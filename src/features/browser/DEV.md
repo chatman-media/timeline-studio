@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Полная структура реализована
+
 ```
 src/features/browser/
 ├── components/
@@ -22,6 +23,7 @@ src/features/browser/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── components/
 │   ├── browser.test.tsx ✅
@@ -37,33 +39,39 @@ src/features/browser/
 ## 🏗️ Архитектура компонентов
 
 ### Browser (корневой компонент)
+
 **Файл**: `components/browser.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Управление активным табом
 - Интеграция с UI библиотекой (Tabs)
 - Координация между BrowserTabs и BrowserContent
 
 **Ключевые особенности**:
+
 ```typescript
-const [activeTab, setActiveTab] = useState("media")
+const [activeTab, setActiveTab] = useState("media");
 
 const handleTabChange = (value: string) => {
-  setActiveTab(value)
-}
+  setActiveTab(value);
+};
 ```
 
 ### BrowserTabs
+
 **Файл**: `components/browser-tabs.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Отображение табов для всех категорий
 - Обработка переключения табов
 - Визуальные индикаторы активного состояния
 
 **Категории табов**:
+
 - Media (медиафайлы)
 - Music (музыка)
 - Transitions (переходы)
@@ -73,15 +81,18 @@ const handleTabChange = (value: string) => {
 - Templates (шаблоны)
 
 ### BrowserContent
+
 **Файл**: `components/browser-content.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Отображение контента для каждого таба
 - Интеграция с соответствующими компонентами
 - Единообразное оформление
 
 **Интегрированные компоненты**:
+
 ```typescript
 <TabsContent value="media">
   <MediaListProvider>
@@ -97,61 +108,70 @@ const handleTabChange = (value: string) => {
 ## 🔧 Медиа модуль
 
 ### MediaMachine
+
 **Файл**: `media/media-machine.ts`
 **Статус**: ✅ Полностью реализован
 
 **Контекст**:
+
 ```typescript
 interface MediaContext {
-  files: MediaFile[]
-  selectedFiles: MediaFile[]
-  isLoading: boolean
-  error: string | null
-  importProgress: number
-  searchQuery: string
-  sortBy: 'name' | 'date' | 'size'
-  sortOrder: 'asc' | 'desc'
-  groupBy: 'none' | 'date' | 'type'
+  files: MediaFile[];
+  selectedFiles: MediaFile[];
+  isLoading: boolean;
+  error: string | null;
+  importProgress: number;
+  searchQuery: string;
+  sortBy: "name" | "date" | "size";
+  sortOrder: "asc" | "desc";
+  groupBy: "none" | "date" | "type";
 }
 ```
 
 **События**:
+
 ```typescript
-type MediaEvents = 
-  | { type: 'IMPORT_FILES'; files: File[] }
-  | { type: 'SELECT_FILE'; fileId: string }
-  | { type: 'DESELECT_FILE'; fileId: string }
-  | { type: 'CLEAR_SELECTION' }
-  | { type: 'DELETE_FILE'; fileId: string }
-  | { type: 'SEARCH'; query: string }
-  | { type: 'SORT'; by: string; order: string }
-  | { type: 'GROUP'; by: string }
+type MediaEvents =
+  | { type: "IMPORT_FILES"; files: File[] }
+  | { type: "SELECT_FILE"; fileId: string }
+  | { type: "DESELECT_FILE"; fileId: string }
+  | { type: "CLEAR_SELECTION" }
+  | { type: "DELETE_FILE"; fileId: string }
+  | { type: "SEARCH"; query: string }
+  | { type: "SORT"; by: string; order: string }
+  | { type: "GROUP"; by: string };
 ```
 
 ### MediaProvider
+
 **Файл**: `media/media-provider.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - React Context для медиа состояния
 - Интеграция с MediaMachine
 - Предоставление хуков для компонентов
 
 ### useMediaImport
+
 **Файл**: `media/use-media-import.ts`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Импорт медиафайлов
 - Обработка метаданных
 - Прогресс загрузки
 - Валидация файлов
 
 ### useMedia
+
 **Файл**: `media/use-media.ts`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Доступ к медиа состоянию
 - Операции с файлами
 - Поиск и фильтрация
@@ -162,6 +182,7 @@ type MediaEvents =
 ### ✅ Реализованные интеграции
 
 #### MediaStudio Layouts
+
 ```typescript
 // В DefaultLayout, DualLayout, VerticalLayout
 import { Browser } from "@/features/browser/components/browser";
@@ -175,13 +196,16 @@ import { Browser } from "@/features/browser/components/browser";
 ```
 
 #### UserSettings
+
 ```typescript
 const { isBrowserVisible } = useUserSettings();
 ```
+
 - Управление видимостью браузера
 - Сохранение пользовательских предпочтений
 
 #### Компоненты категорий
+
 ```typescript
 import {
   EffectList,
@@ -197,89 +221,100 @@ import {
 ### ❌ Требуют реализации
 
 #### Timeline интеграция
+
 - Drag & drop медиафайлов на треки
 - Синхронизация выбранных файлов
 - Предпросмотр на таймлайне
 
 #### VideoPlayer синхронизация
+
 - Автоматическая загрузка выбранного видео
 - Синхронизация времени воспроизведения
 
 ## 📦 Типы данных
 
 ### MediaFile (основной тип)
+
 ```typescript
 interface MediaFile {
-  id: string
-  name: string
-  path: string
-  size: number
-  type: 'video' | 'image' | 'audio'
-  duration?: number
-  width?: number
-  height?: number
-  frameRate?: number
-  bitrate?: number
-  format: string
-  createdAt: Date
-  modifiedAt: Date
-  thumbnail?: string
+  id: string;
+  name: string;
+  path: string;
+  size: number;
+  type: "video" | "image" | "audio";
+  duration?: number;
+  width?: number;
+  height?: number;
+  frameRate?: number;
+  bitrate?: number;
+  format: string;
+  createdAt: Date;
+  modifiedAt: Date;
+  thumbnail?: string;
 }
 ```
 
 ### BrowserTab
+
 ```typescript
 interface BrowserTab {
-  id: string
-  label: string
-  icon?: React.ReactNode
-  component: React.ComponentType
-  isActive: boolean
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  component: React.ComponentType;
+  isActive: boolean;
 }
 ```
 
 ### MediaState
+
 ```typescript
 interface MediaState {
-  files: MediaFile[]
-  selectedFiles: MediaFile[]
-  isLoading: boolean
-  error: string | null
-  importProgress: number
-  searchQuery: string
-  sortBy: 'name' | 'date' | 'size'
-  sortOrder: 'asc' | 'desc'
-  groupBy: 'none' | 'date' | 'type'
+  files: MediaFile[];
+  selectedFiles: MediaFile[];
+  isLoading: boolean;
+  error: string | null;
+  importProgress: number;
+  searchQuery: string;
+  sortBy: "name" | "date" | "size";
+  sortOrder: "asc" | "desc";
+  groupBy: "none" | "date" | "type";
 }
 ```
 
 ## 🧪 Тестирование
 
 ### Стратегия тестирования
+
 - **Компоненты**: Рендеринг, навигация, интерактивность
 - **Хуки**: Логика импорта, состояние, побочные эффекты
 - **Машина состояний**: Переходы, события, контекст
 - **Провайдер**: Интеграция с контекстом
 
 ### Ключевые тесты
+
 ```typescript
 // Тест переключения табов
-it('should switch tabs when clicked', () => {
-  fireEvent.click(screen.getByTestId('tab-trigger-music'))
-  expect(screen.getByTestId('browser-tabs')).toHaveAttribute('data-active-tab', 'music')
-})
+it("should switch tabs when clicked", () => {
+  fireEvent.click(screen.getByTestId("tab-trigger-music"));
+  expect(screen.getByTestId("browser-tabs")).toHaveAttribute(
+    "data-active-tab",
+    "music",
+  );
+});
 
 // Тест импорта медиа
-it('should import media files', async () => {
-  const files = [new File([''], 'test.mp4', { type: 'video/mp4' })]
+it("should import media files", async () => {
+  const files = [new File([""], "test.mp4", { type: "video/mp4" })];
   await act(async () => {
-    importFiles(files)
-  })
-  expect(mediaFiles).toHaveLength(1)
-})
+    importFiles(files);
+  });
+  expect(mediaFiles).toHaveLength(1);
+});
 ```
 
 ### Моки и утилиты
+
 ```typescript
 // Мок для файлового API
 vi.mock('@tauri-apps/api/fs', () => ({
@@ -297,12 +332,14 @@ vi.mock('@/features', () => ({
 ## 🚀 Производительность
 
 ### Оптимизации
+
 - **Ленивая загрузка**: TabsContent рендерится только при активации
 - **Виртуализация**: Для больших списков медиафайлов
 - **Мемоизация**: React.memo для предотвращения ререндеров
 - **Дебаунсинг**: Для поиска и фильтрации
 
 ### Метрики
+
 ```typescript
 // Время переключения табов
 const TAB_SWITCH_TIME = 100; // ms
@@ -317,41 +354,46 @@ const VIRTUAL_LIST_SIZE = 50; // элементов
 ## 🔧 Конфигурация
 
 ### Настройки по умолчанию
+
 ```typescript
-const DEFAULT_TAB = 'media';
-const SUPPORTED_FORMATS = ['mp4', 'avi', 'mov', 'jpg', 'png', 'mp3', 'wav'];
+const DEFAULT_TAB = "media";
+const SUPPORTED_FORMATS = ["mp4", "avi", "mov", "jpg", "png", "mp3", "wav"];
 const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB
 const THUMBNAIL_SIZE = { width: 150, height: 100 };
 ```
 
 ### Категории контента
+
 ```typescript
 const BROWSER_CATEGORIES = [
-  { id: 'media', label: 'Media', component: MediaList },
-  { id: 'music', label: 'Music', component: MusicList },
-  { id: 'transitions', label: 'Transitions', component: TransitionsList },
-  { id: 'effects', label: 'Effects', component: EffectList },
-  { id: 'subtitles', label: 'Subtitles', component: SubtitlesList },
-  { id: 'filters', label: 'Filters', component: FilterList },
-  { id: 'templates', label: 'Templates', component: TemplateList },
+  { id: "media", label: "Media", component: MediaList },
+  { id: "music", label: "Music", component: MusicList },
+  { id: "transitions", label: "Transitions", component: TransitionsList },
+  { id: "effects", label: "Effects", component: EffectList },
+  { id: "subtitles", label: "Subtitles", component: SubtitlesList },
+  { id: "filters", label: "Filters", component: FilterList },
+  { id: "templates", label: "Templates", component: TemplateList },
 ];
 ```
 
 ## 📈 Метрики качества
 
 ### Покрытие тестами
+
 - Компоненты: 100%
 - Хуки: 100%
 - Сервисы: 100%
 - Общее покрытие: 100%
 
 ### Производительность
+
 - Время переключения табов: < 100ms
 - Время загрузки контента: < 500ms
 - Отзывчивость UI: < 16ms
 - Использование памяти: оптимизировано
 
 ### Качество кода
+
 - TypeScript строгий режим
 - ESLint без ошибок
 - Полная типизация

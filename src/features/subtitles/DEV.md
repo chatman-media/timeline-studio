@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Реализованная структура
+
 ```
 src/features/subtitles/
 ├── subtitles-list.tsx ✅
@@ -12,6 +13,7 @@ src/features/subtitles/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── subtitles-list.test.tsx ✅
 ├── subtitles-preview.test.tsx ✅
@@ -21,22 +23,25 @@ src/features/subtitles/
 ## 🏗️ Архитектура компонентов
 
 ### SubtitlesList
+
 **Файл**: `subtitles-list.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### SubtitlesPreview
+
 **Файл**: `subtitles-preview.tsx`
 **Статус**: ✅ Полностью реализован
 
 ## 📦 Типы данных
 
 ### Subtitle
+
 ```typescript
 interface Subtitle {
-  id: string
-  text: string
-  startTime: number
-  endTime: number
-  style?: SubtitleStyle
+  id: string;
+  text: string;
+  startTime: number;
+  endTime: number;
+  style?: SubtitleStyle;
 }
 ```

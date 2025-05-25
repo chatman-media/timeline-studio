@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Полная структура реализована
+
 ```
 src/features/media-studio/
 ├── layouts/
@@ -19,6 +20,7 @@ src/features/media-studio/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── layouts/
 │   ├── default-layout.test.tsx ✅
@@ -34,43 +36,52 @@ src/features/media-studio/
 ## 🏗️ Архитектура компонентов
 
 ### MediaStudio (корневой компонент)
+
 **Файл**: `media-studio.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Корневой компонент приложения
 - Управление макетами
 - Интеграция TopBar и ModalContainer
 
 ### Providers
+
 **Файл**: `providers.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Глобальные провайдеры контекста
 - Обертка для всего приложения
 
 ## 📦 Макеты
 
 ### DefaultLayout
+
 **Файл**: `layouts/default-layout.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### DualLayout
+
 **Файл**: `layouts/dual-layout.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### VerticalLayout
+
 **Файл**: `layouts/vertical-layout.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### OptionsLayout
+
 **Файл**: `layouts/options-layout.tsx`
 **Статус**: ✅ Полностью реализован
 
 ## 🔗 Интеграция компонентов
 
 ### Основные компоненты
+
 - TopBar
 - Browser
 - Timeline
@@ -79,6 +90,7 @@ src/features/media-studio/
 - ModalContainer
 
 ### Система макетов
+
 ```typescript
 {layoutMode === "default" && <DefaultLayout />}
 {layoutMode === "options" && <OptionsLayout />}

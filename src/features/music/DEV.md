@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Полная структура реализована
+
 ```
 src/features/music/
 ├── music-list.tsx ✅
@@ -15,6 +16,7 @@ src/features/music/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── music-list.test.tsx ✅
 ├── music-toolbar.test.tsx ✅
@@ -26,20 +28,24 @@ src/features/music/
 ## 🏗️ Архитектура компонентов
 
 ### MusicList (основной компонент)
+
 **Файл**: `music-list.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Отображение списка музыкальных треков
 - Интеграция с MusicProvider
 - Обработка пустых состояний
 - Адаптивное отображение
 
 ### MusicToolbar
+
 **Файл**: `music-toolbar.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Панель инструментов для управления музыкой
 - Кнопка импорта аудиофайлов
 - Поиск по трекам
@@ -48,39 +54,44 @@ src/features/music/
 ## 🔧 Машина состояний
 
 ### MusicMachine
+
 **Файл**: `music-machine.ts`
 **Статус**: ✅ Полностью реализован
 
 **Контекст**:
+
 ```typescript
 interface MusicContext {
-  tracks: AudioTrack[]
-  selectedTracks: AudioTrack[]
-  isLoading: boolean
-  error: string | null
-  searchQuery: string
-  sortBy: 'name' | 'duration' | 'size'
-  sortOrder: 'asc' | 'desc'
+  tracks: AudioTrack[];
+  selectedTracks: AudioTrack[];
+  isLoading: boolean;
+  error: string | null;
+  searchQuery: string;
+  sortBy: "name" | "duration" | "size";
+  sortOrder: "asc" | "desc";
 }
 ```
 
 **События**:
+
 ```typescript
-type MusicEvents = 
-  | { type: 'LOAD_TRACKS' }
-  | { type: 'IMPORT_TRACKS'; files: File[] }
-  | { type: 'SELECT_TRACK'; trackId: string }
-  | { type: 'DESELECT_TRACK'; trackId: string }
-  | { type: 'DELETE_TRACK'; trackId: string }
-  | { type: 'SEARCH'; query: string }
-  | { type: 'SORT'; by: string; order: string }
+type MusicEvents =
+  | { type: "LOAD_TRACKS" }
+  | { type: "IMPORT_TRACKS"; files: File[] }
+  | { type: "SELECT_TRACK"; trackId: string }
+  | { type: "DESELECT_TRACK"; trackId: string }
+  | { type: "DELETE_TRACK"; trackId: string }
+  | { type: "SEARCH"; query: string }
+  | { type: "SORT"; by: string; order: string };
 ```
 
 ### MusicProvider
+
 **Файл**: `music-provider.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - React Context для состояния музыки
 - Интеграция с MusicMachine
 - Предоставление хуков для компонентов
@@ -88,10 +99,12 @@ type MusicEvents =
 ## 🎣 Хуки
 
 ### useMusicImport
+
 **Файл**: `use-music-import.ts`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Импорт аудиофайлов
 - Валидация форматов
 - Извлечение метаданных
@@ -100,10 +113,12 @@ type MusicEvents =
 ## 🛠️ Утилиты
 
 ### MusicUtils
+
 **Файл**: `music-utils.ts`
 **Статус**: ✅ Полностью реализован
 
 **Функции**:
+
 - Форматирование времени аудио
 - Валидация аудиофайлов
 - Извлечение метаданных
@@ -112,22 +127,23 @@ type MusicEvents =
 ## 📦 Типы данных
 
 ### AudioTrack
+
 ```typescript
 interface AudioTrack {
-  id: string
-  name: string
-  path: string
-  duration: number
-  size: number
-  format: string
-  bitrate?: number
-  sampleRate?: number
-  channels?: number
-  artist?: string
-  album?: string
-  genre?: string
-  year?: number
-  createdAt: Date
+  id: string;
+  name: string;
+  path: string;
+  duration: number;
+  size: number;
+  format: string;
+  bitrate?: number;
+  sampleRate?: number;
+  channels?: number;
+  artist?: string;
+  album?: string;
+  genre?: string;
+  year?: number;
+  createdAt: Date;
 }
 ```
 
@@ -143,6 +159,7 @@ interface AudioTrack {
 ## 🧪 Тестирование
 
 ### Стратегия тестирования
+
 - Компоненты: рендеринг, взаимодействия
 - Машина состояний: переходы, события
 - Хуки: импорт, валидация
@@ -151,6 +168,7 @@ interface AudioTrack {
 ## 📈 Производительность
 
 ### Оптимизации
+
 - Ленивая загрузка треков
 - Виртуализация списков
 - Кэширование метаданных

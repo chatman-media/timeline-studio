@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Реализованная структура
+
 ```
 src/features/top-bar/
 ├── components/
@@ -11,6 +12,7 @@ src/features/top-bar/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 └── components/
     └── top-bar.test.tsx ✅
@@ -19,10 +21,12 @@ src/features/top-bar/
 ## 🏗️ Архитектура компонентов
 
 ### TopBar
+
 **Файл**: `components/top-bar.tsx`
 **Статус**: ✅ Полностью реализован
 
 **Функционал**:
+
 - Верхняя панель приложения
 - Меню и навигация
 - Интеграция с MediaStudio
@@ -30,6 +34,7 @@ src/features/top-bar/
 ## 🔗 Интеграция
 
 ### MediaStudio интеграция
+
 ```typescript
 // В MediaStudio
 <div className="flex flex-col h-screen">

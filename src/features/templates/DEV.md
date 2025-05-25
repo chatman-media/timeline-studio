@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Полная структура реализована
+
 ```
 src/features/templates/
 ├── components/
@@ -27,6 +28,7 @@ src/features/templates/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── components/
 │   ├── template-list-toolbar.test.tsx ✅
@@ -39,23 +41,26 @@ src/features/templates/
 ## 🏗️ Архитектура компонентов
 
 ### TemplateList
+
 **Файл**: `components/template-list.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### TemplateListMachine
+
 **Файл**: `services/template-list-machine.ts`
 **Статус**: ✅ Полностью реализован
 
 ## 📦 Типы данных
 
 ### Template
+
 ```typescript
 interface Template {
-  id: string
-  name: string
-  category: string
-  description: string
-  preview?: string
-  config: TemplateConfig
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  preview?: string;
+  config: TemplateConfig;
 }
 ```
