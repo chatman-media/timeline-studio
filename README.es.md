@@ -25,19 +25,21 @@ Timeline Studio es una aplicación de escritorio para crear y editar videos. La 
 
 ```
 Componentes:     16/17 ✅ (94%)
-Hooks:           14/17 ✅ (82%)  
+Hooks:           14/17 ✅ (82%)
 Servicios:       15/17 ✅ (88%)
 Pruebas:         13/17 ✅ (76%)
 Documentación:   17/17 ✅ (100%)
 ```
 
 ### 🔥 Tareas Críticas
+
 - **Timeline** - requiere máquina de estado, hooks, lógica principal
 - **Resources** - requiere componentes UI para gestión
 - **AI Chat** - requiere verificación de completitud funcional
 - **Options** - requiere expansión de funcionalidad
 
 ### ✅ Componentes Listos
+
 - **VideoPlayer** - reproductor de video completamente funcional
 - **Browser** - navegador de archivos multimedia con pestañas
 - **Media, Music, Effects, Filters, Transitions, Templates** - todo listo
@@ -178,6 +180,7 @@ Cada característica contiene documentación detallada:
 El proyecto utiliza XState v5 para gestionar la lógica de estado compleja.
 
 #### ✅ Máquinas de Estado Implementadas (10):
+
 - `appSettingsMachine` - gestión centralizada de configuraciones
 - `chatMachine` - gestión de chat AI
 - `modalMachine` - gestión de ventanas modales
@@ -190,6 +193,7 @@ El proyecto utiliza XState v5 para gestionar la lógica de estado compleja.
 - `templateListMachine` - gestión de plantillas
 
 #### ❌ Requieren Implementación (2):
+
 - `timelineMachine` - **¡CRÍTICO!** Máquina de estado principal del timeline
 - `optionsMachine` - gestión del panel de opciones
 

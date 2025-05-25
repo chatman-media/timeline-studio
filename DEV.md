@@ -13,6 +13,7 @@
 ```
 
 ### 🔥 Критические задачи
+
 1. **Timeline** - требует машину состояний, хуки, основную логику
 2. **Resources** - требует UI компоненты для управления
 3. **AI Chat** - требует проверки полноты функционала
@@ -43,32 +44,41 @@
 #### ✅ Реализованные машины состояний
 
 1. **`appSettingsMachine`** ✅ - централизованное управление настройками
+
    - Состояния: `loading` → `idle` / `error`
    - Управляет: пользовательские настройки, проекты, медиафайлы, избранное
 
 2. **`chatMachine`** ✅ - управление AI чатом
+
    - Состояния: `idle` → `processing` → `idle`
    - События: отправка/получение сообщений, выбор агента
 
 3. **`modalMachine`** ✅ - управление модальными окнами
+
    - Состояния: `closed` ⇄ `opened`
 
 4. **`playerMachine`** ✅ - управление видеоплеером
+
    - Состояния: `idle` → `loading` → `ready`
 
 5. **`resourcesMachine`** ✅ - управление ресурсами таймлайна
+
    - Управляет: эффекты, фильтры, переходы, шаблоны, музыка, субтитры
 
 6. **`musicMachine`** ✅ - управление музыкальными файлами
+
    - Фильтрация и поиск музыкальных файлов
 
 7. **`userSettingsMachine`** ✅ - управление пользовательскими настройками
+
    - Настройки интерфейса, API ключи, видимость браузера
 
 8. **`projectSettingsMachine`** ✅ - управление настройками проекта
+
    - Разрешение, частота кадров, настройки экспорта
 
 9. **`mediaListMachine`** ✅ - управление списками медиафайлов
+
    - Загрузка файлов, избранное, состояние загрузки
 
 10. **`templateListMachine`** ✅ - управление шаблонами
@@ -77,6 +87,7 @@
 #### ❌ Требуют реализации
 
 11. **`timelineMachine`** ❌ - **КРИТИЧНО!** Основная машина состояний таймлайна
+
     - Управление треками, клипами, временной шкалой
     - История изменений (undo/redo)
     - Синхронизация с плеером
@@ -137,6 +148,7 @@ AppProvider = composeProviders(
 Каждая feature содержит два типа документации в своей папке:
 
 #### `{feature}-features.md` - Функциональные требования
+
 - 📋 Статус готовности компонента
 - 🎯 Основные функции (готово ✅ / требует реализации ❌)
 - 🎨 UI/UX требования
@@ -144,6 +156,7 @@ AppProvider = composeProviders(
 - 📊 Приоритеты реализации
 
 #### `{feature}-technical.md` - Техническая документация
+
 - 📁 Структура файлов и тестовое покрытие
 - 🏗️ Архитектура компонентов
 - 🔧 Машины состояний и контекст
@@ -154,6 +167,7 @@ AppProvider = composeProviders(
 ### 📋 Полный список документации
 
 #### ✅ Полностью готовые features (13):
+
 1. `src/features/browser/` - README.md, DEV.md
 2. `src/features/media/` - README.md, DEV.md
 3. `src/features/video-player/` - README.md, DEV.md
@@ -169,28 +183,33 @@ AppProvider = composeProviders(
 13. `src/features/media-studio/` - README.md, DEV.md
 
 #### ⚠️ Частично готовые features (4):
+
 14. `src/features/timeline/` - README.md, DEV.md
 15. `src/features/resources/` - README.md, DEV.md
 16. `src/features/ai-chat/` - README.md
 17. `src/features/options/` - README.md, DEV.md
 
 ### 📊 Общий обзор
+
 - `src/features/OVERVIEW.md` - полный обзор всех features с приоритетами
 
 ## 🚀 Следующие шаги разработки
 
 ### 🔥 Критический приоритет
+
 1. **Timeline Machine** - создать `src/features/timeline/services/timeline-machine.ts`
 2. **Timeline Provider** - создать `src/features/timeline/services/timeline-provider.tsx`
 3. **Timeline Hooks** - создать хуки в `src/features/timeline/hooks/`
 4. **Resources Components** - создать UI компоненты в `src/features/resources/components/`
 
 ### 🚀 Высокий приоритет
+
 1. **AI Chat проверка** - протестировать полноту функционала
 2. **Options расширение** - добавить машину состояний и UI элементы
 3. **Timeline интеграция** - связать с VideoPlayer и Browser
 
 ### 📝 Средний приоритет
+
 1. **Тестирование** - добавить недостающие тесты
 2. **Оптимизация** - улучшить производительность
 3. **Документация** - обновлять по мере разработки

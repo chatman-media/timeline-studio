@@ -32,12 +32,14 @@ Documentation:  17/17 ✅ (100%)
 ```
 
 ### 🔥 Critical Tasks
+
 - **Timeline** - requires state machine, hooks, core logic
 - **Resources** - requires UI components for management
 - **AI Chat** - requires functionality completeness check
 - **Options** - requires functionality expansion
 
 ### ✅ Ready Components
+
 - **VideoPlayer** - fully functional video player
 - **Browser** - media file browser with tabs
 - **Media, Music, Effects, Filters, Transitions, Templates** - all ready
@@ -182,6 +184,7 @@ Each feature contains detailed documentation:
 The project uses XState v5 for managing complex state logic.
 
 #### ✅ Implemented State Machines (10):
+
 - `appSettingsMachine` - centralized settings management
 - `chatMachine` - AI chat management
 - `modalMachine` - modal window management
@@ -194,6 +197,7 @@ The project uses XState v5 for managing complex state logic.
 - `templateListMachine` - template management
 
 #### ❌ Require Implementation (2):
+
 - `timelineMachine` - **CRITICAL!** Main timeline state machine
 - `optionsMachine` - options panel management
 
