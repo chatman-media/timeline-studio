@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Полная структура реализована
+
 ```
 src/features/modals/
 ├── components/
@@ -24,6 +25,7 @@ src/features/modals/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 └── services/
     ├── modal-machine.test.ts ✅
@@ -33,32 +35,37 @@ src/features/modals/
 ## 🔧 Машина состояний
 
 ### ModalMachine
+
 **Файл**: `services/modal-machine.ts`
 **Статус**: ✅ Полностью реализован
 
 **Контекст**:
+
 ```typescript
 interface ModalContext {
-  activeModal: string | null
-  modalData: any
-  isOpen: boolean
-  canClose: boolean
+  activeModal: string | null;
+  modalData: any;
+  isOpen: boolean;
+  canClose: boolean;
 }
 ```
 
 ## 🏗️ Архитектура
 
 ### ModalContainer
+
 **Файл**: `components/modal-container.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### ModalProvider
+
 **Файл**: `services/modal-provider.tsx`
 **Статус**: ✅ Полностью реализован
 
 ## 📦 Модальные окна
 
 ### Доступные модалы
+
 - Camera Capture
 - Export
 - Keyboard Shortcuts

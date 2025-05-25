@@ -3,6 +3,7 @@
 ## 📁 Структура файлов
 
 ### ✅ Реализованная структура
+
 ```
 src/features/filters/
 ├── filter-list.tsx ✅
@@ -12,6 +13,7 @@ src/features/filters/
 ```
 
 ### 🧪 Тестовое покрытие
+
 ```
 ├── filter-list.test.tsx ✅
 ├── filter-preview.test.tsx ✅
@@ -20,23 +22,26 @@ src/features/filters/
 ## 🏗️ Архитектура компонентов
 
 ### FilterList
+
 **Файл**: `filter-list.tsx`
 **Статус**: ✅ Полностью реализован
 
 ### FilterPreview
+
 **Файл**: `filter-preview.tsx`
 **Статус**: ✅ Полностью реализован
 
 ## 📦 Типы данных
 
 ### Filter
+
 ```typescript
 interface Filter {
-  id: string
-  name: string
-  category: string
-  description: string
-  parameters: FilterParameter[]
-  preview?: string
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  parameters: FilterParameter[];
+  preview?: string;
 }
 ```
