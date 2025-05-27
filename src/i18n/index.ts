@@ -1,18 +1,22 @@
-import i18n from "i18next"
-import LanguageDetector from "i18next-browser-languagedetector"
-import { initReactI18next } from "react-i18next"
+import i18n from "i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
 
 // Импорт констант для языков
-import { DEFAULT_LANGUAGE, LanguageCode, isSupportedLanguage } from "./constants"
+import {
+  DEFAULT_LANGUAGE,
+  LanguageCode,
+  isSupportedLanguage,
+} from "./constants";
 // Импорт ресурсов переводов
-import translationDE from "./locales/de.json"
-import translationEN from "./locales/en.json"
-import translationES from "./locales/es.json"
-import translationFR from "./locales/fr.json"
-import translationRU from "./locales/ru.json"
+import translationDE from "./locales/de.json";
+import translationEN from "./locales/en.json";
+import translationES from "./locales/es.json";
+import translationFR from "./locales/fr.json";
+import translationRU from "./locales/ru.json";
 
 // Проверка, что код выполняется в браузере
-const isBrowser = typeof window !== "undefined"
+const isBrowser = typeof window !== "undefined";
 
 // Ресурсы переводов
 const resources = {
@@ -31,29 +35,32 @@ const resources = {
   de: {
     translation: translationDE,
   },
-}
+};
 
 // Инициализация i18next
 const initI18n = () => {
   // Используем LanguageDetector только в браузере
   // eslint-disable-next-line import/no-named-as-default-member
-  const instance = i18n.use(initReactI18next)
+  const instance = i18n.use(initReactI18next);
 
   if (isBrowser) {
-    instance.use(LanguageDetector)
+    instance.use(LanguageDetector);
   }
 
   // Получаем сохраненный язык из localStorage
-  let savedLanguage = DEFAULT_LANGUAGE
+  let savedLanguage = DEFAULT_LANGUAGE;
   if (isBrowser) {
     try {
-      const storedLanguage = localStorage.getItem("app-language")
+      const storedLanguage = localStorage.getItem("app-language");
       if (storedLanguage && isSupportedLanguage(storedLanguage)) {
-        savedLanguage = storedLanguage as LanguageCode
-        console.log("i18n: Using saved language from localStorage:", savedLanguage)
+        savedLanguage = storedLanguage as LanguageCode;
+        console.log(
+          "i18n: Using saved language from localStorage:",
+          savedLanguage,
+        );
       }
     } catch (error) {
-      console.error("i18n: Error reading language from localStorage:", error)
+      console.error("i18n: Error reading language from localStorage:", error);
     }
   }
 
@@ -80,7 +87,7 @@ const initI18n = () => {
   });
 
   // Безопасно обрабатываем результат инициализации
-  if (initResult && typeof initResult.catch === 'function') {
+  if (initResult && typeof initResult.catch === "function") {
     initResult.catch((error) => {
       console.error("i18n: Failed to initialize:", error);
     });
@@ -91,18 +98,18 @@ const initI18n = () => {
     // Сохраняем в localStorage
     if (isBrowser) {
       try {
-        localStorage.setItem("app-language", lng)
-        console.log("i18n: Language changed and saved to localStorage:", lng)
+        localStorage.setItem("app-language", lng);
+        console.log("i18n: Language changed and saved to localStorage:", lng);
       } catch (error) {
-        console.error("i18n: Error saving language to localStorage:", error)
+        console.error("i18n: Error saving language to localStorage:", error);
       }
     }
-  })
+  });
 
-  return instance
-}
+  return instance;
+};
 
 // Инициализируем i18n
-const i18nInstance = initI18n()
+const i18nInstance = initI18n();
 
-export default i18nInstance
+export default i18nInstance;

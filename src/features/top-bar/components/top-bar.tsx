@@ -45,21 +45,30 @@ const TopBarComponent = function TopBar() {
     setProjectName(currentProject.name);
   }, [currentProject.name]);
 
-  const handleOpenModal = useCallback((modal: string) => {
-    console.log(`Opening modal: ${modal}`);
-    openModal(modal as ModalType);
-  }, [openModal]);
+  const handleOpenModal = useCallback(
+    (modal: string) => {
+      console.log(`Opening modal: ${modal}`);
+      openModal(modal as ModalType);
+    },
+    [openModal],
+  );
 
-  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setProjectName(e.target.value);
-    setProjectDirty(true);
-  }, [setProjectDirty]);
+  const handleNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setProjectName(e.target.value);
+      setProjectDirty(true);
+    },
+    [setProjectDirty],
+  );
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setIsEditing(false);
-    }
-  }, []);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        setIsEditing(false);
+      }
+    },
+    [],
+  );
 
   const handleSave = useCallback(() => {
     try {
@@ -82,35 +91,48 @@ const TopBarComponent = function TopBar() {
   }, [openProject]);
 
   // Мемоизируем заголовки для кнопок
-  const buttonTitles = useMemo(() => ({
-    browser: isBrowserVisible ? t("browser.hide") : t("browser.show"),
-    layout: t("topBar.layout"),
-    keyboardShortcuts: t("topBar.keyboardShortcuts"),
-    userSettings: t("topBar.userSettings"),
-    projectSettings: t("topBar.projectSettings"),
-    openProject: t("topBar.openProject"),
-    save: currentProject.isDirty ? t("topBar.saveChanges") : t("topBar.allChangesSaved"),
-    cameraCapture: t("topBar.cameraCapture"),
-    voiceRecording: t("topBar.voiceRecording"),
-    publish: t("topBar.publish"),
-    editingTasks: t("topBar.editingTasks"),
-    export: t("topBar.export"),
-  }), [t, isBrowserVisible, currentProject.isDirty]);
+  const buttonTitles = useMemo(
+    () => ({
+      browser: isBrowserVisible ? t("browser.hide") : t("browser.show"),
+      layout: t("topBar.layout"),
+      keyboardShortcuts: t("topBar.keyboardShortcuts"),
+      userSettings: t("topBar.userSettings"),
+      projectSettings: t("topBar.projectSettings"),
+      openProject: t("topBar.openProject"),
+      save: currentProject.isDirty
+        ? t("topBar.saveChanges")
+        : t("topBar.allChangesSaved"),
+      cameraCapture: t("topBar.cameraCapture"),
+      voiceRecording: t("topBar.voiceRecording"),
+      publish: t("topBar.publish"),
+      editingTasks: t("topBar.editingTasks"),
+      export: t("topBar.export"),
+    }),
+    [t, isBrowserVisible, currentProject.isDirty],
+  );
 
   // Мемоизируем CSS классы
-  const saveButtonClassName = useMemo(() => cn(
-    "h-7 w-7 cursor-pointer p-0",
-    currentProject.isDirty
-      ? "hover:bg-accent opacity-100"
-      : "opacity-50 hover:opacity-50",
-  ), [currentProject.isDirty]);
+  const saveButtonClassName = useMemo(
+    () =>
+      cn(
+        "h-7 w-7 cursor-pointer p-0",
+        currentProject.isDirty
+          ? "hover:bg-accent opacity-100"
+          : "opacity-50 hover:opacity-50",
+      ),
+    [currentProject.isDirty],
+  );
 
-  const projectNameClassName = useMemo(() => cn(
-    "group relative ml-1 w-[100px] text-xs",
-    isEditing
-      ? "ring-1 ring-teal"
-      : "transition-colors group-hover:ring-1 group-hover:ring-teal",
-  ), [isEditing]);
+  const projectNameClassName = useMemo(
+    () =>
+      cn(
+        "group relative ml-1 w-[100px] text-xs",
+        isEditing
+          ? "ring-1 ring-teal"
+          : "transition-colors group-hover:ring-1 group-hover:ring-teal",
+      ),
+    [isEditing],
+  );
 
   return (
     <div className="relative flex w-full items-center bg-gray-200 px-1 py-0 dark:bg-[#343434]">
@@ -324,4 +346,4 @@ const TopBarComponent = function TopBar() {
 };
 
 // Мемоизируем компонент для предотвращения лишних перерисовок
-export const TopBar = (TopBarComponent);
+export const TopBar = TopBarComponent;

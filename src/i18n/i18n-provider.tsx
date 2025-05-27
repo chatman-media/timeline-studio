@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react";
 
-import { I18nextProvider } from "react-i18next"
+import { I18nextProvider } from "react-i18next";
 
-import i18n from "./index"
+import i18n from "./index";
 
 interface I18nProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function I18nProvider({ children }: I18nProviderProps) {
-  const [isI18nInitialized, setIsI18nInitialized] = useState(false)
+  const [isI18nInitialized, setIsI18nInitialized] = useState(false);
 
   useEffect(() => {
     // Проверяем, инициализирован ли i18n
     if (i18n.isInitialized) {
-      setIsI18nInitialized(true)
+      setIsI18nInitialized(true);
     } else {
       // Если не инициализирован, подписываемся на событие initialized
       const handleInitialized = () => {
-        setIsI18nInitialized(true)
-      }
+        setIsI18nInitialized(true);
+      };
 
-      i18n.on("initialized", handleInitialized)
+      i18n.on("initialized", handleInitialized);
 
       // Очистка подписки при размонтировании
       return () => {
-        i18n.off("initialized", handleInitialized)
-      }
+        i18n.off("initialized", handleInitialized);
+      };
     }
-  }, [])
+  }, []);
 
   // Показываем загрузку, пока i18n не инициализирован
   if (!isI18nInitialized) {
@@ -41,8 +41,8 @@ export function I18nProvider({ children }: I18nProviderProps) {
           <p className="text-gray-600">Loading translations...</p>
         </div>
       </div>
-    )
+    );
   }
 
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }
