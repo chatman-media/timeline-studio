@@ -30,7 +30,7 @@ describe("ProjectSettingsProvider", () => {
   it("должен принимать children prop", () => {
     const TestComponent = () => <div data-testid="test">Test</div>;
 
-    const { getByTestId  } = render(
+    const { getByTestId } = render(
       <ProjectSettingsProvider>
         <TestComponent />
       </ProjectSettingsProvider>,

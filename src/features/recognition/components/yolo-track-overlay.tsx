@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react";
 
-import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { YoloVideoData } from "@/types/yolo"
+import { YoloVideoData } from "@/types/yolo";
 
 interface YoloTrackOverlayProps {
-  yoloData: YoloVideoData
-  currentTime: number
-  width?: number
-  height?: number
-  showTrajectories?: boolean
+  yoloData: YoloVideoData;
+  currentTime: number;
+  width?: number;
+  height?: number;
+  showTrajectories?: boolean;
 }
 
 /**
@@ -24,16 +24,23 @@ export function YoloTrackOverlay({
   height = 300,
   showTrajectories: initialShowTrajectories = true,
 }: YoloTrackOverlayProps) {
-  const { t } = useTranslation()
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
-  const [showTrajectories, setShowTrajectories] = useState(initialShowTrajectories)
-  const [trackHistory, setTrackHistory] = useState<Map<string, Array<{
-    timestamp: number
-    x: number
-    y: number
-    class: string
-  }>>>(new Map())
+  const { t } = useTranslation();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+  const [showTrajectories, setShowTrajectories] = useState(
+    initialShowTrajectories,
+  );
+  const [trackHistory, setTrackHistory] = useState<
+    Map<
+      string,
+      Array<{
+        timestamp: number;
+        x: number;
+        y: number;
+        class: string;
+      }>
+    >
+  >(new Map());
 
   // Цвета для разных классов объектов
   const classColors: Record<string, string> = {
@@ -45,227 +52,244 @@ export function YoloTrackOverlay({
     motorcycle: "#A29BFE",
     bus: "#FD79A8",
     truck: "#00B894",
-  }
+  };
 
   const getColorForClass = (className: string): string => {
-    return classColors[className] || "#95A5A6"
-  }
+    return classColors[className] || "#95A5A6";
+  };
 
   // Обновляем историю треков
   useEffect(() => {
-    const newTrackHistory = new Map<string, Array<{
-      timestamp: number
-      x: number
-      y: number
-      class: string
-    }>>()
+    const newTrackHistory = new Map<
+      string,
+      Array<{
+        timestamp: number;
+        x: number;
+        y: number;
+        class: string;
+      }>
+    >();
 
     // Группируем обнаружения по трекам (используем простую эвристику)
     yoloData.frames.forEach((frame) => {
       frame.detections.forEach((detection, index) => {
         // Простая эвристика для создания треков - используем комбинацию класса и позиции
-        const trackId = `${detection.class}_${Math.floor(detection.bbox.x * 10)}_${Math.floor(detection.bbox.y * 10)}`
+        const trackId = `${detection.class}_${Math.floor(detection.bbox.x * 10)}_${Math.floor(detection.bbox.y * 10)}`;
 
         if (!newTrackHistory.has(trackId)) {
-          newTrackHistory.set(trackId, [])
+          newTrackHistory.set(trackId, []);
         }
 
-        const track = newTrackHistory.get(trackId)!
+        const track = newTrackHistory.get(trackId)!;
 
         // Добавляем точку только если она не слишком близко к предыдущей
-        const lastPoint = track[track.length - 1]
-        const centerX = detection.bbox.x + detection.bbox.width / 2
-        const centerY = detection.bbox.y + detection.bbox.height / 2
+        const lastPoint = track[track.length - 1];
+        const centerX = detection.bbox.x + detection.bbox.width / 2;
+        const centerY = detection.bbox.y + detection.bbox.height / 2;
 
-        if (!lastPoint ||
-            Math.abs(lastPoint.timestamp - frame.timestamp) > 0.5 ||
-            Math.abs(lastPoint.x - centerX) > 0.05 ||
-            Math.abs(lastPoint.y - centerY) > 0.05) {
-
+        if (
+          !lastPoint ||
+          Math.abs(lastPoint.timestamp - frame.timestamp) > 0.5 ||
+          Math.abs(lastPoint.x - centerX) > 0.05 ||
+          Math.abs(lastPoint.y - centerY) > 0.05
+        ) {
           track.push({
             timestamp: frame.timestamp,
             x: centerX,
             y: centerY,
             class: detection.class,
-          })
+          });
         }
-      })
-    })
+      });
+    });
 
     // Фильтруем треки с минимальным количеством точек
-    const filteredTracks = new Map()
+    const filteredTracks = new Map();
     newTrackHistory.forEach((track, trackId) => {
-      if (track.length >= 3) { // Минимум 3 точки для трека
-        filteredTracks.set(trackId, track)
+      if (track.length >= 3) {
+        // Минимум 3 точки для трека
+        filteredTracks.set(trackId, track);
       }
-    })
+    });
 
-    setTrackHistory(filteredTracks)
-  }, [yoloData])
+    setTrackHistory(filteredTracks);
+  }, [yoloData]);
 
   // Рисуем треки
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     // Очищаем canvas
-    ctx.clearRect(0, 0, width, height)
+    ctx.clearRect(0, 0, width, height);
 
     // Настраиваем размеры с учетом DPI
-    const dpr = window.devicePixelRatio || 1
-    canvas.width = width * dpr
-    canvas.height = height * dpr
-    ctx.scale(dpr, dpr)
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
 
     // Рисуем фон
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
-    ctx.fillRect(0, 0, width, height)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, width, height);
 
-    if (!showTrajectories) return
+    if (!showTrajectories) return;
 
     // Рисуем треки
     trackHistory.forEach((track, trackId) => {
-      const className = track[0]?.class || "unknown"
-      const color = getColorForClass(className)
-      const isSelected = selectedTrack === trackId
+      const className = track[0]?.class || "unknown";
+      const color = getColorForClass(className);
+      const isSelected = selectedTrack === trackId;
 
       // Фильтруем точки до текущего времени
-      const visibleTrack = track.filter(point => point.timestamp <= currentTime)
+      const visibleTrack = track.filter(
+        (point) => point.timestamp <= currentTime,
+      );
 
-      if (visibleTrack.length < 2) return
+      if (visibleTrack.length < 2) return;
 
       // Рисуем траекторию
-      ctx.strokeStyle = isSelected ? color : `${color}80` // 50% прозрачности для невыбранных
-      ctx.lineWidth = isSelected ? 3 : 2
-      ctx.lineCap = "round"
-      ctx.lineJoin = "round"
+      ctx.strokeStyle = isSelected ? color : `${color}80`; // 50% прозрачности для невыбранных
+      ctx.lineWidth = isSelected ? 3 : 2;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
-      ctx.beginPath()
+      ctx.beginPath();
       visibleTrack.forEach((point, index) => {
-        const x = point.x * width
-        const y = point.y * height
+        const x = point.x * width;
+        const y = point.y * height;
 
         if (index === 0) {
-          ctx.moveTo(x, y)
+          ctx.moveTo(x, y);
         } else {
-          ctx.lineTo(x, y)
+          ctx.lineTo(x, y);
         }
-      })
-      ctx.stroke()
+      });
+      ctx.stroke();
 
       // Рисуем точки трека
       visibleTrack.forEach((point, index) => {
-        const x = point.x * width
-        const y = point.y * height
-        const isCurrentPoint = index === visibleTrack.length - 1
+        const x = point.x * width;
+        const y = point.y * height;
+        const isCurrentPoint = index === visibleTrack.length - 1;
 
         // Размер точки зависит от того, является ли она текущей
-        const radius = isCurrentPoint ? 6 : 3
+        const radius = isCurrentPoint ? 6 : 3;
 
-        ctx.fillStyle = color
-        ctx.beginPath()
-        ctx.arc(x, y, radius, 0, 2 * Math.PI)
-        ctx.fill()
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fill();
 
         // Обводка для текущей точки
         if (isCurrentPoint) {
-          ctx.strokeStyle = "#FFFFFF"
-          ctx.lineWidth = 2
-          ctx.stroke()
+          ctx.strokeStyle = "#FFFFFF";
+          ctx.lineWidth = 2;
+          ctx.stroke();
         }
-      })
+      });
 
       // Подпись для выбранного трека
       if (isSelected && visibleTrack.length > 0) {
-        const lastPoint = visibleTrack[visibleTrack.length - 1]
-        const x = lastPoint.x * width
-        const y = lastPoint.y * height
+        const lastPoint = visibleTrack[visibleTrack.length - 1];
+        const x = lastPoint.x * width;
+        const y = lastPoint.y * height;
 
-        ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
-        ctx.fillRect(x + 10, y - 20, 80, 20)
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.fillRect(x + 10, y - 20, 80, 20);
 
-        ctx.fillStyle = "#FFFFFF"
-        ctx.font = "12px Arial"
-        ctx.fillText(className, x + 15, y - 5)
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "12px Arial";
+        ctx.fillText(className, x + 15, y - 5);
       }
-    })
+    });
 
     // Рисуем текущие обнаружения
-    const currentFrame = yoloData.frames.find(frame =>
-      Math.abs(frame.timestamp - currentTime) < 0.5
-    )
+    const currentFrame = yoloData.frames.find(
+      (frame) => Math.abs(frame.timestamp - currentTime) < 0.5,
+    );
 
     if (currentFrame) {
       currentFrame.detections.forEach((detection) => {
-        const x = (detection.bbox.x + detection.bbox.width / 2) * width
-        const y = (detection.bbox.y + detection.bbox.height / 2) * height
-        const color = getColorForClass(detection.class)
+        const x = (detection.bbox.x + detection.bbox.width / 2) * width;
+        const y = (detection.bbox.y + detection.bbox.height / 2) * height;
+        const color = getColorForClass(detection.class);
 
         // Рисуем пульсирующий круг для текущих обнаружений
-        const pulseRadius = 8 + Math.sin(Date.now() / 200) * 2
+        const pulseRadius = 8 + Math.sin(Date.now() / 200) * 2;
 
-        ctx.fillStyle = `${color}40` // 25% прозрачности
-        ctx.beginPath()
-        ctx.arc(x, y, pulseRadius, 0, 2 * Math.PI)
-        ctx.fill()
+        ctx.fillStyle = `${color}40`; // 25% прозрачности
+        ctx.beginPath();
+        ctx.arc(x, y, pulseRadius, 0, 2 * Math.PI);
+        ctx.fill();
 
-        ctx.strokeStyle = color
-        ctx.lineWidth = 2
-        ctx.stroke()
-      })
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
     }
-
-  }, [trackHistory, currentTime, width, height, showTrajectories, selectedTrack, yoloData])
+  }, [
+    trackHistory,
+    currentTime,
+    width,
+    height,
+    showTrajectories,
+    selectedTrack,
+    yoloData,
+  ]);
 
   // Обработчик клика по треку
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect()
-    const clickX = (event.clientX - rect.left) / width
-    const clickY = (event.clientY - rect.top) / height
+    const rect = canvas.getBoundingClientRect();
+    const clickX = (event.clientX - rect.left) / width;
+    const clickY = (event.clientY - rect.top) / height;
 
     // Находим ближайший трек к клику
-    let closestTrack: string | null = null
-    let minDistance = Infinity
+    let closestTrack: string | null = null;
+    let minDistance = Infinity;
 
     trackHistory.forEach((track, trackId) => {
-      const visibleTrack = track.filter(point => point.timestamp <= currentTime)
+      const visibleTrack = track.filter(
+        (point) => point.timestamp <= currentTime,
+      );
 
       visibleTrack.forEach((point) => {
         const distance = Math.sqrt(
-          Math.pow(point.x - clickX, 2) + Math.pow(point.y - clickY, 2)
-        )
+          Math.pow(point.x - clickX, 2) + Math.pow(point.y - clickY, 2),
+        );
 
-        if (distance < 0.05 && distance < minDistance) { // 5% от размера canvas
-          minDistance = distance
-          closestTrack = trackId
+        if (distance < 0.05 && distance < minDistance) {
+          // 5% от размера canvas
+          minDistance = distance;
+          closestTrack = trackId;
         }
-      })
-    })
+      });
+    });
 
     if (closestTrack) {
-      setSelectedTrack(selectedTrack === closestTrack ? null : closestTrack)
+      setSelectedTrack(selectedTrack === closestTrack ? null : closestTrack);
 
       // Показываем информацию о треке
-      const track = trackHistory.get(closestTrack)
+      const track = trackHistory.get(closestTrack);
       if (track) {
-        const className = track[0]?.class || "unknown"
-        const trackLength = track.length
+        const className = track[0]?.class || "unknown";
+        const trackLength = track.length;
 
         toast(`${t("Трек выбран")}: ${className}`, {
           description: `${t("Точек в треке")}: ${trackLength}`,
           duration: 2000,
-        })
+        });
       }
     } else {
-      setSelectedTrack(null)
+      setSelectedTrack(null);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -304,19 +328,22 @@ export function YoloTrackOverlay({
         <div>
           <div className="font-medium">{t("Выбранный трек")}</div>
           <div className="text-gray-600">
-            {selectedTrack ?
-              trackHistory.get(selectedTrack)?.[0]?.class || t("Неизвестно") :
-              t("Не выбран")
-            }
+            {selectedTrack
+              ? trackHistory.get(selectedTrack)?.[0]?.class || t("Неизвестно")
+              : t("Не выбран")}
           </div>
         </div>
       </div>
 
       {/* Легенда */}
       <div className="flex flex-wrap gap-2">
-        {Array.from(new Set(
-          Array.from(trackHistory.values()).flat().map(point => point.class)
-        )).map((className) => (
+        {Array.from(
+          new Set(
+            Array.from(trackHistory.values())
+              .flat()
+              .map((point) => point.class),
+          ),
+        ).map((className) => (
           <div key={className} className="flex items-center gap-1 text-xs">
             <div
               className="w-3 h-3 rounded-full"
@@ -327,5 +354,5 @@ export function YoloTrackOverlay({
         ))}
       </div>
     </div>
-  )
+  );
 }

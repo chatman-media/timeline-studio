@@ -124,15 +124,9 @@ describe("CameraSettings", () => {
     // Находим селект устройств и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(selects[0]);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван
@@ -145,15 +139,9 @@ describe("CameraSettings", () => {
     // Находим селект аудио устройств и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(selects[1]);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван
@@ -166,15 +154,9 @@ describe("CameraSettings", () => {
     // Находим селект разрешений и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(selects[2]);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван
@@ -187,15 +169,9 @@ describe("CameraSettings", () => {
     // Находим селект частоты кадров и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(selects[3]);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван с числовым значением
@@ -208,15 +184,9 @@ describe("CameraSettings", () => {
     // Находим поле ввода обратного отсчета и изменяем его значение
     const countdownInput = screen.getByTestId("input");
     act(() => {
-
       act(() => {
-
-
         fireEvent.change(countdownInput, { target: { value: "5" } });
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван

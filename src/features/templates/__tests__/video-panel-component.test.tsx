@@ -25,32 +25,34 @@ describe("VideoPanelComponent", () => {
 
   it("should render without crashing", () => {
     renderWithTemplates(
-      <VideoPanelComponent video={mockVideo} isActive={false} />
+      <VideoPanelComponent video={mockVideo} isActive={false} />,
     );
 
     // Проверяем, что компонент отрендерился (ищем контейнер)
-    const container = document.querySelector('.video-panel-template');
+    const container = document.querySelector(".video-panel-template");
     expect(container).toBeInTheDocument();
   });
 
   it("should display video when path is provided", () => {
     renderWithTemplates(
-      <VideoPanelComponent video={mockVideo} isActive={true} />
+      <VideoPanelComponent video={mockVideo} isActive={true} />,
     );
 
     // Проверяем, что видео элемент отрендерился
-    const videoElement = document.querySelector('video[data-video-id="test-video-1"]');
+    const videoElement = document.querySelector(
+      'video[data-video-id="test-video-1"]',
+    );
     expect(videoElement).toBeInTheDocument();
-    expect(videoElement).toHaveAttribute('src', '/test/video.mp4');
+    expect(videoElement).toHaveAttribute("src", "/test/video.mp4");
   });
 
   it("should show active indicator when video is active", () => {
     renderWithTemplates(
-      <VideoPanelComponent video={mockVideo} isActive={true} />
+      <VideoPanelComponent video={mockVideo} isActive={true} />,
     );
 
     // Проверяем, что контейнер отрендерился и имеет активную рамку
-    const activeContainer = document.querySelector('.border-2.border-white');
+    const activeContainer = document.querySelector(".border-2.border-white");
     expect(activeContainer).toBeInTheDocument();
   });
 
@@ -60,7 +62,7 @@ describe("VideoPanelComponent", () => {
         video={mockVideo}
         isActive={true}
         hideLabel={false}
-      />
+      />,
     );
 
     // Проверяем, что название видео отображается
@@ -73,23 +75,25 @@ describe("VideoPanelComponent", () => {
         video={mockVideo}
         isActive={true}
         hideLabel={true}
-      />
+      />,
     );
 
     // Проверяем, что название видео скрыто (opacity: 0)
     const labelElement = screen.getByText("Test Video");
-    expect(labelElement).toHaveStyle({ opacity: '0' });
+    expect(labelElement).toHaveStyle({ opacity: "0" });
   });
 
   it("should show no video message when path is missing", () => {
     const videoWithoutPath = { ...mockVideo, path: "" };
 
     renderWithTemplates(
-      <VideoPanelComponent video={videoWithoutPath} isActive={true} />
+      <VideoPanelComponent video={videoWithoutPath} isActive={true} />,
     );
 
     // Проверяем, что отображается сообщение об отсутствии видео
-    expect(screen.getByText("timeline.player.noVideoSelected")).toBeInTheDocument();
+    expect(
+      screen.getByText("timeline.player.noVideoSelected"),
+    ).toBeInTheDocument();
   });
 
   it("should have correct component structure", () => {

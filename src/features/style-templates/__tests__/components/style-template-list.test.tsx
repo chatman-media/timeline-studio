@@ -211,15 +211,9 @@ describe("StyleTemplateList", () => {
 
     const templatePreview = screen.getByTestId("template-preview-template-1");
     act(() => {
-
       act(() => {
-
-
         templatePreview.click();
-
-
       });
-
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(

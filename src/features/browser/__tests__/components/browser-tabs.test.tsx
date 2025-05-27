@@ -33,7 +33,9 @@ vi.mock("lucide-react", () => ({
     <div data-testid="flip-horizontal-icon">FlipHorizontal2</div>
   ),
   Grid2X2: () => <div data-testid="grid-icon">Grid2X2</div>,
-  LayoutTemplate: () => <div data-testid="layout-template-icon">LayoutTemplate</div>,
+  LayoutTemplate: () => (
+    <div data-testid="layout-template-icon">LayoutTemplate</div>
+  ),
   Sticker: () => <div data-testid="sticker-icon">Sticker</div>,
 }));
 
@@ -106,29 +108,17 @@ describe("BrowserTabs", () => {
 
     // Кликаем по вкладке "Music"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("tab-trigger-music"));
-
-
       });
-
     });
     expect(mockOnTabChange).toHaveBeenCalledWith("music");
 
     // Кликаем по вкладке "Effects"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("tab-trigger-effects"));
-
-
       });
-
     });
     expect(mockOnTabChange).toHaveBeenCalledWith("effects");
   });

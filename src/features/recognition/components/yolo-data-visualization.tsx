@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react";
 
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
 
-import { YoloVideoData } from "@/types/yolo"
+import { YoloVideoData } from "@/types/yolo";
 
 interface YoloDataVisualizationProps {
-  yoloData: YoloVideoData
-  width?: number
-  height?: number
+  yoloData: YoloVideoData;
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -19,9 +19,9 @@ export function YoloDataVisualization({
   width = 800,
   height = 400,
 }: YoloDataVisualizationProps) {
-  const { t } = useTranslation()
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [selectedClass, setSelectedClass] = useState<string | null>(null)
+  const { t } = useTranslation();
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [selectedClass, setSelectedClass] = useState<string | null>(null);
 
   // Получаем уникальные классы объектов
   const uniqueClasses = Array.from(
@@ -30,7 +30,7 @@ export function YoloDataVisualization({
         frame.detections.map((detection) => detection.class),
       ),
     ),
-  )
+  );
 
   // Цвета для разных классов
   const classColors: Record<string, string> = {
@@ -42,57 +42,59 @@ export function YoloDataVisualization({
     motorcycle: "#a29bfe",
     bus: "#fd79a8",
     truck: "#00b894",
-  }
+  };
 
   // Получаем цвет для класса
   const getColorForClass = (className: string): string => {
-    return classColors[className] || "#95a5a6"
-  }
+    return classColors[className] || "#95a5a6";
+  };
 
   // Подготавливаем данные для графика
   const chartData = yoloData.frames.map((frame) => {
-    const classCounts: Record<string, number> = {}
+    const classCounts: Record<string, number> = {};
 
     // Подсчитываем количество объектов каждого класса в кадре
     frame.detections.forEach((detection) => {
-      const className = detection.class
-      classCounts[className] = (classCounts[className] || 0) + 1
-    })
+      const className = detection.class;
+      classCounts[className] = (classCounts[className] || 0) + 1;
+    });
 
     return {
       timestamp: frame.timestamp,
       totalDetections: frame.detections.length,
       classCounts,
-    }
-  })
+    };
+  });
 
   // Находим максимальное количество обнаружений для масштабирования
   const maxDetections = Math.max(
     ...chartData.map((data) => data.totalDetections),
     1,
-  )
+  );
 
   // Размеры графика с отступами
-  const margin = { top: 20, right: 20, bottom: 40, left: 60 }
-  const chartWidth = width - margin.left - margin.right
-  const chartHeight = height - margin.top - margin.bottom
+  const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
 
   // Масштабы
   const xScale = (timestamp: number) =>
-    (timestamp / Math.max(...chartData.map((d) => d.timestamp))) * chartWidth
+    (timestamp / Math.max(...chartData.map((d) => d.timestamp))) * chartWidth;
 
   const yScale = (count: number) =>
-    chartHeight - (count / maxDetections) * chartHeight
+    chartHeight - (count / maxDetections) * chartHeight;
 
   useEffect(() => {
     // Здесь можно добавить дополнительную логику для D3.js, если потребуется
     // Пока используем простую SVG визуализацию
-  }, [yoloData])
+  }, [yoloData]);
 
   return (
     <div className="w-full">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold">{t("Анализ обнаружений YOLO")}</h3>
+        <h3 className="text-lg font-semibold">
+          {t("Анализ обнаружений YOLO")}
+        </h3>
         <p className="text-sm text-gray-600">
           {t("Общее количество кадров")}: {yoloData.frames.length}
         </p>
@@ -166,25 +168,27 @@ export function YoloDataVisualization({
             <path
               d={`M ${chartData
                 .map((data, index) => {
-                  const x = xScale(data.timestamp)
+                  const x = xScale(data.timestamp);
                   const y = selectedClass
                     ? yScale(data.classCounts[selectedClass] || 0)
-                    : yScale(data.totalDetections)
-                  return `${index === 0 ? "M" : "L"} ${x} ${y}`
+                    : yScale(data.totalDetections);
+                  return `${index === 0 ? "M" : "L"} ${x} ${y}`;
                 })
                 .join(" ")}`}
               fill="none"
-              stroke={selectedClass ? getColorForClass(selectedClass) : "#007bff"}
+              stroke={
+                selectedClass ? getColorForClass(selectedClass) : "#007bff"
+              }
               strokeWidth={2}
             />
           )}
 
           {/* Точки данных */}
           {chartData.map((data, index) => {
-            const x = xScale(data.timestamp)
+            const x = xScale(data.timestamp);
             const y = selectedClass
               ? yScale(data.classCounts[selectedClass] || 0)
-              : yScale(data.totalDetections)
+              : yScale(data.totalDetections);
 
             return (
               <circle
@@ -192,7 +196,9 @@ export function YoloDataVisualization({
                 cx={x}
                 cy={y}
                 r={3}
-                fill={selectedClass ? getColorForClass(selectedClass) : "#007bff"}
+                fill={
+                  selectedClass ? getColorForClass(selectedClass) : "#007bff"
+                }
                 className="cursor-pointer"
                 // title={`${t("Время")}: ${data.timestamp}s, ${t("Обнаружений")}: ${
                 //   selectedClass
@@ -200,7 +206,7 @@ export function YoloDataVisualization({
                 //     : data.totalDetections
                 // }`}
               />
-            )
+            );
           })}
 
           {/* Оси */}
@@ -271,5 +277,5 @@ export function YoloDataVisualization({
         </div>
       </div>
     </div>
-  )
+  );
 }

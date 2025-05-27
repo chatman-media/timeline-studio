@@ -230,7 +230,7 @@ describe("FavoriteButton", () => {
 
   it("should apply different styles based on size prop", () => {
     // Рендерим компонент с большим размером
-    const { rerender  } = render(
+    const { rerender } = render(
       <FavoriteButton
         file={testFile}
         size={120}

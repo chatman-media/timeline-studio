@@ -52,9 +52,7 @@ vi.mock("react-i18next", () => ({
 
 describe("VoiceRecordModal", () => {
   it("renders the component", () => {
-    const renderResult = render(
-      <VoiceRecordModal isOpen onClose={() => {}} />,
-    );
+    const renderResult = render(<VoiceRecordModal isOpen onClose={() => {}} />);
     expect(renderResult.container.firstChild).not.toBeNull();
   });
 });

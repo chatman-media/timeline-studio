@@ -50,15 +50,9 @@ describe("CameraPermissionRequest", () => {
 
     // Проверяем, что при клике на кнопку вызывается функция onRequestPermissions
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(button);
-
-
       });
-
     });
     expect(mockOnRequestPermissions).toHaveBeenCalledTimes(1);
   });
@@ -99,15 +93,9 @@ describe("CameraPermissionRequest", () => {
 
     // Проверяем, что при клике на кнопку вызывается функция onRequestPermissions
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(button);
-
-
       });
-
     });
     expect(mockOnRequestPermissions).toHaveBeenCalledTimes(1);
   });

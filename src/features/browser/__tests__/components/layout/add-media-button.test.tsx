@@ -128,15 +128,9 @@ describe("AddMediaButton", () => {
 
     // Кликаем на кнопку
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTitle("Add to timeline"));
-
-
       });
-
     });
 
     // Проверяем, что onAddMedia был вызван с правильными аргументами
@@ -168,15 +162,9 @@ describe("AddMediaButton", () => {
 
     // Симулируем наведение на кнопку
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(button);
-
-
       });
-
     });
 
     // Проверяем, что title изменился
@@ -207,28 +195,16 @@ describe("AddMediaButton", () => {
 
     // Симулируем наведение на кнопку
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(button);
-
-
       });
-
     });
 
     // Кликаем на кнопку удаления
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTitle("Remove from timeline"));
-
-
       });
-
     });
 
     // Проверяем, что onRemoveMedia был вызван с правильными аргументами
@@ -250,28 +226,16 @@ describe("AddMediaButton", () => {
 
     // Симулируем наведение на кнопку
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(button);
-
-
       });
-
     });
 
     // Кликаем на кнопку удаления
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTitle("Remove from timeline"));
-
-
       });
-
     });
 
     // Проверяем, что onAddMedia был вызван с правильными аргументами
@@ -281,7 +245,7 @@ describe("AddMediaButton", () => {
 
   it("should apply different styles based on size prop", () => {
     // Рендерим компонент с большим размером
-    const { rerender  } = render(
+    const { rerender } = render(
       <AddMediaButton
         file={testFile}
         isAdded={false}
@@ -300,16 +264,14 @@ describe("AddMediaButton", () => {
 
     // Перерендериваем компонент с маленьким размером
     act(() => {
-
       rerender(
-      <AddMediaButton
-        file={testFile}
-        isAdded={false}
-        size={60}
-        onAddMedia={onAddMedia}
-      />,
-    );
-
+        <AddMediaButton
+          file={testFile}
+          isAdded={false}
+          size={60}
+          onAddMedia={onAddMedia}
+        />,
+      );
     });
 
     // Проверяем, что иконка имеет правильный класс для маленького размера

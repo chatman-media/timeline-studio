@@ -1,7 +1,7 @@
-import { act, render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { act, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { ThemeProvider } from "./theme-context"
+import { ThemeProvider } from "./theme-context";
 
 // Мокаем next-themes
 vi.mock("next-themes", () => ({
@@ -12,7 +12,7 @@ vi.mock("next-themes", () => ({
     theme: "light",
     setTheme: vi.fn(),
   }),
-}))
+}));
 
 describe("ThemeProvider", () => {
   it("should render children", () => {
@@ -20,24 +20,26 @@ describe("ThemeProvider", () => {
       <ThemeProvider>
         <div data-testid="test-child">Test</div>
       </ThemeProvider>,
-    )
+    );
 
     // Проверяем, что дочерний компонент отрендерен
-    expect(screen.getByTestId("test-child")).toBeInTheDocument()
-    expect(screen.getByText("Test")).toBeInTheDocument()
-  })
+    expect(screen.getByTestId("test-child")).toBeInTheDocument();
+    expect(screen.getByText("Test")).toBeInTheDocument();
+  });
 
   it("should wrap children in NextThemeProvider", () => {
     render(
       <ThemeProvider>
         <div data-testid="test-child">Test</div>
       </ThemeProvider>,
-    )
+    );
 
     // Проверяем, что NextThemeProvider отрендерен
-    expect(screen.getByTestId("next-theme-provider")).toBeInTheDocument()
+    expect(screen.getByTestId("next-theme-provider")).toBeInTheDocument();
 
     // Проверяем, что дочерний компонент находится внутри NextThemeProvider
-    expect(screen.getByTestId("next-theme-provider")).toContainElement(screen.getByTestId("test-child"))
-  })
-})
+    expect(screen.getByTestId("next-theme-provider")).toContainElement(
+      screen.getByTestId("test-child"),
+    );
+  });
+});

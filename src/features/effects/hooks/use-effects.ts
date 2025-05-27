@@ -1,12 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import effectsData from '@features/effects/data/effects.json';
+import effectsData from "@features/effects/data/effects.json";
 
-import { VideoEffect } from '@/types/effects';
+import { VideoEffect } from "@/types/effects";
 
-import { createFallbackEffect, processEffects, validateEffectsData } from '../utils/effect-processor';
+import {
+  createFallbackEffect,
+  processEffects,
+  validateEffectsData,
+} from "../utils/effect-processor";
 // Импортируем JSON файл напрямую - в Tauri это работает отлично
 
 interface UseEffectsReturn {
@@ -39,7 +43,12 @@ export function useEffects(): UseEffectsReturn {
 
       // Валидируем данные
       if (!validateEffectsData(data)) {
-        throw new Error(t('effects.errors.invalidEffectsData', 'Invalid effects data structure'));
+        throw new Error(
+          t(
+            "effects.errors.invalidEffectsData",
+            "Invalid effects data structure",
+          ),
+        );
       }
 
       // Обрабатываем эффекты (преобразуем строки в функции)
@@ -47,22 +56,35 @@ export function useEffects(): UseEffectsReturn {
 
       setEffects(processedEffects);
 
-      console.log(`✅ ${t('effects.messages.effectsLoaded', 'Loaded {{count}} effects from JSON', { count: processedEffects.length })}`);
-
+      console.log(
+        `✅ ${t("effects.messages.effectsLoaded", "Loaded {{count}} effects from JSON", { count: processedEffects.length })}`,
+      );
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('effects.errors.unknownError', 'Unknown error');
-      setError(t('effects.errors.failedToLoadEffects', 'Failed to load effects: {{error}}', { error: errorMessage }));
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : t("effects.errors.unknownError", "Unknown error");
+      setError(
+        t(
+          "effects.errors.failedToLoadEffects",
+          "Failed to load effects: {{error}}",
+          { error: errorMessage },
+        ),
+      );
 
       // Создаем fallback эффекты в случае ошибки
       const fallbackEffects = [
-        createFallbackEffect('brightness'),
-        createFallbackEffect('contrast'),
-        createFallbackEffect('saturation')
+        createFallbackEffect("brightness"),
+        createFallbackEffect("contrast"),
+        createFallbackEffect("saturation"),
       ];
 
       setEffects(fallbackEffects);
 
-      console.error(`❌ ${t('effects.errors.fallbackEffects', 'Failed to load effects, using fallback')}:`, err);
+      console.error(
+        `❌ ${t("effects.errors.fallbackEffects", "Failed to load effects, using fallback")}:`,
+        err,
+      );
     } finally {
       setLoading(false);
     }
@@ -78,7 +100,7 @@ export function useEffects(): UseEffectsReturn {
     loading,
     error,
     reload: loadEffects,
-    isReady: !loading && effects.length > 0
+    isReady: !loading && effects.length > 0,
   };
 }
 
@@ -93,7 +115,7 @@ export function useEffectById(effectId: string): VideoEffect | null {
     return null;
   }
 
-  return effects.find(effect => effect.id === effectId) || null;
+  return effects.find((effect) => effect.id === effectId) || null;
 }
 
 /**
@@ -106,13 +128,16 @@ export function useEffectsByCategory(category: string): VideoEffect[] {
     return [];
   }
 
-  return effects.filter(effect => effect.category === category);
+  return effects.filter((effect) => effect.category === category);
 }
 
 /**
  * Хук для поиска эффектов
  */
-export function useEffectsSearch(query: string, lang: 'ru' | 'en' = 'ru'): VideoEffect[] {
+export function useEffectsSearch(
+  query: string,
+  lang: "ru" | "en" = "ru",
+): VideoEffect[] {
   const { effects, isReady } = useEffects();
 
   if (!isReady || !query.trim()) {
@@ -121,9 +146,16 @@ export function useEffectsSearch(query: string, lang: 'ru' | 'en' = 'ru'): Video
 
   const lowercaseQuery = query.toLowerCase();
 
-  return effects.filter(effect =>
-    (effect.labels?.[lang] || effect.name || "").toLowerCase().includes(lowercaseQuery) ||
-    (effect.description?.[lang] || "").toLowerCase().includes(lowercaseQuery) ||
-    (effect.tags || []).some(tag => tag.toLowerCase().includes(lowercaseQuery))
+  return effects.filter(
+    (effect) =>
+      (effect.labels?.[lang] || effect.name || "")
+        .toLowerCase()
+        .includes(lowercaseQuery) ||
+      (effect.description?.[lang] || "")
+        .toLowerCase()
+        .includes(lowercaseQuery) ||
+      (effect.tags || []).some((tag) =>
+        tag.toLowerCase().includes(lowercaseQuery),
+      ),
   );
 }

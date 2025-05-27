@@ -109,7 +109,7 @@ describe("Providers", () => {
     );
 
     // Рендерим компонент Providers с тестовым компонентом
-    const { getByTestId  } = render(
+    const { getByTestId } = render(
       <Providers>
         <TestComponent />
       </Providers>,
@@ -140,7 +140,9 @@ describe("Providers", () => {
       renderResult.container.querySelector('[data-testid="modal-provider"]'),
     ).toBeInTheDocument();
     expect(
-      renderResult.container.querySelector('[data-testid="project-settings-provider"]'),
+      renderResult.container.querySelector(
+        '[data-testid="project-settings-provider"]',
+      ),
     ).toBeInTheDocument();
     expect(
       renderResult.container.querySelector('[data-testid="test-component"]'),

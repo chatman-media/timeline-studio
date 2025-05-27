@@ -436,15 +436,9 @@ describe("ResourcesPanel", () => {
     // Находим и кликаем по эффекту
     const effectElement = screen.getByText("Brightness Effect");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(effectElement);
-
-
       });
-
     });
 
     // Проверяем, что addEffect был вызван с правильными параметрами
@@ -485,15 +479,9 @@ describe("ResourcesPanel", () => {
     // Находим и кликаем по фильтру
     const filterElement = screen.getByText("Vintage Filter");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(filterElement);
-
-
       });
-
     });
 
     // Проверяем, что addFilter был вызван с правильными параметрами

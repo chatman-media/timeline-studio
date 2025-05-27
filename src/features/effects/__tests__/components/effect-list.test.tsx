@@ -293,15 +293,9 @@ describe("EffectList", () => {
     // Кликаем на эффект
     const effectPreview = screen.getByTestId("effect-preview-blur");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(effectPreview);
-
-
       });
-
     });
 
     // Проверяем, что обработчик вызван

@@ -374,42 +374,47 @@ vi.mock("@/features/templates/lib/templates", () => ({
         screens: 4,
         render: () => ({
           type: "div",
-          props: { "data-testid": "template-grid-square", children: "Grid 2x2 Square" },
+          props: {
+            "data-testid": "template-grid-square",
+            children: "Grid 2x2 Square",
+          },
         }),
       },
     ],
   },
-  getTemplatesByAspectRatio: vi.fn().mockImplementation((aspectRatio: string) => {
-    const templates = {
-      "16:9": [
-        {
-          id: "split-vertical-landscape",
-          split: "vertical",
-          resizable: true,
-          screens: 2,
-          splitPosition: 50,
-        },
-      ],
-      "9:16": [
-        {
-          id: "split-vertical-portrait",
-          split: "vertical",
-          resizable: true,
-          screens: 2,
-          splitPosition: 50,
-        },
-      ],
-      "1:1": [
-        {
-          id: "split-grid-2x2-square",
-          split: "grid",
-          resizable: true,
-          screens: 4,
-        },
-      ],
-    };
-    return templates[aspectRatio as keyof typeof templates] || [];
-  }),
+  getTemplatesByAspectRatio: vi
+    .fn()
+    .mockImplementation((aspectRatio: string) => {
+      const templates = {
+        "16:9": [
+          {
+            id: "split-vertical-landscape",
+            split: "vertical",
+            resizable: true,
+            screens: 2,
+            splitPosition: 50,
+          },
+        ],
+        "9:16": [
+          {
+            id: "split-vertical-portrait",
+            split: "vertical",
+            resizable: true,
+            screens: 2,
+            splitPosition: 50,
+          },
+        ],
+        "1:1": [
+          {
+            id: "split-grid-2x2-square",
+            split: "grid",
+            resizable: true,
+            screens: 4,
+          },
+        ],
+      };
+      return templates[aspectRatio as keyof typeof templates] || [];
+    }),
 }));
 
 // Мок для template labels
@@ -427,9 +432,11 @@ vi.mock("@/features/templates/lib/template-labels", () => ({
   getTemplateDescription: vi.fn().mockImplementation((templateId: string) => {
     const descriptions: Record<string, string> = {
       "split-vertical-landscape": "Разделяет экран вертикально на две части",
-      "split-horizontal-landscape": "Разделяет экран горизонтально на две части",
+      "split-horizontal-landscape":
+        "Разделяет экран горизонтально на две части",
       "split-grid-2x2-landscape": "Создает сетку 2x2 для четырех видео",
-      "split-vertical-portrait": "Вертикальное разделение для портретного режима",
+      "split-vertical-portrait":
+        "Вертикальное разделение для портретного режима",
       "split-grid-2x2-square": "Сетка 2x2 для квадратного формата",
     };
     return descriptions[templateId] || `Описание для ${templateId}`;
@@ -442,7 +449,12 @@ vi.mock("@/components/common/content-group", () => ({
     React.createElement(
       "div",
       { "data-testid": "content-group" },
-      title && React.createElement("h3", { "data-testid": "content-group-title" }, title),
+      title &&
+        React.createElement(
+          "h3",
+          { "data-testid": "content-group-title" },
+          title,
+        ),
       React.createElement(
         "div",
         { "data-testid": "content-group-items" },
@@ -477,7 +489,8 @@ vi.mock("@/features/browser/components/layout", () => ({
         "data-file-id": file.id,
         "data-is-added": isAdded ? "true" : "false",
         "data-size": size,
-        onClick: (e: any) => (isAdded ? onRemoveMedia(e, file) : onAddMedia(e, file)),
+        onClick: (e: any) =>
+          isAdded ? onRemoveMedia(e, file) : onAddMedia(e, file),
       },
       isAdded ? "Remove Media" : "Add Media",
     ),
@@ -496,7 +509,7 @@ vi.mock("@/features/templates/components/templates/custom", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -513,7 +526,7 @@ vi.mock("@/features/templates/components/templates/custom", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -530,7 +543,7 @@ vi.mock("@/features/templates/components/templates/custom", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -547,7 +560,7 @@ vi.mock("@/features/templates/components/templates/custom", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -564,7 +577,7 @@ vi.mock("@/features/templates/components/templates/custom", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -585,7 +598,7 @@ vi.mock("@/features/templates/components/templates/grid", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -602,7 +615,7 @@ vi.mock("@/features/templates/components/templates/grid", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -619,7 +632,7 @@ vi.mock("@/features/templates/components/templates/grid", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -636,7 +649,7 @@ vi.mock("@/features/templates/components/templates/grid", () => ({
             key: video.id,
             "data-testid": `video-panel-${index + 1}`,
             "data-video-id": video.id,
-            "data-is-active": activeVideoId === video.id
+            "data-is-active": activeVideoId === video.id,
           },
           `Video Panel ${index + 1}`,
         ),
@@ -659,37 +672,93 @@ vi.mock("@/features/templates/components/templates/grid", () => ({
 // Моки для landscape шаблонов
 vi.mock("@/features/templates/components/templates/landscape", () => ({
   Split13BottomLandscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-1-3-bottom-landscape" }, "1-3 Bottom"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-1-3-bottom-landscape" },
+      "1-3 Bottom",
+    ),
   Split13Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-1-3-landscape" }, "1-3 Landscape"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-1-3-landscape" },
+      "1-3 Landscape",
+    ),
   Split31BottomLandscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-3-1-bottom-landscape" }, "3-1 Bottom"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-3-1-bottom-landscape" },
+      "3-1 Bottom",
+    ),
   Split31RightLandscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-3-1-right-landscape" }, "3-1 Right"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-3-1-right-landscape" },
+      "3-1 Right",
+    ),
   SplitCustom51Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-1-landscape" }, "Custom 5-1"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-1-landscape" },
+      "Custom 5-1",
+    ),
   SplitCustom52Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-2-landscape" }, "Custom 5-2"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-2-landscape" },
+      "Custom 5-2",
+    ),
   SplitCustom53Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-3-landscape" }, "Custom 5-3"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-3-landscape" },
+      "Custom 5-3",
+    ),
   SplitDiagonalLandscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-diagonal-landscape" }, "Diagonal"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-diagonal-landscape" },
+      "Diagonal",
+    ),
   SplitHorizontal3Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-horizontal-3-landscape" }, "Horizontal 3"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-horizontal-3-landscape" },
+      "Horizontal 3",
+    ),
   SplitMixed1Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-mixed-1-landscape" }, "Mixed 1"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-mixed-1-landscape" },
+      "Mixed 1",
+    ),
   SplitMixed2Landscape: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-mixed-2-landscape" }, "Mixed 2"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-mixed-2-landscape" },
+      "Mixed 2",
+    ),
 }));
 
 // Моки для portrait шаблонов
 vi.mock("@/features/templates/components/templates/portrait", () => ({
   SplitCustom51Portrait: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-1-portrait" }, "Custom 5-1 Portrait"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-1-portrait" },
+      "Custom 5-1 Portrait",
+    ),
   SplitCustom52Portrait: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-2-portrait" }, "Custom 5-2 Portrait"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-2-portrait" },
+      "Custom 5-2 Portrait",
+    ),
   SplitCustom53Portrait: ({ videos, activeVideoId }: any) =>
-    React.createElement("div", { "data-testid": "split-custom-5-3-portrait" }, "Custom 5-3 Portrait"),
+    React.createElement(
+      "div",
+      { "data-testid": "split-custom-5-3-portrait" },
+      "Custom 5-3 Portrait",
+    ),
 }));
 
 // Мок для useUserSettings

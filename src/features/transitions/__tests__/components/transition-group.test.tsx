@@ -156,15 +156,9 @@ describe("TransitionGroup", () => {
 
     const fadePreview = screen.getByTestId("transition-preview-fade-1");
     act(() => {
-
       act(() => {
-
-
         fadePreview.click();
-
-
       });
-
     });
 
     expect(mockOnTransitionClick).toHaveBeenCalledWith(mockTransitions[0]);
@@ -182,29 +176,17 @@ describe("TransitionGroup", () => {
     // Кликаем на первый переход
     const fadePreview = screen.getByTestId("transition-preview-fade-1");
     act(() => {
-
       act(() => {
-
-
         fadePreview.click();
-
-
       });
-
     });
 
     // Кликаем на второй переход
     const zoomPreview = screen.getByTestId("transition-preview-zoom-1");
     act(() => {
-
       act(() => {
-
-
         zoomPreview.click();
-
-
       });
-
     });
 
     expect(mockOnTransitionClick).toHaveBeenCalledTimes(2);
@@ -272,16 +254,14 @@ describe("TransitionGroup", () => {
     // Изменяем размеры
     act(() => {
       act(() => {
-
         rerender(
-        <TransitionGroup
-          {...defaultProps}
-          previewWidth={200}
-          previewHeight={150}
-          previewSize={3}
-        />,
-      );
-
+          <TransitionGroup
+            {...defaultProps}
+            previewWidth={200}
+            previewHeight={150}
+            previewSize={3}
+          />,
+        );
       });
     });
 
@@ -361,9 +341,9 @@ describe("TransitionGroup", () => {
     // Изменяем demo видео
     act(() => {
       act(() => {
-
-        rerender(<TransitionGroup {...defaultProps} demoVideos={newDemoVideos} />);
-
+        rerender(
+          <TransitionGroup {...defaultProps} demoVideos={newDemoVideos} />,
+        );
       });
     });
 

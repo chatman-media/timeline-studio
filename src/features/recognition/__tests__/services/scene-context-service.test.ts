@@ -14,12 +14,12 @@ describe("SceneContextService", () => {
     createMockDetection({
       class: "car",
       confidence: 0.87,
-      bbox: { x: 0.5, y: 0.4, width: 0.2, height: 0.3 }
+      bbox: { x: 0.5, y: 0.4, width: 0.2, height: 0.3 },
     }),
     createMockDetection({
       class: "person",
       confidence: 0.92,
-      bbox: { x: 0.7, y: 0.1, width: 0.25, height: 0.5 }
+      bbox: { x: 0.7, y: 0.1, width: 0.25, height: 0.5 },
     }),
   ];
 
@@ -29,7 +29,11 @@ describe("SceneContextService", () => {
 
   describe("createSceneContext", () => {
     it("should create correct scene context", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5.5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5.5,
+      );
 
       expect(context.currentVideo).toEqual({
         id: "test-video",
@@ -57,7 +61,11 @@ describe("SceneContextService", () => {
     });
 
     it("should calculate correct positions", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 0);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        0,
+      );
 
       const firstPerson = context.detectedObjects[0];
       expect(firstPerson.position).toContain("середине");
@@ -69,7 +77,11 @@ describe("SceneContextService", () => {
     });
 
     it("should calculate correct sizes", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 0);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        0,
+      );
 
       const firstPerson = context.detectedObjects[0];
       // 0.3 * 0.6 = 0.18 > 0.15, поэтому "большой"
@@ -190,10 +202,12 @@ describe("SceneContextService", () => {
 
       const description = (service as any).generateSceneDescription(
         detectedObjects,
-        objectCounts
+        objectCounts,
       );
 
-      expect(description).toBe("В кадре обнаружено: большой person в середине слева кадра.");
+      expect(description).toBe(
+        "В кадре обнаружено: большой person в середине слева кадра.",
+      );
     });
 
     it("should generate description for multiple objects of same class", () => {
@@ -214,7 +228,7 @@ describe("SceneContextService", () => {
 
       const description = (service as any).generateSceneDescription(
         detectedObjects,
-        objectCounts
+        objectCounts,
       );
 
       expect(description).toContain("2 person(ов)");
@@ -228,7 +242,11 @@ describe("SceneContextService", () => {
 
   describe("createChatDescription", () => {
     it("should create chat description", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5,
+      );
       const chatDescription = service.createChatDescription(context);
 
       expect(chatDescription).toContain("Сцена содержит 3 объект(ов)");
@@ -248,12 +266,18 @@ describe("SceneContextService", () => {
 
   describe("createDetailedDescription", () => {
     it("should create detailed description", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5.5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5.5,
+      );
       const detailedDescription = service.createDetailedDescription(context);
 
       expect(detailedDescription).toContain('Анализ видео "test.mp4"');
       expect(detailedDescription).toContain("на временной метке 5.5 секунд");
-      expect(detailedDescription).toContain("Детальная информация об объектах:");
+      expect(detailedDescription).toContain(
+        "Детальная информация об объектах:",
+      );
       expect(detailedDescription).toContain("1.");
       expect(detailedDescription).toContain("2.");
       expect(detailedDescription).toContain("3.");
@@ -262,7 +286,11 @@ describe("SceneContextService", () => {
 
   describe("exportToJSON", () => {
     it("should export context to JSON", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5,
+      );
       const json = service.exportToJSON(context);
 
       const parsed = JSON.parse(json);
@@ -274,17 +302,27 @@ describe("SceneContextService", () => {
 
   describe("filterByClass", () => {
     it("should filter context by class", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5,
+      );
       const filteredContext = service.filterByClass(context, "person");
 
       expect(filteredContext.detectedObjects).toHaveLength(2);
-      expect(filteredContext.detectedObjects.every(obj => obj.class === "person")).toBe(true);
+      expect(
+        filteredContext.detectedObjects.every((obj) => obj.class === "person"),
+      ).toBe(true);
       expect(filteredContext.objectCounts).toEqual({ person: 2 });
       expect(filteredContext.dominantObjects).toEqual(["person"]);
     });
 
     it("should handle non-existent class", () => {
-      const context = service.createSceneContext(mockVideoInfo, mockDetections, 5);
+      const context = service.createSceneContext(
+        mockVideoInfo,
+        mockDetections,
+        5,
+      );
       const filteredContext = service.filterByClass(context, "dog");
 
       expect(filteredContext.detectedObjects).toHaveLength(0);

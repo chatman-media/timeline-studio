@@ -143,15 +143,9 @@ describe("ImagePreview", () => {
 
     // Проверяем, что при клике вызывается onAddMedia
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(addButton);
-
-
       });
-
     });
     expect(onAddMedia).toHaveBeenCalledWith(expect.anything(), imageFile);
   });

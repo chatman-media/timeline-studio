@@ -189,15 +189,9 @@ describe("SubtitlePreview", () => {
       .getByTestId("subtitle-preview-text")
       .closest("div");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(container!);
-
-
       });
-
     });
 
     // Проверяем, что обработчик вызван
@@ -209,15 +203,9 @@ describe("SubtitlePreview", () => {
 
     const addButton = screen.getByTestId("add-button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(addButton);
-
-
       });
-
     });
 
     // Проверяем, что субтитр добавлен

@@ -1,7 +1,7 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { AudioPermissionRequest } from "./audio-permission-request"
+import { AudioPermissionRequest } from "./audio-permission-request";
 
 describe("AudioPermissionRequest", () => {
   it("renders nothing when permission is granted", () => {
@@ -10,11 +10,11 @@ describe("AudioPermissionRequest", () => {
         permissionStatus="granted"
         errorMessage=""
         onRequestPermissions={() => {}}
-      />
-    )
+      />,
+    );
 
-    expect(renderResult.container.firstChild).toBeNull()
-  })
+    expect(renderResult.container.firstChild).toBeNull();
+  });
 
   it("renders pending state correctly", () => {
     render(
@@ -22,53 +22,59 @@ describe("AudioPermissionRequest", () => {
         permissionStatus="pending"
         errorMessage=""
         onRequestPermissions={() => {}}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByText("Запрашиваем разрешения...")).toBeInTheDocument()
-  })
+    expect(screen.getByText("Запрашиваем разрешения...")).toBeInTheDocument();
+  });
 
   it("renders denied state with error message", () => {
-    const errorMessage = "Доступ к микрофону запрещен"
+    const errorMessage = "Доступ к микрофону запрещен";
     render(
       <AudioPermissionRequest
         permissionStatus="denied"
         errorMessage={errorMessage}
         onRequestPermissions={() => {}}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Повторить запрос" })).toBeInTheDocument()
-  })
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Повторить запрос" }),
+    ).toBeInTheDocument();
+  });
 
   it("renders error state with error message", () => {
-    const errorMessage = "Произошла ошибка при запросе разрешений"
+    const errorMessage = "Произошла ошибка при запросе разрешений";
     render(
       <AudioPermissionRequest
         permissionStatus="error"
         errorMessage={errorMessage}
         onRequestPermissions={() => {}}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Повторить" })).toBeInTheDocument()
-  })
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Повторить" }),
+    ).toBeInTheDocument();
+  });
 
   it("calls onRequestPermissions when retry button is clicked", () => {
-    const onRequestPermissionsMock = vi.fn()
+    const onRequestPermissionsMock = vi.fn();
     render(
       <AudioPermissionRequest
         permissionStatus="denied"
         errorMessage="Доступ запрещен"
         onRequestPermissions={onRequestPermissionsMock}
-      />
-    )
+      />,
+    );
 
-    const retryButton = screen.getByRole("button", { name: "Повторить запрос" })
-    fireEvent.click(retryButton)
+    const retryButton = screen.getByRole("button", {
+      name: "Повторить запрос",
+    });
+    fireEvent.click(retryButton);
 
-    expect(onRequestPermissionsMock).toHaveBeenCalledTimes(1)
-  })
-})
+    expect(onRequestPermissionsMock).toHaveBeenCalledTimes(1);
+  });
+});

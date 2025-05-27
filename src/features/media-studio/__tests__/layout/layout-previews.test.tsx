@@ -129,15 +129,9 @@ describe("LayoutPreviews", () => {
 
     // Кликаем на превью макета "options"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("options-layout-preview"));
-
-
       });
-
     });
 
     // Проверяем, что handleLayoutChange был вызван с правильным аргументом
@@ -146,15 +140,9 @@ describe("LayoutPreviews", () => {
 
     // Кликаем на превью макета "vertical"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("vertical-layout-preview"));
-
-
       });
-
     });
 
     // Проверяем, что handleLayoutChange был вызван с правильным аргументом
@@ -168,15 +156,9 @@ describe("LayoutPreviews", () => {
 
     // Кликаем на превью макета "dual"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("dual-layout-preview"));
-
-
       });
-
     });
 
     // Проверяем, что handleLayoutChange был вызван с правильным аргументом

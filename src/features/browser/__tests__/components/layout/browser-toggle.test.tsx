@@ -97,15 +97,9 @@ describe("BrowserToggle", () => {
 
     // Кликаем на кнопку
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTitle("Hide Browser"));
-
-
       });
-
     });
 
     // Проверяем, что toggleBrowserVisibility был вызван

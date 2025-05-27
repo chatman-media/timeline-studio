@@ -226,15 +226,9 @@ describe("AudioPreview", () => {
     // Кликаем на контейнер
     const container_div = renderResult.container.firstChild as HTMLElement;
     act(() => {
-
       act(() => {
-
-
         container_div.click();
-
-
       });
-
     });
 
     // Проверяем, что play был вызван
@@ -255,17 +249,11 @@ describe("AudioPreview", () => {
 
     // Симулируем движение мыши
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseMove(container_div, {
-      clientX: 50, // 50% от ширины
-    });
-
-
+          clientX: 50, // 50% от ширины
+        });
       });
-
     });
 
     // Проверяем, что currentTime был установлен
@@ -284,15 +272,9 @@ describe("AudioPreview", () => {
 
     // Симулируем уход мыши
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseLeave(container_div);
-
-
       });
-
     });
 
     // Проверяем, что pause был вызван (если аудио играло)
@@ -319,15 +301,9 @@ describe("AudioPreview", () => {
 
     // Симулируем нажатие пробела
     act(() => {
-
       act(() => {
-
-
         fireEvent.keyDown(audioElement, { code: "Space" });
-
-
       });
-
     });
 
     expect(playMock).toHaveBeenCalled();

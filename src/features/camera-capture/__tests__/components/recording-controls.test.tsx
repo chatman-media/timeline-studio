@@ -96,15 +96,9 @@ describe("RecordingControls", () => {
     // Находим кнопку начала записи и кликаем по ней
     const button = screen.getByTestId("button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(button);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван
@@ -117,15 +111,9 @@ describe("RecordingControls", () => {
     // Находим кнопку остановки записи и кликаем по ней
     const button = screen.getByTestId("button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(button);
-
-
       });
-
     });
 
     // Проверяем, что обработчик был вызван

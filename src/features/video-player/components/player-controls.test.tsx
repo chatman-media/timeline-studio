@@ -122,8 +122,8 @@ vi.mock("@/components/ui/slider", () => ({
 // Мокаем console.log для проверки вызова
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.spyOn(console, "log").mockImplementation(() => { });
-  vi.spyOn(console, "error").mockImplementation(() => { });
+  vi.spyOn(console, "log").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
 // Создаем тестовый объект MediaFile
@@ -157,15 +157,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (playButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(playButton);
-
-
         });
-
       });
     }
 
@@ -185,15 +179,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (recordButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(recordButton);
-
-
         });
-
       });
     }
 
@@ -213,15 +201,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (nextFrameButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(nextFrameButton);
-
-
         });
-
       });
     }
 
@@ -242,15 +224,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (prevFrameButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(prevFrameButton);
-
-
         });
-
       });
     }
 
@@ -271,15 +247,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (firstFrameButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(firstFrameButton);
-
-
         });
-
       });
     }
 
@@ -300,15 +270,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (lastFrameButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(lastFrameButton);
-
-
         });
-
       });
     }
 
@@ -329,15 +293,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (resizableButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(resizableButton);
-
-
         });
-
       });
     }
 
@@ -354,15 +312,9 @@ describe("PlayerControls", () => {
 
     // Кликаем по кнопке
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(volumeChangeButton);
-
-
       });
-
     });
 
     // Проверяем, что setVolume был вызван с правильным значением
@@ -386,15 +338,9 @@ describe("PlayerControls", () => {
     // Кликаем по кнопке
     if (fullscreenButton) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(fullscreenButton);
-
-
         });
-
       });
     }
 

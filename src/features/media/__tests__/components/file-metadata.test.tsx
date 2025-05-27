@@ -181,9 +181,7 @@ describe("FileMetadata", () => {
     };
 
     // Рендерим с размером > 100
-    const { rerender } = render(
-      <FileMetadata file={videoFile} size={120} />,
-    );
+    const { rerender } = render(<FileMetadata file={videoFile} size={120} />);
 
     // Проверяем, что стиль font-size установлен на 13px
     const durationElement = screen.getByText("120 сек");

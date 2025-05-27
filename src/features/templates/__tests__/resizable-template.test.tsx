@@ -102,7 +102,7 @@ describe("ResizableTemplate", () => {
     );
 
     // Проверяем, что отрендерился пустой div
-    const container = document.querySelector('.h-full.w-full.bg-black');
+    const container = document.querySelector(".h-full.w-full.bg-black");
     expect(container).toBeInTheDocument();
   });
 

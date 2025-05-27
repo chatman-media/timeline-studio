@@ -114,15 +114,9 @@ describe("MediaContent", () => {
 
     // Кликаем на кнопку Retry
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(retryButton);
-
-
       });
-
     });
 
     // Проверяем, что вызвана функция onRetry
@@ -208,15 +202,9 @@ describe("MediaContent", () => {
 
     // Кликаем на первую группу
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getAllByTestId("media-group")[0]);
-
-
       });
-
     });
 
     // Проверяем, что вызвана функция addFilesToTimeline с правильными параметрами

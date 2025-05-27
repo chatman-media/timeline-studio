@@ -392,9 +392,12 @@ export function MediaList() {
     }
   }, [allMediaFiles, addMediaToTimeline]);
 
-  const addDateFiles = useCallback((files: MediaFile[]) => {
-    addMediaToTimeline(files);
-  }, [addMediaToTimeline]);
+  const addDateFiles = useCallback(
+    (files: MediaFile[]) => {
+      addMediaToTimeline(files);
+    },
+    [addMediaToTimeline],
+  );
 
   const handleAddAllVideoFiles = useCallback(() => {
     const videoFiles = allMediaFiles.filter((file: MediaFile) =>

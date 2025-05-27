@@ -133,29 +133,19 @@ describe("UserSettingsModal", () => {
 
     // Вводим новый путь
     act(() => {
-
       act(() => {
-
-
-        fireEvent.change(screenshotsPathInput, { target: { value: "new/path" } });
-
-
+        fireEvent.change(screenshotsPathInput, {
+          target: { value: "new/path" },
+        });
       });
-
     });
 
     // Нажимаем кнопку "Сохранить"
     const saveButton = screen.getByText("dialogs.userSettings.save");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(saveButton);
-
-
       });
-
     });
 
     // Проверяем, что handleScreenshotsPathChange был вызван с правильными параметрами
@@ -175,29 +165,17 @@ describe("UserSettingsModal", () => {
 
     // Вводим новый API ключ
     act(() => {
-
       act(() => {
-
-
         fireEvent.change(openAiKeyInput, { target: { value: "test-api-key" } });
-
-
       });
-
     });
 
     // Нажимаем кнопку "Сохранить"
     const saveButton = screen.getByText("dialogs.userSettings.save");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(saveButton);
-
-
       });
-
     });
 
     // Проверяем, что handleAiApiKeyChange был вызван с правильными параметрами
@@ -210,15 +188,9 @@ describe("UserSettingsModal", () => {
     // Нажимаем кнопку "Отмена"
     const cancelButton = screen.getByText("dialogs.userSettings.cancel");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(cancelButton);
-
-
       });
-
     });
 
     // Проверяем, что closeModal был вызван
@@ -251,15 +223,9 @@ describe("UserSettingsModal", () => {
 
     // Кликаем по кнопке X
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(clearButton);
-
-
       });
-
     });
 
     // Проверяем, что handleScreenshotsPathChange был вызван с правильным значением
@@ -299,15 +265,9 @@ describe("UserSettingsModal", () => {
 
     // Кликаем по кнопке X
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(clearOpenAiButton);
-
-
       });
-
     });
 
     // Проверяем, что handleAiApiKeyChange был вызван с пустой строкой
@@ -388,17 +348,11 @@ describe("UserSettingsModal", () => {
 
     // Вводим значение в поле
     act(() => {
-
       act(() => {
-
-
         fireEvent.change(openAiApiKeyInput, {
-      target: { value: "openai-api-key" },
-    });
-
-
+          target: { value: "openai-api-key" },
+        });
       });
-
     });
 
     // Проверяем, что handleAiApiKeyChange был вызван с правильным значением
@@ -420,7 +374,7 @@ describe("UserSettingsModal", () => {
     mockOpen.mockClear();
 
     // Рендерим компонент
-    const { rerender  } = render(<UserSettingsModal />);
+    const { rerender } = render(<UserSettingsModal />);
 
     // Находим кнопки выбора папки (у нас их две - для screenshotsPath и playerScreenshotsPath)
     const folderButtons = screen.getAllByRole("button", {
@@ -432,15 +386,9 @@ describe("UserSettingsModal", () => {
 
     // Кликаем по кнопке
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(folderButton);
-
-
       });
-
     });
 
     // Ждем, пока асинхронные операции завершатся
@@ -475,9 +423,7 @@ describe("UserSettingsModal", () => {
 
     // Перерендериваем компонент
     act(() => {
-
       rerender(<UserSettingsModal />);
-
     });
 
     // Проверяем, что путь скриншотов был обновлен
@@ -506,15 +452,9 @@ describe("UserSettingsModal", () => {
 
     // Кликаем по кнопке
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(folderButton);
-
-
       });
-
     });
 
     // Ждем, пока асинхронные операции завершатся

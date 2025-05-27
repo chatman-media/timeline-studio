@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAppSettings } from "../../hooks";
@@ -229,15 +235,9 @@ describe("AppSettingsProvider", () => {
 
     // Нажимаем на кнопку создания проекта
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("create-project"));
-
-
       });
-
     });
 
     // Проверяем, что событие было отправлено в машину состояний
@@ -256,15 +256,9 @@ describe("AppSettingsProvider", () => {
 
     // Нажимаем на кнопку установки флага "грязный"
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("set-dirty"));
-
-
       });
-
     });
 
     // Проверяем, что событие было отправлено в машину состояний
@@ -287,15 +281,9 @@ describe("AppSettingsProvider", () => {
 
     // Нажимаем на кнопку открытия проекта
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("open-project"));
-
-
       });
-
     });
 
     // Проверяем, что appDataDir был вызван
@@ -345,15 +333,9 @@ describe("AppSettingsProvider", () => {
 
     // Нажимаем на кнопку сохранения проекта
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("save-project"));
-
-
       });
-
     });
 
     // Проверяем, что appDataDir был вызван

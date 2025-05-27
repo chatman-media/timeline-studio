@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { EffectPreview } from "../../components/effect-preview";
@@ -193,15 +199,9 @@ describe("EffectPreview", () => {
     // Кликаем на контейнер превью
     const container = screen.getByTestId("effect-video").closest("div");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(container!);
-
-
       });
-
     });
 
     expect(mockOnClick).toHaveBeenCalledTimes(1);
@@ -221,15 +221,9 @@ describe("EffectPreview", () => {
 
     // Наводим мышь
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(container!);
-
-
       });
-
     });
 
     // Ждем применения эффекта
@@ -239,15 +233,9 @@ describe("EffectPreview", () => {
 
     // Убираем мышь
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseLeave(container!);
-
-
       });
-
     });
 
     expect(pauseMock).toHaveBeenCalled();
@@ -258,15 +246,9 @@ describe("EffectPreview", () => {
 
     const addButton = screen.getByTestId("add-button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(addButton);
-
-
       });
-
     });
 
     expect(mockAddEffect).toHaveBeenCalledWith(mockEffects[0]);

@@ -120,15 +120,9 @@ describe("StyleTemplatePreview", () => {
 
     const container = screen.getByRole("img");
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(container.parentElement!);
-
-
       });
-
     });
 
     // Кнопка воспроизведения должна появиться только если есть previewVideo
@@ -142,15 +136,9 @@ describe("StyleTemplatePreview", () => {
 
     const container = screen.getByRole("img");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(container.parentElement!);
-
-
       });
-
     });
 
     expect(mockOnSelect).toHaveBeenCalledWith("test-template");
@@ -210,29 +198,17 @@ describe("StyleTemplatePreview", () => {
 
     // Тестируем mouseEnter
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(container);
-
-
       });
-
     });
     // Состояние hover должно измениться (проверяется через наличие кнопки воспроизведения)
 
     // Тестируем mouseLeave
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseLeave(container);
-
-
       });
-
     });
     // Состояние hover должно сброситься
   });

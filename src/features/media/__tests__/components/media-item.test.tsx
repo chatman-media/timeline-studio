@@ -165,15 +165,9 @@ describe("MediaItem", () => {
 
     // Кликаем на превью
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(screen.getByTestId("media-preview"));
-
-
       });
-
     });
 
     // Проверяем, что вызвана функция onAddMedia

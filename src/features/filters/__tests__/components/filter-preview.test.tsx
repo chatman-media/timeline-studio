@@ -158,15 +158,9 @@ describe("FilterPreview", () => {
     // Кликаем на контейнер превью
     const container = screen.getByTestId("filter-video").closest("div");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(container!);
-
-
       });
-
     });
 
     // Проверяем, что обработчик вызван
@@ -185,28 +179,16 @@ describe("FilterPreview", () => {
 
     // Наводим мышь
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(container!);
-
-
       });
-
     });
 
     // Убираем мышь
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseLeave(container!);
-
-
       });
-
     });
 
     // Проверяем, что методы видео были вызваны
@@ -218,15 +200,9 @@ describe("FilterPreview", () => {
 
     const addButton = screen.getByTestId("add-button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(addButton);
-
-
       });
-
     });
 
     // Проверяем, что фильтр добавлен
@@ -287,15 +263,9 @@ describe("FilterPreview", () => {
 
     // Наводим мышь для применения фильтра
     act(() => {
-
       act(() => {
-
-
         fireEvent.mouseEnter(container!);
-
-
       });
-
     });
 
     // Проверяем, что CSS фильтр применен (проверяем, что style.filter не пустой)

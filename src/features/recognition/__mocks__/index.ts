@@ -68,13 +68,17 @@ export const YoloDataVisualization = vi.fn(({ yoloData, width, height }) => {
   return `<div data-testid="yolo-data-visualization">Video: ${yoloData.videoName}, Size: ${width}x${height}</div>`;
 });
 
-export const YoloGraphOverlay = vi.fn(({ yoloData, currentTime, onTimeChange }) => {
-  return `<div data-testid="yolo-graph-overlay" onClick={() => onTimeChange?.(10)}>Graph for ${yoloData.videoName}</div>`;
-});
+export const YoloGraphOverlay = vi.fn(
+  ({ yoloData, currentTime, onTimeChange }) => {
+    return `<div data-testid="yolo-graph-overlay" onClick={() => onTimeChange?.(10)}>Graph for ${yoloData.videoName}</div>`;
+  },
+);
 
-export const YoloTrackOverlay = vi.fn(({ yoloData, currentTime, showTrajectories }) => {
-  return `<div data-testid="yolo-track-overlay">Tracks: ${showTrajectories ? 'shown' : 'hidden'}</div>`;
-});
+export const YoloTrackOverlay = vi.fn(
+  ({ yoloData, currentTime, showTrajectories }) => {
+    return `<div data-testid="yolo-track-overlay">Tracks: ${showTrajectories ? "shown" : "hidden"}</div>`;
+  },
+);
 
 // Мок хука useYoloData
 export const useYoloData = vi.fn(() => ({
@@ -119,7 +123,7 @@ export const YoloDataService = vi.fn().mockImplementation(() => ({
 export const SceneContextService = vi.fn().mockImplementation(() => ({
   createSceneContext: vi.fn().mockReturnValue({
     currentVideo: { id: "test-video", name: "test.mp4", timestamp: 5 },
-    detectedObjects: mockDetections.map(d => ({
+    detectedObjects: mockDetections.map((d) => ({
       class: d.class,
       confidence: d.confidence,
       position: "в центре кадра",
@@ -131,7 +135,9 @@ export const SceneContextService = vi.fn().mockImplementation(() => ({
     dominantObjects: [],
   }),
   createChatDescription: vi.fn().mockReturnValue("Сцена содержит 2 объекта"),
-  createDetailedDescription: vi.fn().mockReturnValue("Детальное описание сцены"),
+  createDetailedDescription: vi
+    .fn()
+    .mockReturnValue("Детальное описание сцены"),
   exportToJSON: vi.fn().mockReturnValue(JSON.stringify({ test: "data" })),
   filterByClass: vi.fn().mockReturnValue({
     currentVideo: { id: "test-video", name: "test.mp4", timestamp: 5 },
@@ -188,12 +194,12 @@ export const setupCanvasMock = () => {
   const mockGetContext = vi.fn().mockReturnValue(mockCanvasContext);
 
   // Проверяем, что HTMLCanvasElement существует в тестовой среде
-  if (typeof HTMLCanvasElement !== 'undefined') {
+  if (typeof HTMLCanvasElement !== "undefined") {
     HTMLCanvasElement.prototype.getContext = mockGetContext;
   }
 
   // Мокаем window.devicePixelRatio если window существует
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     Object.defineProperty(window, "devicePixelRatio", {
       value: 2,
       writable: true,

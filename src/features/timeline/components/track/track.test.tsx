@@ -55,15 +55,9 @@ describe("Track", () => {
 
     act(() => {
       act(() => {
-
         act(() => {
-
-
           trackElement?.click();
-
-
         });
-
       });
     });
 

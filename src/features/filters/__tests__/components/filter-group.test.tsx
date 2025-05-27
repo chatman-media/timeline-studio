@@ -123,15 +123,9 @@ describe("FilterGroup", () => {
 
     const brightnessPreview = screen.getByTestId("filter-preview-brightness-1");
     act(() => {
-
       act(() => {
-
-
         brightnessPreview.click();
-
-
       });
-
     });
 
     expect(mockOnFilterClick).toHaveBeenCalledWith(mockFilters[0]);
@@ -146,29 +140,17 @@ describe("FilterGroup", () => {
     // Кликаем на первый фильтр
     const brightnessPreview = screen.getByTestId("filter-preview-brightness-1");
     act(() => {
-
       act(() => {
-
-
         brightnessPreview.click();
-
-
       });
-
     });
 
     // Кликаем на второй фильтр
     const contrastPreview = screen.getByTestId("filter-preview-contrast-1");
     act(() => {
-
       act(() => {
-
-
         contrastPreview.click();
-
-
       });
-
     });
 
     expect(mockOnFilterClick).toHaveBeenCalledTimes(2);
@@ -222,7 +204,7 @@ describe("FilterGroup", () => {
   });
 
   it("должен обрабатывать изменение размеров превью", () => {
-    const { rerender  } = renderWithBase(<FilterGroup {...defaultProps} />);
+    const { rerender } = renderWithBase(<FilterGroup {...defaultProps} />);
 
     // Проверяем начальные размеры
     let brightnessPreview = screen.getByTestId("filter-preview-brightness-1");
@@ -231,16 +213,14 @@ describe("FilterGroup", () => {
 
     // Изменяем размеры
     act(() => {
-
       rerender(
-      <FilterGroup
-        {...defaultProps}
-        previewWidth={200}
-        previewHeight={150}
-        previewSize={3}
-      />,
-    );
-
+        <FilterGroup
+          {...defaultProps}
+          previewWidth={200}
+          previewHeight={150}
+          previewSize={3}
+        />,
+      );
     });
 
     brightnessPreview = screen.getByTestId("filter-preview-brightness-1");

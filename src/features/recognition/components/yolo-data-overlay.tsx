@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
-import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { YoloDetection } from "@/types/yolo"
+import { YoloDetection } from "@/types/yolo";
 
-import { useYoloData } from "../hooks/use-yolo-data"
+import { useYoloData } from "../hooks/use-yolo-data";
 
 interface YoloDataOverlayProps {
   video: {
-    id: string
-    name: string
-    path: string
-  }
-  currentTime: number
+    id: string;
+    name: string;
+    path: string;
+  };
+  currentTime: number;
 }
 
 /**
@@ -21,36 +21,39 @@ interface YoloDataOverlayProps {
  * Показывает рамки вокруг обнаруженных объектов и информацию о них
  */
 export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
-  const { t } = useTranslation()
-  const [detections, setDetections] = useState<YoloDetection[]>([])
-  const { getYoloDataAtTimestamp } = useYoloData()
+  const { t } = useTranslation();
+  const [detections, setDetections] = useState<YoloDetection[]>([]);
+  const { getYoloDataAtTimestamp } = useYoloData();
 
   // Загружаем данные YOLO для текущего времени
   useEffect(() => {
     const loadYoloData = async () => {
       try {
         // Округляем время до ближайшей секунды для оптимизации
-        const timestamp = Math.round(currentTime)
+        const timestamp = Math.round(currentTime);
 
         // Проверяем, есть ли данные для этого видео
         if (!video?.id) {
-          setDetections([])
-          return
+          setDetections([]);
+          return;
         }
 
-        const data = await getYoloDataAtTimestamp(video.id, timestamp)
-        setDetections(data)
+        const data = await getYoloDataAtTimestamp(video.id, timestamp);
+        setDetections(data);
       } catch (error) {
-        console.error(`[YoloDataOverlay] Ошибка при получении данных YOLO:`, error)
+        console.error(
+          `[YoloDataOverlay] Ошибка при получении данных YOLO:`,
+          error,
+        );
       }
-    }
+    };
 
-   void loadYoloData()
-  }, [video?.id, currentTime, getYoloDataAtTimestamp])
+    void loadYoloData();
+  }, [video?.id, currentTime, getYoloDataAtTimestamp]);
 
   // Если нет обнаружений, не отображаем ничего
   if (!detections || detections.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -96,18 +99,20 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
               null,
               2,
             ),
-          )
+          );
 
           toast(t("Контекст сцены скопирован"), {
-            description: t("Данные о распознанных объектах скопированы в буфер обмена"),
+            description: t(
+              "Данные о распознанных объектах скопированы в буфер обмена",
+            ),
             duration: 2000,
-          })
+          });
         }}
       >
         {t("Скопировать контекст сцены")}
       </button>
     </div>
-  )
+  );
 }
 
 /**
@@ -121,13 +126,13 @@ function DetectionBox({ detection }: { detection: YoloDetection }) {
       car: "rgba(0, 255, 0, 0.5)",
       dog: "rgba(0, 0, 255, 0.5)",
       cat: "rgba(255, 255, 0, 0.5)",
-    }
+    };
 
-    return colors[className] || "rgba(255, 165, 0, 0.5)"
-  }
+    return colors[className] || "rgba(255, 165, 0, 0.5)";
+  };
 
-  const { x, y, width, height } = detection.bbox
-  const color = getColorForClass(detection.class)
+  const { x, y, width, height } = detection.bbox;
+  const color = getColorForClass(detection.class);
 
   return (
     <div
@@ -147,7 +152,7 @@ function DetectionBox({ detection }: { detection: YoloDetection }) {
         {detection.class} ({Math.round(detection.confidence * 100)}%)
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -157,31 +162,31 @@ function DetectionBox({ detection }: { detection: YoloDetection }) {
  */
 function calculatePosition(detection: YoloDetection): string {
   // Рассчитываем центр объекта
-  const centerX = detection.bbox.x + detection.bbox.width / 2
+  const centerX = detection.bbox.x + detection.bbox.width / 2;
 
   // Определяем горизонтальную позицию
-  let horizontalPosition: string
+  let horizontalPosition: string;
   if (centerX < 0.33) {
-    horizontalPosition = "left"
+    horizontalPosition = "left";
   } else if (centerX < 0.66) {
-    horizontalPosition = "center"
+    horizontalPosition = "center";
   } else {
-    horizontalPosition = "right"
+    horizontalPosition = "right";
   }
 
   // Рассчитываем вертикальную позицию
-  const centerY = detection.bbox.y + detection.bbox.height / 2
-  let verticalPosition: string
+  const centerY = detection.bbox.y + detection.bbox.height / 2;
+  let verticalPosition: string;
   if (centerY < 0.33) {
-    verticalPosition = "top"
+    verticalPosition = "top";
   } else if (centerY < 0.66) {
-    verticalPosition = "middle"
+    verticalPosition = "middle";
   } else {
-    verticalPosition = "bottom"
+    verticalPosition = "bottom";
   }
 
   // Возвращаем комбинированную позицию
-  return `${verticalPosition}-${horizontalPosition}`
+  return `${verticalPosition}-${horizontalPosition}`;
 }
 
 /**
@@ -191,14 +196,14 @@ function calculatePosition(detection: YoloDetection): string {
  */
 function calculateSize(detection: YoloDetection): string {
   // Рассчитываем площадь объекта относительно всего кадра
-  const area = detection.bbox.width * detection.bbox.height
+  const area = detection.bbox.width * detection.bbox.height;
 
   // Определяем размер
   if (area < 0.05) {
-    return "small"
+    return "small";
   } else if (area < 0.15) {
-    return "medium"
+    return "medium";
   } else {
-    return "large"
+    return "large";
   }
 }

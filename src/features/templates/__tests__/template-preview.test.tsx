@@ -81,15 +81,9 @@ describe("TemplatePreview", () => {
     const previewElement = screen.getByTestId("template-content").parentElement;
     if (previewElement) {
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(previewElement);
-
-
         });
-
       });
       expect(mockOnClick).toHaveBeenCalledTimes(1);
     }
@@ -108,15 +102,9 @@ describe("TemplatePreview", () => {
     // Кликаем по кнопке добавления
     const addButton = screen.getByTestId("add-media-button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(addButton);
-
-
       });
-
     });
 
     // Проверяем, что функция добавления шаблона была вызвана
@@ -140,15 +128,9 @@ describe("TemplatePreview", () => {
     // Кликаем по кнопке удаления
     const removeButton = screen.getByTestId("add-media-button");
     act(() => {
-
       act(() => {
-
-
         fireEvent.click(removeButton);
-
-
       });
-
     });
 
     // Проверяем, что функция удаления ресурса была вызвана

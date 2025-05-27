@@ -36,9 +36,7 @@ describe("Layout Components", () => {
 
     it("should apply active styles when isActive is true", () => {
       const onClick = vi.fn();
-      const renderResult = render(
-        <DefaultLayout isActive onClick={onClick} />,
-      );
+      const renderResult = render(<DefaultLayout isActive onClick={onClick} />);
 
       // Проверяем, что применены стили активного элемента
       const layoutElement = renderResult.container.firstChild as HTMLElement;
@@ -52,15 +50,9 @@ describe("Layout Components", () => {
 
       // Кликаем по компоненту
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(screen.getByText("topBar.layouts.default"));
-
-
         });
-
       });
 
       // Проверяем, что функция onClick была вызвана
@@ -79,9 +71,7 @@ describe("Layout Components", () => {
 
     it("should apply active styles when isActive is true", () => {
       const onClick = vi.fn();
-      const renderResult = render(
-        <OptionsLayout isActive onClick={onClick} />,
-      );
+      const renderResult = render(<OptionsLayout isActive onClick={onClick} />);
 
       // Проверяем, что применены стили активного элемента
       const layoutElement = renderResult.container.firstChild as HTMLElement;
@@ -95,15 +85,9 @@ describe("Layout Components", () => {
 
       // Кликаем по компоненту
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(screen.getByText("topBar.layouts.options"));
-
-
         });
-
       });
 
       // Проверяем, что функция onClick была вызвана
@@ -138,15 +122,9 @@ describe("Layout Components", () => {
 
       // Кликаем по компоненту
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(screen.getByText("topBar.layouts.vertical"));
-
-
         });
-
       });
 
       // Проверяем, что функция onClick была вызвана
@@ -226,15 +204,9 @@ describe("Layout Components", () => {
 
       // Кликаем по компоненту
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(screen.getByText("topBar.layouts.dual"));
-
-
         });
-
       });
 
       // Проверяем, что функция onClick была вызвана
@@ -253,15 +225,9 @@ describe("Layout Components", () => {
 
       // Кликаем по компоненту
       act(() => {
-
         act(() => {
-
-
           fireEvent.click(screen.getByText("topBar.layouts.dual"));
-
-
         });
-
       });
 
       // Проверяем, что функция onClick была вызвана

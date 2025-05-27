@@ -1,4 +1,9 @@
-import { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/types/yolo"
+import {
+  YoloDetection,
+  YoloFrameData,
+  YoloVideoData,
+  YoloVideoSummary,
+} from "@/types/yolo";
 
 /**
  * Сервис для работы с данными YOLO
@@ -6,13 +11,13 @@ import { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@
  */
 export class YoloDataService {
   // Кэш для хранения данных YOLO
-  private yoloDataCache: Record<string, YoloVideoData> = {}
+  private yoloDataCache: Record<string, YoloVideoData> = {};
 
   // Кэш для отслеживания видео, для которых нет данных
-  private nonExistentFiles: Record<string, boolean> = {}
+  private nonExistentFiles: Record<string, boolean> = {};
 
   // Счетчик для отслеживания количества сообщений о ненайденных данных YOLO
-  private missingDataCount = 0
+  private missingDataCount = 0;
 
   /**
    * Найти ближайший кадр к указанной временной метке
@@ -20,29 +25,32 @@ export class YoloDataService {
    * @param timestamp Временная метка
    * @returns Ближайший кадр или null, если кадры не найдены
    */
-  private findClosestFrame(frames: YoloFrameData[], timestamp: number): YoloFrameData | null {
+  private findClosestFrame(
+    frames: YoloFrameData[],
+    timestamp: number,
+  ): YoloFrameData | null {
     if (!frames || frames.length === 0) {
-      return null
+      return null;
     }
 
     // Если только один кадр, возвращаем его
     if (frames.length === 1) {
-      return frames[0]
+      return frames[0];
     }
 
     // Находим ближайший кадр
-    let closestFrame = frames[0]
-    let minDiff = Math.abs(closestFrame.timestamp - timestamp)
+    let closestFrame = frames[0];
+    let minDiff = Math.abs(closestFrame.timestamp - timestamp);
 
     for (let i = 1; i < frames.length; i++) {
-      const diff = Math.abs(frames[i].timestamp - timestamp)
+      const diff = Math.abs(frames[i].timestamp - timestamp);
       if (diff < minDiff) {
-        minDiff = diff
-        closestFrame = frames[i]
+        minDiff = diff;
+        closestFrame = frames[i];
       }
     }
 
-    return closestFrame
+    return closestFrame;
   }
 
   /**
@@ -51,21 +59,24 @@ export class YoloDataService {
    * @param videoPath Путь к видеофайлу (опционально)
    * @returns Данные YOLO или null, если не найдены
    */
-  public async loadYoloData(videoId: string, videoPath?: string): Promise<YoloVideoData | null> {
+  public async loadYoloData(
+    videoId: string,
+    videoPath?: string,
+  ): Promise<YoloVideoData | null> {
     // Проверяем кэш
     if (this.yoloDataCache[videoId]) {
-      return this.yoloDataCache[videoId]
+      return this.yoloDataCache[videoId];
     }
 
     // Проверяем, не пытались ли мы уже загрузить данные для этого видео
     if (this.nonExistentFiles[videoId]) {
-      return null
+      return null;
     }
 
     try {
       // Здесь должна быть логика загрузки данных YOLO из файла или API
       // Пока возвращаем null, так как реальная загрузка не реализована
-      
+
       // Пример структуры данных, которые могли бы быть загружены:
       // const yoloData: YoloVideoData = {
       //   videoId,
@@ -83,13 +94,15 @@ export class YoloDataService {
       // return yoloData
 
       // Отмечаем, что данные для этого видео отсутствуют
-      this.nonExistentFiles[videoId] = true
-      return null
-
+      this.nonExistentFiles[videoId] = true;
+      return null;
     } catch (error) {
-      console.error(`[YoloDataService] Ошибка загрузки данных YOLO для видео ${videoId}:`, error)
-      this.nonExistentFiles[videoId] = true
-      return null
+      console.error(
+        `[YoloDataService] Ошибка загрузки данных YOLO для видео ${videoId}:`,
+        error,
+      );
+      this.nonExistentFiles[videoId] = true;
+      return null;
     }
   }
 
@@ -105,34 +118,34 @@ export class YoloDataService {
   ): Promise<YoloDetection[]> {
     // Проверяем, не пытались ли мы уже загрузить данные для этого видео
     if (this.nonExistentFiles[videoId]) {
-      return []
+      return [];
     }
 
     // Проверяем кэш
     if (this.yoloDataCache[videoId]) {
-      const yoloData = this.yoloDataCache[videoId]
+      const yoloData = this.yoloDataCache[videoId];
 
       if (!yoloData.frames || yoloData.frames.length === 0) {
-        return []
+        return [];
       }
 
       // Находим ближайший кадр к указанной временной метке
-      const closestFrame = this.findClosestFrame(yoloData.frames, timestamp)
+      const closestFrame = this.findClosestFrame(yoloData.frames, timestamp);
 
       if (!closestFrame) {
-        return []
+        return [];
       }
 
-      return closestFrame.detections
+      return closestFrame.detections;
     }
 
     // Пытаемся загрузить данные
-    const yoloData = await this.loadYoloData(videoId)
+    const yoloData = await this.loadYoloData(videoId);
     if (yoloData) {
-      return this.getYoloDataAtTimestamp(videoId, timestamp)
+      return this.getYoloDataAtTimestamp(videoId, timestamp);
     }
 
-    return []
+    return [];
   }
 
   /**
@@ -140,55 +153,61 @@ export class YoloDataService {
    * @param videoId ID видео
    * @returns Сводная информация или null, если данные не найдены
    */
-  public async getVideoSummary(videoId: string): Promise<YoloVideoSummary | null> {
+  public async getVideoSummary(
+    videoId: string,
+  ): Promise<YoloVideoSummary | null> {
     // Проверяем, не пытались ли мы уже загрузить данные для этого видео
     if (this.nonExistentFiles[videoId]) {
-      return null
+      return null;
     }
 
     // Проверяем кэш
     if (this.yoloDataCache[videoId]) {
-      const yoloData = this.yoloDataCache[videoId]
+      const yoloData = this.yoloDataCache[videoId];
 
       if (!yoloData.frames || yoloData.frames.length === 0) {
-        return null
+        return null;
       }
 
       // Собираем статистику
-      const detectedClasses = new Set<string>()
-      const classCounts: Record<string, number> = {}
-      const classTimeRanges: Record<string, Array<{ start: number; end: number }>> = {}
+      const detectedClasses = new Set<string>();
+      const classCounts: Record<string, number> = {};
+      const classTimeRanges: Record<
+        string,
+        Array<{ start: number; end: number }>
+      > = {};
 
       // Обрабатываем все кадры
       yoloData.frames.forEach((frame) => {
         frame.detections.forEach((detection) => {
-          const className = detection.class
-          detectedClasses.add(className)
+          const className = detection.class;
+          detectedClasses.add(className);
 
           if (!classCounts[className]) {
-            classCounts[className] = 0
+            classCounts[className] = 0;
           }
-          classCounts[className]++
+          classCounts[className]++;
 
           // Обновляем временные диапазоны
           if (!classTimeRanges[className]) {
-            classTimeRanges[className] = []
+            classTimeRanges[className] = [];
           }
 
           // Простая логика для создания временных диапазонов
-          const lastRange = classTimeRanges[className][classTimeRanges[className].length - 1]
+          const lastRange =
+            classTimeRanges[className][classTimeRanges[className].length - 1];
           if (!lastRange || frame.timestamp - lastRange.end > 2) {
             // Создаем новый диапазон, если прошло больше 2 секунд
             classTimeRanges[className].push({
               start: frame.timestamp,
-              end: frame.timestamp
-            })
+              end: frame.timestamp,
+            });
           } else {
             // Расширяем существующий диапазон
-            lastRange.end = frame.timestamp
+            lastRange.end = frame.timestamp;
           }
-        })
-      })
+        });
+      });
 
       // Создаем сводную информацию
       return {
@@ -198,16 +217,16 @@ export class YoloDataService {
         detectedClasses: Array.from(detectedClasses),
         classCounts: classCounts,
         classTimeRanges: classTimeRanges,
-      }
+      };
     }
 
     // Пытаемся загрузить данные
-    const yoloData = await this.loadYoloData(videoId)
+    const yoloData = await this.loadYoloData(videoId);
     if (yoloData) {
-      return this.getVideoSummary(videoId)
+      return this.getVideoSummary(videoId);
     }
 
-    return null
+    return null;
   }
 
   /**
@@ -216,7 +235,7 @@ export class YoloDataService {
    * @returns Все данные YOLO или null, если не найдены
    */
   public async getAllYoloData(videoId: string): Promise<YoloVideoData | null> {
-    return this.loadYoloData(videoId)
+    return this.loadYoloData(videoId);
   }
 
   /**
@@ -225,7 +244,7 @@ export class YoloDataService {
    * @returns true, если данные есть в кэше
    */
   public hasYoloData(videoId: string): boolean {
-    return !!this.yoloDataCache[videoId] && !this.nonExistentFiles[videoId]
+    return !!this.yoloDataCache[videoId] && !this.nonExistentFiles[videoId];
   }
 
   /**
@@ -234,18 +253,18 @@ export class YoloDataService {
    */
   public clearVideoCache(videoId: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete this.yoloDataCache[videoId]
+    delete this.yoloDataCache[videoId];
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete this.nonExistentFiles[videoId]
+    delete this.nonExistentFiles[videoId];
   }
 
   /**
    * Очистить весь кэш
    */
   public clearAllCache(): void {
-    this.yoloDataCache = {}
-    this.nonExistentFiles = {}
-    this.missingDataCount = 0
+    this.yoloDataCache = {};
+    this.nonExistentFiles = {};
+    this.missingDataCount = 0;
   }
 
   /**
@@ -258,6 +277,6 @@ export class YoloDataService {
       nonExistentVideos: Object.keys(this.nonExistentFiles).length,
       totalMemoryUsage: JSON.stringify(this.yoloDataCache).length,
       missingDataCount: this.missingDataCount,
-    }
+    };
   }
 }
