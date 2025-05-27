@@ -1,22 +1,31 @@
-import { Blend, FlipHorizontal2, Grid2X2, Image, Music, Sparkles, Sticker, Type } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import {
+  Blend,
+  FlipHorizontal2,
+  Grid2X2,
+  Image,
+  Music,
+  Sparkles,
+  Sticker,
+  Type,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const TAB_TRIGGER_STYLES =
   "text-xs text-gray-600 dark:bg-[#2D2D2D] border-none " +
   "dark:data-[state=active]:bg-[#252526] dark:data-[state=active]:text-[#35d1c1] data-[state=active]:text-text-gray-900" +
   "hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#252526] dark:hover:text-gray-100 " +
   "flex flex-col items-center justify-center gap-1 py-2 " +
-  "[&>svg]:data-[state=active]:text-[#38dacac3] cursor-pointer data-[state=active]:cursor-default rounded-none"
+  "[&>svg]:data-[state=active]:text-[#38dacac3] cursor-pointer data-[state=active]:cursor-default rounded-none";
 
 interface BrowserTabsProps {
-  activeTab: string
-  onTabChange: (value: string) => void
+  activeTab: string;
+  onTabChange: (value: string) => void;
 }
 
 export function BrowserTabs({ activeTab, onTabChange }: BrowserTabsProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <TabsList className="h-[50px] flex-shrink-0 justify-start border-none rounded-none dark:bg-[#252526] m-0 p-0">
@@ -93,5 +102,5 @@ export function BrowserTabs({ activeTab, onTabChange }: BrowserTabsProps) {
         <span>{t("browser.tabs.styleTemplates")}</span>
       </TabsTrigger>
     </TabsList>
-  )
+  );
 }

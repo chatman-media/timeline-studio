@@ -99,7 +99,9 @@ export function TimelineResources() {
                   <Scissors className="h-4 w-4" />
                 )}
                 {resource.type === "template" && <Video className="h-4 w-4" />}
-                {resource.type === "style-template" && <Sticker className="h-4 w-4" />}
+                {resource.type === "style-template" && (
+                  <Sticker className="h-4 w-4" />
+                )}
                 {resource.type === "music" && <Music className="h-4 w-4" />}
                 {resource.type === "subtitle" && (
                   <Subtitles className="h-4 w-4" />
@@ -115,11 +117,8 @@ export function TimelineResources() {
                         resource.name,
                       )
                     : resource.type === "style-template"
-                    ? t(
-                        `styleTemplates.${resource.name}`,
-                        resource.name,
-                      )
-                    : resource.name}
+                      ? t(`styleTemplates.${resource.name}`, resource.name)
+                      : resource.name}
                 </div>
               </div>
             </div>
