@@ -32,12 +32,14 @@ Dokumentation:   17/17 ✅ (100%)
 ```
 
 ### 🔥 Kritische Aufgaben
+
 - **Timeline** - benötigt Zustandsautomat, Hooks, Kernlogik
 - **Resources** - benötigt UI-Komponenten für Verwaltung
 - **AI Chat** - benötigt Überprüfung der funktionalen Vollständigkeit
 - **Options** - benötigt Funktionserweiterung
 
 ### ✅ Fertige Komponenten
+
 - **VideoPlayer** - voll funktionsfähiger Video-Player
 - **Browser** - Mediendatei-Browser mit Tabs
 - **Media, Music, Effects, Filters, Transitions, Templates** - alles fertig
@@ -178,6 +180,7 @@ Jedes Feature enthält detaillierte Dokumentation:
 Das Projekt verwendet XState v5 zur Verwaltung komplexer Zustandslogik.
 
 #### ✅ Implementierte Zustandsautomaten (11):
+
 - `appSettingsMachine` - zentralisierte Einstellungsverwaltung
 - `chatMachine` - KI-Chat-Verwaltung
 - `modalMachine` - modale Fensterverwaltung
@@ -191,6 +194,7 @@ Das Projekt verwendet XState v5 zur Verwaltung komplexer Zustandslogik.
 - `timelineMachine` - ✅ **ABGESCHLOSSEN!** Haupt-Timeline-Zustandsautomat (20 Tests bestanden)
 
 #### ❌ Benötigen Implementierung (1):
+
 - `optionsMachine` - Optionen-Panel-Verwaltung
 
 Siehe `DEV.md` für Details.
