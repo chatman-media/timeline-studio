@@ -1,6 +1,6 @@
 # Timeline Studio
 
-**🌐** [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md)
 
 Video editor built with Tauri, React, and XState.
 
@@ -11,7 +11,7 @@ Video editor built with Tauri, React, and XState.
 [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
 [![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timeline_ru)
+[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 
 
 ## Project Overview
@@ -95,41 +95,54 @@ bun tauri build
 
 ```
 timeline-studio/
-├── src/                  # Frontend source code (React, Next.js)
-│   ├── features/         # Application feature modules (17 features)
-│   │   ├── browser/      ✅ # Media file browser with tabs
-│   │   ├── media/        ✅ # Media file management
-│   │   ├── video-player/ ✅ # Video player with controls
-│   │   ├── timeline/     ⚠️ # Timeline (requires work)
-│   │   ├── resources/    ⚠️ # Resources (requires UI components)
-│   │   ├── ai-chat/      ❓ # AI chat (requires verification)
-│   │   ├── options/      ⚠️ # Options panel (requires expansion)
-│   │   ├── music/        ✅ # Music files
-│   │   ├── effects/      ✅ # Video effects
-│   │   ├── filters/      ✅ # Image filters
-│   │   ├── transitions/  ✅ # Clip transitions
-│   │   ├── subtitles/    ✅ # Subtitles
-│   │   ├── templates/    ✅ # Project templates
-│   │   ├── modals/       ✅ # Modal windows
-│   │   ├── app-state/    ✅ # Global state
-│   │   ├── top-bar/      ✅ # Top navigation bar
-│   │   ├── media-studio/ ✅ # Root component
-│   │   └── OVERVIEW.md   📚 # Overview of all features
-│   ├── i18n/             # Internationalization
-│   ├── types/            # TypeScript types
-│   ├── lib/              # Utilities and libraries
-│   └── components/       # Reusable UI components
-├── src-tauri/            # Backend source code (Rust)
-│   ├── src/              # Rust code
-│   └── Cargo.toml        # Rust dependencies configuration
-├── public/               # Static files
-├── DEV.md                📚 # Developer documentation
-├── README.md             📚 # English documentation (main)
-├── README.es.md          📚 # Spanish documentation
-├── README.fr.md          📚 # French documentation
-├── README.de.md          📚 # German documentation
-├── README.ru.md          📚 # Russian documentation
-└── package.json          # Node.js dependencies configuration
+├── src/                         # Frontend source code (React, XState, Next.js)
+│   ├── app/                     # Main application entry point
+│   ├── components/              # Shared components
+│   ├── hooks/                   # Custom React hooks
+│   ├── services/                # Services for API calls and business logic
+│   ├── features/                # Фичи
+│   │   ├── ai-chat/             # AI-чат-бот (интерактивный помощник)
+│   │   ├── app-state/           # Глобальное состояние приложения
+│   │   ├── browser/             # Браузер медиафайлов (панель файлов)
+│   │   ├── camera-capture/      # Захват видео/фото с камеры
+│   │   ├── effects/             # Видеоеффекты и их параметры
+│   │   ├── export/              # Экспорт видео и проектов
+│   │   ├── filters/             # Видеофильтры (цветокор, стили)
+│   │   ├── keyboard-shortcuts/  # Горячие клавиши и пресеты
+│   │   ├── media/               # Работа с медиафайлами (аудио/видео)
+│   │   ├── media-studio/        # Студия для работы с медиа
+│   │   ├── modals/              # Модальные окна (диалоги)
+│   │   ├── music/               # Импорт и управление музыкой
+│   │   ├── options/             # Настройки экспорта и проекта
+│   │   ├── project-settings/    # Настройки проекта (размер, fps и др.)
+│   │   ├── recognition/         # Распознавание сцен и объектов
+│   │   ├── resources/           # Управление ресурсами проекта
+│   │   ├── style-templates/     # Стили и шаблоны оформления
+│   │   ├── subtitles/           # Импорт и редактирование субтитров
+│   │   ├── templates/           # Видео-шаблоны и пресеты
+│   │   ├── timeline/            # Основная монтажная лента (таймлайн)
+│   │   ├── top-bar/             # Верхняя панель управления
+│   │   ├── transitions/         # Видеопереходы между клипами
+│   │   ├── user-settings/       # Пользовательские настройки
+│   │   ├── video-player/        # Видеоплеер
+│   │   ├── voice-recording/     # Запись голоса и озвучка
+│   │   └── OVERVIEW.md       📚 # Overview of all features
+│   ├── i18n/                    # Internationalization
+│   ├── lib/                     # Utilities and libraries
+│   ├── styles/                  # Global styles
+|   ├── test/                    # Test config and utilities
+│   ├── types/                   # TypeScript types
+├── src-tauri/                   # Backend source code (Rust)
+│   ├── src/                     # Rust code
+│   └── Cargo.toml               # Rust dependencies configuration
+├── public/                      # Static files
+├── DEV.md                    📚 # Developer documentation
+├── README.md                 📚 # English documentation (main)
+├── README.es.md              📚 # Spanish documentation
+├── README.fr.md              📚 # French documentation
+├── README.de.md              📚 # German documentation
+├── README.ru.md              📚 # Russian documentation
+└── package.json                 # Node.js dependencies configuration
 ```
 
 ## 📚 Documentation
@@ -143,7 +156,7 @@ Each feature contains detailed documentation:
 
 ### 📋 Key Documents
 
-- **`src/features/OVERVIEW.md`** - overview of all 17 features with priorities
+- **`src/features/OVERVIEW.md`** - overview of all the features with priorities
 - **`DEV.md`** - application architecture, state machines, development plan
 - **`README.md`** - general project information (English)
 - **`README.es.md`** - Spanish version of documentation
@@ -180,54 +193,15 @@ Each feature contains detailed documentation:
 - `bun test:ui` - Run tests with UI interface
 - `bun test:e2e` - Run end-to-end tests with Playwright
 
-### State Machines (XState v5)
-
-The project uses XState v5 for managing complex state logic.
-
-#### ✅ Implemented State Machines (11):
-
-- `appSettingsMachine` - centralized settings management
-- `chatMachine` - AI chat management
-- `modalMachine` - modal window management
-- `playerMachine` - video player management
-- `resourcesMachine` - timeline resources management
-- `musicMachine` - music file management
-- `userSettingsMachine` - user settings
-- `projectSettingsMachine` - project settings
-- `mediaListMachine` - media file list management
-- `templateListMachine` - template management
-- `timelineMachine` - ✅ **COMPLETED!** Main timeline state machine (20 tests passed)
-
-#### ❌ Require Implementation (1):
-
-- `optionsMachine` - options panel management
-
-See `DEV.md` for details.
-
 ### Testing
 
-The project uses Vitest for unit testing. Tests are located next to the tested files with `.test.ts` or `.test.tsx` extensions.
-
-#### 🧪 Test Coverage Status: **100% Complete** ✅
-
-**130 test files passed successfully** (1118 tests + 9 skipped = 1127 total)
-
-**Key Features Test Coverage:**
-
-- ✅ **Effects** - comprehensive test coverage (hooks, import, components)
-- ✅ **Filters** - 41 tests (processor, hooks, import functionality)
-- ✅ **Transitions** - 36 tests (preview, import, group components)
-- ✅ **Templates** - comprehensive coverage (import, labels, components)
-- ✅ **Style Templates** - 39 tests (utils, import, loading components)
-- ✅ **Music** - 26 tests (utils, file handling)
-- ✅ **Subtitles** - 10 tests (processor, styles)
-- ✅ **Resources** - 27 tests (state machine, provider)
-- ✅ **User Settings** - 34 tests (machine, modal, hooks)
-- ✅ **Video Player** - comprehensive coverage (controls, provider)
-- ✅ **Voice Recording** - 10 tests (permissions, devices, components)
-- ✅ **Camera Capture** - comprehensive coverage
-- ✅ **Browser, Timeline, App State** - comprehensive coverage
-- ✅ **Media Studio, Modals, Theme** - full test coverage
+## Test Coverage
+```bash
+   Test Files  142 passed (142)
+      Tests  1301 passed | 9 skipped (1310)
+   Start at  22:30:54
+   Duration  17.05s (transform 3.78s, setup 29.93s, collect 15.95s, tests 11.31s, environment 45.46s, prepare 10.71s)
+```
 
 ```bash
 # Run all tests
@@ -239,6 +213,8 @@ bun test:coverage
 # Run tests for specific feature
 bun test src/features/effects
 ```
+
+See `DEV.md` for details.
 
 ## License
 
