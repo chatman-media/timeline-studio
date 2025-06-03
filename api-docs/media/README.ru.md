@@ -116,12 +116,11 @@ timeline-studio/
 │   │   ├── montage-planner/        # Новый: планирование монтажа
 │   │   ├── person-identification/  # Новый: именование людей
 │   │   ├── scene-analyzer/         # Новый: анализ сцен
-│   │   └── OVERVIEW.md          📚 # Overview of all features
+│   │   └── README.md            📚 # Overview of all features
 │   ├── i18n/                       # Internationalization
 │   ├── lib/                        # Utilities and libraries
 │   ├── styles/                     # Global styles
 |   ├── test/                       # Test config and utilities
-│   ├── types/                      # TypeScript types
 ├── src-tauri/                      # Бэкенд (Rust)
 │   ├── src/
 │   │   ├── main.rs                 # Точка входа Tauri
