@@ -32,7 +32,16 @@ Tests:          17/17 ✅ (100%) 🎉
 Documentation:  17/17 ✅ (100%)
 ```
 
-### 🔥 Critical Tasks
+### 🔥 Critical Tasks - Video Compiler Architecture
+
+**NEW PRIORITY:** Video Compiler модуль (Rust/FFmpeg) - центральная система компиляции видео
+
+- **Video Compiler** - 🆕 центральный модуль компиляции (Rust/FFmpeg)
+- **Timeline Engine** - интеграция с Video Compiler для UI управления
+- **Preview Generator** - превью кадры и прогресс рендеринга
+- **Testing Coverage** - Templates (9.63%→80%+), Export (3.64%→80%+)
+
+### 📋 Legacy Tasks
 
 - **Timeline** - ✅ state machine ready, needs UI integration
 - **Resources** - requires UI components for management
@@ -95,54 +104,64 @@ bun tauri build
 
 ```
 timeline-studio/
-├── src/                         # Frontend source code (React, XState, Next.js)
-│   ├── app/                     # Main application entry point
-│   ├── components/              # Shared components
-│   ├── hooks/                   # Custom React hooks
-│   ├── services/                # Services for API calls and business logic
-│   ├── features/                # Фичи
-│   │   ├── ai-chat/             # AI-чат-бот (интерактивный помощник)
-│   │   ├── app-state/           # Глобальное состояние приложения
-│   │   ├── browser/             # Браузер медиафайлов (панель файлов)
-│   │   ├── camera-capture/      # Захват видео/фото с камеры
-│   │   ├── effects/             # Видеоеффекты и их параметры
-│   │   ├── export/              # Экспорт видео и проектов
-│   │   ├── filters/             # Видеофильтры (цветокор, стили)
-│   │   ├── keyboard-shortcuts/  # Горячие клавиши и пресеты
-│   │   ├── media/               # Работа с медиафайлами (аудио/видео)
-│   │   ├── media-studio/        # Студия для работы с медиа
-│   │   ├── modals/              # Модальные окна (диалоги)
-│   │   ├── music/               # Импорт и управление музыкой
-│   │   ├── options/             # Настройки экспорта и проекта
-│   │   ├── project-settings/    # Настройки проекта (размер, fps и др.)
-│   │   ├── recognition/         # Распознавание сцен и объектов
-│   │   ├── resources/           # Управление ресурсами проекта
-│   │   ├── style-templates/     # Стили и шаблоны оформления
-│   │   ├── subtitles/           # Импорт и редактирование субтитров
-│   │   ├── templates/           # Видео-шаблоны и пресеты
-│   │   ├── timeline/            # Основная монтажная лента (таймлайн)
-│   │   ├── top-bar/             # Верхняя панель управления
-│   │   ├── transitions/         # Видеопереходы между клипами
-│   │   ├── user-settings/       # Пользовательские настройки
-│   │   ├── video-player/        # Видеоплеер
-│   │   ├── voice-recording/     # Запись голоса и озвучка
-│   │   └── OVERVIEW.md       📚 # Overview of all features
-│   ├── i18n/                    # Internationalization
-│   ├── lib/                     # Utilities and libraries
-│   ├── styles/                  # Global styles
-|   ├── test/                    # Test config and utilities
-│   ├── types/                   # TypeScript types
-├── src-tauri/                   # Backend source code (Rust)
-│   ├── src/                     # Rust code
-│   └── Cargo.toml               # Rust dependencies configuration
-├── public/                      # Static files
-├── DEV.md                    📚 # Developer documentation
-├── README.md                 📚 # English documentation (main)
-├── README.es.md              📚 # Spanish documentation
-├── README.fr.md              📚 # French documentation
-├── README.de.md              📚 # German documentation
-├── README.ru.md              📚 # Russian documentation
-└── package.json                 # Node.js dependencies configuration
+├── src/                            # Frontend source code (React, XState, Next.js)
+│   ├── app/                        # Main application entry point
+│   ├── components/                 # Shared components
+│   ├── hooks/                      # Custom React hooks
+│   ├── services/                   # Services for API calls and business logic
+│   ├── features/                   # Фичи
+│   │   ├── ai-chat/                # AI-чат-бот (интерактивный помощник)
+│   │   ├── app-state/              # Глобальное состояние приложения
+│   │   ├── browser/                # Браузер медиафайлов (панель файлов)
+│   │   ├── camera-capture/         # Захват видео/фото с камеры
+│   │   ├── effects/                # Видеоеффекты и их параметры
+│   │   ├── export/                 # Экспорт видео и проектов
+│   │   ├── filters/                # Видеофильтры (цветокор, стили)
+│   │   ├── keyboard-shortcuts/     # Горячие клавиши и пресеты
+│   │   ├── media/                  # Работа с медиафайлами (аудио/видео)
+│   │   ├── media-studio/           # Студия для работы с медиа
+│   │   ├── modals/                 # Модальные окна (диалоги)
+│   │   ├── music/                  # Импорт и управление музыкой
+│   │   ├── options/                # Настройки экспорта и проекта
+│   │   ├── project-settings/       # Настройки проекта (размер, fps и др.)
+│   │   ├── recognition/            # Распознавание сцен и объектов
+│   │   ├── resources/              # Управление ресурсами проекта
+│   │   ├── style-templates/        # Стили и шаблоны оформления
+│   │   ├── subtitles/              # Импорт и редактирование субтитров
+│   │   ├── templates/              # Видео-шаблоны и пресеты
+│   │   ├── timeline/               # Основная монтажная лента (таймлайн)
+│   │   ├── top-bar/                # Верхняя панель управления
+│   │   ├── transitions/            # Видеопереходы между клипами
+│   │   ├── user-settings/          # Пользовательские настройки
+│   │   ├── video-player/           # Видеоплеер
+│   │   ├── voice-recording/        # Запись голоса и озвучка
+│   │   ├── script-generator/       # Новый: генерация сценариев
+│   │   ├── montage-planner/        # Новый: планирование монтажа
+│   │   ├── person-identification/  # Новый: именование людей
+│   │   ├── scene-analyzer/         # Новый: анализ сцен
+│   │   └── OVERVIEW.md          📚 # Overview of all features
+│   ├── i18n/                       # Internationalization
+│   ├── lib/                        # Utilities and libraries
+│   ├── styles/                     # Global styles
+|   ├── test/                       # Test config and utilities
+│   ├── types/                      # TypeScript types
+├── src-tauri/                      # Бэкенд (Rust)
+│   ├── src/
+│   │   ├── main.rs                 # Точка входа Tauri
+│   │   ├── media.rs                # Анализ медиа (FFmpeg)
+│   │   ├── recognition.rs          # YOLO для объектов/лиц
+│   │   ├── script_generator.rs     # Генерация сценариев (Claude/OpenAi/Grok API)
+│   │   ├── montage_planner.rs      # Планирование монтажа
+│   │   ├── person_identification.rs # Идентификация людей
+│   │   ├── scene_analyzer.rs       # Анализ сцен
+│   │   └── ai_chat.rs              # Обработка чата
+├── public/                         # Static files
+├── README.md                    📚 # English documentation (main)
+├── README.es.md                 📚 # Spanish documentation
+├── README.fr.md                 📚 # French documentation
+├── README.de.md                 📚 # German documentation
+├── README.ru.md                 📚 # Russian documentation
+└── package.json                    # Node.js dependencies configuration
 ```
 
 ## 📚 Documentation

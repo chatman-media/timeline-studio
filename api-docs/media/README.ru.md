@@ -21,30 +21,9 @@ Timeline Studio - это настольное приложение для соз
 
 ## 📊 Статус разработки
 
-### 🎯 Общий прогресс: 85% готово (15/17 features)
+### 🎯 Общий прогресс: 70% готово (29 фич)
 
-```
-Компоненты:     16/17 ✅ (94%)
-Хуки:           15/17 ✅ (88%)
-Сервисы:        16/17 ✅ (94%)
-Тесты:          17/17 ✅ (100%) 🎉
-Документация:   17/17 ✅ (100%)
-```
-
-### 🔥 Критические задачи
-
-- **Timeline** - ✅ машина состояний готова, требует интеграции UI
-- **Resources** - требует UI компоненты для управления
-- **AI Chat** - требует проверки полноты функционала
-- **Options** - требует расширения функционала
-
-### ✅ Готовые компоненты
-
-- **VideoPlayer** - полностью функциональный видеоплеер
-- **Browser** - браузер медиафайлов с табами
-- **Media, Music, Effects, Filters, Transitions, Templates** - все готово
-- **AppState, Modals, TopBar, MediaStudio** - базовая инфраструктура
-
+=======
 ### Ключевые особенности
 
 - 🎬 Создание и редактирование видеопроектов
@@ -94,41 +73,66 @@ bun tauri build
 
 ```
 timeline-studio/
-├── src/                  # Исходный код фронтенда (React, Next.js)
-│   ├── features/         # Функциональные модули приложения (17 features)
-│   │   ├── browser/      ✅ # Браузер медиафайлов с табами
-│   │   ├── media/        ✅ # Управление медиафайлами
-│   │   ├── video-player/ ✅ # Видеоплеер с элементами управления
-│   │   ├── timeline/     ⚠️ # Таймлайн (требует доработки)
-│   │   ├── resources/    ⚠️ # Ресурсы (требует UI компоненты)
-│   │   ├── ai-chat/      ❓ # AI чат (требует проверки)
-│   │   ├── options/      ⚠️ # Панель опций (требует расширения)
-│   │   ├── music/        ✅ # Музыкальные файлы
-│   │   ├── effects/      ✅ # Видеоэффекты
-│   │   ├── filters/      ✅ # Фильтры изображения
-│   │   ├── transitions/  ✅ # Переходы между клипами
-│   │   ├── subtitles/    ✅ # Субтитры
-│   │   ├── templates/    ✅ # Шаблоны проектов
-│   │   ├── modals/       ✅ # Модальные окна
-│   │   ├── app-state/    ✅ # Глобальное состояние
-│   │   ├── top-bar/      ✅ # Верхняя панель
-│   │   ├── media-studio/ ✅ # Корневой компонент
-│   │   └── README.md     📚 # Обзор всех features
-│   ├── i18n/             # Интернационализация
-│   ├── types/            # TypeScript типы
-│   ├── lib/              # Утилиты и библиотеки
-│   └── components/       # Переиспользуемые UI компоненты
-├── src-tauri/            # Исходный код бэкенда (Rust)
-│   ├── src/              # Rust код
-│   └── Cargo.toml        # Конфигурация Rust зависимостей
-├── public/               # Статические файлы
-├── DEV.md                📚 # Документация для разработчиков
-├── README.md             📚 # Английская документация (основная)
-├── README.es.md          📚 # Испанская документация
-├── README.fr.md          📚 # Французская документация
-├── README.de.md          📚 # Немецкая документация
-├── README.ru.md          📚 # Русская документация
-└── package.json          # Конфигурация Node.js зависимостей
+├── bin/                            # shell Скрипты 
+├── docs/                           # Автоматически генерируемая документация
+├── docs-dev/                       # Документация формируемая в ходе разрабоки, в т.ч. для агентов
+├── docs/                           # e2e тесты
+├── examples/                       # Примеры использования апи
+├── promo/                          # Cайт на github pages
+├── public/                         # Static files
+├── scripts/                        # Скрипты js
+├── src/                            # Frontend source code (React, XState, Next.js)
+│   ├── app/                        # Main application entry point
+│   ├── components/                 # Shared components
+│   ├── hooks/                      # Custom React hooks
+│   ├── services/                   # Services for API calls and business logic
+│   ├── features/                   # Фичи
+│   │   ├── ai-chat/                # AI-чат-бот (интерактивный помощник)
+│   │   ├── app-state/              # Глобальное состояние приложения
+│   │   ├── browser/                # Браузер медиафайлов (панель файлов)
+│   │   ├── camera-capture/         # Захват видео/фото с камеры
+│   │   ├── effects/                # Видеоеффекты и их параметры
+│   │   ├── export/                 # Экспорт видео и проектов
+│   │   ├── filters/                # Видеофильтры (цветокор, стили)
+│   │   ├── keyboard-shortcuts/     # Горячие клавиши и пресеты
+│   │   ├── media/                  # Работа с медиафайлами (аудио/видео)
+│   │   ├── media-studio/           # Студия для работы с медиа
+│   │   ├── modals/                 # Модальные окна (диалоги)
+│   │   ├── music/                  # Импорт и управление музыкой
+│   │   ├── options/                # Настройки экспорта и проекта
+│   │   ├── project-settings/       # Настройки проекта (размер, fps и др.)
+│   │   ├── recognition/            # Распознавание сцен и объектов
+│   │   ├── resources/              # Управление ресурсами проекта
+│   │   ├── style-templates/        # Стили и шаблоны оформления
+│   │   ├── subtitles/              # Импорт и редактирование субтитров
+│   │   ├── templates/              # Видео-шаблоны и пресеты
+│   │   ├── timeline/               # Основная монтажная лента (таймлайн)
+│   │   ├── top-bar/                # Верхняя панель управления
+│   │   ├── transitions/            # Видеопереходы между клипами
+│   │   ├── user-settings/          # Пользовательские настройки
+│   │   ├── video-player/           # Видеоплеер
+│   │   ├── voice-recording/        # Запись голоса и озвучка
+│   │   ├── script-generator/       # Новый: генерация сценариев
+│   │   ├── montage-planner/        # Новый: планирование монтажа
+│   │   ├── person-identification/  # Новый: именование людей
+│   │   ├── scene-analyzer/         # Новый: анализ сцен
+│   │   └── OVERVIEW.md          📚 # Overview of all features
+│   ├── i18n/                       # Internationalization
+│   ├── lib/                        # Utilities and libraries
+│   ├── styles/                     # Global styles
+|   ├── test/                       # Test config and utilities
+│   ├── types/                      # TypeScript types
+├── src-tauri/                      # Бэкенд (Rust)
+│   ├── src/
+│   │   ├── main.rs                 # Точка входа Tauri
+│   │   ├── media.rs                # Анализ медиа (FFmpeg)
+│   │   ├── recognition.rs          # YOLO для объектов/лиц
+│   │   ├── script_generator.rs     # Генерация сценариев (Claude/OpenAi/Grok API)
+│   │   ├── montage_planner.rs      # Планирование монтажа
+│   │   ├── person_identification.rs # Идентификация людей
+│   │   ├── scene_analyzer.rs       # Анализ сцен
+│   │   └── ai_chat.rs              # Обработка чата
+└── package.json                    # Node.js dependencies configuration
 ```
 
 ## 📚 Документация
@@ -186,57 +190,44 @@ timeline-studio/
 #### ✅ Реализованные машины состояний (11):
 
 - `appSettingsMachine` - централизованное управление настройками
+- `browserMachine` - 
 - `chatMachine` - управление AI чатом
 - `modalMachine` - управление модальными окнами
 - `playerMachine` - управление видеоплеером
 - `resourcesMachine` - управление ресурсами таймлайна
-- `musicMachine` - управление музыкальными файлами
 - `userSettingsMachine` - пользовательские настройки
 - `projectSettingsMachine` - настройки проекта
-- `mediaListMachine` - управление списками медиафайлов
+- `mediaMachine` - управление медиафайлами
 - `templateListMachine` - управление шаблонами
-- `timelineMachine` - ✅ **ЗАВЕРШЕНО!** Основная машина состояний таймлайна (20 тестов прошли)
-
-#### ❌ Требуют реализации (1):
-
-- `optionsMachine` - управление панелью опций
-
-Подробнее см. в `DEV.md`
+- `timelineMachine` - Основная машина состояний таймлайна
 
 ### Тестирование
 
-Проект использует Vitest для модульного тестирования. Тесты находятся рядом с тестируемыми файлами с расширением `.test.ts` или `.test.tsx`.
+Проект использует Vitest для модульного тестирования. Тесты находятся в деректории фичи __tests__ там же лежат моки __mocks__.
 
-#### 🧪 Статус покрытия тестами: **100% готово** ✅
+#### 🧪 Статус покрытия тестами:
+```bash
+⨯ bun run test
 
-**130 файлов тестов успешно прошли** (1118 тестов + 9 пропущенных = 1127 всего)
+ Test Files  141 passed (141)
+      Tests  1295 passed | 9 skipped (1304)
+   Start at  23:20:43
+   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
 
-**Покрытие ключевых функций тестами:**
+⨯ bun run test:rust      
+   test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
 
-- ✅ **Effects** - полное покрытие тестами (хуки, импорт, компоненты)
-- ✅ **Filters** - 41 тест (процессор, хуки, функциональность импорта)
-- ✅ **Transitions** - 36 тестов (превью, импорт, групповые компоненты)
-- ✅ **Templates** - полное покрытие (импорт, метки, компоненты)
-- ✅ **Style Templates** - 39 тестов (утилиты, импорт, компоненты загрузки)
-- ✅ **Music** - 26 тестов (утилиты, обработка файлов)
-- ✅ **Subtitles** - 10 тестов (процессор, стили)
-- ✅ **Resources** - 27 тестов (машина состояний, провайдер)
-- ✅ **User Settings** - 34 теста (машина, модальные окна, хуки)
-- ✅ **Video Player** - полное покрытие (элементы управления, провайдер)
-- ✅ **Voice Recording** - 10 тестов (разрешения, устройства, компоненты)
-- ✅ **Camera Capture** - полное покрытие
-- ✅ **Browser, Timeline, App State** - полное покрытие
-- ✅ **Media Studio, Modals, Theme** - полное покрытие тестами
+```
 
 ```bash
 # Запуск всех тестов
-bun test
+bun run test
 
 # Запуск тестов с отчетом о покрытии
-bun test:coverage
+bun run test:coverage
 
 # Запуск тестов для конкретной функции
-bun test src/features/effects
+bun run test src/features/effects
 ```
 
 ## Непрерывная интеграция и развертывание
