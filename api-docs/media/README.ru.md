@@ -310,7 +310,6 @@ npm run build
 
 ## Дополнительные ресурсы
 
-- [Next.js Documentation](https://nextjs.org/docs)
 - [Tauri Documentation](https://v2.tauri.app/start/)
 - [XState Documentation](https://xstate.js.org/docs/)
 - [Vitest Documentation](https://vitest.dev/guide/)

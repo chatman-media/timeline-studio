@@ -310,7 +310,6 @@ The promo page is automatically updated when files change in the `promo/` folder
 
 ## Additional Resources
 
-- [Next.js Documentation](https://nextjs.org/docs)
 - [Tauri Documentation](https://v2.tauri.app/start/)
 - [XState Documentation](https://xstate.js.org/docs/)
 - [Vitest Documentation](https://vitest.dev/guide/)
