@@ -2,8 +2,6 @@
 
 [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md)
 
-Video editor built with Tauri, React, and XState.
-
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
@@ -13,57 +11,21 @@ Video editor built with Tauri, React, and XState.
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 
-
 ## Project Overview
 
-Timeline Studio is a desktop application for creating and editing videos. The application uses an architecture based on finite state machines (XState) to manage complex state logic.
+Timeline Studio is a desktop application for creating and editing videos based on Tauri, React, XState, and ffmpeg.
 
 ![Timeline Interface](/public/screen3.png)
 
-## 📊 Development Status
+## Key Features
 
-### 🎯 Overall Progress: 85% Complete (15/17 features)
-
-```
-Components:     16/17 ✅ (94%)
-Hooks:          15/17 ✅ (88%)
-Services:       16/17 ✅ (94%)
-Tests:          17/17 ✅ (100%) 🎉
-Documentation:  17/17 ✅ (100%)
-```
-
-### 🔥 Critical Tasks - Video Compiler Architecture
-
-**NEW PRIORITY:** Video Compiler модуль (Rust/FFmpeg) - центральная система компиляции видео
-
-- **Video Compiler** - 🆕 центральный модуль компиляции (Rust/FFmpeg)
-- **Timeline Engine** - интеграция с Video Compiler для UI управления
-- **Preview Generator** - превью кадры и прогресс рендеринга
-- **Testing Coverage** - Templates (9.63%→80%+), Export (3.64%→80%+)
-
-### 📋 Legacy Tasks
-
-- **Timeline** - ✅ state machine ready, needs UI integration
-- **Resources** - requires UI components for management
-- **AI Chat** - requires functionality completeness check
-- **Options** - requires functionality expansion
-
-### ✅ Ready Components
-
-- **VideoPlayer** - fully functional video player
-- **Browser** - media file browser with tabs
-- **Media, Music, Effects, Filters, Transitions, Templates** - all ready
-- **AppState, Modals, TopBar, MediaStudio** - basic infrastructure
-
-### Key Features
-
-- 🎬 Video project creation and editing
-- 🖥️ Cross-platform (Windows, macOS, Linux)
-- 🧠 State management with XState v5
-- 🌐 Internationalization (i18n) support
-- 🎨 Modern UI with Tailwind CSS v4
-- 🔍 Strict code quality control with ESLint, Stylelint, and Clippy
-- 📚 Complete documentation for all components
+- 🎬 Creating and editing video projects
+- 🖥️ Cross-platform (Windows, macOS, Linux, Telegram Mini App)
+- 🧠 State management using XState v5
+- 🌐 Internationalization support (i18n)
+- 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
+- 🔍 Strict code quality control using ESLint, Stylelint and Clippy
+- 📚 Complete documentation of all modules
 
 ## Getting Started
 
@@ -72,6 +34,7 @@ Documentation:  17/17 ✅ (100%)
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [Rust](https://www.rust-lang.org/tools/install) (latest stable version)
 - [bun](https://bun.sh/) (latest stable version)
+- [ffmpeg](https://ffmpeg.org/download.html) (latest stable version)
 
 ### Installation
 
@@ -88,80 +51,81 @@ cd timeline-studio
 bun install
 ```
 
-### Development Mode
+### Development Mode Launch
 
 ```bash
-bun tauri dev
+bun run tauri dev
 ```
 
-### Production Build
+### Release Build
 
 ```bash
-bun tauri build
+bun run tauri build
 ```
 
 ## Project Structure
 
 ```
 timeline-studio/
-├── src/                            # Frontend source code (React, XState, Next.js)
-│   ├── app/                        # Main application entry point
-│   ├── components/                 # Shared components
-│   ├── hooks/                      # Custom React hooks
-│   ├── services/                   # Services for API calls and business logic
-│   ├── features/                   # Фичи
-│   │   ├── ai-chat/                # AI-чат-бот (интерактивный помощник)
-│   │   ├── app-state/              # Глобальное состояние приложения
-│   │   ├── browser/                # Браузер медиафайлов (панель файлов)
-│   │   ├── camera-capture/         # Захват видео/фото с камеры
-│   │   ├── effects/                # Видеоеффекты и их параметры
-│   │   ├── export/                 # Экспорт видео и проектов
-│   │   ├── filters/                # Видеофильтры (цветокор, стили)
-│   │   ├── keyboard-shortcuts/     # Горячие клавиши и пресеты
-│   │   ├── media/                  # Работа с медиафайлами (аудио/видео)
-│   │   ├── media-studio/           # Студия для работы с медиа
-│   │   ├── modals/                 # Модальные окна (диалоги)
-│   │   ├── music/                  # Импорт и управление музыкой
-│   │   ├── options/                # Настройки экспорта и проекта
-│   │   ├── project-settings/       # Настройки проекта (размер, fps и др.)
-│   │   ├── recognition/            # Распознавание сцен и объектов
-│   │   ├── resources/              # Управление ресурсами проекта
-│   │   ├── style-templates/        # Стили и шаблоны оформления
-│   │   ├── subtitles/              # Импорт и редактирование субтитров
-│   │   ├── templates/              # Видео-шаблоны и пресеты
-│   │   ├── timeline/               # Основная монтажная лента (таймлайн)
-│   │   ├── top-bar/                # Верхняя панель управления
-│   │   ├── transitions/            # Видеопереходы между клипами
-│   │   ├── user-settings/          # Пользовательские настройки
-│   │   ├── video-player/           # Видеоплеер
-│   │   ├── voice-recording/        # Запись голоса и озвучка
-│   │   ├── script-generator/       # Новый: генерация сценариев
-│   │   ├── montage-planner/        # Новый: планирование монтажа
-│   │   ├── person-identification/  # Новый: именование людей
-│   │   ├── scene-analyzer/         # Новый: анализ сцен
-│   │   └── OVERVIEW.md          📚 # Overview of all features
-│   ├── i18n/                       # Internationalization
-│   ├── lib/                        # Utilities and libraries
-│   ├── styles/                     # Global styles
-|   ├── test/                       # Test config and utilities
-│   ├── types/                      # TypeScript types
-├── src-tauri/                      # Бэкенд (Rust)
+├── bin/                              # Shell scripts
+├── docs/                             # Automatically generated documentation
+├── docs-dev/                         # Development documentation, including for agents
+├── docs/                             # E2E tests
+├── examples/                         # API usage examples
+├── promo/                            # GitHub Pages website
+├── public/                           # Static files
+├── scripts/                          # JavaScript scripts
+├── src/                              # Frontend source code (React, XState, Next.js)
+│   ├── app/                          # Main application entry point
+│   ├── components/                   # Shared components
+│   ├── hooks/                        # Custom React hooks
+│   ├── services/                     # Services for API calls and business logic
+│   ├── features/                     # Features
+│   │   ├── ai-chat/                  # AI chatbot (interactive assistant)
+│   │   ├── app-state/                # Global application state
+│   │   ├── browser/                  # Media file browser (file panel)
+│   │   ├── camera-capture/           # Video/photo camera capture
+│   │   ├── effects/                  # Video effects and their parameters
+│   │   ├── export/                   # Video and project export
+│   │   ├── filters/                  # Video filters (color correction, styles)
+│   │   ├── keyboard-shortcuts/       # Keyboard shortcuts and presets
+│   │   ├── media/                    # Media file handling (audio/video)
+│   │   ├── media-studio/             # Media editing studio
+│   │   ├── modals/                   # Modal windows (dialogs)
+│   │   ├── music/                    # Music import and management
+│   │   ├── options/                  # Export and project settings
+│   │   ├── project-settings/         # Project settings (size, fps, etc.)
+│   │   ├── recognition/              # Scene and object recognition
+│   │   ├── resources/                # Project resource management
+│   │   ├── style-templates/          # Styles and design templates
+│   │   ├── subtitles/                # Subtitle import and editing
+│   │   ├── templates/                # Video templates and presets
+│   │   ├── timeline/                 # Main editing timeline
+│   │   ├── top-bar/                  # Top control panel
+│   │   ├── transitions/              # Video transitions between clips
+│   │   ├── user-settings/            # User settings
+│   │   ├── video-player/             # Video player
+│   │   ├── voice-recording/          # Voice recording and voiceover
+│   │   ├── script-generator/         # New: script generation
+│   │   ├── montage-planner/          # New: montage planning
+│   │   ├── person-identification/    # New: person identification
+│   │   ├── scene-analyzer/           # New: scene analysis
+│   │   └── README.md                 # Overview of all features
+│   ├── i18n/                         # Internationalization
+│   ├── lib/                          # Utilities and libraries
+│   ├── styles/                       # Global styles
+|   ├── test/                         # Test config and utilities
+├── src-tauri/                        # Backend (Rust)
 │   ├── src/
-│   │   ├── main.rs                 # Точка входа Tauri
-│   │   ├── media.rs                # Анализ медиа (FFmpeg)
-│   │   ├── recognition.rs          # YOLO для объектов/лиц
-│   │   ├── script_generator.rs     # Генерация сценариев (Claude/OpenAi/Grok API)
-│   │   ├── montage_planner.rs      # Планирование монтажа
-│   │   ├── person_identification.rs # Идентификация людей
-│   │   ├── scene_analyzer.rs       # Анализ сцен
-│   │   └── ai_chat.rs              # Обработка чата
-├── public/                         # Static files
-├── README.md                    📚 # English documentation (main)
-├── README.es.md                 📚 # Spanish documentation
-├── README.fr.md                 📚 # French documentation
-├── README.de.md                 📚 # German documentation
-├── README.ru.md                 📚 # Russian documentation
-└── package.json                    # Node.js dependencies configuration
+│   │   ├── main.rs                   # Tauri entry point
+│   │   ├── media.rs                  # Media analysis (FFmpeg)
+│   │   ├── recognition.rs            # YOLO for objects/faces
+│   │   ├── script_generator.rs       # Script generation (Claude/OpenAI/Grok API)
+│   │   ├── montage_planner.rs        # Montage planning
+│   │   ├── person_identification.rs  # Person identification
+│   │   ├── scene_analyzer.rs         # Scene analysis
+│   │   └── ai_chat.rs                # Chat processing
+└── package.json                      # Node.js dependencies configuration
 ```
 
 ## 📚 Documentation
@@ -175,7 +139,7 @@ Each feature contains detailed documentation:
 
 ### 📋 Key Documents
 
-- **`src/features/OVERVIEW.md`** - overview of all the features with priorities
+- **`src/features/README.md`** - overview of all features with priorities
 - **`DEV.md`** - application architecture, state machines, development plan
 - **`README.md`** - general project information (English)
 - **`README.es.md`** - Spanish version of documentation
@@ -187,61 +151,184 @@ Each feature contains detailed documentation:
 
 ### Available Scripts
 
-- `bun dev` - Run Next.js in development mode
-- `bun tauri dev` - Run Tauri in development mode
-- `bun build` - Build Next.js
-- `bun tauri build` - Build Tauri application
+- `bun run dev` - Launch Next.js in development mode
+- `bun run tauri dev` - Launch Tauri in development mode
+- `bun run build` - Build Next.js
+- `bun run tauri build` - Build Tauri application
 
 #### Linting and Formatting
 
-- `bun lint` - Check JavaScript/TypeScript code with ESLint
-- `bun lint:fix` - Fix ESLint errors
-- `bun lint:css` - Check CSS code with Stylelint
-- `bun lint:css:fix` - Fix Stylelint errors
-- `bun format:imports` - Format imports
-- `bun lint:rust` - Check Rust code with Clippy
-- `bun format:rust` - Format Rust code with rustfmt
-- `bun check:all` - Run all checks and tests
-- `bun fix:all` - Fix all linting errors
+- `bun run lint` - Check JavaScript/TypeScript code with ESLint
+- `bun run lint:fix` - Fix ESLint errors
+- `bun run lint:css` - Check CSS code with Stylelint
+- `bun run lint:css:fix` - Fix Stylelint errors
+- `bun run format:imports` - Format imports
+- `bun run lint:rust` - Check Rust code with Clippy
+- `bun run format:rust` - Format Rust code with rustfmt
+- `bun run check:all` - Run all checks and tests
+- `bun run fix:all` - Fix all linting errors
 
 #### Testing
 
-- `bun test` - Run tests
-- `bun test:app` - Run tests only for application components
-- `bun test:coverage` - Run tests with coverage report
-- `bun test:ui` - Run tests with UI interface
-- `bun test:e2e` - Run end-to-end tests with Playwright
+- `bun run test` - Run tests
+- `bun run test:app` - Run tests for application components only
+- `bun run test:watch` - Run tests in watch mode
+- `bun run test:ui` - Run tests with UI interface
+- `bun run test:e2e` - Run end-to-end tests with Playwright
+
+### State Machines (XState v5)
+
+The project uses XState v5 for managing complex state logic.
+
+#### ✅ Implemented State Machines (11):
+
+- `appSettingsMachine` - centralized settings management
+- `browserStateMachine` - browser state management
+- `chatMachine` - AI chat management
+- `modalMachine` - modal windows management
+- `playerMachine` - video player management
+- `resourcesMachine` - timeline resources management
+- `userSettingsMachine` - user settings
+- `projectSettingsMachine` - project settings
+- `mediaMachine` - media files management
+- `timelineMachine` - Main timeline state machine
 
 ### Testing
 
-## Test Coverage
+The project uses Vitest for unit testing. Tests are located in the feature's __tests__ directory, along with mocks in __mocks__.
+
+#### 🧪 Test Coverage Status:
 ```bash
-   Test Files  142 passed (142)
-      Tests  1301 passed | 9 skipped (1310)
-   Start at  22:30:54
-   Duration  17.05s (transform 3.78s, setup 29.93s, collect 15.95s, tests 11.31s, environment 45.46s, prepare 10.71s)
+⨯ bun run test
+
+ Test Files  141 passed (141)
+      Tests  1295 passed | 9 skipped (1304)
+   Start at  23:20:43
+   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+
+⨯ bun run test:rust
+   test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
 ```
 
 ```bash
-# Run all tests
-bun test
+# Run client tests
+bun run test
+
+# Run rust tests
+bun run test:rust
 
 # Run tests with coverage report
-bun test:coverage
+bun run test:coverage
 
-# Run tests for specific feature
-bun test src/features/effects
+# Run tests for specific function
+bun run test src/features/effects
 ```
 
-See `DEV.md` for details.
+## Continuous Integration and Deployment
+
+The project is configured to use GitHub Actions for continuous integration and deployment. Workflows:
+
+### Verification and Build
+
+- `check-all.yml` - Run all checks and tests
+- `lint-css.yml` - Check CSS code only (runs when CSS files change)
+- `lint-rs.yml` - Check Rust code only (runs when Rust files change)
+- `lint-js.yml` - Check JavaScript/TypeScript code only (runs when JavaScript/TypeScript files change)
+
+### Deployment
+
+- `build.yml` - Build project
+- `build-release.yml` - Build project for release
+- `deploy-promo.yml` - Build and publish promo page on GitHub Pages
+- `docs.yml` - Generate and publish API documentation on GitHub Pages
+
+### Linter Configuration
+
+#### Stylelint (CSS)
+
+The project uses Stylelint to check CSS code. Configuration is located in the `.stylelintrc.json` file. Main features:
+
+- Support for Tailwind CSS directives
+- Ignoring duplicate selectors for Tailwind compatibility
+- Automatic error fixing when saving files (in VS Code)
+
+To run the CSS linter, use the command:
+
+```bash
+bun lint:css
+```
+
+For automatic error fixing:
+
+```bash
+bun lint:css:fix
+```
+
+## API Documentation
+
+API documentation is available at: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+To generate documentation locally, use the command:
+
+```bash
+bun run docs
+```
+
+Documentation will be available in the `docs/` folder.
+
+For real-time documentation development, use:
+
+```bash
+bun run docs:watch
+```
+
+Documentation is automatically updated when source code changes in the `main` branch using the GitHub Actions workflow `docs.yml`.
+
+## Promo Page
+
+Project promo page is available at: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+
+The promo page source code is located in the `promo/` folder.
+
+For local development of the promo page, use the commands:
+
+```bash
+cd promo
+npm install
+npm run dev
+```
+
+To build the promo page:
+
+```bash
+cd promo
+npm run build
+```
+
+The promo page is automatically updated when files change in the `promo/` folder on the `main` branch using the GitHub Actions workflow `deploy-promo.yml`.
+
+## Additional Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tauri Documentation](https://v2.tauri.app/start/)
+- [XState Documentation](https://xstate.js.org/docs/)
+- [Vitest Documentation](https://vitest.dev/guide/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Shadcn UI Documentation](https://ui.shadcn.com/)
+- [Stylelint Documentation](https://stylelint.io/)
+- [ESLint Documentation](https://eslint.org/docs/latest/)
+- [Playwright Documentation](https://playwright.dev/docs/intro)
+- [TypeDoc Documentation](https://typedoc.org/)
+- [ffmpeg Documentation](https://ffmpeg.org/documentation.html)
 
 ## License
 
-This project is distributed under the MIT License with Commons Clause.
+This project is distributed under the MIT License with Commons Clause condition.
 
-**Main Terms:**
+**Main terms:**
 
-- **Open Source**: You can freely use, modify, and distribute the code in accordance with the MIT license terms.
+- **Open Source**: You can freely use, modify, and distribute the code according to the MIT License terms.
 - **Commercial Use Restriction**: Commons Clause prohibits "selling" the software without a separate agreement with the author.
 - **"Selling"** means using the software functionality to provide third parties with a product or service for a fee.
 
@@ -255,27 +342,15 @@ But prohibits:
 
 - Creating commercial products or services based on the code without a license
 
-For a commercial license, please contact the author: ak.chatman.media@gmail.com
+To obtain a commercial license, please contact the author: ak.chatman.media@gmail.com
 
-Full license text is available in the [LICENSE](./LICENSE) file.
-
-## Additional Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tauri Documentation](https://v2.tauri.app/start/)
-- [XState Documentation](https://xstate.js.org/docs/)
-- [Vitest Documentation](https://vitest.dev/guide/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Stylelint Documentation](https://stylelint.io/)
-- [ESLint Documentation](https://eslint.org/docs/latest/)
-- [Playwright Documentation](https://playwright.dev/docs/intro)
-- [TypeDoc Documentation](https://typedoc.org/)
+Full license text is available in the [LICENSE](./LICENSE) file
 
 ## GitHub Pages
 
-The project uses GitHub Pages to host API documentation and promo page:
+Project uses GitHub Pages for hosting API documentation and promo page:
 
 - **Promo Page**: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
 - **API Documentation**: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
 
-Both pages are automatically updated when corresponding files change in the `main` branch via GitHub Actions workflows.
+Both pages are automatically updated when corresponding files are changed in the `main` branch using GitHub Actions workflows.
