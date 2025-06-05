@@ -78,8 +78,6 @@ timeline-studio/
 ├── src/                              # Frontend source code (React, XState, Next.js)
 │   ├── app/                          # Main application entry point
 │   ├── components/                   # Shared components
-│   ├── hooks/                        # Custom React hooks
-│   ├── services/                     # Services for API calls and business logic
 │   ├── features/                     # Features
 │   │   ├── ai-chat/                  # AI chatbot (interactive assistant)
 │   │   ├── app-state/                # Global application state
@@ -295,15 +293,15 @@ For local development of the promo page, use the commands:
 
 ```bash
 cd promo
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 To build the promo page:
 
 ```bash
 cd promo
-npm run build
+bun run build
 ```
 
 The promo page is automatically updated when files change in the `promo/` folder on the `main` branch using the GitHub Actions workflow `deploy-promo.yml`.

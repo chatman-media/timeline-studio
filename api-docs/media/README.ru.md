@@ -78,8 +78,6 @@ timeline-studio/
 ├── src/                               # Frontend source code (React, XState, Next.js)
 │   ├── app/                           # Main application entry point
 │   ├── components/                    # Shared components
-│   ├── hooks/                         # Custom React hooks
-│   ├── services/                      # Services for API calls and business logic
 │   ├── features/                      # Фичи
 │   │   ├── ai-chat/                   # AI-чат-бот (интерактивный помощник)
 │   │   ├── app-state/                 # Глобальное состояние приложения
@@ -295,15 +293,15 @@ bun run docs:watch
 
 ```bash
 cd promo
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Для сборки промо-страницы:
 
 ```bash
 cd promo
-npm run build
+bun run build
 ```
 
 Промо-страница автоматически обновляется при изменении файлов в папке `promo/` в ветке `main` с помощью GitHub Actions workflow `deploy-promo.yml`.
