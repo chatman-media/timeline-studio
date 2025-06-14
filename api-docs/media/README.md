@@ -1,30 +1,46 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 <!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
 [![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 
 ## Project Overview
 
-Timeline Studio is a desktop application for creating and editing videos based on Tauri, React, XState, and ffmpeg.
+Timeline Studio is a professional video editing application built with modern web technologies and native performance. Our goal is to create a DaVinci Resolve-level editor that's accessible to everyone.
 
 ![Timeline Interface](/public/screen3.png)
 
+### Project Status (June 2025)
+
+**Overall Completion: 75%**
+- ✅ Core editing functionality complete
+- ✅ Video Compiler with GPU acceleration
+- ✅ Recognition module (YOLO v11)
+- ✅ Effects, filters, and transitions
+- ⚠️ Export UI needs completion (25%)
+- ⚠️ Resources panel in development (40%)
+- 🎯 Target MVP release: End of June 2025
+
 ## Key Features
 
-- 🎬 Creating and editing video projects
-- 🖥️ Cross-platform (Windows, macOS, Linux, Telegram Mini App)
+- 🎬 Professional video editing with multi-track timeline
+- 🖥️ Cross-platform (Windows, macOS, Linux)
+- 🚀 GPU-accelerated video processing (NVENC, QuickSync, VideoToolbox)
+- 🤖 AI-powered object/face recognition (YOLO v11)
+- 🎨 30+ transitions, visual effects, and filters
+- 📝 Advanced subtitle system with 12 styles and animations
+- 🎵 Multi-track audio editing with effects
 - 🧠 State management using XState v5
-- 🌐 Internationalization support (i18n)
+- 🌐 Internationalization support (6 languages)
+- 💾 Smart caching and preview generation
 - 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
-- 🔍 Strict code quality control using ESLint, Stylelint and Clippy
-- 📚 Complete documentation of all modules
+- 📚 Complete documentation with 80%+ test coverage
 
 ## Getting Started
 
@@ -68,8 +84,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Shell scripts
 ├── docs/                             # Automatically generated documentation
-├── docs-dev/                         # Development documentation, including for agents
-├── docs/                             # E2E tests
+├── ai-gen-docs/                      # AI-generated docs for developers and agents
 ├── examples/                         # API usage examples
 ├── promo/                            # GitHub Pages website
 ├── public/                           # Static files
@@ -132,17 +147,24 @@ timeline-studio/
 Each feature contains detailed documentation:
 
 - **`README.md`** - functional requirements, readiness status
-- **`DEV.md`** - technical architecture, API, data types
 
 ### 📋 Key Documents
 
-- **`src/features/README.md`** - overview of all features with priorities
-- **`DEV.md`** - application architecture, state machines, development plan
+- **`src/features/DEV-README.md`** - overview of all features with priorities and status
 - **`README.md`** - general project information (English)
 - **`README.es.md`** - Spanish version of documentation
 - **`README.fr.md`** - French version of documentation
 - **`README.de.md`** - German version of documentation
 - **`README.ru.md`** - Russian version of documentation
+
+## Documentation
+
+- 📚 [Documentation Map](ai-gen-docs/MAP.md) - Complete documentation overview
+- 🏗️ [Architecture Guide](ai-gen-docs/ARCHITECTURE.md) - System architecture
+- 🧪 [Testing Guide](ai-gen-docs/testing/TESTING.md) - Testing strategies
+- 📡 [API Reference](ai-gen-docs/API.md) - Tauri commands reference
+- 🚀 [Deployment Guide](ai-gen-docs/deployment/DEPLOYMENT.md) - Build and deployment
+- 🛣️ [Roadmap](ai-gen-docs/ROADMAP.md) - Development roadmap
 
 ## Development
 
