@@ -145,14 +145,6 @@ timeline-studio/
 └── package.json                      # Node.js dependencies configuration
 ```
 
-## 📚 Documentation
-
-### 🗂️ Documentation Structure
-
-Each feature contains detailed documentation:
-
-- **`README.md`** - functional requirements, readiness status
-
 ## Documentation
 
 ### 📚 Main Documentation

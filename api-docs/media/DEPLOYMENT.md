@@ -20,13 +20,38 @@ bun install
 cargo install tauri-cli
 ```
 
-### 2. Install ONNX Runtime (for Recognition features)
+### 2. Install System Dependencies
+
+#### FFmpeg (required for video processing)
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt-get install ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
+
+# Windows
+choco install ffmpeg
+```
+
+#### ONNX Runtime (for Recognition features)
 ```bash
 # macOS
 brew install onnxruntime
 
-# Linux
-# Download from https://github.com/microsoft/onnxruntime/releases
+# Add to your shell profile:
+# For bash/zsh (~/.zshrc or ~/.bashrc):
+export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib
+
+# For fish (~/.config/fish/config.fish):
+set -gx ORT_DYLIB_PATH /opt/homebrew/lib/libonnxruntime.dylib
+
+# Ubuntu/Debian
+ONNX_VERSION="1.19.2"
+wget https://github.com/microsoft/onnxruntime/releases/download/v${ONNX_VERSION}/onnxruntime-linux-x64-${ONNX_VERSION}.tgz
+sudo tar -xzf onnxruntime-linux-x64-${ONNX_VERSION}.tgz -C /opt/
+sudo ln -sf /opt/onnxruntime-linux-x64-${ONNX_VERSION}/lib/libonnxruntime.so.${ONNX_VERSION} /usr/local/lib/libonnxruntime.so
+sudo ldconfig
 
 # Windows
 # Download from https://github.com/microsoft/onnxruntime/releases
