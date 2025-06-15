@@ -187,8 +187,19 @@ timeline-studio/
 - `bun run test` - Run tests
 - `bun run test:app` - Run tests for application components only
 - `bun run test:watch` - Run tests in watch mode
+- `bun run test:coverage` - Run tests with coverage report
+- `bun run test:coverage:report` - Generate and submit test coverage report
+- `bun run test:rust` - Run Rust backend tests
+- `bun run test:rust:watch` - Run Rust tests in watch mode
+- `bun run test:coverage:rust` - Run Rust tests with coverage
+- `bun run test:coverage:rust:report` - Generate and submit Rust coverage report
 - `bun run test:ui` - Run tests with UI interface
 - `bun run test:e2e` - Run end-to-end tests with Playwright
+- `bun run test:e2e:ui` - Run e2e tests with Playwright UI
+- `bun run test:e2e:basic` - Run basic media import e2e test
+- `bun run test:e2e:real` - Run e2e tests with real media files
+- `bun run test:e2e:integration` - Run integration e2e tests (requires INTEGRATION_TEST=true)
+- `bun run playwright:install` - Install Playwright browsers
 
 ### State Machines (XState v5)
 
