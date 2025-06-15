@@ -19,12 +19,15 @@ Timeline Studio is a professional video editing application built with modern we
 
 ### Project Status (June 2025)
 
-**Overall Completion: 75%**
+**Overall Completion: 73.5%**
 - ✅ Core editing functionality complete
 - ✅ Video Compiler with GPU acceleration
 - ✅ Recognition module (YOLO v11)
-- ✅ Effects, filters, and transitions
-- ⚠️ Export UI needs completion (25%)
+- ✅ Effects, filters, and transitions (75-80%)
+- ✅ Export - local export fully working! (75%)
+- ✅ Unified preview system with Preview Manager
+- ✅ Media persistence and temp projects
+- ⚠️ Timeline at 90% completion
 - ⚠️ Resources panel in development (40%)
 - 🎯 Target MVP release: End of June 2025
 
@@ -33,13 +36,14 @@ Timeline Studio is a professional video editing application built with modern we
 - 🎬 Professional video editing with multi-track timeline
 - 🖥️ Cross-platform (Windows, macOS, Linux)
 - 🚀 GPU-accelerated video processing (NVENC, QuickSync, VideoToolbox)
-- 🤖 AI-powered object/face recognition (YOLO v11)
+- 🤖 AI-powered object/face recognition (YOLO v11 - ORT fixed)
 - 🎨 30+ transitions, visual effects, and filters
 - 📝 Advanced subtitle system with 12 styles and animations
 - 🎵 Multi-track audio editing with effects
+- 📤 Export to MP4/MOV/WebM with presets for social media
 - 🧠 State management using XState v5
-- 🌐 Internationalization support (6 languages)
-- 💾 Smart caching and preview generation
+- 🌐 Internationalization support (13 languages)
+- 💾 Smart caching and unified preview system
 - 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
 - 📚 Complete documentation with 80%+ test coverage
 
@@ -219,13 +223,13 @@ The project uses Vitest for unit testing. Tests are located in the feature's __t
 ```bash
 ⨯ bun run test
 
- Test Files  141 passed (141)
-      Tests  1295 passed | 9 skipped (1304)
-   Start at  23:20:43
-   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+ Test Files  179 passed (179)
+      Tests  2064 passed | 25 skipped (2089)
+   Start at  14:05:54
+   Duration  24.49s (transform 5.12s, setup 52.28s, collect 21.39s, tests 21.32s, environment 68.17s, prepare 16.69s)
 
 ⨯ bun run test:rust
-   test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+   test result: ok. 344 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 13.06s
 
 ```
 
