@@ -50,6 +50,9 @@
 - [`media-project-persistence.md`](implementation-plans/media-project-persistence.md) - Персистентность медиа
 - [`temp-project-implementation.md`](implementation-plans/temp-project-implementation.md) - Временные проекты
 
+#### 📹 export/ - Документация экспорта
+- [`EXPORT-FEATURES.md`](export/EXPORT-FEATURES.md) - Функциональность экспорта видео
+
 ### 🦀 src-tauri/ - Backend документация
 
 #### Модули Rust
@@ -70,8 +73,8 @@
 - [`src/features/effects/README.md`](../src/features/effects/README.md) - Визуальные эффекты
 - [`src/features/filters/README.md`](../src/features/filters/README.md) - Фильтры
 - [`src/features/transitions/README.md`](../src/features/transitions/README.md) - Переходы
-- [`src/features/templates/README.md`](../src/features/templates/README.md) - Шаблоны мультикамеры
-- [`src/features/style-templates/README.md`](../src/features/style-templates/README.md) - Стильные шаблоны
+- [`src/features/templates/README.md`](../src/features/templates/README.md) - Многокамерные шаблоны
+- [`src/features/style-templates/README.md`](../src/features/style-templates/README.md) - Стилестические шаблоны
 - [`src/features/subtitles/README.md`](../src/features/subtitles/README.md) - Субтитры
 
 #### Дополнительные модули
@@ -91,9 +94,9 @@
 - Recognition (backend) - README с примерами
 - Timeline (frontend) - подробный README
 - Effects/Filters/Transitions - все с примерами
+- Export - полная документация функций экспорта
 
 ### ⚠️ Требуют обновления
-- Export - нужна документация по новому API
 - Resources - требует описания drag & drop
 - Subtitles - нужны примеры интеграции
 
@@ -107,7 +110,7 @@
 ## 🚀 Быстрый старт для разработчиков
 
 1. **Новичкам**: Начните с корневого [`README.md`](../README.md)
-2. **Frontend разработка**: См. [`src/features/DEV-README.md`](../src/features/DEV-README.md)
+2. **Frontend разработка**: См. [`src/features/README.md`](../src/features/README.md)
 3. **Backend разработка**: См. документацию модулей в `src-tauri/src/*/README.md`
 4. **Архитектура**: Изучите [`ARCHITECTURE.md`](ARCHITECTURE.md)
 5. **API**: См. [`api/API.md`](api/API.md) для Tauri команд
@@ -172,4 +175,4 @@ Tauri команды
 
 ---
 
-*Последнее обновление: 14 июня 2025*
+*Последнее обновление: 15 июня 2025*
