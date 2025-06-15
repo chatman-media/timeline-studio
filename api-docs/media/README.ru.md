@@ -1,11 +1,12 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 <!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
 [![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
@@ -140,24 +141,9 @@ timeline-studio/
 └── package.json                       # Node.js dependencies configuration
 ```
 
-## 📚 Документация
-
-### 🗂️ Структура документации
-
-Каждая feature содержит подробную документацию:
-
-- **`README.md`** - функциональные требования, статус готовности
-
-### 📋 Ключевые документы
-
-- **`src/features/DEV-README.md`** - обзор всех фич с приоритетами и статусом
-- **`README.md`** - общая информация о проекте (английский)
-- **`README.es.md`** - испанская версия документации
-- **`README.fr.md`** - французская версия документации
-- **`README.de.md`** - немецкая версия документации
-- **`README.ru.md`** - русская версия документации
-
 ## Документация
+
+### 📚 Основная документация
 
 - 📚 [Карта документации](ai-gen-docs/MAP.md) - Полный обзор документации
 - 🏗️ [Руководство по архитектуре](ai-gen-docs/ARCHITECTURE.md) - Архитектура системы
@@ -165,6 +151,11 @@ timeline-studio/
 - 📡 [Справочник API](ai-gen-docs/API.md) - Справочник команд Tauri
 - 🚀 [Руководство по развертыванию](ai-gen-docs/deployment/DEPLOYMENT.md) - Сборка и развертывание
 - 🛣️ [Дорожная карта](ai-gen-docs/ROADMAP.md) - План развития проекта
+
+### 📋 Документация проекта
+
+- **`src/features/README.md`** - обзор всех функций с приоритетами и статусом
+- **Языковые версии**: Доступно на 13 языках через переключатель выше
 
 ## Разработка
 

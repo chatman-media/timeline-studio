@@ -1,11 +1,12 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
 ## プロジェクト概要
 
@@ -132,24 +133,9 @@ timeline-studio/
 └── ...その他の設定ファイル
 ```
 
-各機能には詳細なドキュメントが含まれています：
-
-- **`README.md`** - 機能要件、準備状況
-
-### 📋 主要ドキュメント
-
-- **`src/features/DEV-README.md`** - 優先順位とステータスを含むすべての機能の概要
-- **`README.md`** - 一般的なプロジェクト情報（英語）
-- **`README.es.md`** - スペイン語版ドキュメント
-- **`README.fr.md`** - フランス語版ドキュメント
-- **`README.de.md`** - ドイツ語版ドキュメント
-- **`README.ru.md`** - ロシア語版ドキュメント
-- **`README.zh.md`** - 中国語版ドキュメント
-- **`README.pt.md`** - ポルトガル語版ドキュメント
-- **`README.ja.md`** - 日本語版ドキュメント
-- **`README.ar.md`** - アラビア語版ドキュメント
-
 ## ドキュメント
+
+### 📚 メインドキュメント
 
 - 📚 [ドキュメントマップ](ai-gen-docs/MAP.md) - 完全なドキュメント概要
 - 🏗️ [アーキテクチャガイド](ai-gen-docs/ARCHITECTURE.md) - システムアーキテクチャ
@@ -157,6 +143,11 @@ timeline-studio/
 - 📡 [APIリファレンス](ai-gen-docs/API.md) - Tauriコマンドリファレンス
 - 🚀 [デプロイメントガイド](ai-gen-docs/deployment/DEPLOYMENT.md) - ビルドとデプロイメント
 - 🛣️ [ロードマップ](ai-gen-docs/ROADMAP.md) - 開発ロードマップ
+
+### 📋 プロジェクトドキュメント
+
+- **`src/features/README.md`** - 優先順位とステータスを含むすべての機能の概要
+- **言語版**: 上記のセレクターから13言語で利用可能
 
 ## 開発
 

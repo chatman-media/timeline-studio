@@ -1,11 +1,12 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
 <div dir="rtl">
 
@@ -99,14 +100,9 @@ timeline-studio/
 └── ...ملفات الإعداد الأخرى
 ```
 
-### 📋 الوثائق الرئيسية
-
-- **`src/features/DEV-README.md`** - نظرة عامة على جميع الميزات مع الأولويات والحالة
-- **`README.md`** - معلومات المشروع العامة (الإنجليزية)
-- **`README.ar.md`** - النسخة العربية من التوثيق
-- ملفات README بلغات أخرى
-
 ## التوثيق
+
+### 📚 التوثيق الرئيسي
 
 - 📚 [خريطة التوثيق](ai-gen-docs/MAP.md) - نظرة عامة كاملة على التوثيق
 - 🏗️ [دليل البنية](ai-gen-docs/ARCHITECTURE.md) - بنية النظام
@@ -114,6 +110,11 @@ timeline-studio/
 - 📡 [مرجع API](ai-gen-docs/API.md) - مرجع أوامر Tauri
 - 🚀 [دليل النشر](ai-gen-docs/deployment/DEPLOYMENT.md) - البناء والنشر
 - 🛣️ [خارطة الطريق](ai-gen-docs/ROADMAP.md) - خارطة طريق التطوير
+
+### 📋 وثائق المشروع
+
+- **`src/features/README.md`** - نظرة عامة على جميع الميزات مع الأولويات والحالة
+- **الإصدارات اللغوية**: متوفرة بـ 13 لغة عبر المحول أعلاه
 
 ## التطوير
 

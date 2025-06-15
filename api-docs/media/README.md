@@ -1,11 +1,12 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 <!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
 [![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
@@ -148,16 +149,9 @@ Each feature contains detailed documentation:
 
 - **`README.md`** - functional requirements, readiness status
 
-### 📋 Key Documents
-
-- **`src/features/DEV-README.md`** - overview of all features with priorities and status
-- **`README.md`** - general project information (English)
-- **`README.es.md`** - Spanish version of documentation
-- **`README.fr.md`** - French version of documentation
-- **`README.de.md`** - German version of documentation
-- **`README.ru.md`** - Russian version of documentation
-
 ## Documentation
+
+### 📚 Main Documentation
 
 - 📚 [Documentation Map](ai-gen-docs/MAP.md) - Complete documentation overview
 - 🏗️ [Architecture Guide](ai-gen-docs/ARCHITECTURE.md) - System architecture
@@ -165,6 +159,11 @@ Each feature contains detailed documentation:
 - 📡 [API Reference](ai-gen-docs/API.md) - Tauri commands reference
 - 🚀 [Deployment Guide](ai-gen-docs/deployment/DEPLOYMENT.md) - Build and deployment
 - 🛣️ [Roadmap](ai-gen-docs/ROADMAP.md) - Development roadmap
+
+### 📋 Project Documentation
+
+- **`src/features/README.md`** - overview of all features with priorities and status
+- **Language versions**: Available in 13 languages via the switcher above
 
 ## Development
 

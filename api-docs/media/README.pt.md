@@ -1,11 +1,12 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
 ## Visão Geral do Projeto
 
@@ -132,22 +133,9 @@ timeline-studio/
 └── ...outros arquivos de configuração
 ```
 
-Cada recurso contém documentação detalhada:
-
-- **`README.md`** - requisitos funcionais, status de prontidão
-
-### 📋 Documentos Principais
-
-- **`src/features/DEV-README.md`** - visão geral de todos os recursos com prioridades e status
-- **`README.md`** - informações gerais do projeto (Inglês)
-- **`README.es.md`** - versão em espanhol da documentação
-- **`README.fr.md`** - versão em francês da documentação
-- **`README.de.md`** - versão em alemão da documentação
-- **`README.ru.md`** - versão em russo da documentação
-- **`README.zh.md`** - versão em chinês da documentação
-- **`README.pt.md`** - versão em português da documentação
-
 ## Documentação
+
+### 📚 Documentação Principal
 
 - 📚 [Mapa da Documentação](ai-gen-docs/MAP.md) - Visão geral completa da documentação
 - 🏗️ [Guia de Arquitetura](ai-gen-docs/ARCHITECTURE.md) - Arquitetura do sistema
@@ -155,6 +143,11 @@ Cada recurso contém documentação detalhada:
 - 📡 [Referência da API](ai-gen-docs/API.md) - Referência de comandos Tauri
 - 🚀 [Guia de Implantação](ai-gen-docs/deployment/DEPLOYMENT.md) - Build e implantação
 - 🛣️ [Roteiro](ai-gen-docs/ROADMAP.md) - Roteiro de desenvolvimento
+
+### 📋 Documentação do Projeto
+
+- **`src/features/README.md`** - visão geral de todos os recursos com prioridades e status
+- **Versões em idiomas**: Disponível em 13 idiomas através do seletor acima
 
 ## Desenvolvimento
 

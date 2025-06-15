@@ -1,13 +1,12 @@
 # Timeline Studio
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [العربية](README.ar.md)
-
-Video-Editor erstellt mit Tauri, React und XState.
+[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 <!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
 [![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
 [![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
@@ -126,24 +125,21 @@ timeline-studio/
 └── package.json          # Node.js-Abhängigkeitskonfiguration
 ```
 
-## 📚 Dokumentation
+## Dokumentation
 
-### 🗂️ Dokumentationsstruktur
+### 📚 Hauptdokumentation
 
-Jedes Feature enthält detaillierte Dokumentation:
+- 📚 [Dokumentationsübersicht](ai-gen-docs/MAP.md) - Vollständige Dokumentationsübersicht
+- 🏗️ [Architektur-Leitfaden](ai-gen-docs/ARCHITECTURE.md) - Systemarchitektur
+- 🧪 [Test-Leitfaden](ai-gen-docs/testing/TESTING.md) - Teststrategien
+- 📡 [API-Referenz](ai-gen-docs/API.md) - Tauri-Befehle Referenz
+- 🚀 [Deployment-Leitfaden](ai-gen-docs/deployment/DEPLOYMENT.md) - Build und Deployment
+- 🛣️ [Roadmap](ai-gen-docs/ROADMAP.md) - Entwicklungs-Roadmap
 
-- **`README.md`** - funktionale Anforderungen, Bereitschaftsstatus
-- **`DEV.md`** - technische Architektur, API, Datentypen
+### 📋 Projektdokumentation
 
-### 📋 Wichtige Dokumente
-
-- **`src/features/OVERVIEW.md`** - Übersicht aller 17 Features mit Prioritäten
-- **`DEV.md`** - Anwendungsarchitektur, Zustandsautomaten, Entwicklungsplan
-- **`README.md`** - allgemeine Projektinformationen (Englisch)
-- **`README.es.md`** - spanische Version der Dokumentation
-- **`README.fr.md`** - französische Version der Dokumentation
-- **`README.de.md`** - deutsche Version der Dokumentation
-- **`README.ru.md`** - russische Version der Dokumentation
+- **`src/features/README.md`** - Übersicht aller Features mit Prioritäten und Status
+- **Sprachversionen**: Verfügbar in 13 Sprachen über den Wechsler oben
 
 ## Entwicklung
 
