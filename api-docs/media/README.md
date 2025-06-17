@@ -89,7 +89,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Shell scripts
 ├── docs/                             # Automatically generated documentation
-├── ai-gen-docs/                      # AI-generated docs for developers and agents
+├── docs-ru/                      # AI-generated docs for developers and agents
 ├── examples/                         # API usage examples
 ├── promo/                            # GitHub Pages website
 ├── public/                           # Static files
@@ -149,12 +149,12 @@ timeline-studio/
 
 ### 📚 Main Documentation
 
-- 📚 [Documentation Map](ai-gen-docs/MAP.md) - Complete documentation overview
-- 🏗️ [Architecture Guide](ai-gen-docs/ARCHITECTURE.md) - System architecture
-- 🧪 [Testing Guide](ai-gen-docs/testing/TESTING.md) - Testing strategies
-- 📡 [API Reference](ai-gen-docs/API.md) - Tauri commands reference
-- 🚀 [Deployment Guide](ai-gen-docs/deployment/DEPLOYMENT.md) - Build and deployment
-- 🛣️ [Roadmap](ai-gen-docs/ROADMAP.md) - Development roadmap
+- 📚 [Documentation Map](docs-ru/MAP.md) - Complete documentation overview
+- 🏗️ [Architecture Guide](docs-ru/ARCHITECTURE.md) - System architecture
+- 🧪 [Testing Guide](docs-ru/testing/TESTING.md) - Testing strategies
+- 📡 [API Reference](docs-ru/API.md) - Tauri commands reference
+- 🚀 [Deployment Guide](docs-ru/deployment/DEPLOYMENT.md) - Build and deployment
+- 🛣️ [Roadmap](docs-ru/ROADMAP.md) - Development roadmap
 
 ### 📋 Project Documentation
 

@@ -82,7 +82,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Scripts shell
 ├── docs/                             # Documentação gerada automaticamente
-├── ai-gen-docs/                      # Documentação gerada por IA para desenvolvedores
+├── docs-ru/                      # Documentação gerada por IA para desenvolvedores
 ├── examples/                         # Exemplos de uso da API
 ├── promo/                            # Site GitHub Pages
 ├── public/                           # Arquivos estáticos
@@ -137,12 +137,12 @@ timeline-studio/
 
 ### 📚 Documentação Principal
 
-- 📚 [Mapa da Documentação](ai-gen-docs/MAP.md) - Visão geral completa da documentação
-- 🏗️ [Guia de Arquitetura](ai-gen-docs/ARCHITECTURE.md) - Arquitetura do sistema
-- 🧪 [Guia de Testes](ai-gen-docs/testing/TESTING.md) - Estratégias de teste
-- 📡 [Referência da API](ai-gen-docs/API.md) - Referência de comandos Tauri
-- 🚀 [Guia de Implantação](ai-gen-docs/deployment/DEPLOYMENT.md) - Build e implantação
-- 🛣️ [Roteiro](ai-gen-docs/ROADMAP.md) - Roteiro de desenvolvimento
+- 📚 [Mapa da Documentação](docs-ru/MAP.md) - Visão geral completa da documentação
+- 🏗️ [Guia de Arquitetura](docs-ru/ARCHITECTURE.md) - Arquitetura do sistema
+- 🧪 [Guia de Testes](docs-ru/testing/TESTING.md) - Estratégias de teste
+- 📡 [Referência da API](docs-ru/API.md) - Referência de comandos Tauri
+- 🚀 [Guia de Implantação](docs-ru/deployment/DEPLOYMENT.md) - Build e implantação
+- 🛣️ [Roteiro](docs-ru/ROADMAP.md) - Roteiro de desenvolvimento
 
 ### 📋 Documentação do Projeto
 

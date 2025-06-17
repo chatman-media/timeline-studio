@@ -82,7 +82,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Scripts shell
 ├── docs/                             # Documentation générée automatiquement
-├── ai-gen-docs/                      # Docs générées par IA pour développeurs et agents
+├── docs-ru/                      # Docs générées par IA pour développeurs et agents
 ├── examples/                         # Exemples d'utilisation API
 ├── promo/                            # Site web GitHub Pages
 ├── public/                           # Fichiers statiques
@@ -142,12 +142,12 @@ timeline-studio/
 
 ### 📚 Documentation Principale
 
-- 📚 [Carte de Documentation](ai-gen-docs/MAP.md) - Aperçu complet de la documentation
-- 🏗️ [Guide Architecture](ai-gen-docs/ARCHITECTURE.md) - Architecture système
-- 🧪 [Guide de Tests](ai-gen-docs/testing/TESTING.md) - Stratégies de test
-- 📡 [Référence API](ai-gen-docs/API.md) - Référence commandes Tauri
-- 🚀 [Guide de Déploiement](ai-gen-docs/deployment/DEPLOYMENT.md) - Build et déploiement
-- 🛣️ [Feuille de Route](ai-gen-docs/ROADMAP.md) - Feuille de route développement
+- 📚 [Carte de Documentation](docs-ru/MAP.md) - Aperçu complet de la documentation
+- 🏗️ [Guide Architecture](docs-ru/ARCHITECTURE.md) - Architecture système
+- 🧪 [Guide de Tests](docs-ru/testing/TESTING.md) - Stratégies de test
+- 📡 [Référence API](docs-ru/API.md) - Référence commandes Tauri
+- 🚀 [Guide de Déploiement](docs-ru/deployment/DEPLOYMENT.md) - Build et déploiement
+- 🛣️ [Feuille de Route](docs-ru/ROADMAP.md) - Feuille de route développement
 
 ### 📋 Documentation du Projet
 

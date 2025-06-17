@@ -82,7 +82,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Shell betikleri
 ├── docs/                             # Otomatik oluşturulan dokümantasyon
-├── ai-gen-docs/                      # Geliştiriciler ve ajanlar için AI üretimi dokümanlar
+├── docs-ru/                      # Geliştiriciler ve ajanlar için AI üretimi dokümanlar
 ├── examples/                         # API kullanım örnekleri
 ├── promo/                            # GitHub Pages web sitesi
 ├── public/                           # Statik dosyalar
@@ -142,12 +142,12 @@ timeline-studio/
 
 ### 📚 Ana Dokümantasyon
 
-- 📚 [Dokümantasyon Haritası](ai-gen-docs/MAP.md) - Tam dokümantasyon genel bakışı
-- 🏗️ [Mimari Kılavuzu](ai-gen-docs/ARCHITECTURE.md) - Sistem mimarisi
-- 🧪 [Test Kılavuzu](ai-gen-docs/testing/TESTING.md) - Test stratejileri
-- 📡 [API Referansı](ai-gen-docs/API.md) - Tauri komutları referansı
-- 🚀 [Dağıtım Kılavuzu](ai-gen-docs/deployment/DEPLOYMENT.md) - Derleme ve dağıtım
-- 🛣️ [Yol Haritası](ai-gen-docs/ROADMAP.md) - Geliştirme yol haritası
+- 📚 [Dokümantasyon Haritası](docs-ru/MAP.md) - Tam dokümantasyon genel bakışı
+- 🏗️ [Mimari Kılavuzu](docs-ru/ARCHITECTURE.md) - Sistem mimarisi
+- 🧪 [Test Kılavuzu](docs-ru/testing/TESTING.md) - Test stratejileri
+- 📡 [API Referansı](docs-ru/API.md) - Tauri komutları referansı
+- 🚀 [Dağıtım Kılavuzu](docs-ru/deployment/DEPLOYMENT.md) - Derleme ve dağıtım
+- 🛣️ [Yol Haritası](docs-ru/ROADMAP.md) - Geliştirme yol haritası
 
 ### 📋 Proje Dokümantasyonu
 

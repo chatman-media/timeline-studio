@@ -129,12 +129,12 @@ timeline-studio/
 
 ### 📚 Documentación Principal
 
-- 📚 [Mapa de Documentación](ai-gen-docs/MAP.md) - Resumen completo de la documentación
-- 🏗️ [Guía de Arquitectura](ai-gen-docs/ARCHITECTURE.md) - Arquitectura del sistema
-- 🧪 [Guía de Pruebas](ai-gen-docs/testing/TESTING.md) - Estrategias de pruebas
-- 📡 [Referencia API](ai-gen-docs/API.md) - Referencia de comandos Tauri
-- 🚀 [Guía de Despliegue](ai-gen-docs/deployment/DEPLOYMENT.md) - Construcción y despliegue
-- 🛣️ [Hoja de Ruta](ai-gen-docs/ROADMAP.md) - Hoja de ruta de desarrollo
+- 📚 [Mapa de Documentación](docs-ru/MAP.md) - Resumen completo de la documentación
+- 🏗️ [Guía de Arquitectura](docs-ru/ARCHITECTURE.md) - Arquitectura del sistema
+- 🧪 [Guía de Pruebas](docs-ru/testing/TESTING.md) - Estrategias de pruebas
+- 📡 [Referencia API](docs-ru/API.md) - Referencia de comandos Tauri
+- 🚀 [Guía de Despliegue](docs-ru/deployment/DEPLOYMENT.md) - Construcción y despliegue
+- 🛣️ [Hoja de Ruta](docs-ru/ROADMAP.md) - Hoja de ruta de desarrollo
 
 ### 📋 Documentación del Proyecto
 

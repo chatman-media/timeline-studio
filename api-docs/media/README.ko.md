@@ -82,7 +82,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # 셸 스크립트
 ├── docs/                             # 자동 생성된 문서
-├── ai-gen-docs/                      # 개발자와 에이전트를 위한 AI 생성 문서
+├── docs-ru/                      # 개발자와 에이전트를 위한 AI 생성 문서
 ├── examples/                         # API 사용 예제
 ├── promo/                            # GitHub Pages 웹사이트
 ├── public/                           # 정적 파일
@@ -142,12 +142,12 @@ timeline-studio/
 
 ### 📚 주요 문서
 
-- 📚 [문서 맵](ai-gen-docs/MAP.md) - 완전한 문서 개요
-- 🏗️ [아키텍처 가이드](ai-gen-docs/ARCHITECTURE.md) - 시스템 아키텍처
-- 🧪 [테스팅 가이드](ai-gen-docs/testing/TESTING.md) - 테스트 전략
-- 📡 [API 참조](ai-gen-docs/API.md) - Tauri 명령 참조
-- 🚀 [배포 가이드](ai-gen-docs/deployment/DEPLOYMENT.md) - 빌드 및 배포
-- 🛣️ [로드맵](ai-gen-docs/ROADMAP.md) - 개발 로드맵
+- 📚 [문서 맵](docs-ru/MAP.md) - 완전한 문서 개요
+- 🏗️ [아키텍처 가이드](docs-ru/ARCHITECTURE.md) - 시스템 아키텍처
+- 🧪 [테스팅 가이드](docs-ru/testing/TESTING.md) - 테스트 전략
+- 📡 [API 참조](docs-ru/API.md) - Tauri 명령 참조
+- 🚀 [배포 가이드](docs-ru/deployment/DEPLOYMENT.md) - 빌드 및 배포
+- 🛣️ [로드맵](docs-ru/ROADMAP.md) - 개발 로드맵
 
 ### 📋 프로젝트 문서
 

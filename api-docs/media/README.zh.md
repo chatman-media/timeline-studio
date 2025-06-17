@@ -82,7 +82,7 @@ bun run tauri build
 timeline-studio/
 ├── bin/                              # Shell 脚本
 ├── docs/                             # 自动生成的文档
-├── ai-gen-docs/                      # AI 为开发者和代理生成的文档
+├── docs-ru/                      # AI 为开发者和代理生成的文档
 ├── examples/                         # API 使用示例
 ├── promo/                            # GitHub Pages 网站
 ├── public/                           # 静态文件
@@ -142,12 +142,12 @@ timeline-studio/
 
 ### 📚 主要文档
 
-- 📚 [文档地图](ai-gen-docs/MAP.md) - 完整文档概述
-- 🏗️ [架构指南](ai-gen-docs/ARCHITECTURE.md) - 系统架构
-- 🧪 [测试指南](ai-gen-docs/testing/TESTING.md) - 测试策略
-- 📡 [API 参考](ai-gen-docs/API.md) - Tauri 命令参考
-- 🚀 [部署指南](ai-gen-docs/deployment/DEPLOYMENT.md) - 构建和部署
-- 🛣️ [路线图](ai-gen-docs/ROADMAP.md) - 开发路线图
+- 📚 [文档地图](docs-ru/MAP.md) - 完整文档概述
+- 🏗️ [架构指南](docs-ru/ARCHITECTURE.md) - 系统架构
+- 🧪 [测试指南](docs-ru/testing/TESTING.md) - 测试策略
+- 📡 [API 参考](docs-ru/API.md) - Tauri 命令参考
+- 🚀 [部署指南](docs-ru/deployment/DEPLOYMENT.md) - 构建和部署
+- 🛣️ [路线图](docs-ru/ROADMAP.md) - 开发路线图
 
 ### 📋 项目文档
 
