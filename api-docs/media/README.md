@@ -42,7 +42,7 @@ Timeline Studio is a professional video editing application built with modern we
 - 🎵 Multi-track audio editing with effects
 - 📤 Export to MP4/MOV/WebM with presets for social media
 - 🧠 State management using XState v5
-- 🌐 Internationalization support (13 languages)
+- 🌐 Internationalization support (11 languages)
 - 💾 Smart caching and unified preview system
 - 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
 - 📚 Complete documentation with 80%+ test coverage
@@ -159,7 +159,7 @@ timeline-studio/
 ### 📋 Project Documentation
 
 - **`src/features/README.md`** - overview of all features with priorities and status
-- **Language versions**: Available in 13 languages via the switcher above
+- **Language versions**: Available in 11 languages via the switcher above
 
 ## Development
 
