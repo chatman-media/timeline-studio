@@ -137,23 +137,6 @@ bun run tauri build
 - `bun run test:ui` - 使用 UI 界面运行测试
 - `bun run test:e2e` - 使用 Playwright 运行端到端测试
 
-### 状态机（XState v5）
-
-项目使用 XState v5 来管理复杂的状态逻辑。
-
-#### ✅ 已实现的状态机（11个）：
-
-- `appSettingsMachine` - 集中设置管理
-- `browserStateMachine` - 浏览器状态管理
-- `chatMachine` - AI 聊天管理
-- `modalMachine` - 模态窗口管理
-- `playerMachine` - 视频播放器管理
-- `resourcesMachine` - 时间轴资源管理
-- `userSettingsMachine` - 用户设置
-- `projectSettingsMachine` - 项目设置
-- `mediaMachine` - 媒体文件管理
-- `timelineMachine` - 主时间轴状态机
-
 ### 测试
 
 项目使用 Vitest 进行单元测试。测试位于功能的 __tests__ 目录中，模拟对象在 __mocks__ 中。
@@ -162,13 +145,13 @@ bun run tauri build
 ```bash
 ⨯ bun run test
 
- Test Files  229 passed (229)
-      Tests  3022 passed | 20 skipped (3042)
-   Start at  13:35:14
-   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
 
 ⨯ bun run test:rust
-   test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s
 
 ```
 

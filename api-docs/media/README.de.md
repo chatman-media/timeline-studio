@@ -55,10 +55,6 @@ Timeline Studio ist eine professionelle Videobearbeitungsanwendung, die mit mode
 - 💾 Intelligente Zwischenspeicherung und einheitliches Vorschausystem
 - 🎨 Moderne UI mit Tailwind CSS v4, shadcn-ui
 - 📚 Vollständige Dokumentation mit 2400+ Tests (98.8% Erfolgsrate)
-- 🌐 Internationalisierungsunterstützung (i18n)
-- 🎨 Moderne UI mit Tailwind CSS v4
-- 🔍 Strenge Codequalitätskontrolle mit ESLint, Stylelint und Clippy
-- 📚 Vollständige Dokumentation für alle Komponenten
 
 ## Erste Schritte
 
@@ -67,6 +63,7 @@ Timeline Studio ist eine professionelle Videobearbeitungsanwendung, die mit mode
 - [Node.js](https://nodejs.org/) (v18 oder höher)
 - [Rust](https://www.rust-lang.org/tools/install) (neueste stabile Version)
 - [bun](https://bun.sh/) (neueste stabile Version)
+- [ffmpeg](https://ffmpeg.org/download.html) (neueste stabile Version)
 
 ### Installation
 
@@ -83,74 +80,200 @@ cd timeline-studio
 bun install
 ```
 
-### Entwicklungsmodus
+### Entwicklungsmodus starten
 
 ```bash
-bun tauri dev
+bun run tauri dev
 ```
 
-### Produktions-Build
+### Release-Build
 
 ```bash
-bun tauri build
+bun run tauri build
 ```
 
 ## Dokumentation
 
 ### 📚 Hauptdokumentation
 
-- 📚 [Dokumentationsübersicht](docs-ru/MAP.md) - Vollständige Dokumentationsübersicht
-- 🏗️ [Architektur-Leitfaden](docs-ru/ARCHITECTURE.md) - Systemarchitektur
-- 🧪 [Test-Leitfaden](docs-ru/testing/TESTING.md) - Teststrategien
-- 📡 [API-Referenz](docs-ru/API.md) - Tauri-Befehle Referenz
-- 🚀 [Deployment-Leitfaden](docs-ru/deployment/DEPLOYMENT.md) - Build und Deployment
-- 🛣️ [Roadmap](docs-ru/ROADMAP.md) - Entwicklungs-Roadmap
+- 📚 [Dokumentationsübersicht](docs-ru/README.md) - Vollständige Dokumentationsübersicht
+- 🚀 [Erste Schritte](docs-ru/01-getting-started/README.md) - Installation und erste Schritte
+- 🏗️ [Architektur-Leitfaden](docs-ru/02-architecture/README.md) - Systemarchitektur
+- 🎯 [Feature-Leitfaden](docs-ru/03-features/README.md) - Feature-Übersicht und Status
+- 📡 [API-Referenz](docs-ru/04-api-reference/README.md) - Tauri-Befehle Referenz
+- 🧪 [Entwicklungs-Leitfaden](docs-ru/05-development/README.md) - Tests und Entwicklung
+- 🚀 [Deployment-Leitfaden](docs-ru/06-deployment/README.md) - Build und Deployment
+- 📋 [Benutzer-Leitfäden](docs-ru/07-guides/README.md) - Performance und Best Practices
+- 🛣️ [Roadmap](docs-ru/08-roadmap/README.md) - Entwicklungs-Roadmap
+- 🔐 [OAuth-Setup](docs-ru/09-oauth-setup/oauth-setup-guide.md) - Social Media Integration
 
 ### 📋 Projektdokumentation
 
 - **`src/features/README.md`** - Übersicht aller Features mit Prioritäten und Status
-- **Sprachversionen**: Verfügbar in 13 Sprachen über den Wechsler oben
+- **Sprachversionen**: Verfügbar in 11 Sprachen über den Wechsler oben
 
 ## Entwicklung
 
 ### Verfügbare Skripte
 
-- `bun dev` - Next.js im Entwicklungsmodus ausführen
-- `bun tauri dev` - Tauri im Entwicklungsmodus ausführen
-- `bun build` - Next.js erstellen
-- `bun tauri build` - Tauri-Anwendung erstellen
+- `bun run dev` - Next.js im Entwicklungsmodus starten
+- `bun run tauri dev` - Tauri im Entwicklungsmodus starten
+- `bun run build` - Next.js erstellen
+- `bun run tauri build` - Tauri-Anwendung erstellen
 
 #### Linting und Formatierung
 
-- `bun lint` - JavaScript/TypeScript-Code mit ESLint überprüfen
-- `bun lint:fix` - ESLint-Fehler beheben
-- `bun lint:css` - CSS-Code mit Stylelint überprüfen
-- `bun lint:css:fix` - Stylelint-Fehler beheben
-- `bun format:imports` - Importe formatieren
-- `bun lint:rust` - Rust-Code mit Clippy überprüfen
-- `bun format:rust` - Rust-Code mit rustfmt formatieren
-- `bun check:all` - Alle Überprüfungen und Tests ausführen
-- `bun fix:all` - Alle Linting-Fehler beheben
+- `bun run lint` - JavaScript/TypeScript-Code mit ESLint überprüfen
+- `bun run lint:fix` - ESLint-Fehler beheben
+- `bun run lint:css` - CSS-Code mit Stylelint überprüfen
+- `bun run lint:css:fix` - Stylelint-Fehler beheben
+- `bun run format:imports` - Importe formatieren
+- `bun run lint:rust` - Rust-Code mit Clippy überprüfen
+- `bun run format:rust` - Rust-Code mit rustfmt formatieren
+- `bun run check:all` - Alle Überprüfungen und Tests ausführen
+- `bun run fix:all` - Alle Linting-Fehler beheben
 
 #### Tests
 
-- `bun test` - Tests ausführen
-- `bun test:app` - Tests nur für Anwendungskomponenten ausführen
-- `bun test:coverage` - Tests mit Coverage-Bericht ausführen
-- `bun test:ui` - Tests mit UI-Oberfläche ausführen
-- `bun test:e2e` - End-to-End-Tests mit Playwright ausführen
+- `bun run test` - Tests ausführen
+- `bun run test:app` - Tests nur für Anwendungskomponenten ausführen
+- `bun run test:watch` - Tests im Watch-Modus ausführen
+- `bun run test:coverage` - Tests mit Coverage-Bericht ausführen
+- `bun run test:coverage:report` - Test-Coverage-Bericht generieren und übermitteln
+- `bun run test:rust` - Rust-Backend-Tests ausführen
+- `bun run test:rust:watch` - Rust-Tests im Watch-Modus ausführen
+- `bun run test:coverage:rust` - Rust-Tests mit Coverage ausführen
+- `bun run test:coverage:rust:report` - Rust-Coverage-Bericht generieren und übermitteln
+- `bun run test:ui` - Tests mit UI-Oberfläche ausführen
+- `bun run test:e2e` - End-to-End-Tests mit Playwright ausführen
+- `bun run test:e2e:ui` - E2E-Tests mit Playwright UI ausführen
+- `bun run test:e2e:basic` - Basis-E2E-Test für Medien-Import ausführen
+- `bun run test:e2e:real` - E2E-Tests mit echten Mediendateien ausführen
+- `bun run test:e2e:integration` - Integrations-E2E-Tests ausführen (erfordert INTEGRATION_TEST=true)
+- `bun run playwright:install` - Playwright-Browser installieren
 
 ### Tests
 
-Das Projekt verwendet Vitest für Unit-Tests. Tests befinden sich neben den getesteten Dateien mit den Erweiterungen `.test.ts` oder `.test.tsx`.
+Das Projekt verwendet Vitest für Unit-Tests. Tests befinden sich im __tests__ Verzeichnis jedes Features, zusammen mit Mocks in __mocks__.
+
+#### 🧪 Test-Coverage-Status:
+```bash
+⨯ bun run test
+
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+
+⨯ bun run test:rust
+   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
+
+```
 
 ```bash
-# Alle Tests ausführen
-bun test
+# Client-Tests ausführen
+bun run test
+
+# Rust-Tests ausführen
+bun run test:rust
 
 # Tests mit Coverage-Bericht ausführen
-bun test:coverage
+bun run test:coverage
+
+# Tests für spezifische Funktion ausführen
+bun run test src/features/effects
 ```
+
+## Continuous Integration und Deployment
+
+Das Projekt ist für die Verwendung von GitHub Actions für kontinuierliche Integration und Deployment konfiguriert. Workflows:
+
+### Verifizierung und Build
+
+- `check-all.yml` - Alle Überprüfungen und Tests ausführen
+- `lint-css.yml` - Nur CSS-Code überprüfen (läuft wenn CSS-Dateien sich ändern)
+- `lint-rs.yml` - Nur Rust-Code überprüfen (läuft wenn Rust-Dateien sich ändern)
+- `lint-js.yml` - Nur JavaScript/TypeScript-Code überprüfen (läuft wenn JavaScript/TypeScript-Dateien sich ändern)
+
+### Deployment
+
+- `build.yml` - Projekt erstellen
+- `build-release.yml` - Projekt für Release erstellen
+- `deploy-promo.yml` - Promo-Seite erstellen und auf GitHub Pages veröffentlichen
+- `docs.yml` - API-Dokumentation generieren und auf GitHub Pages veröffentlichen
+
+### Linter-Konfiguration
+
+#### Stylelint (CSS)
+
+Das Projekt verwendet Stylelint zur Überprüfung von CSS-Code. Die Konfiguration befindet sich in der `.stylelintrc.json` Datei. Hauptfeatures:
+
+- Unterstützung für Tailwind CSS Direktiven
+- Ignorieren doppelter Selektoren für Tailwind-Kompatibilität
+- Automatische Fehlerbehebung beim Speichern von Dateien (in VS Code)
+
+Um den CSS-Linter auszuführen, verwenden Sie den Befehl:
+
+```bash
+bun lint:css
+```
+
+Für automatische Fehlerbehebung:
+
+```bash
+bun lint:css:fix
+```
+
+## API-Dokumentation
+
+API-Dokumentation ist verfügbar unter: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+Um Dokumentation lokal zu generieren, verwenden Sie den Befehl:
+
+```bash
+bun run docs
+```
+
+Die Dokumentation wird im `docs/` Ordner verfügbar sein.
+
+Für Echtzeit-Dokumentationsentwicklung verwenden Sie:
+
+```bash
+bun run docs:watch
+```
+
+Die Dokumentation wird automatisch aktualisiert, wenn sich der Quellcode im `main` Branch ändert, über den GitHub Actions Workflow `docs.yml`.
+
+## Promo-Seite
+
+Die Projekt-Promo-Seite ist verfügbar unter: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+
+Der Quellcode der Promo-Seite befindet sich im `promo/` Ordner.
+
+Für lokale Entwicklung der Promo-Seite verwenden Sie die Befehle:
+
+```bash
+cd promo
+bun install
+bun run dev
+```
+
+Um die Promo-Seite zu erstellen:
+
+```bash
+cd promo
+bun run build
+```
+
+Die Promo-Seite wird automatisch aktualisiert, wenn sich Dateien im `promo/` Ordner auf dem `main` Branch ändern, über den GitHub Actions Workflow `deploy-promo.yml`.
+
+### Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, XState v5
+- **Backend**: Tauri v2 (Rust), FFmpeg
+- **UI**: Tailwind CSS v4, shadcn-ui, Radix UI
+- **Tests**: Vitest, Testing Library, Playwright
+- **KI**: ONNX Runtime, YOLO v11
 
 ## Lizenz
 
@@ -178,15 +301,16 @@ Der vollständige Lizenztext ist in der Datei [LICENSE](./LICENSE) verfügbar.
 
 ## Zusätzliche Ressourcen
 
-- [Next.js-Dokumentation](https://nextjs.org/docs)
 - [Tauri-Dokumentation](https://v2.tauri.app/start/)
 - [XState-Dokumentation](https://xstate.js.org/docs/)
 - [Vitest-Dokumentation](https://vitest.dev/guide/)
 - [Tailwind CSS-Dokumentation](https://tailwindcss.com/docs)
+- [Shadcn UI-Dokumentation](https://ui.shadcn.com/)
 - [Stylelint-Dokumentation](https://stylelint.io/)
 - [ESLint-Dokumentation](https://eslint.org/docs/latest/)
 - [Playwright-Dokumentation](https://playwright.dev/docs/intro)
 - [TypeDoc-Dokumentation](https://typedoc.org/)
+- [ffmpeg-Dokumentation](https://ffmpeg.org/documentation.html)
 
 ## GitHub Pages
 

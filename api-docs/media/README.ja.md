@@ -96,17 +96,21 @@ bun run tauri build
 
 ### 📚 メインドキュメント
 
-- 📚 [ドキュメントマップ](docs-ru/MAP.md) - 完全なドキュメント概要
-- 🏗️ [アーキテクチャガイド](docs-ru/ARCHITECTURE.md) - システムアーキテクチャ
-- 🧪 [テストガイド](docs-ru/testing/TESTING.md) - テスト戦略
-- 📡 [APIリファレンス](docs-ru/API.md) - Tauriコマンドリファレンス
-- 🚀 [デプロイメントガイド](docs-ru/deployment/DEPLOYMENT.md) - ビルドとデプロイメント
-- 🛣️ [ロードマップ](docs-ru/ROADMAP.md) - 開発ロードマップ
+- 📚 [ドキュメント概要](docs-ru/README.md) - 完全なドキュメントマップ
+- 🚀 [はじめに](docs-ru/01-getting-started/README.md) - インストールと最初のステップ
+- 🏗️ [アーキテクチャガイド](docs-ru/02-architecture/README.md) - システムアーキテクチャ
+- 🎯 [機能ガイド](docs-ru/03-features/README.md) - 機能概要とステータス
+- 📡 [APIリファレンス](docs-ru/04-api-reference/README.md) - Tauriコマンドリファレンス
+- 🧪 [開発ガイド](docs-ru/05-development/README.md) - テストと開発
+- 🚀 [デプロイメントガイド](docs-ru/06-deployment/README.md) - ビルドとデプロイメント
+- 📋 [ユーザーガイド](docs-ru/07-guides/README.md) - パフォーマンスとベストプラクティス
+- 🛣️ [ロードマップ](docs-ru/08-roadmap/README.md) - 開発ロードマップ
+- 🔐 [OAuth設定](docs-ru/09-oauth-setup/oauth-setup-guide.md) - ソーシャルメディア統合
 
 ### 📋 プロジェクトドキュメント
 
 - **`src/features/README.md`** - 優先順位とステータスを含むすべての機能の概要
-- **言語版**: 上記のセレクターから13言語で利用可能
+- **言語版**: 上記のセレクターから11言語で利用可能
 
 ## 開発
 
@@ -116,33 +120,195 @@ bun run tauri build
 - `bun run tauri dev` - 開発モードでTauriを起動
 - `bun run build` - Next.jsをビルド
 - `bun run tauri build` - Tauriアプリケーションをビルド
-- `bun run test` - すべてのテストを実行
+
+#### リンティングとフォーマット
+
+- `bun run lint` - ESLintでJavaScript/TypeScriptコードをチェック
+- `bun run lint:fix` - ESLintエラーを修正
+- `bun run lint:css` - StylelintでCSSコードをチェック
+- `bun run lint:css:fix` - Stylelintエラーを修正
+- `bun run format:imports` - インポートをフォーマット
+- `bun run lint:rust` - ClippyでRustコードをチェック
+- `bun run format:rust` - rustfmtでRustコードをフォーマット
+- `bun run check:all` - すべてのチェックとテストを実行
+- `bun run fix:all` - すべてのリンティングエラーを修正
+
+#### テスト
+
+- `bun run test` - テストを実行
+- `bun run test:app` - アプリケーションコンポーネントのテストのみ実行
 - `bun run test:watch` - ウォッチモードでテストを実行
-- `bun run lint` - コードをチェック
-- `bun run format` - コードをフォーマット
+- `bun run test:coverage` - カバレッジレポート付きでテストを実行
+- `bun run test:coverage:report` - テストカバレッジレポートを生成・送信
+- `bun run test:rust` - Rustバックエンドテストを実行
+- `bun run test:rust:watch` - ウォッチモードでRustテストを実行
+- `bun run test:coverage:rust` - カバレッジ付きでRustテストを実行
+- `bun run test:coverage:rust:report` - Rustカバレッジレポートを生成・送信
+- `bun run test:ui` - UIインターフェースでテストを実行
+- `bun run test:e2e` - PlaywrightでEnd-to-Endテストを実行
+- `bun run test:e2e:ui` - Playwright UIでE2Eテストを実行
+- `bun run test:e2e:basic` - 基本的なメディアインポートE2Eテストを実行
+- `bun run test:e2e:real` - 実際のメディアファイルでE2Eテストを実行
+- `bun run test:e2e:integration` - 統合E2Eテストを実行（INTEGRATION_TEST=trueが必要）
+- `bun run playwright:install` - Playwrightブラウザをインストール
 
-### 技術スタック
+### テスト
 
-- **フロントエンド**: Next.js 15、React 19、TypeScript、XState v5
-- **バックエンド**: Tauri v2 (Rust)、FFmpeg
-- **UI**: Tailwind CSS v4、shadcn-ui、Radix UI
-- **テスト**: Vitest、Testing Library、Playwright
-- **AI**: ONNX Runtime、YOLO v11
+プロジェクトはユニットテストにVitestを使用しています。テストは各機能の__tests__ディレクトリ内にあり、モックは__mocks__内にあります。
 
-## 貢献
+#### 🧪 テストカバレッジステータス:
+```bash
+⨯ bun run test
 
-行動規範とプルリクエストの送信プロセスの詳細については、[CONTRIBUTING.md](CONTRIBUTING.md)をお読みください。
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+
+⨯ bun run test:rust
+   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
+
+```
+
+```bash
+# クライアントテストを実行
+bun run test
+
+# Rustテストを実行
+bun run test:rust
+
+# カバレッジレポート付きでテストを実行
+bun run test:coverage
+
+# 特定の機能のテストを実行
+bun run test src/features/effects
+```
+
+## 継続的インテグレーションとデプロイメント
+
+プロジェクトは継続的インテグレーションとデプロイメントのためにGitHub Actionsを使用するよう設定されています。ワークフロー：
+
+### 検証とビルド
+
+- `check-all.yml` - すべてのチェックとテストを実行
+- `lint-css.yml` - CSSコードのみをチェック（CSSファイルが変更された時に実行）
+- `lint-rs.yml` - Rustコードのみをチェック（Rustファイルが変更された時に実行）
+- `lint-js.yml` - JavaScript/TypeScriptコードのみをチェック（JavaScript/TypeScriptファイルが変更された時に実行）
+
+### デプロイメント
+
+- `build.yml` - プロジェクトをビルド
+- `build-release.yml` - リリース用プロジェクトをビルド
+- `deploy-promo.yml` - GitHub Pagesでプロモページをビルド・公開
+- `docs.yml` - GitHub PagesでAPIドキュメントを生成・公開
+
+### リンター設定
+
+#### Stylelint (CSS)
+
+プロジェクトはCSSコードをチェックするためにStylelintを使用しています。設定は`.stylelintrc.json`ファイルにあります。主な機能：
+
+- Tailwind CSS ディレクティブのサポート
+- Tailwind互換性のための重複セレクターの無視
+- ファイル保存時の自動エラー修正（VS Codeで）
+
+CSSリンターを実行するには、以下のコマンドを使用してください：
+
+```bash
+bun lint:css
+```
+
+自動エラー修正の場合：
+
+```bash
+bun lint:css:fix
+```
+
+## APIドキュメント
+
+APIドキュメントは以下で利用可能です：[https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+ローカルでドキュメントを生成するには、以下のコマンドを使用してください：
+
+```bash
+bun run docs
+```
+
+ドキュメントは`docs/`フォルダで利用可能になります。
+
+リアルタイムドキュメント開発の場合：
+
+```bash
+bun run docs:watch
+```
+
+ドキュメントは、GitHub Actionsワークフロー`docs.yml`を使用して`main`ブランチでソースコードが変更されると自動的に更新されます。
+
+## プロモページ
+
+プロジェクトのプロモページは以下で利用可能です：[https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+
+プロモページのソースコードは`promo/`フォルダにあります。
+
+プロモページのローカル開発には、以下のコマンドを使用してください：
+
+```bash
+cd promo
+bun install
+bun run dev
+```
+
+プロモページをビルドするには：
+
+```bash
+cd promo
+bun run build
+```
+
+プロモページは、GitHub Actionsワークフロー`deploy-promo.yml`を使用して`main`ブランチで`promo/`フォルダ内のファイルが変更されると自動的に更新されます。
+
+## 追加リソース
+
+- [Tauriドキュメント](https://v2.tauri.app/start/)
+- [XStateドキュメント](https://xstate.js.org/docs/)
+- [Vitestドキュメント](https://vitest.dev/guide/)
+- [Tailwind CSSドキュメント](https://tailwindcss.com/docs)
+- [Shadcn UIドキュメント](https://ui.shadcn.com/)
+- [Stylelintドキュメント](https://stylelint.io/)
+- [ESLintドキュメント](https://eslint.org/docs/latest/)
+- [Playwrightドキュメント](https://playwright.dev/docs/intro)
+- [TypeDocドキュメント](https://typedoc.org/)
+- [ffmpegドキュメント](https://ffmpeg.org/documentation.html)
 
 ## ライセンス
 
-このプロジェクトはMITライセンスの下でライセンスされています - 詳細は[LICENSE](LICENSE)ファイルを参照してください。
+このプロジェクトはCommons Clause条件付きのMITライセンスの下で配布されています。
 
-## お問い合わせ
+**主な条項：**
 
-- GitHub Issues: [github.com/chatman-media/timeline-studio/issues](https://github.com/chatman-media/timeline-studio/issues)
-- Telegram: [@timelinestudio](https://t.me/timelinestudio)
-- ウェブサイト: [chatman-media.github.io/timeline-studio](https://chatman-media.github.io/timeline-studio/)
+- **オープンソース**: MITライセンスの条項に従って、コードを自由に使用、変更、配布することができます。
+- **商用利用制限**: Commons Clauseは、作者との別の合意なしにソフトウェアを「販売」することを禁止しています。
+- **「販売」**とは、ソフトウェアの機能を使用して、第三者に有料で製品やサービスを提供することを意味します。
 
----
+このライセンスは以下を許可します：
 
-⭐ このプロジェクトが気に入ったら、スターを付けてください！
+- 個人的および非商用プロジェクトでのコードの使用
+- コードの学習と変更
+- 同じライセンスの下での変更の配布
+
+しかし、以下を禁止します：
+
+- ライセンスなしでコードに基づく商用製品やサービスの作成
+
+商用ライセンスを取得するには、作者にお問い合わせください：ak.chatman.media@gmail.com
+
+完全なライセンステキストは[LICENSE](./LICENSE)ファイルで利用可能です
+
+## GitHub Pages
+
+プロジェクトはAPIドキュメントとプロモページのホスティングにGitHub Pagesを使用しています：
+
+- **プロモページ**: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+- **APIドキュメント**: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+両方のページは、GitHub Actionsワークフローを使用して`main`ブランチで対応するファイルが変更されると自動的に更新されます。

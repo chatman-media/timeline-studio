@@ -149,10 +149,10 @@ El proyecto utiliza Vitest para pruebas unitarias. Las pruebas se encuentran en 
 ```bash
 ⨯ bun run test
 
- Test Files  229 passed (229)
-      Tests  3022 passed | 20 skipped (3042)
-   Start at  13:35:14
-   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
 
 ⨯ bun run test:rust
    test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s

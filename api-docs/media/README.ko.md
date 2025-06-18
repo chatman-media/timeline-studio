@@ -121,23 +121,6 @@ bun run tauri build
 - `bun run test:ui` - UI 인터페이스로 테스트 실행
 - `bun run test:e2e` - Playwright로 E2E 테스트 실행
 
-### 상태 머신 (XState v5)
-
-프로젝트는 복잡한 상태 로직 관리를 위해 XState v5를 사용합니다.
-
-#### ✅ 구현된 상태 머신 (11개):
-
-- `appSettingsMachine` - 중앙화된 설정 관리
-- `browserStateMachine` - 브라우저 상태 관리
-- `chatMachine` - AI 채팅 관리
-- `modalMachine` - 모달 창 관리
-- `playerMachine` - 비디오 플레이어 관리
-- `resourcesMachine` - 타임라인 리소스 관리
-- `userSettingsMachine` - 사용자 설정
-- `projectSettingsMachine` - 프로젝트 설정
-- `mediaMachine` - 미디어 파일 관리
-- `timelineMachine` - 메인 타임라인 상태 머신
-
 ### 테스팅
 
 프로젝트는 단위 테스트를 위해 Vitest를 사용합니다. 테스트는 기능의 __tests__ 디렉토리에 위치하며, __mocks__에 모의 객체가 있습니다.
@@ -146,13 +129,13 @@ bun run tauri build
 ```bash
 ⨯ bun run test
 
- Test Files  229 passed (229)
-      Tests  3022 passed | 20 skipped (3042)
-   Start at  13:35:14
-   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
 
 ⨯ bun run test:rust
-   test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s
 
 ```
 

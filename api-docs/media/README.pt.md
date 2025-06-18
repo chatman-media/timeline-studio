@@ -96,17 +96,21 @@ bun run tauri build
 
 ### 📚 Documentação Principal
 
-- 📚 [Mapa da Documentação](docs-ru/MAP.md) - Visão geral completa da documentação
-- 🏗️ [Guia de Arquitetura](docs-ru/ARCHITECTURE.md) - Arquitetura do sistema
-- 🧪 [Guia de Testes](docs-ru/testing/TESTING.md) - Estratégias de teste
-- 📡 [Referência da API](docs-ru/API.md) - Referência de comandos Tauri
-- 🚀 [Guia de Implantação](docs-ru/deployment/DEPLOYMENT.md) - Build e implantação
-- 🛣️ [Roteiro](docs-ru/ROADMAP.md) - Roteiro de desenvolvimento
+- 📚 [Visão Geral da Documentação](docs-ru/README.md) - Mapa completo da documentação
+- 🚀 [Primeiros Passos](docs-ru/01-getting-started/README.md) - Instalação e primeiros passos
+- 🏗️ [Guia de Arquitetura](docs-ru/02-architecture/README.md) - Arquitetura do sistema
+- 🎯 [Guia de Recursos](docs-ru/03-features/README.md) - Visão geral e status dos recursos
+- 📡 [Referência da API](docs-ru/04-api-reference/README.md) - Referência de comandos Tauri
+- 🧪 [Guia de Desenvolvimento](docs-ru/05-development/README.md) - Testes e desenvolvimento
+- 🚀 [Guia de Implantação](docs-ru/06-deployment/README.md) - Build e implantação
+- 📋 [Guias do Usuário](docs-ru/07-guides/README.md) - Performance e melhores práticas
+- 🛣️ [Roteiro](docs-ru/08-roadmap/README.md) - Roteiro de desenvolvimento
+- 🔐 [Configuração OAuth](docs-ru/09-oauth-setup/oauth-setup-guide.md) - Integração com redes sociais
 
 ### 📋 Documentação do Projeto
 
 - **`src/features/README.md`** - visão geral de todos os recursos com prioridades e status
-- **Versões em idiomas**: Disponível em 13 idiomas através do seletor acima
+- **Versões em idiomas**: Disponível em 11 idiomas através do seletor acima
 
 ## Desenvolvimento
 
@@ -116,33 +120,195 @@ bun run tauri build
 - `bun run tauri dev` - Iniciar Tauri em modo de desenvolvimento
 - `bun run build` - Build do Next.js
 - `bun run tauri build` - Build da aplicação Tauri
-- `bun run test` - Executar todos os testes
+
+#### Linting e Formatação
+
+- `bun run lint` - Verificar código JavaScript/TypeScript com ESLint
+- `bun run lint:fix` - Corrigir erros do ESLint
+- `bun run lint:css` - Verificar código CSS com Stylelint
+- `bun run lint:css:fix` - Corrigir erros do Stylelint
+- `bun run format:imports` - Formatar imports
+- `bun run lint:rust` - Verificar código Rust com Clippy
+- `bun run format:rust` - Formatar código Rust com rustfmt
+- `bun run check:all` - Executar todas as verificações e testes
+- `bun run fix:all` - Corrigir todos os erros de linting
+
+#### Testes
+
+- `bun run test` - Executar testes
+- `bun run test:app` - Executar testes apenas dos componentes da aplicação
 - `bun run test:watch` - Executar testes em modo watch
-- `bun run lint` - Verificar código
-- `bun run format` - Formatar código
+- `bun run test:coverage` - Executar testes com relatório de cobertura
+- `bun run test:coverage:report` - Gerar e enviar relatório de cobertura de testes
+- `bun run test:rust` - Executar testes do backend Rust
+- `bun run test:rust:watch` - Executar testes Rust em modo watch
+- `bun run test:coverage:rust` - Executar testes Rust com cobertura
+- `bun run test:coverage:rust:report` - Gerar e enviar relatório de cobertura Rust
+- `bun run test:ui` - Executar testes com interface UI
+- `bun run test:e2e` - Executar testes end-to-end com Playwright
+- `bun run test:e2e:ui` - Executar testes e2e com UI do Playwright
+- `bun run test:e2e:basic` - Executar teste e2e básico de importação de mídia
+- `bun run test:e2e:real` - Executar testes e2e com arquivos de mídia reais
+- `bun run test:e2e:integration` - Executar testes e2e de integração (requer INTEGRATION_TEST=true)
+- `bun run playwright:install` - Instalar navegadores do Playwright
 
-### Stack Tecnológico
+### Testes
 
-- **Frontend**: Next.js 15, React 19, TypeScript, XState v5
-- **Backend**: Tauri v2 (Rust), FFmpeg
-- **UI**: Tailwind CSS v4, shadcn-ui, Radix UI
-- **Testes**: Vitest, Testing Library, Playwright
-- **IA**: ONNX Runtime, YOLO v11
+O projeto usa Vitest para testes unitários. Os testes estão localizados no diretório __tests__ de cada recurso, junto com mocks em __mocks__.
 
-## Contribuindo
+#### 🧪 Status de Cobertura de Testes:
+```bash
+⨯ bun run test
 
-Por favor, leia [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre nosso código de conduta e o processo para enviar pull requests.
+ Test Files  242 passed | 1 skipped (243)
+      Tests  3284 passed | 60 skipped (3344)
+   Start at  16:17:39
+   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+
+⨯ bun run test:rust
+   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
+
+```
+
+```bash
+# Executar testes do cliente
+bun run test
+
+# Executar testes rust
+bun run test:rust
+
+# Executar testes com relatório de cobertura
+bun run test:coverage
+
+# Executar testes de função específica
+bun run test src/features/effects
+```
+
+## Integração e Implantação Contínuas
+
+O projeto está configurado para usar GitHub Actions para integração e implantação contínuas. Workflows:
+
+### Verificação e Build
+
+- `check-all.yml` - Executar todas as verificações e testes
+- `lint-css.yml` - Verificar apenas código CSS (executa quando arquivos CSS mudam)
+- `lint-rs.yml` - Verificar apenas código Rust (executa quando arquivos Rust mudam)
+- `lint-js.yml` - Verificar apenas código JavaScript/TypeScript (executa quando arquivos JavaScript/TypeScript mudam)
+
+### Implantação
+
+- `build.yml` - Build do projeto
+- `build-release.yml` - Build do projeto para release
+- `deploy-promo.yml` - Build e publicar página promocional no GitHub Pages
+- `docs.yml` - Gerar e publicar documentação da API no GitHub Pages
+
+### Configuração do Linter
+
+#### Stylelint (CSS)
+
+O projeto usa Stylelint para verificar código CSS. A configuração está localizada no arquivo `.stylelintrc.json`. Principais recursos:
+
+- Suporte para diretivas do Tailwind CSS
+- Ignorar seletores duplicados para compatibilidade com Tailwind
+- Correção automática de erros ao salvar arquivos (no VS Code)
+
+Para executar o linter CSS, use o comando:
+
+```bash
+bun lint:css
+```
+
+Para correção automática de erros:
+
+```bash
+bun lint:css:fix
+```
+
+## Documentação da API
+
+A documentação da API está disponível em: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+Para gerar documentação localmente, use o comando:
+
+```bash
+bun run docs
+```
+
+A documentação estará disponível na pasta `docs/`.
+
+Para desenvolvimento de documentação em tempo real, use:
+
+```bash
+bun run docs:watch
+```
+
+A documentação é atualizada automaticamente quando o código fonte muda no branch `main` usando o workflow do GitHub Actions `docs.yml`.
+
+## Página Promocional
+
+A página promocional do projeto está disponível em: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+
+O código fonte da página promocional está localizado na pasta `promo/`.
+
+Para desenvolvimento local da página promocional, use os comandos:
+
+```bash
+cd promo
+bun install
+bun run dev
+```
+
+Para build da página promocional:
+
+```bash
+cd promo
+bun run build
+```
+
+A página promocional é atualizada automaticamente quando arquivos mudam na pasta `promo/` no branch `main` usando o workflow do GitHub Actions `deploy-promo.yml`.
+
+## Recursos Adicionais
+
+- [Documentação Tauri](https://v2.tauri.app/start/)
+- [Documentação XState](https://xstate.js.org/docs/)
+- [Documentação Vitest](https://vitest.dev/guide/)
+- [Documentação Tailwind CSS](https://tailwindcss.com/docs)
+- [Documentação Shadcn UI](https://ui.shadcn.com/)
+- [Documentação Stylelint](https://stylelint.io/)
+- [Documentação ESLint](https://eslint.org/docs/latest/)
+- [Documentação Playwright](https://playwright.dev/docs/intro)
+- [Documentação TypeDoc](https://typedoc.org/)
+- [Documentação ffmpeg](https://ffmpeg.org/documentation.html)
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto é distribuído sob a Licença MIT com condição Commons Clause.
 
-## Contato
+**Termos principais:**
 
-- GitHub Issues: [github.com/chatman-media/timeline-studio/issues](https://github.com/chatman-media/timeline-studio/issues)
-- Telegram: [@timelinestudio](https://t.me/timelinestudio)
-- Website: [chatman-media.github.io/timeline-studio](https://chatman-media.github.io/timeline-studio/)
+- **Open Source**: Você pode usar, modificar e distribuir o código livremente de acordo com os termos da Licença MIT.
+- **Restrição de Uso Comercial**: Commons Clause proíbe "vender" o software sem um acordo separado com o autor.
+- **"Vender"** significa usar a funcionalidade do software para fornecer a terceiros um produto ou serviço mediante pagamento.
 
----
+Esta licença permite:
 
-⭐ Se você gosta deste projeto, por favor, dê-nos uma estrela!
+- Usar o código para projetos pessoais e não-comerciais
+- Estudar e modificar o código
+- Distribuir modificações sob a mesma licença
+
+Mas proíbe:
+
+- Criar produtos ou serviços comerciais baseados no código sem uma licença
+
+Para obter uma licença comercial, entre em contato com o autor: ak.chatman.media@gmail.com
+
+O texto completo da licença está disponível no arquivo [LICENSE](./LICENSE)
+
+## GitHub Pages
+
+O projeto usa GitHub Pages para hospedar a documentação da API e página promocional:
+
+- **Página Promocional**: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
+- **Documentação da API**: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
+
+Ambas as páginas são atualizadas automaticamente quando os arquivos correspondentes são alterados no branch `main` usando workflows do GitHub Actions.
