@@ -76,68 +76,6 @@ bun run tauri dev
 bun run tauri build
 ```
 
-## โครงสร้างโครงการ
-
-```
-timeline-studio/
-├── bin/                              # Shell scripts
-├── docs/                             # เอกสารที่สร้างโดยอัตโนมัติ
-├── docs-ru/                      # เอกสารที่สร้างโดย AI สำหรับนักพัฒนาและเอเจนต์
-├── examples/                         # ตัวอย่างการใช้ API
-├── promo/                            # เว็บไซต์ GitHub Pages
-├── public/                           # ไฟล์สแตติก
-├── scripts/                          # JavaScript scripts
-├── src/                              # โค้ดซอร์สส่วนหน้า (React, XState, Next.js)
-│   ├── app/                          # จุดเข้าแอปพลิเคชันหลัก
-│   ├── components/                   # คอมโพเนนต์ที่แชร์
-│   ├── features/                     # ฟีเจอร์
-│   │   ├── ai-chat/                  # AI chatbot (ผู้ช่วยแบบโต้ตอบ)
-│   │   ├── app-state/                # สถานะแอปพลิเคชันกลาง
-│   │   ├── browser/                  # เบราว์เซอร์ไฟล์มีเดีย (แผงไฟล์)
-│   │   ├── camera-capture/           # การจับภาพวิดีโอ/ภาพถ่าย
-│   │   ├── effects/                  # เอฟเฟกต์วิดีโอและพารามิเตอร์
-│   │   ├── export/                   # การส่งออกวิดีโอและโครงการ
-│   │   ├── filters/                  # ฟิลเตอร์วิดีโอ (การแก้ไขสี สไตล์)
-│   │   ├── keyboard-shortcuts/       # ทางลัดคีย์บอร์ดและพรีเซ็ต
-│   │   ├── media/                    # การจัดการไฟล์มีเดีย (เสียง/วิดีโอ)
-│   │   ├── media-studio/             # สตูดิโอแก้ไขมีเดีย
-│   │   ├── modals/                   # หน้าต่างโมดอล (ไดอะล็อก)
-│   │   ├── music/                    # การนำเข้าและจัดการเพลง
-│   │   ├── options/                  # การส่งออกและการตั้งค่าโครงการ
-│   │   ├── project-settings/         # การตั้งค่าโครงการ (ขนาด fps ฯลฯ)
-│   │   ├── recognition/              # การรู้จำฉากและวัตถุ
-│   │   ├── resources/                # การจัดการทรัพยากรโครงการ
-│   │   ├── style-templates/          # เทมเพลตสไตล์และการออกแบบ
-│   │   ├── subtitles/                # การนำเข้าและแก้ไขซับไตเติล
-│   │   ├── templates/                # เทมเพลตวิดีโอและพรีเซ็ต
-│   │   ├── timeline/                 # ไทม์ไลน์การแก้ไขหลัก
-│   │   ├── top-bar/                  # แผงควบคุมด้านบน
-│   │   ├── transitions/              # การเปลี่ยนผ่านวิดีโอระหว่างคลิป
-│   │   ├── user-settings/            # การตั้งค่าผู้ใช้
-│   │   ├── video-player/             # เครื่องเล่นวิดีโอ
-│   │   ├── voice-recording/          # การบันทึกเสียงและพากย์เสียง
-│   │   ├── script-generator/         # ใหม่: การสร้างสคริปต์
-│   │   ├── montage-planner/          # ใหม่: การวางแผนมอนทาจ
-│   │   ├── person-identification/    # ใหม่: การระบุบุคคล
-│   │   ├── scene-analyzer/           # ใหม่: การวิเคราะห์ฉาก
-│   │   └── README.md                 # ภาพรวมของฟีเจอร์ทั้งหมด
-│   ├── i18n/                         # นานาชาติ
-│   ├── lib/                          # ยูทิลิตีและไลบรารี
-│   ├── styles/                       # สไตล์กลาง
-|   ├── test/                         # การกำหนดค่าการทดสอบและยูทิลิตี
-├── src-tauri/                        # Backend (Rust)
-│   ├── src/
-│   │   ├── main.rs                   # จุดเข้า Tauri
-│   │   ├── media.rs                  # การวิเคราะห์มีเดีย (FFmpeg)
-│   │   ├── recognition.rs            # YOLO สำหรับวัตถุ/ใบหน้า
-│   │   ├── script_generator.rs       # การสร้างสคริปต์ (Claude/OpenAI/Grok API)
-│   │   ├── montage_planner.rs        # การวางแผนมอนทาจ
-│   │   ├── person_identification.rs  # การระบุบุคคล
-│   │   ├── scene_analyzer.rs         # การวิเคราะห์ฉาก
-│   │   └── ai_chat.rs                # การประมวลผลการแชท
-└── package.json                      # การกำหนดค่าการพึ่งพา Node.js
-```
-
 ## เอกสาร
 
 ### 📚 เอกสารหลัก
@@ -208,10 +146,10 @@ timeline-studio/
 ```bash
 ⨯ bun run test
 
- Test Files  141 passed (141)
-      Tests  1295 passed | 9 skipped (1304)
-   Start at  23:20:43
-   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+ Test Files  229 passed (229)
+      Tests  3022 passed | 20 skipped (3042)
+   Start at  13:35:14
+   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
 
 ⨯ bun run test:rust
    test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s

@@ -76,68 +76,6 @@ bun run tauri dev
 bun run tauri build
 ```
 
-## Proje Yapısı
-
-```
-timeline-studio/
-├── bin/                              # Shell betikleri
-├── docs/                             # Otomatik oluşturulan dokümantasyon
-├── docs-ru/                      # Geliştiriciler ve ajanlar için AI üretimi dokümanlar
-├── examples/                         # API kullanım örnekleri
-├── promo/                            # GitHub Pages web sitesi
-├── public/                           # Statik dosyalar
-├── scripts/                          # JavaScript betikleri
-├── src/                              # Frontend kaynak kodu (React, XState, Next.js)
-│   ├── app/                          # Ana uygulama giriş noktası
-│   ├── components/                   # Paylaşılan bileşenler
-│   ├── features/                     # Özellikler
-│   │   ├── ai-chat/                  # AI sohbet botu (etkileşimli asistan)
-│   │   ├── app-state/                # Global uygulama durumu
-│   │   ├── browser/                  # Medya dosyası tarayıcısı (dosya paneli)
-│   │   ├── camera-capture/           # Video/fotoğraf kamera yakalama
-│   │   ├── effects/                  # Video efektleri ve parametreleri
-│   │   ├── export/                   # Video ve proje dışa aktarma
-│   │   ├── filters/                  # Video filtreleri (renk düzeltme, stiller)
-│   │   ├── keyboard-shortcuts/       # Klavye kısayolları ve ön ayarlar
-│   │   ├── media/                    # Medya dosyası işleme (ses/video)
-│   │   ├── media-studio/             # Medya düzenleme stüdyosu
-│   │   ├── modals/                   # Modal pencereler (diyaloglar)
-│   │   ├── music/                    # Müzik içe aktarma ve yönetimi
-│   │   ├── options/                  # Dışa aktarma ve proje ayarları
-│   │   ├── project-settings/         # Proje ayarları (boyut, fps, vb.)
-│   │   ├── recognition/              # Sahne ve nesne tanıma
-│   │   ├── resources/                # Proje kaynak yönetimi
-│   │   ├── style-templates/          # Stil ve tasarım şablonları
-│   │   ├── subtitles/                # Altyazı içe aktarma ve düzenleme
-│   │   ├── templates/                # Video şablonları ve ön ayarlar
-│   │   ├── timeline/                 # Ana düzenleme zaman çizelgesi
-│   │   ├── top-bar/                  # Üst kontrol paneli
-│   │   ├── transitions/              # Klipler arası video geçişleri
-│   │   ├── user-settings/            # Kullanıcı ayarları
-│   │   ├── video-player/             # Video oynatıcı
-│   │   ├── voice-recording/          # Ses kaydı ve seslendirme
-│   │   ├── script-generator/         # Yeni: betik oluşturma
-│   │   ├── montage-planner/          # Yeni: montaj planlama
-│   │   ├── person-identification/    # Yeni: kişi tanımlama
-│   │   ├── scene-analyzer/           # Yeni: sahne analizi
-│   │   └── README.md                 # Tüm özelliklerin genel bakışı
-│   ├── i18n/                         # Uluslararasılaştırma
-│   ├── lib/                          # Yardımcı programlar ve kütüphaneler
-│   ├── styles/                       # Global stiller
-|   ├── test/                         # Test yapılandırması ve yardımcı programlar
-├── src-tauri/                        # Backend (Rust)
-│   ├── src/
-│   │   ├── main.rs                   # Tauri giriş noktası
-│   │   ├── media.rs                  # Medya analizi (FFmpeg)
-│   │   ├── recognition.rs            # Nesneler/yüzler için YOLO
-│   │   ├── script_generator.rs       # Betik oluşturma (Claude/OpenAI/Grok API)
-│   │   ├── montage_planner.rs        # Montaj planlama
-│   │   ├── person_identification.rs  # Kişi tanımlama
-│   │   ├── scene_analyzer.rs         # Sahne analizi
-│   │   └── ai_chat.rs                # Sohbet işleme
-└── package.json                      # Node.js bağımlılık yapılandırması
-```
-
 ## Dokümantasyon
 
 ### 📚 Ana Dokümantasyon
@@ -208,10 +146,10 @@ Proje, birim testler için Vitest kullanır. Testler, özelliğin __tests__ dizi
 ```bash
 ⨯ bun run test
 
- Test Files  141 passed (141)
-      Tests  1295 passed | 9 skipped (1304)
-   Start at  23:20:43
-   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+ Test Files  229 passed (229)
+      Tests  3022 passed | 20 skipped (3042)
+   Start at  13:35:14
+   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
 
 ⨯ bun run test:rust
    test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s

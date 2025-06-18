@@ -5,6 +5,12 @@
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
@@ -12,33 +18,43 @@
 
 Timeline Studio est une application de montage vidéo professionnelle construite avec des technologies web modernes et des performances natives. Notre objectif est de créer un éditeur de niveau DaVinci Resolve accessible à tous.
 
-![Timeline Interface](/public/screen3.png)
+![Interface Timeline #1](/public/screen2.png)
+
+![Interface Timeline #2](/public/screen4.png)
 
 ### Statut du Projet (Juin 2025)
 
-**Achèvement Global : 75%**
-- ✅ Fonctionnalité d'édition de base terminée
+**Achèvement Global : 86.2%** ⬆️ (mis à jour après l'intégration OAuth et l'achèvement Export)
+- ✅ Fonctionnalité d'édition principale terminée
 - ✅ Compilateur vidéo avec accélération GPU
-- ✅ Module de reconnaissance (YOLO v11)
-- ✅ Effets, filtres et transitions
-- ⚠️ Interface d'exportation à terminer (25%)
-- ⚠️ Panneau de ressources en développement (40%)
-- 🎯 Objectif de sortie MVP : Fin juin 2025
+- ✅ Module de reconnaissance (YOLO v11) - ORT corrigé
+- ✅ Effets, filtres et transitions (75-80%)
+- ✅ Export - intégration complète des réseaux sociaux ! (98%) 🎉
+- ✅ Intégration OAuth - support YouTube/TikTok/Vimeo/Telegram
+- ✅ Système d'aperçu unifié avec Preview Manager
+- ✅ Persistance des médias et projets temporaires
+- ✅ Système de modèles - basé sur la configuration (95% terminé)
+- ✅ Timeline à 90% d'achèvement
+- ⚠️ Panneau de ressources en développement (85%)
+- 🎯 Date cible de sortie MVP : Fin juin 2025
 
 ## Fonctionnalités Principales
 
 - 🎬 Montage vidéo professionnel avec timeline multi-pistes
 - 🖥️ Multi-plateforme (Windows, macOS, Linux)
 - 🚀 Traitement vidéo accéléré par GPU (NVENC, QuickSync, VideoToolbox)
-- 🤖 Reconnaissance d'objets/visages alimentée par l'IA (YOLO v11)
+- 🤖 Reconnaissance d'objets/visages alimentée par l'IA (YOLO v11 - ORT corrigé)
 - 🎨 Plus de 30 transitions, effets visuels et filtres
 - 📝 Système de sous-titres avancé avec 12 styles et animations
 - 🎵 Montage audio multi-pistes avec effets
+- 📤 Export vers MP4/MOV/WebM avec intégration OAuth des réseaux sociaux
+- 🔐 Support OAuth pour YouTube/TikTok/Vimeo/Telegram avec stockage sécurisé des tokens
+- 📱 Préréglages d'appareils (iPhone, iPad, Android) pour des exports optimisés
 - 🧠 Gestion d'état utilisant XState v5
-- 🌐 Support d'internationalisation (6 langues)
-- 💾 Cache intelligent et génération d'aperçus
+- 🌐 Support d'internationalisation (11 langues)
+- 💾 Cache intelligent et système d'aperçu unifié
 - 🎨 Interface moderne utilisant Tailwind CSS v4, shadcn-ui
-- 📚 Documentation complète avec plus de 80% de couverture de tests
+- 📚 Documentation complète avec 2400+ tests (98.8% de réussite)
 
 ## Commencer
 
@@ -74,68 +90,6 @@ bun run tauri dev
 
 ```bash
 bun run tauri build
-```
-
-## Structure du Projet
-
-```
-timeline-studio/
-├── bin/                              # Scripts shell
-├── docs/                             # Documentation générée automatiquement
-├── docs-ru/                      # Docs générées par IA pour développeurs et agents
-├── examples/                         # Exemples d'utilisation API
-├── promo/                            # Site web GitHub Pages
-├── public/                           # Fichiers statiques
-├── scripts/                          # Scripts JavaScript
-├── src/                              # Code source frontend (React, XState, Next.js)
-│   ├── app/                          # Point d'entrée principal de l'application
-│   ├── components/                   # Composants partagés
-│   ├── features/                     # Fonctionnalités
-│   │   ├── ai-chat/                  # Chatbot IA (assistant interactif)
-│   │   ├── app-state/                # État global de l'application
-│   │   ├── browser/                  # Navigateur de fichiers média (panneau de fichiers)
-│   │   ├── camera-capture/           # Capture vidéo/photo caméra
-│   │   ├── effects/                  # Effets vidéo et leurs paramètres
-│   │   ├── export/                   # Export vidéo et projet
-│   │   ├── filters/                  # Filtres vidéo (correction couleur, styles)
-│   │   ├── keyboard-shortcuts/       # Raccourcis clavier et préréglages
-│   │   ├── media/                    # Gestion fichiers média (audio/vidéo)
-│   │   ├── media-studio/             # Studio de montage média
-│   │   ├── modals/                   # Fenêtres modales (dialogues)
-│   │   ├── music/                    # Import et gestion musique
-│   │   ├── options/                  # Export et paramètres projet
-│   │   ├── project-settings/         # Paramètres projet (taille, fps, etc.)
-│   │   ├── recognition/              # Reconnaissance scène et objets
-│   │   ├── resources/                # Gestion ressources projet
-│   │   ├── style-templates/          # Modèles de styles et design
-│   │   ├── subtitles/                # Import et édition sous-titres
-│   │   ├── templates/                # Modèles vidéo et préréglages
-│   │   ├── timeline/                 # Timeline de montage principale
-│   │   ├── top-bar/                  # Panneau de contrôle supérieur
-│   │   ├── transitions/              # Transitions vidéo entre clips
-│   │   ├── user-settings/            # Paramètres utilisateur
-│   │   ├── video-player/             # Lecteur vidéo
-│   │   ├── voice-recording/          # Enregistrement vocal et voix off
-│   │   ├── script-generator/         # Nouveau : génération de scripts
-│   │   ├── montage-planner/          # Nouveau : planification montage
-│   │   ├── person-identification/    # Nouveau : identification personnes
-│   │   ├── scene-analyzer/           # Nouveau : analyse de scènes
-│   │   └── README.md                 # Aperçu de toutes les fonctionnalités
-│   ├── i18n/                         # Internationalisation
-│   ├── lib/                          # Utilitaires et bibliothèques
-│   ├── styles/                       # Styles globaux
-|   ├── test/                         # Configuration tests et utilitaires
-├── src-tauri/                        # Backend (Rust)
-│   ├── src/
-│   │   ├── main.rs                   # Point d'entrée Tauri
-│   │   ├── media.rs                  # Analyse média (FFmpeg)
-│   │   ├── recognition.rs            # YOLO pour objets/visages
-│   │   ├── script_generator.rs       # Génération scripts (Claude/OpenAI/Grok API)
-│   │   ├── montage_planner.rs        # Planification montage
-│   │   ├── person_identification.rs  # Identification personnes
-│   │   ├── scene_analyzer.rs         # Analyse scènes
-│   │   └── ai_chat.rs                # Traitement chat
-└── package.json                      # Configuration dépendances Node.js
 ```
 
 ## Documentation
@@ -183,23 +137,6 @@ timeline-studio/
 - `bun run test:ui` - Lancer tests avec interface UI
 - `bun run test:e2e` - Lancer tests end-to-end avec Playwright
 
-### Machines d'État (XState v5)
-
-Le projet utilise XState v5 pour gérer la logique d'état complexe.
-
-#### ✅ Machines d'État Implémentées (11) :
-
-- `appSettingsMachine` - gestion des paramètres centralisés
-- `browserStateMachine` - gestion état navigateur
-- `chatMachine` - gestion chat IA
-- `modalMachine` - gestion fenêtres modales
-- `playerMachine` - gestion lecteur vidéo
-- `resourcesMachine` - gestion ressources timeline
-- `userSettingsMachine` - paramètres utilisateur
-- `projectSettingsMachine` - paramètres projet
-- `mediaMachine` - gestion fichiers média
-- `timelineMachine` - Machine d'état timeline principale
-
 ### Tests
 
 Le projet utilise Vitest pour les tests unitaires. Les tests sont situés dans le répertoire __tests__ de la fonctionnalité, avec les mocks dans __mocks__.
@@ -208,10 +145,10 @@ Le projet utilise Vitest pour les tests unitaires. Les tests sont situés dans l
 ```bash
 ⨯ bun run test
 
- Test Files  141 passed (141)
-      Tests  1295 passed | 9 skipped (1304)
-   Start at  23:20:43
-   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+ Test Files  229 passed (229)
+      Tests  3022 passed | 20 skipped (3042)
+   Start at  13:35:14
+   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
 
 ⨯ bun run test:rust
    test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s

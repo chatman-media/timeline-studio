@@ -5,6 +5,12 @@
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
@@ -12,33 +18,43 @@
 
 Timeline Studio é uma aplicação profissional de edição de vídeo construída com tecnologias web modernas e desempenho nativo. Nosso objetivo é criar um editor de nível DaVinci Resolve que seja acessível a todos.
 
-![Interface da Timeline](/public/screen3.png)
+![Interface da Timeline #1](/public/screen2.png)
+
+![Interface da Timeline #2](/public/screen4.png)
 
 ### Status do Projeto (Junho 2025)
 
-**Conclusão Geral: 75%**
+**Conclusão Geral: 86.2%** ⬆️ (atualizado após integração OAuth e conclusão do Export)
 - ✅ Funcionalidade principal de edição completa
 - ✅ Compilador de vídeo com aceleração GPU
-- ✅ Módulo de reconhecimento (YOLO v11)
-- ✅ Efeitos, filtros e transições
-- ⚠️ UI de exportação precisa ser concluída (25%)
-- ⚠️ Painel de recursos em desenvolvimento (40%)
-- 🎯 Lançamento MVP alvo: Final de junho 2025
+- ✅ Módulo de reconhecimento (YOLO v11) - ORT corrigido
+- ✅ Efeitos, filtros e transições (75-80%)
+- ✅ Export - integração completa com redes sociais! (98%) 🎉
+- ✅ Integração OAuth - suporte para YouTube/TikTok/Vimeo/Telegram
+- ✅ Sistema de pré-visualização unificado com Preview Manager
+- ✅ Persistência de mídia e projetos temporários
+- ✅ Sistema de templates - baseado em configuração (95% concluído)
+- ✅ Timeline com 90% de conclusão
+- ⚠️ Painel de recursos em desenvolvimento (85%)
+- 🎯 Data alvo de lançamento MVP: Final de junho 2025
 
 ## Recursos Principais
 
 - 🎬 Edição profissional de vídeo com timeline multi-faixa
 - 🖥️ Multiplataforma (Windows, macOS, Linux)
 - 🚀 Processamento de vídeo acelerado por GPU (NVENC, QuickSync, VideoToolbox)
-- 🤖 Reconhecimento de objetos/rostos alimentado por IA (YOLO v11)
+- 🤖 Reconhecimento de objetos/rostos alimentado por IA (YOLO v11 - ORT corrigido)
 - 🎨 Mais de 30 transições, efeitos visuais e filtros
 - 📝 Sistema avançado de legendas com 12 estilos e animações
 - 🎵 Edição de áudio multi-faixa com efeitos
+- 📤 Exportação para MP4/MOV/WebM com integração OAuth de redes sociais
+- 🔐 Suporte OAuth para YouTube/TikTok/Vimeo/Telegram com armazenamento seguro de tokens
+- 📱 Presets de dispositivos (iPhone, iPad, Android) para exportações otimizadas
 - 🧠 Gerenciamento de estado usando XState v5
-- 🌐 Suporte à internacionalização (6 idiomas)
-- 💾 Cache inteligente e geração de pré-visualizações
+- 🌐 Suporte à internacionalização (11 idiomas)
+- 💾 Cache inteligente e sistema de pré-visualização unificado
 - 🎨 UI moderna usando Tailwind CSS v4, shadcn-ui
-- 📚 Documentação completa com mais de 80% de cobertura de testes
+- 📚 Documentação completa com 2400+ testes (98.8% de taxa de sucesso)
 
 ## Começando
 
@@ -74,63 +90,6 @@ bun run tauri dev
 
 ```bash
 bun run tauri build
-```
-
-## Estrutura do Projeto
-
-```
-timeline-studio/
-├── bin/                              # Scripts shell
-├── docs/                             # Documentação gerada automaticamente
-├── docs-ru/                      # Documentação gerada por IA para desenvolvedores
-├── examples/                         # Exemplos de uso da API
-├── promo/                            # Site GitHub Pages
-├── public/                           # Arquivos estáticos
-├── scripts/                          # Scripts JavaScript
-├── src/                              # Código-fonte frontend (React, XState, Next.js)
-│   ├── app/                          # Ponto de entrada principal da aplicação
-│   ├── components/                   # Componentes compartilhados
-│   ├── features/                     # Recursos
-│   │   ├── ai-chat/                  # Chatbot IA (assistente interativo)
-│   │   ├── app-state/                # Estado global da aplicação
-│   │   ├── browser/                  # Navegador de arquivos de mídia (painel de arquivos)
-│   │   ├── camera-capture/           # Captura de vídeo/foto da câmera
-│   │   ├── effects/                  # Efeitos de vídeo e seus parâmetros
-│   │   ├── export/                   # Exportação de vídeo e projeto
-│   │   ├── filters/                  # Filtros de vídeo (correção de cor, estilos)
-│   │   ├── keyboard-shortcuts/       # Atalhos de teclado e predefinições
-│   │   ├── media/                    # Manipulação de arquivos de mídia (áudio/vídeo)
-│   │   ├── media-studio/             # Estúdio de edição de mídia
-│   │   ├── modals/                   # Janelas modais (diálogos)
-│   │   ├── music/                    # Importação e gerenciamento de música
-│   │   ├── options/                  # Configurações de exportação e projeto
-│   │   ├── project-settings/         # Configurações do projeto (tamanho, fps, etc.)
-│   │   ├── recognition/              # Reconhecimento de cena e objeto
-│   │   ├── resources/                # Gerenciamento de recursos do projeto
-│   │   ├── style-templates/          # Estilos e modelos de design
-│   │   ├── subtitles/                # Importação e edição de legendas
-│   │   ├── templates/                # Modelos e predefinições de vídeo
-│   │   ├── timeline/                 # Timeline de edição principal
-│   │   ├── top-bar/                  # Interface da barra superior
-│   │   ├── transitions/              # Transições de vídeo
-│   │   ├── user-settings/            # Preferências do usuário
-│   │   ├── video-compiler/           # Integração do compilador de vídeo frontend
-│   │   └── video-player/             # Player de vídeo personalizado
-│   ├── lib/                          # Bibliotecas e utilitários compartilhados
-│   ├── test/                         # Utilitários de teste
-│   └── types/                        # Definições de tipo TypeScript
-├── src-tauri/                        # Código-fonte backend (Rust)
-│   ├── src/                          # Arquivos fonte Rust
-│   │   ├── app_dirs.rs               # Gerenciamento de diretórios da aplicação
-│   │   ├── filesystem.rs             # Operações do sistema de arquivos
-│   │   ├── language.rs               # Suporte de idioma/i18n
-│   │   ├── lib.rs                    # Entrada principal da biblioteca
-│   │   ├── media/                    # Módulo de processamento de mídia
-│   │   ├── recognition/              # Módulo de reconhecimento YOLO
-│   │   ├── video_compiler/           # Compilação de vídeo FFmpeg
-│   │   └── video_server/             # Servidor de streaming de vídeo
-│   └── tauri.conf.json               # Configuração Tauri
-└── ...outros arquivos de configuração
 ```
 
 ## Documentação

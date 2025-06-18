@@ -78,28 +78,6 @@ bun run tauri dev
 bun run tauri build
 ```
 
-## ساختار پروژه
-
-```
-timeline-studio/
-├── bin/                              # اسکریپت‌های Shell
-├── docs/                             # مستندات تولید شده خودکار
-├── docs-ru/                      # مستندات تولید شده توسط AI برای توسعه‌دهندگان
-├── examples/                         # نمونه‌های استفاده از API
-├── promo/                            # سایت GitHub Pages
-├── public/                           # فایل‌های استاتیک
-├── scripts/                          # اسکریپت‌های JavaScript
-├── src/                              # کد منبع فرانت‌اند (React، XState، Next.js)
-│   ├── app/                          # نقطه ورود اصلی برنامه
-│   ├── components/                   # کامپوننت‌های مشترک
-│   ├── features/                     # ویژگی‌ها
-│   └── ...
-├── src-tauri/                        # کد منبع بک‌اند (Rust)
-│   ├── src/                          # فایل‌های منبع Rust
-│   └── tauri.conf.json               # پیکربندی Tauri
-└── ...سایر فایل‌های پیکربندی
-```
-
 ## مستندات
 
 ### 📚 مستندات اصلی

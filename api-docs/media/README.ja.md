@@ -5,6 +5,12 @@
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
@@ -12,17 +18,24 @@
 
 Timeline Studioは、最新のWeb技術とネイティブパフォーマンスで構築されたプロフェッショナルなビデオ編集アプリケーションです。私たちの目標は、誰もがアクセスできるDaVinci Resolveレベルのエディターを作成することです。
 
-![タイムラインインターフェース](/public/screen3.png)
+![タイムラインインターフェース #1](/public/screen2.png)
+
+![タイムラインインターフェース #2](/public/screen4.png)
 
 ### プロジェクトステータス（2025年6月）
 
-**全体的な完成度：75%**
+**全体的な完成度：86.2%** ⬆️（OAuth統合とExport完成後に更新）
 - ✅ コア編集機能完了
 - ✅ GPU加速付きビデオコンパイラー
-- ✅ 認識モジュール（YOLO v11）
-- ✅ エフェクト、フィルター、トランジション
-- ⚠️ エクスポートUIの完成が必要（25%）
-- ⚠️ リソースパネル開発中（40%）
+- ✅ 認識モジュール（YOLO v11）- ORT修正済み
+- ✅ エフェクト、フィルター、トランジション（75-80%）
+- ✅ Export - 完全なソーシャルメディア統合！（98%）🎉
+- ✅ OAuth統合 - YouTube/TikTok/Vimeo/Telegramサポート
+- ✅ Preview Managerによる統一プレビューシステム
+- ✅ メディア永続化と一時プロジェクト
+- ✅ テンプレートシステム - 設定ベース（95%完了）
+- ✅ Timeline 90%完了
+- ⚠️ リソースパネル開発中（85%）
 - 🎯 目標MVPリリース：2025年6月末
 
 ## 主な機能
@@ -30,15 +43,18 @@ Timeline Studioは、最新のWeb技術とネイティブパフォーマンス�
 - 🎬 マルチトラックタイムラインによるプロフェッショナルなビデオ編集
 - 🖥️ クロスプラットフォーム（Windows、macOS、Linux）
 - 🚀 GPU加速ビデオ処理（NVENC、QuickSync、VideoToolbox）
-- 🤖 AI駆動のオブジェクト/顔認識（YOLO v11）
+- 🤖 AI駆動のオブジェクト/顔認識（YOLO v11 - ORT修正済み）
 - 🎨 30種類以上のトランジション、視覚効果、フィルター
 - 📝 12種類のスタイルとアニメーションを備えた高度な字幕システム
 - 🎵 エフェクト付きマルチトラックオーディオ編集
+- 📤 ソーシャルメディアOAuth統合付きMP4/MOV/WebMエクスポート
+- 🔐 YouTube/TikTok/Vimeo/Telegram OAuth対応、安全なトークン保存
+- 📱 最適化されたエクスポート用デバイスプリセット（iPhone、iPad、Android）
 - 🧠 XState v5を使用した状態管理
-- 🌐 国際化サポート（6言語）
-- 💾 スマートキャッシングとプレビュー生成
+- 🌐 国際化サポート（11言語）
+- 💾 スマートキャッシングと統一プレビューシステム
 - 🎨 Tailwind CSS v4、shadcn-uiを使用したモダンなUI
-- 📚 80%以上のテストカバレッジを持つ完全なドキュメント
+- 📚 2400以上のテスト（98.8%成功率）による完全なドキュメント
 
 ## はじめに
 
@@ -74,63 +90,6 @@ bun run tauri dev
 
 ```bash
 bun run tauri build
-```
-
-## プロジェクト構造
-
-```
-timeline-studio/
-├── bin/                              # シェルスクリプト
-├── docs/                             # 自動生成されたドキュメント
-├── docs-ru/                      # 開発者向けAI生成ドキュメント
-├── examples/                         # API使用例
-├── promo/                            # GitHub Pagesサイト
-├── public/                           # 静的ファイル
-├── scripts/                          # JavaScriptスクリプト
-├── src/                              # フロントエンドソースコード（React、XState、Next.js）
-│   ├── app/                          # メインアプリケーションエントリーポイント
-│   ├── components/                   # 共有コンポーネント
-│   ├── features/                     # 機能
-│   │   ├── ai-chat/                  # AIチャットボット（インタラクティブアシスタント）
-│   │   ├── app-state/                # グローバルアプリケーション状態
-│   │   ├── browser/                  # メディアファイルブラウザー（ファイルパネル）
-│   │   ├── camera-capture/           # ビデオ/写真カメラキャプチャ
-│   │   ├── effects/                  # ビデオエフェクトとそのパラメータ
-│   │   ├── export/                   # ビデオとプロジェクトのエクスポート
-│   │   ├── filters/                  # ビデオフィルター（カラー補正、スタイル）
-│   │   ├── keyboard-shortcuts/       # キーボードショートカットとプリセット
-│   │   ├── media/                    # メディアファイル処理（オーディオ/ビデオ）
-│   │   ├── media-studio/             # メディア編集スタジオ
-│   │   ├── modals/                   # モーダルウィンドウ（ダイアログ）
-│   │   ├── music/                    # 音楽のインポートと管理
-│   │   ├── options/                  # エクスポートとプロジェクト設定
-│   │   ├── project-settings/         # プロジェクト設定（サイズ、FPSなど）
-│   │   ├── recognition/              # シーンとオブジェクト認識
-│   │   ├── resources/                # プロジェクトリソース管理
-│   │   ├── style-templates/          # スタイルとデザインテンプレート
-│   │   ├── subtitles/                # 字幕のインポートと編集
-│   │   ├── templates/                # ビデオテンプレートとプリセット
-│   │   ├── timeline/                 # メイン編集タイムライン
-│   │   ├── top-bar/                  # トップバーインターフェース
-│   │   ├── transitions/              # ビデオトランジション
-│   │   ├── user-settings/            # ユーザー設定
-│   │   ├── video-compiler/           # フロントエンドビデオコンパイラー統合
-│   │   └── video-player/             # カスタムビデオプレーヤー
-│   ├── lib/                          # 共有ライブラリとユーティリティ
-│   ├── test/                         # テストユーティリティ
-│   └── types/                        # TypeScript型定義
-├── src-tauri/                        # バックエンドソースコード（Rust）
-│   ├── src/                          # Rustソースファイル
-│   │   ├── app_dirs.rs               # アプリケーションディレクトリ管理
-│   │   ├── filesystem.rs             # ファイルシステム操作
-│   │   ├── language.rs               # 言語/i18nサポート
-│   │   ├── lib.rs                    # メインライブラリエントリー
-│   │   ├── media/                    # メディア処理モジュール
-│   │   ├── recognition/              # YOLO認識モジュール
-│   │   ├── video_compiler/           # FFmpegビデオコンパイル
-│   │   └── video_server/             # ビデオストリーミングサーバー
-│   └── tauri.conf.json               # Tauri設定
-└── ...その他の設定ファイル
 ```
 
 ## ドキュメント

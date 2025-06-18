@@ -1,53 +1,60 @@
-# Timeline Studio
+# [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
 [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
-<!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
 
 ## Projektübersicht
 
-Timeline Studio ist eine Desktop-Anwendung zum Erstellen und Bearbeiten von Videos. Die Anwendung verwendet eine auf endlichen Zustandsautomaten (XState) basierende Architektur zur Verwaltung komplexer Zustandslogik.
+Timeline Studio ist eine professionelle Videobearbeitungsanwendung, die mit modernen Webtechnologien und nativer Leistung entwickelt wurde. Unser Ziel ist es, einen Editor auf DaVinci Resolve-Niveau zu schaffen, der für jeden zugänglich ist.
 
-![Timeline-Oberfläche](/public/screen3.png)
+![Timeline-Oberfläche #1](/public/screen2.png)
 
-## 📊 Entwicklungsstand
+![Timeline-Oberfläche #2](/public/screen4.png)
 
-### 🎯 Gesamtfortschritt: 76% Abgeschlossen (13/17 Features)
+### Projektstatus (Juni 2025)
 
-```
-Komponenten:     16/17 ✅ (94%)
-Hooks:           14/17 ✅ (82%)
-Services:        15/17 ✅ (88%)
-Tests:           13/17 ✅ (76%)
-Dokumentation:   17/17 ✅ (100%)
-```
+**Gesamte Fertigstellung: 86.2%** ⬆️ (aktualisiert nach OAuth-Integration und Export-Fertigstellung)
+- ✅ Kernfunktionen der Bearbeitung vollständig
+- ✅ Video Compiler mit GPU-Beschleunigung
+- ✅ Erkennungsmodul (YOLO v11) - ORT behoben
+- ✅ Effekte, Filter und Übergänge (75-80%)
+- ✅ Export - vollständige Social Media Integration! (98%) 🎉
+- ✅ OAuth-Integration - Unterstützung für YouTube/TikTok/Vimeo/Telegram
+- ✅ Einheitliches Vorschausystem mit Preview Manager
+- ✅ Medienpersistenz und temporäre Projekte
+- ✅ Template-System - konfigurationsbasiert (95% fertig)
+- ✅ Timeline zu 90% fertiggestellt
+- ⚠️ Ressourcen-Panel in Entwicklung (85%)
+- 🎯 Ziel-MVP-Release: Ende Juni 2025
 
-### 🔥 Kritische Aufgaben
+## Hauptfunktionen
 
-- **Timeline** - benötigt Zustandsautomat, Hooks, Kernlogik
-- **Resources** - benötigt UI-Komponenten für Verwaltung
-- **AI Chat** - benötigt Überprüfung der funktionalen Vollständigkeit
-- **Options** - benötigt Funktionserweiterung
-
-### ✅ Fertige Komponenten
-
-- **VideoPlayer** - voll funktionsfähiger Video-Player
-- **Browser** - Mediendatei-Browser mit Tabs
-- **Media, Music, Effects, Filters, Transitions, Templates** - alles fertig
-- **AppState, Modals, TopBar, MediaStudio** - Grundinfrastruktur
-
-### Hauptfunktionen
-
-- 🎬 Erstellung und Bearbeitung von Videoprojekten
+- 🎬 Professionelle Videobearbeitung mit Multi-Track-Timeline
 - 🖥️ Plattformübergreifend (Windows, macOS, Linux)
+- 🚀 GPU-beschleunigte Videoverarbeitung (NVENC, QuickSync, VideoToolbox)
+- 🤖 KI-gestützte Objekt-/Gesichtserkennung (YOLO v11 - ORT behoben)
+- 🎨 30+ Übergänge, visuelle Effekte und Filter
+- 📝 Erweiterte Untertitelsystem mit 12 Stilen und Animationen
+- 🎵 Multi-Track-Audiobearbeitung mit Effekten
+- 📤 Export zu MP4/MOV/WebM mit Social Media OAuth-Integration
+- 🔐 OAuth-Unterstützung für YouTube/TikTok/Vimeo/Telegram mit sicherer Token-Speicherung
+- 📱 Geräte-Presets (iPhone, iPad, Android) für optimierte Exporte
 - 🧠 Zustandsverwaltung mit XState v5
+- 🌐 Internationalisierung-Support (11 Sprachen)
+- 💾 Intelligente Zwischenspeicherung und einheitliches Vorschausystem
+- 🎨 Moderne UI mit Tailwind CSS v4, shadcn-ui
+- 📚 Vollständige Dokumentation mit 2400+ Tests (98.8% Erfolgsrate)
 - 🌐 Internationalisierungsunterstützung (i18n)
 - 🎨 Moderne UI mit Tailwind CSS v4
 - 🔍 Strenge Codequalitätskontrolle mit ESLint, Stylelint und Clippy
@@ -86,43 +93,6 @@ bun tauri dev
 
 ```bash
 bun tauri build
-```
-
-## Projektstruktur
-
-```
-timeline-studio/
-├── src/                  # Frontend-Quellcode (React, Next.js)
-│   ├── features/         # Anwendungsfeature-Module (17 Features)
-│   │   ├── browser/      ✅ # Mediendatei-Browser mit Tabs
-│   │   ├── media/        ✅ # Mediendatei-Verwaltung
-│   │   ├── video-player/ ✅ # Video-Player mit Steuerelementen
-│   │   ├── timeline/     ⚠️ # Timeline (benötigt Arbeit)
-│   │   ├── resources/    ⚠️ # Ressourcen (benötigt UI-Komponenten)
-│   │   ├── ai-chat/      ❓ # KI-Chat (benötigt Überprüfung)
-│   │   ├── options/      ⚠️ # Optionen-Panel (benötigt Erweiterung)
-│   │   ├── music/        ✅ # Musikdateien
-│   │   ├── effects/      ✅ # Video-Effekte
-│   │   ├── filters/      ✅ # Bildfilter
-│   │   ├── transitions/  ✅ # Clip-Übergänge
-│   │   ├── subtitles/    ✅ # Untertitel
-│   │   ├── templates/    ✅ # Projektvorlagen
-│   │   ├── modals/       ✅ # Modale Fenster
-│   │   ├── app-state/    ✅ # Globaler Zustand
-│   │   ├── top-bar/      ✅ # Obere Navigationsleiste
-│   │   ├── media-studio/ ✅ # Root-Komponente
-│   │   └── OVERVIEW.md   📚 # Übersicht aller Features
-│   ├── i18n/             # Internationalisierung
-│   ├── types/            # TypeScript-Typen
-│   ├── lib/              # Hilfsprogramme und Bibliotheken
-│   └── components/       # Wiederverwendbare UI-Komponenten
-├── src-tauri/            # Backend-Quellcode (Rust)
-│   ├── src/              # Rust-Code
-│   └── Cargo.toml        # Rust-Abhängigkeitskonfiguration
-├── public/               # Statische Dateien
-├── DEV.md                📚 # Entwicklerdokumentation
-├── README.ru.md          📚 # Russische Dokumentation
-└── package.json          # Node.js-Abhängigkeitskonfiguration
 ```
 
 ## Dokumentation
@@ -169,30 +139,6 @@ timeline-studio/
 - `bun test:coverage` - Tests mit Coverage-Bericht ausführen
 - `bun test:ui` - Tests mit UI-Oberfläche ausführen
 - `bun test:e2e` - End-to-End-Tests mit Playwright ausführen
-
-### Zustandsautomaten (XState v5)
-
-Das Projekt verwendet XState v5 zur Verwaltung komplexer Zustandslogik.
-
-#### ✅ Implementierte Zustandsautomaten (11):
-
-- `appSettingsMachine` - zentralisierte Einstellungsverwaltung
-- `chatMachine` - KI-Chat-Verwaltung
-- `modalMachine` - modale Fensterverwaltung
-- `playerMachine` - Video-Player-Verwaltung
-- `resourcesMachine` - Timeline-Ressourcenverwaltung
-- `musicMachine` - Musikdatei-Verwaltung
-- `userSettingsMachine` - Benutzereinstellungen
-- `projectSettingsMachine` - Projekteinstellungen
-- `mediaListMachine` - Mediendateilisten-Verwaltung
-- `templateListMachine` - Vorlagenverwaltung
-- `timelineMachine` - ✅ **ABGESCHLOSSEN!** Haupt-Timeline-Zustandsautomat (20 Tests bestanden)
-
-#### ❌ Benötigen Implementierung (1):
-
-- `optionsMachine` - Optionen-Panel-Verwaltung
-
-Siehe `DEV.md` für Details.
 
 ### Tests
 

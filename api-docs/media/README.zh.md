@@ -5,6 +5,12 @@
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
@@ -12,17 +18,24 @@
 
 Timeline Studio 是一款基于现代 Web 技术构建的专业视频编辑应用程序，具有原生性能。我们的目标是创建一个达到 DaVinci Resolve 水平的编辑器，让每个人都能使用。
 
-![时间轴界面](/public/screen3.png)
+![时间轴界面 #1](/public/screen2.png)
+
+![时间轴界面 #2](/public/screen4.png)
 
 ### 项目状态（2025年6月）
 
-**总体完成度：75%**
+**总体完成度：86.2%** ⬆️（OAuth 集成和 Export 完成后更新）
 - ✅ 核心编辑功能完成
 - ✅ 带 GPU 加速的视频编译器
-- ✅ 识别模块（YOLO v11）
-- ✅ 效果、滤镜和转场
-- ⚠️ 导出 UI 需要完成（25%）
-- ⚠️ 资源面板开发中（40%）
+- ✅ 识别模块（YOLO v11）- ORT 已修复
+- ✅ 效果、滤镜和转场（75-80%）
+- ✅ Export - 完整的社交媒体集成！（98%）🎉
+- ✅ OAuth 集成 - 支持 YouTube/TikTok/Vimeo/Telegram
+- ✅ 统一的预览系统与 Preview Manager
+- ✅ 媒体持久化和临时项目
+- ✅ 模板系统 - 基于配置（95% 完成）
+- ✅ Timeline 90% 完成
+- ⚠️ 资源面板开发中（85%）
 - 🎯 目标 MVP 发布：2025年6月底
 
 ## 主要功能
@@ -30,15 +43,18 @@ Timeline Studio 是一款基于现代 Web 技术构建的专业视频编辑应�
 - 🎬 专业视频编辑，支持多轨道时间轴
 - 🖥️ 跨平台（Windows、macOS、Linux）
 - 🚀 GPU 加速视频处理（NVENC、QuickSync、VideoToolbox）
-- 🤖 AI 驱动的对象/人脸识别（YOLO v11）
+- 🤖 AI 驱动的对象/人脸识别（YOLO v11 - ORT 已修复）
 - 🎨 30+ 种转场、视觉效果和滤镜
 - 📝 高级字幕系统，支持 12 种样式和动画
 - 🎵 多轨音频编辑，带效果
+- 📤 导出到 MP4/MOV/WebM，支持社交媒体 OAuth 集成
+- 🔐 支持 YouTube/TikTok/Vimeo/Telegram OAuth，安全令牌存储
+- 📱 设备预设（iPhone、iPad、Android）用于优化导出
 - 🧠 使用 XState v5 进行状态管理
-- 🌐 国际化支持（6 种语言）
-- 💾 智能缓存和预览生成
+- 🌐 国际化支持（11 种语言）
+- 💾 智能缓存和统一预览系统
 - 🎨 使用 Tailwind CSS v4、shadcn-ui 的现代 UI
-- 📚 完整文档，测试覆盖率超过 80%
+- 📚 完整文档，2400+ 测试（98.8% 成功率）
 
 ## 开始使用
 
@@ -74,68 +90,6 @@ bun run tauri dev
 
 ```bash
 bun run tauri build
-```
-
-## 项目结构
-
-```
-timeline-studio/
-├── bin/                              # Shell 脚本
-├── docs/                             # 自动生成的文档
-├── docs-ru/                      # AI 为开发者和代理生成的文档
-├── examples/                         # API 使用示例
-├── promo/                            # GitHub Pages 网站
-├── public/                           # 静态文件
-├── scripts/                          # JavaScript 脚本
-├── src/                              # 前端源代码（React、XState、Next.js）
-│   ├── app/                          # 主应用程序入口点
-│   ├── components/                   # 共享组件
-│   ├── features/                     # 功能模块
-│   │   ├── ai-chat/                  # AI 聊天机器人（交互式助手）
-│   │   ├── app-state/                # 全局应用程序状态
-│   │   ├── browser/                  # 媒体文件浏览器（文件面板）
-│   │   ├── camera-capture/           # 视频/照片相机捕获
-│   │   ├── effects/                  # 视频效果及其参数
-│   │   ├── export/                   # 视频和项目导出
-│   │   ├── filters/                  # 视频滤镜（颜色校正、样式）
-│   │   ├── keyboard-shortcuts/       # 键盘快捷键和预设
-│   │   ├── media/                    # 媒体文件处理（音频/视频）
-│   │   ├── media-studio/             # 媒体编辑工作室
-│   │   ├── modals/                   # 模态窗口（对话框）
-│   │   ├── music/                    # 音乐导入和管理
-│   │   ├── options/                  # 导出和项目设置
-│   │   ├── project-settings/         # 项目设置（尺寸、fps 等）
-│   │   ├── recognition/              # 场景和对象识别
-│   │   ├── resources/                # 项目资源管理
-│   │   ├── style-templates/          # 样式和设计模板
-│   │   ├── subtitles/                # 字幕导入和编辑
-│   │   ├── templates/                # 视频模板和预设
-│   │   ├── timeline/                 # 主编辑时间轴
-│   │   ├── top-bar/                  # 顶部控制面板
-│   │   ├── transitions/              # 剪辑间的视频转场
-│   │   ├── user-settings/            # 用户设置
-│   │   ├── video-player/             # 视频播放器
-│   │   ├── voice-recording/          # 语音录制和配音
-│   │   ├── script-generator/         # 新增：脚本生成
-│   │   ├── montage-planner/          # 新增：蒙太奇规划
-│   │   ├── person-identification/    # 新增：人物识别
-│   │   ├── scene-analyzer/           # 新增：场景分析
-│   │   └── README.md                 # 所有功能概述
-│   ├── i18n/                         # 国际化
-│   ├── lib/                          # 实用工具和库
-│   ├── styles/                       # 全局样式
-|   ├── test/                         # 测试配置和实用工具
-├── src-tauri/                        # 后端（Rust）
-│   ├── src/
-│   │   ├── main.rs                   # Tauri 入口点
-│   │   ├── media.rs                  # 媒体分析（FFmpeg）
-│   │   ├── recognition.rs            # 对象/人脸的 YOLO
-│   │   ├── script_generator.rs       # 脚本生成（Claude/OpenAI/Grok API）
-│   │   ├── montage_planner.rs        # 蒙太奇规划
-│   │   ├── person_identification.rs  # 人物识别
-│   │   ├── scene_analyzer.rs         # 场景分析
-│   │   └── ai_chat.rs                # 聊天处理
-└── package.json                      # Node.js 依赖配置
 ```
 
 ## 文档
@@ -208,10 +162,10 @@ timeline-studio/
 ```bash
 ⨯ bun run test
 
- Test Files  141 passed (141)
-      Tests  1295 passed | 9 skipped (1304)
-   Start at  23:20:43
-   Duration  13.14s (transform 3.71s, setup 25.13s, collect 13.88s, tests 8.69s, environment 38.26s, prepare 8.96s)
+ Test Files  229 passed (229)
+      Tests  3022 passed | 20 skipped (3042)
+   Start at  13:35:14
+   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
 
 ⨯ bun run test:rust
    test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s

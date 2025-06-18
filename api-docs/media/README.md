@@ -160,10 +160,10 @@ The project uses Vitest for unit testing. Tests are located in the feature's __t
 ```bash
 ⨯ bun run test
 
- Test Files  221 passed (221)
-      Tests  2658 passed | 20 skipped (2678)
-   Start at  05:07:53
-   Duration  29.45s (transform 5.22s, setup 66.59s, collect 28.44s, tests 28.04s, environment 79.86s, prepare 18.33s)
+ Test Files  229 passed (229)
+      Tests  3022 passed | 20 skipped (3042)
+   Start at  13:35:14
+   Duration  29.47s (transform 5.44s, setup 47.14s, collect 24.93s, tests 31.95s, environment 72.34s, prepare 23.00s)
 
 ⨯ bun run test:rust
    test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
