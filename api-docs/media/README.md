@@ -3,34 +3,39 @@
 [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
-[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
-<!-- [![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml) -->
 
 ## Project Overview
 
 Timeline Studio is a professional video editing application built with modern web technologies and native performance. Our goal is to create a DaVinci Resolve-level editor that's accessible to everyone.
 
-![Timeline Interface](/public/screen3.png)
+![Timeline Interface #1](/public/screen2.png)
+
+![Timeline Interface #2](/public/screen4.png)
 
 ### Project Status (June 2025)
 
-**Overall Completion: 73.5%**
+**Overall Completion: 86.2%** ⬆️ (updated after OAuth integration and Export completion)
 - ✅ Core editing functionality complete
 - ✅ Video Compiler with GPU acceleration
-- ✅ Recognition module (YOLO v11)
+- ✅ Recognition module (YOLO v11) - ORT fixed
 - ✅ Effects, filters, and transitions (75-80%)
-- ✅ Export - local export fully working! (75%)
+- ✅ Export - full social media integration! (98%) 🎉
+- ✅ OAuth Integration - YouTube/TikTok/Vimeo/Telegram support
 - ✅ Unified preview system with Preview Manager
 - ✅ Media persistence and temp projects
-- ⚠️ Timeline at 90% completion
-- ⚠️ Resources panel in development (40%)
+- ✅ Template System - configuration-based (95% completed)
+- ✅ Timeline at 90% completion
+- ⚠️ Resources panel in development (85%)
 - 🎯 Target MVP release: End of June 2025
 
 ## Key Features
@@ -42,12 +47,14 @@ Timeline Studio is a professional video editing application built with modern we
 - 🎨 30+ transitions, visual effects, and filters
 - 📝 Advanced subtitle system with 12 styles and animations
 - 🎵 Multi-track audio editing with effects
-- 📤 Export to MP4/MOV/WebM with presets for social media
+- 📤 Export to MP4/MOV/WebM with social media OAuth integration
+- 🔐 YouTube/TikTok/Vimeo/Telegram OAuth support with secure token storage
+- 📱 Device presets (iPhone, iPad, Android) for optimized exports
 - 🧠 State management using XState v5
 - 🌐 Internationalization support (11 languages)
 - 💾 Smart caching and unified preview system
 - 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
-- 📚 Complete documentation with 80%+ test coverage
+- 📚 Complete documentation with 2400+ tests (98.8% success rate)
 
 ## Getting Started
 
@@ -85,78 +92,20 @@ bun run tauri dev
 bun run tauri build
 ```
 
-## Project Structure
-
-```
-timeline-studio/
-├── bin/                              # Shell scripts
-├── docs/                             # Automatically generated documentation
-├── docs-ru/                      # AI-generated docs for developers and agents
-├── examples/                         # API usage examples
-├── promo/                            # GitHub Pages website
-├── public/                           # Static files
-├── scripts/                          # JavaScript scripts
-├── src/                              # Frontend source code (React, XState, Next.js)
-│   ├── app/                          # Main application entry point
-│   ├── components/                   # Shared components
-│   ├── features/                     # Features
-│   │   ├── ai-chat/                  # AI chatbot (interactive assistant)
-│   │   ├── app-state/                # Global application state
-│   │   ├── browser/                  # Media file browser (file panel)
-│   │   ├── camera-capture/           # Video/photo camera capture
-│   │   ├── effects/                  # Video effects and their parameters
-│   │   ├── export/                   # Video and project export
-│   │   ├── filters/                  # Video filters (color correction, styles)
-│   │   ├── keyboard-shortcuts/       # Keyboard shortcuts and presets
-│   │   ├── media/                    # Media file handling (audio/video)
-│   │   ├── media-studio/             # Media editing studio
-│   │   ├── modals/                   # Modal windows (dialogs)
-│   │   ├── music/                    # Music import and management
-│   │   ├── options/                  # Export and project settings
-│   │   ├── project-settings/         # Project settings (size, fps, etc.)
-│   │   ├── recognition/              # Scene and object recognition
-│   │   ├── resources/                # Project resource management
-│   │   ├── style-templates/          # Styles and design templates
-│   │   ├── subtitles/                # Subtitle import and editing
-│   │   ├── templates/                # Video templates and presets
-│   │   ├── timeline/                 # Main editing timeline
-│   │   ├── top-bar/                  # Top control panel
-│   │   ├── transitions/              # Video transitions between clips
-│   │   ├── user-settings/            # User settings
-│   │   ├── video-player/             # Video player
-│   │   ├── voice-recording/          # Voice recording and voiceover
-│   │   ├── script-generator/         # New: script generation
-│   │   ├── montage-planner/          # New: montage planning
-│   │   ├── person-identification/    # New: person identification
-│   │   ├── scene-analyzer/           # New: scene analysis
-│   │   └── README.md                 # Overview of all features
-│   ├── i18n/                         # Internationalization
-│   ├── lib/                          # Utilities and libraries
-│   ├── styles/                       # Global styles
-|   ├── test/                         # Test config and utilities
-├── src-tauri/                        # Backend (Rust)
-│   ├── src/
-│   │   ├── main.rs                   # Tauri entry point
-│   │   ├── media.rs                  # Media analysis (FFmpeg)
-│   │   ├── recognition.rs            # YOLO for objects/faces
-│   │   ├── script_generator.rs       # Script generation (Claude/OpenAI/Grok API)
-│   │   ├── montage_planner.rs        # Montage planning
-│   │   ├── person_identification.rs  # Person identification
-│   │   ├── scene_analyzer.rs         # Scene analysis
-│   │   └── ai_chat.rs                # Chat processing
-└── package.json                      # Node.js dependencies configuration
-```
-
 ## Documentation
 
 ### 📚 Main Documentation
 
-- 📚 [Documentation Map](docs-ru/MAP.md) - Complete documentation overview
-- 🏗️ [Architecture Guide](docs-ru/ARCHITECTURE.md) - System architecture
-- 🧪 [Testing Guide](docs-ru/testing/TESTING.md) - Testing strategies
-- 📡 [API Reference](docs-ru/API.md) - Tauri commands reference
-- 🚀 [Deployment Guide](docs-ru/deployment/DEPLOYMENT.md) - Build and deployment
-- 🛣️ [Roadmap](docs-ru/ROADMAP.md) - Development roadmap
+- 📚 [Documentation Overview](docs-ru/README.md) - Complete documentation map
+- 🚀 [Getting Started](docs-ru/01-getting-started/README.md) - Installation and first steps
+- 🏗️ [Architecture Guide](docs-ru/02-architecture/README.md) - System architecture
+- 🎯 [Features Guide](docs-ru/03-features/README.md) - Feature overview and status
+- 📡 [API Reference](docs-ru/04-api-reference/README.md) - Tauri commands reference
+- 🧪 [Development Guide](docs-ru/05-development/README.md) - Testing and development
+- 🚀 [Deployment Guide](docs-ru/06-deployment/README.md) - Build and deployment
+- 📋 [User Guides](docs-ru/07-guides/README.md) - Performance and best practices
+- 🛣️ [Roadmap](docs-ru/08-roadmap/README.md) - Development roadmap
+- 🔐 [OAuth Setup](docs-ru/09-oauth-setup/oauth-setup-guide.md) - Social media integration
 
 ### 📋 Project Documentation
 
@@ -202,23 +151,6 @@ timeline-studio/
 - `bun run test:e2e:real` - Run e2e tests with real media files
 - `bun run test:e2e:integration` - Run integration e2e tests (requires INTEGRATION_TEST=true)
 - `bun run playwright:install` - Install Playwright browsers
-
-### State Machines (XState v5)
-
-The project uses XState v5 for managing complex state logic.
-
-#### ✅ Implemented State Machines (11):
-
-- `appSettingsMachine` - centralized settings management
-- `browserStateMachine` - browser state management
-- `chatMachine` - AI chat management
-- `modalMachine` - modal windows management
-- `playerMachine` - video player management
-- `resourcesMachine` - timeline resources management
-- `userSettingsMachine` - user settings
-- `projectSettingsMachine` - project settings
-- `mediaMachine` - media files management
-- `timelineMachine` - Main timeline state machine
 
 ### Testing
 
