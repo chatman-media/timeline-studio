@@ -24,19 +24,24 @@ Timeline Studio is a professional video editing application built with modern we
 
 ### Project Status (June 2025)
 
-**Overall Completion: 86.2%** ⬆️ (updated after OAuth integration and Export completion)
-- ✅ Core editing functionality complete
-- ✅ Video Compiler with GPU acceleration
-- ✅ Recognition module (YOLO v11) - ORT fixed
-- ✅ Effects, filters, and transitions (75-80%)
-- ✅ Export - full social media integration! (98%) 🎉
-- ✅ OAuth Integration - YouTube/TikTok/Vimeo/Telegram support
-- ✅ Unified preview system with Preview Manager
-- ✅ Media persistence and temp projects
-- ✅ Template System - configuration-based (95% completed)
-- ✅ Timeline at 90% completion
-- ⚠️ Resources panel in development (85%)
-- 🎯 Target MVP release: End of June 2025
+**Overall Completion: 53.4%** ⬆️ (recalculated with real module status and 14 new planned modules)
+- **Completed**: 11 modules (100% readiness) 
+- **In development**: 8 modules (45-85% readiness)
+- **Planned**: 5 modules (30-85% readiness)
+- **New planned**: 14 modules (0% readiness) - [details in planned/](docs-ru/08-roadmap/planned/)
+
+### Key Achievements:
+- ✅ **Video Compiler** - fully implemented with GPU acceleration (100%)
+- ✅ **Timeline** - main editor fully functional (100%)
+- ✅ **Media Management** - file management ready (100%)
+- ✅ **Core Architecture** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Recognition** - YOLO v11 object and face recognition (100%)
+- 🔄 **Effects/Filters/Transitions** - rich effects library in Filmora style (75-80%)
+- 🔄 **Export** - almost ready, details of parameters remain (85%)
+- ❗ **Resources UI** - UI components missing (40%)
+- ❗ **AI Chat** - requires real API integration (30%)
+- 📋 **14 new planned modules** - [see planned/](docs-ru/08-roadmap/planned/) to achieve DaVinci + Filmora level
+- 🎯 **Goal** - combine DaVinci power and Filmora library with AI automation
 
 ## Key Features
 
