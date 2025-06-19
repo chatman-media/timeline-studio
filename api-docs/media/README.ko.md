@@ -10,7 +10,14 @@
 
 ## 프로젝트 개요
 
-Timeline Studio는 최신 웹 기술과 네이티브 성능을 결합한 전문적인 동영상 편집 애플리케이션입니다. 모든 사람이 접근할 수 있는 DaVinci Resolve 수준의 편집기를 만드는 것이 우리의 목표입니다.
+Timeline Studio는 Tauri 아키텍처(Rust + React)로 구축된 최신 비디오 편집기입니다.
+
+**우리의 목표**: 다음을 결합한 편집기 만들기:
+- **DaVinci Resolve의 전문적인 기능** - 편집, 색상 보정, 오디오 믹싱, 시각 효과, 모션 그래픽 및 고급 합성에 대한 완전한 제어
+- **광범위한 창의적 라이브러리** - Filmora와 같은 인기 편집기에 필적하는 효과, 필터, 전환, 멀티 카메라 템플릿, 애니메이션 제목, 스타일 템플릿 및 자막 프리셋
+- **AI 스크립팅 및 자동화** - 다양한 언어와 다양한 플랫폼을 위한 자동 콘텐츠 생성
+
+**핵심 혁신**: 사용자가 비디오, 음악 및 기타 리소스를 업로드하기만 하면 AI가 다양한 언어로 자동으로 비디오 세트를 만들고 다양한 플랫폼(YouTube, TikTok, Vimeo, Telegram)에 최적화합니다.
 
 ![Timeline Interface](/public/screen3.png)
 
@@ -129,10 +136,10 @@ bun run tauri build
 ```bash
 ⨯ bun run test
 
- Test Files  242 passed | 1 skipped (243)
-      Tests  3284 passed | 60 skipped (3344)
-   Start at  16:17:39
-   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+ Test Files  258 passed | 1 skipped (259)
+      Tests  3604 passed | 60 skipped (3664)
+   Start at  20:08:23
+   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
 
 ⨯ bun run test:rust
    test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s

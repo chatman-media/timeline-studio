@@ -2,21 +2,28 @@
 
 [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
-[![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
-[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
-[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=e29a9e35-a271-42fc-a4d1-3b0a7f1ef672&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=e29a9e35-a271-42fc-a4d1-3b0a7f1ef672&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=flat-square&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
+[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=flat-square&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=flat-square&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=flat-square&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=flat-square&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=flat-square&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
 
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
+[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
 ## Project Overview
 
-Timeline Studio is a professional video editing application built with modern web technologies and native performance. Our goal is to create a DaVinci Resolve-level editor that's accessible to everyone.
+Timeline Studio is a modern video editor built on Tauri architecture (Rust + React).
+
+**Our goal**: create an editor combining:
+- **Professional power of DaVinci Resolve** - complete control over editing, color grading, audio mixing, visual effects, motion graphics, and advanced compositing
+- **Extensive creative library** - effects, filters, transitions, multi-camera templates, animated titles, style templates, and subtitle presets comparable to popular editors like Filmora
+- **AI scripting and automation** - automatic content generation in different languages and for different platforms
+
+**Key innovation**: It's enough for users to upload videos, music and other resources, and AI will automatically create a set of videos in different languages and optimized for different platforms (YouTube, TikTok, Vimeo, Telegram).
 
 ![Timeline Interface #1](/public/screen2.png)
 
@@ -24,7 +31,7 @@ Timeline Studio is a professional video editing application built with modern we
 
 ### Project Status (June 2025)
 
-**Overall Completion: 53.4%** ⬆️ (recalculated with real module status and 14 new planned modules)
+**Overall Completion: 53.8%** ⬆️ (recalculated with real module status and 14 new planned modules)
 - **Completed**: 11 modules (100% readiness) 
 - **In development**: 8 modules (45-85% readiness)
 - **Planned**: 5 modules (30-85% readiness)
@@ -38,7 +45,7 @@ Timeline Studio is a professional video editing application built with modern we
 - ✅ **Recognition** - YOLO v11 object and face recognition (100%)
 - 🔄 **Effects/Filters/Transitions** - rich effects library in Filmora style (75-80%)
 - 🔄 **Export** - almost ready, details of parameters remain (85%)
-- ❗ **Resources UI** - UI components missing (40%)
+- 🔄 **Resources Panel** - main UI ready, drag & drop missing (80%)
 - ❗ **AI Chat** - requires real API integration (30%)
 - 📋 **14 new planned modules** - [see planned/](docs-ru/08-roadmap/planned/) to achieve DaVinci + Filmora level
 - 🎯 **Goal** - combine DaVinci power and Filmora library with AI automation
@@ -167,10 +174,10 @@ The project uses Vitest for unit testing. Tests are located in the feature's __t
 ```bash
 ⨯ bun run test
 
- Test Files  242 passed | 1 skipped (243)
-      Tests  3284 passed | 60 skipped (3344)
-   Start at  16:17:39
-   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+ Test Files  258 passed | 1 skipped (259)
+      Tests  3604 passed | 60 skipped (3664)
+   Start at  20:08:23
+   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
 
 ⨯ bun run test:rust
    test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s

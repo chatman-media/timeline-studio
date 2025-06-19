@@ -2,23 +2,30 @@
 
 [English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
-[![Build Status](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Lint CSS](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml/badge.svg)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
-[![Frontend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://codecov.io/gh/chatman-media/timeline-studio/branch/main/graph/badge.svg?token=ee5ebdfd-4bff-4c8c-8cca-36a0448df9de&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=flat-square&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
+[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=flat-square&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
+[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=flat-square&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
+[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=flat-square&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=flat-square&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=flat-square&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
 
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-blue?logo=telegram)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
+[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
 <div dir="rtl">
 
 ## نمای کلی پروژه
 
-Timeline Studio یک برنامه ویرایش ویدیوی حرفه‌ای است که با فناوری‌های وب مدرن و عملکرد بومی ساخته شده است. هدف ما ایجاد یک ویرایشگر در سطح DaVinci Resolve است که برای همه قابل دسترس باشد.
+Timeline Studio یک ویرایشگر ویدیوی مدرن است که بر پایه معماری Tauri (Rust + React) ساخته شده است.
+
+**هدف ما**: ایجاد ویرایشگری که ترکیبی از موارد زیر باشد:
+- **قدرت حرفه‌ای DaVinci Resolve** - کنترل کامل بر ویرایش، درجه‌بندی رنگ، میکس صدا، جلوه‌های بصری، گرافیک متحرک و ترکیب پیشرفته
+- **کتابخانه خلاقانه گسترده** - جلوه‌ها، فیلترها، انتقال‌ها، قالب‌های چند دوربینه، عناوین متحرک، قالب‌های سبک و پیش‌تنظیمات زیرنویس قابل مقایسه با ویرایشگرهای محبوب مانند Filmora
+- **اسکریپت‌نویسی و خودکارسازی با هوش مصنوعی** - تولید خودکار محتوا به زبان‌های مختلف و برای پلتفرم‌های مختلف
+
+**نوآوری کلیدی**: کافی است کاربران ویدیوها، موسیقی و سایر منابع را آپلود کنند و هوش مصنوعی به طور خودکار مجموعه‌ای از ویدیوها را به زبان‌های مختلف و بهینه‌سازی شده برای پلتفرم‌های مختلف (YouTube، TikTok، Vimeo، Telegram) ایجاد خواهد کرد.
 
 ![رابط تایم‌لاین #1](/public/screen2.png)
 
@@ -162,10 +169,10 @@ bun run tauri build
 ```bash
 ⨯ bun run test
 
- Test Files  242 passed | 1 skipped (243)
-      Tests  3284 passed | 60 skipped (3344)
-   Start at  16:17:39
-   Duration  29.44s (transform 5.03s, setup 47.28s, collect 22.85s, tests 32.74s, environment 74.05s, prepare 22.21s)
+ Test Files  258 passed | 1 skipped (259)
+      Tests  3604 passed | 60 skipped (3664)
+   Start at  20:08:23
+   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
 
 ⨯ bun run test:rust
    test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
