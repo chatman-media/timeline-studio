@@ -130,158 +130,56 @@ bun run tauri build
 
 ## Development
 
-### Available Scripts
-
-- `bun run dev` - Launch Next.js in development mode
-- `bun run tauri dev` - Launch Tauri in development mode
-- `bun run build` - Build Next.js
-- `bun run tauri build` - Build Tauri application
-
-#### Linting and Formatting
-
-- `bun run lint` - Check JavaScript/TypeScript code with ESLint
-- `bun run lint:fix` - Fix ESLint errors
-- `bun run lint:css` - Check CSS code with Stylelint
-- `bun run lint:css:fix` - Fix Stylelint errors
-- `bun run format:imports` - Format imports
-- `bun run lint:rust` - Check Rust code with Clippy
-- `bun run format:rust` - Format Rust code with rustfmt
-- `bun run check:all` - Run all checks and tests
-- `bun run fix:all` - Fix all linting errors
-
-#### Testing
-
-- `bun run test` - Run tests
-- `bun run test:app` - Run tests for application components only
-- `bun run test:watch` - Run tests in watch mode
-- `bun run test:coverage` - Run tests with coverage report
-- `bun run test:coverage:report` - Generate and submit test coverage report
-- `bun run test:rust` - Run Rust backend tests
-- `bun run test:rust:watch` - Run Rust tests in watch mode
-- `bun run test:coverage:rust` - Run Rust tests with coverage
-- `bun run test:coverage:rust:report` - Generate and submit Rust coverage report
-- `bun run test:ui` - Run tests with UI interface
-- `bun run test:e2e` - Run end-to-end tests with Playwright
-- `bun run test:e2e:ui` - Run e2e tests with Playwright UI
-- `bun run test:e2e:basic` - Run basic media import e2e test
-- `bun run test:e2e:real` - Run e2e tests with real media files
-- `bun run test:e2e:integration` - Run integration e2e tests (requires INTEGRATION_TEST=true)
-- `bun run playwright:install` - Install Playwright browsers
-
-### Testing
-
-The project uses Vitest for unit testing. Tests are located in the feature's __tests__ directory, along with mocks in __mocks__.
-
-#### 🧪 Test Coverage Status:
-```bash
-⨯ bun run test
-
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
-
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
-
-```
+### Quick Start
 
 ```bash
-# Run client tests
-bun run test
+# Development mode
+bun run tauri dev
 
-# Run rust tests
-bun run test:rust
+# Run tests
+bun run test && bun run test:rust
 
-# Run tests with coverage report
-bun run test:coverage
-
-# Run tests for specific function
-bun run test src/features/effects
+# Check code quality
+bun run check:all
 ```
 
-## Continuous Integration and Deployment
+### Essential Commands
 
-The project is configured to use GitHub Actions for continuous integration and deployment. Workflows:
+| Command | Description |
+|---------|-------------|
+| `bun run tauri dev` | Launch full application in development |
+| `bun run dev` | Launch frontend only |
+| `bun run build` | Build for production |
+| `bun run test` | Run frontend tests |
+| `bun run test:rust` | Run backend tests |
+| `bun run lint` | Check code quality |
+| `bun run fix:all` | Auto-fix code issues |
 
-### Verification and Build
+📚 **[Complete Development Guide →](docs-ru/05-development/README.md)**
 
-- `check-all.yml` - Run all checks and tests
-- `lint-css.yml` - Check CSS code only (runs when CSS files change)
-- `lint-rs.yml` - Check Rust code only (runs when Rust files change)
-- `lint-js.yml` - Check JavaScript/TypeScript code only (runs when JavaScript/TypeScript files change)
+### Test Coverage Status
 
-### Deployment
+✅ **Frontend Tests**: 3,604 passed  
+✅ **Backend Tests**: 504 passed (+18 новых!)  
+📊 **Total**: 4,108 tests passing
 
-- `build.yml` - Build project
-- `build-release.yml` - Build project for release
-- `deploy-promo.yml` - Build and publish promo page on GitHub Pages
-- `docs.yml` - Generate and publish API documentation on GitHub Pages
+## CI/CD & Code Quality
 
-### Linter Configuration
+### Automated Workflows
+- ✅ **Linting**: ESLint, Stylelint, Clippy
+- ✅ **Testing**: Frontend (Vitest), Backend (Rust), E2E (Playwright)
+- ✅ **Coverage**: Codecov integration
+- ✅ **Build**: Cross-platform builds
 
-#### Stylelint (CSS)
+📚 **[Detailed CI/CD Guide →](docs-ru/06-deployment/README.md)**  
+🔧 **[Linting & Formatting →](docs-ru/05-development/linting-and-formatting.md)**
 
-The project uses Stylelint to check CSS code. Configuration is located in the `.stylelintrc.json` file. Main features:
+## Documentation & Resources
 
-- Support for Tailwind CSS directives
-- Ignoring duplicate selectors for Tailwind compatibility
-- Automatic error fixing when saving files (in VS Code)
-
-To run the CSS linter, use the command:
-
-```bash
-bun lint:css
-```
-
-For automatic error fixing:
-
-```bash
-bun lint:css:fix
-```
-
-## API Documentation
-
-API documentation is available at: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-To generate documentation locally, use the command:
-
-```bash
-bun run docs
-```
-
-Documentation will be available in the `docs/` folder.
-
-For real-time documentation development, use:
-
-```bash
-bun run docs:watch
-```
-
-Documentation is automatically updated when source code changes in the `main` branch using the GitHub Actions workflow `docs.yml`.
-
-## Promo Page
-
-Project promo page is available at: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-The promo page source code is located in the `promo/` folder.
-
-For local development of the promo page, use the commands:
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-To build the promo page:
-
-```bash
-cd promo
-bun run build
-```
-
-The promo page is automatically updated when files change in the `promo/` folder on the `main` branch using the GitHub Actions workflow `deploy-promo.yml`.
+- 📚 [**API Documentation**](https://chatman-media.github.io/timeline-studio/api-docs/) - Auto-generated TypeScript docs
+- 🚀 [**Promo Page**](https://chatman-media.github.io/timeline-studio/) - Project showcase
+- 📖 [**Complete Documentation**](docs-ru/README.md) - Full guide in Russian
+- 🎬 [**Live Demo**](https://chatman-media.github.io/timeline-studio/) - Try the editor online
 
 ## Additional Resources
 

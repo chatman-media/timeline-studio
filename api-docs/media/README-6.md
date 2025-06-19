@@ -7,6 +7,9 @@
 - [Настройка окружения](setup.md)
 - [Стандарты кодирования](coding-standards.md)
 - [Тестирование](testing.md)
+- [Команды разработки](development-commands.md) ⭐ **Полный справочник команд**
+- [Справочник package.json](package-scripts-reference.md) 📋 **Все 48 команд с описанием**
+- [Линтинг и форматирование](linting-and-formatting.md) ⭐ **Инструменты качества кода**
 - [Внесение изменений](contributing.md)
 
 ## 🎯 Для кого это руководство
@@ -37,21 +40,24 @@ bun run tauri dev
 
 ```bash
 # Разработка
-bun run dev              # Frontend only
-bun run tauri dev        # Full app
+bun run dev              # Frontend only (Next.js)
+bun run tauri dev        # Full app (Tauri)
+bun run build            # Build production
+bun run tauri build      # Build Tauri app
 
-# Тестирование
-bun run test            # Unit tests
-bun run test:watch      # Watch mode
+# Тестирование (4,108 тестов)
+bun run test            # Frontend tests (3,604)
+bun run test:rust       # Backend tests (504)
+bun run test:e2e        # E2E tests (Playwright)
 bun run test:coverage   # Coverage report
-bun run test:e2e        # E2E tests
 
 # Качество кода
-bun run lint            # ESLint
-bun run lint:fix        # Auto-fix
-bun run type-check      # TypeScript
-bun run format          # Prettier
+bun run lint            # ESLint + Stylelint + Clippy
+bun run check:all       # All checks + tests  
+bun run fix:all         # Auto-fix all issues
 ```
+
+📋 **[Все 48 команд →](package-scripts-reference.md)**
 
 ## 📁 Структура разработки
 

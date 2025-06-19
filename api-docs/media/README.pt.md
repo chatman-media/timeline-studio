@@ -33,19 +33,24 @@ Timeline Studio é um editor de vídeo moderno construído com arquitetura Tauri
 
 ### Status do Projeto (Junho 2025)
 
-**Conclusão Geral: 86.2%** ⬆️ (atualizado após integração OAuth e conclusão do Export)
-- ✅ Funcionalidade principal de edição completa
-- ✅ Compilador de vídeo com aceleração GPU
-- ✅ Módulo de reconhecimento (YOLO v11) - ORT corrigido
-- ✅ Efeitos, filtros e transições (75-80%)
-- ✅ Export - integração completa com redes sociais! (98%) 🎉
-- ✅ Integração OAuth - suporte para YouTube/TikTok/Vimeo/Telegram
-- ✅ Sistema de pré-visualização unificado com Preview Manager
-- ✅ Persistência de mídia e projetos temporários
-- ✅ Sistema de templates - baseado em configuração (95% concluído)
-- ✅ Timeline com 90% de conclusão
-- ⚠️ Painel de recursos em desenvolvimento (85%)
-- 🎯 Data alvo de lançamento MVP: Final de junho 2025
+**Conclusão Geral: 53.8%** ⬆️ (recalculado com status real dos módulos e 14 novos módulos planejados)
+- **Concluído**: 11 módulos (100% pronto)
+- **Em desenvolvimento**: 8 módulos (45-85% pronto)
+- **Planejado**: 5 módulos (30-85% pronto)
+- **Novos planejados**: 14 módulos (0% pronto) - [detalhes em planned/](docs-ru/08-roadmap/planned/)
+
+### Principais Conquistas:
+- ✅ **Compilador de Vídeo** - totalmente implementado com aceleração GPU (100%)
+- ✅ **Timeline** - editor principal totalmente funcional (100%)
+- ✅ **Gerenciamento de Mídia** - gerenciamento de arquivos pronto (100%)
+- ✅ **Arquitetura Central** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Reconhecimento** - reconhecimento de objetos e rostos YOLO v11 (100%)
+- 🔄 **Efeitos/Filtros/Transições** - rica biblioteca de efeitos estilo Filmora (75-80%)
+- 🔄 **Export** - quase pronto, faltam detalhes de parâmetros (85%)
+- 🔄 **Painel de Recursos** - UI principal pronto, falta drag & drop (80%)
+- ❗ **AI Chat** - requer integração real da API (30%)
+- 📋 **14 novos módulos planejados** - [ver planned/](docs-ru/08-roadmap/planned/) para alcançar nível DaVinci + Filmora
+- 🎯 **Objetivo** - combinar poder do DaVinci e biblioteca Filmora com automação AI
 
 ## Recursos Principais
 
@@ -123,31 +128,38 @@ bun run tauri build
 
 ## Desenvolvimento
 
-### Scripts Disponíveis
+### Início Rápido
 
-- `bun run dev` - Iniciar Next.js em modo de desenvolvimento
-- `bun run tauri dev` - Iniciar Tauri em modo de desenvolvimento
-- `bun run build` - Build do Next.js
-- `bun run tauri build` - Build da aplicação Tauri
+```bash
+# Modo de desenvolvimento
+bun run tauri dev
 
-#### Linting e Formatação
+# Executar testes
+bun run test && bun run test:rust
 
-- `bun run lint` - Verificar código JavaScript/TypeScript com ESLint
-- `bun run lint:fix` - Corrigir erros do ESLint
-- `bun run lint:css` - Verificar código CSS com Stylelint
-- `bun run lint:css:fix` - Corrigir erros do Stylelint
-- `bun run format:imports` - Formatar imports
-- `bun run lint:rust` - Verificar código Rust com Clippy
-- `bun run format:rust` - Formatar código Rust com rustfmt
-- `bun run check:all` - Executar todas as verificações e testes
-- `bun run fix:all` - Corrigir todos os erros de linting
+# Verificar qualidade do código
+bun run check:all
+```
 
-#### Testes
+### Comandos Essenciais
 
-- `bun run test` - Executar testes
-- `bun run test:app` - Executar testes apenas dos componentes da aplicação
-- `bun run test:watch` - Executar testes em modo watch
-- `bun run test:coverage` - Executar testes com relatório de cobertura
+| Comando | Descrição |
+|---------|-------------|
+| `bun run tauri dev` | Iniciar aplicação completa em desenvolvimento |
+| `bun run dev` | Iniciar apenas frontend |
+| `bun run build` | Build para produção |
+| `bun run test` | Executar testes frontend |
+| `bun run test:rust` | Executar testes backend |
+| `bun run lint` | Verificar qualidade do código |
+| `bun run fix:all` | Auto-corrigir problemas de código |
+
+📚 **[Guia Completo de Desenvolvimento →](docs-ru/05-development/README.md)**
+
+### Status de Cobertura dos Testes
+
+✅ **Testes Frontend**: 3,604 passaram  
+✅ **Testes Backend**: 504 passaram (+18 novos!)  
+📊 **Total**: 4,108 testes passando
 - `bun run test:coverage:report` - Gerar e enviar relatório de cobertura de testes
 - `bun run test:rust` - Executar testes do backend Rust
 - `bun run test:rust:watch` - Executar testes Rust em modo watch
@@ -165,116 +177,23 @@ bun run tauri build
 
 O projeto usa Vitest para testes unitários. Os testes estão localizados no diretório __tests__ de cada recurso, junto com mocks em __mocks__.
 
-#### 🧪 Status de Cobertura de Testes:
-```bash
-⨯ bun run test
+## CI/CD e Qualidade do Código
 
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
+### Processos Automatizados
+- ✅ **Linting**: ESLint, Stylelint, Clippy
+- ✅ **Testes**: Frontend (Vitest), Backend (Rust), E2E (Playwright)
+- ✅ **Cobertura**: Integração Codecov
+- ✅ **Build**: Builds multiplataforma
 
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
+📚 **[Guia Detalhado de CI/CD →](docs-ru/06-deployment/README.md)**  
+🔧 **[Linting e Formatação →](docs-ru/05-development/linting-and-formatting.md)**
 
-```
+## Documentação e Recursos
 
-```bash
-# Executar testes do cliente
-bun run test
-
-# Executar testes rust
-bun run test:rust
-
-# Executar testes com relatório de cobertura
-bun run test:coverage
-
-# Executar testes de função específica
-bun run test src/features/effects
-```
-
-## Integração e Implantação Contínuas
-
-O projeto está configurado para usar GitHub Actions para integração e implantação contínuas. Workflows:
-
-### Verificação e Build
-
-- `check-all.yml` - Executar todas as verificações e testes
-- `lint-css.yml` - Verificar apenas código CSS (executa quando arquivos CSS mudam)
-- `lint-rs.yml` - Verificar apenas código Rust (executa quando arquivos Rust mudam)
-- `lint-js.yml` - Verificar apenas código JavaScript/TypeScript (executa quando arquivos JavaScript/TypeScript mudam)
-
-### Implantação
-
-- `build.yml` - Build do projeto
-- `build-release.yml` - Build do projeto para release
-- `deploy-promo.yml` - Build e publicar página promocional no GitHub Pages
-- `docs.yml` - Gerar e publicar documentação da API no GitHub Pages
-
-### Configuração do Linter
-
-#### Stylelint (CSS)
-
-O projeto usa Stylelint para verificar código CSS. A configuração está localizada no arquivo `.stylelintrc.json`. Principais recursos:
-
-- Suporte para diretivas do Tailwind CSS
-- Ignorar seletores duplicados para compatibilidade com Tailwind
-- Correção automática de erros ao salvar arquivos (no VS Code)
-
-Para executar o linter CSS, use o comando:
-
-```bash
-bun lint:css
-```
-
-Para correção automática de erros:
-
-```bash
-bun lint:css:fix
-```
-
-## Documentação da API
-
-A documentação da API está disponível em: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Para gerar documentação localmente, use o comando:
-
-```bash
-bun run docs
-```
-
-A documentação estará disponível na pasta `docs/`.
-
-Para desenvolvimento de documentação em tempo real, use:
-
-```bash
-bun run docs:watch
-```
-
-A documentação é atualizada automaticamente quando o código fonte muda no branch `main` usando o workflow do GitHub Actions `docs.yml`.
-
-## Página Promocional
-
-A página promocional do projeto está disponível em: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-O código fonte da página promocional está localizado na pasta `promo/`.
-
-Para desenvolvimento local da página promocional, use os comandos:
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-Para build da página promocional:
-
-```bash
-cd promo
-bun run build
-```
-
-A página promocional é atualizada automaticamente quando arquivos mudam na pasta `promo/` no branch `main` usando o workflow do GitHub Actions `deploy-promo.yml`.
+- 📚 [**Documentação da API**](https://chatman-media.github.io/timeline-studio/api-docs/) - Documentação TypeScript auto-gerada
+- 🚀 [**Página Promocional**](https://chatman-media.github.io/timeline-studio/) - Vitrine do projeto
+- 📖 [**Documentação Completa**](docs-ru/README.md) - Guia completo em russo
+- 🎬 [**Demo ao Vivo**](https://chatman-media.github.io/timeline-studio/) - Experimente o editor online
 
 ## Recursos Adicionais
 

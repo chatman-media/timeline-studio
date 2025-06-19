@@ -33,19 +33,24 @@ Timeline Studio 是一款基于 Tauri 架构（Rust + React）构建的现代视
 
 ### 项目状态（2025年6月）
 
-**总体完成度：86.2%** ⬆️（OAuth 集成和 Export 完成后更新）
-- ✅ 核心编辑功能完成
-- ✅ 带 GPU 加速的视频编译器
-- ✅ 识别模块（YOLO v11）- ORT 已修复
-- ✅ 效果、滤镜和转场（75-80%）
-- ✅ Export - 完整的社交媒体集成！（98%）🎉
-- ✅ OAuth 集成 - 支持 YouTube/TikTok/Vimeo/Telegram
-- ✅ 统一的预览系统与 Preview Manager
-- ✅ 媒体持久化和临时项目
-- ✅ 模板系统 - 基于配置（95% 完成）
-- ✅ Timeline 90% 完成
-- ⚠️ 资源面板开发中（85%）
-- 🎯 目标 MVP 发布：2025年6月底
+**总体完成度：53.8%** ⬆️（根据真实模块状态和14个新计划模块重新计算）
+- **已完成**：11个模块（100% 就绪）
+- **开发中**：8个模块（45-85% 就绪）
+- **已计划**：5个模块（30-85% 就绪）
+- **新计划**：14个模块（0% 就绪）- [详情见 planned/](docs-ru/08-roadmap/planned/)
+
+### 关键成就：
+- ✅ **视频编译器** - 完全实现GPU加速（100%）
+- ✅ **时间轴** - 主编辑器完全功能（100%）
+- ✅ **媒体管理** - 文件管理就绪（100%）
+- ✅ **核心架构** - app-state、browser、modals、user/project settings（100%）
+- ✅ **识别** - YOLO v11对象和人脸识别（100%）
+- 🔄 **效果/滤镜/转场** - 丰富的Filmora风格效果库（75-80%）
+- 🔄 **导出** - 几乎完成，参数细节待完善（85%）
+- 🔄 **资源面板** - 主UI就绪，缺少拖放功能（80%）
+- ❗ **AI聊天** - 需要真实API集成（30%）
+- 📋 **14个新计划模块** - [查看 planned/](docs-ru/08-roadmap/planned/) 以达到DaVinci + Filmora水平
+- 🎯 **目标** - 结合DaVinci的强大功能和Filmora的库以及AI自动化
 
 ## 主要功能
 
@@ -119,147 +124,56 @@ bun run tauri build
 
 ## 开发
 
-### 可用脚本
-
-- `bun run dev` - 在开发模式下启动 Next.js
-- `bun run tauri dev` - 在开发模式下启动 Tauri
-- `bun run build` - 构建 Next.js
-- `bun run tauri build` - 构建 Tauri 应用程序
-
-#### 代码检查和格式化
-
-- `bun run lint` - 使用 ESLint 检查 JavaScript/TypeScript 代码
-- `bun run lint:fix` - 修复 ESLint 错误
-- `bun run lint:css` - 使用 Stylelint 检查 CSS 代码
-- `bun run lint:css:fix` - 修复 Stylelint 错误
-- `bun run format:imports` - 格式化导入
-- `bun run lint:rust` - 使用 Clippy 检查 Rust 代码
-- `bun run format:rust` - 使用 rustfmt 格式化 Rust 代码
-- `bun run check:all` - 运行所有检查和测试
-- `bun run fix:all` - 修复所有代码检查错误
-
-#### 测试
-
-- `bun run test` - 运行测试
-- `bun run test:app` - 仅运行应用程序组件测试
-- `bun run test:watch` - 在监视模式下运行测试
-- `bun run test:ui` - 使用 UI 界面运行测试
-- `bun run test:e2e` - 使用 Playwright 运行端到端测试
-
-### 测试
-
-项目使用 Vitest 进行单元测试。测试位于功能的 __tests__ 目录中，模拟对象在 __mocks__ 中。
-
-#### 🧪 测试覆盖率状态：
-```bash
-⨯ bun run test
-
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
-
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s
-
-```
+### 快速开始
 
 ```bash
-# 运行客户端测试
-bun run test
+# 开发模式
+bun run tauri dev
 
-# 运行 rust 测试
-bun run test:rust
+# 运行测试
+bun run test && bun run test:rust
 
-# 运行带覆盖率报告的测试
-bun run test:coverage
-
-# 运行特定功能的测试
-bun run test src/features/effects
+# 检查代码质量
+bun run check:all
 ```
 
-## 持续集成和部署
+### 基本命令
 
-项目配置为使用 GitHub Actions 进行持续集成和部署。工作流程：
+| 命令 | 描述 |
+|------|------|
+| `bun run tauri dev` | 启动完整应用程序开发模式 |
+| `bun run dev` | 仅启动前端 |
+| `bun run build` | 生产环境构建 |
+| `bun run test` | 运行前端测试 |
+| `bun run test:rust` | 运行后端测试 |
+| `bun run lint` | 检查代码质量 |
+| `bun run fix:all` | 自动修复代码问题 |
 
-### 验证和构建
+📚 **[完整开发指南 →](docs-ru/05-development/README.md)**
 
-- `check-all.yml` - 运行所有检查和测试
-- `lint-css.yml` - 仅检查 CSS 代码（CSS 文件更改时运行）
-- `lint-rs.yml` - 仅检查 Rust 代码（Rust 文件更改时运行）
-- `lint-js.yml` - 仅检查 JavaScript/TypeScript 代码（JavaScript/TypeScript 文件更改时运行）
+### 测试覆盖状态
 
-### 部署
+✅ **前端测试**：3,604 通过  
+✅ **后端测试**：504 通过（+18 新增！）  
+📊 **总计**：4,108 测试通过
 
-- `build.yml` - 构建项目
-- `build-release.yml` - 为发布构建项目
-- `deploy-promo.yml` - 在 GitHub Pages 上构建和发布宣传页面
-- `docs.yml` - 在 GitHub Pages 上生成和发布 API 文档
+## CI/CD 和代码质量
 
-### 代码检查器配置
+### 自动化流程
+- ✅ **代码检查**：ESLint、Stylelint、Clippy
+- ✅ **测试**：前端（Vitest）、后端（Rust）、E2E（Playwright）
+- ✅ **覆盖率**：Codecov 集成
+- ✅ **构建**：跨平台构建
 
-#### Stylelint（CSS）
+📚 **[详细 CI/CD 指南 →](docs-ru/06-deployment/README.md)**  
+🔧 **[代码检查和格式化 →](docs-ru/05-development/linting-and-formatting.md)**
 
-项目使用 Stylelint 来检查 CSS 代码。配置位于 `.stylelintrc.json` 文件中。主要功能：
+## 文档和资源
 
-- 支持 Tailwind CSS 指令
-- 忽略重复选择器以兼容 Tailwind
-- 保存文件时自动错误修复（在 VS Code 中）
-
-要运行 CSS 代码检查器，请使用命令：
-
-```bash
-bun lint:css
-```
-
-对于自动错误修复：
-
-```bash
-bun lint:css:fix
-```
-
-## API 文档
-
-API 文档可在以下位置获取：[https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-要在本地生成文档，请使用命令：
-
-```bash
-bun run docs
-```
-
-文档将在 `docs/` 文件夹中可用。
-
-对于实时文档开发：
-
-```bash
-bun run docs:watch
-```
-
-当 `main` 分支中的源代码更改时，文档会使用 GitHub Actions 工作流程 `docs.yml` 自动更新。
-
-## 宣传页面
-
-项目宣传页面可在以下位置获取：[https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-宣传页面源代码位于 `promo/` 文件夹中。
-
-对于宣传页面的本地开发，请使用命令：
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-要构建宣传页面：
-
-```bash
-cd promo
-bun run build
-```
-
-当 `main` 分支上的 `promo/` 文件夹中的文件更改时，宣传页面会使用 GitHub Actions 工作流程 `deploy-promo.yml` 自动更新。
+- 📚 [**API 文档**](https://chatman-media.github.io/timeline-studio/api-docs/) - 自动生成的 TypeScript 文档
+- 🚀 [**宣传页面**](https://chatman-media.github.io/timeline-studio/) - 项目展示
+- 📖 [**完整文档**](docs-ru/README.md) - 俄语完整指南
+- 🎬 [**在线演示**](https://chatman-media.github.io/timeline-studio/) - 在线试用编辑器
 
 ## 附加资源
 

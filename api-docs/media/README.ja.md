@@ -33,19 +33,24 @@ Timeline Studioは、Tauriアーキテクチャ（Rust + React）で構築され
 
 ### プロジェクトステータス（2025年6月）
 
-**全体的な完成度：86.2%** ⬆️（OAuth統合とExport完成後に更新）
-- ✅ コア編集機能完了
-- ✅ GPU加速付きビデオコンパイラー
-- ✅ 認識モジュール（YOLO v11）- ORT修正済み
-- ✅ エフェクト、フィルター、トランジション（75-80%）
-- ✅ Export - 完全なソーシャルメディア統合！（98%）🎉
-- ✅ OAuth統合 - YouTube/TikTok/Vimeo/Telegramサポート
-- ✅ Preview Managerによる統一プレビューシステム
-- ✅ メディア永続化と一時プロジェクト
-- ✅ テンプレートシステム - 設定ベース（95%完了）
-- ✅ Timeline 90%完了
-- ⚠️ リソースパネル開発中（85%）
-- 🎯 目標MVPリリース：2025年6月末
+**全体的な完成度：53.8%** ⬆️（モジュールの実際の状態と1414の新しい計画モジュールで再計算）
+- **完了**：11モジュール（100%準備完了）
+- **開発中**：8モジュール（45-85%準備完了）
+- **計画済み**：5モジュール（30-85%準備完了）
+- **新計画**：14モジュール（0%準備完了）- [詳細はplanned/](docs-ru/08-roadmap/planned/)
+
+### 主要な成果：
+- ✅ **ビデオコンパイラー** - GPU加速で完全実装（100%）
+- ✅ **タイムライン** - メインエディターが完全機能（100%）
+- ✅ **メディア管理** - ファイル管理準備完了（100%）
+- ✅ **コアアーキテクチャ** - app-state、browser、modals、user/project settings（100%）
+- ✅ **認識** - YOLO v11オブジェクト・顔認識（100%）
+- 🔄 **エフェクト/フィルター/トランジション** - Filmoraスタイルの豊富なエフェクトライブラリ（75-80%）
+- 🔄 **エクスポート** - ほぼ完成、パラメーターの詳細が残っている（85%）
+- 🔄 **リソースパネル** - メインUI準備完了、ドラッグ&ドロップが不足（80%）
+- ❗ **AIチャット** - 実際API統合が必要（30%）
+- 📋 **14の新計画モジュール** - [planned/を参照](docs-ru/08-roadmap/planned/) DaVinci + Filmoraレベルに達するため
+- 🎯 **目標** - DaVinciのパワーとFilmoraのライブラリをAI自動化で結合
 
 ## 主な機能
 
@@ -123,31 +128,38 @@ bun run tauri build
 
 ## 開発
 
-### 利用可能なスクリプト
+### クイックスタート
 
-- `bun run dev` - 開発モードでNext.jsを起動
-- `bun run tauri dev` - 開発モードでTauriを起動
-- `bun run build` - Next.jsをビルド
-- `bun run tauri build` - Tauriアプリケーションをビルド
+```bash
+# 開発モード
+bun run tauri dev
 
-#### リンティングとフォーマット
+# テスト実行
+bun run test && bun run test:rust
 
-- `bun run lint` - ESLintでJavaScript/TypeScriptコードをチェック
-- `bun run lint:fix` - ESLintエラーを修正
-- `bun run lint:css` - StylelintでCSSコードをチェック
-- `bun run lint:css:fix` - Stylelintエラーを修正
-- `bun run format:imports` - インポートをフォーマット
-- `bun run lint:rust` - ClippyでRustコードをチェック
-- `bun run format:rust` - rustfmtでRustコードをフォーマット
-- `bun run check:all` - すべてのチェックとテストを実行
-- `bun run fix:all` - すべてのリンティングエラーを修正
+# コード品質チェック
+bun run check:all
+```
 
-#### テスト
+### 基本コマンド
 
-- `bun run test` - テストを実行
-- `bun run test:app` - アプリケーションコンポーネントのテストのみ実行
-- `bun run test:watch` - ウォッチモードでテストを実行
-- `bun run test:coverage` - カバレッジレポート付きでテストを実行
+| コマンド | 説明 |
+|---------|------|
+| `bun run tauri dev` | 完全なアプリケーションを開発モードで起動 |
+| `bun run dev` | フロントエンドのみ起動 |
+| `bun run build` | プロダクション用ビルド |
+| `bun run test` | フロントエンドテスト実行 |
+| `bun run test:rust` | バックエンドテスト実行 |
+| `bun run lint` | コード品質チェック |
+| `bun run fix:all` | コード問題の自動修正 |
+
+📚 **[完全な開発ガイド →](docs-ru/05-development/README.md)**
+
+### テストカバレッジ状態
+
+✅ **フロントエンドテスト**：3,604成功  
+✅ **バックエンドテスト**：504成功（+18新規！）  
+📊 **合計**：4,108テスト成功
 - `bun run test:coverage:report` - テストカバレッジレポートを生成・送信
 - `bun run test:rust` - Rustバックエンドテストを実行
 - `bun run test:rust:watch` - ウォッチモードでRustテストを実行
@@ -193,88 +205,23 @@ bun run test:coverage
 bun run test src/features/effects
 ```
 
-## 継続的インテグレーションとデプロイメント
+## CI/CDとコード品質
 
-プロジェクトは継続的インテグレーションとデプロイメントのためにGitHub Actionsを使用するよう設定されています。ワークフロー：
+### 自動化プロセス
+- ✅ **リンティング**: ESLint、Stylelint、Clippy
+- ✅ **テスト**: フロントエンド（Vitest）、バックエンド（Rust）、E2E（Playwright）
+- ✅ **カバレッジ**: Codecov統合
+- ✅ **ビルド**: クロスプラットフォームビルド
 
-### 検証とビルド
+📚 **[詳細なCI/CDガイド →](docs-ru/06-deployment/README.md)**  
+🔧 **[リンティングとフォーマッティング →](docs-ru/05-development/linting-and-formatting.md)**
 
-- `check-all.yml` - すべてのチェックとテストを実行
-- `lint-css.yml` - CSSコードのみをチェック（CSSファイルが変更された時に実行）
-- `lint-rs.yml` - Rustコードのみをチェック（Rustファイルが変更された時に実行）
-- `lint-js.yml` - JavaScript/TypeScriptコードのみをチェック（JavaScript/TypeScriptファイルが変更された時に実行）
+## ドキュメントとリソース
 
-### デプロイメント
-
-- `build.yml` - プロジェクトをビルド
-- `build-release.yml` - リリース用プロジェクトをビルド
-- `deploy-promo.yml` - GitHub Pagesでプロモページをビルド・公開
-- `docs.yml` - GitHub PagesでAPIドキュメントを生成・公開
-
-### リンター設定
-
-#### Stylelint (CSS)
-
-プロジェクトはCSSコードをチェックするためにStylelintを使用しています。設定は`.stylelintrc.json`ファイルにあります。主な機能：
-
-- Tailwind CSS ディレクティブのサポート
-- Tailwind互換性のための重複セレクターの無視
-- ファイル保存時の自動エラー修正（VS Codeで）
-
-CSSリンターを実行するには、以下のコマンドを使用してください：
-
-```bash
-bun lint:css
-```
-
-自動エラー修正の場合：
-
-```bash
-bun lint:css:fix
-```
-
-## APIドキュメント
-
-APIドキュメントは以下で利用可能です：[https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-ローカルでドキュメントを生成するには、以下のコマンドを使用してください：
-
-```bash
-bun run docs
-```
-
-ドキュメントは`docs/`フォルダで利用可能になります。
-
-リアルタイムドキュメント開発の場合：
-
-```bash
-bun run docs:watch
-```
-
-ドキュメントは、GitHub Actionsワークフロー`docs.yml`を使用して`main`ブランチでソースコードが変更されると自動的に更新されます。
-
-## プロモページ
-
-プロジェクトのプロモページは以下で利用可能です：[https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-プロモページのソースコードは`promo/`フォルダにあります。
-
-プロモページのローカル開発には、以下のコマンドを使用してください：
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-プロモページをビルドするには：
-
-```bash
-cd promo
-bun run build
-```
-
-プロモページは、GitHub Actionsワークフロー`deploy-promo.yml`を使用して`main`ブランチで`promo/`フォルダ内のファイルが変更されると自動的に更新されます。
+- 📚 [**APIドキュメント**](https://chatman-media.github.io/timeline-studio/api-docs/) - 自動生成されたTypeScriptドキュメント
+- 🚀 [**プロモページ**](https://chatman-media.github.io/timeline-studio/) - プロジェクトショーケース
+- 📖 [**完全なドキュメント**](docs-ru/README.md) - ロシア語での完全ガイド
+- 🎬 [**ライブデモ**](https://chatman-media.github.io/timeline-studio/) - オンラインでエディターを試す
 
 ## 追加リソース
 

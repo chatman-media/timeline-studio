@@ -33,19 +33,24 @@ Timeline Studio est un éditeur vidéo moderne construit sur l'architecture Taur
 
 ### Statut du Projet (Juin 2025)
 
-**Achèvement Global : 86.2%** ⬆️ (mis à jour après l'intégration OAuth et l'achèvement Export)
-- ✅ Fonctionnalité d'édition principale terminée
-- ✅ Compilateur vidéo avec accélération GPU
-- ✅ Module de reconnaissance (YOLO v11) - ORT corrigé
-- ✅ Effets, filtres et transitions (75-80%)
-- ✅ Export - intégration complète des réseaux sociaux ! (98%) 🎉
-- ✅ Intégration OAuth - support YouTube/TikTok/Vimeo/Telegram
-- ✅ Système d'aperçu unifié avec Preview Manager
-- ✅ Persistance des médias et projets temporaires
-- ✅ Système de modèles - basé sur la configuration (95% terminé)
-- ✅ Timeline à 90% d'achèvement
-- ⚠️ Panneau de ressources en développement (85%)
-- 🎯 Date cible de sortie MVP : Fin juin 2025
+**Achèvement Global : 53.8%** ⬆️ (recalculé avec état réel des modules et 14 nouveaux modules planifiés)
+- **Terminé** : 11 modules (100% prêt) 
+- **En développement** : 8 modules (45-85% prêt)
+- **Planifié** : 5 modules (30-85% prêt)
+- **Nouveaux planifiés** : 14 modules (0% prêt) - [détails dans planned/](docs-ru/08-roadmap/planned/)
+
+### Réalisations Clés :
+- ✅ **Video Compiler** - complètement implémenté avec accélération GPU (100%)
+- ✅ **Timeline** - éditeur principal complètement fonctionnel (100%)
+- ✅ **Gestion des Médias** - gestion des fichiers prête (100%)
+- ✅ **Architecture Centrale** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Reconnaissance** - reconnaissance d'objets et visages YOLO v11 (100%)
+- 🔄 **Effets/Filtres/Transitions** - riche bibliothèque d'effets style Filmora (75-80%)
+- 🔄 **Export** - presque prêt, il reste des détails de paramètres (85%)
+- 🔄 **Panneau de Ressources** - UI principal prêt, manque drag & drop (80%)
+- ❗ **AI Chat** - nécessite intégration API réelle (30%)
+- 📋 **14 nouveaux modules planifiés** - [voir planned/](docs-ru/08-roadmap/planned/) pour atteindre le niveau DaVinci + Filmora
+- 🎯 **Objectif** - combiner puissance DaVinci et bibliothèque Filmora avec automatisation IA
 
 ## Fonctionnalités Principales
 
@@ -119,147 +124,56 @@ bun run tauri build
 
 ## Développement
 
-### Scripts Disponibles
-
-- `bun run dev` - Lancer Next.js en mode développement
-- `bun run tauri dev` - Lancer Tauri en mode développement
-- `bun run build` - Build Next.js
-- `bun run tauri build` - Build application Tauri
-
-#### Linting et Formatage
-
-- `bun run lint` - Vérifier code JavaScript/TypeScript avec ESLint
-- `bun run lint:fix` - Corriger erreurs ESLint
-- `bun run lint:css` - Vérifier code CSS avec Stylelint
-- `bun run lint:css:fix` - Corriger erreurs Stylelint
-- `bun run format:imports` - Formater imports
-- `bun run lint:rust` - Vérifier code Rust avec Clippy
-- `bun run format:rust` - Formater code Rust avec rustfmt
-- `bun run check:all` - Lancer toutes vérifications et tests
-- `bun run fix:all` - Corriger toutes erreurs de linting
-
-#### Tests
-
-- `bun run test` - Lancer tests
-- `bun run test:app` - Lancer tests composants application uniquement
-- `bun run test:watch` - Lancer tests en mode surveillance
-- `bun run test:ui` - Lancer tests avec interface UI
-- `bun run test:e2e` - Lancer tests end-to-end avec Playwright
-
-### Tests
-
-Le projet utilise Vitest pour les tests unitaires. Les tests sont situés dans le répertoire __tests__ de la fonctionnalité, avec les mocks dans __mocks__.
-
-#### 🧪 Statut Couverture Tests :
-```bash
-⨯ bun run test
-
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
-
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s
-
-```
+### Démarrage Rapide
 
 ```bash
-# Lancer tests client
-bun run test
+# Mode développement
+bun run tauri dev
 
-# Lancer tests rust
-bun run test:rust
+# Lancer tests
+bun run test && bun run test:rust
 
-# Lancer tests avec rapport couverture
-bun run test:coverage
-
-# Lancer tests pour fonction spécifique
-bun run test src/features/effects
+# Vérifier qualité du code
+bun run check:all
 ```
 
-## Intégration Continue et Déploiement
+### Commandes Essentielles
 
-Le projet est configuré pour utiliser GitHub Actions pour l'intégration continue et le déploiement. Workflows :
+| Commande | Description |
+|----------|-------------|
+| `bun run tauri dev` | Lancer application complète en développement |
+| `bun run dev` | Lancer frontend uniquement |
+| `bun run build` | Build pour production |
+| `bun run test` | Lancer tests frontend |
+| `bun run test:rust` | Lancer tests backend |
+| `bun run lint` | Vérifier qualité du code |
+| `bun run fix:all` | Auto-corriger problèmes de code |
 
-### Vérification et Build
+📚 **[Guide Complet de Développement →](docs-ru/05-development/README.md)**
 
-- `check-all.yml` - Lancer toutes vérifications et tests
-- `lint-css.yml` - Vérifier code CSS uniquement (lance quand fichiers CSS changent)
-- `lint-rs.yml` - Vérifier code Rust uniquement (lance quand fichiers Rust changent)
-- `lint-js.yml` - Vérifier code JavaScript/TypeScript uniquement (lance quand fichiers JavaScript/TypeScript changent)
+### Statut de Couverture des Tests
 
-### Déploiement
+✅ **Tests Frontend** : 3,604 réussis  
+✅ **Tests Backend** : 504 réussis (+18 nouveaux !)  
+📊 **Total** : 4,108 tests réussis
 
-- `build.yml` - Build projet
-- `build-release.yml` - Build projet pour release
-- `deploy-promo.yml` - Build et publier page promo sur GitHub Pages
-- `docs.yml` - Générer et publier documentation API sur GitHub Pages
+## CI/CD et Qualité du Code
 
-### Configuration Linter
+### Processus Automatisés
+- ✅ **Linting** : ESLint, Stylelint, Clippy
+- ✅ **Tests** : Frontend (Vitest), Backend (Rust), E2E (Playwright)
+- ✅ **Couverture** : Intégration Codecov
+- ✅ **Build** : Builds multi-plateformes
 
-#### Stylelint (CSS)
+📚 **[Guide Détaillé CI/CD →](docs-ru/06-deployment/README.md)**  
+🔧 **[Linting et Formatage →](docs-ru/05-development/linting-and-formatting.md)**
 
-Le projet utilise Stylelint pour vérifier le code CSS. La configuration est située dans le fichier `.stylelintrc.json`. Fonctionnalités principales :
+## Documentation et Ressources
 
-- Support des directives Tailwind CSS
-- Ignorer sélecteurs dupliqués pour compatibilité Tailwind
-- Correction automatique erreurs lors sauvegarde fichiers (dans VS Code)
-
-Pour lancer le linter CSS, utiliser la commande :
-
-```bash
-bun lint:css
-```
-
-Pour correction automatique erreurs :
-
-```bash
-bun lint:css:fix
-```
-
-## Documentation API
-
-La documentation API est disponible à : [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Pour générer la documentation localement, utiliser la commande :
-
-```bash
-bun run docs
-```
-
-La documentation sera disponible dans le dossier `docs/`.
-
-Pour développement documentation en temps réel :
-
-```bash
-bun run docs:watch
-```
-
-La documentation est automatiquement mise à jour quand le code source change dans la branche `main` en utilisant le workflow GitHub Actions `docs.yml`.
-
-## Page Promo
-
-La page promo du projet est disponible à : [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-Le code source de la page promo est situé dans le dossier `promo/`.
-
-Pour développement local de la page promo, utiliser les commandes :
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-Pour build la page promo :
-
-```bash
-cd promo
-bun run build
-```
-
-La page promo est automatiquement mise à jour quand les fichiers changent dans le dossier `promo/` sur la branche `main` en utilisant le workflow GitHub Actions `deploy-promo.yml`.
+- 📚 [**Documentation API**](https://chatman-media.github.io/timeline-studio/api-docs/) - Documentation TypeScript auto-générée
+- 🚀 [**Page Promo**](https://chatman-media.github.io/timeline-studio/) - Vitrine du projet
+- 📖 [**Documentation Complète**](docs-ru/README.md) - Guide complet en russe
+- 🎬 [**Démo Live**](https://chatman-media.github.io/timeline-studio/) - Essayez l'éditeur en ligne
 
 ## Ressources Supplémentaires
 

@@ -33,19 +33,24 @@ Timeline Studio es un editor de video moderno construido sobre la arquitectura T
 
 ### Estado del Proyecto (Junio 2025)
 
-**Completado General: 86.2%** ⬆️ (actualizado después de la integración OAuth y finalización de Export)
-- ✅ Funcionalidad principal de edición completa
-- ✅ Video Compiler con aceleración GPU
-- ✅ Módulo de reconocimiento (YOLO v11) - ORT arreglado
-- ✅ Efectos, filtros y transiciones (75-80%)
-- ✅ Export - ¡integración completa con redes sociales! (98%) 🎉
-- ✅ Integración OAuth - soporte para YouTube/TikTok/Vimeo/Telegram
-- ✅ Sistema de vista previa unificado con Preview Manager
-- ✅ Persistencia de medios y proyectos temporales
-- ✅ Sistema de plantillas - basado en configuración (95% completado)
-- ✅ Timeline al 90% de finalización
-- ⚠️ Panel de recursos en desarrollo (85%)
-- 🎯 Fecha objetivo de lanzamiento MVP: Final de junio 2025
+**Completado General: 53.8%** ⬆️ (recalculado con estado real de módulos y 14 nuevos módulos planificados)
+- **Completado**: 11 módulos (100% listo) 
+- **En desarrollo**: 8 módulos (45-85% listo)
+- **Planificado**: 5 módulos (30-85% listo)
+- **Nuevos planificados**: 14 módulos (0% listo) - [detalles en planned/](docs-ru/08-roadmap/planned/)
+
+### Logros Clave:
+- ✅ **Video Compiler** - completamente implementado con aceleración GPU (100%)
+- ✅ **Timeline** - editor principal completamente funcional (100%)
+- ✅ **Gestión de Medios** - gestión de archivos lista (100%)
+- ✅ **Arquitectura Central** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Reconocimiento** - reconocimiento de objetos y rostros YOLO v11 (100%)
+- 🔄 **Efectos/Filtros/Transiciones** - rica biblioteca de efectos estilo Filmora (75-80%)
+- 🔄 **Export** - casi listo, quedan detalles de parámetros (85%)
+- 🔄 **Panel de Recursos** - UI principal listo, falta drag & drop (80%)
+- ❗ **AI Chat** - requiere integración real de API (30%)
+- 📋 **14 nuevos módulos planificados** - [ver planned/](docs-ru/08-roadmap/planned/) para alcanzar nivel DaVinci + Filmora
+- 🎯 **Objetivo** - combinar poder de DaVinci y biblioteca Filmora con automatización AI
 
 ## Características Principales
 
@@ -123,64 +128,38 @@ bun run tauri build
 
 ## Desarrollo
 
-### Scripts Disponibles
-
-- `bun dev` - Ejecutar Next.js en modo desarrollo
-- `bun tauri dev` - Ejecutar Tauri en modo desarrollo
-- `bun build` - Compilar Next.js
-- `bun tauri build` - Compilar aplicación Tauri
-
-#### Linting y Formateo
-
-- `bun lint` - Verificar código JavaScript/TypeScript con ESLint
-- `bun lint:fix` - Corregir errores de ESLint
-- `bun lint:css` - Verificar código CSS con Stylelint
-- `bun lint:css:fix` - Corregir errores de Stylelint
-- `bun format:imports` - Formatear importaciones
-- `bun lint:rust` - Verificar código Rust con Clippy
-- `bun format:rust` - Formatear código Rust con rustfmt
-- `bun check:all` - Ejecutar todas las verificaciones y pruebas
-- `bun fix:all` - Corregir todos los errores de linting
-
-#### Pruebas
-
-- `bun test` - Ejecutar pruebas
-- `bun test:app` - Ejecutar pruebas solo para componentes de aplicación
-- `bun test:coverage` - Ejecutar pruebas con reporte de cobertura
-- `bun test:ui` - Ejecutar pruebas con interfaz UI
-- `bun test:e2e` - Ejecutar pruebas end-to-end con Playwright
-
-### Pruebas
-
-El proyecto utiliza Vitest para pruebas unitarias. Las pruebas se encuentran en el directorio __tests__ de cada característica, junto con los mocks en __mocks__.
-
-#### 🧪 Estado de Cobertura de Pruebas:
-```bash
-⨯ bun run test
-
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
-
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.38s
-
-```
+### Inicio Rápido
 
 ```bash
-# Ejecutar pruebas del cliente
-bun run test
+# Modo de desarrollo
+bun run tauri dev
 
-# Ejecutar pruebas de rust
-bun run test:rust
+# Ejecutar pruebas
+bun run test && bun run test:rust
 
-# Ejecutar pruebas con reporte de cobertura
-bun run test:coverage
-
-# Ejecutar pruebas para función específica
-bun run test src/features/effects
+# Verificar calidad del código
+bun run check:all
 ```
+
+### Comandos Esenciales
+
+| Comando | Descripción |
+|---------|-------------|
+| `bun run tauri dev` | Ejecutar aplicación completa en desarrollo |
+| `bun run dev` | Ejecutar solo frontend |
+| `bun run build` | Compilar para producción |
+| `bun run test` | Ejecutar pruebas de frontend |
+| `bun run test:rust` | Ejecutar pruebas de backend |
+| `bun run lint` | Verificar calidad del código |
+| `bun run fix:all` | Auto-corregir problemas de código |
+
+📚 **[Guía Completa de Desarrollo →](docs-ru/05-development/README.md)**
+
+### Estado de Cobertura de Pruebas
+
+✅ **Pruebas Frontend**: 3,604 pasaron  
+✅ **Pruebas Backend**: 504 pasaron (+18 nuevas!)  
+📊 **Total**: 4,108 pruebas pasando
 
 ## Licencia
 
@@ -206,17 +185,36 @@ Para una licencia comercial, por favor contacta al autor: ak.chatman.media@gmail
 
 El texto completo de la licencia está disponible en el archivo [LICENSE](./LICENSE).
 
+## CI/CD y Calidad del Código
+
+### Procesos Automatizados
+- ✅ **Linting**: ESLint, Stylelint, Clippy
+- ✅ **Pruebas**: Frontend (Vitest), Backend (Rust), E2E (Playwright)
+- ✅ **Cobertura**: Integración con Codecov
+- ✅ **Compilación**: Compilaciones multiplataforma
+
+📚 **[Guía Detallada de CI/CD →](docs-ru/06-deployment/README.md)**  
+🔧 **[Linting y Formateo →](docs-ru/05-development/linting-and-formatting.md)**
+
+## Documentación y Recursos
+
+- 📚 [**Documentación API**](https://chatman-media.github.io/timeline-studio/api-docs/) - Documentación TypeScript auto-generada
+- 🚀 [**Página Promocional**](https://chatman-media.github.io/timeline-studio/) - Showcase del proyecto
+- 📖 [**Documentación Completa**](docs-ru/README.md) - Guía completa en ruso
+- 🎬 [**Demo en Vivo**](https://chatman-media.github.io/timeline-studio/) - Prueba el editor online
+
 ## Recursos Adicionales
 
-- [Documentación de Next.js](https://nextjs.org/docs)
 - [Documentación de Tauri](https://v2.tauri.app/start/)
 - [Documentación de XState](https://xstate.js.org/docs/)
 - [Documentación de Vitest](https://vitest.dev/guide/)
 - [Documentación de Tailwind CSS](https://tailwindcss.com/docs)
+- [Documentación de Shadcn UI](https://ui.shadcn.com/)
 - [Documentación de Stylelint](https://stylelint.io/)
 - [Documentación de ESLint](https://eslint.org/docs/latest/)
 - [Documentación de Playwright](https://playwright.dev/docs/intro)
 - [Documentación de TypeDoc](https://typedoc.org/)
+- [Documentación de ffmpeg](https://ffmpeg.org/documentation.html)
 
 ## GitHub Pages
 

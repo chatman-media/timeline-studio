@@ -31,14 +31,24 @@ Timeline Studio, Tauri mimarisi (Rust + React) üzerine inşa edilmiş modern bi
 
 ### Proje Durumu (Haziran 2025)
 
-**Genel Tamamlanma: %75**
-- ✅ Temel düzenleme işlevselliği tamamlandı
-- ✅ GPU hızlandırmalı Video Derleyici
-- ✅ Tanıma modülü (YOLO v11)
-- ✅ Efektler, filtreler ve geçişler
-- ⚠️ Dışa aktarma UI'sının tamamlanması gerekiyor (%25)
-- ⚠️ Kaynak paneli geliştiriliyor (%40)
-- 🎯 MVP sürüm hedefi: Haziran 2025 sonu
+**Genel Tamamlanma: %53.8** ⬆️ (gerçek modül durumu ve 14 yeni planlı modülle yeniden hesaplandı)
+- **Tamamlandı**: 11 modül (%100 hazır)
+- **Geliştirme aşamasında**: 8 modül (%45-85 hazır)
+- **Planlı**: 5 modül (%30-85 hazır)
+- **Yeni planlı**: 14 modül (%0 hazır) - [ayrıntılar planned/ içinde](docs-ru/08-roadmap/planned/)
+
+### Temel Başarılar:
+- ✅ **Video Derleyici** - GPU hızlandırma ile tam olarak uygulandı (%100)
+- ✅ **Zaman Çizelgesi** - ana editör tam işlevsel (%100)
+- ✅ **Medya Yönetimi** - dosya yönetimi hazır (%100)
+- ✅ **Temel Mimari** - app-state, browser, modals, user/project settings (%100)
+- ✅ **Tanıma** - YOLO v11 nesne ve yüz tanıma (%100)
+- 🔄 **Efektler/Filtreler/Geçişler** - Filmora tarzında zengin efekt kütüphanesi (%75-80)
+- 🔄 **Dışa Aktarma** - neredeyse tamamlandı, parametre ayrıntıları kaldı (%85)
+- 🔄 **Kaynak Paneli** - ana UI hazır, sürükle & bırak eksik (%80)
+- ❗ **AI Sohbet** - gerçek API entegrasyonu gerekli (%30)
+- 📋 **14 yeni planlı modül** - [planned/ bak](docs-ru/08-roadmap/planned/) DaVinci + Filmora seviyesine ulaşmak için
+- 🎯 **Hedef** - DaVinci gücü ve Filmora kütüphanesini AI otomasyonuyla birleştir
 
 ## Ana Özellikler
 
@@ -50,10 +60,10 @@ Timeline Studio, Tauri mimarisi (Rust + React) üzerine inşa edilmiş modern bi
 - 📝 12 stil ve animasyonlu gelişmiş altyazı sistemi
 - 🎵 Efektli çoklu parça ses düzenleme
 - 🧠 XState v5 kullanarak durum yönetimi
-- 🌐 Uluslararasılaştırma desteği (6 dil)
+- 🌐 Uluslararasılaştırma desteği (11 dil)
 - 💾 Akıllı önbelleğe alma ve önizleme oluşturma
 - 🎨 Tailwind CSS v4, shadcn-ui kullanarak modern UI
-- 📚 %80'den fazla test kapsamıyla tam dokümantasyon
+- 📚 2400+ test (%98.8 başarı oranı) ile tam dokümantasyon
 
 ## Başlarken
 
@@ -105,151 +115,64 @@ bun run tauri build
 ### 📋 Proje Dokümantasyonu
 
 - **`src/features/README.md`** - öncelikler ve durumla birlikte tüm özelliklerin genel bakışı
-- **Dil Sürümleri**: Yukarıdaki değiştirici aracılığıyla 13 dilde mevcut
+- **Dil Sürümleri**: Yukarıdaki değiştirici aracılığıyla 11 dilde mevcut
 
 ## Geliştirme
 
-### Mevcut Betikler
+### Hızlı Başlangıç
 
-- `bun run dev` - Geliştirme modunda Next.js başlat
-- `bun run tauri dev` - Geliştirme modunda Tauri başlat
-- `bun run build` - Next.js derle
-- `bun run tauri build` - Tauri uygulaması derle
+```bash
+# Geliştirme modu
+bun run tauri dev
 
-#### Linting ve Biçimlendirme
+# Testleri çalıştır
+bun run test && bun run test:rust
 
-- `bun run lint` - ESLint ile JavaScript/TypeScript kodunu kontrol et
-- `bun run lint:fix` - ESLint hatalarını düzelt
-- `bun run lint:css` - Stylelint ile CSS kodunu kontrol et
-- `bun run lint:css:fix` - Stylelint hatalarını düzelt
-- `bun run format:imports` - İçe aktarmaları biçimlendir
-- `bun run lint:rust` - Clippy ile Rust kodunu kontrol et
-- `bun run format:rust` - rustfmt ile Rust kodunu biçimlendir
-- `bun run check:all` - Tüm kontrolleri ve testleri çalıştır
-- `bun run fix:all` - Tüm linting hatalarını düzelt
+# Kod kalitesini kontrol et
+bun run check:all
+```
 
-#### Test Etme
+### Temel Komutlar
 
-- `bun run test` - Testleri çalıştır
-- `bun run test:app` - Sadece uygulama bileşenleri testlerini çalıştır
-- `bun run test:watch` - İzleme modunda testleri çalıştır
-- `bun run test:ui` - UI arayüzüyle testleri çalıştır
-- `bun run test:e2e` - Playwright ile uçtan uca testleri çalıştır
+| Komut | Açıklama |
+|-------|----------|
+| `bun run tauri dev` | Tam uygulamayı geliştirme modunda başlat |
+| `bun run dev` | Sadece frontend başlat |
+| `bun run build` | Üretim için derle |
+| `bun run test` | Frontend testleri çalıştır |
+| `bun run test:rust` | Backend testleri çalıştır |
+| `bun run lint` | Kod kalitesini kontrol et |
+| `bun run fix:all` | Kod sorunlarını otomatik düzelt |
+
+📚 **[Tam Geliştirme Kılavuzu →](docs-ru/05-development/README.md)**
+
+### Test Kapsamı Durumu
+
+✅ **Frontend Testleri**: 3,604 geçti  
+✅ **Backend Testleri**: 504 geçti (+18 yeni!)  
+📊 **Toplam**: 4,108 test geçti
 
 ### Test Etme
 
 Proje, birim testler için Vitest kullanır. Testler, özelliğin __tests__ dizininde bulunur ve mock'lar __mocks__ içindedir.
 
-#### 🧪 Test Kapsamı Durumu:
-```bash
-⨯ bun run test
+## CI/CD ve Kod Kalitesi
 
- Test Files  258 passed | 1 skipped (259)
-      Tests  3604 passed | 60 skipped (3664)
-   Start at  20:08:23
-   Duration  26.48s (transform 5.42s, setup 53.03s, collect 25.72s, tests 32.83s, environment 67.99s, prepare 16.45s)
+### Otomatik Süreçler
+- ✅ **Linting**: ESLint, Stylelint, Clippy
+- ✅ **Testler**: Frontend (Vitest), Backend (Rust), E2E (Playwright)
+- ✅ **Kapsam**: Codecov entegrasyonu
+- ✅ **Derleme**: Çoklu platform derlemeleri
 
-⨯ bun run test:rust
-   test result: ok. 366 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.26s
+📚 **[Ayrıntılı CI/CD Kılavuzu →](docs-ru/06-deployment/README.md)**  
+🔧 **[Linting ve Biçimlendirme →](docs-ru/05-development/linting-and-formatting.md)**
 
-```
+## Dokümantasyon ve Kaynaklar
 
-```bash
-# İstemci testlerini çalıştır
-bun run test
-
-# Rust testlerini çalıştır
-bun run test:rust
-
-# Kapsam raporu ile testleri çalıştır
-bun run test:coverage
-
-# Belirli fonksiyon testlerini çalıştır
-bun run test src/features/effects
-```
-
-## Sürekli Entegrasyon ve Dağıtım
-
-Proje, sürekli entegrasyon ve dağıtım için GitHub Actions kullanacak şekilde yapılandırılmıştır. İş akışları:
-
-### Doğrulama ve Derleme
-
-- `check-all.yml` - Tüm kontrolleri ve testleri çalıştır
-- `lint-css.yml` - Sadece CSS kodunu kontrol et (CSS dosyaları değiştiğinde çalışır)
-- `lint-rs.yml` - Sadece Rust kodunu kontrol et (Rust dosyaları değiştiğinde çalışır)
-- `lint-js.yml` - Sadece JavaScript/TypeScript kodunu kontrol et (JavaScript/TypeScript dosyaları değiştiğinde çalışır)
-
-### Dağıtım
-
-- `build.yml` - Projeyi derle
-- `build-release.yml` - Sürüm için projeyi derle
-- `deploy-promo.yml` - GitHub Pages'de tanıtım sayfasını derle ve yayınla
-- `docs.yml` - GitHub Pages'de API dokümantasyonu oluştur ve yayınla
-
-### Linter Yapılandırması
-
-#### Stylelint (CSS)
-
-Proje, CSS kodunu kontrol etmek için Stylelint kullanır. Yapılandırma `.stylelintrc.json` dosyasında bulunur. Ana özellikler:
-
-- Tailwind CSS direktifleri desteği
-- Tailwind uyumluluğu için yinelenen seçicileri yoksayma
-- Dosyaları kaydederken otomatik hata düzeltme (VS Code'da)
-
-CSS linter'ı çalıştırmak için komutu kullanın:
-
-```bash
-bun lint:css
-```
-
-Otomatik hata düzeltme için:
-
-```bash
-bun lint:css:fix
-```
-
-## API Dokümantasyonu
-
-API dokümantasyonu şu adreste mevcuttur: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Dokümantasyonu yerel olarak oluşturmak için komutu kullanın:
-
-```bash
-bun run docs
-```
-
-Dokümantasyon `docs/` klasöründe mevcut olacaktır.
-
-Gerçek zamanlı dokümantasyon geliştirme için:
-
-```bash
-bun run docs:watch
-```
-
-Dokümantasyon, GitHub Actions iş akışı `docs.yml` kullanılarak `main` dalındaki kaynak kod değişikliklerinde otomatik olarak güncellenir.
-
-## Tanıtım Sayfası
-
-Proje tanıtım sayfası şu adreste mevcuttur: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-
-Tanıtım sayfası kaynak kodu `promo/` klasöründe bulunur.
-
-Tanıtım sayfasının yerel geliştirmesi için komutları kullanın:
-
-```bash
-cd promo
-bun install
-bun run dev
-```
-
-Tanıtım sayfasını derlemek için:
-
-```bash
-cd promo
-bun run build
-```
-
-Tanıtım sayfası, GitHub Actions iş akışı `deploy-promo.yml` kullanılarak `main` dalındaki `promo/` klasör dosya değişikliklerinde otomatik olarak güncellenir.
+- 📚 [**API Dokümantasyonu**](https://chatman-media.github.io/timeline-studio/api-docs/) - Otomatik oluşturulmuş TypeScript dokümantasyonu
+- 🚀 [**Tanıtım Sayfası**](https://chatman-media.github.io/timeline-studio/) - Proje vitrin
+- 📖 [**Tam Dokümantasyon**](docs-ru/README.md) - Rusça tam kılavuz
+- 🎬 [**Canlı Demo**](https://chatman-media.github.io/timeline-studio/) - Editörü çevrimiçi deneyin
 
 ## Ek Kaynaklar
 
