@@ -70,6 +70,8 @@ Timeline Studio is a professional video editing application built with modern we
 - [bun](https://bun.sh/) (latest stable version)
 - [ffmpeg](https://ffmpeg.org/download.html) (latest stable version)
 
+**Windows users**: Please see [WINDOWS_BUILD.md](WINDOWS_BUILD.md) for detailed setup instructions including FFmpeg configuration.
+
 ### Installation
 
 1. Clone the repository:
