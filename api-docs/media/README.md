@@ -79,7 +79,7 @@ Timeline Studio is a modern video editor built on Tauri architecture (Rust + Rea
 - [bun](https://bun.sh/) (latest stable version)
 - [ffmpeg](https://ffmpeg.org/download.html) (latest stable version)
 
-**Windows users**: Please see [WINDOWS_BUILD.md](WINDOWS_BUILD.md) for detailed setup instructions including FFmpeg configuration.
+**Windows users**: Please see [docs-ru/06-deployment/platforms/windows-build.md](docs-ru/06-deployment/platforms/windows-build.md) for detailed setup instructions including FFmpeg configuration.
 
 ### Installation
 
