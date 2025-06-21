@@ -1,239 +1,194 @@
-# 06. Развертывание Timeline Studio
+# 07. Практические руководства
 
 [← Назад к оглавлению](../README.md)
 
 ## 📋 Содержание
 
-- [Процесс сборки](build.md)
-- [Платформы](#платформы)
-  - [Windows](platforms/windows.md)
-  - [macOS](platforms/macos.md)
-  - [Linux](platforms/linux.md)
-- [Решение проблем](troubleshooting.md)
+- [Работа с медиафайлами](media-persistence.md)
+- [Оптимизация производительности](performance.md)
+- [Создание пользовательских эффектов](custom-effects.md)
+- [Добавление новых языков](localization.md)
+- [Структура директорий приложения](app-directories.md)
 
-## 🎯 Обзор
+## 🎯 О разделе
 
-Timeline Studio поддерживает сборку для всех основных десктопных платформ. Каждая платформа имеет свои особенности сборки, подписания и распространения.
+Этот раздел содержит пошаговые руководства для решения типичных задач при работе с Timeline Studio. Каждое руководство включает практические примеры и готовые решения.
 
-## 🚀 Быстрая сборка
+## 📚 Доступные руководства
 
-### Универсальная команда
+### [Работа с медиафайлами](media-persistence.md)
+Полное руководство по управлению медиафайлами в проектах
+- Импорт и организация медиа
+- Восстановление отсутствующих файлов
+- Оптимизация хранения
+- Работа с большими файлами
 
-```bash
-# Сборка для текущей платформы
-bun run tauri build
+### [Оптимизация производительности](performance.md)
+Техники улучшения производительности приложения
+- Профилирование и метрики
+- Оптимизация рендеринга
+- Управление памятью
+- GPU ускорение
 
-# Сборка с определенными функциями
-bun run tauri build -- --features gpu-acceleration,ml-recognition
-```
+### [Создание пользовательских эффектов](custom-effects.md)
+Разработка собственных визуальных эффектов
+- Структура эффекта
+- CSS и WebGL эффекты
+- Анимация параметров
+- Интеграция с UI
 
-### Результаты сборки
+### [Добавление новых языков](localization.md)
+Расширение языковой поддержки
+- Структура переводов
+- Процесс локализации
+- RTL языки
+- Тестирование переводов
 
-```
-src-tauri/target/release/
-├── bundle/
-│   ├── dmg/          # macOS installer
-│   ├── msi/          # Windows installer
-│   ├── deb/          # Debian package
-│   └── appimage/     # AppImage
-└── timeline-studio   # Исполняемый файл
-```
+### [Структура директорий](app-directories.md)
+Где Timeline Studio хранит данные
+- Пользовательские настройки
+- Кэш и временные файлы
+- Проекты и медиа
+- Логи и отладка
 
-## 🖥️ Платформы
+## 🎓 Формат руководств
 
-### Windows
-- **Форматы**: MSI, NSIS, Portable
-- **Подписание**: Authenticode сертификат
-- **Зависимости**: Visual C++ Redistributable
-- [Подробное руководство →](platforms/windows.md)
+Каждое руководство следует единой структуре:
 
-### macOS
-- **Форматы**: DMG, App Bundle
-- **Подписание**: Developer ID сертификат
-- **Нотаризация**: Обязательна для распространения
-- [Подробное руководство →](platforms/macos.md)
+1. **Введение** - что вы узнаете
+2. **Предварительные требования** - что нужно знать
+3. **Пошаговые инструкции** - детальные шаги
+4. **Примеры кода** - работающий код
+5. **Решение проблем** - частые ошибки
+6. **Дополнительные ресурсы** - где узнать больше
 
-### Linux
-- **Форматы**: AppImage, DEB, RPM, Snap
-- **Зависимости**: Различаются по дистрибутивам
-- **Песочница**: Flatpak поддержка
-- [Подробное руководство →](platforms/linux.md)
+## 💡 Быстрые рецепты
 
-## 📦 Конфигурация сборки
-
-### tauri.conf.json
-
-```json
-{
-  "bundle": {
-    "active": true,
-    "targets": ["dmg", "msi", "deb", "appimage"],
-    "identifier": "com.timeline.studio",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
-    "resources": [
-      "models/*",
-      "assets/*"
-    ]
-  }
-}
-```
-
-### Оптимизация размера
-
-```toml
-# Cargo.toml
-[profile.release]
-opt-level = "z"     # Оптимизация по размеру
-lto = true          # Link Time Optimization
-codegen-units = 1   # Один модуль компиляции
-strip = true        # Удаление символов отладки
-```
-
-## 🔐 Подписание и безопасность
-
-### Подписание кода
-
-1. **Windows**: Authenticode сертификат
-2. **macOS**: Developer ID + нотаризация
-3. **Linux**: GPG подписи для репозиториев
-
-### Обновления
+### Добавить новый формат видео
 
 ```typescript
-// Автоматические обновления через Tauri
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater'
+// src/features/media/constants/formats.ts
+export const VIDEO_FORMATS = [
+  ...EXISTING_FORMATS,
+  'webm',  // Добавить новый формат
+]
 
-async function checkForUpdates() {
-  const update = await checkUpdate()
-  if (update.shouldUpdate) {
-    await installUpdate()
-  }
-}
+// src-tauri/src/media/scanner.rs
+const SUPPORTED_VIDEO: &[&str] = &[
+    "mp4", "mov", "avi", "mkv", 
+    "webm",  // Добавить поддержку
+];
 ```
 
-## 🚢 CI/CD Pipeline
-
-### GitHub Actions пример
-
-```yaml
-name: Release
-on:
-  push:
-    tags:
-      - 'v*'
-
-jobs:
-  release:
-    strategy:
-      matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
-    
-    runs-on: ${{ matrix.platform }}
-    
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: oven-sh/setup-bun@v1
-      
-      - name: Install dependencies
-        run: bun install
-        
-      - name: Build
-        run: bun run tauri build
-        
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.platform }}
-          path: src-tauri/target/release/bundle/
-```
-
-## 📊 Метрики сборки
-
-### Размеры приложения (примерные)
-
-| Платформа | Размер установщика | Размер установленного |
-|-----------|-------------------|-----------------------|
-| Windows   | ~80 MB            | ~250 MB               |
-| macOS     | ~90 MB            | ~280 MB               |
-| Linux     | ~85 MB            | ~260 MB               |
-
-### Время сборки
-
-- **Первая сборка**: 10-15 минут
-- **Инкрементальная**: 2-3 минуты
-- **CI/CD**: 15-20 минут полный цикл
-
-## 🔧 Оптимизации
-
-### 1. Разделение кода (Code Splitting)
+### Создать горячую клавишу
 
 ```typescript
-// Ленивая загрузка тяжелых модулей
-const RecognitionModule = lazy(() => import('@/features/recognition'))
-const EffectsModule = lazy(() => import('@/features/effects'))
+// src/features/keyboard-shortcuts/shortcuts.ts
+export const shortcuts: Shortcut[] = [
+  {
+    id: 'split-clip',
+    keys: ['s'],
+    action: 'timeline.splitClip',
+    description: 'shortcuts.splitClip',
+  },
+  // Добавить новую
+  {
+    id: 'duplicate-clip',
+    keys: ['cmd', 'd'],
+    action: 'timeline.duplicateClip',
+    description: 'shortcuts.duplicateClip',
+  }
+]
 ```
 
-### 2. Сжатие ресурсов
+### Добавить новый эффект
 
-```bash
-# Оптимизация изображений
-pngquant icons/*.png --ext=.png --force
-
-# Сжатие ML моделей
-gzip -9 models/*.onnx
+```typescript
+// src/features/effects/effects/index.ts
+export const effects = [
+  ...existingEffects,
+  {
+    id: 'vintage',
+    name: 'effects.vintage',
+    category: 'color',
+    params: {
+      sepia: { min: 0, max: 1, default: 0.5 },
+      vignette: { min: 0, max: 1, default: 0.3 }
+    },
+    apply: (params) => ({
+      filter: `sepia(${params.sepia}) contrast(1.2)`,
+      // CSS для эффекта
+    })
+  }
+]
 ```
 
-### 3. Выборочные функции
+## 🛠️ Создание собственных руководств
 
-```toml
-# Cargo.toml
-[features]
-default = ["basic"]
-basic = []
-gpu-acceleration = ["dep:cuda"]
-ml-recognition = ["dep:ort"]
-full = ["gpu-acceleration", "ml-recognition"]
+Хотите добавить руководство? Следуйте шаблону:
+
+```markdown
+# Название руководства
+
+## Что вы узнаете
+- Пункт 1
+- Пункт 2
+
+## Предварительные требования
+- Знание X
+- Установленный Y
+
+## Шаг 1: Название
+Описание шага...
+
+\```typescript
+// Код примера
+\```
+
+## Решение проблем
+**Проблема**: Описание
+**Решение**: Как исправить
+
+## Дополнительные ресурсы
+- [Ссылка 1](url)
+- [Ссылка 2](url)
 ```
 
-## 🚨 Частые проблемы
+## 🔍 Поиск по руководствам
 
-### "Missing dependencies" на Linux
-```bash
-# Установка зависимостей
-sudo apt install libgtk-3-dev libwebkit2gtk-4.1-dev
-```
+### По темам
+- **Медиа**: импорт, экспорт, форматы, кодеки
+- **Производительность**: оптимизация, профилирование, GPU
+- **Кастомизация**: эффекты, переходы, шаблоны
+- **Локализация**: переводы, языки, шрифты
 
-### "Code signing failed" на macOS
-- Проверьте срок действия сертификата
-- Убедитесь в правильности keychain access
+### По уровню сложности
+- **Начинающий**: базовые операции
+- **Средний**: расширение функциональности
+- **Продвинутый**: глубокая кастомизация
 
-### "Build failed" на Windows
-- Установите Visual Studio Build Tools
-- Проверьте переменные окружения
+## 📊 Популярные вопросы
 
-## 📋 Чеклист перед релизом
+1. **Как ускорить экспорт видео?**
+   → См. [Оптимизация производительности](performance.md#экспорт)
 
-- [ ] Обновлена версия в `package.json` и `Cargo.toml`
-- [ ] Все тесты проходят успешно
-- [ ] Нет критических TODO в коде
-- [ ] Обновлен CHANGELOG.md
-- [ ] Проверена работа на всех платформах
-- [ ] Подписан код для каждой платформы
-- [ ] Подготовлены release notes
+2. **Как восстановить потерянные файлы?**
+   → См. [Работа с медиафайлами](media-persistence.md#восстановление)
 
-## 🔗 Дополнительные ресурсы
+3. **Как создать свой визуальный эффект?**
+   → См. [Создание эффектов](custom-effects.md)
 
-- [Tauri Building Guide](https://tauri.app/v2/guides/building/)
-- [Electron Forge](https://www.electronforge.io/) (для сравнения)
-- [Code Signing Guide](https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution)
+4. **Где хранятся проекты?**
+   → См. [Структура директорий](app-directories.md#проекты)
+
+## 🚀 Следующие шаги
+
+После изучения руководств:
+1. Попробуйте создать свой эффект
+2. Оптимизируйте производительность проекта
+3. Добавьте поддержку нового языка
+4. Поделитесь опытом с сообществом
 
 ---
 
-[← Разработка](../05-development/README.md) | [Далее: Процесс сборки →](build.md)
+[← Развертывание](../06-deployment/README.md) | [Далее: Работа с медиафайлами →](media-persistence.md)

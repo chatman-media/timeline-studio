@@ -1,232 +1,128 @@
-# [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
+# Документация Timeline Studio
 
 <div align="center">
-
-[English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
-
-[![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
-[![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
-[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=for-the-badge&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=for-the-badge&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=for-the-badge&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
-
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
-[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=for-the-badge&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Rust Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=for-the-badge&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
-
+  <img src="assets/logo.png" alt="Timeline Studio Logo" width="200">
+  
+  **Профессиональный видеоредактор нового поколения**
+  
+  [Быстрый старт](01-getting-started/README.md) • [Архитектура](02-architecture/README.md) • [API](04-api-reference/README.md) • [Разработка](05-development/README.md)
 </div>
 
-## Project Overview
+## 📚 О документации
 
-Timeline Studio is a modern video editor built on Tauri architecture (Rust + React).
+Эта документация предназначена для разработчиков, контрибьюторов и технических специалистов, работающих с Timeline Studio. Документация организована по принципу прогрессивного раскрытия информации - от простого к сложному.
 
-**Our goal**: create an editor combining:
-- **Professional power of DaVinci Resolve** - complete control over editing, color grading, audio mixing, visual effects, motion graphics, and advanced compositing
-- **Extensive creative library** - effects, filters, transitions, multi-camera templates, animated titles, style templates, and subtitle presets comparable to popular editors like Filmora
-- **AI scripting and automation** - automatic content generation in different languages and for different platforms
+## 🗺️ Навигация
 
-**Key innovation**: It's enough for users to upload videos, music and other resources, and AI will automatically create a set of videos in different languages and optimized for different platforms (YouTube, TikTok, Vimeo, Telegram).
+### [01. Начало работы](01-getting-started/README.md)
+Все необходимое для быстрого старта с Timeline Studio
+- Установка и настройка окружения
+- Создание первого проекта
+- Обзор интерфейса
+- Базовые операции
 
-![Timeline Interface #1](/public/screen2.png)
+### [02. Архитектура](02-architecture/README.md)
+Понимание внутреннего устройства приложения
+- Общая архитектура системы
+- Frontend на React/Next.js
+- Backend на Rust/Tauri
+- Взаимодействие компонентов
 
-![Timeline Interface #2](/public/screen4.png)
+### [03. Функциональность](03-features/README.md)
+Детальное описание всех возможностей
+- **Основные модули**: Timeline, Video Player, Browser, Export
+- **Эффекты**: Filters, Transitions, Templates
+- **Продвинутые функции**: AI Chat, Recognition, Voice Recording
 
-### Project Status (June 2025)
+### [04. API справочник](04-api-reference/README.md)
+Полная документация всех API методов
+- Media API
+- Video Compiler API
+- Recognition API
+- File System API
 
-**Overall Completion: 54.2%** ⬆️ (recalculated with export completion and 14 new planned modules)
-- **Completed**: 12 modules (100% readiness)
-- **In development**: 8 modules (45-85% readiness)
-- **Planned**: 4 modules (30-80% readiness)
-- **New planned**: 14 modules (0% readiness) - [details in planned/](docs-ru/08-roadmap/planned/)
+### [05. Разработка](05-development/README.md)
+Руководство для разработчиков
+- Настройка среды разработки
+- Стандарты кодирования
+- Тестирование
+- Внесение изменений
 
-### Key Achievements:
-- ✅ **Video Compiler** - fully implemented with GPU acceleration (100%)
-- ✅ **Timeline** - main editor fully functional (100%)
-- ✅ **Media Management** - file management ready (100%)
-- ✅ **Core Architecture** - app-state, browser, modals, user/project settings (100%)
-- ✅ **Recognition** - YOLO v11 object and face recognition (100%)
-- ✅ **Effects/Filters/Transitions** - rich effects library in Filmora style (75-80%)
-- ✅ **Export** - fully ready with 4 tabs support (100%)
-- ✅ **Resources Panel** - main UI ready, drag & drop missing (80%)
-- ❗ **AI Chat** - requires real API integration (30%)
-- 📋 **14 new planned modules** - [see planned/](docs-ru/08-roadmap/planned/) to achieve DaVinci + Filmora level
-- 🎯 **Goal** - combine DaVinci power and Filmora library with AI automation
+### [06. Развертывание](06-deployment/README.md)
+Сборка и распространение приложения
+- Процесс сборки
+- Платформо-специфичные настройки
+- Подписание и нотаризация
+- Решение проблем
 
-## Key Features
+### [07. Практические руководства](07-guides/README.md)
+Пошаговые инструкции для типичных задач
+- Работа с медиафайлами
+- Оптимизация производительности
+- Создание пользовательских эффектов
+- Добавление новых языков
 
-- 🎬 Professional video editing with multi-track timeline
-- 🖥️ Cross-platform (Windows, macOS, Linux)
-- 🚀 GPU-accelerated video processing (NVENC, QuickSync, VideoToolbox)
-- 🤖 AI-powered object/face recognition (YOLO v11 - ORT fixed)
-- 🎨 30+ transitions, visual effects, and filters
-- 📝 Advanced subtitle system with 12 styles and animations
-- 🎵 Multi-track audio editing with effects
-- 📤 Export to MP4/MOV/WebM with social media OAuth integration
-- 🔐 YouTube/TikTok/Vimeo/Telegram OAuth support with secure token storage
-- 📱 Device presets (iPhone, iPad, Android) for optimized exports
-- 🌐 Internationalization support (11 languages)
-- 💾 Smart caching and unified preview system
-- 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
-- 📚 Complete documentation with more than 5,000 tests and over 80% code coverage
+### [08. Дорожная карта](08-roadmap/README.md)
+Планы развития проекта
+- Выполненные задачи
+- Текущие работы
+- Планируемые функции
 
-## Getting Started
+### [09. Тестирование](09-testing/README.md)
+Комплексное тестирование приложения
+- Обзор тестирования
+- [Структура компонентов Codecov](09-testing/codecov-components.md)
+- Запуск тестов
+- Написание тестов
+- Покрытие кода
 
-### Prerequisites
+## 🚀 Быстрые ссылки
 
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Rust](https://www.rust-lang.org/tools/install) (latest stable version)
-- [bun](https://bun.sh/) (latest stable version)
-- [ffmpeg](https://ffmpeg.org/download.html) (latest stable version)
+### Для новичков
+1. [Установка зависимостей](01-getting-started/installation.md)
+2. [Первый проект](01-getting-started/first-project.md)
+3. [Структура проекта](01-getting-started/project-structure.md)
 
-**Windows users**: Please see [docs-ru/06-deployment/platforms/windows-build.md](docs-ru/06-deployment/platforms/windows-build.md) for detailed setup instructions including FFmpeg configuration.
+### Для разработчиков
+1. [Настройка окружения](05-development/setup.md)
+2. [Стандарты кода](05-development/coding-standards.md)
+3. [Запуск тестов](05-development/testing.md)
 
-### Installation
+### Частые вопросы
+1. [Как добавить новый эффект?](07-guides/custom-effects.md)
+2. [Как оптимизировать производительность?](07-guides/performance.md)
+3. [Как добавить новый язык?](07-guides/localization.md)
 
-1. Clone the repository:
+## 📖 Принципы документации
 
-```bash
-git clone https://github.com/chatman-media/timeline-studio.git
-cd timeline-studio
-```
+1. **Актуальность** - документация обновляется вместе с кодом
+2. **Примеры** - каждая концепция иллюстрируется примером
+3. **Прогрессивность** - от простого к сложному
+4. **Практичность** - фокус на решении реальных задач
 
-2. Install dependencies:
+## 🤝 Вклад в документацию
 
-```bash
-bun install
-```
+Мы приветствуем улучшения документации! См. [руководство по внесению изменений](05-development/contributing.md).
 
-### Development Mode Launch
+### Как улучшить документацию:
+1. Исправить опечатки или неточности
+2. Добавить недостающие примеры
+3. Улучшить объяснения
+4. Добавить диаграммы или скриншоты
 
-```bash
-bun run tauri dev
-```
+## 📝 Версионирование
 
-### Release Build
+Документация версионируется вместе с основным проектом. Текущая версия: **1.0.0**
 
-```bash
-bun run tauri build
-```
+## 🔗 Полезные ссылки
 
-## Documentation
+- [Основной README проекта](../README.md)
+- [Инструкции для AI-ассистентов](../CLAUDE.md)
+- [История изменений](../CHANGELOG.md)
+- [Лицензия](../LICENSE)
 
-### 📚 Main Documentation
+---
 
-- 📚 [Documentation Overview](docs-ru/README.md) - Complete documentation map
-- 🚀 [Getting Started](docs-ru/01-getting-started/README.md) - Installation and first steps
-- 🏗️ [Architecture Guide](docs-ru/02-architecture/README.md) - System architecture
-- 🎯 [Features Guide](docs-ru/03-features/README.md) - Feature overview and status
-- 📡 [API Reference](docs-ru/04-api-reference/README.md) - Tauri commands reference
-- 🧪 [Development Guide](docs-ru/05-development/README.md) - Testing and development
-- 🚀 [Deployment Guide](docs-ru/06-deployment/README.md) - Build and deployment
-- 📋 [User Guides](docs-ru/07-guides/README.md) - Performance and best practices
-- 🛣️ [Roadmap](docs-ru/08-roadmap/README.md) - Development roadmap
-- 🔐 [OAuth Setup](docs-ru/09-oauth-setup/oauth-setup-guide.md) - Social media integration
-
-### 📋 Project Documentation
-
-- **`src/features/README.md`** - overview of all features with priorities and status
-- **Language versions**: Available in 11 languages via the switcher above
-
-## Development
-
-### Quick Start
-
-```bash
-# Development mode
-bun run tauri dev
-
-# Run tests
-bun run test && bun run test:rust
-
-# Check code quality
-bun run check:all
-```
-
-### Essential Commands
-
-| Command | Description |
-|---------|-------------|
-| `bun run tauri dev`   | Launch full application in development |
-| `bun run dev`         | Launch frontend only                   |
-| `bun run build`       | Build for production                   |
-| `bun run test`        | Run frontend tests                     |
-| `bun run test:rust`   | Run backend tests                      |
-| `bun run lint`        | Check code quality                     |
-| `bun run fix:all`     | Auto-fix code issues                   |
-
-📚 **[Complete Development Guide →](docs-ru/05-development/README.md)**
-
-### Test Coverage Status
-
-- ✅ **Frontend Tests**: 4122 passed
-- ✅ **Backend Tests**: 798 passed
-- ✅ **E2E Tests**: 927 passed
-- 📊 **Total**: >5,000 tests passing
-
-## CI/CD & Code Quality
-
-### Automated Workflows
-- ✅ **Linting**: ESLint, Stylelint, Clippy
-- ✅ **Testing**: Frontend (Vitest), Backend (Rust), E2E (Playwright)
-- ✅ **Coverage**: Codecov integration
-- ✅ **Build**: Cross-platform builds
-
-📚 **[Detailed CI/CD Guide →](docs-ru/06-deployment/README.md)**  
-🔧 **[Linting & Formatting →](docs-ru/05-development/linting-and-formatting.md)**
-
-## Documentation & Resources
-
-- 📚 [**API Documentation**](https://chatman-media.github.io/timeline-studio/api-docs/) - Auto-generated TypeScript docs
-- 🚀 [**Website**](https://chatman-media.github.io/timeline-studio/) - Project showcase
-- 📖 [**Complete Documentation**](docs-ru/README.md) - Full guide in Russian
-
-## Additional Resources
-
-- [Tauri Documentation](https://v2.tauri.app/start/)
-- [XState Documentation](https://xstate.js.org/docs/)
-- [Vitest Documentation](https://vitest.dev/guide/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Shadcn UI Documentation](https://ui.shadcn.com/)
-- [Stylelint Documentation](https://stylelint.io/)
-- [ESLint Documentation](https://eslint.org/docs/latest/)
-- [Playwright Documentation](https://playwright.dev/docs/intro)
-- [TypeDoc Documentation](https://typedoc.org/)
-- [ffmpeg Documentation](https://ffmpeg.org/documentation.html)
-
-## License
-
-This project is distributed under the MIT License with Commons Clause condition.
-
-**Main terms:**
-
-- **Open Source**: You can freely use, modify, and distribute the code according to the MIT License terms.
-- **Commercial Use Restriction**: Commons Clause prohibits "selling" the software without a separate agreement with the author.
-- **"Selling"** means using the software functionality to provide third parties with a product or service for a fee.
-
-This license allows:
-
-- Using the code for personal and non-commercial projects
-- Studying and modifying the code
-- Distributing modifications under the same license
-
-But prohibits:
-
-- Creating commercial products or services based on the code without a license
-
-To obtain a commercial license, please contact the author: ak.chatman.media@gmail.com
-
-Full license text is available in the [LICENSE](./LICENSE) file
-
-## GitHub Pages
-
-Project uses GitHub Pages for hosting API documentation and promo page:
-
-- **Promo Page**: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-- **API Documentation**: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Both pages are automatically updated when corresponding files are changed in the `main` branch using GitHub Actions workflows.
+<div align="center">
+  <sub>Документация создана с ❤️ для сообщества Timeline Studio</sub>
+</div>
