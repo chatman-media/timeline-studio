@@ -47,7 +47,7 @@
 <li>🎬 Professional video editing with multi-track timeline</li>
 <li>🖥️ Cross-platform (Windows, macOS, Linux)</li>
 <li>🚀 GPU-accelerated video processing (NVENC, QuickSync, VideoToolbox)</li>
-<li>🤖 AI-powered object/face recognition (YOLO v11 - ORT fixed)</li>
+<li>🤖 AI-powered object/face recognition (YOLO v11)</li>
 <li>🎨 30+ transitions, visual effects, and filters</li>
 <li>📝 Advanced subtitle system with 12 styles and animations</li>
 <li>🎵 Multi-track audio editing with effects</li>
@@ -98,7 +98,7 @@
 </ul>
 <h3 id="📋-project-documentation" class="tsd-anchor-link">📋 Project Documentation<a href="#📋-project-documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li><strong><code>src/features/README.md</code></strong> - overview of all features with priorities and status</li>
-<li><strong>Language versions</strong>: Available in 11 languages via the switcher above</li>
+<li><strong>Language versions</strong>: Available in 12 languages via the switcher above</li>
 </ul>
 <h2 id="development" class="tsd-anchor-link">Development<a href="#development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="quick-start" class="tsd-anchor-link">Quick Start<a href="#quick-start" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-3"># Development mode</span><br/><span class="hl-0">bun</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">tauri</span><span class="hl-1"> </span><span class="hl-2">dev</span><br/><br/><span class="hl-3"># Run tests</span><br/><span class="hl-0">bun</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">test</span><span class="hl-1"> &amp;&amp; </span><span class="hl-0">bun</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">test:rust</span><br/><br/><span class="hl-3"># Check code quality</span><br/><span class="hl-0">bun</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">check:all</span>
 </code><button type="button">Copy</button></pre>
@@ -132,6 +132,10 @@
 <td>Run backend tests</td>
 </tr>
 <tr>
+<td><code>bun run test:e2e</code></td>
+<td>Run end-to-end tests</td>
+</tr>
+<tr>
 <td><code>bun run lint</code></td>
 <td>Check code quality</td>
 </tr>
@@ -143,10 +147,10 @@
 </table>
 <p>📚 <strong><a href="media/README-5.md">Complete Development Guide →</a></strong></p>
 <h3 id="test-coverage-status" class="tsd-anchor-link">Test Coverage Status<a href="#test-coverage-status" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>✅ <strong>Frontend Tests</strong>: 4145 passed</li>
-<li>✅ <strong>Backend Tests</strong>: 829 passed</li>
+<li>✅ <strong>Frontend Tests</strong>: 4318 passed</li>
+<li>✅ <strong>Backend Tests</strong>: 828 passed</li>
 <li>✅ <strong>E2E Tests</strong>: 927 passed</li>
-<li>📊 <strong>Total</strong>: &gt;5,000 tests passing</li>
+<li>📊 <strong>Total</strong>: &gt;6,000 tests passing</li>
 </ul>
 <h2 id="cicd--code-quality" class="tsd-anchor-link">CI/CD &amp; Code Quality<a href="#cicd--code-quality" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="automated-workflows" class="tsd-anchor-link">Automated Workflows<a href="#automated-workflows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li>✅ <strong>Linting</strong>: ESLint, Stylelint, Clippy</li>
