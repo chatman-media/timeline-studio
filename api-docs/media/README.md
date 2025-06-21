@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[English](README.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
+[English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
@@ -39,7 +39,7 @@ Timeline Studio is a modern video editor built on Tauri architecture (Rust + Rea
 ### Project Status (June 2025)
 
 **Overall Completion: 54.2%** ⬆️ (recalculated with export completion and 14 new planned modules)
-- **Completed**: 12 modules (100% readiness) 
+- **Completed**: 12 modules (100% readiness)
 - **In development**: 8 modules (45-85% readiness)
 - **Planned**: 4 modules (30-80% readiness)
 - **New planned**: 14 modules (0% readiness) - [details in planned/](docs-ru/08-roadmap/planned/)
@@ -50,9 +50,9 @@ Timeline Studio is a modern video editor built on Tauri architecture (Rust + Rea
 - ✅ **Media Management** - file management ready (100%)
 - ✅ **Core Architecture** - app-state, browser, modals, user/project settings (100%)
 - ✅ **Recognition** - YOLO v11 object and face recognition (100%)
-- 🔄 **Effects/Filters/Transitions** - rich effects library in Filmora style (75-80%)
+- ✅ **Effects/Filters/Transitions** - rich effects library in Filmora style (75-80%)
 - ✅ **Export** - fully ready with 4 tabs support (100%)
-- 🔄 **Resources Panel** - main UI ready, drag & drop missing (80%)
+- ✅ **Resources Panel** - main UI ready, drag & drop missing (80%)
 - ❗ **AI Chat** - requires real API integration (30%)
 - 📋 **14 new planned modules** - [see planned/](docs-ru/08-roadmap/planned/) to achieve DaVinci + Filmora level
 - 🎯 **Goal** - combine DaVinci power and Filmora library with AI automation
@@ -69,11 +69,10 @@ Timeline Studio is a modern video editor built on Tauri architecture (Rust + Rea
 - 📤 Export to MP4/MOV/WebM with social media OAuth integration
 - 🔐 YouTube/TikTok/Vimeo/Telegram OAuth support with secure token storage
 - 📱 Device presets (iPhone, iPad, Android) for optimized exports
-- 🧠 State management using XState v5
 - 🌐 Internationalization support (11 languages)
 - 💾 Smart caching and unified preview system
 - 🎨 Modern UI using Tailwind CSS v4, shadcn-ui
-- 📚 Complete documentation with 5,000 tests (Frontend: 3,604, Rust: 622, E2E: 774)
+- 📚 Complete documentation with more than 5,000 tests and over 80% code coverage
 
 ## Getting Started
 
@@ -152,22 +151,22 @@ bun run check:all
 
 | Command | Description |
 |---------|-------------|
-| `bun run tauri dev` | Launch full application in development |
-| `bun run dev` | Launch frontend only |
-| `bun run build` | Build for production |
-| `bun run test` | Run frontend tests |
-| `bun run test:rust` | Run backend tests |
-| `bun run lint` | Check code quality |
-| `bun run fix:all` | Auto-fix code issues |
+| `bun run tauri dev`   | Launch full application in development |
+| `bun run dev`         | Launch frontend only                   |
+| `bun run build`       | Build for production                   |
+| `bun run test`        | Run frontend tests                     |
+| `bun run test:rust`   | Run backend tests                      |
+| `bun run lint`        | Check code quality                     |
+| `bun run fix:all`     | Auto-fix code issues                   |
 
 📚 **[Complete Development Guide →](docs-ru/05-development/README.md)**
 
 ### Test Coverage Status
 
-✅ **Frontend Tests**: 4168 passed
-✅ **Backend Tests**: 798 passed
-✅ **E2E Tests**: 927 passed
-📊 **Total**: >5,000 tests passing
+- ✅ **Frontend Tests**: 4122 passed
+- ✅ **Backend Tests**: 798 passed
+- ✅ **E2E Tests**: 927 passed
+- 📊 **Total**: >5,000 tests passing
 
 ## CI/CD & Code Quality
 
@@ -183,9 +182,8 @@ bun run check:all
 ## Documentation & Resources
 
 - 📚 [**API Documentation**](https://chatman-media.github.io/timeline-studio/api-docs/) - Auto-generated TypeScript docs
-- 🚀 [**Promo Page**](https://chatman-media.github.io/timeline-studio/) - Project showcase
+- 🚀 [**Website**](https://chatman-media.github.io/timeline-studio/) - Project showcase
 - 📖 [**Complete Documentation**](docs-ru/README.md) - Full guide in Russian
-- 🎬 [**Live Demo**](https://chatman-media.github.io/timeline-studio/) - Try the editor online
 
 ## Additional Resources
 
