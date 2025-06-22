@@ -1,54 +1,78 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
+[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
-[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=for-the-badge&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=for-the-badge&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=for-the-badge&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![codecov](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=for-the-badge&label=npm%20downloads)](https://www.npmjs.com/package/timeline-studio)
+[![Open Collective](https://img.shields.io/opencollective/all/timeline-studio?style=for-the-badge&label=sponsors)](https://opencollective.com/timeline-studio)
+[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Website](https://img.shields.io/badge/visit-website-brightgreen?style=for-the-badge&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
+[![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+[![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
+[![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
-[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=for-the-badge&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=for-the-badge&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+</div>
 
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+## 🎬 Proje Genel Bakış
 
-## Proje Genel Bakış
+**Timeline Studio** - AI destekli video editörü, videolarınızı, müziklerinizi ve favori efektlerinizi tüm platformlarda yayınlanmaya hazır düzinelerce klibe dönüştürür!
 
-Timeline Studio, Tauri mimarisi (Rust + React) üzerine inşa edilmiş modern bir video editörüdür.
+### 🚀 Olanakları Hayal Edin
 
-**Hedefimiz**: Aşağıdakileri birleştiren bir editör oluşturmak:
-- **DaVinci Resolve'un profesyonel gücü** - düzenleme, renk derecelendirme, ses miksajı, görsel efektler, hareketli grafikler ve gelişmiş kompozisyon üzerinde tam kontrol
-- **Kapsamlı yaratıcı kütüphane** - Filmora gibi popüler editörlere kıyaslanabilir efektler, filtreler, geçişler, çoklu kamera şablonları, animasyonlu başlıklar, stil şablonları ve altyazı ön ayarları
-- **AI komut dosyası ve otomasyon** - farklı diller ve farklı platformlar için otomatik içerik üretimi
+**Videolarınızı, fotoğraflarınızı, müziklerinizi bir kez yükleyin** → şunları elde edin:
+- 📱 **TikTok** - trend efektlerle dikey kısa videolar
+- 📺 **YouTube** - tam filmler, kısa klipler, Shorts
+- 📸 **Instagram** - farklı uzunluklarda Reels, Stories, gönderiler
+- ✈️ **Telegram** - kanallar ve sohbetler için optimize edilmiş sürümler
 
-**Temel yenilik**: Kullanıcıların videoları, müzikleri ve diğer kaynakları yüklemesi yeterlidir ve AI, farklı dillerde ve farklı platformlar (YouTube, TikTok, Vimeo, Telegram) için optimize edilmiş bir dizi video otomatik olarak oluşturacaktır.
+AI asistanı her platform için doğru sayıda sürüm oluşturacak! 🤖
+
+### 💡 Nasıl Çalışır
+
+> *"Asya seyahatim hakkında tüm sosyal medya için bir video oluştur" - ve dakikalar içinde hazır seçenekleriniz var: TikTok için dinamik kısa videolar, YouTube için atmosferik vlog, Instagram için canlı Stories. AI en iyi anları seçecek, müzikle senkronize edecek ve her platforma uyarlayacak.*
+
+### ⚡ Bu Neden Her Şeyi Değiştiriyor
+
+- **10x zaman tasarrufu** - her video için artık manuel uyarlama yok
+- **AI trendleri anlıyor** - her sosyal ağda neyin işe yaradığını biliyor
+- **Profesyonel kalite** - büyük stüdyolarla aynı araçları kullanıyor
+- **Her şey yerel olarak çalışıyor** - içeriğiniz gizli kalıyor
 
 ![Timeline Interface](/public/screen3.png)
 
 ### Proje Durumu (Haziran 2025)
 
-**Genel Tamamlanma: %53.8** ⬆️ (gerçek modül durumu ve 14 yeni planlı modülle yeniden hesaplandı)
-- **Tamamlandı**: 11 modül (%100 hazır)
-- **Geliştirme aşamasında**: 8 modül (%45-85 hazır)
-- **Planlı**: 5 modül (%30-85 hazır)
+**Genel Tamamlanma: %58** ⬆️ (API Anahtar Yönetimi %100 tamamlanma ve 14 yeni planlı modülle yeniden hesaplandı)
+- **Tamamlandı**: 13 modül (%100 hazır)
+- **Geliştirme aşamasında**: 7 modül (%45-90 hazır)
+- **Planlı**: 4 modül (%30-80 hazır)
 - **Yeni planlı**: 14 modül (%0 hazır) - [ayrıntılar planned/ içinde](docs-ru/08-roadmap/planned/)
 
 ### Temel Başarılar:
-- ✅ **Video Derleyici** - GPU hızlandırma ile tam olarak uygulandı (%100)
-- ✅ **Zaman Çizelgesi** - ana editör tam işlevsel (%100)
-- ✅ **Medya Yönetimi** - dosya yönetimi hazır (%100)
-- ✅ **Temel Mimari** - app-state, browser, modals, user/project settings (%100)
+- ✅ **Temel Mimari** - Zaman Çizelgesi, Video Derleyici, Medya Yönetimi (%100)
+- ✅ **API Anahtar Yönetimi** - AES-256-GCM şifreleme ile güvenli depolama (%100)
 - ✅ **Tanıma** - YOLO v11 nesne ve yüz tanıma (%100)
-- 🔄 **Efektler/Filtreler/Geçişler** - Filmora tarzında zengin efekt kütüphanesi (%75-80)
-- 🔄 **Dışa Aktarma** - neredeyse tamamlandı, parametre ayrıntıları kaldı (%85)
-- 🔄 **Kaynak Paneli** - ana UI hazır, sürükle & bırak eksik (%80)
-- ❗ **AI Sohbet** - gerçek API entegrasyonu gerekli (%30)
-- 📋 **14 yeni planlı modül** - [planned/ bak](docs-ru/08-roadmap/planned/) DaVinci + Filmora seviyesine ulaşmak için
-- 🎯 **Hedef** - DaVinci gücü ve Filmora kütüphanesini AI otomasyonuyla birleştir
+- ✅ **Dışa Aktarma** - YouTube/TikTok/Vimeo OAuth entegrasyonu (%100)
+- 🚧 **Efektler/Filtreler/Geçişler** - zengin kütüphane geliştiriliyor (%75-80)
+- 🚧 **Zaman Çizelgesi AI** - 41 Claude aracıyla otomasyon (%90)
+
+### Mevcut Görevler:
+- 🔄 **OAuth geri arama işleme** - sosyal ağ entegrasyonunu tamamlama
+- ⏳ **HTTP API doğrulama** - gerçek zamanlı bağlantı testi
+- ⏳ **.env'den içe aktarma** - mevcut anahtarların taşınması
+
+### Sonraki Adımlar:
+1. **Sosyal Ağlar Entegrasyonu** - tam OAuth akışı uygulaması
+2. **Gelişmiş Efektler** - Filmora tarzı kütüphanenin tamamlanması
+3. **Zaman Çizelgesi AI** - akıllı video oluşturma otomasyonu
 
 ## Ana Özellikler
 
@@ -67,39 +91,23 @@ Timeline Studio, Tauri mimarisi (Rust + React) üzerine inşa edilmiş modern bi
 
 ## Başlarken
 
-### Ön Koşullar
-
-- [Node.js](https://nodejs.org/) (v18 veya üzeri)
-- [Rust](https://www.rust-lang.org/tools/install) (en son kararlı sürüm)
-- [bun](https://bun.sh/) (en son kararlı sürüm)
-- [ffmpeg](https://ffmpeg.org/download.html) (en son kararlı sürüm)
-
-### Kurulum
-
-1. Depoyu klonlayın:
+### Hızlı Kurulum
 
 ```bash
+# Klonla ve kur
 git clone https://github.com/chatman-media/timeline-studio.git
 cd timeline-studio
-```
-
-2. Bağımlılıkları yükleyin:
-
-```bash
 bun install
-```
 
-### Geliştirme Modu Başlatma
-
-```bash
+# Geliştirme modunu çalıştır
 bun run tauri dev
 ```
 
-### Sürüm Derlemesi
+### Gereksinimler
+- Node.js v18+, Rust, Bun, FFmpeg
 
-```bash
-bun run tauri build
-```
+📚 **[Tam Kurulum Kılavuzu →](docs-ru/01-getting-started/README.md)**  
+🪟 **[Windows Kurulumu →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Dokümantasyon
 

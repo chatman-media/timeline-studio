@@ -1,31 +1,50 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
+[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
-[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=for-the-badge&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=for-the-badge&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=for-the-badge&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![codecov](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=for-the-badge&label=npm%20downloads)](https://www.npmjs.com/package/timeline-studio)
+[![Open Collective](https://img.shields.io/opencollective/all/timeline-studio?style=for-the-badge&label=sponsors)](https://opencollective.com/timeline-studio)
+[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Website](https://img.shields.io/badge/visit-website-brightgreen?style=for-the-badge&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
+[![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+[![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
+[![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
-[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=for-the-badge&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=for-the-badge&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+</div>
 
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+## 🎬 Visão Geral do Projeto
 
-## Visão Geral do Projeto
+**Timeline Studio** - Editor de vídeo impulsionado por IA que transforma seus vídeos, música e efeitos favoritos em dezenas de clipes prontos para publicar em todas as plataformas!
 
-Timeline Studio é um editor de vídeo moderno construído com arquitetura Tauri (Rust + React).
+### 🚀 Imagine as Possibilidades
 
-**Nosso objetivo**: criar um editor combinando:
-- **Poder profissional do DaVinci Resolve** - controle completo sobre edição, correção de cor, mixagem de áudio, efeitos visuais, gráficos em movimento e composição avançada
-- **Biblioteca criativa extensa** - efeitos, filtros, transições, modelos multicâmera, títulos animados, modelos de estilo e predefinições de legendas comparáveis a editores populares como Filmora
-- **Scripts e automação com IA** - geração automática de conteúdo em diferentes idiomas e para diferentes plataformas
+**Faça upload de seus vídeos, fotos, música uma vez** → obtenha:
+- 📱 **TikTok** - shorts verticais com efeitos em tendência
+- 📺 **YouTube** - filmes completos, clipes curtos, Shorts
+- 📸 **Instagram** - Reels, Stories, posts de diferentes durações
+- ✈️ **Telegram** - versões otimizadas para canais e chats
 
-**Inovação principal**: É suficiente que os usuários carreguem vídeos, música e outros recursos, e a IA criará automaticamente um conjunto de vídeos em diferentes idiomas e otimizados para diferentes plataformas (YouTube, TikTok, Vimeo, Telegram).
+Assistente de IA criará o número certo de versões para cada plataforma! 🤖
+
+### 💡 Como Funciona
+
+> *"Crie um vídeo sobre minha viagem à Ásia para todas as redes sociais" - e em minutos você tem opções prontas: shorts dinâmicos para TikTok, vlog atmosférico para YouTube, Stories vibrantes para Instagram. A IA selecionará os melhores momentos, sincronizará com a música e adaptará para cada plataforma.*
+
+### ⚡ Por Que Isso Muda Tudo
+
+- **Economia de 10x no tempo** - sem mais adaptação manual para cada vídeo
+- **IA entende tendências** - sabe o que funciona em cada rede social
+- **Qualidade profissional** - usando as mesmas ferramentas dos grandes estúdios
+- **Tudo funciona localmente** - seu conteúdo permanece privado
 
 ![Interface da Timeline #1](/public/screen2.png)
 
@@ -33,24 +52,29 @@ Timeline Studio é um editor de vídeo moderno construído com arquitetura Tauri
 
 ### Status do Projeto (Junho 2025)
 
-**Conclusão Geral: 53.8%** ⬆️ (recalculado com status real dos módulos e 14 novos módulos planejados)
-- **Concluído**: 11 módulos (100% pronto)
-- **Em desenvolvimento**: 8 módulos (45-85% pronto)
-- **Planejado**: 5 módulos (30-85% pronto)
+**Conclusão Geral: 58%** ⬆️ (recalculado com Gerenciamento de Chaves API em 100% e 14 novos módulos planejados)
+- **Concluído**: 13 módulos (100% pronto)
+- **Em desenvolvimento**: 7 módulos (45-90% pronto)
+- **Planejado**: 4 módulos (30-80% pronto)
 - **Novos planejados**: 14 módulos (0% pronto) - [detalhes em planned/](docs-ru/08-roadmap/planned/)
 
 ### Principais Conquistas:
-- ✅ **Compilador de Vídeo** - totalmente implementado com aceleração GPU (100%)
-- ✅ **Timeline** - editor principal totalmente funcional (100%)
-- ✅ **Gerenciamento de Mídia** - gerenciamento de arquivos pronto (100%)
-- ✅ **Arquitetura Central** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Arquitetura Central** - Timeline, Compilador de Vídeo, Gerenciamento de Mídia (100%)
+- ✅ **Gerenciamento de Chaves API** - armazenamento seguro com criptografia AES-256-GCM (100%)
 - ✅ **Reconhecimento** - reconhecimento de objetos e rostos YOLO v11 (100%)
-- 🔄 **Efeitos/Filtros/Transições** - rica biblioteca de efeitos estilo Filmora (75-80%)
-- 🔄 **Export** - quase pronto, faltam detalhes de parâmetros (85%)
-- 🔄 **Painel de Recursos** - UI principal pronto, falta drag & drop (80%)
-- ❗ **AI Chat** - requer integração real da API (30%)
-- 📋 **14 novos módulos planejados** - [ver planned/](docs-ru/08-roadmap/planned/) para alcançar nível DaVinci + Filmora
-- 🎯 **Objetivo** - combinar poder do DaVinci e biblioteca Filmora com automação AI
+- ✅ **Export** - integração OAuth para YouTube/TikTok/Vimeo (100%)
+- 🚧 **Efeitos/Filtros/Transições** - rica biblioteca em progresso (75-80%)
+- 🚧 **Timeline AI** - automação com 41 ferramentas Claude (90%)
+
+### Tarefas Atuais:
+- 🔄 **Manipulação de callback OAuth** - completando integração de redes sociais
+- ⏳ **Validação de API HTTP** - teste de conexão em tempo real
+- ⏳ **Importar de .env** - migração de chaves existentes
+
+### Próximos Passos:
+1. **Integração de Redes Sociais** - implementação completa do fluxo OAuth
+2. **Efeitos Avançados** - completando biblioteca estilo Filmora
+3. **Timeline AI** - automação inteligente de criação de vídeo
 
 ## Recursos Principais
 
@@ -72,39 +96,23 @@ Timeline Studio é um editor de vídeo moderno construído com arquitetura Tauri
 
 ## Começando
 
-### Pré-requisitos
-
-- [Node.js](https://nodejs.org/) (v18 ou superior)
-- [Rust](https://www.rust-lang.org/tools/install) (versão estável mais recente)
-- [bun](https://bun.sh/) (versão estável mais recente)
-- [ffmpeg](https://ffmpeg.org/download.html) (versão estável mais recente)
-
-### Instalação
-
-1. Clone o repositório:
+### Configuração Rápida
 
 ```bash
+# Clone e instale
 git clone https://github.com/chatman-media/timeline-studio.git
 cd timeline-studio
-```
-
-2. Instale as dependências:
-
-```bash
 bun install
-```
 
-### Iniciando em Modo de Desenvolvimento
-
-```bash
+# Executar modo de desenvolvimento
 bun run tauri dev
 ```
 
-### Build de Produção
+### Requisitos
+- Node.js v18+, Rust, Bun, FFmpeg
 
-```bash
-bun run tauri build
-```
+📚 **[Guia de Instalação Completo →](docs-ru/01-getting-started/README.md)**  
+🪟 **[Configuração Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Documentação
 
@@ -141,41 +149,7 @@ bun run test && bun run test:rust
 bun run check:all
 ```
 
-### Comandos Essenciais
-
-| Comando | Descrição |
-|---------|-------------|
-| `bun run tauri dev` | Iniciar aplicação completa em desenvolvimento |
-| `bun run dev` | Iniciar apenas frontend |
-| `bun run build` | Build para produção |
-| `bun run test` | Executar testes frontend |
-| `bun run test:rust` | Executar testes backend |
-| `bun run lint` | Verificar qualidade do código |
-| `bun run fix:all` | Auto-corrigir problemas de código |
-
 📚 **[Guia Completo de Desenvolvimento →](docs-ru/05-development/README.md)**
-
-### Status de Cobertura dos Testes
-
-✅ **Testes Frontend**: 3,604 passaram  
-✅ **Testes Backend**: 554 passaram (+18 novos!)  
-📊 **Total**: 4,158 testes passando
-- `bun run test:coverage:report` - Gerar e enviar relatório de cobertura de testes
-- `bun run test:rust` - Executar testes do backend Rust
-- `bun run test:rust:watch` - Executar testes Rust em modo watch
-- `bun run test:coverage:rust` - Executar testes Rust com cobertura
-- `bun run test:coverage:rust:report` - Gerar e enviar relatório de cobertura Rust
-- `bun run test:ui` - Executar testes com interface UI
-- `bun run test:e2e` - Executar testes end-to-end com Playwright
-- `bun run test:e2e:ui` - Executar testes e2e com UI do Playwright
-- `bun run test:e2e:basic` - Executar teste e2e básico de importação de mídia
-- `bun run test:e2e:real` - Executar testes e2e com arquivos de mídia reais
-- `bun run test:e2e:integration` - Executar testes e2e de integração (requer INTEGRATION_TEST=true)
-- `bun run playwright:install` - Instalar navegadores do Playwright
-
-### Testes
-
-O projeto usa Vitest para testes unitários. Os testes estão localizados no diretório __tests__ de cada recurso, junto com mocks em __mocks__.
 
 ## CI/CD e Qualidade do Código
 
@@ -191,52 +165,25 @@ O projeto usa Vitest para testes unitários. Os testes estão localizados no dir
 ## Documentação e Recursos
 
 - 📚 [**Documentação da API**](https://chatman-media.github.io/timeline-studio/api-docs/) - Documentação TypeScript auto-gerada
-- 🚀 [**Página Promocional**](https://chatman-media.github.io/timeline-studio/) - Vitrine do projeto
+- 🚀 [**Site**](https://chatman-media.github.io/timeline-studio/) - Vitrine do projeto
 - 📖 [**Documentação Completa**](docs-ru/README.md) - Guia completo em russo
-- 🎬 [**Demo ao Vivo**](https://chatman-media.github.io/timeline-studio/) - Experimente o editor online
 
-## Recursos Adicionais
+## Star History
+<a href="https://www.star-history.com/#chatman-media/timeline-studio&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date" />
+ </picture>
+</a>
 
-- [Documentação Tauri](https://v2.tauri.app/start/)
-- [Documentação XState](https://xstate.js.org/docs/)
-- [Documentação Vitest](https://vitest.dev/guide/)
-- [Documentação Tailwind CSS](https://tailwindcss.com/docs)
-- [Documentação Shadcn UI](https://ui.shadcn.com/)
-- [Documentação Stylelint](https://stylelint.io/)
-- [Documentação ESLint](https://eslint.org/docs/latest/)
-- [Documentação Playwright](https://playwright.dev/docs/intro)
-- [Documentação TypeDoc](https://typedoc.org/)
-- [Documentação ffmpeg](https://ffmpeg.org/documentation.html)
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=chatman-media/timeline-studio@github)](https://gitads.dev/v1/ad-track?source=chatman-media/timeline-studio@github)
 
 ## Licença
 
-Este projeto é distribuído sob a Licença MIT com condição Commons Clause.
+Licença MIT com Commons Clause - gratuito para uso pessoal, uso comercial requer acordo.
 
-**Termos principais:**
+📄 **[Detalhes Completos da Licença →](docs-ru/10-legal/license.md)** | 📧 **Licença Comercial**: ak.chatman.media@gmail.com
 
-- **Open Source**: Você pode usar, modificar e distribuir o código livremente de acordo com os termos da Licença MIT.
-- **Restrição de Uso Comercial**: Commons Clause proíbe "vender" o software sem um acordo separado com o autor.
-- **"Vender"** significa usar a funcionalidade do software para fornecer a terceiros um produto ou serviço mediante pagamento.
-
-Esta licença permite:
-
-- Usar o código para projetos pessoais e não-comerciais
-- Estudar e modificar o código
-- Distribuir modificações sob a mesma licença
-
-Mas proíbe:
-
-- Criar produtos ou serviços comerciais baseados no código sem uma licença
-
-Para obter uma licença comercial, entre em contato com o autor: ak.chatman.media@gmail.com
-
-O texto completo da licença está disponível no arquivo [LICENSE](./LICENSE)
-
-## GitHub Pages
-
-O projeto usa GitHub Pages para hospedar a documentação da API e página promocional:
-
-- **Página Promocional**: [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-- **Documentação da API**: [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Ambas as páginas são atualizadas automaticamente quando os arquivos correspondentes são alterados no branch `main` usando workflows do GitHub Actions.
+<!-- GitAds-Verify: EIS875AHMQZGOHYNQFNPOUHHNSEXHVUR -->

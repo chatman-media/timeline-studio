@@ -1,31 +1,50 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
+[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
-[![Lint CSS](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-css.yml?style=for-the-badge&label=lint%20css)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-css.yml)
-[![Lint TypeScript](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=for-the-badge&label=lint%20ts)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Lint Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=for-the-badge&label=lint%20rust)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![codecov](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=for-the-badge&label=npm%20downloads)](https://www.npmjs.com/package/timeline-studio)
+[![Open Collective](https://img.shields.io/opencollective/all/timeline-studio?style=for-the-badge&label=sponsors)](https://opencollective.com/timeline-studio)
+[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Website](https://img.shields.io/badge/visit-website-brightgreen?style=for-the-badge&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
+[![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
+[![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+[![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
+[![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
-[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=frontend&style=for-the-badge&label=frontend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?flag=backend&style=for-the-badge&label=backend%20coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
+</div>
 
-[![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+## 🎬 项目概述
 
-## 项目概述
+**Timeline Studio** - AI驱动的视频编辑器，将您的视频、音乐和喜爱的效果转换为数十个可直接发布到所有平台的视频片段！
 
-Timeline Studio 是一款基于 Tauri 架构（Rust + React）构建的现代视频编辑器。
+### 🚀 想象无限可能
 
-**我们的目标**：创建一个结合以下特点的编辑器：
-- **DaVinci Resolve 的专业能力** - 完全控制编辑、调色、音频混音、视觉效果、动态图形和高级合成
-- **丰富的创意库** - 效果、滤镜、转场、多机位模板、动画标题、样式模板和字幕预设，可与 Filmora 等流行编辑器媲美
-- **AI 脚本和自动化** - 自动生成不同语言和不同平台的内容
+**一次上传您的视频、照片、音乐** → 获得：
+- 📱 **TikTok** - 带有热门效果的竖版短视频
+- 📺 **YouTube** - 完整影片、短片段、Shorts
+- 📸 **Instagram** - 不同时长的Reels、Stories、帖子
+- ✈️ **Telegram** - 为频道和聊天优化的版本
 
-**关键创新**：用户只需上传视频、音乐和其他资源，AI 将自动创建一组针对不同语言和不同平台（YouTube、TikTok、Vimeo、Telegram）优化的视频。
+AI助手将为每个平台创建合适数量的版本！🤖
+
+### 💡 工作原理
+
+> *"为我的亚洲之旅创建视频并发布到所有社交媒体" - 几分钟内您就有了现成的选项：TikTok的动态短视频、YouTube的氛围视频博客、Instagram的生动Stories。AI将选择最佳时刻，与音乐同步，并适配每个平台。*
+
+### ⚡ 这将改变一切
+
+- **节省10倍时间** - 不再需要为每个视频手动调整
+- **AI理解趋势** - 知道什么在每个社交网络上有效
+- **专业质量** - 使用与大型工作室相同的工具
+- **一切本地运行** - 您的内容保持私密
 
 ![时间轴界面 #1](/public/screen2.png)
 
@@ -33,24 +52,29 @@ Timeline Studio 是一款基于 Tauri 架构（Rust + React）构建的现代视
 
 ### 项目状态（2025年6月）
 
-**总体完成度：53.8%** ⬆️（根据真实模块状态和14个新计划模块重新计算）
-- **已完成**：11个模块（100% 就绪）
-- **开发中**：8个模块（45-85% 就绪）
-- **已计划**：5个模块（30-85% 就绪）
+**总体完成度：58%** ⬆️（根据API密钥管理100%完成和14个新计划模块重新计算）
+- **已完成**：13个模块（100% 就绪）
+- **开发中**：7个模块（45-90% 就绪）
+- **已计划**：4个模块（30-80% 就绪）
 - **新计划**：14个模块（0% 就绪）- [详情见 planned/](docs-ru/08-roadmap/planned/)
 
 ### 关键成就：
-- ✅ **视频编译器** - 完全实现GPU加速（100%）
-- ✅ **时间轴** - 主编辑器完全功能（100%）
-- ✅ **媒体管理** - 文件管理就绪（100%）
-- ✅ **核心架构** - app-state、browser、modals、user/project settings（100%）
+- ✅ **核心架构** - 时间轴、视频编译器、媒体管理（100%）
+- ✅ **API密钥管理** - 使用AES-256-GCM加密的安全存储（100%）
 - ✅ **识别** - YOLO v11对象和人脸识别（100%）
-- 🔄 **效果/滤镜/转场** - 丰富的Filmora风格效果库（75-80%）
-- 🔄 **导出** - 几乎完成，参数细节待完善（85%）
-- 🔄 **资源面板** - 主UI就绪，缺少拖放功能（80%）
-- ❗ **AI聊天** - 需要真实API集成（30%）
-- 📋 **14个新计划模块** - [查看 planned/](docs-ru/08-roadmap/planned/) 以达到DaVinci + Filmora水平
-- 🎯 **目标** - 结合DaVinci的强大功能和Filmora的库以及AI自动化
+- ✅ **导出** - YouTube/TikTok/Vimeo的OAuth集成（100%）
+- 🚧 **效果/滤镜/转场** - 丰富的库正在开发中（75-80%）
+- 🚧 **时间轴AI** - 使用41个Claude工具的自动化（90%）
+
+### 当前任务：
+- 🔄 **OAuth回调处理** - 完成社交网络集成
+- ⏳ **HTTP API验证** - 实时连接测试
+- ⏳ **从.env导入** - 现有密钥的迁移
+
+### 下一步：
+1. **社交网络集成** - 完整的OAuth流程实现
+2. **高级效果** - 完成Filmora风格的库
+3. **时间轴AI** - 智能视频创作自动化
 
 ## 主要功能
 
@@ -72,39 +96,23 @@ Timeline Studio 是一款基于 Tauri 架构（Rust + React）构建的现代视
 
 ## 开始使用
 
-### 前提条件
-
-- [Node.js](https://nodejs.org/)（v18 或更高版本）
-- [Rust](https://www.rust-lang.org/tools/install)（最新稳定版本）
-- [bun](https://bun.sh/)（最新稳定版本）
-- [ffmpeg](https://ffmpeg.org/download.html)（最新稳定版本）
-
-### 安装
-
-1. 克隆仓库：
+### 快速设置
 
 ```bash
+# 克隆并安装
 git clone https://github.com/chatman-media/timeline-studio.git
 cd timeline-studio
-```
-
-2. 安装依赖：
-
-```bash
 bun install
-```
 
-### 开发模式启动
-
-```bash
+# 运行开发模式
 bun run tauri dev
 ```
 
-### 发布构建
+### 要求
+- Node.js v18+、Rust、Bun、FFmpeg
 
-```bash
-bun run tauri build
-```
+📚 **[完整安装指南 →](docs-ru/01-getting-started/README.md)**  
+🪟 **[Windows设置 →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## 文档
 
@@ -137,25 +145,7 @@ bun run test && bun run test:rust
 bun run check:all
 ```
 
-### 基本命令
-
-| 命令 | 描述 |
-|------|------|
-| `bun run tauri dev` | 启动完整应用程序开发模式 |
-| `bun run dev` | 仅启动前端 |
-| `bun run build` | 生产环境构建 |
-| `bun run test` | 运行前端测试 |
-| `bun run test:rust` | 运行后端测试 |
-| `bun run lint` | 检查代码质量 |
-| `bun run fix:all` | 自动修复代码问题 |
-
 📚 **[完整开发指南 →](docs-ru/05-development/README.md)**
-
-### 测试覆盖状态
-
-✅ **前端测试**：3,604 通过  
-✅ **后端测试**：554 通过（+18 新增！）  
-📊 **总计**：4,158 测试通过
 
 ## CI/CD 和代码质量
 
@@ -170,53 +160,26 @@ bun run check:all
 
 ## 文档和资源
 
-- 📚 [**API 文档**](https://chatman-media.github.io/timeline-studio/api-docs/) - 自动生成的 TypeScript 文档
-- 🚀 [**宣传页面**](https://chatman-media.github.io/timeline-studio/) - 项目展示
+- 📚 [**API 文档**](https://chatman-media.github.io/timeline-studio/api-docs/) - 自动生成的TypeScript文档
+- 🚀 [**网站**](https://chatman-media.github.io/timeline-studio/) - 项目展示
 - 📖 [**完整文档**](docs-ru/README.md) - 俄语完整指南
-- 🎬 [**在线演示**](https://chatman-media.github.io/timeline-studio/) - 在线试用编辑器
 
-## 附加资源
+## Star History
+<a href="https://www.star-history.com/#chatman-media/timeline-studio&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=chatman-media/timeline-studio&type=Date" />
+ </picture>
+</a>
 
-- [Tauri 文档](https://v2.tauri.app/start/)
-- [XState 文档](https://xstate.js.org/docs/)
-- [Vitest 文档](https://vitest.dev/guide/)
-- [Tailwind CSS 文档](https://tailwindcss.com/docs)
-- [Shadcn UI 文档](https://ui.shadcn.com/)
-- [Stylelint 文档](https://stylelint.io/)
-- [ESLint 文档](https://eslint.org/docs/latest/)
-- [Playwright 文档](https://playwright.dev/docs/intro)
-- [TypeDoc 文档](https://typedoc.org/)
-- [ffmpeg 文档](https://ffmpeg.org/documentation.html)
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=chatman-media/timeline-studio@github)](https://gitads.dev/v1/ad-track?source=chatman-media/timeline-studio@github)
 
 ## 许可证
 
-本项目在带有 Commons Clause 条件的 MIT 许可证下分发。
+MIT许可证附带Commons Clause - 个人使用免费，商业使用需要协议。
 
-**主要条款：**
+📄 **[完整许可证详情 →](docs-ru/10-legal/license.md)** | 📧 **商业许可证**: ak.chatman.media@gmail.com
 
-- **开源**：您可以根据 MIT 许可证条款自由使用、修改和分发代码。
-- **商业使用限制**：Commons Clause 禁止在没有与作者单独协议的情况下"销售"软件。
-- **"销售"**意味着使用软件功能向第三方提供收费的产品或服务。
-
-此许可证允许：
-
-- 将代码用于个人和非商业项目
-- 研究和修改代码
-- 在相同许可证下分发修改
-
-但禁止：
-
-- 在没有许可证的情况下创建基于代码的商业产品或服务
-
-要获得商业许可证，请联系作者：ak.chatman.media@gmail.com
-
-完整的许可证文本可在 [LICENSE](./LICENSE) 文件中找到
-
-## GitHub Pages
-
-项目使用 GitHub Pages 托管 API 文档和宣传页面：
-
-- **宣传页面**：[https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-- **API 文档**：[https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-当 `main` 分支中的相应文件更改时，两个页面都会使用 GitHub Actions 工作流程自动更新。
+<!-- GitAds-Verify: EIS875AHMQZGOHYNQFNPOUHHNSEXHVUR -->

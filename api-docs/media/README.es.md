@@ -16,16 +16,30 @@
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 
-## Descripción del Proyecto
+## 🎬 Descripción del Proyecto
 
-Timeline Studio es un editor de video moderno construido sobre la arquitectura Tauri (Rust + React).
+**Timeline Studio** - editor de video con IA que transforma tus videos, música y efectos favoritos en docenas de clips listos para publicar en todas las plataformas!
 
-**Nuestro objetivo**: crear un editor que combine:
-- **Poder profesional de DaVinci Resolve** - control completo sobre edición, corrección de color, mezcla de audio, efectos visuales, gráficos en movimiento y composición avanzada
-- **Amplia biblioteca creativa** - efectos, filtros, transiciones, plantillas multicámara, títulos animados, plantillas de estilo y preajustes de subtítulos comparables a editores populares como Filmora
-- **Scripting y automatización con IA** - generación automática de contenido en diferentes idiomas y para diferentes plataformas
+### 🚀 Imagina las Posibilidades
 
-**Innovación clave**: Es suficiente que los usuarios carguen videos, música y otros recursos, y la IA creará automáticamente un conjunto de videos en diferentes idiomas y optimizados para diferentes plataformas (YouTube, TikTok, Vimeo, Telegram).
+**Sube tus videos, fotos, música una vez** → obtén:
+- 📱 **TikTok** - shorts verticales con efectos de tendencia
+- 📺 **YouTube** - películas completas, clips cortos, Shorts
+- 📸 **Instagram** - Reels, Stories, publicaciones de diferentes duraciones
+- ✈️ **Telegram** - versiones optimizadas para canales y chats
+
+¡El asistente de IA creará el número correcto de versiones para cada plataforma! 🤖
+
+### 💡 Cómo Funciona
+
+> *"Crea un video sobre mi viaje a Asia para todas las redes sociales" - y en minutos tienes opciones listas: shorts dinámicos para TikTok, vlog atmosférico para YouTube, Stories vibrantes para Instagram. La IA seleccionará los mejores momentos, sincronizará con la música y adaptará para cada plataforma.*
+
+### ⚡ Por Qué Esto Cambia Todo
+
+- **Ahorro de tiempo 10x** - no más adaptación manual para cada video
+- **La IA entiende las tendencias** - sabe qué funciona en cada red social
+- **Calidad profesional** - usando las mismas herramientas que los grandes estudios
+- **Todo funciona localmente** - tu contenido permanece privado
 
 ![Interfaz de Timeline #1](/public/screen2.png)
 
@@ -33,24 +47,29 @@ Timeline Studio es un editor de video moderno construido sobre la arquitectura T
 
 ### Estado del Proyecto (Junio 2025)
 
-**Completado General: 53.8%** ⬆️ (recalculado con estado real de módulos y 14 nuevos módulos planificados)
-- **Completado**: 11 módulos (100% listo) 
-- **En desarrollo**: 8 módulos (45-85% listo)
-- **Planificado**: 5 módulos (30-85% listo)
+**Completado General: 58%** ⬆️ (recalculado con API Keys Management al 100% y 14 nuevos módulos planificados)
+- **Completado**: 13 módulos (100% listo)
+- **En desarrollo**: 7 módulos (45-90% listo)
+- **Planificado**: 4 módulos (30-80% listo)
 - **Nuevos planificados**: 14 módulos (0% listo) - [detalles en planned/](docs-ru/08-roadmap/planned/)
 
 ### Logros Clave:
-- ✅ **Video Compiler** - completamente implementado con aceleración GPU (100%)
-- ✅ **Timeline** - editor principal completamente funcional (100%)
-- ✅ **Gestión de Medios** - gestión de archivos lista (100%)
-- ✅ **Arquitectura Central** - app-state, browser, modals, user/project settings (100%)
+- ✅ **Arquitectura Central** - Timeline, Video Compiler, Media Management (100%)
+- ✅ **API Keys Management** - almacenamiento seguro con encriptación AES-256-GCM (100%)
 - ✅ **Reconocimiento** - reconocimiento de objetos y rostros YOLO v11 (100%)
-- 🔄 **Efectos/Filtros/Transiciones** - rica biblioteca de efectos estilo Filmora (75-80%)
-- 🔄 **Export** - casi listo, quedan detalles de parámetros (85%)
-- 🔄 **Panel de Recursos** - UI principal listo, falta drag & drop (80%)
-- ❗ **AI Chat** - requiere integración real de API (30%)
-- 📋 **14 nuevos módulos planificados** - [ver planned/](docs-ru/08-roadmap/planned/) para alcanzar nivel DaVinci + Filmora
-- 🎯 **Objetivo** - combinar poder de DaVinci y biblioteca Filmora con automatización AI
+- ✅ **Export** - integración OAuth para YouTube/TikTok/Vimeo (100%)
+- 🚧 **Efectos/Filtros/Transiciones** - rica biblioteca en progreso (75-80%)
+- 🚧 **Timeline AI** - automatización con 41 herramientas Claude (90%)
+
+### Tareas Actuales:
+- 🔄 **Manejo de callback OAuth** - completando integración de redes sociales
+- ⏳ **Validación de API HTTP** - pruebas de conexión en tiempo real
+- ⏳ **Importar desde .env** - migración de claves existentes
+
+### Próximos Pasos:
+1. **Integración de Redes Sociales** - implementación completa del flujo OAuth
+2. **Efectos Avanzados** - completar biblioteca estilo Filmora
+3. **Timeline AI** - automatización inteligente de creación de video
 
 ## Características Principales
 
@@ -72,39 +91,23 @@ Timeline Studio es un editor de video moderno construido sobre la arquitectura T
 
 ## Comenzando
 
-### Prerrequisitos
-
-- [Node.js](https://nodejs.org/) (v18 o superior)
-- [Rust](https://www.rust-lang.org/tools/install) (última versión estable)
-- [bun](https://bun.sh/) (última versión estable)
-- [ffmpeg](https://ffmpeg.org/download.html) (última versión estable)
-
-### Instalación
-
-1. Clonar el repositorio:
+### Configuración Rápida
 
 ```bash
+# Clonar e instalar
 git clone https://github.com/chatman-media/timeline-studio.git
 cd timeline-studio
-```
-
-2. Instalar dependencias:
-
-```bash
 bun install
-```
 
-### Modo de Desarrollo
-
-```bash
+# Ejecutar en modo desarrollo
 bun run tauri dev
 ```
 
-### Compilación de Producción
+### Requisitos
+- Node.js v18+, Rust, Bun, FFmpeg
 
-```bash
-bun run tauri build
-```
+📚 **[Guía Completa de Instalación →](docs-ru/01-getting-started/README.md)**  
+🪟 **[Configuración para Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Documentación
 
@@ -163,27 +166,9 @@ bun run check:all
 
 ## Licencia
 
-Este proyecto se distribuye bajo la Licencia MIT con Commons Clause.
+Licencia MIT con Commons Clause - gratis para uso personal, el uso comercial requiere acuerdo.
 
-**Términos Principales:**
-
-- **Código Abierto**: Puedes usar, modificar y distribuir libremente el código de acuerdo con los términos de la licencia MIT.
-- **Restricción de Uso Comercial**: Commons Clause prohíbe "vender" el software sin un acuerdo separado con el autor.
-- **"Vender"** significa usar la funcionalidad del software para proporcionar a terceros un producto o servicio por una tarifa.
-
-Esta licencia permite:
-
-- Usar el código para proyectos personales y no comerciales
-- Estudiar y modificar el código
-- Distribuir modificaciones bajo la misma licencia
-
-Pero prohíbe:
-
-- Crear productos o servicios comerciales basados en el código sin una licencia
-
-Para una licencia comercial, por favor contacta al autor: ak.chatman.media@gmail.com
-
-El texto completo de la licencia está disponible en el archivo [LICENSE](./LICENSE).
+📄 **[Detalles Completos de la Licencia →](docs-ru/10-legal/license.md)** | 📧 **Licencia Comercial**: ak.chatman.media@gmail.com
 
 ## CI/CD y Calidad del Código
 
