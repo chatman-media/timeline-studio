@@ -197,12 +197,3 @@ bun run check:all
 Licence MIT avec Commons Clause - gratuit pour usage personnel, l'usage commercial nécessite un accord.
 
 📄 **[Détails Complets de la Licence →](docs-ru/10-legal/license.md)** | 📧 **Licence Commerciale** : ak.chatman.media@gmail.com
-
-## GitHub Pages
-
-Le projet utilise GitHub Pages pour héberger la documentation API et la page promo :
-
-- **Page Promo** : [https://chatman-media.github.io/timeline-studio/](https://chatman-media.github.io/timeline-studio/)
-- **Documentation API** : [https://chatman-media.github.io/timeline-studio/api-docs/](https://chatman-media.github.io/timeline-studio/api-docs/)
-
-Les deux pages sont automatiquement mises à jour quand les fichiers correspondants changent dans la branche `main` en utilisant les workflows GitHub Actions.

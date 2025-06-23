@@ -239,9 +239,6 @@ bun run test src/features/effects
  </picture>
 </a>
 
-## GitAds Sponsored
-[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=chatman-media/timeline-studio@github)](https://gitads.dev/v1/ad-track?source=chatman-media/timeline-studio@github)
-
 ## ライセンス
 
 MITライセンスにCommons Clause付き - 個人利用は無料、商用利用には合意が必要。
