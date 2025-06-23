@@ -5,6 +5,7 @@
 ## 📋 Содержание
 
 - [Процесс сборки](build.md)
+- [Настройка Codecov](codecov-setup.md)
 - [Платформы](#платформы)
   - [Windows](platforms/windows.md)
   - [macOS](platforms/macos.md)
