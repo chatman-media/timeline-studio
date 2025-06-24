@@ -1,5 +1,7 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
@@ -17,6 +19,8 @@
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
+
+</div>
 
 ## 🎬 Descripción del Proyecto
 
@@ -108,7 +112,7 @@ bun run tauri dev
 ### Requisitos
 - Node.js v18+, Rust, Bun, FFmpeg
 
-📚 **[Guía Completa de Instalación →](docs-ru/01-getting-started/README.md)**  
+📚 **[Guía Completa de Instalación →](docs-ru/01-getting-started/README.md)**
 🪟 **[Configuración para Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Documentación
@@ -162,8 +166,8 @@ bun run check:all
 
 ### Estado de Cobertura de Pruebas
 
-✅ **Pruebas Frontend**: 3,604 pasaron  
-✅ **Pruebas Backend**: 554 pasaron (+18 nuevas!)  
+✅ **Pruebas Frontend**: 3,604 pasaron
+✅ **Pruebas Backend**: 554 pasaron (+18 nuevas!)
 📊 **Total**: 4,158 pruebas pasando
 
 ## Licencia
@@ -180,7 +184,7 @@ Licencia MIT con Commons Clause - gratis para uso personal, el uso comercial req
 - ✅ **Cobertura**: Integración con Codecov
 - ✅ **Compilación**: Compilaciones multiplataforma
 
-📚 **[Guía Detallada de CI/CD →](docs-ru/06-deployment/README.md)**  
+📚 **[Guía Detallada de CI/CD →](docs-ru/06-deployment/README.md)**
 🔧 **[Linting y Formateo →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## Documentación y Recursos

@@ -1,5 +1,7 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
@@ -18,6 +20,8 @@
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
+</div>
+
 ## 프로젝트 개요
 
 Timeline Studio는 Tauri 아키텍처(Rust + React)로 구축된 최신 비디오 편집기입니다.
@@ -34,7 +38,7 @@ Timeline Studio는 Tauri 아키텍처(Rust + React)로 구축된 최신 비디�
 ### 프로젝트 상태 (2025년 6월)
 
 **전체 완성도: 53.8%** ⬆️ (실제 모듈 상태와 14개의 새로운 계획 모듈로 재계산)
-- **완료**: 11개 모듈 (100% 준비) 
+- **완료**: 11개 모듈 (100% 준비)
 - **개발 중**: 8개 모듈 (45-85% 준비)
 - **계획됨**: 5개 모듈 (30-85% 준비)
 - **새로 계획됨**: 14개 모듈 (0% 준비) - [planned/에서 세부사항](docs-ru/08-roadmap/planned/)
@@ -150,8 +154,8 @@ bun run check:all
 
 ### 테스트 커버리지 상태
 
-✅ **프론트엔드 테스트**: 3,604 통과  
-✅ **백엔드 테스트**: 554 통과 (+18 새로운!)  
+✅ **프론트엔드 테스트**: 3,604 통과
+✅ **백엔드 테스트**: 554 통과 (+18 새로운!)
 📊 **총합**: 4,158 테스트 통과
 
 ### 테스팅
@@ -166,7 +170,7 @@ bun run check:all
 - ✅ **커버리지**: Codecov 통합
 - ✅ **빌드**: 크로스 플랫폼 빌드
 
-📚 **[상세 CI/CD 가이드 →](docs-ru/06-deployment/README.md)**  
+📚 **[상세 CI/CD 가이드 →](docs-ru/06-deployment/README.md)**
 🔧 **[린팅 및 포맷팅 →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## 문서 및 리소스

@@ -1,5 +1,7 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
@@ -17,6 +19,8 @@
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
+
+</div>
 
 ## 🎬 Aperçu du Projet
 
@@ -108,7 +112,7 @@ bun run tauri dev
 ### Prérequis
 - Node.js v18+, Rust, Bun, FFmpeg
 
-📚 **[Guide Complet d'Installation →](docs-ru/01-getting-started/README.md)**  
+📚 **[Guide Complet d'Installation →](docs-ru/01-getting-started/README.md)**
 🪟 **[Configuration Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Documentation
@@ -158,8 +162,8 @@ bun run check:all
 
 ### Statut de Couverture des Tests
 
-✅ **Tests Frontend** : 3,604 réussis  
-✅ **Tests Backend** : 554 réussis (+18 nouveaux !)  
+✅ **Tests Frontend** : 3,604 réussis
+✅ **Tests Backend** : 554 réussis (+18 nouveaux !)
 📊 **Total** : 4,158 tests réussis
 
 ## CI/CD et Qualité du Code
@@ -170,7 +174,7 @@ bun run check:all
 - ✅ **Couverture** : Intégration Codecov
 - ✅ **Build** : Builds multi-plateformes
 
-📚 **[Guide Détaillé CI/CD →](docs-ru/06-deployment/README.md)**  
+📚 **[Guide Détaillé CI/CD →](docs-ru/06-deployment/README.md)**
 🔧 **[Linting et Formatage →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## Documentation et Ressources

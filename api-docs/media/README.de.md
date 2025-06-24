@@ -1,5 +1,7 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [العربية](README.ar.md) | [فارسی](README.fa.md)
 
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
@@ -17,6 +19,8 @@
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
+
+</div>
 
 ## 🎬 Projektübersicht
 
@@ -108,7 +112,7 @@ bun run tauri dev
 ### Anforderungen
 - Node.js v18+, Rust, Bun, FFmpeg
 
-📚 **[Vollständige Installationsanleitung →](docs-ru/01-getting-started/README.md)**  
+📚 **[Vollständige Installationsanleitung →](docs-ru/01-getting-started/README.md)**
 🪟 **[Windows-Einrichtung →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Dokumentation
@@ -162,8 +166,8 @@ bun run check:all
 
 ### Test-Abdeckungsstatus
 
-✅ **Frontend-Tests**: 3,604 bestanden  
-✅ **Backend-Tests**: 554 bestanden (+18 neue!)  
+✅ **Frontend-Tests**: 3,604 bestanden
+✅ **Backend-Tests**: 554 bestanden (+18 neue!)
 📊 **Gesamt**: 4,158 Tests bestanden
 - `bun run test:coverage:report` - Test-Coverage-Bericht generieren und übermitteln
 - `bun run test:rust` - Rust-Backend-Tests ausführen
@@ -190,7 +194,7 @@ Das Projekt verwendet Vitest für Unit-Tests. Tests befinden sich im __tests__ V
 - ✅ **Abdeckung**: Codecov-Integration
 - ✅ **Build**: Plattformübergreifende Builds
 
-📚 **[Detaillierter CI/CD-Leitfaden →](docs-ru/06-deployment/README.md)**  
+📚 **[Detaillierter CI/CD-Leitfaden →](docs-ru/06-deployment/README.md)**
 🔧 **[Linting und Formatierung →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## Dokumentation und Ressourcen

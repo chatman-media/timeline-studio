@@ -112,7 +112,7 @@ bun run tauri dev
 ### 要求
 - Node.js v18+、Rust、Bun、FFmpeg
 
-📚 **[完整安装指南 →](docs-ru/01-getting-started/README.md)**  
+📚 **[完整安装指南 →](docs-ru/01-getting-started/README.md)**
 🪟 **[Windows设置 →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## 文档
@@ -156,7 +156,7 @@ bun run check:all
 - ✅ **覆盖率**：Codecov 集成
 - ✅ **构建**：跨平台构建
 
-📚 **[详细 CI/CD 指南 →](docs-ru/06-deployment/README.md)**  
+📚 **[详细 CI/CD 指南 →](docs-ru/06-deployment/README.md)**
 🔧 **[代码检查和格式化 →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## 文档和资源
@@ -179,5 +179,3 @@ bun run check:all
 MIT许可证附带Commons Clause - 个人使用免费，商业使用需要协议。
 
 📄 **[完整许可证详情 →](docs-ru/10-legal/license.md)** | 📧 **商业许可证**: ak.chatman.media@gmail.com
-
-<!-- GitAds-Verify: EIS875AHMQZGOHYNQFNPOUHHNSEXHVUR -->

@@ -112,7 +112,7 @@ bun run tauri dev
 ### Requisitos
 - Node.js v18+, Rust, Bun, FFmpeg
 
-📚 **[Guia de Instalação Completo →](docs-ru/01-getting-started/README.md)**  
+📚 **[Guia de Instalação Completo →](docs-ru/01-getting-started/README.md)**
 🪟 **[Configuração Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ## Documentação
@@ -160,7 +160,7 @@ bun run check:all
 - ✅ **Cobertura**: Integração Codecov
 - ✅ **Build**: Builds multiplataforma
 
-📚 **[Guia Detalhado de CI/CD →](docs-ru/06-deployment/README.md)**  
+📚 **[Guia Detalhado de CI/CD →](docs-ru/06-deployment/README.md)**
 🔧 **[Linting e Formatação →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## Documentação e Recursos
@@ -183,5 +183,3 @@ bun run check:all
 Licença MIT com Commons Clause - gratuito para uso pessoal, uso comercial requer acordo.
 
 📄 **[Detalhes Completos da Licença →](docs-ru/10-legal/license.md)** | 📧 **Licença Comercial**: ak.chatman.media@gmail.com
-
-<!-- GitAds-Verify: EIS875AHMQZGOHYNQFNPOUHHNSEXHVUR -->

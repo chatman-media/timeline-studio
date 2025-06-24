@@ -1,5 +1,7 @@
 # [Timeline Studio](https://chatman-media.github.io/timeline-studio/)
 
+<div align="center">
+
 [English](README.md) | [Italiano](README.it.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Русский](README.ru.md) | [中文](README.zh.md) | [Português](README.pt.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Türkçe](README.tr.md) | [ไทย](README.th.md) | [فارسی](README.fa.md)
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
@@ -15,6 +17,8 @@
 [![Documentation](https://img.shields.io/badge/docs-TypeDoc-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
+
+</div>
 
 <div dir="rtl">
 
@@ -159,8 +163,8 @@ bun run check:all
 
 ### حالة تغطية الاختبارات
 
-✅ **اختبارات الواجهة الأمامية**: 3,604 نجحت  
-✅ **اختبارات الواجهة الخلفية**: 554 نجحت (+18 جديد!)  
+✅ **اختبارات الواجهة الأمامية**: 3,604 نجحت
+✅ **اختبارات الواجهة الخلفية**: 554 نجحت (+18 جديد!)
 📊 **المجموع**: 4,158 اختبار نجح
 
 ### الاختبارات
@@ -175,7 +179,7 @@ bun run check:all
 - ✅ **التغطية**: تكامل Codecov
 - ✅ **البناء**: بناء متعدد المنصات
 
-📚 **[دليل CI/CD المفصل ←](docs-ru/06-deployment/README.md)**  
+📚 **[دليل CI/CD المفصل ←](docs-ru/06-deployment/README.md)**
 🔧 **[التحقق والتنسيق ←](docs-ru/05-development/linting-and-formatting.md)**
 
 ## التوثيق والموارد
