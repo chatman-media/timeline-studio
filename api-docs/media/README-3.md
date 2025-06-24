@@ -337,6 +337,62 @@ AI генерация видеосценариев
 ### Дополнительные планируемые модули
 📖 **[Полный список планируемых модулей (14 модулей)](../08-roadmap/planned/README.md)**
 
+## 🔧 Backend модули
+
+Серверная часть Timeline Studio построена на Rust с использованием Tauri v2 и включает следующие core модули:
+
+### [Core Infrastructure](../../../src-tauri/src/core/README.md)
+**Статус**: ✅ Готов (100%)  
+Основная инфраструктура backend приложения
+- **Dependency Injection** - Type-safe управление зависимостями
+- **Event System** - Асинхронная система событий
+- **Plugin System** - WebAssembly плагины с sandbox изоляцией
+- **Telemetry** - OpenTelemetry мониторинг и метрики
+- **Performance** - Worker pools, кэширование, zero-copy операции
+
+📖 **[Подробная документация Core модулей](../../../src-tauri/src/core/README.md)**
+
+### [Video Compiler Backend](../../../src-tauri/src/video_compiler/README.md)
+**Статус**: ✅ Готов (100%)  
+Rust backend для видео обработки
+- FFmpeg интеграция через rust-ffmpeg
+- GPU ускорение (NVIDIA NVENC, Intel QuickSync, AMD AMF)
+- Многоуровневое кэширование
+- Управление задачами рендеринга
+- WebAssembly preview генерация
+
+### [Plugin System](../06-plugins/README.md)
+**Статус**: ✅ Готов (100%)  
+Система расширений с WebAssembly
+- Безопасное выполнение в WASM sandbox
+- Granular permissions система
+- Resource limits и timeouts
+- Hot-swappable плагины
+
+📖 **[Руководство разработчика плагинов](../06-plugins/development-guide.md)**
+
+### [Telemetry System](../07-telemetry/README.md)
+**Статус**: ✅ Готов (100%)  
+Комплексный мониторинг приложения
+- OpenTelemetry стандарты
+- Real-time метрики и трейсинг
+- Health checks системы
+- Export в Prometheus, Jaeger, Grafana
+
+📖 **[Настройка и конфигурация телеметрии](../07-telemetry/configuration.md)**
+
+### Backend сервисы по модулям
+
+| Frontend модуль | Backend сервисы | Документация |
+|----------------|-----------------|--------------|
+| Timeline | `timeline_schema_commands.rs` | [Schema API](../../../src-tauri/src/video_compiler/commands/timeline_schema_commands.rs) |
+| Video Player | `frame_extraction_commands.rs` | [Frame API](../../../src-tauri/src/video_compiler/commands/frame_extraction_commands.rs) |
+| Export | `rendering.rs`, `ffmpeg_builder_commands.rs` | [Render API](../../../src-tauri/src/video_compiler/commands/rendering.rs) |
+| Effects/Filters | `ffmpeg_utilities_commands.rs` | [Effects API](../../../src-tauri/src/video_compiler/commands/ffmpeg_utilities_commands.rs) |
+| Recognition | `recognition_advanced_commands.rs` | [Recognition API](../../../src-tauri/src/video_compiler/commands/recognition_advanced_commands.rs) |
+| AI Integration | `multimodal_commands.rs`, `whisper_commands.rs` | [AI API](../../../src-tauri/src/video_compiler/commands/multimodal_commands.rs) |
+| GPU Acceleration | `gpu.rs`, `platform_optimization_commands.rs` | [GPU API](../../../src-tauri/src/video_compiler/commands/gpu.rs) |
+
 ## 📚 Дополнительные ресурсы
 
 - [Руководство по созданию модулей](../05-development/creating-features.md)
