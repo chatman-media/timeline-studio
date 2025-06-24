@@ -5,13 +5,14 @@
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=for-the-badge)](https://www.npmjs.com/package/timeline-studio)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=for-the-badge&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=for-the-badge&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
-[![codecov](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
+[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=frontend&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=for-the-badge&label=backend&flag=backend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![GitHub commits](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=for-the-badge&label=commits)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
 [![GitHub stars](https://img.shields.io/github/stars/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/stargazers)
 [![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=for-the-badge&label=npm%20downloads)](https://www.npmjs.com/package/timeline-studio)
-[![Open Collective](https://img.shields.io/opencollective/all/timeline-studio?style=for-the-badge&label=sponsors)](https://opencollective.com/timeline-studio)
 [![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
 [![Website](https://img.shields.io/badge/visit-website-brightgreen?style=for-the-badge&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
+
 [![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
@@ -111,7 +112,7 @@ bun run tauri dev
 ### Требования
 - Node.js v18+, Rust, Bun, FFmpeg
 
-📚 **[Полное руководство по установке →](docs-ru/01-getting-started/README.md)**  
+📚 **[Полное руководство по установке →](docs-ru/01-getting-started/README.md)**
 🪟 **[Настройка для Windows →](docs-ru/06-deployment/platforms/windows-build.md)**
 
 ### Сборка релиза
@@ -184,7 +185,7 @@ bun run check:all
 - ✅ **Покрытие**: Интеграция с Codecov
 - ✅ **Сборка**: Кроссплатформенные сборки
 
-📚 **[Подробное руководство по CI/CD →](docs-ru/06-deployment/README.md)**  
+📚 **[Подробное руководство по CI/CD →](docs-ru/06-deployment/README.md)**
 🔧 **[Линтинг и форматирование →](docs-ru/05-development/linting-and-formatting.md)**
 
 ## Документация и ресурсы
