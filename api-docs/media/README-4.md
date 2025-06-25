@@ -1,578 +1,406 @@
-# 04. Справочник API Timeline Studio
+# 03. Функциональность Timeline Studio
 
 [← Назад к оглавлению](../README.md)
 
 ## 📋 Содержание
 
-- [Обзор](#обзор)
-- [Категории команд](#категории-команд)
-- [Команды медиа](#команды-медиа)
-- [Команды видео компилятора](#команды-видео-компилятора)
-- [Команды распознавания](#команды-распознавания)
-- [Команды файловой системы](#команды-файловой-системы)
-- [Команды управления приложением](#команды-управления-приложением)
-- [Команды настроек](#команды-настроек)
+- [Основные модули](#основные-модули)
+- [Эффекты и визуализация](#эффекты-и-визуализация)
+- [Продвинутые функции](#продвинутые-функции)
+- [Статус разработки](#статус-разработки)
 
-## 🔌 Обзор
+## 🎯 Обзор
 
-Этот документ описывает все команды Tauri, доступные для взаимодействия между фронтендом и бэкендом.
+Timeline Studio включает более 30 функциональных модулей, организованных по категориям. Каждый модуль имеет свою документацию, тесты и примеры использования. Для ключевых модулей доступна подробная техническая документация.
 
-## Категории команд
+## 🏗️ Основные модули
 
-- [Команды медиа](#команды-медиа)
-- [Команды видео компилятора](#команды-видео-компилятора)
-- [Команды распознавания](#команды-распознавания)
-- [Команды файловой системы](#команды-файловой-системы)
-- [Команды управления приложением](#команды-управления-приложением)
-- [Команды настроек](#команды-настроек)
+Ядро функциональности Timeline Studio для базового видеоредактирования.
 
-## Команды медиа
+### [Timeline](core/timeline.md)
+**Статус**: ✅ Готов (90%)  
+Центральный компонент для редактирования видео
+- Многодорожечный редактор
+- Drag & drop операции
+- Покадровая точность
+- Масштабирование и навигация
 
-### `get_media_metadata`
-Извлекает метаданные из медиафайла.
+📖 **[Техническая документация модуля](../../src/features/timeline/README.md)**
 
-**Параметры:**
+### [Video Player](core/video-player.md)
+**Статус**: ✅ Готов (100%)  
+Кастомный видео плеер с расширенными возможностями
+- Покадровое воспроизведение
+- Переменная скорость (0.25x - 4x)
+- Полноэкранный режим
+- Синхронизация с таймлайном
+
+📖 **[Техническая документация модуля](../../src/features/video-player/README.md)**
+
+### [Browser](core/browser.md)
+**Статус**: ✅ Готов (100%)  
+Менеджер медиафайлов с табами
+- Просмотр файлов и папок
+- Превью медиа в реальном времени
+- Поиск и фильтрация
+- Избранные файлы
+
+📖 **[Техническая документация модуля](../../src/features/browser/README.md)**
+
+### [Export](core/export.md)
+**Статус**: ✅ Готов (100%)  
+Экспорт готовых видео с продвинутыми возможностями
+- Пресеты для всех платформ (YouTube, TikTok, Vimeo, Telegram)
+- Настраиваемые параметры и валидация в реальном времени
+- GPU ускорение и оптимизация настроек
+- Пакетный экспорт и экспорт секций по времени
+- Автоматическая оценка времени экспорта
+- Умная оптимизация для разных платформ
+
+📖 **[Техническая документация модуля](../../src/features/export/README.md)**
+
+## 🎨 Эффекты и визуализация
+
+Инструменты для улучшения и стилизации видео.
+
+### [Effects](effects/effects.md)
+**Статус**: ✅ Готов (80%)  
+Визуальные эффекты на базе CSS и WebGL
+- 50+ встроенных эффектов
+- Реал-тайм превью
+- Анимируемые параметры
+- GPU ускорение
+
+📖 **[Техническая документация модуля](../../src/features/effects/README.md)**
+
+### [Filters](effects/filters.md)
+**Статус**: ✅ Готов (80%)  
+Цветокоррекция и фильтры
+- Базовые настройки (яркость, контраст)
+- LUT поддержка
+- Цветовые пресеты
+- HSL коррекция
+
+📖 **[Техническая документация модуля](../../src/features/filters/README.md)**
+
+### [Transitions](effects/transitions.md)
+**Статус**: ✅ Готов (75%)  
+Переходы между клипами
+- 30+ типов переходов
+- Настраиваемая длительность
+- Кривые анимации
+- 3D переходы
+
+📖 **[Техническая документация модуля](../../src/features/transitions/README.md)**
+
+### [Templates](effects/templates.md)
+**Статус**: ⚠️ В разработке (70%)  
+Многокамерные шаблоны
+- Split-screen макеты
+- Picture-in-picture
+- Grid композиции
+- Анимированные шаблоны
+
+📖 **[Техническая документация модуля](../../src/features/templates/README.md)**
+
+### [Style Templates](effects/style-templates.md)
+**Статус**: ✅ Готов (85%)  
+Стилистические шаблоны
+- Intro/Outro анимации
+- Титры и заставки
+- Нижние трети
+- Переходы сцен
+
+📖 **[Техническая документация модуля](../../src/features/style-templates/README.md)**
+
+## 🚀 Продвинутые функции
+
+Инновационные возможности на базе AI и ML.
+
+### [AI Chat](advanced/ai-chat.md)
+**Статус**: ✅ Готов (100%)  
+Интегрированный AI ассистент
+- Claude/GPT интеграция
+- Контекстная помощь
+- Генерация сценариев
+- Умные подсказки
+
+📖 **[Техническая документация модуля](../../src/features/ai-chat/README.md)**
+
+### [AI Models Integration](advanced/ai-models-integration.md)
+**Статус**: ✅ Готов (100%)  
+Полная AI платформа для автоматизации
+- FFmpeg + AI анализ видео (15 инструментов)
+- Whisper транскрипция (10 инструментов)
+- Пакетная обработка (12 инструментов)
+- Мультимодальный анализ GPT-4V (10 инструментов)
+- Платформная оптимизация для 10+ соцсетей (10 инструментов)
+- Workflow автоматизация с 10 процессами (9 инструментов)
+- 82 Claude AI инструмента в системе
+- 35+ Rust команд для интеграции
+
+📖 **[Детальная документация](../08-roadmap/completed/ai-models-integration.md)**
+
+### [Recognition](advanced/recognition.md)
+**Статус**: ✅ Готов (100%)  
+ML распознавание объектов
+- YOLO v11 интеграция
+- Распознавание объектов
+- Трекинг движения
+- Автоматические метки
+
+📖 **[Техническая документация модуля](../../src/features/recognition/README.md)**
+
+### [Voice Recording](advanced/voice-recording.md)
+**Статус**: ⚠️ В разработке (35%)  
+Запись и обработка голоса
+- Запись с микрофона
+- Шумоподавление
+- Эффекты голоса
+- Синхронизация с видео
+
+### [Camera Capture](advanced/camera-capture.md)
+**Статус**: ⚠️ В разработке (75%)  
+Захват с веб-камеры
+- Выбор устройств
+- Настройки качества
+- Фильтры в реальном времени
+- Запись в проект
+
+📖 **[Техническая документация модуля](../../src/features/camera-capture/README.md)**
+
+### [Subtitles](advanced/subtitles.md)
+**Статус**: ✅ Готов (100%)  
+Система профессиональных субтитров
+- 72 стиля субтитров в 6 категориях
+- CSS анимации и эффекты
+- Полная интернационализация
+- Интеграция с браузером ресурсов
+
+📖 **[Техническая документация модуля](../../src/features/subtitles/README.md)**
+
+### [Video Compiler](advanced/video-compiler.md)
+**Статус**: ✅ Готов (100%)  
+Система рендеринга и компиляции видео
+- GPU ускорение (NVIDIA, Intel, AMD, Apple)
+- Многоуровневое кеширование
+- Извлечение кадров для превью
+- Управление задачами рендеринга
+
+📖 **[Техническая документация модуля](../../src/features/video-compiler/README.md)**
+
+### Дополнительные модули
+
+#### [Media](advanced/media.md)
+**Статус**: ✅ Готов (90%)  
+Управление медиафайлами и кеширование
+- Импорт и обработка медиа
+- Кеширование превью в IndexedDB
+- Метаданные и анализ файлов
+- Восстановление отсутствующих файлов
+
+📖 **[Техническая документация модуля](../../src/features/media/README.md)**
+
+#### [App State](core/app-state.md)
+**Статус**: ✅ Готов (85%)  
+Глобальное состояние приложения
+- Настройки приложения
+- Управление проектами
+- Избранные файлы
+- Последние проекты
+
+📖 **[Техническая документация модуля](../../src/features/app-state/README.md)**
+
+#### [User Settings](core/user-settings.md)
+**Статус**: ✅ Готов (90%)  
+Пользовательские настройки
+- Персонализация интерфейса
+- API ключи для AI сервисов
+- Настройки производительности
+- Локализация
+
+📖 **[Техническая документация модуля](../../src/features/user-settings/README.md)**
+
+## 📊 Статус разработки
+
+### Готовность модулей
+
+| Категория | Готовых | В разработке | Планируется |
+|-----------|---------|--------------|-------------|
+| Основные | 6/7 (86%) | 1/7 | 0/7 |
+| Эффекты | 4/5 (80%) | 1/5 | 0/5 |
+| Продвинутые | 5/8 (63%) | 3/8 | 0/8 |
+
+### Покрытие тестами
+
+- **Отличное (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, AI Models Integration
+- **Хорошее (60-80%)**: Transitions, Style Templates, Camera Capture
+- **Требует улучшения (<60%)**: Templates, AI Chat, Voice Recording
+
+## 🛠️ Архитектура модулей
+
+Каждый модуль следует единой структуре:
+
+```
+feature-name/
+├── components/      # React компоненты
+├── hooks/          # Custom hooks
+├── services/       # Бизнес-логика и XState
+├── types/          # TypeScript типы  
+├── utils/          # Вспомогательные функции
+├── __tests__/      # Тесты
+├── __mocks__/      # Моки
+└── README.md       # Документация
+```
+
+## 🔧 Использование модулей
+
+### Импорт функциональности
+
 ```typescript
-{
-  file_path: string;
+// Импорт компонентов
+import { Timeline } from '@/features/timeline'
+import { VideoPlayer } from '@/features/video-player'
+import { EffectsPanel } from '@/features/effects'
+
+// Импорт хуков
+import { useTimeline } from '@/features/timeline/hooks'
+import { useVideoPlayer } from '@/features/video-player/hooks'
+
+// Импорт сервисов
+import { timelineMachine } from '@/features/timeline/services'
+import { recognitionService } from '@/features/recognition/services'
+```
+
+### Композиция в приложении
+
+```tsx
+export function App() {
+  return (
+    <TimelineProvider>
+      <VideoPlayerProvider>
+        <EffectsProvider>
+          <div className="app-layout">
+            <VideoPlayer />
+            <Timeline />
+            <EffectsPanel />
+          </div>
+        </EffectsProvider>
+      </VideoPlayerProvider>
+    </TimelineProvider>
+  )
 }
 ```
 
-**Возвращает:**
-```typescript
-{
-  duration: number;      // секунды
-  width: number;
-  height: number;
-  fps: number;
-  codec: string;
-  bitrate: number;
-  audio_tracks: number;
-  has_video: boolean;
-  has_audio: boolean;
-}
-```
+## 🔮 Планируемые модули
+
+Следующие модули находятся в стадии планирования и имеют подробную техническую документацию:
+
+### [Scene Analyzer](../../src/features/scene-analyzer/README.md)
+**Статус**: 📋 Планируется (0%)  
+Анализ видеосцен с использованием ML
+- Анализ кадров через ffmpeg-rs
+- Распознавание объектов YOLOv11
+- Идентификация персон
+- Интеграция с субтитрами
+
+📖 **[Техническая документация модуля](../../src/features/scene-analyzer/README.md)**
+
+### [Person Identification](../../src/features/person-identification/README.md)
+**Статус**: 📋 Планируется (0%)  
+Распознавание и идентификация людей
+- FaceNet/YOLOv11 интеграция
+- Присвоение имен персонам
+- SQLite база данных лиц
+- Связь с субтитрами
+
+📖 **[Техническая документация модуля](../../src/features/person-identification/README.md)**
+
+### [Script Generator](../../src/features/script-generator/README.md)
+**Статус**: 📋 Планируется (0%)  
+AI генерация видеосценариев
+- Анализ субтитров
+- Обработка пользовательских инструкций
+- Выбор видеофрагментов
+- Интеграция с Timeline
+
+📖 **[Техническая документация модуля](../../src/features/script-generator/README.md)**
+
+### [Montage Planner](../../src/features/montage-planner/README.md)
+**Статус**: 📋 Планируется (0%)  
+Автоматическое планирование монтажа
+- Анализ видео через ffmpeg-rs
+- ML распознавание сцен
+- Генерация планов монтажа
+- Асинхронная обработка
+
+📖 **[Техническая документация модуля](../../src/features/montage-planner/README.md)**
+
+### Дополнительные планируемые модули
+📖 **[Полный список планируемых модулей (14 модулей)](../08-roadmap/planned/README.md)**
+
+## 🔧 Backend модули
+
+Серверная часть Timeline Studio построена на Rust с использованием Tauri v2 и включает следующие core модули:
+
+### [Core Infrastructure](../../../src-tauri/src/core/README.md)
+**Статус**: ✅ Готов (100%)  
+Основная инфраструктура backend приложения
+- **Dependency Injection** - Type-safe управление зависимостями
+- **Event System** - Асинхронная система событий
+- **Plugin System** - WebAssembly плагины с sandbox изоляцией
+- **Telemetry** - OpenTelemetry мониторинг и метрики
+- **Performance** - Worker pools, кэширование, zero-copy операции
+
+📖 **[Подробная документация Core модулей](../../../src-tauri/src/core/README.md)**
+
+### [Video Compiler Backend](../../../src-tauri/src/video_compiler/README.md)
+**Статус**: ✅ Готов (100%)  
+Rust backend для видео обработки
+- FFmpeg интеграция через rust-ffmpeg
+- GPU ускорение (NVIDIA NVENC, Intel QuickSync, AMD AMF)
+- Многоуровневое кэширование
+- Управление задачами рендеринга
+- WebAssembly preview генерация
+
+### [Plugin System](../08-plugins/README.md)
+**Статус**: ✅ Готов (100%)  
+Система расширений с WebAssembly
+- Безопасное выполнение в WASM sandbox
+- Granular permissions система
+- Resource limits и timeouts
+- Hot-swappable плагины
+
+📖 **[Руководство разработчика плагинов](../08-plugins/development-guide.md)**
+
+### [Telemetry System](../09-telemetry/README.md)
+**Статус**: ✅ Готов (100%)  
+Комплексный мониторинг приложения
+- OpenTelemetry стандарты
+- Real-time метрики и трейсинг
+- Health checks системы
+- Export в Prometheus, Jaeger, Grafana
+
+📖 **[Настройка и конфигурация телеметрии](../09-telemetry/configuration.md)**
+
+### Backend сервисы по модулям
+
+| Frontend модуль | Backend сервисы | Документация |
+|----------------|-----------------|--------------|
+| Timeline | `timeline_schema_commands.rs` | [Schema API](../../../src-tauri/src/video_compiler/commands/timeline_schema_commands.rs) |
+| Video Player | `frame_extraction_commands.rs` | [Frame API](../../../src-tauri/src/video_compiler/commands/frame_extraction_commands.rs) |
+| Export | `rendering.rs`, `ffmpeg_builder_commands.rs` | [Render API](../../../src-tauri/src/video_compiler/commands/rendering.rs) |
+| Effects/Filters | `ffmpeg_utilities_commands.rs` | [Effects API](../../../src-tauri/src/video_compiler/commands/ffmpeg_utilities_commands.rs) |
+| Recognition | `recognition_advanced_commands.rs` | [Recognition API](../../../src-tauri/src/video_compiler/commands/recognition_advanced_commands.rs) |
+| AI Integration | `multimodal_commands.rs`, `whisper_commands.rs` | [AI API](../../../src-tauri/src/video_compiler/commands/multimodal_commands.rs) |
+| GPU Acceleration | `gpu.rs`, `platform_optimization_commands.rs` | [GPU API](../../../src-tauri/src/video_compiler/commands/gpu.rs) |
 
-**Пример:**
-```typescript
-const metadata = await invoke('get_media_metadata', {
-  file_path: '/path/to/video.mp4'
-});
-```
+## 📚 Дополнительные ресурсы
 
-### `scan_media_folder`
-Сканирует папку на наличие медиафайлов.
-
-**Параметры:**
-```typescript
-{
-  folder_path: string;
-  recursive?: boolean;
-}
-```
-
-**Возвращает:**
-```typescript
-MediaFile[]
-
-interface MediaFile {
-  id: string;
-  name: string;
-  path: string;
-  type: 'video' | 'audio' | 'image';
-  size: number;
-  created_at: string;
-  modified_at: string;
-}
-```
-
-### `scan_media_folder_with_thumbnails`
-Сканирует папку и генерирует миниатюры.
-
-**Параметры:**
-```typescript
-{
-  folder_path: string;
-  options: {
-    width: number;
-    height: number;
-    quality: number;
-  }
-}
-```
-
-**Возвращает:**
-```typescript
-MediaFileWithThumbnail[]
-
-interface MediaFileWithThumbnail extends MediaFile {
-  thumbnail: string; // base64 data URL
-}
-```
-
-## Команды видео компилятора
-
-### `compile_video`
-Компилирует видеопроект.
-
-**Параметры:**
-```typescript
-{
-  project: ProjectSchema;
-  output_path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-### `get_render_progress`
-Получает прогресс задания рендеринга.
-
-**Параметры:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  progress: number;      // 0-100
-  eta_seconds?: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  error?: string;
-}
-```
-
-### `generate_preview`
-Генерирует кадр предпросмотра.
-
-**Параметры:**
-```typescript
-{
-  timeline: TimelineData;
-  timestamp: number;
-  width: number;
-  height: number;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  image_data: string; // base64 PNG
-}
-```
-
-### `cancel_render`
-Отменяет задание рендеринга.
-
-**Параметры:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_gpu_capabilities`
-Получает доступные GPU кодировщики.
-
-**Возвращает:**
-```typescript
-{
-  available_encoders: GpuEncoder[];
-  current_encoder?: GpuEncoder;
-  cuda_available: boolean;
-  metal_available: boolean;
-}
-
-interface GpuEncoder {
-  name: string;
-  type: 'nvidia' | 'intel' | 'amd' | 'apple' | 'cpu';
-  supported_codecs: string[];
-}
-```
-
-### `extract_timeline_frames`
-Извлекает кадры для предпросмотра таймлайна.
-
-**Параметры:**
-```typescript
-{
-  video_path: string;
-  count: number;
-  width?: number;
-  height?: number;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  frames: ExtractedFrame[];
-}
-
-interface ExtractedFrame {
-  timestamp: number;
-  data: string;      // base64
-  width: number;
-  height: number;
-}
-```
-
-## Команды распознавания
-
-### `process_video_recognition`
-Обрабатывает видео для распознавания объектов/лиц.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-  frame_paths: string[];
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  objects: DetectedObject[];
-  faces: DetectedFace[];
-  scenes: DetectedScene[];
-  processed_at: string;
-}
-
-interface DetectedObject {
-  class: string;
-  confidence: number;
-  timestamps: number[];
-  bounding_boxes: BoundingBox[];
-}
-```
-
-### `get_recognition_results`
-Получает сохраненные результаты распознавания.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-RecognitionResults | null
-```
-
-### `export_recognition_results`
-Экспортирует результаты распознавания.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-  format: 'json' | 'csv';
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  file_path: string;
-}
-```
-
-## Команды файловой системы
-
-### `file_exists`
-Проверяет существование файла.
-
-**Параметры:**
-```typescript
-{
-  path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-boolean
-```
-
-### `get_file_stats`
-Получает статистику файла.
-
-**Параметры:**
-```typescript
-{
-  path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  size: number;
-  created_at: string;
-  modified_at: string;
-  is_file: boolean;
-  is_directory: boolean;
-}
-```
-
-### `search_files_by_name`
-Ищет файлы по шаблону имени.
-
-**Параметры:**
-```typescript
-{
-  directory: string;
-  pattern: string;
-  recursive?: boolean;
-}
-```
-
-**Возвращает:**
-```typescript
-string[] // пути к файлам
-```
-
-## Команды управления приложением
-
-### `get_app_directories`
-Получает директории приложения.
-
-**Возвращает:**
-```typescript
-{
-  base_dir: string;
-  projects_dir: string;
-  media_cache_dir: string;
-  render_cache_dir: string;
-  temp_dir: string;
-  recognition_dir: string;
-}
-```
-
-### `create_app_directories`
-Создает директории приложения.
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_directory_sizes`
-Получает размеры директорий приложения.
-
-**Возвращает:**
-```typescript
-{
-  projects: number;
-  media_cache: number;
-  render_cache: number;
-  temp: number;
-  total: number;
-}
-```
-
-### `clear_app_cache`
-Очищает кэш приложения.
-
-**Параметры:**
-```typescript
-{
-  cache_types?: ('media' | 'render' | 'temp' | 'all')[];
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  cleared_size: number;
-}
-```
-
-## Команды настроек
-
-### `get_app_language_tauri`
-Получает текущий язык приложения.
-
-**Возвращает:**
-```typescript
-{
-  language: 'en' | 'zh' | 'ja' | 'ko' | 'ru' | 'de';
-}
-```
-
-### `set_app_language_tauri`
-Устанавливает язык приложения.
-
-**Параметры:**
-```typescript
-{
-  language: 'en' | 'zh' | 'ja' | 'ko' | 'ru' | 'de';
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_compiler_settings`
-Получает настройки видео компилятора.
-
-**Возвращает:**
-```typescript
-{
-  ffmpeg_path?: string;
-  hardware_acceleration: boolean;
-  max_parallel_jobs: number;
-  cache_size_mb: number;
-}
-```
-
-### `update_compiler_settings`
-Обновляет настройки компилятора.
-
-**Параметры:**
-```typescript
-{
-  settings: Partial<CompilerSettings>;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-## Команды видео сервера
-
-### `register_video`
-Регистрирует видео для стриминга.
-
-**Параметры:**
-```typescript
-{
-  file_path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  video_id: string;
-  stream_url: string;
-}
-```
-
-## Обработка ошибок
-
-Все команды возвращают ошибки в следующем формате:
-
-```typescript
-{
-  error: string;
-  code?: string;
-  details?: any;
-}
-```
-
-Общие коды ошибок:
-- `FILE_NOT_FOUND` - Файл или директория не найдены
-- `PERMISSION_DENIED` - Нет разрешения на доступ к ресурсу
-- `INVALID_FORMAT` - Неверный формат файла
-- `PROCESSING_ERROR` - Ошибка во время обработки
-- `CANCELLED` - Операция была отменена
-
-## Пример использования
-
-```typescript
-import { invoke } from '@tauri-apps/api/tauri';
-
-async function loadVideo(path: string) {
-  try {
-    // Проверяем существование файла
-    const exists = await invoke('file_exists', { path });
-    if (!exists) {
-      throw new Error('Файл не найден');
-    }
-    
-    // Получаем метаданные
-    const metadata = await invoke('get_media_metadata', {
-      file_path: path
-    });
-    
-    // Регистрируем для стриминга
-    const { stream_url } = await invoke('register_video', {
-      file_path: path
-    });
-    
-    return {
-      metadata,
-      stream_url
-    };
-  } catch (error) {
-    console.error('Не удалось загрузить видео:', error);
-    throw error;
-  }
-}
-```
-
-## События
-
-Бэкенд может генерировать события, которые фронтенд может прослушивать:
-
-### События распознавания
-```typescript
-listen('recognition', (event) => {
-  switch (event.payload.type) {
-    case 'ProcessingStarted':
-      // Обработка начала
-      break;
-    case 'ProcessingProgress':
-      // Обработка прогресса
-      break;
-    case 'ProcessingCompleted':
-      // Обработка завершения
-      break;
-    case 'ProcessingError':
-      // Обработка ошибки
-      break;
-  }
-});
-```
-
-### События рендеринга
-```typescript
-listen('render-progress', (event) => {
-  const { job_id, progress, eta } = event.payload;
-  // Обновление UI
-});
-```
+- [Руководство по созданию модулей](../05-development/creating-features.md)
+- [Стандарты тестирования](../05-development/testing.md)
+- [Примеры интеграции](../07-guides/feature-integration.md)
 
 ---
 
-*Для деталей реализации смотрите соответствующие модули Rust в `src-tauri/src/`.*
+[← Архитектура](../02-architecture/README.md) | [Далее: Timeline →](core/timeline.md)
