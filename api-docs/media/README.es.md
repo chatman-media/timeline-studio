@@ -89,8 +89,7 @@
 - 📤 Exportación a MP4/MOV/WebM con integración OAuth de redes sociales
 - 🔐 Soporte OAuth para YouTube/TikTok/Vimeo/Telegram con almacenamiento seguro de tokens
 - 📱 Presets de dispositivos (iPhone, iPad, Android) para exportaciones optimizadas
-- 🧠 Gestión de estado usando XState v5
-- 🌐 Soporte de internacionalización (11 idiomas)
+- 🌐 Soporte de internacionalización (13 idiomas)
 - 💾 Caché inteligente y sistema de vista previa unificado
 - 🎨 UI moderna usando Tailwind CSS v4, shadcn-ui
 - 📚 Documentación completa con 2400+ pruebas (98.8% de éxito)

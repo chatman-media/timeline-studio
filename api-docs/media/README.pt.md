@@ -89,8 +89,7 @@ Assistente de IA criará o número certo de versões para cada plataforma! 🤖
 - 📤 Exportação para MP4/MOV/WebM com integração OAuth de redes sociais
 - 🔐 Suporte OAuth para YouTube/TikTok/Vimeo/Telegram com armazenamento seguro de tokens
 - 📱 Presets de dispositivos (iPhone, iPad, Android) para exportações otimizadas
-- 🧠 Gerenciamento de estado usando XState v5
-- 🌐 Suporte à internacionalização (11 idiomas)
+- 🌐 Suporte à internacionalização (13 idiomas)
 - 💾 Cache inteligente e sistema de pré-visualização unificado
 - 🎨 UI moderna usando Tailwind CSS v4, shadcn-ui
 - 📚 Documentação completa com 2400+ testes (98.8% de taxa de sucesso)

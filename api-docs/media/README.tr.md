@@ -84,8 +84,7 @@ AI asistanı her platform için doğru sayıda sürüm oluşturacak! 🤖
 - 🎨 30'dan fazla geçiş, görsel efekt ve filtre
 - 📝 12 stil ve animasyonlu gelişmiş altyazı sistemi
 - 🎵 Efektli çoklu parça ses düzenleme
-- 🧠 XState v5 kullanarak durum yönetimi
-- 🌐 Uluslararasılaştırma desteği (11 dil)
+- 🌐 Uluslararasılaştırma desteği (13 dil)
 - 💾 Akıllı önbelleğe alma ve önizleme oluşturma
 - 🎨 Tailwind CSS v4, shadcn-ui kullanarak modern UI
 - 📚 2400+ test (%98.8 başarı oranı) ile tam dokümantasyon

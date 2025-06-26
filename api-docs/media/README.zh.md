@@ -89,8 +89,7 @@ AI助手将为每个平台创建合适数量的版本！🤖
 - 📤 导出到 MP4/MOV/WebM，支持社交媒体 OAuth 集成
 - 🔐 支持 YouTube/TikTok/Vimeo/Telegram OAuth，安全令牌存储
 - 📱 设备预设（iPhone、iPad、Android）用于优化导出
-- 🧠 使用 XState v5 进行状态管理
-- 🌐 国际化支持（11 种语言）
+- 🌐 国际化支持（13 种语言）
 - 💾 智能缓存和统一预览系统
 - 🎨 使用 Tailwind CSS v4、shadcn-ui 的现代 UI
 - 📚 完整文档，2400+ 测试（98.8% 成功率）

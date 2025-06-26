@@ -70,7 +70,7 @@ Timeline Studio è un editor video moderno basato sull'architettura Tauri (Rust 
 - 📤 Export in MP4/MOV/WebM con integrazione OAuth social media
 - 🔐 Supporto OAuth YouTube/TikTok/Vimeo/Telegram con archiviazione token sicura
 - 📱 Preset dispositivi (iPhone, iPad, Android) per export ottimizzati
-- 🌐 Supporto internazionalizzazione (11 lingue)
+- 🌐 Supporto internazionalizzazione (13 lingue)
 - 💾 Caching intelligente e sistema preview unificato
 - 🎨 UI moderna usando Tailwind CSS v4, shadcn-ui
 - 📚 Documentazione completa con più di 5.000 test e oltre l'80% di copertura del codice

@@ -89,8 +89,7 @@ Der KI-Assistent erstellt die richtige Anzahl von Versionen für jede Plattform!
 - 📤 Export zu MP4/MOV/WebM mit Social Media OAuth-Integration
 - 🔐 OAuth-Unterstützung für YouTube/TikTok/Vimeo/Telegram mit sicherer Token-Speicherung
 - 📱 Geräte-Presets (iPhone, iPad, Android) für optimierte Exporte
-- 🧠 Zustandsverwaltung mit XState v5
-- 🌐 Internationalisierung-Support (11 Sprachen)
+- 🌐 Internationalisierung-Support (13 Sprachen)
 - 💾 Intelligente Zwischenspeicherung und einheitliches Vorschausystem
 - 🎨 Moderne UI mit Tailwind CSS v4, shadcn-ui
 - 📚 Vollständige Dokumentation mit 2400+ Tests (98.8% Erfolgsrate)
