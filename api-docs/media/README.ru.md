@@ -11,16 +11,16 @@
 [![Last Commit](https://img.shields.io/github/last-commit/chatman-media/timeline-studio?style=flat-square&label=last%20commit)](https://github.com/chatman-media/timeline-studio/commits/main)
 [![GitHub commits](https://img.shields.io/github/commit-activity/m/chatman-media/timeline-studio?style=flat-square&label=commits)](https://github.com/chatman-media/timeline-studio/graphs/commit-activity)
 [![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=flat-square&label=downloads)](https://www.npmjs.com/package/timeline-studio)
-[![Documentation](https://img.shields.io/badge/read-docs-blue?style=flat-square)](https://chatman-media.github.io/timeline-studio/api-docs/)
-[![Website](https://img.shields.io/badge/visit-website-brightgreen?style=flat-square&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
+[![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=flat-square&label=frontend&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
+[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=flat-square&label=backend&flag=rust)](https://codecov.io/gh/chatman-media/timeline-studio)
 
 [![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gwJUYxck)
 [![X](https://img.shields.io/badge/Follow-@chatman-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/chatman_media)
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
-<!-- [![Frontend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=flat-square&label=frontend&flag=frontend)](https://codecov.io/gh/chatman-media/timeline-studio)
-[![Backend Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=flat-square&label=backend&flag=rust)](https://codecov.io/gh/chatman-media/timeline-studio) -->
+[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](https://chatman-media.github.io/timeline-studio/api-docs/)
+[![Website](https://img.shields.io/badge/visit-website-brightgreen?style=for-the-badge&logo=globe&logoColor=white)](https://chatman-media.github.io/timeline-studio/)
 
 </div>
 
@@ -69,7 +69,7 @@ AI-ассистент сам создаст нужное количество в
 **Общая готовность: 78.2%** (взвешенный прогресс с учетом сложности модулей)  
 **🎯 Alpha версия: 91.0%** готовности
 
-✅ **Завершено**: 48 модулей (100% готовности) - 27 frontend + 21 backend (включая Fairlight Audio)  
+✅ **Завершено**: 51 модуль (100% готовности) - 30 frontend + 21 backend (включая Fairlight Audio, Color Grading, AI Chat)  
 🚀 **Для завершения Alpha нужно сделать**:
   - Scene Analyzer (доделать 70%) - ИИ анализ сцен и моментов
   - Script Generator (доделать 80%) - генерация сценариев из видео
@@ -85,8 +85,10 @@ AI-ассистент сам создаст нужное количество в
 - ✅ **Recognition** - YOLO v11 распознавание объектов и лиц (100%)
 - ✅ **Export** - OAuth интеграция для YouTube/TikTok/Vimeo (100%)
 - ✅ **Advanced Color Grading** - профессиональная цветокоррекция (100%)
+- ✅ **Fairlight Audio** - профессиональный аудио модуль с AI шумоподавлением (100%)
+- ✅ **AI Chat** - полная интеграция с 82 инструментами AI (100%)
 - 🚧 **Effects/Filters/Transitions** - богатая библиотека в процессе (75-80%)
-- 🚧 **Timeline AI** - автоматизация с 41 инструментом Claude (90%)
+- 🚧 **Resources Panel** - UI готов, требуется drag & drop (80%)
 
 ## Ключевые возможности
 
@@ -103,12 +105,13 @@ AI-ассистент сам создаст нужное количество в
 - 🌐 Поддержка интернационализации (13 языков)
 - 💾 Умное кэширование и унифицированная система превью
 - 🎨 Современный UI с использованием Tailwind CSS v4, shadcn-ui
-- 📚 Полная документация с более чем 7000 тестами и покрытием кода более 80%
+- 📚 Полная документация с более чем 9000 тестами и покрытием кода более 80%
 - 🧠 **НОВОЕ: Полная AI платформа** - 82 Claude AI инструмента для автоматизации видео
 - 🎤 **НОВОЕ: Whisper транскрипция** - Речь в текст с OpenAI/локальными моделями
 - 📱 **НОВОЕ: Оптимизация под платформы** - Авто-адаптация для 10+ соцсетей
 - 🤖 **НОВОЕ: Workflow автоматизация** - 10 предустановленных процессов для быстрого монтажа
 - 🎨 **НОВОЕ: Продвинутая цветокоррекция** - Профессиональная работа с цветом (color wheels, curves, LUT, scopes)
+- 🎧 **НОВОЕ: Fairlight Audio** - Профессиональная система микширования и мастеринга звука
 
 ## Начало работы
 
@@ -152,7 +155,6 @@ bun run tauri build
 ### 📋 Документация проекта
 
 - **`src/features/README.md`** - обзор всех функций с приоритетами и статусом
-- **Языковые версии**: Доступны на 12 языках через переключатель выше
 
 ## Разработка
 
