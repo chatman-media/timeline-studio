@@ -1,85 +1,245 @@
-# 01. Начало работы с Timeline Studio
+# Утилиты для тестирования Tauri аудио компонентов
 
-[← Назад к оглавлению](../README.md)
+Этот набор утилит предназначен для тестирования аудио компонентов в Tauri приложении с использованием Vitest и React Testing Library.
 
-## 📋 Содержание раздела
+## Основные возможности
 
-1. [Установка зависимостей](installation.md)
-2. [Создание первого проекта](first-project.md)
-3. [Структура проекта](project-structure.md)
+### 🎵 Мокирование аудио данных
 
-## 🎯 Для кого этот раздел
+- Создание реалистичных MP3 данных для тестирования
+- Мокирование Tauri API для чтения файлов
+- Поддержка различных форматов аудио
 
-Этот раздел предназначен для:
-- Новых разработчиков проекта
-- Контрибьюторов
-- Тех, кто хочет собрать Timeline Studio из исходников
+### 🔊 Web Audio API моки
 
-## 🚀 Быстрый старт
+- Полная имитация AudioContext
+- Мокирование MediaRecorder
+- Поддержка аудио визуализации
 
-### Минимальные требования
+### 🎮 Симуляция аудио событий
 
-- **Node.js** 18+ и **Bun** 
-- **Rust** 1.81.0+
-- **FFmpeg** (с библиотеками разработки)
-- **ONNX Runtime** (для функций распознавания)
+- Загрузка, воспроизведение, пауза
+- Обработка ошибок
+- Управление временем воспроизведения
 
-### Быстрая установка (macOS)
+## Использование
 
-```bash
-# Установка зависимостей
-brew install ffmpeg onnxruntime
+### Базовая настройка
 
-# Клонирование репозитория
-git clone https://github.com/your-org/timeline-studio.git
-cd timeline-studio
+```typescript
+import { setupAudioTestEnvironment } from "@/test/utils/tauri-audio-test-utils";
 
-# Установка npm пакетов
-bun install
+describe("AudioComponent", () => {
+  let testEnv: ReturnType<typeof setupAudioTestEnvironment>;
 
-# Запуск в режиме разработки
-bun run tauri dev
+  beforeEach(() => {
+    testEnv = setupAudioTestEnvironment();
+  });
+
+  afterEach(() => {
+    testEnv.cleanup();
+  });
+
+  // Ваши тесты здесь
+});
 ```
 
-### Первые шаги
+### Создание тестовых данных
 
-1. **Установите все зависимости** - [подробная инструкция](installation.md)
-2. **Запустите приложение** - `bun run tauri dev`
-3. **Создайте тестовый проект** - [пошаговое руководство](first-project.md)
-4. **Изучите структуру кода** - [обзор архитектуры](project-structure.md)
+```typescript
+import {
+  createMockAudioFile,
+  createMockAudioData,
+} from "@/test/utils/tauri-audio-test-utils";
 
-## 🎓 Что вы узнаете
+// Создание мок аудио файла
+const audioFile = createMockAudioFile({
+  name: "test-song.mp3",
+  path: "/music/test-song.mp3",
+  duration: 180,
+});
 
-После прохождения этого раздела вы сможете:
-- ✅ Установить и настроить среду разработки
-- ✅ Запустить Timeline Studio локально
-- ✅ Понимать базовую структуру проекта
-- ✅ Создать и отредактировать простое видео
-- ✅ Ориентироваться в коде проекта
+// Создание мок аудио данных
+const audioData = createMockAudioData(1024);
+```
 
-## 📚 Дополнительные ресурсы
+### Симуляция аудио событий
 
-- [Архитектура приложения](../02-architecture/README.md) - для глубокого понимания
-- [API справочник](../04-api-reference/README.md) - все доступные команды
-- [Руководство разработчика](../05-development/README.md) - best practices
+```typescript
+import {
+  simulateAudioLoad,
+  simulateAudioPlay,
+  simulateAudioPause,
+  simulateAudioEnd,
+  simulateAudioError,
+} from "@/test/utils/tauri-audio-test-utils";
 
-## ❓ Частые вопросы
+// Симуляция загрузки
+await simulateAudioLoad(audioElement);
 
-**Q: Можно ли разрабатывать на Windows?**  
-A: Да, Timeline Studio поддерживает Windows, macOS и Linux. См. [платформо-специфичные инструкции](installation.md#платформы).
+// Симуляция воспроизведения
+await simulateAudioPlay(audioElement);
 
-**Q: Обязательно ли устанавливать ONNX Runtime?**  
-A: Только если вы планируете использовать функции распознавания объектов. Базовое редактирование работает без него.
+// Симуляция паузы
+await simulateAudioPause(audioElement);
 
-**Q: Какая версия Node.js рекомендуется?**  
-A: Рекомендуем использовать Node.js 20 LTS для лучшей производительности.
+// Симуляция окончания
+await simulateAudioEnd(audioElement);
 
-## 🆘 Нужна помощь?
+// Симуляция ошибки
+await simulateAudioError(audioElement, 4); // MEDIA_ELEMENT_ERROR
+```
 
-- Проверьте [раздел решения проблем](../06-deployment/troubleshooting.md)
-- Задайте вопрос в [GitHub Issues](https://github.com/your-org/timeline-studio/issues)
-- Присоединитесь к нашему [Discord серверу](https://discord.gg/timeline-studio)
+## API Reference
 
----
+### setupAudioTestEnvironment()
 
-[Далее: Установка зависимостей →](installation.md)
+Создает полную среду для тестирования аудио компонентов.
+
+**Возвращает:**
+
+```typescript
+{
+  webAudio: {
+    AudioContext: MockedFunction,
+    MediaRecorder: MockedFunction,
+  },
+  tauri: {
+    readFile: MockedFunction,
+    convertFileSrc: MockedFunction,
+  },
+  url: {
+    createObjectURL: MockedFunction,
+    revokeObjectURL: MockedFunction,
+  },
+  cleanup: () => void,
+}
+```
+
+### createMockAudioFile(options?)
+
+Создает мок объект аудио файла.
+
+**Параметры:**
+
+- `name?: string` - Имя файла (по умолчанию: "test-audio.mp3")
+- `path?: string` - Путь к файлу (по умолчанию: "/path/to/test-audio.mp3")
+- `duration?: number` - Длительность в секундах (по умолчанию: 180)
+- `size?: number` - Размер файла в байтах (по умолчанию: 3MB)
+
+### createMockAudioData(size?)
+
+Создает реалистичные аудио данные в формате Uint8Array.
+
+**Параметры:**
+
+- `size?: number` - Размер данных в байтах (по умолчанию: 1024)
+
+### createAudioElementMock()
+
+Создает мок для HTMLAudioElement с полным набором методов и свойств.
+
+### waitForAudioContextInit(delay?)
+
+Ждет инициализации аудио контекста (имитирует setTimeout в компоненте).
+
+**Параметры:**
+
+- `delay?: number` - Задержка в миллисекундах (по умолчанию: 150)
+
+## Примеры тестов
+
+### Тестирование загрузки аудио
+
+```typescript
+it("should load audio file and create blob URL", async () => {
+  render(<AudioPreview file={audioFile} />);
+
+  await waitFor(() => {
+    expect(testEnv.url.createObjectURL).toHaveBeenCalled();
+  });
+
+  const audioElement = document.querySelector("audio");
+  expect(audioElement).not.toBeNull();
+});
+```
+
+### Тестирование воспроизведения
+
+```typescript
+it("should play audio on click", async () => {
+  const { container } = render(<AudioPreview file={audioFile} />);
+
+  const audioElement = container.querySelector("audio") as HTMLAudioElement;
+  const mockAudio = createAudioElementMock();
+
+  audioElement.play = mockAudio.play;
+
+  const containerDiv = container.firstChild as HTMLElement;
+  fireEvent.click(containerDiv);
+
+  expect(mockAudio.play).toHaveBeenCalled();
+});
+```
+
+### Тестирование обработки ошибок
+
+```typescript
+it("should handle audio loading error", async () => {
+  testEnv.tauri.readFile.mockRejectedValueOnce(new Error("File not found"));
+
+  render(<AudioPreview file={audioFile} />);
+
+  await waitFor(() => {
+    expect(testEnv.tauri.convertFileSrc).toHaveBeenCalledWith(audioFile.path);
+  });
+});
+```
+
+## Интеграция с Context7
+
+Утилиты совместимы с Context7 MCP и могут использоваться для тестирования компонентов, которые взаимодействуют с внешними API или сервисами.
+
+### Мокирование внешних сервисов
+
+```typescript
+// Мокирование Context7 API
+vi.mock("@context7/api", () => ({
+  analyzeAudio: vi.fn().mockResolvedValue({
+    duration: 180,
+    format: "mp3",
+    bitrate: 320,
+  }),
+}));
+```
+
+## Лучшие практики
+
+1. **Всегда очищайте моки** после каждого теста с помощью `testEnv.cleanup()`
+2. **Используйте waitFor** для асинхронных операций
+3. **Мокайте только необходимые части** API для конкретного теста
+4. **Тестируйте как успешные сценарии, так и ошибки**
+5. **Проверяйте очистку ресурсов** при размонтировании компонентов
+
+## Устранение неполадок
+
+### Проблема: "AudioContext is not defined"
+
+**Решение:** Убедитесь, что вы используете `setupAudioTestEnvironment()` в beforeEach
+
+### Проблема: "MediaRecorder.isTypeSupported is not a function"
+
+**Решение:** Моки в setup.ts уже включают этот метод
+
+### Проблема: Тесты не ждут асинхронные операции
+
+**Решение:** Используйте `waitFor` и `waitForAudioContextInit`
+
+## Совместимость
+
+- ✅ Vitest
+- ✅ React Testing Library
+- ✅ Tauri v2
+- ✅ Web Audio API
+- ✅ Context7 MCP
+- ✅ TypeScript

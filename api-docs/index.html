@@ -55,7 +55,7 @@
 <li><strong>FFmpeg интеграция</strong> - продвинутая обработка видео</li>
 <li><strong>Безопасность</strong> - шифрование API ключей, OAuth, Keychain</li>
 </ul>
-<p>📚 <strong><a href="media/frontend.md">Подробная архитектура Frontend →</a></strong><br>
+<p>📚 <strong><a href="docs-ru/02-architecture/frontend.md">Подробная архитектура Frontend →</a></strong><br>
 📚 <strong><a href="media/architecture.md">Подробная архитектура Backend →</a></strong><br>
 📚 <strong><a href="media/plugin-system-design.md">Система плагинов →</a></strong></p>
 <h2 id="🛠️-technical-stack-details" class="tsd-anchor-link">🛠️ Technical Stack Details<a href="#🛠️-technical-stack-details" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="frontend-stack" class="tsd-anchor-link">Frontend Stack<a href="#frontend-stack" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><table>
@@ -248,7 +248,7 @@ You upload your videos - AI finds story arcs, crises, resolutions, emotional pea
 🔄 <strong>In progress</strong>: 3 modules for Alpha - Scene Analyzer (30%), Script Generator (20%), Person ID (0%)
 📋 <strong>Remaining for Alpha</strong>: Smart Montage Planner + completing 3 AI modules = 28.9 weight units
 📋 <strong>Planned</strong>: 9 modules (0% ready) for future versions (excluding plugins)</p>
-<p><a href="media/README.md">→ Detailed Roadmap</a></p>
+<p><a href="docs-ru/10-roadmap/README.md">→ Detailed Roadmap</a></p>
 <h2 id="🎯-key-features" class="tsd-anchor-link">🎯 Key Features<a href="#🎯-key-features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="🎬-video-editing-core" class="tsd-anchor-link">🎬 Video Editing Core<a href="#🎬-video-editing-core" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li><strong>Multi-track Timeline</strong> - Professional non-linear editing <code>Stable</code></li>
 <li><strong>GPU Acceleration</strong> - NVENC, QuickSync, VideoToolbox support <code>Stable</code></li>
@@ -300,40 +300,40 @@ You upload your videos - AI finds story arcs, crises, resolutions, emotional pea
 <h4 id="tauri-development-issues" class="tsd-anchor-link">Tauri Development Issues<a href="#tauri-development-issues" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="bash"><span class="hl-0"># Clear Rust cache</span><br/><span class="hl-1">cargo</span><span class="hl-2"> </span><span class="hl-3">clean</span><br/><br/><span class="hl-0"># Reinstall dependencies</span><br/><span class="hl-1">bun</span><span class="hl-2"> </span><span class="hl-3">install</span><span class="hl-2"> </span><span class="hl-4">--force</span><br/><br/><span class="hl-0"># Check Rust version (need 1.81.0+)</span><br/><span class="hl-1">rustc</span><span class="hl-2"> </span><span class="hl-4">--version</span>
 </code><button type="button">Copy</button></pre>
 
-<p>📚 <strong><a href="media/README-1.md">Complete Installation Guide →</a></strong>
-🪟 <strong><a href="media/windows-build.md">Windows Setup →</a></strong>
+<p>📚 <strong><a href="docs-ru/01-getting-started/README.md">Complete Installation Guide →</a></strong>
+🪟 <strong><a href="docs-ru/06-deployment/platforms/windows-build.md">Windows Setup →</a></strong>
 🎥 <strong><a href="https://www.youtube.com/@chatman-media">Video Tutorial →</a></strong></p>
 <h2 id="📚-центр-документации" class="tsd-anchor-link">📚 Центр документации<a href="#📚-центр-документации" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="🚀-начало-работы" class="tsd-anchor-link">🚀 Начало работы<a href="#🚀-начало-работы" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>📌 <a href="media/installation.md">Установка и настройка</a></li>
-<li>🎬 <a href="media/first-project.md">Первый проект</a></li>
-<li>🤔 <a href="media/project-structure.md">Структура проекта</a></li>
-<li>🪟 <a href="media/windows-build.md">Настройка Windows</a></li>
+<li>📌 <a href="docs-ru/01-getting-started/installation.md">Установка и настройка</a></li>
+<li>🎬 <a href="docs-ru/01-getting-started/first-project.md">Первый проект</a></li>
+<li>🤔 <a href="docs-ru/01-getting-started/project-structure.md">Структура проекта</a></li>
+<li>🪟 <a href="docs-ru/06-deployment/platforms/windows-build.md">Настройка Windows</a></li>
 </ul>
 <h3 id="🏗️-архитектура-1" class="tsd-anchor-link">🏗️ Архитектура<a href="#🏗️-архитектура-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>📄 <a href="media/README-2.md">Обзор архитектуры</a></li>
-<li>🌐 <a href="media/frontend.md">Frontend архитектура</a></li>
+<li>📄 <a href="docs-ru/02-architecture/README.md">Обзор архитектуры</a></li>
+<li>🌐 <a href="docs-ru/02-architecture/frontend.md">Frontend архитектура</a></li>
 <li>⚙️ <a href="media/architecture.md">Backend архитектура</a></li>
-<li>🔄 <a href="media/state-management.md">State Management</a></li>
-<li>📡 <a href="media/communication.md">Коммуникация</a></li>
+<li>🔄 <a href="docs-ru/02-architecture/state-management.md">State Management</a></li>
+<li>📡 <a href="docs-ru/02-architecture/communication.md">Коммуникация</a></li>
 </ul>
 <h3 id="🎯-функции-и-возможности" class="tsd-anchor-link">🎯 Функции и возможности<a href="#🎯-функции-и-возможности" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>📈 <a href="media/README-3.md">Обзор функций</a></li>
-<li>📝 <a href="media/README-4.md">Описание всех модулей</a></li>
-<li>🎨 <a href="media/color-grading-system.md">Цветокоррекция</a></li>
-<li>🎧 <a href="media/fairlight-audio-completion.md">Fairlight Audio</a></li>
+<li>📈 <a href="docs-ru/03-features/README.md">Обзор функций</a></li>
+<li>📝 <a href="media/README.md">Описание всех модулей</a></li>
+<li>🎨 <a href="docs-ru/10-roadmap/completed/color-grading-system.md">Цветокоррекция</a></li>
+<li>🎧 <a href="docs-ru/10-roadmap/completed/fairlight-audio-completion.md">Fairlight Audio</a></li>
 </ul>
 <h3 id="👨💻-разработка" class="tsd-anchor-link">👨‍💻 Разработка<a href="#👨💻-разработка" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>🧪 <a href="media/README-5.md">Руководство разработчика</a></li>
-<li>🧪 <a href="media/testing.md">Тестирование</a></li>
-<li>📡 <a href="media/README-6.md">API Reference</a></li>
+<li>🧪 <a href="docs-ru/05-development/README.md">Руководство разработчика</a></li>
+<li>🧪 <a href="docs-ru/05-development/testing.md">Тестирование</a></li>
+<li>📡 <a href="docs-ru/04-api-reference/README.md">API Reference</a></li>
 <li>🔌 <a href="media/plugin-system-design.md">Система плагинов</a></li>
-<li>🔧 <a href="media/development-commands.md">Команды разработки</a></li>
+<li>🔧 <a href="docs-ru/05-development/development-commands.md">Команды разработки</a></li>
 </ul>
 <h3 id="🚀-развертывание" class="tsd-anchor-link">🚀 Развертывание<a href="#🚀-развертывание" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>📦 <a href="media/build.md">Сборка приложения</a></li>
-<li>🤖 <a href="media/ci-cd-setup.md">CI/CD настройка</a></li>
-<li>🔐 <a href="media/oauth-setup-guide.md">OAuth настройка</a></li>
-<li>📊 <a href="media/codecov-setup.md">Codecov интеграция</a></li>
+<li>📦 <a href="docs-ru/06-deployment/build.md">Сборка приложения</a></li>
+<li>🤖 <a href="docs-ru/05-development/ci-cd-setup.md">CI/CD настройка</a></li>
+<li>🔐 <a href="docs-ru/11-oauth-setup/oauth-setup-guide.md">OAuth настройка</a></li>
+<li>📊 <a href="docs-ru/06-deployment/codecov-setup.md">Codecov интеграция</a></li>
 </ul>
 <h3 id="🔧-backend-документация" class="tsd-anchor-link">🔧 Backend документация<a href="#🔧-backend-документация" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li>🔒 <a href="media/security-architecture.md">Архитектура безопасности</a></li>
@@ -343,23 +343,23 @@ You upload your videos - AI finds story arcs, crises, resolutions, emotional pea
 <li>⚠️ <a href="media/error-handling-guide.md">Обработка ошибок</a></li>
 </ul>
 <h3 id="📚-дополнительные-ресурсы" class="tsd-anchor-link">📚 Дополнительные ресурсы<a href="#📚-дополнительные-ресурсы" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>🌟 <a href="media/README-7.md">Полная документация</a></li>
-<li>📊 <a href="media/README.md">Прогресс разработки</a></li>
+<li>🌟 <a href="docs-ru/README.md">Полная документация</a></li>
+<li>📊 <a href="docs-ru/10-roadmap/README.md">Прогресс разработки</a></li>
 <li>🌐 <a href="https://chatman-media.github.io/timeline-studio/api-docs/">API документация</a></li>
 <li>🌐 <a href="https://chatman-media.github.io/timeline-studio/">Веб-сайт проекта</a></li>
 </ul>
 <h2 id="development" class="tsd-anchor-link">Development<a href="#development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="quick-start" class="tsd-anchor-link">Quick Start<a href="#quick-start" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-0"># Development mode</span><br/><span class="hl-1">bun</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">tauri</span><span class="hl-2"> </span><span class="hl-3">dev</span><br/><br/><span class="hl-0"># Run tests</span><br/><span class="hl-1">bun</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">test</span><span class="hl-2"> &amp;&amp; </span><span class="hl-1">bun</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">test:rust</span><br/><br/><span class="hl-0"># Check code quality</span><br/><span class="hl-1">bun</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">check:all</span>
 </code><button type="button">Copy</button></pre>
 
-<p>📚 <strong><a href="media/README-5.md">Complete Development Guide →</a></strong></p>
+<p>📚 <strong><a href="docs-ru/05-development/README.md">Complete Development Guide →</a></strong></p>
 <h2 id="cicd--code-quality" class="tsd-anchor-link">CI/CD &amp; Code Quality<a href="#cicd--code-quality" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="automated-workflows" class="tsd-anchor-link">Automated Workflows<a href="#automated-workflows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li>✅ <strong>Linting</strong>: ESLint, Stylelint, Clippy</li>
 <li>✅ <strong>Testing</strong>: Frontend (Vitest), Backend (Rust), E2E (Playwright)</li>
 <li>✅ <strong>Coverage</strong>: Codecov integration</li>
 <li>✅ <strong>Build</strong>: Cross-platform builds</li>
 </ul>
-<p>📚 <strong><a href="media/README-8.md">Detailed CI/CD Guide →</a></strong>
-🔧 <strong><a href="media/linting-and-formatting.md">Linting &amp; Formatting →</a></strong></p>
+<p>📚 <strong><a href="docs-ru/06-deployment/README.md">Detailed CI/CD Guide →</a></strong>
+🔧 <strong><a href="docs-ru/05-development/linting-and-formatting.md">Linting &amp; Formatting →</a></strong></p>
 <h2 id="👨💻-developer-resources" class="tsd-anchor-link">👨‍💻 Developer Resources<a href="#👨💻-developer-resources" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="contributing-to-timeline-studio" class="tsd-anchor-link">Contributing to Timeline Studio<a href="#contributing-to-timeline-studio" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
 <li>🤝 <strong><a href="media/CONTRIBUTING.md">Contributing Guide</a></strong> - How to contribute to the project</li>
 <li>🐛 <strong><a href="https://github.com/chatman-media/timeline-studio/issues">Report Issues</a></strong> - Found a bug? Let us know!</li>
@@ -377,15 +377,15 @@ You upload your videos - AI finds story arcs, crises, resolutions, emotional pea
 <li>📊 <strong><a href="media/monitoring-and-metrics.md">Telemetry API</a></strong> - Monitoring integration</li>
 </ul>
 <h3 id="testing--quality" class="tsd-anchor-link">Testing &amp; Quality<a href="#testing--quality" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>🧪 <strong><a href="media/testing.md">Testing Guide</a></strong> - Unit, integration, E2E testing</li>
-<li>📊 <strong><a href="media/README-9.md">Test Utils</a></strong> - Audio and Tauri component testing</li>
+<li>🧪 <strong><a href="docs-ru/05-development/testing.md">Testing Guide</a></strong> - Unit, integration, E2E testing</li>
+<li>📊 <strong><a href="media/README-1.md">Test Utils</a></strong> - Audio and Tauri component testing</li>
 <li>✅ <strong><a href="media/CLAUDE.md#code-style-guidelines">Code Style</a></strong> - Coding standards</li>
 <li>🔍 <strong><a href="docs-ru/05-development/performance.md">Performance Guide</a></strong> - Optimization tips</li>
 </ul>
 <h2 id="documentation--resources" class="tsd-anchor-link">Documentation &amp; Resources<a href="#documentation--resources" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
 <li>📚 <a href="https://chatman-media.github.io/timeline-studio/api-docs/"><strong>API Documentation</strong></a> - Auto-generated TypeScript docs</li>
 <li>🚀 <a href="https://chatman-media.github.io/timeline-studio/"><strong>Website</strong></a> - Project showcase</li>
-<li>📖 <a href="media/README-7.md"><strong>Complete Documentation</strong></a> - Full guide in Russian</li>
+<li>📖 <a href="docs-ru/README.md"><strong>Complete Documentation</strong></a> - Full guide in Russian</li>
 </ul>
 <h2 id="🌐-community--support" class="tsd-anchor-link">🌐 Community &amp; Support<a href="#🌐-community--support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="join-our-community" class="tsd-anchor-link">Join Our Community<a href="#join-our-community" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><a href="https://t.me/timelinestudio"><img src="https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&amp;logo=telegram&amp;logoColor=white" alt="Telegram"></a>
 <a href="https://discord.gg/gwJUYxck"><img src="https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&amp;logo=discord&amp;logoColor=white" alt="Discord"></a>
@@ -398,8 +398,8 @@ You upload your videos - AI finds story arcs, crises, resolutions, emotional pea
 <li>📧 <strong>Email Support</strong> - <a href="mailto:ak.chatman.media@gmail.com">ak.chatman.media@gmail.com</a></li>
 </ul>
 <h3 id="project-roadmap" class="tsd-anchor-link">Project Roadmap<a href="#project-roadmap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li>🗺️ <strong><a href="media/README.md">Development Roadmap</a></strong> - See what's coming next</li>
-<li>✨ <strong><a href="media/completed">Completed Features</a></strong> - Recently shipped features</li>
+<li>🗺️ <strong><a href="docs-ru/10-roadmap/README.md">Development Roadmap</a></strong> - See what's coming next</li>
+<li>✨ <strong><a href="docs-ru/10-roadmap/completed/">Completed Features</a></strong> - Recently shipped features</li>
 <li>🎯 <strong><a href="docs-ru/10-roadmap/alpha-release.md">Alpha Release Progress</a></strong> - 91% complete!</li>
 <li>📊 <strong><a href="#project-status">Project Status</a></strong> - Current development stats</li>
 </ul>

@@ -319,6 +319,47 @@ The project includes a comprehensive test environment setup:
 - **Test Data Creation**: Realistic mock data generators
 - **Event Simulation**: User interactions and system events
 
+## Documentation Structure
+
+Timeline Studio uses a custom numbered directory structure for documentation following the Claude Simone methodology:
+
+### Documentation Organization (`/docs/`)
+The documentation is organized with numbered directories for logical grouping:
+- `00_project_manifest/` - Project overview and manifests
+- `01_project_docs/` - General project documentation
+- `02_user_guides/` - End-user documentation
+- `03_architecture/` - System architecture and design
+- `04_api_reference/` - API documentation
+- `05_development/` - Development guides and setup
+- `06_configuration/` - Configuration and settings
+- `07_api/` - Extended API documentation
+- `08_tasks/` - Task planning and tracking
+- `09_examples/` - Code examples and tutorials
+- `10_glossary/` - Technical terms and definitions
+- `11_troubleshooting/` - Problem solving guides
+- `12_testing/` - Testing documentation and strategies
+- `13_ci_cd/` - Continuous Integration/Deployment
+- `14_quality_assurance/` - QA processes and standards
+- `15_security/` - Security guidelines and practices
+- `16_user_documentation/` - User-facing documentation
+- `17_releases/` - Release notes and versioning
+- `99_archive/` - Archived documentation
+
+### Bilingual Support
+Each directory contains language-specific subdirectories:
+- `ru/` - Russian documentation
+- `en/` - English documentation
+
+Example structure:
+```
+docs/
+├── 05_development/
+│   ├── ru/
+│   │   └── setup.md
+│   └── en/
+│       └── setup.md
+```
+
 ## Code Style Guidelines
 
 ### TypeScript/JavaScript
