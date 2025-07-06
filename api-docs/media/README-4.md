@@ -1,406 +1,251 @@
-# 03. Функциональность Timeline Studio
+# Timeline Studio Features
 
-[← Назад к оглавлению](../README.md)
+## 📊 Общая готовность проекта: **78.2%**
 
-## 📋 Содержание
+Timeline Studio - профессиональный видеоредактор с современной архитектурой на базе React/Next.js для frontend и Rust/Tauri для backend.
 
-- [Основные модули](#основные-модули)
-- [Эффекты и визуализация](#эффекты-и-визуализация)
-- [Продвинутые функции](#продвинутые-функции)
-- [Статус разработки](#статус-разработки)
+## 🚀 Быстрый старт
 
-## 🎯 Обзор
-
-Timeline Studio включает более 30 функциональных модулей, организованных по категориям. Каждый модуль имеет свою документацию, тесты и примеры использования. Для ключевых модулей доступна подробная техническая документация.
-
-## 🏗️ Основные модули
-
-Ядро функциональности Timeline Studio для базового видеоредактирования.
-
-### [Timeline](core/timeline.md)
-**Статус**: ✅ Готов (90%)  
-Центральный компонент для редактирования видео
-- Многодорожечный редактор
-- Drag & drop операции
-- Покадровая точность
-- Масштабирование и навигация
-
-📖 **[Техническая документация модуля](../../src/features/timeline/README.md)**
-
-### [Video Player](core/video-player.md)
-**Статус**: ✅ Готов (100%)  
-Кастомный видео плеер с расширенными возможностями
-- Покадровое воспроизведение
-- Переменная скорость (0.25x - 4x)
-- Полноэкранный режим
-- Синхронизация с таймлайном
-
-📖 **[Техническая документация модуля](../../src/features/video-player/README.md)**
-
-### [Browser](core/browser.md)
-**Статус**: ✅ Готов (100%)  
-Менеджер медиафайлов с табами
-- Просмотр файлов и папок
-- Превью медиа в реальном времени
-- Поиск и фильтрация
-- Избранные файлы
-
-📖 **[Техническая документация модуля](../../src/features/browser/README.md)**
-
-### [Export](core/export.md)
-**Статус**: ✅ Готов (100%)  
-Экспорт готовых видео с продвинутыми возможностями
-- Пресеты для всех платформ (YouTube, TikTok, Vimeo, Telegram)
-- Настраиваемые параметры и валидация в реальном времени
-- GPU ускорение и оптимизация настроек
-- Пакетный экспорт и экспорт секций по времени
-- Автоматическая оценка времени экспорта
-- Умная оптимизация для разных платформ
-
-📖 **[Техническая документация модуля](../../src/features/export/README.md)**
-
-## 🎨 Эффекты и визуализация
-
-Инструменты для улучшения и стилизации видео.
-
-### [Effects](effects/effects.md)
-**Статус**: ✅ Готов (80%)  
-Визуальные эффекты на базе CSS и WebGL
-- 50+ встроенных эффектов
-- Реал-тайм превью
-- Анимируемые параметры
-- GPU ускорение
-
-📖 **[Техническая документация модуля](../../src/features/effects/README.md)**
-
-### [Filters](effects/filters.md)
-**Статус**: ✅ Готов (80%)  
-Цветокоррекция и фильтры
-- Базовые настройки (яркость, контраст)
-- LUT поддержка
-- Цветовые пресеты
-- HSL коррекция
-
-📖 **[Техническая документация модуля](../../src/features/filters/README.md)**
-
-### [Transitions](effects/transitions.md)
-**Статус**: ✅ Готов (75%)  
-Переходы между клипами
-- 30+ типов переходов
-- Настраиваемая длительность
-- Кривые анимации
-- 3D переходы
-
-📖 **[Техническая документация модуля](../../src/features/transitions/README.md)**
-
-### [Templates](effects/templates.md)
-**Статус**: ⚠️ В разработке (70%)  
-Многокамерные шаблоны
-- Split-screen макеты
-- Picture-in-picture
-- Grid композиции
-- Анимированные шаблоны
-
-📖 **[Техническая документация модуля](../../src/features/templates/README.md)**
-
-### [Style Templates](effects/style-templates.md)
-**Статус**: ✅ Готов (85%)  
-Стилистические шаблоны
-- Intro/Outro анимации
-- Титры и заставки
-- Нижние трети
-- Переходы сцен
-
-📖 **[Техническая документация модуля](../../src/features/style-templates/README.md)**
-
-## 🚀 Продвинутые функции
-
-Инновационные возможности на базе AI и ML.
-
-### [AI Chat](advanced/ai-chat.md)
-**Статус**: ✅ Готов (100%)  
-Интегрированный AI ассистент
-- Claude/GPT интеграция
-- Контекстная помощь
-- Генерация сценариев
-- Умные подсказки
-
-📖 **[Техническая документация модуля](../../src/features/ai-chat/README.md)**
-
-### [AI Models Integration](advanced/ai-models-integration.md)
-**Статус**: ✅ Готов (100%)  
-Полная AI платформа для автоматизации
-- FFmpeg + AI анализ видео (15 инструментов)
-- Whisper транскрипция (10 инструментов)
-- Пакетная обработка (12 инструментов)
-- Мультимодальный анализ GPT-4V (10 инструментов)
-- Платформная оптимизация для 10+ соцсетей (10 инструментов)
-- Workflow автоматизация с 10 процессами (9 инструментов)
-- 82 Claude AI инструмента в системе
-- 35+ Rust команд для интеграции
-
-📖 **[Детальная документация](../08-roadmap/completed/ai-models-integration.md)**
-
-### [Recognition](advanced/recognition.md)
-**Статус**: ✅ Готов (100%)  
-ML распознавание объектов
-- YOLO v11 интеграция
-- Распознавание объектов
-- Трекинг движения
-- Автоматические метки
-
-📖 **[Техническая документация модуля](../../src/features/recognition/README.md)**
-
-### [Voice Recording](advanced/voice-recording.md)
-**Статус**: ⚠️ В разработке (35%)  
-Запись и обработка голоса
-- Запись с микрофона
-- Шумоподавление
-- Эффекты голоса
-- Синхронизация с видео
-
-### [Camera Capture](advanced/camera-capture.md)
-**Статус**: ⚠️ В разработке (75%)  
-Захват с веб-камеры
-- Выбор устройств
-- Настройки качества
-- Фильтры в реальном времени
-- Запись в проект
-
-📖 **[Техническая документация модуля](../../src/features/camera-capture/README.md)**
-
-### [Subtitles](advanced/subtitles.md)
-**Статус**: ✅ Готов (100%)  
-Система профессиональных субтитров
-- 72 стиля субтитров в 6 категориях
-- CSS анимации и эффекты
-- Полная интернационализация
-- Интеграция с браузером ресурсов
-
-📖 **[Техническая документация модуля](../../src/features/subtitles/README.md)**
-
-### [Video Compiler](advanced/video-compiler.md)
-**Статус**: ✅ Готов (100%)  
-Система рендеринга и компиляции видео
-- GPU ускорение (NVIDIA, Intel, AMD, Apple)
-- Многоуровневое кеширование
-- Извлечение кадров для превью
-- Управление задачами рендеринга
-
-📖 **[Техническая документация модуля](../../src/features/video-compiler/README.md)**
-
-### Дополнительные модули
-
-#### [Media](advanced/media.md)
-**Статус**: ✅ Готов (90%)  
-Управление медиафайлами и кеширование
-- Импорт и обработка медиа
-- Кеширование превью в IndexedDB
-- Метаданные и анализ файлов
-- Восстановление отсутствующих файлов
-
-📖 **[Техническая документация модуля](../../src/features/media/README.md)**
-
-#### [App State](core/app-state.md)
-**Статус**: ✅ Готов (85%)  
-Глобальное состояние приложения
-- Настройки приложения
-- Управление проектами
-- Избранные файлы
-- Последние проекты
-
-📖 **[Техническая документация модуля](../../src/features/app-state/README.md)**
-
-#### [User Settings](core/user-settings.md)
-**Статус**: ✅ Готов (90%)  
-Пользовательские настройки
-- Персонализация интерфейса
-- API ключи для AI сервисов
-- Настройки производительности
-- Локализация
-
-📖 **[Техническая документация модуля](../../src/features/user-settings/README.md)**
-
-## 📊 Статус разработки
-
-### Готовность модулей
-
-| Категория | Готовых | В разработке | Планируется |
-|-----------|---------|--------------|-------------|
-| Основные | 6/7 (86%) | 1/7 | 0/7 |
-| Эффекты | 4/5 (80%) | 1/5 | 0/5 |
-| Продвинутые | 5/8 (63%) | 3/8 | 0/8 |
-
-### Покрытие тестами
-
-- **Отличное (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, AI Models Integration
-- **Хорошее (60-80%)**: Transitions, Style Templates, Camera Capture
-- **Требует улучшения (<60%)**: Templates, AI Chat, Voice Recording
-
-## 🛠️ Архитектура модулей
-
-Каждый модуль следует единой структуре:
+### Структура features
 
 ```
 feature-name/
-├── components/      # React компоненты
-├── hooks/          # Custom hooks
-├── services/       # Бизнес-логика и XState
-├── types/          # TypeScript типы  
-├── utils/          # Вспомогательные функции
-├── __tests__/      # Тесты
-├── __mocks__/      # Моки
-└── README.md       # Документация
+├── components/     # React компоненты
+├── hooks/         # Custom React hooks
+├── services/      # Бизнес-логика и XState машины
+├── types/         # TypeScript типы
+├── utils/         # Вспомогательные функции
+├── __tests__/     # Тесты
+├── __mocks__/     # Моки для тестов
+└── README.md      # Документация модуля
 ```
 
-## 🔧 Использование модулей
+## 🎬 Основные модули
 
-### Импорт функциональности
+### ✅ Готовые модули (100%)
 
-```typescript
-// Импорт компонентов
-import { Timeline } from '@/features/timeline'
-import { VideoPlayer } from '@/features/video-player'
-import { EffectsPanel } from '@/features/effects'
+#### [`timeline`](timeline/README.md)
+Центральный модуль видеоредактора с треками, клипами и секциями. Поддерживает drag & drop, масштабирование и синхронизацию с плеером.
+- **Покрытие тестами**: 85.16% (components), 85.01% (hooks), 98.6% (utils)
+- **Статус**: Готов к использованию
 
-// Импорт хуков
-import { useTimeline } from '@/features/timeline/hooks'
-import { useVideoPlayer } from '@/features/video-player/hooks'
+#### [`video-player`](video-player/README.md)
+Кастомный видеоплеер с покадровой навигацией и управлением скоростью.
+- **Покрытие тестами**: 92.66% (components), 96.34% (hooks), 96.78% (services)
+- **Статус**: Полностью функционален
 
-// Импорт сервисов
-import { timelineMachine } from '@/features/timeline/services'
-import { recognitionService } from '@/features/recognition/services'
-```
+#### [`video-compiler`](video-compiler/README.md)
+Система рендеринга через FFmpeg с GPU-ускорением (NVENC, QuickSync, VideoToolbox).
+- **Покрытие тестами**: 97.54% (components), 87.65% (hooks), 85.47% (services)
+- **Особенности**: Пререндеринг, кэширование, отслеживание прогресса
 
-### Композиция в приложении
+#### [`media-studio`](media-studio/README.md)
+Главный интерфейс с 4 вариантами раскладки и настраиваемыми панелями.
+- **Покрытие тестами**: 100% (components), 99.34% (layout), 50.2% (hooks)
+- **Особенности**: Мульти-дисплей поддержка, автосохранение настроек
 
-```tsx
-export function App() {
-  return (
-    <TimelineProvider>
-      <VideoPlayerProvider>
-        <EffectsProvider>
-          <div className="app-layout">
-            <VideoPlayer />
-            <Timeline />
-            <EffectsPanel />
-          </div>
-        </EffectsProvider>
-      </VideoPlayerProvider>
-    </TimelineProvider>
-  )
-}
-```
+#### [`browser`](browser/README.md)
+Браузер медиафайлов с табами, превью и фильтрацией.
+- **Покрытие тестами**: 68.9% (components), 89.65% (services), 98.5% (utils)
 
-## 🔮 Планируемые модули
+#### [`media`](media/README.md)
+Сервисы для работы с медиафайлами, метаданными и превью.
+- **Покрытие тестами**: 90.24% (components), 87.44% (hooks), 85.78% (services)
 
-Следующие модули находятся в стадии планирования и имеют подробную техническую документацию:
+#### [`app-state`](app-state/README.md)
+Глобальное управление состоянием через XState машины.
+- **Покрытие тестами**: 100% (hooks), 97% (components), 85.46% (services)
 
-### [Scene Analyzer](../../src/features/scene-analyzer/README.md)
-**Статус**: 📋 Планируется (0%)  
-Анализ видеосцен с использованием ML
-- Анализ кадров через ffmpeg-rs
-- Распознавание объектов YOLOv11
-- Идентификация персон
-- Интеграция с субтитрами
+#### [`project-settings`](project-settings/README.md)
+Настройки проекта (разрешение, FPS, аудио).
+- **Покрытие тестами**: 68.56% (components), 80% (hooks), 100% (services)
 
-📖 **[Техническая документация модуля](../../src/features/scene-analyzer/README.md)**
+#### [`user-settings`](user-settings/README.md)
+Пользовательские настройки и персонализация.
+- **Покрытие тестами**: 92.85% (components), 100% (hooks), 83.33% (services)
 
-### [Person Identification](../../src/features/person-identification/README.md)
-**Статус**: 📋 Планируется (0%)  
-Распознавание и идентификация людей
-- FaceNet/YOLOv11 интеграция
-- Присвоение имен персонам
-- SQLite база данных лиц
-- Связь с субтитрами
+#### [`modals`](modals/README.md)
+Система модальных окон с поддержкой стека.
+- **Покрытие тестами**: 92.7% (components), 100% (services)
 
-📖 **[Техническая документация модуля](../../src/features/person-identification/README.md)**
+#### [`recognition`](recognition/README.md)
+Интеграция с YOLO для распознавания объектов.
+- **Покрытие тестами**: 90.59% (services)
 
-### [Script Generator](../../src/features/script-generator/README.md)
-**Статус**: 📋 Планируется (0%)  
-AI генерация видеосценариев
-- Анализ субтитров
-- Обработка пользовательских инструкций
-- Выбор видеофрагментов
-- Интеграция с Timeline
+#### [`fairlight-audio`](fairlight-audio/README.md)
+Профессиональный аудио микшер с AI шумоподавлением.
+- **Покрытие тестами**: 84.74% (hooks), 95%+ (services), 77.87% (mixer) ⚠️ Низкое: 3.19% (meters), 2.83% (waveform)
+- **Особенности**: MIDI, Surround 5.1/7.1, LUFS метры, AudioWorklet API
+- **Недавно добавлено**: 80+ новых тестов для AudioFileManager, AutomationEngine, TimelineSyncService
 
-📖 **[Техническая документация модуля](../../src/features/script-generator/README.md)**
+#### [`color-grading`](color-grading/README.md)
+Профессиональная цветокоррекция уровня DaVinci Resolve.
+- **Покрытие тестами**: 100% (components), 100% (services), 98.26% (curves), 79.5% (hooks)
+- **Особенности**: Color Wheels, RGB Curves, LUT, Scopes
+- **Недавно добавлено**: Тесты для ColorGradingProvider (6 новых тестов)
 
-### [Montage Planner](../../src/features/montage-planner/README.md)
-**Статус**: 📋 Планируется (0%)  
-Автоматическое планирование монтажа
-- Анализ видео через ffmpeg-rs
-- ML распознавание сцен
-- Генерация планов монтажа
-- Асинхронная обработка
+#### [`drag-drop`](drag-drop/README.md)
+Система drag & drop для всего приложения.
+- **Покрытие тестами**: 90%+ (hooks), 85%+ (services), 100% (integration)
+- **Особенности**: Cross-module drag операции, 8 типов draggable элементов, SSR совместимость
 
-📖 **[Техническая документация модуля](../../src/features/montage-planner/README.md)**
+#### [`export`](export/README.md)
+Полностью готовый модуль экспорта с поддержкой социальных сетей.
+- **Покрытие тестами**: 100% (constants), 86.74% (hooks), 73.9% (services), 70.52% (components)
+- **Особенности**: OAuth интеграция, пресеты устройств, batch экспорт
 
-### Дополнительные планируемые модули
-📖 **[Полный список планируемых модулей (14 модулей)](../08-roadmap/planned/README.md)**
+#### [`ai-chat`](ai-chat/README.md)
+AI ассистент на базе Claude/OpenAI с полной интеграцией.
+- **Покрытие тестами**: 97.58% (hooks), 96.61% (utils), 86.54% (components), 82.99% (services)
+- **Особенности**: 82 инструмента AI, Timeline контекст, потоковые ответы
 
-## 🔧 Backend модули
+### 🚧 В разработке (50-90%)
 
-Серверная часть Timeline Studio построена на Rust с использованием Tauri v2 и включает следующие core модули:
+#### [`effects`](effects/README.md) - 80%
+CSS-based видеоэффекты с предпросмотром в реальном времени.
+- **Покрытие тестами**: 84.61%
+- **TODO**: GPU ускорение через WebGL
 
-### [Core Infrastructure](../../../src-tauri/src/core/README.md)
-**Статус**: ✅ Готов (100%)  
-Основная инфраструктура backend приложения
-- **Dependency Injection** - Type-safe управление зависимостями
-- **Event System** - Асинхронная система событий
-- **Plugin System** - WebAssembly плагины с sandbox изоляцией
-- **Telemetry** - OpenTelemetry мониторинг и метрики
-- **Performance** - Worker pools, кэширование, zero-copy операции
+#### [`filters`](filters/README.md) - 80%
+Фильтры изображения (яркость, контраст, цветокоррекция).
+- **Покрытие тестами**: 81.48%
+- **TODO**: Пользовательские LUT
 
-📖 **[Подробная документация Core модулей](../../../src-tauri/src/core/README.md)**
+#### [`transitions`](transitions/README.md) - 75%
+30+ типов переходов между клипами.
+- **Покрытие тестами**: 75.43%
+- **TODO**: 3D переходы
 
-### [Video Compiler Backend](../../../src-tauri/src/video_compiler/README.md)
-**Статус**: ✅ Готов (100%)  
-Rust backend для видео обработки
-- FFmpeg интеграция через rust-ffmpeg
-- GPU ускорение (NVIDIA NVENC, Intel QuickSync, AMD AMF)
-- Многоуровневое кэширование
-- Управление задачами рендеринга
-- WebAssembly preview генерация
+#### [`subtitles`](subtitles/README.md) - 75%
+12 профессиональных стилей субтитров с анимациями.
+- **Покрытие тестами**: 62.26% (components), 69.28% (hooks), 74.05% (utils)
+- **TODO**: Импорт/экспорт SRT/VTT
 
-### [Plugin System](../08-plugins/README.md)
-**Статус**: ✅ Готов (100%)  
-Система расширений с WebAssembly
-- Безопасное выполнение в WASM sandbox
-- Granular permissions система
-- Resource limits и timeouts
-- Hot-swappable плагины
+#### [`templates`](templates/README.md) - 70%
+Многокамерные шаблоны для split-screen.
+- **Покрытие тестами**: 79.67% (components), 81.95% (previews), 98.59% (hooks), 100% (lib)
+- **TODO**: Анимированные шаблоны
 
-📖 **[Руководство разработчика плагинов](../08-plugins/development-guide.md)**
+#### [`style-templates`](style-templates/README.md) - 85%
+Анимированные intro/outro и титры.
+- **Покрытие тестами**: 65.51%
 
-### [Telemetry System](../09-telemetry/README.md)
-**Статус**: ✅ Готов (100%)  
-Комплексный мониторинг приложения
-- OpenTelemetry стандарты
-- Real-time метрики и трейсинг
-- Health checks системы
-- Export в Prometheus, Jaeger, Grafana
+#### [`camera-capture`](camera-capture/README.md) - 75%
+Захват видео с веб-камеры.
+- **Покрытие тестами**: 70.0%
 
-📖 **[Настройка и конфигурация телеметрии](../09-telemetry/configuration.md)**
+#### [`music`](music/README.md) - 60%
+Управление музыкальными треками.
+- **Покрытие тестами**: 55.0%
 
-### Backend сервисы по модулям
+### 🚧 В разработке (50-90%)
 
-| Frontend модуль | Backend сервисы | Документация |
-|----------------|-----------------|--------------|
-| Timeline | `timeline_schema_commands.rs` | [Schema API](../../../src-tauri/src/video_compiler/commands/timeline_schema_commands.rs) |
-| Video Player | `frame_extraction_commands.rs` | [Frame API](../../../src-tauri/src/video_compiler/commands/frame_extraction_commands.rs) |
-| Export | `rendering.rs`, `ffmpeg_builder_commands.rs` | [Render API](../../../src-tauri/src/video_compiler/commands/rendering.rs) |
-| Effects/Filters | `ffmpeg_utilities_commands.rs` | [Effects API](../../../src-tauri/src/video_compiler/commands/ffmpeg_utilities_commands.rs) |
-| Recognition | `recognition_advanced_commands.rs` | [Recognition API](../../../src-tauri/src/video_compiler/commands/recognition_advanced_commands.rs) |
-| AI Integration | `multimodal_commands.rs`, `whisper_commands.rs` | [AI API](../../../src-tauri/src/video_compiler/commands/multimodal_commands.rs) |
-| GPU Acceleration | `gpu.rs`, `platform_optimization_commands.rs` | [GPU API](../../../src-tauri/src/video_compiler/commands/gpu.rs) |
+#### [`keyboard-shortcuts`](keyboard-shortcuts/README.md) - 75%
+Система горячих клавиш с предустановками.
+- **Покрытие тестами**: 80%
+- **TODO**: Персистентность, разрешение конфликтов
 
-## 📚 Дополнительные ресурсы
+#### [`resources`](resources/README.md) - 80%
+Управление ресурсами проекта с UI панелью.
+- **Покрытие тестами**: 66.7%
+- **TODO**: Drag & drop функциональность
 
-- [Руководство по созданию модулей](../05-development/creating-features.md)
-- [Стандарты тестирования](../05-development/testing.md)
-- [Примеры интеграции](../07-guides/feature-integration.md)
+### 📝 Планируемые модули (0-40%)
+
+#### [`voice-recording`](voice-recording/README.md) - 35%
+Запись голоса для озвучки.
+
+### 🔮 Новые модули (0%)
+
+- [`scene-analyzer`](scene-analyzer/README.md) - Анализ сцен
+- [`person-identification`](person-identification/README.md) - Идентификация людей
+- [`script-generator`](script-generator/README.md) - AI генерация сценариев
+- [`montage-planner`](montage-planner/README.md) - Планировщик монтажа
+
+## 🧪 Тестирование
+
+### Общая статистика
+- **Всего тестов**: 9206+ (увеличено на 3006+)
+- **Успешно**: 100%
+- **Frontend покрытие**: >80% для большинства модулей
+- **Backend покрытие**: >80%
+
+### 🔥 Недавние улучшения
+- **fairlight-audio services**: Добавлено 80+ новых тестов (39.49% → 95%+)
+- **drag-drop module**: Добавлено 79 новых тестов (26.78% → 85%+)
+- **color-grading services**: Добавлено 6 новых тестов для ColorGradingProvider (35.71% → 100%)
+- **Покрытие AudioFileManager**: 100% (25 тестов)
+- **Покрытие TimelineSyncService**: 100% (30 тестов)
+- **Покрытие AutomationEngine**: 87% (48/55 тестов, 7 skipped)
+- **Покрытие DragDropManager**: 95% (44/46 тестов, 2 skipped)
+- **Покрытие drag-drop hooks**: 90% (16/20 тестов, 4 SSR tests skipped)
+- **Покрытие cross-module integration**: 100% (13 integration tests)
+- **Покрытие ColorGradingProvider**: 100% (6 provider tests)
+
+### Отличное покрытие (>90%)
+- **export**: 98%
+- **ai-chat**: 95%
+- **fairlight-audio**: 95%+ (services)
+- **color-grading**: 90%
+- **drag-drop**: 90%+ (hooks), 85%+ (services)
+- **modals**: 88.88%
+- **browser**: 85.71%
+- **effects**: 84.61%
+
+### Хорошее покрытие (60-84%)
+- **templates**: ~84% (отличное покрытие)
+- **transitions**: 75.43%
+- **subtitles**: ~68% (улучшено с 8.41%)
+- **style-templates**: 65.51%
+
+## 🛠 Технический стек
+
+### Frontend
+- React 19 + Next.js 15
+- TypeScript (strict mode)
+- XState v5 для управления состоянием
+- Tailwind CSS v4
+- shadcn/ui компоненты
+
+### Backend (Tauri)
+- Rust
+- FFmpeg через ffmpeg-rs
+- ONNX Runtime для ML моделей
+- SQLite для кэширования
+
+### Интеграции
+- Claude API для AI функций
+- YOLOv11 для распознавания
+- WebGL для GPU эффектов
+
+## 📋 Стандарты разработки
+
+1. **Структура кода**
+   - TypeScript strict mode обязателен
+   - Следуйте существующим паттернам
+   - Предпочитайте named exports
+
+2. **Компоненты**
+   - Используйте shadcn/ui компоненты
+   - kebab-case для имен файлов
+   - PascalCase для имен компонентов
+
+3. **State Management**
+   - Простое состояние: useState/useReducer
+   - Сложное состояние: XState машины
+   - Глобальное состояние: Context + custom hooks
+
+4. **Тестирование**
+   - Минимум 70% покрытия для новых модулей
+   - Используйте custom render из test-utils
+   - Тестируйте XState машины через actor model
+
+## 🔗 Полезные ссылки
+
+- [Подробный план разработки](DEV.md)
+- [Список всех модулей с описаниями](DEV-README.md)
+- [Дорожная карта проекта](docs-ru/ROADMAP.md)
 
 ---
 
-[← Архитектура](../02-architecture/README.md) | [Далее: Timeline →](core/timeline.md)
+*Последнее обновление: 30 июня 2025 - Добавлены тесты для color-grading provider и исправлены все ошибки линтера в drag-drop (6 новых тестов)*

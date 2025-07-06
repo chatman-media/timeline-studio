@@ -1,240 +1,164 @@
-# 06. Развертывание Timeline Studio
+# Документация Timeline Studio
 
-[← Назад к оглавлению](../README.md)
+<div align="center">
+  <img src="assets/logo.png" alt="Timeline Studio Logo" width="200">
+  
+  **Профессиональный видеоредактор нового поколения**
+  
+  [Быстрый старт](01-getting-started/README.md) • [Архитектура](02-architecture/README.md) • [API](04-api-reference/README.md) • [Разработка](05-development/README.md)
+</div>
 
-## 📋 Содержание
+## 📚 О документации
 
-- [Процесс сборки](build.md)
-- [Настройка Codecov](codecov-setup.md)
-- [Платформы](#платформы)
-  - [Windows](platforms/windows.md)
-  - [macOS](platforms/macos.md)
-  - [Linux](platforms/linux.md)
-- [Решение проблем](troubleshooting.md)
+Эта документация предназначена для разработчиков, контрибьюторов и технических специалистов, работающих с Timeline Studio. Документация организована по принципу прогрессивного раскрытия информации - от простого к сложному.
 
-## 🎯 Обзор
+## 🗺️ Навигация
 
-Timeline Studio поддерживает сборку для всех основных десктопных платформ. Каждая платформа имеет свои особенности сборки, подписания и распространения.
+### [01. Начало работы](01-getting-started/README.md)
+Все необходимое для быстрого старта с Timeline Studio
+- Установка и настройка окружения
+- Создание первого проекта
+- Обзор интерфейса
+- Базовые операции
 
-## 🚀 Быстрая сборка
+### [02. Архитектура](02-architecture/README.md)
+Понимание внутреннего устройства приложения
+- Общая архитектура системы
+- Frontend на React/Next.js
+- Backend на Rust/Tauri
+- Взаимодействие компонентов
 
-### Универсальная команда
+### [03. Функциональность](03-features/README.md)
+Детальное описание всех возможностей
+- **Основные модули**: Timeline, Video Player, Browser, Export
+- **Эффекты**: Filters, Transitions, Templates
+- **Продвинутые функции**: AI Chat, Recognition, Voice Recording
 
-```bash
-# Сборка для текущей платформы
-bun run tauri build
+### [04. API справочник](04-api-reference/README.md)
+Полная документация всех API методов
+- Media API
+- Video Compiler API
+- Recognition API
+- File System API
 
-# Сборка с определенными функциями
-bun run tauri build -- --features gpu-acceleration,ml-recognition
-```
+### [05. Разработка](05-development/README.md)
+Руководство для разработчиков
+- Настройка среды разработки
+- Стандарты кодирования
+- Тестирование
+- Внесение изменений
 
-### Результаты сборки
+### [06. Развертывание](06-deployment/README.md)
+Сборка и распространение приложения
+- Процесс сборки
+- Платформо-специфичные настройки
+- Подписание и нотаризация
+- Решение проблем
 
-```
-src-tauri/target/release/
-├── bundle/
-│   ├── dmg/          # macOS installer
-│   ├── msi/          # Windows installer
-│   ├── deb/          # Debian package
-│   └── appimage/     # AppImage
-└── timeline-studio   # Исполняемый файл
-```
+### [07. Практические руководства](07-guides/README.md)
+Пошаговые инструкции для типичных задач
+- Работа с медиафайлами
+- Оптимизация производительности
+- Создание пользовательских эффектов
+- Добавление новых языков
 
-## 🖥️ Платформы
+### [08. Плагины](08-plugins/README.md)
+Система плагинов Timeline Studio
+- Архитектура плагинов
+- Руководство по разработке
+- API плагинов
+- Примеры плагинов
 
-### Windows
-- **Форматы**: MSI, NSIS, Portable
-- **Подписание**: Authenticode сертификат
-- **Зависимости**: Visual C++ Redistributable
-- [Подробное руководство →](platforms/windows.md)
+### [09. Телеметрия](09-telemetry/README.md)
+Мониторинг и метрики приложения
+- Сбор метрик
+- Анализ производительности
+- Отчеты об ошибках
+- Конфиденциальность данных
 
-### macOS
-- **Форматы**: DMG, App Bundle
-- **Подписание**: Developer ID сертификат
-- **Нотаризация**: Обязательна для распространения
-- [Подробное руководство →](platforms/macos.md)
+### [10. Дорожная карта](10-roadmap/README.md)
+Планы развития проекта
+- Выполненные задачи
+- Текущие работы
+- Планируемые функции
+- [Взвешенный расчет прогресса](10-roadmap/weighted-progress-calculation.md)
 
-### Linux
-- **Форматы**: AppImage, DEB, RPM, Snap
-- **Зависимости**: Различаются по дистрибутивам
-- **Песочница**: Flatpak поддержка
-- [Подробное руководство →](platforms/linux.md)
+### [11. OAuth настройка](11-oauth-setup/README.md)
+Интеграция с внешними сервисами
+- Настройка OAuth
+- Руководство по тестированию
+- Поддерживаемые платформы
+- Безопасность токенов
 
-## 📦 Конфигурация сборки
+### [12. Тестирование](12-testing/README.md)
+Комплексное тестирование приложения
+- Обзор тестирования
+- [Структура компонентов Codecov](12-testing/codecov-components.md)
+- Запуск тестов
+- Написание тестов
+- Покрытие кода
 
-### tauri.conf.json
+### [13. Известные проблемы](13-known-issues/README.md)
+Документация известных проблем и их решений
+- Проблемы с памятью в тестах
+- Ограничения платформ
+- Обходные пути
+- Статус исправлений
 
-```json
-{
-  "bundle": {
-    "active": true,
-    "targets": ["dmg", "msi", "deb", "appimage"],
-    "identifier": "com.timeline.studio",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
-    "resources": [
-      "models/*",
-      "assets/*"
-    ]
-  }
-}
-```
+### [14. Юридическая информация](14-legal/README.md)
+Лицензии и правовые аспекты
+- Лицензия проекта
+- Лицензии зависимостей
+- Авторские права
+- Условия использования
 
-### Оптимизация размера
+## 🚀 Быстрые ссылки
 
-```toml
-# Cargo.toml
-[profile.release]
-opt-level = "z"     # Оптимизация по размеру
-lto = true          # Link Time Optimization
-codegen-units = 1   # Один модуль компиляции
-strip = true        # Удаление символов отладки
-```
+### Для новичков
+1. [Установка зависимостей](01-getting-started/installation.md)
+2. [Первый проект](01-getting-started/first-project.md)
+3. [Структура проекта](01-getting-started/project-structure.md)
 
-## 🔐 Подписание и безопасность
+### Для разработчиков
+1. [Настройка окружения](05-development/setup.md)
+2. [Стандарты кода](05-development/coding-standards.md)
+3. [Запуск тестов](05-development/testing.md)
 
-### Подписание кода
+### Частые вопросы
+1. [Как добавить новый эффект?](07-guides/custom-effects.md)
+2. [Как оптимизировать производительность?](07-guides/performance.md)
+3. [Как добавить новый язык?](07-guides/localization.md)
 
-1. **Windows**: Authenticode сертификат
-2. **macOS**: Developer ID + нотаризация
-3. **Linux**: GPG подписи для репозиториев
+## 📖 Принципы документации
 
-### Обновления
+1. **Актуальность** - документация обновляется вместе с кодом
+2. **Примеры** - каждая концепция иллюстрируется примером
+3. **Прогрессивность** - от простого к сложному
+4. **Практичность** - фокус на решении реальных задач
 
-```typescript
-// Автоматические обновления через Tauri
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater'
+## 🤝 Вклад в документацию
 
-async function checkForUpdates() {
-  const update = await checkUpdate()
-  if (update.shouldUpdate) {
-    await installUpdate()
-  }
-}
-```
+Мы приветствуем улучшения документации! См. [руководство по внесению изменений](05-development/contributing.md).
 
-## 🚢 CI/CD Pipeline
+### Как улучшить документацию:
+1. Исправить опечатки или неточности
+2. Добавить недостающие примеры
+3. Улучшить объяснения
+4. Добавить диаграммы или скриншоты
 
-### GitHub Actions пример
+## 📝 Версионирование
 
-```yaml
-name: Release
-on:
-  push:
-    tags:
-      - 'v*'
+Документация версионируется вместе с основным проектом. Текущая версия: **1.0.0**
 
-jobs:
-  release:
-    strategy:
-      matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
-    
-    runs-on: ${{ matrix.platform }}
-    
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: oven-sh/setup-bun@v1
-      
-      - name: Install dependencies
-        run: bun install
-        
-      - name: Build
-        run: bun run tauri build
-        
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.platform }}
-          path: src-tauri/target/release/bundle/
-```
+## 🔗 Полезные ссылки
 
-## 📊 Метрики сборки
-
-### Размеры приложения (примерные)
-
-| Платформа | Размер установщика | Размер установленного |
-|-----------|-------------------|-----------------------|
-| Windows   | ~80 MB            | ~250 MB               |
-| macOS     | ~90 MB            | ~280 MB               |
-| Linux     | ~85 MB            | ~260 MB               |
-
-### Время сборки
-
-- **Первая сборка**: 10-15 минут
-- **Инкрементальная**: 2-3 минуты
-- **CI/CD**: 15-20 минут полный цикл
-
-## 🔧 Оптимизации
-
-### 1. Разделение кода (Code Splitting)
-
-```typescript
-// Ленивая загрузка тяжелых модулей
-const RecognitionModule = lazy(() => import('@/features/recognition'))
-const EffectsModule = lazy(() => import('@/features/effects'))
-```
-
-### 2. Сжатие ресурсов
-
-```bash
-# Оптимизация изображений
-pngquant icons/*.png --ext=.png --force
-
-# Сжатие ML моделей
-gzip -9 models/*.onnx
-```
-
-### 3. Выборочные функции
-
-```toml
-# Cargo.toml
-[features]
-default = ["basic"]
-basic = []
-gpu-acceleration = ["dep:cuda"]
-ml-recognition = ["dep:ort"]
-full = ["gpu-acceleration", "ml-recognition"]
-```
-
-## 🚨 Частые проблемы
-
-### "Missing dependencies" на Linux
-```bash
-# Установка зависимостей
-sudo apt install libgtk-3-dev libwebkit2gtk-4.1-dev
-```
-
-### "Code signing failed" на macOS
-- Проверьте срок действия сертификата
-- Убедитесь в правильности keychain access
-
-### "Build failed" на Windows
-- Установите Visual Studio Build Tools
-- Проверьте переменные окружения
-
-## 📋 Чеклист перед релизом
-
-- [ ] Обновлена версия в `package.json` и `Cargo.toml`
-- [ ] Все тесты проходят успешно
-- [ ] Нет критических TODO в коде
-- [ ] Обновлен CHANGELOG.md
-- [ ] Проверена работа на всех платформах
-- [ ] Подписан код для каждой платформы
-- [ ] Подготовлены release notes
-
-## 🔗 Дополнительные ресурсы
-
-- [Tauri Building Guide](https://tauri.app/v2/guides/building/)
-- [Electron Forge](https://www.electronforge.io/) (для сравнения)
-- [Code Signing Guide](https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution)
+- [Основной README проекта](../README.md)
+- [Инструкции для AI-ассистентов](../CLAUDE.md)
+- [История изменений](../CHANGELOG.md)
+- [Лицензия](../LICENSE)
 
 ---
 
-[← Разработка](../05-development/README.md) | [Далее: Процесс сборки →](build.md)
+<div align="center">
+  <sub>Документация создана с ❤️ для сообщества Timeline Studio</sub>
+</div>

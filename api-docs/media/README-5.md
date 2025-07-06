@@ -1,578 +1,268 @@
-# 04. Справочник API Timeline Studio
+# 05. Руководство разработчика
 
 [← Назад к оглавлению](../README.md)
 
 ## 📋 Содержание
 
-- [Обзор](#обзор)
-- [Категории команд](#категории-команд)
-- [Команды медиа](#команды-медиа)
-- [Команды видео компилятора](#команды-видео-компилятора)
-- [Команды распознавания](#команды-распознавания)
-- [Команды файловой системы](#команды-файловой-системы)
-- [Команды управления приложением](#команды-управления-приложением)
-- [Команды настроек](#команды-настроек)
+- [Настройка окружения](setup.md)
+- [Стандарты кодирования](coding-standards.md)
+- [Тестирование](testing.md)
+- [Команды разработки](development-commands.md) ⭐ **Полный справочник команд**
+- [Справочник package.json](package-scripts-reference.md) 📋 **Все 48 команд с описанием**
+- [Линтинг и форматирование](linting-and-formatting.md) ⭐ **Инструменты качества кода**
+- [Управление версиями](version-management.md) 📦 **Централизованное управление версиями**
+- [Внесение изменений](contributing.md)
 
-## 🔌 Обзор
+## 🎯 Для кого это руководство
 
-Этот документ описывает все команды Tauri, доступные для взаимодействия между фронтендом и бэкендом.
+Это руководство предназначено для:
+- Разработчиков, работающих над Timeline Studio
+- Контрибьюторов open-source сообщества
+- Тех, кто хочет расширить функциональность
 
-## Категории команд
+## 🚀 Быстрый старт разработчика
 
-- [Команды медиа](#команды-медиа)
-- [Команды видео компилятора](#команды-видео-компилятора)
-- [Команды распознавания](#команды-распознавания)
-- [Команды файловой системы](#команды-файловой-системы)
-- [Команды управления приложением](#команды-управления-приложением)
-- [Команды настроек](#команды-настроек)
+### 1. Настройка окружения
 
-## Команды медиа
+```bash
+# Клонирование и настройка
+git clone https://github.com/your-org/timeline-studio.git
+cd timeline-studio
+bun install
 
-### `get_media_metadata`
-Извлекает метаданные из медиафайла.
+# Настройка pre-commit hooks
+bun run prepare
 
-**Параметры:**
+# Запуск в dev режиме
+bun run tauri dev
+```
+
+### 2. Основные команды
+
+```bash
+# Разработка
+bun run dev              # Frontend only (Next.js)
+bun run tauri dev        # Full app (Tauri)
+bun run build            # Build production
+bun run tauri build      # Build Tauri app
+
+# Тестирование (4,158 тестов)
+bun run test            # Frontend tests (3,604)
+bun run test:rust       # Backend tests (554)
+bun run test:e2e        # E2E tests (Playwright)
+bun run test:coverage   # Coverage report
+
+# Качество кода
+bun run lint            # ESLint + Stylelint + Clippy
+bun run check:all       # All checks + tests  
+bun run fix:all         # Auto-fix all issues
+```
+
+📋 **[Все 48 команд →](package-scripts-reference.md)**
+
+## 📁 Структура разработки
+
+### Frontend разработка
+
+```
+src/
+├── features/           # Функциональные модули
+│   └── feature-name/
+│       ├── components/ # React компоненты
+│       ├── hooks/      # Custom hooks
+│       ├── services/   # Бизнес-логика
+│       ├── types/      # TypeScript типы
+│       └── __tests__/  # Тесты
+│
+├── components/ui/      # Общие UI компоненты
+├── lib/               # Утилиты
+└── test/              # Тестовые утилиты
+```
+
+### Backend разработка
+
+```
+src-tauri/
+├── src/
+│   ├── commands/      # Tauri команды
+│   ├── media/         # Медиа обработка
+│   ├── video_compiler/# Видео компиляция
+│   └── recognition/   # ML функции
+│
+├── Cargo.toml         # Rust зависимости
+└── tauri.conf.json    # Конфигурация
+```
+
+## 🔧 Рабочий процесс
+
+### 1. Создание новой функции
+
+```bash
+# Создание ветки
+git checkout -b feature/new-feature
+
+# Создание структуры модуля
+mkdir -p src/features/new-feature/{components,hooks,services,types,__tests__}
+
+# Добавление README
+touch src/features/new-feature/README.md
+```
+
+### 2. Разработка компонента
+
 ```typescript
-{
-  file_path: string;
+// src/features/new-feature/components/my-component.tsx
+import { FC } from 'react'
+import { cn } from '@/lib/utils'
+
+interface MyComponentProps {
+  title: string
+  onAction: () => void
+}
+
+export const MyComponent: FC<MyComponentProps> = ({
+  title,
+  onAction
+}) => {
+  return (
+    <div className={cn("my-component")}>
+      <h2>{title}</h2>
+      <button onClick={onAction}>Action</button>
+    </div>
+  )
 }
 ```
 
-**Возвращает:**
-```typescript
-{
-  duration: number;      // секунды
-  width: number;
-  height: number;
-  fps: number;
-  codec: string;
-  bitrate: number;
-  audio_tracks: number;
-  has_video: boolean;
-  has_audio: boolean;
-}
-```
-
-**Пример:**
-```typescript
-const metadata = await invoke('get_media_metadata', {
-  file_path: '/path/to/video.mp4'
-});
-```
-
-### `scan_media_folder`
-Сканирует папку на наличие медиафайлов.
-
-**Параметры:**
-```typescript
-{
-  folder_path: string;
-  recursive?: boolean;
-}
-```
-
-**Возвращает:**
-```typescript
-MediaFile[]
-
-interface MediaFile {
-  id: string;
-  name: string;
-  path: string;
-  type: 'video' | 'audio' | 'image';
-  size: number;
-  created_at: string;
-  modified_at: string;
-}
-```
-
-### `scan_media_folder_with_thumbnails`
-Сканирует папку и генерирует миниатюры.
-
-**Параметры:**
-```typescript
-{
-  folder_path: string;
-  options: {
-    width: number;
-    height: number;
-    quality: number;
-  }
-}
-```
-
-**Возвращает:**
-```typescript
-MediaFileWithThumbnail[]
-
-interface MediaFileWithThumbnail extends MediaFile {
-  thumbnail: string; // base64 data URL
-}
-```
-
-## Команды видео компилятора
-
-### `compile_video`
-Компилирует видеопроект.
-
-**Параметры:**
-```typescript
-{
-  project: ProjectSchema;
-  output_path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-### `get_render_progress`
-Получает прогресс задания рендеринга.
-
-**Параметры:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  progress: number;      // 0-100
-  eta_seconds?: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  error?: string;
-}
-```
-
-### `generate_preview`
-Генерирует кадр предпросмотра.
-
-**Параметры:**
-```typescript
-{
-  timeline: TimelineData;
-  timestamp: number;
-  width: number;
-  height: number;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  image_data: string; // base64 PNG
-}
-```
-
-### `cancel_render`
-Отменяет задание рендеринга.
-
-**Параметры:**
-```typescript
-{
-  job_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_gpu_capabilities`
-Получает доступные GPU кодировщики.
-
-**Возвращает:**
-```typescript
-{
-  available_encoders: GpuEncoder[];
-  current_encoder?: GpuEncoder;
-  cuda_available: boolean;
-  metal_available: boolean;
-}
-
-interface GpuEncoder {
-  name: string;
-  type: 'nvidia' | 'intel' | 'amd' | 'apple' | 'cpu';
-  supported_codecs: string[];
-}
-```
-
-### `extract_timeline_frames`
-Извлекает кадры для предпросмотра таймлайна.
-
-**Параметры:**
-```typescript
-{
-  video_path: string;
-  count: number;
-  width?: number;
-  height?: number;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  frames: ExtractedFrame[];
-}
-
-interface ExtractedFrame {
-  timestamp: number;
-  data: string;      // base64
-  width: number;
-  height: number;
-}
-```
-
-## Команды распознавания
-
-### `process_video_recognition`
-Обрабатывает видео для распознавания объектов/лиц.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-  frame_paths: string[];
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  objects: DetectedObject[];
-  faces: DetectedFace[];
-  scenes: DetectedScene[];
-  processed_at: string;
-}
-
-interface DetectedObject {
-  class: string;
-  confidence: number;
-  timestamps: number[];
-  bounding_boxes: BoundingBox[];
-}
-```
-
-### `get_recognition_results`
-Получает сохраненные результаты распознавания.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-}
-```
-
-**Возвращает:**
-```typescript
-RecognitionResults | null
-```
-
-### `export_recognition_results`
-Экспортирует результаты распознавания.
-
-**Параметры:**
-```typescript
-{
-  file_id: string;
-  format: 'json' | 'csv';
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  file_path: string;
-}
-```
-
-## Команды файловой системы
-
-### `file_exists`
-Проверяет существование файла.
-
-**Параметры:**
-```typescript
-{
-  path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-boolean
-```
-
-### `get_file_stats`
-Получает статистику файла.
-
-**Параметры:**
-```typescript
-{
-  path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  size: number;
-  created_at: string;
-  modified_at: string;
-  is_file: boolean;
-  is_directory: boolean;
-}
-```
-
-### `search_files_by_name`
-Ищет файлы по шаблону имени.
-
-**Параметры:**
-```typescript
-{
-  directory: string;
-  pattern: string;
-  recursive?: boolean;
-}
-```
-
-**Возвращает:**
-```typescript
-string[] // пути к файлам
-```
-
-## Команды управления приложением
-
-### `get_app_directories`
-Получает директории приложения.
-
-**Возвращает:**
-```typescript
-{
-  base_dir: string;
-  projects_dir: string;
-  media_cache_dir: string;
-  render_cache_dir: string;
-  temp_dir: string;
-  recognition_dir: string;
-}
-```
-
-### `create_app_directories`
-Создает директории приложения.
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_directory_sizes`
-Получает размеры директорий приложения.
-
-**Возвращает:**
-```typescript
-{
-  projects: number;
-  media_cache: number;
-  render_cache: number;
-  temp: number;
-  total: number;
-}
-```
-
-### `clear_app_cache`
-Очищает кэш приложения.
-
-**Параметры:**
-```typescript
-{
-  cache_types?: ('media' | 'render' | 'temp' | 'all')[];
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  cleared_size: number;
-}
-```
-
-## Команды настроек
-
-### `get_app_language_tauri`
-Получает текущий язык приложения.
-
-**Возвращает:**
-```typescript
-{
-  language: 'en' | 'zh' | 'ja' | 'ko' | 'ru' | 'de';
-}
-```
-
-### `set_app_language_tauri`
-Устанавливает язык приложения.
-
-**Параметры:**
-```typescript
-{
-  language: 'en' | 'zh' | 'ja' | 'ko' | 'ru' | 'de';
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-### `get_compiler_settings`
-Получает настройки видео компилятора.
-
-**Возвращает:**
-```typescript
-{
-  ffmpeg_path?: string;
-  hardware_acceleration: boolean;
-  max_parallel_jobs: number;
-  cache_size_mb: number;
-}
-```
-
-### `update_compiler_settings`
-Обновляет настройки компилятора.
-
-**Параметры:**
-```typescript
-{
-  settings: Partial<CompilerSettings>;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  success: boolean;
-}
-```
-
-## Команды видео сервера
-
-### `register_video`
-Регистрирует видео для стриминга.
-
-**Параметры:**
-```typescript
-{
-  file_path: string;
-}
-```
-
-**Возвращает:**
-```typescript
-{
-  video_id: string;
-  stream_url: string;
-}
-```
-
-## Обработка ошибок
-
-Все команды возвращают ошибки в следующем формате:
+### 3. Написание тестов
 
 ```typescript
-{
-  error: string;
-  code?: string;
-  details?: any;
-}
-```
+// src/features/new-feature/__tests__/my-component.test.tsx
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@/test/test-utils'
+import { MyComponent } from '../components/my-component'
 
-Общие коды ошибок:
-- `FILE_NOT_FOUND` - Файл или директория не найдены
-- `PERMISSION_DENIED` - Нет разрешения на доступ к ресурсу
-- `INVALID_FORMAT` - Неверный формат файла
-- `PROCESSING_ERROR` - Ошибка во время обработки
-- `CANCELLED` - Операция была отменена
-
-## Пример использования
-
-```typescript
-import { invoke } from '@tauri-apps/api/tauri';
-
-async function loadVideo(path: string) {
-  try {
-    // Проверяем существование файла
-    const exists = await invoke('file_exists', { path });
-    if (!exists) {
-      throw new Error('Файл не найден');
-    }
+describe('MyComponent', () => {
+  it('renders title', () => {
+    render(<MyComponent title="Test" onAction={() => {}} />)
+    expect(screen.getByText('Test')).toBeInTheDocument()
+  })
+  
+  it('calls onAction when clicked', () => {
+    const onAction = vi.fn()
+    render(<MyComponent title="Test" onAction={onAction} />)
     
-    // Получаем метаданные
-    const metadata = await invoke('get_media_metadata', {
-      file_path: path
-    });
-    
-    // Регистрируем для стриминга
-    const { stream_url } = await invoke('register_video', {
-      file_path: path
-    });
-    
-    return {
-      metadata,
-      stream_url
-    };
-  } catch (error) {
-    console.error('Не удалось загрузить видео:', error);
-    throw error;
-  }
+    screen.getByRole('button').click()
+    expect(onAction).toHaveBeenCalled()
+  })
+})
+```
+
+## 📊 Метрики качества
+
+### Требования к коду
+
+- **TypeScript**: Strict mode, no `any`
+- **Покрытие тестами**: Минимум 70%
+- **Документация**: README для каждого модуля
+- **Производительность**: < 16ms для рендера
+
+### Автоматические проверки
+
+```yaml
+# .github/workflows/ci.yml
+- Linting (ESLint)
+- Type checking (TypeScript)
+- Unit tests (Vitest)
+- E2E tests (Playwright)
+- Build verification
+```
+
+## 🛠️ Инструменты разработки
+
+### Рекомендуемые расширения VS Code
+
+```json
+{
+  "recommendations": [
+    "rust-lang.rust-analyzer",
+    "tauri-apps.tauri-vscode",
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }
 ```
 
-## События
+### Отладка
 
-Бэкенд может генерировать события, которые фронтенд может прослушивать:
+#### Frontend отладка
+1. Откройте DevTools: `Cmd/Ctrl + Shift + I`
+2. Используйте React DevTools
+3. Просматривайте XState визуализацию
 
-### События распознавания
-```typescript
-listen('recognition', (event) => {
-  switch (event.payload.type) {
-    case 'ProcessingStarted':
-      // Обработка начала
-      break;
-    case 'ProcessingProgress':
-      // Обработка прогресса
-      break;
-    case 'ProcessingCompleted':
-      // Обработка завершения
-      break;
-    case 'ProcessingError':
-      // Обработка ошибки
-      break;
-  }
-});
+#### Backend отладка
+1. Используйте `println!` для логов
+2. Запустите с `RUST_LOG=debug`
+3. Используйте `cargo test` для юнит-тестов
+
+## 🚨 Частые проблемы
+
+### "Module not found" ошибки
+```bash
+# Очистка кэша и переустановка
+rm -rf node_modules bun.lockb
+bun install
 ```
 
-### События рендеринга
-```typescript
-listen('render-progress', (event) => {
-  const { job_id, progress, eta } = event.payload;
-  // Обновление UI
-});
+### Rust compilation errors
+```bash
+# Обновление зависимостей
+cd src-tauri
+cargo update
+cargo clean
+cargo build
 ```
+
+### Tauri command not working
+- Проверьте регистрацию команды в `main.rs`
+- Убедитесь в правильности типов аргументов
+- Проверьте имя команды (snake_case в Rust, camelCase в JS)
+
+## 📈 Лучшие практики
+
+### 1. Композиция компонентов
+- Предпочитайте композицию наследованию
+- Используйте маленькие, переиспользуемые компоненты
+- Следуйте принципу единственной ответственности
+
+### 2. Управление состоянием
+- Локальное состояние для UI
+- XState для сложной логики
+- Context для глобального состояния
+
+### 3. Производительность
+- Используйте `React.memo` для тяжелых компонентов
+- Применяйте `useMemo` и `useCallback`
+- Виртуализируйте длинные списки
+
+### 4. Типизация
+- Всегда определяйте интерфейсы для props
+- Используйте utility types TypeScript
+- Избегайте `any` и `unknown`
+
+## 🔗 Дополнительные ресурсы
+
+### Внутренние
+- [Создание нового модуля](creating-features.md)
+- [Работа с XState](xstate-patterns.md)
+- [Оптимизация производительности](../07-guides/performance.md)
+
+### Внешние
+- [Tauri Documentation](https://tauri.app/v2/guides/)
+- [React Documentation](https://react.dev/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Rust Book](https://doc.rust-lang.org/book/)
 
 ---
 
-*Для деталей реализации смотрите соответствующие модули Rust в `src-tauri/src/`.*
+[← Функциональность](../03-features/README.md) | [Далее: Настройка окружения →](setup.md)
