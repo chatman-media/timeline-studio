@@ -173,6 +173,37 @@ pacman -S mingw-w64-x86_64-ffmpeg mingw-w64-x86_64-pkg-config
 - `bun run test:rust` - Run Rust backend tests
 - `bun run test:e2e` - Run Playwright end-to-end tests
 
+#### Smart Montage Planner Testing
+The Smart Montage Planner module includes comprehensive tests organized by feature:
+
+**Service Tests** (`__tests__/services/`):
+- `montage-planner-machine.test.ts` - XState machine state transitions and logic
+- `content-analyzer.test.ts` - Video/audio content analysis functionality
+- `moment-detector.test.ts` - Key moment detection and scoring algorithms
+
+**Hook Tests** (`__tests__/hooks/`):
+- `use-montage-planner.test.tsx` - Main montage planner hook functionality
+- `use-content-analysis.test.tsx` - Content analysis hooks and state management
+
+**Component Tests** (`__tests__/components/`):
+- `analysis/quality-meter.test.tsx` - Quality visualization component
+- Additional UI component tests for dashboard, editor, and analysis components
+
+**Test Environment Setup:**
+- Uses Vitest with Testing Library for React components
+- XState machines tested with actor model and snapshot testing
+- Tauri API calls mocked for isolated testing
+- Complete mock data in `__tests__/test-utils.ts`
+
+**Mock Data Available:**
+- `mockMediaFile` - Sample video file with metadata
+- `mockVideoAnalysis` - Complete video analysis results
+- `mockAudioAnalysis` - Audio analysis with quality metrics
+- `mockMomentScore` - Moment scoring data
+- `mockFragment` - Video fragment with analysis
+- `mockMontagePlan` - Complete montage plan structure
+- `createMockFragments(n)` - Generate multiple test fragments
+
 ### Code Quality
 - `bun run lint` - Lint TypeScript/JavaScript files
 - `bun run lint:fix` - Auto-fix linting issues
