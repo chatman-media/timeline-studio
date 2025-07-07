@@ -343,6 +343,7 @@ The documentation is organized with numbered directories for logical grouping:
 - `15_security/` - Security guidelines and practices
 - `16_user_documentation/` - User-facing documentation
 - `17_releases/` - Release notes and versioning
+- `18_marketing_strategies/` - Marketing and promotion strategies
 - `99_archive/` - Archived documentation
 
 ### Bilingual Support
