@@ -119,57 +119,7 @@ const EXPORT_PRESETS: ExportPreset[] = [
       resolution: "timeline",
       fps: "timeline",
     },
-  },
-  {
-    id: "youtube",
-    name: "YouTube 1080p",
-    icon: <Play className="h-4 w-4" />,
-    description: "Оптимизировано для YouTube",
-    settings: {
-      format: "mp4",
-      codec: "h264",
-      codecProfile: "high",
-      resolution: "1080",
-      fps: "timeline",
-      bitrateMode: "vbr",
-      bitrate: 12000,
-      normalizeAudio: true,
-      audioTarget: -14, // YouTube рекомендует -14 LKFS
-      uploadDirectly: true,
-    },
-  },
-  {
-    id: "vimeo",
-    name: "Vimeo 1080p",
-    icon: <VimeoIcon />,
-    description: "Высокое качество для Vimeo",
-    settings: {
-      format: "mp4",
-      codec: "h264",
-      codecProfile: "high",
-      resolution: "1080",
-      fps: "timeline",
-      bitrateMode: "vbr",
-      bitrate: 20000,
-      useHardwareAcceleration: true,
-    },
-  },
-  {
-    id: "tiktok",
-    name: "TikTok 1080p",
-    icon: <TikTokIcon />,
-    description: "Вертикальное видео для TikTok",
-    settings: {
-      format: "mp4",
-      codec: "h264",
-      codecProfile: "main",
-      resolution: "1080",
-      fps: "30",
-      bitrateMode: "auto",
-      useVerticalResolution: true,
-      uploadDirectly: true,
-    },
-  },
+  }
 ]
 
 interface ExportPresetsProps {

@@ -21,7 +21,8 @@
         "center": true,
         "decorations": true,
         "maximized": true,
-        "visible": true
+        "visible": true,
+        "devtools": true
       }
     ],
     "security": {
