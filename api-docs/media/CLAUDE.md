@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication Language
+
+**По умолчанию общаемся на русском языке** - Default communication language is Russian. Claude should respond in Russian unless specifically asked to use another language.
+
 ## System Requirements
 
 Before working with this codebase, ensure you have the following dependencies installed:
