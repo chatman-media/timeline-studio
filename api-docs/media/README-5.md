@@ -1,247 +1,319 @@
-# Recognition Module - YOLO Integration
+# Media Module
 
-## Обзор
-
-Модуль распознавания предоставляет интеграцию с YOLO v11 для обнаружения объектов и лиц в видео. Система построена на базе ONNX Runtime с динамической загрузкой библиотек.
-
-## Текущий статус
-
-✅ **Модуль активен и готов к использованию**
-- ORT настроен с версией `2.0.0-rc.10` и `load-dynamic` feature
-- Все команды Tauri зарегистрированы и доступны
-- RecognitionState корректно инициализируется при запуске приложения
+Модуль для работы с медиафайлами в Timeline Studio.
 
 ## Архитектура
 
-### Компоненты
-
-1. **YoloProcessor** - Основной процессор для работы с YOLO моделями (yolo_processor.rs)
-2. **ModelManager** - Управление загрузкой и доступом к YOLO моделям (model_manager.rs)
-3. **FrameProcessor** - Обработка отдельных кадров (frame_processor.rs)
-4. **ResultAggregator** - Агрегация и форматирование результатов (result_aggregator.rs)
-5. **RecognitionService** - Сервис для обработки видео и управления результатами
-6. **Commands** - Tauri команды для взаимодействия с фронтендом (commands/)
-
-### Структура после рефакторинга (2025)
-
 ```
-recognition/
-├── mod.rs                    # Главный модуль и реэкспорт
-├── commands/                 # Tauri команды
-│   ├── mod.rs               # Реэкспорт команд
-│   └── yolo_commands.rs     # Команды YOLO процессора
-├── model_manager.rs         # Управление моделями (329 строк)
-├── frame_processor.rs       # Обработка кадров
-├── result_aggregator.rs     # Агрегация результатов
-├── yolo_processor.rs        # Основной процессор (из 1030 строк)
-├── yolo_processor_refactored.rs # Новая архитектура процессора
-├── service.rs               # Сервис распознавания
-├── registry.rs              # Регистрация команд
-└── tests.rs                 # Тесты модуля
+media/
+├── mod.rs                    # Главный модуль
+├── commands.rs               # Tauri команды
+├── additional_commands.rs    # Дополнительные команды
+├── ffmpeg.rs                 # Интеграция с FFmpeg
+├── file_scanner.rs           # Сканирование директорий
+├── files.rs                  # Работа с файлами
+├── media_analyzer.rs         # Анализ медиафайлов
+├── metadata.rs               # Извлечение метаданных через FFprobe
+├── metadata_extractor.rs     # Расширенный экстрактор метаданных
+├── preview_data.rs           # Структуры данных превью
+├── preview_manager.rs        # Менеджер генерации превью
+├── processor.rs              # Основной процессор медиа
+├── processor_refactored.rs   # Новая архитектура процессора
+├── registry.rs               # Регистрация команд
+├── thumbnail.rs              # Генерация миниатюр
+├── thumbnail_generator.rs    # Улучшенный генератор миниатюр
+├── types.rs                  # Типы данных
+├── PROCESSOR_README.md       # Документация процессора
+└── tests/                    # Тесты модуля
 ```
 
-### Поддерживаемые модели
+## Основные компоненты
 
-- **YOLOv11 Detection** - Обнаружение 80 классов объектов
-- **YOLOv11 Segmentation** - Сегментация объектов
-- **YOLOv11 Face** - Специализированная модель для лиц
-- **YOLOv8** модели (legacy поддержка)
-- **Custom** - Пользовательские ONNX модели
-
-## Процесс работы
-
-### 1. Извлечение кадров
-
-Перед распознаванием необходимо извлечь кадры из видео:
+### MediaMetadata
+Метаданные медиафайла:
 
 ```rust
-// Используйте video_compiler для извлечения кадров
-let frames = extract_recognition_frames(
-    video_path,
-    ExtractionPurpose::ObjectDetection,
-    10 // количество кадров
-).await?;
-```
-
-Параметры извлечения для распознавания:
-- Разрешение: 1280x720
-- Качество: 85%
-- Формат: PNG
-- GPU декодирование: включено
-
-### 2. Загрузка модели
-
-```rust
-let mut processor = YoloProcessor::new(
-    YoloModel::YoloV11Detection,
-    0.5 // confidence threshold
-)?;
-
-// Загружаем модель (требует файл models/yolo11n.onnx)
-processor.load_model().await?;
-```
-
-### 3. Обработка изображений
-
-```rust
-// Обработка одного изображения
-let detections = processor.process_image(&image_path).await?;
-
-// Или пакетная обработка
-let all_detections = processor.process_batch(image_paths).await?;
-```
-
-### 4. Результаты
-
-Каждая детекция содержит:
-- `class` - название класса объекта
-- `class_id` - ID класса
-- `confidence` - уверенность (0.0 - 1.0)
-- `bbox` - координаты ограничивающей рамки
-- `attributes` - дополнительные атрибуты (для лиц)
-
-## Интеграция с фронтендом
-
-### Команды Tauri
-
-1. **process_video_recognition** - Обработать видео
-   ```typescript
-   const results = await invoke('process_video_recognition', {
-     fileId: 'video_123',
-     framePaths: ['/path/to/frame1.png', '/path/to/frame2.png']
-   });
-   ```
-
-2. **get_recognition_results** - Получить сохраненные результаты
-   ```typescript
-   const results = await invoke('get_recognition_results', {
-     fileId: 'video_123'
-   });
-   ```
-
-### События
-
-Система отправляет события через Tauri:
-- `ProcessingStarted` - начало обработки
-- `ProcessingProgress` - прогресс (current/total)
-- `ProcessingCompleted` - завершение с результатами
-- `ProcessingError` - ошибка обработки
-
-## Установка моделей
-
-1. Скачайте модели YOLO v11:
-   - [yolo11n.onnx](https://github.com/ultralytics/assets/releases) - базовая модель
-   - [yolo11n-face.onnx](https://github.com/ultralytics/assets/releases) - для лиц
-   - [yolo11n-seg.onnx](https://github.com/ultralytics/assets/releases) - сегментация
-
-2. Поместите файлы в директорию `models/` в корне проекта
-
-## Конфигурация ORT
-
-Модуль использует ONNX Runtime с динамической загрузкой:
-```toml
-ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "load-dynamic"] }
-```
-
-Для корректной работы необходимо установить ONNX Runtime на системе:
-```bash
-# macOS
-brew install onnxruntime
-
-# Или установить переменную окружения
-export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib
-```
-
-## Структура данных
-
-### RecognitionResults
-```rust
-pub struct RecognitionResults {
-    pub objects: Vec<DetectedObject>,    // Обнаруженные объекты
-    pub faces: Vec<DetectedFace>,        // Обнаруженные лица
-    pub scenes: Vec<DetectedScene>,      // Определенные сцены
-    pub processed_at: DateTime<Utc>,     // Время обработки
+pub struct MediaMetadata {
+    pub path: PathBuf,
+    pub file_type: FileType,
+    pub size: u64,
+    pub created: SystemTime,
+    pub modified: SystemTime,
+    pub duration: Option<f64>,
+    pub dimensions: Option<(u32, u32)>,
+    pub fps: Option<f32>,
+    pub bitrate: Option<u64>,
+    pub codec: Option<String>,
+    pub has_audio: bool,
+    pub audio_channels: Option<u32>,
+    pub audio_sample_rate: Option<u32>,
 }
 ```
 
-### DetectedObject
+### FileType
 ```rust
-pub struct DetectedObject {
-    pub class: String,                   // Класс объекта
-    pub confidence: f32,                 // Уверенность
-    pub timestamps: Vec<f64>,            // Временные метки появления
-    pub bounding_boxes: Vec<BoundingBox>,// Координаты для каждого появления
+pub enum FileType {
+    Video,
+    Audio,
+    Image,
+    Unknown,
 }
 ```
 
-## Оптимизация производительности
+## API Команды
 
-1. **GPU ускорение**: ONNX Runtime автоматически использует GPU если доступен
-2. **Пакетная обработка**: Обрабатывайте несколько кадров за раз
-3. **Кэширование**: Результаты сохраняются в `Recognition/` директории
-4. **Параллельная обработка**: Используйте несколько процессоров для разных типов детекции
+### Основные команды (commands.rs)
 
-## Примеры использования
-
-### Базовое распознавание
 ```rust
-// Создаем сервис
-let service = RecognitionService::new(app_dir)?;
+// Получение метаданных файла
+#[tauri::command]
+pub async fn get_media_metadata(
+    file_path: String
+) -> Result<MediaMetadata, String>
 
-// Обрабатываем видео
-let results = service.process_video(
-    "video_123",
-    vec![
-        PathBuf::from("frame_001.png"),
-        PathBuf::from("frame_002.png"),
-    ]
-).await?;
+// Сканирование директории
+#[tauri::command]
+pub async fn get_media_files(
+    directory_path: String
+) -> Result<Vec<MediaFile>, String>
 
-// Результаты автоматически сохраняются
+// Сканирование с превью
+#[tauri::command]
+pub async fn scan_media_folder_with_thumbnails(
+    folder_path: String,
+    width: u32,
+    height: u32,
+    app_handle: AppHandle,
+) -> Result<Vec<MediaFile>, String>
+
+// Очистка кэша метаданных
+#[tauri::command]
+pub async fn clear_media_cache() -> Result<(), String>
 ```
 
-### Фильтрация по классам
+### Дополнительные команды (additional_commands.rs)
+
 ```rust
-let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.7)?;
+// Проверка формата файла
+#[tauri::command]
+pub async fn check_media_format_support(
+    file_path: String
+) -> Result<MediaFormatSupport, String>
 
-// Ищем только людей и автомобили
-processor.set_target_classes(vec![
-    "person".to_string(),
-    "car".to_string()
-]);
+// Оптимизация медиафайла для редактирования
+#[tauri::command]
+pub async fn optimize_media_for_editing(
+    input_path: String,
+    output_dir: String,
+    options: OptimizationOptions,
+) -> Result<OptimizedMediaInfo, String>
+
+// Извлечение аудио из видео
+#[tauri::command]
+pub async fn extract_audio_from_video(
+    video_path: String,
+    output_path: String,
+    format: AudioFormat,
+) -> Result<ExtractedAudioInfo, String>
+
+// Конвертация медиа
+#[tauri::command]
+pub async fn convert_media(
+    input_path: String,
+    output_path: String,
+    target_format: MediaFormat,
+    options: ConversionOptions,
+) -> Result<ConversionResult, String>
 ```
 
-### Анализ сцен
+## Основные компоненты
+
+### MediaProcessor
+Асинхронный процессор для обработки медиафайлов:
+
 ```rust
-// Сервис автоматически определяет типы сцен:
-// - "people" - сцены с людьми
-// - "traffic" - сцены с транспортом
-// - и другие на основе обнаруженных объектов
+pub struct MediaProcessor {
+    app_handle: AppHandle,
+    thumbnail_dir: PathBuf,
+    semaphore: Arc<Semaphore>,
+}
+
+impl MediaProcessor {
+    pub async fn scan_and_process(
+        &self,
+        folder_path: &Path,
+        thumbnail_options: Option<ThumbnailOptions>
+    ) -> Result<Vec<MediaFile>>
+    
+    pub async fn process_file(
+        &self,
+        file_path: &Path,
+        thumbnail_options: Option<&ThumbnailOptions>
+    ) -> Result<MediaFile>
+}
 ```
 
-## Тестирование
+### MetadataExtractor
+Расширенный экстрактор метаданных с кэшированием:
 
-Запуск тестов:
-```bash
-cargo test --package timeline-studio --lib recognition
+```rust
+pub struct MetadataExtractor {
+    cache: Arc<Mutex<HashMap<PathBuf, (SystemTime, ExtendedMetadata)>>>,
+}
+
+impl MetadataExtractor {
+    pub async fn extract(&self, path: &Path) -> Result<ExtendedMetadata>
+    pub async fn extract_with_ffprobe(&self, path: &Path) -> Result<ExtendedMetadata>
+    pub fn clear_cache(&self)
+}
 ```
 
-Интеграционные тесты (требуют модели):
-```bash
-cargo test --package timeline-studio --lib recognition -- --ignored
+### PreviewManager
+Менеджер для генерации превью:
+
+```rust
+pub struct PreviewManager {
+    thumbnail_dir: PathBuf,
+}
+
+impl PreviewManager {
+    pub async fn generate_preview(
+        &self,
+        media_path: &Path,
+        media_type: MediaType,
+        options: &ThumbnailOptions
+    ) -> Result<(PathBuf, Option<String>)>
+    
+    pub async fn generate_video_thumbnail(
+        &self,
+        video_path: &Path,
+        options: &ThumbnailOptions
+    ) -> Result<DynamicImage>
+    
+    pub async fn generate_image_thumbnail(
+        &self,
+        image_path: &Path,
+        options: &ThumbnailOptions
+    ) -> Result<DynamicImage>
+}
 ```
 
-## Известные ограничения
+### MediaAnalyzer
+Анализатор медиафайлов:
 
-1. Модели YOLO должны быть загружены отдельно
-2. Первая загрузка модели может занять время
-3. Требуется достаточно памяти для обработки 4K видео
-4. Точность зависит от качества извлеченных кадров
+```rust
+pub struct MediaAnalyzer;
 
-## Планы развития
+impl MediaAnalyzer {
+    pub async fn analyze_video(
+        &self,
+        path: &Path
+    ) -> Result<VideoAnalysisResult>
+    
+    pub async fn detect_scenes(
+        &self,
+        video_path: &Path,
+        threshold: f32
+    ) -> Result<Vec<SceneInfo>>
+    
+    pub async fn analyze_audio_levels(
+        &self,
+        media_path: &Path
+    ) -> Result<AudioLevelsInfo>
+}
+```
 
-1. Интеграция с трекингом объектов между кадрами
-2. Поддержка real-time обработки
-3. Добавление моделей для распознавания текста
-4. Интеграция с базой данных лиц
-5. Экспорт результатов в различные форматы
+## Поддерживаемые форматы
+
+### Видео
+- MP4, MOV, AVI, MKV
+- WEBM, MPG, MPEG
+- M4V, WMV, FLV
+
+### Аудио  
+- MP3, WAV, AAC, M4A
+- OGG, FLAC, WMA
+- AIFF, APE
+
+### Изображения
+- JPG, JPEG, PNG
+- GIF, BMP, WEBP
+- TIFF, SVG
+
+## Работа с FFprobe
+
+Модуль использует FFprobe для извлечения метаданных:
+
+```rust
+let output = Command::new("ffprobe")
+    .args([
+        "-v", "quiet",
+        "-print_format", "json",
+        "-show_format",
+        "-show_streams",
+        path.to_str().unwrap()
+    ])
+    .output()
+    .await?;
+```
+
+## Кэширование
+
+Метаданные кэшируются для улучшения производительности:
+- Кэш хранится в памяти
+- Инвалидация по времени модификации файла
+- Автоматическая очистка устаревших записей
+
+## Обработка ошибок
+
+```rust
+pub enum MediaError {
+    IoError(String),
+    FfprobeError(String),
+    InvalidPath(String),
+    UnsupportedFormat(String),
+}
+```
+
+## Использование из фронтенда
+
+```typescript
+// Получить метаданные файла
+const metadata = await invoke('get_media_metadata', {
+    filePath: '/path/to/video.mp4'
+});
+
+// Сканировать директорию
+const files = await invoke('get_media_files', {
+    directoryPath: '/path/to/media/folder'
+});
+```
+
+## Новые возможности (после рефакторинга 2025)
+
+### Параллельная обработка
+- Одновременная обработка до 4 файлов (настраивается)
+- Асинхронное сканирование директорий
+- События прогресса через Tauri
+
+### Расширенный анализ
+- Определение сцен в видео
+- Анализ уровней аудио
+- Проверка поддержки форматов
+
+### Оптимизация для редактирования
+- Конвертация в proxy-форматы
+- Создание оптимизированных копий
+- Извлечение аудио дорожек
+
+### Кэширование
+- Кэш метаданных с TTL
+- Кэш миниатюр с LRU стратегией
+- Очистка кэша по команде
+
+## Интеграция с другими модулями
+
+- **video_compiler** - использует метаданные для валидации проекта
+- **preview** - генерация миниатюр для медиафайлов
+- **timeline** - отображение информации о клипах
+- **recognition** - использует данные для анализа содержимого

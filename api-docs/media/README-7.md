@@ -1,230 +1,247 @@
-# Security Module
+# Recognition Module - YOLO Integration
 
-Модуль безопасности Timeline Studio обеспечивает защиту пользовательских данных и управление API ключами.
+## Обзор
 
-## Структура модуля
+Модуль распознавания предоставляет интеграцию с YOLO v11 для обнаружения объектов и лиц в видео. Система построена на базе ONNX Runtime с динамической загрузкой библиотек.
 
-### Основные компоненты
+## Текущий статус
 
-- **`api_validator.rs`** - Валидация API ключей различных сервисов
-- **`api_validator_service.rs`** - Сервис валидации с поддержкой DI контейнера
-- **`oauth_handler.rs`** - Обработка OAuth авторизации
-- **`secure_storage.rs`** - Безопасное хранение ключей и токенов
-
-### Вспомогательные модули
-
-- **`commands.rs`** - Tauri команды для работы с безопасностью
-- **`additional_commands.rs`** - Дополнительные команды безопасности
-- **`env_importer.rs`** - Импорт переменных окружения
-- **`registry.rs`** - Регистрация команд безопасности
-- **`mod.rs`** - Модульная структура
-
-## Основные возможности
-
-### 🔑 Валидация API ключей
-
-Поддерживаемые сервисы:
-- OpenAI (GPT API)
-- Claude (Anthropic)
-- DeepSeek
-- YouTube (OAuth)
-- TikTok (OAuth)
-- Vimeo (OAuth)
-- Telegram Bot API
-- Codecov
-- Tauri Analytics
-
-### 🔐 OAuth авторизация
-
-- Поддержка OAuth 2.0 flow
-- Безопасное хранение токенов
-- Автоматическое обновление токенов
-- Проверка срока действия
-
-### 🛡️ Безопасное хранение
-
-- Шифрование чувствительных данных
-- Защищенное хранилище ключей
-- Безопасное удаление данных
-
-## Использование
-
-### Валидация API ключа
-
-```rust
-use crate::security::api_validator::ApiValidator;
-use crate::security::ApiKeyType;
-
-let validator = ApiValidator::new();
-let result = validator.validate_api_key(ApiKeyType::OpenAI, "sk-...").await?;
-
-if result.is_valid {
-    println!("API ключ валидный");
-} else {
-    println!("Ошибка: {:?}", result.error_message);
-}
-```
-
-### OAuth авторизация
-
-```rust
-use crate::security::oauth_handler::OAuthHandler;
-
-let oauth = OAuthHandler::new();
-let auth_url = oauth.create_authorization_url("youtube").await?;
-// Пользователь переходит по auth_url и получает код
-let token = oauth.exchange_code_for_token("youtube", "auth_code").await?;
-```
-
-### Безопасное хранение
-
-```rust
-use crate::security::secure_storage::SecureStorage;
-
-let storage = SecureStorage::new().await?;
-storage.store_api_key("openai", "sk-...", None).await?;
-let key = storage.get_api_key("openai").await?;
-```
+✅ **Модуль активен и готов к использованию**
+- ORT настроен с версией `2.0.0-rc.10` и `load-dynamic` feature
+- Все команды Tauri зарегистрированы и доступны
+- RecognitionState корректно инициализируется при запуске приложения
 
 ## Архитектура
 
+### Компоненты
+
+1. **YoloProcessor** - Основной процессор для работы с YOLO моделями (yolo_processor.rs)
+2. **ModelManager** - Управление загрузкой и доступом к YOLO моделям (model_manager.rs)
+3. **FrameProcessor** - Обработка отдельных кадров (frame_processor.rs)
+4. **ResultAggregator** - Агрегация и форматирование результатов (result_aggregator.rs)
+5. **RecognitionService** - Сервис для обработки видео и управления результатами
+6. **Commands** - Tauri команды для взаимодействия с фронтендом (commands/)
+
+### Структура после рефакторинга (2025)
+
 ```
-Security Module
-├── API Validation        # Проверка валидности ключей
-├── OAuth Management      # OAuth 2.0 авторизация
-├── Secure Storage        # Защищенное хранение
-├── Service Integration   # Интеграция с DI контейнером
-└── Tauri Commands        # Команды для фронтенда
+recognition/
+├── mod.rs                    # Главный модуль и реэкспорт
+├── commands/                 # Tauri команды
+│   ├── mod.rs               # Реэкспорт команд
+│   └── yolo_commands.rs     # Команды YOLO процессора
+├── model_manager.rs         # Управление моделями (329 строк)
+├── frame_processor.rs       # Обработка кадров
+├── result_aggregator.rs     # Агрегация результатов
+├── yolo_processor.rs        # Основной процессор (из 1030 строк)
+├── yolo_processor_refactored.rs # Новая архитектура процессора
+├── service.rs               # Сервис распознавания
+├── registry.rs              # Регистрация команд
+└── tests.rs                 # Тесты модуля
 ```
 
-## Безопасность
+### Поддерживаемые модели
 
-### Принципы защиты:
-- 🔐 Все ключи шифруются перед сохранением
-- 🗂️ Токены хранятся в защищенном хранилище ОС
-- 🔄 Автоматическая ротация токенов
-- 🚫 Отсутствие логирования чувствительных данных
-- ⏰ Контроль времени жизни токенов
+- **YOLOv11 Detection** - Обнаружение 80 классов объектов
+- **YOLOv11 Segmentation** - Сегментация объектов
+- **YOLOv11 Face** - Специализированная модель для лиц
+- **YOLOv8** модели (legacy поддержка)
+- **Custom** - Пользовательские ONNX модели
 
-### Стандарты соответствия:
-- OWASP рекомендации по хранению ключей
-- OAuth 2.0 / OpenID Connect стандарты
-- Шифрование AES-256
-- Безопасное удаление из памяти
+## Процесс работы
+
+### 1. Извлечение кадров
+
+Перед распознаванием необходимо извлечь кадры из видео:
+
+```rust
+// Используйте video_compiler для извлечения кадров
+let frames = extract_recognition_frames(
+    video_path,
+    ExtractionPurpose::ObjectDetection,
+    10 // количество кадров
+).await?;
+```
+
+Параметры извлечения для распознавания:
+- Разрешение: 1280x720
+- Качество: 85%
+- Формат: PNG
+- GPU декодирование: включено
+
+### 2. Загрузка модели
+
+```rust
+let mut processor = YoloProcessor::new(
+    YoloModel::YoloV11Detection,
+    0.5 // confidence threshold
+)?;
+
+// Загружаем модель (требует файл models/yolo11n.onnx)
+processor.load_model().await?;
+```
+
+### 3. Обработка изображений
+
+```rust
+// Обработка одного изображения
+let detections = processor.process_image(&image_path).await?;
+
+// Или пакетная обработка
+let all_detections = processor.process_batch(image_paths).await?;
+```
+
+### 4. Результаты
+
+Каждая детекция содержит:
+- `class` - название класса объекта
+- `class_id` - ID класса
+- `confidence` - уверенность (0.0 - 1.0)
+- `bbox` - координаты ограничивающей рамки
+- `attributes` - дополнительные атрибуты (для лиц)
+
+## Интеграция с фронтендом
+
+### Команды Tauri
+
+1. **process_video_recognition** - Обработать видео
+   ```typescript
+   const results = await invoke('process_video_recognition', {
+     fileId: 'video_123',
+     framePaths: ['/path/to/frame1.png', '/path/to/frame2.png']
+   });
+   ```
+
+2. **get_recognition_results** - Получить сохраненные результаты
+   ```typescript
+   const results = await invoke('get_recognition_results', {
+     fileId: 'video_123'
+   });
+   ```
+
+### События
+
+Система отправляет события через Tauri:
+- `ProcessingStarted` - начало обработки
+- `ProcessingProgress` - прогресс (current/total)
+- `ProcessingCompleted` - завершение с результатами
+- `ProcessingError` - ошибка обработки
+
+## Установка моделей
+
+1. Скачайте модели YOLO v11:
+   - [yolo11n.onnx](https://github.com/ultralytics/assets/releases) - базовая модель
+   - [yolo11n-face.onnx](https://github.com/ultralytics/assets/releases) - для лиц
+   - [yolo11n-seg.onnx](https://github.com/ultralytics/assets/releases) - сегментация
+
+2. Поместите файлы в директорию `models/` в корне проекта
+
+## Конфигурация ORT
+
+Модуль использует ONNX Runtime с динамической загрузкой:
+```toml
+ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "load-dynamic"] }
+```
+
+Для корректной работы необходимо установить ONNX Runtime на системе:
+```bash
+# macOS
+brew install onnxruntime
+
+# Или установить переменную окружения
+export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib
+```
+
+## Структура данных
+
+### RecognitionResults
+```rust
+pub struct RecognitionResults {
+    pub objects: Vec<DetectedObject>,    // Обнаруженные объекты
+    pub faces: Vec<DetectedFace>,        // Обнаруженные лица
+    pub scenes: Vec<DetectedScene>,      // Определенные сцены
+    pub processed_at: DateTime<Utc>,     // Время обработки
+}
+```
+
+### DetectedObject
+```rust
+pub struct DetectedObject {
+    pub class: String,                   // Класс объекта
+    pub confidence: f32,                 // Уверенность
+    pub timestamps: Vec<f64>,            // Временные метки появления
+    pub bounding_boxes: Vec<BoundingBox>,// Координаты для каждого появления
+}
+```
+
+## Оптимизация производительности
+
+1. **GPU ускорение**: ONNX Runtime автоматически использует GPU если доступен
+2. **Пакетная обработка**: Обрабатывайте несколько кадров за раз
+3. **Кэширование**: Результаты сохраняются в `Recognition/` директории
+4. **Параллельная обработка**: Используйте несколько процессоров для разных типов детекции
+
+## Примеры использования
+
+### Базовое распознавание
+```rust
+// Создаем сервис
+let service = RecognitionService::new(app_dir)?;
+
+// Обрабатываем видео
+let results = service.process_video(
+    "video_123",
+    vec![
+        PathBuf::from("frame_001.png"),
+        PathBuf::from("frame_002.png"),
+    ]
+).await?;
+
+// Результаты автоматически сохраняются
+```
+
+### Фильтрация по классам
+```rust
+let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.7)?;
+
+// Ищем только людей и автомобили
+processor.set_target_classes(vec![
+    "person".to_string(),
+    "car".to_string()
+]);
+```
+
+### Анализ сцен
+```rust
+// Сервис автоматически определяет типы сцен:
+// - "people" - сцены с людьми
+// - "traffic" - сцены с транспортом
+// - и другие на основе обнаруженных объектов
+```
 
 ## Тестирование
 
-Модуль security имеет комплексное покрытие тестами с организованной структурой:
-
-### 📁 Структура тестов
-
-```
-src/security/tests/
-├── mod.rs                          # Модульная структура тестов
-├── additional_commands_test.rs     # Тесты дополнительных команд
-├── api_validator_service_test.rs   # Тесты сервиса валидации
-├── commands_test.rs                # Тесты основных команд
-├── commands_additional_test.rs     # Дополнительные тесты команд
-├── registry_test.rs                # Тесты регистрации команд
-└── secure_storage_test.rs          # Тесты безопасного хранения
-```
-
-### ✅ Покрытие тестами
-
-**36 тестов покрывают все основные компоненты:**
-
-#### 🔑 API Key Management (commands_test.rs)
-- Сериализация/десериализация структур данных
-- Валидация параметров API ключей
-- Обработка OAuth credentials
-- Информация о пользователях и токенах
-
-#### 🛡️ Secure Storage (secure_storage_test.rs)
-- Типы API ключей и их преобразования
-- OAuth credentials с expiry dates
-- Сериализация данных ключей
-- Создание и управление ключами шифрования
-
-#### ⚙️ Command Registry (registry_test.rs)
-- Регистрация команд безопасности
-- Реализация CommandRegistry trait
-
-#### 🔧 Additional Commands (additional_commands_test.rs)
-- Структуры результатов SecureStorage
-- Encryption key operations
-- Security check parameters
-- Storage information
-
-#### 🌐 OAuth & API Validation (api_validator_service_test.rs)
-- Создание сервиса валидации
-- Проверка доступности API
-- Validation results и rate limits
-- Service lifecycle management
-
-#### 📡 Command Functions (commands_additional_test.rs)
-- OAuth URL generation
-- Callback URL parsing
-- Parameter structures creation
-- Error handling scenarios
-
-### 🚀 Запуск тестов
-
+Запуск тестов:
 ```bash
-# Все тесты security модуля
-cargo test --lib security::tests
-
-# Конкретный набор тестов
-cargo test --lib security::tests::secure_storage_test
-cargo test --lib security::tests::commands_test
-
-# С подробным выводом
-cargo test --lib security::tests -- --nocapture
-
-# Только быстрые тесты (без внешних API)
-cargo test --lib security::tests --no-fail-fast
+cargo test --package timeline-studio --lib recognition
 ```
 
-### 📊 Метрики покрытия
-
-- **Всего тестов:** 36 ✅
-- **Время выполнения:** ~5 секунд
-- **Покрытие модулей:** 100% основных компонентов
-- **Статус:** Все тесты проходят успешно
-
-### 🧪 Типы тестов
-
-1. **Unit тесты** - изолированное тестирование функций
-2. **Serialization тесты** - проверка JSON сериализации
-3. **Structure тесты** - создание и валидация структур
-4. **Error handling тесты** - обработка ошибочных сценариев
-5. **Integration тесты** - взаимодействие компонентов
-
-### 🔍 Mock Strategy
-
-Тесты используют моки для внешних зависимостей:
-- **API calls** - мокирование HTTP запросов
-- **Storage operations** - тестовые хранилища
-- **OAuth flows** - симуляция авторизации
-- **Encryption** - тестовые ключи шифрования
-
-## Конфигурация
-
-### Переменные окружения:
-- `OPENAI_API_KEY` - OpenAI API ключ
-- `CLAUDE_API_KEY` - Claude API ключ
-- `OAUTH_CLIENT_ID` - OAuth клиент ID
-- `OAUTH_CLIENT_SECRET` - OAuth клиент secret
-
-### Настройки безопасности:
-```toml
-[security]
-key_rotation_days = 30
-token_refresh_hours = 1
-storage_encryption = "AES256"
+Интеграционные тесты (требуют модели):
+```bash
+cargo test --package timeline-studio --lib recognition -- --ignored
 ```
 
-## См. также
+## Известные ограничения
 
-- [Main README](../../../README.md) - Общая документация проекта
-- [Video Compiler](../video_compiler/README.md) - Модуль компиляции видео
-- [Core](../core/README.md) - Основные компоненты
+1. Модели YOLO должны быть загружены отдельно
+2. Первая загрузка модели может занять время
+3. Требуется достаточно памяти для обработки 4K видео
+4. Точность зависит от качества извлеченных кадров
+
+## Планы развития
+
+1. Интеграция с трекингом объектов между кадрами
+2. Поддержка real-time обработки
+3. Добавление моделей для распознавания текста
+4. Интеграция с базой данных лиц
+5. Экспорт результатов в различные форматы
