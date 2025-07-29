@@ -1,3 +1,16 @@
+# [0.40.0](https://github.com/chatman-media/timeline-studio/compare/v0.39.0...v0.40.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **promo:** уменьшено искажение glass эффекта навигации ([f3db1b8](https://github.com/chatman-media/timeline-studio/commit/f3db1b88d0c8ffd0e4e2bb3a72f9499974507169))
+
+
+### Features
+
+* **person-identification:** добавлена полная поддержка YOLO моделей всех размеров ([b006249](https://github.com/chatman-media/timeline-studio/commit/b006249b078ccd6b5ce1684e4eca65075d380a4c))
+* Интегрирована поддержка FaceNet для генерации face embeddings ([43634d6](https://github.com/chatman-media/timeline-studio/commit/43634d67c296c5d60f66933445fffe695a538019))
+
 # [0.39.0](https://github.com/chatman-media/timeline-studio/compare/v0.38.3...v0.39.0) (2025-07-29)
 
 
