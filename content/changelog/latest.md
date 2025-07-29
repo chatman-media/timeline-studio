@@ -1,3 +1,17 @@
+## [0.38.3](https://github.com/chatman-media/timeline-studio/compare/v0.38.2...v0.38.3) (2025-07-28)
+
+
+### Bug Fixes
+
+* заменен require на динамический import в тесте use-filters-import ([c0ea8ef](https://github.com/chatman-media/timeline-studio/commit/c0ea8efea8fc515339dce999da07444cdac42e57))
+
+## [0.38.2](https://github.com/chatman-media/timeline-studio/compare/v0.38.1...v0.38.2) (2025-07-28)
+
+
+### Bug Fixes
+
+* **promo:** исправлена проблема с changelog на промо-сайте ([64592d3](https://github.com/chatman-media/timeline-studio/commit/64592d330ec8106d654f5f384f970d532f1caf0c))
+
 ## [0.38.1](https://github.com/chatman-media/timeline-studio/compare/v0.38.0...v0.38.1) (2025-07-28)
 
 
