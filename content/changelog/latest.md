@@ -1,3 +1,18 @@
+# [0.39.0](https://github.com/chatman-media/timeline-studio/compare/v0.38.3...v0.39.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **person-identification:** исправлены типы embedding в тестах ([8fe2198](https://github.com/chatman-media/timeline-studio/commit/8fe2198c3aa2e8821310104f42114920d2a0d19f))
+* **promo:** исправлены ошибки Stylelint в CSS ([fc4f610](https://github.com/chatman-media/timeline-studio/commit/fc4f610b849a5484ee90dad4a86c2a23395ebe94))
+* удален getServerSideProps из oauth/callback для совместимости со статическим экспортом ([633b61c](https://github.com/chatman-media/timeline-studio/commit/633b61cc9ab017f66861821526f42f7c712eb160))
+
+
+### Features
+
+* **person-identification:** реализована продвинутая система распознавания лиц ([2a09987](https://github.com/chatman-media/timeline-studio/commit/2a09987c5932acd82b2c7aa8d8e5bff1eac643dd))
+* **promo:** усилен glass эффект навигации ([44a63f3](https://github.com/chatman-media/timeline-studio/commit/44a63f314d1662c67bc6659282d37145d34238e7))
+
 ## [0.38.3](https://github.com/chatman-media/timeline-studio/compare/v0.38.2...v0.38.3) (2025-07-28)
 
 
