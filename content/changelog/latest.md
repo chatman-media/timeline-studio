@@ -1,3 +1,10 @@
+# [0.59.0](https://github.com/chatman-media/timeline-studio/compare/v0.58.2...v0.59.0) (2025-07-30)
+
+
+### Features
+
+* обновить README с новым 3D лого ([40dd47a](https://github.com/chatman-media/timeline-studio/commit/40dd47a40fccecd904354e5fee9f209cbb958817))
+
 ## [0.58.2](https://github.com/chatman-media/timeline-studio/compare/v0.58.1...v0.58.2) (2025-07-30)
 
 
