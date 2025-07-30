@@ -1,3 +1,16 @@
+# [0.51.0](https://github.com/chatman-media/timeline-studio/compare/v0.50.0...v0.51.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** оптимизировать для GitHub Pages ([f7702e5](https://github.com/chatman-media/timeline-studio/commit/f7702e55bcf61fadd8ef2f716c588440b24d44da))
+* синхронизировать версии между package.json, Cargo.toml и tauri.conf.json ([47efeaf](https://github.com/chatman-media/timeline-studio/commit/47efeafa8056bdcda42b349af6b3cf739f7038d9))
+
+
+### Features
+
+* централизовать управление версией приложения ([bb78d08](https://github.com/chatman-media/timeline-studio/commit/bb78d0806561d8053135554662e55b5ca4c11186))
+
 # [0.50.0](https://github.com/chatman-media/timeline-studio/compare/v0.49.0...v0.50.0) (2025-07-30)
 
 
