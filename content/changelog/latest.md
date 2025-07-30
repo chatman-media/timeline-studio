@@ -1,3 +1,10 @@
+# [0.57.0](https://github.com/chatman-media/timeline-studio/compare/v0.56.0...v0.57.0) (2025-07-30)
+
+
+### Features
+
+* **promo:** обновить стили Blog страницы под glassmorphism дизайн ([b1ca887](https://github.com/chatman-media/timeline-studio/commit/b1ca88713293e85005ba211789a1ee88660d779f))
+
 # [0.56.0](https://github.com/chatman-media/timeline-studio/compare/v0.55.0...v0.56.0) (2025-07-30)
 
 
