@@ -1,3 +1,26 @@
+## [0.48.1](https://github.com/chatman-media/timeline-studio/compare/v0.48.0...v0.48.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **tests:** исправлены падающие тесты в нескольких модулях ([ec271bc](https://github.com/chatman-media/timeline-studio/commit/ec271bc15a43aa9716eae5ed507802c9580effe3))
+
+# [0.48.0](https://github.com/chatman-media/timeline-studio/compare/v0.47.2...v0.48.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* **montage-planner:** исправить все ошибки типов TypeScript ([9c75915](https://github.com/chatman-media/timeline-studio/commit/9c7591557a649e60f9390d4ff939f1af49e50151))
+* мелкие правки AI и MIDI модулей ([e6641ad](https://github.com/chatman-media/timeline-studio/commit/e6641ada25553d24bef8a9d2b4bc5f3e2c0522a0))
+
+
+### Features
+
+* **motion-graphics:** обновлены сервисы и экспорты модуля ([a85f1a8](https://github.com/chatman-media/timeline-studio/commit/a85f1a8f8d82905097d0da9bd90cc78fff2728c0))
+* **transitions:** добавлены 3D переходы с WebGL шейдерами ([f3254c5](https://github.com/chatman-media/timeline-studio/commit/f3254c54b8473ca012c5520cfb32108d48562343))
+* **transitions:** реализованы динамические и glitch переходы с GPU ускорением ([4d5bdf7](https://github.com/chatman-media/timeline-studio/commit/4d5bdf7e97b0e6b805d28ddd786634c147c981c4))
+* добавить полный набор фавиконов для сайтов ([053029f](https://github.com/chatman-media/timeline-studio/commit/053029fea7647a8ce8e9d78cb9bced574386e803))
+
 ## [0.47.2](https://github.com/chatman-media/timeline-studio/compare/v0.47.1...v0.47.2) (2025-07-30)
 
 
