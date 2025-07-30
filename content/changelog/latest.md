@@ -1,3 +1,11 @@
+## [0.58.1](https://github.com/chatman-media/timeline-studio/compare/v0.58.0...v0.58.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** исправить стили блога ([f69786a](https://github.com/chatman-media/timeline-studio/commit/f69786aecf540121d0bc2df9d792eb20f7bc1265))
+* **promo:** обновить шрифты в блоге ([dcb3467](https://github.com/chatman-media/timeline-studio/commit/dcb34678abdba2612a00561488d38c29a859d837))
+
 # [0.58.0](https://github.com/chatman-media/timeline-studio/compare/v0.57.0...v0.58.0) (2025-07-30)
 
 
