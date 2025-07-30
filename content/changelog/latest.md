@@ -1,3 +1,15 @@
+# [0.56.0](https://github.com/chatman-media/timeline-studio/compare/v0.55.0...v0.56.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* обновить ссылку на Discord сервер ([05dfe6c](https://github.com/chatman-media/timeline-studio/commit/05dfe6c306745bce61e830de3e608e613341d7f2))
+
+
+### Features
+
+* **promo:** обновить главную страницу и навигацию ([0e13138](https://github.com/chatman-media/timeline-studio/commit/0e1313857bb32de8da5316787ba40f26efce271b))
+
 # [0.55.0](https://github.com/chatman-media/timeline-studio/compare/v0.54.0...v0.55.0) (2025-07-30)
 
 
