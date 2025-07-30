@@ -1,3 +1,10 @@
+## [0.58.2](https://github.com/chatman-media/timeline-studio/compare/v0.58.1...v0.58.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** обновить позиционирование текста в 3D лого ([ed48df0](https://github.com/chatman-media/timeline-studio/commit/ed48df09a550d80af40f4156330157fd1fca619c))
+
 ## [0.58.1](https://github.com/chatman-media/timeline-studio/compare/v0.58.0...v0.58.1) (2025-07-30)
 
 
