@@ -1,3 +1,17 @@
+# [0.55.0](https://github.com/chatman-media/timeline-studio/compare/v0.54.0...v0.55.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** использовать Link вместо a для внутренней навигации ([da784cf](https://github.com/chatman-media/timeline-studio/commit/da784cf3410d00fd9180829e33a9f42fc72d22d8))
+* **promo:** модернизировать страницу Documentation ([c5dffe4](https://github.com/chatman-media/timeline-studio/commit/c5dffe44faf2ae7af8d04ea5e15982b851a0bcf4))
+* **promo:** улучшить респонсивность тарифной сетки ([f747860](https://github.com/chatman-media/timeline-studio/commit/f747860a8065c7204b32c29a0f3e65dd0e2bf2fb))
+
+
+### Features
+
+* **promo:** улучшить страницы Demo и Pricing ([aae207c](https://github.com/chatman-media/timeline-studio/commit/aae207ce7653974499ccd8bc96a3dfd2e97d45ed))
+
 # [0.54.0](https://github.com/chatman-media/timeline-studio/compare/v0.53.1...v0.54.0) (2025-07-30)
 
 
