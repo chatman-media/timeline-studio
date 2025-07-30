@@ -1,3 +1,10 @@
+## [0.53.1](https://github.com/chatman-media/timeline-studio/compare/v0.53.0...v0.53.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** исправить стили и перевести Pricing на английский ([4a57239](https://github.com/chatman-media/timeline-studio/commit/4a572393d5fa796127335416fbc8825e3e6fc070))
+
 # [0.53.0](https://github.com/chatman-media/timeline-studio/compare/v0.52.1...v0.53.0) (2025-07-30)
 
 
