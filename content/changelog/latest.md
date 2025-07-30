@@ -1,3 +1,10 @@
+# [0.54.0](https://github.com/chatman-media/timeline-studio/compare/v0.53.1...v0.54.0) (2025-07-30)
+
+
+### Features
+
+* **promo:** добавить страницу Demo с интерактивной демонстрацией поиска ([2f6d9a7](https://github.com/chatman-media/timeline-studio/commit/2f6d9a743ddc11dd3b46a968898ea82efd14fd62))
+
 ## [0.53.1](https://github.com/chatman-media/timeline-studio/compare/v0.53.0...v0.53.1) (2025-07-30)
 
 
