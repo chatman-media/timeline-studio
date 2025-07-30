@@ -1,3 +1,27 @@
+# [0.50.0](https://github.com/chatman-media/timeline-studio/compare/v0.49.0...v0.50.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* исправить ошибку SSR с window is not defined в UpdateService ([261b473](https://github.com/chatman-media/timeline-studio/commit/261b473753883602fa3c3f3ff3f6f10a9742a444))
+
+
+### Features
+
+* **promo:** добавить ссылку Pricing в навигационное меню ([dd87c65](https://github.com/chatman-media/timeline-studio/commit/dd87c65419c5e653b5f855452745ce928bff806b))
+
+# [0.49.0](https://github.com/chatman-media/timeline-studio/compare/v0.48.1...v0.49.0) (2025-07-30)
+
+
+### Features
+
+* **promo:** добавить glassmorphism эффект на FAQ и обновить Pricing ([c9187a7](https://github.com/chatman-media/timeline-studio/commit/c9187a7c45bba2e9b75d83fe9e7e1a9be0270634))
+* **promo:** завершить унификацию шрифтов на всех страницах ([53b8e01](https://github.com/chatman-media/timeline-studio/commit/53b8e015d42a3ba2ccc0305e4f33ffd34016fdd5))
+* **promo:** обновить страницу Changelog с glassmorphism дизайном ([16beacc](https://github.com/chatman-media/timeline-studio/commit/16beaccd51df0b12df16117593184289aa2e18bf))
+* **promo:** обновить шрифты на странице Changelog ([eaaca87](https://github.com/chatman-media/timeline-studio/commit/eaaca87b6178cffcb6f5231b74addec2ec3b3b9b))
+* **promo:** улучшить дизайн и добавить glassmorphism на все страницы ([838e42f](https://github.com/chatman-media/timeline-studio/commit/838e42ff5c76b978dc530b4f1bfd1a94c2d74c12))
+* **promo:** унифицировать шрифты на всех страницах ([e0a520d](https://github.com/chatman-media/timeline-studio/commit/e0a520db4a3933efea8f9c4a86313128d0f1d480))
+
 ## [0.48.1](https://github.com/chatman-media/timeline-studio/compare/v0.48.0...v0.48.1) (2025-07-30)
 
 
