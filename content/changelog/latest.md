@@ -1,3 +1,17 @@
+# [0.52.0](https://github.com/chatman-media/timeline-studio/compare/v0.51.1...v0.52.0) (2025-07-30)
+
+
+### Features
+
+* **ci:** добавить автоматический деплой промо-сайта при релизах ([eea588f](https://github.com/chatman-media/timeline-studio/commit/eea588f3d91968aca571b0c20267ee697b9bf748))
+
+## [0.51.1](https://github.com/chatman-media/timeline-studio/compare/v0.51.0...v0.51.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** исправить динамическую загрузку changelog на сайте ([12808e7](https://github.com/chatman-media/timeline-studio/commit/12808e75befdf104452850949abaeef7288fc413))
+
 # [0.51.0](https://github.com/chatman-media/timeline-studio/compare/v0.50.0...v0.51.0) (2025-07-30)
 
 
