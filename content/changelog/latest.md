@@ -1,3 +1,10 @@
+## [0.52.1](https://github.com/chatman-media/timeline-studio/compare/v0.52.0...v0.52.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **promo:** исправить отображение markdown ссылок в changelog ([8f22023](https://github.com/chatman-media/timeline-studio/commit/8f22023a5894eabc440e0ccb07d8d389e8e7bfe9))
+
 # [0.52.0](https://github.com/chatman-media/timeline-studio/compare/v0.51.1...v0.52.0) (2025-07-30)
 
 
