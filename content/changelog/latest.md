@@ -1,3 +1,10 @@
+# [0.53.0](https://github.com/chatman-media/timeline-studio/compare/v0.52.1...v0.53.0) (2025-07-30)
+
+
+### Features
+
+* обновить тарифную сетку Timeline Studio ([19cb154](https://github.com/chatman-media/timeline-studio/commit/19cb1543135136f5d8c220d240009aaf440d074d))
+
 ## [0.52.1](https://github.com/chatman-media/timeline-studio/compare/v0.52.0...v0.52.1) (2025-07-30)
 
 
