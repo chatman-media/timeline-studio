@@ -1,3 +1,115 @@
+## [0.47.2](https://github.com/chatman-media/timeline-studio/compare/v0.47.1...v0.47.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* **rust:** исправить u64 на u32 для execution_time_ms ([94627d6](https://github.com/chatman-media/timeline-studio/commit/94627d655907f992c3ac5c99f935cc9b179bd80c))
+
+## [0.47.1](https://github.com/chatman-media/timeline-studio/compare/v0.47.0...v0.47.1) (2025-07-29)
+
+
+### Bug Fixes
+
+* **rust:** исправить типы для Specta экспорта ([f4d2c8e](https://github.com/chatman-media/timeline-studio/commit/f4d2c8ef31f6b1ba9853836c81c3a5a5336117bf))
+
+# [0.47.0](https://github.com/chatman-media/timeline-studio/compare/v0.46.1...v0.47.0) (2025-07-29)
+
+
+### Features
+
+* **effects:** реализация Effects Library Extension всех фаз ([b161449](https://github.com/chatman-media/timeline-studio/commit/b1614493ad7cb867362142a0e91e4cdeeec5ec11))
+* **motion-graphics:** add keyframe interpolation service ([66ec488](https://github.com/chatman-media/timeline-studio/commit/66ec488c8d92229ab7fe31731fa2e57154e42657))
+* **motion-graphics:** реализация Motion Graphics системы Phase 4 ([cb5d054](https://github.com/chatman-media/timeline-studio/commit/cb5d054a4f475ec42f82aaa8d68f91f98d885eb4))
+* **timeline:** интеграция переходов с треками таймлайна ([d1e7338](https://github.com/chatman-media/timeline-studio/commit/d1e733816a70c2412161be044fdd69a1d99d02cb))
+
+## [0.46.1](https://github.com/chatman-media/timeline-studio/compare/v0.46.0...v0.46.1) (2025-07-29)
+
+
+### Bug Fixes
+
+* fixed tests ([df9a2f1](https://github.com/chatman-media/timeline-studio/commit/df9a2f1188ff29c5e1306a0b18ca7479ebc3da40))
+
+# [0.46.0](https://github.com/chatman-media/timeline-studio/compare/v0.45.2...v0.46.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **app-state:** исправить TypeScript ошибку в batch-commands.ts ([ad6fc0e](https://github.com/chatman-media/timeline-studio/commit/ad6fc0e38935bad6159fcb0b3a2cd7f7e4b35cdc))
+* **app-state:** исправить типовые ошибки в модуле app-state ([68a2c59](https://github.com/chatman-media/timeline-studio/commit/68a2c59430803f71e22e01bc260669acfa659fd2))
+* **rust:** исправить ошибки компиляции Rust backend ([b1561de](https://github.com/chatman-media/timeline-studio/commit/b1561de11cd975a0c0439a0b53803897fe33de2a))
+* **tests:** исправить ошибки типов в тестах timeline модуля ([63eb399](https://github.com/chatman-media/timeline-studio/commit/63eb39999ce31893dcc0920505036dad8694f114))
+
+
+### Features
+
+* **app-state:** завершить рефакторинг модуля с 10/10 оценкой ([4375e9c](https://github.com/chatman-media/timeline-studio/commit/4375e9c0a8b0c694406a0052a5405700db02bb1c))
+* **keyboard-shortcuts:** полностью переработать систему горячих клавиш ([b47b6b8](https://github.com/chatman-media/timeline-studio/commit/b47b6b8cdc04aeea3128649dcb696fd684a4077f))
+
+## [0.45.2](https://github.com/chatman-media/timeline-studio/compare/v0.45.1...v0.45.2) (2025-07-29)
+
+
+### Bug Fixes
+
+* **tests:** исправить тесты MediaStudio и добавить README файлы ([65682a6](https://github.com/chatman-media/timeline-studio/commit/65682a66d05b0373cb7d3e8eab37c79793e66330))
+
+## [0.45.1](https://github.com/chatman-media/timeline-studio/compare/v0.45.0...v0.45.1) (2025-07-29)
+
+
+### Bug Fixes
+
+* **tests:** исправить тест MediaStudio и добавить .serena/ в .gitignore ([ce8da7a](https://github.com/chatman-media/timeline-studio/commit/ce8da7afbc8dc61cbdd61432e60c997218a3b548))
+
+# [0.45.0](https://github.com/chatman-media/timeline-studio/compare/v0.44.0...v0.45.0) (2025-07-29)
+
+
+### Features
+
+* **recognition:** реализовать реальную оценку качества лица в RetinaFace ([0ef8cc4](https://github.com/chatman-media/timeline-studio/commit/0ef8cc4a504ce699bcd8533a834a109e6b12af49))
+
+# [0.44.0](https://github.com/chatman-media/timeline-studio/compare/v0.43.0...v0.44.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **recognition:** исправлены тесты кластеризации лиц ([e44a2fd](https://github.com/chatman-media/timeline-studio/commit/e44a2fd32633edf3cfd3ef1aac7fcfcd8040b650))
+
+
+### Features
+
+* **person-identification:** интеграция кластеризации лиц с PersonDatabase ([a80745e](https://github.com/chatman-media/timeline-studio/commit/a80745e68997e26b33251fdead496f3949ffff34))
+
+# [0.43.0](https://github.com/chatman-media/timeline-studio/compare/v0.42.0...v0.43.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **recognition:** исправлены ошибки компиляции и обновлена документация кластеризации ([bdcbbf6](https://github.com/chatman-media/timeline-studio/commit/bdcbbf6663fc894e65cbee602232614eab073086))
+
+
+### Features
+
+* **recognition:** добавлена умная кластеризация лиц ([86d5da0](https://github.com/chatman-media/timeline-studio/commit/86d5da0ab55517d42d3a4f2f6d5a830f2069375a))
+
+# [0.42.0](https://github.com/chatman-media/timeline-studio/compare/v0.41.0...v0.42.0) (2025-07-29)
+
+
+### Features
+
+* **recognition:** добавлен Privacy Processor для размытия лиц ([95ba8cc](https://github.com/chatman-media/timeline-studio/commit/95ba8cc8a9fa145442c3525f14bac8e10ca44056))
+
+# [0.41.0](https://github.com/chatman-media/timeline-studio/compare/v0.40.0...v0.41.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **promo:** увеличена прозрачность glass навигации ([57a063b](https://github.com/chatman-media/timeline-studio/commit/57a063b923035b50d76f2038ab3f68e123528153))
+
+
+### Features
+
+* **recognition:** добавлен модуль RetinaFace для распознавания лиц ([9d932cd](https://github.com/chatman-media/timeline-studio/commit/9d932cd9c87954becb9bec8c716847554bb90a4b))
+* **recognition:** добавлена поддержка MediaPipe для анализа лиц ([5e6af90](https://github.com/chatman-media/timeline-studio/commit/5e6af90ffd7023088082e11e39ab28b834302d1b))
+
 # [0.40.0](https://github.com/chatman-media/timeline-studio/compare/v0.39.0...v0.40.0) (2025-07-29)
 
 
