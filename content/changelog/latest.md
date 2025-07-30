@@ -1,3 +1,10 @@
+# [0.58.0](https://github.com/chatman-media/timeline-studio/compare/v0.57.0...v0.58.0) (2025-07-30)
+
+
+### Features
+
+* **promo:** добавить 3D лого с горой из Непала ([5986b12](https://github.com/chatman-media/timeline-studio/commit/5986b1228a9176d8708104ed23fe378206ad82f3))
+
 # [0.57.0](https://github.com/chatman-media/timeline-studio/compare/v0.56.0...v0.57.0) (2025-07-30)
 
 
