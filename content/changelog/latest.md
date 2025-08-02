@@ -1,3 +1,47 @@
+## [0.59.9](https://github.com/chatman-media/timeline-studio/compare/v0.59.8...v0.59.9) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить скрипт sync-version для добавления переносов строк в JSON файлы ([9015a55](https://github.com/chatman-media/timeline-studio/commit/9015a557a5b76d5d06799fbc0838f88ca83b6553))
+
+## [0.59.8](https://github.com/chatman-media/timeline-studio/compare/v0.59.7...v0.59.8) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить типы и методы в Script Generation Engine ([bfda2a2](https://github.com/chatman-media/timeline-studio/commit/bfda2a2cccf5db0675fd57115533787d9b70242f))
+
+## [0.59.7](https://github.com/chatman-media/timeline-studio/compare/v0.59.6...v0.59.7) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить тесты UnifiedDashboard после изменения структуры конфига ([ec9319d](https://github.com/chatman-media/timeline-studio/commit/ec9319dc24144182587b4909c0ebe888e4c4b359))
+
+## [0.59.6](https://github.com/chatman-media/timeline-studio/compare/v0.59.5...v0.59.6) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить ошибки Biome CI и добавить недостающие типы ([b1e8f0e](https://github.com/chatman-media/timeline-studio/commit/b1e8f0e5f7dd3f4cd795db8875feafff2be721e4))
+* исправить ошибки типов в AI Content Intelligence модуле ([12d0c27](https://github.com/chatman-media/timeline-studio/commit/12d0c27e3e001928ed8524f8afc30ee211b2e144))
+
+## [0.59.5](https://github.com/chatman-media/timeline-studio/compare/v0.59.4...v0.59.5) (2025-08-02)
+
+
+### Bug Fixes
+
+* настроить автоматическое обновление версии в package.json ([147e548](https://github.com/chatman-media/timeline-studio/commit/147e5486efc8ee07c182033a1a8dfd4f20b54da9))
+
+## [0.59.4](https://github.com/chatman-media/timeline-studio/compare/v0.59.3...v0.59.4) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить ошибки типов и добавить отсутствующие свойства ([775b6f8](https://github.com/chatman-media/timeline-studio/commit/775b6f8de37f2786e30b24d6da4f76c54f678706))
+* обновить пути к CI скриптам в semantic-release конфигурации ([9a550f6](https://github.com/chatman-media/timeline-studio/commit/9a550f63556b58d8eb1bc627e5d81f983f5fee7a))
+
 ## [0.59.3](https://github.com/chatman-media/timeline-studio/compare/v0.59.2...v0.59.3) (2025-08-02)
 
 
