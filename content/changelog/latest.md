@@ -1,3 +1,29 @@
+## [0.59.3](https://github.com/chatman-media/timeline-studio/compare/v0.59.2...v0.59.3) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить формирование version.json в скрипте синхронизации версий ([9f1f2cb](https://github.com/chatman-media/timeline-studio/commit/9f1f2cb8f1688c6c47ad06606e7390fba8823fac))
+
+## [0.59.2](https://github.com/chatman-media/timeline-studio/compare/v0.59.1...v0.59.2) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить mutex lock failed ошибку в Rust тестах на macOS ([c07270d](https://github.com/chatman-media/timeline-studio/commit/c07270d4e8b125e9a067b84e7cb1412673c72375))
+
+## [0.59.1](https://github.com/chatman-media/timeline-studio/compare/v0.59.0...v0.59.1) (2025-08-02)
+
+
+### Bug Fixes
+
+* исправить тесты после замены div на семантические button элементы ([862541c](https://github.com/chatman-media/timeline-studio/commit/862541c1318f61e74c4df4d3d2601f2e5c52b4e0))
+
+
+### Reverts
+
+* откат обновления пакета ([396670d](https://github.com/chatman-media/timeline-studio/commit/396670dabfc923861249d4ec3288a6d699c881c8))
+
 # [0.59.0](https://github.com/chatman-media/timeline-studio/compare/v0.58.2...v0.59.0) (2025-07-30)
 
 
