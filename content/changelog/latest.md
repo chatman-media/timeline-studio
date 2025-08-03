@@ -1,3 +1,23 @@
+## [0.60.1](https://github.com/chatman-media/timeline-studio/compare/v0.60.0...v0.60.1) (2025-08-02)
+
+
+### Bug Fixes
+
+* добавить обновление Cargo.lock в скрипт синхронизации версий ([0858087](https://github.com/chatman-media/timeline-studio/commit/0858087b6b7e13410261e906a6aefed9e8398daa))
+* исправлены критические TypeScript ошибки в продакшн коде ([6eb9bcf](https://github.com/chatman-media/timeline-studio/commit/6eb9bcf06c034ff58c3369e1df0ff2b43c15cc48))
+
+# [0.60.0](https://github.com/chatman-media/timeline-studio/compare/v0.59.9...v0.60.0) (2025-08-02)
+
+
+### Bug Fixes
+
+* **alpha:** исправлены критические ошибки и добавлен скрипт запуска ([7f04296](https://github.com/chatman-media/timeline-studio/commit/7f042963ad78655ae4614a516730de7dcbbf0d7e))
+
+
+### Features
+
+* **alpha:** интеграция Ollama для локального AI и документация альфа-релиза ([f88ac09](https://github.com/chatman-media/timeline-studio/commit/f88ac09fd285d44939f3b63c89ac130ee184748a))
+
 ## [0.59.9](https://github.com/chatman-media/timeline-studio/compare/v0.59.8...v0.59.9) (2025-08-02)
 
 
