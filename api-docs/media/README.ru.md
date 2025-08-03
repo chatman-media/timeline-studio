@@ -250,7 +250,7 @@ sudo apt-get install ffmpeg libavcodec-dev libavformat-dev
 - 📊 [Прогресс разработки](docs/ru/10_project_state/)
 - 🌐 [API документация](https://chatman-media.github.io/timeline-studio/api-docs/)
 - 🌐 [Веб-сайт проекта](https://chatman-media.github.io/timeline-studio/)
-- 🏗️ [TDF методология](docs/ru/18_marketing_strategies/)
+- 🏗️ [TDF методология](docs/ru/18_marketing/)
 
 ## Разработка
 
@@ -312,7 +312,7 @@ Timeline Studio создал **Timeline Documentation Framework (TDF)** - инн
 - Сертификационные программы ($500-2,000 за курс)
 - Enterprise инструменты ($1,000-10,000/год)
 
-📚 **[Узнать больше о TDF →](docs/ru/18_marketing_strategies/)**
+📚 **[Узнать больше о TDF →](docs/ru/18_marketing/)**
 
 ## 🌐 Сообщество и поддержка
 
