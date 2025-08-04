@@ -1,3 +1,34 @@
+## [0.61.1](https://github.com/chatman-media/timeline-studio/compare/v0.61.0...v0.61.1) (2025-08-03)
+
+
+### Bug Fixes
+
+* добавлены недостающие поля в ScriptMetadata ([a70b853](https://github.com/chatman-media/timeline-studio/commit/a70b85363194e1f48c5b6ce4957290b9a8abb27a))
+
+# [0.61.0](https://github.com/chatman-media/timeline-studio/compare/v0.60.1...v0.61.0) (2025-08-03)
+
+
+### Bug Fixes
+
+* исправлена ошибка типов в smart-export-optimizer ([83332e3](https://github.com/chatman-media/timeline-studio/commit/83332e3f5501ea3a381afa26fb26b99ee803f4d3))
+* исправлены TypeScript ошибки в AI Content Intelligence модуле ([3e21a06](https://github.com/chatman-media/timeline-studio/commit/3e21a06271116b54828d8e654e57d1b997852d47))
+* исправлены TypeScript ошибки в AI модулях и конфигурации ([131a403](https://github.com/chatman-media/timeline-studio/commit/131a403174c1d8023fa916e52f4ed0fbbacb13a7))
+* исправлены TypeScript ошибки в app-state модуле ([e41aaad](https://github.com/chatman-media/timeline-studio/commit/e41aaad272f1d8d67da820686a2ac5701350baaf))
+* исправлены TypeScript ошибки в export и effects модулях ([6850fe2](https://github.com/chatman-media/timeline-studio/commit/6850fe221dd4e3856f7ff285ca741c3ae3951e4e))
+* исправлены TypeScript ошибки в export и fairlight-audio модулях ([863c916](https://github.com/chatman-media/timeline-studio/commit/863c916645328968be0a5340492c128818931478))
+* исправлены TypeScript ошибки в video-player и test-data ([96f5a35](https://github.com/chatman-media/timeline-studio/commit/96f5a3517abedbedf5cea7154af7e4d5d6b8e910))
+* исправлены TypeScript ошибки в различных модулях ([c22f367](https://github.com/chatman-media/timeline-studio/commit/c22f367cf4d9f97ed6f7e328423aef48e690f04e))
+* исправлены TypeScript ошибки и обновлена документация ([d31809b](https://github.com/chatman-media/timeline-studio/commit/d31809bfb5c9ccc32603c6ede5621d22d231fbb7))
+* исправлены TypeScript ошибки и применены линтер исправления ([c9a3ade](https://github.com/chatman-media/timeline-studio/commit/c9a3ade79e92231a288ad19855d5115c2da81453))
+* исправлены все ошибки линтера ([44ae3f8](https://github.com/chatman-media/timeline-studio/commit/44ae3f846ab50fd3b0c3636d14dd6f338ca6f85a))
+* исправлены оставшиеся TypeScript ошибки и обновлена документация ([9029236](https://github.com/chatman-media/timeline-studio/commit/90292363da7e9e081cc03b658131f730342b5b8f))
+* удалены неиспользуемые импорты после рефакторинга ([77783b2](https://github.com/chatman-media/timeline-studio/commit/77783b20e1c44769fda09fa741fdf60e00f86aca))
+
+
+### Features
+
+* **alpha:** создана структура для альфа-релиза ([853fdee](https://github.com/chatman-media/timeline-studio/commit/853fdeec9e646276c24061e2632a9a43f76128b6))
+
 ## [0.60.1](https://github.com/chatman-media/timeline-studio/compare/v0.60.0...v0.60.1) (2025-08-02)
 
 
