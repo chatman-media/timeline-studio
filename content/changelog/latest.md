@@ -1,3 +1,12 @@
+# [0.62.0](https://github.com/chatman-media/timeline-studio/compare/v0.61.1...v0.62.0) (2025-08-04)
+
+
+### Features
+
+* **i18n:** добавлена поддержка арабского и персидского языков (Phase 2) ([29b94f2](https://github.com/chatman-media/timeline-studio/commit/29b94f2664821a1c9454d88142bf09068827b9dd))
+* **i18n:** перевод раздела fairlightAudio на персидский язык ([0d84e35](https://github.com/chatman-media/timeline-studio/commit/0d84e35ffce665ff412bb6b2fa19249cc1885605))
+* **promo:** подключение реальных markdown файлов к блогу ([42dd7f6](https://github.com/chatman-media/timeline-studio/commit/42dd7f618ff55afed033aa3cf1592469f360e1da))
+
 ## [0.61.1](https://github.com/chatman-media/timeline-studio/compare/v0.61.0...v0.61.1) (2025-08-03)
 
 
