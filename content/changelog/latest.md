@@ -1,3 +1,10 @@
+## [0.62.1](https://github.com/chatman-media/timeline-studio/compare/v0.62.0...v0.62.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* исправлен путь импорта markdown файлов для GitHub Pages ([4c9645f](https://github.com/chatman-media/timeline-studio/commit/4c9645f1362de13264545f3abd8446b209484362))
+
 # [0.62.0](https://github.com/chatman-media/timeline-studio/compare/v0.61.1...v0.62.0) (2025-08-04)
 
 
