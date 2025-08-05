@@ -1,3 +1,10 @@
+## [0.67.1](https://github.com/chatman-media/timeline-studio/compare/v0.67.0...v0.67.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* **promo:** добавлены атрибуты width/height для изображения в SearchDemo ([02a5957](https://github.com/chatman-media/timeline-studio/commit/02a5957d2896cdfcf94154f37ffef0963718ebcd))
+
 # [0.67.0](https://github.com/chatman-media/timeline-studio/compare/v0.66.1...v0.67.0) (2025-08-05)
 
 

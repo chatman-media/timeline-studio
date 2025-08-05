@@ -7,28 +7,28 @@
   <link rel="icon" type="image/x-icon" href="./favicon/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
   <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png" />
-  
+
   <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png" />
-  
+
   <!-- Web App Manifest -->
   <link rel="manifest" href="./favicon/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- Preconnect to external domains -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://github.com">
   <link rel="dns-prefetch" href="https://api.github.com">
   <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-  
+
   <!-- Preload critical resources -->
   <link rel="preload" href="./fav.svg" as="image" type="image/svg+xml">
-  
+
   <title>Timeline Studio - AI-Powered Video Editor</title>
   <meta name="description"
     content="Timeline Studio - Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever." />
-  
+
   <!-- Canonical URL -->
   <link rel="canonical" href="https://timelinestudio.pro/" />
   <!-- Load fonts with better performance -->
@@ -38,7 +38,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
       rel="stylesheet">
   </noscript>
-  
+
   <!-- Critical CSS inline -->
   <style>
     /* Critical above-the-fold styles */
@@ -50,11 +50,11 @@
       color: #ffffff;
       min-height: 100vh;
     }
-    
+
     #root {
       min-height: 100vh;
     }
-    
+
     /* Prevent layout shift from fonts */
     @font-face {
       font-family: 'Inter';
@@ -63,7 +63,7 @@
       font-display: swap;
       src: local('Inter'), local('Inter-Regular');
     }
-    
+
     @font-face {
       font-family: 'Bebas Neue';
       font-style: normal;
@@ -77,20 +77,22 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
+
   <!-- Open Graph tags -->
   <meta property="og:title" content="Timeline Studio - AI-Powered Video Editor">
-  <meta property="og:description" content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
+  <meta property="og:description"
+    content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://timelinestudio.pro">
   <meta property="og:image" content="https://timelinestudio.pro/og-image.png">
-  
+
   <!-- Twitter Card tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Timeline Studio - AI-Powered Video Editor">
-  <meta name="twitter:description" content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
+  <meta name="twitter:description"
+    content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
   <meta name="twitter:image" content="https://timelinestudio.pro/og-image.png">
-  
+
   <!-- Structured Data -->
   <script type="application/ld+json">
   {
@@ -120,11 +122,11 @@
     }
   }
   </script>
-  
+
   <!-- Prefetch key routes -->
   <link rel="prefetch" href="./assets/Pricing-CTJSRXqx.tsx" as="script">
   <link rel="prefetch" href="./assets/About-B6GxCp7K.tsx" as="script">
-  <script type="module" crossorigin src="./assets/index-CQTT0Ql8.js"></script>
+  <script type="module" crossorigin src="./assets/index-C_mBDDzq.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/react-CEZjBCbl.js">
   <link rel="modulepreload" crossorigin href="./assets/router-BDXgoB13.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-6FzILPv8.js">
@@ -147,7 +149,7 @@
         justify-content: center;
         z-index: 9999;
       }
-      
+
       .loading-spinner {
         width: 50px;
         height: 50px;
@@ -156,16 +158,18 @@
         border-top-color: #8b5cf6;
         animation: spin 1s ease-in-out infinite;
       }
-      
+
       @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
     </style>
     <div class="loading-placeholder">
       <div class="loading-spinner"></div>
     </div>
   </div>
-  
+
   <!-- Оптимизация загрузки шрифтов -->
   <script>
     // Загружаем шрифты асинхронно после основного контента
@@ -176,16 +180,16 @@
       });
     }
   </script>
-  
+
   <!-- Remove loading placeholder when app loads -->
   <script>
-    window.addEventListener('DOMContentLoaded', function() {
-      setTimeout(function() {
+    window.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
         const placeholder = document.querySelector('.loading-placeholder');
         if (placeholder) {
           placeholder.style.opacity = '0';
           placeholder.style.transition = 'opacity 0.3s ease-out';
-          setTimeout(function() {
+          setTimeout(function () {
             placeholder.remove();
           }, 300);
         }
