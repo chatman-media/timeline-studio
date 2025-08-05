@@ -1,3 +1,10 @@
+# [0.66.0](https://github.com/chatman-media/timeline-studio/compare/v0.65.4...v0.66.0) (2025-08-05)
+
+
+### Features
+
+* **promo:** добавлены переводы для FAQ и главной страницы ([2d58861](https://github.com/chatman-media/timeline-studio/commit/2d588614b01e1530f88bf4c2ebfdcaff294e593d))
+
 ## [0.65.4](https://github.com/chatman-media/timeline-studio/compare/v0.65.3...v0.65.4) (2025-08-05)
 
 
