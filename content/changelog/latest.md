@@ -1,3 +1,10 @@
+## [0.63.1](https://github.com/chatman-media/timeline-studio/compare/v0.63.0...v0.63.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* исправления линтера и типов после обновления зависимостей ([944692d](https://github.com/chatman-media/timeline-studio/commit/944692d24b065fef51a3104b886e05c402c4e9f4))
+
 # [0.63.0](https://github.com/chatman-media/timeline-studio/compare/v0.62.1...v0.63.0) (2025-08-04)
 
 
