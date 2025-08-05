@@ -267,13 +267,14 @@ State machines are created using XState's `setup` method for better type safety 
 - Missing file restoration is handled through the MediaRestorationService
 
 ### Internationalization (i18n)
-Timeline Studio supports 10 languages with complete localization:
-- **Supported Languages**: English, Russian, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, Turkish
+Timeline Studio supports 15 languages with complete localization (Phase 2 completed):
+- **Supported Languages**: English, Russian, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, Turkish, Italian, Thai, Hindi, Arabic, Persian
+- **RTL Support**: Arabic and Persian languages automatically switch to right-to-left text direction
 - **Frontend Configuration**: Located in `/src/i18n/` with language constants, translation files, and React provider
-- **Backend Support**: Rust backend in `/src-tauri/src/language.rs` supports all 10 languages
+- **Backend Support**: Rust backend in `/src-tauri/src/language.rs` supports all 15 languages
 - **Translation Files**: Each language has a complete JSON file in `/src/i18n/locales/[lang].json`
 - **Language Selection**: Users can switch languages via User Settings modal
-- **Native Names**: Languages are displayed using their native names (e.g., "中文" for Chinese, "Türkçe" for Turkish)
+- **Native Names**: Languages are displayed using their native names (e.g., "中文" for Chinese, "العربية" for Arabic)
 
 When adding new languages:
 1. Add language code to `LanguageCode` type and `SUPPORTED_LANGUAGES` array in `/src/i18n/constants.ts`
