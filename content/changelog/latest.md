@@ -1,3 +1,15 @@
+# [0.64.0](https://github.com/chatman-media/timeline-studio/compare/v0.63.1...v0.64.0) (2025-08-05)
+
+
+### Bug Fixes
+
+* исправлен тест person-form-modal для корректной работы с TypeScript ([79e0e3c](https://github.com/chatman-media/timeline-studio/commit/79e0e3c8928c4c78aa8ce465881a25d4e072e2d6))
+
+
+### Features
+
+* **promo:** добавлена поддержка переводов для страниц Docs и About ([be9277d](https://github.com/chatman-media/timeline-studio/commit/be9277d1f4d7d21b168e9b5b249cce46b6f9537f))
+
 ## [0.63.1](https://github.com/chatman-media/timeline-studio/compare/v0.63.0...v0.63.1) (2025-08-05)
 
 
