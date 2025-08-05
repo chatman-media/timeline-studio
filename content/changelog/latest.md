@@ -1,3 +1,16 @@
+# [0.63.0](https://github.com/chatman-media/timeline-studio/compare/v0.62.1...v0.63.0) (2025-08-04)
+
+
+### Bug Fixes
+
+* **promo:** исправлена ошибка Buffer is not defined в блоге ([34f513f](https://github.com/chatman-media/timeline-studio/commit/34f513fd9c5d506d860ed3ad9335d62b346d834c))
+
+
+### Features
+
+* **promo:** добавлена мультиязычная поддержка для блога ([69c993e](https://github.com/chatman-media/timeline-studio/commit/69c993ecb58ed8a1a047abcdbe102305b3336698))
+* **promo:** удален переключатель языка, используется автоопределение ([0a7c3e6](https://github.com/chatman-media/timeline-studio/commit/0a7c3e6edc62c7e8577b239f721cd0420a69760a))
+
 ## [0.62.1](https://github.com/chatman-media/timeline-studio/compare/v0.62.0...v0.62.1) (2025-08-04)
 
 
