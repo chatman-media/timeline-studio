@@ -1,3 +1,10 @@
+## [0.66.1](https://github.com/chatman-media/timeline-studio/compare/v0.66.0...v0.66.1) (2025-08-05)
+
+
+### Performance Improvements
+
+* **promo:** оптимизация кеширования и производительности ([42bcb6e](https://github.com/chatman-media/timeline-studio/commit/42bcb6e844e2ba527837318b89a64461c6451bfa))
+
 # [0.66.0](https://github.com/chatman-media/timeline-studio/compare/v0.65.4...v0.66.0) (2025-08-05)
 
 
