@@ -1,3 +1,17 @@
+## [0.65.2](https://github.com/chatman-media/timeline-studio/compare/v0.65.1...v0.65.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* **promo:** исправление ошибок и оптимизация производительности ([8fee73a](https://github.com/chatman-media/timeline-studio/commit/8fee73a762f3a23d0846da81f0181ea5c18c93e1))
+
+## [0.65.1](https://github.com/chatman-media/timeline-studio/compare/v0.65.0...v0.65.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* **promo:** обновил перевод пункта меню ([75c1c7a](https://github.com/chatman-media/timeline-studio/commit/75c1c7ac4e22d582b4c06f4867da65e8c10701c3))
+
 # [0.65.0](https://github.com/chatman-media/timeline-studio/compare/v0.64.0...v0.65.0) (2025-08-05)
 
 

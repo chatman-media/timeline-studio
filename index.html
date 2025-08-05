@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -14,19 +14,142 @@
   <!-- Web App Manifest -->
   <link rel="manifest" href="./favicon/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://github.com">
+  <link rel="dns-prefetch" href="https://api.github.com">
+  <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
   <title>Timeline Studio - AI-Powered Video Editor</title>
   <meta name="description"
     content="Timeline Studio - Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Load fonts with better performance -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
-    rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-BLR8iEI2.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CmkXRSiT.css">
+    rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
+      rel="stylesheet">
+  </noscript>
+  
+  <!-- Critical CSS inline -->
+  <style>
+    /* Critical above-the-fold styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #12192C;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+    
+    #root {
+      min-height: 100vh;
+    }
+    
+    /* Prevent layout shift from fonts */
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: local('Inter'), local('Inter-Regular');
+    }
+    
+    @font-face {
+      font-family: 'Bebas Neue';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: local('Bebas Neue'), local('BebasNeue-Regular');
+    }
+  </style>
+  <!-- SEO and Performance meta tags -->
+  <meta name="theme-color" content="#12192C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Open Graph tags -->
+  <meta property="og:title" content="Timeline Studio - AI-Powered Video Editor">
+  <meta property="og:description" content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://timelinestudio.pro">
+  <meta property="og:image" content="https://timelinestudio.pro/og-image.png">
+  
+  <!-- Prefetch key routes -->
+  <link rel="prefetch" href="./assets/Pricing-CTJSRXqx.tsx" as="script">
+  <link rel="prefetch" href="./assets/About-B6GxCp7K.tsx" as="script">
+  <script type="module" crossorigin src="./assets/index-ghh6WCA4.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/js/chunk-LgjMXJh-.js">
+  <link rel="modulepreload" crossorigin href="./assets/js/chunk-S428cgpR.js">
+  <link rel="modulepreload" crossorigin href="./assets/js/chunk-C8q26AQ9.js">
+  <link rel="modulepreload" crossorigin href="./assets/js/chunk-DuEZOzCt.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-ClimTjBa.css">
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!-- Loading placeholder to prevent blank screen -->
+    <style>
+      .loading-placeholder {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #12192C;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #8b5cf6;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    <div class="loading-placeholder">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+  
+  <!-- Оптимизация загрузки шрифтов -->
+  <script>
+    // Загружаем шрифты асинхронно после основного контента
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        const link = document.querySelector('link[href*="fonts.googleapis.com"]');
+        if (link) link.media = 'all';
+      });
+    }
+  </script>
+  
+  <!-- Remove loading placeholder when app loads -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        const placeholder = document.querySelector('.loading-placeholder');
+        if (placeholder) {
+          placeholder.style.opacity = '0';
+          placeholder.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(function() {
+            placeholder.remove();
+          }, 300);
+        }
+      }, 100);
+    });
+  </script>
 </body>
 
 </html>
