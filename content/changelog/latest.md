@@ -1,3 +1,10 @@
+# [0.67.0](https://github.com/chatman-media/timeline-studio/compare/v0.66.1...v0.67.0) (2025-08-05)
+
+
+### Features
+
+* **promo:** улучшения SEO и доступности ([5d9b12f](https://github.com/chatman-media/timeline-studio/commit/5d9b12f71bb612a867e54a0310263aba3fa20867))
+
 ## [0.66.1](https://github.com/chatman-media/timeline-studio/compare/v0.66.0...v0.66.1) (2025-08-05)
 
 
