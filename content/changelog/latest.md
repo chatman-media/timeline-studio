@@ -1,3 +1,10 @@
+## [0.65.3](https://github.com/chatman-media/timeline-studio/compare/v0.65.2...v0.65.3) (2025-08-05)
+
+
+### Bug Fixes
+
+* **promo:** исправление ошибок сборки для GitHub Actions ([afb9b43](https://github.com/chatman-media/timeline-studio/commit/afb9b43779890de12f04b059f49387bcf8cfe56b))
+
 ## [0.65.2](https://github.com/chatman-media/timeline-studio/compare/v0.65.1...v0.65.2) (2025-08-05)
 
 
