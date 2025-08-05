@@ -1,3 +1,10 @@
+## [0.65.4](https://github.com/chatman-media/timeline-studio/compare/v0.65.3...v0.65.4) (2025-08-05)
+
+
+### Bug Fixes
+
+* **promo:** исправление ошибки React в production сборке ([cc55bac](https://github.com/chatman-media/timeline-studio/commit/cc55baca64cdf3581e239ee001fd8ee261666b17))
+
 ## [0.65.3](https://github.com/chatman-media/timeline-studio/compare/v0.65.2...v0.65.3) (2025-08-05)
 
 
