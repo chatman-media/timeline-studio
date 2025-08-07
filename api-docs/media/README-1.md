@@ -1,136 +1,146 @@
-# AI Chat Tools
+# AI Tools для Timeline Studio
 
-The AI Chat Tools system provides 151 specialized tools for working with Timeline Studio through Claude AI.
+> 🎆 **Новая архитектура!** Инструменты теперь организованы по доменам (core, analysis, automation, integration)
 
-## Structure
+## 🏗️ Новая структура каталога
 
 ```
 tools/
-├── timeline/          # Timeline tools (11 tools)
-├── player/           # Player control tools (10 tools)
-├── browser/          # File browser tools (8 tools)
-├── resources/        # Resource management tools (10 tools)
-├── export-management-tools.ts    # Export management (12 tools)
-├── effects-filters-tools.ts     # Effects and filters (10 tools)
-├── audio-processing-tools.ts    # Audio processing (12 tools)
-├── render-performance-tools.ts  # Rendering and performance (8 tools)
-├── template-layout-tools.ts     # Templates and layouts (10 tools)
-├── settings-config-tools.ts     # Settings and configuration (8 tools)
-├── color-style-tools.ts         # Color and style (6 tools)
-├── media-processing-tools.ts    # Media processing (6 tools)
-└── index.ts            # Main export of all tools
+├── 📁 core/               # Основные инструменты
+│   ├── timeline/         # Работа с таймлайном
+│   ├── resources/        # Управление ресурсами
+│   ├── browser/          # Браузер медиа
+│   ├── player/           # Управление плеером
+│   └── *.ts              # Эффекты, настройки
+├── 🔬 analysis/          # Инструменты анализа
+│   ├── video-analysis.ts # Анализ видео
+│   ├── audio-analysis.ts # Анализ аудио
+│   ├── content-intelligence.ts
+│   └── ...
+├── ⚙️ automation/        # Автоматизация
+│   ├── workflow-tools.ts # Workflow автоматизация
+│   ├── batch-processing.ts
+│   └── ...
+├── 🔗 integration/       # Интеграции
+│   ├── export-tools.ts   # Экспорт
+│   ├── platform-integration.ts
+│   └── ...
+└── 📕 base-ai-tool.ts    # Базовый класс
 ```
 
-## Tool Categories
+## 📦 Домены инструментов
 
-### Timeline Tools (50 tools)
-- **Basic operations**: project creation, track management, clip placement
-- **Analytics**: structure analysis, scene detection, narrative analysis
-- **Automation**: music synchronization, automatic enhancements
-- **Export**: support for JSON, XML, CSV, EDL, FCPXML, DaVinci Resolve formats
+### Core Domain - Основные инструменты
+Базовая функциональность Timeline Studio:
+- **Timeline Tools** - создание проектов, управление секциями и клипами
+- **Resources Tools** - управление эффектами, фильтрами, переходами
+- **Browser Tools** - навигация по медиафайлам, выбор ресурсов
+- **Player Tools** - управление воспроизведением, навигация
+- **Effects & Filters** - применение визуальных эффектов
+- **Settings Configuration** - управление настройками проекта
 
-### Player Tools (10 tools)
-- Playback control and navigation
-- Speed and marker management
-- Frame-by-frame navigation
+### Analysis Domain - Инструменты анализа
+Анализ и обработка контента:
+- **Video Analysis** - детекция сцен, анализ качества
+- **Audio Analysis** - анализ звука, детекция тишины
+- **Content Intelligence** - анализ структуры и содержания
+- **Multimodal Analysis** - комбинированный анализ видео и аудио
+- **Whisper Tools** - транскрипция речи
+- **Person Identification** - распознавание лиц
+- **Color & Style Analysis** - анализ цвета и стиля
 
-### Browser Tools (8 tools)
-- File system navigation
-- Media filtering and import
-- Project management
+### Automation Domain - Автоматизация
+Автоматические процессы:
+- **Workflow Automation** - создание автоматических workflow
+- **Batch Processing** - пакетная обработка файлов
+- **Performance Optimization** - оптимизация производительности
+- **Smart Templates** - интеллектуальные шаблоны
+- **Subtitle Generation** - генерация субтитров
 
-### Resource Tools (10 tools)
-- Effects, filters, and transitions
-- Templates and styles
-- Preset management
+### Integration Domain - Интеграции
+Экспорт и интеграции:
+- **Export Management** - экспорт в различные форматы
+- **Platform Integration** - интеграция с соцсетями
+- **Format Conversion** - конвертация форматов
 
-### Export Management Tools (12 tools)
-- Export settings optimization
-- Batch export and render queue
-- Preset creation and validation
+## 🚀 Использование
 
-### Effects & Filters Tools (10 tools)
-- Intelligent effect selection
-- Batch filter application
-- Parameter animation
-
-### Audio Processing Tools (12 tools)
-- Normalization and noise removal
-- Synchronization and beat analysis
-- Equalization, compression, reverb
-- Mixing and export
-
-### Render & Performance Tools (8 tools)
-- Performance analysis and optimization
-- Cache and proxy media management
-- GPU acceleration and profiling
-
-### Template & Layout Tools (10 tools)
-- Project templates and multi-camera layouts
-- Titles and animated intros
-- Social media formats
-
-### Settings & Configuration Tools (8 tools)
-- User profiles and hotkeys
-- Workspaces and autosave
-- Plugins and integrations
-
-### Color & Style Tools (6 tools)
-- Color correction and LUTs
-- Color schemes and stylization
-- Gradients and masks
-
-### Media Processing Tools (6 tools)
-- Format conversion
-- Resolution adjustment and stabilization
-- Batch processing
-
-## Usage
-
+### Импорт всех инструментов
 ```typescript
-// Timeline tools
-import { executeTimelineTool } from './timeline-tools'
-const result = await executeTimelineTool('analyze_timeline_structure', params)
+import { allTools } from '@/features/ai-chat/tools'
 
-// Player tools  
-import { executePlayerTool } from './player-tools'
-const result = await executePlayerTool('control_playback', params)
-
-// Export Management tools
-import { executeExportManagementTool } from './export-management-tools'
-const result = await executeExportManagementTool('optimize_export_settings', params)
+// Использование в AI сервисе
+const tools = allTools
 ```
 
-## Interfaces
-
-### ClaudeTool
+### Импорт по доменам
 ```typescript
-interface ClaudeTool {
-  name: string
-  description: string
-  input_schema: {
-    type: "object"
-    properties: Record<string, any>
-    required?: string[]
+import { coreTools } from '@/features/ai-chat/tools/core'
+import { analysisTools } from '@/features/ai-chat/tools/analysis'
+import { automationTools } from '@/features/ai-chat/tools/automation'
+import { integrationTools } from '@/features/ai-chat/tools/integration'
+```
+
+### Импорт конкретных инструментов
+```typescript
+import { timelineTools } from '@/features/ai-chat/tools/core/timeline'
+import { videoAnalysisTools } from '@/features/ai-chat/tools/analysis/video-analysis-tools'
+```
+
+## 🛠️ Базовый класс BaseAITool
+
+Все инструменты наследуются от `BaseAITool`, который предоставляет:
+- Унифицированную обработку ошибок
+- Логирование операций
+- Retry механизм
+- Таймауты выполнения
+- Метрики производительности
+
+```typescript
+export class MyTool extends BaseAITool {
+  constructor() {
+    super('MyTool')
+  }
+
+  async execute(input: MyInput): Promise<AIToolResult<MyResult>> {
+    return this.executeWithErrorHandling(async () => {
+      // Логика инструмента
+      return result
+    })
   }
 }
 ```
 
-### ToolResult
-```typescript
-interface ToolResult {
-  success: boolean
-  message: string
-  data?: any
-  errors?: string[]
-  warnings?: string[]
-  nextActions?: string[]
-}
-```
+## 📊 Статистика
 
-## Statistics
+- **Всего инструментов**: 48
+- **Core домен**: ~18 инструментов
+- **Analysis домен**: ~15 инструментов
+- **Automation домен**: ~10 инструментов
+- **Integration домен**: ~5 инструментов
 
-- **Total number of tools**: 151
-- **Modular organization**: 4 main categories with subfolders
-- **Specialized modules**: 8 additional files
-- **Complete coverage**: From video import to export
+## 🔧 Преимущества новой архитектуры
+
+### ✅ Логическая группировка
+- Инструменты сгруппированы по функциональности
+- Четкое разделение ответственности
+- Интуитивная навигация
+
+### ⚡ Производительность
+- Lazy loading по доменам
+- Меньший размер bundle
+- Быстрая загрузка нужных инструментов
+
+### 🛠️ Разработка
+- Простое добавление новых инструментов
+- Изолированное тестирование доменов
+- Упрощенный рефакторинг
+
+### 📦 Масштабируемость
+- Независимое развитие каждого домена
+- Возможность вынесения доменов в отдельные пакеты
+- Гибкая архитектура для будущих расширений
+
+---
+
+**Статус**: ✅ **ГОТОВО К ИСПОЛЬЗОВАНИЮ** - Новая архитектура внедрена!
