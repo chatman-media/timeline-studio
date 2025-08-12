@@ -1,3 +1,24 @@
+## [1.3.5](https://github.com/chatman-media/timeline-studio/compare/v1.3.4...v1.3.5) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** Теперь в index.html подключаются только production-бандлы с type="module" и defer. Скрипт src/main.tsx для разработки удалён. ([e8c153a](https://github.com/chatman-media/timeline-studio/commit/e8c153a8392507d30b0b23cd246ed5bcb09b88d6))
+
+## [1.3.4](https://github.com/chatman-media/timeline-studio/compare/v1.3.3...v1.3.4) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added preload and seo fixes ([ddc8ceb](https://github.com/chatman-media/timeline-studio/commit/ddc8cebdb4f364fae4ff067c65c70f44620be793))
+
+## [1.3.3](https://github.com/chatman-media/timeline-studio/compare/v1.3.2...v1.3.3) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added aria-label to button ([bd8a491](https://github.com/chatman-media/timeline-studio/commit/bd8a491d3b3914db3a163ee4e0627fb7ed236c95))
+
 ## [1.3.2](https://github.com/chatman-media/timeline-studio/compare/v1.3.1...v1.3.2) (2025-08-11)
 
 
