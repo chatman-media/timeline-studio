@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/chatman-media/timeline-studio/compare/v1.3.7...v1.3.8) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added Google tag ([e4068e6](https://github.com/chatman-media/timeline-studio/commit/e4068e69e9f33b568e55d59a8a9593989d7babc9))
+
 ## [1.3.7](https://github.com/chatman-media/timeline-studio/compare/v1.3.6...v1.3.7) (2025-08-12)
 
 
