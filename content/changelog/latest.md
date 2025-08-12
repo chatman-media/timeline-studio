@@ -1,3 +1,10 @@
+## [1.3.6](https://github.com/chatman-media/timeline-studio/compare/v1.3.5...v1.3.6) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** back main srcipt ([1c19cb1](https://github.com/chatman-media/timeline-studio/commit/1c19cb160d0d8fd6d9149583a49c2bd558630644))
+
 ## [1.3.5](https://github.com/chatman-media/timeline-studio/compare/v1.3.4...v1.3.5) (2025-08-12)
 
 
