@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/chatman-media/timeline-studio/compare/v1.3.1...v1.3.2) (2025-08-11)
+
+
+### Bug Fixes
+
+* **promo:** fixed self ([ce98e3c](https://github.com/chatman-media/timeline-studio/commit/ce98e3c3a2e5bc9a448fbb7d0792802f1a32bda9))
+
 ## [1.3.1](https://github.com/chatman-media/timeline-studio/compare/v1.3.0...v1.3.1) (2025-08-11)
 
 
