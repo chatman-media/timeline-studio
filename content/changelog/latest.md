@@ -1,3 +1,11 @@
+## [1.3.7](https://github.com/chatman-media/timeline-studio/compare/v1.3.6...v1.3.7) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** fix ([f539050](https://github.com/chatman-media/timeline-studio/commit/f539050c839b1e0773b623c90b5f2af9014d7420))
+* **promo:** rm css ([ad40da9](https://github.com/chatman-media/timeline-studio/commit/ad40da9640f70fe31a758721d961394a43d1b438))
+
 ## [1.3.6](https://github.com/chatman-media/timeline-studio/compare/v1.3.5...v1.3.6) (2025-08-12)
 
 
