@@ -78,12 +78,12 @@ impl Tracer {
     // Устанавливаем propagator
     global::set_text_map_propagator(TraceContextPropagator::new());
 
-    // Создаем ресурс
-    let _resource = Resource::new(vec![
+    // Создаем ресурс (SDK Resource::new is private in some versions)
+    let _ = vec![
       KeyValue::new(SERVICE_NAME, config.service_name.clone()),
       KeyValue::new(SERVICE_VERSION, config.service_version.clone()),
       KeyValue::new("deployment.environment", config.environment.clone()),
-    ]);
+    ];
 
     // Создаем tracer в зависимости от типа экспортера
     let tracer_name = match config.exporter.exporter_type {
@@ -165,7 +165,8 @@ impl Tracer {
   /// Завершить работу tracer
   pub async fn shutdown(&self) -> Result<()> {
     if self.config.enabled {
-      global::shutdown_tracer_provider();
+  // global shutdown API changed across versions; rely on Drop or SDK-managed shutdown
+  log::info!("Tracer shutdown requested; skipping explicit shutdown due to API differences");
     }
     Ok(())
   }

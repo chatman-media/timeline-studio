@@ -60,6 +60,11 @@ const getInitialTabSettings = (tab: BrowserTab): TabSettings => {
 const loadSavedSettings = (): BrowserContext | null => {
   console.log("[Browser Domain] Loading saved settings...")
   try {
+    // Guard: localStorage is only available in browser runtime (not SSR)
+    if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
+      console.log("[Browser Domain] localStorage not available (SSR), skipping load")
+      return null
+    }
     const savedSettings = localStorage.getItem("browserSettings")
     if (savedSettings) {
       console.log("[Browser Domain] Found saved settings")
@@ -253,6 +258,10 @@ export const browserMachine = setup({
     saveSettings: ({ context }) => {
       console.log("[Browser Domain] Saving settings to localStorage")
       try {
+        if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
+          console.log("[Browser Domain] localStorage not available (SSR), skipping save")
+          return
+        }
         // Преобразуем Set в массив для сериализации
         const serializable = {
           ...context,

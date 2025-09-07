@@ -5,7 +5,7 @@ description = "A Timeline Studio"
 authors = ["Alexander Kireyev <ak.chatman.media@gmail.com>"]
 license = "MIT WITH Commons-Clause"
 repository = "https://github.com/chatman-media/timeline-studio"
-edition = "2021"
+edition = "2024"
 default-run = "timeline-studio"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -36,26 +36,28 @@ path = "src/main.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.2", features = [] }
+ffmpeg-sys-next = { version = "8.0.1", features = ["build"] }
 
 [dev-dependencies]
 # For test cleanup and initialization
-ctor = "0.2"
+ctor = "0.5.0"
 env_logger = "0.11"
 libc = "0.2"
 # Test utilities
 tempfile = "3.14"
-tower = { version = "0.4", features = ["util"] }
+tower = { version = "0.5.2", features = ["util"] }
 urlencoding = "2.1"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.12.23", features = ["json"] }
 mockito = "1.2"
 # Benchmarking
-criterion = { version = "0.5", features = ["html_reports"] }
+criterion = { version = "0.7.0", features = ["html_reports"] }
 # HTTP mocking for OAuth tests
 httpmock = "0.7"
 # Mocking framework for tests
-mockall = "0.11"
+mockall = "0.13.1"
 # Async utilities for testing
 futures = "0.3"
+rand_chacha = "0.3"
 
 [dependencies]
 serde_json = "1.0"
@@ -75,12 +77,12 @@ tauri-plugin-updater = "2.4"
 tauri-plugin-sql = { version = "2.2", features = ["sqlite"] }
 rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] }
 # Video Compiler dependencies
-ffmpeg-next = "7.1"
+ffmpeg-next = "8"
 uuid = { version = "1.11", features = ["serde", "v4"] }
 tokio = { version = "1.42", features = ["full"] }
 futures = "0.3"
-dashmap = "5.5"
-image = "0.25"
+dashmap = "6.1.0"
+image = "0.25.7"
 imageproc = "0.25"
 chrono = { version = "0.4", features = ["serde"] }
 log = "0.4"
@@ -91,46 +93,47 @@ async-trait = "0.1"
 base64 = "0.22"
 once_cell = "1.20"
 # Video Server dependencies
-axum = { version = "0.7", features = ["tokio", "http2"] }
+axum = { version = "0.8.4", features = ["tokio", "http2"] }
 tokio-util = { version = "0.7", features = ["io"] }
-tower = { version = "0.4", features = ["util"] }
-tower-http = { version = "0.5", features = ["cors", "fs"] }
-md5 = "0.7"
-dirs = "5.0"
+tower = { version = "0.5.2", features = ["util"] }
+tower-http = { version = "0.6.6", features = ["cors", "fs"] }
+md5 = "0.8.0"
+dirs = "6.0.0"
 anyhow = "1.0"
 # Python interop for Faster Whisper
-pyo3 = { version = "0.22", features = ["auto-initialize"] }
+pyo3 = { version = "0.26.0", features = ["auto-initialize"] }
 # Security and API keys management
 aes-gcm = "0.10"
 argon2 = "0.5"
-rand = "0.8"
+rand = "0.9.2"
+rand_chacha = "0.3"
 keyring = "3.6"
 # HTTP client for API validation
-reqwest = { version = "0.11", features = ["json", "rustls-tls", "multipart"] }
-which = "7.0"
+reqwest = { version = "0.12.23", features = ["json", "rustls-tls", "multipart"] }
+which = "8.0.0"
 # URL handling for OAuth
 url = "2.5"
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "load-dynamic"] }
-ndarray = "0.15"
+ndarray = "0.16.1"
 # System information dependencies
 num_cpus = "1.16"
 sysinfo = "0.32"
 os_info = "3.8"
-# OpenTelemetry dependencies
+# OpenTelemetry dependencies (pinned to compatible older versions)
 opentelemetry = { version = "0.27", features = ["trace", "metrics"] }
 opentelemetry_sdk = { version = "0.27", features = ["rt-tokio", "trace", "metrics"] }
 opentelemetry-otlp = { version = "0.27", features = ["tonic", "metrics", "trace"] }
-opentelemetry-semantic-conventions = "0.28"
+opentelemetry-semantic-conventions = "0.27"
 opentelemetry-prometheus = "0.27"
-hyper = { version = "0.14", features = ["server", "tcp", "http1", "http2"] }
+hyper = { version = "0.14", features = ["server"] }
 tracing = "0.1"
 tracing-opentelemetry = "0.27"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
-tonic = "0.12"
+tonic = "0.14.1"
 # WebAssembly runtime dependencies
-wasmtime = "28.0"
+wasmtime = "36.0.2"
 filetime = "0.2"
-wasmtime-wasi = "28.0"
+wasmtime-wasi = "36.0.2"
 wasm-bindgen = "0.2"
 # Additional security dependencies
 cap-std = "3.4"

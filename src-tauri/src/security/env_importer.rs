@@ -40,7 +40,7 @@ impl EnvImporter {
           if let Some((key, value)) = line.split_once('=') {
             let key = key.trim();
             let value = value.trim().trim_matches('"').trim_matches('\'');
-            env::set_var(key, value);
+            unsafe { env::set_var(key, value) };
           }
         }
 
@@ -493,10 +493,12 @@ EMPTY_LINE_ABOVE=value
     assert_eq!(env::var("EMPTY_LINE_ABOVE").unwrap(), "value");
 
     // Clean up
-    env::remove_var("TEST_KEY");
-    env::remove_var("TEST_KEY_QUOTED");
-    env::remove_var("TEST_KEY_SINGLE");
-    env::remove_var("EMPTY_LINE_ABOVE");
+    unsafe {
+      env::remove_var("TEST_KEY");
+      env::remove_var("TEST_KEY_QUOTED");
+      env::remove_var("TEST_KEY_SINGLE");
+      env::remove_var("EMPTY_LINE_ABOVE");
+    }
   }
 
   #[test]
@@ -529,7 +531,7 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Set test environment variable
-    env::set_var("OPENAI_API_KEY", "test_openai_key_123");
+    unsafe { env::set_var("OPENAI_API_KEY", "test_openai_key_123"); }
 
     let env_vars = vec!["OPENAI_API_KEY".to_string()];
     let result = importer
@@ -542,7 +544,7 @@ EMPTY_LINE_ABOVE=value
     assert_eq!(key_data.value, "test_openai_key_123");
 
     // Clean up
-    env::remove_var("OPENAI_API_KEY");
+    unsafe { env::remove_var("OPENAI_API_KEY"); }
   }
 
   #[test]
@@ -550,8 +552,10 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Set OAuth environment variables
-    env::set_var("YOUTUBE_CLIENT_ID", "youtube_client_123");
-    env::set_var("YOUTUBE_CLIENT_SECRET", "youtube_secret_456");
+    unsafe {
+      env::set_var("YOUTUBE_CLIENT_ID", "youtube_client_123");
+      env::set_var("YOUTUBE_CLIENT_SECRET", "youtube_secret_456");
+    }
 
     let env_vars = vec![
       "YOUTUBE_CLIENT_ID".to_string(),
@@ -573,8 +577,10 @@ EMPTY_LINE_ABOVE=value
     assert_eq!(oauth_data.client_secret, "youtube_secret_456");
 
     // Clean up
-    env::remove_var("YOUTUBE_CLIENT_ID");
-    env::remove_var("YOUTUBE_CLIENT_SECRET");
+    unsafe {
+      env::remove_var("YOUTUBE_CLIENT_ID");
+      env::remove_var("YOUTUBE_CLIENT_SECRET");
+    }
   }
 
   #[test]
@@ -592,31 +598,35 @@ EMPTY_LINE_ABOVE=value
   #[test]
   fn test_import_all_api_keys() {
     // Clear all environment variables first
-    env::remove_var("OPENAI_API_KEY");
-    env::remove_var("OPENAI_KEY");
-    env::remove_var("CLAUDE_API_KEY");
-    env::remove_var("ANTHROPIC_API_KEY");
-    env::remove_var("CLAUDE_KEY");
-    env::remove_var("DEEPSEEK_API_KEY");
-    env::remove_var("DEEPSEEK_KEY");
-    env::remove_var("YOUTUBE_CLIENT_ID");
-    env::remove_var("YOUTUBE_CLIENT_SECRET");
-    env::remove_var("TIKTOK_CLIENT_ID");
-    env::remove_var("TIKTOK_CLIENT_SECRET");
-    env::remove_var("VIMEO_CLIENT_ID");
-    env::remove_var("VIMEO_CLIENT_SECRET");
-    env::remove_var("VIMEO_ACCESS_TOKEN");
-    env::remove_var("TELEGRAM_BOT_TOKEN");
-    env::remove_var("CODECOV_TOKEN");
-    env::remove_var("TAURI_ANALYTICS_KEY");
+    unsafe {
+      env::remove_var("OPENAI_API_KEY");
+      env::remove_var("OPENAI_KEY");
+      env::remove_var("CLAUDE_API_KEY");
+      env::remove_var("ANTHROPIC_API_KEY");
+      env::remove_var("CLAUDE_KEY");
+      env::remove_var("DEEPSEEK_API_KEY");
+      env::remove_var("DEEPSEEK_KEY");
+      env::remove_var("YOUTUBE_CLIENT_ID");
+      env::remove_var("YOUTUBE_CLIENT_SECRET");
+      env::remove_var("TIKTOK_CLIENT_ID");
+      env::remove_var("TIKTOK_CLIENT_SECRET");
+      env::remove_var("VIMEO_CLIENT_ID");
+      env::remove_var("VIMEO_CLIENT_SECRET");
+      env::remove_var("VIMEO_ACCESS_TOKEN");
+      env::remove_var("TELEGRAM_BOT_TOKEN");
+      env::remove_var("CODECOV_TOKEN");
+      env::remove_var("TAURI_ANALYTICS_KEY");
+    }
 
     let importer = EnvImporter::new();
 
     // Set various test environment variables
-    env::set_var("OPENAI_API_KEY", "openai_test_key");
-    env::set_var("CLAUDE_API_KEY", "claude_test_key");
-    env::set_var("TELEGRAM_BOT_TOKEN", "bot_token_123");
-    env::set_var("VIMEO_ACCESS_TOKEN", "vimeo_token_456");
+    unsafe {
+      env::set_var("OPENAI_API_KEY", "openai_test_key");
+      env::set_var("CLAUDE_API_KEY", "claude_test_key");
+      env::set_var("TELEGRAM_BOT_TOKEN", "bot_token_123");
+      env::set_var("VIMEO_ACCESS_TOKEN", "vimeo_token_456");
+    }
 
     let result = importer.import_all_api_keys();
     assert!(result.is_ok());
@@ -649,23 +659,25 @@ EMPTY_LINE_ABOVE=value
     assert!(has_vimeo);
 
     // Clean up - remove all test variables
-    env::remove_var("OPENAI_API_KEY");
-    env::remove_var("CLAUDE_API_KEY");
-    env::remove_var("TELEGRAM_BOT_TOKEN");
-    env::remove_var("VIMEO_ACCESS_TOKEN");
-    env::remove_var("OPENAI_KEY");
-    env::remove_var("ANTHROPIC_API_KEY");
-    env::remove_var("CLAUDE_KEY");
-    env::remove_var("DEEPSEEK_API_KEY");
-    env::remove_var("DEEPSEEK_KEY");
-    env::remove_var("YOUTUBE_CLIENT_ID");
-    env::remove_var("YOUTUBE_CLIENT_SECRET");
-    env::remove_var("TIKTOK_CLIENT_ID");
-    env::remove_var("TIKTOK_CLIENT_SECRET");
-    env::remove_var("VIMEO_CLIENT_ID");
-    env::remove_var("VIMEO_CLIENT_SECRET");
-    env::remove_var("CODECOV_TOKEN");
-    env::remove_var("TAURI_ANALYTICS_KEY");
+    unsafe {
+      env::remove_var("OPENAI_API_KEY");
+      env::remove_var("CLAUDE_API_KEY");
+      env::remove_var("TELEGRAM_BOT_TOKEN");
+      env::remove_var("VIMEO_ACCESS_TOKEN");
+      env::remove_var("OPENAI_KEY");
+      env::remove_var("ANTHROPIC_API_KEY");
+      env::remove_var("CLAUDE_KEY");
+      env::remove_var("DEEPSEEK_API_KEY");
+      env::remove_var("DEEPSEEK_KEY");
+      env::remove_var("YOUTUBE_CLIENT_ID");
+      env::remove_var("YOUTUBE_CLIENT_SECRET");
+      env::remove_var("TIKTOK_CLIENT_ID");
+      env::remove_var("TIKTOK_CLIENT_SECRET");
+      env::remove_var("VIMEO_CLIENT_ID");
+      env::remove_var("VIMEO_CLIENT_SECRET");
+      env::remove_var("CODECOV_TOKEN");
+      env::remove_var("TAURI_ANALYTICS_KEY");
+    }
   }
 
   #[test]
@@ -673,7 +685,7 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Test with existing key
-    env::set_var("DEEPSEEK_API_KEY", "deepseek_test_123");
+    unsafe { env::set_var("DEEPSEEK_API_KEY", "deepseek_test_123"); }
 
     let result = importer.import_api_key(ApiKeyType::DeepSeek);
     assert!(result.is_ok());
@@ -686,14 +698,14 @@ EMPTY_LINE_ABOVE=value
 
     // Test with non-existing key
     // First ensure the env var is not set
-    env::remove_var("CODECOV_TOKEN");
+    unsafe { env::remove_var("CODECOV_TOKEN"); }
 
     let result = importer.import_api_key(ApiKeyType::Codecov);
     assert!(result.is_ok());
     assert!(result.unwrap().is_none());
 
     // Clean up
-    env::remove_var("DEEPSEEK_API_KEY");
+    unsafe { env::remove_var("DEEPSEEK_API_KEY"); }
   }
 
   #[test]
@@ -779,8 +791,10 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Test Telegram with both bot token and chat ID
-    env::set_var("TELEGRAM_BOT_TOKEN", "bot_token_123");
-    env::set_var("TELEGRAM_CHAT_ID", "chat_id_456");
+    unsafe {
+      env::set_var("TELEGRAM_BOT_TOKEN", "bot_token_123");
+      env::set_var("TELEGRAM_CHAT_ID", "chat_id_456");
+    }
 
     let env_vars = vec![
       "TELEGRAM_BOT_TOKEN".to_string(),
@@ -799,8 +813,10 @@ EMPTY_LINE_ABOVE=value
     // Telegram only imports bot token, not chat_id
 
     // Clean up
-    env::remove_var("TELEGRAM_BOT_TOKEN");
-    env::remove_var("TELEGRAM_CHAT_ID");
+    unsafe {
+      env::remove_var("TELEGRAM_BOT_TOKEN");
+      env::remove_var("TELEGRAM_CHAT_ID");
+    }
   }
 
   #[test]
@@ -833,8 +849,10 @@ KEY_WITH_SPACES = value with spaces
     assert!(env::var("INVALID_LINE_NO_EQUALS").is_err());
 
     // Clean up
-    env::remove_var("VALID_KEY");
-    env::remove_var("KEY_WITH_EQUALS_IN_VALUE");
-    env::remove_var("KEY_WITH_SPACES");
+    unsafe {
+      env::remove_var("VALID_KEY");
+      env::remove_var("KEY_WITH_EQUALS_IN_VALUE");
+      env::remove_var("KEY_WITH_SPACES");
+    }
   }
 }

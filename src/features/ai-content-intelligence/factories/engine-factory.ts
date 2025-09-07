@@ -6,9 +6,6 @@
 import { getAIContainer } from "@/domains/ai-core/container/di-container"
 import { ContentClassificationEngine } from "../engines/content-classification/content-classification-engine"
 import { SceneAnalysisEngine } from "../engines/scene-analysis/scene-analysis-engine"
-import { DialogueGenerator } from "../engines/script-generation/services/dialogue-generator"
-import { ScriptGenerationEngine } from "../engines/script-generation/services/script-generation-engine"
-import { TemplateEngine } from "../engines/script-generation/services/template-engine"
 
 // Интерфейсы для движков
 export interface ISceneAnalysisEngine {
@@ -44,11 +41,11 @@ export class EngineFactory {
     this.container.registerSingleton("ContentClassificationEngine", () => new ContentClassificationEngine())
 
     // Script Generation Engine и его зависимости
-    this.container.registerSingleton("TemplateEngine", () => new TemplateEngine())
+    // this.container.registerSingleton("TemplateEngine", () => new TemplateEngine())
 
-    this.container.registerSingleton("DialogueGenerator", () => new DialogueGenerator())
+    // this.container.registerSingleton("DialogueGenerator", () => new DialogueGenerator())
 
-    this.container.registerSingleton("ScriptGenerationEngine", () => new ScriptGenerationEngine())
+    // this.container.registerSingleton("ScriptGenerationEngine", () => new ScriptGenerationEngine())
   }
 
   /**

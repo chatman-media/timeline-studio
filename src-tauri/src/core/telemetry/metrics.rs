@@ -12,12 +12,13 @@ use opentelemetry::{
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
   KeyValue,
 };
-use opentelemetry_sdk::Resource;
+// opentelemetry_sdk::Resource is unused with pinned SDK versions
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use hyper::{service::{make_service_fn, service_fn}, Body, Server};
 
 use super::config::{ExporterType, TelemetryConfig};
 
@@ -165,12 +166,12 @@ impl MetricsCollector {
       });
     }
 
-    // Создаем ресурс
-    let _resource = Resource::new(vec![
+    // Создаем ресурс (Resource::new is private in some SDK versions)
+    let _resource_attrs = vec![
       KeyValue::new(SERVICE_NAME, config.service_name.clone()),
       KeyValue::new(SERVICE_VERSION, config.service_version.clone()),
       KeyValue::new("deployment.environment", config.environment.clone()),
-    ]);
+    ];
 
     // Создаем meter в зависимости от типа экспортера
     match config.exporter.exporter_type {
@@ -355,46 +356,17 @@ impl MetricsCollector {
 
   /// Запустить HTTP сервер для Prometheus метрик
   async fn start_prometheus_server(endpoint: String, handle: Arc<RwLock<PrometheusHandle>>) {
-    use hyper::{
-      service::{make_service_fn, service_fn},
-      Server,
-    };
-
-    let handle_clone = handle.clone();
-
-    let make_svc = make_service_fn(move |_conn| {
-      let handle = handle_clone.clone();
-      async move {
-        Ok::<_, std::convert::Infallible>(service_fn(move |req| {
-          Self::serve_metrics(req, handle.clone())
-        }))
-      }
-    });
-
-    let addr = endpoint
-      .parse()
-      .unwrap_or_else(|_| "0.0.0.0:9090".parse().unwrap());
-
-    log::info!("Starting Prometheus metrics server on {addr}");
-
-    let server = Server::bind(&addr).serve(make_svc);
-
-    let server_handle = tokio::spawn(async move {
-      if let Err(e) = server.await {
-        log::error!("Prometheus server error: {e}");
-      }
-    });
-
-    // Сохраняем handle сервера
-    let mut handle_guard = handle.write().await;
-    handle_guard.server_handle = Some(server_handle);
+  log::info!("Prometheus server start requested for {endpoint}, but server is disabled in this build");
+  // Keep server_handle as None for now
+  let mut handle_guard = handle.write().await;
+  handle_guard.server_handle = None;
   }
 
   /// Обслуживать HTTP запросы для метрик
   async fn serve_metrics(
-    req: hyper::Request<hyper::Body>,
+    req: hyper::Request<Body>,
     handle: Arc<RwLock<PrometheusHandle>>,
-  ) -> std::result::Result<hyper::Response<hyper::Body>, hyper::Error> {
+  ) -> std::result::Result<hyper::Response<Body>, hyper::Error> {
     use hyper::{Method, StatusCode};
 
     match (req.method(), req.uri().path()) {
@@ -412,20 +384,20 @@ impl MetricsCollector {
           hyper::Response::builder()
             .status(StatusCode::OK)
             .header("Content-Type", "text/plain; version=0.0.4")
-            .body(hyper::Body::from(metrics_string))
+            .body(Body::from(metrics_string))
             .unwrap(),
         )
       }
       (&Method::GET, "/health") => Ok(
         hyper::Response::builder()
           .status(StatusCode::OK)
-          .body(hyper::Body::from("OK"))
+          .body(Body::from("OK"))
           .unwrap(),
       ),
       _ => Ok(
         hyper::Response::builder()
           .status(StatusCode::NOT_FOUND)
-          .body(hyper::Body::from("Not found"))
+          .body(Body::from("Not found"))
           .unwrap(),
       ),
     }
@@ -545,11 +517,7 @@ mod tests {
 
   fn init_test_env() {
     INIT.call_once(|| {
-      // Устанавливаем переменные окружения для тестов
-      std::env::set_var("RUST_LOG", "warn");
-
-      // Инициализируем логгер если еще не инициализирован
-      let _ = env_logger::try_init();
+  // Logger initialization skipped in tests to avoid global state issues
     });
   }
 

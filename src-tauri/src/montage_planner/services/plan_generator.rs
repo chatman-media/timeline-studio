@@ -4,14 +4,14 @@
 
 use crate::montage_planner::types::*;
 use rand::prelude::*;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 /// Service for generating optimized montage plans
 pub struct PlanGenerator {
   /// Configuration for plan generation
   config: PlanGenerationConfig,
-  /// Random number generator
-  rng: StdRng,
+  // Random number generator is created per-call to ensure thread-safety
 }
 
 /// Configuration for plan generation
@@ -92,7 +92,6 @@ impl PlanGenerator {
   pub fn new() -> Self {
     Self {
       config: PlanGenerationConfig::default(),
-      rng: StdRng::from_entropy(),
     }
   }
 
@@ -100,7 +99,6 @@ impl PlanGenerator {
   pub fn with_config(config: PlanGenerationConfig) -> Self {
     Self {
       config,
-      rng: StdRng::from_entropy(),
     }
   }
 
@@ -239,8 +237,9 @@ impl PlanGenerator {
       let mut used_indices = std::collections::HashSet::new();
 
       // Select random moments without replacement
-      while genes.len() < target_clips && genes.len() < moments.len() {
-        let index = self.rng.gen_range(0..moments.len());
+    while genes.len() < target_clips && genes.len() < moments.len() {
+  let mut rng = rand::thread_rng();
+  let index = rng.gen_range(0..moments.len());
         if used_indices.insert(index) {
           genes.push(index);
         }
@@ -304,23 +303,24 @@ impl PlanGenerator {
     new_population.extend(population[..elite_count].iter().cloned());
 
     // Generate offspring
-    while new_population.len() < population.len() {
+  while new_population.len() < population.len() {
       let parent1_idx = self.tournament_selection(&population);
       let parent2_idx = self.tournament_selection(&population);
 
       let mut child1 = population[parent1_idx].clone();
       let mut child2 = population[parent2_idx].clone();
 
-      // Crossover
-      if self.rng.gen::<f32>() < self.config.crossover_rate {
+    // Crossover
+  let mut rng = rand::thread_rng();
+  if rng.r#gen::<f32>() < self.config.crossover_rate {
         self.crossover(&mut child1, &mut child2, moments.len());
       }
 
       // Mutation with adaptive rate
-      if self.rng.gen::<f32>() < mutation_rate {
+  if rng.r#gen::<f32>() < mutation_rate {
         self.mutate(&mut child1, moments.len());
       }
-      if self.rng.gen::<f32>() < mutation_rate {
+  if rng.r#gen::<f32>() < mutation_rate {
         self.mutate(&mut child2, moments.len());
       }
 
@@ -351,7 +351,8 @@ impl PlanGenerator {
 
     // Select random candidates
     for _ in 0..tournament_size {
-      candidates.push(self.rng.gen_range(0..population.len()));
+  let mut rng = rand::thread_rng();
+  candidates.push(rng.gen_range(0..population.len()));
     }
 
     // Select based on fitness and diversity contribution
@@ -380,7 +381,8 @@ impl PlanGenerator {
       return;
     }
 
-    let crossover_point = self.rng.gen_range(1..len);
+  let mut rng = rand::thread_rng();
+  let crossover_point = rng.gen_range(1..len);
 
     // Create new children by combining parents
     let mut new_genes1 = child1.genes[..crossover_point].to_vec();
@@ -409,16 +411,17 @@ impl PlanGenerator {
       return;
     }
 
-    let mutation_type = self.rng.gen_range(0..5);
+  let mut rng = rand::thread_rng();
+  let mutation_type = rng.gen_range(0..5);
 
     match mutation_type {
       0 => {
         // Replace random gene
-        let gene_idx = self.rng.gen_range(0..individual.genes.len());
-        let mut new_gene = self.rng.gen_range(0..max_moment_index);
+  let gene_idx = rng.gen_range(0..individual.genes.len());
+  let mut new_gene = rng.gen_range(0..max_moment_index);
         let mut attempts = 0;
         while individual.genes.contains(&new_gene) && attempts < 10 {
-          new_gene = self.rng.gen_range(0..max_moment_index);
+          new_gene = rng.gen_range(0..max_moment_index);
           attempts += 1;
         }
         if !individual.genes.contains(&new_gene) {
@@ -428,8 +431,8 @@ impl PlanGenerator {
       1 => {
         // Swap two genes (maintaining order)
         if individual.genes.len() > 1 {
-          let idx1 = self.rng.gen_range(0..individual.genes.len());
-          let idx2 = self.rng.gen_range(0..individual.genes.len());
+          let idx1 = rng.gen_range(0..individual.genes.len());
+          let idx2 = rng.gen_range(0..individual.genes.len());
           if idx1 != idx2 {
             individual.genes.swap(idx1, idx2);
           }
@@ -438,7 +441,7 @@ impl PlanGenerator {
       2 => {
         // Add new gene if space allows
         if individual.genes.len() < max_moment_index {
-          let new_gene = self.rng.gen_range(0..max_moment_index);
+          let new_gene = rng.gen_range(0..max_moment_index);
           if !individual.genes.contains(&new_gene) {
             individual.genes.push(new_gene);
           }
@@ -447,19 +450,17 @@ impl PlanGenerator {
       3 => {
         // Remove random gene if we have enough
         if individual.genes.len() > 3 {
-          let idx = self.rng.gen_range(0..individual.genes.len());
+          let idx = rng.gen_range(0..individual.genes.len());
           individual.genes.remove(idx);
         }
       }
       4 => {
         // Shift segment - move a subsequence
         if individual.genes.len() > 3 {
-          let start = self.rng.gen_range(0..individual.genes.len() - 1);
-          let end = self
-            .rng
-            .gen_range(start + 1..=individual.genes.len().min(start + 3));
+          let start = rng.gen_range(0..individual.genes.len() - 1);
+          let end = rng.gen_range(start + 1..=individual.genes.len().min(start + 3));
           let segment: Vec<_> = individual.genes.drain(start..end).collect();
-          let insert_pos = self.rng.gen_range(0..=individual.genes.len());
+          let insert_pos = rng.gen_range(0..=individual.genes.len());
           for (i, gene) in segment.into_iter().enumerate() {
             individual.genes.insert(insert_pos + i, gene);
           }
@@ -773,20 +774,21 @@ impl PlanGenerator {
   ) {
     let elite_count = (self.config.elite_percentage * population.len() as f32) as usize;
 
-    for item in population.iter_mut().take(elite_count) {
+  for item in population.iter_mut().take(elite_count) {
       let mut best_neighbor = item.clone();
       let mut best_fitness = best_neighbor.fitness;
 
       // Try local improvements
       for _ in 0..self.config.local_search_iterations {
-        let mut neighbor = item.clone();
+    let mut neighbor = item.clone();
 
-        // Try different local moves
-        match self.rng.gen_range(0..3) {
+    // Try different local moves
+  let mut rng = rand::thread_rng();
+  match rng.gen_range(0..3) {
           0 => {
             // Try swapping adjacent moments
             if neighbor.genes.len() > 1 {
-              let idx = self.rng.gen_range(0..neighbor.genes.len() - 1);
+              let idx = rng.gen_range(0..neighbor.genes.len() - 1);
               neighbor.genes.swap(idx, idx + 1);
             }
           }
@@ -813,7 +815,7 @@ impl PlanGenerator {
           _ => {
             // Try adjusting clip boundaries
             if neighbor.genes.len() > 2 {
-              let idx = self.rng.gen_range(1..neighbor.genes.len() - 1);
+              let idx = rng.gen_range(1..neighbor.genes.len() - 1);
               // Try nearby moments
               let current = neighbor.genes[idx];
               if current > 0 && !neighbor.genes.contains(&(current - 1)) {
@@ -857,10 +859,11 @@ impl PlanGenerator {
     // Replace worst individuals with new random ones
     for item in population.iter_mut().skip(start_idx) {
       let mut genes = Vec::new();
-      let target_size = self.rng.gen_range(3..moments.len().min(20));
+  let mut rng = rand::thread_rng();
+  let target_size = rng.gen_range(3..moments.len().min(20));
 
-      while genes.len() < target_size {
-        let idx = self.rng.gen_range(0..moments.len());
+    while genes.len() < target_size {
+  let idx = rng.gen_range(0..moments.len());
         if !genes.contains(&idx) {
           genes.push(idx);
         }
