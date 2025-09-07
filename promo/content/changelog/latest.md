@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/chatman-media/timeline-studio/compare/v1.3.9...v1.3.10) (2025-09-07)
+
+
+### Bug Fixes
+
+* wrap env::set_var and env::remove_var calls in unsafe blocks ([61da046](https://github.com/chatman-media/timeline-studio/commit/61da04687859d30d80361f631260dee80917ac83))
+
 ## [1.3.9](https://github.com/chatman-media/timeline-studio/compare/v1.3.8...v1.3.9) (2025-08-12)
 
 
