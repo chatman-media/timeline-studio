@@ -18,18 +18,35 @@ export type {
 } from "../machines/montage-planner-machine"
 // AI Intelligence types
 export type {
+  AdaptedContent,
+  AIConfig,
   AIIntelligenceContext,
   AIIntelligenceEvent,
   ContentInsights,
+  GeneratedScript,
+  IntelligentContent,
   KeyMoment,
   LegacyAIConfig,
   LegacyIntelligentContent,
   LegacyUnifiedContentAnalysis,
   MediaFile as AIMediaFile,
+  PlatformId,
   ProcessedMoment,
+  ProcessingError,
+  ProcessingStep,
   SceneInfo,
+  ScriptGenerationParams,
+  ScriptStyle,
+  UnifiedContentAnalysis,
 } from "./ai-intelligence"
-export { KeyMomentType } from "./ai-intelligence"
+export {
+  ContentType,
+  Emotion,
+  KeyMomentType,
+  NarrativeType,
+  PaceType,
+  ProcessingStatus,
+} from "./ai-intelligence"
 // Chat types
 export type {
   Agent,

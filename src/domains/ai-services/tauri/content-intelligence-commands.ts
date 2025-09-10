@@ -3,8 +3,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { ScriptStyle } from "@/domains/ai-services/types/script-generation"
-import type { AdaptedContent, GeneratedScript, PlatformId, UnifiedContentAnalysis } from "../types/ai-intelligence"
+import type { AdaptedContent, GeneratedScript, PlatformId, ScriptStyle, UnifiedContentAnalysis } from "../types/ai-intelligence"
 
 /**
  * Video Analysis Commands via FFmpeg

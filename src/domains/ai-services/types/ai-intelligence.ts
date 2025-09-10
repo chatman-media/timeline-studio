@@ -7,12 +7,18 @@
 import {
   AdaptedContent,
   AIConfig,
+  ContentType,
+  Emotion,
   GeneratedScript,
   IntelligentContent,
+  NarrativeType,
+  PaceType,
   PlatformId,
   ProcessingError,
+  ProcessingStatus,
   ProcessingStep,
   ScriptGenerationParams,
+  ScriptStyle,
   UnifiedContentAnalysis,
 } from "@/features/ai-content-intelligence"
 import { ContentClassification } from "./content-analysis"
@@ -117,6 +123,29 @@ export enum KeyMomentType {
   TRANSITION = "transition",
   INTRO = "intro",
   OUTRO = "outro",
+}
+
+// Direct exports for current usage
+export type {
+  AdaptedContent,
+  AIConfig,
+  GeneratedScript,
+  IntelligentContent,
+  PlatformId,
+  ProcessingError,
+  ProcessingStep,
+  ScriptGenerationParams,
+  ScriptStyle,
+  UnifiedContentAnalysis,
+}
+
+// Enum exports
+export {
+  ContentType,
+  Emotion,
+  NarrativeType,
+  PaceType,
+  ProcessingStatus,
 }
 
 // Re-exports for backward compatibility
