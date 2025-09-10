@@ -1,6 +1,5 @@
 // Scene Analysis Engine exports
 
-export { SceneAnalysisEngine } from "./services/scene-analysis-engine"
-export { VisionService } from "./services/vision-service"
+export { SceneAnalysisEngine } from "./scene-analysis-engine"
 
 export * from "./types"

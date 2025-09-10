@@ -6,8 +6,8 @@
  */
 
 // Используем shared типы вместо ai-chat
-import type { MediaFile as MediaInput, SceneAnalysis } from "@domains/ai-services"
-import { PersonDatabaseService } from "@/features/person-identification/services/person-database-service"
+import type { MediaFile as MediaInput, SceneAnalysis } from "@/domains/ai-services"
+import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification/person-database-service"
 import type {
   DetectedFace,
   FaceEmbedding,
@@ -82,6 +82,7 @@ export interface AudioCharacteristics {
  * Использует shared AI services
  */
 export class SceneAnalysisEngine {
+  private static instance: SceneAnalysisEngine | null = null
   private sharedAIService: any = null
   private ffmpegService: any = null
   private personDatabase: PersonDatabaseService
@@ -98,12 +99,22 @@ export class SceneAnalysisEngine {
   }
 
   /**
+   * Singleton pattern - получить единственный экземпляр
+   */
+  static getInstance(): SceneAnalysisEngine {
+    if (!SceneAnalysisEngine.instance) {
+      SceneAnalysisEngine.instance = new SceneAnalysisEngine()
+    }
+    return SceneAnalysisEngine.instance
+  }
+
+  /**
    * Инициализация shared сервисов
    */
   private async initializeServices() {
     if (!this.sharedAIService) {
       try {
-        const { getAIContainer } = await import("@domains/ai-core")
+        const { getAIContainer } = await import("@/domains/ai-core")
         const aiContainer = getAIContainer()
         this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
         this.ffmpegService = await aiContainer.resolve("FFmpegService")
