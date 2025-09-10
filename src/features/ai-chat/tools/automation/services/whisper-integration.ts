@@ -3,8 +3,8 @@
  * Мост между Enhanced Subtitle Automation и существующими сервисами транскрипции
  */
 
-import type { SpeechDetection } from "../../../../ai-content-intelligence/shared/types/content-analysis"
-import type { TranscriptionService } from "../../../../transcription/services/transcription-service"
+import type { SpeechDetection } from "@/domains/ai-services/types/content-analysis"
+import type { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
 import type { TranscriptionOptions, TranscriptionResult } from "../../../../transcription/types"
 
 export interface WhisperIntegrationOptions {

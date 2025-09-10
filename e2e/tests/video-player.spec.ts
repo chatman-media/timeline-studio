@@ -114,7 +114,7 @@ test.describe("Video Player Functionality", () => {
     const hasSpeedControl =
       (await page.locator('button:has-text("1x"), button:has-text("1.0x")').count()) > 0 ||
       (await page.locator('[class*="speed"], [aria-label*="speed" i]').count()) > 0 ||
-      (await page.locator("text=/\d(\.\d)?x/").count()) > 0
+      (await page.locator("text=/d(.d)?x/").count()) > 0
 
     if (hasSpeedControl) {
       const speedButton = page

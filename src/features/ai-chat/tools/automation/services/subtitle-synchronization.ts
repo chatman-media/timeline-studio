@@ -7,7 +7,7 @@ import type {
   AudioDetections,
   SceneAnalysis,
   SpeechDetection,
-} from "../../../../ai-content-intelligence/shared/types/content-analysis"
+} from "@/domains/ai-services/types/content-analysis"
 import type { SubtitleItem } from "../subtitle-tools"
 
 export interface SynchronizationOptions {

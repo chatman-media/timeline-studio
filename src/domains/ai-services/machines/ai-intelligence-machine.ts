@@ -10,7 +10,7 @@ import { assign, emit, fromPromise, setup } from "xstate"
 import {
   getAIService,
   getFFmpegService,
-} from "../../../features/ai-content-intelligence/shared/services/media-analysis-interface"
+} from "@/domains/ai-services/services/media-analysis-interface"
 // Import types from domain
 import type {
   AdaptedContent,

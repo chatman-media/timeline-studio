@@ -8,7 +8,7 @@ import type {
   SpeechDetection,
   TextDetection,
   UnifiedContentAnalysis,
-} from "../../../ai-content-intelligence/shared/types/content-analysis"
+} from "@/domains/ai-services/types/content-analysis"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { SubtitleAIIntegrationService } from "./services/subtitle-ai-integration"
 import type { SubtitleItem } from "./subtitle-tools"

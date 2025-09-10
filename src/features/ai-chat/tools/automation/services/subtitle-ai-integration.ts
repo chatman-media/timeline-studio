@@ -11,7 +11,7 @@ import type {
   SpeechDetection,
   TextDetection,
   UnifiedContentAnalysis,
-} from "../../../../ai-content-intelligence/shared/types/content-analysis"
+} from "@/domains/ai-services/types/content-analysis"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 import { WhisperIntegrationService } from "./whisper-integration"
 

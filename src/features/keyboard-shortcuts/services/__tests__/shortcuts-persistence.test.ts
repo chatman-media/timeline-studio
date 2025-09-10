@@ -100,7 +100,7 @@ describe("ShortcutsPersistence", () => {
       const { Store } = await import("@tauri-apps/plugin-store")
       ;(Store as any).mockImplementation(() => mockStore)
 
-      // @ts-ignore
+      // @ts-expect-error
       window.__TAURI__ = {}
 
       await persistence.saveSettings(mockShortcuts, false)
@@ -115,7 +115,7 @@ describe("ShortcutsPersistence", () => {
       })
       expect(mockStore.save).toHaveBeenCalled()
 
-      // @ts-ignore
+      // @ts-expect-error
       delete window.__TAURI__
     })
 
@@ -129,7 +129,7 @@ describe("ShortcutsPersistence", () => {
       const { Store } = await import("@tauri-apps/plugin-store")
       ;(Store as any).mockImplementation(() => mockStore)
 
-      // @ts-ignore
+      // @ts-expect-error
       window.__TAURI__ = {}
 
       await persistence.saveSettings(mockShortcuts, true)
@@ -138,7 +138,7 @@ describe("ShortcutsPersistence", () => {
       const saved = JSON.parse(mockLocalStorage["timeline-studio-shortcuts"])
       expect(saved.globalEnabled).toBe(true)
 
-      // @ts-ignore
+      // @ts-expect-error
       delete window.__TAURI__
     })
 
@@ -184,14 +184,14 @@ describe("ShortcutsPersistence", () => {
       const { Store } = await import("@tauri-apps/plugin-store")
       ;(Store as any).mockImplementation(() => mockStore)
 
-      // @ts-ignore
+      // @ts-expect-error
       window.__TAURI__ = {}
 
       const loaded = await persistence.loadSettings()
       expect(loaded).toEqual(settings)
       expect(mockStore.get).toHaveBeenCalledWith("timeline-studio-shortcuts")
 
-      // @ts-ignore
+      // @ts-expect-error
       delete window.__TAURI__
     })
 
@@ -280,7 +280,7 @@ describe("ShortcutsPersistence", () => {
       const { Store } = await import("@tauri-apps/plugin-store")
       ;(Store as any).mockImplementation(() => mockStore)
 
-      // @ts-ignore
+      // @ts-expect-error
       window.__TAURI__ = {}
 
       await persistence.clearSettings()
@@ -288,7 +288,7 @@ describe("ShortcutsPersistence", () => {
       expect(mockStore.delete).toHaveBeenCalledWith("timeline-studio-shortcuts")
       expect(mockStore.save).toHaveBeenCalled()
 
-      // @ts-ignore
+      // @ts-expect-error
       delete window.__TAURI__
     })
 
@@ -373,7 +373,7 @@ describe("ShortcutsPersistence", () => {
       const { Store } = await import("@tauri-apps/plugin-store")
       ;(Store as any).mockImplementation(() => mockStore)
 
-      // @ts-ignore
+      // @ts-expect-error
       window.__TAURI__ = {}
 
       await persistence.importSettings(JSON.stringify(settings))
@@ -381,7 +381,7 @@ describe("ShortcutsPersistence", () => {
       expect(mockStore.set).toHaveBeenCalledWith("timeline-studio-shortcuts", settings)
       expect(mockStore.save).toHaveBeenCalled()
 
-      // @ts-ignore
+      // @ts-expect-error
       delete window.__TAURI__
     })
 

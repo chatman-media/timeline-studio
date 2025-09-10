@@ -3,7 +3,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { ScriptStyle } from "@/features/ai-content-intelligence/shared/types/script-generation"
+import { ScriptStyle } from "@/domains/ai-services/types/script-generation"
 import type { AdaptedContent, GeneratedScript, PlatformId, UnifiedContentAnalysis } from "../types/ai-intelligence"
 
 /**

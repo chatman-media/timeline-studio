@@ -4,7 +4,7 @@
  */
 
 import { UnifiedAIService } from "@/domains/ai-core/services"
-import { AdaptedContent } from "@/features/ai-content-intelligence/shared/types"
+import { AdaptedContent } from "@/domains/ai-services/types"
 
 export class LanguageAdapter {
   private aiService: UnifiedAIService

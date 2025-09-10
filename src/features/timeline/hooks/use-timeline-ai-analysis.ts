@@ -4,16 +4,15 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-
-import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
-import type { SceneAnalysisResult } from "@/features/ai-content-intelligence/engines/scene-analysis/types"
-import type { AIIntelligenceOrchestrator } from "@/features/ai-content-intelligence/shared/services/ai-intelligence-orchestrator"
 import type {
   ContentInsights,
   KeyMoment,
   LegacyUnifiedContentAnalysis as UnifiedContentAnalysis,
 } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
+import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+import type { SceneAnalysisResult } from "@/features/ai-content-intelligence/engines/scene-analysis/types"
+import type { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-intelligence-orchestrator"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
