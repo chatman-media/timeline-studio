@@ -3,6 +3,23 @@
  * Типы для анализа и классификации контента
  */
 
+// Speech Detection Types
+export interface SpeechDetection {
+  startTime: number
+  endTime: number
+  text?: string
+  transcript?: string
+  speaker?: string
+  language?: string
+  confidence: number
+  words?: Array<{
+    word: string
+    startTime: number
+    endTime: number
+    confidence: number
+  }>
+}
+
 // Content Classification Types
 export enum ContentType {
   NARRATIVE = "narrative",

@@ -4,28 +4,21 @@
  */
 
 import type { SpeechDetection } from "@/domains/ai-services/types/content-analysis"
-import type { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
-import type { TranscriptionOptions, TranscriptionResult } from "../../../../transcription/types"
+import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
+import type { TranscriptionOptions, TranscriptionResult, WhisperIntegrationOptions } from "@/domains/ai-services/types/transcription"
 
-export interface WhisperIntegrationOptions {
-  provider?: "whisper" | "faster-whisper" | "openai"
-  modelSize?: "tiny" | "base" | "small" | "medium" | "large-v3"
-  language?: string
-  wordTimestamps?: boolean
-  vadFilter?: boolean
-  device?: "auto" | "cpu" | "cuda" | "mps"
-  computeType?: "auto" | "int8" | "float16" | "float32"
-}
+// WhisperIntegrationOptions теперь в domains/ai-services/types/transcription
 
 /**
  * Сервис интеграции с Whisper для распознавания речи
  */
 export class WhisperIntegrationService {
   private static instance: WhisperIntegrationService
-  private transcriptionService: TranscriptionService | null = null
-  private isInitialized = false
+  private transcriptionService: TranscriptionService
 
-  private constructor() {}
+  private constructor() {
+    this.transcriptionService = TranscriptionService.getInstance()
+  }
 
   /**
    * Получить экземпляр сервиса (Singleton)
@@ -38,74 +31,11 @@ export class WhisperIntegrationService {
   }
 
   /**
-   * Инициализация сервиса транскрипции
-   */
-  public async initialize(): Promise<void> {
-    if (this.isInitialized) return
-
-    try {
-      // Динамический импорт для избежания circular dependency
-      const { TranscriptionService } = await import("../../../../transcription/services/transcription-service")
-
-      this.transcriptionService = new TranscriptionService()
-      this.isInitialized = true
-
-      console.log("WhisperIntegrationService initialized successfully")
-    } catch (error) {
-      console.error("Failed to initialize WhisperIntegrationService:", error)
-      throw error
-    }
-  }
-
-  /**
    * Распознавание речи через Whisper
    */
   public async recognizeSpeech(mediaPath: string, options: WhisperIntegrationOptions = {}): Promise<SpeechDetection[]> {
-    if (!this.isInitialized) {
-      await this.initialize()
-    }
-
-    if (!this.transcriptionService) {
-      throw new Error("TranscriptionService not initialized")
-    }
-
-    console.log("Starting speech recognition with Whisper:", {
-      mediaPath,
-      options,
-    })
-
-    try {
-      // Конвертируем наши опции в формат TranscriptionOptions
-      const transcriptionOptions: TranscriptionOptions = {
-        language: options.language || "auto",
-        task: "transcribe",
-        modelSize: options.modelSize || "base",
-        wordTimestamps: options.wordTimestamps ?? true,
-        vadFilter: options.vadFilter ?? true,
-        provider: (options.provider === "whisper" ? "local" : options.provider) || "faster-whisper",
-        device: options.device || "auto",
-        computeType: options.computeType || "auto",
-      }
-
-      // Выполняем транскрипцию
-      const transcriptionResult = await this.transcriptionService.transcribeMedia(
-        mediaPath,
-        transcriptionOptions,
-        (progress) => {
-          console.log(`Speech recognition progress: ${progress.progress}% - ${progress.status}`)
-        },
-      )
-
-      // Конвертируем результат в формат SpeechDetection
-      const speechDetections = this.convertTranscriptionToSpeech(transcriptionResult, options)
-
-      console.log(`Speech recognition completed: found ${speechDetections.length} segments`)
-      return speechDetections
-    } catch (error) {
-      console.error("Speech recognition failed:", error)
-      // Возвращаем пустой массив вместо ошибки для graceful degradation
-      return []
-    }
+    // Делегируем в TranscriptionService, который уже содержит эту логику
+    return this.transcriptionService.recognizeSpeech(mediaPath, options)
   }
 
   /**
@@ -296,9 +226,6 @@ export class WhisperIntegrationService {
    * Проверка доступности моделей Whisper
    */
   public async checkModelAvailability(): Promise<{ available: string[]; recommended: string }> {
-    if (!this.isInitialized) {
-      await this.initialize()
-    }
 
     try {
       // Проверяем доступные модели через TranscriptionService

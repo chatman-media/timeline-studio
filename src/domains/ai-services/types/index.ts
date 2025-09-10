@@ -94,3 +94,6 @@ export interface AIServicesDomainContext {
   activeServices: string[]
   lastError?: string
 }
+
+// Transcription types
+export * from "./transcription"

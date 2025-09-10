@@ -4,8 +4,8 @@ export { useEnhancedSubtitleAutomation } from "./hooks/use-enhanced-subtitle-aut
 // Хуки
 export { useTranscription, useWhisperModels } from "./hooks/use-transcription"
 
-// Сервисы
-export { TranscriptionService } from "./services/transcription-service"
+// Сервисы (переехали в domains)
+export { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
 
-// Типы
-export * from "./types"
+// Типы (переехали в domains)
+export * from "@/domains/ai-services/types/transcription"
