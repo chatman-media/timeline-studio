@@ -11,7 +11,7 @@ import type {
 } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-import type { SceneAnalysisResult } from "@/features/ai-content-intelligence/engines/scene-analysis/types"
+import type { AdvancedSceneAnalysis } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
 import type { AIIntelligenceOrchestrator } from "@/features/ai-content-intelligence/shared/services/ai-intelligence-orchestrator"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
@@ -20,7 +20,7 @@ interface TimelineAnalysisState {
   isAnalyzing: boolean
   analysisProgress: number
   currentAnalysis: UnifiedContentAnalysis | null
-  sceneAnalysis: SceneAnalysisResult | null
+  sceneAnalysis: AdvancedSceneAnalysis[] | null
   insights: ContentInsights | null
   keyMoments: KeyMoment[]
   error: string | null

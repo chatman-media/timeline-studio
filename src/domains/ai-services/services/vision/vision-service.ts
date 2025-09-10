@@ -1,5 +1,6 @@
 /**
  * Vision Service для анализа изображений с использованием YOLO/ONNX моделей
+ * Перенесено из features/ai-content-intelligence/engines/scene-analysis/services/
  */
 
 export interface VisionServiceConfig {
@@ -106,6 +107,12 @@ export class VisionService {
     }
 
     return analysis
+  }
+
+  async extractFaceEmbedding(_imagePath: string): Promise<number[]> {
+    // Заглушка для извлечения эмбеддинга лица
+    // TODO: Реализовать с использованием FaceNet или аналогичной модели
+    return new Array(128).fill(0).map(() => Math.random())
   }
 
   extractDominantColors(imageData: ImageData, count = 5): string[] {

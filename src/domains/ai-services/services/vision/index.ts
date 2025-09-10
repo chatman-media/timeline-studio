@@ -1,1 +1,5 @@
 export * from "./multimodal-analysis-service"
+export * from "./object-tracking"
+export * from "./onnx-runtime"
+export * from "./vision-adapter"
+export * from "./vision-service"

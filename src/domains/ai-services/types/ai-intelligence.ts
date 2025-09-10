@@ -120,6 +120,7 @@ export enum KeyMomentType {
   ACTION_PEAK = "action_peak",
   DIALOGUE_HIGHLIGHT = "dialogue_highlight",
   VISUAL_HIGHLIGHT = "visual_highlight",
+  AUDIO_PEAK = "audio_peak",
   TRANSITION = "transition",
   INTRO = "intro",
   OUTRO = "outro",

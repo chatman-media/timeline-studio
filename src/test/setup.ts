@@ -210,7 +210,7 @@ vi.mock("@/features/ai-chat/services/unified-ai-service", () => ({
 
 // PersonDatabaseService is not mocked globally to allow testing the real implementation
 
-vi.mock("@/features/ai-content-intelligence/engines/scene-analysis/scene-analysis-engine", () => ({
+vi.mock("@/domains/ai-services/services/scene-analysis/scene-analysis-engine", () => ({
   SceneAnalysisEngine: vi.fn(() => ({
     analyzeScene: vi.fn().mockResolvedValue({
       objects: [],

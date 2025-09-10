@@ -166,7 +166,7 @@ export class PersonIdentificationTool extends BaseAITool {
       } else if (input.faceImagePath) {
         // Поиск по лицу
         const { VisionService } = await import(
-          "@/domains/ai-services/services/vision/vision-adapter"
+          "@/domains/ai-services/services/vision/vision-service"
         )
         const visionService = VisionService.getInstance()
 

@@ -2,7 +2,7 @@
  * Vision Adapter - адаптер для интеграции VisionService с AI архитектурой
  */
 
-import { VisionService } from "@/features/ai-content-intelligence/engines/scene-analysis/services/vision-service"
+import { VisionService } from "./vision-service"
 import type {
   ColorAnalysis,
   CompositionAnalysis,
