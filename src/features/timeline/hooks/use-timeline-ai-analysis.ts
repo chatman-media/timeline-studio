@@ -10,9 +10,9 @@ import type {
   LegacyUnifiedContentAnalysis as UnifiedContentAnalysis,
 } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
-import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
 import type { SceneAnalysisResult } from "@/features/ai-content-intelligence/engines/scene-analysis/types"
-import type { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-intelligence-orchestrator"
+import type { AIIntelligenceOrchestrator } from "@/features/ai-content-intelligence/shared/services/ai-intelligence-orchestrator"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
@@ -85,26 +85,10 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   const [enableAutoAnalysis, setEnableAutoAnalysis] = useState(true)
 
   // Инициализация сервисов
-  const [sceneEngine] = useState(() => new SceneAnalysisEngine())
+  const [sceneEngine] = useState(() => SceneAnalysisEngine.getInstance())
   const [orchestrator] = useState<AIIntelligenceOrchestrator | null>(() => null)
 
-  // Инициализация AI движков
-  useEffect(() => {
-    const initializeEngines = async () => {
-      try {
-        await sceneEngine.initialize()
-        await orchestrator?.initialize()
-      } catch (error) {
-        console.error("Failed to initialize AI engines:", error)
-        setAnalysisState((prev) => ({
-          ...prev,
-          error: "Не удалось инициализировать AI движки",
-        }))
-      }
-    }
-
-    void initializeEngines()
-  }, [sceneEngine, orchestrator])
+  // AI engines инициализируются автоматически при первом использовании
 
   // Анализ отдельного клипа
   const analyzeClip = useCallback(
@@ -124,12 +108,12 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         setAnalysisState((prev) => ({ ...prev, analysisProgress: 10 }))
 
         // Запускаем анализ сцен
-        const sceneResult = await sceneEngine.process({
-          mediaFile: {
-            path: clip.mediaFile.path,
-            name: clip.mediaFile.name,
-            duration: clip.mediaFile.duration || 0,
-          },
+        const sceneResult = await sceneEngine.analyzeScenes({
+          path: clip.mediaFile.path,
+          filename: clip.mediaFile.name,
+          duration: clip.mediaFile.duration || 0,
+          size: clip.mediaFile.size || 0,
+          format: clip.mediaFile.format || "unknown",
         })
 
         setAnalysisState((prev) => ({

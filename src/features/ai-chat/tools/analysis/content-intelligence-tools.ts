@@ -418,7 +418,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     try {
       // Используем Scene Analysis Engine для реального анализа
       const { SceneAnalysisEngine } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
       const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
 
@@ -533,7 +533,7 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       const { SceneDetectionService } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-detection"
+        "@/domains/ai-services/services/scene-analysis/scene-detection"
       )
 
       const sceneDetector = new SceneDetectionService()
@@ -545,7 +545,7 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Импортируем и создаем scene analysis engine
       const { SceneAnalysisEngine } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
       const sceneEngine = new SceneAnalysisEngine()
       await sceneEngine.initialize()
@@ -624,7 +624,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     try {
       const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
       const { SceneAnalysisEngine } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
 
       const classifier = ContentClassifier.getInstance()
@@ -1208,7 +1208,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     try {
       const { getAIContainer } = await import("@/domains/ai-core")
       const { AgeGenderDetectionService } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/age-gender-detection"
+        "@/domains/ai-services/services/scene-analysis/age-gender-detection"
       )
 
       const aiContainer = getAIContainer()
@@ -1338,7 +1338,7 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       const { SceneAnalysisEngine } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
 
       const sceneEngine = new SceneAnalysisEngine()

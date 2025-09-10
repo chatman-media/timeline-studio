@@ -76,7 +76,7 @@ export class PersonIdentificationTool extends BaseAITool {
     try {
       // Используем Scene Analysis Engine для реального анализа
       const { SceneAnalysisEngine } = await import(
-        "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
+        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
       const sceneEngine = new SceneAnalysisEngine()
 
@@ -166,7 +166,7 @@ export class PersonIdentificationTool extends BaseAITool {
       } else if (input.faceImagePath) {
         // Поиск по лицу
         const { VisionService } = await import(
-          "@/features/ai-content-intelligence/engines/scene-analysis/services/vision-service"
+          "@/domains/ai-services/services/vision/vision-adapter"
         )
         const visionService = VisionService.getInstance()
 
