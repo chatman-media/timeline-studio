@@ -2,6 +2,8 @@
  * AI инструмент для интеллектуального анализа контента с использованием BaseAITool
  */
 
+import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+import { MediaFile } from "@/domains/video-editing/types/media"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для интеллектуального анализа контента
@@ -417,13 +419,9 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       // Используем Scene Analysis Engine для реального анализа
-      const { SceneAnalysisEngine } = await import(
-        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-      )
       const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
 
-      const sceneEngine = new SceneAnalysisEngine()
-      await sceneEngine.initialize()
+      const sceneEngine = SceneAnalysisEngine.getInstance()
 
       const classifier = ContentClassifier.getInstance()
 
@@ -434,20 +432,14 @@ export class ContentIntelligenceTool extends BaseAITool {
       }
 
       // Выполняем анализ сцен
-      const analysis = await sceneEngine.process(
-        {
-          mediaFile: {
-            path: videoPath,
-            name: "temp",
-            duration: 0,
-          },
-        },
-        {
-          // Оставляем только существующие свойства
-          shotBoundaryThreshold: 0.7,
-          analysisType: input.analysisDepth === "deep" ? "comprehensive" : "basic",
-        } as any,
-      )
+      const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
+        name: "temp",
+        path: videoPath,
+        type: "video" as any,
+        duration: 0,
+        size: 0,
+      })
 
       // Преобразуем сцены для классификатора
       const scenesForClassifier = (analysis as any).scenes.map((scene: any) => ({
@@ -532,11 +524,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     })
 
     try {
-      const { SceneDetectionService } = await import(
-        "@/domains/ai-services/services/scene-analysis/scene-detection"
-      )
-
-      const sceneDetector = new SceneDetectionService()
+      const sceneDetector = SceneAnalysisEngine.getInstance()
       const videoPath = input.mediaFiles?.[0]
 
       if (!videoPath) {
@@ -547,16 +535,17 @@ export class ContentIntelligenceTool extends BaseAITool {
       const { SceneAnalysisEngine } = await import(
         "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
-      const sceneEngine = new SceneAnalysisEngine()
-      await sceneEngine.initialize()
+      const sceneEngine = SceneAnalysisEngine.getInstance()
 
       // Выполняем детекцию сцен через scene analysis engine
-      const scenes = await sceneEngine.process(
-        {
-          mediaFile: { path: videoPath, name: "temp", duration: 0 },
-        },
-        {} as any, // Используем пустой конфиг с any для избежания ошибок типов
-      )
+      const scenes = await sceneEngine.analyzeScenes({
+        id: "temp",
+        name: "temp",
+        path: videoPath,
+        type: "video" as any,
+        duration: 0,
+        size: 0,
+      })
 
       // Анализируем переходы между сценами
       // transitionAnalysis закомментирован, так как analyzeTransitions может не существовать
@@ -623,13 +612,8 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
-      const { SceneAnalysisEngine } = await import(
-        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-      )
-
       const classifier = ContentClassifier.getInstance()
-      const sceneEngine = new SceneAnalysisEngine()
-      await sceneEngine.initialize()
+      const sceneEngine = SceneAnalysisEngine.getInstance()
 
       const videoPath = input.mediaFiles?.[0]
       if (!videoPath) {
@@ -637,12 +621,14 @@ export class ContentIntelligenceTool extends BaseAITool {
       }
 
       // Быстрый анализ для классификации
-      const analysis = await sceneEngine.process(
-        {
-          mediaFile: { path: videoPath, name: "temp", duration: 0 },
-        },
-        {} as any, // Пустой конфиг с типом any
-      )
+      const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
+        name: "temp",
+        path: videoPath,
+        type: "video" as any,
+        duration: 0,
+        size: 0,
+      })
 
       // Преобразуем сцены для классификатора
       const scenesForClassifier = analysis.scenes.map((scene: any) => ({
@@ -1207,17 +1193,17 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       const { getAIContainer } = await import("@/domains/ai-core")
-      const { AgeGenderDetectionService } = await import(
-        "@/domains/ai-services/services/scene-analysis/age-gender-detection"
-      )
-
+      // Используем SceneAnalysisEngine для анализа возраста и пола
       const aiContainer = getAIContainer()
       const contentAnalyzer = await aiContainer.resolve<any>("ContentAnalyzer")
-      const ageGenderService = new AgeGenderDetectionService({
+      const ageGenderService = SceneAnalysisEngine.getInstance()
+
+      // Создаем конфиг для анализа (заглушка для совместимости)
+      const ageGenderConfig = {
         enableAge: true,
         enableGender: true,
         enableEmotion: true,
-      })
+      }
 
       const videoPath = input.mediaFiles?.[0]
       if (!videoPath) {
@@ -1225,7 +1211,14 @@ export class ContentIntelligenceTool extends BaseAITool {
       }
 
       // Анализируем демографию через видео
-      const demographics = await ageGenderService.analyzeVideo([] as any) // Пустой массив для исправления типа
+      const demographics = await ageGenderService.analyzeScenes({
+        id: "temp",
+        name: "temp",
+        path: videoPath,
+        type: "video" as any,
+        duration: 0,
+        size: 0,
+      })
 
       // Анализируем контент для определения аудитории
       const contentProfile = await contentAnalyzer.analyzeContentProfile({
@@ -1337,12 +1330,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     this.logger?.info("Выполняем оптимизацию вовлечения")
 
     try {
-      const { SceneAnalysisEngine } = await import(
-        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-      )
-
-      const sceneEngine = new SceneAnalysisEngine()
-      await sceneEngine.initialize()
+      const sceneEngine = SceneAnalysisEngine.getInstance()
 
       const videoPath = input.mediaFiles?.[0]
       if (!videoPath) {
@@ -1350,12 +1338,14 @@ export class ContentIntelligenceTool extends BaseAITool {
       }
 
       // Анализируем видео
-      const analysis = await sceneEngine.process(
-        {
-          mediaFile: { path: videoPath, name: "temp", duration: 0 },
-        },
-        {} as any, // Пустой конфиг для избежания ошибок типов
-      )
+      const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
+        name: "temp",
+        path: videoPath,
+        type: "video" as any,
+        duration: 0,
+        size: 0,
+      })
 
       // Оцениваем факторы вовлечения
       const engagementFactors = input.engagementFactors || ["hook", "pacing", "music", "effects", "cta"]

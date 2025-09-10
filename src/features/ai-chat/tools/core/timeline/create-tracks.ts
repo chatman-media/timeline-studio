@@ -2,7 +2,7 @@
  * AI инструмент для создания структуры треков на Timeline с использованием BaseAITool
  */
 
-import type { TimelineTrack, TrackType } from "@/features/timeline/types/timeline"
+import type { TimelineTrack, TrackType } from "@/domains/video-editing/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 import { generateTrackId } from "./utils/generators"
 import { getCurrentTimelineProject, saveTimelineProject } from "./utils/helpers"

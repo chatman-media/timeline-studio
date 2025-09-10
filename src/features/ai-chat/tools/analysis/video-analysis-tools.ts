@@ -11,7 +11,7 @@ import {
   VideoAnalysisOptions,
   VideoMetadata,
 } from "@/domains/ai-services"
-import { MediaFile } from "@/features/media"
+import { MediaFile } from "@/domains/video-editing/types/media"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { AudioAnalysisResult } from "./audio-analysis-tools"
 
