@@ -21,12 +21,15 @@ export type {
   AIIntelligenceContext,
   AIIntelligenceEvent,
   ContentInsights,
+  KeyMoment,
   LegacyAIConfig,
   LegacyIntelligentContent,
   LegacyUnifiedContentAnalysis,
   MediaFile as AIMediaFile,
   ProcessedMoment,
+  SceneInfo,
 } from "./ai-intelligence"
+export { KeyMomentType } from "./ai-intelligence"
 // Chat types
 export type {
   Agent,

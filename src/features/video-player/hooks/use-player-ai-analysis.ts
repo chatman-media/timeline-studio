@@ -8,8 +8,11 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
 import type {
   KeyMoment,
-  ObjectDetection,
   SceneInfo,
+} from "@/domains/ai-services/types"
+// TODO: Migrate ObjectDetection to domains
+import type {
+  ObjectDetection,
 } from "@/features/ai-content-intelligence/shared/types/content-analysis"
 
 import { FrameCaptureService } from "../services/frame-capture-service"

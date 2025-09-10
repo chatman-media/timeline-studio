@@ -88,6 +88,37 @@ export interface ContentInsights {
   targetDemographics: string[]
 }
 
+// Scene and Key Moment types
+export interface SceneInfo {
+  id: string
+  type: string
+  startTime: number
+  endTime: number
+  duration: number
+  confidence: number
+}
+
+export interface KeyMoment {
+  id: string
+  timestamp: number
+  duration: number
+  type: KeyMomentType
+  score: number
+  description: string
+  sceneId: string
+}
+
+export enum KeyMomentType {
+  CLIMAX = "climax",
+  EMOTIONAL_PEAK = "emotional_peak",
+  ACTION_PEAK = "action_peak",
+  DIALOGUE_HIGHLIGHT = "dialogue_highlight",
+  VISUAL_HIGHLIGHT = "visual_highlight",
+  TRANSITION = "transition",
+  INTRO = "intro",
+  OUTRO = "outro",
+}
+
 // Re-exports for backward compatibility
 export type { AIConfig as LegacyAIConfig }
 export type { IntelligentContent as LegacyIntelligentContent }

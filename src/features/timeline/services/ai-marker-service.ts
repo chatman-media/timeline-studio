@@ -7,8 +7,8 @@ import type {
   ContentInsights,
   KeyMoment,
   SceneInfo,
-} from "@/features/ai-content-intelligence/shared/types/content-analysis"
-import { KeyMomentType } from "@/features/ai-content-intelligence/shared/types/content-analysis"
+} from "@/domains/ai-services/types"
+import { KeyMomentType } from "@/domains/ai-services/types"
 
 import type { TimelineMarker } from "../types/markers"
 

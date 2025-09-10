@@ -11,9 +11,9 @@ import type { AIIntelligenceOrchestrator } from "@/features/ai-content-intellige
 import type {
   ContentInsights,
   KeyMoment,
-  UnifiedContentAnalysis,
-} from "@/features/ai-content-intelligence/shared/types/content-analysis"
-import { KeyMomentType } from "@/features/ai-content-intelligence/shared/types/content-analysis"
+  LegacyUnifiedContentAnalysis as UnifiedContentAnalysis,
+} from "@/domains/ai-services/types"
+import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
