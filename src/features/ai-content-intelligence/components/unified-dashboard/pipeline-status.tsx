@@ -3,9 +3,9 @@
  * Отображает прогресс обработки pipeline
  */
 
+import { PipelineProgress } from "@/domains/ai-services"
+import { ProcessingStatus } from "@/domains/ai-services/types"
 import { cn } from "@/lib/utils"
-import type { PipelineProgress } from "../../shared/types"
-import { ProcessingStatus } from "../../shared/types"
 
 interface PipelineStatusProps {
   progress: PipelineProgress | null

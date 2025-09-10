@@ -2,14 +2,9 @@
  * Типы для Multi-Platform Engine
  */
 
-import {
-  AdaptedContent,
-  AspectRatio,
-  GeneratedScript,
-  Platform,
-  PlatformId,
-  UnifiedContentAnalysis,
-} from "@/features/ai-content-intelligence"
+import { AspectRatio } from "lightningcss"
+import { AdaptedContent, PlatformId } from "../../types"
+import { GeneratedScript, UnifiedContentAnalysis } from "../script-generation"
 
 export interface MultiPlatformConfig {
   // Настройки адаптации

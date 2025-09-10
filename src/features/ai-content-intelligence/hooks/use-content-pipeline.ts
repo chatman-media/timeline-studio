@@ -4,17 +4,12 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type {
-  AIConfig,
-  BatchProcessingConfig,
-  BatchProgress,
-  IntelligentContent,
-  PipelineConfig,
-  PipelineEvent,
-  PipelineProgress,
-} from "../shared/types"
-import { AccuracyLevel, AIProvider, AnalysisDepth, SpeedPriority, StepType } from "../shared/types"
-import { ProcessingStatus } from "../shared/types/pipeline"
+import { AIProvider } from "@/domains/ai-core/services"
+import { PipelineProgress } from "@/domains/ai-services"
+import { BatchProgress } from "@/domains/ai-services/services"
+import { BatchProcessingConfig } from "@/domains/ai-services/services/multi-platform/services/batch-processor"
+import { AIConfig, IntelligentContent, ProcessingStatus } from "@/domains/ai-services/types"
+import { PipelineConfig, PipelineEvent } from "../unified-pipeline/unified-content-pipeline"
 import { useAIIntelligence } from "./use-ai-intelligence"
 
 interface UseContentPipelineOptions {

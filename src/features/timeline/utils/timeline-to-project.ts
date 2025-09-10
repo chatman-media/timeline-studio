@@ -10,6 +10,7 @@ import type { StyleTemplate } from "@/features/style-templates/types"
 import { SubtitleClip } from "@/features/subtitles"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
+import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
   AlignX,
   AlignY,
@@ -27,6 +28,7 @@ import {
   type SubtitleStyle as BackendSubtitleStyle,
   type Template as BackendTemplate,
   type Track as BackendTrack,
+  CompilerTemplateType,
   type ElementAnimation,
   FitMode,
   FontWeight,
@@ -44,11 +46,9 @@ import {
   SubtitleEasing,
   SubtitleFontWeight,
   type TemplateCell,
-  CompilerTemplateType,
   TextAlign,
   toRustEnumCase,
 } from "../../../domains/video-editing/types"
-import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
   type AppliedTransition,
   isSubtitleClip,

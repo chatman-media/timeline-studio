@@ -3,21 +3,16 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import { useAIIntelligence as useAIIntelligenceContext } from "../services/ai-intelligence-provider"
-import { AIIntelligenceOrchestrator } from "../shared/services/ai-intelligence-orchestrator"
-
-import type {
+import { GeneratedScript, PipelineControl, PipelineProgress, ScriptGenerationParams } from "@/domains/ai-services"
+import {
   AdaptedContent,
   AIConfig,
-  GeneratedScript,
   IntelligentContent,
-  PipelineControl,
-  PipelineProgress,
   PlatformId,
-  ScriptGenerationParams,
   UnifiedContentAnalysis,
-} from "../shared/types"
+} from "@/domains/ai-services/types"
+import { AIIntelligenceOrchestrator } from ".."
+import { useAIIntelligence as useAIIntelligenceContext } from "../services/ai-intelligence-provider"
 
 interface UseAIIntelligenceOptions {
   autoInitialize?: boolean
@@ -186,13 +181,13 @@ export function useAIIntelligence(options: UseAIIntelligenceOptions = {}): UseAI
         pipelineControlRef.current = orchestrator.createPipelineControl()
 
         // Подписываемся на прогресс
-        const unsubscribeProgress = pipelineControlRef.current.onProgress((progress) => {
+        const unsubscribeProgress = pipelineControlRef.current?.onProgress((progress) => {
           setProgress(progress)
           onProgress?.(progress)
         })
 
         // Подписываемся на события
-        const unsubscribeEvents = pipelineControlRef.current.onEvent((event) => {
+        const unsubscribeEvents = pipelineControlRef.current?.onEvent((event) => {
           console.log("Pipeline event:", event.type, event.data)
         })
 

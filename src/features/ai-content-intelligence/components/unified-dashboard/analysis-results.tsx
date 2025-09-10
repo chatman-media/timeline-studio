@@ -3,9 +3,8 @@
  * Отображает результаты AI анализа
  */
 
+import { IntelligentContent } from "@/domains/ai-services/types"
 import { cn } from "@/lib/utils"
-
-import type { IntelligentContent } from "../../shared/types"
 
 interface AnalysisResultsProps {
   result: IntelligentContent

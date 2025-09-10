@@ -1,7 +1,6 @@
 import { useMemo } from "react"
-
+import { AIIntelligenceOrchestrator } from "@/domains/ai-services/services"
 import { useAIIntelligence } from "../services/ai-intelligence-provider"
-import { AIIntelligenceOrchestrator } from "../shared/services/ai-intelligence-orchestrator"
 
 /**
  * Хук для получения экземпляра AI Intelligence Orchestrator

@@ -6,16 +6,11 @@
  */
 
 // Используем shared типы
-import type { MediaFile as MediaInput } from "@/domains/ai-services"
-import {
-  type AdvancedSceneAnalysis,
-  SceneAnalysisEngine,
-} from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-import {
-  ContentClassificationEngine,
-  type ExtendedContentClassification,
-} from "../engines/content-classification/content-classification-engine"
-import { UnifiedContentAnalysis } from "../shared/types/content-analysis"
+import { AdvancedSceneAnalysis, type MediaFile as MediaInput, SceneAnalysisEngine } from "@/domains/ai-services"
+import ContentClassificationEngine, {
+  ExtendedContentClassification,
+} from "@/domains/ai-services/services/engines/content-classification/content-classification-engine"
+import { UnifiedContentAnalysis } from "@/domains/ai-services/types"
 
 // Pipeline конфигурация
 export interface PipelineConfig {
