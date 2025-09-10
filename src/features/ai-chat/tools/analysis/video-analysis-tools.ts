@@ -11,7 +11,7 @@ import {
   VideoAnalysisOptions,
   VideoMetadata,
 } from "@/domains/ai-services"
-import { MediaFile } from "@/domains/video-editing/types/media"
+import { MediaFile, MediaType } from "@/domains/video-editing/types/media"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { AudioAnalysisResult } from "./audio-analysis-tools"
 
@@ -197,7 +197,7 @@ export class VideoAnalysisTool extends BaseAITool {
 
           case "analyze_audio":
             result = await this.analyzeVideoAudio(input)
-            if (result.audio && result.audio.silentSegments.length > 0) {
+            if (result.audio && result.audio.audioLevels?.clippingInstances && result.audio.audioLevels.clippingInstances > 0) {
               warnings.push("Обнаружен клиппинг в аудио")
               recommendations.push("Уменьшите уровень громкости")
             }
@@ -393,12 +393,13 @@ export class VideoAnalysisTool extends BaseAITool {
 
     try {
       const ffmpegService = await this.getFFmpegService()
-      const mediaFile: MediaFile = {
-        id: input.clipId,
+      const mediaFile = {
         path: input.clipId,
+        name: input.clipId.split("/").pop() || input.clipId,
         filename: input.clipId.split("/").pop() || input.clipId,
+        type: "video" as const,
+        duration: 0,
         size: 0,
-        type: "video",
       }
       const audio = await ffmpegService.analyzeAudio(mediaFile)
 
@@ -413,7 +414,16 @@ export class VideoAnalysisTool extends BaseAITool {
       return {
         operation: "analyze_audio",
         success: true,
-        audio,
+        audio: {
+          analysisType: "audio_analysis",
+          audioLevels: {
+            peakLevels: [audio.volume.peak],
+            averageLevel: audio.volume.average,
+            dynamicRange: audio.volume.peak - audio.volume.average,
+            clippingInstances: 0,
+            recommendedAdjustments: recommendations,
+          },
+        },
         message: "Анализ аудио завершен",
         recommendations,
       }

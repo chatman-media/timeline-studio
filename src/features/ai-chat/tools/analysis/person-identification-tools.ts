@@ -78,7 +78,7 @@ export class PersonIdentificationTool extends BaseAITool {
       const { SceneAnalysisEngine } = await import(
         "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
       )
-      const sceneEngine = new SceneAnalysisEngine()
+      const sceneEngine = SceneAnalysisEngine.getInstance()
 
       // Инициализация движка
       await sceneEngine.initialize()
@@ -87,7 +87,7 @@ export class PersonIdentificationTool extends BaseAITool {
       const detectedPersons = await sceneEngine.detectPersons(input.videoPath)
 
       // Подготавливаем результаты
-      const processedPersons = detectedPersons.map((person) => ({
+      const processedPersons = detectedPersons.map((person: any) => ({
         id: person.id,
         name: person.name || `Неизвестная персона ${person.id}`,
         confidence: person.confidence || input.confidenceThreshold || 0.7,
@@ -109,7 +109,7 @@ export class PersonIdentificationTool extends BaseAITool {
       if (processedPersons.length === 0) {
         warnings.push("Не обнаружено лиц в видео")
       }
-      if (processedPersons.some((p) => p.confidence < 0.5)) {
+      if (processedPersons.some((p: any) => p.confidence < 0.5)) {
         warnings.push("Некоторые лица обнаружены с низкой уверенностью")
       }
 
@@ -174,7 +174,7 @@ export class PersonIdentificationTool extends BaseAITool {
         const faceEmbedding = await visionService.extractFaceEmbedding(input.faceImagePath)
 
         if (faceEmbedding) {
-          const results = await dbService.findSimilarPersons(faceEmbedding, {
+          const results = await dbService.findSimilarPersons(new Float32Array(faceEmbedding), {
             limit: input.limit || 10,
             minConfidence: input.similarityThreshold || 0.7,
           })
