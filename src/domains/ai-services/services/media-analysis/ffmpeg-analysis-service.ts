@@ -6,15 +6,21 @@
 import { invoke } from "@tauri-apps/api/core"
 
 import type {
+  AudioAnalysisOptions,
   AudioAnalysisResult,
+  KeyFrameExtractionOptions,
+  MotionAnalysisOptions,
   MotionAnalysisResult,
+  QualityAnalysisOptions,
   QualityAnalysisResult,
+  SceneDetectionOptions,
   SceneDetectionResult,
+  SilenceDetectionOptions,
   SilenceDetectionResult,
   VideoAnalysisOptions,
   VideoMetadata,
 } from "@/domains/ai-services/types/interfaces"
-import { KeyFrameExtractionResult } from "@/domains/shared/types"
+import type { KeyFrameExtractionResult } from "@/domains/shared/types"
 
 // Реэкспортируем типы для обратной совместимости
 export type {
@@ -26,6 +32,7 @@ export type {
   VideoAnalysisOptions,
   VideoMetadata,
 } from "@/domains/ai-services/types/interfaces"
+export type { KeyFrameExtractionResult } from "@/domains/shared/types"
 
 /**
  * Основной сервис FFmpeg анализа
@@ -65,7 +72,7 @@ export class FFmpegAnalysisService {
    */
   public async detectScenes(
     filePath: string,
-    options: VideoAnalysisOptions["sceneDetection"] = {},
+    options: SceneDetectionOptions = {},
   ): Promise<SceneDetectionResult> {
     try {
       const result = await invoke<SceneDetectionResult>("ffmpeg_detect_scenes", {
@@ -85,7 +92,7 @@ export class FFmpegAnalysisService {
    */
   public async analyzeQuality(
     filePath: string,
-    options: VideoAnalysisOptions["qualityAnalysis"] = {},
+    options: QualityAnalysisOptions = {},
   ): Promise<QualityAnalysisResult> {
     try {
       const result = await invoke<QualityAnalysisResult>("ffmpeg_analyze_quality", {
@@ -106,7 +113,7 @@ export class FFmpegAnalysisService {
    */
   public async detectSilence(
     filePath: string,
-    options: VideoAnalysisOptions["silenceDetection"] = {},
+    options: SilenceDetectionOptions = {},
   ): Promise<SilenceDetectionResult> {
     try {
       const result = await invoke<SilenceDetectionResult>("ffmpeg_detect_silence", {
@@ -126,7 +133,7 @@ export class FFmpegAnalysisService {
    */
   public async analyzeMotion(
     filePath: string,
-    options: VideoAnalysisOptions["motionAnalysis"] = {},
+    options: MotionAnalysisOptions = {},
   ): Promise<MotionAnalysisResult> {
     try {
       const result = await invoke<MotionAnalysisResult>("ffmpeg_analyze_motion", {
@@ -145,12 +152,12 @@ export class FFmpegAnalysisService {
    */
   public async extractKeyFrames(
     filePath: string,
-    options: VideoAnalysisOptions["keyFrameExtraction"] = {},
+    options: KeyFrameExtractionOptions = {},
   ): Promise<KeyFrameExtractionResult> {
     try {
-      // Конвертируем count в interval (примерно каждые N секунд)
-      const maxFrames = options.count || 10
-      const interval = 5.0 // Извлекаем ключевой кадр каждые 5 секунд по умолчанию
+      // Конвертируем maxFrames в interval (примерно каждые N секунд)
+      const maxFrames = options.maxFrames || 10
+      const interval = options.interval || 5.0 // Извлекаем ключевой кадр каждые 5 секунд по умолчанию
 
       const result = await invoke<KeyFrameExtractionResult>("ffmpeg_extract_keyframes", {
         filePath,
@@ -204,13 +211,13 @@ export class FFmpegAnalysisService {
    */
   public async analyzeAudio(
     filePath: string,
-    options: VideoAnalysisOptions["audioAnalysis"] = {},
+    options: AudioAnalysisOptions = {},
   ): Promise<AudioAnalysisResult> {
     try {
       const result = await invoke<AudioAnalysisResult>("ffmpeg_analyze_audio", {
         filePath,
         enableSpectralAnalysis: options.enableSpectralAnalysis ?? true,
-        enableDynamicsAnalysis: options.enableDynamicsAnalysis ?? true,
+        enableLoudnessAnalysis: options.enableLoudnessAnalysis ?? true,
       })
       return result
     } catch (error) {
@@ -315,7 +322,7 @@ export class FFmpegAnalysisService {
     }> = []
 
     // Анализ качества видео
-    if (analysisResult.quality.sharpness < 0.6) {
+    if (analysisResult.quality.video?.sharpness && analysisResult.quality.video.sharpness < 0.6) {
       suggestions.push({
         type: "quality",
         severity: "medium",
@@ -325,7 +332,7 @@ export class FFmpegAnalysisService {
       })
     }
 
-    if (analysisResult.quality.brightness < 0.3 || analysisResult.quality.brightness > 0.8) {
+    if (analysisResult.quality.video?.brightness && (analysisResult.quality.video.brightness < 0.3 || analysisResult.quality.video.brightness > 0.8)) {
       suggestions.push({
         type: "quality",
         severity: "medium",
@@ -335,7 +342,7 @@ export class FFmpegAnalysisService {
       })
     }
 
-    if (analysisResult.quality.stability < 0.7) {
+    if (analysisResult.quality.video?.stability && analysisResult.quality.video.stability < 0.7) {
       suggestions.push({
         type: "quality",
         severity: "high",
@@ -345,7 +352,7 @@ export class FFmpegAnalysisService {
       })
     }
 
-    if (analysisResult.quality.noise > 0.4) {
+    if (analysisResult.quality.video?.noise && analysisResult.quality.video.noise > 0.4) {
       suggestions.push({
         type: "quality",
         severity: "medium",
@@ -356,22 +363,22 @@ export class FFmpegAnalysisService {
     }
 
     // Анализ аудио
-    if (analysisResult.audio.quality.clipping) {
+    if (analysisResult.audio.volume.peak > 0.95) {
       suggestions.push({
         type: "audio",
         severity: "high",
-        issue: "Обрезание аудиосигнала (клиппинг)",
+        issue: "Возможное обрезание аудиосигнала (клиппинг)",
         suggestion: "Уменьшить громкость и применить лимитер",
         autoFixAvailable: true,
       })
     }
 
-    if (analysisResult.audio.quality.noiseLevel > 0.3) {
+    if (analysisResult.audio.volume.average < 0.1) {
       suggestions.push({
         type: "audio",
         severity: "medium",
-        issue: "Высокий уровень фонового шума",
-        suggestion: "Применить фильтр шумоподавления для аудио",
+        issue: "Низкий уровень аудио",
+        suggestion: "Увеличить громкость и применить нормализацию",
         autoFixAvailable: true,
       })
     }
@@ -387,7 +394,7 @@ export class FFmpegAnalysisService {
     }
 
     // Анализ движения
-    if (analysisResult.motion.cameraMovement.stability < 0.6) {
+    if (analysisResult.motion.stabilityScore < 0.6) {
       suggestions.push({
         type: "motion",
         severity: "medium",

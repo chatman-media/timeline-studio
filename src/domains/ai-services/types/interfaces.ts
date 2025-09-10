@@ -191,12 +191,51 @@ export interface ContentAnalysisOptions {
   outputDir?: string
 }
 
+// Опции для различных типов анализа
+export interface SceneDetectionOptions {
+  threshold?: number
+  minSceneLength?: number
+}
+
+export interface QualityAnalysisOptions {
+  sampleRate?: number
+  enableNoiseDetection?: boolean
+  enableStabilityCheck?: boolean
+}
+
+export interface SilenceDetectionOptions {
+  threshold?: number
+  minDuration?: number
+}
+
+export interface MotionAnalysisOptions {
+  sensitivity?: number
+  blockSize?: number
+}
+
+export interface KeyFrameExtractionOptions {
+  interval?: number
+  maxFrames?: number
+}
+
+export interface AudioAnalysisOptions {
+  enableSpectralAnalysis?: boolean
+  enableLoudnessAnalysis?: boolean
+}
+
 export interface VideoAnalysisOptions {
   includeSceneDetection?: boolean
   includeQualityAnalysis?: boolean
   includeMotionAnalysis?: boolean
   analysisDepth?: "quick" | "normal" | "deep"
   outputDir?: string
+  // Дополнительные опции анализа
+  sceneDetection?: SceneDetectionOptions
+  qualityAnalysis?: QualityAnalysisOptions
+  silenceDetection?: SilenceDetectionOptions
+  motionAnalysis?: MotionAnalysisOptions
+  keyFrameExtraction?: KeyFrameExtractionOptions
+  audioAnalysis?: AudioAnalysisOptions
 }
 
 // Object Detection Types for Object Tracking

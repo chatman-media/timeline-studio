@@ -87,7 +87,7 @@ export class VideoAnalysisTool extends BaseAITool {
         this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
       } catch (error) {
         // Fallback к локальному сервису если shared недоступен
-        const { FFmpegAnalysisService } = await import("../../services/ffmpeg-analysis-service")
+        const { FFmpegAnalysisService } = await import("@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service")
         this.ffmpegService = FFmpegAnalysisService.getInstance()
       }
     }
