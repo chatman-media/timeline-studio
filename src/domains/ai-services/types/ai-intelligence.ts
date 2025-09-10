@@ -4,11 +4,9 @@
  * Перенесено из src/features/ai-content-intelligence/shared/types/
  */
 
-import {
+import type {
   AdaptedContent,
   AIConfig,
-  ContentType,
-  Emotion,
   GeneratedScript,
   IntelligentContent,
   NarrativeType,
@@ -21,7 +19,36 @@ import {
   ScriptStyle,
   UnifiedContentAnalysis,
 } from "@/features/ai-content-intelligence"
-import { ContentClassification } from "./content-analysis"
+
+import { ContentType, Emotion } from "@/features/ai-content-intelligence"
+
+// Types are imported above and used in interfaces below
+// Re-exports are handled in the main index.ts
+
+// Additional types for domain usage
+export interface ContentClassification {
+  category: string
+  confidence: number
+  tags: string[]
+}
+
+export interface ProcessedMoment {
+  id: string
+  timestamp: number
+  type: string
+  confidence: number
+  metadata?: Record<string, any>
+}
+
+// Media file interface
+export interface MediaFile {
+  id: string
+  path: string
+  name: string
+  type: ContentType
+  duration?: number
+  metadata?: Record<string, any>
+}
 
 // Machine-specific types
 export interface AIIntelligenceContext {
@@ -141,13 +168,7 @@ export type {
 }
 
 // Enum exports
-export {
-  ContentType,
-  Emotion,
-  NarrativeType,
-  PaceType,
-  ProcessingStatus,
-}
+export { ContentType, Emotion, type NarrativeType, type PaceType, type ProcessingStatus }
 
 // Re-exports for backward compatibility
 export type { AIConfig as LegacyAIConfig }

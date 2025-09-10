@@ -1228,15 +1228,11 @@ export class ContentIntelligenceTool extends BaseAITool {
         age_groups: { "18-24": 25, "25-34": 35, "35-44": 25, "45+": 15 },
         gender: { male: 60, female: 40 },
         interests: ["technology", "entertainment", "lifestyle"],
-        confidence: 0.7
+        confidence: 0.7,
       }
 
       // Определяем сегменты аудитории
-      const segments = this.generateAudienceSegments(
-        overallDemographics,
-        contentProfile,
-        input.audienceSegments,
-      )
+      const segments = this.generateAudienceSegments(overallDemographics, contentProfile, input.audienceSegments)
 
       // Рассчитываем общий скор
       const overallScore = segments.reduce((sum, seg) => sum + seg.engagement_prediction, 0) / segments.length

@@ -2,7 +2,18 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import "@testing-library/jest-dom"
 
-import { ContentType, SceneType } from "@/features/ai-content-intelligence/shared/types/content-analysis"
+import { ContentType } from "@/domains/ai-services/types"
+
+// SceneType enum for testing
+enum SceneType {
+  ACTION = "action",
+  DIALOGUE = "dialogue",
+  LANDSCAPE = "landscape",
+  CLOSEUP = "closeup",
+  ESTABLISHING = "establishing",
+  MONTAGE = "montage",
+  TRANSITION = "transition",
+}
 
 import { AIMarkerControls } from "../ai-marker-controls"
 

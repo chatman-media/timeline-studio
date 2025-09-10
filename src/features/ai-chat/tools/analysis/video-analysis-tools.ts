@@ -5,13 +5,14 @@
 
 import {
   IFFmpegAnalysisService,
+  MediaFile,
   MotionAnalysisResult,
   QualityAnalysisResult,
   SceneDetectionResult,
   VideoAnalysisOptions,
   VideoMetadata,
 } from "@/domains/ai-services"
-import { MediaFile, MediaType } from "@/domains/video-editing/types/media"
+
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { AudioAnalysisResult } from "./audio-analysis-tools"
 
@@ -87,7 +88,9 @@ export class VideoAnalysisTool extends BaseAITool {
         this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
       } catch (error) {
         // Fallback к локальному сервису если shared недоступен
-        const { FFmpegAnalysisService } = await import("@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service")
+        const { FFmpegAnalysisService } = await import(
+          "@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service"
+        )
         this.ffmpegService = FFmpegAnalysisService.getInstance()
       }
     }
@@ -197,7 +200,11 @@ export class VideoAnalysisTool extends BaseAITool {
 
           case "analyze_audio":
             result = await this.analyzeVideoAudio(input)
-            if (result.audio && result.audio.audioLevels?.clippingInstances && result.audio.audioLevels.clippingInstances > 0) {
+            if (
+              result.audio &&
+              result.audio.audioLevels?.clippingInstances &&
+              result.audio.audioLevels.clippingInstances > 0
+            ) {
               warnings.push("Обнаружен клиппинг в аудио")
               recommendations.push("Уменьшите уровень громкости")
             }
@@ -393,11 +400,11 @@ export class VideoAnalysisTool extends BaseAITool {
 
     try {
       const ffmpegService = await this.getFFmpegService()
-      const mediaFile = {
+      const mediaFile: MediaFile = {
+        id: input.clipId,
         path: input.clipId,
-        name: input.clipId.split("/").pop() || input.clipId,
         filename: input.clipId.split("/").pop() || input.clipId,
-        type: "video" as const,
+        type: "video",
         duration: 0,
         size: 0,
       }

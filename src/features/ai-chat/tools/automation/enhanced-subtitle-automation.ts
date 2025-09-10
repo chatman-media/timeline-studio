@@ -3,12 +3,7 @@
  * Использует OCR, анализ сцен, распознавание речи и анализ аудио
  */
 
-import type {
-  SceneAnalysis,
-  SpeechDetection,
-  TextDetection,
-  UnifiedContentAnalysis,
-} from "@/domains/ai-services/types/content-analysis"
+import type { SceneAnalysis, SpeechDetection, TextDetection, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { SubtitleAIIntegrationService } from "./services/subtitle-ai-integration"
 import type { SubtitleItem } from "./subtitle-tools"

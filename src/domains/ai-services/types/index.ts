@@ -1,99 +1,23 @@
-/**
- * AI Services Domain - Type Exports
- */
+// AI Services Domain Types
+// Consolidated from features/ai-content-intelligence/shared/types
 
-export type {
-  AIOrchestatorContext,
-  AIOrchestatorEvent,
-  ServiceInfo,
-} from "../machines/ai-orchestrator-machine"
-// Machine Types
-export type {
-  ChatMachineContext,
-  ChatMachineEvent,
-} from "../machines/chat-machine"
-export type {
-  MontagePlannerContext,
-  MontagePlannerEvent,
-} from "../machines/montage-planner-machine"
-// AI Intelligence types
+// Re-export all types from ai-content-intelligence for convenience
 export type {
   AdaptedContent,
   AIConfig,
-  AIIntelligenceContext,
-  AIIntelligenceEvent,
-  ContentInsights,
   GeneratedScript,
   IntelligentContent,
-  KeyMoment,
-  LegacyAIConfig,
-  LegacyIntelligentContent,
-  LegacyUnifiedContentAnalysis,
-  MediaFile as AIMediaFile,
+  NarrativeType,
+  PaceType,
   PlatformId,
-  ProcessedMoment,
   ProcessingError,
+  ProcessingStatus,
   ProcessingStep,
-  SceneInfo,
   ScriptGenerationParams,
   ScriptStyle,
   UnifiedContentAnalysis,
-} from "./ai-intelligence"
-export {
-  ContentType,
-  Emotion,
-  KeyMomentType,
-  NarrativeType,
-  PaceType,
-  ProcessingStatus,
-} from "./ai-intelligence"
-// Chat types
-export type {
-  Agent,
-  AgentId,
-  AIService,
-  ChatListItem,
-  ChatMessage,
-  ChatSession,
-  ChatStorageService,
-  ChatTimelineContext,
-  LegacyChatListItem,
-  LegacyChatMessage,
-  LegacyChatSession,
-} from "./chat"
-// Montage Planner types
-export type {
-  AnalysisOptions,
-  AnalysisProgress,
-  AudioAnalysis,
-  Fragment,
-  FragmentAnalysis,
-  MediaFile,
-  MomentScore,
-  MontagePlan,
-  Person,
-  PlanGenerationOptions,
-  PlanStatistics,
-  PlanValidation,
-  Transition,
-  VideoAnalysis,
-  VideoEffect,
-} from "./montage-planner"
-export { AnalysisPhase } from "./montage-planner"
-
-// Domain-specific types will be added here as we migrate more features
-export interface AIServicesDomainConfig {
-  chatEnabled: boolean
-  intelligenceEnabled: boolean
-  montagePlannerEnabled: boolean
-  recognitionEnabled: boolean
-}
-
-export interface AIServicesDomainContext {
-  config: AIServicesDomainConfig
-  activeServices: string[]
-  lastError?: string
-}
-
-// Transcription types
-export * from "./transcription"
+} from "@/features/ai-content-intelligence"
+export { ContentType, Emotion } from "@/features/ai-content-intelligence"
+// Core AI types (primary exports)
+export * from "./ai-intelligence"
+export * from "./montage-planner"

@@ -6,7 +6,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
-import { WhisperService } from "./whisper-service"
+import type { SpeechDetection } from "../types/content-analysis"
 import type {
   ModelInfo,
   SubtitleFormat,
@@ -15,7 +15,7 @@ import type {
   TranscriptionResult,
   WhisperIntegrationOptions,
 } from "../types/transcription"
-import type { SpeechDetection } from "../types/content-analysis"
+import { WhisperService } from "./whisper-service"
 
 export class TranscriptionService {
   private static instance: TranscriptionService | null = null
@@ -91,12 +91,14 @@ export class TranscriptionService {
             start: seg.start,
             end: seg.end,
             text: seg.text,
-            words: result.words?.filter(w => w.start >= seg.start && w.end <= seg.end)?.map((w) => ({
-              word: w.word,
-              start: w.start,
-              end: w.end,
-              confidence: w.confidence || 0.8,
-            })),
+            words: result.words
+              ?.filter((w) => w.start >= seg.start && w.end <= seg.end)
+              ?.map((w) => ({
+                word: w.word,
+                start: w.start,
+                end: w.end,
+                confidence: w.confidence || 0.8,
+              })),
             confidence: 0.8, // WhisperSegment не имеет confidence, используем дефолтное значение
           })) || [],
         language: result.language || "unknown",

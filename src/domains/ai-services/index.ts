@@ -59,9 +59,8 @@ export type {
   EmotionalTone,
   Genre,
   SceneAnalysis,
-} from "./types/content-analysis"
-// Types
-export * from "./types/content-analysis"
+} from "./types"
+// Types - content-analysis types are now in main types export
 // Re-export specific types for convenience
 export type {
   AudioAnalysisResult,

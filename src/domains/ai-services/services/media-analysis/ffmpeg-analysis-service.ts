@@ -70,10 +70,7 @@ export class FFmpegAnalysisService {
   /**
    * Определить сцены в видео
    */
-  public async detectScenes(
-    filePath: string,
-    options: SceneDetectionOptions = {},
-  ): Promise<SceneDetectionResult> {
+  public async detectScenes(filePath: string, options: SceneDetectionOptions = {}): Promise<SceneDetectionResult> {
     try {
       const result = await invoke<SceneDetectionResult>("ffmpeg_detect_scenes", {
         filePath,
@@ -90,10 +87,7 @@ export class FFmpegAnalysisService {
   /**
    * Анализ качества видео
    */
-  public async analyzeQuality(
-    filePath: string,
-    options: QualityAnalysisOptions = {},
-  ): Promise<QualityAnalysisResult> {
+  public async analyzeQuality(filePath: string, options: QualityAnalysisOptions = {}): Promise<QualityAnalysisResult> {
     try {
       const result = await invoke<QualityAnalysisResult>("ffmpeg_analyze_quality", {
         filePath,
@@ -111,10 +105,7 @@ export class FFmpegAnalysisService {
   /**
    * Детекция тишины в аудио
    */
-  public async detectSilence(
-    filePath: string,
-    options: SilenceDetectionOptions = {},
-  ): Promise<SilenceDetectionResult> {
+  public async detectSilence(filePath: string, options: SilenceDetectionOptions = {}): Promise<SilenceDetectionResult> {
     try {
       const result = await invoke<SilenceDetectionResult>("ffmpeg_detect_silence", {
         filePath,
@@ -131,10 +122,7 @@ export class FFmpegAnalysisService {
   /**
    * Анализ движения в видео
    */
-  public async analyzeMotion(
-    filePath: string,
-    options: MotionAnalysisOptions = {},
-  ): Promise<MotionAnalysisResult> {
+  public async analyzeMotion(filePath: string, options: MotionAnalysisOptions = {}): Promise<MotionAnalysisResult> {
     try {
       const result = await invoke<MotionAnalysisResult>("ffmpeg_analyze_motion", {
         filePath,
@@ -209,10 +197,7 @@ export class FFmpegAnalysisService {
   /**
    * Анализ аудиодорожки
    */
-  public async analyzeAudio(
-    filePath: string,
-    options: AudioAnalysisOptions = {},
-  ): Promise<AudioAnalysisResult> {
+  public async analyzeAudio(filePath: string, options: AudioAnalysisOptions = {}): Promise<AudioAnalysisResult> {
     try {
       const result = await invoke<AudioAnalysisResult>("ffmpeg_analyze_audio", {
         filePath,
@@ -332,7 +317,10 @@ export class FFmpegAnalysisService {
       })
     }
 
-    if (analysisResult.quality.video?.brightness && (analysisResult.quality.video.brightness < 0.3 || analysisResult.quality.video.brightness > 0.8)) {
+    if (
+      analysisResult.quality.video?.brightness &&
+      (analysisResult.quality.video.brightness < 0.3 || analysisResult.quality.video.brightness > 0.8)
+    ) {
       suggestions.push({
         type: "quality",
         severity: "medium",

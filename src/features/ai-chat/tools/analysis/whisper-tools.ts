@@ -67,6 +67,7 @@ export interface WhisperResult {
     content: string
     segments: any[]
   }
+  results?: any[] // для batch операций
   detectedLanguage?: {
     language: string
     confidence: number
@@ -514,7 +515,7 @@ export class WhisperTool extends BaseAITool {
       return {
         operation: "batch_transcribe",
         success: failCount === 0,
-        batchResults: results,
+        results: results,
         message: `Транскрипция завершена: ${successCount} успешно, ${failCount} с ошибками`,
         recommendations:
           failCount > 0
@@ -600,7 +601,7 @@ export class WhisperTool extends BaseAITool {
         language: "auto", // автоопределение языка
         model: "whisper-1",
         timestamp_granularities: ["segment"],
-        max_duration: sampleDuration,
+        // max_duration: sampleDuration, // не поддерживается в текущих опциях
       })
 
       // Анализируем результат для определения языка
@@ -1141,7 +1142,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     existingSegments.forEach((existing) => {
       // Находим наиболее подходящий новый сегмент
-      let bestMatch = null
+      let bestMatch: any = null
       let bestScore = 0
 
       newSegments.forEach((newSeg) => {

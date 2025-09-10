@@ -3,9 +3,13 @@
  * Мост между Enhanced Subtitle Automation и существующими сервисами транскрипции
  */
 
-import type { SpeechDetection } from "@/domains/ai-services/types/content-analysis"
 import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
-import type { TranscriptionOptions, TranscriptionResult, WhisperIntegrationOptions } from "@/domains/ai-services/types/transcription"
+import type { SpeechDetection } from "@/domains/ai-services/types"
+import type {
+  TranscriptionOptions,
+  TranscriptionResult,
+  WhisperIntegrationOptions,
+} from "@/domains/ai-services/types/transcription"
 
 // WhisperIntegrationOptions теперь в domains/ai-services/types/transcription
 
@@ -226,7 +230,6 @@ export class WhisperIntegrationService {
    * Проверка доступности моделей Whisper
    */
   public async checkModelAvailability(): Promise<{ available: string[]; recommended: string }> {
-
     try {
       // Проверяем доступные модели через TranscriptionService
       const available = ["tiny", "base", "small", "medium"] // Базовый набор

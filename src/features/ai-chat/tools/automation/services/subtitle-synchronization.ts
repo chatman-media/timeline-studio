@@ -3,11 +3,7 @@
  * Использует анализ аудио, сцен и временных меток для точной синхронизации
  */
 
-import type {
-  AudioDetections,
-  SceneAnalysis,
-  SpeechDetection,
-} from "@/domains/ai-services/types/content-analysis"
+import type { AudioDetections, SceneAnalysis, SpeechDetection } from "@/domains/ai-services/types"
 import type { SubtitleItem } from "../subtitle-tools"
 
 export interface SynchronizationOptions {

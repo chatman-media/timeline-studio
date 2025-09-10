@@ -2,7 +2,6 @@
  * Vision Adapter - адаптер для интеграции VisionService с AI архитектурой
  */
 
-import { VisionService } from "./vision-service"
 import type {
   ColorAnalysis,
   CompositionAnalysis,
@@ -12,6 +11,7 @@ import type {
   FrameAnalysisResult,
   IVisionService,
 } from "../../types/interfaces"
+import { VisionService } from "./vision-service"
 
 export class VisionAdapter implements IVisionService {
   private visionService: VisionService

@@ -4,8 +4,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
 
 import { FrameCaptureService } from "../services/frame-capture-service"

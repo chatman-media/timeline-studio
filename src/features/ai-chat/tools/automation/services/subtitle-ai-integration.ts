@@ -3,15 +3,15 @@
  * Реализует реальные вызовы OCR, анализа сцен и распознавания речи
  */
 
-// Импортируем сервисы AI Content Intelligence
-import { IVisionService } from "@/domains/ai-services/types/interfaces"
 import type {
   AudioDetections,
   SceneAnalysis,
   SpeechDetection,
   TextDetection,
   UnifiedContentAnalysis,
-} from "@/domains/ai-services/types/content-analysis"
+} from "@/domains/ai-services/types"
+// Импортируем сервисы AI Content Intelligence
+import { IVisionService } from "@/domains/ai-services/types/interfaces"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 import { WhisperIntegrationService } from "./whisper-integration"
 

@@ -7,10 +7,64 @@
 
 import { assign, emit, fromPromise, setup } from "xstate"
 // Service imports (will be replaced with domain services)
-import {
-  getAIService,
-  getFFmpegService,
-} from "@/features/ai-content-intelligence/shared/services/media-analysis-interface"
+// Import services from domain
+import { getAIContainer } from "@/domains/ai-core"
+import type { IContentAnalysisService, IFFmpegAnalysisService, IVisionService } from "../types/interfaces"
+
+// Service getters for compatibility
+let ffmpegService: IFFmpegAnalysisService | null = null
+let visionService: IVisionService | null = null
+let contentAnalysisService: IContentAnalysisService | null = null
+let aiService: any = null
+
+/**
+ * Get FFmpeg analysis service
+ */
+async function getFFmpegService(): Promise<IFFmpegAnalysisService> {
+  if (!ffmpegService) {
+    const aiContainer = getAIContainer()
+    ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
+  }
+  return ffmpegService
+}
+
+/**
+ * Get Vision service for scene analysis
+ */
+async function getVisionService(): Promise<IVisionService> {
+  if (!visionService) {
+    const aiContainer = getAIContainer()
+    visionService = await aiContainer.resolve<IVisionService>("VisionService")
+  }
+  return visionService
+}
+
+/**
+ * Get Content Analysis service
+ */
+async function getContentAnalysisService(): Promise<IContentAnalysisService> {
+  if (!contentAnalysisService) {
+    const aiContainer = getAIContainer()
+    contentAnalysisService = await aiContainer.resolve<IContentAnalysisService>("ContentAnalysisService")
+  }
+  return contentAnalysisService
+}
+
+/**
+ * Get AI service for content generation
+ */
+async function getAIService(): Promise<any> {
+  if (!aiService) {
+    const aiContainer = getAIContainer()
+    // For now, return a mock service
+    aiService = {
+      generateScript: async () => ({ text: "Generated script", scenes: [] }),
+      adaptForPlatform: async () => ({ adaptedContent: [] }),
+    }
+  }
+  return aiService
+}
+
 // Import types from domain
 import type {
   AdaptedContent,
@@ -25,6 +79,7 @@ import type {
   ScriptGenerationParams,
   UnifiedContentAnalysis,
 } from "../types/ai-intelligence"
+// Import enums and values (not types)
 import { ContentType, Emotion, NarrativeType, PaceType, ProcessingStatus } from "../types/ai-intelligence"
 
 // Actors

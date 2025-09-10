@@ -4,8 +4,8 @@
  */
 
 import { getAIContainer } from "@/domains/ai-core/container/di-container"
-import { ContentClassificationEngine } from "../engines/content-classification/content-classification-engine"
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+import { ContentClassificationEngine } from "../engines/content-classification/content-classification-engine"
 
 // Интерфейсы для движков
 export interface ISceneAnalysisEngine {
