@@ -11,15 +11,6 @@
   <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png" />
 
-  <!-- Security Headers (for reference, set these via server config) -->
-  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://github.com https://api.github.com https://raw.githubusercontent.com /src/main.tsx; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://timelinestudio.pro; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.github.com; object-src 'none'; frame-ancestors 'self'; base-uri 'self';">
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), fullscreen=(self)">
-
   <!-- Web App Manifest -->
   <link rel="manifest" href="./favicon/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,12 +23,6 @@
   <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 
   <!-- Preload critical resources -->
-  <!-- Preload critical CSS and JS -->
-  <!-- <link rel="preload" href="/assets/index.css" as="style"> -->
-  <link rel="preload" href="/assets/index.js" as="script">
-  <link rel="preload" href="/assets/react.js" as="script">
-  <link rel="preload" href="/assets/router.js" as="script">
-  <link rel="preload" href="/assets/vendor.js" as="script">
   <link rel="preload" href="./fav.svg" as="image" type="image/svg+xml">
 
   <title>Timeline Studio - AI-Powered Video Editor</title>
@@ -53,9 +38,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
       rel="stylesheet">
   </noscript>
-
-  <!-- Critical CSS -->
-  <!-- <link rel="stylesheet" href="/index.css" /> -->
 
   <!-- Critical CSS inline -->
   <style>
@@ -142,23 +124,14 @@
   </script>
 
   <!-- Prefetch key routes -->
-  <link rel="prefetch" href="./assets/Pricing-CTJSRXqx.tsx" as="script">
+  <link rel="prefetch" href="./assets/Pricing-CAQz51Fn.tsx" as="script">
   <link rel="prefetch" href="./assets/About-B6GxCp7K.tsx" as="script">
-  <script type="module" crossorigin src="./assets/index-Den5B2Xs.js"></script>
+  <script type="module" crossorigin src="./assets/index-CL7kgO5D.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/react-CEZjBCbl.js">
   <link rel="modulepreload" crossorigin href="./assets/router-BDXgoB13.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-6FzILPv8.js">
-  <link rel="stylesheet" crossorigin href="./assets/style-Do3YBVXi.css">
+  <link rel="stylesheet" crossorigin href="./assets/style-3GGPYciI.css">
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TMTLPVZKYJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-
-  gtag('config', 'G-TMTLPVZKYJ');
-</script>
 
 <body>
   <div id="root">
@@ -196,6 +169,7 @@
       <div class="loading-spinner"></div>
     </div>
   </div>
+
   <!-- Оптимизация загрузки шрифтов -->
   <script>
     // Загружаем шрифты асинхронно после основного контента
