@@ -11,11 +11,37 @@ export const Project: React.FC = () => {
   const { language } = useLanguage()
   const [markdownContent, setMarkdownContent] = useState('')
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('manifest')
 
-  // Определяем путь к манифесту в зависимости от языка
+  // Определяем вкладки
+  const tabs = [
+    {
+      id: 'manifest',
+      title: language === 'ru' ? 'Манифест' : 'Manifest',
+      path: 'README.md'
+    },
+    {
+      id: 'business',
+      title: language === 'ru' ? 'Бизнес-план' : 'Business Plan',
+      path: 'business-plan.md'
+    },
+    {
+      id: 'investment',
+      title: language === 'ru' ? 'Инвестиции' : 'Investment',
+      path: 'investment-valuation.md'
+    },
+    {
+      id: 'competitive',
+      title: language === 'ru' ? 'Конкуренты' : 'Competitive',
+      path: 'competitive-analysis.md'
+    }
+  ]
+
+  // Определяем путь к документу в зависимости от языка и активной вкладки
+  const currentTab = tabs.find(tab => tab.id === activeTab)
   const manifestPath = language === 'ru'
-    ? '/content/docs/ru/00_project_manifest/README.md'
-    : '/content/docs/en/00_project_manifest/README.md'
+    ? `/content/docs/ru/00_project_manifest/${currentTab?.path}`
+    : `/content/docs/en/00_project_manifest/${currentTab?.path}`
 
   useEffect(() => {
     const fetchMarkdown = async () => {
@@ -33,14 +59,14 @@ export const Project: React.FC = () => {
       } catch (error) {
         console.error('Error loading markdown:', error)
         const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-        setMarkdownContent(`# Ошибка загрузки\n\nНе удалось загрузить манифест проекта.\n\nОшибка: ${errorMessage}`)
+        setMarkdownContent(`# Ошибка загрузки\n\nНе удалось загрузить документ.\n\nОшибка: ${errorMessage}`)
       } finally {
         setLoading(false)
       }
     }
 
     fetchMarkdown()
-  }, [manifestPath])
+  }, [manifestPath, activeTab])
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
@@ -67,7 +93,7 @@ export const Project: React.FC = () => {
             >
               <h1 className="page-title">
                 <span className="text-gradient">
-                  {language === 'ru' ? 'Манифест проекта' : 'Project Manifest'}
+                  {language === 'ru' ? 'Проектная документация' : 'Project Documentation'}
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8">
@@ -83,6 +109,32 @@ export const Project: React.FC = () => {
                 <span>•</span>
                 <span>{language === 'ru' ? '250+ AI инструментов' : '250+ AI tools'}</span>
               </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Tabs */}
+        <section className="py-8">
+          <div className="container mx-auto px-6 md:px-8 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-wrap justify-center gap-2 mb-8"
+            >
+              {tabs.map((tab) => (
+                <button
+                   key={tab.id}
+                   onClick={() => setActiveTab(tab.id)}
+                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer ${
+                     activeTab === tab.id
+                       ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                       : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 hover:text-white'
+                   }`}
+                 >
+                  {tab.title}
+                </button>
+              ))}
             </motion.div>
           </div>
         </section>
@@ -122,10 +174,10 @@ export const Project: React.FC = () => {
                           h2: ({ children }) => <h2 className="text-3xl md:text-4xl font-light mb-6 text-white mt-12">{children}</h2>,
                           h3: ({ children }) => <h3 className="text-2xl md:text-3xl font-light mb-4 text-white mt-8">{children}</h3>,
                           h4: ({ children }) => <h4 className="text-xl md:text-2xl font-light mb-3 text-gray-200 mt-6">{children}</h4>,
-                          p: ({ children }) => <p className="text-base text-gray-300 mb-4 leading-relaxed font-light">{children}</p>,
-                          ul: ({ children }) => <ul className="text-gray-300 mb-4 space-y-2 list-disc list-inside font-light">{children}</ul>,
-                          ol: ({ children }) => <ol className="text-gray-300 mb-4 space-y-2 list-decimal list-inside font-light">{children}</ol>,
-                          li: ({ children }) => <li className="text-gray-300 font-light">{children}</li>,
+                          p: ({ children }) => <p className="text-sm text-gray-300 mb-4 leading-relaxed font-light">{children}</p>,
+                          ul: ({ children }) => <ul className="text-sm text-gray-300 mb-4 space-y-2 list-disc list-inside font-light">{children}</ul>,
+                          ol: ({ children }) => <ol className="text-sm text-gray-300 mb-4 space-y-2 list-decimal list-inside font-light">{children}</ol>,
+                          li: ({ children }) => <li className="text-sm text-gray-300 font-light">{children}</li>,
                           strong: ({ children }) => <strong className="text-white font-medium">{children}</strong>,
                           code: ({ children }) => <code className="bg-gray-800 text-purple-300 px-2 py-1 rounded text-sm font-normal">{children}</code>,
                           pre: ({ children }) => <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4">{children}</pre>,
