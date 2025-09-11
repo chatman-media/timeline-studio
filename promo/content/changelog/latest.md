@@ -844,7 +844,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI Chat Integration with Claude/OpenAI/DeepSeek/Ollama support
 - Smart Montage Planner with AI-powered automatic montage generation
 - Enhanced Timeline with complete editing capabilities
-- 257+ specialized AI tools for video editing
+- 257 specialized AI tools for video editing
 - Multi-language support (10 languages)
 - Advanced audio processing with Fairlight integration
 
