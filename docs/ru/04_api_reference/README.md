@@ -26,7 +26,7 @@
 ### 🤖 AI и автоматизация
 
 - [**AI Chat API**](ai-chat-api.md) - Интеграция с AI ассистентами (Claude, GPT)
-- [**AI Tools API**](ai-tools-api.md) - 151 AI инструмент для автоматизации
+- [**AI Tools API**](ai-tools-api.md) - 257 AI инструмент для автоматизации
 - [**Recognition API**](recognition-api.md) - Распознавание объектов и лиц
 - [**AI Content Intelligence API**](ai-content-intelligence-api.md) - Интеллектуальный анализ контента
 - [**Montage Planner API**](montage-planner-api.md) - Автоматическое планирование монтажа

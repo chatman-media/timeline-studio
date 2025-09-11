@@ -4,6 +4,7 @@
 
 use crate::montage_planner::types::*;
 use rand::prelude::*;
+use rand::{SeedableRng, rngs::StdRng};
 use serde::{Deserialize, Serialize};
 
 /// Service for generating optimized montage plans
@@ -92,7 +93,7 @@ impl PlanGenerator {
   pub fn new() -> Self {
     Self {
       config: PlanGenerationConfig::default(),
-      rng: StdRng::from_entropy(),
+      rng: StdRng::from_seed([0; 32]), // Use a fixed seed for now, can be made configurable
     }
   }
 
@@ -100,7 +101,7 @@ impl PlanGenerator {
   pub fn with_config(config: PlanGenerationConfig) -> Self {
     Self {
       config,
-      rng: StdRng::from_entropy(),
+      rng: StdRng::from_seed([0; 32]), // Use a fixed seed for now, can be made configurable
     }
   }
 

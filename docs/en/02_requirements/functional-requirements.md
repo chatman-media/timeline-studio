@@ -95,7 +95,7 @@
 ### AI Assistant
 - **FR-090**: Claude API integration
 - **FR-091**: OpenAI GPT integration
-- **FR-092**: **151 AI tools** - absolute leadership in AI-powered video editors market
+- **FR-092**: **257 AI tools** - absolute leadership in AI-powered video editors market
 - **FR-093**: **8 categories of AI tools** for complete automation:
   - Export Management Tools (12 tools)
   - Effects & Filters Tools (10 tools)

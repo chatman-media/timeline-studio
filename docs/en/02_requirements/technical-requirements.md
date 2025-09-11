@@ -149,7 +149,7 @@
 - **Timeline length**: Up to 24 hours
 - **Project size**: Up to 10 GB
 - **Clip count**: Up to 10,000
-- **AI tools**: 151 tools
+- **AI tools**: 257 tools
 
 ### Optimization
 - **Proxy files**: Automatic for 4K+

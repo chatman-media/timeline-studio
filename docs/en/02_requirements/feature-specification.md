@@ -119,7 +119,7 @@ Innovative capabilities based on AI and ML.
 
 ### [AI Chat](advanced/ai-chat.md)
 **Status**: ✅ Ready (100%)  
-Integrated AI assistant with **151 AI tools**
+Integrated AI assistant with **257 AI tools**
 - Claude/GPT integration
 - Contextual help
 - Script generation
@@ -131,7 +131,7 @@ Integrated AI assistant with **151 AI tools**
 ### [AI Models Integration](advanced/ai-models-integration.md)
 **Status**: ✅ Ready (100%)  
 Complete AI platform for automation
-- **151 AI tools** - absolute leadership in AI-powered video editors market
+- **257 AI tools** - absolute leadership in AI-powered video editors market
 - **4 AI engines** in ai-content-intelligence:
   - Content Classification Engine
   - Scene Analysis Engine
@@ -147,7 +147,7 @@ Complete AI platform for automation
 - Media Processing Tools (6 tools)
 - 35+ Rust commands for integration
 
-📖 **[Detailed Documentation](../08_tasks/completed/ai-chat-tools-expansion-to-151.md)**
+📖 **[Detailed Documentation](../08_tasks/completed/ai-chat-tools-expansion-to-257.md)**
 
 ### [Recognition](advanced/recognition.md)
 **Status**: ✅ Ready (100%)  
@@ -314,7 +314,7 @@ User settings
 
 ### Test Coverage
 
-- **Excellent (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (151 tools)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
+- **Excellent (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (257 tools)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
 - **Good (60-80%)**: Transitions, Style Templates
 - **Needs Improvement (<60%)**: Templates
 

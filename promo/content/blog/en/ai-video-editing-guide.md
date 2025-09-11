@@ -10,7 +10,7 @@ readTime: 8 min read
 
 # Getting Started with AI Video Editing
 
-AI is transforming how we edit videos. With Timeline Studio's 151 AI tools, you can automate repetitive tasks and focus on creativity.
+AI is transforming how we edit videos. With Timeline Studio's 257 AI tools, you can automate repetitive tasks and focus on creativity.
 
 ## Understanding AI Tools
 

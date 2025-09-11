@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI Chat API provides integration with AI assistants (Claude, OpenAI GPT) and includes 151 specialized tools for video production automation.
+The AI Chat API provides integration with AI assistants (Claude, OpenAI GPT) and includes 257 specialized tools for video production automation.
 
 ## Core Components
 
@@ -34,7 +34,7 @@ Context provider for AI chat.
 </ChatProvider>
 ```
 
-## AI Tools (151 tools)
+## AI Tools (257 tools)
 
 ### Tool Categories
 

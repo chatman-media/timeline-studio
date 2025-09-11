@@ -11,7 +11,7 @@
 | **Version** | 0.60.0-alpha |
 | **Test coverage** | 80%+ |
 | **Number of tests** | 8,000+ |
-| **AI tools** | 151 ✅ |
+| **AI tools** | 257 ✅ |
 | **Language support** | 15 (with RTL) |
 | **TypeScript errors** | ~1860 (non-critical) |
 
@@ -38,7 +38,7 @@
 - **Effects/Filters/Transitions** - 100+ effects and transitions
 - **Templates** - Multi-camera templates
 - **Style Templates** - Animated intro/outro
-- **AI Chat** - Claude/OpenAI/Ollama integration with **151 AI tools** ✅
+- **AI Chat** - Claude/OpenAI/Ollama integration with **257 AI tools** ✅
 - **AI Content Intelligence** - **4 engines**: Content Classification, Scene Analysis, Script Generation, Multi-Platform ✅
 - **Person Identification** - Face recognition and person management ✅
 - **Recognition** - YOLO object detection
@@ -72,7 +72,7 @@
 - ✅ **Critical TypeScript errors fixed** - in production code
 
 ### Previous Achievements (July 17, 2025)
-- ✅ **151 AI tools** - market leader in AI-powered video editors
+- ✅ **257 AI tools** - market leader in AI-powered video editors
 - ✅ **AI Content Intelligence Suite** - 4 automatic analysis engines
 - ✅ **Unified resource system** - all 8 resource types unified with single API
 - ✅ **Person Identification Core** - Face recognition with Timeline integration

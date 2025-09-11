@@ -7,7 +7,7 @@ This section contains requirements for the Timeline Studio project.
 ### 🎯 Functional Requirements
 - [**functional-requirements.md**](functional-requirements.md) - Detailed description of system functional requirements
   - 📂 Media browser with 8 resource categories
-  - 🤖 151 AI tools for automation
+  - 🤖 257 AI tools for automation
   - 🎬 Professional editing tools
   - 📤 Export with GPU acceleration
 
@@ -27,7 +27,7 @@ This section contains requirements for the Timeline Studio project.
 ## 📊 Key Metrics
 
 - **Functional modules**: 30+
-- **AI tools**: 151
+- **AI tools**: 257
 - **Supported platforms**: Windows, macOS, Linux
 - **GPU acceleration**: NVENC, AMF, QuickSync, VideoToolbox
 - **Interface languages**: 10 languages
