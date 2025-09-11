@@ -25,12 +25,12 @@
   - 🔒 Требования безопасности
 
 ### 🌍 Захват новых рынков
-- [**market-expansion-requirements.md**](market-expansion-requirements.md) - Требования для 5 новых рынков ($31.2 млрд)
+- [**market-expansion-requirements.md**](market-expansion-requirements.md) - Требования для 5 новых рынков ($45.1 млрд)
   - 🎭 Мемы и вирусный контент ($8.2 млрд) - Meme Machine
   - 📺 Стриминг ($15.3 млрд) - Live Streaming (OBS Killer)
   - 🤖 AI аватары ($3.8 млрд) - Avatar Generation
   - 🎬 AI видео генерация ($2.1 млрд) - Video Generation
-  - 📱 Мобильные платформы ($1.8 млрд) - Telegram Mini App
+  - 📱 Мобильные платформы ($15.7 млрд) - iOS/Android/Telegram Apps
 
 ## 📊 Ключевые показатели
 
@@ -43,10 +43,11 @@
 
 ### Новые рынки для захвата
 - **Целевых рынков**: 5
-- **Общий объем рынков**: $31.2 млрд
-- **Новых модулей**: 5 (Meme Machine, Live Streaming, Avatar Generation, Video Generation, Telegram Mini App)
-- **Ожидаемый ARR**: $10M+ к концу 2025
-- **Целевая аудитория**: 1M+ пользователей в первый год
+- **Общий объем рынков**: $45.1 млрд
+- **Новых модулей**: 5 (Meme Machine, Live Streaming, Avatar Generation, Video Generation, Mobile Apps)
+- **Мобильные платформы**: iOS ($8.5 млрд) + Android ($5.4 млрд) + Telegram ($1.8 млрд)
+- **Ожидаемый ARR**: $15M+ к концу 2025
+- **Целевая аудитория**: 2M+ пользователей в первый год
 
 ## 🔗 Связанные разделы
 
