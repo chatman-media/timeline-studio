@@ -4,7 +4,7 @@
 
 use crate::montage_planner::types::*;
 use rand::prelude::*;
-use rand::{SeedableRng, rngs::StdRng};
+use rand::{rngs::StdRng, SeedableRng};
 use serde::{Deserialize, Serialize};
 
 /// Service for generating optimized montage plans
