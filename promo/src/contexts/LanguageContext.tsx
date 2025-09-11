@@ -13,6 +13,7 @@ const translations = {
     // Navigation
     "nav.features": "Features",
     "nav.pricing": "Pricing",
+    "nav.project": "Project",
     "nav.blog": "Blog",
     "nav.docs": "Docs",
     "nav.about": "About",
@@ -43,6 +44,7 @@ const translations = {
     // Navigation
     "nav.features": "Возможности",
     "nav.pricing": "Цены",
+    "nav.project": "О проекте",
     "nav.blog": "Блог",
     "nav.docs": "Доки",
     "nav.about": "О нас",

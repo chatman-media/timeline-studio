@@ -23,6 +23,7 @@ const FAQ = lazy(() => import("./pages/FAQ"))
 const Logo3D = lazy(() => import("./pages/Logo3D"))
 const Pricing = lazy(() => import("./pages/Pricing"))
 const Privacy = lazy(() => import("./pages/Privacy"))
+const Project = lazy(() => import("./pages/Project"))
 const ResponsibleAI = lazy(() => import("./pages/ResponsibleAI"))
 const Terms = lazy(() => import("./pages/Terms"))
 
@@ -54,6 +55,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<App />} />
               <Route path="/about" element={<About />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/project" element={<Project />} />
               <Route path="/changelog" element={<Changelog />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
