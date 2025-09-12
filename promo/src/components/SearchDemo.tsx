@@ -39,14 +39,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
           </div>
 
           {/* Animated overlay badges */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.3 }}
-            className="absolute bottom-1/2 right-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg"
-          >
-            🔥 AI-Powered Editor
-          </motion.div>
+
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -79,24 +72,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
         </div>
       </motion.div>
 
-      {/* Floating animated labels */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2, duration: 0.5 }}
-        className="absolute -left-4 top-20 bg-gradient-to-r from-green-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg"
-      >
-        🎬 Pro Quality
-      </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.4, duration: 0.5 }}
-        className="absolute -right-4 top-40 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg"
-      >
-        🌟 Go Viral
-      </motion.div>
     </div>
   )
 }
