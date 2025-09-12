@@ -2,8 +2,8 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguage } from "../contexts/LanguageContext"
-import { Logo } from "./Logo"
 import { LanguageToggle } from "./LanguageToggle"
+import { Logo } from "./Logo"
 
 interface NavItem {
   label: string

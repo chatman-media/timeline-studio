@@ -48,13 +48,13 @@ const translations = {
     "footer.legal.termsOfService": "Terms of Service",
     "footer.legal.privacyPolicy": "Privacy Policy",
     "footer.legal.responsibleAI": "Responsible AI Policy",
-    
+
     // Hero section
     "hero.title": "AI-Powered Video Creation",
     "hero.subtitle": "Watch Timeline Studio AI help you create viral content in seconds",
     "hero.description": "Enter your ideas and let AI work its magic",
     "hero.downloadFree": "Download Free",
-    
+
     // Changelog
     "changelog.title": "Changelog",
     "changelog.subtitle": "Track all updates and improvements to Timeline Studio",
@@ -65,26 +65,32 @@ const translations = {
     "changelog.breakingChanges": "Breaking Changes",
     "changelog.viewRelease": "View Release",
     "changelog.viewAllReleases": "View all releases on GitHub",
-    
+
     // Main page
     "mainPage.features.smartAnalysis.title": "Smart Analysis",
-    "mainPage.features.smartAnalysis.description": "AI analyzes trends and suggests the best content strategy for maximum engagement",
+    "mainPage.features.smartAnalysis.description":
+      "AI analyzes trends and suggests the best content strategy for maximum engagement",
     "mainPage.features.instantCreation.title": "Instant Creation",
-    "mainPage.features.instantCreation.description": "Generate professional videos with trending effects and transitions in seconds",
+    "mainPage.features.instantCreation.description":
+      "Generate professional videos with trending effects and transitions in seconds",
     "mainPage.features.viralOptimization.title": "Viral Optimization",
-    "mainPage.features.viralOptimization.description": "Optimize timing, hashtags, and content format for each social platform",
+    "mainPage.features.viralOptimization.description":
+      "Optimize timing, hashtags, and content format for each social platform",
     "mainPage.features.cinematicAutoEdit.title": "Cinematic Auto-Edit",
-    "mainPage.features.cinematicAutoEdit.description": "Transform raw clips into Hollywood-style sequences with dynamic pacing, perfect timing, and emotional flow",
+    "mainPage.features.cinematicAutoEdit.description":
+      "Transform raw clips into Hollywood-style sequences with dynamic pacing, perfect timing, and emotional flow",
     "mainPage.features.cinematicAutoEdit.filmTheory": "Film Theory",
     "mainPage.features.cinematicAutoEdit.aiDirector": "AI Director",
     "mainPage.features.magicEnhancement.title": "Magic Enhancement",
-    "mainPage.features.magicEnhancement.description": "Upscale to 8K, stabilize shaky footage, remove objects, and enhance audio - all with one-click AI magic",
+    "mainPage.features.magicEnhancement.description":
+      "Upscale to 8K, stabilize shaky footage, remove objects, and enhance audio - all with one-click AI magic",
     "mainPage.features.magicEnhancement.superResolution": "Super Resolution",
     "mainPage.aiSmartEditing.title": "AI-Powered Smart Editing",
     "mainPage.aiSmartEditing.subtitle": "Let AI do the heavy lifting while you focus on creativity",
     "mainPage.aiSmartEditing.description": "Our neural networks analyze, optimize, and perfect every frame 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "Neural Scene Analysis",
-    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc": "Our AI watches your footage like a professional editor, identifying key moments, emotions, and story beats in milliseconds",
+    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc":
+      "Our AI watches your footage like a professional editor, identifying key moments, emotions, and story beats in milliseconds",
     "mainPage.aiSmartEditing.deepLearning": "Deep Learning",
     "mainPage.aiSmartEditing.realTime": "Real-time",
     "mainPage.download.title": "Download Free",
@@ -94,7 +100,7 @@ const translations = {
     "mainPage.download.latestVersion": "Latest version",
     "mainPage.download.checkGithub": "Check GitHub",
     "mainPage.download.allReleases": "All releases",
-    
+
     // Docs
     "docs.title": "Documentation",
     "docs.subtitle": "Everything you need to know about Timeline Studio",
@@ -108,7 +114,7 @@ const translations = {
     "docs.sections.integrations.openai": "OpenAI API",
     "docs.sections.integrations.youtube": "YouTube API",
     "docs.sections.integrations.telegram": "Telegram API",
-    
+
     // Project page translations
     "project.hero.title": "Project Documentation",
     "project.hero.description": "Complete Timeline Studio documentation - revolutionary AI video editor",
@@ -133,7 +139,8 @@ const translations = {
     // Pricing
     "pricing.title": "Simple Pricing",
     "pricing.subtitle": "Local features free. Cloud features paid. Everything transparent.",
-    "pricing.description": "AI avatars, video generation, one-click export to TikTok/YouTube\nEverything you need to dominate social media",
+    "pricing.description":
+      "AI avatars, video generation, one-click export to TikTok/YouTube\nEverything you need to dominate social media",
     "pricing.mostPopular": "MOST POPULAR",
     "pricing.cloudStorage": "Cloud Storage",
     "pricing.aiTokens": "AI Tokens",
@@ -178,13 +185,17 @@ const translations = {
     "pricing.teamsEnterprise": "For Teams & Enterprise",
     "pricing.faq.title": "Frequently Asked Questions",
     "pricing.faq.whatAreTokens.question": "What are AI tokens?",
-    "pricing.faq.whatAreTokens.answer": "AI tokens are used for premium AI models (Claude, GPT-4). Local AI through Ollama works free and doesn't require tokens. PRO includes 80K tokens/mo, MAX provides 500K tokens/mo for power users.",
+    "pricing.faq.whatAreTokens.answer":
+      "AI tokens are used for premium AI models (Claude, GPT-4). Local AI through Ollama works free and doesn't require tokens. PRO includes 80K tokens/mo, MAX provides 500K tokens/mo for power users.",
     "pricing.faq.canUpgradeDowngrade.question": "Can I upgrade or downgrade?",
-    "pricing.faq.canUpgradeDowngrade.answer": "Yes! You can change your plan anytime. When upgrading, you'll get instant access to new features. When downgrading, changes take effect at the next billing cycle.",
+    "pricing.faq.canUpgradeDowngrade.answer":
+      "Yes! You can change your plan anytime. When upgrading, you'll get instant access to new features. When downgrading, changes take effect at the next billing cycle.",
     "pricing.faq.whyFreePowerful.question": "Why is the free version so powerful?",
-    "pricing.faq.whyFreePowerful.answer": "We believe in transparency. Everything that can run on your computer is free. You only pay for cloud services and third-party APIs that require our infrastructure costs.",
+    "pricing.faq.whyFreePowerful.answer":
+      "We believe in transparency. Everything that can run on your computer is free. You only pay for cloud services and third-party APIs that require our infrastructure costs.",
     "pricing.faq.isThereFreeTrial.question": "Is there a free trial?",
-    "pricing.faq.isThereFreeTrial.answer": "Yes! PRO, MAX and TEAM plans come with a 14-day free trial. No credit card required. Cancel anytime. Plus, get 3 months free when switching from competitors.",
+    "pricing.faq.isThereFreeTrial.answer":
+      "Yes! PRO, MAX and TEAM plans come with a 14-day free trial. No credit card required. Cancel anytime. Plus, get 3 months free when switching from competitors.",
   },
   ru: {
     // Navigation
@@ -225,13 +236,13 @@ const translations = {
     "footer.legal.termsOfService": "Условия использования",
     "footer.legal.privacyPolicy": "Политика конфиденциальности",
     "footer.legal.responsibleAI": "Политика ответственного ИИ",
-    
+
     // Hero section
     "hero.title": "Создание видео с помощью ИИ",
     "hero.subtitle": "Смотрите, как Timeline Studio AI поможет вам создать вирусный контент за секунды",
     "hero.description": "Введите свои идеи и позвольте ИИ творить чудеса",
     "hero.downloadFree": "Скачать бесплатно",
-    
+
     // Changelog
     "changelog.title": "История изменений",
     "changelog.subtitle": "Отслеживайте все обновления и улучшения Timeline Studio",
@@ -242,26 +253,33 @@ const translations = {
     "changelog.breakingChanges": "Критические изменения",
     "changelog.viewRelease": "Посмотреть релиз",
     "changelog.viewAllReleases": "Посмотреть все релизы на GitHub",
-    
+
     // Main page
     "mainPage.features.smartAnalysis.title": "Умный анализ",
-    "mainPage.features.smartAnalysis.description": "ИИ анализирует тренды и предлагает лучшую контент-стратегию для максимального охвата",
+    "mainPage.features.smartAnalysis.description":
+      "ИИ анализирует тренды и предлагает лучшую контент-стратегию для максимального охвата",
     "mainPage.features.instantCreation.title": "Мгновенное создание",
-    "mainPage.features.instantCreation.description": "Генерируйте профессиональные видео с трендовыми эффектами и переходами за секунды",
+    "mainPage.features.instantCreation.description":
+      "Генерируйте профессиональные видео с трендовыми эффектами и переходами за секунды",
     "mainPage.features.viralOptimization.title": "Вирусная оптимизация",
-    "mainPage.features.viralOptimization.description": "Оптимизируйте тайминг, хештеги и формат контента для каждой социальной платформы",
+    "mainPage.features.viralOptimization.description":
+      "Оптимизируйте тайминг, хештеги и формат контента для каждой социальной платформы",
     "mainPage.features.cinematicAutoEdit.title": "Кинематографическое авто-редактирование",
-    "mainPage.features.cinematicAutoEdit.description": "Превращайте сырые клипы в голливудские последовательности с динамичным темпом, идеальным таймингом и эмоциональным потоком",
+    "mainPage.features.cinematicAutoEdit.description":
+      "Превращайте сырые клипы в голливудские последовательности с динамичным темпом, идеальным таймингом и эмоциональным потоком",
     "mainPage.features.cinematicAutoEdit.filmTheory": "Теория кино",
     "mainPage.features.cinematicAutoEdit.aiDirector": "ИИ Режиссёр",
     "mainPage.features.magicEnhancement.title": "Магическое улучшение",
-    "mainPage.features.magicEnhancement.description": "Увеличивайте до 8K, стабилизируйте дрожащие кадры, удаляйте объекты и улучшайте звук - всё одним кликом ИИ магии",
+    "mainPage.features.magicEnhancement.description":
+      "Увеличивайте до 8K, стабилизируйте дрожащие кадры, удаляйте объекты и улучшайте звук - всё одним кликом ИИ магии",
     "mainPage.features.magicEnhancement.superResolution": "Супер разрешение",
     "mainPage.aiSmartEditing.title": "ИИ-управляемое умное редактирование",
     "mainPage.aiSmartEditing.subtitle": "Позвольте ИИ делать тяжёлую работу, пока вы сосредотачиваетесь на творчестве",
-    "mainPage.aiSmartEditing.description": "Наши нейронные сети анализируют, оптимизируют и совершенствуют каждый кадр 🤖",
+    "mainPage.aiSmartEditing.description":
+      "Наши нейронные сети анализируют, оптимизируют и совершенствуют каждый кадр 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "Нейронный анализ сцен",
-    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc": "Наш ИИ наблюдает за вашими кадрами как профессиональный редактор, выявляя ключевые моменты, эмоции и сюжетные точки за миллисекунды",
+    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc":
+      "Наш ИИ наблюдает за вашими кадрами как профессиональный редактор, выявляя ключевые моменты, эмоции и сюжетные точки за миллисекунды",
     "mainPage.aiSmartEditing.deepLearning": "Глубокое обучение",
     "mainPage.aiSmartEditing.realTime": "В реальном времени",
     "mainPage.download.title": "Скачать бесплатно",
@@ -271,13 +289,14 @@ const translations = {
     "mainPage.download.latestVersion": "Последняя версия",
     "mainPage.download.checkGithub": "Проверить на GitHub",
     "mainPage.download.allReleases": "Все релизы",
-    
+
     // Docs
     "docs.title": "Документация",
     "docs.subtitle": "Всё, что нужно знать о Timeline Studio",
     "docs.description": "Руководства по разработке, справочник API и лучшие практики 📚",
     "docs.contribute.title": "Хотите внести вклад?",
-    "docs.contribute.description": "Помогите нам улучшить Timeline Studio, внося вклад в документацию или кодовую базу.",
+    "docs.contribute.description":
+      "Помогите нам улучшить Timeline Studio, внося вклад в документацию или кодовую базу.",
     "docs.contribute.viewGithub": "Посмотреть на GitHub",
     "docs.contribute.contributingGuide": "Руководство по участию",
     "docs.sections.integrations.title": "Интеграции",
@@ -337,7 +356,7 @@ const translations = {
     "docs.sections.tasks.title": "Управление задачами",
     "docs.sections.tasks.active": "Активные задачи",
     "docs.sections.tasks.roadmap": "Дорожная карта",
-    
+
     // Project page translations
     "project.hero.title": "Проектная документация",
     "project.hero.description": "Полная документация Timeline Studio - революционного AI-видеоредактора",
@@ -362,7 +381,8 @@ const translations = {
     // Pricing
     "pricing.title": "Простые цены",
     "pricing.subtitle": "Локальные функции бесплатно. Облачные функции платно. Всё прозрачно.",
-    "pricing.description": "AI аватары, генерация видео, экспорт в TikTok/YouTube одним кликом\nВсё что нужно для доминирования в социальных сетях",
+    "pricing.description":
+      "AI аватары, генерация видео, экспорт в TikTok/YouTube одним кликом\nВсё что нужно для доминирования в социальных сетях",
     "pricing.mostPopular": "САМЫЙ ПОПУЛЯРНЫЙ",
     "pricing.cloudStorage": "Облачное хранилище",
     "pricing.aiTokens": "AI токены",
@@ -407,13 +427,17 @@ const translations = {
     "pricing.teamsEnterprise": "Для команд и корпораций",
     "pricing.faq.title": "Часто задаваемые вопросы",
     "pricing.faq.whatAreTokens.question": "Что такое токены ИИ?",
-    "pricing.faq.whatAreTokens.answer": "Токены ИИ используются для премиум ИИ-моделей (Claude, GPT-4). Локальный ИИ через Ollama работает бесплатно и не требует токенов. PRO включает 80тыс токенов/мес, MAX предоставляет 500тыс токенов/мес для продвинутых пользователей.",
+    "pricing.faq.whatAreTokens.answer":
+      "Токены ИИ используются для премиум ИИ-моделей (Claude, GPT-4). Локальный ИИ через Ollama работает бесплатно и не требует токенов. PRO включает 80тыс токенов/мес, MAX предоставляет 500тыс токенов/мес для продвинутых пользователей.",
     "pricing.faq.canUpgradeDowngrade.question": "Могу ли я изменить тариф?",
-    "pricing.faq.canUpgradeDowngrade.answer": "Да! Вы можете изменить свой тариф в любое время. При повышении тарифа вы сразу получите доступ к новым функциям. При понижении тарифа изменения вступят в силу в следующем расчетном периоде.",
+    "pricing.faq.canUpgradeDowngrade.answer":
+      "Да! Вы можете изменить свой тариф в любое время. При повышении тарифа вы сразу получите доступ к новым функциям. При понижении тарифа изменения вступят в силу в следующем расчетном периоде.",
     "pricing.faq.whyFreePowerful.question": "Почему бесплатная версия такая мощная?",
-    "pricing.faq.whyFreePowerful.answer": "Мы верим в прозрачность. Всё, что может работать на вашем компьютере, бесплатно. Вы платите только за облачные сервисы и сторонние API, которые требуют затрат на нашу инфраструктуру.",
+    "pricing.faq.whyFreePowerful.answer":
+      "Мы верим в прозрачность. Всё, что может работать на вашем компьютере, бесплатно. Вы платите только за облачные сервисы и сторонние API, которые требуют затрат на нашу инфраструктуру.",
     "pricing.faq.isThereFreeTrial.question": "Есть ли бесплатный триал?",
-    "pricing.faq.isThereFreeTrial.answer": "Да! Тарифы PRO, MAX и КОМАНДА включают 14-дневный бесплатный триал. Кредитная карта не требуется. Отмена в любое время. Плюс, получите 3 месяца бесплатно при переходе от конкурентов.",
+    "pricing.faq.isThereFreeTrial.answer":
+      "Да! Тарифы PRO, MAX и КОМАНДА включают 14-дневный бесплатный триал. Кредитная карта не требуется. Отмена в любое время. Плюс, получите 3 месяца бесплатно при переходе от конкурентов.",
   },
   zh: {
     // Navigation
@@ -460,7 +484,7 @@ const translations = {
     "hero.subtitle": "观看Timeline Studio AI如何帮助您在几秒钟内创建病毒式内容",
     "hero.description": "输入您的想法，让AI施展魔法",
     "hero.downloadFree": "免费下载",
-    
+
     // Changelog
     "changelog.title": "更新日志",
     "changelog.subtitle": "跟踪Timeline Studio的所有更新和改进",
@@ -471,7 +495,7 @@ const translations = {
     "changelog.breakingChanges": "重大变更",
     "changelog.viewRelease": "查看发布",
     "changelog.viewAllReleases": "在GitHub上查看所有发布",
-    
+
     // Main page
     "mainPage.features.smartAnalysis.title": "智能分析",
     "mainPage.features.smartAnalysis.description": "AI分析趋势并建议最佳内容策略以获得最大参与度",
@@ -480,17 +504,20 @@ const translations = {
     "mainPage.features.viralOptimization.title": "病毒式优化",
     "mainPage.features.viralOptimization.description": "为每个社交平台优化时机、标签和内容格式",
     "mainPage.features.cinematicAutoEdit.title": "电影级自动编辑",
-    "mainPage.features.cinematicAutoEdit.description": "将原始片段转换为好莱坞风格的序列，具有动态节奏、完美时机和情感流动",
+    "mainPage.features.cinematicAutoEdit.description":
+      "将原始片段转换为好莱坞风格的序列，具有动态节奏、完美时机和情感流动",
     "mainPage.features.cinematicAutoEdit.filmTheory": "电影理论",
     "mainPage.features.cinematicAutoEdit.aiDirector": "AI导演",
     "mainPage.features.magicEnhancement.title": "魔法增强",
-    "mainPage.features.magicEnhancement.description": "升级到8K，稳定抖动镜头，移除对象，增强音频 - 一键AI魔法完成所有操作",
+    "mainPage.features.magicEnhancement.description":
+      "升级到8K，稳定抖动镜头，移除对象，增强音频 - 一键AI魔法完成所有操作",
     "mainPage.features.magicEnhancement.superResolution": "超级分辨率",
     "mainPage.aiSmartEditing.title": "AI驱动的智能编辑",
     "mainPage.aiSmartEditing.subtitle": "让AI承担繁重的工作，您专注于创意",
     "mainPage.aiSmartEditing.description": "我们的神经网络分析、优化并完善每一帧 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "神经场景分析",
-    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc": "我们的AI像专业编辑一样观察您的镜头，在毫秒内识别关键时刻、情感和故事节拍",
+    "mainPage.aiSmartEditing.neuralSceneAnalysisDesc":
+      "我们的AI像专业编辑一样观察您的镜头，在毫秒内识别关键时刻、情感和故事节拍",
     "mainPage.aiSmartEditing.deepLearning": "深度学习",
     "mainPage.aiSmartEditing.realTime": "实时",
     "mainPage.download.title": "免费下载",
@@ -566,7 +593,7 @@ const translations = {
     "docs.sections.tasks.title": "任务管理",
     "docs.sections.tasks.active": "活跃任务",
     "docs.sections.tasks.roadmap": "路线图",
-    
+
     // Project page translations
     "project.hero.title": "项目文档",
     "project.hero.description": "完整的Timeline Studio文档 - 革命性的AI视频编辑器",
@@ -636,13 +663,17 @@ const translations = {
     "pricing.teamsEnterprise": "适用于团队和企业",
     "pricing.faq.title": "常见问题",
     "pricing.faq.whatAreTokens.question": "什么是AI令牌？",
-    "pricing.faq.whatAreTokens.answer": "AI令牌用于高级AI模型（Claude、GPT-4）。通过Ollama的本地AI免费工作，不需要令牌。专业版包含8万令牌/月，最大版为高级用户提供50万令牌/月。",
+    "pricing.faq.whatAreTokens.answer":
+      "AI令牌用于高级AI模型（Claude、GPT-4）。通过Ollama的本地AI免费工作，不需要令牌。专业版包含8万令牌/月，最大版为高级用户提供50万令牌/月。",
     "pricing.faq.canUpgradeDowngrade.question": "我可以升级或降级吗？",
-    "pricing.faq.canUpgradeDowngrade.answer": "可以！您可以随时更改计划。升级时，您将立即获得新功能的访问权限。降级时，更改将在下一个计费周期生效。",
+    "pricing.faq.canUpgradeDowngrade.answer":
+      "可以！您可以随时更改计划。升级时，您将立即获得新功能的访问权限。降级时，更改将在下一个计费周期生效。",
     "pricing.faq.whyFreePowerful.question": "为什么免费版本如此强大？",
-    "pricing.faq.whyFreePowerful.answer": "我们相信透明度。能在您计算机上运行的一切都是免费的。您只需为需要我们基础设施成本的云服务和第三方API付费。",
+    "pricing.faq.whyFreePowerful.answer":
+      "我们相信透明度。能在您计算机上运行的一切都是免费的。您只需为需要我们基础设施成本的云服务和第三方API付费。",
     "pricing.faq.isThereFreeTrial.question": "有免费试用吗？",
-    "pricing.faq.isThereFreeTrial.answer": "有！专业版、最大版和团队版都提供14天免费试用。无需信用卡。随时取消。另外，从竞争对手转换时可获得3个月免费。",
+    "pricing.faq.isThereFreeTrial.answer":
+      "有！专业版、最大版和团队版都提供14天免费试用。无需信用卡。随时取消。另外，从竞争对手转换时可获得3个月免费。",
   },
 }
 

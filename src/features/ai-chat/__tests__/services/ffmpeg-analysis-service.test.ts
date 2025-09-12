@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+// Import global mock
+import { mockInvoke } from "@/test/mocks/tauri/core"
 import {
   type AudioAnalysisResult,
   FFmpegAnalysisService,
@@ -11,9 +12,6 @@ import {
   type VideoAnalysisOptions,
   type VideoMetadata,
 } from "../../services/ffmpeg-analysis-service"
-
-// Import global mock
-import { mockInvoke } from "@/test/mocks/tauri/core"
 
 describe("FFmpegAnalysisService", () => {
   let service: FFmpegAnalysisService

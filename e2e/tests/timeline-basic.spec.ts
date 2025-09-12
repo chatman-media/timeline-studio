@@ -147,10 +147,10 @@ test.describe("Timeline Basic Functionality", () => {
   test("should display correct project info", async ({ page }) => {
     // Проверяем наличие информации о проекте - используем более гибкие селекторы
     const hasFPS =
-      (await page.locator("text=/\\d+\s*fps/i").count()) > 0 || (await page.locator('[class*="fps"]').count()) > 0
+      (await page.locator("text=/\\d+s*fps/i").count()) > 0 || (await page.locator('[class*="fps"]').count()) > 0
 
     const hasResolution =
-      (await page.locator("text=/\\d{3,4}\s*x\s*\\d{3,4}/").count()) > 0 ||
+      (await page.locator("text=/\\d{3,4}s*xs*\\d{3,4}/").count()) > 0 ||
       (await page.locator("text=/1080|720|4K|2K|HD|FHD|UHD/").count()) > 0 ||
       (await page.locator('[class*="resolution"], [class*="size"]').count()) > 0
 

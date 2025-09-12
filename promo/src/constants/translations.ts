@@ -806,8 +806,7 @@ export const translations = {
         title: "我们的价值观",
         innovation: {
           title: "创新优先",
-          description:
-            "我们推动可能性的边界，将最新的AI进展集成到实用工具中。",
+          description: "我们推动可能性的边界，将最新的AI进展集成到实用工具中。",
         },
         community: {
           title: "全球社区",
@@ -823,8 +822,7 @@ export const translations = {
         },
         userCentric: {
           title: "以用户为中心",
-          description:
-            "每个决定都从我们的用户开始。我们构建解决真实创作者真实问题的功能。",
+          description: "每个决定都从我们的用户开始。我们构建解决真实创作者真实问题的功能。",
         },
         openInnovation: {
           title: "开放创新",
@@ -833,14 +831,12 @@ export const translations = {
       },
       team: {
         title: "由创作者为创作者构建",
-        description:
-          "我们的团队结合了AI、视频技术和用户体验设计方面的专业知识，创造真正理解创作者需求的工具。",
+        description: "我们的团队结合了AI、视频技术和用户体验设计方面的专业知识，创造真正理解创作者需求的工具。",
         founder: "创始人兼首席开发者",
       },
       cta: {
         title: "加入我们的旅程",
-        description:
-          "无论您是内容创作者、开发者，还是只是对视频的未来充满热情，我们都希望您成为我们社区的一部分。",
+        description: "无论您是内容创作者、开发者，还是只是对视频的未来充满热情，我们都希望您成为我们社区的一部分。",
         contributeGithub: "在GitHub上贡献",
         tryStudio: "试用Timeline Studio",
       },
@@ -859,8 +855,7 @@ export const translations = {
     pricing: {
       title: "简单定价",
       subtitle: "本地功能免费。云功能付费。一切透明。",
-      description:
-        "AI头像、视频生成、一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
+      description: "AI头像、视频生成、一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
       mostPopular: "最受欢迎",
       cloudStorage: "云存储",
       aiTokens: "AI令牌",
@@ -1003,8 +998,7 @@ export const translations = {
         },
         isFree: {
           question: "Timeline Studio免费吗？",
-          answer:
-            "是的！Timeline Studio完全免费且开源。您可以为Windows、macOS和Linux下载它，无需任何费用或订阅费。",
+          answer: "是的！Timeline Studio完全免费且开源。您可以为Windows、macOS和Linux下载它，无需任何费用或订阅费。",
         },
         formats: {
           question: "支持哪些视频格式？",
@@ -1013,8 +1007,7 @@ export const translations = {
         },
         commercial: {
           question: "我可以将Timeline Studio用于商业项目吗？",
-          answer:
-            "当然可以！Timeline Studio在自由许可证下发布，允许个人和商业使用，无任何限制。",
+          answer: "当然可以！Timeline Studio在自由许可证下发布，允许个人和商业使用，无任何限制。",
         },
         requirements: {
           question: "系统要求是什么？",

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 import { useLanguage } from "../contexts/LanguageContext"
 
@@ -25,7 +25,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
   const { language, setLanguage } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
 
-  const currentLanguage = languages.find(lang => lang.code === language) || languages[0]
+  const currentLanguage = languages.find((lang) => lang.code === language) || languages[0]
 
   const handleLanguageSelect = (langCode: Language) => {
     setLanguage(langCode)
@@ -54,7 +54,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </motion.svg>
         </button>
-        
+
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -98,9 +98,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
           layoutId="language-bg"
         />
         <span className="relative z-10 mr-2">{currentLanguage.flag}</span>
-        <span className="relative z-10 text-xs tracking-wider">
-          {currentLanguage.code.toUpperCase()}
-        </span>
+        <span className="relative z-10 text-xs tracking-wider">{currentLanguage.code.toUpperCase()}</span>
         <motion.svg
           className="relative z-10 w-3 h-3 ml-1"
           fill="none"
@@ -127,9 +125,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
                 key={lang.code}
                 onClick={() => handleLanguageSelect(lang.code)}
                 className={`flex items-center w-full px-3 py-2 text-sm transition-colors duration-200 cursor-pointer ${
-                  lang.code === language
-                    ? "bg-white/10 text-white"
-                    : "text-gray-300 hover:text-white hover:bg-white/5"
+                  lang.code === language ? "bg-white/10 text-white" : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`}
                 whileHover={{ x: 2 }}
               >
@@ -142,12 +138,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
       </AnimatePresence>
 
       {/* Backdrop to close dropdown */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />}
     </div>
   )
 }

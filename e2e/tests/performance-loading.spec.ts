@@ -4,9 +4,9 @@ test.describe("Performance Loading Tests", () => {
   test.beforeEach(async ({ page }) => {
     // Сбрасываем performance API
     await page.addInitScript(() => {
-      // @ts-ignore
+      // @ts-expect-error
       window.performanceMarks = []
-      // @ts-ignore
+      // @ts-expect-error
       window.renderCount = 0
     })
   })
