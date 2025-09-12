@@ -10,6 +10,7 @@ import enVersionRaw from "../../content/blog/en/version-079-documentation-invest
 import ruAiEditingRaw from "../../content/blog/ru/ai-video-editing-guide.md?raw"
 import ruAlphaReleaseRaw from "../../content/blog/ru/alpha-release-ollama-integration.md?raw"
 import ruIntroducingRaw from "../../content/blog/ru/introducing-timeline-studio.md?raw"
+import ruVersionRaw from "../../content/blog/ru/version-079-documentation-investment.md?raw"
 
 // Chinese posts
 import zhAiEditingRaw from "../../content/blog/zh/ai-video-editing-guide.md?raw"
@@ -29,6 +30,7 @@ export const blogPostsRaw = {
     "introducing-timeline-studio": ruIntroducingRaw,
     "ai-video-editing-guide": ruAiEditingRaw,
     "alpha-release-ollama-integration": ruAlphaReleaseRaw,
+    "version-079-documentation-investment": ruVersionRaw,
     "getting-started-ai-editing": ruAiEditingRaw, // alias for compatibility
   },
   zh: {
@@ -42,6 +44,6 @@ export const blogPostsRaw = {
 
 export const blogPostsList = {
   en: [enVersionRaw, enAlphaReleaseRaw, enIntroducingRaw, enAiEditingRaw],
-  ru: [ruAlphaReleaseRaw, ruIntroducingRaw, ruAiEditingRaw],
+  ru: [ruVersionRaw, ruAlphaReleaseRaw, ruIntroducingRaw, ruAiEditingRaw],
   zh: [zhVersionRaw, zhAlphaReleaseRaw, zhIntroducingRaw, zhAiEditingRaw],
 }
