@@ -1,6 +1,6 @@
 ---
 title: "Timeline Studio v0.79.0: Documentation Update and Open for Investment"
-date: "2025-01-27"
+date: "2025-09-11"
 author: "Timeline Team"
 slug: "version-079-documentation-investment"
 excerpt: "Release of version 0.79.0 with updated documentation, project evaluation, and investment proposal formation. We are open for investments!"
