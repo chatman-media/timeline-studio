@@ -6,7 +6,8 @@
 import { VideoAnalysisParams } from "@/features/ai-chat/services/multimodal-analysis-service"
 import type { MediaFile } from "@/features/media/types/media"
 import { getAIContainer } from "@/shared/services/ai"
-import type { IUnifiedAIService, MediaAnalysisFactory } from "@/shared/services/ai/providers/interfaces"
+import type { MediaAnalysisFactory } from "@/shared/services/ai/analysis/interfaces"
+import type { IUnifiedAIService } from "@/shared/services/ai/providers/interfaces"
 import type {
   AudioAnalysis,
   Fragment,

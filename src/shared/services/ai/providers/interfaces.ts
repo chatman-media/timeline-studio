@@ -163,13 +163,6 @@ export interface AIServiceConfig {
   }
 }
 
-// Фабрика для анализа медиа
-export interface MediaAnalysisFactory {
-  createFFmpegService(): any
-  createVisionService(): any
-  createContentAnalysisService(): any
-}
-
 // Фабрика для оркестрации
 export interface OrchestrationFactory {
   createWorkflowEngine(): any
