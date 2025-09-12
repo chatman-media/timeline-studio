@@ -1,27 +1,27 @@
-# Инвестиционная оценка Timeline Studio
+# Timeline Studio Investment Valuation
 
-## 📊 Исполнительное резюме
+## 📊 Executive Summary
 
-**Timeline Studio** - революционный AI-powered видеоредактор с **257 AI инструментами** (мировое лидерство) и готовностью продукта **95%**. Проект нацелен на захват **5 рынков общим объемом $45.1 млрд** с уникальной мультирыночной стратегией.
+**Timeline Studio** - revolutionary AI-powered video editor with **257 AI tools** (world leadership) and **95% product readiness**. The project targets **5 markets with a total volume of $45.1 billion** with a unique multi-market strategy.
 
-### Ключевые показатели
-- **Готовность продукта**: 95% (21/26 модулей завершено)
-- **AI превосходство**: 257 инструментов vs 10-25 у конкурентов
-- **Рыночная возможность**: $45.1 млрд (5 рынков)
-- **Прогноз ARR 2025**: $15M+
-- **Предлагаемая оценка**: **$60-70 млн**
+### Key Metrics
+- **Product Readiness**: 95% (21/26 modules completed)
+- **AI Superiority**: 257 tools vs 10-25 from competitors
+- **Market Opportunity**: $45.1 billion (5 markets)
+- **2025 ARR Forecast**: $15M+
+- **Proposed Valuation**: **$60-70 million**
 
-## 🎯 Анализ рыночной возможности
+## 🎯 Market Opportunity Analysis
 
-### Целевые рынки ($45.1 млрд)
+### Target Markets ($45.1 billion)
 
-| Рынок | Объем | CAGR | Наша доля к 2027 |
-|-------|-------|------|------------------|
-| Видеоредакторы | $2.15 млрд | 13.4% | 5-8% |
-| Live Streaming | $15.3 млрд | 28.1% | 2-3% |
-| Мемы/Viral контент | $8.2 млрд | 35% | 3-5% |
-| AI аватары | $3.8 млрд | 47% | 8-12% |
-| Мобильные платформы | $15.7 млрд | 22.3% | 1-2% |
+| Market | Volume | CAGR | Our Share by 2027 |
+|--------|--------|------|-------------------|
+| Video Editors | $2.15B | 13.4% | 5-8% |
+| Live Streaming | $15.3B | 28.1% | 2-3% |
+| Memes/Viral Content | $8.2B | 35% | 3-5% |
+| AI Avatars | $3.8B | 47% | 8-12% |
+| Mobile Platforms | $15.7B | 22.3% | 1-2% |
 
 ### Конкурентные преимущества
 
