@@ -8,7 +8,7 @@ import { Navigation } from "../components/Navigation"
 import { useLanguage } from "../contexts/LanguageContext"
 
 export const Project: React.FC = () => {
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
   const [markdownContent, setMarkdownContent] = useState("")
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("manifest")
@@ -245,26 +245,25 @@ export const Project: React.FC = () => {
               className="max-w-4xl mx-auto text-center"
             >
               <h2 className="text-4xl md:text-5xl mb-12 text-center">
-                <span className="text-gradient">{language === "ru" ? "Быстрые ссылки" : "Quick Links"}</span>
+                <span className="text-gradient">{t("project.quickLinks.title")}</span>
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
                   {
-                    title: language === "ru" ? "GitHub" : "GitHub",
-                    description: language === "ru" ? "Исходный код проекта" : "Project source code",
+                    title: t("project.quickLinks.github.title"),
+                    description: t("project.quickLinks.github.description"),
                     href: "https://github.com/chatman-media/timeline-studio",
                     icon: "🔗",
                   },
                   {
-                    title: language === "ru" ? "Документация" : "Documentation",
-                    description:
-                      language === "ru" ? "Полная техническая документация" : "Complete technical documentation",
+                    title: t("project.quickLinks.docs.title"),
+                    description: t("project.quickLinks.docs.description"),
                     href: "/docs",
                     icon: "📚",
                   },
                   {
-                    title: language === "ru" ? "Скачать" : "Download",
-                    description: language === "ru" ? "Последняя версия приложения" : "Latest application version",
+                    title: t("project.quickLinks.download.title"),
+                    description: t("project.quickLinks.download.description"),
                     href: "https://github.com/chatman-media/timeline-studio/releases/latest",
                     icon: "⬇️",
                   },
