@@ -40,8 +40,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
 
           {/* Animated overlay badges */}
 
-
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.5 }}
@@ -68,11 +67,9 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
                 Pro Effects
               </div>
             </div>
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
-
-
     </div>
   )
 }
