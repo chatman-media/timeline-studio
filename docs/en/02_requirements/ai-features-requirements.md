@@ -214,19 +214,19 @@ Timeline Studio should provide intelligent functions for automating the video cr
 - Video quality enhancement
 - Automatic color correction
 
-## 10. Success Metrics
+## 10. 成功指标
 
-### 10.1 Performance
-- Analysis speed: minimum 2x real-time
-- Detection accuracy: >90% for main objects
-- UI response time: <100ms
+### 10.1 性能
+- 分析速度：最低2倍实时
+- 检测准确率：主要物体>90%
+- UI响应时间：<100ms
 
-### 10.2 User Experience
-- 50% reduction in editing time
-- User satisfaction >4.5/5
-- AI function usage rate >70%
+### 10.2 用户体验
+- 编辑时间减少50%
+- 用户满意度>4.5/5
+- AI功能使用率>70%
 
-### 10.3 Result Quality
-- Scene classification accuracy >85%
-- Generated script relevance >80%
-- Auto-edit quality comparable to manual editing
+### 10.3 结果质量
+- 场景分类准确率>85%
+- 生成脚本相关性>80%
+- 自动编辑质量与手动编辑相当
