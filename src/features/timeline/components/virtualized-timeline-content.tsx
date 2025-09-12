@@ -37,7 +37,7 @@ import { VirtualizedTrack } from "./track/virtualized-track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
-import { IntegratedVersionPanel } from "./version-control-integration/integrated-version-panel"
+// import { IntegratedVersionPanel } from "./version-control-integration/integrated-version-panel" // Временно скрыто
 
 export function VirtualizedTimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -87,11 +87,7 @@ export function VirtualizedTimelineContent() {
   // Создаем проект при первой загрузке
   useEffect(() => {
     if (!project && currentProject && projectSettings) {
-      void createProject(currentProject.name, {
-        width: projectSettings.aspectRatio.value.width,
-        height: projectSettings.aspectRatio.value.height,
-        frameRate: Number.parseInt(projectSettings.frameRate),
-      })
+      void createProject(currentProject.name)
     }
   }, [project, currentProject, projectSettings, createProject])
 
@@ -222,7 +218,7 @@ export function VirtualizedTimelineContent() {
               <div className="h-full flex flex-col">
                 <TrackControlsPanel />
                 <div className="p-2 border-t">
-                  <IntegratedVersionPanel />
+                  {/* <IntegratedVersionPanel /> */} {/* Временно скрыто */}
                 </div>
               </div>
             </ResizablePanel>
@@ -301,12 +297,7 @@ export function VirtualizedTimelineContent() {
                           if (!track) return null
 
                           return (
-                            <div
-                              key={track.id}
-                              data-index={virtualItem.index}
-                              ref={virtualItem.measureElement}
-                              style={getItemStyle(virtualItem)}
-                            >
+                            <div key={track.id} data-index={virtualItem.index} style={getItemStyle(virtualItem)}>
                               <VirtualizedTrack
                                 track={track}
                                 timeScale={timeScale}

@@ -5,6 +5,7 @@
 
 import { CLAUDE_MODELS } from "@/shared/services/ai/providers/claude"
 import { DEEPSEEK_MODELS } from "@/shared/services/ai/providers/deepseek"
+import { OLLAMA_MODELS } from "@/shared/services/ai/providers/ollama"
 import { OPENAI_MODELS } from "@/shared/services/ai/providers/openai"
 
 // Типы AI провайдеров
@@ -158,6 +159,58 @@ export class ModelConfigurationManager {
       supportsTools: false,
       maxTokens: 32768,
       description: "Специализированная модель для программирования",
+    },
+
+    // Ollama модели (локальные)
+    [OLLAMA_MODELS.LLAMA3_2]: {
+      id: OLLAMA_MODELS.LLAMA3_2,
+      name: "Llama 3.2 (Локальная)",
+      provider: "ollama",
+      isLocal: true,
+      supportsStreaming: true,
+      supportsTools: false,
+      maxTokens: 8192,
+      description: "Локальная модель Llama 3.2 через Ollama",
+    },
+    [OLLAMA_MODELS.LLAMA3_1]: {
+      id: OLLAMA_MODELS.LLAMA3_1,
+      name: "Llama 3.1 (Локальная)",
+      provider: "ollama",
+      isLocal: true,
+      supportsStreaming: true,
+      supportsTools: false,
+      maxTokens: 8192,
+      description: "Локальная модель Llama 3.1 через Ollama",
+    },
+    [OLLAMA_MODELS.CODELLAMA]: {
+      id: OLLAMA_MODELS.CODELLAMA,
+      name: "Code Llama (Локальная)",
+      provider: "ollama",
+      isLocal: true,
+      supportsStreaming: true,
+      supportsTools: false,
+      maxTokens: 4096,
+      description: "Локальная модель для программирования через Ollama",
+    },
+    [OLLAMA_MODELS.MISTRAL]: {
+      id: OLLAMA_MODELS.MISTRAL,
+      name: "Mistral (Локальная)",
+      provider: "ollama",
+      isLocal: true,
+      supportsStreaming: true,
+      supportsTools: false,
+      maxTokens: 8192,
+      description: "Локальная модель Mistral через Ollama",
+    },
+    [OLLAMA_MODELS.QWEN2_5]: {
+      id: OLLAMA_MODELS.QWEN2_5,
+      name: "Qwen 2.5 (Локальная)",
+      provider: "ollama",
+      isLocal: true,
+      supportsStreaming: true,
+      supportsTools: false,
+      maxTokens: 8192,
+      description: "Локальная модель Qwen 2.5 через Ollama",
     },
   }
 

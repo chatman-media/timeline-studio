@@ -6,7 +6,7 @@
 import type { ReactNode } from "react"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
-import { type AIDIContainer, getAIContainer } from "./di-container"
+import { type AIDIContainer, getAIContainer, getAIContainerSafe, initializeAIServices } from "./di-container"
 import type { IUnifiedAIService } from "./providers/interfaces"
 
 // Типы для AI сервисов доступных в React
@@ -34,7 +34,7 @@ interface AIServicesProviderProps {
  */
 export function AIServicesProvider({ children, config }: AIServicesProviderProps) {
   const [services, setServices] = useState<AIServices>({
-    container: getAIContainer(),
+    container: null as any,
     isInitialized: false,
   })
 
@@ -42,12 +42,8 @@ export function AIServicesProvider({ children, config }: AIServicesProviderProps
     let mounted = true
 
     async function initializeServices() {
-      const container = getAIContainer()
-
-      // Конфигурируем если нужно
-      if (config) {
-        container.configure(config)
-      }
+      // Инициализируем AI сервисы
+      const container = await initializeAIServices(config)
 
       // Инициализируем контейнер
       await container.initialize()

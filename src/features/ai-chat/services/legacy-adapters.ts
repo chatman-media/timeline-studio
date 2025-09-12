@@ -26,8 +26,9 @@ export class LegacyFFmpegAnalysisService {
 
   private async getSharedService(): Promise<IFFmpegAnalysisService> {
     if (!this.sharedService) {
-      const container = getAIContainer()
-      this.sharedService = await container.resolve<IFFmpegAnalysisService>("FFmpegService")
+      // Используем прямой импорт для избежания циклической зависимости
+      const { FFmpegAdapter } = await import("@/shared/services/ai/analysis/ffmpeg")
+      this.sharedService = new FFmpegAdapter()
     }
     return this.sharedService
   }

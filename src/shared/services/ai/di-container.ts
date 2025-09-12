@@ -4,6 +4,7 @@
  */
 
 import { createMediaAnalysisFactory } from "./analysis/factory"
+import type { IFFmpegAnalysisService, IVisionService } from "./analysis/interfaces"
 import { ModelManagerImpl } from "./model-manager"
 import { createAIProviderFactory } from "./providers/factory"
 import type {
@@ -280,11 +281,11 @@ export class AIDIContainer {
     // Content Analysis Service
     this.registerSingleton(
       "ContentAnalysisService",
-      async (analysisFactory: MediaAnalysisFactory) => {
-        const factory = await analysisFactory
-        return factory.createContentAnalysisService()
+      async (ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) => {
+        const { ContentAnalysisService } = await import("./analysis/content")
+        return new ContentAnalysisService(ffmpegService, visionService)
       },
-      ["MediaAnalysisFactory"],
+      ["FFmpegService", "VisionService"],
     )
   }
 

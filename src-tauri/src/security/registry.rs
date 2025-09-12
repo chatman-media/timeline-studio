@@ -14,6 +14,7 @@ impl CommandRegistry for SecurityCommandRegistry {
       get_decrypted_api_key,
       list_api_keys,
       delete_api_key,
+      has_api_key,
       validate_api_key,
       get_api_key_info,
       // OAuth operations

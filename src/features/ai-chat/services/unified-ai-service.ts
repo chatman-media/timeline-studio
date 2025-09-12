@@ -81,13 +81,46 @@ export class UnifiedAIService {
 
       // Создаем адаптер для проверки доступности провайдеров через shared сервисы
       const availabilityChecker = {
-        isClaudeAvailable: () => sharedUnifiedService.isModelAvailable("claude-4-sonnet-latest"),
-        isOpenAIAvailable: (model: string) => sharedUnifiedService.isModelAvailable(model),
-        isDeepSeekAvailable: () => sharedUnifiedService.isModelAvailable("deepseek-chat"),
-        isOllamaAvailable: () => sharedUnifiedService.isModelAvailable("llama3.2:latest"),
+        isClaudeAvailable: async () => {
+          try {
+            return await sharedUnifiedService.isModelAvailable("claude-4-sonnet-latest")
+          } catch (error) {
+            console.warn("Failed to check Claude availability:", error)
+            return false
+          }
+        },
+        isOpenAIAvailable: async (model: string) => {
+          try {
+            return await sharedUnifiedService.isModelAvailable(model)
+          } catch (error) {
+            console.warn("Failed to check OpenAI availability:", error)
+            return false
+          }
+        },
+        isDeepSeekAvailable: async () => {
+          try {
+            return await sharedUnifiedService.isModelAvailable("deepseek-chat")
+          } catch (error) {
+            console.warn("Failed to check DeepSeek availability:", error)
+            return false
+          }
+        },
+        isOllamaAvailable: async () => {
+          try {
+            return await sharedUnifiedService.isModelAvailable("llama3.2:latest")
+          } catch (error) {
+            console.warn("Failed to check Ollama availability:", error)
+            return false
+          }
+        },
         getOllamaModels: async () => {
-          const models = await sharedUnifiedService.getAvailableModels()
-          return models.filter((m: any) => m.provider === "ollama").map((m: any) => m.model)
+          try {
+            const models = await sharedUnifiedService.getAvailableModels()
+            return models.filter((m: any) => m.provider === "ollama").map((m: any) => m.model)
+          } catch (error) {
+            console.warn("Failed to get Ollama models from shared service:", error)
+            return []
+          }
         },
       }
 

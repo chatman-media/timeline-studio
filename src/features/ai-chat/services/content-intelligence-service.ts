@@ -476,10 +476,9 @@ export class ContentIntelligenceService {
    */
   private async analyzeQuality(mediaFile: MediaInput, scenes: SceneAnalysis[]): Promise<QualityMetrics> {
     try {
-      // Используем shared FFmpeg анализ качества
-      const { getAIContainer } = await import("@/shared/services/ai")
-      const aiContainer = getAIContainer()
-      const ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
+      // Используем прямой импорт FFmpegAdapter для избежания циклической зависимости
+      const { FFmpegAdapter } = await import("@/shared/services/ai/analysis/ffmpeg")
+      const ffmpegService = new FFmpegAdapter()
 
       const qualityAnalysis = await ffmpegService.analyzeQuality(mediaFile.path, {
         checkVideo: true,

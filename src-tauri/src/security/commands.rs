@@ -230,6 +230,23 @@ pub async fn delete_api_key(
   }
 }
 
+/// Проверяет наличие API ключа
+#[tauri::command]
+pub async fn has_api_key(
+  storage: SecureStorageState<'_>,
+  key_type: String,
+) -> Result<bool, String> {
+  let key_type = ApiKeyType::from_str(&key_type).map_err(|_| "Invalid key type".to_string())?;
+
+  let mut storage_guard = storage.lock().await;
+
+  match storage_guard.get_api_key(key_type).await {
+    Ok(Some(_)) => Ok(true),
+    Ok(None) => Ok(false),
+    Err(e) => Err(format!("Failed to check API key: {e}")),
+  }
+}
+
 /// Валидирует API ключ
 #[tauri::command]
 pub async fn validate_api_key(

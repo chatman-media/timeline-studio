@@ -23,9 +23,9 @@ export class ContentAnalysisService implements IContentAnalysisService {
   private ffmpegService: IFFmpegAnalysisService
   private visionService: IVisionService
 
-  constructor() {
-    this.ffmpegService = new FFmpegAdapter()
-    this.visionService = new VisionAdapter()
+  constructor(ffmpegService?: IFFmpegAnalysisService, visionService?: IVisionService) {
+    this.ffmpegService = ffmpegService || new FFmpegAdapter()
+    this.visionService = visionService || new VisionAdapter()
   }
 
   async analyzeMedia(file: MediaFile, options: ContentAnalysisOptions = {}): Promise<ContentAnalysisResult> {

@@ -34,7 +34,10 @@ export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
 
   createContentAnalysisService(): IContentAnalysisService {
     if (!this.contentService) {
-      this.contentService = new ContentAnalysisService()
+      // Создаем с зависимостями из фабрики
+      const ffmpegService = this.createFFmpegService()
+      const visionService = this.createVisionService()
+      this.contentService = new ContentAnalysisService(ffmpegService, visionService)
     }
     return this.contentService
   }

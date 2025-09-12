@@ -41,7 +41,7 @@ import { Track } from "./track/track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
-import { IntegratedVersionPanel } from "./version-control-integration"
+// import { IntegratedVersionPanel } from "./version-control-integration" // Временно скрыто
 
 export function TimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -85,11 +85,7 @@ export function TimelineContent() {
   // Создаем проект при первой загрузке, используя настройки из реального проекта
   useEffect(() => {
     if (!project && currentProject && projectSettings) {
-      void createProject(currentProject.name, {
-        width: projectSettings.aspectRatio.value.width,
-        height: projectSettings.aspectRatio.value.height,
-        frameRate: Number.parseInt(projectSettings.frameRate),
-      })
+      void createProject(currentProject.name)
     }
   }, [project, currentProject, projectSettings, createProject])
 
@@ -227,7 +223,7 @@ export function TimelineContent() {
               <div className="h-full flex flex-col">
                 <TrackControlsPanel />
                 <div className="p-2 border-t">
-                  <IntegratedVersionPanel />
+                  {/* <IntegratedVersionPanel /> */} {/* Временно скрыто */}
                 </div>
               </div>
             </ResizablePanel>

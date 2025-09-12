@@ -6,7 +6,7 @@
 
 "use client"
 
-import { type ReactNode, useEffect } from "react"
+import { type ReactNode } from "react"
 
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AIIntelligenceProvider } from "@/features/ai-content-intelligence"
@@ -22,7 +22,7 @@ import { TimelineProvider } from "@/features/timeline/services/timeline-provider
 import { UserSettingsProvider } from "@/features/user-settings"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
-import { setupXStateInspector } from "@/lib/xstate-inspector"
+import { AIServicesProvider } from "@/shared/services/ai/react-integration"
 
 interface ProvidersV2Props {
   children: ReactNode
@@ -40,6 +40,7 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
 // AppProviderV2 должен быть рано в цепочке для инициализации backend
 const AppProviderComposite = composeProviders(
   TauriMockProvider, // Должен быть первым для инициализации моков
+  AIServicesProvider, // AI сервисы должны инициализироваться рано
   I18nProvider, // Легкий провайдер для локализации
   ThemeProvider, // Легкий провайдер для темы
   ModalProvider, // Легкий провайдер для модальных окон
@@ -63,11 +64,6 @@ const AppProviderComposite = composeProviders(
 )
 
 export function ProvidersV2({ children }: ProvidersV2Props) {
-  // Инициализируем XState Inspector в development режиме
-  useEffect(() => {
-    setupXStateInspector()
-  }, [])
-
   return <AppProviderComposite>{children}</AppProviderComposite>
 }
 

@@ -178,10 +178,9 @@ export class MultimodalAnalysisService {
    */
   public async analyzeFrame(params: FrameAnalysisParams): Promise<FrameAnalysisResult> {
     try {
-      // Используем shared Vision service
-      const { getAIContainer } = await import("@/shared/services/ai")
-      const aiContainer = getAIContainer()
-      const visionService = (await aiContainer.resolve("VisionService")) as IVisionService
+      // Используем прямой импорт VisionAdapter для избежания циклической зависимости
+      const { VisionAdapter } = await import("@/shared/services/ai/analysis/vision")
+      const visionService = new VisionAdapter()
 
       // Создаем промпт в зависимости от типа анализа
       const prompt = this.buildAnalysisPrompt(params)
