@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLanguage } from "../contexts/LanguageContext"
 import { Logo } from "./Logo"
+import { LanguageToggle } from "./LanguageToggle"
 
 interface NavItem {
   label: string
@@ -126,6 +127,11 @@ export function Navigation() {
               ))}
             </ul>
 
+            {/* Language Toggle */}
+            <div className="hidden md:flex items-center mr-2">
+              <LanguageToggle className="mr-4" />
+            </div>
+
             {/* Social Icons */}
             <div className="hidden md:flex items-center mr-2">
               <a
@@ -245,6 +251,11 @@ export function Navigation() {
                   )}
                 </li>
               ))}
+
+              {/* Language toggle in mobile menu */}
+              <li className="pt-2 border-t border-gray-700">
+                <LanguageToggle isMobile={true} />
+              </li>
 
               {/* Social icons in mobile menu */}
               <li className="pt-2 border-t border-gray-700">

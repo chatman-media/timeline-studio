@@ -41,6 +41,8 @@ export const Project: React.FC = () => {
   const currentTab = tabs.find(tab => tab.id === activeTab)
   const manifestPath = language === 'ru'
     ? `/content/docs/ru/00_project_manifest/${currentTab?.path}`
+    : language === 'zh'
+    ? `/content/docs/zh/00_project_manifest/${currentTab?.path}`
     : `/content/docs/en/00_project_manifest/${currentTab?.path}`
 
   useEffect(() => {

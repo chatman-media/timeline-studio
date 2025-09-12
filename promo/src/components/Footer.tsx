@@ -184,13 +184,13 @@ export const Footer: React.FC = () => {
               <img src="/fav.png" alt="Timeline Studio Logo" className="w-7 h-7 invert" />
               <div className="flex flex-wrap gap-x-6 gap-y-2">
                 <Link to="/terms" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
-                  Terms of Service
+                  {t("footer.legal.termsOfService")}
                 </Link>
                 <Link to="/privacy" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
-                  Privacy Policy
+                  {t("footer.legal.privacyPolicy")}
                 </Link>
                 <Link to="/responsible-ai" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
-                  Responsible AI Policy
+                  {t("footer.legal.responsibleAI")}
                 </Link>
               </div>
             </div>

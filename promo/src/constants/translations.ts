@@ -697,6 +697,354 @@ export const translations = {
       },
     },
   },
+  zh: {
+    docs: {
+      title: "文档",
+      subtitle: "关于Timeline Studio的一切",
+      description: "开发指南、API参考和最佳实践",
+      sections: {
+        gettingStarted: {
+          title: "入门指南",
+          quickStart: "快速开始指南",
+          installation: "安装",
+          projectStructure: "项目结构",
+        },
+        architecture: {
+          title: "架构",
+          overview: "架构概述",
+          frontend: "前端架构",
+          backend: "后端架构",
+        },
+        development: {
+          title: "开发",
+          guide: "开发指南",
+          commands: "开发命令",
+          plugins: "插件开发",
+          codingStandards: "编码标准",
+          performance: "性能指南",
+          testing: "测试指南",
+        },
+        api: {
+          title: "API参考",
+          media: "媒体API",
+          timeline: "时间轴API",
+          recognition: "识别API",
+          aiChat: "AI聊天API",
+          export: "导出API",
+          generated: "生成的API文档",
+        },
+        integrations: {
+          title: "集成",
+          claude: "Claude API",
+          openai: "OpenAI API",
+          youtube: "YouTube API",
+          telegram: "Telegram API",
+        },
+        requirements: {
+          title: "需求",
+          functional: "功能需求",
+          technical: "技术需求",
+          features: "功能规范",
+        },
+        security: {
+          title: "安全",
+          guidelines: "安全指南",
+          architecture: "安全架构",
+        },
+        deployment: {
+          title: "部署",
+          build: "构建指南",
+          windows: "Windows构建",
+          macos: "macOS构建",
+          linux: "Linux构建",
+          oauth: "OAuth设置",
+        },
+        cicd: {
+          title: "CI/CD",
+          setup: "CI/CD设置",
+          codecov: "代码覆盖率",
+        },
+        testing: {
+          title: "测试",
+          guide: "测试指南",
+          backend: "后端测试",
+          realMedia: "真实媒体测试",
+        },
+        quality: {
+          title: "质量保证",
+          alphaGuide: "Alpha测试指南",
+        },
+        tasks: {
+          title: "开发任务",
+          active: "活跃任务",
+          roadmap: "项目路线图",
+        },
+      },
+      contribute: {
+        title: "想要贡献？",
+        description: "通过为文档或代码库做贡献来帮助我们改进Timeline Studio。",
+        viewGithub: "在GitHub上查看",
+        contributingGuide: "贡献指南",
+      },
+    },
+    about: {
+      hero: {
+        title: "重新定义视频编辑",
+        subtitle: "用AI驱动的工具构建创意内容的未来",
+        founded: "成立于2025年",
+        remote: "远程优先",
+        openSource: "开源",
+      },
+      mission: {
+        title: "我们的使命",
+        paragraph1:
+          "在Timeline Studio，我们相信视频编辑应该是易于访问、直观且强大的。我们的使命是通过将尖端AI技术与任何人都能掌握的用户友好界面相结合，来民主化专业视频创作。",
+        paragraph2:
+          "我们不仅仅是在构建软件——我们正在创建一个平台，赋能创作者、简化工作流程，并推动数字叙事可能性的边界。",
+      },
+      values: {
+        title: "我们的价值观",
+        innovation: {
+          title: "创新优先",
+          description:
+            "我们推动可能性的边界，将最新的AI进展集成到实用工具中。",
+        },
+        community: {
+          title: "全球社区",
+          description: "通过多语言支持和平台无关的解决方案支持全球创作者。",
+        },
+        efficiency: {
+          title: "速度与效率",
+          description: "每个功能都旨在节省时间和增强创造力，而不是使工作流程复杂化。",
+        },
+        privacy: {
+          title: "注重隐私",
+          description: "您的内容属于您。我们在构建的一切中都优先考虑用户隐私和数据安全。",
+        },
+        userCentric: {
+          title: "以用户为中心",
+          description:
+            "每个决定都从我们的用户开始。我们构建解决真实创作者真实问题的功能。",
+        },
+        openInnovation: {
+          title: "开放创新",
+          description: "我们相信开源和社区驱动开发的力量。",
+        },
+      },
+      team: {
+        title: "由创作者为创作者构建",
+        description:
+          "我们的团队结合了AI、视频技术和用户体验设计方面的专业知识，创造真正理解创作者需求的工具。",
+        founder: "创始人兼首席开发者",
+      },
+      cta: {
+        title: "加入我们的旅程",
+        description:
+          "无论您是内容创作者、开发者，还是只是对视频的未来充满热情，我们都希望您成为我们社区的一部分。",
+        contributeGithub: "在GitHub上贡献",
+        tryStudio: "试用Timeline Studio",
+      },
+    },
+    changelog: {
+      title: "更新日志",
+      subtitle: "跟踪Timeline Studio的所有更新和改进",
+      latest: "最新",
+      newFeatures: "新功能",
+      bugFixes: "错误修复",
+      improvements: "改进",
+      breakingChanges: "重大变更",
+      viewRelease: "查看发布",
+      viewAllReleases: "在GitHub上查看所有发布",
+    },
+    pricing: {
+      title: "简单定价",
+      subtitle: "本地功能免费。云功能付费。一切透明。",
+      description:
+        "AI头像、视频生成、一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
+      mostPopular: "最受欢迎",
+      cloudStorage: "云存储",
+      aiTokens: "AI令牌",
+      localStorage: "本地存储",
+      localAI: "本地AI (Ollama)",
+      perUserMonth: "/用户/月",
+      contactUs: "联系我们",
+      tiers: {
+        free: {
+          name: "免费",
+          price: "$0",
+          period: "永久",
+          description: "本地运行的一切都是免费的",
+          buttonText: "免费下载",
+        },
+        pro: {
+          name: "专业版",
+          price: "$19",
+          period: "/月",
+          description: "云功能和高级AI",
+          buttonText: "开始免费试用",
+        },
+        max: {
+          name: "最大版",
+          price: "$99",
+          period: "/月",
+          description: "专业人士的最大AI能力",
+          buttonText: "试用MAX",
+        },
+        team: {
+          name: "团队版",
+          price: "$39",
+          description: "用于协作工作",
+          buttonText: "开始团队版",
+        },
+        enterprise: {
+          name: "企业版",
+          description: "定制解决方案",
+          buttonText: "联系销售",
+        },
+      },
+      features: {
+        everythingInFree: "免费版的所有功能 +",
+        everythingInPro: "专业版的所有功能 +",
+        everythingInProBase: "专业版的所有功能",
+        realTimeCollaboration: "实时协作",
+        teamResourceLibraries: "团队资源库",
+        ssoAuthentication: "SSO身份验证",
+        onPremiseDeployment: "本地部署",
+        unlimitedStorageRendering: "无限存储和渲染",
+        customAiModels: "自定义AI模型",
+        apiAccess: "API访问",
+        dedicatedManagerSla: "专属经理和SLA",
+        whiteLabelCustomization: "白标定制",
+      },
+      teamsEnterprise: "适用于团队和企业",
+      faq: {
+        title: "常见问题",
+        whatAreTokens: {
+          question: "什么是AI令牌？",
+          answer:
+            "AI令牌用于高级AI模型（Claude、GPT-4）。通过Ollama的本地AI免费工作，不需要令牌。专业版包含8万令牌/月，最大版为高级用户提供50万令牌/月。",
+        },
+        canUpgradeDowngrade: {
+          question: "我可以升级或降级吗？",
+          answer:
+            "可以！您可以随时更改计划。升级时，您将立即获得新功能的访问权限。降级时，更改将在下一个计费周期生效。",
+        },
+        whyFreePowerful: {
+          question: "为什么免费版本如此强大？",
+          answer:
+            "我们相信透明度。能在您计算机上运行的一切都是免费的。您只需为需要我们基础设施成本的云服务和第三方API付费。",
+        },
+        isThereFreeTrial: {
+          question: "有免费试用吗？",
+          answer:
+            "有！专业版、最大版和团队版都提供14天免费试用。无需信用卡。随时取消。另外，从竞争对手转换时可获得3个月免费。",
+        },
+      },
+    },
+    footer: {
+      product: {
+        title: "产品",
+        about: "关于",
+        pricing: "定价",
+        changelog: "更新日志",
+        downloads: "下载",
+        contact: "联系",
+      },
+      resources: {
+        title: "资源",
+        documentation: "文档",
+        blog: "博客",
+        faqs: "常见问题",
+        submitFeedback: "提交反馈",
+      },
+      social: {
+        title: "关注我们",
+      },
+      copyright: "© 2025 Timeline Studio, Inc.",
+    },
+    hero: {
+      title: "AI驱动的视频创作",
+      subtitle: "观看Timeline Studio AI如何帮助您在几秒钟内创建病毒式内容",
+      description: "输入您的想法，让AI施展魔法",
+      downloadFree: "免费下载",
+    },
+    mainPage: {
+      features: {
+        smartAnalysis: {
+          title: "智能分析",
+          description: "AI分析趋势并建议最佳内容策略以获得最大参与度",
+        },
+        instantCreation: {
+          title: "即时创作",
+          description: "在几秒钟内生成具有趋势效果和转场的专业视频",
+        },
+        viralOptimization: {
+          title: "病毒式优化",
+          description: "为每个社交平台优化时机、标签和内容格式",
+        },
+      },
+      download: {
+        title: "免费下载",
+        subtitle: "适用于所有主要操作系统",
+        description: "选择您的平台，今天就开始创建精彩视频",
+        latestVersion: "最新版本",
+        checkGithub: "在GitHub上查看",
+        allReleases: "所有发布",
+        downloadFor: "下载适用于",
+      },
+    },
+    faq: {
+      title: "常见问题",
+      questions: {
+        whatIs: {
+          question: "什么是Timeline Studio？",
+          answer:
+            "Timeline Studio是一个AI驱动的视频编辑应用程序，帮助您比以往更快地创建专业质量的视频。拥有超过150个AI工具，它自动化繁琐的任务，同时给您创意控制权。",
+        },
+        isFree: {
+          question: "Timeline Studio免费吗？",
+          answer:
+            "是的！Timeline Studio完全免费且开源。您可以为Windows、macOS和Linux下载它，无需任何费用或订阅费。",
+        },
+        formats: {
+          question: "支持哪些视频格式？",
+          answer:
+            "Timeline Studio支持所有主要视频格式，包括MP4、MOV、AVI、MKV、WebM等。它还可以导出为针对不同平台优化的各种格式。",
+        },
+        commercial: {
+          question: "我可以将Timeline Studio用于商业项目吗？",
+          answer:
+            "当然可以！Timeline Studio在自由许可证下发布，允许个人和商业使用，无任何限制。",
+        },
+        requirements: {
+          question: "系统要求是什么？",
+          answer:
+            "Timeline Studio在Windows 10+、macOS 10.15+和大多数Linux发行版上运行。我们建议至少8GB RAM和专用显卡以获得最佳AI功能性能。",
+        },
+        aiHow: {
+          question: "AI视频编辑是如何工作的？",
+          answer:
+            "我们的AI分析您的素材以识别关键时刻，建议剪辑，应用效果，甚至可以根据您的偏好生成整个编辑序列。您保持完全控制，可以撤销任何AI决定。",
+        },
+        dataSafe: {
+          question: "我的数据安全吗？",
+          answer:
+            "是的！Timeline Studio在您的计算机上本地处理一切。您的视频和项目永远不会离开您的设备，确保完全的隐私和安全。",
+        },
+        contribute: {
+          question: "我可以为项目做贡献吗？",
+          answer:
+            "我们欢迎贡献！Timeline Studio在GitHub上开源。您可以提交错误报告、功能请求，甚至贡献代码来帮助改进软件。",
+        },
+      },
+      stillQuestions: {
+        title: "还有问题？",
+        description: "随时联系我们的社区或查看我们的文档。",
+        joinDiscord: "加入Discord社区",
+        openIssue: "在GitHub上开启Issue",
+      },
+    },
+  },
 } as const
 
 export type Language = keyof typeof translations

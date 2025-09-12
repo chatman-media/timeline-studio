@@ -1,9 +1,14 @@
 import { motion } from "framer-motion"
+import { useId } from "react"
 import { AnimatedSection } from "./AnimatedSection"
+import { useLanguage } from "../contexts/LanguageContext"
 
 export function AIEditingSection() {
+  const { t } = useLanguage()
+  const sectionId = useId()
+  
   return (
-    <section id="ai-editing" className="py-20 bg-[#12192C] relative overflow-hidden">
+    <section id={`ai-editing-${sectionId}`} className="py-20 bg-[#12192C] relative overflow-hidden">
       {/* Liquid glass background effects */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
@@ -14,13 +19,13 @@ export function AIEditingSection() {
         <AnimatedSection animation="fadeUp">
           <div className="text-center mb-16">
             <h2 className="section-title">
-              AI-Powered <span className="text-gradient">Smart Editing</span>
+              {t("mainPage.aiSmartEditing.title").split(" ").slice(0, -2).join(" ")} <span className="text-gradient">{t("mainPage.aiSmartEditing.title").split(" ").slice(-2).join(" ")}</span>
             </h2>
             <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
-              Let AI do the heavy lifting while you focus on creativity
+              {t("mainPage.aiSmartEditing.subtitle")}
             </p>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-              Our neural networks analyze, optimize, and perfect every frame 🤖
+              {t("mainPage.aiSmartEditing.description")}
             </p>
           </div>
         </AnimatedSection>
@@ -44,16 +49,15 @@ export function AIEditingSection() {
                     <span className="text-2xl">🧠</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-medium text-white mb-2">Neural Scene Analysis</h3>
+                    <h3 className="text-2xl font-medium text-white mb-2">{t("mainPage.aiSmartEditing.neuralSceneAnalysis")}</h3>
                     <p className="text-gray-400 text-sm">
-                      Our AI watches your footage like a professional editor, identifying key moments, emotions, and
-                      story beats in milliseconds
+                      {t("mainPage.aiSmartEditing.neuralSceneAnalysisDesc")}
                     </p>
                     <div className="mt-3 flex items-center space-x-2">
                       <span className="text-xs text-purple-400 bg-purple-400/10 px-2 py-1 rounded-full">
-                        Deep Learning
+                        {t("mainPage.aiSmartEditing.deepLearning")}
                       </span>
-                      <span className="text-xs text-pink-400 bg-pink-400/10 px-2 py-1 rounded-full">Real-time</span>
+                      <span className="text-xs text-pink-400 bg-pink-400/10 px-2 py-1 rounded-full">{t("mainPage.aiSmartEditing.realTime")}</span>
                     </div>
                   </div>
                 </div>
@@ -75,16 +79,15 @@ export function AIEditingSection() {
                     <span className="text-2xl">🎬</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-medium text-white mb-2">Cinematic Auto-Edit</h3>
+                    <h3 className="text-2xl font-medium text-white mb-2">{t("mainPage.features.cinematicAutoEdit.title")}</h3>
                     <p className="text-gray-400 text-sm">
-                      Transform raw clips into Hollywood-style sequences with dynamic pacing, perfect timing, and
-                      emotional flow
+                      {t("mainPage.features.cinematicAutoEdit.description")}
                     </p>
                     <div className="mt-3 flex items-center space-x-2">
                       <span className="text-xs text-purple-400 bg-purple-400/10 px-2 py-1 rounded-full">
-                        Film Theory
+                        {t("mainPage.features.cinematicAutoEdit.filmTheory")}
                       </span>
-                      <span className="text-xs text-pink-400 bg-pink-400/10 px-2 py-1 rounded-full">AI Director</span>
+                      <span className="text-xs text-pink-400 bg-pink-400/10 px-2 py-1 rounded-full">{t("mainPage.features.cinematicAutoEdit.aiDirector")}</span>
                     </div>
                   </div>
                 </div>
@@ -106,14 +109,13 @@ export function AIEditingSection() {
                     <span className="text-2xl">✨</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-medium text-white mb-2">Magic Enhancement</h3>
+                    <h3 className="text-2xl font-medium text-white mb-2">{t("mainPage.features.magicEnhancement.title")}</h3>
                     <p className="text-gray-400 text-sm">
-                      Upscale to 8K, stabilize shaky footage, remove objects, and enhance audio - all with one-click AI
-                      magic
+                      {t("mainPage.features.magicEnhancement.description")}
                     </p>
                     <div className="mt-3 flex items-center space-x-2">
                       <span className="text-xs text-purple-400 bg-purple-400/10 px-2 py-1 rounded-full">
-                        Super Resolution
+                        {t("mainPage.features.magicEnhancement.superResolution")}
                       </span>
                       <span className="text-xs text-pink-400 bg-pink-400/10 px-2 py-1 rounded-full">60 FPS</span>
                     </div>
