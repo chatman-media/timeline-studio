@@ -1,264 +1,264 @@
-# Requirements for New Market Capture
+# 新市场拓展需求
 
-[← Back to Requirements](README.md)
+[← 返回需求文档](README.md)
 
-## 📋 Overview
+## 📋 概述
 
-Timeline Studio is expanding into 5 new markets with a total volume of **$45.1 billion**, transforming from a video editor into a multi-market AI platform. Each new market has detailed technical requirements and implementation plan.
+Timeline Studio正在扩展到5个新市场，总价值**451亿美元**，从视频编辑器转型为多市场AI平台。每个新市场都有详细的技术需求和实施计划。
 
-## 🎭 Memes and Viral Content Market ($8.2 billion)
+## 🎭 表情包和病毒内容市场（82亿美元）
 
-### Module: Meme Machine
+### 模块：表情包制造机
 
-#### Functional Requirements:
-- **Automatic meme creation** in <3 seconds
-- **500+ meme templates** (Drake Format, Distracted Boyfriend, Woman Yelling at Cat, etc)
-- **AI recognition of funny moments** with 90% accuracy
-- **Virality prediction** with 80% accuracy
-- **Real-time trend analytics** (Reddit, Twitter, TikTok, Instagram)
-- **Multilingual adaptation** of humor for different cultures
+#### 功能需求：
+- **自动表情包创建**，<3秒内完成
+- **500+表情包模板**（Drake格式、分心男友、对猫咆哮的女人等）
+- **AI识别搞笑时刻**，准确率90%
+- **病毒传播预测**，准确率80%
+- **实时趋势分析**（Reddit、Twitter、TikTok、Instagram）
+- **多语言幽默适配**，适应不同文化
 
-#### Technical Requirements:
-- **Emotion Recognition AI** - emotion recognition in video
-- **Context Understanding** - context understanding for humor
-- **Text Generation** - AI generation of funny captions
-- **Trend Analysis** - trend and pattern analysis
-- **Virality Prediction** - machine learning on successful memes
+#### 技术需求：
+- **情感识别AI** - 视频中的情感识别
+- **上下文理解** - 幽默的上下文理解
+- **文本生成** - AI生成搞笑字幕
+- **趋势分析** - 趋势和模式分析
+- **病毒传播预测** - 基于成功表情包的机器学习
 
-#### Content Types:
-- Static memes (images with text)
-- Video memes (TikTok-style, Vine loops, Instagram Reels)
-- Reactions and remixes
-- Animated GIFs
-- Meta-memes and format combinations
+#### 内容类型：
+- 静态表情包（带文字的图片）
+- 视频表情包（TikTok风格、Vine循环、Instagram Reels）
+- 反应和混音
+- 动画GIF
+- 元表情包和格式组合
 
-#### Integrations:
-- Social Media APIs for trend tracking
-- Meme Databases (Know Your Meme, Reddit)
-- Translation APIs for localization
-- Analytics for virality tracking
+#### 集成：
+- 社交媒体API用于趋势跟踪
+- 表情包数据库（Know Your Meme、Reddit）
+- 翻译API用于本地化
+- 病毒传播跟踪分析
 
-## 📺 Streaming Market ($15.3 billion)
+## 📺 流媒体市场（153亿美元）
 
-### Module: Live Streaming (OBS Killer)
+### 模块：直播流媒体（OBS杀手）
 
-#### Functional Requirements:
-- **Ready-made multi-camera templates** instead of creating scenes from scratch
-- **AI auto camera switching** by voice (who speaks - is on screen)
-- **Built-in music library** with automatic ducking
-- **Quick setup** - from idea to stream in 2 minutes
-- **Platform integration** (YouTube/Twitch/TikTok/VK Live)
-- **Mobile control** via app
+#### 功能需求：
+- **现成的多摄像头模板**，无需从头创建场景
+- **AI自动摄像头切换**，基于语音（谁说话谁上屏）
+- **内置音乐库**，自动音频闪避
+- **快速设置** - 从想法到直播2分钟内完成
+- **平台集成**（YouTube/Twitch/TikTok/VK Live）
+- **移动端控制**，通过应用程序
 
-#### Streaming Templates:
-- **Podcast (2 participants)** - split screen for two cameras
-- **Interview** - main speaker large + guest in corner
-- **Presentation** - screen + presenter camera
-- **Gaming stream** - game + camera + chat
-- **Webinar** - up to 4 participants in grid
-- **Concert** - switching between multiple cameras
+#### 流媒体模板：
+- **播客（2人参与）** - 两个摄像头分屏显示
+- **访谈** - 主讲人大屏 + 嘉宾小窗
+- **演示** - 屏幕 + 演讲者摄像头
+- **游戏直播** - 游戏 + 摄像头 + 聊天
+- **网络研讨会** - 最多4人网格布局
+- **音乐会** - 多摄像头之间切换
 
-#### Technical Requirements:
-- **WebRTC** for low-latency camera capture
-- **FFmpeg 6.0+** for encoding and streaming
-- **WebGPU/WebGL** for video compositing
-- **GPU acceleration** via NVENC/QuickSync/VCE
-- **Adaptive bitrate** (ABR) based on network quality
+#### 技术需求：
+- **WebRTC** 用于低延迟摄像头捕获
+- **FFmpeg 6.0+** 用于编码和流媒体
+- **WebGPU/WebGL** 用于视频合成
+- **GPU加速** 通过NVENC/QuickSync/VCE
+- **自适应码率**（ABR）基于网络质量
 
-#### AI Features:
-- Auto camera switching by voice
-- Virtual backgrounds without green screen (AI-based)
-- Automatic titles with speaker names
-- Smart cropping and face tracking
+#### AI功能：
+- 基于语音的自动摄像头切换
+- 无绿幕虚拟背景（基于AI）
+- 自动生成带说话人姓名的标题
+- 智能裁剪和人脸跟踪
 
-#### Performance:
-- CPU usage < 30% for 2 cameras @ 1080p30
-- RAM < 500MB base consumption
-- Latency < 100ms from camera to preview
-- Startup time < 3 seconds
+#### 性能：
+- CPU使用率 < 30%（2个摄像头@1080p30）
+- 内存 < 500MB基础消耗
+- 延迟 < 100ms（从摄像头到预览）
+- 启动时间 < 3秒
 
-## 🤖 AI Avatars Market ($3.8 billion)
+## 🤖 AI头像市场（38亿美元）
 
-### Module: Avatar Generation
+### 模块：头像生成
 
-#### Functional Requirements:
-- **Local generation** for privacy and speed
-- **Training on user's own videos**
-- **Realistic lip sync** with audio
-- **Face replacement in videos** (deepfake technology)
-- **Full video generation** with avatar
-- **Timeline integration** for seamless use
+#### 功能需求：
+- **本地生成**，保护隐私和提高速度
+- **基于用户自己的视频训练**
+- **逼真的唇形同步**，与音频匹配
+- **视频中的人脸替换**（深度伪造技术）
+- **完整的头像视频生成**
+- **时间轴集成**，无缝使用
 
-#### Technical Approaches:
-**Local Models:**
-- **First Order Motion Model** - image animation
-- **Wav2Lip** - lip synchronization
-- **FaceSwap** models for face replacement
-- **StyleGAN** for face generation
-- **GFPGAN** for quality enhancement
+#### 技术方法：
+**本地模型：**
+- **First Order Motion Model** - 图像动画
+- **Wav2Lip** - 唇形同步
+- **FaceSwap** 人脸替换模型
+- **StyleGAN** 人脸生成
+- **GFPGAN** 质量增强
 
-**Cloud Services (fallback):**
-- **D-ID** - talking avatar generation
-- **Synthesia** - professional AI avatars
-- **HeyGen** - simple avatar video generation
+**云服务（备用）：**
+- **D-ID** - 说话头像生成
+- **Synthesia** - 专业AI头像
+- **HeyGen** - 简单头像视频生成
 
-#### Implementation Phases:
-1. **Phase 1**: MVP with cloud service (2-3 weeks)
-2. **Phase 2**: Extended features (3-4 weeks)
-3. **Phase 3**: Local generation (4-6 weeks)
+#### 实施阶段：
+1. **阶段1**：云服务MVP（2-3周）
+2. **阶段2**：扩展功能（3-4周）
+3. **阶段3**：本地生成（4-6周）
 
-#### System Requirements:
-- **Minimum**: 8GB RAM, stable internet
-- **Recommended**: 16GB+ RAM, NVIDIA GPU with 12GB+ VRAM
+#### 系统需求：
+- **最低配置**：8GB内存，稳定网络
+- **推荐配置**：16GB+内存，NVIDIA GPU 12GB+ VRAM
 
-## 🎬 AI Video Generation Market ($2.1 billion)
+## 🎬 AI视频生成市场（21亿美元）
 
-### Module: Video Generation
+### 模块：视频生成
 
-#### Functional Requirements:
-- **Text-to-Video generation** from text description
-- **Image-to-Video animation** of static images
-- **Video-to-Video stylization** and style changes
-- **Motion graphics generation** and infographics
-- **Transition creation** between clips
-- **Background videos** by description
+#### 功能需求：
+- **文本到视频生成**，基于文本描述
+- **图像到视频动画**，静态图像动画化
+- **视频到视频风格化**，风格变换
+- **动态图形生成**，信息图表
+- **过渡效果创建**，片段间过渡
+- **背景视频**，基于描述生成
 
-#### Types of Generated Content:
-- **Realistic videos** (people, nature, architecture)
-- **Animated content** (2D/3D animation, motion graphics)
-- **Specialized content** (intros, VFX, text animation)
+#### 生成内容类型：
+- **真实视频**（人物、自然、建筑）
+- **动画内容**（2D/3D动画、动态图形）
+- **专业内容**（片头、视觉特效、文字动画）
 
-#### Technical Approaches:
-**Cloud Solutions:**
-- **Runway Gen-3** - leader in generation quality
-- **Pika Labs** - fast short clip generation
-- **Stable Video Diffusion** - open model
+#### 技术方法：
+**云解决方案：**
+- **Runway Gen-3** - 生成质量领先
+- **Pika Labs** - 快速短片生成
+- **Stable Video Diffusion** - 开源模型
 
-**Local Models:**
-- **AnimateDiff** - animation based on Stable Diffusion
-- **Text2Video-Zero** - without additional training
-- **CogVideo** - open model from THUDM
+**本地模型：**
+- **AnimateDiff** - 基于Stable Diffusion的动画
+- **Text2Video-Zero** - 无需额外训练
+- **CogVideo** - THUDM开源模型
 
-#### Monetization:
-- **Free tier**: 10 generations/month, 720p, watermark
-- **Pro**: 100 generations, 1080p, no watermark
-- **Studio**: Unlimited, 4K, priority queue
-- **Local**: Free, limited by GPU power
+#### 变现模式：
+- **免费版**：10次生成/月，720p，水印
+- **专业版**：100次生成，1080p，无水印
+- **工作室版**：无限制，4K，优先队列
+- **本地版**：免费，受GPU性能限制
 
-## 📱 Mobile Platforms Market ($15.7 billion)
+## 📱 移动平台市场（157亿美元）
 
-### Module: Mobile Apps (iOS/Android/Telegram)
+### 模块：移动应用（iOS/Android/Telegram）
 
-#### Functional Requirements:
+#### 功能需求：
 
-##### iOS App (App Store - $8.5 billion market)
-- **Native iOS app** on Tauri v2 with full functionality
-- **Touch-optimized interface** for iPhone and iPad
-- **iOS ecosystem integration** (Files app, Photos, iCloud)
-- **Metal GPU acceleration** for rendering
-- **Background App Refresh** for synchronization
-- **Siri Shortcuts** for quick actions
+##### iOS应用（App Store - 85亿美元市场）
+- **原生iOS应用**，基于Tauri v2，功能完整
+- **触控优化界面**，适配iPhone和iPad
+- **iOS生态集成**（Files应用、照片、iCloud）
+- **Metal GPU加速**，用于渲染
+- **后台应用刷新**，用于同步
+- **Siri快捷指令**，快速操作
 
-##### Android App (Google Play - $5.4 billion market)
-- **Native Android app** on Tauri v2
-- **Material Design 3** interface
-- **Android ecosystem integration** (Storage Access Framework, MediaStore)
-- **Vulkan/OpenGL ES** GPU acceleration
-- **Android Auto** support for content creators
-- **Work Profile** support for business
+##### Android应用（Google Play - 54亿美元市场）
+- **原生Android应用**，基于Tauri v2
+- **Material Design 3**界面
+- **Android生态集成**（存储访问框架、MediaStore）
+- **Vulkan/OpenGL ES** GPU加速
+- **Android Auto**支持，面向内容创作者
+- **工作配置文件**支持，面向企业
 
-##### Telegram Mini App ($1.8 billion market)
-- **Full-featured video editor** in Telegram Web App
-- **Video import/export** directly from Telegram chats
-- **Collaborative editing** through groups
-- **Monetization via Telegram Stars** and TON
-- **Integration with Telegram Cloud Storage**
+##### Telegram小程序（18亿美元市场）
+- **全功能视频编辑器**，在Telegram Web App中
+- **视频导入/导出**，直接从Telegram聊天
+- **协作编辑**，通过群组
+- **通过Telegram Stars变现**和TON
+- **与Telegram云存储集成**
 
-#### Technical Requirements:
+#### 技术需求：
 
-##### Tauri v2 Mobile
-- **Unified codebase** with desktop version (95% reuse)
-- **Rust backend** for performance
-- **React Native WebView** for UI
-- **Native modules** for platform-specific functions
-- **Hot reload** for development
+##### Tauri v2移动端
+- **统一代码库**，与桌面版本（95%重用）
+- **Rust后端**，提升性能
+- **React Native WebView**，用于UI
+- **原生模块**，平台特定功能
+- **热重载**，用于开发
 
-##### Performance
-- **Startup time** < 2 seconds on average devices
-- **Memory usage** < 150MB for basic operations
-- **Battery optimization** - efficient GPU usage
-- **Offline editing** with auto-sync when connected
+##### 性能
+- **启动时间** < 2秒（普通设备）
+- **内存使用** < 150MB（基础操作）
+- **电池优化** - 高效GPU使用
+- **离线编辑**，连接时自动同步
 
-##### Cloud Synchronization
-- **Real-time sync** of projects between devices
-- **Conflict resolution** for simultaneous editing
-- **Incremental backup** of only changed data
-- **End-to-end encryption** of all user data
+##### 云同步
+- **实时同步**，设备间项目同步
+- **冲突解决**，同时编辑处理
+- **增量备份**，仅备份变更数据
+- **端到端加密**，所有用户数据
 
-#### Development Phases:
+#### 开发阶段：
 
-##### Phase 1: iOS App (Q4 2025)
-1. **October 2025**: Tauri v2 mobile setup and basic UI (3 weeks)
-2. **November 2025**: Core functionality and testing (4 weeks)
-3. **December 2025**: App Store submission and release (2 weeks)
+##### 阶段1：iOS应用（2025年第4季度）
+1. **2025年10月**：Tauri v2移动端设置和基础UI（3周）
+2. **2025年11月**：核心功能和测试（4周）
+3. **2025年12月**：App Store提交和发布（2周）
 
-##### Phase 2: Android App (Q1 2026)
-1. **January 2026**: Android adaptation and Material Design (3 weeks)
-2. **February 2026**: Google Play Console and testing (3 weeks)
-3. **March 2026**: Google Play release (2 weeks)
+##### 阶段2：Android应用（2026年第1季度）
+1. **2026年1月**：Android适配和Material Design（3周）
+2. **2026年2月**：Google Play控制台和测试（3周）
+3. **2026年3月**：Google Play发布（2周）
 
-##### Phase 3: Telegram Mini App (Q2 2026)
-1. **April 2026**: Telegram Web App integration (2 weeks)
-2. **May 2026**: TON Connect and Stars monetization (2 weeks)
-3. **June 2026**: Telegram release (1 week)
+##### 阶段3：Telegram小程序（2026年第2季度）
+1. **2026年4月**：Telegram Web App集成（2周）
+2. **2026年5月**：TON Connect和Stars变现（2周）
+3. **2026年6月**：Telegram发布（1周）
 
-#### Monetization:
+#### 变现模式：
 
-##### iOS/Android Apps
-- **Freemium model**: basic features free
-- **Timeline Studio Pro**: $9.99/month or $99/year
-- **Timeline Studio Studio**: $29.99/month for professionals
-- **In-app purchases**: premium effects, templates, music
+##### iOS/Android应用
+- **免费增值模式**：基础功能免费
+- **Timeline Studio Pro**：$9.99/月或$99/年
+- **Timeline Studio Studio**：$29.99/月，面向专业人士
+- **应用内购买**：高级特效、模板、音乐
 
-##### Telegram Mini App
-- **Basic**: free (720p, watermark)
-- **Pro**: 100 Stars/month (1080p, no watermark)
-- **Premium**: 500 Stars/month (4K, cloud rendering)
+##### Telegram小程序
+- **基础版**：免费（720p，水印）
+- **专业版**：100 Stars/月（1080p，无水印）
+- **高级版**：500 Stars/月（4K，云渲染）
 
-## 📊 General Technical Requirements
+## 📊 通用技术需求
 
-### Architectural Principles:
-- **Modularity** - each market as separate module
-- **Reusability** - common components and services
-- **Scalability** - readiness for user growth
-- **Performance** - optimization for different devices
+### 架构原则：
+- **模块化** - 每个市场作为独立模块
+- **可重用性** - 通用组件和服务
+- **可扩展性** - 为用户增长做好准备
+- **性能** - 针对不同设备优化
 
-### Integration with Main Platform:
-- **Unified account system** and settings
-- **Shared resources** (effects, filters, music)
-- **Project synchronization** between modules
-- **Unified export** and publishing
+### 与主平台集成：
+- **统一账户系统**和设置
+- **共享资源**（特效、滤镜、音乐）
+- **项目同步**，模块间同步
+- **统一导出**和发布
 
-### Performance Requirements:
-- **Response time** < 100ms for UI operations
-- **Load time** < 3 seconds for any module
-- **Memory usage** < 2GB for all modules
-- **CPU load** < 50% in active use
+### 性能需求：
+- **响应时间** < 100ms（UI操作）
+- **加载时间** < 3秒（任何模块）
+- **内存使用** < 2GB（所有模块）
+- **CPU负载** < 50%（活跃使用时）
 
-## 🎯 Success Metrics
+## 🎯 成功指标
 
-### Quantitative Indicators:
-- **1M+ users** in first year
-- **100K+ paid subscribers** by end of 2025
-- **$10M+ ARR** from new markets
-- **Top-3 positions** in each category
+### 量化指标：
+- **100万+用户**，第一年内
+- **10万+付费订阅者**，2025年底前
+- **1000万+美元ARR**，来自新市场
+- **前3名位置**，各个类别中
 
-### Qualitative Indicators:
-- **4.5+ rating** in app stores
-- **90%+ retention** of users at 7 days
-- **50%+ conversion** to paid plans
-- **<1% churn rate** for annual subscriptions
+### 质量指标：
+- **4.5+评分**，应用商店中
+- **90%+留存率**，7天用户留存
+- **50%+转化率**，付费计划转化
+- **<1%流失率**，年度订阅流失
 
 ---
 
-*Document updated as each direction develops*
+*文档随各方向发展而更新*

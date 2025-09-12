@@ -1,60 +1,60 @@
-# TIMELINE STUDIO TECHNICAL REQUIREMENTS
+# TIMELINE STUDIO 技术要求
 
-## 🖥️ System Requirements
+## 🖥️ 系统要求
 
-### Minimum Requirements
+### 最低要求
 
-#### Operating System
-- **Windows**: Windows 10 version 1809+ (64-bit)
-- **macOS**: macOS 10.15 Catalina+ (Intel and Apple Silicon)
-- **Linux**: Ubuntu 20.04+, Fedora 34+, Debian 11+
+#### 操作系统
+- **Windows**: Windows 10 版本 1809+（64位）
+- **macOS**: macOS 10.15 Catalina+（Intel和Apple Silicon）
+- **Linux**: Ubuntu 20.04+、Fedora 34+、Debian 11+
 
-#### Hardware
-- **Processor**: 
-  - Intel Core i5 6th generation / AMD Ryzen 5 2600
-  - Apple M1 (for macOS)
-- **RAM**: 8 GB RAM
-- **Graphics Card**: 
-  - NVIDIA GTX 1050 / AMD RX 560 (for GPU acceleration)
-  - Intel HD Graphics 620 (basic operation)
-  - Apple GPU (M1/M2/M3)
-- **Disk Space**: 4 GB for installation + space for projects
-- **Display**: 1920x1080 or higher
+#### 硬件
+- **处理器**: 
+  - Intel Core i5 第6代 / AMD Ryzen 5 2600
+  - Apple M1（macOS）
+- **内存**: 8 GB RAM
+- **显卡**: 
+  - NVIDIA GTX 1050 / AMD RX 560（GPU加速）
+  - Intel HD Graphics 620（基本操作）
+  - Apple GPU（M1/M2/M3）
+- **磁盘空间**: 安装需要4 GB + 项目空间
+- **显示器**: 1920x1080或更高
 
-### Recommended Requirements
+### 推荐要求
 
-#### Hardware
-- **Processor**: 
-  - Intel Core i7 10th generation / AMD Ryzen 7 3700X
-  - Apple M1 Pro/M2/M3 (for macOS)
-- **RAM**: 16 GB RAM (32 GB for 4K)
-- **Graphics Card**: 
+#### 硬件
+- **处理器**: 
+  - Intel Core i7 第10代 / AMD Ryzen 7 3700X
+  - Apple M1 Pro/M2/M3（macOS）
+- **内存**: 16 GB RAM（4K需要32 GB）
+- **显卡**: 
   - NVIDIA RTX 3060 / AMD RX 6600 XT
-  - NVENC/AMF/VideoToolbox acceleration support
-  - Apple GPU with 16+ GB unified memory
-- **Disk Space**: NVMe SSD with 50 GB free space
-- **Display**: 2560x1440 or 4K
+  - NVENC/AMF/VideoToolbox加速支持
+  - 16+ GB统一内存的Apple GPU
+- **磁盘空间**: NVMe SSD，50 GB可用空间
+- **显示器**: 2560x1440或4K
 
-## 🛠️ Development Dependencies
+## 🛠️ 开发依赖
 
-### Required Components
+### 必需组件
 - **Node.js**: 18.0.0+
-- **Bun**: Latest
+- **Bun**: 最新版
 - **Rust**: 1.81.0+
-- **FFmpeg**: 6.0+ with development libraries
-- **ONNX Runtime**: 1.16+ (for AI functions)
+- **FFmpeg**: 6.0+ 带开发库
+- **ONNX Runtime**: 1.16+（AI功能）
 
-### Platform-Specific Dependencies
+### 平台特定依赖
 
 #### Windows
-- Visual Studio 2022 with C++ tools
+- Visual Studio 2022 带C++工具
 - Windows SDK
-- pkg-config (via chocolatey)
+- pkg-config（通过chocolatey）
 
 #### macOS
-- Xcode Command Line Tools
+- Xcode命令行工具
 - Homebrew
-- ONNX Runtime (for AI functions)
+- ONNX Runtime（AI功能）
 
 #### Linux
 - build-essential
@@ -62,131 +62,131 @@
 - libwebkit2gtk-4.1-dev
 - libayatana-appindicator3-dev
 
-## 🚀 Performance Requirements
+## 🚀 性能要求
 
-### Response Time
-- **Application startup**: < 2 seconds
-- **Project opening**: < 5 seconds
-- **Playback start**: < 100ms
-- **Effect application**: < 50ms (preview)
+### 响应时间
+- **应用启动**: < 2秒
+- **项目打开**: < 5秒
+- **播放开始**: < 100毫秒
+- **特效应用**: < 50毫秒（预览）
 
-### Resource Usage
-- **RAM at idle**: < 200 MB
-- **RAM during work**: < 2 GB (HD), < 4 GB (4K)
-- **CPU at idle**: < 5%
-- **GPU during rendering**: 80-100% (expected)
+### 资源使用
+- **空闲时内存**: < 200 MB
+- **工作时内存**: < 2 GB（HD），< 4 GB（4K）
+- **空闲时CPU**: < 5%
+- **渲染时GPU**: 80-100%（预期）
 
-### Processing Speed
-- **HD Export (1080p)**: 
-  - 3-5x realtime with NVENC/VideoToolbox
-  - 2-3x realtime with QuickSync/AMF
-  - 1x realtime CPU only
-- **4K Export**: 
-  - 1-2x realtime with NVENC/VideoToolbox
-  - 0.5-1x realtime with QuickSync/AMF
-  - 0.2x realtime CPU only
-- **Preview generation**: 10-20x realtime
-- **AI analysis**: 
-  - YOLO recognition: 15-30 fps
-  - Scene analysis: 5-10 fps
-  - Face recognition: 10-20 fps
+### 处理速度
+- **HD导出（1080p）**: 
+  - NVENC/VideoToolbox：3-5倍实时
+  - QuickSync/AMF：2-3倍实时
+  - 仅CPU：1倍实时
+- **4K导出**: 
+  - NVENC/VideoToolbox：1-2倍实时
+  - QuickSync/AMF：0.5-1倍实时
+  - 仅CPU：0.2倍实时
+- **预览生成**: 10-20倍实时
+- **AI分析**: 
+  - YOLO识别：15-30 fps
+  - 场景分析：5-10 fps
+  - 人脸识别：10-20 fps
 
-## 🔒 Security Requirements
+## 🔒 安全要求
 
-### Data Protection
-- **Encryption**: AES-256 for API keys
-- **Storage**: System keychain/credential store
-- **Network requests**: HTTPS only
-- **Local processing**: No telemetry without consent
+### 数据保护
+- **加密**: API密钥使用AES-256
+- **存储**: 系统钥匙串/凭据存储
+- **网络请求**: 仅HTTPS
+- **本地处理**: 未经同意不收集遥测数据
 
-### Authentication
-- **OAuth 2.0**: PKCE flow for social media
-- **Tokens**: Automatic refresh
-- **Sessions**: Secure in-memory storage
+### 身份验证
+- **OAuth 2.0**: 社交媒体PKCE流程
+- **令牌**: 自动刷新
+- **会话**: 安全内存存储
 
-## 🌐 Network Requirements
+## 🌐 网络要求
 
-### Bandwidth
-- **Minimum**: 10 Mbps for social media uploads
-- **Recommended**: 50 Mbps for comfortable work
-- **AI functions**: 5 Mbps for API requests
+### 带宽
+- **最低**: 社交媒体上传需要10 Mbps
+- **推荐**: 舒适工作需要50 Mbps
+- **AI功能**: API请求需要5 Mbps
 
-### Protocols
-- **HTTP/2**: For all API requests
-- **WebSocket**: For real-time functions
-- **WebRTC**: For future collaborative features
+### 协议
+- **HTTP/2**: 所有API请求
+- **WebSocket**: 实时功能
+- **WebRTC**: 未来协作功能
 
-## 📦 File Formats
+## 📦 文件格式
 
-### Supported Import Formats
-- **Video**: MP4, MOV, AVI, MKV, WebM, HEVC
-- **Audio**: MP3, WAV, AAC, FLAC, OGG
-- **Images**: JPG, PNG, WebP, TIFF, BMP
-- **Subtitles**: SRT, VTT, ASS, SSA
+### 支持的导入格式
+- **视频**: MP4、MOV、AVI、MKV、WebM、HEVC
+- **音频**: MP3、WAV、AAC、FLAC、OGG
+- **图像**: JPG、PNG、WebP、TIFF、BMP
+- **字幕**: SRT、VTT、ASS、SSA
 
-### Export Formats
-- **Video**: MP4 (H.264/H.265), MOV (ProRes), WebM
-- **Audio**: AAC, MP3, WAV
-- **Codecs**: x264, x265, VP8, VP9, ProRes
+### 导出格式
+- **视频**: MP4（H.264/H.265）、MOV（ProRes）、WebM
+- **音频**: AAC、MP3、WAV
+- **编解码器**: x264、x265、VP8、VP9、ProRes
 
-## 🔧 API Requirements
+## 🔧 API要求
 
 ### REST API
-- **Versioning**: v1, v2
-- **Format**: JSON
-- **Authentication**: Bearer tokens
-- **Rate limiting**: 1000 req/hour
+- **版本控制**: v1、v2
+- **格式**: JSON
+- **身份验证**: Bearer令牌
+- **速率限制**: 1000请求/小时
 
-### Tauri Commands
-- **Async/await**: All commands asynchronous
-- **Error handling**: Result<T, Error> pattern
-- **Timeout**: 30 seconds default
+### Tauri命令
+- **异步/等待**: 所有命令异步
+- **错误处理**: Result<T, Error>模式
+- **超时**: 默认30秒
 
-## 📊 Scalability
+## 📊 可扩展性
 
-### Project Limits
-- **Track count**: Up to 128 (including audio)
-- **Timeline length**: Up to 24 hours
-- **Project size**: Up to 10 GB
-- **Clip count**: Up to 10,000
-- **AI tools**: 257 tools
+### 项目限制
+- **轨道数量**: 最多128个（包括音频）
+- **时间轴长度**: 最多24小时
+- **项目大小**: 最多10 GB
+- **片段数量**: 最多10,000个
+- **AI工具**: 257个工具
 
-### Optimization
-- **Proxy files**: Automatic for 4K+
-- **Caching**: LRU for previews
-- **Lazy loading**: For large projects
-- **Virtualization**: For timeline and lists
-
----
-
-## 🎮 GPU Acceleration
-
-### Supported Technologies
-- **NVIDIA**: NVENC (GTX 1050+)
-- **AMD**: AMF (RX 400+)
-- **Intel**: Quick Sync (6th gen+)
-- **Apple**: VideoToolbox (M1/M2/M3)
-
-### GPU Performance
-- **NVENC**: Up to 5x realtime for 1080p
-- **VideoToolbox**: Up to 4x realtime for 1080p
-- **Quick Sync**: Up to 3x realtime for 1080p
-- **AMF**: Up to 3x realtime for 1080p
-
-## 🤖 AI Processing
-
-### AI Function Requirements
-- **YOLO v11**: 2GB VRAM for recognition
-- **Whisper**: 4GB VRAM for transcription
-- **AI Chat**: 10 Mbps internet
-- **ONNX Runtime**: CUDA 11.6+ or CoreML
-
-### AI Performance
-- **Object recognition**: 30 fps (RTX 3060)
-- **Face recognition**: 20 fps (RTX 3060)
-- **Whisper transcription**: 5x realtime
-- **AI editing**: 2-5 seconds per minute of video
+### 优化
+- **代理文件**: 4K+自动生成
+- **缓存**: 预览使用LRU
+- **延迟加载**: 大型项目
+- **虚拟化**: 时间轴和列表
 
 ---
 
-*Last updated: July 31, 2025*
+## 🎮 GPU加速
+
+### 支持的技术
+- **NVIDIA**: NVENC（GTX 1050+）
+- **AMD**: AMF（RX 400+）
+- **Intel**: Quick Sync（第6代+）
+- **Apple**: VideoToolbox（M1/M2/M3）
+
+### GPU性能
+- **NVENC**: 1080p最高5倍实时
+- **VideoToolbox**: 1080p最高4倍实时
+- **Quick Sync**: 1080p最高3倍实时
+- **AMF**: 1080p最高3倍实时
+
+## 🤖 AI处理
+
+### AI功能要求
+- **YOLO v11**: 识别需要2GB显存
+- **Whisper**: 转录需要4GB显存
+- **AI聊天**: 10 Mbps网络
+- **ONNX Runtime**: CUDA 11.6+或CoreML
+
+### AI性能
+- **物体识别**: 30 fps（RTX 3060）
+- **人脸识别**: 20 fps（RTX 3060）
+- **Whisper转录**: 5倍实时
+- **AI编辑**: 每分钟视频2-5秒
+
+---
+
+*最后更新：2025年7月31日*

@@ -1,109 +1,109 @@
-# Installation Guide
+# 安装指南
 
-[← Back to section](README.md) | [← To contents](../README.md)
+[← 返回章节](README.md) | [← 返回目录](../README.md)
 
-## 📋 Contents
+## 📋 目录
 
-- [System Requirements](#system-requirements)
-- [Installation by Platform](#installation-by-platform)
+- [系统要求](#系统要求)
+- [按平台安装](#按平台安装)
   - [macOS](#macos)
   - [Windows](#windows)
   - [Linux](#linux)
-- [Verification](#verification)
-- [Troubleshooting](#troubleshooting)
+- [验证](#验证)
+- [故障排除](#故障排除)
 
-## 📊 System Requirements
+## 📊 系统要求
 
-### Minimum Requirements
-- **OS**: macOS 10.15+, Windows 10+, Linux (Ubuntu 20.04+)
-- **Processor**: 4 cores, 2.0 GHz
-- **Memory**: 8 GB RAM
-- **Storage**: 2 GB free space
-- **GPU**: OpenGL 3.3 support
+### 最低要求
+- **操作系统**: macOS 10.15+, Windows 10+, Linux (Ubuntu 20.04+)
+- **处理器**: 4 核心, 2.0 GHz
+- **内存**: 8 GB RAM
+- **存储**: 2 GB 可用空间
+- **GPU**: OpenGL 3.3 支持
 
-### Recommended Requirements
-- **Processor**: 8+ cores, 3.0+ GHz
-- **Memory**: 16+ GB RAM
-- **GPU**: Discrete graphics card with 4+ GB VRAM
-- **Storage**: SSD with 10+ GB free space
+### 推荐要求
+- **处理器**: 8+ 核心, 3.0+ GHz
+- **内存**: 16+ GB RAM
+- **GPU**: 独立显卡，4+ GB 显存
+- **存储**: SSD，10+ GB 可用空间
 
-## 🛠️ Required Tools
+## 🛠️ 所需工具
 
-### 1. Node.js and Bun
-- **Node.js** version 18 or higher
-- **Bun** - fast JavaScript runtime and package manager
+### 1. Node.js 和 Bun
+- **Node.js** 版本 18 或更高
+- **Bun** - 快速的 JavaScript 运行时和包管理器
 
 ### 2. Rust
-- **Rust** version 1.81.0 or higher
-- Cargo (installed with Rust)
+- **Rust** 版本 1.81.0 或更高
+- Cargo（随 Rust 一起安装）
 
 ### 3. FFmpeg
-- **FFmpeg** with development libraries
-- Required for video processing
+- **FFmpeg** 及其开发库
+- 视频处理所需
 
-### 4. ONNX Runtime (optional)
-- Required for object recognition features
-- Can be skipped for basic functionality
+### 4. ONNX Runtime（可选）
+- 物体识别功能所需
+- 基本功能可跳过
 
-### 5. Additional Tools
+### 5. 附加工具
 
-#### For Development
-- **Git** - version control system
-- **pkg-config** - for finding libraries during compilation
+#### 开发用
+- **Git** - 版本控制系统
+- **pkg-config** - 编译时查找库
 
-#### For Windows
-- **Visual Studio 2022** - with C++ workload
-- **Windows SDK** - for native development
-- **pkg-config** - via chocolatey or vcpkg
+#### Windows 用
+- **Visual Studio 2022** - 带 C++ 工作负载
+- **Windows SDK** - 原生开发
+- **pkg-config** - 通过 chocolatey 或 vcpkg
 
-#### For Linux
-- **build-essential** - basic build tools
-- **libssl-dev** - for cryptography
-- **GTK3 and WebKit2GTK** - for Tauri UI
+#### Linux 用
+- **build-essential** - 基本构建工具
+- **libssl-dev** - 加密功能
+- **GTK3 和 WebKit2GTK** - Tauri UI
 
 ## 🍎 macOS
 
-### Automatic Installation (recommended)
+### 自动安装（推荐）
 
 ```bash
-# Install Homebrew (if not already installed)
+# 安装 Homebrew（如果尚未安装）
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install all dependencies
+# 安装所有依赖
 brew install node rust ffmpeg onnxruntime
 
-# Install Bun
+# 安装 Bun
 curl -fsSL https://bun.sh/install | bash
 
-# Set up environment variables for different shells
+# 为不同 shell 设置环境变量
 
-## For Zsh (default on macOS)
+## Zsh（macOS 默认）
 echo 'export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib' >> ~/.zshrc
 source ~/.zshrc
 
-## For Bash
+## Bash
 echo 'export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib' >> ~/.bashrc
 source ~/.bashrc
 
-## For Fish
+## Fish
 echo 'set -gx ORT_DYLIB_PATH /opt/homebrew/lib/libonnxruntime.dylib' >> ~/.config/fish/config.fish
 source ~/.config/fish/config.fish
 
-# FFmpeg development setup (optional)
-# Only needed if you encounter build issues
+# FFmpeg 开发设置（可选）
+# 仅在遇到构建问题时需要
 
-## For Apple Silicon (M1/M2/M3)
+## Apple Silicon（M1/M2/M3）
 export FFMPEG_DIR=/opt/homebrew/opt/ffmpeg
 export PKG_CONFIG_PATH=/opt/homebrew/opt/ffmpeg/lib/pkgconfig:$PKG_CONFIG_PATH
 
-## For Intel Mac
+## Intel Mac
 export FFMPEG_DIR=/usr/local/opt/ffmpeg
 export PKG_CONFIG_PATH=/usr/local/opt/ffmpeg/lib/pkgconfig:$PKG_CONFIG_PATH
 ```
 
-### Manual Installation
+### 手动安装
 
-1. **Node.js**: Download from [nodejs.org](https://nodejs.org/)
+1. **Node.js**: 从 [nodejs.org](https://nodejs.org/) 下载
 2. **Rust**: 
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -119,47 +119,47 @@ export PKG_CONFIG_PATH=/usr/local/opt/ffmpeg/lib/pkgconfig:$PKG_CONFIG_PATH
 
 ## 🪟 Windows
 
-### Prerequisites
-- Visual Studio 2022 with "Desktop development with C++" workload
+### 前置条件
+- Visual Studio 2022 带"使用 C++ 的桌面开发"工作负载
 - Windows SDK
 
-### Installation via Chocolatey
+### 通过 Chocolatey 安装
 
 ```powershell
-# Install Chocolatey (run PowerShell as Administrator)
+# 安装 Chocolatey（以管理员身份运行 PowerShell）
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-# Install dependencies
+# 安装依赖
 choco install nodejs rust ffmpeg git pkgconfiglite
 
-# Install Bun
+# 安装 Bun
 powershell -c "irm bun.sh/install.ps1 | iex"
 
-# Install vcpkg for C++ library management
+# 安装 vcpkg 用于 C++ 库管理
 git clone https://github.com/Microsoft/vcpkg.git C:\vcpkg
 cd C:\vcpkg
 .\bootstrap-vcpkg.bat
 .\vcpkg integrate install
 ```
 
-### Manual Installation
+### 手动安装
 
 1. **Visual Studio 2022**: [visualstudio.microsoft.com](https://visualstudio.microsoft.com/)
 2. **Node.js**: [nodejs.org](https://nodejs.org/)
 3. **Rust**: [rustup.rs](https://rustup.rs/)
 4. **FFmpeg**: 
-   - Download from [ffmpeg.org](https://ffmpeg.org/download.html)
-   - Extract to `C:\ffmpeg`
-   - Add `C:\ffmpeg\bin` to PATH
+   - 从 [ffmpeg.org](https://ffmpeg.org/download.html) 下载
+   - 解压到 `C:\ffmpeg`
+   - 将 `C:\ffmpeg\bin` 添加到 PATH
 
-### ONNX Runtime Setup (Windows)
+### ONNX Runtime 设置（Windows）
 
 ```powershell
-# Download ONNX Runtime from official website
-# Extract to C:\onnxruntime
-# Add to environment variables:
+# 从官方网站下载 ONNX Runtime
+# 解压到 C:\onnxruntime
+# 添加到环境变量：
 [Environment]::SetEnvironmentVariable("ORT_DYLIB_PATH", "C:\onnxruntime\lib\onnxruntime.dll", "User")
 ```
 
@@ -168,13 +168,13 @@ cd C:\vcpkg
 ### Ubuntu/Debian
 
 ```bash
-# Update packages
+# 更新包
 sudo apt update && sudo apt upgrade -y
 
-# Install basic tools
+# 安装基本工具
 sudo apt install -y curl build-essential pkg-config libssl-dev
 
-# Node.js via NodeSource
+# 通过 NodeSource 安装 Node.js
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
@@ -182,31 +182,31 @@ sudo apt install -y nodejs
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 
-# FFmpeg and required libraries
+# FFmpeg 和所需库
 sudo apt install -y ffmpeg libavcodec-dev libavformat-dev \
   libavutil-dev libavfilter-dev libavdevice-dev \
   libswscale-dev libswresample-dev
 
-# Additional dependencies for Tauri
+# Tauri 的附加依赖
 sudo apt install -y libgtk-3-dev libwebkit2gtk-4.1-dev \
   libayatana-appindicator3-dev librsvg2-dev
 
 # Bun
 curl -fsSL https://bun.sh/install | bash
 
-# ONNX Runtime (optional)
+# ONNX Runtime（可选）
 sudo apt install -y libonnxruntime-dev
 
-# Set up environment variables
-## For Bash
+# 设置环境变量
+## Bash
 echo 'export PATH="$HOME/.bun/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
-## For Zsh
+## Zsh
 echo 'export PATH="$HOME/.bun/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 
-## For Fish
+## Fish
 echo 'set -gx PATH "$HOME/.bun/bin" $PATH' >> ~/.config/fish/config.fish
 source ~/.config/fish/config.fish
 ```
@@ -214,7 +214,7 @@ source ~/.config/fish/config.fish
 ### Fedora
 
 ```bash
-# Install development tools
+# 安装开发工具
 sudo dnf groupinstall -y "Development Tools" "C Development Tools and Libraries"
 
 # Node.js
@@ -226,7 +226,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # FFmpeg
 sudo dnf install -y ffmpeg ffmpeg-devel
 
-# Tauri dependencies
+# Tauri 依赖
 sudo dnf install -y gtk3-devel webkit2gtk4.1-devel \
   libappindicator-gtk3-devel librsvg2-devel
 ```
@@ -234,108 +234,108 @@ sudo dnf install -y gtk3-devel webkit2gtk4.1-devel \
 ### Arch Linux
 
 ```bash
-# Install all dependencies
+# 安装所有依赖
 sudo pacman -S --needed base-devel nodejs npm rust ffmpeg \
   gtk3 webkit2gtk-4.1 libayatana-appindicator librsvg
 
-# Bun via AUR
+# 通过 AUR 安装 Bun
 yay -S bun-bin
 ```
 
-## ✅ Verification
+## ✅ 验证
 
-Run the following commands to verify installation:
+运行以下命令验证安装：
 
 ```bash
 # Node.js
-node --version  # Should be 18.0.0 or higher
-npm --version   # Check npm
+node --version  # 应该是 18.0.0 或更高版本
+npm --version   # 检查 npm
 
 # Bun
-bun --version   # Any latest version
+bun --version   # 任何最新版本
 
 # Rust
-rustc --version # Should be 1.81.0 or higher
-cargo --version # Check Cargo
+rustc --version # 应该是 1.81.0 或更高版本
+cargo --version # 检查 Cargo
 
 # FFmpeg
-ffmpeg -version # Should display version info
+ffmpeg -version # 应该显示版本信息
 
 # Git
-git --version   # Version control system
+git --version   # 版本控制系统
 
 # pkg-config
-pkg-config --version # For finding libraries
+pkg-config --version # 用于查找库
 
-# ONNX Runtime (optional)
+# ONNX Runtime（可选）
 # macOS/Linux
 echo $ORT_DYLIB_PATH
 # Windows
 echo %ORT_DYLIB_PATH%
 
-# Check Tauri CLI (after project installation)
+# 检查 Tauri CLI（项目安装后）
 cargo tauri --version
 ```
 
-## 🚨 Troubleshooting
+## 🚨 故障排除
 
 ### macOS: "xcrun: error: invalid active developer path"
 ```bash
 xcode-select --install
 ```
 
-### Windows: "cargo not found"
-- Restart terminal after installing Rust
-- Ensure `%USERPROFILE%\.cargo\bin` is added to PATH
+### Windows: "找不到 cargo"
+- 安装 Rust 后重启终端
+- 确保 `%USERPROFILE%\.cargo\bin` 已添加到 PATH
 
-### Linux: "error while loading shared libraries"
+### Linux: "加载共享库时出错"
 ```bash
-# Update dynamic library cache
+# 更新动态库缓存
 sudo ldconfig
 ```
 
-### FFmpeg not found
-- Ensure FFmpeg path is added to PATH variable
-- Restart terminal
+### 找不到 FFmpeg
+- 确保 FFmpeg 路径已添加到 PATH 变量
+- 重启终端
 
-### ONNX Runtime errors
-- This is an optional dependency, you can continue without it
-- For full functionality, follow instructions for your OS
+### ONNX Runtime 错误
+- 这是可选依赖，您可以在没有它的情况下继续
+- 要获得完整功能，请按照您操作系统的说明操作
 
-### Bun: "command not found"
+### Bun: "找不到命令"
 ```bash
-# Restart terminal or run:
+# 重启终端或运行：
 # Bash/Zsh
-source ~/.bashrc  # or ~/.zshrc
+source ~/.bashrc  # 或 ~/.zshrc
 # Fish
 source ~/.config/fish/config.fish
 ```
 
-### Windows: FFmpeg compilation errors
-- Ensure Visual Studio 2022 with C++ tools is installed
-- Check FFMPEG_DIR and PKG_CONFIG_PATH environment variables
-- Use vcpkg to install FFmpeg: `vcpkg install ffmpeg:x64-windows`
+### Windows: FFmpeg 编译错误
+- 确保安装了带有 C++ 工具的 Visual Studio 2022
+- 检查 FFMPEG_DIR 和 PKG_CONFIG_PATH 环境变量
+- 使用 vcpkg 安装 FFmpeg: `vcpkg install ffmpeg:x64-windows`
 
-### Linux: Error "webkit2gtk-4.1 not found"
+### Linux: 错误 "找不到 webkit2gtk-4.1"
 ```bash
 # Ubuntu 22.04+
 sudo apt install libwebkit2gtk-4.1-dev
-# For older versions use webkit2gtk-4.0
+# 对于旧版本使用 webkit2gtk-4.0
 sudo apt install libwebkit2gtk-4.0-dev
 ```
 
-### macOS: Apple Silicon issues
-- Ensure all tools are installed for arm64 architecture
-- Use Homebrew for arm64: `/opt/homebrew` instead of `/usr/local`
+### macOS: Apple Silicon 问题
+- 确保所有工具都为 arm64 架构安装
+- 为 arm64 使用 Homebrew: `/opt/homebrew` 而不是 `/usr/local`
 
-## 📌 Next Steps
+## 📌 下一步
 
-After successful installation of all dependencies:
+成功安装所有依赖后：
 
-1. [Clone repository and set up project](quick-start.md)
-2. [Learn project structure](project-structure.md)
-3. [Run application in development mode](../05_development/setup.md)
+1. [克隆仓库并设置项目](quick-start.md)
+2. [了解项目结构](project-structure.md)
+3. [在开发模式下运行应用](../05_development/setup.md)
 
 ---
 
-[← Back to section](README.md) | [Next: Quick Start →](quick-start.md)
+[← 返回章节](README.md) | [下一步：快速开始 →](quick-start.md)

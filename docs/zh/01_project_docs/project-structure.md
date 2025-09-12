@@ -1,273 +1,273 @@
-# Timeline Studio Project Structure
+# Timeline Studio 项目结构
 
-[← Back to section](README.md) | [← To contents](../README.md)
+[← 返回章节](README.md) | [← 返回目录](../README.md)
 
-## 📋 Contents
+## 📋 目录
 
-- [Structure Overview](#structure-overview)
-- [Frontend (React/Next.js)](#frontend-reactnextjs)
-- [Backend (Rust/Tauri)](#backend-rusttauri)
-- [Configuration Files](#configuration-files)
-- [Supporting Directories](#supporting-directories)
+- [结构概览](#结构概览)
+- [前端 (React/Next.js)](#前端-reactnextjs)
+- [后端 (Rust/Tauri)](#后端-rusttauri)
+- [配置文件](#配置文件)
+- [支持目录](#支持目录)
 
-## 🏗️ Structure Overview
+## 🏗️ 结构概览
 
 ```
 timeline-studio/
-├── src/                  # Frontend code (React/Next.js)
+├── src/                  # 前端代码 (React/Next.js)
 │   ├── app/              # Next.js App Router
-│   ├── components/       # Common UI components
-│   ├── features/         # Feature modules
-│   ├── i18n/             # Internationalization
-│   ├── lib/              # Utilities and helpers
-│   ├── styles/           # Global styles
-│   └── test/             # Test utilities
+│   ├── components/       # 通用 UI 组件
+│   ├── features/         # 功能模块
+│   ├── i18n/             # 国际化
+│   ├── lib/              # 工具和助手
+│   ├── styles/           # 全局样式
+│   └── test/             # 测试工具
 │
-├── src-tauri/            # Backend code (Rust)
-│   ├── src/              # Rust source code
-│   ├── Cargo.toml        # Rust configuration
-│   └── tauri.conf.json   # Tauri configuration
+├── src-tauri/            # 后端代码 (Rust)
+│   ├── src/              # Rust 源代码
+│   ├── Cargo.toml        # Rust 配置
+│   └── tauri.conf.json   # Tauri 配置
 │
-├── public/               # Static files
-├── docs/                 # Documentation
-├── e2e/                  # End-to-end tests
-└── ...configuration files
+├── public/               # 静态文件
+├── docs/                 # 文档
+├── e2e/                  # 端到端测试
+└── ...configuration files # 配置文件
 ```
 
-## ⚛️ Frontend (React/Next.js)
+## ⚛️ 前端 (React/Next.js)
 
 ### `/src/app/`
-Next.js 15 App Router - application entry point.
+Next.js 15 App Router - 应用程序入口点。
 
 ```
 app/
-├── layout.tsx           # Root layout
-├── page.tsx             # Main page
-├── globals.css          # Global styles
-└── providers.tsx        # React providers
+├── layout.tsx           # 根布局
+├── page.tsx             # 主页面
+├── globals.css          # 全局样式
+└── providers.tsx        # React 提供者
 ```
 
 ### `/src/features/`
-Main business logic organized by feature modules.
+按功能模块组织的主要业务逻辑。
 
 ```
 features/
-├── timeline/          # Timeline editor
-│   ├── components/    # React components
-│   ├── hooks/         # Custom hooks
-│   ├── services/      # Business logic
-│   ├── types/         # TypeScript types
-│   ├── utils/         # Utilities
-│   ├── __tests__/     # Tests
-│   └── README.md      # Module documentation
+├── timeline/          # 时间轴编辑器
+│   ├── components/    # React 组件
+│   ├── hooks/         # 自定义钩子
+│   ├── services/      # 业务逻辑
+│   ├── types/         # TypeScript 类型
+│   ├── utils/         # 工具函数
+│   ├── __tests__/     # 测试
+│   └── README.md      # 模块文档
 │
-├── video-player/      # Video player
-├── browser/           # Media file browser
-├── effects/           # Visual effects
-├── export/            # Video export
-├── ai-chat/           # AI assistant
-├── ai-content-intelligence/  # Intelligent content analysis
-├── montage-planner/   # AI montage planner
-├── person-identification/    # Character recognition
-├── fairlight-audio/   # Professional audio mixer
-├── color-grading/     # Color correction
-├── motion-graphics/   # Animation and graphics
-├── multicam/          # Multi-camera shooting
-├── camera-capture/    # Camera capture
-├── voice-recording/   # Voice recording
-├── filters/           # Filter system
-├── transitions/       # Clip transitions
-├── templates/         # Multi-camera templates
-├── style-templates/   # Animated templates
-├── subtitles/         # Subtitle handling
-├── recognition/       # Scene recognition
-├── keyboard-shortcuts/# Keyboard shortcuts
-├── modals/            # Modal windows
-├── media-studio/      # Main interface
-├── project-settings/  # Project settings
-├── user-settings/     # User settings
-└── app-state/         # Global application state
+├── video-player/      # 视频播放器
+├── browser/           # 媒体文件浏览器
+├── effects/           # 视觉效果
+├── export/            # 视频导出
+├── ai-chat/           # AI 助手
+├── ai-content-intelligence/  # 智能内容分析
+├── montage-planner/   # AI 蒙太奇规划器
+├── person-identification/    # 人物识别
+├── fairlight-audio/   # 专业音频混音器
+├── color-grading/     # 色彩校正
+├── motion-graphics/   # 动画和图形
+├── multicam/          # 多机位拍摄
+├── camera-capture/    # 摄像头捕获
+├── voice-recording/   # 语音录制
+├── filters/           # 滤镜系统
+├── transitions/       # 剪辑转场
+├── templates/         # 多机位模板
+├── style-templates/   # 动画模板
+├── subtitles/         # 字幕处理
+├── recognition/       # 场景识别
+├── keyboard-shortcuts/# 键盘快捷键
+├── modals/            # 模态窗口
+├── media-studio/      # 主界面
+├── project-settings/  # 项目设置
+├── user-settings/     # 用户设置
+└── app-state/         # 全局应用状态
 ```
 
-#### Key Modules:
+#### 关键模块：
 
-**Core Editing Modules:**
-1. **`timeline`** - Central component for editing
-2. **`video-player`** - Custom player with frame-accurate control
-3. **`browser`** - File manager for media
-4. **`media-studio`** - Main application interface
+**核心编辑模块：**
+1. **`timeline`** - 编辑的核心组件
+2. **`video-player`** - 具有帧精确控制的自定义播放器
+3. **`browser`** - 媒体文件管理器
+4. **`media-studio`** - 主应用程序界面
 
-**AI Modules:**
-5. **`ai-chat`** - AI assistant (Claude/OpenAI integration)
-6. **`ai-content-intelligence`** - Intelligent content analysis
-7. **`montage-planner`** - Automatic montage planning
-8. **`person-identification`** - Character recognition and tracking
+**AI 模块：**
+5. **`ai-chat`** - AI 助手（Claude/OpenAI 集成）
+6. **`ai-content-intelligence`** - 智能内容分析
+7. **`montage-planner`** - 自动蒙太奇规划
+8. **`person-identification`** - 人物识别和跟踪
 
-**Professional Tools:**
-9. **`fairlight-audio`** - Complete audio mixer with effects
-10. **`color-grading`** - Professional color correction
-11. **`motion-graphics`** - Animation system with keyframes
+**专业工具：**
+9. **`fairlight-audio`** - 带效果的完整音频混音器
+10. **`color-grading`** - 专业色彩校正
+11. **`motion-graphics`** - 带关键帧的动画系统
 
-**Effects and Transitions:**
-12. **`effects`** - Visual effects (100+ effects)
-13. **`filters`** - Filter system
-14. **`transitions`** - Clip transitions
+**效果和转场：**
+12. **`effects`** - 视觉效果（100+ 种效果）
+13. **`filters`** - 滤镜系统
+14. **`transitions`** - 剪辑转场
 
-**Additional Features:**
-15. **`multicam`** - Multi-camera synchronization
-16. **`camera-capture`** - Video capture from camera/screen
-17. **`voice-recording`** - Voiceover recording
-18. **`subtitles`** - Subtitle creation and editing
+**附加功能：**
+15. **`multicam`** - 多机位同步
+16. **`camera-capture`** - 摄像头/屏幕视频捕获
+17. **`voice-recording`** - 配音录制
+18. **`subtitles`** - 字幕创建和编辑
 
 ### `/src/components/`
-Reusable UI components based on shadcn/ui.
+基于 shadcn/ui 的可重用 UI 组件。
 
 ```
 components/
-├── ui/                # Base UI components
+├── ui/                # 基础 UI 组件
 │   ├── button.tsx
 │   ├── dialog.tsx
 │   ├── input.tsx
 │   └── ...
-└── layout/            # Layout components
+└── layout/            # 布局组件
     ├── header.tsx
     ├── sidebar.tsx
     └── ...
 ```
 
 ### `/src/lib/`
-Common utilities and helpers.
+通用工具和助手函数。
 
 ```
 lib/
-├── utils.ts          # Common utilities
-├── cn.ts             # Class utility
-├── date.ts           # Date operations
-└── validation.ts     # Data validation
+├── utils.ts          # 通用工具
+├── cn.ts             # 类名工具
+├── date.ts           # 日期操作
+└── validation.ts     # 数据验证
 ```
 
 ### `/src/i18n/`
-Internationalization system (10 languages).
+国际化系统（10 种语言）。
 
 ```
 i18n/
-├── index.ts         # i18next configuration
-├── constants.ts     # Language constants
-├── locales/         # Translation files
-│   ├── en.json      # English
-│   ├── ru.json      # Russian
-│   └── ...9 other languages
-└── services/         # i18n provider
+├── index.ts         # i18next 配置
+├── constants.ts     # 语言常量
+├── locales/         # 翻译文件
+│   ├── en.json      # 英语
+│   ├── ru.json      # 俄语
+│   └── ...9 other languages # 其他 9 种语言
+└── services/         # i18n 提供者
 ```
 
-## 🦀 Backend (Rust/Tauri)
+## 🦀 后端 (Rust/Tauri)
 
 ### `/src-tauri/src/`
-Backend logic in Rust.
+Rust 后端逻辑。
 
 ```
 src-tauri/src/
-├── main.rs             # Tauri entry point
-├── lib.rs              # Root library module
-├── commands.rs         # Tauri commands
+├── main.rs             # Tauri 入口点
+├── lib.rs              # 根库模块
+├── commands.rs         # Tauri 命令
 │
-├── media/             # Media handling module
-│   ├── mod.rs         # Main module file
-│   ├── scanner.rs     # File scanning
-│   ├── metadata.rs    # Metadata extraction
-│   └── cache.rs       # Caching
+├── media/             # 媒体处理模块
+│   ├── mod.rs         # 主模块文件
+│   ├── scanner.rs     # 文件扫描
+│   ├── metadata.rs    # 元数据提取
+│   └── cache.rs       # 缓存
 │
-├── video_compiler/    # Video compilation
+├── video_compiler/    # 视频编译
 │   ├── mod.rs
-│   ├── ffmpeg.rs      # FFmpeg integration
-│   ├── encoder.rs     # Video encoding
-│   └── progress.rs    # Progress tracking
+│   ├── ffmpeg.rs      # FFmpeg 集成
+│   ├── encoder.rs     # 视频编码
+│   └── progress.rs    # 进度跟踪
 │
-├── recognition/       # ML recognition
+├── recognition/       # ML 识别
 │   ├── mod.rs
-│   ├── yolo.rs        # YOLO integration
-│   ├── tracker.rs     # Object tracking
-│   ├── face_detection.rs    # Face detection
-│   └── scene_analysis.rs    # Scene analysis
+│   ├── yolo.rs        # YOLO 集成
+│   ├── tracker.rs     # 对象跟踪
+│   ├── face_detection.rs    # 人脸检测
+│   └── scene_analysis.rs    # 场景分析
 │
-├── audio/             # Audio processing
+├── audio/             # 音频处理
 │   ├── mod.rs
-│   ├── fairlight_engine.rs  # Audio engine
-│   ├── effects_chain.rs     # Effects chain
-│   └── midi_handler.rs      # MIDI controllers
+│   ├── fairlight_engine.rs  # 音频引擎
+│   ├── effects_chain.rs     # 效果链
+│   └── midi_handler.rs      # MIDI 控制器
 │
-├── color/             # Color correction
+├── color/             # 色彩校正
 │   ├── mod.rs
-│   ├── grading_engine.rs    # Color grading engine
-│   ├── lut_processor.rs     # LUT processing
-│   └── scopes.rs            # Professional scopes
+│   ├── grading_engine.rs    # 色彩分级引擎
+│   ├── lut_processor.rs     # LUT 处理
+│   └── scopes.rs            # 专业示波器
 │
-├── montage/           # Montage planner
+├── montage/           # 蒙太奇规划器
 │   ├── mod.rs
-│   ├── content_analyzer.rs   # Content analysis
-│   ├── plan_generator.rs     # Plan generator
-│   └── rhythm_calculator.rs  # Rhythm calculation
+│   ├── content_analyzer.rs   # 内容分析
+│   ├── plan_generator.rs     # 计划生成器
+│   └── rhythm_calculator.rs  # 节奏计算
 │
-├── project/           # Project management
-├── export/            # Export functionality
-└── utils/             # Common utilities
+├── project/           # 项目管理
+├── export/            # 导出功能
+└── utils/             # 通用工具
 ```
 
-### Key Rust Modules:
+### 关键 Rust 模块：
 
-**Core Modules:**
-1. **`media`** - Media file handling, metadata, previews
-2. **`video_compiler`** - FFmpeg integration for rendering
-3. **`project`** - Project save/load
-4. **`export`** - Export to various formats
+**核心模块：**
+1. **`media`** - 媒体文件处理、元数据、预览
+2. **`video_compiler`** - 用于渲染的 FFmpeg 集成
+3. **`project`** - 项目保存/加载
+4. **`export`** - 导出为各种格式
 
-**AI and Recognition:**
-5. **`recognition`** - YOLO models for object, face, and scene recognition
-6. **`montage`** - AI montage planner with content analysis
+**AI 和识别：**
+5. **`recognition`** - 用于对象、人脸和场景识别的 YOLO 模型
+6. **`montage`** - 带内容分析的 AI 蒙太奇规划器
 
-**Professional Tools:**
-7. **`audio`** - Fairlight-like audio engine with effects and MIDI
-8. **`color`** - GPU-accelerated color correction with LUT and scopes
+**专业工具：**
+7. **`audio`** - 类似 Fairlight 的音频引擎，带效果和 MIDI
+8. **`color`** - GPU 加速的色彩校正，带 LUT 和示波器
 
-### Tauri Commands
-Commands for frontend-backend interaction:
+### Tauri 命令
+前后端交互的命令：
 
 ```rust
 #[tauri::command]
 async fn get_media_metadata(path: String) -> Result<MediaMetadata> {
-    // Implementation
+    // 实现
 }
 
 #[tauri::command]
 async fn export_video(settings: ExportSettings) -> Result<String> {
-    // Implementation
+    // 实现
 }
 ```
 
-## ⚙️ Configuration Files
+## ⚙️ 配置文件
 
-### Root Configs
+### 根配置
 
 ```
-├── package.json        # NPM dependencies and scripts
-├── bun.lockb           # Bun lock file
-├── tsconfig.json       # TypeScript configuration
-├── next.config.ts      # Next.js configuration
-├── tailwind.config.ts  # Tailwind CSS settings
-├── vitest.config.ts    # Test configuration
-└── .env.example        # Environment variables example
+├── package.json        # NPM 依赖和脚本
+├── bun.lockb           # Bun 锁定文件
+├── tsconfig.json       # TypeScript 配置
+├── next.config.ts      # Next.js 配置
+├── tailwind.config.ts  # Tailwind CSS 设置
+├── vitest.config.ts    # 测试配置
+└── .env.example        # 环境变量示例
 ```
 
-### Tauri Configuration
+### Tauri 配置
 
 ```
 src-tauri/
-├── tauri.conf.json     # Main configuration
-├── Cargo.toml          # Rust dependencies
-└── build.rs            # Build script
+├── tauri.conf.json     # 主配置
+├── Cargo.toml          # Rust 依赖
+└── build.rs            # 构建脚本
 ```
 
-### Important settings in `tauri.conf.json`:
+### `tauri.conf.json` 中的重要设置：
 
 ```json
 {
@@ -285,72 +285,72 @@ src-tauri/
 }
 ```
 
-## 📁 Supporting Directories
+## 📁 支持目录
 
 ### `/public/`
-Static resources, directly accessible.
+静态资源，可直接访问。
 
 ```
 public/
-├── icons/              # Application icons
-├── models/             # YOLO models
-└── samples/            # Sample media files
+├── icons/              # 应用程序图标
+├── models/             # YOLO 模型
+└── samples/            # 示例媒体文件
 ```
 
 ### `/e2e/`
-End-to-end tests with Playwright.
+使用 Playwright 的端到端测试。
 
 ```
 e2e/
-├── tests/              # Test scenarios
-├── fixtures/           # Test data
+├── tests/              # 测试场景
+├── fixtures/           # 测试数据
 └── playwright.config.ts
 ```
 
 ### `/docs/`
-Project documentation (you are here!).
+项目文档（您现在就在这里！）。
 
-## 🔧 Development Scripts
+## 🔧 开发脚本
 
-### Main Commands
+### 主要命令
 
 ```bash
-# Development
-bun run dev              # Frontend only
-bun run tauri dev        # Frontend + Backend
+# 开发
+bun run dev              # 仅前端
+bun run tauri dev        # 前端 + 后端
 
-# Testing
-bun run test            # Unit tests
-bun run test:e2e        # E2E tests
-bun run test:coverage   # Code coverage
+# 测试
+bun run test            # 单元测试
+bun run test:e2e        # E2E 测试
+bun run test:coverage   # 代码覆盖率
 
-# Building
-bun run build           # Production build
-bun run tauri build     # Application build
+# 构建
+bun run build           # 生产构建
+bun run tauri build     # 应用程序构建
 
-# Code quality
-bun run lint            # ESLint check
-bun run lint:fix        # Auto-fix
-bun run type-check      # TypeScript check
+# 代码质量
+bun run lint            # ESLint 检查
+bun run lint:fix        # 自动修复
+bun run type-check      # TypeScript 检查
 ```
 
-## 📊 Architectural Principles
+## 📊 架构原则
 
-1. **Feature-based structure** - code organized by functionality
-2. **Separation of concerns** - UI, business logic and data are separated
-3. **Type Safety** - strict typing in TypeScript and Rust
-4. **Modularity** - each module is independent and reusable
-5. **Testability** - code written with testing in mind
+1. **基于功能的结构** - 代码按功能组织
+2. **关注点分离** - UI、业务逻辑和数据分离
+3. **类型安全** - TypeScript 和 Rust 中的严格类型
+4. **模块化** - 每个模块独立且可重用
+5. **可测试性** - 代码编写时考虑测试
 
-## 🎯 What's Next?
+## 🎯 下一步？
 
-Now that you understand the project structure:
+现在您已经了解了项目结构：
 
-1. [Study the architecture](../02-architecture/README.md) - how components interact
-2. [Choose a module to study](../03-features/README.md) - implementation details
-3. [Set up development environment](../05-development/setup.md) - optimal configuration
-4. [Start developing](../05-development/README.md) - best practices
+1. [研究架构](../02-architecture/README.md) - 组件如何交互
+2. [选择要学习的模块](../03-features/README.md) - 实现细节
+3. [设置开发环境](../05-development/setup.md) - 最佳配置
+4. [开始开发](../05-development/README.md) - 最佳实践
 
 ---
 
-[← First project](first-project.md) | [Next: Architecture →](../02-architecture/README.md)
+[← 第一个项目](first-project.md) | [下一步：架构 →](../02-architecture/README.md)

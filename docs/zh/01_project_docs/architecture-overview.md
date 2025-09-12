@@ -1,151 +1,151 @@
-# TIMELINE STUDIO ARCHITECTURE OVERVIEW
+# TIMELINE STUDIO 架构概览
 
-## 🏗️ General Architecture
+## 🏗️ 总体架构
 
-Timeline Studio is built on a modern modular architecture that combines the power of native desktop applications with the convenience of web technologies.
+Timeline Studio 基于现代模块化架构构建，结合了原生桌面应用程序的强大功能和Web技术的便利性。
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Timeline Studio                         │
 ├─────────────────────────┬───────────────────────────────────┤
-│      Frontend          │           Backend                  │
+│      前端              │           后端                    │
 │    (Next.js 15)        │         (Rust + Tauri)           │
 ├─────────────────────────┼───────────────────────────────────┤
-│  • React 19            │  • Video Compiler (FFmpeg)        │
-│  • XState v5           │  • GPU Acceleration               │
-│  • shadcn/ui           │  • Media Processing               │
-│  • Tailwind CSS v4     │  • Plugin System                  │
-│  • Feature-based       │  • Security Layer                 │
+│  • React 19            │  • 视频编译器 (FFmpeg)            │
+│  • XState v5           │  • GPU 加速                      │
+│  • shadcn/ui           │  • 媒体处理                       │
+│  • Tailwind CSS v4     │  • 插件系统                       │
+│  • 基于功能的架构        │  • 安全层                         │
 └─────────────────────────┴───────────────────────────────────┘
 ```
 
-## 🎨 Frontend Architecture
+## 🎨 前端架构
 
-### Feature-based Organization
+### 基于功能的组织结构
 
-Each feature in `/src/features/` is a self-contained module:
+`/src/features/` 中的每个功能都是一个独立的模块：
 
 ```
 src/features/
-├── timeline/           # Main editor
-│   ├── components/    # React components
-│   ├── hooks/         # Custom hooks
-│   ├── services/      # Business logic and XState machines
-│   ├── types/         # TypeScript types
-│   ├── utils/         # Helper functions
-│   └── __tests__/     # Tests
-├── video-player/      # Video player
-├── media-studio/      # Main interface
-├── ai-chat/          # AI assistant
-├── ai-content-intelligence/  # Smart content analysis
-├── montage-planner/   # AI montage planner
-├── person-identification/    # Character recognition
-├── fairlight-audio/   # Professional audio mixer
-├── color-grading/     # Color correction
-├── motion-graphics/   # Animation and graphics
-├── multicam/          # Multi-camera editing
-├── camera-capture/    # Camera capture
-├── voice-recording/   # Voice recording
-└── ...               # Other features
+├── timeline/           # 主编辑器
+│   ├── components/    # React 组件
+│   ├── hooks/         # 自定义钩子
+│   ├── services/      # 业务逻辑和 XState 状态机
+│   ├── types/         # TypeScript 类型
+│   ├── utils/         # 辅助函数
+│   └── __tests__/     # 测试
+├── video-player/      # 视频播放器
+├── media-studio/      # 主界面
+├── ai-chat/          # AI 助手
+├── ai-content-intelligence/  # 智能内容分析
+├── montage-planner/   # AI 蒙太奇规划器
+├── person-identification/    # 人物识别
+├── fairlight-audio/   # 专业音频混音器
+├── color-grading/     # 色彩校正
+├── motion-graphics/   # 动画和图形
+├── multicam/          # 多机位编辑
+├── camera-capture/    # 摄像头捕获
+├── voice-recording/   # 语音录制
+└── ...               # 其他功能
 ```
 
-### State Management
+### 状态管理
 
-- **XState v5** for complex logic (timeline, player, browser)
-- **React Context** for global state
-- **Tauri Store** for persistent data storage
-- **Local Storage** for temporary user settings
+- **XState v5** 用于复杂逻辑（时间轴、播放器、浏览器）
+- **React Context** 用于全局状态
+- **Tauri Store** 用于持久化数据存储
+- **Local Storage** 用于临时用户设置
 
-### UI Architecture
+### UI 架构
 
-- **shadcn/ui** - ready components based on Radix UI
-- **Tailwind CSS v4** - utility-first styling
-- **CSS Variables** - theming
-- **Framer Motion** - animations
+- **shadcn/ui** - 基于 Radix UI 的现成组件
+- **Tailwind CSS v4** - 实用优先的样式
+- **CSS Variables** - 主题化
+- **Framer Motion** - 动画
 
-### Key Modules
+### 关键模块
 
-#### AI Modules
-- **AI Content Intelligence** - content analysis, scene/object detection (YOLO/ONNX), script generation
-- **Montage Planner** - automatic montage plan generation with AI material analysis
-- **Person Identification** - face detection and identification, DBSCAN clustering
+#### AI 模块
+- **AI 内容智能** - 内容分析、场景/物体检测（YOLO/ONNX）、脚本生成
+- **蒙太奇规划器** - 通过 AI 素材分析自动生成蒙太奇计划
+- **人物识别** - 人脸检测和识别、DBSCAN 聚类
 
-#### Professional Tools
-- **Fairlight Audio** - complete audio mixer with Web Audio API, effects, and MIDI
-- **Color Grading** - professional color correction with LUT, curves, and scopes
-- **Motion Graphics** - keyframe system with expression engine
+#### 专业工具
+- **Fairlight 音频** - 完整的音频混音器，支持 Web Audio API、效果和 MIDI
+- **色彩分级** - 专业色彩校正，支持 LUT、曲线和示波器
+- **动态图形** - 带表达式引擎的关键帧系统
 
-#### Additional Features
-- **Multicam** - multi-camera synchronization by timecode/audio
-- **Camera Capture** - video capture from camera and screen via WebRTC
-- **Voice Recording** - professional voiceover recording
+#### 附加功能
+- **多机位** - 通过时间码/音频进行多机位同步
+- **摄像头捕获** - 通过 WebRTC 从摄像头和屏幕捕获视频
+- **语音录制** - 专业配音录制
 
-## ⚙️ Backend Architecture
+## ⚙️ 后端架构
 
-### Modular Structure
+### 模块化结构
 
 ```
 src-tauri/src/
-├── core/              # Core infrastructure
-│   ├── di/           # Dependency Injection
-│   ├── events/       # EventBus system
-│   ├── performance/  # Memory management
-│   ├── plugins/      # Plugin system
-│   └── telemetry/    # Metrics and monitoring
-├── security/          # Security
-│   ├── secure_storage.rs    # Data encryption
-│   ├── oauth_handler.rs     # OAuth for social media
-│   └── api_validator.rs     # API key validation
-├── media/             # Media processing
-│   ├── metadata.rs   # File analysis
-│   ├── ffmpeg.rs     # FFmpeg integration
-│   └── preview.rs    # Preview generation
-├── video_compiler/    # Video compilation
-│   ├── core/         # GPU, pipeline, codecs
-│   ├── services/     # Service layer
-│   └── cache/        # LRU cache
-├── recognition/       # AI recognition
-│   ├── yolo_processor.rs    # YOLO models
-│   ├── face_detection.rs    # Face detection
-│   └── scene_analysis.rs    # Scene analysis
-├── audio/             # Audio processing
-│   ├── fairlight_engine.rs  # Audio engine
-│   ├── effects_chain.rs     # Effects chain
-│   └── midi_handler.rs      # MIDI controllers
-├── color/             # Color correction
-│   ├── grading_engine.rs    # Color grading engine
-│   ├── lut_processor.rs     # LUT processing
-│   └── scopes.rs            # Professional scopes
-└── montage/           # Montage planner
-    ├── content_analyzer.rs   # Content analysis
-    ├── plan_generator.rs     # Plan generation
-    └── rhythm_calculator.rs  # Rhythm calculation
+├── core/              # 核心基础设施
+│   ├── di/           # 依赖注入
+│   ├── events/       # 事件总线系统
+│   ├── performance/  # 内存管理
+│   ├── plugins/      # 插件系统
+│   └── telemetry/    # 指标和监控
+├── security/          # 安全
+│   ├── secure_storage.rs    # 数据加密
+│   ├── oauth_handler.rs     # 社交媒体 OAuth
+│   └── api_validator.rs     # API 密钥验证
+├── media/             # 媒体处理
+│   ├── metadata.rs   # 文件分析
+│   ├── ffmpeg.rs     # FFmpeg 集成
+│   └── preview.rs    # 预览生成
+├── video_compiler/    # 视频编译
+│   ├── core/         # GPU、管道、编解码器
+│   ├── services/     # 服务层
+│   └── cache/        # LRU 缓存
+├── recognition/       # AI 识别
+│   ├── yolo_processor.rs    # YOLO 模型
+│   ├── face_detection.rs    # 人脸检测
+│   └── scene_analysis.rs    # 场景分析
+├── audio/             # 音频处理
+│   ├── fairlight_engine.rs  # 音频引擎
+│   ├── effects_chain.rs     # 效果链
+│   └── midi_handler.rs      # MIDI 控制器
+├── color/             # 色彩校正
+│   ├── grading_engine.rs    # 色彩分级引擎
+│   ├── lut_processor.rs     # LUT 处理
+│   └── scopes.rs            # 专业示波器
+└── montage/           # 蒙太奇规划器
+    ├── content_analyzer.rs   # 内容分析
+    ├── plan_generator.rs     # 计划生成
+    └── rhythm_calculator.rs  # 节奏计算
 ```
 
-### Key Components
+### 关键组件
 
-1. **Video Compiler** - FFmpeg-based video processing core
-2. **GPU Service** - Hardware acceleration (NVENC, QuickSync)
-3. **Plugin System** - Extensibility through plugins
-4. **Security Layer** - Secure storage and OAuth
-5. **Media Pipeline** - Media processing pipeline
-6. **AI Recognition** - YOLO/ONNX models for content analysis
-7. **Fairlight Engine** - Professional audio processing
-8. **Color Engine** - GPU-accelerated color correction
-9. **Montage AI** - Intelligent analysis and planning
+1. **视频编译器** - 基于 FFmpeg 的视频处理核心
+2. **GPU 服务** - 硬件加速（NVENC、QuickSync）
+3. **插件系统** - 通过插件实现可扩展性
+4. **安全层** - 安全存储和 OAuth
+5. **媒体管道** - 媒体处理管道
+6. **AI 识别** - 用于内容分析的 YOLO/ONNX 模型
+7. **Fairlight 引擎** - 专业音频处理
+8. **色彩引擎** - GPU 加速的色彩校正
+9. **蒙太奇 AI** - 智能分析和规划
 
-## 🔌 Frontend ↔ Backend Communication
+## 🔌 前后端通信
 
-### Tauri Commands
+### Tauri 命令
 
 ```rust
-// Backend
+// 后端
 #[tauri::command]
 async fn process_video(path: String, options: VideoOptions) -> Result<VideoOutput> {
-    // Process video
+    // 处理视频
 }
 
-// Frontend
+// 前端
 import { invoke } from '@tauri-apps/api/core';
 
 const result = await invoke('process_video', {
@@ -154,77 +154,77 @@ const result = await invoke('process_video', {
 });
 ```
 
-### Event System
+### 事件系统
 
 ```typescript
-// Frontend subscription
+// 前端订阅
 import { listen } from '@tauri-apps/api/event';
 
 const unlisten = await listen('render-progress', (event) => {
-    console.log('Progress:', event.payload.percent);
+    console.log('进度:', event.payload.percent);
 });
 
-// Backend emission
+// 后端发射
 window.emit("render-progress", ProgressPayload { percent: 75.0 });
 ```
 
-## 🔐 Security
+## 🔐 安全
 
-### API Keys
-- Stored in system keychain (macOS), Credential Store (Windows), Secret Service (Linux)
-- Encrypted with AES-256 before saving
-- Never transmitted in plaintext
+### API 密钥
+- 存储在系统钥匙串（macOS）、凭据存储（Windows）、密钥服务（Linux）中
+- 保存前使用 AES-256 加密
+- 从不以明文传输
 
-### OAuth Tokens
-- PKCE flow used for security
-- Tokens refreshed automatically
-- Support for YouTube, TikTok, Vimeo, Telegram
+### OAuth 令牌
+- 使用 PKCE 流程确保安全
+- 令牌自动刷新
+- 支持 YouTube、TikTok、Vimeo、Telegram
 
-## 🚀 Performance
+## 🚀 性能
 
-### Frontend Optimizations
-- Code splitting by routes
-- Lazy loading of components
-- Memoization of expensive calculations
-- Virtualization of large lists
+### 前端优化
+- 按路由进行代码分割
+- 组件懒加载
+- 昂贵计算的记忆化
+- 大列表虚拟化
 
-### Backend Optimizations
-- GPU acceleration for rendering
-- LRU cache for previews
-- Parallel processing via tokio
-- Zero-copy operations where possible
+### 后端优化
+- 渲染的 GPU 加速
+- 预览的 LRU 缓存
+- 通过 tokio 进行并行处理
+- 尽可能使用零拷贝操作
 
-## 🧪 Testing
+## 🧪 测试
 
-### Frontend
-- **Vitest** for unit tests
-- **Testing Library** for components
-- **Playwright** for E2E tests
-- **80%+** code coverage
+### 前端
+- **Vitest** 用于单元测试
+- **Testing Library** 用于组件测试
+- **Playwright** 用于端到端测试
+- **80%+** 代码覆盖率
 
-### Backend
-- **Cargo test** for unit tests
-- **Integration tests** for commands
-- **Mockall** for mocks
-- **Proptest** for property-based tests
+### 后端
+- **Cargo test** 用于单元测试
+- **集成测试** 用于命令测试
+- **Mockall** 用于模拟
+- **Proptest** 用于基于属性的测试
 
-## 📦 Build System
+## 📦 构建系统
 
-### Development
+### 开发
 ```bash
-bun run tauri dev  # Hot reload for frontend and backend
+bun run tauri dev  # 前后端热重载
 ```
 
-### Production
+### 生产
 ```bash
-bun run tauri build  # Optimized build
+bun run tauri build  # 优化构建
 ```
 
-### Platforms
-- **Windows**: MSI/NSIS installer
-- **macOS**: DMG/App bundle
+### 平台
+- **Windows**: MSI/NSIS 安装程序
+- **macOS**: DMG/App 包
 - **Linux**: AppImage/deb/rpm
 
 ---
 
-*For detailed information, see specialized documents in architecture sections*
+*详细信息请参阅架构部分的专门文档*
