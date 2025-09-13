@@ -96,11 +96,20 @@ interface BrowserStateProviderProps {
  */
 export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ children }) => {
   const [state, setState] = useState<BrowserContext>(() => {
-    // Пытаемся загрузить настройки из localStorage
+    // Не обращаемся к localStorage на этапе SSR / синхронной инициализации.
+    // Загружать сохранённые настройки будем в useEffect на клиенте.
+    return getInitialContext()
+  })
+
+  // Загрузка сохранённых настроек только на клиенте (не в SSR)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
     try {
       const savedSettings = localStorage.getItem("browserSettings")
       if (savedSettings) {
         const parsed = JSON.parse(savedSettings)
+
         // Преобразуем массивы обратно в Set для selectedFiles
         if (parsed.selectedFiles) {
           const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
@@ -112,13 +121,17 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           // Если нет selectedFiles, инициализируем пустыми Set
           parsed.selectedFiles = getInitialContext().selectedFiles
         }
-        return parsed
+
+        // Объединяем сохранённые настройки с начальными, чтобы не потерять структуру
+        setState((prev) => ({
+          ...prev,
+          ...parsed,
+        }))
       }
     } catch (error) {
       console.error("Failed to load browser settings from localStorage:", error)
     }
-    return getInitialContext()
-  })
+  }, [])
 
   // Используем ref для отслеживания первого рендера и предыдущего состояния
   const isFirstRender = useRef(true)
@@ -153,7 +166,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           ...state,
           selectedFiles: Object.entries(state.selectedFiles).reduce(
             (acc, [tab, files]) => {
-              acc[tab] = Array.from(files)
+              acc[tab as BrowserTab] = Array.from(files)
               return acc
             },
             {} as Record<BrowserTab, string[]>,

@@ -84,54 +84,88 @@ export class ProviderManager {
    * Использует shared AI services
    */
   private async initializeProviders(): Promise<void> {
-    try {
-      // Импорт shared AI services
-      const { getAIContainer } = await import("@/shared/services/ai")
-      const aiContainer = getAIContainer()
-      this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
+    const maxAttempts = 3
+    const retryDelayMs = 1500
 
-      // Создаем адаптеры для shared провайдеров
-      this.providers.set("claude", {
-        name: "claude",
-        sendRequest: this.createSharedSendRequest("claude"),
-        sendStreamingRequest: this.createSharedStreamingRequest("claude"),
-        isAvailable: () => this.sharedAIService.isModelAvailable("claude-4-sonnet-latest"),
-        hasApiKey: () => this.sharedAIService.isModelAvailable("claude-4-sonnet-latest"),
-      })
+    const attemptInit = async (attempt: number) => {
+      try {
+        // Импорт shared AI services
+        console.debug(`ProviderManager: initializeProviders attempt ${attempt} - importing shared services`)
+        const { getAIContainer } = await import("@/shared/services/ai")
+        const aiContainer = getAIContainer()
+        this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
+        console.info("ProviderManager: shared UnifiedAIService resolved")
 
-      this.providers.set("openai", {
-        name: "openai",
-        sendRequest: this.createSharedSendRequest("openai"),
-        sendStreamingRequest: this.createSharedStreamingRequest("openai"),
-        isAvailable: (model?: string) => this.sharedAIService.isModelAvailable(model || "gpt-4o"),
-        hasApiKey: (model?: string) => this.sharedAIService.isModelAvailable(model || "gpt-4o"),
-      })
+        // Создаем адаптеры для shared провайдеров
+        this.providers.set("claude", {
+          name: "claude",
+          sendRequest: this.createSharedSendRequest("claude"),
+          sendStreamingRequest: this.createSharedStreamingRequest("claude"),
+          isAvailable: () => this.sharedAIService.isModelAvailable("claude-4-sonnet-latest"),
+          hasApiKey: () => this.sharedAIService.isModelAvailable("claude-4-sonnet-latest"),
+        })
 
-      this.providers.set("deepseek", {
-        name: "deepseek",
-        sendRequest: this.createSharedSendRequest("deepseek"),
-        sendStreamingRequest: this.createSharedStreamingRequest("deepseek"),
-        isAvailable: () => this.sharedAIService.isModelAvailable("deepseek-chat"),
-        hasApiKey: () => this.sharedAIService.isModelAvailable("deepseek-chat"),
-      })
+        this.providers.set("openai", {
+          name: "openai",
+          sendRequest: this.createSharedSendRequest("openai"),
+          sendStreamingRequest: this.createSharedStreamingRequest("openai"),
+          isAvailable: (model?: string) => this.sharedAIService.isModelAvailable(model || "gpt-4o"),
+          hasApiKey: (model?: string) => this.sharedAIService.isModelAvailable(model || "gpt-4o"),
+        })
 
-      this.providers.set("ollama", {
-        name: "ollama",
-        sendRequest: this.createSharedSendRequest("ollama"),
-        sendStreamingRequest: this.createSharedStreamingRequest("ollama"),
-        isAvailable: () => this.sharedAIService.isModelAvailable("llama3.2:latest"),
-        hasApiKey: () => Promise.resolve(true), // Ollama не требует API ключа
-        getInstalledModels: async () => {
-          const models = await this.sharedAIService.getAvailableModels()
-          return models
-            .filter((m: any) => m.provider === "ollama")
-            .map((m: any) => ({ name: m.model, details: { parameter_size: m.size || "unknown" } }))
-        },
-      })
-    } catch (error) {
-      console.warn("Ошибка инициализации shared AI services, используем fallback:", error)
-      // Fallback к пустому состоянию если shared services недоступны
+        this.providers.set("deepseek", {
+          name: "deepseek",
+          sendRequest: this.createSharedSendRequest("deepseek"),
+          sendStreamingRequest: this.createSharedStreamingRequest("deepseek"),
+          isAvailable: () => this.sharedAIService.isModelAvailable("deepseek-chat"),
+          hasApiKey: () => this.sharedAIService.isModelAvailable("deepseek-chat"),
+        })
+
+        this.providers.set("ollama", {
+          name: "ollama",
+          sendRequest: this.createSharedSendRequest("ollama"),
+          sendStreamingRequest: this.createSharedStreamingRequest("ollama"),
+          isAvailable: () => this.sharedAIService.isModelAvailable("llama3.2:latest"),
+          hasApiKey: () => Promise.resolve(true), // Ollama не требует API ключа
+          getInstalledModels: async () => {
+            try {
+              const models = await this.sharedAIService.getAvailableModels()
+              return models
+                .filter((m: any) => m.provider === "ollama")
+                .map((m: any) => ({
+                  name: m.model,
+                  details: { parameter_size: m.size || "unknown" },
+                }))
+            } catch (e) {
+              console.warn("ProviderManager: failed to get Ollama installed models:", e)
+              return []
+            }
+          },
+        })
+
+        console.info("ProviderManager: providers initialized successfully")
+        return true
+      } catch (error) {
+        console.warn(`ProviderManager: initializeProviders attempt ${attempt} failed:`, error)
+        return false
+      }
     }
+
+    // Попытки инициализации с экспоненциальным бэкоффом
+    for (let i = 1; i <= maxAttempts; i++) {
+      const ok = await attemptInit(i)
+      if (ok) return
+      if (i < maxAttempts) {
+        const delay = retryDelayMs * i
+        console.debug(`ProviderManager: retrying initialization in ${delay}ms (attempt ${i + 1}/${maxAttempts})`)
+        await new Promise((r) => setTimeout(r, delay))
+      }
+    }
+
+    // Если не удалось инициализировать после попыток — выставляем предупреждение и оставляем fallback
+    console.error(
+      "ProviderManager: failed to initialize shared AI providers after retries; providers map may be incomplete",
+    )
   }
 
   /**
@@ -358,32 +392,66 @@ export class ProviderManager {
     if (!aiProvider) {
       status.error = "Провайдер не найден"
       this.statusCache.set(provider, status)
+      console.warn(`ProviderManager: updateProviderStatus - provider ${provider} not found`)
       return status
     }
 
-    try {
-      // Проверяем наличие API ключа
-      status.hasApiKey = await aiProvider.hasApiKey()
+    // Вспомогательная функция с retry для вызовов провайдера
+    const withRetry = async <T>(fn: () => Promise<T>, label: string, attempts = 2): Promise<T> => {
+      let lastErr: unknown = null
+      for (let i = 1; i <= attempts; i++) {
+        try {
+          if (i > 1) {
+            console.debug(`ProviderManager: retrying ${label} for ${provider} (attempt ${i}/${attempts})`)
+          }
+          const res = await fn()
+          return res
+        } catch (err) {
+          lastErr = err
+          console.warn(`ProviderManager: ${label} attempt ${i} failed for ${provider}:`, err)
+          // небольшая пауза между попытками
+          if (i < attempts) await new Promise((r) => setTimeout(r, 300 * i))
+        }
+      }
+      throw lastErr
+    }
 
-      // Проверяем доступность
-      status.available = await aiProvider.isAvailable()
+    try {
+      // Проверяем наличие API ключа (с ретраем)
+      try {
+        status.hasApiKey = !!(await withRetry(() => aiProvider.hasApiKey(), "hasApiKey", 2))
+      } catch (e) {
+        console.warn(`ProviderManager: hasApiKey check failed for ${provider}:`, e)
+        status.hasApiKey = false
+      }
+
+      // Проверяем доступность (с ретраем)
+      try {
+        status.available = !!(await withRetry(() => aiProvider.isAvailable(), "isAvailable", 2))
+      } catch (e) {
+        console.warn(`ProviderManager: isAvailable check failed for ${provider}:`, e)
+        status.available = false
+      }
 
       // Получаем модели для Ollama
       if (provider === "ollama" && aiProvider.getInstalledModels) {
         try {
-          const models = await aiProvider.getInstalledModels()
+          const models = await withRetry(() => aiProvider.getInstalledModels!(), "getInstalledModels", 2)
           status.models = models.map((m) => m.name)
         } catch (error) {
-          // Игнорируем ошибки получения моделей
+          console.warn(`ProviderManager: failed to list Ollama models for ${provider}:`, error)
+          status.models = []
         }
       }
     } catch (error) {
       status.error = error instanceof Error ? error.message : String(error)
       status.available = false
+      console.error(`ProviderManager: updateProviderStatus unexpected error for ${provider}:`, error)
     }
 
     // Кэшируем результат
     this.statusCache.set(provider, status)
+    console.debug(`ProviderManager: updated status for ${provider}:`, status)
     return status
   }
 
@@ -540,4 +608,62 @@ export class ProviderManager {
       }
     }
   }
+}
+
+/**
+ * Singleton instance holder and debug helpers
+ *
+ * Expose `getProviderManager()` so other runtime code (or dev console) can access
+ * the ProviderManager singleton. Attach a debug handle to `window.__providerManager`
+ * in browser environments for convenient inspection.
+ *
+ * Also provide `debugListProviders()` helper that returns provider instances and
+ * current statuses (force-refresh) — useful to verify Ollama visibility.
+ */
+
+let providerManagerInstance: ProviderManager | null = null
+
+export function getProviderManager(): ProviderManager {
+  if (!providerManagerInstance) {
+    providerManagerInstance = ProviderManager.getInstance()
+  }
+
+  // Attach to window for interactive debugging in browser (dev only)
+  try {
+    if (typeof window !== "undefined") {
+      ;(window as any).__providerManager = providerManagerInstance
+    }
+  } catch {
+    // ignore
+  }
+
+  return providerManagerInstance
+}
+
+/**
+ * Debug helper: returns a simple map of providers and their latest statuses.
+ * Also assigns the result to `window.__providerStatuses` for easy inspection.
+ */
+export async function debugListProviders() {
+  const mgr = getProviderManager()
+  const providers = mgr.getAllProviders()
+  const statuses = await mgr.getAllProviderStatuses(true)
+
+  const out: Record<string, any> = {}
+  for (const [key, prov] of providers) {
+    out[key] = {
+      hasInstance: !!prov,
+      status: statuses.get(key),
+    }
+  }
+
+  try {
+    if (typeof window !== "undefined") {
+      ;(window as any).__providerStatuses = out
+    }
+  } catch {
+    // ignore
+  }
+
+  return out
 }

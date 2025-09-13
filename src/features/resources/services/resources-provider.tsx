@@ -87,16 +87,43 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Подписка на backend состояние
+  // Подписка и подключение к backend состоянию
   useEffect(() => {
-    console.log("ResourcesProvider: Setting up backend state subscription")
+    let mounted = true
+    console.log("ResourcesProvider: Setting up backend state subscription and connecting")
+    // Подписываемся на обновления состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       console.log("ResourcesProvider: Backend state updated", state)
-      setBackendState(state)
-      setError(null)
+      if (mounted) {
+        setBackendState(state)
+        setError(null)
+      }
     })
 
-    return unsubscribe
+    // Попытка подключиться и получить начальное состояние
+    void (async () => {
+      try {
+        await backendSync.connect()
+        const initialState = await backendSync.getProjectState()
+        if (initialState && mounted) {
+          setBackendState(initialState)
+        }
+      } catch (e) {
+        console.error("ResourcesProvider: Failed to connect to backendSync:", e)
+        setError(e instanceof Error ? e.message : String(e))
+      }
+    })()
+
+    return () => {
+      mounted = false
+      // отписываемся
+      try {
+        unsubscribe()
+      } catch {
+        // ignore
+      }
+      void backendSync.disconnect()
+    }
   }, [backendSync])
 
   // Функция для выполнения backend команд
@@ -251,8 +278,13 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
 
   // Извлекаем ресурсы из backend состояния
   // Пока backend не содержит все типы ресурсов, создаем пустые массивы
-  const mediaPool = backendState?.project?.media_pool
-  console.log("ResourcesProvider: MediaPool from backend", mediaPool)
+  const mediaPool = backendState?.project?.media_pool ?? null
+  if (!mediaPool) {
+    // Если пусто — логируем предупреждение и используем пустые наборы при дальнейшем преобразовании
+    console.warn("ResourcesProvider: MediaPool from backend is undefined or empty; using empty defaults")
+  } else {
+    console.log("ResourcesProvider: MediaPool from backend", mediaPool)
+  }
 
   // Конвертируем медиа из backend в MediaResource формат
   const mediaResources: MediaResource[] = mediaPool?.items

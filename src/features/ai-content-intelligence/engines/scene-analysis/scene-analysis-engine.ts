@@ -163,7 +163,7 @@ export class SceneAnalysisEngine {
       return scenesWithTransitions
     } catch (error) {
       console.error("Ошибка анализа сцен:", error)
-      throw new Error(`Не удалось проанализировать сцены в файле ${mediaFile.name}: ${String(error)}`)
+      throw new Error(`Не удалось проанализировать сцены в файле ${mediaFile.path}: ${String(error)}`)
     }
   }
 
@@ -200,7 +200,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           const classifications = JSON.parse(response.content)
           const classificationMap = new Map(classifications.map((c: any) => [c.id, c.type]))
 
-          return sceneDetection.scenes.map((scene) => ({
+          return sceneDetection.scenes.map((scene: any) => ({
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
@@ -213,7 +213,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           }))
         } catch {
           // Fallback без классификации
-          return sceneDetection.scenes.map((scene) => ({
+          return sceneDetection.scenes.map((scene: any) => ({
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
@@ -228,7 +228,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
       }
 
       // Без классификации типов
-      return sceneDetection.scenes.map((scene) => ({
+      return sceneDetection.scenes.map((scene: any) => ({
         id: scene.id,
         startTime: scene.startTime,
         endTime: scene.endTime,
