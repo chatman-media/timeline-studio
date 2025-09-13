@@ -7,12 +7,12 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
+use crate::video_compiler::CompilerSettings;
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::progress::RenderProgress;
 use crate::video_compiler::progress::RenderStatus;
 use crate::video_compiler::renderer::VideoRenderer;
 use crate::video_compiler::services::ServiceContainer;
-use crate::video_compiler::CompilerSettings;
 
 /// Метаданные активной задачи рендеринга
 #[derive(Debug, Clone)]

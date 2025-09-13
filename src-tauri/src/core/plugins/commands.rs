@@ -184,9 +184,11 @@ mod tests {
 
     // Регистрируем примеры плагинов
     let registry = manager.loader().registry();
-    assert!(crate::core::plugins::register_example_plugins(&registry)
-      .await
-      .is_ok());
+    assert!(
+      crate::core::plugins::register_example_plugins(&registry)
+        .await
+        .is_ok()
+    );
 
     // Проверяем что плагины зарегистрированы
     let plugins = registry.list_plugins().await;

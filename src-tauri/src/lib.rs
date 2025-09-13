@@ -43,8 +43,8 @@ use video_compiler::VideoCompilerState;
 
 // Модуль распознавания (YOLO)
 pub mod recognition;
-use recognition::commands::yolo_commands::YoloProcessorState;
 use recognition::RecognitionState;
+use recognition::commands::yolo_commands::YoloProcessorState;
 
 // Модуль Smart Montage Planner
 pub mod montage_planner;

@@ -1,6 +1,6 @@
 use super::*;
 use crate::video_compiler::{
-  schema::{timeline::ClipSource, Track},
+  schema::{Track, timeline::ClipSource},
   services::FfmpegServiceImpl,
 };
 use std::path::PathBuf;

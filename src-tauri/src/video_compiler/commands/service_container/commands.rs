@@ -1,8 +1,8 @@
 //! Tauri команды для работы с ServiceContainer и MetricsRegistry
 
 use super::{business_logic, types::*};
-use crate::video_compiler::error::Result;
 use crate::video_compiler::VideoCompilerState;
+use crate::video_compiler::error::Result;
 use tauri::State;
 
 /// Получить информацию о проектном сервисе

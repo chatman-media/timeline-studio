@@ -8,17 +8,19 @@
 
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use opentelemetry::{
-  global,
+  KeyValue, global,
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
-  KeyValue,
 };
 // opentelemetry_sdk::Resource is unused with pinned SDK versions
+use hyper::{
+  Body, Server,
+  service::{make_service_fn, service_fn},
+};
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use hyper::{service::{make_service_fn, service_fn}, Body, Server};
 
 use super::config::{ExporterType, TelemetryConfig};
 
@@ -356,10 +358,12 @@ impl MetricsCollector {
 
   /// Запустить HTTP сервер для Prometheus метрик
   async fn start_prometheus_server(endpoint: String, handle: Arc<RwLock<PrometheusHandle>>) {
-  log::info!("Prometheus server start requested for {endpoint}, but server is disabled in this build");
-  // Keep server_handle as None for now
-  let mut handle_guard = handle.write().await;
-  handle_guard.server_handle = None;
+    log::info!(
+      "Prometheus server start requested for {endpoint}, but server is disabled in this build"
+    );
+    // Keep server_handle as None for now
+    let mut handle_guard = handle.write().await;
+    handle_guard.server_handle = None;
   }
 
   /// Обслуживать HTTP запросы для метрик
@@ -517,7 +521,7 @@ mod tests {
 
   fn init_test_env() {
     INIT.call_once(|| {
-  // Logger initialization skipped in tests to avoid global state issues
+      // Logger initialization skipped in tests to avoid global state issues
     });
   }
 

@@ -129,7 +129,7 @@ pub async fn add_person_thumbnail(
   let db = state.0.lock().await;
 
   // Декодируем base64 изображение
-  use base64::{engine::general_purpose, Engine as _};
+  use base64::{Engine as _, engine::general_purpose};
   let image_data = general_purpose::STANDARD
     .decode(&image_data_base64)
     .map_err(|e| format!("Failed to decode image data: {}", e))?;

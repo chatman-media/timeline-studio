@@ -318,10 +318,12 @@ mod tests {
     // Невалидный эффект должен быть отклонен
     let result2 = bridge.apply_effect("test.mp4", &invalid_effect).await;
     assert!(result2.is_err());
-    assert!(result2
-      .unwrap_err()
-      .to_string()
-      .contains("Unsupported effect"));
+    assert!(
+      result2
+        .unwrap_err()
+        .to_string()
+        .contains("Unsupported effect")
+    );
   }
 
   #[test]

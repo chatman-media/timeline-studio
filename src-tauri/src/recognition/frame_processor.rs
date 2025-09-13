@@ -1,7 +1,7 @@
 //! Frame Processor - Обработка кадров для распознавания
 
-use anyhow::{anyhow, Result};
-use image::{imageops::FilterType, DynamicImage, GenericImageView};
+use anyhow::{Result, anyhow};
+use image::{DynamicImage, GenericImageView, imageops::FilterType};
 use ort::value::Tensor;
 use serde::{Deserialize, Serialize};
 

@@ -1,11 +1,11 @@
 //! Memory pool для эффективного управления памятью
 
 use crate::video_compiler::error::{Result, VideoCompilerError};
-use std::alloc::{alloc, dealloc, Layout};
+use std::alloc::{Layout, alloc, dealloc};
 use std::collections::{HashMap, VecDeque};
 use std::ptr::NonNull;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::{Mutex, RwLock};
 
 /// Размеры блоков памяти (в байтах)

@@ -531,7 +531,9 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Set test environment variable
-    unsafe { env::set_var("OPENAI_API_KEY", "test_openai_key_123"); }
+    unsafe {
+      env::set_var("OPENAI_API_KEY", "test_openai_key_123");
+    }
 
     let env_vars = vec!["OPENAI_API_KEY".to_string()];
     let result = importer
@@ -544,7 +546,9 @@ EMPTY_LINE_ABOVE=value
     assert_eq!(key_data.value, "test_openai_key_123");
 
     // Clean up
-    unsafe { env::remove_var("OPENAI_API_KEY"); }
+    unsafe {
+      env::remove_var("OPENAI_API_KEY");
+    }
   }
 
   #[test]
@@ -685,7 +689,9 @@ EMPTY_LINE_ABOVE=value
     let importer = EnvImporter::new();
 
     // Test with existing key
-    unsafe { env::set_var("DEEPSEEK_API_KEY", "deepseek_test_123"); }
+    unsafe {
+      env::set_var("DEEPSEEK_API_KEY", "deepseek_test_123");
+    }
 
     let result = importer.import_api_key(ApiKeyType::DeepSeek);
     assert!(result.is_ok());
@@ -698,14 +704,18 @@ EMPTY_LINE_ABOVE=value
 
     // Test with non-existing key
     // First ensure the env var is not set
-    unsafe { env::remove_var("CODECOV_TOKEN"); }
+    unsafe {
+      env::remove_var("CODECOV_TOKEN");
+    }
 
     let result = importer.import_api_key(ApiKeyType::Codecov);
     assert!(result.is_ok());
     assert!(result.unwrap().is_none());
 
     // Clean up
-    unsafe { env::remove_var("DEEPSEEK_API_KEY"); }
+    unsafe {
+      env::remove_var("DEEPSEEK_API_KEY");
+    }
   }
 
   #[test]

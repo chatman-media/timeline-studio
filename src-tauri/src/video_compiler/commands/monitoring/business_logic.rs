@@ -2,7 +2,7 @@
 
 use super::types::*;
 use crate::video_compiler::{
-  error::Result, services::monitoring::MetricsSummary, VideoCompilerState,
+  VideoCompilerState, error::Result, services::monitoring::MetricsSummary,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

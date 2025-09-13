@@ -4,12 +4,12 @@
 mod schema_tests {
   use super::super::*;
   use crate::video_compiler::schema::{
+    ProjectSchema, Timeline, Track, TrackType,
     common::AspectRatio,
     effects::{EffectType, FilterType},
     subtitles::{SubtitleAnimationType, SubtitleEasing},
     templates::{StyleTemplateCategory, StyleTemplateStyle, TemplateType},
     timeline::ClipSource,
-    ProjectSchema, Timeline, Track, TrackType,
   };
   use std::collections::HashMap;
 
@@ -354,10 +354,12 @@ mod schema_tests {
     assert!(!validation.is_valid);
     assert!(!validation.errors.is_empty());
     assert!(validation.errors.iter().any(|e| e.contains("duration")));
-    assert!(validation
-      .errors
-      .iter()
-      .any(|e| e.contains("Invalid subtitle timing")));
+    assert!(
+      validation
+        .errors
+        .iter()
+        .any(|e| e.contains("Invalid subtitle timing"))
+    );
   }
 
   #[test]

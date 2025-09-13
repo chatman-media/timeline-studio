@@ -1,8 +1,8 @@
 //! Tauri команды для расширенных функций превью
 
 use super::{business_logic, types::*};
-use crate::video_compiler::error::Result;
 use crate::video_compiler::VideoCompilerState;
+use crate::video_compiler::error::Result;
 use tauri::State;
 
 /// Создать генератор превью с кастомным путем к FFmpeg

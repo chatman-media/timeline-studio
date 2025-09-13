@@ -2,10 +2,10 @@
 
 use super::types::*;
 use crate::video_compiler::{
+  VideoCompilerState,
   core::schema::{Clip, Subtitle},
   core::{cache::RenderCache, frame_extraction::FrameExtractionManager},
   error::{Result, VideoCompilerError},
-  VideoCompilerState,
 };
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

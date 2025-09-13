@@ -243,9 +243,11 @@ mod tests {
 
     let result = project.validate();
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .contains("Версия проекта не может быть пустой"));
+    assert!(
+      result
+        .unwrap_err()
+        .contains("Версия проекта не может быть пустой")
+    );
   }
 
   #[test]
@@ -266,17 +268,21 @@ mod tests {
     project.timeline.resolution = (0, 1080);
     let result = project.validate();
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .contains("Разрешение должно быть больше 0x0"));
+    assert!(
+      result
+        .unwrap_err()
+        .contains("Разрешение должно быть больше 0x0")
+    );
 
     // Test zero height
     project.timeline.resolution = (1920, 0);
     let result = project.validate();
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .contains("Разрешение должно быть больше 0x0"));
+    assert!(
+      result
+        .unwrap_err()
+        .contains("Разрешение должно быть больше 0x0")
+    );
 
     // Test both zero
     project.timeline.resolution = (0, 0);

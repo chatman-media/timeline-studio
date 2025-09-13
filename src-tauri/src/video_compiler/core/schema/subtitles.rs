@@ -402,18 +402,22 @@ mod tests {
     // Negative start time
     invalid_subtitle = Subtitle::new("Text".to_string(), -1.0, 5.0);
     assert!(invalid_subtitle.validate().is_err());
-    assert!(invalid_subtitle
-      .validate()
-      .unwrap_err()
-      .contains("отрицательным"));
+    assert!(
+      invalid_subtitle
+        .validate()
+        .unwrap_err()
+        .contains("отрицательным")
+    );
 
     // End time <= start time
     invalid_subtitle = Subtitle::new("Text".to_string(), 5.0, 5.0);
     assert!(invalid_subtitle.validate().is_err());
-    assert!(invalid_subtitle
-      .validate()
-      .unwrap_err()
-      .contains("больше времени начала"));
+    assert!(
+      invalid_subtitle
+        .validate()
+        .unwrap_err()
+        .contains("больше времени начала")
+    );
 
     invalid_subtitle = Subtitle::new("Text".to_string(), 5.0, 3.0);
     assert!(invalid_subtitle.validate().is_err());

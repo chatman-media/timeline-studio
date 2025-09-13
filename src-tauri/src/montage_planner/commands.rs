@@ -8,7 +8,7 @@ use crate::montage_planner::types::*;
 use crate::recognition::commands::yolo_commands::YoloProcessorState;
 use std::path::PathBuf;
 use std::sync::Arc;
-use tauri::{command, Builder, Runtime, State};
+use tauri::{Builder, Runtime, State, command};
 use tokio::sync::RwLock;
 
 /// Global state for montage planner services

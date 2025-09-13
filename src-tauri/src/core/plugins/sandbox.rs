@@ -3,8 +3,8 @@
 use super::permissions::{FileSystemPermissions, PluginPermissions, SecurityLevel};
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 use tokio::sync::{RwLock, Semaphore};
 
@@ -673,25 +673,35 @@ mod tests {
     let sandbox = PluginSandbox::new("test".to_string(), &permissions);
 
     // Разрешенный доступ
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/allowed/read/file.txt"), false)
-      .is_ok());
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/allowed/write/file.txt"), true)
-      .is_ok());
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/allowed/read/file.txt"), false)
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/allowed/write/file.txt"), true)
+        .is_ok()
+    );
 
     // Запрещенный доступ
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/forbidden/file.txt"), false)
-      .is_err());
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/forbidden/file.txt"), true)
-      .is_err());
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/forbidden/file.txt"), false)
+        .is_err()
+    );
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/forbidden/file.txt"), true)
+        .is_err()
+    );
 
     // Попытка записи в read-only директорию
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/allowed/read/file.txt"), true)
-      .is_err());
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/allowed/read/file.txt"), true)
+        .is_err()
+    );
   }
 
   #[tokio::test]
@@ -706,25 +716,33 @@ mod tests {
     let sandbox = PluginSandbox::new("test".to_string(), &permissions);
 
     // Разрешенные домены
-    assert!(sandbox
-      .check_network_access("api.example.com")
-      .await
-      .is_ok());
-    assert!(sandbox
-      .check_network_access("sheets.googleapis.com")
-      .await
-      .is_ok());
-    assert!(sandbox
-      .check_network_access("drive.googleapis.com")
-      .await
-      .is_ok());
+    assert!(
+      sandbox
+        .check_network_access("api.example.com")
+        .await
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_network_access("sheets.googleapis.com")
+        .await
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_network_access("drive.googleapis.com")
+        .await
+        .is_ok()
+    );
 
     // Запрещенные домены
     assert!(sandbox.check_network_access("evil.com").await.is_err());
-    assert!(sandbox
-      .check_network_access("subdomain.evil.com")
-      .await
-      .is_err());
+    assert!(
+      sandbox
+        .check_network_access("subdomain.evil.com")
+        .await
+        .is_err()
+    );
   }
 
   #[tokio::test]
@@ -1149,20 +1167,28 @@ mod tests {
     let sandbox = PluginSandbox::new("test".to_string(), &permissions);
 
     // Чтение разрешено для всех вложенных путей
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/project/src/main.rs"), false)
-      .is_ok());
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/project/output/result.mp4"), false)
-      .is_ok());
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/project/src/main.rs"), false)
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/project/output/result.mp4"), false)
+        .is_ok()
+    );
 
     // Запись разрешена только для /project/output
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/project/output/result.mp4"), true)
-      .is_ok());
-    assert!(sandbox
-      .check_file_access(std::path::Path::new("/project/src/main.rs"), true)
-      .is_err());
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/project/output/result.mp4"), true)
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_file_access(std::path::Path::new("/project/src/main.rs"), true)
+        .is_err()
+    );
   }
 
   #[tokio::test]
@@ -1204,34 +1230,46 @@ mod tests {
     let sandbox = PluginSandbox::new("test".to_string(), &permissions);
 
     // Поддомены example.com разрешены
-    assert!(sandbox
-      .check_network_access("api.example.com")
-      .await
-      .is_ok());
-    assert!(sandbox
-      .check_network_access("cdn.example.com")
-      .await
-      .is_ok());
-    assert!(sandbox
-      .check_network_access("deep.nested.example.com")
-      .await
-      .is_ok());
+    assert!(
+      sandbox
+        .check_network_access("api.example.com")
+        .await
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_network_access("cdn.example.com")
+        .await
+        .is_ok()
+    );
+    assert!(
+      sandbox
+        .check_network_access("deep.nested.example.com")
+        .await
+        .is_ok()
+    );
 
     // Точное совпадение для api.service.com
-    assert!(sandbox
-      .check_network_access("api.service.com")
-      .await
-      .is_ok());
+    assert!(
+      sandbox
+        .check_network_access("api.service.com")
+        .await
+        .is_ok()
+    );
 
     // Не совпадающие домены
-    assert!(sandbox
-      .check_network_access("example.com.evil.com")
-      .await
-      .is_err());
-    assert!(sandbox
-      .check_network_access("cdn.service.com")
-      .await
-      .is_err());
+    assert!(
+      sandbox
+        .check_network_access("example.com.evil.com")
+        .await
+        .is_err()
+    );
+    assert!(
+      sandbox
+        .check_network_access("cdn.service.com")
+        .await
+        .is_err()
+    );
   }
 
   #[tokio::test]

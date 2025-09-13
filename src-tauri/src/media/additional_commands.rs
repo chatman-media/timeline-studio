@@ -1,9 +1,9 @@
 //! Additional Media Commands - дополнительные команды для работы с медиа
 
 use crate::media::files::get_media_files;
+use crate::video_compiler::VideoCompilerState;
 use crate::video_compiler::commands::ffmpeg_advanced::probe_media_file;
 use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tauri::State;

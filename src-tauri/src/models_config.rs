@@ -389,16 +389,20 @@ mod tests {
     let config = ModelsConfig::new(temp_dir.clone());
 
     assert_eq!(config.models_dir, temp_dir.join("models"));
-    assert!(config
-      .yolo_models
-      .yolo_v8_face_nano
-      .to_string_lossy()
-      .contains("yolov8n-face.onnx"));
-    assert!(config
-      .facenet_models
-      .facenet_512d
-      .to_string_lossy()
-      .contains("facenet-512d.onnx"));
+    assert!(
+      config
+        .yolo_models
+        .yolo_v8_face_nano
+        .to_string_lossy()
+        .contains("yolov8n-face.onnx")
+    );
+    assert!(
+      config
+        .facenet_models
+        .facenet_512d
+        .to_string_lossy()
+        .contains("facenet-512d.onnx")
+    );
   }
 
   #[test]

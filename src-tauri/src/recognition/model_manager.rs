@@ -1,7 +1,7 @@
 //! Model Manager - Управление YOLO моделями
 
-use anyhow::{anyhow, Result};
-use ort::session::{builder::GraphOptimizationLevel, Session};
+use anyhow::{Result, anyhow};
+use ort::session::{Session, builder::GraphOptimizationLevel};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 

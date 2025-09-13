@@ -1,7 +1,7 @@
 use super::{ApiKeyType, OAuthCredentials};
 use anyhow::Result;
 use reqwest::Client;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::time::Duration;
 
 /// Результат валидации API ключа
@@ -568,10 +568,12 @@ mod tests {
     let validation = result.unwrap();
     assert!(!validation.is_valid);
     assert!(validation.error_message.is_some());
-    assert!(validation
-      .error_message
-      .unwrap()
-      .contains("OAuth validation not supported"));
+    assert!(
+      validation
+        .error_message
+        .unwrap()
+        .contains("OAuth validation not supported")
+    );
   }
 
   #[test]

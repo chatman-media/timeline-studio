@@ -2,8 +2,8 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
 use crate::video_compiler::VideoCompilerState;
+use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri::State;

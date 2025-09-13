@@ -1,6 +1,6 @@
 //! Бизнес-логика для автоматизированных рабочих процессов
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::Path;
 use std::process::Command;
 

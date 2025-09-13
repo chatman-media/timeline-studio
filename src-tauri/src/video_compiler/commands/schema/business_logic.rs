@@ -4,8 +4,8 @@ use super::types::*;
 use crate::video_compiler::{
   error::{Result, VideoCompilerError},
   schema::{
-    timeline::{Clip, ClipProperties, ClipSource},
     Effect, Filter, ProjectSchema, StyleTemplate, Subtitle, Template, Track, TrackType,
+    timeline::{Clip, ClipProperties, ClipSource},
   },
 };
 use std::collections::HashMap;
@@ -595,11 +595,7 @@ pub fn convert_json_to_filter_parameters(
       }
       serde_json::Value::Bool(b) => {
         // bool -> f64: true=1.0, false=0.0
-        if *b {
-          1.0
-        } else {
-          0.0
-        }
+        if *b { 1.0 } else { 0.0 }
       }
       _ => {
         log::warn!(

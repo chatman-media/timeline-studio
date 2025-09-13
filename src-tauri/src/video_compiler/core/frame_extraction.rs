@@ -227,7 +227,7 @@ impl FrameExtractionManager {
           crate::video_compiler::error::VideoCompilerError::InvalidParameter(
             "Only file sources are supported for frame extraction".to_string(),
           ),
-        )
+        );
       }
     };
     let video_info = self.preview_generator.get_video_info(video_path).await?;

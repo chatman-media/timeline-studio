@@ -10,8 +10,8 @@ use plugins::{
 };
 use std::sync::Arc;
 use timeline_studio_lib::core::{
-  plugins::{loader::PluginRegistration, PluginManager, SecurityLevel, Version},
   AppEvent, EventBus, Plugin, ServiceContainer,
+  plugins::{PluginManager, SecurityLevel, Version, loader::PluginRegistration},
 };
 use timeline_studio_lib::video_compiler::error::Result;
 
@@ -256,8 +256,8 @@ async fn main() -> Result<()> {
 /// Демонстрация создания кастомного плагина
 mod custom_plugin_example {
   use async_trait::async_trait;
-  use timeline_studio_lib::core::plugins::*;
   use timeline_studio_lib::core::AppEvent;
+  use timeline_studio_lib::core::plugins::*;
   use timeline_studio_lib::video_compiler::error::Result;
 
   /// Простой плагин-счетчик событий

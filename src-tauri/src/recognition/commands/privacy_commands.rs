@@ -6,10 +6,10 @@ use std::sync::{Arc, Mutex};
 use tauri::State;
 use tokio::sync::RwLock;
 
+use crate::YoloProcessorState;
 use crate::recognition::privacy_processor::{
   BlurType, BoundingBox, PrivacyProcessor, PrivacySettings,
 };
-use crate::YoloProcessorState;
 
 /// Состояние Privacy процессора
 pub struct PrivacyProcessorState(pub Mutex<Option<Arc<PrivacyProcessor>>>);

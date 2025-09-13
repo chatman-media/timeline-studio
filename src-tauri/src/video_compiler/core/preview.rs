@@ -6,8 +6,8 @@
 use crate::video_compiler::cache::{PreviewKey, RenderCache};
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use crate::video_compiler::schema::{PreviewFormat, ProjectSchema};
-use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine as _;
+use base64::engine::general_purpose::STANDARD as BASE64;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::process::Stdio;

@@ -1,9 +1,9 @@
 /**
  * FaceNet Processor - генерация embeddings для распознавания лиц
  */
-use anyhow::{anyhow, Result};
-use image::{imageops::FilterType, DynamicImage};
-use ort::session::{builder::GraphOptimizationLevel, Session};
+use anyhow::{Result, anyhow};
+use image::{DynamicImage, imageops::FilterType};
+use ort::session::{Session, builder::GraphOptimizationLevel};
 use ort::value::Tensor;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

@@ -3,8 +3,8 @@
 use std::sync::Arc;
 use std::time::Duration;
 use timeline_studio_lib::core::{
-  telemetry::{LogLevel, TelemetryConfigBuilder},
   AppEvent, EventBus, MetricsCollector, TelemetryManager, Tracer,
+  telemetry::{LogLevel, TelemetryConfigBuilder},
 };
 use timeline_studio_lib::video_compiler::error::VideoCompilerError;
 use tokio::time::sleep;

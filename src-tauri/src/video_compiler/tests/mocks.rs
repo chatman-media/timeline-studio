@@ -3,13 +3,13 @@
 //! Предоставляет мок-реализации для внешних зависимостей и сервисов.
 
 use crate::video_compiler::{
+  CompilerSettings,
   core::{
     cache::{MediaMetadata, PreviewData, RenderCache, RenderCacheData},
     gpu::{GpuCapabilities, GpuEncoder, GpuInfo},
     progress::{RenderProgress, RenderStatus},
   },
   error::Result,
-  CompilerSettings,
 };
 use std::collections::HashMap;
 use std::sync::Arc;

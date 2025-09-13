@@ -14,10 +14,12 @@ fn main() {
 
       // Help bindgen find system headers
       if std::env::var("BINDGEN_EXTRA_CLANG_ARGS").is_err() {
-        unsafe { std::env::set_var(
-          "BINDGEN_EXTRA_CLANG_ARGS",
-          "-I/usr/include -I/usr/include/x86_64-linux-gnu",
-        ) };
+        unsafe {
+          std::env::set_var(
+            "BINDGEN_EXTRA_CLANG_ARGS",
+            "-I/usr/include -I/usr/include/x86_64-linux-gnu",
+          )
+        };
       }
     }
 

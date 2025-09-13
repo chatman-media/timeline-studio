@@ -858,10 +858,12 @@ mod tests {
   async fn test_hardware_acceleration_detection() {
     // С GPU
     let service_with_gpu = MockGpuService::nvidia_available();
-    assert!(service_with_gpu
-      .check_hardware_acceleration()
-      .await
-      .unwrap());
+    assert!(
+      service_with_gpu
+        .check_hardware_acceleration()
+        .await
+        .unwrap()
+    );
 
     // Без GPU
     let service_no_gpu = MockGpuService::no_gpu();

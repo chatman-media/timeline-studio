@@ -160,12 +160,16 @@ mod tests {
       None, // AppHandle not available in tests
     );
 
-    assert!(context
-      .plugin_dir
-      .ends_with("timeline-studio/plugins/test-plugin"));
-    assert!(context
-      .config_dir
-      .ends_with("timeline-studio/plugins/test-plugin/config"));
+    assert!(
+      context
+        .plugin_dir
+        .ends_with("timeline-studio/plugins/test-plugin")
+    );
+    assert!(
+      context
+        .config_dir
+        .ends_with("timeline-studio/plugins/test-plugin/config")
+    );
     assert!(context.temp_dir.to_string_lossy().contains("test-plugin"));
   }
 

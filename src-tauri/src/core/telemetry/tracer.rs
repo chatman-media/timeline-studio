@@ -2,21 +2,20 @@
 
 use crate::video_compiler::error::Result;
 use opentelemetry::{
-  global,
+  Context as OtelContext, KeyValue, global,
   trace::{SpanId, SpanKind, TraceContextExt, TraceId},
-  Context as OtelContext, KeyValue,
 };
 use opentelemetry_sdk::{
+  Resource,
   propagation::TraceContextPropagator,
   trace::{self, RandomIdGenerator, Sampler},
-  Resource,
 };
 use opentelemetry_semantic_conventions::{
   attribute::{HTTP_REQUEST_METHOD, HTTP_RESPONSE_STATUS_CODE, HTTP_ROUTE},
   resource::{SERVICE_NAME, SERVICE_VERSION},
 };
 use std::time::Instant;
-use tracing::{info_span, Instrument};
+use tracing::{Instrument, info_span};
 
 use super::config::{ExporterType, TelemetryConfig};
 
@@ -165,8 +164,8 @@ impl Tracer {
   /// Завершить работу tracer
   pub async fn shutdown(&self) -> Result<()> {
     if self.config.enabled {
-  // global shutdown API changed across versions; rely on Drop or SDK-managed shutdown
-  log::info!("Tracer shutdown requested; skipping explicit shutdown due to API differences");
+      // global shutdown API changed across versions; rely on Drop or SDK-managed shutdown
+      log::info!("Tracer shutdown requested; skipping explicit shutdown due to API differences");
     }
     Ok(())
   }

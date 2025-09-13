@@ -1,4 +1,4 @@
-use super::{project_state::ProjectSnapshot, ProjectState};
+use super::{ProjectState, project_state::ProjectSnapshot};
 use chrono::{DateTime, Utc};
 use serde_json;
 use std::path::PathBuf;

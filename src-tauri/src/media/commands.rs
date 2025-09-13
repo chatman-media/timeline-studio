@@ -335,11 +335,7 @@ pub async fn process_media_file_simple(
               if parts.len() == 2 {
                 let num = parts[0].parse::<f64>().ok()?;
                 let den = parts[1].parse::<f64>().ok()?;
-                if den > 0.0 {
-                  Some(num / den)
-                } else {
-                  None
-                }
+                if den > 0.0 { Some(num / den) } else { None }
               } else {
                 None
               }

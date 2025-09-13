@@ -106,7 +106,6 @@ pyo3 = { version = "0.26.0", features = ["auto-initialize"] }
 aes-gcm = "0.10"
 argon2 = "0.5"
 rand = "0.9.2"
-rand_chacha = "0.3"
 keyring = "3.6"
 # HTTP client for API validation
 reqwest = { version = "0.12.23", features = ["json", "rustls-tls", "multipart"] }
@@ -120,16 +119,16 @@ num_cpus = "1.16"
 sysinfo = "0.32"
 os_info = "3.8"
 # OpenTelemetry dependencies (pinned to compatible older versions)
-opentelemetry = { version = "0.27", features = ["trace", "metrics"] }
-opentelemetry_sdk = { version = "0.27", features = ["rt-tokio", "trace", "metrics"] }
-opentelemetry-otlp = { version = "0.27", features = ["tonic", "metrics", "trace"] }
-opentelemetry-semantic-conventions = "0.27"
-opentelemetry-prometheus = "0.27"
+opentelemetry = { version = "0.30.0", features = ["trace", "metrics"] }
+opentelemetry_sdk = { version = "0.30.0", features = ["rt-tokio", "trace", "metrics"] }
+opentelemetry-otlp = { version = "0.30.0", features = ["tonic", "metrics", "trace"] }
+opentelemetry-semantic-conventions = "0.30.0"
+opentelemetry-prometheus = "0.29.1"
 hyper = { version = "0.14", features = ["server"] }
 tracing = "0.1"
-tracing-opentelemetry = "0.27"
+tracing-opentelemetry = "0.31.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
-tonic = "0.14.1"
+tonic = "0.14.2"
 # WebAssembly runtime dependencies
 wasmtime = "36.0.2"
 filetime = "0.2"
