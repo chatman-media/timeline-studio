@@ -117,7 +117,7 @@ ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "
 ndarray = "0.16.1"
 # System information dependencies
 num_cpus = "1.16"
-sysinfo = "0.37"
+sysinfo = "0.36.1"
 os_info = "3.8"
 # OpenTelemetry dependencies (pinned to compatible older versions)
 opentelemetry = { version = "0.30.0", features = ["trace", "metrics"] }
