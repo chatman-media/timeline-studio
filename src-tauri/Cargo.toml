@@ -57,7 +57,7 @@ httpmock = "0.7"
 mockall = "0.13.1"
 # Async utilities for testing
 futures = "0.3"
-rand_chacha = "0.3"
+rand_chacha = "0.9"
 
 [dependencies]
 serde_json = "1.0"
@@ -80,6 +80,7 @@ rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] 
 ffmpeg-next = "8"
 uuid = { version = "1.11", features = ["serde", "v4"] }
 tokio = { version = "1.42", features = ["full"] }
+tokio-metrics = "0.4.5"
 futures = "0.3"
 dashmap = "6.1.0"
 image = "0.25.7"
@@ -116,7 +117,7 @@ ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "
 ndarray = "0.16.1"
 # System information dependencies
 num_cpus = "1.16"
-sysinfo = "0.32"
+sysinfo = "0.37"
 os_info = "3.8"
 # OpenTelemetry dependencies (pinned to compatible older versions)
 opentelemetry = { version = "0.30.0", features = ["trace", "metrics"] }
@@ -124,7 +125,6 @@ opentelemetry_sdk = { version = "0.30.0", features = ["rt-tokio", "trace", "metr
 opentelemetry-otlp = { version = "0.30.0", features = ["tonic", "metrics", "trace"] }
 opentelemetry-semantic-conventions = "0.30.0"
 opentelemetry-prometheus = "0.29.1"
-hyper = { version = "0.14", features = ["server"] }
 tracing = "0.1"
 tracing-opentelemetry = "0.31.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }

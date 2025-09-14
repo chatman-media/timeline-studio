@@ -5,15 +5,28 @@
  * и расширяет их возможностями scene classification и content analysis.
  */
 
-// Используем shared типы вместо ai-chat
-import type { MediaFile as MediaInput, SceneAnalysis } from "@/domains/ai-services"
-import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification/person-database-service"
+import { PersonDatabaseService } from "@/features/person-identification/services/person-database-service"
 import type {
   DetectedFace,
   FaceEmbedding,
   PersonAppearance,
   PersonProfile,
 } from "@/features/person-identification/types/person"
+import { MediaInput } from "../../content-intelligence-service"
+// Используем shared типы вместо ai-chat
+
+// Legacy тип для обратной совместимости
+export interface SceneAnalysis {
+  id: string
+  startTime: number
+  endTime: number
+  type: "dialog" | "action" | "landscape" | "closeup" | "transition"
+  confidence: number
+  keyFrames: string[]
+  description: string
+  objects?: any[]
+  persons?: any[]
+}
 
 // Дополнительные типы для Scene Analysis
 export interface SceneDetectionOptions {
@@ -82,7 +95,6 @@ export interface AudioCharacteristics {
  * Использует shared AI services
  */
 export class SceneAnalysisEngine {
-  private static instance: SceneAnalysisEngine | null = null
   private sharedAIService: any = null
   private ffmpegService: any = null
   private personDatabase: PersonDatabaseService
@@ -99,22 +111,12 @@ export class SceneAnalysisEngine {
   }
 
   /**
-   * Singleton pattern - получить единственный экземпляр
-   */
-  static getInstance(): SceneAnalysisEngine {
-    if (!SceneAnalysisEngine.instance) {
-      SceneAnalysisEngine.instance = new SceneAnalysisEngine()
-    }
-    return SceneAnalysisEngine.instance
-  }
-
-  /**
    * Инициализация shared сервисов
    */
   private async initializeServices() {
     if (!this.sharedAIService) {
       try {
-        const { getAIContainer } = await import("@/domains/ai-core")
+        const { getAIContainer } = await import("@/features/ai-content-intelligence/services/ai-intelligence-provider")
         const aiContainer = getAIContainer()
         this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
         this.ffmpegService = await aiContainer.resolve("FFmpegService")
@@ -161,7 +163,7 @@ export class SceneAnalysisEngine {
       return scenesWithTransitions
     } catch (error) {
       console.error("Ошибка анализа сцен:", error)
-      throw new Error(`Не удалось проанализировать сцены в файле ${mediaFile.filename}: ${String(error)}`)
+      throw new Error(`Не удалось проанализировать сцены в файле ${mediaFile.path}: ${String(error)}`)
     }
   }
 
@@ -198,7 +200,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           const classifications = JSON.parse(response.content)
           const classificationMap = new Map(classifications.map((c: any) => [c.id, c.type]))
 
-          return sceneDetection.scenes.map((scene: SceneAnalysis) => ({
+          return sceneDetection.scenes.map((scene: any) => ({
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
@@ -211,7 +213,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           }))
         } catch {
           // Fallback без классификации
-          return sceneDetection.scenes.map((scene: SceneAnalysis) => ({
+          return sceneDetection.scenes.map((scene: any) => ({
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
@@ -226,7 +228,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
       }
 
       // Без классификации типов
-      return sceneDetection.scenes.map((scene: SceneAnalysis) => ({
+      return sceneDetection.scenes.map((scene: any) => ({
         id: scene.id,
         startTime: scene.startTime,
         endTime: scene.endTime,
@@ -799,7 +801,7 @@ ${scenes.map((s) => `${s.id}: тип=${s.type}, описание="${s.descriptio
       scene.endTime,
       scene.type,
       scene.confidence,
-      `"${scene.description?.replace(/"/g, '""') ?? ""}"`,
+      `"${scene.description.replace(/"/g, '""')}"`,
       scene.qualityScore,
       scene.complexity,
       scene.audioCharacteristics.hasVoice,

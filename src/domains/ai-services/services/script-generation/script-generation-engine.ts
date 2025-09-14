@@ -607,7 +607,7 @@ Return only the voiceover text.`
   private shouldHaveVoiceover(scene: ScriptScene, params: ScriptGenerationParams): boolean {
     return (
       params.includeVoiceover === true &&
-      !scene.audioElements.some((ae) => ae.type === "DIALOGUE") &&
+      !scene.audioElements.some((ae) => ae.type === AudioElementType.DIALOGUE) &&
       scene.duration > 2
     )
   }
@@ -857,7 +857,7 @@ Return only the voiceover text.`
 
     for (const scene of scenes) {
       const sceneDialogues = scene.audioElements
-        .filter((ae) => ae.type === "DIALOGUE")
+        .filter((ae) => ae.type === AudioElementType.DIALOGUE)
         .map((ae) => {
           const [character, ...textParts] = ae.description.split(":")
           return {
@@ -880,7 +880,7 @@ Return only the voiceover text.`
   private extractVoiceoverFromScenes(scenes: ScriptScene[]): any[] {
     return scenes.flatMap((scene) =>
       scene.audioElements
-        .filter((ae) => ae.type === "VOICEOVER")
+        .filter((ae) => ae.type === AudioElementType.VOICEOVER)
         .map((ae) => ({
           sceneId: scene.id,
           text: ae.description,

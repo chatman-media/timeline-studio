@@ -28,18 +28,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PipelineProgress } from "@/domains/ai-services"
+import { IntelligentContent, UnifiedContentAnalysis } from "@/domains/ai-services/types"
+import { MediaInfo } from "@/domains/media-management"
 import { cn } from "@/lib/utils"
-
 import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
 import { useContentPipeline } from "../../hooks/use-content-pipeline"
-import type { IntelligentContent, MediaFileInfo, PipelineProgress, UnifiedContentAnalysis } from "../../shared/types"
-import { createDefaultAIConfig } from "../../shared/utils/config"
 import { AnalysisViewer } from "../analysis-viewer/analysis-viewer"
 import { PreviewGrid } from "../preview-grid/preview-grid"
 
 interface UnifiedDashboardProps {
   className?: string
-  mediaFiles?: MediaFileInfo[]
+  mediaFiles?: MediaInfo[]
   onFileUpload?: (files: File[]) => void
   onAnalysisComplete?: (analysis: UnifiedContentAnalysis) => void
   onProcessingComplete?: (content: IntelligentContent) => void
@@ -387,7 +387,7 @@ interface OverviewTabProps {
     processingComplete: boolean
     successRate: number
   }
-  mediaFiles: MediaFileInfo[]
+  mediaFiles: MediaInfo[]
   processingStatus: ProcessingStatus
   onFileUpload: (files: File[]) => void
   onStartAnalysis: () => void

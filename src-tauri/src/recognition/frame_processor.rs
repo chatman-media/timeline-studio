@@ -95,7 +95,7 @@ impl FrameProcessor {
       },
     );
 
-    Tensor::from_array((img_array.shape().to_vec(), img_array.into_raw_vec()))
+    Tensor::from_array((img_array.shape().to_vec(), img_array.into_raw_vec_and_offset().0))
       .map_err(|e| anyhow!("Failed to create tensor: {}", e))
   }
 

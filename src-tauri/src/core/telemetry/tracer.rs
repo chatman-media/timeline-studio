@@ -6,9 +6,7 @@ use opentelemetry::{
   trace::{SpanId, SpanKind, TraceContextExt, TraceId},
 };
 use opentelemetry_sdk::{
-  Resource,
   propagation::TraceContextPropagator,
-  trace::{self, RandomIdGenerator, Sampler},
 };
 use opentelemetry_semantic_conventions::{
   attribute::{HTTP_REQUEST_METHOD, HTTP_RESPONSE_STATUS_CODE, HTTP_ROUTE},
@@ -97,22 +95,6 @@ impl Tracer {
       tracer,
       config: config.clone(),
     })
-  }
-
-  /// Построить конфигурацию трассировки
-  #[allow(dead_code)]
-  fn build_trace_config(config: &TelemetryConfig) -> trace::Config {
-    // Use the default config - accept deprecation warnings as OpenTelemetry SDK
-    // is still evolving and we'll update when stable APIs are available
-    #[allow(deprecated)]
-    {
-      trace::Config::default()
-        .with_sampler(Sampler::TraceIdRatioBased(config.tracing.sample_rate))
-        .with_id_generator(RandomIdGenerator::default())
-        .with_max_attributes_per_span(config.tracing.max_attributes_per_span)
-        .with_max_events_per_span(config.tracing.max_events_per_span)
-        .with_max_links_per_span(config.tracing.max_links_per_span)
-    }
   }
 
   /// Создать новый span
@@ -455,21 +437,6 @@ mod tests {
 
       assert_eq!(result.unwrap(), "success");
     }
-  }
-
-  #[tokio::test]
-  async fn test_build_trace_config() {
-    let mut config = TelemetryConfig::default();
-    config.tracing.sample_rate = 0.5;
-    config.tracing.max_attributes_per_span = 128;
-    config.tracing.max_events_per_span = 256;
-    config.tracing.max_links_per_span = 64;
-
-    // Test that config builder doesn't panic
-    let trace_config = Tracer::build_trace_config(&config);
-
-    // We can't directly test the values but ensure it builds
-    let _ = trace_config;
   }
 
   #[tokio::test]

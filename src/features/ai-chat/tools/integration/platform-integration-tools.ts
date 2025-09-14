@@ -6,12 +6,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import {
-  type ContentCategory,
-  PlatformOptimizationService,
-  type SupportedPlatform,
-} from "../../services/platform-optimization-service"
-import type { ClaudeTool } from "../../types"
+import { ClaudeTool } from "@/domains/ai-core/providers/claude"
+import { ContentCategory, PlatformOptimizationService, SupportedPlatform } from "@/domains/ai-services"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для операций оптимизации платформ

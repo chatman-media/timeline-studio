@@ -239,7 +239,7 @@ impl RetinaFaceProcessor {
     let preprocessed = self.preprocess_image(image)?;
 
     // Создаем тензор для инференса
-    let input_vec: Vec<f32> = preprocessed.into_raw_vec();
+    let input_vec: Vec<f32> = preprocessed.into_raw_vec_and_offset().0;
     let input_tensor = Tensor::from_array((
       [1, 3, self.input_size.1 as usize, self.input_size.0 as usize],
       input_vec,

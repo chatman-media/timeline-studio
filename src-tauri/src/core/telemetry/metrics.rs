@@ -12,9 +12,11 @@ use opentelemetry::{
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
 };
 // opentelemetry_sdk::Resource is unused with pinned SDK versions
-use hyper::{
-  Body, Server,
-  service::{make_service_fn, service_fn},
+use axum::{
+  http::StatusCode,
+  response::IntoResponse,
+  routing::get,
+  Router,
 };
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
@@ -306,10 +308,43 @@ impl MetricsCollector {
       return Ok(());
     }
 
-    // TODO: Реализовать сбор метрик runtime
-    // - Количество потоков
-    // - Использование CPU
-    // - Количество задач в Tokio
+    // Получаем системную статистику
+    let mut system = sysinfo::System::new();
+    system.refresh_all();
+
+    // Количество потоков
+    let thread_count = std::thread::available_parallelism()
+      .map(|p| p.get())
+      .unwrap_or(1);
+    let threads_gauge = self.gauge("runtime.threads.count", "Number of available threads")?;
+    threads_gauge.set(thread_count as i64);
+
+    // Использование CPU
+    let cpu_usage = system.global_cpu_usage();
+    let cpu_gauge = self.gauge("runtime.cpu.usage_percent", "CPU usage percentage")?;
+    cpu_gauge.set(cpu_usage as i64);
+
+    // Tokio runtime метрики
+    let handle = tokio::runtime::Handle::current();
+    let runtime_metrics = handle.metrics();
+
+    // Количество worker потоков
+    let worker_threads = runtime_metrics.num_workers();
+    let worker_threads_gauge = self.gauge("runtime.tokio.worker_threads", "Number of Tokio worker threads")?;
+    worker_threads_gauge.set(worker_threads as i64);
+
+    // Глобальная очередь задач
+    let global_queue_depth = runtime_metrics.global_queue_depth();
+    let global_queue_gauge = self.gauge("runtime.tokio.global_queue_depth", "Tokio global queue depth")?;
+    global_queue_gauge.set(global_queue_depth as i64);
+
+    // Общее время работы worker потоков
+    let mut total_busy_duration = std::time::Duration::ZERO;
+    for worker_id in 0..worker_threads {
+      total_busy_duration += runtime_metrics.worker_total_busy_duration(worker_id);
+    }
+    let busy_duration_gauge = self.gauge("runtime.tokio.total_busy_duration_seconds", "Total busy duration of all workers in seconds")?;
+    busy_duration_gauge.set(total_busy_duration.as_secs() as i64);
 
     Ok(())
   }
@@ -356,55 +391,85 @@ impl MetricsCollector {
     Ok(())
   }
 
+  /// Увеличить счетчик
+  pub fn increment_counter(&self, name: &str, labels: &[(String, String)]) -> Result<()> {
+    let counter = self.counter(name, &format!("Counter metric: {}", name))?;
+    let mut labeled_counter = counter;
+    for (key, value) in labels {
+      labeled_counter = labeled_counter.with_label(key, value.clone());
+    }
+    labeled_counter.inc();
+    Ok(())
+  }
+
+  /// Записать значение в гистограмму
+  pub fn record_histogram(&self, name: &str, value: f64, labels: &[(String, String)]) -> Result<()> {
+    let histogram = self.histogram(name, &format!("Histogram metric: {}", name))?;
+    let mut labeled_histogram = histogram;
+    for (key, val) in labels {
+      labeled_histogram = labeled_histogram.with_label(key, val.clone());
+    }
+    labeled_histogram.observe(value);
+    Ok(())
+  }
+
+  /// Установить значение gauge
+  pub fn set_gauge(&self, name: &str, value: f64, labels: &[(String, String)]) -> Result<()> {
+    let gauge = self.gauge(name, &format!("Gauge metric: {}", name))?;
+    let mut labeled_gauge = gauge;
+    for (key, val) in labels {
+      labeled_gauge = labeled_gauge.with_label(key, val.clone());
+    }
+    labeled_gauge.set(value as i64);
+    Ok(())
+  }
+
   /// Запустить HTTP сервер для Prometheus метрик
   async fn start_prometheus_server(endpoint: String, handle: Arc<RwLock<PrometheusHandle>>) {
-    log::info!(
-      "Prometheus server start requested for {endpoint}, but server is disabled in this build"
-    );
-    // Keep server_handle as None for now
-    let mut handle_guard = handle.write().await;
-    handle_guard.server_handle = None;
+    let app = Router::new()
+      .route("/metrics", get(Self::serve_metrics))
+      .route("/health", get(Self::health_check));
+
+    match tokio::net::TcpListener::bind(&endpoint).await {
+      Ok(listener) => {
+        log::info!("Prometheus server starting on {}", endpoint);
+        
+        let server_handle = tokio::spawn(async move {
+          if let Err(e) = axum::serve(listener, app).await {
+            log::error!("Prometheus server error: {}", e);
+          }
+        });
+        
+        let mut handle_guard = handle.write().await;
+        handle_guard.server_handle = Some(server_handle);
+      }
+      Err(e) => {
+        log::error!("Failed to bind Prometheus server to {}: {}", endpoint, e);
+        let mut handle_guard = handle.write().await;
+        handle_guard.server_handle = None;
+      }
+    }
   }
 
   /// Обслуживать HTTP запросы для метрик
-  async fn serve_metrics(
-    req: hyper::Request<Body>,
-    handle: Arc<RwLock<PrometheusHandle>>,
-  ) -> std::result::Result<hyper::Response<Body>, hyper::Error> {
-    use hyper::{Method, StatusCode};
+  async fn serve_metrics() -> impl IntoResponse {
+    // Используем глобальный prometheus registry
+    let registry = prometheus::default_registry();
+    let metrics = registry.gather();
+    let mut buffer = Vec::new();
+    let encoder = prometheus::TextEncoder::new();
+    encoder.encode(&metrics, &mut buffer).unwrap();
+    let metrics_string = String::from_utf8(buffer).unwrap();
 
-    match (req.method(), req.uri().path()) {
-      (&Method::GET, "/metrics") => {
-        let _handle_guard = handle.read().await;
-        // Используем глобальный prometheus registry
-        let registry = prometheus::default_registry();
-        let metrics = registry.gather();
-        let mut buffer = Vec::new();
-        let encoder = prometheus::TextEncoder::new();
-        encoder.encode(&metrics, &mut buffer).unwrap();
-        let metrics_string = String::from_utf8(buffer).unwrap();
+    (
+      StatusCode::OK,
+      [("Content-Type", "text/plain; version=0.0.4")],
+      metrics_string,
+    )
+  }
 
-        Ok(
-          hyper::Response::builder()
-            .status(StatusCode::OK)
-            .header("Content-Type", "text/plain; version=0.0.4")
-            .body(Body::from(metrics_string))
-            .unwrap(),
-        )
-      }
-      (&Method::GET, "/health") => Ok(
-        hyper::Response::builder()
-          .status(StatusCode::OK)
-          .body(Body::from("OK"))
-          .unwrap(),
-      ),
-      _ => Ok(
-        hyper::Response::builder()
-          .status(StatusCode::NOT_FOUND)
-          .body(Body::from("Not found"))
-          .unwrap(),
-      ),
-    }
+  async fn health_check() -> impl IntoResponse {
+    (StatusCode::OK, "OK")
   }
 
   /// Получить строку метрик в формате Prometheus

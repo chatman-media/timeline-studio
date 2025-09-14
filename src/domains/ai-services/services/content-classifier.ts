@@ -3,14 +3,16 @@
  * Классификация контента с использованием AI и эвристических методов
  */
 
-import type {
+import {
   Audience,
   ClassificationResult,
   ContentClassification,
+  ContentType,
+  Emotion,
   EmotionalTone,
+  Genre,
   SceneAnalysis,
-} from "../types/content-analysis"
-import { ContentType, Emotion, Genre } from "../types/content-analysis"
+} from "@/domains/shared/types/ai-tools/content-analysis"
 
 interface ClassifierConfig {
   useAI: boolean
@@ -568,8 +570,10 @@ Format your response as JSON with this structure:
               // Fallback: используем композицию для оценки цветового разнообразия
               if (keyFrame.composition) {
                 const colorScore = keyFrame.composition.colorHarmony
-                if (colorScore > 0.7) allColors.add("harmonious")
-                if (colorScore < 0.3) allColors.add("contrasting")
+                if (colorScore !== undefined) {
+                  if (colorScore > 0.7) allColors.add("harmonious")
+                  if (colorScore < 0.3) allColors.add("contrasting")
+                }
               }
             }
           }

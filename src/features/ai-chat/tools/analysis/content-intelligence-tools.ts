@@ -2,8 +2,6 @@
  * AI инструмент для интеллектуального анализа контента с использованием BaseAITool
  */
 
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-import { MediaFile } from "@/domains/ai-services/types/media"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для интеллектуального анализа контента

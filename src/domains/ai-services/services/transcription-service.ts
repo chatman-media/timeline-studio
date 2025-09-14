@@ -6,7 +6,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
-
+import { SpeechDetection } from "@/domains/shared/types/ai-tools/content-analysis"
 import type {
   ModelInfo,
   SubtitleFormat,

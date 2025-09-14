@@ -17,16 +17,7 @@ import { type ChatMachine, chatMachine } from "../machines/chat-machine"
 import { type MontagePlannerMachine, montagePlannerMachine } from "../machines/montage-planner-machine"
 
 // Import types from ai-intelligence
-import type {
-  AdaptedContent,
-  AIConfig,
-  GeneratedScript,
-  IntelligentContent,
-  PlatformId,
-  ProcessedMoment,
-  ScriptGenerationParams,
-  UnifiedContentAnalysis,
-} from "../types/ai-intelligence"
+import type { AIConfig, IntelligentContent, MediaFile } from "../types/ai-intelligence"
 
 export class AIServicesOrchestrator {
   private static instance: AIServicesOrchestrator | null = null
@@ -258,17 +249,6 @@ interface AIEngine {
   name: string
   initialize(): Promise<void>
   process(data: any, config: any): Promise<any>
-}
-
-interface MediaFile {
-  path: string
-  name: string
-  size?: number
-}
-
-interface Content {
-  analysis: UnifiedContentAnalysis
-  script?: GeneratedScript
 }
 
 /**

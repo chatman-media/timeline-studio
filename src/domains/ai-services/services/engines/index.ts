@@ -3,6 +3,5 @@
  * Migrated from features/ai-content-intelligence/engines
  */
 
-export * from "./content-classification"
 export * from "./scene-analysis"
 export * from "./types"

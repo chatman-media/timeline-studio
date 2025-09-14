@@ -60,7 +60,7 @@ impl ServiceMetrics {
   }
 
   /// Начать отслеживание операции
-  pub fn start_operation(&self, operation_name: &str) -> OperationTracker {
+  pub fn start_operation(&self, operation_name: &str) -> OperationTracker<'_> {
     self.active_operations.fetch_add(1, Ordering::Relaxed);
     OperationTracker {
       metrics: self,

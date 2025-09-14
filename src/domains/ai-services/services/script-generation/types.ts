@@ -171,6 +171,8 @@ export enum Emotion {
 
 // Scene and Script types
 export interface SceneAnalysis {
+  confidence: number
+  keyFrames: never[]
   id: string
   type: string
   startTime: number

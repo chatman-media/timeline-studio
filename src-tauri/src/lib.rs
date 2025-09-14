@@ -8,6 +8,7 @@ use tokio::sync::RwLock;
 
 // Core infrastructure modules
 pub mod core;
+use core::telemetry::{TelemetryManager, TelemetryConfig};
 
 // Command registry module
 mod command_registry;
@@ -319,6 +320,22 @@ pub fn run() {
         }
         Err(e) => {
           log::error!("Failed to get app data dir for models config: {e}");
+        }
+      }
+
+      // Initialize Telemetry System
+      let telemetry_config = TelemetryConfig::default();
+      match tauri::async_runtime::block_on(TelemetryManager::new(telemetry_config)) {
+        Ok(telemetry_manager) => {
+          if let Err(e) = tauri::async_runtime::block_on(telemetry_manager.initialize()) {
+            log::error!("Failed to initialize telemetry: {e}");
+          } else {
+            log::info!("Telemetry system initialized successfully");
+          }
+          app.manage(telemetry_manager);
+        }
+        Err(e) => {
+          log::error!("Failed to create telemetry manager: {e}");
         }
       }
 

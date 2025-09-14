@@ -4,10 +4,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines"
 import { PersonDatabaseService } from "../services/person-database-service"
-
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
 
 interface UsePersonIdentificationOptions {

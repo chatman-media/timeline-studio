@@ -3,6 +3,7 @@
 use super::types::SUPPORTED_EXTENSIONS;
 use std::path::Path;
 /// Получение списка медиафайлов в директории
+#[allow(dead_code)]
 pub fn get_media_files(directory: String) -> Result<Vec<String>, String> {
   let path = Path::new(&directory);
 

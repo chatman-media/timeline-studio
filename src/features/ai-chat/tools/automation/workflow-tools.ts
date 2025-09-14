@@ -2,11 +2,7 @@
  * AI инструменты для автоматизации рабочих процессов видеомонтажа с использованием BaseAITool
  */
 
-import {
-  WorkflowAutomationService,
-  type WorkflowParams,
-  type WorkflowType,
-} from "../../services/workflow-automation-service"
+import { WorkflowAutomationService, WorkflowParams, WorkflowType } from "@/domains/ai-services"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для операций автоматизации workflow

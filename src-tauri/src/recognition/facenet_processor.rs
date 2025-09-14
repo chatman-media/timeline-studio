@@ -165,7 +165,8 @@ impl FaceNetProcessor {
     let preprocessed = self.preprocess_image(face_image)?;
 
     // Создаем тензор для инференса - конвертируем ndarray в Vec
-    let input_vec: Vec<f32> = preprocessed.into_raw_vec();
+    let (input_vec, _offset) = preprocessed.into_raw_vec_and_offset();
+    let input_vec: Vec<f32> = input_vec;
     let input_tensor = Tensor::from_array((
       [1, 3, self.input_size.1 as usize, self.input_size.0 as usize],
       input_vec,

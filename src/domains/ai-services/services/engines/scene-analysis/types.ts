@@ -2,8 +2,9 @@
  * Типы для Scene Analysis Engine
  */
 
-import { SceneAnalysis } from "@/domains/ai-services"
-import type { ContentType, Genre, KeyMoment } from "../../shared/types/content-analysis"
+import { ContentType, KeyMoment } from "@/domains/ai-services/types"
+import { Genre } from "@/domains/shared/types/ai-tools/content-analysis"
+import { SceneAnalysis } from "./scene-analysis-engine"
 
 export interface SceneAnalysisConfig {
   // FFmpeg параметры

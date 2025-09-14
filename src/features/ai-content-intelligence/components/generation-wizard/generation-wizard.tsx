@@ -24,26 +24,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-
-import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
-import type {
-  EmotionalTone,
-  GeneratedScript,
-  ScriptGenerationParams,
-  ScriptStyle,
-  ScriptTemplate,
-  UnifiedContentAnalysis,
-} from "../../shared/types"
-import { Emotion, Genre } from "../../shared/types/content-analysis"
+import { UnifiedContentAnalysis } from "@/domains/ai-services/services"
+import { EmotionalTone } from "@/domains/ai-services/services/script-generation"
+import { ScriptTemplate } from "@/domains/ai-services/services/script-generation/template-engine"
+import { Emotion } from "@/domains/ai-services/types"
+import { Genre } from "@/domains/shared/types/ai-tools/content-analysis"
 import {
   EditingStyle,
+  GeneratedScript,
   NarrativeStyle,
   NarrativeType,
   PaceType,
+  ScriptStyle,
   TemplateCategory,
   VisualStyle,
-} from "../../shared/types/script-generation"
+} from "@/domains/shared/types/ai-tools/script-generation"
+import { cn } from "@/lib/utils"
+import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
 
 interface GenerationWizardProps {
   className?: string

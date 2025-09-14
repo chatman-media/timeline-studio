@@ -24,7 +24,3 @@ export {
   AIIntelligenceProvider,
   useAIIntelligence as useAIIntelligenceContext,
 } from "./services/ai-intelligence-provider"
-// ===== Orchestrator & State Machine =====
-export { AIIntelligenceOrchestrator } from "./shared/services/ai-intelligence-orchestrator"
-// Export all types from shared/types
-export * from "./shared/types"

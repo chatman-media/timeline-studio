@@ -26,36 +26,18 @@ telemetry/
 
 **OpenTelemetry интеграция**:
 ```rust
-impl Metrics {
-    // Счетчики
-    pub async fn increment_counter(&self, name: &str, value: u64) -> Result<()>
-    pub async fn increment_counter_with_attributes(
-        &self, 
-        name: &str, 
-        value: u64, 
-        attributes: Vec<(&str, &str)>
-    ) -> Result<()>
+pub struct MetricsCollector {
+    meter: Meter,
+    config: TelemetryConfig,
+    registered_metrics: Arc<RwLock<HashMap<String, MetricType>>>,
+    prometheus_handle: Option<Arc<RwLock<PrometheusHandle>>>,
+}
 
-    // Gauge метрики
-    pub async fn set_gauge(&self, name: &str, value: f64) -> Result<()>
-    pub async fn set_gauge_with_attributes(
-        &self,
-        name: &str, 
-        value: f64,
-        attributes: Vec<(&str, &str)>
-    ) -> Result<()>
-
-    // Гистограммы
-    pub async fn record_histogram(&self, name: &str, value: f64) -> Result<()>
-    pub async fn record_histogram_with_attributes(
-        &self,
-        name: &str,
-        value: f64, 
-        attributes: Vec<(&str, &str)>
-    ) -> Result<()>
-
-    // Системные метрики
-    pub async fn collect_system_metrics(&self) -> Result<()>
+impl MetricsCollector {
+    pub async fn new(config: &TelemetryConfig) -> Result<Self>
+    pub async fn increment_counter(&self, name: &str, value: u64, attributes: &[(&str, &str)])
+    pub async fn set_gauge(&self, name: &str, value: f64, attributes: &[(&str, &str)])
+    pub async fn record_histogram(&self, name: &str, value: f64, attributes: &[(&str, &str)])
 }
 ```
 
@@ -93,12 +75,11 @@ metrics.collect_system_metrics().await?;
 
 ---
 
-### `health.rs` - Health Checks
-**Система мониторинга состояния**:
-- Periodic health checks
-- Configurable check intervals
-- Result caching для производительности
-- Timeout handling
+### `health.rs` - Health Checks и мониторинг
+**Health check система**:
+- `HealthCheckManager` - центральный менеджер
+- `HealthCheck` trait - базовый интерфейс
+- Built-in проверки: Database, Memory, Disk, External API
 
 **Health статусы**:
 ```rust
@@ -116,6 +97,17 @@ pub struct HealthCheckResult {
     pub timestamp: SystemTime,
     pub check_duration: Duration,
     pub metadata: HashMap<String, String>,
+}
+
+impl HealthCheckManager {
+    pub fn new() -> Self
+    pub async fn add_check(&self, name: String, check: Box<dyn HealthCheck>)
+    pub async fn check_all(&self) -> Result<HashMap<String, HealthStatus>>
+    pub async fn check_one(&self, name: &str) -> Result<HealthStatus>
+}
+
+pub trait HealthCheck: Send + Sync {
+    async fn check(&self) -> Result<HealthStatus>;
 }
 ```
 
@@ -299,36 +291,46 @@ impl MetricsMiddleware {
 
 ---
 
-### `config.rs` - Конфигурация
-**Настройка телеметрии**:
+### `config.rs` - Конфигурация телеметрии
+**Основные структуры конфигурации**:
 ```rust
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TelemetryConfig {
+    /// Включена ли телеметрия
     pub enabled: bool,
+    /// Название сервиса
     pub service_name: String,
+    /// Версия сервиса
     pub service_version: String,
-    
+    /// Окружение (development, staging, production)
+    pub environment: String,
+    /// Конфигурация экспортера
+    pub exporter: ExporterConfig,
+    /// Конфигурация трассировки
     pub tracing: TracingConfig,
+    /// Конфигурация метрик
     pub metrics: MetricsConfig,
+    /// Конфигурация health check
     pub health: HealthConfig,
+    /// Уровень логирования
+    pub log_level: LogLevel,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TracingConfig {
     pub enabled: bool,
-    pub sample_rate: f64,                    // 0.0 - 1.0
+    pub sample_rate: f64,
     pub max_attributes_per_span: u32,
     pub max_events_per_span: u32,
     pub max_links_per_span: u32,
-    pub exporters: Vec<TracingExporter>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MetricsConfig {
     pub enabled: bool,
     pub collection_interval: Duration,
-    pub retention_period: Duration,
-    pub exporters: Vec<MetricsExporter>,
+    pub max_export_batch_size: u32,
+    pub export_timeout: Duration,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -337,21 +339,23 @@ pub struct HealthConfig {
     pub check_interval: Duration,
     pub cache_ttl: Duration,
     pub default_timeout: Duration,
+    pub timeout: Duration,
+    pub endpoint: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum TracingExporter {
-    Jaeger { endpoint: String },
-    Zipkin { endpoint: String },
-    Console,
-    File { path: String },
+pub struct ExporterConfig {
+    pub enabled: bool,
+    pub endpoint: String,
+    pub protocol: Protocol,
+    pub timeout: Duration,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum MetricsExporter {
-    Prometheus { port: u16 },
-    Console,
-    File { path: String },
+pub enum Protocol {
+    Grpc,
+    HttpProtobuf,
+    HttpJson,
 }
 ```
 
@@ -361,36 +365,35 @@ let config = TelemetryConfig {
     enabled: true,
     service_name: "timeline-studio".to_string(),
     service_version: "1.0.0".to_string(),
-    
+    environment: "development".to_string(),
+    exporter: ExporterConfig {
+        enabled: true,
+        endpoint: "http://localhost:4317".to_string(),
+        protocol: Protocol::Grpc,
+        timeout: Duration::from_secs(10),
+    },
     tracing: TracingConfig {
         enabled: true,
         sample_rate: 0.1,  // 10% запросов
         max_attributes_per_span: 64,
         max_events_per_span: 128,
         max_links_per_span: 64,
-        exporters: vec![
-            TracingExporter::Jaeger { 
-                endpoint: "http://localhost:14268/api/traces".to_string() 
-            },
-            TracingExporter::Console,
-        ],
     },
-    
     metrics: MetricsConfig {
         enabled: true,
         collection_interval: Duration::from_secs(10),
-        retention_period: Duration::from_hours(24),
-        exporters: vec![
-            MetricsExporter::Prometheus { port: 9090 },
-        ],
+        max_export_batch_size: 512,
+        export_timeout: Duration::from_secs(30),
     },
-    
     health: HealthConfig {
         enabled: true,
         check_interval: Duration::from_secs(30),
         cache_ttl: Duration::from_secs(60),
         default_timeout: Duration::from_secs(5),
+        timeout: Duration::from_secs(5),
+        endpoint: "/health".to_string(),
     },
+    log_level: LogLevel::Info,
 };
 ```
 

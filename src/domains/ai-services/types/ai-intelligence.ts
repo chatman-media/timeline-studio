@@ -4,9 +4,11 @@
  * Перенесено из src/features/ai-content-intelligence/shared/types/
  */
 
-import type {
+import {
   AdaptedContent,
   AIConfig,
+  ContentType,
+  Emotion,
   GeneratedScript,
   IntelligentContent,
   NarrativeType,
@@ -18,9 +20,7 @@ import type {
   ScriptGenerationParams,
   ScriptStyle,
   UnifiedContentAnalysis,
-} from "@/features/ai-content-intelligence"
-
-import { ContentType, Emotion } from "@/features/ai-content-intelligence"
+} from "."
 
 // Types are imported above and used in interfaces below
 // Re-exports are handled in the main index.ts

@@ -13,7 +13,7 @@
 - **Health checks** - автоматические проверки состояния сервисов
 - **Performance tracking** - детальная аналитика производительности
 - **Export в различные backend'ы** - Prometheus, Jaeger, Grafana и др.
-- **Comprehensive testing** - 61 unit тест с полным покрытием (98%)
+- **Comprehensive testing** - 95 unit тестов с полным покрытием (98%)
 
 ## 📁 Структура документации
 
@@ -45,46 +45,45 @@
 use timeline_studio::core::telemetry::*;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Создание конфигурации
     let config = TelemetryConfig {
         enabled: true,
         service_name: "timeline-studio".to_string(),
         service_version: "1.0.0".to_string(),
-        
+        environment: "development".to_string(),
+        exporter: ExporterConfig {
+            enabled: true,
+            endpoint: "http://localhost:4317".to_string(),
+            protocol: Protocol::Grpc,
+            timeout: Duration::from_secs(10),
+        },
         tracing: TracingConfig {
             enabled: true,
             sample_rate: 0.1,  // 10% трейсов
-            exporters: vec![
-                TracingExporter::Console,
-                TracingExporter::Jaeger { 
-                    endpoint: "http://localhost:14268/api/traces".to_string() 
-                },
-            ],
-            ..Default::default()
+            max_attributes_per_span: 128,
+            max_events_per_span: 128,
+            max_links_per_span: 128,
         },
-        
         metrics: MetricsConfig {
             enabled: true,
             collection_interval: Duration::from_secs(10),
-            exporters: vec![
-                MetricsExporter::Prometheus { port: 9090 },
-                MetricsExporter::Console,
-            ],
-            ..Default::default()
+            max_export_batch_size: 512,
+            export_timeout: Duration::from_secs(30),
         },
-        
         health: HealthConfig {
             enabled: true,
             check_interval: Duration::from_secs(30),
+            timeout: Duration::from_secs(5),
             cache_ttl: Duration::from_secs(60),
             default_timeout: Duration::from_secs(5),
+            endpoint: "/health".to_string(),
         },
+        log_level: LogLevel::Info,
     };
     
     // Инициализация телеметрии
     let telemetry = TelemetryManager::new(config).await?;
-    telemetry.initialize().await?;
     
     // Ваше приложение здесь...
     
@@ -95,29 +94,31 @@ async fn main() -> Result<()> {
 ### 2. Сбор метрик
 
 ```rust
-use timeline_studio::core::telemetry::Metrics;
+use timeline_studio::core::telemetry::MetricsCollector;
+use std::sync::Arc;
 
-async fn example_video_processing(metrics: Arc<Metrics>) -> Result<()> {
+async fn example_video_processing(telemetry: &TelemetryManager) -> Result<(), Box<dyn std::error::Error>> {
+    let metrics = telemetry.metrics();
+    
     // Счетчик обработанных видео
-    metrics.increment_counter("videos_processed_total", 1).await?;
+    metrics.increment_counter("videos_processed_total", &[("format", "mp4")]);
     
     // Текущее использование памяти
     let memory_usage = get_memory_usage();
-    metrics.set_gauge("memory_usage_bytes", memory_usage as f64).await?;
+    metrics.set_gauge("memory_usage_bytes", memory_usage as f64, &[]);
     
     // Время обработки кадра
-    let start = Instant::now();
+    let start = std::time::Instant::now();
     process_video_frame().await?;
-    let duration = start.elapsed().as_millis() as f64;
+    let duration = start.elapsed().as_secs_f64();
     
-    metrics.record_histogram("frame_processing_duration_ms", duration).await?;
+    metrics.record_histogram("frame_processing_duration_seconds", duration, &[("resolution", "1080p")]);
     
     // Метрики с атрибутами для детализации
-    metrics.increment_counter_with_attributes(
+    metrics.increment_counter(
         "api_requests_total",
-        1,
-        vec![("method", "POST"), ("endpoint", "/render"), ("status", "success")]
-    ).await?;
+        &[("method", "POST"), ("endpoint", "/render"), ("status", "success")]
+    );
     
     Ok(())
 }
@@ -126,53 +127,57 @@ async fn example_video_processing(metrics: Arc<Metrics>) -> Result<()> {
 ### 3. Health Checks
 
 ```rust
-use timeline_studio::core::telemetry::{HealthCheckManager, HealthCheck, HealthStatus, HealthCheckResult};
+use timeline_studio::core::telemetry::HealthCheckManager;
+use std::time::Duration;
 
-// Создание custom health check
-struct DatabaseHealthCheck {
-    connection_pool: Arc<DbPool>,
-}
-
-#[async_trait]
-impl HealthCheck for DatabaseHealthCheck {
-    fn name(&self) -> &str { "database" }
+async fn setup_health_checks(telemetry: &TelemetryManager) -> Result<(), Box<dyn std::error::Error>> {
+    let health = telemetry.health();
     
-    async fn check(&self) -> HealthCheckResult {
-        let start = Instant::now();
-        
-        match self.connection_pool.get_connection().await {
-            Ok(_) => HealthCheckResult {
-                status: HealthStatus::Healthy,
-                message: "Database connection successful".to_string(),
-                timestamp: SystemTime::now(),
-                check_duration: start.elapsed(),
-                metadata: HashMap::new(),
-            },
-            Err(e) => HealthCheckResult {
-                status: HealthStatus::Unhealthy,
-                message: format!("Database connection failed: {}", e),
-                timestamp: SystemTime::now(),
-                check_duration: start.elapsed(),
-                metadata: HashMap::new(),
-            }
+    // Добавление custom health check для базы данных
+    health.add_check(
+        "database".to_string(),
+        Box::new(|| {
+            Box::pin(async {
+                // Проверка подключения к базе данных
+                match check_database_connection().await {
+                    Ok(_) => Ok("Database connection successful".to_string()),
+                    Err(e) => Err(format!("Database connection failed: {}", e)),
+                }
+            })
+        }),
+    );
+    
+    // Добавление проверки файловой системы
+    health.add_check(
+        "filesystem".to_string(),
+        Box::new(|| {
+            Box::pin(async {
+                match tokio::fs::metadata("/tmp").await {
+                    Ok(_) => Ok("Filesystem accessible".to_string()),
+                    Err(e) => Err(format!("Filesystem check failed: {}", e)),
+                }
+            })
+        }),
+    );
+    
+    // Проверка всех health checks
+    match health.check_all().await {
+        Ok(results) => {
+            println!("Health check results: {:?}", results);
+        }
+        Err(e) => {
+            eprintln!("Health check failed: {}", e);
         }
     }
+    
+    Ok(())
 }
 
-// Настройка health checks
-async fn setup_health_checks() -> Result<()> {
-    let health_manager = HealthCheckManager::new();
-    
-    // Добавление предустановленных проверок
-    health_manager.add_check(Box::new(DatabaseHealthCheck::new(db_pool))).await;
-    health_manager.add_check(Box::new(DiskSpaceHealthCheck::new("/tmp", 0.9))).await;
-    health_manager.add_check(Box::new(MemoryHealthCheck::new(0.8))).await;
-    
-    // Настройка интервалов
-    health_manager.set_cache_ttl(Duration::from_secs(60));
-    health_manager.set_default_timeout(Duration::from_secs(10));
-    
-    // Запуск периодических проверок
+async fn check_database_connection() -> Result<(), Box<dyn std::error::Error>> {
+    // Здесь должна быть реальная проверка базы данных
+    tokio::time::sleep(Duration::from_millis(10)).await;
+    Ok(())
+}
     tokio::spawn(async move {
         let mut interval = tokio::time::interval(Duration::from_secs(30));
         loop {
@@ -717,18 +722,38 @@ for (exporter, status) in export_status {
 ```rust
 // Включение debug уровня для трейсинга
 let config = TelemetryConfig {
+    enabled: true,
+    service_name: "timeline-studio-debug".to_string(),
+    service_version: "1.0.0".to_string(),
+    environment: "development".to_string(),
+    exporter: ExporterConfig {
+        enabled: true,
+        endpoint: "http://localhost:4317".to_string(),
+        protocol: Protocol::Grpc,
+        timeout: Duration::from_secs(10),
+    },
     tracing: TracingConfig {
         enabled: true,
         sample_rate: 1.0,  // 100% для debugging
-        debug_mode: true,
-        log_spans: true,
-        exporters: vec![
-            TracingExporter::Console,  // Вывод в консоль для debug
-            TracingExporter::File { path: "./debug_traces.json".to_string() },
-        ],
-        ..Default::default()
+        max_attributes_per_span: 128,
+        max_events_per_span: 128,
+        max_links_per_span: 128,
     },
-    ..Default::default()
+    metrics: MetricsConfig {
+        enabled: true,
+        collection_interval: Duration::from_secs(1),
+        max_export_batch_size: 512,
+        export_timeout: Duration::from_secs(30),
+    },
+    health: HealthConfig {
+        enabled: true,
+        check_interval: Duration::from_secs(5),
+        timeout: Duration::from_secs(2),
+        cache_ttl: Duration::from_secs(5),
+        default_timeout: Duration::from_secs(2),
+        endpoint: "/health".to_string(),
+    },
+    log_level: LogLevel::Debug,
 };
 
 // Детальное логирование для конкретных операций

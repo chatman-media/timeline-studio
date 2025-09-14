@@ -244,7 +244,7 @@ export class TimelineAIService {
 
       return {
         success: result.success,
-        message: result.message,
+        message: result.message ?? "",
         data: result.data,
         errors: result.errors,
         warnings: result.warnings,
@@ -289,7 +289,7 @@ export class TimelineAIService {
 
       return {
         success: result.success,
-        message: result.message,
+        message: result.message ?? "",
         data: result.data,
         executionTime: Date.now() - startTime,
         nextActions: [], // AIToolResult не имеет nextActions
@@ -334,7 +334,7 @@ export class TimelineAIService {
 
       return {
         success: result.success,
-        message: result.message,
+        message: result.message ?? "",
         data: result.data,
         executionTime: Date.now() - startTime,
         nextActions: [], // AIToolResult не имеет nextActions
@@ -415,6 +415,8 @@ export class TimelineAIService {
       success: true,
       message: response.content,
       data: {},
+      executionTime: 0,
+      toolName: "",
     }
 
     // Если Claude использовал инструмент
@@ -713,6 +715,8 @@ export class TimelineAIService {
         success: true,
         message: `Инструмент ${name} выполнен успешно`,
         data: result,
+        toolName: name,
+        executionTime: 0,
       }
     } catch (error) {
       console.error(`Error executing tool ${name}:`, error)
@@ -720,6 +724,8 @@ export class TimelineAIService {
         success: false,
         message: `Ошибка выполнения инструмента ${name}: ${String(error)}`,
         data: { toolName: name, input, error: String(error) },
+        toolName: name,
+        executionTime: 0,
       }
     }
   }

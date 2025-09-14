@@ -167,7 +167,7 @@ impl PluginSandbox {
   }
 
   /// Проверить и зарезервировать ресурсы для операции
-  pub async fn acquire_operation_permit(&self) -> Result<OperationGuard> {
+  pub async fn acquire_operation_permit(&self) -> Result<OperationGuard<'_>> {
     // Проверяем не нарушены ли уже лимиты
     if self.usage.limits_violated.load(Ordering::Relaxed) {
       return Err(VideoCompilerError::SecurityError(format!(
@@ -235,7 +235,7 @@ impl PluginSandbox {
   }
 
   /// Проверить разрешение на сетевой запрос
-  pub async fn check_network_access(&self, domain: &str) -> Result<NetworkGuard> {
+  pub async fn check_network_access(&self, domain: &str) -> Result<NetworkGuard<'_>> {
     // Проверяем домен в whitelist
     if !self.allowed_domains.is_empty() {
       let domain_allowed = self.allowed_domains.iter().any(|allowed| {

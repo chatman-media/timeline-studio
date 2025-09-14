@@ -4,9 +4,11 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { SceneAnalysisResult } from "@/domains/ai-services/services"
 import { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
-import type { AdvancedSceneAnalysis } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+import SceneAnalysisEngine, {
+  AdvancedSceneAnalysis,
+} from "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
 import type {
   ContentInsights,
   KeyMoment,
@@ -64,7 +66,7 @@ export interface TimelineAIAnalysisHook {
 }
 
 export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
-  const { project, uiState, send } = useTimeline()
+  const { project, send } = useTimeline()
 
   // Состояние анализа
   const [analysisState, setAnalysisState] = useState<TimelineAnalysisState>({

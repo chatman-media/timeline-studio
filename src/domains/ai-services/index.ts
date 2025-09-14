@@ -19,19 +19,6 @@ export * from "./services/media-analysis"
 // Platform Optimization Services
 export * from "./services/platform-optimization"
 export type {
-  AdvancedSceneAnalysis,
-  AudioCharacteristics,
-  IdentifiedPersonInScene,
-  PersonAppearanceInScene,
-  SceneAnalysis as SceneAnalysisData,
-  SceneDetectionOptions,
-  SceneGroup,
-  SceneTransition,
-  VisualElement as SceneVisualElement,
-} from "./services/scene-analysis"
-// Scene Analysis Services (migrated from ai-content-intelligence)
-export { SceneAnalysisEngine } from "./services/scene-analysis"
-export type {
   GeneratedScript,
   NarrativeStructure,
   NarrativeType,
@@ -50,16 +37,6 @@ export { DialogueGenerator, ScriptGenerationEngine, TemplateEngine } from "./ser
 export * from "./services/vision"
 // Workflow Automation
 export * from "./services/workflow-automation"
-export type {
-  Audience,
-  ClassificationResult,
-  ContentClassification,
-  ContentType,
-  Emotion,
-  EmotionalTone,
-  Genre,
-  SceneAnalysis,
-} from "./types"
 // Types - content-analysis types are now in main types export
 // Re-export specific types for convenience
 export type {
