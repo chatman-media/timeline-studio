@@ -44,15 +44,13 @@ use video_compiler::VideoCompilerState;
 
 // Модуль распознавания (YOLO)
 pub mod recognition;
-use recognition::RecognitionState;
+use recognition::RecognitionService;
+use recognition::recognition_service::RecognitionState;
 use recognition::commands::yolo_commands::YoloProcessorState;
 
 // Модуль Smart Montage Planner
 pub mod montage_planner;
 use montage_planner::commands::MontageState;
-
-// Модуль Person Identification
-pub mod features;
 
 // Модуль безопасности и API ключей
 pub mod security;
@@ -226,9 +224,37 @@ pub fn run() {
         }
       }
 
-      // Create Recognition State
-      let recognition_state = RecognitionState::new();
-      app.manage(recognition_state);
+      // Initialize Recognition Service
+      {
+        let app_handle = app.handle();
+        let app_handle_clone = app_handle.clone();
+        
+        tauri::async_runtime::spawn(async move {
+          match app_handle_clone.path().app_data_dir() {
+            Ok(app_dir) => {
+              // Create app data directory if it doesn't exist
+              if let Err(e) = std::fs::create_dir_all(&app_dir) {
+                log::error!("Failed to create app data dir: {e}");
+              } else {
+                // Create RecognitionService instance
+                match RecognitionService::new(&app_dir).await {
+                  Ok(service) => {
+                    let recognition_state = RecognitionState::new(Arc::new(service));
+                    app_handle_clone.manage(recognition_state);
+                    log::info!("Recognition service initialized successfully");
+                  }
+                  Err(e) => {
+                    log::error!("Failed to create recognition service: {e}");
+                  }
+                }
+              }
+            }
+            Err(e) => {
+              log::error!("Failed to get app data dir: {e}");
+            }
+          }
+        });
+      }
 
       // Create YOLO Processor State
       let yolo_processor_state = YoloProcessorState::default();
@@ -267,9 +293,8 @@ pub fn run() {
 
       // Initialize Person Identification Database
       {
-        use features::person_identification::commands::PersonDatabaseState;
-        use features::person_identification::database::PersonDatabase;
-
+        use crate::recognition::person_database::PersonDatabase;
+        
         let app_handle = app.handle();
         match app_handle.path().app_data_dir() {
           Ok(app_dir) => {
@@ -278,12 +303,12 @@ pub fn run() {
               log::error!("Failed to create app data dir: {e}");
             } else {
               let db_path = app_dir.join("persons.db");
-
+              
               // Initialize database asynchronously
               match tauri::async_runtime::block_on(PersonDatabase::new(db_path)) {
                 Ok(db) => {
-                  app.manage(PersonDatabaseState(Arc::new(tokio::sync::Mutex::new(db))));
-                  log::info!("Person identification database initialized successfully");
+                  app.manage(db);
+                  log::info!("Person recognition database initialized successfully");
                 }
                 Err(e) => {
                   log::error!("Failed to initialize person database: {e}");

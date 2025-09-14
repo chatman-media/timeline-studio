@@ -7,10 +7,8 @@
  * 3. Интеграция с PersonDatabase
  */
 
-use crate::features::person_identification::clustering_integration::{
-    ClusteringIntegrator, ClusterMetadata,
-};
-use crate::features::person_identification::database::PersonDatabase;
+use crate::recognition::person_database::PersonDatabase;
+use crate::recognition::person_clustering::PersonClusteringService;
 use crate::recognition::face_clustering::{DBSCANParams, FaceClusteringEngine};
 use crate::recognition::facenet_processor::FaceNetProcessor;
 use crate::recognition::retinaface_processor::RetinaFaceProcessor;
@@ -67,16 +65,16 @@ pub async fn run_clustering_pipeline(
     
     // 4. Интеграция с базой данных
     let mut db = PersonDatabase::new(db_path).await?;
+    let clustering_service = PersonClusteringService::new(db.clone()).await?;
     
-    let metadata = ClusterMetadata {
+    let metadata = crate::recognition::person_clustering::ClusterMetadata {
         file_id: "video_001".to_string(),
         timestamps,
         bboxes,
         frame_paths: video_frames.iter().map(|p| p.to_string_lossy().to_string()).collect(),
     };
     
-    let mut integrator = ClusteringIntegrator::new(&mut db, 0.7);
-    let integration_result = integrator.integrate_clusters(
+    let integration_result = clustering_service.integrate_clusters(
         &clustering_result,
         &all_embeddings,
         &metadata,

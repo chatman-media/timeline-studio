@@ -34,7 +34,7 @@ pub struct FaceCluster {
 }
 
 /// Статистика кластеризации
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ClusteringStats {
   /// Общее количество лиц
   pub total_faces: usize,
