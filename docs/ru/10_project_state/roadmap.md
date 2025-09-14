@@ -21,7 +21,7 @@ Timeline Studio - это современный видеоредактор, со
 - ✅ 100+ эффектов, фильтров и переходов
 - ✅ Advanced Color Grading система
 - ✅ Fairlight Audio микшер
-- ✅ AI Chat интеграция (Claude/OpenAI/Ollama) с **151 AI инструментом** 🎯
+- ✅ AI Chat интеграция (Claude/OpenAI/Ollama) с **257 AI инструментом** 🎯
 - ✅ **Ollama интеграция** - локальные AI модели (Llama 3.2, Phi-3, Gemma 2, Qwen 2.5)
 - ✅ AI Content Intelligence Suite (**4 движка**: Content Classification, Scene Analysis, Script Generation, Multi-Platform)
 - ✅ Person Identification - распознавание и управление персонами
@@ -92,7 +92,7 @@ Timeline Studio - это современный видеоредактор, со
 - 🎯 1,000+ early adopters (в процессе)
 - 🎯 50+ обработанных видео в день
 - 🎯 80%+ удовлетворенность пользователей
-- ✅ **151 AI инструмент** в использовании
+- ✅ **257 AI инструмент** в использовании
 - ✅ **Локальные AI модели** через Ollama
 
 ### Beta (Q4 2025)

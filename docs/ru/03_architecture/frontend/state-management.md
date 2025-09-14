@@ -68,7 +68,7 @@ Timeline Studio использует комбинацию XState v5 для уп�
 ### 11. **AI Intelligence Machine**
 📍 [`src/features/ai-content-intelligence/shared/services/ai-intelligence-machine.ts`](../../src/features/ai-content-intelligence/shared/services/ai-intelligence-machine.ts)
 
-Состояние AI анализа контента: 4 движка анализа, обработка через 151 AI инструмент, координация workflow.
+Состояние AI анализа контента: 4 движка анализа, обработка через 257 AI инструмент, координация workflow.
 
 ## 🔌 React провайдеры
 
@@ -237,7 +237,7 @@ export function MyComponent() {
 - **Modal Machine** ← **Все машины**: Открытие модальных окон из любого места
 - **AI Intelligence Machine** → **Timeline Machine**: Автоматическое создание клипов на основе AI анализа
 - **Montage Planner Machine** → **Timeline Machine**: Применение автоматических планов монтажа
-- **AI Chat Machine** ↔ **AI Intelligence Machine**: Координация AI обработки и **151 AI инструмента**
+- **AI Chat Machine** ↔ **AI Intelligence Machine**: Координация AI обработки и **257 AI инструмента**
 - **Resources Machine** ↔ **AI Intelligence Machine**: Использование AI для рекомендаций ресурсов
 
 ## 📚 Дополнительные ресурсы

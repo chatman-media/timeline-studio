@@ -4,7 +4,7 @@ Welcome to the unified Timeline Studio documentation system!
 
 ## 🎯 About This Documentation
 
-This documentation is organized following the **Timeline Documentation Framework (TDF)** methodology, providing:
+This documentation provides:
 - **Complete project context** for developers and AI assistants
 - **Structured information** about all project aspects
 - **Current development state** and progress tracking
@@ -13,7 +13,7 @@ This documentation is organized following the **Timeline Documentation Framework
 
 ## 📁 Documentation Structure
 
-### [00_project_manifest/](00_project_manifest/)
+### [00_manifest/](00_manifest/)
 Main document with project vision, goals, and key innovations.
 
 ### [01_project_docs/](01_project_docs/)
@@ -27,6 +27,10 @@ Project requirements and specifications:
 - **[Functional Requirements](02_requirements/functional-requirements.md)** - Detailed functional requirements
 - **[Technical Requirements](02_requirements/technical-requirements.md)** - System technical requirements
 - **[Feature Specification](02_requirements/feature-specification.md)** - Detailed feature specifications
+- **[AI Chat Requirements](02_requirements/ai-chat-requirements.md)** - AI chat functionality requirements
+- **[AI Analysis Requirements](02_requirements/ai-analysis-requirements.md)** - AI analysis requirements
+- **[AI Functions Requirements](02_requirements/ai-functions-requirements.md)** - AI functions requirements
+- **[Market Expansion Requirements](02_requirements/market-expansion-requirements.md)** - Market expansion requirements
 
 ### [03_architecture/](03_architecture/)
 - **[frontend/](03_architecture/frontend/)** - React, XState, components
@@ -44,12 +48,23 @@ Project requirements and specifications:
   - **[Service Layer](03_architecture/backend/service-layer.md)** - Service layer design
   - **[Telemetry](03_architecture/backend/telemetry.md)** - Telemetry and logging
   - **[Type Mapping](03_architecture/backend/type-mapping.md)** - Type system mapping
+- **[AI Service](03_architecture/ai-service.md)** - AI service architecture
 - **[Data Flow](03_architecture/data_flow.md)** - Data flow architecture
 - **[Communication](03_architecture/communication.md)** - Component communication
 
 ### [04_api_reference/](04_api_reference/)
 All API documentation:
 - **[Media API](04_api_reference/media-api.md)** - API for working with media files
+- **[AI Chat API](04_api_reference/ai-chat-api.md)** - AI chat API documentation
+- **[Export API](04_api_reference/export-api.md)** - Export functionality API
+- **[File API](04_api_reference/file-api.md)** - File management API
+- **[Media Processing API](04_api_reference/media-processing-api.md)** - Media processing API
+- **[Plugin API](04_api_reference/plugin-api.md)** - Plugin system API
+- **[Project API](04_api_reference/project-api.md)** - Project management API
+- **[Settings API](04_api_reference/settings-api.md)** - Application settings API
+- **[Timeline API](04_api_reference/timeline-api.md)** - Timeline functionality API
+- **[User API](04_api_reference/user-api.md)** - User management API
+- **[Workspace API](04_api_reference/workspace-api.md)** - Workspace management API
 
 ### [05_development/](05_development/)
 Developer guides:
@@ -64,6 +79,24 @@ Developer guides:
 - **[Package Scripts Reference](05_development/package-scripts-reference.md)** - NPM scripts documentation
 - **[Plugin Development](05_development/plugin-development.md)** - Plugin development guide
 - **[Version Management](05_development/version-management.md)** - Version control practices
+- **[Setup](05_development/setup.md)** - Development environment setup
+- **[Testing](05_development/testing.md)** - Testing guidelines
+- **[Debugging](05_development/debugging.md)** - Debugging techniques
+- **[Code Review](05_development/code-review.md)** - Code review process
+- **[Git Workflow](05_development/git-workflow.md)** - Git workflow guidelines
+- **[Environment Variables](05_development/environment-variables.md)** - Environment configuration
+- **[Database](05_development/database.md)** - Database development
+- **[API Development](05_development/api-development.md)** - API development guide
+- **[Frontend Development](05_development/frontend-development.md)** - Frontend development guide
+- **[Backend Development](05_development/backend-development.md)** - Backend development guide
+- **[Mobile Development](05_development/mobile-development.md)** - Mobile development guide
+- **[DevOps](05_development/devops.md)** - DevOps practices
+- **[Security](05_development/security.md)** - Security development practices
+- **[Performance Optimization](05_development/performance-optimization.md)** - Performance optimization guide
+- **[Monitoring](05_development/monitoring.md)** - Development monitoring
+- **[Troubleshooting](05_development/troubleshooting.md)** - Common issues and solutions
+- **[Best Practices](05_development/best-practices.md)** - Development best practices
+- **[Tools](05_development/tools.md)** - Development tools guide
 
 ### [06_deployment/](06_deployment/)
 Deployment guides:
@@ -102,20 +135,28 @@ Testing strategies:
 - **[Test Memory Issues](12_testing/test-memory-issues.md)** - Memory-related testing issues
 - **[Test Summary](12_testing/test-summary.md)** - Testing coverage summary
 - **[Testing Guide](12_testing/testing.md)** - Comprehensive testing guide
+- **[New Media Testing](12_testing/new-media-testing.md)** - New media testing approaches
+- **[Performance Testing](12_testing/performance-testing.md)** - Performance testing guide
+- **[Integration Testing](12_testing/integration-testing.md)** - Integration testing strategies
+- **[E2E Testing](12_testing/e2e-testing.md)** - End-to-end testing guide
 
 ### [13_ci_cd/](13_ci_cd/)
 Continuous integration and deployment:
 - **[CI/CD](13_ci_cd/README.md)** - Main CI/CD guide
 - **[CI/CD Setup](13_ci_cd/ci-cd-setup.md)** - Pipeline setup
 - **[Codecov Components](13_ci_cd/codecov-components.md)** - Code coverage configuration
+- **[GitHub Actions](13_ci_cd/github-actions.md)** - GitHub Actions workflows
+- **[Deployment Pipeline](13_ci_cd/deployment-pipeline.md)** - Deployment automation
 
 ### [14_quality_assurance/](14_quality_assurance/)
 Quality assurance processes:
 - **[Quality Assurance](14_quality_assurance/README.md)** - Quality standards
+- **[Alpha Testing Guide](14_quality_assurance/alpha-testing-guide.md)** - Alpha version testing guide
 
 ### [15_security/](15_security/)
 Security guidelines:
 - **[Security](15_security/README.md)** - Security guide
+- **[Security Guidelines](15_security/security-guidelines.md)** - Security principles
 
 ### [16_user_documentation/](16_user_documentation/)
 User documentation:
@@ -124,10 +165,20 @@ User documentation:
 ### [17_releases/](17_releases/)
 Release management:
 - **[Releases](17_releases/README.md)** - Version and release management
+- **[v0.60.0-alpha](17_releases/v0.60.0-alpha.md)** - Alpha version release
 
 ### [18_marketing/](18_marketing/) ⭐
 - **[Promotion Strategy](18_marketing/timeline-studio-promotion-strategy.md)** - Strategic promotion plan
 - **[Comprehensive Plan](18_marketing/comprehensive-promotion-plan.md)** - Detailed marketing plan
+- **[Business Plan](18_marketing/business-plan.md)** - Project business plan
+- **[Competitive Analysis](18_marketing/competitive-analysis.md)** - Competitive analysis
+- **[Financial Projections](18_marketing/financial-projections.md)** - Financial projections
+- **[Investment Valuation](18_marketing/investment-valuation.md)** - Investment valuation
+- **[Pitch Deck Requirements](18_marketing/pitch-deck-requirements.md)** - Pitch deck requirements
+- **[Pitch Deck Structure](18_marketing/pitch-deck-structure.md)** - Pitch deck structure
+- **[Pricing Model](18_marketing/pricing-model.md)** - Pricing model
+- **[Team Roadmap Investment](18_marketing/team-roadmap-investment.md)** - Team roadmap and investment
+- **[AI Demo Slides](18_marketing/ai-demo-slides.md)** - AI demonstration slides
 
 ## 🚀 Getting Started
 
@@ -142,28 +193,22 @@ Release management:
 - **Frontend Modules**: 30+ completed
 - **Backend Modules**: 21+ completed  
 - **Test Coverage**: 80%+
-- **TDF Sections**: 18 complete sections
 
 ## 🤝 How to Contribute
 
-1. Study the [Project Manifest](00_project_manifest/)
+1. Study the [Project Manifest](00_manifest/)
 2. Choose a task from [Planned](08_tasks/planned/)
 3. Follow guides from [Development](05_development/)
-4. Use TDF methodology for documentation
+4. Follow documentation standards
 
-## 🏗️ Timeline Documentation Framework (TDF)
+## 🏗️ Documentation Structure
 
-**TDF** is an innovative documentation methodology created during Timeline Studio development:
+**Our documentation** is organized following these principles:
 
 ✅ **18 specialized sections** for complete project coverage  
 ✅ **Bilingual support out of the box** (ru/en structure)  
 ✅ **Media-First architecture** for multimedia projects  
-✅ **Enterprise-ready organization** with professional standards  
-
-**TDF is already used for:**
-- Documentation consulting ($5,000-50,000 per project)
-- Certification programs ($500-2,000 per course)
-- Enterprise tools ($1,000-10,000/year)
+✅ **Enterprise-ready organization** with professional standards
 
 ## 🔗 Useful Links
 
@@ -173,13 +218,12 @@ Release management:
 
 ### [99_templates/](99_templates/)
 Document templates:
-- **[TDF Section Template](99_templates/tdf-section-template.md)** - Template for creating sections
-- **[Task Template](99_templates/task_template.md)** - Template for describing tasks
-- **[Feature Template](99_templates/feature_template.md)** - Template for describing features
-- **[ADR Template](99_templates/adr_template.md)** - Architectural Decision Record template
+- **[Task Template](99_templates/task-template.md)** - Template for describing tasks
+- **[Feature Template](99_templates/feature-template.md)** - Template for describing features
+- **[ADR Template](99_templates/adr-template.md)** - Architectural Decision Record template
 - **[Marketing Strategy Template](99_templates/marketing-strategy-template.md)** - Marketing strategy template
 - **[Release Template](99_templates/release-template.md)** - Release notes template
 
 ---
 
-*Documentation based on TDF methodology. Last updated: January 2025*
+*Last updated: January 2025*

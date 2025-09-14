@@ -11,28 +11,28 @@
 
 #### Hardware
 - **Processor**: 
-  - Intel Core i5 6th gen / AMD Ryzen 5 2600
+  - Intel Core i5 6th generation / AMD Ryzen 5 2600
   - Apple M1 (for macOS)
-- **Memory**: 8 GB RAM
-- **Graphics**: 
+- **RAM**: 8 GB RAM
+- **Graphics Card**: 
   - NVIDIA GTX 1050 / AMD RX 560 (for GPU acceleration)
   - Intel HD Graphics 620 (basic operation)
   - Apple GPU (M1/M2/M3)
-- **Storage**: 4 GB for installation + project storage
+- **Disk Space**: 4 GB for installation + space for projects
 - **Display**: 1920x1080 or higher
 
 ### Recommended Requirements
 
 #### Hardware
 - **Processor**: 
-  - Intel Core i7 10th gen / AMD Ryzen 7 3700X
+  - Intel Core i7 10th generation / AMD Ryzen 7 3700X
   - Apple M1 Pro/M2/M3 (for macOS)
-- **Memory**: 16 GB RAM (32 GB for 4K)
-- **Graphics**: 
+- **RAM**: 16 GB RAM (32 GB for 4K)
+- **Graphics Card**: 
   - NVIDIA RTX 3060 / AMD RX 6600 XT
-  - NVENC/AMF/VideoToolbox support for acceleration
+  - NVENC/AMF/VideoToolbox acceleration support
   - Apple GPU with 16+ GB unified memory
-- **Storage**: NVMe SSD with 50 GB free space
+- **Disk Space**: NVMe SSD with 50 GB free space
 - **Display**: 2560x1440 or 4K
 
 ## 🛠️ Development Dependencies
@@ -42,7 +42,7 @@
 - **Bun**: Latest
 - **Rust**: 1.81.0+
 - **FFmpeg**: 6.0+ with development libraries
-- **ONNX Runtime**: 1.16+ (for AI features)
+- **ONNX Runtime**: 1.16+ (for AI functions)
 
 ### Platform-Specific Dependencies
 
@@ -54,7 +54,7 @@
 #### macOS
 - Xcode Command Line Tools
 - Homebrew
-- ONNX Runtime (for AI features)
+- ONNX Runtime (for AI functions)
 
 #### Linux
 - build-essential
@@ -64,30 +64,30 @@
 
 ## 🚀 Performance Requirements
 
-### Response Times
+### Response Time
 - **Application startup**: < 2 seconds
 - **Project opening**: < 5 seconds
 - **Playback start**: < 100ms
 - **Effect application**: < 50ms (preview)
 
 ### Resource Usage
-- **RAM idle**: < 200 MB
-- **RAM active**: < 2 GB (HD), < 4 GB (4K)
-- **CPU idle**: < 5%
-- **GPU rendering**: 80-100% (expected)
+- **RAM at idle**: < 200 MB
+- **RAM during work**: < 2 GB (HD), < 4 GB (4K)
+- **CPU at idle**: < 5%
+- **GPU during rendering**: 80-100% (expected)
 
 ### Processing Speed
-- **HD export (1080p)**: 
+- **HD Export (1080p)**: 
   - 3-5x realtime with NVENC/VideoToolbox
   - 2-3x realtime with QuickSync/AMF
   - 1x realtime CPU only
-- **4K export**: 
+- **4K Export**: 
   - 1-2x realtime with NVENC/VideoToolbox
   - 0.5-1x realtime with QuickSync/AMF
   - 0.2x realtime CPU only
 - **Preview generation**: 10-20x realtime
 - **AI analysis**: 
-  - YOLO detection: 15-30 fps
+  - YOLO recognition: 15-30 fps
   - Scene analysis: 5-10 fps
   - Face recognition: 10-20 fps
 
@@ -96,7 +96,7 @@
 ### Data Protection
 - **Encryption**: AES-256 for API keys
 - **Storage**: System keychain/credential store
-- **Network**: HTTPS only
+- **Network requests**: HTTPS only
 - **Local processing**: No telemetry without consent
 
 ### Authentication
@@ -108,13 +108,13 @@
 
 ### Bandwidth
 - **Minimum**: 10 Mbps for social media uploads
-- **Recommended**: 50 Mbps for comfortable operation
-- **AI features**: 5 Mbps for API requests
+- **Recommended**: 50 Mbps for comfortable work
+- **AI functions**: 5 Mbps for API requests
 
 ### Protocols
 - **HTTP/2**: For all API requests
-- **WebSocket**: For real-time features
-- **WebRTC**: For future collaboration features
+- **WebSocket**: For real-time functions
+- **WebRTC**: For future collaborative features
 
 ## 📦 File Formats
 
@@ -149,7 +149,7 @@
 - **Timeline length**: Up to 24 hours
 - **Project size**: Up to 10 GB
 - **Clip count**: Up to 10,000
-- **AI tools**: 151 tools
+- **AI tools**: 257 tools
 
 ### Optimization
 - **Proxy files**: Automatic for 4K+
@@ -175,17 +175,17 @@
 
 ## 🤖 AI Processing
 
-### AI Feature Requirements
-- **YOLO v11**: 2GB VRAM for detection
+### AI Function Requirements
+- **YOLO v11**: 2GB VRAM for recognition
 - **Whisper**: 4GB VRAM for transcription
 - **AI Chat**: 10 Mbps internet
 - **ONNX Runtime**: CUDA 11.6+ or CoreML
 
 ### AI Performance
-- **Object detection**: 30 fps (RTX 3060)
+- **Object recognition**: 30 fps (RTX 3060)
 - **Face recognition**: 20 fps (RTX 3060)
 - **Whisper transcription**: 5x realtime
-- **AI montage**: 2-5 seconds per minute of video
+- **AI editing**: 2-5 seconds per minute of video
 
 ---
 

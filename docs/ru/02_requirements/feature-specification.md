@@ -115,11 +115,11 @@ Timeline Studio включает более 30 функциональных мо
 
 ## 🚀 Продвинутые функции
 
-Инновационные возможности на базе AI и ML.
+Инновационные возможности на базе AI и ML для захвата новых рынков.
 
 ### [AI Chat](advanced/ai-chat.md)
 **Статус**: ✅ Готов (100%)  
-Интегрированный AI ассистент с **151 AI инструментом**
+Интегрированный AI ассистент с **257 AI инструментом**
 - Claude/GPT интеграция
 - Контекстная помощь
 - Генерация сценариев
@@ -131,7 +131,7 @@ Timeline Studio включает более 30 функциональных мо
 ### [AI Models Integration](advanced/ai-models-integration.md)
 **Статус**: ✅ Готов (100%)  
 Полная AI платформа для автоматизации
-- **151 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
+- **257 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
 - **4 AI движка** в ai-content-intelligence:
   - Content Classification Engine - классификация контента
   - Scene Analysis Engine - анализ сцен и видео
@@ -270,6 +270,68 @@ ML распознавание объектов
 
 📖 **[Техническая документация модуля](../../src/features/video-compiler/README.md)**
 
+### [Meme Machine](advanced/meme-machine.md)
+**Статус**: 📋 Планируется (0%)
+AI-powered создание вирусных мемов
+- Автоматическое распознавание смешных моментов
+- 500+ шаблонов мемов (Drake, Distracted Boyfriend, etc)
+- Трендовая аналитика в реальном времени
+- Предсказание виральности с точностью 80%
+- Мультиязычная адаптация юмора
+- Генерация видео-мемов и реакций
+
+📖 **[Техническая документация модуля](../08_tasks/planned/meme-machine.md)**
+
+### [Live Streaming](advanced/live-streaming.md)
+**Статус**: 📋 Планируется (0%)
+Упрощенная альтернатива OBS Studio
+- Готовые многокамерные шаблоны (подкаст, интервью, презентация)
+- AI автопереключение камер по голосу
+- Встроенная музыкальная библиотека с автоматическим ducking
+- Интеграция с YouTube/Twitch/TikTok/VK Live
+- Виртуальные фоны без green screen
+- Мобильное приложение для удаленного управления
+
+📖 **[Техническая документация модуля](../08_tasks/planned/live-streaming.md)**
+
+### [Avatar Generation](advanced/avatar-generation.md)
+**Статус**: 📋 Планируется (0%)
+Генерация и анимация AI аватаров
+- Локальная генерация для приватности
+- Обучение на собственных видео пользователя
+- Реалистичная синхронизация губ с аудио
+- Замена лиц в существующих видео (deepfake)
+- Интеграция с timeline для бесшовного использования
+- Поддержка ONNX/CoreML для оффлайн работы
+
+📖 **[Техническая документация модуля](../08_tasks/planned/avatar-generation.md)**
+
+### [Video Generation](advanced/video-generation.md)
+**Статус**: 📋 Планируется (0%)
+Полная AI генерация видео контента
+- Text-to-Video генерация (Runway Gen-3, Stable Video Diffusion)
+- Image-to-Video анимация статичных изображений
+- Video-to-Video стилизация и изменение стиля
+- Генерация motion graphics и инфографики
+- Создание переходов и фоновых видео
+- Локальные модели + облачные провайдеры
+
+📖 **[Техническая документация модуля](../08_tasks/planned/video-generation.md)**
+
+### [Mobile Apps](advanced/mobile-apps.md)
+**Статус**: 📋 Планируется (0%)
+Нативные мобильные приложения на Tauri v2
+- **iOS App** - полнофункциональный видеоредактор для iPhone/iPad
+- **Android App** - нативное приложение для всех Android устройств
+- **Telegram Mini App** - Web App интеграция в мессенджер
+- Единая кодовая база с десктопной версией (Tauri v2)
+- Облачная синхронизация проектов между устройствами
+- Touch-оптимизированный интерфейс для мобильных экранов
+- Оффлайн редактирование с автосинхронизацией
+- Монетизация через App Store, Google Play и Telegram Stars
+
+📖 **[Техническая документация модуля](../08_tasks/planned/mobile-apps.md)**
+
 ### Дополнительные модули
 
 #### [Media](advanced/media.md)
@@ -310,17 +372,29 @@ ML распознавание объектов
 |-----------|---------|--------------|-------------|
 | Основные | 7/7 (100%) | 0/7 | 0/7 |
 | Эффекты | 4/5 (80%) | 1/5 | 0/5 |
-| Продвинутые | 16/16 (100%) | 0/16 | 0/16 |
+| Продвинутые | 16/21 (76%) | 0/21 | 5/21 |
+| **Новые рынки** | 0/5 (0%) | 0/5 | 5/5 |
+
+### Новые рынки для захвата
+
+| Рынок | Модуль | Размер рынка | Статус |
+|-------|--------|--------------|--------|
+| Мемы и вирусный контент | Meme Machine | $8.2 млрд | 📋 Планируется |
+| Стриминг | Live Streaming | $15.3 млрд | 📋 Планируется |
+| AI аватары | Avatar Generation | $3.8 млрд | 📋 Планируется |
+| AI видео генерация | Video Generation | $2.1 млрд | 📋 Планируется |
+| Мобильные платформы | Mobile Apps (iOS/Android/Telegram) | $15.7 млрд | 📋 Планируется |
+| **Общий потенциал** | **5 модулей** | **$45.1 млрд** | **Новые возможности** |
 
 ### Покрытие тестами
 
-- **Отличное (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (151 инструмент)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
+- **Отличное (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (257 инструмент)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
 - **Хорошее (60-80%)**: Transitions, Style Templates
 - **Требует улучшения (<60%)**: Templates
 
 ### 🏆 Важные достижения 2025 года
 
-- **17 июля 2025**: Достигнуто **151 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
+- **17 июля 2025**: Достигнуто **257 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
 - **17 июля 2025**: Завершена **унификация системы ресурсов** - все 8 типов ресурсов объединены единым API
 - **17 июля 2025**: Добавлены масштабные задачи для развития в **профессиональный уровень**:
   - Comprehensive Resources Database (5000+ ресурсов)

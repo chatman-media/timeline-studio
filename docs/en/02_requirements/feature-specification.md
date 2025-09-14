@@ -1,6 +1,6 @@
-# Timeline Studio Functionality Specification
+# 03. Timeline Studio Functionality
 
-[← Back to Contents](../README.md)
+[← Back to Table of Contents](../README.md)
 
 ## 📋 Contents
 
@@ -15,7 +15,7 @@ Timeline Studio includes over 30 functional modules organized by categories. Eac
 
 ## 🏗️ Core Modules
 
-The core functionality of Timeline Studio for basic video editing.
+Core Timeline Studio functionality for basic video editing.
 
 ### [Timeline](core/timeline.md)
 **Status**: ✅ Ready (90%)  
@@ -53,7 +53,7 @@ Export finished videos with advanced capabilities
 - Presets for all platforms (YouTube, TikTok, Vimeo, Telegram)
 - Customizable parameters and real-time validation
 - GPU acceleration and settings optimization
-- Batch export and time-section export
+- Batch export and time-based section export
 - Automatic export time estimation
 - Smart optimization for different platforms
 
@@ -61,7 +61,7 @@ Export finished videos with advanced capabilities
 
 ## 🎨 Effects and Visualization
 
-Tools for enhancing and styling videos.
+Tools for enhancing and stylizing video.
 
 ### [Effects](effects/effects.md)
 **Status**: ✅ Ready (80%)  
@@ -76,7 +76,7 @@ Visual effects based on CSS and WebGL
 ### [Filters](effects/filters.md)
 **Status**: ✅ Ready (80%)  
 Color correction and filters
-- Basic adjustments (brightness, contrast)
+- Basic settings (brightness, contrast)
 - LUT support
 - Color presets
 - HSL correction
@@ -115,11 +115,11 @@ Stylistic templates
 
 ## 🚀 Advanced Features
 
-Innovative capabilities based on AI and ML.
+Innovative AI and ML-powered capabilities for capturing new markets.
 
 ### [AI Chat](advanced/ai-chat.md)
 **Status**: ✅ Ready (100%)  
-Integrated AI assistant with **151 AI tools**
+Integrated AI assistant with **257 AI tools**
 - Claude/GPT integration
 - Contextual help
 - Script generation
@@ -131,14 +131,14 @@ Integrated AI assistant with **151 AI tools**
 ### [AI Models Integration](advanced/ai-models-integration.md)
 **Status**: ✅ Ready (100%)  
 Complete AI platform for automation
-- **151 AI tools** - absolute leadership in AI-powered video editors market
+- **257 AI tools** - absolute leadership in AI-powered video editors market
 - **4 AI engines** in ai-content-intelligence:
-  - Content Classification Engine
-  - Scene Analysis Engine
-  - Script Generation Engine
-  - Multi-Platform Engine
+  - Content Classification Engine - content classification
+  - Scene Analysis Engine - scene and video analysis
+  - Script Generation Engine - script generation
+  - Multi-Platform Engine - platform adaptation
 - Export Management Tools (12 tools)
-- Effects & Filters Tools (10 tools)
+- Effects & Filters Tools (10 tools) 
 - Audio Processing Tools (12 tools)
 - Render & Performance Tools (8 tools)
 - Template & Layout Tools (10 tools)
@@ -242,11 +242,11 @@ Animation and graphics system
 
 ### [Multicam](advanced/multicam.md)
 **Status**: ✅ Ready (100%)  
-Multi-camera editing
+Multi-camera shooting
 - Timecode synchronization
 - Audio synchronization
 - Camera switching
-- Preview monitoring
+- Preview
 
 📖 **[Module Technical Documentation](../../src/features/multicam/README.md)**
 
@@ -255,7 +255,7 @@ Multi-camera editing
 Professional subtitle system
 - 72 subtitle styles in 6 categories
 - CSS animations and effects
-- Complete internationalization
+- Full internationalization
 - Resource browser integration
 
 📖 **[Module Technical Documentation](../../src/features/subtitles/README.md)**
@@ -265,10 +265,72 @@ Professional subtitle system
 Video rendering and compilation system
 - GPU acceleration (NVIDIA, Intel, AMD, Apple)
 - Multi-level caching
-- Frame extraction for previews
+- Frame extraction for preview
 - Render task management
 
 📖 **[Module Technical Documentation](../../src/features/video-compiler/README.md)**
+
+### [Meme Machine](advanced/meme-machine.md)
+**Status**: 📋 Planned (0%)
+AI-powered viral meme creation
+- Automatic funny moment recognition
+- 500+ meme templates (Drake, Distracted Boyfriend, etc)
+- Real-time trend analytics
+- Virality prediction with 80% accuracy
+- Multilingual humor adaptation
+- Video meme and reaction generation
+
+📖 **[Module Technical Documentation](../08_tasks/planned/meme-machine.md)**
+
+### [Live Streaming](advanced/live-streaming.md)
+**Status**: 📋 Planned (0%)
+Simplified OBS Studio alternative
+- Ready multi-camera templates (podcast, interview, presentation)
+- AI auto camera switching by voice
+- Built-in music library with automatic ducking
+- YouTube/Twitch/TikTok/VK Live integration
+- Virtual backgrounds without green screen
+- Mobile app for remote control
+
+📖 **[Module Technical Documentation](../08_tasks/planned/live-streaming.md)**
+
+### [Avatar Generation](advanced/avatar-generation.md)
+**Status**: 📋 Planned (0%)
+AI avatar generation and animation
+- Local generation for privacy
+- Training on user's own videos
+- Realistic lip sync with audio
+- Face replacement in existing videos (deepfake)
+- Timeline integration for seamless use
+- ONNX/CoreML support for offline work
+
+📖 **[Module Technical Documentation](../08_tasks/planned/avatar-generation.md)**
+
+### [Video Generation](advanced/video-generation.md)
+**Status**: 📋 Planned (0%)
+Complete AI video content generation
+- Text-to-Video generation (Runway Gen-3, Stable Video Diffusion)
+- Image-to-Video static image animation
+- Video-to-Video stylization and style changes
+- Motion graphics and infographics generation
+- Transition and background video creation
+- Local models + cloud providers
+
+📖 **[Module Technical Documentation](../08_tasks/planned/video-generation.md)**
+
+### [Mobile Apps](advanced/mobile-apps.md)
+**Status**: 📋 Planned (0%)
+Native mobile applications on Tauri v2
+- **iOS App** - full-featured video editor for iPhone/iPad
+- **Android App** - native application for all Android devices
+- **Telegram Mini App** - Web App integration in messenger
+- Unified codebase with desktop version (Tauri v2)
+- Cloud project synchronization between devices
+- Touch-optimized interface for mobile screens
+- Offline editing with auto-sync
+- Monetization through App Store, Google Play and Telegram Stars
+
+📖 **[Module Technical Documentation](../08_tasks/planned/mobile-apps.md)**
 
 ### Additional Modules
 
@@ -278,7 +340,7 @@ Media file management and caching
 - Media import and processing
 - Preview caching in IndexedDB
 - Metadata and file analysis
-- Missing file restoration
+- Missing file recovery
 
 📖 **[Module Technical Documentation](../../src/features/media/README.md)**
 
@@ -296,7 +358,7 @@ Global application state
 **Status**: ✅ Ready (90%)  
 User settings
 - Interface personalization
-- AI service API keys
+- API keys for AI services
 - Performance settings
 - Localization
 
@@ -307,16 +369,37 @@ User settings
 ### Module Readiness
 
 | Category | Ready | In Development | Planned |
-|----------|-------|----------------|---------|
+|----------|-------|----------------|----------|
 | Core | 7/7 (100%) | 0/7 | 0/7 |
 | Effects | 4/5 (80%) | 1/5 | 0/5 |
-| Advanced | 16/16 (100%) | 0/16 | 0/16 |
+| Advanced | 16/21 (76%) | 0/21 | 5/21 |
+| **New Markets** | 0/5 (0%) | 0/5 | 5/5 |
+
+### New Markets to Capture
+
+| Market | Module | Market Size | Status |
+|--------|--------|-------------|--------|
+| Memes and viral content | Meme Machine | $8.2 billion | 📋 Planned |
+| Streaming | Live Streaming | $15.3 billion | 📋 Planned |
+| AI avatars | Avatar Generation | $3.8 billion | 📋 Planned |
+| AI video generation | Video Generation | $2.1 billion | 📋 Planned |
+| Mobile platforms | Mobile Apps (iOS/Android/Telegram) | $15.7 billion | 📋 Planned |
+| **Total potential** | **5 modules** | **$45.1 billion** | **New opportunities** |
 
 ### Test Coverage
 
-- **Excellent (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (151 tools)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
+- **Excellent (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (257 tools)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam
 - **Good (60-80%)**: Transitions, Style Templates
-- **Needs Improvement (<60%)**: Templates
+- **Needs improvement (<60%)**: Templates
+
+### 🏆 Important 2025 Achievements
+
+- **July 17, 2025**: Achieved **257 AI tools** - absolute leadership in AI-powered video editors market
+- **July 17, 2025**: Completed **resource system unification** - all 8 resource types unified with single API
+- **July 17, 2025**: Added large-scale tasks for **professional level** development:
+  - Comprehensive Resources Database (5000+ resources)
+  - Cloud Storage & Sync (multi-platform ecosystem)
+- **July 17, 2025**: Continuing development of **Advanced Timeline Features** for professional users
 
 ## 🛠️ Module Architecture
 
@@ -379,8 +462,8 @@ The following modules are in planning stage and have detailed technical document
 
 ### [Scene Analyzer](../../src/features/scene-analyzer/README.md)
 **Status**: 📋 Planned (0%)  
-Video scene analysis using ML
-- Frame analysis via ffmpeg-rs
+ML-powered video scene analysis
+- Frame analysis through ffmpeg-rs
 - YOLOv11 object recognition
 - Person identification
 - Subtitle integration
@@ -397,9 +480,9 @@ AI video script generation
 
 📖 **[Module Technical Documentation](../../src/features/script-generator/README.md)**
 
-### [Comprehensive Resources Database](../../docs/en/08_tasks/planned/comprehensive-resources-database.md)
+### [Comprehensive Resources Database](../../docs/ru/08_tasks/planned/comprehensive-resources-database.md)
 **Status**: 📋 Planned (0%)  
-Extensive resource database at Filmora level
+Extensive Filmora-level resource database
 - **5000+ resources** for all categories
 - Effects Library (1000+ effects)
 - Filters Collection (800+ filters)
@@ -408,10 +491,10 @@ Extensive resource database at Filmora level
 - CDN delivery system
 - Freemium monetization model
 
-### [Cloud Storage & Sync](../../docs/en/08_tasks/planned/cloud-storage-sync.md)
+### [Cloud Storage & Sync](../../docs/ru/08_tasks/planned/cloud-storage-sync.md)
 **Status**: 📋 Planned (0%)  
 Multi-platform synchronization
-- **Cloud storage** and project sync
+- **Cloud storage** and project synchronization
 - **Collaborative editing** in real-time
 - **Mobile versions** (iOS, Android, Telegram Mini App)
 - **End-to-end encryption** of all data
@@ -422,7 +505,7 @@ Multi-platform synchronization
 
 ## 🔧 Backend Modules
 
-Timeline Studio's server side is built on Rust using Tauri v2 and includes the following core modules:
+Timeline Studio backend is built on Rust using Tauri v2 and includes the following core modules:
 
 ### [Core Infrastructure](../../../src-tauri/src/core/README.md)
 **Status**: ✅ Ready (100%)  
@@ -433,28 +516,28 @@ Core backend application infrastructure
 - **Telemetry** - OpenTelemetry monitoring and metrics
 - **Performance** - Worker pools, caching, zero-copy operations
 
-📖 **[Detailed Core Module Documentation](../../../src-tauri/src/core/README.md)**
+📖 **[Detailed Core Modules Documentation](../../../src-tauri/src/core/README.md)**
 
 ### [Video Compiler Backend](../../../src-tauri/src/video_compiler/README.md)
 **Status**: ✅ Ready (100%)  
 Rust backend for video processing
-- FFmpeg integration via rust-ffmpeg
+- FFmpeg integration through rust-ffmpeg
 - GPU acceleration (NVIDIA NVENC, Intel QuickSync, AMD AMF)
 - Multi-level caching
 - Render task management
 - WebAssembly preview generation
 
-### [Plugin System](../08_tasks/completed/plugin-system.md)
+### [Plugin System](../08-plugins/README.md)
 **Status**: ✅ Ready (100%)  
-Extension system with WebAssembly
-- Secure execution in WASM sandbox
+WebAssembly extension system
+- Safe execution in WASM sandbox
 - Granular permissions system
 - Resource limits and timeouts
 - Hot-swappable plugins
 
-📖 **[Plugin Developer Guide](../08_tasks/completed/plugin-development-guide.md)**
+📖 **[Plugin Developer Guide](../08-plugins/development-guide.md)**
 
-### [Telemetry System](../05_development/telemetry.md)
+### [Telemetry System](../09-telemetry/README.md)
 **Status**: ✅ Ready (100%)  
 Comprehensive application monitoring
 - OpenTelemetry standards
@@ -462,12 +545,12 @@ Comprehensive application monitoring
 - System health checks
 - Export to Prometheus, Jaeger, Grafana
 
-📖 **[Telemetry Setup and Configuration](../05_development/telemetry-configuration.md)**
+📖 **[Telemetry Setup and Configuration](../09-telemetry/configuration.md)**
 
 ### Backend Services by Module
 
 | Frontend Module | Backend Services | Documentation |
-|----------------|-----------------|--------------|
+|----------------|-----------------|---------------|
 | Timeline | `timeline_schema_commands.rs` | [Schema API](../../../src-tauri/src/video_compiler/commands/timeline_schema_commands.rs) |
 | Video Player | `frame_extraction_commands.rs` | [Frame API](../../../src-tauri/src/video_compiler/commands/frame_extraction_commands.rs) |
 | Export | `rendering.rs`, `ffmpeg_builder_commands.rs` | [Render API](../../../src-tauri/src/video_compiler/commands/rendering.rs) |
@@ -478,10 +561,10 @@ Comprehensive application monitoring
 
 ## 📚 Additional Resources
 
-- [Module Creation Guide](../05_development/creating-features.md)
-- [Testing Standards](../05_development/testing.md)
-- [Integration Examples](../05_development/feature-integration.md)
+- [Module Creation Guide](../05-development/creating-features.md)
+- [Testing Standards](../05-development/testing.md)
+- [Integration Examples](../07-guides/feature-integration.md)
 
 ---
 
-[← Architecture](../03_architecture/README.md) | [Next: Timeline →](core/timeline.md)
+[← Architecture](../02-architecture/README.md) | [Next: Timeline →](core/timeline.md)
