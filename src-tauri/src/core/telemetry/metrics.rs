@@ -171,11 +171,9 @@ impl MetricsCollector {
     }
 
     // Создаем ресурс (Resource::new is private in some SDK versions)
-    let _resource_attrs = vec![
-      KeyValue::new(SERVICE_NAME, config.service_name.clone()),
+    let _resource_attrs = [KeyValue::new(SERVICE_NAME, config.service_name.clone()),
       KeyValue::new(SERVICE_VERSION, config.service_version.clone()),
-      KeyValue::new("deployment.environment", config.environment.clone()),
-    ];
+      KeyValue::new("deployment.environment", config.environment.clone())];
 
     // Создаем meter в зависимости от типа экспортера
     match config.exporter.exporter_type {

@@ -236,8 +236,8 @@ pub async fn tracing_example() {
   tokio::time::sleep(Duration::from_millis(100)).await;
   
   // Добавляем атрибуты к span
-  Span::current().record("processed_items", &42);
-  Span::current().record("success", &true);
+  Span::current().record("processed_items", 42);
+  Span::current().record("success", true);
   
   info!("Data processing completed");
 }
