@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { usePlayerAIAnalysis } from "../use-player-ai-analysis"
 
@@ -35,7 +35,7 @@ const mockPlayerContext = {
 
 // Мокаем модули
 vi.mock("@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine", () => ({
-  SceneAnalysisEngine: vi.fn(() => mockSceneEngine),
+  SceneAnalysisEngine: vi.fn().mockImplementation(() => mockSceneEngine),
 }))
 
 vi.mock("../services/frame-capture-service", () => ({

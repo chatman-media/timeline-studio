@@ -47,7 +47,7 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
     frameAnalysisRate: 2, // Анализировать 2 кадра в секунду по умолчанию
   })
 
-  const [sceneEngine] = useState(() => SceneAnalysisEngine.getInstance())
+  const [sceneEngine] = useState(() => new SceneAnalysisEngine())
   const [frameCaptureService] = useState(() => new FrameCaptureService())
   const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const lastAnalyzedTimeRef = useRef<number>(0)
