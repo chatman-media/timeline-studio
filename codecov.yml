@@ -3,6 +3,7 @@
 
 codecov:
   max_report_age: false  # Disable report age check
+  disable_telemetry: true
 
 coverage:
   status:
@@ -323,8 +324,6 @@ comment:
   layout: "reach,diff,flags,tree,reach"
   behavior: default
   require_changes: false
-  require_base: no
-  require_head: yes
   branches:
     - "main"
     - "develop"
