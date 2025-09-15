@@ -4,35 +4,21 @@
  * Автоматические процессы, пакетная обработка и интеллектуальные шаблоны
  */
 
-// Batch processing инструменты
-export * from "./batch-processing-tools"
-// Enhanced subtitle automation инструменты
-export * from "./enhanced-subtitle-automation"
-// Performance optimization инструменты
-export * from "./performance-tools"
-// Smart templates инструменты
-export * from "./smart-templates-tools"
-// Subtitle automation инструменты
-export * from "./subtitle-tools"
-// Workflow automation инструменты
-export * from "./workflow-tools"
-
-import { batchProcessingTools } from "./batch-processing-tools"
-import { enhancedSubtitleAutomation } from "./enhanced-subtitle-automation"
-import { renderPerformanceTools } from "./performance-tools"
-import { templateLayoutTools } from "./smart-templates-tools"
-import { subtitleTools } from "./subtitle-tools"
-// Сбор всех automation инструментов в один массив
-import { workflowAutomationTools } from "./workflow-tools"
+// Migrated tools
+import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing";
+import { performanceTools } from "@/domains/ai-tools/tools/automation/performance";
+import { templateTools } from "@/domains/ai-tools/tools/automation/templates";
+import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles";
+import { workflowTools } from "@/domains/ai-tools/tools/automation/workflow";
+import { enhancedSubtitleAutomationTools } from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation";
 
 export const automationTools = [
-  ...workflowAutomationTools,
+  ...workflowTools,
   ...batchProcessingTools,
-  ...renderPerformanceTools,
-  ...templateLayoutTools,
+  ...performanceTools,
+  ...templateTools,
   ...subtitleTools,
-  // Enhanced subtitle automation (новый AI инструмент)
-  enhancedSubtitleAutomation,
-]
+  ...enhancedSubtitleAutomationTools,
+];
 
-export const AUTOMATION_TOOLS_COUNT = automationTools.length
+export const AUTOMATION_TOOLS_COUNT = automationTools.length;

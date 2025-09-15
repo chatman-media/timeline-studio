@@ -4,18 +4,19 @@
  * Экспорт проектов, интеграция с платформами и конвертация форматов
  */
 
-// Export management инструменты
-export * from "./export-tools"
-// Format conversion инструменты
-export * from "./format-conversion-tools"
-// Platform integration инструменты
-export * from "./platform-integration-tools"
+// Migrated tools
+import { exportTools } from "@/domains/ai-tools/tools/integration/export";
+import { formatConversionTools } from "@/domains/ai-tools/tools/integration/format-conversion";
 
-// Сбор всех integration инструментов в один массив
-import { exportManagementTools } from "./export-tools"
-import { mediaProcessingTools } from "./format-conversion-tools"
-import { platformOptimizationTools } from "./platform-integration-tools"
+// Not migrated tools
+export * from "./platform-integration-tools";
 
-export const integrationTools = [...exportManagementTools, ...platformOptimizationTools, ...mediaProcessingTools]
+import { platformOptimizationTools } from "./platform-integration-tools";
 
-export const INTEGRATION_TOOLS_COUNT = integrationTools.length
+export const integrationTools = [
+  ...exportTools,
+  ...platformOptimizationTools,
+  ...formatConversionTools,
+];
+
+export const INTEGRATION_TOOLS_COUNT = integrationTools.length;

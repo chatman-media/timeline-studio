@@ -1,12 +1,16 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
+import { TimelineProvider, TimelineProjectProvider } from "@/domains/video-editing/providers/timeline-providers"
 import type { MediaFile } from "@/features/media/types/media"
 import { PlayerControls } from "../player-controls"
 
 // Вспомогательная функция для рендеринга с провайдерами
 const renderWithProviders = (ui: React.ReactElement) => {
-  return render(<TimelineProvider>{ui}</TimelineProvider>)
+  return render(
+    <TimelineProjectProvider>
+      <TimelineProvider>{ui}</TimelineProvider>
+    </TimelineProjectProvider>
+  )
 }
 
 // Мокаем компоненты UI
@@ -34,8 +38,8 @@ vi.mock("@/components/ui/slider", () => ({
 }))
 
 // Мокаем дочерние компоненты
-vi.mock("../components/prerender-controls", () => ({
-  PrerenderControls: () => <div data-testid="prerender-controls">Prerender Controls</div>,
+vi.mock("../prerender-controls", () => ({
+  PrerenderControls: vi.fn(() => <div data-testid="prerender-controls">Prerender Controls</div>),
 }))
 
 vi.mock("../components/volume-slider", () => ({
@@ -92,19 +96,19 @@ vi.mock("@/features/multicam/hooks/use-multicam", () => ({
 // Мокаем хуки
 const mockPlayerContext = {
   isPlaying: false,
-  play: vi.fn().mockResolvedValue(undefined),
-  pause: vi.fn().mockResolvedValue(undefined),
-  seek: vi.fn().mockResolvedValue(undefined),
+  play: Object.assign(vi.fn().mockResolvedValue(undefined), { bind: vi.fn() }),
+  pause: Object.assign(vi.fn().mockResolvedValue(undefined), { bind: vi.fn() }),
+  seek: Object.assign(vi.fn().mockResolvedValue(undefined), { bind: vi.fn() }),
   volume: 0.75,
-  setVolume: vi.fn(),
+  setVolume: Object.assign(vi.fn(), { bind: vi.fn() }),
   isRecording: false,
-  setIsRecording: vi.fn(),
-  setIsSeeking: vi.fn(),
+  setIsRecording: Object.assign(vi.fn(), { bind: vi.fn() }),
+  setIsSeeking: Object.assign(vi.fn(), { bind: vi.fn() }),
   isChangingCamera: false,
   isResizableMode: false,
-  setIsResizableMode: vi.fn(),
+  setIsResizableMode: Object.assign(vi.fn(), { bind: vi.fn() }),
   videoSource: "timeline" as const,
-  setVideoSource: vi.fn(),
+  setVideoSource: Object.assign(vi.fn(), { bind: vi.fn() }),
 }
 
 vi.mock("../services/player-provider", () => ({
@@ -113,7 +117,7 @@ vi.mock("../services/player-provider", () => ({
 
 const mockFullscreen = {
   isFullscreen: false,
-  toggleFullscreen: vi.fn(),
+  toggleFullscreen: Object.assign(vi.fn(), { bind: vi.fn() }),
 }
 
 vi.mock("../hooks/use-fullscreen", () => ({
@@ -128,6 +132,47 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("@/features/media/utils/video", () => ({
   getFrameTime: (_file: MediaFile) => 1 / 30, // 30 fps
+}))
+
+// Мокаем video-editing-orchestrator
+vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+  getVideoEditingOrchestrator: () => ({
+    getActors: () => ({
+      timeline: {
+        send: vi.fn(),
+        getSnapshot: () => ({
+          context: {
+            project: null,
+            isLoading: false,
+            hasUnsavedChanges: false,
+            isPlaying: false,
+            currentTime: 0,
+            playbackRate: 1,
+            duration: 0,
+            tracks: [],
+            clips: [],
+            selectedClipIds: [],
+            selectedTrackIds: [],
+            selectedSectionIds: []
+          }
+        })
+      }
+    }),
+    createProject: Object.assign(vi.fn(), { bind: vi.fn() }),
+    saveProject: Object.assign(vi.fn(), { bind: vi.fn() }),
+    loadProject: Object.assign(vi.fn(), { bind: vi.fn() }),
+    play: Object.assign(vi.fn(), { bind: vi.fn() }),
+    pause: Object.assign(vi.fn(), { bind: vi.fn() }),
+    stopPlayback: Object.assign(vi.fn(), { bind: vi.fn() }),
+    seek: Object.assign(vi.fn(), { bind: vi.fn() }),
+    addTrack: Object.assign(vi.fn(), { bind: vi.fn() }),
+    removeTrack: Object.assign(vi.fn(), { bind: vi.fn() }),
+    updateTrack: Object.assign(vi.fn(), { bind: vi.fn() }),
+    addClip: Object.assign(vi.fn(), { bind: vi.fn() }),
+    removeClip: Object.assign(vi.fn(), { bind: vi.fn() }),
+    updateClip: Object.assign(vi.fn(), { bind: vi.fn() }),
+    executeCommand: Object.assign(vi.fn(), { bind: vi.fn() })
+  })
 }))
 
 describe("PlayerControls", () => {
@@ -374,7 +419,7 @@ describe("PlayerControls", () => {
     })
 
     it("должен показывать правильную иконку для текущего источника", () => {
-      const { rerender } = render(<PlayerControls currentTime={0} file={mockFile} />)
+      const { rerender } = renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       // В режиме timeline
       expect(screen.getByTestId("tvminimalplay-icon")).toBeInTheDocument()
@@ -382,7 +427,13 @@ describe("PlayerControls", () => {
 
       // Переключаем на browser
       mockPlayerContext.videoSource = "browser" as any
-      rerender(<PlayerControls currentTime={0} file={mockFile} />)
+      rerender(
+        <TimelineProjectProvider>
+          <TimelineProvider>
+            <PlayerControls currentTime={0} file={mockFile} />
+          </TimelineProvider>
+        </TimelineProjectProvider>
+      )
 
       // В режиме browser
       expect(screen.getByTestId("imageplay-icon")).toBeInTheDocument()

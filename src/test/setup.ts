@@ -327,5 +327,14 @@ declare module "vitest" {
     toBeInTheDocument(): T
     toHaveClass(className: string): T
     toHaveStyle(style: Record<string, any>): T
+    toHaveAttribute(attr: string, value?: string): T
+    toBeDisabled(): T
+    toBeEnabled(): T
+    toHaveValue(value: string | number): T
+    toBeChecked(): T
+    toHaveTextContent(text: string): T
+    toBeVisible(): T
+    toBeEmptyDOMElement(): T
+    toHaveFocus(): T
   }
 }

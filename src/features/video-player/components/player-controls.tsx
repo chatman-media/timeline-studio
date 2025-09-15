@@ -93,10 +93,14 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
 
   // Нормализуем currentTime для отображения, если это Unix timestamp
   const calculatedDisplayTime = useMemo(() => {
+    // Проверяем на валидность значений
+    if (typeof currentTime !== 'number' || isNaN(currentTime)) {
+      return 0
+    }
     if (currentTime > 365 * 24 * 60 * 60) {
       // Если время больше года в секундах, это, вероятно, Unix timestamp
       // Используем локальное время для отображения
-      return localDisplayTime
+      return typeof localDisplayTime === 'number' && !isNaN(localDisplayTime) ? localDisplayTime : 0
     }
     return currentTime
   }, [currentTime, localDisplayTime])
@@ -227,13 +231,13 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
               <div
                 className="absolute top-0 left-0 h-full rounded-full bg-teal dark:bg-white transition-all duration-200 ease-out"
                 style={{
-                  width: `${(Math.max(0, calculatedDisplayTime) / (file.duration ?? 100)) * 100}%`,
+                  width: `${typeof calculatedDisplayTime === 'number' && !isNaN(calculatedDisplayTime) && typeof file.duration === 'number' && !isNaN(file.duration) && file.duration > 0 ? (Math.max(0, calculatedDisplayTime) / file.duration) * 100 : 0}%`,
                 }}
               />
               <div
                 className="absolute top-1/2 h-[14px] w-[14px] -translate-y-1/2 rounded-full border border-teal dark:border-teal bg-teal transition-all duration-200 ease-out"
                 style={{
-                  left: `calc(${(Math.max(0, calculatedDisplayTime) / (file.duration ?? 100)) * 100}% - 7px)`,
+                  left: `calc(${typeof calculatedDisplayTime === 'number' && !isNaN(calculatedDisplayTime) && typeof file.duration === 'number' && !isNaN(file.duration) && file.duration > 0 ? (Math.max(0, calculatedDisplayTime) / file.duration) * 100 : 0}% - 7px)`,
                 }}
               />
               <Slider
