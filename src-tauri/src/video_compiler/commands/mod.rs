@@ -48,8 +48,6 @@ pub mod workflow;
 #[allow(ambiguous_glob_reexports)]
 pub use ai_api_proxy::*;
 #[allow(ambiguous_glob_reexports)]
-pub use ollama_proxy::*;
-#[allow(ambiguous_glob_reexports)]
 pub use batch::*;
 pub use cache::*;
 #[allow(ambiguous_glob_reexports, hidden_glob_reexports)]
