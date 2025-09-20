@@ -840,6 +840,21 @@ ${scenes.map((s) => `${s.id}: тип=${s.type}, описание="${s.descriptio
   </scenes>
 </sceneAnalysis>`
   }
+
+  /**
+   * Singleton instance getter
+   */
+  private static instance: SceneAnalysisEngine | null = null
+
+  /**
+   * Get singleton instance of SceneAnalysisEngine
+   */
+  static getInstance(): SceneAnalysisEngine {
+    if (!SceneAnalysisEngine.instance) {
+      SceneAnalysisEngine.instance = new SceneAnalysisEngine()
+    }
+    return SceneAnalysisEngine.instance
+  }
 }
 
 // Дополнительные типы

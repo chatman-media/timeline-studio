@@ -1,6 +1,6 @@
 // Platform Adaptation Types
 
-import type { ContentType } from "./content-analysis"
+import { ContentType } from "./content-analysis"
 
 // Platform Types
 export interface Platform {
@@ -681,3 +681,6 @@ export enum PlatformImportance {
   HIGH = "high",
   CRITICAL = "critical",
 }
+
+// Re-export ContentType for convenience
+export { ContentType } from "./content-analysis"

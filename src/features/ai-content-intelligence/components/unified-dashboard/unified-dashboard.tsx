@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PipelineProgress } from "@/domains/ai-services"
 import { IntelligentContent, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { MediaInfo } from "@/domains/media-management"
+import { createDefaultAIConfig } from "@/domains/shared/utils/config"
 import { cn } from "@/lib/utils"
 import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
 import { useContentPipeline } from "../../hooks/use-content-pipeline"
@@ -502,7 +503,7 @@ const OverviewTab: FC<OverviewTabProps> = ({
                     <div className="flex items-center gap-3">
                       <FileVideo className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="font-medium text-sm">{file.filename}</p>
+                        <p className="font-medium text-sm">{file.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {formatFileSize(file.size)} • {formatDuration(file.duration)}
                         </p>

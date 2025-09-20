@@ -3,6 +3,31 @@
 import { AudioAnalysis, ContentInsights } from "@/domains/ai-services/types"
 import { QualityAnalysisResult, VideoMetadata } from "../media-analysis"
 
+// Дополнительные типы для AI Intelligence Machine
+export enum NarrativeType {
+  THREE_ACT = "three_act",
+  HERO_JOURNEY = "hero_journey",
+  STORY_CIRCLE = "story_circle",
+  NON_LINEAR = "non_linear",
+  EPISODIC = "episodic",
+  DOCUMENTARY = "documentary",
+}
+
+export enum PaceType {
+  SLOW = "slow",
+  MODERATE = "moderate",
+  FAST = "fast",
+  DYNAMIC = "dynamic",
+}
+
+export enum ProcessingStatus {
+  PENDING = "pending",
+  IN_PROGRESS = "in_progress",
+  COMPLETED = "completed",
+  FAILED = "failed",
+  CANCELLED = "cancelled",
+}
+
 // Временный тип для VideoAnalysis пока не найден точный импорт
 export interface VideoAnalysis {
   metadata?: VideoMetadata

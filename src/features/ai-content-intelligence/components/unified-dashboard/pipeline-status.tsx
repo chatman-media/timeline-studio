@@ -3,8 +3,7 @@
  * Отображает прогресс обработки pipeline
  */
 
-import { PipelineProgress } from "@/domains/ai-services"
-import { ProcessingStatus } from "@/domains/ai-services/types"
+import { PipelineProgress, ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 import { cn } from "@/lib/utils"
 
 interface PipelineStatusProps {
@@ -67,7 +66,7 @@ export function PipelineStatus({ progress, className }: PipelineStatusProps) {
 
         {/* Step Details */}
         <div className="space-y-2">
-          {progress.steps.map((step, index) => (
+          {progress.steps.map((step: any, index: any) => (
             <div key={index} className="flex items-center space-x-2">
               <div
                 className={cn(
@@ -86,7 +85,7 @@ export function PipelineStatus({ progress, className }: PipelineStatusProps) {
                 </div>
                 {step.subSteps && step.subSteps.length > 0 && (
                   <div className="ml-4 mt-1 space-y-1">
-                    {step.subSteps.map((subStep, subIndex) => (
+                    {step.subSteps.map((subStep: any, subIndex: any) => (
                       <div key={subIndex} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-gray-400 rounded-full" />
                         <span className="text-xs text-muted-foreground">

@@ -25,9 +25,8 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { UnifiedContentAnalysis } from "@/domains/ai-services/services"
-import { EmotionalTone } from "@/domains/ai-services/services/script-generation"
+import { Emotion, EmotionalTone } from "@/domains/ai-services/services/script-generation"
 import { ScriptTemplate } from "@/domains/ai-services/services/script-generation/template-engine"
-import { Emotion } from "@/domains/ai-services/types"
 import { Genre } from "@/domains/shared/types/ai-tools/content-analysis"
 import {
   EditingStyle,

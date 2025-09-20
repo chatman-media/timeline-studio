@@ -2,7 +2,7 @@
  * AI инструмент для предложения дополнительных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { ResourceToolResult, SuggestResourcesParams } from "./types"
 import {

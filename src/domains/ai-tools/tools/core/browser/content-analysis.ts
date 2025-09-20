@@ -2,7 +2,7 @@
  * AI инструменты для анализа контента и предложения источников с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { AnalyzeMissingContentParams, BrowserToolResult, ExportFileListParams, SuggestImportParams } from "./types"
 import { formatFileSize, getBrowserFiles, getBrowserStats, hasBrowserAccess } from "./utils/helpers"

@@ -279,7 +279,7 @@ export class AICoreDIContainer implements AIDIContainer {
           baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
         },
         grok: {
-          apiKey: process.env.GROK_API_KEY || process.env.OPENAI_API_KEY,
+          apiKey: process.env.GROK_API_KEY,
           maxRetries: 3,
         },
       },

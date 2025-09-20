@@ -5,41 +5,22 @@
  * ресурсами, браузером, плеером и таймлайном
  */
 
-import { ApiKeyLoader, getAIContainer } from "@/domains/ai-core"
-import { type ClaudeTool } from "@/domains/ai-core/providers/claude"
-import {
-  AIToolResult,
-  batchProcessingTools,
-  browserTools,
-  contentIntelligenceTools,
-  effectsFiltersTools,
-  executeBatchProcessingTool,
-  executeBrowserTool,
-  executeContentIntelligenceTool,
-  executeEffectsFiltersTool,
-  executeExportManagementTool,
-  executeMultimodalAnalysisTool,
-  executePersonIdentificationTool,
-  executePlatformOptimizationTool,
-  executePlayerTool,
-  executeResourceTool,
-  executeSubtitleTool,
-  executeTimelineTool,
-  executeVideoAnalysisTool,
-  executeWhisperTool,
-  executeWorkflowAutomationTool,
-  exportManagementTools,
-  multimodalAnalysisTools,
-  personIdentificationTools,
-  platformOptimizationTools,
-  playerTools,
-  resourceTools,
-  subtitleTools,
-  timelineTools,
-  videoAnalysisTools,
-  whisperTools,
-  workflowAutomationTools,
-} from "@/features/ai-chat/tools"
+import { getAIContainer, type UnifiedAITool } from "@/domains/ai-core"
+import { contentIntelligenceTools } from "@/domains/ai-tools/tools/analysis/content-intelligence"
+import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
+import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
+import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
+import { whisperTools } from "@/domains/ai-tools/tools/analysis/whisper"
+import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing"
+import { performanceTools as platformOptimizationTools } from "@/domains/ai-tools/tools/automation/performance"
+import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
+import { workflowTools as workflowAutomationTools } from "@/domains/ai-tools/tools/automation/workflow"
+import { browserTools } from "@/domains/ai-tools/tools/core/browser"
+import { effectsFiltersTools } from "@/domains/ai-tools/tools/core/effects-filters-tools"
+import { playerTools } from "@/domains/ai-tools/tools/core/player"
+import { resourceTools } from "@/domains/ai-tools/tools/core/resources"
+import { timelineTools } from "@/domains/ai-tools/tools/core/timeline"
+import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
 import {
   AIBrowserContext,
   AIPlayerContext,
@@ -76,7 +57,8 @@ export interface TimelineAIResult {
  * Сервис для AI интеграции с Timeline Studio
  */
 export class TimelineAIService {
-  private allTools: ClaudeTool[]
+  private allTools: UnifiedAITool[]
+  private aiContainer = getAIContainer()
 
   constructor(
     private resourcesProvider: ResourcesContextType,
@@ -105,31 +87,36 @@ export class TimelineAIService {
   }
 
   /**
-   * Инициализирует API ключ Claude из безопасного хранилища
-   * @returns Promise<boolean> - успешность загрузки ключа
+   * Инициализирует API ключи из безопасного хранилища
+   * @returns Promise<boolean> - успешность загрузки ключей
    */
   public async initializeApiKey(): Promise<boolean> {
-    const apiKeyLoader = ApiKeyLoader.getInstance()
-    const apiKey = await apiKeyLoader.getApiKey("claude")
+    try {
+      // Используем unified provider для инициализации всех доступных провайдеров
+      const providers = ["openai", "anthropic", "google"]
+      let initializedCount = 0
 
-    if (apiKey) {
-      // Обновляем кэш через API Keys Management
-      const apiKeyLoader = ApiKeyLoader.getInstance()
-      apiKeyLoader.updateCache("claude", apiKey)
-      return true
+      for (const provider of providers) {
+        const apiKey = await this.aiContainer.apiKeyManager.getApiKey(provider)
+        if (apiKey) {
+          initializedCount++
+        }
+      }
+
+      return initializedCount > 0
+    } catch (error) {
+      console.error("Failed to initialize API keys:", error)
+      return false
     }
-
-    return false
   }
 
   /**
-   * Устанавливает API ключ для Claude
+   * Устанавливает API ключ для указанного провайдера
+   * @param provider Название провайдера (openai, anthropic, google)
    * @param apiKey API ключ
    */
-  public setApiKey(apiKey: string): void {
-    // Используем современный API Keys Management
-    const apiKeyLoader = ApiKeyLoader.getInstance()
-    apiKeyLoader.updateCache("claude", apiKey)
+  public setApiKey(provider: string, apiKey: string): void {
+    this.aiContainer.apiKeyManager.setApiKey(provider, apiKey)
   }
 
   /**
@@ -316,28 +303,30 @@ export class TimelineAIService {
 
       const systemPrompt = this.createSystemPrompt(context)
 
-      const container = getAIContainer()
-      const aiService = await container.resolve("UnifiedAIService")
-
-      const response = await (aiService as any).sendRequest(
-        "claude-4-sonnet-latest",
-        [{ role: "user", content: fullPrompt }],
-        {
-          system: systemPrompt,
-          temperature: 0.6,
-          max_tokens: 3000,
-          tools: this.allTools,
+      // Используем unified AI service с автоматическим выбором провайдера
+      const response = await this.aiContainer.aiService.processRequest({
+        prompt: fullPrompt,
+        systemPrompt,
+        tools: this.allTools,
+        context: {
+          timelineContext: context,
+          command,
+          params,
         },
-      )
-
-      const result = await this.processClaudeResponse(response, context)
+        options: {
+          temperature: 0.6,
+          maxTokens: 3000,
+        },
+      })
 
       return {
-        success: result.success,
-        message: result.message ?? "",
-        data: result.data,
+        success: response.success,
+        message: response.message,
+        data: response.data,
+        errors: response.errors,
+        warnings: response.warnings,
         executionTime: Date.now() - startTime,
-        nextActions: [], // AIToolResult не имеет nextActions
+        nextActions: response.nextActions,
       }
     } catch (error) {
       return {

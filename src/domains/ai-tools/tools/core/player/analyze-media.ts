@@ -2,7 +2,7 @@
  * AI инструмент для анализа медиа в плеере с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { MediaAnalysisParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, parseFps } from "./utils/helpers"

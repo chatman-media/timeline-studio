@@ -137,10 +137,34 @@ export class UpdateService {
       clearInterval(this.checkInterval)
     }
 
-    this.checkInterval = setInterval(() => this.checkForUpdatesQuietly(), intervalMinutes * 60 * 1000)
+    console.log(`[UpdateService] Starting auto-check with interval ${intervalMinutes} minutes`)
+    let checkCount = 0
+
+    this.checkInterval = setInterval(
+      () => {
+        checkCount++
+        const startTime = performance.now()
+        console.log(`[UpdateService] Running auto-check #${checkCount}`)
+
+        this.checkForUpdatesQuietly().finally(() => {
+          const duration = performance.now() - startTime
+          console.log(`[UpdateService] Auto-check #${checkCount} completed in ${duration.toFixed(2)}ms`)
+
+          if (duration > 5000) {
+            console.warn(
+              `[UpdateService] WARNING: Auto-check #${checkCount} took ${duration.toFixed(2)}ms - this might block the UI`,
+            )
+          }
+        })
+      },
+      intervalMinutes * 60 * 1000,
+    )
 
     // Первая проверка через 30 секунд после включения
-    setTimeout(() => this.checkForUpdatesQuietly(), 30000)
+    setTimeout(() => {
+      console.log("[UpdateService] Running initial auto-check")
+      this.checkForUpdatesQuietly()
+    }, 30000)
   }
 
   /**

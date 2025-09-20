@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { TimelineProvider, TimelineProjectProvider } from "@/domains/video-editing/providers/timeline-providers"
+import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import type { MediaFile } from "@/features/media/types/media"
 import { PlayerControls } from "../player-controls"
 
@@ -9,7 +9,7 @@ const renderWithProviders = (ui: React.ReactElement) => {
   return render(
     <TimelineProjectProvider>
       <TimelineProvider>{ui}</TimelineProvider>
-    </TimelineProjectProvider>
+    </TimelineProjectProvider>,
   )
 }
 
@@ -153,10 +153,10 @@ vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
             clips: [],
             selectedClipIds: [],
             selectedTrackIds: [],
-            selectedSectionIds: []
-          }
-        })
-      }
+            selectedSectionIds: [],
+          },
+        }),
+      },
     }),
     createProject: Object.assign(vi.fn(), { bind: vi.fn() }),
     saveProject: Object.assign(vi.fn(), { bind: vi.fn() }),
@@ -171,8 +171,8 @@ vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
     addClip: Object.assign(vi.fn(), { bind: vi.fn() }),
     removeClip: Object.assign(vi.fn(), { bind: vi.fn() }),
     updateClip: Object.assign(vi.fn(), { bind: vi.fn() }),
-    executeCommand: Object.assign(vi.fn(), { bind: vi.fn() })
-  })
+    executeCommand: Object.assign(vi.fn(), { bind: vi.fn() }),
+  }),
 }))
 
 describe("PlayerControls", () => {
@@ -432,7 +432,7 @@ describe("PlayerControls", () => {
           <TimelineProvider>
             <PlayerControls currentTime={0} file={mockFile} />
           </TimelineProvider>
-        </TimelineProjectProvider>
+        </TimelineProjectProvider>,
       )
 
       // В режиме browser

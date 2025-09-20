@@ -4,7 +4,7 @@
  */
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
-import type { IAITool, AIToolMetadata } from "../../../types"
+import type { AIToolMetadata, IAITool } from "../../../types"
 
 // TODO: Перенести эти типы в shared/types/ai-tools
 export interface EnhancedSubtitleInput {
@@ -104,7 +104,13 @@ async function adaptAutoGenerateFromVideo(input: EnhancedSubtitleInput): Promise
     subtitles: [],
     sources: { fromSpeech: [], fromOCR: [], fromSceneAnalysis: [], combined: [] },
     quality: { overallConfidence: 0.9 },
-    processing: { detectedLanguages: [], identifiedSpeakers: 0, processedScenes: 0, ocrTextBlocks: 0, totalProcessingTime: 0 },
+    processing: {
+      detectedLanguages: [],
+      identifiedSpeakers: 0,
+      processedScenes: 0,
+      ocrTextBlocks: 0,
+      totalProcessingTime: 0,
+    },
     recommendations: [],
   }
 }

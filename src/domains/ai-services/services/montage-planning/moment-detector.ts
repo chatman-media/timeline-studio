@@ -6,13 +6,16 @@
 import type {
   AnalysisOptions,
   AudioAnalysis,
-  MomentCluster,
   MomentScore,
-  TemporalDistribution,
-  TimeGap,
   VideoAnalysis,
-} from "../types"
-import { CameraMovement, EmotionalTone, LightingCondition, MomentCategory, SceneType } from "../types"
+} from "../../../../features/montage-planner/types/index"
+import {
+  CameraMovement,
+  EmotionalTone,
+  LightingCondition,
+  MomentCategory,
+  SceneType,
+} from "../../../../features/montage-planner/types/index"
 
 export class MomentDetector {
   private static instance: MomentDetector

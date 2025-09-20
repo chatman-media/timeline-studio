@@ -1,11 +1,5 @@
 import { AIConfig } from "@/domains/ai-services/types"
-
-export enum AIProvider {
-  LOCAL = "local",
-  OLLAMA = "ollama", // Добавлен для альфа-релиза
-  OPENAI = "openai",
-  ANTHROPIC = "anthropic",
-}
+import { AccuracyLevel, AIProvider, AnalysisDepth, SpeedPriority } from "../types/ai-tools/ai-config"
 
 export function createDefaultAIConfig(overrides?: Partial<AIConfig>): AIConfig {
   const defaultConfig: AIConfig = {

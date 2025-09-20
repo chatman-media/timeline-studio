@@ -2,18 +2,9 @@
  * AI инструменты для автоматизации рабочих процессов видеомонтажа с использованием BaseAITool
  */
 
-import {
-  WorkflowAutomationService,
-  WorkflowParams,
-  WorkflowType,
-} from "@/domains/ai-services";
-import {
-  type AIToolExecutionOptions,
-  type AIToolLogger,
-  type AIToolResult,
-  BaseAITool,
-} from "../../../base";
-import type { IAITool, AIToolMetadata } from "../../../types";
+import { WorkflowAutomationService, WorkflowParams, WorkflowType } from "@/domains/ai-services"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import type { AIToolMetadata, IAITool } from "../../../types"
 
 // Типы для операций автоматизации workflow
 export interface WorkflowAutomationInput {
@@ -25,37 +16,37 @@ export interface WorkflowAutomationInput {
     | "batch_process_videos"
     | "optimize_workflow_performance"
     | "manage_workflow_templates"
-    | "validate_workflow_compatibility";
-  complexity?: string;
-  category?: string;
-  workflowType?: WorkflowType;
-  inputVideos?: string[];
-  outputSettings?: any;
-  customization?: any;
-  reason?: string;
-  workflowName?: string;
-  steps?: any[];
-  videoPaths?: string[];
-  batchSettings?: any;
-  performanceMetrics?: any;
-  templateAction?: string;
-  projectRequirements?: any;
+    | "validate_workflow_compatibility"
+  complexity?: string
+  category?: string
+  workflowType?: WorkflowType
+  inputVideos?: string[]
+  outputSettings?: any
+  customization?: any
+  reason?: string
+  workflowName?: string
+  steps?: any[]
+  videoPaths?: string[]
+  batchSettings?: any
+  performanceMetrics?: any
+  templateAction?: string
+  projectRequirements?: any
 }
 
 export interface WorkflowAutomationResult {
-  operation: string;
-  success: boolean;
-  availableWorkflows?: any[];
-  executionResult?: any;
-  createdWorkflow?: any;
-  batchResults?: any[];
-  optimizations?: any;
-  templateLibrary?: any;
-  validationResult?: any;
-  workflowData?: any;
-  message: string;
-  recommendations: string[];
-  warnings?: string[];
+  operation: string
+  success: boolean
+  availableWorkflows?: any[]
+  executionResult?: any
+  createdWorkflow?: any
+  batchResults?: any[]
+  optimizations?: any
+  templateLibrary?: any
+  validationResult?: any
+  workflowData?: any
+  message: string
+  recommendations: string[]
+  warnings?: string[]
 }
 
 /**
@@ -65,19 +56,18 @@ export class WorkflowTool extends BaseAITool implements IAITool {
   metadata: AIToolMetadata = {
     name: "workflow-automation",
     displayName: "Автоматизация рабочих процессов",
-    description:
-      "Инструмент для создания и выполнения автоматизированных рабочих процессов",
+    description: "Инструмент для создания и выполнения автоматизированных рабочих процессов",
     category: "automation/workflow",
     tags: ["workflow", "automation", "process"],
     version: "1.0.0",
     author: "Timeline Studio",
-  };
+  }
 
-  private workflowService: WorkflowAutomationService;
+  private workflowService: WorkflowAutomationService
 
   constructor(logger?: AIToolLogger) {
-    super("WorkflowTool", logger);
-    this.workflowService = WorkflowAutomationService.getInstance();
+    super("WorkflowTool", logger)
+    this.workflowService = WorkflowAutomationService.getInstance()
   }
 
   /**
@@ -90,7 +80,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
       const validation = this.validateInput(input, (data) => {
-        const errors: string[] = [];
+        const errors: string[] = []
 
         const validOperations = [
           "get_available_workflows",
@@ -101,31 +91,28 @@ export class WorkflowTool extends BaseAITool implements IAITool {
           "optimize_workflow_performance",
           "manage_workflow_templates",
           "validate_workflow_compatibility",
-        ];
+        ]
         if (!validOperations.includes(data.operation)) {
-          errors.push(`Неподдерживаемая операция: ${data.operation}`);
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
         }
 
         // Специфические валидации
         if (data.operation === "execute_workflow" && !data.workflowType) {
-          errors.push("Требуется workflowType для выполнения workflow");
+          errors.push("Требуется workflowType для выполнения workflow")
         }
 
-        if (
-          data.operation === "batch_process_videos" &&
-          (!data.videoPaths || data.videoPaths.length === 0)
-        ) {
-          errors.push("Требуется массив videoPaths для пакетной обработки");
+        if (data.operation === "batch_process_videos" && (!data.videoPaths || data.videoPaths.length === 0)) {
+          errors.push("Требуется массив videoPaths для пакетной обработки")
         }
 
-        return { isValid: errors.length === 0, errors };
-      });
+        return { isValid: errors.length === 0, errors }
+      })
 
       if (!validation.isValid) {
-        throw new Error(validation.errors.join(", "));
+        throw new Error(validation.errors.join(", "))
       }
 
-      let result: WorkflowAutomationResult;
+      let result: WorkflowAutomationResult
 
       switch (input.operation) {
         case "get_available_workflows":
@@ -140,12 +127,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
                 complexity: "simple",
                 duration: "2-5 min",
                 description: "Быстрое создание контента для социальных сетей",
-                steps: [
-                  "trim",
-                  "add_captions",
-                  "apply_template",
-                  "export_formats",
-                ],
+                steps: ["trim", "add_captions", "apply_template", "export_formats"],
               },
               {
                 id: "business_presentation",
@@ -154,13 +136,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
                 complexity: "medium",
                 duration: "5-15 min",
                 description: "Создание презентационных роликов",
-                steps: [
-                  "intro",
-                  "content_analysis",
-                  "transitions",
-                  "branding",
-                  "outro",
-                ],
+                steps: ["intro", "content_analysis", "transitions", "branding", "outro"],
               },
               {
                 id: "wedding_highlight",
@@ -168,15 +144,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
                 category: "personal",
                 complexity: "complex",
                 duration: "15-30 min",
-                description:
-                  "Создание свадебного ролика с музыкой и переходами",
-                steps: [
-                  "scene_detection",
-                  "best_moments",
-                  "music_sync",
-                  "color_correction",
-                  "export",
-                ],
+                description: "Создание свадебного ролика с музыкой и переходами",
+                steps: ["scene_detection", "best_moments", "music_sync", "color_correction", "export"],
               },
             ],
             message: `Найдено ${3} доступных workflow`,
@@ -185,8 +154,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Учтите категорию контента при выборе",
               "Проверьте совместимость с входными файлами",
             ],
-          };
-          break;
+          }
+          break
 
         case "execute_workflow":
           const workflowParams: WorkflowParams = {
@@ -194,10 +163,9 @@ export class WorkflowTool extends BaseAITool implements IAITool {
             inputVideos: input.inputVideos || [],
             outputDirectory: input.outputSettings?.outputDirectory || "/output",
             preferences: input.customization || {},
-          };
+          }
 
-          const executionResult =
-            await this.workflowService.executeWorkflow(workflowParams);
+          const executionResult = await this.workflowService.executeWorkflow(workflowParams)
 
           result = {
             operation: input.operation,
@@ -208,10 +176,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               workflowType: input.workflowType,
               status: "completed",
               processingTime: "3.2 seconds",
-              outputFiles: [
-                "/output/processed_video_1.mp4",
-                "/output/processed_video_2.mp4",
-              ],
+              outputFiles: ["/output/processed_video_1.mp4", "/output/processed_video_2.mp4"],
               stepsCompleted: 5,
               totalSteps: 5,
             },
@@ -221,8 +186,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Экспортируйте в нужные форматы",
               "Сохраните настройки для повторного использования",
             ],
-          };
-          break;
+          }
+          break
 
         case "create_custom_workflow":
           result = {
@@ -247,8 +212,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Сохраните как шаблон для повторного использования",
               "Настройте параметры для оптимизации производительности",
             ],
-          };
-          break;
+          }
+          break
 
         case "analyze_video_for_recommendations":
           result = {
@@ -260,8 +225,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Примените рекомендации по улучшению качества",
               "Используйте инструменты стабилизации при необходимости",
             ],
-          };
-          break;
+          }
+          break
 
         case "batch_process_videos":
           result = {
@@ -280,8 +245,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Организуйте выходные файлы по папкам",
               "Создайте отчет об обработке",
             ],
-          };
-          break;
+          }
+          break
 
         case "optimize_workflow_performance":
           result = {
@@ -311,8 +276,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Мониторьте производительность после изменений",
               "Настройте размер пакета под ваше железо",
             ],
-          };
-          break;
+          }
+          break
 
         case "manage_workflow_templates":
           result = {
@@ -322,12 +287,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               totalTemplates: 15,
               userTemplates: 8,
               systemTemplates: 7,
-              categories: [
-                "social_media",
-                "business",
-                "personal",
-                "educational",
-              ],
+              categories: ["social_media", "business", "personal", "educational"],
               recentlyUsed: [
                 { id: "quick_social_media", lastUsed: "2024-12-19" },
                 { id: "business_presentation", lastUsed: "2024-12-18" },
@@ -339,8 +299,8 @@ export class WorkflowTool extends BaseAITool implements IAITool {
               "Создайте резервную копию пользовательских шаблонов",
               "Организуйте шаблоны по категориям",
             ],
-          };
-          break;
+          }
+          break
 
         case "validate_workflow_compatibility":
           result = {
@@ -349,21 +309,13 @@ export class WorkflowTool extends BaseAITool implements IAITool {
             validationResult: {
               compatible: true,
               issues: [],
-              warnings: [
-                "Некоторые эффекты могут работать медленнее на текущем железе",
-              ],
-              recommendations: [
-                "Workflow совместим с текущим проектом",
-                "Рассмотрите обновление драйверов GPU",
-              ],
+              warnings: ["Некоторые эффекты могут работать медленнее на текущем железе"],
+              recommendations: ["Workflow совместим с текущим проектом", "Рассмотрите обновление драйверов GPU"],
             },
             message: "Валидация совместимости завершена",
-            recommendations: [
-              "Workflow готов к использованию",
-              "Примите к сведению предупреждения",
-            ],
-          };
-          break;
+            recommendations: ["Workflow готов к использованию", "Примите к сведению предупреждения"],
+          }
+          break
 
         default:
           result = {
@@ -371,15 +323,15 @@ export class WorkflowTool extends BaseAITool implements IAITool {
             success: false,
             message: "Функция пока не реализована",
             recommendations: ["Функция будет добавлена в следующих версиях"],
-          };
-          break;
+          }
+          break
       }
 
-      return result;
-    }, options);
+      return result
+    }, options)
   }
 }
 
-export const workflowTools = [new WorkflowTool()];
+export const workflowTools = [new WorkflowTool()]
 
-export const WORKFLOW_TOOLS_COUNT = workflowTools.length;
+export const WORKFLOW_TOOLS_COUNT = workflowTools.length

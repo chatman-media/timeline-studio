@@ -2,7 +2,12 @@
  * AI инструменты для поиска файлов в браузере с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolResult,
+  BaseAITool,
+} from "@/features/ai-chat/tools/base-ai-tool"
 import type { BrowserToolResult, SearchMediaParams } from "./types"
 import { findFilesByPattern, getBrowserFiles, getBrowserStateAccess, hasBrowserAccess } from "./utils/helpers"
 
@@ -127,7 +132,7 @@ export class FileSearchTool extends BaseAITool {
   /**
    * Выполняет поиск файлов
    */
-  private async performSearch(input: FileSearchInput, _context: any): Promise<FileSearchResult> {
+  private async performSearch(input: FileSearchInput, _context?: any): Promise<FileSearchResult> {
     const params: SearchMediaParams = {
       query: input.query,
       searchIn: input.searchIn || ["filename"],

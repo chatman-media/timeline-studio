@@ -11,8 +11,10 @@
 //! - `schema` - Команды создания и работы с элементами схемы (эффекты, фильтры, клипы, субтитры)
 //! - `prerender_commands` - Команды предрендеринга
 //! - `frame_extraction_commands` - Команды извлечения кадров
+//! - `ai_api_proxy` - Команды для проксирования AI API запросов (Claude, OpenAI и др.)
 //! - `misc` - Дополнительные команды
 
+pub mod ai_api_proxy;
 pub mod batch;
 pub mod cache;
 pub mod compiler_settings_commands;
@@ -43,6 +45,10 @@ pub mod workflow;
 // pub mod workflow_commands; // Заменено на модуль workflow
 
 // Re-export всех команд для удобства использования
+#[allow(ambiguous_glob_reexports)]
+pub use ai_api_proxy::*;
+#[allow(ambiguous_glob_reexports)]
+pub use ollama_proxy::*;
 #[allow(ambiguous_glob_reexports)]
 pub use batch::*;
 pub use cache::*;

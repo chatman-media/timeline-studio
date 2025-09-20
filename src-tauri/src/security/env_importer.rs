@@ -110,6 +110,11 @@ impl EnvImporter {
       vec!["DEEPSEEK_API_KEY".to_string(), "DEEPSEEK_KEY".to_string()],
     );
 
+    mappings.insert(
+      ApiKeyType::Grok,
+      vec!["GROK_API_KEY".to_string(), "GROK_KEY".to_string()],
+    );
+
     // Социальные сети - OAuth credentials
     mappings.insert(
       ApiKeyType::YouTube,
@@ -176,6 +181,7 @@ impl EnvImporter {
       ApiKeyType::OpenAI
       | ApiKeyType::Claude
       | ApiKeyType::DeepSeek
+      | ApiKeyType::Grok
       | ApiKeyType::Codecov
       | ApiKeyType::TauriAnalytics => {
         for env_var in _env_vars {
@@ -361,6 +367,9 @@ impl EnvImporter {
         ApiKeyType::DeepSeek => {
           env_content.push_str(&format!("DEEPSEEK_API_KEY=\"{}\"\n", key_data.value));
         }
+        ApiKeyType::Grok => {
+          env_content.push_str(&format!("GROK_API_KEY=\"{}\"\n", key_data.value));
+        }
         ApiKeyType::YouTube => {
           if let Some(oauth_data) = &key_data.oauth_data {
             env_content.push_str(&format!("YOUTUBE_CLIENT_ID=\"{}\"\n", oauth_data.client_id));
@@ -510,6 +519,7 @@ EMPTY_LINE_ABOVE=value
     assert!(mappings.contains_key(&ApiKeyType::OpenAI));
     assert!(mappings.contains_key(&ApiKeyType::Claude));
     assert!(mappings.contains_key(&ApiKeyType::DeepSeek));
+    assert!(mappings.contains_key(&ApiKeyType::Grok));
     assert!(mappings.contains_key(&ApiKeyType::YouTube));
     assert!(mappings.contains_key(&ApiKeyType::TikTok));
     assert!(mappings.contains_key(&ApiKeyType::Vimeo));
@@ -610,6 +620,8 @@ EMPTY_LINE_ABOVE=value
       env::remove_var("CLAUDE_KEY");
       env::remove_var("DEEPSEEK_API_KEY");
       env::remove_var("DEEPSEEK_KEY");
+      env::remove_var("GROK_API_KEY");
+      env::remove_var("GROK_KEY");
       env::remove_var("YOUTUBE_CLIENT_ID");
       env::remove_var("YOUTUBE_CLIENT_SECRET");
       env::remove_var("TIKTOK_CLIENT_ID");

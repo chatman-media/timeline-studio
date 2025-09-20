@@ -166,7 +166,10 @@ function convertClip(clip: TimelineClip): BackendClip {
     start_time: clip.startTime,
     end_time: clip.startTime + clip.duration,
     source_start: clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0,
-    source_end: clip.mediaEndTime !== null && clip.mediaEndTime !== undefined ? clip.mediaEndTime : (clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0) + clip.duration,
+    source_end:
+      clip.mediaEndTime !== null && clip.mediaEndTime !== undefined
+        ? clip.mediaEndTime
+        : (clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0) + clip.duration,
     speed: clip.speed || 1.0,
     volume: clip.volume ?? 1.0,
     effects: clip.effects?.map((e) => e.effectId) || [],

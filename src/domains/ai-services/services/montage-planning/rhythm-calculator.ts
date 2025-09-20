@@ -15,7 +15,7 @@ import {
   type RhythmPattern,
   type TempoChange,
   TempoChangeReason,
-} from "../types"
+} from "../../../../features/montage-planner/types/index"
 
 export class RhythmCalculator {
   private static instance: RhythmCalculator

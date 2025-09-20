@@ -2,7 +2,7 @@
  * AI инструмент для экспорта списка ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { ExportListParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, groupResourcesByType, hasResourcesAccess } from "./utils/helpers"

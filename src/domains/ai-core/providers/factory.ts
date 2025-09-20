@@ -189,19 +189,19 @@ export class AIProviderFactoryImpl implements AIProviderFactory {
       "claude-4-sonnet-latest": "Claude 4 Sonnet",
       "claude-4-opus-latest": "Claude 4 Opus",
       "claude-3-5-sonnet-20241022": "Claude 3.5 Sonnet",
-      "gpt-4o": "GPT-4o",
-      "gpt-4o-mini": "GPT-4o Mini",
+      "gpt-4.1": "GPT-4.1",
+      "gpt-5-nano": "GPT-5 Nano",
+      "gpt-5-mini": "GPT-5 Mini",
       "gpt-5": "GPT-5 (Preview)",
       "deepseek-chat": "DeepSeek Chat",
-      "deepseek-coder": "DeepSeek Coder",
-      "deepseek-v3": "DeepSeek V3",
+      "deepseek-reasoner": "DeepSeek Reasoner",
+      "deepseek-v3.1": "DeepSeek V3.1",
       "llama3.2": "Llama 3.2",
       "llama3.1": "Llama 3.1",
-      "grok-1": "Grok-1",
-      "grok-1-vision": "Grok-1 Vision",
-      "grok-2": "Grok-2",
-      "grok-2-vision": "Grok-2 Vision",
-      "grok-beta": "Grok Beta",
+      "grok-code-fast-1": "Grok Code Fast",
+      "grok-4-0709": "Grok-4",
+      "grok-3": "Grok-3",
+      "grok-3-mini": "Grok-3 Mini",
     }
 
     return displayNames[model] || model
@@ -225,7 +225,7 @@ export class AIProviderFactoryImpl implements AIProviderFactory {
       return true // Все новые Claude модели поддерживают vision
     }
     if (provider === "grok") {
-      return ["grok-1-vision", "grok-2-vision"].includes(model)
+      return ["grok-1-vision", "grok-2-vision", "grok-4-0709", "grok-3", "grok-3-mini"].includes(model)
     }
     return false
   }

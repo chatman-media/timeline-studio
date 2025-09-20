@@ -94,7 +94,11 @@ interface BrowserStateProviderProps {
  */
 export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ children }) => {
   const [state, setState] = useState<BrowserContext>(() => {
-    // Пытаемся загрузить настройки из localStorage
+    // Пытаемся загрузить настройки из localStorage только на клиенте
+    if (typeof window === "undefined") {
+      return getInitialContext()
+    }
+
     try {
       const savedSettings = localStorage.getItem("browserSettings")
       if (savedSettings) {
@@ -145,6 +149,10 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     }
 
     saveTimeoutRef.current = setTimeout(() => {
+      if (typeof window === "undefined") {
+        return
+      }
+
       try {
         // Преобразуем Set в массив для сериализации
         const stateToSave = {
@@ -199,7 +207,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   const selectedFiles = state.selectedFiles[activeTab] || new Set<string>()
   const previewSize = PREVIEW_SIZES[currentTabSettings.previewSizeIndex] || PREVIEW_SIZES[DEFAULT_PREVIEW_SIZE_INDEX]
 
-  // Действия
+  // Остальные функции остаются без изменений...
   const switchTab = (tab: BrowserTab) => {
     setState((prev) => ({ ...prev, activeTab: tab }))
   }
@@ -211,7 +219,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       tabSettings: {
         ...prev.tabSettings,
         [targetTab]: {
-          ...(prev.tabSettings[targetTab] || getInitialTabSettings(targetTab)),
+          ...prev.tabSettings[targetTab],
           searchQuery: query,
         },
       },
@@ -313,28 +321,31 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     }))
   }
 
-  // Методы для работы с выбором файлов
   const selectFile = (fileId: string, tab?: BrowserTab) => {
     const targetTab = tab || activeTab
-    setState((prev) => ({
-      ...prev,
-      selectedFiles: {
-        ...prev.selectedFiles,
-        [targetTab]: new Set([...prev.selectedFiles[targetTab], fileId]),
-      },
-    }))
+    setState((prev) => {
+      const newSelected = new Set(prev.selectedFiles[targetTab])
+      newSelected.add(fileId)
+      return {
+        ...prev,
+        selectedFiles: {
+          ...prev.selectedFiles,
+          [targetTab]: newSelected,
+        },
+      }
+    })
   }
 
   const deselectFile = (fileId: string, tab?: BrowserTab) => {
     const targetTab = tab || activeTab
     setState((prev) => {
-      const newSelectedFiles = new Set(prev.selectedFiles[targetTab])
-      newSelectedFiles.delete(fileId)
+      const newSelected = new Set(prev.selectedFiles[targetTab])
+      newSelected.delete(fileId)
       return {
         ...prev,
         selectedFiles: {
           ...prev.selectedFiles,
-          [targetTab]: newSelectedFiles,
+          [targetTab]: newSelected,
         },
       }
     })
@@ -343,18 +354,17 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   const toggleFileSelection = (fileId: string, tab?: BrowserTab) => {
     const targetTab = tab || activeTab
     setState((prev) => {
-      const isSelected = prev.selectedFiles[targetTab].has(fileId)
-      const newSelectedFiles = new Set(prev.selectedFiles[targetTab])
-      if (isSelected) {
-        newSelectedFiles.delete(fileId)
+      const newSelected = new Set(prev.selectedFiles[targetTab])
+      if (newSelected.has(fileId)) {
+        newSelected.delete(fileId)
       } else {
-        newSelectedFiles.add(fileId)
+        newSelected.add(fileId)
       }
       return {
         ...prev,
         selectedFiles: {
           ...prev.selectedFiles,
-          [targetTab]: newSelectedFiles,
+          [targetTab]: newSelected,
         },
       }
     })
@@ -377,7 +387,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       ...prev,
       selectedFiles: {
         ...prev.selectedFiles,
-        [targetTab]: new Set(),
+        [targetTab]: new Set<string>(),
       },
     }))
   }
@@ -387,39 +397,43 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     return state.selectedFiles[targetTab]?.has(fileId) || false
   }
 
-  const value: BrowserStateContextValue = {
-    state,
-    activeTab,
-    currentTabSettings,
-    selectedFiles,
-    previewSize,
-    switchTab,
-    setSearchQuery,
-    toggleFavorites,
-    setSort,
-    setGroupBy,
-    setFilter,
-    setViewMode,
-    setPreviewSize,
-    resetTabSettings,
-    selectFile,
-    deselectFile,
-    toggleFileSelection,
-    selectAllFiles,
-    deselectAllFiles,
-    isFileSelected,
-  }
-
-  return <BrowserStateContext.Provider value={value}>{children}</BrowserStateContext.Provider>
+  return (
+    <BrowserStateContext.Provider
+      value={{
+        state,
+        activeTab,
+        currentTabSettings,
+        selectedFiles,
+        previewSize,
+        switchTab,
+        setSearchQuery,
+        toggleFavorites,
+        setSort,
+        setGroupBy,
+        setFilter,
+        setViewMode,
+        setPreviewSize,
+        resetTabSettings,
+        selectFile,
+        deselectFile,
+        toggleFileSelection,
+        selectAllFiles,
+        deselectAllFiles,
+        isFileSelected,
+      }}
+    >
+      {children}
+    </BrowserStateContext.Provider>
+  )
 }
 
 /**
- * Хук для использования состояния браузера
+ * Хук для использования контекста браузера
  */
-export const useBrowserState = (): BrowserStateContextValue => {
+export const useBrowserState = () => {
   const context = useContext(BrowserStateContext)
   if (!context) {
-    throw new Error("useBrowserState must be used within a BrowserStateProvider")
+    throw new Error("useBrowserState must be used within BrowserStateProvider")
   }
   return context
 }

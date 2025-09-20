@@ -56,7 +56,7 @@ function AnalysisTabContent({ result }: { result: IntelligentContent }) {
       <div className="bg-muted rounded-lg p-4">
         <h3 className="font-medium mb-3">Scenes Detected</h3>
         <div className="space-y-2">
-          {analysis.scenes.slice(0, 5).map((scene, index) => (
+          {analysis.scenes.slice(0, 5).map((scene: any, index: number) => (
             <div key={scene.id} className="flex items-center justify-between text-sm">
               <span>
                 Scene {index + 1}: {scene.type}
@@ -77,7 +77,7 @@ function AnalysisTabContent({ result }: { result: IntelligentContent }) {
         <div className="bg-muted rounded-lg p-4">
           <h3 className="font-medium mb-3">Key Moments</h3>
           <div className="space-y-2">
-            {moments.slice(0, 3).map((moment) => (
+            {moments.slice(0, 3).map((moment: any) => (
               <div key={moment.id} className="flex items-start space-x-2">
                 <div className="text-lg">⭐</div>
                 <div className="flex-1">
@@ -158,7 +158,7 @@ function ScriptTabContent({ result }: { result: IntelligentContent }) {
       <div className="bg-muted rounded-lg p-4">
         <h3 className="font-medium mb-3">Script Scenes</h3>
         <div className="space-y-3">
-          {script.scenes.slice(0, 5).map((scene) => (
+          {script.scenes.slice(0, 5).map((scene: any) => (
             <div key={scene.id} className="border-l-2 border-primary/20 pl-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-medium">{scene.title}</h4>
@@ -188,7 +188,7 @@ function PlatformsTabContent({ result }: { result: IntelligentContent }) {
 
   return (
     <div className="space-y-4">
-      {result.platformContent.map((content) => (
+      {result.platformContent.map((content: any) => (
         <div key={content.id} className="bg-muted rounded-lg p-4">
           <h3 className="font-medium mb-3 flex items-center space-x-2">
             <span>{getPlatformIcon(content.platform)}</span>
@@ -218,7 +218,7 @@ function PlatformsTabContent({ result }: { result: IntelligentContent }) {
             <div className="mt-3">
               <span className="text-sm text-muted-foreground">Hashtags:</span>
               <div className="flex flex-wrap gap-1 mt-1">
-                {content.adaptations.text.hashtags.map((tag, index) => (
+                {content.adaptations.text.hashtags.map((tag: any, index: number) => (
                   <span key={index} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
                     {tag}
                   </span>

@@ -4,6 +4,7 @@
  */
 
 import type { VersionInfo } from "@/features/version-control/types"
+import { isServiceEnabled } from "@/shared/config/service-config"
 import type { UndoRedoService } from "./undo-redo-service"
 
 export interface VersionControlIntegrationConfig {
@@ -49,7 +50,7 @@ export class VersionControlIntegration {
       pendingActions: 0,
       isIntegrationEnabled: true,
       config: {
-        autoSnapshotEnabled: true,
+        autoSnapshotEnabled: isServiceEnabled("AUTO_SNAPSHOT"),
         autoSnapshotThreshold: 50, // После 50 действий
         autoSnapshotInterval: 15, // Каждые 15 минут
         clearHistoryOnBranchSwitch: true,
@@ -329,19 +330,52 @@ export class VersionControlIntegration {
 
     if (!this.state.config.autoSnapshotEnabled) return
 
+    // Проверяем, разрешены ли автоснапшоты
+    if (!isServiceEnabled("AUTO_SNAPSHOT")) {
+      console.log("[VersionControlIntegration] Auto-snapshot is disabled by service config")
+      return
+    }
+
+    console.log("[VersionControlIntegration] Starting auto-snapshot timer")
+    let timerRuns = 0
+
     this.autoSnapshotTimer = setInterval(() => {
+      timerRuns++
+      const startTime = performance.now()
+      console.log(`[VersionControlIntegration] Auto-snapshot timer run #${timerRuns}`)
+
       if (this.state.pendingActions > 0) {
         const minutesSinceSnapshot = (Date.now() - this.state.lastSnapshotTime.getTime()) / (1000 * 60)
+        console.log(
+          `[VersionControlIntegration] Minutes since snapshot: ${minutesSinceSnapshot.toFixed(1)}, pending actions: ${this.state.pendingActions}`,
+        )
 
         if (minutesSinceSnapshot >= this.state.config.autoSnapshotInterval) {
+          console.log(
+            `[VersionControlIntegration] Creating auto-snapshot by timer (interval: ${this.state.config.autoSnapshotInterval}min)`,
+          )
           this.createAutoSnapshot("interval", {
             actionCount: this.state.pendingActions,
             lastActionType: "TIMER",
             groupCount: 0,
             timestamp: new Date(),
             reason: "interval",
+          }).then((success) => {
+            const duration = performance.now() - startTime
+            console.log(
+              `[VersionControlIntegration] Auto-snapshot creation ${success ? "succeeded" : "failed"} in ${duration.toFixed(2)}ms`,
+            )
           })
         }
+      } else {
+        console.log("[VersionControlIntegration] No pending actions, skipping snapshot creation")
+      }
+
+      const totalDuration = performance.now() - startTime
+      if (totalDuration > 50) {
+        console.warn(
+          `[VersionControlIntegration] WARNING: Auto-snapshot timer run #${timerRuns} took ${totalDuration.toFixed(2)}ms`,
+        )
       }
     }, 60000) // Проверяем каждую минуту
   }

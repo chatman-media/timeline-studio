@@ -12,7 +12,7 @@ import {
   PlatformId,
   PlatformImportance,
   SignalType,
-} from "@/features/ai-content-intelligence"
+} from "@/domains/shared/types/ai-tools/platform-adaptation"
 
 type PlatformIdString =
   | "youtube"

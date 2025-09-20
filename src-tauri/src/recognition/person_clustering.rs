@@ -5,6 +5,7 @@ use uuid::Uuid;
 use crate::recognition::person_database::{PersonProfile, SimilaritySearchResult};
 use crate::recognition::types::DetectedFace;
 use crate::recognition::person_database::PersonDatabase;
+use log;
 
 pub struct PersonClusteringService {
     database: Arc<Mutex<PersonDatabase>>,
@@ -14,11 +15,21 @@ impl PersonClusteringService {
     pub async fn new(database_path: impl AsRef<std::path::Path>) -> Result<Self, String> {
         let database = PersonDatabase::new(database_path.as_ref().to_path_buf())
             .await
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| {
+                log::error!("Failed to initialize PersonDatabase: {}", e);
+                format!("Failed to create person database: {}", e)
+            })?;
         
         Ok(Self {
             database: Arc::new(Mutex::new(database)),
         })
+    }
+    
+    /// Create PersonClusteringService with existing PersonDatabase
+    pub fn with_database(database: PersonDatabase) -> Self {
+        Self {
+            database: Arc::new(Mutex::new(database)),
+        }
     }
 
     pub async fn cluster_and_identify(&self, _faces: Vec<DetectedFace>) -> Result<Vec<PersonProfile>, String> {

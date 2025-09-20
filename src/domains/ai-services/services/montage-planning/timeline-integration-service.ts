@@ -4,7 +4,11 @@
  * Сервис для применения монтажных планов к Timeline
  */
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "../../../../domains/video-editing/types/media"
+import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
+import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
+
+import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 import {
   createTimelineClip,
   createTimelineSection,
@@ -14,9 +18,7 @@ import {
   type TimelineSection,
   type TimelineTrack,
   type TrackType,
-} from "@/features/timeline/types"
-
-import { EmotionalTone, type MontagePlan, type PlannedClip, type TransitionPlan } from "../types"
+} from "../../../../features/timeline/types"
 
 export interface TimelineIntegrationOptions {
   // Создать новую секцию для плана
@@ -101,12 +103,12 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isVideo || clip.fragment.sourceFile.isImage
+    return MediaFileUtils.isVideo(clip.fragment.sourceFile) || MediaFileUtils.isImage(clip.fragment.sourceFile)
   })
 
   const audioClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isAudio
+    return MediaFileUtils.isAudio(clip.fragment.sourceFile)
   })
 
   // Добавляем видео клипы

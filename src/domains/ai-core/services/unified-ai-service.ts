@@ -3,6 +3,7 @@
  * Объединенная версия с лучшими возможностями из ai-chat и shared
  */
 
+import { getAIProviderFactory } from "../providers/factory"
 import type {
   AIProviderFactory,
   AiMessage,
@@ -14,6 +15,7 @@ import type {
   ModelManager,
   StreamingOptions,
 } from "../types"
+import { ModelManagerImpl } from "./model-manager"
 
 // Расширенные типы для объединенного сервиса
 export interface UnifiedResponse extends AiResponse {
@@ -69,8 +71,8 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
   private readonly MAX_RETRY_ATTEMPTS = 3
 
   // Зависимости
-  private providerFactory: AIProviderFactory
-  private modelManager: ModelManager
+  private providerFactory!: AIProviderFactory
+  private modelManager!: ModelManager
   private contentIntelligenceService?: any
 
   // Singleton + DI support
@@ -93,6 +95,17 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
     // Автоочистка кэша каждые 5 минут
     if (typeof window !== "undefined") {
       setInterval(() => this.cleanupCache(), 300000)
+    }
+  }
+
+  private ensureDependencies(): void {
+    // Ленивая инициализация зависимостей, если DI контейнер не используется
+    if (!this.providerFactory) {
+      this.providerFactory = getAIProviderFactory() as AIProviderFactory
+    }
+    if (!this.modelManager) {
+      const factory = this.providerFactory || (getAIProviderFactory() as AIProviderFactory)
+      this.modelManager = new ModelManagerImpl(factory)
     }
   }
 
@@ -176,6 +189,8 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
     messages: AiMessage[],
     options: UnifiedRequestOptions & StreamingOptions = {},
   ): Promise<void> {
+    // Гарантируем наличие зависимостей перед использованием
+    this.ensureDependencies()
     const modelsToTry = [model, ...(options.fallbackModels || [])]
     let lastError: Error | null = null
 
@@ -219,8 +234,12 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
 
   async getAvailableModels(): Promise<ModelConfiguration[]> {
     if (!this.modelManager) {
-      console.warn("ModelManager not initialized, returning empty models list")
-      return []
+      try {
+        this.ensureDependencies()
+      } catch {
+        console.warn("ModelManager not initialized, returning empty models list")
+        return []
+      }
     }
     return await this.modelManager.getAvailableModels()
   }
@@ -235,8 +254,12 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
 
   async getProviderStatuses(): Promise<Record<string, boolean>> {
     if (!this.providerFactory) {
-      console.warn("ProviderFactory not initialized, returning empty statuses")
-      return {}
+      try {
+        this.ensureDependencies()
+      } catch {
+        console.warn("ProviderFactory not initialized, returning empty statuses")
+        return {}
+      }
     }
 
     const providers = ["claude", "openai", "deepseek", "ollama", "grok"]
@@ -361,7 +384,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
   // Приватные методы
   private async getProviderForModel(model: string): Promise<IAIProvider> {
     if (!this.providerFactory) {
-      throw new Error("ProviderFactory not initialized")
+      this.ensureDependencies()
     }
     const provider = this.providerFactory.getProviderByModel(model)
     if (!provider) {

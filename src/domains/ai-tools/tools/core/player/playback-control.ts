@@ -2,7 +2,7 @@
  * AI инструмент для управления воспроизведением с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { PlaybackControlParams, PlayerToolResult } from "./types"
 import { getPlayerState, hasLoadedMedia, setPlayerState } from "./utils/helpers"

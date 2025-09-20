@@ -5,7 +5,7 @@
  * оптимизации и создания визуальных эффектов
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base"
 
 // Типы для операций с эффектами
 export interface EffectsInput {

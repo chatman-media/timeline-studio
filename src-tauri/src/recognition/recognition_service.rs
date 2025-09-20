@@ -45,15 +45,20 @@ impl RecognitionService {
     let object_detector = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5)?;
     let face_detector = YoloProcessor::new(YoloModel::YoloV11Face, 0.7)?;
 
-    // Создаем сервис кластеринга
+    // Create person clustering service with proper error handling
     let db_path = base_path.join("persons.db");
-    let person_clustering = PersonClusteringService::new(db_path).await
-        .map_err(|e| anyhow::anyhow!("Failed to create person clustering service: {}", e))?;
+    let person_clustering = match PersonClusteringService::new(db_path).await {
+        Ok(service) => Arc::new(service),
+        Err(e) => {
+            log::error!("Failed to create person clustering service: {}", e);
+            return Err(anyhow::anyhow!("Failed to create person clustering service: {}", e));
+        }
+    };
 
     Ok(Self {
       object_detector: Arc::new(RwLock::new(object_detector)),
       face_detector: Arc::new(RwLock::new(face_detector)),
-      person_clustering: Arc::new(person_clustering),
+      person_clustering,
       results_dir,
     })
   }

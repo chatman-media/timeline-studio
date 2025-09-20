@@ -5,13 +5,8 @@
  * и управления визуальными шаблонами и макетами проекта
  */
 
-import {
-  type AIToolExecutionOptions,
-  type AIToolLogger,
-  type AIToolResult,
-  BaseAITool,
-} from "../../../base";
-import type { IAITool, AIToolMetadata } from "../../../types";
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import type { AIToolMetadata, IAITool } from "../../../types"
 
 // Типы для операций с шаблонами и макетами
 export interface TemplateLayoutInput {
@@ -25,47 +20,47 @@ export interface TemplateLayoutInput {
     | "create_overlay_graphics"
     | "manage_template_library"
     | "create_animated_elements"
-    | "generate_social_media_adaptations";
-  templateCategory?: string;
-  projectType?: string;
-  stylePreference?: string;
-  includeCustomization?: boolean;
-  targetResolution?: string;
-  templateId?: string;
-  targetLocation?: string;
-  customization?: any;
-  autoFit?: boolean;
-  reason?: string;
-  templateType?: string;
-  baseTemplate?: string;
-  customElements?: any[];
-  layoutConfiguration?: any;
-  cameraPositions?: any[];
-  sequenceType?: string;
-  responsiveSettings?: any;
-  overlayType?: string;
-  libraryAction?: string;
-  elementType?: string;
-  socialPlatforms?: string[];
+    | "generate_social_media_adaptations"
+  templateCategory?: string
+  projectType?: string
+  stylePreference?: string
+  includeCustomization?: boolean
+  targetResolution?: string
+  templateId?: string
+  targetLocation?: string
+  customization?: any
+  autoFit?: boolean
+  reason?: string
+  templateType?: string
+  baseTemplate?: string
+  customElements?: any[]
+  layoutConfiguration?: any
+  cameraPositions?: any[]
+  sequenceType?: string
+  responsiveSettings?: any
+  overlayType?: string
+  libraryAction?: string
+  elementType?: string
+  socialPlatforms?: string[]
 }
 
 export interface TemplateLayoutResult {
-  operation: string;
-  success: boolean;
-  availableTemplates?: any[];
-  appliedTemplate?: any;
-  createdTemplate?: any;
-  layoutSettings?: any;
-  generatedContent?: any;
-  optimizations?: any;
-  overlaySettings?: any;
-  libraryStats?: any;
-  animatedElements?: any[];
-  adaptations?: any[];
-  templateInfo?: any;
-  message: string;
-  recommendations: string[];
-  warnings?: string[];
+  operation: string
+  success: boolean
+  availableTemplates?: any[]
+  appliedTemplate?: any
+  createdTemplate?: any
+  layoutSettings?: any
+  generatedContent?: any
+  optimizations?: any
+  overlaySettings?: any
+  libraryStats?: any
+  animatedElements?: any[]
+  adaptations?: any[]
+  templateInfo?: any
+  message: string
+  recommendations: string[]
+  warnings?: string[]
 }
 
 /**
@@ -80,10 +75,10 @@ export class TemplateTool extends BaseAITool implements IAITool {
     tags: ["templates", "smart", "automation"],
     version: "1.0.0",
     author: "Timeline Studio",
-  };
+  }
 
   constructor(logger?: AIToolLogger) {
-    super("TemplateTool", logger);
+    super("TemplateTool", logger)
   }
 
   /**
@@ -96,7 +91,7 @@ export class TemplateTool extends BaseAITool implements IAITool {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
       const validation = this.validateInput(input, (data) => {
-        const errors: string[] = [];
+        const errors: string[] = []
 
         const validOperations = [
           "analyze_layout_templates",
@@ -109,24 +104,24 @@ export class TemplateTool extends BaseAITool implements IAITool {
           "manage_template_library",
           "create_animated_elements",
           "generate_social_media_adaptations",
-        ];
+        ]
         if (!validOperations.includes(data.operation)) {
-          errors.push(`Неподдерживаемая операция: ${data.operation}`);
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
         }
 
         // Специфические валидации
         if (data.operation === "apply_layout_template" && !data.templateId) {
-          errors.push("Требуется templateId для применения шаблона");
+          errors.push("Требуется templateId для применения шаблона")
         }
 
-        return { isValid: errors.length === 0, errors };
-      });
+        return { isValid: errors.length === 0, errors }
+      })
 
       if (!validation.isValid) {
-        throw new Error(validation.errors.join(", "));
+        throw new Error(validation.errors.join(", "))
       }
 
-      let result: TemplateLayoutResult;
+      let result: TemplateLayoutResult
 
       switch (input.operation) {
         case "analyze_layout_templates":
@@ -164,14 +159,7 @@ export class TemplateTool extends BaseAITool implements IAITool {
             ],
             templateInfo: {
               totalTemplates: 25,
-              categories: [
-                "intro",
-                "outro",
-                "title",
-                "lower-third",
-                "split-screen",
-                "multi-camera",
-              ],
+              categories: ["intro", "outro", "title", "lower-third", "split-screen", "multi-camera"],
               compatibleCount: 22,
             },
             message: `Найдено шаблонов для категории: ${input.templateCategory || "all"}`,
@@ -180,8 +168,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Выберите стиль, соответствующий проекту",
               "Рассмотрите возможности кастомизации",
             ],
-          };
-          break;
+          }
+          break
 
         case "apply_layout_template":
           result = {
@@ -201,8 +189,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Убедитесь, что цвета соответствуют брендингу",
               "Настройте анимацию и тайминги при необходимости",
             ],
-          };
-          break;
+          }
+          break
 
         case "create_custom_template":
           result = {
@@ -221,8 +209,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Сохраните шаблон в библиотеку для повторного использования",
               "Протестируйте шаблон на разных разрешениях",
             ],
-          };
-          break;
+          }
+          break
 
         case "manage_multi_camera_layout":
           result = {
@@ -236,12 +224,9 @@ export class TemplateTool extends BaseAITool implements IAITool {
               aspectRatio: "16:9",
             },
             message: "Макет мультикамеры настроен",
-            recommendations: [
-              "Синхронизируйте все камеры по таймкоду",
-              "Настройте переходы между камерами",
-            ],
-          };
-          break;
+            recommendations: ["Синхронизируйте все камеры по таймкоду", "Настройте переходы между камерами"],
+          }
+          break
 
         case "generate_title_sequences":
           result = {
@@ -258,8 +243,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Проверьте читаемость текста на всех устройствах",
               "Убедитесь в соответствии корпоративному стилю",
             ],
-          };
-          break;
+          }
+          break
 
         case "optimize_responsive_layout":
           result = {
@@ -272,12 +257,9 @@ export class TemplateTool extends BaseAITool implements IAITool {
               scalingMethod: "smart",
             },
             message: "Адаптивный макет оптимизирован",
-            recommendations: [
-              "Проверьте макет на всех целевых разрешениях",
-              "Убедитесь в читаемости мелких элементов",
-            ],
-          };
-          break;
+            recommendations: ["Проверьте макет на всех целевых разрешениях", "Убедитесь в читаемости мелких элементов"],
+          }
+          break
 
         case "create_overlay_graphics":
           result = {
@@ -295,8 +277,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Настройте прозрачность для лучшей читаемости",
               "Позиционируйте оверлеи так, чтобы не закрывать важный контент",
             ],
-          };
-          break;
+          }
+          break
 
         case "manage_template_library":
           result = {
@@ -310,12 +292,9 @@ export class TemplateTool extends BaseAITool implements IAITool {
               recentlyUsed: 6,
             },
             message: "Библиотека шаблонов обновлена",
-            recommendations: [
-              "Организуйте шаблоны по категориям",
-              "Удалите неиспользуемые шаблоны",
-            ],
-          };
-          break;
+            recommendations: ["Организуйте шаблоны по категориям", "Удалите неиспользуемые шаблоны"],
+          }
+          break
 
         case "create_animated_elements":
           result = {
@@ -336,12 +315,9 @@ export class TemplateTool extends BaseAITool implements IAITool {
               },
             ],
             message: "Анимированные элементы созданы",
-            recommendations: [
-              "Не переусердствуйте с анимациями",
-              "Используйте консистентный стиль анимаций",
-            ],
-          };
-          break;
+            recommendations: ["Не переусердствуйте с анимациями", "Используйте консистентный стиль анимаций"],
+          }
+          break
 
         case "generate_social_media_adaptations":
           result = {
@@ -372,8 +348,8 @@ export class TemplateTool extends BaseAITool implements IAITool {
               "Проверьте соответствие требованиям каждой платформы",
               "Адаптируйте контент под аудиторию платформы",
             ],
-          };
-          break;
+          }
+          break
 
         default:
           result = {
@@ -381,15 +357,15 @@ export class TemplateTool extends BaseAITool implements IAITool {
             success: false,
             message: "Функция пока не реализована",
             recommendations: ["Функция будет добавлена в следующих версиях"],
-          };
-          break;
+          }
+          break
       }
 
-      return result;
-    }, options);
+      return result
+    }, options)
   }
 }
 
-export const templateTools = [new TemplateTool()];
+export const templateTools = [new TemplateTool()]
 
-export const TEMPLATE_TOOLS_COUNT = templateTools.length;
+export const TEMPLATE_TOOLS_COUNT = templateTools.length

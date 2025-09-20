@@ -13,6 +13,10 @@ export const GROK_MODELS = {
   GROK_2: "grok-2",
   GROK_2_VISION: "grok-2-vision",
   GROK_BETA: "grok-beta",
+  GROK_CODE_FAST_1: "grok-code-fast-1",
+  GROK_4_0709: "grok-4-0709",
+  GROK_3: "grok-3",
+  GROK_3_MINI: "grok-3-mini",
 } as const
 
 // Интерфейс для запроса к Grok API
@@ -73,6 +77,10 @@ export class GrokProvider implements IAIProvider {
     GROK_MODELS.GROK_2,
     GROK_MODELS.GROK_2_VISION,
     GROK_MODELS.GROK_BETA,
+    GROK_MODELS.GROK_CODE_FAST_1,
+    GROK_MODELS.GROK_4_0709,
+    GROK_MODELS.GROK_3,
+    GROK_MODELS.GROK_3_MINI,
   ]
 
   private apiUrl = "https://api.x.ai/v1/chat/completions"
@@ -312,6 +320,10 @@ export class GrokProvider implements IAIProvider {
       [GROK_MODELS.GROK_2]: 131072,
       [GROK_MODELS.GROK_2_VISION]: 131072,
       [GROK_MODELS.GROK_BETA]: 100000,
+      [GROK_MODELS.GROK_CODE_FAST_1]: 256000,
+      [GROK_MODELS.GROK_4_0709]: 256000,
+      [GROK_MODELS.GROK_3]: 131072,
+      [GROK_MODELS.GROK_3_MINI]: 131072,
     }
     return limits[model] || 100000
   }
@@ -319,7 +331,13 @@ export class GrokProvider implements IAIProvider {
   // Grok-специфичные методы
 
   supportsVision(model: string): boolean {
-    const visionModels = [GROK_MODELS.GROK_1_VISION, GROK_MODELS.GROK_2_VISION]
+    const visionModels = [
+      GROK_MODELS.GROK_1_VISION,
+      GROK_MODELS.GROK_2_VISION,
+      GROK_MODELS.GROK_4_0709,
+      GROK_MODELS.GROK_3,
+      GROK_MODELS.GROK_3_MINI,
+    ]
     return visionModels.includes(model as any)
   }
 
@@ -344,6 +362,10 @@ export class GrokProvider implements IAIProvider {
       [GROK_MODELS.GROK_2]: "Grok-2",
       [GROK_MODELS.GROK_2_VISION]: "Grok-2 Vision",
       [GROK_MODELS.GROK_BETA]: "Grok Beta",
+      [GROK_MODELS.GROK_CODE_FAST_1]: "Grok Code Fast",
+      [GROK_MODELS.GROK_4_0709]: "Grok-4",
+      [GROK_MODELS.GROK_3]: "Grok-3",
+      [GROK_MODELS.GROK_3_MINI]: "Grok-3 Mini",
     }
     return names[model] || model
   }
@@ -355,6 +377,10 @@ export class GrokProvider implements IAIProvider {
       [GROK_MODELS.GROK_2]: "Улучшенная модель Grok второго поколения",
       [GROK_MODELS.GROK_2_VISION]: "Grok-2 с поддержкой мультимодального анализа",
       [GROK_MODELS.GROK_BETA]: "Экспериментальная версия Grok",
+      [GROK_MODELS.GROK_CODE_FAST_1]: "Grok оптимизированный для кода с высокой скоростью",
+      [GROK_MODELS.GROK_4_0709]: "Grok-4 последняя версия с улучшенными возможностями",
+      [GROK_MODELS.GROK_3]: "Grok-3 новейшая модель с расширенными возможностями",
+      [GROK_MODELS.GROK_3_MINI]: "Grok-3 Mini компактная версия Grok-3",
     }
     return descriptions[model] || "Grok AI model"
   }

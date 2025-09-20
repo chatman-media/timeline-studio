@@ -5,12 +5,12 @@
  */
 
 // Migrated tools
-import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing";
-import { performanceTools } from "@/domains/ai-tools/tools/automation/performance";
-import { templateTools } from "@/domains/ai-tools/tools/automation/templates";
-import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles";
-import { workflowTools } from "@/domains/ai-tools/tools/automation/workflow";
-import { enhancedSubtitleAutomationTools } from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation";
+import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing"
+import { enhancedSubtitleAutomationTools } from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+import { performanceTools } from "@/domains/ai-tools/tools/automation/performance"
+import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
+import { templateTools } from "@/domains/ai-tools/tools/automation/templates"
+import { workflowTools } from "@/domains/ai-tools/tools/automation/workflow"
 
 export const automationTools = [
   ...workflowTools,
@@ -19,6 +19,6 @@ export const automationTools = [
   ...templateTools,
   ...subtitleTools,
   ...enhancedSubtitleAutomationTools,
-];
+]
 
-export const AUTOMATION_TOOLS_COUNT = automationTools.length;
+export const AUTOMATION_TOOLS_COUNT = automationTools.length

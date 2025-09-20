@@ -65,20 +65,42 @@ export interface UndoRedoResult {
 }
 
 export class UndoRedoService {
+  private static instance: UndoRedoService | null = null
+  private static initializationCounter = 0
   private history: UndoRedoAction[] = []
   private redoStack: UndoRedoAction[] = []
   private currentGroup: ActionGroup | null = null
   private maxHistorySize = 1000
   private mergeTimeout = 500 // ms для объединения похожих действий
 
-  constructor() {
-    console.log("[UndoRedoService] Initialized")
+  private isInitialized = false
+
+  private constructor() {
+    UndoRedoService.initializationCounter++
+    console.log(`[UndoRedoService] Initialized (instance #${UndoRedoService.initializationCounter})`)
+    console.log("[UndoRedoService] Stack trace:", new Error().stack)
+    this.isInitialized = true
+  }
+
+  /**
+   * Получить единственный экземпляр сервиса (Singleton)
+   */
+  public static getInstance(): UndoRedoService {
+    if (!UndoRedoService.instance) {
+      console.log("[UndoRedoService] Creating new instance")
+      UndoRedoService.instance = new UndoRedoService()
+    } else {
+      console.log("[UndoRedoService] Returning existing instance")
+    }
+    return UndoRedoService.instance
   }
 
   /**
    * Добавить действие в историю
    */
   addAction(action: Omit<UndoRedoAction, "id" | "timestamp">): string {
+    const startTime = performance.now()
+
     const newAction: UndoRedoAction = {
       ...action,
       id: `action-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -115,6 +137,12 @@ export class UndoRedoService {
     // Проверяем размер истории
     if (this.history.length > this.maxHistorySize) {
       this.history.shift()
+    }
+
+    const endTime = performance.now()
+    if (endTime - startTime > 16) {
+      // Больше 16ms (1 кадр при 60fps)
+      console.warn(`[UndoRedoService] addAction slow: ${endTime - startTime}ms`, newAction.type)
     }
 
     return newAction.id
@@ -371,6 +399,18 @@ export class UndoRedoService {
     // Обрезаем историю если нужно
     if (this.history.length > size) {
       this.history = this.history.slice(-size)
+    }
+  }
+
+  /**
+   * Получить статистику инициализации (для дебага)
+   */
+  getInitializationStats() {
+    return {
+      totalInitializations: UndoRedoService.initializationCounter,
+      isSingletonInitialized: UndoRedoService.instance !== null,
+      historyLength: this.history.length,
+      redoStackLength: this.redoStack.length,
     }
   }
 

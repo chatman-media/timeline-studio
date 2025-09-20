@@ -6,11 +6,13 @@
  */
 
 // Используем shared типы
-import { AdvancedSceneAnalysis, type MediaFile as MediaInput, SceneAnalysisEngine } from "@/domains/ai-services"
+import { type MediaFile as MediaInput } from "@/domains/ai-services"
+import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines"
 import ContentClassificationEngine, {
   ExtendedContentClassification,
 } from "@/domains/ai-services/services/engines/content-classification/content-classification-engine"
 import { UnifiedContentAnalysis } from "@/domains/ai-services/types"
+import { AdvancedSceneAnalysis } from "../engines/scene-analysis/scene-analysis-engine"
 
 // Pipeline конфигурация
 export interface PipelineConfig {
@@ -161,13 +163,9 @@ export class UnifiedContentPipeline {
         const aiContainer = getAIContainer()
         this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
 
-        // Получаем движки через фабрику
-        const { getEngineFactory } = await import("../factories/engine-factory")
-        const engineFactory = getEngineFactory()
-
-        const engines = await engineFactory.createAllEngines()
-        this.sceneEngine = engines.sceneEngine as SceneAnalysisEngine
-        this.classificationEngine = engines.classificationEngine as unknown as ContentClassificationEngine
+        // Прямое создание движков (фабрика не существует)
+        this.sceneEngine = new SceneAnalysisEngine()
+        this.classificationEngine = new ContentClassificationEngine()
       } catch (error) {
         console.error("Ошибка инициализации сервисов:", error)
         // Fallback к прямому созданию

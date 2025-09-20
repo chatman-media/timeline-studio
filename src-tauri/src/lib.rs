@@ -224,7 +224,7 @@ pub fn run() {
         }
       }
 
-      // Initialize Recognition Service
+      // Initialize Recognition Service - after PersonDatabase is initialized
       {
         let app_handle = app.handle();
         let app_handle_clone = app_handle.clone();

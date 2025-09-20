@@ -3,9 +3,21 @@
  * Coordinates video and audio analysis to extract meaningful data
  */
 
-import type { MediaFile } from "@/features/media/types/media"
-import type { AnalysisOptions, AudioAnalysis, Fragment, MomentScore, VideoAnalysis } from "../types"
-import { CameraMovement, EmotionalTone, FlowDirection, LightingCondition, SceneType } from "../types"
+import { MediaFile, MediaFileUtils } from "@/domains/video-editing/types/media"
+import type {
+  AnalysisOptions,
+  AudioAnalysis,
+  Fragment,
+  MomentScore,
+  VideoAnalysis,
+} from "@/features/montage-planner/types/index"
+import {
+  CameraMovement,
+  EmotionalTone,
+  FlowDirection,
+  LightingCondition,
+  SceneType,
+} from "@/features/montage-planner/types/index"
 import { getMontagePlannerAI } from "./montage-planner-ai-integration"
 
 export class ContentAnalyzer {
@@ -77,7 +89,7 @@ export class ContentAnalyzer {
     file: MediaFile,
     options: AnalysisOptions["audioAnalysis"],
   ): Promise<AudioAnalysis> {
-    const hasAudio = file.isAudio !== false
+    const hasAudio = MediaFileUtils.hasAudio(file)
 
     if (!hasAudio) {
       return this.getEmptyAudioAnalysis()

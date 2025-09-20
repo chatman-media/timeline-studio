@@ -12,7 +12,7 @@ interface Clip {
   mediaId: string
 }
 
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { type ActionType, type UndoRedoAction, UndoRedoService } from "../services/undo-redo-service"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 
@@ -52,7 +52,8 @@ export interface UseUndoRedoReturn {
 }
 
 export function useUndoRedo(): UseUndoRedoReturn {
-  const serviceRef = useRef(new UndoRedoService())
+  const service = useMemo(() => UndoRedoService.getInstance(), [])
+  const serviceRef = useRef(service)
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
 
@@ -366,14 +367,8 @@ export function useUndoRedo(): UseUndoRedoReturn {
   const undoableActions = serviceRef.current.getUndoableActions(10)
   const redoableActions = serviceRef.current.getRedoableActions(10)
 
-  // Автоматическая оптимизация истории
-  useEffect(() => {
-    const interval = setInterval(() => {
-      serviceRef.current.optimizeHistory()
-    }, 30000) // Каждые 30 секунд
-
-    return () => clearInterval(interval)
-  }, [])
+  // Автоматическая оптимизация истории отключена по требованию
+  // useEffect(() => { ... }, [])
 
   return {
     // Основные операции

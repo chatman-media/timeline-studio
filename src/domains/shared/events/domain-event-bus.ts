@@ -90,6 +90,7 @@ export class DomainEventBus {
     payload: T,
     metadata?: Record<string, unknown>,
   ): Promise<PublishResult> {
+    const startTime = performance.now()
     const event: DomainEvent<T> = {
       id: nanoid(),
       type,
@@ -117,8 +118,10 @@ export class DomainEventBus {
 
     // Выполняем обработчики
     await Promise.all(
-      handlers.map(async ({ handler, options }) => {
+      handlers.map(async ({ handler, options }, index) => {
         try {
+          const handlerStartTime = performance.now()
+
           // Обработка с таймаутом
           if (options.timeout) {
             const handlerResult = handler(event)
@@ -130,6 +133,16 @@ export class DomainEventBus {
             }
           } else {
             await handler(event)
+          }
+
+          const handlerEndTime = performance.now()
+          const handlerDuration = handlerEndTime - handlerStartTime
+
+          if (handlerDuration > 16) {
+            // Больше 16ms (1 кадр при 60fps)
+            console.warn(
+              `[EventBus] Slow handler detected: ${handlerDuration}ms for event ${event.type}, handler ${index}`,
+            )
           }
 
           // Если once, удаляем обработчик
@@ -144,6 +157,14 @@ export class DomainEventBus {
         }
       }),
     )
+
+    const totalDuration = performance.now() - startTime
+    if (totalDuration > 50) {
+      // Больше 50ms - потенциальная проблема
+      console.warn(
+        `[EventBus] Slow event processing: ${totalDuration}ms for ${event.type} with ${handlers.length} handlers`,
+      )
+    }
 
     return {
       eventId: event.id,

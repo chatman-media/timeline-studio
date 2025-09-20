@@ -6,17 +6,21 @@
 // Using crypto.randomUUID() instead of uuid package (native in modern browsers/Node.js)
 
 import type {
+  ClipRole,
   EmotionalCurve,
   Fragment,
+  MONTAGE_STYLES,
   MontagePlan,
   PacingProfile,
   PlanGenerationOptions,
   PlanMetadata,
   PlannedClip,
   Sequence,
+  SequencePurpose,
+  SequenceType,
+  TargetPlatform,
   TransitionPlan,
-} from "../types"
-import { ClipRole, MONTAGE_STYLES, SequencePurpose, SequenceType, TargetPlatform } from "../types"
+} from "../../../../features/montage-planner/types/index"
 
 // Fallback UUID generator in case crypto.randomUUID is not available
 

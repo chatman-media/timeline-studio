@@ -80,10 +80,7 @@ export class ColorPaletteAnalysisTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptColorPaletteAnalysis(input)
@@ -105,10 +102,7 @@ export class CinematicGradingTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptCinematicGrading(input)
@@ -130,10 +124,7 @@ export class ColorMatchingTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptColorMatching(input)
@@ -155,10 +146,7 @@ export class StyleTransferTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptStyleTransfer(input)
@@ -180,10 +168,7 @@ export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptColorSchemeCreation(input)
@@ -205,10 +190,7 @@ export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ColorStyleInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ColorStyleResult>> {
+  async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptConsistencyOptimization(input)

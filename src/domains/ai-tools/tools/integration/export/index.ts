@@ -4,7 +4,7 @@
  */
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
-import type { IAITool, AIToolMetadata } from "../../../types"
+import type { AIToolMetadata, IAITool } from "../../../types"
 
 // TODO: Перенести эти типы в shared/types/ai-tools
 export interface ExportInput {
@@ -97,10 +97,7 @@ export class OptimizeSettingsTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(
-    input: ExportInput,
-    options?: AIToolExecutionOptions,
-  ): Promise<AIToolResult<ExportResult>> {
+  async execute(input: ExportInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ExportResult>> {
     return this.executeWithErrorHandling(
       async (context) => {
         return await adaptOptimizeSettings(input)

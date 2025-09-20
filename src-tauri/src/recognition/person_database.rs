@@ -118,9 +118,19 @@ impl PersonDatabase {
         let conn = rusqlite::Connection::open(&db_path)
             .context("Failed to open person database")?;
 
-        conn.execute("PRAGMA foreign_keys = ON", [])?;
-        conn.execute("PRAGMA journal_mode = WAL", [])?;
-        conn.execute("PRAGMA synchronous = NORMAL", [])?;
+        // Execute PRAGMA statements with proper error handling
+        conn.execute("PRAGMA foreign_keys = ON", [])
+            .context("Failed to set PRAGMA foreign_keys")?;
+        
+        // Handle journal_mode which might return results in some SQLite versions
+        // Use query_row for PRAGMA that might return results
+        let _ = conn.query_row("PRAGMA journal_mode = WAL", [], |row| {
+            let mode: String = row.get(0)?;
+            Ok(mode)
+        }).unwrap_or_else(|_| "wal".to_string());
+        
+        conn.execute("PRAGMA synchronous = NORMAL", [])
+            .context("Failed to set PRAGMA synchronous")?;
 
         let db = Self {
             conn: Arc::new(Mutex::new(conn)),
@@ -128,13 +138,19 @@ impl PersonDatabase {
             quality_threshold: 0.7,
         };
 
-        db.create_tables().await?;
+        // Only create tables if they don't exist
+        if let Err(e) = db.create_tables().await {
+            log::warn!("Tables might already exist, continuing: {}", e);
+        }
+        
         Ok(db)
     }
 
     /// Создание профессиональных таблиц
     async fn create_tables(&self) -> Result<()> {
         let conn = self.conn.lock().await;
+
+        log::debug!("Creating person database tables...");
 
         // Таблица персон с расширенными полями
         conn.execute(
@@ -154,7 +170,7 @@ impl PersonDatabase {
                 metadata TEXT NOT NULL DEFAULT '{}'
             )",
             [],
-        )?;
+        ).context("Failed to create persons table")?;
 
         // Таблица эмбеддингов с расширенными данными
         conn.execute(
@@ -175,7 +191,7 @@ impl PersonDatabase {
                 FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE CASCADE
             )",
             [],
-        )?;
+        ).context("Failed to create face_embeddings table")?;
 
         // Таблица появлений
         conn.execute(
@@ -193,7 +209,7 @@ impl PersonDatabase {
                 FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE CASCADE
             )",
             [],
-        )?;
+        ).context("Failed to create person_appearances table")?;
 
         // Таблица миниатюр
         conn.execute(
@@ -210,38 +226,38 @@ impl PersonDatabase {
                 FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE CASCADE
             )",
             [],
-        )?;
+        ).context("Failed to create person_thumbnails table")?;
 
         // Индексы для производительности
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_face_embeddings_person_id ON face_embeddings(person_id)",
             [],
-        )?;
+        ).context("Failed to create idx_face_embeddings_person_id index")?;
 
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_face_embeddings_clip_id ON face_embeddings(source_clip_id)",
             [],
-        )?;
+        ).context("Failed to create idx_face_embeddings_clip_id index")?;
 
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_face_embeddings_quality ON face_embeddings(quality_score)",
             [],
-        )?;
+        ).context("Failed to create idx_face_embeddings_quality index")?;
 
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_person_appearances_person_id ON person_appearances(person_id)",
             [],
-        )?;
+        ).context("Failed to create idx_person_appearances_person_id index")?;
 
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_person_appearances_clip_id ON person_appearances(clip_id)",
             [],
-        )?;
+        ).context("Failed to create idx_person_appearances_clip_id index")?;
 
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_person_thumbnails_person_id ON person_thumbnails(person_id)",
             [],
-        )?;
+        ).context("Failed to create idx_person_thumbnails_person_id index")?;
 
         Ok(())
     }

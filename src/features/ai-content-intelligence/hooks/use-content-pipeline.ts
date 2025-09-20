@@ -4,11 +4,17 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { AIProvider } from "@/domains/ai-core/services"
-import { PipelineProgress } from "@/domains/ai-services"
-import { BatchProgress } from "@/domains/ai-services/services"
+import { BatchProgress, PipelineProgress } from "@/domains/ai-services/services"
 import { BatchProcessingConfig } from "@/domains/ai-services/services/multi-platform/services/batch-processor"
-import { AIConfig, IntelligentContent, ProcessingStatus } from "@/domains/ai-services/types"
+import { AIConfig, IntelligentContent } from "@/domains/ai-services/types"
+import {
+  AccuracyLevel,
+  AIProvider,
+  AnalysisDepth,
+  SpeedPriority,
+  StepType,
+} from "@/domains/shared/types/ai-tools/ai-config"
+import { ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 import { PipelineConfig, PipelineEvent } from "../unified-pipeline/unified-content-pipeline"
 import { useAIIntelligence } from "./use-ai-intelligence"
 

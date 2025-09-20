@@ -8,7 +8,7 @@ import type {
   TimelineSection,
   TimelineTrack,
 } from "@/domains/video-editing/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import { getTimelineStateAccess } from "./types"
 import {
   calculateTimelineDensity,

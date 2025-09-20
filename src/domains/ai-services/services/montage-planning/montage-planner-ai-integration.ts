@@ -3,17 +3,20 @@
  * Bridges the montage planner with DI Container and shared AI services
  */
 
-import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core"
-import { VideoAnalysisParams } from "@/domains/ai-services"
-import type { MediaFile } from "@/features/media/types/media"
+import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "../../../../domains/ai-core/index"
+import { VideoAnalysisParams } from "../../../../domains/ai-services/index"
+import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import type {
   AudioAnalysis,
   Fragment,
   MomentScore,
+  MontagePlan,
   MontageQualityAnalysis,
+  MontageStyle,
+  PlanGenerationOptions,
   VideoAnalysis,
   VideoCompositionAnalysis,
-} from "../types"
+} from "../../../../features/montage-planner/types/index"
 
 export interface MontagePlannerAIService {
   // Video analysis using shared AI services

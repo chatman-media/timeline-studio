@@ -4,7 +4,7 @@
  */
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
-import type { IAITool, AIToolMetadata } from "../../../types"
+import type { AIToolMetadata, IAITool } from "../../../types"
 
 // TODO: Перенести эти типы в shared/types/ai-tools
 export interface MediaProcessingInput {

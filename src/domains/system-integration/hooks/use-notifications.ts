@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { isServiceEnabled } from "@/shared/config/service-config"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
 import type { NotificationAction, SystemNotification } from "../types"
 
@@ -12,11 +13,42 @@ export function useNotifications() {
 
   // Периодическое обновление списка уведомлений
   useEffect(() => {
+    // Проверяем, разрешены ли уведомления
+    if (!isServiceEnabled("NOTIFICATIONS")) {
+      console.log("[useNotifications] Notifications are disabled by service config")
+      return
+    }
+
+    console.log("[useNotifications] Setting up notifications update interval")
+    let updateCount = 0
+    let lastNotificationCount = 0
+
     const interval = setInterval(() => {
-      setNotifications(orchestrator.getNotifications())
+      const startTime = performance.now()
+      updateCount++
+
+      const currentNotifications = orchestrator.getNotifications()
+      const currentCount = currentNotifications.length
+
+      // Обновляем только если количество уведомлений изменилось или первый запуск
+      if (currentCount !== lastNotificationCount || updateCount === 1) {
+        setNotifications(currentNotifications)
+        lastNotificationCount = currentCount
+
+        const duration = performance.now() - startTime
+        if (duration > 5) {
+          console.warn(`[useNotifications] Notification update #${updateCount} took ${duration.toFixed(2)}ms`)
+        }
+      }
+
+      // Логируем каждые 100 обновлений для отладки
+      if (updateCount % 100 === 0) {
+        console.log(`[useNotifications] Processed ${updateCount} notification updates, current count: ${currentCount}`)
+      }
     }, 100) // Обновляем каждые 100ms
 
     return () => {
+      console.log(`[useNotifications] Cleaning up notifications interval (processed ${updateCount} updates)`)
       clearInterval(interval)
     }
   }, [orchestrator])

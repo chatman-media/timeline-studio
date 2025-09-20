@@ -1010,7 +1010,11 @@
       "saveSuccess": "Видео успешно сохранено!",
       "send": "Отправить",
       "stop": "Остановить",
-      "processing": "Обработка..."
+      "processing": "Обработка...",
+      "ai_connected": "AI подключен",
+      "empty_project_hint": "Проект пока пустой. Начните с:",
+      "import_media": "Импортировать медиа",
+      "ask_ai_import": "Спросить AI"
     }
   },
   "titles": {
@@ -1970,11 +1974,14 @@
       "apiKeyTestSuccess": "API ключ действителен",
       "apiKeyTestFailure": "API ключ недействителен или истёк",
       "apiKeyTestError": "Ошибка при проверке API ключа",
+      "creditsError": "Недостаточно кредитов. Пополните баланс на сайте провайдера",
       "apiKeyDeleteConfirm": "Вы уверены, что хотите удалить этот API ключ?",
       "apiKeyProviders": {
         "openai": "OpenAI",
         "claude": "Claude (Anthropic)",
         "gemini": "Google Gemini",
+        "grok": "Grok (xAI)",
+        "deepseek": "DeepSeek",
         "custom": "Пользовательский"
       },
       "apiKeyPlaceholder": "Введите ваш API ключ...",
@@ -2075,7 +2082,27 @@
           "description": "Необходим для Claude моделей в ИИ чате",
           "placeholder": "sk-ant-...",
           "getKey": "Получить API ключ"
+        },
+        "grok": {
+          "title": "Grok (xAI)",
+          "description": "Необходим для Grok моделей в ИИ чате",
+          "placeholder": "xai-...",
+          "getKey": "Получить API ключ"
+        },
+        "deepseek": {
+          "title": "DeepSeek",
+          "description": "Необходим для DeepSeek моделей в ИИ чате",
+          "placeholder": "sk-...",
+          "getKey": "Получить API ключ"
         }
+      },
+      "localModels": {
+        "title": "Локальные модели",
+        "description": "Модели из Ollama (localhost:11434)",
+        "checking": "Проверка доступных моделей...",
+        "notAvailable": "Локальные модели недоступны. Убедитесь, что Ollama запущен на localhost:11434",
+        "noModels": "Нет доступных локальных моделей",
+        "installOllama": "Установите Ollama для работы с локальными моделями"
       },
       "socialNetworks": {
         "title": "Социальные сети",

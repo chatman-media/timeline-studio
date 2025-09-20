@@ -150,7 +150,14 @@ export class SystemIntegrationOrchestrator {
 
     // Автоматически удаляем уведомление после заданного времени
     if (notification.duration) {
+      const startTime = performance.now()
+      console.log(`[System Integration Orchestrator] Scheduling notification dismissal in ${notification.duration}ms`)
+
       setTimeout(() => {
+        const duration = performance.now() - startTime
+        console.log(
+          `[System Integration Orchestrator] Dismissing notification after ${duration.toFixed(2)}ms (scheduled: ${notification.duration}ms)`,
+        )
         this.dismissNotification(id)
       }, notification.duration)
     }

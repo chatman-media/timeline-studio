@@ -50,14 +50,14 @@ const AppProviderComposite = composeProviders(
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
   ShortcutsProvider, // Зависит от UserSettingsProvider
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
-  BrowserStateProvider, // Состояние браузера
+  // BrowserStateProvider, // ОТКЛЮЧЕНО: может вызывать зависания браузера
 
   // ✅ НОВАЯ TIMELINE АРХИТЕКТУРА
   TimelineProvider, // Новый провайдер timeline с backend интеграцией
 
   PlayerProvider, // ✅ Новый провайдер видеоплеера с backend синхронизацией
   ChatProvider, // ✅ Новый провайдер чата с backend интеграцией для истории
-  AIIntelligenceProvider, // AI Intelligence (может быть тяжелым)
+  // AIIntelligenceProvider, // ОТКЛЮЧЕНО: может быть тяжелым и вызывать зависания
 )
 
 export function ProvidersV2({ children }: ProvidersV2Props) {

@@ -44,3 +44,5 @@ export function useAIIntelligence() {
   }
   return context
 }
+
+export { AIIntelligenceContext }

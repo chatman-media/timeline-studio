@@ -3,9 +3,9 @@
  * Defines structures for montage plans, fragments, and analysis results
  */
 
-import type { VideoEffect } from "@/features/effects/types"
-import type { MediaFile } from "@/features/media/types/media"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { MediaFile } from "../../../domains/video-editing/types/media"
+import type { BaseEffect as VideoEffect } from "../../../features/effects/types/unified-effects"
+import type { Transition } from "../../../features/transitions/types/transitions"
 
 // Person identification
 export interface Person {

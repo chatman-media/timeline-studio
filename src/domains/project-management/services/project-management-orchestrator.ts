@@ -5,6 +5,7 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
+import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
 import { type UserSettingsContextType, userSettingsMachine } from "../machines/user-settings-machine"
@@ -68,13 +69,22 @@ export class ProjectManagementOrchestrator {
    * Выполнение команды
    */
   async executeCommand(command: ProjectCommand): Promise<any> {
+    const startTime = performance.now()
+    console.log(`[ProjectManagementOrchestrator] Executing command: ${command.type}`)
+
     return new Promise((resolve, reject) => {
       const subscription = this.appActor.subscribe((state) => {
+        const duration = performance.now() - startTime
+
         if (state.matches({ connected: "idle" })) {
           subscription.unsubscribe()
+          if (duration > 100) {
+            console.warn(`[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms`)
+          }
           resolve(true)
         } else if (state.matches("error")) {
           subscription.unsubscribe()
+          console.error(`[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms`)
           reject(new Error(state.context.error || "Command failed"))
         }
       })
@@ -195,18 +205,41 @@ export class ProjectManagementOrchestrator {
    * Включение автосохранения
    */
   private enableAutoSave(interval: number) {
+    // Проверяем, разрешено ли автосохранение
+    if (!isServiceEnabled("AUTO_SAVE")) {
+      console.log("[Project Management Orchestrator] Auto-save is disabled by service config")
+      return
+    }
+
     if (this.autoSaveTimer) {
       clearInterval(this.autoSaveTimer)
     }
 
     console.log(`[Project Management Orchestrator] Enabling auto-save with interval: ${interval}s`)
 
-    this.autoSaveTimer = setInterval(() => {
-      const projectState = this.getProjectState()
-      if (projectState) {
-        this.saveProject().catch((error) => {
-          console.error("[Project Management Orchestrator] Auto-save failed:", error)
-        })
+    let saveCounter = 0
+    this.autoSaveTimer = setInterval(async () => {
+      const startTime = performance.now()
+      saveCounter++
+
+      try {
+        const projectState = this.getProjectState()
+        if (projectState) {
+          console.log(`[Project Management Orchestrator] Auto-save #${saveCounter} started`)
+          await this.saveProject()
+          const duration = performance.now() - startTime
+
+          if (duration > 500) {
+            // Если сохранение занимает более 500ms
+            console.warn(
+              `[Project Management Orchestrator] Auto-save #${saveCounter} took ${duration}ms - potential performance issue`,
+            )
+          } else {
+            console.log(`[Project Management Orchestrator] Auto-save #${saveCounter} completed in ${duration}ms`)
+          }
+        }
+      } catch (error) {
+        console.error(`[Project Management Orchestrator] Auto-save #${saveCounter} failed:`, error)
       }
     }, interval * 1000)
   }
