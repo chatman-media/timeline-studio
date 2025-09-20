@@ -5,7 +5,7 @@ description = "A Timeline Studio"
 authors = ["Alexander Kireyev <ak.chatman.media@gmail.com>"]
 license = "MIT WITH Commons-Clause"
 repository = "https://github.com/chatman-media/timeline-studio"
-edition = "2024"
+edition = "2021"
 default-run = "timeline-studio"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
