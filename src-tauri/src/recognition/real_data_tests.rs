@@ -174,7 +174,7 @@ async fn test_recognition_service_with_real_video() {
   let temp_dir = TempDir::new().unwrap();
 
   // Создаем сервис
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
 
   // Извлекаем кадры
   // match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 5).await {
@@ -363,7 +363,7 @@ async fn test_scene_detection_accuracy() {
 
   // Используем разные видео для проверки определения сцен
   let _temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(_temp_dir.path().to_path_buf()).unwrap();
+  let _service = RecognitionService::new(_temp_dir.path().to_path_buf()).await.unwrap();
 
   // Видео с людьми
   // Тест временно отключен из-за отсутствия доступа к test_data
@@ -400,7 +400,7 @@ async fn test_export_recognition_results() {
   // let video = get_test_video();
   // Этот тест работает без реальных данных
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
 
   // Создаем простые результаты для экспорта
   let results = RecognitionResults {
@@ -420,6 +420,7 @@ async fn test_export_recognition_results() {
     ],
     faces: vec![],
     scenes: vec![],
+    identified_persons: vec![],
     processed_at: chrono::Utc::now(),
   };
 
