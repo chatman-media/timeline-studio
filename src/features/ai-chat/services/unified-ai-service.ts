@@ -216,6 +216,7 @@ export class UnifiedAIService {
     messages: AiMessage[],
     options: UnifiedRequestOptions & StreamingOptions = {},
   ): Promise<void> {
+    await this.ensureInitialized()
     try {
       // Используем shared AI service для потокового запроса
       const { getAIContainer } = await import("@/shared/services/ai")
@@ -256,6 +257,7 @@ export class UnifiedAIService {
    * Получить доступные модели
    */
   public async getAvailableModels(): Promise<ModelConfig[]> {
+    await this.ensureInitialized()
     try {
       const { getAIContainer } = await import("@/shared/services/ai")
       const aiContainer = getAIContainer()
@@ -263,14 +265,17 @@ export class UnifiedAIService {
       return await sharedUnifiedService.getAvailableModels()
     } catch (error) {
       console.warn("Ошибка получения доступных моделей:", error)
+      // modelManager is guaranteed after ensureInitialized
       return this.modelManager.getAvailableModels()
     }
   }
+  
 
   /**
    * Проверить доступность модели
    */
   public async isModelAvailable(model: string): Promise<boolean> {
+    await this.ensureInitialized()
     try {
       const { getAIContainer } = await import("@/shared/services/ai")
       const aiContainer = getAIContainer()
@@ -294,6 +299,7 @@ export class UnifiedAIService {
       requiresTools?: boolean
     } = {},
   ): Promise<ModelConfig | null> {
+    await this.ensureInitialized()
     try {
       const { getAIContainer } = await import("@/shared/services/ai")
       const aiContainer = getAIContainer()
@@ -309,6 +315,7 @@ export class UnifiedAIService {
    * Получить статус всех провайдеров
    */
   public async getProviderStatuses() {
+    await this.ensureInitialized()
     try {
       const { getAIContainer } = await import("@/shared/services/ai")
       const aiContainer = getAIContainer()
@@ -337,6 +344,7 @@ export class UnifiedAIService {
       generateScript?: boolean
     } = {},
   ): Promise<UnifiedContentAnalysis[]> {
+    await this.ensureInitialized()
     return this.contentIntelligenceService.analyzeContentIntelligence(mediaFiles, options)
   }
 
