@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 
 /**
- * Загрузчик API ключей из безопасного хранилища
- * Централизованное управление API ключами для всех AI провайдеров
+ * Loader for API keys from secure storage
+ * Centralized management of API keys for all AI providers
  */
 export class ApiKeyLoader {
   private static instance: ApiKeyLoader
@@ -13,14 +13,14 @@ export class ApiKeyLoader {
   private constructor() {}
 
   /**
-   * Проверяет, выполняется ли код внутри Tauri WebView (а не в SSR/браузере)
+   * Checks if the code is running inside a Tauri WebView (and not in an SSR/browser)
    */
   private static isTauriEnvironment(): boolean {
     return typeof window !== "undefined" && "__TAURI__" in window
   }
 
   /**
-   * Получить экземпляр загрузчика (Singleton)
+   * Get an instance of the loader (Singleton)
    */
   public static getInstance(): ApiKeyLoader {
     if (!ApiKeyLoader.instance) {
@@ -30,12 +30,13 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Получить API ключ из безопасного хранилища
-   * @param keyType Тип ключа (openai, claude, deepseek, ollama)
-   * @returns Promise с расшифрованным ключом или null
+   * Retrieve an API key from secure storage
+   * @param keyType Type of key (openai, claude, deepseek, ollama)
+   * @returns Promise with the decrypted key or null
    */
+
   public async getApiKey(keyType: "openai" | "claude" | "deepseek" | "ollama"): Promise<string | null> {
-    // Проверяем кэш и его актуальность
+    // Check cache and its validity
     const cached = this.keyCache.get(keyType)
     const cacheTime = this.cacheTimestamps.get(keyType)
 
@@ -44,17 +45,17 @@ export class ApiKeyLoader {
     }
 
     try {
-      // Не вызываем Tauri API вне окружения Tauri (SSR/браузер)
+      // Do not call the Tauri API outside the Tauri environment (SSR/browser)
       if (!ApiKeyLoader.isTauriEnvironment()) {
         return null
       }
-      // Запрашиваем ключ из backend
+      // Request the key from the backend
       const result = await invoke<string | null>("get_decrypted_api_key", {
         key_type: keyType,
       })
 
       if (result) {
-        // Кэшируем результат
+        // Cache the result
         this.keyCache.set(keyType, result)
         this.cacheTimestamps.set(keyType, Date.now())
         return result
@@ -68,13 +69,13 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Проверить наличие API ключа без получения его значения
-   * @param keyType Тип ключа
+   * Check if an API key exists without retrieving its value
+   * @param keyType Type of key
    * @returns Promise<boolean>
    */
   public async hasApiKey(keyType: "openai" | "claude" | "deepseek" | "ollama"): Promise<boolean> {
     try {
-      // Не вызываем Tauri API вне окружения Tauri (SSR/браузер)
+      // Do not call the Tauri API outside the Tauri environment (SSR/browser)
       if (!ApiKeyLoader.isTauriEnvironment()) {
         return false
       }
@@ -89,7 +90,7 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Получить статус всех API ключей
+   * Get the status of all API keys
    * @returns Promise<Record<string, boolean>>
    */
   public async getAllKeyStatuses(): Promise<Record<string, boolean>> {
@@ -106,7 +107,7 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Очистить кэш ключей
+   * Clear the entire key cache
    */
   public clearCache(): void {
     this.keyCache.clear()
@@ -114,8 +115,8 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Очистить кэш для конкретного ключа
-   * @param keyType Тип ключа
+   * Clear cache for a specific key
+   * @param keyType Type of key
    */
   public clearKeyCache(keyType: "openai" | "claude" | "deepseek" | "ollama"): void {
     this.keyCache.delete(keyType)
@@ -123,9 +124,9 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Обновить кэшированный ключ
-   * @param keyType Тип ключа
-   * @param value Новое значение (null для удаления из кэша)
+   * Update the cached key
+   * @param keyType Type of key
+   * @param value New value (null to remove from cache)
    */
   public updateCache(keyType: "openai" | "claude" | "deepseek" | "ollama", value: string | null): void {
     if (value) {
@@ -137,9 +138,9 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Валидация API ключа (базовая проверка формата)
-   * @param keyType Тип ключа
-   * @param key Ключ для валидации
+   * Validate API key format (basic format check)
+   * @param keyType Type of key
+   * @param key Key to validate
    * @returns boolean
    */
   public validateKeyFormat(keyType: "openai" | "claude" | "deepseek" | "ollama", key: string): boolean {
@@ -159,8 +160,8 @@ export class ApiKeyLoader {
   }
 
   /**
-   * Получить информацию о кэше
-   * @returns Статистика кэша
+   * Get cache information
+   * @returns Cache statistics
    */
   public getCacheInfo(): {
     size: number
@@ -180,8 +181,8 @@ export class ApiKeyLoader {
   }
 }
 
-// Экспорт типов для удобства
+// Export types for convenience
 export type ApiKeyType = "openai" | "claude" | "deepseek" | "ollama"
 
-// Экспорт singleton instance для удобства
+// Export singleton instance for convenience
 export const apiKeyLoader = ApiKeyLoader.getInstance()
