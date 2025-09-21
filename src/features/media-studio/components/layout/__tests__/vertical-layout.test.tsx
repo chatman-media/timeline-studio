@@ -77,17 +77,6 @@ const mockTimelineContext = {
   isSaving: false,
 }
 
-vi.mock("@/features/timeline/services/timeline-provider", () => ({
-  TimelineContext: {
-    Provider: ({ children }: any) => children,
-    Consumer: ({ children }: any) => children(mockTimelineContext),
-  },
-  TimelineProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="timeline-provider">{children}</div>
-  ),
-  useTimeline: () => mockTimelineContext,
-}))
-
 vi.mock("@/features/panels/components", () => ({
   LeftPanel: () => <div data-testid="left-panel">LeftPanel</div>,
   RightPanel: () => <div data-testid="right-panel">RightPanel</div>,

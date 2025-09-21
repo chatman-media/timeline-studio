@@ -114,8 +114,6 @@ const mockTimelineContext = {
   isSaving: false,
 }
 
-
-
 // Мокаем ResizablePanel компоненты
 vi.mock("@/components/ui/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (

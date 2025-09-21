@@ -75,8 +75,6 @@ const mockTimelineContext = {
   isSaving: false,
 }
 
-
-
 vi.mock("@/features/panels/components", () => ({
   LeftPanel: () => <div data-testid="left-panel">LeftPanel</div>,
   RightPanel: () => <div data-testid="right-panel">RightPanel</div>,
