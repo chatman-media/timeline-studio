@@ -92,6 +92,19 @@ export function useUserSettings() {
     [orchestrator],
   )
 
+  // Удобные переключатели видимости панелей (паритет с legacy API)
+  const toggleBrowserVisibility = useCallback(() => {
+    orchestrator.updateUserSettings({ isBrowserVisible: !settings.isBrowserVisible })
+  }, [orchestrator, settings.isBrowserVisible])
+
+  const toggleTimelineVisibility = useCallback(() => {
+    orchestrator.updateUserSettings({ isTimelineVisible: !settings.isTimelineVisible })
+  }, [orchestrator, settings.isTimelineVisible])
+
+  const toggleOptionsVisibility = useCallback(() => {
+    orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible })
+  }, [orchestrator, settings.isOptionsVisible])
+
   // Пакетное обновление настроек
   const updateSettings = useCallback(
     (updates: Partial<UserSettingsContextType>) => {
@@ -116,6 +129,11 @@ export function useUserSettings() {
     updateScreenshotsPath,
     updatePlayerScreenshotsPath,
     updateSettings,
+
+    // Удобные методы переключения
+    toggleBrowserVisibility,
+    toggleTimelineVisibility,
+    toggleOptionsVisibility,
 
     // Удобные геттеры
     hasOpenAiApiKey: !!settings.openAiApiKey,

@@ -149,6 +149,19 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  useTimeline: () => ({
+    currentTime: 0,
+    duration: 0,
+    isPlaying: false,
+    zoom: 1,
+    setCurrentTime: vi.fn(),
+    setDuration: vi.fn(),
+    setIsPlaying: vi.fn(),
+    setZoom: vi.fn(),
+  }),
+}))
+
 describe("VerticalLayout", () => {
   beforeEach(() => {
     // Сбрасываем моки перед каждым тестом

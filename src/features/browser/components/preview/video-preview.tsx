@@ -1,9 +1,8 @@
 import { useDraggable } from "@dnd-kit/core"
 import { Film } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
-
-import { FileSelectionCheckbox } from "@/features/browser/components/layout/file-selection-checkbox"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { FileSelectionCheckbox } from "@/features/browser/components/layout/file-selection-checkbox"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { FfprobeStream } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"

@@ -18,7 +18,7 @@ import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-p
 import { ModalProvider } from "@/features/modals/services/modal-provider"
 import { ProjectSettingsProvider } from "@/features/project-settings/services/project-settings-provider"
 import { ResourcesProvider } from "@/features/resources/services/resources-provider"
-import { UserSettingsProvider } from "@/features/user-settings/services/user-settings-provider"
+// import { UserSettingsProvider } from "@/features/user-settings/services/user-settings-provider"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 
@@ -46,9 +46,9 @@ const AppProviderComposite = composeProviders(
   AppProvider, // Новый провайдер с backend state management
 
   // Остальные провайдеры (некоторые будут мигрированы позже)
-  UserSettingsProvider, // Пользовательские настройки
+  // UserSettingsProvider, // Пользовательские настройки больше не обязательны: читаются через доменный хук
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
-  ShortcutsProvider, // Зависит от UserSettingsProvider
+  ShortcutsProvider, // Не зависит от UserSettingsProvider
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
   // BrowserStateProvider, // ОТКЛЮЧЕНО: может вызывать зависания браузера
 

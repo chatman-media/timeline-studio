@@ -144,6 +144,10 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  Timeline: () => <div data-testid="timeline">Timeline</div>,
+}))
+
 describe("OptionsLayout", () => {
   beforeEach(() => {
     // Сбрасываем моки перед каждым тестом

@@ -187,3 +187,7 @@ export function setupAdapterMocks() {
 export function clearAdapterMocks() {
   vi.clearAllMocks()
 }
+
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  TimelineProvider: ({ children }: any) => children,
+}))

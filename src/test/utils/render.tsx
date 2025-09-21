@@ -59,7 +59,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { TimelineProvider } = await import("@/features/timeline/services/timeline-provider")
+    const { TimelineProvider } = await import("@/domains/video-editing/providers/timeline-providers")
     providers.TimelineProvider = TimelineProvider
   } catch (_e) {
     // Provider not available
@@ -86,11 +86,12 @@ const getProviders = async () => {
     // Provider not available
   }
 
+  // IMPORTANT: import via barrel so test setup mock applies and provider becomes a no-op in tests
   try {
-    const { UserSettingsProvider } = await import("@/features/user-settings/services/user-settings-provider")
+    const { UserSettingsProvider } = await import("@/features/user-settings")
     providers.UserSettingsProvider = UserSettingsProvider
   } catch (_e) {
-    // Provider not available
+    // Provider not available (or mocked as no-op in tests)
   }
 
   try {
@@ -258,7 +259,6 @@ export const renderWithMedia = (ui: React.ReactElement, initialFiles?: any[]) =>
     providerConfig: { media: { initialFiles } },
   })
 
-// Re-export everything from testing library except render
 export {
   act,
   buildQueries,

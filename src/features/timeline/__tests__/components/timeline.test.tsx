@@ -35,9 +35,8 @@ import "@/test/mocks/timeline-components"
 import { ChatProvider } from "@/features/ai-chat/services"
 import { ModalProvider } from "@/features/modals"
 import { ProjectSettingsProvider } from "@/features/project-settings"
-import { renderWithTimeline } from "@/test/test-utils"
+import { renderWithTimeline, TimelineProviders } from "@/test/test-utils"
 import { Timeline } from "../../components/timeline"
-import { TimelineProviders } from "@/test/test-utils"
 
 // Use the pre-configured renderWithTimeline function
 const renderTimeline = (ui: React.ReactElement) => {

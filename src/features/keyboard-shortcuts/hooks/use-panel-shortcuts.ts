@@ -6,10 +6,9 @@ import { shortcutsRegistry } from "../services/shortcuts-registry"
 
 /**
  * Хук для регистрации shortcuts панелей
- * Должен вызываться после инициализации UserSettingsProvider
  *
  * Использует useUserSettings для получения методов управления видимостью панелей
- * Важно: ShortcutsProvider должен быть размещен ПОСЛЕ UserSettingsProvider в иерархии
+ * Примечание: не требует наличия UserSettingsProvider в иерархии
  */
 export function usePanelShortcuts() {
   const userSettings = useUserSettings()
