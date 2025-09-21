@@ -59,6 +59,7 @@ describe("ApiKeyInput", () => {
     vi.mocked(useApiKeys).mockImplementation(() => ({
       getApiKeyStatus: mockGetApiKeyStatus.mockReturnValue("not_set"),
       getApiKeyInfo: vi.fn(),
+      getValidationError: vi.fn(),
       testApiKey: mockTestApiKey,
       saveSimpleApiKey: vi.fn(),
       deleteApiKey: vi.fn(),
