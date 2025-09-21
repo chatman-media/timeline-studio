@@ -57,17 +57,18 @@ vi.mock("../components/volume-slider", () => ({
   ),
 }))
 
-// Мокаем TimelineProvider
-vi.mock("@/features/timeline/services/timeline-provider", () => ({
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  TimelineProjectProvider: ({ children }: any) => children,
   TimelineProvider: ({ children }: any) => children,
   useTimeline: () => ({
+    currentTime: 0,
+    duration: 120,
     isPlaying: false,
-    timeline: {
-      tracks: [],
-      duration: 120,
-      fps: 30,
-    },
-    clips: [],
+    zoom: 1,
+    setCurrentTime: vi.fn(),
+    setDuration: vi.fn(),
+    setIsPlaying: vi.fn(),
+    setZoom: vi.fn(),
   }),
 }))
 
