@@ -38,6 +38,18 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
   }
 })
 
+// Мокаем AppProvider для избежания проблем с машиной состояний
+vi.mock("@/features/app-state/services/app-provider", () => ({
+  AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useApp: vi.fn(() => ({
+    projectState: { project: null },
+    executeCommand: vi.fn(),
+    isConnected: true,
+    isConnecting: false,
+    connectionError: null,
+  })),
+}))
+
 // Мокаем useMachine для UI машины
 const mockUISend = vi.fn()
 const mockUIState = {
@@ -66,7 +78,7 @@ vi.mock("@xstate/react", () => ({
 import type { MediaFile } from "@/features/media/types/media"
 
 import { useTimeline } from "../../hooks/use-timeline"
-import { TimelineProvider } from "../../services/timeline-provider"
+import { TimelineProviders } from "@/test/test-utils"
 
 // Получаем моки из модуля
 const {
@@ -79,7 +91,7 @@ const {
   _mockGetEventHistory: mockGetEventHistory,
 } = await import("@/features/app-state/services/backend-sync")
 
-const wrapper = ({ children }: { children: React.ReactNode }) => <TimelineProvider>{children}</TimelineProvider>
+const wrapper = ({ children }: { children: React.ReactNode }) => <TimelineProviders>{children}</TimelineProviders>
 
 describe("useTimeline", () => {
   beforeEach(() => {

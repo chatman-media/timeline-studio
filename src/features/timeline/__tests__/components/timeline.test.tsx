@@ -37,7 +37,7 @@ import { ModalProvider } from "@/features/modals"
 import { ProjectSettingsProvider } from "@/features/project-settings"
 import { renderWithTimeline } from "@/test/test-utils"
 import { Timeline } from "../../components/timeline"
-import { TimelineProvider } from "../../services/providers"
+import { TimelineProviders } from "@/test/test-utils"
 
 // Use the pre-configured renderWithTimeline function
 const renderTimeline = (ui: React.ReactElement) => {
@@ -121,17 +121,11 @@ describe("Timeline Component", () => {
 
       // Перерендерим с другим размером
       rerender(
-        <ModalProvider>
-          <ProjectSettingsProvider>
-            <ChatProvider>
-              <TimelineProvider>
-                <div style={{ width: "1200px", height: "600px" }}>
-                  <Timeline />
-                </div>
-              </TimelineProvider>
-            </ChatProvider>
-          </ProjectSettingsProvider>
-        </ModalProvider>,
+        <TimelineProviders>
+          <div style={{ width: "1200px", height: "600px" }}>
+            <Timeline />
+          </div>
+        </TimelineProviders>,
       )
 
       expect(screen.getByTestId("timeline")).toBeInTheDocument()
@@ -159,15 +153,9 @@ describe("Timeline Component", () => {
       // Множественные перерендеры не должны вызывать ошибок
       for (let i = 0; i < 10; i++) {
         rerender(
-          <ModalProvider>
-            <ProjectSettingsProvider>
-              <ChatProvider>
-                <TimelineProvider>
-                  <Timeline key={i} />
-                </TimelineProvider>
-              </ChatProvider>
-            </ProjectSettingsProvider>
-          </ModalProvider>,
+          <TimelineProviders>
+            <Timeline key={i} />
+          </TimelineProviders>,
         )
       }
 
