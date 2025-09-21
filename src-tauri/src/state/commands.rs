@@ -283,6 +283,8 @@ impl CommandHandler {
       ProjectCommand::PlayerClearFilters => self.player_clear_filters().await,
       ProjectCommand::PlayerClearTemplate => self.player_clear_template().await,
       ProjectCommand::AddMedia { path, media_type } => self.add_media(path, media_type).await,
+      ProjectCommand::RemoveMedia { media_id } => self.remove_media(media_id).await,
+      ProjectCommand::UpdateMedia { media_id, updates } => self.update_media(media_id, updates).await,
 
       // NEW: Version control commands
       ProjectCommand::CreateSnapshot { message } => self.create_snapshot(message).await,
@@ -959,6 +961,84 @@ impl CommandHandler {
       .ok();
 
     CommandResult::success(Some(serde_json::json!({ "media_id": media_id })))
+  }
+
+  async fn remove_media(&self, media_id: String) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Check if media item exists
+    if !project.media_pool.items.contains_key(&media_id) {
+      return CommandResult::error(format!("Media item not found: {}", media_id));
+    }
+
+    // Remove from media pool
+    project.media_pool.items.remove(&media_id);
+    state.mark_dirty();
+
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaRemoved {
+          media_id: media_id.clone(),
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
+  }
+
+  async fn update_media(&self, media_id: String, updates: MediaUpdates) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Get media item and apply updates
+    let updated_name = if let Some(media_item) = project.media_pool.items.get_mut(&media_id) {
+      if let Some(name) = updates.name {
+        media_item.name = name.clone();
+        Some(name)
+      } else {
+        Some(media_item.name.clone())
+      }
+    } else {
+      return CommandResult::error(format!("Media item not found: {}", media_id));
+    };
+
+    state.mark_dirty();
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaUpdated {
+          media_id: media_id.clone(),
+          changes: super::events::MediaChanges {
+            name: updated_name,
+            thumbnail: None, // Not updating thumbnail in this command
+          },
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
   }
 
   // NEW: Version control command implementations
