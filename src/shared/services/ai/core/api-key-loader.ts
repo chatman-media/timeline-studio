@@ -13,13 +13,6 @@ export class ApiKeyLoader {
   private constructor() {}
 
   /**
-   * Проверяет, выполняется ли код внутри Tauri WebView (а не в SSR/браузере)
-   */
-  private static isTauriEnvironment(): boolean {
-    return typeof window !== "undefined" && "__TAURI__" in window
-  }
-
-  /**
    * Получить экземпляр загрузчика (Singleton)
    */
   public static getInstance(): ApiKeyLoader {
@@ -44,13 +37,9 @@ export class ApiKeyLoader {
     }
 
     try {
-      // Не вызываем Tauri API вне окружения Tauri (SSR/браузер)
-      if (!ApiKeyLoader.isTauriEnvironment()) {
-        return null
-      }
       // Запрашиваем ключ из backend
       const result = await invoke<string | null>("get_decrypted_api_key", {
-        key_type: keyType,
+        keyType,
       })
 
       if (result) {
@@ -74,12 +63,8 @@ export class ApiKeyLoader {
    */
   public async hasApiKey(keyType: "openai" | "claude" | "deepseek" | "ollama"): Promise<boolean> {
     try {
-      // Не вызываем Tauri API вне окружения Tauri (SSR/браузер)
-      if (!ApiKeyLoader.isTauriEnvironment()) {
-        return false
-      }
       const result = await invoke<boolean>("has_api_key", {
-        key_type: keyType,
+        keyType,
       })
       return result
     } catch (error) {
