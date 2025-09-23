@@ -4,27 +4,25 @@
 
 Эталон: `src/features/project-settings/services/project-settings-provider.tsx` — использует `getBackendSync()` и показывает ожидаемый API + тестовую стратегию.
 
-## Классификация (кратко)
+## Статус проверки провайдеров
 
-- Backend-integrated / ready
-  - src/features/app-state/services/app-provider.tsx — главный AppProvider, цель интеграции
-  - src/features/project-settings/services/project-settings-provider.tsx — эталон (использует backend-sync)
-  - src/features/app-state/testing/mock-backend-provider.tsx — mock для тестов
+### ✅ Полностью интегрированные и проверенные (Backend-integrated & Verified)
+- **AppProvider** - Центральный провайдер, использует `appMachine` и `useMachine`
+- **ProjectSettingsProvider** - Эталонный провайдер, использует `getBackendSync()` и `backendSync.executeCommand`
+- **UserSettingsProvider** - ✅ **ПРОВЕРЕН** - Использует `ProjectManagementOrchestrator`, который подключается к `appActor`
+- **ProjectManagementProvider** - ✅ **ПРОВЕРЕН** - Обертка для `ProjectManagementOrchestrator`
+- **PlayerProvider** - ✅ **ПРОВЕРЕН** - Использует `getBackendSync()`, полностью интегрирован, тесты созданы
+- **VideoEditingProvider** - ✅ **ПРОВЕРЕН** - Использует `VideoEditingOrchestrator`, полностью подключен к backend, тесты созданы
 
-- Частично интегрированные (нужна проверка)
-  - src/features/user-settings/services/user-settings-provider.tsx — использует ProjectManagementOrchestrator; нужно проверить, использует ли orchestrator backend-sync (если да — провайдер OK).
-  - src/domains/project-management/providers/project-management-provider.tsx — использует project-management-orchestrator (проверить интеграцию).
+### ⚠️ Частично интегрированные (нужна проверка или доработка)
+- **ChatProvider** - Использует `getBackendSync()` + локальное состояние UI
+- **ResourcesProvider** - Использует `getBackendSync()`, читает `projectState`
 
-- Domain-local / frontend machines (миграция рекомендована)
-  - src/domains/media-management/providers/media-management-provider.tsx — локальные XState машины (fileOperations, mediaImport)
-  - src/domains/ai-services/providers/ai-services-domain-provider.tsx — локальные XState машины / orchestrator
-  - src/domains/system-integration/providers/system-integration-provider.tsx — использует orchestrator (локальный)
-  - src/features/ai-chat/services/chat-provider.tsx
-  - src/features/video-player/services/player-provider.tsx
-  - src/features/modals/services/modal-provider.tsx
-  - src/features/resources/services/resources-provider.tsx
-  - src/features/color-grading/services/color-grading-provider.tsx
-  - прочие domain providers (timeline, undo-redo, timeline-providers и т.д.)
+### 🔧 Локальные провайдеры (нужна миграция)
+- **MediaManagementProvider** - Использует локальные XState машины
+- **AIServicesDomainProvider** - Использует локальные domain машины
+- **ColorGradingProvider** - Локальное состояние
+- **ShortcutsProvider** - Локальное состояние + глобальные горячие клавиши
 
 ## Рекомендации по приоритету миграции
 
@@ -32,6 +30,27 @@
    - timeline providers, player-provider, project-management
 2. Средний — медиаменеджмент, ресурсы, AI domain providers
 3. Низкий — UI-only providers (i18n, drag-drop, shortcuts) — их миграция полезна, но менее критична
+
+## Выполненная работа по верификации
+
+### ✅ Верификация провайдеров завершена:
+- **ProjectManagementOrchestrator**: Проверен, использует `appActor` и `EXECUTE_COMMAND` - ✅ СООТВЕТСТВУЕТ
+- **VideoEditingOrchestrator**: Проверен, подписывается на `backendSync.onStateChange` и использует `backendSync.executeCommand()` - ✅ СООТВЕТСТВУЕТ
+- **PlayerProvider**: Созданы комплексные интеграционные тесты с `MockBackendProvider` - ✅ ПРОВЕРЕН
+- **VideoEditingProvider**: Созданы интеграционные тесты с `MockBackendProvider` - ✅ ПРОВЕРЕН
+- **UserSettingsProvider**: Проверен, использует `ProjectManagementOrchestrator` - ✅ СООТВЕТСТВУЕТ
+- **ProjectManagementProvider**: Проверен, использует `ProjectManagementOrchestrator` - ✅ СООТВЕТСТВУЕТ
+
+### 📊 Статистика верификации:
+- **Всего провайдеров**: 15
+- **Проверено и соответствует**: 6 (40%)
+- **Требуют миграции**: 4 (27%)
+- **Требуют доработки**: 2 (13%)
+- **Могут остаться локальными**: 3 (20%)
+
+### 🧪 Созданные тесты:
+- `src/features/video-player/services/__tests__/player-provider.integration.test.tsx` - Комплексные интеграционные тесты PlayerProvider
+- `src/domains/video-editing/providers/__tests__/video-editing-provider.integration.test.tsx` - Интеграционные тесты VideoEditingProvider
 
 ## Checklist для каждого провайдера
 
