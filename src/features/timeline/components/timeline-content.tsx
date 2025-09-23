@@ -225,9 +225,7 @@ export function TimelineContent() {
             <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
               <div className="h-full flex flex-col">
                 <TrackControlsPanel />
-                <div className="p-2 border-t">
-                  {/* <IntegratedVersionPanel /> */}
-                </div>
+                <div className="p-2 border-t">{/* <IntegratedVersionPanel /> */}</div>
               </div>
             </ResizablePanel>
 

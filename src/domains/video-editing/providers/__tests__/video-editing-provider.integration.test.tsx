@@ -176,7 +176,7 @@ describe("VideoEditingProvider Integration Tests", () => {
   it("should subscribe to state changes", async () => {
     const timelineCallback = vi.fn()
     const playerCallback = vi.fn()
-    
+
     const { result } = renderHook(() => useVideoEditingContext(), {
       wrapper: ({ children }) => (
         <MockBackendProvider>
@@ -188,7 +188,7 @@ describe("VideoEditingProvider Integration Tests", () => {
     // Subscribe to state changes
     let unsubscribeTimeline: any
     let unsubscribePlayer: any
-    
+
     act(() => {
       unsubscribeTimeline = result.current.orchestrator.subscribeToTimeline(timelineCallback)
       unsubscribePlayer = result.current.orchestrator.subscribeToPlayer(playerCallback)
@@ -205,10 +205,10 @@ describe("VideoEditingProvider Integration Tests", () => {
 
     // Test unsubscribe - the subscribe methods return unsubscribe functions directly
     act(() => {
-      if (typeof unsubscribeTimeline === 'function') {
+      if (typeof unsubscribeTimeline === "function") {
         unsubscribeTimeline()
       }
-      if (typeof unsubscribePlayer === 'function') {
+      if (typeof unsubscribePlayer === "function") {
         unsubscribePlayer()
       }
     })

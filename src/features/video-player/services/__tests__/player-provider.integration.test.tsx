@@ -4,15 +4,15 @@
  * Tests backend integration compliance and local state management
  */
 
+import { act, renderHook, waitFor } from "@testing-library/react"
 import React from "react"
-import { renderHook, act, waitFor } from "@testing-library/react"
-import { vi, describe, it, expect, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock service configuration to enable video player service
 vi.mock("@/shared/config/service-config", () => ({
   isServiceEnabled: (serviceName: string) => {
     console.log("isServiceEnabled called with:", serviceName)
-    if (serviceName === 'VIDEO_PLAYER' || serviceName === 'TIMELINE_PLAYER') {
+    if (serviceName === "VIDEO_PLAYER" || serviceName === "TIMELINE_PLAYER") {
       return true
     }
     return false
@@ -110,9 +110,7 @@ let PlayerProvider: any
 let usePlayer: any
 
 beforeEach(async () => {
-  const mod = await vi.importActual<typeof import("../player-provider")>(
-    "../player-provider",
-  )
+  const mod = await vi.importActual<typeof import("../player-provider")>("../player-provider")
   PlayerProvider = mod.PlayerProvider
   usePlayer = mod.usePlayer
 })
@@ -343,8 +341,6 @@ describe("PlayerProvider Integration Tests", () => {
     expect(result.current.basePlaybackRate).toBe(2.0)
   })
 
-
-
   it("should handle prerender settings locally", async () => {
     const { result } = renderHook(() => usePlayer(), {
       wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
@@ -366,8 +362,8 @@ describe("PlayerProvider Integration Tests", () => {
   })
 
   it("should handle backend command failures gracefully", async () => {
-    const mockBackendSync = getBackendSync();
-    (mockBackendSync.executeCommand as any).mockRejectedValueOnce(new Error("Backend command failed"))
+    const mockBackendSync = getBackendSync()
+    ;(mockBackendSync.executeCommand as any).mockRejectedValueOnce(new Error("Backend command failed"))
 
     const { result } = renderHook(() => usePlayer(), {
       wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
