@@ -2,6 +2,7 @@
 
 import { createContext, useEffect, useState } from "react"
 import { type BrowserTab } from "@/domains/browser/types"
+import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
 
@@ -87,16 +88,29 @@ export const UserSettingsContext = createContext<UserSettingsContextValue | unde
 /**
  * Провайдер пользовательских настроек
  * Компонент, который предоставляет доступ к пользовательским настройкам через контекст
- * Использует XState машину состояний для управления настройками
+ * Использует ProjectManagementOrchestrator для управления настройками
  *
  * @param {Object} props - Пропсы компонента
  * @param {React.ReactNode} props.children - Дочерние компоненты
  * @returns {JSX.Element} Провайдер контекста с пользовательскими настройками
  */
-export function UserSettingsProvider({ children }: { children: React.ReactNode }) {
+export function UserSettingsProvider({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode
+  initialSettings?: Partial<UserSettingsContextType>
+}) {
   // Получаем оркестратор домена и подписываемся на настройки
   const [orchestrator] = useState(() => getProjectManagementOrchestrator())
   const [settings, setSettings] = useState(() => orchestrator.getUserSettings())
+
+  // Применяем начальные настройки при монтировании, если переданы
+  useEffect(() => {
+    if (initialSettings) {
+      orchestrator.updateUserSettings(initialSettings)
+    }
+  }, [orchestrator, initialSettings])
 
   useEffect(() => {
     const sub = orchestrator.subscribeToUserSettings((s) => setSettings(s))

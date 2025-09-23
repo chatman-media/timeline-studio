@@ -408,6 +408,38 @@ test('component works', () => {
 - ❌ Создавать новые legacy хуки
 - ❌ Игнорировать новую архитектуру в новых компонентах
 
+### Политика для провайдеров (важно)
+
+- Для React-провайдеров (Provider pattern) вводится жёсткое требование: они должны быть переведены на новую backend-центричную систему и использовать backend-sync / AppProvider как источник истины.
+- Поддержка старых (legacy) провайдеров не требуется и не будет поддерживаться как обязательная — провайдеры можно переводить сразу на новую систему без создания shim-слоя.
+- За эталон берите провайдер настроек проекта: `src/features/project-settings/services/project-settings-provider.tsx` (ProjectSettingsProvider). Он показывает ожидаемый API, тесты и интеграцию с mock-backend.
+
+Проверочный чеклист для провайдера
+
+1. Экспортирует React Provider и hook (например, MyProvider / useMyProvider) совместимый с AppProvider или использует AppProvider внутри.
+2. Не держит независимый локальный источник истины — состояние должно приходить из backend (через useAppState / AppProvider) или синхронизироваться с ним.
+3. Имеет тесты, которые запускаются с `renderWithAppState` / `MockBackendProvider` и проверяют поведение в изолированном режиме.
+4. Не добавляет новых legacy-хуков; если требуется совместимость — делайте миграцию в отдельной задаче, но не держите shim навсегда.
+
+Примеры тестов и интеграции
+
+Используйте `renderWithAppState` или `MockBackendProvider` для unit/integration тестов провайдера. Пример:
+
+```typescript
+import { renderWithAppState } from '@/features/app-state/testing'
+import { ProjectSettingsProvider } from '@/features/project-settings/services/project-settings-provider'
+
+test('provider integrates with backend', () => {
+  const { mockBackend } = renderWithAppState(<ProjectSettingsProvider />, {
+    mockBackend: { initialState: /* createTestScenarios.emptyProject() */ }
+  })
+
+  // assertions against mockBackend or rendered output
+})
+```
+
+Если провайдер работает корректно с mock-backend — он считается совместимым с новой архитектурой.
+
 ### Рекомендуемая стратегия
 1. **Новые компоненты** - сразу используйте новую архитектуру
 2. **Существующие компоненты** - мигрируйте по мере необходимости
