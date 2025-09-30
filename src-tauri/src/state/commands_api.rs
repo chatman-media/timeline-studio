@@ -136,3 +136,171 @@ pub async fn get_event_history(
 
 // Subscribe to project events (handled automatically by Tauri event system)
 // Frontend should listen to "project:event" events
+
+// Browser commands wrappers
+use super::browser::{BrowserTab, SortOrder, ViewMode};
+
+/// Switch browser tab
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_switch_tab(
+  state_manager: State<'_, StateManager>,
+  tab: BrowserTab,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSwitchTab { tab }).await;
+  Ok(result)
+}
+
+/// Set browser search query
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_search_query(
+  state_manager: State<'_, StateManager>,
+  query: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetSearchQuery { query, tab }).await;
+  Ok(result)
+}
+
+/// Toggle browser favorites filter
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_toggle_favorites(
+  state_manager: State<'_, StateManager>,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserToggleFavorites { tab }).await;
+  Ok(result)
+}
+
+/// Set browser sort order
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_sort(
+  state_manager: State<'_, StateManager>,
+  sort_by: String,
+  sort_order: SortOrder,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetSort { sort_by, sort_order, tab }).await;
+  Ok(result)
+}
+
+/// Set browser group by
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_group_by(
+  state_manager: State<'_, StateManager>,
+  group_by: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetGroupBy { group_by, tab }).await;
+  Ok(result)
+}
+
+/// Set browser filter
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_filter(
+  state_manager: State<'_, StateManager>,
+  filter_type: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetFilter { filter_type, tab }).await;
+  Ok(result)
+}
+
+/// Set browser view mode
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_view_mode(
+  state_manager: State<'_, StateManager>,
+  view_mode: ViewMode,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetViewMode { view_mode, tab }).await;
+  Ok(result)
+}
+
+/// Set browser preview size
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_set_preview_size(
+  state_manager: State<'_, StateManager>,
+  size_index: u32,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSetPreviewSize { size_index, tab }).await;
+  Ok(result)
+}
+
+/// Reset browser tab settings to defaults
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_reset_tab_settings(
+  state_manager: State<'_, StateManager>,
+  tab: BrowserTab,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserResetTabSettings { tab }).await;
+  Ok(result)
+}
+
+/// Select a file in the browser
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_select_file(
+  state_manager: State<'_, StateManager>,
+  file_id: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSelectFile { file_id, tab }).await;
+  Ok(result)
+}
+
+/// Deselect a file in the browser
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_deselect_file(
+  state_manager: State<'_, StateManager>,
+  file_id: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserDeselectFile { file_id, tab }).await;
+  Ok(result)
+}
+
+/// Toggle file selection in the browser
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_toggle_file_selection(
+  state_manager: State<'_, StateManager>,
+  file_id: String,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserToggleFileSelection { file_id, tab }).await;
+  Ok(result)
+}
+
+/// Select all files in the browser
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_select_all_files(
+  state_manager: State<'_, StateManager>,
+  file_ids: Vec<String>,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserSelectAllFiles { file_ids, tab }).await;
+  Ok(result)
+}
+
+/// Deselect all files in the browser
+#[tauri::command]
+#[specta::specta]
+pub async fn browser_deselect_all_files(
+  state_manager: State<'_, StateManager>,
+  tab: Option<BrowserTab>,
+) -> Result<CommandResult, String> {
+  let result = state_manager.execute_command(ProjectCommand::BrowserDeselectAllFiles { tab }).await;
+  Ok(result)
+}

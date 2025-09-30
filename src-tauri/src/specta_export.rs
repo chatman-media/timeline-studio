@@ -27,6 +27,10 @@ pub use crate::state::{
   CommandResult, EventEnvelope, EventMetadata, ProjectCommand, ProjectEvent, ProjectState,
 };
 
+// Browser types
+#[allow(unused_imports)]
+pub use crate::state::browser::{BrowserTab, BrowserState, SortOrder, TabSettings, ViewMode, BrowserEvent};
+
 // Simple command for demonstration
 #[tauri::command]
 #[specta::specta]
@@ -46,6 +50,21 @@ pub fn export_typescript_bindings() {
       crate::state::commands_api::execute_batch_commands,
       crate::state::commands_api::get_project_state,
       crate::state::commands_api::get_event_history,
+      // Browser commands
+      crate::state::commands_api::browser_switch_tab,
+      crate::state::commands_api::browser_set_search_query,
+      crate::state::commands_api::browser_toggle_favorites,
+      crate::state::commands_api::browser_set_sort,
+      crate::state::commands_api::browser_set_group_by,
+      crate::state::commands_api::browser_set_filter,
+      crate::state::commands_api::browser_set_view_mode,
+      crate::state::commands_api::browser_set_preview_size,
+      crate::state::commands_api::browser_reset_tab_settings,
+      crate::state::commands_api::browser_select_file,
+      crate::state::commands_api::browser_deselect_file,
+      crate::state::commands_api::browser_toggle_file_selection,
+      crate::state::commands_api::browser_select_all_files,
+      crate::state::commands_api::browser_deselect_all_files,
     ])
     .events(tauri_specta::collect_events![]);
 

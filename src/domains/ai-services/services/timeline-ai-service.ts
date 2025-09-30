@@ -5,7 +5,7 @@
  * ресурсами, браузером, плеером и таймлайном
  */
 
-import { getAIContainer, type UnifiedAITool } from "@/domains/ai-core"
+import { getAIContainer } from "@/domains/ai-core"
 import { contentIntelligenceTools } from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
 import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
@@ -15,17 +15,28 @@ import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-
 import { performanceTools as platformOptimizationTools } from "@/domains/ai-tools/tools/automation/performance"
 import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
 import { workflowTools as workflowAutomationTools } from "@/domains/ai-tools/tools/automation/workflow"
-import { browserTools } from "@/domains/ai-tools/tools/core/browser"
-import { effectsFiltersTools } from "@/domains/ai-tools/tools/core/effects-filters-tools"
-import { playerTools } from "@/domains/ai-tools/tools/core/player"
-import { resourceTools } from "@/domains/ai-tools/tools/core/resources"
-import { timelineTools } from "@/domains/ai-tools/tools/core/timeline"
+import { browserTools, executeBrowserTool } from "@/domains/ai-tools/tools/core/browser"
+import { effectsFiltersTools, executeEffectsFiltersTool } from "@/domains/ai-tools/tools/core/effects-filters-tools"
+import { executePlayerTool, playerTools } from "@/domains/ai-tools/tools/core/player"
+import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/core/resources"
+import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
+import { executePlatformOptimizationTool } from "@/features/ai-chat/tools"
+import { executeContentIntelligenceTool } from "@/features/ai-chat/tools/analysis/content-intelligence-tools"
+import { executeMultimodalAnalysisTool } from "@/features/ai-chat/tools/analysis/multimodal-tools"
+import { executePersonIdentificationTool } from "@/features/ai-chat/tools/analysis/person-identification-tools"
+import { executeVideoAnalysisTool } from "@/features/ai-chat/tools/analysis/video-analysis-tools"
+import { executeWhisperTool } from "@/features/ai-chat/tools/analysis/whisper-tools"
+import { executeBatchProcessingTool } from "@/features/ai-chat/tools/automation/batch-processing-tools"
+import { executeSubtitleTool } from "@/features/ai-chat/tools/automation/subtitle-tools"
+import { executeWorkflowAutomationTool } from "@/features/ai-chat/tools/automation/workflow-tools"
+import { executeExportManagementTool } from "@/features/ai-chat/tools/integration/export-tools"
 import {
   AIBrowserContext,
   AIPlayerContext,
   AIResourcesContext,
   AITimelineContext,
+  AIToolResult,
   ContentStoryAnalysis,
   TimelineStudioContext,
 } from "@/features/ai-chat/types/ai-context"
@@ -404,8 +415,8 @@ export class TimelineAIService {
       success: true,
       message: response.content,
       data: {},
-      executionTime: 0,
-      toolName: "",
+      // executionTime: 0,
+      // toolName: "",
     }
 
     // Если Claude использовал инструмент

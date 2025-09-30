@@ -5,7 +5,7 @@
 
 // Using crypto.randomUUID() instead of uuid package (native in modern browsers/Node.js)
 
-import type {
+import {
   ClipRole,
   EmotionalCurve,
   Fragment,

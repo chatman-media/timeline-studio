@@ -1,3 +1,4 @@
+use super::browser::BrowserEvent;
 use super::chat::ChatEvent;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -170,6 +171,9 @@ pub enum ProjectEvent {
     enabled: bool,
     interval_seconds: u32,
   },
+
+  // Browser events
+  Browser(BrowserEvent),
 
   // Chat events
   Chat(ChatEvent),

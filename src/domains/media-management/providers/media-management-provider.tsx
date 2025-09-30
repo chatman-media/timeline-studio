@@ -2,20 +2,23 @@
  * Media Management Domain Provider
  *
  * Централизованный провайдер для Media Management домена
+ * Перенесено на BackendSync для централизованного управления состоянием
  */
 
-import { useActor } from "@xstate/react"
-import { createContext, type ReactNode } from "react"
+import { createContext, type ReactNode, useState, useEffect } from "react"
 import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
-import { fileOperationsMachine } from "../machines/file-operations-machine"
-import { mediaImportMachine } from "../machines/media-import-machine"
 import { getMediaMetadataService } from "../services/media-metadata-service"
-import type { MediaImportOptions, MediaManagementService } from "../types"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { AppCommands } from "@/domains/project-management/machines/app-machine"
+import type { MediaImportOptions, MediaManagementService, MediaType } from "../types"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 interface MediaManagementContextValue extends MediaManagementService {
   fileOperationsState: any
   mediaImportState: any
   isReady: boolean
+  isLoading: boolean
+  error: string | null
 }
 
 export const MediaManagementContext = createContext<MediaManagementContextValue | null>(null)
@@ -25,38 +28,91 @@ interface MediaManagementProviderProps {
 }
 
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
-  const [fileOperationsState, sendFileOperations] = useActor(fileOperationsMachine)
-  const [mediaImportState, sendMediaImport] = useActor(mediaImportMachine)
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [fileOperations, setFileOperations] = useState<any[]>([])
+  const [mediaImportStatus, setMediaImportStatus] = useState<'idle' | 'importing' | 'completed' | 'failed'>('idle')
+  
+  const backendSync = getBackendSync()
   const metadataService = getMediaMetadataService()
+
+  // Подписка на изменения backend состояния
+  useEffect(() => {
+    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+      // Обновляем состояние на основе backend
+      if (state.project?.media_files) {
+        // Обновляем список медиа файлов
+        setFileOperations(state.project.media_files.map(file => ({
+          id: file.id,
+          path: file.path,
+          status: 'completed',
+          result: file,
+          progress: 100
+        })))
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [backendSync])
+
+  // Вспомогательная функция для определения типа медиа по пути файла
+  const getMediaTypeFromPath = (filePath: string): MediaType => {
+    const ext = filePath.split('.').pop()?.toLowerCase() || ""
+    
+    const videoExts = ["mp4", "avi", "mkv", "mov", "webm", "m4v", "3gp", "flv"]
+    const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"]
+    const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff"]
+    
+    if (videoExts.includes(ext)) return "Video"
+    if (audioExts.includes(ext)) return "Audio"
+    if (imageExts.includes(ext)) return "Image"
+    
+    return "Unknown"
+  }
 
   const mediaManagementService: MediaManagementService = {
     importFiles: async (files: string[], options: MediaImportOptions) => {
       console.log(`[Media Management] Importing ${files.length} files`)
+      setIsLoading(true)
+      setError(null)
+      setMediaImportStatus('importing')
 
-      // Add files to import machine
-      sendMediaImport({ type: "ADD_FILES", files })
-      sendMediaImport({ type: "UPDATE_OPTIONS", options })
-      sendMediaImport({ type: "START_IMPORT" })
-
-      // Wait for import to complete
-      return new Promise<any[]>((resolve, reject) => {
-        // Subscribe to mediaImportState changes instead
-        const checkState = () => {
-          if (mediaImportState.matches("completed")) {
-            const results = mediaImportState.context.operations
-              .filter((op: any) => op.status === "completed" && op.result)
-              .map((op: any) => op.result)
-            resolve(results)
-          } else if (mediaImportState.matches("failed")) {
-            reject(new Error(mediaImportState.context.errors.join(", ")))
-          } else {
-            // Check again after a short delay
-            setTimeout(checkState, 100)
+      try {
+        // Импортируем каждый файл через BackendSync
+        const importResults: any[] = []
+        
+        for (const filePath of files) {
+          try {
+            // Определяем тип медиа на основе расширения файла
+            const mediaType = getMediaTypeFromPath(filePath)
+            
+            // Используем AddMedia команду для импорта
+            const result = await backendSync.executeCommand(
+              AppCommands.addMedia(filePath, mediaType)
+            )
+            
+            if (result) {
+              importResults.push(result)
+            }
+          } catch (importError) {
+            console.error(`Failed to import file ${filePath}:`, importError)
+            // Продолжаем импорт остальных файлов даже если один не удался
           }
         }
-        checkState()
-      })
+
+        setMediaImportStatus('completed')
+        setIsLoading(false)
+        return importResults
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Import failed'
+        console.error('[Media Management] Import failed:', errorMessage)
+        setError(errorMessage)
+        setMediaImportStatus('failed')
+        setIsLoading(false)
+        throw error
+      }
     },
 
     selectMediaFiles: async () => {
@@ -68,36 +124,93 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     },
 
     getMediaInfo: async (path: string) => {
-      // For now, return basic info based on file extension
-      const name = path.split("/").pop() || path
-      const ext = name.split(".").pop()?.toLowerCase() || ""
-
-      const videoExts = ["mp4", "avi", "mkv", "mov", "webm"]
-      const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a"]
-      const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp"]
-
-      let type: "Video" | "Audio" | "Image" | "Unknown" = "Unknown"
-      if (videoExts.includes(ext)) type = "Video"
-      else if (audioExts.includes(ext)) type = "Audio"
-      else if (imageExts.includes(ext)) type = "Image"
-
-      return {
-        path,
-        name,
-        type,
+      try {
+        // Пытаемся получить информацию из backend состояния
+        const backendState = await backendSync.getProjectState()
+        const mediaFile = backendState?.project?.media_files?.find(file => file.path === path)
+        
+        if (mediaFile) {
+          return {
+            path: mediaFile.path,
+            name: mediaFile.name,
+            type: mediaFile.media_type,
+            duration: mediaFile.duration,
+            size: mediaFile.size,
+            thumbnail_path: mediaFile.thumbnail_path,
+          }
+        }
+        
+        // Если файл не найден в backend, возвращаем базовую информацию
+        const name = path.split("/").pop() || path
+        const mediaType = getMediaTypeFromPath(path)
+        
+        return {
+          path,
+          name,
+          type: mediaType,
+        }
+      } catch (error) {
+        console.error('[Media Management] Failed to get media info:', error)
+        // В случае ошибки возвращаем базовую информацию
+        const name = path.split("/").pop() || path
+        const mediaType = getMediaTypeFromPath(path)
+        
+        return {
+          path,
+          name,
+          type: mediaType,
+        }
       }
     },
 
     extractMetadata: async (path: string) => {
-      return metadataService.extractMetadata(path)
+      try {
+        setIsLoading(true)
+        setError(null)
+        
+        const metadata = await metadataService.extractMetadata(path)
+        
+        // Обновляем метаданные в backend через UpdateMedia команду
+        if (metadata) {
+          const backendState = await backendSync.getProjectState()
+          const mediaFile = backendState?.project?.media_files?.find(file => file.path === path)
+          
+          if (mediaFile) {
+            await backendSync.executeCommand(
+              AppCommands.updateMedia(mediaFile.id, { metadata })
+            )
+          }
+        }
+        
+        setIsLoading(false)
+        return metadata
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Metadata extraction failed'
+        console.error('[Media Management] Metadata extraction failed:', errorMessage)
+        setError(errorMessage)
+        setIsLoading(false)
+        throw error
+      }
     },
   }
 
   const value: MediaManagementContextValue = {
     ...mediaManagementService,
-    fileOperationsState,
-    mediaImportState,
+    fileOperationsState: {
+      operations: fileOperations,
+      hasActiveOperations: fileOperations.some(op => op.status === 'in_progress'),
+      completedOperations: fileOperations.filter(op => op.status === 'completed'),
+      failedOperations: fileOperations.filter(op => op.status === 'failed'),
+    },
+    mediaImportState: {
+      status: mediaImportStatus,
+      isImporting: mediaImportStatus === 'importing',
+      isCompleted: mediaImportStatus === 'completed',
+      isFailed: mediaImportStatus === 'failed',
+    },
     isReady: true,
+    isLoading,
+    error,
   }
 
   return <MediaManagementContext.Provider value={value}>{children}</MediaManagementContext.Provider>

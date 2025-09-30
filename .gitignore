@@ -71,3 +71,7 @@ claude_desktop_config.json
 
 # Serena cache
 .serena/
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

@@ -174,3 +174,11 @@ export { ContentType, Emotion, type NarrativeType, type PaceType, type Processin
 export type { AIConfig as LegacyAIConfig }
 export type { IntelligentContent as LegacyIntelligentContent }
 export type { UnifiedContentAnalysis as LegacyUnifiedContentAnalysis }
+
+// Domain configuration type
+export interface AIServicesDomainConfig {
+  chatEnabled: boolean
+  intelligenceEnabled: boolean
+  montagePlannerEnabled: boolean
+  recognitionEnabled: boolean
+}

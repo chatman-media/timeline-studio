@@ -47,7 +47,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
       <LanguageProvider>
-        <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <HashRouter>
           <ScrollToTop />
           <Suspense fallback={<LoadingFallback />}>
             <Routes>

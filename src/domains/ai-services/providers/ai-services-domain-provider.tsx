@@ -9,17 +9,15 @@ import { useActor } from "@xstate/react"
 import { createContext, type PropsWithChildren, useContext } from "react"
 import { aiIntelligenceMachine } from "../machines/ai-intelligence-machine"
 // Import domain machines
-import { chatMachine } from "../machines/chat-machine"
-import { montagePlannerMachine } from "../machines/montage-planner-machine"
+import { ChatMachineContext, chatMachine } from "../machines/chat-machine"
+import { MontagePlannerContext, montagePlannerMachine } from "../machines/montage-planner-machine"
 
 // Import domain types
 import type {
   AIIntelligenceContext,
   AIIntelligenceEvent,
   AIServicesDomainConfig,
-  ChatMachineContext,
   ChatMachineEvent,
-  MontagePlannerContext,
   MontagePlannerEvent,
 } from "../types"
 

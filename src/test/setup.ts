@@ -185,6 +185,101 @@ vi.mock("@/features/app-state", async (importOriginal) => {
   }
 })
 
+// Mock new project management domain hooks
+vi.mock("@/domains/project-management", () => ({
+  useProject: () => ({
+    projectState: {
+      project: {
+        metadata: {
+          name: "Test Project",
+          file_path: "/test/project.tlsp",
+        },
+        timeline: { tracks: [], duration: 0 },
+      },
+      hasUnsavedChanges: false,
+    },
+    isLoading: false,
+    hasUnsavedChanges: false,
+    createProject: vi.fn(),
+    saveProject: vi.fn(),
+    saveProjectAs: vi.fn(),
+    openProject: vi.fn(),
+    closeProject: vi.fn(),
+  }),
+  useUserSettings: () => ({
+    settings: {
+      layoutMode: "default",
+      activeTab: "media",
+      openAiApiKey: "test-openai-key",
+      claudeApiKey: "test-claude-key",
+      playerVolume: 0.8,
+      screenshotsPath: "/test/screenshots",
+      playerScreenshotsPath: "/test/player-screenshots",
+      gpuAccelerationEnabled: true,
+      autoSaveEnabled: true,
+      autoSaveInterval: 5,
+      isBrowserVisible: true,
+      isTimelineVisible: true,
+      isOptionsVisible: true,
+    },
+    isLoading: false,
+    updateSettings: vi.fn(),
+    updateLayoutMode: vi.fn(),
+    updateActiveTab: vi.fn(),
+    updateApiKey: vi.fn(),
+    updateGpuAcceleration: vi.fn(),
+    updateAutoSave: vi.fn(),
+  }),
+  useAppState: () => ({
+    isConnected: true,
+    connectionError: null,
+    isLoading: false,
+    retryConnection: vi.fn(),
+  }),
+  useProjectManagement: () => ({
+    projectState: {
+      project: {
+        metadata: {
+          name: "Test Project",
+          file_path: "/test/project.tlsp",
+        },
+        timeline: { tracks: [], duration: 0 },
+      },
+    },
+    userSettings: {
+      layoutMode: "default",
+      activeTab: "media",
+      openAiApiKey: "test-openai-key",
+      claudeApiKey: "test-claude-key",
+      playerVolume: 0.8,
+      autoSaveEnabled: true,
+      autoSaveInterval: 5,
+    },
+    isConnected: true,
+    connectionError: null,
+    createProject: vi.fn(),
+    openProject: vi.fn(),
+    saveProject: vi.fn(),
+    saveProjectAs: vi.fn(),
+    closeProject: vi.fn(),
+    updateUserSettings: vi.fn(),
+    hasProject: true,
+    projectName: "Test Project",
+    projectPath: "/test/project.tlsp",
+    isAutoSaveEnabled: true,
+    layoutMode: "default",
+    activeTab: "media",
+  }),
+  ProjectManagementProvider: ({ children }: { children: React.ReactNode }) => children,
+  useProjectManagementContext: () => ({
+    projectState: null,
+    userSettings: {},
+    isConnected: true,
+    connectionError: null,
+    isLoading: false,
+  }),
+}))
+
 vi.mock("@/features/app-state/services", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/features/app-state/services")>()
   return {

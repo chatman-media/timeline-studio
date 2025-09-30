@@ -10,8 +10,12 @@ export type { BrowserMachine } from "./machines/browser-machine"
 // Machines
 export { browserMachine } from "./machines/browser-machine"
 
-// Providers
+// Providers - Legacy (XState-based)
 export { BrowserDomainContext, BrowserDomainProvider } from "./providers/browser-domain-provider"
+
+// Providers - New (BackendSync-based)
+export { BrowserProviderV2, useBrowserV2 } from "./providers/browser-provider-v2"
+
 // Types
 export type {
   BrowserContext,

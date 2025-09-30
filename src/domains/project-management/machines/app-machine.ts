@@ -387,6 +387,22 @@ export const AppCommands = {
   playerClearTemplate: (): ProjectCommand => ({
     type: "PlayerClearTemplate",
   }),
+
+  // Media management commands
+  addMedia: (path: string, mediaType: any): ProjectCommand => ({
+    type: "AddMedia",
+    params: { path, media_type: mediaType },
+  }),
+
+  removeMedia: (mediaId: string): ProjectCommand => ({
+    type: "RemoveMedia",
+    params: { media_id: mediaId },
+  }),
+
+  updateMedia: (mediaId: string, updates: any): ProjectCommand => ({
+    type: "UpdateMedia",
+    params: { media_id: mediaId, updates },
+  }),
 }
 
 // Legacy export для обратной совместимости

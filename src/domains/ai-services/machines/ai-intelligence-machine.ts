@@ -65,14 +65,9 @@ async function getAIService(): Promise<any> {
   return aiService
 }
 
+import { ContentType, Emotion, NarrativeType, PaceType } from "@/domains/shared/types/ai-tools/content-analysis"
 // Import enums and values (not types)
-import {
-  ContentType,
-  Emotion,
-  NarrativeType,
-  PaceType,
-  ProcessingStatus,
-} from "@/domains/shared/types/ai-tools/content-analysis"
+import { ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 // Import types from domain
 import type {
   AdaptedContent,

@@ -1,3 +1,4 @@
+use super::browser::BrowserState;
 use super::chat::ChatSession;
 use super::commands::PlayerSource;
 use chrono::{DateTime, Utc};
@@ -17,6 +18,8 @@ pub struct ProjectState {
   pub version_info: VersionInfo,
   /// Chat sessions
   pub chat_sessions: Vec<ChatSession>,
+  /// Browser state
+  pub browser_state: BrowserState,
 }
 
 /// Main project structure

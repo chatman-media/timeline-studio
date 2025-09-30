@@ -302,6 +302,20 @@ export class ProjectManagementOrchestrator {
   }
 
   /**
+   * Получение app actor
+   */
+  getAppActor(): ActorRefFrom<typeof appMachine> {
+    return this.appActor
+  }
+
+  /**
+   * Получение user settings actor
+   */
+  getUserSettingsActor(): ActorRefFrom<typeof userSettingsMachine> {
+    return this.userSettingsActor
+  }
+
+  /**
    * Очистка ресурсов
    */
   dispose() {
