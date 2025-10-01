@@ -12,7 +12,7 @@ interface OptimizedMotionProps extends MotionProps {
 export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
   ({ children, initial, animate, transition, as = "div", ...props }, ref) => {
     const prefersReducedMotion = useReducedMotion()
-    const Component = motion(as) as any
+    const Component = motion[as] as any
 
     if (prefersReducedMotion) {
       // Для пользователей с reduced motion - мгновенные переходы

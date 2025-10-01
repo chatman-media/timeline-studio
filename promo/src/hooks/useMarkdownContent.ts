@@ -14,7 +14,7 @@ export function useBlogPosts() {
     async function loadPosts() {
       try {
         // Используем явно импортированные посты для текущего языка
-        const langPosts = blogPostsList[language as "en" | "ru"] || blogPostsList.en
+        const langPosts = blogPostsList[language as "en" | "ru" | "zh"] || blogPostsList.en
         const loadedPosts: PostMetadata[] = []
 
         for (const content of langPosts) {
@@ -58,7 +58,7 @@ export function useBlogPost(slug: string) {
     async function loadPost() {
       try {
         // Используем явные импорты для текущего языка
-        const langPosts = blogPostsRaw[language as "en" | "ru"] || blogPostsRaw.en
+        const langPosts = blogPostsRaw[language as "en" | "ru" | "zh"] || blogPostsRaw.en
         const content = langPosts[slug as keyof typeof langPosts]
 
         if (content) {

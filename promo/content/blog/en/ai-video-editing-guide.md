@@ -1,6 +1,6 @@
 ---
 title: Getting Started with AI Video Editing
-date: 2025-01-25
+date: 2025-08-01
 author: Timeline Team
 slug: getting-started-ai-editing
 excerpt: Learn how to use AI tools in Timeline Studio to speed up your video editing workflow and create professional content faster.
@@ -10,7 +10,7 @@ readTime: 8 min read
 
 # Getting Started with AI Video Editing
 
-AI is transforming how we edit videos. With Timeline Studio's 151 AI tools, you can automate repetitive tasks and focus on creativity.
+AI is transforming how we edit videos. With Timeline Studio's 257 AI tools, you can automate repetitive tasks and focus on creativity.
 
 ## Understanding AI Tools
 

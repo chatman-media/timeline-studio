@@ -15,10 +15,10 @@ export const Logo: React.FC<LogoProps> = ({ size = "medium", showText = true }) 
   const currentSize = sizes[size]
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center flex-shrink-0 w-auto max-w-full pr-2 md:pr-4">
       {/* Static circle with T */}
       <div
-        className={`${currentSize.circle} mb-1 rounded-full flex items-center justify-center overflow-visible`}
+        className={`${currentSize.circle} flex-shrink-0 mb-1 rounded-full flex items-center justify-center overflow-hidden`}
         style={{
           background: "#8b5cf6",
           boxShadow: "0 8px 32px 0 rgba(139, 92, 246, 0.4)",
@@ -42,18 +42,18 @@ export const Logo: React.FC<LogoProps> = ({ size = "medium", showText = true }) 
       {/* <img src="/favicon.svg" alt="Timeline Studio" className="w-12 h-12 mb-3" /> */}
       {/* Text */}
       {showText && (
-        <div className="flex items-center space-x-2 ml-[-15px] mt-0.5">
+        <div className="hidden md:flex items-center space-x-2 -ml-3 mt-0.5 max-w-full overflow-hidden">
           <span
-            className={`text-white ${currentSize.text}`}
+            className={`text-white ${currentSize.text} truncate whitespace-nowrap`}
             style={{
               fontFamily: "Brush Script MT, Lucida Handwriting, cursive",
               fontWeight: "400",
-              fontSize: 38,
+              fontSize: size === "small" ? 22 : 38,
             }}
           >
             imeline Studio
           </span>
-          <span className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md">
+          <span className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md flex-shrink-0">
             BETA
           </span>
         </div>

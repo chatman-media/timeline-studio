@@ -124,14 +124,13 @@ html {
 }
 
 .nav-glass-scrolled {
-  background: rgb(17 24 39 / 15%);
-  backdrop-filter: saturate(160%) blur(35px) contrast(110%) brightness(105%);
-  border: 1px solid rgb(255 255 255 / 6%);
+  background: rgb(17 24 39 / 20%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgb(255 255 255 / 8%);
   box-shadow:
-    inset 0 1px 0 0 rgb(255 255 255 / 4%),
-    0 1px 0 0 rgb(0 0 0 / 8%),
-    0 3px 20px 0 rgb(0 0 0 / 12%),
-    0 6px 40px 0 rgb(17 24 39 / 20%);
+    0 4px 16px 0 rgb(0 0 0 / 15%),
+    0 8px 32px 0 rgb(17 24 39 / 25%);
+  will-change: transform;
 }
 
 .glass-card {
