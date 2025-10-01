@@ -6,10 +6,8 @@
  */
 
 import { useCallback } from "react"
-
+import { TimelineAIService } from "@/domains/ai-services/services/timeline-ai-service"
 import { useResources } from "@/features/resources/services/resources-provider"
-
-import { TimelineAIService } from "../services/timeline-ai-service"
 
 // Заглушка для sendTimelineEvent, пока не реализован useChat
 const mockSendTimelineEvent = (event: any) => {

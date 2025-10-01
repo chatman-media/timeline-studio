@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { OutputFormat, RenderStatus } from "@/types/video-compiler"
+import { OutputFormat, RenderStatus } from "@/domains/video-editing/types"
 
 import { BatchExportTab } from "../../components/batch-export-tab"
 

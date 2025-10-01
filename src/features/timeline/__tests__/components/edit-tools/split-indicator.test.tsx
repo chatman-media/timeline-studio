@@ -58,7 +58,6 @@ describe("SplitIndicator", () => {
           toJSON: () => ({}),
         }) as DOMRect,
     )
-    // @ts-expect-error - для тестов можем мутировать ref
     mockContainerRef.current = container
   })
 

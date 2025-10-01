@@ -267,7 +267,7 @@ fn test_recognition_event() {
 #[tokio::test]
 async fn test_recognition_service_creation() {
   let temp_dir = TempDir::new().unwrap();
-  let service = RecognitionService::new(temp_dir.path().to_path_buf());
+  let service = RecognitionService::new(temp_dir.path().to_path_buf()).await;
   assert!(service.is_ok());
 }
 
@@ -303,6 +303,7 @@ fn test_empty_recognition_results() {
   assert!(results.objects.is_empty());
   assert!(results.faces.is_empty());
   assert!(results.scenes.is_empty());
+  assert!(results.identified_persons.is_empty());
 }
 
 #[tokio::test]
@@ -329,7 +330,7 @@ async fn test_recognition_service_creation_with_dir() {
   }
 
   let temp_dir = TempDir::new().unwrap();
-  let service = RecognitionService::new(temp_dir.path().to_path_buf());
+  let service = RecognitionService::new(temp_dir.path().to_path_buf()).await;
 
   assert!(service.is_ok());
 
@@ -348,7 +349,7 @@ async fn test_detection_to_object_grouping() {
   use crate::recognition::yolo_processor::{BoundingBox, Detection};
 
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
 
   // Создаем тестовые детекции
   let _detections = vec![
@@ -441,7 +442,7 @@ async fn test_scene_detection() {
   use crate::media::preview_data::DetectedObject;
 
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
 
   // Создаем тестовые объекты
   let _objects = vec![
@@ -509,10 +510,10 @@ async fn test_save_and_load_results() {
     return;
   }
 
-  use crate::media::preview_data::{DetectedObject, RecognitionResults};
+  use crate::recognition::types::{DetectedObject, RecognitionResults};
 
   let temp_dir = TempDir::new().unwrap();
-  let service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
+  let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
 
   // Создаем тестовые результаты
   let results = RecognitionResults {
@@ -524,6 +525,7 @@ async fn test_save_and_load_results() {
     }],
     faces: vec![],
     scenes: vec![],
+    identified_persons: vec![],
     processed_at: chrono::Utc::now(),
   };
 

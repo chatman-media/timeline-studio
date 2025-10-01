@@ -6,7 +6,7 @@
 import type { ReactNode } from "react"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
-import { type AIDIContainer, getAIContainer, getAIContainerSafe, initializeAIServices } from "./di-container"
+import { type AIDIContainer, initializeAIServices } from "./di-container"
 import type { IUnifiedAIService } from "./providers/interfaces"
 
 // Типы для AI сервисов доступных в React
@@ -42,33 +42,44 @@ export function AIServicesProvider({ children, config }: AIServicesProviderProps
     let mounted = true
 
     async function initializeServices() {
-      // Инициализируем AI сервисы
-      const container = await initializeAIServices(config)
+      try {
+        // Инициализируем AI сервисы
+        const container = await initializeAIServices(config)
 
-      // Инициализируем контейнер
-      await container.initialize()
+        // Инициализируем контейнер
+        await container.initialize()
 
-      if (mounted) {
-        // Резолвим основные сервисы
-        const [aiService, ffmpeg, vision, content] = await Promise.all([
-          container.resolve("UnifiedAIService"),
-          container.resolve("FFmpegService"),
-          container.resolve("VisionService"),
-          container.resolve("ContentAnalysisService"),
-        ])
+        if (mounted) {
+          // Резолвим основные сервисы
+          const [aiService, ffmpeg, vision, content] = await Promise.all([
+            container.resolve("UnifiedAIService"),
+            container.resolve("FFmpegService"),
+            container.resolve("VisionService"),
+            container.resolve("ContentAnalysisService"),
+          ])
 
-        setServices({
-          container,
-          aiService: aiService as any,
-          ffmpegService: ffmpeg,
-          visionService: vision,
-          contentAnalysisService: content,
-          isInitialized: true,
-        })
+          setServices({
+            container,
+            aiService: aiService as any,
+            ffmpegService: ffmpeg,
+            visionService: vision,
+            contentAnalysisService: content,
+            isInitialized: true,
+          })
+        }
+      } catch (error) {
+        console.error("Failed to initialize AI services:", error)
+        if (mounted) {
+          setServices((prev) => ({
+            ...prev,
+            error: error as Error,
+            isInitialized: false,
+          }))
+        }
       }
     }
 
-    initializeServices().catch(console.error)
+    initializeServices()
 
     return () => {
       mounted = false
@@ -153,32 +164,4 @@ export function withAIServices<P extends object>(
     const aiServices = useAIServices()
     return <Component {...props} aiServices={aiServices} />
   }
-}
-
-// Пример использования в компоненте
-export const ExampleComponent: React.FC = () => {
-  const { isInitialized } = useAIServices()
-  const aiService = useAIService()
-  const { service: sceneEngine, loading } = useAIServiceLazy("SceneEngine")
-
-  const handleAnalyze = async () => {
-    if (!aiService) return
-
-    const result = await aiService.sendRequest("claude-4-sonnet-latest", [
-      { role: "user", content: "Analyze this video" },
-    ])
-
-    console.log(result)
-  }
-
-  if (!isInitialized || loading) {
-    return <div>Loading AI services...</div>
-  }
-
-  return (
-    <div>
-      <button onClick={handleAnalyze}>Analyze with AI</button>
-      {sceneEngine ? <div>Scene Engine loaded!</div> : null}
-    </div>
-  )
 }

@@ -2,7 +2,7 @@
  * AI инструмент для предложения улучшений Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/domains/video-editing/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 
 // Типы для предложения улучшений

@@ -4,13 +4,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
-import type {
-  KeyMoment,
-  ObjectDetection,
-  SceneInfo,
-} from "@/features/ai-content-intelligence/shared/types/content-analysis"
+import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines/scene-analysis"
+import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
+import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
 
 import { FrameCaptureService } from "../services/frame-capture-service"
 import { usePlayer } from "../services/player-provider"
@@ -56,18 +52,7 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
   const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const lastAnalyzedTimeRef = useRef<number>(0)
 
-  // Инициализация Scene Analysis Engine
-  useEffect(() => {
-    const initEngine = async () => {
-      try {
-        await sceneEngine.initialize()
-      } catch (error) {
-        console.error("Failed to initialize Scene Analysis Engine:", error)
-      }
-    }
-
-    void initEngine()
-  }, [sceneEngine])
+  // Scene engine инициализируется автоматически при первом использовании
 
   // Запуск real-time анализа
   const startRealtimeAnalysis = useCallback(() => {
@@ -116,7 +101,8 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
                 width: 30,
                 height: 60,
               },
-              frameNumbers: [Math.floor(currentTime * 30)], // Assuming 30fps
+              frameNumber: Math.floor(currentTime * 30), // Assuming 30fps
+              timestamp: currentTime,
             },
           ],
         }))

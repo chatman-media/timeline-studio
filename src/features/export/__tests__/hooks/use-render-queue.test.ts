@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { type RenderJob, RenderStatus } from "@/types/video-compiler"
+import { type RenderJob, RenderStatus } from "@/domains/video-editing/types"
 
 import { useRenderQueue } from "../../hooks/use-render-queue"
 

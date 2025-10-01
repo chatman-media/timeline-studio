@@ -1,12 +1,9 @@
 "use client"
 
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
-
 import { type Actor, createActor } from "xstate"
-
-import { aiIntelligenceMachine } from "../shared/services/ai-intelligence-machine"
-
-// import { aiIntelligenceMachineSimple as aiIntelligenceMachine } from "../shared/services/ai-intelligence-machine-simple"
+// Используем машину из домена
+import { aiIntelligenceMachine } from "@/domains/ai-services/machines/ai-intelligence-machine"
 
 interface AIIntelligenceContextType {
   actor: Actor<typeof aiIntelligenceMachine> | null
@@ -47,3 +44,5 @@ export function useAIIntelligence() {
   }
   return context
 }
+
+export { AIIntelligenceContext }

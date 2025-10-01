@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
-
+import { Subtitle } from "@/domains/video-editing/types/video-compiler"
 import { indexedDBCacheService } from "@/features/media/services/indexeddb-cache-service"
-import type { Subtitle } from "@/types/video-compiler"
 
 /**
  * Цель извлечения кадров

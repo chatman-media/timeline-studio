@@ -6,16 +6,11 @@
  */
 
 // Используем shared типы
-import type {
-  MediaFile as MediaInput,
-  ContentAnalysisResult as UnifiedContentAnalysis,
-} from "@/shared/services/ai/analysis/interfaces"
-
-import {
-  ContentClassificationEngine,
-  type ExtendedContentClassification,
-} from "../engines/content-classification/content-classification-engine"
-import { type AdvancedSceneAnalysis, SceneAnalysisEngine } from "../engines/scene-analysis/scene-analysis-engine"
+import { AdvancedSceneAnalysis, type MediaFile as MediaInput, SceneAnalysisEngine } from "@/domains/ai-services"
+import ContentClassificationEngine, {
+  ExtendedContentClassification,
+} from "@/domains/ai-services/services/engines/content-classification/content-classification-engine"
+import { UnifiedContentAnalysis } from "@/domains/ai-services/types"
 
 // Pipeline конфигурация
 export interface PipelineConfig {
@@ -109,8 +104,8 @@ export interface PipelineResult {
  */
 export class UnifiedContentPipeline {
   private sharedAIService: any = null
-  private sceneEngine: SceneAnalysisEngine
-  private classificationEngine: ContentClassificationEngine
+  private sceneEngine: SceneAnalysisEngine | null = null
+  private classificationEngine: ContentClassificationEngine | null = null
   private pipelines = new Map<string, PipelineProgress>()
   private eventListeners: ((event: PipelineEvent) => void)[] = []
 
@@ -162,7 +157,7 @@ export class UnifiedContentPipeline {
     if (!this.sharedAIService) {
       try {
         // Получаем AI service из DI контейнера
-        const { getAIContainer } = await import("@/shared/services/ai")
+        const { getAIContainer } = await import("@/domains/ai-core")
         const aiContainer = getAIContainer()
         this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
 
@@ -172,7 +167,7 @@ export class UnifiedContentPipeline {
 
         const engines = await engineFactory.createAllEngines()
         this.sceneEngine = engines.sceneEngine as SceneAnalysisEngine
-        this.classificationEngine = engines.classificationEngine as ContentClassificationEngine
+        this.classificationEngine = engines.classificationEngine as unknown as ContentClassificationEngine
       } catch (error) {
         console.error("Ошибка инициализации сервисов:", error)
         // Fallback к прямому созданию
@@ -295,7 +290,7 @@ export class UnifiedContentPipeline {
       try {
         this.updatePipelineStage(pipelineId, "scene_analysis")
 
-        sceneAnalysis = await this.sceneEngine.analyzeScenes(mediaFile, {
+        sceneAnalysis = await this.sceneEngine?.analyzeScenes(mediaFile, {
           sensitivity: config.sceneAnalysis.sensitivity,
           minSceneDuration: config.sceneAnalysis.minSceneDuration,
           classifyTypes: config.sceneAnalysis.classifyTypes,
@@ -303,7 +298,7 @@ export class UnifiedContentPipeline {
           enablePersonTracking: config.sceneAnalysis.enablePersonTracking,
         })
 
-        if (sceneAnalysis.length === 0) {
+        if (sceneAnalysis?.length === 0) {
           warnings.push("Не удалось детектировать сцены в видео")
         }
       } catch (error) {
@@ -315,15 +310,16 @@ export class UnifiedContentPipeline {
     if (config.contentClassification.enabled && stages.includes("content_classification")) {
       try {
         this.updatePipelineStage(pipelineId, "content_classification")
-
-        contentClassification = await this.classificationEngine.classifyContent(mediaFile, sceneAnalysis, {
-          includeSubcategories: config.contentClassification.includeSubcategories,
-          analyzeMood: config.contentClassification.analyzeMood,
-          includeTargeting: config.contentClassification.includeTargeting,
-          analyzePlatforms: config.contentClassification.analyzePlatforms,
-          includeMarketing: config.contentClassification.includeMarketing,
-          analyzeAccessibility: config.contentClassification.analyzeAccessibility,
-        })
+        if (sceneAnalysis) {
+          contentClassification = await this.classificationEngine?.classifyContent(mediaFile, sceneAnalysis, {
+            includeSubcategories: config.contentClassification.includeSubcategories,
+            analyzeMood: config.contentClassification.analyzeMood,
+            includeTargeting: config.contentClassification.includeTargeting,
+            analyzePlatforms: config.contentClassification.analyzePlatforms,
+            includeMarketing: config.contentClassification.includeMarketing,
+            analyzeAccessibility: config.contentClassification.analyzeAccessibility,
+          })
+        }
       } catch (error) {
         warnings.push(`Ошибка классификации контента: ${String(error)}`)
       }
@@ -612,6 +608,16 @@ ${classification ? `Классификация: ${JSON.stringify(classification)
         })),
         marketingAngles: [],
         targetDemographics: [],
+      },
+      // video: undefined,
+      // audio: undefined,
+      // transcript: undefined,
+      summary: "",
+      tags: [],
+      sentiment: {
+        positive: 5,
+        neutral: 5,
+        negative: 5,
       },
     }))
 

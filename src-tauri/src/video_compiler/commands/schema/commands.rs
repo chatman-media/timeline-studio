@@ -3,7 +3,7 @@
 use super::{business_logic, types::*};
 use crate::video_compiler::{
   error::Result,
-  schema::{timeline::Clip, Effect, Filter, StyleTemplate, Subtitle, Template},
+  schema::{Effect, Filter, StyleTemplate, Subtitle, Template, timeline::Clip},
 };
 use std::collections::HashMap;
 

@@ -11,8 +11,7 @@ use serde::{Deserialize, Serialize};
 pub struct PlanGenerator {
   /// Configuration for plan generation
   config: PlanGenerationConfig,
-  /// Random number generator
-  rng: StdRng,
+  // Random number generator is created per-call to ensure thread-safety
 }
 
 /// Configuration for plan generation
@@ -241,7 +240,8 @@ impl PlanGenerator {
 
       // Select random moments without replacement
       while genes.len() < target_clips && genes.len() < moments.len() {
-        let index = self.rng.gen_range(0..moments.len());
+        let mut rng = rand::rng();
+        let index = rng.random_range(0..moments.len());
         if used_indices.insert(index) {
           genes.push(index);
         }
@@ -313,15 +313,16 @@ impl PlanGenerator {
       let mut child2 = population[parent2_idx].clone();
 
       // Crossover
-      if self.rng.gen::<f32>() < self.config.crossover_rate {
+      let mut rng = rand::rng();
+      if rng.random::<f32>() < self.config.crossover_rate {
         self.crossover(&mut child1, &mut child2, moments.len());
       }
 
       // Mutation with adaptive rate
-      if self.rng.gen::<f32>() < mutation_rate {
+      if rng.random::<f32>() < mutation_rate {
         self.mutate(&mut child1, moments.len());
       }
-      if self.rng.gen::<f32>() < mutation_rate {
+      if rng.random::<f32>() < mutation_rate {
         self.mutate(&mut child2, moments.len());
       }
 
@@ -352,7 +353,8 @@ impl PlanGenerator {
 
     // Select random candidates
     for _ in 0..tournament_size {
-      candidates.push(self.rng.gen_range(0..population.len()));
+      let mut rng = rand::rng();
+      candidates.push(rng.random_range(0..population.len()));
     }
 
     // Select based on fitness and diversity contribution
@@ -381,7 +383,8 @@ impl PlanGenerator {
       return;
     }
 
-    let crossover_point = self.rng.gen_range(1..len);
+    let mut rng = rand::rng();
+    let crossover_point = rng.random_range(1..len);
 
     // Create new children by combining parents
     let mut new_genes1 = child1.genes[..crossover_point].to_vec();
@@ -410,16 +413,17 @@ impl PlanGenerator {
       return;
     }
 
-    let mutation_type = self.rng.gen_range(0..5);
+    let mut rng = rand::rng();
+    let mutation_type = rng.random_range(0..5);
 
     match mutation_type {
       0 => {
         // Replace random gene
-        let gene_idx = self.rng.gen_range(0..individual.genes.len());
-        let mut new_gene = self.rng.gen_range(0..max_moment_index);
-        let mut attempts = 0;
-        while individual.genes.contains(&new_gene) && attempts < 10 {
-          new_gene = self.rng.gen_range(0..max_moment_index);
+        let gene_idx = rng.random_range(0..individual.genes.len());
+         let mut new_gene = rng.random_range(0..max_moment_index);
+         let mut attempts = 0;
+         while individual.genes.contains(&new_gene) && attempts < 10 {
+           new_gene = rng.random_range(0..max_moment_index);
           attempts += 1;
         }
         if !individual.genes.contains(&new_gene) {
@@ -429,8 +433,8 @@ impl PlanGenerator {
       1 => {
         // Swap two genes (maintaining order)
         if individual.genes.len() > 1 {
-          let idx1 = self.rng.gen_range(0..individual.genes.len());
-          let idx2 = self.rng.gen_range(0..individual.genes.len());
+          let idx1 = rng.random_range(0..individual.genes.len());
+           let idx2 = rng.random_range(0..individual.genes.len());
           if idx1 != idx2 {
             individual.genes.swap(idx1, idx2);
           }
@@ -439,7 +443,7 @@ impl PlanGenerator {
       2 => {
         // Add new gene if space allows
         if individual.genes.len() < max_moment_index {
-          let new_gene = self.rng.gen_range(0..max_moment_index);
+          let new_gene = rng.random_range(0..max_moment_index);
           if !individual.genes.contains(&new_gene) {
             individual.genes.push(new_gene);
           }
@@ -448,19 +452,17 @@ impl PlanGenerator {
       3 => {
         // Remove random gene if we have enough
         if individual.genes.len() > 3 {
-          let idx = self.rng.gen_range(0..individual.genes.len());
+          let idx = rng.random_range(0..individual.genes.len());
           individual.genes.remove(idx);
         }
       }
       4 => {
         // Shift segment - move a subsequence
         if individual.genes.len() > 3 {
-          let start = self.rng.gen_range(0..individual.genes.len() - 1);
-          let end = self
-            .rng
-            .gen_range(start + 1..=individual.genes.len().min(start + 3));
-          let segment: Vec<_> = individual.genes.drain(start..end).collect();
-          let insert_pos = self.rng.gen_range(0..=individual.genes.len());
+          let start = rng.random_range(0..individual.genes.len() - 1);
+           let end = rng.random_range(start + 1..=individual.genes.len().min(start + 3));
+           let segment: Vec<_> = individual.genes.drain(start..end).collect();
+           let insert_pos = rng.random_range(0..=individual.genes.len());
           for (i, gene) in segment.into_iter().enumerate() {
             individual.genes.insert(insert_pos + i, gene);
           }
@@ -783,11 +785,12 @@ impl PlanGenerator {
         let mut neighbor = item.clone();
 
         // Try different local moves
-        match self.rng.gen_range(0..3) {
+        let mut rng = rand::rng();
+        match rng.random_range(0..3) {
           0 => {
             // Try swapping adjacent moments
             if neighbor.genes.len() > 1 {
-              let idx = self.rng.gen_range(0..neighbor.genes.len() - 1);
+              let idx = rng.random_range(0..neighbor.genes.len() - 1);
               neighbor.genes.swap(idx, idx + 1);
             }
           }
@@ -814,7 +817,7 @@ impl PlanGenerator {
           _ => {
             // Try adjusting clip boundaries
             if neighbor.genes.len() > 2 {
-              let idx = self.rng.gen_range(1..neighbor.genes.len() - 1);
+              let idx = rng.random_range(1..neighbor.genes.len() - 1);
               // Try nearby moments
               let current = neighbor.genes[idx];
               if current > 0 && !neighbor.genes.contains(&(current - 1)) {
@@ -858,10 +861,11 @@ impl PlanGenerator {
     // Replace worst individuals with new random ones
     for item in population.iter_mut().skip(start_idx) {
       let mut genes = Vec::new();
-      let target_size = self.rng.gen_range(3..moments.len().min(20));
+      let mut rng = rand::rng();
+       let target_size = rng.random_range(3..moments.len().min(20));
 
-      while genes.len() < target_size {
-        let idx = self.rng.gen_range(0..moments.len());
+       while genes.len() < target_size {
+         let idx = rng.random_range(0..moments.len());
         if !genes.contains(&idx) {
           genes.push(idx);
         }

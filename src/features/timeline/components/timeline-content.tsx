@@ -41,7 +41,6 @@ import { Track } from "./track/track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
-// import { IntegratedVersionPanel } from "./version-control-integration" // Временно скрыто
 
 export function TimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -325,7 +324,7 @@ export function TimelineContent() {
                             currentTime={currentTime}
                             isSelected={selectedTrackIds?.includes(track.id) ?? false}
                             onSelect={(trackId) => selectTracks([trackId])}
-                            onUpdate={(updates) => updateTrack(track.id, updates)}
+                            onUpdate={(updates) => updateTrack(track.id, updates as Partial<typeof Track>)}
                           />
                         ))}
                       </div>

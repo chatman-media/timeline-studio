@@ -7,7 +7,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-
+import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AIIntelligenceProvider } from "@/features/ai-content-intelligence"
 import { AppProvider } from "@/features/app-state/services/app-provider"
@@ -18,8 +18,7 @@ import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-p
 import { ModalProvider } from "@/features/modals/services/modal-provider"
 import { ProjectSettingsProvider } from "@/features/project-settings/services/project-settings-provider"
 import { ResourcesProvider } from "@/features/resources/services/resources-provider"
-import { TimelineProvider } from "@/features/timeline/services/timeline-provider"
-import { UserSettingsProvider } from "@/features/user-settings"
+import { UserSettingsProvider } from "@/features/user-settings/services/user-settings-provider"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 import { AIServicesProvider } from "@/shared/services/ai/react-integration"
@@ -49,18 +48,18 @@ const AppProviderComposite = composeProviders(
   AppProvider, // Новый провайдер с backend state management
 
   // Остальные провайдеры (некоторые будут мигрированы позже)
-  UserSettingsProvider, // Пользовательские настройки
+  // UserSettingsProvider, // Пользовательские настройки больше не обязательны: читаются через доменный хук
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
-  ShortcutsProvider, // Зависит от UserSettingsProvider
+  ShortcutsProvider, // Не зависит от UserSettingsProvider
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
-  BrowserStateProvider, // Состояние браузера
+  // BrowserStateProvider, // ОТКЛЮЧЕНО: может вызывать зависания браузера
 
   // ✅ НОВАЯ TIMELINE АРХИТЕКТУРА
   TimelineProvider, // Новый провайдер timeline с backend интеграцией
 
   PlayerProvider, // ✅ Новый провайдер видеоплеера с backend синхронизацией
   ChatProvider, // ✅ Новый провайдер чата с backend интеграцией для истории
-  AIIntelligenceProvider, // AI Intelligence (может быть тяжелым)
+  // AIIntelligenceProvider, // ОТКЛЮЧЕНО: может быть тяжелым и вызывать зависания
 )
 
 export function ProvidersV2({ children }: ProvidersV2Props) {

@@ -355,16 +355,19 @@
       "testApiKey": "Test API Key",
       "apiKeyValid": "Valid",
       "apiKeyInvalid": "Invalid",
-      "apiKeyUntested": "Untested",
+      "apiKeyUntested": "Not tested",
       "apiKeyTesting": "Testing...",
       "apiKeyTestSuccess": "API key is valid",
       "apiKeyTestFailure": "API key is invalid or expired",
       "apiKeyTestError": "Error testing API key",
+      "creditsError": "Insufficient credits. Please top up your account",
       "apiKeyDeleteConfirm": "Are you sure you want to delete this API key?",
       "apiKeyProviders": {
         "openai": "OpenAI",
         "claude": "Claude (Anthropic)",
         "gemini": "Google Gemini",
+        "grok": "Grok (xAI)",
+        "deepseek": "DeepSeek",
         "custom": "Custom"
       },
       "apiKeyPlaceholder": "Enter your API key...",
@@ -409,10 +412,30 @@
         },
         "claude": {
           "title": "Claude (Anthropic)",
-          "description": "Required for Claude models in AI Chat",
+          "description": "Required for Claude models in AI chat",
           "placeholder": "sk-ant-...",
           "getKey": "Get API Key"
+        },
+        "grok": {
+          "title": "Grok (xAI)",
+          "description": "Required for Grok models in AI chat",
+          "placeholder": "xai-...",
+          "getKey": "Get API Key"
+        },
+        "deepseek": {
+          "title": "DeepSeek",
+          "description": "Required for DeepSeek models in AI chat",
+          "placeholder": "sk-...",
+          "getKey": "Get API Key"
         }
+      },
+      "localModels": {
+        "title": "Local Models",
+        "description": "Models from Ollama (localhost:11434)",
+        "checking": "Checking available models...",
+        "notAvailable": "Local models unavailable. Make sure Ollama is running on localhost:11434",
+        "noModels": "No local models available",
+        "installOllama": "Install Ollama to work with local models"
       },
       "socialNetworks": {
         "title": "Social Networks",
@@ -513,7 +536,17 @@
         "show": "Show",
         "hide": "Hide",
         "autoProxyMedia": "Auto-generate Proxy Media",
-        "autoProxyMediaDesc": "Automatically create low-resolution proxies for smooth editing"
+        "autoProxyMediaDesc": "Automatically create low-resolution proxies for smooth editing",
+        "timelineOptimization": "Timeline Optimization",
+        "timelineOptimizationDesc": "Optimize timeline performance for better responsiveness",
+        "enableVirtualization": "Enable Virtualization",
+        "enableVirtualizationDesc": "Use virtualization for large timelines to improve performance",
+        "overscanBuffer": "Overscan Buffer",
+        "overscanBufferTooltip": "Number of extra elements to render outside the viewport",
+        "elements": "elements",
+        "clipDetailsThreshold": "Clip Details Threshold",
+        "clipDetailsThresholdTooltip": "Maximum number of clips before hiding detailed information",
+        "pixels": "pixels"
       },
       "cacheStats": "Cache Statistics",
       "cacheSettings": "Cache Settings",
@@ -1854,7 +1887,11 @@
     "saveSuccess": "Video saved successfully!",
     "send": "Send",
     "stop": "Stop",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "ai_connected": "AI Connected",
+    "empty_project_hint": "Project is empty. Start with:",
+    "import_media": "Import Media",
+    "ask_ai_import": "Ask AI"
   },
   "source": {
     "timeline": "Timeline",

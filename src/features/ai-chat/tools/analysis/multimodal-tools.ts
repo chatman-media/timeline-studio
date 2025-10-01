@@ -3,7 +3,7 @@
  * Анализ кадров, создание описаний, выбор превью
  */
 
-import type { MultimodalAnalysisType } from "../../services/multimodal-analysis-service"
+import type { MultimodalAnalysisType } from "@/domains/ai-services/services/vision"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для операций мультимодального анализа
@@ -74,7 +74,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Анализ кадра с AI", { path: input.frameImagePath })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const analysisResult = await service.analyzeFrame({
@@ -116,7 +116,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Комплексный анализ видео", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const videoResult = await service.analyzeVideo({
@@ -158,13 +158,15 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Поиск лучших кадров для превью", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const suggestions = await service.suggestThumbnails({
         clipId: input.clipId,
         count: input.count || 5,
-        criteria: input.criteria || ["aesthetic", "faces", "emotion"],
+        criteria: (input.criteria ?? ["aesthetic", "faces", "emotion"]) as Array<
+          "aesthetic" | "emotion" | "action" | "text" | "faces"
+        >,
         contextPrompt: input.customPrompt,
       })
 
@@ -204,7 +206,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Обнаружение ключевых моментов", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       // Анализируем видео для поиска ключевых моментов
@@ -253,7 +255,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Анализ эмоций")
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       if (input.frameImagePath) {
@@ -317,7 +319,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Генерация описания видео", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       // Анализируем видео для генерации описания
@@ -359,7 +361,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
 
     try {
       // Пока используем базовый анализ
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const videoResult = await service.analyzeVideo({
@@ -405,7 +407,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Модерация контента")
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       if (input.frameImagePath) {
@@ -474,7 +476,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Анализ переходов сцен", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const videoResult = await service.analyzeVideo({
@@ -519,7 +521,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
     this.logger?.info("Анализ брендовых элементов", { clipId: input.clipId })
 
     try {
-      const { MultimodalAnalysisService } = await import("../../services/multimodal-analysis-service")
+      const { MultimodalAnalysisService } = await import("@/domains/ai-services/services/vision")
       const service = MultimodalAnalysisService.getInstance()
 
       const videoResult = await service.analyzeVideo({
@@ -649,7 +651,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
   }
 
   private generateDescriptionFromAnalysis(videoResult: any, length: string): string {
-    const { summary, frameResults } = videoResult
+    const { summary } = videoResult
 
     let description = ""
 
@@ -660,7 +662,7 @@ export class MultimodalAnalysisTool extends BaseAITool {
       description += `Общая атмосфера - ${summary.overallMood}. `
       description += `Ключевые моменты: ${summary.keyMoments
         .slice(0, 3)
-        .map((m) => m.description)
+        .map((m: any) => m.description)
         .join("; ")}.`
     } else {
       description = "Подробное описание видео:\n\n"

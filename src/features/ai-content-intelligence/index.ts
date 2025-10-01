@@ -3,6 +3,9 @@
  * Единая точка входа для всех AI функций
  */
 
+export { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
+// ===== Types & Enums =====
+export { ContentType, Emotion } from "@/domains/shared/types/ai-tools/content-analysis"
 // ===== Components =====
 // Export components individually to avoid circular dependencies
 export { AnalysisViewer } from "./components/analysis-viewer"
@@ -21,19 +24,7 @@ export { useAIOrchestrator } from "./hooks/use-ai-orchestrator"
 export { useContentPipeline } from "./hooks/use-content-pipeline"
 // ===== Services & Providers =====
 export {
+  AIIntelligenceContext,
   AIIntelligenceProvider,
   useAIIntelligence as useAIIntelligenceContext,
 } from "./services/ai-intelligence-provider"
-export type {
-  AIIntelligenceContext,
-  AIIntelligenceEvent,
-} from "./shared/services/ai-intelligence-machine"
-export { aiIntelligenceMachine } from "./shared/services/ai-intelligence-machine"
-// ===== Orchestrator & State Machine =====
-export { AIIntelligenceOrchestrator } from "./shared/services/ai-intelligence-orchestrator"
-// ===== Types =====
-// Export all types from shared/types
-export * from "./shared/types"
-
-// NOTE: Engines are NOT exported here to avoid circular dependencies
-// If you need to use engines, import them directly from their respective paths

@@ -4,16 +4,17 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-
-import { SceneAnalysisEngine } from "@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine"
-import type { SceneAnalysisResult } from "@/features/ai-content-intelligence/engines/scene-analysis/types"
-import type { AIIntelligenceOrchestrator } from "@/features/ai-content-intelligence/shared/services/ai-intelligence-orchestrator"
+import { SceneAnalysisResult } from "@/domains/ai-services/services"
+import { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
+import SceneAnalysisEngine, {
+  AdvancedSceneAnalysis,
+} from "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
 import type {
   ContentInsights,
   KeyMoment,
-  UnifiedContentAnalysis,
-} from "@/features/ai-content-intelligence/shared/types/content-analysis"
-import { KeyMomentType } from "@/features/ai-content-intelligence/shared/types/content-analysis"
+  LegacyUnifiedContentAnalysis as UnifiedContentAnalysis,
+} from "@/domains/ai-services/types"
+import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
@@ -21,7 +22,7 @@ interface TimelineAnalysisState {
   isAnalyzing: boolean
   analysisProgress: number
   currentAnalysis: UnifiedContentAnalysis | null
-  sceneAnalysis: SceneAnalysisResult | null
+  sceneAnalysis: AdvancedSceneAnalysis[] | null
   insights: ContentInsights | null
   keyMoments: KeyMoment[]
   error: string | null
@@ -65,7 +66,7 @@ export interface TimelineAIAnalysisHook {
 }
 
 export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
-  const { project, uiState, send } = useTimeline()
+  const { project, send } = useTimeline()
 
   // Состояние анализа
   const [analysisState, setAnalysisState] = useState<TimelineAnalysisState>({
@@ -86,26 +87,10 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   const [enableAutoAnalysis, setEnableAutoAnalysis] = useState(true)
 
   // Инициализация сервисов
-  const [sceneEngine] = useState(() => new SceneAnalysisEngine())
+  const [sceneEngine] = useState(() => SceneAnalysisEngine.getInstance())
   const [orchestrator] = useState<AIIntelligenceOrchestrator | null>(() => null)
 
-  // Инициализация AI движков
-  useEffect(() => {
-    const initializeEngines = async () => {
-      try {
-        await sceneEngine.initialize()
-        await orchestrator?.initialize()
-      } catch (error) {
-        console.error("Failed to initialize AI engines:", error)
-        setAnalysisState((prev) => ({
-          ...prev,
-          error: "Не удалось инициализировать AI движки",
-        }))
-      }
-    }
-
-    void initializeEngines()
-  }, [sceneEngine, orchestrator])
+  // AI engines инициализируются автоматически при первом использовании
 
   // Анализ отдельного клипа
   const analyzeClip = useCallback(
@@ -125,12 +110,12 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         setAnalysisState((prev) => ({ ...prev, analysisProgress: 10 }))
 
         // Запускаем анализ сцен
-        const sceneResult = await sceneEngine.process({
-          mediaFile: {
-            path: clip.mediaFile.path,
-            name: clip.mediaFile.name,
-            duration: clip.mediaFile.duration || 0,
-          },
+        const sceneResult = await sceneEngine.analyzeScenes({
+          path: clip.mediaFile.path,
+          filename: clip.mediaFile.name,
+          duration: clip.mediaFile.duration || 0,
+          size: clip.mediaFile.size || 0,
+          format: clip.mediaFile.format || "unknown",
         })
 
         setAnalysisState((prev) => ({

@@ -32,9 +32,7 @@ export class AutomationEngine {
   private recordingLanes = new Set<string>()
   private callbacks = new Map<string, (value: number) => void>()
   private latchedLanes = new Set<string>()
-  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: для записи автоматизации
   private recordingStartTime?: number
-  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: для latch режима
   private lastTouchTime?: number
 
   constructor() {

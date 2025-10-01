@@ -6,6 +6,7 @@ import { useCallback, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { Fragment, MontagePlan } from "../types"
+import { convertToAIServicesMediaFile } from "../utils/media-file-converter"
 import { useContentAnalysis } from "./use-content-analysis"
 import { useMontagePlanner } from "./use-montage-planner"
 import { usePlanGenerator } from "./use-plan-generator"
@@ -68,7 +69,7 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
 
         // First add all media files to the montage planner
         for (const mediaFile of mediaFiles) {
-          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: mediaFile })
+          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: convertToAIServicesMediaFile(mediaFile) })
         }
 
         // Start the analysis process

@@ -271,8 +271,8 @@ describe("ClipTrimHandles", () => {
       const startHandle = screen.getByTestId("trim-handle-start")
       const endHandle = screen.getByTestId("trim-handle-end")
 
-      expect(startHandle).toHaveClass("cursor-not-allowed", "opacity-50")
-      expect(endHandle).toHaveClass("cursor-not-allowed", "opacity-50")
+      expect(startHandle).toHaveClass("cursor-not-allowed opacity-50")
+      expect(endHandle).toHaveClass("cursor-not-allowed opacity-50")
     })
   })
 
@@ -474,7 +474,7 @@ describe("RollHandles", () => {
     const { container } = render(<RollHandles {...props} />)
 
     const handle = container.firstChild as HTMLElement
-    expect(handle).toHaveClass("cursor-not-allowed", "opacity-50")
+    expect(handle).toHaveClass("cursor-not-allowed opacity-50")
   })
 
   it("должен показывать purple стили для roll handles", () => {

@@ -35,11 +35,12 @@ export function ApiKeyInput({
   links = [],
 }: ApiKeyInputProps) {
   const { t } = useTranslation()
-  const { getApiKeyStatus, testApiKey } = useApiKeys()
+  const { getApiKeyStatus, testApiKey, getValidationError } = useApiKeys()
   const [showKey, setShowKey] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
 
   const status = getApiKeyStatus(service)
+  const validationError = getValidationError(service)
 
   const handleTest = async () => {
     if (!value || isTesting) return
@@ -52,9 +53,17 @@ export function ApiKeyInput({
     }
   }
 
-  const handleClear = () => {
+  const handleClear = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     onChange("")
     setShowKey(false)
+  }
+
+  const handleToggleShowKey = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowKey(!showKey)
   }
 
   return (
@@ -76,6 +85,8 @@ export function ApiKeyInput({
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             className="h-9 pr-16 font-mono text-sm"
+            autoComplete="off"
+            spellCheck="false"
           />
 
           {/* Кнопки в поле ввода */}
@@ -84,9 +95,14 @@ export function ApiKeyInput({
             {value && (
               <button
                 type="button"
-                onClick={() => setShowKey(!showKey)}
-                className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                onClick={handleToggleShowKey}
+                className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
                 title={
+                  showKey
+                    ? t("dialogs.userSettings.hideKey", "Скрыть ключ")
+                    : t("dialogs.userSettings.showKey", "Показать ключ")
+                }
+                aria-label={
                   showKey
                     ? t("dialogs.userSettings.hideKey", "Скрыть ключ")
                     : t("dialogs.userSettings.showKey", "Показать ключ")
@@ -101,8 +117,9 @@ export function ApiKeyInput({
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
                 title={t("dialogs.userSettings.clearApiKey", "Очистить API ключ")}
+                aria-label={t("dialogs.userSettings.clearApiKey", "Очистить API ключ")}
               >
                 <X className="h-3 w-3" />
               </button>
@@ -148,9 +165,58 @@ export function ApiKeyInput({
 
       {/* Статусное сообщение */}
       {status === "invalid" && (
-        <p className="text-xs text-red-600 dark:text-red-400">
-          {t("dialogs.userSettings.invalidKey", "Неверный API ключ или проблемы с подключением")}
-        </p>
+        <div className="text-xs text-red-600 dark:text-red-400 space-y-1">
+          <p>
+            {validationError || t("dialogs.userSettings.invalidKey", "Неверный API ключ или проблемы с подключением")}
+          </p>
+          {/* Ссылки для пополнения кредитов - показываем только если в сообщении есть информация о кредитах */}
+          {(validationError?.includes("кредит") ||
+            validationError?.includes("credit") ||
+            validationError?.includes("Insufficient Balance")) && (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {service === "grok" && (
+                <a
+                  href="https://console.x.ai/team/e111ca1e-660a-42c1-9b09-16fcb0d64cbf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                >
+                  Пополнить кредиты Grok
+                </a>
+              )}
+              {service === "deepseek" && (
+                <a
+                  href="https://platform.deepseek.com/usage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                >
+                  Проверить баланс DeepSeek
+                </a>
+              )}
+              {service === "claude" && (
+                <a
+                  href="https://console.anthropic.com/settings/billing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                >
+                  Проверить баланс Claude
+                </a>
+              )}
+              {service === "openai" && (
+                <a
+                  href="https://platform.openai.com/usage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                >
+                  Проверить баланс OpenAI
+                </a>
+              )}
+            </div>
+          )}
+        </div>
       )}
       {status === "valid" && (
         <p className="text-xs text-green-600 dark:text-green-400">

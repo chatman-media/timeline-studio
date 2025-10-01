@@ -1,12 +1,18 @@
 //! OpenTelemetry интеграция для мониторинга и трассировки
 
+pub mod alerts;
 pub mod config;
+pub mod examples;
 pub mod health;
 pub mod metrics;
 pub mod middleware;
 pub mod tracer;
 
-pub use config::{LogLevel, TelemetryConfig, TelemetryConfigBuilder};
+pub use alerts::{Alert, AlertManager, AlertRule, AlertSeverity};
+pub use config::{
+  HealthConfig, LogLevel, MetricsExporter, TelemetryConfig, TelemetryConfigBuilder,
+  TracingExporter,
+};
 pub use health::HealthCheckManager;
 pub use metrics::MetricsCollector;
 pub use tracer::Tracer;
@@ -20,6 +26,7 @@ pub struct TelemetryManager {
   tracer: Arc<Tracer>,
   metrics: Arc<MetricsCollector>,
   health: Arc<HealthCheckManager>,
+  alerts: Arc<AlertManager>,
   config: Arc<RwLock<TelemetryConfig>>,
 }
 
@@ -29,6 +36,7 @@ impl TelemetryManager {
     let tracer = Arc::new(Tracer::new(&config).await?);
     let metrics = Arc::new(MetricsCollector::new(&config).await?);
     let health = Arc::new(HealthCheckManager::new());
+    let alerts = Arc::new(AlertManager::new());
 
     // Добавляем базовые health checks
     health
@@ -42,6 +50,7 @@ impl TelemetryManager {
       tracer,
       metrics,
       health,
+      alerts,
       config: Arc::new(RwLock::new(config)),
     })
   }
@@ -59,6 +68,18 @@ impl TelemetryManager {
   /// Получить health check manager
   pub fn health(&self) -> Arc<HealthCheckManager> {
     self.health.clone()
+  }
+
+  /// Получить alert manager
+  pub fn alerts(&self) -> Arc<AlertManager> {
+    self.alerts.clone()
+  }
+
+  /// Инициализировать телеметрию (для совместимости с существующим кодом)
+  pub async fn initialize(&self) -> Result<()> {
+    // Телеметрия уже инициализирована в конструкторе
+    // Этот метод оставлен для совместимости
+    Ok(())
   }
 
   /// Обновить конфигурацию

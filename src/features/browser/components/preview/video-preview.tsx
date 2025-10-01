@@ -1,12 +1,13 @@
 import { useDraggable } from "@dnd-kit/core"
 import { Film } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useResources } from "@/features"
+import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { FileSelectionCheckbox } from "@/features/browser/components/layout/file-selection-checkbox"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { FfprobeStream } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
+import { useResources } from "@/features/resources"
 import type { TimelineResource } from "@/features/resources/types"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { getTrackTypeForMediaFile } from "@/features/timeline/utils/drag-calculations"
@@ -14,7 +15,6 @@ import { usePlayer } from "@/features/video-player"
 import { formatDuration } from "@/lib/date"
 import { checkFileAccess, convertToAssetUrl, convertVideoSrc } from "@/lib/tauri-utils"
 import { cn, formatResolution } from "@/lib/utils"
-
 import { ApplyButton } from "../layout"
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
@@ -54,6 +54,7 @@ export const VideoPreview = memo(
     const { isAdded: isResourceAdded } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
     const { setPreviewMedia, playerSetSource, playerSetMedia } = usePlayer()
+    const { removeMediaFile } = useMediaFiles()
 
     // Используем Preview Manager для получения данных превью
     const { getPreviewData } = useMediaPreview()
@@ -413,6 +414,13 @@ export const VideoPreview = memo(
                     console.error(`  - URL: ${video.src}`)
                     console.error(`  - Код ошибки: ${video.error.code}`)
                     console.error(`  - Сообщение: ${video.error.message}`)
+
+                    // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
+                    if (video.error.code === 4) {
+                      console.log(`[VideoPreview Placeholder] Автоматическое удаление файла из проекта: ${file.name}`)
+                      void removeMediaFile(file.id)
+                      return // Прекращаем дальнейшую обработку
+                    }
                   }
                 }}
               />
@@ -592,6 +600,13 @@ export const VideoPreview = memo(
                         console.error(
                           "  - MEDIA_ERR_SRC_NOT_SUPPORTED (4): Формат не поддерживается или URL недоступен",
                         )
+
+                        // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
+                        if (video.error.code === 4) {
+                          console.log(`[VideoPreview] Автоматическое удаление файла из проекта: ${file.name}`)
+                          void removeMediaFile(file.id)
+                          return // Прекращаем дальнейшую обработку
+                        }
 
                         // Попробуем альтернативный подход для видео
                         if (video.error.code === 4 && videoUrl && videoUrl.includes("asset.localhost")) {

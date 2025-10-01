@@ -602,7 +602,7 @@ mod new_commands_tests {
   async fn test_build_render_command_with_settings() {
     // Test the FFmpegBuilder logic directly since we can't create tauri::State in tests
     use crate::video_compiler::core::ffmpeg_builder::{
-      builder::FFmpegBuilderSettings, FFmpegBuilder,
+      FFmpegBuilder, builder::FFmpegBuilderSettings,
     };
 
     let project = ProjectSchema::new("Test Project".to_string());

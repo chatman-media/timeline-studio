@@ -3,9 +3,8 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import type { ChatListItem } from "@/domains/ai-services/types/chat"
 import { cn } from "@/lib/utils"
-
-import type { ChatListItem } from "../types/chat"
 
 interface ChatListProps {
   sessions: ChatListItem[]

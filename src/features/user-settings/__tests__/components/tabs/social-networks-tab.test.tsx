@@ -84,49 +84,49 @@ describe("SocialNetworksTab", () => {
     render(<SocialNetworksTab />)
 
     const comingSoonSection = screen.getByText("Скоро").parentElement?.parentElement
-    expect(comingSoonSection).toHaveClass("flex", "flex-col", "items-center", "justify-center", "py-12", "space-y-4")
+    expect(comingSoonSection).toHaveClass("flex flex-col items-center justify-center py-12 space-y-4")
   })
 
   it("should render information box with correct styling", () => {
     render(<SocialNetworksTab />)
 
     const infoBox = screen.getByText("Текущая реализация").parentElement
-    expect(infoBox).toHaveClass("mt-6", "p-4", "bg-muted/50", "rounded-md")
+    expect(infoBox).toHaveClass("mt-6 p-4 bg-muted/50 rounded-md")
   })
 
   it("should render buttons container with correct layout", () => {
     render(<SocialNetworksTab />)
 
     const buttonsContainer = screen.getByRole("button", { name: "YouTube" }).parentElement
-    expect(buttonsContainer).toHaveClass("flex", "flex-wrap", "gap-2", "justify-center")
+    expect(buttonsContainer).toHaveClass("flex flex-wrap gap-2 justify-center")
   })
 
   it("should have all text content properly styled", () => {
     render(<SocialNetworksTab />)
 
     const heading = screen.getByText("Социальные сети")
-    expect(heading).toHaveClass("text-lg", "font-semibold")
+    expect(heading).toHaveClass("text-lg font-semibold")
 
     const description = screen.getByText(
       "Настройте OAuth подключения для автоматической публикации видео в социальных сетях.",
     )
-    expect(description).toHaveClass("text-sm", "text-muted-foreground")
+    expect(description).toHaveClass("text-sm text-muted-foreground")
 
     const comingSoonHeading = screen.getByText("Скоро")
-    expect(comingSoonHeading).toHaveClass("text-lg", "font-medium", "text-muted-foreground")
+    expect(comingSoonHeading).toHaveClass("text-lg font-medium text-muted-foreground")
 
     const comingSoonText = screen.getByText(
       "OAuth интеграция с социальными сетями будет доступна в следующих обновлениях. Пока API ключи сохраняются в зашифрованном виде.",
     )
-    expect(comingSoonText).toHaveClass("text-sm", "text-muted-foreground", "max-w-md")
+    expect(comingSoonText).toHaveClass("text-sm text-muted-foreground max-w-md")
 
     const infoHeading = screen.getByText("Текущая реализация")
-    expect(infoHeading).toHaveClass("text-sm", "font-medium", "mb-2")
+    expect(infoHeading).toHaveClass("text-sm font-medium mb-2")
 
     const infoText = screen.getByText(
       "Система безопасного хранения API ключей готова. OAuth интеграция и UI для социальных сетей находятся в разработке.",
     )
-    expect(infoText).toHaveClass("text-xs", "text-muted-foreground")
+    expect(infoText).toHaveClass("text-xs text-muted-foreground")
   })
 
   it("should render exactly 4 social network buttons", () => {

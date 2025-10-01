@@ -1,7 +1,7 @@
 //! Тесты для модуля multimodal_commands
 
 use super::*;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use tempfile::TempDir;
 use tokio::fs;
 
@@ -210,9 +210,11 @@ fn test_get_temp_frames_dir() {
   let clip_id = "test-clip";
   let dir_path = get_temp_frames_dir(clip_id);
 
-  assert!(dir_path
-    .to_string_lossy()
-    .contains("timeline_studio_multimodal"));
+  assert!(
+    dir_path
+      .to_string_lossy()
+      .contains("timeline_studio_multimodal")
+  );
   assert!(dir_path.to_string_lossy().contains(clip_id));
 }
 
@@ -470,9 +472,11 @@ async fn test_create_temp_frames_dir() {
   let dir_path = result.unwrap();
   assert!(dir_path.exists());
   assert!(dir_path.is_dir());
-  assert!(dir_path
-    .to_string_lossy()
-    .contains("timeline_studio_multimodal"));
+  assert!(
+    dir_path
+      .to_string_lossy()
+      .contains("timeline_studio_multimodal")
+  );
   assert!(dir_path.to_string_lossy().contains(clip_id));
 
   // Cleanup
@@ -490,9 +494,11 @@ async fn test_optimize_image_for_analysis_missing_file() {
   .await;
 
   assert!(result.is_err());
-  assert!(result
-    .unwrap_err()
-    .contains("Входное изображение не найдено"));
+  assert!(
+    result
+      .unwrap_err()
+      .contains("Входное изображение не найдено")
+  );
 }
 
 #[tokio::test]
@@ -505,9 +511,11 @@ async fn test_create_frame_collage_empty_frames() {
   .await;
 
   assert!(result.is_err());
-  assert!(result
-    .unwrap_err()
-    .contains("Список кадров не может быть пустым"));
+  assert!(
+    result
+      .unwrap_err()
+      .contains("Список кадров не может быть пустым")
+  );
 }
 
 #[tokio::test]

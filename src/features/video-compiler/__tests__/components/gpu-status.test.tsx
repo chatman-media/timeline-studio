@@ -1,8 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { GpuEncoder } from "@/types/video-compiler"
-
+import { GpuEncoder } from "@/domains/video-editing/types"
 import { GpuStatus, GpuStatusBadge } from "../../components/gpu-status"
 import * as useGpuCapabilitiesModule from "../../hooks/use-gpu-capabilities"
 

@@ -128,7 +128,7 @@ fn test_api_key_data_simple() {
 fn test_get_or_create_encryption_key() {
   // Создаем временную директорию для теста
   let temp_dir = TempDir::new().unwrap();
-  std::env::set_var("HOME", temp_dir.path());
+  unsafe { std::env::set_var("HOME", temp_dir.path()) };
 
   // Первый вызов создает ключ
   let result1 = SecureStorage::get_or_create_encryption_key();
@@ -149,8 +149,8 @@ fn test_get_or_create_encryption_key() {
 #[cfg(test)]
 mod encryption_tests {
   use aes_gcm::{
-    aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm,
+    aead::{Aead, AeadCore, KeyInit, OsRng},
   };
 
   #[test]

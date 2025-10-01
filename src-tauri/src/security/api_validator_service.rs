@@ -3,8 +3,8 @@
 //! Этот модуль демонстрирует как использовать DI Container для сервисов
 
 use crate::core::{AppEvent, EventBus, Service};
-use crate::security::api_validator::ApiValidator;
 use crate::security::ApiKeyType;
+use crate::security::api_validator::ApiValidator;
 use crate::video_compiler::error::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;

@@ -2,7 +2,7 @@
  * Face Clustering - Smart clustering for grouping faces of the same person
  * Uses DBSCAN algorithm for automatic face grouping based on embeddings similarity
  */
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use ndarray::{Array1, Array2};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -34,7 +34,7 @@ pub struct FaceCluster {
 }
 
 /// Статистика кластеризации
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ClusteringStats {
   /// Общее количество лиц
   pub total_faces: usize,
@@ -481,7 +481,7 @@ mod tests {
       emb[0] = 0.9;
       emb[1] = 0.8;
       emb[2] = 0.7 + i as f32 * 0.02; // Небольшая вариация
-                                      // Нормализуем для косинусного сходства
+      // Нормализуем для косинусного сходства
       let norm = (emb.iter().map(|&x| x * x).sum::<f32>()).sqrt();
       for val in &mut emb {
         *val /= norm;

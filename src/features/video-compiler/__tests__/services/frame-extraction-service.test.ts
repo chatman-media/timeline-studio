@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import type { Subtitle } from "@/types/video-compiler"
+import { Subtitle } from "@/domains/video-editing"
 import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
 import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
 

@@ -1,10 +1,9 @@
 import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useEffect, useState } from "react"
-
+import { OutputFormat, ProjectSchema, RenderJob, RenderStatus } from "@/domains/video-editing"
 import { loadProject } from "@/features/app-state/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
-import { OutputFormat, type ProjectSchema, type RenderJob, RenderStatus } from "@/types/video-compiler"
 
 function calculateProjectDuration(projectFile: any): number {
   try {

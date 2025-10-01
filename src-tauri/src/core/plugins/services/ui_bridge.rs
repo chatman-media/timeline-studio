@@ -460,10 +460,12 @@ mod tests {
       .await;
 
     assert!(invalid_dialog_result.is_err());
-    assert!(invalid_dialog_result
-      .unwrap_err()
-      .to_string()
-      .contains("Unsupported dialog type"));
+    assert!(
+      invalid_dialog_result
+        .unwrap_err()
+        .to_string()
+        .contains("Unsupported dialog type")
+    );
   }
 
   #[tokio::test]
@@ -824,10 +826,12 @@ mod tests {
       .add_menu_item("plugins/test", config_without_label)
       .await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("must have a label"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("must have a label")
+    );
 
     // Тест с пустым путем
     let valid_config = serde_json::json!({

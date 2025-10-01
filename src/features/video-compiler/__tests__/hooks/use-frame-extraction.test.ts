@@ -1,7 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { type Subtitle, SubtitleAlignX, SubtitleAlignY, SubtitleFontWeight } from "@/types/video-compiler"
+import { Subtitle, SubtitleAlignX, SubtitleAlignY, SubtitleFontWeight } from "@/domains/video-editing"
 
 import { useFrameExtraction } from "../../hooks/use-frame-extraction"
 import * as frameExtractionServiceModule from "../../services/frame-extraction-service"

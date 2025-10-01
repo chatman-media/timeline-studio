@@ -64,6 +64,7 @@ export function useApiKeys() {
   const userSettings = useUserSettings()
   const [apiKeysInfo, setApiKeysInfo] = useState<Record<string, ApiKeyInfo>>({})
   const [loadingStatuses, setLoadingStatuses] = useState<Record<string, boolean>>({})
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
 
   /**
    * Загружает информацию обо всех API ключах
@@ -100,11 +101,9 @@ export function useApiKeys() {
         return "not_set"
       }
 
-      if (keyInfo.is_valid === true) {
-        return "valid"
-      }
-      if (keyInfo.is_valid === false) {
-        return "invalid"
+      // Показываем сохраненный статус валидации сразу при загрузке
+      if (keyInfo.is_valid !== undefined) {
+        return keyInfo.is_valid ? "valid" : "invalid"
       }
 
       return "not_set"
@@ -127,6 +126,7 @@ export function useApiKeys() {
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
+          setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
           return true
         }
         console.error(`Failed to save ${service} API key:`, result.message)
@@ -145,15 +145,23 @@ export function useApiKeys() {
   const testApiKey = useCallback(
     async (service: string): Promise<boolean> => {
       setLoadingStatuses((prev) => ({ ...prev, [service]: true }))
+      setValidationErrors((prev) => ({ ...prev, [service]: "" }))
 
       try {
         const result: ValidationResult = await invoke("validate_api_key", {
           keyType: service,
         })
 
+        // Store the specific error message if validation failed
+        if (!result.is_valid && result.error_message) {
+          setValidationErrors((prev: any) => ({ ...prev, [service]: result.error_message }))
+        }
+
         await loadApiKeysInfo() // Обновляем информацию после валидации
         return result.is_valid
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        setValidationErrors((prev) => ({ ...prev, [service]: errorMessage }))
         console.error(`Error testing ${service} API key:`, error)
         return false
       } finally {
@@ -258,6 +266,7 @@ export function useApiKeys() {
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
+          setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
           return true
         }
         console.error(`Failed to delete ${service} API key:`, result.message)
@@ -368,10 +377,21 @@ export function useApiKeys() {
     }
   }, [])
 
+  /**
+   * Получить сообщение об ошибке валидации для сервиса
+   */
+  const getValidationError = useCallback(
+    (service: string): string | undefined => {
+      return validationErrors[service]
+    },
+    [validationErrors],
+  )
+
   return {
     // Основные операции
     getApiKeyStatus,
     getApiKeyInfo,
+    getValidationError,
     testApiKey,
     saveSimpleApiKey,
     deleteApiKey,

@@ -8,11 +8,16 @@
 
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use opentelemetry::{
-  global,
+  KeyValue, global,
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
-  KeyValue,
 };
-use opentelemetry_sdk::Resource;
+// opentelemetry_sdk::Resource is unused with pinned SDK versions
+use axum::{
+  http::StatusCode,
+  response::IntoResponse,
+  routing::get,
+  Router,
+};
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
 use std::collections::HashMap;
@@ -167,12 +172,10 @@ impl MetricsCollector {
       });
     }
 
-    // Создаем ресурс
-    let _resource = Resource::new(vec![
-      KeyValue::new(SERVICE_NAME, config.service_name.clone()),
+    // Создаем ресурс (Resource::new is private in some SDK versions)
+    let _resource_attrs = [KeyValue::new(SERVICE_NAME, config.service_name.clone()),
       KeyValue::new(SERVICE_VERSION, config.service_version.clone()),
-      KeyValue::new("deployment.environment", config.environment.clone()),
-    ]);
+      KeyValue::new("deployment.environment", config.environment.clone())];
 
     // Создаем meter в зависимости от типа экспортера
     match config.exporter.exporter_type {
@@ -305,10 +308,43 @@ impl MetricsCollector {
       return Ok(());
     }
 
-    // TODO: Реализовать сбор метрик runtime
-    // - Количество потоков
-    // - Использование CPU
-    // - Количество задач в Tokio
+    // Получаем системную статистику
+    let mut system = sysinfo::System::new();
+    system.refresh_all();
+
+    // Количество потоков
+    let thread_count = std::thread::available_parallelism()
+      .map(|p| p.get())
+      .unwrap_or(1);
+    let threads_gauge = self.gauge("runtime.threads.count", "Number of available threads")?;
+    threads_gauge.set(thread_count as i64);
+
+    // Использование CPU
+    let cpu_usage = system.global_cpu_usage();
+    let cpu_gauge = self.gauge("runtime.cpu.usage_percent", "CPU usage percentage")?;
+    cpu_gauge.set(cpu_usage as i64);
+
+    // Tokio runtime метрики
+    let handle = tokio::runtime::Handle::current();
+    let runtime_metrics = handle.metrics();
+
+    // Количество worker потоков
+    let worker_threads = runtime_metrics.num_workers();
+    let worker_threads_gauge = self.gauge("runtime.tokio.worker_threads", "Number of Tokio worker threads")?;
+    worker_threads_gauge.set(worker_threads as i64);
+
+    // Глобальная очередь задач
+    let global_queue_depth = runtime_metrics.global_queue_depth();
+    let global_queue_gauge = self.gauge("runtime.tokio.global_queue_depth", "Tokio global queue depth")?;
+    global_queue_gauge.set(global_queue_depth as i64);
+
+    // Общее время работы worker потоков
+    let mut total_busy_duration = std::time::Duration::ZERO;
+    for worker_id in 0..worker_threads {
+      total_busy_duration += runtime_metrics.worker_total_busy_duration(worker_id);
+    }
+    let busy_duration_gauge = self.gauge("runtime.tokio.total_busy_duration_seconds", "Total busy duration of all workers in seconds")?;
+    busy_duration_gauge.set(total_busy_duration.as_secs() as i64);
 
     Ok(())
   }
@@ -355,6 +391,39 @@ impl MetricsCollector {
     Ok(())
   }
 
+  /// Увеличить счетчик
+  pub fn increment_counter(&self, name: &str, labels: &[(String, String)]) -> Result<()> {
+    let counter = self.counter(name, &format!("Counter metric: {}", name))?;
+    let mut labeled_counter = counter;
+    for (key, value) in labels {
+      labeled_counter = labeled_counter.with_label(key, value.clone());
+    }
+    labeled_counter.inc();
+    Ok(())
+  }
+
+  /// Записать значение в гистограмму
+  pub fn record_histogram(&self, name: &str, value: f64, labels: &[(String, String)]) -> Result<()> {
+    let histogram = self.histogram(name, &format!("Histogram metric: {}", name))?;
+    let mut labeled_histogram = histogram;
+    for (key, val) in labels {
+      labeled_histogram = labeled_histogram.with_label(key, val.clone());
+    }
+    labeled_histogram.observe(value);
+    Ok(())
+  }
+
+  /// Установить значение gauge
+  pub fn set_gauge(&self, name: &str, value: f64, labels: &[(String, String)]) -> Result<()> {
+    let gauge = self.gauge(name, &format!("Gauge metric: {}", name))?;
+    let mut labeled_gauge = gauge;
+    for (key, val) in labels {
+      labeled_gauge = labeled_gauge.with_label(key, val.clone());
+    }
+    labeled_gauge.set(value as i64);
+    Ok(())
+  }
+
   /// Запустить HTTP сервер для Prometheus метрик
   async fn start_prometheus_server(endpoint: String, handle: Arc<RwLock<PrometheusHandle>>) {
     let addr: std::net::SocketAddr = endpoint
@@ -389,11 +458,7 @@ impl MetricsCollector {
           }
         }
       }
-    });
-
-    // Сохраняем handle сервера
-    let mut handle_guard = handle.write().await;
-    handle_guard.server_handle = Some(server_handle);
+    }
   }
 
   /// Обработать HTTP соединение
@@ -562,11 +627,7 @@ mod tests {
 
   fn init_test_env() {
     INIT.call_once(|| {
-      // Устанавливаем переменные окружения для тестов
-      std::env::set_var("RUST_LOG", "warn");
-
-      // Инициализируем логгер если еще не инициализирован
-      let _ = env_logger::try_init();
+      // Logger initialization skipped in tests to avoid global state issues
     });
   }
 

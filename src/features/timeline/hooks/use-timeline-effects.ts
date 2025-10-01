@@ -3,13 +3,13 @@
  */
 
 import { useCallback } from "react"
+import type { ProjectSchema } from "@/domains/video-editing/types"
 import {
   addEffectToClip,
   addFilterToClip,
   removeEffectFromClip,
   removeFilterFromClip,
 } from "@/features/effects/utils/user-effects"
-import type { ProjectSchema } from "@/types/video-compiler"
 import type { TimelineProject } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 

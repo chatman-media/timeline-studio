@@ -77,7 +77,7 @@ const VolumeSlider = memo(({ volume, volumeRef, onValueChange, onValueCommit }: 
   }, [onValueCommit])
 
   // Вычисляем стили для слайдера
-  const normalizedVolume = localVolume / 100 // Преобразуем из диапазона 0-100 в 0-1 для стилей
+  const normalizedVolume = typeof localVolume === "number" && !isNaN(localVolume) ? localVolume / 100 : 0 // Преобразуем из диапазона 0-100 в 0-1 для стилей
   const fillStyle = useMemo(() => ({ width: `${normalizedVolume * 100}%` }), [normalizedVolume])
   const thumbStyle = useMemo(() => ({ left: `calc(${normalizedVolume * 100}% - 6px)` }), [normalizedVolume])
 

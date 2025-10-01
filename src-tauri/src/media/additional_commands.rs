@@ -1,9 +1,9 @@
 //! Additional Media Commands - дополнительные команды для работы с медиа
 
 use crate::media::files::get_media_files;
+use crate::video_compiler::VideoCompilerState;
 use crate::video_compiler::commands::ffmpeg_advanced::probe_media_file;
 use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tauri::State;
@@ -25,6 +25,7 @@ pub struct MediaFilesResult {
 }
 
 /// Получить список медиафайлов в директории
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn get_media_files_in_directory(
   params: GetMediaFilesParams,
@@ -78,6 +79,7 @@ pub struct ProbeMediaResult {
 }
 
 /// Проанализировать медиафайл
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn probe_media_file_detailed(
   params: ProbeMediaParams,
@@ -131,6 +133,7 @@ pub struct CurrentGpuInfo {
 }
 
 /// Получить информацию о текущем GPU
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn get_current_gpu_information(
   _state: State<'_, VideoCompilerState>,
@@ -148,6 +151,7 @@ pub async fn get_current_gpu_information(
 }
 
 /// Проверить поддержку аппаратного ускорения
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn test_hardware_acceleration_support(
   _state: State<'_, VideoCompilerState>,

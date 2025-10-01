@@ -1,10 +1,7 @@
+import { OutputFormat, ProjectSchema } from "@/domains/video-editing"
 import type { TimelineProject as Timeline } from "@/features/timeline/types/timeline"
 import { timelineToProjectSchema } from "@/features/timeline/utils/timeline-to-project"
-import type { ProjectSchema } from "@/types/video-compiler"
-import { OutputFormat } from "@/types/video-compiler"
-
 import { AUDIO_BITRATE } from "../constants/export-constants"
-
 import type { ExportSettings } from "../types/export-types"
 
 /**

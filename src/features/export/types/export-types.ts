@@ -1,4 +1,4 @@
-import type { OutputFormat } from "@/types/video-compiler"
+import type { OutputFormat } from "@/domains/video-editing/types"
 
 export interface ExportSettings {
   fileName: string

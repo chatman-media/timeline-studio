@@ -3,6 +3,46 @@
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
+/// Health check configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HealthConfig {
+  pub enabled: bool,
+  pub check_interval: Duration,
+  pub cache_ttl: Duration,
+  pub default_timeout: Duration,
+  pub timeout: Duration,
+  pub endpoint: String,
+}
+
+impl Default for HealthConfig {
+  fn default() -> Self {
+    Self {
+      enabled: true,
+      check_interval: Duration::from_secs(30),
+      cache_ttl: Duration::from_secs(60),
+      default_timeout: Duration::from_secs(5),
+      timeout: Duration::from_secs(5),
+      endpoint: "/health".to_string(),
+    }
+  }
+}
+
+/// Tracing exporters
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TracingExporter {
+  Console,
+  Jaeger { endpoint: String },
+  Otlp { endpoint: String },
+}
+
+/// Metrics exporters
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum MetricsExporter {
+  Console,
+  Prometheus { port: u16 },
+  Otlp { endpoint: String },
+}
+
 /// Конфигурация телеметрии
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TelemetryConfig {
@@ -27,6 +67,9 @@ pub struct TelemetryConfig {
   /// Конфигурация метрик
   pub metrics: MetricsConfig,
 
+  /// Конфигурация health check
+  pub health: HealthConfig,
+
   /// Уровень логирования
   pub log_level: LogLevel,
 }
@@ -41,6 +84,7 @@ impl Default for TelemetryConfig {
       exporter: ExporterConfig::default(),
       tracing: TracingConfig::default(),
       metrics: MetricsConfig::default(),
+      health: HealthConfig::default(),
       log_level: LogLevel::Info,
     }
   }
@@ -99,6 +143,9 @@ pub enum ExporterType {
 /// Конфигурация трассировки
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TracingConfig {
+  /// Включена ли трассировка
+  pub enabled: bool,
+
   /// Процент семплирования (0.0 - 1.0)
   pub sample_rate: f64,
 
@@ -113,11 +160,15 @@ pub struct TracingConfig {
 
   /// Игнорируемые пути (не трассировать)
   pub ignored_paths: Vec<String>,
+
+  /// Экспортеры трассировки
+  pub exporters: Vec<TracingExporter>,
 }
 
 impl Default for TracingConfig {
   fn default() -> Self {
     Self {
+      enabled: true,
       sample_rate: 1.0,
       max_attributes_per_span: 128,
       max_events_per_span: 128,
@@ -127,6 +178,7 @@ impl Default for TracingConfig {
         "/metrics".to_string(),
         "/ready".to_string(),
       ],
+      exporters: vec![TracingExporter::Console],
     }
   }
 }
@@ -134,11 +186,20 @@ impl Default for TracingConfig {
 /// Конфигурация метрик
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MetricsConfig {
+  /// Включены ли метрики
+  pub enabled: bool,
+
   /// Интервал сбора метрик
   pub collection_interval: Duration,
 
   /// Интервал экспорта метрик
   pub export_interval: Duration,
+
+  /// Максимальный размер пакета для экспорта
+  pub max_export_batch_size: usize,
+
+  /// Таймаут экспорта
+  pub export_timeout: Duration,
 
   /// Включить метрики runtime
   pub runtime_metrics: bool,
@@ -148,16 +209,23 @@ pub struct MetricsConfig {
 
   /// Включить метрики процесса
   pub process_metrics: bool,
+
+  /// Экспортеры метрик
+  pub exporters: Vec<MetricsExporter>,
 }
 
 impl Default for MetricsConfig {
   fn default() -> Self {
     Self {
+      enabled: true,
       collection_interval: Duration::from_secs(10),
       export_interval: Duration::from_secs(60),
+      max_export_batch_size: 512,
+      export_timeout: Duration::from_secs(30),
       runtime_metrics: true,
       system_metrics: true,
       process_metrics: true,
+      exporters: vec![MetricsExporter::Console],
     }
   }
 }

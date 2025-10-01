@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 
-import { OutputFormat } from "@/types/video-compiler"
+import { OutputFormat } from "@/domains/video-editing/types"
 
 import { AUDIO_BITRATE } from "../../constants/export-constants"
 import type { ExportSettings } from "../../types/export-types"

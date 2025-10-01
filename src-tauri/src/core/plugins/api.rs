@@ -877,8 +877,7 @@ impl PluginApi for PluginApiImpl {
 
   async fn get_system_info(&self) -> Result<SystemInfo> {
     // Инициализируем sysinfo для получения информации о памяти
-    let mut system =
-      System::new_with_specifics(RefreshKind::new().with_memory(MemoryRefreshKind::everything()));
+    let mut system = System::new_with_specifics(RefreshKind::everything().with_memory(MemoryRefreshKind::everything()));
     system.refresh_memory();
 
     Ok(SystemInfo {

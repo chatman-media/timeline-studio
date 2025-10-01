@@ -103,6 +103,7 @@ describe("TrackContent", () => {
     pan: 0,
     trackEffects: [],
     trackFilters: [],
+    transitions: [],
   }
 
   const baseClip: TimelineClip = {

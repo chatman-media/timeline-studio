@@ -2,7 +2,7 @@
 
 use super::{business_logic, types::*};
 use crate::video_compiler::{
-  error::Result, services::monitoring::MetricsSummary, VideoCompilerState,
+  VideoCompilerState, error::Result, services::monitoring::MetricsSummary,
 };
 use std::collections::HashMap;
 use tauri::State;

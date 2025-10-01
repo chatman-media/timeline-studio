@@ -6,8 +6,8 @@
 
 import { useMachine } from "@xstate/react"
 import React, { type ReactNode, useEffect } from "react"
-
-import { appMachine } from "./app-machine"
+// Используем машину из домена
+import { appMachine } from "@/domains/project-management/machines/app-machine"
 
 export interface AppProviderV2Context {
   // Backend connection state

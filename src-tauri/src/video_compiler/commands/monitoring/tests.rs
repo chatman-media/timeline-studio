@@ -34,9 +34,11 @@ mod monitoring_tests {
 
     for service in invalid_services {
       assert!(business_logic::validate_service_name(service).is_err());
-      assert!(business_logic::validate_service_name(service)
-        .unwrap_err()
-        .contains("Unknown service"));
+      assert!(
+        business_logic::validate_service_name(service)
+          .unwrap_err()
+          .contains("Unknown service")
+      );
     }
   }
 

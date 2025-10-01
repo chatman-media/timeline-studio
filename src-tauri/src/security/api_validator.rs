@@ -1,7 +1,7 @@
 use super::{ApiKeyType, OAuthCredentials};
 use anyhow::Result;
 use reqwest::Client;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::time::Duration;
 
 /// Результат валидации API ключа
@@ -46,6 +46,7 @@ impl ApiValidator {
       ApiKeyType::OpenAI => self.validate_openai_key(value).await,
       ApiKeyType::Claude => self.validate_claude_key(value).await,
       ApiKeyType::DeepSeek => self.validate_deepseek_key(value).await,
+      ApiKeyType::Grok => self.validate_grok_key(value).await,
       ApiKeyType::YouTube => self.validate_youtube_oauth(value).await,
       ApiKeyType::TikTok => self.validate_tiktok_oauth(value).await,
       ApiKeyType::Vimeo => self.validate_vimeo_key(value).await,
@@ -97,16 +98,42 @@ impl ApiValidator {
             rate_limits,
           })
         } else if status.as_u16() == 401 {
+          let error_text = resp.text().await.unwrap_or_default();
+          
+          // Проверяем специфические ошибки
+          let error_message = if error_text.contains("insufficient_quota") || 
+                              error_text.contains("quota_exceeded") ||
+                              error_text.contains("billing_hard_limit") {
+            "Недостаточно кредитов. Пополните баланс на https://platform.openai.com/account/billing".to_string()
+          } else {
+            "Неверный API ключ".to_string()
+          };
+          
           Ok(ValidationResult {
             is_valid: false,
-            error_message: Some("Invalid API key".to_string()),
+            error_message: Some(error_message),
+            service_info: None,
+            rate_limits: None,
+          })
+        } else if status.as_u16() == 429 {
+          let error_text = resp.text().await.unwrap_or_default();
+          let error_message = if error_text.contains("quota") || error_text.contains("billing") {
+            "Недостаточно кредитов. Пополните баланс на https://platform.openai.com/account/billing".to_string()
+          } else {
+            "Превышен лимит запросов".to_string()
+          };
+          
+          Ok(ValidationResult {
+            is_valid: false,
+            error_message: Some(error_message),
             service_info: None,
             rate_limits: None,
           })
         } else {
+          let error_text = resp.text().await.unwrap_or_default();
           Ok(ValidationResult {
             is_valid: false,
-            error_message: Some(format!("HTTP error: {status}")),
+            error_message: Some(format!("OpenAI API error {status}: {error_text}")),
             service_info: None,
             rate_limits: None,
           })
@@ -143,6 +170,7 @@ impl ApiValidator {
     match response {
       Ok(resp) => {
         let status = resp.status();
+        let error_text = resp.text().await.unwrap_or_default();
 
         if status.is_success() {
           Ok(ValidationResult {
@@ -152,16 +180,41 @@ impl ApiValidator {
             rate_limits: None,
           })
         } else if status.as_u16() == 401 {
+          // Проверяем специфические ошибки для ключа
+          let error_message = if error_text.contains("credit balance is too low") || 
+                              error_text.contains("Insufficient credits") ||
+                              error_text.contains("quota exceeded") {
+            "Недостаточно кредитов. Пополните баланс на https://console.anthropic.com/billing".to_string()
+          } else {
+            "Неверный API ключ".to_string()
+          };
+          
           Ok(ValidationResult {
             is_valid: false,
-            error_message: Some("Invalid API key".to_string()),
+            error_message: Some(error_message),
+            service_info: None,
+            rate_limits: None,
+          })
+        } else if status.as_u16() == 400 {
+          // Проверяем ошибки 400, включая недостаточный баланс
+          let error_message = if error_text.contains("credit balance is too low") || 
+                              error_text.contains("Insufficient credits") ||
+                              error_text.contains("quota exceeded") {
+            "Недостаточно кредитов. Пополните баланс на https://console.anthropic.com/billing".to_string()
+          } else {
+            format!("Claude API error {}: {}", status, error_text)
+          };
+          
+          Ok(ValidationResult {
+            is_valid: false,
+            error_message: Some(error_message),
             service_info: None,
             rate_limits: None,
           })
         } else {
           Ok(ValidationResult {
             is_valid: false,
-            error_message: Some(format!("HTTP error: {status}")),
+            error_message: Some(format!("Claude API error {}: {}", status, error_text)),
             service_info: None,
             rate_limits: None,
           })
@@ -205,10 +258,79 @@ impl ApiValidator {
         } else {
           let status = resp.status();
           let error_text = resp.text().await.unwrap_or_default();
+          
+          // Проверяем специфические ошибки
+          let error_message = if error_text.contains("invalid api key") {
+            "Неверный API ключ".to_string()
+          } else if error_text.contains("insufficient_balance") || 
+                    error_text.contains("insufficient_quota") || 
+                    error_text.contains("quota_exceeded") ||
+                    error_text.contains("Insufficient Balance") {
+            "Недостаточно кредитов. Пополните баланс на https://platform.deepseek.com/usage".to_string()
+          } else {
+            format!("DeepSeek API error {status}: {error_text}")
+          };
+          
           Ok(ValidationResult {
             is_valid: false,
-            error_message: Some(format!("DeepSeek API error {status}: {error_text}")),
+            error_message: Some(error_message),
             service_info: Some("DeepSeek API".to_string()),
+            rate_limits: None,
+          })
+        }
+      }
+      Err(e) => Ok(ValidationResult {
+        is_valid: false,
+        error_message: Some(format!("Network error: {e}")),
+        service_info: None,
+        rate_limits: None,
+      }),
+    }
+  }
+
+  async fn validate_grok_key(&self, api_key: &str) -> Result<ValidationResult> {
+    // Простой тест запрос к Grok API
+    let body = json!({
+        "model": "grok-beta",
+        "max_tokens": 10,
+        "messages": [{"role": "user", "content": "Hi"}]
+    });
+
+    let response = self
+      .client
+      .post("https://api.x.ai/v1/chat/completions")
+      .header("Authorization", format!("Bearer {api_key}"))
+      .header("content-type", "application/json")
+      .json(&body)
+      .send()
+      .await;
+
+    match response {
+      Ok(resp) => {
+        if resp.status().is_success() {
+          Ok(ValidationResult {
+            is_valid: true,
+            error_message: None,
+            service_info: Some("Grok API".to_string()),
+            rate_limits: None,
+          })
+        } else {
+          let status = resp.status();
+          let error_text = resp.text().await.unwrap_or_default();
+          
+          // Проверяем специфические ошибки
+          let error_message = if error_text.contains("does not have permission") && error_text.contains("credits") {
+            "Недостаточно кредитов. Пожалуйста, пополните баланс на https://console.x.ai".to_string()
+          } else if error_text.contains("Incorrect API key") {
+            "Неверный API ключ".to_string()
+          } else {
+            format!("Grok API error {status}: {error_text}")
+          };
+          
+          Ok(ValidationResult {
+            is_valid: false,
+            error_message: Some(error_message),
+            service_info: Some("Grok API".to_string()),
             rate_limits: None,
           })
         }
@@ -568,10 +690,12 @@ mod tests {
     let validation = result.unwrap();
     assert!(!validation.is_valid);
     assert!(validation.error_message.is_some());
-    assert!(validation
-      .error_message
-      .unwrap()
-      .contains("OAuth validation not supported"));
+    assert!(
+      validation
+        .error_message
+        .unwrap()
+        .contains("OAuth validation not supported")
+    );
   }
 
   #[test]
@@ -618,6 +742,7 @@ mod tests {
       ApiKeyType::OpenAI,
       ApiKeyType::Claude,
       ApiKeyType::DeepSeek,
+      ApiKeyType::Grok,
       ApiKeyType::YouTube,
       ApiKeyType::TikTok,
       ApiKeyType::Vimeo,
@@ -632,6 +757,7 @@ mod tests {
         ApiKeyType::OpenAI => {}         // Valid API key type variant,
         ApiKeyType::Claude => {}         // Valid API key type variant,
         ApiKeyType::DeepSeek => {}       // Valid API key type variant,
+        ApiKeyType::Grok => {}           // Valid API key type variant,
         ApiKeyType::YouTube => {}        // Valid API key type variant,
         ApiKeyType::TikTok => {}         // Valid API key type variant,
         ApiKeyType::Vimeo => {}          // Valid API key type variant,

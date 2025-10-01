@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { RenderJob } from "@/types/video-compiler"
+import { RenderJob } from "@/domains/video-editing"
 import * as videoCompilerService from "../../services/video-compiler-service"
 import { type RenderProgress, RenderStatus } from "../../types/render"
 

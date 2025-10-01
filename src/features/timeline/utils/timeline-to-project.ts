@@ -10,6 +10,7 @@ import type { StyleTemplate } from "@/features/style-templates/types"
 import { SubtitleClip } from "@/features/subtitles"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
+import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
   AlignX,
   AlignY,
@@ -27,6 +28,7 @@ import {
   type SubtitleStyle as BackendSubtitleStyle,
   type Template as BackendTemplate,
   type Track as BackendTrack,
+  CompilerTemplateType,
   type ElementAnimation,
   FitMode,
   FontWeight,
@@ -44,11 +46,9 @@ import {
   SubtitleEasing,
   SubtitleFontWeight,
   type TemplateCell,
-  TemplateType,
   TextAlign,
-  TrackType,
   toRustEnumCase,
-} from "../../../types/video-compiler"
+} from "../../../domains/video-editing/types"
 import {
   type AppliedTransition,
   isSubtitleClip,
@@ -165,8 +165,11 @@ function convertClip(clip: TimelineClip): BackendClip {
     source_path: clip.mediaFile?.path || "",
     start_time: clip.startTime,
     end_time: clip.startTime + clip.duration,
-    source_start: clip.mediaStartTime || 0,
-    source_end: clip.mediaEndTime || clip.duration,
+    source_start: clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0,
+    source_end:
+      clip.mediaEndTime !== null && clip.mediaEndTime !== undefined
+        ? clip.mediaEndTime
+        : (clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0) + clip.duration,
     speed: clip.speed || 1.0,
     volume: clip.volume ?? 1.0,
     effects: clip.effects?.map((e) => e.effectId) || [],
@@ -555,17 +558,17 @@ function convertTemplates(templates: MediaTemplate[]): BackendTemplate[] {
     }
 
     // Определяем тип шаблона
-    const templateTypeMap: Record<string, TemplateType> = {
-      vertical: TemplateType.Vertical,
-      horizontal: TemplateType.Horizontal,
-      diagonal: TemplateType.Diagonal,
-      grid: TemplateType.Grid,
-      custom: TemplateType.Custom,
+    const templateTypeMap: Record<string, CompilerTemplateType> = {
+      vertical: CompilerTemplateType.Vertical,
+      horizontal: CompilerTemplateType.Horizontal,
+      diagonal: CompilerTemplateType.Diagonal,
+      grid: CompilerTemplateType.Grid,
+      custom: CompilerTemplateType.Custom,
     }
 
     return {
       id: template.id,
-      template_type: templateTypeMap[template.split] || TemplateType.Custom,
+      template_type: templateTypeMap[template.split] || CompilerTemplateType.Custom,
       name: template.id, // Используем ID как имя
       screens: template.screens,
       cells,
@@ -721,14 +724,14 @@ function convertStyleTemplates(styleTemplates: StyleTemplate[]): BackendStyleTem
 function getTrackType(type: string): TrackType {
   switch (type.toLowerCase()) {
     case "video":
-      return TrackType.Video
+      return "Video"
     case "audio":
-      return TrackType.Audio
+      return "Audio"
     case "subtitle":
     case "text":
-      return TrackType.Subtitle
+      return "Title" // Subtitle tracks map to Title in tauri-bindings
     default:
-      return TrackType.Video
+      return "Video"
   }
 }
 

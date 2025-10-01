@@ -574,10 +574,22 @@ echo 'frame=  300 fps=25.0 q=28.0 size=    3072kB time=00:00:12.00 bitrate=2048.
   async fn test_parse_various_progress_formats() {
     // Различные форматы которые может выдавать FFmpeg
     let test_cases = vec![
-          ("frame=    1 fps=0.0 q=0.0 size=       0kB time=00:00:00.04 bitrate=   0.0kbits/s", 1, 0.04),
-          ("frame= 1000 fps= 25 q=28.0 Lsize=    5120kB time=00:00:40.00 bitrate=1048.6kbits/s", 1000, 40.0),
-          ("frame=  500 fps=30.2 q=-1.0 size=    2560kB time=00:00:16.67 bitrate=1258.3kbits/s dup=2 drop=0", 500, 16.67),
-      ];
+      (
+        "frame=    1 fps=0.0 q=0.0 size=       0kB time=00:00:00.04 bitrate=   0.0kbits/s",
+        1,
+        0.04,
+      ),
+      (
+        "frame= 1000 fps= 25 q=28.0 Lsize=    5120kB time=00:00:40.00 bitrate=1048.6kbits/s",
+        1000,
+        40.0,
+      ),
+      (
+        "frame=  500 fps=30.2 q=-1.0 size=    2560kB time=00:00:16.67 bitrate=1258.3kbits/s dup=2 drop=0",
+        500,
+        16.67,
+      ),
+    ];
 
     for (line, expected_frame, _expected_time) in test_cases {
       // Проверяем что строка содержит ожидаемые данные

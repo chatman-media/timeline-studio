@@ -924,10 +924,12 @@ mod tests {
     // Test audio buffer creation with invalid type
     let result = ZeroCopyBuffer::for_audio(1000, DataType::Rgb24);
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Invalid audio data type"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Invalid audio data type")
+    );
   }
 
   #[test]
@@ -1181,10 +1183,12 @@ mod tests {
 
     let result = VideoZeroCopy::rgb_to_rgba_inplace(&buffer);
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("missing dimensions"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("missing dimensions")
+    );
   }
 
   #[test]
@@ -1203,10 +1207,12 @@ mod tests {
 
     let result = VideoZeroCopy::extract_yuv_planes(&buffer);
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("missing dimensions"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("missing dimensions")
+    );
   }
 
   #[test]
@@ -1338,7 +1344,7 @@ mod tests {
     for _ in 0..100 {
       let buffer = ZeroCopyBuffer::new(1024 * 1024, 32, DataType::Raw).unwrap();
       let _slice = buffer.as_slice(); // Use the buffer
-                                      // Buffer dropped here
+      // Buffer dropped here
     }
     // If Drop doesn't work properly, we'd run out of memory
   }

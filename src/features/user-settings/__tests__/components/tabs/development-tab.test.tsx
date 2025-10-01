@@ -53,6 +53,7 @@ describe("DevelopmentTab", () => {
     vi.mocked(useApiKeys).mockImplementation(() => ({
       getApiKeyStatus: vi.fn().mockReturnValue("not_set"),
       getApiKeyInfo: mockGetApiKeyInfo,
+      getValidationError: vi.fn(),
       testApiKey: vi.fn(),
       saveSimpleApiKey: mockSaveSimpleApiKey,
       deleteApiKey: vi.fn(),

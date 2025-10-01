@@ -1,8 +1,8 @@
 //! Integration tests for DI container
 
 use async_trait::async_trait;
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use timeline_studio_lib::core::{Service, ServiceContainer, ServiceProvider};
 use timeline_studio_lib::video_compiler::error::Result;
 

@@ -31,6 +31,7 @@ export const createMockTimelineProject = (): TimelineProject => ({
           pan: 0,
           trackEffects: [],
           trackFilters: [],
+          transitions: [],
         },
         {
           id: "track-2",
@@ -47,6 +48,7 @@ export const createMockTimelineProject = (): TimelineProject => ({
           pan: 0,
           trackEffects: [],
           trackFilters: [],
+          transitions: [],
         },
       ],
     },
@@ -67,6 +69,7 @@ export const createMockTimelineProject = (): TimelineProject => ({
       pan: 0,
       trackEffects: [],
       trackFilters: [],
+      transitions: [],
     },
   ],
   markers: [],
@@ -79,6 +82,7 @@ export const createMockTimelineProject = (): TimelineProject => ({
     subtitleStyles: [],
     music: [],
     media: [],
+    timelineTransitions: [],
   },
   settings: {
     resolution: { width: 1920, height: 1080 },
@@ -124,4 +128,5 @@ export const createMockTimelineTrack = (type: TrackType = "video"): TimelineTrac
   pan: 0,
   trackEffects: [],
   trackFilters: [],
+  transitions: [],
 })

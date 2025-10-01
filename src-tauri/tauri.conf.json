@@ -1,12 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Timeline Studio",
-  "version": "0.80.0",
+  "version": "1.3.10",
   "identifier": "com.chatman-media.timeline-studio",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:3000",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "bun run build:quick",
     "frontendDist": "../dist"
   },
   "app": {

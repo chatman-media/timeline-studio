@@ -1,6 +1,6 @@
 use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
 use crate::video_compiler::schema::ProjectSchema;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use std::path::{Path, PathBuf};
 use tokio::fs;
 

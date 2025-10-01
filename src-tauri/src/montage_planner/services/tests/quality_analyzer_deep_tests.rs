@@ -374,18 +374,26 @@ mod tests {
 
     // Check that all expected issue types are present
     let issue_types: Vec<_> = issues.iter().map(|i| &i.issue_type).collect();
-    assert!(issue_types
-      .iter()
-      .any(|t| matches!(t, QualityIssueType::LowSharpness)));
-    assert!(issue_types
-      .iter()
-      .any(|t| matches!(t, QualityIssueType::HighNoise)));
-    assert!(issue_types
-      .iter()
-      .any(|t| matches!(t, QualityIssueType::Underexposed)));
-    assert!(issue_types
-      .iter()
-      .any(|t| matches!(t, QualityIssueType::LowContrast)));
+    assert!(
+      issue_types
+        .iter()
+        .any(|t| matches!(t, QualityIssueType::LowSharpness))
+    );
+    assert!(
+      issue_types
+        .iter()
+        .any(|t| matches!(t, QualityIssueType::HighNoise))
+    );
+    assert!(
+      issue_types
+        .iter()
+        .any(|t| matches!(t, QualityIssueType::Underexposed))
+    );
+    assert!(
+      issue_types
+        .iter()
+        .any(|t| matches!(t, QualityIssueType::LowContrast))
+    );
   }
 
   #[test]

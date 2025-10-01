@@ -276,10 +276,12 @@ mod service_container_tests {
 
       assert!(!params.service_name.is_empty());
       assert!(params.service_name.contains("service"));
-      assert!(params
-        .service_name
-        .chars()
-        .all(|c| c.is_ascii_lowercase() || c == '_'));
+      assert!(
+        params
+          .service_name
+          .chars()
+          .all(|c| c.is_ascii_lowercase() || c == '_')
+      );
     }
   }
 
@@ -401,17 +403,23 @@ mod service_container_tests {
     assert_eq!(summary.total_services, 3);
     assert_eq!(summary.active_services, 3);
     assert_eq!(summary.summaries.len(), 3);
-    assert!(summary
-      .summaries
-      .iter()
-      .any(|s| s.service_name == "render_service"));
-    assert!(summary
-      .summaries
-      .iter()
-      .any(|s| s.service_name == "preview_service"));
-    assert!(summary
-      .summaries
-      .iter()
-      .any(|s| s.service_name == "cache_service"));
+    assert!(
+      summary
+        .summaries
+        .iter()
+        .any(|s| s.service_name == "render_service")
+    );
+    assert!(
+      summary
+        .summaries
+        .iter()
+        .any(|s| s.service_name == "preview_service")
+    );
+    assert!(
+      summary
+        .summaries
+        .iter()
+        .any(|s| s.service_name == "cache_service")
+    );
   }
 }

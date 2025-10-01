@@ -11,7 +11,7 @@ import {
   useTimelineProject,
   useTimelineSelection,
   useTimelineTracks,
-} from "../services/providers"
+} from "@/domains/video-editing"
 
 export interface TimelineContextType {
   // Project управление

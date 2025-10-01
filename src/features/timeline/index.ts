@@ -7,7 +7,5 @@ export type {
 } from "./hooks"
 // Hooks
 export { useClips, useTimeline, useTimelineSelection, useTimelineTransitions, useTracks } from "./hooks"
-// Providers
-export { TimelineProvider } from "./services/providers"
 // Types
 export * from "./types"

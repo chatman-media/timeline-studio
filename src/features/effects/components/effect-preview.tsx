@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { ApplyButton } from "@/features"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
+import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { BaseEffect, VideoEffect } from "@/features/effects/types"
 import { useResources } from "@/features/resources"

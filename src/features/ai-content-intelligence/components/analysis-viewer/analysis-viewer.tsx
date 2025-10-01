@@ -206,12 +206,12 @@ const ScenesTab: FC<ScenesTabProps> = ({ scenes, onSceneSelect }) => (
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-3">
                   <div>
-                    <p className="text-xs text-muted-foreground">Качество</p>
+                    {/* <p className="text-xs text-muted-foreground">Качество</p>
                     <Progress value={scene.quality.overall} className="h-2 mt-1" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Объектов</p>
-                    <p className="text-sm font-medium">{scene.content.objects.length}</p>
+                    <p className="text-sm font-medium">{scene.content.objects.length}</p> */}
                   </div>
                 </div>
               </div>

@@ -1,106 +1,106 @@
-# WebGL2 Library - Унифицированная WebGL2 библиотека
+# WebGL2 Library - Unified WebGL2 Library
 
-Унифицированная WebGL2 библиотека для Timeline Studio, обеспечивающая высокопроизводительный рендеринг видео с эффектами.
+Unified WebGL2 library for Timeline Studio, providing high-performance GPU-accelerated video rendering with effects.
 
 **🌐 Languages:** [English](./README_EN.md) | [Русский](./README.md)
 
-## 🚀 Особенности
+## 🚀 Features
 
-- **WebGL2**: Полная поддержка современного WebGL2 API
-- **GPU Tier Detection**: Автоматическое определение уровня GPU (low/medium/high)
-- **Контекст-менеджер**: Централизованное управление WebGL2 контекстами
-- **Пул шейдеров**: Кэширование и переиспользование скомпилированных шейдеров
-- **VAO менеджер**: Эффективное управление Vertex Array Objects
-- **Event-driven**: Архитектура на основе событий
-- **Type-safe**: Полная типизация TypeScript
+- **WebGL2**: Full support for modern WebGL2 API
+- **GPU Tier Detection**: Automatic GPU performance detection (low/medium/high)
+- **Context Manager**: Centralized WebGL2 context management
+- **Shader Pool**: Caching and reuse of compiled shaders
+- **VAO Manager**: Efficient Vertex Array Objects management
+- **Event-driven**: Event-based architecture
+- **Type-safe**: Full TypeScript typing
 
-## 📁 Структура
+## 📁 Structure
 
 ```
 src/lib/webgl/
-├── context-manager.ts     # Центральный менеджер WebGL2 контекстов
-├── shader-pool.ts         # Пул шейдеров для оптимизации
-├── vao-manager.ts         # Менеджер Vertex Array Objects
-├── base-renderer.ts       # Базовый класс для всех рендереров
-├── utils.ts              # Утилиты WebGL2
-├── types.ts              # TypeScript типы
-├── index.ts              # Главный экспорт
-└── __tests__/            # Тесты модуля
+├── context-manager.ts     # Central WebGL2 context manager
+├── shader-pool.ts         # Shader pool for optimization
+├── vao-manager.ts         # Vertex Array Objects manager
+├── base-renderer.ts       # Base class for all renderers
+├── utils.ts              # WebGL2 utilities
+├── types.ts              # TypeScript types
+├── index.ts              # Main export
+└── __tests__/            # Module tests
 ```
 
-## 🏗️ Архитектура
+## 🏗️ Architecture
 
 ### ContextManager
-Синглтон для управления WebGL2 контекстами с автоматическим определением GPU возможностей:
+Singleton for managing WebGL2 contexts with automatic GPU capabilities detection:
 
 ```typescript
 import { contextManager } from '@/lib/webgl'
 
-// Инициализация контекста
+// Initialize context
 const success = contextManager.initialize({ canvas })
 
-// Получение возможностей GPU
+// Get GPU capabilities
 const capabilities = contextManager.getCapabilities()
 console.log(capabilities.tier) // "low" | "medium" | "high"
 
-// Изменение размера
+// Resize canvas
 contextManager.resize(1920, 1080)
 
-// События
+// Events
 contextManager.on('contextLost', () => console.log('Context lost'))
 contextManager.on('contextRestored', () => console.log('Context restored'))
 ```
 
 ### ShaderPool
-Эффективное кэширование и управление шейдерами:
+Efficient shader caching and management:
 
 ```typescript
 import { shaderPool } from '@/lib/webgl'
 
-// Получение встроенного шейдера
+// Get built-in shader
 const copyProgram = shaderPool.getProgram("copy")
 
-// Создание кастомного шейдера
+// Create custom shader
 const customProgram = shaderPool.getProgram("myShader", {
   vertex: vertexShaderSource,
   fragment: fragmentShaderSource
 })
 
-// Получение местоположений uniform/attribute
+// Get uniform/attribute locations
 const uTexture = shaderPool.getUniformLocation(program, "u_texture")
 const aPosition = shaderPool.getAttributeLocation(program, "a_position")
 
-// Освобождение ресурсов
+// Release resources
 shaderPool.releaseProgram("myShader")
 ```
 
 ### VAOManager
-Управление Vertex Array Objects для оптимизации рендеринга:
+Vertex Array Objects management for rendering optimization:
 
 ```typescript
 import { vaoManager } from '@/lib/webgl'
 
-// Создание VAO для полноэкранного квада
+// Create VAO for fullscreen quad
 const quadVAO = vaoManager.createQuadVAO(program)
 
-// Использование VAO
+// Use VAO
 vaoManager.bindVAO(quadVAO)
 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 vaoManager.unbindVAO()
 
-// Освобождение ресурсов
+// Release resources
 vaoManager.releaseVAO(quadVAO)
 ```
 
 ### BaseRenderer
-Базовый класс для создания рендереров:
+Base class for creating renderers:
 
 ```typescript
 import { BaseRenderer } from '@/lib/webgl'
 
 class MyRenderer extends BaseRenderer {
   protected async onInitialize(): Promise<void> {
-    // Инициализация специфичная для рендерера
+    // Renderer-specific initialization
     const program = shaderPool.getProgram("myShader")
     this.quadVAO = vaoManager.createQuadVAO(program)
   }
@@ -108,16 +108,16 @@ class MyRenderer extends BaseRenderer {
   public render(deltaTime: number): void {
     if (!this.gl) return
     
-    // Логика рендеринга
+    // Rendering logic
     this.gl.clear(this.gl.COLOR_BUFFER_BIT)
     // ...
   }
 }
 ```
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-1. **Инициализация контекста:**
+1. **Initialize context:**
 ```typescript
 import { contextManager } from '@/lib/webgl'
 
@@ -129,7 +129,7 @@ if (success) {
 }
 ```
 
-2. **Создание простого рендерера:**
+2. **Create simple renderer:**
 ```typescript
 import { BaseRenderer, shaderPool, vaoManager } from '@/lib/webgl'
 
@@ -153,53 +153,53 @@ class SimpleRenderer extends BaseRenderer {
   }
 }
 
-// Использование
+// Usage
 const renderer = new SimpleRenderer({ name: 'simple', canvas })
 await renderer.initialize()
 renderer.render()
 ```
 
-## 🎨 Встроенные шейдеры
+## 🎨 Built-in Shaders
 
-Библиотека включает набор оптимизированных шейдеров для общих задач:
+The library includes a set of optimized shaders for common tasks:
 
-- **copy**: Простое копирование текстуры
-- **blend**: Блендинг двух текстур
-- **colorCorrection**: Коррекция цвета (HSL, RGB)
-- **gaussianBlur**: Размытие по Гауссу
+- **copy**: Simple texture copy
+- **blend**: Blend two textures
+- **colorCorrection**: Color correction (HSL, RGB)
+- **gaussianBlur**: Gaussian blur
 
 ```typescript
-// Использование встроенных шейдеров
+// Using built-in shaders
 const copyProgram = shaderPool.getProgram("copy")
 const blurProgram = shaderPool.getProgram("gaussianBlur")
 ```
 
 ## 🔧 GPU Tier Detection
 
-Автоматическое определение производительности GPU для оптимизации качества:
+Automatic GPU performance detection for quality optimization:
 
 ```typescript
 const capabilities = contextManager.getCapabilities()
 
 switch (capabilities.tier) {
   case "high":
-    // Максимальное качество
+    // Maximum quality
     quality = { resolution: 1.0, effects: "all", antialiasing: true }
     break
   case "medium":
-    // Сбалансированное качество
+    // Balanced quality
     quality = { resolution: 0.75, effects: "all", antialiasing: true }
     break
   case "low":
-    // Производительность приоритет
+    // Performance priority
     quality = { resolution: 0.5, effects: "basic", antialiasing: false }
     break
 }
 ```
 
-## 📊 События
+## 📊 Events
 
-Библиотека поддерживает события для реагирования на изменения контекста:
+The library supports events for responding to context changes:
 
 ```typescript
 contextManager.on('contextLost', () => {
@@ -208,7 +208,7 @@ contextManager.on('contextLost', () => {
 
 contextManager.on('contextRestored', () => {
   console.log('WebGL context restored - resuming rendering')
-  // Перезагрузка ресурсов
+  // Reload resources
 })
 
 contextManager.on('resize', ({ width, height, dpr }) => {
@@ -216,56 +216,56 @@ contextManager.on('resize', ({ width, height, dpr }) => {
 })
 ```
 
-## 🧪 Тестирование
+## 🧪 Testing
 
-Запуск тестов:
+Run tests:
 ```bash
 bun run test src/lib/webgl/__tests__/
 ```
 
-Тесты покрывают:
-- ✅ Инициализацию ContextManager
+Tests cover:
+- ✅ ContextManager initialization
 - ✅ GPU capabilities detection
-- ✅ Компиляцию и кэширование шейдеров
-- ✅ Управление VAO
-- ✅ Обработку потери контекста
-- ✅ Очистку ресурсов
+- ✅ Shader compilation and caching
+- ✅ VAO management
+- ✅ Context loss handling
+- ✅ Resource cleanup
 
-## 🔄 Миграция с WebGL1
+## 🔄 Migration from WebGL1
 
-Если вы мигрируете с WebGL1, см. [руководство по миграции](../../../docs/05_development/webgl-migration-guide.md).
+If you're migrating from WebGL1, see the [migration guide](../../../docs/05_development/webgl-migration-guide.md).
 
 ## 📚 API Reference
 
 ### ContextManager
-- `initialize(options)` - Инициализация WebGL2 контекста
-- `getContext()` - Получение текущего контекста
-- `getCapabilities()` - Получение возможностей GPU
-- `resize(width, height)` - Изменение размера canvas
-- `dispose()` - Очистка ресурсов
+- `initialize(options)` - Initialize WebGL2 context
+- `getContext()` - Get current context
+- `getCapabilities()` - Get GPU capabilities
+- `resize(width, height)` - Resize canvas
+- `dispose()` - Cleanup resources
 
 ### ShaderPool
-- `getProgram(name, source?)` - Получение шейдерной программы
-- `releaseProgram(name)` - Освобождение программы
-- `getUniformLocation(program, name)` - Местоположение uniform
-- `getAttributeLocation(program, name)` - Местоположение attribute
-- `clear()` - Очистка всех программ
+- `getProgram(name, source?)` - Get shader program
+- `releaseProgram(name)` - Release program
+- `getUniformLocation(program, name)` - Get uniform location
+- `getAttributeLocation(program, name)` - Get attribute location
+- `clear()` - Clear all programs
 
 ### VAOManager
-- `createQuadVAO(program)` - Создание VAO для квада
-- `createVAO(program, attributes)` - Создание кастомного VAO
-- `bindVAO(vao)` - Привязка VAO
-- `unbindVAO()` - Отвязка VAO
-- `releaseVAO(vao)` - Освобождение VAO
+- `createQuadVAO(program)` - Create quad VAO
+- `createVAO(program, attributes)` - Create custom VAO
+- `bindVAO(vao)` - Bind VAO
+- `unbindVAO()` - Unbind VAO
+- `releaseVAO(vao)` - Release VAO
 
-## 🤝 Вклад в развитие
+## 🤝 Contributing
 
-При добавлении новых возможностей:
-1. Следуйте существующим паттернам архитектуры
-2. Добавляйте TypeScript типы
-3. Покрывайте код тестами
-4. Обновляйте документацию
+When adding new features:
+1. Follow existing architecture patterns
+2. Add TypeScript types
+3. Cover code with tests
+4. Update documentation
 
-## 📄 Лицензия
+## 📄 License
 
-Часть Timeline Studio - см. корневую лицензию проекта.
+Part of Timeline Studio - see root project license.

@@ -1,10 +1,12 @@
 pub mod commands;
 pub mod recognition_service;
-// pub mod registry; // Not used - commands are registered in app_builder.rs
 pub mod face_clustering;
 pub mod facenet_processor;
 pub mod mediapipe_processor;
 pub mod ort_manager;
+pub mod person_clustering;
+pub mod person_database;
+pub mod types_professional;
 pub mod privacy_processor;
 pub mod retinaface_processor;
 pub mod types;
@@ -16,6 +18,16 @@ pub mod model_manager;
 pub mod result_aggregator;
 pub mod yolo_processor_refactored;
 
+// Экспорт основных типов и сервисов
+pub use recognition_service::RecognitionService;
+pub use types::RecognitionResults;
+pub use person_clustering::PersonClusteringService;
+pub use face_clustering::{ClusteringStats, FaceClusteringEngine};
+
+// Экспорт команд для использования в приложении
+pub use commands::RecognitionState;
+pub use commands::person_commands;
+
 #[cfg(test)]
 mod tests;
 
@@ -24,5 +36,3 @@ mod real_data_tests;
 
 #[cfg(test)]
 mod commands_test;
-
-pub use commands::RecognitionState;

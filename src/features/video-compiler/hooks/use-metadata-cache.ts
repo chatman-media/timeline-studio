@@ -3,8 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-
-import type { MediaMetadata } from "@/types/media"
+import type { MediaMetadata } from "../../../domains/shared/types"
 
 import {
   cacheMediaMetadata,

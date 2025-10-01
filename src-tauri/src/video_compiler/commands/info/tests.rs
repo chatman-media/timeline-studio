@@ -324,10 +324,12 @@ Codecs:
     assert_eq!(error_json["error_type"], "FFmpegError");
     assert_eq!(error_json["exit_code"], 127);
     assert_eq!(error_json["stderr"], sample_stderr);
-    assert!(error_json["command"]
-      .as_str()
-      .unwrap()
-      .starts_with("ffmpeg"));
+    assert!(
+      error_json["command"]
+        .as_str()
+        .unwrap()
+        .starts_with("ffmpeg")
+    );
   }
 
   #[test]

@@ -1,7 +1,6 @@
 import { load, type Store } from "@tauri-apps/plugin-store"
-
+import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import type { MediaFile } from "@/features/media"
-import type { UserSettingsContextType } from "@/features/user-settings/services/user-settings-machine"
 
 /**
  * Путь к файлу хранилища пользовательских настроек

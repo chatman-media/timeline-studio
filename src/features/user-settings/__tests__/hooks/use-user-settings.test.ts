@@ -1,11 +1,11 @@
 import { renderHook } from "@testing-library/react"
-import { useContext } from "react"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useUserSettings } from "../../hooks/use-user-settings"
 
-// Мокаем React Context
-const mockContextValue = {
+// Мокаем доменный хук, так как адаптер завязан на него
+const mockDomain = {
+  // значения
   activeTab: "media" as const,
   layoutMode: "default" as const,
   screenshotsPath: "/path/to/screenshots",
@@ -14,44 +14,105 @@ const mockContextValue = {
   openAiApiKey: "",
   claudeApiKey: "",
   isBrowserVisible: true,
-  handleTabChange: vi.fn(),
-  handleLayoutChange: vi.fn(),
-  handleScreenshotsPathChange: vi.fn(),
-  handlePlayerScreenshotsPathChange: vi.fn(),
-  handlePlayerVolumeChange: vi.fn(),
-  handleAiApiKeyChange: vi.fn(),
-  handleClaudeApiKeyChange: vi.fn(),
+  isTimelineVisible: true,
+  isOptionsVisible: false,
+
+  // GPU/Perf
+  gpuAccelerationEnabled: false,
+  preferredGpuEncoder: "auto",
+  maxConcurrentJobs: 1,
+  renderQuality: "medium",
+  backgroundRenderingEnabled: false,
+  renderDelay: 0,
+
+  // Proxy
+  proxyEnabled: false,
+  proxyType: "http",
+  proxyHost: "",
+  proxyPort: "",
+  proxyUsername: "",
+  proxyPassword: "",
+
+  // Auto-save
+  autoSaveEnabled: true,
+  autoSaveInterval: 300,
+
+  // методы обновления
+  updateLayoutMode: vi.fn(),
+  updateActiveTab: vi.fn(),
+  updateOpenAiApiKey: vi.fn(),
+  updateClaudeApiKey: vi.fn(),
+  updateGpuAcceleration: vi.fn(),
+  updateAutoSave: vi.fn(),
+  updateAutoSaveInterval: vi.fn(),
+  updatePlayerVolume: vi.fn(),
+  updateScreenshotsPath: vi.fn(),
+  updatePlayerScreenshotsPath: vi.fn(),
+  updateSettings: vi.fn(),
+
+  // тумблеры
   toggleBrowserVisibility: vi.fn(),
+  toggleTimelineVisibility: vi.fn(),
+  toggleOptionsVisibility: vi.fn(),
 }
 
-// Мокаем useContext
-vi.mock("react", async () => {
-  const actual = await vi.importActual("react")
-  return {
-    ...actual,
-    useContext: vi.fn(),
-  }
+vi.mock("@/domains/project-management", () => ({
+  useUserSettings: () => mockDomain,
+}))
+
+beforeEach(() => {
+  // Сбрасываем все вызовы моков перед каждым тестом
+  Object.values(mockDomain).forEach((v) => {
+    if (typeof v === "function") (v as any).mockClear?.()
+  })
 })
 
-describe("useUserSettings", () => {
-  it("should return context value when used within UserSettingsProvider", () => {
-    vi.mocked(useContext).mockReturnValue(mockContextValue)
-
+describe("useUserSettings (adapter)", () => {
+  it("возвращает значения из доменного стора без обязательного провайдера", () => {
     const { result } = renderHook(() => useUserSettings())
 
-    expect(result.current).toBe(mockContextValue)
+    expect(result.current.layoutMode).toBe("default")
+    expect(result.current.isBrowserVisible).toBe(true)
+    expect(result.current.playerVolume).toBe(50)
   })
 
-  it("should throw error when used outside UserSettingsProvider", () => {
-    vi.mocked(useContext).mockReturnValue(null)
+  it("проксирует toggle*-методы", () => {
+    const { result } = renderHook(() => useUserSettings())
 
-    const consoleError = console.error
-    console.error = vi.fn() // Подавляем ошибки в консоли во время теста
+    result.current.toggleBrowserVisibility()
+    expect(mockDomain.toggleBrowserVisibility).toHaveBeenCalledTimes(1)
 
-    expect(() => renderHook(() => useUserSettings())).toThrow(
-      "useUserSettings must be used within a UserSettingsProvider",
-    )
+    result.current.toggleTimelineVisibility()
+    expect(mockDomain.toggleTimelineVisibility).toHaveBeenCalledTimes(1)
 
-    console.error = consoleError // Восстанавливаем console.error
+    result.current.toggleOptionsVisibility()
+    expect(mockDomain.toggleOptionsVisibility).toHaveBeenCalledTimes(1)
+  })
+
+  it("маппит handle*-методы на доменные апдейтеры", () => {
+    const { result } = renderHook(() => useUserSettings())
+
+    result.current.handleLayoutChange("default")
+    expect(mockDomain.updateLayoutMode).toHaveBeenCalledWith("default")
+
+    result.current.handleScreenshotsPathChange("/new")
+    expect(mockDomain.updateScreenshotsPath).toHaveBeenCalledWith("/new")
+
+    result.current.handlePlayerVolumeChange(80)
+    expect(mockDomain.updatePlayerVolume).toHaveBeenCalledWith(80)
+
+    result.current.handleAiApiKeyChange("k1")
+    expect(mockDomain.updateOpenAiApiKey).toHaveBeenCalledWith("k1")
+  })
+
+  it("валидирует вкладки браузера в handleTabChange", () => {
+    const { result } = renderHook(() => useUserSettings())
+
+    result.current.handleTabChange("media")
+    expect(mockDomain.updateActiveTab).toHaveBeenCalledWith("media")
+
+    // Неверное значение не должно вызывать апдейтер второй раз
+    result.current.handleTabChange("unknown" as any)
+    expect(mockDomain.updateActiveTab).toHaveBeenCalledTimes(1)
   })
 })

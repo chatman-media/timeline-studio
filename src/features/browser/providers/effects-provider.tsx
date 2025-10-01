@@ -86,7 +86,6 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     error: [],
   }
 
-  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: конфигурация для будущего использования
   constructor(private config: LoadingConfig) {}
 
   // === Получение ресурсов ===

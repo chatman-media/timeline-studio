@@ -4,7 +4,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import type { ProjectSchema } from "@/types/video-compiler"
+import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import type { BaseEffect, EffectPreset } from "../types/unified-effects"
 
 // Счетчик для генерации уникальных ID пресетов

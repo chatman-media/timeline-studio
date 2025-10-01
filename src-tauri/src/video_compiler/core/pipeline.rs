@@ -11,11 +11,11 @@ use std::sync::Arc;
 use std::time::{Duration, SystemTime};
 use tokio::sync::RwLock;
 
+use crate::video_compiler::CompilerSettings;
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
 use crate::video_compiler::progress::ProgressTracker;
 use crate::video_compiler::schema::{ClipSource, ProjectSchema};
-use crate::video_compiler::CompilerSettings;
 
 /// Основной конвейер обработки видео
 #[derive(Debug)]
@@ -1430,7 +1430,7 @@ mod tests {
   };
   use std::path::Path;
   use tempfile::TempDir;
-  use tokio::sync::{mpsc, Mutex};
+  use tokio::sync::{Mutex, mpsc};
 
   /// Создает тестовый клип
   fn create_test_clip(id: &str, source_path: PathBuf, start_time: f64, end_time: f64) -> Clip {

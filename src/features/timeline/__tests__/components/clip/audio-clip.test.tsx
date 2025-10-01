@@ -80,8 +80,6 @@ const mockAudioClip: TimelineClip = {
   name: "Test Audio Clip",
   startTime: 0,
   duration: 30,
-  trimStart: 0,
-  trimEnd: 30,
   mediaStartTime: 0,
   mediaEndTime: 30,
   volume: 0.8,
@@ -108,9 +106,12 @@ const mockAudioClip: TimelineClip = {
     name: "audio.mp3",
     size: 5000000,
     duration: 30,
-    hasAudio: true,
-    hasVideo: false,
+    isAudio: true,
+    isVideo: false,
   },
+  offset: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 }
 
 const mockMusicTrack: TimelineTrack = {
@@ -121,6 +122,14 @@ const mockMusicTrack: TimelineTrack = {
   isLocked: false,
   height: 60,
   clips: [],
+  transitions: [],
+  isMuted: false,
+  isHidden: false,
+  isSolo: false,
+  volume: 0,
+  pan: 0,
+  trackEffects: [],
+  trackFilters: [],
 }
 
 const mockVoiceoverTrack: TimelineTrack = {

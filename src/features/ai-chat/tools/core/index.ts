@@ -4,26 +4,13 @@
  * Базовая функциональность для работы с Timeline, ресурсами, плеером и браузером
  */
 
-// Browser инструменты
-export * from "./browser"
-// Effects & Filters инструменты
-export * from "./effects-filters-tools"
-// Player инструменты
-export * from "./player"
-// Resources инструменты
-export * from "./resources"
-// Settings инструменты
-export * from "./settings-configuration-tools"
-// Timeline инструменты
-export * from "./timeline"
-
-// Сбор всех core инструментов в один массив
-import { browserTools } from "./browser"
-import { effectsFiltersTools } from "./effects-filters-tools"
-import { playerTools } from "./player"
-import { resourceTools } from "./resources"
-import { settingsConfigurationTools } from "./settings-configuration-tools"
-import { timelineTools } from "./timeline"
+// All core tools are now in the domains layer.
+import { browserTools } from "@/domains/ai-tools/tools/core/browser"
+import { effectsFiltersTools } from "@/domains/ai-tools/tools/core/effects-filters-tools"
+import { playerTools } from "@/domains/ai-tools/tools/core/player"
+import { resourceTools } from "@/domains/ai-tools/tools/core/resources"
+import { settingsConfigurationTools } from "@/domains/ai-tools/tools/core/settings-configuration-tools"
+import { timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 
 export const coreTools = [
   ...timelineTools,

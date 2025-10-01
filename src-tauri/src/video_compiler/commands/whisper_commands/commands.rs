@@ -353,7 +353,7 @@ pub async fn whisper_download_model(model_name: String) -> Result<bool> {
     _ => {
       return Err(VideoCompilerError::InvalidParameter(format!(
         "Неизвестная модель: {model_name}"
-      )))
+      )));
     }
   };
 

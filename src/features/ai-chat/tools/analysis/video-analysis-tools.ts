@@ -3,8 +3,7 @@
  * Предоставляет возможности анализа качества, сцен, движения и автоматического улучшения
  */
 
-import type {
-  AudioAnalysisResult,
+import {
   IFFmpegAnalysisService,
   MediaFile,
   MotionAnalysisResult,
@@ -12,8 +11,10 @@ import type {
   SceneDetectionResult,
   VideoAnalysisOptions,
   VideoMetadata,
-} from "@/shared/services/ai/analysis/interfaces"
+} from "@/domains/ai-services"
+
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { AudioAnalysisResult } from "./audio-analysis-tools"
 
 // Типы для операций анализа видео
 export interface VideoAnalysisInput {
@@ -82,12 +83,14 @@ export class VideoAnalysisTool extends BaseAITool {
   private async getFFmpegService(): Promise<IFFmpegAnalysisService> {
     if (!this.ffmpegService) {
       try {
-        const { getAIContainer } = await import("@/shared/services/ai")
+        const { getAIContainer } = await import("@/domains/ai-core")
         const aiContainer = getAIContainer()
         this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
       } catch (error) {
         // Fallback к локальному сервису если shared недоступен
-        const { FFmpegAnalysisService } = await import("../../services/ffmpeg-analysis-service")
+        const { FFmpegAnalysisService } = await import(
+          "@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service"
+        )
         this.ffmpegService = FFmpegAnalysisService.getInstance()
       }
     }
@@ -197,7 +200,11 @@ export class VideoAnalysisTool extends BaseAITool {
 
           case "analyze_audio":
             result = await this.analyzeVideoAudio(input)
-            if (result.audio && result.audio.silentSegments.length > 0) {
+            if (
+              result.audio &&
+              result.audio.audioLevels?.clippingInstances &&
+              result.audio.audioLevels.clippingInstances > 0
+            ) {
               warnings.push("Обнаружен клиппинг в аудио")
               recommendations.push("Уменьшите уровень громкости")
             }
@@ -397,8 +404,9 @@ export class VideoAnalysisTool extends BaseAITool {
         id: input.clipId,
         path: input.clipId,
         filename: input.clipId.split("/").pop() || input.clipId,
-        size: 0,
         type: "video",
+        duration: 0,
+        size: 0,
       }
       const audio = await ffmpegService.analyzeAudio(mediaFile)
 
@@ -413,7 +421,16 @@ export class VideoAnalysisTool extends BaseAITool {
       return {
         operation: "analyze_audio",
         success: true,
-        audio,
+        audio: {
+          analysisType: "audio_analysis",
+          audioLevels: {
+            peakLevels: [audio.volume.peak],
+            averageLevel: audio.volume.average,
+            dynamicRange: audio.volume.peak - audio.volume.average,
+            clippingInstances: 0,
+            recommendedAdjustments: recommendations,
+          },
+        },
         message: "Анализ аудио завершен",
         recommendations,
       }

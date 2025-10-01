@@ -1,7 +1,8 @@
+// Используем типы и машину из домена
+
 import { useMachine } from "@xstate/react"
 import { createContext, useContext, useMemo } from "react"
-
-import { type ModalData, type ModalType, modalMachine } from "./modal-machine"
+import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 
 /**
  * Интерфейс для контекста модальных окон

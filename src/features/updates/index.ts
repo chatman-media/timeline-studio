@@ -15,8 +15,6 @@ export {
 export type { UseUpdateManagerReturn } from "./hooks/use-update-manager"
 // Хуки
 export { useUpdateAvailability, useUpdateManager } from "./hooks/use-update-manager"
-export type { UpdateMachine, UpdateMachineActor } from "./services/update-machine"
-export { updateMachine } from "./services/update-machine"
 // Сервисы
 export { UpdateService, updateService } from "./services/update-service"
 // Типы

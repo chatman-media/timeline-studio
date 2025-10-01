@@ -322,11 +322,12 @@ export abstract class BaseRenderer extends EventEmitter {
     // Создаем текстуру глубины
     let depthTexture: ManagedTexture | undefined
     if (depthAttachment) {
-      depthTexture = this.createTexture(`${name}_depth`, width, height, {
-        format: this.gl.DEPTH_COMPONENT,
-        internalFormat: depthFormat,
-        type: this.gl.UNSIGNED_INT,
-      })
+      depthTexture =
+        this.createTexture(`${name}_depth`, width, height, {
+          format: this.gl.DEPTH_COMPONENT,
+          internalFormat: depthFormat,
+          type: this.gl.UNSIGNED_INT,
+        }) ?? undefined
 
       if (depthTexture) {
         this.gl.framebufferTexture2D(
@@ -368,7 +369,7 @@ export abstract class BaseRenderer extends EventEmitter {
     let program = this.programs.get(name)
 
     if (!program) {
-      program = shaderPool.getProgram(name)
+      program = shaderPool.getProgram(name) ?? undefined
       if (!program) return null
       this.programs.set(name, program)
     }

@@ -6,8 +6,9 @@
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use tokio::sync::{mpsc, RwLock};
+use tokio::sync::{RwLock, mpsc};
 
+use crate::video_compiler::CompilerSettings;
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::error::{
   DetailedResult, OperationMetadata, ResourceUsage, Result, VideoCompilerError,
@@ -16,7 +17,6 @@ use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
 use crate::video_compiler::pipeline::RenderPipeline;
 use crate::video_compiler::progress::ProgressTracker;
 use crate::video_compiler::schema::ProjectSchema;
-use crate::video_compiler::CompilerSettings;
 
 /// Основной рендерер видео
 #[derive(Debug)]
@@ -380,7 +380,7 @@ mod tests {
   use crate::video_compiler::schema::{ExportSettings, OutputFormat, Track, TrackType};
   use std::sync::Arc;
   use tempfile::TempDir;
-  use tokio::sync::{mpsc, RwLock};
+  use tokio::sync::{RwLock, mpsc};
 
   async fn create_test_renderer() -> VideoRenderer {
     let project = ProjectSchema::new("Test Project".to_string());

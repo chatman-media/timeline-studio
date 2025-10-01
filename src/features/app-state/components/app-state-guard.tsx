@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 
+import { AIServicesProvider } from "@/shared/services/ai/react-integration"
 import { AppProvider } from "../services/app-provider"
 
 interface AppStateGuardProps {
@@ -9,5 +10,9 @@ interface AppStateGuardProps {
 }
 
 export function AppStateGuard({ children }: AppStateGuardProps) {
-  return <AppProvider>{children}</AppProvider>
+  return (
+    <AIServicesProvider>
+      <AppProvider>{children}</AppProvider>
+    </AIServicesProvider>
+  )
 }

@@ -4,8 +4,8 @@
 mod ffmpeg_builder_tests {
   use super::super::*;
   use crate::video_compiler::schema::{
-    timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
     ProjectMetadata, ProjectSchema, ProjectSettings, Timeline,
+    timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
   };
   use chrono::Utc;
   use std::collections::HashMap;

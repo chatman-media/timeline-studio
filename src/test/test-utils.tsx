@@ -1,6 +1,6 @@
 import { type RenderOptions, render } from "@testing-library/react"
 import type { ReactElement, ReactNode } from "react"
-
+import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AppProvider } from "@/features/app-state/services/app-provider"
 import { BrowserStateProvider } from "@/features/browser/services/browser-state-provider"
@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/
 import { ModalProvider } from "@/features/modals/services/modal-provider"
 import { ProjectSettingsProvider } from "@/features/project-settings"
 import { ResourcesProvider } from "@/features/resources"
-import { TimelineProvider } from "@/features/timeline/services/timeline-provider"
 import { UserSettingsProvider } from "@/features/user-settings"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"

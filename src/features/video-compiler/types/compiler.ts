@@ -2,8 +2,7 @@
  * Типы для основного компилятора видео
  */
 
-import type { ProjectSchema } from "@/types/video-compiler"
-
+import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import type { RenderSettings } from "./render"
 
 export interface VideoCompilerConfig {

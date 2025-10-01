@@ -98,7 +98,7 @@ vi.mock("@/features/resources/services/resources-provider", () => ({
 }))
 
 // Мокаем TimelineProvider
-vi.mock("@/features/timeline/services/timeline-provider", () => ({
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
   TimelineProvider: ({ children }: any) => children,
 }))
 

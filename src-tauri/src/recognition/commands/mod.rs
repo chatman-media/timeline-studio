@@ -1,6 +1,7 @@
 pub mod clustering_commands;
 pub mod facenet_commands;
 pub mod mediapipe_commands;
+pub mod person_commands;
 pub mod privacy_commands;
 pub mod retinaface_commands;
 pub mod yolo_commands;
@@ -15,6 +16,7 @@ pub use yolo_commands_simple::{
 
 use anyhow::Result;
 use serde_json::Value;
+use std::path::PathBuf;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::recognition::recognition_service::{RecognitionEvent, RecognitionService};
@@ -27,23 +29,36 @@ pub struct RecognitionState {
 
 impl Default for RecognitionState {
   fn default() -> Self {
-    Self::new()
+    // This is a blocking call for Default, which is not ideal
+    // but we'll use a temporary directory as fallback
+    let base_dir = std::env::temp_dir().join("timeline-studio");
+    
+    // Use a simple sync initialization for Default
+    let service = match tauri::async_runtime::block_on(RecognitionService::new(base_dir)) {
+      Ok(s) => s,
+      Err(e) => {
+        log::warn!("Failed to create RecognitionService in Default: {}", e);
+        panic!("Cannot create RecognitionService");
+      }
+    };
+    
+    Self { service }
   }
 }
 
 impl RecognitionState {
-  pub fn new() -> Self {
-    let base_dir = dirs::cache_dir()
-      .unwrap_or_default()
-      .join("timeline-studio");
-
-    let service = RecognitionService::new(base_dir).unwrap_or_else(|_| {
-      // Fallback если не удалось создать сервис
-      log::warn!("Failed to create RecognitionService, using default");
-      // Создаем временный сервис для компиляции
-      RecognitionService::new(std::env::temp_dir().join("timeline-studio"))
-        .expect("Failed to create fallback RecognitionService")
-    });
+  /// Создать новое состояние распознавания
+  pub async fn new(base_dir: PathBuf) -> Self {
+    let service = match RecognitionService::new(base_dir).await {
+      Ok(s) => s,
+      Err(e) => {
+        log::warn!("Failed to create RecognitionService: {}", e);
+        log::warn!("Using fallback temporary directory");
+        RecognitionService::new(std::env::temp_dir().join("timeline-studio"))
+          .await
+          .expect("Failed to create fallback RecognitionService")
+      }
+    };
 
     Self { service }
   }

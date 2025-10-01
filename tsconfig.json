@@ -23,7 +23,15 @@
       "@/*": ["./src/*"],
       "@types/*": ["./src/types/*"],
       "@ui/*": ["./src/components/ui/*"],
-      "@features/*": ["./src/features/*"]
+      "@features/*": ["./src/features/*"],
+      "@domains/*": ["./src/domains/*"],
+      "@domains/ai-services/*": ["./src/domains/ai-services/*"],
+      "@domains/browser/*": ["./src/domains/browser/*"],
+      "@domains/media-management/*": ["./src/domains/media-management/*"],
+      "@domains/video-editing/*": ["./src/domains/video-editing/*"],
+      "@domains/project-management/*": ["./src/domains/project-management/*"],
+      "@domains/system-integration/*": ["./src/domains/system-integration/*"],
+      "@domains/shared/*": ["./src/domains/shared/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-env.d.ts", "dist/types/**/*.ts"],

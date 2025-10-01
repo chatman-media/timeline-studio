@@ -1,6 +1,6 @@
 use aes_gcm::{
-  aead::{Aead, AeadCore, KeyInit, OsRng},
   Aes256Gcm, Key, Nonce,
+  aead::{Aead, AeadCore, KeyInit, OsRng},
 };
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
@@ -15,6 +15,7 @@ pub enum ApiKeyType {
   OpenAI,
   Claude,
   DeepSeek,
+  Grok,
 
   // Социальные сети
   YouTube,
@@ -33,6 +34,7 @@ impl ApiKeyType {
       ApiKeyType::OpenAI => "openai",
       ApiKeyType::Claude => "claude",
       ApiKeyType::DeepSeek => "deepseek",
+      ApiKeyType::Grok => "grok",
       ApiKeyType::YouTube => "youtube",
       ApiKeyType::TikTok => "tiktok",
       ApiKeyType::Vimeo => "vimeo",
@@ -51,6 +53,7 @@ impl FromStr for ApiKeyType {
       "openai" => Ok(ApiKeyType::OpenAI),
       "claude" => Ok(ApiKeyType::Claude),
       "deepseek" => Ok(ApiKeyType::DeepSeek),
+      "grok" => Ok(ApiKeyType::Grok),
       "youtube" => Ok(ApiKeyType::YouTube),
       "tiktok" => Ok(ApiKeyType::TikTok),
       "vimeo" => Ok(ApiKeyType::Vimeo),
@@ -331,6 +334,7 @@ mod tests {
     assert_eq!(ApiKeyType::OpenAI.as_str(), "openai");
     assert_eq!(ApiKeyType::Claude.as_str(), "claude");
     assert_eq!(ApiKeyType::DeepSeek.as_str(), "deepseek");
+    assert_eq!(ApiKeyType::Grok.as_str(), "grok");
     assert_eq!(ApiKeyType::YouTube.as_str(), "youtube");
     assert_eq!(ApiKeyType::TikTok.as_str(), "tiktok");
     assert_eq!(ApiKeyType::Vimeo.as_str(), "vimeo");
@@ -344,6 +348,7 @@ mod tests {
     // Valid conversions
     assert_eq!(ApiKeyType::from_str("openai").unwrap(), ApiKeyType::OpenAI);
     assert_eq!(ApiKeyType::from_str("claude").unwrap(), ApiKeyType::Claude);
+    assert_eq!(ApiKeyType::from_str("grok").unwrap(), ApiKeyType::Grok);
     assert_eq!(
       ApiKeyType::from_str("deepseek").unwrap(),
       ApiKeyType::DeepSeek

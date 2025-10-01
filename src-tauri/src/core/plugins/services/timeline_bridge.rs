@@ -556,18 +556,22 @@ mod tests {
     // Test invalid track type
     let result = bridge.create_track("invalid", "Test Track").await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Invalid track type"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Invalid track type")
+    );
 
     // Test empty track name
     let result = bridge.create_track("video", "").await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Track name cannot be empty"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Track name cannot be empty")
+    );
   }
 
   #[tokio::test]
@@ -673,10 +677,12 @@ mod tests {
     });
     let result = bridge.update_clip(clip_id, invalid_start).await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Start time cannot be negative"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Start time cannot be negative")
+    );
 
     // Test invalid duration (zero)
     let invalid_duration = serde_json::json!({
@@ -684,10 +690,12 @@ mod tests {
     });
     let result = bridge.update_clip(clip_id, invalid_duration).await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Duration must be positive"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Duration must be positive")
+    );
 
     // Test invalid duration (negative)
     let negative_duration = serde_json::json!({
@@ -695,38 +703,46 @@ mod tests {
     });
     let result = bridge.update_clip(clip_id, negative_duration).await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Duration must be positive"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Duration must be positive")
+    );
 
     // Test empty clip ID
     let result = bridge
       .update_clip("", serde_json::json!({"start_time": 5.0}))
       .await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Clip ID cannot be empty"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Clip ID cannot be empty")
+    );
 
     // Test null updates
     let result = bridge.update_clip(clip_id, serde_json::Value::Null).await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Updates must be a valid JSON object"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Updates must be a valid JSON object")
+    );
 
     // Test non-object updates
     let result = bridge
       .update_clip(clip_id, serde_json::json!("not an object"))
       .await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Updates must be a valid JSON object"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Updates must be a valid JSON object")
+    );
   }
 
   #[tokio::test]
@@ -742,10 +758,12 @@ mod tests {
     // Test removing empty clip ID
     let result = bridge.remove_clip("").await;
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .to_string()
-      .contains("Clip ID cannot be empty"));
+    assert!(
+      result
+        .unwrap_err()
+        .to_string()
+        .contains("Clip ID cannot be empty")
+    );
 
     // Test removing with minimal permissions
     let minimal_permissions = Arc::new(SecurityLevel::Minimal.permissions());

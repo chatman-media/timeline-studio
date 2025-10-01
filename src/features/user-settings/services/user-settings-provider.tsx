@@ -1,7 +1,10 @@
-import { useMachine } from "@xstate/react"
-import { createContext } from "react"
+// Используем типы и машину из домена
 
-import { type BrowserTab, type LayoutMode, userSettingsMachine } from "./user-settings-machine"
+import { createContext, useEffect, useState } from "react"
+import { type BrowserTab } from "@/domains/browser/types"
+import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
+import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
+import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
 
 /**
  * Интерфейс значения контекста пользовательских настроек
@@ -85,333 +88,170 @@ export const UserSettingsContext = createContext<UserSettingsContextValue | unde
 /**
  * Провайдер пользовательских настроек
  * Компонент, который предоставляет доступ к пользовательским настройкам через контекст
- * Использует XState машину состояний для управления настройками
+ * Использует ProjectManagementOrchestrator для управления настройками
  *
  * @param {Object} props - Пропсы компонента
  * @param {React.ReactNode} props.children - Дочерние компоненты
  * @returns {JSX.Element} Провайдер контекста с пользовательскими настройками
  */
-export function UserSettingsProvider({ children }: { children: React.ReactNode }) {
-  console.log("UserSettingsProvider rendering")
+export function UserSettingsProvider({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode
+  initialSettings?: Partial<UserSettingsContextType>
+}) {
+  // Получаем оркестратор домена и подписываемся на настройки
+  const [orchestrator] = useState(() => getProjectManagementOrchestrator())
+  const [settings, setSettings] = useState(() => orchestrator.getUserSettings())
 
-  // Функция для сохранения пользовательских настроек
-  // TODO: Интегрировать с новой системой сохранения настроек
-  const saveUserSettings = (partialSettings: any) => {
-    console.log("Saving user settings:", partialSettings)
-    // Временно сохраняем в localStorage
-    try {
-      const currentSettings = localStorage.getItem("userSettings")
-      const settings = currentSettings ? JSON.parse(currentSettings) : {}
-      const updatedSettings = { ...settings, ...partialSettings }
-      localStorage.setItem("userSettings", JSON.stringify(updatedSettings))
-    } catch (error) {
-      console.error("Failed to save user settings:", error)
+  // Применяем начальные настройки при монтировании, если переданы
+  useEffect(() => {
+    if (initialSettings) {
+      orchestrator.updateUserSettings(initialSettings)
     }
-  }
+  }, [orchestrator, initialSettings])
 
-  // Инициализируем машину состояний для управления пользовательскими настройками
-  const [state, send] = useMachine(userSettingsMachine)
+  useEffect(() => {
+    const sub = orchestrator.subscribeToUserSettings((s) => setSettings(s))
+    return () => sub.unsubscribe()
+  }, [orchestrator])
 
-  // Отладочные логи
-  console.log("UserSettingsProvider state:", state?.context)
-  console.log("UserSettingsProvider state status:", state?.status)
-
-  // Хелпер для обновления настроек с сохранением
-  const updateSettingAndSave = (event: any, partialSettings: any) => {
-    // Обновляем локальное состояние
-    send(event)
-    // Сохраняем в persistent storage
-    saveUserSettings(partialSettings)
-  }
-
-  // Создаем значение контекста, которое будет доступно через хук useUserSettings
-  const value = {
-    // Данные настроек из контекста машины состояний
-    activeTab: state?.context?.activeTab || "media",
-    layoutMode: state?.context?.layoutMode || "default",
-    screenshotsPath: state?.context?.screenshotsPath || "",
-    playerScreenshotsPath: state?.context?.playerScreenshotsPath || "",
-    playerVolume: state?.context?.playerVolume || 100,
-    openAiApiKey: state?.context?.openAiApiKey || "",
-    claudeApiKey: state?.context?.claudeApiKey || "",
-    isBrowserVisible: state?.context?.isBrowserVisible ?? true,
-    isTimelineVisible: state?.context?.isTimelineVisible ?? true,
-    isOptionsVisible: state?.context?.isOptionsVisible ?? false,
+  const value: UserSettingsContextValue = {
+    // Значения настроек
+    activeTab: settings?.activeTab ?? "media",
+    layoutMode: settings?.layoutMode ?? ("default" as LayoutMode),
+    screenshotsPath: settings?.screenshotsPath ?? "",
+    playerScreenshotsPath: settings?.playerScreenshotsPath ?? "",
+    playerVolume: settings?.playerVolume ?? 100,
+    openAiApiKey: settings?.openAiApiKey ?? "",
+    claudeApiKey: settings?.claudeApiKey ?? "",
+    isBrowserVisible: settings?.isBrowserVisible ?? true,
+    isTimelineVisible: settings?.isTimelineVisible ?? true,
+    isOptionsVisible: settings?.isOptionsVisible ?? false,
 
     // GPU и производительность
-    gpuAccelerationEnabled: state?.context?.gpuAccelerationEnabled ?? false,
-    preferredGpuEncoder: state?.context?.preferredGpuEncoder || "auto",
-    maxConcurrentJobs: state?.context?.maxConcurrentJobs || 1,
-    renderQuality: state?.context?.renderQuality || "medium",
-    backgroundRenderingEnabled: state?.context?.backgroundRenderingEnabled ?? false,
-    renderDelay: state?.context?.renderDelay || 0,
+    gpuAccelerationEnabled: settings?.gpuAccelerationEnabled ?? false,
+    preferredGpuEncoder: settings?.preferredGpuEncoder ?? "auto",
+    maxConcurrentJobs: settings?.maxConcurrentJobs ?? 1,
+    renderQuality: settings?.renderQuality ?? "medium",
+    backgroundRenderingEnabled: settings?.backgroundRenderingEnabled ?? false,
+    renderDelay: settings?.renderDelay ?? 0,
 
-    // Настройки прокси
-    proxyEnabled: state?.context?.proxyEnabled ?? false,
-    proxyType: state?.context?.proxyType || "http",
-    proxyHost: state?.context?.proxyHost || "",
-    proxyPort: state?.context?.proxyPort || "",
-    proxyUsername: state?.context?.proxyUsername || "",
-    proxyPassword: state?.context?.proxyPassword || "",
+    // Прокси
+    proxyEnabled: settings?.proxyEnabled ?? false,
+    proxyType: settings?.proxyType ?? "http",
+    proxyHost: settings?.proxyHost ?? "",
+    proxyPort: settings?.proxyPort ?? "",
+    proxyUsername: settings?.proxyUsername ?? "",
+    proxyPassword: settings?.proxyPassword ?? "",
 
-    // Настройки автосохранения
-    autoSaveEnabled: state?.context?.autoSaveEnabled ?? true,
-    autoSaveInterval: state?.context?.autoSaveInterval || 300,
+    // Автосохранение
+    autoSaveEnabled: settings?.autoSaveEnabled ?? true,
+    autoSaveInterval: settings?.autoSaveInterval ?? 300,
 
-    /**
-     * Обработчик изменения активной вкладки
-     * @param {string} value - Новое значение активной вкладки
-     */
+    // Методы изменения
     handleTabChange: (value: string) => {
-      console.log("Tab change requested:", value)
-      // Проверяем, что значение является допустимым BrowserTab
       if (["media", "music", "transitions", "effects", "filters", "templates"].includes(value)) {
-        // Обновляем состояние и сохраняем
-        updateSettingAndSave(
-          {
-            type: "UPDATE_ACTIVE_TAB",
-            tab: value as BrowserTab,
-          },
-          { activeTab: value as BrowserTab },
-        )
-        console.log("Active tab updated:", value)
-      } else {
-        console.error("Invalid tab value:", value)
+        orchestrator.updateUserSettings({ activeTab: value as BrowserTab })
       }
     },
 
-    /**
-     * Обработчик изменения макета интерфейса
-     * @param {LayoutMode} value - Новый макет интерфейса
-     */
     handleLayoutChange: (value: LayoutMode) => {
-      console.log("Layout change requested:", value)
-      console.log("Current layoutMode before update:", state?.context?.layoutMode)
-
-      // Проверяем, что значение является допустимым LayoutMode
-      if (["default", "options", "vertical", "chat"].includes(value)) {
-        console.log("Updating layoutMode:", value)
-        // Обновляем состояние и сохраняем
-        updateSettingAndSave(
-          {
-            type: "UPDATE_LAYOUT",
-            layoutMode: value,
-          },
-          { layoutMode: value },
-        )
-      } else {
-        console.error("Invalid layout value:", value)
-      }
+      orchestrator.updateUserSettings({ layoutMode: value })
     },
 
-    /**
-     * Обработчик изменения пути для скриншотов плеера
-     * @param {string} value - Новый путь для скриншотов плеера
-     */
     handlePlayerScreenshotsPathChange: (value: string) => {
-      console.log("Player screenshots path change requested:", value)
-      // Отправляем событие в машину состояний
-      send({
-        type: "UPDATE_PLAYER_SCREENSHOTS_PATH",
-        path: value,
-      })
-      console.log("Player screenshots path updated:", value)
+      orchestrator.updateUserSettings({ playerScreenshotsPath: value })
     },
 
-    /**
-     * Обработчик изменения пути для скриншотов
-     * @param {string} value - Новый путь для скриншотов
-     */
     handleScreenshotsPathChange: (value: string) => {
-      console.log("Screenshots path change requested:", value)
-      // Отправляем событие в машину состояний
-      send({
-        type: "UPDATE_SCREENSHOTS_PATH",
-        path: value,
-      })
-      console.log("Screenshots path updated:", value)
+      orchestrator.updateUserSettings({ screenshotsPath: value })
     },
 
-    /**
-     * Обработчик изменения API ключа OpenAI
-     * @param {string} value - Новый API ключ OpenAI
-     */
     handleAiApiKeyChange: (value: string) => {
-      // Скрываем API ключ в логах для безопасности
-      console.log("AI API key change requested:", value ? "***" : "(empty)")
-      // Отправляем событие в машину состояний
-      send({
-        type: "UPDATE_OPENAI_API_KEY",
-        apiKey: value,
-      })
-      console.log("AI API key updated")
+      orchestrator.updateUserSettings({ openAiApiKey: value })
     },
 
-    /**
-     * Обработчик изменения API ключа Claude
-     * @param {string} value - Новый API ключ Claude
-     */
     handleClaudeApiKeyChange: (value: string) => {
-      // Скрываем API ключ в логах для безопасности
-      console.log("Claude API key change requested:", value ? "***" : "(empty)")
-      // Отправляем событие в машину состояний
-      send({
-        type: "UPDATE_CLAUDE_API_KEY",
-        apiKey: value,
-      })
-      console.log("Claude API key updated")
+      orchestrator.updateUserSettings({ claudeApiKey: value })
     },
 
-    /**
-     * Обработчик изменения громкости плеера
-     * @param {number} value - Новое значение громкости (0-100)
-     */
     handlePlayerVolumeChange: (value: number) => {
-      console.log("Player volume change requested:", value)
-      // Обновляем состояние и сохраняем
-      updateSettingAndSave(
-        {
-          type: "UPDATE_PLAYER_VOLUME",
-          volume: value,
-        },
-        { playerVolume: value },
-      )
-      console.log("Player volume updated")
+      orchestrator.updateUserSettings({ playerVolume: value })
     },
 
-    /**
-     * Обработчик переключения видимости браузера
-     * Инвертирует текущее значение флага видимости
-     */
     toggleBrowserVisibility: () => {
-      console.log("Browser visibility toggle requested")
-      // Отправляем событие в машину состояний
-      send({
-        type: "TOGGLE_BROWSER_VISIBILITY",
-      })
-      console.log("Browser visibility toggled")
+      orchestrator.updateUserSettings({ isBrowserVisible: !settings.isBrowserVisible })
     },
 
     toggleTimelineVisibility: () => {
-      console.log("Timeline visibility toggle requested")
-      // Отправляем событие в машину состояний
-      send({
-        type: "TOGGLE_TIMELINE_VISIBILITY",
-      })
-      console.log("Timeline visibility toggled")
+      orchestrator.updateUserSettings({ isTimelineVisible: !settings.isTimelineVisible })
     },
 
     toggleOptionsVisibility: () => {
-      console.log("Options visibility toggle requested")
-      // Отправляем событие в машину состояний
-      send({
-        type: "TOGGLE_OPTIONS_VISIBILITY",
-      })
-      console.log("Options visibility toggled")
+      orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible })
     },
 
-    // Методы для GPU и производительности
+    // GPU и производительность
     handleGpuAccelerationChange: (value: boolean) => {
-      send({
-        type: "UPDATE_GPU_ACCELERATION",
-        enabled: value,
-      })
+      orchestrator.updateUserSettings({ gpuAccelerationEnabled: value })
     },
 
     handlePreferredGpuEncoderChange: (value: string) => {
-      send({
-        type: "UPDATE_PREFERRED_GPU_ENCODER",
-        encoder: value,
-      })
+      orchestrator.updateUserSettings({ preferredGpuEncoder: value })
     },
 
     handleMaxConcurrentJobsChange: (value: number) => {
-      send({
-        type: "UPDATE_MAX_CONCURRENT_JOBS",
-        jobs: value,
-      })
+      orchestrator.updateUserSettings({ maxConcurrentJobs: value })
     },
 
     handleRenderQualityChange: (value: string) => {
-      send({
-        type: "UPDATE_RENDER_QUALITY",
-        quality: value,
-      })
+      orchestrator.updateUserSettings({ renderQuality: value })
     },
 
     handleBackgroundRenderingChange: (value: boolean) => {
-      send({
-        type: "UPDATE_BACKGROUND_RENDERING",
-        enabled: value,
-      })
+      orchestrator.updateUserSettings({ backgroundRenderingEnabled: value })
     },
 
     handleRenderDelayChange: (value: number) => {
-      send({
-        type: "UPDATE_RENDER_DELAY",
-        delay: value,
-      })
+      orchestrator.updateUserSettings({ renderDelay: value })
     },
 
-    // Методы для прокси
+    // Прокси
     handleProxyEnabledChange: (value: boolean) => {
-      send({
-        type: "UPDATE_PROXY_ENABLED",
-        enabled: value,
-      })
+      orchestrator.updateUserSettings({ proxyEnabled: value })
     },
 
     handleProxyTypeChange: (value: string) => {
-      send({
-        type: "UPDATE_PROXY_TYPE",
-        proxyType: value,
-      })
+      orchestrator.updateUserSettings({ proxyType: value })
     },
 
     handleProxyHostChange: (value: string) => {
-      send({
-        type: "UPDATE_PROXY_HOST",
-        host: value,
-      })
+      orchestrator.updateUserSettings({ proxyHost: value })
     },
 
     handleProxyPortChange: (value: string) => {
-      send({
-        type: "UPDATE_PROXY_PORT",
-        port: value,
-      })
+      orchestrator.updateUserSettings({ proxyPort: value })
     },
 
     handleProxyUsernameChange: (value: string) => {
-      send({
-        type: "UPDATE_PROXY_USERNAME",
-        username: value,
-      })
+      orchestrator.updateUserSettings({ proxyUsername: value })
     },
 
     handleProxyPasswordChange: (value: string) => {
-      send({
-        type: "UPDATE_PROXY_PASSWORD",
-        password: value,
-      })
+      orchestrator.updateUserSettings({ proxyPassword: value })
     },
 
-    // Методы для автосохранения
+    // Автосохранение
     handleAutoSaveEnabledChange: (value: boolean) => {
-      send({
-        type: "UPDATE_AUTO_SAVE_ENABLED",
-        enabled: value,
-      })
+      orchestrator.updateUserSettings({ autoSaveEnabled: value })
     },
 
     handleAutoSaveIntervalChange: (value: number) => {
-      send({
-        type: "UPDATE_AUTO_SAVE_INTERVAL",
-        interval: value,
-      })
+      orchestrator.updateUserSettings({ autoSaveInterval: value })
     },
   }
 
-  // Возвращаем провайдер контекста с созданным значением
   return <UserSettingsContext.Provider value={value}>{children}</UserSettingsContext.Provider>
 }

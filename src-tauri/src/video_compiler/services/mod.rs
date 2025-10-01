@@ -17,7 +17,7 @@ pub mod transition_ffmpeg_service;
 pub use cache_service::{CacheService, CacheServiceImpl};
 pub use ffmpeg_service::{FfmpegService, FfmpegServiceImpl, FileInfo};
 pub use gpu_service::{GpuService, GpuServiceImpl};
-pub use monitoring::{ServiceMetrics, METRICS};
+pub use monitoring::{METRICS, ServiceMetrics};
 pub use preview_service::{PreviewService, PreviewServiceImpl};
 pub use project_service::{ProjectService, ProjectServiceImpl};
 pub use render_service::{RenderService, RenderServiceImpl};
@@ -199,7 +199,9 @@ impl ServiceContainer {
     // В текущей архитектуре сервисы создаются один раз при инициализации
     // и не поддерживают динамическое обновление пути к FFmpeg.
     // Эта функция оставлена для совместимости.
-    log::warn!("update_ffmpeg_path вызван, но динамическое обновление пути к FFmpeg не поддерживается текущей архитектурой");
+    log::warn!(
+      "update_ffmpeg_path вызван, но динамическое обновление пути к FFmpeg не поддерживается текущей архитектурой"
+    );
   }
 }
 

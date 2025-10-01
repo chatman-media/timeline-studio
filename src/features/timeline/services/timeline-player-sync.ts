@@ -4,6 +4,7 @@
  * Синхронизирует выбранный клип в timeline с video player
  */
 
+import { isServiceEnabled } from "../../../shared/config/service-config"
 import type { TimelineClip } from "../types"
 import { interpolateSpeed } from "../utils/speed-ramping-utils"
 
@@ -34,7 +35,11 @@ export class TimelinePlayerSync {
   private playerContext: PlayerContext | null = null
   private currentSelectedClip: TimelineClip | null = null
 
-  private constructor() {}
+  private isTimelinePlayerServiceEnabled: boolean
+
+  private constructor() {
+    this.isTimelinePlayerServiceEnabled = isServiceEnabled("TIMELINE_PLAYER")
+  }
 
   static getInstance(): TimelinePlayerSync {
     if (!TimelinePlayerSync.instance) {
@@ -47,6 +52,9 @@ export class TimelinePlayerSync {
    * Устанавливает контекст плеера для синхронизации
    */
   setPlayerContext(context: PlayerContext) {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
     this.playerContext = context
     console.log("[TimelinePlayerSync] Player context set")
   }
@@ -55,6 +63,10 @@ export class TimelinePlayerSync {
    * Синхронизирует выбранный клип с плеером через backend команды
    */
   async syncSelectedClip(clip: TimelineClip | null) {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
+
     // Если клип не выбран, очищаем выбор
     if (!clip) {
       await this.clearSelection()
@@ -105,6 +117,10 @@ export class TimelinePlayerSync {
    * Применяет ресурсы (эффекты, фильтры, шаблоны) из клипа к плееру через backend команды
    */
   private async applyClipResources(clip: TimelineClip) {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
+
     if (!this.playerContext) return
 
     try {
@@ -141,6 +157,10 @@ export class TimelinePlayerSync {
    * Обновляет время воспроизведения в плеере при изменении времени в timeline
    */
   async syncPlaybackTime(timelineTime: number) {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
+
     if (!this.playerContext || !this.currentSelectedClip) {
       return
     }
@@ -167,6 +187,10 @@ export class TimelinePlayerSync {
    * Вычисляет и применяет speed ramping для текущего времени
    */
   private async updateSpeedRamping(clipRelativeTime: number) {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
+
     if (!this.playerContext || !this.currentSelectedClip) {
       return
     }
@@ -206,6 +230,10 @@ export class TimelinePlayerSync {
    * Очищает текущий выбранный клип через backend команды
    */
   async clearSelection() {
+    if (!this.isTimelinePlayerServiceEnabled) {
+      return
+    }
+
     this.currentSelectedClip = null
 
     if (this.playerContext) {

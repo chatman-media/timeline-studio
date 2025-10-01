@@ -227,7 +227,7 @@ test.describe("Color Grading", () => {
         console.log(`Slider value after reset: ${value}`)
 
         // Проверяем что значение изменилось (должно быть близко к дефолтному)
-        const numValue = Number.parseInt(value)
+        const numValue = Number.parseInt(value, 10)
         const hasReset = numValue !== 75 && numValue >= 0 && numValue <= 100
         expect(hasReset).toBeTruthy()
       }

@@ -7,18 +7,20 @@
   },
   "files": {
     "ignoreUnknown": false,
+    "includes": ["src/**/*.ts", "src/**/*.tsx"],
     "experimentalScannerIgnores": [
       "node_modules/**",
-      "dist/**",
-      "build/**",
-      ".next/**",
-      "out/**",
-      "coverage/**",
+      "dist",
+      "build",
+      ".next",
+      "out",
+      "coverage",
       "*.min.js",
       "*.min.css",
       "public/**",
       "src-tauri/**",
-      ".claude/**",
+      "promo",
+      ".claude",
       "version.json"
     ]
   },
@@ -105,6 +107,7 @@
         "noUnusedLabels": "error",
         "noUnusedVariables": "off",
         "noUnusedImports": "warn",
+        "noUnusedPrivateClassMembers": "off",
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "off",
         "useIsNan": "error",
@@ -224,26 +227,6 @@
           "correctness": {
             "noUnusedVariables": "off",
             "noUnusedFunctionParameters": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["promo/**/*.ts", "promo/**/*.tsx"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUnusedVariables": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["promo/src/types/three.d.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noNamespace": "off"
           }
         }
       }

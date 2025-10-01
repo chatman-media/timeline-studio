@@ -4,8 +4,9 @@ import { describe, expect, it, vi } from "vitest"
 // Import mocks before components
 import "../../../__mocks__/hooks"
 
+import { SubtitleClip } from "@/features/subtitles/types/subtitles"
 import { Clip } from "../../../components/clip/clip"
-import type { SubtitleClip, TimelineClip, TimelineTrack } from "../../../types"
+import type { TimelineClip, TimelineTrack } from "../../../types"
 
 // Мокаем дочерние компоненты
 vi.mock("../../../components/clip/video-clip", () => ({
@@ -57,14 +58,24 @@ describe("Clip", () => {
   const baseClip: TimelineClip = {
     id: "clip-1",
     trackId: "track-1",
-    mediaFileId: "media-1",
     startTime: 5,
     duration: 10,
-    trimStart: 0,
-    trimEnd: 0,
     volume: 1,
     isSelected: false,
     isLocked: false,
+    name: "",
+    mediaId: "",
+    mediaStartTime: 0,
+    mediaEndTime: 0,
+    offset: 0,
+    speed: 0,
+    isReversed: false,
+    opacity: 0,
+    effects: [],
+    filters: [],
+    transitions: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }
 
   const baseTrack: TimelineTrack = {
@@ -73,10 +84,17 @@ describe("Clip", () => {
     type: "video",
     name: "Video Track 1",
     height: 100,
-    isExpanded: true,
     isLocked: false,
     isMuted: false,
     clips: [],
+    order: 0,
+    transitions: [],
+    isHidden: false,
+    isSolo: false,
+    volume: 0,
+    pan: 0,
+    trackEffects: [],
+    trackFilters: [],
   }
 
   beforeEach(() => {

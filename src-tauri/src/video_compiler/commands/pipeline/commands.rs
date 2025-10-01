@@ -2,10 +2,10 @@
 
 use super::business_logic;
 use super::types::*;
+use crate::video_compiler::VideoCompilerState;
 use crate::video_compiler::core::pipeline_refactored::{PipelineBuilder, RenderPipeline};
 use crate::video_compiler::error::Result;
 use crate::video_compiler::schema::ProjectSchema;
-use crate::video_compiler::VideoCompilerState;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::State;

@@ -1,7 +1,7 @@
 //! Тесты для модуля registry.rs
 
-use timeline_studio_lib::security::registry::SecurityCommandRegistry;
 use timeline_studio_lib::CommandRegistry;
+use timeline_studio_lib::security::registry::SecurityCommandRegistry;
 
 #[test]
 fn test_security_command_registry_implementation() {
@@ -49,9 +49,11 @@ fn test_all_command_names_are_valid() {
 
   // Проверяем, что все команды имеют валидные имена (snake_case)
   for cmd in expected_commands {
-    assert!(cmd
-      .chars()
-      .all(|c| c.is_lowercase() || c == '_' || c.is_numeric()));
+    assert!(
+      cmd
+        .chars()
+        .all(|c| c.is_lowercase() || c == '_' || c.is_numeric())
+    );
     assert!(!cmd.is_empty());
     assert!(!cmd.starts_with('_'));
     assert!(!cmd.ends_with('_'));

@@ -738,7 +738,22 @@ export type ProjectCommand =
   | { type: "PlayerClearTemplate" }
   | { type: "SelectClips"; params: { clip_ids: string[]; add_to_selection: boolean } }
   | { type: "SelectTracks"; params: { track_ids: string[]; add_to_selection: boolean } }
-  | { type: "ClearSelection" };
+  | { type: "ClearSelection" }
+  // Browser commands
+  | { type: "BrowserSwitchTab"; params: { tab: BrowserTab } }
+  | { type: "BrowserSetSearchQuery"; params: { query: string; tab: BrowserTab | null } }
+  | { type: "BrowserToggleFavorites"; params: { tab: BrowserTab | null } }
+  | { type: "BrowserSetSort"; params: { sort_by: string; sort_order: SortOrder; tab: BrowserTab | null } }
+  | { type: "BrowserSetGroupBy"; params: { group_by: string; tab: BrowserTab | null } }
+  | { type: "BrowserSetFilter"; params: { filter_type: string; tab: BrowserTab | null } }
+  | { type: "BrowserSetViewMode"; params: { view_mode: ViewMode; tab: BrowserTab | null } }
+  | { type: "BrowserSetPreviewSize"; params: { size_index: number; tab: BrowserTab | null } }
+  | { type: "BrowserResetTabSettings"; params: { tab: BrowserTab } }
+  | { type: "BrowserSelectFile"; params: { file_id: string; tab: BrowserTab | null } }
+  | { type: "BrowserDeselectFile"; params: { file_id: string; tab: BrowserTab | null } }
+  | { type: "BrowserToggleFileSelection"; params: { file_id: string; tab: BrowserTab | null } }
+  | { type: "BrowserSelectAllFiles"; params: { file_ids: string[]; tab: BrowserTab | null } }
+  | { type: "BrowserDeselectAllFiles"; params: { tab: BrowserTab | null } };
 
 export interface CommandResult {
   success: boolean;
@@ -790,7 +805,22 @@ export type ProjectEvent =
   | { type: "TimelineZoomChanged"; payload: { zoom: number } }
   | { type: "TimelineScrollChanged"; payload: { scroll: number } }
   | { type: "ProjectDirtyStateChanged"; payload: { is_dirty: boolean } }
-  | { type: "StateRestored"; payload: { version: number } };
+  | { type: "StateRestored"; payload: { version: number } }
+  // Browser events
+  | { type: "BrowserTabSwitched"; payload: { tab: BrowserTab } }
+  | { type: "BrowserSearchQueryChanged"; payload: { tab: BrowserTab; query: string } }
+  | { type: "BrowserFavoritesToggled"; payload: { tab: BrowserTab; show_favorites_only: boolean } }
+  | { type: "BrowserSortChanged"; payload: { tab: BrowserTab; sort_by: string; sort_order: SortOrder } }
+  | { type: "BrowserGroupByChanged"; payload: { tab: BrowserTab; group_by: string | null } }
+  | { type: "BrowserFilterChanged"; payload: { tab: BrowserTab; filter_type: string | null } }
+  | { type: "BrowserViewModeChanged"; payload: { tab: BrowserTab; view_mode: ViewMode } }
+  | { type: "BrowserPreviewSizeChanged"; payload: { tab: BrowserTab; size_index: number } }
+  | { type: "BrowserTabSettingsReset"; payload: { tab: BrowserTab } }
+  | { type: "BrowserFileSelected"; payload: { tab: BrowserTab; file_id: string } }
+  | { type: "BrowserFileDeselected"; payload: { tab: BrowserTab; file_id: string } }
+  | { type: "BrowserFileSelectionToggled"; payload: { tab: BrowserTab; file_id: string } }
+  | { type: "BrowserAllFilesSelected"; payload: { tab: BrowserTab; file_ids: string[] } }
+  | { type: "BrowserAllFilesDeselected"; payload: { tab: BrowserTab } };
 
 export interface EventMetadata {
   id: string;
@@ -847,6 +877,30 @@ export interface MediaData {
 export interface MediaChanges {
   name?: string;
   thumbnail?: string;
+}
+
+// Browser types
+export type BrowserTab = "media" | "effects" | "transitions" | "audio" | "titles" | "graphics" | "color" | "export";
+
+export type ViewMode = "grid" | "list" | "filmstrip";
+
+export type SortOrder = "name" | "date" | "duration" | "type" | "size";
+
+export interface TabSettings {
+  view_mode: ViewMode;
+  sort_by: string;
+  sort_order: SortOrder;
+  group_by: string | null;
+  filter_type: string | null;
+  search_query: string;
+  show_favorites_only: boolean;
+  preview_size: number;
+  selected_file_ids: string[];
+}
+
+export interface BrowserState {
+  active_tab: BrowserTab;
+  tabs: Record<BrowserTab, TabSettings>;
 }
 "#;
 

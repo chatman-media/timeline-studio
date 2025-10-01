@@ -5,7 +5,6 @@
  */
 
 import { describe, expect, it } from "vitest"
-
 import {
   AlignX,
   AlignY,
@@ -13,6 +12,7 @@ import {
   AnimationEasing,
   AnimationType,
   AspectRatio,
+  CompilerTemplateType,
   FitMode,
   FontWeight,
   OutputFormat,
@@ -25,12 +25,10 @@ import {
   SubtitleDirection,
   SubtitleEasing,
   SubtitleFontWeight,
-  TemplateType,
   TextAlign,
-  TrackType,
-} from "@/types/video-compiler"
+} from "@/domains/video-editing/types"
 
-import type { SubtitleClip, TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"
 
 describe("timelineToProjectSchema", () => {
@@ -46,6 +44,14 @@ describe("timelineToProjectSchema", () => {
       fps: 30,
       resolution: { width: 1920, height: 1080 },
       sampleRate: 48000,
+      aspectRatio: "",
+      channels: 0,
+      bitDepth: 0,
+      timeFormat: "timecode",
+      snapToGrid: false,
+      gridSize: 0,
+      autoSave: false,
+      autoSaveInterval: 0,
     },
     resources: {
       effects: [],
@@ -54,7 +60,14 @@ describe("timelineToProjectSchema", () => {
       templates: [],
       styleTemplates: [],
       subtitleStyles: [],
+      timelineTransitions: [],
+      music: [],
+      media: [],
     },
+    duration: 0,
+    fps: 0,
+    sampleRate: 0,
+    version: "",
     ...overrides,
   })
 
@@ -67,10 +80,17 @@ describe("timelineToProjectSchema", () => {
     isMuted: false,
     isLocked: false,
     volume: 1.0,
+    transitions: [],
+    isHidden: false,
+    isSolo: false,
+    pan: 0,
+    height: 0,
+    trackEffects: [],
+    trackFilters: [],
     ...overrides,
   })
 
-  const createMockClip = (overrides = {}): TimelineClip => ({
+  const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
     id: "clip-1",
     name: "Test Clip",
     startTime: 0,
@@ -82,10 +102,25 @@ describe("timelineToProjectSchema", () => {
       isVideo: true,
       isAudio: false,
       isImage: false,
+      id: "",
     },
     volume: 1.0,
     speed: 1.0,
+    mediaId: "",
+    trackId: "",
+    mediaStartTime: 0,
+    mediaEndTime: 0,
+    offset: 0,
+    isReversed: false,
+    opacity: 0,
+    isSelected: false,
     ...overrides,
+    effects: overrides.effects || [],
+    filters: overrides.filters || [],
+    transitions: overrides.transitions || [],
+    isLocked: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   })
 
   it("преобразует базовый проект без треков", () => {
@@ -171,11 +206,11 @@ describe("timelineToProjectSchema", () => {
 
   it("преобразует различные типы треков", () => {
     const testCases = [
-      { type: "video", expected: TrackType.Video },
-      { type: "audio", expected: TrackType.Audio },
-      { type: "subtitle", expected: TrackType.Subtitle },
-      { type: "text", expected: TrackType.Subtitle },
-      { type: "unknown", expected: TrackType.Video },
+      { type: "video", expected: "Video" },
+      { type: "audio", expected: "Audio" },
+      { type: "subtitle", expected: "Title" },
+      { type: "text", expected: "Title" },
+      { type: "unknown", expected: "Video" },
     ]
 
     testCases.forEach(({ type, expected }) => {
@@ -210,11 +245,11 @@ describe("timelineToProjectSchema", () => {
       mediaEndTime: 15,
       speed: 2.0,
       volume: 0.8,
-      effects: [{ effectId: "effect-1" }],
-      filters: [{ filterId: "filter-1" }],
+      effects: [{ id: "effect-1", effectId: "effect-1", enabled: true, order: 0 }],
+      filters: [{ id: "filter-1", filterId: "filter-1", isEnabled: true, order: 0 }],
       templateId: "template-1",
       templateCell: 2,
-      styleTemplate: { styleTemplateId: "style-1" },
+      styleTemplate: { id: "style-1", styleTemplateId: "style-1", isEnabled: true },
     })
 
     const track = createMockTrack({ clips: [clip] })
@@ -238,11 +273,11 @@ describe("timelineToProjectSchema", () => {
 
   it("использует значения по умолчанию для клипов", () => {
     const clip = createMockClip({
-      mediaFile: null,
-      mediaStartTime: null,
-      mediaEndTime: null,
-      speed: null,
-      volume: null,
+      mediaFile: undefined,
+      mediaStartTime: undefined,
+      mediaEndTime: undefined,
+      speed: undefined,
+      volume: undefined,
     })
 
     const track = createMockTrack({ clips: [clip] })
@@ -283,9 +318,8 @@ describe("timelineToProjectSchema", () => {
 
     const brightnessEffect = result.effects[0]
     expect(brightnessEffect.id).toBe("effect-1")
-    expect(brightnessEffect.effect_type).toBe("Brightness")
+    expect(brightnessEffect.effect).toBe("Brightness")
     expect(brightnessEffect.name).toBe("Brightness Effect")
-    expect(brightnessEffect.enabled).toBe(true)
     expect(brightnessEffect.parameters).toEqual({ value: 0.5 })
     expect(brightnessEffect.ffmpeg_command).toBe("some command")
 
@@ -343,7 +377,7 @@ describe("timelineToProjectSchema", () => {
     const template = result.templates[0]
 
     expect(template.id).toBe("template-1")
-    expect(template.template_type).toBe(TemplateType.Vertical)
+    expect(template.template_type).toBe(CompilerTemplateType.Vertical)
     expect(template.screens).toBe(2)
     expect(template.cells).toHaveLength(2)
 
@@ -386,7 +420,7 @@ describe("timelineToProjectSchema", () => {
     const result = timelineToProjectSchema(project)
     const template = result.templates[0]
 
-    expect(template.template_type).toBe(TemplateType.Horizontal)
+    expect(template.template_type).toBe(CompilerTemplateType.Horizontal)
     expect(template.cells).toHaveLength(3)
 
     template.cells.forEach((cell, index) => {
@@ -414,7 +448,7 @@ describe("timelineToProjectSchema", () => {
     const result = timelineToProjectSchema(project)
     const template = result.templates[0]
 
-    expect(template.template_type).toBe(TemplateType.Grid)
+    expect(template.template_type).toBe(CompilerTemplateType.Grid)
     expect(template.cells).toHaveLength(4)
 
     // 2x2 сетка
@@ -493,7 +527,7 @@ describe("timelineToProjectSchema", () => {
   })
 
   it("собирает субтитры из треков субтитров", () => {
-    const subtitleClip: SubtitleClip = {
+    const subtitleClip: any = {
       id: "subtitle-1",
       trackId: "track-1",
       type: "subtitle",
@@ -558,9 +592,9 @@ describe("timelineToProjectSchema", () => {
     expect(subtitle.style.font_weight).toBe(SubtitleFontWeight.Bold)
 
     expect(subtitle.animations).toHaveLength(2)
-    expect(subtitle.animations[0].animation_type).toBe(SubtitleAnimationType.FadeIn)
-    expect(subtitle.animations[0].easing).toBe(SubtitleEasing.EaseIn)
-    expect(subtitle.animations[1].animation_type).toBe(SubtitleAnimationType.SlideOut)
+    expect(subtitle.animations?.[0]?.animation_type).toBe(SubtitleAnimationType.FadeIn)
+    expect(subtitle.animations?.[0]?.easing).toBe(SubtitleEasing.EaseIn)
+    expect(subtitle.animations?.[1]?.animation_type).toBe(SubtitleAnimationType.SlideOut)
     expect(subtitle.animations[1].direction).toBe(SubtitleDirection.Left)
   })
 
@@ -602,7 +636,7 @@ describe("timelineToProjectSchema", () => {
     ]
 
     positions.forEach(({ alignment, expected }) => {
-      const subtitleClip: SubtitleClip = {
+      const subtitleClip: any = {
         id: "subtitle-1",
         trackId: "track-1",
         type: "subtitle",

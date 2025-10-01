@@ -1,3 +1,5 @@
+use super::browser::BrowserState;
+use super::chat::ChatSession;
 use super::commands::PlayerSource;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -14,6 +16,10 @@ pub struct ProjectState {
   pub version: u32,
   /// NEW: Version control information
   pub version_info: VersionInfo,
+  /// Chat sessions
+  pub chat_sessions: Vec<ChatSession>,
+  /// Browser state
+  pub browser_state: BrowserState,
 }
 
 /// Main project structure

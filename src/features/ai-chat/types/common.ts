@@ -3,7 +3,7 @@
  * Стандартизированные типы результатов и интерфейсы
  */
 
-import type { AIProvider } from "../services/model-configuration-manager"
+import { AIProvider } from "@/features/ai-content-intelligence"
 
 // Базовый результат выполнения операции
 export interface BaseResult<T = any> {

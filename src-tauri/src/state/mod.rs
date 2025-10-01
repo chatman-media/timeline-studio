@@ -1,3 +1,5 @@
+pub mod browser;
+pub mod chat;
 pub mod commands;
 pub mod commands_api;
 pub mod events;
@@ -21,7 +23,7 @@ pub use project_state::ProjectState;
 
 use std::sync::Arc;
 use tokio::sync::{Mutex, RwLock};
-use tokio::time::{interval, Duration};
+use tokio::time::{Duration, interval};
 
 /// Main state manager that coordinates all state operations
 pub struct StateManager {

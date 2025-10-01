@@ -3,11 +3,9 @@
  * Bridges the montage planner with DI Container and shared AI services
  */
 
-import { VideoAnalysisParams } from "@/features/ai-chat/services/multimodal-analysis-service"
+import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core"
+import { VideoAnalysisParams } from "@/domains/ai-services"
 import type { MediaFile } from "@/features/media/types/media"
-import { getAIContainer } from "@/shared/services/ai"
-import type { MediaAnalysisFactory } from "@/shared/services/ai/analysis/interfaces"
-import type { IUnifiedAIService } from "@/shared/services/ai/providers/interfaces"
 import type {
   AudioAnalysis,
   Fragment,

@@ -234,14 +234,14 @@ describe("RollEditHandle", () => {
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
-      expect(handle).toHaveClass("absolute", "top-0", "bottom-0", "w-4", "-translate-x-1/2")
-      expect(handle).toHaveClass("flex", "items-center", "justify-center", "cursor-ew-resize", "z-20")
-      expect(handle).toHaveClass("transition-all", "duration-150")
+      expect(handle).toHaveClass("absolute top-0 bottom-0 w-4 -translate-x-1/2")
+      expect(handle).toHaveClass("flex items-center justify-center cursor-ew-resize z-20")
+      expect(handle).toHaveClass("transition-all duration-150")
 
       const background = handle.querySelector(".bg-purple-500\\/20")
       expect(background).toBeInTheDocument()
-      expect(background).toHaveClass("absolute", "inset-0", "rounded")
-      expect(background).toHaveClass("border-x-2", "border-purple-500")
+      expect(background).toHaveClass("absolute inset-0 rounded")
+      expect(background).toHaveClass("border-x-2 border-purple-500")
       expect(background).not.toHaveClass("bg-purple-500/40")
     })
 
@@ -262,20 +262,20 @@ describe("RollEditHandle", () => {
       // Проверяем левый индикатор
       const leftIndicator = container.querySelector(".right-full")
       expect(leftIndicator).toBeInTheDocument()
-      expect(leftIndicator).toHaveClass("absolute", "top-1/2", "-translate-y-1/2", "mr-1")
+      expect(leftIndicator).toHaveClass("absolute top-1/2 -translate-y-1/2 mr-1")
 
       const leftLine = leftIndicator?.querySelector(".bg-purple-500\\/50")
       expect(leftLine).toBeInTheDocument()
-      expect(leftLine).toHaveClass("w-8", "h-0.5")
+      expect(leftLine).toHaveClass("w-8 h-0.5")
 
       // Проверяем правый индикатор
       const rightIndicator = container.querySelector(".left-full")
       expect(rightIndicator).toBeInTheDocument()
-      expect(rightIndicator).toHaveClass("absolute", "top-1/2", "-translate-y-1/2", "ml-1")
+      expect(rightIndicator).toHaveClass("absolute top-1/2 -translate-y-1/2 ml-1")
 
       const rightLine = rightIndicator?.querySelector(".bg-purple-500\\/50")
       expect(rightLine).toBeInTheDocument()
-      expect(rightLine).toHaveClass("w-8", "h-0.5")
+      expect(rightLine).toHaveClass("w-8 h-0.5")
     })
 
     it("не должен отображать индикаторы когда не активен", () => {
@@ -295,10 +295,10 @@ describe("RollEditHandle", () => {
 
       const icon = container.querySelector("svg")
       expect(icon).toBeInTheDocument()
-      expect(icon).toHaveClass("w-4", "h-4", "text-purple-500")
+      expect(icon).toHaveClass("w-4 h-4 text-purple-500")
 
       const iconWrapper = icon?.parentElement
-      expect(iconWrapper).toHaveClass("relative", "z-10")
+      expect(iconWrapper).toHaveClass("relative z-10")
     })
   })
 
@@ -315,14 +315,14 @@ describe("RollEditHandle", () => {
 
       const description = within(tooltipContent).getByText("Drag to adjust edit point")
       expect(description).toBeInTheDocument()
-      expect(description).toHaveClass("text-xs", "opacity-80")
+      expect(description).toHaveClass("text-xs opacity-80")
     })
 
     it("должен иметь правильные стили для tooltip", () => {
       render(<RollEditHandle {...defaultProps} />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
-      expect(tooltipContent).toHaveClass("bg-gray-900", "text-white")
+      expect(tooltipContent).toHaveClass("bg-gray-900 text-white")
     })
   })
 

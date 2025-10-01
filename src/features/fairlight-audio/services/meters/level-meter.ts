@@ -37,7 +37,6 @@ export class LevelMeter extends EventEmitter {
   private config: LevelConfig
   private meterConfig: MeterConfig
   private processor: AudioWorkletNode | null = null
-  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: для восстановления контекста
   private context?: AudioContext
 
   // Буферы для каждого канала

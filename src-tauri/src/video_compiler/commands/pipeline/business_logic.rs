@@ -1,8 +1,8 @@
 //! Бизнес-логика для работы с конвейером рендеринга
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
 use crate::video_compiler::VideoCompilerState;
+use crate::video_compiler::error::{Result, VideoCompilerError};
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
@@ -486,8 +486,8 @@ pub async fn generate_noise_clip_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
   // Используем оригинальный метод PreprocessingStage::generate_noise_clip
-  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
   use crate::video_compiler::core::stages::PipelineContext;
+  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
   use crate::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 
@@ -528,8 +528,8 @@ pub async fn generate_gradient_clip_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
   // Используем оригинальный метод PreprocessingStage::generate_gradient_clip
-  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
   use crate::video_compiler::core::stages::PipelineContext;
+  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
   use crate::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 

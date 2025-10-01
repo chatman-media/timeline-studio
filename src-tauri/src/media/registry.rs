@@ -4,6 +4,7 @@ use crate::command_registry::CommandRegistry;
 use tauri::{Builder, Runtime};
 
 /// Media module command registry
+#[allow(dead_code)]
 pub struct MediaCommandRegistry;
 
 impl CommandRegistry for MediaCommandRegistry {

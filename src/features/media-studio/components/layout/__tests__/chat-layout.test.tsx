@@ -114,17 +114,6 @@ const mockTimelineContext = {
   isSaving: false,
 }
 
-vi.mock("@/features/timeline/services/timeline-provider", () => ({
-  TimelineContext: {
-    Provider: ({ children }: any) => children,
-    Consumer: ({ children }: any) => children(mockTimelineContext),
-  },
-  TimelineProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="timeline-provider">{children}</div>
-  ),
-  useTimeline: () => mockTimelineContext,
-}))
-
 // Мокаем ResizablePanel компоненты
 vi.mock("@/components/ui/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (
@@ -143,6 +132,19 @@ vi.mock("@/components/ui/resizable", () => ({
       {children}
     </div>
   ),
+}))
+
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  useTimeline: () => ({
+    currentTime: 0,
+    duration: 0,
+    isPlaying: false,
+    zoom: 1,
+    setCurrentTime: vi.fn(),
+    setDuration: vi.fn(),
+    setIsPlaying: vi.fn(),
+    setZoom: vi.fn(),
+  }),
 }))
 
 describe("ChatLayout", () => {

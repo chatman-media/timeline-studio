@@ -153,7 +153,7 @@ pub async fn track_operations(
     _ => {
       return Err(VideoCompilerError::InvalidParameter(format!(
         "Unknown operation: {operation}"
-      )))
+      )));
     }
   }
 

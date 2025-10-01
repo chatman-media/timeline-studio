@@ -11,6 +11,7 @@ import { AppCommands } from "@/features/app-state/services/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
+import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 interface PlayerContextType {
@@ -112,6 +113,7 @@ interface PlayerProviderProps {
 export function PlayerProvider({ children }: PlayerProviderProps) {
   const userSettings = useUserSettings()
   const [backendSync] = useState(() => getBackendSync())
+  const isVideoPlayerServiceEnabled = isServiceEnabled("VIDEO_PLAYER")
 
   // Backend состояние (синхронизированное)
   const [backendState, setBackendState] = useState<ProjectState | null>(null)
@@ -148,45 +150,66 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   // Подписка на backend состояние
   useEffect(() => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
+
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setBackendState(state)
     })
 
     return unsubscribe
-  }, [backendSync])
+  }, [backendSync, isVideoPlayerServiceEnabled])
 
   // Backend команды
   const executeCommand = async (command: any) => {
     try {
       const result = await backendSync.executeCommand(command)
-      if (!result.success) {
-        throw new Error(result.error || "Command failed")
+
+      console.log("Player command result:", result)
+      if (!result?.success) {
+        throw new Error(result?.error || "Command failed")
       }
       return result.data
     } catch (error) {
       console.error("Player command failed:", error)
-      throw error
+      // throw error
     }
   }
 
   const play = async () => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
     await executeCommand({ type: "Play", params: {} })
   }
 
   const pause = async () => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
     await executeCommand({ type: "Pause", params: {} })
   }
 
   const seek = async (time: number) => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
     await executeCommand({ type: "Seek", params: { time } })
   }
 
   const setPlaybackRateBackend = async (rate: number) => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
     await executeCommand({ type: "SetPlaybackRate", params: { rate } })
   }
 
   // Player-specific backend команды
   const playerSetMedia = async (mediaId: string, startTime?: number) => {
+    if (!isVideoPlayerServiceEnabled) {
+      return
+    }
     await executeCommand(AppCommands.playerSetMedia(mediaId, startTime))
   }
 

@@ -7,7 +7,7 @@
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::fs;
 use std::path::{Path, PathBuf};
-use tempfile::{tempdir, TempDir};
+use tempfile::{TempDir, tempdir};
 
 /// Создает временную директорию для тестов
 pub fn create_test_dir() -> Result<TempDir> {

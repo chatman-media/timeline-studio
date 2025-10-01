@@ -1,6 +1,5 @@
+import type { ChatListItem, ChatMessage, ChatSession, ChatStorageService } from "@/domains/ai-services/types/chat"
 import { appDirectoriesService } from "@/features/app-state/services"
-
-import type { ChatListItem, ChatMessage, ChatSession, ChatStorageService } from "../types/chat"
 
 // Declare Tauri global for this file
 declare global {
@@ -238,7 +237,7 @@ export class LocalChatStorageService implements ChatStorageService {
       throw new Error(`Session ${sessionId} not found`)
     }
 
-    const messageIndex = session.messages.findIndex((m) => m.id === messageId)
+    const messageIndex = session.messages.findIndex((m: ChatMessage) => m.id === messageId)
     if (messageIndex === -1) {
       throw new Error(`Message ${messageId} not found`)
     }
@@ -260,7 +259,7 @@ export class LocalChatStorageService implements ChatStorageService {
       throw new Error(`Session ${sessionId} not found`)
     }
 
-    session.messages = session.messages.filter((m) => m.id !== messageId)
+    session.messages = session.messages.filter((m: ChatMessage) => m.id !== messageId)
     await this.updateSession(sessionId, { messages: session.messages })
   }
 
@@ -350,6 +349,8 @@ export class LocalChatStorageService implements ChatStorageService {
       lastMessage: lastMessage ? `${lastMessage.content.substring(0, 100)}...` : undefined,
       lastMessageAt: session.updatedAt,
       messageCount: session.messages.length,
+      createdAt: new Date(),
+      agent: "gpt-5",
     }
   }
 

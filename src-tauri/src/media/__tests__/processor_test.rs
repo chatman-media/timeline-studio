@@ -305,9 +305,11 @@ mod tests {
     let temp_dir = TempDir::new().unwrap();
     let thumbnail_path = temp_dir.path().join(format!("thumb_{file_id}.jpg"));
 
-    assert!(thumbnail_path
-      .to_string_lossy()
-      .contains("thumb_abc123.jpg"));
+    assert!(
+      thumbnail_path
+        .to_string_lossy()
+        .contains("thumb_abc123.jpg")
+    );
   }
 
   #[test]

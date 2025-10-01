@@ -3,8 +3,8 @@ import { useState } from "react"
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { AiChat } from "@/features/ai-chat/components/ai-chat"
+import { useUserSettings } from "@/features/app-state/hooks/use-user-settings"
 import { ResourcesPanel } from "@/features/resources"
-import { useUserSettings } from "@/features/user-settings/hooks/use-user-settings"
 import { cn } from "@/lib/utils"
 
 import { AISuggestionsPanel } from "./ai-suggestions/ai-suggestions-panel"
@@ -26,10 +26,10 @@ interface TimelineProps {
  */
 export function Timeline({ className, style }: TimelineProps = {}) {
   const [activeView, setActiveView] = useState<WorkspaceView>("timeline")
-  const { settings } = useUserSettings()
+  const { userSettings } = useUserSettings()
 
   // Выбираем компонент Timeline в зависимости от настроек виртуализации
-  const TimelineComponent = settings?.timelineVirtualizationEnabled ? VirtualizedTimelineContent : TimelineContent
+  const TimelineComponent = userSettings?.timelineVirtualizationEnabled ? VirtualizedTimelineContent : TimelineContent
 
   return (
     <ResizablePanelGroup

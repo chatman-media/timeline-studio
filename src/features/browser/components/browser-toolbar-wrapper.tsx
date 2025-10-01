@@ -1,9 +1,8 @@
 import { memo } from "react"
-
+import { BrowserTab } from "@/domains/browser"
 import { MediaToolbar } from "@/features/browser/components/media-toolbar"
 import { getToolbarConfigForContent } from "@/features/browser/components/media-toolbar-configs"
 import { PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
-import type { BrowserTab } from "@/shared/types/browser"
 
 interface BrowserToolbarWrapperProps {
   activeTab: BrowserTab

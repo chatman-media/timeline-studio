@@ -1,12 +1,12 @@
 import { useCallback, useRef, useState } from "react"
-import { TranscriptionService } from "../services/transcription-service"
+import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
 import type {
   ModelInfo,
   SubtitleFormat,
   TranscriptionOptions,
   TranscriptionProgress,
   TranscriptionResult,
-} from "../types"
+} from "@/domains/ai-services/types/transcription"
 
 export function useTranscription() {
   const [isTranscribing, setIsTranscribing] = useState(false)
@@ -21,7 +21,7 @@ export function useTranscription() {
 
   // Инициализация сервиса
   if (!serviceRef.current) {
-    serviceRef.current = new TranscriptionService()
+    serviceRef.current = TranscriptionService.getInstance()
   }
 
   /**

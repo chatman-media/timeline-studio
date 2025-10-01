@@ -7,10 +7,10 @@ import { useCallback, useMemo } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import { formatTime } from "@/lib/date"
-
 import { useMontagePlanner as useMontagePlannerContext } from "../services/montage-planner-provider"
 import type { AnalysisOptions, ExportFormat, Fragment, PlanGenerationOptions } from "../types"
 import { MONTAGE_STYLES } from "../types"
+import { convertFragmentForAIServices, convertToAIServicesMediaFile } from "../utils/media-file-converter"
 
 export function useMontagePlanner() {
   const {
@@ -44,7 +44,7 @@ export function useMontagePlanner() {
   // Video management
   const addVideo = useCallback(
     (videoId: string, file: MediaFile) => {
-      send({ type: "ADD_VIDEO", videoId, file })
+      send({ type: "ADD_VIDEO", videoId, file: convertToAIServicesMediaFile(file) })
     },
     [send],
   )
@@ -112,7 +112,7 @@ export function useMontagePlanner() {
   // Fragment editing
   const editFragment = useCallback(
     (fragmentId: string, updates: Partial<Fragment>) => {
-      send({ type: "EDIT_FRAGMENT", fragmentId, updates })
+      send({ type: "EDIT_FRAGMENT", fragmentId, updates: convertFragmentForAIServices(updates) })
     },
     [send],
   )

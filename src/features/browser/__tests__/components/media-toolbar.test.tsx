@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { ViewMode } from "@/shared/types"
+import { ViewMode } from "@/domains/browser"
 import { MediaToolbar, type MediaToolbarProps } from "../../components/media-toolbar"
 
 // Mock react-i18next

@@ -12,9 +12,6 @@ import "@/test/mocks/libraries"
 import "@/test/mocks/libraries/lucide-react"
 import "@/test/mocks/libraries/react-hotkeys-hook"
 
-// Initialize AI services for tests
-import { AIDIContainer } from "@/shared/services/ai/di-container"
-
 // Mock scrollIntoView globally for all tests (needed for Radix UI components)
 beforeAll(async () => {
   Element.prototype.scrollIntoView = vi.fn()
@@ -28,13 +25,13 @@ beforeAll(async () => {
   }
 
   // Initialize AI services with test configuration
-  try {
-    const container = AIDIContainer.getInstance()
-    await container.initialize()
-  } catch (error) {
-    // AI services initialization might fail in test environment - that's ok
-    console.warn("AI services initialization skipped in test environment:", error)
-  }
+  // try {
+  //   const container = AIDIContainer.getInstance()
+  //   await container.initialize()
+  // } catch (error) {
+  //   // AI services initialization might fail in test environment - that's ok
+  //   console.warn("AI services initialization skipped in test environment:", error)
+  // }
 })
 
 // Mock common providers that are used in tests
@@ -188,6 +185,101 @@ vi.mock("@/features/app-state", async (importOriginal) => {
   }
 })
 
+// Mock new project management domain hooks
+vi.mock("@/domains/project-management", () => ({
+  useProject: () => ({
+    projectState: {
+      project: {
+        metadata: {
+          name: "Test Project",
+          file_path: "/test/project.tlsp",
+        },
+        timeline: { tracks: [], duration: 0 },
+      },
+      hasUnsavedChanges: false,
+    },
+    isLoading: false,
+    hasUnsavedChanges: false,
+    createProject: vi.fn(),
+    saveProject: vi.fn(),
+    saveProjectAs: vi.fn(),
+    openProject: vi.fn(),
+    closeProject: vi.fn(),
+  }),
+  useUserSettings: () => ({
+    settings: {
+      layoutMode: "default",
+      activeTab: "media",
+      openAiApiKey: "test-openai-key",
+      claudeApiKey: "test-claude-key",
+      playerVolume: 0.8,
+      screenshotsPath: "/test/screenshots",
+      playerScreenshotsPath: "/test/player-screenshots",
+      gpuAccelerationEnabled: true,
+      autoSaveEnabled: true,
+      autoSaveInterval: 5,
+      isBrowserVisible: true,
+      isTimelineVisible: true,
+      isOptionsVisible: true,
+    },
+    isLoading: false,
+    updateSettings: vi.fn(),
+    updateLayoutMode: vi.fn(),
+    updateActiveTab: vi.fn(),
+    updateApiKey: vi.fn(),
+    updateGpuAcceleration: vi.fn(),
+    updateAutoSave: vi.fn(),
+  }),
+  useAppState: () => ({
+    isConnected: true,
+    connectionError: null,
+    isLoading: false,
+    retryConnection: vi.fn(),
+  }),
+  useProjectManagement: () => ({
+    projectState: {
+      project: {
+        metadata: {
+          name: "Test Project",
+          file_path: "/test/project.tlsp",
+        },
+        timeline: { tracks: [], duration: 0 },
+      },
+    },
+    userSettings: {
+      layoutMode: "default",
+      activeTab: "media",
+      openAiApiKey: "test-openai-key",
+      claudeApiKey: "test-claude-key",
+      playerVolume: 0.8,
+      autoSaveEnabled: true,
+      autoSaveInterval: 5,
+    },
+    isConnected: true,
+    connectionError: null,
+    createProject: vi.fn(),
+    openProject: vi.fn(),
+    saveProject: vi.fn(),
+    saveProjectAs: vi.fn(),
+    closeProject: vi.fn(),
+    updateUserSettings: vi.fn(),
+    hasProject: true,
+    projectName: "Test Project",
+    projectPath: "/test/project.tlsp",
+    isAutoSaveEnabled: true,
+    layoutMode: "default",
+    activeTab: "media",
+  }),
+  ProjectManagementProvider: ({ children }: { children: React.ReactNode }) => children,
+  useProjectManagementContext: () => ({
+    projectState: null,
+    userSettings: {},
+    isConnected: true,
+    connectionError: null,
+    isLoading: false,
+  }),
+}))
+
 vi.mock("@/features/app-state/services", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/features/app-state/services")>()
   return {
@@ -213,7 +305,7 @@ vi.mock("@/features/ai-chat/services/unified-ai-service", () => ({
 
 // PersonDatabaseService is not mocked globally to allow testing the real implementation
 
-vi.mock("@/features/ai-content-intelligence/engines/scene-analysis/scene-analysis-engine", () => ({
+vi.mock("@/domains/ai-services/services/scene-analysis/scene-analysis-engine", () => ({
   SceneAnalysisEngine: vi.fn(() => ({
     analyzeScene: vi.fn().mockResolvedValue({
       objects: [],
@@ -305,15 +397,15 @@ afterEach(async () => {
   vi.unstubAllEnvs()
 
   // Очистка AI сервисов
-  try {
-    const container = AIDIContainer.getInstanceSafe()
-    if (container) {
-      await container.dispose()
-      AIDIContainer.resetInstance()
-    }
-  } catch (error) {
-    // Ignore cleanup errors
-  }
+  // try {
+  //   const container = AIDIContainer.getInstanceSafe()
+  //   if (container) {
+  //     await container.dispose()
+  //     AIDIContainer.resetInstance()
+  //   }
+  // } catch (error) {
+  //   // Ignore cleanup errors
+  // }
 
   // Дополнительная очистка памяти
   if (globalThis.gc) {
@@ -330,5 +422,14 @@ declare module "vitest" {
     toBeInTheDocument(): T
     toHaveClass(className: string): T
     toHaveStyle(style: Record<string, any>): T
+    toHaveAttribute(attr: string, value?: string): T
+    toBeDisabled(): T
+    toBeEnabled(): T
+    toHaveValue(value: string | number): T
+    toBeChecked(): T
+    toHaveTextContent(text: string): T
+    toBeVisible(): T
+    toBeEmptyDOMElement(): T
+    toHaveFocus(): T
   }
 }

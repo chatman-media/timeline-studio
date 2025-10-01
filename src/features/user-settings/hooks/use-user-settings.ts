@@ -1,23 +1,115 @@
-import { useContext } from "react"
-
-import { UserSettingsContext, type UserSettingsContextValue } from "../services/user-settings-provider"
+import { type BrowserTab } from "@/domains/browser/types"
+import { useUserSettings as useDomainUserSettings } from "@/domains/project-management"
+import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
+import { type UserSettingsContextValue } from "../services/user-settings-provider"
 
 /**
- * Хук для доступа к пользовательским настройкам
- * Предоставляет доступ к текущим настройкам и методам для их изменения
- *
- * @returns {UserSettingsContextValue} Объект с настройками и методами для их изменения
- * @throws {Error} Если хук используется вне компонента UserSettingsProvider
+ * Адаптер-хук: сохраняем публичный API features/use-user-settings,
+ * но под капотом используем доменную реализацию через Orchestrator.
+ * Провайдер контекста больше не обязателен.
  */
 export function useUserSettings(): UserSettingsContextValue {
-  // Получаем значение контекста
-  const context = useContext(UserSettingsContext)
+  const d = useDomainUserSettings()
 
-  // Проверяем, что хук используется внутри провайдера
-  if (!context) {
-    throw new Error("useUserSettings must be used within a UserSettingsProvider")
+  // Совместимый API обработчиков (handle*) из legacy-версии
+  const handleTabChange = (value: string) => {
+    // Совместимость с прежней валидацией вкладок
+    const allowed = ["media", "music", "transitions", "effects", "filters", "templates"] as const
+    if (allowed.includes(value as (typeof allowed)[number])) {
+      d.updateActiveTab(value as BrowserTab)
+    }
   }
 
-  // Возвращаем значение контекста
-  return context
+  const handleLayoutChange = (value: LayoutMode) => d.updateLayoutMode(value)
+  const handleScreenshotsPathChange = (value: string) => d.updateScreenshotsPath(value)
+  const handlePlayerScreenshotsPathChange = (value: string) => d.updatePlayerScreenshotsPath(value)
+  const handlePlayerVolumeChange = (value: number) => d.updatePlayerVolume(value)
+  const handleAiApiKeyChange = (value: string) => d.updateOpenAiApiKey(value)
+  const handleClaudeApiKeyChange = (value: string) => d.updateClaudeApiKey(value)
+
+  // GPU/Perf
+  const handleGpuAccelerationChange = (value: boolean) => d.updateGpuAcceleration(value)
+  const handlePreferredGpuEncoderChange = (value: string) => d.updateSettings({ preferredGpuEncoder: value })
+  const handleMaxConcurrentJobsChange = (value: number) => d.updateSettings({ maxConcurrentJobs: value })
+  const handleRenderQualityChange = (value: string) => d.updateSettings({ renderQuality: value })
+  const handleBackgroundRenderingChange = (value: boolean) => d.updateSettings({ backgroundRenderingEnabled: value })
+  const handleRenderDelayChange = (value: number) => d.updateSettings({ renderDelay: value })
+
+  // Proxy
+  const handleProxyEnabledChange = (value: boolean) => d.updateSettings({ proxyEnabled: value })
+  const handleProxyTypeChange = (value: string) => d.updateSettings({ proxyType: value })
+  const handleProxyHostChange = (value: string) => d.updateSettings({ proxyHost: value })
+  const handleProxyPortChange = (value: string) => d.updateSettings({ proxyPort: value })
+  const handleProxyUsernameChange = (value: string) => d.updateSettings({ proxyUsername: value })
+  const handleProxyPasswordChange = (value: string) => d.updateSettings({ proxyPassword: value })
+
+  // Auto-save
+  const handleAutoSaveEnabledChange = (value: boolean) => d.updateAutoSave(value)
+  const handleAutoSaveIntervalChange = (value: number) => d.updateAutoSaveInterval(value)
+
+  return {
+    // Данные настроек (сквозняк из доменного стора)
+    activeTab: d.activeTab,
+    layoutMode: d.layoutMode,
+    playerScreenshotsPath: d.playerScreenshotsPath,
+    screenshotsPath: d.screenshotsPath,
+    playerVolume: d.playerVolume,
+    openAiApiKey: d.openAiApiKey,
+    claudeApiKey: d.claudeApiKey,
+    isBrowserVisible: d.isBrowserVisible,
+    isTimelineVisible: d.isTimelineVisible,
+    isOptionsVisible: d.isOptionsVisible,
+
+    // GPU/Perf
+    gpuAccelerationEnabled: d.gpuAccelerationEnabled,
+    preferredGpuEncoder: d.preferredGpuEncoder,
+    maxConcurrentJobs: d.maxConcurrentJobs,
+    renderQuality: d.renderQuality,
+    backgroundRenderingEnabled: d.backgroundRenderingEnabled,
+    renderDelay: d.renderDelay,
+
+    // Proxy
+    proxyEnabled: d.proxyEnabled,
+    proxyType: d.proxyType,
+    proxyHost: d.proxyHost,
+    proxyPort: d.proxyPort,
+    proxyUsername: d.proxyUsername,
+    proxyPassword: d.proxyPassword,
+
+    // Auto-save
+    autoSaveEnabled: d.autoSaveEnabled,
+    autoSaveInterval: d.autoSaveInterval,
+
+    // Методы изменения (совместимый API)
+    handleTabChange,
+    handleLayoutChange,
+    handleScreenshotsPathChange,
+    handlePlayerScreenshotsPathChange,
+    handlePlayerVolumeChange,
+    handleAiApiKeyChange,
+    handleClaudeApiKeyChange,
+    toggleBrowserVisibility: d.toggleBrowserVisibility,
+    toggleTimelineVisibility: d.toggleTimelineVisibility,
+    toggleOptionsVisibility: d.toggleOptionsVisibility,
+
+    // GPU/Perf
+    handleGpuAccelerationChange,
+    handlePreferredGpuEncoderChange,
+    handleMaxConcurrentJobsChange,
+    handleRenderQualityChange,
+    handleBackgroundRenderingChange,
+    handleRenderDelayChange,
+
+    // Proxy
+    handleProxyEnabledChange,
+    handleProxyTypeChange,
+    handleProxyHostChange,
+    handleProxyPortChange,
+    handleProxyUsernameChange,
+    handleProxyPasswordChange,
+
+    // Auto-save
+    handleAutoSaveEnabledChange,
+    handleAutoSaveIntervalChange,
+  }
 }

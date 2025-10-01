@@ -87,17 +87,6 @@ const mockTimelineContext = {
   isSaving: false,
 }
 
-vi.mock("@/features/timeline/services/timeline-provider", () => ({
-  TimelineContext: {
-    Provider: ({ children }: any) => children,
-    Consumer: ({ children }: any) => children(mockTimelineContext),
-  },
-  TimelineProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="timeline-provider">{children}</div>
-  ),
-  useTimeline: () => mockTimelineContext,
-}))
-
 vi.mock("@/features/video-compiler/hooks/use-prerender", () => ({
   usePrerender: () => ({
     isRendering: false,
@@ -142,6 +131,10 @@ vi.mock("@/components/ui/resizable", () => ({
       {children}
     </div>
   ),
+}))
+
+vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+  Timeline: () => <div data-testid="timeline">Timeline</div>,
 }))
 
 describe("OptionsLayout", () => {

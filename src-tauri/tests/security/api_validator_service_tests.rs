@@ -2,8 +2,8 @@
 
 use std::sync::Arc;
 use timeline_studio_lib::core::{AppEvent, EventBus, Service};
-use timeline_studio_lib::security::api_validator_service::ApiValidatorService;
 use timeline_studio_lib::security::ApiKeyType;
+use timeline_studio_lib::security::api_validator_service::ApiValidatorService;
 
 #[tokio::test]
 async fn test_service_new() {

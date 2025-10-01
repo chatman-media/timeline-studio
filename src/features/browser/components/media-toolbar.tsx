@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import type { ViewMode } from "@/domains/browser"
 import { cn } from "@/lib/utils"
-import type { ViewMode } from "@/shared/types/browser-context"
 
 // Конфигурация режимов просмотра
 export interface ViewModeConfig {
