@@ -32,7 +32,7 @@ export function Navigation() {
 
   useEffect(() => {
     let ticking = false
-    
+
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -53,7 +53,7 @@ export function Navigation() {
               }
             }
           }
-          
+
           ticking = false
         })
         ticking = true
@@ -74,8 +74,12 @@ export function Navigation() {
   }
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-[padding] duration-300 ease-out ${isScrolled ? "py-0" : "py-3"}`}>
-      <div className={`transition-[padding] duration-300 ease-out ${isScrolled ? "px-2 md:px-2 pt-3" : "px-2 md:px-2 lg:px-2"}`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-[padding] duration-300 ease-out ${isScrolled ? "py-0" : "py-3"}`}
+    >
+      <div
+        className={`transition-[padding] duration-300 ease-out ${isScrolled ? "px-2 md:px-2 pt-3" : "px-2 md:px-2 lg:px-2"}`}
+      >
         <div
           className={`flex items-center justify-between outline-none border border-transparent px-3 md:px-5 py-3 transition-[background-color,border-radius,box-shadow] duration-300 ease-out ${
             isScrolled ? "nav-glass-scrolled rounded-2xl" : ""
@@ -207,9 +211,7 @@ export function Navigation() {
               {/* Background with purple base */}
               <div className="absolute inset-0 bg-[#8b5cf6] rounded-lg" />
               {/* Text */}
-              <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-300">
-                Download
-              </span>
+              <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-300">Download</span>
             </a>
 
             {/* Mobile menu button */}

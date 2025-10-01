@@ -28,9 +28,7 @@
       "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data:; media-src 'self' asset: http://asset.localhost blob: mediastream:; connect-src 'self' ipc: http://ipc.localhost http://localhost:* ws://localhost:* wss://localhost:*",
       "assetProtocol": {
         "enable": true,
-        "scope": [
-          "**/*"
-        ]
+        "scope": ["**/*"]
       }
     }
   },
@@ -41,9 +39,7 @@
     "shell": {},
     "updater": {
       "active": true,
-      "endpoints": [
-        "https://releases.timeline-studio.app/{{target}}/{{arch}}/{{current_version}}"
-      ],
+      "endpoints": ["https://releases.timeline-studio.app/{{target}}/{{arch}}/{{current_version}}"],
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMyNTExRUY3NzgzMkUyODkKUldTN3NTbkhBREF5aG1lZlY4bWx5eGMvUHZJQTlyRGZITmRLZWZWWG1vUUJCeFAzTDNIQlZRCg==",
       "windows": {
@@ -53,9 +49,7 @@
     "window": {
       "label": {
         "main": {
-          "permissions": [
-            "all"
-          ]
+          "permissions": ["all"]
         }
       }
     }
@@ -63,13 +57,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
     "publisher": "Chatman Media",
     "copyright": "© 2025 Chatman Media",
     "category": "Video",

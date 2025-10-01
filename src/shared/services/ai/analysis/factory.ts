@@ -14,30 +14,26 @@ import type {
 import { VisionAdapter } from "./vision"
 
 export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
-  private ffmpegService: IFFmpegAnalysisService | null = null
-  private visionService: IVisionService | null = null
+  private ffmpegService: IFFmpegAnalysisService
+  private visionService: IVisionService
   private contentService: IContentAnalysisService | null = null
 
+  constructor(ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) {
+    this.ffmpegService = ffmpegService
+    this.visionService = visionService
+  }
+
   createFFmpegService(): IFFmpegAnalysisService {
-    if (!this.ffmpegService) {
-      this.ffmpegService = new FFmpegAdapter()
-    }
     return this.ffmpegService
   }
 
   createVisionService(): IVisionService {
-    if (!this.visionService) {
-      this.visionService = new VisionAdapter()
-    }
     return this.visionService
   }
 
   createContentAnalysisService(): IContentAnalysisService {
     if (!this.contentService) {
-      // Создаем с зависимостями из фабрики
-      const ffmpegService = this.createFFmpegService()
-      const visionService = this.createVisionService()
-      this.contentService = new ContentAnalysisService(ffmpegService, visionService)
+      this.contentService = new ContentAnalysisService(this.ffmpegService, this.visionService)
     }
     return this.contentService
   }
@@ -168,9 +164,19 @@ export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
 // Singleton instance
 let factoryInstance: MediaAnalysisFactoryImpl | null = null
 
-export function createMediaAnalysisFactory(): MediaAnalysisFactory {
+export function createMediaAnalysisFactory(
+  ffmpegService?: IFFmpegAnalysisService,
+  visionService?: IVisionService,
+): MediaAnalysisFactory {
   if (!factoryInstance) {
-    factoryInstance = new MediaAnalysisFactoryImpl()
+    if (ffmpegService && visionService) {
+      factoryInstance = new MediaAnalysisFactoryImpl(ffmpegService, visionService)
+    } else {
+      // Fallback для обратной совместимости
+      const ffmpegService = new FFmpegAdapter()
+      const visionService = new VisionAdapter()
+      factoryInstance = new MediaAnalysisFactoryImpl(ffmpegService, visionService)
+    }
   }
   return factoryInstance
 }

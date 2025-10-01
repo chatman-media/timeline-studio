@@ -230,8 +230,37 @@ export class AIDIContainer {
     // AI Provider Factory
     this.registerSingleton("AIProviderFactory", () => createAIProviderFactory())
 
-    // Media Analysis Factory
-    this.registerSingleton("MediaAnalysisFactory", () => createMediaAnalysisFactory())
+    // FFmpeg Service
+    this.registerSingleton("FFmpegService", async () => {
+      const { FFmpegAdapter } = await import("./analysis/ffmpeg")
+      return new FFmpegAdapter()
+    }, [])
+
+    // Vision Service
+    this.registerSingleton("VisionService", async () => {
+      const { VisionAdapter } = await import("./analysis/vision")
+      return new VisionAdapter()
+    }, [])
+
+    // Content Analysis Service
+    this.registerSingleton(
+      "ContentAnalysisService",
+      async (ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) => {
+        const { ContentAnalysisService } = await import("./analysis/content")
+        return new ContentAnalysisService(ffmpegService, visionService)
+      },
+      ["FFmpegService", "VisionService"],
+    )
+
+    // Media Analysis Factory - обновленный подход
+    this.registerSingleton(
+      "MediaAnalysisFactory",
+      async (ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) => {
+        const { MediaAnalysisFactoryImpl } = await import("./analysis/factory")
+        return new MediaAnalysisFactoryImpl(ffmpegService, visionService)
+      },
+      ["FFmpegService", "VisionService"],
+    )
 
     // Model Manager
     this.registerSingleton(
@@ -256,36 +285,6 @@ export class AIDIContainer {
       "ContentAnalyzer",
       (sceneEngine: any, unifiedService: IUnifiedAIService) => this.createContentAnalyzer(sceneEngine, unifiedService),
       ["SceneAnalysisEngine", "UnifiedAIService"],
-    )
-
-    // FFmpeg Service
-    this.registerSingleton(
-      "FFmpegService",
-      async (analysisFactory: MediaAnalysisFactory) => {
-        const factory = await analysisFactory
-        return factory.createFFmpegService()
-      },
-      ["MediaAnalysisFactory"],
-    )
-
-    // Vision Service
-    this.registerSingleton(
-      "VisionService",
-      async (analysisFactory: MediaAnalysisFactory) => {
-        const factory = await analysisFactory
-        return factory.createVisionService()
-      },
-      ["MediaAnalysisFactory"],
-    )
-
-    // Content Analysis Service
-    this.registerSingleton(
-      "ContentAnalysisService",
-      async (ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) => {
-        const { ContentAnalysisService } = await import("./analysis/content")
-        return new ContentAnalysisService(ffmpegService, visionService)
-      },
-      ["FFmpegService", "VisionService"],
     )
   }
 
