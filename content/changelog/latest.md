@@ -1,4 +1,143 @@
-# [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-09-23)
+## [1.3.10](https://github.com/chatman-media/timeline-studio/compare/v1.3.9...v1.3.10) (2025-09-07)
+
+
+### Bug Fixes
+
+* wrap env::set_var and env::remove_var calls in unsafe blocks ([61da046](https://github.com/chatman-media/timeline-studio/commit/61da04687859d30d80361f631260dee80917ac83))
+
+## [1.3.9](https://github.com/chatman-media/timeline-studio/compare/v1.3.8...v1.3.9) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** up google ads ([843307d](https://github.com/chatman-media/timeline-studio/commit/843307db056f694cd3693598f9f0b85c4fc0750a))
+
+## [1.3.8](https://github.com/chatman-media/timeline-studio/compare/v1.3.7...v1.3.8) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added Google tag ([e4068e6](https://github.com/chatman-media/timeline-studio/commit/e4068e69e9f33b568e55d59a8a9593989d7babc9))
+
+## [1.3.7](https://github.com/chatman-media/timeline-studio/compare/v1.3.6...v1.3.7) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** fix ([f539050](https://github.com/chatman-media/timeline-studio/commit/f539050c839b1e0773b623c90b5f2af9014d7420))
+* **promo:** rm css ([ad40da9](https://github.com/chatman-media/timeline-studio/commit/ad40da9640f70fe31a758721d961394a43d1b438))
+
+## [1.3.6](https://github.com/chatman-media/timeline-studio/compare/v1.3.5...v1.3.6) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** back main srcipt ([1c19cb1](https://github.com/chatman-media/timeline-studio/commit/1c19cb160d0d8fd6d9149583a49c2bd558630644))
+
+## [1.3.5](https://github.com/chatman-media/timeline-studio/compare/v1.3.4...v1.3.5) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** Теперь в index.html подключаются только production-бандлы с type="module" и defer. Скрипт src/main.tsx для разработки удалён. ([e8c153a](https://github.com/chatman-media/timeline-studio/commit/e8c153a8392507d30b0b23cd246ed5bcb09b88d6))
+
+## [1.3.4](https://github.com/chatman-media/timeline-studio/compare/v1.3.3...v1.3.4) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added preload and seo fixes ([ddc8ceb](https://github.com/chatman-media/timeline-studio/commit/ddc8cebdb4f364fae4ff067c65c70f44620be793))
+
+## [1.3.3](https://github.com/chatman-media/timeline-studio/compare/v1.3.2...v1.3.3) (2025-08-12)
+
+
+### Bug Fixes
+
+* **promo:** added aria-label to button ([bd8a491](https://github.com/chatman-media/timeline-studio/commit/bd8a491d3b3914db3a163ee4e0627fb7ed236c95))
+
+## [1.3.2](https://github.com/chatman-media/timeline-studio/compare/v1.3.1...v1.3.2) (2025-08-11)
+
+
+### Bug Fixes
+
+* **promo:** fixed self ([ce98e3c](https://github.com/chatman-media/timeline-studio/commit/ce98e3c3a2e5bc9a448fbb7d0792802f1a32bda9))
+
+## [1.3.1](https://github.com/chatman-media/timeline-studio/compare/v1.3.0...v1.3.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* **core:** rm old files ([ff15924](https://github.com/chatman-media/timeline-studio/commit/ff1592484cb9f7a6a2c714bacb9e9dbc75d315a3))
+
+# [1.3.0](https://github.com/chatman-media/timeline-studio/compare/v1.2.0...v1.3.0) (2025-08-10)
+
+
+### Features
+
+* интеграция AI chat с backend через Rust state management ([688d5bb](https://github.com/chatman-media/timeline-studio/commit/688d5bb57a7d108aba32c42be0814f3f0330b312))
+
+# [1.2.0](https://github.com/chatman-media/timeline-studio/compare/v1.1.1...v1.2.0) (2025-08-10)
+
+
+### Features
+
+* интеграция AI chat с бэкендом через UnifiedAIService ([b0822a5](https://github.com/chatman-media/timeline-studio/commit/b0822a5051bcad25cc63e14af9885ae21be521a9))
+
+## [1.1.1](https://github.com/chatman-media/timeline-studio/compare/v1.1.0...v1.1.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* **core:** rm files ([a903c67](https://github.com/chatman-media/timeline-studio/commit/a903c67ec2271a6201efa440f9bf17e7ddaa547f))
+* исправлены ошибки импортов и типов в content-intelligence-tools.ts ([3a9bfd3](https://github.com/chatman-media/timeline-studio/commit/3a9bfd378b798ea5f9148d8cda4f4cda445ac22a))
+* исправлены ошибки типов в content-intelligence-tools.ts ([7a08911](https://github.com/chatman-media/timeline-studio/commit/7a0891106ace620374cd9c7157084dc9335e960d))
+
+# [1.1.0](https://github.com/chatman-media/timeline-studio/compare/v1.0.1...v1.1.0) (2025-08-08)
+
+
+### Features
+
+* миграция AI сервисов в доменную архитектуру с поддержкой Grok ([ceac10a](https://github.com/chatman-media/timeline-studio/commit/ceac10a8549530790d9cb60eef13780a012fe5fb))
+
+## [1.0.1](https://github.com/chatman-media/timeline-studio/compare/v1.0.0...v1.0.1) (2025-08-08)
+
+
+### Bug Fixes
+
+* исправлены все ошибки типов в доменных хуках ([4ac3f1c](https://github.com/chatman-media/timeline-studio/commit/4ac3f1c9219301fad1d59eccf74d36d898ac41e2))
+* исправлены параметры команды MoveClip ([e656abb](https://github.com/chatman-media/timeline-studio/commit/e656abb0223e898a0c8f5b59e6031527be16e1c3))
+* исправлены типы в timeline machines ([985eee6](https://github.com/chatman-media/timeline-studio/commit/985eee664c155f93671b807f321c5a772affdfe8))
+
+# [1.0.0](https://github.com/chatman-media/timeline-studio/compare/v0.81.0...v1.0.0) (2025-08-08)
+
+
+### Features
+
+* миграция timeline компонентов в доменную архитектуру ([61c67c1](https://github.com/chatman-media/timeline-studio/commit/61c67c1517dcab28e5063554a9c958fe4161cfbc))
+
+
+### BREAKING CHANGES
+
+* Компоненты timeline теперь используют доменную архитектуру
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+# [0.81.0](https://github.com/chatman-media/timeline-studio/compare/v0.80.0...v0.81.0) (2025-08-08)
+
+
+### Bug Fixes
+
+* исправлены ошибки типов в DomainEventBus и связанных модулях ([2866b6c](https://github.com/chatman-media/timeline-studio/commit/2866b6cd772ed8e713ec4b0a1f6b92b7c1f0ef67))
+
+
+### Features
+
+* интеграция провайдеров timeline в доменную архитектуру ([4c33ec5](https://github.com/chatman-media/timeline-studio/commit/4c33ec5f78151d77a5d0088c8b2d1b6b52f7c85c))
+* реализован DomainEventBus для межсервисной коммуникации ([2611872](https://github.com/chatman-media/timeline-studio/commit/26118722caf609a4716ab1dd97be767cc92dc240))
+
+# [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-08-08)
 
 
 ### Bug Fixes
@@ -19,7 +158,11 @@
 
 ### Features
 
+* завершена Domain-Driven Architecture миграция (Phase 6) ([9f134fd](https://github.com/chatman-media/timeline-studio/commit/9f134fdfed413d724011725ae807cf729dea905c))
+* завершена миграция Domain-Driven Architecture (Phase 5) ([a68be77](https://github.com/chatman-media/timeline-studio/commit/a68be77fb6a3c68eee873b878e931b61115e7975))
+* миграция на Domain-Driven Architecture - Phase 1-3 завершены ([c66a62d](https://github.com/chatman-media/timeline-studio/commit/c66a62de02b7ecd9b1c34c3f5fbb87dc18e6a45e))
 * added investment valuation ([99bd7a9](https://github.com/chatman-media/timeline-studio/commit/99bd7a9cd063956f1676ab89f14a3cf8c30f9378))
+
 * **blog:** add v0.79.0 blog post about documentation update and investment proposal ([24c6397](https://github.com/chatman-media/timeline-studio/commit/24c63972127e0d79894db2712f4f6ba0f8396a4f))
 * Complete Chinese translations for marketing documentation ([a370f02](https://github.com/chatman-media/timeline-studio/commit/a370f0234f2d1fad5fcad3d18feeeab80b380901))
 * **docs:** update investment valuation documents - RU version:  valuation with 10% first round - EN/ZH versions: maintain -70M valuation ([880fe2a](https://github.com/chatman-media/timeline-studio/commit/880fe2a2ed92b047c7b93c771aa072650a34530a))
