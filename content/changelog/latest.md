@@ -1,3 +1,117 @@
+# [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-09-23)
+
+
+### Bug Fixes
+
+* **ai:** await ensureInitialized in UnifiedAIService public methods ([125ba42](https://github.com/chatman-media/timeline-studio/commit/125ba42417011a5b5e786df2d7b0650384609022))
+* **browser:** prevent SSR localStorage access during initialization ([342ee8d](https://github.com/chatman-media/timeline-studio/commit/342ee8d8a393241d008abfea2e0c9157e57f9ce4))
+* linted ([7e33648](https://github.com/chatman-media/timeline-studio/commit/7e33648f60f3dadfac00396125053da6635d6988))
+* **promo:** replace hardcoded Quick Links translations with i18n function ([33befde](https://github.com/chatman-media/timeline-studio/commit/33befdea6be3dbf8e1096686a0040a1da883c721))
+* **promo:** добавить копирование файлов блога в dist при сборке ([338aba6](https://github.com/chatman-media/timeline-studio/commit/338aba6ea22ac23fc4827ced14de35e639809121))
+* **promo:** удалить промо элементы из SearchDemo ([2e9b62d](https://github.com/chatman-media/timeline-studio/commit/2e9b62dc3366bb0262f7388b63c856c052cbe741))
+* up docs ([785e7c5](https://github.com/chatman-media/timeline-studio/commit/785e7c5a0c3ca9db86905fa3b4b62586d7447260))
+* up docs ([d0e26b4](https://github.com/chatman-media/timeline-studio/commit/d0e26b4fc191ff7a2f924f50842bb087d99d33f0))
+* up translation ([05232a0](https://github.com/chatman-media/timeline-studio/commit/05232a0a030dbee585565252381599cd7b2d4a0e))
+* update routes.d.ts path and reorder navigation items ([8a3c449](https://github.com/chatman-media/timeline-studio/commit/8a3c44967b2188cbbb3c0a371999d0f93c0bda27))
+* добавить русскую версию поста version-079-documentation-investment в блог ([c10a503](https://github.com/chatman-media/timeline-studio/commit/c10a5032f491b77349ad69de376ebdf9a47ce449))
+* исправлен упавший тест FFmpegAnalysisService ([f8da681](https://github.com/chatman-media/timeline-studio/commit/f8da681221bf5925b7fba0ae3fda302dad1cdca1))
+
+
+### Features
+
+* added investment valuation ([99bd7a9](https://github.com/chatman-media/timeline-studio/commit/99bd7a9cd063956f1676ab89f14a3cf8c30f9378))
+* **blog:** add v0.79.0 blog post about documentation update and investment proposal ([24c6397](https://github.com/chatman-media/timeline-studio/commit/24c63972127e0d79894db2712f4f6ba0f8396a4f))
+* Complete Chinese translations for marketing documentation ([a370f02](https://github.com/chatman-media/timeline-studio/commit/a370f0234f2d1fad5fcad3d18feeeab80b380901))
+* **docs:** update investment valuation documents - RU version:  valuation with 10% first round - EN/ZH versions: maintain -70M valuation ([880fe2a](https://github.com/chatman-media/timeline-studio/commit/880fe2a2ed92b047c7b93c771aa072650a34530a))
+* **i18n:** add chinese language support and update dependencies ([52b5fce](https://github.com/chatman-media/timeline-studio/commit/52b5fcee12f0858ce42e60951c8ec8ece7de068e))
+* **navigation:** improve scrolling performance and visual styling ([554ad28](https://github.com/chatman-media/timeline-studio/commit/554ad283330bcb00ac0bb3947cc48cf44ede4e83))
+* **promo:** add translations for Neural Scene Analysis and Deep Learning ([2d0e12f](https://github.com/chatman-media/timeline-studio/commit/2d0e12f0779287f8d84cff27b05f9256d1f84be7))
+* **security:** add has_api_key command to check key existence ([c122cdd](https://github.com/chatman-media/timeline-studio/commit/c122cdd4ee0bbc46f243ada80c520e9320338178))
+* Translate business plan from Russian to English ([ea9dbdd](https://github.com/chatman-media/timeline-studio/commit/ea9dbdddc208707787ffa534a3a86cc03900c8c5))
+* Update project configuration and tests ([6b386b3](https://github.com/chatman-media/timeline-studio/commit/6b386b38b72f235254ea777e1e070ccc761082b6))
+* добавлена страница 'О проекте' с манифестом на промо сайте ([b9c5cf5](https://github.com/chatman-media/timeline-studio/commit/b9c5cf5e67197537af8bdb1cf628eae0e276bfb8))
+* добавлены возможности Person Identification для именования людей ([300238b](https://github.com/chatman-media/timeline-studio/commit/300238bf6bbc84807137a6944d4e55e37dd22388))
+* добавлены примеры создания цепляющих роликов с AI анализом эмоций ([ece0d2a](https://github.com/chatman-media/timeline-studio/commit/ece0d2a59110aef4a9c6bcedcd15c08c3b9d0bc9))
+* обновлен манифест проекта до актуального состояния ([3935f56](https://github.com/chatman-media/timeline-studio/commit/3935f567e8425fca8ccdc9e2c9a01251074fac9d))
+* обновлены требования для захвата 5 новых рынков (1.2 млрд) ([ae47161](https://github.com/chatman-media/timeline-studio/commit/ae47161004174b59638efc854e8197b8287395cf))
+* расширен рынок мобильных платформ до 5.7 млрд (iOS/Android/Telegram) ([f218fed](https://github.com/chatman-media/timeline-studio/commit/f218fede46254c20799f793336ac146a97f99e49))
+* создан полный английский манифест проекта Timeline Studio ([9210f99](https://github.com/chatman-media/timeline-studio/commit/9210f99272426504bf7f7c346654694904591ce3))
+
+# [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-09-13)
+
+
+### Bug Fixes
+
+* **browser:** prevent SSR localStorage access during initialization ([342ee8d](https://github.com/chatman-media/timeline-studio/commit/342ee8d8a393241d008abfea2e0c9157e57f9ce4))
+* linted ([7e33648](https://github.com/chatman-media/timeline-studio/commit/7e33648f60f3dadfac00396125053da6635d6988))
+* **promo:** replace hardcoded Quick Links translations with i18n function ([33befde](https://github.com/chatman-media/timeline-studio/commit/33befdea6be3dbf8e1096686a0040a1da883c721))
+* **promo:** добавить копирование файлов блога в dist при сборке ([338aba6](https://github.com/chatman-media/timeline-studio/commit/338aba6ea22ac23fc4827ced14de35e639809121))
+* **promo:** удалить промо элементы из SearchDemo ([2e9b62d](https://github.com/chatman-media/timeline-studio/commit/2e9b62dc3366bb0262f7388b63c856c052cbe741))
+* up docs ([785e7c5](https://github.com/chatman-media/timeline-studio/commit/785e7c5a0c3ca9db86905fa3b4b62586d7447260))
+* up docs ([d0e26b4](https://github.com/chatman-media/timeline-studio/commit/d0e26b4fc191ff7a2f924f50842bb087d99d33f0))
+* up translation ([05232a0](https://github.com/chatman-media/timeline-studio/commit/05232a0a030dbee585565252381599cd7b2d4a0e))
+* update routes.d.ts path and reorder navigation items ([8a3c449](https://github.com/chatman-media/timeline-studio/commit/8a3c44967b2188cbbb3c0a371999d0f93c0bda27))
+* добавить русскую версию поста version-079-documentation-investment в блог ([c10a503](https://github.com/chatman-media/timeline-studio/commit/c10a5032f491b77349ad69de376ebdf9a47ce449))
+* исправлен упавший тест FFmpegAnalysisService ([f8da681](https://github.com/chatman-media/timeline-studio/commit/f8da681221bf5925b7fba0ae3fda302dad1cdca1))
+
+
+### Features
+
+* added investment valuation ([99bd7a9](https://github.com/chatman-media/timeline-studio/commit/99bd7a9cd063956f1676ab89f14a3cf8c30f9378))
+* **blog:** add v0.79.0 blog post about documentation update and investment proposal ([24c6397](https://github.com/chatman-media/timeline-studio/commit/24c63972127e0d79894db2712f4f6ba0f8396a4f))
+* Complete Chinese translations for marketing documentation ([a370f02](https://github.com/chatman-media/timeline-studio/commit/a370f0234f2d1fad5fcad3d18feeeab80b380901))
+* **docs:** update investment valuation documents - RU version:  valuation with 10% first round - EN/ZH versions: maintain -70M valuation ([880fe2a](https://github.com/chatman-media/timeline-studio/commit/880fe2a2ed92b047c7b93c771aa072650a34530a))
+* **i18n:** add chinese language support and update dependencies ([52b5fce](https://github.com/chatman-media/timeline-studio/commit/52b5fcee12f0858ce42e60951c8ec8ece7de068e))
+* **navigation:** improve scrolling performance and visual styling ([554ad28](https://github.com/chatman-media/timeline-studio/commit/554ad283330bcb00ac0bb3947cc48cf44ede4e83))
+* **promo:** add translations for Neural Scene Analysis and Deep Learning ([2d0e12f](https://github.com/chatman-media/timeline-studio/commit/2d0e12f0779287f8d84cff27b05f9256d1f84be7))
+* **security:** add has_api_key command to check key existence ([c122cdd](https://github.com/chatman-media/timeline-studio/commit/c122cdd4ee0bbc46f243ada80c520e9320338178))
+* Translate business plan from Russian to English ([ea9dbdd](https://github.com/chatman-media/timeline-studio/commit/ea9dbdddc208707787ffa534a3a86cc03900c8c5))
+* Update project configuration and tests ([6b386b3](https://github.com/chatman-media/timeline-studio/commit/6b386b38b72f235254ea777e1e070ccc761082b6))
+* добавлена страница 'О проекте' с манифестом на промо сайте ([b9c5cf5](https://github.com/chatman-media/timeline-studio/commit/b9c5cf5e67197537af8bdb1cf628eae0e276bfb8))
+* добавлены возможности Person Identification для именования людей ([300238b](https://github.com/chatman-media/timeline-studio/commit/300238bf6bbc84807137a6944d4e55e37dd22388))
+* добавлены примеры создания цепляющих роликов с AI анализом эмоций ([ece0d2a](https://github.com/chatman-media/timeline-studio/commit/ece0d2a59110aef4a9c6bcedcd15c08c3b9d0bc9))
+* обновлен манифест проекта до актуального состояния ([3935f56](https://github.com/chatman-media/timeline-studio/commit/3935f567e8425fca8ccdc9e2c9a01251074fac9d))
+* обновлены требования для захвата 5 новых рынков (1.2 млрд) ([ae47161](https://github.com/chatman-media/timeline-studio/commit/ae47161004174b59638efc854e8197b8287395cf))
+* расширен рынок мобильных платформ до 5.7 млрд (iOS/Android/Telegram) ([f218fed](https://github.com/chatman-media/timeline-studio/commit/f218fede46254c20799f793336ac146a97f99e49))
+* создан полный английский манифест проекта Timeline Studio ([9210f99](https://github.com/chatman-media/timeline-studio/commit/9210f99272426504bf7f7c346654694904591ce3))
+
+# [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-09-12)
+
+
+### Bug Fixes
+
+* linted ([7e33648](https://github.com/chatman-media/timeline-studio/commit/7e33648f60f3dadfac00396125053da6635d6988))
+* **promo:** replace hardcoded Quick Links translations with i18n function ([33befde](https://github.com/chatman-media/timeline-studio/commit/33befdea6be3dbf8e1096686a0040a1da883c721))
+* **promo:** добавить копирование файлов блога в dist при сборке ([338aba6](https://github.com/chatman-media/timeline-studio/commit/338aba6ea22ac23fc4827ced14de35e639809121))
+* **promo:** удалить промо элементы из SearchDemo ([2e9b62d](https://github.com/chatman-media/timeline-studio/commit/2e9b62dc3366bb0262f7388b63c856c052cbe741))
+* up docs ([785e7c5](https://github.com/chatman-media/timeline-studio/commit/785e7c5a0c3ca9db86905fa3b4b62586d7447260))
+* up docs ([d0e26b4](https://github.com/chatman-media/timeline-studio/commit/d0e26b4fc191ff7a2f924f50842bb087d99d33f0))
+* up translation ([05232a0](https://github.com/chatman-media/timeline-studio/commit/05232a0a030dbee585565252381599cd7b2d4a0e))
+* update routes.d.ts path and reorder navigation items ([8a3c449](https://github.com/chatman-media/timeline-studio/commit/8a3c44967b2188cbbb3c0a371999d0f93c0bda27))
+* добавить русскую версию поста version-079-documentation-investment в блог ([c10a503](https://github.com/chatman-media/timeline-studio/commit/c10a5032f491b77349ad69de376ebdf9a47ce449))
+* исправлен упавший тест FFmpegAnalysisService ([f8da681](https://github.com/chatman-media/timeline-studio/commit/f8da681221bf5925b7fba0ae3fda302dad1cdca1))
+
+
+### Features
+
+* added investment valuation ([99bd7a9](https://github.com/chatman-media/timeline-studio/commit/99bd7a9cd063956f1676ab89f14a3cf8c30f9378))
+* **blog:** add v0.79.0 blog post about documentation update and investment proposal ([24c6397](https://github.com/chatman-media/timeline-studio/commit/24c63972127e0d79894db2712f4f6ba0f8396a4f))
+* Complete Chinese translations for marketing documentation ([a370f02](https://github.com/chatman-media/timeline-studio/commit/a370f0234f2d1fad5fcad3d18feeeab80b380901))
+* **docs:** update investment valuation documents - RU version:  valuation with 10% first round - EN/ZH versions: maintain -70M valuation ([880fe2a](https://github.com/chatman-media/timeline-studio/commit/880fe2a2ed92b047c7b93c771aa072650a34530a))
+* **i18n:** add chinese language support and update dependencies ([52b5fce](https://github.com/chatman-media/timeline-studio/commit/52b5fcee12f0858ce42e60951c8ec8ece7de068e))
+* **navigation:** improve scrolling performance and visual styling ([554ad28](https://github.com/chatman-media/timeline-studio/commit/554ad283330bcb00ac0bb3947cc48cf44ede4e83))
+* **promo:** add translations for Neural Scene Analysis and Deep Learning ([2d0e12f](https://github.com/chatman-media/timeline-studio/commit/2d0e12f0779287f8d84cff27b05f9256d1f84be7))
+* **security:** add has_api_key command to check key existence ([c122cdd](https://github.com/chatman-media/timeline-studio/commit/c122cdd4ee0bbc46f243ada80c520e9320338178))
+* Translate business plan from Russian to English ([ea9dbdd](https://github.com/chatman-media/timeline-studio/commit/ea9dbdddc208707787ffa534a3a86cc03900c8c5))
+* Update project configuration and tests ([6b386b3](https://github.com/chatman-media/timeline-studio/commit/6b386b38b72f235254ea777e1e070ccc761082b6))
+* добавлена страница 'О проекте' с манифестом на промо сайте ([b9c5cf5](https://github.com/chatman-media/timeline-studio/commit/b9c5cf5e67197537af8bdb1cf628eae0e276bfb8))
+* добавлены возможности Person Identification для именования людей ([300238b](https://github.com/chatman-media/timeline-studio/commit/300238bf6bbc84807137a6944d4e55e37dd22388))
+* добавлены примеры создания цепляющих роликов с AI анализом эмоций ([ece0d2a](https://github.com/chatman-media/timeline-studio/commit/ece0d2a59110aef4a9c6bcedcd15c08c3b9d0bc9))
+* обновлен манифест проекта до актуального состояния ([3935f56](https://github.com/chatman-media/timeline-studio/commit/3935f567e8425fca8ccdc9e2c9a01251074fac9d))
+* обновлены требования для захвата 5 новых рынков (1.2 млрд) ([ae47161](https://github.com/chatman-media/timeline-studio/commit/ae47161004174b59638efc854e8197b8287395cf))
+* расширен рынок мобильных платформ до 5.7 млрд (iOS/Android/Telegram) ([f218fed](https://github.com/chatman-media/timeline-studio/commit/f218fede46254c20799f793336ac146a97f99e49))
+* создан полный английский манифест проекта Timeline Studio ([9210f99](https://github.com/chatman-media/timeline-studio/commit/9210f99272426504bf7f7c346654694904591ce3))
+
 # [0.80.0](https://github.com/chatman-media/timeline-studio/compare/v0.79.0...v0.80.0) (2025-09-12)
 
 
