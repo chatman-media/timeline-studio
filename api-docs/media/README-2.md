@@ -114,7 +114,7 @@ health.add_check(Box::new(DatabaseHealthCheck)).await;
 let status = health.check_all().await?;
 ```
 
-**Тесты**: 34 unit тестов, полное покрытие
+**Тесты**: 8 unit тестов, полное покрытие
 
 ---
 
@@ -147,7 +147,7 @@ cache.insert("key", data, ttl).await;
 let value = cache.get("key").await;
 ```
 
-**Тесты**: 29 unit тестов, все сценарии покрыты
+**Тесты**: 6 unit тестов, все сценарии покрыты
 
 ---
 
@@ -220,12 +220,12 @@ let service = container.resolve::<VideoCompilerService>().await?;
 | Модуль | Тестов | Покрытие | Статус |
 |--------|--------|----------|--------|
 | DI | 8 | 100% | ✅ |
-| Events | 9 | 100% | ✅ |
-| Plugins | 29 | 100% | ✅ |
-| Telemetry | 34 | 100% | ✅ |
-| Performance | 29 | 100% | ✅ |
+| Events | 8 | полное | ✅ |
+| Plugins | 3+ | покрытие основных сценариев | ✅ |
+| Telemetry | 8 | 100% | ✅ |
+| Performance | 6 | полное | ✅ |
 | Test Utils | 6 | 100% | ✅ |
-| **Итого** | **115** | **100%** | ✅ |
+| **Итого** | **31+** | **полное** | ✅ |
 
 ---
 
