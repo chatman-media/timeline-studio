@@ -18,9 +18,10 @@ import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-p
 import { ModalProvider } from "@/features/modals/services/modal-provider"
 import { ProjectSettingsProvider } from "@/features/project-settings/services/project-settings-provider"
 import { ResourcesProvider } from "@/features/resources/services/resources-provider"
-// import { UserSettingsProvider } from "@/features/user-settings/services/user-settings-provider"
+import { UserSettingsProvider } from "@/features/user-settings/services/user-settings-provider"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
+import { AIServicesProvider } from "@/shared/services/ai/react-integration"
 
 interface ProvidersV2Props {
   children: ReactNode
@@ -38,6 +39,7 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
 // AppProviderV2 должен быть рано в цепочке для инициализации backend
 const AppProviderComposite = composeProviders(
   TauriMockProvider, // Должен быть первым для инициализации моков
+  AIServicesProvider, // AI сервисы должны инициализироваться рано
   I18nProvider, // Легкий провайдер для локализации
   ThemeProvider, // Легкий провайдер для темы
   ModalProvider, // Легкий провайдер для модальных окон

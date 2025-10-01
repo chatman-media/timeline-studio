@@ -84,11 +84,7 @@ export function TimelineContent() {
   // Создаем проект при первой загрузке, используя настройки из реального проекта
   useEffect(() => {
     if (!project && currentProject && projectSettings) {
-      void createProject(currentProject.name, {
-        width: projectSettings.aspectRatio.value.width,
-        height: projectSettings.aspectRatio.value.height,
-        frameRate: Number.parseInt(projectSettings.frameRate),
-      })
+      void createProject(currentProject.name)
     }
   }, [project, currentProject, projectSettings, createProject])
 
@@ -225,7 +221,9 @@ export function TimelineContent() {
             <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
               <div className="h-full flex flex-col">
                 <TrackControlsPanel />
-                <div className="p-2 border-t">{/* <IntegratedVersionPanel /> */}</div>
+                <div className="p-2 border-t">
+                  {/* <IntegratedVersionPanel /> */} {/* Временно скрыто */}
+                </div>
               </div>
             </ResizablePanel>
 
@@ -326,7 +324,7 @@ export function TimelineContent() {
                             currentTime={currentTime}
                             isSelected={selectedTrackIds?.includes(track.id) ?? false}
                             onSelect={(trackId) => selectTracks([trackId])}
-                            onUpdate={(updates) => updateTrack(track.id, updates)}
+                            onUpdate={(updates) => updateTrack(track.id, updates as Partial<typeof Track>)}
                           />
                         ))}
                       </div>

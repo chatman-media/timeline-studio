@@ -103,6 +103,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       const savedSettings = localStorage.getItem("browserSettings")
       if (savedSettings) {
         const parsed = JSON.parse(savedSettings)
+
         // Преобразуем массивы обратно в Set для selectedFiles
         if (parsed.selectedFiles) {
           const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
@@ -114,12 +115,16 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           // Если нет selectedFiles, инициализируем пустыми Set
           parsed.selectedFiles = getInitialContext().selectedFiles
         }
-        return parsed
+
+        // Объединяем сохранённые настройки с начальными, чтобы не потерять структуру
+        setState((prev) => ({
+          ...prev,
+          ...parsed,
+        }))
       }
     } catch (error) {
       console.error("Failed to load browser settings from localStorage:", error)
     }
-    return getInitialContext()
   })
 
   // Используем ref для отслеживания первого рендера и предыдущего состояния

@@ -246,7 +246,7 @@ const modelsLoaded = engine.areModelsReady()
 
 Все движки интегрированы с:
 - `AIIntelligenceOrchestrator` - координация работы
-- `UnifiedAIService` - доступ к 151 AI инструменту
+- `UnifiedAIService` - доступ к 257 AI инструментам
 - `FFmpegAnalysisService` - анализ медиа файлов
 
 ## ⚠️ Требования

@@ -6,7 +6,7 @@
 import type { ReactNode } from "react"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
-import { type AIDIContainer, getAIContainer, getAIContainerSafe, initializeAIServices } from "./di-container"
+import { type AIDIContainer, initializeAIServices } from "./di-container"
 import type { IUnifiedAIService } from "./providers/interfaces"
 
 // Типы для AI сервисов доступных в React

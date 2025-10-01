@@ -282,7 +282,7 @@ test.describe("Media Sorting and Filtering", () => {
       const counterText = await itemCounter.textContent()
       const match = counterText?.match(/\\d+/)
       if (match) {
-        initialCount = Number.parseInt(match[0])
+        initialCount = Number.parseInt(match[0], 10)
         console.log(`Initial count: ${initialCount}`)
       }
     }
@@ -299,7 +299,7 @@ test.describe("Media Sorting and Filtering", () => {
         const newCounterText = await itemCounter.textContent()
         const newMatch = newCounterText?.match(/\\d+/)
         if (newMatch) {
-          const newCount = Number.parseInt(newMatch[0])
+          const newCount = Number.parseInt(newMatch[0], 10)
           console.log(`Filtered count: ${newCount}`)
           expect(newCount).toBeLessThanOrEqual(initialCount)
         }

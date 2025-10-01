@@ -3,7 +3,8 @@
 //! Generates optimized montage plans using genetic algorithms.
 
 use crate::montage_planner::types::*;
-use rand::Rng;
+use rand::prelude::*;
+use rand::{rngs::StdRng, SeedableRng};
 use serde::{Deserialize, Serialize};
 
 /// Service for generating optimized montage plans
@@ -91,12 +92,16 @@ impl PlanGenerator {
   pub fn new() -> Self {
     Self {
       config: PlanGenerationConfig::default(),
+      rng: StdRng::from_seed([0; 32]), // Use a fixed seed for now, can be made configurable
     }
   }
 
   /// Create generator with custom configuration
   pub fn with_config(config: PlanGenerationConfig) -> Self {
-    Self { config }
+    Self {
+      config,
+      rng: StdRng::from_seed([0; 32]), // Use a fixed seed for now, can be made configurable
+    }
   }
 
   /// Generate optimized montage plan using genetic algorithm

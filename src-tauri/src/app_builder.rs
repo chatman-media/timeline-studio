@@ -139,6 +139,7 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::security::get_decrypted_api_key,
     crate::security::list_api_keys,
     crate::security::delete_api_key,
+    crate::security::has_api_key,
     crate::security::validate_api_key,
     crate::security::generate_oauth_url,
     crate::security::exchange_oauth_code,

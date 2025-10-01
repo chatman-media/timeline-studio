@@ -252,6 +252,14 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
     return await this.modelManager.getBestModelForTask(task as any, taskOptions)
   }
 
+  async isModelAvailable(model: string): Promise<boolean> {
+    if (!this.modelManager) {
+      console.warn("ModelManager not initialized, returning false")
+      return false
+    }
+    return await this.modelManager.isModelAvailable(model)
+  }
+
   async getProviderStatuses(): Promise<Record<string, boolean>> {
     if (!this.providerFactory) {
       try {

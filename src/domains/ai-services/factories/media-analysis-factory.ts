@@ -12,92 +12,26 @@ import type {
 } from "../types/interfaces"
 
 export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
-  private ffmpegService: IFFmpegAnalysisService | null = null
-  private visionService: IVisionService | null = null
+  private ffmpegService: IFFmpegAnalysisService
+  private visionService: IVisionService
   private contentService: IContentAnalysisService | null = null
 
+  constructor(ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) {
+    this.ffmpegService = ffmpegService
+    this.visionService = visionService
+  }
+
   createFFmpegService(): IFFmpegAnalysisService {
-    if (!this.ffmpegService) {
-      // Заглушка для FFmpeg сервиса
-      this.ffmpegService = {
-        analyzeVideo: async () => ({
-          duration: 0,
-          fps: 30,
-          resolution: { width: 1920, height: 1080 },
-          codec: "h264",
-          bitrate: 5000000,
-          scenes: [],
-          quality: { overall: 80, sharpness: 0.8, noise: 0.2, compression: 0.7, motionIntensity: 0.5 },
-        }),
-        analyzeAudio: async () => ({
-          duration: 0,
-          channels: 2,
-          sampleRate: 44100,
-          bitrate: 128000,
-          codec: "aac",
-          volume: { average: 0.7, peak: 0.9, min: 0.1, max: 0.95 },
-          silentSegments: [],
-        }),
-        extractFrames: async () => [],
-        extractAudioSegment: async () => "",
-        getVideoMetadata: async () => ({
-          format: "mp4",
-          duration: 0,
-          width: 1920,
-          height: 1080,
-          fps: 30,
-          bitrate: 5000000,
-          hasAudio: true,
-        }),
-        detectScenes: async () => [],
-        analyzeQuality: async () => ({ overall: 80 }),
-        detectSilence: async () => ({ silentSegments: [], totalSilenceDuration: 0, speechRatio: 0.8 }),
-        analyzeMotion: async () => ({ motionIntensity: 50, stabilityScore: 0.9 }),
-        extractKeyframes: async () => [],
-        convertToFormat: async () => true,
-      } as IFFmpegAnalysisService
-    }
     return this.ffmpegService
   }
 
   createVisionService(): IVisionService {
-    if (!this.visionService) {
-      // Заглушка для Vision сервиса
-      this.visionService = {
-        analyzeFrame: async () => ({
-          objects: [],
-          faces: [],
-          text: [],
-          scene: { type: "general", confidence: 0.8, attributes: [] },
-          nsfw: { safe: 1, suggestive: 0, explicit: 0 },
-        }),
-        analyzeVideo: async () => [],
-        detectFaces: async () => [],
-        recognizeText: async () => "",
-        analyzeFrames: async () => [],
-        detectObjects: async () => [],
-        extractText: async () => [],
-        analyzeComposition: async () => ({
-          ruleOfThirds: { score: 0.7, points: [] },
-          leadingLines: { score: 0.6, lines: [] },
-          balance: { score: 0.8, centerOfMass: { x: 0.5, y: 0.5 } },
-          symmetry: { score: 0.7 },
-        }),
-        analyzeColors: async () => ({
-          dominantColors: [],
-          palette: [],
-          temperature: "neutral",
-          saturation: "medium",
-          brightness: "medium",
-        }),
-      } as IVisionService
-    }
     return this.visionService
   }
 
   createContentAnalysisService(): IContentAnalysisService {
     if (!this.contentService) {
-      this.contentService = new ContentAnalysisService()
+      this.contentService = new ContentAnalysisService(this.ffmpegService, this.visionService)
     }
     return this.contentService
   }
@@ -228,9 +162,19 @@ export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
 // Singleton instance
 let factoryInstance: MediaAnalysisFactoryImpl | null = null
 
-export function createMediaAnalysisFactory(): MediaAnalysisFactory {
+export function createMediaAnalysisFactory(
+  ffmpegService?: IFFmpegAnalysisService,
+  visionService?: IVisionService,
+): MediaAnalysisFactory {
   if (!factoryInstance) {
-    factoryInstance = new MediaAnalysisFactoryImpl()
+    if (ffmpegService && visionService) {
+      factoryInstance = new MediaAnalysisFactoryImpl(ffmpegService, visionService)
+    } else {
+      // Fallback для обратной совместимости
+      const ffmpegService = new FFmpegAdapter()
+      const visionService = new VisionAdapter()
+      factoryInstance = new MediaAnalysisFactoryImpl(ffmpegService, visionService)
+    }
   }
   return factoryInstance
 }

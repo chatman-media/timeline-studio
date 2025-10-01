@@ -22,6 +22,8 @@ use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION
 use prometheus::Encoder;
 use std::collections::HashMap;
 use std::sync::Arc;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::RwLock;
 
 use super::config::{ExporterType, TelemetryConfig};
@@ -424,50 +426,91 @@ impl MetricsCollector {
 
   /// Запустить HTTP сервер для Prometheus метрик
   async fn start_prometheus_server(endpoint: String, handle: Arc<RwLock<PrometheusHandle>>) {
-    let app = Router::new()
-      .route("/metrics", get(Self::serve_metrics))
-      .route("/health", get(Self::health_check));
+    let addr: std::net::SocketAddr = endpoint
+      .parse()
+      .unwrap_or_else(|_| "0.0.0.0:9090".parse().unwrap());
 
-    match tokio::net::TcpListener::bind(&endpoint).await {
-      Ok(listener) => {
-        log::info!("Prometheus server starting on {}", endpoint);
-        
-        let server_handle = tokio::spawn(async move {
-          if let Err(e) = axum::serve(listener, app).await {
-            log::error!("Prometheus server error: {}", e);
-          }
-        });
-        
-        let mut handle_guard = handle.write().await;
-        handle_guard.server_handle = Some(server_handle);
-      }
+    log::info!("Starting Prometheus metrics server on {addr}");
+
+    let listener = match TcpListener::bind(&addr).await {
+      Ok(listener) => listener,
       Err(e) => {
-        log::error!("Failed to bind Prometheus server to {}: {}", endpoint, e);
-        let mut handle_guard = handle.write().await;
-        handle_guard.server_handle = None;
+        log::error!("Failed to bind to address {addr}: {e}");
+        return;
+      }
+    };
+
+    let handle_clone = handle.clone();
+    let server_handle = tokio::spawn(async move {
+      loop {
+        match listener.accept().await {
+          Ok((stream, _)) => {
+            let handle = handle_clone.clone();
+            tokio::spawn(async move {
+              if let Err(e) = Self::handle_connection(stream, handle).await {
+                log::error!("Error handling connection: {e}");
+              }
+            });
+          }
+          Err(e) => {
+            log::error!("Failed to accept connection: {e}");
+            break;
+          }
+        }
       }
     }
   }
 
-  /// Обслуживать HTTP запросы для метрик
-  async fn serve_metrics() -> impl IntoResponse {
+  /// Обработать HTTP соединение
+  async fn handle_connection(
+    mut stream: TcpStream,
+    handle: Arc<RwLock<PrometheusHandle>>,
+  ) -> std::io::Result<()> {
+    let mut buffer = [0; 1024];
+    let n = stream.read(&mut buffer).await?;
+    let request = String::from_utf8_lossy(&buffer[..n]);
+
+    let response = if request.starts_with("GET /metrics") {
+      Self::get_metrics_response(handle).await
+    } else if request.starts_with("GET /health") {
+      "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\n\r\nOK".to_string()
+    } else {
+      "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nNot Found"
+        .to_string()
+    };
+
+    stream.write_all(response.as_bytes()).await?;
+    stream.flush().await?;
+    Ok(())
+  }
+
+  /// Получить HTTP ответ с метриками
+  async fn get_metrics_response(handle: Arc<RwLock<PrometheusHandle>>) -> String {
+    let _handle_guard = handle.read().await;
     // Используем глобальный prometheus registry
     let registry = prometheus::default_registry();
     let metrics = registry.gather();
     let mut buffer = Vec::new();
     let encoder = prometheus::TextEncoder::new();
-    encoder.encode(&metrics, &mut buffer).unwrap();
-    let metrics_string = String::from_utf8(buffer).unwrap();
 
-    (
-      StatusCode::OK,
-      [("Content-Type", "text/plain; version=0.0.4")],
-      metrics_string,
+    if let Err(e) = encoder.encode(&metrics, &mut buffer) {
+      log::error!("Failed to encode metrics: {e}");
+      return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\nContent-Length: 21\r\n\r\nFailed to encode metrics".to_string();
+    }
+
+    let metrics_string = match String::from_utf8(buffer) {
+      Ok(s) => s,
+      Err(e) => {
+        log::error!("Failed to convert metrics to string: {e}");
+        return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\nContent-Length: 23\r\n\r\nFailed to convert metrics".to_string();
+      }
+    };
+
+    format!(
+      "HTTP/1.1 200 OK\r\nContent-Type: text/plain; version=0.0.4\r\nContent-Length: {}\r\n\r\n{}",
+      metrics_string.len(),
+      metrics_string
     )
-  }
-
-  async fn health_check() -> impl IntoResponse {
-    (StatusCode::OK, "OK")
   }
 
   /// Получить строку метрик в формате Prometheus

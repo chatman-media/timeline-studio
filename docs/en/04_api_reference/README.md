@@ -26,7 +26,7 @@
 ### 🤖 AI and Automation
 
 - [**AI Chat API**](ai-chat-api.md) - AI assistant integration (Claude, GPT)
-- [**AI Tools API**](ai-tools-api.md) - 151 AI tools for automation
+- [**AI Tools API**](ai-tools-api.md) - 257 AI tools for automation
 - [**Recognition API**](recognition-api.md) - Object and face recognition
 - [**AI Content Intelligence API**](ai-content-intelligence-api.md) - Intelligent content analysis
 - [**Montage Planner API**](montage-planner-api.md) - Automatic montage planning
