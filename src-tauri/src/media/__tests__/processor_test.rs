@@ -87,6 +87,7 @@ mod tests {
           format_name: Some("mov,mp4,m4a,3gp,3g2,mj2".to_string()),
         },
       },
+      thumbnail_path: None,
     };
 
     let event = ProcessorEvent::MetadataReady {
@@ -335,6 +336,7 @@ mod tests {
           format_name: None,
         },
       },
+      thumbnail_path: None,
     };
 
     assert!(video_file.is_video);
@@ -362,6 +364,7 @@ mod tests {
           format_name: None,
         },
       },
+      thumbnail_path: None,
     };
 
     assert!(!audio_file.is_video);
@@ -389,6 +392,7 @@ mod tests {
           format_name: None,
         },
       },
+      thumbnail_path: None,
     };
 
     assert!(!image_file.is_video);

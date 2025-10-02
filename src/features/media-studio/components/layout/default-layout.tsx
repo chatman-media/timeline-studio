@@ -58,7 +58,7 @@ function TopDefaultLayout() {
   // VideoPlayer + Options + AI Assistant
   return (
     <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-options-ai">
-       <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+      <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
         <div className="relative h-full flex-1">
           <Browser />
         </div>
@@ -67,12 +67,6 @@ function TopDefaultLayout() {
       <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
         <div className="relative h-full flex-1">
           <VideoPlayer />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
-        <div className="relative h-full flex-1">
-          <AISuggestionsPanel />
         </div>
       </ResizablePanel>
       <ResizableHandle />

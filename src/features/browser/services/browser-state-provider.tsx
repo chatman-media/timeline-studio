@@ -116,15 +116,18 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           parsed.selectedFiles = getInitialContext().selectedFiles
         }
 
-        // Объединяем сохранённые настройки с начальными, чтобы не потерять структуру
-        setState((prev) => ({
-          ...prev,
+        // Возвращаем объединённое состояние напрямую, без вызова setState
+        return {
+          ...getInitialContext(),
           ...parsed,
-        }))
+        }
       }
     } catch (error) {
       console.error("Failed to load browser settings from localStorage:", error)
     }
+
+    // Возвращаем начальное состояние по умолчанию
+    return getInitialContext()
   })
 
   // Используем ref для отслеживания первого рендера и предыдущего состояния

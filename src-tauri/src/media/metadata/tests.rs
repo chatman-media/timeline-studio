@@ -268,6 +268,7 @@ fn test_media_file_struct() {
         format_name: None,
       },
     },
+    thumbnail_path: None,
   };
 
   let json = serde_json::to_string(&media_file).unwrap();
@@ -526,6 +527,7 @@ fn test_media_file_complete_creation() {
         format_name: Some("matroska,webm".to_string()),
       },
     },
+    thumbnail_path: None,
   };
 
   // Проверяем, что все поля правильно установлены

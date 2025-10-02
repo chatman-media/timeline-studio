@@ -414,6 +414,7 @@ mod tests {
           format_name: Some("mp4".to_string()),
         },
       },
+      thumbnail_path: None,
     }
   }
 
@@ -450,6 +451,7 @@ mod tests {
           format_name: Some("png_pipe".to_string()),
         },
       },
+      thumbnail_path: None,
     }
   }
 
@@ -486,6 +488,7 @@ mod tests {
           format_name: Some("mp3".to_string()),
         },
       },
+      thumbnail_path: None,
     }
   }
 

@@ -382,6 +382,7 @@ mod tests {
           format_name: None,
         },
       },
+      thumbnail_path: None,
     }
   }
 

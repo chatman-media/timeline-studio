@@ -1,0 +1,242 @@
+/**
+ * Enhanced AI Panel - Real AI Content Intelligence Integration
+ * Заменяет заглушку настоящей интеграцией с UnifiedDashboard
+ */
+
+import { useState, useCallback, useMemo } from "react"
+import { AlertCircle, Sparkles, BarChart3, Target, Globe, Bot, Play, Pause, Settings } from "lucide-react"
+
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
+import { UnifiedDashboard } from "@/features/ai-content-intelligence"
+import { MediaInfo } from "@/domains/media-management"
+import { useTimeline } from "@/features/timeline"
+import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"
+
+interface EnhancedAIPanelProps {
+  className?: string
+}
+
+interface QuickAnalysis {
+  id: string
+  name: string
+  icon: React.ReactNode
+  operation: string
+  description: string
+}
+
+export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
+  const { clips, tracks, project } = useTimeline()
+  const [error, setError] = useState<Error | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [analysisType, setAnalysisType] = useState<string>("full")
+  const [selectedOperation, setSelectedOperation] = useState<string>("analyze_content")
+  const [analysisResults, setAnalysisResults] = useState<any>(null)
+
+  // Конвертируем клипы и треки в медиа файлы для AI анализа
+  const getMediaFiles = useCallback((): MediaInfo[] => {
+    if (!clips || clips.length === 0) {
+      return []
+    }
+
+    return clips.map((clip, index) => ({
+      id: clip.id || `clip-${index}`,
+      name: clip.name || `Clip ${index + 1}`,
+      path: clip.mediaUrl || clip.thumbnailUrl || "",
+      type: clip.type === "video" ? "video" : "audio",
+      duration: clip.duration || 0,
+      size: clip.metadata?.size || 0,
+      format: clip.metadata?.format || "mp4",
+      width: clip.metadata?.width || 1920,
+      height: clip.metadata?.height || 1080,
+      fps: clip.metadata?.fps || 30,
+      bitrate: clip.metadata?.bitrate || 0,
+      codec: clip.metadata?.codec || "h264",
+      audioCodec: clip.metadata?.audioCodec || "aac",
+      audioChannels: clip.metadata?.audioChannels || 2,
+      metadata: {
+        ...clip.metadata,
+        trackId: clip.trackId,
+        startTime: clip.startTime,
+        endTime: clip.endTime,
+        trimStart: clip.trimStart || 0,
+        trimEnd: clip.trimEnd || clip.duration,
+      },
+    }))
+  }, [clips])
+
+  const handleFileUpload = useCallback((files: File[]) => {
+    console.log("AI Panel: File upload requested", files)
+    // TODO: Реализовать загрузку файлов в таймлайн
+  }, [])
+
+  const handleAnalysisComplete = useCallback((analysis: any) => {
+    console.log("AI Panel: Analysis completed", analysis)
+    setError(null)
+    // TODO: Применить AI рекомендации к таймлайну
+  }, [])
+
+  const handleProcessingComplete = useCallback((content: any) => {
+    console.log("AI Panel: Processing completed", content)
+    setIsProcessing(false)
+    // TODO: Применить обработанный контент к таймлайну
+  }, [])
+
+  const handleError = useCallback((error: Error) => {
+    console.error("AI Panel: Error occurred", error)
+    setError(error)
+    setIsProcessing(false)
+  }, [])
+
+  const mediaFiles = getMediaFiles()
+
+  // Доступные операции AI анализа
+  const quickAnalyses = useMemo<QuickAnalysis[]>(() => [
+    {
+      id: "scene_analysis",
+      name: "Анализ сцен",
+      icon: <BarChart3 className="h-4 w-4" />,
+      operation: "detect_scenes",
+      description: "Обнаружение границ сцен и ключевых кадров"
+    },
+    {
+      id: "content_classification",
+      name: "Классификация",
+      icon: <Target className="h-4 w-4" />,
+      operation: "classify_content",
+      description: "Классификация контента по жанрам и тематике"
+    },
+    {
+      id: "platform_adaptation",
+      name: "Платформы",
+      icon: <Globe className="h-4 w-4" />,
+      operation: "adapt_platform",
+      description: "Адаптация контента под разные платформы"
+    },
+    {
+      id: "audience_analysis",
+      name: "Аудитория",
+      icon: <Bot className="h-4 w-4" />,
+      operation: "analyze_audience",
+      description: "Анализ целевой аудитории и предпочтений"
+    }
+  ], [])
+
+  // Выполнение быстрого анализа
+  const handleQuickAnalysis = useCallback(async (analysis: QuickAnalysis) => {
+    if (!clips || clips.length === 0) {
+      setError(new Error("Нет медиа файлов для анализа"))
+      return
+    }
+
+    setIsProcessing(true)
+    setError(null)
+
+    try {
+      const result = await executeContentIntelligenceTool({
+        operation: analysis.operation,
+        mediaFiles: mediaFiles,
+        options: {
+          projectTitle: project?.name || "Timeline Project",
+          targetPlatforms: ["youtube", "instagram", "tiktok"],
+          language: "ru",
+          audience: "general"
+        }
+      })
+
+      setAnalysisResults({
+        analysis: analysis.name,
+        results: result,
+        timestamp: new Date().toISOString()
+      })
+
+      console.log(`AI Panel: ${analysis.name} completed`, result)
+    } catch (error) {
+      console.error(`AI Panel: ${analysis.name} failed`, error)
+      setError(error instanceof Error ? error : new Error("Ошибка анализа"))
+    } finally {
+      setIsProcessing(false)
+    }
+  }, [clips, mediaFiles, project?.name])
+
+  return (
+    <div className={cn("h-full w-full bg-muted/30 border-l border-border flex flex-col", className)}>
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles className="h-5 w-5 text-blue-500" />
+          <h3 className="text-lg font-semibold">AI Content Intelligence</h3>
+        </div>
+        <p className="text-sm text-muted-foreground mb-3">AI анализ и предложения для улучшения контента</p>
+        
+        {/* Быстрые действия */}
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          {quickAnalyses.map((analysis) => (
+            <Button
+              key={analysis.id}
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAnalysis(analysis)}
+              disabled={isProcessing || !clips?.length}
+              className="justify-start"
+            >
+              {analysis.icon}
+              <span className="ml-2 text-xs">{analysis.name}</span>
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-hidden">
+        {error && (
+          <Alert variant="destructive" className="m-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {error.message || "Произошла ошибка при анализе контента"}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Результаты анализа */}
+        {analysisResults && (
+          <div className="m-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-blue-600" />
+              <h4 className="font-medium text-blue-900 dark:text-blue-100">
+                {analysisResults.analysis} завершен
+              </h4>
+            </div>
+            <div className="text-sm text-blue-800 dark:text-blue-200">
+              <p>Найдено рекомендаций: {analysisResults.results?.recommendations?.length || 0}</p>
+              <p>Обнаружено проблем: {analysisResults.results?.warnings?.length || 0}</p>
+            </div>
+          </div>
+        )}
+
+        {clips && clips.length > 0 ? (
+          <UnifiedDashboard
+            mediaFiles={mediaFiles}
+            onFileUpload={handleFileUpload}
+            onAnalysisComplete={handleAnalysisComplete}
+            onProcessingComplete={handleProcessingComplete}
+            onError={handleError}
+            className="h-full"
+          />
+        ) : (
+          <div className="flex-1 p-4 flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <div className="mb-4">
+                <Sparkles className="h-12 w-12 mx-auto text-blue-500 opacity-50" />
+              </div>
+              <p className="mb-2">Нет медиа файлов для анализа</p>
+              <p className="text-sm">
+                Добавьте видео или аудио в таймлайн, чтобы начать AI анализ
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

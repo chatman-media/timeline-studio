@@ -208,6 +208,7 @@ mod tests {
             format_name: Some("mp4".to_string()),
           },
         },
+        thumbnail_path: None,
       }),
     };
 

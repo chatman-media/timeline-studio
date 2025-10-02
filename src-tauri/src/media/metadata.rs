@@ -123,6 +123,7 @@ pub fn get_media_metadata(file_path: String) -> Result<MediaFile, String> {
       streams: ffprobe_streams,
       format: ffprobe_format,
     },
+    thumbnail_path: None,
   };
 
   Ok(media_file)

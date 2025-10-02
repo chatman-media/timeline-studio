@@ -1366,6 +1366,8 @@
     }
   },
   "timeline": {
+    "hide": "Hide timeline",
+    "show": "Show timeline",
     "workspace": {
       "timeline": "Timeline",
       "audioMixer": "Audio Mixer"

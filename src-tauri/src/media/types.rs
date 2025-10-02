@@ -127,6 +127,7 @@ pub struct MediaFile {
   pub start_time: u64,
   pub creation_time: String,
   pub probe_data: ProbeData,
+  pub thumbnail_path: Option<String>,
 }
 
 /// Поддерживаемые расширения медиафайлов
@@ -181,6 +182,7 @@ mod tests {
       start_time: 1234567890,
       creation_time: "2023-01-01T00:00:00Z".to_string(),
       probe_data,
+      thumbnail_path: Some("/path/to/thumbnail.jpg".to_string()),
     };
 
     // Тестируем сериализацию в JSON

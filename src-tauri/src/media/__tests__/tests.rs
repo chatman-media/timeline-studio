@@ -107,6 +107,7 @@ mod media_tests {
           format_name: Some("mov,mp4,m4a,3gp,3g2,mj2".to_string()),
         },
       },
+      thumbnail_path: None,
     };
 
     let json = serde_json::to_string(&media_file).unwrap();
