@@ -189,7 +189,7 @@ export function VirtualizedTimelineContent() {
               <AIMarkerControls className="ml-4" />
             </div>
             <div className="flex gap-2">
-              <Badge variant="outline">{project.sections.length} секций</Badge>
+              <Badge variant="outline">{project.sections?.length || 0} секций</Badge>
               <Badge variant="outline">{tracks.length} треков</Badge>
               <Badge variant="outline">{clips.length} клипов</Badge>
               <TimelineSpeedRampingStatus />

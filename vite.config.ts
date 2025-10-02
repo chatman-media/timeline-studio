@@ -7,26 +7,26 @@ import { defineConfig } from "vite"
 export default defineConfig({
   plugins: [
     react(),
-    // Codecov bundle analysis plugin
-    codecovVitePlugin({
-      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-      bundleName: "timeline-studio",
-      uploadToken: process.env.CODECOV_TOKEN,
-      gitService: "github",
-      ...(process.env.CI && {
-        uploadOverrides: {
-          // Override the commit SHA if needed
-          sha: process.env.GITHUB_SHA,
-          // Override the branch name if needed
-          branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
-          // Add PR number if available
-          pr: process.env.GITHUB_PR_NUMBER,
-          // Add build ID
-          build: process.env.GITHUB_RUN_ID,
-        },
-      }),
-    }),
-  ],
+    // Codecov bundle analysis plugin - DISABLED
+    // codecovVitePlugin({
+    //   enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+    //   bundleName: "timeline-studio",
+    //   uploadToken: process.env.CODECOV_TOKEN,
+    //   gitService: "github",
+    //   ...(process.env.CI && {
+    //     uploadOverrides: {
+    //       // Override the commit SHA if needed
+    //       sha: process.env.GITHUB_SHA,
+    //       // Override the branch name if needed
+    //       branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
+    //       // Add PR number if available
+    //       pr: process.env.GITHUB_PR_NUMBER,
+    //       // Add build ID
+    //       build: process.env.GITHUB_RUN_ID,
+    //     },
+    //   }),
+    // }),
+  ],"explanation":"Disabling Codecov Vite plugin by commenting out the plugin configuration"}
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

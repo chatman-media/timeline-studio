@@ -34,7 +34,7 @@ export function GroupManagerPanel() {
       })
     })
 
-    project.sections.forEach((section) => {
+    project.sections?.forEach((section) => {
       section.tracks.forEach((track) => {
         track.clips.forEach((clip) => {
           if (selectedClipIds.includes(clip.id)) {

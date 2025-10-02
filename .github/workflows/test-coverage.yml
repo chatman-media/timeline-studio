@@ -1,10 +1,11 @@
-name: Test Coverage
+name: Test Coverage - DISABLED
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
 
 jobs:
   test-coverage:
@@ -78,39 +79,40 @@ jobs:
         run: bun run test:coverage
         env:
           CI: true
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
+          # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} - DISABLED
+          # CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }} - DISABLED
 
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./test-results/junit.xml
-          flags: frontend
-          name: frontend-tests
-          fail_ci_if_error: false
-          verbose: true
+      # Codecov upload steps disabled
+      # - name: Upload test results to Codecov
+      #   if: ${{ !cancelled() }}
+      #   uses: codecov/test-results-action@v1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     file: ./test-results/junit.xml
+      #     flags: frontend
+      #     name: frontend-tests
+      #     fail_ci_if_error: false
+      #     verbose: true
 
-      - name: Upload coverage to Codecov (with plugin)
-        if: always()
-        run: bun run test:coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
-          CI: true
+      # - name: Upload coverage to Codecov (with plugin)
+      #   if: always()
+      #   run: bun run test:coverage
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      #     CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
+      #     CI: true
 
-      - name: Upload coverage reports to Codecov (fallback)
-        if: always()
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          flags: frontend
-          name: frontend-coverage
-          fail_ci_if_error: false
-          verbose: true
-          slug: chatman-media/timeline-studio
+      # - name: Upload coverage reports to Codecov (fallback)
+      #   if: always()
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./coverage/lcov.info
+      #     flags: frontend
+      #     name: frontend-coverage
+      #     fail_ci_if_error: false
+      #     verbose: true
+      #     slug: chatman-media/timeline-studio
 
   test-rust-coverage:
     name: Rust Test Coverage

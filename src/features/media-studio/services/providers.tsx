@@ -50,7 +50,7 @@ const AppProviderComposite = composeProviders(
   // Остальные провайдеры (некоторые будут мигрированы позже)
   // UserSettingsProvider, // Пользовательские настройки больше не обязательны: читаются через доменный хук
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
-  ShortcutsProvider, // Не зависит от UserSettingsProvider
+  // ShortcutsProvider, // ОТКЛЮЧЕНО: отключено по запросу
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
   // BrowserStateProvider, // ОТКЛЮЧЕНО: может вызывать зависания браузера
 

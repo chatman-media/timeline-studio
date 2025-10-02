@@ -79,27 +79,27 @@ const nextConfig: NextConfig = {
       }
     }
 
-    // Add Codecov bundle analysis plugin
-    if (process.env.CODECOV_TOKEN && !isServer) {
-      config.plugins = config.plugins || []
-      config.plugins.push(
-        codecovWebpackPlugin({
-          enableBundleAnalysis: true,
-          bundleName: "timeline-studio",
-          uploadToken: process.env.CODECOV_TOKEN,
-          gitService: "github",
-          telemetry: false,
-          ...(process.env.CI && {
-            uploadOverrides: {
-              sha: process.env.GITHUB_SHA,
-              branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
-              pr: process.env.GITHUB_PR_NUMBER,
-              build: process.env.GITHUB_RUN_ID,
-            },
-          }),
-        }),
-      )
-    }
+    // Codecov bundle analysis plugin - DISABLED
+    // if (process.env.CODECOV_TOKEN && !isServer) {
+    //   config.plugins = config.plugins || []
+    //   config.plugins.push(
+    //     codecovWebpackPlugin({
+    //       enableBundleAnalysis: true,
+    //       bundleName: "timeline-studio",
+    //       uploadToken: process.env.CODECOV_TOKEN,
+    //       gitService: "github",
+    //       telemetry: false,
+    //       ...(process.env.CI && {
+    //         uploadOverrides: {
+    //           sha: process.env.GITHUB_SHA,
+    //           branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
+    //           pr: process.env.GITHUB_PR_NUMBER,
+    //           build: process.env.GITHUB_RUN_ID,
+    //         },
+    //       }),
+    //     }),
+    //   )
+    // }
 
     return config
   },

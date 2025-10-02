@@ -5,7 +5,7 @@
  * управления проектами и системными параметрами
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base/base-ai-tool"
 
 // Типы для настроек конфигурации
 export interface SettingsInput {

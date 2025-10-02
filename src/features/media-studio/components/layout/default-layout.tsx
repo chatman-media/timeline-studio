@@ -1,4 +1,5 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { Browser } from "@/features/browser/components"
 import { Options } from "@/features/options"
 import { AISuggestionsPanel } from "@/features/timeline/components/ai-suggestions/ai-suggestions-panel"
 import { Timeline } from "@/features/timeline/components/timeline"
@@ -6,10 +7,10 @@ import { useUserSettings } from "@/features/user-settings"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 
 function TopDefaultLayout() {
-  const { isOptionsVisible, isTimelineVisible } = useUserSettings()
+  const { isOptionsVisible, isTimelineVisible, isBrowserVisible } = useUserSettings()
 
   // Случай: только VideoPlayer (все панели скрыты)
-  if (!isOptionsVisible && !isTimelineVisible) {
+  if (!isOptionsVisible && !isTimelineVisible && !isBrowserVisible) {
     return (
       <div className="h-full flex-1">
         <VideoPlayer />
@@ -57,9 +58,21 @@ function TopDefaultLayout() {
   // VideoPlayer + Options + AI Assistant
   return (
     <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-options-ai">
+       <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+        <div className="relative h-full flex-1">
+          <Browser />
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
       <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
         <div className="relative h-full flex-1">
           <VideoPlayer />
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+        <div className="relative h-full flex-1">
+          <AISuggestionsPanel />
         </div>
       </ResizablePanel>
       <ResizableHandle />
