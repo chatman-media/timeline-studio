@@ -12,12 +12,12 @@ use opentelemetry::{
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
 };
 // opentelemetry_sdk::Resource is unused with pinned SDK versions
-use axum::{
-  http::StatusCode,
-  response::IntoResponse,
-  routing::get,
-  Router,
-};
+  // use axum::{
+  //   http::StatusCode,
+  //   response::IntoResponse,
+  //   routing::get,
+  //   Router,
+  // };
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
 use std::collections::HashMap;
@@ -441,7 +441,7 @@ impl MetricsCollector {
     };
 
     let handle_clone = handle.clone();
-    let server_handle = tokio::spawn(async move {
+    let _server_handle = tokio::spawn(async move {
       loop {
         match listener.accept().await {
           Ok((stream, _)) => {
@@ -458,7 +458,7 @@ impl MetricsCollector {
           }
         }
       }
-    }
+    });
   }
 
   /// Обработать HTTP соединение

@@ -12,6 +12,7 @@ export default defineConfig({
       bundleName: "timeline-studio",
       uploadToken: process.env.CODECOV_TOKEN,
       gitService: "github",
+      telemetry: false,
       ...(process.env.CI && {
         uploadOverrides: {
           sha: process.env.GITHUB_SHA,
