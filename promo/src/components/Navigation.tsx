@@ -23,6 +23,7 @@ export function Navigation() {
   const { t } = useLanguage()
 
   const rightNavItems: NavItem[] = [
+    { label: t("nav.about").toUpperCase(), href: "/about", isExternal: false },
     { label: t("nav.project").toUpperCase(), href: "/project", isExternal: false },
     { label: t("nav.pricing").toUpperCase(), href: "/pricing", isExternal: false },
     { label: t("nav.changelog").toUpperCase(), href: "/changelog", isExternal: false },
