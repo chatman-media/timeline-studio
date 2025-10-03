@@ -6,7 +6,6 @@
 import { invoke } from "@tauri-apps/api/core"
 import { emit, listen } from "@tauri-apps/api/event"
 
-// biome-ignore lint/correctness/noUnusedImports: UpdateInfo используется в UpdateEventPayload
 import type { UpdateCheckResult, UpdateEventPayload, UpdateInfo, UpdateProgress, UpdateStatus } from "../types"
 
 /**
