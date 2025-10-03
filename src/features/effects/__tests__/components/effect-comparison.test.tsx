@@ -26,7 +26,7 @@ vi.mock("@/components/ui/slider", () => ({
       type="range"
       data-testid="slider"
       value={value[0]}
-      onChange={(e) => onValueChange([Number.parseInt(e.target.value)])}
+      onChange={(e) => onValueChange([Number.parseInt(e.target.value, 10)])}
       min={min}
       max={max}
       step={step}

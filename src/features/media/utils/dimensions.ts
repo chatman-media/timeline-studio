@@ -12,7 +12,7 @@ import type { Dimensions, VideoStream } from "../types/types"
  * });
  */
 export const calculateRealDimensions = (stream: VideoStream & { width: number; height: number }): Dimensions => {
-  const rotation = stream.rotation ? Number.parseInt(stream.rotation) : 0
+  const rotation = stream.rotation ? Number.parseInt(stream.rotation, 10) : 0
   const { width, height } = stream
 
   if (Math.abs(rotation) === 90 || Math.abs(rotation) === 270) {

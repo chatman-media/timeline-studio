@@ -3,6 +3,8 @@
  * Главный экспорт домена AI инструментов
  */
 
+import { getAIToolsContainer } from "./container"
+
 // Базовые компоненты
 export {
   BaseAITool,
@@ -270,7 +272,7 @@ export const LegacyAIToolsCompat = {
   /**
    * Создание адаптера для старых инструментов
    */
-  createLegacyAdapter(legacyTool: any): import("./types").IAITool {
+  createLegacyAdapter(_legacyTool: any): import("./types").IAITool {
     // Здесь будет логика адаптации старых инструментов
     // к новому интерфейсу IAITool
     throw new Error("Legacy adapter not implemented yet")
@@ -279,7 +281,7 @@ export const LegacyAIToolsCompat = {
   /**
    * Миграция старых конфигураций
    */
-  migrateLegacyConfig(legacyConfig: any): import("./types").AIToolsConfig {
+  migrateLegacyConfig(_legacyConfig: any): import("./types").AIToolsConfig {
     // Здесь будет логика миграции старых конфигураций
     throw new Error("Legacy config migration not implemented yet")
   },

@@ -2,22 +2,18 @@
  * Тесты для ToolRegistry
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 import { BaseAITool } from "../../base/base-ai-tool"
 import { ToolRegistry } from "../../base/tool-registry"
-import type { AIToolMetadata, IAITool } from "../../types"
+import type { IAITool } from "../../types"
 
 // Тестовые инструменты
 class TestTool extends BaseAITool {
-  constructor(metadata: AIToolMetadata) {
-    super(metadata)
-  }
-
   async execute(input: any) {
     return this.executeWithErrorHandling(async () => ({ result: "test" }), input)
   }
 
-  validate(input: any): boolean {
+  validate(_input: any): boolean {
     return true
   }
 

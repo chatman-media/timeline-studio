@@ -248,7 +248,7 @@ export function VoiceRecordModal() {
               min="0"
               max="10"
               value={countdown}
-              onChange={(e) => setCountdown(Number.parseInt(e.target.value) || 0)}
+              onChange={(e) => setCountdown(Number.parseInt(e.target.value, 10) || 0)}
               className="w-20 border-[#444] bg-[#222] text-white focus:border-[#666]"
               disabled={isRecording}
             />

@@ -65,7 +65,7 @@ export function useExportSettings() {
       quality: qualityPreset.quality,
       videoBitrate: qualityPreset.videoBitrate,
       resolution: [resolutionPreset.width, resolutionPreset.height] as [number, number],
-      frameRate: Number.parseInt(exportSettings.frameRate),
+      frameRate: Number.parseInt(exportSettings.frameRate, 10),
       enableGPU: exportSettings.enableGPU,
       advancedCompression: exportSettings.advancedCompression,
       cloudBackup: exportSettings.cloudBackup,

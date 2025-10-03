@@ -143,7 +143,7 @@ export class WhisperTranscriptionTool extends BaseAITool implements IAITool {
 
   async execute(input: WhisperInput, options?: AIToolExecutionOptions): Promise<AIToolResult<WhisperResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptTranscription(input)
       },
       input,
@@ -203,7 +203,7 @@ export class SpeechAnalysisTool extends BaseAITool implements IAITool {
 
   async execute(input: WhisperInput, options?: AIToolExecutionOptions): Promise<AIToolResult<WhisperResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptSpeechAnalysis(input)
       },
       input,

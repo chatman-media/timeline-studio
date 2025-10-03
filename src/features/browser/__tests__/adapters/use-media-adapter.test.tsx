@@ -14,7 +14,7 @@ const parseDuration = (duration: string) => {
   if (!duration) return 0
   const parts = duration.split(":")
   if (parts.length === 3) {
-    return Number.parseInt(parts[0]) * 3600 + Number.parseInt(parts[1]) * 60 + Number.parseInt(parts[2])
+    return Number.parseInt(parts[0], 10) * 3600 + Number.parseInt(parts[1], 10) * 60 + Number.parseInt(parts[2], 10)
   }
   return 0
 }
@@ -25,7 +25,7 @@ vi.mock("@/features/browser/utils", () => ({
     if (!duration) return 0
     const parts = duration.split(":")
     if (parts.length === 3) {
-      return Number.parseInt(parts[0]) * 3600 + Number.parseInt(parts[1]) * 60 + Number.parseInt(parts[2])
+      return Number.parseInt(parts[0], 10) * 3600 + Number.parseInt(parts[1], 10) * 60 + Number.parseInt(parts[2], 10)
     }
     return 0
   }),
@@ -34,7 +34,7 @@ vi.mock("@/features/browser/utils", () => ({
     if (!size) return 0
     const match = /(\d+)(KB|MB|GB)?/i.exec(size)
     if (!match) return 0
-    const value = Number.parseInt(match[1])
+    const value = Number.parseInt(match[1], 10)
     const unit = match[2]?.toUpperCase() || "B"
     const multipliers: Record<string, number> = {
       B: 1,

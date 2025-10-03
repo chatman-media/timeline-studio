@@ -82,7 +82,7 @@ export class ColorPaletteAnalysisTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptColorPaletteAnalysis(input)
       },
       input,
@@ -104,7 +104,7 @@ export class CinematicGradingTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptCinematicGrading(input)
       },
       input,
@@ -126,7 +126,7 @@ export class ColorMatchingTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptColorMatching(input)
       },
       input,
@@ -148,7 +148,7 @@ export class StyleTransferTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptStyleTransfer(input)
       },
       input,
@@ -170,7 +170,7 @@ export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptColorSchemeCreation(input)
       },
       input,
@@ -192,7 +192,7 @@ export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
 
   async execute(input: ColorStyleInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ColorStyleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptConsistencyOptimization(input)
       },
       input,

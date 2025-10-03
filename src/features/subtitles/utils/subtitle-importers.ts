@@ -15,10 +15,10 @@ function parseSRTTime(timeString: string): number {
 
   const [, hours, minutes, seconds, milliseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(milliseconds) / 1000
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(milliseconds, 10) / 1000
   )
 }
 
@@ -33,10 +33,10 @@ function parseVTTTime(timeString: string): number {
 
   const [, hours, minutes, seconds, milliseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(milliseconds) / 1000
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(milliseconds, 10) / 1000
   )
 }
 
@@ -51,10 +51,10 @@ function parseASSTime(timeString: string): number {
 
   const [, hours, minutes, seconds, centiseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(centiseconds) / 100
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(centiseconds, 10) / 100
   )
 }
 
@@ -141,7 +141,7 @@ export function importFromVTT(content: string): SubtitleClip[] {
     const positionMatch = /position:(\d+)%/.exec(timeLine)
     if (positionMatch) {
       position = {
-        x: Number.parseInt(positionMatch[1]) / 100,
+        x: Number.parseInt(positionMatch[1], 10) / 100,
         y: 0.9, // По умолчанию внизу
       }
     }
@@ -297,7 +297,7 @@ function parseASSStyles(content: string): Record<string, SubtitleClip["style"]> 
     }
 
     if (fontSizeIndex >= 0) {
-      style.fontSize = Number.parseInt(styleParts[fontSizeIndex])
+      style.fontSize = Number.parseInt(styleParts[fontSizeIndex], 10)
     }
 
     if (primaryColorIndex >= 0) {
@@ -313,7 +313,7 @@ function parseASSStyles(content: string): Record<string, SubtitleClip["style"]> 
     }
 
     if (alignmentIndex >= 0) {
-      const alignment = Number.parseInt(styleParts[alignmentIndex])
+      const alignment = Number.parseInt(styleParts[alignmentIndex], 10)
       // ASS alignment: 1-3 bottom, 4-6 middle, 7-9 top
       // 1,4,7 - left, 2,5,8 - center, 3,6,9 - right
       if ([1, 4, 7].includes(alignment)) {

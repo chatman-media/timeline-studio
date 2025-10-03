@@ -114,7 +114,7 @@ export class ProjectSchemaBuilder {
 
     // Update frame rate
     if (exportSettings.frameRate !== undefined) {
-      const fps = Number.parseInt(exportSettings.frameRate)
+      const fps = Number.parseInt(exportSettings.frameRate, 10)
       if (!Number.isNaN(fps)) {
         this.projectSchema.timeline.fps = fps
       }

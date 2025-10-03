@@ -143,7 +143,7 @@ export class VideoMetadataAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<VideoAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptVideoMetadata(input)
       },
       input,
@@ -194,7 +194,7 @@ export class SceneDetectionTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<VideoAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptSceneDetection(input)
       },
       input,
@@ -245,7 +245,7 @@ export class VideoQualityAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<VideoAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptQualityAnalysis(input)
       },
       input,
@@ -296,7 +296,7 @@ export class MotionAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<VideoAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptMotionAnalysis(input)
       },
       input,
@@ -348,7 +348,7 @@ export class ColorAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<VideoAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptColorAnalysis(input)
       },
       input,

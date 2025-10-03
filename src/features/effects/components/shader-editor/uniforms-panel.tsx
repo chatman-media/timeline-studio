@@ -89,7 +89,7 @@ export function UniformsPanel({ uniforms, onChange, className }: UniformsPanelPr
               <Input
                 type="number"
                 value={uniform.value}
-                onChange={(e) => onChange(uniform.name, Number.parseInt(e.target.value))}
+                onChange={(e) => onChange(uniform.name, Number.parseInt(e.target.value, 10))}
                 className="w-20 h-8 text-xs"
                 step={1}
               />

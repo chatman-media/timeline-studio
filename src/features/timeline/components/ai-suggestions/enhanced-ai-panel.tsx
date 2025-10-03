@@ -3,12 +3,11 @@
  * Заменяет заглушку настоящей интеграцией с UnifiedDashboard
  */
 
-import { AlertCircle, BarChart3, Bot, Globe, Pause, Play, Settings, Sparkles, Target } from "lucide-react"
+import { AlertCircle, BarChart3, Bot, Globe, Sparkles, Target } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"
 import { MediaInfo } from "@/domains/media-management"
 import { UnifiedDashboard } from "@/features/ai-content-intelligence"

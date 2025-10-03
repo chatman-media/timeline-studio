@@ -100,7 +100,7 @@ export class MultimodalAnalysisTool extends BaseAITool implements IAITool {
 
   async execute(input: MultimodalInput, options?: AIToolExecutionOptions): Promise<AIToolResult<MultimodalResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptMultimodalAnalysis(input)
       },
       input,

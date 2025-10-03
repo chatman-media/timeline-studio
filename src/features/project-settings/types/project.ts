@@ -309,7 +309,9 @@ export const COMMON_RESOLUTIONS: ResolutionOption[] = [
   })),
 ]
 
-export const COMMON_FRAMERATES = FRAME_RATES.map((fr) => Number.parseInt(fr.value)).filter((fr) => !Number.isNaN(fr))
+export const COMMON_FRAMERATES = FRAME_RATES.map((fr) => Number.parseInt(fr.value, 10)).filter(
+  (fr) => !Number.isNaN(fr),
+)
 
 // Функция для получения разрешений для конкретного соотношения сторон
 export function getResolutionsForAspectRatio(aspectRatioLabel: string): ResolutionOption[] {

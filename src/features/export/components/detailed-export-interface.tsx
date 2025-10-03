@@ -402,7 +402,7 @@ export function DetailedExportInterface({
                     <Input
                       type="number"
                       value={settings.bitrate || 8000}
-                      onChange={(e) => onSettingsChange({ bitrate: Number.parseInt(e.target.value) })}
+                      onChange={(e) => onSettingsChange({ bitrate: Number.parseInt(e.target.value, 10) })}
                       className="w-24"
                       disabled={settings.bitrateMode === "auto"}
                     />
@@ -500,7 +500,7 @@ export function DetailedExportInterface({
                     <Input
                       type="number"
                       value={settings.keyframeInterval || 30}
-                      onChange={(e) => onSettingsChange({ keyframeInterval: Number.parseInt(e.target.value) })}
+                      onChange={(e) => onSettingsChange({ keyframeInterval: Number.parseInt(e.target.value, 10) })}
                       className="w-16"
                       disabled={settings.keyframeMode === "auto"}
                     />

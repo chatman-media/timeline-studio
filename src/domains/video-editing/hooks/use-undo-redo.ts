@@ -12,7 +12,7 @@ interface Clip {
   mediaId: string
 }
 
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import { type ActionType, type UndoRedoAction, UndoRedoService } from "../services/undo-redo-service"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 

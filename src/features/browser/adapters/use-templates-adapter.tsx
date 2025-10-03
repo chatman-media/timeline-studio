@@ -174,7 +174,7 @@ export function useTemplatesAdapter(): ListAdapter<TemplateListItem> {
 
       // Фильтрация по количеству экранов
       if (filterType.startsWith("screens-")) {
-        const screenCount = Number.parseInt(filterType.split("-")[1])
+        const screenCount = Number.parseInt(filterType.split("-")[1], 10)
         return template.screens === screenCount
       }
 

@@ -136,7 +136,7 @@ export class AudioLevelsAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<AudioAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptAudioLevels(input)
       },
       input,
@@ -188,7 +188,7 @@ export class AudioNormalizationTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<AudioAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptAudioNormalization(input)
       },
       input,
@@ -240,7 +240,7 @@ export class AudioIssueDetectionTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<AudioAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptIssueDetection(input)
       },
       input,
@@ -291,7 +291,7 @@ export class AudioFeatureExtractionTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<AudioAnalysisResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptFeatureExtraction(input)
       },
       input,

@@ -113,7 +113,7 @@ export function generateVideoId(videos: MediaFile[]): string {
   const maxNumber = sortedVideos.reduce((max, video) => {
     const match = /V(\d+)/.exec(video.id)
     if (match) {
-      const num = Number.parseInt(match[1])
+      const num = Number.parseInt(match[1], 10)
       return num > max ? num : max
     }
     return max

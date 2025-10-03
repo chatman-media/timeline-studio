@@ -142,7 +142,7 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
   }
 
   const parseTime = (timeStr: string): number => {
-    const parts = timeStr.split(":").map((p) => Number.parseInt(p) || 0)
+    const parts = timeStr.split(":").map((p) => Number.parseInt(p, 10) || 0)
     return parts[0] * 3600 + parts[1] * 60 + parts[2]
   }
 

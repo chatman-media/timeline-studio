@@ -310,7 +310,7 @@ export function checkResourceCompatibility(
     if (
       audioStream &&
       audioStream.sample_rate &&
-      Number.parseInt(audioStream.sample_rate.toString()) !== projectSettings.sampleRate
+      Number.parseInt(audioStream.sample_rate.toString(), 10) !== projectSettings.sampleRate
     ) {
       issues.push(`Различная частота дискретизации: ${audioStream.sample_rate} Hz vs ${projectSettings.sampleRate} Hz`)
     }

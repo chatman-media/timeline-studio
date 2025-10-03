@@ -140,7 +140,7 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
       // Парсим padding из строки в объект
       const parsePadding = (paddingStr?: string) => {
         if (!paddingStr) return defaultStyle.padding
-        const values = paddingStr.split(" ").map((v) => Number.parseInt(v) || 0)
+        const values = paddingStr.split(" ").map((v) => Number.parseInt(v, 10) || 0)
         if (values.length === 1) {
           return { top: values[0], right: values[0], bottom: values[0], left: values[0] }
         }
@@ -159,9 +159,9 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         const match = shadowStr.match(/(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(.+)/)
         if (match) {
           return {
-            offsetX: Number.parseInt(match[1]) || 0,
-            offsetY: Number.parseInt(match[2]) || 0,
-            blur: Number.parseInt(match[3]) || 0,
+            offsetX: Number.parseInt(match[1], 10) || 0,
+            offsetY: Number.parseInt(match[2], 10) || 0,
+            blur: Number.parseInt(match[3], 10) || 0,
             color: match[4] || "#000000",
           }
         }
@@ -182,7 +182,8 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         textShadow: parseTextShadow(overrides?.textShadow || baseStyle.style?.textShadow),
         padding: parsePadding(overrides?.padding || baseStyle.style?.padding),
         borderRadius:
-          Number.parseInt(overrides?.borderRadius || baseStyle.style?.borderRadius || "4") || defaultStyle.borderRadius,
+          Number.parseInt(overrides?.borderRadius || baseStyle.style?.borderRadius || "4", 10) ||
+          defaultStyle.borderRadius,
         maxWidth: overrides?.maxWidth || baseStyle.style?.maxWidth || defaultStyle.maxWidth,
         wordWrap: defaultStyle.wordWrap,
         letterSpacing: overrides?.letterSpacing || baseStyle.style?.letterSpacing || defaultStyle.letterSpacing,

@@ -14,10 +14,10 @@ function parseSRTTime(timeStr: string): number {
 
   const [, hours, minutes, seconds, milliseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(milliseconds.padEnd(3, "0")) / 1000
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(milliseconds.padEnd(3, "0"), 10) / 1000
   )
 }
 
@@ -33,7 +33,9 @@ function parseVTTTime(timeStr: string): number {
     if (match) {
       const [, minutes, seconds, milliseconds] = match
       return (
-        Number.parseInt(minutes) * 60 + Number.parseInt(seconds) + Number.parseInt(milliseconds.padEnd(3, "0")) / 1000
+        Number.parseInt(minutes, 10) * 60 +
+        Number.parseInt(seconds, 10) +
+        Number.parseInt(milliseconds.padEnd(3, "0"), 10) / 1000
       )
     }
     throw new Error(`Invalid VTT time format: ${timeStr}`)
@@ -41,10 +43,10 @@ function parseVTTTime(timeStr: string): number {
 
   const [, hours, minutes, seconds, milliseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(milliseconds.padEnd(3, "0")) / 1000
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(milliseconds.padEnd(3, "0"), 10) / 1000
   )
 }
 
@@ -285,10 +287,10 @@ function parseASSTime(timeStr: string): number {
 
   const [, hours, minutes, seconds, centiseconds] = match
   return (
-    Number.parseInt(hours) * 3600 +
-    Number.parseInt(minutes) * 60 +
-    Number.parseInt(seconds) +
-    Number.parseInt(centiseconds) / 100
+    Number.parseInt(hours, 10) * 3600 +
+    Number.parseInt(minutes, 10) * 60 +
+    Number.parseInt(seconds, 10) +
+    Number.parseInt(centiseconds, 10) / 100
   )
 }
 

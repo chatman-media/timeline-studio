@@ -187,7 +187,7 @@ export class ShaderCompiler {
       if (errorMatch) {
         const [, , lineNum, message] = errorMatch
         errors.push({
-          line: Number.parseInt(lineNum),
+          line: Number.parseInt(lineNum, 10),
           message,
           type: "syntax",
         })
@@ -199,7 +199,7 @@ export class ShaderCompiler {
       if (warningMatch) {
         const [, , lineNum, message] = warningMatch
         warnings.push({
-          line: Number.parseInt(lineNum),
+          line: Number.parseInt(lineNum, 10),
           message,
           type: "compatibility",
         })
@@ -329,7 +329,7 @@ export class ShaderCompiler {
         case "float":
           return Number.parseFloat(str)
         case "int":
-          return Number.parseInt(str)
+          return Number.parseInt(str, 10)
         case "bool":
           return str.toLowerCase() === "true"
         case "vec2":

@@ -5,11 +5,7 @@
 
 import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
 import type { SpeechDetection } from "@/domains/ai-services/types"
-import type {
-  TranscriptionOptions,
-  TranscriptionResult,
-  WhisperIntegrationOptions,
-} from "@/domains/ai-services/types/transcription"
+import type { TranscriptionResult, WhisperIntegrationOptions } from "@/domains/ai-services/types/transcription"
 
 // WhisperIntegrationOptions теперь в domains/ai-services/types/transcription
 

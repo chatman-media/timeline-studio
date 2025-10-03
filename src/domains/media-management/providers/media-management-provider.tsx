@@ -75,7 +75,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
   }
 
   const mediaManagementService: MediaManagementService = {
-    importFiles: async (files: string[], options: MediaImportOptions) => {
+    importFiles: async (files: string[], _options: MediaImportOptions) => {
       console.log(`[Media Management] Importing ${files.length} files`)
       setIsLoading(true)
       setError(null)

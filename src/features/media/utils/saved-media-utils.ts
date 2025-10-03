@@ -135,8 +135,8 @@ export async function convertToSavedMusicFile(file: MediaFile, projectPath?: str
       typeof tags.genre === "string" ? tags.genre : typeof tags.GENRE === "string" ? tags.GENRE : undefined
     musicMetadata.title =
       typeof tags.title === "string" ? tags.title : typeof tags.TITLE === "string" ? tags.TITLE : undefined
-    musicMetadata.year = tags.date ? Number.parseInt(String(tags.date)) : undefined
-    musicMetadata.track = tags.track ? Number.parseInt(String(tags.track)) : undefined
+    musicMetadata.year = tags.date ? Number.parseInt(String(tags.date), 10) : undefined
+    musicMetadata.track = tags.track ? Number.parseInt(String(tags.track), 10) : undefined
   }
 
   return {

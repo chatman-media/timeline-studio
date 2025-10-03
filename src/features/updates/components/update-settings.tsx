@@ -39,7 +39,7 @@ export function UpdateSettings({ className }: UpdateSettingsProps) {
 
   const handleAutoCheckToggle = (enabled: boolean) => {
     if (enabled) {
-      enableAutoCheck(Number.parseInt(selectedInterval))
+      enableAutoCheck(Number.parseInt(selectedInterval, 10))
     } else {
       disableAutoCheck()
     }
@@ -48,7 +48,7 @@ export function UpdateSettings({ className }: UpdateSettingsProps) {
   const handleIntervalChange = (value: string) => {
     setSelectedInterval(value)
     if (autoCheckSettings.enabled) {
-      enableAutoCheck(Number.parseInt(value))
+      enableAutoCheck(Number.parseInt(value, 10))
     }
   }
 
@@ -235,7 +235,7 @@ export function CompactUpdateSettings({ className }: { className?: string }) {
 
   const handleAutoCheckToggle = (enabled: boolean) => {
     if (enabled) {
-      enableAutoCheck(Number.parseInt(selectedInterval))
+      enableAutoCheck(Number.parseInt(selectedInterval, 10))
     } else {
       disableAutoCheck()
     }
@@ -244,7 +244,7 @@ export function CompactUpdateSettings({ className }: { className?: string }) {
   const handleIntervalChange = (value: string) => {
     setSelectedInterval(value)
     if (autoCheckSettings.enabled) {
-      enableAutoCheck(Number.parseInt(value))
+      enableAutoCheck(Number.parseInt(value, 10))
     }
   }
 

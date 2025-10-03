@@ -322,10 +322,10 @@ export class VisionAdapter implements IVisionService {
       if (match) {
         const [, r, g, b] = match
         return {
-          r: Number.parseInt(r),
-          g: Number.parseInt(g),
-          b: Number.parseInt(b),
-          hex: `#${Number.parseInt(r).toString(16).padStart(2, "0")}${Number.parseInt(g).toString(16).padStart(2, "0")}${Number.parseInt(b).toString(16).padStart(2, "0")}`,
+          r: Number.parseInt(r, 10),
+          g: Number.parseInt(g, 10),
+          b: Number.parseInt(b, 10),
+          hex: `#${Number.parseInt(r, 10).toString(16).padStart(2, "0")}${Number.parseInt(g, 10).toString(16).padStart(2, "0")}${Number.parseInt(b, 10).toString(16).padStart(2, "0")}`,
           percentage: (100 - index * 15) / 100, // Примерное распределение
         }
       }

@@ -87,7 +87,7 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
       ...cssStyle,
       // Адаптируем размер шрифта под размер превью
       fontSize: cssStyle.fontSize
-        ? `${Math.min(Number.parseInt(cssStyle.fontSize.toString()) * ((previewWidth ?? size) / 200), Number.parseInt(cssStyle.fontSize.toString()))}px`
+        ? `${Math.min(Number.parseInt(cssStyle.fontSize.toString(), 10) * ((previewWidth ?? size) / 200), Number.parseInt(cssStyle.fontSize.toString(), 10))}px`
         : `${Math.max(12, (previewWidth ?? size) / 10)}px`,
     }
   }, [cssStyle, previewWidth])

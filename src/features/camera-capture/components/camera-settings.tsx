@@ -153,7 +153,7 @@ export function CameraSettings({
         ) : (
           <Select
             value={frameRate.toString()}
-            onValueChange={(value) => onFrameRateChange(Number.parseInt(value))}
+            onValueChange={(value) => onFrameRateChange(Number.parseInt(value, 10))}
             disabled={isRecording}
           >
             <SelectTrigger className="w-full border-[#444] bg-[#222] focus:ring-0 focus:ring-offset-0">
@@ -187,7 +187,7 @@ export function CameraSettings({
         <Input
           type="number"
           value={countdown}
-          onChange={(e) => onCountdownChange(Number.parseInt(e.target.value) || 3)}
+          onChange={(e) => onCountdownChange(Number.parseInt(e.target.value, 10) || 3)}
           min={0}
           max={10}
           className="mr-2 w-20 border-[#444] bg-[#222] text-center"

@@ -104,7 +104,7 @@ export function useChannelEffects(engine: AudioEngine | null, channelId: string)
     switch (effectData.type) {
       case "equalizer":
         if (param.startsWith("band-")) {
-          const bandIndex = Number.parseInt(param.replace("band-", ""))
+          const bandIndex = Number.parseInt(param.replace("band-", ""), 10)
           const processor = effectData.processor as EqualizerProcessor
           processor.updateBand(bandIndex, { gain: value })
         }

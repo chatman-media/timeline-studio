@@ -121,7 +121,7 @@ function extractFrameRate(file: MediaFile): number | undefined {
     const videoStream = (file as any).metadata.probeData.streams.find((s: any) => s.codec_type === "video")
     if (videoStream?.r_frame_rate) {
       const [num, den] = videoStream.r_frame_rate.split("/")
-      return Number.parseInt(num) / Number.parseInt(den)
+      return Number.parseInt(num, 10) / Number.parseInt(den, 10)
     }
   }
   return undefined
@@ -132,7 +132,7 @@ function extractFrameRateFromProbe(probeData: any): number | undefined {
     const videoStream = probeData.streams.find((s: any) => s.codec_type === "video")
     if (videoStream?.r_frame_rate) {
       const [num, den] = videoStream.r_frame_rate.split("/")
-      return Number.parseInt(num) / Number.parseInt(den)
+      return Number.parseInt(num, 10) / Number.parseInt(den, 10)
     }
   }
   return undefined
@@ -190,14 +190,14 @@ function extractCodecFromProbe(probeData: any): string | undefined {
  */
 function extractBitRate(file: MediaFile): number | undefined {
   if ((file as any).metadata?.probeData?.format?.bit_rate) {
-    return Number.parseInt((file as any).metadata.probeData.format.bit_rate)
+    return Number.parseInt((file as any).metadata.probeData.format.bit_rate, 10)
   }
   return undefined
 }
 
 function extractBitRateFromProbe(probeData: any): number | undefined {
   if (probeData?.format?.bit_rate) {
-    return Number.parseInt(probeData.format.bit_rate)
+    return Number.parseInt(probeData.format.bit_rate, 10)
   }
   return undefined
 }

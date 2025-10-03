@@ -25,7 +25,7 @@ class TestAITool extends BaseAITool {
 
   async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         if (input.shouldFail) {
           throw new Error("Тестовая ошибка")
         }
@@ -116,7 +116,7 @@ describe("BaseAITool", () => {
       class SlowTool extends TestAITool {
         async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
           return this.executeWithErrorHandling(
-            async (context) => {
+            async (_context) => {
               await new Promise((resolve) => setTimeout(resolve, 100))
               return { result: "slow" }
             },
@@ -164,7 +164,9 @@ describe("BaseAITool", () => {
 
       logger.info("Test message", { data: "test" })
 
-      expect(consoleSpy).toHaveBeenCalledWith("[Test] INFO: Test message", { data: "test" })
+      expect(consoleSpy).toHaveBeenCalledWith("[Test] INFO: Test message", {
+        data: "test",
+      })
 
       consoleSpy.mockRestore()
     })

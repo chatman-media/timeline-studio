@@ -21,7 +21,7 @@ export function useMidiIntegration() {
       const target = parts[0]
 
       if (target === "channel" && parts.length >= 3) {
-        const channelIndex = Number.parseInt(parts[1]) - 1 // Convert to 0-based index
+        const channelIndex = Number.parseInt(parts[1], 10) - 1 // Convert to 0-based index
         const param = parts[2]
 
         if (Number.isNaN(channelIndex)) return

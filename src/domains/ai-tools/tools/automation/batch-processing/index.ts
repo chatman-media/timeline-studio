@@ -291,7 +291,7 @@ export class BatchProcessingTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<BatchProcessingResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptBatchProcessing(input)
       },
       input,

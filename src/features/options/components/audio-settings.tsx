@@ -467,7 +467,7 @@ export function AudioSettings() {
                     type="number"
                     value={settings.bufferSize}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, bufferSize: Number.parseInt(e.target.value) || 512 }))
+                      setSettings((prev) => ({ ...prev, bufferSize: Number.parseInt(e.target.value, 10) || 512 }))
                     }
                     min="128"
                     max="2048"
@@ -485,7 +485,7 @@ export function AudioSettings() {
                     type="number"
                     value={settings.latency}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, latency: Number.parseInt(e.target.value) || 20 }))
+                      setSettings((prev) => ({ ...prev, latency: Number.parseInt(e.target.value, 10) || 20 }))
                     }
                     min="0"
                     max="100"

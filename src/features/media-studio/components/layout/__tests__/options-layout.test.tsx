@@ -408,10 +408,10 @@ describe("OptionsLayout", () => {
         const maxSize = panel.getAttribute("data-max-size")
 
         if (minSize) {
-          expect(Number.parseInt(minSize)).toBeGreaterThanOrEqual(20)
+          expect(Number.parseInt(minSize, 10)).toBeGreaterThanOrEqual(20)
         }
         if (maxSize) {
-          expect(Number.parseInt(maxSize)).toBeLessThanOrEqual(100)
+          expect(Number.parseInt(maxSize, 10)).toBeLessThanOrEqual(100)
         }
       })
     })

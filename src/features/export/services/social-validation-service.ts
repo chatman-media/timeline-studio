@@ -250,7 +250,7 @@ function validateExportConfig(
             ? 1080
             : 720
 
-    const settingsHeight = resolutionMap[settings.resolution] || Number.parseInt(settings.resolution)
+    const settingsHeight = resolutionMap[settings.resolution] || Number.parseInt(settings.resolution, 10)
     if (settingsHeight > maxResolutionHeight) {
       result.warnings.push(`Resolution ${settings.resolution}p may exceed platform limits`)
     }
@@ -271,7 +271,7 @@ function addOptimizationSuggestions(networkId: string, settings: SocialExportSet
 
     case "youtube":
       // Consider using YouTube Shorts format for vertical videos
-      if (settings.resolution && Number.parseInt(settings.resolution) < 1080) {
+      if (settings.resolution && Number.parseInt(settings.resolution, 10) < 1080) {
         result.suggestions.push("YouTube recommends 1080p or higher for best quality")
       }
       break

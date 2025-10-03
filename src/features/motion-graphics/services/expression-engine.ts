@@ -172,7 +172,7 @@ export class ExpressionEvaluator {
       velocity: context.velocity,
 
       // Layer/property info
-      index: context.layer?.id ? Number.parseInt(context.layer.id.split("-").pop() || "0") : 0,
+      index: context.layer?.id ? Number.parseInt(context.layer.id.split("-").pop() || "0", 10) : 0,
 
       // Composition info
       comp: {

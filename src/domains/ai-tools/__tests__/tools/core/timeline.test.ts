@@ -2,7 +2,7 @@
  * Тесты для Timeline Tools
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import {
   timelineClipPlacementTool,
   timelineEnhancementApplicationTool,

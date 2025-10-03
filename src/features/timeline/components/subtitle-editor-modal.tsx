@@ -241,7 +241,7 @@ export function SubtitleEditorModal() {
             id="maxWidth"
             type="number"
             value={maxWidth}
-            onChange={(e) => setMaxWidth(Number.parseInt(e.target.value) || 80)}
+            onChange={(e) => setMaxWidth(Number.parseInt(e.target.value, 10) || 80)}
             min="20"
             max="100"
             step="5"

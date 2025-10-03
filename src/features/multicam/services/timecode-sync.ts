@@ -33,14 +33,14 @@ export function parseTimecode(timecode: string, frameRate: number): TimecodeInfo
 
   // Вычисляем общее количество кадров
   let totalFrames = 0
-  totalFrames += Number.parseInt(hours) * 3600 * frameRate
-  totalFrames += Number.parseInt(minutes) * 60 * frameRate
-  totalFrames += Number.parseInt(seconds) * frameRate
-  totalFrames += Number.parseInt(frames)
+  totalFrames += Number.parseInt(hours, 10) * 3600 * frameRate
+  totalFrames += Number.parseInt(minutes, 10) * 60 * frameRate
+  totalFrames += Number.parseInt(seconds, 10) * frameRate
+  totalFrames += Number.parseInt(frames, 10)
 
   // Корректировка для drop frame (NTSC)
   if (dropFrame && (frameRate === 29.97 || frameRate === 59.94)) {
-    const totalMinutes = Number.parseInt(hours) * 60 + Number.parseInt(minutes)
+    const totalMinutes = Number.parseInt(hours, 10) * 60 + Number.parseInt(minutes, 10)
     const droppedFrames = totalMinutes * 2 - Math.floor(totalMinutes / 10) * 2
     totalFrames -= droppedFrames
   }

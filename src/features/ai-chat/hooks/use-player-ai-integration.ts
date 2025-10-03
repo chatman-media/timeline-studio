@@ -120,7 +120,7 @@ export function usePlayerAIIntegration() {
     if (videoStream) {
       const width = videoStream.width || 0
       const height = videoStream.height || 0
-      const bitrate = Number.parseInt(videoStream.bit_rate || "0") || 0
+      const bitrate = Number.parseInt(videoStream.bit_rate || "0", 10) || 0
       const fps = parseFrameRate(videoStream.r_frame_rate || "0")
 
       if (width < 1280 || height < 720) {
@@ -150,8 +150,8 @@ export function usePlayerAIIntegration() {
 
     // Проверка качества аудио
     if (audioStream) {
-      const sampleRate = Number.parseInt(audioStream.sample_rate || "0") || 0
-      const bitrate = Number.parseInt(audioStream.bit_rate || "0") || 0
+      const sampleRate = Number.parseInt(audioStream.sample_rate || "0", 10) || 0
+      const bitrate = Number.parseInt(audioStream.bit_rate || "0", 10) || 0
 
       if (sampleRate < 44100 && sampleRate > 0) {
         issues.push({

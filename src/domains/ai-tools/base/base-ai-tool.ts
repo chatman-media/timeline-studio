@@ -4,7 +4,6 @@
  */
 
 import type {
-  AIToolExecutionContext,
   AIToolExecutionOptions,
   AIToolLogger,
   AIToolMetadata,

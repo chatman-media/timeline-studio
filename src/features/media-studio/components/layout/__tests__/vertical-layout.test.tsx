@@ -449,7 +449,7 @@ describe("VerticalLayout", () => {
       panels.forEach((panel) => {
         const minSize = panel.getAttribute("data-min-size")
         if (minSize) {
-          expect(Number.parseInt(minSize)).toBeGreaterThanOrEqual(20)
+          expect(Number.parseInt(minSize, 10)).toBeGreaterThanOrEqual(20)
         }
       })
 

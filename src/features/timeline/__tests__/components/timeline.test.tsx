@@ -32,9 +32,6 @@ import "@/test/mocks/libraries/lucide-react"
 import "@/test/mocks/libraries/resizable"
 import "@/test/mocks/timeline-components"
 
-import { ChatProvider } from "@/features/ai-chat/services"
-import { ModalProvider } from "@/features/modals"
-import { ProjectSettingsProvider } from "@/features/project-settings"
 import { renderWithTimeline, TimelineProviders } from "@/test/test-utils"
 import { Timeline } from "../../components/timeline"
 

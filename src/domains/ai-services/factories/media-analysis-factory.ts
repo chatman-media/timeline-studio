@@ -4,6 +4,8 @@
  */
 
 import { ContentAnalysisService } from "../services/content"
+import { FFmpegAdapter } from "../services/ffmpeg"
+import { VisionAdapter } from "../services/vision"
 import type {
   IContentAnalysisService,
   IFFmpegAnalysisService,

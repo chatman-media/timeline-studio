@@ -5,14 +5,7 @@
 
 import { UnifiedAIService } from "@/domains/ai-core"
 import { CaptionPosition } from "@/domains/shared/types/ai-tools/platform-adaptation"
-import {
-  AdaptedContent,
-  AudioSpecs,
-  Platform,
-  PlatformResolution,
-  UnifiedContentAnalysis,
-  VideoSpecs,
-} from "@/features/ai-content-intelligence"
+
 import {
   AdaptationStrategy,
   AudioAdaptationStrategy,
@@ -451,13 +444,13 @@ export class PlatformAdapter {
     const tags = new Set<string>()
 
     // Добавляем жанры
-    analysis.genres.forEach((genre) => tags.add(genre))
+    analysis.genres.forEach((genre: string) => tags.add(genre))
 
     // Добавляем темы
     analysis.insights.marketingAngles.forEach((topic: string) => tags.add(topic))
 
     // Добавляем обнаруженные объекты
-    analysis.detections.objects?.forEach((obj) => tags.add(obj.label))
+    analysis.detections.objects?.forEach((obj: { label: string }) => tags.add(obj.label))
 
     return Array.from(tags)
   }

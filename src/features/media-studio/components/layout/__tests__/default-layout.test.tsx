@@ -463,10 +463,10 @@ describe.skip("DefaultLayout", () => {
         const maxSize = panel.getAttribute("data-max-size")
 
         if (minSize) {
-          expect(Number.parseInt(minSize)).toBeGreaterThanOrEqual(10)
+          expect(Number.parseInt(minSize, 10)).toBeGreaterThanOrEqual(10)
         }
         if (maxSize) {
-          expect(Number.parseInt(maxSize)).toBeLessThanOrEqual(100)
+          expect(Number.parseInt(maxSize, 10)).toBeLessThanOrEqual(100)
         }
       })
     })
@@ -483,7 +483,7 @@ describe.skip("DefaultLayout", () => {
       // В зависимости от layout логики maxSize может быть 80 или 100
       const maxSize = videoPanel?.getAttribute("data-max-size")
       expect(maxSize).toBeTruthy()
-      expect(Number.parseInt(maxSize || "0")).toBeGreaterThanOrEqual(80)
+      expect(Number.parseInt(maxSize || "0", 10)).toBeGreaterThanOrEqual(80)
     })
   })
 

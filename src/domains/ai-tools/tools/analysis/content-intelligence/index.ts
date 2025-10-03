@@ -123,7 +123,7 @@ export class ContentAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<ContentIntelligenceResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptContentAnalysis(input)
       },
       input,
@@ -174,7 +174,7 @@ export class TagGenerationTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<ContentIntelligenceResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptTagGeneration(input)
       },
       input,
@@ -225,7 +225,7 @@ export class SentimentAnalysisTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<ContentIntelligenceResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptSentimentAnalysis(input)
       },
       input,

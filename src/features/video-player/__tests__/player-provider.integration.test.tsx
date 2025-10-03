@@ -1,5 +1,4 @@
 import { render } from "@testing-library/react"
-import React from "react"
 import { vi } from "vitest"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 

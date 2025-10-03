@@ -138,7 +138,7 @@ export class FaceDetectionTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<PersonIdentificationResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptFaceDetection(input)
       },
       input,
@@ -200,7 +200,7 @@ export class PersonRecognitionTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<PersonIdentificationResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptPersonRecognition(input)
       },
       input,

@@ -10,10 +10,7 @@ import type {
   AudioAnalysis,
   Fragment,
   MomentScore,
-  MontagePlan,
   MontageQualityAnalysis,
-  MontageStyle,
-  PlanGenerationOptions,
   VideoAnalysis,
   VideoCompositionAnalysis,
 } from "../../../../features/montage-planner/types/index"

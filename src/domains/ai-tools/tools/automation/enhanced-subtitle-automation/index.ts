@@ -3,7 +3,7 @@
  * Инструменты для расширенной автоматизации субтитров
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolResult, BaseAITool } from "../../../base"
 import type { AIToolMetadata, IAITool } from "../../../types"
 
 // TODO: Перенести эти типы в shared/types/ai-tools
@@ -137,7 +137,7 @@ export class AutoGenerateFromVideoTool extends BaseAITool implements IAITool {
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<EnhancedSubtitleResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         return await adaptAutoGenerateFromVideo(input)
       },
       input,

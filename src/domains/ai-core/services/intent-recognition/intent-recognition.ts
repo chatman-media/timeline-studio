@@ -349,7 +349,7 @@ export class IntentRecognitionService {
         const durationPattern = /(\d+)\s*(сек|секунд|с|seconds?)/i
         const durationMatch = durationPattern.exec(normalizedText)
         if (durationMatch) {
-          params.pauseDuration = Number.parseInt(durationMatch[1])
+          params.pauseDuration = Number.parseInt(durationMatch[1], 10)
         }
         break
       }

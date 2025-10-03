@@ -33,7 +33,7 @@ export function parseCubeFile(content: string): LUTData {
     if (line.startsWith("TITLE")) {
       title = line.substring(6).replace(/"/g, "").trim()
     } else if (line.startsWith("LUT_3D_SIZE")) {
-      size = Number.parseInt(line.split(" ")[1])
+      size = Number.parseInt(line.split(" ")[1], 10)
     } else if (line.startsWith("DOMAIN_MIN")) {
       const values = line.split(" ").slice(1).map(Number)
       domainMin = [values[0], values[1], values[2]]

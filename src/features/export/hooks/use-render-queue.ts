@@ -133,7 +133,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
               },
               timeline: {
                 duration: totalDuration,
-                fps: Number.parseInt(projectFile.settings.frameRate) || 30,
+                fps: Number.parseInt(projectFile.settings.frameRate, 10) || 30,
                 resolution: resolution,
                 sample_rate: 48000,
                 aspect_ratio: aspectRatio,

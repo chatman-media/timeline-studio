@@ -4,7 +4,6 @@
  */
 
 import type {
-  AIToolExecutionEvent,
   AIToolExecutionOptions,
   AIToolExecutionStatus,
   AIToolResult,
@@ -77,7 +76,7 @@ export class ExecutionEngine implements IExecutionEngine {
     const startTime = Date.now()
 
     // Создаем промис выполнения
-    const executionPromise = this.executeToolWithMonitoring(tool, input, options, executionId, controller.signal)
+    const executionPromise = this.executeToolWithMonitoring(tool, input, executionId, controller.signal, options)
 
     // Регистрируем выполнение
     const executionInfo: ExecutionInfo = {
@@ -238,9 +237,9 @@ export class ExecutionEngine implements IExecutionEngine {
   private async executeToolWithMonitoring(
     tool: any,
     input: any,
-    options: AIToolExecutionOptions = {},
     executionId: string,
     signal: AbortSignal,
+    options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult> {
     // Проверяем отмену
     if (signal.aborted) {

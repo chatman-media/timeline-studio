@@ -959,7 +959,7 @@ const AudioStep: FC<StyleStepProps> = ({ state, onUpdate }) => {
             id="duration"
             type="number"
             value={state.duration || ""}
-            onChange={(e) => onUpdate({ duration: e.target.value ? Number.parseInt(e.target.value) : undefined })}
+            onChange={(e) => onUpdate({ duration: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
             placeholder="Оставьте пустым для автоматического определения"
             min="10"
             max="3600"
