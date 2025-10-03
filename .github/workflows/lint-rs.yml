@@ -201,6 +201,10 @@ jobs:
           FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
           FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
           FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
+          FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}
 
       - name: Run clippy check and deny warnings
         run: npm run lint:rust
@@ -210,3 +214,7 @@ jobs:
           FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
           FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
           FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
+          FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}

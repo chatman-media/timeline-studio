@@ -171,7 +171,7 @@ const translations = {
     // Project page translations
     "project.hero.title": "Project Documentation",
     "project.hero.description": "Complete Timeline Studio documentation - revolutionary AI video editor",
-    "project.hero.version": "Version 0.79.0",
+    "project.hero.version": "Version 1.40.0",
     "project.hero.ready": "95% ready",
     "project.hero.tools": "250+ AI tools",
     "project.tabs.manifest": "Manifest",
@@ -414,7 +414,7 @@ const translations = {
     // Project page translations
     "project.hero.title": "Проектная документация",
     "project.hero.description": "Полная документация Timeline Studio - революционного AI-видеоредактора",
-    "project.hero.version": "Версия 0.79.0",
+    "project.hero.version": "Версия 1.40.0",
     "project.hero.ready": "95% готовности",
     "project.hero.tools": "250+ AI инструментов",
     "project.tabs.manifest": "Манифест",
@@ -652,7 +652,7 @@ const translations = {
     // Project page translations
     "project.hero.title": "项目文档",
     "project.hero.description": "完整的Timeline Studio文档 - 革命性的AI视频编辑器",
-    "project.hero.version": "版本 0.79.0",
+    "project.hero.version": "版本 1.40.0",
     "project.hero.ready": "95% 完成",
     "project.hero.tools": "250+ AI工具",
     "project.tabs.manifest": "宣言",

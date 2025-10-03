@@ -164,6 +164,8 @@ jobs:
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\ffmpeg\lib
           FFMPEG_SYS_DISABLE_X86ASM: "1"
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
+          FFMPEG_SYS_DISABLE_LINK: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_LINK: "1"
         run: |
           cd src-tauri
           cargo build --release
@@ -179,6 +181,8 @@ jobs:
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\ffmpeg\lib
           FFMPEG_SYS_DISABLE_X86ASM: "1"
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
+          FFMPEG_SYS_DISABLE_LINK: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_LINK: "1"
         run: |
           cd src-tauri
           cargo run --bin generate_types

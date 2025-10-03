@@ -105,7 +105,7 @@ export const Project: React.FC = () => {
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
               <div className="flex items-center justify-center space-x-4 text-gray-400">
-                <span>{language === "ru" ? "Версия 0.79.0" : "Version 0.79.0"}</span>
+                <span>{language === "ru" ? "Версия 1.40.0" : "Version 1.40.0"}</span>
                 <span>•</span>
                 <span>{language === "ru" ? "95% готовности" : "95% ready"}</span>
                 <span>•</span>

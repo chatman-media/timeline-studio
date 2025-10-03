@@ -36,7 +36,7 @@ path = "src/main.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.4", features = [] }
-ffmpeg-sys-next = { version = "8.0.1", features = ["build"] }
+ffmpeg-sys-next = "8.0.1"
 
 [dev-dependencies]
 # For test cleanup and initialization
