@@ -22,7 +22,6 @@ pub type Timestamp = f64;
 pub type PixelCoordinate = f32;
 
 /// Professional Face Recognition Data Structures
-
 /// Главная структура для результатов распознавания
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
