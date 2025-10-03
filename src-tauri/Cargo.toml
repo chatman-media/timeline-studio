@@ -117,8 +117,8 @@ ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "
 ndarray = "0.16.1"
 # System information dependencies
 num_cpus = "1.16"
-sysinfo = "0.37.1"
-os_info = "3.8"
+sysinfo = "0.37.2"
+os_info = "3.12.0"
 # OpenTelemetry dependencies (pinned to compatible older versions)
 opentelemetry = { version = "0.31.0", features = ["trace", "metrics"] }
 opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio", "trace", "metrics"] }
@@ -130,7 +130,7 @@ tracing-opentelemetry = "0.32.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tonic = "0.14.2"
 # WebAssembly runtime dependencies
-wasmtime = "37.0.1"
+wasmtime = { version = "37.0.1", default-features = false }
 filetime = "0.2"
 wasmtime-wasi = "37.0.1"
 wasm-bindgen = "0.2"
