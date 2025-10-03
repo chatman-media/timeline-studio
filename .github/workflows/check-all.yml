@@ -50,6 +50,8 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.90.0
 
       - name: Install Linux dependencies for Tauri bindings
         if: runner.os != 'Windows'
@@ -135,6 +137,8 @@ jobs:
         if: runner.os != 'Windows'
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release
@@ -143,6 +147,8 @@ jobs:
         if: runner.os != 'Windows'
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo run --bin generate_types
@@ -156,6 +162,8 @@ jobs:
           FFMPEG_LIB_DIR: C:\ffmpeg\lib
           FFMPEG_NO_PKG_CONFIG: 1
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\ffmpeg\lib
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release
@@ -169,6 +177,8 @@ jobs:
           FFMPEG_LIB_DIR: C:\ffmpeg\lib
           FFMPEG_NO_PKG_CONFIG: 1
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\ffmpeg\lib
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo run --bin generate_types
@@ -199,12 +209,13 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: 1.90.0
           components: rustfmt, clippy
 
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config nasm yasm autoconf automake libtool texinfo
           
       - name: Setup FFmpeg environment
         run: |
@@ -304,7 +315,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libglib2.0-dev
           # Install FFmpeg dependencies
-          sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config nasm yasm autoconf automake libtool texinfo
 
       - name: Set FFmpeg environment
         run: |
@@ -317,6 +328,8 @@ jobs:
         if: runner.os != 'Windows'
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release
@@ -338,6 +351,8 @@ jobs:
           FFMPEG_LIB_DIR: C:\ffmpeg\lib
           FFMPEG_NO_PKG_CONFIG: 1
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\ffmpeg\lib
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release

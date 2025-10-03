@@ -35,6 +35,10 @@ jobs:
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
           # GTK and GLib dependencies for Tauri
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libglib2.0-dev libgdk-pixbuf2.0-dev libpango1.0-dev libatk1.0-dev libcairo-gobject2 libgtk-3-0 libgdk-pixbuf2.0-0
+          # Install nasm for FFmpeg build optimization
+          sudo apt-get install -y nasm yasm
+          # Install additional build dependencies for FFmpeg
+          sudo apt-get install -y autoconf automake libtool texinfo
           
           # Debug: Check what GLib version is available
           echo "Available GLib packages:"
@@ -91,7 +95,7 @@ jobs:
           cache: 'npm'
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.90.0
 
@@ -147,6 +151,9 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
           RUST_BACKTRACE: 1
           CARGO_NET_GIT_FETCH_WITH_CLI: true
+          # FFmpeg build configuration to handle missing nasm/yasm
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           

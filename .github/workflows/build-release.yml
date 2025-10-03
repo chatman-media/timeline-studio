@@ -93,6 +93,8 @@ jobs:
 
       - name: Install Rust (stable)
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.90.0
 
       - name: Cache Rust
         uses: actions/cache@v3
@@ -321,10 +323,10 @@ jobs:
 
           if [[ "$UBUNTU_VERSION" == "24.04" ]]; then
             # Ubuntu 24.04 (Noble)
-            sudo apt-get install -y build-essential curl libssl-dev libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config clang libclang-dev
+            sudo apt-get install -y build-essential curl libssl-dev libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config clang libclang-dev nasm yasm autoconf automake libtool texinfo
           else
             # Ubuntu 22.04 (Jammy) и более старые versii
-            sudo apt-get install -y build-essential curl libssl-dev libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config clang libclang-dev
+            sudo apt-get install -y build-essential curl libssl-dev libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config clang libclang-dev nasm yasm autoconf automake libtool texinfo
           fi
           
           # Fix FFmpeg headers location for Ubuntu 24.04
@@ -457,6 +459,8 @@ jobs:
         if: runner.os != 'Windows'
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release
@@ -478,6 +482,8 @@ jobs:
           FFMPEG_LIB_DIR: C:\vcpkg\installed\x64-windows\lib
           FFMPEG_NO_PKG_CONFIG: 1
           RUSTFLAGS: -C link-arg=/LIBPATH:C:\vcpkg\installed\x64-windows\lib
+          FFMPEG_SYS_DISABLE_X86ASM: "1"
+          CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
           cargo build --release

@@ -117,7 +117,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
+          toolchain: 1.90.0
 
       - name: Install macOS targets
         run: |
