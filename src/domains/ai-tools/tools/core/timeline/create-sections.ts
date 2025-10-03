@@ -2,7 +2,8 @@
  * AI инструмент для создания секций на Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip, TimelineSection } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, Track } from "@/domains/video-editing/types/timeline"
+import { TimelineSection } from "@/features/timeline/types"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import { calculateSectionsCoverage } from "./utils/calculators"
 import {
@@ -52,6 +53,7 @@ export interface CreateSectionsResult {
  * AI инструмент для создания секций с унифицированной обработкой ошибок
  */
 export class SectionCreationTool extends BaseAITool {
+  toolName: string
   constructor(logger?: AIToolLogger) {
     super("SectionCreationTool", logger)
   }
@@ -128,9 +130,13 @@ export class SectionCreationTool extends BaseAITool {
 
         // Собираем все клипы из проекта
         const allClips: TimelineClip[] = []
-        currentProject.globalTracks.forEach((track) => allClips.push(...track.clips))
-        currentProject.sections.forEach((section) => {
-          section.tracks.forEach((track) => allClips.push(...track.clips))
+        currentProject.globalTracks.forEach((track: Track) => {
+          allClips.push(...track.clips)
+        })
+        currentProject.sections.forEach((section: TimelineSection) => {
+          section.tracks.forEach((track: Track) => {
+            allClips.push(...track.clips)
+          })
         })
 
         // Фильтруем клипы если указаны конкретные
@@ -218,6 +224,9 @@ export class SectionCreationTool extends BaseAITool {
         },
       },
     )
+  }
+  validateInput(input: CreateSectionsInput, arg1: (data: any) => { isValid: boolean; errors: string[] }) {
+    throw new Error("Method not implemented.")
   }
 }
 
