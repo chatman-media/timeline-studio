@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronRight, Folder } from "lucide-react"
-import { useState } from "react"
+import { useId, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -74,6 +74,8 @@ export function DetailedExportInterface({
   const [showSubtitlesSettings, setShowSubtitlesSettings] = useState(false)
   const [renderMode, setRenderMode] = useState<"single" | "individual">("single")
   const [activeTab, setActiveTab] = useState<"video" | "audio" | "file" | "transitions">("video")
+
+  const renderModeId = useId()
 
   // Обработчик выбора пресета
   const handlePresetSelect = (preset: any) => {
@@ -167,14 +169,14 @@ export function DetailedExportInterface({
             <Label>{t("dialogs.export.renderMode")}</Label>
             <RadioGroup value={renderMode} onValueChange={(v) => setRenderMode(v as any)}>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="single" id="single" />
-                <Label htmlFor="single" className="font-normal cursor-pointer">
+                <RadioGroupItem value="single" id={`${renderModeId}-single`} />
+                <Label htmlFor={`${renderModeId}-single`} className="font-normal cursor-pointer">
                   {t("dialogs.export.singleClip")}
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="individual" id="individual" />
-                <Label htmlFor="individual" className="font-normal cursor-pointer">
+                <RadioGroupItem value="individual" id={`${renderModeId}-individual`} />
+                <Label htmlFor={`${renderModeId}-individual`} className="font-normal cursor-pointer">
                   {t("dialogs.export.individualClips")}
                 </Label>
               </div>
@@ -194,11 +196,11 @@ export function DetailedExportInterface({
               {/* Checkbox Экспорт видео */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="export-video"
+                  id={`${renderModeId}-export-video`}
                   checked={settings.exportVideo ?? true}
                   onCheckedChange={(checked) => onSettingsChange({ exportVideo: checked as boolean })}
                 />
-                <Label htmlFor="export-video">{t("dialogs.export.exportVideo")}</Label>
+                <Label htmlFor={`${renderModeId}-export-video`}>{t("dialogs.export.exportVideo")}</Label>
               </div>
 
               {/* Формат */}
@@ -270,22 +272,22 @@ export function DetailedExportInterface({
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="interlaced-rendering"
+                    id={`${renderModeId}-interlaced-rendering`}
                     checked={settings.interlacedRendering ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ interlacedRendering: checked as boolean })}
                   />
-                  <Label htmlFor="interlaced-rendering" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-interlaced-rendering`} className="text-sm">
                     {t("dialogs.export.interlacedRendering")}
                   </Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="optimize-network"
+                    id={`${renderModeId}-optimize-network`}
                     checked={settings.optimizeForNetwork ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ optimizeForNetwork: checked as boolean })}
                   />
-                  <Label htmlFor="optimize-network" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-optimize-network`} className="text-sm">
                     {t("dialogs.export.optimizeForNetwork")}
                   </Label>
                 </div>
@@ -324,11 +326,11 @@ export function DetailedExportInterface({
               {/* Use vertical resolution */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="use-vertical-resolution"
+                  id={`${renderModeId}-use-vertical-resolution`}
                   checked={settings.useVerticalResolution ?? false}
                   onCheckedChange={(checked) => onSettingsChange({ useVerticalResolution: checked as boolean })}
                 />
-                <Label htmlFor="use-vertical-resolution" className="text-sm">
+                <Label htmlFor={`${renderModeId}-use-vertical-resolution`} className="text-sm">
                   {t("dialogs.export.useVerticalResolution")}
                 </Label>
               </div>
@@ -357,11 +359,11 @@ export function DetailedExportInterface({
               {/* Главы по маркерам */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="chapters-by-markers"
+                  id={`${renderModeId}-chapters-by-markers`}
                   checked={settings.chaptersByMarkers ?? false}
                   onCheckedChange={(checked) => onSettingsChange({ chaptersByMarkers: checked as boolean })}
                 />
-                <Label htmlFor="chapters-by-markers" className="text-sm">
+                <Label htmlFor={`${renderModeId}-chapters-by-markers`} className="text-sm">
                   {t("dialogs.export.chaptersByMarkers")}
                 </Label>
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -371,11 +373,11 @@ export function DetailedExportInterface({
               {settings.format !== OutputFormat.Mov && (
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="constant-bitrate"
+                    id={`${renderModeId}-constant-bitrate`}
                     checked={settings.bitrateMode === "limit"}
                     onCheckedChange={(checked) => onSettingsChange({ bitrateMode: checked ? "limit" : "auto" })}
                   />
-                  <Label htmlFor="constant-bitrate" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-constant-bitrate`} className="text-sm">
                     {t("dialogs.export.constantBitrate")}
                   </Label>
                 </div>
@@ -389,14 +391,14 @@ export function DetailedExportInterface({
                   onValueChange={(v) => onSettingsChange({ bitrateMode: v as any })}
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="auto" id="auto" />
-                    <Label htmlFor="auto" className="font-normal">
+                    <RadioGroupItem value="auto" id={`${renderModeId}-auto`} />
+                    <Label htmlFor={`${renderModeId}-auto`} className="font-normal">
                       {t("dialogs.export.auto")}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="limit" id="limit" />
-                    <Label htmlFor="limit" className="font-normal">
+                    <RadioGroupItem value="limit" id={`${renderModeId}-limit`} />
+                    <Label htmlFor={`${renderModeId}-limit`} className="font-normal">
                       {t("dialogs.export.limitTo")}
                     </Label>
                     <Input
@@ -418,11 +420,11 @@ export function DetailedExportInterface({
                 {/* Оптимизация для скорости */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="optimize-speed"
+                    id={`${renderModeId}-optimize-speed`}
                     checked={settings.optimizeForSpeed ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ optimizeForSpeed: checked as boolean })}
                   />
-                  <Label htmlFor="optimize-speed" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-optimize-speed`} className="text-sm">
                     {t("dialogs.export.optimizeForSpeed")}
                   </Label>
                 </div>
@@ -470,11 +472,11 @@ export function DetailedExportInterface({
               {/* Чекбокс многократное кодирование */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="multipass"
+                  id={`${renderModeId}-multipass`}
                   checked={settings.multipassEncoding ?? false}
                   onCheckedChange={(checked) => onSettingsChange({ multipassEncoding: checked as boolean })}
                 />
-                <Label htmlFor="multipass" className="text-sm">
+                <Label htmlFor={`${renderModeId}-multipass`} className="text-sm">
                   {t("dialogs.export.multipassEncoding")}
                 </Label>
               </div>
@@ -487,14 +489,14 @@ export function DetailedExportInterface({
                   onValueChange={(v) => onSettingsChange({ keyframeMode: v as "auto" | "every" })}
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="auto" id="kf-auto" />
-                    <Label htmlFor="kf-auto" className="font-normal">
+                    <RadioGroupItem value="auto" id={`${renderModeId}-kf-auto`} />
+                    <Label htmlFor={`${renderModeId}-kf-auto`} className="font-normal">
                       {t("dialogs.export.auto")}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="every" id="kf-every" />
-                    <Label htmlFor="kf-every" className="font-normal">
+                    <RadioGroupItem value="every" id={`${renderModeId}-kf-every`} />
+                    <Label htmlFor={`${renderModeId}-kf-every`} className="font-normal">
                       {t("dialogs.export.every")}
                     </Label>
                     <Input
@@ -511,11 +513,11 @@ export function DetailedExportInterface({
                 {/* Реорганизация кадров */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="frame-reordering"
+                    id={`${renderModeId}-frame-reordering`}
                     checked={settings.frameReordering ?? true}
                     onCheckedChange={(checked) => onSettingsChange({ frameReordering: checked as boolean })}
                   />
-                  <Label htmlFor="frame-reordering" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-frame-reordering`} className="text-sm">
                     {t("dialogs.export.frameReordering")}
                   </Label>
                 </div>
@@ -526,11 +528,11 @@ export function DetailedExportInterface({
               {/* Checkbox Экспорт аудио */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="export-audio"
+                  id={`${renderModeId}-export-audio`}
                   checked={settings.exportAudio ?? true}
                   onCheckedChange={(checked) => onSettingsChange({ exportAudio: checked as boolean })}
                 />
-                <Label htmlFor="export-audio">{t("dialogs.export.exportAudio")}</Label>
+                <Label htmlFor={`${renderModeId}-export-audio`}>{t("dialogs.export.exportAudio")}</Label>
               </div>
 
               {/* Аудио настройки */}
@@ -568,11 +570,11 @@ export function DetailedExportInterface({
               {/* Normalize Audio */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="normalize-audio"
+                  id={`${renderModeId}-normalize-audio`}
                   checked={settings.normalizeAudio ?? false}
                   onCheckedChange={(checked) => onSettingsChange({ normalizeAudio: checked as boolean })}
                 />
-                <Label htmlFor="normalize-audio" className="text-sm">
+                <Label htmlFor={`${renderModeId}-normalize-audio`} className="text-sm">
                   {t("dialogs.export.normalizeAudio")}
                 </Label>
               </div>
@@ -581,14 +583,14 @@ export function DetailedExportInterface({
                 <div className="space-y-2 ml-6">
                   <RadioGroup value="standard" onValueChange={() => {}}>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="standard" id="normalize-standard" />
-                      <Label htmlFor="normalize-standard" className="font-normal">
+                      <RadioGroupItem value="standard" id={`${renderModeId}-normalize-standard`} />
+                      <Label htmlFor={`${renderModeId}-normalize-standard`} className="font-normal">
                         {t("dialogs.export.normalizeToStandard")}
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="optimize" id="optimize-standard" />
-                      <Label htmlFor="optimize-standard" className="font-normal">
+                      <RadioGroupItem value="optimize" id={`${renderModeId}-optimize-standard`} />
+                      <Label htmlFor={`${renderModeId}-optimize-standard`} className="font-normal">
                         {t("dialogs.export.optimizeToStandard")}
                       </Label>
                     </div>
@@ -658,22 +660,22 @@ export function DetailedExportInterface({
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="use-proxy-media"
+                    id={`${renderModeId}-use-proxy-media`}
                     checked={settings.useProxyMedia ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ useProxyMedia: checked as boolean })}
                   />
-                  <Label htmlFor="use-proxy-media" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-use-proxy-media`} className="text-sm">
                     {t("dialogs.export.useProxyMedia")}
                   </Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="render-without-timecode"
+                    id={`${renderModeId}-render-without-timecode`}
                     checked={settings.renderWithoutTimecode ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ renderWithoutTimecode: checked as boolean })}
                   />
-                  <Label htmlFor="render-without-timecode" className="text-sm">
+                  <Label htmlFor={`${renderModeId}-render-without-timecode`} className="text-sm">
                     {t("dialogs.export.renderWithoutTimecode")}
                   </Label>
                 </div>
@@ -681,7 +683,7 @@ export function DetailedExportInterface({
                 {/* Аппаратное ускорение */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="enable-gpu"
+                    id={`${renderModeId}-enable-gpu`}
                     checked={settings.enableGPU ?? false}
                     onCheckedChange={(checked) => onSettingsChange({ enableGPU: checked as boolean })}
                   />
