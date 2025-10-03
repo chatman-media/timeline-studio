@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/chatman-media/timeline-studio/compare/v1.4.3...v1.5.0) (2025-10-03)
+
+
+### Features
+
+* **navigation:** add about page link to navigation menu ([ff4af40](https://github.com/chatman-media/timeline-studio/commit/ff4af40cb47956f1174529952a1e42c7fe28f745))
+
 ## [1.4.3](https://github.com/chatman-media/timeline-studio/compare/v1.4.2...v1.4.3) (2025-10-03)
 
 
