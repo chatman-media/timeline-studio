@@ -175,7 +175,7 @@
     "vitest-sonar-reporter": "^2.0.4"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.52.3",
+    "@rollup/rollup-linux-x64-gnu": "^4.52.4",
     "@tailwindcss/oxide-darwin-arm64": "^4.1.14",
     "@tailwindcss/oxide-darwin-x64": "^4.1.14",
     "@tailwindcss/oxide-linux-arm64-gnu": "^4.1.14",

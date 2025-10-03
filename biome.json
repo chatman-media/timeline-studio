@@ -213,7 +213,7 @@
       "quoteStyle": "double",
       "attributePosition": "auto"
     },
-    "globals": ["AudioWorkletProcessor", "registerProcessor", "sampleRate", "currentTime", "currentFrame"]
+    "globals": ["AudioWorkletProcessor", "registerProcessor", "sampleRate", "currentTime", "currentFrame", "jest"]
   },
   "json": {
     "formatter": {
