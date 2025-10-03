@@ -3,7 +3,7 @@
  */
 
 import { Settings2, Sparkles } from "lucide-react"
-import { useCallback } from "react"
+import { useCallback, useId } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -114,6 +114,8 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
     return hasEffects || false
   }, [currentTime, project])
 
+  const id = useId()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -136,9 +138,9 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
 
         {/* Включение/выключение */}
         <div className="flex items-center justify-between px-2 py-3">
-          <Label htmlFor="prerender-enabled">Включить пререндер</Label>
+          <Label htmlFor={`${id}-prerender-enabled`}>Включить пререндер</Label>
           <Switch
-            id="prerender-enabled"
+            id={`${id}-prerender-enabled`}
             checked={settings.enabled}
             onCheckedChange={(checked) => updateSetting("enabled", checked)}
           />
@@ -182,9 +184,9 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
 
             {/* Применять эффекты */}
             <div className="flex items-center justify-between px-2 py-3">
-              <Label htmlFor="apply-effects">Применять эффекты</Label>
+              <Label htmlFor={`${id}-apply-effects`}>Применять эффекты</Label>
               <Switch
-                id="apply-effects"
+                id={`${id}-apply-effects`}
                 checked={settings.applyEffects}
                 onCheckedChange={(checked) => updateSetting("applyEffects", checked)}
               />
@@ -192,9 +194,9 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
 
             {/* Автоматический пререндер */}
             <div className="flex items-center justify-between px-2 py-3">
-              <Label htmlFor="auto-prerender">Автоматический</Label>
+              <Label htmlFor={`${id}-auto-prerender`}>Автоматический</Label>
               <Switch
-                id="auto-prerender"
+                id={`${id}-auto-prerender`}
                 checked={settings.autoPrerender}
                 onCheckedChange={(checked) => updateSetting("autoPrerender", checked)}
               />

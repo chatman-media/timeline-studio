@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useId, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
@@ -48,6 +48,8 @@ export function Reverb({ onParameterChange, className }: ReverbProps) {
     })
   }
 
+  const id = useId()
+
   return (
     <div className={cn("bg-zinc-900 rounded-lg p-4 space-y-4", className)}>
       <div className="flex items-center justify-between">
@@ -73,7 +75,7 @@ export function Reverb({ onParameterChange, className }: ReverbProps) {
 
           {/* Gradient definition */}
           <defs>
-            <linearGradient id="reverbGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id={`${id}-reverbGradient`} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
               <stop offset={`${Math.min(95, settings.decay * 20)}%`} stopColor="#3b82f6" stopOpacity="0.1" />
               <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
