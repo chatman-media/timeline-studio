@@ -4,7 +4,7 @@
  */
 
 import { Activity, AlertCircle, Brain, Mic, MicOff, Volume2, Waves, Zap } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useId, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -121,6 +121,7 @@ export function NoiseReduction({
   }
 
   const algorithmInfo = getAlgorithmInfo(settings.config.algorithm)
+  const id = useId()
 
   return (
     <Card className="h-full">
@@ -141,11 +142,11 @@ export function NoiseReduction({
       <CardContent className="space-y-4">
         {/* Algorithm Selection */}
         <div className="space-y-2">
-          <Label htmlFor="algorithm" className="text-xs">
+          <Label htmlFor={`${id}-algorithm`} className="text-xs">
             Algorithm
           </Label>
           <Select value={settings.config.algorithm} onValueChange={handleAlgorithmChange} disabled={!settings.enabled}>
-            <SelectTrigger id="algorithm" className="h-9">
+            <SelectTrigger id={`${id}-algorithm`} className="h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -197,13 +198,13 @@ export function NoiseReduction({
             {/* Strength Control */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="strength" className="text-xs">
+                <Label htmlFor={`${id}-strength`} className="text-xs">
                   Reduction Strength
                 </Label>
                 <span className="text-xs text-muted-foreground">{settings.config.strength}%</span>
               </div>
               <Slider
-                id="strength"
+                id={`${id}-strength`}
                 min={0}
                 max={100}
                 step={1}
@@ -217,11 +218,11 @@ export function NoiseReduction({
             {/* Voice Preservation */}
             {(settings.config.algorithm === "ai" || settings.config.algorithm === "adaptive") && (
               <div className="flex items-center justify-between">
-                <Label htmlFor="preserve-voice" className="text-xs">
+                <Label htmlFor={`${id}-preserve-voice`} className="text-xs">
                   Preserve Voice
                 </Label>
                 <Switch
-                  id="preserve-voice"
+                  id={`${id}-preserve-voice`}
                   checked={settings.config.preserveVoice}
                   onCheckedChange={(preserveVoice) => handleConfigChange({ preserveVoice })}
                   disabled={!settings.enabled}
@@ -232,11 +233,11 @@ export function NoiseReduction({
             {/* Noise Profile Selection */}
             {noiseProfiles.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="profile" className="text-xs">
+                <Label htmlFor={`${id}-profile`} className="text-xs">
                   Noise Profile
                 </Label>
                 <Select value={settings.profileId} onValueChange={(profileId) => onChange({ ...settings, profileId })}>
-                  <SelectTrigger id="profile" className="h-8">
+                  <SelectTrigger id={`${id}-profile`} className="h-8">
                     <SelectValue placeholder="Select profile..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -277,13 +278,13 @@ export function NoiseReduction({
             {/* Attack Time */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="attack" className="text-xs">
+                <Label htmlFor={`${id}-attack`} className="text-xs">
                   Attack Time
                 </Label>
                 <span className="text-xs text-muted-foreground">{settings.config.attackTime}ms</span>
               </div>
               <Slider
-                id="attack"
+                id={`${id}-attack`}
                 min={1}
                 max={100}
                 step={1}
@@ -296,13 +297,13 @@ export function NoiseReduction({
             {/* Release Time */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="release" className="text-xs">
+                <Label htmlFor={`${id}-release`} className="text-xs">
                   Release Time
                 </Label>
                 <span className="text-xs text-muted-foreground">{settings.config.releaseTime}ms</span>
               </div>
               <Slider
-                id="release"
+                id={`${id}-release`}
                 min={10}
                 max={1000}
                 step={10}
@@ -315,7 +316,7 @@ export function NoiseReduction({
             {/* Frequency Smoothing */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="smoothing" className="text-xs">
+                <Label htmlFor={`${id}-smoothing`} className="text-xs">
                   Frequency Smoothing
                 </Label>
                 <span className="text-xs text-muted-foreground">
@@ -323,7 +324,7 @@ export function NoiseReduction({
                 </span>
               </div>
               <Slider
-                id="smoothing"
+                id={`${id}-smoothing`}
                 min={0}
                 max={1}
                 step={0.01}
@@ -337,13 +338,13 @@ export function NoiseReduction({
             {(settings.config.algorithm === "spectral" || settings.config.algorithm === "wiener") && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="floor" className="text-xs">
+                  <Label htmlFor={`${id}-floor`} className="text-xs">
                     {t("fairlightAudio.effects.noiseReduction.parameters.noiseFloor")}
                   </Label>
                   <span className="text-xs text-muted-foreground">{settings.config.noiseFloor}dB</span>
                 </div>
                 <Slider
-                  id="floor"
+                  id={`${id}-floor`}
                   min={-80}
                   max={-20}
                   step={1}
@@ -358,13 +359,13 @@ export function NoiseReduction({
             {settings.config.algorithm === "spectral" && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="threshold" className="text-xs">
+                  <Label htmlFor={`${id}-threshold`} className="text-xs">
                     {t("fairlightAudio.effects.noiseReduction.parameters.gateThreshold")}
                   </Label>
                   <span className="text-xs text-muted-foreground">{settings.config.gateThreshold}dB</span>
                 </div>
                 <Slider
-                  id="threshold"
+                  id={`${id}-threshold`}
                   min={-60}
                   max={0}
                   step={1}
@@ -454,12 +455,12 @@ export function NoiseReduction({
 
         {/* Preview Toggle */}
         <div className="flex items-center justify-between pt-2 border-t">
-          <Label htmlFor="preview" className="text-xs">
+          <Label htmlFor={`${id}-preview`} className="text-xs">
             {t("fairlightAudio.effects.noiseReduction.preview")}
           </Label>
           <div className="flex items-center gap-2">
             <Switch
-              id="preview"
+              id={`${id}-preview`}
               checked={previewEnabled}
               onCheckedChange={setPreviewEnabled}
               disabled={!settings.enabled}
