@@ -4,6 +4,7 @@
  */
 
 import { AlertTriangle, CheckCircle, Cpu, Settings, Zap } from "lucide-react"
+import { useId } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Badge } from "@/components/ui/badge"
@@ -36,6 +37,7 @@ export function TransitionExportSettingsComponent({
 }: TransitionExportSettingsProps) {
   const { t } = useTranslation()
   const { hasTransitions, getTransitionInfo } = useTransitionExport()
+  const id = useId()
 
   // Информация о переходах в проекте
   const transitionInfo = project ? getTransitionInfo(project) : null
@@ -156,11 +158,11 @@ export function TransitionExportSettingsComponent({
       <div className="space-y-4">
         {/* Включить экспорт переходов */}
         <div className="flex items-center justify-between">
-          <Label htmlFor="include-transitions" className="text-sm font-medium">
+          <Label htmlFor={`${id}-include-transitions`} className="text-sm font-medium">
             {t("export.transitions.includeTransitions")}
           </Label>
           <Switch
-            id="include-transitions"
+            id={`${id}-include-transitions`}
             checked={settings.includeTransitions ?? true}
             onCheckedChange={handleSwitchChange("includeTransitions")}
             disabled={!hasProjectTransitions}
@@ -252,11 +254,11 @@ export function TransitionExportSettingsComponent({
 
             {/* Оптимизация переходов */}
             <div className="flex items-center justify-between">
-              <Label htmlFor="optimize-transitions" className="text-sm">
+              <Label htmlFor={`${id}-optimize-transitions`} className="text-sm">
                 {t("export.transitions.optimizeTransitions")}
               </Label>
               <Switch
-                id="optimize-transitions"
+                id={`${id}-optimize-transitions`}
                 checked={settings.optimizeTransitions ?? true}
                 onCheckedChange={handleSwitchChange("optimizeTransitions")}
               />
@@ -297,11 +299,11 @@ export function TransitionExportSettingsComponent({
 
           {/* Параллельная обработка */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="parallel-processing" className="text-sm">
+            <Label htmlFor={`${id}-parallel-processing`} className="text-sm">
               {t("export.transitions.parallelProcessing")}
             </Label>
             <Switch
-              id="parallel-processing"
+              id={`${id}-parallel-processing`}
               checked={settings.parallelTransitionProcessing ?? true}
               onCheckedChange={handleSwitchChange("parallelTransitionProcessing")}
             />
@@ -327,11 +329,11 @@ export function TransitionExportSettingsComponent({
 
           {/* Fallback опции */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="fallback-basic" className="text-sm">
+            <Label htmlFor={`${id}-fallback-basic`} className="text-sm">
               {t("export.transitions.fallbackToBasic")}
             </Label>
             <Switch
-              id="fallback-basic"
+              id={`${id}-fallback-basic`}
               checked={settings.fallbackToBasicTransitions ?? true}
               onCheckedChange={handleSwitchChange("fallbackToBasicTransitions")}
             />
@@ -339,11 +341,11 @@ export function TransitionExportSettingsComponent({
 
           {/* Экспорт метаданных */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="export-metadata" className="text-sm">
+            <Label htmlFor={`${id}-export-metadata`} className="text-sm">
               {t("export.transitions.exportMetadata")}
             </Label>
             <Switch
-              id="export-metadata"
+              id={`${id}-export-metadata`}
               checked={settings.exportTransitionMetadata ?? false}
               onCheckedChange={handleSwitchChange("exportTransitionMetadata")}
             />
@@ -351,11 +353,11 @@ export function TransitionExportSettingsComponent({
 
           {/* Отладка */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="debug-transitions" className="text-sm">
+            <Label htmlFor={`${id}-debug-transitions`} className="text-sm">
               {t("export.transitions.debugMode")}
             </Label>
             <Switch
-              id="debug-transitions"
+              id={`${id}-debug-transitions`}
               checked={settings.debugTransitions ?? false}
               onCheckedChange={handleSwitchChange("debugTransitions")}
             />
@@ -363,11 +365,11 @@ export function TransitionExportSettingsComponent({
 
           {/* Логирование времени */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="log-timing" className="text-sm">
+            <Label htmlFor={`${id}-log-timing`} className="text-sm">
               {t("export.transitions.logTiming")}
             </Label>
             <Switch
-              id="log-timing"
+              id={`${id}-log-timing`}
               checked={settings.logTransitionTiming ?? false}
               onCheckedChange={handleSwitchChange("logTransitionTiming")}
             />
