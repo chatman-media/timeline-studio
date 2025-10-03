@@ -3,17 +3,17 @@
  * Заменяет заглушку настоящей интеграцией с UnifiedDashboard
  */
 
-import { useState, useCallback, useMemo } from "react"
-import { AlertCircle, Sparkles, BarChart3, Target, Globe, Bot, Play, Pause, Settings } from "lucide-react"
+import { AlertCircle, BarChart3, Bot, Globe, Pause, Play, Settings, Sparkles, Target } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { cn } from "@/lib/utils"
-import { UnifiedDashboard } from "@/features/ai-content-intelligence"
-import { MediaInfo } from "@/domains/media-management"
-import { useTimeline } from "@/features/timeline"
 import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"
+import { MediaInfo } from "@/domains/media-management"
+import { UnifiedDashboard } from "@/features/ai-content-intelligence"
+import { useTimeline } from "@/features/timeline"
+import { cn } from "@/lib/utils"
 
 interface EnhancedAIPanelProps {
   className?: string
@@ -93,73 +93,79 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
   const mediaFiles = getMediaFiles()
 
   // Доступные операции AI анализа
-  const quickAnalyses = useMemo<QuickAnalysis[]>(() => [
-    {
-      id: "scene_analysis",
-      name: "Анализ сцен",
-      icon: <BarChart3 className="h-4 w-4" />,
-      operation: "detect_scenes",
-      description: "Обнаружение границ сцен и ключевых кадров"
-    },
-    {
-      id: "content_classification",
-      name: "Классификация",
-      icon: <Target className="h-4 w-4" />,
-      operation: "classify_content",
-      description: "Классификация контента по жанрам и тематике"
-    },
-    {
-      id: "platform_adaptation",
-      name: "Платформы",
-      icon: <Globe className="h-4 w-4" />,
-      operation: "adapt_platform",
-      description: "Адаптация контента под разные платформы"
-    },
-    {
-      id: "audience_analysis",
-      name: "Аудитория",
-      icon: <Bot className="h-4 w-4" />,
-      operation: "analyze_audience",
-      description: "Анализ целевой аудитории и предпочтений"
-    }
-  ], [])
+  const quickAnalyses = useMemo<QuickAnalysis[]>(
+    () => [
+      {
+        id: "scene_analysis",
+        name: "Анализ сцен",
+        icon: <BarChart3 className="h-4 w-4" />,
+        operation: "detect_scenes",
+        description: "Обнаружение границ сцен и ключевых кадров",
+      },
+      {
+        id: "content_classification",
+        name: "Классификация",
+        icon: <Target className="h-4 w-4" />,
+        operation: "classify_content",
+        description: "Классификация контента по жанрам и тематике",
+      },
+      {
+        id: "platform_adaptation",
+        name: "Платформы",
+        icon: <Globe className="h-4 w-4" />,
+        operation: "adapt_platform",
+        description: "Адаптация контента под разные платформы",
+      },
+      {
+        id: "audience_analysis",
+        name: "Аудитория",
+        icon: <Bot className="h-4 w-4" />,
+        operation: "analyze_audience",
+        description: "Анализ целевой аудитории и предпочтений",
+      },
+    ],
+    [],
+  )
 
   // Выполнение быстрого анализа
-  const handleQuickAnalysis = useCallback(async (analysis: QuickAnalysis) => {
-    if (!clips || clips.length === 0) {
-      setError(new Error("Нет медиа файлов для анализа"))
-      return
-    }
+  const handleQuickAnalysis = useCallback(
+    async (analysis: QuickAnalysis) => {
+      if (!clips || clips.length === 0) {
+        setError(new Error("Нет медиа файлов для анализа"))
+        return
+      }
 
-    setIsProcessing(true)
-    setError(null)
+      setIsProcessing(true)
+      setError(null)
 
-    try {
-      const result = await executeContentIntelligenceTool({
-        operation: analysis.operation,
-        mediaFiles: mediaFiles,
-        options: {
-          projectTitle: project?.name || "Timeline Project",
-          targetPlatforms: ["youtube", "instagram", "tiktok"],
-          language: "ru",
-          audience: "general"
-        }
-      })
+      try {
+        const result = await executeContentIntelligenceTool({
+          operation: analysis.operation,
+          mediaFiles: mediaFiles,
+          options: {
+            projectTitle: project?.name || "Timeline Project",
+            targetPlatforms: ["youtube", "instagram", "tiktok"],
+            language: "ru",
+            audience: "general",
+          },
+        })
 
-      setAnalysisResults({
-        analysis: analysis.name,
-        results: result,
-        timestamp: new Date().toISOString()
-      })
+        setAnalysisResults({
+          analysis: analysis.name,
+          results: result,
+          timestamp: new Date().toISOString(),
+        })
 
-      console.log(`AI Panel: ${analysis.name} completed`, result)
-    } catch (error) {
-      console.error(`AI Panel: ${analysis.name} failed`, error)
-      setError(error instanceof Error ? error : new Error("Ошибка анализа"))
-    } finally {
-      setIsProcessing(false)
-    }
-  }, [clips, mediaFiles, project?.name])
+        console.log(`AI Panel: ${analysis.name} completed`, result)
+      } catch (error) {
+        console.error(`AI Panel: ${analysis.name} failed`, error)
+        setError(error instanceof Error ? error : new Error("Ошибка анализа"))
+      } finally {
+        setIsProcessing(false)
+      }
+    },
+    [clips, mediaFiles, project?.name],
+  )
 
   return (
     <div className={cn("h-full w-full bg-muted/30 border-l border-border flex flex-col", className)}>
@@ -169,7 +175,7 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
           <h3 className="text-lg font-semibold">AI Content Intelligence</h3>
         </div>
         <p className="text-sm text-muted-foreground mb-3">AI анализ и предложения для улучшения контента</p>
-        
+
         {/* Быстрые действия */}
         <div className="grid grid-cols-2 gap-2 mt-3">
           {quickAnalyses.map((analysis) => (
@@ -192,9 +198,7 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
         {error && (
           <Alert variant="destructive" className="m-4">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {error.message || "Произошла ошибка при анализе контента"}
-            </AlertDescription>
+            <AlertDescription>{error.message || "Произошла ошибка при анализе контента"}</AlertDescription>
           </Alert>
         )}
 
@@ -203,9 +207,7 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
           <div className="m-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="h-4 w-4 text-blue-600" />
-              <h4 className="font-medium text-blue-900 dark:text-blue-100">
-                {analysisResults.analysis} завершен
-              </h4>
+              <h4 className="font-medium text-blue-900 dark:text-blue-100">{analysisResults.analysis} завершен</h4>
             </div>
             <div className="text-sm text-blue-800 dark:text-blue-200">
               <p>Найдено рекомендаций: {analysisResults.results?.recommendations?.length || 0}</p>
@@ -230,9 +232,7 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
                 <Sparkles className="h-12 w-12 mx-auto text-blue-500 opacity-50" />
               </div>
               <p className="mb-2">Нет медиа файлов для анализа</p>
-              <p className="text-sm">
-                Добавьте видео или аудио в таймлайн, чтобы начать AI анализ
-              </p>
+              <p className="text-sm">Добавьте видео или аудио в таймлайн, чтобы начать AI анализ</p>
             </div>
           </div>
         )}

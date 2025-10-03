@@ -16,9 +16,9 @@ type TimelineProject = Timeline
 type TimelineTrack = Track
 type TimelineClip = DomainTimelineClip
 
-import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 
 // ===========================
 // Project Provider
@@ -50,7 +50,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setBackendProject(state)
-      
+
       // Синхронизируем состояние с timeline машиной
       if (state.project) {
         timelineActor.send({
@@ -61,7 +61,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     })
 
     // Получаем начальное состояние
-    backendSync.getProjectState().then(state => {
+    backendSync.getProjectState().then((state) => {
       if (state) {
         setBackendProject(state)
       }
@@ -243,7 +243,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
           type: "DeleteTrack",
           params: { track_id: trackId },
         })
-        
+
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "REMOVE_TRACK", trackId })
       } catch (error) {
@@ -258,7 +258,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
           type: "UpdateTrack",
           params: { track_id: trackId, updates },
         })
-        
+
         // Обновляем локальное состояние
         timelineActor.send({ type: "UPDATE_TRACK", trackId, updates })
       } catch (error) {
@@ -273,7 +273,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
           type: "ReorderTracks",
           params: { section_id: sectionId, track_ids: trackIds },
         })
-        
+
         // Обновляем локальное состояние
         timelineActor.send({ type: "REORDER_TRACKS", sectionId, trackIds })
       } catch (error) {
@@ -333,7 +333,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "DeleteClip",
           params: { clip_id: clipId },
         })
-        
+
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "REMOVE_CLIP", clipId })
       } catch (error) {
@@ -348,7 +348,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "MoveClip",
           params: { clip_id: clipId, track_id: trackId, time },
         })
-        
+
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "MOVE_CLIP", clipId, trackId, time })
       } catch (error) {
@@ -363,7 +363,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "TrimClip",
           params: { clip_id: clipId, start: startTime, end: endTime },
         })
-        
+
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "TRIM_CLIP", clipId, startTime, endTime })
       } catch (error) {
@@ -378,7 +378,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "SplitClip",
           params: { clip_id: clipId, time },
         })
-        
+
         // Обновляем локальное состояние
         timelineActor.send({ type: "SPLIT_CLIP", clipId, time })
       } catch (error) {
@@ -394,7 +394,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "UpdateClip",
           params: { clip_id: clipId, updates },
         })
-        
+
         // Обновляем локальное состояние
         timelineActor.send({ type: "UPDATE_CLIP", clipId, updates })
       } catch (error) {
@@ -409,7 +409,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
           type: "BatchUpdateClips",
           params: { clips },
         })
-        
+
         // Обновляем локальное состояние
         timelineActor.send({ type: "BATCH_UPDATE_CLIPS", clips })
       } catch (error) {
@@ -565,10 +565,10 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем удаление выбранных элементов с backend
         await backendSync.executeCommand({
           type: "DeleteSelected",
-          params: { 
+          params: {
             clip_ids: selectedClipIds,
             track_ids: selectedTrackIds,
-            section_ids: selectedSectionIds
+            section_ids: selectedSectionIds,
           },
         })
         timelineActor.send({ type: "DELETE_SELECTED" })

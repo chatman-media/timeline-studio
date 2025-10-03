@@ -5,13 +5,13 @@
  * Перенесено на BackendSync для централизованного управления состоянием
  */
 
-import { createContext, type ReactNode, useState, useEffect } from "react"
-import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
-import { getMediaMetadataService } from "../services/media-metadata-service"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createContext, type ReactNode, useEffect, useState } from "react"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
-import type { MediaImportOptions, MediaManagementService, MediaType } from "../types"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+import { getMediaMetadataService } from "../services/media-metadata-service"
+import type { MediaImportOptions, MediaManagementService, MediaType } from "../types"
 
 interface MediaManagementContextValue extends MediaManagementService {
   fileOperationsState: any
@@ -31,8 +31,8 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fileOperations, setFileOperations] = useState<any[]>([])
-  const [mediaImportStatus, setMediaImportStatus] = useState<'idle' | 'importing' | 'completed' | 'failed'>('idle')
-  
+  const [mediaImportStatus, setMediaImportStatus] = useState<"idle" | "importing" | "completed" | "failed">("idle")
+
   const backendSync = getBackendSync()
   const metadataService = getMediaMetadataService()
 
@@ -42,13 +42,15 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       // Обновляем состояние на основе backend
       if (state.project?.media_files) {
         // Обновляем список медиа файлов
-        setFileOperations(state.project.media_files.map(file => ({
-          id: file.id,
-          path: file.path,
-          status: 'completed',
-          result: file,
-          progress: 100
-        })))
+        setFileOperations(
+          state.project.media_files.map((file) => ({
+            id: file.id,
+            path: file.path,
+            status: "completed",
+            result: file,
+            progress: 100,
+          })),
+        )
       }
     })
 
@@ -59,16 +61,16 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
   // Вспомогательная функция для определения типа медиа по пути файла
   const getMediaTypeFromPath = (filePath: string): MediaType => {
-    const ext = filePath.split('.').pop()?.toLowerCase() || ""
-    
+    const ext = filePath.split(".").pop()?.toLowerCase() || ""
+
     const videoExts = ["mp4", "avi", "mkv", "mov", "webm", "m4v", "3gp", "flv"]
     const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"]
     const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff"]
-    
+
     if (videoExts.includes(ext)) return "Video"
     if (audioExts.includes(ext)) return "Audio"
     if (imageExts.includes(ext)) return "Image"
-    
+
     return "Unknown"
   }
 
@@ -77,22 +79,20 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       console.log(`[Media Management] Importing ${files.length} files`)
       setIsLoading(true)
       setError(null)
-      setMediaImportStatus('importing')
+      setMediaImportStatus("importing")
 
       try {
         // Импортируем каждый файл через BackendSync
         const importResults: any[] = []
-        
+
         for (const filePath of files) {
           try {
             // Определяем тип медиа на основе расширения файла
             const mediaType = getMediaTypeFromPath(filePath)
-            
+
             // Используем AddMedia команду для импорта
-            const result = await backendSync.executeCommand(
-              AppCommands.addMedia(filePath, mediaType)
-            )
-            
+            const result = await backendSync.executeCommand(AppCommands.addMedia(filePath, mediaType))
+
             if (result) {
               importResults.push(result)
             }
@@ -102,14 +102,14 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
           }
         }
 
-        setMediaImportStatus('completed')
+        setMediaImportStatus("completed")
         setIsLoading(false)
         return importResults
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Import failed'
-        console.error('[Media Management] Import failed:', errorMessage)
+        const errorMessage = error instanceof Error ? error.message : "Import failed"
+        console.error("[Media Management] Import failed:", errorMessage)
         setError(errorMessage)
-        setMediaImportStatus('failed')
+        setMediaImportStatus("failed")
         setIsLoading(false)
         throw error
       }
@@ -127,8 +127,8 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       try {
         // Пытаемся получить информацию из backend состояния
         const backendState = await backendSync.getProjectState()
-        const mediaFile = backendState?.project?.media_files?.find(file => file.path === path)
-        
+        const mediaFile = backendState?.project?.media_files?.find((file) => file.path === path)
+
         if (mediaFile) {
           return {
             path: mediaFile.path,
@@ -139,22 +139,22 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
             thumbnail_path: mediaFile.thumbnail_path,
           }
         }
-        
+
         // Если файл не найден в backend, возвращаем базовую информацию
         const name = path.split("/").pop() || path
         const mediaType = getMediaTypeFromPath(path)
-        
+
         return {
           path,
           name,
           type: mediaType,
         }
       } catch (error) {
-        console.error('[Media Management] Failed to get media info:', error)
+        console.error("[Media Management] Failed to get media info:", error)
         // В случае ошибки возвращаем базовую информацию
         const name = path.split("/").pop() || path
         const mediaType = getMediaTypeFromPath(path)
-        
+
         return {
           path,
           name,
@@ -167,26 +167,24 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       try {
         setIsLoading(true)
         setError(null)
-        
+
         const metadata = await metadataService.extractMetadata(path)
-        
+
         // Обновляем метаданные в backend через UpdateMedia команду
         if (metadata) {
           const backendState = await backendSync.getProjectState()
-          const mediaFile = backendState?.project?.media_files?.find(file => file.path === path)
-          
+          const mediaFile = backendState?.project?.media_files?.find((file) => file.path === path)
+
           if (mediaFile) {
-            await backendSync.executeCommand(
-              AppCommands.updateMedia(mediaFile.id, { metadata })
-            )
+            await backendSync.executeCommand(AppCommands.updateMedia(mediaFile.id, { metadata }))
           }
         }
-        
+
         setIsLoading(false)
         return metadata
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Metadata extraction failed'
-        console.error('[Media Management] Metadata extraction failed:', errorMessage)
+        const errorMessage = error instanceof Error ? error.message : "Metadata extraction failed"
+        console.error("[Media Management] Metadata extraction failed:", errorMessage)
         setError(errorMessage)
         setIsLoading(false)
         throw error
@@ -198,15 +196,15 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     ...mediaManagementService,
     fileOperationsState: {
       operations: fileOperations,
-      hasActiveOperations: fileOperations.some(op => op.status === 'in_progress'),
-      completedOperations: fileOperations.filter(op => op.status === 'completed'),
-      failedOperations: fileOperations.filter(op => op.status === 'failed'),
+      hasActiveOperations: fileOperations.some((op) => op.status === "in_progress"),
+      completedOperations: fileOperations.filter((op) => op.status === "completed"),
+      failedOperations: fileOperations.filter((op) => op.status === "failed"),
     },
     mediaImportState: {
       status: mediaImportStatus,
-      isImporting: mediaImportStatus === 'importing',
-      isCompleted: mediaImportStatus === 'completed',
-      isFailed: mediaImportStatus === 'failed',
+      isImporting: mediaImportStatus === "importing",
+      isCompleted: mediaImportStatus === "completed",
+      isFailed: mediaImportStatus === "failed",
     },
     isReady: true,
     isLoading,

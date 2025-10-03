@@ -2,10 +2,10 @@
  * Unit tests for BrowserProviderV2
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react"
-import { BrowserProviderV2, useBrowserV2 } from "../browser-provider-v2"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { BackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState, ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
+import { BrowserProviderV2, useBrowserV2 } from "../browser-provider-v2"
 
 // Mock BackendSync
 jest.mock("@/features/app-state/services/backend-sync", () => ({
@@ -13,7 +13,7 @@ jest.mock("@/features/app-state/services/backend-sync", () => ({
     onEvent: jest.fn(),
     executeCommand: jest.fn(),
     getProjectState: jest.fn(),
-  }))
+  })),
 }))
 
 describe("BrowserProviderV2", () => {
@@ -41,13 +41,13 @@ describe("BrowserProviderV2", () => {
 
     // Provide a minimal valid ProjectState for tests that need it
     mockGetProjectState.mockResolvedValue({
-      project: { id: 'test-project', name: 'Test Project' },
-      ui_state: { theme: 'light' },
+      project: { id: "test-project", name: "Test Project" },
+      ui_state: { theme: "light" },
       playback_state: { is_playing: false, current_time: 0 },
-      version: { version: '1.0.0' },
+      version: { version: "1.0.0" },
       chat_state: { messages: [] },
       timeline_state: { tracks: [] },
-      browser_state: null
+      browser_state: null,
     } as any)
   })
 
@@ -86,13 +86,13 @@ describe("BrowserProviderV2", () => {
             filter_type: null,
             preview_size: 1,
             show_favorites_only: false,
-            search_query: ""
-          }
-        }
+            search_query: "",
+          },
+        },
       }
 
       mockGetProjectState.mockResolvedValueOnce({
-        browser_state: mockBrowserState
+        browser_state: mockBrowserState,
       } as ProjectState)
 
       const { result } = renderHook(() => useBrowserV2(), { wrapper })
@@ -120,19 +120,17 @@ describe("BrowserProviderV2", () => {
       const initialState = {
         browser_state: {
           active_tab: "media" as const,
-          tabs: {}
-        }
+          tabs: {},
+        },
       }
       const updatedState = {
         browser_state: {
           active_tab: "effects" as const,
-          tabs: {}
-        }
+          tabs: {},
+        },
       }
 
-      mockGetProjectState
-        .mockResolvedValueOnce(initialState)
-        .mockResolvedValueOnce(updatedState)
+      mockGetProjectState.mockResolvedValueOnce(initialState).mockResolvedValueOnce(updatedState)
 
       const { result } = renderHook(() => useBrowserV2(), { wrapper })
 
@@ -171,10 +169,10 @@ describe("BrowserProviderV2", () => {
         { type: "BrowserFileDeselected", data: { tab: "media", file_id: "file1" } },
         { type: "BrowserFileSelectionToggled", data: { tab: "media", file_id: "file1" } },
         { type: "BrowserAllFilesSelected", data: { tab: "media", file_ids: ["file1", "file2"] } },
-        { type: "BrowserAllFilesDeselected", data: { tab: "media" } }
+        { type: "BrowserAllFilesDeselected", data: { tab: "media" } },
       ]
 
-      browserEvents.forEach(event => {
+      browserEvents.forEach((event) => {
         act(() => {
           eventHandler(event)
         })
@@ -184,18 +182,18 @@ describe("BrowserProviderV2", () => {
       expect(mockGetProjectState).toHaveBeenCalledTimes(browserEvents.length + 1) // +1 for initial load
     })
 
-    it('handles errors gracefully', async () => {
-      mockExecuteCommand.mockRejectedValue(new Error('Command failed'));
-      mockGetProjectState.mockRejectedValue(new Error('Failed to fetch'));
+    it("handles errors gracefully", async () => {
+      mockExecuteCommand.mockRejectedValue(new Error("Command failed"))
+      mockGetProjectState.mockRejectedValue(new Error("Failed to fetch"))
 
-      const { result } = renderHook(() => useBrowserV2(), { wrapper });
+      const { result } = renderHook(() => useBrowserV2(), { wrapper })
 
       await waitFor(() => {
-        expect(result.current.error).toBe('Failed to fetch');
-      });
+        expect(result.current.error).toBe("Failed to fetch")
+      })
 
-      expect(result.current.browserState).toBe(null);
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.browserState).toBe(null)
+      expect(result.current.isLoading).toBe(false)
     })
   })
 
@@ -213,7 +211,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSwitchTab",
-        params: { tab: "effects" }
+        params: { tab: "effects" },
       })
     })
 
@@ -226,7 +224,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSetSearchQuery",
-        params: { query: "test query", tab: null }
+        params: { query: "test query", tab: null },
       })
     })
 
@@ -239,7 +237,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSetSearchQuery",
-        params: { query: "test query", tab: "media" }
+        params: { query: "test query", tab: "media" },
       })
     })
 
@@ -252,7 +250,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserToggleFavorites",
-        params: { tab: null }
+        params: { tab: null },
       })
     })
 
@@ -265,7 +263,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSetSort",
-        params: { sort_by: "date", sort_order: "date", tab: null }
+        params: { sort_by: "date", sort_order: "date", tab: null },
       })
     })
 
@@ -278,7 +276,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSetViewMode",
-        params: { view_mode: "list", tab: null }
+        params: { view_mode: "list", tab: null },
       })
     })
 
@@ -291,7 +289,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSelectFile",
-        params: { file_id: "file123", tab: null }
+        params: { file_id: "file123", tab: null },
       })
     })
 
@@ -304,7 +302,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserToggleFileSelection",
-        params: { file_id: "file123", tab: null }
+        params: { file_id: "file123", tab: null },
       })
     })
 
@@ -317,7 +315,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserSelectAllFiles",
-        params: { file_ids: ["file1", "file2", "file3"], tab: null }
+        params: { file_ids: ["file1", "file2", "file3"], tab: null },
       })
     })
 
@@ -330,7 +328,7 @@ describe("BrowserProviderV2", () => {
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "BrowserDeselectAllFiles",
-        params: { tab: null }
+        params: { tab: null },
       })
     })
   })
@@ -355,7 +353,7 @@ describe("BrowserProviderV2", () => {
     it("should handle command result errors", async () => {
       mockExecuteCommand.mockResolvedValueOnce({
         success: false,
-        error: "Invalid tab"
+        error: "Invalid tab",
       })
 
       const { result } = renderHook(() => useBrowserV2(), { wrapper })
@@ -376,9 +374,7 @@ describe("BrowserProviderV2", () => {
     it("should throw error when used outside provider", () => {
       const { result } = renderHook(() => useBrowserV2())
 
-      expect(result.error).toEqual(
-        new Error("useBrowserV2 must be used within BrowserProviderV2")
-      )
+      expect(result.error).toEqual(new Error("useBrowserV2 must be used within BrowserProviderV2"))
     })
 
     it("should return context when used within provider", () => {
