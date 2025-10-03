@@ -66,6 +66,8 @@ export function HDRVideoPlayer() {
   // Вычисляем соотношение сторон
   const aspectRatioValue = aspectRatio.value.width / aspectRatio.value.height
 
+  const id = "hdr-video-player"
+
   /**
    * Инициализация HDR поддержки
    */
@@ -316,11 +318,11 @@ export function HDRVideoPlayer() {
                       <CardContent className="space-y-4">
                         {/* HDR Toggle */}
                         <div className="flex items-center justify-between">
-                          <Label htmlFor="hdr-enabled" className="text-sm text-gray-300">
+                          <Label htmlFor={`${id}-hdr-enabled`} className="text-sm text-gray-300">
                             HDR обработка
                           </Label>
                           <Switch
-                            id="hdr-enabled"
+                            id={`${id}-hdr-enabled`}
                             checked={hdrSettings.hdrEnabled}
                             onCheckedChange={(checked) => updateHDRSettings("hdrEnabled", checked)}
                           />
@@ -328,11 +330,11 @@ export function HDRVideoPlayer() {
 
                         {/* Tone Mapping Toggle */}
                         <div className="flex items-center justify-between">
-                          <Label htmlFor="tone-mapping" className="text-sm text-gray-300">
+                          <Label htmlFor={`${id}-tone-mapping`} className="text-sm text-gray-300">
                             Tone mapping
                           </Label>
                           <Switch
-                            id="tone-mapping"
+                            id={`${id}-tone-mapping`}
                             checked={hdrSettings.toneMappingEnabled}
                             onCheckedChange={(checked) => updateHDRSettings("toneMappingEnabled", checked)}
                             disabled={!hdrSettings.hdrEnabled}
@@ -409,11 +411,11 @@ export function HDRVideoPlayer() {
 
                         {/* GPU Acceleration */}
                         <div className="flex items-center justify-between">
-                          <Label htmlFor="gpu-accel" className="text-sm text-gray-300">
+                          <Label htmlFor={`${id}-gpu-accel`} className="text-sm text-gray-300">
                             GPU ускорение
                           </Label>
                           <Switch
-                            id="gpu-accel"
+                            id={`${id}-gpu-accel`}
                             checked={hdrSettings.gpuAcceleration}
                             onCheckedChange={(checked) => updateHDRSettings("gpuAcceleration", checked)}
                           />

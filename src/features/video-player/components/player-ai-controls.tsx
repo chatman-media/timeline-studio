@@ -115,18 +115,18 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
                 <Label className="text-sm font-medium">Отображение</Label>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-overlay" className="text-sm font-normal">
+                  <Label htmlFor={`${id}-show-overlay`} className="text-sm font-normal">
                     Показывать оверлей
                   </Label>
-                  <Switch id="show-overlay" checked={showOverlay} onCheckedChange={setShowOverlay} />
+                  <Switch id={`${id}-show-overlay`} checked={showOverlay} onCheckedChange={setShowOverlay} />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-objects" className="text-sm font-normal">
+                  <Label htmlFor={`${id}-show-objects`} className="text-sm font-normal">
                     Обнаруженные объекты
                   </Label>
                   <Switch
-                    id="show-objects"
+                    id={`${id}-show-objects`}
                     checked={showObjects}
                     onCheckedChange={setShowObjects}
                     disabled={!showOverlay}
@@ -134,11 +134,11 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-scene" className="text-sm font-normal">
+                  <Label htmlFor={`${id}-show-scene`} className="text-sm font-normal">
                     Информация о сцене
                   </Label>
                   <Switch
-                    id="show-scene"
+                    id={`${id}-show-scene`}
                     checked={showSceneInfo}
                     onCheckedChange={setShowSceneInfo}
                     disabled={!showOverlay}
@@ -146,11 +146,11 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-moments" className="text-sm font-normal">
+                  <Label htmlFor={`${id}-show-moments`} className="text-sm font-normal">
                     Ключевые моменты
                   </Label>
                   <Switch
-                    id="show-moments"
+                    id={`${id}-show-moments`}
                     checked={showMoments}
                     onCheckedChange={setShowMoments}
                     disabled={!showOverlay}

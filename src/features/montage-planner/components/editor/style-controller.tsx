@@ -55,6 +55,8 @@ export function StyleController({ preferences, onPreferencesChange, className }:
     })
   }
 
+  const id = "style-controller"
+
   return (
     <Card className={cn("", className)}>
       <CardHeader>
@@ -234,18 +236,18 @@ export function StyleController({ preferences, onPreferencesChange, className }:
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="stabilization">Apply Stabilization</Label>
+                  <Label htmlFor={`${id}-stabilization`}>Apply Stabilization</Label>
                   <Switch
-                    id="stabilization"
+                    id={`${id}-stabilization`}
                     checked={preferences.visualParameters.stabilization}
                     onCheckedChange={(checked) => updateVisualParameters({ stabilization: checked })}
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="grain">Add Film Grain</Label>
+                  <Label htmlFor={`${id}-grain`}>Add Film Grain</Label>
                   <Switch
-                    id="grain"
+                    id={`${id}-grain`}
                     checked={preferences.visualParameters.grainIntensity > 0}
                     onCheckedChange={(checked) => updateVisualParameters({ grainIntensity: checked ? 20 : 0 })}
                   />
@@ -316,27 +318,27 @@ export function StyleController({ preferences, onPreferencesChange, className }:
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="auto-balance">Auto-balance Sequences</Label>
+                  <Label htmlFor={`${id}-auto-balance`}>Auto-balance Sequences</Label>
                   <Switch
-                    id="auto-balance"
+                    id={`${id}-auto-balance`}
                     checked={preferences.autoBalance ?? true}
                     onCheckedChange={(checked) => onPreferencesChange({ autoBalance: checked })}
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="diversity">Maximize Fragment Diversity</Label>
+                  <Label htmlFor={`${id}-diversity`}>Maximize Fragment Diversity</Label>
                   <Switch
-                    id="diversity"
+                    id={`${id}-diversity`}
                     checked={preferences.diversityBoost ?? false}
                     onCheckedChange={(checked) => onPreferencesChange({ diversityBoost: checked })}
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="coherence">Prioritize Narrative Coherence</Label>
+                  <Label htmlFor={`${id}-coherence`}>Prioritize Narrative Coherence</Label>
                   <Switch
-                    id="coherence"
+                    id={`${id}-coherence`}
                     checked={preferences.narrativeCoherence ?? true}
                     onCheckedChange={(checked) => onPreferencesChange({ narrativeCoherence: checked })}
                   />
