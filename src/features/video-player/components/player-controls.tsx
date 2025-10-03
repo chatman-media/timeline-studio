@@ -248,6 +248,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
                 onValueChange={handleTimeChange}
                 className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
                 disabled={isChangingCamera} // Отключаем слайдер во время переключения камеры
+                data-testid="slider"
               />
             </div>
           </div>

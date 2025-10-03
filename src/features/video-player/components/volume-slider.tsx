@@ -99,6 +99,7 @@ const VolumeSlider = memo(({ volume, volumeRef, onValueChange, onValueCommit }: 
         onValueChange={handleLocalVolumeChange}
         onValueCommit={handleValueCommit}
         className="absolute inset-0 h-full w-full opacity-0"
+        data-testid="volume-slider"
       />
     </div>
   )
