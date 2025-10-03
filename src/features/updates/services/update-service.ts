@@ -6,7 +6,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { emit, listen } from "@tauri-apps/api/event"
 
-import type { UpdateCheckResult, UpdateEventPayload, UpdateInfo, UpdateProgress, UpdateStatus } from "../types"
+import type { UpdateCheckResult, UpdateEventPayload, UpdateProgress, UpdateStatus } from "../types"
 
 /**
  * Сервис для управления обновлениями приложения
