@@ -1,3 +1,11 @@
+## [1.4.2](https://github.com/chatman-media/timeline-studio/compare/v1.4.1...v1.4.2) (2025-10-03)
+
+
+### Bug Fixes
+
+* **fairlight-audio:** add unique ids to form elements to prevent collisions ([96ac6ee](https://github.com/chatman-media/timeline-studio/commit/96ac6ee7c4315c65b82ff2600874bb5fbfd9ccc9))
+* **video-player:** use unique ids for switch elements to prevent conflicts ([3d9bedd](https://github.com/chatman-media/timeline-studio/commit/3d9bedd59810f4b52e1d206bf3b01c4479ee1f4a))
+
 ## [1.4.1](https://github.com/chatman-media/timeline-studio/compare/v1.4.0...v1.4.1) (2025-10-03)
 
 
