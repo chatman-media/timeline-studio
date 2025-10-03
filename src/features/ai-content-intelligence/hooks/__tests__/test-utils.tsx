@@ -110,20 +110,20 @@ interface TestWrapperProps {
   mockActor?: any
 }
 
+// Mock provider component - moved outside to avoid nested component definitions
+function MockProvider({ children, mockActor }: { children: ReactNode; mockActor?: any }) {
+  const actor = mockActor || createMockActor()
+
+  return (
+    <div>
+      {/* We'll mock the provider behavior in individual tests */}
+      {children}
+    </div>
+  )
+}
+
 export function TestWrapper({ children, mockActor }: TestWrapperProps) {
-  // Create a mock context that mimics AIIntelligenceProvider
-  const MockProvider = ({ children }: { children: ReactNode }) => {
-    const actor = mockActor || createMockActor()
-
-    return (
-      <div>
-        {/* We'll mock the provider behavior in individual tests */}
-        {children}
-      </div>
-    )
-  }
-
-  return <MockProvider>{children}</MockProvider>
+  return <MockProvider mockActor={mockActor}>{children}</MockProvider>
 }
 
 // Render hook with providers

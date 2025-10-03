@@ -15,6 +15,7 @@ export function MidiLearnModal() {
   const { modalData, closeModal } = useModal()
   const { startLearning } = useMidi()
   const midiDeviceId = useId()
+  const targetParameterId = useId()
 
   const { devices = [], onComplete } = (modalData || {}) as {
     devices?: MidiDevice[]
