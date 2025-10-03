@@ -3,6 +3,7 @@
  */
 
 import { Eye, EyeOff, Settings } from "lucide-react"
+import { useId } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -40,6 +41,8 @@ export function TransitionPreviewSettings({
   onQualityChange,
   className,
 }: TransitionPreviewSettingsProps) {
+  const id = useId()
+
   return (
     <div className={cn("flex items-center gap-2", className)}>
       {/* Быстрые переключатели */}
@@ -77,14 +80,14 @@ export function TransitionPreviewSettings({
               {/* Основные настройки */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="enable-preview">Включить предпросмотр</Label>
-                  <Switch id="enable-preview" checked={isEnabled} onCheckedChange={onEnabledChange} />
+                  <Label htmlFor={`${id}-enable-preview`}>Включить предпросмотр</Label>
+                  <Switch id={`${id}-enable-preview`} checked={isEnabled} onCheckedChange={onEnabledChange} />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-overlay">Показывать информацию</Label>
+                  <Label htmlFor={`${id}-show-overlay`}>Показывать информацию</Label>
                   <Switch
-                    id="show-overlay"
+                    id={`${id}-show-overlay`}
                     checked={showOverlay}
                     onCheckedChange={onShowOverlayChange}
                     disabled={!isEnabled}
@@ -92,9 +95,9 @@ export function TransitionPreviewSettings({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="show-indicator">Мини-индикатор</Label>
+                  <Label htmlFor={`${id}-show-indicator`}>Мини-индикатор</Label>
                   <Switch
-                    id="show-indicator"
+                    id={`${id}-show-indicator`}
                     checked={showMiniIndicator}
                     onCheckedChange={onShowMiniIndicatorChange}
                     disabled={!isEnabled}
