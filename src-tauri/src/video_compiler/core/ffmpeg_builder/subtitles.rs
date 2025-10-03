@@ -550,8 +550,8 @@ impl<'a> SubtitleBuilder<'a> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::schema::SubtitleEasing;
   use crate::video_compiler::schema::subtitles::Subtitle;
+  use crate::video_compiler::schema::SubtitleEasing;
   use crate::video_compiler::tests::fixtures::*;
   use std::collections::HashMap;
 
@@ -722,8 +722,8 @@ mod tests {
 
   #[test]
   fn test_slide_positions() {
-    use crate::video_compiler::schema::Resolution;
     use crate::video_compiler::schema::subtitles::SubtitleDirection;
+    use crate::video_compiler::schema::Resolution;
 
     let project = create_minimal_project();
     let builder = SubtitleBuilder::new(&project);

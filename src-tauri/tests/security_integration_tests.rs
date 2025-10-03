@@ -18,7 +18,7 @@ mod integration {
 
     // Проверяем, что все модули безопасности доступны
     use timeline_studio_lib::security::{
-      ApiKeyType, additional_commands, api_validator_service::ApiValidatorService, commands,
+      additional_commands, api_validator_service::ApiValidatorService, commands, ApiKeyType,
     };
 
     // Проверяем основные типы

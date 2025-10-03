@@ -349,7 +349,9 @@ async fn test_detection_to_object_grouping() {
   use crate::recognition::yolo_processor::{BoundingBox, Detection};
 
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf())
+    .await
+    .unwrap();
 
   // Создаем тестовые детекции
   let _detections = vec![
@@ -442,7 +444,9 @@ async fn test_scene_detection() {
   use crate::media::preview_data::DetectedObject;
 
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+  let _service = RecognitionService::new(temp_dir.path().to_path_buf())
+    .await
+    .unwrap();
 
   // Создаем тестовые объекты
   let _objects = vec![
@@ -513,7 +517,9 @@ async fn test_save_and_load_results() {
   use crate::recognition::types::{DetectedObject, RecognitionResults};
 
   let temp_dir = TempDir::new().unwrap();
-  let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+  let service = RecognitionService::new(temp_dir.path().to_path_buf())
+    .await
+    .unwrap();
 
   // Создаем тестовые результаты
   let results = RecognitionResults {

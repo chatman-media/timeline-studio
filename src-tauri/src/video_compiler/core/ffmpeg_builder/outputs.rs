@@ -6,7 +6,7 @@ use tokio::process::Command;
 use crate::video_compiler::error::Result;
 use crate::video_compiler::schema::{OutputFormat, ProjectSchema};
 
-use super::builder::{FFmpegBuilderSettings, quality_to_crf};
+use super::builder::{quality_to_crf, FFmpegBuilderSettings};
 
 /// Построитель выходных параметров
 pub struct OutputBuilder<'a> {

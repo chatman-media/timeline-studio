@@ -2,7 +2,7 @@
 
 use crate::video_compiler::{
   error::{Result, VideoCompilerError},
-  services::{Service, ffmpeg_service::FfmpegService},
+  services::{ffmpeg_service::FfmpegService, Service},
 };
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};

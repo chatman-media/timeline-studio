@@ -346,16 +346,12 @@ mod tests {
     assert_eq!(cfg.auth_url, "https://accounts.google.com/o/oauth2/v2/auth");
     assert_eq!(cfg.token_url, "https://oauth2.googleapis.com/token");
     assert_eq!(cfg.scopes.len(), 2);
-    assert!(
-      cfg
-        .scopes
-        .contains(&"https://www.googleapis.com/auth/youtube.upload".to_string())
-    );
-    assert!(
-      cfg
-        .scopes
-        .contains(&"https://www.googleapis.com/auth/youtube".to_string())
-    );
+    assert!(cfg
+      .scopes
+      .contains(&"https://www.googleapis.com/auth/youtube.upload".to_string()));
+    assert!(cfg
+      .scopes
+      .contains(&"https://www.googleapis.com/auth/youtube".to_string()));
     assert_eq!(cfg.redirect_uri, "http://localhost:3000/oauth/callback");
   }
 
@@ -626,12 +622,10 @@ mod tests {
     let params = HashMap::new();
     let code = callback_utils::extract_auth_code(&params);
     assert!(code.is_err());
-    assert!(
-      code
-        .unwrap_err()
-        .to_string()
-        .contains("No authorization code")
-    );
+    assert!(code
+      .unwrap_err()
+      .to_string()
+      .contains("No authorization code"));
   }
 
   #[test]

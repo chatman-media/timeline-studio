@@ -4,9 +4,9 @@
 
 use tauri::{Emitter, State};
 
-use crate::video_compiler::VideoCompilerEvent;
 use crate::video_compiler::error::Result;
 use crate::video_compiler::schema::ProjectSchema;
+use crate::video_compiler::VideoCompilerEvent;
 
 use super::super::state::{RenderJob, VideoCompilerState};
 use super::business_logic;
@@ -388,7 +388,7 @@ pub async fn build_segment_render_command(
   }
 
   use crate::video_compiler::ffmpeg_builder::{
-    FFmpegBuilder, filters::FilterBuilder, inputs::InputBuilder, outputs::OutputBuilder,
+    filters::FilterBuilder, inputs::InputBuilder, outputs::OutputBuilder, FFmpegBuilder,
   };
   use tokio::process::Command;
 

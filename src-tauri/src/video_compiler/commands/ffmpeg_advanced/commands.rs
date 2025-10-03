@@ -5,7 +5,7 @@ use super::types::*;
 use crate::video_compiler::error::Result;
 use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
 use crate::video_compiler::ffmpeg_executor::{
-  FFmpegExecutor, check_ffmpeg_available, get_available_codecs, get_available_formats,
+  check_ffmpeg_available, get_available_codecs, get_available_formats, FFmpegExecutor,
 };
 use crate::video_compiler::progress::ProgressUpdate;
 use crate::video_compiler::schema::ProjectSchema;

@@ -272,11 +272,9 @@ mod cache_tests {
     let error = crate::video_compiler::error::VideoCompilerError::InvalidParameter(
       "ID проекта не может быть пустым".to_string(),
     );
-    assert!(
-      error
-        .to_string()
-        .contains("ID проекта не может быть пустым")
-    );
+    assert!(error
+      .to_string()
+      .contains("ID проекта не может быть пустым"));
 
     let error = crate::video_compiler::error::VideoCompilerError::CacheError(
       "Не удалось очистить кэш".to_string(),

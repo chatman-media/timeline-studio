@@ -22,7 +22,7 @@ pub mod integration_tests;
 pub mod integration_tests_real_services;
 
 pub use context::PluginContext;
-pub use examples::{BlurEffectPlugin, YouTubeUploaderPlugin, register_example_plugins};
+pub use examples::{register_example_plugins, BlurEffectPlugin, YouTubeUploaderPlugin};
 pub use manager::PluginManager;
 pub use permissions::{PluginPermissions, SecurityLevel};
 pub use plugin::{

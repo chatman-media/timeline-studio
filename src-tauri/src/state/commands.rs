@@ -1,4 +1,4 @@
-use super::browser::{BrowserTab, SortOrder, ViewMode, BrowserEvent};
+use super::browser::{BrowserEvent, BrowserTab, SortOrder, ViewMode};
 use super::chat::{ChatCommand, ChatEvent, ChatSession};
 use super::project_state::{Clip, MediaType, ProjectSettings, TrackType};
 use super::{EventBus, PersistenceService, ProjectEvent, ProjectState};
@@ -340,7 +340,9 @@ impl CommandHandler {
       ProjectCommand::PlayerClearTemplate => self.player_clear_template().await,
       ProjectCommand::AddMedia { path, media_type } => self.add_media(path, media_type).await,
       ProjectCommand::RemoveMedia { media_id } => self.remove_media(media_id).await,
-      ProjectCommand::UpdateMedia { media_id, updates } => self.update_media(media_id, updates).await,
+      ProjectCommand::UpdateMedia { media_id, updates } => {
+        self.update_media(media_id, updates).await
+      }
 
       // NEW: Version control commands
       ProjectCommand::CreateSnapshot { message } => self.create_snapshot(message).await,
@@ -364,18 +366,40 @@ impl CommandHandler {
 
       // Browser commands
       ProjectCommand::BrowserSwitchTab { tab } => self.browser_switch_tab(tab).await,
-      ProjectCommand::BrowserSetSearchQuery { query, tab } => self.browser_set_search_query(query, tab).await,
+      ProjectCommand::BrowserSetSearchQuery { query, tab } => {
+        self.browser_set_search_query(query, tab).await
+      }
       ProjectCommand::BrowserToggleFavorites { tab } => self.browser_toggle_favorites(tab).await,
-      ProjectCommand::BrowserSetSort { sort_by, sort_order, tab } => self.browser_set_sort(sort_by, sort_order, tab).await,
-      ProjectCommand::BrowserSetGroupBy { group_by, tab } => self.browser_set_group_by(group_by, tab).await,
-      ProjectCommand::BrowserSetFilter { filter_type, tab } => self.browser_set_filter(filter_type, tab).await,
-      ProjectCommand::BrowserSetViewMode { view_mode, tab } => self.browser_set_view_mode(view_mode, tab).await,
-      ProjectCommand::BrowserSetPreviewSize { size_index, tab } => self.browser_set_preview_size(size_index, tab).await,
+      ProjectCommand::BrowserSetSort {
+        sort_by,
+        sort_order,
+        tab,
+      } => self.browser_set_sort(sort_by, sort_order, tab).await,
+      ProjectCommand::BrowserSetGroupBy { group_by, tab } => {
+        self.browser_set_group_by(group_by, tab).await
+      }
+      ProjectCommand::BrowserSetFilter { filter_type, tab } => {
+        self.browser_set_filter(filter_type, tab).await
+      }
+      ProjectCommand::BrowserSetViewMode { view_mode, tab } => {
+        self.browser_set_view_mode(view_mode, tab).await
+      }
+      ProjectCommand::BrowserSetPreviewSize { size_index, tab } => {
+        self.browser_set_preview_size(size_index, tab).await
+      }
       ProjectCommand::BrowserResetTabSettings { tab } => self.browser_reset_tab_settings(tab).await,
-      ProjectCommand::BrowserSelectFile { file_id, tab } => self.browser_select_file(file_id, tab).await,
-      ProjectCommand::BrowserDeselectFile { file_id, tab } => self.browser_deselect_file(file_id, tab).await,
-      ProjectCommand::BrowserToggleFileSelection { file_id, tab } => self.browser_toggle_file_selection(file_id, tab).await,
-      ProjectCommand::BrowserSelectAllFiles { file_ids, tab } => self.browser_select_all_files(file_ids, tab).await,
+      ProjectCommand::BrowserSelectFile { file_id, tab } => {
+        self.browser_select_file(file_id, tab).await
+      }
+      ProjectCommand::BrowserDeselectFile { file_id, tab } => {
+        self.browser_deselect_file(file_id, tab).await
+      }
+      ProjectCommand::BrowserToggleFileSelection { file_id, tab } => {
+        self.browser_toggle_file_selection(file_id, tab).await
+      }
+      ProjectCommand::BrowserSelectAllFiles { file_ids, tab } => {
+        self.browser_select_all_files(file_ids, tab).await
+      }
       ProjectCommand::BrowserDeselectAllFiles { tab } => self.browser_deselect_all_files(tab).await,
 
       // Chat commands
@@ -1494,9 +1518,7 @@ impl CommandHandler {
     self
       .event_bus
       .publish(
-        ProjectEvent::Browser(BrowserEvent::TabSwitched {
-          tab: tab.clone(),
-        }),
+        ProjectEvent::Browser(BrowserEvent::TabSwitched { tab: tab.clone() }),
         "command_handler".to_string(),
         version,
       )
@@ -1506,10 +1528,16 @@ impl CommandHandler {
     CommandResult::success(Some(serde_json::json!({ "tab": tab })))
   }
 
-  async fn browser_set_search_query(&self, query: String, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_set_search_query(
+    &self,
+    query: String,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_search_query(query.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .set_search_query(query.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1531,8 +1559,13 @@ impl CommandHandler {
   async fn browser_toggle_favorites(&self, tab: Option<BrowserTab>) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.toggle_favorites(Some(target_tab.clone()));
-    let show_favorites = state.browser_state.get_tab_settings(&target_tab).show_favorites_only;
+    state
+      .browser_state
+      .toggle_favorites(Some(target_tab.clone()));
+    let show_favorites = state
+      .browser_state
+      .get_tab_settings(&target_tab)
+      .show_favorites_only;
     let version = state.version;
 
     self
@@ -1548,13 +1581,24 @@ impl CommandHandler {
       .await
       .ok();
 
-    CommandResult::success(Some(serde_json::json!({ "show_favorites": show_favorites })))
+    CommandResult::success(Some(
+      serde_json::json!({ "show_favorites": show_favorites }),
+    ))
   }
 
-  async fn browser_set_sort(&self, sort_by: String, sort_order: SortOrder, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_set_sort(
+    &self,
+    sort_by: String,
+    sort_order: SortOrder,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_sort(sort_by.clone(), sort_order.clone(), Some(target_tab.clone()));
+    state.browser_state.set_sort(
+      sort_by.clone(),
+      sort_order.clone(),
+      Some(target_tab.clone()),
+    );
     let version = state.version;
 
     self
@@ -1571,16 +1615,18 @@ impl CommandHandler {
       .await
       .ok();
 
-    CommandResult::success(Some(serde_json::json!({ 
-      "sort_by": sort_by, 
-      "sort_order": sort_order 
+    CommandResult::success(Some(serde_json::json!({
+      "sort_by": sort_by,
+      "sort_order": sort_order
     })))
   }
 
   async fn browser_set_group_by(&self, group_by: String, tab: Option<BrowserTab>) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_group_by(group_by.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .set_group_by(group_by.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1599,10 +1645,16 @@ impl CommandHandler {
     CommandResult::success(Some(serde_json::json!({ "group_by": group_by })))
   }
 
-  async fn browser_set_filter(&self, filter_type: String, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_set_filter(
+    &self,
+    filter_type: String,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_filter_type(filter_type.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .set_filter_type(filter_type.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1621,10 +1673,16 @@ impl CommandHandler {
     CommandResult::success(Some(serde_json::json!({ "filter_type": filter_type })))
   }
 
-  async fn browser_set_view_mode(&self, view_mode: ViewMode, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_set_view_mode(
+    &self,
+    view_mode: ViewMode,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_view_mode(view_mode.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .set_view_mode(view_mode.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1643,10 +1701,16 @@ impl CommandHandler {
     CommandResult::success(Some(serde_json::json!({ "view_mode": view_mode })))
   }
 
-  async fn browser_set_preview_size(&self, size_index: u32, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_set_preview_size(
+    &self,
+    size_index: u32,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.set_preview_size(size_index, Some(target_tab.clone()));
+    state
+      .browser_state
+      .set_preview_size(size_index, Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1673,9 +1737,7 @@ impl CommandHandler {
     self
       .event_bus
       .publish(
-        ProjectEvent::Browser(BrowserEvent::TabSettingsReset {
-          tab: tab.clone(),
-        }),
+        ProjectEvent::Browser(BrowserEvent::TabSettingsReset { tab: tab.clone() }),
         "command_handler".to_string(),
         version,
       )
@@ -1688,7 +1750,9 @@ impl CommandHandler {
   async fn browser_select_file(&self, file_id: String, tab: Option<BrowserTab>) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.select_file(file_id.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .select_file(file_id.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1710,7 +1774,9 @@ impl CommandHandler {
   async fn browser_deselect_file(&self, file_id: String, tab: Option<BrowserTab>) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.deselect_file(file_id.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .deselect_file(file_id.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1729,11 +1795,20 @@ impl CommandHandler {
     CommandResult::success(Some(serde_json::json!({ "file_id": file_id })))
   }
 
-  async fn browser_toggle_file_selection(&self, file_id: String, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_toggle_file_selection(
+    &self,
+    file_id: String,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.toggle_file_selection(file_id.clone(), Some(target_tab.clone()));
-    let is_selected = state.browser_state.get_selected_files(&target_tab).contains(&file_id);
+    state
+      .browser_state
+      .toggle_file_selection(file_id.clone(), Some(target_tab.clone()));
+    let is_selected = state
+      .browser_state
+      .get_selected_files(&target_tab)
+      .contains(&file_id);
     let version = state.version;
 
     self
@@ -1750,16 +1825,22 @@ impl CommandHandler {
       .await
       .ok();
 
-    CommandResult::success(Some(serde_json::json!({ 
+    CommandResult::success(Some(serde_json::json!({
       "file_id": file_id,
-      "is_selected": is_selected 
+      "is_selected": is_selected
     })))
   }
 
-  async fn browser_select_all_files(&self, file_ids: Vec<String>, tab: Option<BrowserTab>) -> CommandResult {
+  async fn browser_select_all_files(
+    &self,
+    file_ids: Vec<String>,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.select_all_files(file_ids.clone(), Some(target_tab.clone()));
+    state
+      .browser_state
+      .select_all_files(file_ids.clone(), Some(target_tab.clone()));
     let version = state.version;
 
     self
@@ -1781,15 +1862,15 @@ impl CommandHandler {
   async fn browser_deselect_all_files(&self, tab: Option<BrowserTab>) -> CommandResult {
     let mut state = self.state.write().await;
     let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
-    state.browser_state.deselect_all_files(Some(target_tab.clone()));
+    state
+      .browser_state
+      .deselect_all_files(Some(target_tab.clone()));
     let version = state.version;
 
     self
       .event_bus
       .publish(
-        ProjectEvent::Browser(BrowserEvent::AllFilesDeselected {
-          tab: target_tab,
-        }),
+        ProjectEvent::Browser(BrowserEvent::AllFilesDeselected { tab: target_tab }),
         "command_handler".to_string(),
         version,
       )

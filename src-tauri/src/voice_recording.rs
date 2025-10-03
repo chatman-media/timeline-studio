@@ -3,7 +3,7 @@
 //! Обеспечивает функциональность сохранения аудио записей в структуре проекта
 
 use crate::app_dirs::AppDirectories;
-use base64::{Engine as _, engine::general_purpose};
+use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
@@ -274,10 +274,8 @@ mod tests {
     assert_eq!(formats.len(), 5);
     assert!(formats.iter().all(|f| f.supported));
     assert!(formats.iter().any(|f| matches!(f.format, AudioFormat::Mp3)));
-    assert!(
-      formats
-        .iter()
-        .any(|f| matches!(f.format, AudioFormat::WebM))
-    );
+    assert!(formats
+      .iter()
+      .any(|f| matches!(f.format, AudioFormat::WebM)));
   }
 }

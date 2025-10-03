@@ -79,16 +79,16 @@ pub struct BoundingBox {
 pub struct IdentifiedPerson {
   /// ID персоны из базы данных
   pub person_id: Option<String>,
-  
+
   /// Имя персоны (если известно)
   pub person_name: Option<String>,
-  
+
   /// Группа лиц, относящихся к этой персоне
   pub face_group: Vec<DetectedFace>,
-  
+
   /// Уверенность идентификации
   pub confidence: f32,
-  
+
   /// Количество появлений
   pub appearance_count: usize,
 }

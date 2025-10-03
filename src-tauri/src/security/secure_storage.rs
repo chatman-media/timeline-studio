@@ -1,6 +1,6 @@
 use aes_gcm::{
-  Aes256Gcm, Key, Nonce,
   aead::{Aead, AeadCore, KeyInit, OsRng},
+  Aes256Gcm, Key, Nonce,
 };
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};

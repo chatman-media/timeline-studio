@@ -1,6 +1,6 @@
-use anyhow::{Result, anyhow};
-use image::{DynamicImage, GenericImageView, imageops::FilterType};
-use ort::session::{Session, SessionOutputs, builder::GraphOptimizationLevel};
+use anyhow::{anyhow, Result};
+use image::{imageops::FilterType, DynamicImage, GenericImageView};
+use ort::session::{builder::GraphOptimizationLevel, Session, SessionOutputs};
 use ort::value::Tensor;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
@@ -1098,12 +1098,10 @@ mod tests {
     .unwrap();
     let result = processor.load_model().await;
     assert!(result.is_err());
-    assert!(
-      result
-        .unwrap_err()
-        .to_string()
-        .contains("Model file not found")
-    );
+    assert!(result
+      .unwrap_err()
+      .to_string()
+      .contains("Model file not found"));
   }
 
   #[tokio::test]

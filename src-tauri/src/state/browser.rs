@@ -18,7 +18,6 @@ pub enum BrowserTab {
   StyleTemplates,
 }
 
-
 /// View mode for browser display
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -29,7 +28,6 @@ pub enum ViewMode {
   Grid,
   Thumbnails,
 }
-
 
 /// Settings for individual browser tabs
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -69,7 +67,6 @@ pub enum SortOrder {
   Desc,
 }
 
-
 /// Complete browser state
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct BrowserState {
@@ -82,13 +79,13 @@ impl Default for BrowserState {
   fn default() -> Self {
     let mut tab_settings = HashMap::new();
     let mut selected_files = HashMap::new();
-    
+
     // Initialize all tabs with default settings
     for tab in Self::all_tabs() {
       tab_settings.insert(tab.clone(), TabSettings::default());
       selected_files.insert(tab, Vec::new());
     }
-    
+
     Self {
       active_tab: BrowserTab::default(),
       selected_files,
@@ -111,36 +108,46 @@ impl BrowserState {
       BrowserTab::StyleTemplates,
     ]
   }
-  
+
   /// Get settings for the active tab
   pub fn active_tab_settings(&self) -> TabSettings {
-    self.tab_settings.get(&self.active_tab)
+    self
+      .tab_settings
+      .get(&self.active_tab)
       .cloned()
       .unwrap_or_default()
   }
-  
+
   /// Get mutable settings for the active tab
   pub fn active_tab_settings_mut(&mut self) -> &mut TabSettings {
-    self.tab_settings.entry(self.active_tab.clone()).or_default()
+    self
+      .tab_settings
+      .entry(self.active_tab.clone())
+      .or_default()
   }
-  
+
   /// Get selected files for the active tab
   pub fn active_tab_selected_files(&self) -> &[String] {
-    self.selected_files.get(&self.active_tab)
+    self
+      .selected_files
+      .get(&self.active_tab)
       .map(|files| files.as_slice())
       .unwrap_or(&[])
   }
-  
+
   /// Get mutable selected files for the active tab
   pub fn active_tab_selected_files_mut(&mut self) -> &mut Vec<String> {
-    self.selected_files.entry(self.active_tab.clone()).or_default()
+    self
+      .selected_files
+      .entry(self.active_tab.clone())
+      .or_default()
   }
-  
+
   /// Switch to a different tab
   pub fn switch_tab(&mut self, tab: BrowserTab) {
     self.active_tab = tab;
   }
-  
+
   /// Set search query for a tab (defaults to active tab)
   pub fn set_search_query(&mut self, query: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -148,7 +155,7 @@ impl BrowserState {
       settings.search_query = query;
     }
   }
-  
+
   /// Toggle favorites filter for a tab (defaults to active tab)
   pub fn toggle_favorites(&mut self, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -156,7 +163,7 @@ impl BrowserState {
       settings.show_favorites_only = !settings.show_favorites_only;
     }
   }
-  
+
   /// Set sort options for a tab (defaults to active tab)
   pub fn set_sort(&mut self, sort_by: String, sort_order: SortOrder, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -165,7 +172,7 @@ impl BrowserState {
       settings.sort_order = sort_order;
     }
   }
-  
+
   /// Set group by option for a tab (defaults to active tab)
   pub fn set_group_by(&mut self, group_by: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -173,7 +180,7 @@ impl BrowserState {
       settings.group_by = group_by;
     }
   }
-  
+
   /// Set filter type for a tab (defaults to active tab)
   pub fn set_filter_type(&mut self, filter_type: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -181,7 +188,7 @@ impl BrowserState {
       settings.filter_type = filter_type;
     }
   }
-  
+
   /// Set view mode for a tab (defaults to active tab)
   pub fn set_view_mode(&mut self, view_mode: ViewMode, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -189,7 +196,7 @@ impl BrowserState {
       settings.view_mode = view_mode;
     }
   }
-  
+
   /// Set preview size for a tab (defaults to active tab)
   pub fn set_preview_size(&mut self, size_index: u32, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -197,14 +204,14 @@ impl BrowserState {
       settings.preview_size_index = size_index;
     }
   }
-  
+
   /// Reset tab settings to defaults
   pub fn reset_tab_settings(&mut self, tab: BrowserTab) {
     if let Some(settings) = self.tab_settings.get_mut(&tab) {
       *settings = TabSettings::default();
     }
   }
-  
+
   /// Select a file in a tab (defaults to active tab)
   pub fn select_file(&mut self, file_id: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -214,7 +221,7 @@ impl BrowserState {
       }
     }
   }
-  
+
   /// Deselect a file in a tab (defaults to active tab)
   pub fn deselect_file(&mut self, file_id: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -222,7 +229,7 @@ impl BrowserState {
       files.retain(|id| id != &file_id);
     }
   }
-  
+
   /// Toggle file selection in a tab (defaults to active tab)
   pub fn toggle_file_selection(&mut self, file_id: String, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -234,7 +241,7 @@ impl BrowserState {
       }
     }
   }
-  
+
   /// Select multiple files in a tab (defaults to active tab)
   pub fn select_all_files(&mut self, file_ids: Vec<String>, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -242,7 +249,7 @@ impl BrowserState {
       *files = file_ids;
     }
   }
-  
+
   /// Deselect all files in a tab (defaults to active tab)
   pub fn deselect_all_files(&mut self, tab: Option<BrowserTab>) {
     let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
@@ -250,19 +257,19 @@ impl BrowserState {
       files.clear();
     }
   }
-  
+
   /// Get the selected files for a specific tab
   pub fn get_selected_files(&self, tab: &BrowserTab) -> &[String] {
-    self.selected_files.get(tab)
+    self
+      .selected_files
+      .get(tab)
       .map(|files| files.as_slice())
       .unwrap_or(&[])
   }
-  
+
   /// Get the settings for a specific tab
   pub fn get_tab_settings(&self, tab: &BrowserTab) -> TabSettings {
-    self.tab_settings.get(tab)
-      .cloned()
-      .unwrap_or_default()
+    self.tab_settings.get(tab).cloned().unwrap_or_default()
   }
 }
 

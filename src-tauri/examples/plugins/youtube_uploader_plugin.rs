@@ -4,11 +4,11 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 use std::sync::Arc;
-use timeline_studio_lib::core::AppEvent;
 use timeline_studio_lib::core::plugins::{
   AppEventType, Plugin, PluginCommand, PluginContext, PluginDependency, PluginMetadata,
   PluginResponse, PluginType, Version,
 };
+use timeline_studio_lib::core::AppEvent;
 use timeline_studio_lib::video_compiler::error::Result;
 use tokio::sync::Mutex;
 

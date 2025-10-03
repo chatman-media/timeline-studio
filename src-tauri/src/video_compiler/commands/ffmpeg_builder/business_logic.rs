@@ -2,10 +2,10 @@
 
 use super::types::*;
 use crate::video_compiler::{
-  VideoCompilerState,
   error::Result,
-  ffmpeg_builder::{FFmpegBuilder, inputs::InputBuilder, outputs::OutputBuilder},
+  ffmpeg_builder::{inputs::InputBuilder, outputs::OutputBuilder, FFmpegBuilder},
   schema::ProjectSchema,
+  VideoCompilerState,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

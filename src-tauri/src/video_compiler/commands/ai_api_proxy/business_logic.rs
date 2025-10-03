@@ -9,7 +9,7 @@ pub async fn send_claude_request(
   request: ClaudeApiRequest,
 ) -> Result<ClaudeApiResponse> {
   let client = Client::new();
-  
+
   // Подготавливаем тело запроса
   let mut request_body = serde_json::json!({
     "model": request.model,
@@ -60,7 +60,9 @@ pub async fn send_claude_request(
       .to_string(),
     model: api_response["model"]
       .as_str()
-      .ok_or_else(|| VideoCompilerError::SerializationError("Отсутствует model в ответе".to_string()))?
+      .ok_or_else(|| {
+        VideoCompilerError::SerializationError("Отсутствует model в ответе".to_string())
+      })?
       .to_string(),
     content: extract_claude_content(&api_response)?,
     usage: extract_claude_usage(&api_response),
@@ -75,7 +77,7 @@ pub async fn send_claude_stream_request(
   request: ClaudeApiRequest,
 ) -> Result<String> {
   let client = Client::new();
-  
+
   // Подготавливаем тело запроса для стриминга
   let mut request_body = serde_json::json!({
     "model": request.model,
@@ -126,7 +128,7 @@ pub async fn send_claude_stream_request(
 /// Валидирует API ключ для Claude
 pub async fn validate_claude_api_key(api_key: &str) -> Result<(bool, Vec<String>)> {
   let client = Client::new();
-  
+
   // Делаем простой запрос для проверки ключа
   let request = serde_json::json!({
     "model": "claude-3-haiku-20240307",
@@ -168,17 +170,14 @@ fn get_available_claude_models() -> Vec<String> {
 
 /// Извлекает контент из ответа Claude
 fn extract_claude_content(api_response: &Value) -> Result<Vec<ClaudeContent>> {
-  let content_array = api_response["content"]
-    .as_array()
-    .ok_or_else(|| VideoCompilerError::SerializationError("Отсутствует content в ответе".to_string()))?;
+  let content_array = api_response["content"].as_array().ok_or_else(|| {
+    VideoCompilerError::SerializationError("Отсутствует content в ответе".to_string())
+  })?;
 
   let mut contents = Vec::new();
   for item in content_array {
     let content = ClaudeContent {
-      r#type: item["type"]
-        .as_str()
-        .unwrap_or("text")
-        .to_string(),
+      r#type: item["type"].as_str().unwrap_or("text").to_string(),
       text: item["text"].as_str().map(|s| s.to_string()),
     };
     contents.push(content);

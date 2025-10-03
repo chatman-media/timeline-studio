@@ -5,11 +5,11 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 
-use crate::video_compiler::CompilerSettings;
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
 use crate::video_compiler::progress::ProgressTracker;
 use crate::video_compiler::schema::ProjectSchema;
+use crate::video_compiler::CompilerSettings;
 
 use super::stages::{
   CompositionStage, EncodingStage, FinalizationStage, PipelineContext, PipelineStage,

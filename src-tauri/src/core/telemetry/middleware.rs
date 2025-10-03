@@ -10,7 +10,7 @@ use std::sync::Arc;
 use std::time::Instant;
 use tracing::Instrument;
 
-use super::{MetricsCollector, Tracer, metrics::Metrics};
+use super::{metrics::Metrics, MetricsCollector, Tracer};
 
 /// Middleware для трассировки HTTP запросов
 #[derive(Clone)]

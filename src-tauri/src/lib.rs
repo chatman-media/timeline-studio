@@ -8,7 +8,7 @@ use tokio::sync::RwLock;
 
 // Core infrastructure modules
 pub mod core;
-use core::telemetry::{TelemetryManager, TelemetryConfig};
+use core::telemetry::{TelemetryConfig, TelemetryManager};
 
 // Command registry module
 mod command_registry;
@@ -44,9 +44,9 @@ use video_compiler::VideoCompilerState;
 
 // Модуль распознавания (YOLO)
 pub mod recognition;
-use recognition::RecognitionService;
-use recognition::recognition_service::RecognitionState;
 use recognition::commands::yolo_commands::YoloProcessorState;
+use recognition::recognition_service::RecognitionState;
+use recognition::RecognitionService;
 
 // Модуль Smart Montage Planner
 pub mod montage_planner;
@@ -228,7 +228,7 @@ pub fn run() {
       {
         let app_handle = app.handle();
         let app_handle_clone = app_handle.clone();
-        
+
         tauri::async_runtime::spawn(async move {
           match app_handle_clone.path().app_data_dir() {
             Ok(app_dir) => {
@@ -294,7 +294,7 @@ pub fn run() {
       // Initialize Person Identification Database
       {
         use crate::recognition::person_database::PersonDatabase;
-        
+
         let app_handle = app.handle();
         match app_handle.path().app_data_dir() {
           Ok(app_dir) => {
@@ -303,7 +303,7 @@ pub fn run() {
               log::error!("Failed to create app data dir: {e}");
             } else {
               let db_path = app_dir.join("persons.db");
-              
+
               // Initialize database asynchronously
               match tauri::async_runtime::block_on(PersonDatabase::new(db_path)) {
                 Ok(db) => {

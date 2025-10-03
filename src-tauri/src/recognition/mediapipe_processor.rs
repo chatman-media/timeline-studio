@@ -1,9 +1,9 @@
 /**
  * MediaPipe Processor - real-time face analysis with 468 landmarks
  */
-use anyhow::{Result, anyhow};
-use image::{DynamicImage, imageops::FilterType};
-use ort::session::{Session, SessionOutputs, builder::GraphOptimizationLevel};
+use anyhow::{anyhow, Result};
+use image::{imageops::FilterType, DynamicImage};
+use ort::session::{builder::GraphOptimizationLevel, Session, SessionOutputs};
 use ort::value::Tensor;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

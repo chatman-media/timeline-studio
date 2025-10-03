@@ -2,10 +2,10 @@
 
 use super::types::*;
 use crate::video_compiler::{
-  VideoCompilerState,
   error::Result,
   gpu::{GpuDetector, GpuEncoder, GpuInfo},
   schema::*,
+  VideoCompilerState,
 };
 use serde::{Deserialize, Serialize};
 use tauri::State;

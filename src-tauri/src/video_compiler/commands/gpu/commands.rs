@@ -2,9 +2,9 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::VideoCompilerState;
 use crate::video_compiler::core::gpu::GpuDetector;
 use crate::video_compiler::error::{Result, VideoCompilerError};
+use crate::video_compiler::VideoCompilerState;
 use tauri::State;
 
 /// Обнаружить доступные GPU

@@ -1,8 +1,8 @@
 use anyhow::Result;
 use chrono;
+use image::GenericImageView;
 use std::path::PathBuf;
 use tauri::State;
-use image::GenericImageView;
 
 use super::ffmpeg::check_ffmpeg;
 use super::media_analyzer::{MediaAnalysis, MediaAnalyzer};
@@ -337,7 +337,11 @@ pub async fn process_media_file_simple(
               if parts.len() == 2 {
                 let num = parts[0].parse::<f64>().ok()?;
                 let den = parts[1].parse::<f64>().ok()?;
-                if den > 0.0 { Some(num / den) } else { None }
+                if den > 0.0 {
+                  Some(num / den)
+                } else {
+                  None
+                }
               } else {
                 None
               }
@@ -439,9 +443,17 @@ pub async fn process_media_files_with_thumbnails(
         if media_file.is_video || media_file.is_image {
           // Create a simple thumbnail path based on file ID
           let thumbnail_filename = format!("{}.jpg", media_file.id);
-          
+
           // Try to generate thumbnail using FFmpeg for videos or image processing for images
-          match generate_thumbnail_for_file(&file_path, &thumbnail_filename, width, height, media_file.is_video).await {
+          match generate_thumbnail_for_file(
+            &file_path,
+            &thumbnail_filename,
+            width,
+            height,
+            media_file.is_video,
+          )
+          .await
+          {
             Ok(thumbnail_path) => {
               // Store thumbnail path in media file metadata
               media_file.thumbnail_path = Some(thumbnail_path);
@@ -452,7 +464,7 @@ pub async fn process_media_files_with_thumbnails(
             }
           }
         }
-        
+
         media_files.push(media_file);
       }
       Err(e) => {
@@ -473,20 +485,18 @@ async fn generate_thumbnail_for_file(
   height: u32,
   is_video: bool,
 ) -> Result<String, String> {
-
-  
   // Get app cache directory for thumbnails
   let cache_dir = dirs::cache_dir()
     .ok_or("Failed to get cache directory")?
     .join("timeline-studio")
     .join("thumbnails");
-    
+
   std::fs::create_dir_all(&cache_dir)
     .map_err(|e| format!("Failed to create thumbnail directory: {}", e))?;
-    
+
   let thumbnail_path = cache_dir.join(thumbnail_filename);
   let thumbnail_path_str = thumbnail_path.to_string_lossy().to_string();
-  
+
   if is_video {
     // Use FFmpeg to extract frame from video
     let time_offset = 1.0; // Extract frame at 1 second
@@ -494,27 +504,28 @@ async fn generate_thumbnail_for_file(
       .map_err(|e| format!("Failed to extract video frame: {}", e))?;
   } else {
     // For images, just resize the existing image
-    let img = image::open(file_path)
-      .map_err(|e| format!("Failed to open image: {}", e))?;
-      
+    let img = image::open(file_path).map_err(|e| format!("Failed to open image: {}", e))?;
+
     // Resize with aspect ratio preservation
     let (img_width, img_height) = img.dimensions();
     let width_ratio = width as f32 / img_width as f32;
     let height_ratio = height as f32 / img_height as f32;
     let ratio = width_ratio.min(height_ratio);
-    
+
     if ratio < 1.0 {
       let new_width = (img_width as f32 * ratio) as u32;
       let new_height = (img_height as f32 * ratio) as u32;
       let resized = img.resize(new_width, new_height, image::imageops::FilterType::Lanczos3);
-      resized.save(&thumbnail_path)
+      resized
+        .save(&thumbnail_path)
         .map_err(|e| format!("Failed to save thumbnail: {}", e))?;
     } else {
-      img.save(&thumbnail_path)
+      img
+        .save(&thumbnail_path)
         .map_err(|e| format!("Failed to save thumbnail: {}", e))?;
     }
   }
-  
+
   Ok(thumbnail_path_str)
 }
 

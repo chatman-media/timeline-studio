@@ -8,16 +8,17 @@
 
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use opentelemetry::{
-  KeyValue, global,
+  global,
   metrics::{Counter as OtelCounter, Histogram as OtelHistogram, Meter, UpDownCounter},
+  KeyValue,
 };
 // opentelemetry_sdk::Resource is unused with pinned SDK versions
-  // use axum::{
-  //   http::StatusCode,
-  //   response::IntoResponse,
-  //   routing::get,
-  //   Router,
-  // };
+// use axum::{
+//   http::StatusCode,
+//   response::IntoResponse,
+//   routing::get,
+//   Router,
+// };
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use prometheus::Encoder;
 use std::collections::HashMap;
@@ -173,9 +174,11 @@ impl MetricsCollector {
     }
 
     // Создаем ресурс (Resource::new is private in some SDK versions)
-    let _resource_attrs = [KeyValue::new(SERVICE_NAME, config.service_name.clone()),
+    let _resource_attrs = [
+      KeyValue::new(SERVICE_NAME, config.service_name.clone()),
       KeyValue::new(SERVICE_VERSION, config.service_version.clone()),
-      KeyValue::new("deployment.environment", config.environment.clone())];
+      KeyValue::new("deployment.environment", config.environment.clone()),
+    ];
 
     // Создаем meter в зависимости от типа экспортера
     match config.exporter.exporter_type {
@@ -330,12 +333,18 @@ impl MetricsCollector {
 
     // Количество worker потоков
     let worker_threads = runtime_metrics.num_workers();
-    let worker_threads_gauge = self.gauge("runtime.tokio.worker_threads", "Number of Tokio worker threads")?;
+    let worker_threads_gauge = self.gauge(
+      "runtime.tokio.worker_threads",
+      "Number of Tokio worker threads",
+    )?;
     worker_threads_gauge.set(worker_threads as i64);
 
     // Глобальная очередь задач
     let global_queue_depth = runtime_metrics.global_queue_depth();
-    let global_queue_gauge = self.gauge("runtime.tokio.global_queue_depth", "Tokio global queue depth")?;
+    let global_queue_gauge = self.gauge(
+      "runtime.tokio.global_queue_depth",
+      "Tokio global queue depth",
+    )?;
     global_queue_gauge.set(global_queue_depth as i64);
 
     // Общее время работы worker потоков
@@ -343,7 +352,10 @@ impl MetricsCollector {
     for worker_id in 0..worker_threads {
       total_busy_duration += runtime_metrics.worker_total_busy_duration(worker_id);
     }
-    let busy_duration_gauge = self.gauge("runtime.tokio.total_busy_duration_seconds", "Total busy duration of all workers in seconds")?;
+    let busy_duration_gauge = self.gauge(
+      "runtime.tokio.total_busy_duration_seconds",
+      "Total busy duration of all workers in seconds",
+    )?;
     busy_duration_gauge.set(total_busy_duration.as_secs() as i64);
 
     Ok(())
@@ -403,7 +415,12 @@ impl MetricsCollector {
   }
 
   /// Записать значение в гистограмму
-  pub fn record_histogram(&self, name: &str, value: f64, labels: &[(String, String)]) -> Result<()> {
+  pub fn record_histogram(
+    &self,
+    name: &str,
+    value: f64,
+    labels: &[(String, String)],
+  ) -> Result<()> {
     let histogram = self.histogram(name, &format!("Histogram metric: {}", name))?;
     let mut labeled_histogram = histogram;
     for (key, val) in labels {

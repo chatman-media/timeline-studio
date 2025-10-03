@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::process::Command;
 use std::sync::Mutex;
-use tauri::{Emitter, command};
+use tauri::{command, Emitter};
 
 // Global Python interpreter path
 static PYTHON_PATH: Lazy<Mutex<Option<String>>> = Lazy::new(|| Mutex::new(None));

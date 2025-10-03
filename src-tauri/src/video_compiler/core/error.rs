@@ -504,7 +504,7 @@ macro_rules! render_error {
 mod tests {
   use super::*;
   #[allow(unused_imports)]
-  use tokio::time::{Duration as TokioDuration, timeout};
+  use tokio::time::{timeout, Duration as TokioDuration};
 
   #[test]
   fn test_error_creation() {
@@ -930,14 +930,12 @@ mod tests {
   fn test_is_critical_comprehensive() {
     // Критические ошибки
     assert!(VideoCompilerError::DependencyMissing("test".to_string()).is_critical());
-    assert!(
-      VideoCompilerError::ResourceError {
-        resource_type: "test".to_string(),
-        available: "test".to_string(),
-        required: "test".to_string()
-      }
-      .is_critical()
-    );
+    assert!(VideoCompilerError::ResourceError {
+      resource_type: "test".to_string(),
+      available: "test".to_string(),
+      required: "test".to_string()
+    }
+    .is_critical());
     assert!(VideoCompilerError::InternalError("test".to_string()).is_critical());
 
     // Некритические ошибки
@@ -956,13 +954,11 @@ mod tests {
     // Неповторяемые ошибки
     assert!(!VideoCompilerError::ValidationError("test".to_string()).is_retryable());
     assert!(!VideoCompilerError::DependencyMissing("test".to_string()).is_retryable());
-    assert!(
-      !VideoCompilerError::UnsupportedFormat {
-        format: "test".to_string(),
-        file_path: "test".to_string()
-      }
-      .is_retryable()
-    );
+    assert!(!VideoCompilerError::UnsupportedFormat {
+      format: "test".to_string(),
+      file_path: "test".to_string()
+    }
+    .is_retryable());
   }
 
   #[test]

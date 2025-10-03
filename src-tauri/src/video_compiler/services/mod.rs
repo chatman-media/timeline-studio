@@ -17,7 +17,7 @@ pub mod transition_ffmpeg_service;
 pub use cache_service::{CacheService, CacheServiceImpl};
 pub use ffmpeg_service::{FfmpegService, FfmpegServiceImpl, FileInfo};
 pub use gpu_service::{GpuService, GpuServiceImpl};
-pub use monitoring::{METRICS, ServiceMetrics};
+pub use monitoring::{ServiceMetrics, METRICS};
 pub use preview_service::{PreviewService, PreviewServiceImpl};
 pub use project_service::{ProjectService, ProjectServiceImpl};
 pub use render_service::{RenderService, RenderServiceImpl};

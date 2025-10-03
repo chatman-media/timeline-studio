@@ -1,7 +1,7 @@
 //! Tauri команды для работы с FFmpeg builder
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{VideoCompilerState, error::Result};
+use crate::video_compiler::{error::Result, VideoCompilerState};
 use tauri::State;
 
 // Re-export types from business_logic for Tauri command signatures

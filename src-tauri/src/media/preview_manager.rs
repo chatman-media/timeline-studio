@@ -74,7 +74,7 @@ impl PreviewDataManager {
 
     // Читаем файл для base64
     let image_data = tokio::fs::read(&output_path).await?;
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     let base64_data = STANDARD.encode(&image_data);
 
     let thumbnail = ThumbnailData {
@@ -103,7 +103,7 @@ impl PreviewDataManager {
     duration: f64,
     interval: f64,
   ) -> Result<Vec<TimelinePreview>> {
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
 
     // Используем PreviewGenerator для генерации превью
     let generator = self.timeline_generator.read().await;
@@ -280,7 +280,7 @@ impl PreviewDataManager {
     frames: Vec<crate::media::commands::TimelineFrame>,
   ) -> Result<()> {
     use super::preview_data::TimelinePreview;
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
 
     let mut data = self.data.write().await;
     let preview_data = data
@@ -509,7 +509,7 @@ mod tests {
     let file_id = "test_video".to_string();
 
     // Создаем тестовые frames
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     let test_image_data = vec![255, 0, 0, 255]; // Красный пиксель в RGBA
     let base64_data = STANDARD.encode(&test_image_data);
 
@@ -543,7 +543,7 @@ mod tests {
     let file_id = "test_video";
 
     // Сначала сохраняем frames
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     let test_image_data = vec![255, 0, 0, 255];
     let base64_data = STANDARD.encode(&test_image_data);
 
@@ -730,7 +730,7 @@ mod tests {
     let manager = create_test_manager().await;
     let file_id = "test_video".to_string();
 
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     let test_data = vec![255, 0, 0, 255];
     let base64_data = STANDARD.encode(&test_data);
 
@@ -776,7 +776,7 @@ mod tests {
     let manager = PreviewDataManager::new(temp_dir.path().to_path_buf());
     let file_id = "test_video".to_string();
 
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     let test_data = vec![255, 0, 0, 255];
     let base64_data = STANDARD.encode(&test_data);
 
@@ -1032,7 +1032,7 @@ mod tests {
 
         // Операция 1: Сохранение timeline frames
         if i % 2 == 0 {
-          use base64::{Engine as _, engine::general_purpose::STANDARD};
+          use base64::{engine::general_purpose::STANDARD, Engine as _};
           let data = vec![255, 0, 0, 255];
           let base64 = STANDARD.encode(&data);
 
@@ -1090,7 +1090,7 @@ mod tests {
       assert!(manager.get_preview_data(file_id).await.is_none());
 
       // Добавляем некоторые timeline frames
-      use base64::{Engine as _, engine::general_purpose::STANDARD};
+      use base64::{engine::general_purpose::STANDARD, Engine as _};
       let test_data = vec![255, 0, 0, 255];
       let base64_data = STANDARD.encode(&test_data);
 
@@ -1148,7 +1148,7 @@ mod tests {
       {
         let manager = create_test_manager().await;
 
-        use base64::{Engine as _, engine::general_purpose::STANDARD};
+        use base64::{engine::general_purpose::STANDARD, Engine as _};
         let data = vec![255, 255, 255, 255];
         let base64 = STANDARD.encode(&data);
 

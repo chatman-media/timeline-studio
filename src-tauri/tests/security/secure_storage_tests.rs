@@ -149,8 +149,8 @@ fn test_get_or_create_encryption_key() {
 #[cfg(test)]
 mod encryption_tests {
   use aes_gcm::{
-    Aes256Gcm,
     aead::{Aead, AeadCore, KeyInit, OsRng},
+    Aes256Gcm,
   };
 
   #[test]

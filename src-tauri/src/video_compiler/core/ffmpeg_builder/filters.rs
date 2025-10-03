@@ -928,7 +928,7 @@ mod tests {
     use crate::video_compiler::schema::templates::{Template, TemplateRegion, TemplateType};
     let mut template = Template::new(TemplateType::Grid, "Test Template".to_string(), 4);
     template.id = "template1".to_string(); // Устанавливаем конкретный ID
-    // Добавляем регионы для шаблона
+                                           // Добавляем регионы для шаблона
     template.regions.push(TemplateRegion {
       x: 0,
       y: 0,

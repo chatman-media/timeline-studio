@@ -44,7 +44,11 @@ impl OrtManager {
     });
 
     if let Ok(initialized) = ORT_INITIALIZED.lock() {
-      if *initialized { Ok(()) } else { result }
+      if *initialized {
+        Ok(())
+      } else {
+        result
+      }
     } else {
       Err(anyhow::anyhow!("Failed to check ORT initialization status"))
     }

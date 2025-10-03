@@ -48,11 +48,9 @@ pub async fn claude_send_streaming_message(
 
 /// Валидирует API ключ Claude
 #[tauri::command]
-pub async fn claude_validate_api_key(
-  api_key: String,
-) -> Result<ValidateApiKeyResponse> {
+pub async fn claude_validate_api_key(api_key: String) -> Result<ValidateApiKeyResponse> {
   let (valid, models) = validate_claude_api_key(&api_key).await?;
-  
+
   let message = if valid {
     "API ключ валиден".to_string()
   } else {

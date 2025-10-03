@@ -29,7 +29,9 @@ pub use crate::state::{
 
 // Browser types
 #[allow(unused_imports)]
-pub use crate::state::browser::{BrowserTab, BrowserState, SortOrder, TabSettings, ViewMode, BrowserEvent};
+pub use crate::state::browser::{
+  BrowserEvent, BrowserState, BrowserTab, SortOrder, TabSettings, ViewMode,
+};
 
 // Simple command for demonstration
 #[tauri::command]

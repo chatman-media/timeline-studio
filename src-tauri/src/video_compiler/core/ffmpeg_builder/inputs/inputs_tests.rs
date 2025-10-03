@@ -4,8 +4,8 @@
 
 use super::*;
 use crate::video_compiler::schema::{
-  ClipSource, ProjectSchema, Timeline,
   timeline::{Clip, ClipProperties, Track, TrackType},
+  ClipSource, ProjectSchema, Timeline,
 };
 use std::path::PathBuf;
 use tokio::process::Command;

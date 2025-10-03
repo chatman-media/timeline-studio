@@ -663,12 +663,10 @@ mod tests {
       timeout: Some(Duration::from_secs(10)),
     };
 
-    assert!(
-      manager
-        .add_pool("custom".to_string(), custom_config)
-        .await
-        .is_ok()
-    );
+    assert!(manager
+      .add_pool("custom".to_string(), custom_config)
+      .await
+      .is_ok());
 
     // Проверяем что pool добавлен
     let pools = manager.list_pools().await;
@@ -681,12 +679,10 @@ mod tests {
       priority: TaskPriority::Low,
       timeout: None,
     };
-    assert!(
-      manager
-        .add_pool("custom".to_string(), duplicate_config)
-        .await
-        .is_err()
-    );
+    assert!(manager
+      .add_pool("custom".to_string(), duplicate_config)
+      .await
+      .is_err());
 
     // Удаляем pool
     assert!(manager.remove_pool("custom").await.is_ok());

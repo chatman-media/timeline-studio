@@ -1,7 +1,7 @@
 //! Frame Processor - Обработка кадров для распознавания
 
-use anyhow::{Result, anyhow};
-use image::{DynamicImage, GenericImageView, imageops::FilterType};
+use anyhow::{anyhow, Result};
+use image::{imageops::FilterType, DynamicImage, GenericImageView};
 use ort::value::Tensor;
 use serde::{Deserialize, Serialize};
 
@@ -95,8 +95,11 @@ impl FrameProcessor {
       },
     );
 
-    Tensor::from_array((img_array.shape().to_vec(), img_array.into_raw_vec_and_offset().0))
-      .map_err(|e| anyhow!("Failed to create tensor: {}", e))
+    Tensor::from_array((
+      img_array.shape().to_vec(),
+      img_array.into_raw_vec_and_offset().0,
+    ))
+    .map_err(|e| anyhow!("Failed to create tensor: {}", e))
   }
 
   /// Постобработка выходных данных YOLO

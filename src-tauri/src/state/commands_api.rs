@@ -147,7 +147,9 @@ pub async fn browser_switch_tab(
   state_manager: State<'_, StateManager>,
   tab: BrowserTab,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSwitchTab { tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSwitchTab { tab })
+    .await;
   Ok(result)
 }
 
@@ -159,7 +161,9 @@ pub async fn browser_set_search_query(
   query: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetSearchQuery { query, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetSearchQuery { query, tab })
+    .await;
   Ok(result)
 }
 
@@ -170,7 +174,9 @@ pub async fn browser_toggle_favorites(
   state_manager: State<'_, StateManager>,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserToggleFavorites { tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserToggleFavorites { tab })
+    .await;
   Ok(result)
 }
 
@@ -183,7 +189,13 @@ pub async fn browser_set_sort(
   sort_order: SortOrder,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetSort { sort_by, sort_order, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetSort {
+      sort_by,
+      sort_order,
+      tab,
+    })
+    .await;
   Ok(result)
 }
 
@@ -195,7 +207,9 @@ pub async fn browser_set_group_by(
   group_by: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetGroupBy { group_by, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetGroupBy { group_by, tab })
+    .await;
   Ok(result)
 }
 
@@ -207,7 +221,9 @@ pub async fn browser_set_filter(
   filter_type: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetFilter { filter_type, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetFilter { filter_type, tab })
+    .await;
   Ok(result)
 }
 
@@ -219,7 +235,9 @@ pub async fn browser_set_view_mode(
   view_mode: ViewMode,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetViewMode { view_mode, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetViewMode { view_mode, tab })
+    .await;
   Ok(result)
 }
 
@@ -231,7 +249,9 @@ pub async fn browser_set_preview_size(
   size_index: u32,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSetPreviewSize { size_index, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSetPreviewSize { size_index, tab })
+    .await;
   Ok(result)
 }
 
@@ -242,7 +262,9 @@ pub async fn browser_reset_tab_settings(
   state_manager: State<'_, StateManager>,
   tab: BrowserTab,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserResetTabSettings { tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserResetTabSettings { tab })
+    .await;
   Ok(result)
 }
 
@@ -254,7 +276,9 @@ pub async fn browser_select_file(
   file_id: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSelectFile { file_id, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSelectFile { file_id, tab })
+    .await;
   Ok(result)
 }
 
@@ -266,7 +290,9 @@ pub async fn browser_deselect_file(
   file_id: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserDeselectFile { file_id, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserDeselectFile { file_id, tab })
+    .await;
   Ok(result)
 }
 
@@ -278,7 +304,9 @@ pub async fn browser_toggle_file_selection(
   file_id: String,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserToggleFileSelection { file_id, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserToggleFileSelection { file_id, tab })
+    .await;
   Ok(result)
 }
 
@@ -290,7 +318,9 @@ pub async fn browser_select_all_files(
   file_ids: Vec<String>,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserSelectAllFiles { file_ids, tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserSelectAllFiles { file_ids, tab })
+    .await;
   Ok(result)
 }
 
@@ -301,6 +331,8 @@ pub async fn browser_deselect_all_files(
   state_manager: State<'_, StateManager>,
   tab: Option<BrowserTab>,
 ) -> Result<CommandResult, String> {
-  let result = state_manager.execute_command(ProjectCommand::BrowserDeselectAllFiles { tab }).await;
+  let result = state_manager
+    .execute_command(ProjectCommand::BrowserDeselectAllFiles { tab })
+    .await;
   Ok(result)
 }

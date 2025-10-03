@@ -1,12 +1,12 @@
 //! Простой пример плагина для загрузки видео на YouTube
 
-use crate::core::AppEvent;
 use crate::core::plugins::{
   context::PluginContext,
   plugin::{
     AppEventType, Plugin, PluginCommand, PluginMetadata, PluginResponse, PluginType, Version,
   },
 };
+use crate::core::AppEvent;
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};

@@ -51,11 +51,9 @@ fn test_validate_transcription_params_valid() {
 fn test_validate_transcription_params_empty_api_key() {
   let result = validate_transcription_params("", "whisper-1", None, None);
   assert!(result.is_err());
-  assert!(
-    result
-      .unwrap_err()
-      .contains("API ключ не может быть пустым")
-  );
+  assert!(result
+    .unwrap_err()
+    .contains("API ключ не может быть пустым"));
 }
 
 #[test]

@@ -4,7 +4,7 @@ use super::business_logic;
 use super::types::*;
 use crate::video_compiler::commands::VideoCompilerState;
 use crate::video_compiler::error::Result;
-use crate::video_compiler::services::{METRICS, monitoring::MetricsSummary};
+use crate::video_compiler::services::{monitoring::MetricsSummary, METRICS};
 use tauri::State;
 
 /// Получить сводку метрик для всех сервисов

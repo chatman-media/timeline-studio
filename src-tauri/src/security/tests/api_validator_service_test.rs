@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
-  use crate::security::ApiKeyType;
   use crate::security::api_validator::{RateLimitInfo, ValidationResult};
   use crate::security::api_validator_service::*;
+  use crate::security::ApiKeyType;
 
   #[test]
   fn test_api_validator_service_new() {

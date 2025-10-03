@@ -312,18 +312,14 @@ mod platform_optimization_tests {
     assert!(!result.compatible);
     assert!(!result.issues.is_empty());
     assert!(!result.recommendations.is_empty());
-    assert!(
-      result
-        .issues
-        .iter()
-        .any(|issue| issue.contains("Разрешение"))
-    );
-    assert!(
-      result
-        .issues
-        .iter()
-        .any(|issue| issue.contains("Длительность"))
-    );
+    assert!(result
+      .issues
+      .iter()
+      .any(|issue| issue.contains("Разрешение")));
+    assert!(result
+      .issues
+      .iter()
+      .any(|issue| issue.contains("Длительность")));
     assert!(result.issues.iter().any(|issue| issue.contains("Битрейт")));
   }
 

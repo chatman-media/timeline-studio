@@ -10,8 +10,7 @@ pub mod tracer;
 
 pub use alerts::{Alert, AlertManager, AlertRule, AlertSeverity};
 pub use config::{
-  HealthConfig, LogLevel, MetricsExporter, TelemetryConfig, TelemetryConfigBuilder,
-  TracingExporter,
+  HealthConfig, LogLevel, MetricsExporter, TelemetryConfig, TelemetryConfigBuilder, TracingExporter,
 };
 pub use health::HealthCheckManager;
 pub use metrics::MetricsCollector;

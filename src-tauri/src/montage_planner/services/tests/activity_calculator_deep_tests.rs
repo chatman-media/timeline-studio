@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
   use crate::montage_planner::services::{
-    ActivityCalculator, activity_calculator::ActivityCalculationConfig,
+    activity_calculator::ActivityCalculationConfig, ActivityCalculator,
   };
   use crate::montage_planner::types::*;
 

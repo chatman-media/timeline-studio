@@ -3,8 +3,8 @@
 //! Предоставляет метрики и инструменты для отслеживания производительности сервисов
 
 use std::collections::HashMap;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 
@@ -689,9 +689,7 @@ mod tests {
     assert!(prometheus.contains("detailed_service_operation_count{operation=\"file_upload\"} 1"));
 
     assert!(prometheus.contains("detailed_service_operation_errors{operation=\"video_encode\"} 0"));
-    assert!(
-      prometheus.contains("detailed_service_operation_errors{operation=\"audio_process\"} 1")
-    );
+    assert!(prometheus.contains("detailed_service_operation_errors{operation=\"audio_process\"} 1"));
 
     // Проверяем форматирование имен (замену дефисов и пробелов)
     assert!(prometheus.contains("operation=\"file_upload\""));

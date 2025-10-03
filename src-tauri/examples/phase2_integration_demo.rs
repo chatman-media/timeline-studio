@@ -1,6 +1,8 @@
 //! Демонстрация полной интеграции Phase 2 компонентов
 
 use timeline_studio_lib::core::{
+  performance::{DataType, RuntimeConfig},
+  telemetry::{LogLevel, TelemetryConfigBuilder},
   AppEvent,
 
   CacheManager,
@@ -20,14 +22,12 @@ use timeline_studio_lib::core::{
   // Telemetry & Observability
   TelemetryManager,
   ZeroCopyManager,
-  performance::{DataType, RuntimeConfig},
-  telemetry::{LogLevel, TelemetryConfigBuilder},
 };
 
 use async_trait::async_trait;
 use std::sync::Arc;
 use timeline_studio_lib::video_compiler::error::VideoCompilerError;
-use tokio::time::{Duration, sleep};
+use tokio::time::{sleep, Duration};
 
 /// Пример интегрированного сервиса видео обработки
 struct VideoProcessingService {

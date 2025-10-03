@@ -247,8 +247,6 @@ pub async fn delete_api_key(
   }
 }
 
-
-
 /// Валидирует API ключ
 #[tauri::command]
 pub async fn validate_api_key(

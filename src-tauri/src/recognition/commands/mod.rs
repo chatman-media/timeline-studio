@@ -32,7 +32,7 @@ impl Default for RecognitionState {
     // This is a blocking call for Default, which is not ideal
     // but we'll use a temporary directory as fallback
     let base_dir = std::env::temp_dir().join("timeline-studio");
-    
+
     // Use a simple sync initialization for Default
     let service = match tauri::async_runtime::block_on(RecognitionService::new(base_dir)) {
       Ok(s) => s,
@@ -41,7 +41,7 @@ impl Default for RecognitionState {
         panic!("Cannot create RecognitionService");
       }
     };
-    
+
     Self { service }
   }
 }

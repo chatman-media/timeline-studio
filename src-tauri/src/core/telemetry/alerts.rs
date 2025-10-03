@@ -163,12 +163,15 @@ impl AlertManager {
 
   /// Добавляет правило алерта
   pub fn add_rule(&self, rule: AlertRule) -> Result<(), String> {
-    let mut rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
-    
+    let mut rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
+
     if rules.contains_key(&rule.id) {
       return Err(format!("Rule with id '{}' already exists", rule.id));
     }
-    
+
     info!("Adding alert rule: {} ({})", rule.name, rule.id);
     rules.insert(rule.id.clone(), rule);
     Ok(())
@@ -176,11 +179,14 @@ impl AlertManager {
 
   /// Удаляет правило алерта
   pub fn remove_rule(&self, rule_id: &str) -> Result<(), String> {
-    let mut rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
-    
+    let mut rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
+
     if rules.remove(rule_id).is_some() {
       info!("Removed alert rule: {}", rule_id);
-      
+
       // Также удаляем связанные данные
       if let Ok(mut last_check) = self.last_check.lock() {
         last_check.remove(rule_id);
@@ -191,7 +197,7 @@ impl AlertManager {
       if let Ok(mut active_alerts) = self.active_alerts.lock() {
         active_alerts.remove(rule_id);
       }
-      
+
       Ok(())
     } else {
       Err(format!("Rule with id '{}' not found", rule_id))
@@ -200,23 +206,36 @@ impl AlertManager {
 
   /// Получает все правила
   pub fn get_rules(&self) -> Result<Vec<AlertRule>, String> {
-    let rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     Ok(rules.values().cloned().collect())
   }
 
   /// Получает правило по ID
   pub fn get_rule(&self, rule_id: &str) -> Result<Option<AlertRule>, String> {
-    let rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     Ok(rules.get(rule_id).cloned())
   }
 
   /// Включает или выключает правило
   pub fn set_rule_enabled(&self, rule_id: &str, enabled: bool) -> Result<(), String> {
-    let mut rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
-    
+    let mut rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
+
     if let Some(rule) = rules.get_mut(rule_id) {
       rule.enabled = enabled;
-      info!("Rule '{}' {}", rule_id, if enabled { "enabled" } else { "disabled" });
+      info!(
+        "Rule '{}' {}",
+        rule_id,
+        if enabled { "enabled" } else { "disabled" }
+      );
       Ok(())
     } else {
       Err(format!("Rule with id '{}' not found", rule_id))
@@ -225,14 +244,17 @@ impl AlertManager {
 
   /// Проверяет метрику против всех правил
   pub fn check_metric(&self, metric_name: &str, value: f64) -> Result<(), String> {
-    let rules = self.rules.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let rules = self
+      .rules
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     let now = Instant::now();
-    
+
     for rule in rules.values() {
       if rule.metric_name != metric_name || !rule.enabled {
         continue;
       }
-      
+
       // Проверяем интервал проверки
       if let Ok(mut last_check) = self.last_check.lock() {
         if let Some(last) = last_check.get(&rule.id) {
@@ -242,7 +264,7 @@ impl AlertManager {
         }
         last_check.insert(rule.id.clone(), now);
       }
-      
+
       // Проверяем условие
       if rule.evaluate(value) {
         // Проверяем cooldown
@@ -255,7 +277,7 @@ impl AlertManager {
         } else {
           true
         };
-        
+
         if should_alert {
           self.trigger_alert(rule.clone(), value)?;
         }
@@ -268,7 +290,7 @@ impl AlertManager {
         }
       }
     }
-    
+
     Ok(())
   }
 
@@ -278,57 +300,66 @@ impl AlertManager {
       "Alert: {} - {} {} {} (current: {})",
       rule.name, rule.metric_name, rule.condition, rule.threshold, value
     );
-    
+
     let alert = Alert::new(rule.clone(), value, message.clone());
-    
+
     // Логируем алерт
     match rule.severity {
       AlertSeverity::Critical => error!("{}", message),
       AlertSeverity::Warning => warn!("{}", message),
       AlertSeverity::Info => info!("{}", message),
     }
-    
+
     // Сохраняем активный алерт
     if let Ok(mut active_alerts) = self.active_alerts.lock() {
       active_alerts.insert(rule.id.clone(), alert.clone());
     }
-    
+
     // Обновляем время последнего алерта
     if let Ok(mut last_alert) = self.last_alert.lock() {
       last_alert.insert(rule.id.clone(), Instant::now());
     }
-    
+
     // Отправляем алерт через канал, если он настроен
     if let Some(sender) = &self.alert_sender {
       if let Err(e) = sender.send(alert) {
         error!("Failed to send alert: {}", e);
       }
     }
-    
+
     Ok(())
   }
 
   /// Получает все активные алерты
   pub fn get_active_alerts(&self) -> Result<Vec<Alert>, String> {
-    let active_alerts = self.active_alerts.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let active_alerts = self
+      .active_alerts
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     Ok(active_alerts.values().cloned().collect())
   }
 
   /// Получает количество активных алертов по уровню серьезности
   pub fn get_alert_counts(&self) -> Result<HashMap<AlertSeverity, usize>, String> {
-    let active_alerts = self.active_alerts.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let active_alerts = self
+      .active_alerts
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     let mut counts = HashMap::new();
-    
+
     for alert in active_alerts.values() {
       *counts.entry(alert.rule.severity).or_insert(0) += 1;
     }
-    
+
     Ok(counts)
   }
 
   /// Очищает все активные алерты
   pub fn clear_alerts(&self) -> Result<(), String> {
-    let mut active_alerts = self.active_alerts.lock().map_err(|e| format!("Lock error: {}", e))?;
+    let mut active_alerts = self
+      .active_alerts
+      .lock()
+      .map_err(|e| format!("Lock error: {}", e))?;
     let count = active_alerts.len();
     active_alerts.clear();
     info!("Cleared {} active alerts", count);
@@ -356,7 +387,7 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     assert_eq!(rule.id, "test_rule");
     assert_eq!(rule.name, "Test Rule");
     assert_eq!(rule.metric_name, "cpu_usage");
@@ -375,7 +406,7 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     assert!(rule.evaluate(0.9));
     assert!(!rule.evaluate(0.7));
     assert!(!rule.evaluate(0.8));
@@ -384,7 +415,7 @@ mod tests {
   #[test]
   fn test_alert_manager_add_remove_rules() {
     let manager = AlertManager::new();
-    
+
     let rule = AlertRule::new(
       "test_rule".to_string(),
       "Test Rule".to_string(),
@@ -393,18 +424,18 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     // Добавляем правило
     assert!(manager.add_rule(rule.clone()).is_ok());
-    
+
     // Проверяем, что правило добавлено
     let rules = manager.get_rules().unwrap();
     assert_eq!(rules.len(), 1);
     assert_eq!(rules[0].id, "test_rule");
-    
+
     // Удаляем правило
     assert!(manager.remove_rule("test_rule").is_ok());
-    
+
     // Проверяем, что правило удалено
     let rules = manager.get_rules().unwrap();
     assert_eq!(rules.len(), 0);
@@ -427,7 +458,7 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     let rule_lt = AlertRule::new(
       "lt_rule".to_string(),
       "Less Than Rule".to_string(),
@@ -436,7 +467,7 @@ mod tests {
       0.2,
       AlertSeverity::Critical,
     );
-    
+
     let rule_eq = AlertRule::new(
       "eq_rule".to_string(),
       "Equal Rule".to_string(),
@@ -445,15 +476,15 @@ mod tests {
       1.0,
       AlertSeverity::Info,
     );
-    
+
     // Тестируем условие >
     assert!(rule_gt.evaluate(0.9));
     assert!(!rule_gt.evaluate(0.7));
-    
+
     // Тестируем условие <
     assert!(rule_lt.evaluate(0.1));
     assert!(!rule_lt.evaluate(0.3));
-    
+
     // Тестируем условие ==
     assert!(rule_eq.evaluate(1.0));
     assert!(!rule_eq.evaluate(0.9));
@@ -462,7 +493,7 @@ mod tests {
   #[test]
   fn test_alert_manager_check_metric() {
     let manager = AlertManager::new();
-    
+
     let rule = AlertRule::new(
       "cpu_rule".to_string(),
       "CPU Usage Rule".to_string(),
@@ -471,15 +502,15 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     manager.add_rule(rule).unwrap();
-    
+
     // Проверяем метрику, которая должна вызвать алерт
     assert!(manager.check_metric("cpu_usage", 0.9).is_ok());
-    
+
     // Проверяем метрику, которая не должна вызвать алерт
     assert!(manager.check_metric("cpu_usage", 0.7).is_ok());
-    
+
     // Проверяем несуществующую метрику
     assert!(manager.check_metric("unknown_metric", 0.5).is_ok());
   }
@@ -487,7 +518,7 @@ mod tests {
   #[test]
   fn test_alert_manager_enable_disable_rule() {
     let manager = AlertManager::new();
-    
+
     let rule = AlertRule::new(
       "test_rule".to_string(),
       "Test Rule".to_string(),
@@ -496,21 +527,21 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     manager.add_rule(rule).unwrap();
-    
+
     // Отключаем правило
     assert!(manager.set_rule_enabled("test_rule", false).is_ok());
-    
+
     let rule = manager.get_rule("test_rule").unwrap().unwrap();
     assert!(!rule.enabled);
-    
+
     // Включаем правило обратно
     assert!(manager.set_rule_enabled("test_rule", true).is_ok());
-    
+
     let rule = manager.get_rule("test_rule").unwrap().unwrap();
     assert!(rule.enabled);
-    
+
     // Пытаемся изменить несуществующее правило
     assert!(manager.set_rule_enabled("nonexistent", true).is_err());
   }
@@ -518,7 +549,7 @@ mod tests {
   #[test]
   fn test_alert_manager_get_alert_counts() {
     let manager = AlertManager::new();
-    
+
     // Добавляем правила разной серьезности
     let critical_rule = AlertRule::new(
       "critical_rule".to_string(),
@@ -528,7 +559,7 @@ mod tests {
       0.95,
       AlertSeverity::Critical,
     );
-    
+
     let warning_rule = AlertRule::new(
       "warning_rule".to_string(),
       "Warning Rule".to_string(),
@@ -537,16 +568,16 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     manager.add_rule(critical_rule).unwrap();
     manager.add_rule(warning_rule).unwrap();
-    
+
     // Вызываем алерты
     manager.check_metric("disk_usage", 0.97).unwrap();
     manager.check_metric("cpu_usage", 0.85).unwrap();
-    
+
     let counts = manager.get_alert_counts().unwrap();
-    
+
     // Проверяем, что счетчики корректны
     assert!(counts.contains_key(&AlertSeverity::Critical));
     assert!(counts.contains_key(&AlertSeverity::Warning));
@@ -562,9 +593,9 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     let alert = Alert::new(rule.clone(), 0.9, "CPU usage is high".to_string());
-    
+
     assert_eq!(alert.rule.id, "test_rule");
     assert_eq!(alert.value, 0.9);
     assert_eq!(alert.message, "CPU usage is high");
@@ -573,7 +604,7 @@ mod tests {
   #[test]
   fn test_alert_manager_clear_alerts() {
     let manager = AlertManager::new();
-    
+
     let rule = AlertRule::new(
       "test_rule".to_string(),
       "Test Rule".to_string(),
@@ -582,17 +613,17 @@ mod tests {
       0.8,
       AlertSeverity::Warning,
     );
-    
+
     manager.add_rule(rule).unwrap();
     manager.check_metric("cpu_usage", 0.9).unwrap();
-    
+
     // Проверяем, что есть активные алерты
     let alerts = manager.get_active_alerts().unwrap();
     assert!(!alerts.is_empty());
-    
+
     // Очищаем алерты
     assert!(manager.clear_alerts().is_ok());
-    
+
     // Проверяем, что алерты очищены
     let alerts = manager.get_active_alerts().unwrap();
     assert!(alerts.is_empty());

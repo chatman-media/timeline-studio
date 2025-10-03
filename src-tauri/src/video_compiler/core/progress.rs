@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, SystemTime};
-use tokio::sync::{RwLock, mpsc};
+use tokio::sync::{mpsc, RwLock};
 use uuid::Uuid;
 
 /// Основной трекер прогресса рендеринга
@@ -93,7 +93,8 @@ impl ProgressTracker {
           SystemTime::now()
             .duration_since(start_time)
             .unwrap_or(Duration::ZERO)
-            .as_millis().is_multiple_of(self.settings.update_interval.as_millis())
+            .as_millis()
+            .is_multiple_of(self.settings.update_interval.as_millis())
         })
         .unwrap_or(true);
 

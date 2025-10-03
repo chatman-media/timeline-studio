@@ -97,9 +97,7 @@ impl PlanGenerator {
 
   /// Create generator with custom configuration
   pub fn with_config(config: PlanGenerationConfig) -> Self {
-    Self {
-      config,
-    }
+    Self { config }
   }
 
   /// Generate optimized montage plan using genetic algorithm
@@ -418,10 +416,10 @@ impl PlanGenerator {
       0 => {
         // Replace random gene
         let gene_idx = rng.random_range(0..individual.genes.len());
-         let mut new_gene = rng.random_range(0..max_moment_index);
-         let mut attempts = 0;
-         while individual.genes.contains(&new_gene) && attempts < 10 {
-           new_gene = rng.random_range(0..max_moment_index);
+        let mut new_gene = rng.random_range(0..max_moment_index);
+        let mut attempts = 0;
+        while individual.genes.contains(&new_gene) && attempts < 10 {
+          new_gene = rng.random_range(0..max_moment_index);
           attempts += 1;
         }
         if !individual.genes.contains(&new_gene) {
@@ -432,7 +430,7 @@ impl PlanGenerator {
         // Swap two genes (maintaining order)
         if individual.genes.len() > 1 {
           let idx1 = rng.random_range(0..individual.genes.len());
-           let idx2 = rng.random_range(0..individual.genes.len());
+          let idx2 = rng.random_range(0..individual.genes.len());
           if idx1 != idx2 {
             individual.genes.swap(idx1, idx2);
           }
@@ -458,9 +456,9 @@ impl PlanGenerator {
         // Shift segment - move a subsequence
         if individual.genes.len() > 3 {
           let start = rng.random_range(0..individual.genes.len() - 1);
-           let end = rng.random_range(start + 1..=individual.genes.len().min(start + 3));
-           let segment: Vec<_> = individual.genes.drain(start..end).collect();
-           let insert_pos = rng.random_range(0..=individual.genes.len());
+          let end = rng.random_range(start + 1..=individual.genes.len().min(start + 3));
+          let segment: Vec<_> = individual.genes.drain(start..end).collect();
+          let insert_pos = rng.random_range(0..=individual.genes.len());
           for (i, gene) in segment.into_iter().enumerate() {
             individual.genes.insert(insert_pos + i, gene);
           }
@@ -860,10 +858,10 @@ impl PlanGenerator {
     for item in population.iter_mut().skip(start_idx) {
       let mut genes = Vec::new();
       let mut rng = rand::rng();
-       let target_size = rng.random_range(3..moments.len().min(20));
+      let target_size = rng.random_range(3..moments.len().min(20));
 
-       while genes.len() < target_size {
-         let idx = rng.random_range(0..moments.len());
+      while genes.len() < target_size {
+        let idx = rng.random_range(0..moments.len());
         if !genes.contains(&idx) {
           genes.push(idx);
         }

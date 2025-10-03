@@ -6,8 +6,8 @@ mod service_tests {
   use crate::video_compiler::{
     commands::state::{ActiveRenderJob, RenderJobMetadata},
     schema::{
-      ProjectSchema,
       timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
+      ProjectSchema,
     },
   };
 
@@ -102,7 +102,7 @@ mod service_tests {
   async fn create_test_active_job() -> ActiveRenderJob {
     use crate::video_compiler::{renderer::VideoRenderer, schema::ProjectSchema};
     use std::sync::Arc;
-    use tokio::sync::{RwLock, mpsc};
+    use tokio::sync::{mpsc, RwLock};
 
     let project = ProjectSchema::new("Test Project".to_string());
     let settings = Arc::new(RwLock::new(

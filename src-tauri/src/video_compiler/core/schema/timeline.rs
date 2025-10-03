@@ -489,23 +489,19 @@ mod tests {
     invalid_clip.source = ClipSource::File("video.mp4".to_string());
     invalid_clip.start_time = -1.0;
     assert!(invalid_clip.validate().is_err());
-    assert!(
-      invalid_clip
-        .validate()
-        .unwrap_err()
-        .contains("отрицательным")
-    );
+    assert!(invalid_clip
+      .validate()
+      .unwrap_err()
+      .contains("отрицательным"));
 
     // Клип с end_time <= start_time
     invalid_clip.start_time = 10.0;
     invalid_clip.end_time = 10.0;
     assert!(invalid_clip.validate().is_err());
-    assert!(
-      invalid_clip
-        .validate()
-        .unwrap_err()
-        .contains("больше времени начала")
-    );
+    assert!(invalid_clip
+      .validate()
+      .unwrap_err()
+      .contains("больше времени начала"));
 
     // Клип с невалидной скоростью
     invalid_clip.end_time = 20.0;

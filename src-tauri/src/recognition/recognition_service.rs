@@ -5,7 +5,9 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 
 use super::person_clustering::PersonClusteringService;
-use super::types::{BoundingBox, DetectedFace, DetectedObject, DetectedScene, IdentifiedPerson, RecognitionResults};
+use super::types::{
+  BoundingBox, DetectedFace, DetectedObject, DetectedScene, IdentifiedPerson, RecognitionResults,
+};
 use super::yolo_processor::{Detection, YoloModel, YoloProcessor};
 
 /// State wrapper for RecognitionService
@@ -48,11 +50,14 @@ impl RecognitionService {
     // Create person clustering service with proper error handling
     let db_path = base_path.join("persons.db");
     let person_clustering = match PersonClusteringService::new(db_path).await {
-        Ok(service) => Arc::new(service),
-        Err(e) => {
-            log::error!("Failed to create person clustering service: {}", e);
-            return Err(anyhow::anyhow!("Failed to create person clustering service: {}", e));
-        }
+      Ok(service) => Arc::new(service),
+      Err(e) => {
+        log::error!("Failed to create person clustering service: {}", e);
+        return Err(anyhow::anyhow!(
+          "Failed to create person clustering service: {}",
+          e
+        ));
+      }
     };
 
     Ok(Self {
@@ -90,44 +95,45 @@ impl RecognitionService {
 
     // Группируем результаты
     let grouped_objects = self.group_objects(all_objects);
-    
+
     // Кластеризуем лица и идентифицируем персон
     let detected_faces = self.convert_to_detected_faces(all_faces);
-    let person_profiles = self.person_clustering
+    let person_profiles = self
+      .person_clustering
       .cluster_and_identify(detected_faces)
       .await
       .map_err(|e| anyhow::anyhow!(e))?;
-    
+
     // Convert PersonProfile to IdentifiedPerson with actual data
     let mut identified_persons = Vec::new();
     for profile in person_profiles {
       // For now, use simplified data without database access
-       let confidence = 0.8; // Default confidence
-       let appearance_count = 1; // Default appearance count
-      
+      let confidence = 0.8; // Default confidence
+      let appearance_count = 1; // Default appearance count
+
       // Create a simple face group for now
-       let face_group = vec![DetectedFace {
-         face_id: Some(format!("{}_face_0", profile.id)),
-         person_name: Some(profile.primary_name.clone()),
-         confidence,
-         timestamps: vec![0.0],
-         bounding_boxes: vec![BoundingBox {
-           x: 0.0,
-           y: 0.0,
-           width: 100.0,
-           height: 100.0,
-         }],
-       }];
-      
+      let face_group = vec![DetectedFace {
+        face_id: Some(format!("{}_face_0", profile.id)),
+        person_name: Some(profile.primary_name.clone()),
+        confidence,
+        timestamps: vec![0.0],
+        bounding_boxes: vec![BoundingBox {
+          x: 0.0,
+          y: 0.0,
+          width: 100.0,
+          height: 100.0,
+        }],
+      }];
+
       identified_persons.push(IdentifiedPerson {
-         person_id: Some(profile.id.to_string()),
-         person_name: Some(profile.primary_name),
-         face_group,
-         confidence,
-         appearance_count,
-       });
-     }
-    
+        person_id: Some(profile.id.to_string()),
+        person_name: Some(profile.primary_name),
+        face_group,
+        confidence,
+        appearance_count,
+      });
+    }
+
     let scenes = self.detect_scenes(&grouped_objects);
 
     let results = RecognitionResults {
@@ -436,7 +442,9 @@ mod tests {
   #[tokio::test]
   async fn test_group_objects() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let detections = vec![
       (0.0, create_test_detection("person", 0.9, 100.0, 100.0)),
@@ -460,7 +468,9 @@ mod tests {
   #[tokio::test]
   async fn test_group_faces() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let detections = vec![
       (0.0, create_test_detection("face", 0.95, 100.0, 100.0)),
@@ -482,7 +492,9 @@ mod tests {
   #[tokio::test]
   async fn test_detect_scenes_people() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let objects = vec![
       DetectedObject {
@@ -512,7 +524,9 @@ mod tests {
   #[tokio::test]
   async fn test_detect_scenes_traffic() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let objects = vec![
       DetectedObject {
@@ -551,7 +565,9 @@ mod tests {
   #[tokio::test]
   async fn test_detect_scenes_mixed() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let objects = vec![
       DetectedObject {
@@ -583,7 +599,9 @@ mod tests {
   #[tokio::test]
   async fn test_save_and_load_results() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let results = RecognitionResults {
       objects: vec![DetectedObject {
@@ -616,7 +634,9 @@ mod tests {
   #[tokio::test]
   async fn test_load_nonexistent_results() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let result = service.load_results("nonexistent").await.unwrap();
     assert!(result.is_none());
@@ -625,7 +645,9 @@ mod tests {
   #[tokio::test]
   async fn test_process_batch() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let mut frame_paths_map = HashMap::new();
     frame_paths_map.insert("file1".to_string(), vec![]);
@@ -642,7 +664,9 @@ mod tests {
   #[tokio::test]
   async fn test_get_object_classes() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let classes = service.get_object_classes().await;
     assert!(!classes.is_empty());
@@ -653,7 +677,9 @@ mod tests {
   #[tokio::test]
   async fn test_set_object_classes() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let target_classes = vec!["person".to_string(), "dog".to_string()];
     service.set_object_classes(target_classes.clone()).await;
@@ -721,7 +747,9 @@ mod tests {
   #[tokio::test]
   async fn test_detect_scenes_empty() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let objects = vec![];
     let scenes = service.detect_scenes(&objects);
@@ -731,7 +759,9 @@ mod tests {
   #[tokio::test]
   async fn test_detect_scenes_no_relevant_objects() {
     let temp_dir = TempDir::new().unwrap();
-    let service = RecognitionService::new(temp_dir.path().to_path_buf()).await.unwrap();
+    let service = RecognitionService::new(temp_dir.path().to_path_buf())
+      .await
+      .unwrap();
 
     let objects = vec![
       DetectedObject {

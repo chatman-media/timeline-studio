@@ -107,7 +107,11 @@ pub fn parse_fps_from_string(fps_str: &str) -> f64 {
   if parts.len() == 2 {
     let num: f64 = parts[0].parse().unwrap_or(0.0);
     let den: f64 = parts[1].parse().unwrap_or(1.0);
-    if den != 0.0 { num / den } else { 0.0 }
+    if den != 0.0 {
+      num / den
+    } else {
+      0.0
+    }
   } else {
     fps_str.parse().unwrap_or(0.0)
   }

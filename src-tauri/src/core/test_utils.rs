@@ -7,8 +7,8 @@ use crate::video_compiler::error::{Result, VideoCompilerError};
 use async_trait::async_trait;
 use std::any::Any;
 use std::collections::HashMap;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::sync::Arc;
 use tokio::sync::RwLock;
 
 // ===== Mock Services =====

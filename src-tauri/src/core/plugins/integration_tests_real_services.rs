@@ -2,12 +2,12 @@
 
 use crate::{
   core::{
-    EventBus,
     di::ServiceContainer,
     plugins::{
       api::{ClipInfo, Effect, PluginApi, PluginApiImpl, PluginDialog},
       permissions::SecurityLevel,
     },
+    EventBus,
   },
   video_compiler::error::{Result, VideoCompilerError},
 };
