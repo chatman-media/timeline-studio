@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/chatman-media/timeline-studio/compare/v1.4.2...v1.4.3) (2025-10-03)
+
+
+### Bug Fixes
+
+* **video-player:** ensure unique element ids in player controls ([9bb4a68](https://github.com/chatman-media/timeline-studio/commit/9bb4a68ee01109a50fd6b7da58d5072b872dc9c0))
+
 ## [1.4.2](https://github.com/chatman-media/timeline-studio/compare/v1.4.1...v1.4.2) (2025-10-03)
 
 
