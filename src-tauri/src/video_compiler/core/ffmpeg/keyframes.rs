@@ -144,7 +144,7 @@ fn analyze_frame_quality(keyframe: &KeyFrame) -> f64 {
 /// Определение смены сцены
 fn detect_scene_change(index: usize, _timestamps: &[f64]) -> bool {
   // Простая эвристика: каждый 5-й кадр считаем сменой сцены
-  index > 0 && index % 5 == 0
+  index > 0 && index.is_multiple_of(5)
 }
 
 /// Извлечение ключевых кадров с использованием scene detection

@@ -5,7 +5,9 @@ use std::collections::HashMap;
 /// Browser tab types
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum BrowserTab {
+  #[default]
   Media,
   Music,
   Subtitles,
@@ -16,26 +18,18 @@ pub enum BrowserTab {
   StyleTemplates,
 }
 
-impl Default for BrowserTab {
-  fn default() -> Self {
-    BrowserTab::Media
-  }
-}
 
 /// View mode for browser display
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum ViewMode {
+  #[default]
   List,
   Grid,
   Thumbnails,
 }
 
-impl Default for ViewMode {
-  fn default() -> Self {
-    ViewMode::List
-  }
-}
 
 /// Settings for individual browser tabs
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -68,16 +62,13 @@ impl Default for TabSettings {
 /// Sort order for browser items
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum SortOrder {
+  #[default]
   Asc,
   Desc,
 }
 
-impl Default for SortOrder {
-  fn default() -> Self {
-    SortOrder::Asc
-  }
-}
 
 /// Complete browser state
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -130,7 +121,7 @@ impl BrowserState {
   
   /// Get mutable settings for the active tab
   pub fn active_tab_settings_mut(&mut self) -> &mut TabSettings {
-    self.tab_settings.entry(self.active_tab.clone()).or_insert_with(TabSettings::default)
+    self.tab_settings.entry(self.active_tab.clone()).or_default()
   }
   
   /// Get selected files for the active tab
@@ -142,7 +133,7 @@ impl BrowserState {
   
   /// Get mutable selected files for the active tab
   pub fn active_tab_selected_files_mut(&mut self) -> &mut Vec<String> {
-    self.selected_files.entry(self.active_tab.clone()).or_insert_with(Vec::new)
+    self.selected_files.entry(self.active_tab.clone()).or_default()
   }
   
   /// Switch to a different tab

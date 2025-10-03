@@ -108,7 +108,7 @@ impl FileScanner {
             discovered_files.push(file);
 
             // Отправляем прогресс
-            if discovered_files.len() % 10 == 0 {
+            if discovered_files.len().is_multiple_of(10) {
               let _ = self.app_handle.emit(
                 "media-processor",
                 ScannerEvent::ScanProgress {

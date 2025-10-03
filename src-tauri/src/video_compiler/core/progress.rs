@@ -93,9 +93,7 @@ impl ProgressTracker {
           SystemTime::now()
             .duration_since(start_time)
             .unwrap_or(Duration::ZERO)
-            .as_millis()
-            % self.settings.update_interval.as_millis()
-            == 0
+            .as_millis().is_multiple_of(self.settings.update_interval.as_millis())
         })
         .unwrap_or(true);
 
