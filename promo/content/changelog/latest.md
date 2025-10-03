@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/chatman-media/timeline-studio/compare/v1.4.0...v1.4.1) (2025-10-03)
+
+
+### Bug Fixes
+
+* **export:** use unique ids for form elements to prevent collisions ([6c8f33a](https://github.com/chatman-media/timeline-studio/commit/6c8f33a0d6944a15c90515e472021e0c985620ac))
+* **export:** use unique ids for switch components to prevent collisions ([5a69ef9](https://github.com/chatman-media/timeline-studio/commit/5a69ef9a4f2291211c40f19e578520479b8a0c05))
+
 # [1.4.0](https://github.com/chatman-media/timeline-studio/compare/v1.3.10...v1.4.0) (2025-10-03)
 
 
