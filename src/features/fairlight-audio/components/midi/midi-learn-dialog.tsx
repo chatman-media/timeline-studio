@@ -1,5 +1,5 @@
 import { Loader2, Music } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -29,6 +29,8 @@ interface MidiLearnDialogProps {
 export function MidiLearnDialog({ open, onClose, devices, onComplete }: MidiLearnDialogProps) {
   const { t } = useTranslation()
   const { startLearning } = useMidi()
+  const midiDeviceId = useId()
+  const targetParameterId = useId()
 
   const PARAMETER_OPTIONS = [
     { value: "channel.1.volume", label: t("fairlightAudio.midi.learnDialog.parameters.channel1Volume") },
@@ -94,11 +96,11 @@ export function MidiLearnDialog({ open, onClose, devices, onComplete }: MidiLear
         <div className="space-y-4 py-4">
           {/* Device Selection */}
           <div>
-            <Label htmlFor="midi-device" className="text-xs text-zinc-400">
+            <Label htmlFor={midiDeviceId} className="text-xs text-zinc-400">
               {t("fairlightAudio.midi.learnDialog.midiDevice")}
             </Label>
             <Select value={selectedDevice} onValueChange={setSelectedDevice}>
-              <SelectTrigger id="midi-device" className="mt-1">
+              <SelectTrigger id={midiDeviceId} className="mt-1">
                 <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectMidiDevice")} />
               </SelectTrigger>
               <SelectContent>
@@ -113,11 +115,11 @@ export function MidiLearnDialog({ open, onClose, devices, onComplete }: MidiLear
 
           {/* Parameter Selection */}
           <div>
-            <Label htmlFor="target-parameter" className="text-xs text-zinc-400">
+            <Label htmlFor={targetParameterId} className="text-xs text-zinc-400">
               {t("fairlightAudio.midi.learnDialog.targetParameter")}
             </Label>
             <Select value={targetParameter} onValueChange={setTargetParameter}>
-              <SelectTrigger id="target-parameter" className="mt-1">
+              <SelectTrigger id={targetParameterId} className="mt-1">
                 <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectParameter")} />
               </SelectTrigger>
               <SelectContent>

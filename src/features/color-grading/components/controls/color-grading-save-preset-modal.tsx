@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useId, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
@@ -15,6 +15,7 @@ export function ColorGradingSavePresetModal() {
   const { t } = useTranslation()
   const { modalData, closeModal } = useModal()
   const { onSave } = (modalData as SavePresetModalData) || {}
+  const presetNameId = useId()
 
   const [presetName, setPresetName] = useState("")
 
@@ -30,11 +31,11 @@ export function ColorGradingSavePresetModal() {
     <div className="bg-[#2D2D30] border-[#464647]">
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="preset-name" className="text-right">
+          <Label htmlFor={presetNameId} className="text-right">
             {t("colorGrading.dialogs.savePreset.nameLabel", "Name")}
           </Label>
           <Input
-            id="preset-name"
+            id={presetNameId}
             value={presetName}
             onChange={(e) => setPresetName(e.target.value)}
             className="col-span-3 bg-[#383838] border-[#464647]"

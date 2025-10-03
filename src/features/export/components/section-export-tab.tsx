@@ -1,5 +1,5 @@
 import { Clock, Flag, Play, Scissors, Video } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useId, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -40,6 +40,9 @@ interface TimeMarker {
 export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }: SectionExportTabProps) {
   const { t } = useTranslation()
   const { project, seek } = useTimeline()
+  const markersId = useId()
+  const clipsId = useId()
+  const manualId = useId()
   const [exportMode, setExportMode] = useState<"markers" | "manual" | "clips">("markers")
   const [sections, setSections] = useState<ExportSection[]>([])
   const [manualStart, setManualStart] = useState("00:00:00")
@@ -224,22 +227,22 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
           >
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="markers" id="markers" />
-                <Label htmlFor="markers" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="markers" id={markersId} />
+                <Label htmlFor={markersId} className="flex items-center gap-2 cursor-pointer">
                   <Flag className="h-4 w-4" />
                   {t("export.sections.byMarkers")}
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="clips" id="clips" />
-                <Label htmlFor="clips" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="clips" id={clipsId} />
+                <Label htmlFor={clipsId} className="flex items-center gap-2 cursor-pointer">
                   <Video className="h-4 w-4" />
                   {t("export.sections.byClips")}
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="manual" id="manual" />
-                <Label htmlFor="manual" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="manual" id={manualId} />
+                <Label htmlFor={manualId} className="flex items-center gap-2 cursor-pointer">
                   <Scissors className="h-4 w-4" />
                   {t("export.sections.manual")}
                 </Label>

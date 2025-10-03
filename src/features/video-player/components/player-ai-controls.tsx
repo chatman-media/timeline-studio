@@ -4,7 +4,7 @@
  */
 
 import { Eye, EyeOff, Gauge, Pause, Play, Settings, Sparkles } from "lucide-react"
-import { useState } from "react"
+import { useId, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -47,6 +47,8 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
   const handleFrameRateChange = (value: number[]) => {
     aiAnalysis.setFrameAnalysisRate(value[0])
   }
+
+  const id = useId()
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
