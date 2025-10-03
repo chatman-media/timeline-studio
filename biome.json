@@ -193,7 +193,8 @@
         "noVar": "error",
         "useAwait": "off",
         "useDefaultSwitchClauseLast": "error",
-        "useGetterReturn": "error"
+        "useGetterReturn": "error",
+        "useIterableCallbackReturn": "off"
       },
       "performance": {
         "noImgElement": "off"

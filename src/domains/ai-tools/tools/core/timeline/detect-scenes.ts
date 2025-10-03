@@ -126,7 +126,9 @@ export class SceneDetectionTool extends BaseAITool {
 
         // Получаем все треки и клипы для анализа
         const allTracks = [...currentProject.globalTracks]
-        currentProject.sections.forEach((section) => allTracks.push(...section.tracks))
+        currentProject.sections.forEach((section) => {
+          allTracks.push(...section.tracks)
+        })
 
         // Находим видео клипы для анализа
         const videoClips = this.getVideoClipsForAnalysis(allTracks, targetClips)

@@ -110,7 +110,9 @@ export class EnhancementApplicationTool extends BaseAITool {
 
         // Получаем все треки для анализа
         const allTracks = [...currentProject.globalTracks]
-        currentProject.sections.forEach((section) => allTracks.push(...section.tracks))
+        currentProject.sections.forEach((section) => {
+          allTracks.push(...section.tracks)
+        })
 
         this.logger?.info("Анализируем структуру проекта для улучшений", {
           totalTracks: allTracks.length,

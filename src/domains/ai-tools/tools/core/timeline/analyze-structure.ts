@@ -4,9 +4,8 @@
 
 import type {
   TimelineClip,
-  TimelineProject,
-  TimelineSection,
-  TimelineTrack,
+  Section as TimelineSection,
+  Track as TimelineTrack,
 } from "@/domains/video-editing/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import { getTimelineStateAccess } from "./types"
@@ -123,7 +122,7 @@ export class StructureAnalysisTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<StructureAnalysisResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInput(input, (data: any) => {
       const errors: string[] = []
 
       const validDepths = ["basic", "detailed", "comprehensive"]
@@ -143,7 +142,7 @@ export class StructureAnalysisTool extends BaseAITool {
         errors: validation.errors,
         message: "Ошибка валидации параметров анализа структуры",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: "StructureAnalysisTool",
       }
     }
 
@@ -214,8 +213,8 @@ export class StructureAnalysisTool extends BaseAITool {
           })
 
           // Треки из секций
-          currentProject.sections.forEach((section) => {
-            section.tracks.forEach((track) => {
+          currentProject.sections.forEach((section: any) => {
+            section.tracks.forEach((track: any) => {
               tracks.push({
                 id: track.id,
                 name: track.name,
@@ -239,10 +238,10 @@ export class StructureAnalysisTool extends BaseAITool {
               id: section.id,
               name: section.name,
               index: (section as any).index || 0,
-              duration: section.duration,
+              duration: (section as any).duration || 0,
               startTime: section.startTime,
-              endTime: (section as any).endTime || section.startTime + section.duration,
-              tracksCount: section.tracks.length,
+              endTime: (section as any).endTime || section.startTime + (section as any).duration || 0,
+              tracksCount: (section as any).tracks?.length || 0,
               isCollapsed: (section as any).isCollapsed || false,
               color: section.color || "#333",
               tags: (section as any).tags || [],
@@ -255,7 +254,7 @@ export class StructureAnalysisTool extends BaseAITool {
           const clips: ClipInfo[] = []
 
           // Клипы с глобальных треков
-          currentProject.globalTracks.forEach((track) => {
+          currentProject.globalTracks.forEach((track: any) => {
             track.clips.forEach((clip: TimelineClip) => {
               clips.push({
                 id: clip.id,
@@ -276,8 +275,8 @@ export class StructureAnalysisTool extends BaseAITool {
           })
 
           // Клипы из секций
-          currentProject.sections.forEach((section) => {
-            section.tracks.forEach((track) => {
+          currentProject.sections.forEach((section: any) => {
+            section.tracks.forEach((track: any) => {
               track.clips.forEach((clip: TimelineClip) => {
                 clips.push({
                   id: clip.id,
@@ -304,13 +303,19 @@ export class StructureAnalysisTool extends BaseAITool {
         // Детальная статистика
         if (analysisDepth === "detailed" || analysisDepth === "comprehensive") {
           const allClips: TimelineClip[] = []
-          currentProject.globalTracks.forEach((track) => allClips.push(...track.clips))
-          currentProject.sections.forEach((section) => {
-            section.tracks.forEach((track) => allClips.push(...track.clips))
+          currentProject.globalTracks.forEach((track: any) => {
+            allClips.push(...track.clips)
+          })
+          currentProject.sections.forEach((section: any) => {
+            section.tracks.forEach((track: TimelineTrack) => {
+              allClips.push(...track.clips)
+            })
           })
 
           const allTracks: TimelineTrack[] = [...currentProject.globalTracks]
-          currentProject.sections.forEach((section) => allTracks.push(...section.tracks))
+          currentProject.sections.forEach((section: any) => {
+            allTracks.push(...section.tracks)
+          })
 
           result.statistics = {
             averageClipDuration:
