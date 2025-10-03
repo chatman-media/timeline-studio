@@ -225,7 +225,7 @@ export class SectionCreationTool extends BaseAITool {
       },
     )
   }
-  validateInput(input: CreateSectionsInput, arg1: (data: any) => { isValid: boolean; errors: string[] }) {
+  validateInput(_input: CreateSectionsInput, _arg1: (data: any) => { isValid: boolean; errors: string[] }) {
     throw new Error("Method not implemented.")
   }
 }
