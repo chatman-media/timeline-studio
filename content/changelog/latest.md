@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/chatman-media/timeline-studio/compare/v1.5.0...v1.6.0) (2025-10-03)
+
+
+### Features
+
+* **i18n:** add about page translations for en, ru and zh ([53060fb](https://github.com/chatman-media/timeline-studio/commit/53060fba6404be07526f4850b042f72a373f24ce))
+
 # [1.5.0](https://github.com/chatman-media/timeline-studio/compare/v1.4.3...v1.5.0) (2025-10-03)
 
 
