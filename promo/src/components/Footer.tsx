@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
                   </li>
                   <li>
                     <a
-                      href="mailto:ak.chatman.media@gmail.com"
+                      href="mailto:jerrytropicventures@gmail.com"
                       className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
                     >
                       {t("footer.product.contact")}
