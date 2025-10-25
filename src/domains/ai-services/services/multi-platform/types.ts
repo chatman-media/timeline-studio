@@ -4,7 +4,8 @@
 
 import { AspectRatio } from "lightningcss"
 import { AdaptedContent, PlatformId } from "../../types"
-import { GeneratedScript, UnifiedContentAnalysis } from "../script-generation"
+import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
+import { GeneratedScript } from "../script-generation"
 
 export interface MultiPlatformConfig {
   // Настройки адаптации

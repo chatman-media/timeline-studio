@@ -12,7 +12,7 @@ import ContentClassificationEngine, {
   ExtendedContentClassification,
 } from "@/domains/ai-services/services/engines/content-classification/content-classification-engine"
 import { UnifiedContentAnalysis } from "@/domains/ai-services/types"
-import { AdvancedSceneAnalysis } from "../engines/scene-analysis/scene-analysis-engine"
+import { AdvancedSceneAnalysis } from "../engines/scene-analysis"
 
 // Pipeline конфигурация
 export interface PipelineConfig {

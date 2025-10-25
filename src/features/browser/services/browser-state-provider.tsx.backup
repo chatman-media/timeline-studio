@@ -1,6 +1,5 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { BrowserContext, BrowserTab, ViewMode } from "@/domains/browser"
 import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
 
@@ -46,7 +45,7 @@ const getInitialContext = (): BrowserContext => ({
 })
 
 /**
- * Интерфейс контекста провайдера браузера с BackendSync
+ * Интерфейс контекста провайдера браузера
  */
 interface BrowserStateContextValue {
   // Состояние
@@ -76,10 +75,6 @@ interface BrowserStateContextValue {
   selectAllFiles: (fileIds: string[], tab?: BrowserTab) => void
   deselectAllFiles: (tab?: BrowserTab) => void
   isFileSelected: (fileId: string, tab?: BrowserTab) => boolean
-  
-  // BackendSync методы
-  syncBrowserState: () => Promise<void>
-  isBackendConnected: boolean
 }
 
 /**
@@ -95,17 +90,9 @@ interface BrowserStateProviderProps {
 }
 
 /**
- * Провайдер состояния браузера с интеграцией BackendSync
- * 
- * Добавлено:
- * - Синхронизация состояния браузера с backend
- * - Восстановление состояния из backend при инициализации
- * - Логирование действий пользователя для аналитики
+ * Провайдер состояния браузера
  */
 export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ children }) => {
-  const backendSync = getBackendSync()
-  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
-  
   const [state, setState] = useState<BrowserContext>(() => {
     // Пытаемся загрузить настройки из localStorage только на клиенте
     if (typeof window === "undefined") {
@@ -147,80 +134,6 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   const isFirstRender = useRef(true)
   const prevStateRef = useRef(state)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  // Синхронизация состояния с backend
-  const syncBrowserState = async () => {
-    if (!isBackendConnected) return
-
-    try {
-      // Преобразуем Set в массив для сериализации
-      const serializableState = {
-        ...state,
-        selectedFiles: Object.entries(state.selectedFiles).reduce(
-          (acc, [tab, files]) => {
-            acc[tab as BrowserTab] = Array.from(files)
-            return acc
-          },
-          {} as Record<BrowserTab, string[]>,
-        ),
-      }
-
-      await backendSync.executeCommand({
-        type: "UI",
-        params: {
-          type: "SyncBrowserState",
-          params: serializableState,
-        },
-      })
-
-      console.log("[BrowserStateProvider] Browser state synced with backend")
-    } catch (error) {
-      console.error("[BrowserStateProvider] Failed to sync browser state:", error)
-    }
-  }
-
-  // Подписка на backend события и восстановление состояния
-  useEffect(() => {
-    // Мониторинг соединения
-    const unsubscribeConnection = backendSync.onStateChange((projectState) => {
-      setIsBackendConnected(true)
-      
-      // Восстанавливаем состояние браузера из backend
-      if (projectState.ui_state?.browser_state) {
-        const restoredState = projectState.ui_state.browser_state as any
-        
-        // Преобразуем массивы обратно в Set
-        if (restoredState.selectedFiles) {
-          const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
-          for (const [tab, files] of Object.entries(restoredState.selectedFiles)) {
-            selectedFiles[tab as BrowserTab] = new Set(files as string[])
-          }
-          restoredState.selectedFiles = selectedFiles
-        }
-        
-        setState(prevState => ({
-          ...prevState,
-          ...restoredState,
-        }))
-        
-        console.log("[BrowserStateProvider] Browser state restored from backend")
-      }
-    })
-
-    // Подписка на события
-    const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "BROWSER_STATE_SYNC_REQUEST") {
-        // Backend запрашивает синхронизацию состояния
-        syncBrowserState().catch(console.error)
-      }
-    })
-
-    return () => {
-      unsubscribeConnection()
-      unsubscribeEvents()
-    }
-  }, [backendSync, isBackendConnected])
 
   // Сохраняем настройки в пользовательские настройки при изменении (с дебаунсом)
   useEffect(() => {
@@ -278,38 +191,20 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       saveTimeoutRef.current = null
     }, 500) // Дебаунс 500мс
 
-    // Синхронизация с backend (с большим дебаунсом)
-    if (syncTimeoutRef.current) {
-      clearTimeout(syncTimeoutRef.current)
-    }
-
-    syncTimeoutRef.current = setTimeout(() => {
-      syncBrowserState().catch(console.error)
-      syncTimeoutRef.current = null
-    }, 2000) // Дебаунс 2 секунды для backend
-
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current)
         saveTimeoutRef.current = null
       }
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current)
-        syncTimeoutRef.current = null
-      }
     }
-  }, [state, isBackendConnected])
+  }, [state])
 
-  // Очистка таймеров при размонтировании компонента
+  // Очистка таймера при размонтировании компонента
   useEffect(() => {
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current)
         saveTimeoutRef.current = null
-      }
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current)
-        syncTimeoutRef.current = null
       }
     }
   }, [])
@@ -320,20 +215,9 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   const selectedFiles = state.selectedFiles[activeTab] || new Set<string>()
   const previewSize = PREVIEW_SIZES[currentTabSettings.previewSizeIndex] || PREVIEW_SIZES[DEFAULT_PREVIEW_SIZE_INDEX]
 
-  // Расширенные действия с логированием для backend
+  // Остальные функции остаются без изменений...
   const switchTab = (tab: BrowserTab) => {
     setState((prev) => ({ ...prev, activeTab: tab }))
-    
-    // Логируем переключение вкладки
-    if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "switch_tab", tab },
-        },
-      }).catch(console.error)
-    }
   }
 
   const setSearchQuery = (query: string, tab?: BrowserTab) => {
@@ -419,17 +303,6 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         },
       },
     }))
-    
-    // Логируем изменение режима просмотра
-    if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "change_view_mode", viewMode, tab: targetTab },
-        },
-      }).catch(console.error)
-    }
   }
 
   const setPreviewSize = (sizeIndex: number, tab?: BrowserTab) => {
@@ -514,17 +387,6 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         [targetTab]: new Set(fileIds),
       },
     }))
-    
-    // Логируем массовый выбор файлов
-    if (isBackendConnected && fileIds.length > 10) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
-        },
-      }).catch(console.error)
-    }
   }
 
   const deselectAllFiles = (tab?: BrowserTab) => {
@@ -566,8 +428,6 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         selectAllFiles,
         deselectAllFiles,
         isFileSelected,
-        syncBrowserState,
-        isBackendConnected,
       }}
     >
       {children}
@@ -593,17 +453,4 @@ export const useTabSettings = (tab?: BrowserTab) => {
   const { state, activeTab } = useBrowserState()
   const targetTab = tab || activeTab
   return state.tabSettings[targetTab]
-}
-
-/**
- * Новый хук для мониторинга синхронизации состояния браузера
- */
-export const useBrowserStateSync = () => {
-  const { syncBrowserState, isBackendConnected } = useBrowserState()
-  
-  return {
-    sync: syncBrowserState,
-    isConnected: isBackendConnected,
-    canSync: isBackendConnected,
-  }
 }

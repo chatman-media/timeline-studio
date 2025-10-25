@@ -3,7 +3,6 @@
  */
 
 import type { Person } from "@/features/montage-planner/types"
-import type { MediaFile } from "../../types/media"
 
 // Базовые типы для генерации сценариев
 export interface ScriptGenerationConfig {
@@ -361,8 +360,5 @@ export interface PaceVariation {
   reason?: string
 }
 
-// Unified content analysis types (from ai-content-intelligence)
-export interface UnifiedContentAnalysis {
-  mediaFile: MediaFile
-  scenes: any[]
-}
+// Import UnifiedContentAnalysis from unified types
+export type { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"

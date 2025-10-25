@@ -1,7 +1,5 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 import { useModal } from "@/features/modals/services/modal-provider"
 import { ShortcutHandler } from "../components/shortcut-handler"
@@ -29,12 +27,6 @@ interface ShortcutsContextType {
   exportSettings: () => Promise<string>
   importSettings: (jsonString: string) => Promise<void>
   clearSettings: () => Promise<void>
-  // BackendSync методы
-  syncShortcuts: () => Promise<void>
-  isBackendConnected: boolean
-  shortcutUsageStats: {
-    [shortcutId: string]: number
-  }
 }
 
 const ShortcutsContext = createContext<ShortcutsContextType | null>(null)
@@ -44,146 +36,64 @@ interface ShortcutsProviderProps {
 }
 
 /**
- * Провайдер для управления клавиатурными сочетаниями с интеграцией BackendSync
- * 
- * Добавлено:
- * - Синхронизация пользовательских shortcuts с backend
- * - Статистика использования shortcuts
- * - Синхронизация между окнами/устройствами
+ * Провайдер для управления клавиатурными сочетаниями
+ * Централизованно регистрирует и управляет всеми shortcuts
+ *
+ * Примечание: Ранее зависел от UserSettingsProvider через хук usePanelShortcuts,
+ * теперь использует доменный useUserSettings (через адаптер из features/user-settings)
+ * и НЕ требует наличия отдельного UserSettingsProvider в иерархии.
  */
 export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const { openModal } = useModal()
-  const backendSync = getBackendSync()
-  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
   const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>([])
   const [activeShortcuts, setActiveShortcuts] = useState<ShortcutDefinition[]>([])
   const [currentContext, setCurrentContextState] = useState<ShortcutContext>("global")
   const [isEnabled, setIsEnabled] = useState(true)
   const [isGlobalEnabled, setIsGlobalEnabled] = useState(false)
-  const [shortcutUsageStats, setShortcutUsageStats] = useState<{ [shortcutId: string]: number }>({})
-
-  // Синхронизация shortcuts с backend
-  const syncShortcuts = async () => {
-    if (!isBackendConnected) return
-
-    try {
-      const customShortcuts = shortcuts.filter(s => s.isCustom || s.keys.join("+") !== s.defaultKeys?.join("+"))
-      
-      await backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "SyncShortcuts",
-          params: {
-            shortcuts: customShortcuts,
-            globalEnabled: isGlobalEnabled,
-            context: currentContext,
-            usageStats: shortcutUsageStats,
-          },
-        },
-      })
-      
-      console.log("[ShortcutsProvider] Shortcuts synced with backend")
-    } catch (error) {
-      console.error("[ShortcutsProvider] Failed to sync shortcuts:", error)
-    }
-  }
-
-  // Подписка на backend события
-  useEffect(() => {
-    const unsubscribeConnection = backendSync.onStateChange((state: ProjectState) => {
-      setIsBackendConnected(true)
-      
-      // Восстанавливаем shortcuts из backend
-      if (state.user_settings?.shortcuts) {
-        const restoredShortcuts = state.user_settings.shortcuts as any
-        
-        // Обновляем пользовательские shortcuts
-        if (restoredShortcuts.custom) {
-          restoredShortcuts.custom.forEach((custom: any) => {
-            shortcutsRegistry.updateKeys(custom.id, custom.keys)
-          })
-        }
-        
-        // Восстанавливаем статистику использования
-        if (restoredShortcuts.usageStats) {
-          setShortcutUsageStats(restoredShortcuts.usageStats)
-        }
-        
-        console.log("[ShortcutsProvider] Shortcuts restored from backend")
-      }
-    })
-
-    const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "SHORTCUTS_UPDATED") {
-        // Backend обновил shortcuts
-        loadSettings().catch(console.error)
-      }
-    })
-
-    return () => {
-      unsubscribeConnection()
-      unsubscribeEvents()
-    }
-  }, [backendSync])
 
   // Инициализация shortcuts при первой загрузке
   useEffect(() => {
     if (shortcutsRegistry.getAll().length === 0) {
-      // Добавляем обработчики для shortcuts с логированием использования
+      // Добавляем обработчики для shortcuts
       const enhancedShortcuts = DEFAULT_SHORTCUTS.map((shortcut) => {
-        const originalAction = shortcut.action
-
-        // Оборачиваем action для логирования
-        const wrappedAction = (event: KeyboardEvent) => {
-          // Логируем использование shortcut
-          setShortcutUsageStats(prev => ({
-            ...prev,
-            [shortcut.id]: (prev[shortcut.id] || 0) + 1,
-          }))
-
-          // Отправляем аналитику в backend
-          if (isBackendConnected) {
-            backendSync.executeCommand({
-              type: "Analytics",
-              params: {
-                type: "LogShortcutUsage",
-                params: {
-                  shortcutId: shortcut.id,
-                  keys: shortcut.keys,
-                  context: currentContext,
-                },
-              },
-            }).catch(console.error)
-          }
-
-          // Выполняем оригинальное действие или стандартные действия
-          if (originalAction) {
-            originalAction(event)
-          } else {
-            // Добавляем действия для модальных окон
-            switch (shortcut.id) {
-              case "open-user-settings":
+        // Добавляем действия для модальных окон
+        switch (shortcut.id) {
+          case "open-user-settings":
+            return {
+              ...shortcut,
+              action: (event: KeyboardEvent) => {
                 event.preventDefault()
                 openModal("user-settings")
-                break
-              case "open-project-settings":
+              },
+            }
+          case "open-project-settings":
+            return {
+              ...shortcut,
+              action: (event: KeyboardEvent) => {
                 event.preventDefault()
                 openModal("project-settings")
-                break
-              case "open-keyboard-shortcuts":
+              },
+            }
+          case "open-keyboard-shortcuts":
+            return {
+              ...shortcut,
+              action: (event: KeyboardEvent) => {
                 event.preventDefault()
                 openModal("keyboard-shortcuts")
-                break
-              case "export-video":
+              },
+            }
+          case "export-video":
+            return {
+              ...shortcut,
+              action: (event: KeyboardEvent) => {
                 event.preventDefault()
                 openModal("export")
-                break
-              // TODO: Добавить обработчики для остальных shortcuts
+              },
             }
-          }
+          // TODO: Добавить обработчики для остальных shortcuts
+          default:
+            return shortcut
         }
-
-        return { ...shortcut, action: wrappedAction }
       })
 
       shortcutsRegistry.registerMany(enhancedShortcuts)
@@ -228,18 +138,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     void loadSavedSettings()
 
     return unsubscribe
-  }, [openModal, isBackendConnected, currentContext])
-
-  // Синхронизация с backend при изменениях
-  useEffect(() => {
-    if (!isBackendConnected) return
-
-    const syncTimeout = setTimeout(() => {
-      syncShortcuts().catch(console.error)
-    }, 3000) // Задержка 3 секунды для debouncing
-
-    return () => clearTimeout(syncTimeout)
-  }, [shortcuts, isGlobalEnabled, shortcutUsageStats, isBackendConnected])
+  }, [openModal])
 
   const toggleShortcuts = (enabled: boolean) => {
     setIsEnabled(enabled)
@@ -256,9 +155,6 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
       // Автосохранение настроек
       await shortcutsRegistry.saveSettings(enabled)
-      
-      // Синхронизация с backend
-      await syncShortcuts()
     } catch (error) {
       console.error("Failed to toggle global shortcuts:", error)
       // Возвращаем предыдущее состояние при ошибке
@@ -277,39 +173,14 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     // Автосохранение настроек
     shortcutsRegistry.saveSettings(isGlobalEnabled).catch(console.error)
-    
-    // Немедленная синхронизация с backend для важных изменений
-    if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "UpdateShortcut",
-          params: { id, keys },
-        },
-      }).catch(console.error)
-    }
   }
 
   const resetShortcut = (id: string) => {
     shortcutsRegistry.reset(id)
   }
 
-  const resetAllShortcuts = async () => {
+  const resetAllShortcuts = () => {
     shortcutsRegistry.resetAll()
-    
-    // Сбрасываем статистику
-    setShortcutUsageStats({})
-    
-    // Уведомляем backend
-    if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "ResetAllShortcuts",
-          params: { timestamp: new Date().toISOString() },
-        },
-      })
-    }
   }
 
   const setContext = (context: ShortcutContext) => {
@@ -326,7 +197,6 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
   const saveSettings = async () => {
     await shortcutsRegistry.saveSettings(isGlobalEnabled)
-    await syncShortcuts()
   }
 
   const loadSettings = async () => {
@@ -350,34 +220,17 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   }
 
   const exportSettings = async () => {
-    const settings = await shortcutsRegistry.exportSettings()
-    
-    // Добавляем статистику использования
-    const exportData = JSON.parse(settings)
-    exportData.usageStats = shortcutUsageStats
-    
-    return JSON.stringify(exportData)
+    return shortcutsRegistry.exportSettings()
   }
 
   const importSettings = async (jsonString: string) => {
-    const importData = JSON.parse(jsonString)
-    
-    // Восстанавливаем статистику если есть
-    if (importData.usageStats) {
-      setShortcutUsageStats(importData.usageStats)
-    }
-    
     await shortcutsRegistry.importSettings(jsonString)
     // Перезагружаем состояние после импорта
     await loadSettings()
-    
-    // Синхронизируем с backend
-    await syncShortcuts()
   }
 
   const clearSettings = async () => {
     await shortcutsRegistry.clearSettings()
-    setShortcutUsageStats({})
   }
 
   const contextValue: ShortcutsContextType = {
@@ -399,9 +252,6 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     exportSettings,
     importSettings,
     clearSettings,
-    syncShortcuts,
-    isBackendConnected,
-    shortcutUsageStats,
   }
 
   // Регистрируем shortcuts для панелей
@@ -427,30 +277,4 @@ export function useShortcuts() {
     throw new Error("useShortcuts must be used within ShortcutsProvider")
   }
   return context
-}
-
-/**
- * Новый хук для мониторинга статистики использования shortcuts
- */
-export function useShortcutStats() {
-  const { shortcutUsageStats, syncShortcuts, isBackendConnected } = useShortcuts()
-  
-  const getMostUsedShortcuts = (limit = 10) => {
-    return Object.entries(shortcutUsageStats)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, limit)
-      .map(([id, count]) => ({ id, count }))
-  }
-  
-  const getTotalUsage = () => {
-    return Object.values(shortcutUsageStats).reduce((sum, count) => sum + count, 0)
-  }
-  
-  return {
-    stats: shortcutUsageStats,
-    mostUsed: getMostUsedShortcuts(),
-    totalUsage: getTotalUsage(),
-    sync: syncShortcuts,
-    isConnected: isBackendConnected,
-  }
 }

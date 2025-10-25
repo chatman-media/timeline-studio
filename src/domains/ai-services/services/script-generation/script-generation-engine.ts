@@ -4,6 +4,7 @@
  */
 
 import type { Person } from "@/features/montage-planner/types"
+import { type UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import { BaseAIEngine, type EngineCapabilities } from "./base-engine"
 import { DialogueGenerator } from "./dialogue-generator"
 import { TemplateEngine } from "./template-engine"
@@ -30,7 +31,6 @@ import {
   ScriptScene,
   TurningPoint,
   TurningPointType,
-  UnifiedContentAnalysis,
   VisualElementType,
 } from "./types"
 

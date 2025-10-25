@@ -1,12 +1,7 @@
 /**
- * Drag and Drop Provider for Timeline с интеграцией BackendSync
+ * Drag and Drop Provider for Timeline
  *
  * Wraps the timeline with DndContext and provides drag overlay
- * 
- * BackendSync интеграция добавляет:
- * - Логирование операций drag & drop для аналитики
- * - Запись операций в историю для undo/redo
- * - Основная логика остается в UI для производительности
  */
 
 import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
@@ -55,18 +50,11 @@ function DraggedVideoOverlay({ mediaFile, count }: { mediaFile: MediaFile; count
   )
 }
 
-/**
- * DragDropProvider с интеграцией BackendSync
- * 
- * Сохраняет UI-характер компонента для производительности,
- * добавляя только логирование операций в backend
- */
 export function DragDropProvider({ children }: DragDropProviderProps) {
   const { dragState, handleDragStart, handleDragOver, handleDragEnd } = useDragDropTimeline()
 
   // Инициализируем bridge при монтировании провайдера
   useEffect(() => {
-    console.log("[DragDropProvider] Initializing with BackendSync integration")
     initializeDragDropBridge()
   }, [])
 

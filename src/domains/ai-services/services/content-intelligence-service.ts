@@ -5,17 +5,12 @@
 
 // Импорт shared типов для Content Intelligence
 import { AiMessage } from "@/domains/ai-core"
-import type { ContentAnalysisResult, IFFmpegAnalysisService, MediaFile } from "@/domains/ai-services/types/interfaces"
+import type { IFFmpegAnalysisService, MediaFile } from "@/domains/ai-services/types/interfaces"
+import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 
 // Реэкспорт shared типов для обратной совместимости
 export type MediaInput = MediaFile
-export interface UnifiedContentAnalysis extends ContentAnalysisResult {
-  classification?: ContentClassification
-  script?: ContentScript
-  platformVariants?: PlatformVariant[]
-  qualityMetrics?: QualityMetrics
-  insights?: ContentInsights
-}
+export type { UnifiedContentAnalysis }
 
 // Legacy типы для обратной совместимости
 export interface ContentClassification {

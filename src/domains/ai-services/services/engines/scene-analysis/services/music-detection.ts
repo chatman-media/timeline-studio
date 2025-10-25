@@ -4,7 +4,7 @@
  */
 
 import { FFmpegAnalysisService } from "@/domains/ai-services"
-import { AudioAnalysisResult } from "@/domains/shared/types"
+import { AudioAnalysisResult } from "@/domains/ai-services/types/unified-analysis"
 
 // Типы для музыкальной детекции
 export interface MusicSegment {

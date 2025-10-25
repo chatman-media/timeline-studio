@@ -1,15 +1,9 @@
 /**
- * Main hook for Timeline drag and drop functionality с интеграцией BackendSync
- * 
- * Добавляет логирование операций drag & drop в backend для:
- * - Истории операций (undo/redo)
- * - Аналитики использования
- * - Синхронизации между окнами
+ * Main hook for Timeline drag and drop functionality
  */
 
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core"
 import { useCallback, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { handleInterModuleDrag, isInterModuleDrag } from "../services/drag-drop-bridge"
 import type { TrackType } from "../types"
 import type { DragData, DragState } from "../types/drag-drop"
@@ -37,7 +31,6 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
   const uiState = { timeScale: 50, snapMode: "grid" as const } // Temporary fallback
   const { addSingleMediaToTimeline, addMediaToTimeline } = useTimelineActions()
   const { addTrack } = useTimeline()
-  const backendSync = getBackendSync()
 
   const [dragState, setDragState] = useState<DragState>({
     isDragging: false,
@@ -67,20 +60,6 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
       })
 
       console.log(`[DragDrop] Started dragging ${resourceType}:`, resource.name)
-      
-      // Логируем начало операции drag в backend (не блокируя)
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogDragStart",
-          params: {
-            resourceType,
-            resourceId: resource.id,
-            resourceName: resource.name,
-          },
-        },
-      }).catch(console.error)
-      
       return
     }
 
@@ -102,22 +81,8 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
         "[DragDrop] Drag started:",
         dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
       )
-      
-      // Логируем начало операции в backend
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogDragStart",
-          params: {
-            mediaFileId: dragData.mediaFile.path,
-            mediaFileName: dragData.mediaFile.name,
-            isMultiSelect: dragData.isMultiSelect,
-            fileCount: draggedCount,
-          },
-        },
-      }).catch(console.error)
     }
-  }, [backendSync])
+  }, [])
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback(
@@ -251,20 +216,6 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
         )
         if (bridgeHandled) {
           console.log("[DragDrop] Inter-module drag handled by bridge")
-          
-          // Логируем успешный drop в backend
-          backendSync.executeCommand({
-            type: "Analytics",
-            params: {
-              type: "LogDropComplete",
-              params: {
-                dropType: "inter-module",
-                success: true,
-                targetModule: "timeline",
-              },
-            },
-          }).catch(console.error)
-          
           // Сбрасываем состояние
           setDragState({
             isDragging: false,
@@ -284,9 +235,6 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
         const dropData = over.data.current as any
 
         if (dropData && dragData) {
-          let dropSuccess = false
-          let dropDetails: any = {}
-
           // Handle track insertion (create new track)
           if (dropData.type === "track-insertion") {
             const trackType = getTrackTypeForMediaFile(dragData.mediaFile)
@@ -303,13 +251,6 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             setTimeout(() => {
               addSingleMediaToTimeline(dragData.mediaFile, undefined, 0)
             }, 100)
-            
-            dropSuccess = true
-            dropDetails = {
-              dropType: "new-track",
-              trackType,
-              mediaFile: dragData.mediaFile.path,
-            }
           } else if (dropData.type === "transition-drop" && dragState.dropPosition?.type === "transition") {
             // Handle transition drop
             console.log(
@@ -320,24 +261,12 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
 
             // The actual transition application is handled by the TransitionDropZone component
             // through its onDrop callback
-            dropSuccess = true
-            dropDetails = {
-              dropType: "transition",
-              leftClipId: dragState.dropPosition.leftClipId,
-              rightClipId: dragState.dropPosition.rightClipId,
-            }
           } else if (dropData.type === "clip-drop" && dragState.draggedResourceType) {
             // Handle resource drop on clip
             console.log("[DragDrop] Dropping", dragState.draggedResourceType, "on clip:", dropData.clipId)
 
             // The actual resource application is handled by the ClipDropZone component
             // Resources are applied through TimelineEffectsProvider
-            dropSuccess = true
-            dropDetails = {
-              dropType: "resource-on-clip",
-              resourceType: dragState.draggedResourceType,
-              clipId: dropData.clipId,
-            }
           } else if (dropData.trackId && dropData.trackType) {
             // Handle existing track drop
             const isValid = canDropOnTrack(dragData.mediaFile, dropData.trackType)
@@ -358,38 +287,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
                 dragState.dropPosition.trackId,
                 dragState.dropPosition.startTime,
               )
-              
-              dropSuccess = true
-              dropDetails = {
-                dropType: "existing-track",
-                trackId: dropData.trackId,
-                startTime: dragState.dropPosition.startTime,
-                mediaFile: dragData.mediaFile.path,
-              }
             }
-          }
-          
-          // Логируем результат операции drop в backend
-          if (dropSuccess) {
-            backendSync.executeCommand({
-              type: "Analytics",
-              params: {
-                type: "LogDropComplete",
-                params: {
-                  success: true,
-                  ...dropDetails,
-                },
-              },
-            }).catch(console.error)
-            
-            // Также сохраняем операцию для истории (undo/redo)
-            backendSync.executeCommand({
-              type: "History",
-              params: {
-                type: "RecordDragDropOperation",
-                params: dropDetails,
-              },
-            }).catch(console.error)
           }
         }
       }
@@ -406,7 +304,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
 
       console.log("[DragDrop] Drag ended")
     },
-    [dragState.draggedItem, dragState.dropPosition, addSingleMediaToTimeline, addTrack, backendSync],
+    [dragState.draggedItem, dragState.dropPosition, addSingleMediaToTimeline, addTrack],
   )
 
   // Check if a track is a valid drop target for the current drag

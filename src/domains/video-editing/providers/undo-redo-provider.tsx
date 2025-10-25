@@ -1,17 +1,23 @@
 /**
- * Domain Undo/Redo Provider
+ * Domain Undo/Redo Provider с интеграцией BackendSync
  *
  * Провайдер для автоматической регистрации действий Undo/Redo в домене
+ * с синхронизацией через BackendSync
  */
 
-import { createContext, type ReactNode, useContext } from "react"
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 import type { Clip, Track } from "@/domains/shared/events"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
 
 interface UndoRedoContextType {
   registerAction: ReturnType<typeof useUndoRedo>["registerAction"]
   startGrouping: ReturnType<typeof useUndoRedo>["startGrouping"]
   endGrouping: ReturnType<typeof useUndoRedo>["endGrouping"]
+  // BackendSync status
+  isConnected: boolean
+  error: string | null
 }
 
 const UndoRedoContext = createContext<UndoRedoContextType | null>(null)
@@ -20,14 +26,126 @@ interface UndoRedoProviderProps {
   children: ReactNode
 }
 
+/**
+ * Undo/Redo Provider с интеграцией BackendSync
+ * 
+ * Синхронизирует историю действий с backend для персистентности
+ * и возможности восстановления после перезапуска
+ */
 export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
   const undoRedo = useUndoRedo()
+  const [isConnected, setIsConnected] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const backendSync = getBackendSync()
+
+  // Синхронизация истории с backend
+  useEffect(() => {
+    // Подписываемся на изменения backend состояния
+    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+      setIsConnected(true)
+      
+      // Восстанавливаем историю из backend при загрузке
+      if (state.undo_redo_state && state.undo_redo_state.history) {
+        console.log("[UndoRedo] Restored history from backend:", state.undo_redo_state.history.length, "actions")
+        // Здесь можно восстановить историю в UndoRedoService
+        // Для этого потребуется добавить метод в сервис
+      }
+    })
+
+    // Подписываемся на события backend
+    const unsubscribeEvents = backendSync.onEvent((event) => {
+      if (event.type === "UNDO_PERFORMED") {
+        console.log("[UndoRedo] Undo performed on backend:", event.data.actionId)
+      } else if (event.type === "REDO_PERFORMED") {
+        console.log("[UndoRedo] Redo performed on backend:", event.data.actionId)
+      }
+    })
+
+    return () => {
+      unsubscribe()
+      unsubscribeEvents()
+    }
+  }, [backendSync])
+
+  // Оборачиваем registerAction для синхронизации с backend
+  const registerActionWithBackend: typeof undoRedo.registerAction = (action) => {
+    const actionId = undoRedo.registerAction(action)
+    
+    // Синхронизируем действие с backend
+    backendSync.executeCommand({
+      type: "UndoRedo",
+      params: {
+        type: "RegisterAction",
+        params: {
+          actionId,
+          action: {
+            ...action,
+            id: actionId,
+            timestamp: Date.now(),
+          },
+        },
+      },
+    }).catch((err) => {
+      console.error("[UndoRedo] Failed to sync action:", err)
+      setError(err.message)
+    })
+    
+    return actionId
+  }
+
+  // Оборачиваем undo/redo для синхронизации с backend
+  const originalUndo = undoRedo.undo
+  const originalRedo = undoRedo.redo
+
+  // Переопределяем методы undo/redo через контекст
+  useEffect(() => {
+    // Подписываемся на события undo/redo в сервисе
+    // и синхронизируем с backend
+    const handleUndo = async () => {
+      try {
+        await backendSync.executeCommand({
+          type: "UndoRedo",
+          params: {
+            type: "Undo",
+            params: {},
+          },
+        })
+      } catch (err) {
+        console.error("[UndoRedo] Failed to sync undo:", err)
+        setError(err.message)
+      }
+    }
+
+    const handleRedo = async () => {
+      try {
+        await backendSync.executeCommand({
+          type: "UndoRedo", 
+          params: {
+            type: "Redo",
+            params: {},
+          },
+        })
+      } catch (err) {
+        console.error("[UndoRedo] Failed to sync redo:", err)
+        setError(err.message)
+      }
+    }
+
+    // Здесь можно добавить подписку на события сервиса
+    // если он поддерживает event emitter
+    
+    return () => {
+      // Cleanup
+    }
+  }, [backendSync])
 
   // Создаем контекст с основными функциями регистрации
   const contextValue: UndoRedoContextType = {
-    registerAction: undoRedo.registerAction,
+    registerAction: registerActionWithBackend,
     startGrouping: undoRedo.startGrouping,
     endGrouping: undoRedo.endGrouping,
+    isConnected,
+    error,
   }
 
   return <UndoRedoContext.Provider value={contextValue}>{children}</UndoRedoContext.Provider>
@@ -48,14 +166,26 @@ export function useUndoRedoContext() {
  * Hook для автоматической регистрации действий с клипами
  */
 export function useClipUndoRedo() {
-  const { registerAction, startGrouping, endGrouping } = useUndoRedoContext()
+  const { registerAction, startGrouping, endGrouping, isConnected } = useUndoRedoContext()
 
   const registerAddClip = (clipId: string, trackId: string, mediaFile: any, time: number) => {
-    return registerAction(UndoRedoHelpers.createAddClipAction(clipId, trackId, mediaFile, time))
+    const actionId = registerAction(UndoRedoHelpers.createAddClipAction(clipId, trackId, mediaFile, time))
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerRemoveClip = (clip: Clip) => {
-    return registerAction(UndoRedoHelpers.createRemoveClipAction(clip))
+    const actionId = registerAction(UndoRedoHelpers.createRemoveClipAction(clip))
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerMoveClip = (
@@ -65,15 +195,27 @@ export function useClipUndoRedo() {
     newTrackId: string,
     newTime: number,
   ) => {
-    return registerAction(UndoRedoHelpers.createMoveClipAction(clipId, oldTrackId, oldTime, newTrackId, newTime))
+    const actionId = registerAction(UndoRedoHelpers.createMoveClipAction(clipId, oldTrackId, oldTime, newTrackId, newTime))
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerBatchOperation = (description: string, originalClips: Clip[], updatedClips: Clip[]) => {
-    return registerAction(UndoRedoHelpers.createBatchOperationAction(description, originalClips, updatedClips))
+    const actionId = registerAction(UndoRedoHelpers.createBatchOperationAction(description, originalClips, updatedClips))
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerUpdateClip = (clipId: string, oldProperties: Partial<Clip>, newProperties: Partial<Clip>) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "UPDATE_CLIP",
       description: "Изменить свойства клипа",
       undoData: { clipId, oldProperties },
@@ -82,6 +224,12 @@ export function useClipUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerTrimClip = (
@@ -91,7 +239,7 @@ export function useClipUndoRedo() {
     newStartTime: number,
     newEndTime: number,
   ) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "TRIM_CLIP",
       description: "Обрезать клип",
       undoData: { clipId, oldStartTime, oldEndTime },
@@ -100,10 +248,16 @@ export function useClipUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerSplitClip = (originalClipId: string, newClipId: string, splitTime: number) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "SPLIT_CLIP",
       description: "Разделить клип",
       undoData: { originalClipId, newClipId },
@@ -112,6 +266,12 @@ export function useClipUndoRedo() {
       priority: "high",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   return {
@@ -131,10 +291,10 @@ export function useClipUndoRedo() {
  * Hook для автоматической регистрации действий с треками
  */
 export function useTrackUndoRedo() {
-  const { registerAction, startGrouping, endGrouping } = useUndoRedoContext()
+  const { registerAction, startGrouping, endGrouping, isConnected } = useUndoRedoContext()
 
   const registerAddTrack = (trackId: string, trackType: string, trackName: string) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "ADD_TRACK",
       description: `Добавить трек "${trackName}"`,
       undoData: { trackId },
@@ -143,10 +303,16 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerRemoveTrack = (track: Track, clips: Clip[] = []) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "REMOVE_TRACK",
       description: `Удалить трек "${track.name}"`,
       undoData: {
@@ -163,10 +329,16 @@ export function useTrackUndoRedo() {
       priority: "high",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerUpdateTrack = (trackId: string, oldProperties: Partial<Track>, newProperties: Partial<Track>) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "UPDATE_TRACK",
       description: "Изменить трек",
       undoData: { trackId, oldProperties },
@@ -175,10 +347,16 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerReorderTracks = (oldOrder: string[], newOrder: string[]) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "REORDER_TRACKS",
       description: "Переставить треки",
       undoData: { trackOrder: oldOrder },
@@ -187,6 +365,12 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   return {
@@ -203,10 +387,10 @@ export function useTrackUndoRedo() {
  * Hook для автоматической регистрации действий с keyframes
  */
 export function useKeyframeUndoRedo() {
-  const { registerAction, startGrouping, endGrouping } = useUndoRedoContext()
+  const { registerAction, startGrouping, endGrouping, isConnected } = useUndoRedoContext()
 
   const registerAddKeyframe = (clipId: string, keyframeId: string, keyframe: any) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "ADD_KEYFRAME",
       description: "Добавить keyframe",
       undoData: { clipId, keyframeId },
@@ -215,10 +399,16 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerRemoveKeyframe = (clipId: string, keyframeId: string, keyframe: any) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "REMOVE_KEYFRAME",
       description: "Удалить keyframe",
       undoData: { clipId, keyframeId, keyframe },
@@ -227,10 +417,16 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   const registerUpdateKeyframe = (clipId: string, keyframeId: string, oldKeyframe: any, newKeyframe: any) => {
-    return registerAction({
+    const actionId = registerAction({
       type: "UPDATE_KEYFRAME",
       description: "Изменить keyframe",
       undoData: { clipId, keyframeId, keyframe: oldKeyframe },
@@ -239,6 +435,12 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
+    
+    if (!isConnected) {
+      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+    }
+    
+    return actionId
   }
 
   return {

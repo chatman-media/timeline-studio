@@ -12,7 +12,7 @@ import type {
   PersonAppearance,
   PersonProfile,
 } from "@/features/person-identification/types/person"
-import { MediaInput } from "../../content-intelligence-service"
+import type { MediaFile as MediaInput } from "@/domains/ai-services/types/interfaces"
 // Используем shared типы вместо ai-chat
 
 // Legacy тип для обратной совместимости

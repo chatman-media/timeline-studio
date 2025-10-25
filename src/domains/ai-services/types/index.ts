@@ -1,25 +1,31 @@
 // AI Services Domain Types
-// Consolidated from features/ai-content-intelligence/shared/types
+// Centralized types for AI services
 
-// Re-export all types from ai-content-intelligence for convenience
+// Core AI types
+export * from "./ai-intelligence"
+export * from "./interfaces"
+export * from "./transcription"
+export * from "./unified-analysis"
+
+// Machine events from machines directory
+export type { ChatMachineEvent } from "../machines/chat-machine"
+export type { MontagePlannerEvent } from "../machines/montage-planner-machine"
+
+// Legacy re-exports for backward compatibility
+// TODO: Migrate these imports to use unified-analysis.ts
 export type {
   AdaptedContent,
   AIConfig,
   GeneratedScript,
   IntelligentContent,
-  NarrativeType,
-  PaceType,
   PlatformId,
   ProcessingError,
-  ProcessingStatus,
   ProcessingStep,
   ScriptGenerationParams,
   ScriptStyle,
-  UnifiedContentAnalysis,
 } from "@/features/ai-content-intelligence"
 export { ContentType, Emotion } from "@/features/ai-content-intelligence"
-// Machine events from machines directory
-export type { ChatMachineEvent } from "../machines/chat-machine"
-export type { MontagePlannerEvent } from "../machines/montage-planner-machine"
-// Core AI types (primary exports)
-export * from "./ai-intelligence"
+
+// Use unified types from unified-analysis.ts instead of features
+import { NarrativeType, PaceType, ProcessingStatus, UnifiedContentAnalysis } from "./unified-analysis"
+export { NarrativeType, PaceType, ProcessingStatus, UnifiedContentAnalysis }

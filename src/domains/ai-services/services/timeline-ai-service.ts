@@ -815,3 +815,6 @@ export class TimelineAIService {
     return []
   }
 }
+
+// Re-export executeContentIntelligenceTool для обратной совместимости
+export { executeContentIntelligenceTool }
