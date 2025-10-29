@@ -262,8 +262,38 @@ export function setupAudioMocks() {
   Object.defineProperty(navigator, "mediaDevices", {
     writable: true,
     value: {
-      getUserMedia: vi.fn().mockResolvedValue(new MediaStream()),
-      getDisplayMedia: vi.fn().mockResolvedValue(new MediaStream()),
+      getUserMedia: vi.fn().mockImplementation(() => {
+        const stream = {
+          getTracks: vi.fn().mockReturnValue([]),
+          getAudioTracks: vi.fn().mockReturnValue([]),
+          getVideoTracks: vi.fn().mockReturnValue([]),
+          addTrack: vi.fn(),
+          removeTrack: vi.fn(),
+          getTrackById: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+          active: true,
+          id: "mock-stream-id"
+        }
+        return Promise.resolve(stream)
+      }),
+      getDisplayMedia: vi.fn().mockImplementation(() => {
+        const stream = {
+          getTracks: vi.fn().mockReturnValue([]),
+          getAudioTracks: vi.fn().mockReturnValue([]),
+          getVideoTracks: vi.fn().mockReturnValue([]),
+          addTrack: vi.fn(),
+          removeTrack: vi.fn(),
+          getTrackById: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+          active: true,
+          id: "mock-stream-id"
+        }
+        return Promise.resolve(stream)
+      }),
       enumerateDevices: vi.fn().mockResolvedValue([
         {
           deviceId: "default",

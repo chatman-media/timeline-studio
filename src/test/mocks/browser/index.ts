@@ -1,3 +1,22 @@
+import { vi } from "vitest"
+
+// Define MediaStream globally if not available
+if (typeof MediaStream === "undefined") {
+  (global as any).MediaStream = class MediaStream {
+    getTracks = vi.fn().mockReturnValue([])
+    getAudioTracks = vi.fn().mockReturnValue([])
+    getVideoTracks = vi.fn().mockReturnValue([])
+    addTrack = vi.fn()
+    removeTrack = vi.fn()
+    getTrackById = vi.fn()
+    addEventListener = vi.fn()
+    removeEventListener = vi.fn()
+    dispatchEvent = vi.fn()
+    active = true
+    id = "mock-stream-id"
+  }
+}
+
 import { resetCanvasMocks, setupCanvasMocks } from "./canvas"
 import { resetDOMMocks, setupDOMMocks } from "./dom"
 import { resetMediaMocks, setupAudioMocks, setupVideoMocks } from "./media"

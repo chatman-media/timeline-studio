@@ -210,6 +210,13 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     if (!isVideoPlayerServiceEnabled) {
       return
     }
+    
+    // Проверяем, что mediaId не пустой
+    if (!mediaId) {
+      console.error("[PlayerProvider] playerSetMedia called with empty mediaId")
+      return
+    }
+    
     await executeCommand(AppCommands.playerSetMedia(mediaId, startTime))
   }
 

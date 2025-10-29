@@ -4,6 +4,7 @@ import { vi } from "vitest"
 export const mockBackendSync = {
   connect: vi.fn().mockResolvedValue(undefined),
   disconnect: vi.fn().mockResolvedValue(undefined),
+  isConnected: vi.fn().mockReturnValue(true),
   executeCommand: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
   getProjectState: vi.fn().mockResolvedValue({
     version: 1,

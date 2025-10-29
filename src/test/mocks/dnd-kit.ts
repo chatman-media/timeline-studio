@@ -14,8 +14,14 @@ export const mockUseDroppable = vi.fn(() => ({
 
 // Mock useDraggable hook
 export const mockUseDraggable = vi.fn(() => ({
-  attributes: {},
-  listeners: {},
+  attributes: {
+    role: 'button',
+    tabIndex: 0,
+    'aria-pressed': false,
+    'aria-roledescription': 'draggable',
+    'aria-describedby': undefined,
+  },
+  listeners: undefined, // Safer to return undefined than empty object
   setNodeRef: vi.fn(),
   transform: null,
   isDragging: false,
