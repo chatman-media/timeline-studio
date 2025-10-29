@@ -27,6 +27,9 @@ import {
   type ContentAnalysisResult,
 } from "./interfaces"
 
+// Import ProcessingStatus from processing.ts
+import { ProcessingStatus } from "./processing"
+
 // Re-export основные типы из interfaces.ts
 export {
   MediaFile,
@@ -52,45 +55,51 @@ export {
 }
 
 // Import типы из shared/types/ai-tools/content-analysis.ts для re-export
-import {
-  NarrativeType,
-  PaceType,
-  ProcessingStatus,
-  SceneType,
+import type {
+  ContentInsights,
+  KeyFrame,
+  KeyMoment,
+  QualityMetrics,
   SceneAnalysis,
   SceneInfo,
-  KeyFrame,
-  QualityMetrics,
-  UnifiedContentAnalysis,
-} from "@/domains/shared/types/ai-tools/content-analysis"
+  UnifiedContentAnalysis as UnifiedContentAnalysisShared
+} from "../../shared/types/ai-tools/content-analysis"
+
+import {
+  KeyMomentType,
+  NarrativeType,
+  PaceType,
+  SceneType
+} from "../../shared/types/ai-tools/content-analysis"
 
 // Re-export типы из shared/types/ai-tools/content-analysis.ts
+export type {
+  ContentInsights,
+  KeyFrame,
+  KeyMoment,
+  QualityMetrics,
+  SceneAnalysis,
+  SceneInfo
+}
+
 export {
+  KeyMomentType,
   NarrativeType,
   PaceType,
-  ProcessingStatus,
-  SceneType,
-  SceneAnalysis,
-  SceneInfo,
-  KeyFrame,
-  QualityMetrics,
-  UnifiedContentAnalysis,
+  SceneType
 }
+
+// Alias to avoid naming conflict
+export type UnifiedContentAnalysis = UnifiedContentAnalysisShared
 
 // Import типы из ai-intelligence.ts для re-export
 import {
-  type ContentInsights,
   type ProcessedMoment,
-  type KeyMoment,
-  KeyMomentType,
 } from "./ai-intelligence"
 
 // Re-export типы из ai-intelligence.ts
 export {
-  ContentInsights,
   ProcessedMoment,
-  KeyMoment,
-  KeyMomentType,
 }
 
 // Дополнительные унифицированные типы

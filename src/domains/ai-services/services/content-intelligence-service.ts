@@ -6,7 +6,8 @@
 // Импорт shared типов для Content Intelligence
 import { AiMessage } from "@/domains/ai-core"
 import type { IFFmpegAnalysisService, MediaFile } from "@/domains/ai-services/types/interfaces"
-import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
+import type { UnifiedContentAnalysis, ContentInsights, SceneAnalysis } from "@/domains/ai-services/types/unified-analysis"
+import type { GeneratedScript } from "@/domains/ai-services/types/script"
 
 // Реэкспорт shared типов для обратной совместимости
 export type MediaInput = MediaFile
@@ -36,35 +37,24 @@ export interface QualityMetrics {
   accessibility: { overallScore: number }
 }
 
-export interface ContentInsights {
-  strengths: string[]
-  improvements: string[]
-  recommendations: string[]
-}
+// ContentInsights, SceneAnalysis, GeneratedScript теперь импортируются из types
 
-export interface SceneAnalysis {
+// Типы для обнаружения
+export interface DetectedObject {
   id: string
-  startTime: number
-  endTime: number
-  type: "dialog" | "action" | "landscape" | "closeup" | "transition"
+  type: string
   confidence: number
-  keyFrames: string[]
-  description: string
-  objects?: DetectedObject[]
-  persons?: DetectedPerson[]
+  boundingBox?: { x: number; y: number; width: number; height: number }
 }
 
-export interface GeneratedScript {
+export interface DetectedPerson {
   id: string
-  title: string
-  style: string
-  structure: string
-  tone: string
-  scenes: ScriptScene[]
-  shotList?: ShotListItem[]
-  metadata: ScriptMetadata
+  name?: string
+  confidence: number
+  faceLocation?: { x: number; y: number; width: number; height: number }
 }
 
+// Локальные типы для расширения
 export interface ScriptScene {
   id: string
   sceneNumber: number
@@ -169,12 +159,10 @@ export interface AccessibilityQuality {
   overallScore: number
 }
 
-export interface ContentInsightsDetailed {
+// Расширенная версия ContentInsights
+export interface ContentInsightsDetailed extends ContentInsights {
   summary: string
   tags: string[]
-  strengths: string[]
-  weaknesses: string[]
-  highlights: string[]
   suggestions: Array<{
     type: string
     priority: "low" | "medium" | "high"

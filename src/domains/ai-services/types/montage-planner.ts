@@ -4,13 +4,13 @@
  * Перенесено из src/features/montage-planner/types/
  */
 
-import type { TransitionParameters, VideoEffect } from "@/domains/video-editing/types/effects"
-// Import types from video-editing domain
-import type { MediaFile } from "@/domains/video-editing/types/media"
+import type { TransitionParameters, VideoEffect } from "../../video-editing/types/effects"
+// Import MediaFile from our own types to avoid conflicts
+import type { MediaFile } from "./interfaces"
 
 // Re-export for convenience
 export type Transition = TransitionParameters
-export type { MediaFile, VideoEffect }
+export type { VideoEffect, MediaFile }
 
 // Person identification
 export interface Person {

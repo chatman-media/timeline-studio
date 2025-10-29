@@ -1,31 +1,44 @@
 // AI Services Domain Types
 // Centralized types for AI services
 
-// Core AI types
+// Core AI types - export first to avoid circular dependencies
+export * from "./platform"
+export * from "./processing"
+export * from "./ai-config"
+export * from "./script"
+
+// Other core types
 export * from "./ai-intelligence"
-export * from "./interfaces"
+// Export everything from interfaces except MediaFile to avoid conflict
+export {
+  type VideoMetadata,
+  type AudioAnalysisResult,
+  type VideoAnalysisResult,
+  type Scene,
+  type QualityAnalysisResult,
+  type SilenceDetectionResult,
+  type SilentSegment,
+  type MotionAnalysisResult,
+  type MotionVector,
+  type FrameAnalysis,
+  type DetectedObject,
+  type BoundingBox,
+  type ExtractedText,
+  type CompositionAnalysis,
+  type Point2D,
+  type Line2D,
+  type FrameAnalysisResult,
+  type SceneDetectionResult,
+  type ContentAnalysisResult,
+  type IFFmpegAnalysisService,
+  type IVisionService,
+  type IContentAnalysisService
+} from "./interfaces"
+// Export MediaFile from interfaces as the canonical one
+export type { MediaFile } from "./interfaces"
 export * from "./transcription"
 export * from "./unified-analysis"
 
 // Machine events from machines directory
 export type { ChatMachineEvent } from "../machines/chat-machine"
 export type { MontagePlannerEvent } from "../machines/montage-planner-machine"
-
-// Legacy re-exports for backward compatibility
-// TODO: Migrate these imports to use unified-analysis.ts
-export type {
-  AdaptedContent,
-  AIConfig,
-  GeneratedScript,
-  IntelligentContent,
-  PlatformId,
-  ProcessingError,
-  ProcessingStep,
-  ScriptGenerationParams,
-  ScriptStyle,
-} from "@/features/ai-content-intelligence"
-export { ContentType, Emotion } from "@/features/ai-content-intelligence"
-
-// Use unified types from unified-analysis.ts instead of features
-import { NarrativeType, PaceType, ProcessingStatus, UnifiedContentAnalysis } from "./unified-analysis"
-export { NarrativeType, PaceType, ProcessingStatus, UnifiedContentAnalysis }

@@ -4,26 +4,14 @@
  * Перенесено из src/features/ai-content-intelligence/shared/types/
  */
 
-import {
-  AdaptedContent,
-  AIConfig,
-  ContentType,
-  Emotion,
-  GeneratedScript,
-  IntelligentContent,
-  NarrativeType,
-  PaceType,
-  PlatformId,
-  ProcessingError,
-  ProcessingStatus,
-  ProcessingStep,
-  ScriptGenerationParams,
-  ScriptStyle,
-  UnifiedContentAnalysis,
-} from "."
-
-// Types are imported above and used in interfaces below
-// Re-exports are handled in the main index.ts
+// Import only what we need from other modules to avoid circular deps
+import type { ProcessingStatus, ProcessingStep, ProcessingError } from "./processing"
+import type { UnifiedContentAnalysis, NarrativeType, PaceType } from "./unified-analysis"
+import { ContentType, Emotion } from "../../shared/types/ai-tools/content-analysis"
+import type { AIConfig, IntelligentContent } from "./ai-config"
+import type { GeneratedScript, ScriptGenerationParams } from "./script"
+import type { PlatformId, AdaptedContent } from "./platform"
+import type { MediaFile } from "./interfaces"
 
 // Additional types for domain usage
 export interface ContentClassification {
@@ -37,16 +25,6 @@ export interface ProcessedMoment {
   timestamp: number
   type: string
   confidence: number
-  metadata?: Record<string, any>
-}
-
-// Media file interface
-export interface MediaFile {
-  id: string
-  path: string
-  name: string
-  type: ContentType
-  duration?: number
   metadata?: Record<string, any>
 }
 
@@ -89,91 +67,9 @@ export type AIIntelligenceEvent =
   | { type: "RESET" }
   | { type: "UPDATE_PROGRESS"; step: string; progress: number }
 
-// Temporary types (will be replaced with domain contracts)
-export interface MediaFile {
-  path: string
-  name: string
-  size?: number
-}
+// Temporary types removed - using imports from other modules
 
-export interface ProcessedMoment {
-  id: string
-  timestamp: number
-  duration: number
-  type: string
-  score: number
-  description: string
-  thumbnail?: string
-  tags: string[]
-}
 
-// ContentInsights interface (missing from original)
-export interface ContentInsights {
-  summary: string
-  highlights: string[]
-  suggestions: string[]
-  warnings: string[]
-  opportunities: string[]
-  strengths: string[]
-  weaknesses: string[]
-  recommendations: string[]
-  marketingAngles: string[]
-  targetDemographics: string[]
-}
-
-// Scene and Key Moment types
-export interface SceneInfo {
-  id: string
-  type: string
-  startTime: number
-  endTime: number
-  duration: number
-  confidence: number
-}
-
-export interface KeyMoment {
-  id: string
-  timestamp: number
-  duration: number
-  type: KeyMomentType
-  score: number
-  description: string
-  sceneId: string
-}
-
-export enum KeyMomentType {
-  CLIMAX = "climax",
-  EMOTIONAL_PEAK = "emotional_peak",
-  ACTION_PEAK = "action_peak",
-  DIALOGUE_HIGHLIGHT = "dialogue_highlight",
-  VISUAL_HIGHLIGHT = "visual_highlight",
-  AUDIO_PEAK = "audio_peak",
-  TRANSITION = "transition",
-  INTRO = "intro",
-  OUTRO = "outro",
-}
-
-// Direct exports for current usage
-export type {
-  AdaptedContent,
-  AIConfig,
-  GeneratedScript,
-  IntelligentContent,
-  PlatformId,
-  ProcessingError,
-  ProcessingStep,
-  ScriptGenerationParams,
-  ScriptStyle,
-  UnifiedContentAnalysis,
-}
-
-// Enum exports
-export { ContentType, Emotion, type NarrativeType, type PaceType, type ProcessingStatus }
-
-// Re-exports for backward compatibility
-export type { AIConfig as LegacyAIConfig }
-export type { IntelligentContent as LegacyIntelligentContent }
-export type { UnifiedContentAnalysis as LegacyUnifiedContentAnalysis }
 
 // Domain configuration type
 export interface AIServicesDomainConfig {

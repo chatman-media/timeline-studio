@@ -2,10 +2,9 @@
  * Типы для Multi-Platform Engine
  */
 
-import { AspectRatio } from "lightningcss"
-import { AdaptedContent, PlatformId } from "../../types"
-import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
-import { GeneratedScript } from "../script-generation"
+import type { AdaptedContent, PlatformId } from "../../types/platform"
+import type { UnifiedContentAnalysis } from "../../types/unified-analysis"
+import type { GeneratedScript } from "../../types/script"
 
 export interface MultiPlatformConfig {
   // Настройки адаптации
@@ -144,7 +143,7 @@ export interface AdaptationStrategy {
 
 export interface VideoAdaptationStrategy {
   targetResolution: VideoResolution
-  targetAspectRatio: AspectRatio
+  targetAspectRatio: string
   cropStrategy: "center" | "smart" | "manual" | "none"
   qualityPreset: "preserve" | "optimize" | "compress"
   enhancementFilters?: VideoEnhancement[]
