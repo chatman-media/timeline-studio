@@ -1860,6 +1860,7 @@
         "cubic": "Cubica",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Sfocatura movimento",
       "motionBlur": {
         "none": "Disattivato",
         "low": "Basso",
@@ -1879,6 +1880,7 @@
         "1_25": "Leggermente veloce",
         "1_5": "Veloce"
       },
+      "presetsButton": "Preset",
       "presets": {
         "slowMotion": "Rallentatore",
         "fastForward": "Avanzamento veloce",

@@ -1921,6 +1921,7 @@
         "cubic": "क्यूबिक",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "गति धुंधला",
       "motionBlur": {
         "none": "बंद",
         "low": "कम",
@@ -1940,6 +1941,7 @@
         "1_25": "थोड़ी तेज़",
         "1_5": "तेज़"
       },
+      "presetsButton": "प्रीसेट",
       "presets": {
         "slowMotion": "स्लो मोशन",
         "fastForward": "फास्ट फॉरवर्ड",

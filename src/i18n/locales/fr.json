@@ -1920,6 +1920,7 @@
         "cubic": "Cubique",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Flou de mouvement",
       "motionBlur": {
         "none": "Désactivé",
         "low": "Faible",
@@ -1935,6 +1936,7 @@
         "1_25": "Légèrement rapide",
         "1_5": "Rapide"
       },
+      "presetsButton": "Préréglages",
       "presets": {
         "slowMotion": "Ralenti",
         "fastForward": "Avance rapide",

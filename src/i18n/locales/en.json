@@ -2029,6 +2029,7 @@
         "cubic": "Cubic",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Motion Blur",
       "motionBlur": {
         "none": "Off",
         "low": "Low",
@@ -2048,6 +2049,7 @@
         "1_25": "Slightly fast",
         "1_5": "Fast"
       },
+      "presetsButton": "Presets",
       "presets": {
         "slowMotion": "Slow Motion",
         "fastForward": "Fast Forward",

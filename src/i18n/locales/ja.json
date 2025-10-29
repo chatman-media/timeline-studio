@@ -1694,6 +1694,7 @@
         "cubic": "キュービック",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "モーションブラー",
       "motionBlur": {
         "none": "オフ",
         "low": "低",
@@ -1713,6 +1714,7 @@
         "1_25": "やや速い",
         "1_5": "速い"
       },
+      "presetsButton": "プリセット",
       "presets": {
         "slowMotion": "スローモーション",
         "fastForward": "早送り",

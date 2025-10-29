@@ -1991,6 +1991,7 @@
         "cubic": "مکعبی",
         "lanczos": "لنکزوس"
       },
+      "motionBlurTitle": "تاری حرکت",
       "motionBlur": {
         "none": "خاموش",
         "low": "کم",
@@ -2010,6 +2011,7 @@
         "1_25": "ندرت سریع",
         "1_5": "سریع"
       },
+      "presetsButton": "پیش‌تنظیم‌ها",
       "presets": {
         "slowMotion": "حرکت آهسته",
         "fastForward": "جلو سریع",

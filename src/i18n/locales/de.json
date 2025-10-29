@@ -1705,6 +1705,7 @@
         "cubic": "Kubisch",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Bewegungsunschärfe",
       "motionBlur": {
         "none": "Aus",
         "low": "Niedrig",
@@ -1720,6 +1721,7 @@
         "1_25": "Etwas schnell",
         "1_5": "Schnell"
       },
+      "presetsButton": "Voreinstellungen",
       "presets": {
         "slowMotion": "Zeitlupe",
         "fastForward": "Schnellvorlauf",

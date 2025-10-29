@@ -1746,6 +1746,7 @@
         "cubic": "ลูกบาศก์",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "เบลอการเคลื่อนไหว",
       "motionBlur": {
         "none": "ปิด",
         "low": "ต่ำ",
@@ -1765,6 +1766,7 @@
         "1_25": "เร็วเล็กน้อย",
         "1_5": "เร็ว"
       },
+      "presetsButton": "พรีเซ็ต",
       "presets": {
         "slowMotion": "สโลว์โมชั่น",
         "fastForward": "เร่งความเร็ว",

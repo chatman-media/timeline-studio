@@ -1694,6 +1694,7 @@
         "cubic": "三次曲线",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "运动模糊",
       "motionBlur": {
         "none": "关闭",
         "low": "低",
@@ -1713,6 +1714,7 @@
         "1_25": "稍快",
         "1_5": "快"
       },
+      "presetsButton": "预设",
       "presets": {
         "slowMotion": "慢动作",
         "fastForward": "快进",

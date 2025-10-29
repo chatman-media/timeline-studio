@@ -1694,6 +1694,7 @@
         "cubic": "큐빅",
         "lanczos": "란초스"
       },
+      "motionBlurTitle": "모션 블러",
       "motionBlur": {
         "none": "끔",
         "low": "낮음",
@@ -1713,6 +1714,7 @@
         "1_25": "약간 빠르게",
         "1_5": "빠르게"
       },
+      "presetsButton": "프리셋",
       "presets": {
         "slowMotion": "슬로우 모션",
         "fastForward": "빨리 감기",

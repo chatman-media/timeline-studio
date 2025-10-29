@@ -1670,6 +1670,7 @@
         "cubic": "Cúbica",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Desenfoque de movimiento",
       "motionBlur": {
         "none": "Desactivado",
         "low": "Bajo",
@@ -1685,6 +1686,7 @@
         "1_25": "Ligeramente rápido",
         "1_5": "Rápido"
       },
+      "presetsButton": "Preajustes",
       "presets": {
         "slowMotion": "Cámara lenta",
         "fastForward": "Avance rápido",

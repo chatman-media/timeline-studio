@@ -1694,6 +1694,7 @@
         "cubic": "Kübik",
         "lanczos": "Lanczos"
       },
+      "motionBlurTitle": "Hareket Bulanıklığı",
       "motionBlur": {
         "none": "Kapalı",
         "low": "Düşük",
@@ -1713,6 +1714,7 @@
         "1_25": "Biraz hızlı",
         "1_5": "Hızlı"
       },
+      "presetsButton": "Ön Ayarlar",
       "presets": {
         "slowMotion": "Ağır Çekim",
         "fastForward": "Hızlı İleri",
