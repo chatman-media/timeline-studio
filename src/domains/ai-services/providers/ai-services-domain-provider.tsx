@@ -60,7 +60,7 @@ const AIServicesDomainContext = createContext<AIServicesDomainContextValue | nul
 // Domain Provider Component
 export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   const backendSync = getBackendSync()
-  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
+  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
   const [aiUsageStats, setAIUsageStats] = useState({
     totalRequests: 0,
     totalTokens: 0,
