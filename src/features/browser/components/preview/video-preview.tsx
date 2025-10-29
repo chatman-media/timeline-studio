@@ -72,6 +72,13 @@ export const VideoPreview = memo(
     const handleApplyVideo = useCallback(
       async (_resource: TimelineResource, _type: string) => {
         try {
+          // Проверяем, что у файла есть id
+          if (!file.id) {
+            console.error("[VideoPreview] File has no id:", file)
+            setPreviewMedia(file)
+            return
+          }
+
           // Устанавливаем плеер в режим браузера
           await playerSetSource("browser")
 
@@ -85,7 +92,7 @@ export const VideoPreview = memo(
           setPreviewMedia(file)
         }
       },
-      [file],
+      [file, playerSetSource, playerSetMedia, setPreviewMedia],
     )
 
     // Используем useRef для хранения времени последнего обновления
@@ -281,8 +288,8 @@ export const VideoPreview = memo(
         ref={setNodeRef}
         className={cn("flex h-full w-full items-center justify-center", isDragging && "cursor-grabbing")}
         style={style}
-        {...listeners}
-        {...attributes}
+        {...(listeners && typeof listeners === 'object' ? listeners : {})}
+        {...(attributes && typeof attributes === 'object' ? attributes : {})}
       >
         {videoData.videoStreams.length === 0 ? (
           // Плейсхолдер с соотношением 16:9 пока метаданные не загрузились

@@ -70,6 +70,24 @@ export const AudioPreview = memo(function AudioPreview({
       e.preventDefault()
 
       try {
+        // Проверяем, что у файла есть id
+        if (!file.id) {
+          console.error("[AudioPreview] File has no id:", file)
+          // Fallback к локальному воспроизведению
+          if (audioRef.current) {
+            if (isPlaying) {
+              audioRef.current.pause()
+            } else {
+              if (hoverTime !== null) {
+                audioRef.current.currentTime = hoverTime
+              }
+              void audioRef.current.play()
+            }
+            setIsPlaying(!isPlaying)
+          }
+          return
+        }
+
         // Отправляем аудио в главный плеер через backend
         await playerSetSource("browser")
         await playerSetMedia(file.id, hoverTime || 0)
