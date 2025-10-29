@@ -1,6 +1,6 @@
 // Content Analysis Types
 
-import { AudioAnalysis, ContentInsights } from "@/domains/ai-services/types"
+import { AudioAnalysis } from "@/domains/ai-services/types"
 import { QualityAnalysisResult, VideoMetadata } from "../media-analysis"
 
 // Дополнительные типы для AI Intelligence Machine
@@ -370,9 +370,6 @@ export interface SceneDetection {
   changeScore: number
 }
 
-// Content Insights (re-exported from unified-ai-service)
-export type { ContentInsights }
-
 export interface ContentSuggestion {
   type: SuggestionType
   description: string
@@ -481,3 +478,34 @@ export interface ClassificationResult {
   confidence: number
   reasoning?: string
 }
+
+// Content Insights interface
+export interface ContentInsights {
+  summary: string
+  highlights: string[]
+  suggestions: string[]
+  warnings: string[]
+  opportunities: string[]
+  strengths: string[]
+  weaknesses: string[]
+  recommendations: string[]
+  marketingAngles: string[]
+  targetDemographics: string[]
+  qualityMetrics?: QualityMetrics
+  mood?: {
+    dominantEmotion: string
+    intensity: number
+    valence: number
+    arousal: number
+  }
+  improvements?: string[] // legacy field for compatibility
+}
+
+// Re-export key types for easier access
+export type {
+  ContentInsights as InsightsData,
+  UnifiedContentAnalysis as UnifiedAnalysis,
+  SceneAnalysis as SceneData,
+  KeyFrame as FrameData,
+}
+

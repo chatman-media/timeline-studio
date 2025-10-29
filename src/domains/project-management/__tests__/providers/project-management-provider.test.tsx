@@ -16,6 +16,9 @@ import {
   useUserSettings,
 } from "../../providers/project-management-provider"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Mock useSelector from @xstate/react
 vi.mock("@xstate/react", async () => {
   const actual = await vi.importActual<typeof import("@xstate/react")>("@xstate/react")

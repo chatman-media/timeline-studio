@@ -35,7 +35,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const orchestrator = getProjectManagementOrchestrator()
   const appActor = orchestrator.getAppActor()
   const backendSync = getBackendSync()
-  const isBackendConnected = backendSync.isConnected()
+  const isBackendConnected = backendSync.connected
 
   const projectState = useSelector(appActor, (state) => state.context.projectState)
   const isLoading = useSelector(appActor, (state) => state.matches("connected.executing"))
@@ -170,7 +170,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getProjectManagementOrchestrator()
   const userSettingsActor = orchestrator.getUserSettingsActor()
   const backendSync = getBackendSync()
-  const isBackendConnected = backendSync.isConnected()
+  const isBackendConnected = backendSync.connected
 
   const settings = useSelector(userSettingsActor, (state) => state.context)
   const isLoading = useSelector(userSettingsActor, (state) => !state.context.isLoaded)
