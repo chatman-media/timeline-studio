@@ -5,6 +5,7 @@
  * и расширяет их возможностями scene classification и content analysis.
  */
 
+import type { MediaFile as MediaInput } from "@/domains/ai-services/types/interfaces"
 import { PersonDatabaseService } from "@/features/person-identification/services/person-database-service"
 import type {
   DetectedFace,
@@ -12,7 +13,6 @@ import type {
   PersonAppearance,
   PersonProfile,
 } from "@/features/person-identification/types/person"
-import type { MediaFile as MediaInput } from "@/domains/ai-services/types/interfaces"
 // Используем shared типы вместо ai-chat
 
 // Legacy тип для обратной совместимости

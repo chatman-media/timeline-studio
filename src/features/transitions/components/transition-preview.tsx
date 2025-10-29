@@ -519,8 +519,8 @@ export function TransitionPreview({
         opacity: isDragging ? 0.5 : 1,
         cursor: isDragging ? "grabbing" : "grab",
       }}
-      {...(attributes && typeof attributes === 'object' ? attributes : {})}
-      {...(listeners && typeof listeners === 'object' ? listeners : {})}
+      {...(attributes && typeof attributes === "object" ? attributes : {})}
+      {...(listeners && typeof listeners === "object" ? listeners : {})}
     >
       <div className="group relative">
         {/* Контейнер превью перехода */}

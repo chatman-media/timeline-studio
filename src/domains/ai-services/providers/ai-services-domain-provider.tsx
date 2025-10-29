@@ -44,7 +44,7 @@ interface AIServicesDomainContextValue {
   resetAllServices: () => void
   enableService: (service: keyof AIServicesDomainConfig) => void
   disableService: (service: keyof AIServicesDomainConfig) => void
-  
+
   // BackendSync методы
   syncAIState: () => Promise<void>
   isBackendConnected: boolean
@@ -129,7 +129,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     // Мониторинг соединения с backend
     const unsubscribeBackend = backendSync.onStateChange((state: ProjectState) => {
       setIsBackendConnected(true)
-      
+
       // Восстанавливаем конфигурацию AI сервисов из backend
       if (state.ai_services_config) {
         setDomainConfig(state.ai_services_config as AIServicesDomainConfig)
@@ -145,11 +145,11 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
             setDomainConfig(event.data.config)
           }
           break
-          
+
         case "AI_USAGE_UPDATED":
           // Backend обновил статистику использования
           if (event.data.stats) {
-            setAIUsageStats(prev => ({
+            setAIUsageStats((prev) => ({
               ...prev,
               ...event.data.stats,
             }))
@@ -173,12 +173,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     }, 2000) // Задержка 2 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
-  }, [
-    chatState.messages,
-    montagePlannerState.montagePlan,
-    aiIntelligenceState.analysisResults,
-    isBackendConnected,
-  ])
+  }, [chatState.messages, montagePlannerState.montagePlan, aiIntelligenceState.analysisResults, isBackendConnected])
 
   // Расширенные domain-level действия с BackendSync
   const resetAllServices = async () => {
@@ -201,9 +196,9 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   const enableService = async (service: keyof AIServicesDomainConfig) => {
     const newConfig = { ...domainConfig, [service]: true }
     setDomainConfig(newConfig)
-    
+
     console.log(`[AI Services Domain] Enabling service: ${service}`)
-    
+
     // Синхронизируем с backend
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -219,9 +214,9 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   const disableService = async (service: keyof AIServicesDomainConfig) => {
     const newConfig = { ...domainConfig, [service]: false }
     setDomainConfig(newConfig)
-    
+
     console.log(`[AI Services Domain] Disabling service: ${service}`)
-    
+
     // Синхронизируем с backend
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -243,23 +238,25 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     // Перехватываем события для подсчета использования
     const wrappedChatSend = (event: ChatMachineEvent) => {
       if (event.type === "SEND_MESSAGE" && isBackendConnected) {
-        setAIUsageStats(prev => ({
+        setAIUsageStats((prev) => ({
           ...prev,
           totalRequests: prev.totalRequests + 1,
         }))
-        
+
         // Логируем использование в backend
-        backendSync.executeCommand({
-          type: "Analytics",
-          params: {
-            type: "LogAIUsage",
-            params: { 
-              service: "chat", 
-              eventType: "message_sent",
-              timestamp: new Date().toISOString(),
+        backendSync
+          .executeCommand({
+            type: "Analytics",
+            params: {
+              type: "LogAIUsage",
+              params: {
+                service: "chat",
+                eventType: "message_sent",
+                timestamp: new Date().toISOString(),
+              },
             },
-          },
-        }).catch(console.error)
+          })
+          .catch(console.error)
       }
       originalChatSend(event)
     }
@@ -334,7 +331,7 @@ export function useAIServicesDomainStatus() {
 // Новый хук для мониторинга AI использования
 export function useAIUsageMonitor() {
   const { aiUsageStats, syncAIState, isBackendConnected } = useAIServicesDomain()
-  
+
   return {
     stats: aiUsageStats,
     isConnected: isBackendConnected,

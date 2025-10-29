@@ -2,7 +2,7 @@ import { vi } from "vitest"
 
 // Define MediaStream globally if not available
 if (typeof MediaStream === "undefined") {
-  (global as any).MediaStream = class MediaStream {
+  ;(global as any).MediaStream = class MediaStream {
     getTracks = vi.fn().mockReturnValue([])
     getAudioTracks = vi.fn().mockReturnValue([])
     getVideoTracks = vi.fn().mockReturnValue([])

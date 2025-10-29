@@ -4,8 +4,8 @@
  */
 
 import { UnifiedAIService } from "@/domains/ai-core"
-import { CaptionPosition } from "@/domains/shared/types/ai-tools/platform-adaptation"
 import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
+import { CaptionPosition } from "@/domains/shared/types/ai-tools/platform-adaptation"
 import {
   AdaptationStrategy,
   AudioAdaptationStrategy,

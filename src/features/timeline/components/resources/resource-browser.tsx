@@ -58,8 +58,8 @@ const ResourceItem = memo(function ResourceItem({ resource, type, icon }: Resour
   return (
     <div
       ref={setNodeRef}
-      {...(listeners && typeof listeners === 'object' ? listeners : {})}
-      {...(attributes && typeof attributes === 'object' ? attributes : {})}
+      {...(listeners && typeof listeners === "object" ? listeners : {})}
+      {...(attributes && typeof attributes === "object" ? attributes : {})}
       className={cn(
         "flex items-center gap-2 p-2 rounded cursor-move",
         "hover:bg-accent transition-colors",

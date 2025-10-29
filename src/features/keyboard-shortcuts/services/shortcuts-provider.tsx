@@ -1,9 +1,8 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
-
 import { useModal } from "@/features/modals/services/modal-provider"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { ShortcutHandler } from "../components/shortcut-handler"
 import { DEFAULT_SHORTCUTS } from "../constants/default-shortcuts"
 import { usePanelShortcuts } from "../hooks/use-panel-shortcuts"
@@ -45,7 +44,7 @@ interface ShortcutsProviderProps {
 
 /**
  * Провайдер для управления клавиатурными сочетаниями с интеграцией BackendSync
- * 
+ *
  * Добавлено:
  * - Синхронизация пользовательских shortcuts с backend
  * - Статистика использования shortcuts
@@ -67,8 +66,8 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     if (!isBackendConnected) return
 
     try {
-      const customShortcuts = shortcuts.filter(s => s.isCustom || s.keys.join("+") !== s.defaultKeys?.join("+"))
-      
+      const customShortcuts = shortcuts.filter((s) => s.isCustom || s.keys.join("+") !== s.defaultKeys?.join("+"))
+
       await backendSync.executeCommand({
         type: "Settings",
         params: {
@@ -81,7 +80,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
           },
         },
       })
-      
+
       console.log("[ShortcutsProvider] Shortcuts synced with backend")
     } catch (error) {
       console.error("[ShortcutsProvider] Failed to sync shortcuts:", error)
@@ -92,23 +91,23 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   useEffect(() => {
     const unsubscribeConnection = backendSync.onStateChange((state: ProjectState) => {
       setIsBackendConnected(true)
-      
+
       // Восстанавливаем shortcuts из backend
       if (state.user_settings?.shortcuts) {
         const restoredShortcuts = state.user_settings.shortcuts as any
-        
+
         // Обновляем пользовательские shortcuts
         if (restoredShortcuts.custom) {
           restoredShortcuts.custom.forEach((custom: any) => {
             shortcutsRegistry.updateKeys(custom.id, custom.keys)
           })
         }
-        
+
         // Восстанавливаем статистику использования
         if (restoredShortcuts.usageStats) {
           setShortcutUsageStats(restoredShortcuts.usageStats)
         }
-        
+
         console.log("[ShortcutsProvider] Shortcuts restored from backend")
       }
     })
@@ -136,24 +135,26 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
         // Оборачиваем action для логирования
         const wrappedAction = (event: KeyboardEvent) => {
           // Логируем использование shortcut
-          setShortcutUsageStats(prev => ({
+          setShortcutUsageStats((prev) => ({
             ...prev,
             [shortcut.id]: (prev[shortcut.id] || 0) + 1,
           }))
 
           // Отправляем аналитику в backend
           if (isBackendConnected) {
-            backendSync.executeCommand({
-              type: "Analytics",
-              params: {
-                type: "LogShortcutUsage",
+            backendSync
+              .executeCommand({
+                type: "Analytics",
                 params: {
-                  shortcutId: shortcut.id,
-                  keys: shortcut.keys,
-                  context: currentContext,
+                  type: "LogShortcutUsage",
+                  params: {
+                    shortcutId: shortcut.id,
+                    keys: shortcut.keys,
+                    context: currentContext,
+                  },
                 },
-              },
-            }).catch(console.error)
+              })
+              .catch(console.error)
           }
 
           // Выполняем оригинальное действие или стандартные действия
@@ -256,7 +257,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
       // Автосохранение настроек
       await shortcutsRegistry.saveSettings(enabled)
-      
+
       // Синхронизация с backend
       await syncShortcuts()
     } catch (error) {
@@ -277,16 +278,18 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     // Автосохранение настроек
     shortcutsRegistry.saveSettings(isGlobalEnabled).catch(console.error)
-    
+
     // Немедленная синхронизация с backend для важных изменений
     if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "UpdateShortcut",
-          params: { id, keys },
-        },
-      }).catch(console.error)
+      backendSync
+        .executeCommand({
+          type: "Settings",
+          params: {
+            type: "UpdateShortcut",
+            params: { id, keys },
+          },
+        })
+        .catch(console.error)
     }
   }
 
@@ -296,10 +299,10 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
   const resetAllShortcuts = async () => {
     shortcutsRegistry.resetAll()
-    
+
     // Сбрасываем статистику
     setShortcutUsageStats({})
-    
+
     // Уведомляем backend
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -351,26 +354,26 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
   const exportSettings = async () => {
     const settings = await shortcutsRegistry.exportSettings()
-    
+
     // Добавляем статистику использования
     const exportData = JSON.parse(settings)
     exportData.usageStats = shortcutUsageStats
-    
+
     return JSON.stringify(exportData)
   }
 
   const importSettings = async (jsonString: string) => {
     const importData = JSON.parse(jsonString)
-    
+
     // Восстанавливаем статистику если есть
     if (importData.usageStats) {
       setShortcutUsageStats(importData.usageStats)
     }
-    
+
     await shortcutsRegistry.importSettings(jsonString)
     // Перезагружаем состояние после импорта
     await loadSettings()
-    
+
     // Синхронизируем с backend
     await syncShortcuts()
   }
@@ -434,18 +437,18 @@ export function useShortcuts() {
  */
 export function useShortcutStats() {
   const { shortcutUsageStats, syncShortcuts, isBackendConnected } = useShortcuts()
-  
+
   const getMostUsedShortcuts = (limit = 10) => {
     return Object.entries(shortcutUsageStats)
       .sort(([, a], [, b]) => b - a)
       .slice(0, limit)
       .map(([id, count]) => ({ id, count }))
   }
-  
+
   const getTotalUsage = () => {
     return Object.values(shortcutUsageStats).reduce((sum, count) => sum + count, 0)
   }
-  
+
   return {
     stats: shortcutUsageStats,
     mostUsed: getMostUsedShortcuts(),

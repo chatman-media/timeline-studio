@@ -7,10 +7,10 @@ import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
+import { type MontagePlannerEvent, montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import type { AnalysisProgress, MontagePlan } from "../types"
-import { type MontagePlannerEvent, montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
 
 // Context type
 interface MontagePlannerContextType {
@@ -42,7 +42,7 @@ interface MontagePlannerProviderProps {
 
 /**
  * Montage Planner Provider с интеграцией BackendSync
- * 
+ *
  * Синхронизирует состояние планировщика монтажа с backend
  */
 export function MontagePlannerProvider({ children }: MontagePlannerProviderProps) {
@@ -64,20 +64,22 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
       // Progress updates
       unsubscribeProgress = await listen<AnalysisProgress>("montage-analysis-progress", (event) => {
         send({ type: "ANALYSIS_PROGRESS", progress: event.payload })
-        
+
         // Синхронизируем прогресс с backend
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "UpdateMontageProgress",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              progress: event.payload,
+              type: "UpdateMontageProgress",
+              params: {
+                progress: event.payload,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to sync progress:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to sync progress:", err)
+            setError(err.message)
+          })
       })
 
       // Video analysis results
@@ -87,21 +89,23 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           videoId: event.payload.videoId,
           analysis: event.payload.analysis,
         })
-        
+
         // Сохраняем анализ видео в backend
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "SaveVideoAnalysis",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              videoId: event.payload.videoId,
-              analysis: event.payload.analysis,
+              type: "SaveVideoAnalysis",
+              params: {
+                videoId: event.payload.videoId,
+                analysis: event.payload.analysis,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to save video analysis:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to save video analysis:", err)
+            setError(err.message)
+          })
       })
 
       // Audio analysis results
@@ -111,21 +115,23 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           videoId: event.payload.videoId,
           analysis: event.payload.analysis,
         })
-        
+
         // Сохраняем анализ аудио в backend
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "SaveAudioAnalysis",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              videoId: event.payload.videoId,
-              analysis: event.payload.analysis,
+              type: "SaveAudioAnalysis",
+              params: {
+                videoId: event.payload.videoId,
+                analysis: event.payload.analysis,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to save audio analysis:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to save audio analysis:", err)
+            setError(err.message)
+          })
       })
 
       // Fragment detection results
@@ -134,20 +140,22 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           type: "FRAGMENTS_DETECTED",
           fragments: event.payload.fragments,
         })
-        
+
         // Сохраняем фрагменты в backend
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "SaveDetectedFragments",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              fragments: event.payload.fragments,
+              type: "SaveDetectedFragments",
+              params: {
+                fragments: event.payload.fragments,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to save fragments:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to save fragments:", err)
+            setError(err.message)
+          })
       })
 
       // Moment scoring results
@@ -156,20 +164,22 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           type: "MOMENTS_SCORED",
           scores: event.payload.scores,
         })
-        
+
         // Сохраняем оценки моментов в backend
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "SaveMomentScores",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              scores: event.payload.scores,
+              type: "SaveMomentScores",
+              params: {
+                scores: event.payload.scores,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to save moment scores:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to save moment scores:", err)
+            setError(err.message)
+          })
       })
     }
 
@@ -178,7 +188,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     // Подписываемся на изменения backend состояния
     const unsubscribeBackend = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-      
+
       // Синхронизируем состояние монтажного планировщика из backend
       if (state.montage_state) {
         // Восстанавливаем анализы видео
@@ -191,18 +201,18 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
             })
           })
         }
-        
+
         // Восстанавливаем анализы аудио
         if (state.montage_state.audio_analyses) {
           Object.entries(state.montage_state.audio_analyses).forEach(([videoId, analysis]) => {
             send({
-              type: "AUDIO_ANALYZED", 
+              type: "AUDIO_ANALYZED",
               videoId,
               analysis,
             })
           })
         }
-        
+
         // Восстанавливаем фрагменты
         if (state.montage_state.fragments) {
           send({
@@ -210,7 +220,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
             fragments: state.montage_state.fragments,
           })
         }
-        
+
         // Восстанавливаем план монтажа
         if (state.montage_state.current_plan) {
           send({
@@ -247,26 +257,28 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     // Синхронизируем состояние когда меняется контекст
     if (state?.context) {
       const context = state.context
-      
+
       // Отправляем состояние на backend при важных изменениях
       if (context.isAnalyzing || context.isGenerating || context.isOptimizing) {
-        backendSync.executeCommand({
-          type: "AI",
-          params: {
-            type: "SyncMontagePlannerState",
+        backendSync
+          .executeCommand({
+            type: "AI",
             params: {
-              isAnalyzing: context.isAnalyzing,
-              isGenerating: context.isGenerating,
-              isOptimizing: context.isOptimizing,
-              montagePlan: context.currentPlan,
-              analysisProgress: context.progress?.progress || 0,
-              fragments: context.fragments,
+              type: "SyncMontagePlannerState",
+              params: {
+                isAnalyzing: context.isAnalyzing,
+                isGenerating: context.isGenerating,
+                isOptimizing: context.isOptimizing,
+                montagePlan: context.currentPlan,
+                analysisProgress: context.progress?.progress || 0,
+                fragments: context.fragments,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[MontagePlanner] Failed to sync state:", err)
-          setError(err.message)
-        })
+          })
+          .catch((err) => {
+            console.error("[MontagePlanner] Failed to sync state:", err)
+            setError(err.message)
+          })
       }
     }
   }, [state, backendSync])

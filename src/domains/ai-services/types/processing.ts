@@ -13,7 +13,7 @@ export enum ProcessingStatus {
   FINALIZING = "finalizing",
   COMPLETED = "completed",
   FAILED = "failed",
-  CANCELLED = "cancelled"
+  CANCELLED = "cancelled",
 }
 
 export interface ProcessingStep {

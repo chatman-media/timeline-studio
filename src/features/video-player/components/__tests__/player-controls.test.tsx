@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import type { MediaFile } from "@/features/media/types/media"
-import { PlayerControls } from "../player-controls"
-import { usePlayer } from "@/features/video-player/services/player-provider"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
+import { usePlayer } from "@/features/video-player/services/player-provider"
+import { PlayerControls } from "../player-controls"
 
 // Вспомогательная функция для рендеринга с провайдерами
 const renderWithProviders = (ui: React.ReactElement) => {
@@ -194,9 +194,9 @@ describe("PlayerControls", () => {
     // Mock the fullscreen API
     Element.prototype.requestFullscreen = vi.fn().mockResolvedValue(undefined)
     Document.prototype.exitFullscreen = vi.fn().mockResolvedValue(undefined)
-    Object.defineProperty(document, 'fullscreenElement', {
+    Object.defineProperty(document, "fullscreenElement", {
       writable: true,
-      value: null
+      value: null,
     })
   })
 
@@ -231,7 +231,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       expect(screen.getByTestId("pause-icon")).toBeInTheDocument()
@@ -257,7 +257,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       expect(screen.getByTestId("circledot-icon")).toBeInTheDocument()
@@ -269,7 +269,7 @@ describe("PlayerControls", () => {
         isFullscreen: true,
         toggleFullscreen: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       expect(screen.getByTestId("minimize2-icon")).toBeInTheDocument()
@@ -296,7 +296,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       const playButton = screen.getByTitle("timeline.controls.play")
@@ -323,7 +323,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       const pauseButton = screen.getByTitle("timeline.controls.pause")
@@ -350,7 +350,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       const recordButton = screen.getByTitle("timeline.controls.record")
@@ -378,7 +378,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       const stopRecordButton = screen.getByTitle("timeline.controls.stopRecord")
@@ -407,7 +407,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={30} file={mockFile} />)
 
       const slider = screen.getByTestId("slider")
@@ -434,7 +434,7 @@ describe("PlayerControls", () => {
         videoSource: "timeline" as const,
         setVideoSource: vi.fn(),
       })
-      
+
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       const slider = screen.getByTestId("slider")
@@ -515,7 +515,7 @@ describe("PlayerControls", () => {
         isFullscreen: false,
         toggleFullscreen: mockToggleFullscreen,
       })
-      
+
       // Создаем mock элемент
       const mockContainer = document.createElement("div")
       mockContainer.className = "media-player-container"

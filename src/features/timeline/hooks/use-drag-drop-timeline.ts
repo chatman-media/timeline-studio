@@ -1,6 +1,6 @@
 /**
  * Main hook for Timeline drag and drop functionality с интеграцией BackendSync
- * 
+ *
  * Добавляет логирование операций drag & drop в backend для:
  * - Истории операций (undo/redo)
  * - Аналитики использования
@@ -49,75 +49,82 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
   })
 
   // Handle drag start
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const { active } = event
 
-    // Обработка перетаскивания ресурсов
-    if (active.data.current?.type?.startsWith("drag-")) {
-      const resourceType = active.data.current.type.replace("drag-", "")
-      const resource = active.data.current.resource
+      // Обработка перетаскивания ресурсов
+      if (active.data.current?.type?.startsWith("drag-")) {
+        const resourceType = active.data.current.type.replace("drag-", "")
+        const resource = active.data.current.resource
 
-      setDragState({
-        isDragging: true,
-        draggedItem: null,
-        dragOverTrack: null,
-        dropPosition: null,
-        draggedResourceType: resourceType,
-        draggedResource: resource,
-      })
+        setDragState({
+          isDragging: true,
+          draggedItem: null,
+          dragOverTrack: null,
+          dropPosition: null,
+          draggedResourceType: resourceType,
+          draggedResource: resource,
+        })
 
-      console.log(`[DragDrop] Started dragging ${resourceType}:`, resource.name)
-      
-      // Логируем начало операции drag в backend (не блокируя)
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogDragStart",
-          params: {
-            resourceType,
-            resourceId: resource.id,
-            resourceName: resource.name,
-          },
-        },
-      }).catch(console.error)
-      
-      return
-    }
+        console.log(`[DragDrop] Started dragging ${resourceType}:`, resource.name)
 
-    const dragData = active.data.current as DragData | undefined
+        // Логируем начало операции drag в backend (не блокируя)
+        backendSync
+          .executeCommand({
+            type: "Analytics",
+            params: {
+              type: "LogDragStart",
+              params: {
+                resourceType,
+                resourceId: resource.id,
+                resourceName: resource.name,
+              },
+            },
+          })
+          .catch(console.error)
 
-    if (dragData) {
-      // Определяем количество файлов для multi-select визуализации
-      const draggedCount = dragData.isMultiSelect && dragData.selectedFiles ? dragData.selectedFiles.length : 1
+        return
+      }
 
-      setDragState({
-        isDragging: true,
-        draggedItem: dragData,
-        dragOverTrack: null,
-        dropPosition: null,
-        draggedCount,
-      })
+      const dragData = active.data.current as DragData | undefined
 
-      console.log(
-        "[DragDrop] Drag started:",
-        dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
-      )
-      
-      // Логируем начало операции в backend
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogDragStart",
-          params: {
-            mediaFileId: dragData.mediaFile.path,
-            mediaFileName: dragData.mediaFile.name,
-            isMultiSelect: dragData.isMultiSelect,
-            fileCount: draggedCount,
-          },
-        },
-      }).catch(console.error)
-    }
-  }, [backendSync])
+      if (dragData) {
+        // Определяем количество файлов для multi-select визуализации
+        const draggedCount = dragData.isMultiSelect && dragData.selectedFiles ? dragData.selectedFiles.length : 1
+
+        setDragState({
+          isDragging: true,
+          draggedItem: dragData,
+          dragOverTrack: null,
+          dropPosition: null,
+          draggedCount,
+        })
+
+        console.log(
+          "[DragDrop] Drag started:",
+          dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
+        )
+
+        // Логируем начало операции в backend
+        backendSync
+          .executeCommand({
+            type: "Analytics",
+            params: {
+              type: "LogDragStart",
+              params: {
+                mediaFileId: dragData.mediaFile.path,
+                mediaFileName: dragData.mediaFile.name,
+                isMultiSelect: dragData.isMultiSelect,
+                fileCount: draggedCount,
+              },
+            },
+          })
+          .catch(console.error)
+      }
+    },
+    [backendSync],
+  )
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback(
@@ -251,20 +258,22 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
         )
         if (bridgeHandled) {
           console.log("[DragDrop] Inter-module drag handled by bridge")
-          
+
           // Логируем успешный drop в backend
-          backendSync.executeCommand({
-            type: "Analytics",
-            params: {
-              type: "LogDropComplete",
+          backendSync
+            .executeCommand({
+              type: "Analytics",
               params: {
-                dropType: "inter-module",
-                success: true,
-                targetModule: "timeline",
+                type: "LogDropComplete",
+                params: {
+                  dropType: "inter-module",
+                  success: true,
+                  targetModule: "timeline",
+                },
               },
-            },
-          }).catch(console.error)
-          
+            })
+            .catch(console.error)
+
           // Сбрасываем состояние
           setDragState({
             isDragging: false,
@@ -303,7 +312,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             setTimeout(() => {
               addSingleMediaToTimeline(dragData.mediaFile, undefined, 0)
             }, 100)
-            
+
             dropSuccess = true
             dropDetails = {
               dropType: "new-track",
@@ -358,7 +367,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
                 dragState.dropPosition.trackId,
                 dragState.dropPosition.startTime,
               )
-              
+
               dropSuccess = true
               dropDetails = {
                 dropType: "existing-track",
@@ -368,28 +377,32 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
               }
             }
           }
-          
+
           // Логируем результат операции drop в backend
           if (dropSuccess) {
-            backendSync.executeCommand({
-              type: "Analytics",
-              params: {
-                type: "LogDropComplete",
+            backendSync
+              .executeCommand({
+                type: "Analytics",
                 params: {
-                  success: true,
-                  ...dropDetails,
+                  type: "LogDropComplete",
+                  params: {
+                    success: true,
+                    ...dropDetails,
+                  },
                 },
-              },
-            }).catch(console.error)
-            
+              })
+              .catch(console.error)
+
             // Также сохраняем операцию для истории (undo/redo)
-            backendSync.executeCommand({
-              type: "History",
-              params: {
-                type: "RecordDragDropOperation",
-                params: dropDetails,
-              },
-            }).catch(console.error)
+            backendSync
+              .executeCommand({
+                type: "History",
+                params: {
+                  type: "RecordDragDropOperation",
+                  params: dropDetails,
+                },
+              })
+              .catch(console.error)
           }
         }
       }

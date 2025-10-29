@@ -24,7 +24,7 @@ vi.mock("../../services/app-provider", () => ({
 describe("CreateProject Integration Test", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     // Mock successful command execution
     mockExecuteCommand.mockResolvedValue({
       success: true,
@@ -88,7 +88,7 @@ describe("CreateProject Integration Test", () => {
     await expect(
       act(async () => {
         await result.current.createNewProject("Test Project")
-      })
+      }),
     ).rejects.toThrow("Failed to create project")
   })
 
@@ -198,7 +198,7 @@ describe("CreateProject Integration Test", () => {
     // Проверяем структуру вызова
     expect(mockExecuteCommand).toHaveBeenCalledTimes(1)
     const command = mockExecuteCommand.mock.calls[0][0]
-    
+
     // Проверяем обязательные поля
     expect(command.type).toBe("CreateProject")
     expect(command.params.name).toBe("Minimal Project")
@@ -208,7 +208,7 @@ describe("CreateProject Integration Test", () => {
       audio_sample_rate: 48000,
       audio_channels: 2,
     })
-    
+
     // Проверяем что нет лишних полей
     const paramKeys = Object.keys(command.params)
     expect(paramKeys).toHaveLength(2) // только name и settings

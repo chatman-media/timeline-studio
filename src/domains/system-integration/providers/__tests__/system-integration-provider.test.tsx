@@ -1,7 +1,11 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { SystemIntegrationProvider, useSystemIntegration, useSystemIntegrationBackendSync } from "../system-integration-provider"
+import {
+  SystemIntegrationProvider,
+  useSystemIntegration,
+  useSystemIntegrationBackendSync,
+} from "../system-integration-provider"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
@@ -54,9 +58,7 @@ describe("SystemIntegrationProvider", () => {
         <div>
           <div data-testid="platform">{context.systemInfo.platform}</div>
           <div data-testid="version">{context.systemInfo.version}</div>
-          <div data-testid="featureEnabled">
-            {context.isFeatureEnabled("enableAdvancedEditing").toString()}
-          </div>
+          <div data-testid="featureEnabled">{context.isFeatureEnabled("enableAdvancedEditing").toString()}</div>
         </div>
       )
     }
@@ -81,7 +83,9 @@ describe("SystemIntegrationProvider", () => {
     // Подавляем вывод ошибки в консоль для этого теста
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
-    expect(() => render(<TestComponent />)).toThrow("useSystemIntegration must be used within SystemIntegrationProvider")
+    expect(() => render(<TestComponent />)).toThrow(
+      "useSystemIntegration must be used within SystemIntegrationProvider",
+    )
 
     consoleSpy.mockRestore()
   })

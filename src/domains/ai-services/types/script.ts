@@ -27,7 +27,7 @@ export interface ScriptStyle {
   musicStyle?: "upbeat" | "calm" | "dramatic" | "none"
 }
 
-export type ScriptFormat = 
+export type ScriptFormat =
   | "video-essay"
   | "tutorial"
   | "vlog"

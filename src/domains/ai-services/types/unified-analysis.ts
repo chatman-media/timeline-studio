@@ -5,33 +5,33 @@
 
 // Import типы из interfaces.ts для re-export
 import {
+  type AudioAnalysisResult,
+  type BoundingBox,
+  type CompositionAnalysis,
+  type ContentAnalysisResult,
+  type DetectedObject,
+  type ExtractedText,
+  type FrameAnalysis,
+  type FrameAnalysisResult,
+  type Line2D,
   type MediaFile,
-  type VideoMetadata,
-  type Scene,
-  type QualityAnalysisResult,
-  type SilenceDetectionResult,
-  type SilentSegment,
   type MotionAnalysisResult,
   type MotionVector,
-  type FrameAnalysis,
-  type DetectedObject,
-  type BoundingBox,
-  type ExtractedText,
-  type CompositionAnalysis,
   type Point2D,
-  type Line2D,
-  type VideoAnalysisResult,
-  type AudioAnalysisResult,
-  type FrameAnalysisResult,
+  type QualityAnalysisResult,
+  type Scene,
   type SceneDetectionResult,
-  type ContentAnalysisResult,
+  type SilenceDetectionResult,
+  type SilentSegment,
+  type VideoAnalysisResult,
+  type VideoMetadata,
 } from "./interfaces"
 
 // Import ProcessingStatus from processing.ts
 import { ProcessingStatus } from "./processing"
 
 // Re-export основные типы из interfaces.ts
-export {
+export type {
   MediaFile,
   VideoMetadata,
   Scene,
@@ -62,45 +62,24 @@ import type {
   QualityMetrics,
   SceneAnalysis,
   SceneInfo,
-  UnifiedContentAnalysis as UnifiedContentAnalysisShared
+  UnifiedContentAnalysis as UnifiedContentAnalysisShared,
 } from "../../shared/types/ai-tools/content-analysis"
 
-import {
-  KeyMomentType,
-  NarrativeType,
-  PaceType,
-  SceneType
-} from "../../shared/types/ai-tools/content-analysis"
+import { KeyMomentType, NarrativeType, PaceType, SceneType } from "../../shared/types/ai-tools/content-analysis"
 
 // Re-export типы из shared/types/ai-tools/content-analysis.ts
-export type {
-  ContentInsights,
-  KeyFrame,
-  KeyMoment,
-  QualityMetrics,
-  SceneAnalysis,
-  SceneInfo
-}
+export type { ContentInsights, KeyFrame, KeyMoment, QualityMetrics, SceneAnalysis, SceneInfo }
 
-export {
-  KeyMomentType,
-  NarrativeType,
-  PaceType,
-  SceneType
-}
+export { KeyMomentType, NarrativeType, PaceType, SceneType }
 
 // Alias to avoid naming conflict
 export type UnifiedContentAnalysis = UnifiedContentAnalysisShared
 
 // Import типы из ai-intelligence.ts для re-export
-import {
-  type ProcessedMoment,
-} from "./ai-intelligence"
+import { type ProcessedMoment } from "./ai-intelligence"
 
 // Re-export типы из ai-intelligence.ts
-export {
-  ProcessedMoment,
-}
+export type { ProcessedMoment }
 
 // Дополнительные унифицированные типы
 
@@ -113,13 +92,13 @@ export interface UnifiedMediaAnalysis {
   id: string
   mediaFile: MediaFile
   timestamp: Date
-  
+
   // Результаты анализа
   video?: VideoAnalysisResult
   audio?: AudioAnalysisResult
   content?: ContentAnalysisResult
   insights?: ContentInsights
-  
+
   // AI анализ
   aiAnalysis?: {
     keyMoments?: KeyMoment[]
@@ -131,7 +110,7 @@ export interface UnifiedMediaAnalysis {
       negative: number
     }
   }
-  
+
   // Метаданные процесса
   processing?: {
     duration: number
@@ -149,12 +128,12 @@ export interface UnifiedAnalysisOptions {
   analyzeAudio?: boolean
   analyzeContent?: boolean
   generateInsights?: boolean
-  
+
   // Детальность анализа
   deepAnalysis?: boolean
   includeFrameAnalysis?: boolean
   includeTranscription?: boolean
-  
+
   // Параметры анализа
   videoOptions?: {
     extractKeyframes?: boolean
@@ -162,13 +141,13 @@ export interface UnifiedAnalysisOptions {
     analyzeMotion?: boolean
     analyzeQuality?: boolean
   }
-  
+
   audioOptions?: {
     detectSilence?: boolean
     transcribe?: boolean
     analyzeQuality?: boolean
   }
-  
+
   contentOptions?: {
     generateTags?: boolean
     analyzeSentiment?: boolean
@@ -196,17 +175,17 @@ export interface BatchAnalysisResult {
 
 // Type guards для проверки типов
 export function isVideoAnalysisResult(obj: any): obj is VideoAnalysisResult {
-  return obj && typeof obj.duration === 'number' && 'fps' in obj && 'resolution' in obj
+  return obj && typeof obj.duration === "number" && "fps" in obj && "resolution" in obj
 }
 
 export function isAudioAnalysisResult(obj: any): obj is AudioAnalysisResult {
-  return obj && typeof obj.duration === 'number' && 'channels' in obj && 'sampleRate' in obj
+  return obj && typeof obj.duration === "number" && "channels" in obj && "sampleRate" in obj
 }
 
 export function isContentAnalysisResult(obj: any): obj is ContentAnalysisResult {
-  return obj && 'mediaFile' in obj && 'scenes' in obj && 'transcript' in obj
+  return obj && "mediaFile" in obj && "scenes" in obj && "transcript" in obj
 }
 
 export function isUnifiedMediaAnalysis(obj: any): obj is UnifiedMediaAnalysis {
-  return obj && 'id' in obj && 'mediaFile' in obj && 'timestamp' in obj
+  return obj && "id" in obj && "mediaFile" in obj && "timestamp" in obj
 }

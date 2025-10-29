@@ -1,6 +1,6 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { ReactNode } from "react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
@@ -168,7 +168,7 @@ describe("MontagePlannerProvider", () => {
   it("должен обновлять прогресс анализа через BackendSync", async () => {
     const mockBackendSync = getBackendSync()
     const { listen } = await import("@tauri-apps/api/event")
-    
+
     let progressCallback: any
     vi.mocked(listen).mockImplementation((event, callback) => {
       if (event === "montage-analysis-progress") {
@@ -176,11 +176,11 @@ describe("MontagePlannerProvider", () => {
       }
       return Promise.resolve(() => {})
     })
-    
+
     render(
       <MontagePlannerProvider>
         <div>Test</div>
-      </MontagePlannerProvider>
+      </MontagePlannerProvider>,
     )
 
     // Сбрасываем счетчик вызовов
@@ -189,12 +189,12 @@ describe("MontagePlannerProvider", () => {
     // Симулируем событие анализа через Tauri event
     await act(async () => {
       if (progressCallback) {
-        progressCallback({ 
+        progressCallback({
           payload: {
             phase: "initializing",
             progress: 0,
-            message: "Starting analysis"
-          }
+            message: "Starting analysis",
+          },
         })
       }
     })
@@ -209,8 +209,8 @@ describe("MontagePlannerProvider", () => {
             progress: {
               phase: "initializing",
               progress: 0,
-              message: "Starting analysis"
-            }
+              message: "Starting analysis",
+            },
           },
         },
       })
@@ -219,8 +219,8 @@ describe("MontagePlannerProvider", () => {
 
   it("должен синхронизировать состояние с backend при изменениях", async () => {
     const mockBackendSync = getBackendSync()
-    
-    // Удаляем этот тест так как текущая реализация провайдера 
+
+    // Удаляем этот тест так как текущая реализация провайдера
     // не отправляет синхронизацию сразу при событии ANALYZE_CONTENT
     // Синхронизация происходит только при изменении состояния isAnalyzing/isGenerating/isOptimizing
   })

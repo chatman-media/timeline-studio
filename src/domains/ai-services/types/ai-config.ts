@@ -14,15 +14,17 @@ export interface AIConfig {
   timeout?: number
   retryAttempts?: number
   customHeaders?: Record<string, string>
+  features?: {
+    scriptGeneration?: boolean
+    multiPlatform?: boolean
+    contentAnalysis?: boolean
+    voiceGeneration?: boolean
+  }
+  platforms?: string[]
+  scriptParams?: any
 }
 
-export type AIProvider = 
-  | "openai"
-  | "claude"
-  | "grok"
-  | "deepseek"
-  | "ollama"
-  | "custom"
+export type AIProvider = "openai" | "claude" | "grok" | "deepseek" | "ollama" | "custom"
 
 // Intelligent content analysis result
 export interface IntelligentContent {

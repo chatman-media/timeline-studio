@@ -3,15 +3,7 @@
  */
 
 // Platform identifier type
-export type PlatformId = 
-  | "youtube"
-  | "instagram"
-  | "tiktok"
-  | "facebook"
-  | "twitter"
-  | "linkedin"
-  | "vimeo"
-  | "twitch"
+export type PlatformId = "youtube" | "instagram" | "tiktok" | "facebook" | "twitter" | "linkedin" | "vimeo" | "twitch"
 
 // Platform configuration
 export interface Platform {

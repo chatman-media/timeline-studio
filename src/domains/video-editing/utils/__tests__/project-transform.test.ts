@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import type { Project } from "@/types/generated/tauri-bindings"
-import { transformBackendProjectToTimeline } from "../project-transform"
+import type { Project, ProjectState, UiState, PlaybackState } from "@/types/generated/tauri-bindings"
+import { transformProjectStateToTimeline } from "../project-transform"
 
 describe("project-transform", () => {
   it("should transform backend project to timeline structure", () => {
@@ -10,7 +10,7 @@ describe("project-transform", () => {
         name: "Test Project",
         description: null,
         created_at: "2024-01-01T00:00:00Z",
-        modified_at: "2024-01-01T00:00:00Z", 
+        modified_at: "2024-01-01T00:00:00Z",
         file_path: null,
         is_dirty: false,
         version: "1.0.0",
@@ -79,7 +79,7 @@ describe("project-transform", () => {
       },
     }
 
-    const timeline = transformBackendProjectToTimeline(backendProject)
+    const timeline = transformProjectStateToTimeline({ project: backendProject, ui: {} as UiState, playback: {} as PlaybackState })
 
     expect(timeline).toBeTruthy()
     expect(timeline?.id).toBe("test-project")
@@ -114,8 +114,8 @@ describe("project-transform", () => {
   })
 
   it("should handle null/undefined backend project", () => {
-    expect(transformBackendProjectToTimeline(null)).toBeNull()
-    expect(transformBackendProjectToTimeline(undefined)).toBeNull()
+    expect(transformProjectStateToTimeline(null)).toBeNull()
+    expect(transformProjectStateToTimeline(undefined)).toBeNull()
   })
 
   it("should handle project without timeline", () => {
@@ -127,6 +127,6 @@ describe("project-transform", () => {
     } as Project
 
     // @ts-expect-error - testing invalid project
-    expect(transformBackendProjectToTimeline(projectWithoutTimeline)).toBeNull()
+    expect(transformProjectStateToTimeline({ project: projectWithoutTimeline, ui: {} as UiState, playback: {} as PlaybackState })).toBeNull()
   })
 })

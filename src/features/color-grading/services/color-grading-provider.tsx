@@ -40,7 +40,7 @@ const ColorGradingContext = createContext<ColorGradingContextValue | null>(null)
 
 /**
  * Color Grading Provider с интеграцией BackendSync
- * 
+ *
  * Синхронизирует состояние цветокоррекции с backend
  */
 export function ColorGradingProvider({ children }: { children: ReactNode }) {
@@ -54,7 +54,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-      
+
       // Синхронизируем состояние цветокоррекции из backend
       if (state.color_grading_state) {
         // Здесь можно восстановить состояние из backend
@@ -179,23 +179,25 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
     if (colorGrading.hasChanges && colorGrading.state.selectedClip) {
       // Debounced синхронизация изменений с backend
       const timer = setTimeout(() => {
-        backendSync.executeCommand({
-          type: "Effects",
-          params: {
-            type: "UpdateColorGradingPreview",
+        backendSync
+          .executeCommand({
+            type: "Effects",
             params: {
-              clipId: colorGrading.state.selectedClip,
-              settings: {
-                colorWheels: colorGrading.state.colorWheels,
-                basicParameters: colorGrading.state.basicParameters,
-                curves: colorGrading.state.curves,
-                lut: colorGrading.state.lut,
+              type: "UpdateColorGradingPreview",
+              params: {
+                clipId: colorGrading.state.selectedClip,
+                settings: {
+                  colorWheels: colorGrading.state.colorWheels,
+                  basicParameters: colorGrading.state.basicParameters,
+                  curves: colorGrading.state.curves,
+                  lut: colorGrading.state.lut,
+                },
               },
             },
-          },
-        }).catch((err) => {
-          console.error("[ColorGrading] Failed to sync preview:", err)
-        })
+          })
+          .catch((err) => {
+            console.error("[ColorGrading] Failed to sync preview:", err)
+          })
       }, 500) // Задержка 500ms для debouncing
 
       return () => clearTimeout(timer)

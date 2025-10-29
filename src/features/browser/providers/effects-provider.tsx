@@ -2,12 +2,11 @@
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
-
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 import type {
   EffectsProviderAPI,
@@ -344,6 +343,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   private async loadLocalResources(): Promise<LoadResult> {
     // Сначала пробуем загрузить из backend
     // TODO: Resources команда еще не реализована в backend
+    // eslint-disable-next-line no-constant-condition
     if (false && this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
@@ -394,6 +394,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   private async loadRemoteResources(): Promise<LoadResult> {
     // Загружаем удаленные ресурсы через backend
     // TODO: Resources команда еще не реализована в backend
+    // eslint-disable-next-line no-constant-condition
     if (false && this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
@@ -438,7 +439,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   private async loadImportedResources(): Promise<LoadResult> {
     // Загружаем импортированные ресурсы из backend
-    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
+    if (false && this.isBackendConnected) {
+      // TODO: Resources команда еще не реализована
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -495,7 +497,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   async preloadCategory(type: ResourceType, category: string): Promise<LoadResult> {
     // Предзагрузка категории через backend
-    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
+    if (false && this.isBackendConnected) {
+      // TODO: Resources команда еще не реализована
       try {
         await this.backendSync.executeCommand({
           type: "Resources",
@@ -523,21 +526,24 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   updateSourceConfig(source: ResourceSource, config: Partial<SourceConfig>): void {
     this.sourceConfigs[source] = { ...this.sourceConfigs[source], ...config }
-    
+
     // Синхронизируем конфигурацию с backend
-    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
-      this.backendSync.executeCommand({
-        type: "Resources",
-        params: {
-          type: "UpdateSourceConfig",
+    if (false && this.isBackendConnected) {
+      // TODO: Resources команда еще не реализована
+      this.backendSync
+        .executeCommand({
+          type: "Resources",
           params: {
-            source,
-            config: this.sourceConfigs[source],
+            type: "UpdateSourceConfig",
+            params: {
+              source,
+              config: this.sourceConfigs[source],
+            },
           },
-        },
-      }).catch((error) => {
-        console.error("[EffectsProvider] Failed to sync source config:", error)
-      })
+        })
+        .catch((error) => {
+          console.error("[EffectsProvider] Failed to sync source config:", error)
+        })
     }
   }
 
@@ -672,7 +678,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async importResource(type: ResourceType, resource: Resource): Promise<boolean> {
     try {
       // Сохраняем ресурс в backend
-      if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
+      if (false && this.isBackendConnected) {
+        // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",
           params: {
@@ -697,8 +704,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
       return true
     } catch (error) {
       console.error("[EffectsProvider] Failed to import resource:", error)
-      this.eventListeners.error.forEach((callback) => 
-        callback(error instanceof Error ? error.message : String(error), "imported")
+      this.eventListeners.error.forEach((callback) =>
+        callback(error instanceof Error ? error.message : String(error), "imported"),
       )
       return false
     }
@@ -707,7 +714,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean> {
     try {
       // Удаляем из backend
-      if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
+      if (false && this.isBackendConnected) {
+        // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",
           params: {
@@ -724,7 +732,10 @@ class EffectsProviderImpl implements EffectsProviderAPI {
       // Удаляем из локального кэша
       const key = `${type}:${source}`
       const currentResources = this.resources.get(key) || []
-      this.resources.set(key, currentResources.filter(r => r.id !== id))
+      this.resources.set(
+        key,
+        currentResources.filter((r) => r.id !== id),
+      )
 
       // Уведомляем об обновлении
       this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, this.getResources(type)))
@@ -732,8 +743,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
       return true
     } catch (error) {
       console.error("[EffectsProvider] Failed to delete resource:", error)
-      this.eventListeners.error.forEach((callback) => 
-        callback(error instanceof Error ? error.message : String(error), source)
+      this.eventListeners.error.forEach((callback) =>
+        callback(error instanceof Error ? error.message : String(error), source),
       )
       return false
     }
@@ -790,7 +801,7 @@ export function resetEffectsProviderState(): void {
 
 /**
  * Компонент EffectsProvider с интеграцией BackendSync
- * 
+ *
  * Добавляет возможность синхронизации ресурсов с backend для:
  * - Сохранения пользовательских ресурсов
  * - Загрузки удаленных ресурсов
@@ -882,12 +893,12 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
           backgroundTimer = setTimeout(() => {
             if (!cancelled) {
               const backgroundSources: ResourceSource[] = ["local", "imported"]
-              
+
               // Если подключен backend, загружаем и remote
               if (isBackendConnected) {
                 backgroundSources.push("remote")
               }
-              
+
               backgroundSources.forEach((source) => {
                 if (!api.isSourceLoaded(source)) {
                   api.loadSource(source).catch((error: unknown) => {

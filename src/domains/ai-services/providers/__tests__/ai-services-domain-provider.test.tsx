@@ -1,14 +1,14 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { 
-  AIServicesDomainProvider, 
-  useAIServicesDomain, 
+import {
+  AIServicesDomainProvider,
   useAIServicesChat,
-  useAIServicesMontage,
-  useAIServicesIntelligence,
+  useAIServicesDomain,
   useAIServicesDomainStatus,
-  useAIUsageMonitor
+  useAIServicesIntelligence,
+  useAIServicesMontage,
+  useAIUsageMonitor,
 } from "../ai-services-domain-provider"
 
 // Import backend-sync mock
@@ -55,7 +55,10 @@ vi.mock("@xstate/react", () => ({
         mockChatSend,
       ]
     }
-    if (machine.provide === vi.mocked(vi.importActual("../../machines/montage-planner-machine")).montagePlannerMachine?.provide) {
+    if (
+      machine.provide ===
+      vi.mocked(vi.importActual("../../machines/montage-planner-machine")).montagePlannerMachine?.provide
+    ) {
       return [
         {
           context: {
@@ -282,7 +285,7 @@ describe("AIServicesDomainProvider", () => {
       const chat = useAIServicesChat()
       const montage = useAIServicesMontage()
       const intelligence = useAIServicesIntelligence()
-      
+
       return (
         <div>
           <div data-testid="chat">{chat.chatState.messages.length}</div>
@@ -306,7 +309,7 @@ describe("AIServicesDomainProvider", () => {
   it("должен предоставлять статус домена через useAIServicesDomainStatus", () => {
     const TestComponent = () => {
       const status = useAIServicesDomainStatus()
-      
+
       return (
         <div>
           <div data-testid="enabled">{status.enabledServices.join(",")}</div>
@@ -328,7 +331,7 @@ describe("AIServicesDomainProvider", () => {
   it("должен мониторить использование через useAIUsageMonitor", () => {
     const TestComponent = () => {
       const monitor = useAIUsageMonitor()
-      
+
       return (
         <div>
           <div data-testid="totalUsage">{monitor.stats.totalRequests}</div>

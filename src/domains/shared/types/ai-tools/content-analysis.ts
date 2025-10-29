@@ -1,7 +1,52 @@
 // Content Analysis Types
 
-import { AudioAnalysis } from "@/domains/ai-services/types"
-import { QualityAnalysisResult, VideoMetadata } from "../media-analysis"
+// Temporarily define AudioAnalysis here to avoid circular dependency
+export interface AudioAnalysis {
+  duration: number
+  channels: number
+  sampleRate: number
+  bitrate: number
+  codec: string
+  volume: {
+    average: number
+    peak: number
+    min: number
+    max: number
+  }
+  silentSegments: Array<{ start: number; end: number }>
+}
+
+// Temporarily define these types to avoid circular dependency  
+export interface QualityAnalysisResult {
+  overall: number
+  video?: {
+    sharpness: number
+    brightness: number
+    contrast: number
+    saturation: number
+    noise: number
+    stability: number
+  }
+  audio?: {
+    clarity: number
+    volume: number
+    clipping: boolean
+    noiseLevel: number
+  }
+}
+
+export interface VideoMetadata {
+  format: string
+  duration: number
+  width: number
+  height: number
+  fps: number
+  bitrate: number
+  hasAudio: boolean
+  audioChannels?: number
+  audioSampleRate?: number
+  codec?: string
+}
 
 // Дополнительные типы для AI Intelligence Machine
 export enum NarrativeType {
@@ -508,4 +553,3 @@ export type {
   SceneAnalysis as SceneData,
   KeyFrame as FrameData,
 }
-

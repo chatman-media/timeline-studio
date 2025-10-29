@@ -16,14 +16,14 @@ export function useCurrentProject() {
   const createNewProject = async (name: string) => {
     return executeCommand({
       type: "CreateProject",
-      params: { 
+      params: {
         name,
         settings: {
           resolution: { width: 1920, height: 1080 },
           frame_rate: 30,
           audio_sample_rate: 48000,
           audio_channels: 2,
-        }
+        },
       },
     })
   }
@@ -32,14 +32,14 @@ export function useCurrentProject() {
   const createTempProject = async () => {
     return executeCommand({
       type: "CreateProject",
-      params: { 
+      params: {
         name: "Temp Project",
         settings: {
           resolution: { width: 1920, height: 1080 },
           frame_rate: 30,
           audio_sample_rate: 48000,
           audio_channels: 2,
-        }
+        },
       },
     })
   }

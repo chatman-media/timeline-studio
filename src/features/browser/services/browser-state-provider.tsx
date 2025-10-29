@@ -1,7 +1,7 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { BrowserContext, BrowserTab, ViewMode } from "@/domains/browser"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
 
 /**
@@ -76,7 +76,7 @@ interface BrowserStateContextValue {
   selectAllFiles: (fileIds: string[], tab?: BrowserTab) => void
   deselectAllFiles: (tab?: BrowserTab) => void
   isFileSelected: (fileId: string, tab?: BrowserTab) => boolean
-  
+
   // BackendSync методы
   syncBrowserState: () => Promise<void>
   isBackendConnected: boolean
@@ -96,7 +96,7 @@ interface BrowserStateProviderProps {
 
 /**
  * Провайдер состояния браузера с интеграцией BackendSync
- * 
+ *
  * Добавлено:
  * - Синхронизация состояния браузера с backend
  * - Восстановление состояния из backend при инициализации
@@ -105,7 +105,7 @@ interface BrowserStateProviderProps {
 export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ children }) => {
   const backendSync = getBackendSync()
   const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
-  
+
   const [state, setState] = useState<BrowserContext>(() => {
     // Пытаемся загрузить настройки из localStorage только на клиенте
     if (typeof window === "undefined") {
@@ -185,11 +185,11 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     // Мониторинг соединения
     const unsubscribeConnection = backendSync.onStateChange((projectState) => {
       setIsBackendConnected(true)
-      
+
       // Восстанавливаем состояние браузера из backend
       if (projectState.ui_state?.browser_state) {
         const restoredState = projectState.ui_state.browser_state as any
-        
+
         // Преобразуем массивы обратно в Set
         if (restoredState.selectedFiles) {
           const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
@@ -198,12 +198,12 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           }
           restoredState.selectedFiles = selectedFiles
         }
-        
-        setState(prevState => ({
+
+        setState((prevState) => ({
           ...prevState,
           ...restoredState,
         }))
-        
+
         console.log("[BrowserStateProvider] Browser state restored from backend")
       }
     })
@@ -323,16 +323,18 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   // Расширенные действия с логированием для backend
   const switchTab = (tab: BrowserTab) => {
     setState((prev) => ({ ...prev, activeTab: tab }))
-    
+
     // Логируем переключение вкладки
     if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "switch_tab", tab },
-        },
-      }).catch(console.error)
+      backendSync
+        .executeCommand({
+          type: "Analytics",
+          params: {
+            type: "LogBrowserAction",
+            params: { action: "switch_tab", tab },
+          },
+        })
+        .catch(console.error)
     }
   }
 
@@ -419,16 +421,18 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         },
       },
     }))
-    
+
     // Логируем изменение режима просмотра
     if (isBackendConnected) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "change_view_mode", viewMode, tab: targetTab },
-        },
-      }).catch(console.error)
+      backendSync
+        .executeCommand({
+          type: "Analytics",
+          params: {
+            type: "LogBrowserAction",
+            params: { action: "change_view_mode", viewMode, tab: targetTab },
+          },
+        })
+        .catch(console.error)
     }
   }
 
@@ -514,16 +518,18 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         [targetTab]: new Set(fileIds),
       },
     }))
-    
+
     // Логируем массовый выбор файлов
     if (isBackendConnected && fileIds.length > 10) {
-      backendSync.executeCommand({
-        type: "Analytics",
-        params: {
-          type: "LogBrowserAction",
-          params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
-        },
-      }).catch(console.error)
+      backendSync
+        .executeCommand({
+          type: "Analytics",
+          params: {
+            type: "LogBrowserAction",
+            params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
+          },
+        })
+        .catch(console.error)
     }
   }
 
@@ -600,7 +606,7 @@ export const useTabSettings = (tab?: BrowserTab) => {
  */
 export const useBrowserStateSync = () => {
   const { syncBrowserState, isBackendConnected } = useBrowserState()
-  
+
   return {
     sync: syncBrowserState,
     isConnected: isBackendConnected,

@@ -3,6 +3,13 @@
  * Централизованные типы для всех AI инструментов в доменной архитектуре
  */
 
+export * from "./ai-config"
+// Re-export основных типов из других модулей
+export * from "./content-analysis"
+export * from "./pipeline"
+export * from "./platform-adaptation"
+export * from "./script-generation"
+
 // ============================================================================
 // CORE TOOLS TYPES
 // ============================================================================

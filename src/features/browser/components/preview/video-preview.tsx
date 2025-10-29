@@ -288,8 +288,8 @@ export const VideoPreview = memo(
         ref={setNodeRef}
         className={cn("flex h-full w-full items-center justify-center", isDragging && "cursor-grabbing")}
         style={style}
-        {...(listeners && typeof listeners === 'object' ? listeners : {})}
-        {...(attributes && typeof attributes === 'object' ? attributes : {})}
+        {...(listeners && typeof listeners === "object" ? listeners : {})}
+        {...(attributes && typeof attributes === "object" ? attributes : {})}
       >
         {videoData.videoStreams.length === 0 ? (
           // Плейсхолдер с соотношением 16:9 пока метаданные не загрузились

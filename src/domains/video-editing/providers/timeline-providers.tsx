@@ -19,7 +19,7 @@ type TimelineClip = DomainTimelineClip
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
-import { transformBackendProjectToTimeline } from "../utils/project-transform"
+import { transformProjectStateToTimeline } from "../utils/project-transform"
 
 // ===========================
 // Project Provider
@@ -56,15 +56,13 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setBackendProject(state)
 
-      // Преобразуем backend project в Timeline структуру
-      if (state.project) {
-        const transformedProject = transformBackendProjectToTimeline(state.project)
-        if (transformedProject) {
-          timelineActor.send({
-            type: "PROJECT_UPDATED",
-            project: transformedProject,
-          })
-        }
+      // Преобразуем ProjectState в Timeline структуру
+      const transformedProject = transformProjectStateToTimeline(state)
+      if (transformedProject) {
+        timelineActor.send({
+          type: "PROJECT_UPDATED",
+          project: transformedProject,
+        })
       }
     })
 
@@ -72,16 +70,14 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     backendSync.getProjectState().then((state) => {
       if (state) {
         setBackendProject(state)
-        
-        // Преобразуем начальный проект
-        if (state.project) {
-          const transformedProject = transformBackendProjectToTimeline(state.project)
-          if (transformedProject) {
-            timelineActor.send({
-              type: "PROJECT_UPDATED", 
-              project: transformedProject,
-            })
-          }
+
+        // Преобразуем начальное состояние
+        const transformedProject = transformProjectStateToTimeline(state)
+        if (transformedProject) {
+          timelineActor.send({
+            type: "PROJECT_UPDATED",
+            project: transformedProject,
+          })
         }
       }
     })
@@ -92,7 +88,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   }, [backendSync, timelineActor])
 
   // Используем преобразованный проект или проект из машины состояний
-  const finalProject = project || transformBackendProjectToTimeline(backendProject?.project)
+  const finalProject = project || transformProjectStateToTimeline(backendProject)
 
   const contextValue: TimelineProjectContext = {
     project: finalProject,

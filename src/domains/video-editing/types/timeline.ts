@@ -20,6 +20,29 @@ export interface Timeline {
   createdAt: Date
   updatedAt: Date
   version: string
+
+  // BackendSync specific fields
+  uiState?: TimelineUiState
+  playbackState?: TimelinePlaybackState
+  stateVersion?: number
+  isBackendSync?: boolean
+}
+
+export interface TimelineUiState {
+  selectedClipIds: string[]
+  selectedTrackIds: string[]
+  zoom: number
+  scroll: number
+  activeTool: string
+}
+
+export interface TimelinePlaybackState {
+  isPlaying: boolean
+  currentTime: number
+  playbackRate: number
+  volume: number
+  selectedMedia?: string
+  source?: string
 }
 
 export interface TimelineSettings {

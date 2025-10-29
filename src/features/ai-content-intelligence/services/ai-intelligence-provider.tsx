@@ -20,7 +20,7 @@ interface AIIntelligenceProviderProps {
 
 /**
  * AI Intelligence Provider с интеграцией BackendSync
- * 
+ *
  * Синхронизирует состояние AI анализа с backend через BackendSync
  */
 export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps) {
@@ -33,10 +33,10 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      
+
       // Создаем актор машины
       const newActor = createActor(aiIntelligenceMachine)
-      
+
       // Подписываемся на события актора для синхронизации с backend
       newActor.subscribe((snapshot) => {
         // Синхронизируем ключевые события с backend
@@ -44,79 +44,87 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
           switch (snapshot.event.type) {
             case "START_ANALYSIS":
               // Отправляем команду начала анализа на backend
-              backendSync.executeCommand({
-                type: "AI",
-                params: {
-                  type: "StartContentAnalysis",
+              backendSync
+                .executeCommand({
+                  type: "AI",
                   params: {
-                    mediaFiles: snapshot.event.mediaFiles,
-                    config: snapshot.event.config,
+                    type: "StartContentAnalysis",
+                    params: {
+                      mediaFiles: snapshot.event.mediaFiles,
+                      config: snapshot.event.config,
+                    },
                   },
-                },
-              }).catch((err) => {
-                console.error("[AIIntelligence] Failed to sync START_ANALYSIS:", err)
-                setError(err.message)
-              })
+                })
+                .catch((err) => {
+                  console.error("[AIIntelligence] Failed to sync START_ANALYSIS:", err)
+                  setError(err.message)
+                })
               break
-              
+
             case "ANALYSIS_COMPLETE":
               // Сохраняем результаты анализа в backend
-              backendSync.executeCommand({
-                type: "AI", 
-                params: {
-                  type: "SaveAnalysisResults",
+              backendSync
+                .executeCommand({
+                  type: "AI",
                   params: {
-                    analysis: snapshot.event.analysis,
+                    type: "SaveAnalysisResults",
+                    params: {
+                      analysis: snapshot.event.analysis,
+                    },
                   },
-                },
-              }).catch((err) => {
-                console.error("[AIIntelligence] Failed to sync ANALYSIS_COMPLETE:", err)
-                setError(err.message)
-              })
+                })
+                .catch((err) => {
+                  console.error("[AIIntelligence] Failed to sync ANALYSIS_COMPLETE:", err)
+                  setError(err.message)
+                })
               break
-              
+
             case "SCRIPT_GENERATED":
               // Сохраняем сгенерированный скрипт
-              backendSync.executeCommand({
-                type: "AI",
-                params: {
-                  type: "SaveGeneratedScript", 
+              backendSync
+                .executeCommand({
+                  type: "AI",
                   params: {
-                    script: snapshot.event.script,
+                    type: "SaveGeneratedScript",
+                    params: {
+                      script: snapshot.event.script,
+                    },
                   },
-                },
-              }).catch((err) => {
-                console.error("[AIIntelligence] Failed to sync SCRIPT_GENERATED:", err)
-                setError(err.message)
-              })
+                })
+                .catch((err) => {
+                  console.error("[AIIntelligence] Failed to sync SCRIPT_GENERATED:", err)
+                  setError(err.message)
+                })
               break
-              
+
             case "PLATFORM_ADAPTATION_COMPLETE":
               // Сохраняем адаптированный контент
-              backendSync.executeCommand({
-                type: "AI",
-                params: {
-                  type: "SaveAdaptedContent",
+              backendSync
+                .executeCommand({
+                  type: "AI",
                   params: {
-                    content: snapshot.event.content,
+                    type: "SaveAdaptedContent",
+                    params: {
+                      content: snapshot.event.content,
+                    },
                   },
-                },
-              }).catch((err) => {
-                console.error("[AIIntelligence] Failed to sync PLATFORM_ADAPTATION_COMPLETE:", err)
-                setError(err.message)
-              })
+                })
+                .catch((err) => {
+                  console.error("[AIIntelligence] Failed to sync PLATFORM_ADAPTATION_COMPLETE:", err)
+                  setError(err.message)
+                })
               break
           }
         }
       })
-      
+
       newActor.start()
       setActor(newActor)
 
       // Подписываемся на изменения backend состояния
       const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
         setIsConnected(true)
-        
+
         // Синхронизируем состояние AI анализа из backend
         if (state.ai_state) {
           // Обновляем состояние машины на основе backend
@@ -126,14 +134,14 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
               analysis: state.ai_state.analysis_results,
             })
           }
-          
+
           if (state.ai_state.generated_scripts) {
             newActor.send({
-              type: "SCRIPT_GENERATED", 
+              type: "SCRIPT_GENERATED",
               script: state.ai_state.generated_scripts,
             })
           }
-          
+
           if (state.ai_state.adapted_content) {
             newActor.send({
               type: "PLATFORM_ADAPTATION_COMPLETE",
@@ -162,16 +170,9 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
     }
   }, [backendSync])
 
-  const contextValue = useMemo(
-    () => ({ actor, isConnected, error }), 
-    [actor, isConnected, error]
-  )
+  const contextValue = useMemo(() => ({ actor, isConnected, error }), [actor, isConnected, error])
 
-  return (
-    <AIIntelligenceContext.Provider value={contextValue}>
-      {children}
-    </AIIntelligenceContext.Provider>
-  )
+  return <AIIntelligenceContext.Provider value={contextValue}>{children}</AIIntelligenceContext.Provider>
 }
 
 export function useAIIntelligence() {

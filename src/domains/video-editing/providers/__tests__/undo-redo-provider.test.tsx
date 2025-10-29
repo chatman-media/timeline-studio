@@ -1,8 +1,7 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { UndoRedoProvider } from "../undo-redo-provider"
 import { useUndoRedo } from "../../hooks/use-undo-redo"
+import { UndoRedoProvider } from "../undo-redo-provider"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
@@ -25,8 +24,8 @@ vi.mock("../../services/video-editing-orchestrator", () => ({
     getActors: vi.fn(() => ({
       timeline: {
         send: vi.fn(),
-        getSnapshot: vi.fn(() => ({ context: {} }))
-      }
+        getSnapshot: vi.fn(() => ({ context: {} })),
+      },
     })),
   })),
 }))

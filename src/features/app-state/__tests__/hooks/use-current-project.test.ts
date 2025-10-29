@@ -47,14 +47,14 @@ describe("useCurrentProject", () => {
 
     expect(mockExecuteCommand).toHaveBeenCalledWith({
       type: "CreateProject",
-      params: { 
+      params: {
         name: "Новый проект",
         settings: {
           resolution: { width: 1920, height: 1080 },
           frame_rate: 30,
           audio_sample_rate: 48000,
           audio_channels: 2,
-        }
+        },
       },
     })
   })
@@ -68,14 +68,14 @@ describe("useCurrentProject", () => {
 
     expect(mockExecuteCommand).toHaveBeenCalledWith({
       type: "CreateProject",
-      params: { 
+      params: {
         name: "Temp Project",
         settings: {
           resolution: { width: 1920, height: 1080 },
           frame_rate: 30,
           audio_sample_rate: 48000,
           audio_channels: 2,
-        }
+        },
       },
     })
   })
@@ -89,14 +89,14 @@ describe("useCurrentProject", () => {
 
     expect(mockExecuteCommand).toHaveBeenCalledWith({
       type: "CreateProject",
-      params: { 
+      params: {
         name: "Temporary Project",
         settings: {
           resolution: { width: 1920, height: 1080 },
           frame_rate: 30,
           audio_sample_rate: 48000,
           audio_channels: 2,
-        }
+        },
       },
     })
   })
@@ -129,8 +129,8 @@ describe("useCurrentProject", () => {
 
   it("должен предоставлять метод установки флага изменений", () => {
     const { result } = renderHook(() => useCurrentProject())
-    
-    const consoleSpy = vi.spyOn(console, 'log')
+
+    const consoleSpy = vi.spyOn(console, "log")
 
     act(() => {
       result.current.setProjectDirty(true)
@@ -143,7 +143,7 @@ describe("useCurrentProject", () => {
     })
 
     expect(consoleSpy).toHaveBeenCalledWith("Project dirty state:", false)
-    
+
     consoleSpy.mockRestore()
   })
 

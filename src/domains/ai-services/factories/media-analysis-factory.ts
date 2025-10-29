@@ -14,8 +14,8 @@ import type {
 } from "../types/interfaces"
 
 export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
-  private ffmpegService: IFFmpegAnalysisService
-  private visionService: IVisionService
+  private ffmpegService: IFFmpegAnalysisService | null
+  private visionService: IVisionService | null
   private contentService: IContentAnalysisService | null = null
 
   constructor(ffmpegService: IFFmpegAnalysisService, visionService: IVisionService) {
@@ -24,16 +24,22 @@ export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
   }
 
   createFFmpegService(): IFFmpegAnalysisService {
+    if (!this.ffmpegService) {
+      throw new Error("FFmpeg service is not available")
+    }
     return this.ffmpegService
   }
 
   createVisionService(): IVisionService {
+    if (!this.visionService) {
+      throw new Error("Vision service is not available")
+    }
     return this.visionService
   }
 
   createContentAnalysisService(): IContentAnalysisService {
     if (!this.contentService) {
-      this.contentService = new ContentAnalysisService(this.ffmpegService, this.visionService)
+      this.contentService = new ContentAnalysisService()
     }
     return this.contentService
   }

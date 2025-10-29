@@ -26,7 +26,7 @@ export default defineConfig({
     //     },
     //   }),
     // }),
-  ],"explanation":"Disabling Codecov Vite plugin by commenting out the plugin configuration"}
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

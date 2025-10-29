@@ -3,8 +3,8 @@
  * Движок для генерации сценариев на основе анализа контента
  */
 
-import type { Person } from "@/features/montage-planner/types"
 import { type UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
+import type { Person } from "@/features/montage-planner/types"
 import { BaseAIEngine, type EngineCapabilities } from "./base-engine"
 import { DialogueGenerator } from "./dialogue-generator"
 import { TemplateEngine } from "./template-engine"

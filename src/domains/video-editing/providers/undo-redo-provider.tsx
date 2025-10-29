@@ -28,7 +28,7 @@ interface UndoRedoProviderProps {
 
 /**
  * Undo/Redo Provider с интеграцией BackendSync
- * 
+ *
  * Синхронизирует историю действий с backend для персистентности
  * и возможности восстановления после перезапуска
  */
@@ -43,7 +43,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-      
+
       // Восстанавливаем историю из backend при загрузке
       if (state.undo_redo_state && state.undo_redo_state.history) {
         console.log("[UndoRedo] Restored history from backend:", state.undo_redo_state.history.length, "actions")
@@ -70,26 +70,28 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
   // Оборачиваем registerAction для синхронизации с backend
   const registerActionWithBackend: typeof undoRedo.registerAction = (action) => {
     const actionId = undoRedo.registerAction(action)
-    
+
     // Синхронизируем действие с backend
-    backendSync.executeCommand({
-      type: "UndoRedo",
-      params: {
-        type: "RegisterAction",
+    backendSync
+      .executeCommand({
+        type: "UndoRedo",
         params: {
-          actionId,
-          action: {
-            ...action,
-            id: actionId,
-            timestamp: Date.now(),
+          type: "RegisterAction",
+          params: {
+            actionId,
+            action: {
+              ...action,
+              id: actionId,
+              timestamp: Date.now(),
+            },
           },
         },
-      },
-    }).catch((err) => {
-      console.error("[UndoRedo] Failed to sync action:", err)
-      setError(err.message)
-    })
-    
+      })
+      .catch((err) => {
+        console.error("[UndoRedo] Failed to sync action:", err)
+        setError(err.message)
+      })
+
     return actionId
   }
 
@@ -119,7 +121,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     const handleRedo = async () => {
       try {
         await backendSync.executeCommand({
-          type: "UndoRedo", 
+          type: "UndoRedo",
           params: {
             type: "Redo",
             params: {},
@@ -133,7 +135,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
 
     // Здесь можно добавить подписку на события сервиса
     // если он поддерживает event emitter
-    
+
     return () => {
       // Cleanup
     }
@@ -170,21 +172,21 @@ export function useClipUndoRedo() {
 
   const registerAddClip = (clipId: string, trackId: string, mediaFile: any, time: number) => {
     const actionId = registerAction(UndoRedoHelpers.createAddClipAction(clipId, trackId, mediaFile, time))
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
   const registerRemoveClip = (clip: Clip) => {
     const actionId = registerAction(UndoRedoHelpers.createRemoveClipAction(clip))
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -195,22 +197,26 @@ export function useClipUndoRedo() {
     newTrackId: string,
     newTime: number,
   ) => {
-    const actionId = registerAction(UndoRedoHelpers.createMoveClipAction(clipId, oldTrackId, oldTime, newTrackId, newTime))
-    
+    const actionId = registerAction(
+      UndoRedoHelpers.createMoveClipAction(clipId, oldTrackId, oldTime, newTrackId, newTime),
+    )
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
   const registerBatchOperation = (description: string, originalClips: Clip[], updatedClips: Clip[]) => {
-    const actionId = registerAction(UndoRedoHelpers.createBatchOperationAction(description, originalClips, updatedClips))
-    
+    const actionId = registerAction(
+      UndoRedoHelpers.createBatchOperationAction(description, originalClips, updatedClips),
+    )
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -224,11 +230,11 @@ export function useClipUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -248,11 +254,11 @@ export function useClipUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -266,11 +272,11 @@ export function useClipUndoRedo() {
       priority: "high",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -303,11 +309,11 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -329,11 +335,11 @@ export function useTrackUndoRedo() {
       priority: "high",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -347,11 +353,11 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -365,11 +371,11 @@ export function useTrackUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -399,11 +405,11 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -417,11 +423,11 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: false,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 
@@ -435,11 +441,11 @@ export function useKeyframeUndoRedo() {
       priority: "medium",
       mergeable: true,
     })
-    
+
     if (!isConnected) {
       console.warn("[UndoRedo] Backend not connected, action may not be persisted")
     }
-    
+
     return actionId
   }
 

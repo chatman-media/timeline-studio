@@ -2,7 +2,7 @@
  * Drag and Drop Provider for Timeline с интеграцией BackendSync
  *
  * Wraps the timeline with DndContext and provides drag overlay
- * 
+ *
  * BackendSync интеграция добавляет:
  * - Логирование операций drag & drop для аналитики
  * - Запись операций в историю для undo/redo
@@ -57,7 +57,7 @@ function DraggedVideoOverlay({ mediaFile, count }: { mediaFile: MediaFile; count
 
 /**
  * DragDropProvider с интеграцией BackendSync
- * 
+ *
  * Сохраняет UI-характер компонента для производительности,
  * добавляя только логирование операций в backend
  */

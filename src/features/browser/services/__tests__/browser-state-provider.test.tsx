@@ -1,8 +1,7 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { BrowserStateProvider, useBrowserState, useBrowserStateSync } from "../browser-state-provider"
 import type { BrowserTab } from "@/domains/browser"
+import { BrowserStateProvider, useBrowserState, useBrowserStateSync } from "../browser-state-provider"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
@@ -114,10 +113,7 @@ describe("BrowserStateProvider", () => {
     // Ждем дебаунс (500мс)
     await waitFor(
       () => {
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "browserSettings",
-          expect.stringContaining("test query"),
-        )
+        expect(localStorageMock.setItem).toHaveBeenCalledWith("browserSettings", expect.stringContaining("test query"))
       },
       { timeout: 1000 },
     )
@@ -205,7 +201,7 @@ describe("BrowserStateProvider", () => {
 
     // Выбираем много файлов
     const fileIds = Array.from({ length: 15 }, (_, i) => `file${i}`)
-    
+
     act(() => {
       result.current.selectAllFiles(fileIds)
     })

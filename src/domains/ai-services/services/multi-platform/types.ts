@@ -3,8 +3,8 @@
  */
 
 import type { AdaptedContent, PlatformId } from "../../types/platform"
-import type { UnifiedContentAnalysis } from "../../types/unified-analysis"
 import type { GeneratedScript } from "../../types/script"
+import type { UnifiedContentAnalysis } from "../../types/unified-analysis"
 
 export interface MultiPlatformConfig {
   // Настройки адаптации

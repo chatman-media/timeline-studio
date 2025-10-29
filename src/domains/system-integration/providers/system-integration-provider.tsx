@@ -32,7 +32,7 @@ interface SystemIntegrationProviderProps {
 
 /**
  * System Integration Provider с интеграцией BackendSync
- * 
+ *
  * Синхронизирует системные настройки, feature flags и уведомления с backend
  */
 export function SystemIntegrationProvider({ children, initialFeatures = {} }: SystemIntegrationProviderProps) {
@@ -49,20 +49,20 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-      
+
       // Синхронизируем feature flags из backend
       if (state.system_state?.feature_flags) {
         const backendFeatures = state.system_state.feature_flags
         setFeatures(backendFeatures)
-        
+
         // Обновляем feature flags в оркестраторе
         Object.entries(backendFeatures).forEach(([feature, enabled]) => {
           orchestrator.toggleFeature(feature, enabled as boolean)
         })
-        
+
         console.log("[System Integration] Feature flags synced from backend:", backendFeatures)
       }
-      
+
       // Синхронизируем системные уведомления
       if (state.system_state?.notifications) {
         state.system_state.notifications.forEach((notification: any) => {
@@ -82,12 +82,12 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
         case "SYSTEM_NOTIFICATION":
           orchestrator.showNotification({
             type: event.data.type,
-            title: event.data.title, 
+            title: event.data.title,
             message: event.data.message,
             actions: event.data.actions,
           })
           break
-          
+
         case "FEATURE_FLAG_UPDATED":
           orchestrator.toggleFeature(event.data.feature, event.data.enabled)
           setFeatures((prev) => ({
@@ -95,7 +95,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
             [event.data.feature]: event.data.enabled,
           }))
           break
-          
+
         case "UPDATE_AVAILABLE":
           orchestrator.checkForUpdates()
           break
@@ -112,23 +112,26 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     }
 
     // Синхронизируем начальные feature flags с backend
-    backendSync.executeCommand({
-      type: "System",
-      params: {
-        type: "UpdateFeatureFlags",
+    backendSync
+      .executeCommand({
+        type: "System",
         params: {
-          features: defaultFeatures,
+          type: "UpdateFeatureFlags",
+          params: {
+            features: defaultFeatures,
+          },
         },
-      },
-    }).then(() => {
-      setFeatures(defaultFeatures)
-      Object.entries(defaultFeatures).forEach(([feature, enabled]) => {
-        orchestrator.toggleFeature(feature, enabled)
       })
-    }).catch((err) => {
-      console.error("[System Integration] Failed to sync feature flags:", err)
-      setError(err.message)
-    })
+      .then(() => {
+        setFeatures(defaultFeatures)
+        Object.entries(defaultFeatures).forEach(([feature, enabled]) => {
+          orchestrator.toggleFeature(feature, enabled)
+        })
+      })
+      .catch((err) => {
+        console.error("[System Integration] Failed to sync feature flags:", err)
+        setError(err.message)
+      })
 
     return () => {
       console.log("[System Integration Provider] Cleanup")
@@ -142,24 +145,26 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     // Подписываемся на изменения feature flags в оркестраторе
     const handleFeatureToggle = (feature: string, enabled: boolean) => {
       // Синхронизируем изменение с backend
-      backendSync.executeCommand({
-        type: "System", 
-        params: {
-          type: "UpdateFeatureFlag",
+      backendSync
+        .executeCommand({
+          type: "System",
           params: {
-            feature,
-            enabled,
+            type: "UpdateFeatureFlag",
+            params: {
+              feature,
+              enabled,
+            },
           },
-        },
-      }).catch((err) => {
-        console.error(`[System Integration] Failed to sync feature flag ${feature}:`, err)
-        setError(err.message)
-      })
+        })
+        .catch((err) => {
+          console.error(`[System Integration] Failed to sync feature flag ${feature}:`, err)
+          setError(err.message)
+        })
     }
-    
+
     // Здесь можно добавить подписку на события оркестратора
     // если он поддерживает event emitter
-    
+
     return () => {
       // Cleanup
     }
@@ -171,24 +176,26 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     const syncNotifications = () => {
       const notifications = orchestrator.getNotifications()
       const unreadNotifications = notifications.filter((n) => !n.read)
-      
+
       if (unreadNotifications.length > 0) {
-        backendSync.executeCommand({
-          type: "System",
-          params: {
-            type: "SyncNotifications", 
+        backendSync
+          .executeCommand({
+            type: "System",
             params: {
-              notifications: unreadNotifications,
+              type: "SyncNotifications",
+              params: {
+                notifications: unreadNotifications,
+              },
             },
-          },
-        }).catch((err) => {
-          console.error("[System Integration] Failed to sync notifications:", err)
-        })
+          })
+          .catch((err) => {
+            console.error("[System Integration] Failed to sync notifications:", err)
+          })
       }
     }
-    
+
     const interval = setInterval(syncNotifications, 30000) // Каждые 30 секунд
-    
+
     return () => {
       clearInterval(interval)
     }
@@ -222,18 +229,18 @@ export function useSystemIntegrationContext() {
  */
 export function useFeatureFlags() {
   const { features, orchestrator, isConnected } = useSystemIntegrationContext()
-  
+
   const toggleFeature = (feature: string, enabled: boolean) => {
     if (!isConnected) {
       console.warn("[System Integration] Backend not connected, feature flag change may not persist")
     }
     orchestrator.toggleFeature(feature, enabled)
   }
-  
+
   const isFeatureEnabled = (feature: string): boolean => {
     return features[feature] || false
   }
-  
+
   return {
     features,
     toggleFeature,

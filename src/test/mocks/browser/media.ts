@@ -274,7 +274,7 @@ export function setupAudioMocks() {
           removeEventListener: vi.fn(),
           dispatchEvent: vi.fn(),
           active: true,
-          id: "mock-stream-id"
+          id: "mock-stream-id",
         }
         return Promise.resolve(stream)
       }),
@@ -290,7 +290,7 @@ export function setupAudioMocks() {
           removeEventListener: vi.fn(),
           dispatchEvent: vi.fn(),
           active: true,
-          id: "mock-stream-id"
+          id: "mock-stream-id",
         }
         return Promise.resolve(stream)
       }),

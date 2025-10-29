@@ -488,8 +488,8 @@ describe("ShortcutsProvider", () => {
 
       // Симулируем вызов action через registerMany
       const registerCall = vi.mocked(shortcutsRegistry.registerMany).mock.calls[0]
-      const registeredShortcut = registerCall[0].find(s => s.id === "open-user-settings")
-      
+      const registeredShortcut = registerCall[0].find((s) => s.id === "open-user-settings")
+
       if (registeredShortcut?.action) {
         registeredShortcut.action(new KeyboardEvent("keydown"))
       }

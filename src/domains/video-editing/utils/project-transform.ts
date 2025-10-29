@@ -1,16 +1,31 @@
 /**
- * Project Transform Utilities
- * 
- * Преобразование между структурами backend (Tauri) и frontend
+ * Project Transform Utilities for BackendSync Architecture
+ *
+ * Преобразование состояния из Backend (единственный источник истины) в frontend представления
+ * Следует принципам BackendSync:
+ * - Backend ProjectState - единственный источник данных
+ * - Frontend только отображает backend состояние
+ * - Все изменения через ProjectCommand
+ * - Реактивная синхронизация через события
  */
 
-import type { Project, Timeline as BackendTimeline, Track as BackendTrack } from "@/types/generated/tauri-bindings"
-import type { Timeline, Track, Section } from "../types/timeline"
+import type {
+  Track as BackendTrack,
+  Project,
+  ProjectCommand,
+  ProjectState,
+} from "@/types/generated/tauri-bindings"
+import type { MediaFile } from "../types/media"
+import type { Timeline, Track } from "../types/timeline"
 
 /**
- * Преобразует backend Project в frontend Timeline структуру
+ * Преобразует ProjectState (backend) в Timeline представление для frontend
+ *
+ * ВАЖНО: Это только VIEW трансформация - НЕ создает новых данных!
+ * Backend ProjectState остается единственным источником истины
  */
-export function transformBackendProjectToTimeline(backendProject: Project | null | undefined): Timeline | null {
+export function transformProjectStateToTimeline(projectState: ProjectState | null): Timeline | null {
+  const backendProject = projectState?.project
   if (!backendProject || !backendProject.timeline) {
     return null
   }
@@ -24,23 +39,25 @@ export function transformBackendProjectToTimeline(backendProject: Project | null
     duration: backendTimeline.duration,
     fps: backendTimeline.fps,
     sampleRate: backendTimeline.sample_rate,
-    
+
     // Backend не поддерживает секции, поэтому создаем одну основную секцию
-    sections: [{
-      id: "main-section",
-      name: "Main",
-      startTime: 0,
-      endTime: backendTimeline.duration || 0,
-      tracks: transformBackendTracks(backendTimeline.tracks),
-      isCollapsed: false,
-    }],
-    
+    sections: [
+      {
+        id: "main-section",
+        name: "Main",
+        startTime: 0,
+        endTime: backendTimeline.duration || 0,
+        tracks: transformBackendTracks(backendTimeline.tracks),
+        isCollapsed: false,
+      },
+    ],
+
     // Backend не разделяет глобальные треки, поэтому оставляем пустым
     globalTracks: [],
-    
-    // Преобразуем ресурсы (в backend они хранятся в media_pool)
+
+    // Преобразуем ресурсы - только файлы, используемые в timeline
     resources: {
-      media: Object.values(backendProject.media_pool.items || {}),
+      media: getUsedMediaFiles(backendProject),
       effects: [],
       filters: [],
       transitions: [],
@@ -48,7 +65,7 @@ export function transformBackendProjectToTimeline(backendProject: Project | null
       subtitleStyles: [],
       music: [],
     },
-    
+
     // Преобразуем настройки
     settings: {
       resolution: backendProject.settings.resolution,
@@ -63,13 +80,64 @@ export function transformBackendProjectToTimeline(backendProject: Project | null
       autoSave: true,
       autoSaveInterval: 300,
     },
-    
+
     createdAt: new Date(backendProject.metadata.created_at),
     updatedAt: new Date(backendProject.metadata.modified_at),
     version: backendProject.metadata.version || "1.0.0",
   }
 
+  // Добавляем UI состояние из backend
+  if (projectState?.ui_state) {
+    timeline.uiState = {
+      selectedClipIds: projectState.ui_state.selected_clips,
+      selectedTrackIds: projectState.ui_state.selected_tracks,
+      zoom: projectState.ui_state.timeline_zoom,
+      scroll: projectState.ui_state.timeline_scroll,
+      activeTool: projectState.ui_state.active_tool,
+    }
+  }
+
+  // Добавляем состояние воспроизведения
+  if (projectState?.playback_state) {
+    timeline.playbackState = {
+      isPlaying: projectState.playback_state.is_playing,
+      currentTime: projectState.playback_state.current_time,
+      playbackRate: projectState.playback_state.playback_rate,
+      volume: projectState.playback_state.volume,
+      selectedMedia: undefined, // TODO: добавить в backend
+      source: undefined, // TODO: добавить в backend
+    }
+  }
+
+  // Добавляем версию состояния для синхронизации
+  timeline.stateVersion = projectState?.version || 0
+  timeline.isBackendSync = true // Маркер что это BackendSync timeline
+
   return timeline
+}
+
+/**
+ * Получает только медиа файлы, которые используются в timeline
+ */
+function getUsedMediaFiles(backendProject: Project): MediaFile[] {
+  const usedMediaIds = new Set<string>()
+  
+  // Собираем все media_id из клипов в треках
+  backendProject.timeline.tracks.forEach(track => {
+    track.clips.forEach(clip => {
+      usedMediaIds.add(clip.media_id)
+    })
+  })
+  
+  // Возвращаем только используемые медиа файлы
+  const allMedia = Object.values(backendProject.media_pool.items || {})
+  return allMedia
+    .filter(Boolean)
+    .filter(media => usedMediaIds.has(media.id))
+    .map(media => ({
+      ...media,
+      type: media.type || 'video' // Добавляем type если отсутствует
+    })) as MediaFile[]
 }
 
 /**
@@ -81,7 +149,7 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
     name: track.name,
     type: mapTrackType(track.track_type),
     order: index,
-    clips: track.clips.map(clip => ({
+    clips: track.clips.map((clip) => ({
       id: clip.id,
       name: clip.name,
       mediaId: clip.media_id,
@@ -105,20 +173,22 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         scaleX: 1,
         scaleY: 1,
       },
-      effects: clip.effects.map(effectId => ({
+      effects: clip.effects.map((effectId) => ({
         id: effectId,
-        type: "effect" as const,
         effectId,
-        params: {},
-        isEnabled: true,
+        name: `Effect ${effectId}`, // TODO: получить имя из backend
+        enabled: true,
+        parameters: {},
+        keyframes: [],
       })),
       filters: [],
-      transitions: clip.transitions.map(t => ({
+      transitions: clip.transitions.map((t) => ({
         id: t.id,
-        type: "transition" as const,
         transitionId: t.transition_type,
-        params: t.params,
+        name: `Transition ${t.transition_type}`,
+        type: "cross" as const, // TODO: определить тип из backend
         duration: t.duration,
+        parameters: t.params || {},
         isEnabled: true,
       })),
     })),
@@ -138,13 +208,13 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
  */
 function mapTrackType(backendType: string): Track["type"] {
   const typeMap: Record<string, Track["type"]> = {
-    "Video": "video",
-    "Audio": "audio", 
-    "Title": "title",
-    "Music": "music",
-    "Voiceover": "voiceover",
-    "Sfx": "sfx",
-    "Ambient": "ambient",
+    Video: "video",
+    Audio: "audio",
+    Title: "title",
+    Music: "music",
+    Voiceover: "voiceover",
+    Sfx: "sfx",
+    Ambient: "ambient",
   }
   return typeMap[backendType] || "video"
 }
@@ -154,13 +224,13 @@ function mapTrackType(backendType: string): Track["type"] {
  */
 function getTrackColor(trackType: string): string {
   const colors: Record<string, string> = {
-    "Video": "#3B82F6",
-    "Audio": "#10B981",
-    "Title": "#F59E0B",
-    "Music": "#8B5CF6",
-    "Voiceover": "#EC4899",
-    "Sfx": "#14B8A6",
-    "Ambient": "#06B6D4",
+    Video: "#3B82F6",
+    Audio: "#10B981",
+    Title: "#F59E0B",
+    Music: "#8B5CF6",
+    Voiceover: "#EC4899",
+    Sfx: "#14B8A6",
+    Ambient: "#06B6D4",
   }
   return colors[trackType] || "#6B7280"
 }
@@ -169,20 +239,26 @@ function getTrackColor(trackType: string): string {
  * Вычисляет соотношение сторон
  */
 function calculateAspectRatio(resolution: { width: number; height: number }): string {
-  const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b)
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
   const divisor = gcd(resolution.width, resolution.height)
   return `${resolution.width / divisor}:${resolution.height / divisor}`
 }
 
 /**
- * Преобразует frontend Timeline обратно в backend Project для сохранения
+ * УСТАРЕЛО: В BackendSync архитектуре не используется!
+ *
+ * Вместо этого используйте ProjectCommand для всех изменений:
+ * - CreateProject, SaveProject, AddClip, MoveClip, etc.
+ *
+ * @deprecated Используйте createProjectCommand() для создания команд
  */
 export function transformTimelineToBackendProject(timeline: Timeline, existingProject?: Project): Partial<Project> {
+  console.warn(
+    "transformTimelineToBackendProject is deprecated in BackendSync architecture. " +
+      "Use ProjectCommand instead for all state changes.",
+  )
   // Собираем все треки из секций и глобальных треков
-  const allTracks = [
-    ...timeline.sections.flatMap(section => section.tracks),
-    ...timeline.globalTracks,
-  ]
+  const allTracks = [...timeline.sections.flatMap((section) => section.tracks), ...timeline.globalTracks]
 
   return {
     id: timeline.id,
@@ -199,14 +275,14 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
       duration: timeline.duration,
       fps: timeline.fps,
       sample_rate: timeline.sampleRate,
-      tracks: allTracks.map(track => ({
+      tracks: allTracks.map((track) => ({
         id: track.id,
         name: track.name,
-        track_type: reverseMapTrackType(track.type),
+        track_type: reverseMapTrackType(track.type) as any, // TODO: исправить типы
         enabled: !track.muted,
         locked: track.locked,
         height: track.height,
-        clips: track.clips.map(clip => ({
+        clips: track.clips.map((clip) => ({
           id: clip.id,
           media_id: clip.mediaId,
           name: clip.name,
@@ -216,12 +292,12 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
           source_out: clip.sourceOut,
           playback_rate: clip.playbackRate,
           enabled: !clip.isMuted,
-          effects: clip.effects.map(e => e.effectId),
-          transitions: clip.transitions.map(t => ({
+          effects: clip.effects.map((e) => e.effectId),
+          transitions: clip.transitions.map((t) => ({
             id: t.id,
             transition_type: t.transitionId,
             duration: t.duration,
-            params: t.params,
+            params: t.parameters,
           })),
         })),
         effects: [],
@@ -231,10 +307,13 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
       markers: [],
     },
     media_pool: {
-      items: timeline.resources.media.reduce((acc, media) => {
-        acc[media.id] = media
-        return acc
-      }, {} as Record<string, any>),
+      items: timeline.resources.media.reduce(
+        (acc, media) => {
+          acc[media.id] = media
+          return acc
+        },
+        {} as Record<string, any>,
+      ),
     },
     settings: {
       resolution: timeline.settings.resolution,
@@ -250,13 +329,129 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
  */
 function reverseMapTrackType(frontendType: Track["type"]): string {
   const typeMap: Record<Track["type"], string> = {
-    "video": "Video",
-    "audio": "Audio",
-    "title": "Title",
-    "music": "Music",
-    "voiceover": "Voiceover",
-    "sfx": "Sfx",
-    "ambient": "Ambient",
+    video: "Video",
+    audio: "Audio",
+    title: "Title",
+    music: "Music",
+    voiceover: "Voiceover",
+    sfx: "Sfx",
+    ambient: "Ambient",
   }
   return typeMap[frontendType] || "Video"
+}
+
+// ===========================
+// NEW: BackendSync Command Helpers
+// ===========================
+
+/**
+ * Создает команду для добавления клипа через BackendSync
+ */
+export function createAddClipCommand(trackId: string, mediaId: string, time: number): ProjectCommand {
+  return {
+    type: "AddClip",
+    params: {
+      track_id: trackId,
+      media_id: mediaId,
+      time,
+    },
+  }
+}
+
+/**
+ * Создает команду для перемещения клипа
+ */
+export function createMoveClipCommand(clipId: string, trackId: string, time: number): ProjectCommand {
+  return {
+    type: "MoveClip",
+    params: {
+      clip_id: clipId,
+      track_id: trackId,
+      time,
+    },
+  }
+}
+
+/**
+ * Создает команду для обрезки клипа
+ */
+export function createTrimClipCommand(clipId: string, start: number, end: number): ProjectCommand {
+  return {
+    type: "TrimClip",
+    params: {
+      clip_id: clipId,
+      start,
+      end,
+    },
+  }
+}
+
+/**
+ * Создает команду для выбора клипов
+ */
+export function createSelectClipsCommand(clipIds: string[], addToSelection = false): ProjectCommand {
+  return {
+    type: "SelectClips",
+    params: {
+      clip_ids: clipIds,
+      add_to_selection: addToSelection,
+    },
+  }
+}
+
+/**
+ * Создает команду для создания проекта
+ */
+export function createProjectCommand(name: string, settings: any): ProjectCommand {
+  return {
+    type: "CreateProject",
+    params: {
+      name,
+      settings,
+    },
+  }
+}
+
+/**
+ * Создает команду для сохранения проекта
+ */
+export function createSaveProjectCommand(path?: string): ProjectCommand {
+  return {
+    type: "SaveProject",
+    params: {
+      path: path || null,
+    },
+  }
+}
+
+// ===========================
+// NEW: State Validation Helpers
+// ===========================
+
+/**
+ * Проверяет, является ли timeline синхронизированным с backend
+ */
+export function isBackendSyncTimeline(timeline: Timeline): boolean {
+  return timeline.isBackendSync === true
+}
+
+/**
+ * Проверяет актуальность timeline относительно backend состояния
+ */
+export function isTimelineStale(timeline: Timeline, currentVersion: number): boolean {
+  return timeline.stateVersion !== currentVersion
+}
+
+/**
+ * Получает статистику синхронизации
+ */
+export function getTimelineSyncStats(timeline: Timeline, projectState: ProjectState | null) {
+  return {
+    isBackendSync: isBackendSyncTimeline(timeline),
+    timelineVersion: timeline.stateVersion || 0,
+    backendVersion: projectState?.version || 0,
+    isStale: projectState ? isTimelineStale(timeline, projectState.version) : true,
+    hasProject: !!projectState?.project,
+    lastSync: timeline.updatedAt,
+  }
 }

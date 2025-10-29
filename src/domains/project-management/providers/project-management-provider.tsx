@@ -80,7 +80,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   // Расширенные методы с BackendSync
   const createProject = async (settings: ProjectSettings) => {
     const result = await orchestrator.createProject(settings)
-    
+
     // Дополнительно сообщаем backend о создании проекта
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -91,24 +91,24 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         },
       })
     }
-    
+
     return result
   }
 
   const saveProject = async () => {
     const result = await orchestrator.saveProject()
-    
+
     // Синхронизируем с backend после сохранения
     if (isBackendConnected) {
       await syncProjectState()
     }
-    
+
     return result
   }
 
   const openProject = async (path: string) => {
     const result = await orchestrator.openProject(path)
-    
+
     // Уведомляем backend об открытии проекта
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -119,7 +119,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         },
       })
     }
-    
+
     return result
   }
 
@@ -195,7 +195,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
   const updateSettings = (newSettings: Partial<UserSettingsContextType>) => {
     orchestrator.updateUserSettings(newSettings)
-    
+
     // Синхронизируем с backend
     if (isBackendConnected) {
       // Debounce синхронизацию
@@ -218,9 +218,9 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
       openai: "openAiApiKey",
       claude: "claudeApiKey",
     } as const
-    
+
     updateSettings({ [keyMap[service]]: key })
-    
+
     // Для API ключей важна немедленная синхронизация
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -235,7 +235,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
   const updateGpuAcceleration = async (enabled: boolean) => {
     updateSettings({ gpuAccelerationEnabled: enabled })
-    
+
     // GPU настройки критичны для производительности
     if (isBackendConnected) {
       await backendSync.executeCommand({
@@ -323,7 +323,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const retryConnection = () => {
     appActor.send({ type: "RETRY_CONNECTION" })
-    
+
     // Также пытаемся переподключить backend
     if (!backendSync.isConnected()) {
       backendSync.connect().catch(console.error)
@@ -334,19 +334,21 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkInterval = setInterval(() => {
       const currentlyConnected = backendSync.isConnected()
-      
+
       if (currentlyConnected !== backendStatus.connected) {
         console.log(`[AppStateProvider] Backend connection status changed: ${currentlyConnected}`)
-        
+
         // Если восстановилось соединение, синхронизируем состояние
         if (currentlyConnected) {
-          backendSync.executeCommand({
-            type: "System",
-            params: {
-              type: "ReconnectNotify",
-              params: { timestamp: new Date().toISOString() },
-            },
-          }).catch(console.error)
+          backendSync
+            .executeCommand({
+              type: "System",
+              params: {
+                type: "ReconnectNotify",
+                params: { timestamp: new Date().toISOString() },
+              },
+            })
+            .catch(console.error)
         }
       }
     }, 5000) // Проверка каждые 5 секунд
@@ -382,7 +384,7 @@ interface ProjectManagementProviderProps {
 
 /**
  * ProjectManagementProvider с улучшенной BackendSync интеграцией
- * 
+ *
  * Добавляет:
  * - Автоматическую синхронизацию состояния проекта
  * - Синхронизацию пользовательских настроек
@@ -395,7 +397,7 @@ export function ProjectManagementProvider({ children }: ProjectManagementProvide
   // Инициализация BackendSync при монтировании
   useEffect(() => {
     console.log("[ProjectManagementProvider] Initializing BackendSync integration")
-    
+
     // Подписываемся на события backend
     const unsubscribe = backendSync.onEvent((event) => {
       switch (event.type) {
@@ -403,7 +405,7 @@ export function ProjectManagementProvider({ children }: ProjectManagementProvide
           // Backend сообщает об обновлении состояния проекта
           console.log("[ProjectManagementProvider] Project state updated from backend")
           break
-          
+
         case "SETTINGS_UPDATED":
           // Backend сообщает об обновлении настроек
           console.log("[ProjectManagementProvider] Settings updated from backend")

@@ -35,7 +35,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined)
 // Модальные окна, которые требуют синхронизации с backend
 const BACKEND_SYNCED_MODALS: ModalType[] = [
   "project-settings",
-  "export", 
+  "export",
   "user-settings",
   "cache-settings",
   "missing-files",
@@ -43,7 +43,7 @@ const BACKEND_SYNCED_MODALS: ModalType[] = [
 
 /**
  * Провайдер для модальных окон с выборочной синхронизацией BackendSync
- * 
+ *
  * Только важные модальные окна синхронизируются с backend
  */
 export function ModalProvider({ children }: ModalProviderProps) {
@@ -56,13 +56,13 @@ export function ModalProvider({ children }: ModalProviderProps) {
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-      
+
       // Восстанавливаем состояние модальных окон из backend при необходимости
       if (state.ui_state?.active_modal && BACKEND_SYNCED_MODALS.includes(state.ui_state.active_modal as ModalType)) {
-        send({ 
-          type: "OPEN_MODAL", 
+        send({
+          type: "OPEN_MODAL",
           modalType: state.ui_state.active_modal as ModalType,
-          modalData: state.ui_state.modal_data
+          modalData: state.ui_state.modal_data,
         })
       }
     })
@@ -74,7 +74,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
         send({
           type: "OPEN_MODAL",
           modalType: event.data.modalType,
-          modalData: event.data.modalData
+          modalData: event.data.modalData,
         })
       }
     })
@@ -90,21 +90,23 @@ export function ModalProvider({ children }: ModalProviderProps) {
     // Синхронизируем только важные модальные окна
     if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType)) {
       const isOpen = state.matches("opened")
-      
+
       // Уведомляем backend об открытии/закрытии важных модальных окон
-      backendSync.executeCommand({
-        type: "UI",
-        params: {
-          type: "UpdateModalState",
+      backendSync
+        .executeCommand({
+          type: "UI",
           params: {
-            modalType: isOpen ? state.context.modalType : null,
-            modalData: isOpen ? state.context.modalData : null,
-            isOpen
-          }
-        }
-      }).catch((err) => {
-        console.error("[Modal] Failed to sync modal state:", err)
-      })
+            type: "UpdateModalState",
+            params: {
+              modalType: isOpen ? state.context.modalType : null,
+              modalData: isOpen ? state.context.modalData : null,
+              isOpen,
+            },
+          },
+        })
+        .catch((err) => {
+          console.error("[Modal] Failed to sync modal state:", err)
+        })
     }
   }, [state, backendSync])
 
@@ -116,13 +118,15 @@ export function ModalProvider({ children }: ModalProviderProps) {
       openModal: (modalType: ModalType, modalData?: ModalData) => {
         console.log("Открываем модальное окно:", modalType)
         send({ type: "OPEN_MODAL", modalType, modalData })
-        
+
         // Для модальных окон с данными проекта, загружаем актуальные данные
         if (modalType === "project-settings" && isConnected) {
-          backendSync.executeCommand({
-            type: "LoadProjectSettings",
-            params: {}
-          }).catch(console.error)
+          backendSync
+            .executeCommand({
+              type: "LoadProjectSettings",
+              params: {},
+            })
+            .catch(console.error)
         }
       },
       closeModal: () => {
@@ -131,36 +135,36 @@ export function ModalProvider({ children }: ModalProviderProps) {
       },
       submitModal: async (data?: ModalData) => {
         console.log("Отправляем данные модального окна:", data)
-        
+
         // Для важных модальных окон синхронизируем результат с backend
         if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType)) {
           try {
             switch (state.context.modalType) {
               case "project-settings":
                 await backendSync.executeCommand({
-                  type: "UpdateProjectSettings", 
-                  params: data
+                  type: "UpdateProjectSettings",
+                  params: data,
                 })
                 break
-                
+
               case "export":
                 await backendSync.executeCommand({
                   type: "Export",
-                  params: data
+                  params: data,
                 })
                 break
-                
+
               case "user-settings":
                 await backendSync.executeCommand({
                   type: "UpdateUserSettings",
-                  params: data
+                  params: data,
                 })
                 break
-                
+
               case "cache-settings":
                 await backendSync.executeCommand({
                   type: "UpdateCacheSettings",
-                  params: data
+                  params: data,
                 })
                 break
             }
@@ -168,10 +172,10 @@ export function ModalProvider({ children }: ModalProviderProps) {
             console.error(`[Modal] Failed to sync ${state.context.modalType} submission:`, error)
           }
         }
-        
+
         send({ type: "SUBMIT_MODAL", data })
       },
-      isConnected
+      isConnected,
     }),
     [state, send, isConnected, backendSync],
   )

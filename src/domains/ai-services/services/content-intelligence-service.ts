@@ -6,8 +6,12 @@
 // Импорт shared типов для Content Intelligence
 import { AiMessage } from "@/domains/ai-core"
 import type { IFFmpegAnalysisService, MediaFile } from "@/domains/ai-services/types/interfaces"
-import type { UnifiedContentAnalysis, ContentInsights, SceneAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import type { GeneratedScript } from "@/domains/ai-services/types/script"
+import type {
+  ContentInsights,
+  SceneAnalysis,
+  UnifiedContentAnalysis,
+} from "@/domains/ai-services/types/unified-analysis"
 
 // Реэкспорт shared типов для обратной совместимости
 export type MediaInput = MediaFile
