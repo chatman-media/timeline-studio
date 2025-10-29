@@ -5,7 +5,6 @@
 
 export { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
 // ===== Types & Enums =====
-export { ContentType, Emotion } from "@/domains/shared/types/ai-tools/content-analysis"
 // ===== Components =====
 // Export components individually to avoid circular dependencies
 export { AnalysisViewer } from "./components/analysis-viewer"
