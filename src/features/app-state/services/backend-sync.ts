@@ -26,6 +26,13 @@ export class BackendSync {
   private lastVersion = 0
 
   /**
+   * Check if backend is connected
+   */
+  get connected(): boolean {
+    return this.isConnected
+  }
+
+  /**
    * Initialize the backend sync service
    */
   async connect(): Promise<void> {

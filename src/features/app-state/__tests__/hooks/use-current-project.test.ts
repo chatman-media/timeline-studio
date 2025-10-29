@@ -47,7 +47,57 @@ describe("useCurrentProject", () => {
 
     expect(mockExecuteCommand).toHaveBeenCalledWith({
       type: "CreateProject",
-      params: { name: "Новый проект", template: "default" },
+      params: { 
+        name: "Новый проект",
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+      },
+    })
+  })
+
+  it("должен предоставлять метод создания временного проекта", async () => {
+    const { result } = renderHook(() => useCurrentProject())
+
+    await act(async () => {
+      await result.current.createTempProject()
+    })
+
+    expect(mockExecuteCommand).toHaveBeenCalledWith({
+      type: "CreateProject",
+      params: { 
+        name: "Temp Project",
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+      },
+    })
+  })
+
+  it("должен предоставлять метод загрузки или создания временного проекта", async () => {
+    const { result } = renderHook(() => useCurrentProject())
+
+    await act(async () => {
+      await result.current.loadOrCreateTempProject()
+    })
+
+    expect(mockExecuteCommand).toHaveBeenCalledWith({
+      type: "CreateProject",
+      params: { 
+        name: "Temporary Project",
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+      },
     })
   })
 
@@ -59,7 +109,7 @@ describe("useCurrentProject", () => {
     })
 
     expect(mockExecuteCommand).toHaveBeenCalledWith({
-      type: "LoadProject",
+      type: "OpenProject",
       params: { path: "/path/to/opened.tls" },
     })
   })
@@ -79,24 +129,22 @@ describe("useCurrentProject", () => {
 
   it("должен предоставлять метод установки флага изменений", () => {
     const { result } = renderHook(() => useCurrentProject())
+    
+    const consoleSpy = vi.spyOn(console, 'log')
 
     act(() => {
       result.current.setProjectDirty(true)
     })
 
-    expect(mockExecuteCommand).toHaveBeenCalledWith({
-      type: "SetProjectDirty",
-      params: { dirty: true },
-    })
+    expect(consoleSpy).toHaveBeenCalledWith("Project dirty state:", true)
 
     act(() => {
       result.current.setProjectDirty(false)
     })
 
-    expect(mockExecuteCommand).toHaveBeenCalledWith({
-      type: "SetProjectDirty",
-      params: { dirty: false },
-    })
+    expect(consoleSpy).toHaveBeenCalledWith("Project dirty state:", false)
+    
+    consoleSpy.mockRestore()
   })
 
   it("должен корректно обрабатывать null проект", () => {
@@ -105,6 +153,23 @@ describe("useCurrentProject", () => {
     const { result } = renderHook(() => useCurrentProject())
 
     expect(result.current.currentProject).toBeNull()
+    expect(result.current.isTempProject).toBe(false)
+  })
+
+  it("должен определять временный проект", () => {
+    const tempProject = {
+      id: "temp-project",
+      name: "Temporary Project",
+      path: null,
+      metadata: {
+        temporary: true,
+      },
+    }
+    mockProjectState.project = tempProject
+
+    const { result } = renderHook(() => useCurrentProject())
+
+    expect(result.current.isTempProject).toBe(true)
   })
 
   it("должен обновляться при изменении проекта", () => {

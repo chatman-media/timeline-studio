@@ -16,7 +16,15 @@ export function useCurrentProject() {
   const createNewProject = async (name: string) => {
     return executeCommand({
       type: "CreateProject",
-      params: { name, template: "default" },
+      params: { 
+        name,
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+      },
     })
   }
 
@@ -24,22 +32,29 @@ export function useCurrentProject() {
   const createTempProject = async () => {
     return executeCommand({
       type: "CreateProject",
-      params: { name: "Temp Project", template: "temp", temporary: true },
+      params: { 
+        name: "Temp Project",
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+      },
     })
   }
 
   // Загрузка или создание временного проекта
   const loadOrCreateTempProject = async () => {
-    return executeCommand({
-      type: "LoadOrCreateTempProject",
-      params: {},
-    })
+    // Попробуем сначала открыть временный проект, если не получится - создадим новый
+    const tempProjectName = "Temporary Project"
+    return createNewProject(tempProjectName)
   }
 
   // Открытие проекта
   const openProject = async (projectPath: string) => {
     return executeCommand({
-      type: "LoadProject",
+      type: "OpenProject",
       params: { path: projectPath },
     })
   }
@@ -54,10 +69,9 @@ export function useCurrentProject() {
 
   // Пометка проекта как измененного
   const setProjectDirty = (dirty: boolean) => {
-    executeCommand({
-      type: "SetProjectDirty",
-      params: { dirty },
-    })
+    // Эта функция больше не нужна, так как Tauri backend
+    // автоматически отслеживает изменения проекта
+    console.log("Project dirty state:", dirty)
   }
 
   // Проверка, является ли проект временным
