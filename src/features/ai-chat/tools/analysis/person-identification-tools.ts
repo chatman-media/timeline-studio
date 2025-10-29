@@ -76,7 +76,7 @@ export class PersonIdentificationTool extends BaseAITool {
     try {
       // Используем Scene Analysis Engine для реального анализа
       const { SceneAnalysisEngine } = await import(
-        "@/domains/ai-services/services/scene-analysis/scene-analysis-engine"
+        "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
       )
       const sceneEngine = SceneAnalysisEngine.getInstance()
 
