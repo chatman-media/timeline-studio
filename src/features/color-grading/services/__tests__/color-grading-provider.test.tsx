@@ -3,6 +3,9 @@ import { describe, expect, it, vi } from "vitest"
 
 import { ColorGradingProvider, useColorGradingContext } from "../color-grading-provider"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Mock the useColorGrading hook
 const mockColorGrading = {
   state: {

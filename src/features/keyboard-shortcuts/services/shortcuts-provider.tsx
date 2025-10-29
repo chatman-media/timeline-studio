@@ -54,7 +54,7 @@ interface ShortcutsProviderProps {
 export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const { openModal } = useModal()
   const backendSync = getBackendSync()
-  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
+  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
   const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>([])
   const [activeShortcuts, setActiveShortcuts] = useState<ShortcutDefinition[]>([])
   const [currentContext, setCurrentContextState] = useState<ShortcutContext>("global")

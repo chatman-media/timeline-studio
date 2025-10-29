@@ -242,88 +242,47 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     }
   }, [send, backendSync])
 
-  // Синхронизация команд с backend
+  // Синхронизация команд с backend при изменении состояния
   useEffect(() => {
-    // Подписываемся на события актора для синхронизации с backend
-    const subscription = state.subscribe((snapshot) => {
-      if (snapshot.event) {
-        switch (snapshot.event.type) {
-          case "START_ANALYSIS":
-            // Запускаем анализ на backend
-            backendSync.executeCommand({
-              type: "AI",
-              params: {
-                type: "StartMontageAnalysis",
-                params: {
-                  videoIds: snapshot.context.videoIds,
-                  mediaFiles: Array.from(snapshot.context.mediaFiles.entries()),
-                  instructions: snapshot.context.instructions,
-                  options: snapshot.context.analysisOptions,
-                },
-              },
-            }).catch((err) => {
-              console.error("[MontagePlanner] Failed to start analysis:", err)
-              setError(err.message)
-            })
-            break
-            
-          case "GENERATE_PLAN":
-            // Генерируем план на backend
-            backendSync.executeCommand({
-              type: "AI",
-              params: {
-                type: "GenerateMontagePlan",
-                params: {
-                  fragments: snapshot.context.fragments,
-                  instructions: snapshot.context.instructions,
-                  style: snapshot.context.selectedStyle,
-                  targetDuration: snapshot.context.targetDuration,
-                  options: snapshot.context.generationOptions,
-                },
-              },
-            }).catch((err) => {
-              console.error("[MontagePlanner] Failed to generate plan:", err)
-              setError(err.message)
-            })
-            break
-            
-          case "OPTIMIZE_PLAN":
-            // Оптимизируем план на backend
-            backendSync.executeCommand({
-              type: "AI",
-              params: {
-                type: "OptimizeMontagePlan",
-                params: {
-                  plan: snapshot.context.currentPlan,
-                  options: snapshot.context.generationOptions,
-                },
-              },
-            }).catch((err) => {
-              console.error("[MontagePlanner] Failed to optimize plan:", err)
-              setError(err.message)
-            })
-            break
-        }
+    // Синхронизируем состояние когда меняется контекст
+    if (state?.context) {
+      const context = state.context
+      
+      // Отправляем состояние на backend при важных изменениях
+      if (context.isAnalyzing || context.isGenerating || context.isOptimizing) {
+        backendSync.executeCommand({
+          type: "AI",
+          params: {
+            type: "SyncMontagePlannerState",
+            params: {
+              isAnalyzing: context.isAnalyzing,
+              isGenerating: context.isGenerating,
+              isOptimizing: context.isOptimizing,
+              montagePlan: context.currentPlan,
+              analysisProgress: context.progress?.progress || 0,
+              fragments: context.fragments,
+            },
+          },
+        }).catch((err) => {
+          console.error("[MontagePlanner] Failed to sync state:", err)
+          setError(err.message)
+        })
       }
-    })
-    
-    return () => {
-      subscription.unsubscribe()
     }
   }, [state, backendSync])
 
   // Derived state
   const context = state?.context || {}
-  const isAnalyzing = context.isAnalyzing
-  const isGenerating = context.isGenerating
-  const isOptimizing = context.isOptimizing
-  const hasVideos = context.videoIds.length > 0
-  const hasFragments = context.fragments.length > 0
+  const isAnalyzing = context.isAnalyzing || false
+  const isGenerating = context.isGenerating || false
+  const isOptimizing = context.isOptimizing || false
+  const hasVideos = (context.videoIds?.length || 0) > 0
+  const hasFragments = (context.fragments?.length || 0) > 0
   const hasPlan = context.currentPlan !== null
   const canGeneratePlan = hasFragments && !isAnalyzing && !isGenerating && !isOptimizing
   const canOptimizePlan = hasPlan && !isAnalyzing && !isGenerating && !isOptimizing
-  const progress = context.progress.progress
-  const progressMessage = context.progress.message || getProgressMessage(context.progress.phase)
+  const progress = context.progress?.progress || 0
+  const progressMessage = context.progress?.message || getProgressMessage(context.progress?.phase || "idle")
 
   // Context value
   const value: MontagePlannerContextType = {

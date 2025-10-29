@@ -1,6 +1,9 @@
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Очищаем моки только для этого файла
 vi.unmock("@/features/modals")
 vi.unmock("@/features/modals/services/modal-provider")

@@ -343,7 +343,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   private async loadLocalResources(): Promise<LoadResult> {
     // Сначала пробуем загрузить из backend
-    if (this.isBackendConnected) {
+    // TODO: Resources команда еще не реализована в backend
+    if (false && this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -392,7 +393,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   private async loadRemoteResources(): Promise<LoadResult> {
     // Загружаем удаленные ресурсы через backend
-    if (this.isBackendConnected) {
+    // TODO: Resources команда еще не реализована в backend
+    if (false && this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -436,7 +438,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   private async loadImportedResources(): Promise<LoadResult> {
     // Загружаем импортированные ресурсы из backend
-    if (this.isBackendConnected) {
+    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -493,7 +495,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   async preloadCategory(type: ResourceType, category: string): Promise<LoadResult> {
     // Предзагрузка категории через backend
-    if (this.isBackendConnected) {
+    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
       try {
         await this.backendSync.executeCommand({
           type: "Resources",
@@ -523,7 +525,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     this.sourceConfigs[source] = { ...this.sourceConfigs[source], ...config }
     
     // Синхронизируем конфигурацию с backend
-    if (this.isBackendConnected) {
+    if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
       this.backendSync.executeCommand({
         type: "Resources",
         params: {
@@ -670,7 +672,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async importResource(type: ResourceType, resource: Resource): Promise<boolean> {
     try {
       // Сохраняем ресурс в backend
-      if (this.isBackendConnected) {
+      if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",
           params: {
@@ -705,7 +707,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean> {
     try {
       // Удаляем из backend
-      if (this.isBackendConnected) {
+      if (false && this.isBackendConnected) { // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",
           params: {

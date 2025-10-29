@@ -10,6 +10,9 @@ import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "vite
 import { DragDropProvider } from "../../components/drag-drop-provider"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Мокаем хук useDragDropTimeline
 vi.mock("../../hooks/use-drag-drop-timeline", () => ({
   useDragDropTimeline: vi.fn(),

@@ -324,7 +324,7 @@ export function SpeedSettings() {
                 {/* Motion Blur */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-300">
-                    {t("options.speed.motionBlur", "Motion Blur")}
+                    {t("options.speed.motionBlurTitle", "Motion Blur")}
                   </Label>
                   <Select
                     value={settings.motionBlur}
@@ -441,7 +441,7 @@ export function SpeedSettings() {
           <div className="flex items-center gap-2">
             {/* Пресеты */}
             <Button variant="ghost" size="sm" className="h-8 px-3 text-xs">
-              {t("options.speed.presets", "Presets")}
+              {t("options.speed.presetsButton", "Presets")}
             </Button>
           </div>
           <div className="flex items-center gap-2">

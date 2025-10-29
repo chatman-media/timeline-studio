@@ -7,6 +7,9 @@ import type { ShortcutDefinition } from "../shortcuts-registry"
 import { shortcutsRegistry } from "../shortcuts-registry"
 import { tauriGlobalShortcuts } from "../tauri-global-shortcuts"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Mock модулей
 vi.mock("@/features/modals/services/modal-provider", () => ({
   useModal: () => ({
@@ -67,6 +70,8 @@ const TestComponent = () => {
       <div data-testid="context">{shortcuts.currentContext}</div>
       <div data-testid="enabled">{shortcuts.isEnabled.toString()}</div>
       <div data-testid="global-enabled">{shortcuts.isGlobalEnabled.toString()}</div>
+      <div data-testid="backend-connected">{shortcuts.isBackendConnected.toString()}</div>
+      <div data-testid="usage-stats">{JSON.stringify(shortcuts.shortcutUsageStats)}</div>
       <button onClick={() => shortcuts.toggleShortcuts(false)}>Toggle</button>
       <button onClick={() => shortcuts.toggleGlobalShortcuts(true)}>Toggle Global</button>
       <button onClick={() => shortcuts.updateShortcutKeys("test", ["Ctrl+T"])}>Update Keys</button>
@@ -75,11 +80,12 @@ const TestComponent = () => {
       <button onClick={() => shortcuts.setContext("modal")}>Set Context</button>
       <button onClick={() => shortcuts.enterContext("timeline")}>Enter Context</button>
       <button onClick={() => shortcuts.exitContext()}>Exit Context</button>
+      <button onClick={() => shortcuts.syncShortcuts()}>Sync Shortcuts</button>
     </div>
   )
 }
 
-describe.skip("ShortcutsProvider", () => {
+describe("ShortcutsProvider", () => {
   const user = userEvent.setup()
 
   beforeEach(() => {
@@ -413,6 +419,92 @@ describe.skip("ShortcutsProvider", () => {
       }
 
       expect(() => render(<Component />)).toThrow("useShortcuts must be used within ShortcutsProvider")
+    })
+  })
+
+  describe("BackendSync интеграция", () => {
+    it("должен показывать состояние подключения к backend", () => {
+      render(
+        <ShortcutsProvider>
+          <TestComponent />
+        </ShortcutsProvider>,
+      )
+
+      expect(screen.getByTestId("backend-connected")).toHaveTextContent("true")
+    })
+
+    it("должен инициализировать пустую статистику использования", () => {
+      render(
+        <ShortcutsProvider>
+          <TestComponent />
+        </ShortcutsProvider>,
+      )
+
+      expect(screen.getByTestId("usage-stats")).toHaveTextContent("{}")
+    })
+
+    it("должен вызывать syncShortcuts при нажатии кнопки", async () => {
+      const { getBackendSync } = await import("@/features/app-state/services/backend-sync")
+      const mockBackendSync = getBackendSync()
+
+      render(
+        <ShortcutsProvider>
+          <TestComponent />
+        </ShortcutsProvider>,
+      )
+
+      await user.click(screen.getByText("Sync Shortcuts"))
+
+      await waitFor(() => {
+        expect(mockBackendSync.executeCommand).toHaveBeenCalledWith({
+          type: "Settings",
+          params: {
+            type: "SyncShortcuts",
+            params: expect.objectContaining({
+              shortcuts: expect.any(Array),
+              globalEnabled: expect.any(Boolean),
+              context: expect.any(String),
+              usageStats: expect.any(Object),
+            }),
+          },
+        })
+      })
+    })
+
+    it("должен обновлять статистику использования при вызове action", async () => {
+      const mockShortcut = {
+        id: "test-shortcut",
+        keys: "Ctrl+T",
+        action: vi.fn(),
+      } as unknown as ShortcutDefinition
+
+      vi.mocked(shortcutsRegistry.getActiveShortcuts).mockReturnValue([mockShortcut])
+
+      const { rerender } = render(
+        <ShortcutsProvider>
+          <TestComponent />
+        </ShortcutsProvider>,
+      )
+
+      // Симулируем вызов action через registerMany
+      const registerCall = vi.mocked(shortcutsRegistry.registerMany).mock.calls[0]
+      const registeredShortcut = registerCall[0].find(s => s.id === "open-user-settings")
+      
+      if (registeredShortcut?.action) {
+        registeredShortcut.action(new KeyboardEvent("keydown"))
+      }
+
+      // Перерендериваем для обновления UI
+      rerender(
+        <ShortcutsProvider>
+          <TestComponent />
+        </ShortcutsProvider>,
+      )
+
+      await waitFor(() => {
+        const stats = JSON.parse(screen.getByTestId("usage-stats").textContent || "{}")
+        expect(stats["open-user-settings"]).toBe(1)
+      })
     })
   })
 })

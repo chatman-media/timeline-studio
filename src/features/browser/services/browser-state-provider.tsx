@@ -104,7 +104,7 @@ interface BrowserStateProviderProps {
  */
 export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ children }) => {
   const backendSync = getBackendSync()
-  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
+  const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
   
   const [state, setState] = useState<BrowserContext>(() => {
     // Пытаемся загрузить настройки из localStorage только на клиенте
