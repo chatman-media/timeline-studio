@@ -4,6 +4,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { EffectsProvider, useEffectsProvider } from "../../providers/effects-provider"
 
+// Import backend-sync mock
+import "@/test/mocks/backend-sync"
+
 // Мокаем ленивые загрузчики ресурсов
 vi.mock("../../services/resource-loaders", () => ({
   loadAllResourcesLazy: vi.fn().mockResolvedValue({
