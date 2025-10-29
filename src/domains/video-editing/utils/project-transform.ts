@@ -9,12 +9,7 @@
  * - Реактивная синхронизация через события
  */
 
-import type {
-  Track as BackendTrack,
-  Project,
-  ProjectCommand,
-  ProjectState,
-} from "@/types/generated/tauri-bindings"
+import type { Track as BackendTrack, Project, ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -121,23 +116,41 @@ export function transformProjectStateToTimeline(projectState: ProjectState | nul
  */
 function getUsedMediaFiles(backendProject: Project): MediaFile[] {
   const usedMediaIds = new Set<string>()
-  
+
   // Собираем все media_id из клипов в треках
-  backendProject.timeline.tracks.forEach(track => {
-    track.clips.forEach(clip => {
+  backendProject.timeline.tracks.forEach((track) => {
+    track.clips.forEach((clip) => {
       usedMediaIds.add(clip.media_id)
     })
   })
-  
+
   // Возвращаем только используемые медиа файлы
   const allMedia = Object.values(backendProject.media_pool.items || {})
   return allMedia
     .filter(Boolean)
-    .filter(media => usedMediaIds.has(media.id))
-    .map(media => ({
+    .filter((media) => media?.id && usedMediaIds.has(media.id))
+    .map((media) => ({
       ...media,
-      type: media.type || 'video' // Добавляем type если отсутствует
+      type: mapMediaTypeToString(media?.media_type) || "video", // Преобразуем media_type в type
     })) as MediaFile[]
+}
+
+/**
+ * Преобразует MediaType (backend) в строку (frontend)
+ */
+function mapMediaTypeToString(mediaType: any): string {
+  if (typeof mediaType === 'string') {
+    return mediaType.toLowerCase()
+  }
+  
+  // Если это объект enum из backend
+  if (mediaType && typeof mediaType === 'object') {
+    if (mediaType === 'Video' || mediaType.Video !== undefined) return 'video'
+    if (mediaType === 'Audio' || mediaType.Audio !== undefined) return 'audio'
+    if (mediaType === 'Image' || mediaType.Image !== undefined) return 'image'
+  }
+  
+  return 'video' // default fallback
 }
 
 /**

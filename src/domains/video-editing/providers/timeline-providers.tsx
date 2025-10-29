@@ -90,6 +90,16 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   // Используем преобразованный проект или проект из машины состояний
   const finalProject = project || transformProjectStateToTimeline(backendProject)
 
+  // Отладочная информация для project provider
+  console.log("[TimelineProjectProvider] Project transformation:", {
+    hasProject: !!project,
+    hasBackendProject: !!backendProject,
+    hasFinalProject: !!finalProject,
+    finalProjectSections: finalProject?.sections?.length || 0,
+    finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
+    backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
+  })
+
   const contextValue: TimelineProjectContext = {
     project: finalProject,
     isLoading,
@@ -252,7 +262,11 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
   const project = useSelector(timelineActor, (state) => state.context.project)
   const activeTrackId = useSelector(timelineActor, (state) => state.context.activeTrackId)
 
-  const tracks = project?.globalTracks || []
+  // Собираем все треки из sections и globalTracks для совместимости
+  const tracks = [
+    ...(project?.globalTracks || []),
+    ...(project?.sections?.flatMap((section) => section.tracks || []) || []),
+  ]
 
   const contextValue: TimelineTracksContext = {
     tracks,
@@ -342,8 +356,23 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
 
   const project = useSelector(timelineActor, (state) => state.context.project)
 
-  // Собираем все клипы из всех треков
-  const clips = project?.globalTracks.flatMap((track) => track.clips) || []
+  // Собираем все клипы из всех треков (проверяем и sections, и globalTracks для совместимости)
+  const clips = [
+    ...(project?.globalTracks?.flatMap((track) => track.clips || []) || []),
+    ...(project?.sections?.flatMap((section) => section.tracks?.flatMap((track) => track.clips || []) || []) || []),
+  ]
+
+  // Отладочная информация
+  console.log("[TimelineClipsProvider] Project structure:", {
+    hasProject: !!project,
+    hasGlobalTracks: !!project?.globalTracks,
+    globalTracksLength: project?.globalTracks?.length || 0,
+    hasSections: !!project?.sections,
+    sectionsLength: project?.sections?.length || 0,
+    sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
+    totalClips: clips.length,
+    projectType: project ? typeof project : "null/undefined",
+  })
 
   const contextValue: TimelineClipsContext = {
     clips,

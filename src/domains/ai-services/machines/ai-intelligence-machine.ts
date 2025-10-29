@@ -207,6 +207,8 @@ async function getAIService(): Promise<any> {
 }
 
 import { ContentType, Emotion } from "../../shared/types/ai-tools/content-analysis"
+// Import IntelligentContent from pipeline types
+import type { IntelligentContent } from "../../shared/types/ai-tools/pipeline"
 // Import enums and values (not types) - use shared ones
 import { ProcessingStatus } from "../../shared/types/ai-tools/pipeline"
 // Import types from domain
@@ -222,8 +224,6 @@ import type {
   ScriptGenerationParams,
   UnifiedContentAnalysis,
 } from "../types/ai-intelligence"
-// Import IntelligentContent from pipeline types
-import type { IntelligentContent } from "../../shared/types/ai-tools/pipeline"
 
 // Actors
 const analyzeContentActor = fromPromise(

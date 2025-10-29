@@ -4,11 +4,11 @@
  * Перенесено из src/features/ai-content-intelligence/shared/types/
  */
 
+// Import shared processing types to avoid conflicts
+import type { ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
 import type { AIConfig, IntelligentContent } from "./ai-config"
 import type { MediaFile } from "./interfaces"
 import type { AdaptedContent, PlatformId } from "./platform"
-// Import shared processing types to avoid conflicts
-import type { ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
 import type { GeneratedScript, ScriptGenerationParams } from "./script"
 import type { UnifiedContentAnalysis } from "./unified-analysis"
 
@@ -68,12 +68,11 @@ export type AIIntelligenceEvent =
 
 // Temporary types removed - using imports from other modules
 
+export type { IntelligentContent, ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
 export type { AIConfig } from "./ai-config"
-export type { IntelligentContent } from "../../shared/types/ai-tools/pipeline"
 export type { ContentInsights } from "./content-analysis"
 export type { MediaFile } from "./interfaces"
 export type { AdaptedContent, PlatformId } from "./platform"
-export type { ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
 export type { GeneratedScript, ScriptGenerationParams } from "./script"
 // Re-export types needed by the machine
 export type { UnifiedContentAnalysis } from "./unified-analysis"

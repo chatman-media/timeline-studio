@@ -529,6 +529,471 @@ async fn generate_thumbnail_for_file(
   Ok(thumbnail_path_str)
 }
 
+/// Import media files - команда, которую вызывает frontend
+#[tauri::command]
+pub async fn import_media_files(
+  paths: Vec<String>,
+  options: ImportMediaOptions,
+) -> Result<ImportMediaResult, String> {
+  let mut imported_files = Vec::new();
+  let mut errors = Vec::new();
+
+  for path in paths {
+    match import_single_media_file(&path, &options).await {
+      Ok(imported_file) => imported_files.push(imported_file),
+      Err(e) => {
+        errors.push(format!("Error importing {}: {}", path, e));
+        log::warn!("Failed to import media file {}: {}", path, e);
+      }
+    }
+  }
+
+  let total_processed = imported_files.len() + errors.len();
+  
+  Ok(ImportMediaResult {
+    imported_files,
+    errors,
+    total_processed,
+  })
+}
+
+/// Options for importing media files
+#[derive(serde::Deserialize)]
+#[allow(dead_code)] // TODO: Implement these options in import logic
+pub struct ImportMediaOptions {
+  pub copy_to_project: bool,
+  pub create_proxies: bool,
+  pub analyze_content: bool,
+  pub generate_thumbnails: bool,
+  pub preserve_metadata: bool,
+}
+
+/// Result of media import operation
+#[derive(serde::Serialize)]
+pub struct ImportMediaResult {
+  pub imported_files: Vec<ImportedMediaFile>,
+  pub errors: Vec<String>,
+  pub total_processed: usize,
+}
+
+/// Information about an imported media file
+#[derive(serde::Serialize)]
+pub struct ImportedMediaFile {
+  pub id: String,
+  pub original_path: String,
+  pub imported_path: String,
+  pub name: String,
+  pub size: u64,
+  pub media_type: String,
+  pub duration: Option<f64>,
+  pub thumbnail_path: Option<String>,
+  pub metadata: Option<SimpleMediaMetadata>,
+}
+
+/// Import a single media file
+async fn import_single_media_file(
+  file_path: &str,
+  options: &ImportMediaOptions,
+) -> Result<ImportedMediaFile, String> {
+  let path = Path::new(file_path);
+  
+  // Check if file exists
+  if !path.exists() {
+    return Err(format!("File does not exist: {}", file_path));
+  }
+
+  // Get file metadata
+  let file_metadata = std::fs::metadata(path)
+    .map_err(|e| format!("Failed to read file metadata: {}", e))?;
+
+  let file_name = path
+    .file_name()
+    .and_then(|n| n.to_str())
+    .unwrap_or("Unknown")
+    .to_string();
+
+  let file_size = file_metadata.len();
+  
+  // Generate unique ID
+  let id = uuid::Uuid::new_v4().to_string();
+
+  // Determine media type
+  let extension = path
+    .extension()
+    .and_then(|e| e.to_str())
+    .unwrap_or("")
+    .to_lowercase();
+  
+  let media_type = match extension.as_str() {
+    "mp4" | "avi" | "mov" | "mkv" | "webm" | "flv" | "wmv" => "video",
+    "mp3" | "wav" | "flac" | "aac" | "ogg" | "m4a" => "audio",
+    "jpg" | "jpeg" | "png" | "gif" | "bmp" | "webp" | "tiff" => "image",
+    _ => "unknown",
+  };
+
+  // Try to get media metadata if requested
+  let (duration, metadata) = if options.analyze_content {
+    match get_media_metadata(file_path.to_string()) {
+      Ok(media_file) => {
+        let duration = media_file.duration;
+        let probe_data = &media_file.probe_data;
+        
+        let (width, height, fps, video_codec) = probe_data
+          .streams
+          .iter()
+          .find(|s| s.codec_type == "video")
+          .map(|s| {
+            let fps = s.r_frame_rate.as_ref().and_then(|r| {
+              let parts: Vec<&str> = r.split('/').collect();
+              if parts.len() == 2 {
+                let num = parts[0].parse::<f64>().ok()?;
+                let den = parts[1].parse::<f64>().ok()?;
+                if den > 0.0 { Some(num / den) } else { None }
+              } else { None }
+            });
+            (s.width, s.height, fps, s.codec_name.clone())
+          })
+          .unwrap_or((None, None, None, None));
+
+        let audio_codec = probe_data
+          .streams
+          .iter()
+          .find(|s| s.codec_type == "audio")
+          .and_then(|s| s.codec_name.clone());
+
+        let bitrate = probe_data.format.bit_rate
+          .as_ref()
+          .and_then(|b| b.parse::<u64>().ok());
+
+        let metadata = SimpleMediaMetadata {
+          duration,
+          width,
+          height,
+          fps,
+          bitrate,
+          video_codec,
+          audio_codec,
+          has_audio: Some(media_file.is_audio),
+          has_video: Some(media_file.is_video),
+        };
+        
+        (duration, Some(metadata))
+      }
+      Err(e) => {
+        log::warn!("Failed to analyze media metadata for {}: {}", file_path, e);
+        (None, None)
+      }
+    }
+  } else {
+    (None, None)
+  };
+
+  // For now, we keep the file in its original location
+  // In a real implementation, you might copy to a project directory if copy_to_project is true
+  let imported_path = if options.copy_to_project {
+    // TODO: Implement copying to project directory
+    file_path.to_string()
+  } else {
+    file_path.to_string()
+  };
+
+  // Generate thumbnail if requested
+  let thumbnail_path = if options.generate_thumbnails && media_type == "video" {
+    match generate_thumbnail_for_file(file_path, &format!("{}.jpg", id), 320, 240, true).await {
+      Ok(thumb_path) => Some(thumb_path),
+      Err(e) => {
+        log::warn!("Failed to generate thumbnail for {}: {}", file_path, e);
+        None
+      }
+    }
+  } else {
+    None
+  };
+
+  Ok(ImportedMediaFile {
+    id,
+    original_path: file_path.to_string(),
+    imported_path,
+    name: file_name,
+    size: file_size,
+    media_type: media_type.to_string(),
+    duration,
+    thumbnail_path,
+    metadata,
+  })
+}
+
+/// Scan media directory for indexing
+#[tauri::command]
+pub async fn scan_media_directory(directory_path: String) -> Result<ScanDirectoryResult, String> {
+  let path = Path::new(&directory_path);
+  
+  if !path.exists() || !path.is_dir() {
+    return Err(format!("Directory not found: {}", directory_path));
+  }
+
+  let mut media_files = Vec::new();
+  let mut errors = Vec::new();
+  let mut total_size = 0u64;
+
+  // Walk through directory recursively
+  fn scan_directory_recursive(
+    dir: &Path,
+    media_files: &mut Vec<ScannedMediaFile>,
+    errors: &mut Vec<String>,
+    total_size: &mut u64,
+  ) {
+    if let Ok(entries) = std::fs::read_dir(dir) {
+      for entry in entries.flatten() {
+        let path = entry.path();
+        
+        if path.is_file() {
+          if let Some(extension) = path.extension().and_then(|e| e.to_str()) {
+            let ext = extension.to_lowercase();
+            if SUPPORTED_EXTENSIONS.contains(&ext.as_str()) {
+              match process_scanned_file(&path) {
+                Ok(scanned_file) => {
+                  *total_size += scanned_file.size;
+                  media_files.push(scanned_file);
+                }
+                Err(e) => {
+                  errors.push(format!("Error scanning {}: {}", path.display(), e));
+                }
+              }
+            }
+          }
+        } else if path.is_dir() {
+          scan_directory_recursive(&path, media_files, errors, total_size);
+        }
+      }
+    }
+  }
+
+  scan_directory_recursive(path, &mut media_files, &mut errors, &mut total_size);
+
+  let total_files = media_files.len() + errors.len();
+  
+  Ok(ScanDirectoryResult {
+    media_files,
+    errors,
+    total_files,
+    total_size,
+    scanned_directories: 1, // TODO: Count actual directories
+  })
+}
+
+/// Index media files for search
+#[tauri::command]
+pub async fn index_media_files(file_paths: Vec<String>) -> Result<IndexMediaResult, String> {
+  let mut indexed_files = Vec::new();
+  let mut errors = Vec::new();
+
+  for path in file_paths {
+    match create_media_index_entry(&path).await {
+      Ok(index_entry) => indexed_files.push(index_entry),
+      Err(e) => {
+        errors.push(format!("Error indexing {}: {}", path, e));
+      }
+    }
+  }
+
+  let total_processed = indexed_files.len() + errors.len();
+  
+  Ok(IndexMediaResult {
+    indexed_files,
+    errors,
+    total_processed,
+  })
+}
+
+/// Search media library
+#[tauri::command]
+pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMediaResult, String> {
+  // For now, this is a simple implementation
+  // In a real application, you would search through an indexed database
+  
+  let directory_path = query.directory.unwrap_or_else(|| ".".to_string());
+  let scan_result = scan_media_directory(directory_path).await?;
+  
+  let mut filtered_files = scan_result.media_files;
+  
+  // Apply filters
+  if let Some(search_term) = &query.search_term {
+    let search_lower = search_term.to_lowercase();
+    filtered_files.retain(|file| {
+      file.name.to_lowercase().contains(&search_lower) ||
+      file.path.to_lowercase().contains(&search_lower)
+    });
+  }
+  
+  if let Some(media_type) = &query.media_type {
+    filtered_files.retain(|file| file.media_type == *media_type);
+  }
+  
+  if let Some(min_size) = query.min_size {
+    filtered_files.retain(|file| file.size >= min_size);
+  }
+  
+  if let Some(max_size) = query.max_size {
+    filtered_files.retain(|file| file.size <= max_size);
+  }
+
+  // Apply sorting
+  match query.sort_by.as_deref() {
+    Some("name") => filtered_files.sort_by(|a, b| a.name.cmp(&b.name)),
+    Some("size") => filtered_files.sort_by(|a, b| a.size.cmp(&b.size)),
+    Some("date") => filtered_files.sort_by(|a, b| a.modified_time.cmp(&b.modified_time)),
+    _ => {} // No sorting
+  }
+  
+  if query.sort_desc.unwrap_or(false) {
+    filtered_files.reverse();
+  }
+
+  let total_found = filtered_files.len();
+  let search_query = query.search_term.unwrap_or_default();
+  
+  Ok(SearchMediaResult {
+    files: filtered_files,
+    total_found,
+    query: search_query,
+  })
+}
+
+/// Helper structures for scanning and indexing
+
+#[derive(serde::Serialize)]
+pub struct ScanDirectoryResult {
+  pub media_files: Vec<ScannedMediaFile>,
+  pub errors: Vec<String>,
+  pub total_files: usize,
+  pub total_size: u64,
+  pub scanned_directories: usize,
+}
+
+#[derive(serde::Serialize)]
+pub struct ScannedMediaFile {
+  pub path: String,
+  pub name: String,
+  pub size: u64,
+  pub media_type: String,
+  pub extension: String,
+  pub modified_time: u64,
+}
+
+#[derive(serde::Serialize)]
+pub struct IndexMediaResult {
+  pub indexed_files: Vec<MediaIndexEntry>,
+  pub errors: Vec<String>,
+  pub total_processed: usize,
+}
+
+#[derive(serde::Serialize)]
+pub struct MediaIndexEntry {
+  pub id: String,
+  pub path: String,
+  pub name: String,
+  pub size: u64,
+  pub media_type: String,
+  pub duration: Option<f64>,
+  pub indexed_at: u64,
+  pub metadata_hash: String,
+}
+
+#[derive(serde::Deserialize)]
+pub struct MediaSearchQuery {
+  pub search_term: Option<String>,
+  pub media_type: Option<String>,
+  pub directory: Option<String>,
+  pub min_size: Option<u64>,
+  pub max_size: Option<u64>,
+  pub sort_by: Option<String>,
+  pub sort_desc: Option<bool>,
+}
+
+#[derive(serde::Serialize)]
+pub struct SearchMediaResult {
+  pub files: Vec<ScannedMediaFile>,
+  pub total_found: usize,
+  pub query: String,
+}
+
+/// Process a single file for scanning
+fn process_scanned_file(path: &Path) -> Result<ScannedMediaFile, String> {
+  let metadata = std::fs::metadata(path)
+    .map_err(|e| format!("Failed to read metadata: {}", e))?;
+
+  let name = path
+    .file_name()
+    .and_then(|n| n.to_str())
+    .unwrap_or("Unknown")
+    .to_string();
+
+  let extension = path
+    .extension()
+    .and_then(|e| e.to_str())
+    .unwrap_or("")
+    .to_lowercase();
+
+  let media_type = match extension.as_str() {
+    "mp4" | "avi" | "mov" | "mkv" | "webm" | "flv" | "wmv" => "video",
+    "mp3" | "wav" | "flac" | "aac" | "ogg" | "m4a" => "audio",
+    "jpg" | "jpeg" | "png" | "gif" | "bmp" | "webp" | "tiff" => "image",
+    _ => "unknown",
+  };
+
+  let modified_time = metadata
+    .modified()
+    .ok()
+    .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
+    .map(|duration| duration.as_secs())
+    .unwrap_or(0);
+
+  Ok(ScannedMediaFile {
+    path: path.to_string_lossy().to_string(),
+    name,
+    size: metadata.len(),
+    media_type: media_type.to_string(),
+    extension,
+    modified_time,
+  })
+}
+
+/// Create an index entry for a media file
+async fn create_media_index_entry(file_path: &str) -> Result<MediaIndexEntry, String> {
+  let path = Path::new(file_path);
+  let scanned_file = process_scanned_file(path)?;
+
+  // Try to get duration for video/audio files
+  let duration = if scanned_file.media_type == "video" || scanned_file.media_type == "audio" {
+    match get_media_metadata(file_path.to_string()) {
+      Ok(media_file) => media_file.duration,
+      Err(_) => None,
+    }
+  } else {
+    None
+  };
+
+  // Create a simple metadata hash (in reality, you'd use proper hashing)
+  let metadata_hash = format!("{}-{}-{}", scanned_file.size, scanned_file.modified_time, scanned_file.name);
+
+  let indexed_at = std::time::SystemTime::now()
+    .duration_since(std::time::UNIX_EPOCH)
+    .unwrap()
+    .as_secs();
+
+  Ok(MediaIndexEntry {
+    id: uuid::Uuid::new_v4().to_string(),
+    path: scanned_file.path,
+    name: scanned_file.name,
+    size: scanned_file.size,
+    media_type: scanned_file.media_type,
+    duration,
+    indexed_at,
+    metadata_hash,
+  })
+}
+
 /// Analyze media file using MediaAnalyzer
 #[tauri::command]
 pub async fn analyze_media(file_path: String) -> Result<MediaAnalysis, String> {

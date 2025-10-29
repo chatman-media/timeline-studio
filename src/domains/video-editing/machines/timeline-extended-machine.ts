@@ -14,6 +14,8 @@
 import { assign, fromPromise, setup } from "xstate"
 import type { MediaFile, Timeline, TimelineClip, Track, TrackType } from "../types"
 
+// Импорты удалены - теперь трансформация происходит в timeline-providers
+
 // Локальный тип для буфера обмена
 interface ClipboardData {
   clips: TimelineClip[]
@@ -135,7 +137,7 @@ export type TimelineExtendedEvent =
   | { type: "CREATE_PROJECT"; name: string; settings?: any }
   | { type: "LOAD_PROJECT"; path: string }
   | { type: "SAVE_PROJECT" }
-  | { type: "PROJECT_UPDATED"; project: Project }
+  | { type: "PROJECT_UPDATED"; project: Timeline }
 
   // Playback events
   | { type: "PLAY" }
@@ -226,62 +228,8 @@ function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
   }
 }
 
-function convertProjectToTimeline(project: Project): Timeline {
-  const tracks: Track[] = project.timeline.tracks.map((track, index) => ({
-    id: track.id,
-    name: track.name,
-    type: track.track_type.toLowerCase() as TrackType,
-    order: index,
-    clips: track.clips.map((clip) => convertClipToTimelineClip(clip, track.id)),
-    transitions: [],
-    isLocked: track.locked,
-    isMuted: !track.enabled,
-    isHidden: false,
-    isSolo: false,
-    volume: track.volume,
-    pan: track.pan,
-    height: track.height,
-    trackEffects: [],
-    trackFilters: [],
-  }))
-
-  return {
-    id: project.id,
-    name: project.metadata.name,
-    duration: project.timeline.duration,
-    fps: project.timeline.fps,
-    sampleRate: project.timeline.sample_rate,
-    sections: [],
-    globalTracks: tracks,
-    resources: {
-      effects: [],
-      filters: [],
-      transitions: [],
-      timelineTransitions: [],
-      templates: [],
-      styleTemplates: [],
-      subtitleStyles: [],
-      music: [],
-      media: [],
-    },
-    settings: {
-      resolution: project.settings.resolution,
-      fps: project.settings.frame_rate,
-      aspectRatio: "16:9",
-      sampleRate: project.settings.audio_sample_rate,
-      channels: project.settings.audio_channels,
-      bitDepth: 16,
-      timeFormat: "timecode" as const,
-      snapToGrid: false,
-      gridSize: 1,
-      autoSave: true,
-      autoSaveInterval: 300,
-    },
-    createdAt: new Date(project.metadata.created_at),
-    updatedAt: new Date(),
-    version: project.metadata.version,
-  }
-}
+// Старая функция convertProjectToTimeline удалена
+// Теперь используется transformProjectStateToTimeline из utils/project-transform
 
 // Actors для backend операций
 const executeCommandActor = fromPromise(async ({ input }: { input: { command: ProjectCommand } }) => {
@@ -351,13 +299,14 @@ export const timelineExtendedMachine = setup({
     setProject: assign({
       project: ({ event }) => {
         if (event.type === "PROJECT_UPDATED" && event.project) {
-          return convertProjectToTimeline(event.project)
+          // Проект уже преобразован в Timeline в provider
+          return event.project
         }
         return null
       },
       duration: ({ event }) => {
         if (event.type === "PROJECT_UPDATED" && event.project) {
-          return event.project.timeline.duration
+          return event.project.duration || 0
         }
         return 0
       },

@@ -267,6 +267,22 @@ impl BrowserState {
       .unwrap_or(&[])
   }
 
+  /// Clear all selected files across all tabs
+  pub fn clear_all_selections(&mut self) {
+    for files in self.selected_files.values_mut() {
+      files.clear();
+    }
+  }
+
+  /// Reset all tab settings to defaults
+  pub fn reset_all_tabs(&mut self) {
+    for (tab, settings) in self.tab_settings.iter_mut() {
+      *settings = TabSettings::default();
+    }
+    // Reset to default tab
+    self.active_tab = BrowserTab::default();
+  }
+
   /// Get the settings for a specific tab
   pub fn get_tab_settings(&self, tab: &BrowserTab) -> TabSettings {
     self.tab_settings.get(tab).cloned().unwrap_or_default()

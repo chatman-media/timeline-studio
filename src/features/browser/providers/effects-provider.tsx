@@ -247,7 +247,8 @@ class EffectsProviderImpl implements EffectsProviderAPI {
       })
 
       // Синхронизируем загруженные ресурсы с backend
-      if (this.isBackendConnected && (source === "imported" || source === "local")) {
+      // TODO: Resources команда еще не реализована в backend
+      if (false && this.isBackendConnected && (source === "imported" || source === "local")) {
         this.syncResourcesWithBackend(source)
       }
 
@@ -656,22 +657,26 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     const filters = this.getFilters(source)
     const transitions = this.getTransitions(source)
 
-    try {
-      await this.backendSync.executeCommand({
-        type: "Resources",
-        params: {
-          type: "SyncResources",
+    // TODO: Resources команда еще не реализована в backend
+    // eslint-disable-next-line no-constant-condition
+    if (false) {
+      try {
+        await this.backendSync.executeCommand({
+          type: "Resources",
           params: {
-            source,
-            effects,
-            filters,
-            transitions,
+            type: "SyncResources",
+            params: {
+              source,
+              effects,
+              filters,
+              transitions,
+            },
           },
-        },
-      })
-      console.log(`[EffectsProvider] Synced ${source} resources with backend`)
-    } catch (error) {
-      console.error(`[EffectsProvider] Failed to sync ${source} resources:`, error)
+        })
+        console.log(`[EffectsProvider] Synced ${source} resources with backend`)
+      } catch (error) {
+        console.error(`[EffectsProvider] Failed to sync ${source} resources:`, error)
+      }
     }
   }
 

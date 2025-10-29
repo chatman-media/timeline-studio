@@ -1,4 +1,4 @@
-use super::browser::BrowserState;
+use super::browser::{BrowserState};
 use super::chat::ChatSession;
 use super::commands::PlayerSource;
 use chrono::{DateTime, Utc};
@@ -457,6 +457,13 @@ impl ProjectState {
     };
 
     self.project = Some(project);
+    
+    // Очищаем browser_state при создании нового проекта
+    // Очищаем выбранные файлы во всех табах
+    for tab in BrowserState::all_tabs() {
+      self.browser_state.selected_files.insert(tab, Vec::new());
+    }
+    
     self.version += 1;
     self.version_info.has_uncommitted_changes = true;
 

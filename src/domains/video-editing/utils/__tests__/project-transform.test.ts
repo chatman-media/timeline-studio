@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { Project, ProjectState, UiState, PlaybackState } from "@/types/generated/tauri-bindings"
+import type { PlaybackState, Project, ProjectState, UiState } from "@/types/generated/tauri-bindings"
 import { transformProjectStateToTimeline } from "../project-transform"
 
 describe("project-transform", () => {
@@ -79,7 +79,11 @@ describe("project-transform", () => {
       },
     }
 
-    const timeline = transformProjectStateToTimeline({ project: backendProject, ui: {} as UiState, playback: {} as PlaybackState })
+    const timeline = transformProjectStateToTimeline({
+      project: backendProject,
+      ui: {} as UiState,
+      playback: {} as PlaybackState,
+    })
 
     expect(timeline).toBeTruthy()
     expect(timeline?.id).toBe("test-project")
@@ -127,6 +131,12 @@ describe("project-transform", () => {
     } as Project
 
     // @ts-expect-error - testing invalid project
-    expect(transformProjectStateToTimeline({ project: projectWithoutTimeline, ui: {} as UiState, playback: {} as PlaybackState })).toBeNull()
+    expect(
+      transformProjectStateToTimeline({
+        project: projectWithoutTimeline,
+        ui: {} as UiState,
+        playback: {} as PlaybackState,
+      }),
+    ).toBeNull()
   })
 })

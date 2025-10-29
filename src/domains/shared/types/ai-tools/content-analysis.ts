@@ -16,7 +16,7 @@ export interface AudioAnalysis {
   silentSegments: Array<{ start: number; end: number }>
 }
 
-// Temporarily define these types to avoid circular dependency  
+// Temporarily define these types to avoid circular dependency
 export interface QualityAnalysisResult {
   overall: number
   video?: {

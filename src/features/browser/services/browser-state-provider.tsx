@@ -213,6 +213,11 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       if (event.type === "BROWSER_STATE_SYNC_REQUEST") {
         // Backend запрашивает синхронизацию состояния
         syncBrowserState().catch(console.error)
+      } else if (event.type === "ProjectCreated" || event.type === "ProjectOpened") {
+        // При создании/открытии проекта очищаем localStorage и сбрасываем состояние
+        console.log("[BrowserStateProvider] Project created/opened, clearing browser state")
+        localStorage.removeItem("browserSettings")
+        setState(getInitialContext())
       }
     })
 

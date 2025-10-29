@@ -6,6 +6,8 @@ pub mod privacy_commands;
 pub mod retinaface_commands;
 pub mod yolo_commands;
 pub mod yolo_commands_simple;
+pub mod advanced_tracking_commands;
+pub mod realtime_face_detection_commands;
 
 // Re-export YOLO commands for convenience
 pub use yolo_commands_simple::{
