@@ -103,7 +103,7 @@ const TopBarComponent = function TopBar() {
       if (selected && typeof selected === "string") {
         // ВАЖНО: Очищаем browser state перед открытием проекта
         clearBrowserState()
-        
+
         // Открываем выбранный проект
         void openProject(selected)
         console.log("Project opened successfully:", selected)

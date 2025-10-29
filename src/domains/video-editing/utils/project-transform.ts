@@ -139,18 +139,18 @@ function getUsedMediaFiles(backendProject: Project): MediaFile[] {
  * Преобразует MediaType (backend) в строку (frontend)
  */
 function mapMediaTypeToString(mediaType: any): string {
-  if (typeof mediaType === 'string') {
+  if (typeof mediaType === "string") {
     return mediaType.toLowerCase()
   }
-  
+
   // Если это объект enum из backend
-  if (mediaType && typeof mediaType === 'object') {
-    if (mediaType === 'Video' || mediaType.Video !== undefined) return 'video'
-    if (mediaType === 'Audio' || mediaType.Audio !== undefined) return 'audio'
-    if (mediaType === 'Image' || mediaType.Image !== undefined) return 'image'
+  if (mediaType && typeof mediaType === "object") {
+    if (mediaType === "Video" || mediaType.Video !== undefined) return "video"
+    if (mediaType === "Audio" || mediaType.Audio !== undefined) return "audio"
+    if (mediaType === "Image" || mediaType.Image !== undefined) return "image"
   }
-  
-  return 'video' // default fallback
+
+  return "video" // default fallback
 }
 
 /**

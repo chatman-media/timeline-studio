@@ -67,6 +67,11 @@ pub fn export_typescript_bindings() {
       crate::state::commands_api::browser_toggle_file_selection,
       crate::state::commands_api::browser_select_all_files,
       crate::state::commands_api::browser_deselect_all_files,
+      // Media import commands
+      crate::media::commands::import_media_files,
+      crate::media::commands::scan_media_directory,
+      crate::media::commands::index_media_files,
+      crate::media::commands::search_media_library,
     ])
     .events(tauri_specta::collect_events![]);
 

@@ -531,6 +531,7 @@ async fn generate_thumbnail_for_file(
 
 /// Import media files - команда, которую вызывает frontend
 #[tauri::command]
+#[specta::specta]
 pub async fn import_media_files(
   paths: Vec<String>,
   options: ImportMediaOptions,
@@ -558,7 +559,7 @@ pub async fn import_media_files(
 }
 
 /// Options for importing media files
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, specta::Type)]
 #[allow(dead_code)] // TODO: Implement these options in import logic
 pub struct ImportMediaOptions {
   pub copy_to_project: bool,
@@ -569,7 +570,7 @@ pub struct ImportMediaOptions {
 }
 
 /// Result of media import operation
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct ImportMediaResult {
   pub imported_files: Vec<ImportedMediaFile>,
   pub errors: Vec<String>,
@@ -577,7 +578,7 @@ pub struct ImportMediaResult {
 }
 
 /// Information about an imported media file
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct ImportedMediaFile {
   pub id: String,
   pub original_path: String,
@@ -725,6 +726,7 @@ async fn import_single_media_file(
 
 /// Scan media directory for indexing
 #[tauri::command]
+#[specta::specta]
 pub async fn scan_media_directory(directory_path: String) -> Result<ScanDirectoryResult, String> {
   let path = Path::new(&directory_path);
   
@@ -784,6 +786,7 @@ pub async fn scan_media_directory(directory_path: String) -> Result<ScanDirector
 
 /// Index media files for search
 #[tauri::command]
+#[specta::specta]
 pub async fn index_media_files(file_paths: Vec<String>) -> Result<IndexMediaResult, String> {
   let mut indexed_files = Vec::new();
   let mut errors = Vec::new();
@@ -808,6 +811,7 @@ pub async fn index_media_files(file_paths: Vec<String>) -> Result<IndexMediaResu
 
 /// Search media library
 #[tauri::command]
+#[specta::specta]
 pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMediaResult, String> {
   // For now, this is a simple implementation
   // In a real application, you would search through an indexed database
@@ -862,7 +866,7 @@ pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMedia
 
 /// Helper structures for scanning and indexing
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct ScanDirectoryResult {
   pub media_files: Vec<ScannedMediaFile>,
   pub errors: Vec<String>,
@@ -871,7 +875,7 @@ pub struct ScanDirectoryResult {
   pub scanned_directories: usize,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct ScannedMediaFile {
   pub path: String,
   pub name: String,
@@ -881,14 +885,14 @@ pub struct ScannedMediaFile {
   pub modified_time: u64,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct IndexMediaResult {
   pub indexed_files: Vec<MediaIndexEntry>,
   pub errors: Vec<String>,
   pub total_processed: usize,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct MediaIndexEntry {
   pub id: String,
   pub path: String,
@@ -900,7 +904,7 @@ pub struct MediaIndexEntry {
   pub metadata_hash: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, specta::Type)]
 pub struct MediaSearchQuery {
   pub search_term: Option<String>,
   pub media_type: Option<String>,
@@ -911,7 +915,7 @@ pub struct MediaSearchQuery {
   pub sort_desc: Option<bool>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct SearchMediaResult {
   pub files: Vec<ScannedMediaFile>,
   pub total_found: usize,

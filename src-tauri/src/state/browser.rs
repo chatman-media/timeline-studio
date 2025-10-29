@@ -276,7 +276,7 @@ impl BrowserState {
 
   /// Reset all tab settings to defaults
   pub fn reset_all_tabs(&mut self) {
-    for (tab, settings) in self.tab_settings.iter_mut() {
+    for (_tab, settings) in self.tab_settings.iter_mut() {
       *settings = TabSettings::default();
     }
     // Reset to default tab

@@ -248,9 +248,9 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
       // Синхронизируем загруженные ресурсы с backend
       // TODO: Resources команда еще не реализована в backend
-      if (false && this.isBackendConnected && (source === "imported" || source === "local")) {
-        this.syncResourcesWithBackend(source)
-      }
+      // if (this.isBackendConnected && (source === "imported" || source === "local")) {
+      //   this.syncResourcesWithBackend(source)
+      // }
 
       return result
     } catch (error) {
@@ -344,8 +344,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   private async loadLocalResources(): Promise<LoadResult> {
     // Сначала пробуем загрузить из backend
     // TODO: Resources команда еще не реализована в backend
-    // eslint-disable-next-line no-constant-condition
-    if (false && this.isBackendConnected) {
+    // if (this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -377,7 +376,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
       } catch (error) {
         console.error("[EffectsProvider] Failed to load local resources from backend:", error)
       }
-    }
+    // }
 
     // Fallback к пустым ресурсам
     this.resources.set("effect:local", [])
@@ -395,8 +394,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   private async loadRemoteResources(): Promise<LoadResult> {
     // Загружаем удаленные ресурсы через backend
     // TODO: Resources команда еще не реализована в backend
-    // eslint-disable-next-line no-constant-condition
-    if (false && this.isBackendConnected) {
+    // if (this.isBackendConnected) {
       try {
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -440,7 +438,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   private async loadImportedResources(): Promise<LoadResult> {
     // Загружаем импортированные ресурсы из backend
-    if (false && this.isBackendConnected) {
+    // if (this.isBackendConnected) {
       // TODO: Resources команда еще не реализована
       try {
         const response = await this.backendSync.executeCommand({
@@ -498,7 +496,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   async preloadCategory(type: ResourceType, category: string): Promise<LoadResult> {
     // Предзагрузка категории через backend
-    if (false && this.isBackendConnected) {
+    // if (this.isBackendConnected) {
       // TODO: Resources команда еще не реализована
       try {
         await this.backendSync.executeCommand({
@@ -529,7 +527,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     this.sourceConfigs[source] = { ...this.sourceConfigs[source], ...config }
 
     // Синхронизируем конфигурацию с backend
-    if (false && this.isBackendConnected) {
+    // if (this.isBackendConnected) {
       // TODO: Resources команда еще не реализована
       this.backendSync
         .executeCommand({
@@ -658,8 +656,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     const transitions = this.getTransitions(source)
 
     // TODO: Resources команда еще не реализована в backend
-    // eslint-disable-next-line no-constant-condition
-    if (false) {
+    // if (true) {
       try {
         await this.backendSync.executeCommand({
           type: "Resources",
@@ -683,7 +680,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async importResource(type: ResourceType, resource: Resource): Promise<boolean> {
     try {
       // Сохраняем ресурс в backend
-      if (false && this.isBackendConnected) {
+      // if (this.isBackendConnected) {
         // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",
@@ -719,7 +716,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   async deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean> {
     try {
       // Удаляем из backend
-      if (false && this.isBackendConnected) {
+      // if (this.isBackendConnected) {
         // TODO: Resources команда еще не реализована
         const response = await this.backendSync.executeCommand({
           type: "Resources",

@@ -3,6 +3,7 @@
  * Компонент для управления video fade in/out эффектами
  */
 
+import { Sparkles as Fade } from "lucide-react"
 import { memo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

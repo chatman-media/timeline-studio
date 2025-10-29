@@ -418,11 +418,12 @@ describe("PlayerControls", () => {
 
     it("должен устанавливать isSeeking при начале перемещения", () => {
       const mockSetIsSeeking = vi.fn()
+      const mockSeek = vi.fn().mockResolvedValue(undefined)
       vi.mocked(usePlayer).mockReturnValue({
         isPlaying: false,
         play: vi.fn().mockResolvedValue(undefined),
         pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
+        seek: mockSeek,
         volume: 0.75,
         setVolume: vi.fn(),
         isRecording: false,

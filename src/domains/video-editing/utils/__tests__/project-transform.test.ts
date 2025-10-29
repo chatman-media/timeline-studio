@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { PlaybackState, Project, ProjectState, UiState } from "@/types/generated/tauri-bindings"
+import type { PlaybackState, Project, UiState } from "@/types/generated/tauri-bindings"
 import { transformProjectStateToTimeline } from "../project-transform"
 
 describe("project-transform", () => {

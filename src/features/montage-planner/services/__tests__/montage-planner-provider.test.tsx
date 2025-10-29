@@ -1,5 +1,4 @@
-import { act, render, renderHook, waitFor } from "@testing-library/react"
-import type { ReactNode } from "react"
+import { act, render, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Import backend-sync mock
@@ -16,7 +15,7 @@ vi.mock("@tauri-apps/api/event", () => ({
 
 // Mock Tauri invoke для машины
 vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn((command: string, params?: any) => {
+  invoke: vi.fn((command: string, _params?: any) => {
     switch (command) {
       case "montage_planner_analyze_video":
         return Promise.resolve({
