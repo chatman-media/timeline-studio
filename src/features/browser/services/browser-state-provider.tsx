@@ -79,6 +79,7 @@ interface BrowserStateContextValue {
 
   // BackendSync методы
   syncBrowserState: () => Promise<void>
+  clearBrowserState: () => void
   isBackendConnected: boolean
 }
 
@@ -554,6 +555,13 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     return state.selectedFiles[targetTab]?.has(fileId) || false
   }
 
+  // Метод для принудительной очистки browser state
+  const clearBrowserState = () => {
+    console.log("[BrowserStateProvider] Manually clearing browser state")
+    localStorage.removeItem("browserSettings")
+    setState(getInitialContext())
+  }
+
   return (
     <BrowserStateContext.Provider
       value={{
@@ -578,6 +586,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         deselectAllFiles,
         isFileSelected,
         syncBrowserState,
+        clearBrowserState,
         isBackendConnected,
       }}
     >

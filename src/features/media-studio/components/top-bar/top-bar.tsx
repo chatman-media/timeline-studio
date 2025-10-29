@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
+import { useBrowserState } from "@/features/browser/services/browser-state-provider"
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
 import { useModal } from "@/features/modals/services/modal-provider"
@@ -43,6 +44,7 @@ const TopBarComponent = function TopBar() {
   const { isOptionsVisible, toggleOptionsVisibility } = useUserSettings()
   const { currentProject, openProject, saveProject, setProjectDirty, createNewProject } = useCurrentProject()
   const { createProject: createTimelineProject } = useTimeline()
+  const { clearBrowserState } = useBrowserState()
   const [isEditing, setIsEditing] = useState(false)
   const [projectName, setProjectName] = useState(currentProject?.name || "Новый проект")
   const projectNameInputId = useId()
@@ -99,6 +101,9 @@ const TopBarComponent = function TopBar() {
       })
 
       if (selected && typeof selected === "string") {
+        // ВАЖНО: Очищаем browser state перед открытием проекта
+        clearBrowserState()
+        
         // Открываем выбранный проект
         void openProject(selected)
         console.log("Project opened successfully:", selected)
@@ -106,12 +111,15 @@ const TopBarComponent = function TopBar() {
     } catch (error) {
       console.error("[handleOpenProject] Error opening project:", error)
     }
-  }, [openProject])
+  }, [openProject, clearBrowserState])
 
   const handleCreateNewProject = useCallback(() => {
     try {
       // Создаем новый проект с настройками по умолчанию
       const projectName = "Untitled Project"
+
+      // ВАЖНО: Сначала очищаем browser state
+      clearBrowserState()
 
       // Создаем проект в app-settings (для управления состоянием приложения)
       void createNewProject(projectName)
@@ -135,7 +143,7 @@ const TopBarComponent = function TopBar() {
     } catch (error) {
       console.error("[handleCreateNewProject] Error creating new project:", error)
     }
-  }, [createNewProject, createTimelineProject])
+  }, [createNewProject, createTimelineProject, clearBrowserState])
 
   // Мемоизируем заголовки для кнопок
   const buttonTitles = useMemo(
