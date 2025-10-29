@@ -19,6 +19,7 @@ type TimelineClip = DomainTimelineClip
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
+import { transformBackendProjectToTimeline } from "../utils/project-transform"
 
 // ===========================
 // Project Provider
@@ -30,6 +31,10 @@ interface TimelineProjectContext {
   createProject: (name: string, settings?: any) => Promise<void>
   saveProject: () => Promise<void>
   loadProject: (path: string) => Promise<void>
+  backend: {
+    isConnected: boolean
+    backendProject: ProjectState | null
+  }
 }
 
 const TimelineProjectContext = createContext<TimelineProjectContext | null>(null)
@@ -51,12 +56,15 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setBackendProject(state)
 
-      // Синхронизируем состояние с timeline машиной
+      // Преобразуем backend project в Timeline структуру
       if (state.project) {
-        timelineActor.send({
-          type: "PROJECT_UPDATED",
-          project: state.project,
-        })
+        const transformedProject = transformBackendProjectToTimeline(state.project)
+        if (transformedProject) {
+          timelineActor.send({
+            type: "PROJECT_UPDATED",
+            project: transformedProject,
+          })
+        }
       }
     })
 
@@ -64,6 +72,17 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     backendSync.getProjectState().then((state) => {
       if (state) {
         setBackendProject(state)
+        
+        // Преобразуем начальный проект
+        if (state.project) {
+          const transformedProject = transformBackendProjectToTimeline(state.project)
+          if (transformedProject) {
+            timelineActor.send({
+              type: "PROJECT_UPDATED", 
+              project: transformedProject,
+            })
+          }
+        }
       }
     })
 
@@ -72,13 +91,20 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     }
   }, [backendSync, timelineActor])
 
+  // Используем преобразованный проект или проект из машины состояний
+  const finalProject = project || transformBackendProjectToTimeline(backendProject?.project)
+
   const contextValue: TimelineProjectContext = {
-    project: project || backendProject?.project || null,
+    project: finalProject,
     isLoading,
     hasUnsavedChanges,
     createProject: orchestrator.createProject.bind(orchestrator),
     saveProject: orchestrator.saveProject.bind(orchestrator),
     loadProject: orchestrator.loadProject.bind(orchestrator),
+    backend: {
+      isConnected: backendSync.connected,
+      backendProject,
+    },
   }
 
   return <TimelineProjectContext.Provider value={contextValue}>{children}</TimelineProjectContext.Provider>

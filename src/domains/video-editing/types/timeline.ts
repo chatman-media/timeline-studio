@@ -52,19 +52,17 @@ export interface Track {
   type: TrackType
   order: number
   clips: TimelineClip[]
-  transitions: TimelineTransition[]
-  isLocked: boolean
-  isMuted: boolean
-  isHidden: boolean
-  isSolo: boolean
+  muted: boolean
+  solo: boolean
+  locked: boolean
+  height: number
+  expanded: boolean
   volume: number
   pan: number
-  height: number
-  trackEffects: AppliedEffect[]
-  trackFilters: AppliedFilter[]
+  color?: string
 }
 
-export type TrackType = "video" | "audio" | "subtitle" | "music" | "voiceover" | "sfx" | "ambient"
+export type TrackType = "video" | "audio" | "title" | "music" | "voiceover" | "sfx" | "ambient"
 
 export interface TimelineClip {
   id: string
@@ -74,21 +72,26 @@ export interface TimelineClip {
   trackId: string
   startTime: number
   duration: number
-  mediaStartTime: number
-  mediaEndTime: number
-  offset: number
-  mediaDuration: number
+  sourceIn: number
+  sourceOut: number
+  playbackRate: number
+  isSelected: boolean
+  isLocked: boolean
+  isMuted: boolean
   volume: number
-  speed: number
-  isReversed: boolean
   opacity: number
+  position: {
+    x: number
+    y: number
+    width: number
+    height: number
+    rotation: number
+    scaleX: number
+    scaleY: number
+  }
   effects: AppliedEffect[]
   filters: AppliedFilter[]
   transitions: AppliedTransition[]
-  isSelected: boolean
-  isLocked: boolean
-  createdAt: Date
-  updatedAt: Date
 }
 
 export interface TimelineTransition {
@@ -100,8 +103,6 @@ export interface TimelineTransition {
   parameters: Record<string, any>
   isEnabled: boolean
 }
-
-// TimelineKeyframe экспортируется из effects.ts
 
 export interface TimelineMarker {
   id: string
@@ -115,10 +116,10 @@ export interface TimelineResources {
   effects: EffectType[]
   filters: FilterType[]
   transitions: TransitionType[]
-  timelineTransitions: TimelineTransition[]
-  templates: TemplateType[]
-  styleTemplates: StyleTemplateType[]
-  subtitleStyles: SubtitleStyleType[]
+  timelineTransitions?: TimelineTransition[]
+  templates?: TemplateType[]
+  styleTemplates?: StyleTemplateType[]
+  subtitleStyles?: SubtitleStyleType[]
   music: MusicType[]
   media: MediaFile[]
 }
@@ -152,9 +153,9 @@ export interface SubtitleStyleType {
 export interface MusicType {
   id: string
   name: string
-  artist: string
+  artist?: string
   duration: number
-  genre: string
+  genre?: string
   file: MediaFile
 }
 
