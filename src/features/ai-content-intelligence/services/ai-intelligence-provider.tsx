@@ -15,7 +15,10 @@ const aiIntelligenceMachine = setup({
     }
     events: 
       | { type: "START_ANALYSIS"; mediaFiles: any[]; config: any }
-      | { type: "ANALYSIS_COMPLETE"; results: any }
+      | { type: "ANALYSIS_COMPLETE"; results: any; analysis: any }
+      | { type: "SCRIPT_GENERATED"; script: any }
+      | { type: "PLATFORM_ADAPTATION_COMPLETE"; content: any }
+      | { type: "UPDATE_PROGRESS"; step: string; progress: number }
       | { type: "ERROR"; error: string }
   }
 }).createMachine({
@@ -35,12 +38,15 @@ const aiIntelligenceMachine = setup({
     analyzing: {
       on: {
         ANALYSIS_COMPLETE: "completed",
+        UPDATE_PROGRESS: "analyzing",
         ERROR: "error"
       }
     },
     completed: {
       on: {
-        START_ANALYSIS: "analyzing"
+        START_ANALYSIS: "analyzing",
+        SCRIPT_GENERATED: "completed",
+        PLATFORM_ADAPTATION_COMPLETE: "completed"
       }
     },
     error: {

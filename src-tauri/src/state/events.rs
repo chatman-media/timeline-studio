@@ -75,6 +75,9 @@ pub enum ProjectEvent {
     media_id: String,
     changes: MediaChanges,
   },
+  MediaImported {
+    file_paths: Vec<String>,
+  },
 
   // Playback events
   PlaybackStarted {
@@ -177,6 +180,50 @@ pub enum ProjectEvent {
 
   // Chat events
   Chat(ChatEvent),
+
+  // System Integration events
+  ModalOpened {
+    modal_type: String,
+    modal_data: Option<serde_json::Value>,
+  },
+  ModalClosed,
+  ModalSubmitted {
+    data: Option<serde_json::Value>,
+  },
+  NotificationShown {
+    notification: super::commands::SystemNotification,
+  },
+  NotificationDismissed {
+    id: String,
+  },
+  NotificationsCleared,
+  UpdateCheckStarted,
+  UpdateCheckCompleted {
+    has_update: bool,
+  },
+  UpdateAvailable {
+    update_info: super::commands::UpdateInfo,
+  },
+  UpdateDownloadStarted,
+  UpdateDownloadCompleted,
+  UpdateInstallStarted,
+  UpdateDismissed,
+  AutoUpdateEnabled {
+    interval_minutes: u32,
+  },
+  AutoUpdateDisabled,
+  FeatureToggled {
+    feature: String,
+    enabled: bool,
+  },
+
+  // AI Streaming events
+  StreamingChunk {
+    data: serde_json::Value,
+  },
+  StreamingComplete {
+    data: serde_json::Value,
+  },
 }
 
 /// Event metadata

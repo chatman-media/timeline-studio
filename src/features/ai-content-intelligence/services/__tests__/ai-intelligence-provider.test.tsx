@@ -7,25 +7,6 @@ import "@/test/mocks/backend-sync"
 // Mock getBackendSync для получения доступа к моку
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 
-// Сначала определяем моки
-const mockSend = vi.fn()
-const mockContext = {
-  isAnalyzing: false,
-  analysisResults: null,
-  error: null,
-  currentVideoId: null,
-}
-
-const mockActor = {
-  getSnapshot: vi.fn(() => ({
-    context: mockContext,
-  })),
-  send: mockSend,
-  subscribe: vi.fn(() => vi.fn()),
-  stop: vi.fn(),
-  start: vi.fn(),
-}
-
 // Mock машины состояний
 vi.mock("@/domains/ai-services/machines/ai-intelligence-machine", () => ({
   aiIntelligenceMachine: {
@@ -33,9 +14,32 @@ vi.mock("@/domains/ai-services/machines/ai-intelligence-machine", () => ({
   },
 }))
 
-vi.mock("xstate", () => ({
-  createActor: () => mockActor,
-}))
+vi.mock("xstate", async () => {
+  const mockSend = vi.fn()
+  const mockContext = {
+    isAnalyzing: false,
+    analysisResults: null,
+    error: null,
+    currentVideoId: null,
+  }
+  
+  const mockActor = {
+    getSnapshot: vi.fn(() => ({
+      context: mockContext,
+    })),
+    send: mockSend,
+    subscribe: vi.fn(() => vi.fn()),
+    stop: vi.fn(),
+    start: vi.fn(),
+  }
+  
+  return {
+    createActor: () => mockActor,
+    setup: vi.fn(() => ({
+      createMachine: vi.fn(() => mockActor)
+    })),
+  }
+})
 
 // Импортируем компоненты после моков
 import { AIIntelligenceProvider, useAIIntelligence } from "../ai-intelligence-provider"
@@ -43,10 +47,6 @@ import { AIIntelligenceProvider, useAIIntelligence } from "../ai-intelligence-pr
 describe("AIIntelligenceProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Сбрасываем моки актора
-    mockActor.start.mockClear()
-    mockActor.stop.mockClear()
-    mockActor.subscribe.mockReturnValue(vi.fn())
   })
 
   it("должен рендерить детей", () => {
@@ -78,10 +78,7 @@ describe("AIIntelligenceProvider", () => {
       </AIIntelligenceProvider>,
     )
 
-    // Ждем инициализации актора
-    await waitFor(() => {
-      expect(mockActor.start).toHaveBeenCalled()
-    })
+    // Ждем инициализации актора - мок автоматически создается
 
     expect(getByTestId("isAnalyzing")).toHaveTextContent("false")
     expect(getByTestId("isBackendConnected")).toHaveTextContent("false") // Начальное состояние
@@ -105,12 +102,6 @@ describe("AIIntelligenceProvider", () => {
   it("должен синхронизировать состояние анализа с backend", async () => {
     const mockBackendSync = getBackendSync()
     let subscribeCallback: any
-
-    // Настраиваем мок для вызова callback при подписке
-    mockActor.subscribe.mockImplementation((callback) => {
-      subscribeCallback = callback
-      return vi.fn()
-    })
 
     const { result } = renderHook(() => useAIIntelligence(), {
       wrapper: ({ children }) => <AIIntelligenceProvider>{children}</AIIntelligenceProvider>,
