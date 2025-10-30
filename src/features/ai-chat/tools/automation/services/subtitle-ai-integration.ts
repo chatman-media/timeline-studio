@@ -3,15 +3,37 @@
  * Реализует реальные вызовы OCR, анализа сцен и распознавания речи
  */
 
-import type {
-  AudioDetections,
-  SceneAnalysis,
-  SpeechDetection,
-  TextDetection,
-  UnifiedContentAnalysis,
-} from "@/domains/ai-services/types"
-// Импортируем сервисы AI Content Intelligence
-import { IVisionService } from "@/domains/ai-services/types/interfaces"
+import type { SceneAnalysis, UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+
+// Временные определения для отсутствующих типов
+interface AudioDetections {
+  speech: SpeechDetection[]
+  music: any[]
+  soundEffects: any[]
+  silence: Array<{ start: number; end: number }>
+}
+
+interface SpeechDetection {
+  startTime: number
+  endTime: number
+  confidence: number
+  text: string
+  speaker?: string
+}
+
+interface TextDetection {
+  x: number
+  y: number
+  width: number
+  height: number
+  text: string
+  confidence: number
+}
+
+// Временная заглушка для IVisionService
+interface IVisionService {
+  extractText: (imagePath: string) => Promise<TextDetection[]>
+}
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 import { WhisperIntegrationService } from "./whisper-integration"
 

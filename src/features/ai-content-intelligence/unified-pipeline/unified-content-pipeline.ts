@@ -6,76 +6,35 @@
  */
 
 // Используем shared типы
-import { AdvancedSceneAnalysis, type MediaFile as MediaInput, SceneAnalysisEngine } from "@/domains/ai-services"
-import ContentClassificationEngine, {
-  ExtendedContentClassification,
-} from "@/domains/ai-services/services/engines/content-classification/content-classification-engine"
-import { UnifiedContentAnalysis } from "@/domains/ai-services/types"
+import type { UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+import type { StepType } from "@/domains/shared/types/ai-tools/ai-config"
+
+// Временный MediaInput тип
+interface MediaInput {
+  path: string
+  name: string
+  size?: number
+}
 
 // Pipeline конфигурация
 export interface PipelineConfig {
-  // Scene Analysis
-  sceneAnalysis: {
-    enabled: boolean
-    sensitivity: number
-    minSceneDuration: number
-    classifyTypes: boolean
-    enableObjectDetection: boolean
-    enablePersonTracking: boolean
-  }
-
-  // Content Classification
-  contentClassification: {
-    enabled: boolean
-    includeSubcategories: boolean
-    analyzeMood: boolean
-    includeTargeting: boolean
-    analyzePlatforms: boolean
-    includeMarketing: boolean
-    analyzeAccessibility: boolean
-  }
-
-  // Script Generation
-  scriptGeneration: {
-    enabled: boolean
-    style: "documentary" | "narrative" | "instructional" | "promotional" | "news" | "interview"
-    includeShotList: boolean
-    narrativeStructure: "chronological" | "flashback" | "parallel" | "circular" | "episodic"
-    tone: "professional" | "casual" | "dramatic" | "humorous" | "inspiring" | "educational"
-  }
-
-  // Platform Adaptation
-  platformAdaptation: {
-    enabled: boolean
-    targetPlatforms: string[]
-    languages: string[]
-    includeSeO: boolean
-    generateVariants: number
-  }
-
-  // General settings
-  general: {
-    analysisDepth: "quick" | "normal" | "deep"
-    parallel: boolean
-    maxConcurrent: number
-    cacheResults: boolean
-    timeout: number
+  steps: Array<{
+    type: StepType
+    config?: any
+  }>
+  
+  // Общие настройки
+  general?: {
+    analysisDepth?: "quick" | "normal" | "deep"
+    parallel?: boolean
+    maxConcurrent?: number
+    cacheResults?: boolean
+    timeout?: number
   }
 }
 
-// Pipeline статус и прогресс
-export interface PipelineProgress {
-  id: string
-  status: "idle" | "running" | "completed" | "error" | "cancelled"
-  currentStage: string
-  completedStages: string[]
-  totalStages: number
-  progress: number // 0-100
-  startTime: Date
-  endTime?: Date
-  error?: string
-  results?: UnifiedContentAnalysis[]
-}
+// Pipeline статус и прогресс используем из shared
+// export interface PipelineProgress уже определен в @/domains/shared/types/ai-tools/pipeline
 
 // Pipeline события
 export type PipelineEvent =
@@ -89,10 +48,7 @@ export type PipelineEvent =
 export interface PipelineResult {
   id: string
   mediaFile: MediaInput
-  sceneAnalysis?: AdvancedSceneAnalysis[]
-  contentClassification?: ExtendedContentClassification
-  generatedScript?: any
-  platformVariants?: any[]
+  analysis: UnifiedContentAnalysis
   processingTime: number
   warnings: string[]
   recommendations: string[]
@@ -103,44 +59,14 @@ export interface PipelineResult {
  * Использует shared AI services
  */
 export class UnifiedContentPipeline {
-  private sharedAIService: any = null
-  private sceneEngine: SceneAnalysisEngine | null = null
-  private classificationEngine: ContentClassificationEngine | null = null
-  private pipelines = new Map<string, PipelineProgress>()
+  private pipelines = new Map<string, any>()
   private eventListeners: ((event: PipelineEvent) => void)[] = []
 
   private defaultConfig: PipelineConfig = {
-    sceneAnalysis: {
-      enabled: true,
-      sensitivity: 0.5,
-      minSceneDuration: 2.0,
-      classifyTypes: true,
-      enableObjectDetection: false,
-      enablePersonTracking: false,
-    },
-    contentClassification: {
-      enabled: true,
-      includeSubcategories: true,
-      analyzeMood: true,
-      includeTargeting: true,
-      analyzePlatforms: true,
-      includeMarketing: true,
-      analyzeAccessibility: true,
-    },
-    scriptGeneration: {
-      enabled: false,
-      style: "documentary",
-      includeShotList: false,
-      narrativeStructure: "chronological",
-      tone: "professional",
-    },
-    platformAdaptation: {
-      enabled: false,
-      targetPlatforms: [],
-      languages: [],
-      includeSeO: true,
-      generateVariants: 1,
-    },
+    steps: [
+      { type: StepType.ANALYZE },
+      { type: StepType.CLASSIFY }
+    ],
     general: {
       analysisDepth: "normal",
       parallel: true,

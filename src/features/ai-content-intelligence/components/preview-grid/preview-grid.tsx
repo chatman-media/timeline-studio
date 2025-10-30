@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-import type { KeyMoment, SceneAnalysis, UnifiedContentAnalysis } from "../../shared/types"
+import type { 
+  UnifiedContentAnalysis,
+  KeyMoment, 
+  SceneAnalysis
+} from "@/domains/shared/types/ai-tools/content-analysis"
 
 interface PreviewItem {
   id: string

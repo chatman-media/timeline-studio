@@ -82,12 +82,13 @@ export class PersonIdentificationTool extends BaseAITool {
 
       // Анализ видео для обнаружения лиц через scene analysis
       const mediaFile = {
+        id: "temp",
         path: input.videoPath,
-        name: input.videoPath.split("/").pop() || input.videoPath,
         filename: input.videoPath.split("/").pop() || input.videoPath,
         type: "video" as const,
         duration: 0,
         size: 0,
+        format: "video",
       }
       const sceneAnalysis = await sceneEngine.analyzeScenes(mediaFile)
 

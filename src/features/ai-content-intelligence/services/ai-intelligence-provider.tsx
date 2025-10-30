@@ -1,8 +1,56 @@
 "use client"
 
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { type Actor, createActor } from "xstate"
-import { aiIntelligenceMachine } from "@/domains/ai-services/machines/ai-intelligence-machine"
+import { type Actor, createActor, setup } from "xstate"
+// import { aiIntelligenceMachine } from "@/domains/ai-services/machines/ai-intelligence-machine"
+// Временно используем упрощенную машину-заглушку
+
+// Упрощенная машина для AI Intelligence
+const aiIntelligenceMachine = setup({
+  types: {} as {
+    context: {
+      currentProject: any
+      analysisResults: any
+      error: string | null
+    }
+    events: 
+      | { type: "START_ANALYSIS"; mediaFiles: any[]; config: any }
+      | { type: "ANALYSIS_COMPLETE"; results: any }
+      | { type: "ERROR"; error: string }
+  }
+}).createMachine({
+  id: "aiIntelligence",
+  initial: "idle",
+  context: {
+    currentProject: null,
+    analysisResults: null,
+    error: null
+  },
+  states: {
+    idle: {
+      on: {
+        START_ANALYSIS: "analyzing"
+      }
+    },
+    analyzing: {
+      on: {
+        ANALYSIS_COMPLETE: "completed",
+        ERROR: "error"
+      }
+    },
+    completed: {
+      on: {
+        START_ANALYSIS: "analyzing"
+      }
+    },
+    error: {
+      on: {
+        START_ANALYSIS: "analyzing"
+      }
+    }
+  }
+})
+
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 

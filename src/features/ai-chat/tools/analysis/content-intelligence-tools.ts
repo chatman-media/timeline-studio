@@ -432,12 +432,13 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Выполняем анализ сцен
       const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
         path: videoPath,
-        name: "temp",
         filename: "temp",
+        size: 0,
         type: "video",
         duration: 0,
-        size: 0,
+        format: "video",
       })
 
       // Преобразуем сцены для классификатора
@@ -535,12 +536,13 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Выполняем детекцию сцен через scene analysis engine
       const scenes = await sceneEngine.analyzeScenes({
+        id: "temp",
         path: videoPath,
-        name: "temp",
         filename: "temp",
+        size: 0,
         type: "video",
         duration: 0,
-        size: 0,
+        format: "video",
       })
 
       // Анализируем переходы между сценами
@@ -618,12 +620,13 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Быстрый анализ для классификации
       const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
         path: videoPath,
-        name: "temp",
         filename: "temp",
+        size: 0,
         type: "video",
         duration: 0,
-        size: 0,
+        format: "video",
       })
 
       // Преобразуем сцены для классификатора
@@ -1208,12 +1211,13 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Анализируем демографию через видео
       const demographics = await ageGenderService.analyzeScenes({
+        id: "temp",
         path: videoPath,
-        name: "temp",
-        filename: "temp",
+        filename: "temp", 
+        size: 0,
         type: "video",
         duration: 0,
-        size: 0,
+        format: "video",
       })
 
       // Анализируем контент для определения аудитории
@@ -1339,12 +1343,13 @@ export class ContentIntelligenceTool extends BaseAITool {
 
       // Анализируем видео
       const analysis = await sceneEngine.analyzeScenes({
+        id: "temp",
         path: videoPath,
-        name: "temp",
         filename: "temp",
+        size: 0,
         type: "video",
         duration: 0,
-        size: 0,
+        format: "video",
       })
 
       // Оцениваем факторы вовлечения

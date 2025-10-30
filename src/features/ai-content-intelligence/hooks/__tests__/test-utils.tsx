@@ -9,15 +9,21 @@ import { vi } from "vitest"
 import { AIIntelligenceProvider } from "../../services/ai-intelligence-provider"
 import type {
   AdaptedContent,
+  PlatformId,
+} from "@/domains/shared/types/ai-tools/platform-adaptation"
+import type {
   AIConfig,
   GeneratedScript,
+  ScriptGenerationParams,
+} from "@/domains/shared/types/ai-tools/script-generation"
+import type {
+  UnifiedContentAnalysis,
+} from "@/domains/shared/types/ai-tools/content-analysis"
+import type {
   IntelligentContent,
   PipelineProgress,
-  PlatformId,
-  ScriptGenerationParams,
-  UnifiedContentAnalysis,
-} from "../../shared/types"
-import { ProcessingStatus } from "../../shared/types/pipeline"
+  ProcessingStatus,
+} from "@/domains/shared/types/ai-tools/pipeline"
 
 // Import ProcessingStatus enum
 

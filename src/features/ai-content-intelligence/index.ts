@@ -4,7 +4,33 @@
  */
 
 export { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
+
 // ===== Types & Enums =====
+// Re-export types that are commonly used by other modules
+export type {
+  AdaptedContent,
+  Platform,
+  PlatformId,
+} from "@/domains/shared/types/ai-tools/platform-adaptation"
+
+export type {
+  AIConfig,
+  AIProvider,
+  GeneratedScript,
+  ScriptGenerationParams,
+} from "@/domains/shared/types/ai-tools/script-generation"
+
+export type {
+  UnifiedContentAnalysis,
+  KeyMoment,
+  SceneAnalysis,
+} from "@/domains/shared/types/ai-tools/content-analysis"
+
+export type {
+  IntelligentContent,
+  PipelineProgress,
+  ProcessingStatus,
+} from "@/domains/shared/types/ai-tools/pipeline"
 // ===== Components =====
 // Export components individually to avoid circular dependencies
 export { AnalysisViewer } from "./components/analysis-viewer"

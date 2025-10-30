@@ -4,9 +4,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BatchProgress, PipelineProgress } from "@/domains/ai-services/services"
-import { BatchProcessingConfig } from "@/domains/ai-services/services/multi-platform/services/batch-processor"
-import { AIConfig, IntelligentContent } from "@/domains/ai-services/types"
+import type { PipelineProgress } from "@/domains/shared/types/ai-tools/pipeline"
+import type { AIConfig, IntelligentContent } from "@/domains/shared/types/ai-tools/pipeline"
 import {
   AccuracyLevel,
   AIProvider,
@@ -17,6 +16,17 @@ import {
 import { ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 import { PipelineConfig, PipelineEvent } from "../unified-pipeline/unified-content-pipeline"
 import { useAIIntelligence } from "./use-ai-intelligence"
+
+interface BatchProgress {
+  total: number
+  completed: number
+  failed: number
+  inProgress: number
+  items: Array<{
+    id: string
+    status: ProcessingStatus
+  }>
+}
 
 interface UseContentPipelineOptions {
   config?: PipelineConfig
@@ -53,6 +63,17 @@ interface MediaFile {
   path: string
   name: string
   size?: number
+}
+
+interface BatchProcessingConfig {
+  items: Array<{
+    id: string
+    mediaFiles: string[]
+    config?: Partial<AIConfig>
+  }>
+  parallel: boolean
+  maxConcurrent: number
+  continueOnError: boolean
 }
 
 export function useContentPipeline(options: UseContentPipelineOptions = {}): UseContentPipelineReturn {
