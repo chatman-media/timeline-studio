@@ -30,9 +30,9 @@ path = "src/main.rs"
 # name = "generate_types"
 # path = "src/bin/generate_types.rs"
 
-# [[bin]]
-# name = "export_types"
-# path = "src/bin/export_types.rs"
+[[bin]]
+name = "export_types"
+path = "src/bin/export_types.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.5", features = [] }
@@ -130,9 +130,9 @@ tracing-opentelemetry = "0.32.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tonic = "0.14.2"
 # WebAssembly runtime dependencies
-wasmtime = { version = "37.0.1", default-features = false }
+wasmtime = { version = "38.0", default-features = false }
 filetime = "0.2"
-wasmtime-wasi = "37.0"
+wasmtime-wasi = "38.0"
 wasm-bindgen = "0.2"
 # Additional security dependencies
 cap-std = "3.4"
