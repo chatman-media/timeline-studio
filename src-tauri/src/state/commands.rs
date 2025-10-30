@@ -5796,11 +5796,12 @@ impl CommandHandler {
       match provider_clone.as_str() {
         "claude" | "openai" | "deepseek" | "grok" => {
           // Simulate streaming by sending chunks
+          let provider_chunk = format!("{} ", provider_clone);
           let chunks = vec![
             "This is ",
             "a streaming ",
             "response from ",
-            &format!("{} ", provider_clone),
+            &provider_chunk,
             "backend service. ",
             "The streaming ",
             "implementation ",
@@ -5816,7 +5817,7 @@ impl CommandHandler {
               "model": model_clone,
               "content": chunk,
               "index": i,
-              "finish_reason": if i == chunks.len() - 1 { "stop" } else { null }
+              "finish_reason": if i == chunks.len() - 1 { "stop" } else { "" }
             });
             
             if let Err(e) = event_bus.publish(
@@ -5864,8 +5865,6 @@ impl CommandHandler {
       "provider": provider,
       "model": model,
       "stream_id": stream_id,
-      "status": "started"
-      "stream_id": uuid::Uuid::new_v4().to_string(),
       "status": "streaming_started"
     })))
   }
@@ -6658,5 +6657,195 @@ impl CommandHandler {
       "AI Usage: provider={}, model={}, tokens={}, cost={:?}",
       provider, model, tokens, cost
     );
+  }
+
+  async fn fetch_openai_models(&self) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = match self.get_api_key_for_provider("openai").await {
+      Some(key) => key,
+      None => return Err("No OpenAI API key available".into()),
+    };
+    
+    let client = reqwest::Client::new();
+    let response = client
+      .get("https://api.openai.com/v1/models")
+      .header("Authorization", format!("Bearer {}", api_key))
+      .send()
+      .await?;
+    
+    if !response.status().is_success() {
+      return Err(format!("Failed to fetch OpenAI models: {}", response.status()).into());
+    }
+    
+    let response_json: serde_json::Value = response.json().await?;
+    let empty_vec = vec![];
+    let models_array = response_json["data"].as_array().unwrap_or(&empty_vec);
+    
+    let mut models = Vec::new();
+    for model_json in models_array {
+      if let Some(id) = model_json["id"].as_str() {
+        // Filter to chat models only
+        if id.starts_with("gpt-") && (id.contains("turbo") || id.contains("4o")) {
+          models.push(AiModel {
+            id: id.to_string(),
+            name: id.replace("-", " ").to_uppercase(),
+            description: format!("OpenAI {}", id),
+            max_tokens: if id.contains("4o") { 128000 } else { 4096 },
+            cost_per_token: if id.contains("4o-mini") { Some(0.00000015) } else { Some(0.000005) },
+            is_available: true,
+          });
+        }
+      }
+    }
+    
+    Ok(models)
+  }
+
+  async fn fetch_ollama_models(&self) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
+    let client = reqwest::Client::new();
+    
+    // Check if Ollama is running
+    match client
+      .get("http://localhost:11434/api/tags")
+      .send()
+      .await
+    {
+      Ok(response) if response.status().is_success() => {
+        let response_json: serde_json::Value = response.json().await?;
+        let empty_vec = vec![];
+        let models_array = response_json["models"].as_array().unwrap_or(&empty_vec);
+        
+        let mut models = Vec::new();
+        for model_json in models_array {
+          if let Some(name) = model_json["name"].as_str() {
+            let size = model_json["size"].as_u64().unwrap_or(0);
+            models.push(AiModel {
+              id: name.to_string(),
+              name: name.split(':').next().unwrap_or(name).to_string(),
+              description: format!("Local model ({})", self.format_bytes(size)),
+              max_tokens: 4096, // Default for most Ollama models
+              cost_per_token: None, // Local models are free
+              is_available: true,
+            });
+          }
+        }
+        
+        Ok(models)
+      }
+      _ => Err("Ollama is not running or not accessible".into())
+    }
+  }
+
+  fn format_bytes(&self, bytes: u64) -> String {
+    const UNITS: &[&str] = &["B", "KB", "MB", "GB", "TB"];
+    let mut size = bytes as f64;
+    let mut unit_index = 0;
+    
+    while size >= 1024.0 && unit_index < UNITS.len() - 1 {
+      size /= 1024.0;
+      unit_index += 1;
+    }
+    
+    format!("{:.1}{}", size, UNITS[unit_index])
+  }
+
+  async fn validate_claude_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self.get_api_key_for_provider("claude").await
+      .ok_or("No Claude API key configured")?;
+    
+    let client = reqwest::Client::new();
+    let response = client
+      .post("https://api.anthropic.com/v1/messages")
+      .header("Content-Type", "application/json")
+      .header("x-api-key", &api_key)
+      .header("anthropic-version", "2023-06-01")
+      .json(&serde_json::json!({
+        "model": "claude-3-5-haiku-20241022",
+        "messages": [{
+          "role": "user",
+          "content": "Hi"
+        }],
+        "max_tokens": 10
+      }))
+      .timeout(std::time::Duration::from_secs(10))
+      .send()
+      .await?;
+    
+    if response.status().is_success() {
+      Ok(())
+    } else {
+      Err(format!("Claude API validation failed: {}", response.status()).into())
+    }
+  }
+
+  async fn validate_openai_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self.get_api_key_for_provider("openai").await
+      .ok_or("No OpenAI API key configured")?;
+    
+    let client = reqwest::Client::new();
+    let response = client
+      .get("https://api.openai.com/v1/models")
+      .header("Authorization", format!("Bearer {}", &api_key))
+      .timeout(std::time::Duration::from_secs(10))
+      .send()
+      .await?;
+    
+    if response.status().is_success() {
+      Ok(())
+    } else {
+      Err(format!("OpenAI API validation failed: {}", response.status()).into())
+    }
+  }
+
+  async fn validate_deepseek_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self.get_api_key_for_provider("deepseek").await
+      .ok_or("No DeepSeek API key configured")?;
+    
+    let client = reqwest::Client::new();
+    let response = client
+      .get("https://api.deepseek.com/v1/models")
+      .header("Authorization", format!("Bearer {}", &api_key))
+      .timeout(std::time::Duration::from_secs(10))
+      .send()
+      .await?;
+    
+    if response.status().is_success() {
+      Ok(())
+    } else {
+      Err(format!("DeepSeek API validation failed: {}", response.status()).into())
+    }
+  }
+
+  async fn validate_grok_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self.get_api_key_for_provider("grok").await
+      .ok_or("No Grok API key configured")?;
+    
+    let client = reqwest::Client::new();
+    let response = client
+      .get("https://api.x.ai/v1/models")
+      .header("Authorization", format!("Bearer {}", &api_key))
+      .timeout(std::time::Duration::from_secs(10))
+      .send()
+      .await?;
+    
+    if response.status().is_success() {
+      Ok(())
+    } else {
+      Err(format!("Grok API validation failed: {}", response.status()).into())
+    }
+  }
+
+  async fn validate_ollama_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let client = reqwest::Client::new();
+    let response = client
+      .get("http://localhost:11434/api/tags")
+      .timeout(std::time::Duration::from_secs(5))
+      .send()
+      .await?;
+    
+    if response.status().is_success() {
+      Ok(())
+    } else {
+      Err(format!("Ollama connection failed: {}", response.status()).into())
+    }
   }
 }
