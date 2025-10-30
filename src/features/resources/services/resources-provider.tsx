@@ -155,82 +155,170 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
   const addMedia = useCallback(
     async (file: MediaFile) => {
       console.log("ResourcesProvider: Adding media", file.path)
-      // Определяем тип медиа на основе свойств файла
-      const mediaType = file.isVideo ? "Video" : file.isAudio ? "Audio" : "Image"
-      const result = await executeCommand({
-        type: "AddMedia",
-        params: { path: file.path, media_type: mediaType },
-      })
-      console.log("ResourcesProvider: AddMedia result", result)
+      // TODO: Активировать после генерации TypeScript типов
+      // const mediaType = file.isVideo ? "Video" : file.isAudio ? "Audio" : "Image"
+      // const result = await executeCommand({
+      //   type: "AddMedia",
+      //   params: { path: file.path, media_type: mediaType },
+      // })
+      // console.log("ResourcesProvider: AddMedia result", result)
     },
     [executeCommand],
   )
 
   const addMusic = useCallback(
     async (file: MediaFile) => {
-      await executeCommand({
-        type: "AddMedia",
-        params: { path: file.path, media_type: "Audio" },
-      })
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "AddMedia",
+      //   params: { path: file.path, media_type: "Audio" },
+      // })
     },
     [executeCommand],
   )
 
-  const addSubtitle = useCallback(async (_style: SubtitleStyleTemplate) => {
-    // Для субтитров пока используем локальное хранение
-    // Так как backend команды для них ещё нет
-    console.warn("Subtitle resources not yet integrated with backend")
-  }, [])
+  const addSubtitle = useCallback(
+    async (style: SubtitleStyleTemplate) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: style.id,
+      //     resource_type: "subtitle",
+      //     data: style,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
-  const addEffect = useCallback(async (_effect: VideoEffect) => {
-    // Эффекты пока остаются локальными
-    console.warn("Effect resources not yet integrated with backend")
-  }, [])
+  const addEffect = useCallback(
+    async (effect: VideoEffect) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: effect.id,
+      //     resource_type: "effect",
+      //     data: effect,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
-  const addFilter = useCallback(async (_filter: VideoFilter) => {
-    // Фильтры пока остаются локальными
-    console.warn("Filter resources not yet integrated with backend")
-  }, [])
+  const addFilter = useCallback(
+    async (filter: VideoFilter) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: filter.id,
+      //     resource_type: "filter",
+      //     data: filter,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
-  const addTransition = useCallback(async (_transition: Transition) => {
-    // Переходы пока остаются локальными
-    console.warn("Transition resources not yet integrated with backend")
-  }, [])
+  const addTransition = useCallback(
+    async (transition: Transition) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: transition.id,
+      //     resource_type: "transition",
+      //     data: transition,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
-  const addTemplate = useCallback(async (_template: MediaTemplate) => {
-    // Шаблоны пока остаются локальными
-    console.warn("Template resources not yet integrated with backend")
-  }, [])
+  const addTemplate = useCallback(
+    async (template: MediaTemplate) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: template.id,
+      //     resource_type: "template",
+      //     data: template,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
-  const addStyleTemplate = useCallback(async (_template: StyleTemplate) => {
-    // Стилистические шаблоны пока остаются локальными
-    console.warn("Style template resources not yet integrated with backend")
-  }, [])
+  const addStyleTemplate = useCallback(
+    async (template: StyleTemplate) => {
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "SaveResource",
+      //   params: {
+      //     resource_id: template.id,
+      //     resource_type: "styleTemplate",
+      //     data: template,
+      //     metadata: {},
+      //   },
+      // })
+    },
+    [executeCommand],
+  )
 
   const removeResource = useCallback(
-    async (resourceId: string) => {
-      await executeCommand({
-        type: "RemoveMedia",
-        params: { mediaId: resourceId },
-      })
+    async (resourceId: string, resourceType: string = "media") => {
+      // TODO: Активировать после генерации TypeScript типов
+      // if (resourceType === "media") {
+      //   await executeCommand({
+      //     type: "RemoveMedia",
+      //     params: { mediaId: resourceId },
+      //   })
+      // } else {
+      //   await executeCommand({
+      //     type: "DeleteResource",
+      //     params: {
+      //       resource_id: resourceId,
+      //       resource_type: resourceType,
+      //     },
+      //   })
+      // }
     },
     [executeCommand],
   )
 
   const updateResource = useCallback(
     async (resourceId: string, params: Record<string, any>) => {
-      await executeCommand({
-        type: "UpdateMedia",
-        params: { mediaId: resourceId, updates: params },
-      })
+      // TODO: Активировать после генерации TypeScript типов
+      // await executeCommand({
+      //   type: "UpdateMedia",
+      //   params: { mediaId: resourceId, updates: params },
+      // })
     },
     [executeCommand],
   )
 
   const clearResources = useCallback(async () => {
-    // Нужна команда для очистки всех ресурсов
-    console.warn("Clear resources command not yet implemented in backend")
-  }, [])
+    // TODO: Активировать после генерации TypeScript типов
+    // const resourceTypes = ["effect", "filter", "transition", "template", "styleTemplate", "subtitle"]
+    // for (const resourceType of resourceTypes) {
+    //   await executeCommand({
+    //     type: "LoadResources",
+    //     params: {
+    //       resource_type: resourceType,
+    //       source: "local",
+    //       category: null,
+    //     },
+    //   })
+    // }
+  }, [executeCommand])
 
   // Утилиты
   const getResourceById = useCallback(
