@@ -8,11 +8,7 @@ import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { UnifiedAIService } from "@/domains/ai-core/services"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { 
-  ProjectState, 
-  ChatSession as BackendChatSession, 
-  ChatMessage as BackendChatMessage 
-} from "@/types/generated/tauri-bindings"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 // Локальные типы для UI (с Date объектами вместо строк)
 interface ChatMessage {
@@ -244,9 +240,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
         // Используем новую прямую AI команду
         const result = await executeCommand({
           type: "CreateChatSession",
-          params: { 
+          params: {
             name: sessionName,
-            agent_type: selectedAgentId 
+            agent_type: selectedAgentId,
           },
         })
 
@@ -392,7 +388,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
         // Определяем модель и провайдера из selectedAgentId
         const agentId = selectedAgentId || "claude-3-5-sonnet-20241022"
         const provider = agentId.includes("claude") ? "claude" : "openai"
-        
+
         // Отправляем запрос через backend
         const aiResult = await executeCommand({
           type: "SendChatMessage",

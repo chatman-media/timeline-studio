@@ -3,16 +3,16 @@
  * Адаптер для многоязычной поддержки контента
  */
 
-import { UnifiedAIService } from "@/domains/ai-core/services"
-import { AdaptedContent } from "@/domains/ai-services/types"
+import { EnhancedUnifiedAIService } from "@/domains/ai-core/services"
+import type { AdaptedContent } from "@/domains/ai-services/types"
 
 export class LanguageAdapter {
-  private aiService: UnifiedAIService
+  private aiService: EnhancedUnifiedAIService
   private isInitialized = false
   private supportedLanguages: Set<string>
 
   constructor() {
-    this.aiService = UnifiedAIService.getInstance()
+    this.aiService = EnhancedUnifiedAIService.getInstance()
     this.supportedLanguages = new Set([
       "en",
       "ru",

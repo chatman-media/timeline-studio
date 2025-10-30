@@ -22,7 +22,7 @@ vi.mock("xstate", async () => {
     error: null,
     currentVideoId: null,
   }
-  
+
   const mockActor = {
     getSnapshot: vi.fn(() => ({
       context: mockContext,
@@ -32,11 +32,11 @@ vi.mock("xstate", async () => {
     stop: vi.fn(),
     start: vi.fn(),
   }
-  
+
   return {
     createActor: () => mockActor,
     setup: vi.fn(() => ({
-      createMachine: vi.fn(() => mockActor)
+      createMachine: vi.fn(() => mockActor),
     })),
   }
 })

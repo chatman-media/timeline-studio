@@ -52,9 +52,7 @@ describe("UndoRedoProvider", () => {
         <div>
           <div data-testid="canUndo">{context.canUndo.toString()}</div>
           <div data-testid="canRedo">{context.canRedo.toString()}</div>
-          <div data-testid="isTracking">{context.isTracking.toString()}</div>
-          <div data-testid="isBackendConnected">{context.isBackendConnected.toString()}</div>
-          <div data-testid="isPersistent">{context.isPersistent.toString()}</div>
+          <div data-testid="historyStats">{JSON.stringify(context.historyStats)}</div>
         </div>
       )
     }
@@ -67,9 +65,7 @@ describe("UndoRedoProvider", () => {
 
     expect(getByTestId("canUndo")).toHaveTextContent("false")
     expect(getByTestId("canRedo")).toHaveTextContent("false")
-    expect(getByTestId("isTracking")).toHaveTextContent("true")
-    expect(getByTestId("isBackendConnected")).toHaveTextContent("true")
-    expect(getByTestId("isPersistent")).toHaveTextContent("true")
+    expect(getByTestId("historyStats")).toBeInTheDocument()
   })
 
   it("должен выбрасывать ошибку при использовании вне провайдера", () => {
@@ -95,11 +91,14 @@ describe("UndoRedoProvider", () => {
 
     // Симулируем добавление действия
     await act(async () => {
-      result.current.addAction({
-        type: "timeline/add-clip",
+      result.current.registerAction({
+        type: "ADD_CLIP",
         description: "Add clip",
-        timestamp: Date.now(),
-        data: { clipId: "test-clip" },
+        undoData: { clipId: "test-clip" },
+        redoData: { clipId: "test-clip", trackId: "test-track", mediaFile: "test.mp4", time: 0 },
+        affectedEntities: { clips: ["test-clip"], tracks: ["test-track"] },
+        priority: "medium",
+        mergeable: false,
       })
     })
 
@@ -197,7 +196,7 @@ describe("UndoRedoProvider", () => {
 
     // Очищаем историю
     await act(async () => {
-      result.current.clear()
+      result.current.clearHistory()
     })
 
     // Проверяем вызов backend
@@ -212,30 +211,14 @@ describe("UndoRedoProvider", () => {
     })
   })
 
-  it("должен сохранять контрольную точку в backend", async () => {
-    const mockBackendSync = getBackendSync()
-
+  it("должен предоставлять статистику истории", async () => {
     const { result } = renderHook(() => useUndoRedo(), {
       wrapper: ({ children }) => <UndoRedoProvider>{children}</UndoRedoProvider>,
     })
 
-    // Создаем контрольную точку
-    await act(async () => {
-      await result.current.createCheckpoint("Test checkpoint")
-    })
-
-    // Проверяем вызов backend
-    expect(mockBackendSync.executeCommand).toHaveBeenCalledWith({
-      type: "History",
-      params: {
-        type: "CreateCheckpoint",
-        params: {
-          name: "Test checkpoint",
-          timestamp: expect.any(String),
-          undoStack: expect.any(Array),
-          redoStack: expect.any(Array),
-        },
-      },
-    })
+    // Проверяем статистику
+    expect(result.current.historyStats).toBeDefined()
+    expect(typeof result.current.historyStats.undoCount).toBe("number")
+    expect(typeof result.current.historyStats.redoCount).toBe("number")
   })
 })

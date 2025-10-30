@@ -4,7 +4,7 @@
  */
 
 // Импорт shared типов для Content Intelligence
-import { AiMessage } from "@/domains/ai-core"
+import type { AiMessage } from "@/domains/ai-core"
 import type { IFFmpegAnalysisService, MediaFile } from "@/domains/ai-services/types/interfaces"
 import type { GeneratedScript } from "@/domains/ai-services/types/script"
 import type {

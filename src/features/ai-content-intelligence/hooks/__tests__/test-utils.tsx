@@ -5,25 +5,15 @@
 import { renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { vi } from "vitest"
-
-import { AIIntelligenceProvider } from "../../services/ai-intelligence-provider"
-import type {
-  AdaptedContent,
-  PlatformId,
-} from "@/domains/shared/types/ai-tools/platform-adaptation"
+import type { UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+import type { IntelligentContent, PipelineProgress } from "@/domains/shared/types/ai-tools/pipeline"
+import type { AdaptedContent, PlatformId } from "@/domains/shared/types/ai-tools/platform-adaptation"
 import type {
   AIConfig,
   GeneratedScript,
   ScriptGenerationParams,
 } from "@/domains/shared/types/ai-tools/script-generation"
-import type {
-  UnifiedContentAnalysis,
-} from "@/domains/shared/types/ai-tools/content-analysis"
-import type {
-  IntelligentContent,
-  PipelineProgress,
-  ProcessingStatus,
-} from "@/domains/shared/types/ai-tools/pipeline"
+import { AIIntelligenceProvider } from "../../services/ai-intelligence-provider"
 
 // Import ProcessingStatus enum
 

@@ -95,14 +95,14 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
           type: "SyncAIServicesState",
           params: {
             config: domainConfig,
-            chatHistory: chatState.messages,
+            chatHistory: chatState.chatMessages,
             montageStatus: {
               isAnalyzing: montagePlannerState.isAnalyzing,
-              currentPlan: montagePlannerState.montagePlan,
+              currentPlan: montagePlannerState.currentPlan,
             },
             intelligenceStatus: {
-              isAnalyzing: aiIntelligenceState.isAnalyzing,
-              analysisResults: aiIntelligenceState.analysisResults,
+              isAnalyzing: aiIntelligenceState.progress > 0 && aiIntelligenceState.progress < 100,
+              analysisResults: aiIntelligenceState.analysis,
             },
             usageStats: aiUsageStats,
           },
@@ -173,7 +173,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     }, 2000) // Задержка 2 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
-  }, [chatState.messages, montagePlannerState.montagePlan, aiIntelligenceState.analysisResults, isBackendConnected])
+  }, [chatState.chatMessages, montagePlannerState.currentPlan, aiIntelligenceState.result, isBackendConnected])
 
   // Расширенные domain-level действия с BackendSync
   const resetAllServices = async () => {

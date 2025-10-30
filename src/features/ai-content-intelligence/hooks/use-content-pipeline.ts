@@ -4,7 +4,6 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { PipelineProgress, IntelligentContent } from "@/domains/shared/types/ai-tools/pipeline"
 import type { AIConfig } from "@/domains/shared/types/ai-tools/ai-config"
 import {
   AccuracyLevel,
@@ -13,6 +12,7 @@ import {
   SpeedPriority,
   StepType,
 } from "@/domains/shared/types/ai-tools/ai-config"
+import type { IntelligentContent, PipelineProgress } from "@/domains/shared/types/ai-tools/pipeline"
 import { ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 import { PipelineConfig, PipelineEvent } from "../unified-pipeline/unified-content-pipeline"
 import { useAIIntelligence } from "./use-ai-intelligence"

@@ -6,9 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
-
 import type { UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+import { cn } from "@/lib/utils"
 
 interface AnalysisViewerProps {
   analysis: UnifiedContentAnalysis | null

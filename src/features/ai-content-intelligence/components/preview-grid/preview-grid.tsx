@@ -7,13 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { KeyMoment, SceneAnalysis, UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
 import { cn } from "@/lib/utils"
-
-import type { 
-  UnifiedContentAnalysis,
-  KeyMoment, 
-  SceneAnalysis
-} from "@/domains/shared/types/ai-tools/content-analysis"
 
 interface PreviewItem {
   id: string

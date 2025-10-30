@@ -5,7 +5,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
-import type { DetectedFace, FaceAttributes } from "../types/person"
+import type { DetectedFace, FaceAttributes } from "@/features/person-identification/types/person"
 
 // Конфигурация продвинутой детекции
 export interface AdvancedDetectionConfig {

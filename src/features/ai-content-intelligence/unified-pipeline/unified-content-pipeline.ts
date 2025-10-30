@@ -5,9 +5,9 @@
  * и Multi-Platform Adaptation в единый pipeline.
  */
 
+import { StepType } from "@/domains/shared/types/ai-tools/ai-config"
 // Используем shared типы
 import type { UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
-import { StepType } from "@/domains/shared/types/ai-tools/ai-config"
 
 // Временный MediaInput тип
 interface MediaInput {
@@ -23,7 +23,7 @@ export interface PipelineConfig {
     type: StepType
     config?: any
   }>
-  
+
   // Общие настройки
   general?: {
     analysisDepth?: "quick" | "normal" | "deep"
@@ -61,10 +61,7 @@ export class UnifiedContentPipeline {
   private eventListeners: ((event: PipelineEvent) => void)[] = []
 
   private defaultConfig: PipelineConfig = {
-    steps: [
-      { type: StepType.ANALYZE },
-      { type: StepType.CLASSIFY }
-    ],
+    steps: [{ type: StepType.ANALYZE }, { type: StepType.CLASSIFY }],
     general: {
       analysisDepth: "normal",
       parallel: true,
@@ -79,14 +76,14 @@ export class UnifiedContentPipeline {
    */
   async processBasic(mediaFiles: MediaInput[]): Promise<UnifiedContentAnalysis[]> {
     // Заглушка для базовой обработки
-    return mediaFiles.map(file => ({
+    return mediaFiles.map((file) => ({
       mediaFile: {
         path: file.path,
         filename: file.filename || "unknown",
         name: file.name || "unknown",
         size: file.size || 0,
         format: "video",
-        duration: 0
+        duration: 0,
       },
       scenes: [],
       keyMoments: [],
@@ -96,7 +93,7 @@ export class UnifiedContentPipeline {
       targetAudience: {
         ageRange: { min: 18, max: 65 },
         interests: [],
-        demographics: { primary: "general" }
+        demographics: { primary: "general" },
       },
       technicalSpecs: {
         resolution: { width: 1920, height: 1080, aspectRatio: "16:9" },
@@ -106,7 +103,7 @@ export class UnifiedContentPipeline {
         audioChannels: 2,
         audioCodec: "aac",
         audioBitrate: 128000,
-        duration: 0
+        duration: 0,
       },
       qualityMetrics: {
         overall: 80,
@@ -115,7 +112,7 @@ export class UnifiedContentPipeline {
         contrast: 80,
         saturation: 80,
         stability: 80,
-        noise: 20
+        noise: 20,
       },
       detections: {
         objects: [],
@@ -125,9 +122,9 @@ export class UnifiedContentPipeline {
           speech: [],
           music: [],
           soundEffects: [],
-          silence: []
+          silence: [],
         },
-        scenes: []
+        scenes: [],
       },
       insights: {
         summary: "Basic analysis completed",
@@ -139,8 +136,8 @@ export class UnifiedContentPipeline {
         weaknesses: [],
         recommendations: [],
         marketingAngles: [],
-        targetDemographics: []
-      }
+        targetDemographics: [],
+      },
     }))
   }
 

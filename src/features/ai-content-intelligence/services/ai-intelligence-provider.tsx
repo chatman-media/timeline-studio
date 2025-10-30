@@ -2,6 +2,7 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { type Actor, createActor, setup } from "xstate"
+
 // import { aiIntelligenceMachine } from "@/domains/ai-services/machines/ai-intelligence-machine"
 // Временно используем упрощенную машину-заглушку
 
@@ -13,48 +14,48 @@ const aiIntelligenceMachine = setup({
       analysisResults: any
       error: string | null
     }
-    events: 
+    events:
       | { type: "START_ANALYSIS"; mediaFiles: any[]; config: any }
       | { type: "ANALYSIS_COMPLETE"; results: any; analysis: any }
       | { type: "SCRIPT_GENERATED"; script: any }
       | { type: "PLATFORM_ADAPTATION_COMPLETE"; content: any }
       | { type: "UPDATE_PROGRESS"; step: string; progress: number }
       | { type: "ERROR"; error: string }
-  }
+  },
 }).createMachine({
   id: "aiIntelligence",
   initial: "idle",
   context: {
     currentProject: null,
     analysisResults: null,
-    error: null
+    error: null,
   },
   states: {
     idle: {
       on: {
-        START_ANALYSIS: "analyzing"
-      }
+        START_ANALYSIS: "analyzing",
+      },
     },
     analyzing: {
       on: {
         ANALYSIS_COMPLETE: "completed",
         UPDATE_PROGRESS: "analyzing",
-        ERROR: "error"
-      }
+        ERROR: "error",
+      },
     },
     completed: {
       on: {
         START_ANALYSIS: "analyzing",
         SCRIPT_GENERATED: "completed",
-        PLATFORM_ADAPTATION_COMPLETE: "completed"
-      }
+        PLATFORM_ADAPTATION_COMPLETE: "completed",
+      },
     },
     error: {
       on: {
-        START_ANALYSIS: "analyzing"
-      }
-    }
-  }
+        START_ANALYSIS: "analyzing",
+      },
+    },
+  },
 })
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"

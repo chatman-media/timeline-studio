@@ -31,27 +31,39 @@ describe("resource-manager", () => {
       name: "Test Project",
       description: "",
       version: "0.0.1",
-      creator: "Test User",
-      createdDate: new Date().toISOString(),
-      modifiedDate: new Date().toISOString(),
+      createdAt: new Date(),
+      modifiedAt: new Date(),
       framerate: 30,
       sections: [],
+      globalTracks: [],
       duration: 0,
       width: 1920,
       height: 1080,
+      resources: {
+        media: [],
+        effects: [],
+        filters: [],
+        transitions: [],
+        templates: [],
+        styleTemplates: [],
+        timelineTransitions: [],
+      },
     }
   })
 
   describe("addEffectToResources", () => {
     const mockEffect: VideoEffect = {
       id: "effect-1",
-      name: "Test Effect",
-      type: "color",
-      category: "basic",
-      description: "Test effect description",
-      preview: "preview.png",
-      parameters: {},
-      applyEffect: () => ({}),
+      name: {
+        en: "Test Effect",
+        ru: "Тестовый эффект",
+      },
+      category: "color_correction",
+      description: {
+        en: "Test effect description",
+        ru: "Описание тестового эффекта",
+      },
+      parameters: [],
     }
 
     it("should create resources object if not exists", () => {
@@ -64,14 +76,13 @@ describe("resource-manager", () => {
 
     it("should add effect to existing resources", () => {
       mockProject.resources = {
+        media: [],
         effects: [],
         filters: [],
         transitions: [],
         templates: [],
         styleTemplates: [],
-        subtitleStyles: [],
-        music: [],
-        media: [],
+        timelineTransitions: [],
       }
 
       const result = addEffectToResources(mockProject, mockEffect)
@@ -82,14 +93,13 @@ describe("resource-manager", () => {
 
     it("should not add duplicate effects", () => {
       mockProject.resources = {
+        media: [],
         effects: [mockEffect],
         filters: [],
         transitions: [],
         templates: [],
         styleTemplates: [],
-        subtitleStyles: [],
-        music: [],
-        media: [],
+        timelineTransitions: [],
       }
 
       const result = addEffectToResources(mockProject, mockEffect)
@@ -102,12 +112,10 @@ describe("resource-manager", () => {
     const mockFilter: VideoFilter = {
       id: "filter-1",
       name: "Test Filter",
-      type: "blur",
-      category: "basic",
-      description: "Test filter description",
-      preview: "preview.png",
-      parameters: {},
-      applyFilter: () => ({}),
+      category: "color-correction",
+      description: {
+        en: "Test filter description",
+      },
     }
 
     it("should add filter to resources", () => {
@@ -127,6 +135,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [],
+        timelineTransitions: [],
       }
 
       const result = addFilterToResources(mockProject, mockFilter)
@@ -141,11 +150,18 @@ describe("resource-manager", () => {
       name: "Test Transition",
       type: "fade",
       category: "basic",
-      description: "Test transition description",
-      preview: "preview.png",
-      duration: 1000,
-      parameters: {},
-      applyTransition: () => ({}),
+      description: {
+        en: "Test transition description",
+        ru: "Описание тестового перехода",
+      },
+      duration: {
+        default: 1,
+        min: 0.1,
+        max: 5,
+      },
+      parameters: [],
+      complexity: "basic",
+      tags: [],
     }
 
     it("should add transition to resources", () => {
@@ -165,6 +181,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [],
+        timelineTransitions: [],
       }
 
       const result = addTransitionToResources(mockProject, mockTransition)
@@ -177,10 +194,9 @@ describe("resource-manager", () => {
     const mockTemplate: MediaTemplate = {
       id: "template-1",
       name: "Test Template",
-      type: "grid",
-      columns: 2,
-      rows: 2,
-      positions: [],
+      category: "grid",
+      duration: 60,
+      tracks: [],
     }
 
     it("should add template to resources", () => {
@@ -200,6 +216,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [],
+        timelineTransitions: [],
       }
 
       const result = addTemplateToResources(mockProject, mockTemplate)
@@ -211,17 +228,21 @@ describe("resource-manager", () => {
   describe("addStyleTemplateToResources", () => {
     const mockStyleTemplate: StyleTemplate = {
       id: "style-template-1",
-      name: "Test Style Template",
-      category: "intro",
-      description: "Test style template",
-      preview: "preview.png",
-      duration: 5000,
-      hasAudio: false,
-      parameters: {
-        text: [],
-        colors: [],
-        media: [],
+      name: {
+        en: "Test Style Template",
+        ru: "Тестовый стиль шаблон",
       },
+      category: "intro",
+      description: {
+        en: "Test style template",
+        ru: "Тестовый стиль шаблон",
+      },
+      duration: 5,
+      hasText: true,
+      hasAnimation: true,
+      style: "modern",
+      aspectRatio: "16:9",
+      elements: [],
     }
 
     it("should add style template to resources", () => {
@@ -241,6 +262,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [],
+        timelineTransitions: [],
       }
 
       const result = addStyleTemplateToResources(mockProject, mockStyleTemplate)
@@ -255,10 +277,9 @@ describe("resource-manager", () => {
       name: "test.mp4",
       path: "/path/to/test.mp4",
       size: 1000000,
-      type: "video",
       format: "mp4",
       duration: 10,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     }
 
     it("should add media to resources", () => {
@@ -289,13 +310,16 @@ describe("resource-manager", () => {
   describe("createAppliedEffect", () => {
     const mockEffect: VideoEffect = {
       id: "effect-1",
-      name: "Test Effect",
-      type: "color",
-      category: "basic",
-      description: "Test effect description",
-      preview: "preview.png",
-      parameters: {},
-      applyEffect: () => ({}),
+      name: {
+        en: "Test Effect",
+        ru: "Тестовый эффект",
+      },
+      category: "color_correction",
+      description: {
+        en: "Test effect description",
+        ru: "Описание тестового эффекта",
+      },
+      parameters: [],
     }
 
     it("should create applied effect and add to resources", () => {
@@ -317,12 +341,10 @@ describe("resource-manager", () => {
     const mockFilter: VideoFilter = {
       id: "filter-1",
       name: "Test Filter",
-      type: "blur",
-      category: "basic",
-      description: "Test filter description",
-      preview: "preview.png",
-      parameters: {},
-      applyFilter: () => ({}),
+      category: "color_correction",
+      description: {
+        en: "Test filter description",
+      },
     }
 
     it("should create applied filter and add to resources", () => {
@@ -346,11 +368,18 @@ describe("resource-manager", () => {
       name: "Test Transition",
       type: "fade",
       category: "basic",
-      description: "Test transition description",
-      preview: "preview.png",
-      duration: 1000,
-      parameters: {},
-      applyTransition: () => ({}),
+      description: {
+        en: "Test transition description",
+        ru: "Описание тестового перехода",
+      },
+      duration: {
+        default: 1,
+        min: 0.1,
+        max: 5,
+      },
+      parameters: [],
+      complexity: "basic",
+      tags: [],
     }
 
     it("should create applied transition and add to resources", () => {
@@ -378,17 +407,21 @@ describe("resource-manager", () => {
   describe("createAppliedStyleTemplate", () => {
     const mockStyleTemplate: StyleTemplate = {
       id: "style-template-1",
-      name: "Test Style Template",
-      category: "intro",
-      description: "Test style template",
-      preview: "preview.png",
-      duration: 5000,
-      hasAudio: false,
-      parameters: {
-        text: [],
-        colors: [],
-        media: [],
+      name: {
+        en: "Test Style Template",
+        ru: "Тестовый стиль шаблон",
       },
+      category: "intro",
+      description: {
+        en: "Test style template",
+        ru: "Тестовый стиль шаблон",
+      },
+      duration: 5,
+      hasText: true,
+      hasAnimation: true,
+      style: "modern",
+      aspectRatio: "16:9",
+      elements: [],
     }
 
     it("should create applied style template and add to resources", () => {
@@ -416,24 +449,32 @@ describe("resource-manager", () => {
     it("should remove unused resources from project", () => {
       const usedEffect: VideoEffect = {
         id: "used-effect",
-        name: "Used Effect",
+        name: {
+          en: "Used Effect",
+          ru: "Используемый эффект",
+        },
         type: "sepia",
-        category: "artistic",
-        description: "Used",
-        preview: "preview.png",
-        parameters: {},
-        applyEffect: () => ({}),
+        category: "color_correction",
+        description: {
+          en: "Used",
+          ru: "Используется",
+        },
+        parameters: [],
       }
 
       const unusedEffect: VideoEffect = {
         id: "unused-effect",
-        name: "Unused Effect",
+        name: {
+          en: "Unused Effect",
+          ru: "Неиспользуемый эффект",
+        },
         type: "sepia",
-        category: "artistic",
-        description: "Unused",
-        preview: "preview.png",
-        parameters: {},
-        applyEffect: () => ({}),
+        category: "color_correction",
+        description: {
+          en: "Unused",
+          ru: "Не используется",
+        },
+        parameters: [],
       }
 
       const usedMedia: MediaFile = {
@@ -441,10 +482,9 @@ describe("resource-manager", () => {
         name: "used.mp4",
         path: "/path/to/used.mp4",
         size: 1000000,
-        type: "video",
         format: "mp4",
         duration: 10,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       }
 
       const unusedMedia: MediaFile = {
@@ -452,10 +492,9 @@ describe("resource-manager", () => {
         name: "unused.mp4",
         path: "/path/to/unused.mp4",
         size: 1000000,
-        type: "video",
         format: "mp4",
         duration: 10,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       }
 
       mockProject.resources = {
@@ -479,17 +518,14 @@ describe("resource-manager", () => {
             {
               id: "track-1",
               name: "Track 1",
-              type: "video",
               order: 0,
               height: 100,
               isLocked: false,
-              isVisible: true,
               clips: [
                 {
                   id: "clip-1",
                   trackId: "track-1",
                   mediaId: "used-media",
-                  start: 0,
                   duration: 5,
                   offset: 0,
                   effects: [
@@ -524,12 +560,16 @@ describe("resource-manager", () => {
       const usedFilter: VideoFilter = {
         id: "used-filter",
         name: "Used Filter",
-        type: "blur",
-        category: "basic",
-        description: "Used",
-        preview: "preview.png",
-        parameters: {},
-        applyFilter: () => ({}),
+        category: "color-correction",
+        complexity: "basic",
+        tags: [],
+        description: {
+          en: "Used",
+        },
+        labels: {
+          en: "Used Filter",
+        },
+        params: {},
       }
 
       mockProject.resources = {
@@ -541,6 +581,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [],
+        timelineTransitions: [],
       }
 
       mockProject.globalTracks = [
@@ -551,7 +592,6 @@ describe("resource-manager", () => {
           order: 0,
           height: 100,
           isLocked: false,
-          isVisible: true,
           trackFilters: [
             {
               id: "applied-filter-1",

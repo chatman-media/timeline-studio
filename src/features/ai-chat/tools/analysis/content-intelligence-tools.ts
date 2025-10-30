@@ -1213,7 +1213,7 @@ export class ContentIntelligenceTool extends BaseAITool {
       const demographics = await ageGenderService.analyzeScenes({
         id: "temp",
         path: videoPath,
-        filename: "temp", 
+        filename: "temp",
         size: 0,
         type: "video",
         duration: 0,

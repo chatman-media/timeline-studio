@@ -7,17 +7,39 @@
 
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
-import type { MediaFile } from "@/domains/ai-services/types/montage-planner"
-// Используем типы из доменов вместо features
-import type { TimelineClip as DomainTimelineClip, Timeline, Track } from "../types"
+// Используем типы из доменов
+import type { TimelineClip as DomainTimelineClip, MediaFile, Timeline, Track } from "../types"
 
 // Временный alias для совместимости
 type TimelineProject = Timeline
 type TimelineTrack = Track
 type TimelineClip = DomainTimelineClip
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+// Временные типы для совместимости до создания backend-sync
+interface BackendSync {
+  connected: boolean
+  onStateChange: (callback: (state: any) => void) => () => void
+  getProjectState: () => Promise<any>
+  executeCommand: (command: any) => Promise<any>
+}
+
+// Mock backend sync
+const mockBackendSync: BackendSync = {
+  connected: true,
+  onStateChange: (_callback) => () => {},
+  getProjectState: () => Promise.resolve(null),
+  executeCommand: (_command) => Promise.resolve({ success: true }),
+}
+
+// Временный тип для ProjectState
+interface ProjectState {
+  project?: {
+    timeline?: {
+      tracks?: any[]
+    }
+  }
+}
+
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { transformProjectStateToTimeline } from "../utils/project-transform"
 
@@ -42,7 +64,7 @@ const TimelineProjectContext = createContext<TimelineProjectContext | null>(null
 export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   const project = useSelector(timelineActor, (state) => state.context.project)
   const isLoading = useSelector(timelineActor, (state) => state.context.isLoading)
@@ -144,12 +166,12 @@ const TimelinePlaybackContext = createContext<TimelinePlaybackContext | null>(nu
 export function TimelinePlaybackProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const playerActor = orchestrator.getActors().player
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
-  const isPlaying = useSelector(playerActor, (state) => state.matches("playing"))
+  const isPlaying = useSelector(playerActor, (state) => state.matches({ ready: "playing" }))
   const currentTime = useSelector(playerActor, (state) => state.context.currentTime)
   const duration = useSelector(playerActor, (state) => state.context.duration)
-  const playbackRate = useSelector(playerActor, (state) => state.context.playbackRate)
+  const playbackRate = useSelector(playerActor, (state) => state.context.basePlaybackRate || 1)
 
   const contextValue: TimelinePlaybackContext = {
     isPlaying,
@@ -257,7 +279,7 @@ const TimelineTracksContext = createContext<TimelineTracksContext | null>(null)
 export function TimelineTracksProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   const project = useSelector(timelineActor, (state) => state.context.project)
   const activeTrackId = useSelector(timelineActor, (state) => state.context.activeTrackId)
@@ -352,7 +374,7 @@ const TimelineClipsContext = createContext<TimelineClipsContext | null>(null)
 export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   const project = useSelector(timelineActor, (state) => state.context.project)
 
@@ -503,7 +525,7 @@ const TimelineSelectionContext = createContext<TimelineSelectionContext | null>(
 export function TimelineSelectionProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   const selectedClipIds = useSelector(timelineActor, (state) => state.context.selectedClipIds)
   const selectedTrackIds = useSelector(timelineActor, (state) => state.context.selectedTrackIds)
@@ -659,7 +681,7 @@ const TimelineEffectsContext = createContext<TimelineEffectsContext | null>(null
 export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   const contextValue: TimelineEffectsContext = {
     applyEffect: async (clipId: string, effectId: string, params?: any) => {

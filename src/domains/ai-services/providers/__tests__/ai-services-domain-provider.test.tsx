@@ -15,6 +15,15 @@ import {
 import "@/test/mocks/backend-sync"
 
 // Mock getBackendSync
+vi.mock("@/features/app-state/services/backend-sync", () => ({
+  getBackendSync: vi.fn(() => ({
+    connected: true,
+    executeCommand: vi.fn().mockResolvedValue({ success: true, data: {} }),
+    onStateChange: vi.fn().mockReturnValue(vi.fn()),
+    onEvent: vi.fn().mockReturnValue(vi.fn()),
+  })),
+}))
+
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 
 // Mock machines
@@ -43,39 +52,39 @@ const mockIntelligenceSend = vi.fn()
 
 vi.mock("@xstate/react", () => ({
   useActor: vi.fn((machine) => {
-    if (machine.provide === vi.mocked(vi.importActual("../../machines/chat-machine")).chatMachine?.provide) {
+    // Chat machine mock
+    if (machine?.id?.includes?.("chat") || machine?.toString?.()?.includes?.("chat")) {
       return [
         {
           context: {
-            messages: [],
-            isLoading: false,
+            chatMessages: [],
+            isProcessing: false,
             error: null,
           },
         },
         mockChatSend,
       ]
     }
-    if (
-      machine.provide ===
-      vi.mocked(vi.importActual("../../machines/montage-planner-machine")).montagePlannerMachine?.provide
-    ) {
+    // Montage planner machine mock
+    if (machine?.id?.includes?.("montage") || machine?.toString?.()?.includes?.("montage")) {
       return [
         {
           context: {
             isAnalyzing: false,
-            montagePlan: null,
+            currentPlan: null,
             error: null,
           },
         },
         mockMontageSend,
       ]
     }
+    // AI intelligence machine mock (default)
     return [
       {
         context: {
-          isAnalyzing: false,
-          analysisResults: null,
-          error: null,
+          progress: 0,
+          result: null,
+          errors: [],
         },
       },
       mockIntelligenceSend,

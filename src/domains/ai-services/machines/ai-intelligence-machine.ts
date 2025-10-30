@@ -206,22 +206,24 @@ async function getAIService(): Promise<any> {
   return aiService
 }
 
+import type { AIConfig } from "../../shared/types/ai-tools/ai-config"
 import { ContentType, Emotion } from "../../shared/types/ai-tools/content-analysis"
-// Import IntelligentContent from pipeline types
-import type { IntelligentContent } from "../../shared/types/ai-tools/pipeline"
+// Import types from shared pipeline types
+import type {
+  PipelineContentClassification as ContentClassification,
+  IntelligentContent,
+  ProcessedMoment,
+} from "../../shared/types/ai-tools/pipeline"
 // Import enums and values (not types) - use shared ones
 import { ProcessingStatus } from "../../shared/types/ai-tools/pipeline"
-// Import types from domain
+import type { AdaptedContent, PlatformId } from "../../shared/types/ai-tools/platform-adaptation"
+import type { GeneratedScript, ScriptGenerationParams } from "../../shared/types/ai-tools/script-generation"
+// Import types from domain - only what we need
 import type {
-  AdaptedContent,
-  AIConfig,
   AIIntelligenceContext,
   AIIntelligenceEvent,
   ContentInsights,
-  GeneratedScript,
   MediaFile,
-  PlatformId,
-  ScriptGenerationParams,
   UnifiedContentAnalysis,
 } from "../types/ai-intelligence"
 
@@ -504,40 +506,62 @@ export const aiIntelligenceMachine = setup({
     }),
 
     prepareResult: assign({
-      result: ({ context }) => {
-        const result: IntelligentContent = {
-          id: `intelligent-content-${Date.now()}`,
-          projectId: `project-${Date.now()}`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          analysis: context.analysis!,
-          script: context.script,
-          moments: context.moments || [],
-          classification: context.classification || {
-            primary: { category: "unknown", confidence: 0 },
-            secondary: [],
-            confidence: 0,
-            tags: [],
+      result: ({ context }): IntelligentContent => ({
+        id: `intelligent-content-${Date.now()}`,
+        projectId: `project-${Date.now()}`,
+        type: "content-analysis" as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        analysis: context.analysis!,
+        script: context.script,
+        moments: (context.moments || []).map((moment) => ({
+          id: moment.id,
+          timestamp: moment.timestamp,
+          type: moment.type,
+          confidence: moment.confidence || 0,
+          duration: 1, // default duration
+          score: moment.confidence || 0,
+          description: `Moment at ${moment.timestamp}s`,
+          tags: [moment.type],
+          metadata: moment.metadata,
+        })) as ProcessedMoment[],
+        classification: {
+          primary: {
+            category: context.classification?.category || "unknown",
+            confidence: context.classification?.confidence || 0,
           },
-          platformContent: context.platformContent,
-          metadata: {
-            startTime: context.steps[0]?.startTime || new Date(),
-            endTime: new Date(),
-            duration: Date.now() - (context.steps[0]?.startTime?.getTime() || Date.now()),
-            config: context.config,
-            steps: context.steps,
-            resources: {
-              cpuUsage: 0,
-              memoryUsage: 0,
-              apiCalls: [],
-              cacheHits: 0,
-              cacheMisses: 0,
+          secondary: [],
+          confidence: context.classification?.confidence || 0,
+          tags: context.classification?.tags || [],
+        } as ContentClassification,
+        platformContent: context.platformContent,
+        suggestions: [],
+        metadata: {
+          startTime: context.steps[0]?.startTime || new Date(),
+          endTime: new Date(),
+          duration: Date.now() - (context.steps[0]?.startTime?.getTime() || Date.now()),
+          config: {
+            providers: {},
+            defaultProvider: "claude",
+            processing: {
+              enablePipeline: true,
+              enableCaching: true,
+              maxRetries: 3,
+              timeout: 30000,
             },
-            errors: context.errors.length > 0 ? context.errors : undefined,
+            quality: "high",
+          } as AIConfig,
+          steps: context.steps,
+          resources: {
+            cpuUsage: 0,
+            memoryUsage: 0,
+            apiCalls: [],
+            cacheHits: 0,
+            cacheMisses: 0,
           },
-        }
-        return result
-      },
+          errors: context.errors.length > 0 ? context.errors : undefined,
+        },
+      }),
     }),
 
     emitProgress: emit(({ context }) => ({

@@ -34,6 +34,7 @@ interface TextDetection {
 interface IVisionService {
   extractText: (imagePath: string) => Promise<TextDetection[]>
 }
+
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 import { WhisperIntegrationService } from "./whisper-integration"
 

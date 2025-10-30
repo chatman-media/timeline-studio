@@ -5,6 +5,8 @@
 export type { ChatMachineEvent } from "../machines/chat-machine"
 export type { MontagePlannerEvent } from "../machines/montage-planner-machine"
 export * from "./ai-config"
+// Export specific types needed by provider
+export type { AIIntelligenceContext, AIIntelligenceEvent, AIServicesDomainConfig } from "./ai-intelligence"
 // Other core types
 export * from "./ai-intelligence"
 // Export MediaFile from interfaces as the canonical one

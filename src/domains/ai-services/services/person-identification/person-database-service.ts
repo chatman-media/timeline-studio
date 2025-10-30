@@ -16,7 +16,7 @@ import type {
   PersonSearchResult,
   PersonStats,
   PersonThumbnail,
-} from "../types/person"
+} from "@/features/person-identification/types/person"
 
 // Расширенный тип для лица с embedding
 interface DetectedFaceWithEmbedding extends DetectedFace {
