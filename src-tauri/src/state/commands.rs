@@ -1,6 +1,6 @@
 use super::browser::{BrowserEvent, BrowserTab, SortOrder, ViewMode};
 use super::chat::{ChatCommand, ChatEvent, ChatSession};
-use super::project_state::{Clip, MediaType, ProjectSettings, TrackType};
+use super::project_state::{Clip, MediaType, ProjectSettings, Track, TrackType};
 use super::{EventBus, PersistenceService, ProjectEvent, ProjectState};
 use chrono;
 use serde::{Deserialize, Serialize};
@@ -502,7 +502,16 @@ impl CommandHandler {
   pub async fn execute(&self, command: ProjectCommand) -> CommandResult {
     match command {
       ProjectCommand::CreateProject { name, settings } => self.create_project(name, settings).await,
+      ProjectCommand::OpenProject { path } => self.open_project(path).await,
       ProjectCommand::SaveProject { path } => self.save_project(path).await,
+      ProjectCommand::CloseProject => self.close_project().await,
+
+      // Track commands
+      ProjectCommand::AddTrack { name, track_type, index } => self.add_track(name, track_type, index).await,
+      ProjectCommand::DeleteTrack { track_id } => self.delete_track(track_id).await,
+      ProjectCommand::UpdateTrack { track_id, updates } => self.update_track(track_id, updates).await,
+
+      // Clip commands
       ProjectCommand::AddClip {
         track_id,
         media_id,
@@ -513,9 +522,16 @@ impl CommandHandler {
         track_id,
         time,
       } => self.move_clip(clip_id, track_id, time).await,
+      ProjectCommand::TrimClip { clip_id, start, end } => self.trim_clip(clip_id, start, end).await,
+      ProjectCommand::DeleteClip { clip_id } => self.delete_clip(clip_id).await,
+      ProjectCommand::UpdateClip { clip_id, updates } => self.update_clip(clip_id, updates).await,
+
+      // Player commands
       ProjectCommand::Play => self.play().await,
       ProjectCommand::Pause => self.pause().await,
+      ProjectCommand::Stop => self.stop().await,
       ProjectCommand::Seek { time } => self.seek(time).await,
+      ProjectCommand::SetPlaybackRate { rate } => self.set_playback_rate(rate).await,
 
       // Player commands
       ProjectCommand::PlayerSetMedia {
@@ -784,10 +800,17 @@ impl CommandHandler {
         self.validate_ai_api_key(provider, api_key).await
       }
 
+      // Selection commands
+      ProjectCommand::SelectClips { clip_ids, add_to_selection } => {
+        self.select_clips(clip_ids, add_to_selection).await
+      }
+      ProjectCommand::SelectTracks { track_ids, add_to_selection } => {
+        self.select_tracks(track_ids, add_to_selection).await
+      }
+      ProjectCommand::ClearSelection => self.clear_selection().await,
+
       // System commands
       ProjectCommand::ReconnectNotify { timestamp } => self.reconnect_notify(timestamp).await,
-
-      _ => CommandResult::error("Command not implemented yet".to_string()),
     }
   }
 
@@ -3077,5 +3100,447 @@ impl CommandHandler {
       },
       _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
     }
+  }
+
+  // Selection commands implementation
+  async fn select_clips(&self, clip_ids: Vec<String>, add_to_selection: bool) -> CommandResult {
+    log::info!("Selecting clips: {:?}, add_to_selection: {}", clip_ids, add_to_selection);
+
+    let mut state = self.state.write().await;
+    
+    if add_to_selection {
+      // Add to existing selection
+      state.ui_state.selected_clips.extend(clip_ids.clone());
+    } else {
+      // Replace selection
+      state.ui_state.selected_clips = clip_ids.clone();
+    }
+    
+    // Remove duplicates
+    state.ui_state.selected_clips.sort();
+    state.ui_state.selected_clips.dedup();
+    
+    state.mark_dirty();
+
+    self.event_bus.publish(
+      ProjectEvent::SelectionChanged {
+        selected_clips: state.ui_state.selected_clips.clone(),
+        selected_tracks: state.ui_state.selected_tracks.clone(),
+      },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "selected_clips": clip_ids,
+      "add_to_selection": add_to_selection
+    })))
+  }
+
+  async fn select_tracks(&self, track_ids: Vec<String>, add_to_selection: bool) -> CommandResult {
+    log::info!("Selecting tracks: {:?}, add_to_selection: {}", track_ids, add_to_selection);
+
+    let mut state = self.state.write().await;
+    
+    if add_to_selection {
+      // Add to existing selection
+      state.ui_state.selected_tracks.extend(track_ids.clone());
+    } else {
+      // Replace selection
+      state.ui_state.selected_tracks = track_ids.clone();
+    }
+    
+    // Remove duplicates
+    state.ui_state.selected_tracks.sort();
+    state.ui_state.selected_tracks.dedup();
+    
+    state.mark_dirty();
+
+    self.event_bus.publish(
+      ProjectEvent::SelectionChanged {
+        selected_clips: state.ui_state.selected_clips.clone(),
+        selected_tracks: state.ui_state.selected_tracks.clone(),
+      },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "selected_tracks": track_ids,
+      "add_to_selection": add_to_selection
+    })))
+  }
+
+  async fn clear_selection(&self) -> CommandResult {
+    log::info!("Clearing all selection");
+
+    let mut state = self.state.write().await;
+    
+    state.ui_state.selected_clips.clear();
+    state.ui_state.selected_tracks.clear();
+    state.mark_dirty();
+
+    self.event_bus.publish(
+      ProjectEvent::SelectionChanged {
+        selected_clips: state.ui_state.selected_clips.clone(),
+        selected_tracks: state.ui_state.selected_tracks.clone(),
+      },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "cleared": true
+    })))
+  }
+
+  // Basic project commands implementation
+  async fn open_project(&self, path: String) -> CommandResult {
+    log::info!("Opening project from path: {}", path);
+
+    match self.persistence.load_project(&path).await {
+      Ok(project_state) => {
+        let mut state = self.state.write().await;
+        *state = project_state;
+        state.mark_dirty();
+
+        self.event_bus.publish(
+          ProjectEvent::ProjectOpened {
+            project_id: state.project.as_ref().unwrap().id.clone(),
+            path: path.clone(),
+          },
+          "command_handler".to_string(),
+          state.version,
+        ).await.ok();
+
+        CommandResult::success(Some(serde_json::json!({ "path": path })))
+      }
+      Err(e) => CommandResult::error(format!("Failed to open project: {}", e))
+    }
+  }
+
+  async fn close_project(&self) -> CommandResult {
+    log::info!("Closing current project");
+
+    let mut state = self.state.write().await;
+    let project_id = state.project.as_ref().map(|p| p.id.clone()).unwrap_or_default();
+    
+    state.project = None;
+    state.ui_state = Default::default();
+    state.mark_dirty();
+
+    self.event_bus.publish(
+      ProjectEvent::ProjectClosed { project_id },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(None)
+  }
+
+  // Track commands implementation
+  async fn add_track(&self, name: String, track_type: TrackType, index: Option<u32>) -> CommandResult {
+    log::info!("Adding track: {} of type {:?} at index {:?}", name, track_type, index);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    let track_id = uuid::Uuid::new_v4().to_string();
+    let track_name = name.clone();
+    let track_type_str = format!("{:?}", track_type);
+    let new_track = Track {
+      id: track_id.clone(),
+      name,
+      track_type,
+      enabled: true,
+      locked: false,
+      height: 64, // Default height
+      clips: Vec::new(),
+      effects: Vec::new(),
+      volume: 1.0,
+      pan: 0.0,
+    };
+
+    let insert_index = if let Some(idx) = index {
+      let insert_pos = (idx as usize).min(project.timeline.tracks.len());
+      project.timeline.tracks.insert(insert_pos, new_track);
+      insert_pos as u32
+    } else {
+      project.timeline.tracks.push(new_track);
+      project.timeline.tracks.len() as u32 - 1
+    };
+
+    state.mark_dirty();
+
+    self.event_bus.publish(
+      ProjectEvent::TrackAdded {
+        track: super::events::TrackData {
+          id: track_id.clone(),
+          name: track_name,
+          track_type: track_type_str,
+          index: insert_index,
+        },
+      },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(Some(serde_json::json!({ "track_id": track_id })))
+  }
+
+  async fn delete_track(&self, track_id: String) -> CommandResult {
+    log::info!("Deleting track: {}", track_id);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    let track_index = project.timeline.tracks.iter().position(|t| t.id == track_id);
+    
+    match track_index {
+      Some(index) => {
+        project.timeline.tracks.remove(index);
+        state.mark_dirty();
+
+        self.event_bus.publish(
+          ProjectEvent::TrackDeleted {
+            track_id: track_id.clone(),
+          },
+          "command_handler".to_string(),
+          state.version,
+        ).await.ok();
+
+        CommandResult::success(Some(serde_json::json!({ "deleted_track_id": track_id })))
+      }
+      None => CommandResult::error(format!("Track not found: {}", track_id))
+    }
+  }
+
+  async fn update_track(&self, track_id: String, updates: TrackUpdates) -> CommandResult {
+    log::info!("Updating track: {} with updates: {:?}", track_id, updates);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    let track = project.timeline.tracks.iter_mut().find(|t| t.id == track_id);
+    
+    match track {
+      Some(track) => {
+        let track_name_change = updates.name.clone();
+        
+        if let Some(name) = updates.name {
+          track.name = name;
+        }
+        if let Some(enabled) = updates.enabled {
+          track.enabled = enabled;
+        }
+        if let Some(locked) = updates.locked {
+          track.locked = locked;
+        }
+        if let Some(volume) = updates.volume {
+          track.volume = volume;
+        }
+        if let Some(height) = updates.height {
+          track.height = height;
+        }
+
+        state.mark_dirty();
+
+        self.event_bus.publish(
+          ProjectEvent::TrackUpdated {
+            track_id: track_id.clone(),
+            changes: super::events::TrackChanges {
+              name: track_name_change,
+              enabled: updates.enabled,
+              locked: updates.locked,
+              volume: updates.volume,
+              height: updates.height,
+            },
+          },
+          "command_handler".to_string(),
+          state.version,
+        ).await.ok();
+
+        CommandResult::success(Some(serde_json::json!({ "updated_track_id": track_id })))
+      }
+      None => CommandResult::error(format!("Track not found: {}", track_id))
+    }
+  }
+
+  // Clip commands implementation
+  async fn trim_clip(&self, clip_id: String, start: f64, end: f64) -> CommandResult {
+    log::info!("Trimming clip: {} from {} to {}", clip_id, start, end);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip across all tracks
+    let mut clip_found = false;
+    for track in &mut project.timeline.tracks {
+      if let Some(clip) = track.clips.iter_mut().find(|c| c.id == clip_id) {
+        clip.timeline_in = start;
+        clip.timeline_out = end;
+        clip_found = true;
+        break;
+      }
+    }
+
+    if clip_found {
+      state.mark_dirty();
+
+      self.event_bus.publish(
+        ProjectEvent::ClipTrimmed {
+          clip_id: clip_id.clone(),
+          new_in: start,
+          new_out: end,
+        },
+        "command_handler".to_string(),
+        state.version,
+      ).await.ok();
+
+      CommandResult::success(Some(serde_json::json!({ 
+        "trimmed_clip_id": clip_id,
+        "start": start,
+        "end": end
+      })))
+    } else {
+      CommandResult::error(format!("Clip not found: {}", clip_id))
+    }
+  }
+
+  async fn delete_clip(&self, clip_id: String) -> CommandResult {
+    log::info!("Deleting clip: {}", clip_id);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find and remove the clip from any track
+    let mut clip_found = false;
+    for track in &mut project.timeline.tracks {
+      if let Some(index) = track.clips.iter().position(|c| c.id == clip_id) {
+        track.clips.remove(index);
+        clip_found = true;
+        break;
+      }
+    }
+
+    if clip_found {
+      state.mark_dirty();
+
+      self.event_bus.publish(
+        ProjectEvent::ClipDeleted {
+          clip_id: clip_id.clone(),
+          track_id: "unknown".to_string(), // We don't track which track it was from
+        },
+        "command_handler".to_string(),
+        state.version,
+      ).await.ok();
+
+      CommandResult::success(Some(serde_json::json!({ "deleted_clip_id": clip_id })))
+    } else {
+      CommandResult::error(format!("Clip not found: {}", clip_id))
+    }
+  }
+
+  async fn update_clip(&self, clip_id: String, updates: ClipUpdates) -> CommandResult {
+    log::info!("Updating clip: {} with updates: {:?}", clip_id, updates);
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip across all tracks
+    let mut clip_found = false;
+    let clip_name_change = updates.name.clone();
+    
+    for track in &mut project.timeline.tracks {
+      if let Some(clip) = track.clips.iter_mut().find(|c| c.id == clip_id) {
+        if let Some(name) = updates.name {
+          clip.name = name;
+        }
+        if let Some(playback_rate) = updates.playback_rate {
+          clip.playback_rate = playback_rate;
+        }
+        if let Some(enabled) = updates.enabled {
+          clip.enabled = enabled;
+        }
+        clip_found = true;
+        break;
+      }
+    }
+
+    if clip_found {
+      state.mark_dirty();
+
+      self.event_bus.publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: clip_name_change,
+            playback_rate: updates.playback_rate,
+            volume: None, // Not in updates
+            effects: None, // Not in updates
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      ).await.ok();
+
+      CommandResult::success(Some(serde_json::json!({ "updated_clip_id": clip_id })))
+    } else {
+      CommandResult::error(format!("Clip not found: {}", clip_id))
+    }
+  }
+
+  // Player commands implementation
+  async fn stop(&self) -> CommandResult {
+    log::info!("Stopping player");
+
+    let mut state = self.state.write().await;
+    state.playback_state.is_playing = false;
+    state.playback_state.current_time = 0.0;
+
+    self.event_bus.publish(
+      ProjectEvent::PlaybackStopped {
+        time: 0.0,
+      },
+      "command_handler".to_string(),
+      state.version,
+    ).await.ok();
+
+    CommandResult::success(Some(serde_json::json!({ "stopped": true })))
+  }
+
+  async fn set_playback_rate(&self, rate: f64) -> CommandResult {
+    log::info!("Setting playback rate to: {}", rate);
+
+    let mut state = self.state.write().await;
+    state.playback_state.playback_rate = rate;
+
+    CommandResult::success(Some(serde_json::json!({ 
+      "playback_rate": rate 
+    })))
   }
 }

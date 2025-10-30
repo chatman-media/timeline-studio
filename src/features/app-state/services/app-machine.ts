@@ -7,9 +7,10 @@
 
 // Re-export everything from the new domain location
 export type {
-  AppMachine,
   AppMachineContext,
   AppMachineEvent,
 } from "@/domains/project-management/machines/app-machine"
+
+export type { appMachine as AppMachine } from "@/domains/project-management/machines/app-machine"
 
 export { AppCommands, appMachine } from "@/domains/project-management/machines/app-machine"

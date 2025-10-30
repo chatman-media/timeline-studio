@@ -4,8 +4,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { PipelineProgress } from "@/domains/shared/types/ai-tools/pipeline"
-import type { AIConfig, IntelligentContent } from "@/domains/shared/types/ai-tools/pipeline"
+import type { PipelineProgress, IntelligentContent } from "@/domains/shared/types/ai-tools/pipeline"
+import type { AIConfig } from "@/domains/shared/types/ai-tools/ai-config"
 import {
   AccuracyLevel,
   AIProvider,

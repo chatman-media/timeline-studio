@@ -104,7 +104,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
   return {
     // Хук для получения данных
     useData: () => ({
-      items: allMediaFiles as MediaListItem[],
+      items: allMediaFiles as unknown as MediaListItem[],
       loading: mediaLoading,
       error: connectionError ? new Error(connectionError) : null,
     }),

@@ -14,11 +14,14 @@ export type {
 } from "@/domains/shared/types/ai-tools/platform-adaptation"
 
 export type {
-  AIConfig,
-  AIProvider,
   GeneratedScript,
   ScriptGenerationParams,
 } from "@/domains/shared/types/ai-tools/script-generation"
+
+export type {
+  AIConfig,
+  AIProvider,
+} from "@/domains/shared/types/ai-tools/ai-config"
 
 export type {
   UnifiedContentAnalysis,

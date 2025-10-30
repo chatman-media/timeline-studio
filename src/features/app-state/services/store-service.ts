@@ -103,7 +103,7 @@ export class StoreService {
 
     try {
       // Используем метод load вместо конструктора Store
-      this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true })
+      this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
       this.isInitialized = true
       console.log("[StoreService] Store initialized successfully")
 
@@ -118,7 +118,7 @@ export class StoreService {
       console.error("[StoreService] Error initializing store:", error)
       // Попытаемся создать новое хранилище
       try {
-        this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true })
+        this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
         if (this.store) {
           await this.store.save()
         }

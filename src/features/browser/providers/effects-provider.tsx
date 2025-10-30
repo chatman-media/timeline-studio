@@ -353,7 +353,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
         })
 
         if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data
+          const { effects = [], filters = [], transitions = [] } = response.data as any
           this.resources.set("effect:local", effects)
           this.resources.set("filter:local", filters)
           this.resources.set("transition:local", transitions)
@@ -402,7 +402,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
         })
 
         if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data
+          const { effects = [], filters = [], transitions = [] } = response.data as any
           this.resources.set("effect:remote", effects)
           this.resources.set("filter:remote", filters)
           this.resources.set("transition:remote", transitions)
@@ -445,7 +445,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
         })
 
         if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data
+          const { effects = [], filters = [], transitions = [] } = response.data as any
           this.resources.set("effect:imported", effects)
           this.resources.set("filter:imported", filters)
           this.resources.set("transition:imported", transitions)
@@ -664,7 +664,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           params: {
             resource_id: resource.id,
             resource_type: type,
-            data: resource,
+            data: resource as any,
             metadata: {},
           },
         })
@@ -811,7 +811,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
       api.setBackendConnected(true)
 
       // Восстанавливаем пользовательские ресурсы из backend
-      if (state.resources_state) {
+      if ((state as any).resources_state) {
         console.log("[EffectsProvider] Restoring resources from backend state")
         // Backend может отправлять уже загруженные ресурсы
         // для быстрой инициализации
