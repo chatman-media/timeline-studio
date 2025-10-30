@@ -10,9 +10,9 @@ pub async fn init_advanced_tracking(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<String, String> {
   log::info!("Initializing advanced tracking with config: {:?}", config);
-  
+
   let tracking_id = Uuid::new_v4().to_string();
-  
+
   // TODO: Implement actual tracking initialization
   Ok(tracking_id)
 }
@@ -25,7 +25,7 @@ pub async fn start_person_tracking(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<TrackingSession, String> {
   log::info!("Starting person tracking for video: {}", video_path);
-  
+
   // TODO: Implement actual person tracking
   Ok(TrackingSession {
     id: Uuid::new_v4().to_string(),
@@ -44,14 +44,18 @@ pub async fn assign_person_to_track(
   confidence: f32,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<(), String> {
-  log::info!("Assigning person {} to track {} with confidence {}", 
-    person_id, track_id, confidence);
-  
+  log::info!(
+    "Assigning person {} to track {} with confidence {}",
+    person_id,
+    track_id,
+    confidence
+  );
+
   // TODO: Implement actual person assignment
   Ok(())
 }
 
-/// Merge two tracking results 
+/// Merge two tracking results
 #[tauri::command]
 pub async fn merge_tracks(
   primary_track_id: String,
@@ -59,9 +63,13 @@ pub async fn merge_tracks(
   merge_strategy: MergeStrategy,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<TrackMergeResult, String> {
-  log::info!("Merging tracks {} and {} with strategy {:?}", 
-    primary_track_id, secondary_track_id, merge_strategy);
-  
+  log::info!(
+    "Merging tracks {} and {} with strategy {:?}",
+    primary_track_id,
+    secondary_track_id,
+    merge_strategy
+  );
+
   // TODO: Implement actual track merging
   Ok(TrackMergeResult {
     merged_track_id: primary_track_id,
@@ -78,7 +86,7 @@ pub async fn stop_person_tracking(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<TrackingResults, String> {
   log::info!("Stopping person tracking session: {}", session_id);
-  
+
   // TODO: Implement actual tracking stop
   Ok(TrackingResults {
     session_id,
@@ -98,7 +106,7 @@ pub async fn update_tracking_config(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("Updating tracking config for session: {}", session_id);
-  
+
   // TODO: Implement actual config update
   Ok(())
 }
@@ -112,7 +120,7 @@ pub async fn cleanup_tracking(
 ) -> Result<CleanupResult, String> {
   let days = older_than_days.unwrap_or(30);
   log::info!("Cleaning up tracking data older than {} days", days);
-  
+
   // TODO: Implement actual cleanup
   Ok(CleanupResult {
     cleaned_sessions: 0,

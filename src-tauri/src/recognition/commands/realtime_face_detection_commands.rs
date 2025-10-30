@@ -10,10 +10,13 @@ pub async fn start_realtime_face_detection(
   detection_config: FaceDetectionConfig,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<RealtimeSession, String> {
-  log::info!("Starting real-time face detection with source: {:?}", source_config);
-  
+  log::info!(
+    "Starting real-time face detection with source: {:?}",
+    source_config
+  );
+
   let session_id = Uuid::new_v4().to_string();
-  
+
   // TODO: Implement actual real-time detection start
   Ok(RealtimeSession {
     id: session_id,
@@ -33,7 +36,7 @@ pub async fn stop_realtime_face_detection(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<RealtimeSessionResults, String> {
   log::info!("Stopping real-time face detection session: {}", session_id);
-  
+
   // TODO: Implement actual detection stop
   Ok(RealtimeSessionResults {
     session_id,
@@ -54,7 +57,7 @@ pub async fn update_face_detection_config(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("Updating face detection config for session: {}", session_id);
-  
+
   // TODO: Implement actual config update
   Ok(())
 }
@@ -66,8 +69,11 @@ pub async fn cleanup_face_detection(
   cleanup_options: FaceDetectionCleanupOptions,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<FaceDetectionCleanupResult, String> {
-  log::info!("Cleaning up face detection data with options: {:?}", cleanup_options);
-  
+  log::info!(
+    "Cleaning up face detection data with options: {:?}",
+    cleanup_options
+  );
+
   // TODO: Implement actual cleanup
   Ok(FaceDetectionCleanupResult {
     cleaned_sessions: 0,
@@ -84,7 +90,7 @@ pub async fn get_realtime_detection_stats(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<RealtimeDetectionStats, String> {
   log::info!("Getting detection stats for session: {}", session_id);
-  
+
   // TODO: Implement actual stats retrieval
   Ok(RealtimeDetectionStats {
     session_id,
@@ -106,7 +112,7 @@ pub async fn configure_detection_alerts(
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("Configuring detection alerts for session: {}", session_id);
-  
+
   // TODO: Implement alert configuration
   Ok(())
 }

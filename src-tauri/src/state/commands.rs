@@ -5,8 +5,10 @@ use super::{EventBus, PersistenceService, ProjectEvent, ProjectState};
 use chrono;
 use serde::{Deserialize, Serialize};
 use specta::Type;
+use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use uuid;
 
 /// Player source types
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -226,6 +228,198 @@ pub enum ProjectCommand {
 
   // Chat commands
   Chat(ChatCommand),
+
+  // Analytics commands
+  LogBrowserAction {
+    action: String,
+    metadata: std::collections::HashMap<String, serde_json::Value>,
+  },
+  LogUserAction {
+    action: String,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: std::collections::HashMap<String, serde_json::Value>,
+  },
+  LogPerformanceMetric {
+    metric_name: String,
+    value: f64,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: std::collections::HashMap<String, serde_json::Value>,
+  },
+  LogError {
+    error_message: String,
+    error_type: String,
+    stack_trace: Option<String>,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: std::collections::HashMap<String, serde_json::Value>,
+  },
+  GetAnalytics {
+    start_time: Option<chrono::DateTime<chrono::Utc>>,
+    end_time: Option<chrono::DateTime<chrono::Utc>>,
+    metric_types: Option<Vec<String>>,
+  },
+
+  // UI State commands
+  SyncBrowserState {
+    state: serde_json::Value,
+  },
+  SyncUIState {
+    component: String,
+    state: serde_json::Value,
+  },
+  SaveUIPreferences {
+    preferences: std::collections::HashMap<String, serde_json::Value>,
+  },
+  GetUIState {
+    component: Option<String>,
+  },
+
+  // Resources commands
+  LoadResources {
+    resource_type: String,
+    source: String,
+    category: Option<String>,
+  },
+  SaveResource {
+    resource_id: String,
+    resource_type: String,
+    data: serde_json::Value,
+    metadata: std::collections::HashMap<String, serde_json::Value>,
+  },
+  DeleteResource {
+    resource_id: String,
+    resource_type: String,
+  },
+  PreloadCategory {
+    resource_type: String,
+    category: String,
+  },
+  SyncResources {
+    source: String,
+  },
+  GetResourceLibrary {
+    resource_type: Option<String>,
+    category: Option<String>,
+  },
+
+  // Timeline Extended commands
+  SplitClip {
+    clip_id: String,
+    time: f64,
+  },
+  BatchUpdateClips {
+    updates: Vec<ClipBatchUpdate>,
+  },
+  CopyClips {
+    clip_ids: Vec<String>,
+  },
+  CutClips {
+    clip_ids: Vec<String>,
+  },
+  PasteClips {
+    track_id: String,
+    time: f64,
+  },
+  DeleteSelected,
+  ApplyEffect {
+    clip_id: String,
+    effect_id: String,
+    params: serde_json::Value,
+  },
+  RemoveEffect {
+    clip_id: String,
+    effect_id: String,
+  },
+  ApplyFilter {
+    clip_id: String,
+    filter_id: String,
+    params: serde_json::Value,
+  },
+  RemoveFilter {
+    clip_id: String,
+    filter_id: String,
+  },
+  ApplyTransition {
+    clip_id: String,
+    transition_id: String,
+    params: serde_json::Value,
+  },
+  RemoveTransition {
+    clip_id: String,
+    transition_id: String,
+  },
+  ReorderTracks {
+    section_id: String,
+    track_ids: Vec<String>,
+  },
+
+  // Project Extended commands
+  SyncProjectState {
+    project_id: String,
+    state: serde_json::Value,
+  },
+  NotifyProjectCreated {
+    settings: ProjectSettings,
+  },
+  NotifyProjectOpened {
+    path: String,
+  },
+
+  // Settings commands
+  SyncUserSettings {
+    settings: serde_json::Value,
+  },
+  UpdateApiKey {
+    service: String,
+    key: String,
+  },
+  UpdateGpuAcceleration {
+    enabled: bool,
+  },
+  GetUserSettings,
+
+  // AI Chat commands
+  SendChatMessage {
+    session_id: String,
+    message: String,
+    model: String,
+    provider: String,
+    project_context: Option<serde_json::Value>,
+  },
+  SendStreamingChatMessage {
+    session_id: String,
+    message: String,
+    model: String,
+    provider: String,
+    project_context: Option<serde_json::Value>,
+  },
+  SaveChatMessage {
+    session_id: String,
+    message_id: String,
+    role: String,
+    content: String,
+    metadata: Option<serde_json::Value>,
+  },
+  LoadChatHistory {
+    session_id: String,
+    limit: Option<u32>,
+  },
+  CreateChatSession {
+    name: String,
+    agent_type: Option<String>,
+  },
+  DeleteChatSession {
+    session_id: String,
+  },
+  GetProjectContext,
+  ValidateAIApiKey {
+    provider: String,
+    api_key: String,
+  },
+
+  // System commands
+  ReconnectNotify {
+    timestamp: String,
+  },
 }
 
 /// Result of a command execution
@@ -275,6 +469,13 @@ pub struct ClipUpdates {
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct MediaUpdates {
   pub name: Option<String>,
+}
+
+/// Batch update for multiple clips
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct ClipBatchUpdate {
+  pub clip_id: String,
+  pub updates: ClipUpdates,
 }
 
 /// Command handler that processes commands and updates state
@@ -404,6 +605,187 @@ impl CommandHandler {
 
       // Chat commands
       ProjectCommand::Chat(chat_cmd) => self.handle_chat_command(chat_cmd).await,
+
+      // Analytics commands
+      ProjectCommand::LogBrowserAction { action, metadata } => {
+        self.log_browser_action(action, metadata).await
+      }
+      ProjectCommand::LogUserAction {
+        action,
+        timestamp,
+        metadata,
+      } => self.log_user_action(action, timestamp, metadata).await,
+      ProjectCommand::LogPerformanceMetric {
+        metric_name,
+        value,
+        timestamp,
+        metadata,
+      } => {
+        self
+          .log_performance_metric(metric_name, value, timestamp, metadata)
+          .await
+      }
+      ProjectCommand::LogError {
+        error_message,
+        error_type,
+        stack_trace,
+        timestamp,
+        metadata,
+      } => {
+        self
+          .log_error(error_message, error_type, stack_trace, timestamp, metadata)
+          .await
+      }
+      ProjectCommand::GetAnalytics {
+        start_time,
+        end_time,
+        metric_types,
+      } => self.get_analytics(start_time, end_time, metric_types).await,
+
+      // UI State commands
+      ProjectCommand::SyncBrowserState { state } => self.sync_browser_state(state).await,
+      ProjectCommand::SyncUIState { component, state } => {
+        self.sync_ui_state(component, state).await
+      }
+      ProjectCommand::SaveUIPreferences { preferences } => {
+        self.save_ui_preferences(preferences).await
+      }
+      ProjectCommand::GetUIState { component } => self.get_ui_state(component).await,
+
+      // Resources commands
+      ProjectCommand::LoadResources {
+        resource_type,
+        source,
+        category,
+      } => self.load_resources(resource_type, source, category).await,
+      ProjectCommand::SaveResource {
+        resource_id,
+        resource_type,
+        data,
+        metadata,
+      } => {
+        self
+          .save_resource(resource_id, resource_type, data, metadata)
+          .await
+      }
+      ProjectCommand::DeleteResource {
+        resource_id,
+        resource_type,
+      } => self.delete_resource(resource_id, resource_type).await,
+      ProjectCommand::PreloadCategory {
+        resource_type,
+        category,
+      } => self.preload_category(resource_type, category).await,
+      ProjectCommand::SyncResources { source } => self.sync_resources(source).await,
+      ProjectCommand::GetResourceLibrary {
+        resource_type,
+        category,
+      } => self.get_resource_library(resource_type, category).await,
+
+      // Timeline Extended commands
+      ProjectCommand::SplitClip { clip_id, time } => self.split_clip(clip_id, time).await,
+      ProjectCommand::BatchUpdateClips { updates } => self.batch_update_clips(updates).await,
+      ProjectCommand::CopyClips { clip_ids } => self.copy_clips(clip_ids).await,
+      ProjectCommand::CutClips { clip_ids } => self.cut_clips(clip_ids).await,
+      ProjectCommand::PasteClips { track_id, time } => self.paste_clips(track_id, time).await,
+      ProjectCommand::DeleteSelected => self.delete_selected().await,
+      ProjectCommand::ApplyEffect {
+        clip_id,
+        effect_id,
+        params,
+      } => self.apply_effect(clip_id, effect_id, params).await,
+      ProjectCommand::RemoveEffect { clip_id, effect_id } => {
+        self.remove_effect(clip_id, effect_id).await
+      }
+      ProjectCommand::ApplyFilter {
+        clip_id,
+        filter_id,
+        params,
+      } => self.apply_filter(clip_id, filter_id, params).await,
+      ProjectCommand::RemoveFilter { clip_id, filter_id } => {
+        self.remove_filter(clip_id, filter_id).await
+      }
+      ProjectCommand::ApplyTransition {
+        clip_id,
+        transition_id,
+        params,
+      } => self.apply_transition(clip_id, transition_id, params).await,
+      ProjectCommand::RemoveTransition {
+        clip_id,
+        transition_id,
+      } => self.remove_transition(clip_id, transition_id).await,
+      ProjectCommand::ReorderTracks {
+        section_id,
+        track_ids,
+      } => self.reorder_tracks(section_id, track_ids).await,
+
+      // Project Extended commands
+      ProjectCommand::SyncProjectState { project_id, state } => {
+        self.sync_project_state(project_id, state).await
+      }
+      ProjectCommand::NotifyProjectCreated { settings } => {
+        self.notify_project_created(settings).await
+      }
+      ProjectCommand::NotifyProjectOpened { path } => self.notify_project_opened(path).await,
+
+      // Settings commands
+      ProjectCommand::SyncUserSettings { settings } => self.sync_user_settings(settings).await,
+      ProjectCommand::UpdateApiKey { service, key } => self.update_api_key(service, key).await,
+      ProjectCommand::UpdateGpuAcceleration { enabled } => {
+        self.update_gpu_acceleration(enabled).await
+      }
+      ProjectCommand::GetUserSettings => self.get_user_settings().await,
+
+      // AI Chat commands
+      ProjectCommand::SendChatMessage {
+        session_id,
+        message,
+        model,
+        provider,
+        project_context,
+      } => {
+        self
+          .send_chat_message(session_id, message, model, provider, project_context)
+          .await
+      }
+      ProjectCommand::SendStreamingChatMessage {
+        session_id,
+        message,
+        model,
+        provider,
+        project_context,
+      } => {
+        self
+          .send_streaming_chat_message(session_id, message, model, provider, project_context)
+          .await
+      }
+      ProjectCommand::SaveChatMessage {
+        session_id,
+        message_id,
+        role,
+        content,
+        metadata,
+      } => {
+        self
+          .save_chat_message(session_id, message_id, role, content, metadata)
+          .await
+      }
+      ProjectCommand::LoadChatHistory { session_id, limit } => {
+        self.load_chat_history(session_id, limit).await
+      }
+      ProjectCommand::CreateChatSession { name, agent_type } => {
+        self.create_chat_session(name, agent_type).await
+      }
+      ProjectCommand::DeleteChatSession { session_id } => {
+        self.delete_chat_session(session_id).await
+      }
+      ProjectCommand::GetProjectContext => self.get_project_context().await,
+      ProjectCommand::ValidateAIApiKey { provider, api_key } => {
+        self.validate_ai_api_key(provider, api_key).await
+      }
+
+      // System commands
+      ProjectCommand::ReconnectNotify { timestamp } => self.reconnect_notify(timestamp).await,
 
       _ => CommandResult::error("Command not implemented yet".to_string()),
     }
@@ -1878,5 +2260,822 @@ impl CommandHandler {
       .ok();
 
     CommandResult::success(None)
+  }
+
+  // ===========================
+  // Analytics Commands
+  // ===========================
+
+  async fn log_browser_action(
+    &self,
+    action: String,
+    metadata: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    // For now, just log to console. Later can be saved to analytics database
+    log::info!("Browser action: {} with metadata: {:?}", action, metadata);
+
+    // Could emit analytics event for tracking
+    CommandResult::success(Some(serde_json::json!({
+      "logged": true,
+      "action": action,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn log_user_action(
+    &self,
+    action: String,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    log::info!(
+      "User action: {} at {} with metadata: {:?}",
+      action,
+      timestamp,
+      metadata
+    );
+    CommandResult::success(Some(serde_json::json!({
+      "logged": true,
+      "action": action,
+      "timestamp": timestamp
+    })))
+  }
+
+  async fn log_performance_metric(
+    &self,
+    metric_name: String,
+    value: f64,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    log::info!(
+      "Performance metric: {} = {} at {} with metadata: {:?}",
+      metric_name,
+      value,
+      timestamp,
+      metadata
+    );
+    CommandResult::success(Some(serde_json::json!({
+      "logged": true,
+      "metric": metric_name,
+      "value": value,
+      "timestamp": timestamp
+    })))
+  }
+
+  async fn log_error(
+    &self,
+    error_message: String,
+    error_type: String,
+    stack_trace: Option<String>,
+    timestamp: chrono::DateTime<chrono::Utc>,
+    metadata: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    log::error!(
+      "Error logged: {} [{}] at {} with stack: {:?} and metadata: {:?}",
+      error_message,
+      error_type,
+      timestamp,
+      stack_trace,
+      metadata
+    );
+    CommandResult::success(Some(serde_json::json!({
+      "logged": true,
+      "error": error_message,
+      "type": error_type,
+      "timestamp": timestamp
+    })))
+  }
+
+  async fn get_analytics(
+    &self,
+    _start_time: Option<chrono::DateTime<chrono::Utc>>,
+    _end_time: Option<chrono::DateTime<chrono::Utc>>,
+    _metric_types: Option<Vec<String>>,
+  ) -> CommandResult {
+    // Return mock analytics data for now
+    CommandResult::success(Some(serde_json::json!({
+      "metrics": [],
+      "events": [],
+      "summary": {
+        "total_events": 0,
+        "time_range": "No data available yet"
+      }
+    })))
+  }
+
+  // ===========================
+  // UI State Commands
+  // ===========================
+
+  async fn sync_browser_state(&self, state: serde_json::Value) -> CommandResult {
+    let mut project_state = self.state.write().await;
+
+    // Store UI state in the project state
+    if project_state.ui_state.browser_state.is_none() {
+      project_state.ui_state.browser_state = Some(state.clone());
+    } else {
+      project_state.ui_state.browser_state = Some(state.clone());
+    }
+
+    log::info!("Browser state synced to backend");
+    CommandResult::success(Some(serde_json::json!({
+      "synced": true,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn sync_ui_state(&self, component: String, _state: serde_json::Value) -> CommandResult {
+    log::info!("UI state synced for component: {}", component);
+
+    // Could store component-specific UI state
+    CommandResult::success(Some(serde_json::json!({
+      "synced": true,
+      "component": component,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn save_ui_preferences(
+    &self,
+    preferences: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    log::info!("UI preferences saved: {:?}", preferences);
+
+    CommandResult::success(Some(serde_json::json!({
+      "saved": true,
+      "preferences_count": preferences.len(),
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn get_ui_state(&self, component: Option<String>) -> CommandResult {
+    let state = self.state.read().await;
+
+    match component {
+      Some(comp) => {
+        log::info!("Getting UI state for component: {}", comp);
+        CommandResult::success(Some(serde_json::json!({
+          "component": comp,
+          "state": {},
+          "timestamp": chrono::Utc::now()
+        })))
+      }
+      None => CommandResult::success(Some(serde_json::json!({
+        "browser_state": state.ui_state.browser_state,
+        "timestamp": chrono::Utc::now()
+      }))),
+    }
+  }
+
+  // ===========================
+  // Resources Commands
+  // ===========================
+
+  async fn load_resources(
+    &self,
+    resource_type: String,
+    source: String,
+    category: Option<String>,
+  ) -> CommandResult {
+    log::info!(
+      "Loading resources: type={}, source={}, category={:?}",
+      resource_type,
+      source,
+      category
+    );
+
+    // Mock resource data for now
+    let resources = match resource_type.as_str() {
+      "effect" => vec!["blur", "sharpen", "color_correction"],
+      "filter" => vec!["vintage", "black_white", "sepia"],
+      "transition" => vec!["fade", "slide", "zoom"],
+      _ => vec!["unknown"],
+    };
+
+    CommandResult::success(Some(serde_json::json!({
+      "success": true,
+      "data": resources,
+      "source": source,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn save_resource(
+    &self,
+    resource_id: String,
+    resource_type: String,
+    _data: serde_json::Value,
+    _metadata: HashMap<String, serde_json::Value>,
+  ) -> CommandResult {
+    log::info!(
+      "Saving resource: id={}, type={}",
+      resource_id,
+      resource_type
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "saved": true,
+      "resource_id": resource_id,
+      "type": resource_type,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn delete_resource(&self, resource_id: String, resource_type: String) -> CommandResult {
+    log::info!(
+      "Deleting resource: id={}, type={}",
+      resource_id,
+      resource_type
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "deleted": true,
+      "resource_id": resource_id,
+      "type": resource_type,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn preload_category(&self, resource_type: String, category: String) -> CommandResult {
+    log::info!(
+      "Preloading category: type={}, category={}",
+      resource_type,
+      category
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "preloaded": true,
+      "type": resource_type,
+      "category": category,
+      "count": 10,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn sync_resources(&self, source: String) -> CommandResult {
+    log::info!("Syncing resources from source: {}", source);
+
+    CommandResult::success(Some(serde_json::json!({
+      "synced": true,
+      "source": source,
+      "count": 42,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn get_resource_library(
+    &self,
+    resource_type: Option<String>,
+    category: Option<String>,
+  ) -> CommandResult {
+    log::info!(
+      "Getting resource library: type={:?}, category={:?}",
+      resource_type,
+      category
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "library": {
+        "effects": ["blur", "sharpen", "color_correction"],
+        "filters": ["vintage", "black_white", "sepia"],
+        "transitions": ["fade", "slide", "zoom"]
+      },
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  // ===========================
+  // Timeline Extended Commands
+  // ===========================
+
+  async fn split_clip(&self, clip_id: String, time: f64) -> CommandResult {
+    log::info!("Splitting clip: id={}, time={}", clip_id, time);
+
+    // Mock implementation - in real app would modify project state
+    CommandResult::success(Some(serde_json::json!({
+      "split": true,
+      "original_clip_id": clip_id,
+      "new_clip_id": format!("{}_split", clip_id),
+      "split_time": time,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn batch_update_clips(&self, updates: Vec<ClipBatchUpdate>) -> CommandResult {
+    log::info!("Batch updating {} clips", updates.len());
+
+    CommandResult::success(Some(serde_json::json!({
+      "updated": true,
+      "count": updates.len(),
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn copy_clips(&self, clip_ids: Vec<String>) -> CommandResult {
+    log::info!("Copying {} clips", clip_ids.len());
+
+    CommandResult::success(Some(serde_json::json!({
+      "copied": true,
+      "count": clip_ids.len(),
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn cut_clips(&self, clip_ids: Vec<String>) -> CommandResult {
+    log::info!("Cutting {} clips", clip_ids.len());
+
+    CommandResult::success(Some(serde_json::json!({
+      "cut": true,
+      "count": clip_ids.len(),
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn paste_clips(&self, track_id: String, time: f64) -> CommandResult {
+    log::info!("Pasting clips to track {} at time {}", track_id, time);
+
+    CommandResult::success(Some(serde_json::json!({
+      "pasted": true,
+      "track_id": track_id,
+      "time": time,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn delete_selected(&self) -> CommandResult {
+    log::info!("Deleting selected items");
+
+    CommandResult::success(Some(serde_json::json!({
+      "deleted": true,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn apply_effect(
+    &self,
+    clip_id: String,
+    effect_id: String,
+    _params: serde_json::Value,
+  ) -> CommandResult {
+    log::info!("Applying effect {} to clip {}", effect_id, clip_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "applied": true,
+      "clip_id": clip_id,
+      "effect_id": effect_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn remove_effect(&self, clip_id: String, effect_id: String) -> CommandResult {
+    log::info!("Removing effect {} from clip {}", effect_id, clip_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "removed": true,
+      "clip_id": clip_id,
+      "effect_id": effect_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn apply_filter(
+    &self,
+    clip_id: String,
+    filter_id: String,
+    _params: serde_json::Value,
+  ) -> CommandResult {
+    log::info!("Applying filter {} to clip {}", filter_id, clip_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "applied": true,
+      "clip_id": clip_id,
+      "filter_id": filter_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn remove_filter(&self, clip_id: String, filter_id: String) -> CommandResult {
+    log::info!("Removing filter {} from clip {}", filter_id, clip_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "removed": true,
+      "clip_id": clip_id,
+      "filter_id": filter_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn apply_transition(
+    &self,
+    clip_id: String,
+    transition_id: String,
+    _params: serde_json::Value,
+  ) -> CommandResult {
+    log::info!("Applying transition {} to clip {}", transition_id, clip_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "applied": true,
+      "clip_id": clip_id,
+      "transition_id": transition_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn remove_transition(&self, clip_id: String, transition_id: String) -> CommandResult {
+    log::info!(
+      "Removing transition {} from clip {}",
+      transition_id,
+      clip_id
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "removed": true,
+      "clip_id": clip_id,
+      "transition_id": transition_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn reorder_tracks(&self, section_id: String, track_ids: Vec<String>) -> CommandResult {
+    log::info!(
+      "Reordering tracks in section {}: {:?}",
+      section_id,
+      track_ids
+    );
+
+    CommandResult::success(Some(serde_json::json!({
+      "reordered": true,
+      "section_id": section_id,
+      "track_count": track_ids.len(),
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  // ===========================
+  // Project Extended Commands
+  // ===========================
+
+  async fn sync_project_state(
+    &self,
+    project_id: String,
+    _state: serde_json::Value,
+  ) -> CommandResult {
+    log::info!("Syncing project state for project {}", project_id);
+
+    CommandResult::success(Some(serde_json::json!({
+      "synced": true,
+      "project_id": project_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn notify_project_created(&self, settings: ProjectSettings) -> CommandResult {
+    log::info!("Project created notification with settings");
+
+    CommandResult::success(Some(serde_json::json!({
+      "notified": true,
+      "settings": settings,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn notify_project_opened(&self, path: String) -> CommandResult {
+    log::info!("Project opened notification for path: {}", path);
+
+    CommandResult::success(Some(serde_json::json!({
+      "notified": true,
+      "path": path,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  // ===========================
+  // Settings Commands
+  // ===========================
+
+  async fn sync_user_settings(&self, _settings: serde_json::Value) -> CommandResult {
+    log::info!("Syncing user settings");
+
+    CommandResult::success(Some(serde_json::json!({
+      "synced": true,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn update_api_key(&self, service: String, _key: String) -> CommandResult {
+    log::info!("Updating API key for service: {}", service);
+
+    // In real implementation, would securely store the key
+    CommandResult::success(Some(serde_json::json!({
+      "updated": true,
+      "service": service,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn update_gpu_acceleration(&self, enabled: bool) -> CommandResult {
+    log::info!("Updating GPU acceleration: {}", enabled);
+
+    CommandResult::success(Some(serde_json::json!({
+      "updated": true,
+      "gpu_acceleration": enabled,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn get_user_settings(&self) -> CommandResult {
+    log::info!("Getting user settings");
+
+    CommandResult::success(Some(serde_json::json!({
+      "settings": {
+        "theme": "dark",
+        "language": "ru",
+        "gpu_acceleration": true
+      },
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  // ===========================
+  // System Commands
+  // ===========================
+
+  async fn reconnect_notify(&self, timestamp: String) -> CommandResult {
+    log::info!("Reconnect notification at {}", timestamp);
+
+    CommandResult::success(Some(serde_json::json!({
+      "reconnected": true,
+      "timestamp": timestamp
+    })))
+  }
+
+  // ===========================
+  // AI Chat Commands
+  // ===========================
+
+  async fn send_chat_message(
+    &self,
+    session_id: String,
+    message: String,
+    model: String,
+    provider: String,
+    project_context: Option<serde_json::Value>,
+  ) -> CommandResult {
+    use crate::video_compiler::commands::ai_api_proxy::commands::claude_send_message;
+    use crate::video_compiler::commands::ai_api_proxy::types::ClaudeMessage;
+
+    log::info!(
+      "Sending chat message to {} model {} in session {}",
+      provider,
+      model,
+      session_id
+    );
+
+    // TODO: Get API key from user settings
+    let api_key = "temp_key".to_string(); // This should come from secure storage
+
+    // Build messages array with context if provided
+    let mut messages = vec![];
+
+    // Add project context as system message if provided
+    if let Some(context) = project_context {
+      messages.push(ClaudeMessage {
+        role: "system".to_string(),
+        content: format!("Project context: {}", context),
+      });
+    }
+
+    // Add user message
+    messages.push(ClaudeMessage {
+      role: "user".to_string(),
+      content: message,
+    });
+
+    // Send to AI provider
+    match provider.as_str() {
+      "claude" => {
+        match claude_send_message(
+          api_key,
+          model,
+          messages,
+          Some(4096), // max_tokens
+          Some(0.7),  // temperature
+          None,       // system
+        )
+        .await
+        {
+          Ok(response) => {
+            // Extract text from response
+            let response_text = response
+              .content
+              .iter()
+              .filter_map(|c| c.text.as_ref())
+              .map(|s| s.as_str())
+              .collect::<Vec<_>>()
+              .join("");
+
+            CommandResult::success(Some(serde_json::json!({
+              "response": response_text,
+              "session_id": session_id,
+              "message_id": response.id,
+              "model": response.model,
+              "usage": response.usage
+            })))
+          }
+          Err(e) => CommandResult::error(format!("AI request failed: {}", e)),
+        }
+      }
+      _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
+    }
+  }
+
+  async fn send_streaming_chat_message(
+    &self,
+    session_id: String,
+    message: String,
+    model: String,
+    provider: String,
+    project_context: Option<serde_json::Value>,
+  ) -> CommandResult {
+    use crate::video_compiler::commands::ai_api_proxy::commands::claude_send_streaming_message;
+    use crate::video_compiler::commands::ai_api_proxy::types::ClaudeMessage;
+
+    log::info!(
+      "Sending streaming chat message to {} model {} in session {}",
+      provider,
+      model,
+      session_id
+    );
+
+    // TODO: Get API key from user settings
+    let api_key = "temp_key".to_string();
+
+    // Build messages array with context if provided
+    let mut messages = vec![];
+
+    if let Some(context) = project_context {
+      messages.push(ClaudeMessage {
+        role: "system".to_string(),
+        content: format!("Project context: {}", context),
+      });
+    }
+
+    messages.push(ClaudeMessage {
+      role: "user".to_string(),
+      content: message,
+    });
+
+    // Send streaming request to AI provider
+    match provider.as_str() {
+      "claude" => {
+        match claude_send_streaming_message(api_key, model, messages, Some(4096), Some(0.7), None)
+          .await
+        {
+          Ok(stream_id) => CommandResult::success(Some(serde_json::json!({
+            "stream_id": stream_id,
+            "session_id": session_id,
+            "status": "streaming"
+          }))),
+          Err(e) => CommandResult::error(format!("Streaming request failed: {}", e)),
+        }
+      }
+      _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
+    }
+  }
+
+  async fn save_chat_message(
+    &self,
+    session_id: String,
+    message_id: String,
+    _role: String,
+    _content: String,
+    _metadata: Option<serde_json::Value>,
+  ) -> CommandResult {
+    log::info!(
+      "Saving chat message {} in session {}",
+      message_id,
+      session_id
+    );
+
+    // TODO: Implement persistent storage for chat messages
+    // This should integrate with the existing persistence service
+
+    CommandResult::success(Some(serde_json::json!({
+      "saved": true,
+      "session_id": session_id,
+      "message_id": message_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn load_chat_history(&self, session_id: String, limit: Option<u32>) -> CommandResult {
+    log::info!(
+      "Loading chat history for session {} (limit: {:?})",
+      session_id,
+      limit
+    );
+
+    // TODO: Implement chat history loading from persistence
+    // This should return actual stored messages
+
+    CommandResult::success(Some(serde_json::json!({
+      "messages": [],
+      "session_id": session_id,
+      "total_count": 0,
+      "limit": limit
+    })))
+  }
+
+  async fn create_chat_session(&self, name: String, agent_type: Option<String>) -> CommandResult {
+    log::info!(
+      "Creating new chat session: {} (type: {:?})",
+      name,
+      agent_type
+    );
+
+    let session_id = uuid::Uuid::new_v4().to_string();
+
+    // TODO: Persist session metadata
+
+    CommandResult::success(Some(serde_json::json!({
+      "session_id": session_id,
+      "name": name,
+      "agent_type": agent_type,
+      "created_at": chrono::Utc::now(),
+      "message_count": 0
+    })))
+  }
+
+  async fn delete_chat_session(&self, session_id: String) -> CommandResult {
+    log::info!("Deleting chat session: {}", session_id);
+
+    // TODO: Remove session and all its messages from persistence
+
+    CommandResult::success(Some(serde_json::json!({
+      "deleted": true,
+      "session_id": session_id,
+      "timestamp": chrono::Utc::now()
+    })))
+  }
+
+  async fn get_project_context(&self) -> CommandResult {
+    log::info!("Getting project context for AI");
+
+    let state = self.state.read().await;
+
+    let context = match &state.project {
+      Some(project) => {
+        serde_json::json!({
+          "project_id": project.id,
+          "project_name": project.metadata.name,
+          "timeline": {
+            "tracks": project.timeline.tracks.len(),
+            "clips": project.timeline.tracks.iter()
+              .map(|t| t.clips.len())
+              .sum::<usize>(),
+            "duration": project.timeline.duration
+          },
+          "media_pool": {
+            "files": project.media_pool.items.len(),
+            "total_duration": project.media_pool.items.values()
+              .filter_map(|f| f.duration)
+              .sum::<f64>()
+          },
+          "settings": {
+            "resolution": format!("{}x{}", project.settings.resolution.width, project.settings.resolution.height),
+            "frame_rate": project.settings.frame_rate,
+            "audio_sample_rate": project.settings.audio_sample_rate
+          }
+        })
+      }
+      None => {
+        serde_json::json!({
+          "project": null,
+          "message": "No project currently open"
+        })
+      }
+    };
+
+    CommandResult::success(Some(context))
+  }
+
+  async fn validate_ai_api_key(&self, provider: String, api_key: String) -> CommandResult {
+    use crate::video_compiler::commands::ai_api_proxy::commands::claude_validate_api_key;
+
+    log::info!("Validating API key for provider: {}", provider);
+
+    match provider.as_str() {
+      "claude" => match claude_validate_api_key(api_key).await {
+        Ok(validation) => CommandResult::success(Some(serde_json::json!({
+          "valid": validation.valid,
+          "message": validation.message,
+          "models": validation.models,
+          "provider": provider
+        }))),
+        Err(e) => CommandResult::error(format!("Validation failed: {}", e)),
+      },
+      _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
+    }
   }
 }

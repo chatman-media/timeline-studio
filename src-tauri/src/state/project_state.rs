@@ -1,4 +1,4 @@
-use super::browser::{BrowserState};
+use super::browser::BrowserState;
 use super::chat::ChatSession;
 use super::commands::PlayerSource;
 use chrono::{DateTime, Utc};
@@ -186,6 +186,7 @@ pub struct UiState {
   pub timeline_zoom: f64,
   pub timeline_scroll: f64,
   pub active_tool: String,
+  pub browser_state: Option<serde_json::Value>,
 }
 
 impl Default for UiState {
@@ -196,6 +197,7 @@ impl Default for UiState {
       timeline_zoom: 1.0,
       timeline_scroll: 0.0,
       active_tool: "select".to_string(),
+      browser_state: None,
     }
   }
 }
@@ -457,13 +459,13 @@ impl ProjectState {
     };
 
     self.project = Some(project);
-    
+
     // Очищаем browser_state при создании нового проекта
     // Очищаем выбранные файлы во всех табах
     for tab in BrowserState::all_tabs() {
       self.browser_state.selected_files.insert(tab, Vec::new());
     }
-    
+
     self.version += 1;
     self.version_info.has_uncommitted_changes = true;
 

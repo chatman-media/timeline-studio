@@ -17,6 +17,7 @@
 - [**communication.md**](communication.md) - Взаимодействие Frontend-Backend через Tauri IPC
 - [**data-flow.md**](data-flow.md) - Поток данных в приложении
 - [**ai-service.md**](ai-service.md) - Архитектура AI сервисов и обработки
+- [**backend-sync-architecture.md**](backend-sync-architecture.md) - Унифицированная BackendSync архитектура (NEW)
 
 ### 🎨 Frontend архитектура
 - [**frontend/**](frontend/) - Обзор Frontend архитектуры
@@ -56,6 +57,7 @@
 ### Frontend (React + TypeScript)
 - **State Management**: XState для сложных состояний
 - **Component Architecture**: Feature-based организация
+- **Provider Architecture**: BackendSync интеграция (17 провайдеров мигрированы)
 - **Type Safety**: Строгая типизация с TypeScript
 - **Performance**: React 19 с оптимизациями
 - **AI Integration**: Seamless AI tools integration

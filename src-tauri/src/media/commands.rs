@@ -9,7 +9,8 @@ use super::media_analyzer::{MediaAnalysis, MediaAnalyzer};
 use super::preview_data::MediaPreviewData;
 use super::preview_manager::PreviewDataManager;
 use super::types::{MediaFile, SUPPORTED_EXTENSIONS};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use specta::Type;
 use std::path::Path;
 use std::process::Command;
 use uuid;
@@ -261,13 +262,13 @@ pub struct TimelineFrame {
 }
 
 /// Simplified media metadata structure
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 pub struct SimpleMediaMetadata {
   pub duration: Option<f64>,
   pub width: Option<u32>,
   pub height: Option<u32>,
   pub fps: Option<f64>,
-  pub bitrate: Option<u64>,
+  pub bitrate: Option<u32>,
   pub video_codec: Option<String>,
   pub audio_codec: Option<String>,
   pub has_audio: Option<bool>,
@@ -275,12 +276,12 @@ pub struct SimpleMediaMetadata {
 }
 
 /// Processed media file result
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 pub struct ProcessedMediaFile {
   pub id: String,
   pub path: String,
   pub name: String,
-  pub size: u64,
+  pub size: u32,
   pub metadata: Option<SimpleMediaMetadata>,
   pub thumbnail_path: Option<String>,
   pub error: Option<String>,
@@ -362,7 +363,7 @@ pub async fn process_media_file_simple(
           .format
           .bit_rate
           .as_ref()
-          .and_then(|b| b.parse::<u64>().ok())
+          .and_then(|b| b.parse::<u32>().ok())
       });
 
       Some(SimpleMediaMetadata {
@@ -400,7 +401,7 @@ pub async fn process_media_file_simple(
     id,
     path: file_path,
     name: file_name,
-    size: file_size,
+    size: file_size as u32,
     metadata,
     thumbnail_path,
     error: None,
@@ -549,8 +550,8 @@ pub async fn import_media_files(
     }
   }
 
-  let total_processed = imported_files.len() + errors.len();
-  
+  let total_processed = (imported_files.len() + errors.len()) as u32;
+
   Ok(ImportMediaResult {
     imported_files,
     errors,
@@ -574,7 +575,7 @@ pub struct ImportMediaOptions {
 pub struct ImportMediaResult {
   pub imported_files: Vec<ImportedMediaFile>,
   pub errors: Vec<String>,
-  pub total_processed: usize,
+  pub total_processed: u32,
 }
 
 /// Information about an imported media file
@@ -584,7 +585,7 @@ pub struct ImportedMediaFile {
   pub original_path: String,
   pub imported_path: String,
   pub name: String,
-  pub size: u64,
+  pub size: u32,
   pub media_type: String,
   pub duration: Option<f64>,
   pub thumbnail_path: Option<String>,
@@ -597,15 +598,15 @@ async fn import_single_media_file(
   options: &ImportMediaOptions,
 ) -> Result<ImportedMediaFile, String> {
   let path = Path::new(file_path);
-  
+
   // Check if file exists
   if !path.exists() {
     return Err(format!("File does not exist: {}", file_path));
   }
 
   // Get file metadata
-  let file_metadata = std::fs::metadata(path)
-    .map_err(|e| format!("Failed to read file metadata: {}", e))?;
+  let file_metadata =
+    std::fs::metadata(path).map_err(|e| format!("Failed to read file metadata: {}", e))?;
 
   let file_name = path
     .file_name()
@@ -614,7 +615,7 @@ async fn import_single_media_file(
     .to_string();
 
   let file_size = file_metadata.len();
-  
+
   // Generate unique ID
   let id = uuid::Uuid::new_v4().to_string();
 
@@ -624,7 +625,7 @@ async fn import_single_media_file(
     .and_then(|e| e.to_str())
     .unwrap_or("")
     .to_lowercase();
-  
+
   let media_type = match extension.as_str() {
     "mp4" | "avi" | "mov" | "mkv" | "webm" | "flv" | "wmv" => "video",
     "mp3" | "wav" | "flac" | "aac" | "ogg" | "m4a" => "audio",
@@ -638,7 +639,7 @@ async fn import_single_media_file(
       Ok(media_file) => {
         let duration = media_file.duration;
         let probe_data = &media_file.probe_data;
-        
+
         let (width, height, fps, video_codec) = probe_data
           .streams
           .iter()
@@ -649,8 +650,14 @@ async fn import_single_media_file(
               if parts.len() == 2 {
                 let num = parts[0].parse::<f64>().ok()?;
                 let den = parts[1].parse::<f64>().ok()?;
-                if den > 0.0 { Some(num / den) } else { None }
-              } else { None }
+                if den > 0.0 {
+                  Some(num / den)
+                } else {
+                  None
+                }
+              } else {
+                None
+              }
             });
             (s.width, s.height, fps, s.codec_name.clone())
           })
@@ -662,9 +669,11 @@ async fn import_single_media_file(
           .find(|s| s.codec_type == "audio")
           .and_then(|s| s.codec_name.clone());
 
-        let bitrate = probe_data.format.bit_rate
+        let bitrate = probe_data
+          .format
+          .bit_rate
           .as_ref()
-          .and_then(|b| b.parse::<u64>().ok());
+          .and_then(|b| b.parse::<u32>().ok());
 
         let metadata = SimpleMediaMetadata {
           duration,
@@ -677,7 +686,7 @@ async fn import_single_media_file(
           has_audio: Some(media_file.is_audio),
           has_video: Some(media_file.is_video),
         };
-        
+
         (duration, Some(metadata))
       }
       Err(e) => {
@@ -716,7 +725,7 @@ async fn import_single_media_file(
     original_path: file_path.to_string(),
     imported_path,
     name: file_name,
-    size: file_size,
+    size: file_size as u32,
     media_type: media_type.to_string(),
     duration,
     thumbnail_path,
@@ -729,26 +738,26 @@ async fn import_single_media_file(
 #[specta::specta]
 pub async fn scan_media_directory(directory_path: String) -> Result<ScanDirectoryResult, String> {
   let path = Path::new(&directory_path);
-  
+
   if !path.exists() || !path.is_dir() {
     return Err(format!("Directory not found: {}", directory_path));
   }
 
   let mut media_files = Vec::new();
   let mut errors = Vec::new();
-  let mut total_size = 0u64;
+  let mut total_size = 0u32;
 
   // Walk through directory recursively
   fn scan_directory_recursive(
     dir: &Path,
     media_files: &mut Vec<ScannedMediaFile>,
     errors: &mut Vec<String>,
-    total_size: &mut u64,
+    total_size: &mut u32,
   ) {
     if let Ok(entries) = std::fs::read_dir(dir) {
       for entry in entries.flatten() {
         let path = entry.path();
-        
+
         if path.is_file() {
           if let Some(extension) = path.extension().and_then(|e| e.to_str()) {
             let ext = extension.to_lowercase();
@@ -773,8 +782,8 @@ pub async fn scan_media_directory(directory_path: String) -> Result<ScanDirector
 
   scan_directory_recursive(path, &mut media_files, &mut errors, &mut total_size);
 
-  let total_files = media_files.len() + errors.len();
-  
+  let total_files = (media_files.len() + errors.len()) as u32;
+
   Ok(ScanDirectoryResult {
     media_files,
     errors,
@@ -800,8 +809,8 @@ pub async fn index_media_files(file_paths: Vec<String>) -> Result<IndexMediaResu
     }
   }
 
-  let total_processed = indexed_files.len() + errors.len();
-  
+  let total_processed = (indexed_files.len() + errors.len()) as u32;
+
   Ok(IndexMediaResult {
     indexed_files,
     errors,
@@ -815,29 +824,29 @@ pub async fn index_media_files(file_paths: Vec<String>) -> Result<IndexMediaResu
 pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMediaResult, String> {
   // For now, this is a simple implementation
   // In a real application, you would search through an indexed database
-  
+
   let directory_path = query.directory.unwrap_or_else(|| ".".to_string());
   let scan_result = scan_media_directory(directory_path).await?;
-  
+
   let mut filtered_files = scan_result.media_files;
-  
+
   // Apply filters
   if let Some(search_term) = &query.search_term {
     let search_lower = search_term.to_lowercase();
     filtered_files.retain(|file| {
-      file.name.to_lowercase().contains(&search_lower) ||
-      file.path.to_lowercase().contains(&search_lower)
+      file.name.to_lowercase().contains(&search_lower)
+        || file.path.to_lowercase().contains(&search_lower)
     });
   }
-  
+
   if let Some(media_type) = &query.media_type {
     filtered_files.retain(|file| file.media_type == *media_type);
   }
-  
+
   if let Some(min_size) = query.min_size {
     filtered_files.retain(|file| file.size >= min_size);
   }
-  
+
   if let Some(max_size) = query.max_size {
     filtered_files.retain(|file| file.size <= max_size);
   }
@@ -849,14 +858,14 @@ pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMedia
     Some("date") => filtered_files.sort_by(|a, b| a.modified_time.cmp(&b.modified_time)),
     _ => {} // No sorting
   }
-  
+
   if query.sort_desc.unwrap_or(false) {
     filtered_files.reverse();
   }
 
-  let total_found = filtered_files.len();
+  let total_found = filtered_files.len() as u32;
   let search_query = query.search_term.unwrap_or_default();
-  
+
   Ok(SearchMediaResult {
     files: filtered_files,
     total_found,
@@ -870,26 +879,26 @@ pub async fn search_media_library(query: MediaSearchQuery) -> Result<SearchMedia
 pub struct ScanDirectoryResult {
   pub media_files: Vec<ScannedMediaFile>,
   pub errors: Vec<String>,
-  pub total_files: usize,
-  pub total_size: u64,
-  pub scanned_directories: usize,
+  pub total_files: u32,
+  pub total_size: u32,
+  pub scanned_directories: u32,
 }
 
 #[derive(serde::Serialize, specta::Type)]
 pub struct ScannedMediaFile {
   pub path: String,
   pub name: String,
-  pub size: u64,
+  pub size: u32,
   pub media_type: String,
   pub extension: String,
-  pub modified_time: u64,
+  pub modified_time: u32,
 }
 
 #[derive(serde::Serialize, specta::Type)]
 pub struct IndexMediaResult {
   pub indexed_files: Vec<MediaIndexEntry>,
   pub errors: Vec<String>,
-  pub total_processed: usize,
+  pub total_processed: u32,
 }
 
 #[derive(serde::Serialize, specta::Type)]
@@ -897,10 +906,10 @@ pub struct MediaIndexEntry {
   pub id: String,
   pub path: String,
   pub name: String,
-  pub size: u64,
+  pub size: u32,
   pub media_type: String,
   pub duration: Option<f64>,
-  pub indexed_at: u64,
+  pub indexed_at: u32,
   pub metadata_hash: String,
 }
 
@@ -909,8 +918,8 @@ pub struct MediaSearchQuery {
   pub search_term: Option<String>,
   pub media_type: Option<String>,
   pub directory: Option<String>,
-  pub min_size: Option<u64>,
-  pub max_size: Option<u64>,
+  pub min_size: Option<u32>,
+  pub max_size: Option<u32>,
   pub sort_by: Option<String>,
   pub sort_desc: Option<bool>,
 }
@@ -918,14 +927,13 @@ pub struct MediaSearchQuery {
 #[derive(serde::Serialize, specta::Type)]
 pub struct SearchMediaResult {
   pub files: Vec<ScannedMediaFile>,
-  pub total_found: usize,
+  pub total_found: u32,
   pub query: String,
 }
 
 /// Process a single file for scanning
 fn process_scanned_file(path: &Path) -> Result<ScannedMediaFile, String> {
-  let metadata = std::fs::metadata(path)
-    .map_err(|e| format!("Failed to read metadata: {}", e))?;
+  let metadata = std::fs::metadata(path).map_err(|e| format!("Failed to read metadata: {}", e))?;
 
   let name = path
     .file_name()
@@ -950,13 +958,13 @@ fn process_scanned_file(path: &Path) -> Result<ScannedMediaFile, String> {
     .modified()
     .ok()
     .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
-    .map(|duration| duration.as_secs())
+    .map(|duration| duration.as_secs() as u32)
     .unwrap_or(0);
 
   Ok(ScannedMediaFile {
     path: path.to_string_lossy().to_string(),
     name,
-    size: metadata.len(),
+    size: metadata.len() as u32,
     media_type: media_type.to_string(),
     extension,
     modified_time,
@@ -979,12 +987,15 @@ async fn create_media_index_entry(file_path: &str) -> Result<MediaIndexEntry, St
   };
 
   // Create a simple metadata hash (in reality, you'd use proper hashing)
-  let metadata_hash = format!("{}-{}-{}", scanned_file.size, scanned_file.modified_time, scanned_file.name);
+  let metadata_hash = format!(
+    "{}-{}-{}",
+    scanned_file.size, scanned_file.modified_time, scanned_file.name
+  );
 
   let indexed_at = std::time::SystemTime::now()
     .duration_since(std::time::UNIX_EPOCH)
     .unwrap()
-    .as_secs();
+    .as_secs() as u32;
 
   Ok(MediaIndexEntry {
     id: uuid::Uuid::new_v4().to_string(),

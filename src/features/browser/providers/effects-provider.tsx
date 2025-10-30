@@ -341,41 +341,40 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadLocalResources(): Promise<LoadResult> {
-    // TODO: Активировать после генерации TypeScript типов
-    // if (this.isBackendConnected) {
-    //   try {
-    //     const response = await this.backendSync.executeCommand({
-    //       type: "LoadResources",
-    //       params: {
-    //         resource_type: "effect",
-    //         source: "local",
-    //         category: null,
-    //       },
-    //     })
-    //
-    //     if (response.success && response.data) {
-    //       const { effects = [], filters = [], transitions = [] } = response.data
-    //       this.resources.set("effect:local", effects)
-    //       this.resources.set("filter:local", filters)
-    //       this.resources.set("transition:local", transitions)
-    //
-    //       console.log("[EffectsProvider] Loaded local resources from backend:", {
-    //         effects: effects.length,
-    //         filters: filters.length,
-    //         transitions: transitions.length,
-    //       })
-    //
-    //       return {
-    //         success: true,
-    //         data: [...effects, ...filters, ...transitions],
-    //         source: "local",
-    //         timestamp: Date.now(),
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("[EffectsProvider] Failed to load local resources from backend:", error)
-    //   }
-    // }
+    if (this.isBackendConnected) {
+      try {
+        const response = await this.backendSync.executeCommand({
+          type: "LoadResources",
+          params: {
+            resource_type: "effect",
+            source: "local",
+            category: null,
+          },
+        })
+
+        if (response.success && response.data) {
+          const { effects = [], filters = [], transitions = [] } = response.data
+          this.resources.set("effect:local", effects)
+          this.resources.set("filter:local", filters)
+          this.resources.set("transition:local", transitions)
+
+          console.log("[EffectsProvider] Loaded local resources from backend:", {
+            effects: effects.length,
+            filters: filters.length,
+            transitions: transitions.length,
+          })
+
+          return {
+            success: true,
+            data: [...effects, ...filters, ...transitions],
+            source: "local",
+            timestamp: Date.now(),
+          }
+        }
+      } catch (error) {
+        console.error("[EffectsProvider] Failed to load local resources from backend:", error)
+      }
+    }
 
     // Fallback к пустым ресурсам
     this.resources.set("effect:local", [])
@@ -391,35 +390,34 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadRemoteResources(): Promise<LoadResult> {
-    // TODO: Активировать после генерации TypeScript типов
-    // if (this.isBackendConnected) {
-    //   try {
-    //     const response = await this.backendSync.executeCommand({
-    //       type: "LoadResources",
-    //       params: {
-    //         resource_type: "effect",
-    //         source: "remote",
-    //         category: null,
-    //       },
-    //     })
-    //
-    //     if (response.success && response.data) {
-    //       const { effects = [], filters = [], transitions = [] } = response.data
-    //       this.resources.set("effect:remote", effects)
-    //       this.resources.set("filter:remote", filters)
-    //       this.resources.set("transition:remote", transitions)
-    //
-    //       return {
-    //         success: true,
-    //         data: [...effects, ...filters, ...transitions],
-    //         source: "remote",
-    //         timestamp: Date.now(),
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("[EffectsProvider] Failed to load remote resources:", error)
-    //   }
-    // }
+    if (this.isBackendConnected) {
+      try {
+        const response = await this.backendSync.executeCommand({
+          type: "LoadResources",
+          params: {
+            resource_type: "effect",
+            source: "remote",
+            category: null,
+          },
+        })
+
+        if (response.success && response.data) {
+          const { effects = [], filters = [], transitions = [] } = response.data
+          this.resources.set("effect:remote", effects)
+          this.resources.set("filter:remote", filters)
+          this.resources.set("transition:remote", transitions)
+
+          return {
+            success: true,
+            data: [...effects, ...filters, ...transitions],
+            source: "remote",
+            timestamp: Date.now(),
+          }
+        }
+      } catch (error) {
+        console.error("[EffectsProvider] Failed to load remote resources:", error)
+      }
+    }
 
     // Fallback к пустым ресурсам
     this.resources.set("effect:remote", [])
@@ -435,35 +433,34 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadImportedResources(): Promise<LoadResult> {
-    // TODO: Активировать после генерации TypeScript типов
-    // if (this.isBackendConnected) {
-    //   try {
-    //     const response = await this.backendSync.executeCommand({
-    //       type: "LoadResources",
-    //       params: {
-    //         resource_type: "effect",
-    //         source: "imported",
-    //         category: null,
-    //       },
-    //     })
-    //
-    //     if (response.success && response.data) {
-    //       const { effects = [], filters = [], transitions = [] } = response.data
-    //       this.resources.set("effect:imported", effects)
-    //       this.resources.set("filter:imported", filters)
-    //       this.resources.set("transition:imported", transitions)
-    //
-    //       return {
-    //         success: true,
-    //         data: [...effects, ...filters, ...transitions],
-    //         source: "imported",
-    //         timestamp: Date.now(),
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("[EffectsProvider] Failed to load imported resources:", error)
-    //   }
-    // }
+    if (this.isBackendConnected) {
+      try {
+        const response = await this.backendSync.executeCommand({
+          type: "LoadResources",
+          params: {
+            resource_type: "effect",
+            source: "imported",
+            category: null,
+          },
+        })
+
+        if (response.success && response.data) {
+          const { effects = [], filters = [], transitions = [] } = response.data
+          this.resources.set("effect:imported", effects)
+          this.resources.set("filter:imported", filters)
+          this.resources.set("transition:imported", transitions)
+
+          return {
+            success: true,
+            data: [...effects, ...filters, ...transitions],
+            source: "imported",
+            timestamp: Date.now(),
+          }
+        }
+      } catch (error) {
+        console.error("[EffectsProvider] Failed to load imported resources:", error)
+      }
+    }
 
     // Fallback к пустым ресурсам
     this.resources.set("effect:imported", [])
@@ -494,20 +491,19 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   }
 
   async preloadCategory(type: ResourceType, category: string): Promise<LoadResult> {
-    // TODO: Активировать после генерации TypeScript типов
-    // if (this.isBackendConnected) {
-    //   try {
-    //     await this.backendSync.executeCommand({
-    //       type: "PreloadCategory",
-    //       params: {
-    //         resource_type: type,
-    //         category,
-    //       },
-    //     })
-    //   } catch (error) {
-    //     console.error("[EffectsProvider] Failed to preload category:", error)
-    //   }
-    // }
+    if (this.isBackendConnected) {
+      try {
+        await this.backendSync.executeCommand({
+          type: "PreloadCategory",
+          params: {
+            resource_type: type,
+            category,
+          },
+        })
+      } catch (error) {
+        console.error("[EffectsProvider] Failed to preload category:", error)
+      }
+    }
 
     return {
       success: true,
@@ -524,19 +520,18 @@ class EffectsProviderImpl implements EffectsProviderAPI {
   updateSourceConfig(source: ResourceSource, config: Partial<SourceConfig>): void {
     this.sourceConfigs[source] = { ...this.sourceConfigs[source], ...config }
 
-    // TODO: Активировать после генерации TypeScript типов
-    // if (this.isBackendConnected) {
-    //   this.backendSync
-    //     .executeCommand({
-    //       type: "SyncResources",
-    //       params: {
-    //         source,
-    //       },
-    //     })
-    //     .catch((error) => {
-    //       console.error("[EffectsProvider] Failed to sync source config:", error)
-    //     })
-    // }
+    if (this.isBackendConnected) {
+      this.backendSync
+        .executeCommand({
+          type: "SyncResources",
+          params: {
+            source,
+          },
+        })
+        .catch((error) => {
+          console.error("[EffectsProvider] Failed to sync source config:", error)
+        })
+    }
   }
 
   // === Состояние и статистика ===
@@ -648,38 +643,36 @@ class EffectsProviderImpl implements EffectsProviderAPI {
     const filters = this.getFilters(source)
     const transitions = this.getTransitions(source)
 
-    // TODO: Активировать после генерации TypeScript типов
-    // try {
-    //   await this.backendSync.executeCommand({
-    //     type: "SyncResources",
-    //     params: {
-    //       source,
-    //     },
-    //   })
-    //   console.log(`[EffectsProvider] Synced ${source} resources with backend`)
-    // } catch (error) {
-    //   console.error(`[EffectsProvider] Failed to sync ${source} resources:`, error)
-    // }
+    try {
+      await this.backendSync.executeCommand({
+        type: "SyncResources",
+        params: {
+          source,
+        },
+      })
+      console.log(`[EffectsProvider] Synced ${source} resources with backend`)
+    } catch (error) {
+      console.error(`[EffectsProvider] Failed to sync ${source} resources:`, error)
+    }
   }
 
   async importResource(type: ResourceType, resource: Resource): Promise<boolean> {
     try {
-      // TODO: Активировать после генерации TypeScript типов
-      // if (this.isBackendConnected) {
-      //   const response = await this.backendSync.executeCommand({
-      //     type: "SaveResource",
-      //     params: {
-      //       resource_id: resource.id,
-      //       resource_type: type,
-      //       data: resource,
-      //       metadata: {},
-      //     },
-      //   })
-      //
-      //   if (!response.success) {
-      //     throw new Error(response.error || "Failed to import resource")
-      //   }
-      // }
+      if (this.isBackendConnected) {
+        const response = await this.backendSync.executeCommand({
+          type: "SaveResource",
+          params: {
+            resource_id: resource.id,
+            resource_type: type,
+            data: resource,
+            metadata: {},
+          },
+        })
+
+        if (!response.success) {
+          throw new Error(response.error || "Failed to import resource")
+        }
+      }
 
       // Добавляем в локальный кэш
       const key = `${type}:imported`
@@ -701,20 +694,19 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
   async deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean> {
     try {
-      // TODO: Активировать после генерации TypeScript типов
-      // if (this.isBackendConnected) {
-      //   const response = await this.backendSync.executeCommand({
-      //     type: "DeleteResource",
-      //     params: {
-      //       resource_id: id,
-      //       resource_type: type,
-      //     },
-      //   })
-      //
-      //   if (!response.success) {
-      //     throw new Error(response.error || "Failed to delete resource")
-      //   }
-      // }
+      if (this.isBackendConnected) {
+        const response = await this.backendSync.executeCommand({
+          type: "DeleteResource",
+          params: {
+            resource_id: id,
+            resource_type: type,
+          },
+        })
+
+        if (!response.success) {
+          throw new Error(response.error || "Failed to delete resource")
+        }
+      }
 
       // Удаляем из локального кэша
       const key = `${type}:${source}`
@@ -819,32 +811,29 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
       api.setBackendConnected(true)
 
       // Восстанавливаем пользовательские ресурсы из backend
-      // TODO: Активировать после генерации TypeScript типов
-      // if (state.resources_state) {
-      //   console.log("[EffectsProvider] Restoring resources from backend state")
-      //   // Backend может отправлять уже загруженные ресурсы
-      //   // для быстрой инициализации
-      // }
+      if (state.resources_state) {
+        console.log("[EffectsProvider] Restoring resources from backend state")
+        // Backend может отправлять уже загруженные ресурсы
+        // для быстрой инициализации
+      }
     })
 
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      // TODO: Активировать после генерации TypeScript типов
+      // TODO: Добавить правильные типы событий для ресурсов
+      console.log("[EffectsProvider] Backend event received:", event.type)
+
+      // Временно отключено до добавления правильных типов событий
       // switch (event.type) {
       //   case "RESOURCE_IMPORTED":
-      //     // Обновляем локальный кэш при импорте через другие источники
       //     api.refreshSource("imported")
       //     break
-      //
       //   case "RESOURCE_DELETED":
-      //     // Обновляем кэш при удалении ресурса
-      //     if (event.data.source) {
+      //     if (event.data?.source) {
       //       api.refreshSource(event.data.source)
       //     }
       //     break
-      //
       //   case "REMOTE_RESOURCES_UPDATED":
-      //     // Обновляем удаленные ресурсы
       //     api.refreshSource("remote")
       //     break
       // }
