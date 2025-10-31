@@ -5,8 +5,7 @@
  */
 
 // Функция для генерации UUID
-import { MediaFile } from "@/features/media/types/media"
-import type { Timeline, TimelineClip, Track, TrackType } from "../../../types"
+import type { Timeline, TimelineClip, Track, TrackType, MediaFile } from "../../../types"
 import { featureToDomainMediaFile } from "../../../utils/media-file-adapter"
 
 import type { FCPXMLResource, ImportError, Importer, ImportOptions, ImportResult, ImportWarning } from "../types"
@@ -158,10 +157,10 @@ export class FCPXMLImporter implements Importer {
     const resources: FCPXMLResource[] = []
 
     // Ищем все asset элементы
-    const assetMatches = content.matchAll(/<asset[^>]*>/g)
-
-    for (const match of assetMatches) {
-      const assetTag = match[0]
+    const assetRegex = /<asset[^>]*>/g
+    let assetMatch
+    while ((assetMatch = assetRegex.exec(content)) !== null) {
+      const assetTag = assetMatch[0]
 
       const resource: FCPXMLResource = {
         id: this.extractAttributeValue(assetTag, "id") || uuidv4(),
@@ -188,7 +187,7 @@ export class FCPXMLImporter implements Importer {
   }
 
   private parseSequence(content: string): FCPXMLSequence | undefined {
-    const sequenceMatch = /<sequence[^>]*>(.*?)<\/sequence>/s.exec(content)
+    const sequenceMatch = /<sequence[^>]*>(.*?)<\/sequence>/g.exec(content)
     if (!sequenceMatch) return undefined
 
     const sequenceContent = sequenceMatch[1]
@@ -204,10 +203,10 @@ export class FCPXMLImporter implements Importer {
     const clips: FCPXMLClipItem[] = []
 
     // Ищем все clip элементы в spine
-    const clipMatches = content.matchAll(/<(clip|asset-clip)[^>]*(?:\/?>|>.*?<\/(?:clip|asset-clip)>)/gs)
-
-    for (const match of clipMatches) {
-      const clipTag = match[0]
+    const clipRegex = /<(clip|asset-clip)[^>]*(?:\/?>|>.*?<\/(?:clip|asset-clip)>)/g
+    let clipMatch
+    while ((clipMatch = clipRegex.exec(content)) !== null) {
+      const clipTag = clipMatch[0]
 
       const clip: FCPXMLClipItem = {
         name: this.extractAttributeValue(clipTag, "name") || "Unknown Clip",

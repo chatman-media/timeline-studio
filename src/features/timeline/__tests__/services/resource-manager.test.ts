@@ -4,7 +4,7 @@ import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { MediaFile } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
+import type { MediaTemplate } from "@/features/templates/lib/template-config"
 import type { Transition } from "@/features/transitions/types/transitions"
 
 import {
@@ -32,13 +32,25 @@ describe("resource-manager", () => {
       description: "",
       version: "0.0.1",
       createdAt: new Date(),
-      modifiedAt: new Date(),
-      framerate: 30,
+      updatedAt: new Date(),
+      fps: 30,
+      sampleRate: 44100,
       sections: [],
       globalTracks: [],
       duration: 0,
-      width: 1920,
-      height: 1080,
+      settings: {
+        autoSave: true,
+        resolution: { width: 1920, height: 1080 },
+        fps: 30,
+        aspectRatio: "16:9",
+        sampleRate: 44100,
+        channels: 2,
+        bitDepth: 16,
+        timeFormat: "seconds",
+        snapToGrid: true,
+        gridSize: 1,
+        autoSaveInterval: 60,
+      },
       resources: {
         media: [],
         effects: [],
@@ -47,6 +59,8 @@ describe("resource-manager", () => {
         templates: [],
         styleTemplates: [],
         timelineTransitions: [],
+        subtitleStyles: [],
+        music: [],
       },
     }
   })
@@ -64,6 +78,14 @@ describe("resource-manager", () => {
         ru: "Описание тестового эффекта",
       },
       parameters: [],
+      scope: ["clip"],
+      processingType: "realtime",
+      version: "1.0.0",
+      tags: [],
+      complexity: "low",
+      gpuAccelerated: false,
+      presets: [],
+      processors: {},
     }
 
     it("should create resources object if not exists", () => {
@@ -83,6 +105,8 @@ describe("resource-manager", () => {
         templates: [],
         styleTemplates: [],
         timelineTransitions: [],
+        subtitleStyles: [],
+        music: [],
       }
 
       const result = addEffectToResources(mockProject, mockEffect)
@@ -100,6 +124,8 @@ describe("resource-manager", () => {
         templates: [],
         styleTemplates: [],
         timelineTransitions: [],
+        subtitleStyles: [],
+        music: [],
       }
 
       const result = addEffectToResources(mockProject, mockEffect)
@@ -113,9 +139,15 @@ describe("resource-manager", () => {
       id: "filter-1",
       name: "Test Filter",
       category: "color-correction",
+      complexity: "basic",
+      tags: [],
       description: {
         en: "Test filter description",
       },
+      labels: {
+        en: "Test Filter",
+      },
+      params: {},
     }
 
     it("should add filter to resources", () => {
@@ -159,9 +191,14 @@ describe("resource-manager", () => {
         min: 0.1,
         max: 5,
       },
-      parameters: [],
+      parameters: {},
       complexity: "basic",
       tags: [],
+      labels: {
+        en: "Test Transition",
+        ru: "Тестовый переход",
+      },
+      ffmpegCommand: () => "fade",
     }
 
     it("should add transition to resources", () => {
@@ -193,10 +230,13 @@ describe("resource-manager", () => {
   describe("addTemplateToResources", () => {
     const mockTemplate: MediaTemplate = {
       id: "template-1",
-      name: "Test Template",
-      category: "grid",
-      duration: 60,
-      tracks: [],
+      split: "grid",
+      screens: 4,
+      gridConfig: {
+        columns: 2,
+        rows: 2,
+      },
+      render: () => null as any,
     }
 
     it("should add template to resources", () => {
@@ -211,7 +251,7 @@ describe("resource-manager", () => {
         effects: [],
         filters: [],
         transitions: [],
-        templates: [mockTemplate],
+        templates: [mockTemplate as any],
         styleTemplates: [],
         subtitleStyles: [],
         music: [],
@@ -277,7 +317,6 @@ describe("resource-manager", () => {
       name: "test.mp4",
       path: "/path/to/test.mp4",
       size: 1000000,
-      format: "mp4",
       duration: 10,
       createdAt: new Date().toISOString(),
     }
@@ -299,6 +338,7 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [mockMedia],
+        timelineTransitions: [],
       }
 
       const result = addMediaToResources(mockProject, mockMedia)
@@ -320,6 +360,14 @@ describe("resource-manager", () => {
         ru: "Описание тестового эффекта",
       },
       parameters: [],
+      scope: ["clip"],
+      processingType: "realtime",
+      version: "1.0.0",
+      tags: [],
+      complexity: "low",
+      gpuAccelerated: false,
+      presets: [],
+      processors: {},
     }
 
     it("should create applied effect and add to resources", () => {
@@ -341,10 +389,16 @@ describe("resource-manager", () => {
     const mockFilter: VideoFilter = {
       id: "filter-1",
       name: "Test Filter",
-      category: "color_correction",
+      category: "color-correction",
       description: {
         en: "Test filter description",
       },
+      complexity: "basic",
+      tags: [],
+      labels: {
+        en: "Test Filter",
+      },
+      params: {},
     }
 
     it("should create applied filter and add to resources", () => {
@@ -377,9 +431,14 @@ describe("resource-manager", () => {
         min: 0.1,
         max: 5,
       },
-      parameters: [],
+      parameters: {},
       complexity: "basic",
       tags: [],
+      labels: {
+        en: "Test Transition",
+        ru: "Тестовый переход",
+      },
+      ffmpegCommand: () => "fade",
     }
 
     it("should create applied transition and add to resources", () => {
@@ -453,13 +512,20 @@ describe("resource-manager", () => {
           en: "Used Effect",
           ru: "Используемый эффект",
         },
-        type: "sepia",
         category: "color_correction",
         description: {
           en: "Used",
           ru: "Используется",
         },
         parameters: [],
+        scope: ["clip"],
+        processingType: "realtime",
+        version: "1.0.0",
+        tags: [],
+        complexity: "low",
+        gpuAccelerated: false,
+        presets: [],
+        processors: {},
       }
 
       const unusedEffect: VideoEffect = {
@@ -468,13 +534,20 @@ describe("resource-manager", () => {
           en: "Unused Effect",
           ru: "Неиспользуемый эффект",
         },
-        type: "sepia",
         category: "color_correction",
         description: {
           en: "Unused",
           ru: "Не используется",
         },
         parameters: [],
+        scope: ["clip"],
+        processingType: "realtime",
+        version: "1.0.0",
+        tags: [],
+        complexity: "low",
+        gpuAccelerated: false,
+        presets: [],
+        processors: {},
       }
 
       const usedMedia: MediaFile = {
@@ -482,8 +555,7 @@ describe("resource-manager", () => {
         name: "used.mp4",
         path: "/path/to/used.mp4",
         size: 1000000,
-        format: "mp4",
-        duration: 10,
+          duration: 10,
         createdAt: new Date().toISOString(),
       }
 
@@ -492,8 +564,7 @@ describe("resource-manager", () => {
         name: "unused.mp4",
         path: "/path/to/unused.mp4",
         size: 1000000,
-        format: "mp4",
-        duration: 10,
+          duration: 10,
         createdAt: new Date().toISOString(),
       }
 
@@ -506,28 +577,58 @@ describe("resource-manager", () => {
         subtitleStyles: [],
         music: [],
         media: [usedMedia, unusedMedia],
+        timelineTransitions: [],
       }
 
       mockProject.sections = [
         {
           id: "section-1",
           name: "Section 1",
-          start: 0,
           duration: 10,
+          index: 0,
+          startTime: 0,
+          endTime: 10,
+          isCollapsed: false,
           tracks: [
             {
               id: "track-1",
               name: "Track 1",
+              type: "video",
               order: 0,
               height: 100,
               isLocked: false,
+              transitions: [],
+              isMuted: false,
+              isHidden: false,
+              isSolo: false,
+              volume: 1,
+              color: "#ffffff",
+              pan: 0,
+              trackEffects: [],
+              trackFilters: [],
               clips: [
                 {
                   id: "clip-1",
+                  name: "Test Clip",
                   trackId: "track-1",
                   mediaId: "used-media",
+                  startTime: 0,
                   duration: 5,
                   offset: 0,
+                  mediaStartTime: 0,
+                  mediaEndTime: 5,
+                  volume: 1,
+                  opacity: 1,
+                  speed: 1,
+                  isLocked: false,
+                  fadeIn: { duration: 0 },
+                  fadeOut: { duration: 0 },
+                  isReversed: false,
+                  filters: [],
+                  transitions: [],
+                  isSelected: false,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
                   effects: [
                     {
                       id: "applied-effect-1",
@@ -592,6 +693,15 @@ describe("resource-manager", () => {
           order: 0,
           height: 100,
           isLocked: false,
+          clips: [],
+          transitions: [],
+          isMuted: false,
+          isHidden: false,
+          isSolo: false,
+          volume: 1,
+          color: "#ffffff",
+          pan: 0,
+          trackEffects: [],
           trackFilters: [
             {
               id: "applied-filter-1",

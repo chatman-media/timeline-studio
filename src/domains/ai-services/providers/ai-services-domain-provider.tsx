@@ -90,30 +90,27 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
 
     try {
       const response = await backendSync.executeCommand({
-        type: "AI",
-        params: {
-          type: "SyncAIServicesState",
-          params: {
-            config: domainConfig,
-            chatHistory: chatState.chatMessages,
-            montageStatus: {
-              isAnalyzing: montagePlannerState.isAnalyzing,
-              currentPlan: montagePlannerState.currentPlan,
-            },
-            intelligenceStatus: {
-              isAnalyzing: aiIntelligenceState.progress > 0 && aiIntelligenceState.progress < 100,
-              analysisResults: aiIntelligenceState.analysis,
-            },
-            usageStats: aiUsageStats,
-          },
+        type: "SyncState" as any,
+        timestamp: new Date().toISOString(),
+        config: domainConfig,
+        chatHistory: (chatState as any).chatMessages || [],
+        montageStatus: {
+          isAnalyzing: (montagePlannerState as any).isAnalyzing || false,
+          currentPlan: (montagePlannerState as any).currentPlan,
         },
-      })
+        intelligenceStatus: {
+          isAnalyzing: ((aiIntelligenceState as any).progress || 0) > 0 && ((aiIntelligenceState as any).progress || 0) < 100,
+          analysisResults: (aiIntelligenceState as any).analysis,
+        },
+        usageStats: aiUsageStats,
+      } as any)
 
       if (response.success && response.data) {
         // Обновляем статистику использования от backend
+        const data = response.data as any
         setAIUsageStats({
-          totalRequests: response.data.totalRequests || 0,
-          totalTokens: response.data.totalTokens || 0,
+          totalRequests: data.totalRequests || 0,
+          totalTokens: data.totalTokens || 0,
           lastSync: new Date(),
         })
       }

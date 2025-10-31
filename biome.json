@@ -7,22 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**/*.ts", "src/**/*.tsx"],
-    "experimentalScannerIgnores": [
-      "node_modules/**",
-      "dist",
-      "build",
-      ".next",
-      "out",
-      "coverage",
-      "*.min.js",
-      "*.min.css",
-      "public/**",
-      "src-tauri/**",
-      "promo",
-      ".claude",
-      "version.json"
-    ]
+    "includes": ["src/**/*.ts", "src/**/*.tsx"]
   },
   "formatter": {
     "enabled": true,

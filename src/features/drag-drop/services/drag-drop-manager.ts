@@ -248,7 +248,7 @@ export class DragDropManager extends EventEmitter {
     if (!element) return null
 
     // Ищем зарегистрированный drop target
-    for (const [id, target] of this.dropTargets) {
+    for (const [id, target] of Array.from(this.dropTargets.entries())) {
       if (target.element && target.element.contains(element as Node)) {
         return target
       }

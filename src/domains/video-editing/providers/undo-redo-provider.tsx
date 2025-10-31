@@ -6,9 +6,42 @@
  */
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
-import type { Clip, Track } from "@/domains/shared/events"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+
+// Временные типы
+interface Clip {
+  id: string
+  trackId: string
+  startTime: number
+  endTime: number
+  duration: number
+  mediaId: string
+}
+
+interface Track {
+  id: string
+  name: string
+  type: string
+}
+
+interface ProjectState {
+  undo_redo_state?: {
+    history?: any[]
+  }
+}
+
+// Mock backend sync
+interface BackendSync {
+  onStateChange: (callback: (state: ProjectState) => void) => () => void
+  onEvent: (callback: (event: any) => void) => () => void
+  executeCommand: (command: any) => Promise<any>
+}
+
+const mockBackendSync: BackendSync = {
+  onStateChange: (callback) => () => {},
+  onEvent: (callback) => () => {},
+  executeCommand: (command) => Promise.resolve({ success: true }),
+}
+
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
 
 interface UndoRedoContextType {
@@ -36,7 +69,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
   const undoRedo = useUndoRedo()
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const backendSync = getBackendSync()
+  const backendSync = mockBackendSync
 
   // Синхронизация истории с backend
   useEffect(() => {

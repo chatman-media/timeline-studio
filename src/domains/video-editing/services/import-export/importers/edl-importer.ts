@@ -5,9 +5,7 @@
  */
 
 // Функция для генерации UUID
-import type { MediaFile } from "@/features/media/types/media"
-
-import type { Timeline, TimelineClip, Track, TrackType } from "../../../types"
+import type { Timeline, TimelineClip, Track, TrackType, MediaFile } from "../../../types"
 import {
   type EDLEvent,
   type ImportError,
@@ -302,10 +300,10 @@ export class EDLImporter implements Importer {
       type,
       order,
       clips: [],
-      isLocked: false,
-      isMuted: false,
-      isHidden: false,
-      isSolo: false,
+      locked: false,
+      muted: false,
+      solo: false,
+      expanded: true,
       volume: 1.0,
       height: 60,
       pan: 0,
@@ -336,14 +334,23 @@ export class EDLImporter implements Importer {
         trackId: "", // Будет установлен позже
         startTime: recordIn,
         duration,
-        mediaStartTime: sourceIn,
-        mediaEndTime: sourceOut,
-        offset: 0,
-        mediaDuration: sourceDuration,
+        sourceIn,
+        sourceOut,
+        playbackRate: 1.0,
+        isSelected: false,
+        isLocked: false,
+        isMuted: false,
         volume: 1.0,
-        speed: 1.0,
-        isReversed: false,
         opacity: 1.0,
+        position: {
+          x: 0,
+          y: 0,
+          width: 1,
+          height: 1,
+          rotation: 0,
+          scaleX: 1,
+          scaleY: 1,
+        },
         effects: [],
         filters: [],
         transitions: this.createTransitions(event),

@@ -1,5 +1,38 @@
 import { describe, expect, it } from "vitest"
-import type { PlaybackState, Project, UiState } from "@/types/generated/tauri-bindings"
+// Временные типы для тестирования
+interface PlaybackState {
+  currentTime: number
+  isPlaying: boolean
+  volume: number
+}
+
+interface UiState {
+  selectedClipIds: string[]
+  selectedTrackIds: string[]
+  zoom: number
+  scroll: number
+}
+
+interface Project {
+  id: string
+  metadata: {
+    name: string
+    created_at: string
+    version: string
+  }
+  settings: {
+    resolution: { width: number; height: number }
+    frame_rate: number
+    audio_sample_rate: number
+    audio_channels: number
+  }
+  timeline: {
+    tracks: any[]
+    duration: number
+    fps: number
+    sample_rate: number
+  }
+}
 import { transformProjectStateToTimeline } from "../project-transform"
 
 describe("project-transform", () => {

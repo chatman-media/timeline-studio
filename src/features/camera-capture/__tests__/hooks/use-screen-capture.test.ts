@@ -25,13 +25,21 @@ class MockMediaStream {
 }
 
 // Мок для MediaStreamTrack
-class MockMediaStreamTrack {
+class MockMediaStreamTrack implements Partial<MediaStreamTrack> {
   kind: string
   id: string
   enabled = true
   readyState: MediaStreamTrackState = "live"
   listeners: Record<string, ((event?: Event) => void)[]> = {}
   settings: MediaTrackSettings = {}
+  
+  // Добавляем недостающие свойства MediaStreamTrack
+  contentHint = ""
+  label = "mock-track"
+  muted = false
+  onended: ((this: MediaStreamTrack, ev: Event) => any) | null = null
+  onmute: ((this: MediaStreamTrack, ev: Event) => any) | null = null
+  onunmute: ((this: MediaStreamTrack, ev: Event) => any) | null = null
 
   constructor(kind: string, settings: Partial<MediaTrackSettings> = {}) {
     this.kind = kind
@@ -40,10 +48,9 @@ class MockMediaStreamTrack {
       width: 1920,
       height: 1080,
       frameRate: 30,
-      displaySurface: "monitor",
-      cursor: "always",
+      displaySurface: "monitor" as any,
       ...settings,
-    }
+    } as MediaTrackSettings
   }
 
   stop = vi.fn(() => {
@@ -213,9 +220,8 @@ describe("useScreenCapture", () => {
       width: 2560,
       height: 1440,
       frameRate: 60,
-      displaySurface: "window",
-      cursor: "motion",
-    })
+      displaySurface: "window" as any,
+    } as Partial<MediaTrackSettings>)
     const mockStream = new MockMediaStream([mockVideoTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 
@@ -231,7 +237,6 @@ describe("useScreenCapture", () => {
       height: 1440,
       frameRate: 60,
       displaySurface: "window",
-      cursor: "motion",
     })
   })
 

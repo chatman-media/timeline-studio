@@ -9,7 +9,48 @@
  * - Реактивная синхронизация через события
  */
 
-import type { Track as BackendTrack, Project, ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
+// Временные типы до создания tauri-bindings
+interface BackendTrack {
+  id: string
+  name: string
+  track_type: string
+  clips: any[]
+  locked: boolean
+  enabled: boolean
+  volume: number
+  pan: number
+  height: number
+}
+
+interface Project {
+  id: string
+  metadata: {
+    name: string
+    created_at: string
+    version: string
+  }
+  settings: {
+    resolution: { width: number; height: number }
+    frame_rate: number
+    audio_sample_rate: number
+    audio_channels: number
+  }
+  timeline: {
+    tracks: BackendTrack[]
+    duration: number
+    fps: number
+    sample_rate: number
+  }
+}
+
+interface ProjectCommand {
+  type: string
+  params: any
+}
+
+interface ProjectState {
+  project?: Project
+}
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -128,10 +169,11 @@ function getUsedMediaFiles(backendProject: Project): MediaFile[] {
   const allMedia = Object.values(backendProject.media_pool.items || {})
   return allMedia
     .filter(Boolean)
-    .filter((media) => media?.id && usedMediaIds.has(media.id))
+    .filter((media): media is any => Boolean(media && typeof media === 'object' && 'id' in media))
+    .filter((media) => usedMediaIds.has(media.id))
     .map((media) => ({
       ...media,
-      type: mapMediaTypeToString(media?.media_type) || "video", // Преобразуем media_type в type
+      type: mapMediaTypeToString(media.media_type) || "video", // Преобразуем media_type в type
     })) as MediaFile[]
 }
 

@@ -237,7 +237,7 @@ describe("AIServicesDomainProvider", () => {
     let stateCallback: any
 
     // Сохраняем callback для вызова позже
-    mockBackendSync.onStateChange.mockImplementation((callback) => {
+    (mockBackendSync.onStateChange as any).mockImplementation((callback: any) => {
       stateCallback = callback
       return vi.fn() // unsubscribe
     })
@@ -265,7 +265,7 @@ describe("AIServicesDomainProvider", () => {
   })
 
   it("должен обновлять статистику использования от backend", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync: any = getBackendSync()
     mockBackendSync.executeCommand.mockResolvedValueOnce({
       success: true,
       data: {
@@ -297,9 +297,9 @@ describe("AIServicesDomainProvider", () => {
 
       return (
         <div>
-          <div data-testid="chat">{chat.chatState.messages.length}</div>
-          <div data-testid="montage">{montage.montagePlannerState.isAnalyzing.toString()}</div>
-          <div data-testid="intelligence">{intelligence.aiIntelligenceState.isAnalyzing.toString()}</div>
+          <div data-testid="chat">{(chat.chatState as any).messages?.length || 0}</div>
+          <div data-testid="montage">{((montage.montagePlannerState as any).isAnalyzing || false).toString()}</div>
+          <div data-testid="intelligence">{((intelligence.aiIntelligenceState as any).isAnalyzing || false).toString()}</div>
         </div>
       )
     }

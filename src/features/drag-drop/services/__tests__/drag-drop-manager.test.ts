@@ -27,7 +27,11 @@ const mockDataTransfer = {
 }
 
 const mockElement = {
-  style: {},
+  style: {
+    position: "",
+    top: "",
+    opacity: "",
+  } as CSSStyleDeclaration,
   appendChild: vi.fn(),
   contains: vi.fn(),
 }

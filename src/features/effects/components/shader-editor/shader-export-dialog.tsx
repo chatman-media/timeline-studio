@@ -46,9 +46,15 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
     // Convert shader to effect format
     const effect: BaseEffect = {
       id: `shader-${project.id}`,
-      name: project.name,
+      name: {
+        en: project.name,
+        ru: project.name,
+      },
       category: effectMetadata.category,
-      description: project.description || "Custom GLSL shader effect",
+      description: {
+        en: project.description || "Custom GLSL shader effect",
+        ru: project.description || "Пользовательский GLSL шейдер",
+      },
       complexity: effectMetadata.complexity,
       parameters: project.uniforms.map((uniform) => ({
         name: uniform.name,

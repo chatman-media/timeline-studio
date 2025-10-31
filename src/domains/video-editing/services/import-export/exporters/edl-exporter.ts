@@ -31,7 +31,7 @@ export class EDLExporter implements Exporter {
 
     // Обрабатываем каждый трек
     for (const track of sortedTracks) {
-      if (!options.includeDisabledClips && (track.isMuted || track.isHidden)) {
+      if (!options.includeDisabledClips && (track.muted || track.locked)) {
         continue
       }
 
@@ -110,8 +110,8 @@ export class EDLExporter implements Exporter {
 
   private createEventFromClip(clip: TimelineClip, trackType: "V" | "A" | "AA" | "B", options: ExportOptions): EDLEvent {
     // Вычисляем timecodes
-    const sourceIn = secondsToTimecode(clip.mediaStartTime || 0, this.frameRate)
-    const sourceOut = secondsToTimecode(clip.mediaEndTime || (clip.mediaStartTime || 0) + clip.duration, this.frameRate)
+    const sourceIn = secondsToTimecode(clip.sourceIn || 0, this.frameRate)
+    const sourceOut = secondsToTimecode(clip.sourceOut || (clip.sourceIn || 0) + clip.duration, this.frameRate)
     const recordIn = secondsToTimecode(clip.startTime, this.frameRate)
     const recordOut = secondsToTimecode(clip.startTime + clip.duration, this.frameRate)
 
@@ -139,8 +139,8 @@ export class EDLExporter implements Exporter {
     }
 
     // Добавляем информацию о скорости
-    if (clip.speed !== 1.0) {
-      comment += `SPEED: ${(clip.speed * 100).toFixed(0)}%\n`
+    if (clip.playbackRate !== 1.0) {
+      comment += `SPEED: ${(clip.playbackRate * 100).toFixed(0)}%\n`
     }
 
     // Добавляем информацию о громкости

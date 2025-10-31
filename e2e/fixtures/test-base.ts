@@ -25,7 +25,7 @@ export const test = base.extend<TestFixtures>({
         { timeout: 30000 },
       )
 
-      await use(page)
+      await use(undefined)
     },
     { auto: true },
   ],
@@ -45,7 +45,7 @@ export const test = base.extend<TestFixtures>({
       { timeout: 10000 },
     )
 
-    await use()
+    await use(undefined)
   },
 })
 

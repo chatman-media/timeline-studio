@@ -88,7 +88,7 @@ export class AAFExporter implements Exporter {
 
     let slotID = 1
     for (const track of sortedTracks) {
-      if (!options.includeDisabledClips && (track.isMuted || track.isHidden)) {
+      if (!options.includeDisabledClips && (track.muted || track.locked)) {
         continue
       }
 
@@ -152,7 +152,7 @@ export class AAFExporter implements Exporter {
     lines.push(`${indentStr}  <Length>${Math.round(clip.duration * this.frameRate)}</Length>`)
     lines.push(`${indentStr}  <SourceID>${sourceID}</SourceID>`)
     lines.push(`${indentStr}  <SourceTrackID>1</SourceTrackID>`)
-    lines.push(`${indentStr}  <StartTime>${Math.round((clip.mediaStartTime || 0) * this.frameRate)}</StartTime>`)
+    lines.push(`${indentStr}  <StartTime>${Math.round((clip.sourceIn || 0) * this.frameRate)}</StartTime>`)
 
     // Добавляем эффекты если указано
     if (options.includeEffects && clip.effects && clip.effects.length > 0) {

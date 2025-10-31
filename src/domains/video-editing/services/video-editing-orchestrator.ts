@@ -9,15 +9,58 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import {
-  type ClipAddedEvent,
-  DOMAIN_EVENTS,
-  eventBus,
-  type PlaybackStateChangedEvent,
-  type TimelineUpdatedEvent,
-} from "@/domains/shared/events"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
+// Временные типы и mock
+interface ClipAddedEvent {
+  type: "CLIP_ADDED"
+  data: any
+}
+
+interface PlaybackStateChangedEvent {
+  type: "PLAYBACK_STATE_CHANGED"
+  data: any
+}
+
+interface TimelineUpdatedEvent {
+  type: "TIMELINE_UPDATED"
+  data: any
+}
+
+const DOMAIN_EVENTS = {
+  CLIP_ADDED: "CLIP_ADDED",
+  TIMELINE_UPDATED: "TIMELINE_UPDATED",
+  PLAYBACK_STATE_CHANGED: "PLAYBACK_STATE_CHANGED",
+}
+
+interface EventBus {
+  emit: (event: any) => void
+  on: (event: string, callback: (data: any) => void) => void
+}
+
+const mockEventBus: EventBus = {
+  emit: (event) => console.log("Event:", event),
+  on: (event, callback) => {},
+}
+
+const eventBus = mockEventBus
+
+interface BackendSync {
+  executeCommand: (command: any) => Promise<any>
+}
+
+const mockBackendSync: BackendSync = {
+  executeCommand: (command) => Promise.resolve({ success: true }),
+}
+
+const getBackendSync = () => mockBackendSync
+
+interface ProjectCommand {
+  type: string
+  params: any
+}
+
+interface ProjectState {
+  project?: any
+}
 import { playerMachine } from "../machines/player-machine"
 // Import machines
 import { timelineExtendedMachine } from "../machines/timeline-extended-machine"

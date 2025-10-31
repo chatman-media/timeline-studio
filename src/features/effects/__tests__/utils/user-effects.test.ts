@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { VideoEffect } from "@/features/effects/types"
+import type { VideoEffect } from "../../types/unified-effects"
 
 import {
   deleteUserEffect,
@@ -149,7 +149,7 @@ describe("user-effects", () => {
     it("should load user effect successfully", async () => {
       const mockEffect = createMockEffect("test-1")
       const mockUserEffect: UserEffect = {
-        effect: mockEffect,
+        ...mockEffect,
         createdAt: "2023-01-01T00:00:00.000Z",
         updatedAt: "2023-01-01T00:00:00.000Z",
         isCustom: true,
@@ -171,10 +171,8 @@ describe("user-effects", () => {
           isCustom: mockUserEffect.isCustom,
           author: mockUserEffect.author,
           tags: mockUserEffect.tags,
-          effect: expect.objectContaining({
-            id: mockUserEffect.effect.id,
-            name: mockUserEffect.effect.name,
-          }),
+          id: mockUserEffect.id,
+          name: mockUserEffect.name,
         }),
       )
     })
@@ -207,7 +205,7 @@ describe("user-effects", () => {
       }
 
       const mockUserEffect: UserEffect = {
-        effect: complexEffect,
+        ...complexEffect,
         createdAt: "2023-01-01T00:00:00.000Z",
         updatedAt: "2023-01-02T00:00:00.000Z",
         isCustom: true,
@@ -217,7 +215,7 @@ describe("user-effects", () => {
 
       const result = await loadUserEffect("/effects/complex.effect")
 
-      expect(result.effect.presets).toEqual(complexEffect.presets)
+      expect(result.presets).toEqual(complexEffect.presets)
       expect(result.createdAt).toBe("2023-01-01T00:00:00.000Z")
       expect(result.updatedAt).toBe("2023-01-02T00:00:00.000Z")
     })
@@ -231,13 +229,13 @@ describe("user-effects", () => {
         description: "A test collection",
         effects: [
           {
-            effect: createMockEffect("effect-1"),
+            ...createMockEffect("effect-1"),
             createdAt: "2023-01-01T00:00:00.000Z",
             updatedAt: "2023-01-01T00:00:00.000Z",
             isCustom: true,
           },
           {
-            effect: createMockEffect("effect-2"),
+            ...createMockEffect("effect-2"),
             createdAt: "2023-01-01T00:00:00.000Z",
             updatedAt: "2023-01-01T00:00:00.000Z",
             isCustom: true,
@@ -283,7 +281,7 @@ describe("user-effects", () => {
         description: "A test collection",
         effects: [
           {
-            effect: createMockEffect("effect-1"),
+            ...createMockEffect("effect-1"),
             createdAt: "2023-01-01T00:00:00.000Z",
             updatedAt: "2023-01-01T00:00:00.000Z",
             isCustom: true,
@@ -312,10 +310,8 @@ describe("user-effects", () => {
               createdAt: mockCollection.effects[0].createdAt,
               updatedAt: mockCollection.effects[0].updatedAt,
               isCustom: mockCollection.effects[0].isCustom,
-              effect: expect.objectContaining({
-                id: mockCollection.effects[0].effect.id,
-                name: mockCollection.effects[0].effect.name,
-              }),
+              id: mockCollection.effects[0].id,
+              name: mockCollection.effects[0].name,
             }),
           ]),
         }),
@@ -556,7 +552,7 @@ describe("user-effects", () => {
         name: "Integration Collection",
         effects: [
           {
-            effect: createMockEffect("effect-1"),
+            ...createMockEffect("effect-1"),
             createdAt: "2023-01-01T00:00:00.000Z",
             updatedAt: "2023-01-01T00:00:00.000Z",
             isCustom: true,
@@ -592,10 +588,8 @@ describe("user-effects", () => {
               createdAt: mockCollection.effects[0].createdAt,
               updatedAt: mockCollection.effects[0].updatedAt,
               isCustom: mockCollection.effects[0].isCustom,
-              effect: expect.objectContaining({
-                id: mockCollection.effects[0].effect.id,
-                name: mockCollection.effects[0].effect.name,
-              }),
+              id: mockCollection.effects[0].id,
+              name: mockCollection.effects[0].name,
             }),
           ]),
         }),

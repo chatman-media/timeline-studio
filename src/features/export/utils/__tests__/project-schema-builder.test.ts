@@ -21,12 +21,40 @@ vi.mock("@/features/timeline/utils/timeline-to-project", () => ({
 const createMockTimeline = () => ({
   id: "test-timeline",
   name: "Test Timeline",
+  description: "",
   duration: 60,
   fps: 30,
-  resolution: [1920, 1080] as [number, number],
-  tracks: [],
+  sampleRate: 44100,
+  sections: [],
+  globalTracks: [],
   markers: [],
-  settings: {},
+  resources: {
+    media: [],
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    styleTemplates: [],
+    timelineTransitions: [],
+    subtitleStyles: [],
+    music: [],
+  },
+  settings: {
+    autoSave: true,
+    resolution: { width: 1920, height: 1080 },
+    fps: 30,
+    aspectRatio: "16:9" as const,
+    sampleRate: 44100,
+    channels: 2,
+    bitDepth: 16,
+    timeFormat: "seconds" as const,
+    snapToGrid: true,
+    gridSize: 1,
+    autoSaveInterval: 60,
+  },
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  version: "1.0.0",
 })
 
 // Create mock project schema
@@ -99,11 +127,11 @@ const createMockProjectSchema = () => ({
 
 describe("formatToOutputFormat", () => {
   it("should convert mp4 format", () => {
-    expect(formatToOutputFormat("mp4")).toBe(OutputFormat.Mp4)
+    expect(formatToOutputFormat("Mp4")).toBe(OutputFormat.Mp4)
   })
 
   it("should convert mov format", () => {
-    expect(formatToOutputFormat("mov")).toBe(OutputFormat.Mov)
+    expect(formatToOutputFormat("Mov")).toBe(OutputFormat.Mov)
     expect(formatToOutputFormat("quicktime")).toBe(OutputFormat.Mov)
   })
 
@@ -197,7 +225,7 @@ describe("ProjectSchemaBuilder", () => {
     it("should apply export format", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const exportSettings: Partial<ExportSettings> = {
-        format: "webm",
+        format: "WebM",
       }
 
       const schema = builder.withExportSettings(exportSettings).build()
@@ -296,7 +324,7 @@ describe("ProjectSchemaBuilder", () => {
     it("should chain multiple settings", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const exportSettings: Partial<ExportSettings> = {
-        format: "mov",
+        format: "Mov",
         quality: "best",
         resolution: "1440",
         enableGPU: true,
@@ -351,25 +379,25 @@ describe("ProjectSchemaBuilder", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const metadata = {
         name: "Custom Name",
-        version: "2.0.0",
+        description: "Custom description",
       }
 
       const schema = builder.withMetadata(metadata).build()
 
       expect(schema.metadata.name).toBe("Custom Name")
-      expect(schema.metadata.version).toBe("2.0.0")
+      expect(schema.metadata.description).toBe("Custom description")
     })
 
     it("should merge with existing metadata", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const metadata = {
-        version: "2.0.0",
+        author: "Test Author",
       }
 
       const schema = builder.withMetadata(metadata).build()
 
       expect(schema.metadata.name).toBe("Test Project") // original preserved
-      expect(schema.metadata.version).toBe("2.0.0") // new value
+      expect(schema.metadata.author).toBe("Test Author") // new value
     })
   })
 
@@ -494,7 +522,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "test",
           savePath: "/tmp",
-          format: "webm",
+          format: "WebM",
           quality: "best",
           resolution: "4k",
           frameRate: "60",
@@ -541,7 +569,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "section",
           savePath: "/tmp",
-          format: "mp4",
+          format: "Mp4",
           quality: "good",
           resolution: "1080",
           frameRate: "30",
@@ -563,7 +591,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "section",
           savePath: "/tmp",
-          format: "mp4",
+          format: "Mp4",
           quality: "good",
           resolution: "1080",
           frameRate: "30",
@@ -580,7 +608,7 @@ describe("ProjectSchemaBuilder", () => {
   describe("method chaining", () => {
     it("should allow chaining multiple methods", () => {
       const exportSettings: Partial<ExportSettings> = {
-        format: "mov",
+        format: "Mov",
         quality: "best",
       }
 
@@ -590,7 +618,7 @@ describe("ProjectSchemaBuilder", () => {
       }
 
       const metadata = {
-        version: "2.0.0",
+        description: "Chained project description",
       }
 
       const customSettings = {
@@ -606,7 +634,7 @@ describe("ProjectSchemaBuilder", () => {
         .build()
 
       expect(schema.metadata.name).toBe("Chained Project")
-      expect(schema.metadata.version).toBe("2.0.0")
+      expect(schema.metadata.description).toBe("Chained project description")
       expect(schema.settings.export.format).toBe(OutputFormat.Mov)
       expect(schema.settings.export.quality).toBe(95)
       expect(schema.settings.preview.resolution).toEqual([1920, 1080])

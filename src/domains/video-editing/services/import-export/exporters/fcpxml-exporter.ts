@@ -78,7 +78,8 @@ export class FCPXMLExporter implements Exporter {
     // Media assets
     const mediaFiles = this.collectMediaFiles(project)
 
-    for (const [index, mediaFile] of mediaFiles.entries()) {
+    for (let index = 0; index < mediaFiles.length; index++) {
+      const mediaFile = mediaFiles[index]
       if (!mediaFile) continue
 
       const assetId = `r${index + 2}` // r1 занят форматом
@@ -126,7 +127,7 @@ export class FCPXMLExporter implements Exporter {
     const sortedTracks = allTracks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
     for (const track of sortedTracks) {
-      if (!options.includeDisabledClips && (track.isMuted || track.isHidden)) {
+      if (!options.includeDisabledClips && (track.muted || track.locked)) {
         continue
       }
 
@@ -170,7 +171,7 @@ export class FCPXMLExporter implements Exporter {
     const assetRef = this.findAssetRef(mediaFile)
     const offset = this.secondsToFCPXMLDuration(clip.startTime)
     const duration = this.secondsToFCPXMLDuration(clip.duration)
-    const start = this.secondsToFCPXMLDuration(clip.mediaStartTime || 0)
+    const start = this.secondsToFCPXMLDuration(clip.sourceIn || 0)
 
     const enabled = clip.opacity > 0 ? "1" : "0"
     const lane = this.getTrackLane(track)
@@ -185,7 +186,7 @@ export class FCPXMLExporter implements Exporter {
     // Проверяем, есть ли эффекты или параметры
     const hasEffects = options.includeEffects && clip.effects && clip.effects.length > 0
     const hasTransitions = options.includeTransitions && clip.transitions && clip.transitions.length > 0
-    const hasAdjustments = clip.volume !== 1.0 || clip.speed !== 1.0 || clip.opacity !== 1.0
+    const hasAdjustments = clip.volume !== 1.0 || clip.playbackRate !== 1.0 || clip.opacity !== 1.0
 
     if (!hasEffects && !hasTransitions && !hasAdjustments) {
       lines.push(`${indentStr}${clipTag}/>`)
@@ -221,11 +222,11 @@ export class FCPXMLExporter implements Exporter {
     }
 
     // Скорость
-    if (clip.speed !== 1.0) {
+    if (clip.playbackRate !== 1.0) {
       lines.push(`${indentStr}<timeMap>`)
       lines.push(`${indentStr}  <timept time="0s" value="0s" interp="smooth2"/>`)
       const endTime = this.secondsToFCPXMLDuration(clip.duration)
-      const scaledDuration = this.secondsToFCPXMLDuration(clip.duration / clip.speed)
+      const scaledDuration = this.secondsToFCPXMLDuration(clip.duration / clip.playbackRate)
       lines.push(`${indentStr}  <timept time="${endTime}" value="${scaledDuration}" interp="smooth2"/>`)
       lines.push(`${indentStr}</timeMap>`)
     }

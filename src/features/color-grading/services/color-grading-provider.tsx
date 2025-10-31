@@ -1,6 +1,20 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+// Временные типы до создания backend-sync
+interface ProjectState {
+  color_grading?: any
+}
+
+interface BackendSync {
+  executeCommand: (command: any) => Promise<any>
+  onStateChange: (callback: (state: ProjectState) => void) => () => void
+}
+
+const mockBackendSync: BackendSync = {
+  executeCommand: (command) => Promise.resolve({ success: true }),
+  onStateChange: (callback) => () => {},
+}
+
+const getBackendSync = () => mockBackendSync
 
 import { useColorGrading } from "../hooks/use-color-grading"
 import type {

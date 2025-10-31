@@ -15,20 +15,21 @@ vi.mock("react-i18next", () => ({
 describe("EffectIndicators", () => {
   const baseEffect: VideoEffect = {
     id: "test-effect",
-    name: "Test Effect",
-    type: "blur",
-    category: "artistic",
-    complexity: "basic",
+    name: {
+      en: "Test Effect",
+      ru: "Тестовый эффект",
+    },
+    category: "blur_sharpen",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    complexity: "medium",
+    gpuAccelerated: false,
+    parameters: [],
+    presets: [],
+    processors: {},
     tags: ["popular"],
     description: { ru: "Тестовый эффект", en: "Test Effect" },
-    labels: {
-      ru: "Тест",
-      en: "Test",
-    },
-    params: {},
-    ffmpegCommand: () => "test",
-    previewPath: "/effects/test.mp4",
-    duration: 0,
   }
 
   beforeEach(() => {

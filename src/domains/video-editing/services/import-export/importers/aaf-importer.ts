@@ -5,9 +5,7 @@
  * Примечание: Это упрощенная реализация AAF XML, не полный бинарный AAF
  */
 
-import type { MediaFile } from "@/features/media/types/media"
-
-import type { Timeline, TimelineClip, Track, TrackType } from "../../../types"
+import type { Timeline, TimelineClip, Track, TrackType, MediaFile } from "../../../types"
 import { featureToDomainMediaFile } from "../../../utils/media-file-adapter"
 import type { ImportError, Importer, ImportOptions, ImportResult, ImportWarning } from "../types"
 
@@ -370,10 +368,10 @@ export class AAFImporter implements Importer {
         type: trackType,
         order: aafTrack.trackID - 1, // AAF trackID начинается с 1
         clips: [],
-        isLocked: false,
-        isMuted: false,
-        isHidden: false,
-        isSolo: false,
+        locked: false,
+        muted: false,
+        solo: false,
+        expanded: true,
         volume: 1.0,
         pan: 0,
         height: 60,
@@ -440,14 +438,23 @@ export class AAFImporter implements Importer {
       trackId,
       startTime,
       duration,
-      mediaStartTime,
-      mediaEndTime: mediaStartTime + duration,
-      offset: 0,
-      mediaDuration: duration,
+      sourceIn: mediaStartTime,
+      sourceOut: mediaStartTime + duration,
+      playbackRate: 1.0,
+      isSelected: false,
+      isLocked: false,
+      isMuted: false,
       volume: 1.0,
-      speed: 1.0,
-      isReversed: false,
       opacity: 1.0,
+      position: {
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 1,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      },
       effects: [],
       filters: [],
       transitions: [],
