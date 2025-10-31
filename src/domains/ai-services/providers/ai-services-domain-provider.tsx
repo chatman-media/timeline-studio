@@ -99,7 +99,8 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
           currentPlan: (montagePlannerState as any).currentPlan,
         },
         intelligenceStatus: {
-          isAnalyzing: ((aiIntelligenceState as any).progress || 0) > 0 && ((aiIntelligenceState as any).progress || 0) < 100,
+          isAnalyzing:
+            ((aiIntelligenceState as any).progress || 0) > 0 && ((aiIntelligenceState as any).progress || 0) < 100,
           analysisResults: (aiIntelligenceState as any).analysis,
         },
         usageStats: aiUsageStats,

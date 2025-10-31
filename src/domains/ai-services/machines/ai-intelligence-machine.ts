@@ -435,7 +435,8 @@ export const aiIntelligenceMachine = setup({
   actions: {
     initializeContext: assign({
       mediaFiles: ({ event }) => (event.type === "START_ANALYSIS" ? event.mediaFiles : []),
-      config: ({ event }) => (event.type === "START_ANALYSIS" ? event.config : ({ provider: "claude", model: "claude-3-sonnet" } as any)),
+      config: ({ event }) =>
+        event.type === "START_ANALYSIS" ? event.config : ({ provider: "claude", model: "claude-3-sonnet" } as any),
       steps: () => [],
       errors: () => [],
       progress: () => 0,
@@ -509,65 +510,66 @@ export const aiIntelligenceMachine = setup({
     }),
 
     prepareResult: assign({
-      result: ({ context }) => ({
-        id: `intelligent-content-${Date.now()}`,
-        projectId: `project-${Date.now()}`,
-        type: "video" as const,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        analysis: context.analysis! as any,
-        script: context.script,
-        moments: (context.moments || []).map((moment) => ({
-          id: moment.id,
-          timestamp: moment.timestamp,
-          type: moment.type,
-          confidence: moment.confidence || 0,
-          duration: 1, // default duration
-          score: moment.confidence || 0,
-          description: `Moment at ${moment.timestamp}s`,
-          tags: [moment.type],
-          metadata: moment.metadata,
-        })),
-        classification: {
-          primary: {
-            category: context.classification?.category || "unknown",
-            confidence: context.classification?.confidence || 0,
-          },
-          secondary: [],
-          confidence: context.classification?.confidence || 0,
-          tags: context.classification?.tags || [],
-        },
-        platformContent: context.platformContent,
-        suggestions: [],
-        metadata: {
-          startTime: context.steps[0]?.startTime || new Date(),
-          endTime: new Date(),
-          duration: Date.now() - (context.steps[0]?.startTime?.getTime() || Date.now()),
-          config: {
-            providers: {},
-            defaultProvider: "claude",
-            processing: {
-              enablePipeline: true,
-              enableCaching: true,
-              maxRetries: 3,
-              timeout: 30000,
+      result: ({ context }) =>
+        ({
+          id: `intelligent-content-${Date.now()}`,
+          projectId: `project-${Date.now()}`,
+          type: "video" as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          analysis: context.analysis! as any,
+          script: context.script,
+          moments: (context.moments || []).map((moment) => ({
+            id: moment.id,
+            timestamp: moment.timestamp,
+            type: moment.type,
+            confidence: moment.confidence || 0,
+            duration: 1, // default duration
+            score: moment.confidence || 0,
+            description: `Moment at ${moment.timestamp}s`,
+            tags: [moment.type],
+            metadata: moment.metadata,
+          })),
+          classification: {
+            primary: {
+              category: context.classification?.category || "unknown",
+              confidence: context.classification?.confidence || 0,
             },
-            quality: "high",
-          } as any,
-          steps: context.steps,
-          resources: {
-            cpuUsage: 0,
-            memoryUsage: 0,
-            apiCalls: [],
-            cacheHits: 0,
-            cacheMisses: 0,
+            secondary: [],
+            confidence: context.classification?.confidence || 0,
+            tags: context.classification?.tags || [],
           },
-          errors: context.errors.length > 0 ? context.errors : undefined,
-          analyzedAt: new Date(),
-          model: "test",
-          confidence: 0.9,
-        } as any,
-      }) as any,
+          platformContent: context.platformContent,
+          suggestions: [],
+          metadata: {
+            startTime: context.steps[0]?.startTime || new Date(),
+            endTime: new Date(),
+            duration: Date.now() - (context.steps[0]?.startTime?.getTime() || Date.now()),
+            config: {
+              providers: {},
+              defaultProvider: "claude",
+              processing: {
+                enablePipeline: true,
+                enableCaching: true,
+                maxRetries: 3,
+                timeout: 30000,
+              },
+              quality: "high",
+            } as any,
+            steps: context.steps,
+            resources: {
+              cpuUsage: 0,
+              memoryUsage: 0,
+              apiCalls: [],
+              cacheHits: 0,
+              cacheMisses: 0,
+            },
+            errors: context.errors.length > 0 ? context.errors : undefined,
+            analyzedAt: new Date(),
+            model: "test",
+            confidence: 0.9,
+          } as any,
+        }) as any,
     }),
 
     emitProgress: emit(({ context }) => ({
@@ -630,12 +632,13 @@ export const aiIntelligenceMachine = setup({
       invoke: {
         id: "analyzeContent",
         src: "analyzeContentActor" as any,
-        input: ({ context }) => ({
-          mediaFiles: context.mediaFiles,
-          config: context.config,
-          ffmpegService: getFFmpegService(),
-          aiService: getAIService(),
-        }) as any,
+        input: ({ context }) =>
+          ({
+            mediaFiles: context.mediaFiles,
+            config: context.config,
+            ffmpegService: getFFmpegService(),
+            aiService: getAIService(),
+          }) as any,
         onDone: {
           target: "analysisComplete",
           actions: [
@@ -765,12 +768,13 @@ export const aiIntelligenceMachine = setup({
       invoke: {
         id: "adaptForPlatforms",
         src: "adaptForPlatformsActor",
-        input: ({ context }) => ({
-          analysis: context.analysis!,
-          script: context.script,
-          platforms: (context.config.platforms || []) as PlatformId[],
-          aiService: getAIService(),
-        }) as any,
+        input: ({ context }) =>
+          ({
+            analysis: context.analysis!,
+            script: context.script,
+            platforms: (context.config.platforms || []) as PlatformId[],
+            aiService: getAIService(),
+          }) as any,
         onDone: {
           target: "complete",
           actions: [

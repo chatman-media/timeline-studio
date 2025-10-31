@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react"
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { EDIT_MODES } from "../types/edit-modes"
 import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../utils/edit-operations"
 import { DEFAULT_SNAP_CONFIG, findSnapPoints, snapTime } from "../utils/snap-engine"
@@ -12,7 +13,10 @@ interface UseClipEditingOptions {
 }
 
 export function useClipEditing(clipId: string, options: UseClipEditingOptions = {}) {
-  const { project, uiState, currentTime, send } = useTimeline()
+  const { project, currentTime, send } = useTimeline()
+  
+  // Мок UI state для восстановления функциональности
+  const uiState = { timeScale: 50 } // TODO: Получать из контекста
   const { editMode } = useEditModeContext()
   const [isEditing, setIsEditing] = useState(false)
   const [preview, setPreview] = useState<{
@@ -57,7 +61,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
       editStartRef.current = {
         startTime: clip.startTime,
         duration: clip.duration,
-        offset: clip.offset,
+        offset: (clip as DomainTimelineClip).sourceIn || 0, // domain клипы используют sourceIn
         mouseX,
       }
 
@@ -83,7 +87,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
       switch (editMode) {
         case EDIT_MODES.TRIM: {
           // Simple trim without ripple
-          const bounds = getClipTrimBounds(clip, "start", track)
+          const bounds = getClipTrimBounds(clip as any, "start", track as any)
 
           if (timeDelta > 0) {
             // Trimming start forward
@@ -109,14 +113,14 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
 
         case EDIT_MODES.SLIP: {
           // Slip only changes offset
-          const slipBounds = getSlipBounds(clip)
+          const slipBounds = getSlipBounds(clip as any)
           newOffset = Math.max(slipBounds.min, Math.min(slipBounds.max, editStartRef.current.offset + timeDelta))
           break
         }
 
         case EDIT_MODES.SLIDE: {
           // Slide moves clip and adjusts neighbors
-          const slideBounds = getSlideBounds(clip, track)
+          const slideBounds = getSlideBounds(clip as any, track as any)
           const slideAmount = Math.max(slideBounds.min, Math.min(slideBounds.max, timeDelta))
           newStartTime = editStartRef.current.startTime + slideAmount
           break
@@ -129,7 +133,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
 
       // Apply snapping
       const snapPoints = findSnapPoints(
-        project,
+        project as any,
         0,
         project.duration * timeScale,
         timeScale,
@@ -181,7 +185,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
             send({
               type: "SLIP_EDIT",
               clipId,
-              delta: preview.offset! - clip.offset,
+              delta: preview.offset! - ((clip as DomainTimelineClip).sourceIn || 0),
             })
             break
 

@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { SplitEditServiceImpl } from "../services/split-edit-service"
 import type {
   SplitEdit,
@@ -11,6 +12,7 @@ import type {
   SplitEditToolSettings,
   SplitEditVisual,
 } from "../types/split-edit"
+import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
 export interface UseSplitEditReturn {
@@ -76,11 +78,26 @@ export function useSplitEdit(): UseSplitEditReturn {
   const [toolSettings, setToolSettings] = useState(() => service.getToolSettings())
   const [visualSettings, setVisualSettings] = useState(() => service.getVisualSettings())
 
-  // Получаем все клипы из проекта
-  const getAllClips = useCallback(() => {
+  // Адаптер для преобразования domain клипа в feature клип
+  const adaptDomainClipToFeatureClip = useCallback((domainClip: DomainTimelineClip): TimelineClip => {
+    return {
+      ...domainClip,
+      mediaFile: undefined,
+      mediaStartTime: domainClip.sourceIn,
+      mediaEndTime: domainClip.sourceOut,
+      speed: domainClip.playbackRate || 1,
+      isReversed: (domainClip.playbackRate || 1) < 0,
+      maintainPitch: false,
+      offset: 0,
+      type: undefined,
+    } as unknown as TimelineClip
+  }, [])
+
+  // Получаем все клипы из проекта (преобразованные в feature типы)
+  const getAllClips = useCallback((): TimelineClip[] => {
     if (!project) return []
 
-    const clips = []
+    const clips: DomainTimelineClip[] = []
 
     // Клипы из глобальных треков
     for (const track of project.globalTracks || []) {
@@ -94,8 +111,9 @@ export function useSplitEdit(): UseSplitEditReturn {
       }
     }
 
-    return clips
-  }, [project])
+    // Преобразуем domain клипы в feature клипы
+    return clips.map(adaptDomainClipToFeatureClip)
+  }, [project, adaptDomainClipToFeatureClip])
 
   // Обновляем конфигурацию при изменении сервиса
   useEffect(() => {

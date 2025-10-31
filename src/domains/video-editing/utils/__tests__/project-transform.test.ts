@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+
 // Временные типы для тестирования
 interface PlaybackState {
   currentTime: number
@@ -33,6 +34,7 @@ interface Project {
     sample_rate: number
   }
 }
+
 import { transformProjectStateToTimeline } from "../project-transform"
 
 describe("project-transform", () => {

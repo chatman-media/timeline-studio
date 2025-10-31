@@ -3,18 +3,101 @@
  */
 
 import { useMemo } from "react"
-
+import type {
+  MediaFile as DomainMediaFile,
+  TimelineClip as DomainTimelineClip,
+  Timeline,
+} from "@/domains/video-editing/types"
 import type { MediaFile } from "@/features/media/types/media"
-import {
-  canPlaceClipOnTrack,
-  findClipById,
-  findNearestClip,
-  getAllClips,
-  getClipsInTimeRange,
-} from "@/features/timeline/utils/utils"
-
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineClip, TrackType } from "../types"
+
+// Адаптер для преобразования domain MediaFile в feature MediaFile
+const adaptDomainMediaFileToFeatureMediaFile = (domainMediaFile: DomainMediaFile): MediaFile => {
+  return domainMediaFile as unknown as MediaFile
+}
+
+// Адаптер для преобразования domain клипа в feature клип
+const adaptDomainClipToFeatureClip = (
+  domainClip: DomainTimelineClip,
+  domainMediaFile?: DomainMediaFile,
+): TimelineClip => {
+  const mediaFile = domainMediaFile ? adaptDomainMediaFileToFeatureMediaFile(domainMediaFile) : undefined
+  return {
+    ...domainClip,
+    mediaFile,
+    // Преобразуем domain свойства в feature
+    mediaStartTime: domainClip.sourceIn,
+    mediaEndTime: domainClip.sourceOut,
+    speed: domainClip.playbackRate || 1,
+    isReversed: (domainClip.playbackRate || 1) < 0,
+    maintainPitch: false,
+    offset: 0,
+    // Добавляем обязательные свойства feature типов
+    type: undefined, // определяется на основе track type
+  } as unknown as TimelineClip
+}
+
+// Локальные утилиты для работы с domain типами
+const getAllClips = (timeline: Timeline) => {
+  const clips = []
+  for (const track of timeline.globalTracks) {
+    clips.push(...track.clips)
+  }
+  for (const section of timeline.sections) {
+    for (const track of section.tracks) {
+      clips.push(...track.clips)
+    }
+  }
+  return clips
+}
+
+const findClipById = (timeline: Timeline, clipId: string) => {
+  const allClips = getAllClips(timeline)
+  return allClips.find((clip) => clip.id === clipId) || null
+}
+
+const getClipsInTimeRange = (timeline: Timeline, startTime: number, endTime: number) => {
+  const allClips = getAllClips(timeline)
+  return allClips.filter((clip) => {
+    const clipEnd = clip.startTime + clip.duration
+    return !(clip.startTime >= endTime || clipEnd <= startTime)
+  })
+}
+
+const findNearestClip = (timeline: Timeline, time: number, trackType?: TrackType) => {
+  const allClips = getAllClips(timeline)
+  let nearestClip = null
+  let minDistance = Number.POSITIVE_INFINITY
+
+  for (const clip of allClips) {
+    if (trackType) {
+      const track = [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)].find(
+        (t) => t.id === clip.trackId,
+      )
+      if (!track || track.type !== trackType) continue
+    }
+
+    const distance = Math.abs(clip.startTime - time)
+    if (distance < minDistance) {
+      minDistance = distance
+      nearestClip = clip
+    }
+  }
+
+  return nearestClip
+}
+
+const canPlaceClipOnTrack = (timeline: Timeline, trackId: string, startTime: number, duration: number) => {
+  const track = [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)].find((t) => t.id === trackId)
+  if (!track) return false
+
+  const endTime = startTime + duration
+  return !track.clips.some((clip) => {
+    const clipEnd = clip.startTime + clip.duration
+    return !(startTime >= clipEnd || endTime <= clip.startTime)
+  })
+}
 
 export interface UseClipsReturn {
   // Данные
@@ -30,9 +113,9 @@ export interface UseClipsReturn {
   findNearestClipToTime: (time: number, trackType?: TrackType) => TimelineClip | null
 
   // Действия с клипами
-  addClip: (trackId: string, mediaFile: MediaFile, startTime: number, duration?: number) => void
-  removeClip: (clipId: string) => void
-  updateClip: (clipId: string, updates: Partial<TimelineClip>) => void
+  addClip: (trackId: string, mediaFile: MediaFile, startTime: number, duration?: number) => Promise<void>
+  removeClip: (clipId: string) => Promise<void>
+  updateClip: (clipId: string, updates: Partial<TimelineClip>) => Promise<void>
   moveClip: (clipId: string, newTrackId: string, newStartTime: number) => void
   splitClip: (clipId: string, splitTime: number) => void
   trimClip: (clipId: string, newStartTime: number, newDuration: number) => void
@@ -87,14 +170,11 @@ export function useClips(): UseClipsReturn {
   const clips = useMemo(() => {
     if (!project) return []
 
-    // Получаем все клипы и обогащаем их ссылками на MediaFile
+    // Получаем все клипы и преобразуем domain типы в feature типы
     const allClips = getAllClips(project)
     return allClips.map((clip) => {
       const mediaFile = project.resources.media.find((file) => file.id === clip.mediaId)
-      return {
-        ...clip,
-        mediaFile,
-      }
+      return adaptDomainClipToFeatureClip(clip, mediaFile)
     })
   }, [project])
 
@@ -122,12 +202,9 @@ export function useClips(): UseClipsReturn {
       const clip = findClipById(project, clipId)
       if (!clip) return null
 
-      // Обогащаем ссылкой на MediaFile
+      // Преобразуем domain клип в feature клип
       const mediaFile = project.resources.media.find((file) => file.id === clip.mediaId)
-      return {
-        ...clip,
-        mediaFile,
-      }
+      return adaptDomainClipToFeatureClip(clip, mediaFile)
     },
     [project],
   )
@@ -142,7 +219,11 @@ export function useClips(): UseClipsReturn {
   const getClipsInRange = useMemo(
     () => (startTime: number, endTime: number) => {
       if (!project) return []
-      return getClipsInTimeRange(project, startTime, endTime)
+      const domainClips = getClipsInTimeRange(project, startTime, endTime)
+      return domainClips.map((clip) => {
+        const mediaFile = project.resources.media.find((file) => file.id === clip.mediaId)
+        return adaptDomainClipToFeatureClip(clip, mediaFile)
+      })
     },
     [project],
   )
@@ -157,8 +238,12 @@ export function useClips(): UseClipsReturn {
         .concat(project.globalTracks)
         .filter((track) => track.type === trackType)
 
-      // Получаем все клипы с этих треков
-      return tracks.flatMap((track) => track.clips)
+      // Получаем все клипы с этих треков и преобразуем их
+      const domainClips = tracks.flatMap((track) => track.clips)
+      return domainClips.map((clip) => {
+        const mediaFile = project.resources.media.find((file) => file.id === clip.mediaId)
+        return adaptDomainClipToFeatureClip(clip, mediaFile)
+      })
     },
     [project],
   )
@@ -166,7 +251,11 @@ export function useClips(): UseClipsReturn {
   const findNearestClipToTime = useMemo(
     () => (time: number, trackType?: TrackType) => {
       if (!project) return null
-      return findNearestClip(project, time, trackType)
+      const domainClip = findNearestClip(project, time, trackType)
+      if (!domainClip) return null
+
+      const mediaFile = project.resources.media.find((file) => file.id === domainClip.mediaId)
+      return adaptDomainClipToFeatureClip(domainClip, mediaFile)
     },
     [project],
   )
@@ -233,7 +322,7 @@ export function useClips(): UseClipsReturn {
   }
 
   const setClipSpeed = (clipId: string, speed: number) => {
-    void updateClip(clipId, { speed: Math.max(0.1, Math.min(10, speed)) })
+    void updateClip(clipId, { playbackRate: Math.max(0.1, Math.min(10, speed)) })
   }
 
   const setClipOpacity = (clipId: string, opacity: number) => {
@@ -243,7 +332,8 @@ export function useClips(): UseClipsReturn {
   const toggleClipReverse = (clipId: string) => {
     const clip = findClip(clipId)
     if (clip) {
-      void updateClip(clipId, { isReversed: !clip.isReversed })
+      // Инвертируем playbackRate для реверса
+      void updateClip(clipId, { playbackRate: -(clip.playbackRate || 1) })
     }
   }
 
@@ -267,14 +357,7 @@ export function useClips(): UseClipsReturn {
 
   const canPlaceClip = (trackId: string, startTime: number, duration: number, excludeClipId?: string): boolean => {
     if (!project) return false
-
-    // Находим трек
-    const allTracks = project.sections.flatMap((s) => s.tracks).concat(project.globalTracks)
-    const track = allTracks.find((t) => t.id === trackId)
-
-    if (!track) return false
-
-    return canPlaceClipOnTrack(track, startTime, duration, excludeClipId)
+    return canPlaceClipOnTrack(project, trackId, startTime, duration)
   }
 
   const getClipConflicts = (
@@ -356,9 +439,30 @@ export function useClips(): UseClipsReturn {
     findNearestClipToTime,
 
     // Действия с клипами
-    addClip,
+    addClip: async (trackId: string, mediaFile: MediaFile, startTime: number, duration?: number) => {
+      const domainMediaFile = mediaFile as unknown as DomainMediaFile
+      await addClip(trackId, domainMediaFile, startTime)
+    },
     removeClip,
-    updateClip,
+    updateClip: async (clipId: string, updates: Partial<TimelineClip>) => {
+      // Преобразуем feature updates в domain updates
+      const domainUpdates = {
+        ...updates,
+        sourceIn: updates.mediaStartTime,
+        sourceOut: updates.mediaEndTime,
+        playbackRate: updates.speed,
+      }
+      // Убираем feature-only свойства
+      delete (domainUpdates as any).mediaStartTime
+      delete (domainUpdates as any).mediaEndTime
+      delete (domainUpdates as any).speed
+      delete (domainUpdates as any).isReversed
+      delete (domainUpdates as any).maintainPitch
+      delete (domainUpdates as any).offset
+      delete (domainUpdates as any).type
+
+      await updateClip(clipId, domainUpdates as any)
+    },
     moveClip,
     splitClip,
     trimClip,

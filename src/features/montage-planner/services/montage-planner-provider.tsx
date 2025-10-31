@@ -1,20 +1,20 @@
 /**
  * Provider for Smart Montage Planner with BackendSync integration
- * Manages the XState machine and provides context to child components
+ * Simplified provider that works with the new BackendSync architecture
  */
 
 import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
-import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
-import { type MontagePlannerEvent, montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
-import type { AnalysisProgress, MontagePlan } from "../types"
+import React from "react"
+
+import { type MontagePlannerEvent, montagePlannerMachine } from "./montage-planner-machine"
+import { useAppSettings } from "../../app-state"
+import type { AnalysisProgress as MontageAnalysisProgress, MontagePlan } from "../types"
 
 // Context type
 interface MontagePlannerContextType {
-  state: ReturnType<typeof montagePlannerMachine>["resolveState"]
+  state: any // XState machine state
   send: (event: MontagePlannerEvent) => void
   // Derived state helpers
   isAnalyzing: boolean
@@ -27,7 +27,7 @@ interface MontagePlannerContextType {
   canOptimizePlan: boolean
   progress: number
   progressMessage: string
-  // BackendSync status
+  // Connection status
   isConnected: boolean
   error: string | null
 }
@@ -37,21 +37,20 @@ const MontagePlannerContext = createContext<MontagePlannerContextType | null>(nu
 
 // Provider component
 interface MontagePlannerProviderProps {
-  children: React.ReactNode
+  children: any
 }
 
 /**
  * Montage Planner Provider с интеграцией BackendSync
  *
- * Синхронизирует состояние планировщика монтажа с backend
+ * Упрощенный провайдер который работает с новой архитектурой BackendSync
  */
 export function MontagePlannerProvider({ children }: MontagePlannerProviderProps) {
-  const [state, send] = useActor(montagePlannerMachine)
-  const [isConnected, setIsConnected] = useState(false)
+  const [state, send] = useActor(montagePlannerMachine, {})
   const [error, setError] = useState<string | null>(null)
-  const backendSync = getBackendSync()
+  const { connectionError } = useAppSettings()
 
-  // Listen for Tauri events and sync with backend
+  // Listen for Tauri events from montage planner
   useEffect(() => {
     let unsubscribeProgress: (() => void) | null = null
     let unsubscribeVideoAnalyzed: (() => void) | null = null
@@ -61,184 +60,58 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
 
     // Set up event listeners
     const setupListeners = async () => {
-      // Progress updates
-      unsubscribeProgress = await listen<AnalysisProgress>("montage-analysis-progress", (event) => {
-        send({ type: "ANALYSIS_PROGRESS", progress: event.payload })
-
-        // Синхронизируем прогресс с backend
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "UpdateMontageProgress",
-              params: {
-                progress: event.payload,
-              },
-            },
-          })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to sync progress:", err)
-            setError(err.message)
-          })
-      })
-
-      // Video analysis results
-      unsubscribeVideoAnalyzed = await listen<{ videoId: string; analysis: any }>("montage-video-analyzed", (event) => {
-        send({
-          type: "VIDEO_ANALYZED",
-          videoId: event.payload.videoId,
-          analysis: event.payload.analysis,
+      try {
+        // Progress updates
+        unsubscribeProgress = await listen<any>("montage-analysis-progress", (event) => {
+          send({ type: "ANALYSIS_PROGRESS", progress: event.payload })
         })
 
-        // Сохраняем анализ видео в backend
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "SaveVideoAnalysis",
-              params: {
-                videoId: event.payload.videoId,
-                analysis: event.payload.analysis,
-              },
-            },
-          })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to save video analysis:", err)
-            setError(err.message)
-          })
-      })
+        // Video analysis results
+        unsubscribeVideoAnalyzed = await listen<{ videoId: string; analysis: any }>(
+          "montage-video-analyzed",
+          (event) => {
+            send({
+              type: "VIDEO_ANALYZED",
+              videoId: event.payload.videoId,
+              analysis: event.payload.analysis,
+            })
+          },
+        )
 
-      // Audio analysis results
-      unsubscribeAudioAnalyzed = await listen<{ videoId: string; analysis: any }>("montage-audio-analyzed", (event) => {
-        send({
-          type: "AUDIO_ANALYZED",
-          videoId: event.payload.videoId,
-          analysis: event.payload.analysis,
+        // Audio analysis results
+        unsubscribeAudioAnalyzed = await listen<{ videoId: string; analysis: any }>(
+          "montage-audio-analyzed",
+          (event) => {
+            send({
+              type: "AUDIO_ANALYZED",
+              videoId: event.payload.videoId,
+              analysis: event.payload.analysis,
+            })
+          },
+        )
+
+        // Fragment detection results
+        unsubscribeFragments = await listen<{ fragments: any[] }>("montage-fragments-detected", (event) => {
+          send({
+            type: "FRAGMENTS_DETECTED",
+            fragments: event.payload.fragments,
+          })
         })
 
-        // Сохраняем анализ аудио в backend
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "SaveAudioAnalysis",
-              params: {
-                videoId: event.payload.videoId,
-                analysis: event.payload.analysis,
-              },
-            },
+        // Moment scoring results
+        unsubscribeMoments = await listen<{ scores: any[] }>("montage-moments-scored", (event) => {
+          send({
+            type: "MOMENTS_SCORED",
+            scores: event.payload.scores,
           })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to save audio analysis:", err)
-            setError(err.message)
-          })
-      })
-
-      // Fragment detection results
-      unsubscribeFragments = await listen<{ fragments: any[] }>("montage-fragments-detected", (event) => {
-        send({
-          type: "FRAGMENTS_DETECTED",
-          fragments: event.payload.fragments,
         })
-
-        // Сохраняем фрагменты в backend
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "SaveDetectedFragments",
-              params: {
-                fragments: event.payload.fragments,
-              },
-            },
-          })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to save fragments:", err)
-            setError(err.message)
-          })
-      })
-
-      // Moment scoring results
-      unsubscribeMoments = await listen<{ scores: any[] }>("montage-moments-scored", (event) => {
-        send({
-          type: "MOMENTS_SCORED",
-          scores: event.payload.scores,
-        })
-
-        // Сохраняем оценки моментов в backend
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "SaveMomentScores",
-              params: {
-                scores: event.payload.scores,
-              },
-            },
-          })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to save moment scores:", err)
-            setError(err.message)
-          })
-      })
+      } catch (err) {
+        console.error("[MontagePlanner] Failed to setup event listeners:", err)
+        setError(err instanceof Error ? err.message : "Failed to setup event listeners")
+      }
     }
 
     void setupListeners()
-
-    // Подписываемся на изменения backend состояния
-    const unsubscribeBackend = backendSync.onStateChange((state: ProjectState) => {
-      setIsConnected(true)
-
-      // Синхронизируем состояние монтажного планировщика из backend
-      if (state.montage_state) {
-        // Восстанавливаем анализы видео
-        if (state.montage_state.video_analyses) {
-          Object.entries(state.montage_state.video_analyses).forEach(([videoId, analysis]) => {
-            send({
-              type: "VIDEO_ANALYZED",
-              videoId,
-              analysis,
-            })
-          })
-        }
-
-        // Восстанавливаем анализы аудио
-        if (state.montage_state.audio_analyses) {
-          Object.entries(state.montage_state.audio_analyses).forEach(([videoId, analysis]) => {
-            send({
-              type: "AUDIO_ANALYZED",
-              videoId,
-              analysis,
-            })
-          })
-        }
-
-        // Восстанавливаем фрагменты
-        if (state.montage_state.fragments) {
-          send({
-            type: "FRAGMENTS_DETECTED",
-            fragments: state.montage_state.fragments,
-          })
-        }
-
-        // Восстанавливаем план монтажа
-        if (state.montage_state.current_plan) {
-          send({
-            type: "PLAN_GENERATED",
-            plan: state.montage_state.current_plan as MontagePlan,
-          })
-        }
-      }
-    })
-
-    // Подписываемся на события backend
-    const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "MONTAGE_ANALYSIS_STARTED") {
-        send({ type: "START_ANALYSIS" })
-      } else if (event.type === "MONTAGE_PLAN_REQUESTED") {
-        send({ type: "GENERATE_PLAN" })
-      }
-    })
 
     // Cleanup
     return () => {
@@ -247,54 +120,23 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
       unsubscribeAudioAnalyzed?.()
       unsubscribeFragments?.()
       unsubscribeMoments?.()
-      unsubscribeBackend()
-      unsubscribeEvents()
     }
-  }, [send, backendSync])
-
-  // Синхронизация команд с backend при изменении состояния
-  useEffect(() => {
-    // Синхронизируем состояние когда меняется контекст
-    if (state?.context) {
-      const context = state.context
-
-      // Отправляем состояние на backend при важных изменениях
-      if (context.isAnalyzing || context.isGenerating || context.isOptimizing) {
-        backendSync
-          .executeCommand({
-            type: "AI",
-            params: {
-              type: "SyncMontagePlannerState",
-              params: {
-                isAnalyzing: context.isAnalyzing,
-                isGenerating: context.isGenerating,
-                isOptimizing: context.isOptimizing,
-                montagePlan: context.currentPlan,
-                analysisProgress: context.progress?.progress || 0,
-                fragments: context.fragments,
-              },
-            },
-          })
-          .catch((err) => {
-            console.error("[MontagePlanner] Failed to sync state:", err)
-            setError(err.message)
-          })
-      }
-    }
-  }, [state, backendSync])
+  }, [send])
 
   // Derived state
-  const context = state?.context || {}
-  const isAnalyzing = context.isAnalyzing || false
-  const isGenerating = context.isGenerating || false
-  const isOptimizing = context.isOptimizing || false
-  const hasVideos = (context.videoIds?.length || 0) > 0
-  const hasFragments = (context.fragments?.length || 0) > 0
-  const hasPlan = context.currentPlan !== null
+  const context = (state?.context as any) || {}
+  const isAnalyzing = Boolean(context.isAnalyzing)
+  const isGenerating = Boolean(context.isGenerating)
+  const isOptimizing = Boolean(context.isOptimizing)
+  const hasVideos = Boolean(context.videoIds?.length)
+  const hasFragments = Boolean(context.fragments?.length)
+  const hasPlan = Boolean(context.currentPlan)
   const canGeneratePlan = hasFragments && !isAnalyzing && !isGenerating && !isOptimizing
   const canOptimizePlan = hasPlan && !isAnalyzing && !isGenerating && !isOptimizing
-  const progress = context.progress?.progress || 0
-  const progressMessage = context.progress?.message || getProgressMessage(context.progress?.phase || "idle")
+  const progress = Number(context.progress?.progress) || 0
+  const progressMessage =
+    context.progress?.message || getProgressMessage(context.progress?.phase || "idle")
+  const isConnected = !connectionError
 
   // Context value
   const value: MontagePlannerContextType = {
@@ -311,7 +153,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     progress,
     progressMessage,
     isConnected,
-    error,
+    error: error || connectionError,
   }
 
   return <MontagePlannerContext.Provider value={value}>{children}</MontagePlannerContext.Provider>
@@ -329,6 +171,7 @@ export function useMontagePlanner() {
 // Helper to get progress message based on phase
 function getProgressMessage(phase: string): string {
   const messages: Record<string, string> = {
+    idle: "Ready",
     initializing: "Initializing analysis...",
     extracting_frames: "Extracting key frames...",
     analyzing_video: "Analyzing video content...",

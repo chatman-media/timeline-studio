@@ -46,12 +46,14 @@ export interface TransitionParameters {
 
   // Новые параметры
   blur?: {
+    enabled?: boolean
     amount: number // 0-100
     type: "gaussian" | "motion" | "radial"
     quality?: "low" | "medium" | "high"
   }
 
   color?: {
+    enabled?: boolean
     tint?: string // Hex color
     saturation?: number // -100 to 100
     brightness?: number // -100 to 100
@@ -126,6 +128,7 @@ export interface TransitionCurve {
  * Точка на кривой
  */
 export interface CurvePoint {
+  id: string
   x: number // 0-1
   y: number // 0-1
   handleIn?: { x: number; y: number } // Bezier handle

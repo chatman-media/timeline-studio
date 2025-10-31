@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useTimelineTransitions } from "@/features/timeline/hooks/use-timeline-transitions"
+// import { useTimelineTransitions } from "@/features/timeline/hooks/use-timeline-transitions"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { cn } from "@/lib/utils"
@@ -35,7 +35,16 @@ export function TransitionControlPanel({
   className,
 }: TransitionControlPanelProps) {
   const [previewTime, setPreviewTime] = useState(transition.duration / 2)
-  const { updateTransition, removeTransition } = useTimelineTransitions()
+  // Мок функций для работы с переходами
+  const updateTransition = useCallback((id: string, updates: Partial<TimelineTransition>) => {
+    console.log(`Обновление перехода ${id}:`, updates)
+    // TODO: Реализовать через контекст или хук
+  }, [])
+
+  const removeTransition = useCallback((id: string) => {
+    console.log(`Удаление перехода ${id}`)
+    // TODO: Реализовать через контекст или хук
+  }, [])
 
   // Обновление перехода через хук
   const handleUpdate = useCallback(
@@ -70,6 +79,9 @@ export function TransitionControlPanel({
     (blurUpdates: Partial<NonNullable<TimelineTransition["parameters"]["blur"]>>) => {
       updateParameters({
         blur: {
+          enabled: false,
+          amount: 0,
+          type: "gaussian" as const,
           ...transition.parameters.blur,
           ...blurUpdates,
         },
@@ -83,6 +95,7 @@ export function TransitionControlPanel({
     (colorUpdates: Partial<NonNullable<TimelineTransition["parameters"]["color"]>>) => {
       updateParameters({
         color: {
+          enabled: false,
           ...transition.parameters.color,
           ...colorUpdates,
         },

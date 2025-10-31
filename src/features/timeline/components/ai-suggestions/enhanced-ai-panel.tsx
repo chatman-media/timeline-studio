@@ -12,6 +12,7 @@ import { executeContentIntelligenceTool } from "@/domains/ai-services/services/t
 import { MediaInfo } from "@/domains/media-management"
 import { UnifiedDashboard } from "@/features/ai-content-intelligence"
 import { useTimeline } from "@/features/timeline"
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { cn } from "@/lib/utils"
 
 interface EnhancedAIPanelProps {
@@ -43,27 +44,27 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
     return clips.map((clip, index) => ({
       id: clip.id || `clip-${index}`,
       name: clip.name || `Clip ${index + 1}`,
-      path: clip.mediaUrl || clip.thumbnailUrl || "",
-      type: clip.type === "video" ? "video" : "audio",
+      path: clip.mediaFile?.path || "",
+      type: "video", // По умолчанию - все клипы считаем видео
       duration: clip.duration || 0,
-      size: clip.metadata?.size || 0,
-      format: clip.metadata?.format || "mp4",
-      width: clip.metadata?.width || 1920,
-      height: clip.metadata?.height || 1080,
-      fps: clip.metadata?.fps || 30,
-      bitrate: clip.metadata?.bitrate || 0,
-      codec: clip.metadata?.codec || "h264",
-      audioCodec: clip.metadata?.audioCodec || "aac",
-      audioChannels: clip.metadata?.audioChannels || 2,
+      size: clip.mediaFile?.size || 0,
+      format: (clip.mediaFile as any)?.format || "mp4",
+      width: clip.mediaFile?.width || 1920,
+      height: clip.mediaFile?.height || 1080,
+      fps: clip.mediaFile?.fps || 30,
+      bitrate: (clip.mediaFile as any)?.bitrate || 0,
+      codec: (clip.mediaFile as any)?.videoCodec || "h264",
+      audioCodec: (clip.mediaFile as any)?.audioCodec || "aac",
+      audioChannels: clip.mediaFile?.audioChannels || 2,
       metadata: {
-        ...clip.metadata,
         trackId: clip.trackId,
         startTime: clip.startTime,
-        endTime: clip.endTime,
-        trimStart: clip.trimStart || 0,
-        trimEnd: clip.trimEnd || clip.duration,
+        endTime: clip.startTime + clip.duration,
+        trimStart: (clip as DomainTimelineClip).sourceIn || 0,
+        trimEnd: (clip as DomainTimelineClip).sourceOut || clip.duration,
+        mediaFile: clip.mediaFile,
       },
-    }))
+    })) as unknown as MediaInfo[]
   }, [clips])
 
   const handleFileUpload = useCallback((files: File[]) => {
@@ -138,16 +139,18 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
       setError(null)
 
       try {
-        const result = await executeContentIntelligenceTool({
-          operation: analysis.operation,
-          mediaFiles: mediaFiles,
-          options: {
-            projectTitle: project?.name || "Timeline Project",
-            targetPlatforms: ["youtube", "instagram", "tiktok"],
-            language: "ru",
-            audience: "general",
-          },
-        })
+        const result = await executeContentIntelligenceTool(
+          analysis.operation,
+          {
+            mediaFiles: mediaFiles,
+            options: {
+              projectTitle: project?.name || "Timeline Project",
+              targetPlatforms: ["youtube", "instagram", "tiktok"],
+              language: "ru",
+              audience: "general",
+            },
+          }
+        )
 
         setAnalysisResults({
           analysis: analysis.name,

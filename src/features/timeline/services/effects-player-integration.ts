@@ -25,6 +25,7 @@ export class EffectsPlayerIntegration {
   private targetCanvas: HTMLCanvasElement | null = null
   private ctx: CanvasRenderingContext2D | null = null
   private animationFrameId: number | null = null
+  private offscreenCanvas: OffscreenCanvas | null = null
 
   constructor(private config: EffectsPlayerConfig = {}) {
     this.renderer = new WebGL2UnifiedRenderer()
@@ -127,7 +128,7 @@ export class EffectsPlayerIntegration {
 
     try {
       // Рендерим эффекты через WebGL
-      const result = await this.renderer.renderEffectStack(activeEffects, this.baseEffects, {
+      const result = await this.renderer.renderEffectStack(activeEffects, Array.from(this.baseEffects.values()), {
         source: videoElement,
         target: this.targetCanvas,
         width: videoElement.videoWidth,
@@ -231,7 +232,7 @@ export class EffectsPlayerIntegration {
         videoElement.onseeked = () => resolve(undefined)
       })
 
-      const result = await this.renderer.renderEffectStack(activeEffects, this.baseEffects, {
+      const result = await this.renderer.renderEffectStack(activeEffects, Array.from(this.baseEffects.values()), {
         source: videoElement,
         target: tempCanvas,
         width: videoElement.videoWidth,
@@ -309,7 +310,7 @@ export class EffectsPlayerIntegration {
         keyframes: {},
       }
 
-      const result = await this.renderer.renderEffectStack([appliedEffect], this.baseEffects, {
+      const result = await this.renderer.renderEffectStack([appliedEffect], Array.from(this.baseEffects.values()), {
         source: sourceImage,
         target: previewCanvas,
         width: size,
@@ -347,16 +348,19 @@ export class EffectsPlayerIntegration {
 
     for (const appliedEffect of activeEffects) {
       const baseEffect = this.baseEffects.get(appliedEffect.effectId)
-      if (!baseEffect?.processors.ffmpeg) continue
+      if (!baseEffect?.processors?.ffmpeg) continue
 
       const params = {
         ...baseEffect.defaultParams,
         ...appliedEffect.parameters,
       }
 
-      const filter = baseEffect.processors.ffmpeg.filter(params)
-      if (filter) {
-        commands.push(filter)
+      // Проверяем наличие filter функции
+      if (typeof baseEffect.processors.ffmpeg.filter === 'function') {
+        const filter = baseEffect.processors.ffmpeg.filter(params)
+        if (filter) {
+          commands.push(filter)
+        }
       }
     }
 

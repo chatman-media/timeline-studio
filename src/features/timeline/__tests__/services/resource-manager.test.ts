@@ -555,7 +555,7 @@ describe("resource-manager", () => {
         name: "used.mp4",
         path: "/path/to/used.mp4",
         size: 1000000,
-          duration: 10,
+        duration: 10,
         createdAt: new Date().toISOString(),
       }
 
@@ -564,7 +564,7 @@ describe("resource-manager", () => {
         name: "unused.mp4",
         path: "/path/to/unused.mp4",
         size: 1000000,
-          duration: 10,
+        duration: 10,
         createdAt: new Date().toISOString(),
       }
 

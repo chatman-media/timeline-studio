@@ -129,11 +129,11 @@ describe("MontagePlannerProvider", () => {
   })
 
   it("должен восстанавливать состояние из backend", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = getBackendSync() as any
     let stateCallback: any
 
     // Подписываемся на изменения состояния
-    mockBackendSync.onStateChange.mockImplementation((callback) => {
+    mockBackendSync.onStateChange.mockImplementation((callback: any) => {
       stateCallback = callback
       return vi.fn() // unsubscribe
     })
@@ -183,7 +183,7 @@ describe("MontagePlannerProvider", () => {
     )
 
     // Сбрасываем счетчик вызовов
-    mockBackendSync.executeCommand.mockClear()
+    ;(mockBackendSync.executeCommand as any).mockClear()
 
     // Симулируем событие анализа через Tauri event
     await act(async () => {

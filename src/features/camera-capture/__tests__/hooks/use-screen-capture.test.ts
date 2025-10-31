@@ -32,7 +32,7 @@ class MockMediaStreamTrack implements Partial<MediaStreamTrack> {
   readyState: MediaStreamTrackState = "live"
   listeners: Record<string, ((event?: Event) => void)[]> = {}
   settings: MediaTrackSettings = {}
-  
+
   // Добавляем недостающие свойства MediaStreamTrack
   contentHint = ""
   label = "mock-track"

@@ -9,6 +9,7 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
+
 // Временные типы и mock
 interface ClipAddedEvent {
   type: "CLIP_ADDED"
@@ -61,6 +62,7 @@ interface ProjectCommand {
 interface ProjectState {
   project?: any
 }
+
 import { playerMachine } from "../machines/player-machine"
 // Import machines
 import { timelineExtendedMachine } from "../machines/timeline-extended-machine"

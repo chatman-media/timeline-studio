@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
+
 // Временные типы до создания backend-sync
 interface ProjectState {
   color_grading?: any

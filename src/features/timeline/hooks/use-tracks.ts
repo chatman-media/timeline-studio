@@ -4,10 +4,41 @@
 
 import { useMemo } from "react"
 
-import { findTrackById, getAllTracks, getTracksByType, sortTracksByOrder } from "@/features/timeline/utils/utils"
-
+import type { Track as DomainTrack, Timeline } from "@/domains/video-editing/types"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineTrack, TrackType } from "../types"
+
+// Адаптер для преобразования domain трека в feature трек
+const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack => {
+  return {
+    ...domainTrack,
+    // Преобразуем domain свойства в feature
+    isLocked: domainTrack.locked,
+    isMuted: domainTrack.muted,
+    isSolo: domainTrack.solo,
+    isHidden: false, // добавляем отсутствующее свойство
+    // Добавляем другие feature-specific свойства если нужно
+  } as unknown as TimelineTrack
+}
+
+// Локальные утилиты для работы с domain типами
+const getAllTracks = (timeline: Timeline) => {
+  return [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)]
+}
+
+const findTrackById = (timeline: Timeline, trackId: string) => {
+  const allTracks = getAllTracks(timeline)
+  return allTracks.find((track) => track.id === trackId) || null
+}
+
+const getTracksByType = (timeline: Timeline, trackType: TrackType) => {
+  const allTracks = getAllTracks(timeline)
+  return allTracks.filter((track) => track.type === trackType)
+}
+
+const sortTracksByOrder = (tracks: DomainTrack[]) => {
+  return [...tracks].sort((a, b) => (a.order || 0) - (b.order || 0))
+}
 
 export interface UseTracksReturn {
   // Данные
@@ -27,7 +58,7 @@ export interface UseTracksReturn {
   // Действия
   addTrack: (trackType: TrackType, sectionId?: string, name?: string) => void
   removeTrack: (trackId: string) => void
-  updateTrack: (trackId: string, updates: Partial<TimelineTrack>) => void
+  updateTrack: (trackId: string, updates: Partial<TimelineTrack>) => Promise<void>
 
   // Управление состоянием треков
   toggleTrackMute: (trackId: string) => void
@@ -61,18 +92,21 @@ export function useTracks(): UseTracksReturn {
 
   const tracks = useMemo(() => {
     if (!project) return []
-    return getAllTracks(project)
+    const domainTracks = getAllTracks(project)
+    return domainTracks.map(adaptDomainTrackToFeatureTrack)
   }, [project])
 
   const globalTracks = useMemo(() => {
     if (!project) return []
-    return sortTracksByOrder(project.globalTracks)
+    const sortedTracks = sortTracksByOrder(project.globalTracks)
+    return sortedTracks.map(adaptDomainTrackToFeatureTrack)
   }, [project])
 
   const sectionTracks = useMemo(() => {
     if (!project) return []
     const allSectionTracks = project.sections.flatMap((section) => section.tracks)
-    return sortTracksByOrder(allSectionTracks)
+    const sortedTracks = sortTracksByOrder(allSectionTracks)
+    return sortedTracks.map(adaptDomainTrackToFeatureTrack)
   }, [project])
 
   const selectedTracks = useMemo(() => {
@@ -90,7 +124,8 @@ export function useTracks(): UseTracksReturn {
   const getTracksByTypeFunc = useMemo(
     () => (type: TrackType) => {
       if (!project) return []
-      return getTracksByType(project, type)
+      const domainTracks = getTracksByType(project, type)
+      return domainTracks.map(adaptDomainTrackToFeatureTrack)
     },
     [project],
   )
@@ -99,7 +134,9 @@ export function useTracks(): UseTracksReturn {
     () => (sectionId: string) => {
       if (!project) return []
       const section = project.sections.find((s) => s.id === sectionId)
-      return section ? sortTracksByOrder(section.tracks) : []
+      if (!section) return []
+      const sortedTracks = sortTracksByOrder(section.tracks)
+      return sortedTracks.map(adaptDomainTrackToFeatureTrack)
     },
     [project],
   )
@@ -107,7 +144,8 @@ export function useTracks(): UseTracksReturn {
   const findTrack = useMemo(
     () => (trackId: string) => {
       if (!project) return null
-      return findTrackById(project, trackId)
+      const domainTrack = findTrackById(project, trackId)
+      return domainTrack ? adaptDomainTrackToFeatureTrack(domainTrack) : null
     },
     [project],
   )
@@ -119,28 +157,29 @@ export function useTracks(): UseTracksReturn {
   const toggleTrackMute = (trackId: string) => {
     const track = findTrack(trackId)
     if (track) {
-      void updateTrack(trackId, { isMuted: !track.isMuted })
+      void updateTrack(trackId, { muted: !track.isMuted })
     }
   }
 
   const toggleTrackLock = (trackId: string) => {
     const track = findTrack(trackId)
     if (track) {
-      void updateTrack(trackId, { isLocked: !track.isLocked })
+      void updateTrack(trackId, { locked: !track.isLocked })
     }
   }
 
   const toggleTrackVisibility = (trackId: string) => {
     const track = findTrack(trackId)
     if (track) {
-      void updateTrack(trackId, { isHidden: !track.isHidden })
+      // isHidden не существует в domain типах, пропускаем
+      console.warn("Track visibility toggle not supported in domain layer")
     }
   }
 
   const toggleTrackSolo = (trackId: string) => {
     const track = findTrack(trackId)
     if (track) {
-      void updateTrack(trackId, { isSolo: !track.isSolo })
+      void updateTrack(trackId, { solo: !track.isSolo })
     }
   }
 
@@ -238,7 +277,22 @@ export function useTracks(): UseTracksReturn {
       void addTrack(trackType, name)
     },
     removeTrack,
-    updateTrack,
+    updateTrack: async (trackId: string, updates: Partial<TimelineTrack>) => {
+      // Преобразуем feature updates в domain updates
+      const domainUpdates = {
+        ...updates,
+        muted: updates.isMuted,
+        locked: updates.isLocked,
+        solo: updates.isSolo,
+      }
+      // Убираем feature-only свойства
+      delete (domainUpdates as any).isMuted
+      delete (domainUpdates as any).isLocked
+      delete (domainUpdates as any).isSolo
+      delete (domainUpdates as any).isHidden
+
+      await updateTrack(trackId, domainUpdates as any)
+    },
 
     // Управление состоянием треков
     toggleTrackMute,

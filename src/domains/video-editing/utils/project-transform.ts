@@ -51,6 +51,7 @@ interface ProjectCommand {
 interface ProjectState {
   project?: Project
 }
+
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -169,7 +170,7 @@ function getUsedMediaFiles(backendProject: Project): MediaFile[] {
   const allMedia = Object.values(backendProject.media_pool.items || {})
   return allMedia
     .filter(Boolean)
-    .filter((media): media is any => Boolean(media && typeof media === 'object' && 'id' in media))
+    .filter((media): media is any => Boolean(media && typeof media === "object" && "id" in media))
     .filter((media) => usedMediaIds.has(media.id))
     .map((media) => ({
       ...media,

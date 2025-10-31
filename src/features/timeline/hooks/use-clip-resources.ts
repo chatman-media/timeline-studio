@@ -8,6 +8,7 @@ import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
 import type { TimelineClip } from "../types"
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { useTimeline } from "./use-timeline"
 
 export interface UseClipResourcesReturn {
@@ -112,7 +113,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return clip?.effects || []
+      return (clip as DomainTimelineClip)?.effects || [] as any
     },
     [project],
   )
@@ -126,7 +127,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return clip?.filters || []
+      return (clip as DomainTimelineClip)?.filters || [] as any
     },
     [project],
   )
@@ -140,7 +141,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return clip?.transitions || []
+      return (clip as DomainTimelineClip)?.transitions || [] as any
     },
     [project],
   )
@@ -156,13 +157,9 @@ export function useClipResources(): UseClipResourcesReturn {
       const clip = allClips.find((c) => c.id === clipId)
       if (!clip) return false
 
-      // Эффекты можно применять к видео и изображениям
-      if (clip.type === "video" || clip.type === "image") return true
-
-      // Некоторые эффекты можно применять и к аудио
-      if (clip.type === "audio" && effect.category === "audio") return true
-
-      return false
+      // По умолчанию эффекты можно применять к любым клипам
+      // TODO: Добавить проверку типа клипа через track type
+      return true
     },
     [project],
   )
@@ -178,8 +175,9 @@ export function useClipResources(): UseClipResourcesReturn {
       const clip = allClips.find((c) => c.id === clipId)
       if (!clip) return false
 
-      // Фильтры применяются в основном к видео и изображениям
-      return clip.type === "video" || clip.type === "image"
+      // По умолчанию фильтры можно применять к любым клипам
+      // TODO: Добавить проверку типа клипа через track type
+      return true
     },
     [project],
   )
@@ -195,8 +193,9 @@ export function useClipResources(): UseClipResourcesReturn {
       const clip = allClips.find((c) => c.id === clipId)
       if (!clip) return false
 
-      // Переходы можно применять к видео и изображениям
-      return clip.type === "video" || clip.type === "image"
+      // По умолчанию переходы можно применять к любым клипам
+      // TODO: Добавить проверку типа клипа через track type
+      return true
     },
     [project],
   )

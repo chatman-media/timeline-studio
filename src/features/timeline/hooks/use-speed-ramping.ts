@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import type { TimelineClip as DomainTimelineClip, Timeline } from "@/domains/video-editing/types"
 import {
   calculateNewDuration,
   createSpeedKeyframe,
@@ -9,7 +10,7 @@ import {
   type SpeedRampingConfig,
   type SpeedRampingPreset,
 } from "../types/speed-ramping"
-import type { TimelineClip, TimelineProject } from "../types/timeline"
+import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
 export interface UseSpeedRampingReturn {
@@ -46,6 +47,21 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
   const { project, send } = useTimeline()
   const [configs, setConfigs] = useState(() => new Map<string, SpeedRampingConfig>())
 
+  // Адаптер для преобразования domain клипа в feature клип
+  const adaptDomainClipToFeatureClip = (domainClip: DomainTimelineClip): TimelineClip => {
+    return {
+      ...domainClip,
+      mediaFile: undefined,
+      mediaStartTime: domainClip.sourceIn,
+      mediaEndTime: domainClip.sourceOut,
+      speed: domainClip.playbackRate || 1,
+      isReversed: (domainClip.playbackRate || 1) < 0,
+      maintainPitch: false,
+      offset: 0,
+      type: undefined,
+    } as unknown as TimelineClip
+  }
+
   // Получение конфигурации для клипа
   const getConfig = useCallback(
     (clipId: string): SpeedRampingConfig | null => {
@@ -55,14 +71,15 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
 
       // Если нет в кэше, читаем из клипа
       const clip = findClip(project, clipId)
-      if (clip?.speedRamping) {
+      if (clip && "speedRamping" in clip && clip.speedRamping) {
         // Сохраняем в кэш для быстрого доступа
+        const speedRampingConfig = clip.speedRamping as SpeedRampingConfig
         setConfigs((prev) => {
           const newConfigs = new Map(prev)
-          newConfigs.set(clipId, clip.speedRamping!)
+          newConfigs.set(clipId, speedRampingConfig)
           return newConfigs
         })
-        return clip.speedRamping
+        return speedRampingConfig
       }
 
       return null
@@ -88,7 +105,6 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
           updates: {
             playbackRate: config.keyframes.length > 0 ? config.keyframes[0].value : 1.0,
             duration: newDuration,
-            maintainPitch: config.maintainPitch,
             speedRamping: config, // Сохраняем конфигурацию в клип
           },
         })
@@ -133,7 +149,6 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
             updates: {
               playbackRate: newKeyframes.length > 0 ? newKeyframes[0].value : 1.0,
               duration: newDuration,
-              maintainPitch: newConfig.maintainPitch,
               speedRamping: newConfig,
             },
           })
@@ -370,7 +385,7 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
             clipId,
             updates: {
               playbackRate: 1.0,
-              duration: clip.mediaDuration || 0,
+              duration: clip.duration,
               speedRamping: newConfig, // Сохраняем с enabled: false
             },
           })
@@ -456,7 +471,7 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
             clipId,
             updates: {
               playbackRate: speed,
-              duration: (clip.mediaDuration || clip.duration) / speed,
+              duration: clip.duration / speed,
               speedRamping: newConfig,
             },
           })
@@ -512,20 +527,20 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
   }
 }
 
-// Утилита для поиска клипа в проекте
-function findClip(project: TimelineProject | null, clipId: string): TimelineClip | null {
-  if (!project) return null
+// Локальная утилита для поиска клипа в Timeline (domain типы)
+function findClip(timeline: Timeline | null, clipId: string): DomainTimelineClip | null {
+  if (!timeline) return null
 
   // Ищем в глобальных треках
-  for (const track of project.globalTracks || []) {
-    const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
+  for (const track of timeline.globalTracks || []) {
+    const clip = track.clips.find((c) => c.id === clipId)
     if (clip) return clip
   }
 
   // Ищем в секциях
-  for (const section of project.sections || []) {
+  for (const section of timeline.sections || []) {
     for (const track of section.tracks || []) {
-      const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
+      const clip = track.clips.find((c) => c.id === clipId)
       if (clip) return clip
     }
   }

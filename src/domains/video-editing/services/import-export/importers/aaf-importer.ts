@@ -5,7 +5,7 @@
  * Примечание: Это упрощенная реализация AAF XML, не полный бинарный AAF
  */
 
-import type { Timeline, TimelineClip, Track, TrackType, MediaFile } from "../../../types"
+import type { MediaFile, Timeline, TimelineClip, Track, TrackType } from "../../../types"
 import { featureToDomainMediaFile } from "../../../utils/media-file-adapter"
 import type { ImportError, Importer, ImportOptions, ImportResult, ImportWarning } from "../types"
 
