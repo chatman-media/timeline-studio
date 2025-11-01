@@ -52,6 +52,10 @@ use recognition::RecognitionService;
 pub mod montage_planner;
 use montage_planner::commands::MontageState;
 
+// Модуль Analysis System
+pub mod analysis;
+use analysis::commands::AnalysisState;
+
 // Модуль безопасности и API ключей
 pub mod security;
 use security::secure_storage::SecureStorage;
@@ -292,7 +296,7 @@ pub fn run() {
       app.manage(montage_state);
 
       // Initialize Person Identification Database
-      {
+      let person_db = {
         use crate::recognition::person_database::PersonDatabase;
 
         let app_handle = app.handle();
@@ -301,25 +305,62 @@ pub fn run() {
             // Create app data directory if it doesn't exist
             if let Err(e) = std::fs::create_dir_all(&app_dir) {
               log::error!("Failed to create app data dir: {e}");
+              None
             } else {
               let db_path = app_dir.join("persons.db");
 
               // Initialize database asynchronously
               match tauri::async_runtime::block_on(PersonDatabase::new(db_path)) {
                 Ok(db) => {
-                  app.manage(db);
+                  let db_arc = Arc::new(db);
+                  app.manage(db_arc.clone());
                   log::info!("Person recognition database initialized successfully");
+                  Some(db_arc)
                 }
                 Err(e) => {
                   log::error!("Failed to initialize person database: {e}");
+                  None
                 }
               }
             }
           }
           Err(e) => {
             log::error!("Failed to get app data dir: {e}");
+            None
           }
         }
+      };
+
+      // Initialize Analysis System
+      if let Some(person_db_ref) = person_db {
+        let app_handle = app.handle();
+        match app_handle.path().app_data_dir() {
+          Ok(app_dir) => {
+            let analysis_db_path = app_dir.join("analysis.db");
+
+            // Создаем YoloState для Analysis System
+            let analysis_yolo_state = Arc::new(RwLock::new(YoloProcessorState::default()));
+
+            match tauri::async_runtime::block_on(AnalysisState::new(
+              analysis_db_path.to_string_lossy().as_ref(),
+              person_db_ref,
+              analysis_yolo_state,
+            )) {
+              Ok(analysis_state) => {
+                app.manage(analysis_state);
+                log::info!("Analysis system initialized successfully");
+              }
+              Err(e) => {
+                log::error!("Failed to initialize analysis system: {e}");
+              }
+            }
+          }
+          Err(e) => {
+            log::error!("Failed to get app data dir for analysis system: {e}");
+          }
+        }
+      } else {
+        log::warn!("Analysis system not initialized - PersonDatabase required");
       }
 
       // Create Secure Storage for API keys

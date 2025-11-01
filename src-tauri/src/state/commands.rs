@@ -978,7 +978,7 @@ pub struct OllamaStatus {
   pub is_running: bool,
   pub version: Option<String>,
   pub available_models: Vec<String>,
-  pub memory_usage: Option<u64>,
+  pub memory_usage: Option<f64>,
 }
 
 /// Video Editing supporting structures
@@ -987,7 +987,7 @@ pub struct OllamaStatus {
 pub struct RenderJobInfo {
   pub id: String,
   pub status: String, // "pending", "running", "completed", "failed", "cancelled"
-  pub progress: f64, // 0.0 to 1.0
+  pub progress: f64,  // 0.0 to 1.0
   pub current_frame: u32,
   pub total_frames: u32,
   pub estimated_time_remaining: Option<u32>, // seconds
@@ -1060,7 +1060,7 @@ pub struct UpdateInfo {
   pub version: String,
   pub release_notes: String,
   pub download_url: String,
-  pub size: u64,
+  pub size: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -1116,8 +1116,8 @@ pub struct DurationRange {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct FileSizeRange {
-  pub min_bytes: u64,
-  pub max_bytes: u64,
+  pub min_bytes: f64,
+  pub max_bytes: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -1151,8 +1151,8 @@ pub struct MediaConversionOptions {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct MediaOptimizationSettings {
-  pub target_size: Option<u64>, // in bytes
-  pub quality_level: String, // "low", "medium", "high", "auto"
+  pub target_size: Option<f64>, // in bytes
+  pub quality_level: String,    // "low", "medium", "high", "auto"
   pub preserve_quality: bool,
   pub reduce_resolution: bool,
   pub max_resolution: Option<String>,
@@ -1243,9 +1243,15 @@ impl CommandHandler {
       ProjectCommand::CloseProject => self.close_project().await,
 
       // Track commands
-      ProjectCommand::AddTrack { name, track_type, index } => self.add_track(name, track_type, index).await,
+      ProjectCommand::AddTrack {
+        name,
+        track_type,
+        index,
+      } => self.add_track(name, track_type, index).await,
       ProjectCommand::DeleteTrack { track_id } => self.delete_track(track_id).await,
-      ProjectCommand::UpdateTrack { track_id, updates } => self.update_track(track_id, updates).await,
+      ProjectCommand::UpdateTrack { track_id, updates } => {
+        self.update_track(track_id, updates).await
+      }
 
       // Clip commands
       ProjectCommand::AddClip {
@@ -1258,7 +1264,11 @@ impl CommandHandler {
         track_id,
         time,
       } => self.move_clip(clip_id, track_id, time).await,
-      ProjectCommand::TrimClip { clip_id, start, end } => self.trim_clip(clip_id, start, end).await,
+      ProjectCommand::TrimClip {
+        clip_id,
+        start,
+        end,
+      } => self.trim_clip(clip_id, start, end).await,
       ProjectCommand::DeleteClip { clip_id } => self.delete_clip(clip_id).await,
       ProjectCommand::UpdateClip { clip_id, updates } => self.update_clip(clip_id, updates).await,
 
@@ -1304,50 +1314,91 @@ impl CommandHandler {
       ProjectCommand::ExtractMediaMetadata { file_path } => {
         self.extract_media_metadata(file_path).await
       }
-      ProjectCommand::GenerateVideoThumbnail { video_path, time, output_path } => {
-        self.generate_video_thumbnail(video_path, time, output_path).await
+      ProjectCommand::GenerateVideoThumbnail {
+        video_path,
+        time,
+        output_path,
+      } => {
+        self
+          .generate_video_thumbnail(video_path, time, output_path)
+          .await
       }
-      ProjectCommand::GetMediaDuration { file_path } => {
-        self.get_media_duration(file_path).await
+      ProjectCommand::GetMediaDuration { file_path } => self.get_media_duration(file_path).await,
+      ProjectCommand::DetectVideoScenes {
+        video_path,
+        threshold,
+      } => self.detect_video_scenes(video_path, threshold).await,
+      ProjectCommand::GenerateAudioWaveform {
+        audio_path,
+        width,
+        height,
+      } => {
+        self
+          .generate_audio_waveform(audio_path, width, height)
+          .await
       }
-      ProjectCommand::DetectVideoScenes { video_path, threshold } => {
-        self.detect_video_scenes(video_path, threshold).await
+      ProjectCommand::CopyMediaToProject {
+        source_paths,
+        project_path,
+      } => self.copy_media_to_project(source_paths, project_path).await,
+      ProjectCommand::CreateProxyFiles {
+        media_paths,
+        proxy_settings,
+      } => self.create_proxy_files(media_paths, proxy_settings).await,
+      ProjectCommand::DeleteMediaFiles {
+        file_paths,
+        move_to_trash,
+      } => self.delete_media_files(file_paths, move_to_trash).await,
+      ProjectCommand::MoveMediaFiles {
+        source_paths,
+        destination_path,
+      } => self.move_media_files(source_paths, destination_path).await,
+      ProjectCommand::ScanMediaDirectory {
+        directory_path,
+        recursive,
+        supported_formats,
+      } => {
+        self
+          .scan_media_directory(directory_path, recursive, supported_formats)
+          .await
       }
-      ProjectCommand::GenerateAudioWaveform { audio_path, width, height } => {
-        self.generate_audio_waveform(audio_path, width, height).await
-      }
-      ProjectCommand::CopyMediaToProject { source_paths, project_path } => {
-        self.copy_media_to_project(source_paths, project_path).await
-      }
-      ProjectCommand::CreateProxyFiles { media_paths, proxy_settings } => {
-        self.create_proxy_files(media_paths, proxy_settings).await
-      }
-      ProjectCommand::DeleteMediaFiles { file_paths, move_to_trash } => {
-        self.delete_media_files(file_paths, move_to_trash).await
-      }
-      ProjectCommand::MoveMediaFiles { source_paths, destination_path } => {
-        self.move_media_files(source_paths, destination_path).await
-      }
-      ProjectCommand::ScanMediaDirectory { directory_path, recursive, supported_formats } => {
-        self.scan_media_directory(directory_path, recursive, supported_formats).await
-      }
-      ProjectCommand::IndexMediaFiles { file_paths, extract_metadata } => {
-        self.index_media_files(file_paths, extract_metadata).await
-      }
+      ProjectCommand::IndexMediaFiles {
+        file_paths,
+        extract_metadata,
+      } => self.index_media_files(file_paths, extract_metadata).await,
       ProjectCommand::SearchMediaLibrary { query, filters } => {
         self.search_media_library(query, filters).await
       }
-      ProjectCommand::ExportMediaFile { source_path, output_path, export_settings } => {
-        self.export_media_file(source_path, output_path, export_settings).await
+      ProjectCommand::ExportMediaFile {
+        source_path,
+        output_path,
+        export_settings,
+      } => {
+        self
+          .export_media_file(source_path, output_path, export_settings)
+          .await
       }
-      ProjectCommand::BatchExportMedia { media_items, output_directory } => {
-        self.batch_export_media(media_items, output_directory).await
+      ProjectCommand::BatchExportMedia {
+        media_items,
+        output_directory,
+      } => self.batch_export_media(media_items, output_directory).await,
+      ProjectCommand::ConvertMediaFormat {
+        input_path,
+        output_path,
+        format,
+        conversion_options,
+      } => {
+        self
+          .convert_media_format(input_path, output_path, format, conversion_options)
+          .await
       }
-      ProjectCommand::ConvertMediaFormat { input_path, output_path, format, conversion_options } => {
-        self.convert_media_format(input_path, output_path, format, conversion_options).await
-      }
-      ProjectCommand::OptimizeMediaFile { file_path, optimization_settings } => {
-        self.optimize_media_file(file_path, optimization_settings).await
+      ProjectCommand::OptimizeMediaFile {
+        file_path,
+        optimization_settings,
+      } => {
+        self
+          .optimize_media_file(file_path, optimization_settings)
+          .await
       }
 
       // NEW: Version control commands
@@ -1590,21 +1641,24 @@ impl CommandHandler {
       }
 
       // Selection commands
-      ProjectCommand::SelectClips { clip_ids, add_to_selection } => {
-        self.select_clips(clip_ids, add_to_selection).await
-      }
-      ProjectCommand::SelectTracks { track_ids, add_to_selection } => {
-        self.select_tracks(track_ids, add_to_selection).await
-      }
+      ProjectCommand::SelectClips {
+        clip_ids,
+        add_to_selection,
+      } => self.select_clips(clip_ids, add_to_selection).await,
+      ProjectCommand::SelectTracks {
+        track_ids,
+        add_to_selection,
+      } => self.select_tracks(track_ids, add_to_selection).await,
       ProjectCommand::ClearSelection => self.clear_selection().await,
 
       // System commands
       ProjectCommand::ReconnectNotify { timestamp } => self.reconnect_notify(timestamp).await,
 
       // System Integration commands
-      ProjectCommand::OpenModal { modal_type, modal_data } => {
-        self.open_modal(modal_type, modal_data).await
-      }
+      ProjectCommand::OpenModal {
+        modal_type,
+        modal_data,
+      } => self.open_modal(modal_type, modal_data).await,
       ProjectCommand::CloseModal => self.close_modal().await,
       ProjectCommand::SubmitModal { data } => self.submit_modal(data).await,
       ProjectCommand::ShowNotification {
@@ -1614,7 +1668,9 @@ impl CommandHandler {
         duration,
         actions,
       } => {
-        self.show_notification(notification_type, title, message, duration, actions).await
+        self
+          .show_notification(notification_type, title, message, duration, actions)
+          .await
       }
       ProjectCommand::DismissNotification { id } => self.dismiss_notification(id).await,
       ProjectCommand::ClearNotifications => self.clear_notifications().await,
@@ -1636,49 +1692,50 @@ impl CommandHandler {
         output_path,
         format,
       } => self.export_timeline(timeline_id, output_path, format).await,
-      ProjectCommand::ImportTimeline { file_path, merge_mode } => {
-        self.import_timeline(file_path, merge_mode).await
-      }
+      ProjectCommand::ImportTimeline {
+        file_path,
+        merge_mode,
+      } => self.import_timeline(file_path, merge_mode).await,
       ProjectCommand::ExportProject {
         project_id,
         output_path,
         format,
         include_media,
       } => {
-        self.export_project(project_id, output_path, format, include_media).await
+        self
+          .export_project(project_id, output_path, format, include_media)
+          .await
       }
       ProjectCommand::RenderVideo {
         timeline_id,
         output_path,
         render_settings,
       } => {
-        self.render_video(timeline_id, output_path, render_settings).await
+        self
+          .render_video(timeline_id, output_path, render_settings)
+          .await
       }
-      ProjectCommand::StartRender { project_id, settings } => {
-        self.start_render(project_id, settings).await
-      }
+      ProjectCommand::StartRender {
+        project_id,
+        settings,
+      } => self.start_render(project_id, settings).await,
       ProjectCommand::GetRenderProgress { render_job_id } => {
         self.get_render_progress(render_job_id).await
       }
-      ProjectCommand::CancelRender { render_job_id } => {
-        self.cancel_render(render_job_id).await
-      }
+      ProjectCommand::CancelRender { render_job_id } => self.cancel_render(render_job_id).await,
       ProjectCommand::ApplyEffectToClip {
         clip_id,
         effect_id,
         params,
-      } => {
-        self.apply_effect_to_clip(clip_id, effect_id, params).await
-      }
+      } => self.apply_effect_to_clip(clip_id, effect_id, params).await,
       ProjectCommand::OptimizeTimeline {
         timeline_id,
         optimization_type,
-      } => {
-        self.optimize_timeline(timeline_id, optimization_type).await
-      }
-      ProjectCommand::StartRealTimePreview { timeline_id, quality } => {
-        self.start_real_time_preview(timeline_id, quality).await
-      }
+      } => self.optimize_timeline(timeline_id, optimization_type).await,
+      ProjectCommand::StartRealTimePreview {
+        timeline_id,
+        quality,
+      } => self.start_real_time_preview(timeline_id, quality).await,
       ProjectCommand::StopRealTimePreview => self.stop_real_time_preview().await,
       ProjectCommand::UpdatePreviewFrame { timestamp } => {
         self.update_preview_frame(timestamp).await
@@ -1686,9 +1743,7 @@ impl CommandHandler {
 
       // AI Provider commands
       ProjectCommand::GetAvailableProviders => self.get_available_providers().await,
-      ProjectCommand::GetProviderModels { provider } => {
-        self.get_provider_models(provider).await
-      }
+      ProjectCommand::GetProviderModels { provider } => self.get_provider_models(provider).await,
       ProjectCommand::ValidateProviderConnection { provider } => {
         self.validate_provider_connection(provider).await
       }
@@ -1701,7 +1756,9 @@ impl CommandHandler {
         messages,
         options,
       } => {
-        self.send_ai_request(provider, model, messages, options).await
+        self
+          .send_ai_request(provider, model, messages, options)
+          .await
       }
       ProjectCommand::SendStreamingAiRequest {
         provider,
@@ -1709,14 +1766,14 @@ impl CommandHandler {
         messages,
         options,
       } => {
-        self.send_streaming_ai_request(provider, model, messages, options).await
+        self
+          .send_streaming_ai_request(provider, model, messages, options)
+          .await
       }
       ProjectCommand::GetModelInfo { provider, model } => {
         self.get_model_info(provider, model).await
       }
-      ProjectCommand::RefreshModelList { provider } => {
-        self.refresh_model_list(provider).await
-      }
+      ProjectCommand::RefreshModelList { provider } => self.refresh_model_list(provider).await,
       ProjectCommand::CheckModelAvailability { provider, model } => {
         self.check_model_availability(provider, model).await
       }
@@ -1728,119 +1785,194 @@ impl CommandHandler {
       }
       ProjectCommand::GetOllamaStatus => self.get_ollama_status().await,
       ProjectCommand::ListInstalledModels => self.list_installed_models().await,
-      ProjectCommand::GetAiUsageStats { provider, timeframe } => {
-        self.get_ai_usage_stats(provider, timeframe).await
-      }
+      ProjectCommand::GetAiUsageStats {
+        provider,
+        timeframe,
+      } => self.get_ai_usage_stats(provider, timeframe).await,
 
       // Effects and Filters commands
-      ProjectCommand::RenderEffectPipeline { clip_id, effects, output_path, quality } => {
-        self.render_effect_pipeline(clip_id, effects, output_path, quality).await
+      ProjectCommand::RenderEffectPipeline {
+        clip_id,
+        effects,
+        output_path,
+        quality,
+      } => {
+        self
+          .render_effect_pipeline(clip_id, effects, output_path, quality)
+          .await
       }
-      ProjectCommand::ProcessVideoWithFilters { input_path, output_path, filters, render_settings } => {
-        self.process_video_with_filters(input_path, output_path, filters, render_settings).await
+      ProjectCommand::ProcessVideoWithFilters {
+        input_path,
+        output_path,
+        filters,
+        render_settings,
+      } => {
+        self
+          .process_video_with_filters(input_path, output_path, filters, render_settings)
+          .await
       }
-      ProjectCommand::ApplyLutToClip { clip_id, lut_path, intensity } => {
-        self.apply_lut_to_clip(clip_id, lut_path, intensity).await
+      ProjectCommand::ApplyLutToClip {
+        clip_id,
+        lut_path,
+        intensity,
+      } => self.apply_lut_to_clip(clip_id, lut_path, intensity).await,
+      ProjectCommand::CreateEffectPreset {
+        name,
+        effect_id,
+        parameters,
+        category,
+      } => {
+        self
+          .create_effect_preset(name, effect_id, parameters, category)
+          .await
       }
-      ProjectCommand::CreateEffectPreset { name, effect_id, parameters, category } => {
-        self.create_effect_preset(name, effect_id, parameters, category).await
+      ProjectCommand::SaveFilterPreset {
+        name,
+        filter_id,
+        parameters,
+        tags,
+      } => {
+        self
+          .save_filter_preset(name, filter_id, parameters, tags)
+          .await
       }
-      ProjectCommand::SaveFilterPreset { name, filter_id, parameters, tags } => {
-        self.save_filter_preset(name, filter_id, parameters, tags).await
-      }
-      ProjectCommand::LoadEffectPresets { effect_id } => {
-        self.load_effect_presets(effect_id).await
-      }
-      ProjectCommand::LoadFilterPresets { filter_id } => {
-        self.load_filter_presets(filter_id).await
-      }
-      ProjectCommand::DeletePreset { preset_id, preset_type } => {
-        self.delete_preset(preset_id, preset_type).await
-      }
-      ProjectCommand::ImportEffectFile { file_path, category } => {
-        self.import_effect_file(file_path, category).await
-      }
-      ProjectCommand::ImportFilterFile { file_path, file_type } => {
-        self.import_filter_file(file_path, file_type).await
-      }
-      ProjectCommand::ExportEffectPreset { preset_id, output_path } => {
-        self.export_effect_preset(preset_id, output_path).await
-      }
-      ProjectCommand::ExportFilterPreset { preset_id, output_path } => {
-        self.export_filter_preset(preset_id, output_path).await
-      }
-      ProjectCommand::GetGpuCapabilities => {
-        self.get_gpu_capabilities().await
-      }
-      ProjectCommand::OptimizeEffectsPipeline { clip_id, target_fps } => {
-        self.optimize_effects_pipeline(clip_id, target_fps).await
-      }
-      ProjectCommand::AnalyzeEffectPerformance { effect_id, duration_seconds } => {
-        self.analyze_effect_performance(effect_id, duration_seconds).await
+      ProjectCommand::LoadEffectPresets { effect_id } => self.load_effect_presets(effect_id).await,
+      ProjectCommand::LoadFilterPresets { filter_id } => self.load_filter_presets(filter_id).await,
+      ProjectCommand::DeletePreset {
+        preset_id,
+        preset_type,
+      } => self.delete_preset(preset_id, preset_type).await,
+      ProjectCommand::ImportEffectFile {
+        file_path,
+        category,
+      } => self.import_effect_file(file_path, category).await,
+      ProjectCommand::ImportFilterFile {
+        file_path,
+        file_type,
+      } => self.import_filter_file(file_path, file_type).await,
+      ProjectCommand::ExportEffectPreset {
+        preset_id,
+        output_path,
+      } => self.export_effect_preset(preset_id, output_path).await,
+      ProjectCommand::ExportFilterPreset {
+        preset_id,
+        output_path,
+      } => self.export_filter_preset(preset_id, output_path).await,
+      ProjectCommand::GetGpuCapabilities => self.get_gpu_capabilities().await,
+      ProjectCommand::OptimizeEffectsPipeline {
+        clip_id,
+        target_fps,
+      } => self.optimize_effects_pipeline(clip_id, target_fps).await,
+      ProjectCommand::AnalyzeEffectPerformance {
+        effect_id,
+        duration_seconds,
+      } => {
+        self
+          .analyze_effect_performance(effect_id, duration_seconds)
+          .await
       }
 
       // Template Management commands
-      ProjectCommand::SaveTemplate { template, path, category } => {
-        self.save_template(template, path, category).await
-      }
-      ProjectCommand::LoadTemplate { path } => {
-        self.load_template(path).await
-      }
-      ProjectCommand::DeleteTemplate { template_id } => {
-        self.delete_template(template_id).await
-      }
-      ProjectCommand::ListTemplates { category, template_type } => {
-        self.list_templates(category, template_type).await
-      }
+      ProjectCommand::SaveTemplate {
+        template,
+        path,
+        category,
+      } => self.save_template(template, path, category).await,
+      ProjectCommand::LoadTemplate { path } => self.load_template(path).await,
+      ProjectCommand::DeleteTemplate { template_id } => self.delete_template(template_id).await,
+      ProjectCommand::ListTemplates {
+        category,
+        template_type,
+      } => self.list_templates(category, template_type).await,
       ProjectCommand::ImportTemplate { path, category } => {
         self.import_template(path, category).await
       }
       ProjectCommand::ExportTemplate { template_id, path } => {
         self.export_template(template_id, path).await
       }
-      ProjectCommand::CreateTemplateFromProject { project_id, template_name, category } => {
-        self.create_template_from_project(project_id, template_name, category).await
+      ProjectCommand::CreateTemplateFromProject {
+        project_id,
+        template_name,
+        category,
+      } => {
+        self
+          .create_template_from_project(project_id, template_name, category)
+          .await
       }
-      ProjectCommand::ApplyTemplateToTimeline { template_id, timeline_id, media_ids } => {
-        self.apply_template_to_timeline(template_id, timeline_id, media_ids).await
+      ProjectCommand::ApplyTemplateToTimeline {
+        template_id,
+        timeline_id,
+        media_ids,
+      } => {
+        self
+          .apply_template_to_timeline(template_id, timeline_id, media_ids)
+          .await
       }
-      ProjectCommand::ValidateTemplate { template } => {
-        self.validate_template(template).await
-      }
-      ProjectCommand::GetTemplatePreview { template_id, media_ids } => {
-        self.get_template_preview(template_id, media_ids).await
-      }
-      ProjectCommand::OptimizeTemplateRendering { template_id, target_quality } => {
-        self.optimize_template_rendering(template_id, target_quality).await
+      ProjectCommand::ValidateTemplate { template } => self.validate_template(template).await,
+      ProjectCommand::GetTemplatePreview {
+        template_id,
+        media_ids,
+      } => self.get_template_preview(template_id, media_ids).await,
+      ProjectCommand::OptimizeTemplateRendering {
+        template_id,
+        target_quality,
+      } => {
+        self
+          .optimize_template_rendering(template_id, target_quality)
+          .await
       }
 
       // Transition Management commands
-      ProjectCommand::CreateTransition { track_id, transition_id, position, duration, parameters } => {
-        self.create_transition(track_id, transition_id, position, duration, parameters).await
+      ProjectCommand::CreateTransition {
+        track_id,
+        transition_id,
+        position,
+        duration,
+        parameters,
+      } => {
+        self
+          .create_transition(track_id, transition_id, position, duration, parameters)
+          .await
       }
-      ProjectCommand::UpdateTransitionParameters { transition_id, parameters } => {
-        self.update_transition_parameters(transition_id, parameters).await
+      ProjectCommand::UpdateTransitionParameters {
+        transition_id,
+        parameters,
+      } => {
+        self
+          .update_transition_parameters(transition_id, parameters)
+          .await
       }
       ProjectCommand::GetTransitionInfo { transition_id } => {
         self.get_transition_info(transition_id).await
       }
-      ProjectCommand::ImportTransitions { file_path } => {
-        self.import_transitions(file_path).await
-      }
-      ProjectCommand::ExportTransitions { transition_ids, export_path } => {
-        self.export_transitions(transition_ids, export_path).await
-      }
+      ProjectCommand::ImportTransitions { file_path } => self.import_transitions(file_path).await,
+      ProjectCommand::ExportTransitions {
+        transition_ids,
+        export_path,
+      } => self.export_transitions(transition_ids, export_path).await,
       ProjectCommand::SaveUserTransition { transition } => {
         self.save_user_transition(transition).await
       }
-      ProjectCommand::PreviewTransition { transition_id, source_clip_id, target_clip_id, parameters } => {
-        self.preview_transition(transition_id, source_clip_id, target_clip_id, parameters).await
+      ProjectCommand::PreviewTransition {
+        transition_id,
+        source_clip_id,
+        target_clip_id,
+        parameters,
+      } => {
+        self
+          .preview_transition(transition_id, source_clip_id, target_clip_id, parameters)
+          .await
       }
       ProjectCommand::RenderTransition { transition_config } => {
         self.render_transition(transition_config).await
       }
-      ProjectCommand::ExportProjectTransitions { project_path, export_settings } => {
-        self.export_project_transitions(project_path, export_settings).await
+      ProjectCommand::ExportProjectTransitions {
+        project_path,
+        export_settings,
+      } => {
+        self
+          .export_project_transitions(project_path, export_settings)
+          .await
       }
       ProjectCommand::ListAvailableTransitions { category } => {
         self.list_available_transitions(category).await
@@ -1850,32 +1982,49 @@ impl CommandHandler {
       }
 
       // Style Template Management commands
-      ProjectCommand::LoadStyleTemplates { category } => {
-        self.load_style_templates(category).await
-      }
+      ProjectCommand::LoadStyleTemplates { category } => self.load_style_templates(category).await,
       ProjectCommand::SaveStyleTemplate { template, path } => {
         self.save_style_template(template, path).await
       }
-      ProjectCommand::ApplyStyleTemplate { template_id, timeline_id, position, text_replacements } => {
-        self.apply_style_template(template_id, timeline_id, position, text_replacements).await
+      ProjectCommand::ApplyStyleTemplate {
+        template_id,
+        timeline_id,
+        position,
+        text_replacements,
+      } => {
+        self
+          .apply_style_template(template_id, timeline_id, position, text_replacements)
+          .await
       }
-      ProjectCommand::ExportStyleTemplate { template_id, export_path } => {
-        self.export_style_template(template_id, export_path).await
-      }
+      ProjectCommand::ExportStyleTemplate {
+        template_id,
+        export_path,
+      } => self.export_style_template(template_id, export_path).await,
       ProjectCommand::ImportStyleTemplates { file_path } => {
         self.import_style_templates(file_path).await
       }
       ProjectCommand::ValidateStyleTemplate { template } => {
         self.validate_style_template(template).await
       }
-      ProjectCommand::RenderStyleTemplatePreview { template_id, output_path, preview_settings } => {
-        self.render_style_template_preview(template_id, output_path, preview_settings).await
+      ProjectCommand::RenderStyleTemplatePreview {
+        template_id,
+        output_path,
+        preview_settings,
+      } => {
+        self
+          .render_style_template_preview(template_id, output_path, preview_settings)
+          .await
       }
       ProjectCommand::GetStyleTemplateAssets { template_id } => {
         self.get_style_template_assets(template_id).await
       }
-      ProjectCommand::UpdateStyleTemplateElements { template_id, elements } => {
-        self.update_style_template_elements(template_id, elements).await
+      ProjectCommand::UpdateStyleTemplateElements {
+        template_id,
+        elements,
+      } => {
+        self
+          .update_style_template_elements(template_id, elements)
+          .await
       }
     }
   }
@@ -4170,7 +4319,11 @@ impl CommandHandler {
 
   // Selection commands implementation
   async fn select_clips(&self, clip_ids: Vec<String>, add_to_selection: bool) -> CommandResult {
-    log::info!("Selecting clips: {:?}, add_to_selection: {}", clip_ids, add_to_selection);
+    log::info!(
+      "Selecting clips: {:?}, add_to_selection: {}",
+      clip_ids,
+      add_to_selection
+    );
 
     let mut state = self.state.write().await;
 
@@ -4188,14 +4341,18 @@ impl CommandHandler {
 
     state.mark_dirty();
 
-    self.event_bus.publish(
-      ProjectEvent::SelectionChanged {
-        selected_clips: state.ui_state.selected_clips.clone(),
-        selected_tracks: state.ui_state.selected_tracks.clone(),
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::SelectionChanged {
+          selected_clips: state.ui_state.selected_clips.clone(),
+          selected_tracks: state.ui_state.selected_tracks.clone(),
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "selected_clips": clip_ids,
@@ -4204,7 +4361,11 @@ impl CommandHandler {
   }
 
   async fn select_tracks(&self, track_ids: Vec<String>, add_to_selection: bool) -> CommandResult {
-    log::info!("Selecting tracks: {:?}, add_to_selection: {}", track_ids, add_to_selection);
+    log::info!(
+      "Selecting tracks: {:?}, add_to_selection: {}",
+      track_ids,
+      add_to_selection
+    );
 
     let mut state = self.state.write().await;
 
@@ -4222,14 +4383,18 @@ impl CommandHandler {
 
     state.mark_dirty();
 
-    self.event_bus.publish(
-      ProjectEvent::SelectionChanged {
-        selected_clips: state.ui_state.selected_clips.clone(),
-        selected_tracks: state.ui_state.selected_tracks.clone(),
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::SelectionChanged {
+          selected_clips: state.ui_state.selected_clips.clone(),
+          selected_tracks: state.ui_state.selected_tracks.clone(),
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "selected_tracks": track_ids,
@@ -4246,14 +4411,18 @@ impl CommandHandler {
     state.ui_state.selected_tracks.clear();
     state.mark_dirty();
 
-    self.event_bus.publish(
-      ProjectEvent::SelectionChanged {
-        selected_clips: state.ui_state.selected_clips.clone(),
-        selected_tracks: state.ui_state.selected_tracks.clone(),
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::SelectionChanged {
+          selected_clips: state.ui_state.selected_clips.clone(),
+          selected_tracks: state.ui_state.selected_tracks.clone(),
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "cleared": true
@@ -4270,18 +4439,22 @@ impl CommandHandler {
         *state = project_state;
         state.mark_dirty();
 
-        self.event_bus.publish(
-          ProjectEvent::ProjectOpened {
-            project_id: state.project.as_ref().unwrap().id.clone(),
-            path: path.clone(),
-          },
-          "command_handler".to_string(),
-          state.version,
-        ).await.ok();
+        self
+          .event_bus
+          .publish(
+            ProjectEvent::ProjectOpened {
+              project_id: state.project.as_ref().unwrap().id.clone(),
+              path: path.clone(),
+            },
+            "command_handler".to_string(),
+            state.version,
+          )
+          .await
+          .ok();
 
         CommandResult::success(Some(serde_json::json!({ "path": path })))
       }
-      Err(e) => CommandResult::error(format!("Failed to open project: {}", e))
+      Err(e) => CommandResult::error(format!("Failed to open project: {}", e)),
     }
   }
 
@@ -4289,24 +4462,42 @@ impl CommandHandler {
     log::info!("Closing current project");
 
     let mut state = self.state.write().await;
-    let project_id = state.project.as_ref().map(|p| p.id.clone()).unwrap_or_default();
+    let project_id = state
+      .project
+      .as_ref()
+      .map(|p| p.id.clone())
+      .unwrap_or_default();
 
     state.project = None;
     state.ui_state = Default::default();
     state.mark_dirty();
 
-    self.event_bus.publish(
-      ProjectEvent::ProjectClosed { project_id },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ProjectClosed { project_id },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(None)
   }
 
   // Track commands implementation
-  async fn add_track(&self, name: String, track_type: TrackType, index: Option<u32>) -> CommandResult {
-    log::info!("Adding track: {} of type {:?} at index {:?}", name, track_type, index);
+  async fn add_track(
+    &self,
+    name: String,
+    track_type: TrackType,
+    index: Option<u32>,
+  ) -> CommandResult {
+    log::info!(
+      "Adding track: {} of type {:?} at index {:?}",
+      name,
+      track_type,
+      index
+    );
 
     let mut state = self.state.write().await;
 
@@ -4342,18 +4533,22 @@ impl CommandHandler {
 
     state.mark_dirty();
 
-    self.event_bus.publish(
-      ProjectEvent::TrackAdded {
-        track: super::events::TrackData {
-          id: track_id.clone(),
-          name: track_name,
-          track_type: track_type_str,
-          index: insert_index,
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::TrackAdded {
+          track: super::events::TrackData {
+            id: track_id.clone(),
+            name: track_name,
+            track_type: track_type_str,
+            index: insert_index,
+          },
         },
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({ "track_id": track_id })))
   }
@@ -4368,24 +4563,32 @@ impl CommandHandler {
       None => return CommandResult::error("No project open".to_string()),
     };
 
-    let track_index = project.timeline.tracks.iter().position(|t| t.id == track_id);
+    let track_index = project
+      .timeline
+      .tracks
+      .iter()
+      .position(|t| t.id == track_id);
 
     match track_index {
       Some(index) => {
         project.timeline.tracks.remove(index);
         state.mark_dirty();
 
-        self.event_bus.publish(
-          ProjectEvent::TrackDeleted {
-            track_id: track_id.clone(),
-          },
-          "command_handler".to_string(),
-          state.version,
-        ).await.ok();
+        self
+          .event_bus
+          .publish(
+            ProjectEvent::TrackDeleted {
+              track_id: track_id.clone(),
+            },
+            "command_handler".to_string(),
+            state.version,
+          )
+          .await
+          .ok();
 
         CommandResult::success(Some(serde_json::json!({ "deleted_track_id": track_id })))
       }
-      None => CommandResult::error(format!("Track not found: {}", track_id))
+      None => CommandResult::error(format!("Track not found: {}", track_id)),
     }
   }
 
@@ -4399,7 +4602,11 @@ impl CommandHandler {
       None => return CommandResult::error("No project open".to_string()),
     };
 
-    let track = project.timeline.tracks.iter_mut().find(|t| t.id == track_id);
+    let track = project
+      .timeline
+      .tracks
+      .iter_mut()
+      .find(|t| t.id == track_id);
 
     match track {
       Some(track) => {
@@ -4423,24 +4630,28 @@ impl CommandHandler {
 
         state.mark_dirty();
 
-        self.event_bus.publish(
-          ProjectEvent::TrackUpdated {
-            track_id: track_id.clone(),
-            changes: super::events::TrackChanges {
-              name: track_name_change,
-              enabled: updates.enabled,
-              locked: updates.locked,
-              volume: updates.volume,
-              height: updates.height,
+        self
+          .event_bus
+          .publish(
+            ProjectEvent::TrackUpdated {
+              track_id: track_id.clone(),
+              changes: super::events::TrackChanges {
+                name: track_name_change,
+                enabled: updates.enabled,
+                locked: updates.locked,
+                volume: updates.volume,
+                height: updates.height,
+              },
             },
-          },
-          "command_handler".to_string(),
-          state.version,
-        ).await.ok();
+            "command_handler".to_string(),
+            state.version,
+          )
+          .await
+          .ok();
 
         CommandResult::success(Some(serde_json::json!({ "updated_track_id": track_id })))
       }
-      None => CommandResult::error(format!("Track not found: {}", track_id))
+      None => CommandResult::error(format!("Track not found: {}", track_id)),
     }
   }
 
@@ -4469,15 +4680,19 @@ impl CommandHandler {
     if clip_found {
       state.mark_dirty();
 
-      self.event_bus.publish(
-        ProjectEvent::ClipTrimmed {
-          clip_id: clip_id.clone(),
-          new_in: start,
-          new_out: end,
-        },
-        "command_handler".to_string(),
-        state.version,
-      ).await.ok();
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::ClipTrimmed {
+            clip_id: clip_id.clone(),
+            new_in: start,
+            new_out: end,
+          },
+          "command_handler".to_string(),
+          state.version,
+        )
+        .await
+        .ok();
 
       CommandResult::success(Some(serde_json::json!({
         "trimmed_clip_id": clip_id,
@@ -4512,14 +4727,18 @@ impl CommandHandler {
     if clip_found {
       state.mark_dirty();
 
-      self.event_bus.publish(
-        ProjectEvent::ClipDeleted {
-          clip_id: clip_id.clone(),
-          track_id: "unknown".to_string(), // We don't track which track it was from
-        },
-        "command_handler".to_string(),
-        state.version,
-      ).await.ok();
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::ClipDeleted {
+            clip_id: clip_id.clone(),
+            track_id: "unknown".to_string(), // We don't track which track it was from
+          },
+          "command_handler".to_string(),
+          state.version,
+        )
+        .await
+        .ok();
 
       CommandResult::success(Some(serde_json::json!({ "deleted_clip_id": clip_id })))
     } else {
@@ -4560,19 +4779,23 @@ impl CommandHandler {
     if clip_found {
       state.mark_dirty();
 
-      self.event_bus.publish(
-        ProjectEvent::ClipUpdated {
-          clip_id: clip_id.clone(),
-          changes: super::events::ClipChanges {
-            name: clip_name_change,
-            playback_rate: updates.playback_rate,
-            volume: None, // Not in updates
-            effects: None, // Not in updates
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::ClipUpdated {
+            clip_id: clip_id.clone(),
+            changes: super::events::ClipChanges {
+              name: clip_name_change,
+              playback_rate: updates.playback_rate,
+              volume: None,  // Not in updates
+              effects: None, // Not in updates
+            },
           },
-        },
-        "command_handler".to_string(),
-        state.version,
-      ).await.ok();
+          "command_handler".to_string(),
+          state.version,
+        )
+        .await
+        .ok();
 
       CommandResult::success(Some(serde_json::json!({ "updated_clip_id": clip_id })))
     } else {
@@ -4588,13 +4811,15 @@ impl CommandHandler {
     state.playback_state.is_playing = false;
     state.playback_state.current_time = 0.0;
 
-    self.event_bus.publish(
-      ProjectEvent::PlaybackStopped {
-        time: 0.0,
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::PlaybackStopped { time: 0.0 },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({ "stopped": true })))
   }
@@ -4611,8 +4836,16 @@ impl CommandHandler {
   }
 
   // Media Management methods
-  async fn import_media_files(&self, paths: Vec<String>, options: MediaImportOptions) -> CommandResult {
-    log::info!("Importing media files: {:?} with options: {:?}", paths, options);
+  async fn import_media_files(
+    &self,
+    paths: Vec<String>,
+    options: MediaImportOptions,
+  ) -> CommandResult {
+    log::info!(
+      "Importing media files: {:?} with options: {:?}",
+      paths,
+      options
+    );
 
     let mut state = self.state.write().await;
     let mut imported_files = Vec::new();
@@ -4640,9 +4873,15 @@ impl CommandHandler {
 
       // Determine media type based on extension
       let media_type = match file_extension.as_str() {
-        "mp4" | "mov" | "avi" | "mkv" | "webm" | "mxf" | "r3d" | "braw" => crate::state::project_state::MediaType::Video,
-        "mp3" | "wav" | "aiff" | "flac" | "ogg" | "m4a" | "aac" => crate::state::project_state::MediaType::Audio,
-        "jpg" | "jpeg" | "png" | "gif" | "webp" | "tiff" | "raw" | "dng" | "heic" => crate::state::project_state::MediaType::Image,
+        "mp4" | "mov" | "avi" | "mkv" | "webm" | "mxf" | "r3d" | "braw" => {
+          crate::state::project_state::MediaType::Video
+        }
+        "mp3" | "wav" | "aiff" | "flac" | "ogg" | "m4a" | "aac" => {
+          crate::state::project_state::MediaType::Audio
+        }
+        "jpg" | "jpeg" | "png" | "gif" | "webp" | "tiff" | "raw" | "dng" | "heic" => {
+          crate::state::project_state::MediaType::Image
+        }
         _ => {
           errors.push(format!("Unsupported file format: {}", path));
           continue;
@@ -4672,8 +4911,14 @@ impl CommandHandler {
 
       // Add to project if open
       if let Some(project) = &mut state.project {
-        let is_video = matches!(media_item.media_type, crate::state::project_state::MediaType::Video);
-        project.media_pool.items.insert(media_id.clone(), media_item);
+        let is_video = matches!(
+          media_item.media_type,
+          crate::state::project_state::MediaType::Video
+        );
+        project
+          .media_pool
+          .items
+          .insert(media_id.clone(), media_item);
         imported_files.push(path.clone());
 
         // Generate thumbnail if requested
@@ -4696,13 +4941,17 @@ impl CommandHandler {
     state.mark_dirty();
 
     // Publish import event
-    self.event_bus.publish(
-      crate::state::ProjectEvent::MediaImported {
-        file_paths: imported_files.clone(),
-      },
-      "command_handler".to_string(),
-      state.version,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        crate::state::ProjectEvent::MediaImported {
+          file_paths: imported_files.clone(),
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     if errors.is_empty() {
       CommandResult::success(Some(serde_json::json!({
@@ -4727,32 +4976,56 @@ impl CommandHandler {
         let mut metadata = serde_json::Map::new();
 
         // Basic file info
-        metadata.insert("file_path".to_string(), serde_json::Value::String(file_path.clone()));
-        metadata.insert("format_name".to_string(),
-          serde_json::Value::String(input.format().name().to_string()));
-        metadata.insert("duration".to_string(),
-          serde_json::Value::Number(serde_json::Number::from_f64(
-            input.duration() as f64 / ffmpeg_next::ffi::AV_TIME_BASE as f64
-          ).unwrap_or(serde_json::Number::from(0))));
+        metadata.insert(
+          "file_path".to_string(),
+          serde_json::Value::String(file_path.clone()),
+        );
+        metadata.insert(
+          "format_name".to_string(),
+          serde_json::Value::String(input.format().name().to_string()),
+        );
+        metadata.insert(
+          "duration".to_string(),
+          serde_json::Value::Number(
+            serde_json::Number::from_f64(
+              input.duration() as f64 / ffmpeg_next::ffi::AV_TIME_BASE as f64,
+            )
+            .unwrap_or(serde_json::Number::from(0)),
+          ),
+        );
 
         // Stream information
         let mut streams = Vec::new();
         for (i, stream) in input.streams().enumerate() {
           let mut stream_info = serde_json::Map::new();
-          stream_info.insert("index".to_string(), serde_json::Value::Number(serde_json::Number::from(i)));
+          stream_info.insert(
+            "index".to_string(),
+            serde_json::Value::Number(serde_json::Number::from(i)),
+          );
 
           match stream.parameters().medium() {
             ffmpeg_next::media::Type::Video => {
-              stream_info.insert("type".to_string(), serde_json::Value::String("video".to_string()));
+              stream_info.insert(
+                "type".to_string(),
+                serde_json::Value::String("video".to_string()),
+              );
 
               // Get video properties from codec parameters
-              if let Ok(codec_ctx) = ffmpeg_next::codec::context::Context::from_parameters(stream.parameters()) {
+              if let Ok(codec_ctx) =
+                ffmpeg_next::codec::context::Context::from_parameters(stream.parameters())
+              {
                 let codec_id = codec_ctx.id();
                 let codec_name = codec_id.name().to_string();
 
                 if let Ok(decoder) = codec_ctx.decoder().video() {
-                  stream_info.insert("width".to_string(), serde_json::Value::Number(serde_json::Number::from(decoder.width())));
-                  stream_info.insert("height".to_string(), serde_json::Value::Number(serde_json::Number::from(decoder.height())));
+                  stream_info.insert(
+                    "width".to_string(),
+                    serde_json::Value::Number(serde_json::Number::from(decoder.width())),
+                  );
+                  stream_info.insert(
+                    "height".to_string(),
+                    serde_json::Value::Number(serde_json::Number::from(decoder.height())),
+                  );
                 }
                 stream_info.insert("codec".to_string(), serde_json::Value::String(codec_name));
               }
@@ -4761,28 +5034,45 @@ impl CommandHandler {
               let frame_rate = stream.avg_frame_rate();
               if frame_rate.denominator() != 0 {
                 let fps = frame_rate.numerator() as f64 / frame_rate.denominator() as f64;
-                stream_info.insert("fps".to_string(), serde_json::Value::Number(
-                  serde_json::Number::from_f64(fps).unwrap_or(serde_json::Number::from(0))
-                ));
+                stream_info.insert(
+                  "fps".to_string(),
+                  serde_json::Value::Number(
+                    serde_json::Number::from_f64(fps).unwrap_or(serde_json::Number::from(0)),
+                  ),
+                );
               }
-            },
+            }
             ffmpeg_next::media::Type::Audio => {
-              stream_info.insert("type".to_string(), serde_json::Value::String("audio".to_string()));
+              stream_info.insert(
+                "type".to_string(),
+                serde_json::Value::String("audio".to_string()),
+              );
 
               // Get audio properties from codec parameters
-              if let Ok(codec_ctx) = ffmpeg_next::codec::context::Context::from_parameters(stream.parameters()) {
+              if let Ok(codec_ctx) =
+                ffmpeg_next::codec::context::Context::from_parameters(stream.parameters())
+              {
                 let codec_id = codec_ctx.id();
                 let codec_name = codec_id.name().to_string();
 
                 if let Ok(decoder) = codec_ctx.decoder().audio() {
-                  stream_info.insert("channels".to_string(), serde_json::Value::Number(serde_json::Number::from(decoder.channels())));
-                  stream_info.insert("sample_rate".to_string(), serde_json::Value::Number(serde_json::Number::from(decoder.rate())));
+                  stream_info.insert(
+                    "channels".to_string(),
+                    serde_json::Value::Number(serde_json::Number::from(decoder.channels())),
+                  );
+                  stream_info.insert(
+                    "sample_rate".to_string(),
+                    serde_json::Value::Number(serde_json::Number::from(decoder.rate())),
+                  );
                 }
                 stream_info.insert("codec".to_string(), serde_json::Value::String(codec_name));
               }
-            },
+            }
             _ => {
-              stream_info.insert("type".to_string(), serde_json::Value::String("other".to_string()));
+              stream_info.insert(
+                "type".to_string(),
+                serde_json::Value::String("other".to_string()),
+              );
             }
           }
 
@@ -4792,11 +5082,14 @@ impl CommandHandler {
 
         // File size
         if let Ok(file_metadata) = std::fs::metadata(&file_path) {
-          metadata.insert("file_size".to_string(), serde_json::Value::Number(serde_json::Number::from(file_metadata.len())));
+          metadata.insert(
+            "file_size".to_string(),
+            serde_json::Value::Number(serde_json::Number::from(file_metadata.len())),
+          );
         }
 
         CommandResult::success(Some(serde_json::Value::Object(metadata)))
-      },
+      }
       Err(e) => {
         log::error!("Failed to extract metadata from {}: {}", file_path, e);
         CommandResult::error(format!("Failed to extract metadata: {}", e))
@@ -4804,7 +5097,12 @@ impl CommandHandler {
     }
   }
 
-  async fn generate_video_thumbnail(&self, video_path: String, time: f64, output_path: Option<String>) -> CommandResult {
+  async fn generate_video_thumbnail(
+    &self,
+    video_path: String,
+    time: f64,
+    output_path: Option<String>,
+  ) -> CommandResult {
     log::info!("Generating thumbnail for: {} at time: {}", video_path, time);
 
     if !std::path::Path::new(&video_path).exists() {
@@ -4844,7 +5142,8 @@ impl CommandHandler {
         let (video_stream_index, time_base, stream_params) = video_stream_info;
 
         // Seek to desired time
-        let seek_target = (time * time_base.denominator() as f64 / time_base.numerator() as f64) as i64;
+        let seek_target =
+          (time * time_base.denominator() as f64 / time_base.numerator() as f64) as i64;
 
         if let Err(e) = input.seek(seek_target, ..seek_target) {
           log::warn!("Could not seek to time {}: {}", time, e);
@@ -4896,10 +5195,8 @@ impl CommandHandler {
         }
 
         CommandResult::error("Could not generate thumbnail - decoding failed".to_string())
-      },
-      Err(e) => {
-        CommandResult::error(format!("Failed to open video file: {}", e))
       }
+      Err(e) => CommandResult::error(format!("Failed to open video file: {}", e)),
     }
   }
 
@@ -4919,15 +5216,17 @@ impl CommandHandler {
           "duration": duration_seconds,
           "duration_formatted": Self::format_duration(duration_seconds)
         })))
-      },
-      Err(e) => {
-        CommandResult::error(format!("Failed to get duration: {}", e))
       }
+      Err(e) => CommandResult::error(format!("Failed to get duration: {}", e)),
     }
   }
 
   async fn detect_video_scenes(&self, video_path: String, threshold: Option<f64>) -> CommandResult {
-    log::info!("Detecting scenes in: {} with threshold: {:?}", video_path, threshold);
+    log::info!(
+      "Detecting scenes in: {} with threshold: {:?}",
+      video_path,
+      threshold
+    );
 
     // TODO: Implement scene detection using FFmpeg
 
@@ -4938,8 +5237,18 @@ impl CommandHandler {
     })))
   }
 
-  async fn generate_audio_waveform(&self, audio_path: String, width: u32, height: u32) -> CommandResult {
-    log::info!("Generating waveform for: {} ({}x{})", audio_path, width, height);
+  async fn generate_audio_waveform(
+    &self,
+    audio_path: String,
+    width: u32,
+    height: u32,
+  ) -> CommandResult {
+    log::info!(
+      "Generating waveform for: {} ({}x{})",
+      audio_path,
+      width,
+      height
+    );
 
     // TODO: Implement waveform generation
 
@@ -4951,8 +5260,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn copy_media_to_project(&self, source_paths: Vec<String>, project_path: String) -> CommandResult {
-    log::info!("Copying media files {:?} to project: {}", source_paths, project_path);
+  async fn copy_media_to_project(
+    &self,
+    source_paths: Vec<String>,
+    project_path: String,
+  ) -> CommandResult {
+    log::info!(
+      "Copying media files {:?} to project: {}",
+      source_paths,
+      project_path
+    );
 
     // TODO: Implement file copying with progress tracking
 
@@ -4963,8 +5280,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn create_proxy_files(&self, media_paths: Vec<String>, proxy_settings: ProxySettings) -> CommandResult {
-    log::info!("Creating proxy files for: {:?} with settings: {:?}", media_paths, proxy_settings);
+  async fn create_proxy_files(
+    &self,
+    media_paths: Vec<String>,
+    proxy_settings: ProxySettings,
+  ) -> CommandResult {
+    log::info!(
+      "Creating proxy files for: {:?} with settings: {:?}",
+      media_paths,
+      proxy_settings
+    );
 
     // TODO: Implement proxy file creation using FFmpeg
 
@@ -4975,8 +5300,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn delete_media_files(&self, file_paths: Vec<String>, move_to_trash: bool) -> CommandResult {
-    log::info!("Deleting media files: {:?} (move_to_trash: {})", file_paths, move_to_trash);
+  async fn delete_media_files(
+    &self,
+    file_paths: Vec<String>,
+    move_to_trash: bool,
+  ) -> CommandResult {
+    log::info!(
+      "Deleting media files: {:?} (move_to_trash: {})",
+      file_paths,
+      move_to_trash
+    );
 
     // TODO: Implement file deletion (with trash support on different platforms)
 
@@ -4986,8 +5319,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn move_media_files(&self, source_paths: Vec<String>, destination_path: String) -> CommandResult {
-    log::info!("Moving media files {:?} to: {}", source_paths, destination_path);
+  async fn move_media_files(
+    &self,
+    source_paths: Vec<String>,
+    destination_path: String,
+  ) -> CommandResult {
+    log::info!(
+      "Moving media files {:?} to: {}",
+      source_paths,
+      destination_path
+    );
 
     // TODO: Implement file moving with progress tracking
 
@@ -4998,8 +5339,18 @@ impl CommandHandler {
     })))
   }
 
-  async fn scan_media_directory(&self, directory_path: String, recursive: bool, supported_formats: Vec<String>) -> CommandResult {
-    log::info!("Scanning directory: {} (recursive: {}, formats: {:?})", directory_path, recursive, supported_formats);
+  async fn scan_media_directory(
+    &self,
+    directory_path: String,
+    recursive: bool,
+    supported_formats: Vec<String>,
+  ) -> CommandResult {
+    log::info!(
+      "Scanning directory: {} (recursive: {}, formats: {:?})",
+      directory_path,
+      recursive,
+      supported_formats
+    );
 
     let dir_path = std::path::Path::new(&directory_path);
     if !dir_path.exists() || !dir_path.is_dir() {
@@ -5013,7 +5364,7 @@ impl CommandHandler {
       path: &std::path::Path,
       recursive: bool,
       formats: &[String],
-      files: &mut Vec<serde_json::Value>
+      files: &mut Vec<serde_json::Value>,
     ) -> Result<(), Box<dyn std::error::Error>> {
       for entry in std::fs::read_dir(path)? {
         let entry = entry?;
@@ -5026,18 +5377,37 @@ impl CommandHandler {
             let ext_lower = extension.to_lowercase();
             if formats.is_empty() || formats.contains(&ext_lower) {
               let mut file_info = serde_json::Map::new();
-              file_info.insert("path".to_string(), serde_json::Value::String(file_path.to_string_lossy().to_string()));
-              file_info.insert("name".to_string(), serde_json::Value::String(
-                file_path.file_name().unwrap_or_default().to_string_lossy().to_string()
-              ));
-              file_info.insert("extension".to_string(), serde_json::Value::String(ext_lower));
+              file_info.insert(
+                "path".to_string(),
+                serde_json::Value::String(file_path.to_string_lossy().to_string()),
+              );
+              file_info.insert(
+                "name".to_string(),
+                serde_json::Value::String(
+                  file_path
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .to_string(),
+                ),
+              );
+              file_info.insert(
+                "extension".to_string(),
+                serde_json::Value::String(ext_lower),
+              );
 
               // Get file size
               if let Ok(metadata) = file_path.metadata() {
-                file_info.insert("size".to_string(), serde_json::Value::Number(serde_json::Number::from(metadata.len())));
+                file_info.insert(
+                  "size".to_string(),
+                  serde_json::Value::Number(serde_json::Number::from(metadata.len())),
+                );
                 if let Ok(modified) = metadata.modified() {
                   if let Ok(timestamp) = modified.duration_since(std::time::UNIX_EPOCH) {
-                    file_info.insert("modified".to_string(), serde_json::Value::Number(serde_json::Number::from(timestamp.as_secs())));
+                    file_info.insert(
+                      "modified".to_string(),
+                      serde_json::Value::Number(serde_json::Number::from(timestamp.as_secs())),
+                    );
                   }
                 }
               }
@@ -5051,23 +5421,27 @@ impl CommandHandler {
     }
 
     match scan_directory(dir_path, recursive, &formats_lower, &mut found_files) {
-      Ok(_) => {
-        CommandResult::success(Some(serde_json::json!({
-          "directory_path": directory_path,
-          "recursive": recursive,
-          "supported_formats": supported_formats,
-          "found_files": found_files,
-          "count": found_files.len()
-        })))
-      },
-      Err(e) => {
-        CommandResult::error(format!("Failed to scan directory: {}", e))
-      }
+      Ok(_) => CommandResult::success(Some(serde_json::json!({
+        "directory_path": directory_path,
+        "recursive": recursive,
+        "supported_formats": supported_formats,
+        "found_files": found_files,
+        "count": found_files.len()
+      }))),
+      Err(e) => CommandResult::error(format!("Failed to scan directory: {}", e)),
     }
   }
 
-  async fn index_media_files(&self, file_paths: Vec<String>, extract_metadata: bool) -> CommandResult {
-    log::info!("Indexing media files: {:?} (extract_metadata: {})", file_paths, extract_metadata);
+  async fn index_media_files(
+    &self,
+    file_paths: Vec<String>,
+    extract_metadata: bool,
+  ) -> CommandResult {
+    log::info!(
+      "Indexing media files: {:?} (extract_metadata: {})",
+      file_paths,
+      extract_metadata
+    );
 
     // TODO: Implement media file indexing for search
 
@@ -5077,8 +5451,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn search_media_library(&self, query: String, filters: MediaSearchFilters) -> CommandResult {
-    log::info!("Searching media library with query: '{}' and filters: {:?}", query, filters);
+  async fn search_media_library(
+    &self,
+    query: String,
+    filters: MediaSearchFilters,
+  ) -> CommandResult {
+    log::info!(
+      "Searching media library with query: '{}' and filters: {:?}",
+      query,
+      filters
+    );
 
     // TODO: Implement media library search
 
@@ -5089,8 +5471,18 @@ impl CommandHandler {
     })))
   }
 
-  async fn export_media_file(&self, source_path: String, output_path: String, export_settings: MediaExportSettings) -> CommandResult {
-    log::info!("Exporting media file from: {} to: {} with settings: {:?}", source_path, output_path, export_settings);
+  async fn export_media_file(
+    &self,
+    source_path: String,
+    output_path: String,
+    export_settings: MediaExportSettings,
+  ) -> CommandResult {
+    log::info!(
+      "Exporting media file from: {} to: {} with settings: {:?}",
+      source_path,
+      output_path,
+      export_settings
+    );
 
     // TODO: Implement media export using FFmpeg
 
@@ -5101,8 +5493,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn batch_export_media(&self, media_items: Vec<BatchExportItem>, output_directory: String) -> CommandResult {
-    log::info!("Batch exporting {} media items to: {}", media_items.len(), output_directory);
+  async fn batch_export_media(
+    &self,
+    media_items: Vec<BatchExportItem>,
+    output_directory: String,
+  ) -> CommandResult {
+    log::info!(
+      "Batch exporting {} media items to: {}",
+      media_items.len(),
+      output_directory
+    );
 
     // TODO: Implement batch export with progress tracking
 
@@ -5113,8 +5513,20 @@ impl CommandHandler {
     })))
   }
 
-  async fn convert_media_format(&self, input_path: String, output_path: String, format: String, conversion_options: MediaConversionOptions) -> CommandResult {
-    log::info!("Converting media format from: {} to: {} (format: {}) with options: {:?}", input_path, output_path, format, conversion_options);
+  async fn convert_media_format(
+    &self,
+    input_path: String,
+    output_path: String,
+    format: String,
+    conversion_options: MediaConversionOptions,
+  ) -> CommandResult {
+    log::info!(
+      "Converting media format from: {} to: {} (format: {}) with options: {:?}",
+      input_path,
+      output_path,
+      format,
+      conversion_options
+    );
 
     // TODO: Implement format conversion using FFmpeg
 
@@ -5126,8 +5538,16 @@ impl CommandHandler {
     })))
   }
 
-  async fn optimize_media_file(&self, file_path: String, optimization_settings: MediaOptimizationSettings) -> CommandResult {
-    log::info!("Optimizing media file: {} with settings: {:?}", file_path, optimization_settings);
+  async fn optimize_media_file(
+    &self,
+    file_path: String,
+    optimization_settings: MediaOptimizationSettings,
+  ) -> CommandResult {
+    log::info!(
+      "Optimizing media file: {} with settings: {:?}",
+      file_path,
+      optimization_settings
+    );
 
     // TODO: Implement media optimization using FFmpeg
     // This would involve re-encoding with optimized settings
@@ -5140,11 +5560,15 @@ impl CommandHandler {
   }
 
   // Helper methods for media management
-  fn save_rgb_frame_as_jpeg(&self, rgb_frame: &ffmpeg_next::util::frame::video::Video, output_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+  fn save_rgb_frame_as_jpeg(
+    &self,
+    rgb_frame: &ffmpeg_next::util::frame::video::Video,
+    output_path: &str,
+  ) -> Result<(), Box<dyn std::error::Error>> {
     use image::{ImageBuffer, Rgb};
 
-    let width = rgb_frame.width() as u32;
-    let height = rgb_frame.height() as u32;
+    let width = rgb_frame.width();
+    let height = rgb_frame.height();
     let data = rgb_frame.data(0);
 
     // Create image buffer from RGB data
@@ -5170,7 +5594,11 @@ impl CommandHandler {
     }
   }
 
-  async fn copy_files_to_directory(&self, source_paths: &[String], destination_dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+  async fn copy_files_to_directory(
+    &self,
+    source_paths: &[String],
+    destination_dir: &str,
+  ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let dest_path = std::path::Path::new(destination_dir);
     if !dest_path.exists() {
       std::fs::create_dir_all(dest_path)?;
@@ -5190,27 +5618,57 @@ impl CommandHandler {
   }
 
   fn is_supported_media_format(extension: &str) -> bool {
-    matches!(extension.to_lowercase().as_str(),
-      "mp4" | "mov" | "avi" | "mkv" | "webm" | "mxf" | "r3d" | "braw" | "dng" |
-      "mp3" | "wav" | "aiff" | "flac" | "ogg" | "m4a" | "aac" |
-      "jpg" | "jpeg" | "png" | "gif" | "webp" | "tiff" | "raw" | "heic"
+    matches!(
+      extension.to_lowercase().as_str(),
+      "mp4"
+        | "mov"
+        | "avi"
+        | "mkv"
+        | "webm"
+        | "mxf"
+        | "r3d"
+        | "braw"
+        | "dng"
+        | "mp3"
+        | "wav"
+        | "aiff"
+        | "flac"
+        | "ogg"
+        | "m4a"
+        | "aac"
+        | "jpg"
+        | "jpeg"
+        | "png"
+        | "gif"
+        | "webp"
+        | "tiff"
+        | "raw"
+        | "heic"
     )
   }
 
   // System Integration command implementations
 
-  async fn open_modal(&self, modal_type: String, modal_data: Option<serde_json::Value>) -> CommandResult {
+  async fn open_modal(
+    &self,
+    modal_type: String,
+    modal_data: Option<serde_json::Value>,
+  ) -> CommandResult {
     log::info!("Opening modal: {} with data: {:?}", modal_type, modal_data);
 
     // Publish modal event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::ModalOpened {
-        modal_type: modal_type.clone(),
-        modal_data: modal_data.clone(),
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ModalOpened {
+          modal_type: modal_type.clone(),
+          modal_data: modal_data.clone(),
+        },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "modal_type": modal_type,
@@ -5223,11 +5681,15 @@ impl CommandHandler {
     log::info!("Closing modal");
 
     // Publish modal event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::ModalClosed,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ModalClosed,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "status": "closed"
@@ -5238,13 +5700,15 @@ impl CommandHandler {
     log::info!("Submitting modal with data: {:?}", data);
 
     // Publish modal event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::ModalSubmitted {
-        data: data.clone(),
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ModalSubmitted { data: data.clone() },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "data": data,
@@ -5277,13 +5741,17 @@ impl CommandHandler {
 
     // Store notification in state if needed
     // For now, we'll publish an event
-    self.event_bus.publish(
-      ProjectEvent::NotificationShown {
-        notification: notification.clone(),
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::NotificationShown {
+          notification: notification.clone(),
+        },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "id": id,
@@ -5300,13 +5768,15 @@ impl CommandHandler {
     log::info!("Dismissing notification: {}", id);
 
     // Publish notification event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::NotificationDismissed {
-        id: id.clone(),
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::NotificationDismissed { id: id.clone() },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "id": id,
@@ -5318,11 +5788,15 @@ impl CommandHandler {
     log::info!("Clearing all notifications");
 
     // Publish notification event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::NotificationsCleared,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::NotificationsCleared,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "status": "cleared"
@@ -5337,11 +5811,15 @@ impl CommandHandler {
     let current_version = env!("CARGO_PKG_VERSION");
 
     // Publish update event through EventBus
-    self.event_bus.publish(
-      ProjectEvent::UpdateCheckStarted,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::UpdateCheckStarted,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     // Simulate update availability (in real implementation, this would check against a server)
     let has_update = false; // Placeholder
@@ -5351,16 +5829,20 @@ impl CommandHandler {
         version: "1.0.1".to_string(),
         release_notes: "Bug fixes and improvements".to_string(),
         download_url: "https://example.com/download".to_string(),
-        size: 52428800, // 50MB
+        size: 52428800.0, // 50MB
       };
 
-      self.event_bus.publish(
-        ProjectEvent::UpdateAvailable {
-          update_info: update_info.clone(),
-        },
-        "system_integration".to_string(),
-        1,
-      ).await.ok();
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::UpdateAvailable {
+            update_info: update_info.clone(),
+          },
+          "system_integration".to_string(),
+          1,
+        )
+        .await
+        .ok();
 
       CommandResult::success(Some(serde_json::json!({
         "has_update": true,
@@ -5368,13 +5850,15 @@ impl CommandHandler {
         "update_info": update_info
       })))
     } else {
-      self.event_bus.publish(
-        ProjectEvent::UpdateCheckCompleted {
-          has_update: false,
-        },
-        "system_integration".to_string(),
-        1,
-      ).await.ok();
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::UpdateCheckCompleted { has_update: false },
+          "system_integration".to_string(),
+          1,
+        )
+        .await
+        .ok();
 
       CommandResult::success(Some(serde_json::json!({
         "has_update": false,
@@ -5389,18 +5873,26 @@ impl CommandHandler {
     // TODO: Implement actual download logic
     // For now, simulate download process
 
-    self.event_bus.publish(
-      ProjectEvent::UpdateDownloadStarted,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::UpdateDownloadStarted,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     // Simulate download completion
-    self.event_bus.publish(
-      ProjectEvent::UpdateDownloadCompleted,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::UpdateDownloadCompleted,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "status": "download_completed",
@@ -5418,11 +5910,15 @@ impl CommandHandler {
     // 3. Applying the update
     // 4. Restarting the application
 
-    self.event_bus.publish(
-      ProjectEvent::UpdateInstallStarted,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::UpdateInstallStarted,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "status": "install_started",
@@ -5433,11 +5929,15 @@ impl CommandHandler {
   async fn dismiss_update(&self) -> CommandResult {
     log::info!("Dismissing update");
 
-    self.event_bus.publish(
-      ProjectEvent::UpdateDismissed,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::UpdateDismissed,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "status": "dismissed"
@@ -5445,18 +5945,23 @@ impl CommandHandler {
   }
 
   async fn enable_auto_update(&self, interval_minutes: u32) -> CommandResult {
-    log::info!("Enabling auto-update with interval: {} minutes", interval_minutes);
+    log::info!(
+      "Enabling auto-update with interval: {} minutes",
+      interval_minutes
+    );
 
     // TODO: Implement auto-update scheduling
     // This would set up a periodic check for updates
 
-    self.event_bus.publish(
-      ProjectEvent::AutoUpdateEnabled {
-        interval_minutes,
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::AutoUpdateEnabled { interval_minutes },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "auto_update_enabled": true,
@@ -5469,11 +5974,15 @@ impl CommandHandler {
 
     // TODO: Implement auto-update cancellation
 
-    self.event_bus.publish(
-      ProjectEvent::AutoUpdateDisabled,
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::AutoUpdateDisabled,
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "auto_update_enabled": false
@@ -5489,17 +5998,25 @@ impl CommandHandler {
     let feature_state = FeatureState {
       name: feature.clone(),
       enabled,
-      description: Some(format!("Feature '{}' is now {}", feature, if enabled { "enabled" } else { "disabled" })),
+      description: Some(format!(
+        "Feature '{}' is now {}",
+        feature,
+        if enabled { "enabled" } else { "disabled" }
+      )),
     };
 
-    self.event_bus.publish(
-      ProjectEvent::FeatureToggled {
-        feature: feature.clone(),
-        enabled,
-      },
-      "system_integration".to_string(),
-      1,
-    ).await.ok();
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::FeatureToggled {
+          feature: feature.clone(),
+          enabled,
+        },
+        "system_integration".to_string(),
+        1,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "feature": feature,
@@ -5510,8 +6027,18 @@ impl CommandHandler {
 
   // Video Editing command implementations
 
-  async fn export_timeline(&self, timeline_id: String, output_path: String, format: String) -> CommandResult {
-    log::info!("Exporting timeline {} to {} in format {}", timeline_id, output_path, format);
+  async fn export_timeline(
+    &self,
+    timeline_id: String,
+    output_path: String,
+    format: String,
+  ) -> CommandResult {
+    log::info!(
+      "Exporting timeline {} to {} in format {}",
+      timeline_id,
+      output_path,
+      format
+    );
 
     let state = self.state.read().await;
 
@@ -5520,18 +6047,27 @@ impl CommandHandler {
       let timeline_data = TimelineExportData {
         timeline_id: timeline_id.clone(),
         format: format.clone(),
-        tracks: project.timeline.tracks.iter().map(|track| TrackExportData {
-          id: track.id.clone(),
-          name: track.name.clone(),
-          track_type: format!("{:?}", track.track_type),
-          clips: track.clips.iter().map(|clip| ClipExportData {
-            id: clip.id.clone(),
-            media_path: clip.media_id.clone(),
-            start_time: clip.timeline_in,
-            duration: clip.timeline_out - clip.timeline_in,
-            effects: vec![], // TODO: Export effects
-          }).collect(),
-        }).collect(),
+        tracks: project
+          .timeline
+          .tracks
+          .iter()
+          .map(|track| TrackExportData {
+            id: track.id.clone(),
+            name: track.name.clone(),
+            track_type: format!("{:?}", track.track_type),
+            clips: track
+              .clips
+              .iter()
+              .map(|clip| ClipExportData {
+                id: clip.id.clone(),
+                media_path: clip.media_id.clone(),
+                start_time: clip.timeline_in,
+                duration: clip.timeline_out - clip.timeline_in,
+                effects: vec![], // TODO: Export effects
+              })
+              .collect(),
+          })
+          .collect(),
         metadata: TimelineMetadata {
           name: project.metadata.name.clone(),
           duration: 0.0, // TODO: Calculate timeline duration
@@ -5581,7 +6117,11 @@ impl CommandHandler {
   }
 
   async fn import_timeline(&self, file_path: String, merge_mode: String) -> CommandResult {
-    log::info!("Importing timeline from {} with merge mode {}", file_path, merge_mode);
+    log::info!(
+      "Importing timeline from {} with merge mode {}",
+      file_path,
+      merge_mode
+    );
 
     // TODO: Implement timeline import logic
     // This would involve:
@@ -5596,8 +6136,20 @@ impl CommandHandler {
     })))
   }
 
-  async fn export_project(&self, project_id: String, output_path: String, format: String, include_media: bool) -> CommandResult {
-    log::info!("Exporting project {} to {} (format: {}, include_media: {})", project_id, output_path, format, include_media);
+  async fn export_project(
+    &self,
+    project_id: String,
+    output_path: String,
+    format: String,
+    include_media: bool,
+  ) -> CommandResult {
+    log::info!(
+      "Exporting project {} to {} (format: {}, include_media: {})",
+      project_id,
+      output_path,
+      format,
+      include_media
+    );
 
     // TODO: Implement full project export
     // This would involve:
@@ -5615,8 +6167,17 @@ impl CommandHandler {
     })))
   }
 
-  async fn render_video(&self, timeline_id: String, output_path: String, render_settings: RenderSettings) -> CommandResult {
-    log::info!("Rendering video for timeline {} to {}", timeline_id, output_path);
+  async fn render_video(
+    &self,
+    timeline_id: String,
+    output_path: String,
+    render_settings: RenderSettings,
+  ) -> CommandResult {
+    log::info!(
+      "Rendering video for timeline {} to {}",
+      timeline_id,
+      output_path
+    );
 
     // TODO: Integrate with existing video compiler
     // This should delegate to the video_compiler module
@@ -5676,8 +6237,18 @@ impl CommandHandler {
     })))
   }
 
-  async fn apply_effect_to_clip(&self, clip_id: String, effect_id: String, params: serde_json::Value) -> CommandResult {
-    log::info!("Applying effect {} to clip {} with params: {:?}", effect_id, clip_id, params);
+  async fn apply_effect_to_clip(
+    &self,
+    clip_id: String,
+    effect_id: String,
+    params: serde_json::Value,
+  ) -> CommandResult {
+    log::info!(
+      "Applying effect {} to clip {} with params: {:?}",
+      effect_id,
+      clip_id,
+      params
+    );
 
     let mut state = self.state.write().await;
 
@@ -5703,9 +6274,16 @@ impl CommandHandler {
     CommandResult::error("Clip not found".to_string())
   }
 
-
-  async fn optimize_timeline(&self, timeline_id: String, optimization_type: String) -> CommandResult {
-    log::info!("Optimizing timeline {} with type {}", timeline_id, optimization_type);
+  async fn optimize_timeline(
+    &self,
+    timeline_id: String,
+    optimization_type: String,
+  ) -> CommandResult {
+    log::info!(
+      "Optimizing timeline {} with type {}",
+      timeline_id,
+      optimization_type
+    );
 
     // TODO: Implement timeline optimization
     // This could include:
@@ -5723,7 +6301,11 @@ impl CommandHandler {
   }
 
   async fn start_real_time_preview(&self, timeline_id: String, quality: String) -> CommandResult {
-    log::info!("Starting real-time preview for timeline {} with quality {}", timeline_id, quality);
+    log::info!(
+      "Starting real-time preview for timeline {} with quality {}",
+      timeline_id,
+      quality
+    );
 
     // TODO: Start real-time preview rendering
     // This would involve setting up a preview pipeline
@@ -5786,7 +6368,11 @@ impl CommandHandler {
             is_available: true,
           },
         ],
-        capabilities: vec!["text".to_string(), "vision".to_string(), "tools".to_string()],
+        capabilities: vec![
+          "text".to_string(),
+          "vision".to_string(),
+          "tools".to_string(),
+        ],
       },
       AiProvider {
         id: "openai".to_string(),
@@ -5811,23 +6397,25 @@ impl CommandHandler {
             is_available: true,
           },
         ],
-        capabilities: vec!["text".to_string(), "vision".to_string(), "tools".to_string()],
+        capabilities: vec![
+          "text".to_string(),
+          "vision".to_string(),
+          "tools".to_string(),
+        ],
       },
       AiProvider {
         id: "deepseek".to_string(),
         name: "DeepSeek".to_string(),
         is_available: true,
         requires_api_key: true,
-        supported_models: vec![
-          AiModel {
-            id: "deepseek-chat".to_string(),
-            name: "DeepSeek Chat".to_string(),
-            description: "Reasoning-capable model".to_string(),
-            max_tokens: 64000,
-            cost_per_token: Some(0.00000014),
-            is_available: true,
-          },
-        ],
+        supported_models: vec![AiModel {
+          id: "deepseek-chat".to_string(),
+          name: "DeepSeek Chat".to_string(),
+          description: "Reasoning-capable model".to_string(),
+          max_tokens: 64000,
+          cost_per_token: Some(0.00000014),
+          is_available: true,
+        }],
         capabilities: vec!["text".to_string(), "reasoning".to_string()],
       },
       AiProvider {
@@ -5835,16 +6423,14 @@ impl CommandHandler {
         name: "Grok (X.AI)".to_string(),
         is_available: true,
         requires_api_key: true,
-        supported_models: vec![
-          AiModel {
-            id: "grok-beta".to_string(),
-            name: "Grok Beta".to_string(),
-            description: "Real-time model".to_string(),
-            max_tokens: 131072,
-            cost_per_token: Some(0.000005),
-            is_available: true,
-          },
-        ],
+        supported_models: vec![AiModel {
+          id: "grok-beta".to_string(),
+          name: "Grok Beta".to_string(),
+          description: "Real-time model".to_string(),
+          max_tokens: 131072,
+          cost_per_token: Some(0.000005),
+          is_available: true,
+        }],
         capabilities: vec!["text".to_string(), "realtime".to_string()],
       },
       AiProvider {
@@ -5960,7 +6546,13 @@ impl CommandHandler {
     })))
   }
 
-  async fn send_ai_request(&self, provider: String, model: String, messages: Vec<AiMessage>, options: AiRequestOptions) -> CommandResult {
+  async fn send_ai_request(
+    &self,
+    provider: String,
+    model: String,
+    messages: Vec<AiMessage>,
+    options: AiRequestOptions,
+  ) -> CommandResult {
     log::info!("Sending AI request to {} with model {}", provider, model);
 
     // Get API key from secure storage
@@ -5973,10 +6565,26 @@ impl CommandHandler {
 
     // Route to appropriate provider implementation
     let result = match provider.as_str() {
-      "claude" => self.send_claude_request(&api_key, &model, &messages, &options).await,
-      "openai" => self.send_openai_request(&api_key, &model, &messages, &options).await,
-      "deepseek" => self.send_deepseek_request(&api_key, &model, &messages, &options).await,
-      "grok" => self.send_grok_request(&api_key, &model, &messages, &options).await,
+      "claude" => {
+        self
+          .send_claude_request(&api_key, &model, &messages, &options)
+          .await
+      }
+      "openai" => {
+        self
+          .send_openai_request(&api_key, &model, &messages, &options)
+          .await
+      }
+      "deepseek" => {
+        self
+          .send_deepseek_request(&api_key, &model, &messages, &options)
+          .await
+      }
+      "grok" => {
+        self
+          .send_grok_request(&api_key, &model, &messages, &options)
+          .await
+      }
       "ollama" => self.send_ollama_request(&model, &messages, &options).await,
       _ => {
         return CommandResult::error(format!("Unsupported provider: {}", provider));
@@ -5986,15 +6594,27 @@ impl CommandHandler {
     match result {
       Ok(response) => {
         // Log usage for monitoring
-        self.log_ai_usage(&provider, &model, response.tokens_used, response.cost).await;
+        self
+          .log_ai_usage(&provider, &model, response.tokens_used, response.cost)
+          .await;
         CommandResult::success(Some(serde_json::json!(response)))
       }
-      Err(e) => CommandResult::error(format!("AI request failed: {}", e))
+      Err(e) => CommandResult::error(format!("AI request failed: {}", e)),
     }
   }
 
-  async fn send_streaming_ai_request(&self, provider: String, model: String, messages: Vec<AiMessage>, options: AiRequestOptions) -> CommandResult {
-    log::info!("Starting streaming AI request to {} with model {}", provider, model);
+  async fn send_streaming_ai_request(
+    &self,
+    provider: String,
+    model: String,
+    messages: Vec<AiMessage>,
+    options: AiRequestOptions,
+  ) -> CommandResult {
+    log::info!(
+      "Starting streaming AI request to {} with model {}",
+      provider,
+      model
+    );
 
     // Get API key
     let api_key = match self.get_api_key_for_provider(&provider).await {
@@ -6024,7 +6644,7 @@ impl CommandHandler {
         "claude" | "openai" | "deepseek" | "grok" => {
           // Simulate streaming by sending chunks
           let provider_chunk = format!("{} ", provider_clone);
-          let chunks = vec![
+          let chunks = [
             "This is ",
             "a streaming ",
             "response from ",
@@ -6033,7 +6653,7 @@ impl CommandHandler {
             "The streaming ",
             "implementation ",
             "will be enhanced ",
-            "with real SSE support."
+            "with real SSE support.",
           ];
 
           for (i, chunk) in chunks.iter().enumerate() {
@@ -6047,11 +6667,14 @@ impl CommandHandler {
               "finish_reason": if i == chunks.len() - 1 { "stop" } else { "" }
             });
 
-            if let Err(e) = event_bus.publish(
-              crate::state::ProjectEvent::StreamingChunk { data: chunk_event },
-              "ai_streaming".to_string(),
-              1
-            ).await {
+            if let Err(e) = event_bus
+              .publish(
+                crate::state::ProjectEvent::StreamingChunk { data: chunk_event },
+                "ai_streaming".to_string(),
+                1,
+              )
+              .await
+            {
               log::error!("Failed to publish streaming chunk: {}", e);
             }
 
@@ -6079,11 +6702,16 @@ impl CommandHandler {
         "cost": 0.001
       });
 
-      if let Err(e) = event_bus.publish(
-        crate::state::ProjectEvent::StreamingComplete { data: completion_event },
-        "ai_streaming".to_string(),
-        1
-      ).await {
+      if let Err(e) = event_bus
+        .publish(
+          crate::state::ProjectEvent::StreamingComplete {
+            data: completion_event,
+          },
+          "ai_streaming".to_string(),
+          1,
+        )
+        .await
+      {
         log::error!("Failed to publish streaming completion: {}", e);
       }
     });
@@ -6097,7 +6725,11 @@ impl CommandHandler {
   }
 
   async fn get_model_info(&self, provider: String, model: String) -> CommandResult {
-    log::info!("Getting info for model {} from provider {}", model, provider);
+    log::info!(
+      "Getting info for model {} from provider {}",
+      model,
+      provider
+    );
 
     // TODO: Get actual model information from provider APIs
 
@@ -6124,7 +6756,11 @@ impl CommandHandler {
   }
 
   async fn check_model_availability(&self, provider: String, model: String) -> CommandResult {
-    log::info!("Checking availability of model {} for provider {}", model, provider);
+    log::info!(
+      "Checking availability of model {} for provider {}",
+      model,
+      provider
+    );
 
     // TODO: Check actual model availability
 
@@ -6163,13 +6799,17 @@ impl CommandHandler {
     let is_running = self.check_ollama_availability().await;
     let status = OllamaStatus {
       is_running,
-      version: if is_running { Some("0.1.0".to_string()) } else { None },
+      version: if is_running {
+        Some("0.1.0".to_string())
+      } else {
+        None
+      },
       available_models: if is_running {
         vec!["llama2".to_string(), "codellama".to_string()]
       } else {
         vec![]
       },
-      memory_usage: if is_running { Some(1024) } else { None },
+      memory_usage: if is_running { Some(1024.0) } else { None },
     };
 
     CommandResult::success(Some(serde_json::json!(status)))
@@ -6186,7 +6826,11 @@ impl CommandHandler {
   }
 
   async fn get_ai_usage_stats(&self, provider: Option<String>, timeframe: String) -> CommandResult {
-    log::info!("Getting AI usage stats for provider: {:?}, timeframe: {}", provider, timeframe);
+    log::info!(
+      "Getting AI usage stats for provider: {:?}, timeframe: {}",
+      provider,
+      timeframe
+    );
 
     // TODO: Implement actual usage tracking and statistics
 
@@ -6215,16 +6859,14 @@ impl CommandHandler {
 
   async fn get_ollama_models(&self) -> Vec<AiModel> {
     // TODO: Get actual installed Ollama models
-    vec![
-      AiModel {
-        id: "llama2".to_string(),
-        name: "Llama 2".to_string(),
-        description: "Meta's Llama 2 model".to_string(),
-        max_tokens: 4096,
-        cost_per_token: None,
-        is_available: true,
-      },
-    ]
+    vec![AiModel {
+      id: "llama2".to_string(),
+      name: "Llama 2".to_string(),
+      description: "Meta's Llama 2 model".to_string(),
+      max_tokens: 4096,
+      cost_per_token: None,
+      is_available: true,
+    }]
   }
 
   // === Effects and Filters Implementation ===
@@ -6241,7 +6883,11 @@ impl CommandHandler {
     // 2. Apply effects chain using FFmpeg filters
     // 3. Render to output path with specified quality
     // 4. Update project state with rendered output
-    log::info!("Rendering effect pipeline for clip {} with {} effects", clip_id, effects.len());
+    log::info!(
+      "Rendering effect pipeline for clip {} with {} effects",
+      clip_id,
+      effects.len()
+    );
 
     CommandResult::success(Some(serde_json::json!({
       "clip_id": clip_id,
@@ -6263,7 +6909,11 @@ impl CommandHandler {
     // 2. Build FFmpeg filter chain
     // 3. Apply color correction, blur, distortion, etc.
     // 4. Render with specified settings
-    log::info!("Processing video {} with {} filters", input_path, filters.len());
+    log::info!(
+      "Processing video {} with {} filters",
+      input_path,
+      filters.len()
+    );
 
     CommandResult::success(Some(serde_json::json!({
       "input_path": input_path,
@@ -6283,7 +6933,12 @@ impl CommandHandler {
     // 1. Validate LUT file (.cube, .3dl formats)
     // 2. Apply to clip using FFmpeg lut3d filter
     // 3. Update clip effects in project state
-    log::info!("Applying LUT {} to clip {} with intensity {}", lut_path, clip_id, intensity);
+    log::info!(
+      "Applying LUT {} to clip {} with intensity {}",
+      lut_path,
+      clip_id,
+      intensity
+    );
 
     let mut state = self.state.write().await;
     state.mark_dirty();
@@ -6343,18 +6998,16 @@ impl CommandHandler {
     // TODO: Load presets for specific effect
     log::info!("Loading presets for effect {}", effect_id);
 
-    let presets = vec![
-      EffectPreset {
-        id: "preset_1".to_string(),
-        name: "Default".to_string(),
-        effect_id: effect_id.clone(),
-        parameters: serde_json::json!({"intensity": 1.0}),
-        category: "standard".to_string(),
-        tags: vec!["default".to_string()],
-        thumbnail: None,
-        created_at: chrono::Utc::now().to_rfc3339(),
-      }
-    ];
+    let presets = vec![EffectPreset {
+      id: "preset_1".to_string(),
+      name: "Default".to_string(),
+      effect_id: effect_id.clone(),
+      parameters: serde_json::json!({"intensity": 1.0}),
+      category: "standard".to_string(),
+      tags: vec!["default".to_string()],
+      thumbnail: None,
+      created_at: chrono::Utc::now().to_rfc3339(),
+    }];
 
     CommandResult::success(Some(serde_json::json!({
       "effect_id": effect_id,
@@ -6367,17 +7020,15 @@ impl CommandHandler {
     // TODO: Load presets for specific filter
     log::info!("Loading presets for filter {}", filter_id);
 
-    let presets = vec![
-      FilterPreset {
-        id: "filter_preset_1".to_string(),
-        name: "Subtle".to_string(),
-        filter_id: filter_id.clone(),
-        parameters: serde_json::json!({"strength": 0.5}),
-        intensity: 0.5,
-        tags: vec!["subtle".to_string()],
-        created_at: chrono::Utc::now().to_rfc3339(),
-      }
-    ];
+    let presets = vec![FilterPreset {
+      id: "filter_preset_1".to_string(),
+      name: "Subtle".to_string(),
+      filter_id: filter_id.clone(),
+      parameters: serde_json::json!({"strength": 0.5}),
+      intensity: 0.5,
+      tags: vec!["subtle".to_string()],
+      created_at: chrono::Utc::now().to_rfc3339(),
+    }];
 
     CommandResult::success(Some(serde_json::json!({
       "filter_id": filter_id,
@@ -6402,7 +7053,11 @@ impl CommandHandler {
     // 1. Validate file format
     // 2. Parse effect definition
     // 3. Add to user effects library
-    log::info!("Importing effect file {} to category {}", file_path, category);
+    log::info!(
+      "Importing effect file {} to category {}",
+      file_path,
+      category
+    );
 
     CommandResult::success(Some(serde_json::json!({
       "file_path": file_path,
@@ -6452,8 +7107,8 @@ impl CommandHandler {
     log::info!("Querying GPU capabilities");
 
     let capabilities = GpuCapabilities {
-      vendor: "NVIDIA".to_string(), // TODO: Get actual GPU vendor
-      model: "RTX 4090".to_string(), // TODO: Get actual GPU model
+      vendor: "NVIDIA".to_string(),         // TODO: Get actual GPU vendor
+      model: "RTX 4090".to_string(),        // TODO: Get actual GPU model
       driver_version: "537.13".to_string(), // TODO: Get actual driver
       opengl_version: "4.6".to_string(),
       vulkan_support: true,
@@ -6470,7 +7125,11 @@ impl CommandHandler {
     // 1. Analyze current effects on clip
     // 2. Adjust quality/complexity to meet FPS target
     // 3. Use GPU acceleration where possible
-    log::info!("Optimizing effects pipeline for clip {} to {} FPS", clip_id, target_fps);
+    log::info!(
+      "Optimizing effects pipeline for clip {} to {} FPS",
+      clip_id,
+      target_fps
+    );
 
     CommandResult::success(Some(serde_json::json!({
       "clip_id": clip_id,
@@ -6481,12 +7140,20 @@ impl CommandHandler {
     })))
   }
 
-  async fn analyze_effect_performance(&self, effect_id: String, duration_seconds: f64) -> CommandResult {
+  async fn analyze_effect_performance(
+    &self,
+    effect_id: String,
+    duration_seconds: f64,
+  ) -> CommandResult {
     // TODO: Analyze effect performance
     // 1. Run effect on test media for specified duration
     // 2. Measure frame time, memory usage, GPU utilization
     // 3. Return performance metrics
-    log::info!("Analyzing performance of effect {} for {}s", effect_id, duration_seconds);
+    log::info!(
+      "Analyzing performance of effect {} for {}s",
+      effect_id,
+      duration_seconds
+    );
 
     let metrics = PerformanceMetrics {
       effect_id: effect_id.clone(),
@@ -6566,9 +7233,7 @@ impl CommandHandler {
       .unwrap_or("No response")
       .to_string();
 
-    let tokens_used = response_json["usage"]["input_tokens"]
-      .as_u64()
-      .unwrap_or(0)
+    let tokens_used = response_json["usage"]["input_tokens"].as_u64().unwrap_or(0)
       + response_json["usage"]["output_tokens"]
         .as_u64()
         .unwrap_or(0);
@@ -6644,9 +7309,7 @@ impl CommandHandler {
       .unwrap_or("No response")
       .to_string();
 
-    let tokens_used = response_json["usage"]["total_tokens"]
-      .as_u64()
-      .unwrap_or(0);
+    let tokens_used = response_json["usage"]["total_tokens"].as_u64().unwrap_or(0);
 
     // Calculate cost (approximate)
     let cost = match model {
@@ -6720,9 +7383,7 @@ impl CommandHandler {
       .unwrap_or("No response")
       .to_string();
 
-    let tokens_used = response_json["usage"]["total_tokens"]
-      .as_u64()
-      .unwrap_or(0);
+    let tokens_used = response_json["usage"]["total_tokens"].as_u64().unwrap_or(0);
 
     // DeepSeek pricing (very affordable)
     let cost = Some(tokens_used as f64 * 0.0000002); // $0.0002 per 1K tokens
@@ -6791,9 +7452,7 @@ impl CommandHandler {
       .unwrap_or("No response")
       .to_string();
 
-    let tokens_used = response_json["usage"]["total_tokens"]
-      .as_u64()
-      .unwrap_or(0);
+    let tokens_used = response_json["usage"]["total_tokens"].as_u64().unwrap_or(0);
 
     // Grok pricing (beta pricing)
     let cost = Some(tokens_used as f64 * 0.000005); // Approximate pricing
@@ -6882,11 +7541,16 @@ impl CommandHandler {
     // TODO: Implement usage logging to database or analytics service
     log::info!(
       "AI Usage: provider={}, model={}, tokens={}, cost={:?}",
-      provider, model, tokens, cost
+      provider,
+      model,
+      tokens,
+      cost
     );
   }
 
-  async fn fetch_openai_models(&self) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
+  async fn fetch_openai_models(
+    &self,
+  ) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
     let api_key = match self.get_api_key_for_provider("openai").await {
       Some(key) => key,
       None => return Err("No OpenAI API key available".into()),
@@ -6917,7 +7581,11 @@ impl CommandHandler {
             name: id.replace("-", " ").to_uppercase(),
             description: format!("OpenAI {}", id),
             max_tokens: if id.contains("4o") { 128000 } else { 4096 },
-            cost_per_token: if id.contains("4o-mini") { Some(0.00000015) } else { Some(0.000005) },
+            cost_per_token: if id.contains("4o-mini") {
+              Some(0.00000015)
+            } else {
+              Some(0.000005)
+            },
             is_available: true,
           });
         }
@@ -6927,15 +7595,13 @@ impl CommandHandler {
     Ok(models)
   }
 
-  async fn fetch_ollama_models(&self) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
+  async fn fetch_ollama_models(
+    &self,
+  ) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
     let client = reqwest::Client::new();
 
     // Check if Ollama is running
-    match client
-      .get("http://localhost:11434/api/tags")
-      .send()
-      .await
-    {
+    match client.get("http://localhost:11434/api/tags").send().await {
       Ok(response) if response.status().is_success() => {
         let response_json: serde_json::Value = response.json().await?;
         let empty_vec = vec![];
@@ -6949,7 +7615,7 @@ impl CommandHandler {
               id: name.to_string(),
               name: name.split(':').next().unwrap_or(name).to_string(),
               description: format!("Local model ({})", self.format_bytes(size)),
-              max_tokens: 4096, // Default for most Ollama models
+              max_tokens: 4096,     // Default for most Ollama models
               cost_per_token: None, // Local models are free
               is_available: true,
             });
@@ -6958,7 +7624,7 @@ impl CommandHandler {
 
         Ok(models)
       }
-      _ => Err("Ollama is not running or not accessible".into())
+      _ => Err("Ollama is not running or not accessible".into()),
     }
   }
 
@@ -6975,8 +7641,12 @@ impl CommandHandler {
     format!("{:.1}{}", size, UNITS[unit_index])
   }
 
-  async fn validate_claude_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let api_key = self.get_api_key_for_provider("claude").await
+  async fn validate_claude_connection(
+    &self,
+  ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self
+      .get_api_key_for_provider("claude")
+      .await
       .ok_or("No Claude API key configured")?;
 
     let client = reqwest::Client::new();
@@ -7004,8 +7674,12 @@ impl CommandHandler {
     }
   }
 
-  async fn validate_openai_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let api_key = self.get_api_key_for_provider("openai").await
+  async fn validate_openai_connection(
+    &self,
+  ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self
+      .get_api_key_for_provider("openai")
+      .await
       .ok_or("No OpenAI API key configured")?;
 
     let client = reqwest::Client::new();
@@ -7023,8 +7697,12 @@ impl CommandHandler {
     }
   }
 
-  async fn validate_deepseek_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let api_key = self.get_api_key_for_provider("deepseek").await
+  async fn validate_deepseek_connection(
+    &self,
+  ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let api_key = self
+      .get_api_key_for_provider("deepseek")
+      .await
       .ok_or("No DeepSeek API key configured")?;
 
     let client = reqwest::Client::new();
@@ -7043,7 +7721,9 @@ impl CommandHandler {
   }
 
   async fn validate_grok_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let api_key = self.get_api_key_for_provider("grok").await
+    let api_key = self
+      .get_api_key_for_provider("grok")
+      .await
       .ok_or("No Grok API key configured")?;
 
     let client = reqwest::Client::new();
@@ -7061,7 +7741,9 @@ impl CommandHandler {
     }
   }
 
-  async fn validate_ollama_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+  async fn validate_ollama_connection(
+    &self,
+  ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let client = reqwest::Client::new();
     let response = client
       .get("http://localhost:11434/api/tags")
@@ -7098,9 +7780,7 @@ impl CommandHandler {
     // 3. Update template index
     // 4. Generate thumbnail preview
 
-    let save_path = path.unwrap_or_else(|| {
-      format!("templates/{}/{}.json", category, template_id)
-    });
+    let save_path = path.unwrap_or_else(|| format!("templates/{}/{}.json", category, template_id));
 
     CommandResult::success(Some(serde_json::json!({
       "template_id": template_id,
@@ -7151,7 +7831,8 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Listing templates - category: {:?}, type: {:?}",
-      category, template_type
+      category,
+      template_type
     );
 
     // TODO: Implement template listing from database/filesystem
@@ -7233,7 +7914,9 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Creating template '{}' from project {} in category {}",
-      template_name, project_id, category
+      template_name,
+      project_id,
+      category
     );
 
     // TODO: Implement template creation from project
@@ -7262,7 +7945,9 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Applying template {} to timeline {} with {} media files",
-      template_id, timeline_id, media_ids.len()
+      template_id,
+      timeline_id,
+      media_ids.len()
     );
 
     // TODO: Implement template application
@@ -7276,7 +7961,8 @@ impl CommandHandler {
     state.mark_dirty();
 
     // Publish event
-    self.event_bus
+    self
+      .event_bus
       .publish(
         crate::state::ProjectEvent::PlayerTemplateApplied {
           template_id: template_id.clone(),
@@ -7305,9 +7991,8 @@ impl CommandHandler {
     // 3. Check aspect ratio compatibility
     // 4. Validate animation parameters
 
-    let is_valid = template["id"].is_string()
-      && template["type"].is_string()
-      && template["cells"].is_array();
+    let is_valid =
+      template["id"].is_string() && template["type"].is_string() && template["cells"].is_array();
 
     let validation_errors = if !is_valid {
       vec!["Missing required fields: id, type, cells".to_string()]
@@ -7330,7 +8015,8 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Generating preview for template {} with {} media files",
-      template_id, media_ids.len()
+      template_id,
+      media_ids.len()
     );
 
     // TODO: Implement template preview generation
@@ -7339,7 +8025,8 @@ impl CommandHandler {
     // 3. Generate preview frame using FFmpeg
     // 4. Return preview image path
 
-    let preview_path = format!("/tmp/template_preview_{}_{}.jpg",
+    let preview_path = format!(
+      "/tmp/template_preview_{}_{}.jpg",
       template_id,
       chrono::Utc::now().timestamp()
     );
@@ -7359,7 +8046,8 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Optimizing rendering for template {} with quality {}",
-      template_id, target_quality
+      template_id,
+      target_quality
     );
 
     // TODO: Implement template rendering optimization
@@ -7371,7 +8059,7 @@ impl CommandHandler {
     let optimizations = vec![
       "Enabled GPU acceleration",
       "Optimized overlay filters",
-      "Reduced intermediate rendering steps"
+      "Reduced intermediate rendering steps",
     ];
 
     CommandResult::success(Some(serde_json::json!({
@@ -7395,7 +8083,10 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Creating transition {} on track {} at position {} for {}s",
-      transition_id, track_id, position, duration
+      transition_id,
+      track_id,
+      position,
+      duration
     );
 
     // TODO: Implement transition creation
@@ -7535,7 +8226,9 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Generating preview for transition {} between clips {} and {}",
-      transition_id, source_clip_id, target_clip_id
+      transition_id,
+      source_clip_id,
+      target_clip_id
     );
 
     // TODO: Implement transition preview
@@ -7588,7 +8281,8 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!(
       "Exporting project transitions from {} with settings: {:?}",
-      project_path, export_settings
+      project_path,
+      export_settings
     );
 
     // TODO: Implement project transitions export
@@ -7646,7 +8340,7 @@ impl CommandHandler {
     let filtered_transitions = if let Some(ref cat) = category {
       mock_transitions
         .into_iter()
-        .filter(|t| t["category"].as_str() == Some(&cat))
+        .filter(|t| t["category"].as_str() == Some(cat))
         .collect()
     } else {
       mock_transitions
@@ -7733,13 +8427,13 @@ impl CommandHandler {
         "hasAnimation": true,
         "thumbnail": "/templates/thumbnails/corporate-lower-third-1.jpg",
         "elements": []
-      })
+      }),
     ];
 
     let filtered_templates = if let Some(ref cat) = category {
       mock_templates
         .into_iter()
-        .filter(|t| t["category"].as_str() == Some(&cat))
+        .filter(|t| t["category"].as_str() == Some(cat))
         .collect()
     } else {
       mock_templates
@@ -7752,7 +8446,11 @@ impl CommandHandler {
     })))
   }
 
-  async fn save_style_template(&self, template: serde_json::Value, path: Option<String>) -> CommandResult {
+  async fn save_style_template(
+    &self,
+    template: serde_json::Value,
+    path: Option<String>,
+  ) -> CommandResult {
     log::info!("Saving style template: {}", template["name"]["en"]);
 
     // TODO: Implement style template saving
@@ -7761,13 +8459,12 @@ impl CommandHandler {
     // 3. Save to user templates directory
     // 4. Update template registry
 
-    let template_id = template["id"].as_str()
+    let template_id = template["id"]
+      .as_str()
       .unwrap_or(&uuid::Uuid::new_v4().to_string())
       .to_string();
 
-    let save_path = path.unwrap_or_else(|| {
-      format!("/user/templates/style/{}.json", template_id)
-    });
+    let save_path = path.unwrap_or_else(|| format!("/user/templates/style/{}.json", template_id));
 
     CommandResult::success(Some(serde_json::json!({
       "template_id": template_id,
@@ -7781,11 +8478,13 @@ impl CommandHandler {
     template_id: String,
     timeline_id: String,
     position: f64,
-    text_replacements: Option<serde_json::Value>
+    text_replacements: Option<serde_json::Value>,
   ) -> CommandResult {
     log::info!(
       "Applying style template {} to timeline {} at position {}",
-      template_id, timeline_id, position
+      template_id,
+      timeline_id,
+      position
     );
 
     // TODO: Implement template application
@@ -7805,7 +8504,11 @@ impl CommandHandler {
   }
 
   async fn export_style_template(&self, template_id: String, export_path: String) -> CommandResult {
-    log::info!("Exporting style template {} to {}", template_id, export_path);
+    log::info!(
+      "Exporting style template {} to {}",
+      template_id,
+      export_path
+    );
 
     // TODO: Implement template export
     // 1. Load template with all assets
@@ -7872,11 +8575,12 @@ impl CommandHandler {
     &self,
     template_id: String,
     output_path: String,
-    preview_settings: serde_json::Value
+    preview_settings: serde_json::Value,
   ) -> CommandResult {
     log::info!(
       "Rendering preview for style template {} to {}",
-      template_id, output_path
+      template_id,
+      output_path
     );
 
     // TODO: Implement preview rendering
@@ -7920,7 +8624,7 @@ impl CommandHandler {
         "path": "/assets/images/logo-overlay.png",
         "name": "Logo Overlay",
         "available": true
-      })
+      }),
     ];
 
     CommandResult::success(Some(serde_json::json!({
@@ -7933,7 +8637,7 @@ impl CommandHandler {
   async fn update_style_template_elements(
     &self,
     template_id: String,
-    elements: Vec<serde_json::Value>
+    elements: Vec<serde_json::Value>,
   ) -> CommandResult {
     log::info!(
       "Updating {} elements for style template {}",

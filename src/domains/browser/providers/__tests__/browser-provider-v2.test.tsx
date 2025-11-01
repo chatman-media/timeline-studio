@@ -3,38 +3,39 @@
  */
 
 import { act, renderHook, waitFor } from "@testing-library/react"
+import { vi } from "vitest"
 import { BackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { BrowserProviderV2, useBrowserV2 } from "../browser-provider-v2"
 
 // Mock BackendSync
-jest.mock("@/features/app-state/services/backend-sync", () => ({
-  BackendSync: jest.fn().mockImplementation(() => ({
-    onEvent: jest.fn(),
-    executeCommand: jest.fn(),
-    getProjectState: jest.fn(),
+vi.mock("@/features/app-state/services/backend-sync", () => ({
+  BackendSync: vi.fn().mockImplementation(() => ({
+    onEvent: vi.fn(),
+    executeCommand: vi.fn(),
+    getProjectState: vi.fn(),
   })),
 }))
 
 describe("BrowserProviderV2", () => {
-  let mockBackendSync: jest.Mocked<BackendSync>
-  let mockOnEvent: jest.Mock
-  let mockUnsubscribe: jest.Mock
-  let mockExecuteCommand: jest.Mock
-  let mockGetProjectState: jest.Mock
+  let mockBackendSync: vi.MockedFunction<any>
+  let mockOnEvent: vi.MockedFunction<any>
+  let mockUnsubscribe: vi.MockedFunction<any>
+  let mockExecuteCommand: vi.MockedFunction<any>
+  let mockGetProjectState: vi.MockedFunction<any>
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    mockOnEvent = jest.fn()
-    mockUnsubscribe = jest.fn()
-    mockExecuteCommand = jest.fn()
-    mockGetProjectState = jest.fn()
+    vi.clearAllMocks()
+    mockOnEvent = vi.fn()
+    mockUnsubscribe = vi.fn()
+    mockExecuteCommand = vi.fn()
+    mockGetProjectState = vi.fn()
 
     mockBackendSync = {
       onEvent: mockOnEvent.mockReturnValue(mockUnsubscribe),
       executeCommand: mockExecuteCommand,
       getProjectState: mockGetProjectState,
-    } as unknown as jest.Mocked<BackendSync>
+    } as unknown as vi.MockedFunction<any>
 
     // Default successful command execution
     mockExecuteCommand.mockResolvedValue({ success: true, data: null })
@@ -52,7 +53,7 @@ describe("BrowserProviderV2", () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (

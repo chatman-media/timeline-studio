@@ -30,26 +30,47 @@ const DOMAIN_EVENTS = {
   CLIP_ADDED: "CLIP_ADDED",
   TIMELINE_UPDATED: "TIMELINE_UPDATED",
   PLAYBACK_STATE_CHANGED: "PLAYBACK_STATE_CHANGED",
+  MEDIA: {
+    FILES_IMPORTED: "FILES_IMPORTED",
+  },
+  AI_SERVICES: {
+    MONTAGE_PLAN_GENERATED: "MONTAGE_PLAN_GENERATED",
+  },
+  VIDEO: {
+    CLIP_ADDED: "CLIP_ADDED",
+    TIMELINE_UPDATED: "TIMELINE_UPDATED",
+    PLAYBACK_STATE_CHANGED: "PLAYBACK_STATE_CHANGED",
+  },
 }
 
 interface EventBus {
-  emit: (event: any) => void
-  on: (event: string, callback: (data: any) => void) => void
+  publish: <T = any>(type: string, source: string, data: T) => void
+  subscribe: (callback: (event: any) => void, options?: any) => () => void
 }
 
 const mockEventBus: EventBus = {
-  emit: (event) => console.log("Event:", event),
-  on: (event, callback) => {},
+  publish: (type, source, data) => console.log("Event:", { type, source, data }),
+  subscribe: (_callback, _options) => () => {},
 }
 
 const eventBus = mockEventBus
 
 interface BackendSync {
   executeCommand: (command: any) => Promise<any>
+  onStateChange: (callback: (state: ProjectState) => void) => () => void
+  onEvent: (callback: (event: any) => void) => () => void
 }
 
 const mockBackendSync: BackendSync = {
-  executeCommand: (command) => Promise.resolve({ success: true }),
+  executeCommand: (_command) => Promise.resolve({ success: true }),
+  onStateChange: (_callback) => {
+    // Mock подписка - возвращаем функцию отписки
+    return () => {}
+  },
+  onEvent: (_callback) => {
+    // Mock подписка на события - возвращаем функцию отписки
+    return () => {}
+  },
 }
 
 const getBackendSync = () => mockBackendSync

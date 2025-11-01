@@ -19,6 +19,7 @@ type TimelineClip = DomainTimelineClip
 interface BackendSync {
   connected: boolean
   onStateChange: (callback: (state: any) => void) => () => void
+  onEvent: (callback: (event: any) => void) => () => void
   getProjectState: () => Promise<any>
   executeCommand: (command: any) => Promise<any>
 }
@@ -27,6 +28,7 @@ interface BackendSync {
 const mockBackendSync: BackendSync = {
   connected: true,
   onStateChange: (_callback) => () => {},
+  onEvent: (_callback) => () => {},
   getProjectState: () => Promise.resolve(null),
   executeCommand: (_command) => Promise.resolve({ success: true }),
 }

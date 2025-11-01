@@ -37,9 +37,9 @@ interface BackendSync {
 }
 
 const mockBackendSync: BackendSync = {
-  onStateChange: (callback) => () => {},
-  onEvent: (callback) => () => {},
-  executeCommand: (command) => Promise.resolve({ success: true }),
+  onStateChange: (_callback) => () => {},
+  onEvent: (_callback) => () => {},
+  executeCommand: (_command) => Promise.resolve({ success: true }),
 }
 
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
