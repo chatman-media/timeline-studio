@@ -118,7 +118,7 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
         type: "UPDATE_CLIP_EFFECT",
         clipId: clip.id,
         effectId: appliedEffectId,
-        updates: { isEnabled: enabled },
+        updates: { enabled },
       })
     },
     [clip, send],

@@ -3,12 +3,11 @@
  */
 
 import { useCallback } from "react"
-
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
 import type { TimelineClip } from "../types"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { useTimeline } from "./use-timeline"
 
 export interface UseClipResourcesReturn {
@@ -113,7 +112,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return (clip as DomainTimelineClip)?.effects || [] as any
+      return (clip as DomainTimelineClip)?.effects || ([] as any)
     },
     [project],
   )
@@ -127,7 +126,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return (clip as DomainTimelineClip)?.filters || [] as any
+      return (clip as DomainTimelineClip)?.filters || ([] as any)
     },
     [project],
   )
@@ -141,7 +140,7 @@ export function useClipResources(): UseClipResourcesReturn {
         .concat(project.globalTracks.flatMap((track) => track.clips))
 
       const clip = allClips.find((c) => c.id === clipId)
-      return (clip as DomainTimelineClip)?.transitions || [] as any
+      return (clip as DomainTimelineClip)?.transitions || ([] as any)
     },
     [project],
   )

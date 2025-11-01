@@ -47,23 +47,23 @@ export const timelineMachine = createMachine({
     CREATE_PROJECT: {
       actions: assign({
         project: ({ event }) => createTimelineProject(event.name, event.settings),
-        lastAction: "CREATE_PROJECT",
+        lastAction: () => "CREATE_PROJECT" as any,
       }),
     },
     LOAD_PROJECT: {
       actions: assign({
         project: ({ event }) => event.project,
-        lastAction: "LOAD_PROJECT",
+        lastAction: () => "LOAD_PROJECT" as any,
       }),
     },
     ADD_MARKER: {
       actions: assign({
-        lastAction: "ADD_MARKER",
+        lastAction: () => "ADD_MARKER" as any,
       }),
     },
     SHOW_MODAL: {
       actions: assign({
-        lastAction: "SHOW_MODAL",
+        lastAction: () => "SHOW_MODAL" as any,
       }),
     },
     // Speed Ramping events
@@ -84,7 +84,7 @@ export const timelineMachine = createMachine({
         speedRampingConfigs: ({ context, event }) => ({
           ...context.speedRampingConfigs,
           [event.clipId]: {
-            ...context.speedRampingConfigs[event.clipId],
+            ...(context.speedRampingConfigs as any)[event.clipId],
             enabled: false,
           },
         }),
@@ -101,7 +101,7 @@ export const timelineMachine = createMachine({
     ADD_SPEED_KEYFRAME: {
       actions: assign({
         speedRampingConfigs: ({ context, event }) => {
-          const config = context.speedRampingConfigs[event.clipId] || {
+          const config = (context.speedRampingConfigs as any)[event.clipId] || {
             enabled: true,
             keyframes: [],
             maintainPitch: true,
@@ -124,14 +124,14 @@ export const timelineMachine = createMachine({
     UPDATE_SPEED_KEYFRAME: {
       actions: assign({
         speedRampingConfigs: ({ context, event }) => {
-          const config = context.speedRampingConfigs[event.clipId]
+          const config = (context.speedRampingConfigs as any)[event.clipId]
           if (!config) return context.speedRampingConfigs
 
           return {
             ...context.speedRampingConfigs,
             [event.clipId]: {
               ...config,
-              keyframes: config.keyframes.map((kf, index) => {
+              keyframes: config.keyframes.map((kf: any, index: number) => {
                 // Support both keyframeId and keyframeIndex
                 if (event.keyframeId && kf.id === event.keyframeId) {
                   return { ...kf, ...event.updates }
@@ -149,14 +149,14 @@ export const timelineMachine = createMachine({
     REMOVE_SPEED_KEYFRAME: {
       actions: assign({
         speedRampingConfigs: ({ context, event }) => {
-          const config = context.speedRampingConfigs[event.clipId]
+          const config = (context.speedRampingConfigs as any)[event.clipId]
           if (!config) return context.speedRampingConfigs
 
           return {
             ...context.speedRampingConfigs,
             [event.clipId]: {
               ...config,
-              keyframes: config.keyframes.filter((kf, index) => {
+              keyframes: config.keyframes.filter((kf: any, index: number) => {
                 // Support both keyframeId and keyframeIndex
                 if (event.keyframeId) {
                   return kf.id !== event.keyframeId

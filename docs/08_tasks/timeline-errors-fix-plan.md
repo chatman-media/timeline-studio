@@ -133,7 +133,15 @@
   - [x] transition-curve-editor.tsx ✅ (25 ошибок исправлено)
   - [x] transition-control-panel.tsx ✅ (10 ошибок исправлено)
   - [x] effects-player-integration.ts ✅ (9 ошибок исправлено)
-- [ ] Фаза 5: 0/остальных файлов
+- [x] Фаза 5: 8/8 тестовых файлов ✅ ЗАВЕРШЕНА
+  - [x] edit-mode-selector.test.tsx ✅ (3 ошибки исправлено)
+  - [x] subtitle-editor-modal.test.tsx ✅ (1 ошибка исправлено)
+  - [x] ai-marker-controls.test.tsx ✅ (12 ошибок исправлено)
+  - [x] collapsed-group.test.tsx ✅ (1 ошибка исправлено)
+  - [x] jl-cut-drag-handle.test.tsx ✅ (1 ошибка исправлено)
+  - [x] jl-cut-indicator.test.tsx ✅ (1 ошибка исправлено)
+  - [x] jl-cut-tool.test.tsx ✅ (1 ошибка исправлено)
+  - [x] persons-panel.test.tsx ✅ (5 ошибок исправлено)
 
 ---
 

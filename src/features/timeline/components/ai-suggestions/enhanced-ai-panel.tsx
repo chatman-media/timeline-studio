@@ -10,9 +10,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"
 import { MediaInfo } from "@/domains/media-management"
+import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { UnifiedDashboard } from "@/features/ai-content-intelligence"
 import { useTimeline } from "@/features/timeline"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { cn } from "@/lib/utils"
 
 interface EnhancedAIPanelProps {
@@ -139,18 +139,15 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
       setError(null)
 
       try {
-        const result = await executeContentIntelligenceTool(
-          analysis.operation,
-          {
-            mediaFiles: mediaFiles,
-            options: {
-              projectTitle: project?.name || "Timeline Project",
-              targetPlatforms: ["youtube", "instagram", "tiktok"],
-              language: "ru",
-              audience: "general",
-            },
-          }
-        )
+        const result = await executeContentIntelligenceTool(analysis.operation, {
+          mediaFiles: mediaFiles,
+          options: {
+            projectTitle: project?.name || "Timeline Project",
+            targetPlatforms: ["youtube", "instagram", "tiktok"],
+            language: "ru",
+            audience: "general",
+          },
+        })
 
         setAnalysisResults({
           analysis: analysis.name,

@@ -12,7 +12,7 @@ import { KeyframeEditor } from "./keyframe-editor"
 
 interface KeyframeButtonProps {
   clip: TimelineClip
-  size?: "sm" | "md" | "lg"
+  size?: "default" | "sm" | "lg" | "icon"
   variant?: "default" | "outline" | "ghost" | "secondary"
   showBadge?: boolean
 }

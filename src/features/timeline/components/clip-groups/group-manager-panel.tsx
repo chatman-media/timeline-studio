@@ -13,12 +13,14 @@ import { GroupColors } from "../../types/clip-groups"
 import type { TimelineClip } from "../../types/timeline"
 
 export function GroupManagerPanel() {
-  const { groups, createGroup, renameGroup, setGroupColor, toggleCollapse, lockGroup, ungroupClips } = useClipGroups()
   const { project, selectedClipIds } = useTimeline()
+  const { groups, createGroup, renameGroup, setGroupColor, toggleCollapse, lockGroup, ungroupClips } = useClipGroups(
+    project!,
+  )
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState("")
 
-  const selectedClipCount = selectedClipIds.length
+  const selectedClipCount = selectedClipIds?.length || 0
 
   const handleCreateGroup = () => {
     if (!project || selectedClipCount < 2) return
@@ -26,18 +28,18 @@ export function GroupManagerPanel() {
     // Получаем выбранные клипы
     const selectedClips: TimelineClip[] = []
 
-    project.globalTracks.forEach((track) => {
-      track.clips.forEach((clip) => {
-        if (selectedClipIds.includes(clip.id)) {
+    project.globalTracks?.forEach((track) => {
+      track.clips?.forEach((clip) => {
+        if (selectedClipIds?.includes(clip.id)) {
           selectedClips.push(clip)
         }
       })
     })
 
     project.sections?.forEach((section) => {
-      section.tracks.forEach((track) => {
-        track.clips.forEach((clip) => {
-          if (selectedClipIds.includes(clip.id)) {
+      section.tracks?.forEach((track) => {
+        track.clips?.forEach((clip) => {
+          if (selectedClipIds?.includes(clip.id)) {
             selectedClips.push(clip)
           }
         })

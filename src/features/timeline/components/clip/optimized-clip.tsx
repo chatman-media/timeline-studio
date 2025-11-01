@@ -58,7 +58,7 @@ export const OptimizedClip = memo(function OptimizedClip({
   const [isHovered, setIsHovered] = useState(false)
   const [showSpeedCurve, setShowSpeedCurve] = useState(false)
   const [showEffectsPanel, setShowEffectsPanel] = useState(false)
-  const { getGroupByClip, toggleCollapse, lockGroup } = useClipGroups()
+  const { getGroupByClip, toggleCollapse, lockGroup } = useClipGroups(track.projectId || "")
   const { getLinkedClip } = useJLCuts()
   const { getConfig } = useSpeedRamping()
   const { getPersonsForClip, getAppearancesForClip, showPersonDetail } = useTimelinePersons()
@@ -157,7 +157,7 @@ export const OptimizedClip = memo(function OptimizedClip({
       case "subtitle":
       case "title":
         if (isSubtitleClip(clip)) {
-          return <SubtitleClip clip={clip} trackHeight={track.height} isSelected={clip.isSelected} />
+          return <SubtitleClip clip={clip} trackHeight={track.height || 64} isSelected={clip.isSelected || false} />
         }
         return renderSimplifiedContent()
 

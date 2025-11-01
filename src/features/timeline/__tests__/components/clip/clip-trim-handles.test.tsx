@@ -19,7 +19,7 @@ const mockEditModeContext = {
 vi.mock("../../../hooks/use-edit-mode", async (importOriginal) => {
   const actual = await importOriginal()
   return {
-    ...actual,
+    ...(actual as any),
     useEditModeContext: () => mockEditModeContext,
   }
 })

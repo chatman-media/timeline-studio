@@ -183,16 +183,16 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   min={-1}
                   max={1}
                   step={0.01}
-                  value={[track.pan || 0]}
-                  onValueChange={(value) => updateTrack(track.id, { pan: value[0] })}
+                  value={[(track as any).pan || 0]}
+                  onValueChange={(value) => updateTrack(track.id, { pan: value[0] } as any)}
                   disabled={track.isMuted}
                 />
                 <span className="text-xs w-10 text-right">
-                  {track.pan === 0
+                  {(track as any).pan === 0
                     ? "C"
-                    : track.pan > 0
-                      ? `${Math.round(track.pan * 100)}R`
-                      : `${Math.round(-track.pan * 100)}L`}
+                    : (track as any).pan > 0
+                      ? `${Math.round((track as any).pan * 100)}R`
+                      : `${Math.round(-(track as any).pan * 100)}L`}
                 </span>
               </div>
             </div>
@@ -209,9 +209,9 @@ export function AudioMixer({ className }: AudioMixerProps) {
             </div>
 
             {/* Индикаторы эффектов */}
-            {track.trackEffects.length > 0 && (
+            {(track as any).trackEffects?.length > 0 && (
               <div className="flex flex-wrap gap-1 pt-1">
-                {track.trackEffects.map((_, index) => (
+                {(track as any).trackEffects.map((_: any, index: number) => (
                   <div key={index} className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
                     FX
                   </div>

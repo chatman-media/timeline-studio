@@ -147,22 +147,15 @@ export class AIServicesOrchestrator {
       type: "START_ANALYSIS",
       mediaFiles: files,
       config: {
-        providers: [
-          {
-            provider: "openai" as any, // Will be properly typed when AI provider is configured
-            apiKey: "",
-            model: "gpt-4-vision-preview",
-          },
-        ],
+        provider: "openai" as any,
+        apiKey: "",
+        model: "gpt-4-vision-preview",
         defaultProvider: "openai" as any,
         features: {
-          sceneAnalysis: true,
+          contentAnalysis: true,
           scriptGeneration: false,
           multiPlatform: false,
-          personIdentification: true,
-          contentClassification: true,
-          qualityEnhancement: false,
-          autoSuggestions: true,
+          voiceGeneration: false,
         },
         processing: {
           parallel: true,
@@ -362,7 +355,7 @@ export class AIIntelligenceOrchestrator {
    */
   public getResult(): IntelligentContent | null {
     const context = this.actor.getSnapshot().context
-    return context.result || null
+    return (context.result || null) as any
   }
 
   /**

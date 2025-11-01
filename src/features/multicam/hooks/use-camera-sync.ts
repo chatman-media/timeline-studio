@@ -64,7 +64,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(0)
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: TimelineClip) => c.id === baseClipId)
+      const baseClip = allClips.find((c: any) => c.id === baseClipId) as TimelineClip
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }
@@ -81,7 +81,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
 
       // Выполняем синхронизацию
       const mappedMediaFiles = mediaItemsToMediaFiles(mediaFiles)
-      const results = syncByTimecodeService(baseClip, clips, mappedMediaFiles)
+      const results = syncByTimecodeService(baseClip as any, clips as any, mappedMediaFiles)
 
       // Преобразуем результаты в нужный формат
       const mappedResults: SyncResult[] = results.map((r) => ({
@@ -117,7 +117,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       abortControllerRef.current = new AbortController()
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: TimelineClip) => c.id === baseClipId)
+      const baseClip = allClips.find((c: any) => c.id === baseClipId) as TimelineClip
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }
@@ -133,7 +133,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
         throw new Error("Нет связанных клипов для синхронизации")
       }
 
-      const otherClips = multicamGroup.filter((clip: TimelineClip) => clip.id !== baseClipId)
+      const otherClips = multicamGroup.filter((clip: any) => clip.id !== baseClipId)
 
       const results: SyncResult[] = []
 
@@ -234,7 +234,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
   const applySyncResults = useCallback(() => {
     // allClips уже доступен из useTimeline
     syncResults.forEach((result) => {
-      const clip = allClips.find((c: TimelineClip) => c.id === result.clipId)
+      const clip = allClips.find((c: any) => c.id === result.clipId) as TimelineClip
       if (clip) {
         // Применяем смещение к startTime клипа
         const newStartTime = clip.startTime + result.offset

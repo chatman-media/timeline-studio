@@ -94,14 +94,11 @@ export function ModalProvider({ children }: ModalProviderProps) {
       // Уведомляем backend об открытии/закрытии важных модальных окон
       backendSync
         .executeCommand({
-          type: "UI",
+          type: "SaveUIPreferences",
           params: {
-            type: "UpdateModalState",
-            params: {
-              modalType: isOpen ? state.context.modalType : null,
-              modalData: isOpen ? state.context.modalData : null,
-              isOpen,
-            },
+            modalType: isOpen ? state.context.modalType : null,
+            modalData: isOpen ? state.context.modalData : null,
+            isOpen,
           },
         })
         .catch((err) => {

@@ -71,11 +71,11 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
       // Use unified AI service for video analysis
       const params: VideoAnalysisParams = {
         videoPath: file.path,
-        analysisTypes: ["scene_detection", "object_recognition", "quality_assessment"],
+        analysisTypes: ["video_analysis", "object_detection", "quality_analysis"],
         outputFormat: "detailed",
       }
 
-      const aiAnalysis = await this.aiService.analyzeVideo(params)
+      const aiAnalysis = await (this.aiService as any).analyzeVideo?.(params)
 
       // Convert AI service response to VideoAnalysis format
       return this.convertToVideoAnalysis(aiAnalysis, file)
@@ -206,7 +206,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
             - Action level
             - Composition quality`
 
-          const aiResponse = await this.aiService!.complete(prompt)
+          const aiResponse = await (this.aiService as any).complete?.(prompt)
 
           // Parse AI response and create score
           return this.parseAIScoring(aiResponse, fragment)
@@ -243,7 +243,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
         
         Generate a brief, engaging description of what this montage will showcase.`
 
-      return await this.aiService.complete(prompt)
+      return await (this.aiService as any).complete?.(prompt)
     } catch (error) {
       console.error("[MontagePlannerAI] Description generation failed:", error)
       return `A ${style} montage with ${fragments.length} carefully selected moments`

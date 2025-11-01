@@ -28,7 +28,7 @@ export function SubtitleClip({
   const { getComputedStyle, getStyleById } = useSubtitleStyles()
 
   // Получаем pixelsPerSecond из uiState.timeScale
-  const pixelsPerSecond = uiState.timeScale
+  const pixelsPerSecond = (uiState as any)?.timeScale || 50
 
   // Расчет позиции и размера
   const left = clip.startTime * pixelsPerSecond

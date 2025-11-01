@@ -181,8 +181,8 @@ function createTimelineClips(
         // Стабилизация
         if (adjustments.stabilization) {
           // Добавляем эффект стабилизации
-          timelineClip.appliedEffects = [
-            ...(timelineClip.appliedEffects || []),
+          timelineClip.effects = [
+            ...(timelineClip.effects || []),
             {
               effectId: "stabilization",
               enabled: true,
@@ -191,25 +191,15 @@ function createTimelineClips(
           ]
         }
 
-        // Кроп
-        if (adjustments.crop) {
-          timelineClip.cropSettings = adjustments.crop
+        // Кроп (через позицию клипа)
+        if (adjustments.crop && timelineClip.position) {
+          timelineClip.position.width = adjustments.crop.width || timelineClip.position.width
+          timelineClip.position.height = adjustments.crop.height || timelineClip.position.height
         }
       }
 
-      // Добавляем метаданные о моменте
-      timelineClip.metadata = {
-        ...timelineClip.metadata,
-        montageMetadata: {
-          momentCategory: montageClip.fragment?.score.category || "",
-          momentScore: montageClip.fragment?.score.totalScore || 0,
-          compositionScore: montageClip.fragment?.score.scores.composition || 0,
-          emotionalTone: getEmotionalToneFromScore(montageClip.fragment?.score.scores.emotional || 0),
-          fragmentId: montageClip.fragmentId,
-          role: montageClip.role,
-          importance: montageClip.importance,
-        },
-      }
+      // Метаданные о моменте можно добавить как комментарий в name
+      timelineClip.name = `${timelineClip.name} (Score: ${montageClip.fragment?.score.totalScore || 0})`
 
       return timelineClip
     })
@@ -226,8 +216,8 @@ function applyTransitionsToClips(clips: TimelineClip[], transitions: TransitionP
 
     if (fromClip && toClip) {
       // Применяем переход к концу первого клипа
-      fromClip.appliedTransitions = [
-        ...(fromClip.appliedTransitions || []),
+      fromClip.transitions = [
+        ...(fromClip.transitions || []),
         {
           transitionId: transition.transitionId,
           position: "out",
@@ -382,7 +372,7 @@ export function createMarkersFromPlan(plan: MontagePlan, timeOffset = 0): Timeli
  */
 function getEmotionalToneFromScore(emotionalScore: number): EmotionalTone {
   if (emotionalScore >= 80) return EmotionalTone.Energetic
-  if (emotionalScore >= 70) return EmotionalTone.Excited
+  if (emotionalScore >= 70) return EmotionalTone.Energetic
   if (emotionalScore >= 60) return EmotionalTone.Happy
   if (emotionalScore >= 40) return EmotionalTone.Calm
   if (emotionalScore >= 20) return EmotionalTone.Tense

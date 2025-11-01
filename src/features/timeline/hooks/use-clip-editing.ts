@@ -14,7 +14,7 @@ interface UseClipEditingOptions {
 
 export function useClipEditing(clipId: string, options: UseClipEditingOptions = {}) {
   const { project, currentTime, send } = useTimeline()
-  
+
   // Мок UI state для восстановления функциональности
   const uiState = { timeScale: 50 } // TODO: Получать из контекста
   const { editMode } = useEditModeContext()

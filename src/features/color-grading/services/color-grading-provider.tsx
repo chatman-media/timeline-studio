@@ -8,11 +8,13 @@ interface ProjectState {
 interface BackendSync {
   executeCommand: (command: any) => Promise<any>
   onStateChange: (callback: (state: ProjectState) => void) => () => void
+  onEvent: (callback: (event: any) => void) => () => void
 }
 
 const mockBackendSync: BackendSync = {
   executeCommand: (command) => Promise.resolve({ success: true }),
   onStateChange: (callback) => () => {},
+  onEvent: (callback) => () => {},
 }
 
 const getBackendSync = () => mockBackendSync

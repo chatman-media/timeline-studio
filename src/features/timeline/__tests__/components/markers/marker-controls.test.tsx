@@ -437,7 +437,7 @@ describe("MarkerControls", () => {
 
     // Проверяем что значение сохранилось
     const input = screen.getByPlaceholderText("Search markers...")
-    expect(input.value).toBe("test")
+    expect((input as HTMLInputElement).value).toBe("test")
   })
 
   it("комбинирует фильтры по типу и поиску", async () => {

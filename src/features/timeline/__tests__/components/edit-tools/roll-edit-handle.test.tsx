@@ -51,7 +51,7 @@ describe("RollEditHandle", () => {
     volume: 1,
     opacity: 1,
     filters: [],
-    transitions: { in: null, out: null },
+    transitions: [],
     metadata: {},
   }
 
@@ -68,7 +68,7 @@ describe("RollEditHandle", () => {
     volume: 1,
     opacity: 1,
     filters: [],
-    transitions: { in: null, out: null },
+    transitions: [],
     metadata: {},
   }
 
@@ -405,7 +405,7 @@ describe("RollEditHandle", () => {
         ...leftClip,
         volume: 0.5,
         opacity: 0.8,
-        effects: ["effect1"],
+        effects: [{ id: "effect1", effectId: "effect1", enabled: true, order: 0 }] as any,
       }
 
       rerender(<RollEditHandle {...defaultProps} leftClip={updatedLeftClip} />)

@@ -239,7 +239,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
 
           // Логируем успешный drop в backend
           // TODO: Реализовать аналитику drag&drop
-          console.log(`[Analytics] Drop complete: inter-module to timeline`)
+          console.log("[Analytics] Drop complete: inter-module to timeline")
 
           // Сбрасываем состояние
           setDragState({
@@ -348,10 +348,10 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           // Логируем результат операции drop в backend
           if (dropSuccess) {
             // TODO: Реализовать аналитику drag&drop
-            console.log(`[Analytics] Drop complete:`, dropDetails)
-            
+            console.log("[Analytics] Drop complete:", dropDetails)
+
             // TODO: Реализовать историю операций для undo/redo
-            console.log(`[History] Record drag&drop operation:`, dropDetails)
+            console.log("[History] Record drag&drop operation:", dropDetails)
           }
         }
       }

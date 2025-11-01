@@ -168,11 +168,8 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       }
 
       await backendSync.executeCommand({
-        type: "UI",
-        params: {
-          type: "SyncBrowserState",
-          params: serializableState,
-        },
+        type: "SyncUIState",
+        params: serializableState,
       })
 
       console.log("[BrowserStateProvider] Browser state synced with backend")
@@ -334,11 +331,8 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     if (isBackendConnected) {
       backendSync
         .executeCommand({
-          type: "Analytics",
-          params: {
-            type: "LogBrowserAction",
-            params: { action: "switch_tab", tab },
-          },
+          type: "LogBrowserAction",
+          params: { action: "switch_tab", tab },
         })
         .catch(console.error)
     }
@@ -432,11 +426,8 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     if (isBackendConnected) {
       backendSync
         .executeCommand({
-          type: "Analytics",
-          params: {
-            type: "LogBrowserAction",
-            params: { action: "change_view_mode", viewMode, tab: targetTab },
-          },
+          type: "LogBrowserAction",
+          params: { action: "change_view_mode", viewMode, tab: targetTab },
         })
         .catch(console.error)
     }
@@ -529,11 +520,8 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     if (isBackendConnected && fileIds.length > 10) {
       backendSync
         .executeCommand({
-          type: "Analytics",
-          params: {
-            type: "LogBrowserAction",
-            params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
-          },
+          type: "LogBrowserAction",
+          params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
         })
         .catch(console.error)
     }

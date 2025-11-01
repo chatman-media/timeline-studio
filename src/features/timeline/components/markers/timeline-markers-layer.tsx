@@ -16,7 +16,7 @@ interface TimelineMarkersLayerProps {
 export function TimelineMarkersLayer({
   timeScale,
   scrollOffset,
-  _containerWidth,
+  containerWidth: _containerWidth,
   currentTime,
   duration,
   className,

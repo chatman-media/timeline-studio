@@ -77,13 +77,13 @@ export function LinkedClipsConnector({
 
     // Обрабатываем глобальные треки
     project.globalTracks?.forEach((track) => {
-      processClips(track.clips, track.id)
+      processClips(track.clips as any, track.id)
     })
 
     // Обрабатываем секции
     project.sections?.forEach((section) => {
       section.tracks?.forEach((track) => {
-        processClips(track.clips, track.id)
+        processClips(track.clips as any, track.id)
       })
     })
 

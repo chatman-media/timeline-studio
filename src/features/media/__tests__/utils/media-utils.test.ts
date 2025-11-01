@@ -9,26 +9,28 @@ import {
 } from "../../utils/media-utils"
 
 describe("media-utils", () => {
-  const createMockMediaFile = (overrides: Partial<MediaFile> = {}): MediaFile => ({
-    id: "test-file",
-    path: "/path/to/file.mp4",
-    name: "file.mp4",
-    size: 1024 * 1024,
-    duration: 60,
-    type: "video",
-    extension: "mp4",
-    ...overrides,
-  })
+  const createMockMediaFile = (overrides: Partial<MediaFile> = {}): MediaFile =>
+    ({
+      id: "test-file",
+      path: "/path/to/file.mp4",
+      name: "file.mp4",
+      size: 1024 * 1024,
+      duration: 60,
+      isVideo: true,
+      isAudio: false,
+      isImage: false,
+      ...overrides,
+    }) as MediaFile
 
   describe("hasAudioStream", () => {
     it("should return true when file has audio stream", () => {
       const file = createMockMediaFile({
         probeData: {
           streams: [
-            { codec_type: "video", codec_name: "h264" },
-            { codec_type: "audio", codec_name: "aac" },
+            { index: 0, codec_type: "video", codec_name: "h264" } as any,
+            { index: 1, codec_type: "audio", codec_name: "aac" } as any,
           ],
-        },
+        } as any,
       })
 
       expect(hasAudioStream(file)).toBe(true)
@@ -37,8 +39,8 @@ describe("media-utils", () => {
     it("should return false when file has no audio stream", () => {
       const file = createMockMediaFile({
         probeData: {
-          streams: [{ codec_type: "video", codec_name: "h264" }],
-        },
+          streams: [{ index: 0, codec_type: "video", codec_name: "h264" } as any],
+        } as any,
       })
 
       expect(hasAudioStream(file)).toBe(false)
@@ -51,7 +53,7 @@ describe("media-utils", () => {
 
     it("should return false when streams array is empty", () => {
       const file = createMockMediaFile({
-        probeData: { streams: [] },
+        probeData: { streams: [], format: {} as any } as any,
       })
       expect(hasAudioStream(file)).toBe(false)
     })
@@ -60,11 +62,11 @@ describe("media-utils", () => {
       const file = createMockMediaFile({
         probeData: {
           streams: [
-            { codec_type: "video", codec_name: "h264" },
-            { codec_type: "audio", codec_name: "aac" },
-            { codec_type: "audio", codec_name: "mp3" },
+            { index: 0, codec_type: "video", codec_name: "h264" } as any,
+            { index: 1, codec_type: "audio", codec_name: "aac" } as any,
+            { index: 2, codec_type: "audio", codec_name: "mp3" } as any,
           ],
-        },
+        } as any,
       })
 
       expect(hasAudioStream(file)).toBe(true)
@@ -76,8 +78,8 @@ describe("media-utils", () => {
       const file = createMockMediaFile({
         isImage: true,
         probeData: {
-          streams: [{ codec_type: "video", codec_name: "mjpeg" }],
-        },
+          streams: [{ index: 0, codec_type: "video", codec_name: "mjpeg" } as any],
+        } as any,
       })
 
       expect(getFileType(file)).toBe("image")
@@ -87,10 +89,10 @@ describe("media-utils", () => {
       const file = createMockMediaFile({
         probeData: {
           streams: [
-            { codec_type: "video", codec_name: "h264" },
-            { codec_type: "audio", codec_name: "aac" },
+            { index: 0, codec_type: "video", codec_name: "h264" } as any,
+            { index: 1, codec_type: "audio", codec_name: "aac" } as any,
           ],
-        },
+        } as any,
       })
 
       expect(getFileType(file)).toBe("video")
@@ -98,11 +100,10 @@ describe("media-utils", () => {
 
     it("should return 'audio' when file has only audio stream", () => {
       const file = createMockMediaFile({
-        type: "audio",
-        extension: "mp3",
+        isAudio: true,
         probeData: {
-          streams: [{ codec_type: "audio", codec_name: "mp3" }],
-        },
+          streams: [{ index: 2, codec_type: "audio", codec_name: "mp3" } as any],
+        } as any,
       })
 
       expect(getFileType(file)).toBe("audio")
@@ -117,8 +118,8 @@ describe("media-utils", () => {
       const file = createMockMediaFile({
         isImage: true,
         probeData: {
-          streams: [{ codec_type: "video", codec_name: "h264" }],
-        },
+          streams: [{ index: 0, codec_type: "video", codec_name: "h264" } as any],
+        } as any,
       })
 
       expect(getFileType(file)).toBe("image")
@@ -133,27 +134,27 @@ describe("media-utils", () => {
           path: "/video1.mp4",
           probeData: {
             streams: [
-              { codec_type: "video", codec_name: "h264" },
-              { codec_type: "audio", codec_name: "aac" },
+              { index: 0, codec_type: "video", codec_name: "h264" } as any,
+              { index: 1, codec_type: "audio", codec_name: "aac" } as any,
             ],
-          },
+          } as any,
         }),
         createMockMediaFile({
           id: "2",
           path: "/video2.mp4",
           probeData: {
             streams: [
-              { codec_type: "video", codec_name: "h264" },
-              { codec_type: "audio", codec_name: "aac" },
+              { index: 0, codec_type: "video", codec_name: "h264" } as any,
+              { index: 1, codec_type: "audio", codec_name: "aac" } as any,
             ],
-          },
+          } as any,
         }),
         createMockMediaFile({
           id: "3",
           path: "/video3.mp4",
           probeData: {
-            streams: [{ codec_type: "video", codec_name: "h264" }], // No audio
-          },
+            streams: [{ index: 0, codec_type: "video", codec_name: "h264" } as any], // No audio
+          } as any,
         }),
       ]
 
@@ -170,20 +171,18 @@ describe("media-utils", () => {
         createMockMediaFile({
           id: "1",
           path: "/audio1.mp3",
-          type: "audio",
-          extension: "mp3",
+          isAudio: true,
           probeData: {
-            streams: [{ codec_type: "audio", codec_name: "mp3" }],
-          },
+            streams: [{ index: 2, codec_type: "audio", codec_name: "mp3" } as any],
+          } as any,
         }),
         createMockMediaFile({
           id: "2",
           path: "/audio2.mp3",
-          type: "audio",
-          extension: "mp3",
+          isAudio: true,
           probeData: {
-            streams: [{ codec_type: "audio", codec_name: "mp3" }],
-          },
+            streams: [{ index: 2, codec_type: "audio", codec_name: "mp3" } as any],
+          } as any,
         }),
       ]
 
@@ -202,17 +201,17 @@ describe("media-utils", () => {
           path: "/video1.mp4",
           probeData: {
             streams: [
-              { codec_type: "video", codec_name: "h264" },
-              { codec_type: "audio", codec_name: "aac" },
+              { index: 0, codec_type: "video", codec_name: "h264" } as any,
+              { index: 1, codec_type: "audio", codec_name: "aac" } as any,
             ],
-          },
+          } as any,
         }),
         createMockMediaFile({
           id: "2",
           path: "/video2.mp4",
           probeData: {
-            streams: [{ codec_type: "video", codec_name: "h264" }], // No audio
-          },
+            streams: [{ index: 0, codec_type: "video", codec_name: "h264" } as any], // No audio
+          } as any,
         }),
       ]
 
@@ -237,10 +236,10 @@ describe("media-utils", () => {
           path: undefined,
           probeData: {
             streams: [
-              { codec_type: "video", codec_name: "h264" },
-              { codec_type: "audio", codec_name: "aac" },
+              { index: 0, codec_type: "video", codec_name: "h264" } as any,
+              { index: 1, codec_type: "audio", codec_name: "aac" } as any,
             ],
-          },
+          } as any,
         }),
       ]
 

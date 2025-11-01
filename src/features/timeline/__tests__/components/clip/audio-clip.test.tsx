@@ -191,8 +191,8 @@ describe("AudioClip", () => {
       const clipWithEffects = {
         ...mockAudioClip,
         effects: [
-          { id: "1", effectId: "reverb", isEnabled: true, order: 0 },
-          { id: "2", effectId: "echo", isEnabled: true, order: 1 },
+          { id: "1", effectId: "reverb", enabled: true, order: 0 },
+          { id: "2", effectId: "echo", enabled: true, order: 1 },
         ],
       }
 

@@ -6,7 +6,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { SnapMode } from "../../types"
+// SnapMode типа нет, используем строковые литералы
 import {
   calculateTimelinePosition,
   canDropOnTrack,
@@ -110,7 +110,7 @@ describe("drag-calculations утилиты", () => {
   describe("snapToGrid", () => {
     it("возвращает исходную позицию при режиме 'none'", () => {
       const position = 123.456
-      const result = snapToGrid(position, "none" as SnapMode)
+      const result = snapToGrid(position, "none")
 
       expect(result).toBe(position)
     })
@@ -118,48 +118,50 @@ describe("drag-calculations утилиты", () => {
     it("возвращает исходную позицию для режима 'grid' (временная реализация)", () => {
       // TODO: В текущей реализации snapToTargets не выполняет привязку к сетке
       // Поэтому функция возвращает исходное значение
-      expect(snapToGrid(1.3, "grid" as SnapMode)).toBe(1.3)
-      expect(snapToGrid(1.7, "grid" as SnapMode)).toBe(1.7)
-      expect(snapToGrid(0.4, "grid" as SnapMode)).toBe(0.4)
-      expect(snapToGrid(0.6, "grid" as SnapMode)).toBe(0.6)
+      expect(snapToGrid(1.3, "grid")).toBe(1.3)
+      expect(snapToGrid(1.7, "grid")).toBe(1.7)
+      expect(snapToGrid(0.4, "grid")).toBe(0.4)
+      expect(snapToGrid(0.6, "grid")).toBe(0.6)
     })
 
     it("возвращает исходное значение без округления (временная реализация)", () => {
-      expect(snapToGrid(2.49, "grid" as SnapMode)).toBe(2.49)
-      expect(snapToGrid(2.51, "grid" as SnapMode)).toBe(2.51)
-      expect(snapToGrid(0.49, "grid" as SnapMode)).toBe(0.49)
-      expect(snapToGrid(0.51, "grid" as SnapMode)).toBe(0.51)
+      expect(snapToGrid(2.49, "grid")).toBe(2.49)
+      expect(snapToGrid(2.51, "grid")).toBe(2.51)
+      expect(snapToGrid(0.49, "grid")).toBe(0.49)
+      expect(snapToGrid(0.51, "grid")).toBe(0.51)
     })
 
     it("возвращает отрицательные значения без изменений (временная реализация)", () => {
-      expect(snapToGrid(-0.3, "grid" as SnapMode)).toBe(-0.3)
-      expect(snapToGrid(-1.7, "grid" as SnapMode)).toBe(-1.7)
+      expect(snapToGrid(-0.3, "grid")).toBe(-0.3)
+      expect(snapToGrid(-1.7, "grid")).toBe(-1.7)
     })
 
     it("возвращает исходную позицию для нереализованных режимов", () => {
       const position = 123.456
 
       // Эти режимы пока не реализованы (TODO в коде)
-      expect(snapToGrid(position, "clips" as SnapMode)).toBe(position)
-      expect(snapToGrid(position, "markers" as SnapMode)).toBe(position)
+      expect(snapToGrid(position, "clips")).toBe(position)
+      expect(snapToGrid(position, "markers")).toBe(position)
     })
 
     it("возвращает большие значения времени без изменений (временная реализация)", () => {
-      expect(snapToGrid(3599.7, "grid" as SnapMode)).toBe(3599.7)
-      expect(snapToGrid(7200.2, "grid" as SnapMode)).toBe(7200.2)
+      expect(snapToGrid(3599.7, "grid")).toBe(3599.7)
+      expect(snapToGrid(7200.2, "grid")).toBe(7200.2)
     })
   })
 
   describe("canDropOnTrack", () => {
-    const createMockMediaFile = (overrides = {}) => ({
-      name: "test-file",
-      path: "/path/to/file",
-      duration: 10,
-      isVideo: false,
-      isAudio: false,
-      isImage: false,
-      ...overrides,
-    })
+    const createMockMediaFile = (overrides = {}) =>
+      ({
+        id: "test-file-id",
+        name: "test-file",
+        path: "/path/to/file",
+        duration: 10,
+        isVideo: false,
+        isAudio: false,
+        isImage: false,
+        ...overrides,
+      }) as any
 
     it("разрешает видеофайлы на video треки", () => {
       const videoFile = createMockMediaFile({ isVideo: true })
@@ -236,16 +238,18 @@ describe("drag-calculations утилиты", () => {
   })
 
   describe("getTrackTypeForMediaFile", () => {
-    const createMockMediaFile = (overrides = {}) => ({
-      name: "test-file",
-      path: "/path/to/file",
-      duration: 10,
-      isVideo: false,
-      isAudio: false,
-      isImage: false,
-      probeData: null,
-      ...overrides,
-    })
+    const createMockMediaFile = (overrides = {}) =>
+      ({
+        id: "test-file-id",
+        name: "test-file",
+        path: "/path/to/file",
+        duration: 10,
+        isVideo: false,
+        isAudio: false,
+        isImage: false,
+        probeData: null,
+        ...overrides,
+      }) as any
 
     it("возвращает 'video' для видеофайлов", () => {
       const videoFile = createMockMediaFile({ isVideo: true })

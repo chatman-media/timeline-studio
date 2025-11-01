@@ -68,7 +68,7 @@ export interface TimelineAIResult {
  * Сервис для AI интеграции с Timeline Studio
  */
 export class TimelineAIService {
-  private allTools: UnifiedAITool[]
+  private allTools: any[]
   private aiContainer = getAIContainer()
 
   constructor(
@@ -108,7 +108,7 @@ export class TimelineAIService {
       let initializedCount = 0
 
       for (const provider of providers) {
-        const apiKey = await this.aiContainer.apiKeyManager.getApiKey(provider)
+        const apiKey = await (this.aiContainer as any).apiKeyManager?.getApiKey(provider)
         if (apiKey) {
           initializedCount++
         }
@@ -127,7 +127,7 @@ export class TimelineAIService {
    * @param apiKey API ключ
    */
   public setApiKey(provider: string, apiKey: string): void {
-    this.aiContainer.apiKeyManager.setApiKey(provider, apiKey)
+    ;(this.aiContainer as any).apiKeyManager?.setApiKey(provider, apiKey)
   }
 
   /**
@@ -315,7 +315,7 @@ export class TimelineAIService {
       const systemPrompt = this.createSystemPrompt(context)
 
       // Используем unified AI service с автоматическим выбором провайдера
-      const response = await this.aiContainer.aiService.processRequest({
+      const response = await (this.aiContainer as any).aiService?.processRequest({
         prompt: fullPrompt,
         systemPrompt,
         tools: this.allTools,
@@ -715,8 +715,6 @@ export class TimelineAIService {
         success: true,
         message: `Инструмент ${name} выполнен успешно`,
         data: result,
-        toolName: name,
-        executionTime: 0,
       }
     } catch (error) {
       console.error(`Error executing tool ${name}:`, error)
@@ -724,8 +722,6 @@ export class TimelineAIService {
         success: false,
         message: `Ошибка выполнения инструмента ${name}: ${String(error)}`,
         data: { toolName: name, input, error: String(error) },
-        toolName: name,
-        executionTime: 0,
       }
     }
   }

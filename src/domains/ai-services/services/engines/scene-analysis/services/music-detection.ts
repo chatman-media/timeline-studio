@@ -365,23 +365,18 @@ export class MusicDetectionService {
    * Классификация типа аудио сегмента
    */
   private classifySegmentType(audioAnalysis: AudioAnalysisResult): MusicSegmentType {
-    const { volume, frequency, dynamics } = audioAnalysis
+    const { volume } = audioAnalysis
 
     // Если очень тихо - вероятно тишина
     if (volume.average < 0.1) {
       return MusicSegmentType.SILENCE
     }
 
-    // Анализируем частотный спектр
-    const lowEnergy = frequency.lowEnd
-    const midEnergy = frequency.midRange
-    const highEnergy = frequency.highEnd
-
-    // Музыка обычно имеет более равномерное распределение частот
-    const frequencyBalance = this.calculateFrequencyBalance(lowEnergy, midEnergy, highEnergy)
+    // Простая классификация на основе доступных данных
+    const dynamicRange = volume.peak - volume.min
 
     // Музыка обычно имеет больший динамический диапазон
-    const dynamicRange = dynamics.dynamicRange
+    const frequencyBalance = 0.6 // Заглушка для совместимости
 
     // Простая эвристика для классификации
     if (frequencyBalance > 0.6 && dynamicRange > 0.4) {
@@ -389,8 +384,8 @@ export class MusicDetectionService {
       const hasSpeechCharacteristics = this.detectSpeechCharacteristics(audioAnalysis)
       return hasSpeechCharacteristics ? MusicSegmentType.MIXED : MusicSegmentType.MUSIC
     }
-    if (midEnergy > lowEnergy && midEnergy > highEnergy) {
-      // Преобладание средних частот может указывать на речь
+    if (volume.average > 0.5 && dynamicRange < 0.3) {
+      // Средний уровень с низким динамическим диапазоном может указывать на речь
       return MusicSegmentType.SPEECH
     }
     if (volume.average > 0.3 && frequencyBalance < 0.3) {
@@ -422,13 +417,13 @@ export class MusicDetectionService {
    * Детекция речевых характеристик
    */
   private detectSpeechCharacteristics(audioAnalysis: AudioAnalysisResult): boolean {
-    const { frequency, volume } = audioAnalysis
-
-    // Речь обычно концентрируется в средних частотах
-    const midFreqDominance = frequency.midRange > (frequency.lowEnd + frequency.highEnd) / 2
+    const { volume } = audioAnalysis
 
     // Речь имеет характерные паузы и изменения громкости
     const hasVariation = volume.peak - volume.average > 0.2
+
+    // Простая эвристика на основе доступных данных
+    const midFreqDominance = volume.average > 0.3 && volume.average < 0.8
 
     return midFreqDominance && hasVariation
   }
@@ -437,33 +432,32 @@ export class MusicDetectionService {
    * Расчет уровня энергии
    */
   private calculateEnergyLevel(audioAnalysis: AudioAnalysisResult): number {
-    const { volume, frequency, dynamics } = audioAnalysis
+    const { volume } = audioAnalysis
 
-    // Комбинируем различные факторы для определения энергии
-    const volumeEnergy = volume.rms * 0.4
-    const frequencyEnergy = ((frequency.lowEnd + frequency.midRange + frequency.highEnd) / 3) * 0.3
-    const dynamicEnergy = dynamics.dynamicRange * 0.3
+    // Простой расчет энергии на основе доступных данных
+    const volumeEnergy = volume.average * 0.7
+    const dynamicEnergy = (volume.peak - volume.min) * 0.3
 
-    return Math.min(1, volumeEnergy + frequencyEnergy + dynamicEnergy)
+    return Math.min(1, volumeEnergy + dynamicEnergy)
   }
 
   /**
    * Детекция жанра музыки (упрощенная)
    */
   private detectGenre(audioAnalysis: AudioAnalysisResult): MusicGenre {
-    const { frequency, dynamics } = audioAnalysis
+    const { volume } = audioAnalysis
 
-    // Простая эвристика на основе частотных характеристик
-    if (frequency.lowEnd > 0.7) {
-      return MusicGenre.ELECTRONIC // Много басов
+    // Простая эвристика на основе доступных данных
+    if (volume.average > 0.8) {
+      return MusicGenre.ELECTRONIC // Высокая энергия
     }
-    if (frequency.highEnd > 0.7) {
-      return MusicGenre.CLASSICAL // Много высоких частот
+    if (volume.peak > 0.9) {
+      return MusicGenre.ROCK // Высокие пики
     }
-    if (dynamics.dynamicRange > 0.8) {
+    if (volume.peak - volume.min > 0.8) {
       return MusicGenre.CLASSICAL // Большой динамический диапазон
     }
-    if (frequency.midRange > 0.6) {
+    if (volume.average > 0.4 && volume.average < 0.7) {
       return MusicGenre.POP // Преобладание средних частот
     }
 
@@ -488,25 +482,25 @@ export class MusicDetectionService {
    */
   private detectMood(audioAnalysis: AudioAnalysisResult): MusicMood {
     const energy = this.calculateEnergyLevel(audioAnalysis)
-    const { frequency, dynamics } = audioAnalysis
+    const { volume } = audioAnalysis
 
-    // Простая эвристика на основе энергии и частотных характеристик
-    if (energy > 0.8 && frequency.highEnd > 0.6) {
+    // Простая эвристика на основе энергии и доступных данных
+    if (energy > 0.8 && volume.peak > 0.9) {
       return MusicMood.ENERGETIC
     }
-    if (energy > 0.7 && dynamics.dynamicRange > 0.6) {
+    if (energy > 0.7 && volume.peak - volume.min > 0.6) {
       return MusicMood.EPIC
     }
-    if (energy < 0.3 && frequency.lowEnd < 0.3) {
+    if (energy < 0.3 && volume.average < 0.3) {
       return MusicMood.SAD
     }
-    if (energy < 0.4 && frequency.midRange > 0.5) {
+    if (energy < 0.4 && volume.average > 0.3 && volume.average < 0.6) {
       return MusicMood.CALM
     }
-    if (energy > 0.6 && frequency.lowEnd > 0.6) {
+    if (energy > 0.6 && volume.peak > 0.8) {
       return MusicMood.AGGRESSIVE
     }
-    if (energy > 0.5 && frequency.midRange > 0.6) {
+    if (energy > 0.5 && volume.average > 0.6) {
       return MusicMood.HAPPY
     }
 

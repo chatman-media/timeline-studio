@@ -356,7 +356,7 @@ export class EffectsPlayerIntegration {
       }
 
       // Проверяем наличие filter функции
-      if (typeof baseEffect.processors.ffmpeg.filter === 'function') {
+      if (typeof baseEffect.processors.ffmpeg.filter === "function") {
         const filter = baseEffect.processors.ffmpeg.filter(params)
         if (filter) {
           commands.push(filter)

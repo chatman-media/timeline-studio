@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { EditMode } from "../../types/edit-modes"
 import { EDIT_MODE_CONFIGS } from "../../types/edit-modes"
 import { EditModeButtonGroup, EditModeSelector } from "../edit-mode-selector"

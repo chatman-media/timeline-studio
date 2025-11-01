@@ -93,15 +93,15 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
         type: "SyncState" as any,
         timestamp: new Date().toISOString(),
         config: domainConfig,
-        chatHistory: (chatState as any).chatMessages || [],
+        chatHistory: chatState.context.chatMessages || [],
         montageStatus: {
-          isAnalyzing: (montagePlannerState as any).isAnalyzing || false,
-          currentPlan: (montagePlannerState as any).currentPlan,
+          isAnalyzing: montagePlannerState.context.isAnalyzing || false,
+          currentPlan: montagePlannerState.context.currentPlan,
         },
         intelligenceStatus: {
           isAnalyzing:
-            ((aiIntelligenceState as any).progress || 0) > 0 && ((aiIntelligenceState as any).progress || 0) < 100,
-          analysisResults: (aiIntelligenceState as any).analysis,
+            (aiIntelligenceState.context.progress || 0) > 0 && (aiIntelligenceState.context.progress || 0) < 100,
+          analysisResults: aiIntelligenceState.context.analysis,
         },
         usageStats: aiUsageStats,
       } as any)
@@ -129,24 +129,24 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
       setIsBackendConnected(true)
 
       // Восстанавливаем конфигурацию AI сервисов из backend
-      if (state.ai_services_config) {
-        setDomainConfig(state.ai_services_config as AIServicesDomainConfig)
+      if ((state as any).ai_services_config) {
+        setDomainConfig((state as any).ai_services_config)
       }
     })
 
     // Подписка на события backend
-    const unsubscribeEvents = backendSync.onEvent((event) => {
+    const unsubscribeEvents = backendSync.onEvent((event: any) => {
       switch (event.type) {
         case "AI_CONFIG_UPDATED":
           // Backend обновил конфигурацию AI сервисов
-          if (event.data.config) {
+          if (event.data?.config) {
             setDomainConfig(event.data.config)
           }
           break
 
         case "AI_USAGE_UPDATED":
           // Backend обновил статистику использования
-          if (event.data.stats) {
+          if (event.data?.stats) {
             setAIUsageStats((prev) => ({
               ...prev,
               ...event.data.stats,
@@ -171,7 +171,12 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     }, 2000) // Задержка 2 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
-  }, [chatState.chatMessages, montagePlannerState.currentPlan, aiIntelligenceState.result, isBackendConnected])
+  }, [
+    chatState.context.chatMessages,
+    montagePlannerState.context.currentPlan,
+    aiIntelligenceState.context.result,
+    isBackendConnected,
+  ])
 
   // Расширенные domain-level действия с BackendSync
   const resetAllServices = async () => {
@@ -181,12 +186,9 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
 
     // Уведомляем backend о сбросе
     if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "AI",
-        params: {
-          type: "ResetAllAIServices",
-          params: { timestamp: new Date().toISOString() },
-        },
+      await (backendSync as any).executeCommand?.({
+        type: "ResetAllAIServices",
+        timestamp: new Date().toISOString(),
       })
     }
   }
@@ -199,12 +201,10 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
 
     // Синхронизируем с backend
     if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "AI",
-        params: {
-          type: "UpdateAIServiceConfig",
-          params: { service, enabled: true },
-        },
+      await (backendSync as any).executeCommand?.({
+        type: "UpdateAIServiceConfig",
+        service,
+        enabled: true,
       })
     }
   }
@@ -217,53 +217,34 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
 
     // Синхронизируем с backend
     if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "AI",
-        params: {
-          type: "UpdateAIServiceConfig",
-          params: { service, enabled: false },
-        },
+      await (backendSync as any).executeCommand?.({
+        type: "UpdateAIServiceConfig",
+        service,
+        enabled: false,
       })
     }
   }
 
-  // Отслеживание использования AI через перехват событий
+  // Отслеживание использования AI через события
   useEffect(() => {
-    const originalChatSend = chatSend
-    const originalMontageSend = montagePlannerSend
-    const originalIntelligenceSend = aiIntelligenceSend
+    // Подсчет использования для событий чата
+    if (chatState.context.chatMessages.length > 0 && isBackendConnected) {
+      setAIUsageStats((prev) => ({
+        ...prev,
+        totalRequests: prev.totalRequests + 1,
+      }))
 
-    // Перехватываем события для подсчета использования
-    const wrappedChatSend = (event: ChatMachineEvent) => {
-      if (event.type === "SEND_MESSAGE" && isBackendConnected) {
-        setAIUsageStats((prev) => ({
-          ...prev,
-          totalRequests: prev.totalRequests + 1,
-        }))
-
-        // Логируем использование в backend
-        backendSync
-          .executeCommand({
-            type: "Analytics",
-            params: {
-              type: "LogAIUsage",
-              params: {
-                service: "chat",
-                eventType: "message_sent",
-                timestamp: new Date().toISOString(),
-              },
-            },
-          })
-          .catch(console.error)
-      }
-      originalChatSend(event)
+      // Логируем использование в backend
+      ;(backendSync as any)
+        .executeCommand?.({
+          type: "LogAIUsage",
+          service: "chat",
+          eventType: "message_sent",
+          timestamp: new Date().toISOString(),
+        })
+        .catch(console.error)
     }
-
-    // Возвращаем оригинальные функции при размонтировании
-    return () => {
-      // Cleanup если нужно
-    }
-  }, [chatSend, montagePlannerSend, aiIntelligenceSend, isBackendConnected])
+  }, [chatState.context.chatMessages.length, isBackendConnected, backendSync])
 
   const contextValue: AIServicesDomainContextValue = {
     config: domainConfig,

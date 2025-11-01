@@ -66,15 +66,15 @@ export class MultiPlatformEngine {
 
     // Переводим при необходимости
     if (context.targetLanguages.length > 0) {
-      await this.languageAdapter.translate(adaptedContent, context.sourceLanguage, context.targetLanguages)
+      await this.languageAdapter.translate(adaptedContent as any, context.sourceLanguage, context.targetLanguages)
     }
 
     // Оцениваем качество адаптации
     const quality = await this.evaluateAdaptation(adaptedContent, platform)
 
     return {
-      platform: platformId,
-      content: adaptedContent,
+      platform: platformId as any,
+      content: adaptedContent as any,
       quality,
       issues: this.detectIssues(adaptedContent, platform),
       suggestions: await this.generateSuggestions(adaptedContent, platform),
@@ -89,13 +89,13 @@ export class MultiPlatformEngine {
       const context: PlatformAdaptationContext = {
         analysis: request.sourceContent.analysis,
         script: request.sourceContent.script,
-        targetPlatform: getPlatformConfig(platformId),
+        targetPlatform: getPlatformConfig(platformId as any),
         sourceLanguage: await this.detectSourceLanguage(request.sourceContent),
         targetLanguages: request.languages,
         userPreferences: request.preferences,
       }
 
-      return this.adaptForPlatform(context, platformId)
+      return this.adaptForPlatform(context, platformId as any)
     })
   }
 
@@ -203,8 +203,8 @@ export class MultiPlatformEngine {
     }
 
     return {
-      platform: platform.id,
-      videoStrategy,
+      platform: platform.id as any,
+      videoStrategy: videoStrategy as any,
       audioStrategy,
       textStrategy,
       graphicsStrategy,

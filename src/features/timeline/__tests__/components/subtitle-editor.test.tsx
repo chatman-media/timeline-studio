@@ -7,10 +7,10 @@ import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen, waitFor } from "@/test/test-utils"
 
 import { SubtitleEditor } from "../../components/subtitle-editor"
-import type { SubtitleClip } from "../../types/timeline"
+import type { TimelineClip } from "../../types/timeline"
 
 // Мокаем данные субтитра
-const mockSubtitle: SubtitleClip = {
+const mockSubtitle: TimelineClip = {
   id: "subtitle-1",
   trackId: "track-1",
   type: "subtitle",

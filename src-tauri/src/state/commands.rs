@@ -688,7 +688,7 @@ pub enum ProjectCommand {
   AnalyzeEffectPerformance {
     effect_id: String,
     duration_seconds: f64,
-  },д
+  },
 
   // Template Management commands
   SaveTemplate {

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { ClipGroup } from "../../../types/clip-groups"
 import type { TimelineClip } from "../../../types/timeline"
 import { CollapsedGroup } from "../collapsed-group"

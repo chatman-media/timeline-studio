@@ -2,7 +2,8 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import "@testing-library/jest-dom"
 
-import { ContentType } from "@/domains/ai-services/types"
+// import { ContentType } from "@/domains/ai-services/types"
+type ContentType = "highlight" | "lowlight" | "object" | "person"
 
 // SceneType enum for testing
 enum SceneType {
@@ -78,7 +79,7 @@ describe("AIMarkerControls", () => {
     // Reset analysis state
     mockAnalysisState.isAnalyzing = false
     mockAnalysisState.sceneAnalysis = null
-    mockAnalysisState.keyMoments = []
+    ;(mockAnalysisState as any).keyMoments = []
     mockAnalysisState.insights = null
   })
 
@@ -102,7 +103,7 @@ describe("AIMarkerControls", () => {
 
   it("generates markers from scene analysis", async () => {
     // Setup scene analysis data
-    mockAnalysisState.sceneAnalysis = {
+    ;(mockAnalysisState as any).sceneAnalysis = {
       scenes: [
         {
           id: "scene1",
@@ -184,22 +185,22 @@ describe("AIMarkerControls", () => {
     fireEvent.click(generateButton)
 
     await waitFor(() => {
-      expect(mockCreateMarkersFromScenes).toHaveBeenCalledWith(mockAnalysisState.sceneAnalysis.scenes)
+      expect(mockCreateMarkersFromScenes).toHaveBeenCalledWith((mockAnalysisState as any).sceneAnalysis.scenes)
       expect(mockSend).toHaveBeenCalledWith({ type: "ADD_MARKER", marker: mockSceneMarkers[0] })
       expect(mockSend).toHaveBeenCalledWith({ type: "ADD_MARKER", marker: mockSceneMarkers[1] })
     })
 
     // Check that markers were created and added
-    expect(mockCreateMarkersFromScenes).toHaveBeenCalledWith(mockAnalysisState.sceneAnalysis.scenes)
+    expect(mockCreateMarkersFromScenes).toHaveBeenCalledWith((mockAnalysisState as any).sceneAnalysis.scenes)
     expect(mockSend).toHaveBeenCalledWith({ type: "ADD_MARKER", marker: mockSceneMarkers[0] })
     expect(mockSend).toHaveBeenCalledWith({ type: "ADD_MARKER", marker: mockSceneMarkers[1] })
   })
 
   it("generates markers from key moments", async () => {
     // Setup key moments data
-    mockAnalysisState.keyMoments = [
-      { time: 10, type: "action", confidence: 0.85, description: "Action moment" },
-      { time: 20, type: "emotion", confidence: 0.9, description: "Emotional moment" },
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, description: "Action moment", score: 0.85 },
+      { id: "km2", time: 20, type: "emotion", confidence: 0.9, description: "Emotional moment", score: 0.9 },
     ]
 
     const mockMomentMarkers = [
@@ -221,7 +222,9 @@ describe("AIMarkerControls", () => {
   })
 
   it("shows progress during generation", async () => {
-    mockAnalysisState.keyMoments = [{ time: 10, type: "action", confidence: 0.85 }]
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, score: 0.85, timestamp: 10 },
+    ]
     mockCreateMarkersFromKeyMoments.mockReturnValue([{ id: "marker1", time: 10 }])
     mockGroupNearbyMarkers.mockImplementation((markers) => markers)
 
@@ -231,9 +234,6 @@ describe("AIMarkerControls", () => {
     fireEvent.click(generateButton)
 
     expect(screen.getByText("Создание...")).toBeInTheDocument()
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-
-    // Check that progress bar is visible during generation
     expect(screen.getByRole("progressbar")).toBeInTheDocument()
   })
 
@@ -293,7 +293,9 @@ describe("AIMarkerControls", () => {
   })
 
   it("handles error during marker generation", async () => {
-    mockAnalysisState.keyMoments = [{ time: 10 }]
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, score: 0.85, timestamp: 10 },
+    ]
     mockCreateMarkersFromKeyMoments.mockImplementation(() => {
       throw new Error("Generation failed")
     })
@@ -314,7 +316,9 @@ describe("AIMarkerControls", () => {
   })
 
   it("closes result alert", async () => {
-    mockAnalysisState.keyMoments = [{ time: 10 }]
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, score: 0.85, timestamp: 10 },
+    ]
     mockCreateMarkersFromKeyMoments.mockReturnValue([{ id: "marker1", time: 10 }])
     mockGroupNearbyMarkers.mockImplementation((markers) => markers)
 
@@ -351,9 +355,9 @@ describe("AIMarkerControls", () => {
   })
 
   it("groups nearby markers when enabled", async () => {
-    mockAnalysisState.keyMoments = [
-      { time: 10, type: "action" },
-      { time: 11, type: "emotion" },
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, score: 0.85, timestamp: 10 },
+      { id: "km2", time: 11, type: "emotion", confidence: 0.9, score: 0.9, timestamp: 11 },
     ]
 
     const mockMarkers = [
@@ -384,7 +388,9 @@ describe("AIMarkerControls", () => {
   })
 
   it("displays progress bar during generation", async () => {
-    mockAnalysisState.keyMoments = [{ time: 10 }]
+    ;(mockAnalysisState as any).keyMoments = [
+      { id: "km1", time: 10, type: "action", confidence: 0.85, score: 0.85, timestamp: 10 },
+    ]
     mockCreateMarkersFromKeyMoments.mockReturnValue([{ id: "marker1", time: 10 }])
     mockGroupNearbyMarkers.mockImplementation((markers) => markers)
 
@@ -394,9 +400,6 @@ describe("AIMarkerControls", () => {
     fireEvent.click(generateButton)
 
     // Progress should be visible during generation
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-
-    // Check that progress bar is visible during generation
     expect(screen.getByRole("progressbar")).toBeInTheDocument()
   })
 })

@@ -5,12 +5,10 @@
 
 import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
-import { createContext, useContext, useEffect, useState } from "react"
-import React from "react"
-
-import { type MontagePlannerEvent, montagePlannerMachine } from "./montage-planner-machine"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { useAppSettings } from "../../app-state"
 import type { AnalysisProgress as MontageAnalysisProgress, MontagePlan } from "../types"
+import { type MontagePlannerEvent, montagePlannerMachine } from "./montage-planner-machine"
 
 // Context type
 interface MontagePlannerContextType {
@@ -134,8 +132,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
   const canGeneratePlan = hasFragments && !isAnalyzing && !isGenerating && !isOptimizing
   const canOptimizePlan = hasPlan && !isAnalyzing && !isGenerating && !isOptimizing
   const progress = Number(context.progress?.progress) || 0
-  const progressMessage =
-    context.progress?.message || getProgressMessage(context.progress?.phase || "idle")
+  const progressMessage = context.progress?.message || getProgressMessage(context.progress?.phase || "idle")
   const isConnected = !connectionError
 
   // Context value

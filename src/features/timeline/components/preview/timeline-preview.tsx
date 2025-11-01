@@ -31,7 +31,7 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
       console.log("[Timeline Preview] Cache stats:", {
         entries: cacheStats.entries,
         sizeMB: cacheStats.sizeMB.toFixed(2),
-        hitRate: `${(cacheStats.hitRate * 100).toFixed(1)}%`,
+        hitRate: `${((cacheStats as any).hitRate * 100 || 0).toFixed(1)}%`,
       })
     }
   }, [cacheStats])
@@ -39,7 +39,11 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
   return (
     <div className={cn("relative w-full h-full bg-black", className)}>
       {/* Canvas для WebGL рендеринга */}
-      <canvas ref={canvasRef} className="w-full h-full object-contain" style={{ imageRendering: "high-quality" }} />
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full object-contain"
+        style={{ imageRendering: "optimizeQuality" as any }}
+      />
 
       {/* Скрытый video элемент для извлечения кадров */}
       <video ref={videoRef} className="hidden" muted playsInline />
@@ -57,17 +61,17 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
               <div>Size: {cacheStats.sizeMB.toFixed(1)}MB</div>
               <div>
                 Hit Rate:{" "}
-                {cacheStats.hitRate > 0 ? (
+                {(cacheStats as any).hitRate > 0 ? (
                   <span
                     className={
-                      cacheStats.hitRate > 0.8
+                      (cacheStats as any).hitRate > 0.8
                         ? "text-green-400"
-                        : cacheStats.hitRate > 0.5
+                        : (cacheStats as any).hitRate > 0.5
                           ? "text-yellow-400"
                           : "text-red-400"
                     }
                   >
-                    {(cacheStats.hitRate * 100).toFixed(0)}%
+                    {((cacheStats as any).hitRate * 100 || 0).toFixed(0)}%
                   </span>
                 ) : (
                   "0%"

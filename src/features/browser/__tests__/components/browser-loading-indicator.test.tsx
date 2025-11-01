@@ -35,8 +35,8 @@ describe("BrowserLoadingIndicator", () => {
     isLoading: false,
     error: null,
     progress: 0,
-    loadedSources: new Set<string>(),
-    loadingQueue: [] as string[],
+    loadedSources: new Set<"built-in" | "local" | "remote" | "imported">(),
+    loadingQueue: [] as ("built-in" | "local" | "remote" | "imported")[],
   }
 
   const mockStats = {
@@ -46,6 +46,14 @@ describe("BrowserLoadingIndicator", () => {
       filters: 0,
       transitions: 0,
     },
+    bySource: {
+      "built-in": 0,
+      local: 0,
+      remote: 0,
+      imported: 0,
+    },
+    cacheSize: 0,
+    memoryUsage: 0,
   }
 
   beforeEach(() => {
@@ -221,8 +229,8 @@ describe("BrowserTabLoadingBadge", () => {
     isLoading: false,
     error: null,
     progress: 0,
-    loadedSources: new Set<string>(),
-    loadingQueue: [] as string[],
+    loadedSources: new Set<"built-in" | "local" | "remote" | "imported">(),
+    loadingQueue: [] as ("built-in" | "local" | "remote" | "imported")[],
   }
 
   const mockStats = {
@@ -232,6 +240,14 @@ describe("BrowserTabLoadingBadge", () => {
       filters: 0,
       transitions: 0,
     },
+    bySource: {
+      "built-in": 0,
+      local: 0,
+      remote: 0,
+      imported: 0,
+    },
+    cacheSize: 0,
+    memoryUsage: 0,
   }
 
   beforeEach(() => {

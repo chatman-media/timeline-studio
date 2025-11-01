@@ -61,7 +61,7 @@ export function TimelineAIOverlay({
     // Сегменты сцен
     if (aiState.sceneAnalysis && Array.isArray(aiState.sceneAnalysis)) {
       // Обрабатываем AdvancedSceneAnalysis[]
-      const allScenes = aiState.sceneAnalysis.flatMap((analysis: any) => analysis.scene ? [analysis.scene] : [])
+      const allScenes = aiState.sceneAnalysis.flatMap((analysis: any) => (analysis.scene ? [analysis.scene] : []))
       allScenes.forEach((scene: any) => {
         newSegments.push({
           id: `scene-${scene.id}`,
