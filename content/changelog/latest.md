@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/chatman-media/timeline-studio/compare/v1.6.0...v1.6.1) (2025-10-19)
+
+
+### Bug Fixes
+
+* **promo:** update maito ([e707990](https://github.com/chatman-media/timeline-studio/commit/e707990680e0584442177923f0c16c37c4339421))
+
 # [1.6.0](https://github.com/chatman-media/timeline-studio/compare/v1.5.0...v1.6.0) (2025-10-03)
 
 
