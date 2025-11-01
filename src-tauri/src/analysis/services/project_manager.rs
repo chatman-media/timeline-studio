@@ -9,7 +9,8 @@ use uuid::Uuid;
 
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
-use crate::recognition::person_database::PersonDatabase;
+use crate::analysis::database::queries::ProjectStatistics;
+// use crate::recognition::person_database::PersonDatabase;  // TODO: интегрировать с person database
 
 /// Менеджер проектов анализа
 pub struct ProjectManager {
@@ -185,32 +186,90 @@ impl ProjectManager {
     }
   }
 
-  /// Получение длительности файла (заглушка для демонстрации)
-  async fn get_file_duration(&self, _file_path: &str) -> Result<f32> {
-    // В реальной реализации здесь будет FFprobe или аналог
-    Ok(60.0) // Заглушка: 60 секунд
+  /// Получение длительности файла
+  async fn get_file_duration(&self, file_path: &str) -> Result<f32> {
+    // Простая оценка на основе размера файла
+    let path = std::path::Path::new(file_path);
+    if !path.exists() {
+      return Err(anyhow::anyhow!("File not found: {}", file_path));
+    }
+
+    let file_size = path.metadata()?.len() as f32;
+    let extension = path.extension()
+      .and_then(|s| s.to_str())
+      .unwrap_or("")
+      .to_lowercase();
+
+    // Оценочная длительность на основе размера и типа файла
+    let duration = match extension.as_str() {
+      "mp4" | "mkv" | "avi" | "mov" => file_size / 2_000_000.0, // ~2MB per second for video
+      "mp3" | "wav" | "flac" => file_size / 150_000.0,         // ~150KB per second for audio
+      "jpg" | "png" | "jpeg" => 0.0,                           // Images have no duration
+      _ => file_size / 1_000_000.0,                           // Default: 1MB per second
+    };
+
+    Ok(duration.max(1.0).min(7200.0)) // Min 1s, max 2 hours
   }
 
-  /// Получение информации о видео (заглушка)
+  /// Получение информации о видео
   async fn get_video_info(
     &self,
-    _file_path: &str,
+    file_path: &str,
   ) -> Result<(
     Option<Resolution>,
     Option<f32>,
     Option<String>,
     Option<String>,
   )> {
-    // В реальной реализации здесь будет FFprobe
-    Ok((
-      Some(Resolution {
-        width: 1920,
-        height: 1080,
-      }),
-      Some(30.0),
-      Some("h264".to_string()),
-      Some("mp4".to_string()),
-    ))
+    let path = std::path::Path::new(file_path);
+    if !path.exists() {
+      return Err(anyhow::anyhow!("File not found: {}", file_path));
+    }
+
+    let extension = path.extension()
+      .and_then(|s| s.to_str())
+      .unwrap_or("")
+      .to_lowercase();
+
+    // Определяем параметры на основе расширения файла
+    match extension.as_str() {
+      "mp4" | "mkv" | "avi" | "mov" => {
+        let file_size = path.metadata()?.len();
+        
+        // Оценочное разрешение на основе размера файла
+        let (width, height) = if file_size > 500_000_000 { // > 500MB
+          (3840, 2160) // 4K
+        } else if file_size > 100_000_000 { // > 100MB
+          (1920, 1080) // FullHD
+        } else {
+          (1280, 720)  // HD
+        };
+
+        Ok((
+          Some(Resolution { width, height }),
+          Some(30.0), // Default FPS
+          Some("h264".to_string()), // Most common codec
+          Some(extension),
+        ))
+      }
+      "jpg" | "png" | "jpeg" | "gif" => {
+        // Images - default resolution, no FPS
+        Ok((
+          Some(Resolution { width: 1920, height: 1080 }),
+          None, // No FPS for images
+          Some("image".to_string()),
+          Some(extension),
+        ))
+      }
+      "mp3" | "wav" | "flac" | "aac" => {
+        // Audio only - no video info
+        Ok((None, None, Some("audio".to_string()), Some(extension)))
+      }
+      _ => {
+        // Unknown format
+        Ok((None, None, None, Some(extension)))
+      }
+    }
   }
 
   /// Получение проекта по ID

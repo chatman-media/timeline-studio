@@ -1,6 +1,6 @@
 // Analysis engine - основной движок анализа интегрированный с существующими сервисами
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
@@ -12,6 +12,36 @@ use crate::montage_planner::services::*;
 use crate::montage_planner::types::*;
 use crate::recognition::commands::yolo_commands::YoloProcessorState;
 use crate::recognition::person_database::PersonDatabase;
+
+// Missing structs for compilation
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct PersonMetadata {
+    pub created_at: String,
+    pub updated_at: String,
+    pub source: String,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ConfidenceScores {
+    pub detection: f32,
+    pub identification: f32,
+    pub overall: f32,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct QualityMetrics {
+    pub face_quality: f32,
+    pub lighting_quality: f32,
+    pub resolution_quality: f32,
+    pub overall_quality: f32,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct PersonSettings {
+    pub auto_clustering: bool,
+    pub similarity_threshold: f32,
+    pub quality_threshold: f32,
+}
 
 /// Движок анализа - координирует все модули анализа
 pub struct AnalysisEngine {
@@ -199,13 +229,15 @@ impl AnalysisEngine {
     let metadata = video_processor.extract_metadata(&file.file_path).await?;
 
     let analysis_options = AnalysisOptions {
-      enable_composition_analysis: true,
-      enable_quality_analysis: true,
-      enable_moment_detection: true,
+      enable_object_detection: true,
+      enable_face_detection: true,
       enable_emotion_analysis: true,
+      enable_composition_analysis: true,
+      enable_audio_analysis: true,
+      frame_sample_rate: 1.0, // Анализируем каждую секунду
       quality_threshold: 50.0,
-      frame_interval: 1.0, // Анализируем каждую секунду
-      max_detections_per_frame: 50,
+      max_moments: Some(50),
+      frame_sampling_rate: 1.0,
     };
 
     let yolo_detections = video_processor
@@ -225,7 +257,6 @@ impl AnalysisEngine {
           metadata.width as f32,
           metadata.height as f32,
         )
-        .await
       {
         enhanced_detections.push((timestamp, enhanced));
       }
@@ -245,7 +276,7 @@ impl AnalysisEngine {
     for scene in &scenes {
       // Анализ эмоций для сцены
       if let Ok(emotions) = emotion_detector
-        .analyze_scene_emotions(&file.file_path, scene.start_time, scene.end_time)
+        .analyze_emotions(&file.file_path, scene.start_time, scene.end_time)
         .await
       {
         let mut enhanced_scene = scene.clone();
@@ -253,7 +284,7 @@ impl AnalysisEngine {
 
         // Анализ активности
         if let Ok(activity) = activity_calculator
-          .calculate_activity_level(
+          .calculate_activity(
             &enhanced_detections
               .iter()
               .filter(|(t, _)| *t >= scene.start_time as f64 && *t <= scene.end_time as f64)
@@ -280,11 +311,11 @@ impl AnalysisEngine {
       .map(|(timestamp, detection)| MontageDetection {
         timestamp: *timestamp,
         detection_type: DetectionType::Combined,
-        objects: detection.objects.clone(),
-        faces: detection.faces.clone(),
+        objects: detection.original_detections.clone(),
+        faces: vec![], // TODO: extract faces from detections
         composition_score: detection.composition_score.clone(),
-        activity_level: detection.activity_level,
-        emotional_tone: detection.emotional_tone.clone(),
+        activity_level: detection.visual_importance,
+        emotional_tone: EmotionalTone::default(), // TODO: extract from detection
       })
       .collect();
 
@@ -489,12 +520,12 @@ impl AnalysisEngine {
             sharpness: detection.composition_score.sharpness,
             noise_level: 1.0 - detection.composition_score.clarity,
             stability: detection.composition_score.stability,
-            persons_present: detection.faces.iter().map(|_| Uuid::new_v4()).collect(),
-            objects_detected: detection.objects.iter().map(|o| o.class.clone()).collect(),
+            persons_present: vec![], // TODO: extract faces
+            objects_detected: detection.original_detections.iter().map(|o| o.class.clone()).collect(),
             has_text: false, // TODO: детектировать текст
-            has_faces: !detection.faces.is_empty(),
-            emotional_tone: Some(detection.emotional_tone.clone()),
-            energy_level: detection.activity_level,
+            has_faces: false, // TODO: extract from detections
+            emotional_tone: Some(EmotionalTone::default()),
+            energy_level: detection.visual_importance,
             auto_description: Some(format!(
               "Scene from {:.1}s to {:.1}s",
               current_scene_start, scene_end
@@ -541,7 +572,7 @@ impl AnalysisEngine {
   /// Анализ персон в файле через PersonDatabase
   async fn analyze_persons_in_file(&self, file: &AnalysisMediaFile) -> Result<Vec<Uuid>> {
     use crate::recognition::types::*;
-    use crate::recognition::types_professional::*;
+    // use crate::recognition::types_professional::*;  // TODO: реализовать professional recognition
 
     log::debug!("Analyzing persons in file: {}", file.file_path);
 
@@ -628,8 +659,8 @@ impl AnalysisEngine {
                           include_in_search: true,
                           privacy_mode: false,
                         },
-                        created_at: chrono::Utc::now(),
-                        updated_at: chrono::Utc::now(),
+                        created_at: chrono::Utc::now().to_rfc3339(),
+                        updated_at: chrono::Utc::now().to_rfc3339(),
                       };
 
                       match self.person_db.create_person(new_person.clone()).await {
@@ -710,8 +741,8 @@ impl AnalysisEngine {
                         include_in_search: true,
                         privacy_mode: false,
                       },
-                      created_at: chrono::Utc::now(),
-                      updated_at: chrono::Utc::now(),
+                      created_at: chrono::Utc::now().to_rfc3339(),
+                      updated_at: chrono::Utc::now().to_rfc3339(),
                     };
 
                     if let Ok(_) = self.person_db.create_person(new_person.clone()).await {
@@ -871,17 +902,17 @@ impl AnalysisEngine {
       scene_id: None,
       timestamp: moment.timestamp as f32,
       duration: moment.duration as f32,
-      moment_type: self.convert_moment_category(moment.category),
+      moment_type: self.convert_moment_category(moment.category.clone()),
       sub_type: Some(format!("{:?}", moment.category)),
       importance_score: moment.total_score,
       scoring_factors: ScoringFactors {
-        emotion_intensity: moment.scores.get("emotion").copied().unwrap_or(0.0),
-        visual_quality: moment.scores.get("visual").copied().unwrap_or(0.0),
-        motion_interest: moment.scores.get("motion").copied().unwrap_or(0.0),
-        audio_clarity: moment.scores.get("audio").copied().unwrap_or(0.0),
+        emotion_intensity: moment.scores.emotional,
+        visual_quality: moment.scores.visual,
+        motion_interest: moment.scores.action,
+        audio_clarity: moment.scores.technical,
         overall_quality: moment.total_score,
         weighted_score: moment.total_score,
-        confidence: moment.scores.get("confidence").copied().unwrap_or(0.8),
+        confidence: moment.scores.composition / 100.0,
         ..Default::default()
       },
       description: format!("{:?} moment at {:.1}s", moment.category, moment.timestamp),
@@ -911,12 +942,13 @@ impl AnalysisEngine {
   ) -> MomentType {
     match category {
       crate::montage_planner::types::MomentCategory::Action => MomentType::ActionClimax,
-      crate::montage_planner::types::MomentCategory::Emotional => MomentType::EmotionalPeak,
-      crate::montage_planner::types::MomentCategory::Visual => MomentType::VisualStunning,
-      crate::montage_planner::types::MomentCategory::Audio => MomentType::AudioPeak,
-      crate::montage_planner::types::MomentCategory::Quality => MomentType::QualityPeak,
-      crate::montage_planner::types::MomentCategory::Motion => MomentType::MotionPeak,
+      crate::montage_planner::types::MomentCategory::Drama => MomentType::EmotionalPeak,
+      crate::montage_planner::types::MomentCategory::Highlight => MomentType::VisualStunning,
+      crate::montage_planner::types::MomentCategory::Comedy => MomentType::ComedicMoment,
+      crate::montage_planner::types::MomentCategory::Opening => MomentType::NarrativeTurning,
+      crate::montage_planner::types::MomentCategory::Closing => MomentType::NarrativeTurning,
       crate::montage_planner::types::MomentCategory::Transition => MomentType::SceneTransition,
+      crate::montage_planner::types::MomentCategory::BRoll => MomentType::ObjectFocus,
     }
   }
 }

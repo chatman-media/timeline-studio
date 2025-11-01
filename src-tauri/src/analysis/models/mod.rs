@@ -240,6 +240,11 @@ pub enum SceneType {
   Establishing, // Establishing shot
   Reaction,     // Реакция персонажа
   Montage,      // Монтажная последовательность
+  Cinematic,    // Кинематографическая сцена
+  Opening,      // Открывающая сцена
+  Ending,       // Завершающая сцена
+  Interview,    // Интервью
+  Content,      // Основной контент
   Unknown,      // Неопределенная
 }
 
@@ -312,6 +317,11 @@ pub enum MomentType {
   QualityPeak,       // Пик технического качества
   MotionPeak,        // Пик движения
   AudioPeak,         // Аудио акцент
+  Highlight,         // Основной хайлайт
+  Audio,             // Аудио момент
+  Emotional,         // Эмоциональный момент
+  Action,            // Действие
+  Visual,            // Визуальный момент
   UserDefined,       // Определен пользователем
 }
 
@@ -709,7 +719,7 @@ pub struct AnalysisSearchResult {
   pub data: serde_json::Value,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SearchResultType {
   Scene,

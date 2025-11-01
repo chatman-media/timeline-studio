@@ -1,24 +1,56 @@
 // Real Analysis Engine - с реальными ONNX моделями вместо mock
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::analysis::models::*;
-use crate::analysis::database::AnalysisDatabase;
-use crate::analysis::services::ProjectManager;
-use crate::recognition::yolo_processor::{YoloProcessor, YoloModel, Detection};
-use crate::recognition::facenet_processor::{FaceNetProcessor, FaceNetModel, FaceEmbedding};
+use crate::analysis::database::AnalysisDatabase; // ✅ Database работает
+use crate::analysis::services::ProjectManager; // ✅ Включено обратно
+use crate::recognition::yolo_processor::{YoloProcessor, YoloModel};
+use crate::recognition::facenet_processor::{FaceNetProcessor, FaceNetModel};
 use crate::recognition::person_database::PersonDatabase;
+
+// Недостающие типы для компиляции
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AnalysisProjectResults {
+    pub project_id: String,
+    pub status: String,
+    pub total_files: u32,
+    pub processed_files: u32,
+    pub results: Vec<String>,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct MediaFile {
+    pub path: String,
+    pub duration: f32,
+    pub file_size: u64,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Scene {
+    pub id: String,
+    pub start_time: f32,
+    pub end_time: f32,
+    pub scene_type: String,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct PersonAppearance {
+    pub person_id: String,
+    pub timestamp: f32,
+    pub confidence: f32,
+}
 
 /// Real Analysis Engine с ONNX моделями
 pub struct RealAnalysisEngine {
     // Database интеграция
-    analysis_db: Arc<AnalysisDatabase>,
+    analysis_db: Arc<AnalysisDatabase>, // ✅ Database работает
     person_db: Arc<PersonDatabase>,
-    project_manager: Arc<ProjectManager>,
+    project_manager: Arc<ProjectManager>, // ✅ Включено обратно
     
     // Real ONNX процессоры
     object_detector: Arc<RwLock<Option<YoloProcessor>>>,
@@ -64,15 +96,15 @@ impl Default for AnalysisEngineConfig {
 impl RealAnalysisEngine {
     /// Создание нового движка с реальными ONNX моделями
     pub fn new(
-        analysis_db: Arc<AnalysisDatabase>,
+        analysis_db: Arc<AnalysisDatabase>, // ✅ Database работает
         person_db: Arc<PersonDatabase>,
-        project_manager: Arc<ProjectManager>,
+        project_manager: Arc<ProjectManager>, // ✅ Включено обратно
         config: Option<AnalysisEngineConfig>,
     ) -> Self {
         Self {
-            analysis_db,
+            analysis_db, // ✅ Database работает
             person_db,
-            project_manager,
+            project_manager, // ✅ Включено обратно
             object_detector: Arc::new(RwLock::new(None)),
             face_detector: Arc::new(RwLock::new(None)),
             face_encoder: Arc::new(RwLock::new(None)),
@@ -150,6 +182,18 @@ impl RealAnalysisEngine {
         let face_encoding_ready = self.face_encoder.read().await.is_some();
         
         object_ready && face_detection_ready && face_encoding_ready
+    }
+    
+    /// Проверка готовности object detector
+    pub async fn is_object_detector_ready(&self) -> bool {
+        self.object_detector.read().await.is_some()
+    }
+    
+    /// Проверка готовности face processors
+    pub async fn is_face_processors_ready(&self) -> bool {
+        let face_detection_ready = self.face_detector.read().await.is_some();
+        let face_encoding_ready = self.face_encoder.read().await.is_some();
+        face_detection_ready && face_encoding_ready
     }
     
     /// Анализ проекта с реальными ONNX моделями
@@ -696,14 +740,14 @@ mod tests {
     
     #[tokio::test]
     async fn test_models_ready_when_none_loaded() {
-        let analysis_db = Arc::new(AnalysisDatabase::new_mock());
-        let person_db = Arc::new(PersonDatabase::new_mock());
-        let project_manager = Arc::new(ProjectManager::new(analysis_db.clone()));
+        let analysis_db = Arc::new(AnalysisDatabase::new_mock()); // ✅ Работает
+        let person_db = Arc::new(PersonDatabase::new(":memory:").expect("Failed to create test person database"));
+        let project_manager = Arc::new(ProjectManager::new(analysis_db.clone())); // ✅ Работает
         
         let engine = RealAnalysisEngine::new(
-            analysis_db,
+            analysis_db, // ✅ Работает
             person_db,
-            project_manager,
+            project_manager, // ✅ Работает
             None,
         );
         

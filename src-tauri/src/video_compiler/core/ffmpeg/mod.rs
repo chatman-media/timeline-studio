@@ -5,6 +5,7 @@
 
 pub mod analysis;
 pub mod audio_analysis;
+pub mod unified_audio_analysis; // 🆕 Modern unified audio analysis
 pub mod color_correction;
 pub mod keyframes;
 pub mod motion_analysis;

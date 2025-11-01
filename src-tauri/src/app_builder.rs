@@ -468,6 +468,17 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::scan_media_folder,
     crate::scan_media_folder_with_thumbnails,
     crate::test_plugin_system,
+    // 🆕 Unified Audio Analysis Commands
+    crate::analysis::commands::analyze_audio_unified,
+    crate::analysis::commands::analyze_audio_quick,
+    crate::analysis::commands::analyze_audio_with_fallback,
+    crate::analysis::commands::get_audio_system_capabilities,
+    crate::analysis::commands::get_recommended_audio_config,
+    crate::analysis::commands::analyze_audio_batch,
+    crate::analysis::commands::benchmark_unified_audio_analysis,
+    crate::analysis::commands::get_unified_audio_analysis_status,
+    crate::analysis::commands::analyze_audio_transcription_unified,
+    crate::analysis::commands::check_whisper_availability_unified,
   ])
 }
 

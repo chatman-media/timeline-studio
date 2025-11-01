@@ -102,17 +102,22 @@ impl AnalysisDatabase {
         rusqlite::params![project_id.to_string()],
         |row| {
           Ok(AnalysisProject {
-            id: Uuid::parse_str(&row.get::<_, String>(0)?)?,
+            id: Uuid::parse_str(&row.get::<_, String>(0)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
             name: row.get(1)?,
             description: row.get(2)?,
-            created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(3)?)?
+            created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(3)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
               .with_timezone(&Utc),
-            updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(4)?)?
+            updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(4)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
               .with_timezone(&Utc),
-            status: serde_json::from_str(&row.get::<_, String>(5)?)?,
+            status: serde_json::from_str(&row.get::<_, String>(5)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
             progress: row.get(6)?,
             error_message: row.get(7)?,
-            config: serde_json::from_str(&row.get::<_, String>(8)?)?,
+            config: serde_json::from_str(&row.get::<_, String>(8)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
             total_files: row.get(9)?,
             total_duration: row.get(10)?,
             processed_files: row.get(11)?,
@@ -120,14 +125,17 @@ impl AnalysisDatabase {
             total_persons: row.get(13)?,
             total_key_moments: row.get(14)?,
             average_quality: row.get(15)?,
-            tags: serde_json::from_str(&row.get::<_, String>(16)?)?,
+            tags: serde_json::from_str(&row.get::<_, String>(16)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
             location: row.get(17)?,
             recording_date: row
               .get::<_, Option<String>>(18)?
               .map(|s| DateTime::parse_from_rfc3339(&s))
-              .transpose()?
+              .transpose()
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
               .map(|dt| dt.with_timezone(&Utc)),
-            metadata: serde_json::from_str(&row.get::<_, String>(19)?)?,
+            metadata: serde_json::from_str(&row.get::<_, String>(19)?)
+              .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
           })
         },
       )
@@ -230,23 +238,28 @@ impl AnalysisDatabase {
         };
 
         Ok(AnalysisMediaFile {
-          id: Uuid::parse_str(&row.get::<_, String>(0)?)?,
-          project_id: Uuid::parse_str(&row.get::<_, String>(1)?)?,
+          id: Uuid::parse_str(&row.get::<_, String>(0)?)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
+          project_id: Uuid::parse_str(&row.get::<_, String>(1)?)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
           file_path: row.get(2)?,
           file_name: row.get(3)?,
           file_size: row.get(4)?,
-          media_type: serde_json::from_str(&row.get::<_, String>(5)?)?,
+          media_type: serde_json::from_str(&row.get::<_, String>(5)?)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
           duration: row.get(6)?,
           resolution,
           fps: row.get(9)?,
           codec: row.get(10)?,
           format: row.get(11)?,
-          processing_status: serde_json::from_str(&row.get::<_, String>(12)?)?,
+          processing_status: serde_json::from_str(&row.get::<_, String>(12)?)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?,
           processing_progress: row.get(13)?,
           processed_at: row
             .get::<_, Option<String>>(14)?
             .map(|s| DateTime::parse_from_rfc3339(&s))
-            .transpose()?
+            .transpose()
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
             .map(|dt| dt.with_timezone(&Utc)),
           scenes_count: row.get(15)?,
           persons_count: row.get(16)?,
@@ -256,7 +269,9 @@ impl AnalysisDatabase {
           average_brightness: row.get(20)?,
           audio_clarity: row.get(21)?,
           has_speech: row.get(22)?,
-          created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(23)?)?.with_timezone(&Utc),
+          created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(23)?)
+            .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
+            .with_timezone(&Utc),
         })
       })?
       .collect::<Result<Vec<_>, _>>()?;
@@ -441,7 +456,7 @@ impl AnalysisDatabase {
     project_id: &Uuid,
   ) -> Result<
     Vec<(
-      crate::recognition::types_professional::PersonProfile,
+      crate::recognition::types::PersonProfile,
       ProjectPersonAssociation,
     )>,
   > {
@@ -583,6 +598,17 @@ impl AnalysisDatabase {
   pub async fn get_project_statistics(&self, project_id: &Uuid) -> Result<ProjectStatistics> {
     let conn = self.conn.lock().await;
     queries::get_project_statistics(&*conn, project_id)
+  }
+
+  /// Создание mock database для тестов
+  pub fn new_mock() -> Self {
+    let conn = Connection::open(":memory:").expect("Failed to create mock database");
+    let person_db = Arc::new(PersonDatabase::new(":memory:").expect("Failed to create mock person database"));
+    
+    Self {
+      conn: Arc::new(Mutex::new(conn)),
+      person_db,
+    }
   }
 }
 

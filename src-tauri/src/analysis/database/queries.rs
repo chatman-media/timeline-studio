@@ -1,6 +1,6 @@
 // Complex database queries - сложные запросы для системы анализа
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use chrono::{DateTime, Utc};
 use rusqlite::Connection;
 use std::collections::HashMap;
@@ -8,7 +8,32 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::analysis::models::*;
-use crate::recognition::person_database::{PersonDatabase, PersonProfile};
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProjectStatistics {
+    pub total_files: u32,
+    pub total_duration: f32,
+    pub processed_files: u32,
+    pub total_scenes: u32,
+    pub total_persons: u32,
+    pub total_key_moments: u32,
+    pub average_quality: f32,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct QualityDistribution {
+    pub excellent: u32,
+    pub good: u32,
+    pub average: u32,
+    pub poor: u32,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct TemporalDistribution {
+    pub hours: Vec<u32>,
+}
+use crate::recognition::person_database::PersonDatabase;
+use crate::recognition::types::PersonProfile;
 
 /// Получение сцен проекта с сортировкой и фильтрацией
 pub fn get_project_scenes(conn: &Connection, project_id: &Uuid) -> Result<Vec<AnalysisScene>> {
@@ -176,8 +201,12 @@ pub async fn get_project_persons_with_stats(
         user_tags: serde_json::from_str(&row.get::<_, String>(18)?).unwrap_or_default(),
         is_main_character: row.get(19)?,
         custom_role: row.get(20)?,
-        created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(21)?)?.with_timezone(&Utc),
-        updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(22)?)?.with_timezone(&Utc),
+        created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(21)?)
+          .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
+          .with_timezone(&Utc),
+        updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(22)?)
+          .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?
+          .with_timezone(&Utc),
       })
     })?
     .collect::<Result<Vec<_>, _>>()?;
@@ -305,12 +334,14 @@ fn search_in_scenes(
         relevance_score += 0.6;
       }
 
+      let combined_desc = auto_desc.as_ref().or(user_desc.as_ref()).unwrap_or(&String::new()).clone();
+      
       let highlight = format!(
         "Сцена {:.1}-{:.1}с: {} {}",
         start_time,
         end_time,
         scene_type,
-        auto_desc.or(user_desc).unwrap_or_default()
+        combined_desc
       );
 
       let data = serde_json::json!({

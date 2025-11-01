@@ -54,7 +54,7 @@ use montage_planner::commands::MontageState;
 
 // Модуль Analysis System
 pub mod analysis;
-use analysis::commands::AnalysisState;
+// use analysis::commands::AnalysisState; // Temporarily disabled due to missing implementation
 
 // Модуль безопасности и API ключей
 pub mod security;
@@ -63,6 +63,24 @@ use security::secure_storage::SecureStorage;
 // Модуль управления состоянием
 pub mod state;
 use state::StateManager;
+
+// Application state for analysis system
+#[derive(Clone)]
+pub struct AppState {
+    pub analysis_db: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
+    pub person_db: Option<std::sync::Arc<crate::recognition::person_database::PersonDatabase>>,
+    pub project_manager: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
+}
+
+impl Default for AppState {
+    fn default() -> Self {
+        Self {
+            analysis_db: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
+            person_db: None,
+            project_manager: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
+        }
+    }
+}
 
 // Модуль экспорта типов
 pub mod types_export;
@@ -331,34 +349,10 @@ pub fn run() {
         }
       };
 
-      // Initialize Analysis System
-      if let Some(person_db_ref) = person_db {
-        let app_handle = app.handle();
-        match app_handle.path().app_data_dir() {
-          Ok(app_dir) => {
-            let analysis_db_path = app_dir.join("analysis.db");
-
-            // Создаем YoloState для Analysis System
-            let analysis_yolo_state = Arc::new(RwLock::new(YoloProcessorState::default()));
-
-            match tauri::async_runtime::block_on(AnalysisState::new(
-              analysis_db_path.to_string_lossy().as_ref(),
-              person_db_ref,
-              analysis_yolo_state,
-            )) {
-              Ok(analysis_state) => {
-                app.manage(analysis_state);
-                log::info!("Analysis system initialized successfully");
-              }
-              Err(e) => {
-                log::error!("Failed to initialize analysis system: {e}");
-              }
-            }
-          }
-          Err(e) => {
-            log::error!("Failed to get app data dir for analysis system: {e}");
-          }
-        }
+      // Initialize Analysis System (temporarily disabled - needs AnalysisState implementation)
+      if let Some(_person_db_ref) = person_db {
+        log::info!("Analysis system components ready but AnalysisState not yet implemented");
+        // TODO: Implement AnalysisState and uncomment initialization
       } else {
         log::warn!("Analysis system not initialized - PersonDatabase required");
       }

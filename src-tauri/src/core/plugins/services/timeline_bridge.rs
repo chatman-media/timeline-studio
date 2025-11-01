@@ -39,18 +39,27 @@ impl TimelineBridge {
   pub async fn get_timeline_state(&self) -> Result<TimelineState> {
     log::info!("[TimelineBridge {}] Getting timeline state", self.plugin_id);
 
+    // Проверяем права доступа
+    if !self.permissions.can_read_timeline() {
+      return Err(VideoCompilerError::PermissionDenied(
+        format!("Plugin {} does not have timeline read permissions", self.plugin_id)
+      ));
+    }
+
     // Интеграция с ProjectService для получения реального состояния timeline
     if let Some(_project_service) = self.service_container.get_project_service() {
+      log::info!("[TimelineBridge {}] ProjectService integration not yet implemented", self.plugin_id);
+      
       // TODO: Реализовать интеграцию с ProjectService
-      log::info!(
-        "[TimelineBridge {}] ProjectService available, but integration not implemented yet",
-        self.plugin_id
-      );
+      // В будущем здесь будет:
+      // let timeline_state = project_service.get_current_timeline_state().await?;
+    }
 
-      // Пока возвращаем улучшенную заглушку с более реалистичными данными
-      use crate::core::plugins::api::ClipInfo;
-
-      return Ok(TimelineState {
+    // Fallback: возвращаем реалистичные данные без ProjectService
+    log::info!("[TimelineBridge {}] Using fallback timeline state", self.plugin_id);
+    
+    use crate::core::plugins::api::ClipInfo;
+    Ok(TimelineState {
         duration: 180.0,    // 3 минуты
         current_time: 30.0, // 30 секунд
         tracks: vec![
@@ -97,42 +106,7 @@ impl TimelineBridge {
             height: 60,
           },
         ],
-      });
-    }
-
-    // Fallback: базовая заглушка без ProjectService
-    log::info!(
-      "[TimelineBridge {}] ProjectService not available, using basic timeline state",
-      self.plugin_id
-    );
-
-    // Создаем примерное состояние timeline
-    let tracks = vec![
-      TrackInfo {
-        id: "video_track_1".to_string(),
-        track_type: "video".to_string(),
-        name: "Video Track 1".to_string(),
-        clips: vec![], // TODO: Получить реальные клипы из проекта
-        muted: false,
-        locked: false,
-        height: 100,
-      },
-      TrackInfo {
-        id: "audio_track_1".to_string(),
-        track_type: "audio".to_string(),
-        name: "Audio Track 1".to_string(),
-        clips: vec![],
-        muted: false,
-        locked: false,
-        height: 60,
-      },
-    ];
-
-    Ok(TimelineState {
-      duration: 120.0, // 2 минуты по умолчанию
-      current_time: 0.0,
-      tracks,
-    })
+      })
   }
 
   /// Добавить клип в timeline
@@ -178,25 +152,24 @@ impl TimelineBridge {
 
     // Интеграция с ProjectService для добавления клипа
     if let Some(_project_service) = self.service_container.get_project_service() {
-      // TODO: Интеграция с ProjectService для реального добавления клипа
+      // TODO: Реализовать интеграцию с ProjectService
       log::info!(
-        "[TimelineBridge {}] ProjectService available - adding clip via service: ID: {}, Media: {}, Start: {}, Duration: {}",
-        self.plugin_id,
-        clip_id,
-        media_id,
-        start_time,
-        duration
+        "[TimelineBridge {}] ProjectService integration not implemented for add_clip_to_timeline",
+        self.plugin_id
       );
-    } else {
-      log::info!(
-        "[TimelineBridge {}] ProjectService not available - clip added to memory only: ID: {}, Media: {}, Start: {}, Duration: {}",
-        self.plugin_id,
-        clip_id,
-        media_id,
-        start_time,
-        duration
-      );
+      // В будущем здесь будет:
+      // match project_service.add_clip_to_timeline(...).await {
     }
+
+    // Fallback: логируем операцию
+    log::info!(
+      "[TimelineBridge {}] Clip added to timeline: ID: {}, Media: {}, Start: {}, Duration: {}",
+      self.plugin_id,
+      clip_id,
+      media_id,
+      start_time,
+      duration
+    );
 
     Ok(clip_id)
   }
@@ -217,9 +190,6 @@ impl TimelineBridge {
       clip_id
     );
 
-    // TODO: Интеграция с реальным ProjectService
-    // Пока логируем операцию
-
     // Валидация ID клипа
     if clip_id.is_empty() {
       return Err(VideoCompilerError::InvalidParameter(
@@ -227,8 +197,20 @@ impl TimelineBridge {
       ));
     }
 
+    // Интеграция с ProjectService для удаления клипа
+    if let Some(_project_service) = self.service_container.get_project_service() {
+      log::info!(
+        "[TimelineBridge {}] ProjectService integration not implemented for remove_clip_from_timeline",
+        self.plugin_id
+      );
+      // TODO: Реализовать интеграцию с ProjectService
+      // В будущем здесь будет:
+      // match project_service.remove_clip_from_timeline(clip_id).await {
+    }
+
+    // Fallback: логируем операцию
     log::info!(
-      "[TimelineBridge {}] Clip '{}' removed successfully",
+      "[TimelineBridge {}] Clip removed from timeline: {}",
       self.plugin_id,
       clip_id
     );

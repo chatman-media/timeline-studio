@@ -720,6 +720,21 @@ impl PersonDatabase {
 
     Ok(embedding)
   }
+
+  /// Создание mock database для тестов (синхронная версия)
+  pub fn new_mock() -> Self {
+    let conn = rusqlite::Connection::open(":memory:").expect("Failed to create mock database");
+    
+    // Setup pragmas for in-memory database
+    let _ = conn.execute("PRAGMA foreign_keys = ON", []);
+    let _ = conn.execute("PRAGMA synchronous = NORMAL", []);
+    
+    Self {
+      conn: Arc::new(Mutex::new(conn)),
+      similarity_threshold: 0.75,
+      quality_threshold: 0.7,
+    }
+  }
 }
 
 /// Утилитные функции для работы с векторами

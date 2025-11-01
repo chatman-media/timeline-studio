@@ -56,6 +56,18 @@ impl PluginPermissions {
     }
   }
 
+  /// Может ли плагин читать timeline
+  pub fn can_read_timeline(&self) -> bool {
+    // Timeline доступен если есть UI доступ или системная информация
+    self.ui_access || self.system_info
+  }
+
+  /// Может ли плагин изменять timeline
+  pub fn can_write_timeline(&self) -> bool {
+    // Запись в timeline требует UI доступ и возможность записи
+    self.ui_access && (self.file_system.write_all || !self.file_system.write_paths.is_empty())
+  }
+
   /// Определить уровень безопасности на основе текущих разрешений
   pub fn get_security_level(&self) -> SecurityLevel {
     if self.file_system.write_all && self.file_system.read_all && self.process_spawn {

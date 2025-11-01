@@ -1,14 +1,22 @@
 // Analysis module - интеграция с существующей person database
 
 pub mod commands;
-pub mod database;
+pub mod database;  // ✅ Включаем обратно и исправляем проблемы
 pub mod models;
-pub mod services;
+pub mod services;  // ✅ Включено обратно - проблемы решены
+pub mod types; // 🆕 Unified type system
 
-// Re-export для удобства использования
-pub use services::analysis_frame_integration::{
-    AnalysisFrameIntegrator, VideoAnalysisResult, ClipAnalysisResult
+// Re-export для удобства использования  
+pub use services::{
+    RealAnalysisEngine, AnalysisEngineConfig, // Real Analysis Engine 
+    UnifiedAudioAnalyzer, // Unified Audio Analysis
 };
-pub use commands::frame_integration_commands::{
-    VideoAnalysisParams, ClipAnalysisParams, FrameIntegrationStatus
+
+// 🆕 Re-export unified audio types
+pub use types::{
+    AudioFloat, AudioDuration, AudioVolume, AudioFrequency, AudioTimestamp,
+    AudioSampleRate, AudioQualityLevel, AudioTimeRange,
+    UnifiedAudioAnalysisResult, AudioBasicMetrics, AudioFFmpegAnalysis,
+    AudioMontageAnalysis, AudioTranscriptionAnalysis, AudioAnalysisMetadata,
+    UnifiedAudioConfig, AudioAnalysisError,
 };

@@ -7,18 +7,15 @@ use anyhow::{Context, Result};
 use std::sync::Arc;
 use std::path::Path;
 use tokio::sync::RwLock;
-use log::{info, warn, error};
+use log::{info, warn};
 
-use crate::analysis::models::*;
 use crate::analysis::services::real_analysis_engine::{RealAnalysisEngine, AnalysisEngineConfig};
 use crate::video_compiler::core::frame_extraction::{
     FrameExtractionManager, ExtractionPurpose, ExtractionSettings, ExtractionStrategy,
-    ExtractedFrame, RecognitionFrame
+    RecognitionFrame
 };
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::schema::Clip;
-use crate::recognition::yolo_processor::{YoloProcessor, Detection};
-use crate::recognition::facenet_processor::{FaceNetProcessor, FaceEmbedding};
 
 /// Интегратор анализа кадров с Real Analysis Engine
 pub struct AnalysisFrameIntegrator {
@@ -48,14 +45,14 @@ impl AnalysisFrameIntegrator {
     pub fn with_cache(cache: Arc<RwLock<RenderCache>>) -> Self {
         let frame_extractor = Arc::new(FrameExtractionManager::new(cache.clone()));
         
-        // Создаем заглушку real_engine - в production нужна правильная инициализация
-        let analysis_db = Arc::new(
-            crate::analysis::database::AnalysisDatabase::new("analysis.db")
-                .expect("Failed to create analysis database")
-        );
+        // Создаем заглушку real_engine - в production нужна правильная инициализация  
+        // PersonDatabase::new is async, so we need to use a mock implementation
+        use std::path::PathBuf;
         let person_db = Arc::new(
-            crate::recognition::person_database::PersonDatabase::new("persons.db")
-                .expect("Failed to create person database")
+            crate::recognition::person_database::PersonDatabase::new_mock()
+        );
+        let analysis_db = Arc::new(
+            crate::analysis::database::AnalysisDatabase::new_mock()
         );
         let project_manager = Arc::new(
             crate::analysis::services::ProjectManager::new(analysis_db.clone())

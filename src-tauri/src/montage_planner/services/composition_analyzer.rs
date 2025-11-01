@@ -167,6 +167,9 @@ impl CompositionAnalyzer {
 
     // Calculate activity level based on object count and distribution
     let activity_level = self.calculate_activity_level(&objects, &faces);
+    
+    // Store face count before moving faces vector
+    let face_count = faces.len() as u32;
 
     Ok(MontageDetection {
       timestamp,
@@ -189,6 +192,10 @@ impl CompositionAnalyzer {
         leading_lines: 0.0,
         symmetry: 0.0,
         overall_score: 0.0,
+        activity_score: 0.0,
+        face_count,
+        face_prominence: 0.0,
+        scene_depth: 0.0,
       }, // Will be calculated separately
       activity_level,
       emotional_tone: EmotionalTone::Neutral, // Will be enhanced by emotion detector
@@ -226,6 +233,10 @@ impl CompositionAnalyzer {
       leading_lines,
       symmetry,
       overall_score,
+      activity_score: 50.0, // Default activity level
+      face_count: 0, // No face count in this context
+      face_prominence: 0.0, // No face analysis in this context
+      scene_depth: 50.0, // Default scene depth
     }
   }
 

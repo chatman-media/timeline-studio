@@ -99,6 +99,9 @@ pub enum VideoCompilerError {
   /// Ошибка безопасности
   SecurityError(String),
 
+  /// Доступ запрещен
+  PermissionDenied(String),
+
   /// Ошибка обработки
   ProcessingError { operation: String, details: String },
 
@@ -211,6 +214,9 @@ impl fmt::Display for VideoCompilerError {
       }
       VideoCompilerError::SecurityError(msg) => {
         write!(f, "Ошибка безопасности: {msg}")
+      }
+      VideoCompilerError::PermissionDenied(msg) => {
+        write!(f, "Доступ запрещен: {msg}")
       }
       VideoCompilerError::ProcessingError { operation, details } => {
         write!(f, "Ошибка обработки при {operation}: {details}")
@@ -425,6 +431,7 @@ impl VideoCompilerError {
       VideoCompilerError::TooManyActiveJobs(_) => "TOO_MANY_ACTIVE_JOBS",
       VideoCompilerError::ServiceNotFound(_) => "SERVICE_NOT_FOUND",
       VideoCompilerError::SecurityError(_) => "SECURITY_ERROR",
+      VideoCompilerError::PermissionDenied(_) => "PERMISSION_DENIED",
       VideoCompilerError::ProcessingError { .. } => "PROCESSING_ERROR",
       VideoCompilerError::IoError { .. } => "IO_ERROR",
     }

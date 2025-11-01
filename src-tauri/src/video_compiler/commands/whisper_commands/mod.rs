@@ -9,9 +9,9 @@ pub use commands::*;
 pub use types::*;
 
 // ============ Модули ============
-mod business_logic;
-mod commands;
-mod types;
+pub mod business_logic;
+pub mod commands;
+pub mod types;
 
 #[cfg(test)]
 mod tests;

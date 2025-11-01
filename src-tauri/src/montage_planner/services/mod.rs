@@ -4,6 +4,7 @@
 
 pub mod activity_calculator;
 pub mod audio_analyzer;
+pub mod unified_audio_analyzer; // 🆕 Modern unified audio analyzer
 pub mod composition_analyzer;
 pub mod emotion_detector;
 pub mod moment_detector;
@@ -17,6 +18,7 @@ pub mod tests;
 // Re-export main services
 pub use activity_calculator::ActivityCalculator;
 pub use audio_analyzer::AudioAnalyzer;
+pub use unified_audio_analyzer::UnifiedMontageAudioAnalyzer; // 🆕 Modern unified analyzer
 pub use composition_analyzer::CompositionAnalyzer;
 pub use emotion_detector::EmotionDetector;
 pub use moment_detector::MomentDetector;

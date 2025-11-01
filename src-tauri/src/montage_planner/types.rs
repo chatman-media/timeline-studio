@@ -69,6 +69,10 @@ pub struct CompositionScore {
   pub leading_lines: f32,  // 0-100: presence of leading lines
   pub symmetry: f32,       // 0-100: symmetrical composition
   pub overall_score: f32,  // 0-100: weighted average
+  pub activity_score: f32, // 0-100: activity level in scene
+  pub face_count: u32,     // number of faces detected
+  pub face_prominence: f32, // 0-100: prominence of faces
+  pub scene_depth: f32,    // 0-100: perceived depth of scene
 }
 
 /// Emotional tone detected from faces or scene
