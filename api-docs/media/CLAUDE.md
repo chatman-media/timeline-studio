@@ -17,10 +17,10 @@ Before working with this codebase, ensure you have the following dependencies in
   ```bash
   # macOS
   brew install ffmpeg
-  
+
   # Ubuntu/Debian
   sudo apt-get install ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
-  
+
   # Windows (требуется более сложная настройка)
   # Вариант 1: Использовать vcpkg
   git clone https://github.com/Microsoft/vcpkg.git
@@ -28,14 +28,14 @@ Before working with this codebase, ensure you have the following dependencies in
   ./bootstrap-vcpkg.bat
   ./vcpkg integrate install
   ./vcpkg install ffmpeg:x64-windows
-  
+
   # Вариант 2: Скачать предсобранные библиотеки
   # 1. Скачайте FFmpeg shared библиотеки с https://www.gyan.dev/ffmpeg/builds/
   # 2. Распакуйте в C:\ffmpeg
   # 3. Добавьте в системные переменные:
   set FFMPEG_DIR=C:\ffmpeg
   set PKG_CONFIG_PATH=C:\ffmpeg\lib\pkgconfig
-  
+
   # Также установите pkg-config для Windows:
   choco install pkgconfiglite
   ```
@@ -43,11 +43,11 @@ Before working with this codebase, ensure you have the following dependencies in
   ```bash
   # macOS
   brew install onnxruntime
-  
+
   # Add to your shell profile:
   # For bash/zsh (~/.zshrc or ~/.bashrc):
   export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib
-  
+
   # For fish (~/.config/fish/config.fish):
   set -gx ORT_DYLIB_PATH /opt/homebrew/lib/libonnxruntime.dylib
   ```
@@ -91,12 +91,12 @@ bun run tauri dev
 
 ### Platform-specific Tools
 - **macOS**: Xcode Command Line Tools
-- **Windows**: 
+- **Windows**:
   - Visual Studio 2022 with C++ tools
   - Windows SDK
   - pkg-config (через `choco install pkgconfiglite`)
   - vcpkg или предсобранные FFmpeg библиотеки
-  
+
 ## CI/CD Configuration
 
 ### GitHub Actions Workflows
