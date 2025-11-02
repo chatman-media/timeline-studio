@@ -6,6 +6,11 @@
  */
 
 import type { MediaFile as MediaInput } from "@/domains/ai-services/types/interfaces"
+// Используем shared типы вместо ai-chat
+import {
+  SceneAnalysis as SharedSceneAnalysis,
+  SceneTransition as SharedSceneTransition,
+} from "@/domains/shared/types/ai-tools/content-analysis"
 import { PersonDatabaseService } from "@/features/person-identification/services/person-database-service"
 import type {
   DetectedFace,
@@ -13,7 +18,6 @@ import type {
   PersonAppearance,
   PersonProfile,
 } from "@/features/person-identification/types/person"
-// Используем shared типы вместо ai-chat
 
 // Legacy тип для обратной совместимости
 export interface SceneAnalysis {
@@ -37,8 +41,8 @@ export interface SceneDetectionOptions {
   enablePersonTracking: boolean
 }
 
-export interface AdvancedSceneAnalysis extends SceneAnalysis {
-  transitions: SceneTransition[]
+export interface AdvancedSceneAnalysis extends SharedSceneAnalysis {
+  transitions: SharedSceneTransition[]
   qualityScore: number
   complexity: "simple" | "moderate" | "complex"
   visualElements: VisualElement[]
@@ -68,8 +72,11 @@ export interface PersonAppearanceInScene {
 
 export interface SceneTransition {
   type: "cut" | "fade" | "dissolve" | "wipe" | "zoom" | "custom"
+  direction: "incoming" | "outgoing"
+  targetSceneId: string
+  startTime: number
+  endTime: number
   duration: number
-  timestamp: number
   confidence: number
 }
 
@@ -116,10 +123,9 @@ export class SceneAnalysisEngine {
   private async initializeServices() {
     if (!this.sharedAIService) {
       try {
-        const { getAIContainer } = await import("@/features/ai-content-intelligence/services/ai-intelligence-provider")
-        const aiContainer = getAIContainer()
-        this.sharedAIService = await aiContainer.resolve("UnifiedAIService")
-        this.ffmpegService = await aiContainer.resolve("FFmpegService")
+        // TODO: Implement proper AI container integration
+        console.log("AI container integration not yet implemented")
+        // Fallback: будем работать в ограниченном режиме
       } catch (error) {
         console.error("Ошибка инициализации shared AI services:", error)
         throw new Error("Не удалось инициализировать AI сервисы")
@@ -173,7 +179,7 @@ export class SceneAnalysisEngine {
   private async performBasicSceneDetection(
     mediaFile: MediaInput,
     options: SceneDetectionOptions,
-  ): Promise<SceneAnalysis[]> {
+  ): Promise<SharedSceneAnalysis[]> {
     try {
       // Используем shared FFmpeg service для детекции сцен
       const sceneDetection = await this.ffmpegService.detectScenes(mediaFile.path, {
@@ -204,12 +210,26 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
+            duration: (scene.endTime || 0) - (scene.startTime || 0),
             type: classificationMap.get(scene.id) || "action",
-            confidence: scene.confidence || 0.8,
             keyFrames: scene.keyFrames || [],
-            description: scene.description || "",
-            objects: options.enableObjectDetection ? [] : undefined,
-            persons: options.enablePersonTracking ? [] : undefined,
+            quality: {
+              overall: 75,
+              sharpness: 0.8,
+              brightness: 0.75,
+              contrast: 0.85,
+              saturation: 0.8,
+              stability: 0.9,
+              noise: 0.1,
+            },
+            content: {
+              objects: options.enableObjectDetection ? [] : [],
+              faces: options.enablePersonTracking ? [] : [],
+              text: [],
+              activities: [],
+              identifiedPersons: options.enablePersonTracking ? [] : undefined,
+            },
+            transitions: [],
           }))
         } catch {
           // Fallback без классификации
@@ -217,12 +237,26 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
             id: scene.id,
             startTime: scene.startTime,
             endTime: scene.endTime,
+            duration: (scene.endTime || 0) - (scene.startTime || 0),
             type: "action" as const,
-            confidence: scene.confidence || 0.8,
             keyFrames: scene.keyFrames || [],
-            description: scene.description || "",
-            objects: options.enableObjectDetection ? [] : undefined,
-            persons: options.enablePersonTracking ? [] : undefined,
+            quality: {
+              overall: 75,
+              sharpness: 0.8,
+              brightness: 0.75,
+              contrast: 0.85,
+              saturation: 0.8,
+              stability: 0.9,
+              noise: 0.1,
+            },
+            content: {
+              objects: options.enableObjectDetection ? [] : [],
+              faces: options.enablePersonTracking ? [] : [],
+              text: [],
+              activities: [],
+              identifiedPersons: options.enablePersonTracking ? [] : undefined,
+            },
+            transitions: [],
           }))
         }
       }
@@ -232,12 +266,26 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
         id: scene.id,
         startTime: scene.startTime,
         endTime: scene.endTime,
+        duration: (scene.endTime || 0) - (scene.startTime || 0),
         type: "action" as const,
-        confidence: scene.confidence || 0.8,
         keyFrames: scene.keyFrames || [],
-        description: scene.description || "",
-        objects: options.enableObjectDetection ? [] : undefined,
-        persons: options.enablePersonTracking ? [] : undefined,
+        quality: {
+          overall: 75,
+          sharpness: 0.8,
+          brightness: 0.75,
+          contrast: 0.85,
+          saturation: 0.8,
+          stability: 0.9,
+          noise: 0.1,
+        },
+        content: {
+          objects: options.enableObjectDetection ? [] : [],
+          faces: options.enablePersonTracking ? [] : [],
+          text: [],
+          activities: [],
+          identifiedPersons: options.enablePersonTracking ? [] : undefined,
+        },
+        transitions: [],
       }))
     } catch (error) {
       console.warn("Ошибка детекции сцен через shared FFmpeg:", error)
@@ -249,7 +297,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
    * Расширенный анализ отдельной сцены
    */
   private async enhanceSceneAnalysis(
-    scene: SceneAnalysis,
+    scene: SharedSceneAnalysis,
     mediaFile: MediaInput,
     _options: SceneDetectionOptions,
   ): Promise<AdvancedSceneAnalysis> {
@@ -258,7 +306,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
 Видео: ${mediaFile.filename}
 Сцена: ${scene.startTime}s - ${scene.endTime}s
 Тип: ${scene.type}
-Описание: ${scene.description}
+Длительность: ${scene.duration}s
 
 Проанализируй:
 1. Визуальные элементы (текст, логотипы, графика, лица, объекты, движение)
@@ -429,7 +477,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
 
 Файл: ${mediaFile.filename}
 Сцена: ${scene.startTime}s - ${scene.endTime}s
-Описание: ${scene.description}
+Длительность: ${scene.duration}s
 Тип: ${scene.type}
 
 Выполни детекцию лиц используя существующие video-analysis-tools и верни JSON массив обнаруженных лиц:
@@ -800,8 +848,8 @@ ${scenes.map((s) => `${s.id}: тип=${s.type}, описание="${s.descriptio
       scene.startTime,
       scene.endTime,
       scene.type,
-      scene.confidence,
-      `"${scene.description.replace(/"/g, '""')}"`,
+      0.8, // default confidence
+      `"${scene.id.replace(/"/g, '""')}"`,
       scene.qualityScore,
       scene.complexity,
       scene.audioCharacteristics.hasVoice,
@@ -822,7 +870,7 @@ ${scenes.map((s) => `${s.id}: тип=${s.type}, описание="${s.descriptio
       <endTime>${scene.endTime}</endTime>
       <type>${scene.type}</type>
       <confidence>${scene.confidence}</confidence>
-      <description><![CDATA[${scene.description}]]></description>
+      <description><![CDATA[${scene.id}]]></description>
       <qualityScore>${scene.qualityScore}</qualityScore>
       <complexity>${scene.complexity}</complexity>
       <audio>

@@ -184,6 +184,32 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::get_active_analysis_projects,
     crate::analysis::commands::start_project_analysis,
     crate::analysis::commands::get_default_analysis_config,
+    // Scene Analysis commands 🆕
+    crate::analysis::commands::configure_scene_engine,
+    crate::analysis::commands::analyze_scenes_command,
+    crate::analysis::commands::analyze_scenes_by_path_command,
+    crate::analysis::commands::analyze_scene_transitions_command,
+    crate::analysis::commands::estimate_scene_count_command,
+    crate::analysis::commands::filter_scenes_command,
+    crate::analysis::commands::get_scene_statistics_command,
+    // Vision Service commands 🆕
+    crate::analysis::commands::initialize_vision_service,
+    crate::analysis::commands::configure_vision_service,
+    crate::analysis::commands::detect_objects,
+    crate::analysis::commands::detect_objects_batch,
+    crate::analysis::commands::detect_faces,
+    crate::analysis::commands::detect_faces_with_embeddings,
+    crate::analysis::commands::analyze_colors,
+    crate::analysis::commands::analyze_image,
+    // Content Engine commands 🆕
+    crate::analysis::commands::configure_content_engine,
+    crate::analysis::commands::set_composition_weights,
+    crate::analysis::commands::classify_content,
+    crate::analysis::commands::analyze_composition,
+    crate::analysis::commands::analyze_scenes_composition,
+    crate::analysis::commands::analyze_mood,
+    crate::analysis::commands::calculate_quality,
+    crate::analysis::commands::analyze_content_comprehensive,
     // Video compiler commands - using the already exported commands from the module
     crate::video_compiler::commands::auto_select_gpu,
     crate::video_compiler::commands::benchmark_gpu,
@@ -479,6 +505,18 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::get_unified_audio_analysis_status,
     crate::analysis::commands::analyze_audio_transcription_unified,
     crate::analysis::commands::check_whisper_availability_unified,
+    // AI Director commands - главные команды для полного анализа медиа
+    crate::analysis::commands::ai_director_analyze_comprehensive,
+    crate::analysis::commands::ai_director_analyze_quick,
+    crate::analysis::commands::ai_director_analyze_batch,
+    crate::analysis::commands::ai_director_get_capabilities,
+    crate::analysis::commands::ai_director_get_default_config,
+    crate::analysis::commands::ai_director_validate_config,
+    crate::analysis::commands::ai_director_health_check,
+    // Content Classification commands
+    crate::analysis::commands::classify_video_content,
+    crate::analysis::commands::quick_classify_content,
+    crate::analysis::commands::get_default_classification_options,
   ])
 }
 

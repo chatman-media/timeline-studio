@@ -1,6 +1,8 @@
 // AI Services Domain Types
 // Centralized types for AI services
 
+// Export ContentType specifically
+export { ContentClassification, ContentType } from "../../shared/types/ai-tools/content-analysis"
 // Machine events from machines directory
 export type { ChatMachineEvent } from "../machines/chat-machine"
 export type { MontagePlannerEvent } from "../machines/montage-planner-machine"
@@ -8,7 +10,7 @@ export * from "./ai-config"
 // Export specific types needed by provider
 export type { AIIntelligenceContext, AIIntelligenceEvent, AIServicesDomainConfig } from "./ai-intelligence"
 // Other core types
-export * from "./ai-intelligence"
+// Other core types already exported above via specific imports
 // Export MediaFile from interfaces as the canonical one
 // Export everything from interfaces except MediaFile to avoid conflict
 export type {

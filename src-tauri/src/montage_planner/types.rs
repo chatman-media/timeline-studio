@@ -62,22 +62,30 @@ pub struct BoundingBox {
 /// Composition analysis score
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompositionScore {
-  pub rule_of_thirds: f32, // 0-100: adherence to rule of thirds
-  pub balance: f32,        // 0-100: visual balance
-  pub focus_clarity: f32,  // 0-100: main subject clarity
-  pub depth_of_field: f32, // 0-100: depth perception
-  pub leading_lines: f32,  // 0-100: presence of leading lines
-  pub symmetry: f32,       // 0-100: symmetrical composition
-  pub overall_score: f32,  // 0-100: weighted average
-  pub activity_score: f32, // 0-100: activity level in scene
-  pub face_count: u32,     // number of faces detected
+  pub rule_of_thirds: f32,  // 0-100: adherence to rule of thirds
+  pub balance: f32,         // 0-100: visual balance
+  pub focus_clarity: f32,   // 0-100: main subject clarity
+  pub depth_of_field: f32,  // 0-100: depth perception
+  pub leading_lines: f32,   // 0-100: presence of leading lines
+  pub symmetry: f32,        // 0-100: symmetrical composition
+  pub overall_score: f32,   // 0-100: weighted average
+  pub activity_score: f32,  // 0-100: activity level in scene
+  pub face_count: u32,      // number of faces detected
   pub face_prominence: f32, // 0-100: prominence of faces
-  pub scene_depth: f32,    // 0-100: perceived depth of scene
+  pub scene_depth: f32,     // 0-100: perceived depth of scene
+  pub confidence: f32,      // 0-100: overall confidence in analysis
+  pub brightness: f32,      // 0-100: brightness level
+  pub contrast: f32,        // 0-100: contrast level
+  pub saturation: f32,      // 0-100: color saturation
+  pub sharpness: f32,       // 0-100: image sharpness
+  pub clarity: f32,         // 0-100: image clarity
+  pub stability: f32,       // 0-100: image stability
 }
 
 /// Emotional tone detected from faces or scene
-#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq, Default)]
 pub enum EmotionalTone {
+  #[default]
   Neutral,
   Happy,
   Sad,

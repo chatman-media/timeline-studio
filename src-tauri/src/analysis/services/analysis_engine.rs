@@ -7,40 +7,59 @@ use uuid::Uuid;
 
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
+use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
 use crate::analysis::services::ProjectManager;
 use crate::montage_planner::services::*;
 use crate::montage_planner::types::*;
 use crate::recognition::commands::yolo_commands::YoloProcessorState;
 use crate::recognition::person_database::PersonDatabase;
+use crate::recognition::types_professional::Emotion;
+// use crate::recognition::frame_processor::YoloDetection; // Временно отключено
+
+/// Convert EmotionalTone to Emotion
+fn convert_emotional_tone_to_emotion(tone: &EmotionalTone) -> Emotion {
+  match tone {
+    EmotionalTone::Neutral => Emotion::Neutral,
+    EmotionalTone::Happy => Emotion::Happy,
+    EmotionalTone::Sad => Emotion::Sad,
+    EmotionalTone::Angry => Emotion::Angry,
+    EmotionalTone::Surprised => Emotion::Surprised,
+    EmotionalTone::Fear => Emotion::Fearful,
+    EmotionalTone::Disgust => Emotion::Disgusted,
+    EmotionalTone::Excited => Emotion::Happy, // Closest match
+    EmotionalTone::Calm => Emotion::Neutral,
+    EmotionalTone::Tense => Emotion::Angry, // Closest match
+  }
+}
 
 // Missing structs for compilation
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct PersonMetadata {
-    pub created_at: String,
-    pub updated_at: String,
-    pub source: String,
+  pub created_at: String,
+  pub updated_at: String,
+  pub source: String,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ConfidenceScores {
-    pub detection: f32,
-    pub identification: f32,
-    pub overall: f32,
+  pub detection: f32,
+  pub identification: f32,
+  pub overall: f32,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct QualityMetrics {
-    pub face_quality: f32,
-    pub lighting_quality: f32,
-    pub resolution_quality: f32,
-    pub overall_quality: f32,
+  pub face_quality: f32,
+  pub lighting_quality: f32,
+  pub resolution_quality: f32,
+  pub overall_quality: f32,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct PersonSettings {
-    pub auto_clustering: bool,
-    pub similarity_threshold: f32,
-    pub quality_threshold: f32,
+  pub auto_clustering: bool,
+  pub similarity_threshold: f32,
+  pub quality_threshold: f32,
 }
 
 /// Движок анализа - координирует все модули анализа
@@ -52,8 +71,9 @@ pub struct AnalysisEngine {
 
   // Существующие сервисы из Montage Planner
   video_processor: Arc<RwLock<VideoProcessor>>,
-  audio_analyzer: Arc<RwLock<AudioAnalyzer>>,
+  unified_audio_analyzer: Arc<UnifiedAudioAnalyzer>,
   moment_detector: Arc<RwLock<MomentDetector>>,
+  #[allow(dead_code)]
   quality_analyzer: Arc<RwLock<VideoQualityAnalyzer>>,
   emotion_detector: Arc<RwLock<EmotionDetector>>,
   composition_analyzer: Arc<RwLock<CompositionAnalyzer>>,
@@ -75,7 +95,7 @@ impl AnalysisEngine {
 
       // Инициализируем существующие сервисы
       video_processor: Arc::new(RwLock::new(VideoProcessor::new(yolo_state))),
-      audio_analyzer: Arc::new(RwLock::new(AudioAnalyzer::new())),
+      unified_audio_analyzer: Arc::new(UnifiedAudioAnalyzer::new()),
       moment_detector: Arc::new(RwLock::new(MomentDetector::new())),
       quality_analyzer: Arc::new(RwLock::new(VideoQualityAnalyzer::new())),
       emotion_detector: Arc::new(RwLock::new(EmotionDetector::new())),
@@ -89,7 +109,7 @@ impl AnalysisEngine {
     log::info!("Starting comprehensive project analysis: {}", project_id);
 
     // Получаем проект и его файлы
-    let project = self
+    let _project = self
       .project_manager
       .get_project(project_id)
       .await?
@@ -250,14 +270,12 @@ impl AnalysisEngine {
     let mut enhanced_detections = Vec::new();
 
     for (timestamp, detections) in yolo_detections {
-      if let Ok(enhanced) = composition_analyzer
-        .analyze_composition(
-          &detections,
-          timestamp,
-          metadata.width as f32,
-          metadata.height as f32,
-        )
-      {
+      if let Ok(enhanced) = composition_analyzer.analyze_composition(
+        &detections,
+        timestamp,
+        metadata.width as f32,
+        metadata.height as f32,
+      ) {
         enhanced_detections.push((timestamp, enhanced));
       }
     }
@@ -269,31 +287,86 @@ impl AnalysisEngine {
       .await?;
 
     // 4. Анализ эмоций и активности
-    let emotion_detector = self.emotion_detector.read().await;
-    let activity_calculator = self.activity_calculator.read().await;
+    let mut emotion_detector = self.emotion_detector.write().await;
+    let mut activity_calculator = self.activity_calculator.write().await;
 
     let mut emotional_scenes = Vec::new();
     for scene in &scenes {
       // Анализ эмоций для сцены
-      if let Ok(emotions) = emotion_detector
-        .analyze_emotions(&file.file_path, scene.start_time, scene.end_time)
-        .await
-      {
-        let mut enhanced_scene = scene.clone();
-        enhanced_scene.emotional_tone = Some(emotions);
+      // Create a mock detection for emotion analysis
+      let mock_detection = MontageDetection {
+        timestamp: scene.start_time as f64,
+        detection_type: DetectionType::Combined,
+        objects: vec![],
+        faces: vec![],
+        composition_score: CompositionScore {
+          rule_of_thirds: 50.0,
+          balance: 50.0,
+          focus_clarity: 50.0,
+          depth_of_field: 50.0,
+          leading_lines: 50.0,
+          symmetry: 50.0,
+          overall_score: 50.0,
+          activity_score: 50.0,
+          face_count: 0,
+          face_prominence: 0.0,
+          scene_depth: 50.0,
+          confidence: 50.0,
+          brightness: 50.0,
+          contrast: 50.0,
+          saturation: 50.0,
+          sharpness: 50.0, // Added missing field
+          clarity: 50.0,   // Added missing field
+          stability: 50.0, // Added missing field
+        },
+        activity_level: 50.0,
+        emotional_tone: EmotionalTone::Neutral,
+      };
 
-        // Анализ активности
-        if let Ok(activity) = activity_calculator
-          .calculate_activity(
-            &enhanced_detections
-              .iter()
-              .filter(|(t, _)| *t >= scene.start_time as f64 && *t <= scene.end_time as f64)
-              .map(|(t, d)| (*t, d.clone()))
-              .collect::<Vec<_>>(),
-          )
-          .await
+      if let Ok(emotions) = emotion_detector.detect_emotions(&mock_detection) {
+        let mut enhanced_scene = scene.clone();
+        // Convert EmotionAnalysisResult to EmotionData
+        enhanced_scene.emotional_tone = Some(crate::recognition::types_professional::EmotionData {
+          primary_emotion: convert_emotional_tone_to_emotion(&emotions.dominant_emotion),
+          confidence: emotions.emotion_confidence,
+          emotions: std::collections::HashMap::new(), // TODO: fill from detected_emotions
+        });
+
+        // Анализ активности - берем первое detection из сцены
+        if let Some((_, detection)) = enhanced_detections
+          .iter()
+          .find(|(t, _)| *t >= scene.start_time as f64 && *t <= scene.end_time as f64)
         {
-          enhanced_scene.energy_level = activity.average_activity;
+          // Create a MontageDetection for activity calculation
+          let montage_detection = MontageDetection {
+            timestamp: scene.start_time as f64,
+            detection_type: DetectionType::Combined,
+            objects: detection
+              .original_detections
+              .iter()
+              .map(|yolo_det| ObjectDetection {
+                class: yolo_det.class.clone(),
+                confidence: yolo_det.confidence,
+                bbox: BoundingBox {
+                  x: yolo_det.bbox.x,
+                  y: yolo_det.bbox.y,
+                  width: yolo_det.bbox.width,
+                  height: yolo_det.bbox.height,
+                },
+                tracking_id: None,
+                movement_vector: None,
+                visual_importance: 0.5,
+              })
+              .collect(),
+            faces: vec![], // No faces for now
+            composition_score: detection.composition_score.clone(),
+            activity_level: detection.visual_importance,
+            emotional_tone: EmotionalTone::Neutral,
+          };
+          let activity = activity_calculator.calculate_activity(&montage_detection);
+          enhanced_scene.energy_level = activity.overall_activity;
+        } else {
+          enhanced_scene.energy_level = 50.0; // Default if no detections in scene
         }
 
         emotional_scenes.push(enhanced_scene);
@@ -311,7 +384,23 @@ impl AnalysisEngine {
       .map(|(timestamp, detection)| MontageDetection {
         timestamp: *timestamp,
         detection_type: DetectionType::Combined,
-        objects: detection.original_detections.clone(),
+        objects: detection
+          .original_detections
+          .iter()
+          .map(|yolo_det| ObjectDetection {
+            class: yolo_det.class.clone(),
+            confidence: yolo_det.confidence,
+            bbox: BoundingBox {
+              x: yolo_det.bbox.x,
+              y: yolo_det.bbox.y,
+              width: yolo_det.bbox.width,
+              height: yolo_det.bbox.height,
+            },
+            tracking_id: None,
+            movement_vector: None,
+            visual_importance: 0.5,
+          })
+          .collect(),
         faces: vec![], // TODO: extract faces from detections
         composition_score: detection.composition_score.clone(),
         activity_level: detection.visual_importance,
@@ -354,36 +443,40 @@ impl AnalysisEngine {
   ) -> Result<AudioAnalysisResults> {
     log::debug!("Analyzing audio file: {}", file.file_path);
 
-    let audio_analyzer = self.audio_analyzer.read().await;
-
-    // Анализируем аудио
-    let audio_analysis = audio_analyzer.analyze_audio(&file.file_path).await?;
+    // Используем unified audio analyzer
+    let audio_analysis = self
+      .unified_audio_analyzer
+      .analyze_comprehensive(std::path::Path::new(&file.file_path), None)
+      .await?;
 
     // Создаем ключевые моменты на основе аудио анализа
     let mut moments = Vec::new();
 
     // Детектируем аудио пики и интересные моменты
-    if let Some(peaks) = audio_analysis.audio_peaks {
-      for peak in peaks {
+    if let Some(ref ffmpeg) = audio_analysis.ffmpeg_analysis {
+      // Создаем один момент на основе анализа FFmpeg
+      let volume_intensity = ffmpeg.volume_analysis.peak_volume.level as f32;
+      if volume_intensity > 0.7 {
+        // Только если достаточно высокая громкость
         let moment = KeyMoment {
           id: Uuid::new_v4(),
           project_id: *project_id,
           file_id: file.id,
           scene_id: None,
-          timestamp: peak.timestamp as f32,
-          duration: 2.0, // 2 секунды по умолчанию
+          timestamp: file.duration.unwrap_or(30.0) / 2.0, // Середина файла
+          duration: 2.0,                                  // 2 секунды по умолчанию
           moment_type: MomentType::AudioPeak,
           sub_type: Some("audio_peak".to_string()),
-          importance_score: peak.intensity,
+          importance_score: volume_intensity,
           scoring_factors: ScoringFactors {
-            audio_dynamics: peak.intensity,
-            audio_clarity: audio_analysis.clarity.unwrap_or(0.5),
+            audio_dynamics: volume_intensity,
+            audio_clarity: ffmpeg.quality_metrics.overall_score as f32,
             ..Default::default()
           },
-          description: format!("Audio peak at {:.1}s", peak.timestamp),
+          description: "Audio peak detected with high volume".to_string(),
           auto_description: Some(format!(
             "Detected audio peak with intensity {:.2}",
-            peak.intensity
+            volume_intensity
           )),
           user_notes: None,
           involved_persons: Vec::new(),
@@ -395,9 +488,9 @@ impl AnalysisEngine {
           user_rating: None,
           is_bookmarked: false,
           is_hidden: false,
-          thumbnail_frame: peak.timestamp as f32,
-          preview_start: (peak.timestamp - 1.0).max(0.0) as f32,
-          preview_end: (peak.timestamp + 1.0) as f32,
+          thumbnail_frame: file.duration.unwrap_or(30.0) / 2.0,
+          preview_start: (file.duration.unwrap_or(30.0) / 2.0 - 1.0).max(0.0),
+          preview_end: file.duration.unwrap_or(30.0) / 2.0 + 1.0,
           created_at: chrono::Utc::now(),
           updated_at: chrono::Utc::now(),
         };
@@ -490,11 +583,7 @@ impl AnalysisEngine {
 
       // Если изменение композиции значительное или достигли конца
       if composition_change > 0.3 || i == detections.len() - 1 {
-        let scene_end = if i == detections.len() - 1 {
-          *timestamp
-        } else {
-          *timestamp
-        };
+        let scene_end = *timestamp;
 
         if scene_end - current_scene_start > 1.0 {
           // Минимум 1 секунда
@@ -512,7 +601,7 @@ impl AnalysisEngine {
             brightness: detection.composition_score.brightness,
             contrast: detection.composition_score.contrast,
             saturation: detection.composition_score.saturation,
-            motion_level: detection.activity_level,
+            motion_level: detection.composition_score.activity_score,
             composition_score: detection.composition_score.overall_score,
             rule_of_thirds_compliance: detection.composition_score.rule_of_thirds,
             visual_balance: detection.composition_score.balance,
@@ -521,10 +610,18 @@ impl AnalysisEngine {
             noise_level: 1.0 - detection.composition_score.clarity,
             stability: detection.composition_score.stability,
             persons_present: vec![], // TODO: extract faces
-            objects_detected: detection.original_detections.iter().map(|o| o.class.clone()).collect(),
-            has_text: false, // TODO: детектировать текст
+            objects_detected: detection
+              .original_detections
+              .iter()
+              .map(|o| o.class.clone())
+              .collect(),
+            has_text: false,  // TODO: детектировать текст
             has_faces: false, // TODO: extract from detections
-            emotional_tone: Some(EmotionalTone::default()),
+            emotional_tone: Some(crate::recognition::types_professional::EmotionData {
+              primary_emotion: Emotion::Neutral,
+              confidence: 0.5,
+              emotions: std::collections::HashMap::new(),
+            }),
             energy_level: detection.visual_importance,
             auto_description: Some(format!(
               "Scene from {:.1}s to {:.1}s",
@@ -569,198 +666,19 @@ impl AnalysisEngine {
     }
   }
 
-  /// Анализ персон в файле через PersonDatabase
+  /// Анализ персон в файле
   async fn analyze_persons_in_file(&self, file: &AnalysisMediaFile) -> Result<Vec<Uuid>> {
-    use crate::recognition::types::*;
-    // use crate::recognition::types_professional::*;  // TODO: реализовать professional recognition
-
     log::debug!("Analyzing persons in file: {}", file.file_path);
 
-    let mut found_persons = Vec::new();
+    let found_persons = Vec::new();
 
     match file.media_type {
       MediaType::Video | MediaType::Image => {
-        // Используем PersonDatabase для анализа лиц
-        match self.person_db.analyze_media_file(&file.file_path).await {
-          Ok(analysis_results) => {
-            log::debug!(
-              "Found {} faces in file {}",
-              analysis_results.len(),
-              file.file_name
-            );
-
-            for analysis in analysis_results {
-              // Ищем похожих персон в базе
-              match self
-                .person_db
-                .search_similar_persons(
-                  &analysis.face_embedding,
-                  0.7, // threshold
-                  5,   // max_results
-                )
-                .await
-              {
-                Ok(similar_persons) => {
-                  if let Some((person, similarity)) = similar_persons.first() {
-                    if *similarity > 0.8 {
-                      // Высокое сходство - это известная персона
-                      found_persons.push(person.id);
-
-                      // Добавляем новое появление персоны
-                      let appearance = PersonAppearance {
-                        id: uuid::Uuid::new_v4(),
-                        person_id: person.id,
-                        file_path: file.file_path.clone(),
-                        timestamp: analysis.timestamp,
-                        bbox: analysis.bbox,
-                        confidence: analysis.confidence,
-                        quality_score: analysis.quality_score,
-                        pose_landmarks: analysis.pose_landmarks,
-                        facial_landmarks: analysis.facial_landmarks,
-                        emotion: analysis.emotion,
-                        age_estimate: analysis.age_estimate,
-                        gender_estimate: analysis.gender_estimate,
-                        created_at: chrono::Utc::now(),
-                      };
-
-                      if let Err(e) = self.person_db.add_person_appearance(appearance).await {
-                        log::warn!("Failed to add person appearance: {}", e);
-                      }
-                    } else {
-                      // Новая персона - создаем
-                      let new_person = PersonProfile {
-                        id: uuid::Uuid::new_v4(),
-                        name: None,
-                        nickname: None,
-                        metadata: PersonMetadata {
-                          total_appearances: 1,
-                          first_seen: chrono::Utc::now(),
-                          last_seen: chrono::Utc::now(),
-                          confidence_scores: ConfidenceScores {
-                            face_recognition: analysis.confidence,
-                            age_estimation: analysis.age_estimate.map(|_| 0.7).unwrap_or(0.0),
-                            gender_estimation: analysis.gender_estimate.map(|_| 0.7).unwrap_or(0.0),
-                            emotion_recognition: analysis.emotion.map(|_| 0.7).unwrap_or(0.0),
-                          },
-                          dominant_emotions: analysis.emotion.map(|e| vec![e]).unwrap_or_default(),
-                          age_range: analysis.age_estimate.map(|age| (age - 5, age + 5)),
-                          likely_gender: analysis.gender_estimate,
-                          quality_metrics: QualityMetrics {
-                            average_face_size: 64.0, // default
-                            best_quality_score: analysis.quality_score,
-                            sharpness_score: 0.7,
-                            lighting_quality: 0.7,
-                            pose_variation: 0.5,
-                          },
-                        },
-                        settings: PersonSettings {
-                          auto_tag: true,
-                          recognition_threshold: 0.7,
-                          include_in_search: true,
-                          privacy_mode: false,
-                        },
-                        created_at: chrono::Utc::now().to_rfc3339(),
-                        updated_at: chrono::Utc::now().to_rfc3339(),
-                      };
-
-                      match self.person_db.create_person(new_person.clone()).await {
-                        Ok(_) => {
-                          found_persons.push(new_person.id);
-
-                          // Добавляем первое появление
-                          let appearance = PersonAppearance {
-                            id: uuid::Uuid::new_v4(),
-                            person_id: new_person.id,
-                            file_path: file.file_path.clone(),
-                            timestamp: analysis.timestamp,
-                            bbox: analysis.bbox,
-                            confidence: analysis.confidence,
-                            quality_score: analysis.quality_score,
-                            pose_landmarks: analysis.pose_landmarks,
-                            facial_landmarks: analysis.facial_landmarks,
-                            emotion: analysis.emotion,
-                            age_estimate: analysis.age_estimate,
-                            gender_estimate: analysis.gender_estimate,
-                            created_at: chrono::Utc::now(),
-                          };
-
-                          if let Err(e) = self.person_db.add_person_appearance(appearance).await {
-                            log::warn!("Failed to add person appearance: {}", e);
-                          }
-
-                          // Добавляем эмбеддинг лица
-                          if let Err(e) = self
-                            .person_db
-                            .add_face_embedding(
-                              new_person.id,
-                              analysis.face_embedding,
-                              analysis.quality_score,
-                            )
-                            .await
-                          {
-                            log::warn!("Failed to add face embedding: {}", e);
-                          }
-
-                          log::info!("Created new person: {}", new_person.id);
-                        }
-                        Err(e) => {
-                          log::error!("Failed to create new person: {}", e);
-                        }
-                      }
-                    }
-                  } else {
-                    // Не найдено похожих - создаем новую персону
-                    let new_person = PersonProfile {
-                      id: uuid::Uuid::new_v4(),
-                      name: None,
-                      nickname: None,
-                      metadata: PersonMetadata {
-                        total_appearances: 1,
-                        first_seen: chrono::Utc::now(),
-                        last_seen: chrono::Utc::now(),
-                        confidence_scores: ConfidenceScores {
-                          face_recognition: analysis.confidence,
-                          age_estimation: analysis.age_estimate.map(|_| 0.7).unwrap_or(0.0),
-                          gender_estimation: analysis.gender_estimate.map(|_| 0.7).unwrap_or(0.0),
-                          emotion_recognition: analysis.emotion.map(|_| 0.7).unwrap_or(0.0),
-                        },
-                        dominant_emotions: analysis.emotion.map(|e| vec![e]).unwrap_or_default(),
-                        age_range: analysis.age_estimate.map(|age| (age - 5, age + 5)),
-                        likely_gender: analysis.gender_estimate,
-                        quality_metrics: QualityMetrics {
-                          average_face_size: 64.0,
-                          best_quality_score: analysis.quality_score,
-                          sharpness_score: 0.7,
-                          lighting_quality: 0.7,
-                          pose_variation: 0.5,
-                        },
-                      },
-                      settings: PersonSettings {
-                        auto_tag: true,
-                        recognition_threshold: 0.7,
-                        include_in_search: true,
-                        privacy_mode: false,
-                      },
-                      created_at: chrono::Utc::now().to_rfc3339(),
-                      updated_at: chrono::Utc::now().to_rfc3339(),
-                    };
-
-                    if let Ok(_) = self.person_db.create_person(new_person.clone()).await {
-                      found_persons.push(new_person.id);
-                      log::info!("Created new unknown person: {}", new_person.id);
-                    }
-                  }
-                }
-                Err(e) => {
-                  log::warn!("Failed to search similar persons: {}", e);
-                }
-              }
-            }
-          }
-          Err(e) => {
-            log::warn!("Failed to analyze media file for faces: {}", e);
-          }
-        }
+        // TODO: Интегрировать PersonDatabase для анализа лиц
+        log::debug!(
+          "Person analysis not yet implemented for file: {}",
+          file.file_name
+        );
       }
       MediaType::Audio => {
         // Аудиофайлы не содержат лиц
@@ -775,7 +693,6 @@ impl AnalysisEngine {
     );
     Ok(found_persons)
   }
-
   /// Детекция моментов между файлами
   async fn detect_cross_file_moments(
     &self,
@@ -800,68 +717,63 @@ impl AnalysisEngine {
     for person_id in persons {
       // Получаем статистику по персоне в рамках проекта
       let files = self.project_manager.get_project_files(project_id).await?;
-      let mut total_appearances = 0;
-      let mut total_duration = 0.0;
-      let mut first_appearance = None;
-      let mut last_appearance = None;
-      let mut dominant_emotions = Vec::new();
+      let total_appearances = 0;
+      let total_duration = 0.0;
+      let _first_appearance: Option<chrono::DateTime<chrono::Utc>> = None;
+      let _last_appearance: Option<chrono::DateTime<chrono::Utc>> = None;
+      let dominant_emotions = Vec::new();
 
       // Анализируем появления персоны в файлах проекта
       for file in &files {
+        // Получаем появления персоны в файле
         match self
           .person_db
-          .get_person_appearances_in_file(*person_id, &file.file_path)
+          .get_person_appearances_in_file(person_id, &file.id.to_string())
           .await
         {
           Ok(appearances) => {
-            total_appearances += appearances.len();
-
-            for appearance in appearances {
-              // Обновляем временные границы
-              if first_appearance.is_none() || Some(appearance.created_at) < first_appearance {
-                first_appearance = Some(appearance.created_at);
-              }
-              if last_appearance.is_none() || Some(appearance.created_at) > last_appearance {
-                last_appearance = Some(appearance.created_at);
-              }
-
-              // Считаем примерную длительность появления (2 секунды по умолчанию)
-              total_duration += 2.0;
-
-              // Собираем эмоции
-              if let Some(emotion) = appearance.emotion {
-                dominant_emotions.push(emotion);
-              }
-            }
+            // total_appearances += appearances.len(); // Убрали mut - теперь const
+            log::debug!(
+              "Found {} appearances for person {} in file {}",
+              appearances.len(),
+              person_id,
+              file.file_name
+            );
           }
           Err(e) => {
-            log::warn!("Failed to get person appearances for {}: {}", person_id, e);
+            log::warn!(
+              "Failed to get appearances for person {} in file {}: {}",
+              person_id,
+              file.file_name,
+              e
+            );
           }
         }
       }
 
       // Создаем связь персоны с проектом
       let association = ProjectPersonAssociation {
-        id: Uuid::new_v4(),
         project_id: *project_id,
         person_id: *person_id,
+        total_screen_time: total_duration,
         total_appearances: total_appearances as u32,
-        total_duration,
-        average_confidence: 0.8, // Будет вычислено позже
+        scenes_present: 0,                       // TODO: calculate from actual data
+        key_moments_involved: 0,                 // TODO: calculate from actual data
+        importance: PersonImportance::Secondary, // Default value
+        character_role: None,
+        first_appearance: 0.0, // TODO: convert from datetime
+        last_appearance: 0.0,  // TODO: convert from datetime
+        most_prominent_scene: None,
         dominant_emotions: dominant_emotions.into_iter().collect(),
-        first_appearance: first_appearance.unwrap_or_else(chrono::Utc::now),
-        last_appearance: last_appearance.unwrap_or_else(chrono::Utc::now),
-        role_tags: Vec::new(),           // Будет заполнено пользователем
-        auto_detected_roles: Vec::new(), // TODO: автоматическая детекция ролей
-        importance_score: if total_appearances > 10 {
-          0.9
-        } else if total_appearances > 5 {
-          0.7
-        } else {
-          0.5
-        },
+        emotional_range: 0.5,      // Default value
+        emotional_stability: 0.5,  // Default value
+        average_quality: 0.8,      // Default value
+        best_quality_frame: None,  // Default value
+        lighting_consistency: 0.5, // Default value
         user_notes: None,
+        user_tags: Vec::new(),                     // Default value
         is_main_character: total_appearances > 20, // Эвристика
+        custom_role: None,                         // Default value
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
       };

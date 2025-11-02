@@ -4,7 +4,6 @@
 
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { vi } from "vitest"
-import { BackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { BrowserProviderV2, useBrowserV2 } from "../browser-provider-v2"
 

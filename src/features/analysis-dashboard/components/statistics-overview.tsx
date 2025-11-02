@@ -1,7 +1,6 @@
 // Statistics overview component
 
-import { Award, BarChart3, Clock, Eye, FileVideo, Star, Target, TrendingUp, Users } from "lucide-react"
-import React from "react"
+import { Award, Clock, Eye, FileVideo, Star, Target, TrendingUp } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"

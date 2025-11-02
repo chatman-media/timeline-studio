@@ -2,8 +2,7 @@
 
 import { formatDistance } from "date-fns"
 import { ru } from "date-fns/locale"
-import { Calendar, Clock, Eye, FileVideo, MoreVertical, PlayCircle, Star, Users } from "lucide-react"
-import React from "react"
+import { Clock, Eye, FileVideo, MoreVertical, PlayCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"

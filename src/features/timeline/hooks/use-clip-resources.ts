@@ -146,7 +146,7 @@ export function useClipResources(): UseClipResourcesReturn {
   )
 
   const canApplyEffectToClip = useCallback(
-    (clipId: string, effect: VideoEffect) => {
+    (clipId: string, _effect: VideoEffect) => {
       if (!project) return false
 
       const allClips = project.sections

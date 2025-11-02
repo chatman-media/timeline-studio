@@ -1,7 +1,6 @@
 // Progress visualization component for analysis
 
 import { BarChart3, CheckCircle, Database, Eye, FileVideo, Heart, Search, Star, Users, Volume2 } from "lucide-react"
-import React from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { AnalysisProgress, AnalysisStage } from "../types/analysis"

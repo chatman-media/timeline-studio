@@ -1,9 +1,8 @@
 // Dialog for creating new analysis projects
 
-import { open } from "@tauri-apps/plugin-dialog"
-import { Clock, FileVideo, FolderOpen, HardDrive, Info, Settings, Upload, X, Zap } from "lucide-react"
-import React, { useEffect, useState } from "react"
-import { Badge } from "@/components/ui/badge"
+import { open as openDialog } from "@tauri-apps/plugin-dialog"
+import { Clock, FileVideo, Settings, Upload, X, Zap } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -17,11 +16,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
 import { useAnalysis } from "../hooks/use-analysis"
 import { AnalysisConfig, QualityMode } from "../types/analysis"
 
@@ -61,7 +58,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
   // Handle file selection
   const handleSelectFiles = async () => {
     try {
-      const selected = await open({
+      const selected = await openDialog({
         multiple: true,
         filters: [
           {

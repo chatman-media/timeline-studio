@@ -5,7 +5,6 @@
 
 pub mod analysis;
 pub mod audio_analysis;
-pub mod unified_audio_analysis; // 🆕 Modern unified audio analysis
 pub mod color_correction;
 pub mod keyframes;
 pub mod motion_analysis;
@@ -13,6 +12,7 @@ pub mod quality;
 pub mod scene_detection;
 pub mod silence_detection;
 pub mod stabilization;
+pub mod unified_audio_analysis; // 🆕 Modern unified audio analysis
 
 use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::process::Output;

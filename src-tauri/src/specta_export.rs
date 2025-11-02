@@ -72,6 +72,18 @@ pub fn export_typescript_bindings() {
       crate::media::commands::scan_media_directory,
       crate::media::commands::index_media_files,
       crate::media::commands::search_media_library,
+      // Content Classification commands (legacy)
+      crate::analysis::commands::classify_video_content,
+      crate::analysis::commands::quick_classify_content,
+      crate::analysis::commands::get_default_classification_options,
+      // 🆕 AI Director commands (comprehensive analysis orchestrator)
+      crate::analysis::commands::ai_director_analyze_comprehensive,
+      crate::analysis::commands::ai_director_analyze_quick,
+      crate::analysis::commands::ai_director_analyze_batch,
+      crate::analysis::commands::ai_director_get_capabilities,
+      crate::analysis::commands::ai_director_get_default_config,
+      crate::analysis::commands::ai_director_validate_config,
+      crate::analysis::commands::ai_director_health_check,
     ])
     .events(tauri_specta::collect_events![]);
 

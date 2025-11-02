@@ -38,7 +38,8 @@ vi.mock("@/domains/ai-core/services", () => ({
   },
 }))
 
-vi.mock("../hooks/use-chat", () => ({
+// Мокаем useChat через хук (компонент импортирует отсюда)
+vi.mock("@/features/ai-chat/hooks/use-chat", () => ({
   useChat: () => ({
     chatMessages: [],
     sendChatMessage: vi.fn(),
@@ -90,6 +91,17 @@ vi.mock("../hooks/use-resources-ai-integration", () => ({
   useResourcesAIIntegration: () => ({
     isIntegrated: false,
     resourceStats: null,
+  }),
+}))
+
+vi.mock("@/features/resources/services/resources-provider", () => ({
+  useResources: () => ({
+    currentMusicItem: null,
+    handleMusicItemSelect: vi.fn(),
+    mediaResources: [],
+    musicResources: [],
+    effectResources: [],
+    filterResources: [],
   }),
 }))
 

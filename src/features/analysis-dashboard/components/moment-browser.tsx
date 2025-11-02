@@ -1,7 +1,6 @@
 // Moment browser component
 
 import { Bookmark, Camera, Clock, Eye, Heart, Star, Zap } from "lucide-react"
-import React from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

@@ -4,15 +4,14 @@ import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 import {
   AnalysisConfig,
-  AnalysisFilter,
   AnalysisProgress,
   AnalysisProject,
   AnalysisScene,
   AnalysisSearchResult,
-  AnalysisSort,
   DashboardData,
   KeyMoment,
   ProjectStatistics,
+  QualityMode,
   SearchResultType,
 } from "../types/analysis"
 
@@ -248,7 +247,7 @@ export function useAnalysis() {
         enable_audio_analysis: true,
         enable_quality_analysis: true,
         enable_text_recognition: false,
-        quality_mode: "Balanced" as const,
+        quality_mode: QualityMode.Balanced,
         frame_skip: 30,
         resolution_scale: 0.5,
         scene_change_threshold: 0.3,

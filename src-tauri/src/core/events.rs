@@ -76,6 +76,39 @@ pub enum AppEvent {
     results: serde_json::Value,
   },
 
+  // AI Director Analysis events
+  AnalysisStarted {
+    analysis_id: String,
+    media_path: String,
+    analysis_type: String, // "comprehensive", "quick", "batch"
+  },
+  AnalysisProgress {
+    analysis_id: String,
+    stage: String, // "audio", "video", "integration", "complete"
+    progress: f32, // 0.0 - 1.0
+    message: Option<String>,
+    estimated_time_remaining: Option<u64>, // seconds
+  },
+  AnalysisStageCompleted {
+    analysis_id: String,
+    stage: String,
+    duration_ms: u64,
+    success: bool,
+    error: Option<String>,
+  },
+  AnalysisCompleted {
+    analysis_id: String,
+    success: bool,
+    total_duration_ms: u64,
+    stages_completed: Vec<String>,
+    errors: Vec<String>,
+  },
+  AnalysisError {
+    analysis_id: String,
+    stage: String,
+    error: String,
+  },
+
   // Plugin events
   PluginLoaded {
     plugin_id: String,

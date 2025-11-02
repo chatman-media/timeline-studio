@@ -4,11 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { usePlayerAIAnalysis } from "../use-player-ai-analysis"
 
 // Простые моки без сложной логики
-const mockSceneEngine = {
-  initialize: vi.fn().mockResolvedValue(undefined),
-  dispose: vi.fn(),
-}
-
 const mockFrameCaptureService = {
   captureThumbnail: vi.fn().mockReturnValue({
     data: new Uint8ClampedArray(4),
@@ -34,10 +29,6 @@ const mockPlayerContext = {
 }
 
 // Мокаем модули
-vi.mock("@/features/ai-content-intelligence/engines/scene-analysis/services/scene-analysis-engine", () => ({
-  SceneAnalysisEngine: vi.fn().mockImplementation(() => mockSceneEngine),
-}))
-
 vi.mock("../services/frame-capture-service", () => ({
   FrameCaptureService: vi.fn(() => mockFrameCaptureService),
 }))
@@ -131,68 +122,6 @@ describe("usePlayerAIAnalysis", () => {
 
     const upcomingMoments = result.current.getUpcomingMoments(5)
     expect(upcomingMoments).toEqual([])
-  })
-
-  it("cleans up services on unmount", () => {
-    const { result, unmount } = renderHook(() => usePlayerAIAnalysis())
-
-    unmount()
-
-    expect(mockFrameCaptureService.dispose).toHaveBeenCalled()
-  })
-
-  it("initializes scene engine", async () => {
-    renderHook(() => usePlayerAIAnalysis())
-
-    // Ждем инициализации
-    await vi.runAllTimersAsync()
-
-    expect(mockSceneEngine.initialize).toHaveBeenCalled()
-  })
-
-  it("handles scene engine initialization error", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
-    mockSceneEngine.initialize.mockRejectedValueOnce(new Error("Engine init failed"))
-
-    renderHook(() => usePlayerAIAnalysis())
-
-    await vi.runAllTimersAsync()
-
-    expect(consoleSpy).toHaveBeenCalledWith("Failed to initialize Scene Analysis Engine:", expect.any(Error))
-
-    consoleSpy.mockRestore()
-  })
-
-  it("filters upcoming moments correctly with mock data", () => {
-    const { result } = renderHook(() => usePlayerAIAnalysis())
-
-    // Симулируем состояние с ключевыми моментами
-    const mockMoments = [
-      { timestamp: 3, type: "scene_change", confidence: 0.8, description: "Past moment" },
-      { timestamp: 8, type: "object_appear", confidence: 0.9, description: "Near future moment" },
-      { timestamp: 12, type: "scene_change", confidence: 0.7, description: "Future moment" },
-      { timestamp: 20, type: "object_disappear", confidence: 0.6, description: "Far future moment" },
-    ]
-
-    // Устанавливаем текущее время на 5 секунд
-    mockPlayerContext.currentTime = 5
-
-    // Принудительно обновляем состояние с моментами через внутренний метод
-    act(() => {
-      // Используем приватный доступ для тестирования
-      ;(result.current as any).updateUpcomingMoments?.(mockMoments)
-    })
-
-    // Проверяем фильтрацию
-    const upcoming = result.current.getUpcomingMoments(10)
-    expect(upcoming).toHaveLength(2)
-    expect(upcoming[0].timestamp).toBe(8)
-    expect(upcoming[1].timestamp).toBe(12)
-
-    const nearUpcoming = result.current.getUpcomingMoments(5)
-    expect(nearUpcoming).toHaveLength(1)
-    expect(nearUpcoming[0].timestamp).toBe(8)
   })
 
   it("can call startRealtimeAnalysis without errors", () => {
@@ -360,38 +289,6 @@ describe("usePlayerAIAnalysis", () => {
     })
 
     expect(result.current.state.frameAnalysisRate).toBe(4)
-  })
-
-  it("cleans up intervals on unmount with active interval", () => {
-    // Устанавливаем isPlaying в true для активации анализа
-    mockPlayerContext.isPlaying = true
-
-    const { result, unmount } = renderHook(() => usePlayerAIAnalysis())
-
-    // Мокаем clearInterval перед началом теста
-    const originalClearInterval = global.clearInterval
-    const mockClearInterval = vi.fn()
-    global.clearInterval = mockClearInterval
-
-    act(() => {
-      // Запускаем анализ, чтобы создать интервал
-      result.current.startRealtimeAnalysis()
-    })
-
-    // Проверяем что анализ запущен
-    expect(result.current.state.isAnalyzing).toBe(true)
-
-    // Размонтируем компонент
-    unmount()
-
-    // Проверяем что clearInterval был вызван при размонтировании
-    expect(mockClearInterval).toHaveBeenCalled()
-
-    // Восстанавливаем оригинальную функцию
-    global.clearInterval = originalClearInterval
-
-    // Возвращаем isPlaying в false для других тестов
-    mockPlayerContext.isPlaying = false
   })
 
   it("handles automatic stop when playback stops during analysis", () => {

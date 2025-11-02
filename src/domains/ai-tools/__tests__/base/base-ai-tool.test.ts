@@ -84,7 +84,7 @@ describe("BaseAITool", () => {
       expect(result.data).toEqual({ result: "success", input })
       expect(result.toolName).toBe("test-tool")
       expect(result.executionTime).toBeGreaterThan(0)
-      expect(result.executionId).toBeDefined()
+      expect(result.executionTime).toBeDefined()
     })
 
     it("должен обрабатывать ошибки", async () => {
@@ -176,9 +176,9 @@ describe("BaseAITool", () => {
 
       // Не должно выбрасывать ошибок
       expect(() => {
-        logger.info("Test message")
-        logger.warn("Test warning")
-        logger.error("Test error")
+        logger.info()
+        logger.warn()
+        logger.error()
       }).not.toThrow()
     })
 

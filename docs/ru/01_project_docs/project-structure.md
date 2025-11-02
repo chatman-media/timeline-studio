@@ -119,6 +119,9 @@ features/
 17. **`voice-recording`** - Запись закадрового голоса
 18. **`subtitles`** - Создание и редактирование субтитров
 
+**🆕 Unified Audio Analysis:**
+19. **`analysis` (backend)** - Unified Audio Analysis System с f64 precision, comprehensive error handling, Whisper integration, real-time analysis engine
+
 ### `/src/components/`
 Переиспользуемые UI компоненты на базе shadcn/ui.
 
@@ -223,11 +226,12 @@ src-tauri/src/
 
 **AI и распознавание:**
 5. **`recognition`** - YOLO модели для распознавания объектов, лиц, сцен
-6. **`montage`** - AI-планировщик монтажа с анализом контента
+6. **`montage`** - AI-планировщик монтажа с анализом контента (интегрирован с unified audio)
+7. **`analysis`** - 🆕 Unified Audio Analysis System с f64 precision, comprehensive error handling
 
 **Профессиональные инструменты:**
-7. **`audio`** - Fairlight-подобный аудио движок с эффектами и MIDI
-8. **`color`** - GPU-ускоренная цветокоррекция с LUT и скоупами
+8. **`audio`** - Fairlight-подобный аудио движок с эффектами и MIDI
+9. **`color`** - GPU-ускоренная цветокоррекция с LUT и скоупами
 
 ### Tauri команды
 Команды для взаимодействия frontend-backend:

@@ -7,9 +7,9 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
+use crate::analysis::database::queries::ProjectStatistics;
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
-use crate::analysis::database::queries::ProjectStatistics;
 // use crate::recognition::person_database::PersonDatabase;  // TODO: интегрировать с person database
 
 /// Менеджер проектов анализа
@@ -195,7 +195,8 @@ impl ProjectManager {
     }
 
     let file_size = path.metadata()?.len() as f32;
-    let extension = path.extension()
+    let extension = path
+      .extension()
       .and_then(|s| s.to_str())
       .unwrap_or("")
       .to_lowercase();
@@ -203,12 +204,12 @@ impl ProjectManager {
     // Оценочная длительность на основе размера и типа файла
     let duration = match extension.as_str() {
       "mp4" | "mkv" | "avi" | "mov" => file_size / 2_000_000.0, // ~2MB per second for video
-      "mp3" | "wav" | "flac" => file_size / 150_000.0,         // ~150KB per second for audio
-      "jpg" | "png" | "jpeg" => 0.0,                           // Images have no duration
-      _ => file_size / 1_000_000.0,                           // Default: 1MB per second
+      "mp3" | "wav" | "flac" => file_size / 150_000.0,          // ~150KB per second for audio
+      "jpg" | "png" | "jpeg" => 0.0,                            // Images have no duration
+      _ => file_size / 1_000_000.0,                             // Default: 1MB per second
     };
 
-    Ok(duration.max(1.0).min(7200.0)) // Min 1s, max 2 hours
+    Ok(duration.clamp(1.0, 7200.0)) // Min 1s, max 2 hours
   }
 
   /// Получение информации о видео
@@ -226,7 +227,8 @@ impl ProjectManager {
       return Err(anyhow::anyhow!("File not found: {}", file_path));
     }
 
-    let extension = path.extension()
+    let extension = path
+      .extension()
       .and_then(|s| s.to_str())
       .unwrap_or("")
       .to_lowercase();
@@ -235,19 +237,21 @@ impl ProjectManager {
     match extension.as_str() {
       "mp4" | "mkv" | "avi" | "mov" => {
         let file_size = path.metadata()?.len();
-        
+
         // Оценочное разрешение на основе размера файла
-        let (width, height) = if file_size > 500_000_000 { // > 500MB
+        let (width, height) = if file_size > 500_000_000 {
+          // > 500MB
           (3840, 2160) // 4K
-        } else if file_size > 100_000_000 { // > 100MB
+        } else if file_size > 100_000_000 {
+          // > 100MB
           (1920, 1080) // FullHD
         } else {
-          (1280, 720)  // HD
+          (1280, 720) // HD
         };
 
         Ok((
           Some(Resolution { width, height }),
-          Some(30.0), // Default FPS
+          Some(30.0),               // Default FPS
           Some("h264".to_string()), // Most common codec
           Some(extension),
         ))
@@ -255,7 +259,10 @@ impl ProjectManager {
       "jpg" | "png" | "jpeg" | "gif" => {
         // Images - default resolution, no FPS
         Ok((
-          Some(Resolution { width: 1920, height: 1080 }),
+          Some(Resolution {
+            width: 1920,
+            height: 1080,
+          }),
           None, // No FPS for images
           Some("image".to_string()),
           Some(extension),

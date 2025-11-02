@@ -10,6 +10,7 @@ const mockSessions: ChatListItem[] = [
     title: "First chat session",
     messageCount: 5,
     lastMessage: "This is the last message",
+    lastMessageAt: new Date("2024-01-01"),
     createdAt: new Date("2024-01-01"),
     agent: "gpt-5",
   },
@@ -18,6 +19,7 @@ const mockSessions: ChatListItem[] = [
     title: "Second chat session",
     messageCount: 3,
     lastMessage: "Another message",
+    lastMessageAt: new Date("2024-01-02"),
     createdAt: new Date("2024-01-02"),
     agent: "gpt-5",
   },
@@ -26,6 +28,7 @@ const mockSessions: ChatListItem[] = [
     title: "Third chat session",
     messageCount: 10,
     lastMessage: "Latest message",
+    lastMessageAt: new Date("2024-01-03"),
     createdAt: new Date("2024-01-03"),
     agent: "gpt-5",
   },
@@ -34,6 +37,7 @@ const mockSessions: ChatListItem[] = [
     title: "Fourth chat session",
     messageCount: 2,
     lastMessage: "Hidden session",
+    lastMessageAt: new Date("2024-01-04"),
     createdAt: new Date("2024-01-04"),
     agent: "gpt-5",
   },
@@ -74,7 +78,7 @@ describe("ChatList", () => {
   })
 
   it("should expand to show all sessions when Show more is clicked", () => {
-    const { getByText } = render(<ChatList {...defaultProps} />)
+    const { getByText, queryByText } = render(<ChatList {...defaultProps} />)
 
     const showMoreButton = getByText(/Show 1 more/)
     fireEvent.click(showMoreButton)
@@ -82,21 +86,21 @@ describe("ChatList", () => {
     // Now all sessions should be visible
     expect(getByText("Fourth chat session")).toBeInTheDocument()
 
-    // Button should change to "Show less"
-    expect(getByText("Show less")).toBeInTheDocument()
+    // "Show more" button should disappear after expanding
+    expect(queryByText(/Show \d+ more/)).not.toBeInTheDocument()
   })
 
   it("should highlight current session", () => {
     const { getByText } = render(<ChatList {...defaultProps} />)
 
-    const currentSession = getByText("First chat session").closest("button")
+    const currentSession = getByText("First chat session").closest("div")
     expect(currentSession).toHaveClass("bg-muted")
   })
 
   it("should call onSelectSession when session is clicked", () => {
     const { getByText } = render(<ChatList {...defaultProps} />)
 
-    const secondSession = getByText("Second chat session").closest("button")!
+    const secondSession = getByText("Second chat session").closest("div")!
     fireEvent.click(secondSession)
 
     expect(defaultProps.onSelectSession).toHaveBeenCalledWith("session-2")
@@ -105,7 +109,7 @@ describe("ChatList", () => {
   it("should show delete button on hover", async () => {
     const { getByText, getByLabelText } = render(<ChatList {...defaultProps} />)
 
-    const sessionButton = getByText("Second chat session").closest("button")!
+    const sessionButton = getByText("Second chat session").closest("div")!
 
     // Hover over session
     fireEvent.mouseEnter(sessionButton)
@@ -122,7 +126,7 @@ describe("ChatList", () => {
   it("should show copy button on hover", async () => {
     const { getByText, getByLabelText } = render(<ChatList {...defaultProps} />)
 
-    const sessionButton = getByText("Second chat session").closest("button")!
+    const sessionButton = getByText("Second chat session").closest("div")!
 
     // Hover over session
     fireEvent.mouseEnter(sessionButton)
@@ -145,9 +149,9 @@ describe("ChatList", () => {
   it("should show message count for each session", () => {
     const { getByText } = render(<ChatList {...defaultProps} />)
 
-    expect(getByText("5")).toBeInTheDocument() // First session message count
-    expect(getByText("3")).toBeInTheDocument() // Second session message count
-    expect(getByText("10")).toBeInTheDocument() // Third session message count
+    expect(getByText("5 messages")).toBeInTheDocument() // First session message count
+    expect(getByText("3 messages")).toBeInTheDocument() // Second session message count
+    expect(getByText("10 messages")).toBeInTheDocument() // Third session message count
   })
 
   it("should truncate long session titles", () => {

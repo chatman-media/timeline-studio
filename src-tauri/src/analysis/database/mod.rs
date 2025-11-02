@@ -3,8 +3,6 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use rusqlite::{Connection, OptionalExtension};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
@@ -40,7 +38,7 @@ impl AnalysisDatabase {
   /// Выполнение миграций
   async fn run_migrations(&self) -> Result<()> {
     let conn = self.conn.lock().await;
-    migrations::run_all_migrations(&*conn)?;
+    migrations::run_all_migrations(&conn)?;
     Ok(())
   }
 
@@ -323,7 +321,7 @@ impl AnalysisDatabase {
                 serde_json::to_string(&scene.objects_detected)?,
                 scene.has_text,
                 scene.has_faces,
-                scene.emotional_tone.as_ref().map(|e| serde_json::to_string(e)).transpose()?,
+                scene.emotional_tone.as_ref().map(serde_json::to_string).transpose()?,
                 scene.energy_level,
                 scene.auto_description,
                 scene.user_description,
@@ -341,7 +339,7 @@ impl AnalysisDatabase {
   /// Получение сцен проекта
   pub async fn get_project_scenes(&self, project_id: &Uuid) -> Result<Vec<AnalysisScene>> {
     let conn = self.conn.lock().await;
-    queries::get_project_scenes(&*conn, project_id)
+    queries::get_project_scenes(&conn, project_id)
   }
 
   /// Создание ключевого момента
@@ -398,7 +396,7 @@ impl AnalysisDatabase {
   /// Получение ключевых моментов проекта
   pub async fn get_project_key_moments(&self, project_id: &Uuid) -> Result<Vec<KeyMoment>> {
     let conn = self.conn.lock().await;
-    queries::get_project_key_moments(&*conn, project_id)
+    queries::get_project_key_moments(&conn, project_id)
   }
 
   /// Связывание персоны с проектом
@@ -462,7 +460,7 @@ impl AnalysisDatabase {
   > {
     // Интегрируемся с существующей person database
     let conn = self.conn.lock().await;
-    queries::get_project_persons_with_stats(&*conn, &self.person_db, project_id).await
+    queries::get_project_persons_with_stats(&conn, &self.person_db, project_id).await
   }
 
   /// Создание плана монтажа
@@ -505,7 +503,7 @@ impl AnalysisDatabase {
           plan
             .export_settings
             .as_ref()
-            .map(|s| serde_json::to_string(s))
+            .map(serde_json::to_string)
             .transpose()?,
           plan.preview_url,
           plan.created_at.to_rfc3339(),
@@ -517,7 +515,7 @@ impl AnalysisDatabase {
     // Сохраняем сегменты
     for segment in &plan.segments {
       self
-        .create_montage_segment_internal(&*conn, &plan.id, segment.clone())
+        .create_montage_segment_internal(&conn, &plan.id, segment.clone())
         .await?;
     }
 
@@ -563,8 +561,8 @@ impl AnalysisDatabase {
                 segment.speed_multiplier,
                 segment.fade_in_duration,
                 segment.fade_out_duration,
-                segment.color_correction.as_ref().map(|cc| serde_json::to_string(cc)).transpose()?,
-                segment.audio_adjustments.as_ref().map(|aa| serde_json::to_string(aa)).transpose()?,
+                segment.color_correction.as_ref().map(serde_json::to_string).transpose()?,
+                segment.audio_adjustments.as_ref().map(serde_json::to_string).transpose()?,
                 serde_json::to_string(&segment.visual_effects)?,
                 segment.ai_reason,
                 segment.ai_confidence,
@@ -572,8 +570,8 @@ impl AnalysisDatabase {
                 segment.is_user_modified,
                 segment.user_locked,
                 segment.user_notes,
-                segment.transition_in.as_ref().map(|t| serde_json::to_string(t)).transpose()?,
-                segment.transition_out.as_ref().map(|t| serde_json::to_string(t)).transpose()?,
+                segment.transition_in.as_ref().map(serde_json::to_string).transpose()?,
+                segment.transition_out.as_ref().map(serde_json::to_string).transpose()?,
                 serde_json::to_string(&segment.related_segments)?,
                 segment.created_at.to_rfc3339(),
                 segment.updated_at.to_rfc3339(),
@@ -591,20 +589,20 @@ impl AnalysisDatabase {
     result_types: Option<Vec<SearchResultType>>,
   ) -> Result<Vec<AnalysisSearchResult>> {
     let conn = self.conn.lock().await;
-    queries::search_analysis_data(&*conn, project_id, query, result_types)
+    queries::search_analysis_data(&conn, project_id, query, result_types)
   }
 
   /// Получение статистики проекта
   pub async fn get_project_statistics(&self, project_id: &Uuid) -> Result<ProjectStatistics> {
     let conn = self.conn.lock().await;
-    queries::get_project_statistics(&*conn, project_id)
+    queries::get_project_statistics(&conn, project_id)
   }
 
   /// Создание mock database для тестов
   pub fn new_mock() -> Self {
-    let conn = Connection::open(":memory:").expect("Failed to create mock database");
-    let person_db = Arc::new(PersonDatabase::new(":memory:").expect("Failed to create mock person database"));
-    
+    let conn = Connection::open(":memory:").unwrap();
+    let person_db = Arc::new(PersonDatabase::new_mock());
+
     Self {
       conn: Arc::new(Mutex::new(conn)),
       person_db,
@@ -612,37 +610,5 @@ impl AnalysisDatabase {
   }
 }
 
-/// Статистика проекта
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ProjectStatistics {
-  pub project_id: Uuid,
-  pub total_files: u32,
-  pub total_duration: f32,
-  pub total_scenes: u32,
-  pub total_persons: u32,
-  pub total_key_moments: u32,
-  pub average_quality: f32,
-  pub scenes_by_type: HashMap<SceneType, u32>,
-  pub moments_by_type: HashMap<MomentType, u32>,
-  pub persons_by_importance: HashMap<PersonImportance, u32>,
-  pub quality_distribution: QualityDistribution,
-  pub temporal_distribution: TemporalDistribution,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct QualityDistribution {
-  pub excellent: u32, // 0.9-1.0
-  pub good: u32,      // 0.7-0.9
-  pub fair: u32,      // 0.5-0.7
-  pub poor: u32,      // 0.0-0.5
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TemporalDistribution {
-  pub by_hour: HashMap<u8, f32>,    // 0-23 hours -> duration
-  pub by_day: HashMap<String, f32>, // day name -> duration
-  pub peak_activity_period: Option<String>,
-}
+// Use all statistical types from queries module instead of duplicating
+pub use queries::{ProjectStatistics, QualityDistribution, TemporalDistribution};

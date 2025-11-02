@@ -66,6 +66,7 @@ export function ChatList({
                     size="icon"
                     variant="ghost"
                     className="h-6 w-6"
+                    aria-label="Copy session"
                     onClick={(e) => {
                       e.stopPropagation()
                       onCopySession(session.id)
@@ -77,6 +78,7 @@ export function ChatList({
                     size="icon"
                     variant="ghost"
                     className="h-6 w-6"
+                    aria-label="Delete session"
                     onClick={(e) => {
                       e.stopPropagation()
                       onDeleteSession(session.id)

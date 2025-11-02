@@ -147,35 +147,14 @@ export class AIServicesOrchestrator {
       type: "START_ANALYSIS",
       mediaFiles: files,
       config: {
-        provider: "openai" as any,
+        provider: "openai",
         apiKey: "",
         model: "gpt-4-vision-preview",
-        defaultProvider: "openai" as any,
         features: {
           contentAnalysis: true,
           scriptGeneration: false,
           multiPlatform: false,
           voiceGeneration: false,
-        },
-        processing: {
-          parallel: true,
-          maxConcurrent: 2,
-          batchSize: 10,
-          cacheResults: true,
-          cacheDuration: 24,
-          retryAttempts: 3,
-          timeout: 300,
-        },
-        quality: {
-          analysisDepth: "standard" as any,
-          accuracy: "balanced" as any,
-          speed: "normal" as any,
-          resourceUsage: {
-            maxCPU: 80,
-            maxRAM: 4096,
-            maxGPU: 90,
-            maxDiskSpace: 1024,
-          },
         },
       },
     })

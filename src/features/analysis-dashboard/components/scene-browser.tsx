@@ -1,7 +1,6 @@
 // Scene browser component
 
-import { Clock, Eye, Star, Users } from "lucide-react"
-import React from "react"
+import { Clock, Eye, Users } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnalysisScene, SceneType } from "../types/analysis"

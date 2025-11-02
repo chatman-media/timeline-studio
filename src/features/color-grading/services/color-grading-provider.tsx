@@ -12,9 +12,9 @@ interface BackendSync {
 }
 
 const mockBackendSync: BackendSync = {
-  executeCommand: (command) => Promise.resolve({ success: true }),
-  onStateChange: (callback) => () => {},
-  onEvent: (callback) => () => {},
+  executeCommand: (_command) => Promise.resolve({ success: true }),
+  onStateChange: (_callback) => () => {},
+  onEvent: (_callback) => () => {},
 }
 
 const getBackendSync = () => mockBackendSync

@@ -2,13 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useAnalysis } from "@/features/analysis-dashboard/hooks/use-analysis"
-import {
-  AnalysisProgress,
-  AnalysisProject,
-  AnalysisScene,
-  KeyMoment,
-} from "@/features/analysis-dashboard/types/analysis"
-import type { TimelineClip } from "../types/timeline"
+import { AnalysisProject, AnalysisScene, KeyMoment } from "@/features/analysis-dashboard/types/analysis"
 import { useTimeline } from "./use-timeline"
 
 interface TimelineAnalysisState {

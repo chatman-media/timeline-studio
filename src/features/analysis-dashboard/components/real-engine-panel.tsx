@@ -1,13 +1,11 @@
 // Real Analysis Engine Control Panel
 
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   AlertTriangle,
   Brain,
   CheckCircle,
-  Cpu,
   Download,
-  Eye,
   Info,
   Play,
   RefreshCw,
@@ -15,11 +13,10 @@ import {
   XCircle,
   Zap,
 } from "lucide-react"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
@@ -29,7 +26,6 @@ import { cn } from "@/lib/utils"
 
 interface RealEnginePanelProps {
   className?: string
-  onEngineSwitch?: (useRealEngine: boolean) => void
 }
 
 interface ModelsStatus {
@@ -56,7 +52,7 @@ interface AvailableModels {
   face_encoding_models: string[]
 }
 
-export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelProps) {
+export function RealEnginePanel({ className }: RealEnginePanelProps) {
   const [isInitializing, setIsInitializing] = useState(false)
   const [modelsStatus, setModelsStatus] = useState<ModelsStatus | null>(null)
   const [engineConfig, setEngineConfig] = useState<EngineConfig>({
@@ -69,7 +65,6 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
     detailed_analysis: false,
   })
   const [availableModels, setAvailableModels] = useState<AvailableModels | null>(null)
-  const [useRealEngine, setUseRealEngine] = useState(false)
 
   // Загрузка доступных моделей при монтировании
   useEffect(() => {
@@ -79,7 +74,6 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
 
   const loadAvailableModels = async () => {
     try {
-      // @ts-expect-error - Tauri API
       const models = await window.__TAURI__.invoke("get_available_models")
       setAvailableModels(models)
     } catch (error) {
@@ -89,7 +83,6 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
 
   const checkModelsStatus = async () => {
     try {
-      // @ts-expect-error - Tauri API
       const status = await window.__TAURI__.invoke("check_models_status")
       setModelsStatus(status)
     } catch (error) {
@@ -100,7 +93,6 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
   const initializeEngine = async () => {
     setIsInitializing(true)
     try {
-      // @ts-expect-error - Tauri API
       await window.__TAURI__.invoke("initialize_real_analysis_engine", {
         config: {
           object_model: engineConfig.object_model,
@@ -119,19 +111,6 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
       console.error("Failed to initialize Real Analysis Engine:", error)
     } finally {
       setIsInitializing(false)
-    }
-  }
-
-  const switchEngine = async (enabled: boolean) => {
-    try {
-      // @ts-expect-error - Tauri API
-      await window.__TAURI__.invoke("switch_analysis_engine", {
-        useRealEngine: enabled,
-      })
-      setUseRealEngine(enabled)
-      onEngineSwitch?.(enabled)
-    } catch (error) {
-      console.error("Failed to switch analysis engine:", error)
     }
   }
 
@@ -166,20 +145,22 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-blue-500" />
-            Real ONNX Analysis Engine
-            <Badge variant={useRealEngine ? "default" : "secondary"}>{useRealEngine ? "Active" : "Standby"}</Badge>
+            ONNX Analysis Engine Configuration
+            <Badge variant={modelsStatus?.models_ready ? "default" : "secondary"}>
+              {modelsStatus?.models_ready ? "Ready" : "Not Ready"}
+            </Badge>
           </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Engine Status */}
+          {/* Models Status */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium">Engine Status</h3>
-              <div className="flex items-center gap-2">
-                <Switch checked={useRealEngine} onCheckedChange={switchEngine} disabled={!modelsStatus?.models_ready} />
-                <span className="text-sm text-muted-foreground">{useRealEngine ? "Real Engine" : "Mock Engine"}</span>
-              </div>
+              <h3 className="font-medium">Models Status</h3>
+              <Button variant="outline" size="sm" onClick={checkModelsStatus}>
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Refresh
+              </Button>
             </div>
 
             {modelsStatus && (
@@ -203,13 +184,13 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
               </div>
             )}
 
-            {modelsStatus?.initialization_errors.length > 0 && (
+            {modelsStatus?.initialization_errors && modelsStatus.initialization_errors.length > 0 && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="w-4 h-4 text-red-500" />
                   <span className="text-sm font-medium text-red-700">Initialization Errors</span>
                 </div>
-                {modelsStatus.initialization_errors.map((error, index) => (
+                {modelsStatus?.initialization_errors?.map((error, index) => (
                   <p key={index} className="text-xs text-red-600">
                     {error}
                   </p>
@@ -427,17 +408,10 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
               )}
             </Button>
 
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" size="sm" onClick={checkModelsStatus}>
-                <RefreshCw className="w-3 h-3 mr-1" />
-                Refresh Status
-              </Button>
-
-              <Button variant="outline" size="sm" disabled={!modelsStatus?.models_ready}>
-                <Play className="w-3 h-3 mr-1" />
-                Test Models
-              </Button>
-            </div>
+            <Button variant="outline" size="sm" disabled={!modelsStatus?.models_ready} className="w-full">
+              <Play className="w-3 h-3 mr-1" />
+              Test Models
+            </Button>
           </div>
 
           {/* Performance Info */}
@@ -452,8 +426,8 @@ export function RealEnginePanel({ className, onEngineSwitch }: RealEnginePanelPr
                 <span className="text-sm font-medium text-green-700">Ready for Analysis</span>
               </div>
               <p className="text-xs text-green-600">
-                All ONNX models are loaded and ready for real-time video analysis. You can now process your Phuket
-                videos with AI-powered detection.
+                All ONNX models are loaded and ready for AI-powered video analysis including object detection, face
+                recognition, and advanced visual analysis.
               </p>
             </motion.div>
           )}

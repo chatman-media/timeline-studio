@@ -5,9 +5,8 @@
 
 import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
-import React, { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { useAppSettings } from "../../app-state"
-import type { AnalysisProgress as MontageAnalysisProgress, MontagePlan } from "../types"
 import { type MontagePlannerEvent, montagePlannerMachine } from "./montage-planner-machine"
 
 // Context type

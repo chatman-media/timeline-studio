@@ -104,6 +104,7 @@ pub struct SecureStorage {
 
 impl SecureStorage {
   /// Создает новый экземпляр SecureStorage
+  #[allow(deprecated)]
   pub fn new(app_handle: tauri::AppHandle) -> Result<Self> {
     // Создаем или получаем ключ шифрования из keyring
     let encryption_key = Self::get_or_create_encryption_key()?;
@@ -152,7 +153,7 @@ impl SecureStorage {
       let key = Aes256Gcm::generate_key(&mut OsRng);
 
       // Сохраняем в файл
-      fs::write(&key_file, key.as_slice()).context("Failed to write encryption key file")?;
+      fs::write::<_, &[u8]>(&key_file, key.as_ref()).context("Failed to write encryption key file")?;
 
       // Устанавливаем права доступа только для владельца (Unix-like системы)
       #[cfg(unix)]
@@ -205,6 +206,7 @@ impl SecureStorage {
   }
 
   /// Получает API ключ с расшифровкой
+  #[allow(deprecated)]
   pub async fn get_api_key(&mut self, key_type: ApiKeyType) -> Result<Option<ApiKeyData>> {
     let service_key = format!("api_key_{}", key_type.as_str());
 

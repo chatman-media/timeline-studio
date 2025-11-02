@@ -355,7 +355,7 @@ export function useClips(): UseClipsReturn {
   // VALIDATION AND CHECKS
   // ============================================================================
 
-  const canPlaceClip = (trackId: string, startTime: number, duration: number, excludeClipId?: string): boolean => {
+  const canPlaceClip = (trackId: string, startTime: number, duration: number, _excludeClipId?: string): boolean => {
     if (!project) return false
     return canPlaceClipOnTrack(project, trackId, startTime, duration)
   }
@@ -439,7 +439,7 @@ export function useClips(): UseClipsReturn {
     findNearestClipToTime,
 
     // Действия с клипами
-    addClip: async (trackId: string, mediaFile: MediaFile, startTime: number, duration?: number) => {
+    addClip: async (trackId: string, mediaFile: MediaFile, startTime: number, _duration?: number) => {
       const domainMediaFile = mediaFile as unknown as DomainMediaFile
       await addClip(trackId, domainMediaFile, startTime)
     },

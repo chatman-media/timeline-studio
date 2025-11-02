@@ -337,8 +337,6 @@ export class EDLImporter implements Importer {
         sourceIn,
         sourceOut,
         playbackRate: 1.0,
-        isSelected: false,
-        isLocked: false,
         isMuted: false,
         volume: 1.0,
         opacity: 1.0,

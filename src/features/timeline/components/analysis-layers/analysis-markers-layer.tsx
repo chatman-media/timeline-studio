@@ -1,8 +1,8 @@
 // Analysis markers layer for Timeline
 
 import { AnimatePresence, motion } from "framer-motion"
-import { AlertTriangle, Camera, Eye, Heart, PlayCircle, Star, TrendingUp, Users, Volume2, Zap } from "lucide-react"
-import React, { useMemo } from "react"
+import { AlertTriangle, Camera, Heart, PlayCircle, Star, TrendingUp, Users, Volume2, Zap } from "lucide-react"
+import { useMemo } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import { type TimelineAnalysisHook, useTimelineAnalysis } from "../../hooks/use-timeline-analysis"
@@ -17,7 +17,7 @@ interface AnalysisMarkersLayerProps {
 }
 
 export function AnalysisMarkersLayer({
-  timelineWidth,
+  // timelineWidth,
   timelineDuration,
   pixelsPerSecond,
   currentTime,

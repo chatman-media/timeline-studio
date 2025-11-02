@@ -112,6 +112,12 @@ src-tauri/src/
 │   ├── fairlight_engine.rs  # Аудио движок
 │   ├── effects_chain.rs     # Цепь эффектов
 │   └── midi_handler.rs      # MIDI контроллеры
+├── analysis/          # 🆕 Unified Audio Analysis System
+│   ├── types/         # f64 precision audio types + comprehensive error handling
+│   ├── services/      # UnifiedAudioAnalyzer + AnalysisEngine + Whisper integration
+│   ├── commands/      # Tauri commands для unified analysis + system capabilities
+│   ├── database/      # Analysis data storage + SQLite integration
+│   └── tests/         # Comprehensive unit tests for all audio types
 ├── color/             # Цветокоррекция
 │   ├── grading_engine.rs    # Движок цветокоррекции
 │   ├── lut_processor.rs     # Обработка LUT
@@ -131,8 +137,9 @@ src-tauri/src/
 5. **Media Pipeline** - конвейер обработки медиа
 6. **AI Recognition** - YOLO/ONNX модели для анализа контента
 7. **Fairlight Engine** - профессиональная аудио обработка
-8. **Color Engine** - GPU-ускоренная цветокоррекция
-9. **Montage AI** - интеллектуальный анализ и планирование
+8. **🆕 Unified Audio Analysis** - f64 precision система с comprehensive error handling, Whisper integration, real-time analysis engine
+9. **Color Engine** - GPU-ускоренная цветокоррекция
+10. **Montage AI** - интеллектуальный анализ и планирование
 
 ## 🔌 Коммуникация Frontend ↔ Backend
 
@@ -145,12 +152,46 @@ async fn process_video(path: String, options: VideoOptions) -> Result<VideoOutpu
     // Обработка видео
 }
 
+// 🆕 Unified Audio Analysis Commands
+#[tauri::command] 
+async fn analyze_audio_unified(file_path: String, config: Option<String>) -> Result<String> {
+    // Unified audio analysis с f64 precision + comprehensive error handling
+}
+
+#[tauri::command]
+async fn get_audio_system_capabilities() -> Result<String> {
+    // System capabilities detection для audio analysis
+}
+
+#[tauri::command]
+async fn get_recommended_audio_config(file_path: String) -> Result<String> {
+    // AI-powered configuration recommendations
+}
+
 // Frontend
 import { invoke } from '@tauri-apps/api/core';
 
 const result = await invoke('process_video', {
     path: '/path/to/video.mp4',
     options: { format: 'mp4', quality: 'high' }
+});
+
+// 🆕 Unified Audio Analysis с comprehensive capabilities
+const audioAnalysis = await invoke('analyze_audio_unified', {
+    filePath: '/path/to/audio.mp3',
+    config: JSON.stringify({ 
+        performance_mode: 'quality',
+        enable_whisper: true,
+        enable_montage_integration: true 
+    })
+});
+
+// System capabilities detection
+const capabilities = await invoke('get_audio_system_capabilities');
+
+// AI-powered config recommendations
+const recommendedConfig = await invoke('get_recommended_audio_config', {
+    filePath: '/path/to/audio.mp3'
 });
 ```
 

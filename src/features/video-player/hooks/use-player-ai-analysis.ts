@@ -4,7 +4,6 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines/scene-analysis"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
 
@@ -47,12 +46,9 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
     frameAnalysisRate: 2, // Анализировать 2 кадра в секунду по умолчанию
   })
 
-  const [sceneEngine] = useState(() => new SceneAnalysisEngine())
   const [frameCaptureService] = useState(() => new FrameCaptureService())
   const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const lastAnalyzedTimeRef = useRef<number>(0)
-
-  // Scene engine инициализируется автоматически при первом использовании
 
   // Запуск real-time анализа
   const startRealtimeAnalysis = useCallback(() => {

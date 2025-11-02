@@ -1,15 +1,13 @@
 // Main Analysis Dashboard component
 
-import { BarChart3, Clock, Eye, FileVideo, PlayCircle, Plus, Search, Star, TrendingUp, Users, Zap } from "lucide-react"
-import React, { useState } from "react"
-import { Badge } from "@/components/ui/badge"
+import { BarChart3, Eye, FileVideo, Plus, Search, Star, Users, Zap } from "lucide-react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAnalysis } from "../hooks/use-analysis"
-import { AnalysisStatus, MomentType, SceneType } from "../types/analysis"
+import { AnalysisStatus } from "../types/analysis"
 import { CreateProjectDialog } from "./create-project-dialog"
 import { MomentBrowser } from "./moment-browser"
 import { ProgressVisualization } from "./progress-visualization"
@@ -240,11 +238,7 @@ export function AnalysisDashboard() {
 
         {/* Real Engine Tab */}
         <TabsContent value="engine">
-          <RealEnginePanel
-            onEngineSwitch={(useReal) => {
-              console.log("Engine switched to:", useReal ? "Real ONNX" : "Mock")
-            }}
-          />
+          <RealEnginePanel />
         </TabsContent>
       </Tabs>
 

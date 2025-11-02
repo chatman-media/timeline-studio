@@ -208,15 +208,9 @@ async function getAIService(): Promise<any> {
 
 import type { AIConfig } from "../../shared/types/ai-tools/ai-config"
 import { ContentType, Emotion } from "../../shared/types/ai-tools/content-analysis"
-// Import types from shared pipeline types
-import type {
-  PipelineContentClassification as ContentClassification,
-  IntelligentContent,
-  ProcessedMoment,
-} from "../../shared/types/ai-tools/pipeline"
 // Import enums and values (not types) - use shared ones
 import { ProcessingStatus } from "../../shared/types/ai-tools/pipeline"
-import type { AdaptedContent, PlatformId } from "../../shared/types/ai-tools/platform-adaptation"
+import type { PlatformId } from "../../shared/types/ai-tools/platform-adaptation"
 import type { GeneratedScript, ScriptGenerationParams } from "../../shared/types/ai-tools/script-generation"
 // Import types from domain - only what we need
 import type {

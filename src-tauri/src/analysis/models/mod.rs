@@ -148,7 +148,7 @@ pub struct AnalysisMediaFile {
   pub created_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum MediaType {
   Video,
@@ -225,7 +225,7 @@ pub struct AnalysisScene {
   pub created_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum SceneType {
   Action,       // Действие, движение
@@ -244,7 +244,8 @@ pub enum SceneType {
   Opening,      // Открывающая сцена
   Ending,       // Завершающая сцена
   Interview,    // Интервью
-  Content,      // Основной контент
+  #[default]
+  Content, // Основной контент
   Unknown,      // Неопределенная
 }
 

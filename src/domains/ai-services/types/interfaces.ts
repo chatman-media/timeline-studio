@@ -37,6 +37,9 @@ export interface Scene {
   description?: string
 }
 
+// Re-export from shared types
+export type { KeyFrameExtractionOptions, KeyFrameExtractionResult } from "@/domains/shared/types/media-analysis"
+
 export interface QualityAnalysisResult {
   overall: number // 0-100
   video?: {

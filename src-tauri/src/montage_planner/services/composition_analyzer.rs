@@ -167,7 +167,7 @@ impl CompositionAnalyzer {
 
     // Calculate activity level based on object count and distribution
     let activity_level = self.calculate_activity_level(&objects, &faces);
-    
+
     // Store face count before moving faces vector
     let face_count = faces.len() as u32;
 
@@ -196,6 +196,13 @@ impl CompositionAnalyzer {
         face_count,
         face_prominence: 0.0,
         scene_depth: 0.0,
+        confidence: 0.0,
+        brightness: 50.0,
+        contrast: 50.0,
+        saturation: 50.0,
+        sharpness: 50.0, // Added missing field
+        clarity: 50.0,   // Added missing field
+        stability: 50.0, // Added missing field
       }, // Will be calculated separately
       activity_level,
       emotional_tone: EmotionalTone::Neutral, // Will be enhanced by emotion detector
@@ -234,9 +241,16 @@ impl CompositionAnalyzer {
       symmetry,
       overall_score,
       activity_score: 50.0, // Default activity level
-      face_count: 0, // No face count in this context
+      face_count: 0,        // No face count in this context
       face_prominence: 0.0, // No face analysis in this context
-      scene_depth: 50.0, // Default scene depth
+      scene_depth: 50.0,    // Default scene depth
+      confidence: overall_score,
+      brightness: 50.0,
+      contrast: 50.0,
+      saturation: 50.0,
+      sharpness: 50.0, // Added missing field
+      clarity: 50.0,   // Added missing field
+      stability: 50.0, // Added missing field
     }
   }
 

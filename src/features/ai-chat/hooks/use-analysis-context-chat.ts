@@ -2,12 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useAnalysis } from "@/features/analysis-dashboard/hooks/use-analysis"
-import {
-  AnalysisProject,
-  AnalysisScene,
-  KeyMoment,
-  ProjectStatistics,
-} from "@/features/analysis-dashboard/types/analysis"
 import { useTimelineAnalysis } from "@/features/timeline/hooks/use-timeline-analysis"
 
 interface ChatMessage {
@@ -277,7 +271,7 @@ ${moment.description ? `Описание: ${moment.description}` : ""}`
 // Simulate AI response (replace with actual AI service)
 async function simulateAIResponse(
   userMessage: string,
-  systemPrompt: string,
+  _systemPrompt: string,
   contextData: any,
 ): Promise<{
   content: string

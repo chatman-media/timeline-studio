@@ -724,16 +724,75 @@ impl PersonDatabase {
   /// Создание mock database для тестов (синхронная версия)
   pub fn new_mock() -> Self {
     let conn = rusqlite::Connection::open(":memory:").expect("Failed to create mock database");
-    
+
     // Setup pragmas for in-memory database
     let _ = conn.execute("PRAGMA foreign_keys = ON", []);
     let _ = conn.execute("PRAGMA synchronous = NORMAL", []);
-    
+
     Self {
       conn: Arc::new(Mutex::new(conn)),
       similarity_threshold: 0.75,
       quality_threshold: 0.7,
     }
+  }
+
+  /// Получить все появления персоны в конкретном файле
+  pub async fn get_person_appearances_in_file(
+    &self,
+    person_id: &Uuid,
+    file_id: &str,
+  ) -> Result<Vec<PersonAppearance>> {
+    let conn = self.conn.lock().await;
+    let mut stmt = conn
+      .prepare(
+        "SELECT id, start_time, end_time, confidence, frame_count, scene_description, key_frame_number
+         FROM person_appearances 
+         WHERE person_id = ?1 AND clip_id = ?2
+         ORDER BY start_time ASC",
+      )
+      .context("Failed to prepare query for person appearances")?;
+
+    let appearance_iter = stmt
+      .query_map([person_id.to_string(), file_id.to_string()], |row| {
+        Ok(PersonAppearance {
+          id: Uuid::parse_str(&row.get::<_, String>(0)?).unwrap_or_else(|_| Uuid::new_v4()),
+          person_id: *person_id,
+          clip_id: Uuid::parse_str(file_id).unwrap_or_else(|_| Uuid::new_v4()),
+          start_time: row.get(1)?,
+          end_time: row.get(2)?,
+          confidence: row.get::<_, f32>(3)?,
+          frame_count: row.get(4)?,
+          scene_description: row.get::<_, Option<String>>(5)?,
+          key_frame_number: row.get(6)?,
+          created_at: Utc::now(), // TODO: Get actual created_at from DB
+        })
+      })
+      .context("Failed to execute query for person appearances")?;
+
+    let mut appearances = Vec::new();
+    for appearance in appearance_iter {
+      appearances.push(appearance?);
+    }
+
+    Ok(appearances)
+  }
+
+  /// Получить количество появлений персоны в файле
+  pub async fn get_person_appearance_count_in_file(
+    &self,
+    person_id: &Uuid,
+    file_id: &str,
+  ) -> Result<u32> {
+    let conn = self.conn.lock().await;
+    let count: u32 = conn
+      .query_row(
+        "SELECT COUNT(*) FROM person_appearances WHERE person_id = ?1 AND clip_id = ?2",
+        [person_id.to_string(), file_id.to_string()],
+        |row| row.get(0),
+      )
+      .context("Failed to count person appearances")?;
+
+    Ok(count)
   }
 }
 

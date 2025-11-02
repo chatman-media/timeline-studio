@@ -1,17 +1,28 @@
 /**
  * AI Services Domain - Service Exports
+ *
+ * ⚠️ IMPORTANT: AI Analysis services migrated to Rust backend (AI Director)
+ * Use @/features/ai-director hooks instead of these legacy services
+ *
+ * Migration Guide:
+ * - Scene Analysis → AI Director comprehensive analysis
+ * - Content Classification → AI Director content engine
+ * - Moment Detection → AI Director moment engine
+ * - Vision Analysis → AI Director vision service
+ *
+ * See: /docs/ru/05_development/ai-director-unified-migration-guide.md
  */
 
 // Core services
-export * from "./ai-orchestrator"
+export * from "./ai-orchestrator" // ⚠️ Legacy: Still used by ai-content-intelligence, migrate to @/features/ai-director
 // Specialized services
 // export * from "./audio"
-export * from "./batch-processing-service"
+// export * from "./batch-processing-service" // ⚠️ Deprecated: Use AI Director batch analysis
 export * from "./content"
-export * from "./content-classifier"
-export * from "./content-intelligence-service"
-export * from "./content-pipeline"
-export * from "./engines"
+// export * from "./content-classifier" // ⚠️ Deprecated: Migrated to Rust backend
+// Removed: content-intelligence-service - migrated to Rust backend
+// Removed: content-pipeline - migrated to Rust backend
+// Removed: engines/content-classification - migrated to Rust backend
 export * from "./ffmpeg"
 export * from "./media-analysis"
 export * from "./media-analysis-interface"
@@ -20,7 +31,7 @@ export * from "./multi-platform"
 export * from "./person-identification"
 // export * from "./platform-optimization"
 export * from "./recognition"
-// export * from "./scene-analysis"
+// export * from "./scene-analysis" // ⚠️ Deprecated: Migrated to Rust backend
 // export * from "./script-generation"
 export * from "./timeline-ai-service"
 export * from "./transcription-service"

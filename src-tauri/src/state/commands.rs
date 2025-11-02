@@ -3610,11 +3610,7 @@ impl CommandHandler {
     let mut project_state = self.state.write().await;
 
     // Store UI state in the project state
-    if project_state.ui_state.browser_state.is_none() {
-      project_state.ui_state.browser_state = Some(state.clone());
-    } else {
-      project_state.ui_state.browser_state = Some(state.clone());
-    }
+    project_state.ui_state.browser_state = Some(state.clone());
 
     log::info!("Browser state synced to backend");
     CommandResult::success(Some(serde_json::json!({

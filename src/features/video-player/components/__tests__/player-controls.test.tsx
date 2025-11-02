@@ -15,6 +15,29 @@ const renderWithProviders = (ui: React.ReactElement) => {
   )
 }
 
+// Мокаем lucide-react иконки
+vi.mock("lucide-react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("lucide-react")>()
+  return {
+    ...actual,
+    Play: (props: any) => <svg data-testid="play-icon" data-icon="Play" {...props}>Play</svg>,
+    Pause: (props: any) => <svg data-testid="pause-icon" data-icon="Pause" {...props}>Pause</svg>,
+    StepBack: (props: any) => <svg data-testid="stepback-icon" data-icon="StepBack" {...props}>StepBack</svg>,
+    StepForward: (props: any) => <svg data-testid="stepforward-icon" data-icon="StepForward" {...props}>StepForward</svg>,
+    Maximize2: (props: any) => <svg data-testid="maximize2-icon" data-icon="Maximize2" {...props}>Maximize2</svg>,
+    Minimize2: (props: any) => <svg data-testid="minimize2-icon" data-icon="Minimize2" {...props}>Minimize2</svg>,
+    CircleDot: (props: any) => <svg data-testid="circledot-icon" data-icon="CircleDot" {...props}>CircleDot</svg>,
+    Volume2: (props: any) => <svg data-testid="volume2-icon" data-icon="Volume2" {...props}>Volume2</svg>,
+    VolumeX: (props: any) => <svg data-testid="volumex-icon" data-icon="VolumeX" {...props}>VolumeX</svg>,
+    TvMinimalPlay: (props: any) => <svg data-testid="tvminimalplay-icon" data-icon="TvMinimalPlay" {...props}>TvMinimalPlay</svg>,
+    ImagePlay: (props: any) => <svg data-testid="imageplay-icon" data-icon="ImagePlay" {...props}>ImagePlay</svg>,
+    UnfoldHorizontal: (props: any) => <svg data-testid="unfoldhorizontal-icon" data-icon="UnfoldHorizontal" {...props}>UnfoldHorizontal</svg>,
+    Camera: (props: any) => <svg data-testid="camera-icon" data-icon="Camera" {...props}>Camera</svg>,
+    ChevronFirst: (props: any) => <svg data-testid="chevronfirst-icon" data-icon="ChevronFirst" {...props}>ChevronFirst</svg>,
+    ChevronLast: (props: any) => <svg data-testid="chevronlast-icon" data-icon="ChevronLast" {...props}>ChevronLast</svg>,
+  }
+})
+
 // Мокаем компоненты UI
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, variant, size, className, ...props }: any) => (
@@ -44,7 +67,7 @@ vi.mock("../prerender-controls", () => ({
   PrerenderControls: vi.fn(() => <div data-testid="prerender-controls">Prerender Controls</div>),
 }))
 
-vi.mock("../components/volume-slider", () => ({
+vi.mock("../volume-slider", () => ({
   VolumeSlider: ({ volume, onValueChange, onValueCommit }: any) => (
     <div
       data-testid="volume-slider"
@@ -97,7 +120,7 @@ vi.mock("@/features/multicam/hooks/use-multicam", () => ({
 }))
 
 // Мокаем хуки
-vi.mock("../services/player-provider", () => ({
+vi.mock("@/features/video-player/services/player-provider", () => ({
   usePlayer: vi.fn(() => ({
     isPlaying: false,
     play: vi.fn().mockResolvedValue(undefined),
@@ -116,7 +139,7 @@ vi.mock("../services/player-provider", () => ({
   })),
 }))
 
-vi.mock("../hooks/use-fullscreen", () => ({
+vi.mock("@/features/video-player/hooks/use-fullscreen", () => ({
   useFullscreen: vi.fn(() => ({
     isFullscreen: false,
     toggleFullscreen: vi.fn(),
@@ -664,6 +687,24 @@ describe("PlayerControls", () => {
     })
 
     it("должен показывать правильную иконку для текущего источника", () => {
+      // Сбрасываем мок обратно к дефолтному videoSource: "timeline"
+      vi.mocked(usePlayer).mockReturnValue({
+        isPlaying: false,
+        play: vi.fn().mockResolvedValue(undefined),
+        pause: vi.fn().mockResolvedValue(undefined),
+        seek: vi.fn().mockResolvedValue(undefined),
+        volume: 0.75,
+        setVolume: vi.fn(),
+        isRecording: false,
+        setIsRecording: vi.fn(),
+        setIsSeeking: vi.fn(),
+        isChangingCamera: false,
+        isResizableMode: false,
+        setIsResizableMode: vi.fn(),
+        videoSource: "timeline" as const,
+        setVideoSource: vi.fn(),
+      })
+
       const { rerender } = renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
       // В режиме timeline

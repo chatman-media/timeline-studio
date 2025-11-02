@@ -54,6 +54,10 @@ use montage_planner::commands::MontageState;
 
 // Модуль Analysis System
 pub mod analysis;
+use analysis::commands::ai_director_commands::AIDirectorState; // AI Director State
+use analysis::commands::content_commands::ContentEngineState; // 🆕 Content Engine State
+use analysis::commands::scene_commands::SceneEngineState; // 🆕 Scene Engine State
+use analysis::commands::vision_commands::VisionServiceState; // 🆕 Vision Service State
 // use analysis::commands::AnalysisState; // Temporarily disabled due to missing implementation
 
 // Модуль безопасности и API ключей
@@ -67,19 +71,19 @@ use state::StateManager;
 // Application state for analysis system
 #[derive(Clone)]
 pub struct AppState {
-    pub analysis_db: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
-    pub person_db: Option<std::sync::Arc<crate::recognition::person_database::PersonDatabase>>,
-    pub project_manager: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
+  pub analysis_db: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
+  pub person_db: Option<std::sync::Arc<crate::recognition::person_database::PersonDatabase>>,
+  pub project_manager: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
 }
 
 impl Default for AppState {
-    fn default() -> Self {
-        Self {
-            analysis_db: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
-            person_db: None,
-            project_manager: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
-        }
+  fn default() -> Self {
+    Self {
+      analysis_db: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
+      person_db: None,
+      project_manager: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
     }
+  }
 }
 
 // Модуль экспорта типов
@@ -312,6 +316,22 @@ pub fn run() {
       let montage_yolo_state = Arc::new(RwLock::new(YoloProcessorState::default()));
       let montage_state = MontageState::new(montage_yolo_state);
       app.manage(montage_state);
+
+      // Create Scene Engine State 🆕
+      let scene_engine_state = SceneEngineState::new();
+      app.manage(scene_engine_state);
+
+      // Create Vision Service State 🆕
+      let vision_service_state = VisionServiceState::new();
+      app.manage(vision_service_state);
+
+      // Create Content Engine State 🆕
+      let content_engine_state = ContentEngineState::new();
+      app.manage(content_engine_state);
+
+      // Create AI Director State
+      let ai_director_state = AIDirectorState::new();
+      app.manage(ai_director_state);
 
       // Initialize Person Identification Database
       let person_db = {

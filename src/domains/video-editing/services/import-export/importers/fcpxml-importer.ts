@@ -158,7 +158,7 @@ export class FCPXMLImporter implements Importer {
 
     // Ищем все asset элементы
     const assetRegex = /<asset[^>]*>/g
-    let assetMatch
+    let assetMatch: RegExpExecArray | null
     while ((assetMatch = assetRegex.exec(content)) !== null) {
       const assetTag = assetMatch[0]
 
@@ -204,7 +204,7 @@ export class FCPXMLImporter implements Importer {
 
     // Ищем все clip элементы в spine
     const clipRegex = /<(clip|asset-clip)[^>]*(?:\/?>|>.*?<\/(?:clip|asset-clip)>)/g
-    let clipMatch
+    let clipMatch: RegExpExecArray | null
     while ((clipMatch = clipRegex.exec(content)) !== null) {
       const clipTag = clipMatch[0]
 

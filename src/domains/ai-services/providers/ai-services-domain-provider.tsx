@@ -228,7 +228,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   // Отслеживание использования AI через события
   useEffect(() => {
     // Подсчет использования для событий чата
-    if (chatState.context.chatMessages.length > 0 && isBackendConnected) {
+    if (chatState.context.chatMessages?.length && chatState.context.chatMessages.length > 0 && isBackendConnected) {
       setAIUsageStats((prev) => ({
         ...prev,
         totalRequests: prev.totalRequests + 1,
@@ -244,7 +244,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
         })
         .catch(console.error)
     }
-  }, [chatState.context.chatMessages.length, isBackendConnected, backendSync])
+  }, [chatState.context.chatMessages?.length, isBackendConnected, backendSync])
 
   const contextValue: AIServicesDomainContextValue = {
     config: domainConfig,

@@ -441,8 +441,6 @@ export class AAFImporter implements Importer {
       sourceIn: mediaStartTime,
       sourceOut: mediaStartTime + duration,
       playbackRate: 1.0,
-      isSelected: false,
-      isLocked: false,
       isMuted: false,
       volume: 1.0,
       opacity: 1.0,

@@ -41,72 +41,79 @@ impl TimelineBridge {
 
     // Проверяем права доступа
     if !self.permissions.can_read_timeline() {
-      return Err(VideoCompilerError::PermissionDenied(
-        format!("Plugin {} does not have timeline read permissions", self.plugin_id)
-      ));
+      return Err(VideoCompilerError::PermissionDenied(format!(
+        "Plugin {} does not have timeline read permissions",
+        self.plugin_id
+      )));
     }
 
     // Интеграция с ProjectService для получения реального состояния timeline
     if let Some(_project_service) = self.service_container.get_project_service() {
-      log::info!("[TimelineBridge {}] ProjectService integration not yet implemented", self.plugin_id);
-      
+      log::info!(
+        "[TimelineBridge {}] ProjectService integration not yet implemented",
+        self.plugin_id
+      );
+
       // TODO: Реализовать интеграцию с ProjectService
       // В будущем здесь будет:
       // let timeline_state = project_service.get_current_timeline_state().await?;
     }
 
     // Fallback: возвращаем реалистичные данные без ProjectService
-    log::info!("[TimelineBridge {}] Using fallback timeline state", self.plugin_id);
-    
+    log::info!(
+      "[TimelineBridge {}] Using fallback timeline state",
+      self.plugin_id
+    );
+
     use crate::core::plugins::api::ClipInfo;
     Ok(TimelineState {
-        duration: 180.0,    // 3 минуты
-        current_time: 30.0, // 30 секунд
-        tracks: vec![
-          TrackInfo {
-            id: "video_track_1".to_string(),
-            track_type: "video".to_string(),
-            name: "Main Video".to_string(),
-            clips: vec![
-              ClipInfo {
-                id: "clip_1".to_string(),
-                media_id: "sample_video.mp4".to_string(),
-                start_time: 0.0,
-                duration: 60.0,
-                in_point: 0.0,
-                out_point: 60.0,
-              },
-              ClipInfo {
-                id: "clip_2".to_string(),
-                media_id: "sample_video2.mp4".to_string(),
-                start_time: 60.0,
-                duration: 120.0,
-                in_point: 0.0,
-                out_point: 120.0,
-              },
-            ],
-            muted: false,
-            locked: false,
-            height: 120,
-          },
-          TrackInfo {
-            id: "audio_track_1".to_string(),
-            track_type: "audio".to_string(),
-            name: "Audio Track 1".to_string(),
-            clips: vec![ClipInfo {
-              id: "audio_clip_1".to_string(),
-              media_id: "sample_audio.mp3".to_string(),
+      duration: 180.0,    // 3 минуты
+      current_time: 30.0, // 30 секунд
+      tracks: vec![
+        TrackInfo {
+          id: "video_track_1".to_string(),
+          track_type: "video".to_string(),
+          name: "Main Video".to_string(),
+          clips: vec![
+            ClipInfo {
+              id: "clip_1".to_string(),
+              media_id: "sample_video.mp4".to_string(),
               start_time: 0.0,
-              duration: 180.0,
+              duration: 60.0,
               in_point: 0.0,
-              out_point: 180.0,
-            }],
-            muted: false,
-            locked: false,
-            height: 60,
-          },
-        ],
-      })
+              out_point: 60.0,
+            },
+            ClipInfo {
+              id: "clip_2".to_string(),
+              media_id: "sample_video2.mp4".to_string(),
+              start_time: 60.0,
+              duration: 120.0,
+              in_point: 0.0,
+              out_point: 120.0,
+            },
+          ],
+          muted: false,
+          locked: false,
+          height: 120,
+        },
+        TrackInfo {
+          id: "audio_track_1".to_string(),
+          track_type: "audio".to_string(),
+          name: "Audio Track 1".to_string(),
+          clips: vec![ClipInfo {
+            id: "audio_clip_1".to_string(),
+            media_id: "sample_audio.mp3".to_string(),
+            start_time: 0.0,
+            duration: 180.0,
+            in_point: 0.0,
+            out_point: 180.0,
+          }],
+          muted: false,
+          locked: false,
+          height: 60,
+        },
+      ],
+    })
   }
 
   /// Добавить клип в timeline
