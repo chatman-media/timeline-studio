@@ -144,7 +144,7 @@ impl UnifiedFFmpegAudioAnalyzer {
     info!("Analyzing volume with unified types");
 
     // Use volumedetect filter
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -202,7 +202,7 @@ impl UnifiedFFmpegAudioAnalyzer {
     info!("Analyzing frequency spectrum with unified types");
 
     // Use showfreqs filter to analyze frequency spectrum
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -249,7 +249,7 @@ impl UnifiedFFmpegAudioAnalyzer {
     info!("Analyzing audio dynamics with unified types");
 
     // Use dynaudnorm filter to analyze dynamics
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -357,7 +357,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Quick volume estimation для basic metrics
   async fn quick_volume_estimation(file_path: &Path) -> Result<AudioVolume> {
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -423,7 +423,9 @@ impl UnifiedFFmpegAudioAnalyzer {
   }
 
   /// Generate detailed volume histogram
-  async fn generate_volume_histogram_detailed(file_path: &Path) -> Result<Vec<VolumeHistogramBin>> {
+  async fn generate_volume_histogram_detailed(
+    _file_path: &Path,
+  ) -> Result<Vec<VolumeHistogramBin>> {
     // This would require more advanced FFmpeg analysis
     // For now, provide a reasonable histogram structure
     Ok(vec![
@@ -456,7 +458,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Analyze LUFS loudness
   async fn analyze_loudness_lufs(file_path: &Path) -> Result<AudioFloat> {
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -481,7 +483,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Detect audio clipping
   async fn detect_clipping(file_path: &Path) -> Result<bool> {
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -502,7 +504,7 @@ impl UnifiedFFmpegAudioAnalyzer {
   /// Analyze noise level
   async fn analyze_noise_level(file_path: &Path) -> Result<AudioFloat> {
     // Use FFmpeg to analyze noise floor
-    let output = FFmpegCommand::ffmpeg()
+    let _output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -520,13 +522,13 @@ impl UnifiedFFmpegAudioAnalyzer {
   }
 
   /// Calculate signal-to-noise ratio
-  async fn calculate_snr(file_path: &Path) -> Result<AudioFloat> {
+  async fn calculate_snr(_file_path: &Path) -> Result<AudioFloat> {
     // Simplified SNR calculation
     Ok(25.0) // dB, placeholder
   }
 
   /// Analyze distortion level
-  async fn analyze_distortion_level(file_path: &Path) -> Result<AudioFloat> {
+  async fn analyze_distortion_level(_file_path: &Path) -> Result<AudioFloat> {
     // Advanced distortion analysis (placeholder)
     Ok(0.05) // 5% distortion
   }

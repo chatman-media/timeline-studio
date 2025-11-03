@@ -716,7 +716,7 @@ impl UnifiedMontageAudioAnalyzer {
   /// Extract segment features с unified типами
   async fn extract_segment_features_unified<P: AsRef<Path>>(
     &self,
-    audio_path: P,
+    _audio_path: P,
     start_time: AudioFloat,
     duration: AudioFloat,
   ) -> Result<UnifiedAudioSegmentAnalysis, AudioAnalysisError> {

@@ -97,7 +97,7 @@ pub async fn check_models_status(
 
 /// Получение информации о конфигурации движка
 #[tauri::command]
-pub async fn get_engine_info(state: State<'_, crate::AppState>) -> Result<EngineInfo, String> {
+pub async fn get_engine_info(_state: State<'_, crate::AppState>) -> Result<EngineInfo, String> {
   // TODO: Получить из real engine
   Ok(EngineInfo {
     object_model: "YoloV11Nano".to_string(),
@@ -114,7 +114,7 @@ pub async fn get_engine_info(state: State<'_, crate::AppState>) -> Result<Engine
 #[tauri::command]
 pub async fn start_real_project_analysis(
   project_id: String,
-  state: State<'_, crate::AppState>,
+  _state: State<'_, crate::AppState>,
 ) -> Result<String, String> {
   // Временно возвращаем String
   let project_uuid =
@@ -257,14 +257,14 @@ pub async fn search_project_data(project_id: String, query: String) -> Result<St
 #[tauri::command]
 pub async fn create_analysis_scene(
   project_id: String,
-  scene_data: String,
+  _scene_data: String,
 ) -> Result<String, String> {
   log::info!("Creating analysis scene for project: {}", project_id);
   Ok("{}".to_string()) // Mock response
 }
 
 #[tauri::command]
-pub async fn create_key_moment(project_id: String, moment_data: String) -> Result<String, String> {
+pub async fn create_key_moment(project_id: String, _moment_data: String) -> Result<String, String> {
   log::info!("Creating key moment for project: {}", project_id);
   Ok("{}".to_string()) // Mock response
 }
@@ -272,7 +272,7 @@ pub async fn create_key_moment(project_id: String, moment_data: String) -> Resul
 #[tauri::command]
 pub async fn create_project_person_association(
   project_id: String,
-  person_data: String,
+  _person_data: String,
 ) -> Result<String, String> {
   log::info!("Creating person association for project: {}", project_id);
   Ok("{}".to_string()) // Mock response
@@ -285,7 +285,7 @@ pub async fn get_project_persons_with_stats(project_id: String) -> Result<String
 }
 
 #[tauri::command]
-pub async fn create_montage_plan(project_id: String, plan_data: String) -> Result<String, String> {
+pub async fn create_montage_plan(project_id: String, _plan_data: String) -> Result<String, String> {
   log::info!("Creating montage plan for project: {}", project_id);
   Ok("{}".to_string()) // Mock response
 }
