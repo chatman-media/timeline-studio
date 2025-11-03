@@ -147,14 +147,8 @@ impl RetinaFaceProcessor {
       ));
     }
 
-    // Инициализируем ORT если не инициализирован
-    if let Err(e) = crate::recognition::yolo_processor::init_ort() {
-      if cfg!(test) {
-        eprintln!("Warning: Failed to initialize ORT in test mode: {e}");
-      } else {
-        return Err(anyhow!("Failed to initialize ORT: {e}"));
-      }
-    }
+    // ORT initialization is now handled automatically by ModelManager
+    // No need for explicit init_ort() call
 
     // В тестах пропускаем загрузку модели если ORT недоступен
     if cfg!(test) {

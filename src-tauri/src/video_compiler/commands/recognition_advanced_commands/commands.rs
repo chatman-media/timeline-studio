@@ -377,6 +377,11 @@ pub async fn get_loaded_model_type(model_type: String) -> Result<serde_json::Val
       YoloModel::YoloV8Detection => "yolo8_detection",
       YoloModel::YoloV8Segmentation => "yolo8_segmentation",
       YoloModel::YoloV8Face => "yolo8_face",
+      YoloModel::YoloV8Nano => "yolo8n",
+      YoloModel::YoloV8Small => "yolo8s",
+      YoloModel::YoloV8Medium => "yolo8m",
+      YoloModel::YoloV8Large => "yolo8l",
+      YoloModel::YoloV8Extra => "yolo8x",
       YoloModel::Custom(path) => return Ok(serde_json::json!({
         "success": true,
         "model_type": "custom",

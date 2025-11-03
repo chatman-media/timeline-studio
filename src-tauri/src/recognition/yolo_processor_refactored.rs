@@ -50,7 +50,7 @@ impl YoloProcessor {
     let mut model_manager = ModelManager::new(config.model.clone())?;
     model_manager.load_model().await?;
 
-    let class_names = Self::get_class_names(&config.model);
+    let class_names = Self::get_class_names_for_model(&config.model);
     let frame_processor = Arc::new(FrameProcessor::new(
       config.processing_config.clone(),
       class_names.clone(),
@@ -79,6 +79,22 @@ impl YoloProcessor {
         .postprocess_output(&outputs[0], image)?
     };
     Ok(detections)
+  }
+
+  /// Обработать изображение из файла (для обратной совместимости)
+  pub async fn process_image_path(&self, image_path: &Path) -> Result<Vec<Detection>> {
+    let image = image::open(image_path)?;
+    self.process_image(&image).await
+  }
+
+  /// Обработать пакет изображений (для обратной совместимости)
+  pub async fn process_batch(&self, image_paths: Vec<std::path::PathBuf>) -> Result<Vec<Vec<Detection>>> {
+    let mut results = Vec::new();
+    for path in image_paths {
+      let detections = self.process_image_path(&path).await?;
+      results.push(detections);
+    }
+    Ok(results)
   }
 
   /// Обработать видео из файла
@@ -171,10 +187,40 @@ impl YoloProcessor {
     &self.config
   }
 
-  /// Получить имена классов для модели
-  fn get_class_names(model: &YoloModel) -> Vec<String> {
+  /// Загрузить модель (для обратной совместимости - модель уже загружена в new())
+  pub async fn load_model(&self) -> Result<()> {
+    // Модель уже загружена в конструкторе, это no-op для совместимости
+    Ok(())
+  }
+
+  /// Установить целевые классы для фильтрации (для обратной совместимости)
+  pub fn set_target_classes(&mut self, classes: Vec<String>) {
+    self.config.processing_config.target_classes = if classes.is_empty() {
+      None
+    } else {
+      Some(classes)
+    };
+    // Обновляем конфигурацию в frame_processor
+    if let Some(fp) = Arc::get_mut(&mut self.frame_processor) {
+      fp.update_config(self.config.processing_config.clone())
+    }
+  }
+
+  /// Получить имена классов как метод (для обратной совместимости)
+  pub fn get_class_names(&self) -> Vec<String> {
+    self.class_names.clone()
+  }
+
+  /// Получить имена классов для модели (статическая функция)
+  fn get_class_names_for_model(model: &YoloModel) -> Vec<String> {
     match model {
-      YoloModel::YoloV11Detection | YoloModel::YoloV8Detection => {
+      YoloModel::YoloV11Detection
+      | YoloModel::YoloV8Detection
+      | YoloModel::YoloV8Nano
+      | YoloModel::YoloV8Small
+      | YoloModel::YoloV8Medium
+      | YoloModel::YoloV8Large
+      | YoloModel::YoloV8Extra => {
         // COCO classes
         vec![
           "person",
@@ -267,7 +313,7 @@ impl YoloProcessor {
       }
       YoloModel::YoloV11Segmentation | YoloModel::YoloV8Segmentation => {
         // Same as detection but with segmentation masks
-        Self::get_class_names(&YoloModel::YoloV11Detection)
+        Self::get_class_names_for_model(&YoloModel::YoloV11Detection)
       }
       YoloModel::Custom(_) => {
         // For custom models, return empty vector

@@ -11,7 +11,9 @@ use crate::analysis::models::*;
 use crate::analysis::services::ProjectManager; // ✅ Включено обратно
 use crate::recognition::facenet_processor::{FaceNetModel, FaceNetProcessor};
 use crate::recognition::person_database::{PersonAppearance, PersonDatabase};
-use crate::recognition::yolo_processor::{YoloModel, YoloProcessor};
+use crate::recognition::model_manager::YoloModel;
+use crate::recognition::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
+use crate::recognition::frame_processor::ProcessingConfig;
 
 // Недостающие типы для компиляции
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -82,8 +84,8 @@ pub struct AnalysisEngineConfig {
 impl Default for AnalysisEngineConfig {
   fn default() -> Self {
     Self {
-      object_model: YoloModel::YoloV11Nano, // Быстрая модель для начала
-      face_detection_model: YoloModel::YoloV11FaceNano,
+      object_model: YoloModel::YoloV8Nano, // Быстрая модель для начала
+      face_detection_model: YoloModel::YoloV11Face,
       face_encoding_model: FaceNetModel::FaceNet128D, // Быстрая модель
       object_confidence_threshold: 0.5,
       face_confidence_threshold: 0.7,
@@ -117,18 +119,22 @@ impl RealAnalysisEngine {
     log::info!("Initializing ONNX models for real analysis...");
 
     // Инициализируем object detector
-    let mut object_detector = YoloProcessor::new(
-      self.config.object_model.clone(),
-      self.config.object_confidence_threshold,
-    )?;
+    let processor_config = ProcessorConfig {
+      model: self.config.object_model.clone(),
+      processing_config: ProcessingConfig {
+        confidence_threshold: self.config.object_confidence_threshold,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    match object_detector.load_model().await {
-      Ok(_) => {
+    match YoloProcessor::new(processor_config).await {
+      Ok(processor) => {
         log::info!(
           "Object detection model loaded successfully: {:?}",
           self.config.object_model
         );
-        *self.object_detector.write().await = Some(object_detector);
+        *self.object_detector.write().await = Some(processor);
       }
       Err(e) => {
         log::warn!("Failed to load object detection model: {}", e);
@@ -140,18 +146,22 @@ impl RealAnalysisEngine {
     }
 
     // Инициализируем face detector
-    let mut face_detector = YoloProcessor::new(
-      self.config.face_detection_model.clone(),
-      self.config.face_confidence_threshold,
-    )?;
+    let face_processor_config = ProcessorConfig {
+      model: self.config.face_detection_model.clone(),
+      processing_config: ProcessingConfig {
+        confidence_threshold: self.config.face_confidence_threshold,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    match face_detector.load_model().await {
-      Ok(_) => {
+    match YoloProcessor::new(face_processor_config).await {
+      Ok(processor) => {
         log::info!(
           "Face detection model loaded successfully: {:?}",
           self.config.face_detection_model
         );
-        *self.face_detector.write().await = Some(face_detector);
+        *self.face_detector.write().await = Some(processor);
       }
       Err(e) => {
         log::warn!("Failed to load face detection model: {}", e);
@@ -531,7 +541,7 @@ impl RealAnalysisEngine {
 
     // Детекция объектов
     if let Some(object_detector) = &mut *self.object_detector.write().await {
-      match object_detector.process_image(image_path).await {
+      match object_detector.process_image_path(image_path).await {
         Ok(detections) => {
           for detection in detections {
             objects.push(ObjectDetection {
@@ -562,7 +572,7 @@ impl RealAnalysisEngine {
 
     // Детекция лиц
     if let Some(face_detector) = &mut *self.face_detector.write().await {
-      match face_detector.process_image(image_path).await {
+      match face_detector.process_image_path(image_path).await {
         Ok(face_detections) => {
           // Обрабатываем каждое обнаруженное лицо
           for face_detection in face_detections {

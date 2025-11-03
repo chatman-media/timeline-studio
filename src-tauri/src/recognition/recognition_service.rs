@@ -8,7 +8,10 @@ use super::person_clustering::PersonClusteringService;
 use super::types::{
   BoundingBox, DetectedFace, DetectedObject, DetectedScene, IdentifiedPerson, RecognitionResults,
 };
-use super::yolo_processor::{Detection, YoloModel, YoloProcessor};
+// Use refactored YOLO implementation
+use super::frame_processor::{Detection, ProcessingConfig};
+use super::model_manager::YoloModel;
+use super::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 
 /// State wrapper for RecognitionService
 #[derive(Clone)]
@@ -43,9 +46,26 @@ impl RecognitionService {
     let results_dir = base_path.join("Recognition");
     std::fs::create_dir_all(&results_dir)?;
 
-    // Создаем процессоры
-    let object_detector = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5)?;
-    let face_detector = YoloProcessor::new(YoloModel::YoloV11Face, 0.7)?;
+    // Создаем процессоры с использованием refactored API
+    let object_config = ProcessorConfig {
+      model: YoloModel::YoloV11Detection,
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.5,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
+    let object_detector = YoloProcessor::new(object_config).await?;
+
+    let face_config = ProcessorConfig {
+      model: YoloModel::YoloV11Face,
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.7,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
+    let face_detector = YoloProcessor::new(face_config).await?;
 
     // Create person clustering service with proper error handling
     let db_path = base_path.join("persons.db");
@@ -83,13 +103,13 @@ impl RecognitionService {
       let timestamp = idx as f64 * 1.0; // Простая метка времени
 
       // Обнаружение объектов
-      let mut object_detector = self.object_detector.write().await;
-      let objects = object_detector.process_image(frame_path).await?;
+      let object_detector = self.object_detector.read().await;
+      let objects = object_detector.process_image_path(frame_path).await?;
       all_objects.extend(objects.into_iter().map(|d| (timestamp, d)));
 
       // Обнаружение лиц
-      let mut face_detector = self.face_detector.write().await;
-      let faces = face_detector.process_image(frame_path).await?;
+      let face_detector = self.face_detector.read().await;
+      let faces = face_detector.process_image_path(frame_path).await?;
       all_faces.extend(faces.into_iter().map(|d| (timestamp, d)));
     }
 
@@ -349,14 +369,14 @@ impl RecognitionService {
 
   /// Загрузить модель для детектора объектов
   pub async fn load_object_model(&self) -> Result<()> {
-    let mut detector = self.object_detector.write().await;
+    let detector = self.object_detector.read().await;
     detector.load_model().await
   }
 
   /// Загрузить модель для детектора лиц
   #[allow(dead_code)]
   pub async fn load_face_model(&self) -> Result<()> {
-    let mut detector = self.face_detector.write().await;
+    let detector = self.face_detector.read().await;
     detector.load_model().await
   }
 
@@ -377,7 +397,7 @@ impl RecognitionService {
     &self,
     image_paths: Vec<PathBuf>,
   ) -> Result<Vec<Vec<Detection>>> {
-    let mut detector = self.object_detector.write().await;
+    let detector = self.object_detector.read().await;
     detector.process_batch(image_paths).await
   }
 }

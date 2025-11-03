@@ -10,18 +10,34 @@ use super::ort_manager::OrtManager;
 /// Поддерживаемые модели YOLO
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum YoloModel {
+  // YOLOv11 модели
   /// YOLOv11 для обнаружения объектов
   YoloV11Detection,
   /// YOLOv11 для сегментации
   YoloV11Segmentation,
   /// YOLOv11 для обнаружения лиц
   YoloV11Face,
+
+  // YOLOv8 базовые модели (legacy)
   /// YOLOv8 для обнаружения объектов (legacy)
   YoloV8Detection,
   /// YOLOv8 для сегментации (legacy)
   YoloV8Segmentation,
   /// YOLOv8 для обнаружения лиц (legacy)
   YoloV8Face,
+
+  // YOLOv8 размерные варианты (для совместимости)
+  /// YOLOv8n - Nano (самая быстрая)
+  YoloV8Nano,
+  /// YOLOv8s - Small
+  YoloV8Small,
+  /// YOLOv8m - Medium
+  YoloV8Medium,
+  /// YOLOv8l - Large
+  YoloV8Large,
+  /// YOLOv8x - Extra Large (самая точная)
+  YoloV8Extra,
+
   /// Пользовательская модель
   Custom(PathBuf),
 }
@@ -76,6 +92,46 @@ impl YoloModel {
           .join("timeline-studio")
           .join("models")
           .join("yolov8n-face.onnx");
+        Ok(path)
+      }
+      YoloModel::YoloV8Nano => {
+        let path = dirs::data_local_dir()
+          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
+          .join("timeline-studio")
+          .join("models")
+          .join("yolov8n.onnx");
+        Ok(path)
+      }
+      YoloModel::YoloV8Small => {
+        let path = dirs::data_local_dir()
+          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
+          .join("timeline-studio")
+          .join("models")
+          .join("yolov8s.onnx");
+        Ok(path)
+      }
+      YoloModel::YoloV8Medium => {
+        let path = dirs::data_local_dir()
+          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
+          .join("timeline-studio")
+          .join("models")
+          .join("yolov8m.onnx");
+        Ok(path)
+      }
+      YoloModel::YoloV8Large => {
+        let path = dirs::data_local_dir()
+          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
+          .join("timeline-studio")
+          .join("models")
+          .join("yolov8l.onnx");
+        Ok(path)
+      }
+      YoloModel::YoloV8Extra => {
+        let path = dirs::data_local_dir()
+          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
+          .join("timeline-studio")
+          .join("models")
+          .join("yolov8x.onnx");
         Ok(path)
       }
       YoloModel::Custom(path) => Ok(path.clone()),

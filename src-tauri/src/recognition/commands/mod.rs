@@ -7,14 +7,6 @@ pub mod privacy_commands;
 pub mod realtime_face_detection_commands;
 pub mod retinaface_commands;
 pub mod yolo_commands;
-pub mod yolo_commands_simple;
-
-// Re-export YOLO commands for convenience
-pub use yolo_commands_simple::{
-  analyze_video_with_yolo, check_gpu_availability, detect_objects_in_image,
-  get_yolo_class_names_advanced, init_yolo_processor, load_yolo_data, save_yolo_data,
-  update_yolo_confidence_threshold,
-};
 
 use anyhow::Result;
 use serde_json::Value;
@@ -255,7 +247,7 @@ pub async fn get_yolo_class_names(
 pub async fn process_yolo_batch(
   image_paths: Vec<String>,
   state: State<'_, RecognitionState>,
-) -> Result<Vec<Vec<crate::recognition::yolo_processor::Detection>>, String> {
+) -> Result<Vec<Vec<crate::recognition::Detection>>, String> {
   let paths: Vec<std::path::PathBuf> = image_paths.iter().map(std::path::PathBuf::from).collect();
 
   state

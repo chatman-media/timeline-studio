@@ -9,8 +9,11 @@
 //! Предоставляет простой API для Scene Engine и других компонентов.
 
 use super::facenet_processor::{FaceNetModel, FaceNetProcessor};
+use super::frame_processor::ProcessingConfig;
 use super::retinaface_processor::{RetinaFaceModel, RetinaFaceProcessor};
-use super::yolo_processor::{YoloModel, YoloProcessor};
+// Use refactored YOLO implementation
+use super::model_manager::YoloModel;
+use super::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 use crate::analysis::types::{
   BoundingBox, BrightnessLevel, Color, ColorAnalysis, ColorTemperature, FaceDetection,
   ObjectDetection, SaturationLevel, TextDetection,
@@ -113,11 +116,17 @@ impl VisionService {
 
     // Initialize YOLO processor if enabled
     if self.config.enable_object_detection {
+      let processor_config = ProcessorConfig {
+        model: self.config.yolo_model.clone(),
+        processing_config: ProcessingConfig {
+          confidence_threshold: self.config.object_confidence,
+          ..Default::default()
+        },
+        ..Default::default()
+      };
+
       let mut yolo_lock = self.yolo_processor.write().await;
-      match YoloProcessor::new(
-        self.config.yolo_model.clone(),
-        self.config.object_confidence,
-      ) {
+      match YoloProcessor::new(processor_config).await {
         Ok(processor) => {
           info!("YOLO processor initialized successfully");
           *yolo_lock = Some(processor);
@@ -200,7 +209,7 @@ impl VisionService {
 
     // Process image using YOLO
     let detections = processor
-      .process_image(Path::new(image_path))
+      .process_image_path(Path::new(image_path))
       .await
       .context("Failed to detect objects")?;
 

@@ -11,7 +11,6 @@ pub mod retinaface_processor;
 pub mod types;
 pub mod types_professional;
 pub mod vision_service; // 🆕 Unified Vision Service
-pub mod yolo_processor;
 
 // Новые модули после рефакторинга
 pub mod frame_processor;
@@ -27,7 +26,11 @@ pub use recognition_service::RecognitionService;
 pub use retinaface_processor::RetinaFaceModel; // 🆕 Export RetinaFace models
 pub use types::RecognitionResults;
 pub use vision_service::{ImageAnalysisResult, VisionService, VisionServiceConfig}; // 🆕
-pub use yolo_processor::YoloModel; // 🆕 Export YOLO models
+
+// YOLO exports - using refactored implementation only
+pub use frame_processor::{BoundingBox, Detection, FaceAttributes};
+pub use model_manager::YoloModel;
+pub use yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 
 // Экспорт команд для использования в приложении
 pub use commands::person_commands;

@@ -71,6 +71,11 @@ impl From<&ProcessorConfig> for ProcessorConfigDto {
       YoloModel::YoloV8Face => "yolov8-face".to_string(),
       YoloModel::YoloV11Segmentation => "yolov11-segmentation".to_string(),
       YoloModel::YoloV8Segmentation => "yolov8-segmentation".to_string(),
+      YoloModel::YoloV8Nano => "yolov8n".to_string(),
+      YoloModel::YoloV8Small => "yolov8s".to_string(),
+      YoloModel::YoloV8Medium => "yolov8m".to_string(),
+      YoloModel::YoloV8Large => "yolov8l".to_string(),
+      YoloModel::YoloV8Extra => "yolov8x".to_string(),
       YoloModel::Custom(name) => name.to_string_lossy().to_string(),
     };
 

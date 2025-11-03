@@ -289,7 +289,7 @@ pub fn run() {
       // Create simple YOLO processor state for new commands
       use std::sync::Mutex;
       app.manage(Mutex::new(
-        None::<recognition::yolo_processor::YoloProcessor>,
+        None::<recognition::YoloProcessor>,
       ));
 
       // Create FaceNet processor state

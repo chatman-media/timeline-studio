@@ -7,7 +7,7 @@ use uuid::Uuid;
 
 // use crate::analysis::services::{RealAnalysisEngine, AnalysisEngineConfig};  // Отключено - неиспользуется
 use crate::recognition::facenet_processor::FaceNetModel;
-use crate::recognition::yolo_processor::YoloModel;
+use crate::recognition::model_manager::YoloModel;
 
 /// State для Analysis system (временные заглушки)
 pub struct AnalysisState {
@@ -100,8 +100,8 @@ pub async fn check_models_status(
 pub async fn get_engine_info(_state: State<'_, crate::AppState>) -> Result<EngineInfo, String> {
   // TODO: Получить из real engine
   Ok(EngineInfo {
-    object_model: "YoloV11Nano".to_string(),
-    face_detection_model: "YoloV11FaceNano".to_string(),
+    object_model: "YoloV8Nano".to_string(),
+    face_detection_model: "YoloV11Face".to_string(),
     face_encoding_model: "FaceNet128D".to_string(),
     object_confidence_threshold: 0.5,
     face_confidence_threshold: 0.7,
@@ -148,18 +148,18 @@ pub async fn switch_analysis_engine(
 pub async fn get_available_models() -> Result<AvailableModels, String> {
   Ok(AvailableModels {
     object_detection_models: vec![
-      "YoloV11Nano".to_string(),
-      "YoloV11Small".to_string(),
-      "YoloV11Medium".to_string(),
-      "YoloV11Large".to_string(),
+      "YoloV8Nano".to_string(),
+      "YoloV8Small".to_string(),
+      "YoloV8Medium".to_string(),
+      "YoloV8Large".to_string(),
       "YoloV8Nano".to_string(),
       "YoloV8Small".to_string(),
     ],
     face_detection_models: vec![
-      "YoloV11FaceNano".to_string(),
-      "YoloV11FaceSmall".to_string(),
-      "YoloV8FaceNano".to_string(),
-      "YoloV8FaceSmall".to_string(),
+      "YoloV11Face".to_string(),
+      "YoloV11Face".to_string(),
+      "YoloV8Face".to_string(),
+      "YoloV8Face".to_string(),
     ],
     face_encoding_models: vec![
       "FaceNet128D".to_string(),
@@ -209,22 +209,22 @@ pub struct ModelTestResult {
 #[allow(dead_code)]
 fn parse_yolo_model(model_name: &str) -> YoloModel {
   match model_name {
-    "YoloV11Nano" => YoloModel::YoloV11Nano,
-    "YoloV11Small" => YoloModel::YoloV11Small,
-    "YoloV11Medium" => YoloModel::YoloV11Medium,
-    "YoloV11Large" => YoloModel::YoloV11Large,
-    "YoloV11Extra" => YoloModel::YoloV11Extra,
-    "YoloV11FaceNano" => YoloModel::YoloV11FaceNano,
-    "YoloV11FaceSmall" => YoloModel::YoloV11FaceSmall,
-    "YoloV11FaceMedium" => YoloModel::YoloV11FaceMedium,
-    "YoloV11FaceLarge" => YoloModel::YoloV11FaceLarge,
     "YoloV8Nano" => YoloModel::YoloV8Nano,
     "YoloV8Small" => YoloModel::YoloV8Small,
     "YoloV8Medium" => YoloModel::YoloV8Medium,
     "YoloV8Large" => YoloModel::YoloV8Large,
-    "YoloV8FaceNano" => YoloModel::YoloV8FaceNano,
-    "YoloV8FaceSmall" => YoloModel::YoloV8FaceSmall,
-    _ => YoloModel::YoloV11Nano, // Default fallback
+    "YoloV8Extra" => YoloModel::YoloV8Extra,
+    "YoloV11Face" => YoloModel::YoloV11Face,
+    "YoloV11Face" => YoloModel::YoloV11Face,
+    "YoloV11Face" => YoloModel::YoloV11Face,
+    "YoloV11Face" => YoloModel::YoloV11Face,
+    "YoloV8Nano" => YoloModel::YoloV8Nano,
+    "YoloV8Small" => YoloModel::YoloV8Small,
+    "YoloV8Medium" => YoloModel::YoloV8Medium,
+    "YoloV8Large" => YoloModel::YoloV8Large,
+    "YoloV8Face" => YoloModel::YoloV8Face,
+    "YoloV8Face" => YoloModel::YoloV8Face,
+    _ => YoloModel::YoloV8Nano, // Default fallback
   }
 }
 
@@ -329,8 +329,8 @@ mod tests {
   #[test]
   fn test_parse_yolo_model() {
     assert!(matches!(
-      parse_yolo_model("YoloV11Nano"),
-      YoloModel::YoloV11Nano
+      parse_yolo_model("YoloV8Nano"),
+      YoloModel::YoloV8Nano
     ));
     assert!(matches!(
       parse_yolo_model("YoloV8Small"),
@@ -338,7 +338,7 @@ mod tests {
     ));
     assert!(matches!(
       parse_yolo_model("invalid"),
-      YoloModel::YoloV11Nano
+      YoloModel::YoloV8Nano
     ));
   }
 
