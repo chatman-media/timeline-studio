@@ -26,7 +26,7 @@ vi.mock("@/features/resources", () => ({
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
-vi.mock("@/features", () => ({
+vi.mock("@/features/browser/components/layout/apply-button", () => ({
   ApplyButton: vi.fn(({ resource, size, type }) => (
     <div data-testid="apply-button" data-resource-id={resource.id} data-size={size} data-type={type}>
       Apply

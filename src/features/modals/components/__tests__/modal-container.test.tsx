@@ -234,7 +234,7 @@ describe("ModalContainer", () => {
       ["voice-recording", "h-[max(500px,min(60vh,700px))]"],
       ["export", "h-[max(700px,min(80vh,900px))]"],
       ["project-settings", "h-[450px]"],
-      ["user-settings", "h-[700px]"],
+      ["user-settings", "h-[800px]"],
       ["keyboard-shortcuts", "h-[max(600px,min(70vh,1000px))]"],
       ["cache-settings", "h-[max(700px,min(80vh,900px))]"],
       ["cache-statistics", "h-[max(600px,min(70vh,800px))]"],
