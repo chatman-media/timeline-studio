@@ -3,10 +3,10 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
-  // Temporarily disable static export in CI to avoid Next.js 16 + React Context bug
-  // This is a known issue: https://github.com/vercel/next.js/issues/85604
-  // Re-enable for local Tauri builds by removing CI check
-  ...(process.env.CI ? {} : { output: "export" }),
+  // TEMPORARILY DISABLED: static export causes Next.js 16 + React Context bug
+  // Known issue: https://github.com/vercel/next.js/issues/85604
+  // TODO: Re-enable when Next.js fixes the bug or downgrade to Next.js 15
+  // output: "export",
   images: {
     unoptimized: true,
   },
@@ -112,8 +112,6 @@ const nextConfig: NextConfig = {
     // Reduce memory usage
     workerThreads: false,
     cpus: 1,
-    // Workaround for Next.js 16 static export + React Context issue
-    missingSuspenseWithCSRBailout: false,
     // Conditionally disable CSS features that require lightningcss on Windows CI
     ...(process.env.DISABLE_LIGHTNINGCSS === "true" && {
       cssChunking: false,
