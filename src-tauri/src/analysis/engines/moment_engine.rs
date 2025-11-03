@@ -12,7 +12,7 @@
 //! - Narrative importance
 
 use crate::analysis::types::unified_types::{
-    KeyMoment, MomentScoring, MomentType, SceneAnalysis,
+    AudioCharacteristics, KeyMoment, MomentScoring, MomentType, SceneAnalysis, VisualCharacteristics,
 };
 use anyhow::Result;
 use log::{debug, info, warn};
