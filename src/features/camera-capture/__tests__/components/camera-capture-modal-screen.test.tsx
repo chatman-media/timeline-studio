@@ -22,6 +22,15 @@ vi.mock("@/features/media/hooks/use-media-import", () => ({
   }),
 }))
 
+// Mock MediaStream
+global.MediaStream = vi.fn(() => ({
+  getTracks: vi.fn().mockReturnValue([]),
+  getAudioTracks: vi.fn().mockReturnValue([]),
+  getVideoTracks: vi.fn().mockReturnValue([]),
+  addTrack: vi.fn(),
+  removeTrack: vi.fn(),
+})) as any
+
 // Mock navigator.mediaDevices
 beforeEach(() => {
   Object.defineProperty(navigator, "mediaDevices", {
@@ -213,9 +222,17 @@ describe("CameraCaptureModal - Screen Recording", () => {
   it("should stop screen capture when switching back to camera", async () => {
     const mockStopScreenCapture = vi.fn()
 
+    const mockScreenStream = {
+      getTracks: vi.fn().mockReturnValue([]),
+      getAudioTracks: vi.fn().mockReturnValue([]),
+      getVideoTracks: vi.fn().mockReturnValue([]),
+      addTrack: vi.fn(),
+      removeTrack: vi.fn(),
+    } as any
+
     const { useScreenCapture } = await import("../../hooks")
     vi.mocked(useScreenCapture).mockReturnValue({
-      screenStream: new MediaStream(),
+      screenStream: mockScreenStream,
       isScreenSharing: true,
       error: null,
       startScreenCapture: vi.fn(),
