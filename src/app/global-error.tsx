@@ -6,13 +6,7 @@
  * to prevent "Cannot read properties of null (reading 'useContext')" errors
  * during Next.js static export pre-rendering
  */
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string }
-  reset: () => void
-}) {
+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <html lang="en">
       <body>
@@ -28,16 +22,12 @@ export default function GlobalError({
           }}
         >
           <div style={{ textAlign: "center", maxWidth: "600px" }}>
-            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-              Application Error
-            </h1>
+            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Application Error</h1>
             <p style={{ fontSize: "1.25rem", marginBottom: "2rem", opacity: 0.8 }}>
               An unexpected error occurred. Please try refreshing the page.
             </p>
             {error.digest && (
-              <p style={{ fontSize: "0.875rem", opacity: 0.6, marginBottom: "2rem" }}>
-                Error ID: {error.digest}
-              </p>
+              <p style={{ fontSize: "0.875rem", opacity: 0.6, marginBottom: "2rem" }}>Error ID: {error.digest}</p>
             )}
             <button
               onClick={reset}
