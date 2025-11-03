@@ -26,12 +26,17 @@ vi.mock("@/components/ui/aspect-ratio", () => ({
 }))
 
 // Мокаем PlayerControls
-vi.mock("../components/player-controls", () => ({
+vi.mock("../player-controls", () => ({
   PlayerControls: ({ currentTime, file }: any) => (
     <div data-testid="player-controls" data-current-time={currentTime} data-file-name={file?.name}>
       Player Controls
     </div>
   ),
+}))
+
+// Мокаем PrerenderControls
+vi.mock("../prerender-controls", () => ({
+  PrerenderControls: () => <div data-testid="prerender-controls">Prerender Controls</div>,
 }))
 
 // Мокаем хуки Timeline
@@ -124,6 +129,25 @@ vi.mock("@/features/ai-chat/hooks/use-player-ai-integration", () => ({
     isPlaying: false,
     effectsCount: 0,
     filtersCount: 0,
+  }),
+}))
+
+// Мокаем useMulticam
+vi.mock("@/features/multicam/hooks/use-multicam", () => ({
+  useMulticam: () => ({
+    isMulticam: false,
+    angles: [],
+    currentAngle: 0,
+    switchAngle: vi.fn(),
+    isChangingCamera: false,
+  }),
+}))
+
+// Мокаем useApp
+vi.mock("@/features/app-state/services/app-provider", () => ({
+  useApp: () => ({
+    mediaFiles: [],
+    setMediaFiles: vi.fn(),
   }),
 }))
 

@@ -4,6 +4,62 @@ import { cleanup } from "@testing-library/react"
 import type React from "react"
 import { afterEach, beforeAll, vi } from "vitest"
 
+// Mock requestAnimationFrame and cancelAnimationFrame at module level
+// This ensures they're available before any component code loads
+let animationFrameId = 0
+;(global as any).requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
+  animationFrameId++
+  const id = animationFrameId
+  setTimeout(() => callback(Date.now()), 16)
+  return id
+})
+;(global as any).cancelAnimationFrame = vi.fn((id?: number) => {
+  if (id !== undefined) {
+    clearTimeout(id as any)
+  }
+})
+
+// Mock Image constructor at module level
+;(global as any).Image = class MockImage {
+  onload: (() => void) | null = null
+  onerror: ((error: any) => void) | null = null
+  src = ""
+  width = 0
+  height = 0
+
+  constructor(width?: number, height?: number) {
+    if (width !== undefined) this.width = width
+    if (height !== undefined) this.height = height
+  }
+
+  load() {
+    setTimeout(() => {
+      if (this.onload) this.onload()
+    }, 0)
+  }
+}
+
+// Mock ImageData constructor at module level
+;(global as any).ImageData = class MockImageData {
+  data: Uint8ClampedArray
+  width: number
+  height: number
+
+  constructor(width: number, height: number)
+  constructor(data: Uint8ClampedArray, width: number, height?: number)
+  constructor(dataOrWidth: Uint8ClampedArray | number, widthOrHeight: number, height?: number) {
+    if (dataOrWidth instanceof Uint8ClampedArray) {
+      this.data = dataOrWidth
+      this.width = widthOrHeight
+      this.height = height || dataOrWidth.length / (4 * widthOrHeight)
+    } else {
+      this.width = dataOrWidth
+      this.height = widthOrHeight
+      this.data = new Uint8ClampedArray(dataOrWidth * widthOrHeight * 4)
+    }
+  }
+}
+
 // Import modular mocks
 import "@/test/mocks/backend-sync"
 import "@/test/mocks/tauri"
@@ -375,20 +431,6 @@ beforeAll(() => {
     }) as any
   }
 
-  // Mock requestAnimationFrame and cancelAnimationFrame
-  if (typeof global.requestAnimationFrame === "undefined") {
-    let animationFrameId = 0
-    global.requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
-      animationFrameId++
-      const id = animationFrameId
-      setTimeout(() => callback(Date.now()), 16)
-      return id
-    }) as any
-  }
-
-  if (typeof global.cancelAnimationFrame === "undefined") {
-    global.cancelAnimationFrame = vi.fn() as any
-  }
 })
 
 afterEach(async () => {
