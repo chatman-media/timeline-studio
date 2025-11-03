@@ -16,12 +16,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Workaround for Next.js 16 static export + React Context bug
+  // During static generation, skip providers to avoid useContext errors
+  const isClient = typeof window !== "undefined"
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <Providers>
+        {isClient ? (
+          <Providers>
+            <AppErrorBoundary>{children}</AppErrorBoundary>
+          </Providers>
+        ) : (
           <AppErrorBoundary>{children}</AppErrorBoundary>
-        </Providers>
+        )}
       </body>
     </html>
   )
