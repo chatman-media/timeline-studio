@@ -356,16 +356,22 @@ describe("sync-resources-to-project", () => {
       const project = createMockProject()
       const originalModified = project.metadata.modified
 
-      // Mock Date.now to return a specific time
+      // Mock Date constructor to return a specific time
       const mockDate = new Date("2023-12-01")
-      vi.spyOn(global, "Date").mockImplementation(() => mockDate as any)
+      const OriginalDate = global.Date
+      global.Date = class extends OriginalDate {
+        constructor() {
+          super()
+          return mockDate as any
+        }
+      } as any
 
       const result = syncResourcesToProject(project, [], [])
 
       expect(result.metadata.modified).toEqual(mockDate)
       expect(result.metadata.modified).not.toEqual(originalModified)
 
-      vi.restoreAllMocks()
+      global.Date = OriginalDate
     })
 
     it("should handle empty resources arrays", () => {

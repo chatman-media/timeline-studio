@@ -440,9 +440,12 @@ describe("IndexedDBCacheService", () => {
       const estimateStringSize = (service as any).estimateStringSize.bind(service)
 
       // Mock Blob constructor
-      global.Blob = vi.fn().mockImplementation((content) => ({
-        size: content[0].length,
-      })) as any
+      global.Blob = class MockBlob {
+        size: number
+        constructor(content: any[]) {
+          this.size = content[0].length
+        }
+      } as any
 
       const size = estimateStringSize("hello")
       expect(size).toBe(5)
@@ -451,9 +454,12 @@ describe("IndexedDBCacheService", () => {
     it("should estimate object size correctly", () => {
       const estimateObjectSize = (service as any).estimateObjectSize.bind(service)
 
-      global.Blob = vi.fn().mockImplementation((content) => ({
-        size: content[0].length,
-      })) as any
+      global.Blob = class MockBlob {
+        size: number
+        constructor(content: any[]) {
+          this.size = content[0].length
+        }
+      } as any
 
       const obj = { name: "test", value: 123 }
       const size = estimateObjectSize(obj)

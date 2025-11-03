@@ -53,11 +53,17 @@ describe("TauriGlobalShortcuts", () => {
     context: "global",
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Reset singleton instance
     // @ts-expect-error - accessing private property for testing
     TauriGlobalShortcuts.instance = null as any
     instance = TauriGlobalShortcuts.getInstance()
+
+    // Reset all mocks to default successful state
+    const { register, unregister, isRegistered } = await import("@tauri-apps/plugin-global-shortcut")
+    vi.mocked(register).mockResolvedValue(undefined)
+    vi.mocked(unregister).mockResolvedValue(undefined)
+    vi.mocked(isRegistered).mockResolvedValue(false)
 
     vi.clearAllMocks()
     vi.spyOn(console, "log").mockImplementation(() => {})

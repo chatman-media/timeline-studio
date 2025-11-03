@@ -25,21 +25,16 @@ export class TauriGlobalShortcuts {
   async enableGlobal(): Promise<void> {
     if (this.isGlobalEnabled) return
 
-    try {
-      const shortcuts = shortcutsRegistry.getAll()
-      const globalShortcuts = shortcuts.filter(
-        (shortcut) => shortcut.context === "global" && shortcut.enabled !== false,
-      )
+    const shortcuts = shortcutsRegistry.getAll()
+    const globalShortcuts = shortcuts.filter(
+      (shortcut) => shortcut.context === "global" && shortcut.enabled !== false,
+    )
 
-      for (const shortcut of globalShortcuts) {
-        await this.registerGlobalShortcut(shortcut)
-      }
-
-      this.isGlobalEnabled = true
-    } catch (error) {
-      console.error("Failed to enable global shortcuts:", error)
-      throw error
+    for (const shortcut of globalShortcuts) {
+      await this.registerGlobalShortcut(shortcut)
     }
+
+    this.isGlobalEnabled = true
   }
 
   /**
@@ -48,19 +43,14 @@ export class TauriGlobalShortcuts {
   async disableGlobal(): Promise<void> {
     if (!this.isGlobalEnabled) return
 
-    try {
-      for (const shortcutId of this.registeredShortcuts) {
-        const shortcut = shortcutsRegistry.get(shortcutId)
-        if (shortcut) {
-          await this.unregisterGlobalShortcut(shortcut)
-        }
+    for (const shortcutId of this.registeredShortcuts) {
+      const shortcut = shortcutsRegistry.get(shortcutId)
+      if (shortcut) {
+        await this.unregisterGlobalShortcut(shortcut)
       }
-
-      this.isGlobalEnabled = false
-    } catch (error) {
-      console.error("Failed to disable global shortcuts:", error)
-      throw error
     }
+
+    this.isGlobalEnabled = false
   }
 
   /**
@@ -177,8 +167,11 @@ export class TauriGlobalShortcuts {
   async updateGlobalShortcuts(): Promise<void> {
     if (!this.isGlobalEnabled) return
 
-    // Отключаем и включаем заново для обновления
+    // Отключаем (это установит isGlobalEnabled = false)
     await this.disableGlobal()
+
+    // Временно сбрасываем флаг чтобы enableGlobal сработал
+    this.isGlobalEnabled = false
     await this.enableGlobal()
   }
 

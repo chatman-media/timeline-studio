@@ -29,7 +29,8 @@ const DEFAULT_PREVIEW_SETTINGS = {
  * Convert frontend export format to backend OutputFormat
  */
 export function formatToOutputFormat(format: string): OutputFormat {
-  switch (format) {
+  const normalized = format.toLowerCase()
+  switch (normalized) {
     case "mp4":
       return OutputFormat.Mp4
     case "mov":
