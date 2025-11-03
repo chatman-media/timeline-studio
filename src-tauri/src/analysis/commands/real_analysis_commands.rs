@@ -214,16 +214,12 @@ fn parse_yolo_model(model_name: &str) -> YoloModel {
     "YoloV8Medium" => YoloModel::YoloV8Medium,
     "YoloV8Large" => YoloModel::YoloV8Large,
     "YoloV8Extra" => YoloModel::YoloV8Extra,
-    "YoloV11Face" => YoloModel::YoloV11Face,
-    "YoloV11Face" => YoloModel::YoloV11Face,
-    "YoloV11Face" => YoloModel::YoloV11Face,
-    "YoloV11Face" => YoloModel::YoloV11Face,
-    "YoloV8Nano" => YoloModel::YoloV8Nano,
-    "YoloV8Small" => YoloModel::YoloV8Small,
-    "YoloV8Medium" => YoloModel::YoloV8Medium,
-    "YoloV8Large" => YoloModel::YoloV8Large,
     "YoloV8Face" => YoloModel::YoloV8Face,
-    "YoloV8Face" => YoloModel::YoloV8Face,
+    "YoloV11Face" => YoloModel::YoloV11Face,
+    "YoloV11Detection" => YoloModel::YoloV11Detection,
+    "YoloV11Segmentation" => YoloModel::YoloV11Segmentation,
+    "YoloV8Detection" => YoloModel::YoloV8Detection,
+    "YoloV8Segmentation" => YoloModel::YoloV8Segmentation,
     _ => YoloModel::YoloV8Nano, // Default fallback
   }
 }

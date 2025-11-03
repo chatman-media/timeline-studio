@@ -3,7 +3,8 @@ use crate::recognition::recognition_service::{RecognitionEvent, RecognitionServi
 use crate::recognition::types::{
   BoundingBox, DetectedFace, DetectedObject, DetectedScene, RecognitionResults,
 };
-use crate::recognition::yolo_processor::{YoloModel, YoloProcessor};
+use crate::recognition::{YoloProcessor, ProcessorConfig, ProcessingConfig};
+use crate::recognition::model_manager::YoloModel;
 use std::path::PathBuf;
 use tempfile::TempDir;
 
@@ -21,14 +22,38 @@ async fn test_yolo_processor_creation() {
   }
 
   // Тест создания процессора для разных моделей
-  let processor_v11 = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5);
+  let config_v11 = ProcessorConfig {
+    model: YoloModel::YoloV11Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let processor_v11 = YoloProcessor::new(config_v11).await;
   assert!(processor_v11.is_ok());
 
-  let processor_v8 = YoloProcessor::new(YoloModel::YoloV8Detection, 0.7);
+  let config_v8 = ProcessorConfig {
+    model: YoloModel::YoloV8Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.7,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let processor_v8 = YoloProcessor::new(config_v8).await;
   assert!(processor_v8.is_ok());
 
   let custom_path = PathBuf::from("custom_model.onnx");
-  let processor_custom = YoloProcessor::new(YoloModel::Custom(custom_path), 0.6);
+  let config_custom = ProcessorConfig {
+    model: YoloModel::Custom(custom_path),
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.6,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let processor_custom = YoloProcessor::new(config_custom).await;
   assert!(processor_custom.is_ok());
 }
 
@@ -39,7 +64,15 @@ async fn test_confidence_threshold() {
     return;
   }
 
-  let _processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.8).unwrap();
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV11Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.8,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let _processor = YoloProcessor::new(config).await.unwrap();
 
   // Проверяем, что процессор создан с правильным порогом
   // В реальном тесте здесь бы проверялась фильтрация по confidence
@@ -53,11 +86,22 @@ async fn test_target_classes() {
     return;
   }
 
-  // Тест создания процессора с определенными классами
-  let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5).unwrap();
-
   let target_classes = vec!["person".to_string(), "car".to_string(), "dog".to_string()];
-  processor.set_target_classes(target_classes.clone());
+
+  // Тест создания процессора с определенными классами
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV11Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      target_classes: Some(target_classes.clone()),
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let mut processor = YoloProcessor::new(config).await.unwrap();
+
+  // Также можем установить классы после создания
+  processor.set_target_classes(target_classes);
 
   // Verify that processor was created and configured successfully
   // The actual filtering would be tested with real image processing
@@ -313,7 +357,15 @@ async fn test_yolo_processor_cleanup() {
     return;
   }
 
-  let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5).unwrap();
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV11Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let mut processor = YoloProcessor::new(config).await.unwrap();
 
   // Устанавливаем целевые классы
   processor.set_target_classes(vec!["person".to_string(), "car".to_string()]);
@@ -346,7 +398,8 @@ async fn test_detection_to_object_grouping() {
     return;
   }
 
-  use crate::recognition::yolo_processor::{BoundingBox, Detection};
+  use crate::recognition::Detection;
+  use crate::recognition::frame_processor::BoundingBox as YoloBBox;
 
   let temp_dir = TempDir::new().unwrap();
   let _service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -361,7 +414,7 @@ async fn test_detection_to_object_grouping() {
         class: "person".to_string(),
         class_id: 0,
         confidence: 0.9,
-        bbox: BoundingBox {
+        bbox: YoloBBox {
           x: 10.0,
           y: 20.0,
           width: 100.0,
@@ -376,7 +429,7 @@ async fn test_detection_to_object_grouping() {
         class: "person".to_string(),
         class_id: 0,
         confidence: 0.85,
-        bbox: BoundingBox {
+        bbox: YoloBBox {
           x: 15.0,
           y: 25.0,
           width: 100.0,
@@ -391,7 +444,7 @@ async fn test_detection_to_object_grouping() {
         class: "car".to_string(),
         class_id: 2,
         confidence: 0.7,
-        bbox: BoundingBox {
+        bbox: YoloBBox {
           x: 200.0,
           y: 100.0,
           width: 150.0,
@@ -555,31 +608,50 @@ async fn test_save_and_load_results() {
   assert_eq!(loaded.objects[0].confidence, 0.95);
 }
 
-#[test]
-fn test_yolo_model_processors() {
+#[tokio::test]
+async fn test_yolo_model_processors() {
   if !is_ort_available() {
     eprintln!("Skipping test: ONNX Runtime not available");
     return;
   }
 
   // Проверяем правильность создания процессоров для разных моделей
-  let v11_detection = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5);
+  let config_v11 = ProcessorConfig {
+    model: YoloModel::YoloV11Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let v11_detection = YoloProcessor::new(config_v11).await;
   assert!(v11_detection.is_ok());
 
-  let v8_detection = YoloProcessor::new(YoloModel::YoloV8Detection, 0.5);
+  let config_v8 = ProcessorConfig {
+    model: YoloModel::YoloV8Detection,
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let v8_detection = YoloProcessor::new(config_v8).await;
   assert!(v8_detection.is_ok());
 
-  let custom = YoloProcessor::new(
-    YoloModel::Custom(PathBuf::from("/path/to/custom.onnx")),
-    0.5,
-  );
+  let config_custom = ProcessorConfig {
+    model: YoloModel::Custom(PathBuf::from("/path/to/custom.onnx")),
+    processing_config: ProcessingConfig {
+      confidence_threshold: 0.5,
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  let custom = YoloProcessor::new(config_custom).await;
   assert!(custom.is_ok());
 }
 
 #[test]
 fn test_bounding_box_conversion() {
-  use crate::recognition::yolo_processor::BoundingBox;
-
   // Тест преобразования координат bounding box
   let bbox = BoundingBox {
     x: 100.0,
@@ -604,7 +676,8 @@ fn test_bounding_box_conversion() {
 #[cfg(test)]
 mod integration_tests {
   use super::is_ort_available;
-  use crate::recognition::yolo_processor::{YoloModel, YoloProcessor};
+  use crate::recognition::{YoloProcessor, ProcessorConfig, ProcessingConfig};
+  use crate::recognition::model_manager::YoloModel;
   use std::path::PathBuf;
   use tempfile::TempDir;
 
@@ -639,11 +712,17 @@ mod integration_tests {
 
     // Используем mock модель вместо реальной
     let mock_model_path = create_mock_model_file(temp_dir.path());
-    let mut processor =
-      YoloProcessor::new(YoloModel::Custom(mock_model_path.clone()), 0.5).unwrap();
+    let config = ProcessorConfig {
+      model: YoloModel::Custom(mock_model_path.clone()),
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.5,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    // Пытаемся загрузить модель
-    let result = processor.load_model().await;
+    // Пытаемся создать процессор - это загружает модель автоматически
+    let result = YoloProcessor::new(config).await;
 
     // Проверяем результат загрузки
     // Ожидаем ошибку, так как это не настоящая модель ONNX
@@ -673,24 +752,26 @@ mod integration_tests {
 
     // Используем mock модель
     let mock_model_path = create_mock_model_file(temp_dir.path());
-    let mut processor = YoloProcessor::new(YoloModel::Custom(mock_model_path), 0.5).unwrap();
+    let config = ProcessorConfig {
+      model: YoloModel::Custom(mock_model_path),
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.5,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    // Пытаемся загрузить модель (ожидаем неудачу)
-    if processor.load_model().await.is_err() {
+    // Пытаемся создать процессор (ожидаем неудачу с mock моделью)
+    let processor_result = YoloProcessor::new(config).await;
+
+    if processor_result.is_err() {
       // Это ожидаемо для mock модели
       println!("Mock model failed to load as expected");
-
-      // Тестируем обработку изображения без загруженной модели
-      let result = processor.process_image(&test_image).await;
-      assert!(
-        result.is_err(),
-        "Processing should fail without loaded model"
-      );
-
       println!("Image processing correctly failed without valid model");
     } else {
       // Если загрузка прошла успешно, тестируем обработку
-      let result = processor.process_image(&test_image).await;
+      let processor = processor_result.unwrap();
+      let result = processor.process_image_path(&test_image).await;
 
       match result {
         Ok(detections) => {
@@ -719,15 +800,22 @@ mod integration_tests {
 
     // Тест с несуществующей моделью
     let nonexistent_path = PathBuf::from("/nonexistent/path/model.onnx");
-    let mut processor = YoloProcessor::new(YoloModel::Custom(nonexistent_path), 0.5).unwrap();
+    let config = ProcessorConfig {
+      model: YoloModel::Custom(nonexistent_path),
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.5,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    let result = processor.load_model().await;
+    let result = YoloProcessor::new(config).await;
     assert!(result.is_err(), "Loading nonexistent model should fail");
 
     if let Err(e) = result {
       let error_msg = e.to_string();
       assert!(
-        error_msg.contains("not found") || error_msg.contains("Model file"),
+        error_msg.contains("not found") || error_msg.contains("Model file") || error_msg.contains("No such file"),
         "Error should mention file not found: {error_msg}"
       );
     }
@@ -742,25 +830,35 @@ mod integration_tests {
 
     let temp_dir = TempDir::new().unwrap();
     let mock_model_path = create_mock_model_file(temp_dir.path());
-    let mut processor = YoloProcessor::new(YoloModel::Custom(mock_model_path), 0.5).unwrap();
+    let config = ProcessorConfig {
+      model: YoloModel::Custom(mock_model_path),
+      processing_config: ProcessingConfig {
+        confidence_threshold: 0.5,
+        ..Default::default()
+      },
+      ..Default::default()
+    };
 
-    // Тестируем с несуществующим изображением
-    let nonexistent_image = PathBuf::from("/nonexistent/image.jpg");
-    let result = processor.process_image(&nonexistent_image).await;
+    // Создание процессора скорее всего упадет с mock моделью,
+    // но если получится - тестируем с несуществующим изображением
+    if let Ok(processor) = YoloProcessor::new(config).await {
+      let nonexistent_image = PathBuf::from("/nonexistent/image.jpg");
+      let result = processor.process_image_path(&nonexistent_image).await;
 
-    assert!(result.is_err(), "Processing nonexistent image should fail");
+      assert!(result.is_err(), "Processing nonexistent image should fail");
 
-    if let Err(e) = result {
-      let error_msg = e.to_string();
-      // Проверяем что ошибка связана с отсутствием файла, модели или незагруженной модели
-      assert!(
-        error_msg.contains("not found")
-          || error_msg.contains("No such file")
-          || error_msg.contains("session")
-          || error_msg.contains("not loaded")
-          || error_msg.contains("load_model"),
-        "Error should mention file or model issue: {error_msg}"
-      );
+      if let Err(e) = result {
+        let error_msg = e.to_string();
+        // Проверяем что ошибка связана с отсутствием файла
+        assert!(
+          error_msg.contains("not found")
+            || error_msg.contains("No such file")
+            || error_msg.contains("cannot"),
+          "Error should mention file issue: {error_msg}"
+        );
+      }
+    } else {
+      println!("Mock model loading failed as expected - skipping image test");
     }
   }
 }

@@ -430,7 +430,8 @@ pub enum RecognitionEvent {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::recognition::yolo_processor::{BoundingBox as YoloBBox, Detection};
+  use crate::recognition::Detection;
+  use crate::recognition::frame_processor::BoundingBox as YoloBBox;
   use std::collections::HashMap;
   use tempfile::TempDir;
 

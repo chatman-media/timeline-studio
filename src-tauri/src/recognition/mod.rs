@@ -28,7 +28,7 @@ pub use types::RecognitionResults;
 pub use vision_service::{ImageAnalysisResult, VisionService, VisionServiceConfig}; // 🆕
 
 // YOLO exports - using refactored implementation only
-pub use frame_processor::{BoundingBox, Detection, FaceAttributes};
+pub use frame_processor::{BoundingBox, Detection, FaceAttributes, ProcessingConfig};
 pub use model_manager::YoloModel;
 pub use yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 

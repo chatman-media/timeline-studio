@@ -262,6 +262,7 @@ impl ModelsConfig {
   }
 
   /// Получить путь к YOLO модели по типу
+  #[allow(dead_code)]
   pub fn get_yolo_model_path(&self, model_type: &str) -> Option<&PathBuf> {
     match model_type {
       // YOLOv8 объекты

@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod tests {
-  use super::super::types::{BoundingBox, DetectedFace, DetectedObject, RecognitionResults};
+  use super::super::types::{BoundingBox as TypesBBox, DetectedFace, DetectedObject, RecognitionResults};
   use crate::recognition::recognition_service::{RecognitionEvent, RecognitionService};
-  use crate::recognition::yolo_processor::Detection;
+  use crate::recognition::Detection;
+  use crate::recognition::frame_processor::BoundingBox;
   use std::collections::HashMap;
   use tempfile::TempDir;
 
@@ -62,7 +63,7 @@ mod tests {
       class: "person".to_string(),
       class_id: 0,
       confidence: 0.95,
-      bbox: crate::recognition::yolo_processor::BoundingBox {
+      bbox: BoundingBox {
         x: 100.0,
         y: 200.0,
         width: 50.0,

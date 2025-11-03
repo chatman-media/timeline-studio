@@ -62,40 +62,52 @@ recognition/
 ├── commands/                      # Tauri команды
 │   ├── mod.rs                    # Реэкспорт команд
 │   ├── yolo_commands.rs          # YOLO команды
-│   ├── yolo_commands_simple.rs   # Упрощенные YOLO команды
 │   ├── facenet_commands.rs       # FaceNet команды
 │   ├── retinaface_commands.rs    # RetinaFace команды
 │   ├── mediapipe_commands.rs     # MediaPipe команды
 │   ├── privacy_commands.rs       # Privacy команды
-│   └── clustering_commands.rs    # Clustering команды
-├── yolo_processor.rs             # YOLO процессор
+│   ├── person_commands.rs        # Person management команды
+│   └── recognition_advanced_commands.rs # Продвинутые команды
+├── yolo_processor_refactored.rs  # Унифицированный YOLO процессор (async)
+├── frame_processor.rs            # Низкоуровневая обработка YOLO
+├── model_manager.rs              # Управление YOLO моделями
 ├── facenet_processor.rs          # FaceNet процессор
 ├── retinaface_processor.rs       # RetinaFace процессор
 ├── mediapipe_processor.rs        # MediaPipe процессор
 ├── privacy_processor.rs          # Privacy процессор
 ├── face_clustering.rs            # Face clustering engine
-├── model_manager.rs              # Управление моделями
-├── frame_processor.rs            # Обработка кадров
+├── person_manager.rs             # Управление персонами
+├── person_database.rs            # SQLite база персон
 ├── result_aggregator.rs          # Агрегация результатов
-├── recognition_service.rs        # Сервис распознавания
-└── types.rs                      # Общие типы данных
+├── recognition_service.rs        # Главный сервис распознавания
+├── vision_service.rs             # Высокоуровневый API для анализа
+├── types.rs                      # Базовые типы данных
+└── types_professional.rs         # Профессиональные типы
 ```
 
 ## Поддерживаемые модели
 
 ### YOLO модели
 ```rust
-// Детекция объектов
-YoloModel::YoloV8Nano        // Самая быстрая
-YoloModel::YoloV8Small       // Баланс скорости и точности
-YoloModel::YoloV8Medium      // Хорошая точность
-YoloModel::YoloV8Large       // Высокая точность
-YoloModel::YoloV8Extra       // Максимальная точность
+// YOLOv11 модели (новейшие)
+YoloModel::YoloV11Detection     // Детекция объектов v11
+YoloModel::YoloV11Segmentation  // Сегментация v11
+YoloModel::YoloV11Face          // Детекция лиц v11
 
-// Детекция лиц
-YoloModel::YoloV8FaceNano    // Быстрая детекция лиц
-YoloModel::YoloV8FaceMedium  // Точная детекция лиц
-YoloModel::YoloV11Face       // Новейшая модель для лиц
+// YOLOv8 базовые модели
+YoloModel::YoloV8Detection      // Детекция объектов v8
+YoloModel::YoloV8Segmentation   // Сегментация v8
+YoloModel::YoloV8Face           // Детекция лиц v8
+
+// YOLOv8 размерные варианты (для объектов)
+YoloModel::YoloV8Nano          // Самая быстрая (n)
+YoloModel::YoloV8Small         // Баланс скорости/точности (s)
+YoloModel::YoloV8Medium        // Хорошая точность (m)
+YoloModel::YoloV8Large         // Высокая точность (l)
+YoloModel::YoloV8Extra         // Максимальная точность (x)
+
+// Кастомные модели
+YoloModel::Custom(PathBuf)     // Своя ONNX модель
 ```
 
 ### FaceNet модели
@@ -125,35 +137,68 @@ MediaPipeModel::SelfieSegmentation // Портретная сегментаци�
 
 ### 1. Инициализация процессоров
 
-```rust
-// YOLO
-let yolo_state = State<YoloProcessorState>;
-invoke('init_yolo_processor', { modelType: 'yolov8n-face' });
+**⚡ ВАЖНО**: Все процессоры теперь используют async API и создаются автоматически при первом использовании.
 
-// FaceNet
-let facenet_state = State<FaceNetProcessorState>;
-invoke('init_facenet_processor', { modelType: 'facenet-512d' });
+```typescript
+// YOLO - через ProcessorConfig
+const config = {
+  model: 'YoloV8Medium',  // или 'YoloV11Detection', 'YoloV8Face' и т.д.
+  processing_config: {
+    confidence_threshold: 0.5,
+    iou_threshold: 0.45,
+    max_detections: 100,
+    target_classes: ['person', 'car', 'dog'] // опционально
+  }
+};
 
-// RetinaFace
-let retinaface_state = State<RetinaFaceProcessorState>;
-invoke('init_retinaface_processor', { modelType: 'retinaface-r50' });
+// Процессор создается автоматически при вызове команд
+const detections = await invoke('yolo_detect_objects', {
+  imagePath: '/path/to/image.jpg',
+  config: config
+});
 
-// MediaPipe
-let mediapipe_state = State<MediaPipeProcessorState>;
-invoke('init_mediapipe_processor', { modelType: 'face-mesh' });
+// FaceNet - автоматическая инициализация
+const embedding = await invoke('generate_face_embedding', {
+  imagePath: '/path/to/face.jpg'
+});
 
-// Face Clustering
-let clustering_state = State<ClusteringEngineState>;
-invoke('init_clustering_engine', { params: { eps: 0.5, min_samples: 3 } });
+// RetinaFace - автоматическая инициализация
+const faces = await invoke('detect_faces_retinaface', {
+  imagePath: '/path/to/image.jpg',
+  confidence: 0.7
+});
+
+// MediaPipe - автоматическая инициализация
+const landmarks = await invoke('extract_face_mesh_landmarks', {
+  imageData: base64_image_data
+});
 ```
 
 ### 2. Обработка изображений
 
 #### YOLO детекция
 ```typescript
-const detections = await invoke('detect_objects_in_image', {
-  imagePath: '/path/to/image.jpg'
+// Одиночное изображение
+const detections = await invoke('yolo_detect_objects', {
+  imagePath: '/path/to/image.jpg',
+  config: {
+    model: 'YoloV8Medium',
+    processing_config: {
+      confidence_threshold: 0.5,
+      target_classes: ['person', 'car'] // опционально
+    }
+  }
 });
+
+// Пакетная обработка
+const batchResults = await invoke('yolo_detect_objects_batch', {
+  imagePaths: ['/path/1.jpg', '/path/2.jpg'],
+  config: config
+});
+
+// Список доступных моделей
+const models = await invoke('yolo_list_available_models');
+// ['YoloV8Nano', 'YoloV8Medium', 'YoloV11Detection', ...]
 ```
 
 #### FaceNet embeddings
@@ -376,48 +421,43 @@ const keyMoments = await detectKeyMoments({
 
 ## API команд
 
-### YOLO команды
-- `init_yolo_processor(modelType: string)`
-- `detect_objects_in_image(imagePath: string)`
-- `analyze_video_with_yolo(videoPath: string, options: YoloOptions)`
-- `update_yolo_confidence_threshold(threshold: number)`
+### YOLO команды (обновлено для async API)
+- `yolo_detect_objects(imagePath: string, config: ProcessorConfigDto)` - Детекция объектов
+- `yolo_detect_objects_batch(imagePaths: string[], config: ProcessorConfigDto)` - Пакетная детекция
+- `yolo_list_available_models()` - Список доступных моделей
 
 ### FaceNet команды
-- `init_facenet_processor(modelType: string)`
-- `generate_face_embedding(imagePath: string)`
-- `generate_face_embedding_from_base64(imageData: string)`
-- `calculate_cosine_similarity(embedding1: number[], embedding2: number[])`
+- `generate_face_embedding(imagePath: string)` - Генерация embedding из файла
+- `generate_face_embedding_from_base64(imageData: string)` - Генерация из base64
+- `calculate_cosine_similarity(embedding1: number[], embedding2: number[])` - Сравнение лиц
 
 ### RetinaFace команды
-- `init_retinaface_processor(modelType: string)`
-- `detect_faces_with_landmarks(imagePath: string)`
-- `detect_faces_with_landmarks_from_base64(imageData: string)`
-- `get_aligned_face(imageData: string, landmarks: FacialLandmarks)`
-- `configure_retinaface_thresholds(confidence: number, nms: number)`
+- `detect_faces_retinaface(imagePath: string, confidence: number)` - Детекция лиц с landmarks
+- `detect_faces_with_landmarks_from_base64(imageData: string)` - Детекция из base64
+- `get_aligned_face(imageData: string, landmarks: FacialLandmarks)` - Выравнивание лица
 
 ### MediaPipe команды
-- `init_mediapipe_processor(modelType: string)`
-- `detect_faces_blazeface(imagePath: string)`
-- `extract_face_mesh_landmarks(imageData: string)`
-- `analyze_facial_expressions(imageData: string)`
-- `configure_mediapipe_settings(confidence: number, maxFaces: number)`
+- `detect_faces_blazeface(imagePath: string)` - Быстрая детекция лиц
+- `extract_face_mesh_landmarks(imageData: string)` - 468 landmarks
+- `analyze_facial_expressions(imageData: string)` - Анализ выражений
 
 ### Privacy команды
-- `init_privacy_processor(blurType: string)`
-- `blur_faces_in_image(imagePath: string, outputPath: string, autoDetect: boolean)`
-- `update_privacy_settings(blurType?: string, expandRatio?: number, adaptiveBlur?: boolean)`
-- `blur_faces_in_video_frames(framePaths: string[], outputDir: string, autoDetect: boolean)`
-- `get_privacy_processor_info()`
+- `blur_faces_in_image(imagePath: string, outputPath: string, autoDetect: boolean)` - Размытие лиц
+- `blur_faces_in_video_frames(framePaths: string[], outputDir: string, autoDetect: boolean)` - Пакетное размытие
+- `update_privacy_settings(blurType?: string, expandRatio?: number, adaptiveBlur?: boolean)` - Настройки
 
-### Clustering команды
-- `init_clustering_engine(params?: DBSCANParams)`
-- `cluster_faces(embeddings: number[][], params?: DBSCANParams)`
-- `find_nearest_cluster(embedding: number[], clusters: FaceCluster[])`
-- `update_clustering_params(params: DBSCANParams)`
-- `merge_clusters(cluster1: FaceCluster, cluster2: FaceCluster, embeddings: number[][])`
-- `analyze_clustering_quality(result: ClusteringResult)`
-- `auto_cluster_video_faces(fileId: string, embeddings: number[][], metadata: FaceMetadata[], saveResults: boolean)`
-- `get_clustering_engine_info()`
+### Person Management команды (новые)
+- `create_person(name: Option<string>, faceImages: string[])` - Создать профиль персоны
+- `identify_person(faceImage: string, threshold: number)` - Идентифицировать по лицу
+- `list_all_persons()` - Список всех персон
+- `update_person_name(personId: string, name: string)` - Обновить имя
+- `delete_person(personId: string)` - Удалить персону
+
+### Advanced Recognition команды
+- `analyze_image_full(imagePath: string, options: AnalysisOptions)` - Полный анализ изображения
+- `analyze_video_full(videoPath: string, options: AnalysisOptions)` - Полный анализ видео
+- `search_person_in_video(personId: string, videoPath: string)` - Поиск персоны в видео
+- `auto_cluster_faces_in_video(videoPath: string)` - Автокластеризация лиц
 
 ## Структуры данных
 
