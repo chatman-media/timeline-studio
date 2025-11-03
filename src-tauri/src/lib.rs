@@ -58,7 +58,7 @@ use analysis::commands::ai_director_commands::AIDirectorState; // AI Director St
 use analysis::commands::content_commands::ContentEngineState; // 🆕 Content Engine State
 use analysis::commands::scene_commands::SceneEngineState; // 🆕 Scene Engine State
 use analysis::commands::vision_commands::VisionServiceState; // 🆕 Vision Service State
-// use analysis::commands::AnalysisState; // Temporarily disabled due to missing implementation
+                                                             // use analysis::commands::AnalysisState; // Temporarily disabled due to missing implementation
 
 // Модуль безопасности и API ключей
 pub mod security;

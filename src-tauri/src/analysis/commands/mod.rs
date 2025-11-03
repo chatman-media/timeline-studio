@@ -5,10 +5,10 @@ pub mod real_analysis_commands;
 // pub mod audio_integration_commands; // Commented out due to compilation issues
 pub mod ai_director_commands;
 pub mod content_classification_commands;
+pub mod content_commands;
 pub mod scene_commands; // 🆕 Scene Analysis commands
 pub mod unified_audio_commands; // 🆕 Modern unified audio commands
-pub mod vision_commands; // 🆕 Vision Service commands
-pub mod content_commands; // 🆕 Content Engine commands
+pub mod vision_commands; // 🆕 Vision Service commands // 🆕 Content Engine commands
 
 // Re-export всех команд
 pub use real_analysis_commands::*;
@@ -16,10 +16,10 @@ pub use real_analysis_commands::*;
 // pub use audio_integration_commands::*; // Commented out due to compilation issues
 pub use ai_director_commands::*;
 pub use content_classification_commands::*;
+pub use content_commands::*;
 pub use scene_commands::*;
 pub use unified_audio_commands::*;
 pub use vision_commands::*;
-pub use content_commands::*;
 
 // Основные команды анализа
 use chrono::Utc;

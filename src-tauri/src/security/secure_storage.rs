@@ -153,7 +153,8 @@ impl SecureStorage {
       let key = Aes256Gcm::generate_key(&mut OsRng);
 
       // Сохраняем в файл
-      fs::write::<_, &[u8]>(&key_file, key.as_ref()).context("Failed to write encryption key file")?;
+      fs::write::<_, &[u8]>(&key_file, key.as_ref())
+        .context("Failed to write encryption key file")?;
 
       // Устанавливаем права доступа только для владельца (Unix-like системы)
       #[cfg(unix)]

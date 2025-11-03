@@ -18,16 +18,16 @@ use std::time::Instant;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
+use crate::analysis::engines::content_engine::{
+  CompositionScore, ContentClassification, MoodAnalysis, QualityScore,
+};
 use crate::analysis::engines::{ContentEngine, MomentEngine, SceneEngine};
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
 use crate::analysis::types::unified_types::{
-  KeyMoment, SceneAnalysis, SceneType, VisualCharacteristics, AudioCharacteristics
+  AudioCharacteristics, KeyMoment, SceneAnalysis, SceneType, VisualCharacteristics,
 };
 use crate::analysis::types::{
   AudioPerformanceMode, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
-};
-use crate::analysis::engines::content_engine::{
-  ContentClassification, CompositionScore, MoodAnalysis, QualityScore,
 };
 
 /// Результат полного анализа через AI Director
@@ -447,16 +447,23 @@ impl AIDirector {
 
           let scene_result = SceneAnalysisResult {
             total_scenes: scenes.len() as u32,
-            avg_scene_duration: scenes.iter().map(|s| s.duration).sum::<f64>() / scenes.len().max(1) as f64,
-            scene_types_distribution: scenes.iter().fold(std::collections::HashMap::new(), |mut acc, s| {
-              *acc.entry(format!("{:?}", s.scene_type)).or_insert(0) += 1;
-              acc
-            }),
+            avg_scene_duration: scenes.iter().map(|s| s.duration).sum::<f64>()
+              / scenes.len().max(1) as f64,
+            scene_types_distribution: scenes.iter().fold(
+              std::collections::HashMap::new(),
+              |mut acc, s| {
+                *acc.entry(format!("{:?}", s.scene_type)).or_insert(0) += 1;
+                acc
+              },
+            ),
             scenes,
           };
 
           result.scene_analysis = Some(scene_result);
-          result.metadata.engines_used.push("scene_engine".to_string());
+          result
+            .metadata
+            .engines_used
+            .push("scene_engine".to_string());
           success_count += 1;
           info!("Scene detection completed successfully");
         }
@@ -479,7 +486,10 @@ impl AIDirector {
       match self.run_vision_analysis(&all_scenes, &config).await {
         Ok(vision_result) => {
           result.vision_analysis = Some(vision_result);
-          result.metadata.engines_used.push("vision_service".to_string());
+          result
+            .metadata
+            .engines_used
+            .push("vision_service".to_string());
           success_count += 1;
           info!("Vision analysis completed successfully");
         }
@@ -503,16 +513,23 @@ impl AIDirector {
         Ok(moments) => {
           let moment_result = MomentAnalysisResult {
             total_moments: moments.len() as u32,
-            avg_importance: moments.iter().map(|m| m.importance_score).sum::<f64>() / moments.len().max(1) as f64,
-            moment_types_distribution: moments.iter().fold(std::collections::HashMap::new(), |mut acc, m| {
-              *acc.entry(format!("{:?}", m.moment_type)).or_insert(0) += 1;
-              acc
-            }),
+            avg_importance: moments.iter().map(|m| m.importance_score).sum::<f64>()
+              / moments.len().max(1) as f64,
+            moment_types_distribution: moments.iter().fold(
+              std::collections::HashMap::new(),
+              |mut acc, m| {
+                *acc.entry(format!("{:?}", m.moment_type)).or_insert(0) += 1;
+                acc
+              },
+            ),
             key_moments: moments,
           };
 
           result.moment_analysis = Some(moment_result);
-          result.metadata.engines_used.push("moment_engine".to_string());
+          result
+            .metadata
+            .engines_used
+            .push("moment_engine".to_string());
           success_count += 1;
           info!("Moment detection completed successfully");
         }
@@ -527,9 +544,12 @@ impl AIDirector {
     }
 
     // 5. CONTENT ANALYSIS (если включен и есть сцены)
-    if (config.enable_content_classification || config.enable_composition_analysis
-        || config.enable_mood_analysis || config.enable_quality_analysis)
-        && !all_scenes.is_empty() {
+    if (config.enable_content_classification
+      || config.enable_composition_analysis
+      || config.enable_mood_analysis
+      || config.enable_quality_analysis)
+      && !all_scenes.is_empty()
+    {
       total_engines += 1;
       let content_start = Instant::now();
 
@@ -537,7 +557,10 @@ impl AIDirector {
       match self.run_content_analysis(&all_scenes, &config).await {
         Ok(content_result) => {
           result.content_analysis = Some(content_result);
-          result.metadata.engines_used.push("content_engine".to_string());
+          result
+            .metadata
+            .engines_used
+            .push("content_engine".to_string());
           success_count += 1;
           info!("Content analysis completed successfully");
         }
@@ -629,39 +652,37 @@ impl AIDirector {
     // Пока возвращаем заглушку
     let file_id = Uuid::new_v4().to_string();
 
-    Ok(vec![
-      SceneAnalysis {
-        id: Uuid::new_v4().to_string(),
-        file_id: file_id.clone(),
-        start_time: 0.0,
-        end_time: 30.0,
-        duration: 30.0,
-        scene_type: SceneType::Action,
-        confidence: 0.85,
-        key_frames: vec![0.0, 15.0],
-        description: Some("Opening scene".to_string()),
-        visual: Some(VisualCharacteristics {
-          dominant_colors: vec!["#FF0000".to_string()],
-          brightness: 0.7,
-          contrast: 0.8,
-          saturation: 0.6,
-          motion_level: 0.3,
-          composition_score: 0.75,
-          sharpness: 0.85,
-          noise_level: 0.2,
-        }),
-        audio: Some(AudioCharacteristics {
-          has_speech: true,
-          has_music: true,
-          volume_level: 0.7,
-          clarity: 0.8,
-          dominant_frequencies: vec![440.0],
-        }),
-        objects: vec!["person".to_string()],
-        persons: vec!["speaker1".to_string()],
-        transition: None,
-      },
-    ])
+    Ok(vec![SceneAnalysis {
+      id: Uuid::new_v4().to_string(),
+      file_id: file_id.clone(),
+      start_time: 0.0,
+      end_time: 30.0,
+      duration: 30.0,
+      scene_type: SceneType::Action,
+      confidence: 0.85,
+      key_frames: vec![0.0, 15.0],
+      description: Some("Opening scene".to_string()),
+      visual: Some(VisualCharacteristics {
+        dominant_colors: vec!["#FF0000".to_string()],
+        brightness: 0.7,
+        contrast: 0.8,
+        saturation: 0.6,
+        motion_level: 0.3,
+        composition_score: 0.75,
+        sharpness: 0.85,
+        noise_level: 0.2,
+      }),
+      audio: Some(AudioCharacteristics {
+        has_speech: true,
+        has_music: true,
+        volume_level: 0.7,
+        clarity: 0.8,
+        dominant_frequencies: vec![440.0],
+      }),
+      objects: vec!["person".to_string()],
+      persons: vec!["speaker1".to_string()],
+      transition: None,
+    }])
   }
 
   /// Запуск vision analysis
@@ -694,8 +715,16 @@ impl AIDirector {
     Ok(VisionAnalysisResult {
       objects_detected,
       faces_count,
-      avg_composition_score: if count > 0 { total_composition / count as f64 } else { 0.0 },
-      visual_quality_avg: if count > 0 { total_quality / count as f64 } else { 0.0 },
+      avg_composition_score: if count > 0 {
+        total_composition / count as f64
+      } else {
+        0.0
+      },
+      visual_quality_avg: if count > 0 {
+        total_quality / count as f64
+      } else {
+        0.0
+      },
     })
   }
 
@@ -786,7 +815,7 @@ impl AIDirector {
         emotional_intensity: 0.5,
         confidence: 0.0,
       }),
-      quality: quality.unwrap_or_else(|| QualityScore {
+      quality: quality.unwrap_or(QualityScore {
         overall: 0.0,
         visual: 0.0,
         audio: 0.0,

@@ -8,9 +8,9 @@ pub mod services; // ✅ Включено обратно - проблемы ре
 pub mod types; // 🆕 Unified type system
 
 // Re-export для удобства использования
-pub use engines::SceneEngine; // 🆕 Scene Analysis Engine
+pub use engines::ContentEngine;
 pub use engines::MomentEngine; // 🆕 Moment Detection Engine
-pub use engines::ContentEngine; // 🆕 Content Analysis Engine
+pub use engines::SceneEngine; // 🆕 Scene Analysis Engine // 🆕 Content Analysis Engine
 
 pub use services::{
   AnalysisEngineConfig, // Real Analysis Engine

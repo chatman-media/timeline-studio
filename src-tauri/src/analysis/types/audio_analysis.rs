@@ -90,7 +90,7 @@ pub struct AudioBasicMetrics {
   pub channels: u32,
   pub overall_volume: AudioVolume,
   pub estimated_quality: AudioFloat, // 0.0 - 1.0
-  pub file_size_bytes: Option<f64>, // используем f64 для больших файлов (>4GB)
+  pub file_size_bytes: Option<f64>,  // используем f64 для больших файлов (>4GB)
   pub codec: Option<String>,
   pub bitrate: Option<u32>,
 }
