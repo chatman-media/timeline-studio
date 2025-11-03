@@ -1,3 +1,11 @@
+## [2.1.1](https://github.com/chatman-media/timeline-studio/compare/v2.1.0...v2.1.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* **build:** Temporary workaround for Next.js 16 React Context bug ([0ba56c3](https://github.com/chatman-media/timeline-studio/commit/0ba56c305354662fb4bf6b30a25c21aa41b20456))
+* **build:** Workaround for Next.js 16 static export + React Context issue ([cf1a467](https://github.com/chatman-media/timeline-studio/commit/cf1a46774424a91f0ce66ca86fa9b6ef803bb60b))
+
 # [2.1.0](https://github.com/chatman-media/timeline-studio/compare/v2.0.1...v2.1.0) (2025-11-03)
 
 
