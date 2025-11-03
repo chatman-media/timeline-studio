@@ -360,9 +360,12 @@ describe("sync-resources-to-project", () => {
       const mockDate = new Date("2023-12-01")
       const OriginalDate = global.Date
       global.Date = class extends OriginalDate {
-        constructor() {
-          super()
-          Object.assign(this, mockDate)
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            super(mockDate.getTime())
+          } else {
+            super(...args)
+          }
         }
       } as any
 
@@ -581,16 +584,33 @@ describe("sync-resources-to-project", () => {
 
     it("should maintain data integrity during sync", () => {
       const project = createMockProject()
+      const originalModified = project.metadata.modified
 
       vi.mocked(convertMediaFileToPoolItem)
         .mockReturnValueOnce(mockMediaPoolItem)
         .mockReturnValueOnce(mockMusicPoolItem)
 
+      // Mock Date to return a different time for the sync operation
+      const mockDate = new Date("2024-01-01")
+      const OriginalDate = global.Date
+      global.Date = class extends OriginalDate {
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            super(mockDate.getTime())
+          } else {
+            super(...args)
+          }
+        }
+      } as any
+
       const result = syncResourcesToProject(project, [mockMediaResource], [mockMusicResource])
+
+      global.Date = OriginalDate
 
       // Verify that the original project wasn't mutated
       expect(project.mediaPool.items.size).toBe(0)
-      expect(project.metadata.modified).not.toEqual(result.metadata.modified)
+      expect(project.metadata.modified).toEqual(originalModified)
+      expect(result.metadata.modified).toEqual(mockDate)
 
       // Verify that the result has correct structure
       expect(result.mediaPool.items instanceof Map).toBe(true)
