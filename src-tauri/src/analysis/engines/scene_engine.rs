@@ -429,6 +429,7 @@ pub struct VisualElements {
 mod tests {
   use super::*;
   use crate::analysis::types::UnifiedMediaType;
+  use uuid::Uuid;
 
   fn create_test_media() -> UnifiedMediaFile {
     UnifiedMediaFile {

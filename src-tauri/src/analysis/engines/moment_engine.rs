@@ -555,6 +555,7 @@ impl Default for MomentEngine {
 mod tests {
   use super::*;
   use crate::analysis::types::unified_types::SceneType;
+  use crate::analysis::types::{AudioCharacteristics, VisualCharacteristics};
 
   fn create_test_scene() -> SceneAnalysis {
     SceneAnalysis {
