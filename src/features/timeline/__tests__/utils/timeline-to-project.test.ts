@@ -318,7 +318,7 @@ describe("timelineToProjectSchema", () => {
 
     const brightnessEffect = result.effects[0]
     expect(brightnessEffect.id).toBe("effect-1")
-    expect(brightnessEffect.effect).toBe("Brightness")
+    expect(brightnessEffect.effect_type).toBe("Brightness")
     expect(brightnessEffect.name).toBe("Brightness Effect")
     expect(brightnessEffect.parameters).toEqual({ value: 0.5 })
     expect(brightnessEffect.ffmpeg_command).toBe("some command")
