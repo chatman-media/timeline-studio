@@ -1221,6 +1221,7 @@ pub struct CommandHandler {
   persistence: Arc<PersistenceService>,
 }
 
+#[allow(dead_code)]
 impl CommandHandler {
   pub fn new(
     state: Arc<RwLock<ProjectState>>,

@@ -216,7 +216,8 @@ impl SceneEngine {
       ModelSceneType::Montage => SceneType::Montage,
       ModelSceneType::Opening => SceneType::Opening,
       ModelSceneType::Ending => SceneType::Ending,
-      ModelSceneType::Content | _ => SceneType::Unknown,
+      ModelSceneType::Content => SceneType::Unknown,
+      _ => SceneType::Unknown,
     }
   }
 
