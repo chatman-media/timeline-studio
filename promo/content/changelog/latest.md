@@ -1,3 +1,27 @@
+## [2.0.1](https://github.com/chatman-media/timeline-studio/compare/v2.0.0...v2.0.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* Fix test:rust script and missing test imports ([a8fc3d9](https://github.com/chatman-media/timeline-studio/commit/a8fc3d95660581a8ef6da0c49cd045bfb9f69f24))
+* **lint:** Fix noConstructorReturn errors in test mocks ([ca886fe](https://github.com/chatman-media/timeline-studio/commit/ca886fe810888ceba1e5b33b00e373320b84dfe0))
+* **rust:** Fix all unused variable warnings (39 → 3) ([88a8a01](https://github.com/chatman-media/timeline-studio/commit/88a8a01c02ef1a8dccba87377bff45624adfae87))
+* **rust:** Fix final clippy warnings - achieve true 0 warnings ([db46361](https://github.com/chatman-media/timeline-studio/commit/db4636153d202c2846c262276d2361495e3f9d2f))
+* **rust:** Suppress all dead_code warnings - achieve 0 warnings ([df2b7a2](https://github.com/chatman-media/timeline-studio/commit/df2b7a2fb501c4c848569a2d10758e95e9611235))
+* **rust:** Добавить недостающие импорты и закомментировать проблемные Tauri тесты ([6cf6814](https://github.com/chatman-media/timeline-studio/commit/6cf68141b1a803a279845f8db3d7d313108da4bc))
+* **rust:** Исправить ошибки типов в Rust тестах ([2b03a80](https://github.com/chatman-media/timeline-studio/commit/2b03a80789223e140f384d52f0f6754e6413839b))
+* **tests:** Fix all failing Rust tests and eliminate warnings ([2179e6f](https://github.com/chatman-media/timeline-studio/commit/2179e6f16d446ae0437804b04ee8a70343270976))
+* **tests:** Fix remaining Rust compilation errors ([4f35980](https://github.com/chatman-media/timeline-studio/commit/4f35980f770ff4330709de2d92e303554ae7d851))
+* **tests:** Исправить 2 проваленных теста (22 -> 20) ([79b01aa](https://github.com/chatman-media/timeline-studio/commit/79b01aab7870766c1179583072c4d941db5d753b))
+* **tests:** Исправить 2 теста с 1 провалом (15 -> 13) ([3634654](https://github.com/chatman-media/timeline-studio/commit/3634654e03d1635c3d1a664e74b77c96c465a9e4))
+* **tests:** Исправить 5 критичных тестов после миграции на BackendSync ([10fc87f](https://github.com/chatman-media/timeline-studio/commit/10fc87f2d263e120ea87f9c58086e4298b0876f1))
+* **tests:** Исправить frame-extraction-service тесты и пропустить проблемный тест ([ea30c11](https://github.com/chatman-media/timeline-studio/commit/ea30c114fdf5574c22cc67dde8304756bfee8f32))
+* **tests:** Исправить timeline-to-project.test.ts (13 -> 12) ([3fadc65](https://github.com/chatman-media/timeline-studio/commit/3fadc654a728d55969c25133033ff277624434ec))
+* **tests:** Исправить use-tracks тесты - добавлены default значения ([719f675](https://github.com/chatman-media/timeline-studio/commit/719f6756c53df59b814e05bf9360ea614b8407ed))
+* **tests:** Исправить video-player тесты - неправильный путь мока usePlayer ([8653022](https://github.com/chatman-media/timeline-studio/commit/8653022f5c9991e6c75dcbe36fcd9a31928ee40a))
+* **tests:** Исправить падающие тесты после миграции BackendSync ([f1af78e](https://github.com/chatman-media/timeline-studio/commit/f1af78e073f9b822236c07750d852a013c884508))
+* **warnings:** Fix unused variable warnings (part 1/2) ([3c359a1](https://github.com/chatman-media/timeline-studio/commit/3c359a11fbe340980c2bdf0cfad48212654e68e2))
+
 # [2.0.0](https://github.com/chatman-media/timeline-studio/compare/v1.6.1...v2.0.0) (2025-11-03)
 
 
