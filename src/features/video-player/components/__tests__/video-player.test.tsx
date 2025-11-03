@@ -117,7 +117,7 @@ const mockPlayerContext = {
   setVideoSource: vi.fn(),
 }
 
-vi.mock("../services/player-provider", () => ({
+vi.mock("../../services/player-provider", () => ({
   usePlayer: () => mockPlayerContext,
 }))
 
