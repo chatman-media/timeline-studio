@@ -563,7 +563,7 @@ impl Default for AudioWhisperConfig {
   }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, specta::Type)]
 pub enum AudioPerformanceMode {
   Fast,     // быстрый анализ, минимальные детали
   Balanced, // баланс между скоростью и качеством
@@ -624,7 +624,7 @@ mod tests {
       channels: 2,
       overall_volume: AudioVolume::from_normalized(0.7),
       estimated_quality: 0.8,
-      file_size_bytes: Some(1024 * 1024),
+      file_size_bytes: Some((1024 * 1024) as f64),
       codec: Some("aac".to_string()),
       bitrate: Some(128),
     };
@@ -655,7 +655,7 @@ mod tests {
       channels: 2,
       overall_volume: AudioVolume::from_normalized(0.7),
       estimated_quality: 0.0, // will be calculated
-      file_size_bytes: Some(1024 * 1024),
+      file_size_bytes: Some((1024 * 1024) as f64),
       codec: Some("aac".to_string()),
       bitrate: Some(256),
     };

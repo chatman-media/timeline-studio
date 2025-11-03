@@ -867,7 +867,7 @@ mod tests {
   async fn test_models_ready_when_none_loaded() {
     let analysis_db = Arc::new(AnalysisDatabase::new_mock()); // ✅ Работает
     let person_db =
-      Arc::new(PersonDatabase::new(":memory:").expect("Failed to create test person database"));
+      Arc::new(PersonDatabase::new(":memory:".into()).await.expect("Failed to create test person database"));
     let project_manager = Arc::new(ProjectManager::new(analysis_db.clone())); // ✅ Работает
 
     let engine = RealAnalysisEngine::new(

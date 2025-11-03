@@ -470,7 +470,7 @@ mod tests {
 
     #[test]
     fn test_scene_type_conversion() {
-        let model_type = ModelSceneType::Dialog;
+        let model_type = ModelSceneType::Dialogue;
         let unified_type = SceneEngine::convert_scene_type(&model_type);
         assert_eq!(unified_type, SceneType::Dialog);
     }
