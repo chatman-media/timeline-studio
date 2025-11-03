@@ -6627,9 +6627,9 @@ impl CommandHandler {
     // Clone data for background task
     let provider_clone = provider.clone();
     let model_clone = model.clone();
-    let messages_clone = messages.clone();
-    let options_clone = options.clone();
-    let api_key_clone = api_key.clone();
+    let _messages_clone = messages.clone();
+    let _options_clone = options.clone();
+    let _api_key_clone = api_key.clone();
     let stream_id_clone = stream_id.clone();
 
     tokio::spawn(async move {
@@ -6872,7 +6872,7 @@ impl CommandHandler {
     clip_id: String,
     effects: Vec<EffectConfig>,
     output_path: String,
-    quality: String,
+    _quality: String,
   ) -> CommandResult {
     // TODO: Implement FFmpeg pipeline for rendering effects
     // 1. Load clip media file
@@ -6898,7 +6898,7 @@ impl CommandHandler {
     input_path: String,
     output_path: String,
     filters: Vec<FilterConfig>,
-    render_settings: RenderSettings,
+    _render_settings: RenderSettings,
   ) -> CommandResult {
     // TODO: Implement video processing with filters
     // 1. Validate input file exists
@@ -6951,7 +6951,7 @@ impl CommandHandler {
     &self,
     name: String,
     effect_id: String,
-    parameters: serde_json::Value,
+    _parameters: serde_json::Value,
     category: String,
   ) -> CommandResult {
     // TODO: Create and save effect preset
@@ -6974,7 +6974,7 @@ impl CommandHandler {
     &self,
     name: String,
     filter_id: String,
-    parameters: serde_json::Value,
+    _parameters: serde_json::Value,
     tags: Vec<String>,
   ) -> CommandResult {
     // TODO: Save filter preset

@@ -643,10 +643,10 @@ impl AIDirector {
   /// Запуск scene detection через SceneEngine
   async fn run_scene_detection(
     &self,
-    media_path: &Path,
+    _media_path: &Path,
     _config: &AIDirectorConfig,
   ) -> Result<Vec<SceneAnalysis>> {
-    let engine = self.scene_engine.read().await;
+    let _engine = self.scene_engine.read().await;
 
     // TODO: Реальная детекция сцен из видео
     // Пока возвращаем заглушку

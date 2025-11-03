@@ -301,8 +301,8 @@ impl AIDirectorWithEvents {
   /// Запуск audio stage с прогрессом
   async fn run_audio_stage(
     &self,
-    media_path: &Path,
-    config: &AIDirectorConfig,
+    _media_path: &Path,
+    _config: &AIDirectorConfig,
     analysis_id: &str,
   ) -> Result<()> {
     self
@@ -356,8 +356,8 @@ impl AIDirectorWithEvents {
   /// Запуск video stage с прогрессом
   async fn run_video_stage(
     &self,
-    media_path: &Path,
-    config: &AIDirectorConfig,
+    _media_path: &Path,
+    _config: &AIDirectorConfig,
     analysis_id: &str,
   ) -> Result<()> {
     self

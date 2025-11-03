@@ -130,7 +130,7 @@ pub async fn start_real_project_analysis(
 #[tauri::command]
 pub async fn switch_analysis_engine(
   use_real_engine: bool,
-  state: State<'_, crate::AppState>,
+  _state: State<'_, crate::AppState>,
 ) -> Result<String, String> {
   if use_real_engine {
     log::info!("Switching to Real Analysis Engine");
@@ -174,7 +174,7 @@ pub async fn get_available_models() -> Result<AvailableModels, String> {
 pub async fn test_model_on_image(
   image_path: String,
   model_type: String,
-  state: State<'_, crate::AppState>,
+  _state: State<'_, crate::AppState>,
 ) -> Result<ModelTestResult, String> {
   log::info!("Testing {} model on image: {}", model_type, image_path);
 
@@ -309,7 +309,7 @@ pub async fn get_active_analysis_projects() -> Result<String, String> {
 }
 
 #[tauri::command]
-pub async fn start_project_analysis(project_config: String) -> Result<String, String> {
+pub async fn start_project_analysis(_project_config: String) -> Result<String, String> {
   log::info!("Starting project analysis");
   Ok("{}".to_string()) // Mock response
 }

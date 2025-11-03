@@ -827,7 +827,10 @@ fn get_quality_distribution(conn: &Connection, project_id: &Uuid) -> Result<Qual
 }
 
 /// Получение временного распределения
-fn get_temporal_distribution(conn: &Connection, project_id: &Uuid) -> Result<TemporalDistribution> {
+fn get_temporal_distribution(
+  _conn: &Connection,
+  _project_id: &Uuid,
+) -> Result<TemporalDistribution> {
   // Для простоты создаем базовое распределение
   // В реальной реализации здесь будет анализ временных меток файлов
   let by_hour = HashMap::new();

@@ -298,7 +298,7 @@ impl ContentClassificationEngine {
   /// Анализ маркетингового потенциала
   async fn analyze_marketing_potential(
     &self,
-    base: &BaseContentClassification,
+    _base: &BaseContentClassification,
     _subcategories: &SubcategoryClassification,
     _mood: &MoodAnalysis,
   ) -> Result<MarketingPotential> {

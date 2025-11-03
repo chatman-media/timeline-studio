@@ -144,7 +144,7 @@ impl UnifiedFFmpegAudioAnalyzer {
     info!("Analyzing volume with unified types");
 
     // Use volumedetect filter
-    let _output = FFmpegCommand::ffmpeg()
+    let output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -357,7 +357,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Quick volume estimation для basic metrics
   async fn quick_volume_estimation(file_path: &Path) -> Result<AudioVolume> {
-    let _output = FFmpegCommand::ffmpeg()
+    let output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -458,7 +458,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Analyze LUFS loudness
   async fn analyze_loudness_lufs(file_path: &Path) -> Result<AudioFloat> {
-    let _output = FFmpegCommand::ffmpeg()
+    let output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),
@@ -483,7 +483,7 @@ impl UnifiedFFmpegAudioAnalyzer {
 
   /// Detect audio clipping
   async fn detect_clipping(file_path: &Path) -> Result<bool> {
-    let _output = FFmpegCommand::ffmpeg()
+    let output = FFmpegCommand::ffmpeg()
       .args(vec![
         "-i",
         &file_path.to_string_lossy(),

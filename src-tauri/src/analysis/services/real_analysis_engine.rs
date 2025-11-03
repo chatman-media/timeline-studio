@@ -672,7 +672,7 @@ impl RealAnalysisEngine {
   /// Mock анализ аудио (пока ONNX аудио модели не подключены)
   async fn mock_analyze_audio(
     &self,
-    project_id: &Uuid,
+    _project_id: &Uuid,
     file: &MediaFile,
   ) -> Result<FileAnalysisResults> {
     // TODO: Интегрировать Whisper для анализа аудио
@@ -731,7 +731,7 @@ impl RealAnalysisEngine {
   /// Создание связей персон с проектом
   async fn create_project_person_associations(
     &self,
-    project_id: &Uuid,
+    _project_id: &Uuid,
     _persons: &[PersonAppearance],
   ) -> Result<()> {
     // TODO: Интегрировать с PersonDatabase
@@ -741,7 +741,7 @@ impl RealAnalysisEngine {
   /// Сохранение обнаруженных объектов
   async fn save_detected_objects(
     &self,
-    project_id: &Uuid,
+    _project_id: &Uuid,
     _objects: &[ObjectDetection],
   ) -> Result<()> {
     // TODO: Сохранить в analysis_db

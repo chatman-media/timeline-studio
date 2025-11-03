@@ -295,7 +295,7 @@ pub async fn get_unified_audio_analysis_status() -> Result<String, String> {
 pub async fn analyze_audio_transcription_unified(
   file_path: String,
   performance_mode: Option<String>, // "fast", "balanced", "quality"
-  enable_word_timestamps: Option<bool>,
+  _enable_word_timestamps: Option<bool>,
 ) -> Result<String, String> {
   info!("Starting unified Whisper transcription for: {}", file_path);
 
