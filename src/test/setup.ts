@@ -362,16 +362,16 @@ vi.mock("@/features/ai-chat/services/unified-ai-service", () => ({
 // PersonDatabaseService is not mocked globally to allow testing the real implementation
 
 vi.mock("@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine", () => ({
-  SceneAnalysisEngine: vi.fn(() => ({
-    analyzeScene: vi.fn().mockResolvedValue({
+  SceneAnalysisEngine: class MockSceneAnalysisEngine {
+    analyzeScene = vi.fn().mockResolvedValue({
       objects: [],
       faces: [],
       emotions: [],
       quality: { score: 0.8 },
-    }),
-    detectPersons: vi.fn().mockResolvedValue([]),
-    analyzeVideo: vi.fn().mockResolvedValue({ scenes: [], persons: [] }),
-  })),
+    })
+    detectPersons = vi.fn().mockResolvedValue([])
+    analyzeVideo = vi.fn().mockResolvedValue({ scenes: [], persons: [] })
+  },
 }))
 
 // Only absolutely essential global setup

@@ -347,17 +347,24 @@ describe("TimelinePreviewStrip", () => {
 
 describe("useTimelinePreviewStrip hook", () => {
   beforeEach(() => {
-    // Mock ResizeObserver
-    global.ResizeObserver = vi.fn().mockImplementation((callback) => ({
-      observe: vi.fn().mockImplementation((_element) => {
+    // Mock ResizeObserver as a class
+    global.ResizeObserver = class MockResizeObserver {
+      private callback: ResizeObserverCallback
+
+      constructor(callback: ResizeObserverCallback) {
+        this.callback = callback
+      }
+
+      observe = vi.fn().mockImplementation((_element: Element) => {
         // Simulate resize observation
         setTimeout(() => {
-          callback([{ contentRect: { width: 1200 } }])
+          this.callback([{ contentRect: { width: 1200 } } as ResizeObserverEntry], this as any)
         }, 0)
-      }),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-    }))
+      })
+
+      unobserve = vi.fn()
+      disconnect = vi.fn()
+    } as any
   })
 
   afterEach(() => {
@@ -411,11 +418,11 @@ describe("useTimelinePreviewStrip hook", () => {
 
   it("should disconnect observer on unmount", () => {
     const mockDisconnect = vi.fn()
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: mockDisconnect,
-    }))
+    global.ResizeObserver = class MockResizeObserver {
+      observe = vi.fn()
+      unobserve = vi.fn()
+      disconnect = mockDisconnect
+    } as any
 
     const TestComponent = () => {
       const { containerRef } = useTimelinePreviewStrip("/test.mp4", 10)

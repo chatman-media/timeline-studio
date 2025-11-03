@@ -358,17 +358,17 @@ describe("useClips - Comprehensive Tests", () => {
       act(() => {
         result.current.setClipSpeed("clip-1", 2)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { speed: 2 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 2 })
 
       act(() => {
         result.current.setClipSpeed("clip-1", 0)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { speed: 0.1 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 0.1 })
 
       act(() => {
         result.current.setClipSpeed("clip-1", 20)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { speed: 10 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 10 })
     })
 
     it("should set clip opacity with bounds", () => {
@@ -391,7 +391,7 @@ describe("useClips - Comprehensive Tests", () => {
         result.current.toggleClipReverse("clip-1")
       })
 
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { isReversed: true })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: -1 })
     })
 
     it("should not toggle reverse for non-existent clip", () => {
