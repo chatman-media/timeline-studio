@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/chatman-media/timeline-studio/compare/v2.1.1...v2.1.2) (2025-11-03)
+
+
+### Bug Fixes
+
+* **ci:** Add Next.js 16 workaround to Build and Release workflow ([807ecbe](https://github.com/chatman-media/timeline-studio/commit/807ecbec411ba87d71344c28189ff47f974fb423)), closes [vercel/next.js#85604](https://github.com/vercel/next.js/issues/85604)
+
 ## [2.1.1](https://github.com/chatman-media/timeline-studio/compare/v2.1.0...v2.1.1) (2025-11-03)
 
 
