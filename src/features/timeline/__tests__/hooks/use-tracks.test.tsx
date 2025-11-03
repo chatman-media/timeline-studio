@@ -10,56 +10,68 @@ import { TimelineProviders } from "@/test/test-utils"
 import { useTracks } from "../../hooks/use-tracks"
 import type { TimelineProject, TimelineTrack } from "../../types/timeline"
 
-// Мокаем треки
+// Мокаем треки (используем domain свойства)
 const mockTracks: TimelineTrack[] = [
   {
     id: "track-1",
     name: "Video Track 1",
     type: "video",
     clips: [],
-    isMuted: false,
-    isLocked: false,
+    muted: false,
+    locked: false,
     isHidden: false,
-    isSolo: false,
+    solo: false,
     volume: 1,
     pan: 0,
     height: 80,
     order: 0,
     trackEffects: [],
     trackFilters: [],
-  },
+    // Feature properties (добавляются адаптером)
+    isMuted: false,
+    isLocked: false,
+    isSolo: false,
+  } as any,
   {
     id: "track-2",
     name: "Audio Track 1",
     type: "audio",
     clips: [],
-    isMuted: true,
-    isLocked: false,
+    muted: true,
+    locked: false,
     isHidden: false,
-    isSolo: false,
+    solo: false,
     volume: 0.8,
     pan: -0.2,
     height: 60,
     order: 1,
     trackEffects: [],
     trackFilters: [],
-  },
+    // Feature properties (добавляются адаптером)
+    isMuted: true,
+    isLocked: false,
+    isSolo: false,
+  } as any,
   {
     id: "track-3",
     name: "Hidden Track",
     type: "video",
     clips: [],
-    isMuted: false,
-    isLocked: false,
+    muted: false,
+    locked: false,
     isHidden: true,
-    isSolo: false,
+    solo: false,
     volume: 1,
     pan: 0,
     height: 80,
     order: 2,
     trackEffects: [],
     trackFilters: [],
-  },
+    // Feature properties (добавляются адаптером)
+    isMuted: false,
+    isLocked: false,
+    isSolo: false,
+  } as any,
 ]
 
 // Мокаем проект

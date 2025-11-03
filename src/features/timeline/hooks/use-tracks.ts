@@ -12,11 +12,11 @@ import type { TimelineTrack, TrackType } from "../types"
 const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack => {
   return {
     ...domainTrack,
-    // Преобразуем domain свойства в feature
-    isLocked: domainTrack.locked,
-    isMuted: domainTrack.muted,
-    isSolo: domainTrack.solo,
-    isHidden: false, // добавляем отсутствующее свойство
+    // Преобразуем domain свойства в feature с default значениями
+    isLocked: domainTrack.locked ?? false,
+    isMuted: domainTrack.muted ?? false,
+    isSolo: domainTrack.solo ?? false,
+    isHidden: (domainTrack as any).isHidden ?? false, // сохраняем если есть
     // Добавляем другие feature-specific свойства если нужно
   } as unknown as TimelineTrack
 }
