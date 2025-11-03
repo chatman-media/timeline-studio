@@ -26,9 +26,7 @@ export class TauriGlobalShortcuts {
     if (this.isGlobalEnabled) return
 
     const shortcuts = shortcutsRegistry.getAll()
-    const globalShortcuts = shortcuts.filter(
-      (shortcut) => shortcut.context === "global" && shortcut.enabled !== false,
-    )
+    const globalShortcuts = shortcuts.filter((shortcut) => shortcut.context === "global" && shortcut.enabled !== false)
 
     for (const shortcut of globalShortcuts) {
       await this.registerGlobalShortcut(shortcut)

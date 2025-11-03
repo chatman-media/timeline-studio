@@ -5,6 +5,8 @@
  * Simplified dashboard working directly with AI Director (file-centric, not project-based)
  */
 
+import { invoke } from "@tauri-apps/api/core"
+import { open } from "@tauri-apps/plugin-dialog"
 import { FileVideo, Play, Settings, Zap } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -15,21 +17,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
-import { invoke } from "@tauri-apps/api/core"
-import { open } from "@tauri-apps/plugin-dialog"
 
 type AnalysisMode = "fast" | "balanced" | "quality"
 
 export function AIAnalysisDashboard() {
   const { analyzeComprehensive, analyzeQuick, state } = useAIDirector()
-  const {
-    isAnalyzing,
-    currentProgress,
-    result,
-    errors,
-    progressPercentage,
-    currentStage,
-  } = useAIDirectorAnalysis()
+  const { isAnalyzing, currentProgress, result, errors, progressPercentage, currentStage } = useAIDirectorAnalysis()
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
@@ -94,9 +87,7 @@ export function AIAnalysisDashboard() {
             <Zap className="h-8 w-8 text-blue-500" />
             AI Director Analysis
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Комплексный AI анализ видео - сцены, моменты, аудио, контент
-          </p>
+          <p className="text-muted-foreground mt-1">Комплексный AI анализ видео - сцены, моменты, аудио, контент</p>
         </div>
       </div>
 
@@ -261,11 +252,10 @@ export function AIAnalysisDashboard() {
                                     Сцена {index + 1}: {scene.scene_type}
                                   </p>
                                   <p className="text-sm text-muted-foreground">
-                                    {scene.start_time.toFixed(1)}s - {scene.end_time.toFixed(1)}s ({scene.duration.toFixed(1)}s)
+                                    {scene.start_time.toFixed(1)}s - {scene.end_time.toFixed(1)}s (
+                                    {scene.duration.toFixed(1)}s)
                                   </p>
-                                  {scene.description && (
-                                    <p className="text-sm mt-1">{scene.description}</p>
-                                  )}
+                                  {scene.description && <p className="text-sm mt-1">{scene.description}</p>}
                                 </div>
                                 <span className="text-sm font-medium text-blue-600">
                                   {Math.round(scene.confidence * 100)}%
@@ -299,9 +289,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">
-                                {result.moment_analysis.top_moments?.length || 0}
-                              </p>
+                              <p className="text-2xl font-bold">{result.moment_analysis.top_moments?.length || 0}</p>
                               <p className="text-sm text-muted-foreground">Топ моментов</p>
                             </CardContent>
                           </Card>
@@ -321,19 +309,12 @@ export function AIAnalysisDashboard() {
                               <div className="flex justify-between items-start">
                                 <div className="flex-1">
                                   <p className="font-medium">{moment.moment_type}</p>
-                                  <p className="text-sm text-muted-foreground">
-                                    {moment.timestamp.toFixed(1)}s
-                                  </p>
-                                  {moment.description && (
-                                    <p className="text-sm mt-1">{moment.description}</p>
-                                  )}
+                                  <p className="text-sm text-muted-foreground">{moment.timestamp.toFixed(1)}s</p>
+                                  {moment.description && <p className="text-sm mt-1">{moment.description}</p>}
                                   {moment.content_tags && moment.content_tags.length > 0 && (
                                     <div className="flex flex-wrap gap-1 mt-2">
                                       {moment.content_tags.map((tag, i) => (
-                                        <span
-                                          key={i}
-                                          className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
-                                        >
+                                        <span key={i} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                                           {tag}
                                         </span>
                                       ))}
@@ -514,9 +495,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">
-                                {result.vision_analysis.objects_detected.length}
-                              </p>
+                              <p className="text-2xl font-bold">{result.vision_analysis.objects_detected.length}</p>
                               <p className="text-sm text-muted-foreground">Объектов</p>
                             </CardContent>
                           </Card>
@@ -538,7 +517,10 @@ export function AIAnalysisDashboard() {
                             <CardContent>
                               <div className="flex flex-wrap gap-2">
                                 {result.vision_analysis.objects_detected.map((obj, i) => (
-                                  <span key={i} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+                                  <span
+                                    key={i}
+                                    className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
+                                  >
                                     {obj}
                                   </span>
                                 ))}

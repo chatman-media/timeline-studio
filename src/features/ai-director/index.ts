@@ -4,6 +4,6 @@
  */
 
 export * from "./hooks"
-export * from "./types/ai-director"
-export * from "./services/ai-director-service"
 export * from "./services/ai-director-machine"
+export * from "./services/ai-director-service"
+export * from "./types/ai-director"

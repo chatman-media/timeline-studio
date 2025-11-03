@@ -362,7 +362,7 @@ describe("sync-resources-to-project", () => {
       global.Date = class extends OriginalDate {
         constructor() {
           super()
-          return mockDate as any
+          Object.assign(this, mockDate)
         }
       } as any
 

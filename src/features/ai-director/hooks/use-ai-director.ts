@@ -5,14 +5,14 @@
  */
 
 import { useCallback, useState } from "react"
-import { commands } from "@/types/generated/tauri-bindings"
 import type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
-  SystemCapabilities,
   ConfigValidationResult,
   HealthCheckResult,
+  SystemCapabilities,
 } from "@/types/generated/tauri-bindings"
+import { commands } from "@/types/generated/tauri-bindings"
 
 export interface AIDirectorState {
   isAnalyzing: boolean
@@ -74,9 +74,8 @@ export function useAIDirector(): AIDirectorHook {
             currentResult: result.data,
           }))
           return result.data
-        } else {
-          throw new Error(result.error)
         }
+        throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
         setState((prev) => ({
@@ -87,7 +86,7 @@ export function useAIDirector(): AIDirectorHook {
         throw error
       }
     },
-    []
+    [],
   )
 
   // Quick Analysis
@@ -111,9 +110,8 @@ export function useAIDirector(): AIDirectorHook {
           currentResult: result.data,
         }))
         return result.data
-      } else {
-        throw new Error(result.error)
       }
+      throw new Error(result.error)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
       setState((prev) => ({
@@ -147,9 +145,8 @@ export function useAIDirector(): AIDirectorHook {
             currentResult: result.data[result.data.length - 1] || null,
           }))
           return result.data
-        } else {
-          throw new Error(result.error)
         }
+        throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
         setState((prev) => ({
@@ -160,7 +157,7 @@ export function useAIDirector(): AIDirectorHook {
         throw error
       }
     },
-    []
+    [],
   )
 
   // Get Default Config
@@ -169,11 +166,10 @@ export function useAIDirector(): AIDirectorHook {
       const result = await commands.aiDirectorGetDefaultConfig(mode)
       if (result.status === "ok") {
         return result.data
-      } else {
-        throw new Error(result.error)
       }
+      throw new Error(result.error)
     },
-    []
+    [],
   )
 
   // Validate Config
@@ -181,9 +177,8 @@ export function useAIDirector(): AIDirectorHook {
     const result = await commands.aiDirectorValidateConfig(config)
     if (result.status === "ok") {
       return result.data
-    } else {
-      throw new Error(result.error)
     }
+    throw new Error(result.error)
   }, [])
 
   // Get Capabilities
@@ -191,9 +186,8 @@ export function useAIDirector(): AIDirectorHook {
     const result = await commands.aiDirectorGetCapabilities()
     if (result.status === "ok") {
       return result.data
-    } else {
-      throw new Error(result.error)
     }
+    throw new Error(result.error)
   }, [])
 
   // Health Check
@@ -201,9 +195,8 @@ export function useAIDirector(): AIDirectorHook {
     const result = await commands.aiDirectorHealthCheck()
     if (result.status === "ok") {
       return result.data
-    } else {
-      throw new Error(result.error)
     }
+    throw new Error(result.error)
   }, [])
 
   // Clear Analysis

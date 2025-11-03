@@ -430,7 +430,6 @@ beforeAll(() => {
       clearTimeout(id)
     }) as any
   }
-
 })
 
 afterEach(async () => {

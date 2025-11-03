@@ -20,21 +20,81 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("lucide-react")>()
   return {
     ...actual,
-    Play: (props: any) => <svg data-testid="play-icon" data-icon="Play" {...props}>Play</svg>,
-    Pause: (props: any) => <svg data-testid="pause-icon" data-icon="Pause" {...props}>Pause</svg>,
-    StepBack: (props: any) => <svg data-testid="stepback-icon" data-icon="StepBack" {...props}>StepBack</svg>,
-    StepForward: (props: any) => <svg data-testid="stepforward-icon" data-icon="StepForward" {...props}>StepForward</svg>,
-    Maximize2: (props: any) => <svg data-testid="maximize2-icon" data-icon="Maximize2" {...props}>Maximize2</svg>,
-    Minimize2: (props: any) => <svg data-testid="minimize2-icon" data-icon="Minimize2" {...props}>Minimize2</svg>,
-    CircleDot: (props: any) => <svg data-testid="circledot-icon" data-icon="CircleDot" {...props}>CircleDot</svg>,
-    Volume2: (props: any) => <svg data-testid="volume2-icon" data-icon="Volume2" {...props}>Volume2</svg>,
-    VolumeX: (props: any) => <svg data-testid="volumex-icon" data-icon="VolumeX" {...props}>VolumeX</svg>,
-    TvMinimalPlay: (props: any) => <svg data-testid="tvminimalplay-icon" data-icon="TvMinimalPlay" {...props}>TvMinimalPlay</svg>,
-    ImagePlay: (props: any) => <svg data-testid="imageplay-icon" data-icon="ImagePlay" {...props}>ImagePlay</svg>,
-    UnfoldHorizontal: (props: any) => <svg data-testid="unfoldhorizontal-icon" data-icon="UnfoldHorizontal" {...props}>UnfoldHorizontal</svg>,
-    Camera: (props: any) => <svg data-testid="camera-icon" data-icon="Camera" {...props}>Camera</svg>,
-    ChevronFirst: (props: any) => <svg data-testid="chevronfirst-icon" data-icon="ChevronFirst" {...props}>ChevronFirst</svg>,
-    ChevronLast: (props: any) => <svg data-testid="chevronlast-icon" data-icon="ChevronLast" {...props}>ChevronLast</svg>,
+    Play: (props: any) => (
+      <svg data-testid="play-icon" data-icon="Play" {...props}>
+        Play
+      </svg>
+    ),
+    Pause: (props: any) => (
+      <svg data-testid="pause-icon" data-icon="Pause" {...props}>
+        Pause
+      </svg>
+    ),
+    StepBack: (props: any) => (
+      <svg data-testid="stepback-icon" data-icon="StepBack" {...props}>
+        StepBack
+      </svg>
+    ),
+    StepForward: (props: any) => (
+      <svg data-testid="stepforward-icon" data-icon="StepForward" {...props}>
+        StepForward
+      </svg>
+    ),
+    Maximize2: (props: any) => (
+      <svg data-testid="maximize2-icon" data-icon="Maximize2" {...props}>
+        Maximize2
+      </svg>
+    ),
+    Minimize2: (props: any) => (
+      <svg data-testid="minimize2-icon" data-icon="Minimize2" {...props}>
+        Minimize2
+      </svg>
+    ),
+    CircleDot: (props: any) => (
+      <svg data-testid="circledot-icon" data-icon="CircleDot" {...props}>
+        CircleDot
+      </svg>
+    ),
+    Volume2: (props: any) => (
+      <svg data-testid="volume2-icon" data-icon="Volume2" {...props}>
+        Volume2
+      </svg>
+    ),
+    VolumeX: (props: any) => (
+      <svg data-testid="volumex-icon" data-icon="VolumeX" {...props}>
+        VolumeX
+      </svg>
+    ),
+    TvMinimalPlay: (props: any) => (
+      <svg data-testid="tvminimalplay-icon" data-icon="TvMinimalPlay" {...props}>
+        TvMinimalPlay
+      </svg>
+    ),
+    ImagePlay: (props: any) => (
+      <svg data-testid="imageplay-icon" data-icon="ImagePlay" {...props}>
+        ImagePlay
+      </svg>
+    ),
+    UnfoldHorizontal: (props: any) => (
+      <svg data-testid="unfoldhorizontal-icon" data-icon="UnfoldHorizontal" {...props}>
+        UnfoldHorizontal
+      </svg>
+    ),
+    Camera: (props: any) => (
+      <svg data-testid="camera-icon" data-icon="Camera" {...props}>
+        Camera
+      </svg>
+    ),
+    ChevronFirst: (props: any) => (
+      <svg data-testid="chevronfirst-icon" data-icon="ChevronFirst" {...props}>
+        ChevronFirst
+      </svg>
+    ),
+    ChevronLast: (props: any) => (
+      <svg data-testid="chevronlast-icon" data-icon="ChevronLast" {...props}>
+        ChevronLast
+      </svg>
+    ),
   }
 })
 

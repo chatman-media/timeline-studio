@@ -267,10 +267,8 @@ describe("frameExtractionService", () => {
       }
 
       // Replace global.Image with mock constructor
-      global.Image = class MockImage {
-        constructor() {
-          return mockImage as any
-        }
+      global.Image = function MockImage() {
+        return mockImage
       } as any
 
       const promise = frameExtractionService.drawFrameToCanvas(frameData, canvas)
@@ -312,10 +310,8 @@ describe("frameExtractionService", () => {
       }
 
       // Replace global.Image with mock constructor
-      global.Image = class MockImage {
-        constructor() {
-          return mockImage as any
-        }
+      global.Image = function MockImage() {
+        return mockImage
       } as any
 
       await expect(frameExtractionService.drawFrameToCanvas(frameData, canvas)).rejects.toThrow(
