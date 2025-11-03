@@ -1,5 +1,6 @@
-// Export all analysis dashboard functionality
+/**
+ * Analysis Dashboard Feature - Main Export
+ * Direct AI Director integration (file-centric workflow)
+ */
 
 export * from "./components"
-export * from "./hooks/use-analysis"
-export * from "./types/analysis"
