@@ -5590,6 +5590,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   async fn copy_files_to_directory(
     &self,
     source_paths: &[String],
@@ -5613,6 +5614,7 @@ impl CommandHandler {
     Ok(copied_files)
   }
 
+  #[allow(dead_code)]
   fn is_supported_media_format(extension: &str) -> bool {
     matches!(
       extension.to_lowercase().as_str(),
@@ -7544,6 +7546,7 @@ impl CommandHandler {
     );
   }
 
+  #[allow(dead_code)]
   async fn fetch_openai_models(
     &self,
   ) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
@@ -7591,6 +7594,7 @@ impl CommandHandler {
     Ok(models)
   }
 
+  #[allow(dead_code)]
   async fn fetch_ollama_models(
     &self,
   ) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
@@ -7624,6 +7628,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   fn format_bytes(&self, bytes: u64) -> String {
     const UNITS: &[&str] = &["B", "KB", "MB", "GB", "TB"];
     let mut size = bytes as f64;
@@ -7637,6 +7642,7 @@ impl CommandHandler {
     format!("{:.1}{}", size, UNITS[unit_index])
   }
 
+  #[allow(dead_code)]
   async fn validate_claude_connection(
     &self,
   ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -7670,6 +7676,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   async fn validate_openai_connection(
     &self,
   ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -7693,6 +7700,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   async fn validate_deepseek_connection(
     &self,
   ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -7716,6 +7724,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   async fn validate_grok_connection(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let api_key = self
       .get_api_key_for_provider("grok")
@@ -7737,6 +7746,7 @@ impl CommandHandler {
     }
   }
 
+  #[allow(dead_code)]
   async fn validate_ollama_connection(
     &self,
   ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {

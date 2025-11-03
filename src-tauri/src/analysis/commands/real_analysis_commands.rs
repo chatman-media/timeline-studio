@@ -206,6 +206,7 @@ pub struct ModelTestResult {
 
 // Helper functions
 
+#[allow(dead_code)]
 fn parse_yolo_model(model_name: &str) -> YoloModel {
   match model_name {
     "YoloV11Nano" => YoloModel::YoloV11Nano,
@@ -227,6 +228,7 @@ fn parse_yolo_model(model_name: &str) -> YoloModel {
   }
 }
 
+#[allow(dead_code)]
 fn parse_facenet_model(model_name: &str) -> FaceNetModel {
   match model_name {
     "FaceNet128D" => FaceNetModel::FaceNet128D,
