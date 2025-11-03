@@ -64,6 +64,7 @@ mod tests {
         leading_lines: activity_level * 0.6,
         symmetry: activity_level * 0.75,
         overall_score: activity_level,
+        ..Default::default()
       },
       activity_level,
       emotional_tone: EmotionalTone::Happy,
@@ -381,6 +382,7 @@ mod tests {
         leading_lines: 50.0,
         symmetry: 50.0,
         overall_score: 50.0,
+        ..Default::default()
       },
       activity_level: 50.0,
       emotional_tone: EmotionalTone::Neutral,

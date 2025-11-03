@@ -40,6 +40,7 @@ mod tests {
         leading_lines: 0.6,
         symmetry: 0.65,
         overall_score: 0.75,
+        ..Default::default()
       },
       activity_level: motion_intensity * 100.0,
       emotional_tone: EmotionalTone::Neutral,
@@ -113,6 +114,7 @@ mod tests {
         leading_lines: 0.0,
         symmetry: 0.0,
         overall_score: 0.0,
+        ..Default::default()
       },
       activity_level: 0.0,
       emotional_tone: EmotionalTone::Neutral,

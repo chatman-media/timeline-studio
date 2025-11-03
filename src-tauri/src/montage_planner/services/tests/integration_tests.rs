@@ -135,6 +135,7 @@ mod tests {
           leading_lines: 30.0,
           symmetry: 50.0,
           overall_score: 50.0,
+          ..Default::default()
         },
         activity_level: 20.0,
         emotional_tone: EmotionalTone::Calm,
@@ -181,6 +182,7 @@ mod tests {
           leading_lines: 65.0,
           symmetry: 40.0,
           overall_score: 65.0,
+          ..Default::default()
         },
         activity_level: 0.0,
         emotional_tone: EmotionalTone::Excited,
@@ -255,6 +257,7 @@ mod tests {
           leading_lines: 60.0,
           symmetry: 65.0,
           overall_score: 75.0,
+          ..Default::default()
         },
         activity_level: 80.0,
         emotional_tone: EmotionalTone::Excited,
@@ -299,6 +302,7 @@ mod tests {
           leading_lines: 40.0,
           symmetry: 70.0,
           overall_score: 68.0,
+          ..Default::default()
         },
         activity_level: 30.0,
         emotional_tone: EmotionalTone::Sad,
@@ -524,6 +528,7 @@ mod tests {
           leading_lines: 50.0,
           symmetry: 60.0,
           overall_score: 70.0,
+          ..Default::default()
         },
         activity_level: intensity,
         emotional_tone: EmotionalTone::Neutral,
@@ -608,6 +613,7 @@ mod tests {
           leading_lines: 40.0,
           symmetry: 70.0,
           overall_score: 72.0,
+          ..Default::default()
         },
         activity_level: 40.0,
         emotional_tone: EmotionalTone::Happy,
@@ -665,6 +671,7 @@ mod tests {
           leading_lines: 60.0,
           symmetry: 40.0,
           overall_score: 63.0,
+          ..Default::default()
         },
         activity_level: 85.0,
         emotional_tone: EmotionalTone::Tense,
@@ -741,6 +748,7 @@ mod tests {
           leading_lines: 40.0,
           symmetry: 50.0,
           overall_score: 60.0,
+          ..Default::default()
         },
         activity_level: 0.0,
         emotional_tone: EmotionalTone::Neutral,

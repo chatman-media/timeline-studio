@@ -60,7 +60,7 @@ pub struct BoundingBox {
 }
 
 /// Composition analysis score
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CompositionScore {
   pub rule_of_thirds: f32,  // 0-100: adherence to rule of thirds
   pub balance: f32,         // 0-100: visual balance

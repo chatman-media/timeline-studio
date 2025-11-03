@@ -861,7 +861,7 @@ mod tests {
       channels: 2,
       overall_volume: AudioVolume::from_level(0.5),
       estimated_quality: 0.8,
-      file_size_bytes: Some(1024 * 1024),
+      file_size_bytes: Some((1024 * 1024) as f64),
       codec: Some("aac".to_string()),
       bitrate: Some(256),
     };
@@ -899,12 +899,12 @@ mod tests {
         channels: 2,
         overall_volume: AudioVolume::from_level(0.7),
         estimated_quality: 0.8,
-        file_size_bytes: Some(1024 * 1024),
+        file_size_bytes: Some((1024 * 1024) as f64),
         codec: Some("aac".to_string()),
         bitrate: Some(128),
       },
       quality_score: 0.85,
-      processing_time: AudioDuration::from_millis(1500),
+      processing_time: AudioDuration::from_millis(1500.0),
       analysis_version: "test".to_string(),
     };
 

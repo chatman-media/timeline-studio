@@ -130,6 +130,7 @@ mod tests {
       leading_lines: 50.0,
       symmetry: 65.0,
       overall_score: 72.0,
+      ..Default::default()
     };
 
     let json = serde_json::to_string(&score).expect("Serialization failed");

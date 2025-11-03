@@ -548,11 +548,11 @@ mod tests {
 
   #[tokio::test]
   async fn test_get_default_config() {
-    let fast_config = ai_director_get_default_config("fast".to_string()).await;
+    let fast_config = ai_director_get_default_config("fast".to_string());
     assert!(fast_config.is_ok());
     assert!(!fast_config.unwrap().enable_scene_detection);
 
-    let balanced_config = ai_director_get_default_config("balanced".to_string()).await;
+    let balanced_config = ai_director_get_default_config("balanced".to_string());
     assert!(balanced_config.is_ok());
     assert!(balanced_config.unwrap().enable_scene_detection);
   }

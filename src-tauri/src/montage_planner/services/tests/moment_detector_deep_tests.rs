@@ -61,6 +61,7 @@ mod tests {
         leading_lines: 0.6,
         symmetry: 0.65,
         overall_score: 0.75,
+        ..Default::default()
       },
       activity_level,
       emotional_tone: emotion,
@@ -236,6 +237,7 @@ mod tests {
       leading_lines: 0.85,
       symmetry: 0.87,
       overall_score: 0.9,
+      ..Default::default()
     };
 
     // Низкое качество композиции
@@ -248,6 +250,7 @@ mod tests {
       leading_lines: 0.2,
       symmetry: 0.25,
       overall_score: 0.3,
+      ..Default::default()
     };
 
     let moments = detector.detect_moments(&[good_comp, bad_comp]).unwrap();
@@ -425,6 +428,7 @@ mod tests {
       leading_lines: 0.7,
       symmetry: 0.6,
       overall_score: 0.8,
+      ..Default::default()
     };
 
     let moments = detector.detect_moments(&[vehicle_scene]).unwrap();
