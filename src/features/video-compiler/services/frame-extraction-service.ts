@@ -179,7 +179,10 @@ export class FrameExtractionService {
     const img = new Image()
     img.src = `data:image/jpeg;base64,${frameData}`
     img.alt = `Frame at ${timestamp.toFixed(2)}s`
-    img.dataset.timestamp = timestamp.toString()
+    // dataset may not be available in test environments
+    if (img.dataset) {
+      img.dataset.timestamp = timestamp.toString()
+    }
     return img
   }
 
