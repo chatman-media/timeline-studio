@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --no-lint",
-    "build:quick": "next build --no-lint",
-    "build:analyze": "ANALYZE=true next build --no-lint",
+    "build": "next build",
+    "build:quick": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "biome check .",
     "lint:ci": "biome ci .",
