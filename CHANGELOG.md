@@ -1,3 +1,15 @@
+# [2.1.0](https://github.com/chatman-media/timeline-studio/compare/v2.0.1...v2.1.0) (2025-11-03)
+
+
+### Bug Fixes
+
+* **build:** Remove deprecated --no-lint flag and Pages Router ([96cbbb3](https://github.com/chatman-media/timeline-studio/commit/96cbbb3b297b7d8e278cfcfee0fdcf5237ab9961))
+
+
+### Features
+
+* Add custom not-found page for better 404 handling ([f1cf120](https://github.com/chatman-media/timeline-studio/commit/f1cf1208090edd1f917cab4f18ad8ffe2ac60989))
+
 ## [2.0.1](https://github.com/chatman-media/timeline-studio/compare/v2.0.0...v2.0.1) (2025-11-03)
 
 
