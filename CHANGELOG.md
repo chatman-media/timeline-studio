@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/chatman-media/timeline-studio/compare/v2.1.2...v2.1.3) (2025-11-03)
+
+
+### Bug Fixes
+
+* **tauri:** Change beforeBuildCommand from bun to npm ([824fb0d](https://github.com/chatman-media/timeline-studio/commit/824fb0dbadadb026bbdf33f107e966b123b2aa13))
+
 ## [2.1.2](https://github.com/chatman-media/timeline-studio/compare/v2.1.1...v2.1.2) (2025-11-03)
 
 
