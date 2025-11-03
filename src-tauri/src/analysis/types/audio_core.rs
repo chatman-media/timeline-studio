@@ -454,7 +454,7 @@ mod tests {
     assert_eq!(duration_f32.seconds, 30.5);
 
     let volume_f32: AudioVolume = 0.8_f32.into();
-    assert_eq!(volume_f32.level, 0.8);
+    assert!((volume_f32.level - 0.8).abs() < 0.0001); // Floating point precision tolerance
 
     // Test f64 -> unified types
     let freq_f64: AudioFrequency = 440.0_f64.into();

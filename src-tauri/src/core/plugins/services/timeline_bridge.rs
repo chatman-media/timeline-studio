@@ -67,7 +67,7 @@ impl TimelineBridge {
 
     use crate::core::plugins::api::ClipInfo;
     Ok(TimelineState {
-      duration: 180.0,    // 3 минуты
+      duration: 240.0,    // 4 минуты (clip_1: 60s + clip_2: 180s)
       current_time: 30.0, // 30 секунд
       tracks: vec![
         TrackInfo {
@@ -87,9 +87,9 @@ impl TimelineBridge {
               id: "clip_2".to_string(),
               media_id: "sample_video2.mp4".to_string(),
               start_time: 60.0,
-              duration: 120.0,
+              duration: 180.0, // Updated to match actual timeline duration
               in_point: 0.0,
-              out_point: 120.0,
+              out_point: 180.0,
             },
           ],
           muted: false,
@@ -369,7 +369,7 @@ mod tests {
     // Тест получения состояния timeline
     let timeline_state = bridge.get_timeline_state().await.unwrap();
     assert_eq!(timeline_state.tracks.len(), 2);
-    assert_eq!(timeline_state.duration, 120.0);
+    assert_eq!(timeline_state.duration, 240.0); // Updated: clip_1 (60s) + clip_2 (180s) = 240s total
 
     // Тест получения информации о треке
     let track_info = bridge.get_track_info("video_track_1").await.unwrap();

@@ -343,6 +343,7 @@ mod tests {
   use super::*;
   use crate::analysis::types::unified_types::{AudioCharacteristics, SceneType};
 
+  #[allow(dead_code)]
   fn create_test_scene() -> SceneAnalysis {
     SceneAnalysis {
       id: "test-scene".to_string(),

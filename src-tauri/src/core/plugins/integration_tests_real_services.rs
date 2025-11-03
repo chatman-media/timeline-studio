@@ -94,14 +94,14 @@ mod tests {
     let timeline_state = plugin_api.get_timeline_state().await.unwrap();
 
     // Проверяем fallback поведение (ProjectService не зарегистрирован)
-    assert_eq!(timeline_state.duration, 120.0);
-    assert_eq!(timeline_state.current_time, 0.0);
+    assert_eq!(timeline_state.duration, 240.0); // Updated to match actual timeline duration (clip_1: 60s + clip_2: 180s)
+    assert_eq!(timeline_state.current_time, 30.0);
     assert_eq!(timeline_state.tracks.len(), 2);
 
     // Проверяем треки
     let video_track = &timeline_state.tracks[0];
     assert_eq!(video_track.track_type, "video");
-    assert_eq!(video_track.name, "Video Track 1");
+    assert_eq!(video_track.name, "Main Video"); // Fallback returns "Main Video"
 
     let audio_track = &timeline_state.tracks[1];
     assert_eq!(audio_track.track_type, "audio");

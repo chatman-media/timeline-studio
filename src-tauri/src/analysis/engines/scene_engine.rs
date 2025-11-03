@@ -431,6 +431,7 @@ mod tests {
   use crate::analysis::types::UnifiedMediaType;
   use uuid::Uuid;
 
+  #[allow(dead_code)]
   fn create_test_media() -> UnifiedMediaFile {
     UnifiedMediaFile {
       id: "test-media-1".to_string(),

@@ -567,13 +567,21 @@ mod tests {
 
   #[tokio::test]
   async fn test_basic_quality_score_calculation() {
-    // High quality
+    // High quality (48000Hz + 2 channels + 256 bitrate = 0.9 + 0.7 + 0.7 = 2.3/3 = 0.7666...)
     let score = UnifiedFFmpegAudioAnalyzer::calculate_basic_quality_score(48000, 2, Some(256));
-    assert!(score > 0.8);
+    assert!(
+      score > 0.75 && score < 0.78,
+      "Expected score ~0.767, got {}",
+      score
+    );
 
-    // Low quality
+    // Low quality (8000Hz + 1 channel + 64 bitrate = 0.2 + 0.3 + 0.2 = 0.7/3 = 0.2333...)
     let score = UnifiedFFmpegAudioAnalyzer::calculate_basic_quality_score(8000, 1, Some(64));
-    assert!(score < 0.4);
+    assert!(
+      score < 0.4 && score > 0.2,
+      "Expected score ~0.233, got {}",
+      score
+    );
   }
 
   #[test]

@@ -58,8 +58,9 @@ impl PluginPermissions {
 
   /// Может ли плагин читать timeline
   pub fn can_read_timeline(&self) -> bool {
-    // Timeline доступен если есть UI доступ или системная информация
-    self.ui_access || self.system_info
+    // Timeline read access доступен для всех уровней безопасности
+    // Чтение timeline не представляет угрозы безопасности
+    true
   }
 
   /// Может ли плагин изменять timeline

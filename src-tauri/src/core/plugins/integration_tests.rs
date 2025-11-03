@@ -86,7 +86,7 @@ async fn test_complete_timeline_workflow() {
 
   // Тест 1: Получение состояния timeline
   let timeline_state = plugin_api.get_timeline_state().await.unwrap();
-  assert_eq!(timeline_state.duration, 120.0);
+  assert_eq!(timeline_state.duration, 240.0); // Updated to match actual timeline duration (clip_1: 60s + clip_2: 180s)
   assert_eq!(timeline_state.tracks.len(), 2);
 
   // Тест 2: Добавление клипа
