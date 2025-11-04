@@ -122,9 +122,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Add empty turbopack config to silence the error
-  // We'll use webpack for now as we have custom webpack configuration
-  turbopack: {},
 }
 
 export default nextConfig
