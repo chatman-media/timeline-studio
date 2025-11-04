@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod tests {
-  use super::super::types::{BoundingBox as TypesBBox, DetectedFace, DetectedObject, RecognitionResults};
+  use super::super::types::{
+    BoundingBox as TypesBBox, DetectedFace, DetectedObject, RecognitionResults,
+  };
+  use crate::recognition::frame_processor::BoundingBox;
   use crate::recognition::recognition_service::{RecognitionEvent, RecognitionService};
   use crate::recognition::Detection;
-  use crate::recognition::frame_processor::BoundingBox;
   use std::collections::HashMap;
   use tempfile::TempDir;
 

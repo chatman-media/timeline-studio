@@ -1,8 +1,8 @@
+use crate::recognition::model_manager::YoloModel;
 use crate::recognition::ort_manager::OrtManager;
 use crate::recognition::recognition_service::RecognitionService;
 use crate::recognition::types::{DetectedObject, RecognitionResults};
-use crate::recognition::{YoloProcessor, ProcessorConfig, ProcessingConfig};
-use crate::recognition::model_manager::YoloModel;
+use crate::recognition::{ProcessingConfig, ProcessorConfig, YoloProcessor};
 // Временно отключаем пока не интегрируем frame_extraction
 // use crate::video_compiler::frame_extraction::{FrameExtractionManager, ExtractionPurpose};
 use std::path::{Path, PathBuf};

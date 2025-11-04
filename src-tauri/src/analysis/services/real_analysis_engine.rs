@@ -10,10 +10,10 @@ use crate::analysis::database::AnalysisDatabase; // ✅ Database работае�
 use crate::analysis::models::*;
 use crate::analysis::services::ProjectManager; // ✅ Включено обратно
 use crate::recognition::facenet_processor::{FaceNetModel, FaceNetProcessor};
-use crate::recognition::person_database::{PersonAppearance, PersonDatabase};
-use crate::recognition::model_manager::YoloModel;
-use crate::recognition::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 use crate::recognition::frame_processor::ProcessingConfig;
+use crate::recognition::model_manager::YoloModel;
+use crate::recognition::person_database::{PersonAppearance, PersonDatabase};
+use crate::recognition::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
 
 // Недостающие типы для компиляции
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]

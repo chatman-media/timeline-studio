@@ -88,7 +88,10 @@ impl YoloProcessor {
   }
 
   /// Обработать пакет изображений (для обратной совместимости)
-  pub async fn process_batch(&self, image_paths: Vec<std::path::PathBuf>) -> Result<Vec<Vec<Detection>>> {
+  pub async fn process_batch(
+    &self,
+    image_paths: Vec<std::path::PathBuf>,
+  ) -> Result<Vec<Vec<Detection>>> {
     let mut results = Vec::new();
     for path in image_paths {
       let detections = self.process_image_path(&path).await?;

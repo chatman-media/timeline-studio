@@ -1,10 +1,10 @@
+use crate::recognition::model_manager::YoloModel;
 use crate::recognition::ort_manager::OrtManager;
 use crate::recognition::recognition_service::{RecognitionEvent, RecognitionService};
 use crate::recognition::types::{
   BoundingBox, DetectedFace, DetectedObject, DetectedScene, RecognitionResults,
 };
-use crate::recognition::{YoloProcessor, ProcessorConfig, ProcessingConfig};
-use crate::recognition::model_manager::YoloModel;
+use crate::recognition::{ProcessingConfig, ProcessorConfig, YoloProcessor};
 use std::path::PathBuf;
 use tempfile::TempDir;
 
@@ -398,8 +398,8 @@ async fn test_detection_to_object_grouping() {
     return;
   }
 
-  use crate::recognition::Detection;
   use crate::recognition::frame_processor::BoundingBox as YoloBBox;
+  use crate::recognition::Detection;
 
   let temp_dir = TempDir::new().unwrap();
   let _service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -676,8 +676,8 @@ fn test_bounding_box_conversion() {
 #[cfg(test)]
 mod integration_tests {
   use super::is_ort_available;
-  use crate::recognition::{YoloProcessor, ProcessorConfig, ProcessingConfig};
   use crate::recognition::model_manager::YoloModel;
+  use crate::recognition::{ProcessingConfig, ProcessorConfig, YoloProcessor};
   use std::path::PathBuf;
   use tempfile::TempDir;
 
@@ -815,7 +815,9 @@ mod integration_tests {
     if let Err(e) = result {
       let error_msg = e.to_string();
       assert!(
-        error_msg.contains("not found") || error_msg.contains("Model file") || error_msg.contains("No such file"),
+        error_msg.contains("not found")
+          || error_msg.contains("Model file")
+          || error_msg.contains("No such file"),
         "Error should mention file not found: {error_msg}"
       );
     }

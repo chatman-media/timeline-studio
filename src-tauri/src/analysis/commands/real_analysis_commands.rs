@@ -332,10 +332,7 @@ mod tests {
       parse_yolo_model("YoloV8Small"),
       YoloModel::YoloV8Small
     ));
-    assert!(matches!(
-      parse_yolo_model("invalid"),
-      YoloModel::YoloV8Nano
-    ));
+    assert!(matches!(parse_yolo_model("invalid"), YoloModel::YoloV8Nano));
   }
 
   #[test]
