@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/chatman-media/timeline-studio/compare/v2.1.3...v2.1.4) (2025-11-04)
+
+
+### Bug Fixes
+
+* Browser media addition bugs and Next.js downgrade to stable ([4b0f430](https://github.com/chatman-media/timeline-studio/commit/4b0f430cbe3f937c59c8131284635f82c8d271a0))
+
 ## [2.1.3](https://github.com/chatman-media/timeline-studio/compare/v2.1.2...v2.1.3) (2025-11-03)
 
 
