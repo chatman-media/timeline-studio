@@ -30,7 +30,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.10.0'
+          node-version: "20.10.0"
           cache: "npm"
 
       - name: Install dependencies on Unix
@@ -72,25 +72,25 @@ jobs:
         run: |
           # Install pkg-config
           choco install pkgconfiglite -y
-          
+
           # Create FFmpeg directory
           New-Item -ItemType Directory -Force -Path C:\ffmpeg
-          
+
           # Download pre-built FFmpeg shared libraries
           $ffmpegUrl = "https://github.com/GyanD/codexffmpeg/releases/download/7.1/ffmpeg-7.1-full_build-shared.7z"
           Write-Host "Downloading FFmpeg from $ffmpegUrl"
           Invoke-WebRequest -Uri $ffmpegUrl -OutFile ffmpeg.7z
-          
+
           # Extract FFmpeg
           Write-Host "Extracting FFmpeg..."
           7z x ffmpeg.7z -oC:\
           $extractedDir = Get-ChildItem -Path C:\ -Directory | Where-Object { $_.Name -like "ffmpeg-*" } | Select-Object -First 1
           Write-Host "Found extracted directory: $($extractedDir.FullName)"
-          
+
           # Copy contents to C:\ffmpeg (use Copy instead of Move for reliability)
           Write-Host "Copying FFmpeg files to C:\ffmpeg..."
           Copy-Item -Path "$($extractedDir.FullName)\*" -Destination C:\ffmpeg -Recurse -Force
-          
+
           # Verify FFmpeg installation
           Write-Host "Verifying FFmpeg installation..."
           $requiredDirs = @("bin", "include", "lib")
@@ -101,11 +101,11 @@ jobs:
               Write-Error "✗ Missing C:\ffmpeg\$dir"
             }
           }
-          
+
           # List library files
           Write-Host "FFmpeg libraries found:"
           Get-ChildItem -Path "C:\ffmpeg\lib" -Filter "*.lib" | ForEach-Object { Write-Host "  - $($_.Name)" }
-          
+
           # Set environment variables using NO_PKG_CONFIG approach
           Write-Host "Setting environment variables..."
           echo "FFMPEG_DIR=C:\ffmpeg" >> $env:GITHUB_ENV
@@ -114,7 +114,7 @@ jobs:
           echo "FFMPEG_NO_PKG_CONFIG=1" >> $env:GITHUB_ENV
           echo "RUSTFLAGS=-C link-arg=/LIBPATH:C:\ffmpeg\lib" >> $env:GITHUB_ENV
           echo "C:\ffmpeg\bin" >> $env:GITHUB_PATH
-          
+
           # Also set for current shell
           $env:FFMPEG_DIR = "C:\ffmpeg"
           $env:FFMPEG_INCLUDE_DIR = "C:\ffmpeg\include"
@@ -129,7 +129,7 @@ jobs:
         run: |
           Write-Host "Running setup-rust-env-windows.ps1..."
           ./scripts/ci/setup-rust-env-windows.ps1 -FFmpegDir C:\ffmpeg
-          
+
       - name: Create dist directory
         run: mkdir -p dist
 
@@ -189,7 +189,7 @@ jobs:
 
       - name: Run lint step
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run lint:ci
 
   check-rust:
@@ -220,26 +220,26 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config nasm yasm autoconf automake libtool texinfo
-          
+
       - name: Setup FFmpeg environment
         run: |
           echo "=== FFmpeg Header Location Fix ==="
-          
+
           # Check if headers are in expected location
           if [ ! -f "/usr/include/libswscale/swscale.h" ]; then
             echo "Headers not found in /usr/include, searching..."
-            
+
             # Find actual location
             SWSCALE_PATHS=$(find /usr -name "swscale.h" 2>/dev/null)
             echo "Found swscale.h at: $SWSCALE_PATHS"
-            
+
             # Find main header location
             MAIN_SWSCALE=$(echo "$SWSCALE_PATHS" | grep "libswscale/swscale.h" | head -1)
-            
+
             if [ -n "$MAIN_SWSCALE" ]; then
               BASE_DIR=$(dirname $(dirname "$MAIN_SWSCALE"))
               echo "Found FFmpeg headers in: $BASE_DIR"
-              
+
               # Create symlinks
               FFMPEG_LIBS=("libavcodec" "libavformat" "libavutil" "libswscale" "libavfilter" "libavdevice" "libswresample")
               for lib in "${FFMPEG_LIBS[@]}"; do
@@ -250,7 +250,7 @@ jobs:
               done
             fi
           fi
-          
+
           # Set PKG_CONFIG_PATH
           echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
 
@@ -260,7 +260,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: "npm"
 
       - name: Install dependencies from lockfile
@@ -280,7 +280,7 @@ jobs:
 
   check-tests:
     name: Run Tests
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -299,7 +299,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
