@@ -1,3 +1,10 @@
+## [2.1.5](https://github.com/chatman-media/timeline-studio/compare/v2.1.4...v2.1.5) (2025-11-04)
+
+
+### Bug Fixes
+
+* Remove Next.js 16 config and standardize Node.js version ([5593105](https://github.com/chatman-media/timeline-studio/commit/5593105338222165e3faaa92f446701ef9978f7d))
+
 ## [2.1.4](https://github.com/chatman-media/timeline-studio/compare/v2.1.3...v2.1.4) (2025-11-04)
 
 
