@@ -64,40 +64,52 @@ recognition/
 ├── commands/                      # Tauri commands
 │   ├── mod.rs                    # Command re-exports
 │   ├── yolo_commands.rs          # YOLO commands
-│   ├── yolo_commands_simple.rs   # Simplified YOLO commands
 │   ├── facenet_commands.rs       # FaceNet commands
 │   ├── retinaface_commands.rs    # RetinaFace commands
 │   ├── mediapipe_commands.rs     # MediaPipe commands
 │   ├── privacy_commands.rs       # Privacy commands
-│   └── clustering_commands.rs    # Clustering commands
-├── yolo_processor.rs             # YOLO processor
+│   ├── person_commands.rs        # Person management commands
+│   └── recognition_advanced_commands.rs # Advanced commands
+├── yolo_processor_refactored.rs  # Unified YOLO processor (async)
+├── frame_processor.rs            # Low-level YOLO processing
+├── model_manager.rs              # YOLO model management
 ├── facenet_processor.rs          # FaceNet processor
 ├── retinaface_processor.rs       # RetinaFace processor
 ├── mediapipe_processor.rs        # MediaPipe processor
 ├── privacy_processor.rs          # Privacy processor
 ├── face_clustering.rs            # Face clustering engine
-├── model_manager.rs              # Model management
-├── frame_processor.rs            # Frame processing
+├── person_manager.rs             # Person management
+├── person_database.rs            # SQLite person database
 ├── result_aggregator.rs          # Result aggregation
-├── recognition_service.rs        # Recognition service
-└── types.rs                      # Common data types
+├── recognition_service.rs        # Main recognition service
+├── vision_service.rs             # High-level analysis API
+├── types.rs                      # Base data types
+└── types_professional.rs         # Professional types
 ```
 
 ## Supported Models
 
 ### YOLO Models
 ```rust
-// Object detection
-YoloModel::YoloV8Nano        // Fastest
-YoloModel::YoloV8Small       // Balance of speed and accuracy
-YoloModel::YoloV8Medium      // Good accuracy
-YoloModel::YoloV8Large       // High accuracy
-YoloModel::YoloV8Extra       // Maximum accuracy
+// YOLOv11 models (latest)
+YoloModel::YoloV11Detection     // Object detection v11
+YoloModel::YoloV11Segmentation  // Segmentation v11
+YoloModel::YoloV11Face          // Face detection v11
 
-// Face detection
-YoloModel::YoloV8FaceNano    // Fast face detection
-YoloModel::YoloV8FaceMedium  // Accurate face detection
-YoloModel::YoloV11Face       // Latest face model
+// YOLOv8 base models
+YoloModel::YoloV8Detection      // Object detection v8
+YoloModel::YoloV8Segmentation   // Segmentation v8
+YoloModel::YoloV8Face           // Face detection v8
+
+// YOLOv8 size variants (for objects)
+YoloModel::YoloV8Nano          // Fastest (n)
+YoloModel::YoloV8Small         // Speed/accuracy balance (s)
+YoloModel::YoloV8Medium        // Good accuracy (m)
+YoloModel::YoloV8Large         // High accuracy (l)
+YoloModel::YoloV8Extra         // Maximum accuracy (x)
+
+// Custom models
+YoloModel::Custom(PathBuf)     // Your own ONNX model
 ```
 
 ### FaceNet Models
@@ -127,35 +139,68 @@ MediaPipeModel::SelfieSegmentation // Portrait segmentation
 
 ### 1. Processor Initialization
 
-```rust
-// YOLO
-let yolo_state = State<YoloProcessorState>;
-invoke('init_yolo_processor', { modelType: 'yolov8n-face' });
+**⚡ IMPORTANT**: All processors now use async API and are automatically created on first use.
 
-// FaceNet
-let facenet_state = State<FaceNetProcessorState>;
-invoke('init_facenet_processor', { modelType: 'facenet-512d' });
+```typescript
+// YOLO - via ProcessorConfig
+const config = {
+  model: 'YoloV8Medium',  // or 'YoloV11Detection', 'YoloV8Face', etc.
+  processing_config: {
+    confidence_threshold: 0.5,
+    iou_threshold: 0.45,
+    max_detections: 100,
+    target_classes: ['person', 'car', 'dog'] // optional
+  }
+};
 
-// RetinaFace
-let retinaface_state = State<RetinaFaceProcessorState>;
-invoke('init_retinaface_processor', { modelType: 'retinaface-r50' });
+// Processor is created automatically when calling commands
+const detections = await invoke('yolo_detect_objects', {
+  imagePath: '/path/to/image.jpg',
+  config: config
+});
 
-// MediaPipe
-let mediapipe_state = State<MediaPipeProcessorState>;
-invoke('init_mediapipe_processor', { modelType: 'face-mesh' });
+// FaceNet - automatic initialization
+const embedding = await invoke('generate_face_embedding', {
+  imagePath: '/path/to/face.jpg'
+});
 
-// Face Clustering
-let clustering_state = State<ClusteringEngineState>;
-invoke('init_clustering_engine', { params: { eps: 0.5, min_samples: 3 } });
+// RetinaFace - automatic initialization
+const faces = await invoke('detect_faces_retinaface', {
+  imagePath: '/path/to/image.jpg',
+  confidence: 0.7
+});
+
+// MediaPipe - automatic initialization
+const landmarks = await invoke('extract_face_mesh_landmarks', {
+  imageData: base64_image_data
+});
 ```
 
 ### 2. Image Processing
 
 #### YOLO Detection
 ```typescript
-const detections = await invoke('detect_objects_in_image', {
-  imagePath: '/path/to/image.jpg'
+// Single image
+const detections = await invoke('yolo_detect_objects', {
+  imagePath: '/path/to/image.jpg',
+  config: {
+    model: 'YoloV8Medium',
+    processing_config: {
+      confidence_threshold: 0.5,
+      target_classes: ['person', 'car'] // optional
+    }
+  }
 });
+
+// Batch processing
+const batchResults = await invoke('yolo_detect_objects_batch', {
+  imagePaths: ['/path/1.jpg', '/path/2.jpg'],
+  config: config
+});
+
+// List available models
+const models = await invoke('yolo_list_available_models');
+// ['YoloV8Nano', 'YoloV8Medium', 'YoloV11Detection', ...]
 ```
 
 #### FaceNet Embeddings
@@ -378,48 +423,43 @@ const keyMoments = await detectKeyMoments({
 
 ## API Commands
 
-### YOLO Commands
-- `init_yolo_processor(modelType: string)`
-- `detect_objects_in_image(imagePath: string)`
-- `analyze_video_with_yolo(videoPath: string, options: YoloOptions)`
-- `update_yolo_confidence_threshold(threshold: number)`
+### YOLO Commands (updated for async API)
+- `yolo_detect_objects(imagePath: string, config: ProcessorConfigDto)` - Object detection
+- `yolo_detect_objects_batch(imagePaths: string[], config: ProcessorConfigDto)` - Batch detection
+- `yolo_list_available_models()` - List available models
 
 ### FaceNet Commands
-- `init_facenet_processor(modelType: string)`
-- `generate_face_embedding(imagePath: string)`
-- `generate_face_embedding_from_base64(imageData: string)`
-- `calculate_cosine_similarity(embedding1: number[], embedding2: number[])`
+- `generate_face_embedding(imagePath: string)` - Generate embedding from file
+- `generate_face_embedding_from_base64(imageData: string)` - Generate from base64
+- `calculate_cosine_similarity(embedding1: number[], embedding2: number[])` - Compare faces
 
 ### RetinaFace Commands
-- `init_retinaface_processor(modelType: string)`
-- `detect_faces_with_landmarks(imagePath: string)`
-- `detect_faces_with_landmarks_from_base64(imageData: string)`
-- `get_aligned_face(imageData: string, landmarks: FacialLandmarks)`
-- `configure_retinaface_thresholds(confidence: number, nms: number)`
+- `detect_faces_retinaface(imagePath: string, confidence: number)` - Detect faces with landmarks
+- `detect_faces_with_landmarks_from_base64(imageData: string)` - Detect from base64
+- `get_aligned_face(imageData: string, landmarks: FacialLandmarks)` - Align face
 
 ### MediaPipe Commands
-- `init_mediapipe_processor(modelType: string)`
-- `detect_faces_blazeface(imagePath: string)`
-- `extract_face_mesh_landmarks(imageData: string)`
-- `analyze_facial_expressions(imageData: string)`
-- `configure_mediapipe_settings(confidence: number, maxFaces: number)`
+- `detect_faces_blazeface(imagePath: string)` - Fast face detection
+- `extract_face_mesh_landmarks(imageData: string)` - 468 landmarks
+- `analyze_facial_expressions(imageData: string)` - Expression analysis
 
 ### Privacy Commands
-- `init_privacy_processor(blurType: string)`
-- `blur_faces_in_image(imagePath: string, outputPath: string, autoDetect: boolean)`
-- `update_privacy_settings(blurType?: string, expandRatio?: number, adaptiveBlur?: boolean)`
-- `blur_faces_in_video_frames(framePaths: string[], outputDir: string, autoDetect: boolean)`
-- `get_privacy_processor_info()`
+- `blur_faces_in_image(imagePath: string, outputPath: string, autoDetect: boolean)` - Blur faces
+- `blur_faces_in_video_frames(framePaths: string[], outputDir: string, autoDetect: boolean)` - Batch blur
+- `update_privacy_settings(blurType?: string, expandRatio?: number, adaptiveBlur?: boolean)` - Settings
 
-### Clustering Commands
-- `init_clustering_engine(params?: DBSCANParams)`
-- `cluster_faces(embeddings: number[][], params?: DBSCANParams)`
-- `find_nearest_cluster(embedding: number[], clusters: FaceCluster[])`
-- `update_clustering_params(params: DBSCANParams)`
-- `merge_clusters(cluster1: FaceCluster, cluster2: FaceCluster, embeddings: number[][])`
-- `analyze_clustering_quality(result: ClusteringResult)`
-- `auto_cluster_video_faces(fileId: string, embeddings: number[][], metadata: FaceMetadata[], saveResults: boolean)`
-- `get_clustering_engine_info()`
+### Person Management Commands (new)
+- `create_person(name: Option<string>, faceImages: string[])` - Create person profile
+- `identify_person(faceImage: string, threshold: number)` - Identify by face
+- `list_all_persons()` - List all persons
+- `update_person_name(personId: string, name: string)` - Update name
+- `delete_person(personId: string)` - Delete person
+
+### Advanced Recognition Commands
+- `analyze_image_full(imagePath: string, options: AnalysisOptions)` - Full image analysis
+- `analyze_video_full(videoPath: string, options: AnalysisOptions)` - Full video analysis
+- `search_person_in_video(personId: string, videoPath: string)` - Search person in video
+- `auto_cluster_faces_in_video(videoPath: string)` - Auto-cluster faces
 
 ## Data Structures
 
