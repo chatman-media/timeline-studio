@@ -18,8 +18,6 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 import {
-  createMediaResource,
-  createMusicResource,
   type EffectResource,
   type FilterResource,
   type MediaResource,
@@ -58,7 +56,7 @@ interface ResourcesContextType {
   addStyleTemplate: (template: StyleTemplate) => Promise<void>
 
   // Действия для удаления/обновления
-  removeResource: (resourceId: string) => Promise<void>
+  removeResource: (resourceId: string, resourceType?: string) => Promise<void>
   updateResource: (resourceId: string, params: Record<string, any>) => Promise<void>
   clearResources: () => Promise<void>
 
@@ -370,8 +368,8 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
           (item): item is NonNullable<typeof item> =>
             item !== null && item !== undefined && (item.media_type === "Video" || item.media_type === "Image"),
         )
-        .map((item) =>
-          createMediaResource({
+        .map((item) => {
+          const file: MediaFile = {
             id: item.id,
             name: item.name,
             path: item.path,
@@ -382,8 +380,18 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
             isLoadingMetadata: false,
             probeData: { streams: [], format: {} },
             duration: item.duration || 0,
-          }),
-        )
+          }
+          // Создаем MediaResource напрямую, используя backend ID
+          return {
+            id: item.id, // Используем ID от backend напрямую
+            type: "media" as const,
+            name: item.name,
+            resourceId: item.id, // resourceId совпадает с id
+            addedAt: Date.now(),
+            file,
+            params: {},
+          }
+        })
     : []
 
   const musicResources: MusicResource[] = mediaPool?.items
@@ -392,8 +400,8 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
           (item): item is NonNullable<typeof item> =>
             item !== null && item !== undefined && item.media_type === "Audio",
         )
-        .map((item) =>
-          createMusicResource({
+        .map((item) => {
+          const file: MediaFile = {
             id: item.id,
             name: item.name,
             path: item.path,
@@ -404,8 +412,18 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
             isLoadingMetadata: false,
             probeData: { streams: [], format: {} },
             duration: item.duration || 0,
-          }),
-        )
+          }
+          // Создаем MusicResource напрямую, используя backend ID
+          return {
+            id: item.id, // Используем ID от backend напрямую
+            type: "music" as const,
+            name: item.name,
+            resourceId: item.id, // resourceId совпадает с id
+            addedAt: Date.now(),
+            file,
+            params: {},
+          }
+        })
     : []
 
   // Остальные ресурсы пока пустые (будут добавлены позже)
@@ -483,6 +501,17 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
     },
     isAdded: (resourceId: string, type: string) => {
       const resources = getResourcesByType(type)
+      // Для медиа и музыки проверяем также по path
+      if (type === "media" || type === "music") {
+        const mediaRes = resources as (MediaResource | MusicResource)[]
+        return mediaRes.some(
+          (resource) =>
+            resource.id === resourceId ||
+            resource.resourceId === resourceId ||
+            resource.file.path === resourceId || // Проверка по path
+            resource.file.id === resourceId, // Проверка по ID файла
+        )
+      }
       return resources.some((resource) => resource.id === resourceId || resource.resourceId === resourceId)
     },
   }

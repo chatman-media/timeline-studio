@@ -53,9 +53,11 @@ export const AddMediaButton = memo(function AddMediaButton({
 
   // Обновляем состояние при изменении isAdded
   useEffect(() => {
-    if (isAdded(resource.id, type) !== prevIsAddedRef.current) {
+    const currentIsAdded = isAdded(resource.id, type)
+
+    if (currentIsAdded !== prevIsAddedRef.current) {
       // Если файл добавлен, устанавливаем флаг isRecentlyAdded
-      if (isAdded(resource.id, type)) {
+      if (currentIsAdded) {
         setIsRecentlyAdded(true)
 
         // Очищаем предыдущий таймер, если он есть
@@ -80,7 +82,7 @@ export const AddMediaButton = memo(function AddMediaButton({
       }
 
       // Обновляем предыдущее значение isAdded
-      prevIsAddedRef.current = isAdded(resource.id, type)
+      prevIsAddedRef.current = currentIsAdded
     }
 
     // Очищаем таймер при размонтировании компонента
@@ -90,23 +92,7 @@ export const AddMediaButton = memo(function AddMediaButton({
         timerRef.current = null
       }
     }
-  }, [isAdded])
-
-  // Принудительно обновляем состояние при монтировании компонента
-  useEffect(() => {
-    // Если элемент уже добавлен при монтировании компонента
-    if (isAdded(resource.id, type)) {
-      setIsRecentlyAdded(true)
-      prevIsAddedRef.current = true
-
-      // Через 1 секунду сбрасываем флаг
-      const timer = setTimeout(() => {
-        setIsRecentlyAdded(false)
-      }, 1000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [isAdded])
+  }, [isAdded, resource.id, type])
 
   // Определяем, можно ли показывать кнопку удаления
   // Не показываем кнопку удаления в течение 3 секунд после добавления
@@ -119,7 +105,7 @@ export const AddMediaButton = memo(function AddMediaButton({
 
       if (isAdded(resource.id, type) && canShowRemoveButton) {
         // Удаляем из добавленных
-        void removeResource(resource.id)
+        void removeResource(resource.id, type)
       } else if (!isAdded(resource.id, type) && isHovering) {
         // Добавляем в добавленные в зависимости от типа
         switch (resource.type) {
