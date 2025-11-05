@@ -17,6 +17,24 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
   readTextFile: vi.fn(),
 }))
 
+// Создаем мок функции для addStyleTemplate
+const mockAddStyleTemplate = vi.fn()
+
+// Мокаем useResources для возврата mockAddStyleTemplate
+vi.mock("@/features/resources", async () => {
+  const React = await import("react")
+  return {
+    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+    useResources: () => ({
+      addStyleTemplate: mockAddStyleTemplate,
+      effects: [],
+      filters: [],
+      transitions: [],
+      templates: [],
+    }),
+  }
+})
+
 // Получаем мок функции
 const mockOpen = vi.mocked(open)
 const mockReadTextFile = vi.mocked(readTextFile)
@@ -121,7 +139,12 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplatesFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Импортировано 1 стилистических шаблонов")
+      // Проверяем что addStyleTemplate был вызван для каждого шаблона
+      expect(mockAddStyleTemplate).toHaveBeenCalledTimes(1)
+      expect(mockAddStyleTemplate).toHaveBeenCalledWith(expect.objectContaining({
+        id: "template1",
+        category: "intro",
+      }))
     })
 
     it("должен обрабатывать ошибки", async () => {
@@ -209,7 +232,8 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Обработано 2 файлов")
+      // Проверяем что addStyleTemplate был вызван для каждого файла
+      expect(mockAddStyleTemplate).toHaveBeenCalledTimes(2)
     })
 
     it("должен обрабатывать одиночный файл как массив", async () => {
@@ -232,7 +256,8 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Обработано 1 файлов")
+      // Проверяем что addStyleTemplate был вызван один раз
+      expect(mockAddStyleTemplate).toHaveBeenCalledTimes(1)
     })
 
     it("не должен делать ничего если файлы не выбраны", async () => {

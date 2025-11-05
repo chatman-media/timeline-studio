@@ -45,6 +45,24 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
   readTextFile: vi.fn(),
 }))
 
+// Создаем мок функции для addFilter
+const mockAddFilter = vi.fn()
+
+// Мокаем useResources для возврата mockAddFilter
+vi.mock("@/features/resources", async () => {
+  const React = await import("react")
+  return {
+    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+    useResources: () => ({
+      addFilter: mockAddFilter,
+      effects: [],
+      filters: [],
+      transitions: [],
+      templates: [],
+    }),
+  }
+})
+
 // Получаем мок функции
 const mockOpen = vi.mocked(open)
 const mockReadTextFile = vi.mocked(readTextFile)
@@ -118,7 +136,7 @@ describe("useFiltersImport", () => {
       })
     })
 
-    it("должен логировать выбранный файл", async () => {
+    it("должен импортировать фильтры из файла", async () => {
       const filePath = "/path/to/filters.json"
       mockOpen.mockResolvedValue(filePath)
       // Мокаем JSON файл с корректными фильтрами
@@ -136,7 +154,13 @@ describe("useFiltersImport", () => {
         await result.current.importFiltersFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Импортировано 1 фильтров")
+      // Проверяем что addFilter был вызван для каждого фильтра
+      expect(mockAddFilter).toHaveBeenCalledTimes(1)
+      expect(mockAddFilter).toHaveBeenCalledWith(expect.objectContaining({
+        id: "filter1",
+        name: "Filter 1",
+        category: "creative",
+      }))
     })
 
     it("не должен делать ничего если файл не выбран", async () => {
@@ -147,7 +171,8 @@ describe("useFiltersImport", () => {
         await result.current.importFiltersFile()
       })
 
-      expect(console.log).not.toHaveBeenCalledWith(expect.stringContaining("Импортировано"))
+      // Проверяем что addFilter не был вызван
+      expect(mockAddFilter).not.toHaveBeenCalled()
     })
 
     it("должен обрабатывать ошибки", async () => {
@@ -224,7 +249,8 @@ describe("useFiltersImport", () => {
         await result.current.importFilterFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Импортировано 2 файлов фильтров")
+      // Проверяем что addFilter был вызван для каждого файла
+      expect(mockAddFilter).toHaveBeenCalledTimes(2)
     })
 
     it("должен обрабатывать одиночный файл как массив", async () => {
@@ -236,7 +262,8 @@ describe("useFiltersImport", () => {
         await result.current.importFilterFile()
       })
 
-      expect(console.log).toHaveBeenCalledWith("Импортировано 1 файлов фильтров")
+      // Проверяем что addFilter был вызван один раз
+      expect(mockAddFilter).toHaveBeenCalledTimes(1)
     })
 
     it("должен устанавливать isImporting в true во время импорта", async () => {
