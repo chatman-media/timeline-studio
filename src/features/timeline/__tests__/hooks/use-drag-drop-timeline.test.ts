@@ -530,7 +530,18 @@ describe("useDragDropTimeline", () => {
   })
 
   describe("Расчеты позиции и снэппинга", () => {
-    // TODO: Тест пропущен - требуется проверка
+    /**
+     * NOTE: Эти 2 теста пропущены из-за проблемы со stale closures в React hooks.
+     *
+     * handleDragOver в useCallback захватывает dragState.draggedItem как зависимость (строка 218 хука).
+     * При вызове handleDragStart → handleDragOver в тестах, handleDragOver видит устаревшее
+     * значение dragState.draggedItem = null и выходит рано (строка 111), не устанавливая dropPosition.
+     *
+     * Эта проблема специфична для unit-тестов с синхронными вызовами.
+     * В реальном использовании обработчики вызываются асинхронно через DOM события.
+     *
+     * TODO: Покрыть эти сценарии в E2E тестах (Playwright)
+     */
     it.skip("должен правильно рассчитывать позицию времени", () => {
       const { result } = renderHook(() => useDragDropTimeline())
 
@@ -599,7 +610,6 @@ describe("useDragDropTimeline", () => {
       expect(result.current.dragState.dropPosition?.startTime).toBe(200)
     })
 
-    // TODO: Тест пропущен - требуется проверка
     it.skip("должен применять снэппинг при включенном режиме", () => {
       mockUiState.snapMode = "grid"
       const { result } = renderHook(() => useDragDropTimeline())

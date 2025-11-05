@@ -137,12 +137,18 @@ describe("Transitions Module", () => {
       expect(fadeTransition?.labels?.en).toBe("Fade")
     })
 
-    // TODO: Тест пропущен - требуется проверка
+    /**
+     * NOTE: Эти 2 теста пропущены, так как невозможно протестировать loading/error состояния
+     * со статическими моками JSON-файлов (строки 15-112).
+     *
+     * Хук useTransitions загружает статические JSON синхронно через import,
+     * поэтому к моменту выполнения хука данные уже загружены.
+     * Loading/error состояния не возникают в реальном использовании.
+     */
     it.skip("should handle loading state", () => {
       // Skip: Mock already loaded by the time hook runs
     })
 
-    // TODO: Тест пропущен - требуется проверка
     it.skip("should handle error state", () => {
       // Skip: Mock already loaded by the time hook runs
     })

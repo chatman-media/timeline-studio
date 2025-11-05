@@ -144,7 +144,16 @@ describe("usePanelShortcuts", () => {
   })
 
   describe("UserSettings Integration", () => {
-    // TODO: Тест пропущен - требуется проверка
+    /**
+     * NOTE: Эти 2 теста пропущены из-за ограничений Vitest - vi.doMock не работает после импорта модуля.
+     *
+     * Тесты пытаются изменить моки @/features/user-settings после загрузки модуля,
+     * но Vitest не поддерживает динамическую замену уже импортированных модулей.
+     *
+     * Эту функциональность можно протестировать через:
+     * 1. E2E тесты с реальным изменением настроек
+     * 2. Разделение тестов на отдельные файлы с изоляцией модулей
+     */
     it.skip("should use current userSettings instance", () => {
       // Skip: vi.doMock doesn't work after module import
       const customToggleBrowser = vi.fn()
@@ -178,7 +187,6 @@ describe("usePanelShortcuts", () => {
   })
 
   describe("Effect Dependencies", () => {
-    // TODO: Тест пропущен - требуется проверка
     it.skip("should re-run effect when userSettings changes", () => {
       // Skip: vi.doMock doesn't work after module import
       const { rerender } = renderHook(() => usePanelShortcuts())
