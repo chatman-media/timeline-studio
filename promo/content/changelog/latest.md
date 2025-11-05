@@ -1,3 +1,11 @@
+## [2.3.3](https://github.com/chatman-media/timeline-studio/compare/v2.3.2...v2.3.3) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлены 5 пропущенных тестов в project-settings-modal ([7d26138](https://github.com/chatman-media/timeline-studio/commit/7d261388177b23f5c5019fd5b3f2478bd0febe65))
+* Исправлены пропущенные тесты timeline-content и default-layout ([43d3c70](https://github.com/chatman-media/timeline-studio/commit/43d3c70b619385222bb57e7bcdd9ddd2effdb0d6))
+
 ## [2.3.2](https://github.com/chatman-media/timeline-studio/compare/v2.3.1...v2.3.2) (2025-11-05)
 
 
