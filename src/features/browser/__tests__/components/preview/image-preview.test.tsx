@@ -93,10 +93,7 @@ const mockFile = {
   lastModified: Date.now(),
 }
 
-// TODO: Набор тестов пропущен
-// Причина неизвестна - требуется проверка
-// Компонент preview изображений, вероятно связано с Tauri asset URLs
-describe.skip("ImagePreview", () => {
+describe("ImagePreview", () => {
   it("should render correctly with default props", () => {
     render(<ImagePreview file={mockFile} size={100} />)
 
