@@ -294,50 +294,6 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     }
   }, [executeCommand])
 
-  // Утилиты
-  const getResourceById = useCallback(
-    (resourceId: string) => {
-      const allResources = [
-        ...mediaResources,
-        ...musicResources,
-        ...subtitleResources,
-        ...effectResources,
-        ...filterResources,
-        ...transitionResources,
-        ...templateResources,
-        ...styleTemplateResources,
-      ]
-      return allResources.find((resource) => resource.resourceId === resourceId)
-    },
-    [backendState],
-  )
-
-  const getResourcesByType = useCallback(
-    (type: string) => {
-      switch (type) {
-        case "media":
-          return mediaResources
-        case "music":
-          return musicResources
-        case "subtitle":
-          return subtitleResources
-        case "effect":
-          return effectResources
-        case "filter":
-          return filterResources
-        case "transition":
-          return transitionResources
-        case "template":
-          return templateResources
-        case "styleTemplate":
-          return styleTemplateResources
-        default:
-          return []
-      }
-    },
-    [backendState],
-  )
-
   // Извлекаем ресурсы из backend состояния
   // Пока backend не содержит все типы ресурсов, создаем пустые массивы
   const mediaPool = backendState?.project?.media_pool ?? null
@@ -431,6 +387,68 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     ...templateResources,
     ...styleTemplateResources,
   ]
+
+  // Утилиты - определяем ПОСЛЕ всех массивов ресурсов
+  const getResourceById = useCallback(
+    (resourceId: string) => {
+      const allResources = [
+        ...mediaResources,
+        ...musicResources,
+        ...subtitleResources,
+        ...effectResources,
+        ...filterResources,
+        ...transitionResources,
+        ...templateResources,
+        ...styleTemplateResources,
+      ]
+      return allResources.find((resource) => resource.resourceId === resourceId)
+    },
+    [
+      mediaResources,
+      musicResources,
+      subtitleResources,
+      effectResources,
+      filterResources,
+      transitionResources,
+      templateResources,
+      styleTemplateResources,
+    ],
+  )
+
+  const getResourcesByType = useCallback(
+    (type: string) => {
+      switch (type) {
+        case "media":
+          return mediaResources
+        case "music":
+          return musicResources
+        case "subtitle":
+          return subtitleResources
+        case "effect":
+          return effectResources
+        case "filter":
+          return filterResources
+        case "transition":
+          return transitionResources
+        case "template":
+          return templateResources
+        case "styleTemplate":
+          return styleTemplateResources
+        default:
+          return []
+      }
+    },
+    [
+      mediaResources,
+      musicResources,
+      subtitleResources,
+      effectResources,
+      filterResources,
+      transitionResources,
+      templateResources,
+      styleTemplateResources,
+    ],
+  )
 
   // Контекстное значение
   const contextValue: ResourcesContextType = {
