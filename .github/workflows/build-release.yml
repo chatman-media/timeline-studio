@@ -12,6 +12,8 @@ on:
         required: true
         default: true
         type: boolean
+  release:
+    types: [published]
 
 jobs:
   create-release:
@@ -19,18 +21,42 @@ jobs:
     outputs:
       release_id: ${{ fromJSON(steps.create_release.outputs.result).id }}
       upload_url: ${{ fromJSON(steps.create_release.outputs.result).upload_url }}
-      version: ${{ github.event.inputs.version }}
+      version: ${{ steps.get_version.outputs.version }}
 
     steps:
+      - name: Get Version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            # Автоматический запуск - извлекаем версию из тега релиза
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"  # Убираем префикс 'v' если есть
+          else
+            # Ручной запуск - используем введенную версию
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
       - name: Create or Get Release
         id: create_release
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const tag = `v${{ github.event.inputs.version }}`;
-            const releaseName = `Timeline Studio v${{ github.event.inputs.version }}`;
-            const releaseBody = `Timeline Studio v${{ github.event.inputs.version }}
+            const isAutoRelease = context.eventName === 'release';
+            const version = '${{ steps.get_version.outputs.version }}';
+            const tag = `v${version}`;
+
+            if (isAutoRelease) {
+              // Автоматический запуск - используем существующий релиз
+              console.log(`Using existing release from semantic-release: ${tag}`);
+              return context.payload.release;
+            }
+
+            // Ручной запуск - создаем или получаем релиз
+            const releaseName = `Timeline Studio v${version}`;
+            const releaseBody = `Timeline Studio v${version}
 
             ## Статус сборки
 
@@ -63,7 +89,7 @@ jobs:
                   name: releaseName,
                   body: releaseBody,
                   draft: false,
-                  prerelease: ${{ github.event.inputs.prerelease }}
+                  prerelease: ${{ github.event.inputs.prerelease || false }}
                 });
 
                 return newRelease.data;
