@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/chatman-media/timeline-studio/compare/v2.2.3...v2.2.4) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлен синтаксис HSL цветов в светлой и темной темах ([a26d19f](https://github.com/chatman-media/timeline-studio/commit/a26d19f8677083d4d0cfa06cac730e9faab95e54)), closes [#68](https://github.com/chatman-media/timeline-studio/issues/68) [#68](https://github.com/chatman-media/timeline-studio/issues/68)
+
 ## [2.2.3](https://github.com/chatman-media/timeline-studio/compare/v2.2.2...v2.2.3) (2025-11-05)
 
 
