@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
 import { type DraggableType, useDraggable } from "@/features/drag-drop"
-import { useResources } from "@/features/resources"
+import { useResources } from "@/features/resources/services/resources-provider"
 import type { TimelineResource } from "@/features/resources/types"
 
 /**
