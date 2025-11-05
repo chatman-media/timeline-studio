@@ -125,16 +125,6 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
   return <ProjectSettingsContext.Provider value={contextValue}>{children}</ProjectSettingsContext.Provider>
 }
 
-export function useProjectSettings(): ProjectSettingsContextType {
-  const context = useContext(ProjectSettingsContext)
-
-  if (!context) {
-    throw new Error("useProjectSettings must be used within ProjectSettingsProvider")
-  }
-
-  return context
-}
-
 // Экспорт типов
 export type { ProjectSettingsContextType }
 export type { ProjectSettingsContextType as ProjectSettingsProviderType }
