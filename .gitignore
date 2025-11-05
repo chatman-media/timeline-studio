@@ -76,3 +76,15 @@ claude_desktop_config.json
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
 target/
+
+# Python virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+ENV/
+path/to/venv/
+*.pyc
+__pycache__/
+*.pt
+*.onnx.pt

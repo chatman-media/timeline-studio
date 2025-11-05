@@ -141,10 +141,12 @@ describe("useStyleTemplatesImport", () => {
 
       // Проверяем что addStyleTemplate был вызван для каждого шаблона
       expect(mockAddStyleTemplate).toHaveBeenCalledTimes(1)
-      expect(mockAddStyleTemplate).toHaveBeenCalledWith(expect.objectContaining({
-        id: "template1",
-        category: "intro",
-      }))
+      expect(mockAddStyleTemplate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "template1",
+          category: "intro",
+        }),
+      )
     })
 
     it("должен обрабатывать ошибки", async () => {

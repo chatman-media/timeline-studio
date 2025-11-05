@@ -44,6 +44,7 @@ async fn test_yolo_processor_creation() {
   let processor_v8 = YoloProcessor::new(config_v8).await;
   assert!(processor_v8.is_ok());
 
+  // Тест с кастомной моделью которой нет - должна быть ошибка
   let custom_path = PathBuf::from("custom_model.onnx");
   let config_custom = ProcessorConfig {
     model: YoloModel::Custom(custom_path),
@@ -54,7 +55,10 @@ async fn test_yolo_processor_creation() {
     ..Default::default()
   };
   let processor_custom = YoloProcessor::new(config_custom).await;
-  assert!(processor_custom.is_ok());
+  assert!(
+    processor_custom.is_err(),
+    "Custom model should fail if file doesn't exist"
+  );
 }
 
 #[tokio::test]

@@ -156,11 +156,13 @@ describe("useFiltersImport", () => {
 
       // Проверяем что addFilter был вызван для каждого фильтра
       expect(mockAddFilter).toHaveBeenCalledTimes(1)
-      expect(mockAddFilter).toHaveBeenCalledWith(expect.objectContaining({
-        id: "filter1",
-        name: "Filter 1",
-        category: "creative",
-      }))
+      expect(mockAddFilter).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "filter1",
+          name: "Filter 1",
+          category: "creative",
+        }),
+      )
     })
 
     it("не должен делать ничего если файл не выбран", async () => {

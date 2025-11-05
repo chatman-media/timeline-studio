@@ -215,7 +215,7 @@ impl YoloProcessor {
   }
 
   /// Получить имена классов для модели (статическая функция)
-  fn get_class_names_for_model(model: &YoloModel) -> Vec<String> {
+  pub fn get_class_names_for_model(model: &YoloModel) -> Vec<String> {
     match model {
       YoloModel::YoloV11Detection
       | YoloModel::YoloV8Detection
@@ -411,11 +411,11 @@ mod tests {
 
   #[test]
   fn test_class_names() {
-    let coco_classes = YoloProcessor::get_class_names(&YoloModel::YoloV11Detection);
+    let coco_classes = YoloProcessor::get_class_names_for_model(&YoloModel::YoloV11Detection);
     assert_eq!(coco_classes.len(), 80);
     assert_eq!(coco_classes[0], "person");
 
-    let face_classes = YoloProcessor::get_class_names(&YoloModel::YoloV11Face);
+    let face_classes = YoloProcessor::get_class_names_for_model(&YoloModel::YoloV11Face);
     assert_eq!(face_classes.len(), 1);
     assert_eq!(face_classes[0], "face");
   }

@@ -2,7 +2,7 @@ use crate::recognition::model_manager::YoloModel;
 use crate::recognition::ort_manager::OrtManager;
 use crate::recognition::recognition_service::RecognitionService;
 use crate::recognition::types::{DetectedObject, RecognitionResults};
-use crate::recognition::{ProcessingConfig, ProcessorConfig, YoloProcessor};
+use crate::recognition::{ProcessorConfig, YoloProcessor};
 // Временно отключаем пока не интегрируем frame_extraction
 // use crate::video_compiler::frame_extraction::{FrameExtractionManager, ExtractionPurpose};
 use std::path::{Path, PathBuf};
@@ -59,7 +59,10 @@ async fn test_yolo_on_hevc_video() {
   #[allow(unreachable_code)]
   {
     let _temp_dir = TempDir::new().unwrap();
-    let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5).unwrap();
+    let mut config = ProcessorConfig::default();
+    config.model = YoloModel::YoloV11Detection;
+    config.processing_config.confidence_threshold = 0.5;
+    let mut processor = YoloProcessor::new(config).await.unwrap();
 
     // Пытаемся загрузить модель
     match processor.load_model().await {
@@ -128,7 +131,10 @@ async fn test_face_detection_on_video() {
   #[allow(unreachable_code)]
   {
     let _temp_dir = TempDir::new().unwrap();
-    let mut processor = YoloProcessor::new(YoloModel::YoloV11Face, 0.7).unwrap();
+    let mut config = ProcessorConfig::default();
+    config.model = YoloModel::YoloV11Face;
+    config.processing_config.confidence_threshold = 0.7;
+    let mut processor = YoloProcessor::new(config).await.unwrap();
 
     match processor.load_model().await {
       Ok(_) => {
@@ -319,41 +325,46 @@ async fn test_batch_processing() {
   return;
 
   #[allow(unreachable_code)]
-  let _temp_dir = TempDir::new().unwrap();
-  let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5).unwrap();
+  {
+    let _temp_dir = TempDir::new().unwrap();
+    let mut config = ProcessorConfig::default();
+    config.model = YoloModel::YoloV11Detection;
+    config.processing_config.confidence_threshold = 0.5;
+    let mut processor = YoloProcessor::new(config).await.unwrap();
 
-  match processor.load_model().await {
-    Ok(_) => {
-      let mut all_frame_paths = Vec::new();
+    match processor.load_model().await {
+      Ok(_) => {
+        let mut all_frame_paths = Vec::new();
 
-      // Извлекаем кадры из нескольких видео
-      // for video in &videos {
-      //   match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 2)
-      //     .await
-      //   {
-      //     Ok(mut paths) => all_frame_paths.append(&mut paths),
-      //     Err(e) => println!("Failed to extract frames from {}: {}", video.filename, e),
-      //   }
-      // }
+        // Извлекаем кадры из нескольких видео
+        // for video in &videos {
+        //   match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 2)
+        //     .await
+        //   {
+        //     Ok(mut paths) => all_frame_paths.append(&mut paths),
+        //     Err(e) => println!("Failed to extract frames from {}: {}", video.filename, e),
+        //   }
+        // }
 
-      if !all_frame_paths.is_empty() {
-        println!("Batch processing {} frames", all_frame_paths.len());
+        if !all_frame_paths.is_empty() {
+          println!("Batch processing {} frames", all_frame_paths.len());
 
-        let start = Instant::now();
-        match processor.process_batch(all_frame_paths).await {
-          Ok(batch_results) => {
-            let duration = start.elapsed();
-            println!("Batch processed in {duration:?}");
+          let start = Instant::now();
+          match processor.process_batch(all_frame_paths).await {
+            Ok(batch_results) => {
+              let duration = start.elapsed();
+              println!("Batch processed in {duration:?}");
 
-            let total_detections: usize = batch_results.iter().map(|r| r.len()).sum();
+              let total_detections: usize = batch_results.iter().map(|r| r.len()).sum();
 
-            println!("Total detections across all frames: {total_detections}");
+              println!("Total detections across all frames: {total_detections}");
+            }
+            Err(e) => println!("Batch processing failed: {e}"),
           }
-          Err(e) => println!("Batch processing failed: {e}"),
         }
       }
+      Err(_) => println!("Model not available for batch test"),
     }
-    Err(_) => println!("Model not available for batch test"),
   }
 }
 

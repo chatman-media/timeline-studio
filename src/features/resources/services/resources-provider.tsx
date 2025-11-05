@@ -16,7 +16,6 @@ import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 import {
   type EffectResource,
