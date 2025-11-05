@@ -147,23 +147,27 @@ describe("AddMediaButton", () => {
     expect(button.className).toContain("visible")
   })
 
-  // TODO: Тест падает - компонент не вызывает addResource при клике
-  // Необходимо проверить логику компонента или обновить тест
-  it.skip("should call addResource when clicked and not added", () => {
-    const { isAdded, addResource } = vi.mocked(useResources())
+  it("should call addMedia when clicked while hovering and not added", () => {
+    const { isAdded, addMedia } = vi.mocked(useResources())
     isAdded.mockReturnValue(false)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
 
-    // Кликаем на кнопку
+    // Наводим мышь на кнопку (необходимо для срабатывания логики)
+    const button = screen.getByTitle("Add to timeline")
     act(() => {
-      fireEvent.click(screen.getByTitle("Add to timeline"))
+      fireEvent.mouseEnter(button)
     })
 
-    // Проверяем, что addResource был вызван с правильными аргументами
-    expect(addResource).toHaveBeenCalledTimes(1)
-    expect(addResource).toHaveBeenCalledWith(testResource.id, "media")
+    // Кликаем на кнопку
+    act(() => {
+      fireEvent.click(button)
+    })
+
+    // Проверяем, что addMedia был вызван с правильными аргументами
+    expect(addMedia).toHaveBeenCalledTimes(1)
+    expect(addMedia).toHaveBeenCalledWith(testMediaFile)
   })
 
   it("should show remove icon on hover when isAdded is true and not recently added", () => {
@@ -196,27 +200,35 @@ describe("AddMediaButton", () => {
     expect(screen.getByTestId("x-icon")).toBeInTheDocument()
   })
 
-  // TODO: Тест падает - элемент "Remove from timeline" не появляется после mouseEnter
-  // Компонент не переключается в режим удаления при наведении
-  it.skip("should call removeResource when clicked on remove icon", () => {
+  it("should call removeResource when clicked on remove icon", async () => {
     const { isAdded, removeResource } = vi.mocked(useResources())
     isAdded.mockReturnValue(true)
 
     // Рендерим компонент
-    render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    const { rerender } = render(<AddMediaButton resource={testResource} type="media" size={150} />)
 
-    // Продвигаем таймеры вперед, чтобы сбросить флаг isRecentlyAdded
+    // Продвигаем таймеры вперед, чтобы сбросить флаг isRecentlyAdded (1 секунда из компонента)
     act(() => {
-      vi.advanceTimersByTime(2000)
+      vi.advanceTimersByTime(1100)
     })
+
+    // Перерисовываем чтобы убедиться что состояние обновилось
+    rerender(<AddMediaButton resource={testResource} type="media" size={150} />)
 
     // Получаем кнопку
     const button = screen.getByTitle("Added to timeline")
 
-    // Симулируем наведение на кнопку и клик на кнопку удаления
+    // Симулируем наведение на кнопку
     act(() => {
       fireEvent.mouseEnter(button)
-      fireEvent.click(screen.getByTitle("Remove from timeline"))
+    })
+
+    // Теперь title должен измениться на "Remove from timeline"
+    const removeButton = screen.getByTitle("Remove from timeline")
+
+    // Кликаем на кнопку удаления
+    act(() => {
+      fireEvent.click(removeButton)
     })
 
     // Проверяем, что removeResource был вызван с правильными аргументами
