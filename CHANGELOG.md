@@ -1,3 +1,16 @@
+# [2.2.0](https://github.com/chatman-media/timeline-studio/compare/v2.1.5...v2.2.0) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлен баг 4x добавления видео и пустого браузера ([49c4bfc](https://github.com/chatman-media/timeline-studio/commit/49c4bfcc53d6aca366a71b461074b4f619f8739e))
+* Исправлены падающие тесты после перехода на новую архитектуру ([5f8f168](https://github.com/chatman-media/timeline-studio/commit/5f8f1686e23d536f36b2189260683f473a2e4c1a))
+
+
+### Features
+
+* Implement dynamic i18n loading through Tauri backend ([bc265ff](https://github.com/chatman-media/timeline-studio/commit/bc265ff6036e821863ef94254acdcf313847c1c1))
+
 ## [2.1.5](https://github.com/chatman-media/timeline-studio/compare/v2.1.4...v2.1.5) (2025-11-04)
 
 
