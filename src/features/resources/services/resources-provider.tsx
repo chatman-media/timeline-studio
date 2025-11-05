@@ -153,6 +153,19 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
   const addMedia = useCallback(
     async (file: MediaFile) => {
       console.log("ResourcesProvider: Adding media", file.path)
+
+      // ДЕДУПЛИКАЦИЯ: Проверяем существование медиа по path перед добавлением
+      const mediaPool = backendState?.project?.media_pool
+      if (mediaPool?.items) {
+        const alreadyExists = Object.values(mediaPool.items).some(
+          (item) => item && item.path === file.path
+        )
+        if (alreadyExists) {
+          console.log("ResourcesProvider: Media already added, skipping:", file.path)
+          return
+        }
+      }
+
       const mediaType = file.isVideo ? "Video" : file.isAudio ? "Audio" : "Image"
       const result = await executeCommand({
         type: "AddMedia",
@@ -160,17 +173,29 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
       })
       console.log("ResourcesProvider: AddMedia result", result)
     },
-    [executeCommand],
+    [executeCommand, backendState],
   )
 
   const addMusic = useCallback(
     async (file: MediaFile) => {
+      // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
+      const mediaPool = backendState?.project?.media_pool
+      if (mediaPool?.items) {
+        const alreadyExists = Object.values(mediaPool.items).some(
+          (item) => item && item.path === file.path
+        )
+        if (alreadyExists) {
+          console.log("ResourcesProvider: Music already added, skipping:", file.path)
+          return
+        }
+      }
+
       await executeCommand({
         type: "AddMedia",
         params: { path: file.path, media_type: "Audio" },
       })
     },
-    [executeCommand],
+    [executeCommand, backendState],
   )
 
   const addSubtitle = useCallback(

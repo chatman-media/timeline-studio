@@ -1,8 +1,6 @@
 import { useDraggable } from "@dnd-kit/core"
 import { Film } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
-import { FileSelectionCheckbox } from "@/features/browser/components/layout/file-selection-checkbox"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { FfprobeStream } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"
@@ -51,10 +49,9 @@ export const VideoPreview = memo(
     const [isLoaded, setIsLoaded] = useState(false)
     const [previewData, setPreviewData] = useState<string | null>(null)
     const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
-    const { isAdded: isResourceAdded } = useResources()
+    const { isAdded: isResourceAdded, removeResource } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
     const { setPreviewMedia, playerSetSource, playerSetMedia } = usePlayer()
-    const { removeMediaFile } = useMediaFiles()
 
     // Используем Preview Manager для получения данных превью
     const { getPreviewData } = useMediaPreview()
@@ -364,8 +361,9 @@ export const VideoPreview = memo(
                       ? convertToAssetUrl(file.thumbnailPath)
                       : undefined
                 }
-                preload="auto"
+                preload="metadata"
                 autoPlay={false}
+                muted
                 tabIndex={0}
                 playsInline
                 className={cn("h-full w-full object-cover focus:outline-none", isAdded ? "opacity-50" : "opacity-100")}
@@ -425,7 +423,7 @@ export const VideoPreview = memo(
                     // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                     if (video.error.code === 4) {
                       console.log(`[VideoPreview Placeholder] Автоматическое удаление файла из проекта: ${file.name}`)
-                      void removeMediaFile(file.id)
+                      void removeResource(file.id, 'media')
                       return // Прекращаем дальнейшую обработку
                     }
                   }
@@ -462,9 +460,6 @@ export const VideoPreview = memo(
                   {formatDuration(file.duration, 0, true)}
                 </div>
               )}
-
-              {/* Чекбокс выбора файла для плейсхолдера */}
-              <FileSelectionCheckbox file={file} size={size} />
 
               {/* Кнопка избранного для плейсхолдера */}
               <FavoriteButton file={file} size={size} type="media" />
@@ -532,11 +527,11 @@ export const VideoPreview = memo(
                           ? convertToAssetUrl(file.thumbnailPath)
                           : undefined
                     }
-                    preload="auto"
+                    preload="metadata"
                     autoPlay={false}
                     tabIndex={0}
                     playsInline
-                    muted={false} // Включаем звук в превью по запросу пользователя
+                    muted
                     className={cn("h-full w-full object-cover focus:outline-none", isAdded ? "opacity-50" : "")}
                     style={{
                       transition: "opacity 0.2s ease-in-out",
@@ -611,7 +606,7 @@ export const VideoPreview = memo(
                         // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                         if (video.error.code === 4) {
                           console.log(`[VideoPreview] Автоматическое удаление файла из проекта: ${file.name}`)
-                          void removeMediaFile(file.id)
+                          void removeResource(file.id, 'media')
                           return // Прекращаем дальнейшую обработку
                         }
 
@@ -691,11 +686,6 @@ export const VideoPreview = memo(
                     >
                       <Film size={size > 100 ? 16 : 12} />
                     </div>
-                  )}
-
-                  {/* Чекбокс выбора файла */}
-                  {!(isMultipleStreams && typeof stream.index !== "undefined" && stream.index !== 0) && (
-                    <FileSelectionCheckbox file={file} size={size} />
                   )}
 
                   {/* Кнопка избранного */}

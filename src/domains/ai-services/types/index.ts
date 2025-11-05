@@ -1,8 +1,8 @@
 // AI Services Domain Types
 // Centralized types for AI services
 
-// Export ContentType specifically
-export { ContentClassification, ContentType } from "../../shared/types/ai-tools/content-analysis"
+// Export ContentType specifically from local content-analysis module
+export type { ContentClassification, ContentType } from "./content-analysis"
 // Machine events from machines directory
 export type { ChatMachineEvent } from "../machines/chat-machine"
 export type { MontagePlannerEvent } from "../machines/montage-planner-machine"

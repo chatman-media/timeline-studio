@@ -42,18 +42,17 @@ export function useMediaFiles() {
   }
 
   // Массовое обновление медиа-файлов
+  // DEPRECATED: Эта функция больше не должна использоваться для добавления медиа
+  // Используйте Resources Provider (addMedia) вместо этого
   const updateMediaFiles = async (files: MediaFile[]) => {
-    // Добавляем файлы по одному через команды
-    for (const file of files) {
-      const mediaType = file.isVideo ? "Video" : file.isAudio ? "Audio" : "Image"
-      executeCommand({
-        type: "AddMedia",
-        params: {
-          path: file.path,
-          media_type: mediaType,
-        },
-      })
-    }
+    console.warn(
+      "DEPRECATED: updateMediaFiles should not be used for adding media. " +
+      "Use Resources Provider (addMedia) instead. " +
+      `Called with ${files.length} files.`,
+      files.map(f => f.path)
+    )
+    // NO-OP: не вызываем executeCommand чтобы избежать дублирования
+    // Resources Provider - единственный источник истины для медиа
   }
 
   return {

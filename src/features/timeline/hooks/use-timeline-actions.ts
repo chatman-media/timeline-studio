@@ -5,6 +5,7 @@
 import { useCallback } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { useResources } from "@/features/resources"
 
 import { useTimeline } from "../hooks/use-timeline"
 import type { TrackType } from "../types"
@@ -60,6 +61,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
   const { project, addTrack, addClip, createProject } = useTimeline()
   const { tracks, getTracksByType } = useTracks()
   const { getClipsByTrack } = useClips()
+  const { addMedia } = useResources()
 
   // ============================================================================
   // UTILITY FUNCTIONS
@@ -168,10 +170,13 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       const startTime = customStartTime !== undefined ? customStartTime : calculateClipStartTime(targetTrackId)
       const duration = file.duration || (file.isImage ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
 
+      // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
+      void addMedia(file)
+
       void addClip(targetTrackId, file, startTime)
       console.log(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
-    [project, getTrackTypeForMedia, findBestTrackForMedia, addTrack, calculateClipStartTime, addClip, createProject],
+    [project, getTrackTypeForMedia, findBestTrackForMedia, addTrack, calculateClipStartTime, addClip, createProject, addMedia],
   )
 
   const addMediaToTimeline = useCallback(

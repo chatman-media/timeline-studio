@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 
-import { useMediaFiles } from "@/features/app-state"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
 import { selectMediaDirectory, selectMediaFile } from "@/features/media"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
@@ -23,7 +22,6 @@ interface ImportResult {
  * Использует события от backend для обновления файлов по мере готовности
  */
 export function useMediaImport() {
-  const { updateMediaFiles } = useMediaFiles()
   const { currentProject, setProjectDirty } = useCurrentProject()
   const { addMedia } = useResources()
   const [isImporting, setIsImporting] = useState(false)
@@ -75,15 +73,12 @@ export function useMediaImport() {
 
         const basicFiles = discoveredFiles.map((file) => createBasicMediaFile(file.path, file.size))
 
-        // Обновляем файлы в контексте
-        void updateMediaFiles(basicFiles)
-
-        // Добавляем файлы в ресурсы для синхронизации с проектом
+        // Добавляем файлы в ресурсы для синхронизации с проектом (Resources - единственный источник истины)
         basicFiles.forEach((file) => {
           void addMedia(file)
         })
       },
-      [updateMediaFiles, addMedia],
+      [addMedia],
     ),
 
     // Когда готовы метаданные - обновляем конкретный файл
@@ -98,13 +93,10 @@ export function useMediaImport() {
           isLoadingMetadata: false,
         }
 
-        // Обновляем в контексте только этот файл
-        void updateMediaFiles([updatedFile])
-
-        // Обновляем файл в ресурсах для синхронизации с проектом
+        // Обновляем файл в ресурсах для синхронизации с проектом (Resources - единственный источник истины)
         void addMedia(updatedFile)
       },
-      [updateMediaFiles, addMedia],
+      [addMedia],
     ),
 
     // Когда готово превью - обновляем путь и генерируем через Preview Manager
@@ -115,7 +107,7 @@ export function useMediaImport() {
         // TODO: Нужен способ получить текущий файл по ID для обновления thumbnail
         // Пока просто логируем для отладки
       },
-      [updateMediaFiles, generateThumbnail],
+      [generateThumbnail],
     ),
 
     // Обработка ошибок
@@ -125,7 +117,7 @@ export function useMediaImport() {
 
         // TODO: Нужен способ обновить файл и снять флаг загрузки при ошибке
       },
-      [updateMediaFiles],
+      [],
     ),
 
     // Обновление прогресса
@@ -185,10 +177,7 @@ export function useMediaImport() {
       // Создаем базовые файлы для мгновенного отображения
       const basicFiles = selectedFiles.map((filePath) => createBasicMediaFile(filePath))
 
-      // Обновляем контекст
-      void updateMediaFiles(basicFiles)
-
-      // Добавляем файлы в ресурсы для синхронизации с проектом
+      // Добавляем файлы в ресурсы для синхронизации с проектом (Resources - единственный источник истины)
       basicFiles.forEach((file) => {
         void addMedia(file)
       })
@@ -201,7 +190,7 @@ export function useMediaImport() {
 
       console.log(`Обработка завершена. Импортировано ${processedFiles.length} файлов`)
 
-      // Если получили обработанные файлы, обновляем их в контексте
+      // Если получили обработанные файлы, обновляем их в ресурсах
       if (processedFiles.length > 0) {
         // Обновляем файлы, устанавливая isLoadingMetadata: false
         const filesWithMetadata = processedFiles.map((file) => ({
@@ -209,9 +198,7 @@ export function useMediaImport() {
           isLoadingMetadata: false,
         }))
 
-        void updateMediaFiles(filesWithMetadata)
-
-        // Добавляем обработанные файлы в ресурсы
+        // Добавляем обработанные файлы в ресурсы (Resources - единственный источник истины)
         filesWithMetadata.forEach((file) => {
           void addMedia(file)
         })
@@ -239,7 +226,7 @@ export function useMediaImport() {
         files: [],
       }
     }
-  }, [updateMediaFiles, processFiles, saveFilesToProject, addMedia])
+  }, [processFiles, saveFilesToProject, addMedia])
 
   /**
    * Импортирует папку с медиафайлами
@@ -276,10 +263,7 @@ export function useMediaImport() {
             isLoadingMetadata: false,
           }))
 
-          // Обновляем файлы в контексте
-          void updateMediaFiles(filesWithMetadata)
-
-          // Добавляем файлы в ресурсы
+          // Добавляем файлы в ресурсы (Resources - единственный источник истины)
           filesWithMetadata.forEach((file) => {
             void addMedia(file)
           })
@@ -306,7 +290,7 @@ export function useMediaImport() {
         files: [],
       }
     }
-  }, [scanFolderWithThumbnails, saveFilesToProject, updateMediaFiles, addMedia])
+  }, [scanFolderWithThumbnails, saveFilesToProject, addMedia])
 
   return {
     importFile,
