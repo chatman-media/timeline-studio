@@ -1,3 +1,11 @@
+## [2.2.3](https://github.com/chatman-media/timeline-studio/compare/v2.2.2...v2.2.3) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлены дубликаты в моках и импорты удаленных legacy файлов ([30d8cb0](https://github.com/chatman-media/timeline-studio/commit/30d8cb0f535bc237eac73f143f514a8de535dc64))
+* Исправлены импорты V2 в тестах и добавлен экспорт ProjectSettingsContext ([3d9d435](https://github.com/chatman-media/timeline-studio/commit/3d9d435a824facba70837f20699c7a6ae25dcc37))
+
 ## [2.2.2](https://github.com/chatman-media/timeline-studio/compare/v2.2.1...v2.2.2) (2025-11-05)
 
 
