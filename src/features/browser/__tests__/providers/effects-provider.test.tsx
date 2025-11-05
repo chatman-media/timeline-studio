@@ -395,3 +395,187 @@ describe("EffectsProvider API", () => {
     expect(loadingState.error).toBeNull()
   })
 })
+
+describe("EffectsProvider Events", () => {
+  let api: any
+
+  function APITestComponent() {
+    const { api: providerAPI, isInitialized } = useEffectsProvider()
+
+    React.useEffect(() => {
+      if (isInitialized && providerAPI) {
+        api = providerAPI
+      }
+    }, [providerAPI, isInitialized])
+
+    return (
+      <div>
+        <div data-testid="api-ready">{String(isInitialized)}</div>
+      </div>
+    )
+  }
+
+  beforeEach(async () => {
+    api = undefined
+
+    render(
+      <EffectsProvider>
+        <APITestComponent />
+      </EffectsProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId("api-ready")).toHaveTextContent("true")
+    })
+
+    await waitFor(() => {
+      expect(api).toBeDefined()
+    })
+  })
+
+  it("должен поддерживать подписку на изменения состояния загрузки", () => {
+    const callback = vi.fn()
+    const unsubscribe = api.onLoadingStateChange(callback)
+
+    expect(typeof unsubscribe).toBe("function")
+
+    // Очищаем подписку
+    unsubscribe()
+  })
+
+  it("должен поддерживать подписку на обновления ресурсов", () => {
+    const callback = vi.fn()
+    const unsubscribe = api.onResourcesUpdate(callback)
+
+    expect(typeof unsubscribe).toBe("function")
+
+    // Очищаем подписку
+    unsubscribe()
+  })
+
+  it("должен поддерживать подписку на ошибки", () => {
+    const callback = vi.fn()
+    const unsubscribe = api.onError(callback)
+
+    expect(typeof unsubscribe).toBe("function")
+
+    // Очищаем подписку
+    unsubscribe()
+  })
+
+  it("должен вызывать callback при обновлении ресурсов", async () => {
+    const callback = vi.fn()
+    api.onResourcesUpdate(callback)
+
+    // Загружаем новый источник для триггера события
+    await api.loadSource("local")
+
+    // Даем время на обработку
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    // Callback должен быть вызван для каждого типа ресурса
+    expect(callback).toHaveBeenCalled()
+  })
+})
+
+describe("EffectsProvider BackendSync Integration", () => {
+  let api: any
+
+  function APITestComponent() {
+    const { api: providerAPI, isInitialized, isBackendConnected } = useEffectsProvider()
+
+    React.useEffect(() => {
+      if (isInitialized && providerAPI) {
+        api = providerAPI
+      }
+    }, [providerAPI, isInitialized])
+
+    return (
+      <div>
+        <div data-testid="api-ready">{String(isInitialized)}</div>
+        <div data-testid="backend-connected">{String(isBackendConnected)}</div>
+      </div>
+    )
+  }
+
+  beforeEach(async () => {
+    api = undefined
+
+    render(
+      <EffectsProvider>
+        <APITestComponent />
+      </EffectsProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId("api-ready")).toHaveTextContent("true")
+    })
+
+    await waitFor(() => {
+      expect(api).toBeDefined()
+    })
+  })
+
+  it("должен предоставлять метод setBackendConnected", () => {
+    expect(api.setBackendConnected).toBeDefined()
+    expect(typeof api.setBackendConnected).toBe("function")
+
+    // Устанавливаем состояние подключения
+    api.setBackendConnected(true)
+    api.setBackendConnected(false)
+  })
+
+  it("должен предоставлять метод syncResourcesWithBackend", async () => {
+    expect(api.syncResourcesWithBackend).toBeDefined()
+    expect(typeof api.syncResourcesWithBackend).toBe("function")
+
+    // Синхронизируем ресурсы
+    await api.syncResourcesWithBackend("built-in")
+  })
+
+  it("должен предоставлять метод importResource", async () => {
+    expect(api.importResource).toBeDefined()
+    expect(typeof api.importResource).toBe("function")
+
+    const testResource = {
+      id: "test-imported-effect",
+      name: "Test Imported Effect",
+      type: "blur",
+      category: "artistic",
+      complexity: "basic",
+      tags: ["test"],
+      description: { ru: "Тестовый импортированный эффект", en: "Test Imported Effect" },
+      ffmpegCommand: () => "blur=5",
+      params: { intensity: 50 },
+      previewPath: "/test-imported.mp4",
+      labels: { en: "Test Imported Effect", ru: "Тестовый импортированный эффект" },
+    }
+
+    const result = await api.importResource("effect", testResource)
+    expect(typeof result).toBe("boolean")
+  })
+
+  it("должен предоставлять метод deleteResource", async () => {
+    expect(api.deleteResource).toBeDefined()
+    expect(typeof api.deleteResource).toBe("function")
+
+    const result = await api.deleteResource("effect", "test-effect-1", "built-in")
+    expect(typeof result).toBe("boolean")
+  })
+
+  it("должен предоставлять статус подключения к backend в контексте", () => {
+    const backendStatus = screen.getByTestId("backend-connected")
+    expect(backendStatus).toBeInTheDocument()
+    // Значение может быть true или false в зависимости от мока
+    expect(["true", "false"]).toContain(backendStatus.textContent)
+  })
+
+  it("должен предоставлять метод preloadCategory", async () => {
+    expect(api.preloadCategory).toBeDefined()
+    expect(typeof api.preloadCategory).toBe("function")
+
+    const result = await api.preloadCategory("effect", "artistic")
+    expect(result).toBeDefined()
+    expect(result.success).toBe(true)
+  })
+})
