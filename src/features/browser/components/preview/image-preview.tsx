@@ -82,10 +82,15 @@ export const ImagePreview = memo(function ImagePreview({
       console.log("[ImagePreview] Создан объект URL:", url)
       return url
     } catch (error) {
-      console.error("[ImagePreview] Ошибка при загрузке изображения:", error)
+      console.error("[ImagePreview] Ошибка при загрузке изображения:", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        path,
+        stack: error instanceof Error ? error.stack : undefined,
+      })
       // В случае ошибки используем convertToAssetUrl
       const assetUrl = convertToAssetUrl(path)
-      console.log("[ImagePreview] Используем asset URL:", assetUrl)
+      console.log("[ImagePreview] Используем fallback asset URL:", assetUrl)
       return assetUrl
     }
   }, [])

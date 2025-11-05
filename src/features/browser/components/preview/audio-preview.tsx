@@ -134,10 +134,15 @@ export const AudioPreview = memo(function AudioPreview({
       console.log("[AudioPreview] Создан объект URL:", url)
       return url
     } catch (error) {
-      console.error("[AudioPreview] Ошибка при загрузке аудио:", error)
+      console.error("[AudioPreview] Ошибка при загрузке аудио:", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        path,
+        stack: error instanceof Error ? error.stack : undefined,
+      })
       // В случае ошибки используем convertToAssetUrl
       const assetUrl = convertToAssetUrl(path)
-      console.log("[AudioPreview] Используем asset URL:", assetUrl)
+      console.log("[AudioPreview] Используем fallback asset URL:", assetUrl)
       return assetUrl
     }
   }, [])
