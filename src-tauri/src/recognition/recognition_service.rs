@@ -73,7 +73,10 @@ impl RecognitionService {
           Some(Arc::new(RwLock::new(processor)))
         }
         Err(e) => {
-          log::warn!("Face detector not available: {}. Face detection will be disabled.", e);
+          log::warn!(
+            "Face detector not available: {}. Face detection will be disabled.",
+            e
+          );
           None
         }
       }
