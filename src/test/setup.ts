@@ -189,6 +189,39 @@ vi.mock("@/features/modals/services", () => ({
   ModalProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
+// Mock ResourcesProvider and useResources
+vi.mock("@/features/resources", () => ({
+  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+  useResources: () => ({
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    addMedia: vi.fn(),
+    removeMedia: vi.fn(),
+    getEffectById: vi.fn(),
+    getFilterById: vi.fn(),
+    getTransitionById: vi.fn(),
+    getTemplateById: vi.fn(),
+    loadResources: vi.fn(),
+    isLoading: false,
+  }),
+  useResourcesV2: () => ({
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    addMedia: vi.fn(),
+    removeMedia: vi.fn(),
+    getEffectById: vi.fn(),
+    getFilterById: vi.fn(),
+    getTransitionById: vi.fn(),
+    getTemplateById: vi.fn(),
+    loadResources: vi.fn(),
+    isLoading: false,
+  }),
+}))
+
 vi.mock("@/features/app-state", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/features/app-state")>()
   return {

@@ -9,7 +9,7 @@ import { useMediaImport } from "../../hooks/use-media-import"
 // Импорты для моков
 
 // Мокаем зависимости
-const mockUpdateMediaFiles = vi.fn()
+const mockAddMedia = vi.fn()
 const mockSetProjectDirty = vi.fn()
 
 // Re-mock these functions with test-specific implementations
@@ -17,13 +17,6 @@ vi.mock("@/features/app-state", async () => {
   const actual = await vi.importActual("@/features/app-state")
   return {
     ...actual,
-    useMediaFiles: vi.fn(() => ({
-      mediaFiles: [],
-      addMediaFile: vi.fn(),
-      removeMediaFile: vi.fn(),
-      updateMediaFile: vi.fn(),
-      updateMediaFiles: mockUpdateMediaFiles,
-    })),
     useCurrentProject: vi.fn(() => ({
       currentProject: { path: "/test/project", name: "Test", isDirty: false, isNew: false },
       setProjectDirty: mockSetProjectDirty,
@@ -40,7 +33,7 @@ vi.mock("../../hooks/use-media-preview", () => ({
 vi.mock("@/features/resources/services/resources-provider", () => ({
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
   useResources: vi.fn(() => ({
-    addMedia: vi.fn(),
+    addMedia: mockAddMedia,
   })),
 }))
 
@@ -149,8 +142,8 @@ describe("useMediaImport", () => {
       isLoadingMetadata: true,
     })
 
-    // Проверяем, что файлы были добавлены
-    expect(mockUpdateMediaFiles).toHaveBeenCalled()
+    // Проверяем, что файлы были добавлены в ресурсы
+    expect(mockAddMedia).toHaveBeenCalled()
   })
 
   it("should import files from a folder", async () => {
@@ -181,7 +174,7 @@ describe("useMediaImport", () => {
 
     expect(importResult.success).toBe(false)
     expect(importResult.message).toContain("Файлы не выбраны")
-    expect(mockUpdateMediaFiles).not.toHaveBeenCalled()
+    expect(mockAddMedia).not.toHaveBeenCalled()
   })
 
   it("should handle folder selection cancellation", async () => {
