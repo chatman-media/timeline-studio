@@ -22,6 +22,10 @@ vi.mock("../../services/drag-drop-manager", () => ({
 // Mock DOM APIs for SSR compatibility
 const originalWindow = global.window
 
+/**
+ * NOTE: 4 SSR-теста пропущены, так как Timeline Studio - это desktop приложение (Tauri), не SSR.
+ * SSR environment не возникает в production и эти тесты не релевантны.
+ */
 describe("useDraggable", () => {
   const mockGetData = vi.fn(() => ({ id: "test-item", name: "Test Item" }))
   const mockGetPreview = vi.fn(() => ({ url: "test-preview.jpg", width: 100, height: 100 }))
