@@ -30,8 +30,8 @@ pub struct RecognitionService {
   /// YOLO процессор для объектов
   object_detector: Arc<RwLock<YoloProcessor>>,
 
-  /// YOLO процессор для лиц
-  face_detector: Arc<RwLock<YoloProcessor>>,
+  /// YOLO процессор для лиц (опционально)
+  face_detector: Option<Arc<RwLock<YoloProcessor>>>,
 
   /// Сервис для кластеринга и идентификации персон
   pub person_clustering: Arc<PersonClusteringService>,
@@ -57,15 +57,27 @@ impl RecognitionService {
     };
     let object_detector = YoloProcessor::new(object_config).await?;
 
-    let face_config = ProcessorConfig {
-      model: YoloModel::YoloV11Face,
-      processing_config: ProcessingConfig {
-        confidence_threshold: 0.7,
+    // Попытка создать face detector (опционально)
+    let face_detector = {
+      let face_config = ProcessorConfig {
+        model: YoloModel::YoloV11Face,
+        processing_config: ProcessingConfig {
+          confidence_threshold: 0.7,
+          ..Default::default()
+        },
         ..Default::default()
-      },
-      ..Default::default()
+      };
+      match YoloProcessor::new(face_config).await {
+        Ok(processor) => {
+          log::info!("Face detector initialized successfully");
+          Some(Arc::new(RwLock::new(processor)))
+        }
+        Err(e) => {
+          log::warn!("Face detector not available: {}. Face detection will be disabled.", e);
+          None
+        }
+      }
     };
-    let face_detector = YoloProcessor::new(face_config).await?;
 
     // Create person clustering service with proper error handling
     let db_path = base_path.join("persons.db");
@@ -82,7 +94,7 @@ impl RecognitionService {
 
     Ok(Self {
       object_detector: Arc::new(RwLock::new(object_detector)),
-      face_detector: Arc::new(RwLock::new(face_detector)),
+      face_detector,
       person_clustering,
       results_dir,
     })
@@ -107,10 +119,12 @@ impl RecognitionService {
       let objects = object_detector.process_image_path(frame_path).await?;
       all_objects.extend(objects.into_iter().map(|d| (timestamp, d)));
 
-      // Обнаружение лиц
-      let face_detector = self.face_detector.read().await;
-      let faces = face_detector.process_image_path(frame_path).await?;
-      all_faces.extend(faces.into_iter().map(|d| (timestamp, d)));
+      // Обнаружение лиц (если доступно)
+      if let Some(ref face_detector) = self.face_detector {
+        let face_detector = face_detector.read().await;
+        let faces = face_detector.process_image_path(frame_path).await?;
+        all_faces.extend(faces.into_iter().map(|d| (timestamp, d)));
+      }
     }
 
     // Группируем результаты
@@ -361,9 +375,9 @@ impl RecognitionService {
     self.object_detector.clone()
   }
 
-  /// Получить доступ к детектору лиц
+  /// Получить доступ к детектору лиц (если доступен)
   #[allow(dead_code)]
-  pub fn get_face_detector(&self) -> Arc<RwLock<YoloProcessor>> {
+  pub fn get_face_detector(&self) -> Option<Arc<RwLock<YoloProcessor>>> {
     self.face_detector.clone()
   }
 
@@ -373,11 +387,15 @@ impl RecognitionService {
     detector.load_model().await
   }
 
-  /// Загрузить модель для детектора лиц
+  /// Загрузить модель для детектора лиц (если доступен)
   #[allow(dead_code)]
   pub async fn load_face_model(&self) -> Result<()> {
-    let detector = self.face_detector.read().await;
-    detector.load_model().await
+    if let Some(ref face_detector) = self.face_detector {
+      let detector = face_detector.read().await;
+      detector.load_model().await
+    } else {
+      Err(anyhow::anyhow!("Face detector is not available"))
+    }
   }
 
   /// Установить целевые классы для детектора объектов
