@@ -176,7 +176,7 @@ describe("EffectsProvider", () => {
     expect(onError).not.toHaveBeenCalled()
   })
 
-  // TODO: Тест пропущен - требуется проверка
+  // TODO: Тест пропущен - требуется проверка (ошибка рендеринга объекта переводов)
   it.skip("должен поддерживать кастомную конфигурацию", async () => {
     const config = {
       initialSources: ["built-in" as const],
