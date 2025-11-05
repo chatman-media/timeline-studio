@@ -1,3 +1,14 @@
+## [2.3.1](https://github.com/chatman-media/timeline-studio/compare/v2.3.0...v2.3.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлен type-only импорт React в ResourcesProvider ([beaa876](https://github.com/chatman-media/timeline-studio/commit/beaa8760caf956c7af9a141bd1e527ed2f09a0eb))
+* Исправлен импорт несуществующего AppContext ([0d253c2](https://github.com/chatman-media/timeline-studio/commit/0d253c2e0b53956d1e84840568cff499591fcfd2))
+* Исправлен порядок объявлений в ResourcesProvider ([20908e0](https://github.com/chatman-media/timeline-studio/commit/20908e066f74214cf14a488fe784639f13621c9f))
+* Исправлена циклическая зависимость в ResourcesPanel ([af7686f](https://github.com/chatman-media/timeline-studio/commit/af7686fa3240faceb17f3a1ba36772fcc7603c75))
+* Улучшено логирование ошибок загрузки изображений ([752c86b](https://github.com/chatman-media/timeline-studio/commit/752c86b7faa926e716e3f0a6b0d3062ca16c026a))
+
 # [2.3.0](https://github.com/chatman-media/timeline-studio/compare/v2.2.4...v2.3.0) (2025-11-05)
 
 
