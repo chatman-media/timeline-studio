@@ -71,6 +71,14 @@ const mockedUseTimeline = vi.mocked(useTimeline)
 const mockedUseMediaFiles = vi.mocked(useMediaFiles)
 const mockedWhisperService = vi.mocked(WhisperService.getInstance)
 
+/**
+ * NOTE: Большинство тестов пропущены, так как требуют integration/E2E testing:
+ * - Tauri file dialog API требует нативных моков
+ * - Полный flow транскрипции с Whisper service сложно мокировать
+ * - Выбор файлов через нативный dialog требует E2E окружения
+ *
+ * TODO: Покрыть эти сценарии в E2E тестах (Playwright)
+ */
 describe("SubtitleAIToolsModal", () => {
   const mockProject = {
     sections: [
