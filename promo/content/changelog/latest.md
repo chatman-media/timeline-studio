@@ -1,3 +1,13 @@
+## [2.2.2](https://github.com/chatman-media/timeline-studio/compare/v2.2.1...v2.2.2) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлены Rust тесты и добавлены скрипты для скачивания YOLO моделей ([46309ed](https://github.com/chatman-media/timeline-studio/commit/46309ed0d9fe02d6536000a6328c5ff87373fe3f))
+* Сделать face detector опциональным в RecognitionService ([5156f5e](https://github.com/chatman-media/timeline-studio/commit/5156f5e5168706f7b63408f4c836f2f0c6da1f7a))
+* Удален дублирующий FileSelectionCheckbox из превью медиа ([de68357](https://github.com/chatman-media/timeline-studio/commit/de6835701627f8205c50702a0cd40a8f92997d95))
+* Улучшено логирование ошибок загрузки медиа в preview ([d153c82](https://github.com/chatman-media/timeline-studio/commit/d153c82f8af13005821efcb303d4f1274991650e))
+
 ## [2.2.1](https://github.com/chatman-media/timeline-studio/compare/v2.2.0...v2.2.1) (2025-11-05)
 
 
