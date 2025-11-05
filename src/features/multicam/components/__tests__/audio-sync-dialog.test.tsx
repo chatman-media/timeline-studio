@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AudioSyncDialog } from "../audio-sync-dialog"
 
+// TODO: Тест зависает на стадии компиляции/запуска
+// Необходимо исследовать причину зависания и исправить
 describe.skip("AudioSyncDialog", () => {
   const mockOnClose = vi.fn()
   const mockOnSync = vi.fn()
