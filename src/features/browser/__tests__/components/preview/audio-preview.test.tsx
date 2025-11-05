@@ -106,6 +106,9 @@ vi.mock("@/features/video-player", () => ({
 // Глобальные моки для Web Audio API уже настроены в setup.ts
 // Здесь мы можем добавить специфичные для теста настройки если нужно
 
+// TODO: Набор тестов пропущен (9 тестов)
+// Причина неизвестна - требуется проверка
+// Компонент preview аудио с Web Audio API и blob URLs
 describe.skip("AudioPreview", () => {
   const audioFile: MediaFile = {
     id: "audio1",

@@ -177,6 +177,9 @@ vi.mock("../../components/track/track", () => ({
   Track: ({ track }: any) => <div data-testid={`track-${track.id}`}>{track.name}</div>,
 }))
 
+// TODO: Набор тестов пропущен (33 теста)
+// Причина неизвестна - требуется проверка
+// Компонент сложный, имеет множество зависимостей и моков
 describe.skip("TimelineContent", () => {
   beforeEach(() => {
     vi.clearAllMocks()

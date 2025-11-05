@@ -465,6 +465,9 @@ describe("useFrameExtraction", () => {
     })
   })
 
+  // TODO: Набор тестов пропущен (1 тест)
+  // Причина неизвестна - требуется проверка
+  // Тест адаптивного расчета интервалов для длинных видео
   describe.skip("adaptive interval calculation", () => {
     it("should calculate adaptive interval for long videos", async () => {
       // Reset mocks before this test
@@ -506,6 +509,9 @@ describe("useFrameExtraction", () => {
     })
   })
 
+  // TODO: Набор тестов пропущен (1 тест)
+  // Причина неизвестна - требуется проверка
+  // Тест отслеживания прогресса экстракции кадров
   describe.skip("progress tracking", () => {
     it("should update progress during extraction", async () => {
       // Reset mocks before this test

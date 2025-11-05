@@ -76,6 +76,9 @@ vi.mock("@/domains/ai-services/services/platform-optimization", () => ({
   },
 }))
 
+// TODO: Набор тестов пропущен (8 тестов)
+// Причина неизвестна - требуется проверка
+// Компонент AI контент-анализа видео с множественными сервисами
 describe.skip("ContentIntelligencePanel", () => {
   it("should render empty state when no video is selected", () => {
     const { getByText } = render(<ContentIntelligencePanel />)
