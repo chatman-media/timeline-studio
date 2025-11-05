@@ -1,3 +1,11 @@
+## [2.2.1](https://github.com/chatman-media/timeline-studio/compare/v2.2.0...v2.2.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* Исправлена синхронизация Media browser и автопроигрывание видео ([cbe697a](https://github.com/chatman-media/timeline-studio/commit/cbe697a849c628f4d38db9ef0f4347efc9f591f9))
+* Удалены проверки console.log из тестов импорта ([ec344ad](https://github.com/chatman-media/timeline-studio/commit/ec344ad34f3e9bf3d9aae79d9969764be73a6134))
+
 # [2.2.0](https://github.com/chatman-media/timeline-studio/compare/v2.1.5...v2.2.0) (2025-11-05)
 
 
