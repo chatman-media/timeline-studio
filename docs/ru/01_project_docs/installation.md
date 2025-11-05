@@ -175,7 +175,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y curl build-essential pkg-config libssl-dev
 
 # Node.js через NodeSource
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # Rust
