@@ -54,6 +54,7 @@ describe("useDraggable", () => {
     expect(typeof result.current.onDragEnd).toBe("function")
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should return false for draggable in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
@@ -122,6 +123,7 @@ describe("useDraggable", () => {
     )
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should skip drag start in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
@@ -205,6 +207,7 @@ describe("useDropZone", () => {
     expect(typeof result.current.onDrop).toBe("function")
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should skip registration in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
@@ -278,6 +281,7 @@ describe("useDragDropState", () => {
     expect(result.current).toBeNull()
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should skip setup in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })

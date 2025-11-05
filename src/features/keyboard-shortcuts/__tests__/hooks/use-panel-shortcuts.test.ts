@@ -144,6 +144,7 @@ describe("usePanelShortcuts", () => {
   })
 
   describe("UserSettings Integration", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should use current userSettings instance", () => {
       // Skip: vi.doMock doesn't work after module import
       const customToggleBrowser = vi.fn()
@@ -177,6 +178,7 @@ describe("usePanelShortcuts", () => {
   })
 
   describe("Effect Dependencies", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should re-run effect when userSettings changes", () => {
       // Skip: vi.doMock doesn't work after module import
       const { rerender } = renderHook(() => usePanelShortcuts())

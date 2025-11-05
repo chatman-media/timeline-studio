@@ -276,6 +276,7 @@ describe("StoreService", () => {
       consoleErrorSpy.mockRestore()
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("не должен сохранять, если хранилище не инициализировано", async () => {
       // Сбрасываем singleton полностью
       // @ts-expect-error - обращаемся к приватному свойству для тестов

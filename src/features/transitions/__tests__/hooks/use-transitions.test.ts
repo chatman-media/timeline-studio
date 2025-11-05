@@ -137,10 +137,12 @@ describe("Transitions Module", () => {
       expect(fadeTransition?.labels?.en).toBe("Fade")
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should handle loading state", () => {
       // Skip: Mock already loaded by the time hook runs
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should handle error state", () => {
       // Skip: Mock already loaded by the time hook runs
     })

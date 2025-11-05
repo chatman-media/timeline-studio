@@ -176,6 +176,7 @@ describe("EffectsProvider", () => {
     expect(onError).not.toHaveBeenCalled()
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("должен поддерживать кастомную конфигурацию", async () => {
     const config = {
       initialSources: ["built-in" as const],

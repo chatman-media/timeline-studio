@@ -270,6 +270,7 @@ describe("useStyleTemplates", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("должен обрабатывать ошибки загрузки", async () => {
     // Мокаем ошибку импорта
     vi.doMock("../../data/style-templates.json", () => {

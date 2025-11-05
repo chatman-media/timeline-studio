@@ -157,6 +157,7 @@ describe("SubtitleAIToolsModal", () => {
     expect(screen.getByText("Автоматическое создание субтитров с использованием AI")).toBeTruthy()
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should display available media files", async () => {
     // This test is skipped because TranscriptionPanel uses Tauri file dialog
     render(<SubtitleAIToolsModal />)
@@ -171,6 +172,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should display language options", () => {
     render(<SubtitleAIToolsModal />)
 
@@ -183,6 +185,7 @@ describe("SubtitleAIToolsModal", () => {
     expect(screen.getAllByText("English").length).toBeGreaterThan(0)
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should display model selection options", async () => {
     render(<SubtitleAIToolsModal />)
 
@@ -196,6 +199,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should disable start button when no file is selected", () => {
     render(<SubtitleAIToolsModal />)
 
@@ -203,6 +207,7 @@ describe("SubtitleAIToolsModal", () => {
     expect(startButton).toBeDisabled()
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should show no media message when project has no files", () => {
     mockedUseTimeline.mockReturnValue({
       project: { sections: [], globalTracks: [] } as any,
@@ -218,6 +223,7 @@ describe("SubtitleAIToolsModal", () => {
     expect(screen.getByText("Добавьте видео или аудио файлы в проект для транскрипции")).toBeTruthy()
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should start transcription with selected video file", async () => {
     const mockTranscriptionResult = {
       segments: [
@@ -299,6 +305,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should use OpenAI API when API key is available", async () => {
     const mockTranscriptionResult = {
       text: "Test subtitle",
@@ -338,6 +345,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should handle transcription errors", async () => {
     const mockWhisper = {
       loadApiKey: vi.fn().mockResolvedValue(false),
@@ -371,6 +379,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should show local model note when local model is selected", async () => {
     render(<SubtitleAIToolsModal />)
 
@@ -387,6 +396,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should disable start button when transcribing", async () => {
     render(<SubtitleAIToolsModal />)
 
@@ -405,6 +415,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should handle no available transcription method", async () => {
     const mockWhisper = {
       loadApiKey: vi.fn().mockResolvedValue(false),
@@ -436,6 +447,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should handle duplicate media files", async () => {
     const projectWithDuplicates = {
       sections: [
@@ -506,6 +518,7 @@ describe("SubtitleAIToolsModal", () => {
     })
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("should use selected language for transcription", async () => {
     const mockWhisper = {
       loadApiKey: vi.fn().mockResolvedValue(false),

@@ -121,6 +121,7 @@ describe("KeyboardShortcutsModal", () => {
   })
 
   describe("Preset Selection", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should switch presets when selected", async () => {
       // Skipped due to complex Select component portal rendering
       const { baseElement } = render(<KeyboardShortcutsModal />)
@@ -146,6 +147,7 @@ describe("KeyboardShortcutsModal", () => {
       })
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should display selected preset name", async () => {
       // Skipped due to complex Select component portal rendering
       const { baseElement } = render(<KeyboardShortcutsModal />)
@@ -293,6 +295,7 @@ describe("KeyboardShortcutsModal", () => {
   })
 
   describe("Shortcut Editing", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should enter edit mode on shortcut click", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)
@@ -315,6 +318,7 @@ describe("KeyboardShortcutsModal", () => {
       })
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should capture key combination in edit mode", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)
@@ -342,6 +346,7 @@ describe("KeyboardShortcutsModal", () => {
       })
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should cancel edit mode on Escape", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)
@@ -362,6 +367,7 @@ describe("KeyboardShortcutsModal", () => {
       })
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should cancel edit mode on outside click", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)
@@ -395,6 +401,7 @@ describe("KeyboardShortcutsModal", () => {
       expect(mockCreatePresets).toHaveBeenCalledTimes(2) // Once on init, once on reset
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should exit edit mode on reset", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)
@@ -438,6 +445,7 @@ describe("KeyboardShortcutsModal", () => {
   })
 
   describe("Keyboard Navigation", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("should handle special keys in edit mode", async () => {
       // Skip for now - component state management seems to have issues in test environment
       render(<KeyboardShortcutsModal />)

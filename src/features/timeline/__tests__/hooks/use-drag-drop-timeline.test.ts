@@ -530,6 +530,7 @@ describe("useDragDropTimeline", () => {
   })
 
   describe("Расчеты позиции и снэппинга", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен правильно рассчитывать позицию времени", () => {
       const { result } = renderHook(() => useDragDropTimeline())
 
@@ -598,6 +599,7 @@ describe("useDragDropTimeline", () => {
       expect(result.current.dragState.dropPosition?.startTime).toBe(200)
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен применять снэппинг при включенном режиме", () => {
       mockUiState.snapMode = "grid"
       const { result } = renderHook(() => useDragDropTimeline())

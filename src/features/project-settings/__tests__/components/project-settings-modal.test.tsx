@@ -187,6 +187,7 @@ describe("ProjectSettingsModal", () => {
       expect(aspectRatioCombobox).toHaveTextContent("16:9")
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен обрабатывать смену соотношения сторон на custom", () => {
       mockSettings.aspectRatio.label = "custom"
       render(<ProjectSettingsModal />)
@@ -213,6 +214,7 @@ describe("ProjectSettingsModal", () => {
       expect(resolutionSelect).toHaveTextContent("1920x1080")
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен показывать custom для пользовательского соотношения", () => {
       mockSettings.aspectRatio.label = "custom"
       mockSettings.resolution = "custom"
@@ -491,6 +493,7 @@ describe("ProjectSettingsModal", () => {
       )
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен обрабатывать сохранение с пользовательским разрешением", async () => {
       const user = userEvent.setup()
 
@@ -531,6 +534,7 @@ describe("ProjectSettingsModal", () => {
       )
     })
 
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен применять таймаут при сохранении", async () => {
       const user = userEvent.setup()
       render(<ProjectSettingsModal />)
@@ -712,6 +716,7 @@ describe("ProjectSettingsModal", () => {
   })
 
   describe("Интеграционные тесты", () => {
+    // TODO: Тест пропущен - требуется проверка
     it.skip("должен правильно обрабатывать полный цикл редактирования", async () => {
       const user = userEvent.setup()
       render(<ProjectSettingsModal />)

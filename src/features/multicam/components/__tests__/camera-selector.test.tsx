@@ -161,6 +161,7 @@ describe("CameraSelector", () => {
     expect(screen.getByRole("button")).toHaveClass("custom-class")
   })
 
+  // TODO: Тест пропущен - требуется проверка
   it.skip("закрывает меню после выбора", async () => {
     // Пропускаем - Radix UI dropdown не закрывается в тестах
   })
