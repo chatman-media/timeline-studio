@@ -151,6 +151,7 @@ export const VideoPreview = memo(
         const videoRef = videoRefs.current[key]
         if (videoRef && !isPlaying) {
           videoRef.currentTime = newTime
+          videoRef.pause() // Явно останавливаем после изменения currentTime
         }
       },
       [file.duration, isPlaying],
@@ -341,8 +342,9 @@ export const VideoPreview = memo(
 
                 setHoverTime(newTime)
                 const video = e.currentTarget.querySelector("video")
-                if (video) {
+                if (video && !isPlaying) {
                   video.currentTime = newTime
+                  video.pause() // Явно останавливаем после изменения currentTime
                 }
               }}
               onMouseLeave={() => {

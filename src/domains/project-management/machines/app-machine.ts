@@ -154,6 +154,16 @@ export const appMachine = setup({
     commandQueue: [],
   },
 
+  // Global event handlers - work in all states
+  on: {
+    STATE_UPDATED: {
+      actions: {
+        type: "setProjectState",
+        params: ({ event }) => ({ state: event.state }),
+      },
+    },
+  },
+
   states: {
     disconnected: {
       entry: "clearError",

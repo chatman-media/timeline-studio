@@ -5,8 +5,9 @@
  */
 
 import type React from "react"
-import { createContext, useCallback, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useState } from "react"
 
+import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
@@ -81,48 +82,14 @@ interface ResourcesProviderV2Props {
 
 export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
   const [backendSync] = useState(() => getBackendSync())
-  const [backendState, setBackendState] = useState<ProjectState | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Подписка и подключение к backend состоянию
-  useEffect(() => {
-    let mounted = true
-    console.log("ResourcesProvider: Setting up backend state subscription and connecting")
-    // Подписываемся на обновления состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      console.log("ResourcesProvider: Backend state updated", state)
-      if (mounted) {
-        setBackendState(state)
-        setError(null)
-      }
-    })
+  // Используем projectState из appMachine вместо прямой подписки на backendSync
+  const { projectState } = useAppSettings()
+  const backendState = projectState
 
-    // Попытка подключиться и получить начальное состояние
-    void (async () => {
-      try {
-        await backendSync.connect()
-        const initialState = await backendSync.getProjectState()
-        if (initialState && mounted) {
-          setBackendState(initialState)
-        }
-      } catch (e) {
-        console.error("ResourcesProvider: Failed to connect to backendSync:", e)
-        setError(e instanceof Error ? e.message : String(e))
-      }
-    })()
-
-    return () => {
-      mounted = false
-      // отписываемся
-      try {
-        unsubscribe()
-      } catch {
-        // ignore
-      }
-      void backendSync.disconnect()
-    }
-  }, [backendSync])
+  console.log("ResourcesProvider: Using projectState from appMachine", backendState)
 
   // Функция для выполнения backend команд
   const executeCommand = useCallback(
