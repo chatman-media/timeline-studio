@@ -4,8 +4,7 @@
  * Новая версия с интеграцией backend state management
  */
 
-import type React from "react"
-import { createContext, useCallback, useContext, useState } from "react"
+import { createContext, type ReactNode, useCallback, useContext, useState } from "react"
 
 import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
@@ -76,7 +75,7 @@ interface ResourcesContextType {
 const ResourcesContext = createContext<ResourcesContextType | undefined>(undefined)
 
 interface ResourcesProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function ResourcesProvider({ children }: ResourcesProviderProps) {
