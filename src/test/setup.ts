@@ -206,20 +206,6 @@ vi.mock("@/features/resources", () => ({
     loadResources: vi.fn(),
     isLoading: false,
   }),
-  useResources: () => ({
-    effects: [],
-    filters: [],
-    transitions: [],
-    templates: [],
-    addMedia: vi.fn(),
-    removeMedia: vi.fn(),
-    getEffectById: vi.fn(),
-    getFilterById: vi.fn(),
-    getTransitionById: vi.fn(),
-    getTemplateById: vi.fn(),
-    loadResources: vi.fn(),
-    isLoading: false,
-  }),
 }))
 
 vi.mock("@/features/app-state", async (importOriginal) => {

@@ -28,9 +28,6 @@ vi.mock("@/features/app-state/services/app-provider", async () => {
     AppProvider: ({ children }: { children: React.ReactNode }) =>
       React.createElement(AppContext.Provider, { value: mockContext }, children),
     useApp: () => mockContext,
-    useApp: () => mockContext,
-    AppProvider: ({ children }: { children: React.ReactNode }) =>
-      React.createElement(AppContext.Provider, { value: mockContext }, children),
     AppContext,
   }
 })

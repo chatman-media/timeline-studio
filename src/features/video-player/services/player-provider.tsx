@@ -7,7 +7,7 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 
-import { AppCommands } from "@/features/app-state/services/app-machine"
+import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
