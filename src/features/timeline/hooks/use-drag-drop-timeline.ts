@@ -9,7 +9,6 @@
 
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core"
 import { useCallback, useState } from "react"
-// import { getBackendSync } from "@/features/app-state/services/backend-sync" // TODO: Реализовать аналитику и историю
 import { handleInterModuleDrag, isInterModuleDrag } from "../services/drag-drop-bridge"
 import type { TrackType } from "../types"
 import type { DragData, DragState } from "../types/drag-drop"

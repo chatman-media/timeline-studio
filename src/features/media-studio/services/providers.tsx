@@ -20,7 +20,7 @@ import { PlayerProvider } from "@/features/video-player/services/player-provider
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 import { AIServicesProvider } from "@/shared/services/ai/react-integration"
 
-interface ProvidersV2Props {
+interface ProvidersProps {
   children: ReactNode
 }
 
@@ -59,9 +59,8 @@ const AppProviderComposite = composeProviders(
   // AIIntelligenceProvider, // ОТКЛЮЧЕНО: может быть тяжелым и вызывать зависания
 )
 
-export function ProvidersV2({ children }: ProvidersV2Props) {
+export function Providers({ children }: ProvidersProps) {
   return <AppProviderComposite>{children}</AppProviderComposite>
 }
 
 // Экспорт для обратной совместимости
-export { ProvidersV2 as Providers }

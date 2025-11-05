@@ -455,8 +455,4 @@ export function usePlayer(): PlayerContextType {
   return context
 }
 
-// Legacy exports для обратной совместимости
-export { PlayerProvider as PlayerProviderV2 }
-export { usePlayer as usePlayerV2 }
 export type { PlayerContextType }
-export type { PlayerContextType as PlayerContextTypeV2 }

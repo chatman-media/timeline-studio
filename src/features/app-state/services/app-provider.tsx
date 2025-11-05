@@ -83,9 +83,3 @@ export function useApp(): AppProviderV2Context {
 
   return context
 }
-
-// Legacy exports для обратной совместимости
-export { AppProvider as AppProviderV2 }
-export { useApp as useAppV2 }
-export { AppContextV2 as AppContext }
-export type { AppProviderV2Context as AppSettingsProviderContext }

@@ -11,7 +11,7 @@ import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
 
-interface ProjectSettingsContextTypeV2 {
+interface ProjectSettingsContextType {
   // Настройки проекта (синхронизированы с backend)
   settings: ProjectSettings
 
@@ -24,13 +24,13 @@ interface ProjectSettingsContextTypeV2 {
   resetSettings: () => Promise<void>
 }
 
-const ProjectSettingsContextV2 = createContext<ProjectSettingsContextTypeV2 | undefined>(undefined)
+const ProjectSettingsContext = createContext<ProjectSettingsContextType | undefined>(undefined)
 
-interface ProjectSettingsProviderV2Props {
+interface ProjectSettingsProviderProps {
   children: React.ReactNode
 }
 
-export function ProjectSettingsProviderV2({ children }: ProjectSettingsProviderV2Props) {
+export function ProjectSettingsProvider({ children }: ProjectSettingsProviderProps) {
   const [backendSync] = useState(() => getBackendSync())
   const [backendState, setBackendState] = useState<ProjectState | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -109,7 +109,7 @@ export function ProjectSettingsProviderV2({ children }: ProjectSettingsProviderV
   }, [backendState?.project?.settings])
 
   // Контекстное значение
-  const contextValue: ProjectSettingsContextTypeV2 = {
+  const contextValue: ProjectSettingsContextType = {
     // Настройки
     settings,
 
@@ -122,23 +122,19 @@ export function ProjectSettingsProviderV2({ children }: ProjectSettingsProviderV
     resetSettings,
   }
 
-  return <ProjectSettingsContextV2.Provider value={contextValue}>{children}</ProjectSettingsContextV2.Provider>
+  return <ProjectSettingsContext.Provider value={contextValue}>{children}</ProjectSettingsContext.Provider>
 }
 
-export function useProjectSettingsV2(): ProjectSettingsContextTypeV2 {
-  const context = useContext(ProjectSettingsContextV2)
+export function useProjectSettings(): ProjectSettingsContextType {
+  const context = useContext(ProjectSettingsContext)
 
   if (!context) {
-    throw new Error("useProjectSettingsV2 must be used within ProjectSettingsProviderV2")
+    throw new Error("useProjectSettings must be used within ProjectSettingsProvider")
   }
 
   return context
 }
 
 // Экспорт типов
-export type { ProjectSettingsContextTypeV2 }
-export type { ProjectSettingsContextTypeV2 as ProjectSettingsProviderType }
-
-// Экспорт для обратной совместимости
-export { ProjectSettingsProviderV2 as ProjectSettingsProvider }
-export { ProjectSettingsContextV2 as ProjectSettingsContext }
+export type { ProjectSettingsContextType }
+export type { ProjectSettingsContextType as ProjectSettingsProviderType }

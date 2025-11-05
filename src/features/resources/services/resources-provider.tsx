@@ -73,13 +73,13 @@ interface ResourcesContextType {
   isAdded: (resourceId: string, type: string) => boolean
 }
 
-const ResourcesContextV2 = createContext<ResourcesContextType | undefined>(undefined)
+const ResourcesContext = createContext<ResourcesContextType | undefined>(undefined)
 
-interface ResourcesProviderV2Props {
+interface ResourcesProviderProps {
   children: React.ReactNode
 }
 
-export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
+export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const [backendSync] = useState(() => getBackendSync())
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -503,14 +503,14 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
     },
   }
 
-  return <ResourcesContextV2.Provider value={contextValue}>{children}</ResourcesContextV2.Provider>
+  return <ResourcesContext.Provider value={contextValue}>{children}</ResourcesContext.Provider>
 }
 
-export function useResourcesV2(): ResourcesContextType {
-  const context = useContext(ResourcesContextV2)
+export function useResources(): ResourcesContextType {
+  const context = useContext(ResourcesContext)
 
   if (!context) {
-    throw new Error("useResourcesV2 must be used within ResourcesProviderV2")
+    throw new Error("useResources must be used within ResourcesProviderV2")
   }
 
   return context
@@ -518,7 +518,3 @@ export function useResourcesV2(): ResourcesContextType {
 
 // Экспорт типов
 export type { ResourcesContextType }
-
-// Экспорт для обратной совместимости
-export { ResourcesProviderV2 as ResourcesProvider }
-export { useResourcesV2 as useResources }
