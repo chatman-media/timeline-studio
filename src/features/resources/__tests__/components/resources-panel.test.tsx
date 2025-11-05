@@ -26,25 +26,31 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-// Mock lucide-react icons
-vi.mock("lucide-react", () => ({
-  Blend: ({ className }: any) => <div data-testid="blend-icon" className={className} />,
-  Clapperboard: ({ className }: any) => <div data-testid="clapperboard-icon" className={className} />,
-  FlipHorizontal2: ({ className }: any) => <div data-testid="flip-horizontal-icon" className={className} />,
-  Music: ({ className }: any) => <div data-testid="music-icon" className={className} />,
-  Package: ({ className }: any) => <div data-testid="package-icon" className={className} />,
-  Palette: ({ className }: any) => <div data-testid="palette-icon" className={className} />,
-  Scissors: ({ className }: any) => <div data-testid="scissors-icon" className={className} />,
-  Sparkles: ({ className }: any) => <div data-testid="sparkles-icon" className={className} />,
-  Sticker: ({ className }: any) => <div data-testid="sticker-icon" className={className} />,
-  Subtitles: ({ className }: any) => <div data-testid="subtitles-icon" className={className} />,
-  Type: ({ className }: any) => <div data-testid="type-icon" className={className} />,
-  Video: ({ className }: any) => <div data-testid="video-icon" className={className} />,
-  X: ({ className }: any) => <div data-testid="x-icon" className={className} />,
-}))
+// Mock lucide-react icons - используем importOriginal для остальных иконок
+vi.mock("lucide-react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("lucide-react")>()
+  return {
+    ...actual,
+    Blend: ({ className }: any) => <div data-testid="blend-icon" className={className} />,
+    Clapperboard: ({ className }: any) => <div data-testid="clapperboard-icon" className={className} />,
+    FlipHorizontal2: ({ className }: any) => <div data-testid="flip-horizontal-icon" className={className} />,
+    Grid: ({ className }: any) => <div data-testid="grid-icon" className={className} />,
+    LayoutDashboard: ({ className }: any) => <div data-testid="layout-dashboard-icon" className={className} />,
+    Music: ({ className }: any) => <div data-testid="music-icon" className={className} />,
+    Package: ({ className }: any) => <div data-testid="package-icon" className={className} />,
+    Palette: ({ className }: any) => <div data-testid="palette-icon" className={className} />,
+    Scissors: ({ className }: any) => <div data-testid="scissors-icon" className={className} />,
+    Sparkles: ({ className }: any) => <div data-testid="sparkles-icon" className={className} />,
+    Sticker: ({ className }: any) => <div data-testid="sticker-icon" className={className} />,
+    Subtitles: ({ className }: any) => <div data-testid="subtitles-icon" className={className} />,
+    Type: ({ className }: any) => <div data-testid="type-icon" className={className} />,
+    Video: ({ className }: any) => <div data-testid="video-icon" className={className} />,
+    X: ({ className }: any) => <div data-testid="x-icon" className={className} />,
+  }
+})
 
 // Mock useResources hook
-vi.mock("@/features/resources", () => ({
+vi.mock("@/features/resources/services/resources-provider", () => ({
   useResources: vi.fn(),
 }))
 
@@ -104,7 +110,7 @@ describe("ResourcesPanel", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const { useResources } = vi.mocked(await import("@/features/resources"))
+    const { useResources } = vi.mocked(await import("@/features/resources/services/resources-provider"))
     useResources.mockReturnValue(mockResources)
   })
 
@@ -199,7 +205,7 @@ describe("ResourcesPanel", () => {
         removeResource: mockRemoveResource,
       }
 
-      const { useResources } = vi.mocked(await import("@/features/resources"))
+      const { useResources } = vi.mocked(await import("@/features/resources/services/resources-provider"))
       useResources.mockReturnValue(emptyResources)
 
       render(<ResourcesPanel />)
@@ -222,7 +228,7 @@ describe("ResourcesPanel", () => {
         removeResource: mockRemoveResource,
       }
 
-      const { useResources } = vi.mocked(await import("@/features/resources"))
+      const { useResources } = vi.mocked(await import("@/features/resources/services/resources-provider"))
       useResources.mockReturnValue(emptyResources)
 
       render(<ResourcesPanel />)
@@ -280,7 +286,7 @@ describe("ResourcesPanel", () => {
         removeResource: mockRemoveResource,
       }
 
-      const { useResources } = vi.mocked(await import("@/features/resources"))
+      const { useResources } = vi.mocked(await import("@/features/resources/services/resources-provider"))
       useResources.mockReturnValue(mixedResources)
 
       render(<ResourcesPanel />)

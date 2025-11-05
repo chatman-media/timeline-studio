@@ -135,11 +135,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-// TODO: Набор тестов пропущен (17/25 тестов проходят, 8 падают)
-// Проблема: компонент DefaultLayout не корректно обрабатывает видимость Browser
-// Все падающие тесты связаны с условным рендерингом Browser компонента
-// Необходимо исправить логику useUserSettings мока или компонент
-describe.skip("DefaultLayout", () => {
+describe("DefaultLayout", () => {
   beforeEach(() => {
     // Сбрасываем моки перед каждым тестом
     mockUseUserSettings.mockReturnValue({

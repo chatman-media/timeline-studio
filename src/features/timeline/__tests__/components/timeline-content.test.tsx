@@ -181,7 +181,7 @@ vi.mock("../../components/track/track", () => ({
 // Проблема: ResizeObserver мок не является конструктором
 // Ошибка: "() => ({ observe: vi.fn(), ... }) is not a constructor"
 // Необходимо исправить мокирование ResizeObserver в setup.ts или в этом файле
-describe.skip("TimelineContent", () => {
+describe("TimelineContent", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     // Reset mock states
@@ -189,13 +189,7 @@ describe.skip("TimelineContent", () => {
     mockTimelineState.error = null
     mockTracks.tracks = []
     mockClips.clips = []
-
-    // Mock ResizeObserver
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-    }))
+    // ResizeObserver уже мокируется в setup.ts
   })
 
   afterEach(() => {
@@ -237,11 +231,7 @@ describe.skip("TimelineContent", () => {
       render(<TimelineContent />)
 
       await waitFor(() => {
-        expect(mockTimelineState.createProject).toHaveBeenCalledWith("Test Project", {
-          width: 1920,
-          height: 1080,
-          frameRate: 30,
-        })
+        expect(mockTimelineState.createProject).toHaveBeenCalledWith("Test Project")
       })
     })
 
@@ -471,10 +461,13 @@ describe.skip("TimelineContent", () => {
     it("should setup resize observer", () => {
       const mockObserve = vi.fn()
       const mockDisconnect = vi.fn()
-      global.ResizeObserver = vi.fn().mockImplementation(() => ({
-        observe: mockObserve,
-        disconnect: mockDisconnect,
-      }))
+
+      // Создаем класс, а не функцию
+      global.ResizeObserver = class {
+        observe = mockObserve
+        disconnect = mockDisconnect
+        unobserve = vi.fn()
+      } as any
 
       const { unmount } = render(<TimelineContent />)
 

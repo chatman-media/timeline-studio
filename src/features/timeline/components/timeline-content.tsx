@@ -64,12 +64,12 @@ export function TimelineContent() {
     selectTracks,
     seek,
     send,
+    error = null,
+    clearError = () => {},
   } = useTimeline()
 
   // Временные значения для обратной совместимости
   const timeScale = 60 // Пикселей в секунду по умолчанию
-  const error: string | null = null
-  const clearError = () => {}
 
   const { tracks, setTrackHeight } = useTracks()
   const { clips } = useClips()

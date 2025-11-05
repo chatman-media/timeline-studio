@@ -10,7 +10,7 @@ function TopDefaultLayout() {
   const { isOptionsVisible, isTimelineVisible, isBrowserVisible } = useUserSettings()
 
   // Случай: только VideoPlayer (все панели скрыты)
-  if (!isOptionsVisible && !isTimelineVisible && !isBrowserVisible) {
+  if (!isOptionsVisible && !isBrowserVisible) {
     return (
       <div className="h-full flex-1">
         <VideoPlayer />
@@ -18,36 +18,36 @@ function TopDefaultLayout() {
     )
   }
 
-  // Случай: VideoPlayer + AI Assistant (Options скрыт)
-  if (!isOptionsVisible && isTimelineVisible) {
+  // Случай: Browser + VideoPlayer (Options скрыт)
+  if (isBrowserVisible && !isOptionsVisible) {
     return (
-      <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-ai">
-        <ResizablePanel defaultSize={70} minSize={30} maxSize={90}>
+      <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-1">
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
           <div className="h-full flex-1">
-            <VideoPlayer />
+            <Browser />
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={30} minSize={10} maxSize={70}>
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
           <div className="h-full flex-1">
-            <AISuggestionsPanel />
+            <VideoPlayer />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     )
   }
 
-  // Случай: VideoPlayer + Options (AI может быть видим)
-  if (!isTimelineVisible) {
+  // Случай: VideoPlayer + Options (Browser скрыт)
+  if (!isBrowserVisible && isOptionsVisible) {
     return (
       <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-2">
-        <ResizablePanel defaultSize={65} minSize={20} maxSize={80}>
-          <div className="relative h-full flex-1">
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
+          <div className="h-full flex-1">
             <VideoPlayer />
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={35} minSize={20} maxSize={80}>
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
           <div className="h-full flex-1">
             <Options />
           </div>
@@ -55,27 +55,37 @@ function TopDefaultLayout() {
       </ResizablePanelGroup>
     )
   }
-  // VideoPlayer + Options + AI Assistant
+
+  // Случай: Browser + VideoPlayer + Options (все видимы)
+  if (isBrowserVisible && isOptionsVisible) {
+    return (
+      <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-3">
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+          <div className="h-full flex-1">
+            <Browser />
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+          <div className="h-full flex-1">
+            <VideoPlayer />
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
+          <div className="h-full flex-1">
+            <Options />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    )
+  }
+
+  // Fallback: только VideoPlayer
   return (
-    <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="default-layout-options-ai">
-      <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
-        <div className="relative h-full flex-1">
-          <Browser />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={50} minSize={20} maxSize={70}>
-        <div className="relative h-full flex-1">
-          <VideoPlayer />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={25} minSize={15} maxSize={70}>
-        <div className="h-full flex-1">
-          <Options />
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <div className="h-full flex-1">
+      <VideoPlayer />
+    </div>
   )
 }
 
