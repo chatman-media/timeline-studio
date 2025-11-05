@@ -147,6 +147,8 @@ describe("AddMediaButton", () => {
     expect(button.className).toContain("visible")
   })
 
+  // TODO: Тест падает - компонент не вызывает addResource при клике
+  // Необходимо проверить логику компонента или обновить тест
   it.skip("should call addResource when clicked and not added", () => {
     const { isAdded, addResource } = vi.mocked(useResources())
     isAdded.mockReturnValue(false)
@@ -194,6 +196,8 @@ describe("AddMediaButton", () => {
     expect(screen.getByTestId("x-icon")).toBeInTheDocument()
   })
 
+  // TODO: Тест падает - элемент "Remove from timeline" не появляется после mouseEnter
+  // Компонент не переключается в режим удаления при наведении
   it.skip("should call removeResource when clicked on remove icon", () => {
     const { isAdded, removeResource } = vi.mocked(useResources())
     isAdded.mockReturnValue(true)
