@@ -391,7 +391,10 @@ describe("Temporary Project Integration", () => {
       expect(writeTextFile).toHaveBeenCalledWith("/app/backup/temp_project.tlsp", expect.any(String))
     })
 
-    // TODO: Тест пропущен - требуется проверка
+    /**
+     * NOTE: Тест пропущен - требуется настройка моков для загрузки существующего проекта.
+     * TODO: Проверить integration logic и включить тест.
+     */
     it.skip("should load existing temp project if it exists", async () => {
       // Mock existing temp project file
       const existingProject = {

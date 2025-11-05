@@ -176,7 +176,10 @@ describe("EffectsProvider", () => {
     expect(onError).not.toHaveBeenCalled()
   })
 
-  // TODO: Тест пропущен - требуется проверка (ошибка рендеринга объекта переводов)
+  /**
+   * NOTE: Тест пропущен из-за ошибки рендеринга объекта переводов (i18n).
+   * TODO: Исправить моки react-i18next для корректной работы с объектами переводов.
+   */
   it.skip("должен поддерживать кастомную конфигурацию", async () => {
     const config = {
       initialSources: ["built-in" as const],

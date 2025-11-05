@@ -406,7 +406,11 @@ describe("DragDropManager", () => {
       expect(mockDropTarget.onDrop).not.toHaveBeenCalled()
     })
 
-    // TODO: Тест пропущен - требуется проверка
+    /**
+     * NOTE: Эти 2 теста пропущены - требуется детальная проверка логики и моков DOM.
+     * Могут требовать настройки сложных моков document.elementFromPoint и element.contains.
+     * TODO: Проверить и включить или покрыть через integration тесты.
+     */
     it.skip("should handle drag enter/leave on target change", () => {
       const target1 = {
         ...mockDropTarget,
@@ -538,7 +542,6 @@ describe("DragDropManager", () => {
       expect(mockDataTransfer.setDragImage).not.toHaveBeenCalled()
     })
 
-    // TODO: Тест пропущен - требуется проверка
     it.skip("should create ghost element but not image without preview url", () => {
       const itemWithoutUrl = { ...testItem, preview: { width: 100, height: 100 } }
 

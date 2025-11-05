@@ -161,7 +161,10 @@ describe("CameraSelector", () => {
     expect(screen.getByRole("button")).toHaveClass("custom-class")
   })
 
-  // TODO: Тест пропущен - требуется проверка
+  /**
+   * NOTE: Тест пропущен - требуется проверка взаимодействия с Radix UI Popover.
+   * TODO: Настроить моки для Radix UI или покрыть через E2E тесты.
+   */
   it.skip("закрывает меню после выбора", async () => {
     // Пропускаем - Radix UI dropdown не закрывается в тестах
   })
