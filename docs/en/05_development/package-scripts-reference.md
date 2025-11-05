@@ -40,8 +40,8 @@ Complete reference for all available npm/bun scripts in Timeline Studio with up-
 | `bun run lint:fix` | ESLint with auto-fix | ✅ |
 | `bun run lint:windows` | ESLint for Windows | ❌ |
 | `bun run lint:fix:windows` | ESLint auto-fix for Windows | ✅ |
-| `bun run format:imports` | Format imports | ✅ |
-| `bun run format:imports:windows` | Format imports for Windows | ✅ |
+| `bun run format` | Format imports | ✅ |
+| `bun run format` | Format imports for Windows | ✅ |
 
 ### CSS
 | Command | Description | Auto-fix |
@@ -60,9 +60,9 @@ Complete reference for all available npm/bun scripts in Timeline Studio with up-
 ### Comprehensive Commands
 | Command | Description | What's included |
 |---------|-------------|----------------|
-| `bun run check:all` | All checks + tests | lint + lint:css + format:imports + check:rust + test + test:rust |
+| `bun run check:all` | All checks + tests | lint + lint:css + format + check:rust + test + test:rust |
 | `bun run check:rust` | All Rust checks | lint:rust + format:rust:check |
-| `bun run fix:all` | All auto-fixes | lint:css:fix + format:imports + fix:rust |
+| `bun run fix:all` | All auto-fixes | lint:css:fix + format + fix:rust |
 | `bun run fix:rust` | All Rust auto-fixes | format:rust + lint:rust:fix |
 
 ## 🧪 Testing (20 commands)
@@ -105,11 +105,11 @@ Complete reference for all available npm/bun scripts in Timeline Studio with up-
 
 | Command | Description | What it does |
 |---------|-------------|--------------|
-| `bun run biome:check` | Check with Biome | Linting + formatting |
-| `bun run biome:check:apply` | Auto-fix | --write flag |
-| `bun run biome:format` | Formatting only | Code formatting |
-| `bun run biome:lint` | Linting only | Rules checking |
-| `bun run biome:lint:fix` | Auto-fix linting | --write for linting |
+| `bun run lint` | Check with Biome | Linting + formatting |
+| `bun run lint:fix` | Auto-fix | --write flag |
+| `bun run format` | Formatting only | Code formatting |
+| `bun run lint` | Linting only | Rules checking |
+| `bun run lint:fix` | Auto-fix linting | --write for linting |
 
 ## 📚 Documentation (2 commands)
 
@@ -175,7 +175,7 @@ bun run tauri build
 bun run lint && bun run lint:css && bun run lint:rust
 
 # Formatting only
-bun run format:imports && bun run format:rust
+bun run format && bun run format:rust
 
 # Specific module
 bun run test src/features/timeline
@@ -207,7 +207,7 @@ bun run test src/features/timeline
 
 ### Windows Users
 - Use commands with `:windows` suffix if regular ones don't work
-- `format:imports:windows` and `lint:fix:windows` commands work around path issues
+- `format` and `lint:fix:windows` commands work around path issues
 
 ### CI/CD
 - `build:analyze` requires `CODECOV_TOKEN` variable

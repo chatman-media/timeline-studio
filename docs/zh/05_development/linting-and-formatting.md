@@ -58,12 +58,12 @@ bun run lint
 bun run lint:fix
 
 # Format imports only
-bun run format:imports
+bun run format
 
 # Windows versions (work around path issues)
 bun run lint:windows
 bun run lint:fix:windows
-bun run format:imports:windows
+bun run format
 ```
 
 **What's checked:**
@@ -119,19 +119,19 @@ bun run check:rust
 
 ```bash
 # Check (linting + formatting)
-bun run biome:check
+bun run lint
 
 # Auto-fix
-bun run biome:check:apply
+bun run lint:fix
 
 # Formatting only
-bun run biome:format
+bun run format
 
 # Linting only
-bun run biome:lint
+bun run lint
 
 # Auto-fix linting
-bun run biome:lint:fix
+bun run lint:fix
 ```
 
 ## 🔄 Comprehensive Commands
@@ -230,7 +230,7 @@ chmod +x .husky/pre-commit
 **Issue**: `import/order` errors
 ```bash
 # Solution: auto-fix imports
-bun run format:imports
+bun run format
 ```
 
 **Issue**: TypeScript type errors  

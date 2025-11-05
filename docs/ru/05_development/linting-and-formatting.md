@@ -25,7 +25,7 @@ Timeline Studio использует несколько инструментов
 | Clippy | Rust | Линтинг Rust кода | `bun run lint:rust` |
 | Prettier | JS/TS | Форматирование кода | встроен в ESLint |
 | rustfmt | Rust | Форматирование Rust | `bun run format:rust` |
-| Biome | JS/TS/CSS | Быстрая альтернатива | `bun run biome:check` |
+| Biome | JS/TS/CSS | Быстрая альтернатива | `bun run lint` |
 
 ## 📘 ESLint (JavaScript/TypeScript)
 
@@ -254,10 +254,10 @@ let value = some_option.unwrap(); // Безопасно в тестах
 
 ```bash
 # Форматирование импортов
-bun run format:imports
+bun run format
 
 # Windows версия
-bun run format:imports:windows
+bun run format
 ```
 
 Пример результата:
@@ -342,17 +342,17 @@ Biome - быстрая альтернатива ESLint + Prettier, написа�
 
 ```bash
 # Полная проверка
-bun run biome:check
+bun run lint
 
 # С автоисправлением
-bun run biome:check:apply
+bun run lint:fix
 
 # Только форматирование
-bun run biome:format
+bun run format
 
 # Только линтинг
-bun run biome:lint
-bun run biome:lint:fix
+bun run lint
+bun run lint:fix
 ```
 
 ### Преимущества Biome
@@ -479,7 +479,7 @@ jobs:
         run: bun run lint:css
         
       - name: Check formatting
-        run: bun run format:imports
+        run: bun run format
         
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

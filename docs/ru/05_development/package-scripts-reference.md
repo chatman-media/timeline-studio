@@ -40,8 +40,8 @@
 | `bun run lint:fix` | ESLint с автоисправлением | ✅ |
 | `bun run lint:windows` | ESLint для Windows | ❌ |
 | `bun run lint:fix:windows` | ESLint автоисправление для Windows | ✅ |
-| `bun run format:imports` | Форматирование импортов | ✅ |
-| `bun run format:imports:windows` | Форматирование импортов для Windows | ✅ |
+| `bun run format` | Форматирование импортов | ✅ |
+| `bun run format` | Форматирование импортов для Windows | ✅ |
 
 ### CSS
 | Команда | Описание | Автоисправление |
@@ -60,9 +60,9 @@
 ### Комплексные команды
 | Команда | Описание | Что включает |
 |---------|----------|--------------|
-| `bun run check:all` | Все проверки + тесты | lint + lint:css + format:imports + check:rust + test + test:rust |
+| `bun run check:all` | Все проверки + тесты | lint + lint:css + format + check:rust + test + test:rust |
 | `bun run check:rust` | Все проверки Rust | lint:rust + format:rust:check |
-| `bun run fix:all` | Все автоисправления | lint:css:fix + format:imports + fix:rust |
+| `bun run fix:all` | Все автоисправления | lint:css:fix + format + fix:rust |
 | `bun run fix:rust` | Все автоисправления Rust | format:rust + lint:rust:fix |
 
 ## 🧪 Тестирование (20 команд)
@@ -105,11 +105,11 @@
 
 | Команда | Описание | Что делает |
 |---------|----------|------------|
-| `bun run biome:check` | Проверка с Biome | Линтинг + форматирование |
-| `bun run biome:check:apply` | Автоисправление | --write флаг |
-| `bun run biome:format` | Только форматирование | Форматирование кода |
-| `bun run biome:lint` | Только линтинг | Проверка правил |
-| `bun run biome:lint:fix` | Автоисправление линтинга | --write для линтинга |
+| `bun run lint` | Проверка с Biome | Линтинг + форматирование |
+| `bun run lint:fix` | Автоисправление | --write флаг |
+| `bun run format` | Только форматирование | Форматирование кода |
+| `bun run lint` | Только линтинг | Проверка правил |
+| `bun run lint:fix` | Автоисправление линтинга | --write для линтинга |
 
 ## 📚 Документация (2 команды)
 
@@ -175,7 +175,7 @@ bun run tauri build
 bun run lint && bun run lint:css && bun run lint:rust
 
 # Только форматирование
-bun run format:imports && bun run format:rust
+bun run format && bun run format:rust
 
 # Конкретный модуль
 bun run test src/features/timeline
@@ -207,7 +207,7 @@ bun run test src/features/timeline
 
 ### Windows пользователи
 - Используйте команды с суффиксом `:windows` если обычные не работают
-- Команды `format:imports:windows` и `lint:fix:windows` обходят проблемы с путями
+- Команды `format` и `lint:fix:windows` обходят проблемы с путями
 
 ### CI/CD
 - `build:analyze` требует переменную `CODECOV_TOKEN`

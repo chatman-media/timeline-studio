@@ -193,7 +193,7 @@ bun run lint
 bun run lint:fix  # Автоисправление
 
 # Форматирование
-bun run format:imports
+bun run format
 
 # Проверка типов
 bun run type-check

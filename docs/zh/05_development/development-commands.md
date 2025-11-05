@@ -39,12 +39,12 @@ bun run lint
 bun run lint:fix
 
 # Format imports
-bun run format:imports
+bun run format
 
 # Windows versions
 bun run lint:windows
 bun run lint:fix:windows  
-bun run format:imports:windows
+bun run format
 ```
 
 ### CSS
@@ -72,24 +72,6 @@ bun run format:rust:check
 
 # Comprehensive Rust check
 bun run check:rust
-```
-
-### Biome (alternative linter)
-```bash
-# Check with Biome
-bun run biome:check
-
-# Auto-fix with Biome
-bun run biome:check:apply
-
-# Format with Biome
-bun run biome:format
-
-# Lint with Biome
-bun run biome:lint
-
-# Auto-fix linting with Biome
-bun run biome:lint:fix
 ```
 
 ### Comprehensive Commands
@@ -234,7 +216,7 @@ bun run fix:all
 bun run lint && bun run lint:css && bun run lint:rust
 
 # Only formatting
-bun run format:imports && bun run format:rust
+bun run format && bun run format:rust
 
 # Only tests
 bun run test && bun run test:rust

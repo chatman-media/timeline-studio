@@ -39,12 +39,12 @@ bun run lint
 bun run lint:fix
 
 # Форматирование импортов
-bun run format:imports
+bun run format
 
 # Версии для Windows
 bun run lint:windows
 bun run lint:fix:windows  
-bun run format:imports:windows
+bun run format
 ```
 
 ### CSS
@@ -72,24 +72,6 @@ bun run format:rust:check
 
 # Комплексная проверка Rust
 bun run check:rust
-```
-
-### Biome (альтернативный линтер)
-```bash
-# Проверка с Biome
-bun run biome:check
-
-# Автоисправление с Biome
-bun run biome:check:apply
-
-# Форматирование с Biome
-bun run biome:format
-
-# Линтинг с Biome
-bun run biome:lint
-
-# Автоисправление линтинга с Biome
-bun run biome:lint:fix
 ```
 
 ### Комплексные команды
@@ -234,7 +216,7 @@ bun run fix:all
 bun run lint && bun run lint:css && bun run lint:rust
 
 # Только форматирование
-bun run format:imports && bun run format:rust
+bun run format && bun run format:rust
 
 # Только тесты
 bun run test && bun run test:rust
