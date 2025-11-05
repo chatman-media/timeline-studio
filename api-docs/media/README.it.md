@@ -76,7 +76,7 @@ Timeline Studio è un editor video moderno basato sull'architettura Tauri (Rust 
 
 ### Prerequisiti
 
-- [Node.js](https://nodejs.org/) (v18 o superiore)
+- [Node.js](https://nodejs.org/) (v24 o superiore)
 - [Rust](https://www.rust-lang.org/tools/install) (ultima versione stabile)
 - [bun](https://bun.sh/) (ultima versione stabile)
 - [ffmpeg](https://ffmpeg.org/download.html) (ultima versione stabile)

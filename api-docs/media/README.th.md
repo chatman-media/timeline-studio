@@ -105,7 +105,7 @@ bun run tauri dev
 ```
 
 ### ข้อกำหนด
-- Node.js v18+, Rust, Bun, FFmpeg
+- Node.js v24+, Rust, Bun, FFmpeg
 
 📚 **[คู่มือการติดตั้งฉบับสมบูรณ์ →](docs-ru/01-getting-started/README.md)**
 🪟 **[การตั้งค่า Windows →](docs-ru/06-deployment/platforms/windows-build.md)**

@@ -78,7 +78,7 @@
 
 ### المتطلبات الأساسية
 
-- [Node.js](https://nodejs.org/) (الإصدار 18 أو أعلى)
+- [Node.js](https://nodejs.org/) (الإصدار 24 أو أعلى)
 - [Rust](https://www.rust-lang.org/tools/install) (أحدث إصدار مستقر)
 - [bun](https://bun.sh/) (أحدث إصدار مستقر)
 - [ffmpeg](https://ffmpeg.org/download.html) (أحدث إصدار مستقر)
