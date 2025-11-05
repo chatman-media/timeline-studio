@@ -4,7 +4,6 @@ import { readFile } from "@tauri-apps/plugin-fs"
 import { Image } from "lucide-react"
 import { memo, useCallback, useEffect, useState } from "react"
 
-import { FileSelectionCheckbox } from "@/features/browser/components/layout/file-selection-checkbox"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
@@ -182,7 +181,6 @@ export const ImagePreview = memo(function ImagePreview({
       >
         <Image size={size > 100 ? 16 : 12} />
       </div>
-      <FileSelectionCheckbox file={file} size={size} />
       <FavoriteButton file={file} size={size} type="media" />
       <AddMediaButton resource={{ id: file.id, type: "media" } as TimelineResource} size={size} type="media" />
     </div>
