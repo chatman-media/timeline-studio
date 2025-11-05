@@ -74,6 +74,20 @@ bun run tauri dev
 - No need to manually source files - variables load automatically
 - `.env.macos` file remains available as bash export alternative
 
+### Camera and Microphone Permissions
+
+The application requires camera and microphone access for recording features:
+
+**macOS Configuration:**
+- Permissions are configured in `src-tauri/Info.plist`
+- Contains `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys
+- On first use, macOS will show a system dialog requesting permission
+- If permissions are denied, users can grant them manually in **System Settings** → **Privacy & Security** → **Camera** / **Microphone**
+
+**Web Configuration:**
+- CSP policy in `tauri.conf.json` includes `mediastream:` for `navigator.mediaDevices` access
+- Browser-based permissions are handled automatically via standard Web APIs
+
 ### Important FFmpeg Configuration Notes
 
 **⚠️ CRITICAL**: FFmpeg paths must NOT be set globally in `.cargo/config.toml` as this breaks cross-platform builds.

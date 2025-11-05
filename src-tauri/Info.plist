@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Timeline Studio needs access to your camera to record video directly in the application.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Timeline Studio needs access to your microphone to record audio with video or voice recordings.</string>
+</dict>
+</plist>

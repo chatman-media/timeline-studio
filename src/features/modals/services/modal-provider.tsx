@@ -96,9 +96,11 @@ export function ModalProvider({ children }: ModalProviderProps) {
         .executeCommand({
           type: "SaveUIPreferences",
           params: {
-            modalType: isOpen ? state.context.modalType : null,
-            modalData: isOpen ? state.context.modalData : null,
-            isOpen,
+            preferences: {
+              modalType: isOpen ? state.context.modalType : null,
+              modalData: isOpen ? state.context.modalData : null,
+              isOpen,
+            },
           },
         })
         .catch((err) => {

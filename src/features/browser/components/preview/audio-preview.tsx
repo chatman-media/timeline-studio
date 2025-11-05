@@ -215,7 +215,7 @@ export const AudioPreview = memo(function AudioPreview({
       <audio
         ref={audioRef}
         src={audioUrl || convertToAssetUrl(file.path)}
-        preload="auto"
+        preload="metadata"
         tabIndex={0}
         className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"
         onEnded={() => setIsPlaying(false)}
