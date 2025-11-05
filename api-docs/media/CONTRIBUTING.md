@@ -75,8 +75,8 @@ bun lint
 # Исправление ошибок
 bun lint:fix
 
-# Форматирование импортов
-bun format:imports
+# Форматирование кода
+bun format
 ```
 
 #### CSS
