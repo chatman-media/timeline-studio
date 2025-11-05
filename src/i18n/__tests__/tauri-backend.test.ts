@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest"
 import { invoke } from "@tauri-apps/api/core"
+import { describe, expect, it, vi } from "vitest"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
@@ -32,9 +32,7 @@ describe("i18n TauriBackend Integration", () => {
     const mockInvoke = vi.mocked(invoke)
     mockInvoke.mockRejectedValueOnce(new Error("Translation file not found"))
 
-    await expect(invoke("load_translation_tauri", { lang: "unknown" })).rejects.toThrow(
-      "Translation file not found"
-    )
+    await expect(invoke("load_translation_tauri", { lang: "unknown" })).rejects.toThrow("Translation file not found")
   })
 
   it("should return valid JSON string from backend", async () => {

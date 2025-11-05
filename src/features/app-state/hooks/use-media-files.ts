@@ -47,9 +47,9 @@ export function useMediaFiles() {
   const updateMediaFiles = async (files: MediaFile[]) => {
     console.warn(
       "DEPRECATED: updateMediaFiles should not be used for adding media. " +
-      "Use Resources Provider (addMedia) instead. " +
-      `Called with ${files.length} files.`,
-      files.map(f => f.path)
+        "Use Resources Provider (addMedia) instead. " +
+        `Called with ${files.length} files.`,
+      files.map((f) => f.path),
     )
     // NO-OP: не вызываем executeCommand чтобы избежать дублирования
     // Resources Provider - единственный источник истины для медиа

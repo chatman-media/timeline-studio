@@ -111,14 +111,11 @@ export function useMediaImport() {
     ),
 
     // Обработка ошибок
-    onError: useCallback(
-      (fileId: string, error: string) => {
-        console.error(`Ошибка обработки файла ${fileId}:`, error)
+    onError: useCallback((fileId: string, error: string) => {
+      console.error(`Ошибка обработки файла ${fileId}:`, error)
 
-        // TODO: Нужен способ обновить файл и снять флаг загрузки при ошибке
-      },
-      [],
-    ),
+      // TODO: Нужен способ обновить файл и снять флаг загрузки при ошибке
+    }, []),
 
     // Обновление прогресса
     onProgress: useCallback((current: number, total: number) => {

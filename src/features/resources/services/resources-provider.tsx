@@ -157,9 +157,7 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
       // ДЕДУПЛИКАЦИЯ: Проверяем существование медиа по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some(
-          (item) => item && item.path === file.path
-        )
+        const alreadyExists = Object.values(mediaPool.items).some((item) => item && item.path === file.path)
         if (alreadyExists) {
           console.log("ResourcesProvider: Media already added, skipping:", file.path)
           return
@@ -181,9 +179,7 @@ export function ResourcesProviderV2({ children }: ResourcesProviderV2Props) {
       // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some(
-          (item) => item && item.path === file.path
-        )
+        const alreadyExists = Object.values(mediaPool.items).some((item) => item && item.path === file.path)
         if (alreadyExists) {
           console.log("ResourcesProvider: Music already added, skipping:", file.path)
           return

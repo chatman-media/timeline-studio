@@ -176,7 +176,16 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       void addClip(targetTrackId, file, startTime)
       console.log(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
-    [project, getTrackTypeForMedia, findBestTrackForMedia, addTrack, calculateClipStartTime, addClip, createProject, addMedia],
+    [
+      project,
+      getTrackTypeForMedia,
+      findBestTrackForMedia,
+      addTrack,
+      calculateClipStartTime,
+      addClip,
+      createProject,
+      addMedia,
+    ],
   )
 
   const addMediaToTimeline = useCallback(

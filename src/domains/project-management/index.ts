@@ -4,20 +4,19 @@
  * Домен для управления проектами и настройками приложения
  */
 
-// Экспорт хуков
+// Экспорт хуков (работают через оркестратор, не требуют провайдеров)
+export { useAppState } from "./hooks/use-app-state"
 export { useProjectManagement } from "./hooks/use-project-management"
+export { useUserSettings } from "./hooks/use-user-settings"
 // Экспорт машин
 export { appMachine } from "./machines/app-machine"
 export { userSettingsMachine } from "./machines/user-settings-machine"
-// Экспорт провайдеров и хуков
+// Экспорт только провайдеров (без хуков чтобы избежать конфликта имен)
 export {
   AppStateProvider,
   ProjectManagementProvider,
   ProjectProvider,
   UserSettingsProvider,
-  useAppState,
-  useProject,
-  useUserSettings,
 } from "./providers/project-management-provider"
 // Экспорт оркестратора
 export {

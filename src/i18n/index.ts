@@ -1,7 +1,7 @@
+import { invoke } from "@tauri-apps/api/core"
 import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next } from "react-i18next"
-import { invoke } from "@tauri-apps/api/core"
 
 // Импорт констант для языков
 import { DEFAULT_LANGUAGE, getTextDirection, isSupportedLanguage, type LanguageCode } from "./constants"
@@ -23,7 +23,7 @@ class TauriBackend {
   async read(
     language: string,
     namespace: string,
-    callback: (err: Error | null, data?: Record<string, unknown>) => void
+    callback: (err: Error | null, data?: Record<string, unknown>) => void,
   ): Promise<void> {
     try {
       const cacheKey = `${language}-${namespace}`

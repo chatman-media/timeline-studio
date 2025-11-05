@@ -423,7 +423,7 @@ export const VideoPreview = memo(
                     // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                     if (video.error.code === 4) {
                       console.log(`[VideoPreview Placeholder] Автоматическое удаление файла из проекта: ${file.name}`)
-                      void removeResource(file.id, 'media')
+                      void removeResource(file.id, "media")
                       return // Прекращаем дальнейшую обработку
                     }
                   }
@@ -606,7 +606,7 @@ export const VideoPreview = memo(
                         // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                         if (video.error.code === 4) {
                           console.log(`[VideoPreview] Автоматическое удаление файла из проекта: ${file.name}`)
-                          void removeResource(file.id, 'media')
+                          void removeResource(file.id, "media")
                           return // Прекращаем дальнейшую обработку
                         }
 
