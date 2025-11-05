@@ -3,7 +3,7 @@
 
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use tauri::State;
+use tauri::{Manager, State};
 
 // Поддерживаемые языки
 const SUPPORTED_LANGUAGES: [&str; 15] = [
@@ -102,6 +102,45 @@ pub fn set_app_language_tauri(
     language: lang,
     system_language: get_system_language(),
   })
+}
+
+/// Загрузка JSON файла перевода из ресурсов приложения
+#[tauri::command]
+pub async fn load_translation_tauri<R: tauri::Runtime>(
+  app: tauri::AppHandle<R>,
+  lang: String,
+) -> Result<String, String> {
+  // Проверяем, поддерживается ли язык
+  if !is_supported_language(&lang) {
+    return Err(format!("Unsupported language: {lang}"));
+  }
+
+  // Получаем путь к директории ресурсов
+  let resource_path = app
+    .path()
+    .resource_dir()
+    .map_err(|e| format!("Failed to get resource directory: {e}"))?;
+
+  // Формируем путь к файлу перевода
+  let translation_file = resource_path.join(format!("{lang}.json"));
+
+  // Проверяем существование файла
+  if !translation_file.exists() {
+    return Err(format!(
+      "Translation file not found: {}",
+      translation_file.display()
+    ));
+  }
+
+  // Читаем содержимое файла
+  let content = std::fs::read_to_string(&translation_file)
+    .map_err(|e| format!("Failed to read translation file: {e}"))?;
+
+  // Проверяем что это валидный JSON
+  serde_json::from_str::<serde_json::Value>(&content)
+    .map_err(|e| format!("Invalid JSON in translation file: {e}"))?;
+
+  Ok(content)
 }
 
 #[cfg(test)]

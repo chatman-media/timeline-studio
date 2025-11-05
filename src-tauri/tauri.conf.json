@@ -63,6 +63,9 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "resources": [
+      "../src/i18n/locales/*.json"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -78,7 +81,8 @@
     "macOS": {
       "exceptionDomain": "com.chatman-media.timeline-studio",
       "frameworks": [],
-      "minimumSystemVersion": "10.15"
+      "minimumSystemVersion": "10.15",
+      "infoPlist": "Info.plist"
     },
     "windows": {
       "digestAlgorithm": "sha256",

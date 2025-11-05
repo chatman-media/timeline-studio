@@ -1,83 +1,76 @@
 import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next } from "react-i18next"
+import { invoke } from "@tauri-apps/api/core"
 
 // Импорт констант для языков
 import { DEFAULT_LANGUAGE, getTextDirection, isSupportedLanguage, type LanguageCode } from "./constants"
-// Импорт ресурсов переводов
-import translationAR from "./locales/ar.json"
-import translationDE from "./locales/de.json"
+
+// Fallback переводы для английского языка (встроены для надежности)
 import translationEN from "./locales/en.json"
-import translationES from "./locales/es.json"
-import translationFA from "./locales/fa.json"
-import translationFR from "./locales/fr.json"
-import translationHI from "./locales/hi.json"
-import translationIT from "./locales/it.json"
-import translationJA from "./locales/ja.json"
-import translationKO from "./locales/ko.json"
-import translationPT from "./locales/pt.json"
-import translationRU from "./locales/ru.json"
-import translationTH from "./locales/th.json"
-import translationTR from "./locales/tr.json"
-import translationZH from "./locales/zh.json"
 
 // Проверка, что код выполняется в браузере
 const isBrowser = typeof window !== "undefined"
 
-// Ресурсы переводов
-const resources = {
-  ru: {
-    translation: translationRU,
-  },
-  en: {
-    translation: translationEN,
-  },
-  es: {
-    translation: translationES,
-  },
-  fr: {
-    translation: translationFR,
-  },
-  de: {
-    translation: translationDE,
-  },
-  pt: {
-    translation: translationPT,
-  },
-  zh: {
-    translation: translationZH,
-  },
-  ja: {
-    translation: translationJA,
-  },
-  ko: {
-    translation: translationKO,
-  },
-  tr: {
-    translation: translationTR,
-  },
-  th: {
-    translation: translationTH,
-  },
-  it: {
-    translation: translationIT,
-  },
-  hi: {
-    translation: translationHI,
-  },
-  ar: {
-    translation: translationAR,
-  },
-  fa: {
-    translation: translationFA,
-  },
+// Custom Tauri Backend для динамической загрузки переводов
+class TauriBackend {
+  type = "backend" as const
+  static type = "backend" as const
+
+  // Кеш загруженных переводов в памяти
+  private cache = new Map<string, Record<string, unknown>>()
+
+  async read(
+    language: string,
+    namespace: string,
+    callback: (err: Error | null, data?: Record<string, unknown>) => void
+  ): Promise<void> {
+    try {
+      const cacheKey = `${language}-${namespace}`
+
+      // Проверяем кеш в памяти
+      if (this.cache.has(cacheKey)) {
+        console.log(`i18n: Loading ${language} from cache`)
+        callback(null, this.cache.get(cacheKey))
+        return
+      }
+
+      // Загружаем через Tauri API
+      console.log(`i18n: Loading ${language} from Tauri backend`)
+      const translationJson = await invoke<string>("load_translation_tauri", { lang: language })
+      const parsed = JSON.parse(translationJson) as Record<string, unknown>
+
+      // Сохраняем в кеш
+      this.cache.set(cacheKey, parsed)
+
+      callback(null, parsed)
+    } catch (error) {
+      console.error(`i18n: Failed to load translation for ${language}:`, error)
+
+      // Fallback на английский если это не английский язык
+      if (language !== "en") {
+        console.log(`i18n: Falling back to English for ${language}`)
+        callback(null, translationEN as Record<string, unknown>)
+      } else {
+        callback(error as Error)
+      }
+    }
+  }
+
+  // Очистить кеш (полезно для тестирования)
+  clearCache(): void {
+    this.cache.clear()
+  }
 }
+
+// Создаем экземпляр backend
+const tauriBackend = new TauriBackend()
 
 // Инициализация i18next
 const initI18n = () => {
   // Используем LanguageDetector только в браузере
   // eslint-disable-next-line import/no-named-as-default-member
-  const instance = i18n.use(initReactI18next)
+  const instance = i18n.use(initReactI18next).use(tauriBackend)
 
   if (isBrowser) {
     instance.use(LanguageDetector)
@@ -97,23 +90,32 @@ const initI18n = () => {
     }
   }
 
-  // Инициализируем i18n
+  // Инициализируем i18n с динамической загрузкой
   const initResult = instance.init({
-    resources,
+    // Встроенный английский как fallback
+    resources: {
+      en: {
+        translation: translationEN,
+      },
+    },
     lng: savedLanguage, // Используем сохраненный язык
-    fallbackLng: "en", // Язык по умолчанию, если сохраненный недоступен
-    debug: process.env.NODE_ENV === "development", // Включаем отладку только в режиме разработки
+    fallbackLng: "en", // Язык по умолчанию
+    debug: process.env.NODE_ENV === "development", // Отладка в dev mode
 
     interpolation: {
       escapeValue: false, // Не экранировать HTML
     },
 
+    // Backend опции
+    backend: {
+      loadPath: "{{lng}}/{{ns}}", // Шаблон (не используется в Tauri backend, но требуется)
+    },
+
     // Настройки определения языка (только для браузера)
     ...(isBrowser && {
       detection: {
-        // Изменяем порядок определения языка, чтобы localStorage имел приоритет
         order: ["localStorage", "navigator"],
-        lookupLocalStorage: "app-language", // Ключ в localStorage
+        lookupLocalStorage: "app-language",
         caches: ["localStorage"],
       },
     }),
@@ -149,5 +151,8 @@ const initI18n = () => {
 
 // Инициализируем i18n
 const i18nInstance = initI18n()
+
+// Экспорт backend для возможности очистки кеша (полезно для тестов)
+export { tauriBackend }
 
 export default i18nInstance

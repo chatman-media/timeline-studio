@@ -24,6 +24,7 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     // Language commands
     crate::language_tauri::get_app_language_tauri,
     crate::language_tauri::set_app_language_tauri,
+    crate::language_tauri::load_translation_tauri,
     // Filesystem commands
     crate::filesystem::file_exists,
     crate::filesystem::get_file_stats,
