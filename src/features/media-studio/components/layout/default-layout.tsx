@@ -1,7 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Browser } from "@/features/browser/components"
 import { Options } from "@/features/options"
-import { AISuggestionsPanel } from "@/features/timeline/components/ai-suggestions/ai-suggestions-panel"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
