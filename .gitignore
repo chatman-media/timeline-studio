@@ -88,3 +88,5 @@ path/to/venv/
 __pycache__/
 *.pt
 *.onnx.pt
+# Turborepo
+.turbo
