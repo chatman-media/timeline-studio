@@ -18,7 +18,7 @@ rustup default stable-msvc
 ```
 
 ### 3. Node.js и Bun
-- Установите Node.js 18+ с https://nodejs.org/
+- Установите Node.js 24+ с https://nodejs.org/
 - Установите Bun:
 ```powershell
 powershell -c "irm bun.sh/install.ps1|iex"

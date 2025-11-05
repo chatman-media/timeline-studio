@@ -10,7 +10,7 @@ This document describes the testing strategy, test organization, and best practi
 
 - Rust 1.70+ with cargo
 - FFmpeg installed and available in PATH
-- Node.js 18+ (for frontend integration)
+- Node.js 24+ (for frontend integration)
 - Tauri CLI: `cargo install tauri-cli`
 
 ### Running in Development Mode

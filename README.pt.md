@@ -110,7 +110,7 @@ bun run tauri dev
 ```
 
 ### Requisitos
-- Node.js v18+, Rust, Bun, FFmpeg
+- Node.js v24+, Rust, Bun, FFmpeg
 
 📚 **[Guia de Instalação Completo →](docs-ru/01-getting-started/README.md)**
 🪟 **[Configuração Windows →](docs-ru/06-deployment/platforms/windows-build.md)**

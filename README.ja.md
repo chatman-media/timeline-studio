@@ -106,7 +106,7 @@ bun run tauri dev
 ```
 
 ### 要件
-- Node.js v18+、Rust、Bun、FFmpeg
+- Node.js v24+、Rust、Bun、FFmpeg
 
 📚 **[完全なインストールガイド →](docs-ru/01-getting-started/README.md)**
 🪟 **[Windowsセットアップ →](docs-ru/06-deployment/platforms/windows-build.md)**

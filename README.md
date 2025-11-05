@@ -166,7 +166,7 @@ bun run tauri dev
 ```
 
 ### Requirements
-- Node.js v18+, Rust, Bun, FFmpeg
+- Node.js v24+, Rust, Bun, FFmpeg
 
 ### 🚑 Troubleshooting Common Issues
 

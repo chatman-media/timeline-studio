@@ -33,7 +33,7 @@
 ### 1. Node.js и Bun
 
 ```bash
-# Установка Node.js 18+
+# Установка Node.js 24+
 # macOS
 brew install node@18
 

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 18+ and Bun
+- Node.js 24+ and Bun
 - Rust 1.81.0+
 - Platform-specific tools:
   - **macOS**: Xcode Command Line Tools

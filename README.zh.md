@@ -106,7 +106,7 @@ bun run tauri dev
 ```
 
 ### 要求
-- Node.js v18+、Rust、Bun、FFmpeg
+- Node.js v24+、Rust、Bun、FFmpeg
 
 📚 **[完整安装指南 →](docs-ru/01-getting-started/README.md)**
 🪟 **[Windows设置 →](docs-ru/06-deployment/platforms/windows-build.md)**

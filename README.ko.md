@@ -71,7 +71,7 @@ Timeline Studio는 Tauri 아키텍처(Rust + React)로 구축된 최신 비디�
 
 ### 사전 요구사항
 
-- [Node.js](https://nodejs.org/) (v18 이상)
+- [Node.js](https://nodejs.org/) (v24 이상)
 - [Rust](https://www.rust-lang.org/tools/install) (최신 안정 버전)
 - [bun](https://bun.sh/) (최신 안정 버전)
 - [ffmpeg](https://ffmpeg.org/download.html) (최신 안정 버전)

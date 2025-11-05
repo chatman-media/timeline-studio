@@ -10,7 +10,7 @@
 
 - Rust 1.70+ с cargo
 - FFmpeg установлен и доступен в PATH
-- Node.js 18+ (для интеграции с frontend)
+- Node.js 24+ (для интеграции с frontend)
 - Tauri CLI: `cargo install tauri-cli`
 
 ### Запуск в режиме разработки

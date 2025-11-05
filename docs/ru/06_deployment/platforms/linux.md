@@ -55,7 +55,7 @@ sudo pacman -S --needed \
 ### 2. Node.js и Bun
 
 ```bash
-# Установка Node.js 18+
+# Установка Node.js 24+
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 

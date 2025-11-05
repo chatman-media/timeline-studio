@@ -98,7 +98,7 @@ bun run tauri dev
 ```
 
 ### आवश्यकताएं
-- Node.js v18+, Rust, Bun, FFmpeg
+- Node.js v24+, Rust, Bun, FFmpeg
 
 📚 **[पूर्ण इंस्टॉलेशन गाइड →](docs-ru/01-getting-started/README.md)**
 🪟 **[Windows सेटअप →](docs-ru/06-deployment/platforms/windows-build.md)**

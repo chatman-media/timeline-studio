@@ -101,7 +101,7 @@ bun run tauri dev
 ```
 
 ### Gereksinimler
-- Node.js v18+, Rust, Bun, FFmpeg
+- Node.js v24+, Rust, Bun, FFmpeg
 
 📚 **[Tam Kurulum Kılavuzu →](docs-ru/01-getting-started/README.md)**  
 🪟 **[Windows Kurulumu →](docs-ru/06-deployment/platforms/windows-build.md)**
