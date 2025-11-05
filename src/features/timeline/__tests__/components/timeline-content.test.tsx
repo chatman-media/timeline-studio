@@ -177,9 +177,10 @@ vi.mock("../../components/track/track", () => ({
   Track: ({ track }: any) => <div data-testid={`track-${track.id}`}>{track.name}</div>,
 }))
 
-// TODO: Набор тестов пропущен (33 теста)
-// Причина неизвестна - требуется проверка
-// Компонент сложный, имеет множество зависимостей и моков
+// TODO: Набор тестов пропущен (1/33 тестов проходит, 32 падают)
+// Проблема: ResizeObserver мок не является конструктором
+// Ошибка: "() => ({ observe: vi.fn(), ... }) is not a constructor"
+// Необходимо исправить мокирование ResizeObserver в setup.ts или в этом файле
 describe.skip("TimelineContent", () => {
   beforeEach(() => {
     vi.clearAllMocks()
