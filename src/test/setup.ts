@@ -206,7 +206,7 @@ vi.mock("@/features/resources", () => ({
     loadResources: vi.fn(),
     isLoading: false,
   }),
-  useResourcesV2: () => ({
+  useResources: () => ({
     effects: [],
     filters: [],
     transitions: [],

@@ -138,3 +138,6 @@ export function useProjectSettings(): ProjectSettingsContextType {
 // Экспорт типов
 export type { ProjectSettingsContextType }
 export type { ProjectSettingsContextType as ProjectSettingsProviderType }
+
+// Экспорт контекста для использования в хуках
+export { ProjectSettingsContext }

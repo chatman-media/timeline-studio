@@ -17,9 +17,9 @@ import {
 // Мокаем модули до их использования
 vi.mock("@/features/resources", () => ({
   useResources: vi.fn(() => mockUseResources),
-  useResourcesV2: vi.fn(() => mockUseResources),
+  useResources: vi.fn(() => mockUseResources),
   ResourcesProvider: ({ children }: any) => children,
-  ResourcesProviderV2: ({ children }: any) => children,
+  ResourcesProvider: ({ children }: any) => children,
 }))
 
 vi.mock("../../types/tauri", () => ({

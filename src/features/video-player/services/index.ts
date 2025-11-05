@@ -17,7 +17,7 @@ export type {
 export { playerMachine } from "./player-machine"
 export type {
   PlayerContextType,
-  PlayerContextTypeV2,
+  PlayerContextType,
 } from "./player-provider"
 // Export from player-provider
 export {
