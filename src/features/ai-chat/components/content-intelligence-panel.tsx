@@ -80,24 +80,27 @@ export function ContentIntelligencePanel({
   const ffmpegService = FFmpegAnalysisService.getInstance()
   const contentClassifier = ContentClassifier.getInstance()
 
-  const analyzeContent = useCallback(async () => {
-    if (!videoPath) {
+  const analyzeContent = useCallback(
+    async (abortSignal?: AbortSignal) => {
+      if (!videoPath) {
+        setState((prev) => ({
+          ...prev,
+          error: t("ai.analysis.noVideoSelected"),
+        }))
+        return
+      }
+
       setState((prev) => ({
         ...prev,
-        error: t("ai.analysis.noVideoSelected"),
+        isAnalyzing: true,
+        progress: 0,
+        currentStep: t("ai.analysis.starting"),
+        error: undefined,
       }))
-      return
-    }
 
-    setState((prev) => ({
-      ...prev,
-      isAnalyzing: true,
-      progress: 0,
-      currentStep: t("ai.analysis.starting"),
-      error: undefined,
-    }))
-
-    try {
+      try {
+        // Проверяем отмену перед каждым шагом
+        if (abortSignal?.aborted) return
       // Шаг 1: Базовый анализ FFmpeg
       setState((prev) => ({
         ...prev,
@@ -106,7 +109,10 @@ export function ContentIntelligencePanel({
       }))
 
       const metadata = await ffmpegService.getVideoMetadata(videoPath)
+      if (abortSignal?.aborted) return
+
       const quality = await ffmpegService.analyzeQuality(videoPath)
+      if (abortSignal?.aborted) return
 
       setState((prev) => ({
         ...prev,
@@ -117,6 +123,7 @@ export function ContentIntelligencePanel({
 
       // Шаг 2: Детекция сцен
       const scenes = (await ffmpegService.detectScenes(videoPath)) as unknown as SceneDetectionData
+      if (abortSignal?.aborted) return
 
       setState((prev) => ({
         ...prev,
@@ -127,6 +134,7 @@ export function ContentIntelligencePanel({
 
       // Шаг 3: Анализ движения
       const motion = await ffmpegService.analyzeMotion(videoPath)
+      if (abortSignal?.aborted) return
 
       setState((prev) => ({
         ...prev,
@@ -166,6 +174,8 @@ export function ContentIntelligencePanel({
         }))
 
         classification = await contentClassifier.classify(sceneAnalyses, metadata)
+        if (abortSignal?.aborted) return
+
         setState((prev) => ({
           ...prev,
           results: { ...prev.results, classification },
@@ -173,6 +183,9 @@ export function ContentIntelligencePanel({
       } catch (error) {
         console.warn("Classification skipped:", error)
       }
+
+      // Проверяем отмену перед финализацией
+      if (abortSignal?.aborted) return
 
       // Финальные результаты
       const finalResults = {
@@ -193,19 +206,30 @@ export function ContentIntelligencePanel({
       }))
 
       onAnalysisComplete?.(finalResults)
-    } catch (error) {
-      console.error("Content analysis error:", error)
-      setState((prev) => ({
-        ...prev,
-        isAnalyzing: false,
-        error: error instanceof Error ? error.message : t("ai.analysis.error"),
-      }))
-    }
-  }, [videoPath, t, ffmpegService, contentClassifier, onAnalysisComplete])
+      } catch (error) {
+        // Игнорируем ошибки если операция была отменена
+        if (abortSignal?.aborted) return
+
+        console.error("Content analysis error:", error)
+        setState((prev) => ({
+          ...prev,
+          isAnalyzing: false,
+          error: error instanceof Error ? error.message : t("ai.analysis.error"),
+        }))
+      }
+    },
+    [videoPath, t, ffmpegService, contentClassifier, onAnalysisComplete],
+  )
 
   useEffect(() => {
     if (autoStart && videoPath) {
-      analyzeContent()
+      const abortController = new AbortController()
+      analyzeContent(abortController.signal)
+
+      // Cleanup функция для отмены операций при unmount
+      return () => {
+        abortController.abort()
+      }
     }
   }, [autoStart, videoPath, analyzeContent])
 

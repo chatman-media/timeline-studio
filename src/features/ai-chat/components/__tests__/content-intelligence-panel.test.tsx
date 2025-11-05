@@ -1,46 +1,23 @@
 import { fireEvent, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { render } from "@/test/test-utils"
 import { ContentIntelligencePanel } from "../content-intelligence-panel"
+
+// Создаем легковесные моковые функции
+const mockGetVideoMetadata = vi.fn()
+const mockAnalyzeQuality = vi.fn()
+const mockDetectScenes = vi.fn()
+const mockAnalyzeMotion = vi.fn()
+const mockClassify = vi.fn()
 
 // Мокаем сервисы
 vi.mock("@/domains/ai-services/services/media-analysis", () => ({
   FFmpegAnalysisService: {
     getInstance: () => ({
-      getVideoMetadata: vi.fn().mockResolvedValue({
-        format: "mp4",
-        duration: 120.5,
-        width: 1920,
-        height: 1080,
-        fps: 30,
-        bitrate: 5000000,
-        hasAudio: true,
-      }),
-      analyzeQuality: vi.fn().mockResolvedValue({
-        overall: 85,
-        video: {
-          sharpness: 0.9,
-          brightness: 0.7,
-          stability: 0.95,
-          noise: 0.1,
-        },
-      }),
-      detectScenes: vi.fn().mockResolvedValue({
-        scenes: [
-          { start_time: 0, end_time: 10, confidence: 0.95 },
-          { start_time: 10, end_time: 25, confidence: 0.88 },
-          { start_time: 25, end_time: 40, confidence: 0.92 },
-        ],
-        total_scenes: 3,
-        average_scene_length: 13.33,
-      }),
-      analyzeMotion: vi.fn().mockResolvedValue({
-        motionIntensity: 0.65,
-        cameraMovement: {
-          type: "pan",
-          intensity: 0.4,
-        },
-      }),
+      getVideoMetadata: mockGetVideoMetadata,
+      analyzeQuality: mockAnalyzeQuality,
+      detectScenes: mockDetectScenes,
+      analyzeMotion: mockAnalyzeMotion,
     }),
   },
 }))
@@ -48,18 +25,7 @@ vi.mock("@/domains/ai-services/services/media-analysis", () => ({
 vi.mock("@/domains/ai-services/services/content-classifier", () => ({
   ContentClassifier: {
     getInstance: () => ({
-      classify: vi.fn().mockResolvedValue({
-        primary: {
-          category: "documentary",
-          subcategory: "educational",
-          confidence: 0.89,
-          reasoning: "Based on content analysis",
-        },
-        secondary: [],
-        confidence: 0.89,
-        tags: ["nature", "science", "discovery"],
-        warnings: [],
-      }),
+      classify: mockClassify,
     }),
   },
 }))
@@ -76,11 +42,60 @@ vi.mock("@/domains/ai-services/services/platform-optimization", () => ({
   },
 }))
 
-// TODO: Набор тестов пропущен (2/7 тестов прошли, затем память кончилась)
-// Проблема: JavaScript heap out of memory - утечка памяти в тестах
-// FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed
-// Необходимо исправить утечку памяти в компоненте или моках
+// TODO: Набор тестов пропущен - тесты зависают несмотря на исправления
+// Проблема: Тесты зависают при выполнении, возможно связано с асинхронными операциями
+// Исправлено:
+// - Добавлен AbortController в компоненте для предотвращения утечек памяти
+// - Улучшены моки (легковесные, с proper cleanup)
+// - Добавлены beforeEach/afterEach для cleanup
+// Необходимо дополнительное исследование причины зависания
 describe.skip("ContentIntelligencePanel", () => {
+  // Setup и cleanup
+  beforeEach(() => {
+    // Настраиваем легковесные возвращаемые значения
+    mockGetVideoMetadata.mockResolvedValue({
+      format: "mp4",
+      duration: 120,
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      bitrate: 5000000,
+      hasAudio: true,
+    })
+
+    mockAnalyzeQuality.mockResolvedValue({
+      overall: 85,
+      video: { sharpness: 0.9, brightness: 0.7, stability: 0.95, noise: 0.1 },
+    })
+
+    mockDetectScenes.mockResolvedValue({
+      scenes: [
+        { start_time: 0, end_time: 10, confidence: 0.95 },
+        { start_time: 10, end_time: 25, confidence: 0.88 },
+      ],
+      total_scenes: 2,
+      average_scene_length: 12.5,
+    })
+
+    mockAnalyzeMotion.mockResolvedValue({
+      motionIntensity: 0.65,
+      cameraMovement: { type: "pan", intensity: 0.4 },
+    })
+
+    mockClassify.mockResolvedValue({
+      primary: { category: "documentary", subcategory: "educational", confidence: 0.89, reasoning: "Test" },
+      secondary: [],
+      confidence: 0.89,
+      tags: ["nature"],
+      warnings: [],
+    })
+  })
+
+  afterEach(() => {
+    // Очищаем все моки
+    vi.clearAllMocks()
+  })
+
   it("should render empty state when no video is selected", () => {
     const { getByText } = render(<ContentIntelligencePanel />)
 
@@ -171,10 +186,8 @@ describe.skip("ContentIntelligencePanel", () => {
   })
 
   it("should handle errors gracefully", async () => {
-    // Mock error
-    const FFmpegAnalysisService = await import("@/domains/ai-services/services/media-analysis")
-    const mockGetMetadata = FFmpegAnalysisService.FFmpegAnalysisService.getInstance().getVideoMetadata as any
-    mockGetMetadata.mockRejectedValueOnce(new Error("Failed to analyze"))
+    // Мок ошибки для этого теста
+    mockGetVideoMetadata.mockRejectedValueOnce(new Error("Failed to analyze"))
 
     const { getByText } = render(<ContentIntelligencePanel videoPath="/path/to/video.mp4" />)
 
