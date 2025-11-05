@@ -1,3 +1,10 @@
+## [2.3.2](https://github.com/chatman-media/timeline-studio/compare/v2.3.1...v2.3.2) (2025-11-05)
+
+
+### Bug Fixes
+
+* Удален дублирующий экспорт useProjectSettings ([7890cda](https://github.com/chatman-media/timeline-studio/commit/7890cda0d9fa09d62fa0530a5a85c779dc66b3af))
+
 ## [2.3.1](https://github.com/chatman-media/timeline-studio/compare/v2.3.0...v2.3.1) (2025-11-05)
 
 
