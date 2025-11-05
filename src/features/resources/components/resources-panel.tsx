@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
+import { MediaPreview } from "@/features/browser/components/preview/media-preview"
 import { type DraggableType, useDraggable } from "@/features/drag-drop"
 import { useResources } from "@/features/resources"
 import type { TimelineResource } from "@/features/resources/types"
@@ -93,16 +94,51 @@ function ResourceItem({ resource, onRemove }: { resource: TimelineResource; onRe
     height: 80,
   }))
 
+  // Для media и music показываем превью
+  const shouldShowPreview = resource.type === "media" || resource.type === "music"
+
+  if (shouldShowPreview && resource.file) {
+    return (
+      <div
+        key={resource.id}
+        className="group relative mb-2 flex w-[110px] flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-sm border border-[#333] transition-all duration-150 hover:border-[#555]"
+        {...dragProps}
+      >
+        {/* Превью медиафайла */}
+        <div className="relative h-[62px] w-full overflow-hidden bg-black">
+          <MediaPreview file={resource.file} size={62} ignoreRatio />
+        </div>
+
+        {/* Название файла под превью */}
+        <div className="flex items-center justify-between bg-[#222] px-1.5 py-1">
+          <div className="flex-1 overflow-hidden">
+            <div className="truncate text-[9px] text-gray-300">{resource.name}</div>
+          </div>
+        </div>
+
+        {/* Кнопка удаления - показывается при наведении */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onRemove(resource.id)
+          }}
+          className="absolute right-1 top-1 z-10 rounded bg-black/50 p-0.5 opacity-0 transition-opacity duration-150 hover:bg-red-500/80 group-hover:opacity-100"
+        >
+          <X className="h-3 w-3 text-white" />
+        </button>
+      </div>
+    )
+  }
+
+  // Для остальных ресурсов (effects, filters, transitions, templates) - компактный вид
   return (
     <div
       key={resource.id}
-      className="group relative mb-1 flex h-[26px] w-[110px] flex-shrink-0 cursor-pointer items-center gap-2 rounded-sm border border-[#333] px-2 hover:bg-[#444] hover:text-white transition-colors duration-150"
+      className="group relative mb-1 flex h-[26px] w-[110px] flex-shrink-0 cursor-pointer items-center gap-2 rounded-sm border border-[#333] px-2 transition-colors duration-150 hover:bg-[#444] hover:text-white"
       {...dragProps}
     >
       {/* Иконка ресурса (слева) */}
       <div className="flex-shrink-0">
-        {resource.type === "media" && <Clapperboard className="h-4 w-4" />}
-        {resource.type === "music" && <Music className="h-4 w-4" />}
         {resource.type === "subtitle" && <Subtitles className="h-4 w-4" />}
         {resource.type === "effect" && <Package className="h-4 w-4" />}
         {resource.type === "filter" && <Palette className="h-4 w-4" />}
@@ -128,7 +164,7 @@ function ResourceItem({ resource, onRemove }: { resource: TimelineResource; onRe
           e.stopPropagation()
           onRemove(resource.id)
         }}
-        className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-0.5 hover:bg-red-500/20 rounded"
+        className="absolute right-1 top-1/2 -translate-y-1/2 rounded p-0.5 opacity-0 transition-opacity duration-150 hover:bg-red-500/20 group-hover:opacity-100"
       >
         <X className="h-3 w-3 text-red-500" />
       </button>
