@@ -156,12 +156,17 @@ export const ImagePreview = memo(function ImagePreview({
           className="h-full w-full object-contain"
           onError={(e) => {
             const target = e.currentTarget as HTMLImageElement
-            console.error("[ImagePreview] Ошибка загрузки изображения:", {
+            // Извлекаем данные из события сразу (до event pooling)
+            const errorInfo = {
               src: target.src,
               fileName: file.name,
               filePath: file.path,
-              error: e.type,
-            })
+              eventType: e.type,
+              naturalWidth: target.naturalWidth,
+              naturalHeight: target.naturalHeight,
+              currentSrc: target.currentSrc,
+            }
+            console.error("[ImagePreview] Ошибка загрузки изображения:", errorInfo)
             // Заменяем на иконку при ошибке
             target.style.display = "none"
 
