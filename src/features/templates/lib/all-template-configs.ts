@@ -1100,14 +1100,14 @@ export function convertConfigToTemplate(config: MediaTemplateConfig): MediaTempl
 }
 
 // Экспортируем массивы с render методами для обратной совместимости
-export const landscapeTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
-  c.id.includes("landscape"),
-).map(convertConfigToTemplate)
+export const landscapeTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) => c.id.includes("landscape")).map(
+  convertConfigToTemplate,
+)
 
-export const portraitTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
-  c.id.includes("portrait"),
-).map(convertConfigToTemplate)
+export const portraitTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) => c.id.includes("portrait")).map(
+  convertConfigToTemplate,
+)
 
-export const squareTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
-  c.id.includes("square"),
-).map(convertConfigToTemplate)
+export const squareTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) => c.id.includes("square")).map(
+  convertConfigToTemplate,
+)
