@@ -166,7 +166,9 @@ export function TimelineContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div>
-                <h3 className="font-semibold text-foreground">{currentProject?.name || project?.name || "Новый проект"}</h3>
+                <h3 className="font-semibold text-foreground">
+                  {currentProject?.name || project?.name || "Новый проект"}
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {projectSettings
                     ? `${projectSettings.aspectRatio.value.width}x${projectSettings.aspectRatio.value.height} @ ${projectSettings.frameRate}fps`

@@ -10,8 +10,8 @@ import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { MediaFile } from "@/features/media/types/media"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
+import type { MediaFile } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
@@ -155,7 +155,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       // Сохраняем метаданные в кэш перед добавлением в backend
       if (file.probeData && file.probeData.streams && file.probeData.streams.length > 0) {
         metadataCacheRef.current.set(file.path, file.probeData)
-        console.log("ResourcesProvider: Cached metadata for music", file.path, "streams:", file.probeData.streams.length)
+        console.log(
+          "ResourcesProvider: Cached metadata for music",
+          file.path,
+          "streams:",
+          file.probeData.streams.length,
+        )
       }
 
       // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
