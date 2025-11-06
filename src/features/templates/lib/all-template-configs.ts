@@ -1066,3 +1066,48 @@ export const ALL_TEMPLATE_CONFIG_MAP: Record<string, MediaTemplateConfig> = ALL_
 export function getAllTemplateConfig(templateId: string): MediaTemplateConfig | undefined {
   return ALL_TEMPLATE_CONFIG_MAP[templateId]
 }
+
+// ===== АДАПТЕР ДЛЯ ОБРАТНОЙ СОВМЕСТИМОСТИ =====
+// Этот адаптер добавляет метод render() к конфигурациям для совместимости с legacy кодом
+
+import type { MediaTemplate } from "./template-config"
+
+/**
+ * Конвертирует MediaTemplateConfig в MediaTemplate с методом render()
+ * Используется для обратной совместимости с кодом, ожидающим MediaTemplate
+ */
+export function convertConfigToTemplate(config: MediaTemplateConfig): MediaTemplate {
+  return {
+    ...config,
+    render: () => {
+      // Этот метод используется только для preview в старом коде
+      // В реальном использовании TemplateRenderer принимает видео через renderCell prop
+      // Создаем простой placeholder элемент без JSX для совместимости
+      const div = document.createElement("div")
+      div.style.cssText =
+        "display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; font-size: 18px; color: rgba(156, 163, 175, 0.4);"
+
+      for (let i = 0; i < config.screens; i++) {
+        const cell = document.createElement("div")
+        cell.style.cssText = "display: flex; flex: 1; align-items: center; justify-content: center;"
+        cell.textContent = String(i + 1)
+        div.appendChild(cell)
+      }
+
+      return div as any // Type cast for compatibility
+    },
+  }
+}
+
+// Экспортируем массивы с render методами для обратной совместимости
+export const landscapeTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
+  c.id.includes("landscape"),
+).map(convertConfigToTemplate)
+
+export const portraitTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
+  c.id.includes("portrait"),
+).map(convertConfigToTemplate)
+
+export const squareTemplates: MediaTemplate[] = ALL_TEMPLATE_CONFIGS.filter((c) =>
+  c.id.includes("square"),
+).map(convertConfigToTemplate)

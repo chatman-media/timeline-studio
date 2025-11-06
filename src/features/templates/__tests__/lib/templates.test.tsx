@@ -2,23 +2,17 @@ import { describe, expect, it, vi } from "vitest"
 
 import { createCellConfig, createDividerConfig, PRESET_STYLES, TEMPLATE_MAP } from "../../lib/templates"
 
-// Mock the template preview components
-vi.mock("../../components/template-previews/landscape-templates", () => ({
+// Mock the new template configs system
+vi.mock("../../lib/all-template-configs", () => ({
   landscapeTemplates: [
     { id: "landscape-1", split: "vertical", screens: 2, render: () => null },
     { id: "landscape-2", split: "horizontal", screens: 2, render: () => null },
     { id: "landscape-3", split: "grid", screens: 4, render: () => null },
   ],
-}))
-
-vi.mock("../../components/template-previews/portrait-templates", () => ({
   portraitTemplates: [
     { id: "portrait-1", split: "vertical", screens: 2, render: () => null },
     { id: "portrait-2", split: "horizontal", screens: 2, render: () => null },
   ],
-}))
-
-vi.mock("../../components/template-previews/square-templates", () => ({
   squareTemplates: [
     { id: "square-1", split: "grid", screens: 4, render: () => null },
     { id: "square-2", split: "grid", screens: 9, render: () => null },
