@@ -81,18 +81,22 @@ export function TimelineContent() {
   // Инициализируем синхронизацию с плеером
   useTimelinePlayerSync()
 
-  // Создаем проект при первой загрузке, используя настройки из реального проекта
+  // Создаем проект немедленно при наличии currentProject
   useEffect(() => {
     if (!project && currentProject && projectSettings) {
-      void createProject(currentProject.name)
+      // Создаем проект синхронно
+      createProject(currentProject.name).then(() => {
+        console.log("[TimelineContent] Timeline project created for:", currentProject.name)
+      })
     }
   }, [project, currentProject, projectSettings, createProject])
 
-  // Добавляем демо секцию
+  // Добавляем демо секцию после создания проекта
   useEffect(() => {
     if (project && project.sections.length === 0) {
-      // Добавляем секцию
-      void addSection("Main Section", 0, 300) // 5 минут
+      addSection("Main Section", 0, 300).then(() => {
+        console.log("[TimelineContent] Main section added")
+      })
     }
   }, [project, addSection])
 
@@ -144,20 +148,8 @@ export function TimelineContent() {
     )
   }
 
-  if (!project) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle>Загрузка Timeline...</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-600">Инициализация проекта...</p>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  // Не показываем сообщение загрузки - Timeline будет пустым пока проект создается
+  // Проект создается автоматически в useEffect выше при наличии currentProject
 
   return (
     <EditModeProvider>
@@ -174,11 +166,13 @@ export function TimelineContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div>
-                <h3 className="font-semibold text-foreground">{currentProject?.name || project.name}</h3>
+                <h3 className="font-semibold text-foreground">{currentProject?.name || project?.name || "Новый проект"}</h3>
                 <p className="text-sm text-muted-foreground">
                   {projectSettings
                     ? `${projectSettings.aspectRatio.value.width}x${projectSettings.aspectRatio.value.height} @ ${projectSettings.frameRate}fps`
-                    : `${project.settings.resolution.width}x${project.settings.resolution.height} @ ${project.settings.fps}fps`}
+                    : project
+                      ? `${project.settings.resolution.width}x${project.settings.resolution.height} @ ${project.settings.fps}fps`
+                      : "1920x1080 @ 30fps"}
                 </p>
               </div>
               {/* Edit mode selector */}
@@ -187,7 +181,7 @@ export function TimelineContent() {
               <AIMarkerControls className="ml-4" />
             </div>
             <div className="flex gap-2">
-              <Badge variant="outline">{project.sections?.length || 0} секций</Badge>
+              <Badge variant="outline">{project?.sections?.length || 0} секций</Badge>
               <Badge variant="outline">{tracks.length} треков</Badge>
               <Badge variant="outline">{clips.length} клипов</Badge>
               <TimelineSpeedRampingStatus />
