@@ -32,7 +32,7 @@ tools/
 |------------|---------------------|
 | `video-analysis-tools.ts` | `tools/analysis/video-analysis-tools.ts` |
 | `audio-processing-tools.ts` | `tools/analysis/audio-analysis-tools.ts` |
-| `content-intelligence-tools.ts` | `tools/analysis/content-intelligence-tools.ts` |
+| `content-intelligence-tools.ts` | ✅ **ПОЛНОСТЬЮ МИГРИРОВАН** → `/domains/ai-tools/tools/analysis/content-intelligence/` |
 | `multimodal-analysis-tools.ts` | `tools/analysis/multimodal-tools.ts` |
 | `whisper-tools.ts` | `tools/analysis/whisper-tools.ts` |
 | `person-identification-tools.ts` | `tools/analysis/person-identification-tools.ts` |
@@ -135,6 +135,107 @@ const domains = AIToolsUtils.getDomains()
 - [ ] Performance benchmarks
 - [ ] Создать tool registry для динамической регистрации
 - [ ] Provider абстракция для различных AI провайдеров
+
+---
+
+## 🎯 Детальная миграция Content Intelligence Tools
+
+**Дата**: 2025-01-06
+**Статус**: ✅ Полностью завершена
+
+### Структура миграции
+
+Инструменты Content Intelligence полностью перенесены из старой структуры в новый домен:
+
+**Старое расположение:**
+```
+/src/features/ai-chat/tools/analysis/content-intelligence-tools.ts
+```
+
+**Новое расположение:**
+```
+/src/domains/ai-tools/tools/analysis/content-intelligence/
+├── types.ts                    - Все интерфейсы и типы
+├── content-analysis-tool.ts    - Основной класс ContentIntelligenceTool
+├── index.ts                    - Экспорты для внешнего использования
+```
+
+### Перенесенная функциональность
+
+1. **Класс ContentIntelligenceTool** (1,732 строки)
+   - Все методы сохранены без изменений
+   - Полная интеграция с BaseAITool
+   - Унифицированная обработка ошибок
+
+2. **Типы и интерфейсы**:
+   - `ContentIntelligenceInput`
+   - `ContentAnalysisResult`
+   - `ContentVariant`
+   - `ContentIntelligenceResult`
+   - `ContentIntelligenceToolResult`
+
+3. **Функции-обертки для обратной совместимости**:
+   - `analyzeContentIntelligence()`
+   - `detectSceneBoundaries()`
+   - `classifyContent()`
+   - `adaptContentToPlatform()`
+   - `generateMultiLanguageBatch()`
+   - `generateContentVariants()`
+   - `analyzeAudienceSegments()`
+   - `optimizeEngagementFactors()`
+   - `executeContentIntelligenceTool()`
+
+4. **Все приватные методы класса**:
+   - `performContentAnalysis()`
+   - `performSceneDetection()`
+   - `performContentClassification()`
+   - `performPlatformAdaptation()`
+   - `performMultiLanguageGeneration()`
+   - `performVariantGeneration()`
+   - `performAudienceAnalysis()`
+   - `performEngagementOptimization()`
+   - `getPlatformConfig()`
+   - `generateTitleVariations()`
+   - `generateHashtags()`
+   - `buildTranslationPrompt()`
+   - `parseTranslationResult()`
+   - `identifyCulturalAdaptations()`
+   - `buildVariantPrompt()`
+   - `parseVariantResult()`
+   - `predictVariantPerformance()`
+   - `generateAudienceSegments()`
+   - `getContentPreferences()`
+   - `evaluateHook()`
+   - `evaluatePacing()`
+   - `evaluateMusic()`
+
+### Обновленные импорты
+
+**Файлы с обновленными импортами:**
+
+1. `/src/domains/ai-services/services/timeline-ai-service.ts`
+   - Удален: `import { executeContentIntelligenceTool } from "@/features/ai-chat/tools/analysis/content-intelligence-tools"`
+   - Добавлен: `import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"`
+   - Удален re-export в конце файла
+
+2. `/src/features/timeline/components/ai-suggestions/enhanced-ai-panel.tsx`
+   - Удален: `import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"`
+   - Добавлен: `import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"`
+
+### Проверка
+
+✅ Сборка проекта: Успешно (`bun run build`)
+✅ Типизация: Все типы экспортированы корректно
+✅ Обратная совместимость: Все функции-обертки сохранены
+✅ Старый файл удален: `content-intelligence-tools.ts` (1,732 строки)
+
+### Размер миграции
+
+- **Перенесено строк кода**: 1,732
+- **Размер файла**: 64KB
+- **Количество методов**: 25+
+- **Количество интерфейсов**: 5
+- **Количество операций**: 8
 
 ---
 

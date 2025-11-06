@@ -6,7 +6,10 @@
  */
 
 import { getAIContainer } from "@/domains/ai-core"
-import { contentIntelligenceTools } from "@/domains/ai-tools/tools/analysis/content-intelligence"
+import {
+  contentIntelligenceTools,
+  executeContentIntelligenceTool,
+} from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
 import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
 import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
@@ -22,7 +25,6 @@ import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/cor
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
 import { executePlatformOptimizationTool } from "@/features/ai-chat/tools"
-import { executeContentIntelligenceTool } from "@/features/ai-chat/tools/analysis/content-intelligence-tools"
 import { executeMultimodalAnalysisTool } from "@/features/ai-chat/tools/analysis/multimodal-tools"
 import { executePersonIdentificationTool } from "@/features/ai-chat/tools/analysis/person-identification-tools"
 import { executeVideoAnalysisTool } from "@/features/ai-chat/tools/analysis/video-analysis-tools"
@@ -811,6 +813,3 @@ export class TimelineAIService {
     return []
   }
 }
-
-// Re-export executeContentIntelligenceTool для обратной совместимости
-export { executeContentIntelligenceTool }

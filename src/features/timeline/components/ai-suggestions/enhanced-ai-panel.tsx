@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { executeContentIntelligenceTool } from "@/domains/ai-services/services/timeline-ai-service"
+import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@/domains/media-management"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { UnifiedDashboard } from "@/features/ai-content-intelligence"
