@@ -77,8 +77,7 @@ interface BrowserStateContextValue {
   deselectAllFiles: (tab?: BrowserTab) => void
   isFileSelected: (fileId: string, tab?: BrowserTab) => boolean
 
-  // BackendSync методы
-  syncBrowserState: () => Promise<void>
+  // Утилиты
   clearBrowserState: () => void
   isBackendConnected: boolean
 }
@@ -108,7 +107,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
   const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
 
   const [state, setState] = useState<BrowserContext>(() => {
-    // Пытаемся загрузить настройки из localStorage только на клиенте
+    // Пытаемся загрузить UI настройки из localStorage только на клиенте
     if (typeof window === "undefined") {
       return getInitialContext()
     }
@@ -118,22 +117,12 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       if (savedSettings) {
         const parsed = JSON.parse(savedSettings)
 
-        // Преобразуем массивы обратно в Set для selectedFiles
-        if (parsed.selectedFiles) {
-          const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
-          for (const [tab, files] of Object.entries(parsed.selectedFiles)) {
-            selectedFiles[tab as BrowserTab] = new Set(files as string[])
-          }
-          parsed.selectedFiles = selectedFiles
-        } else {
-          // Если нет selectedFiles, инициализируем пустыми Set
-          parsed.selectedFiles = getInitialContext().selectedFiles
-        }
-
-        // Возвращаем объединённое состояние напрямую, без вызова setState
+        // Восстанавливаем только UI настройки (activeTab, tabSettings)
+        // selectedFiles всегда инициализируются пустыми (временное состояние)
         return {
           ...getInitialContext(),
-          ...parsed,
+          activeTab: parsed.activeTab || getInitialContext().activeTab,
+          tabSettings: parsed.tabSettings || getInitialContext().tabSettings,
         }
       }
     } catch (error) {
@@ -144,78 +133,26 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     return getInitialContext()
   })
 
-  // Используем ref для отслеживания первого рендера и предыдущего состояния
+  // Используем ref для отслеживания первого рендера
   const isFirstRender = useRef(true)
-  const prevStateRef = useRef(state)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Синхронизация состояния с backend
-  const syncBrowserState = async () => {
-    if (!isBackendConnected) return
-
-    try {
-      // Преобразуем Set в массив для сериализации
-      const serializableState = {
-        ...state,
-        selectedFiles: Object.entries(state.selectedFiles).reduce(
-          (acc, [tab, files]) => {
-            acc[tab as BrowserTab] = Array.from(files)
-            return acc
-          },
-          {} as Record<BrowserTab, string[]>,
-        ),
-      }
-
-      await backendSync.executeCommand({
-        type: "SyncUIState",
-        params: serializableState,
-      })
-
-      console.log("[BrowserStateProvider] Browser state synced with backend")
-    } catch (error) {
-      console.error("[BrowserStateProvider] Failed to sync browser state:", error)
-    }
-  }
-
-  // Подписка на backend события и восстановление состояния
+  // Подписка на backend события (только для сброса при смене проекта)
   useEffect(() => {
     // Мониторинг соединения
-    const unsubscribeConnection = backendSync.onStateChange((projectState) => {
+    const unsubscribeConnection = backendSync.onStateChange(() => {
       setIsBackendConnected(true)
-
-      // Восстанавливаем состояние браузера из backend
-      if (projectState.ui_state?.browser_state) {
-        const restoredState = projectState.ui_state.browser_state as any
-
-        // Преобразуем массивы обратно в Set
-        if (restoredState.selectedFiles) {
-          const selectedFiles: Record<BrowserTab, Set<string>> = {} as any
-          for (const [tab, files] of Object.entries(restoredState.selectedFiles)) {
-            selectedFiles[tab as BrowserTab] = new Set(files as string[])
-          }
-          restoredState.selectedFiles = selectedFiles
-        }
-
-        setState((prevState) => ({
-          ...prevState,
-          ...restoredState,
-        }))
-
-        console.log("[BrowserStateProvider] Browser state restored from backend")
-      }
     })
 
-    // Подписка на события
+    // Подписка на события проекта
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "BROWSER_STATE_SYNC_REQUEST") {
-        // Backend запрашивает синхронизацию состояния
-        syncBrowserState().catch(console.error)
-      } else if (event.type === "ProjectCreated" || event.type === "ProjectOpened" || event.type === "ProjectClosed") {
-        // При создании/открытии/закрытии проекта очищаем localStorage и сбрасываем состояние
-        console.log(`[BrowserStateProvider] ${event.type}, clearing browser state`)
-        localStorage.removeItem("browserSettings")
-        setState(getInitialContext())
+      if (event.type === "ProjectCreated" || event.type === "ProjectOpened" || event.type === "ProjectClosed") {
+        // При создании/открытии/закрытии проекта сбрасываем selectedFiles
+        console.log(`[BrowserStateProvider] ${event.type}, clearing temporary selections`)
+        setState((prev) => ({
+          ...prev,
+          selectedFiles: getInitialContext().selectedFiles,
+        }))
       }
     })
 
@@ -223,25 +160,17 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       unsubscribeConnection()
       unsubscribeEvents()
     }
-  }, [backendSync, isBackendConnected])
+  }, [backendSync])
 
-  // Сохраняем настройки в пользовательские настройки при изменении (с дебаунсом)
+  // Сохраняем UI настройки в localStorage для UX (с дебаунсом)
   useEffect(() => {
     // Пропускаем первый рендер, чтобы не сохранять сразу после загрузки
     if (isFirstRender.current) {
       isFirstRender.current = false
-      prevStateRef.current = state
       return
     }
 
-    // Проверяем, действительно ли состояние изменилось
-    if (JSON.stringify(prevStateRef.current) === JSON.stringify(state)) {
-      return
-    }
-
-    prevStateRef.current = state
-
-    // Очищаем предыдущий таймаут, если он существует
+    // Очищаем предыдущий таймаут
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current)
     }
@@ -252,67 +181,33 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
       }
 
       try {
-        // Преобразуем Set в массив для сериализации
-        const stateToSave = {
-          ...state,
-          selectedFiles: Object.entries(state.selectedFiles).reduce(
-            (acc, [tab, files]) => {
-              acc[
-                tab as
-                  | "media"
-                  | "music"
-                  | "subtitles"
-                  | "transitions"
-                  | "effects"
-                  | "filters"
-                  | "templates"
-                  | "style-templates"
-              ] = Array.from(files)
-              return acc
-            },
-            {} as Record<BrowserTab, string[]>,
-          ),
+        // Сохраняем только UI настройки (activeTab, tabSettings)
+        // НЕ сохраняем selectedFiles - это временное состояние для drag
+        const uiSettings = {
+          activeTab: state.activeTab,
+          tabSettings: state.tabSettings,
         }
-        localStorage.setItem("browserSettings", JSON.stringify(stateToSave))
-        // Settings saved to localStorage
+        localStorage.setItem("browserSettings", JSON.stringify(uiSettings))
       } catch (error) {
         console.error("Failed to save browser settings to localStorage:", error)
       }
       saveTimeoutRef.current = null
-    }, 500) // Дебаунс 500мс
-
-    // Синхронизация с backend (с большим дебаунсом)
-    if (syncTimeoutRef.current) {
-      clearTimeout(syncTimeoutRef.current)
-    }
-
-    syncTimeoutRef.current = setTimeout(() => {
-      syncBrowserState().catch(console.error)
-      syncTimeoutRef.current = null
-    }, 2000) // Дебаунс 2 секунды для backend
+    }, 500) // Дебаунс 500мс для оптимизации
 
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current)
         saveTimeoutRef.current = null
       }
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current)
-        syncTimeoutRef.current = null
-      }
     }
-  }, [state, isBackendConnected])
+  }, [state.activeTab, state.tabSettings])
 
-  // Очистка таймеров при размонтировании компонента
+  // Очистка таймера при размонтировании
   useEffect(() => {
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current)
         saveTimeoutRef.current = null
-      }
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current)
-        syncTimeoutRef.current = null
       }
     }
   }, [])
@@ -573,7 +468,6 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         selectAllFiles,
         deselectAllFiles,
         isFileSelected,
-        syncBrowserState,
         clearBrowserState,
         isBackendConnected,
       }}
@@ -601,17 +495,4 @@ export const useTabSettings = (tab?: BrowserTab) => {
   const { state, activeTab } = useBrowserState()
   const targetTab = tab || activeTab
   return state.tabSettings[targetTab]
-}
-
-/**
- * Новый хук для мониторинга синхронизации состояния браузера
- */
-export const useBrowserStateSync = () => {
-  const { syncBrowserState, isBackendConnected } = useBrowserState()
-
-  return {
-    sync: syncBrowserState,
-    isConnected: isBackendConnected,
-    canSync: isBackendConnected,
-  }
 }
