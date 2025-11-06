@@ -1,3 +1,10 @@
+## [2.3.5](https://github.com/chatman-media/timeline-studio/compare/v2.3.4...v2.3.5) (2025-11-06)
+
+
+### Bug Fixes
+
+* Унифицировать проверку Tauri окружения для v2 ([b1b16dd](https://github.com/chatman-media/timeline-studio/commit/b1b16ddd2ad1fd84ebb3051026553fbb8291488d))
+
 ## [2.3.4](https://github.com/chatman-media/timeline-studio/compare/v2.3.3...v2.3.4) (2025-11-06)
 
 
