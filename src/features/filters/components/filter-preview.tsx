@@ -146,7 +146,12 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
     const applyFilter = () => {
       videoElement.currentTime = 0 // Сбрасываем время видео на начало
       videoElement.style.filter = getFilterStyle() // Применяем CSS-фильтры
-      void videoElement.play() // Запускаем воспроизведение
+
+      // Запускаем воспроизведение с обработкой ошибок autoplay
+      videoElement.play().catch((error) => {
+        // Игнорируем ошибки autoplay, которые блокируются браузером
+        console.debug("[FilterPreview] Autoplay blocked:", error.message)
+      })
 
       // Устанавливаем таймер для повторного воспроизведения через 2 секунды
       timeoutRef.current = setTimeout(() => {

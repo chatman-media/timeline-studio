@@ -140,14 +140,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         }
       }
 
-      const mediaType = file.isVideo ? "Video" : file.isAudio ? "Audio" : "Image"
-      const result = await executeCommand({
-        type: "AddMedia",
-        params: { path: file.path, media_type: mediaType },
-      })
-      console.log("ResourcesProvider: AddMedia result", result)
+      // В V2 архитектуре backend сам управляет media_pool через события
+      // Файлы добавляются через importMediaFiles/processFiles, которые вызывают backend
+      // Backend отправляет STATE_UPDATED события, которые автоматически обновляют frontend
+      console.log("ResourcesProvider: Media will be added through backend events:", file.path)
     },
-    [executeCommand, backendState],
+    [backendState],
   )
 
   const addMusic = useCallback(
@@ -173,12 +171,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         }
       }
 
-      await executeCommand({
-        type: "AddMedia",
-        params: { path: file.path, media_type: "Audio" },
-      })
+      // В V2 архитектуре backend сам управляет media_pool через события
+      // Файлы добавляются через importMediaFiles/processFiles, которые вызывают backend
+      // Backend отправляет STATE_UPDATED события, которые автоматически обновляют frontend
+      console.log("ResourcesProvider: Music will be added through backend events:", file.path)
     },
-    [executeCommand, backendState],
+    [backendState],
   )
 
   const addSubtitle = useCallback(

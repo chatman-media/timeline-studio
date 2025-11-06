@@ -62,7 +62,18 @@ vi.mock("../../hooks/use-media-processor", () => ({
           isLoadingMetadata: false,
         })
       })
-      return files.map((f: string) => ({ id: f, path: f }))
+      // Возвращаем полные MediaFile объекты
+      return files.map((f: string) => ({
+        id: f,
+        path: f,
+        name: f.split("/").pop() || f,
+        isVideo: f.endsWith(".mp4"),
+        isAudio: f.endsWith(".mp3"),
+        isImage: f.endsWith(".jpg"),
+        size: 1024,
+        duration: 60,
+        isLoadingMetadata: false,
+      }))
     }),
   })),
 }))
@@ -122,14 +133,14 @@ describe("useMediaImport", () => {
     expect(importResult.success).toBe(true)
     expect(importResult.files).toHaveLength(2)
 
-    // Проверяем первый файл - будет базовая информация
+    // Проверяем первый файл - после обработки с метаданными
     expect(importResult.files[0]).toMatchObject({
       path: mockFiles[0],
       name: "file1.mp4",
       isVideo: true,
       isAudio: false,
       isImage: false,
-      isLoadingMetadata: true,
+      isLoadingMetadata: false, // Изменено: файлы добавляются только после обработки
     })
 
     // Проверяем второй файл
@@ -139,7 +150,7 @@ describe("useMediaImport", () => {
       isVideo: false,
       isAudio: true,
       isImage: false,
-      isLoadingMetadata: true,
+      isLoadingMetadata: false, // Изменено: файлы добавляются только после обработки
     })
 
     // Проверяем, что файлы были добавлены в ресурсы

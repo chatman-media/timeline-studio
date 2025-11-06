@@ -171,15 +171,7 @@ export function useMediaImport() {
 
       console.log(`Выбрано ${selectedFiles.length} файлов`)
 
-      // Создаем базовые файлы для мгновенного отображения
-      const basicFiles = selectedFiles.map((filePath) => createBasicMediaFile(filePath))
-
-      // Добавляем файлы в ресурсы для синхронизации с проектом (Resources - единственный источник истины)
-      basicFiles.forEach((file) => {
-        void addMedia(file)
-      })
-
-      // Обрабатываем выбранные файлы и ждем результат
+      // Обрабатываем выбранные файлы и ждем результат (добавим только после обработки с метаданными)
       const processedFiles = await processFiles(selectedFiles).catch((error: unknown) => {
         console.error("Ошибка обработки файлов:", error)
         return [] as MediaFile[]
@@ -187,32 +179,42 @@ export function useMediaImport() {
 
       console.log(`Обработка завершена. Импортировано ${processedFiles.length} файлов`)
 
-      // Если получили обработанные файлы, обновляем их в ресурсах
+      // Сохраняем финальные файлы для возврата
+      let finalFiles: MediaFile[]
+
+      // Если получили обработанные файлы, добавляем их в ресурсы
       if (processedFiles.length > 0) {
-        // Обновляем файлы, устанавливая isLoadingMetadata: false
+        // Устанавливаем isLoadingMetadata: false для финализации
         const filesWithMetadata = processedFiles.map((file) => ({
           ...file,
           isLoadingMetadata: false,
         }))
 
         // Добавляем обработанные файлы в ресурсы (Resources - единственный источник истины)
+        // ВАЖНО: Добавляем ТОЛЬКО ОДИН РАЗ, после полной обработки с метаданными
         filesWithMetadata.forEach((file) => {
           void addMedia(file)
         })
 
         // Сохраняем обработанные файлы в проект
         await saveFilesToProject(filesWithMetadata)
+        finalFiles = filesWithMetadata
       } else {
-        // Если обработка не удалась, сохраняем хотя бы базовые файлы
+        // Если обработка не удалась, создаем базовые файлы и сохраняем их
+        const basicFiles = selectedFiles.map((filePath) => createBasicMediaFile(filePath))
+        basicFiles.forEach((file) => {
+          void addMedia(file)
+        })
         await saveFilesToProject(basicFiles)
+        finalFiles = basicFiles
       }
 
       setIsImporting(false)
 
       return {
         success: true,
-        message: `Импортируется ${basicFiles.length} файлов...`,
-        files: basicFiles,
+        message: `Импортировано ${finalFiles.length} файлов`,
+        files: finalFiles,
       }
     } catch (error) {
       console.error("Ошибка при импорте файлов:", error)

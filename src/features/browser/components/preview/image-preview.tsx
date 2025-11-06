@@ -2,7 +2,7 @@
 
 import { readFile } from "@tauri-apps/plugin-fs"
 import { Image } from "lucide-react"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
@@ -51,6 +51,8 @@ export const ImagePreview = memo(function ImagePreview({
 
   // Состояние для хранения объекта URL
   const [imageUrl, setImageUrl] = useState<string>("")
+  // Ref для отслеживания текущего blob URL который нужно очистить
+  const blobUrlRef = useRef<string | null>(null)
 
   // Функция для чтения файла и создания объекта URL
   const loadImageFile = useCallback(async (path: string) => {
@@ -101,18 +103,25 @@ export const ImagePreview = memo(function ImagePreview({
 
     void loadImageFile(file.path).then((url) => {
       if (isMounted) {
+        // Очищаем предыдущий blob URL если он есть
+        if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
+          URL.revokeObjectURL(blobUrlRef.current)
+        }
+        // Сохраняем новый URL в ref
+        blobUrlRef.current = url.startsWith("blob:") ? url : null
         setImageUrl(url)
       }
     })
 
-    // Очистка объекта URL при размонтировании компонента
+    // Очистка объекта URL при размонтировании компонента или смене файла
     return () => {
       isMounted = false
-      if (imageUrl && imageUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(imageUrl)
+      if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
+        URL.revokeObjectURL(blobUrlRef.current)
+        blobUrlRef.current = null
       }
     }
-  }, [file.path, loadImageFile]) // Убираем imageUrl из зависимостей
+  }, [file.path, loadImageFile])
 
   // Обработчик клика для отправки изображения в плеер
   const handleImageClick = useCallback(async () => {
