@@ -781,19 +781,42 @@ export function resetEffectsProviderState(): void {
 /**
  * Browser Resources Provider - управляет библиотекой ДОСТУПНЫХ ресурсов для Browser
  *
- * Отвечает за:
- * - Загрузку встроенных ресурсов (effects, filters, transitions)
- * - Получение импортированных медиа от backend
- * - Кэширование для производительности
+ * @description
+ * Этот провайдер управляет библиотекой ресурсов, доступных для выбора в Browser компоненте.
+ * Он отделён от ResourcesProvider, который управляет ресурсами, УЖЕ ДОБАВЛЕННЫМИ на timeline.
  *
- * НЕ управляет:
- * - ❌ Timeline resources (это ResourcesProvider)
- * - ❌ UI состоянием (это BrowserStateProvider)
+ * @responsibilities Отвечает за:
+ * - ✅ Загрузку встроенных ресурсов (effects, filters, transitions) из JSON
+ * - ✅ Получение импортированных медиа файлов от backend
+ * - ✅ Кэширование для производительности
+ * - ✅ Поиск и фильтрацию ресурсов
  *
- * BackendSync интеграция:
- * - Сохранение пользовательских ресурсов
- * - Загрузка удаленных ресурсов
- * - Синхронизация импортированных ресурсов
+ * @notResponsible НЕ управляет:
+ * - ❌ Timeline resources (это `ResourcesProvider` в `src/features/resources`)
+ * - ❌ UI состоянием Browser (это `BrowserStateProvider`)
+ * - ❌ Применением эффектов на видео
+ *
+ * @backendIntegration BackendSync интеграция:
+ * - Восстановление импортированных медиа файлов при открытии проекта
+ * - Синхронизация пользовательских ресурсов
+ * - Уведомления об изменениях ресурсов
+ *
+ * @example
+ * ```tsx
+ * // Правильное использование
+ * <BrowserResourcesProvider>
+ *   <BrowserComponent />
+ * </BrowserResourcesProvider>
+ *
+ * // Или с deprecated именем (обратная совместимость)
+ * <EffectsProvider>
+ *   <BrowserComponent />
+ * </EffectsProvider>
+ * ```
+ *
+ * @deprecated Имя `EffectsProvider` устарело. Используйте `BrowserResourcesProvider`.
+ * @see BrowserResourcesProvider
+ * @see useBrowserResourcesProvider
  */
 export function EffectsProvider({ children, config = {}, onError }: EffectsProviderProps) {
   const finalConfig = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config])
@@ -931,7 +954,36 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 }
 
 /**
- * Хук для использования BrowserResourcesProvider
+ * Хук для доступа к Browser Resources Provider контексту
+ *
+ * @description
+ * Предоставляет доступ к библиотеке ДОСТУПНЫХ ресурсов для Browser компонента.
+ * Этот хук используется для получения эффектов, фильтров, переходов и медиа файлов,
+ * доступных для выбора пользователем.
+ *
+ * @returns {EffectsProviderContext} Контекст провайдера с ресурсами и API
+ * @throws {Error} Если хук используется вне BrowserResourcesProvider
+ *
+ * @example
+ * ```tsx
+ * function BrowserTab() {
+ *   const { getResources, isLoading } = useBrowserResourcesProvider()
+ *   const effects = getResources('effect')
+ *
+ *   if (isLoading) return <Spinner />
+ *
+ *   return (
+ *     <div>
+ *       {effects.map(effect => (
+ *         <EffectCard key={effect.id} effect={effect} />
+ *       ))}
+ *     </div>
+ *   )
+ * }
+ * ```
+ *
+ * @see EffectsProviderContext
+ * @see BrowserResourcesProvider
  */
 export function useBrowserResourcesProvider(): EffectsProviderContext {
   const context = useContext(BrowserResourcesProviderContextValue)

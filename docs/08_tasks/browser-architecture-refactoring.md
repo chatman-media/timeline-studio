@@ -71,24 +71,41 @@
 - [x] **Задача 1.2**: Проанализировать ResourcesPanel и убедиться, что ResourcesProvider правильный
 - [x] **Задача 1.3**: Понять разницу между Browser (доступные) и Resources Panel (на timeline)
 
-### Фаза 2: Упрощение BrowserStateProvider
+### Фаза 2: Упрощение BrowserStateProvider ✅ ВЫПОЛНЕНО
 
-- [ ] **Задача 2.1**: Упростить `BrowserStateProvider` - убрать дублирование с backend
-  - Сохранить localStorage ТОЛЬКО для UX (activeTab, viewMode)
-  - Убрать синхронизацию selectedFiles с backend (временное состояние для drag)
-  - Упростить debounce логику
+- [x] **Задача 2.1**: Упростить `BrowserStateProvider` - убрать дублирование с backend
+  - ✅ Сохранил localStorage ТОЛЬКО для UX (activeTab, viewMode, tabSettings)
+  - ✅ Убрал синхронизацию selectedFiles с backend (временное состояние для drag)
+  - ✅ Упростил debounce логику (убрал двойной debounce: 500ms + 2sec)
+  - ✅ Результат: -119 строк кода
+  - ✅ Файл: `src/features/browser/services/browser-state-provider.tsx`
 
-### Фаза 3: Переименование для ясности
+### Фаза 3: Переименование для ясности ✅ ВЫПОЛНЕНО
 
-- [ ] **Задача 3.1**: Переименовать `EffectsProvider` → `BrowserResourcesProvider`
-  - Добавить deprecated алиас для обратной совместимости
-  - Обновить exports в index.ts
+- [x] **Задача 3.1**: Переименовать `EffectsProvider` → `BrowserResourcesProvider`
+  - ✅ Использовал `git mv` для сохранения истории
+  - ✅ Добавил deprecated алиас `EffectsProvider` для обратной совместимости
+  - ✅ Создал новый хук `useBrowserResourcesProvider`
+  - ✅ Сохранил старый хук `useEffectsProvider` как алиас
+  - ✅ Файлы переименованы:
+    - `providers/effects-provider.tsx` → `providers/browser-resources-provider.tsx`
+    - `types/effects-provider.ts` → `types/browser-resources-provider.ts`
 
-- [ ] **Задача 3.2**: Обновить импорты в `browser.tsx`
+- [x] **Задача 3.2**: Обновить импорты в `browser.tsx`
+  - ✅ Обновлен импорт на новый путь
 
-- [ ] **Задача 3.3**: Обновить импорты в browser/hooks/use-resources.ts
+- [x] **Задача 3.3**: Обновить импорты в browser/hooks/use-resources.ts
+  - ✅ Обновлены все импорты на новый путь
 
-### Фаза 4: Документация
+- [x] **Задача 3.4**: Исправить тесты после переименования
+  - ✅ Обновлены импорты в тестах:
+    - `browser-tabs.test.tsx`
+    - `use-resources.test.tsx`
+    - `effects-provider.test.tsx`
+  - ✅ Обновлено ожидаемое сообщение об ошибке в тестах
+  - ✅ Все 24 тестовых файла browser feature проходят (456 тестов)
+
+### Фаза 4: Документация 🔄 В ПРОЦЕССЕ
 
 - [ ] **Задача 4.1**: Создать diagram с архитектурой Browser vs Resources Panel
 - [ ] **Задача 4.2**: Обновить комментарии в коде
@@ -219,7 +236,72 @@ const { effects } = useResources()
 
 ---
 
-## Статус: В процессе
+## Статус: Фазы 1-3 завершены, Фаза 4 в процессе
 
-**Текущая фаза**: Фаза 1 - Подготовка
+**Текущая фаза**: Фаза 4 - Документация
 **Последнее обновление**: 2025-11-06
+
+---
+
+## Выполненная работа
+
+### Упрощение BrowserStateProvider (Фаза 2)
+
+**Изменения в `src/features/browser/services/browser-state-provider.tsx`:**
+
+1. **Удалена функция `syncBrowserState()`** (-80 строк)
+   - Убрана синхронизация UI состояния с backend
+   - Убрана сериализация selectedFiles для backend
+   - Убран debounce для backend синхронизации (2 сек)
+
+2. **Упрощено взаимодействие с backend**
+   - Теперь только мониторинг событий проекта (ProjectCreated, ProjectOpened, ProjectClosed)
+   - Очистка временных выборов при изменении проекта
+   - Проверка соединения с backend
+
+3. **localStorage используется ТОЛЬКО для UX**
+   ```typescript
+   // Сохраняются только UI настройки
+   const uiSettings = {
+     activeTab: state.activeTab,
+     tabSettings: state.tabSettings,
+   }
+   localStorage.setItem("browserSettings", JSON.stringify(uiSettings))
+   ```
+   - selectedFiles НЕ сохраняются (временное drag состояние)
+   - viewMode восстанавливается из tabSettings
+
+4. **Результат**: -119 строк кода, более простая архитектура
+
+### Переименование EffectsProvider (Фаза 3)
+
+**Изменения:**
+
+1. **Файлы переименованы** (с сохранением git истории)
+   ```bash
+   git mv providers/effects-provider.tsx providers/browser-resources-provider.tsx
+   git mv types/effects-provider.ts types/browser-resources-provider.ts
+   ```
+
+2. **Обратная совместимость сохранена**
+   ```typescript
+   // Новые экспорты
+   export function useBrowserResourcesProvider(): EffectsProviderContext
+   export { EffectsProvider as BrowserResourcesProvider }
+
+   // Deprecated алиасы
+   export const useEffectsProvider = useBrowserResourcesProvider
+   export { EffectsProvider } // остается для совместимости
+   ```
+
+3. **Обновлены сообщения об ошибках**
+   ```typescript
+   throw new Error("useBrowserResourcesProvider must be used within a BrowserResourcesProvider")
+   ```
+
+4. **Обновлены все импорты**
+   - Компоненты: `browser.tsx`
+   - Хуки: `use-resources.ts`
+   - Тесты: 3 тестовых файла
+
+5. **Все тесты проходят**: 24 файла, 456 тестов ✅

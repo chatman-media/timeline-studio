@@ -23,7 +23,7 @@ import {
   useTransitions,
   useTransitionsSearch,
 } from "../../hooks/use-resources"
-import { EffectsProvider, resetEffectsProviderState } from "../../providers/effects-provider"
+import { EffectsProvider, resetEffectsProviderState } from "../../providers/browser-resources-provider"
 
 // Мокаем JSON файл с переходами
 vi.mock("@/features/transitions/data/transitions.json", () => ({

@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { BrowserTabs } from "../../components/browser-tabs"
-import { EffectsProvider } from "../../providers/effects-provider"
+import { EffectsProvider } from "../../providers/browser-resources-provider"
 
 // Мокаем ленивые загрузчики ресурсов
 vi.mock("../../services/resource-loaders", () => ({

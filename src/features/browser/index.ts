@@ -29,7 +29,16 @@ export {
 } from "./hooks/use-resources"
 
 // Провайдеры
-export { EffectsProvider, useEffectsProvider } from "./provider./browser-resources-provider"
+/**
+ * BrowserResourcesProvider - управляет библиотекой ДОСТУПНЫХ ресурсов для Browser
+ * @deprecated Имя EffectsProvider устарело, используйте BrowserResourcesProvider
+ */
+export {
+  EffectsProvider,
+  BrowserResourcesProvider,
+  useEffectsProvider,
+  useBrowserResourcesProvider,
+} from "./providers/browser-resources-provider"
 
 // Сервисы
 export * from "./services"
