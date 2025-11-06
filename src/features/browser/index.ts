@@ -29,7 +29,7 @@ export {
 } from "./hooks/use-resources"
 
 // Провайдеры
-export { EffectsProvider, useEffectsProvider } from "./providers/effects-provider"
+export { EffectsProvider, useEffectsProvider } from "./provider./browser-resources-provider"
 
 // Сервисы
 export * from "./services"

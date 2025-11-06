@@ -2,7 +2,7 @@ import type { BaseEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
 
-import type { LoadResult } from "../types/effects-provider"
+import type { LoadResult } from "../types/browser-resources-provider"
 
 /**
  * Ленивые загрузчики ресурсов для оптимизации памяти

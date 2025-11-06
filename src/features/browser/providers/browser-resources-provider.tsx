@@ -21,7 +21,7 @@ import type {
   ResourceStats,
   SearchOptions,
   SourceConfig,
-} from "../types/effects-provider"
+} from "../types/browser-resources-provider"
 
 // Константы по умолчанию
 const DEFAULT_CONFIG: LoadingConfig = {
@@ -59,14 +59,14 @@ const DEFAULT_SOURCE_CONFIGS: Record<ResourceSource, SourceConfig> = {
 }
 
 /**
- * Контекст для EffectsProvider
+ * Контекст для BrowserResourcesProvider (библиотека доступных ресурсов для Browser)
  */
-const EffectsProviderContextValue = createContext<EffectsProviderContext | null>(null)
+const BrowserResourcesProviderContextValue = createContext<EffectsProviderContext | null>(null)
 
 /**
  * Внутренняя реализация EffectsProvider API с интеграцией BackendSync
  */
-class EffectsProviderImpl implements EffectsProviderAPI {
+class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   private resources = new Map<string, Resource[]>()
   private cache: ResourceCache = {}
   private loadingState: LoadingState = {
@@ -358,7 +358,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           this.resources.set("filter:local", filters)
           this.resources.set("transition:local", transitions)
 
-          console.log("[EffectsProvider] Loaded local resources from backend:", {
+          console.log("[BrowserResourcesProvider] Loaded local resources from backend:", {
             effects: effects.length,
             filters: filters.length,
             transitions: transitions.length,
@@ -372,7 +372,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[EffectsProvider] Failed to load local resources from backend:", error)
+        console.error("[BrowserResourcesProvider] Failed to load local resources from backend:", error)
       }
     }
 
@@ -415,7 +415,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[EffectsProvider] Failed to load remote resources:", error)
+        console.error("[BrowserResourcesProvider] Failed to load remote resources:", error)
       }
     }
 
@@ -458,7 +458,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[EffectsProvider] Failed to load imported resources:", error)
+        console.error("[BrowserResourcesProvider] Failed to load imported resources:", error)
       }
     }
 
@@ -501,7 +501,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           },
         })
       } catch (error) {
-        console.error("[EffectsProvider] Failed to preload category:", error)
+        console.error("[BrowserResourcesProvider] Failed to preload category:", error)
       }
     }
 
@@ -529,7 +529,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           },
         })
         .catch((error) => {
-          console.error("[EffectsProvider] Failed to sync source config:", error)
+          console.error("[BrowserResourcesProvider] Failed to sync source config:", error)
         })
     }
   }
@@ -650,9 +650,9 @@ class EffectsProviderImpl implements EffectsProviderAPI {
           source,
         },
       })
-      console.log(`[EffectsProvider] Synced ${source} resources with backend`)
+      console.log(`[BrowserResourcesProvider] Synced ${source} resources with backend`)
     } catch (error) {
-      console.error(`[EffectsProvider] Failed to sync ${source} resources:`, error)
+      console.error(`[BrowserResourcesProvider] Failed to sync ${source} resources:`, error)
     }
   }
 
@@ -684,7 +684,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
       return true
     } catch (error) {
-      console.error("[EffectsProvider] Failed to import resource:", error)
+      console.error("[BrowserResourcesProvider] Failed to import resource:", error)
       this.eventListeners.error.forEach((callback) =>
         callback(error instanceof Error ? error.message : String(error), "imported"),
       )
@@ -721,7 +721,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 
       return true
     } catch (error) {
-      console.error("[EffectsProvider] Failed to delete resource:", error)
+      console.error("[BrowserResourcesProvider] Failed to delete resource:", error)
       this.eventListeners.error.forEach((callback) =>
         callback(error instanceof Error ? error.message : String(error), source),
       )
@@ -767,7 +767,7 @@ class EffectsProviderImpl implements EffectsProviderAPI {
 // === Экспорт для тестов ===
 
 // Глобальная переменная для хранения инстанса для очистки в тестах
-let globalProviderInstance: EffectsProviderImpl | null = null
+let globalProviderInstance: BrowserResourcesProviderImpl | null = null
 
 /**
  * Очищает глобальное состояние провайдера (для тестов)
@@ -779,23 +779,32 @@ export function resetEffectsProviderState(): void {
 }
 
 /**
- * Компонент EffectsProvider с интеграцией BackendSync
+ * Browser Resources Provider - управляет библиотекой ДОСТУПНЫХ ресурсов для Browser
  *
- * Добавляет возможность синхронизации ресурсов с backend для:
- * - Сохранения пользовательских ресурсов
- * - Загрузки удаленных ресурсов
- * - Синхронизации импортированных ресурсов
+ * Отвечает за:
+ * - Загрузку встроенных ресурсов (effects, filters, transitions)
+ * - Получение импортированных медиа от backend
+ * - Кэширование для производительности
+ *
+ * НЕ управляет:
+ * - ❌ Timeline resources (это ResourcesProvider)
+ * - ❌ UI состоянием (это BrowserStateProvider)
+ *
+ * BackendSync интеграция:
+ * - Сохранение пользовательских ресурсов
+ * - Загрузка удаленных ресурсов
+ * - Синхронизация импортированных ресурсов
  */
 export function EffectsProvider({ children, config = {}, onError }: EffectsProviderProps) {
   const finalConfig = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config])
   const [isInitialized, setIsInitialized] = useState(false)
   const [isBackendConnected, setIsBackendConnected] = useState(false)
-  const apiRef = useRef<EffectsProviderImpl | null>(null)
+  const apiRef = useRef<BrowserResourcesProviderImpl | null>(null)
   const backendSync = getBackendSync()
 
   // Создаем API инстанс
   if (!apiRef.current) {
-    apiRef.current = new EffectsProviderImpl(finalConfig)
+    apiRef.current = new BrowserResourcesProviderImpl(finalConfig)
     globalProviderInstance = apiRef.current
   }
 
@@ -803,7 +812,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 
   // Синхронизация с BackendSync
   useEffect(() => {
-    console.log("[EffectsProvider] Initializing BackendSync integration")
+    console.log("[BrowserResourcesProvider] Initializing BackendSync integration")
 
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
@@ -812,7 +821,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 
       // Восстанавливаем пользовательские ресурсы из backend
       if ((state as any).resources_state) {
-        console.log("[EffectsProvider] Restoring resources from backend state")
+        console.log("[BrowserResourcesProvider] Restoring resources from backend state")
         // Backend может отправлять уже загруженные ресурсы
         // для быстрой инициализации
       }
@@ -821,7 +830,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
       // TODO: Добавить правильные типы событий для ресурсов
-      console.log("[EffectsProvider] Backend event received:", event.type)
+      console.log("[BrowserResourcesProvider] Backend event received:", event.type)
 
       // Временно отключено до добавления правильных типов событий
       // switch (event.type) {
@@ -918,20 +927,31 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
     [api, finalConfig, isInitialized, isBackendConnected],
   )
 
-  return <EffectsProviderContextValue.Provider value={contextValue}>{children}</EffectsProviderContextValue.Provider>
+  return <BrowserResourcesProviderContextValue.Provider value={contextValue}>{children}</BrowserResourcesProviderContextValue.Provider>
 }
 
 /**
- * Хук для использования EffectsProvider
+ * Хук для использования BrowserResourcesProvider
  */
-export function useEffectsProvider(): EffectsProviderContext {
-  const context = useContext(EffectsProviderContextValue)
+export function useBrowserResourcesProvider(): EffectsProviderContext {
+  const context = useContext(BrowserResourcesProviderContextValue)
 
   if (!context) {
-    throw new Error("useEffectsProvider must be used within an EffectsProvider")
+    throw new Error("useBrowserResourcesProvider must be used within a BrowserResourcesProvider")
   }
 
   return context
 }
+
+// Новое имя (рекомендуется)
+export { EffectsProvider as BrowserResourcesProvider }
+
+// ===  Deprecated exports для обратной совместимости ===
+// TODO: Удалить в следующей мажорной версии
+
+/**
+ * @deprecated Используйте useBrowserResourcesProvider вместо useEffectsProvider
+ */
+export const useEffectsProvider = useBrowserResourcesProvider
 
 export type { EffectsProviderAPI, EffectsProviderContext, EffectsProviderProps }

@@ -2,5 +2,5 @@ export type {
   EffectsProviderAPI,
   EffectsProviderContext,
   EffectsProviderProps,
-} from "./effects-provider"
-export { EffectsProvider, useEffectsProvider } from "./effects-provider"
+} from "./browser-resources-provider"
+export { EffectsProvider, useEffectsProvider } from "./browser-resources-provider"

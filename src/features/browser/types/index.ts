@@ -1,2 +1,2 @@
-export type * from "./effects-provider"
+export type * from "./browser-resources-provider"
 export type * from "./list"
