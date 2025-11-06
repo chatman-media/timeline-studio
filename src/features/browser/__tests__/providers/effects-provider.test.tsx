@@ -2,7 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { EffectsProvider, resetEffectsProviderState, useEffectsProvider } from "../../providers/browser-resources-provider"
+import {
+  EffectsProvider,
+  resetEffectsProviderState,
+  useEffectsProvider,
+} from "../../providers/browser-resources-provider"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"

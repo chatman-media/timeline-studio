@@ -8,7 +8,13 @@ import type { Transition } from "@/features/transitions/types/transitions"
 
 import { useEffectsProvider } from "../providers/browser-resources-provider"
 
-import type { LoadingState, Resource, ResourceSource, ResourceStats, SearchOptions } from "../types/browser-resources-provider"
+import type {
+  LoadingState,
+  Resource,
+  ResourceSource,
+  ResourceStats,
+  SearchOptions,
+} from "../types/browser-resources-provider"
 
 /**
  * Хук для получения всех эффектов

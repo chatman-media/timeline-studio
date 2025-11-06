@@ -950,7 +950,11 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
     [api, finalConfig, isInitialized, isBackendConnected],
   )
 
-  return <BrowserResourcesProviderContextValue.Provider value={contextValue}>{children}</BrowserResourcesProviderContextValue.Provider>
+  return (
+    <BrowserResourcesProviderContextValue.Provider value={contextValue}>
+      {children}
+    </BrowserResourcesProviderContextValue.Provider>
+  )
 }
 
 /**

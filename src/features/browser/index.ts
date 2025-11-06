@@ -34,10 +34,10 @@ export {
  * @deprecated Имя EffectsProvider устарело, используйте BrowserResourcesProvider
  */
 export {
-  EffectsProvider,
   BrowserResourcesProvider,
-  useEffectsProvider,
+  EffectsProvider,
   useBrowserResourcesProvider,
+  useEffectsProvider,
 } from "./providers/browser-resources-provider"
 
 // Сервисы
