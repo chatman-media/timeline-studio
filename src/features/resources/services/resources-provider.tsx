@@ -4,13 +4,14 @@
  * Новая версия с интеграцией backend state management
  */
 
-import { createContext, type ReactNode, useCallback, useContext, useState } from "react"
+import { createContext, type ReactNode, useCallback, useContext, useRef, useState } from "react"
 
 import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { MediaFile } from "@/features/media/types/media"
+import type { FfprobeData } from "@/features/media/types/ffprobe"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
@@ -83,6 +84,10 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Кэш метаданных медиа файлов (path -> probeData)
+  // Сохраняем метаданные чтобы не терять их при обновлении из backend
+  const metadataCacheRef = useRef<Map<string, FfprobeData>>(new Map())
+
   // Используем projectState из appMachine вместо прямой подписки на backendSync
   const { projectState } = useAppSettings()
   const backendState = projectState
@@ -119,6 +124,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (file: MediaFile) => {
       console.log("ResourcesProvider: Adding media", file.path)
 
+      // Сохраняем метаданные в кэш перед добавлением в backend
+      if (file.probeData && file.probeData.streams && file.probeData.streams.length > 0) {
+        metadataCacheRef.current.set(file.path, file.probeData)
+        console.log("ResourcesProvider: Cached metadata for", file.path, "streams:", file.probeData.streams.length)
+      }
+
       // ДЕДУПЛИКАЦИЯ: Проверяем существование медиа по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
@@ -141,6 +152,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
   const addMusic = useCallback(
     async (file: MediaFile) => {
+      // Сохраняем метаданные в кэш перед добавлением в backend
+      if (file.probeData && file.probeData.streams && file.probeData.streams.length > 0) {
+        metadataCacheRef.current.set(file.path, file.probeData)
+        console.log("ResourcesProvider: Cached metadata for music", file.path, "streams:", file.probeData.streams.length)
+      }
+
       // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
@@ -311,6 +328,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             item !== null && item !== undefined && (item.media_type === "Video" || item.media_type === "Image"),
         )
         .map((item) => {
+          // Проверяем кэш метаданных для этого файла
+          const cachedProbeData = metadataCacheRef.current.get(item.path)
+
           const file: MediaFile = {
             id: item.id,
             name: item.name,
@@ -320,9 +340,21 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             isAudio: false,
             isImage: item.media_type === "Image",
             isLoadingMetadata: false,
-            probeData: { streams: [], format: {} },
+            // Используем метаданные из кэша если они есть, иначе пустые
+            probeData: cachedProbeData || { streams: [], format: {} },
             duration: item.duration || 0,
           }
+
+          // Логируем для отладки
+          if (cachedProbeData) {
+            console.log(
+              "ResourcesProvider: Restored metadata from cache for",
+              item.path,
+              "streams:",
+              cachedProbeData.streams?.length || 0,
+            )
+          }
+
           // Создаем MediaResource напрямую, используя backend ID
           return {
             id: item.id, // Используем ID от backend напрямую
@@ -343,6 +375,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             item !== null && item !== undefined && item.media_type === "Audio",
         )
         .map((item) => {
+          // Проверяем кэш метаданных для этого файла
+          const cachedProbeData = metadataCacheRef.current.get(item.path)
+
           const file: MediaFile = {
             id: item.id,
             name: item.name,
@@ -352,9 +387,21 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             isAudio: true,
             isImage: false,
             isLoadingMetadata: false,
-            probeData: { streams: [], format: {} },
+            // Используем метаданные из кэша если они есть, иначе пустые
+            probeData: cachedProbeData || { streams: [], format: {} },
             duration: item.duration || 0,
           }
+
+          // Логируем для отладки
+          if (cachedProbeData) {
+            console.log(
+              "ResourcesProvider: Restored metadata from cache for music",
+              item.path,
+              "streams:",
+              cachedProbeData.streams?.length || 0,
+            )
+          }
+
           // Создаем MusicResource напрямую, используя backend ID
           return {
             id: item.id, // Используем ID от backend напрямую
