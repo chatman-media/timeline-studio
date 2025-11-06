@@ -1,5 +1,5 @@
 // Импортируем шаблоны из новой конфигурационной системы
-import { landscapeTemplates, portraitTemplates, squareTemplates } from "./all-template-configs"
+import { landscapeTemplates, portraitTemplates, squareTemplates } from "./all-template-configs.tsx"
 
 // Импортируем и реэкспортируем типы из template-config для обратной совместимости
 import type {

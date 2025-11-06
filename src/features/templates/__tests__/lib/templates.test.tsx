@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import { createCellConfig, createDividerConfig, PRESET_STYLES, TEMPLATE_MAP } from "../../lib/templates"
 
 // Mock the new template configs system
-vi.mock("../../lib/all-template-configs", () => ({
+vi.mock("../../lib/all-template-configs.tsx", () => ({
   landscapeTemplates: [
     { id: "landscape-1", split: "vertical", screens: 2, render: () => null },
     { id: "landscape-2", split: "horizontal", screens: 2, render: () => null },

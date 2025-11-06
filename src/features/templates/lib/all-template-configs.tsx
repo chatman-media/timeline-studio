@@ -1082,19 +1082,15 @@ export function convertConfigToTemplate(config: MediaTemplateConfig): MediaTempl
     render: () => {
       // Этот метод используется только для preview в старом коде
       // В реальном использовании TemplateRenderer принимает видео через renderCell prop
-      // Создаем простой placeholder элемент без JSX для совместимости
-      const div = document.createElement("div")
-      div.style.cssText =
-        "display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; font-size: 18px; color: rgba(156, 163, 175, 0.4);"
-
-      for (let i = 0; i < config.screens; i++) {
-        const cell = document.createElement("div")
-        cell.style.cssText = "display: flex; flex: 1; align-items: center; justify-content: center;"
-        cell.textContent = String(i + 1)
-        div.appendChild(cell)
-      }
-
-      return div as any // Type cast for compatibility
+      return (
+        <div className="flex h-full w-full items-center justify-center text-lg text-gray-400">
+          {Array.from({ length: config.screens }, (_, i) => (
+            <div key={i} className="flex flex-1 items-center justify-center">
+              {i + 1}
+            </div>
+          ))}
+        </div>
+      )
     },
   }
 }
