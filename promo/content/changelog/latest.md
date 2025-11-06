@@ -1,3 +1,12 @@
+## [2.3.4](https://github.com/chatman-media/timeline-studio/compare/v2.3.3...v2.3.4) (2025-11-06)
+
+
+### Bug Fixes
+
+* Исправлена проблема с пустым отображением шаблонов после миграции ([6e4bf06](https://github.com/chatman-media/timeline-studio/commit/6e4bf06092d9bb2a33c6c32e6d5e9c82aa81e29d))
+* Сохранение метаданных видео при синхронизации с backend ([946a5b1](https://github.com/chatman-media/timeline-studio/commit/946a5b1be5900aca9d07e3af70bffc97277c1533))
+* Удалены сообщения о загрузке Timeline ([3211d63](https://github.com/chatman-media/timeline-studio/commit/3211d6393fba1ae6b08939f86bb198347f820c84))
+
 ## [2.3.3](https://github.com/chatman-media/timeline-studio/compare/v2.3.2...v2.3.3) (2025-11-05)
 
 
