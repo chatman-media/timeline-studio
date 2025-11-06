@@ -3,6 +3,8 @@
  * Поддерживает localStorage и Tauri Store API
  */
 
+import { isDesktop } from "@/lib/environment"
+
 import type { ShortcutDefinition } from "./shortcuts-registry"
 
 const STORAGE_KEY = "timeline-studio-shortcuts"
@@ -37,7 +39,7 @@ export class ShortcutsPersistence {
 
     try {
       // Попробуем использовать Tauri Store если доступен
-      if (typeof window !== "undefined" && (window as any).__TAURI__) {
+      if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
         const store = new Store("shortcuts.json")
         await store.set(STORAGE_KEY, settings)
@@ -69,7 +71,7 @@ export class ShortcutsPersistence {
       let settings: ShortcutSettings | null = null
 
       // Попробуем использовать Tauri Store если доступен
-      if (typeof window !== "undefined" && (window as any).__TAURI__) {
+      if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
         const store = new Store("shortcuts.json")
         settings = await store.get<ShortcutSettings>(STORAGE_KEY)
@@ -117,7 +119,7 @@ export class ShortcutsPersistence {
    */
   async clearSettings(): Promise<void> {
     try {
-      if (typeof window !== "undefined" && (window as any).__TAURI__) {
+      if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
         const store = new Store("shortcuts.json")
         await store.delete(STORAGE_KEY)
@@ -161,7 +163,7 @@ export class ShortcutsPersistence {
       const migratedSettings = settings.version !== this.currentVersion ? this.migrateSettings(settings) : settings
 
       // Сохраняем
-      if (typeof window !== "undefined" && (window as any).__TAURI__) {
+      if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
         const store = new Store("shortcuts.json")
         await store.set(STORAGE_KEY, migratedSettings)

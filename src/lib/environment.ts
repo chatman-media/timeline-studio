@@ -6,16 +6,24 @@
 
 /**
  * Проверяет, выполняется ли код в desktop приложении (Tauri)
+ *
+ * В Tauri v2 проверяем либо __TAURI__ (старое API), либо __TAURI_INTERNALS__ (новое API)
  */
 export function isDesktop(): boolean {
-  return typeof window !== "undefined" && window.__TAURI__ !== undefined
+  if (typeof window === "undefined") return false
+
+  const windowWithTauri = window as any
+  return windowWithTauri.__TAURI__ !== undefined || windowWithTauri.__TAURI_INTERNALS__ !== undefined
 }
 
 /**
  * Проверяет, выполняется ли код в браузере
  */
 export function isBrowser(): boolean {
-  return typeof window !== "undefined" && window.__TAURI__ === undefined
+  if (typeof window === "undefined") return false
+
+  const windowWithTauri = window as any
+  return windowWithTauri.__TAURI__ === undefined && windowWithTauri.__TAURI_INTERNALS__ === undefined
 }
 
 /**

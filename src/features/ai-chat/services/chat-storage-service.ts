@@ -1,12 +1,6 @@
 import type { ChatListItem, ChatMessage, ChatSession, ChatStorageService } from "@/domains/ai-services/types/chat"
 import { appDirectoriesService } from "@/features/app-state/services"
-
-// Declare Tauri global for this file
-declare global {
-  interface Window {
-    __TAURI__?: any
-  }
-}
+import { isDesktop } from "@/lib/environment"
 
 /**
  * Сервис для сохранения и управления чатами
@@ -37,7 +31,7 @@ export class LocalChatStorageService implements ChatStorageService {
       this.chatsDir = `${dirs.base_dir}/Chats`
 
       // Создаем директорию для чатов если её нет
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      if (isDesktop()) {
         const { exists, mkdir } = await import("@tauri-apps/plugin-fs")
 
         if (!(await exists(this.chatsDir))) {
@@ -78,7 +72,7 @@ export class LocalChatStorageService implements ChatStorageService {
     await this.initialize()
 
     try {
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      if (isDesktop()) {
         const { readTextFile } = await import("@tauri-apps/plugin-fs")
         const filePath = `${this.chatsDir}/${id}.json`
 
@@ -127,7 +121,7 @@ export class LocalChatStorageService implements ChatStorageService {
     try {
       const sessions: ChatListItem[] = []
 
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      if (isDesktop()) {
         const { readDir } = await import("@tauri-apps/plugin-fs")
         const entries = await readDir(this.chatsDir!)
 
@@ -188,7 +182,7 @@ export class LocalChatStorageService implements ChatStorageService {
     await this.initialize()
 
     try {
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      if (isDesktop()) {
         const { remove } = await import("@tauri-apps/plugin-fs")
         const filePath = `${this.chatsDir}/${id}.json`
         await remove(filePath)
@@ -324,7 +318,7 @@ export class LocalChatStorageService implements ChatStorageService {
     try {
       const data = JSON.stringify(session, null, 2)
 
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      if (isDesktop()) {
         const { writeTextFile } = await import("@tauri-apps/plugin-fs")
         const filePath = `${this.chatsDir}/${session.id}.json`
         await writeTextFile(filePath, data)

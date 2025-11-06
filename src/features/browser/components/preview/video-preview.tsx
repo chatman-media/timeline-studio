@@ -215,14 +215,16 @@ export const VideoPreview = memo(
 
     // Функция для получения URL видео без загрузки в память
     const loadVideoFile = useCallback(async (path: string) => {
-      console.log(`[VideoPreview] loadVideoFile called with path: ${path}`)
-      console.log(
-        `[VideoPreview] isTauriEnvironment: ${typeof window !== "undefined" && window.__TAURI__ !== undefined}`,
-      )
-      console.log(
-        "[VideoPreview] window.__TAURI__:",
-        typeof window !== "undefined" ? window.__TAURI__ : "window undefined",
-      )
+      if (typeof window !== "undefined") {
+        const windowWithTauri = window as any
+        const hasTauri = windowWithTauri.__TAURI__ !== undefined
+        const hasTauriInternals = windowWithTauri.__TAURI_INTERNALS__ !== undefined
+        console.log("[VideoPreview] Tauri environment check:", {
+          hasTauri,
+          hasTauriInternals,
+          isTauriEnv: hasTauri || hasTauriInternals,
+        })
+      }
 
       // Используем file:// протокол для видео через convertVideoSrc
       const videoUrl = convertVideoSrc(path)

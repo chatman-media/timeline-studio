@@ -833,7 +833,8 @@ export class WorkflowAutomationService {
    */
   private async cleanupTempDirectory(tempDir: string): Promise<void> {
     try {
-      if (typeof window !== "undefined" && window.__TAURI__) {
+      const { isDesktop } = await import("@/lib/environment")
+      if (isDesktop()) {
         const { remove } = await import("@tauri-apps/plugin-fs")
         await remove(tempDir, { recursive: true })
       }
