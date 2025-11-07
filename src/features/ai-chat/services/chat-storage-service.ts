@@ -114,7 +114,7 @@ export class LocalChatStorageService implements ChatStorageService {
         })),
       }
     } catch (error) {
-      console.error(`Failed to get session ${id}:`, error)
+      void LocalChatStorageService.logger.error("Failed to get session", { id, error: String(error) })
       return null
     }
   }
@@ -159,7 +159,7 @@ export class LocalChatStorageService implements ChatStorageService {
       // Сортируем по дате последнего обновления (новые сверху)
       return sessions.sort((a, b) => (b.lastMessageAt?.getTime() || 0) - (a.lastMessageAt?.getTime() || 0))
     } catch (error) {
-      console.error("Failed to get all sessions:", error)
+      void LocalChatStorageService.logger.error("Failed to get all sessions", { error: String(error) })
       return []
     }
   }
@@ -197,7 +197,7 @@ export class LocalChatStorageService implements ChatStorageService {
         localStorage.removeItem(`chat_${id}`)
       }
     } catch (error) {
-      console.error(`Failed to delete session ${id}:`, error)
+      void LocalChatStorageService.logger.error("Failed to delete session", { id, error: String(error) })
       throw error
     }
   }
@@ -311,7 +311,7 @@ export class LocalChatStorageService implements ChatStorageService {
       await this.saveSession(session)
       return session
     } catch (error) {
-      console.error("Failed to import session:", error)
+      void LocalChatStorageService.logger.error("Failed to import session", { error: String(error) })
       throw new Error("Invalid session data")
     }
   }
@@ -333,7 +333,7 @@ export class LocalChatStorageService implements ChatStorageService {
         localStorage.setItem(`chat_${session.id}`, data)
       }
     } catch (error) {
-      console.error("Failed to save session:", error)
+      void LocalChatStorageService.logger.error("Failed to save session", { sessionId: session.id, error: String(error) })
       throw error
     }
   }

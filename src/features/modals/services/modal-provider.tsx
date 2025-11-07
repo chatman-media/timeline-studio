@@ -107,7 +107,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           },
         })
         .catch((err) => {
-          console.error("[Modal] Failed to sync modal state:", err)
+          void logger.error("Failed to sync modal state", { error: String(err) })
         })
     }
   }, [state, backendSync])
@@ -118,7 +118,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
       modalData: state?.context?.modalData || null,
       isOpen: state?.matches("opened") || false,
       openModal: (modalType: ModalType, modalData?: ModalData) => {
-        console.log("Открываем модальное окно:", modalType)
+        logger.debugSync("Opening modal window", { modalType })
         send({ type: "OPEN_MODAL", modalType, modalData })
 
         // Для модальных окон с данными проекта, загружаем актуальные данные
@@ -128,15 +128,17 @@ export function ModalProvider({ children }: ModalProviderProps) {
               type: "LoadProjectSettings",
               params: {},
             })
-            .catch(console.error)
+            .catch((error) => {
+              void logger.error("Failed to load project settings", { error: String(error) })
+            })
         }
       },
       closeModal: () => {
-        console.log("Закрываем модальное окно")
+        logger.debugSync("Closing modal window")
         send({ type: "CLOSE_MODAL" })
       },
       submitModal: async (data?: ModalData) => {
-        console.log("Отправляем данные модального окна:", data)
+        logger.debugSync("Submitting modal data", { data })
 
         // Для важных модальных окон синхронизируем результат с backend
         if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType)) {
@@ -171,7 +173,10 @@ export function ModalProvider({ children }: ModalProviderProps) {
                 break
             }
           } catch (error) {
-            console.error(`[Modal] Failed to sync ${state.context.modalType} submission:`, error)
+            void logger.error("Failed to sync modal submission", {
+              modalType: state.context.modalType,
+              error: String(error)
+            })
           }
         }
 

@@ -80,7 +80,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       if (state.color_grading_state) {
         // Здесь можно восстановить состояние из backend
         // Например, загрузить сохраненные пресеты, последние настройки и т.д.
-        console.log("[ColorGrading] Synced state from backend:", state.color_grading_state)
+        logger.debugSync("Synced state from backend", { state: state.color_grading_state })
       }
     })
 
@@ -90,7 +90,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
         colorGrading.loadPreset(event.data.presetId)
       } else if (event.type === "COLOR_GRADING_APPLIED") {
         // Обновляем состояние после применения цветокоррекции
-        console.log("[ColorGrading] Color grading applied to clip:", event.data.clipId)
+        logger.debugSync("Color grading applied to clip", { clipId: event.data.clipId })
       }
     })
 
@@ -131,7 +131,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       // Вызываем оригинальный метод для локального обновления
       colorGrading.applyToClip()
     } catch (err) {
-      console.error("[ColorGrading] Failed to apply color grading:", err)
+      void logger.error("Failed to apply color grading", { error: String(err) })
       setError(err instanceof Error ? err.message : "Failed to apply color grading")
     }
   }
@@ -168,7 +168,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       // Вызываем оригинальный метод для локального сохранения
       colorGrading.savePreset(name)
     } catch (err) {
-      console.error("[ColorGrading] Failed to save preset:", err)
+      void logger.error("Failed to save preset", { error: String(err) })
       setError(err instanceof Error ? err.message : "Failed to save preset")
     }
   }
@@ -190,7 +190,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       // Вызываем оригинальный метод
       colorGrading.loadPreset(presetId)
     } catch (err) {
-      console.error("[ColorGrading] Failed to load preset:", err)
+      void logger.error("Failed to load preset", { error: String(err) })
       setError(err instanceof Error ? err.message : "Failed to load preset")
     }
   }
@@ -217,7 +217,7 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
             },
           })
           .catch((err) => {
-            console.error("[ColorGrading] Failed to sync preview:", err)
+            void logger.error("Failed to sync preview", { error: String(err) })
           })
       }, 500) // Задержка 500ms для debouncing
 

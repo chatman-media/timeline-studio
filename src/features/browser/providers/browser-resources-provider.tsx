@@ -118,7 +118,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
     // Если источник не указан, объединяем ресурсы из всех загруженных источников
     const allResources: T[] = []
-    console.log(`[getResources] Looking for ${type} in loaded sources:`, {
+    logger.debugSync("Looking for resources in loaded sources", {
       type,
       loadedSources: Array.from(this.loadingState.loadedSources),
       availableKeys: Array.from(this.resources.keys()),
@@ -127,7 +127,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     for (const loadedSource of this.loadingState.loadedSources) {
       const sourceKey = `${type}:${loadedSource}`
       const sourceResources = this.resources.get(sourceKey) || []
-      console.log(`[getResources] Checking ${sourceKey}: found ${sourceResources.length} items`)
+      logger.debugSync("Checking source resources", { sourceKey, count: sourceResources.length })
       allResources.push(...(sourceResources as T[]))
     }
 
@@ -144,7 +144,8 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   searchResources<T extends Resource>(type: ResourceType, options: SearchOptions): T[] {
     let resources = this.getResources<T>(type, options.source)
 
-    console.log(`[searchResources] Initial search for ${type}:`, {
+    logger.debugSync("Initial search for resources", {
+      type,
       options,
       initialCount: resources.length,
     })
@@ -301,19 +302,19 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
       // Сохраняем ресурсы в кэш только если загрузка успешна
       if (results.effects.success) {
         this.resources.set("effect:built-in", results.effects.data)
-        console.log(`Loaded ${results.effects.data.length} effects`)
+        logger.debugSync("Loaded effects", { count: results.effects.data.length })
         // Уведомляем об обновлении ресурсов
         this.eventListeners.resourcesUpdate.forEach((callback) => callback("effect", results.effects.data))
       }
       if (results.filters.success) {
         this.resources.set("filter:built-in", results.filters.data)
-        console.log(`Loaded ${results.filters.data.length} filters`)
+        logger.debugSync("Loaded filters", { count: results.filters.data.length })
         // Уведомляем об обновлении ресурсов
         this.eventListeners.resourcesUpdate.forEach((callback) => callback("filter", results.filters.data))
       }
       if (results.transitions.success) {
         this.resources.set("transition:built-in", results.transitions.data)
-        console.log(`Loaded ${results.transitions.data.length} transitions`)
+        logger.debugSync("Loaded transitions", { count: results.transitions.data.length })
         // Уведомляем об обновлении ресурсов
         this.eventListeners.resourcesUpdate.forEach((callback) => callback("transition", results.transitions.data))
       }
@@ -361,7 +362,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           this.resources.set("filter:local", filters)
           this.resources.set("transition:local", transitions)
 
-          console.log("[BrowserResourcesProvider] Loaded local resources from backend:", {
+          logger.debugSync("Loaded local resources from backend", {
             effects: effects.length,
             filters: filters.length,
             transitions: transitions.length,
@@ -375,7 +376,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[BrowserResourcesProvider] Failed to load local resources from backend:", error)
+        void logger.error("Failed to load local resources from backend", { error: String(error) })
       }
     }
 
@@ -418,7 +419,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[BrowserResourcesProvider] Failed to load remote resources:", error)
+        void logger.error("Failed to load remote resources", { error: String(error) })
       }
     }
 
@@ -461,7 +462,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           }
         }
       } catch (error) {
-        console.error("[BrowserResourcesProvider] Failed to load imported resources:", error)
+        void logger.error("Failed to load imported resources", { error: String(error) })
       }
     }
 
@@ -504,7 +505,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           },
         })
       } catch (error) {
-        console.error("[BrowserResourcesProvider] Failed to preload category:", error)
+        void logger.error("Failed to preload category", { error: String(error) })
       }
     }
 
@@ -532,7 +533,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           },
         })
         .catch((error) => {
-          console.error("[BrowserResourcesProvider] Failed to sync source config:", error)
+          void logger.error("Failed to sync source config", { error: String(error) })
         })
     }
   }
@@ -653,9 +654,9 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           source,
         },
       })
-      console.log(`[BrowserResourcesProvider] Synced ${source} resources with backend`)
+      logger.debugSync("Synced resources with backend", { source })
     } catch (error) {
-      console.error(`[BrowserResourcesProvider] Failed to sync ${source} resources:`, error)
+      void logger.error("Failed to sync resources", { source, error: String(error) })
     }
   }
 
@@ -687,7 +688,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
       return true
     } catch (error) {
-      console.error("[BrowserResourcesProvider] Failed to import resource:", error)
+      void logger.error("Failed to import resource", { error: String(error) })
       this.eventListeners.error.forEach((callback) =>
         callback(error instanceof Error ? error.message : String(error), "imported"),
       )
@@ -724,7 +725,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
       return true
     } catch (error) {
-      console.error("[BrowserResourcesProvider] Failed to delete resource:", error)
+      void logger.error("Failed to delete resource", { error: String(error) })
       this.eventListeners.error.forEach((callback) =>
         callback(error instanceof Error ? error.message : String(error), source),
       )
@@ -838,7 +839,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 
   // Синхронизация с BackendSync
   useEffect(() => {
-    console.log("[BrowserResourcesProvider] Initializing BackendSync integration")
+    logger.debugSync("Initializing BackendSync integration")
 
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
@@ -847,7 +848,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 
       // Восстанавливаем пользовательские ресурсы из backend
       if ((state as any).resources_state) {
-        console.log("[BrowserResourcesProvider] Restoring resources from backend state")
+        logger.debugSync("Restoring resources from backend state")
         // Backend может отправлять уже загруженные ресурсы
         // для быстрой инициализации
       }
@@ -856,7 +857,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
       // TODO: Добавить правильные типы событий для ресурсов
-      console.log("[BrowserResourcesProvider] Backend event received:", event.type)
+      logger.debugSync("Backend event received", { eventType: event.type })
 
       // Временно отключено до добавления правильных типов событий
       // switch (event.type) {
@@ -890,7 +891,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
       try {
         // Подписываемся на ошибки
         unsubscribeError = api.onError((error, source) => {
-          console.error(`EffectsProvider error from ${source}:`, error)
+          void logger.error("Error from source", { source, error })
           onError?.(error)
         })
 
@@ -916,7 +917,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
                 if (!api.isSourceLoaded(source)) {
                   api.loadSource(source).catch((error: unknown) => {
                     const errorMessage = error instanceof Error ? error.message : String(error)
-                    console.warn(`Background loading failed for ${source}:`, errorMessage)
+                    logger.warnSync("Background loading failed for source", { source, error: errorMessage })
                   })
                 }
               })
@@ -924,7 +925,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
           }, finalConfig.backgroundLoadDelay)
         }
       } catch (error) {
-        console.error("EffectsProvider initialization failed:", error)
+        void logger.error("EffectsProvider initialization failed", { error: String(error) })
         onError?.(error instanceof Error ? error.message : String(error))
       }
     }

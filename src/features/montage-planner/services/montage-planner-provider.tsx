@@ -106,7 +106,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           })
         })
       } catch (err) {
-        console.error("[MontagePlanner] Failed to setup event listeners:", err)
+        void logger.error("Failed to setup event listeners", { error: String(err) })
         setError(err instanceof Error ? err.message : "Failed to setup event listeners")
       }
     }

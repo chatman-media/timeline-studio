@@ -61,7 +61,7 @@ export class UpdateService {
         this.updateStatus("error", { error: event.payload })
       })
     } catch (error) {
-      console.warn("Failed to setup update event listeners:", error)
+      UpdateService.logger.warnSync("Failed to setup update event listeners", { error: String(error) })
     }
   }
 
@@ -112,7 +112,7 @@ export class UpdateService {
     try {
       return await invoke<string>("get_current_version")
     } catch (error) {
-      console.error("Failed to get current version:", error)
+      void UpdateService.logger.error("Failed to get current version", { error: String(error) })
       return "unknown"
     }
   }
@@ -124,7 +124,7 @@ export class UpdateService {
     try {
       return await invoke<boolean>("is_updater_available")
     } catch (error) {
-      console.error("Failed to check updater availability:", error)
+      void UpdateService.logger.error("Failed to check updater availability", { error: String(error) })
       return false
     }
   }
@@ -140,23 +140,28 @@ export class UpdateService {
       clearInterval(this.checkInterval)
     }
 
-    console.log(`[UpdateService] Starting auto-check with interval ${intervalMinutes} minutes`)
+    UpdateService.logger.infoSync("Starting auto-check", { intervalMinutes })
     let checkCount = 0
 
     this.checkInterval = setInterval(
       () => {
         checkCount++
         const startTime = performance.now()
-        console.log(`[UpdateService] Running auto-check #${checkCount}`)
+        UpdateService.logger.debugSync("Running auto-check", { checkNumber: checkCount })
 
         this.checkForUpdatesQuietly().finally(() => {
           const duration = performance.now() - startTime
-          console.log(`[UpdateService] Auto-check #${checkCount} completed in ${duration.toFixed(2)}ms`)
+          UpdateService.logger.debugSync("Auto-check completed", {
+            checkNumber: checkCount,
+            durationMs: duration.toFixed(2)
+          })
 
           if (duration > 5000) {
-            console.warn(
-              `[UpdateService] WARNING: Auto-check #${checkCount} took ${duration.toFixed(2)}ms - this might block the UI`,
-            )
+            UpdateService.logger.warnSync("Auto-check took too long", {
+              checkNumber: checkCount,
+              durationMs: duration.toFixed(2),
+              message: "This might block the UI"
+            })
           }
         })
       },
@@ -165,7 +170,7 @@ export class UpdateService {
 
     // Первая проверка через 30 секунд после включения
     setTimeout(() => {
-      console.log("[UpdateService] Running initial auto-check")
+      UpdateService.logger.debugSync("Running initial auto-check")
       this.checkForUpdatesQuietly()
     }, 30000)
   }
@@ -195,7 +200,7 @@ export class UpdateService {
         this.updateStatus("available", { update_info: result.update_info })
       }
     } catch (error) {
-      console.error("Silent update check failed:", error)
+      void UpdateService.logger.error("Silent update check failed", { error: String(error) })
     }
   }
 
@@ -237,7 +242,7 @@ export class UpdateService {
       try {
         listener(payload)
       } catch (error) {
-        console.error("Update listener error:", error)
+        void UpdateService.logger.error("Update listener error", { error: String(error) })
       }
     })
   }

@@ -149,7 +149,7 @@ function createTimelineClips(
   return montageClips
     .map((montageClip, index) => {
       if (!montageClip.fragment || !montageClip.fragment.sourceFile) {
-        console.warn(`Fragment or source file not found for clip ${montageClip.fragmentId}`)
+        logger.warnSync("Fragment or source file not found for clip", { fragmentId: montageClip.fragmentId })
         return null
       }
 

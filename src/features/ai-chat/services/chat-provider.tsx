@@ -135,7 +135,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
         setWasUpdated(true)
       }
     } catch (error) {
-      console.error("Failed to load chat sessions from localStorage:", error)
+      void logger.error("Failed to load chat sessions from localStorage", { error: String(error) })
     }
   }, [])
 
@@ -145,7 +145,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       try {
         localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(sessions))
       } catch (error) {
-        console.error("Failed to save chat sessions to localStorage:", error)
+        void logger.error("Failed to save chat sessions to localStorage", { error: String(error) })
       }
     }
   }, [sessions, wasUpdated])
@@ -225,7 +225,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Unknown error"
         setError(errorMessage)
-        console.error("Chat command failed:", err)
+        void logger.error("Chat command failed", { error: String(err) })
         throw err
       } finally {
         setIsLoading(false)
@@ -265,7 +265,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
         }
         throw new Error("Failed to create chat session")
       } catch (error) {
-        console.error("Failed to create chat session via backend:", error)
+        void logger.error("Failed to create chat session via backend", { error: String(error) })
 
         // Fallback на локальное создание
         const newSession: ChatSession = {
@@ -294,7 +294,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
           params: { session_id: sessionId },
         })
       } catch (error) {
-        console.error("Failed to delete chat session via backend:", error)
+        void logger.error("Failed to delete chat session via backend", { error: String(error) })
       }
 
       setSessions((prev) => {
@@ -305,7 +305,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
           try {
             localStorage.removeItem(CHAT_STORAGE_KEY)
           } catch (error) {
-            console.error("Failed to clear chat sessions from localStorage:", error)
+            void logger.error("Failed to clear chat sessions from localStorage", { error: String(error) })
           }
         }
 
@@ -365,7 +365,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
         })
         projectContext = contextResult
       } catch (error) {
-        console.error("Failed to get project context:", error)
+        void logger.error("Failed to get project context", { error: String(error) })
       }
 
       // Добавляем сообщение пользователя локально для немедленного отображения
@@ -435,7 +435,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
           throw new Error("No response from AI")
         }
       } catch (error) {
-        console.error("AI response error:", error)
+        void logger.error("AI response error", { error: String(error) })
         setError(error instanceof Error ? error.message : "Ошибка при получении ответа от AI")
 
         // Добавляем сообщение об ошибке
@@ -487,7 +487,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       return clearedSession
     })
 
-    console.warn("Chat session clearing not yet integrated with backend")
+    logger.warnSync("Chat session clearing not yet integrated with backend")
 
     // В будущем это будет:
     // await executeCommand({
@@ -597,7 +597,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
         }
       } else {
         // Обновление сессий уже происходит через backend state
-        console.log("Sessions updated through backend state")
+        logger.debugSync("Sessions updated through backend state")
       }
     },
     [currentSession],

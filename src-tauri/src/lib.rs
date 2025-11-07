@@ -45,6 +45,7 @@ use video_compiler::VideoCompilerState;
 // Модуль распознавания (YOLO)
 pub mod recognition;
 use recognition::commands::yolo_commands::YoloProcessorState;
+use recognition::person_database::PersonDatabase;
 use recognition::recognition_service::RecognitionState;
 use recognition::RecognitionService;
 
