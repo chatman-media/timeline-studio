@@ -1,7 +1,7 @@
 /**
- * App Provider V2
+ * App Provider
  *
- * Главный провайдер с новой архитектурой backend state management
+ * Главный провайдер с архитектурой backend state management
  */
 
 import { useMachine } from "@xstate/react"
@@ -9,7 +9,7 @@ import React, { type ReactNode, useEffect } from "react"
 // Используем машину из домена
 import { appMachine } from "@/domains/project-management/machines/app-machine"
 
-export interface AppProviderV2Context {
+export interface AppContext {
   // Backend connection state
   isConnected: boolean
   isConnecting: boolean
@@ -25,13 +25,13 @@ export interface AppProviderV2Context {
   executeCommand: (command: any) => void
 }
 
-const AppContextV2 = React.createContext<AppProviderV2Context | null>(null)
+const AppContextInternal = React.createContext<AppContext | null>(null)
 
-interface AppProviderV2Props {
+interface AppProviderProps {
   children: ReactNode
 }
 
-export function AppProvider({ children }: AppProviderV2Props) {
+export function AppProvider({ children }: AppProviderProps) {
   const [state, send] = useMachine(appMachine)
 
   // Auto-connect when component mounts
@@ -59,7 +59,7 @@ export function AppProvider({ children }: AppProviderV2Props) {
   }
 
   // Context value with safe fallbacks
-  const contextValue: AppProviderV2Context = {
+  const contextValue: AppContext = {
     isConnected: state?.context?.isConnected ?? false,
     isConnecting: state?.matches("connecting") ?? false,
     connectionError: state?.context?.error ?? null,
@@ -70,12 +70,12 @@ export function AppProvider({ children }: AppProviderV2Props) {
     executeCommand,
   }
 
-  return <AppContextV2.Provider value={contextValue}>{children}</AppContextV2.Provider>
+  return <AppContextInternal.Provider value={contextValue}>{children}</AppContextInternal.Provider>
 }
 
 // Hook for using app context
-export function useApp(): AppProviderV2Context {
-  const context = React.useContext(AppContextV2)
+export function useApp(): AppContext {
+  const context = React.useContext(AppContextInternal)
 
   if (!context) {
     throw new Error("useApp must be used within AppProvider")

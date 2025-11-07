@@ -1,7 +1,7 @@
 /**
- * Providers V2
+ * Providers
  *
- * Новая версия провайдеров с интеграцией backend state management
+ * Провайдеры с интеграцией backend state management
  */
 
 "use client"
@@ -31,9 +31,9 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
   }
 }
 
-// Создаем единый провайдер из всех контекстов V2
+// Создаем единый провайдер из всех контекстов
 // ВАЖНО: Порядок провайдеров оптимизирован для новой архитектуры!
-// AppProviderV2 должен быть рано в цепочке для инициализации backend
+// AppProvider должен быть рано в цепочке для инициализации backend
 const AppProviderComposite = composeProviders(
   TauriMockProvider, // Должен быть первым для инициализации моков
   AIServicesProvider, // AI сервисы должны инициализироваться рано
