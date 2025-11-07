@@ -106,7 +106,9 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to process video recognition"
         setError(errorMsg)
-        logError("[useRecognitionPreview] Ошибка распознавания видео", err)
+        logError("[useRecognitionPreview] Ошибка распознавания видео", {
+          error: err instanceof Error ? err.message : String(err),
+        })
         options.onError?.(errorMsg)
         return null
       } finally {
@@ -143,7 +145,9 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
         return []
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to get recognition at timestamp"
-        logError("[useRecognitionPreview] Ошибка получения распознавания по timestamp", err)
+        logError("[useRecognitionPreview] Ошибка получения распознавания по timestamp", {
+          error: err instanceof Error ? err.message : String(err),
+        })
         return []
       }
     },
@@ -164,7 +168,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to get preview with recognition"
         setError(errorMsg)
-        logError("[useRecognitionPreview] Ошибка получения превью с распознаванием", err)
+        logError("[useRecognitionPreview] Ошибка получения превью с распознаванием", { error: err })
         options.onError?.(errorMsg)
         return null
       }
@@ -214,7 +218,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to process batch recognition"
         setError(errorMsg)
-        logError("[useRecognitionPreview] Ошибка batch распознавания", err)
+        logError("[useRecognitionPreview] Ошибка batch распознавания", { error: err })
         options.onError?.(errorMsg)
         return new Map()
       } finally {
@@ -235,7 +239,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to clear recognition results"
         setError(errorMsg)
-        logError("[useRecognitionPreview] Ошибка очистки результатов распознавания", err)
+        logError("[useRecognitionPreview] Ошибка очистки результатов распознавания", { error: err })
         options.onError?.(errorMsg)
         return false
       }

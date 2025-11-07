@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 2.6.0 Released
-date: 2025-11-07
+date: 2024-11-07
 author: Timeline Team
 slug: release-2-6-0
 excerpt: Major update with improved AI features, performance optimizations, and new multi-platform export capabilities.

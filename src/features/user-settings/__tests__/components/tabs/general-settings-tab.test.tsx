@@ -186,28 +186,14 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should show clear button for non-default screenshots path", () => {
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "custom/screenshots",
-      playerScreenshotsPath: "public/media",
-      handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
-      handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      isTimelineVisible: true,
-      isOptionsVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      playerVolume: 100,
-      handleAiApiKeyChange: vi.fn(),
-      handleClaudeApiKeyChange: vi.fn(),
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-      handlePlayerVolumeChange: vi.fn(),
-      toggleTimelineVisibility: vi.fn(),
-      toggleOptionsVisibility: vi.fn(),
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() =>
+      createMockUserSettings({
+        screenshotsPath: "custom/screenshots",
+        playerScreenshotsPath: "public/media",
+        handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
+        handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
+      }),
+    )
 
     render(<GeneralSettingsTab />)
 

@@ -123,12 +123,15 @@ describe("SubtitleGroup", () => {
   })
 
   it("должен обрабатывать большое количество субтитров", () => {
-    const manySubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = Array.from({ length: 20 }, (_, i) => ({
-      ...mockSubtitles[0],
-      id: `subtitle-${i}`,
-      name: `Subtitle ${i}`,
-      labels: { en: `Subtitle ${i}`, ru: `Субтитр ${i}` },
-    }))
+    const manySubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = Array.from(
+      { length: 20 },
+      (_, i) => ({
+        ...mockSubtitles[0],
+        id: `subtitle-${i}`,
+        name: `Subtitle ${i}`,
+        labels: { en: `Subtitle ${i}`, ru: `Субтитр ${i}` },
+      }),
+    )
 
     render(<SubtitleGroup {...defaultProps} subtitles={manySubtitles} />)
 

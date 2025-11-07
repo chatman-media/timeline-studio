@@ -35,6 +35,10 @@ export interface VideoFilter {
   tags: FilterTag[]
   description: {
     en: string
+    ru?: string
+    es?: string
+    fr?: string
+    de?: string
   }
   labels: {
     en: string

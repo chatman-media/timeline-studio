@@ -63,7 +63,10 @@ export function ProjectSettingsModal() {
     setCustomWidth(settings.aspectRatio.value.width)
     setCustomHeight(settings.aspectRatio.value.height)
 
-    logger.info("[ProjectSettingsDialog] Доступные разрешения обновлены:", resolutions)
+    logger.info("[ProjectSettingsDialog] Доступные разрешения обновлены:", {
+      count: resolutions.length,
+      aspectRatio: settings.aspectRatio.label,
+    })
   }, [settings.aspectRatio]) // Зависимость от соотношения сторон
 
   /**

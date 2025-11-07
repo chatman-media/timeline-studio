@@ -64,7 +64,11 @@ export function VoiceRecordModal() {
           useSubdirectory: true,
         })
 
-        logger.info("Аудиозапись сохранена:", result)
+        logger.info("Аудиозапись сохранена", {
+          filePath: result.filePath,
+          fileName: result.fileName,
+          fileSize: result.fileSize,
+        })
 
         // Создаем объект MediaFile для добавления в медиатеку
         const mediaFile: MediaFile = {
@@ -85,7 +89,7 @@ export function VoiceRecordModal() {
         // Закрываем диалог после успешного сохранения
         closeModal()
       } catch (error) {
-        logger.error("Ошибка при сохранении аудиозаписи:", error)
+        logger.error("Ошибка при сохранении аудиозаписи", { error })
         setErrorMessage(t("dialogs.voiceRecord.saveError", "Ошибка при сохранении аудиозаписи"))
       }
     },
@@ -125,7 +129,7 @@ export function VoiceRecordModal() {
         await getDevices()
       }
     } catch (error) {
-      logger.error("Ошибка при получении устройств после разрешений:", error)
+      logger.error("Ошибка при получении устройств после разрешений", { error })
     }
   }, [requestPermissions, getDevices])
 

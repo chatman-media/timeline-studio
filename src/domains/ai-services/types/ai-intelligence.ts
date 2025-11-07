@@ -5,8 +5,8 @@
  */
 
 // Import shared processing types to avoid conflicts
-import type { ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
-import type { AIConfig, IntelligentContent } from "./ai-config"
+import type { IntelligentContent, ProcessingError, ProcessingStep } from "../../shared/types/ai-tools/pipeline"
+import type { AIConfig } from "./ai-config"
 import type { MediaFile } from "./interfaces"
 import type { AdaptedContent, PlatformId } from "./platform"
 import type { GeneratedScript, ScriptGenerationParams } from "./script"

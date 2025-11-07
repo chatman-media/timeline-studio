@@ -20,7 +20,7 @@ import type {
 } from "@/domains/shared/events"
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AnalysisOptions,

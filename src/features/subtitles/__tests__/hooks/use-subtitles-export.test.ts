@@ -165,14 +165,27 @@ describe("useSubtitlesExport", () => {
       getTracksBySection: vi.fn(() => []),
       findTrack: vi.fn(() => null),
       selectedTracks: [],
+      visibleTracks: [],
+      addTrack: vi.fn(),
+      removeTrack: vi.fn(),
+      updateTrack: vi.fn(async () => {}),
+      toggleTrackMute: vi.fn(),
+      toggleTrackLock: vi.fn(),
+      toggleTrackVisibility: vi.fn(),
+      toggleTrackSolo: vi.fn(),
+      setTrackVolume: vi.fn(),
+      setTrackPan: vi.fn(),
+      setTrackHeight: vi.fn(),
       selectTrack: vi.fn(),
-      toggleTrackSelection: vi.fn(),
+      selectMultipleTracks: vi.fn(),
       clearTrackSelection: vi.fn(),
-      sortedTracks: [],
-      videoTracks: [],
-      audioTracks: [],
-      subtitleTracks: [],
-    })
+      canAddTrackToSection: vi.fn(() => true),
+      getTrackStats: vi.fn(() => ({
+        clipCount: 0,
+        totalDuration: 0,
+        isEmpty: true,
+      })),
+    } as any)
 
     const { result } = renderHook(() => useSubtitlesExport())
 

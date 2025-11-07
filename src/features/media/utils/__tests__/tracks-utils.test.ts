@@ -22,6 +22,8 @@ describe("tracks-utils", () => {
     timeRanges: [],
     startTime: 0,
     endTime: 0,
+    isLocked: false,
+    combinedDuration: 0,
     zoomLevel: 1,
     scrollPosition: 0,
   })

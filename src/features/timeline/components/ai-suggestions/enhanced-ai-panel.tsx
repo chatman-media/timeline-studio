@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@/domains/media-management"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
-import { UnifiedDashboard } from "@/features/ai-content-intelligence"
+// MIGRATION NOTE: UnifiedDashboard removed - use AI Director integration instead
+// import { UnifiedDashboard } from "@/features/ai-content-intelligence"
 import { useTimeline } from "@/features/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -70,22 +71,8 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
     })) as unknown as MediaInfo[]
   }, [clips])
 
-  const handleFileUpload = useCallback((files: File[]) => {
-    logger.info("AI Panel: File upload requested", files)
-    // TODO: Реализовать загрузку файлов в таймлайн
-  }, [])
-
-  const handleAnalysisComplete = useCallback((analysis: any) => {
-    logger.info("AI Panel: Analysis completed", analysis)
-    setError(null)
-    // TODO: Применить AI рекомендации к таймлайну
-  }, [])
-
-  const handleProcessingComplete = useCallback((content: any) => {
-    logger.info("AI Panel: Processing completed", content)
-    setIsProcessing(false)
-    // TODO: Применить обработанный контент к таймлайну
-  }, [])
+  // MIGRATION NOTE: Removed Dashboard-specific handlers (handleFileUpload, handleAnalysisComplete, handleProcessingComplete)
+  // These will be reimplemented with AI Director integration
 
   const handleError = useCallback((error: Error) => {
     logger.error("AI Panel: Error occurred", error)
@@ -219,14 +206,18 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
         )}
 
         {clips && clips.length > 0 ? (
-          <UnifiedDashboard
-            mediaFiles={mediaFiles}
-            onFileUpload={handleFileUpload}
-            onAnalysisComplete={handleAnalysisComplete}
-            onProcessingComplete={handleProcessingComplete}
-            onError={handleError}
-            className="h-full"
-          />
+          <div className="flex-1 p-4 flex items-center justify-center">
+            <div className="text-center text-muted-foreground max-w-md">
+              <div className="mb-4">
+                <Bot className="h-16 w-16 mx-auto text-blue-500 opacity-50" />
+              </div>
+              <p className="mb-2 text-lg font-medium">AI Dashboard временно недоступен</p>
+              <p className="text-sm mb-4">Идет миграция на новый AI Director для более мощного анализа контента</p>
+              <p className="text-xs text-muted-foreground/70">
+                Используйте кнопки быстрого анализа выше для основных операций
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="flex-1 p-4 flex items-center justify-center">
             <div className="text-center text-muted-foreground">

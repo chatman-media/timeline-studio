@@ -82,7 +82,7 @@ export function useAutoLoadResources() {
         scanCacheRef.current.set(dirPath, jsonFiles)
         return jsonFiles
       } catch (error) {
-        logger.error(`Error scanning ${dirPath}:`, error)
+        logger.error("Error scanning directory", { error, dirPath })
         return []
       }
     },
@@ -102,7 +102,7 @@ export function useAutoLoadResources() {
         }
         return await response.json()
       } catch (error) {
-        logger.error(`Error loading ${filePath}:`, error)
+        logger.error("Error loading JSON file", { error, filePath })
         return null
       }
     },
@@ -156,7 +156,11 @@ export function useAutoLoadResources() {
                     addFunction(validated)
                     validCount++
                   } catch (err) {
-                    logger.error(`Error adding ${resourceType} ${validated.id}:`, err)
+                    logger.error("Error adding resource", {
+                      error: err,
+                      resourceType,
+                      resourceId: validated.id,
+                    })
                   }
                 }
               })
@@ -164,10 +168,10 @@ export function useAutoLoadResources() {
           })
         }
 
-        logger.info(`[useAutoLoadResources] Loaded ${validCount} ${resourceType}s`)
+        logger.info("Resources loaded", { validCount, resourceType, context: "useAutoLoadResources" })
         return validCount
       } catch (error) {
-        logger.error(`Error processing ${resourceType} files:`, error)
+        logger.error("Error processing resource files", { error, resourceType })
         return 0
       }
     },
@@ -207,7 +211,7 @@ export function useAutoLoadResources() {
             styleTemplates: appDirectoriesService.getMediaSubdirectory("style_templates"),
           }
         } catch (error) {
-          logger.warn("Failed to get app directories:", error)
+          logger.warn("Failed to get app directories", { error })
         }
       }
 
@@ -250,9 +254,9 @@ export function useAutoLoadResources() {
       lastLoadTimeRef.current = Date.now()
 
       const totalLoaded = Object.values(stats).reduce((sum, count) => sum + count, 0)
-      logger.info(`[useAutoLoadResources] Loaded ${totalLoaded} total resources`)
+      logger.info("Total resources loaded", { totalLoaded, stats, context: "useAutoLoadResources" })
     } catch (error) {
-      logger.error("Error loading resources:", error)
+      logger.error("Error loading resources", { error })
       setError(error instanceof Error ? error.message : "Unknown error")
     } finally {
       setIsLoading(false)
@@ -304,7 +308,7 @@ export function useAutoLoadResources() {
     */
 
     // Логируем, что автозагрузка отключена
-    logger.info("[useAutoLoadResources] Auto-loading is disabled")
+    logger.info("Auto-loading is disabled", { context: "useAutoLoadResources" })
   }, []) // Пустой массив зависимостей - выполняется только при монтировании
 
   const clearCache = useCallback(() => {

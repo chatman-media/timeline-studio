@@ -24,7 +24,9 @@ export function useAudioPermissions() {
 
       // Проверяем поддержку mediaDevices
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        logError("[useAudioPermissions] MediaDevices API не поддерживается", new Error("API not supported"))
+        logError("[useAudioPermissions] MediaDevices API не поддерживается", {
+          error: new Error("API not supported"),
+        })
         setPermissionStatus("error")
         setErrorMessage(
           t(
@@ -63,7 +65,7 @@ export function useAudioPermissions() {
       logInfo("[useAudioPermissions] API разрешений не поддерживается, запрашиваем доступ напрямую")
       return await requestPermissions()
     } catch (error) {
-      logError("[useAudioPermissions] Ошибка при проверке разрешений", error)
+      logError("[useAudioPermissions] Ошибка при проверке разрешений", { error })
       setPermissionStatus("error")
       setErrorMessage(
         t("dialogs.voiceRecord.permissionCheckError", "Не удалось проверить разрешения. Попробуйте еще раз."),
@@ -95,7 +97,7 @@ export function useAudioPermissions() {
         setErrorMessage(
           t("dialogs.voiceRecord.permissionError", "Не удалось получить доступ к микрофону. Проверьте настройки."),
         )
-        logError("[useAudioPermissions] Не удалось получить поток", new Error("Stream is null"))
+        logError("[useAudioPermissions] Не удалось получить поток", { error: new Error("Stream is null") })
         return false
       }
 
@@ -106,7 +108,7 @@ export function useAudioPermissions() {
       logInfo("[useAudioPermissions] Разрешения успешно получены")
       return true
     } catch (error) {
-      logError("[useAudioPermissions] Ошибка при запросе разрешений", error)
+      logError("[useAudioPermissions] Ошибка при запросе разрешений", { error })
 
       // Определяем тип ошибки
       if (error instanceof DOMException) {
@@ -115,7 +117,7 @@ export function useAudioPermissions() {
           setErrorMessage(
             t("dialogs.voiceRecord.deviceNotFound", "Микрофон не найден. Подключите микрофон и попробуйте снова."),
           )
-          logError("[useAudioPermissions] Микрофон не найден", error)
+          logError("[useAudioPermissions] Микрофон не найден", { error })
         } else if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
           setPermissionStatus("denied")
           setErrorMessage(
@@ -127,14 +129,14 @@ export function useAudioPermissions() {
           setErrorMessage(
             t("dialogs.voiceRecord.permissionError", "Не удалось получить доступ к микрофону. Проверьте настройки."),
           )
-          logError("[useAudioPermissions] Неизвестная ошибка DOM", error)
+          logError("[useAudioPermissions] Неизвестная ошибка DOM", { error })
         }
       } else {
         setPermissionStatus("error")
         setErrorMessage(
           t("dialogs.voiceRecord.unknownError", "Произошла неизвестная ошибка при запросе доступа к микрофону."),
         )
-        logError("[useAudioPermissions] Неизвестная ошибка", error)
+        logError("[useAudioPermissions] Неизвестная ошибка", { error })
       }
 
       return false

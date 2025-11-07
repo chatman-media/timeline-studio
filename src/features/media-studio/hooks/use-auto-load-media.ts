@@ -17,7 +17,7 @@ export function useAutoLoadMedia() {
   const [error, setError] = useState<string | null>(null)
   const [loadedCount, setLoadedCount] = useState({ media: 0, music: 0 })
 
-  const { updateMediaFiles } = useMediaFiles()
+  const { addMediaFile } = useMediaFiles()
   const { updateMusicFiles } = useMusicFiles()
 
   // Debouncing refs
@@ -79,7 +79,7 @@ export function useAutoLoadMedia() {
         scanCacheRef.current.set(cacheKey, files)
         return files
       } catch (error) {
-        logger.error(`Error scanning ${dirPath}:`, error)
+        logger.error("Error scanning directory", { error, dirPath })
         return []
       }
     },
@@ -171,7 +171,7 @@ export function useAutoLoadMedia() {
 
         return processedFiles
       } catch (error) {
-        logger.error("Error processing media files:", error)
+        logger.error("Error processing media files", { error })
         return []
       }
     },
@@ -201,7 +201,7 @@ export function useAutoLoadMedia() {
           mediaDir = appDirectoriesService.getMediaSubdirectory("videos")
           musicDir = appDirectoriesService.getMediaSubdirectory("music")
         } catch (error) {
-          logger.warn("Failed to get app directories:", error)
+          logger.warn("Failed to get app directories", { error })
         }
       }
 
@@ -219,7 +219,13 @@ export function useAutoLoadMedia() {
 
       // Обновляем состояние только если есть изменения
       if (processedMedia.length > 0) {
-        void updateMediaFiles(processedMedia)
+        // Добавляем медиа файлы по одному
+        for (const media of processedMedia) {
+          const mediaType = media.isVideo ? "Video" : media.isAudio ? "Audio" : "Image"
+          await addMediaFile(media.path, mediaType).catch((err) => {
+            logger.error("Failed to add media file:", { path: media.path, error: err })
+          })
+        }
       }
       if (processedMusic.length > 0) {
         void updateMusicFiles(processedMusic)
@@ -232,11 +238,13 @@ export function useAutoLoadMedia() {
 
       lastLoadTimeRef.current = Date.now()
 
-      logger.info(
-        `[useAutoLoadMedia] Loaded ${processedMedia.length} media files and ${processedMusic.length} music files`,
-      )
+      logger.info("Media files loaded", {
+        mediaCount: processedMedia.length,
+        musicCount: processedMusic.length,
+        context: "useAutoLoadMedia",
+      })
     } catch (error) {
-      logger.error("Error loading media files:", error)
+      logger.error("Error loading media files", { error })
       setError(error instanceof Error ? error.message : "Unknown error")
     } finally {
       setIsLoading(false)
@@ -245,7 +253,7 @@ export function useAutoLoadMedia() {
     isTauriEnvironment,
     scanDirectory,
     processMediaFiles,
-    updateMediaFiles,
+    addMediaFile,
     updateMusicFiles,
     mediaExtensions,
     musicExtensions,
@@ -295,7 +303,7 @@ export function useAutoLoadMedia() {
     */
 
     // Логируем, что автозагрузка отключена
-    logger.info("[useAutoLoadMedia] Auto-loading is disabled")
+    logger.info("Auto-loading is disabled", { context: "useAutoLoadMedia" })
   }, []) // Убираем зависимости, так как эффект теперь не активен
 
   // Функция для очистки кэша

@@ -20,7 +20,7 @@ export const FRAME_RATES: { value: FrameRate; label: string }[] = [
   { value: "60", label: "60 fps" },
 ]
 
-export type ColorSpace = "sdr" | "dci-p3" | "p3-d65" | "hdr-hlg" | "hdr-pq"
+export type ColorSpace = "sdr" | "rec709" | "dci-p3" | "p3-d65" | "hdr-hlg" | "hdr-pq" | "rec2020" | "srgb"
 
 // Константа с доступными значениями цветовых пространств
 export const COLOR_SPACES: { value: ColorSpace; label: string }[] = [
@@ -196,7 +196,7 @@ export interface AspectRatio {
   description: string
 }
 
-interface AspectRatioValue {
+export interface AspectRatioValue {
   width: number
   height: number
   name: string

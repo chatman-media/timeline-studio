@@ -18,10 +18,10 @@ export function useFiltersImport() {
    * Импорт JSON файла с фильтрами
    */
   const importFiltersFile = useCallback(async () => {
-    logInfo("useFiltersImport", "Starting filters file import")
+    await logInfo("Starting filters file import")
 
     if (isImporting) {
-      logInfo("useFiltersImport", "Import already in progress")
+      await logInfo("Import already in progress")
       return
     }
 
@@ -50,7 +50,7 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
-          logInfo("useFiltersImport", `Imported ${filtersData.length} filters`, { count: filtersData.length })
+          await logInfo(`Imported ${filtersData.length} filters`, { count: filtersData.length })
         } else if (filtersData.filters && Array.isArray(filtersData.filters)) {
           // Альтернативный формат с обёрткой
           for (const filterData of filtersData.filters) {
@@ -58,26 +58,26 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
-          logInfo("useFiltersImport", `Imported ${filtersData.filters.length} filters`, {
+          await logInfo(`Imported ${filtersData.filters.length} filters`, {
             count: filtersData.filters.length,
           })
         }
       }
     } catch (error) {
-      logError("useFiltersImport", "Error importing filters file", error)
+      await logError("Error importing filters file", { error })
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting])
+  }, [isImporting, addFilter])
 
   /**
    * Импорт отдельных файлов фильтров (.cube, .3dl, .lut)
    */
   const importFilterFile = useCallback(async () => {
-    logInfo("useFiltersImport", "Starting filter files import")
+    await logInfo("Starting filter files import")
 
     if (isImporting) {
-      logInfo("useFiltersImport", "Import already in progress")
+      await logInfo("Import already in progress")
       return
     }
 
@@ -126,14 +126,14 @@ export function useFiltersImport() {
           void addFilter(filter)
         }
 
-        logInfo("useFiltersImport", `Imported ${files.length} filter files`, { count: files.length })
+        await logInfo(`Imported ${files.length} filter files`, { count: files.length })
       }
     } catch (error) {
-      logError("useFiltersImport", "Error importing filter files", error)
+      await logError("Error importing filter files", { error })
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting])
+  }, [isImporting, addFilter])
 
   return {
     importFiltersFile,

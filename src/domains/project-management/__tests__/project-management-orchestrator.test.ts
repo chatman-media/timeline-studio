@@ -5,8 +5,11 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { ProjectManagementOrchestrator, resetProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 import type { ProjectSettings } from "@/types/generated/tauri-bindings"
+import {
+  ProjectManagementOrchestrator,
+  resetProjectManagementOrchestrator,
+} from "../services/project-management-orchestrator"
 
 // Mock BackendSync
 vi.mock("@/features/app-state/services/backend-sync", () => ({

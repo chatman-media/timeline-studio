@@ -48,30 +48,7 @@ export interface VideoMetadata {
   codec?: string
 }
 
-// Дополнительные типы для AI Intelligence Machine
-export enum NarrativeType {
-  THREE_ACT = "three_act",
-  HERO_JOURNEY = "hero_journey",
-  STORY_CIRCLE = "story_circle",
-  NON_LINEAR = "non_linear",
-  EPISODIC = "episodic",
-  DOCUMENTARY = "documentary",
-}
-
-export enum PaceType {
-  SLOW = "slow",
-  MODERATE = "moderate",
-  FAST = "fast",
-  DYNAMIC = "dynamic",
-}
-
-export enum ProcessingStatus {
-  PENDING = "pending",
-  IN_PROGRESS = "in_progress",
-  COMPLETED = "completed",
-  FAILED = "failed",
-  CANCELLED = "cancelled",
-}
+// ProcessingStatus перенесен в pipeline.ts чтобы избежать дублирования
 
 // Временный тип для VideoAnalysis пока не найден точный импорт
 export interface VideoAnalysis {
@@ -87,6 +64,8 @@ export interface SceneAnalysis {
   endTime: number
   duration: number
   type: SceneType
+  confidence?: number // Confidence score for scene classification
+  description?: string // Optional description of the scene
   keyFrames: KeyFrame[]
   quality: QualityMetrics
   content: ContentElements
@@ -380,7 +359,8 @@ export interface AudioDetections {
 export interface SpeechDetection {
   startTime: number
   endTime: number
-  transcript?: string
+  text: string // Основной текст распознавания речи
+  transcript?: string // Альтернативное поле для совместимости
   speaker?: string
   language?: string
   confidence: number

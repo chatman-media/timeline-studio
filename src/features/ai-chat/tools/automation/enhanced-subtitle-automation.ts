@@ -14,14 +14,8 @@ interface SpeechDetection {
   speaker?: string
 }
 
-interface TextDetection {
-  x: number
-  y: number
-  width: number
-  height: number
-  text: string
-  confidence: number
-}
+// Используем shared тип
+import type { TextDetection } from "@/domains/shared/types/ai-tools/content-analysis"
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import { SubtitleAIIntegrationService } from "./services/subtitle-ai-integration"
@@ -704,6 +698,7 @@ export class EnhancedSubtitleAutomation extends BaseAITool {
             {
               startTime: 5000,
               endTime: 15000,
+              text: "Привет, это пример речи в видео",
               transcript: "Привет, это пример речи в видео",
               speaker: "Диктор 1",
               language: "ru",
@@ -761,6 +756,7 @@ export class EnhancedSubtitleAutomation extends BaseAITool {
       {
         startTime: 1000,
         endTime: 5000,
+        text: "Это пример распознанной речи",
         transcript: "Это пример распознанной речи",
         confidence: 0.89,
       },
@@ -785,7 +781,7 @@ export class EnhancedSubtitleAutomation extends BaseAITool {
       id: `speech-${index}`,
       startTime: speech.startTime,
       endTime: speech.endTime,
-      text: speech.transcript || "",
+      text: speech.text || speech.transcript || "",
       speaker: speech.speaker,
     }))
   }

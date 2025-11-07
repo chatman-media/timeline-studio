@@ -30,7 +30,7 @@ export function useFilters(): UseFiltersReturn {
    * Загружает фильтры из импортированного JSON файла
    */
   const loadFilters = useCallback(() => {
-    logInfo("useFilters", "Loading filters from JSON data")
+    void logInfo("Loading filters from JSON data")
 
     try {
       setLoading(true)
@@ -49,7 +49,7 @@ export function useFilters(): UseFiltersReturn {
 
       setFilters(processedFilters)
 
-      logInfo("useFilters", `Loaded ${processedFilters.length} filters from JSON`, { count: processedFilters.length })
+      void logInfo(`Loaded ${processedFilters.length} filters from JSON`, { count: processedFilters.length })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t("filters.errors.unknownError", "Unknown error")
       setError(t("filters.errors.failedToLoadFilters", "Failed to load filters: {{error}}", { error: errorMessage }))
@@ -63,7 +63,7 @@ export function useFilters(): UseFiltersReturn {
 
       setFilters(fallbackFilters)
 
-      logError("useFilters", "Failed to load filters, using fallback", err)
+      void logError("Failed to load filters, using fallback", { error: err })
     } finally {
       setLoading(false)
     }

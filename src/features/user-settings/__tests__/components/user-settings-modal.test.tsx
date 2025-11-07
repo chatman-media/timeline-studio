@@ -7,6 +7,7 @@ import { useModal } from "@/features/modals/services/modal-provider"
 import { UserSettingsModal } from "../../components/user-settings-modal"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { useUserSettings } from "../../hooks/use-user-settings"
+import { createMockApiKeys, createMockUserSettings } from "../../__tests__/test-utils"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
@@ -84,28 +85,19 @@ describe("UserSettingsModal", () => {
     vi.clearAllMocks()
 
     // Устанавливаем моки по умолчанию
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "public/screenshots",
-      playerScreenshotsPath: "public/media",
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      isTimelineVisible: true,
-      isOptionsVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      playerVolume: 100,
-      handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
-      handleAiApiKeyChange: mockHandleAiApiKeyChange,
-      handleClaudeApiKeyChange: mockHandleClaudeApiKeyChange,
-      handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-      handlePlayerVolumeChange: mockHandlePlayerVolumeChange,
-      toggleTimelineVisibility: mockToggleTimelineVisibility,
-      toggleOptionsVisibility: mockToggleOptionsVisibility,
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() =>
+      createMockUserSettings({
+        screenshotsPath: "public/screenshots",
+        playerScreenshotsPath: "public/media",
+        handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
+        handleAiApiKeyChange: mockHandleAiApiKeyChange,
+        handleClaudeApiKeyChange: mockHandleClaudeApiKeyChange,
+        handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
+        handlePlayerVolumeChange: mockHandlePlayerVolumeChange,
+        toggleTimelineVisibility: mockToggleTimelineVisibility,
+        toggleOptionsVisibility: mockToggleOptionsVisibility,
+      }),
+    )
 
     vi.mocked(useLanguage).mockImplementation(() => ({
       currentLanguage: "ru",
@@ -119,30 +111,14 @@ describe("UserSettingsModal", () => {
     vi.mocked(useModal).mockImplementation(() => ({
       openModal: vi.fn(),
       closeModal: mockCloseModal,
-      modalType: null,
+      modalType: "none",
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
+      isConnected: true,
     }))
 
-    vi.mocked(useApiKeys).mockImplementation(() => ({
-      getApiKeyStatus: vi.fn().mockReturnValue("not_set"),
-      updateApiKeyStatus: vi.fn(),
-      testApiKey: vi.fn(),
-      initiateOAuth: vi.fn(),
-      youtubeCredentials: { clientId: "", clientSecret: "" },
-      updateYoutubeCredentials: vi.fn(),
-      tiktokCredentials: { clientId: "", clientSecret: "" },
-      updateTiktokCredentials: vi.fn(),
-      vimeoCredentials: { clientId: "", clientSecret: "", accessToken: "" },
-      updateVimeoCredentials: vi.fn(),
-      telegramCredentials: { botToken: "", chatId: "" },
-      updateTelegramCredentials: vi.fn(),
-      codecovToken: "",
-      updateCodecovToken: vi.fn(),
-      tauriAnalyticsKey: "",
-      updateTauriAnalyticsKey: vi.fn(),
-    }))
+    vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
   })
 
   it("should render correctly", () => {
@@ -230,7 +206,7 @@ describe("UserSettingsModal", () => {
   it("should clear screenshots path when X button is clicked", () => {
     // Переопределяем значение screenshotsPath для этого теста
     vi.mocked(useUserSettings).mockImplementation(() =>
-      getMockUserSettings({
+      createMockUserSettings({
         screenshotsPath: "custom/path",
         handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
         handleAiApiKeyChange: mockHandleAiApiKeyChange,
@@ -290,7 +266,7 @@ describe("UserSettingsModal", () => {
 
     // Изменяем путь скриншотов в контексте
     vi.mocked(useUserSettings).mockImplementation(() =>
-      getMockUserSettings({
+      createMockUserSettings({
         screenshotsPath: "new/path",
         handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
         handleAiApiKeyChange: mockHandleAiApiKeyChange,
@@ -344,22 +320,13 @@ describe("UserSettingsModal", () => {
     })
 
     // Имитируем обновление состояния после выбора директории
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "selected/directory/path",
-      playerScreenshotsPath: "public/media",
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
-      handleAiApiKeyChange: mockHandleAiApiKeyChange,
-      handleClaudeApiKeyChange: vi.fn(),
-      handlePlayerScreenshotsPathChange: vi.fn(),
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() =>
+      createMockUserSettings({
+        screenshotsPath: "selected/directory/path",
+        handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
+        handleAiApiKeyChange: mockHandleAiApiKeyChange,
+      }),
+    )
 
     // Перерендериваем компонент
     act(() => {
@@ -410,22 +377,13 @@ describe("UserSettingsModal", () => {
     })
 
     // Имитируем обновление состояния после выбора директории
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "public/screenshots",
-      playerScreenshotsPath: "selected/directory/path",
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
-      handleAiApiKeyChange: mockHandleAiApiKeyChange,
-      handleClaudeApiKeyChange: vi.fn(),
-      handlePlayerScreenshotsPathChange: vi.fn(),
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() =>
+      createMockUserSettings({
+        playerScreenshotsPath: "selected/directory/path",
+        handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
+        handleAiApiKeyChange: mockHandleAiApiKeyChange,
+      }),
+    )
 
     // Перерендериваем компонент
     act(() => {
@@ -549,7 +507,7 @@ describe("UserSettingsModal", () => {
     // Переопределяем значение playerScreenshotsPath для этого теста
     const mockHandlePlayerScreenshotsPathChangeFn = vi.fn()
     vi.mocked(useUserSettings).mockImplementation(() =>
-      getMockUserSettings({
+      createMockUserSettings({
         playerScreenshotsPath: "custom/player/path",
         screenshotsPath: "public/screenshots", // Keep default value
         handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
@@ -582,10 +540,11 @@ describe("UserSettingsModal", () => {
     vi.mocked(useModal).mockImplementation(() => ({
       openModal: mockOpenModal,
       closeModal: mockCloseModal,
-      modalType: null,
+      modalType: "none",
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
+      isConnected: true,
     }))
 
     render(<UserSettingsModal />)
@@ -607,10 +566,11 @@ describe("UserSettingsModal", () => {
     vi.mocked(useModal).mockImplementation(() => ({
       openModal: mockOpenModal,
       closeModal: mockCloseModal,
-      modalType: null,
+      modalType: "none",
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
+      isConnected: true,
     }))
 
     render(<UserSettingsModal />)

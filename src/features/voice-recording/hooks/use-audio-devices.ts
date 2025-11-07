@@ -55,7 +55,7 @@ export function useAudioDevices({ setErrorMessage }: UseAudioDevicesProps) {
 
       return true
     } catch (error) {
-      logError("[useAudioDevices] Ошибка при получении устройств", error)
+      logError("[useAudioDevices] Ошибка при получении устройств", { error })
       setErrorMessage(t("dialogs.voiceRecord.errorGettingDevices", "Не удалось получить список устройств"))
       return false
     }

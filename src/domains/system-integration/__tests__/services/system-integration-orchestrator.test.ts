@@ -3,12 +3,12 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { ModalType } from "../../machines/modal-machine"
 import {
   getSystemIntegrationOrchestrator,
   resetSystemIntegrationOrchestrator,
   type SystemIntegrationOrchestrator,
 } from "../../services/system-integration-orchestrator"
-import type { ModalType } from "../../machines/modal-machine"
 
 describe("SystemIntegrationOrchestrator", () => {
   let orchestrator: SystemIntegrationOrchestrator

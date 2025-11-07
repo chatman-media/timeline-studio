@@ -4,20 +4,20 @@
 export const blogPostsConfig = {
   en: {
     'release-2-6-0': '/src/content/blog/en/release-2-6-0.md',
-    'ai-features-guide': '/src/content/blog/en/ai-features-guide.md',
-    'getting-started': '/src/content/blog/en/getting-started.md',
+    'alpha-release-ollama-integration': '/src/content/blog/en/alpha-release-ollama-integration.md',
+    'introducing-timeline-studio': '/src/content/blog/en/introducing-timeline-studio.md',
   },
   ru: {
     'release-2-6-0': '/src/content/blog/ru/release-2-6-0.md',
-    'ai-features-guide': '/src/content/blog/ru/ai-features-guide.md',
-    'getting-started': '/src/content/blog/ru/getting-started.md',
+    'alpha-release-ollama-integration': '/src/content/blog/ru/alpha-release-ollama-integration.md',
+    'introducing-timeline-studio': '/src/content/blog/ru/introducing-timeline-studio.md',
   },
   zh: {
     'release-2-6-0': '/src/content/blog/zh/release-2-6-0.md',
-    'ai-features-guide': '/src/content/blog/zh/ai-features-guide.md',
-    'getting-started': '/src/content/blog/zh/getting-started.md',
+    'alpha-release-ollama-integration': '/src/content/blog/zh/alpha-release-ollama-integration.md',
+    'introducing-timeline-studio': '/src/content/blog/zh/introducing-timeline-studio.md',
   },
 }
 
 // Порядок постов (от новых к старым)
-export const blogPostsOrder = ['release-2-6-0', 'ai-features-guide', 'getting-started']
+export const blogPostsOrder = ['release-2-6-0', 'alpha-release-ollama-integration', 'introducing-timeline-studio']

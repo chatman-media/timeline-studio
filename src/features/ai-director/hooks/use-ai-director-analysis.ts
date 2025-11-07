@@ -5,12 +5,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { listen, UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useState } from "react"
-import type {
-  AIDirectorConfig,
-  AnalysisError,
-  AnalysisProgress,
-  ComprehensiveAnalysisResult,
-} from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+import type { AnalysisError, AnalysisProgress } from "@/domains/ai-services/types/ai-director-events"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 export interface UseAIDirectorAnalysisReturn {

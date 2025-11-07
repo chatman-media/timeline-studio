@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { createElement } from "react"
 
 import {
   type CellConfiguration,
@@ -106,7 +107,7 @@ describe("Template Configuration Types", () => {
         id: "legacy-template",
         split: "horizontal",
         screens: 2,
-        render: () => null,
+        render: () => createElement("div", null, "Test"),
       }
 
       expect(template.render).toBeDefined()
@@ -298,7 +299,7 @@ describe("Type compatibility", () => {
 
     const template: MediaTemplate = {
       ...config,
-      render: () => null,
+      render: () => createElement("div", null, "Test"),
     }
 
     expect(template.id).toBe("test")

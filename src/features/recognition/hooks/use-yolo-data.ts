@@ -22,7 +22,7 @@ export function useYoloData() {
       logInfo("[useYoloData] Распознавание завершено", { fileId, framesCount: data.frames.length })
     },
     onError: (error) => {
-      logError("[useYoloData] Ошибка распознавания", error)
+      logError("[useYoloData] Ошибка распознавания", { error })
     },
   })
 
@@ -53,7 +53,7 @@ export function useYoloData() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
         setErrorStates((prev) => ({ ...prev, [videoId]: errorMessage }))
-        logError("[useYoloData] Ошибка загрузки YOLO данных", error)
+        logError("[useYoloData] Ошибка загрузки YOLO данных", { error })
         return null
       } finally {
         setLoadingStates((prev) => ({ ...prev, [videoId]: false }))
@@ -223,7 +223,7 @@ export function useYoloData() {
 
         return `В кадре обнаружено: ${descriptions.join(", ")}.`
       } catch (error) {
-        logError("[useYoloData] Ошибка создания контекста сцены", error)
+        logError("[useYoloData] Ошибка создания контекста сцены", { error })
         return "Ошибка при анализе сцены."
       }
     },

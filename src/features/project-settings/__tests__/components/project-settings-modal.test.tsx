@@ -13,11 +13,11 @@ const mockSettings = {
   aspectRatio: {
     label: "16:9",
     textLabel: "Widescreen",
-    value: { width: 1920, height: 1080 },
+    value: { width: 1920, height: 1080, name: "16:9" },
   },
   resolution: "1920x1080",
   frameRate: "30",
-  colorSpace: "rec709",
+  colorSpace: "sdr" as const,
 }
 
 // Мокируем все зависимости
@@ -49,10 +49,10 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Мокируем lucide-react иконки
-vi.mock("lucide-react", async (importOriginal) => {
-  const actual = await importOriginal()
+vi.mock("lucide-react", async () => {
+  const actual = await vi.importActual("lucide-react")
   return {
-    ...actual,
+    ...(typeof actual === "object" ? actual : {}),
     Lock: () => <div data-testid="lock-icon">Lock</div>,
     Unlock: () => <div data-testid="unlock-icon">Unlock</div>,
     ChevronDownIcon: () => <div data-testid="chevron-down-icon">ChevronDown</div>,
@@ -62,10 +62,10 @@ vi.mock("lucide-react", async (importOriginal) => {
 // Мокируем типы и константы проекта
 vi.mock("../../types/project", () => ({
   ASPECT_RATIOS: [
-    { label: "16:9", textLabel: "Widescreen", value: { width: 1920, height: 1080 } },
-    { label: "4:3", textLabel: "Standard", value: { width: 1440, height: 1080 } },
-    { label: "1:1", textLabel: "Square", value: { width: 1080, height: 1080 } },
-    { label: "custom", textLabel: "Custom", value: { width: 1920, height: 1080 } },
+    { label: "16:9", textLabel: "Widescreen", value: { width: 1920, height: 1080, name: "16:9" } },
+    { label: "4:3", textLabel: "Standard", value: { width: 1440, height: 1080, name: "4:3" } },
+    { label: "1:1", textLabel: "Square", value: { width: 1080, height: 1080, name: "1:1" } },
+    { label: "custom", textLabel: "Custom", value: { width: 1920, height: 1080, name: "custom" } },
   ],
   FRAME_RATES: [
     { label: "24 fps", value: "24" },
@@ -73,9 +73,9 @@ vi.mock("../../types/project", () => ({
     { label: "60 fps", value: "60" },
   ],
   COLOR_SPACES: [
-    { label: "Rec. 709", value: "rec709" },
-    { label: "Rec. 2020", value: "rec2020" },
-    { label: "sRGB", value: "srgb" },
+    { label: "SDR - Rec.709", value: "sdr" },
+    { label: "DCI-P3", value: "dci-p3" },
+    { label: "P3-D65", value: "p3-d65" },
   ],
   getDefaultResolutionForAspectRatio: vi.fn((aspectRatio) => {
     const resolutions: Record<string, any> = {
@@ -117,11 +117,11 @@ describe("ProjectSettingsModal", () => {
     mockSettings.aspectRatio = {
       label: "16:9",
       textLabel: "Widescreen",
-      value: { width: 1920, height: 1080 },
+      value: { width: 1920, height: 1080, name: "16:9" },
     }
     mockSettings.resolution = "1920x1080"
     mockSettings.frameRate = "30"
-    mockSettings.colorSpace = "rec709"
+    mockSettings.colorSpace = "sdr"
   })
 
   describe("Базовый рендеринг", () => {
@@ -436,7 +436,7 @@ describe("ProjectSettingsModal", () => {
       render(<ProjectSettingsModal />)
 
       const colorSpaceSelect = screen.getAllByRole("combobox")[3]
-      expect(colorSpaceSelect).toHaveTextContent("Rec. 709")
+      expect(colorSpaceSelect).toHaveTextContent("SDR - Rec.709")
     })
 
     it("должен обрабатывать смену цветового пространства через mock", () => {
@@ -707,7 +707,7 @@ describe("ProjectSettingsModal", () => {
       mockSettings.aspectRatio = {
         label: "4:3",
         textLabel: "Standard",
-        value: { width: 1440, height: 1080 },
+        value: { width: 1440, height: 1080, name: "4:3" },
       }
 
       render(<ProjectSettingsModal />)
@@ -719,7 +719,7 @@ describe("ProjectSettingsModal", () => {
       mockSettings.aspectRatio = {
         label: "16:9",
         textLabel: "Widescreen",
-        value: { width: 1920, height: 1080 },
+        value: { width: 1920, height: 1080, name: "16:9" },
       }
     })
   })

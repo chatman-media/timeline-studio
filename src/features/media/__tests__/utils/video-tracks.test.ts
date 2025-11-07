@@ -454,6 +454,9 @@ describe("video-tracks", () => {
           isMuted: false,
           isLocked: false,
           isVisible: true,
+          startTime: 0,
+          endTime: 0,
+          combinedDuration: 0,
         }
         mockSector.tracks = [audioTrack]
 
@@ -470,10 +473,10 @@ describe("video-tracks", () => {
         const videoFile = createMockMediaFile("video1", "video1.mp4", 0, 10)
         videoFile.probeData = {
           streams: [
-            { codec_type: "audio", duration: 10, bit_rate: "128000", codec_name: "aac" },
+            { codec_type: "audio", duration: "10", bit_rate: "128000", codec_name: "aac" },
             // No video stream
           ],
-          format: { duration: "10", size: "1000000", bit_rate: "1000000", format_name: "mp4" },
+          format: { duration: 10, size: 1000000, bit_rate: 1000000, format_name: "mp4" },
         }
 
         processVideoFiles([videoFile], mockSector)
@@ -493,6 +496,9 @@ describe("video-tracks", () => {
           isMuted: false,
           isLocked: false,
           isVisible: true,
+          startTime: 0,
+          endTime: 0,
+          combinedDuration: 0,
           // videos array is undefined
         }
         mockSector.tracks = [trackWithoutVideos]

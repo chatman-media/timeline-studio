@@ -185,7 +185,8 @@ describe("VolumeState and getNextVolumeState", () => {
   })
 
   it("should handle non-standard values", () => {
-    expect(getNextVolumeState(0.75)).toBe(VolumeState.FULL)
+    // Для нестандартных значений (которые не являются VolumeState) возвращается FULL
+    expect(getNextVolumeState(0.75 as VolumeState)).toBe(VolumeState.FULL)
   })
 })
 

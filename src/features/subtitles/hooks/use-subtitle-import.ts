@@ -7,13 +7,20 @@ import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 
+import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile as DomainMediaFile, MediaType } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { useToast } from "@/hooks/use-toast"
-import { logError, logInfo, type LogContext } from "@/lib/tauri-logger"
+import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { SubtitleClip } from "../types/subtitles"
-import { detectSubtitleFormat, importSubtitles, validateSubtitles } from "../utils/subtitle-importers"
+import {
+  createSubtitleClip,
+  detectSubtitleFormat,
+  importSubtitles,
+  validateSubtitles,
+} from "../utils/subtitle-importers"
 
 export interface UseSubtitleImportProps {
   trackId?: string
@@ -118,22 +125,25 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       // Добавляем клипы на timeline
       // Для субтитров создаем псевдо MediaFile или используем другой подход
       for (const clip of clipsToAdd) {
-        // Создаем псевдо MediaFile для субтитра
+        // Создаем MediaFile для субтитра (совместимый с обоими типами)
         const subtitleMediaFile = {
           id: clip.id,
           name: `${clip.text.substring(0, 50)}...`,
-          type: "subtitle",
-          path: "",
+          path: "", // Субтитры не имеют файла
+          type: MediaType.Subtitle,
           duration: clip.duration || 0,
         }
 
-        await addClip(targetTrackId, subtitleMediaFile, clip.startTime)
+        await addClip(targetTrackId, subtitleMediaFile as any, clip.startTime)
       }
 
       setImportProgress(100)
 
       // Успешное завершение
-      await logInfo("[useSubtitleImport] Субтитры успешно импортированы", { count: subtitles.length, format } as LogContext)
+      await logInfo("[useSubtitleImport] Субтитры успешно импортированы", {
+        count: subtitles.length,
+        format,
+      } as LogContext)
       toast({
         title: "Субтитры импортированы",
         description: `Импортировано ${subtitles.length} субтитров из файла ${format.toUpperCase()}`,
@@ -202,16 +212,16 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         }))
 
         for (const clip of clipsToAdd) {
-          // Создаем псевдо MediaFile для субтитра
+          // Создаем MediaFile для субтитра (совместимый с обоими типами)
           const subtitleMediaFile = {
             id: clip.id,
             name: `${clip.text.substring(0, 50)}...`,
-            type: "subtitle",
-            path: "",
+            path: "", // Субтитры не имеют файла
+            type: MediaType.Subtitle,
             duration: clip.duration || 0,
           }
 
-          await addClip(targetTrackId, subtitleMediaFile, clip.startTime)
+          await addClip(targetTrackId, subtitleMediaFile as any, clip.startTime)
         }
 
         return { success: true, subtitles: clipsToAdd }
@@ -241,17 +251,20 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         language?: string
       },
     ) => {
-      await logInfo("[useSubtitleImport] Импорт субтитров из Whisper транскрипции", { segmentsCount: segments.length } as LogContext)
+      await logInfo("[useSubtitleImport] Импорт субтитров из Whisper транскрипции", {
+        segmentsCount: segments.length,
+      } as LogContext)
       try {
         // Конвертируем сегменты Whisper в субтитры
-        const subtitles: SubtitleClip[] = segments.map((segment) => ({
-          id: generateId(),
-          trackId: options?.trackId || trackId || "",
-          type: "subtitle",
-          startTime: segment.start,
-          duration: segment.end - segment.start,
-          text: segment.text.trim(),
-        }))
+        const subtitles: SubtitleClip[] = segments.map((segment) =>
+          createSubtitleClip({
+            id: generateId(),
+            trackId: options?.trackId || trackId || "",
+            startTime: segment.start,
+            duration: segment.end - segment.start,
+            text: segment.text.trim(),
+          }),
+        )
 
         // Валидируем
         const validation = validateSubtitles(subtitles)
@@ -269,19 +282,21 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         for (const subtitle of subtitles) {
           subtitle.trackId = targetTrackId
 
-          // Создаем псевдо MediaFile для субтитра
+          // Создаем MediaFile для субтитра (совместимый с обоими типами)
           const subtitleMediaFile = {
             id: subtitle.id,
             name: `${subtitle.text.substring(0, 50)}...`,
-            type: "subtitle",
-            path: "",
+            path: "", // Субтитры не имеют файла
+            type: MediaType.Subtitle,
             duration: subtitle.duration || 0,
           }
 
-          await addClip(targetTrackId, subtitleMediaFile, subtitle.startTime)
+          await addClip(targetTrackId, subtitleMediaFile as any, subtitle.startTime)
         }
 
-        await logInfo("[useSubtitleImport] Whisper транскрипция успешно импортирована", { count: subtitles.length } as LogContext)
+        await logInfo("[useSubtitleImport] Whisper транскрипция успешно импортирована", {
+          count: subtitles.length,
+        } as LogContext)
         toast({
           title: "Транскрипция импортирована",
           description: `Добавлено ${subtitles.length} субтитров из транскрипции`,

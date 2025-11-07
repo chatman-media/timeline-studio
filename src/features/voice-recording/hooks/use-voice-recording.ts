@@ -62,7 +62,7 @@ export function useVoiceRecording({
   const startRecording = useCallback(() => {
     logInfo("[useVoiceRecording] Начало записи")
     if (!streamRef.current) {
-      logError("[useVoiceRecording] Поток не доступен", new Error("Stream is null"))
+      logError("[useVoiceRecording] Поток не доступен", { error: new Error("Stream is null") })
       return
     }
 
@@ -95,12 +95,12 @@ export function useVoiceRecording({
     try {
       mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
     } catch (e) {
-      logError("[useVoiceRecording] MediaRecorder не поддерживает данный формат", e)
+      logError("[useVoiceRecording] MediaRecorder не поддерживает данный формат", { error: e })
       try {
         // Пробуем без опций
         mediaRecorderRef.current = new MediaRecorder(streamRef.current)
       } catch (e) {
-        logError("[useVoiceRecording] MediaRecorder не поддерживается браузером", e)
+        logError("[useVoiceRecording] MediaRecorder не поддерживается браузером", { error: e })
         setErrorMessage(t("dialogs.voiceRecord.recordingNotSupported", "Запись не поддерживается браузером"))
         return
       }
@@ -138,7 +138,7 @@ export function useVoiceRecording({
   const startCountdown = useCallback(() => {
     logInfo("[useVoiceRecording] Запуск обратного отсчета", { countdown })
     if (!isDeviceReady) {
-      logError("[useVoiceRecording] Устройство не готово", new Error("Device not ready"))
+      logError("[useVoiceRecording] Устройство не готово", { error: new Error("Device not ready") })
       return
     }
 
@@ -173,7 +173,7 @@ export function useVoiceRecording({
 
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      logError("[useVoiceRecording] MediaDevices API недоступен", new Error("API not available"))
+      logError("[useVoiceRecording] MediaDevices API недоступен", { error: new Error("API not available") })
       setErrorMessage(
         t(
           "dialogs.voiceRecord.mediaDevicesNotSupported",
@@ -204,7 +204,7 @@ export function useVoiceRecording({
       const stream = await navigator.mediaDevices?.getUserMedia?.(constraints)
 
       if (!stream) {
-        logError("[useVoiceRecording] Не удалось получить поток с микрофона", new Error("Stream is null"))
+        logError("[useVoiceRecording] Не удалось получить поток с микрофона", { error: new Error("Stream is null") })
         setErrorMessage(t("dialogs.voiceRecord.streamError", "Не удалось инициализировать микрофон"))
         setIsDeviceReady(false)
         return
@@ -221,7 +221,7 @@ export function useVoiceRecording({
       setIsDeviceReady(true)
       logInfo("[useVoiceRecording] Микрофон инициализирован успешно")
     } catch (error) {
-      logError("[useVoiceRecording] Ошибка при инициализации микрофона", error)
+      logError("[useVoiceRecording] Ошибка при инициализации микрофона", { error })
       setErrorMessage(
         t("dialogs.voiceRecord.initError", {
           defaultValue: "Failed to initialize microphone. Please check settings and permissions.",

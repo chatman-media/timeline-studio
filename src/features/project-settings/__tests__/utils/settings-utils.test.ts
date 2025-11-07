@@ -14,11 +14,12 @@ describe("settings-utils", () => {
     aspectRatio: {
       label: "16:9",
       textLabel: "Widescreen",
-      value: { width: 1920, height: 1080 },
+      description: "YouTube",
+      value: { width: 1920, height: 1080, name: "16:9" },
     },
     resolution: "1920x1080",
     frameRate: "30",
-    colorSpace: "rec709",
+    colorSpace: "sdr",
   }
 
   describe("updateSettingsWithNewWidth", () => {
@@ -42,7 +43,7 @@ describe("settings-utils", () => {
       const result = updateSettingsWithNewWidth(mockSettings, 1600, 1080, true)
 
       expect(result.frameRate).toBe("30")
-      expect(result.colorSpace).toBe("rec709")
+      expect(result.colorSpace).toBe("sdr")
       expect(result.aspectRatio.label).toBe("16:9")
       expect(result.aspectRatio.textLabel).toBe("Widescreen")
     })
@@ -53,7 +54,8 @@ describe("settings-utils", () => {
         aspectRatio: {
           ...mockSettings.aspectRatio,
           label: "1:1",
-          value: { width: 1080, height: 1080 },
+          description: "Square",
+          value: { width: 1080, height: 1080, name: "1:1" },
         },
       }
 
@@ -86,7 +88,7 @@ describe("settings-utils", () => {
       const result = updateSettingsWithNewHeight(mockSettings, 1920, 900, true)
 
       expect(result.frameRate).toBe("30")
-      expect(result.colorSpace).toBe("rec709")
+      expect(result.colorSpace).toBe("sdr")
       expect(result.aspectRatio.label).toBe("16:9")
       expect(result.aspectRatio.textLabel).toBe("Widescreen")
     })
@@ -97,7 +99,8 @@ describe("settings-utils", () => {
         aspectRatio: {
           ...mockSettings.aspectRatio,
           label: "9:16",
-          value: { width: 1080, height: 1920 },
+          description: "Portrait",
+          value: { width: 1080, height: 1920, name: "9:16" },
         },
       }
 
@@ -113,7 +116,8 @@ describe("settings-utils", () => {
     const newAspectRatio = {
       label: "1:1",
       textLabel: "Square",
-      value: { width: 1080, height: 1080 },
+      description: "Instagram",
+      value: { width: 1080, height: 1080, name: "1:1" },
     }
 
     const recommendedResolution = {
@@ -143,7 +147,8 @@ describe("settings-utils", () => {
       const customAspectRatio = {
         label: "custom",
         textLabel: "Custom",
-        value: { width: 800, height: 600 },
+        description: "Custom",
+        value: { width: 800, height: 600, name: "custom" },
       }
 
       const result = createSettingsWithNewAspectRatio(
@@ -172,7 +177,7 @@ describe("settings-utils", () => {
       )
 
       expect(result.frameRate).toBe("30")
-      expect(result.colorSpace).toBe("rec709")
+      expect(result.colorSpace).toBe("sdr")
     })
   })
 

@@ -77,7 +77,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
   // Обработчик применения шаблона
   const handleApplyTemplate = useCallback(
     (_resource: TimelineResource, _type: string) => {
-      logger.info("[TemplatePreview] Applying template:", template.id)
+      logger.info("[TemplatePreview] Applying template:", { templateId: template.id })
       const videos = getVideosForPreview()
       applyTemplate(
         {
@@ -110,7 +110,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
     setTimeout(() => {
       // Это вызовет перерисовку компонента
       const isAdded = isTemplateAdded(template)
-      logger.info(`Шаблон ${template.id} добавлен: ${isAdded}`)
+      logger.info("Шаблон добавлен", { templateId: template.id, isAdded })
     }, 10)
   }
 

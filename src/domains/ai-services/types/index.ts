@@ -9,6 +9,8 @@ export * from "./ai-config"
 export type { AIIntelligenceContext, AIIntelligenceEvent, AIServicesDomainConfig } from "./ai-intelligence"
 // Export ContentType specifically from local content-analysis module
 export type { ContentClassification, ContentType } from "./content-analysis"
+// Export SpeechDetection and TextDetection from shared types
+export type { SpeechDetection, TextDetection } from "../../shared/types/ai-tools/content-analysis"
 // Other core types
 // Other core types already exported above via specific imports
 // Export MediaFile from interfaces as the canonical one

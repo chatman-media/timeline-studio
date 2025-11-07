@@ -1,5 +1,15 @@
-import { AIConfig } from "@/domains/ai-services/types"
-import { AccuracyLevel, AIProvider, AnalysisDepth, SpeedPriority } from "../types/ai-tools/ai-config"
+import {
+  AIConfig,
+  AIProviderConfig,
+  AIProvider,
+  AIFeatures,
+  ProcessingConfig,
+  QualityConfig,
+  AnalysisDepth,
+  AccuracyLevel,
+  SpeedPriority,
+  LanguageConfig,
+} from "../types/ai-tools/ai-config"
 
 export function createDefaultAIConfig(overrides?: Partial<AIConfig>): AIConfig {
   const defaultConfig: AIConfig = {

@@ -21,14 +21,8 @@ interface SpeechDetection {
   speaker?: string
 }
 
-interface TextDetection {
-  x: number
-  y: number
-  width: number
-  height: number
-  text: string
-  confidence: number
-}
+// Используем shared тип
+import type { TextDetection } from "@/domains/shared/types/ai-tools/content-analysis"
 
 // Временная заглушка для IVisionService
 interface IVisionService {
@@ -297,6 +291,7 @@ export class SubtitleAIIntegrationService {
         {
           startTime: 2.5,
           endTime: 7.8,
+          text: "Пример распознанной речи (fallback)",
           transcript: "Пример распознанной речи (fallback)",
           speaker: "Говорящий 1",
           language: language,
@@ -459,7 +454,7 @@ export class SubtitleAIIntegrationService {
       id: `speech-${index}`,
       startTime: segment.startTime * 1000, // в миллисекундах
       endTime: segment.endTime * 1000,
-      text: segment.transcript || "",
+      text: segment.text || segment.transcript || "",
       speaker: segment.speaker,
       confidence: segment.confidence,
       language: segment.language,

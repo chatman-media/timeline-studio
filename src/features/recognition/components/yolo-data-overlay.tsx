@@ -43,7 +43,9 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
         const data = await getYoloDataAtTimestamp(video.id, timestamp)
         setDetections(data)
       } catch (error) {
-        logger.error("[YoloDataOverlay] Ошибка при получении данных YOLO:", error)
+        logger.error("[YoloDataOverlay] Ошибка при получении данных YOLO:", {
+          error: error instanceof Error ? error.message : String(error),
+        })
       }
     }
 

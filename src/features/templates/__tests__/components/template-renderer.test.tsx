@@ -223,10 +223,12 @@ describe("TemplateRenderer", () => {
 
     const title1 = screen.getByText("Camera 1")
     expect(title1).toHaveStyle({ color: "#fff", fontSize: "14px" })
-    expect(title1).toHaveClass("top-4", "left-4")
+    expect(title1.className).toContain("top-4")
+    expect(title1.className).toContain("left-4")
 
     const title2 = screen.getByText("Camera 2")
     expect(title2).toHaveStyle({ color: "#ccc", fontSize: "12px" })
-    expect(title2).toHaveClass("bottom-4", "right-4")
+    expect(title2.className).toContain("bottom-4")
+    expect(title2.className).toContain("right-4")
   })
 })

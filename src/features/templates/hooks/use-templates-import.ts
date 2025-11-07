@@ -37,12 +37,12 @@ export function useTemplatesImport() {
       })
 
       if (selected) {
-        logger.info("Импорт JSON файла с многокамерными шаблонами:", selected)
+        logger.info("Импорт JSON файла с многокамерными шаблонами:", { path: selected })
         // TODO: Обработка импорта JSON файла с шаблонами
         // Валидация структуры, добавление в пользовательскую коллекцию
       }
     } catch (error) {
-      logger.error("Ошибка при импорте шаблонов:", error)
+      logger.error("Ошибка при импорте шаблонов:", { error })
     } finally {
       setIsImporting(false)
     }
@@ -69,12 +69,12 @@ export function useTemplatesImport() {
 
       if (selected) {
         const files = Array.isArray(selected) ? selected : [selected]
-        logger.info("Импорт файлов многокамерных шаблонов:", files)
+        logger.info("Импорт файлов многокамерных шаблонов:", { files })
         // TODO: Обработка импорта файлов шаблонов
         // Парсинг разных форматов, конвертация в наш формат
       }
     } catch (error) {
-      logger.error("Ошибка при импорте файлов шаблонов:", error)
+      logger.error("Ошибка при импорте файлов шаблонов:", { error })
     } finally {
       setIsImporting(false)
     }

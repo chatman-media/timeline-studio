@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  createSubtitleClip,
   detectSubtitleFormat,
   importFromASS,
   importFromSRT,
@@ -261,22 +262,20 @@ Hello`
   describe("validateSubtitles", () => {
     it("should validate correct subtitles", () => {
       const subtitles = [
-        {
+        createSubtitleClip({
           id: "1",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 0,
           duration: 2,
           text: "First",
-        },
-        {
+        }),
+        createSubtitleClip({
           id: "2",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 3,
           duration: 2,
           text: "Second",
-        },
+        }),
       ]
 
       const result = validateSubtitles(subtitles)
@@ -294,14 +293,13 @@ Hello`
 
     it("should detect empty text", () => {
       const subtitles = [
-        {
+        createSubtitleClip({
           id: "1",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 0,
           duration: 2,
           text: "",
-        },
+        }),
       ]
 
       const result = validateSubtitles(subtitles)
@@ -312,14 +310,13 @@ Hello`
 
     it("should detect negative start time", () => {
       const subtitles = [
-        {
+        createSubtitleClip({
           id: "1",
           trackId: "",
-          type: "subtitle" as const,
           startTime: -1,
           duration: 2,
           text: "Test",
-        },
+        }),
       ]
 
       const result = validateSubtitles(subtitles)
@@ -330,22 +327,20 @@ Hello`
 
     it("should detect overlapping subtitles", () => {
       const subtitles = [
-        {
+        createSubtitleClip({
           id: "1",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 0,
           duration: 3,
           text: "First",
-        },
-        {
+        }),
+        createSubtitleClip({
           id: "2",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 2,
           duration: 2,
           text: "Second",
-        },
+        }),
       ]
 
       const result = validateSubtitles(subtitles)
@@ -356,14 +351,13 @@ Hello`
 
     it("should detect invalid duration", () => {
       const subtitles = [
-        {
+        createSubtitleClip({
           id: "1",
           trackId: "",
-          type: "subtitle" as const,
           startTime: 0,
           duration: 0,
           text: "Test",
-        },
+        }),
       ]
 
       const result = validateSubtitles(subtitles)

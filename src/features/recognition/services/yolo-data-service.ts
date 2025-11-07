@@ -138,7 +138,7 @@ export class YoloDataService {
       this.nonExistentFiles[videoId] = true
       return null
     } catch (error) {
-      logger.error(`[YoloDataService] Ошибка загрузки данных YOLO для видео ${videoId}:`, error)
+      logger.error(`[YoloDataService] Ошибка загрузки данных YOLO для видео ${videoId}:`, { error })
       this.nonExistentFiles[videoId] = true
       return null
     }
@@ -345,7 +345,7 @@ export class YoloDataService {
       logger.info("[YoloDataService] YOLO процессор успешно инициализирован")
       return true
     } catch (error) {
-      logger.error("[YoloDataService] Ошибка инициализации YOLO процессора:", error)
+      logger.error("[YoloDataService] Ошибка инициализации YOLO процессора:", { error })
       return false
     }
   }

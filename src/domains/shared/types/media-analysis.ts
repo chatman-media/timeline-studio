@@ -77,6 +77,13 @@ export interface KeyFrameExtractionResult {
   thumbnailPath: string // лучший кадр для превью
 }
 
+export interface KeyFrameExtractionOptions {
+  count?: number // количество ключевых кадров
+  quality?: "low" | "medium" | "high"
+  aiDescription?: boolean // использовать AI для описания кадров
+  minInterval?: number // минимальный интервал между кадрами в секундах
+}
+
 export interface AudioAnalysisResult {
   volume: {
     average: number // 0-1

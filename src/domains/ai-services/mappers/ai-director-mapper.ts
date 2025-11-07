@@ -7,10 +7,10 @@
 
 import type {
   ComprehensiveAnalysisResult,
+  EditingRecommendation,
+  KeyMomentInsight,
   MontageAnalysisResult,
   SceneAnalysis,
-  KeyMomentInsight,
-  EditingRecommendation,
 } from "@/types/generated/tauri-bindings"
 
 // ============================================================================
@@ -144,23 +144,25 @@ export interface UnifiedContentAnalysis {
  */
 export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisResult): UnifiedContentAnalysis {
   // Извлекаем scenes и конвертируем в нужный формат
-  const scenes = result.scene_analysis?.scenes?.map((scene: SceneAnalysis) => ({
-    startTime: scene.startTime,
-    endTime: scene.endTime,
-    sceneType: String(scene.sceneType),
-    confidence: scene.confidence,
-    description: scene.description || "",
-  })) ?? []
+  const scenes =
+    result.scene_analysis?.scenes?.map((scene: SceneAnalysis) => ({
+      startTime: scene.startTime,
+      endTime: scene.endTime,
+      sceneType: String(scene.sceneType),
+      confidence: scene.confidence,
+      description: scene.description || "",
+    })) ?? []
 
   // Извлекаем key moments из combined_insights
-  const keyMoments = result.combined_insights?.key_moments?.map((km: KeyMomentInsight) => ({
-    timestamp: km.timestamp,
-    duration: km.duration,
-    category: km.moment_type,
-    score: km.importance,
-    description: km.reason, // Используем reason как description
-    tags: [], // Tags не доступны в новой структуре
-  })) ?? []
+  const keyMoments =
+    result.combined_insights?.key_moments?.map((km: KeyMomentInsight) => ({
+      timestamp: km.timestamp,
+      duration: km.duration,
+      category: km.moment_type,
+      score: km.importance,
+      description: km.reason, // Используем reason как description
+      tags: [], // Tags не доступны в новой структуре
+    })) ?? []
 
   return {
     // Metadata
@@ -172,8 +174,9 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
 
     // Video Info (минимальная информация, т.к. детали не доступны в новой структуре)
     videoInfo: {
-      duration: result.scene_analysis?.avg_scene_duration ?
-        result.scene_analysis.avg_scene_duration * result.scene_analysis.total_scenes : 0,
+      duration: result.scene_analysis?.avg_scene_duration
+        ? result.scene_analysis.avg_scene_duration * result.scene_analysis.total_scenes
+        : 0,
       fps: 0, // Не доступно
       resolution: { width: 0, height: 0 }, // Не доступно
       codec: "unknown",
@@ -224,15 +227,17 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
     qualityMetrics: calculateQualityMetrics(result),
 
     // Recommendations
-    editingRecommendations: result.editing_recommendations?.map((rec: EditingRecommendation) => ({
-      type: rec.recommendation_type,
-      description: rec.description,
-      confidence: rec.priority / 100,
-      suggestedAction: rec.description, // Using description as action
-      timeRange: rec.timestamp !== null && rec.duration !== null
-        ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
-        : undefined,
-    })) ?? [],
+    editingRecommendations:
+      result.editing_recommendations?.map((rec: EditingRecommendation) => ({
+        type: rec.recommendation_type,
+        description: rec.description,
+        confidence: rec.priority / 100,
+        suggestedAction: rec.description, // Using description as action
+        timeRange:
+          rec.timestamp !== null && rec.duration !== null
+            ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
+            : undefined,
+      })) ?? [],
   }
 }
 
@@ -319,9 +324,7 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
   technical: number
 } {
   // Video quality из content_analysis
-  const videoQuality = result.content_analysis?.quality.overall
-    ? result.content_analysis.quality.overall * 100
-    : 50
+  const videoQuality = result.content_analysis?.quality.overall ? result.content_analysis.quality.overall * 100 : 50
 
   // Audio quality
   const audioQuality = 50 // TODO: Рассчитать из доступных audio метрик
@@ -348,9 +351,7 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
 function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number {
   // Новая структура не содержит детальной video информации
   // Используем visual_quality_avg из vision_analysis
-  return result.vision_analysis?.visual_quality_avg
-    ? result.vision_analysis.visual_quality_avg * 100
-    : 50
+  return result.vision_analysis?.visual_quality_avg ? result.vision_analysis.visual_quality_avg * 100 : 50
 
   // DEPRECATED CODE BELOW (kept for reference)
   /*

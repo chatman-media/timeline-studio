@@ -35,8 +35,9 @@ describe("useMediaProcessor", () => {
     name: "video.mp4",
     size: 1024 * 1024 * 10, // 10MB
     duration: 120.5,
-    type: "video",
-    extension: "mp4",
+    isVideo: true,
+    isAudio: false,
+    isImage: false,
     probeData: {
       streams: [
         {
@@ -52,7 +53,7 @@ describe("useMediaProcessor", () => {
         },
       ],
       format: {
-        bit_rate: "1000000",
+        bit_rate: 1000000,
       },
     },
   }

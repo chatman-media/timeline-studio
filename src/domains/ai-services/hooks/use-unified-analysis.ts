@@ -6,7 +6,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AnalysisOptions,

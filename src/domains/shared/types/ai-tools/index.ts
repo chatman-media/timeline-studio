@@ -8,7 +8,50 @@ export * from "./ai-config"
 export * from "./content-analysis"
 export * from "./pipeline"
 export * from "./platform-adaptation"
-export * from "./script-generation"
+// Экспортируем script-generation включая NarrativeType и PaceType
+export {
+  NarrativeType,
+  PaceType,
+} from "./script-generation"
+export type {
+  GeneratedScript,
+  NarrativeStructure,
+  Act,
+  TurningPoint,
+  TurningPointType,
+  Climax,
+  ScriptResolution,
+  ResolutionType,
+  ScriptScene,
+  SceneCharacter,
+  TimeOfDay,
+  VisualElement,
+  VisualElementType,
+  AudioElement,
+  AudioElementType,
+  Action,
+  ScriptTransition,
+  ScriptTransitionType,
+  Character,
+  CharacterRole,
+  CharacterAppearance,
+  Dialogue,
+  Voiceover,
+  VoiceoverStyle,
+  ScriptMetadata,
+  Pacing,
+  PaceVariation,
+  ScriptStyle,
+  VisualStyle,
+  NarrativeStyle,
+  EditingStyle,
+  ScriptGenerationParams,
+  ScriptTemplate,
+  TemplateCategory,
+  ScriptTiming,
+  ScriptImportance,
+  VolumeLevel,
+} from "./script-generation"
 
 // ============================================================================
 // CORE TOOLS TYPES

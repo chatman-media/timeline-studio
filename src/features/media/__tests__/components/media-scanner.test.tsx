@@ -24,15 +24,15 @@ describe("MediaScanner", () => {
     // Мокаем useMediaProcessor для этого теста
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolder: vi.fn(),
-      scanFolderWithThumbnails: vi.fn(),
-      processFiles: vi.fn(),
-      processFilesWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -48,15 +48,15 @@ describe("MediaScanner", () => {
     // Мокаем useMediaProcessor для этого теста
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolder: vi.fn(),
-      scanFolderWithThumbnails: vi.fn(),
-      processFiles: vi.fn(),
-      processFilesWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -71,15 +71,15 @@ describe("MediaScanner", () => {
 
     vi.mocked(open).mockResolvedValue("/path/to/test/folder")
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolder: vi.fn(),
-      scanFolderWithThumbnails: vi.fn(),
-      processFiles: vi.fn(),
-      processFilesWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -111,15 +111,15 @@ describe("MediaScanner", () => {
 
     vi.mocked(open).mockResolvedValue(null) // Пользователь отменил выбор
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolder: vi.fn(),
-      scanFolderWithThumbnails: vi.fn(),
-      processFiles: vi.fn(),
-      processFilesWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -164,12 +164,15 @@ describe("MediaScanner", () => {
 
     const mockScanFolderWithThumbnails = vi.fn().mockResolvedValue(mockFiles)
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: mockScanFolderWithThumbnails,
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -202,12 +205,15 @@ describe("MediaScanner", () => {
 
     // Мокаем состояние обработки
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolderWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: true,
       progress: { current: 5, total: 10 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -231,12 +237,15 @@ describe("MediaScanner", () => {
 
     // Мокаем состояние с ошибками
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolderWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: mockErrors,
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -286,12 +295,15 @@ describe("MediaScanner", () => {
 
     const mockScanFolderWithThumbnails = vi.fn().mockResolvedValue(mockFiles)
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: mockScanFolderWithThumbnails,
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -324,11 +336,15 @@ describe("MediaScanner", () => {
     const mockClearErrors = vi.fn()
 
     vi.mocked(useMediaProcessor).mockReturnValue({
-      scanFolderWithThumbnails: vi.fn(),
+      scanFolder: vi.fn().mockResolvedValue([]),
+      scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
+      processFiles: vi.fn().mockResolvedValue([]),
+      processFilesWithThumbnails: vi.fn().mockResolvedValue([]),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: mockErrors,
       clearErrors: mockClearErrors,
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     vi.mocked(open).mockResolvedValue("/new/path")
@@ -353,12 +369,15 @@ describe("MediaScanner", () => {
 
     const mockScanFolderWithThumbnails = vi.fn().mockRejectedValue(new Error("Scan failed"))
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: mockScanFolderWithThumbnails,
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -384,12 +403,15 @@ describe("MediaScanner", () => {
     const mockScanFolderWithThumbnails = vi.fn()
 
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: mockScanFolderWithThumbnails,
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
-      cancelProcessing: vi.fn(),
+      cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
     renderWithProviders(<MediaScanner />)

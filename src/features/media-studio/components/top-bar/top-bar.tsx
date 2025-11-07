@@ -84,7 +84,7 @@ const TopBarComponent = function TopBar() {
       void saveProject(projectName)
       logger.info("Project saved successfully")
     } catch (error) {
-      logger.error("[handleSave] Error saving project:", error)
+      logger.error("Error saving project", { error, context: "handleSave" })
     }
   }, [saveProject, projectName])
 
@@ -108,10 +108,10 @@ const TopBarComponent = function TopBar() {
 
         // Открываем выбранный проект
         void openProject(selected)
-        logger.info("Project opened successfully:", selected)
+        logger.info("Project opened successfully", { path: selected })
       }
     } catch (error) {
-      logger.error("[handleOpenProject] Error opening project:", error)
+      logger.error("Error opening project", { error, context: "handleOpenProject" })
     }
   }, [openProject, clearBrowserState])
 
@@ -143,7 +143,7 @@ const TopBarComponent = function TopBar() {
 
       logger.info("New project created successfully")
     } catch (error) {
-      logger.error("[handleCreateNewProject] Error creating new project:", error)
+      logger.error("Error creating new project", { error, context: "handleCreateNewProject" })
     }
   }, [createNewProject, createTimelineProject, clearBrowserState])
 

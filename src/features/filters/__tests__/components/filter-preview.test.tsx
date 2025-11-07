@@ -152,10 +152,8 @@ describe("FilterPreview", () => {
   it("should fallback to name if no labels available", () => {
     const filterWithoutLabels = {
       ...mockFilter,
-      labels: { en: "" } as any, // Use empty labels instead of undefined to satisfy type
+      labels: undefined as any, // Use undefined to test the fallback
     }
-    // @ts-expect-error - We want to test this edge case
-    filterWithoutLabels.labels = undefined
 
     renderWithBase(<FilterPreview {...defaultProps} filter={filterWithoutLabels} />)
 
@@ -185,7 +183,7 @@ describe("FilterPreview", () => {
   it("should start video playback on mouse enter", async () => {
     renderWithBase(<FilterPreview {...defaultProps} />)
 
-    const video = screen.getByTestId("filter-video")
+    const video = screen.getByTestId("filter-video") as HTMLVideoElement
     const mockPlay = vi.fn().mockResolvedValue(undefined)
     video.play = mockPlay
 
@@ -200,7 +198,7 @@ describe("FilterPreview", () => {
   it("should pause video on mouse leave", async () => {
     renderWithBase(<FilterPreview {...defaultProps} />)
 
-    const video = screen.getByTestId("filter-video")
+    const video = screen.getByTestId("filter-video") as HTMLVideoElement
     const mockPause = vi.fn()
     video.pause = mockPause
 

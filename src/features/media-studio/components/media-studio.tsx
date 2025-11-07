@@ -19,13 +19,13 @@ export function MediaStudio() {
 
   // Логирование для отладки
   if (userDataError) {
-    logger.error("Ошибка автозагрузки пользовательских данных:", userDataError)
+    logger.error("Ошибка автозагрузки пользовательских данных", { error: userDataError })
   }
   if (isLoadingUserData) {
     logger.info("Загружаем пользовательские данные...")
   }
   if (loadedData && Object.values(loadedData).some((count) => count > 0)) {
-    logger.info("Загружены пользовательские данные:", loadedData)
+    logger.info("Загружены пользовательские данные", { loadedData })
   }
 
   return (

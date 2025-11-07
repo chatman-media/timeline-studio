@@ -4,10 +4,10 @@
  * Тесты для app machine state management
  */
 
-import { createActor, waitFor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { appMachine } from "../machines/app-machine"
+import { createActor, waitFor } from "xstate"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
+import { appMachine } from "../machines/app-machine"
 
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({

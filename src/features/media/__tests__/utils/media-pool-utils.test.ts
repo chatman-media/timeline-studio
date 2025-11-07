@@ -81,6 +81,7 @@ describe("Media Pool Utils", () => {
       },
     },
     status: "available",
+    alternativePaths: [],
     lastChecked: Date.now(),
   }
 
@@ -153,11 +154,11 @@ describe("Media Pool Utils", () => {
     })
 
     it("должен правильно конвертировать статусы", () => {
-      const missingFile = { ...mockSavedMediaFile, status: "missing" }
+      const missingFile = { ...mockSavedMediaFile, status: "missing" as const }
       const missingResult = convertSavedMediaFileToPoolItem(missingFile)
       expect(missingResult.status).toBe("missing")
 
-      const movedFile = { ...mockSavedMediaFile, status: "moved" }
+      const movedFile = { ...mockSavedMediaFile, status: "moved" as const }
       const movedResult = convertSavedMediaFileToPoolItem(movedFile)
       expect(movedResult.status).toBe("offline")
     })

@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { type CacheStatistics, IndexedDBCacheService } from "../../services/indexeddb-cache-service"
+import type {
+  RecognitionFrame,
+  SubtitleFrame,
+  TimelineFrame,
+} from "@/features/video-compiler/services/frame-extraction-service"
 
 // Mock idb-keyval
 vi.mock("idb-keyval", () => {
@@ -147,18 +152,14 @@ describe("IndexedDBCacheService", () => {
       const fileId = "video-123"
       const frames = [
         {
-          time: 0,
-          thumbnail: "frame1-data",
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          timestamp: 0,
+          frameData: "frame1-data",
+          isKeyframe: true,
         },
         {
-          time: 1000,
-          thumbnail: "frame2-data",
-          video_time: 1,
-          section_id: "section1",
-          segment_id: "segment1",
+          timestamp: 1000,
+          frameData: "frame2-data",
+          isKeyframe: false,
         },
       ]
 
@@ -180,11 +181,9 @@ describe("IndexedDBCacheService", () => {
       const fileId = "video-123"
       const frames = [
         {
-          time: 0,
-          thumbnail: "frame1-data",
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          timestamp: 0,
+          frameData: "frame1-data",
+          isKeyframe: true,
         },
       ]
       const mockCached = {
@@ -232,17 +231,11 @@ describe("IndexedDBCacheService", () => {
       const fileId = "recognition-123"
       const frames = [
         {
-          time: 0,
-          objects: [
-            {
-              class_name: "person",
-              confidence: 0.95,
-              bbox: { x: 10, y: 20, width: 100, height: 200 },
-            },
-          ],
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          timestamp: 0,
+          frameData: new Uint8Array([1, 2, 3]),
+          resolution: [1920, 1080] as [number, number],
+          isKeyframe: true,
+          sceneChangeScore: 0.8,
         },
       ]
 
@@ -264,11 +257,10 @@ describe("IndexedDBCacheService", () => {
       const fileId = "recognition-123"
       const frames = [
         {
-          time: 0,
-          objects: [],
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          timestamp: 0,
+          frameData: new Uint8Array([1, 2, 3]),
+          resolution: [1920, 1080] as [number, number],
+          isKeyframe: true,
         },
       ]
       const mockCached = {
@@ -298,11 +290,12 @@ describe("IndexedDBCacheService", () => {
       const fileId = "subtitle-123"
       const frames = [
         {
-          time: 0,
-          text: "Hello, world!",
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          subtitleId: "sub-1",
+          subtitleText: "Hello, world!",
+          timestamp: 0,
+          frameData: new Uint8Array([1, 2, 3]),
+          startTime: 0,
+          endTime: 1000,
         },
       ]
 
@@ -324,11 +317,12 @@ describe("IndexedDBCacheService", () => {
       const fileId = "subtitle-123"
       const frames = [
         {
-          time: 0,
-          text: "Cached subtitle",
-          video_time: 0,
-          section_id: "section1",
-          segment_id: "segment1",
+          subtitleId: "sub-1",
+          subtitleText: "Cached subtitle",
+          timestamp: 0,
+          frameData: new Uint8Array([1, 2, 3]),
+          startTime: 0,
+          endTime: 1000,
         },
       ]
       const mockCached = {

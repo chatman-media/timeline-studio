@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest"
 
-import subtitleCategories from "../../data/subtitle-categories.json"
-import subtitleStyles from "../../data/subtitle-styles.json"
+import subtitleCategoriesData from "../../data/subtitle-categories.json"
+import subtitleStylesData from "../../data/subtitle-styles.json"
 
 import type { SubtitleCategory, SubtitleStyleTemplate } from "../../types/subtitles"
+
+// Type-safe JSON imports
+const subtitleCategories = subtitleCategoriesData as typeof subtitleCategoriesData & {
+  categories: Record<string, any>
+}
+
+const subtitleStyles = subtitleStylesData as typeof subtitleStylesData & {
+  styles: SubtitleStyleTemplate[]
+}
 
 describe("Subtitle Data Files", () => {
   describe("subtitle-styles.json", () => {

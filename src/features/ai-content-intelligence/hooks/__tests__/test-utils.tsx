@@ -5,7 +5,8 @@
 import { renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { vi } from "vitest"
-import { ProcessingStatus, type UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+import type { UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+import { ProcessingStatus } from "@/domains/shared/types/ai-tools/pipeline"
 import type { IntelligentContent, PipelineProgress } from "@/domains/shared/types/ai-tools/pipeline"
 import type { AdaptedContent, PlatformId } from "@/domains/shared/types/ai-tools/platform-adaptation"
 import type {

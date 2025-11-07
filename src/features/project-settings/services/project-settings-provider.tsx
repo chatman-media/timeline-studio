@@ -64,7 +64,10 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Unknown error"
         setError(errorMessage)
-        logger.error("Project settings command failed:", err)
+        logger.error("Project settings command failed:", {
+          error: errorMessage,
+          command: command?.type,
+        })
         throw err
       } finally {
         setIsLoading(false)

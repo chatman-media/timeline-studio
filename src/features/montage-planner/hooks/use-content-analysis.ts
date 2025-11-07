@@ -105,12 +105,8 @@ export function useContentAnalysis() {
 
   // Content statistics
   const contentStats = useMemo(() => {
-    const videoAnalyses = context.videoAnalyses
-      ? (Array.from(context.videoAnalyses.values()) as VideoAnalysis[])
-      : []
-    const audioAnalyses = context.audioAnalyses
-      ? (Array.from(context.audioAnalyses.values()) as AudioAnalysis[])
-      : []
+    const videoAnalyses = context.videoAnalyses ? (Array.from(context.videoAnalyses.values()) as VideoAnalysis[]) : []
+    const audioAnalyses = context.audioAnalyses ? (Array.from(context.audioAnalyses.values()) as AudioAnalysis[]) : []
 
     return {
       totalVideos: context.videoIds?.length || 0,

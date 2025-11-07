@@ -70,7 +70,10 @@ export function useSubtitles(): UseSubtitlesReturn {
 
       setSubtitles(fallbackStyles)
 
-      void logger.error(`❌ ${t("subtitles.errors.fallbackStyles", "Failed to load subtitle styles, using fallback")}:`, { error: err } as LogContext)
+      void logger.error(
+        `❌ ${t("subtitles.errors.fallbackStyles", "Failed to load subtitle styles, using fallback")}:`,
+        { error: err } as LogContext,
+      )
     } finally {
       setLoading(false)
     }

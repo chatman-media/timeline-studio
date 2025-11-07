@@ -4,8 +4,8 @@
  * Тесты для user settings machine
  */
 
-import { createActor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { createActor } from "xstate"
 import { userSettingsMachine } from "../machines/user-settings-machine"
 
 // Mock logger

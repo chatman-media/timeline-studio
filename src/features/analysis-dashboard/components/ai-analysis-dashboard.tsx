@@ -17,10 +17,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
-import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import type { LogContext } from "@/lib/tauri-logger"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("AiAnalysisDashboard")
 

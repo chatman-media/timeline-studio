@@ -1,9 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { BaseProviders } from "@/test/test-utils"
-
 import type { ModalType } from "@/domains/system-integration/machines/modal-machine"
+import { BaseProviders } from "@/test/test-utils"
 import { ModalContainer } from "../modal-container"
 
 // Mock useModal hook
