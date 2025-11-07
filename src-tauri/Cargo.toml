@@ -40,7 +40,7 @@ ffmpeg-sys-next = "8.0.1"
 
 [dev-dependencies]
 # For test cleanup and initialization
-ctor = "0.6.0"
+ctor = "0.6.1"
 env_logger = "0.11"
 libc = "0.2"
 # Test utilities
@@ -114,7 +114,7 @@ which = "8.0.0"
 # URL handling for OAuth
 url = "2.5"
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "load-dynamic"] }
-ndarray = "0.16"
+ndarray = "0.17"
 # System information dependencies
 num_cpus = "1.17"
 sysinfo = "0.37.2"
