@@ -73,6 +73,11 @@ export interface ModelConfiguration {
   supportStreaming?: boolean
   supportVision?: boolean
   apiKeyRequired?: boolean
+  // Дополнительные поля для оптимизации
+  costPerMillionTokens?: number // Стоимость за 1M токенов
+  recommended?: boolean // Рекомендованная модель
+  premium?: boolean // Премиум модель (для платных пользователей)
+  deprecated?: boolean // Устаревшая модель
 }
 
 // Фабрика AI провайдеров
