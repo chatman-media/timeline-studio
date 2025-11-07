@@ -353,19 +353,19 @@ export function MotionGraphicsPanel({
               onTimeChange={onTimeChange}
               onKeyframeAdd={(curveId, time, value) => {
                 // Handle keyframe addition
-                logger.info("Add keyframe", curveId, time, value)
+                logger.info("Add keyframe", { curveId, time, value })
               }}
               onKeyframeUpdate={(curveId, keyframeId, updates) => {
                 // Handle keyframe update
-                logger.info("Update keyframe", curveId, keyframeId, updates)
+                logger.info("Update keyframe", { curveId, keyframeId, updates })
               }}
               onKeyframeDelete={(curveId, keyframeId) => {
                 // Handle keyframe deletion
-                logger.info("Delete keyframe", curveId, keyframeId)
+                logger.info("Delete keyframe", { curveId, keyframeId })
               }}
               onCurveSelect={(curveId) => {
                 // Handle curve selection
-                logger.info("Select curve", curveId)
+                logger.info("Select curve", { curveId })
               }}
               height={400}
             />

@@ -65,12 +65,16 @@ import type {
   UnifiedContentAnalysis as UnifiedContentAnalysisShared,
 } from "../../shared/types/ai-tools/content-analysis"
 
-import { KeyMomentType, NarrativeType, PaceType, SceneType } from "../../shared/types/ai-tools/content-analysis"
+import { KeyMomentType, SceneType } from "../../shared/types/ai-tools/content-analysis"
+import { NarrativeType, PaceType } from "../../shared/types/ai-tools/script-generation"
 
 // Re-export типы из shared/types/ai-tools/content-analysis.ts
 export type { ContentInsights, KeyFrame, KeyMoment, QualityMetrics, SceneAnalysis, SceneInfo }
 
-export { KeyMomentType, NarrativeType, PaceType, SceneType }
+export { KeyMomentType, SceneType }
+
+// Re-export типы из shared/types/ai-tools/script-generation.ts
+export { NarrativeType, PaceType }
 
 // Alias to avoid naming conflict
 export type UnifiedContentAnalysis = UnifiedContentAnalysisShared

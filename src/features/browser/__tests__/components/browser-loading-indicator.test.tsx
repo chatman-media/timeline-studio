@@ -205,6 +205,7 @@ describe("BrowserLoadingIndicator", () => {
           "built-in": 100,
           local: 0,
           remote: 0,
+          imported: 0,
         },
         cacheSize: 0,
         memoryUsage: 0,

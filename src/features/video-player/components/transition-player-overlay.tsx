@@ -7,7 +7,7 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
+import type { TimelineTransition } from "@/domains/video-editing/types/timeline"
 import { cn } from "@/lib/utils"
 
 interface TransitionPlayerOverlayProps {
@@ -76,7 +76,7 @@ export function TransitionPlayerOverlay({
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
                 <div className="text-muted-foreground">Позиция</div>
-                <div>{transition.position.toFixed(2)}s</div>
+                <div>{transition.startTime.toFixed(2)}s</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Длительность</div>
@@ -84,14 +84,10 @@ export function TransitionPlayerOverlay({
               </div>
             </div>
 
-            {/* Тип перехода */}
+            {/* Название перехода */}
             <div>
-              <div className="text-sm text-muted-foreground">Режим</div>
-              <div className="font-medium capitalize">
-                {transition.type === "in" && "Вход"}
-                {transition.type === "out" && "Выход"}
-                {transition.type === "between" && "Между клипами"}
-              </div>
+              <div className="text-sm text-muted-foreground">Название</div>
+              <div className="font-medium">{transition.name}</div>
             </div>
 
             {/* Параметры */}
@@ -125,12 +121,6 @@ export function TransitionPlayerOverlay({
             <div className="flex items-center gap-2 pt-2 border-t border-white/10">
               <div className={cn("w-2 h-2 rounded-full", transition.isEnabled ? "bg-green-500" : "bg-red-500")} />
               <span className="text-xs text-muted-foreground">{transition.isEnabled ? "Включён" : "Отключён"}</span>
-              {transition.renderCache?.status && (
-                <>
-                  <span className="text-muted-foreground">•</span>
-                  <span className="text-xs text-muted-foreground">Кеш: {transition.renderCache.status}</span>
-                </>
-              )}
             </div>
           </div>
         </CardContent>

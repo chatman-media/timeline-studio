@@ -312,7 +312,7 @@ export function importMotionGraphics(clip: TimelineClip, jsonData: string): Moti
       motionEnabled: true,
     }
   } catch (error) {
-    logger.error("Failed to import motion graphics:", error)
+    logger.error("Failed to import motion graphics:", error instanceof Error ? { message: error.message } : { error })
     return null
   }
 }

@@ -78,13 +78,13 @@ export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspacePro
       type: "UPDATE_WIDGET_BOUNDS",
       widgetId: widget.id,
       bounds: newBounds,
-    })
+    } as any)
 
     send({ type: "END_DRAG" })
   }
 
   const handleDragStart = (event: any) => {
-    send({ type: "START_DRAG", widgetId: event.active.id })
+    send({ type: "START_DRAG", widgetId: event.active.id } as any)
   }
 
   return (
@@ -102,10 +102,10 @@ export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspacePro
               key={widget.id}
               widget={widget}
               isSelected={selectedWidgetId === widget.id}
-              onSelect={(id) => send({ type: "SELECT_WIDGET", widgetId: id })}
-              onRemove={(id) => send({ type: "REMOVE_WIDGET", widgetId: id })}
-              onMinimize={(id) => send({ type: "MINIMIZE_WIDGET", widgetId: id })}
-              onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id })}
+              onSelect={(id) => send({ type: "SELECT_WIDGET", widgetId: id } as any)}
+              onRemove={(id) => send({ type: "REMOVE_WIDGET", widgetId: id } as any)}
+              onMinimize={(id) => send({ type: "MINIMIZE_WIDGET", widgetId: id } as any)}
+              onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id } as any)}
             >
               {renderWidget(widget)}
             </WidgetContainer>

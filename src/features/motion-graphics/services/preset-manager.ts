@@ -284,7 +284,7 @@ export function importPresets(json: string): MotionPreset[] {
       id: nanoid(), // Generate new IDs
     }))
   } catch (error) {
-    logger.error("Failed to import presets:", error)
+    logger.error("Failed to import presets:", error instanceof Error ? { message: error.message } : { error })
     return []
   }
 }

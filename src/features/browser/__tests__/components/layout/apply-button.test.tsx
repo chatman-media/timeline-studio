@@ -88,7 +88,7 @@ describe("ApplyButton", () => {
     types.forEach((type) => {
       const { unmount } = render(
         <ApplyButton
-          resource={{ ...(mockResource as unknown as TimelineResource), type }}
+          resource={{ ...mockResource, type } as unknown as TimelineResource}
           size={150}
           type={type}
           onApply={onApply}

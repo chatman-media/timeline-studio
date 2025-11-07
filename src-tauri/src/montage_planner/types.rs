@@ -310,10 +310,10 @@ pub struct AnalysisOptions {
   pub enable_emotion_analysis: bool,
   pub enable_composition_analysis: bool,
   pub enable_audio_analysis: bool,
-  pub frame_sample_rate: f32,     // frames per second to analyze
-  pub quality_threshold: f32,     // minimum quality for inclusion
-  pub max_moments: Option<u32>,   // limit number of detected moments
-  pub frame_sampling_rate: f32,   // frames per second sampling rate
+  pub frame_sample_rate: f32,   // frames per second to analyze
+  pub quality_threshold: f32,   // minimum quality for inclusion
+  pub max_moments: Option<u32>, // limit number of detected moments
+  pub frame_sampling_rate: f32, // frames per second sampling rate
 }
 
 /// Video quality analysis result

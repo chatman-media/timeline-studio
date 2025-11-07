@@ -36,6 +36,8 @@ export default defineConfig({
   define: {
     global: "globalThis",
     "process.env": {},
+    "process.platform": JSON.stringify("browser"),
+    "process.version": JSON.stringify("v18.0.0"),
   },
   resolve: {
     alias: {
@@ -47,7 +49,12 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["buffer", "use-sync-external-store/shim/with-selector"],
+    include: [
+      "buffer",
+      "use-sync-external-store/shim/with-selector",
+      "gray-matter",
+      "js-yaml",
+    ],
     // Исключаем тяжелые библиотеки из предварительной оптимизации
     exclude: ["@react-three/fiber", "@react-three/drei", "three"],
   },
@@ -107,6 +114,10 @@ export default defineConfig({
       },
       format: {
         comments: false, // Убираем комментарии
+      },
+      mangle: {
+        // Не минифицировать имена свойств для gray-matter/js-yaml
+        properties: false,
       },
     },
     // Генерация source maps только для продакшена при необходимости

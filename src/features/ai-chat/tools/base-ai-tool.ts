@@ -3,6 +3,10 @@
  * Обеспечивает унифицированную обработку ошибок и стандартизацию результатов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("BaseAITool")
+
 // Результат выполнения AI инструмента
 export interface AIToolResult<T = any> {
   success: boolean

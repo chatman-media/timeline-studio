@@ -229,10 +229,37 @@ pub struct AudioCharacteristics {
 }
 ```
 
-**Type synchronization**:
-- Все типы имеют `#[derive(specta::Type)]`
-- Автоматическая генерация TypeScript bindings
+**Type synchronization (via tauri-specta)**:
+- Все типы имеют `#[derive(specta::Type)]` для auto-generation
+- TypeScript bindings генерируются в `src/types/generated/tauri-bindings.ts`
 - Полная type safety между frontend и backend
+- Single source of truth в Rust - никаких дублирующих TypeScript типов
+
+**Генерация типов**:
+```bash
+# Регенерировать TypeScript bindings
+cd src-tauri
+cargo run --bin export_types
+
+# Bindings обновляются в src/types/generated/tauri-bindings.ts
+```
+
+**Использование в TypeScript**:
+```typescript
+// Автоматически сгенерированные типы
+import type {
+  AIDirectorConfig,
+  ComprehensiveAnalysisResult,
+  SceneAnalysis,
+  KeyMoment,
+  AnalysisStatus
+} from "@/types/generated/tauri-bindings"
+
+// TypeScript знает все поля благодаря specta
+function processAnalysis(result: ComprehensiveAnalysisResult) {
+  console.log(result.scenes.length) // Full type safety
+}
+```
 
 ### 4. Tauri Commands API
 
@@ -535,12 +562,13 @@ pub struct SystemCapabilities {
 
 ## References
 
-- Migration Guide: `/docs/ru/05_development/ai-director-unified-migration-guide.md`
-- API Documentation: `/docs/ru/04_api_reference/ai-director-api.md`
-- Usage Examples: `/docs/ru/09_examples/ai-director-usage.md`
+- **Migration Guide**: `/docs/ru/05_development/ai-director-migration-guide.md` - Complete type migration guide
+- **API Documentation**: `/docs/ru/04_api_reference/ai-director-api.md`
+- **Usage Examples**: `/docs/ru/09_examples/ai-director-usage.md` - Practical code examples
+- **Tauri Specta**: https://github.com/specta-rs/tauri-specta - Type generation library
 
 ---
 
-**Архитектура версия**: 4.0
-**Последнее обновление**: 2 ноября 2025
-**Статус**: Production Ready
+**Архитектура версия**: 4.1-tauri-bindings
+**Последнее обновление**: 8 ноября 2025
+**Статус**: Production Ready with Type Safety

@@ -43,13 +43,16 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
   useEffect(() => {
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       // Обновляем состояние на основе backend
-      if (state.project?.media_files) {
-        // Обновляем список медиа файлов
+      if (state.project?.media_pool?.items) {
+        // Обновляем список медиа файлов из media_pool
+        const mediaItems = Object.values(state.project.media_pool.items).filter(
+          (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
+        )
         setFileOperations(
-          state.project.media_files.map((file) => ({
+          mediaItems.map((file) => ({
             id: file.id,
             path: file.path,
-            status: "completed",
+            status: "completed" as const,
             result: file,
             progress: 100,
           })),
@@ -130,16 +133,20 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       try {
         // Пытаемся получить информацию из backend состояния
         const backendState = await backendSync.getProjectState()
-        const mediaFile = backendState?.project?.media_files?.find((file) => file.path === path)
+        const mediaItems = backendState?.project?.media_pool?.items
+          ? Object.values(backendState.project.media_pool.items).filter(
+              (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
+            )
+          : []
+        const mediaFile = mediaItems.find((file) => file.path === path)
 
         if (mediaFile) {
           return {
             path: mediaFile.path,
             name: mediaFile.name,
             type: mediaFile.media_type,
-            duration: mediaFile.duration,
-            size: mediaFile.size,
-            thumbnail_path: mediaFile.thumbnail_path,
+            duration: mediaFile.duration ?? undefined,
+            thumbnailPath: mediaFile.thumbnail ?? undefined,
           }
         }
 
@@ -176,10 +183,15 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
         // Обновляем метаданные в backend через UpdateMedia команду
         if (metadata) {
           const backendState = await backendSync.getProjectState()
-          const mediaFile = backendState?.project?.media_files?.find((file) => file.path === path)
+          const mediaItems = backendState?.project?.media_pool?.items
+            ? Object.values(backendState.project.media_pool.items).filter(
+                (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
+              )
+            : []
+          const mediaFile = mediaItems.find((file) => file.path === path)
 
           if (mediaFile) {
-            await backendSync.executeCommand(AppCommands.updateMedia(mediaFile.id, { metadata }))
+            await backendSync.executeCommand(AppCommands.updateMedia(mediaFile.id, {}))
           }
         }
 

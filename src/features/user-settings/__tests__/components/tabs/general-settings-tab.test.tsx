@@ -110,7 +110,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should handle language selection and console log the change", async () => {
-    const consoleSpy = vi.spyOn(console, "log")
+    const consoleSpy = vi.spyOn(console, "info")
     render(<GeneralSettingsTab />)
 
     const selectTrigger = screen.getByRole("combobox")
@@ -132,7 +132,9 @@ describe("GeneralSettingsTab", () => {
       fireEvent.click(dropdownOption)
     })
 
-    expect(consoleSpy).toHaveBeenCalledWith("Applying language change via new system:", "en")
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[GeneralSettingsTab] Applying language change via new system: {\n  "language": "en"\n}',
+    )
     expect(mockChangeLanguage).toHaveBeenCalledWith("en")
   })
 
@@ -252,7 +254,9 @@ describe("GeneralSettingsTab", () => {
     })
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith("Ошибка при выборе директории:", expect.any(Error))
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[GeneralSettingsTab] Ошибка при выборе директории: {\n  "error": "Error: Permission denied"\n}',
+      )
       expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/screenshots")
       expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("fallback/path")
     })
@@ -278,7 +282,9 @@ describe("GeneralSettingsTab", () => {
     })
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith("Ошибка при выборе директории:", expect.any(Error))
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[GeneralSettingsTab] Ошибка при выборе директории: {\n  "error": "Error: Permission denied"\n}',
+      )
       expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/media")
       expect(mockHandlePlayerScreenshotsPathChange).toHaveBeenCalledWith("player/fallback/path")
     })
@@ -379,7 +385,7 @@ describe("GeneralSettingsTab", () => {
     const mockOpen = open as unknown as ReturnType<typeof vi.fn>
     mockOpen.mockResolvedValue("new/selected/path")
 
-    const consoleSpy = vi.spyOn(console, "log")
+    const consoleSpy = vi.spyOn(console, "info")
 
     render(<GeneralSettingsTab />)
 
@@ -391,7 +397,9 @@ describe("GeneralSettingsTab", () => {
     })
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith("Screenshots path updated from folder dialog:", "new/selected/path")
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[GeneralSettingsTab] Screenshots path updated from folder dialog: {\n  "path": "new/selected/path"\n}',
+      )
     })
   })
 

@@ -46,7 +46,7 @@ export function useNotifications() {
 
       // Логируем каждые 100 обновлений для отладки
       if (updateCount % 100 === 0) {
-        logger.info("[useNotifications] Processed ${updateCount} notification updates, current count:", {
+        logger.info(`[useNotifications] Processed ${updateCount} notification updates, current count:`, {
           currentCount,
         })
       }

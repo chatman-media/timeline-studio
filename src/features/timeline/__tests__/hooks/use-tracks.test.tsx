@@ -127,6 +127,7 @@ const mockProject: TimelineProject = {
     effects: [],
     filters: [],
     transitions: [],
+    timelineTransitions: [],
     templates: [],
     styleTemplates: [],
     subtitleStyles: [],

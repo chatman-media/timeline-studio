@@ -16,10 +16,14 @@ import { useTracks } from "../../hooks/use-tracks"
 vi.mock("../../hooks/use-timeline")
 vi.mock("../../hooks/use-tracks")
 vi.mock("../../hooks/use-clips")
+vi.mock("@/features/resources", () => ({
+  useResources: vi.fn(() => ({
+    addMedia: vi.fn(),
+  })),
+}))
 
-// Mock console.log
-const mockConsoleLog = vi.fn()
-vi.stubGlobal("console", { log: mockConsoleLog, error: vi.fn() })
+// Spy on console.info for logger
+const mockConsoleInfo = vi.spyOn(console, "info").mockImplementation(() => {})
 
 // Мокаем медиафайл для тестов
 const mockVideoFile: MediaFile = {
@@ -296,7 +300,9 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
       })
 
-      expect(mockConsoleLog).toHaveBeenCalledWith("No timeline project found, creating new project...")
+      expect(mockConsoleInfo).toHaveBeenCalledWith(
+        "[UseTimelineActions] No timeline project found, creating new project...",
+      )
       expect(mockTimeline.createProject).toHaveBeenCalledWith("Untitled Project")
     })
 
@@ -321,7 +327,9 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
       })
 
-      expect(mockConsoleLog).toHaveBeenCalledWith("Creating new video track for file: test-video.mp4")
+      expect(mockConsoleInfo).toHaveBeenCalledWith(
+        "[UseTimelineActions] Creating new video track for file: test-video.mp4",
+      )
       expect(mockTimeline.addTrack).toHaveBeenCalledWith("video", "Video Track", undefined)
     })
 
@@ -378,7 +386,7 @@ describe("useTimelineActions", () => {
         result.current.addMediaToTimeline([])
       })
 
-      expect(mockConsoleLog).not.toHaveBeenCalled()
+      expect(mockConsoleInfo).not.toHaveBeenCalled()
     })
 
     it("должен обработать null или undefined", () => {
@@ -388,13 +396,13 @@ describe("useTimelineActions", () => {
         result.current.addMediaToTimeline(null as any)
       })
 
-      expect(mockConsoleLog).not.toHaveBeenCalled()
+      expect(mockConsoleInfo).not.toHaveBeenCalled()
 
       act(() => {
         result.current.addMediaToTimeline(undefined as any)
       })
 
-      expect(mockConsoleLog).not.toHaveBeenCalled()
+      expect(mockConsoleInfo).not.toHaveBeenCalled()
     })
 
     it("должен залогировать количество добавляемых файлов", () => {
@@ -404,7 +412,7 @@ describe("useTimelineActions", () => {
         result.current.addMediaToTimeline([mockVideoFile, mockAudioFile])
       })
 
-      expect(mockConsoleLog).toHaveBeenCalledWith("Adding 2 files to timeline")
+      expect(mockConsoleInfo).toHaveBeenCalledWith("[UseTimelineActions] Adding 2 files to timeline")
     })
 
     it("должен добавить все файлы с задержкой", async () => {

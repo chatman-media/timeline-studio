@@ -37,7 +37,7 @@ export function CurveEditor({
   onTimeChange,
   onKeyframeAdd,
   onKeyframeUpdate,
-  _onKeyframeDelete,
+  onKeyframeDelete: _onKeyframeDelete,
   onCurveSelect,
   selectedCurveId,
   height = 400,

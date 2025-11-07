@@ -78,9 +78,9 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         duration: durationStr,
         thumbnailPath: mediaItem.thumbnail,
         type: mediaItem.media_type?.toLowerCase() || "video",
-        isVideo: mediaItem.media_type === "Video",
-        isAudio: mediaItem.media_type === "Audio",
-        isImage: mediaItem.media_type === "Image",
+        isVideo: (mediaItem.media_type as string) === "Video",
+        isAudio: (mediaItem.media_type as string) === "Audio",
+        isImage: (mediaItem.media_type as string) === "Image",
         isLoadingMetadata: false,
         // Добавляем probeData для совместимости с тестами
         probeData:

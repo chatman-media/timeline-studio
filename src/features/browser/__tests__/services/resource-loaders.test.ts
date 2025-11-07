@@ -246,10 +246,13 @@ describe("loadResourcesInChunks", () => {
     const generator = loadResourcesInChunks("effects", 1)
     const firstChunk = await generator.next()
 
+    expect(firstChunk.value).toBeDefined()
     expect(firstChunk.value).toHaveProperty("success")
     expect(firstChunk.value).toHaveProperty("data")
     expect(firstChunk.value).toHaveProperty("source")
-    expect(Array.isArray(firstChunk.value.data)).toBe(true)
+    if (firstChunk.value) {
+      expect(Array.isArray(firstChunk.value.data)).toBe(true)
+    }
   })
 
   it("должен обрабатывать отмену загрузки во время чанкинга", async () => {
@@ -258,7 +261,10 @@ describe("loadResourcesInChunks", () => {
 
     // Получаем первый чанк
     const firstChunk = await generator.next()
-    expect(firstChunk.value.success).toBe(true)
+    expect(firstChunk.value).toBeDefined()
+    if (firstChunk.value) {
+      expect(firstChunk.value.success).toBe(true)
+    }
 
     // Отменяем загрузку
     controller.abort()

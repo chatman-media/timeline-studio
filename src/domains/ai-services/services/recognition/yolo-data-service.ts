@@ -82,7 +82,7 @@ export class YoloDataService {
 
       // Если сохраненных данных нет и есть путь к видео, анализируем видео
       if (videoPath) {
-        logger.info("Анализируем видео ${videoPath} с YOLO", { module: "YoloDataService" })
+        logger.info(`Анализируем видео ${videoPath} с YOLO`, { module: "YoloDataService" })
 
         // Инициализируем YOLO процессор если еще не инициализирован
         const isInitialized = await this.ensureYoloInitialized()
@@ -138,7 +138,7 @@ export class YoloDataService {
       this.nonExistentFiles[videoId] = true
       return null
     } catch (error) {
-      logger.error("Ошибка загрузки данных YOLO для видео ${videoId}:", { module: "YoloDataService", error: error })
+      logger.error(`Ошибка загрузки данных YOLO для видео ${videoId}:`, { module: "YoloDataService", error: error })
       this.nonExistentFiles[videoId] = true
       return null
     }
@@ -322,7 +322,7 @@ export class YoloDataService {
       delete this.nonExistentFiles[videoId]
     }
 
-    logger.info("Данные YOLO сохранены для видео ${videoId}", { module: "YoloDataService" })
+    logger.info(`Данные YOLO сохранены для видео ${videoId}`, { module: "YoloDataService" })
   }
 
   /**

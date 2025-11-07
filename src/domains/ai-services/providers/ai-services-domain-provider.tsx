@@ -221,7 +221,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     const newConfig = { ...domainConfig, [service]: true }
     setDomainConfig(newConfig)
 
-    logger.info("Enabling service: ${service}", { module: "AI Services Domain" })
+    logger.info(`Enabling service: ${service}`, { module: "AI Services Domain" })
 
     // Синхронизируем с backend
     if (isBackendConnected) {
@@ -237,7 +237,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     const newConfig = { ...domainConfig, [service]: false }
     setDomainConfig(newConfig)
 
-    logger.info("Disabling service: ${service}", { module: "AI Services Domain" })
+    logger.info(`Disabling service: ${service}`, { module: "AI Services Domain" })
 
     // Синхронизируем с backend
     if (isBackendConnected) {

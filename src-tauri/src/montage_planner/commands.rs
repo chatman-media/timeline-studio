@@ -261,7 +261,10 @@ pub async fn analyze_montage_videos(
   }
 
   if results.is_empty() && !errors.is_empty() {
-    return Err(format!("All videos failed to analyze: {}", errors.join("; ")));
+    return Err(format!(
+      "All videos failed to analyze: {}",
+      errors.join("; ")
+    ));
   }
 
   if !errors.is_empty() {
@@ -287,7 +290,11 @@ pub async fn optimize_montage_plan(
   optimized_plan.quality_score = (plan.quality_score * 1.1).min(100.0);
   optimized_plan.engagement_score = (plan.engagement_score * 1.05).min(100.0);
 
-  log::info!("Plan optimized: quality {:.1} -> {:.1}", plan.quality_score, optimized_plan.quality_score);
+  log::info!(
+    "Plan optimized: quality {:.1} -> {:.1}",
+    plan.quality_score,
+    optimized_plan.quality_score
+  );
 
   Ok(optimized_plan)
 }
@@ -295,9 +302,7 @@ pub async fn optimize_montage_plan(
 /// Validate a montage plan
 #[tauri::command]
 #[specta::specta]
-pub async fn validate_montage_plan(
-  plan: MontagePlan,
-) -> Result<PlanValidation, String> {
+pub async fn validate_montage_plan(plan: MontagePlan) -> Result<PlanValidation, String> {
   log::info!("Validating montage plan: {}", plan.id);
 
   let mut errors = Vec::new();
@@ -329,7 +334,10 @@ pub async fn validate_montage_plan(
     if i > 0 {
       let prev_clip = &sorted_clips[i - 1];
       if clip.order == prev_clip.order {
-        errors.push(format!("Clips {} and {} have duplicate order", prev_clip.id, clip.id));
+        errors.push(format!(
+          "Clips {} and {} have duplicate order",
+          prev_clip.id, clip.id
+        ));
       }
     }
   }
@@ -346,13 +354,16 @@ pub async fn validate_montage_plan(
   }
 
   if plan.clips.len() > 50 {
-    warnings.push(format!("Plan has {} clips which may be too many", plan.clips.len()));
+    warnings.push(format!(
+      "Plan has {} clips which may be too many",
+      plan.clips.len()
+    ));
     suggestions.push("Consider consolidating similar clips".to_string());
   }
 
   let is_valid = errors.is_empty();
   let quality = if is_valid {
-    (plan.quality_score / 100.0) as f32
+    (plan.quality_score / 100.0)
   } else {
     0.0
   };
@@ -369,9 +380,7 @@ pub async fn validate_montage_plan(
 /// Calculate statistics for a montage plan
 #[tauri::command]
 #[specta::specta]
-pub async fn calculate_plan_statistics(
-  plan: MontagePlan,
-) -> Result<PlanStatistics, String> {
+pub async fn calculate_plan_statistics(plan: MontagePlan) -> Result<PlanStatistics, String> {
   log::info!("Calculating statistics for plan: {}", plan.id);
 
   let fragment_count = plan.clips.len() as u32;
@@ -463,33 +472,37 @@ fn convert_to_montage_result(
 ) -> MontageAnalysisResult {
   // Extract key moments from moment analysis
   let key_moments = if let Some(moment_analysis) = &comprehensive.moment_analysis {
-    moment_analysis.key_moments.iter().map(|km| {
-      // Convert unified KeyMoment to montage DetectedMoment
-      let moment_type_str = format!("{:?}", km.moment_type).to_lowercase();
-      DetectedMoment {
-        timestamp: km.timestamp,
-        duration: km.duration,
-        category: match moment_type_str.as_str() {
-          "action" => MomentCategory::Action,
-          "drama" => MomentCategory::Drama,
-          "comedy" => MomentCategory::Comedy,
-          "transition" => MomentCategory::Transition,
-          "highlight" => MomentCategory::Highlight,
-          _ => MomentCategory::BRoll,
-        },
-        scores: MomentScores {
-          visual: (km.scoring.visual_quality * 100.0) as f32,
-          technical: (km.scoring.composition_quality * 100.0) as f32,
-          emotional: (km.scoring.emotion_intensity * 100.0) as f32,
-          narrative: (km.importance_score * 100.0) as f32,
-          action: (km.scoring.motion_interest * 100.0) as f32,
-          composition: (km.scoring.composition_quality * 100.0) as f32,
-        },
-        total_score: (km.importance_score * 100.0) as f32,
-        description: km.description.clone(),
-        tags: km.tags.clone(),
-      }
-    }).collect()
+    moment_analysis
+      .key_moments
+      .iter()
+      .map(|km| {
+        // Convert unified KeyMoment to montage DetectedMoment
+        let moment_type_str = format!("{:?}", km.moment_type).to_lowercase();
+        DetectedMoment {
+          timestamp: km.timestamp,
+          duration: km.duration,
+          category: match moment_type_str.as_str() {
+            "action" => MomentCategory::Action,
+            "drama" => MomentCategory::Drama,
+            "comedy" => MomentCategory::Comedy,
+            "transition" => MomentCategory::Transition,
+            "highlight" => MomentCategory::Highlight,
+            _ => MomentCategory::BRoll,
+          },
+          scores: MomentScores {
+            visual: (km.scoring.visual_quality * 100.0) as f32,
+            technical: (km.scoring.composition_quality * 100.0) as f32,
+            emotional: (km.scoring.emotion_intensity * 100.0) as f32,
+            narrative: (km.importance_score * 100.0) as f32,
+            action: (km.scoring.motion_interest * 100.0) as f32,
+            composition: (km.scoring.composition_quality * 100.0) as f32,
+          },
+          total_score: (km.importance_score * 100.0) as f32,
+          description: km.description.clone(),
+          tags: km.tags.clone(),
+        }
+      })
+      .collect()
   } else {
     Vec::new()
   };
@@ -521,7 +534,11 @@ fn convert_to_montage_result(
 
   // Calculate duration from scenes or use default
   let duration = if let Some(scene_analysis) = &comprehensive.scene_analysis {
-    scene_analysis.scenes.iter().map(|s| s.duration).sum::<f64>()
+    scene_analysis
+      .scenes
+      .iter()
+      .map(|s| s.duration)
+      .sum::<f64>()
   } else {
     0.0
   };

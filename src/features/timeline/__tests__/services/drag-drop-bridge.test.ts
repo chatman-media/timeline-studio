@@ -5,6 +5,27 @@
 import type { DragEndEvent } from "@dnd-kit/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+// Мокаем модули с использованием factory function
+const mockDragDropManager = {
+  emit: vi.fn(),
+}
+
+const mockLogger = {
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+  trace: vi.fn(),
+}
+
+vi.mock("@/features/drag-drop", () => ({
+  getDragDropManager: vi.fn(() => mockDragDropManager),
+}))
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
+
 import {
   convertDndKitToDragDropManager,
   getBridgeStatus,
@@ -13,18 +34,11 @@ import {
   isInterModuleDrag,
 } from "../../services/drag-drop-bridge"
 
-// Мокаем DragDropManager
-const mockDragDropManager = {
-  emit: vi.fn(),
-}
-
-vi.mock("@/features/drag-drop", () => ({
-  getDragDropManager: () => mockDragDropManager,
-}))
-
 describe("DragDropBridge", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockLogger.info.mockClear()
+    mockLogger.error.mockClear()
   })
 
   describe("convertDndKitToDragDropManager", () => {
@@ -191,7 +205,7 @@ describe("DragDropBridge", () => {
   })
 
   describe("handleInterModuleDrag", () => {
-    it("должен обработать межмодульный drag & drop", () => {
+    it("должен обработать межмодульный drag & drop", async () => {
       const mockTimelineActions = {
         addSingleMediaToTimeline: vi.fn(),
         addMediaToTimeline: vi.fn(),
@@ -313,26 +327,20 @@ describe("DragDropBridge", () => {
         },
       } as any
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const result = handleInterModuleDrag(mockEvent, mockTimelineActions)
 
       expect(result).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("[DragDropBridge] Failed to bridge drag:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      // Проверяем что logger.error был вызван с правильным сообщением
+      expect(mockLogger.error).toHaveBeenCalledWith("[DragDropBridge] Failed to bridge drag:", expect.any(Error))
     })
   })
 
   describe("initializeDragDropBridge", () => {
     it("должен инициализировать bridge", () => {
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-
       initializeDragDropBridge()
 
-      expect(consoleSpy).toHaveBeenCalledWith("[DragDropBridge] Initializing drag & drop bridge")
-
-      consoleSpy.mockRestore()
+      // Проверяем что logger.info был вызван с правильным сообщением
+      expect(mockLogger.info).toHaveBeenCalledWith("[DragDropBridge] Initializing drag & drop bridge")
     })
   })
 

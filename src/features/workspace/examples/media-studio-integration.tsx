@@ -6,7 +6,7 @@
 
 "use client"
 
-import { useMemo } from "react"
+import { type ReactNode, useMemo } from "react"
 
 import { AiChat } from "@/features/ai-chat/components/ai-chat"
 import { Browser } from "@/features/browser/components"
@@ -65,7 +65,7 @@ export function MediaStudioWidgetExample() {
             <AISuggestionsPanel />
           </div>
         ),
-      }) as Record<WidgetType, (widget: Widget) => JSX.Element>,
+      }) as Record<WidgetType, (widget: Widget) => ReactNode>,
     [],
   )
 

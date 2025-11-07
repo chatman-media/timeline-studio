@@ -3,8 +3,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { TimelineTransition } from "@/domains/video-editing/types/timeline"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { getTransitionsPreviewService, type TransitionParams } from "../services/transitions-preview"
@@ -74,10 +74,14 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
     const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
-      if (!track.transitions || !project.resources.timelineTransitions) continue
+      // Skip tracks without clips that have transitions
+      if (!track.clips || !project.resources.timelineTransitions) continue
 
-      const validTransitions = track.transitions
-        .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
+      // Collect transitions from all clips in this track
+      const trackTransitionIds = track.clips.flatMap((clip) => clip.transitions.map((t) => t.id))
+
+      const validTransitions = trackTransitionIds
+        .map((id) => project.resources.timelineTransitions?.find((t) => t.id === id))
         .filter((t): t is TimelineTransition => t !== undefined && t !== null)
 
       const trackTransitions = validTransitions.map((transition) => ({ transition, trackId: track.id }))
@@ -85,16 +89,16 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
       transitions.push(...trackTransitions)
     }
 
-    return transitions.sort((a, b) => a.transition.position - b.transition.position)
+    return transitions.sort((a, b) => a.transition.startTime - b.transition.startTime)
   }, [project])
 
   // Найти переход на определённом времени
   const getTransitionAtTime = useCallback(
     (time: number) => {
       for (const { transition } of allTransitions) {
-        const transitionEnd = transition.position + transition.duration
-        if (time >= transition.position && time <= transitionEnd) {
-          const progress = (time - transition.position) / transition.duration
+        const transitionEnd = transition.startTime + transition.duration
+        if (time >= transition.startTime && time <= transitionEnd) {
+          const progress = (time - transition.startTime) / transition.duration
           return { transition, progress }
         }
       }
@@ -122,8 +126,8 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
         ...prev,
         activeTransition: transition,
         progress,
-        startTime: transition.position,
-        endTime: transition.position + transition.duration,
+        startTime: transition.startTime,
+        endTime: transition.startTime + transition.duration,
       }))
     } else {
       setState((prev) => ({
@@ -221,8 +225,8 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
           ...prev,
           activeTransition: transitionData.transition,
           progress: transitionData.progress,
-          startTime: transitionData.transition.position,
-          endTime: transitionData.transition.position + transitionData.transition.duration,
+          startTime: transitionData.transition.startTime,
+          endTime: transitionData.transition.startTime + transitionData.transition.duration,
         }))
       }
     },
@@ -275,16 +279,20 @@ export function useActiveTransition() {
     const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
-      if (!track.transitions || !project.resources.timelineTransitions) continue
+      // Skip tracks without clips that have transitions
+      if (!track.clips || !project.resources.timelineTransitions) continue
 
-      const validTransitions = track.transitions
-        .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
+      // Collect transitions from all clips in this track
+      const trackTransitionIds = track.clips.flatMap((clip) => clip.transitions.map((t) => t.id))
+
+      const validTransitions = trackTransitionIds
+        .map((id) => project.resources.timelineTransitions?.find((t) => t.id === id))
         .filter((t): t is TimelineTransition => t !== undefined && t !== null)
 
       for (const transition of validTransitions) {
-        const transitionEnd = transition.position + transition.duration
-        if (currentTime >= transition.position && currentTime <= transitionEnd) {
-          const progress = (currentTime - transition.position) / transition.duration
+        const transitionEnd = transition.startTime + transition.duration
+        if (currentTime >= transition.startTime && currentTime <= transitionEnd) {
+          const progress = (currentTime - transition.startTime) / transition.duration
           return { transition, progress, trackId: track.id }
         }
       }

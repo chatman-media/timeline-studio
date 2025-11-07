@@ -55,7 +55,7 @@ const DEFAULT_BROWSER_STATE: BrowserState = {
       view_mode: "thumbnails",
       preview_size_index: 2,
     },
-    "style-templates": {
+    style_templates: {
       search_query: "",
       show_favorites_only: false,
       sort_by: "name",
@@ -72,7 +72,7 @@ const DEFAULT_BROWSER_STATE: BrowserState = {
     filters: [],
     transitions: [],
     templates: [],
-    "style-templates": [],
+    style_templates: [],
   },
 }
 
@@ -93,6 +93,34 @@ function triggerStateChange() {
       auto_save_interval_seconds: 30,
     },
     browser_state: mockBrowserState,
+    project: null,
+    ui_state: {
+      selected_clips: [],
+      selected_tracks: [],
+      timeline_zoom: 1,
+      timeline_scroll: 0,
+      active_tool: "select",
+      browser_state: null,
+    },
+    playback_state: {
+      is_playing: false,
+      current_time: 0,
+      playback_rate: 1,
+      loop_enabled: false,
+      loop_start: null,
+      loop_end: null,
+      volume: 1,
+      current_media_id: null,
+      selected_clip_id: null,
+      video_source: "browser",
+      applied_effects: [],
+      applied_filters: [],
+      applied_template: null,
+      is_loading: false,
+      is_seeking: false,
+      duration: 0,
+    },
+    chat_sessions: [],
   }
   stateChangeHandlers.forEach((handler) => handler(state))
 }
@@ -105,13 +133,14 @@ function handleBrowserCommand(command: ProjectCommand) {
     case "BrowserSelectFile":
       if (command.params?.file_id) {
         const tab = command.params.tab || activeTab
-        if (!mockBrowserState.selected_files[tab].includes(command.params.file_id)) {
+        const currentFiles = mockBrowserState.selected_files[tab] || []
+        if (!currentFiles.includes(command.params.file_id)) {
           // Create new state object to trigger React re-render
           mockBrowserState = {
             ...mockBrowserState,
             selected_files: {
               ...mockBrowserState.selected_files,
-              [tab]: [...mockBrowserState.selected_files[tab], command.params.file_id],
+              [tab]: [...currentFiles, command.params.file_id],
             },
           }
           triggerStateChange()
@@ -122,12 +151,13 @@ function handleBrowserCommand(command: ProjectCommand) {
     case "BrowserDeselectFile":
       if (command.params?.file_id) {
         const tab = command.params.tab || activeTab
+        const currentFiles = mockBrowserState.selected_files[tab] || []
         // Create new state object to trigger React re-render
         mockBrowserState = {
           ...mockBrowserState,
           selected_files: {
             ...mockBrowserState.selected_files,
-            [tab]: mockBrowserState.selected_files[tab].filter((id) => id !== command.params.file_id),
+            [tab]: currentFiles.filter((id) => id !== command.params.file_id),
           },
         }
         triggerStateChange()
@@ -137,7 +167,7 @@ function handleBrowserCommand(command: ProjectCommand) {
     case "BrowserToggleFileSelection":
       if (command.params?.file_id) {
         const tab = command.params.tab || activeTab
-        const files = mockBrowserState.selected_files[tab]
+        const files = mockBrowserState.selected_files[tab] || []
         // Create new state object to trigger React re-render
         mockBrowserState = {
           ...mockBrowserState,
@@ -228,6 +258,34 @@ export const mockBackendSync = {
         auto_save_interval_seconds: 30,
       },
       browser_state: mockBrowserState,
+      project: null,
+      ui_state: {
+        selected_clips: [],
+        selected_tracks: [],
+        timeline_zoom: 1,
+        timeline_scroll: 0,
+        active_tool: "select",
+        browser_state: null,
+      },
+      playback_state: {
+        is_playing: false,
+        current_time: 0,
+        playback_rate: 1,
+        loop_enabled: false,
+        loop_start: null,
+        loop_end: null,
+        volume: 1,
+        current_media_id: null,
+        selected_clip_id: null,
+        video_source: "browser",
+        applied_effects: [],
+        applied_filters: [],
+        applied_template: null,
+        is_loading: false,
+        is_seeking: false,
+        duration: 0,
+      },
+      chat_sessions: [],
     })
     // Return unsubscribe function
     return () => {
@@ -246,20 +304,40 @@ export function resetMockBrowserState() {
   mockBrowserState = {
     active_tab: DEFAULT_BROWSER_STATE.active_tab,
     tab_settings: {
-      media: { ...DEFAULT_BROWSER_STATE.tab_settings.media },
-      effects: { ...DEFAULT_BROWSER_STATE.tab_settings.effects },
-      filters: { ...DEFAULT_BROWSER_STATE.tab_settings.filters },
-      transitions: { ...DEFAULT_BROWSER_STATE.tab_settings.transitions },
-      templates: { ...DEFAULT_BROWSER_STATE.tab_settings.templates },
-      "style-templates": { ...DEFAULT_BROWSER_STATE.tab_settings["style-templates"] },
+      media: DEFAULT_BROWSER_STATE.tab_settings.media ? { ...DEFAULT_BROWSER_STATE.tab_settings.media } : undefined,
+      effects: DEFAULT_BROWSER_STATE.tab_settings.effects
+        ? { ...DEFAULT_BROWSER_STATE.tab_settings.effects }
+        : undefined,
+      filters: DEFAULT_BROWSER_STATE.tab_settings.filters
+        ? { ...DEFAULT_BROWSER_STATE.tab_settings.filters }
+        : undefined,
+      transitions: DEFAULT_BROWSER_STATE.tab_settings.transitions
+        ? { ...DEFAULT_BROWSER_STATE.tab_settings.transitions }
+        : undefined,
+      templates: DEFAULT_BROWSER_STATE.tab_settings.templates
+        ? { ...DEFAULT_BROWSER_STATE.tab_settings.templates }
+        : undefined,
+      style_templates: DEFAULT_BROWSER_STATE.tab_settings.style_templates
+        ? { ...DEFAULT_BROWSER_STATE.tab_settings.style_templates }
+        : undefined,
     },
     selected_files: {
-      media: [...DEFAULT_BROWSER_STATE.selected_files.media],
-      effects: [...DEFAULT_BROWSER_STATE.selected_files.effects],
-      filters: [...DEFAULT_BROWSER_STATE.selected_files.filters],
-      transitions: [...DEFAULT_BROWSER_STATE.selected_files.transitions],
-      templates: [...DEFAULT_BROWSER_STATE.selected_files.templates],
-      "style-templates": [...DEFAULT_BROWSER_STATE.selected_files["style-templates"]],
+      media: DEFAULT_BROWSER_STATE.selected_files.media ? [...DEFAULT_BROWSER_STATE.selected_files.media] : undefined,
+      effects: DEFAULT_BROWSER_STATE.selected_files.effects
+        ? [...DEFAULT_BROWSER_STATE.selected_files.effects]
+        : undefined,
+      filters: DEFAULT_BROWSER_STATE.selected_files.filters
+        ? [...DEFAULT_BROWSER_STATE.selected_files.filters]
+        : undefined,
+      transitions: DEFAULT_BROWSER_STATE.selected_files.transitions
+        ? [...DEFAULT_BROWSER_STATE.selected_files.transitions]
+        : undefined,
+      templates: DEFAULT_BROWSER_STATE.selected_files.templates
+        ? [...DEFAULT_BROWSER_STATE.selected_files.templates]
+        : undefined,
+      style_templates: DEFAULT_BROWSER_STATE.selected_files.style_templates
+        ? [...DEFAULT_BROWSER_STATE.selected_files.style_templates]
+        : undefined,
     },
   }
 

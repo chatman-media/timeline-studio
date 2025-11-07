@@ -242,7 +242,7 @@ export class ProjectManagementOrchestrator {
               data: `[Project Management Orchestrator] Auto-save #${saveCounter} took ${duration}ms - potential performance issue`,
             })
           } else {
-            logger.info("[Project Management Orchestrator] Auto-save #${saveCounter} completed in", { duration })
+            logger.info(`[Project Management Orchestrator] Auto-save #${saveCounter} completed in`, { duration })
           }
         }
       } catch (error) {

@@ -13,7 +13,7 @@ import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
-import type { ProjectState } from "@/types/generated/state-types"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("video-player:player-provider")
 
@@ -157,8 +157,8 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
       return
     }
 
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      setBackendState(state as ProjectState | null)
+    const unsubscribe = backendSync.onStateChange((state) => {
+      setBackendState(state)
     })
 
     return unsubscribe

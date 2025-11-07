@@ -9,6 +9,19 @@ import { AudioClip } from "@/features/timeline/components/clip/audio-clip"
 
 import type { TimelineClip, TimelineTrack, TrackType } from "../../../types"
 
+// Mock tauri-logger
+const mockLogger = {
+  info: vi.fn(),
+  debug: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  trace: vi.fn(),
+}
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
+
 // Mock hooks
 vi.mock("../../../hooks", () => ({
   useClips: vi.fn(() => ({
@@ -163,6 +176,11 @@ describe("AudioClip", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
+    mockLogger.info.mockClear()
+    mockLogger.debug.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.error.mockClear()
+    mockLogger.trace.mockClear()
     const { useClips } = await import("../../../hooks")
     vi.mocked(useClips).mockReturnValue({
       updateClip: mockUpdateClip,
@@ -347,33 +365,31 @@ describe("AudioClip", () => {
     })
 
     it("should handle copy button click", () => {
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+      const { container } = render(
+        <AudioClip clip={mockAudioClip} track={mockMusicTrack} onUpdate={mockOnUpdate} onRemove={mockOnRemove} />,
+      )
 
-      render(<AudioClip clip={mockAudioClip} track={mockMusicTrack} onUpdate={mockOnUpdate} onRemove={mockOnRemove} />)
-
-      const clipElement = screen.getByText("Test Audio Clip").closest("div")!
-      fireEvent.mouseEnter(clipElement.parentElement!)
+      const clipElement = container.firstChild as Element
+      fireEvent.mouseEnter(clipElement)
 
       const copyButton = screen.getByTitle("Копировать")
       fireEvent.click(copyButton)
 
-      expect(consoleSpy).toHaveBeenCalledWith("Copy audio clip:", "clip-1")
-      consoleSpy.mockRestore()
+      expect(mockLogger.info).toHaveBeenCalledWith("Copy audio clip:", "clip-1")
     })
 
     it("should handle split button click", () => {
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+      const { container } = render(
+        <AudioClip clip={mockAudioClip} track={mockMusicTrack} onUpdate={mockOnUpdate} onRemove={mockOnRemove} />,
+      )
 
-      render(<AudioClip clip={mockAudioClip} track={mockMusicTrack} onUpdate={mockOnUpdate} onRemove={mockOnRemove} />)
-
-      const clipElement = screen.getByText("Test Audio Clip").closest("div")!
-      fireEvent.mouseEnter(clipElement.parentElement!)
+      const clipElement = container.firstChild as Element
+      fireEvent.mouseEnter(clipElement)
 
       const splitButton = screen.getByTitle("Разделить")
       fireEvent.click(splitButton)
 
-      expect(consoleSpy).toHaveBeenCalledWith("Split audio clip:", "clip-1")
-      consoleSpy.mockRestore()
+      expect(mockLogger.info).toHaveBeenCalledWith("Split audio clip:", "clip-1")
     })
 
     it("should handle remove button click", () => {

@@ -18,20 +18,33 @@ export interface Post {
 
 // Функция для парсинга markdown с frontmatter
 export function parseMarkdown(fileContent: string): Post {
-  const { data, content } = matter(fileContent)
+  try {
+    const { data, content } = matter(fileContent)
 
-  return {
-    metadata: {
-      title: data.title || "Untitled",
-      date: data.date || new Date().toISOString(),
-      author: data.author,
-      slug: data.slug || "",
-      excerpt: data.excerpt,
-      version: data.version,
-      category: data.category,
-      readTime: data.readTime,
-    },
-    content,
+    return {
+      metadata: {
+        title: data.title || "Untitled",
+        date: data.date || new Date().toISOString(),
+        author: data.author,
+        slug: data.slug || "",
+        excerpt: data.excerpt,
+        version: data.version,
+        category: data.category,
+        readTime: data.readTime,
+      },
+      content,
+    }
+  } catch (error) {
+    console.error("Error parsing markdown:", error)
+    // Возвращаем fallback данные
+    return {
+      metadata: {
+        title: "Untitled",
+        date: new Date().toISOString(),
+        slug: "",
+      },
+      content: fileContent,
+    }
   }
 }
 

@@ -92,60 +92,65 @@ export function ModalProvider({ children }: ModalProviderProps) {
     }
   }, [state, backendSync])
 
-  const value = useMemo(
-    () => ({
-      modalType: state?.context?.modalType || null,
-      modalData: state?.context?.modalData || null,
-      isOpen: state?.matches("opened") || false,
-      openModal: (modalType: ModalType, modalData?: ModalData) => {
-        logger.debugSync("Opening modal window", { modalType })
-        send({ type: "OPEN_MODAL", modalType, modalData })
+  // Actions
+  const openModal = (modalType: ModalType, modalData?: ModalData) => {
+    logger.debugSync("Opening modal window", { modalType })
+    send({ type: "OPEN_MODAL", modalType, modalData })
 
-        // Уведомляем backend об открытии модального окна
-        if (isConnected && BACKEND_SYNCED_MODALS.includes(modalType)) {
-          backendSync
-            .executeCommand({
-              type: "OpenModal",
-              params: {
-                modal_type: modalType,
-                modal_data: (modalData as any) || null,
-              },
-            })
-            .catch((error) => {
-              void logger.error("Failed to notify backend about modal opening", { error: String(error) })
-            })
-        }
-      },
-      closeModal: () => {
-        logger.debugSync("Closing modal window")
-        send({ type: "CLOSE_MODAL" })
-      },
-      submitModal: async (data?: ModalData) => {
-        logger.debugSync("Submitting modal data", { data })
+    // Уведомляем backend об открытии модального окна
+    if (isConnected && BACKEND_SYNCED_MODALS.includes(modalType)) {
+      backendSync
+        .executeCommand({
+          type: "OpenModal",
+          params: {
+            modal_type: modalType,
+            modal_data: (modalData as any) || null,
+          },
+        })
+        .catch((error) => {
+          void logger.error("Failed to notify backend about modal opening", { error: String(error) })
+        })
+    }
+  }
 
-        // Уведомляем backend о закрытии модального окна с данными
-        if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType) && isConnected) {
-          try {
-            await backendSync.executeCommand({
-              type: "SubmitModal",
-              params: {
-                data: (data as any) || null,
-              },
-            })
-          } catch (error) {
-            void logger.error("Failed to sync modal submission", {
-              modalType: state.context.modalType,
-              error: String(error),
-            })
-          }
-        }
+  const closeModal = () => {
+    logger.debugSync("Closing modal window")
+    send({ type: "CLOSE_MODAL" })
+  }
 
-        send({ type: "SUBMIT_MODAL", data })
-      },
-      isConnected,
-    }),
-    [state, send, isConnected, backendSync],
-  )
+  const submitModal = async (data?: ModalData) => {
+    logger.debugSync("Submitting modal data", { data })
+
+    // Уведомляем backend о закрытии модального окна с данными
+    if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType) && isConnected) {
+      try {
+        await backendSync.executeCommand({
+          type: "SubmitModal",
+          params: {
+            data: (data as any) || null,
+          },
+        })
+      } catch (error) {
+        void logger.error("Failed to sync modal submission", {
+          modalType: state.context.modalType,
+          error: String(error),
+        })
+      }
+    }
+
+    send({ type: "SUBMIT_MODAL", data })
+  }
+
+  // Context value with safe fallbacks
+  const value: ModalContextType = {
+    modalType: state?.context?.modalType ?? "none",
+    modalData: state?.context?.modalData ?? null,
+    isOpen: state?.matches("opened") ?? false,
+    openModal,
+    closeModal,
+    submitModal,
+    isConnected,
+  }
 
   return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
 }

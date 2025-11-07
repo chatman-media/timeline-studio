@@ -65,6 +65,8 @@ describe("ResourcesPanel", () => {
         name: "Blur Effect",
         resourceId: "blur-1",
         addedAt: Date.now(),
+        effect: { id: "blur-1", name: "Blur Effect" } as any,
+        params: {},
       },
       {
         id: "effect-2",
@@ -72,6 +74,8 @@ describe("ResourcesPanel", () => {
         name: "Glow Effect",
         resourceId: "glow-1",
         addedAt: Date.now(),
+        effect: { id: "glow-1", name: "Glow Effect" } as any,
+        params: {},
       },
     ],
     filterResources: [
@@ -81,6 +85,8 @@ describe("ResourcesPanel", () => {
         name: "Vintage Filter",
         resourceId: "vintage-1",
         addedAt: Date.now(),
+        filter: { id: "vintage-1", name: "Vintage Filter" } as any,
+        params: {},
       },
     ],
     transitionResources: [],
@@ -91,6 +97,8 @@ describe("ResourcesPanel", () => {
         name: "splitScreen",
         resourceId: "split-1",
         addedAt: Date.now(),
+        template: { id: "split-1" } as any,
+        params: {},
       },
     ],
     styleTemplateResources: [
@@ -100,6 +108,8 @@ describe("ResourcesPanel", () => {
         name: "modernIntro",
         resourceId: "modern-1",
         addedAt: Date.now(),
+        template: { id: "modern-1", name: { ru: "modernIntro" } } as any,
+        params: {},
       },
     ],
     mediaResources: [],
@@ -343,6 +353,8 @@ describe("ResourcesPanel", () => {
             name: "Test Effect",
             resourceId: "test-1",
             addedAt: Date.now(),
+            effect: { id: "test-1", name: "Test Effect" } as any,
+            params: {},
           },
         ],
         filterResources: [],
@@ -465,7 +477,7 @@ describe("ResourcesPanel", () => {
       expect(firstDeleteButton).toBeInTheDocument()
 
       // Click the delete button
-      if (firstDeleteButton) {
+      if (firstDeleteButton && firstDeleteButton instanceof HTMLElement) {
         firstDeleteButton.click()
 
         // Should have called removeResource with the correct ID
@@ -489,7 +501,7 @@ describe("ResourcesPanel", () => {
       mockRemoveResource.mockClear()
 
       // Click should work
-      if (firstDeleteButton) {
+      if (firstDeleteButton && firstDeleteButton instanceof HTMLElement) {
         firstDeleteButton.click()
         expect(mockRemoveResource).toHaveBeenCalledTimes(1)
       }

@@ -149,9 +149,11 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       // ДЕДУПЛИКАЦИЯ: Проверяем существование медиа по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some(
-          (item): item is MediaItem => item !== null && item !== undefined && item.path === file.path,
-        )
+        const alreadyExists = Object.values(mediaPool.items).some((item) => {
+          if (!item || typeof item !== "object") return false
+          const mediaItem = item as MediaItem
+          return "path" in mediaItem && mediaItem.path === file.path
+        })
         if (alreadyExists) {
           logInfo("ResourcesProvider: Media already exists, skipping", { path: file.path })
           return
@@ -186,9 +188,11 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some(
-          (item): item is MediaItem => item !== null && item !== undefined && item.path === file.path,
-        )
+        const alreadyExists = Object.values(mediaPool.items).some((item) => {
+          if (!item || typeof item !== "object") return false
+          const mediaItem = item as MediaItem
+          return "path" in mediaItem && mediaItem.path === file.path
+        })
         if (alreadyExists) {
           logInfo("ResourcesProvider: Music already exists, skipping", { path: file.path })
           return
@@ -462,22 +466,25 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   // Конвертируем медиа из backend в MediaResource формат
   const mediaResources: MediaResource[] = mediaPool?.items
     ? Object.values(mediaPool.items)
-        .filter(
-          (item): item is MediaItem =>
-            item !== null && item !== undefined && (item.media_type === "Video" || item.media_type === "Image"),
-        )
+        .filter((item): item is MediaItem => {
+          if (!item || typeof item !== "object") return false
+          const mediaItem = item as MediaItem
+          const mediaType = String(mediaItem.media_type)
+          return "media_type" in mediaItem && (mediaType === "Video" || mediaType === "Image")
+        })
         .map((item) => {
           // Проверяем кэш метаданных для этого файла
           const cachedProbeData = metadataCacheRef.current.get(item.path)
+          const mediaType = String(item.media_type)
 
           const file: MediaFile = {
             id: item.id,
             name: item.name,
             path: item.path,
             size: 0, // Backend не предоставляет размер файла
-            isVideo: item.media_type === "Video",
+            isVideo: mediaType === "Video",
             isAudio: false,
-            isImage: item.media_type === "Image",
+            isImage: mediaType === "Image",
             isLoadingMetadata: false,
             // Используем метаданные из кэша если они есть, иначе пустые
             probeData: cachedProbeData || { streams: [], format: {} },
@@ -507,7 +514,12 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
   const musicResources: MusicResource[] = mediaPool?.items
     ? Object.values(mediaPool.items)
-        .filter((item): item is MediaItem => item !== null && item !== undefined && item.media_type === "Audio")
+        .filter((item): item is MediaItem => {
+          if (!item || typeof item !== "object") return false
+          const mediaItem = item as MediaItem
+          const mediaType = String(mediaItem.media_type)
+          return "media_type" in mediaItem && mediaType === "Audio"
+        })
         .map((item) => {
           // Проверяем кэш метаданных для этого файла
           const cachedProbeData = metadataCacheRef.current.get(item.path)

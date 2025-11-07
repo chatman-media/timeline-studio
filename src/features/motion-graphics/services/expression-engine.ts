@@ -129,7 +129,7 @@ export class ExpressionEvaluator {
       // Evaluate
       return compiledFn.call(safeContext)
     } catch (error) {
-      logger.error("Expression evaluation error:", error)
+      logger.error("Expression evaluation error:", error instanceof Error ? { message: error.message } : { error })
       return context.value // Return current value on error
     }
   }
@@ -152,7 +152,7 @@ export class ExpressionEvaluator {
         const fn = new Function(functionBody)
         return fn.call(this)
       } catch (error) {
-        logger.error("Expression compilation error:", error)
+        logger.error("Expression compilation error:", error instanceof Error ? { message: error.message } : { error })
         return 0 // Return default value on error
       }
     }

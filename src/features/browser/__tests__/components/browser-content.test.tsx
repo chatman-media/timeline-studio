@@ -168,6 +168,7 @@ vi.mock("../../components/lazy-tab-content", () => ({
               const item = { id: "1", name: "test-item.mp4", path: "/test/path" }
               // Вызываем соответствующий обработчик в зависимости от activeTab
               if (activeTab === "media" && mockMediaAdapter.importHandlers?.importFile) {
+                mockMediaAdapter.importHandlers.importFile(item as any)
                 mockAddSingleMediaToTimeline(item)
               } else {
                 // Для других вкладок просто логируем

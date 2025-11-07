@@ -71,8 +71,6 @@ const createTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => (
   trackFilters: [],
   isLocked: false,
   isSolo: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
   ...overrides,
 })
 
