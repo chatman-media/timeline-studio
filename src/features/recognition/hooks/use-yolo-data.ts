@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import type { YoloDetection, YoloVideoData, YoloVideoSummary } from "@/features/recognition/types/yolo"
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { YoloDataService } from "../services/yolo-data-service"
 import { useRecognitionPreview } from "./use-recognition-preview"
 
@@ -9,6 +10,8 @@ import { useRecognitionPreview } from "./use-recognition-preview"
  * Предоставляет методы для загрузки, кэширования и получения данных распознавания объектов
  */
 export function useYoloData() {
+  logInfo("[useYoloData] Инициализация хука для работы с YOLO данными")
+
   const [yoloDataService] = useState(() => new YoloDataService())
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({})
   const [errorStates, setErrorStates] = useState<Record<string, string | null>>({})
@@ -16,16 +19,17 @@ export function useYoloData() {
   // Используем интегрированный хук для работы с Preview Manager
   const { processVideoRecognition, getRecognitionAtTimestamp: getRecognitionFromCache } = useRecognitionPreview({
     onRecognitionComplete: (fileId, data) => {
-      console.log(`Распознавание завершено для ${fileId}, обнаружено объектов: ${data.frames.length}`)
+      logInfo("[useYoloData] Распознавание завершено", { fileId, framesCount: data.frames.length })
     },
     onError: (error) => {
-      console.error("Ошибка распознавания:", error)
+      logError("[useYoloData] Ошибка распознавания", error)
     },
   })
 
   // Загрузка данных YOLO для видео
   const loadYoloData = useCallback(
     async (videoId: string, videoPath?: string): Promise<YoloVideoData | null> => {
+      logInfo("[useYoloData] Загрузка YOLO данных", { videoId, videoPath })
       setLoadingStates((prev) => ({ ...prev, [videoId]: true }))
       setErrorStates((prev) => ({ ...prev, [videoId]: null }))
 
@@ -35,12 +39,13 @@ export function useYoloData() {
 
         // Если нет данных и есть путь к видео, запускаем распознавание через Preview Manager
         if (!data && videoPath) {
-          console.log(`Запуск распознавания через Preview Manager для ${videoId}`)
+          logInfo("[useYoloData] Запуск распознавания через Preview Manager", { videoId })
           data = await processVideoRecognition(videoId, videoPath)
 
           // Сохраняем результат в локальный кэш
           if (data) {
             await yoloDataService.saveYoloData(videoId, data)
+            logInfo("[useYoloData] YOLO данные сохранены в кэш", { videoId })
           }
         }
 
@@ -48,7 +53,7 @@ export function useYoloData() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
         setErrorStates((prev) => ({ ...prev, [videoId]: errorMessage }))
-        console.error(`[useYoloData] Ошибка загрузки данных для видео ${videoId}:`, error)
+        logError("[useYoloData] Ошибка загрузки YOLO данных", error)
         return null
       } finally {
         setLoadingStates((prev) => ({ ...prev, [videoId]: false }))
@@ -71,7 +76,7 @@ export function useYoloData() {
 
         return data
       } catch (error) {
-        console.error(`[useYoloData] Ошибка получения данных для времени ${timestamp}:`, error)
+        logError("[useYoloData] Ошибка получения данных для времени", { timestamp, error })
         return []
       }
     },
@@ -84,7 +89,7 @@ export function useYoloData() {
       try {
         return await yoloDataService.getVideoSummary(videoId)
       } catch (error) {
-        console.error(`[useYoloData] Ошибка получения сводки для видео ${videoId}:`, error)
+        logError("[useYoloData] Ошибка получения сводки для видео", { videoId, error })
         return null
       }
     },
@@ -97,7 +102,7 @@ export function useYoloData() {
       try {
         return await yoloDataService.getAllYoloData(videoId)
       } catch (error) {
-        console.error(`[useYoloData] Ошибка получения всех данных для видео ${videoId}:`, error)
+        logError("[useYoloData] Ошибка получения всех данных для видео", { videoId, error })
         return null
       }
     },
@@ -147,13 +152,15 @@ export function useYoloData() {
   // Предзагрузка данных для списка видео
   const preloadYoloData = useCallback(
     async (videoIds: string[]): Promise<void> => {
+      logInfo("[useYoloData] Предзагрузка YOLO данных", { videosCount: videoIds.length })
       const promises = videoIds.map((videoId) =>
         loadYoloData(videoId).catch((error: unknown) => {
-          console.warn(`[useYoloData] Не удалось предзагрузить данные для видео ${videoId}:`, error)
+          logError("[useYoloData] Не удалось предзагрузить данные для видео", { videoId, error })
         }),
       )
 
       await Promise.allSettled(promises)
+      logInfo("[useYoloData] Предзагрузка YOLO данных завершена")
     },
     [loadYoloData],
   )
@@ -216,7 +223,7 @@ export function useYoloData() {
 
         return `В кадре обнаружено: ${descriptions.join(", ")}.`
       } catch (error) {
-        console.error("[useYoloData] Ошибка создания контекста сцены:", error)
+        logError("[useYoloData] Ошибка создания контекста сцены", error)
         return "Ошибка при анализе сцены."
       }
     },

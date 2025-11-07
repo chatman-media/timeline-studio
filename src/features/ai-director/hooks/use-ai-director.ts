@@ -5,6 +5,7 @@
  */
 
 import { useCallback, useState } from "react"
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
@@ -44,6 +45,8 @@ export interface AIDirectorHook {
 }
 
 export function useAIDirector(): AIDirectorHook {
+  logInfo("[useAIDirector] Инициализация AI Director хука")
+
   const [state, setState] = useState<AIDirectorState>({
     isAnalyzing: false,
     analysisProgress: 0,
@@ -55,6 +58,7 @@ export function useAIDirector(): AIDirectorHook {
   // Comprehensive Analysis
   const analyzeComprehensive = useCallback(
     async (videoPath: string, config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult> => {
+      logInfo("[useAIDirector] Запуск комплексного анализа", { videoPath, config })
       setState((prev) => ({
         ...prev,
         isAnalyzing: true,
@@ -67,6 +71,7 @@ export function useAIDirector(): AIDirectorHook {
         const result = await commands.aiDirectorAnalyzeComprehensive(videoPath, config)
 
         if (result.status === "ok") {
+          logInfo("[useAIDirector] Комплексный анализ завершен успешно", { videoPath })
           setState((prev) => ({
             ...prev,
             isAnalyzing: false,
@@ -78,6 +83,7 @@ export function useAIDirector(): AIDirectorHook {
         throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
+        logError("[useAIDirector] Ошибка комплексного анализа", error)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -91,6 +97,7 @@ export function useAIDirector(): AIDirectorHook {
 
   // Quick Analysis
   const analyzeQuick = useCallback(async (videoPath: string): Promise<ComprehensiveAnalysisResult> => {
+    logInfo("[useAIDirector] Запуск быстрого анализа", { videoPath })
     setState((prev) => ({
       ...prev,
       isAnalyzing: true,
@@ -103,6 +110,7 @@ export function useAIDirector(): AIDirectorHook {
       const result = await commands.aiDirectorAnalyzeQuick(videoPath)
 
       if (result.status === "ok") {
+        logInfo("[useAIDirector] Быстрый анализ завершен успешно", { videoPath })
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -114,6 +122,7 @@ export function useAIDirector(): AIDirectorHook {
       throw new Error(result.error)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
+      logError("[useAIDirector] Ошибка быстрого анализа", error)
       setState((prev) => ({
         ...prev,
         isAnalyzing: false,
@@ -126,6 +135,7 @@ export function useAIDirector(): AIDirectorHook {
   // Batch Analysis
   const analyzeBatch = useCallback(
     async (filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> => {
+      logInfo("[useAIDirector] Запуск batch анализа", { filesCount: filePaths.length })
       setState((prev) => ({
         ...prev,
         isAnalyzing: true,
@@ -137,6 +147,7 @@ export function useAIDirector(): AIDirectorHook {
         const result = await commands.aiDirectorAnalyzeBatch(filePaths, config)
 
         if (result.status === "ok") {
+          logInfo("[useAIDirector] Batch анализ завершен успешно", { resultsCount: result.data.length })
           setState((prev) => ({
             ...prev,
             isAnalyzing: false,
@@ -149,6 +160,7 @@ export function useAIDirector(): AIDirectorHook {
         throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
+        logError("[useAIDirector] Ошибка batch анализа", error)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,

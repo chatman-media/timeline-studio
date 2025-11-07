@@ -5,6 +5,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { listen, UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useState } from "react"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 export interface AnalysisProgress {
   analysisId: string
@@ -56,6 +57,8 @@ export interface UseAIDirectorAnalysisReturn {
 }
 
 export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
+  logInfo("[useAIDirectorAnalysis] Инициализация хука для управления AI Director анализом с real-time событиями")
+
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [currentProgress, setCurrentProgress] = useState<AnalysisProgress | null>(null)
   const [result, setResult] = useState<AnalysisResult | null>(null)
@@ -68,7 +71,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
     const setupEventListeners = async () => {
       // Listen to analysis started
       const unlistenStarted = await listen("analysis-started", (event) => {
-        console.log("Analysis started:", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis started", event.payload)
         setIsAnalyzing(true)
         setCurrentProgress(null)
         setResult(null)
@@ -79,14 +82,14 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
       // Listen to analysis progress
       const unlistenProgress = await listen("analysis-progress", (event) => {
         const progress = event.payload as AnalysisProgress
-        console.log("Analysis progress:", progress)
+        logInfo("[useAIDirectorAnalysis] Analysis progress", progress)
         setCurrentProgress(progress)
       })
       unlistenFunctions.push(unlistenProgress)
 
       // Listen to analysis completed
       const unlistenCompleted = await listen("analysis-completed", (event) => {
-        console.log("Analysis completed:", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload)
         setIsAnalyzing(false)
         setCurrentProgress(null)
         // result будет установлен из возвращаемого значения команды
@@ -96,14 +99,14 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
       // Listen to analysis errors
       const unlistenError = await listen("analysis-error", (event) => {
         const error = event.payload as AnalysisError
-        console.error("Analysis error:", error)
+        logError("[useAIDirectorAnalysis] Analysis error", error)
         setErrors((prev) => [...prev, error])
       })
       unlistenFunctions.push(unlistenError)
 
       // Listen to stage completed
       const unlistenStageCompleted = await listen("analysis-stage-completed", (event) => {
-        console.log("Analysis stage completed:", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload)
         // Можно добавить дополнительную логику для отслеживания завершенных этапов
       })
       unlistenFunctions.push(unlistenStageCompleted)
@@ -120,7 +123,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Start comprehensive analysis
   const startAnalysis = useCallback(async (videoPath: string, config?: AIDirectorConfig) => {
     try {
-      console.log("Starting AI Director comprehensive analysis for:", videoPath)
+      logInfo("[useAIDirectorAnalysis] Запуск комплексного AI Director анализа", { videoPath })
 
       const analysisResult = await invoke<AnalysisResult>("ai_director_analyze_comprehensive", {
         videoPath,
@@ -135,10 +138,10 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
         },
       })
 
-      console.log("Analysis completed with result:", analysisResult)
+      logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult })
       setResult(analysisResult)
     } catch (error) {
-      console.error("Failed to start analysis:", error)
+      logError("[useAIDirectorAnalysis] Ошибка запуска AI Director анализа", error)
       setIsAnalyzing(false)
       setErrors((prev) => [
         ...prev,
@@ -154,16 +157,16 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Start quick analysis
   const startQuickAnalysis = useCallback(async (videoPath: string) => {
     try {
-      console.log("Starting AI Director quick analysis for:", videoPath)
+      logInfo("[useAIDirectorAnalysis] Запуск быстрого AI Director анализа", { videoPath })
 
       const analysisResult = await invoke<AnalysisResult>("ai_director_analyze_quick", {
         videoPath,
       })
 
-      console.log("Quick analysis completed with result:", analysisResult)
+      logInfo("[useAIDirectorAnalysis] Быстрый AI Director анализ завершен", { analysisResult })
       setResult(analysisResult)
     } catch (error) {
-      console.error("Failed to start quick analysis:", error)
+      logError("[useAIDirectorAnalysis] Ошибка запуска быстрого AI Director анализа", error)
       setIsAnalyzing(false)
       setErrors((prev) => [
         ...prev,

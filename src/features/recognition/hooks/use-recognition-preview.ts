@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { RecognitionResults } from "@/features/media/types/preview"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { YoloDetection, YoloVideoData } from "../types/yolo"
 
@@ -55,6 +56,8 @@ export interface UseRecognitionPreviewOptions {
  * Объединяет функциональность распознавания и кэширования превью
  */
 export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}) {
+  logInfo("[useRecognitionPreview] Инициализация хука для интеграции распознавания с Preview Manager")
+
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -70,6 +73,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       modelPath?: string,
       targetClasses?: string[],
     ): Promise<YoloVideoData | null> => {
+      logInfo("[useRecognitionPreview] Запуск распознавания видео", { fileId, videoPath })
       try {
         setIsProcessing(true)
         setError(null)
@@ -77,7 +81,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
         // Проверяем кэш Preview Manager
         const cachedData = await getPreviewData(fileId)
         if (cachedData?.recognition_results) {
-          console.log(`Использованы кэшированные результаты распознавания для ${fileId}`)
+          logInfo("[useRecognitionPreview] Использованы кэшированные результаты распознавания", { fileId })
           // Конвертируем RecognitionResults в YoloVideoData формат
           const yoloData = convertRecognitionResultsToYoloData(
             fileId,
@@ -89,17 +93,20 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
         }
 
         // Запускаем распознавание
+        logInfo("[useRecognitionPreview] Запуск нового распознавания", { fileId, modelPath, targetClasses })
         const result = await invoke<YoloVideoData>("process_video_recognition", {
           videoPath,
           modelPath,
           targetClasses,
         })
 
+        logInfo("[useRecognitionPreview] Распознавание завершено успешно", { fileId })
         options.onRecognitionComplete?.(fileId, result)
         return result
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to process video recognition"
         setError(errorMsg)
+        logError("[useRecognitionPreview] Ошибка распознавания видео", err)
         options.onError?.(errorMsg)
         return null
       } finally {
@@ -136,7 +143,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
         return []
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to get recognition at timestamp"
-        console.error(errorMsg)
+        logError("[useRecognitionPreview] Ошибка получения распознавания по timestamp", err)
         return []
       }
     },
@@ -157,6 +164,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to get preview with recognition"
         setError(errorMsg)
+        logError("[useRecognitionPreview] Ошибка получения превью с распознаванием", err)
         options.onError?.(errorMsg)
         return null
       }
@@ -173,6 +181,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       modelPath?: string,
       targetClasses?: string[],
     ): Promise<Map<string, YoloVideoData>> => {
+      logInfo("[useRecognitionPreview] Запуск batch распознавания", { filesCount: files.length })
       try {
         setIsProcessing(true)
         setError(null)
@@ -200,10 +209,12 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
           })
         }
 
+        logInfo("[useRecognitionPreview] Batch распознавание завершено", { resultsCount: results.size })
         return results
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to process batch recognition"
         setError(errorMsg)
+        logError("[useRecognitionPreview] Ошибка batch распознавания", err)
         options.onError?.(errorMsg)
         return new Map()
       } finally {
@@ -224,6 +235,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to clear recognition results"
         setError(errorMsg)
+        logError("[useRecognitionPreview] Ошибка очистки результатов распознавания", err)
         options.onError?.(errorMsg)
         return false
       }

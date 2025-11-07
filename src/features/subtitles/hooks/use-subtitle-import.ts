@@ -9,6 +9,7 @@ import { useCallback, useState } from "react"
 
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useToast } from "@/hooks/use-toast"
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { SubtitleClip } from "../types/subtitles"
 import { detectSubtitleFormat, importSubtitles, validateSubtitles } from "../utils/subtitle-importers"
@@ -29,6 +30,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
    * Открывает диалог выбора файла и импортирует субтитры
    */
   const importFromFile = useCallback(async () => {
+    logInfo("[useSubtitleImport] Начало импорта субтитров из файла")
     try {
       setIsImporting(true)
       setImportProgress(0)
@@ -129,6 +131,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       setImportProgress(100)
 
       // Успешное завершение
+      logInfo("[useSubtitleImport] Субтитры успешно импортированы", { count: subtitles.length, format })
       toast({
         title: "Субтитры импортированы",
         description: `Импортировано ${subtitles.length} субтитров из файла ${format.toUpperCase()}`,
@@ -145,7 +148,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         subtitles: clipsToAdd,
       })
     } catch (error) {
-      console.error("Ошибка импорта субтитров:", error)
+      logError("[useSubtitleImport] Ошибка импорта субтитров", error)
       toast({
         title: "Ошибка импорта",
         description: error instanceof Error ? error.message : "Неизвестная ошибка",
@@ -211,7 +214,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
 
         return { success: true, subtitles: clipsToAdd }
       } catch (error) {
-        console.error("Ошибка импорта субтитров из строки:", error)
+        logError("[useSubtitleImport] Ошибка импорта субтитров из строки", error)
         return {
           success: false,
           error: error instanceof Error ? error.message : "Неизвестная ошибка",
@@ -236,6 +239,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         language?: string
       },
     ) => {
+      logInfo("[useSubtitleImport] Импорт субтитров из Whisper транскрипции", { segmentsCount: segments.length })
       try {
         // Конвертируем сегменты Whisper в субтитры
         const subtitles: SubtitleClip[] = segments.map((segment) => ({
@@ -275,6 +279,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
           await addClip(targetTrackId, subtitleMediaFile, subtitle.startTime)
         }
 
+        logInfo("[useSubtitleImport] Whisper транскрипция успешно импортирована", { count: subtitles.length })
         toast({
           title: "Транскрипция импортирована",
           description: `Добавлено ${subtitles.length} субтитров из транскрипции`,
@@ -282,7 +287,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
 
         return { success: true, subtitles }
       } catch (error) {
-        console.error("Ошибка импорта транскрипции:", error)
+        logError("[useSubtitleImport] Ошибка импорта Whisper транскрипции", error)
         toast({
           title: "Ошибка импорта",
           description: error instanceof Error ? error.message : "Неизвестная ошибка",
