@@ -5,9 +5,11 @@ import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/previ
 import { useResources } from "@/features/resources"
 import type { TemplateResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { AddMediaButton, ApplyButton, FavoriteButton } from "../../browser/components/layout"
 import type { MediaTemplate } from "../lib/templates"
+
+const logger = createLogger({ module: "TemplatePreview" })
 
 /**
  * Интерфейс пропсов для компонента TemplatePreview
@@ -75,7 +77,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
   // Обработчик применения шаблона
   const handleApplyTemplate = useCallback(
     (_resource: TimelineResource, _type: string) => {
-      console.log("[TemplatePreview] Applying template:", template.id)
+      logger.info("[TemplatePreview] Applying template:", template.id)
       const videos = getVideosForPreview()
       applyTemplate(
         {
@@ -108,7 +110,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
     setTimeout(() => {
       // Это вызовет перерисовку компонента
       const isAdded = isTemplateAdded(template)
-      console.log(`Шаблон ${template.id} добавлен: ${isAdded}`)
+      logger.info(`Шаблон ${template.id} добавлен: ${isAdded}`)
     }, 10)
   }
 
@@ -131,7 +133,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
       // Удаляем ресурс из хранилища
       void removeResource(resource.id)
     } else {
-      console.warn(`Не удалось найти ресурс шаблона с ID ${template.id} для удаления`)
+      logger.warn(`Не удалось найти ресурс шаблона с ID ${template.id} для удаления`)
     }
   }
 

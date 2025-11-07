@@ -7,9 +7,11 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import type { VersionInfo } from "@/features/version-control/types"
 import { useToast } from "@/hooks/use-toast"
+import { createLogger } from "@/lib/tauri-logger"
 import type { CommandResult, ProjectEvent } from "@/types/generated/tauri-bindings"
-
 import { getBackendSync } from "../services/backend-sync"
+
+const logger = createLogger({ module: "UseVersionControl" })
 
 // This is a different interface for hook state, not the same as backend VersionControlState
 export interface VersionControlHookState {
@@ -141,7 +143,7 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
           break
 
         default:
-          console.warn(`[useVersionControl] Unhandled event type: ${event.type}`)
+          logger.warn(`[useVersionControl] Unhandled event type: ${event.type}`)
           break
       }
     },

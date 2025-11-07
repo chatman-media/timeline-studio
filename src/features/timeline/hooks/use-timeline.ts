@@ -12,7 +12,9 @@ import {
   useTimelineSelection,
   useTimelineTracks,
 } from "@/domains/video-editing"
-import { logInfo } from "@/lib/tauri-logger"
+import { createLogger, logInfo } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseTimeline" })
 
 export interface TimelineContextType {
   // Project управление
@@ -170,25 +172,25 @@ export function useTimeline(): TimelineContextType {
 
     // Legacy методы для обратной совместимости
     addSection: async (_name: string, _start: number, _end: number) => {
-      console.warn("addSection is deprecated - sections are not implemented in the new architecture")
+      logger.warn("addSection is deprecated - sections are not implemented in the new architecture")
     },
     removeSection: async (_sectionId: string) => {
-      console.warn("removeSection is deprecated - sections are not implemented in the new architecture")
+      logger.warn("removeSection is deprecated - sections are not implemented in the new architecture")
     },
     selectSections: (_sectionIds: string[]) => {
-      console.warn("selectSections is deprecated - sections are not implemented in the new architecture")
+      logger.warn("selectSections is deprecated - sections are not implemented in the new architecture")
     },
     setTimeScale: (_scale: number) => {
-      console.warn("setTimeScale is deprecated - use UI state management instead")
+      logger.warn("setTimeScale is deprecated - use UI state management instead")
     },
     setScrollPosition: (_position: { x: number; y: number }) => {
-      console.warn("setScrollPosition is deprecated - use UI state management instead")
+      logger.warn("setScrollPosition is deprecated - use UI state management instead")
     },
     setEditMode: (_mode: string) => {
-      console.warn("setEditMode is deprecated - use UI state management instead")
+      logger.warn("setEditMode is deprecated - use UI state management instead")
     },
     toggleSnap: () => {
-      console.warn("toggleSnap is deprecated - use UI state management instead")
+      logger.warn("toggleSnap is deprecated - use UI state management instead")
     },
     copySelection: async () => {
       await selection.copyClips()
@@ -200,7 +202,7 @@ export function useTimeline(): TimelineContextType {
       await selection.pasteClips(targetId, position)
     },
     send: (_event: any) => {
-      console.warn("send is deprecated - use specific provider methods instead")
+      logger.warn("send is deprecated - use specific provider methods instead")
     },
   }
 }

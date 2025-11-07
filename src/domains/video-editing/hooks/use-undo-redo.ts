@@ -13,8 +13,11 @@ interface Clip {
 }
 
 import { useCallback, useMemo, useRef } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { type ActionType, type UndoRedoAction, UndoRedoService } from "../services/undo-redo-service"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
+
+const logger = createLogger("UseUndoRedo")
 
 export interface UseUndoRedoReturn {
   // Основные операции
@@ -243,13 +246,13 @@ export function useUndoRedo(): UseUndoRedoReturn {
 
           // Добавляем поддержку keyframes, эффектов и других операций
           default:
-            console.warn(`Неподдерживаемый тип действия: ${action.type}`)
+            logger.warn(`Неподдерживаемый тип действия: ${action.type}`)
             return false
         }
 
         return true
       } catch (error) {
-        console.error("Ошибка применения действия:", error)
+        logger.error("Ошибка применения действия:", { error })
         return false
       }
     },

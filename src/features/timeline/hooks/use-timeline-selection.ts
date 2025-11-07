@@ -3,11 +3,13 @@
  */
 
 import { useMemo } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../types"
 import { useClips } from "./use-clips"
 import { useTracks } from "./use-tracks"
+
+const logger = createLogger({ module: "UseTimelineSelection" })
 
 export interface UseTimelineSelectionReturn {
   // Текущее выделение
@@ -241,12 +243,12 @@ export function useTimelineSelection(): UseTimelineSelectionReturn {
 
   const groupSelected = () => {
     // TODO: Implement grouping functionality
-    console.log("Grouping selected items...")
+    logger.info("Grouping selected items...")
   }
 
   const ungroupSelected = () => {
     // TODO: Implement ungrouping functionality
-    console.log("Ungrouping selected items...")
+    logger.info("Ungrouping selected items...")
   }
 
   // ============================================================================

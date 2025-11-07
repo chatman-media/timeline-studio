@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { createLogger } from "@/lib/tauri-logger"
 import { formatFileSize } from "@/lib/utils"
 
 import { type CacheStatistics, indexedDBCacheService } from "../services/indexeddb-cache-service"
+
+const logger = createLogger("CacheSettings")
 
 /**
  * Модальное окно настроек кэширования
@@ -30,7 +33,7 @@ export function CacheSettingsModal() {
       const stats = await indexedDBCacheService.getCacheStatistics()
       setCacheStats(stats)
     } catch (error) {
-      console.error("Ошибка загрузки статистики кэша:", error)
+      logger.errorSync("Failed to load cache statistics", { error })
       toast.error(t("browser.media.cache.errors.loadStats"))
     } finally {
       setIsLoading(false)
@@ -58,7 +61,7 @@ export function CacheSettingsModal() {
       toast.success(t("browser.media.cache.success.clearPreview"))
       await loadCacheStats()
     } catch (error) {
-      console.error("Ошибка очистки кэша превью:", error)
+      logger.errorSync("Failed to clear preview cache", { error })
       toast.error(t("browser.media.cache.errors.clearPreview"))
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -90,7 +93,7 @@ export function CacheSettingsModal() {
       toast.success(t("browser.media.cache.success.clearFrames"))
       await loadCacheStats()
     } catch (error) {
-      console.error("Ошибка очистки кэша кадров:", error)
+      logger.errorSync("Failed to clear frame cache", { error })
       toast.error(t("browser.media.cache.errors.clearFrames"))
     } finally {
       setTimeout(() => {
@@ -117,7 +120,7 @@ export function CacheSettingsModal() {
       toast.success(t("browser.media.cache.success.clearRecognition"))
       await loadCacheStats()
     } catch (error) {
-      console.error("Ошибка очистки кэша распознавания:", error)
+      logger.errorSync("Failed to clear recognition cache", { error })
       toast.error(t("browser.media.cache.errors.clearRecognition"))
     } finally {
       setTimeout(() => {
@@ -144,7 +147,7 @@ export function CacheSettingsModal() {
       toast.success(t("browser.media.cache.success.clearAll"))
       await loadCacheStats()
     } catch (error) {
-      console.error("Ошибка очистки всего кэша:", error)
+      logger.errorSync("Failed to clear all cache", { error })
       toast.error(t("browser.media.cache.errors.clearAll"))
     } finally {
       setTimeout(() => {
@@ -161,7 +164,7 @@ export function CacheSettingsModal() {
       toast.success(t("browser.media.cache.success.cleanupExpired"))
       await loadCacheStats()
     } catch (error) {
-      console.error("Ошибка очистки устаревшего кэша:", error)
+      logger.errorSync("Failed to cleanup expired cache", { error })
       toast.error(t("browser.media.cache.errors.cleanupExpired"))
     }
   }, [loadCacheStats, t])
@@ -309,7 +312,7 @@ export function CacheSettingsModal() {
                     toast.success(t("browser.media.cache.success.clearSubtitles"))
                     await loadCacheStats()
                   } catch (error) {
-                    console.error("Ошибка очистки кэша субтитров:", error)
+                    logger.errorSync("Failed to clear subtitle cache", { error })
                     toast.error(t("browser.media.cache.errors.clearSubtitles"))
                   } finally {
                     setTimeout(() => {

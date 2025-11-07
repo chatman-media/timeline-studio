@@ -1,6 +1,10 @@
 import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaApi")
+
 /**
  * Типы метаданных медиафайлов для браузера
  * Отличается от VideoMetadata из media-analysis - здесь все поля опциональные
@@ -67,7 +71,7 @@ export async function getMediaMetadata(filePath: string): Promise<any> {
   try {
     return await invoke("get_media_metadata", { filePath })
   } catch (error) {
-    console.error("Ошибка при получении метаданных:", error)
+    logger.errorSync("Failed to get media metadata", { filePath, error })
     throw error
   }
 }
@@ -81,7 +85,7 @@ export async function getMediaFiles(directory: string): Promise<string[]> {
   try {
     return await invoke<string[]>("get_media_files", { directory })
   } catch (error) {
-    console.error("Ошибка при получении списка файлов:", error)
+    logger.errorSync("Failed to get media files", { directory, error })
     throw error
   }
 }
@@ -124,7 +128,7 @@ export async function selectMediaFile(): Promise<string[] | null> {
     // Если выбран один файл, open возвращает строку, иначе массив строк
     return Array.isArray(selected) ? selected : [selected]
   } catch (error) {
-    console.error("Ошибка при выборе файлов:", error)
+    logger.errorSync("Failed to select media files", { error })
     throw error
   }
 }
@@ -152,7 +156,7 @@ export async function selectAudioFile(): Promise<string[] | null> {
     // Если выбран один файл, open возвращает строку, иначе массив строк
     return Array.isArray(selected) ? selected : [selected]
   } catch (error) {
-    console.error("Ошибка при выборе аудиофайлов:", error)
+    logger.errorSync("Failed to select audio files", { error })
     throw error
   }
 }
@@ -174,7 +178,7 @@ export async function selectMediaDirectory(): Promise<string | null> {
 
     return selected
   } catch (error) {
-    console.error("Ошибка при выборе директории:", error)
+    logger.errorSync("Failed to select directory", { error })
     throw error
   }
 }

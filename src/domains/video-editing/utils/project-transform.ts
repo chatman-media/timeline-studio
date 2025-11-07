@@ -52,8 +52,11 @@ interface ProjectState {
   project?: Project
 }
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
+
+const logger = createLogger("ProjectTransform")
 
 /**
  * Преобразует ProjectState (backend) в Timeline представление для frontend
@@ -309,10 +312,11 @@ function calculateAspectRatio(resolution: { width: number; height: number }): st
  * @deprecated Используйте createProjectCommand() для создания команд
  */
 export function transformTimelineToBackendProject(timeline: Timeline, existingProject?: Project): Partial<Project> {
-  console.warn(
-    "transformTimelineToBackendProject is deprecated in BackendSync architecture. " +
+  logger.warn("Warning", {
+    data:
+      "transformTimelineToBackendProject is deprecated in BackendSync architecture. " +
       "Use ProjectCommand instead for all state changes.",
-  )
+  })
   // Собираем все треки из секций и глобальных треков
   const allTracks = [...timeline.sections.flatMap((section) => section.tracks), ...timeline.globalTracks]
 

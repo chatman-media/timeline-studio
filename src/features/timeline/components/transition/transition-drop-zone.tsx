@@ -2,11 +2,14 @@ import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineEffects } from "../../hooks/use-timeline-effects"
 import type { TimelineClip } from "../../types/timeline"
+
+const logger = createLogger({ module: "TransitionDropZone" })
 
 interface TransitionDropZoneProps {
   leftClip: TimelineClip
@@ -85,7 +88,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
         // Вызываем callback если предоставлен
         onDrop?.(transition)
       } catch (error) {
-        console.error("Failed to apply transition:", error)
+        logger.error("Failed to apply transition:", error)
       }
     },
     [leftClip, rightClip, applyTransition, onDrop, saveProject],

@@ -6,6 +6,10 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseNoiseReduction" })
   type AnalysisResult,
   type NoiseProfile,
   type NoiseReductionConfig,
@@ -64,7 +68,7 @@ export function useNoiseReduction({
     })
 
     noiseEngine.on("processingError", (error) => {
-      console.error("Noise reduction error:", error)
+      logger.error("Noise reduction error:", error)
       setIsProcessing(false)
     })
 
@@ -83,7 +87,7 @@ export function useNoiseReduction({
       try {
         return engine.createProcessor(config)
       } catch (error) {
-        console.error("Failed to create noise processor:", error)
+        logger.error("Failed to create noise processor:", error)
         return null
       }
     },

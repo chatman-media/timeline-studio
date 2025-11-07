@@ -14,6 +14,7 @@ import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
 import { useModal } from "@/features/modals"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 // Импорты констант моделей больше не нужны - будем получать через UnifiedAIService
 import { useChat } from "../hooks/use-chat"
@@ -22,6 +23,8 @@ import { chatStorageService } from "../services/chat-storage-service"
 import { compressContext, isContextOverLimit } from "../utils/context-manager"
 import { createTimelineContextPrompt } from "../utils/timeline-context"
 import { ChatList } from "./chat-list"
+
+const logger = createLogger({ module: "AiChat" })
 
 // Модели теперь получаем динамически из UnifiedAIService
 
@@ -111,7 +114,7 @@ export function AiChat() {
 
         setAvailableModels(agents)
       } catch (error) {
-        console.error("Failed to load available models:", error)
+        logger.error("Failed to load available models:", error)
         // Используем минимальный набор моделей в случае ошибки
         const fallbackModels: Agent[] = [
           { id: "claude-4-opus", name: "Claude 4 Sonnet", useTools: true, provider: "claude" },
@@ -204,7 +207,7 @@ export function AiChat() {
           // Добавляем сообщение
           await chatStorageService.addMessage(currentSessionId, userMessage)
         } catch (error) {
-          console.error("Failed to save message:", error)
+          logger.error("Failed to save message:", error)
         }
       }
       void performSave()
@@ -301,7 +304,7 @@ export function AiChat() {
         // Управление размером контекста
         let messages: { role: "user" | "assistant"; content: string }[] = allMessages
         if (isContextOverLimit(allMessages, currentModel, systemPrompt)) {
-          console.log("Контекст превышает лимиты модели, сжимаем...")
+          logger.info("Контекст превышает лимиты модели, сжимаем...")
           const compressedMessages = compressContext(allMessages, currentModel, systemPrompt)
           // Фильтруем только user и assistant сообщения для API
           messages = compressedMessages.filter((msg) => msg.role === "user" || msg.role === "assistant") as {
@@ -337,7 +340,7 @@ export function AiChat() {
 
         // Общий обработчик ошибок
         const handleStreamError = (error: Error) => {
-          console.error("Error in streaming:", error)
+          logger.error("Error in streaming:", error)
           setIsStreaming(false)
           setStreamingContent("")
           throw error
@@ -364,7 +367,7 @@ export function AiChat() {
           ...(provider === "claude" && { system: systemPrompt }),
         })
       } catch (error) {
-        console.error("Error sending message to AI:", error)
+        logger.error("Error sending message to AI:", error)
         setIsStreaming(false)
         setStreamingContent("")
 
@@ -554,7 +557,7 @@ export function AiChat() {
                       onClick={async () => {
                         const result = await importFile()
                         if (result.success) {
-                          console.log(`Импортировано ${result.files.length} файлов`)
+                          logger.info(`Импортировано ${result.files.length} файлов`)
                         }
                       }}
                     >
@@ -901,7 +904,7 @@ export function AiChat() {
                       await switchSession(newSession.id)
                     }
                   } catch (error) {
-                    console.error("Failed to copy session:", error)
+                    logger.error("Failed to copy session:", error)
                   }
                 }}
               />

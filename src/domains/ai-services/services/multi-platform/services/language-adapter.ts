@@ -6,6 +6,10 @@
 import { EnhancedUnifiedAIService } from "@/domains/ai-core/services"
 import type { AdaptedContent } from "@/domains/ai-services/types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("LanguageAdapter")
+
 export class LanguageAdapter {
   private aiService: EnhancedUnifiedAIService
   private isInitialized = false
@@ -61,7 +65,7 @@ export class LanguageAdapter {
 
     // Переводим субтитры если есть
     // Note: Subtitles translation would require additional properties in AdaptedContent
-    console.log("[LanguageAdapter] Subtitle translation not implemented yet")
+    logger.debug("[LanguageAdapter] Subtitle translation not implemented yet")
   }
 
   /**
@@ -162,7 +166,11 @@ export class LanguageAdapter {
     targetLanguages: string[],
   ): Promise<void> {
     // Note: Caption translation requires extended AdaptedContent interface
-    console.log("[LanguageAdapter] Caption translation placeholder", content, sourceLanguage, targetLanguages)
+    logger.debug("[LanguageAdapter] Caption translation placeholder", {
+      data: content,
+      sourceLanguage,
+      targetLanguages,
+    })
   }
 
   /**
@@ -258,7 +266,7 @@ export class LanguageAdapter {
       }
       content.metadata.culturalAdaptations[targetLanguage] = suggestions
     } catch (error) {
-      console.error("Failed to parse cultural adaptation suggestions:", error)
+      logger.error("Failed to parse cultural adaptation suggestions:", { error })
     }
   }
 

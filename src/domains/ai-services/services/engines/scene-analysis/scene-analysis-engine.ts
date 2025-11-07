@@ -6,6 +6,11 @@
  */
 
 import type { MediaFile as MediaInput } from "@/domains/ai-services/types/interfaces"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SceneAnalysisEngine")
+
 // Используем shared типы вместо ai-chat
 import {
   SceneAnalysis as SharedSceneAnalysis,
@@ -124,10 +129,10 @@ export class SceneAnalysisEngine {
     if (!this.sharedAIService) {
       try {
         // TODO: Implement proper AI container integration
-        console.log("AI container integration not yet implemented")
+        logger.debug("AI container integration not yet implemented")
         // Fallback: будем работать в ограниченном режиме
       } catch (error) {
-        console.error("Ошибка инициализации shared AI services:", error)
+        logger.error("Ошибка инициализации shared AI services:", { error })
         throw new Error("Не удалось инициализировать AI сервисы")
       }
     }
@@ -168,7 +173,7 @@ export class SceneAnalysisEngine {
 
       return scenesWithTransitions
     } catch (error) {
-      console.error("Ошибка анализа сцен:", error)
+      logger.error("Ошибка анализа сцен:", { error })
       throw new Error(`Не удалось проанализировать сцены в файле ${mediaFile.path}: ${String(error)}`)
     }
   }
@@ -288,7 +293,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
         transitions: [],
       }))
     } catch (error) {
-      console.warn("Ошибка детекции сцен через shared FFmpeg:", error)
+      logger.warn("Ошибка детекции сцен через shared FFmpeg", { error })
       return []
     }
   }
@@ -358,7 +363,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
         personAppearances: [],
       }
     } catch (error) {
-      console.warn(`Ошибка расширенного анализа сцены ${scene.id}:`, error)
+      logger.warn(`Ошибка расширенного анализа сцены ${scene.id}`, { error })
       return {
         ...scene,
         visualElements: [],
@@ -421,7 +426,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
 
       return scenesWithTransitions
     } catch (error) {
-      console.warn("Ошибка анализа переходов:", error)
+      logger.warn("Ошибка анализа переходов", { error })
       return scenes
     }
   }
@@ -456,7 +461,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           personAppearances,
         })
       } catch (error) {
-        console.warn(`Ошибка Person Identification для сцены ${scene.id}:`, error)
+        logger.warn(`Ошибка Person Identification для сцены ${scene.id}`, { error })
         enhancedScenes.push({
           ...scene,
           detectedFaces: [],
@@ -530,7 +535,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
         clipId: mediaFile.path,
       }))
     } catch (error) {
-      console.warn("Ошибка детекции лиц:", error)
+      logger.warn("Ошибка детекции лиц", { error })
       return []
     }
   }
@@ -591,10 +596,10 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           }
         } else {
           // Персона не найдена - можно создать новую или пропустить
-          console.log(`Не удалось идентифицировать лицо ${face.id}`)
+          logger.debug(`Не удалось идентифицировать лицо ${face.id}`)
         }
       } catch (error) {
-        console.warn(`Ошибка идентификации лица ${face.id}:`, error)
+        logger.warn(`Ошибка идентификации лица ${face.id}`, { error })
       }
     }
 
@@ -636,7 +641,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
 
         appearances.push(appearance)
       } catch (error) {
-        console.warn(`Ошибка создания появления для персоны ${identifiedPerson.personId}:`, error)
+        logger.warn(`Ошибка создания появления для персоны ${identifiedPerson.personId}`, { error })
       }
     }
 
@@ -672,7 +677,7 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
           await this.personDatabase.addEmbedding(appearance.personId, fakeEmbedding)
         }
       } catch (error) {
-        console.warn(`Ошибка обновления базы данных для персоны ${appearance.personId}:`, error)
+        logger.warn(`Ошибка обновления базы данных для персоны ${appearance.personId}`, { error })
       }
     }
   }
@@ -714,10 +719,10 @@ ${JSON.stringify(sceneDetection.scenes.map((s: any) => ({ id: s.id, description:
       // Кластеризуем неопознанные лица
       const newPersons = await this.personDatabase.clusterUnidentifiedFaces(detectedFaces, 0.8)
 
-      console.log(`Создано ${newPersons.length} новых профилей персон из неопознанных лиц`)
+      logger.debug(`Создано ${newPersons.length} новых профилей персон из неопознанных лиц`)
       return newPersons
     } catch (error) {
-      console.error("Ошибка создания профилей персон:", error)
+      logger.error("Ошибка создания профилей персон:", { error })
       return []
     }
   }
@@ -804,7 +809,7 @@ ${scenes.map((s) => `${s.id}: тип=${s.type}, описание="${s.descriptio
 
       return JSON.parse(response.content)
     } catch (error) {
-      console.warn("Ошибка группировки сцен:", error)
+      logger.warn("Ошибка группировки сцен", { error })
       return []
     }
   }

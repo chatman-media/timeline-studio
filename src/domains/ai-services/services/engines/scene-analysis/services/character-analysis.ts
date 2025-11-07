@@ -6,6 +6,9 @@
 import { SceneAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
 import type { Person } from "@/features/montage-planner/types"
 import type { DetectedFace, PersonProfile } from "@/features/person-identification/types/person"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("character-analysis")
 
 // Типы отношений между персонажами
 export enum RelationshipType {
@@ -259,7 +262,10 @@ export class CharacterAnalysisService {
     _mediaFile: any,
   ): Promise<CharacterAnalysisResult> {
     try {
-      console.log(`Analyzing characters for ${detectedPersons.length} detected persons in ${scenes.length} scenes`)
+      logger.info("Starting character analysis", {
+        personsCount: detectedPersons.length,
+        scenesCount: scenes.length,
+      })
 
       // 1. Создаем профили персонажей
       const characters = await this.createCharacterProfiles(scenes, detectedPersons)
@@ -284,7 +290,11 @@ export class CharacterAnalysisService {
         summary,
       }
     } catch (error) {
-      console.error("Character analysis failed:", error)
+      logger.error("Character analysis failed", {
+        error,
+        personsCount: detectedPersons.length,
+        scenesCount: scenes.length,
+      })
       throw error
     }
   }
@@ -422,7 +432,12 @@ export class CharacterAnalysisService {
 
       return interaction
     } catch (error) {
-      console.warn(`Failed to analyze interaction between ${charA.personId} and ${charB.personId}:`, error)
+      logger.warn("Failed to analyze interaction between characters", {
+        error,
+        personA: charA.personId,
+        personB: charB.personId,
+        sceneId: scene.id,
+      })
       return null
     }
   }
@@ -529,7 +544,12 @@ export class CharacterAnalysisService {
 
       return relationship
     } catch (error) {
-      console.warn(`Failed to analyze relationship between ${personAId} and ${personBId}:`, error)
+      logger.warn("Failed to analyze relationship between persons", {
+        error,
+        personA: personAId,
+        personB: personBId,
+        interactionsCount: interactions.length,
+      })
       return null
     }
   }

@@ -12,8 +12,10 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { PersonProfile } from "../types/person"
+
+const logger = createLogger({ module: "PersonForm" })
 
 interface PersonFormProps {
   person?: PersonProfile
@@ -92,7 +94,7 @@ export function PersonForm({ person, isOpen, onClose, onSave, isLoading = false 
       await onSave(personData)
       onClose()
     } catch (error) {
-      console.error("Error saving person:", error)
+      logger.error("Error saving person:", error)
       // Здесь можно добавить toast с ошибкой
     }
   }

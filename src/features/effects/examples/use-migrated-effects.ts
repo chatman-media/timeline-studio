@@ -3,6 +3,10 @@
  */
 
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseMigratedEffects" })
   createEffectManager,
   createEffectRenderer,
   findMigratedEffect,
@@ -22,52 +26,52 @@ const effectManager = createEffectManager({
 const renderer = createEffectRenderer()
 
 // Показываем статистику миграции
-console.log("📊 Статистика миграции эффектов:")
-console.log(`   Всего категорий: ${migrationStats.totalCategories}`)
-console.log(`   Всего эффектов: ${migrationStats.totalEffects}`)
-console.log("\n   По категориям:")
+logger.info("📊 Статистика миграции эффектов:")
+logger.info(`   Всего категорий: ${migrationStats.totalCategories}`)
+logger.info(`   Всего эффектов: ${migrationStats.totalEffects}`)
+logger.info("\n   По категориям:")
 Object.entries(migrationStats.effectsByCategory).forEach(([category, count]) => {
-  console.log(`   - ${category}: ${String(count)} эффектов`)
+  logger.info(`   - ${category}: ${String(count)} эффектов`)
 })
 
 // Примеры использования
-console.log("\n🎨 Примеры эффектов:")
+logger.info("\n🎨 Примеры эффектов:")
 
 // 1. Находим эффект по ID
 const brightnessEffect = findMigratedEffect("effect_brightness")
 if (brightnessEffect) {
-  console.log(`\n1. Эффект яркости: ${brightnessEffect.name.ru}`)
-  console.log(`   Категория: ${brightnessEffect.category}`)
-  console.log(`   Параметры: ${brightnessEffect.parameters.map((p) => p.name.ru).join(", ")}`)
+  logger.info(`\n1. Эффект яркости: ${brightnessEffect.name.ru}`)
+  logger.info(`   Категория: ${brightnessEffect.category}`)
+  logger.info(`   Параметры: ${brightnessEffect.parameters.map((p) => p.name.ru).join(", ")}`)
 }
 
 // 2. Получаем все эффекты цветокоррекции
 const colorEffects = getMigratedEffectsByCategory("color_correction")
-console.log(`\n2. Эффекты цветокоррекции (${colorEffects.length}):`)
+logger.info(`\n2. Эффекты цветокоррекции (${colorEffects.length}):`)
 colorEffects.forEach((effect) => {
-  console.log(`   - ${effect.name.ru} (${effect.id})`)
+  logger.info(`   - ${effect.name.ru} (${effect.id})`)
 })
 
 // 3. Находим популярные эффекты
 const popularEffects = getMigratedEffectsByTags(["popular"])
-console.log(`\n3. Популярные эффекты (${popularEffects.length}):`)
+logger.info(`\n3. Популярные эффекты (${popularEffects.length}):`)
 popularEffects.slice(0, 5).forEach((effect) => {
-  console.log(`   - ${effect.name.ru} (${effect.category})`)
+  logger.info(`   - ${effect.name.ru} (${effect.category})`)
 })
 
 // 4. Применяем эффект к клипу
-console.log("\n4. Применение эффекта:")
+logger.info("\n4. Применение эффекта:")
 const appliedEffect = effectManager.applyEffect("effect_sepia", "clip_123", "clip")
 if (appliedEffect) {
-  console.log(`   ✅ Эффект "${appliedEffect.effectId}" применен к клипу`)
+  logger.info(`   ✅ Эффект "${appliedEffect.effectId}" применен к клипу`)
 
   // Настраиваем параметры
   effectManager.setEffectParameter(appliedEffect.id, "intensity", 0.8)
-  console.log("   ✅ Параметры настроены")
+  logger.info("   ✅ Параметры настроены")
 }
 
 // 5. Создаем стек эффектов
-console.log("\n5. Создание стека эффектов:")
+logger.info("\n5. Создание стека эффектов:")
 const effectStack = effectManager.createEffectStack("clip_123", "clip")
 if (effectStack) {
   // Добавляем эффекты в стек
@@ -75,11 +79,11 @@ if (effectStack) {
   effectManager.applyEffect("effect_contrast", effectStack.id, "clip", {})
   effectManager.applyEffect("effect_vintage_film", effectStack.id, "clip", {})
 
-  console.log(`   ✅ Создан стек с ${effectStack.effects.length} эффектами`)
+  logger.info(`   ✅ Создан стек с ${effectStack.effects.length} эффектами`)
 }
 
 // 6. Рендеринг с эффектами (пример)
-console.log("\n6. Рендеринг эффектов:")
+logger.info("\n6. Рендеринг эффектов:")
 async function renderExample() {
   // Создаем тестовое изображение
   const canvas = document.createElement("canvas")
@@ -114,22 +118,22 @@ async function renderExample() {
   const result = await renderer.renderEffectStack(effectStack.effects, new Map(), context)
 
   if (result.success && result.output) {
-    console.log("   ✅ Рендеринг успешен")
-    console.log(`   Время рендеринга: ${result.processingTime}ms`)
+    logger.info("   ✅ Рендеринг успешен")
+    logger.info(`   Время рендеринга: ${result.processingTime}ms`)
   }
 }
 
 // Запускаем рендеринг если в браузере
 if (typeof window !== "undefined") {
-  renderExample().catch(console.error)
+  renderExample().catch((error) => logger.errorSync("Failed to render example", { error }))
 }
 
 // 7. Экспорт конфигурации эффектов
-console.log("\n7. Экспорт конфигурации:")
+logger.info("\n7. Экспорт конфигурации:")
 const exportData = effectManager.exportEffectStack(effectStack.id)
 if (exportData) {
-  console.log("   ✅ Конфигурация экспортирована")
-  console.log(`   Размер: ${JSON.stringify(exportData).length} байт`)
+  logger.info("   ✅ Конфигурация экспортирована")
+  logger.info(`   Размер: ${JSON.stringify(exportData).length} байт`)
 }
 
-console.log("\n✨ Готово! Система эффектов работает с мигрированными эффектами.")
+logger.info("\n✨ Готово! Система эффектов работает с мигрированными эффектами.")

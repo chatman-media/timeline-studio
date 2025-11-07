@@ -11,8 +11,11 @@ import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+
+const logger = createLogger("video-player:player-provider")
 
 interface PlayerContextType {
   // Состояние воспроизведения (синхронизировано с backend)
@@ -166,13 +169,13 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     try {
       const result = await backendSync.executeCommand(command)
 
-      console.log("Player command result:", result)
+      logger.debug("player command executed", { result })
       if (!result?.success) {
         throw new Error(result?.error || "Command failed")
       }
       return result.data
     } catch (error) {
-      console.error("Player command failed:", error)
+      logger.error("player command failed", { error })
       // throw error
     }
   }
@@ -213,7 +216,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
     // Проверяем, что mediaId не пустой
     if (!mediaId) {
-      console.error("[PlayerProvider] playerSetMedia called with empty mediaId")
+      logger.error("playerSetMedia called with empty mediaId")
       return
     }
 

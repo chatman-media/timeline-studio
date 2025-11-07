@@ -8,9 +8,12 @@
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useEffect } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
+
+const logger = createLogger("ProjectManagementProvider")
 
 // ===========================
 // Project Provider
@@ -59,9 +62,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           },
         },
       })
-      console.log("[ProjectProvider] Project state synced with backend")
+      logger.info("[ProjectProvider] Project state synced with backend")
     } catch (error) {
-      console.error("[ProjectProvider] Failed to sync project state:", error)
+      logger.error("[ProjectProvider] Failed to sync project state:", { error: error })
     }
   }
 
@@ -70,7 +73,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (projectState && isBackendConnected && hasUnsavedChanges) {
       // Debounce синхронизацию
       const timer = setTimeout(() => {
-        syncProjectState().catch(console.error)
+        syncProjectState().catch((error) => logger.error("Failed to sync project state", { error }))
       }, 1000)
 
       return () => clearTimeout(timer)
@@ -187,9 +190,9 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
           params: settings,
         },
       })
-      console.log("[UserSettingsProvider] Settings synced with backend")
+      logger.info("[UserSettingsProvider] Settings synced with backend")
     } catch (error) {
-      console.error("[UserSettingsProvider] Failed to sync settings:", error)
+      logger.error("[UserSettingsProvider] Failed to sync settings:", { error: error })
     }
   }
 
@@ -200,7 +203,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     if (isBackendConnected) {
       // Debounce синхронизацию
       setTimeout(() => {
-        syncSettings().catch(console.error)
+        syncSettings().catch((error) => logger.error("Failed to sync settings", { error }))
       }, 500)
     }
   }
@@ -259,7 +262,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
   // Синхронизация при инициализации
   useEffect(() => {
     if (settings.isLoaded && isBackendConnected) {
-      syncSettings().catch(console.error)
+      syncSettings().catch((error) => logger.error("Failed to sync settings on init", { error }))
     }
   }, [settings.isLoaded, isBackendConnected])
 
@@ -326,7 +329,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
     // Также пытаемся переподключить backend
     if (!backendSync.isConnected()) {
-      backendSync.connect().catch(console.error)
+      backendSync.connect().catch((error) => logger.error("Failed to connect backend sync", { error }))
     }
   }
 
@@ -336,7 +339,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       const currentlyConnected = backendSync.isConnected()
 
       if (currentlyConnected !== backendStatus.connected) {
-        console.log(`[AppStateProvider] Backend connection status changed: ${currentlyConnected}`)
+        logger.info("[AppStateProvider] Backend connection status changed:", { currentlyConnected })
 
         // Если восстановилось соединение, синхронизируем состояние
         if (currentlyConnected) {
@@ -348,7 +351,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
                 params: { timestamp: new Date().toISOString() },
               },
             })
-            .catch(console.error)
+            .catch((error) => logger.error("Failed to notify backend about reconnect", { error }))
         }
       }
     }, 5000) // Проверка каждые 5 секунд
@@ -396,19 +399,19 @@ export function ProjectManagementProvider({ children }: ProjectManagementProvide
 
   // Инициализация BackendSync при монтировании
   useEffect(() => {
-    console.log("[ProjectManagementProvider] Initializing BackendSync integration")
+    logger.info("[ProjectManagementProvider] Initializing BackendSync integration")
 
     // Подписываемся на события backend
     const unsubscribe = backendSync.onEvent((event) => {
       switch (event.type) {
         case "PROJECT_STATE_UPDATED":
           // Backend сообщает об обновлении состояния проекта
-          console.log("[ProjectManagementProvider] Project state updated from backend")
+          logger.info("[ProjectManagementProvider] Project state updated from backend")
           break
 
         case "SETTINGS_UPDATED":
           // Backend сообщает об обновлении настроек
-          console.log("[ProjectManagementProvider] Settings updated from backend")
+          logger.info("[ProjectManagementProvider] Settings updated from backend")
           break
       }
     })

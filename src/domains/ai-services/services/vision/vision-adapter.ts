@@ -11,6 +11,11 @@ import type {
   FrameAnalysisResult,
   IVisionService,
 } from "../../types/interfaces"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("VisionAdapter")
+
 import { VisionService } from "./vision-service"
 
 export class VisionAdapter implements IVisionService {
@@ -40,7 +45,7 @@ export class VisionAdapter implements IVisionService {
   private async loadImageData(imagePath: string): Promise<ImageData> {
     // TODO: Реальная загрузка изображения
     // Сейчас возвращаем заглушку
-    console.warn(`Loading image from ${imagePath} - using mock data`)
+    logger.warn(`Loading image from ${imagePath} - using mock data`)
     return new ImageData(1920, 1080)
   }
 
@@ -119,7 +124,7 @@ export class VisionAdapter implements IVisionService {
 
       return this.convertToDetectedObjects(analysis.objects || [])
     } catch (error) {
-      console.warn(`Object detection failed for ${imagePath}:`, error)
+      logger.warn(`Object detection failed for ${imagePath}`, { error })
       return []
     }
   }
@@ -133,7 +138,7 @@ export class VisionAdapter implements IVisionService {
 
       return this.convertToExtractedText(analysis.text || [])
     } catch (error) {
-      console.warn(`Text extraction failed for ${imagePath}:`, error)
+      logger.warn(`Text extraction failed for ${imagePath}`, { error })
       return []
     }
   }
@@ -151,7 +156,7 @@ export class VisionAdapter implements IVisionService {
 
       return this.getDefaultComposition()
     } catch (error) {
-      console.warn(`Composition analysis failed for ${imagePath}:`, error)
+      logger.warn(`Composition analysis failed for ${imagePath}`, { error })
       return this.getDefaultComposition()
     }
   }
@@ -165,7 +170,7 @@ export class VisionAdapter implements IVisionService {
 
       return this.convertToColorAnalysis(dominantColors)
     } catch (error) {
-      console.warn(`Color analysis failed for ${imagePath}:`, error)
+      logger.warn(`Color analysis failed for ${imagePath}`, { error })
       return this.getDefaultColors()
     }
   }
@@ -175,7 +180,7 @@ export class VisionAdapter implements IVisionService {
 
     try {
       // TODO: Извлечь кадры из видео с заданной частотой
-      console.warn(`Video analysis not fully implemented for ${videoPath}`)
+      logger.warn(`Video analysis not fully implemented for ${videoPath}`)
 
       // Возвращаем пример анализа одного кадра
       const frameResult = await this.analyzeFrame(videoPath)
@@ -194,7 +199,7 @@ export class VisionAdapter implements IVisionService {
 
       return this.convertToFaces(analysis.faces || [])
     } catch (error) {
-      console.warn(`Face detection failed for ${imagePath}:`, error)
+      logger.warn(`Face detection failed for ${imagePath}`, { error })
       return []
     }
   }
@@ -206,7 +211,7 @@ export class VisionAdapter implements IVisionService {
       const textResults = await this.extractText(imagePath)
       return textResults.map((result) => result.text).join(" ")
     } catch (error) {
-      console.warn(`Text recognition failed for ${imagePath}:`, error)
+      logger.warn(`Text recognition failed for ${imagePath}`, { error })
       return ""
     }
   }

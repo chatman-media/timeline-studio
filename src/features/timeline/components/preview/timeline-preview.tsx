@@ -5,7 +5,10 @@
 
 import { memo, useEffect } from "react"
 import { useWebGL2Preview } from "@/features/preview/hooks/use-webgl2-preview"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
+
+const logger = createLogger({ module: "TimelinePreview" })
 
 interface TimelinePreviewProps {
   className?: string
@@ -21,14 +24,14 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
   // Логирование для отладки
   useEffect(() => {
     if (isInitialized) {
-      console.log("[Timeline Preview] Initialized with GPU tier:", gpuTier)
-      console.log("[Timeline Preview] Quality settings:", quality)
+      logger.info("[Timeline Preview] Initialized with GPU tier:", gpuTier)
+      logger.info("[Timeline Preview] Quality settings:", quality)
     }
   }, [isInitialized, gpuTier, quality])
 
   useEffect(() => {
     if (cacheStats) {
-      console.log("[Timeline Preview] Cache stats:", {
+      logger.info("[Timeline Preview] Cache stats:", {
         entries: cacheStats.entries,
         sizeMB: cacheStats.sizeMB.toFixed(2),
         hitRate: `${((cacheStats as any).hitRate * 100 || 0).toFixed(1)}%`,

@@ -4,6 +4,10 @@ import { useTranslation } from "react-i18next"
 
 import type { MediaFile } from "@/features/media/types/media"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "VideoPanelComponent" })
+
 interface VideoPanelProps {
   video: MediaFile
   isActive: boolean
@@ -31,14 +35,14 @@ export function VideoPanelComponent({
   // Эффект для регистрации видео в videoRefs и обновления src при изменении источника
   useEffect(() => {
     if (videoRef.current && video.id && videoRefs) {
-      console.log(`[VideoPanel] Регистрация видео ${video.id} startTime=${video.startTime}`)
+      logger.info(`[VideoPanel] Регистрация видео ${video.id} startTime=${video.startTime}`)
 
       // Сохраняем ссылку на видео элемент
       videoRefs[video.id] = videoRef.current
 
       // Проверяем, что src установлен правильно
       if (video.path && !videoRef.current.src?.includes(video.id)) {
-        console.log(`[VideoPanel] Принудительно обновляем src для видео ${video.id}: ${video.path}`)
+        logger.info(`[VideoPanel] Принудительно обновляем src для видео ${video.id}: ${video.path}`)
 
         // Сохраняем текущее время и состояние воспроизведения
         const currentTime = videoRef.current.currentTime
@@ -59,7 +63,7 @@ export function VideoPanelComponent({
             if (wasPlaying) {
               videoRef.current
                 .play()
-                .catch((e: unknown) => console.error(`[VideoPanel] Ошибка воспроизведения видео ${video.id}:`, e))
+                .catch((e: unknown) => logger.error(`[VideoPanel] Ошибка воспроизведения видео ${video.id}:`, e))
             }
           }
         }, 100)
@@ -75,7 +79,7 @@ export function VideoPanelComponent({
 
   const videoKey = video.path ? video.path : `empty-${video.id}`
 
-  console.log(`[VideoPanel] Рендеринг видео с ключом: ${videoKey}`)
+  logger.info(`[VideoPanel] Рендеринг видео с ключом: ${videoKey}`)
 
   return (
     <div

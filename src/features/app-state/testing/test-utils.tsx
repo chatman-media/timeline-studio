@@ -9,10 +9,11 @@ import { type RenderOptions, type RenderResult, render } from "@testing-library/
 import type React from "react"
 import type { ReactElement } from "react"
 import { vi } from "vitest"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { CommandResult, ProjectCommand } from "@/types/generated/tauri-bindings"
-
 import { createTestScenarios, MockBackendProvider, type MockProjectState } from "./mock-backend-provider"
+
+const logger = createLogger({ module: "TestUtils" })
 
 // Re-export will be done later in the file to avoid duplicates
 
@@ -126,7 +127,7 @@ export function setupTauriMocks(commandMocks: Record<string, any> = {}) {
     if (mock) {
       return mock(args)
     }
-    console.warn(`Unmocked Tauri command: ${command}`)
+    logger.warn(`Unmocked Tauri command: ${command}`)
     return Promise.resolve({ status: "error", error: `Unmocked command: ${command}` })
   })
 

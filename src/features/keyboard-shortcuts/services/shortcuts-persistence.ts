@@ -4,8 +4,10 @@
  */
 
 import { isDesktop } from "@/lib/environment"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { ShortcutDefinition } from "./shortcuts-registry"
+
+const logger = createLogger({ module: "ShortcutsPersistence" })
 
 const STORAGE_KEY = "timeline-studio-shortcuts"
 const GLOBAL_SHORTCUTS_KEY = "timeline-studio-global-shortcuts-enabled"
@@ -49,15 +51,15 @@ export class ShortcutsPersistence {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
       }
 
-      console.log("Shortcuts settings saved successfully")
+      logger.info("Shortcuts settings saved successfully")
     } catch (error) {
-      console.error("Failed to save shortcuts settings:", error)
+      logger.error("Failed to save shortcuts settings:", error)
 
       // Fallback на localStorage в случае ошибки
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
       } catch (localStorageError) {
-        console.error("Failed to save to localStorage:", localStorageError)
+        logger.error("Failed to save to localStorage:", localStorageError)
         throw error
       }
     }
@@ -87,13 +89,13 @@ export class ShortcutsPersistence {
 
       // Проверяем версию настроек
       if (settings && settings.version !== this.currentVersion) {
-        console.log(`Migrating shortcuts settings from ${settings.version} to ${this.currentVersion}`)
+        logger.info(`Migrating shortcuts settings from ${settings.version} to ${this.currentVersion}`)
         settings = this.migrateSettings(settings)
       }
 
       return settings
     } catch (error) {
-      console.error("Failed to load shortcuts settings:", error)
+      logger.error("Failed to load shortcuts settings:", error)
       return null
     }
   }
@@ -128,9 +130,9 @@ export class ShortcutsPersistence {
         localStorage.removeItem(STORAGE_KEY)
       }
 
-      console.log("Shortcuts settings cleared")
+      logger.info("Shortcuts settings cleared")
     } catch (error) {
-      console.error("Failed to clear shortcuts settings:", error)
+      logger.error("Failed to clear shortcuts settings:", error)
       throw error
     }
   }
@@ -172,9 +174,9 @@ export class ShortcutsPersistence {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(migratedSettings))
       }
 
-      console.log("Settings imported successfully")
+      logger.info("Settings imported successfully")
     } catch (error) {
-      console.error("Failed to import settings:", error)
+      logger.error("Failed to import settings:", error)
       throw error
     }
   }

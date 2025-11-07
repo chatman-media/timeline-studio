@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { AudioEngine } from "../services/audio-engine"
+
+const logger = createLogger({ module: "UseAudioEngine" })
 
 export function useAudioEngine() {
   const engineRef = useRef<AudioEngine | null>(null)
@@ -17,7 +19,7 @@ export function useAudioEngine() {
         setIsInitialized(true)
       })
       .catch((error: unknown) => {
-        console.error("Failed to initialize audio engine:", error)
+        logger.error("Failed to initialize audio engine:", error)
       })
 
     return () => {

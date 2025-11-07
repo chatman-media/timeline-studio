@@ -74,7 +74,7 @@ export const chatMachine = setup({
      */
     logSendMessage: ({ event }) => {
       if (event.type === "SEND_CHAT_MESSAGE") {
-        console.log(`[AI-Services/ChatMachine] Отправка сообщения: ${event.message}`)
+        logger.infoSync("Отправка сообщения", { message: event.message })
       }
     },
 
@@ -83,9 +83,10 @@ export const chatMachine = setup({
      */
     logReceiveMessage: ({ event }) => {
       if (event.type === "RECEIVE_CHAT_MESSAGE") {
-        console.log(
-          `[AI-Services/ChatMachine] Получение сообщения от ${event.message.role}: ${event.message.content?.substring(0, 50) || ""}...`,
-        )
+        logger.infoSync("Получение сообщения", {
+          role: event.message.role,
+          contentPreview: event.message.content?.substring(0, 50) || "",
+        })
       }
     },
 
@@ -94,7 +95,7 @@ export const chatMachine = setup({
      */
     logSelectAgent: ({ event }) => {
       if (event.type === "SELECT_AGENT") {
-        console.log(`[AI-Services/ChatMachine] Выбран агент: ${event.agentId}`)
+        logger.infoSync("Выбран агент", { agentId: event.agentId })
       }
     },
   },
@@ -253,7 +254,7 @@ export const chatMachine = setup({
               error: null,
             }),
             ({ event }) => {
-              console.log("[AI-Services/ChatMachine] Timeline создан успешно:", event.result)
+              logger.infoSync("Timeline создан успешно", { result: event.result })
             },
           ],
         },
@@ -276,7 +277,7 @@ export const chatMachine = setup({
               error: null,
             }),
             ({ event }) => {
-              console.log("[AI-Services/ChatMachine] Анализ ресурсов завершен:", event.result)
+              logger.infoSync("Анализ ресурсов завершен", { result: event.result })
             },
           ],
         },
@@ -299,7 +300,7 @@ export const chatMachine = setup({
               error: null,
             }),
             ({ event }) => {
-              console.log("[AI-Services/ChatMachine] Команда выполнена успешно:", event.result)
+              logger.infoSync("Команда выполнена успешно", { result: event.result })
             },
           ],
         },

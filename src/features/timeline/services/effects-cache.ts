@@ -3,7 +3,10 @@
  * Адаптирован для работы с AppliedEffect из timeline
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect } from "../types"
+
+const logger = createLogger({ module: "EffectsCache" })
 
 interface CacheEntry {
   bitmap: ImageBitmap
@@ -48,7 +51,7 @@ export class EffectsCache {
       this.cache.set(key, entry)
       this.currentSizeBytes += size
     } catch (error) {
-      console.warn("Failed to cache frame:", error)
+      logger.warn("Failed to cache frame:", error)
     }
   }
 
@@ -185,7 +188,7 @@ export class EffectsCache {
               }
             })
             .catch((error) => {
-              console.warn(`Failed to prefetch frame at ${t}:`, error)
+              logger.warn(`Failed to prefetch frame at ${t}:`, error)
             }),
         )
       }

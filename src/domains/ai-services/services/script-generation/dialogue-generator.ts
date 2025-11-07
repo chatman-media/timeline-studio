@@ -4,7 +4,10 @@
  */
 
 import { UnifiedAIService } from "@/domains/ai-core/services"
+import { createLogger } from "@/lib/tauri-logger"
 import type { Character, Dialogue, Timing } from "./types"
+
+const logger = createLogger("DialogueGenerator")
 
 export interface DialogueGenerationParams {
   characters: Character[]
@@ -207,7 +210,7 @@ Generate ${Math.min(characters.length * 2, 6)} lines of dialogue as JSON:
         timing: this.calculateTiming(index, item.text),
       }))
     } catch (error) {
-      console.error("Failed to parse dialogue response:", error)
+      logger.errorSync("Failed to parse dialogue response", { error })
       // Fallback: пытаемся извлечь диалог из текста
       return this.extractDialogueFromText(response)
     }

@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { EffectPreset, VideoEffect } from "@/features/effects/types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "EffectPresets" })
+
 interface EffectPresetsProps {
   effect: VideoEffect
   onApplyPreset: (presetName: string, parameters: Record<string, any>) => void
@@ -45,11 +49,11 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
             setCustomPresets(converted)
           }
         } catch (parseError) {
-          console.error("Error parsing custom presets:", parseError)
+          logger.error("Error parsing custom presets:", parseError)
         }
       }
     } catch (storageError) {
-      console.error("Error accessing localStorage:", storageError)
+      logger.error("Error accessing localStorage:", storageError)
     }
   }, [effect.id])
 

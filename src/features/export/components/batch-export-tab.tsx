@@ -9,10 +9,13 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { RenderStatus } from "@/domains/video-editing"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useRenderQueue } from "../hooks/use-render-queue"
 import type { ExportSettings } from "../types/export-types"
 import { ExportPresets } from "./export-presets"
+
+const logger = createLogger({ module: "BatchExportTab" })
 
 interface BatchExportTabProps {
   onClose: () => void
@@ -71,7 +74,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
         )
       }
     } catch (error) {
-      console.error("Failed to select output folder:", error)
+      logger.error("Failed to select output folder:", error)
     }
   }, [t])
 
@@ -96,7 +99,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
       setPendingProjects((prev) => [...prev, ...newProjects])
     } catch (error) {
-      console.error("Failed to add projects:", error)
+      logger.error("Failed to add projects:", error)
     }
   }, [addProjectsToQueue, globalSettings, outputFolder])
 

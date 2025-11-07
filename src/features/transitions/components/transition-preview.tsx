@@ -8,9 +8,12 @@ import { FavoriteButton } from "@/features/browser/components/layout/favorite-bu
 import type { MediaFile } from "@/features/media/types/media"
 import type { TransitionResource } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
 import { convertVideoSrc } from "@/lib/tauri-utils"
 
 import { useTransitions } from "../hooks/use-transitions"
+
+const logger = createLogger("TransitionPreview")
 
 /**
  * Интерфейс пропсов для компонента TransitionPreview
@@ -412,7 +415,7 @@ export function TransitionPreview({
    */
   useEffect(() => {
     if (!sourceVideoRef.current || !targetVideoRef.current) {
-      console.warn(`🎬 [TransitionPreview] Видео элементы не найдены для ${transitionType}`)
+      logger.warn("Video elements not found", { transitionType })
       return
     }
 
@@ -429,27 +432,18 @@ export function TransitionPreview({
         networkState: target.networkState,
         readyState: target.readyState,
       }
-      console.error("🎬 [TransitionPreview] Ошибка загрузки видео:", errorInfo)
+      logger.error("Video load error", errorInfo)
 
       // Дополнительная информация об ошибке
       if (target.error) {
-        switch (target.error.code) {
-          case target.error.MEDIA_ERR_ABORTED:
-            console.error("Загрузка видео была прервана")
-            break
-          case target.error.MEDIA_ERR_NETWORK:
-            console.error("Сетевая ошибка при загрузке видео")
-            break
-          case target.error.MEDIA_ERR_DECODE:
-            console.error("Ошибка декодирования видео")
-            break
-          case target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            console.error("Формат видео не поддерживается или файл не найден")
-            break
-          default:
-            console.error(`Неизвестная ошибка видео: код ${target.error.code}`)
-            break
+        const errorMessages: Record<number, string> = {
+          [target.error.MEDIA_ERR_ABORTED]: "Video load aborted",
+          [target.error.MEDIA_ERR_NETWORK]: "Network error loading video",
+          [target.error.MEDIA_ERR_DECODE]: "Video decode error",
+          [target.error.MEDIA_ERR_SRC_NOT_SUPPORTED]: "Video format not supported or file not found",
         }
+        const message = errorMessages[target.error.code] || `Unknown video error: code ${target.error.code}`
+        logger.error(message, { errorCode: target.error.code })
       }
 
       setIsError(true)

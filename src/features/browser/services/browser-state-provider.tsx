@@ -129,7 +129,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         }
       }
     } catch (error) {
-      console.error("Failed to load browser settings from localStorage:", error)
+      logger.error("Failed to load browser settings from localStorage:", error)
     }
 
     // Возвращаем начальное состояние по умолчанию
@@ -151,7 +151,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
     const unsubscribeEvents = backendSync.onEvent((event) => {
       if (event.type === "ProjectCreated" || event.type === "ProjectOpened" || event.type === "ProjectClosed") {
         // При создании/открытии/закрытии проекта сбрасываем selectedFiles
-        console.log(`[BrowserStateProvider] ${event.type}, clearing temporary selections`)
+        logger.info(`[BrowserStateProvider] ${event.type}, clearing temporary selections`)
         setState((prev) => ({
           ...prev,
           selectedFiles: getInitialContext().selectedFiles,
@@ -192,7 +192,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
         }
         localStorage.setItem("browserSettings", JSON.stringify(uiSettings))
       } catch (error) {
-        console.error("Failed to save browser settings to localStorage:", error)
+        logger.error("Failed to save browser settings to localStorage:", error)
       }
       saveTimeoutRef.current = null
     }, 500) // Дебаунс 500мс для оптимизации
@@ -232,7 +232,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           type: "LogBrowserAction",
           params: { action: "switch_tab", tab },
         })
-        .catch(console.error)
+        .catch((error) => logger.error("Failed to log browser action", { error }))
     }
   }
 
@@ -327,7 +327,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           type: "LogBrowserAction",
           params: { action: "change_view_mode", viewMode, tab: targetTab },
         })
-        .catch(console.error)
+        .catch((error) => logger.error("Operation failed", { error }))
     }
   }
 
@@ -421,7 +421,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
           type: "LogBrowserAction",
           params: { action: "select_all_files", count: fileIds.length, tab: targetTab },
         })
-        .catch(console.error)
+        .catch((error) => logger.error("Operation failed", { error }))
     }
   }
 
@@ -443,7 +443,7 @@ export const BrowserStateProvider: React.FC<BrowserStateProviderProps> = ({ chil
 
   // Метод для принудительной очистки browser state
   const clearBrowserState = () => {
-    console.log("[BrowserStateProvider] Manually clearing browser state")
+    logger.info("[BrowserStateProvider] Manually clearing browser state")
     localStorage.removeItem("browserSettings")
     setState(getInitialContext())
   }

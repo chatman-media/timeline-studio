@@ -17,12 +17,15 @@ import {
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useClips } from "../../hooks/use-clips"
 import { useTimeline } from "../../hooks/use-timeline"
 import type { VideoFadeOptions } from "../../services/video-fade-service"
 import { VideoFadeService } from "../../services/video-fade-service"
 import type { TimelineClip } from "../../types"
+
+const logger = createLogger({ module: "VideoCrossfade" })
 
 interface VideoCrossfadeProps {
   clipA: TimelineClip
@@ -75,7 +78,7 @@ export const VideoCrossfade = memo(function VideoCrossfade({ clipA, clipB, class
 
       setIsOpen(false)
     } catch (error) {
-      console.error("Failed to create crossfade:", error)
+      logger.error("Failed to create crossfade:", error)
     }
   }, [clipA, clipB, duration, fadeType, overlap.isValid, updateClip])
 

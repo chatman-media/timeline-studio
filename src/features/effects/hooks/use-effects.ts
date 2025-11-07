@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import type { BaseEffect } from "@/features/effects/types"
-import { logError, logInfo } from "@/lib/tauri-logger"
-
+import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 import { allMigratedEffects, migratedEffects } from "../data/effects-loader"
+
+const logger = createLogger({ module: "UseEffects" })
 
 // Используем мигрированные эффекты из новой системы
 
@@ -39,7 +40,7 @@ export function useEffects(): UseEffectsReturn {
       setEffects(allMigratedEffects)
 
       logInfo("useEffects", `Loaded ${allMigratedEffects.length} effects from unified system`)
-      console.log(
+      logger.info(
         `✅ ${t("effects.messages.effectsLoaded", "Loaded {{count}} effects from unified system", { count: allMigratedEffects.length })}`,
       )
     } catch (err) {
@@ -50,7 +51,7 @@ export function useEffects(): UseEffectsReturn {
       setEffects([])
 
       logError("useEffects", "Failed to load effects", err)
-      console.error(`❌ ${t("effects.errors.fallbackEffects", "Failed to load effects")}:`, err)
+      logger.error(`❌ ${t("effects.errors.fallbackEffects", "Failed to load effects")}:`, err)
     } finally {
       setLoading(false)
     }

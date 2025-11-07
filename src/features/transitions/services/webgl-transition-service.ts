@@ -1,4 +1,7 @@
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("WebGLTransitionService")
 
 /**
  * Параметры для рендеринга перехода
@@ -183,7 +186,7 @@ export class WebGLTransitionService {
       this.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
 
       if (!this.gl) {
-        console.error("WebGL не поддерживается")
+        logger.error("WebGL not supported")
         return false
       }
 
@@ -195,7 +198,7 @@ export class WebGLTransitionService {
 
       return true
     } catch (error) {
-      console.error("Ошибка инициализации WebGL:", error)
+      logger.error("WebGL initialization error", error)
       return false
     }
   }
@@ -240,8 +243,8 @@ export class WebGLTransitionService {
       const renderTime = performance.now() - startTime
       return { success: true, renderTime }
     } catch (error) {
-      console.error("Ошибка рендеринга перехода:", error)
-      return { success: false, error: error instanceof Error ? error.message : "Неизвестная ошибка" }
+      logger.error("Transition render error", error)
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
     }
   }
 
@@ -325,7 +328,7 @@ export class WebGLTransitionService {
     this.gl.linkProgram(program)
 
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-      console.error("Ошибка линковки шейдерной программы:", this.gl.getProgramInfoLog(program))
+      logger.error("Shader program link error", { log: this.gl.getProgramInfoLog(program) })
       this.gl.deleteProgram(program)
       return null
     }
@@ -346,7 +349,7 @@ export class WebGLTransitionService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error("Ошибка компиляции шейдера:", this.gl.getShaderInfoLog(shader))
+      logger.error("Shader compilation error", { log: this.gl.getShaderInfoLog(shader) })
       this.gl.deleteShader(shader)
       return null
     }

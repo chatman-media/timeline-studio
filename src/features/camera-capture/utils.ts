@@ -2,6 +2,10 @@
  * Утилиты для модуля camera-capture
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "CameraCaptureUtils" })
+
 /**
  * Безопасно останавливает все треки MediaStream
  * @param stream - MediaStream для остановки
@@ -10,18 +14,18 @@
 export function cleanupMediaStream(stream: MediaStream | null, logPrefix = "MediaStream cleanup"): void {
   if (!stream) return
 
-  console.log(`${logPrefix}: Остановка ${stream.getTracks().length} треков`)
+  logger.info(`${logPrefix}: Остановка треков`, { trackCount: stream.getTracks().length })
 
   stream.getTracks().forEach((track, index) => {
     if (track.readyState !== "ended") {
       try {
         track.stop()
-        console.log(`${logPrefix}: Остановлен трек ${index + 1} (${track.kind})`)
+        logger.debug(`${logPrefix}: Остановлен трек`, { index: index + 1, kind: track.kind })
       } catch (error) {
-        console.warn(`${logPrefix}: Ошибка при остановке трека ${index + 1}:`, error)
+        logger.warn(`${logPrefix}: Ошибка при остановке трека`, { index: index + 1, error })
       }
     } else {
-      console.log(`${logPrefix}: Трек ${index + 1} (${track.kind}) уже остановлен`)
+      logger.debug(`${logPrefix}: Трек уже остановлен`, { index: index + 1, kind: track.kind })
     }
   })
 }
@@ -36,7 +40,7 @@ export function cleanupVideoElement(videoElement: HTMLVideoElement | null, logPr
 
   try {
     if (videoElement.srcObject) {
-      console.log(`${logPrefix}: Очистка srcObject`)
+      logger.debug(`${logPrefix}: Очистка srcObject`)
       videoElement.srcObject = null
     }
 
@@ -46,7 +50,7 @@ export function cleanupVideoElement(videoElement: HTMLVideoElement | null, logPr
 
     videoElement.currentTime = 0
   } catch (error) {
-    console.warn(`${logPrefix}: Ошибка при очистке видео элемента:`, error)
+    logger.warn(`${logPrefix}: Ошибка при очистке видео элемента`, { error })
   }
 }
 

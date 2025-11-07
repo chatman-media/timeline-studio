@@ -4,8 +4,11 @@ import { useCallback, useState } from "react"
 import { toast } from "sonner"
 
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleImportResult } from "../types/subtitles"
 import { parseSubtitleFile } from "../utils/subtitle-parsers"
+
+const logger = createLogger({ module: "UseSubtitlesImport" })
 
 // Генерация уникального ID для субтитров
 const generateSubtitleId = () => `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
@@ -131,7 +134,7 @@ export function useSubtitlesImport() {
 
             totalImported += subtitles.length
           } catch (error) {
-            console.error(`Ошибка при импорте файла ${filePath}:`, error)
+            logger.error(`Ошибка при импорте файла ${filePath}:`, error)
             toast.error("Ошибка импорта", {
               description: `Не удалось импортировать файл ${filePath}`,
             })
@@ -145,7 +148,7 @@ export function useSubtitlesImport() {
         }
       }
     } catch (error) {
-      console.error("Ошибка при импорте субтитров:", error)
+      logger.error("Ошибка при импорте субтитров:", error)
       toast.error("Ошибка", {
         description: "Не удалось импортировать субтитры",
       })
@@ -200,14 +203,14 @@ export function useSubtitlesImport() {
             description: `Импортировано ${subtitles.length} субтитров из файла ${result.file_name}`,
           })
         } catch (error) {
-          console.error("Ошибка при импорте файла:", error)
+          logger.error("Ошибка при импорте файла:", error)
           toast.error("Ошибка импорта", {
             description: "Не удалось импортировать файл субтитров",
           })
         }
       }
     } catch (error) {
-      console.error("Ошибка при выборе файла:", error)
+      logger.error("Ошибка при выборе файла:", error)
       toast.error("Ошибка", {
         description: "Не удалось выбрать файл",
       })

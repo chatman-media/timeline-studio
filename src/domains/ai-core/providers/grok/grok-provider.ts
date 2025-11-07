@@ -3,6 +3,10 @@
  * Реализация xAI Grok API с поддержкой streaming
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("GrokProvider")
+
 import { ApiKeyLoader } from "../../services/api-key-loader"
 import type { AiMessage, AiRequestOptions, AiResponse, IAIProvider, StreamingOptions } from "../../types"
 
@@ -142,7 +146,7 @@ export class GrokProvider implements IAIProvider {
           : undefined,
       }
     } catch (error) {
-      console.error("Grok request failed:", error)
+      logger.error("Grok request failed", { error, model })
       throw error
     }
   }
@@ -247,7 +251,7 @@ export class GrokProvider implements IAIProvider {
                   }
                 }
               } catch (parseError) {
-                console.warn("Error parsing Grok streaming event:", parseError)
+                logger.warn("Error parsing Grok streaming event", { parseError })
               }
             }
           }
@@ -267,7 +271,7 @@ export class GrokProvider implements IAIProvider {
         reader.releaseLock()
       }
     } catch (error) {
-      console.error("Grok streaming request failed:", error)
+      logger.error("Grok streaming request failed", { error, model })
       if (options.onError) {
         options.onError(error instanceof Error ? error : new Error("Unknown error"))
       } else {

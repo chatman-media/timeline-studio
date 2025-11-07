@@ -5,6 +5,9 @@
 
 import { FFmpegAnalysisService } from "@/domains/ai-services"
 import { AudioAnalysisResult } from "@/domains/ai-services/types/unified-analysis"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("music-detection")
 
 // Типы для музыкальной детекции
 export interface MusicSegment {
@@ -235,7 +238,7 @@ export class MusicDetectionService {
    */
   async detectMusic(filePath: string): Promise<MusicDetectionResult> {
     try {
-      console.log(`Starting music detection for: ${filePath}`)
+      logger.info("Starting music detection", { filePath })
 
       // Получаем базовую аудио аналитику через FFmpeg
       const audioAnalysis = await this.ffmpegService.analyzeAudio(filePath)
@@ -258,7 +261,7 @@ export class MusicDetectionService {
       // Создаем временную шкалу
       const timeline = this.createMusicTimeline(segments, metadata.duration)
 
-      console.log(`Music detection completed. Found ${segments.length} segments`)
+      logger.info("Music detection completed", { segmentsCount: segments.length, filePath })
 
       return {
         segments,
@@ -266,7 +269,7 @@ export class MusicDetectionService {
         timeline,
       }
     } catch (error) {
-      console.error("Failed to detect music:", error)
+      logger.error("Failed to detect music", { error, filePath })
       throw error
     }
   }

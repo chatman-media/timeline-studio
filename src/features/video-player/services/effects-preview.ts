@@ -10,6 +10,10 @@
 
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "EffectsPreview" })
+
 export interface EffectShader {
   name: string
   vertexShader: string
@@ -71,7 +75,7 @@ export class EffectsPreviewService {
     try {
       // Skip initialization during SSR
       if (typeof document === "undefined") {
-        console.warn("Effects preview WebGL initialization skipped (SSR)")
+        logger.warn("Effects preview WebGL initialization skipped (SSR)")
         return
       }
 
@@ -85,9 +89,9 @@ export class EffectsPreviewService {
         throw new Error("WebGL2 not supported")
       }
 
-      console.log("Effects preview WebGL2 initialized")
+      logger.info("Effects preview WebGL2 initialized")
     } catch (error) {
-      console.error("Effects preview WebGL initialization failed:", error)
+      logger.error("Effects preview WebGL initialization failed:", error)
     }
   }
 
@@ -421,7 +425,7 @@ export class EffectsPreviewService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
+      logger.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
       this.gl.deleteShader(shader)
       return null
     }
@@ -451,7 +455,7 @@ export class EffectsPreviewService {
     this.gl.linkProgram(program)
 
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-      console.error("Program linking error:", this.gl.getProgramInfoLog(program))
+      logger.error("Program linking error:", this.gl.getProgramInfoLog(program))
       this.gl.deleteProgram(program)
       return null
     }
@@ -561,7 +565,7 @@ export class EffectsPreviewService {
             break
           default:
             // Неподдерживаемый тип uniform
-            console.warn(`Unsupported uniform type: ${uniform.type}`)
+            logger.warn(`Unsupported uniform type: ${uniform.type}`)
             break
         }
       }
@@ -596,7 +600,7 @@ export class EffectsPreviewService {
 
       return true
     } catch (error) {
-      console.error("Effect application failed:", error)
+      logger.error("Effect application failed:", error)
       return false
     }
   }
@@ -656,7 +660,7 @@ export class EffectsPreviewService {
         )
 
         if (!success) {
-          console.error(`Failed to apply effect: ${effect.effectId}`)
+          logger.error(`Failed to apply effect: ${effect.effectId}`)
           return false
         }
 
@@ -678,7 +682,7 @@ export class EffectsPreviewService {
 
       return true
     } catch (error) {
-      console.error("Effect chain application failed:", error)
+      logger.error("Effect chain application failed:", error)
       return false
     }
   }

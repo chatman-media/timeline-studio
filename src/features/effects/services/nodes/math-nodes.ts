@@ -1,4 +1,7 @@
+import { createLogger } from "@/lib/tauri-logger"
 import type { NodeProcessor } from "../../types/node-compositing"
+
+const logger = createLogger({ module: "MathNodes" })
 
 /**
  * Math and Logic Nodes
@@ -129,7 +132,7 @@ export const mathOperationProcessor: NodeProcessor = {
         result = Math.round(a)
         break
       default:
-        console.warn(`Unknown math operation: ${operation}`)
+        logger.warn(`Unknown math operation: ${operation}`)
         result = a
     }
 
@@ -222,7 +225,7 @@ export const compareProcessor: NodeProcessor = {
         result = a <= b
         break
       default:
-        console.warn(`Unknown compare operation: ${operation}`)
+        logger.warn(`Unknown compare operation: ${operation}`)
         result = false
     }
 
@@ -304,7 +307,7 @@ export const logicGateProcessor: NodeProcessor = {
         result = !a
         break
       default:
-        console.warn(`Unknown logic operation: ${operation}`)
+        logger.warn(`Unknown logic operation: ${operation}`)
         result = false
     }
 
@@ -563,7 +566,7 @@ export const randomProcessor: NodeProcessor = {
         value = Math.floor(min + random() * (max - min + 1))
         break
       default:
-        console.warn(`Unknown random type: ${type}`)
+        logger.warn(`Unknown random type: ${type}`)
         value = min + random() * (max - min)
     }
 

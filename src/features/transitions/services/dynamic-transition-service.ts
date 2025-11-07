@@ -3,6 +3,10 @@
  * Поддерживает particle systems, physics simulation и complex shaders
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("DynamicTransitionService")
+
 // Типы динамических шейдеров
 export type DynamicShaderType =
   | "particle-dissolve"
@@ -105,7 +109,7 @@ export class DynamicTransitionService {
       })
 
       if (!this.gl) {
-        console.error("WebGL2 не поддерживается")
+        logger.error("WebGL2 not supported")
         return false
       }
 
@@ -114,7 +118,7 @@ export class DynamicTransitionService {
 
       for (const ext of requiredExtensions) {
         if (!this.gl.getExtension(ext)) {
-          console.warn(`Расширение ${ext} не поддерживается`)
+          logger.warn("Extension not supported", { extension: ext })
         }
       }
 
@@ -128,7 +132,7 @@ export class DynamicTransitionService {
 
       return true
     } catch (error) {
-      console.error("Ошибка инициализации WebGL2:", error)
+      logger.error("WebGL2 initialization error", error)
       return false
     }
   }
@@ -174,7 +178,7 @@ export class DynamicTransitionService {
           }
         }
       } catch (error) {
-        console.error(`Ошибка компиляции шейдера ${shaderType}:`, error)
+        logger.error("Shader compilation error", { shaderType, error })
       }
     }
   }
@@ -237,7 +241,7 @@ export class DynamicTransitionService {
     const program = this.shaderPrograms.get(shaderType)
 
     if (!program) {
-      console.error(`Шейдер ${shaderType} не найден`)
+      logger.error("Shader not found", { shaderType })
       return false
     }
 
@@ -268,7 +272,7 @@ export class DynamicTransitionService {
 
       return true
     } catch (error) {
-      console.error(`Ошибка рендеринга ${shaderType}:`, error)
+      logger.error("Render error", { shaderType, error })
       return false
     }
   }
@@ -515,7 +519,7 @@ export class DynamicTransitionService {
 
       default:
         // Неизвестный тип шейдера - используем базовые uniforms
-        console.warn(`Unknown shader type: ${shaderType}`)
+        logger.warn("Unknown shader type", { shaderType })
         break
     }
   }
@@ -543,7 +547,7 @@ export class DynamicTransitionService {
           this.gl.uniform4fv(location, value)
           break
         default:
-          console.warn(`Unsupported array length for uniform ${name}: ${value.length}`)
+          logger.warn("Unsupported array length for uniform", { name, length: value.length })
           break
       }
     }
@@ -1559,7 +1563,7 @@ export class DynamicTransitionService {
     this.gl.linkProgram(program)
 
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-      console.error("Ошибка линковки программы:", this.gl.getProgramInfoLog(program))
+      logger.error("Program link error", { log: this.gl.getProgramInfoLog(program) })
       return null
     }
 
@@ -1576,7 +1580,7 @@ export class DynamicTransitionService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error("Ошибка компиляции шейдера:", this.gl.getShaderInfoLog(shader))
+      logger.error("Shader compilation error", { log: this.gl.getShaderInfoLog(shader) })
       return null
     }
 

@@ -11,6 +11,10 @@ import type { DragEndEvent } from "@dnd-kit/core"
 import type { DraggableItem } from "@/features/drag-drop"
 import { getDragDropManager } from "@/features/drag-drop"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "DragDropBridge" })
+
 /**
  * Конвертирует DragData из @dnd-kit в формат DragDropManager
  */
@@ -113,9 +117,9 @@ export function handleInterModuleDrag(
 
       if (isMultiSelectDrag && timelineActions.addMediaToTimeline) {
         // Multi-select drag & drop - добавляем все выбранные файлы
-        console.log("[DragDropBridge] Multi-select drag detected:", dragItem.selectedFiles.length, "files")
+        logger.info("[DragDropBridge] Multi-select drag detected:", dragItem.selectedFiles.length, "files")
         timelineActions.addMediaToTimeline(dragItem.selectedFiles)
-        console.log(
+        logger.info(
           "[DragDropBridge] Successfully added multiple media via Timeline actions:",
           dragItem.selectedFiles.length,
           "files",
@@ -123,7 +127,7 @@ export function handleInterModuleDrag(
       } else {
         // Single file drag & drop
         timelineActions.addSingleMediaToTimeline(dragData.data, targetTrackId, startTime)
-        console.log(
+        logger.info(
           "[DragDropBridge] Successfully added media via Timeline actions:",
           dragData.data.name || "media file",
         )
@@ -137,10 +141,10 @@ export function handleInterModuleDrag(
     manager.emit("drop", dragData, { id: dropId })
     manager.emit("dragEnd")
 
-    console.log("[DragDropBridge] Successfully bridged inter-module drag:", dragData.type)
+    logger.info("[DragDropBridge] Successfully bridged inter-module drag:", dragData.type)
     return true
   } catch (error) {
-    console.error("[DragDropBridge] Failed to bridge drag:", error)
+    logger.error("[DragDropBridge] Failed to bridge drag:", error)
     return false
   }
 }
@@ -149,7 +153,7 @@ export function handleInterModuleDrag(
  * Инициализирует bridge между системами
  */
 export function initializeDragDropBridge() {
-  console.log("[DragDropBridge] Initializing drag & drop bridge")
+  logger.info("[DragDropBridge] Initializing drag & drop bridge")
 
   // Bridge готов к использованию
   // Timeline будет вызывать handleInterModuleDrag в своём DragEndHandler

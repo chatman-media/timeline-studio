@@ -2,10 +2,12 @@
  * AI инструменты для применения эффектов и фильтров в превью с использованием BaseAITool
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
-
 import type { EffectApplicationParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, hasLoadedMedia } from "./utils/helpers"
+
+const logger = createLogger({ module: "PreviewEffects" })
 
 // Типы для операций с эффектами превью
 export interface PreviewEffectsInput {
@@ -122,9 +124,9 @@ export class PreviewEffectsTool extends BaseAITool {
 
         // Здесь бы был код применения эффекта к preview
         // Пока что просто логируем
-        console.log(`Применение эффекта ${effect.effectId} с параметрами:`, effect.parameters)
+        logger.info(`Применение эффекта ${effect.effectId} с параметрами:`, effect.parameters)
       } catch (error) {
-        console.warn(`Ошибка применения эффекта ${effect.effectId}:`, error)
+        logger.warn(`Ошибка применения эффекта ${effect.effectId}:`, error)
       }
     }
 
@@ -170,9 +172,9 @@ export class PreviewEffectsTool extends BaseAITool {
         }
 
         // Здесь бы был код применения фильтра к preview
-        console.log(`Применение фильтра ${filter.effectId} с параметрами:`, filter.parameters)
+        logger.info(`Применение фильтра ${filter.effectId} с параметрами:`, filter.parameters)
       } catch (error) {
-        console.warn(`Ошибка применения фильтра ${filter.effectId}:`, error)
+        logger.warn(`Ошибка применения фильтра ${filter.effectId}:`, error)
       }
     }
 

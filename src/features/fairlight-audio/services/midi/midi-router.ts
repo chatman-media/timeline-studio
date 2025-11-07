@@ -4,8 +4,10 @@
  */
 
 import { EventEmitter } from "events"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { MidiMessage } from "./midi-engine"
+
+const logger = createLogger({ module: "MidiRouter" })
 
 export interface MidiRoute {
   id: string
@@ -407,12 +409,12 @@ export class MidiRouter extends EventEmitter {
           try {
             destination.callback(finalMessage)
           } catch (error) {
-            console.error("Error in MIDI route callback:", error)
+            logger.error("Error in MIDI route callback:", error)
           }
         }
         break
       default:
-        console.warn("Unknown destination type:", destination.type)
+        logger.warn("Unknown destination type:", destination.type)
         break
     }
   }
@@ -477,7 +479,7 @@ export class MidiRouter extends EventEmitter {
     // Validate all route IDs exist
     const validIds = routeIds.filter((id) => this.routes.has(id))
     if (validIds.length !== routeIds.length) {
-      console.warn("Some route IDs are invalid")
+      logger.warn("Some route IDs are invalid")
     }
 
     this.routeOrder = validIds

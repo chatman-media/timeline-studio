@@ -8,6 +8,10 @@
  * - Кастомные easing функции
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:transitions-preview")
+
 export interface TransitionParams {
   duration: number // Duration in seconds
   progress: number // 0.0 to 1.0
@@ -82,9 +86,9 @@ export class TransitionsPreviewService {
         throw new Error("WebGL2 not supported")
       }
 
-      console.log("Transitions preview WebGL2 initialized")
+      logger.debug("WebGL2 initialized for transitions preview")
     } catch (error) {
-      console.error("Transitions WebGL initialization failed:", error)
+      logger.error("WebGL initialization failed", { error })
     }
   }
 
@@ -511,7 +515,10 @@ export class TransitionsPreviewService {
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error(`${name} transition program linking error:`, gl.getProgramInfoLog(program))
+      logger.error("transition program linking failed", {
+        transition: name,
+        info: gl.getProgramInfoLog(program),
+      })
       gl.deleteProgram(program)
       return
     }
@@ -532,7 +539,7 @@ export class TransitionsPreviewService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error("Transition shader compilation error:", this.gl.getShaderInfoLog(shader))
+      logger.error("shader compilation failed", { info: this.gl.getShaderInfoLog(shader) })
       this.gl.deleteShader(shader)
       return null
     }
@@ -735,7 +742,7 @@ export class TransitionsPreviewService {
             break
           default:
             // Неподдерживаемый тип uniform
-            console.warn(`Unsupported uniform type: ${uniform.type}`)
+            logger.warn("unsupported uniform type", { type: uniform.type })
             break
         }
       }
@@ -756,7 +763,7 @@ export class TransitionsPreviewService {
 
       return true
     } catch (error) {
-      console.error("Transition application failed:", error)
+      logger.error("transition application failed", { error })
       return false
     }
   }

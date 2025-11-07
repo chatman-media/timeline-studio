@@ -4,8 +4,11 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { createLogger } from "@/lib/tauri-logger"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { KeyStatusIndicator } from "./key-status-indicator"
+
+const logger = createLogger({ module: "OauthConnection" })
 
 interface OAuthField {
   key: string
@@ -57,7 +60,7 @@ export function OAuthConnection({ service, credentials, onUpdate, fields, links 
         await saveOAuthCredentials(service, credentials.clientId, credentials.clientSecret)
       }
     } catch (error) {
-      console.error(`OAuth error for ${service}:`, error)
+      logger.error(`OAuth error for ${service}:`, error)
     }
   }
 

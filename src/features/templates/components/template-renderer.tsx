@@ -1,8 +1,9 @@
 import React from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import type { CellConfiguration, MediaTemplateConfig } from "../lib/template-config"
+
+const logger = createLogger({ module: "TemplateRenderer" })
 
 interface TemplateRendererProps {
   config: MediaTemplateConfig
@@ -146,7 +147,7 @@ export function TemplateRenderer({ config, renderCell, className }: TemplateRend
 
     case "grid": {
       if (!gridConfig) {
-        console.warn("Grid template requires gridConfig")
+        logger.warn("Grid template requires gridConfig")
         return null
       }
 
@@ -168,7 +169,7 @@ export function TemplateRenderer({ config, renderCell, className }: TemplateRend
 
     case "diagonal": {
       if (!config.splitPoints || config.splitPoints.length < 2) {
-        console.warn("Diagonal template requires at least 2 split points")
+        logger.warn("Diagonal template requires at least 2 split points")
         return null
       }
 
@@ -307,7 +308,7 @@ export function TemplateRenderer({ config, renderCell, className }: TemplateRend
     }
 
     default:
-      console.warn(`Unknown split type: ${split}`)
+      logger.warn(`Unknown split type: ${split}`)
       return null
   }
 }

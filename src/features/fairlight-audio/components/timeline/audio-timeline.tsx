@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useAudioClipEditor } from "../../hooks/use-audio-clip-editor"
 import type { AudioClip } from "../../services/audio-clip-editor"
 import { AudioClipEditorComponent } from "../editor/audio-clip-editor"
 import { AudioClipComponent } from "./audio-clip"
+
+const logger = createLogger({ module: "AudioTimeline" })
 
 interface AudioTrack {
   id: string
@@ -66,7 +68,7 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
 
         onTracksUpdate(updatedTracks)
       } catch (error) {
-        console.error("Failed to split clip:", error)
+        logger.error("Failed to split clip:", error)
       }
     },
     [tracks, onTracksUpdate, splitClip],

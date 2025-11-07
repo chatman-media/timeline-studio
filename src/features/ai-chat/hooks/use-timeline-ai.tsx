@@ -9,9 +9,13 @@ import { useCallback } from "react"
 import { TimelineAIService } from "@/domains/ai-services/services/timeline-ai-service"
 import { useResources } from "@/features/resources/services/resources-provider"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseTimelineAi" })
+
 // Заглушка для sendTimelineEvent, пока не реализован useChat
 const mockSendTimelineEvent = (event: any) => {
-  console.log("Timeline event:", event)
+  logger.info("Timeline event:", event)
 }
 
 /**

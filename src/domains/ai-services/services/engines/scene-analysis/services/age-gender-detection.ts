@@ -5,6 +5,9 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { FaceDetection } from "@/domains/shared/types/ai-tools/content-analysis"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("age-gender-detection")
 
 /**
  * Результат анализа возраста и пола
@@ -238,7 +241,7 @@ export class AgeGenderDetectionService {
 
       return result
     } catch (error) {
-      console.error("Failed to analyze face for age/gender:", error)
+      logger.error("Failed to analyze face for age/gender", { error, faceId: face.id })
       return null
     }
   }
@@ -255,7 +258,7 @@ export class AgeGenderDetectionService {
         return onnxResult
       }
     } catch (error) {
-      console.warn("ONNX analysis failed, fallback to mock data:", error)
+      logger.debug("ONNX analysis not available, using fallback", { error })
     }
 
     // Fallback: используем mock данные с небольшой случайностью
@@ -376,7 +379,7 @@ export class AgeGenderDetectionService {
       }
     } catch (error) {
       // ONNX модели не доступны или произошла ошибка
-      console.debug("ONNX analysis not available:", error)
+      logger.debug("ONNX analysis not available", { error })
       return null
     }
   }

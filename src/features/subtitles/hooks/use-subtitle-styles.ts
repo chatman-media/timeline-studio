@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next"
 import subtitleStylesData from "../data/subtitle-styles.json"
 import type { SubtitleStyleTemplate } from "../types/subtitles"
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseSubtitleStyles" })
   createFallbackSubtitleStyleTemplate,
   processSubtitleStyleTemplates,
   validateSubtitleStyleTemplatesData,
@@ -50,7 +54,7 @@ export function useSubtitles(): UseSubtitlesReturn {
 
       setSubtitles(processedStyles)
 
-      console.log(
+      logger.info(
         `✅ ${t("subtitles.messages.stylesLoaded", "Loaded {{count}} subtitle styles from JSON", { count: processedStyles.length })}`,
       )
     } catch (err) {
@@ -68,7 +72,7 @@ export function useSubtitles(): UseSubtitlesReturn {
 
       setSubtitles(fallbackStyles)
 
-      console.error(
+      logger.error(
         `❌ ${t("subtitles.errors.fallbackStyles", "Failed to load subtitle styles, using fallback")}:`,
         err,
       )

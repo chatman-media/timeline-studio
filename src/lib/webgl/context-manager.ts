@@ -4,6 +4,9 @@
  */
 
 import { EventEmitter } from "events"
+import { createLogger } from "../tauri-logger"
+
+const logger = createLogger("WebGLContextManager")
 
 /**
  * Конфигурация контекста
@@ -95,7 +98,7 @@ export class ContextManager extends EventEmitter {
       // Создаем WebGL2 контекст
       const gl = this.canvas.getContext("webgl2", contextAttributes)
       if (!gl) {
-        console.error("WebGL2 не поддерживается")
+        logger.errorSync("WebGL2 не поддерживается")
         return false
       }
 
@@ -113,11 +116,14 @@ export class ContextManager extends EventEmitter {
       this.isInitialized = true
       this.emit("initialized", this.capabilities)
 
-      console.log("WebGL2 контекст инициализирован:", this.capabilities)
+      logger.infoSync("WebGL2 контекст инициализирован", {
+        tier: this.capabilities?.tier,
+        renderer: this.capabilities?.renderer,
+      })
 
       return true
     } catch (error) {
-      console.error("Ошибка инициализации WebGL2 контекста:", error)
+      logger.errorSync("Ошибка инициализации WebGL2 контекста", { error })
       this.emit("error", error)
       return false
     }
@@ -322,13 +328,13 @@ export class ContextManager extends EventEmitter {
     // Обработчик потери контекста
     this.contextLostHandler = (event: Event) => {
       event.preventDefault()
-      console.warn("WebGL контекст потерян")
+      logger.warnSync("WebGL контекст потерян")
       this.emit("contextLost")
     }
 
     // Обработчик восстановления контекста
     this.contextRestoredHandler = () => {
-      console.log("WebGL контекст восстановлен")
+      logger.infoSync("WebGL контекст восстановлен")
 
       // Переинициализируем контекст
       this.initialize({ canvas: this.canvas! })

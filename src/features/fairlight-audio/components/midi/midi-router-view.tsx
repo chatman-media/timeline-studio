@@ -15,10 +15,11 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useMidiEngine } from "../../hooks/use-midi-engine"
-
 import type { MidiDestination, MidiRoute } from "../../services/midi/midi-router"
+
+const logger = createLogger({ module: "MidiRouterView" })
 
 interface RouteItemProps {
   route: MidiRoute
@@ -203,7 +204,7 @@ export function MidiRouterView() {
         )
         break
       default:
-        console.warn("Unknown preset:", selectedPreset)
+        logger.warn("Unknown preset:", selectedPreset)
         break
     }
 

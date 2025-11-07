@@ -30,9 +30,11 @@ import { useModal } from "@/features/modals/services/modal-provider"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { GpuStatusBadge, RenderJobsDropdown } from "@/features/video-compiler"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { ThemeToggle } from "./theme/theme-toggle"
+
+const logger = createLogger({ module: "TopBar" })
 
 export const TOP_BAR_BUTTON_CLASS = "hover:bg-[#D1D1D1] dark:hover:bg-[#464747] h-6 w-6 cursor-pointer m-0.5 p-0"
 
@@ -56,7 +58,7 @@ const TopBarComponent = function TopBar() {
 
   const handleOpenModal = useCallback(
     (modal: string) => {
-      console.log(`Opening modal: ${modal}`)
+      logger.info(`Opening modal: ${modal}`)
       openModal(modal as ModalType)
     },
     [openModal],
@@ -80,9 +82,9 @@ const TopBarComponent = function TopBar() {
     try {
       // Сохраняем проект
       void saveProject(projectName)
-      console.log("Project saved successfully")
+      logger.info("Project saved successfully")
     } catch (error) {
-      console.error("[handleSave] Error saving project:", error)
+      logger.error("[handleSave] Error saving project:", error)
     }
   }, [saveProject, projectName])
 
@@ -106,10 +108,10 @@ const TopBarComponent = function TopBar() {
 
         // Открываем выбранный проект
         void openProject(selected)
-        console.log("Project opened successfully:", selected)
+        logger.info("Project opened successfully:", selected)
       }
     } catch (error) {
-      console.error("[handleOpenProject] Error opening project:", error)
+      logger.error("[handleOpenProject] Error opening project:", error)
     }
   }, [openProject, clearBrowserState])
 
@@ -139,9 +141,9 @@ const TopBarComponent = function TopBar() {
         autoSaveInterval: 300,
       })
 
-      console.log("New project created successfully")
+      logger.info("New project created successfully")
     } catch (error) {
-      console.error("[handleCreateNewProject] Error creating new project:", error)
+      logger.error("[handleCreateNewProject] Error creating new project:", error)
     }
   }, [createNewProject, createTimelineProject, clearBrowserState])
 

@@ -1,11 +1,14 @@
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile, MediaTrack } from "../types/media"
 import type { Sector } from "../types/types"
 import { processAudioFiles } from "./audio-tracks"
 import { updateSectorTimeRange } from "./tracks-utils"
 import { processVideoFiles } from "./video-tracks"
+
+const logger = createLogger("Tracks")
 
 /**
  * Создает треки из медиафайлов
@@ -14,14 +17,12 @@ import { processVideoFiles } from "./video-tracks"
  * @returns Массив созданных секторов
  */
 export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaTrack[] = []): Sector[] => {
-  console.log(
-    "createTracksFromFiles called with files:",
-    files.map((f) => f.name),
-  )
-  console.log(
-    "existingTracks:",
-    existingTracks.map((t) => t.name),
-  )
+  logger.debugSync("createTracksFromFiles called", {
+    filesCount: files.length,
+    files: files.map((f) => f.name),
+    existingTracksCount: existingTracks.length,
+    existingTracks: existingTracks.map((t) => t.name),
+  })
 
   // Разделяем файлы на видео и аудио
   const videoFiles = files.filter((file) => file.probeData?.streams.some((stream) => stream.codec_type === "video"))
@@ -31,14 +32,12 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
       file.probeData?.streams.some((stream) => stream.codec_type === "audio"),
   )
 
-  console.log(
-    "videoFiles:",
-    videoFiles.map((f) => f.name),
-  )
-  console.log(
-    "audioFiles:",
-    audioFiles.map((f) => f.name),
-  )
+  logger.debugSync("Separated files", {
+    videoFilesCount: videoFiles.length,
+    videoFiles: videoFiles.map((f) => f.name),
+    audioFilesCount: audioFiles.length,
+    audioFiles: audioFiles.map((f) => f.name),
+  })
 
   // Сортируем файлы по времени начала
   const sortedVideoFiles = [...videoFiles].sort((a, b) => (a.startTime ?? 0) - (b.startTime ?? 0))
@@ -61,21 +60,20 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
     return acc
   }, {})
 
-  console.log(
-    "videoFilesByDay:",
-    Object.entries(videoFilesByDay).map(([date, files]) => ({
+  logger.debugSync("Video files grouped by day", {
+    days: Object.entries(videoFilesByDay).map(([date, files]) => ({
       date,
       filesCount: files.length,
       files: files.map((f) => f.name),
     })),
-  )
+  })
 
   // Получаем существующие секторы по дням (упрощено)
   const existingSectorsByDay: Record<string, { sector: Sector | null }> = {}
 
   // Обрабатываем видео файлы по дням
   for (const [date, dayFiles] of Object.entries(videoFilesByDay)) {
-    console.log(`Processing ${dayFiles.length} video files for date ${date}`)
+    logger.debugSync("Processing video files for date", { date, filesCount: dayFiles.length })
 
     // Получаем существующие треки для этого дня или создаем новый сектор
     // Ищем существующий сектор по дате или по имени, содержащему дату
@@ -100,7 +98,7 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
       }
     }
 
-    console.log(`Existing sector for date ${date}: ${existingSector ? "yes" : "no"}`)
+    logger.debugSync("Existing sector check", { date, hasExistingSector: !!existingSector })
 
     // Форматируем дату для отображения с помощью универсального метода
     const dateObj = new Date(date)
@@ -125,7 +123,7 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
       scrollPosition: 0,
     }
 
-    console.log(`Using sector ${sector.name} with ${sector.tracks.length} tracks`)
+    logger.debugSync("Using sector", { sectorName: sector.name, tracksCount: sector.tracks.length })
 
     // Обрабатываем каждый файл и добавляем его на подходящую дорожку
     processVideoFiles(dayFiles, sector)
@@ -153,9 +151,9 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
   // Обрабатываем аудио файлы по дням
   processAudioFiles(sortedAudioFiles, sectors, existingSectorsByDay, currentLanguage)
 
-  console.log(
-    "Created sectors:",
-    sectors.map((s) => ({
+  logger.debugSync("Created sectors", {
+    sectorsCount: sectors.length,
+    sectors: sectors.map((s) => ({
       name: s.name,
       tracksCount: s.tracks.length,
       tracks: s.tracks.map((t) => ({
@@ -165,7 +163,7 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
         videos: t.videos?.map((v) => v.name),
       })),
     })),
-  )
+  })
 
   return sectors
 }

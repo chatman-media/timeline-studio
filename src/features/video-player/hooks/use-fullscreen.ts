@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 
-import { logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:use-fullscreen")
 
 /**
  * Хук для отслеживания изменений полноэкранного режима
  * @returns Объект с состоянием полноэкранного режима и функциями для управления им
  */
 export function useFullscreen() {
-  logInfo("[useFullscreen] Инициализация хука")
+  logger.debug("hook initialized")
 
   const [isFullscreen, setIsFullscreen] = useState(false)
 
@@ -20,7 +22,7 @@ export function useFullscreen() {
         (document as any).msFullscreenElement
 
       setIsFullscreen(!!isCurrentlyFullscreen)
-      console.log(`[FullscreenChange] Полноэкранный режим ${isCurrentlyFullscreen ? "включен" : "выключен"}`)
+      logger.debug("fullscreen state changed", { isFullscreen: !!isCurrentlyFullscreen })
     }
 
     // Добавляем слушатели для разных браузеров
@@ -72,8 +74,6 @@ export function useFullscreen() {
       enterFullscreen(element)
     }
   }
-
-  logInfo("[useFullscreen] Хук готов", { isFullscreen })
 
   return {
     isFullscreen,

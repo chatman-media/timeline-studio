@@ -18,6 +18,10 @@ import { AIDirectorProgress } from "@/features/ai-director/components/ai-directo
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "AiAnalysisDashboard" })
+
 type AnalysisMode = "fast" | "balanced" | "quality"
 
 export function AIAnalysisDashboard() {
@@ -45,7 +49,7 @@ export function AIAnalysisDashboard() {
         setSelectedFile(selected)
       }
     } catch (error) {
-      console.error("Failed to select file:", error)
+      logger.error("Failed to select file:", error)
     }
   }
 
@@ -61,7 +65,7 @@ export function AIAnalysisDashboard() {
         await analyzeComprehensive(selectedFile, config)
       }
     } catch (error) {
-      console.error("Failed to start analysis:", error)
+      logger.error("Failed to start analysis:", error)
     }
   }
 

@@ -9,6 +9,10 @@ import { useTranslation } from "react-i18next"
 
 import { DEFAULT_LANGUAGE, isSupportedLanguage, type LanguageCode } from "@/i18n/constants"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseLanguage" })
+
 interface LanguageResponse {
   language: string
   system_language: string
@@ -60,7 +64,7 @@ export function useLanguage(): UseLanguageReturn {
       // Сохраняем в localStorage для совместимости
       localStorage.setItem("app-language", appLang)
     } catch (err) {
-      console.error("Error fetching language:", err)
+      logger.error("Error fetching language:", err)
       setError(err instanceof Error ? err.message : String(err))
 
       // Пытаемся получить язык из localStorage
@@ -70,7 +74,7 @@ export function useLanguage(): UseLanguageReturn {
           await i18n.changeLanguage(storedLanguage as LanguageCode)
         }
       } catch (e) {
-        console.error("Error reading language from localStorage:", e)
+        logger.error("Error reading language from localStorage:", e)
       }
     } finally {
       setIsLoading(false)
@@ -95,7 +99,7 @@ export function useLanguage(): UseLanguageReturn {
         // Синхронизируем с бэкендом Tauri
         await invoke<LanguageResponse>("set_app_language_tauri", { lang })
       } catch (err) {
-        console.error("Error changing language:", err)
+        logger.error("Error changing language:", err)
         setError(err instanceof Error ? err.message : String(err))
       } finally {
         setIsLoading(false)

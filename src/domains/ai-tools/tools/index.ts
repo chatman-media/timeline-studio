@@ -5,6 +5,11 @@
 
 // Analysis Tools
 export * from "./analysis"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("Index")
+
 // Automation Tools
 export * from "./automation"
 // Core Tools
@@ -95,7 +100,7 @@ export function getAllToolSchemas() {
       try {
         schemas[tool.metadata.name] = tool.getSchema()
       } catch (error) {
-        console.warn(`Ошибка получения схемы для инструмента ${tool.metadata.name}:`, error)
+        logger.warn("Ошибка получения схемы для инструмента", { tool.metadata.name, error })
       }
       return schemas
     },
@@ -236,12 +241,12 @@ export function registerAllToolsInContainer(container: any) {
   allAITools.forEach((tool) => {
     try {
       registry.register(tool)
-      console.log(`[AI Tools] Зарегистрирован инструмент: ${tool.metadata.name}`)
+      logger.info("[AI Tools] Зарегистрирован инструмент:", { tool.metadata.name })
     } catch (error) {
-      console.error(`[AI Tools] Ошибка регистрации инструмента ${tool.metadata.name}:`, error)
+      logger.error("[AI Tools] Ошибка регистрации инструмента", { tool.metadata.name, error })
     }
   })
 
-  console.log(`[AI Tools] Зарегистрировано ${allAITools.length} инструментов`)
+  logger.info("[AI Tools] Зарегистрировано", { allAITools.length })
   return registry.getStatistics()
 }

@@ -3,7 +3,11 @@
  */
 
 import { useCallback, useEffect, useRef } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { type DomainName, type EventHandler, eventBus, type PublishResult, type SubscriptionOptions } from "../events"
+
+const logger = createLogger("UseDomainEvents")
+
 
 export interface UseDomainEventsOptions {
   /** Домен, от имени которого публикуются события */
@@ -41,7 +45,7 @@ export function useDomainEvents(options: UseDomainEventsOptions): UseDomainEvent
   const publish = useCallback(
     async <T = unknown>(type: string, payload: T, metadata?: Record<string, unknown>): Promise<PublishResult> => {
       if (debug) {
-        console.log(`[${domain}] Publishing event:`, type, payload)
+        logger.debug("Log", { data: `[${domain}] Publishing event:`, type, payload })
       }
 
       return eventBus.publish(type, domain, payload, {
@@ -57,7 +61,7 @@ export function useDomainEvents(options: UseDomainEventsOptions): UseDomainEvent
     <T = unknown>(handler: EventHandler<T>, options?: SubscriptionOptions): void => {
       const wrappedHandler: EventHandler<T> = (event) => {
         if (debug) {
-          console.log(`[${domain}] Received event:`, event.type, event.payload)
+          logger.debug("Log", { data: `[${domain}] Received event:`, event.type, event.payload })
         }
         return handler(event)
       }

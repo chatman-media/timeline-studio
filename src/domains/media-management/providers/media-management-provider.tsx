@@ -9,9 +9,13 @@ import { createContext, type ReactNode, useEffect, useState } from "react"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { getMediaMetadataService } from "../services/media-metadata-service"
 import type { MediaImportOptions, MediaManagementService, MediaType } from "../types"
+
+const logger = createLogger("MediaManagementProvider")
+
 
 interface MediaManagementContextValue extends MediaManagementService {
   fileOperationsState: any
@@ -76,7 +80,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
   const mediaManagementService: MediaManagementService = {
     importFiles: async (files: string[], _options: MediaImportOptions) => {
-      console.log(`[Media Management] Importing ${files.length} files`)
+      logger.info("[Media Management] Importing", { files.length })
       setIsLoading(true)
       setError(null)
       setMediaImportStatus("importing")
@@ -97,7 +101,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
               importResults.push(result)
             }
           } catch (importError) {
-            console.error(`Failed to import file ${filePath}:`, importError)
+            logger.error("Failed to import file", { filePath, importError })
             // Продолжаем импорт остальных файлов даже если один не удался
           }
         }
@@ -107,7 +111,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
         return importResults
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Import failed"
-        console.error("[Media Management] Import failed:", errorMessage)
+        logger.error("[Media Management] Import failed:", { error: errorMessage })
         setError(errorMessage)
         setMediaImportStatus("failed")
         setIsLoading(false)
@@ -150,7 +154,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
           type: mediaType,
         }
       } catch (error) {
-        console.error("[Media Management] Failed to get media info:", error)
+        logger.error("[Media Management] Failed to get media info:", { error: error })
         // В случае ошибки возвращаем базовую информацию
         const name = path.split("/").pop() || path
         const mediaType = getMediaTypeFromPath(path)
@@ -184,7 +188,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
         return metadata
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Metadata extraction failed"
-        console.error("[Media Management] Metadata extraction failed:", errorMessage)
+        logger.error("[Media Management] Metadata extraction failed:", { error: errorMessage })
         setError(errorMessage)
         setIsLoading(false)
         throw error

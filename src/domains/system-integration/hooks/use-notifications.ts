@@ -3,9 +3,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
 import type { NotificationAction, SystemNotification } from "../types"
+
+const logger = createLogger("UseNotifications")
 
 export function useNotifications() {
   const [orchestrator] = useState(() => getSystemIntegrationOrchestrator())
@@ -15,11 +18,11 @@ export function useNotifications() {
   useEffect(() => {
     // Проверяем, разрешены ли уведомления
     if (!isServiceEnabled("NOTIFICATIONS")) {
-      console.log("[useNotifications] Notifications are disabled by service config")
+      logger.info("[useNotifications] Notifications are disabled by service config")
       return
     }
 
-    console.log("[useNotifications] Setting up notifications update interval")
+    logger.info("[useNotifications] Setting up notifications update interval")
     let updateCount = 0
     let lastNotificationCount = 0
 
@@ -37,18 +40,20 @@ export function useNotifications() {
 
         const duration = performance.now() - startTime
         if (duration > 5) {
-          console.warn(`[useNotifications] Notification update #${updateCount} took ${duration.toFixed(2)}ms`)
+          logger.warn(`[useNotifications] Notification update #${updateCount} took ${duration.toFixed(2)}ms`)
         }
       }
 
       // Логируем каждые 100 обновлений для отладки
       if (updateCount % 100 === 0) {
-        console.log(`[useNotifications] Processed ${updateCount} notification updates, current count: ${currentCount}`)
+        logger.info("[useNotifications] Processed ${updateCount} notification updates, current count:", {
+          currentCount,
+        })
       }
     }, 100) // Обновляем каждые 100ms
 
     return () => {
-      console.log(`[useNotifications] Cleaning up notifications interval (processed ${updateCount} updates)`)
+      logger.info("[useNotifications] Cleaning up notifications interval (processed", { updateCount })
       clearInterval(interval)
     }
   }, [orchestrator])

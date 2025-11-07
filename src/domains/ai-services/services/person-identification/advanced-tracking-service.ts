@@ -7,6 +7,10 @@ import { invoke } from "@tauri-apps/api/core"
 
 import type { DetectedFace, PersonAppearance } from "@/features/person-identification/types/person"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AdvancedTrackingService")
+
 // Трекинг конфигурация
 export interface TrackingConfig {
   // Алгоритм трекинга
@@ -157,9 +161,9 @@ export class AdvancedTrackingService {
       })
 
       this.isInitialized = true
-      console.log("Advanced Tracking Service инициализирован")
+      logger.debug("Advanced Tracking Service инициализирован")
     } catch (error) {
-      console.error("Ошибка инициализации Advanced Tracking Service:", error)
+      logger.error("Ошибка инициализации Advanced Tracking Service:", { error })
       throw error
     }
   }
@@ -184,9 +188,9 @@ export class AdvancedTrackingService {
       this.frameNumber = 0
       this.tracks.clear()
 
-      console.log(`Трекинг запущен для видео ${videoId}`)
+      logger.debug(`Трекинг запущен для видео ${videoId}`)
     } catch (error) {
-      console.error("Ошибка запуска трекинга:", error)
+      logger.error("Ошибка запуска трекинга:", { error })
       throw error
     }
   }
@@ -269,7 +273,7 @@ export class AdvancedTrackingService {
         statistics: result.statistics,
       }
     } catch (error) {
-      console.error("Ошибка обработки кадра:", error)
+      logger.error("Ошибка обработки кадра:", { error })
       throw error
     }
   }
@@ -298,7 +302,7 @@ export class AdvancedTrackingService {
         }
       }
     } catch (error) {
-      console.error("Ошибка предсказания позиций:", error)
+      logger.error("Ошибка предсказания позиций:", { error })
 
       // Fallback: простая линейная экстраполяция
       for (const [trackId, track] of this.tracks) {
@@ -337,7 +341,7 @@ export class AdvancedTrackingService {
         personId,
       })
     } catch (error) {
-      console.error("Ошибка назначения персоны треку:", error)
+      logger.error("Ошибка назначения персоны треку:", { error })
       throw error
     }
   }
@@ -375,7 +379,7 @@ export class AdvancedTrackingService {
         targetTrackId,
       })
     } catch (error) {
-      console.error("Ошибка объединения треков:", error)
+      logger.error("Ошибка объединения треков:", { error })
       throw error
     }
   }
@@ -435,7 +439,7 @@ export class AdvancedTrackingService {
 
       return interpolated
     } catch (error) {
-      console.error("Ошибка интерполяции позиций:", error)
+      logger.error("Ошибка интерполяции позиций:", { error })
       return []
     }
   }
@@ -495,12 +499,12 @@ export class AdvancedTrackingService {
 
       // Сохраняем финальное состояние треков
       const finalTracks = this.getActiveTracks()
-      console.log(`Трекинг остановлен. Финальных треков: ${finalTracks.length}`)
+      logger.debug(`Трекинг остановлен. Финальных треков: ${finalTracks.length}`)
 
       // Очищаем треки только после сохранения
       // this.tracks.clear() // Не очищаем сразу, чтобы можно было экспортировать
     } catch (error) {
-      console.error("Ошибка остановки трекинга:", error)
+      logger.error("Ошибка остановки трекинга:", { error })
       throw error
     }
   }
@@ -537,7 +541,7 @@ export class AdvancedTrackingService {
       try {
         listener(event)
       } catch (error) {
-        console.error("Ошибка в обработчике события трекинга:", error)
+        logger.error("Ошибка в обработчике события трекинга:", { error })
       }
     })
   }

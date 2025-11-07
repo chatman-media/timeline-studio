@@ -61,16 +61,16 @@ const getInitialTabSettings = (tab: BrowserTab): TabSettings => {
  * Загрузка сохраненных настроек из localStorage
  */
 const loadSavedSettings = (): BrowserContext | null => {
-  console.log("[Browser Domain] Loading saved settings...")
+  logger.debugSync("Loading saved settings...")
   try {
     // Guard: localStorage is only available in browser runtime (not SSR)
     if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
-      console.log("[Browser Domain] localStorage not available (SSR), skipping load")
+      logger.debugSync("localStorage not available (SSR), skipping load")
       return null
     }
     const savedSettings = localStorage.getItem("browserSettings")
     if (savedSettings) {
-      console.log("[Browser Domain] Found saved settings")
+      logger.debugSync("Found saved settings")
       const parsed = JSON.parse(savedSettings)
       // Восстанавливаем Set из массива для selectedFiles
       if (parsed.selectedFiles) {
@@ -83,7 +83,7 @@ const loadSavedSettings = (): BrowserContext | null => {
       return parsed as BrowserContext
     }
   } catch (error) {
-    console.error("[Browser Domain] Failed to load saved settings:", error)
+    logger.errorSync("Failed to load saved settings", { error })
   }
 
   return null
@@ -128,7 +128,7 @@ export const browserMachine = setup({
     switchTab: assign({
       activeTab: ({ event }) => {
         if (event.type !== "SWITCH_TAB") return "media"
-        console.log(`[Browser Domain] Switching to ${event.tab} tab`)
+        logger.debugSync("Switching to tab", { tab: event.tab })
         return event.tab
       },
     }),
@@ -137,7 +137,7 @@ export const browserMachine = setup({
       tabSettings: ({ context, event }) => {
         if (event.type !== "SET_SEARCH_QUERY") return context.tabSettings
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] Setting search query for ${tab}: ${event.query}`)
+        logger.debugSync("Setting search query", { tab, query: event.query })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -153,7 +153,7 @@ export const browserMachine = setup({
         if (event.type !== "TOGGLE_FAVORITES") return context.tabSettings
         const tab = event.tab || context.activeTab
         const newValue = !context.tabSettings[tab as BrowserTab].showFavoritesOnly
-        console.log(`[Browser Domain] ${tab} - show favorites only: ${newValue}`)
+        logger.debugSync("Toggle favorites", { tab, showFavoritesOnly: newValue })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -168,7 +168,7 @@ export const browserMachine = setup({
       tabSettings: ({ context, event }) => {
         if (event.type !== "SET_SORT") return context.tabSettings
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] ${tab} - sort by ${event.sortBy} ${event.sortOrder}`)
+        logger.debugSync("Set sort", { tab, sortBy: event.sortBy, sortOrder: event.sortOrder })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -184,7 +184,7 @@ export const browserMachine = setup({
       tabSettings: ({ context, event }) => {
         if (event.type !== "SET_GROUP_BY") return context.tabSettings
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] ${tab} - group by ${event.groupBy}`)
+        logger.debugSync("Set group by", { tab, groupBy: event.groupBy })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -199,7 +199,7 @@ export const browserMachine = setup({
       tabSettings: ({ context, event }) => {
         if (event.type !== "SET_FILTER") return context.tabSettings
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] ${tab} - filter by ${event.filterType}`)
+        logger.debugSync("Set filter", { tab, filterType: event.filterType })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -214,7 +214,7 @@ export const browserMachine = setup({
       tabSettings: ({ context, event }) => {
         if (event.type !== "SET_VIEW_MODE") return context.tabSettings
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] ${tab} - view mode: ${event.viewMode}`)
+        logger.debugSync("Set view mode", { tab, viewMode: event.viewMode })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -230,7 +230,7 @@ export const browserMachine = setup({
         if (event.type !== "SET_PREVIEW_SIZE") return context.tabSettings
         const tab = event.tab || context.activeTab
         const validIndex = Math.max(0, Math.min(event.sizeIndex, 6)) // 0-6 valid indices for PREVIEW_SIZES
-        console.log(`[Browser Domain] ${tab} - preview size index: ${validIndex}`)
+        logger.debugSync("Set preview size", { tab, previewSizeIndex: validIndex })
         return {
           ...context.tabSettings,
           [tab]: {
@@ -244,7 +244,7 @@ export const browserMachine = setup({
     resetTabSettings: assign({
       tabSettings: ({ context, event }) => {
         if (event.type !== "RESET_TAB_SETTINGS") return context.tabSettings
-        console.log(`[Browser Domain] Resetting ${event.tab} tab settings`)
+        logger.debugSync("Resetting tab settings", { tab: event.tab })
         return {
           ...context.tabSettings,
           [event.tab]: getInitialTabSettings(event.tab),
@@ -254,15 +254,15 @@ export const browserMachine = setup({
 
     loadSettings: assign(({ event }) => {
       if (event.type !== "LOAD_SETTINGS") return {}
-      console.log("[Browser Domain] Loading settings:", event.settings)
+      logger.debugSync("Loading settings", { settings: event.settings })
       return event.settings
     }),
 
     saveSettings: ({ context }) => {
-      console.log("[Browser Domain] Saving settings to localStorage")
+      logger.debugSync("Saving settings to localStorage")
       try {
         if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
-          console.log("[Browser Domain] localStorage not available (SSR), skipping save")
+          logger.debugSync("localStorage not available (SSR), skipping save")
           return
         }
         // Преобразуем Set в массив для сериализации
@@ -278,7 +278,7 @@ export const browserMachine = setup({
         }
         localStorage.setItem("browserSettings", JSON.stringify(serializable))
       } catch (error) {
-        console.error("[Browser Domain] Failed to save settings:", error)
+        logger.errorSync("Failed to save settings", { error })
       }
     },
 
@@ -289,7 +289,7 @@ export const browserMachine = setup({
         const tab = event.tab || context.activeTab
         const newSelected = new Set(context.selectedFiles[tab as BrowserTab])
         newSelected.add(event.fileId)
-        console.log(`[Browser Domain] Selected file ${event.fileId} in ${tab}`)
+        logger.debugSync("Selected file", { fileId: event.fileId, tab })
         return {
           ...context.selectedFiles,
           [tab as BrowserTab]: newSelected,
@@ -303,7 +303,7 @@ export const browserMachine = setup({
         const tab = event.tab || context.activeTab
         const newSelected = new Set(context.selectedFiles[tab as BrowserTab])
         newSelected.delete(event.fileId)
-        console.log(`[Browser Domain] Deselected file ${event.fileId} in ${tab}`)
+        logger.debugSync("Deselected file", { fileId: event.fileId, tab })
         return {
           ...context.selectedFiles,
           [tab as BrowserTab]: newSelected,
@@ -318,10 +318,10 @@ export const browserMachine = setup({
         const newSelected = new Set(context.selectedFiles[tab as BrowserTab])
         if (newSelected.has(event.fileId)) {
           newSelected.delete(event.fileId)
-          console.log(`[Browser Domain] Deselected file ${event.fileId} in ${tab}`)
+          logger.debugSync("Deselected file", { fileId: event.fileId, tab })
         } else {
           newSelected.add(event.fileId)
-          console.log(`[Browser Domain] Selected file ${event.fileId} in ${tab}`)
+          logger.debugSync("Selected file", { fileId: event.fileId, tab })
         }
         return {
           ...context.selectedFiles,
@@ -334,7 +334,7 @@ export const browserMachine = setup({
       selectedFiles: ({ context, event }) => {
         if (event.type !== "SELECT_ALL_FILES") return context.selectedFiles
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] Selecting all ${event.fileIds.length} files in ${tab}`)
+        logger.debugSync("Selecting all files", { fileCount: event.fileIds.length, tab })
         return {
           ...context.selectedFiles,
           [tab as BrowserTab]: new Set(event.fileIds),
@@ -346,7 +346,7 @@ export const browserMachine = setup({
       selectedFiles: ({ context, event }) => {
         if (event.type !== "DESELECT_ALL_FILES") return context.selectedFiles
         const tab = event.tab || context.activeTab
-        console.log(`[Browser Domain] Deselecting all files in ${tab}`)
+        logger.debugSync("Deselecting all files", { tab })
         return {
           ...context.selectedFiles,
           [tab as BrowserTab]: new Set<string>(),

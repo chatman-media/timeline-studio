@@ -7,6 +7,10 @@ import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 
 // Use generated types from Specta
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "BackendSync" })
   type CommandResult,
   commands,
   type EventEnvelope,
@@ -54,9 +58,9 @@ export class BackendSync {
       }
 
       this.isConnected = true
-      console.log("Backend sync connected")
+      logger.info("Backend sync connected")
     } catch (error) {
-      console.error("Failed to connect backend sync:", error)
+      logger.error("Failed to connect backend sync:", error)
       throw error
     }
   }
@@ -70,7 +74,7 @@ export class BackendSync {
       this.unlisten = null
     }
     this.isConnected = false
-    console.log("Backend sync disconnected")
+    logger.info("Backend sync disconnected")
   }
 
   /**
@@ -82,14 +86,14 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      console.error("Command execution failed:", result.error)
+      logger.error("Command execution failed:", result.error)
       return {
         success: false,
         error: result.error,
         data: null,
       }
     } catch (error) {
-      console.error("Command execution failed:", error)
+      logger.error("Command execution failed:", error)
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -107,10 +111,10 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      console.error("Failed to get project state:", result.error)
+      logger.error("Failed to get project state:", result.error)
       return null
     } catch (error) {
-      console.error("Failed to get project state:", error)
+      logger.error("Failed to get project state:", error)
       return null
     }
   }
@@ -124,10 +128,10 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      console.error("Failed to get event history:", result.error)
+      logger.error("Failed to get event history:", result.error)
       return []
     } catch (error) {
-      console.error("Failed to get event history:", error)
+      logger.error("Failed to get event history:", error)
       return []
     }
   }
@@ -259,7 +263,7 @@ export class BackendSync {
    * Handle incoming backend event
    */
   private handleBackendEvent(envelope: EventEnvelope) {
-    console.log("BackendSync: Received event", envelope)
+    logger.info("BackendSync: Received event", envelope)
     // Update last version
     this.lastVersion = envelope.metadata.version
 
@@ -268,13 +272,13 @@ export class BackendSync {
       try {
         handler(envelope.event)
       } catch (error) {
-        console.error("Event handler error:", error)
+        logger.error("Event handler error:", error)
       }
     })
 
     // For state-changing events, fetch new state
     if (this.isStateChangingEvent(envelope.event)) {
-      console.log("BackendSync: State-changing event detected, fetching new state")
+      logger.info("BackendSync: State-changing event detected, fetching new state")
       void this.fetchAndNotifyState()
     }
   }
@@ -322,7 +326,7 @@ export class BackendSync {
    */
   private async fetchAndNotifyState() {
     const state = await this.getProjectState()
-    console.log("BackendSync: Fetched project state", state)
+    logger.info("BackendSync: Fetched project state", state)
     if (state) {
       this.notifyStateChange(state)
     }
@@ -332,12 +336,12 @@ export class BackendSync {
    * Notify state change handlers
    */
   private notifyStateChange(state: ProjectState) {
-    console.log("BackendSync: Notifying state change to", this.stateChangeHandlers.size, "handlers")
+    logger.info("BackendSync: Notifying state change to", this.stateChangeHandlers.size, "handlers")
     this.stateChangeHandlers.forEach((handler) => {
       try {
         handler(state)
       } catch (error) {
-        console.error("State change handler error:", error)
+        logger.error("State change handler error:", error)
       }
     })
   }

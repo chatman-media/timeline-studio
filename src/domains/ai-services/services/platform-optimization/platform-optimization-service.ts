@@ -4,6 +4,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("PlatformOptimizationService")
 
 /**
  * Поддерживаемые платформы
@@ -422,7 +425,7 @@ export class PlatformOptimizationService {
         suggestions,
       }
     } catch (error) {
-      console.error(`Ошибка оптимизации для ${params.platform}:`, error)
+      logger.errorSync("Ошибка оптимизации для платформы", { platform: params.platform, error })
       throw new Error(`Не удалось оптимизировать видео для ${specs.displayName}: ${String(error)}`)
     }
   }
@@ -465,7 +468,7 @@ export class PlatformOptimizationService {
         totalOptimizedSize += result.metadata.optimizedSize
         platformDistribution[platform] = (platformDistribution[platform] || 0) + 1
       } catch (error) {
-        console.error(`Ошибка оптимизации для ${platform}:`, error)
+        logger.errorSync("Ошибка пакетной оптимизации для платформы", { platform, error })
         failedOptimizations++
       }
     }

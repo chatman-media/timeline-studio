@@ -6,8 +6,11 @@ import {
   FrameExtractionService,
   type TimelineFrame,
 } from "@/features/video-compiler/services/frame-extraction-service"
+import { createLogger } from "@/lib/tauri-logger"
 
 import { useMediaPreview } from "./use-media-preview"
+
+const logger = createLogger("FramePreview")
 
 export interface UseFramePreviewOptions {
   onFramesExtracted?: (frames: TimelineFrame[]) => void
@@ -43,7 +46,7 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
         // Сначала проверяем IndexedDB кэш
         const indexedDBCached = await frameExtraction.getCachedFrames(videoPath)
         if (indexedDBCached && indexedDBCached.length > 0) {
-          console.log(`Использованы кэшированные кадры из IndexedDB для ${videoPath}`)
+          logger.infoSync("Using cached frames from IndexedDB", { videoPath, framesCount: indexedDBCached.length })
           options.onFramesExtracted?.(indexedDBCached)
           return indexedDBCached
         }
@@ -51,7 +54,10 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
         // Затем проверяем кэш Preview Manager
         const cachedData = await getPreviewData(fileId)
         if (cachedData?.timeline_previews && cachedData.timeline_previews.length > 0) {
-          console.log(`Использованы кэшированные кадры из Preview Manager для ${fileId}`)
+          logger.infoSync("Using cached frames from Preview Manager", {
+            fileId,
+            framesCount: cachedData.timeline_previews.length,
+          })
           const frames = cachedData.timeline_previews.map((frame) => ({
             timestamp: frame.timestamp,
             frameData: frame.base64_data || "",
@@ -117,7 +123,10 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
         // Проверяем кэш для recognition frames
         const cachedData = await getPreviewData(fileId)
         if (cachedData?.recognition_frames && cachedData.recognition_frames.length > 0) {
-          console.log(`Использованы кэшированные recognition кадры для ${fileId}`)
+          logger.infoSync("Using cached recognition frames", {
+            fileId,
+            framesCount: cachedData.recognition_frames.length,
+          })
           return cachedData.recognition_frames
         }
 

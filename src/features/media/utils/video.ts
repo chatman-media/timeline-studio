@@ -2,6 +2,10 @@ import type { FfprobeStream } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimeRange } from "@/features/media/types/time-range"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "Video" })
+
 /**
  * Константы для работы с временными промежутками
  *
@@ -26,7 +30,7 @@ const TIME_CONSTANTS = {
  */
 export const calculateTimeRanges = (videos: MediaFile[]): TimeRange[] => {
   // Отключаем логирование для уменьшения количества сообщений
-  // console.log(
+  // logger.info(
   //   "calculateTimeRanges called with videos:",
   //   videos.map((v) => v.name),
   // )
@@ -36,7 +40,7 @@ export const calculateTimeRanges = (videos: MediaFile[]): TimeRange[] => {
     const duration = v.duration ?? 0
     const endTime = startTime + duration * TIME_CONSTANTS.MILLISECONDS_IN_SECOND
     // Отключаем логирование для уменьшения количества сообщений
-    // console.log(
+    // logger.info(
     //   `Video ${v.name}: startTime=${startTime / 1000}s, duration=${duration}s, endTime=${endTime / 1000}s`,
     // )
     return [startTime, endTime]
@@ -72,7 +76,7 @@ export const calculateTimeRanges = (videos: MediaFile[]): TimeRange[] => {
   ranges.push(currentRange)
 
   // Отключаем логирование для уменьшения количества сообщений
-  // console.log("Calculated time ranges:", ranges)
+  // logger.info("Calculated time ranges:", ranges)
 
   return ranges
 }
@@ -192,7 +196,7 @@ export const getFrameTime = (videoOrStream?: MediaFile | { r_frame_rate?: string
  *
  * // Проверка, отключен ли звук
  * if (volume === VolumeState.MUTED) {
- *   console.log("Звук отключен");
+ *   logger.info("Звук отключен");
  * }
  * ```
  */

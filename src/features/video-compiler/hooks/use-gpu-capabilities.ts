@@ -3,6 +3,10 @@ import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseGpuCapabilities" })
   CompilerSettings,
   FfmpegCapabilities,
   GpuCapabilities,
@@ -43,29 +47,29 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       setIsLoading(true)
       setError(null)
 
-      console.log("Refreshing GPU capabilities...")
+      logger.info("Refreshing GPU capabilities...")
 
       // Загружаем все данные параллельно
       const [gpuResponse, system, ffmpeg, settings] = await Promise.all([
         invoke<any>("get_gpu_capabilities_full").catch((err: unknown) => {
-          console.error("Failed to get GPU capabilities:", err)
+          logger.error("Failed to get GPU capabilities:", err)
           throw err
         }),
         invoke<SystemInfo>("get_system_info").catch((err: unknown) => {
-          console.error("Failed to get system info:", err)
+          logger.error("Failed to get system info:", err)
           throw err
         }),
         invoke<FfmpegCapabilities>("check_ffmpeg_capabilities").catch((err: unknown) => {
-          console.error("Failed to check FFmpeg:", err)
+          logger.error("Failed to check FFmpeg:", err)
           throw err
         }),
         invoke<CompilerSettings>("get_compiler_settings_advanced").catch((err: unknown) => {
-          console.error("Failed to get compiler settings:", err)
+          logger.error("Failed to get compiler settings:", err)
           throw err
         }),
       ])
 
-      console.log("GPU Response:", gpuResponse)
+      logger.info("GPU Response:", gpuResponse)
 
       // Преобразуем ответ в нужный формат
       const gpu: GpuCapabilities = {
@@ -103,7 +107,7 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       }
 
       setError(errorMsg)
-      console.error("GPU capabilities error:", err)
+      logger.error("GPU capabilities error:", err)
 
       // Не показываем toast при первой загрузке, только логируем
       if (!isLoading) {
@@ -137,7 +141,7 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
     try {
       return await invoke<boolean>("check_hardware_acceleration_support")
     } catch (err) {
-      console.error("Failed to check hardware acceleration:", err)
+      logger.error("Failed to check hardware acceleration:", err)
       return false
     }
   }, [])

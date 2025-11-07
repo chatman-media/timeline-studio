@@ -18,6 +18,10 @@ import type {
   PersonThumbnail,
 } from "@/features/person-identification/types/person"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("PersonDatabaseService")
+
 // Расширенный тип для лица с embedding
 interface DetectedFaceWithEmbedding extends DetectedFace {
   embedding?: Float32Array
@@ -116,9 +120,9 @@ export class PersonDatabaseService {
       }
 
       this.isInitialized = true
-      console.log("Person Database Service инициализирован")
+      logger.debug("Person Database Service инициализирован")
     } catch (error) {
-      console.error("Ошибка инициализации Person Database Service:", error)
+      logger.error("Ошибка инициализации Person Database Service:", { error })
       throw error
     }
   }
@@ -207,9 +211,9 @@ export class PersonDatabaseService {
   private async initializeTauriDB(): Promise<void> {
     try {
       await invoke("init_person_database")
-      console.log("Tauri база данных инициализирована")
+      logger.debug("Tauri база данных инициализирована")
     } catch (error) {
-      console.error("Ошибка инициализации Tauri базы данных:", error)
+      logger.error("Ошибка инициализации Tauri базы данных:", { error })
       throw error
     }
   }
@@ -281,7 +285,7 @@ export class PersonDatabaseService {
 
       return person
     } catch (error) {
-      console.error(`Ошибка получения персоны ${personId}:`, error)
+      logger.error("Error occurred", { error: `Ошибка получения персоны ${personId}:`, error })
       return null
     }
   }
@@ -331,13 +335,13 @@ export class PersonDatabaseService {
         // Обрабатываем ошибки для каждой операции отдельно
         const deleteOperations = [
           this.deletePersonEmbeddings(personId).catch((err: unknown) =>
-            console.warn(`Не удалось удалить эмбеддинги для ${personId}:`, err),
+            logger.warn(`Не удалось удалить эмбеддинги для ${personId}`, { error: err }),
           ),
           this.deletePersonAppearances(personId).catch((err: unknown) =>
-            console.warn(`Не удалось удалить появления для ${personId}:`, err),
+            logger.warn(`Не удалось удалить появления для ${personId}`, { error: err }),
           ),
           this.deletePersonDetections(personId).catch((err: unknown) =>
-            console.warn(`Не удалось удалить детекции для ${personId}:`, err),
+            logger.warn(`Не удалось удалить детекции для ${personId}`, { error: err }),
           ),
         ]
 
@@ -353,7 +357,7 @@ export class PersonDatabaseService {
       this.emitEvent({ type: "person_deleted", data: { personId } })
       return true
     } catch (error) {
-      console.error(`Ошибка удаления персоны ${personId}:`, error)
+      logger.error("Error occurred", { error: `Ошибка удаления персоны ${personId}:`, error })
       return false
     }
   }
@@ -369,7 +373,7 @@ export class PersonDatabaseService {
     try {
       return await this.searchPersonsInStore("name", query.toLowerCase(), limit)
     } catch (error) {
-      console.error("Ошибка поиска персон по имени:", error)
+      logger.error("Ошибка поиска персон по имени:", { error })
       return []
     }
   }
@@ -484,7 +488,7 @@ export class PersonDatabaseService {
 
       return results
     } catch (error) {
-      console.error("Ошибка поиска по эмбеддингу:", error)
+      logger.error("Ошибка поиска по эмбеддингу:", { error })
       return []
     }
   }
@@ -525,7 +529,7 @@ export class PersonDatabaseService {
 
       return true
     } catch (error) {
-      console.error("Ошибка добавления эмбеддинга:", error)
+      logger.error("Ошибка добавления эмбеддинга:", { error })
       return false
     }
   }
@@ -578,7 +582,7 @@ export class PersonDatabaseService {
 
       return true
     } catch (error) {
-      console.error("Ошибка добавления появления:", error)
+      logger.error("Ошибка добавления появления:", { error })
       return false
     }
   }
@@ -615,7 +619,7 @@ export class PersonDatabaseService {
 
       return stats
     } catch (error) {
-      console.error("Ошибка получения статистики персоны:", error)
+      logger.error("Ошибка получения статистики персоны:", { error })
       return null
     }
   }
@@ -629,7 +633,7 @@ export class PersonDatabaseService {
     try {
       return await this.loadAllPersons()
     } catch (error) {
-      console.error("Ошибка получения всех персон:", error)
+      logger.error("Ошибка получения всех персон:", { error })
       return []
     }
   }
@@ -678,7 +682,7 @@ export class PersonDatabaseService {
 
       return true
     } catch (error) {
-      console.error("Ошибка объединения персон:", error)
+      logger.error("Ошибка объединения персон:", { error })
       return false
     }
   }
@@ -807,7 +811,7 @@ export class PersonDatabaseService {
 
       return newPersons
     } catch (error) {
-      console.error("Ошибка кластеризации лиц:", error)
+      logger.error("Ошибка кластеризации лиц:", { error })
       return []
     }
   }
@@ -835,7 +839,7 @@ export class PersonDatabaseService {
         lastUpdated: new Date().toISOString(),
       }
     } catch (error) {
-      console.error("Ошибка получения статистики базы данных:", error)
+      logger.error("Ошибка получения статистики базы данных:", { error })
       return {
         totalPersons: 0,
         totalEmbeddings: 0,
@@ -866,7 +870,7 @@ export class PersonDatabaseService {
       try {
         listener(event)
       } catch (error) {
-        console.error("Ошибка в обработчике события персоны:", error)
+        logger.error("Ошибка в обработчике события персоны:", { error })
       }
     })
   }
@@ -1010,7 +1014,7 @@ export class PersonDatabaseService {
         request.onerror = () => reject(new Error(request.error?.message || "Database error"))
       } catch (error) {
         // Если таблица или индекс не существует, просто разрешаем промис
-        console.warn(`Не удалось удалить эмбеддинги: ${String(error)}`)
+        logger.warn("Не удалось удалить эмбеддинги", { error })
         resolve()
       }
     })
@@ -1041,7 +1045,7 @@ export class PersonDatabaseService {
         request.onerror = () => reject(new Error(request.error?.message || "Database error"))
       } catch (error) {
         // Если таблица или индекс не существует, просто разрешаем промис
-        console.warn(`Не удалось удалить появления: ${String(error)}`)
+        logger.warn("Не удалось удалить появления", { error })
         resolve()
       }
     })
@@ -1072,7 +1076,7 @@ export class PersonDatabaseService {
         request.onerror = () => reject(new Error(request.error?.message || "Database error"))
       } catch (error) {
         // Если таблица или индекс не существует, просто разрешаем промис
-        console.warn(`Не удалось удалить детекции: ${String(error)}`)
+        logger.warn("Не удалось удалить детекции", { error })
         resolve()
       }
     })
@@ -1183,7 +1187,7 @@ export class PersonDatabaseService {
 
       return true
     } catch (error) {
-      console.error("Ошибка добавления миниатюры:", error)
+      logger.error("Ошибка добавления миниатюры:", { error })
       return false
     }
   }
@@ -1293,7 +1297,7 @@ export class PersonDatabaseService {
 
       return results
     } catch (error) {
-      console.error("Ошибка поиска персон:", error)
+      logger.error("Ошибка поиска персон:", { error })
       return []
     }
   }
@@ -1382,7 +1386,7 @@ export class PersonDatabaseService {
 
       return results
     } catch (error) {
-      console.error("Ошибка поиска похожих персон:", error)
+      logger.error("Ошибка поиска похожих персон:", { error })
       return []
     }
   }

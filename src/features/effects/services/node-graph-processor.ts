@@ -1,3 +1,4 @@
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   CompositeNode,
   NodeExecutionContext,
@@ -6,6 +7,8 @@ import type {
   NodeRenderResult,
 } from "../types/node-compositing"
 import { getNodeProcessor } from "./node-library"
+
+const logger = createLogger({ module: "NodeGraphProcessor" })
 
 /**
  * Node Graph Processor
@@ -44,7 +47,7 @@ export class NodeGraphProcessor {
         const result = await this.processNode(node, graph, context)
         results.set(nodeId, result)
       } catch (error) {
-        console.error(`Error processing node ${nodeId}:`, error)
+        logger.error(`Error processing node ${nodeId}:`, error)
         results.set(nodeId, {
           data: null,
           metadata: {

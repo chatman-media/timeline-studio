@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   BasicParametersState,
   ColorGradingState,
@@ -9,6 +9,8 @@ import type {
   RGBValue,
 } from "../types/color-grading"
 import { BUILT_IN_PRESETS, type ColorGradingPreset } from "../types/presets"
+
+const logger = createLogger({ module: "UseColorGrading" })
 
 // Начальные значения
 const DEFAULT_RGB: RGBValue = { r: 0, g: 0, b: 0 }
@@ -198,7 +200,7 @@ export function useColorGrading() {
   const loadPreset = useCallback((presetId: string) => {
     const preset = BUILT_IN_PRESETS.find((p) => p.id === presetId)
     if (!preset) {
-      console.warn("Preset not found:", presetId)
+      logger.warn("Preset not found:", presetId)
       return
     }
 
@@ -233,7 +235,7 @@ export function useColorGrading() {
       customPresets.push(preset)
       localStorage.setItem("colorGradingPresets", JSON.stringify(customPresets))
 
-      console.log("Saved preset:", name)
+      logger.info("Saved preset:", name)
     },
     [state],
   )
@@ -342,7 +344,7 @@ export function useColorGrading() {
           savePreset(action.name)
           break
         default:
-          console.warn("Unknown action type:", action.type)
+          logger.warn("Unknown action type:", action.type)
       }
     },
     [

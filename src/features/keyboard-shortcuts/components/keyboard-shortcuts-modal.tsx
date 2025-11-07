@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useModal } from "@/features/modals/services/modal-provider"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { createPresets, type PresetType } from "../presets"
+
+const logger = createLogger({ module: "KeyboardShortcutsModal" })
 
 export function KeyboardShortcutsModal() {
   const { t } = useTranslation()
@@ -128,7 +130,7 @@ export function KeyboardShortcutsModal() {
       scrollContainer.scrollTop = 0
     }
 
-    console.log("Component initialized")
+    logger.info("Component initialized")
   }, [])
 
   // Обработчик изменения поискового запроса
@@ -194,7 +196,7 @@ export function KeyboardShortcutsModal() {
 
   // Прокрутка к категории - упрощенная версия
   const scrollToCategory = (index: number) => {
-    console.log(`Setting active section to ${index}`)
+    logger.info(`Setting active section to ${index}`)
 
     // Просто устанавливаем активную секцию
     setActiveSection(index)
@@ -215,18 +217,18 @@ export function KeyboardShortcutsModal() {
         // Прокручиваем контейнер к этой позиции
         container.scrollTop = relativeTop
 
-        console.log(`Scrolled container to position ${relativeTop}`)
+        logger.info(`Scrolled container to position ${relativeTop}`)
       } catch (error) {
-        console.error("Error scrolling to category:", error)
+        logger.error("Error scrolling to category:", error)
       }
     } else {
-      console.warn(`Cannot scroll to category ${index}: section or container is null`)
+      logger.warn(`Cannot scroll to category ${index}: section or container is null`)
     }
   }
 
   // Начать редактирование горячей клавиши
   const startEditing = (categoryIndex: number, shortcutIndex: number) => {
-    console.log(`Starting editing shortcut at category ${categoryIndex}, shortcut ${shortcutIndex}`)
+    logger.info(`Starting editing shortcut at category ${categoryIndex}, shortcut ${shortcutIndex}`)
     setEditingShortcut({ categoryIndex, shortcutIndex })
     setListeningForKeys(true)
   }
@@ -235,18 +237,18 @@ export function KeyboardShortcutsModal() {
   useEffect(() => {
     if (!listeningForKeys || !editingShortcut) return
 
-    console.log("Setting up global keyboard event listener", {
+    logger.info("Setting up global keyboard event listener", {
       listeningForKeys,
       editingShortcut,
     })
 
     // Функция для обработки клавиатурных событий на уровне окна
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      console.log("Key event received:", e.key)
+      logger.info("Key event received:", e.key)
 
       // Проверяем, что мы все еще в режиме прослушивания
       if (!listeningForKeys || !editingShortcut) {
-        console.log("Not listening for keys or no editing shortcut")
+        logger.info("Not listening for keys or no editing shortcut")
         return
       }
 
@@ -254,7 +256,7 @@ export function KeyboardShortcutsModal() {
       e.preventDefault()
       e.stopPropagation()
 
-      console.log(
+      logger.info(
         "Global key down event:",
         e.key,
         "Meta:",
@@ -288,18 +290,18 @@ export function KeyboardShortcutsModal() {
 
       // Игнорируем нажатия только модификаторов
       if (["Meta", "Control", "Alt", "Shift"].includes(e.key)) {
-        console.log("Ignoring modifier key:", e.key)
+        logger.info("Ignoring modifier key:", e.key)
         return
       }
 
       // Формируем строку с горячей клавишей
       const keyString = [...modifiers, key].join("")
-      console.log("Generated key string:", keyString)
+      logger.info("Generated key string:", keyString)
 
       try {
         // Обновляем предустановку в PRESETS напрямую
         const { categoryIndex, shortcutIndex } = editingShortcut
-        console.log("Updating shortcut at:", {
+        logger.info("Updating shortcut at:", {
           categoryIndex,
           shortcutIndex,
           keyString,
@@ -310,9 +312,9 @@ export function KeyboardShortcutsModal() {
         // Вызываем перерендер, обновляя предустановку
         setSelectedPreset((prev) => prev)
 
-        console.log("Shortcut updated successfully")
+        logger.info("Shortcut updated successfully")
       } catch (error) {
-        console.error("Error updating shortcut:", error)
+        logger.error("Error updating shortcut:", error)
       }
 
       // Завершаем режим редактирования
@@ -326,7 +328,7 @@ export function KeyboardShortcutsModal() {
     // Добавляем обработчик для клика, чтобы отменить режим редактирования при клике вне
     const handleGlobalClick = () => {
       if (listeningForKeys && editingShortcut) {
-        console.log("Canceling editing due to click outside")
+        logger.info("Canceling editing due to click outside")
         setEditingShortcut(null)
         setListeningForKeys(false)
       }
@@ -342,7 +344,7 @@ export function KeyboardShortcutsModal() {
       window.removeEventListener("keydown", handleGlobalKeyDown, true)
       window.removeEventListener("click", handleGlobalClick, true)
       clearTimeout(clickTimeout)
-      console.log("Global event listeners removed")
+      logger.info("Global event listeners removed")
     }
   }, [listeningForKeys, editingShortcut, PRESETS, selectedPreset])
 
@@ -353,7 +355,7 @@ export function KeyboardShortcutsModal() {
       e.preventDefault()
       e.stopPropagation()
 
-      console.log(
+      logger.info(
         "Key down event:",
         e.key,
         "Meta:",
@@ -392,7 +394,7 @@ export function KeyboardShortcutsModal() {
 
       // Формируем строку с горячей клавишей
       const keyString = [...modifiers, key].join("")
-      console.log("Generated key string:", keyString)
+      logger.info("Generated key string:", keyString)
 
       try {
         // Вместо обновления категорий, просто обновляем выбранную предустановку
@@ -405,9 +407,9 @@ export function KeyboardShortcutsModal() {
           return prev
         })
 
-        console.log("Shortcut updated successfully")
+        logger.info("Shortcut updated successfully")
       } catch (error) {
-        console.error("Error updating shortcut:", error)
+        logger.error("Error updating shortcut:", error)
       }
 
       // Завершаем режим редактирования
@@ -492,7 +494,7 @@ export function KeyboardShortcutsModal() {
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  console.log(`Clicked on category ${index}: ${category.name}`)
+                  logger.info(`Clicked on category ${index}: ${category.name}`)
                   scrollToCategory(index)
                 }}
               >

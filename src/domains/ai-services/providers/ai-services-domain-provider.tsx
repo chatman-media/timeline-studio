@@ -8,8 +8,12 @@
 import { useActor } from "@xstate/react"
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { aiIntelligenceMachine } from "../machines/ai-intelligence-machine"
+
+const logger = createLogger("AiServicesDomainProvider")
+
 // Import domain machines
 import { ChatMachineContext, chatMachine } from "../machines/chat-machine"
 import { MontagePlannerContext, montagePlannerMachine } from "../machines/montage-planner-machine"
@@ -116,9 +120,9 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
         })
       }
 
-      console.log("[AIServicesDomain] AI state synced with backend")
+      logger.debug("[AIServicesDomain] AI state synced with backend")
     } catch (error) {
-      console.error("[AIServicesDomain] Failed to sync AI state:", error)
+      logger.error("[AIServicesDomain] Failed to sync AI state:", { error: error })
     }
   }
 
@@ -167,7 +171,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     if (!isBackendConnected) return
 
     const syncTimeout = setTimeout(() => {
-      syncAIState().catch(console.error)
+      syncAIState().catch((error) => logger.error("Operation failed", { error }))
     }, 2000) // Задержка 2 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
@@ -197,7 +201,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     const newConfig = { ...domainConfig, [service]: true }
     setDomainConfig(newConfig)
 
-    console.log(`[AI Services Domain] Enabling service: ${service}`)
+    logger.info("Enabling service: ${service}", { module: "AI Services Domain" })
 
     // Синхронизируем с backend
     if (isBackendConnected) {
@@ -213,7 +217,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     const newConfig = { ...domainConfig, [service]: false }
     setDomainConfig(newConfig)
 
-    console.log(`[AI Services Domain] Disabling service: ${service}`)
+    logger.info("Disabling service: ${service}", { module: "AI Services Domain" })
 
     // Синхронизируем с backend
     if (isBackendConnected) {
@@ -242,7 +246,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
           eventType: "message_sent",
           timestamp: new Date().toISOString(),
         })
-        .catch(console.error)
+        .catch((error) => logger.error("Operation failed", { error }))
     }
   }, [chatState.context.chatMessages?.length, isBackendConnected, backendSync])
 

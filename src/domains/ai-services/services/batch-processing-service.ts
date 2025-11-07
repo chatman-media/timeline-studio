@@ -4,6 +4,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("batch-processing-service")
 
 /**
  * Типы пакетных операций
@@ -128,7 +131,7 @@ export class BatchProcessingService {
 
     // Запускаем обработку асинхронно
     this.processBatchOperation(jobId, params).catch((error: unknown) => {
-      console.error(`Batch operation ${jobId} failed:`, error)
+      logger.error("Batch operation failed", { jobId, error, operation: params.operation })
       this.updateJobStatus(jobId, "failed")
     })
 
@@ -287,7 +290,12 @@ export class BatchProcessingService {
       this.jobHistory.push(operationResult)
       this.activeJobs.delete(jobId)
     } catch (error) {
-      console.error(`Batch operation ${jobId} failed:`, error)
+      logger.error("Batch operation failed during processing", {
+        jobId,
+        error,
+        operation: params.operation,
+        processedCount: progress.completed,
+      })
       progress.status = "failed"
       progress.errors.push(String(error))
       this.activeJobs.set(jobId, progress)
@@ -443,7 +451,7 @@ export class BatchProcessingService {
     }
 
     // Fallback на стандартный путь если клип не найден
-    console.warn(`Clip ${clipId} not found in timeline, using fallback path`)
+    logger.warn("Clip not found in timeline, using fallback path", { clipId })
     return `/path/to/video/${clipId}.mp4`
   }
 

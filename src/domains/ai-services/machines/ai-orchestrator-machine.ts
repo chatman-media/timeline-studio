@@ -6,7 +6,10 @@
  */
 
 import { assign, emit, fromPromise, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import type { AIIntelligenceEvent, ChatMachineEvent, MontagePlannerEvent } from "../types"
+
+const logger = createLogger("AiOrchestratorMachine")
 
 // Service status tracking
 export interface ServiceInfo {
@@ -116,7 +119,7 @@ export type AIOrchestatorEvent =
 
 // Actors for orchestration tasks
 const resourceMonitorActor = fromPromise(async () => {
-  console.log("[AI Orchestrator] Monitoring system resources")
+  logger.debug("[AI Orchestrator] Monitoring system resources")
 
   // This would get actual system resource usage
   return {
@@ -137,7 +140,7 @@ const operationSchedulerActor = fromPromise(
       currentUsage: AIOrchestatorContext["currentResourceUsage"]
     }
   }) => {
-    console.log("[AI Orchestrator] Scheduling operations")
+    logger.debug("[AI Orchestrator] Scheduling operations")
 
     const { queuedOperations, activeOperations, resourceLimits } = input
 
@@ -161,7 +164,7 @@ const operationSchedulerActor = fromPromise(
 )
 
 const healthCheckActor = fromPromise(async ({ input }: { input: { services: Record<string, ServiceInfo> } }) => {
-  console.log("[AI Orchestrator] Performing health check")
+  logger.debug("[AI Orchestrator] Performing health check")
 
   const { services } = input
   const healthReport = {
@@ -480,7 +483,7 @@ export const aiOrchestratorMachine = setup({
               // Start the scheduled operations
               const { operationsToStart } = event.output
               for (const operation of operationsToStart) {
-                console.log("[AI Orchestrator] Starting operation:", operation.id)
+                logger.debug("[AI Orchestrator] Starting operation:", { data: operation.id })
               }
             },
             "emitOperationUpdate",
@@ -510,12 +513,11 @@ export const aiOrchestratorMachine = setup({
           actions: [
             ({ event }) => {
               const healthReport = event.output
-              console.log(
-                "[AI Orchestrator] Health check completed:",
-                healthReport.healthy ? "HEALTHY" : "ISSUES FOUND",
-              )
+              logger.debug("[AI Orchestrator] Health check completed", {
+                status: healthReport.healthy ? "HEALTHY" : "ISSUES FOUND",
+              })
               if (!healthReport.healthy) {
-                console.warn("[AI Orchestrator] Health issues:", healthReport.issues)
+                logger.warn("[AI Orchestrator] Health issues", { issues: healthReport.issues })
               }
             },
             "emitHealthStatus",
@@ -551,7 +553,7 @@ export const aiOrchestratorMachine = setup({
     optimizing: {
       entry: [
         () => {
-          console.log("[AI Orchestrator] Optimizing resources...")
+          logger.debug("[AI Orchestrator] Optimizing resources...")
           // Pause low-priority operations
           // Clear caches
           // Reduce concurrent operations
@@ -590,7 +592,7 @@ export const aiOrchestratorMachine = setup({
       actions: [
         ({ event }) => {
           if (event.type === "PAUSE_SERVICE") {
-            console.log("[AI Orchestrator] Pausing service:", event.serviceName)
+            logger.debug("[AI Orchestrator] Pausing service:", { data: event.serviceName })
           }
         },
       ],
@@ -599,7 +601,7 @@ export const aiOrchestratorMachine = setup({
       actions: [
         ({ event }) => {
           if (event.type === "RESUME_SERVICE") {
-            console.log("[AI Orchestrator] Resuming service:", event.serviceName)
+            logger.debug("[AI Orchestrator] Resuming service:", { data: event.serviceName })
           }
         },
       ],

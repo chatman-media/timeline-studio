@@ -10,8 +10,11 @@ import {
   removeEffectFromClip,
   removeFilterFromClip,
 } from "@/features/effects/utils/user-effects"
+import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineProject } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
+
+const logger = createLogger({ module: "UseTimelineEffects" })
 
 // Простой адаптер для конвертации TimelineProject в ProjectSchema
 function timelineProjectToSchema(project: TimelineProject): ProjectSchema {
@@ -32,7 +35,7 @@ export function useTimelineEffects() {
         // Сохраняем проект
         await saveProject()
       } catch (error) {
-        console.error("Failed to apply effect:", error)
+        logger.error("Failed to apply effect:", error)
         throw error
       }
     },
@@ -50,7 +53,7 @@ export function useTimelineEffects() {
         // Сохраняем проект
         await saveProject()
       } catch (error) {
-        console.error("Failed to remove effect:", error)
+        logger.error("Failed to remove effect:", error)
         throw error
       }
     },
@@ -68,7 +71,7 @@ export function useTimelineEffects() {
         // Сохраняем проект
         await saveProject()
       } catch (error) {
-        console.error("Failed to apply filter:", error)
+        logger.error("Failed to apply filter:", error)
         throw error
       }
     },
@@ -86,7 +89,7 @@ export function useTimelineEffects() {
         // Сохраняем проект
         await saveProject()
       } catch (error) {
-        console.error("Failed to remove filter:", error)
+        logger.error("Failed to remove filter:", error)
         throw error
       }
     },
@@ -96,7 +99,7 @@ export function useTimelineEffects() {
   const applyTransition = useCallback(
     async (clipId: string, transitionId: string, params?: Record<string, any>) => {
       // TODO: Имплементировать backend команду для переходов
-      console.log("Applying transition via backend:", { clipId, transitionId, params })
+      logger.info("Applying transition via backend:", { clipId, transitionId, params })
 
       try {
         // Пока что оставляем заглушку, поскольку backend команда еще не создана
@@ -105,7 +108,7 @@ export function useTimelineEffects() {
         // Сохраняем проект
         await saveProject()
       } catch (error) {
-        console.error("Failed to apply transition:", error)
+        logger.error("Failed to apply transition:", error)
         throw error
       }
     },

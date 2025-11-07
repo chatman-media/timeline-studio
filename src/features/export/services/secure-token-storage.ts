@@ -7,6 +7,10 @@
 
 import { isDesktop } from "@/lib/environment"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "SecureTokenStorage" })
+
 interface OAuthToken {
   accessToken: string
   refreshToken?: string
@@ -44,7 +48,7 @@ export async function storeToken(network: string, token: OAuthToken): Promise<vo
       await storeEncrypted(key, tokenWithExpiry)
     }
   } catch (error) {
-    console.error(`Failed to store token for ${network}:`, error)
+    logger.error(`Failed to store token for ${network}:`, error)
     // Fallback к обычному localStorage (не рекомендуется для продакшена)
     localStorage.setItem(key, JSON.stringify(tokenWithExpiry))
   }
@@ -79,7 +83,7 @@ export async function getStoredToken(network: string): Promise<OAuthToken | null
 
     return token
   } catch (error) {
-    console.error(`Failed to get token for ${network}:`, error)
+    logger.error(`Failed to get token for ${network}:`, error)
     // Fallback к localStorage
     return getFromLocalStorage(key)
   }
@@ -106,7 +110,7 @@ export async function removeToken(network: string): Promise<void> {
       localStorage.removeItem(userKey)
     }
   } catch (error) {
-    console.error(`Failed to remove token for ${network}:`, error)
+    logger.error(`Failed to remove token for ${network}:`, error)
     // Fallback к localStorage
     localStorage.removeItem(key)
     localStorage.removeItem(`${network}_user_info`)
@@ -136,7 +140,7 @@ async function storeTauriSecure(key: string, token: OAuthToken): Promise<void> {
     await store.set(key, token)
     await store.save()
   } catch (error) {
-    console.error("Tauri store not available, falling back to encrypted localStorage:", error)
+    logger.error("Tauri store not available, falling back to encrypted localStorage:", error)
     await storeEncrypted(key, token)
   }
 }
@@ -152,7 +156,7 @@ async function getTauriSecure(key: string): Promise<OAuthToken | null> {
     const token = await store.get<OAuthToken>(key)
     return token || null
   } catch (error) {
-    console.error("Tauri store not available, falling back to encrypted localStorage:", error)
+    logger.error("Tauri store not available, falling back to encrypted localStorage:", error)
     return getEncrypted(key)
   }
 }
@@ -168,7 +172,7 @@ async function removeTauriSecure(key: string): Promise<void> {
     await store.delete(key)
     await store.save()
   } catch (error) {
-    console.error("Tauri store not available:", error)
+    logger.error("Tauri store not available:", error)
   }
 }
 
@@ -180,7 +184,7 @@ async function storeEncrypted(key: string, token: OAuthToken): Promise<void> {
     const encrypted = await encrypt(JSON.stringify(token))
     localStorage.setItem(key, JSON.stringify(encrypted))
   } catch (error) {
-    console.error("Encryption failed, storing plain text:", error)
+    logger.error("Encryption failed, storing plain text:", error)
     localStorage.setItem(key, JSON.stringify(token))
   }
 }
@@ -203,7 +207,7 @@ async function getEncrypted(key: string): Promise<OAuthToken | null> {
     // Это незашифрованный токен, возвращаем как есть
     return parsed
   } catch (error) {
-    console.error("Failed to decrypt token:", error)
+    logger.error("Failed to decrypt token:", error)
     return null
   }
 }

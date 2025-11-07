@@ -8,10 +8,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineEffects } from "@/features/timeline/hooks/use-timeline-effects"
 import { usePlayer } from "@/features/video-player"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { PreviewCache } from "../services/preview-cache"
 import { WebGL2PreviewRenderer } from "../services/webgl2-preview-renderer"
 import type { Effect, GPUTier, PreviewQuality } from "../types"
+
+const logger = createLogger({ module: "UseWebgl2Preview" })
 
 // Throttle utility function
 function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
@@ -207,7 +209,7 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
         setIsInitialized(true)
       })
       .catch((err: unknown) => {
-        console.error("Failed to initialize WebGL2 preview renderer:", err)
+        logger.error("Failed to initialize WebGL2 preview renderer:", err)
       })
 
     return () => {
@@ -277,7 +279,7 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
 
         return cached
       } catch (error) {
-        console.error("Failed to render preview frame:", error)
+        logger.error("Failed to render preview frame:", error)
         return null
       }
     },

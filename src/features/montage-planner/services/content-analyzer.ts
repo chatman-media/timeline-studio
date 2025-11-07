@@ -4,9 +4,12 @@
  */
 
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisOptions, AudioAnalysis, Fragment, MomentScore, VideoAnalysis } from "../types"
 import { CameraMovement, EmotionalTone, FlowDirection, LightingCondition, SceneType } from "../types"
 import { getMontagePlannerAI } from "./montage-planner-ai-integration"
+
+const logger = createLogger({ module: "ContentAnalyzer" })
 
 export class ContentAnalyzer {
   private static instance: ContentAnalyzer
@@ -35,7 +38,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeVideoWithAI(file)
       }
     } catch (error) {
-      console.warn("[ContentAnalyzer] AI analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI analysis failed, using fallback:", error)
     }
 
     // Fallback to simulated analysis
@@ -89,7 +92,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeAudioWithAI(file)
       }
     } catch (error) {
-      console.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", error)
     }
 
     // Fallback to simulated analysis

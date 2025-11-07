@@ -4,8 +4,10 @@
  */
 
 import type { HotkeyCallback, Options as HotkeyOptions } from "react-hotkeys-hook"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { shortcutsPersistence } from "./shortcuts-persistence"
+
+const logger = createLogger({ module: "ShortcutsRegistry" })
 
 // Типы контекстов приложения
 export type ShortcutContext =
@@ -255,7 +257,7 @@ class ShortcutsRegistry {
       const shortcuts = this.getAll()
       await shortcutsPersistence.saveSettings(shortcuts, globalEnabled)
     } catch (error) {
-      console.error("Failed to save shortcuts settings:", error)
+      logger.error("Failed to save shortcuts settings:", error)
       throw error
     }
   }
@@ -282,7 +284,7 @@ class ShortcutsRegistry {
 
       return { globalEnabled: settings.globalEnabled }
     } catch (error) {
-      console.error("Failed to load shortcuts settings:", error)
+      logger.error("Failed to load shortcuts settings:", error)
       return null
     }
   }

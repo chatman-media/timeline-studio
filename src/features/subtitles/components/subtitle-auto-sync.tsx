@@ -13,7 +13,10 @@ import { Slider } from "@/components/ui/slider"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
+
+const logger = createLogger({ module: "SubtitleAutoSync" })
 
 interface AudioPeak {
   time: number
@@ -102,7 +105,7 @@ export function SubtitleAutoSync() {
 
       return result.peaks
     } catch (error) {
-      console.error("Ошибка анализа аудио:", error)
+      logger.error("Ошибка анализа аудио:", error)
       throw error
     }
   }
@@ -254,7 +257,7 @@ export function SubtitleAutoSync() {
         ),
       })
     } catch (error) {
-      console.error("Ошибка автосинхронизации:", error)
+      logger.error("Ошибка автосинхронизации:", error)
       toast.error(t("subtitles.autoSync.error", "Ошибка синхронизации"), {
         description:
           error instanceof Error

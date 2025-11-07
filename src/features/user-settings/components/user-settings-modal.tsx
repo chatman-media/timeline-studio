@@ -3,8 +3,10 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
 import { useModal } from "@/features/modals/services/modal-provider"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { UserSettingsModalTabs } from "./user-settings-modal-tabs"
+
+const logger = createLogger({ module: "UserSettingsModal" })
 
 /**
  * Модальное окно пользовательских настроек с вкладками
@@ -40,7 +42,7 @@ export function UserSettingsModal() {
           className="flex-1 cursor-pointer bg-[#00CCC0] text-black hover:bg-[#00AAA0]"
           onClick={() => {
             // Все изменения уже применены в реальном времени, просто закрываем модальное окно
-            console.log("Closing modal with save button, all changes already applied")
+            logger.info("Closing modal with save button, all changes already applied")
             closeModal()
           }}
         >

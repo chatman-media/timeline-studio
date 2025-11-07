@@ -5,7 +5,10 @@
 
 import type { Effect } from "@/features/effects/types"
 import type { TimelineSegment } from "@/features/timeline/types"
+import { createLogger } from "@/lib/tauri-logger"
 import { BaseRenderer, type RendererOptions, type ShaderSource, shaderPool, vaoManager } from "@/lib/webgl"
+
+const logger = createLogger({ module: "Webgl2PreviewRenderer" })
 
 // Re-export or map to local types if needed
 type PreviewEffect = Effect
@@ -522,7 +525,7 @@ export class WebGL2PreviewRenderer extends BaseRenderer {
 
       // Fallback
       default:
-        console.warn(`Unknown effect type: ${effect.type}`)
+        logger.warn(`Unknown effect type: ${effect.type}`)
     }
 
     const program = this.useProgram(programName)

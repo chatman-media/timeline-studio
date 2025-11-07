@@ -5,6 +5,9 @@
 
 import type { ReactNode } from "react"
 import React, { createContext, useContext, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AIServicesProvider")
 
 import { type AIDIContainer, getAIContainer } from "../container"
 import type { IUnifiedAIService } from "../types"
@@ -72,7 +75,7 @@ export function AIServicesProvider({ children, config }: AIServicesProviderProps
       }
     }
 
-    initializeServices().catch(console.error)
+    initializeServices().catch((error) => logger.error("Failed to initialize services", { error }))
 
     return () => {
       mounted = false
@@ -172,7 +175,7 @@ export const ExampleComponent: React.FC = () => {
       { role: "user", content: "Analyze this video" },
     ])
 
-    console.log(result)
+    logger.debug("AI request result", { result })
   }
 
   if (!isInitialized || loading) {

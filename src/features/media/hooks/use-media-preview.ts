@@ -1,9 +1,10 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { indexedDBCacheService } from "../services/indexeddb-cache-service"
-
 import type { MediaPreviewData, ThumbnailData } from "../types/preview"
+
+const logger = createLogger("MediaPreview")
 
 export interface UseMediaPreviewOptions {
   onThumbnailGenerated?: (fileId: string, thumbnail: ThumbnailData) => void
@@ -20,7 +21,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         // Сначала проверяем IndexedDB кэш
         const cachedThumbnail = await indexedDBCacheService.getCachedPreview(fileId)
         if (cachedThumbnail) {
-          console.log(`[useMediaPreview] Preview found in IndexedDB cache for file: ${fileId}`)
+          logger.debugSync("Preview found in IndexedDB cache", { fileId })
           // Возвращаем в формате MediaPreviewData
           return {
             file_id: fileId,
@@ -44,7 +45,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         // Сохраняем в кэш, если есть данные превью
         if (data?.browser_thumbnail?.base64_data) {
           await indexedDBCacheService.cachePreview(fileId, data.browser_thumbnail.base64_data)
-          console.log(`[useMediaPreview] Preview cached in IndexedDB for file: ${fileId}`)
+          logger.debugSync("Preview cached in IndexedDB", { fileId })
         }
 
         return data
@@ -81,7 +82,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         // Сохраняем в кэш, если есть base64 данные
         if (thumbnail?.base64_data) {
           await indexedDBCacheService.cachePreview(fileId, thumbnail.base64_data)
-          console.log(`[useMediaPreview] Generated thumbnail cached in IndexedDB for file: ${fileId}`)
+          logger.debugSync("Generated thumbnail cached in IndexedDB", { fileId })
         }
 
         // Notify callback if provided
@@ -111,7 +112,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         // Очищаем конкретное превью из IndexedDB кэша
         await indexedDBCacheService.deletePreview(fileId)
 
-        console.log(`[useMediaPreview] Preview data cleared for file: ${fileId}`)
+        logger.debugSync("Preview data cleared", { fileId })
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to clear preview data"

@@ -2,12 +2,15 @@ import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { useModal } from "@/features/modals/services/modal-provider"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { ShortcutHandler } from "../components/shortcut-handler"
 import { DEFAULT_SHORTCUTS } from "../constants/default-shortcuts"
 import { usePanelShortcuts } from "../hooks/use-panel-shortcuts"
 import { type ShortcutContext, type ShortcutDefinition, shortcutsRegistry } from "./shortcuts-registry"
 import { tauriGlobalShortcuts } from "./tauri-global-shortcuts"
+
+const logger = createLogger({ module: "ShortcutsProvider" })
 
 interface ShortcutsContextType {
   shortcuts: ShortcutDefinition[]
@@ -81,9 +84,9 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
         },
       })
 
-      console.log("[ShortcutsProvider] Shortcuts synced with backend")
+      logger.info("[ShortcutsProvider] Shortcuts synced with backend")
     } catch (error) {
-      console.error("[ShortcutsProvider] Failed to sync shortcuts:", error)
+      logger.error("[ShortcutsProvider] Failed to sync shortcuts:", error)
     }
   }
 
@@ -108,14 +111,14 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
           setShortcutUsageStats(restoredShortcuts.usageStats)
         }
 
-        console.log("[ShortcutsProvider] Shortcuts restored from backend")
+        logger.info("[ShortcutsProvider] Shortcuts restored from backend")
       }
     })
 
     const unsubscribeEvents = backendSync.onEvent((event) => {
       if (event.type === "SHORTCUTS_UPDATED") {
         // Backend обновил shortcuts
-        loadSettings().catch(console.error)
+        loadSettings().catch((error) => logger.error("Operation failed", { error }))
       }
     })
 
@@ -154,7 +157,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                   },
                 },
               })
-              .catch(console.error)
+              .catch((error) => logger.error("Operation failed", { error }))
           }
 
           // Выполняем оригинальное действие или стандартные действия
@@ -202,13 +205,13 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             try {
               await tauriGlobalShortcuts.enableGlobal()
             } catch (error) {
-              console.error("Failed to enable global shortcuts:", error)
+              logger.error("Failed to enable global shortcuts:", error)
               setIsGlobalEnabled(false)
             }
           }
         }
       } catch (error) {
-        console.error("Failed to load shortcuts settings:", error)
+        logger.error("Failed to load shortcuts settings:", error)
       }
     }
 
@@ -236,7 +239,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     if (!isBackendConnected) return
 
     const syncTimeout = setTimeout(() => {
-      syncShortcuts().catch(console.error)
+      syncShortcuts().catch((error) => logger.error("Operation failed", { error }))
     }, 3000) // Задержка 3 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
@@ -261,7 +264,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
       // Синхронизация с backend
       await syncShortcuts()
     } catch (error) {
-      console.error("Failed to toggle global shortcuts:", error)
+      logger.error("Failed to toggle global shortcuts:", error)
       // Возвращаем предыдущее состояние при ошибке
       setIsGlobalEnabled(tauriGlobalShortcuts.isEnabled())
       throw error
@@ -273,11 +276,11 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     // Обновляем глобальные shortcuts если они включены
     if (isGlobalEnabled) {
-      tauriGlobalShortcuts.updateGlobalShortcuts().catch(console.error)
+      tauriGlobalShortcuts.updateGlobalShortcuts().catch((error) => logger.error("Operation failed", { error }))
     }
 
     // Автосохранение настроек
-    shortcutsRegistry.saveSettings(isGlobalEnabled).catch(console.error)
+    shortcutsRegistry.saveSettings(isGlobalEnabled).catch((error) => logger.error("Operation failed", { error }))
 
     // Немедленная синхронизация с backend для важных изменений
     if (isBackendConnected) {
@@ -289,7 +292,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             params: { id, keys },
           },
         })
-        .catch(console.error)
+        .catch((error) => logger.error("Operation failed", { error }))
     }
   }
 
@@ -346,7 +349,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             await tauriGlobalShortcuts.disableGlobal()
           }
         } catch (error) {
-          console.error("Failed to sync global shortcuts:", error)
+          logger.error("Failed to sync global shortcuts:", error)
         }
       }
     }

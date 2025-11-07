@@ -2,6 +2,10 @@ import { invoke } from "@tauri-apps/api/core"
 import { Subtitle } from "@/domains/video-editing/types/video-compiler"
 import { indexedDBCacheService } from "@/features/media/services/indexeddb-cache-service"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "FrameExtractionService" })
+
 /**
  * Цель извлечения кадров
  */
@@ -89,7 +93,7 @@ export class FrameExtractionService {
         isKeyframe: frame.is_keyframe,
       }))
     } catch (error) {
-      console.error("Failed to extract timeline frames:", error)
+      logger.error("Failed to extract timeline frames:", error)
       throw error
     }
   }
@@ -125,7 +129,7 @@ export class FrameExtractionService {
         isKeyframe: frame.is_keyframe,
       }))
     } catch (error) {
-      console.error("Failed to extract recognition frames:", error)
+      logger.error("Failed to extract recognition frames:", error)
       throw error
     }
   }
@@ -167,7 +171,7 @@ export class FrameExtractionService {
         endTime: frame.end_time,
       }))
     } catch (error) {
-      console.error("Failed to extract subtitle frames:", error)
+      logger.error("Failed to extract subtitle frames:", error)
       throw error
     }
   }
@@ -246,9 +250,9 @@ export class FrameExtractionService {
   async cacheFramesInIndexedDB(videoPath: string, frames: TimelineFrame[]): Promise<void> {
     try {
       await indexedDBCacheService.cacheTimelineFrames(videoPath, frames)
-      console.log(`Cached ${frames.length} timeline frames for ${videoPath}`)
+      logger.info(`Cached ${frames.length} timeline frames for ${videoPath}`)
     } catch (error) {
-      console.error("Failed to cache timeline frames:", error)
+      logger.error("Failed to cache timeline frames:", error)
       // Не прерываем работу при ошибке кэширования
     }
   }
@@ -260,11 +264,11 @@ export class FrameExtractionService {
     try {
       const cachedFrames = await indexedDBCacheService.getCachedTimelineFrames(videoPath)
       if (cachedFrames) {
-        console.log(`Retrieved ${cachedFrames.length} cached frames for ${videoPath}`)
+        logger.info(`Retrieved ${cachedFrames.length} cached frames for ${videoPath}`)
       }
       return cachedFrames
     } catch (error) {
-      console.error("Failed to retrieve cached frames:", error)
+      logger.error("Failed to retrieve cached frames:", error)
       return null
     }
   }
@@ -275,9 +279,9 @@ export class FrameExtractionService {
   async cacheRecognitionFrames(videoPath: string, frames: RecognitionFrame[]): Promise<void> {
     try {
       await indexedDBCacheService.cacheRecognitionFrames(videoPath, frames)
-      console.log(`Cached ${frames.length} recognition frames for ${videoPath}`)
+      logger.info(`Cached ${frames.length} recognition frames for ${videoPath}`)
     } catch (error) {
-      console.error("Failed to cache recognition frames:", error)
+      logger.error("Failed to cache recognition frames:", error)
     }
   }
 
@@ -288,11 +292,11 @@ export class FrameExtractionService {
     try {
       const cachedFrames = await indexedDBCacheService.getCachedRecognitionFrames(videoPath)
       if (cachedFrames) {
-        console.log(`Retrieved ${cachedFrames.length} cached recognition frames for ${videoPath}`)
+        logger.info(`Retrieved ${cachedFrames.length} cached recognition frames for ${videoPath}`)
       }
       return cachedFrames
     } catch (error) {
-      console.error("Failed to retrieve cached recognition frames:", error)
+      logger.error("Failed to retrieve cached recognition frames:", error)
       return null
     }
   }
@@ -303,9 +307,9 @@ export class FrameExtractionService {
   async cacheSubtitleFrames(videoPath: string, frames: SubtitleFrame[]): Promise<void> {
     try {
       await indexedDBCacheService.cacheSubtitleFrames(videoPath, frames)
-      console.log(`Cached ${frames.length} subtitle frames for ${videoPath}`)
+      logger.info(`Cached ${frames.length} subtitle frames for ${videoPath}`)
     } catch (error) {
-      console.error("Failed to cache subtitle frames:", error)
+      logger.error("Failed to cache subtitle frames:", error)
     }
   }
 
@@ -316,11 +320,11 @@ export class FrameExtractionService {
     try {
       const cachedFrames = await indexedDBCacheService.getCachedSubtitleFrames(videoPath)
       if (cachedFrames) {
-        console.log(`Retrieved ${cachedFrames.length} cached subtitle frames for ${videoPath}`)
+        logger.info(`Retrieved ${cachedFrames.length} cached subtitle frames for ${videoPath}`)
       }
       return cachedFrames
     } catch (error) {
-      console.error("Failed to retrieve cached subtitle frames:", error)
+      logger.error("Failed to retrieve cached subtitle frames:", error)
       return null
     }
   }
@@ -333,9 +337,9 @@ export class FrameExtractionService {
       await indexedDBCacheService.clearFrameCache()
       await indexedDBCacheService.clearRecognitionCache()
       await indexedDBCacheService.clearSubtitleCache()
-      console.log("Frame cache cleared")
+      logger.info("Frame cache cleared")
     } catch (error) {
-      console.error("Failed to clear frame cache:", error)
+      logger.error("Failed to clear frame cache:", error)
       throw error
     }
   }

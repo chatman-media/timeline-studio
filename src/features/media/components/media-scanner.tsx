@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 
 import { useMediaProcessor } from "../hooks/use-media-processor"
+
+const logger = createLogger("MediaScanner")
 
 export function MediaScanner() {
   const [scannedFiles, setScannedFiles] = useState<MediaFile[]>([])
@@ -15,22 +18,24 @@ export function MediaScanner() {
 
   const { scanFolderWithThumbnails, isProcessing, progress, errors, clearErrors } = useMediaProcessor({
     onFilesDiscovered: (files) => {
-      console.log(`Обнаружено ${files.length} файлов`)
+      logger.infoSync("Files discovered", { count: files.length })
     },
     onMetadataReady: (fileId, metadata) => {
-      console.log(`Метаданные готовы для файла ${fileId}:`, metadata)
+      logger.debugSync("Metadata ready", { fileId, metadata })
     },
     onThumbnailReady: (fileId, thumbnailPath, thumbnailData) => {
-      console.log(`Превью готово для файла ${fileId}: ${thumbnailPath}`)
-      if (thumbnailData) {
-        console.log(`Base64 данные превью доступны (${thumbnailData.length} символов)`)
-      }
+      logger.debugSync("Thumbnail ready", {
+        fileId,
+        thumbnailPath,
+        hasData: !!thumbnailData,
+        dataLength: thumbnailData?.length,
+      })
     },
     onError: (fileId, error) => {
-      console.error(`Ошибка обработки файла ${fileId}:`, error)
+      logger.errorSync("File processing error", { fileId, error })
     },
     onProgress: (current, total) => {
-      console.log(`Прогресс: ${current}/${total}`)
+      logger.debugSync("Processing progress", { current, total })
     },
   })
 
@@ -53,9 +58,9 @@ export function MediaScanner() {
     try {
       const files = await scanFolderWithThumbnails(selectedFolder, 320, 180)
       setScannedFiles(files)
-      console.log(`Сканирование завершено. Обработано файлов: ${files.length}`)
+      logger.infoSync("Scan completed", { filesCount: files.length })
     } catch (error) {
-      console.error("Ошибка сканирования:", error)
+      logger.errorSync("Scan failed", { error })
     }
   }
 

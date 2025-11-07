@@ -98,7 +98,7 @@ export function getVideoStyleForTemplate(
     }
 
     // Логируем стили для отладки
-    console.log(`[TemplateService] Стили для вертикального разделения (индекс ${videoIndex}):`, result)
+    logger.info(`[TemplateService] Стили для вертикального разделения (индекс ${videoIndex}):`, result)
 
     return result
   }
@@ -115,7 +115,7 @@ export function getVideoStyleForTemplate(
     }
 
     // Логируем стили для отладки
-    console.log(`[TemplateService] Стили для горизонтального разделения (индекс ${videoIndex}):`, result)
+    logger.info(`[TemplateService] Стили для горизонтального разделения (индекс ${videoIndex}):`, result)
 
     return result
   }
@@ -216,7 +216,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "1 left + 3 right" (большое видео слева, индекс ${videoIndex}):`,
           result,
         )
@@ -238,7 +238,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "1 left + 3 right" (маленькое видео справа, индекс ${videoIndex}):`,
         result,
       )
@@ -260,7 +260,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "3 left + 1 right" (большое видео справа, индекс ${videoIndex}):`,
           result,
         )
@@ -281,7 +281,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "3 left + 1 right" (маленькое видео слева, индекс ${videoIndex}):`,
         result,
       )
@@ -302,7 +302,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "Mixed Split (2+1)" (верхнее видео, индекс ${videoIndex}):`,
           result,
         )
@@ -324,7 +324,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "Mixed Split (2+1)" (нижнее видео, индекс ${videoIndex}):`,
         result,
       )
@@ -345,7 +345,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "Mixed Split (1+2)" (левое видео, индекс ${videoIndex}):`,
           result,
         )
@@ -367,7 +367,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "Mixed Split (1+2)" (правое видео, индекс ${videoIndex}):`,
         result,
       )
@@ -388,7 +388,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 left + 4 right" (большое видео слева, индекс ${videoIndex}):`,
           result,
         )
@@ -407,7 +407,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 left + 4 right" (большое видео в верхней правой части, индекс ${videoIndex}):`,
           result,
         )
@@ -429,7 +429,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 left + 4 right" (маленькое видео в верхней части нижней правой половины, индекс ${videoIndex}):`,
           result,
         )
@@ -449,7 +449,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 left + 4 right" (видео в нижней части нижней правой половины, индекс ${videoIndex}):`,
           result,
         )
@@ -471,7 +471,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 right + 4 left" (большое видео справа, индекс ${videoIndex}):`,
           result,
         )
@@ -491,7 +491,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 right + 4 left" (большое видео в верхней левой части, индекс ${videoIndex}):`,
           result,
         )
@@ -513,7 +513,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 right + 4 left" (маленькое видео в верхней части нижней левой половины, индекс ${videoIndex}):`,
           result,
         )
@@ -533,7 +533,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 right + 4 left" (видео в нижней части нижней левой половины, индекс ${videoIndex}):`,
           result,
         )
@@ -557,7 +557,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 top + 4 bottom" (верхнее видео, индекс ${videoIndex}):`,
           result,
         )
@@ -577,7 +577,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "5 screens: 1 top + 4 bottom" (среднее видео, индекс ${videoIndex}):`,
           result,
         )
@@ -598,7 +598,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "5 screens: 1 top + 4 bottom" (нижнее видео, индекс ${videoIndex}):`,
         result,
       )
@@ -619,7 +619,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "3 top + 1 bottom" (большое видео снизу, индекс ${videoIndex}):`,
           result,
         )
@@ -640,7 +640,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "3 top + 1 bottom" (маленькое видео сверху, индекс ${videoIndex}):`,
         result,
       )
@@ -661,7 +661,7 @@ export function getVideoStyleForTemplate(
         }
 
         // Логируем стили для отладки
-        console.log(
+        logger.info(
           `[TemplateService] Стили для шаблона "1 top + 3 bottom" (большое видео сверху, индекс ${videoIndex}):`,
           result,
         )
@@ -683,7 +683,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(
+      logger.info(
         `[TemplateService] Стили для шаблона "1 top + 3 bottom" (маленькое видео снизу, индекс ${videoIndex}):`,
         result,
       )
@@ -717,7 +717,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(`[TemplateService] Стили для сетки с 8 экранами (общий случай, индекс ${videoIndex}):`, result)
+      logger.info(`[TemplateService] Стили для сетки с 8 экранами (общий случай, индекс ${videoIndex}):`, result)
 
       return result
     }
@@ -735,7 +735,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(`[TemplateService] Стили для сетки 4x2 (индекс ${videoIndex}):`, result)
+      logger.info(`[TemplateService] Стили для сетки 4x2 (индекс ${videoIndex}):`, result)
 
       return result
     }
@@ -753,7 +753,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(`[TemplateService] Стили для сетки 2x4 (индекс ${videoIndex}):`, result)
+      logger.info(`[TemplateService] Стили для сетки 2x4 (индекс ${videoIndex}):`, result)
 
       return result
     }
@@ -771,7 +771,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(`[TemplateService] Стили для сетки 3x2 (индекс ${videoIndex}):`, result)
+      logger.info(`[TemplateService] Стили для сетки 3x2 (индекс ${videoIndex}):`, result)
 
       return result
     }
@@ -789,7 +789,7 @@ export function getVideoStyleForTemplate(
       }
 
       // Логируем стили для отладки
-      console.log(`[TemplateService] Стили для сетки 2x3 (индекс ${videoIndex}):`, result)
+      logger.info(`[TemplateService] Стили для сетки 2x3 (индекс ${videoIndex}):`, result)
 
       return result
     }

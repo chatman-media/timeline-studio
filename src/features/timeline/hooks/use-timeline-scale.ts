@@ -1,5 +1,9 @@
 import { useMemo } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseTimelineScale" })
+
 interface TimeScale {
   main: number
   sub: number
@@ -52,7 +56,7 @@ export function useTimelineScale(duration: number, startTime: number, endTime: n
     const baseScale = getTimeScale(scaledDuration)
 
     // Отключаем логирование для уменьшения количества сообщений
-    // console.log(
+    // logger.info(
     //   `[useTimelineScale] Масштаб: ${scale}, Длительность: ${duration}с, Скорректированная длительность: ${scaledDuration}с, Шаг: ${baseScale.main}с, Подшаг: ${baseScale.sub}с`,
     // )
 

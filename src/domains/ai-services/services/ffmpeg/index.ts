@@ -3,6 +3,7 @@
  * Адаптер для интеграции с FFmpeg анализом через shared интерфейсы
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   IFFmpegAnalysisService,
   MotionAnalysisResult,
@@ -12,6 +13,8 @@ import type {
   VideoMetadata,
 } from "../../types/interfaces"
 import { FFmpegAnalysisService } from "../media-analysis"
+
+const logger = createLogger("FFmpegAdapter")
 
 export class FFmpegAdapter implements IFFmpegAnalysisService {
   private ffmpegService: any
@@ -214,7 +217,7 @@ export class FFmpegAdapter implements IFFmpegAnalysisService {
 
     try {
       // TODO: Implement format conversion if needed
-      console.warn("Format conversion not yet implemented in adapter")
+      logger.warnSync("Format conversion not yet implemented in adapter")
       return false
     } catch (error) {
       throw new Error(`FFmpeg conversion error: ${error instanceof Error ? error.message : "Unknown error"}`)
@@ -295,7 +298,7 @@ export class FFmpegAdapter implements IFFmpegAnalysisService {
     try {
       // TODO: Implement audio segment extraction
       const outputPath = `/tmp/audio_segment_${start}_${end}.wav`
-      console.warn(`Audio segment extraction not implemented: ${file.path} ${start}-${end}`)
+      logger.warnSync("Audio segment extraction not implemented", { filePath: file.path, start, end })
       return outputPath
     } catch (error) {
       throw new Error(`Audio segment extraction error: ${error instanceof Error ? error.message : "Unknown error"}`)

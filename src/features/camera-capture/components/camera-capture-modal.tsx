@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
 import { useModal } from "@/features/modals"
 import { useToast } from "@/hooks/use-toast"
-
+import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,
   useCameraStream,
@@ -16,8 +16,9 @@ import {
   useScreenCapture,
 } from "../hooks"
 import { cleanupMediaStream, cleanupVideoElement } from "../utils"
-
 import { CameraPermissionRequest, CameraPreview, CameraSettings, RecordingControls } from "."
+
+const logger = createLogger({ module: "CameraCaptureModal" })
 
 /**
  * Модальное окно для захвата видео с камеры
@@ -146,12 +147,12 @@ export function CameraCaptureModal() {
         variant: "success",
       })
 
-      console.log(`Запись сохранена: ${fullPath}`)
+      logger.info(`Запись сохранена: ${fullPath}`)
 
       // Закрываем модальное окно
       closeModal()
     } catch (error) {
-      console.error("Ошибка при сохранении записи:", error)
+      logger.error("Ошибка при сохранении записи:", error)
       toast({
         title: t("dialogs.cameraCapture.recordingError", "Ошибка при сохранении записи"),
         description: String(error),
@@ -208,7 +209,7 @@ export function CameraCaptureModal() {
     if (isOpen) {
       void requestPermissions()
     } else {
-      console.log("Закрытие модального окна - полная очистка ресурсов")
+      logger.info("Закрытие модального окна - полная очистка ресурсов")
 
       // Останавливаем текущую запись
       if (isRecording) {
@@ -277,10 +278,10 @@ export function CameraCaptureModal() {
 
     // Останавливаем текущий поток с улучшенной очисткой
     if (captureMode === "screen" && isScreenSharing) {
-      console.log("Остановка screen capture при переключении режима")
+      logger.info("Остановка screen capture при переключении режима")
       stopScreenCapture()
     } else if (captureMode === "camera" && streamRef.current) {
-      console.log("Остановка camera stream при переключении режима")
+      logger.info("Остановка camera stream при переключении режима")
       cleanupMediaStream(streamRef.current, "Mode switch camera cleanup")
       streamRef.current = null
       setIsDeviceReady(false)
@@ -300,7 +301,7 @@ export function CameraCaptureModal() {
           audio: !!selectedAudioDevice,
         })
       } catch (error) {
-        console.error("Failed to start screen capture:", error)
+        logger.error("Failed to start screen capture:", error)
         setErrorMessage(screenError || "Failed to start screen capture")
       }
     } else if (mode === "camera") {

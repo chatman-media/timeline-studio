@@ -12,8 +12,10 @@ import { Switch } from "@/components/ui/switch"
 import { useLanguage } from "@/features/language"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { type LanguageCode, SUPPORTED_LANGUAGES } from "@/i18n/constants"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useUserSettings } from "../../hooks/use-user-settings"
+
+const logger = createLogger({ module: "GeneralSettingsTab" })
 
 /**
  * Вкладка общих настроек пользователя
@@ -45,7 +47,7 @@ export function GeneralSettingsTab() {
   const handleLanguageSelect = (value: string) => {
     const newLanguage = value as LanguageCode
     setSelectedLanguage(newLanguage)
-    console.log("Applying language change via new system:", newLanguage)
+    logger.info("Applying language change via new system:", newLanguage)
     void changeLanguage(newLanguage)
   }
 
@@ -108,10 +110,10 @@ export function GeneralSettingsTab() {
 
                   if (selectedFolder && !Array.isArray(selectedFolder)) {
                     handleScreenshotsPathChange(selectedFolder)
-                    console.log("Screenshots path updated from folder dialog:", selectedFolder)
+                    logger.info("Screenshots path updated from folder dialog:", selectedFolder)
                   }
                 } catch (error) {
-                  console.error("Ошибка при выборе директории:", error)
+                  logger.error("Ошибка при выборе директории:", error)
                   const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/screenshots")
                   if (promptResult) {
                     handleScreenshotsPathChange(promptResult.trim())
@@ -165,10 +167,10 @@ export function GeneralSettingsTab() {
 
                   if (selectedFolder && !Array.isArray(selectedFolder)) {
                     handlePlayerScreenshotsPathChange(selectedFolder)
-                    console.log("Player screenshots path updated from folder dialog:", selectedFolder)
+                    logger.info("Player screenshots path updated from folder dialog:", selectedFolder)
                   }
                 } catch (error) {
-                  console.error("Ошибка при выборе директории:", error)
+                  logger.error("Ошибка при выборе директории:", error)
                   const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/media")
                   if (promptResult) {
                     handlePlayerScreenshotsPathChange(promptResult.trim())

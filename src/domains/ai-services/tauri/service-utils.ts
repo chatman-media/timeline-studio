@@ -3,6 +3,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AIServiceUtils")
 
 /**
  * Service Management Commands
@@ -21,7 +24,7 @@ export interface ServiceStatus {
 }
 
 export async function getAIServiceStatus(serviceName: string): Promise<ServiceStatus> {
-  console.log("[Service Utils] Getting AI service status:", serviceName)
+  logger.debugSync("Getting AI service status", { serviceName })
 
   // This would be implemented in the backend to check service health
   return {
@@ -38,7 +41,7 @@ export async function getAIServiceStatus(serviceName: string): Promise<ServiceSt
 }
 
 export async function getAllAIServicesStatus(): Promise<ServiceStatus[]> {
-  console.log("[Service Utils] Getting all AI services status")
+  logger.debugSync("Getting all AI services status")
 
   const services = [
     "yolo_processor",
@@ -54,14 +57,14 @@ export async function getAllAIServicesStatus(): Promise<ServiceStatus[]> {
 }
 
 export async function restartAIService(serviceName: string): Promise<boolean> {
-  console.log("[Service Utils] Restarting AI service:", serviceName)
+  logger.infoSync("Restarting AI service", { serviceName })
 
   // This would restart the specific AI service
   return true
 }
 
 export async function stopAIService(serviceName: string): Promise<void> {
-  console.log("[Service Utils] Stopping AI service:", serviceName)
+  logger.infoSync("Stopping AI service", { serviceName })
 
   // This would stop the specific AI service
 }
@@ -94,7 +97,7 @@ export interface SystemResources {
 }
 
 export async function getSystemResources(): Promise<SystemResources> {
-  console.log("[Service Utils] Getting system resources")
+  logger.debugSync("Getting system resources")
 
   // This would get actual system resource information
   return {
@@ -127,7 +130,7 @@ export async function optimizeSystemForAI(): Promise<{
   changes: string[]
   recommendations: string[]
 }> {
-  console.log("[Service Utils] Optimizing system for AI")
+  logger.infoSync("Optimizing system for AI")
 
   return {
     optimized: true,
@@ -160,7 +163,7 @@ export interface PerformanceMetrics {
 }
 
 export async function logPerformanceMetric(metric: Omit<PerformanceMetrics, "timestamp">): Promise<void> {
-  console.log("[Service Utils] Logging performance metric:", metric.serviceName, metric.operation)
+  logger.debugSync("Logging performance metric", { serviceName: metric.serviceName, operation: metric.operation })
 
   // This would log performance metrics to the backend
   await invoke("log_ai_performance_metric", {
@@ -176,7 +179,7 @@ export async function getPerformanceMetrics(
   _timeRange?: { start: number; end: number },
   _limit?: number,
 ): Promise<PerformanceMetrics[]> {
-  console.log("[Service Utils] Getting performance metrics for:", serviceName || "all services")
+  logger.debugSync("Getting performance metrics", { serviceName: serviceName || "all services" })
 
   // This would retrieve performance metrics from the backend
   return []
@@ -196,7 +199,7 @@ export async function generatePerformanceReport(): Promise<{
     title: string
   }>
 }> {
-  console.log("[Service Utils] Generating performance report")
+  logger.debugSync("Generating performance report")
 
   return {
     summary: {
@@ -226,7 +229,7 @@ export interface AIServiceConfig {
 }
 
 export async function getAIServiceConfig(serviceName: string): Promise<AIServiceConfig> {
-  console.log("[Service Utils] Getting AI service config:", serviceName)
+  logger.debugSync("Getting AI service config", { serviceName })
 
   return {
     serviceName,
@@ -237,13 +240,13 @@ export async function getAIServiceConfig(serviceName: string): Promise<AIService
 }
 
 export async function updateAIServiceConfig(serviceName: string, _config: Partial<AIServiceConfig>): Promise<void> {
-  console.log("[Service Utils] Updating AI service config:", serviceName)
+  logger.infoSync("Updating AI service config", { serviceName })
 
   // This would update the service configuration
 }
 
 export async function resetAIServiceConfig(serviceName: string): Promise<void> {
-  console.log("[Service Utils] Resetting AI service config:", serviceName)
+  logger.infoSync("Resetting AI service config", { serviceName })
 
   // This would reset service configuration to defaults
 }
@@ -260,7 +263,7 @@ export interface HealthCheckResult {
 }
 
 export async function performHealthCheck(serviceName: string): Promise<HealthCheckResult> {
-  console.log("[Service Utils] Performing health check for:", serviceName)
+  logger.debugSync("Performing health check", { serviceName })
 
   return {
     service: serviceName,
@@ -271,7 +274,7 @@ export async function performHealthCheck(serviceName: string): Promise<HealthChe
 }
 
 export async function performAllHealthChecks(): Promise<HealthCheckResult[]> {
-  console.log("[Service Utils] Performing all health checks")
+  logger.debugSync("Performing all health checks")
 
   const services = [
     "yolo_processor",
@@ -298,7 +301,7 @@ export interface CacheStats {
 }
 
 export async function getCacheStats(serviceName: string): Promise<CacheStats> {
-  console.log("[Service Utils] Getting cache stats for:", serviceName)
+  logger.debugSync("Getting cache stats", { serviceName })
 
   return {
     service: serviceName,
@@ -310,13 +313,13 @@ export async function getCacheStats(serviceName: string): Promise<CacheStats> {
 }
 
 export async function clearServiceCache(serviceName: string): Promise<void> {
-  console.log("[Service Utils] Clearing cache for:", serviceName)
+  logger.infoSync("Clearing cache", { serviceName })
 
   // This would clear the service cache
 }
 
 export async function clearAllAICaches(): Promise<void> {
-  console.log("[Service Utils] Clearing all AI caches")
+  logger.infoSync("Clearing all AI caches")
 
   // This would clear all AI service caches
 }

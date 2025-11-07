@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTimeline } from "@/features/timeline/hooks"
+import { createLogger } from "@/lib/tauri-logger"
 import { AudioFileManager } from "../services/audio-file-manager"
 import { useAudioEngine } from "./use-audio-engine"
+
+const logger = createLogger({ module: "UseChannelAudio" })
 
 export function useChannelAudio(channelId: string, trackId?: string) {
   const timeline = useTimeline()
@@ -49,7 +52,7 @@ export function useChannelAudio(channelId: string, trackId?: string) {
 
       try {
         const clips = getAudioClipsForTrack()
-        console.log(`[AudioLoader] Found ${clips.length} clips for track ${trackId}`)
+        logger.info(`[AudioLoader] Found ${clips.length} clips for track ${trackId}`)
 
         if (clips.length === 0) {
           setAudioElements(new Map())
@@ -61,21 +64,21 @@ export function useChannelAudio(channelId: string, trackId?: string) {
 
         // Load all clips
         for (const clip of clips) {
-          console.log(`[AudioLoader] Loading clip ${clip.id} with media ${clip.mediaId}`)
+          logger.info(`[AudioLoader] Loading clip ${clip.id} with media ${clip.mediaId}`)
 
           // Get media file path from project resources
           const mediaFile = timeline.project?.resources?.media?.find((m) => m.id === clip.mediaId)
           if (!mediaFile) {
-            console.error(`[AudioLoader] Media file ${clip.mediaId} not found in project resources`)
+            logger.error(`[AudioLoader] Media file ${clip.mediaId} not found in project resources`)
             continue
           }
 
           // Check if it's actually an audio file
           if (!mediaFile.isAudio) {
-            console.warn(`[AudioLoader] Media file ${clip.mediaId} is not marked as audio`)
+            logger.warn(`[AudioLoader] Media file ${clip.mediaId} is not marked as audio`)
           }
 
-          console.log(`[AudioLoader] Loading audio from: ${mediaFile.path}`)
+          logger.info(`[AudioLoader] Loading audio from: ${mediaFile.path}`)
 
           try {
             // Load audio file
@@ -88,7 +91,7 @@ export function useChannelAudio(channelId: string, trackId?: string) {
               audioFile.element.dataset.startTime = clip.startTime.toString()
             }
           } catch (clipErr) {
-            console.error(`[AudioLoader] Failed to load clip ${clip.id}:`, clipErr)
+            logger.error(`[AudioLoader] Failed to load clip ${clip.id}:`, clipErr)
           }
         }
 

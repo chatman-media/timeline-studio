@@ -11,10 +11,12 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { SOCIAL_NETWORKS } from "../constants/export-constants"
 import { useSocialExport } from "../hooks/use-social-export"
 import type { ExportProgress, SocialExportSettings } from "../types/export-types"
+
+const logger = createLogger({ module: "SocialExportTab" })
 
 // Иконка YouTube
 const YouTubeIcon = () => (
@@ -134,7 +136,7 @@ export function SocialExportTab({
         })
       }
     } catch (error) {
-      console.error(`Login to ${networkId} failed:`, error)
+      logger.error(`Login to ${networkId} failed:`, error)
     }
   }
 
@@ -145,7 +147,7 @@ export function SocialExportTab({
       setLoginStates((prev) => ({ ...prev, [networkId]: false }))
       onSettingsChange({ isLoggedIn: false })
     } catch (error) {
-      console.error(`Logout from ${networkId} failed:`, error)
+      logger.error(`Logout from ${networkId} failed:`, error)
     }
   }
 
@@ -157,7 +159,7 @@ export function SocialExportTab({
       // Сначала проверяем видео
       const validation = validateSocialExport(settings)
       if (!validation.valid) {
-        console.warn("Video validation failed:", validation.error)
+        logger.warn("Video validation failed:", validation.error)
         // Показать ошибки валидации пользователю
         return
       }
@@ -165,7 +167,7 @@ export function SocialExportTab({
       // Запускаем экспорт
       onExport(selectedNetwork)
     } catch (error) {
-      console.error("Social export failed:", error)
+      logger.error("Social export failed:", error)
     }
   }
 

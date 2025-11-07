@@ -13,6 +13,11 @@ import type {
   ExecutionMetrics,
   IExecutionEngine,
 } from "../types"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ExecutionEngine")
+
 import { ToolRegistry } from "./tool-registry"
 
 /**
@@ -213,7 +218,7 @@ export class ExecutionEngine implements IExecutionEngine {
     // Удаляем из активных выполнений
     this.executions.delete(executionId)
 
-    console.log(`[ExecutionEngine] Отменено выполнение: ${executionId}`)
+    logger.info("[ExecutionEngine] Отменено выполнение:", { executionId })
   }
 
   /**
@@ -358,7 +363,7 @@ export class ExecutionEngine implements IExecutionEngine {
       try {
         listener(eventData)
       } catch (error) {
-        console.error(`[ExecutionEngine] Ошибка в обработчике события ${eventType}:`, error)
+        logger.error("[ExecutionEngine] Ошибка в обработчике события", { eventType, error })
       }
     })
   }

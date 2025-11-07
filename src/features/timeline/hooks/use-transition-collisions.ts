@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import {
   autoFixCollisions,
   detectAllCollisions,
@@ -12,6 +13,8 @@ import {
 } from "../services/transition-collision-detector"
 import type { TimelineTrack } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
+
+const logger = createLogger({ module: "UseTransitionCollisions" })
 
 interface UseTransitionCollisionsReturn {
   // Все коллизии в проекте
@@ -112,7 +115,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
           const updates = fix.action()
 
           // TODO: Интегрировать с системой обновления проекта
-          console.log("Apply fix:", collision.transition1.id, updates)
+          logger.info("Apply fix:", collision.transition1.id, updates)
         },
       }))
     },
@@ -137,7 +140,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
     const fixedProject = autoFixCollisions(project, collisions)
 
     // TODO: Обновить проект через систему управления состоянием
-    console.log("Auto-fixed project:", fixedProject)
+    logger.info("Auto-fixed project:", fixedProject)
   }, [project, collisions])
 
   return {

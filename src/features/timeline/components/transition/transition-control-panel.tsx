@@ -10,10 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 // import { useTimelineTransitions } from "@/features/timeline/hooks/use-timeline-transitions"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { TransitionCurveEditor } from "./transition-curve-editor"
 import { TransitionCurveVisualizer } from "./transition-curve-visualizer"
+
+const logger = createLogger({ module: "TransitionControlPanel" })
 
 interface TransitionControlPanelProps {
   transition: TimelineTransition
@@ -37,12 +39,12 @@ export function TransitionControlPanel({
   const [previewTime, setPreviewTime] = useState(transition.duration / 2)
   // Мок функций для работы с переходами
   const updateTransition = useCallback((id: string, updates: Partial<TimelineTransition>) => {
-    console.log(`Обновление перехода ${id}:`, updates)
+    logger.info(`Обновление перехода ${id}:`, updates)
     // TODO: Реализовать через контекст или хук
   }, [])
 
   const removeTransition = useCallback((id: string) => {
-    console.log(`Удаление перехода ${id}`)
+    logger.info(`Удаление перехода ${id}`)
     // TODO: Реализовать через контекст или хук
   }, [])
 

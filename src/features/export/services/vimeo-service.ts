@@ -1,7 +1,10 @@
 // Vimeo API service для загрузки видео
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
+
+const logger = createLogger({ module: "VimeoService" })
 
 export interface VimeoUploadResult {
   success: boolean
@@ -42,7 +45,7 @@ export async function getUserInfo(accessToken?: string): Promise<any> {
 
     return await response.json()
   } catch (error) {
-    console.error("Failed to get Vimeo user info:", error)
+    logger.error("Failed to get Vimeo user info:", error)
     throw error
   }
 }
@@ -128,7 +131,7 @@ export async function uploadVideo(
       id: videoUri.replace("/videos/", ""),
     }
   } catch (error) {
-    console.error("Vimeo upload failed:", error)
+    logger.error("Vimeo upload failed:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

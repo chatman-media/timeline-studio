@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useApp } from "../services/app-provider"
+
+const logger = createLogger({ module: "UseFavorites" })
 
 /**
  * Хук для доступа к избранным элементам
@@ -35,7 +37,7 @@ export function useFavorites() {
       //   type: 'AddToFavorites',
       //   params: { item, type }
       // })
-      console.log(`Added to favorites [${type}]:`, item)
+      logger.info(`Added to favorites [${type}]:`, item)
     },
     [executeCommand],
   )
@@ -52,7 +54,7 @@ export function useFavorites() {
       //   type: 'RemoveFromFavorites',
       //   params: { itemId: item.id, type }
       // })
-      console.log(`Removed from favorites [${type}]:`, item)
+      logger.info(`Removed from favorites [${type}]:`, item)
     },
     [executeCommand],
   )
@@ -66,7 +68,7 @@ export function useFavorites() {
       //   type: 'UpdateFavorites',
       //   params: { favorites: newFavorites }
       // })
-      console.log("Updated favorites:", newFavorites)
+      logger.info("Updated favorites:", newFavorites)
     },
     [executeCommand],
   )

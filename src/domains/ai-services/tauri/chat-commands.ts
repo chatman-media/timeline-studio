@@ -3,7 +3,10 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ChatMessage, ChatTimelineContext } from "../types/chat"
+
+const logger = createLogger("ChatCommands")
 
 /**
  * API Key management commands
@@ -52,7 +55,7 @@ export interface ChatSessionData {
 // Note: These commands would need to be implemented in Rust backend
 // Currently they are placeholder for future implementation
 export async function createChatSession(title: string): Promise<ChatSessionData> {
-  console.log("[Chat Commands] Creating chat session:", title)
+  logger.infoSync("Creating chat session", { title })
   // Placeholder - would call actual Tauri command when implemented
   return {
     id: `session-${Date.now()}`,
@@ -64,18 +67,18 @@ export async function createChatSession(title: string): Promise<ChatSessionData>
 }
 
 export async function saveChatSession(session: ChatSessionData): Promise<void> {
-  console.log("[Chat Commands] Saving chat session:", session.id)
+  logger.debugSync("Saving chat session", { sessionId: session.id })
   // Placeholder for future backend implementation
 }
 
 export async function loadChatSession(sessionId: string): Promise<ChatSessionData | null> {
-  console.log("[Chat Commands] Loading chat session:", sessionId)
+  logger.debugSync("Loading chat session", { sessionId })
   // Placeholder for future backend implementation
   return null
 }
 
 export async function deleteChatSession(sessionId: string): Promise<void> {
-  console.log("[Chat Commands] Deleting chat session:", sessionId)
+  logger.infoSync("Deleting chat session", { sessionId })
   // Placeholder for future backend implementation
 }
 
@@ -83,7 +86,7 @@ export async function deleteChatSession(sessionId: string): Promise<void> {
  * Timeline context extraction for AI chat
  */
 export async function extractTimelineContext(): Promise<ChatTimelineContext> {
-  console.log("[Chat Commands] Extracting timeline context")
+  logger.debugSync("Extracting timeline context")
   // This would integrate with timeline domain when available
   return {
     projectName: "Current Project",

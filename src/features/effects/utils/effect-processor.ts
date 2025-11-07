@@ -3,7 +3,10 @@
  * Обрабатывает и валидирует эффекты BaseEffect
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect, EffectParameter, EffectPreset } from "../types/unified-effects"
+
+const logger = createLogger({ module: "EffectProcessor" })
 
 /**
  * Интерфейс для сырых данных эффекта из JSON (старый формат)
@@ -270,7 +273,7 @@ function mapComplexity(oldComplexity: string): "low" | "medium" | "high" | "extr
  */
 export function processEffects(rawEffects: RawEffectData[]): BaseEffect[] {
   if (!Array.isArray(rawEffects)) {
-    console.error("processEffects: rawEffects is not an array", rawEffects)
+    logger.error("processEffects: rawEffects is not an array", rawEffects)
     return []
   }
 
@@ -280,7 +283,7 @@ export function processEffects(rawEffects: RawEffectData[]): BaseEffect[] {
       try {
         return processEffect(effect)
       } catch (error) {
-        console.error("processEffects: Failed to process effect", effect, error)
+        logger.error("processEffects: Failed to process effect", effect, error)
         return null
       }
     })
@@ -304,13 +307,13 @@ export function validateEffect(effect: any): effect is BaseEffect {
  */
 export function validateEffectsData(data: any): boolean {
   if (!data || !Array.isArray(data.effects)) {
-    console.error("validateEffectsData: Invalid data structure", data)
+    logger.error("validateEffectsData: Invalid data structure", data)
     return false
   }
 
   const validEffects = data.effects.filter((effect: any) => effect != null)
   if (validEffects.length !== data.effects.length) {
-    console.warn(`validateEffectsData: Found ${data.effects.length - validEffects.length} null/undefined effects`)
+    logger.warn(`validateEffectsData: Found ${data.effects.length - validEffects.length} null/undefined effects`)
   }
 
   return validEffects.every(validateEffect)

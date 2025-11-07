@@ -5,6 +5,10 @@
 
 import { EventEmitter } from "events"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "MidiClock" })
+
 export interface ClockState {
   isRunning: boolean
   bpm: number
@@ -258,7 +262,7 @@ export class MidiClock extends EventEmitter {
 
   setBPM(bpm: number): void {
     if (this.sync.type !== "internal") {
-      console.warn("Cannot set BPM in external sync mode")
+      logger.warn("Cannot set BPM in external sync mode")
       return
     }
 

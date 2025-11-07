@@ -5,6 +5,10 @@
 import { convertFileSrc } from "@tauri-apps/api/core"
 import { exists } from "@tauri-apps/plugin-fs"
 
+import { createLogger } from "./tauri-logger"
+
+const logger = createLogger("TauriUtils")
+
 // Попробуем статический импорт для Tauri v2
 
 /**
@@ -17,7 +21,7 @@ import { exists } from "@tauri-apps/plugin-fs"
 export function convertToAssetUrl(filePath: string): string {
   // Проверяем Tauri окружение
   if (!isTauriEnvironment()) {
-    console.warn("[convertToAssetUrl] Not in Tauri environment")
+    logger.warnSync("Not in Tauri environment")
     return filePath
   }
 
@@ -37,10 +41,10 @@ export function convertToAssetUrl(filePath: string): string {
   // В Tauri v2 используем convertFileSrc
   try {
     const assetUrl = convertFileSrc(cleanPath)
-    console.log("[convertToAssetUrl] convertFileSrc result:", assetUrl)
+    logger.debugSync("convertFileSrc result", { assetUrl })
     return assetUrl
   } catch (error) {
-    console.error("[convertToAssetUrl] Error with convertFileSrc:", error)
+    logger.errorSync("Error with convertFileSrc", { error })
   }
 
   // Fallback - создаем asset URL вручную для Tauri 2.0
@@ -55,7 +59,7 @@ export function convertToAssetUrl(filePath: string): string {
 
   // В Tauri 2.0 формат: asset://localhost/путь
   const assetUrl = `asset://localhost/${escapedPath}`
-  console.log("[convertToAssetUrl] Fallback asset URL:", assetUrl)
+  logger.debugSync("Fallback asset URL", { assetUrl })
 
   return assetUrl
 }
@@ -70,14 +74,14 @@ export function convertToAssetUrl(filePath: string): string {
 export function convertVideoSrc(filePath: string): string {
   // Проверяем, работаем ли мы в Tauri окружении
   if (!isTauriEnvironment()) {
-    console.warn("[convertVideoSrc] Not in Tauri environment, returning original path")
+    logger.warnSync("Not in Tauri environment, returning original path")
 
     // В development режиме пробуем использовать asset URL напрямую
     if (typeof window !== "undefined" && window.location.hostname === "localhost") {
       // Создаем asset URL для development
       const encodedPath = encodeURIComponent(filePath)
       const devAssetUrl = `http://asset.localhost/${encodedPath}`
-      console.log("[convertVideoSrc] Dev mode asset URL:", devAssetUrl)
+      logger.debugSync("Dev mode asset URL", { devAssetUrl })
       return devAssetUrl
     }
 
@@ -97,7 +101,7 @@ export function convertVideoSrc(filePath: string): string {
     // Используем исходный путь
   }
 
-  console.log("[convertVideoSrc] Converting:", {
+  logger.debugSync("Converting video src", {
     original: filePath,
     cleaned: cleanPath,
     isTauri: isTauriEnvironment(),
@@ -107,7 +111,7 @@ export function convertVideoSrc(filePath: string): string {
   try {
     // Пробуем использовать встроенную функцию
     const assetUrl = convertFileSrc(cleanPath)
-    console.log("[convertVideoSrc] convertFileSrc result:", assetUrl)
+    logger.debugSync("convertFileSrc result", { assetUrl })
 
     // Если URL начинается с asset://, возвращаем как есть
     if (assetUrl && assetUrl.startsWith("asset://")) {
@@ -121,7 +125,7 @@ export function convertVideoSrc(filePath: string): string {
 
     return assetUrl
   } catch (error) {
-    console.error("[convertVideoSrc] Error with convertFileSrc:", error)
+    logger.errorSync("Error with convertFileSrc", { error })
   }
 
   // Fallback - создаем asset URL вручную для Tauri 2.0
@@ -136,7 +140,7 @@ export function convertVideoSrc(filePath: string): string {
 
   // В Tauri 2.0 формат: asset://localhost/путь
   const assetUrl = `asset://localhost/${escapedPath}`
-  console.log("[convertVideoSrc] Fallback asset URL:", assetUrl)
+  logger.debugSync("Fallback asset URL", { assetUrl })
 
   return assetUrl
 }
@@ -149,10 +153,10 @@ export function convertVideoSrc(filePath: string): string {
 export async function checkFileAccess(filePath: string): Promise<boolean> {
   try {
     const fileExists = await exists(filePath)
-    console.log(`[TauriUtils] File exists check for ${filePath}: ${fileExists}`)
+    logger.debugSync("File exists check", { filePath, fileExists })
     return fileExists
   } catch (error) {
-    console.error(`[TauriUtils] Error checking file access for ${filePath}:`, error)
+    logger.errorSync("Error checking file access", { filePath, error })
     return false
   }
 }
@@ -172,7 +176,7 @@ export function isTauriEnvironment(): boolean {
   const isTauri = hasTauri || hasTauriInternals
 
   if (isTauri) {
-    console.log("[isTauriEnvironment] Tauri detected:", { hasTauri, hasTauriInternals })
+    logger.debugSync("Tauri detected", { hasTauri, hasTauriInternals })
   }
 
   return isTauri

@@ -3,8 +3,11 @@
  */
 
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip, TimelineProject, TimelineTransition } from "../types"
 import { generateId } from "../utils/id-generator"
+
+const logger = createLogger({ module: "TransitionManager" })
 
 export interface TransitionApplication {
   leftClipId: string
@@ -26,13 +29,13 @@ export class TransitionManager {
     const rightClip = TransitionManager.findClipInProject(project, rightClipId)
 
     if (!leftClip || !rightClip) {
-      console.error("Clips not found for transition")
+      logger.error("Clips not found for transition")
       return project
     }
 
     // Проверяем, что клипы на одном треке и рядом друг с другом
     if (leftClip.trackId !== rightClip.trackId) {
-      console.error("Clips must be on the same track for transition")
+      logger.error("Clips must be on the same track for transition")
       return project
     }
 
@@ -42,7 +45,7 @@ export class TransitionManager {
 
     if (Math.abs(gap) > 0.1) {
       // Допускаем небольшую погрешность
-      console.error("Clips must be adjacent for transition")
+      logger.error("Clips must be adjacent for transition")
       return project
     }
 

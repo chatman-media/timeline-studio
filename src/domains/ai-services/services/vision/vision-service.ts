@@ -3,6 +3,10 @@
  * Перенесено из features/ai-content-intelligence/engines/scene-analysis/services/
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("VisionService")
+
 export interface VisionServiceConfig {
   enableObjectDetection?: boolean
   enableFaceDetection?: boolean
@@ -56,15 +60,15 @@ export class VisionService {
 
     try {
       // TODO: Инициализация ONNX Runtime и загрузка моделей YOLO
-      console.log("VisionService: Initializing ONNX Runtime...")
+      logger.debug("VisionService: Initializing ONNX Runtime...")
 
       // Симуляция загрузки моделей
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       this.initialized = true
-      console.log("VisionService: Initialized successfully")
+      logger.debug("VisionService: Initialized successfully")
     } catch (error) {
-      console.error("VisionService: Failed to initialize", error)
+      logger.error("VisionService: Failed to initialize", { error })
       throw error
     }
   }

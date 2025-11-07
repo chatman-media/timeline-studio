@@ -8,6 +8,10 @@
  * - GPU-ускорение для HDR декодинга
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:hdr-support")
+
 export interface HDRMetadata {
   /** Основные характеристики HDR */
   format: "HDR10" | "HDR10+" | "Dolby Vision" | "HLG" | "SDR"
@@ -78,7 +82,7 @@ export class HDRSupportService {
     try {
       // Skip initialization during SSR
       if (typeof document === "undefined") {
-        console.warn("HDR support WebGL initialization skipped (SSR)")
+        logger.debug("WebGL initialization skipped (SSR)")
         return
       }
 
@@ -89,13 +93,13 @@ export class HDRSupportService {
         this.isWebGL2Supported = true
         // Проверяем поддержку HDR расширений
         const supportedExtensions = this.gl.getSupportedExtensions()
-        console.log(
+        logger.info(
           "WebGL2 HDR extensions:",
           supportedExtensions?.filter((ext) => ext.includes("color") || ext.includes("hdr") || ext.includes("float")),
         )
       }
     } catch (error) {
-      console.warn("WebGL2 initialization failed:", error)
+      logger.warn("WebGL2 initialization failed", { error })
       this.isWebGL2Supported = false
     }
   }
@@ -185,7 +189,7 @@ export class HDRSupportService {
         }
       }
     } catch (error) {
-      console.warn("HDR capabilities detection failed:", error)
+      logger.warn("HDR capabilities detection failed", { error })
     }
 
     return capabilities
@@ -240,7 +244,7 @@ export class HDRSupportService {
       // Проверяем codec информацию через MediaSource API
       await this.detectCodecHDRSupport(video, metadata)
     } catch (error) {
-      console.warn("HDR metadata parsing failed:", error)
+      logger.warn("HDR metadata parsing failed", { error })
     }
 
     return metadata
@@ -284,7 +288,7 @@ export class HDRSupportService {
         }
       }
     } catch (error) {
-      console.warn("Codec HDR detection failed:", error)
+      logger.warn("codec HDR detection failed", { error })
     }
   }
 
@@ -385,7 +389,7 @@ export class HDRSupportService {
         }
       }
     } catch (error) {
-      console.warn("Codec info detection failed:", error)
+      logger.warn("codec info detection failed", { error })
     }
 
     return codecInfo
@@ -422,7 +426,7 @@ export class HDRSupportService {
     },
   ): boolean {
     if (!this.gl || !this.isWebGL2Supported) {
-      console.warn("WebGL2 not available for HDR tone mapping")
+      logger.warn("WebGL2 not available for HDR tone mapping")
       return false
     }
 
@@ -491,7 +495,7 @@ export class HDRSupportService {
       gl.linkProgram(program)
 
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error("HDR shader program failed to link")
+        logger.error("shader program failed to link")
         return false
       }
 
@@ -507,7 +511,7 @@ export class HDRSupportService {
 
       return true
     } catch (error) {
-      console.error("HDR tone mapping failed:", error)
+      logger.error("tone mapping failed", { error })
       return false
     }
   }
@@ -520,7 +524,7 @@ export class HDRSupportService {
     gl.compileShader(shader)
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error("Shader compilation error:", gl.getShaderInfoLog(shader))
+      logger.error("shader compilation error", { info: gl.getShaderInfoLog(shader) })
       gl.deleteShader(shader)
       return null
     }

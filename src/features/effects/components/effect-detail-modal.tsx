@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useModal } from "@/features/modals/services"
+import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect } from "../types"
 import { prepareEffectForExport, saveUserEffect } from "../utils/user-effects"
 import { EffectComparison } from "./effect-comparison"
@@ -13,6 +14,8 @@ import { EffectIndicators } from "./effect-indicators"
 import { EffectParameterControls } from "./effect-parameter-controls"
 import { EffectPresets } from "./effect-presets"
 import { EffectPreview } from "./effect-preview"
+
+const logger = createLogger({ module: "EffectDetailModal" })
 
 /**
  * Компонент для детального просмотра эффекта с возможностью настройки параметров
@@ -90,12 +93,12 @@ export function EffectDetailModal() {
         localStorage.setItem(storageKey, JSON.stringify(presets))
 
         // Уведомляем пользователя об успешном сохранении
-        console.log("Custom preset saved:", name, params)
+        logger.info("Custom preset saved:", name, params)
 
         // Обновляем состояние компонента, если нужно показать новый пресет
         // Можно добавить toast уведомление здесь
       } catch (error) {
-        console.error("Error saving custom preset:", error)
+        logger.error("Error saving custom preset:", error)
       }
     },
     [effect?.id, currentLang, t],
@@ -129,11 +132,11 @@ export function EffectDetailModal() {
       )
 
       const filePath = await saveUserEffect(effectToExport, exportName)
-      console.log("Effect exported to:", filePath)
+      logger.info("Effect exported to:", filePath)
 
       // Можем добавить toast уведомление об успешном экспорте
     } catch (error) {
-      console.error("Error exporting effect:", error)
+      logger.error("Error exporting effect:", error)
     }
   }, [effect, currentParameters, selectedPreset, t])
 

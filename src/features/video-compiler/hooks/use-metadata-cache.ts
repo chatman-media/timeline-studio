@@ -3,8 +3,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaMetadata } from "../../../domains/shared/types"
-
 import {
   cacheMediaMetadata,
   cacheMultipleMetadata,
@@ -12,8 +12,9 @@ import {
   getCachedMetadata,
   getCacheMemoryUsage,
 } from "../services/metadata-cache-service"
-
 import type { CacheMemoryUsage } from "../types/cache"
+
+const logger = createLogger({ module: "UseMetadataCache" })
 
 interface UseMetadataCacheReturn {
   // Получение метаданных
@@ -143,7 +144,7 @@ export function useAutoMetadataCache(files: Array<{ path: string; needsMetadata?
         await saveMetadata(filePath, metadata)
         setCachedStatus((prev) => new Map(prev).set(filePath, true))
       } catch (error) {
-        console.error(`Failed to cache metadata for ${filePath}:`, error)
+        logger.error(`Failed to cache metadata for ${filePath}:`, error)
       }
     },
     [saveMetadata],

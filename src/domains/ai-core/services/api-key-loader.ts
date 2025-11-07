@@ -1,4 +1,7 @@
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ApiKeyLoader")
 
 /**
  * Загрузчик API ключей из безопасного хранилища
@@ -51,7 +54,7 @@ export class ApiKeyLoader {
 
       return null
     } catch (error) {
-      console.error(`Failed to get API key for ${keyType}:`, error)
+      logger.error("Failed to get API key", { keyType, error })
       return null
     }
   }
@@ -68,7 +71,7 @@ export class ApiKeyLoader {
       })
       return result
     } catch (error) {
-      console.error(`Failed to check API key for ${keyType}:`, error)
+      logger.error("Failed to check API key", { keyType, error })
       return false
     }
   }

@@ -3,8 +3,11 @@
  * Управляет созданием и привязкой VAO для оптимизации производительности
  */
 
+import { createLogger } from "../tauri-logger"
 import { contextManager } from "./context-manager"
 import type { ShaderProgram } from "./shader-pool"
+
+const logger = createLogger("VAOManager")
 
 /**
  * Описание атрибута вершины
@@ -292,7 +295,7 @@ export class VAOManager {
     for (const attribute of geometry.attributes) {
       const location = gl.getAttribLocation(program.program, attribute.name)
       if (location < 0) {
-        console.warn(`Атрибут "${attribute.name}" не найден в программе`)
+        logger.warnSync("Атрибут не найден в программе", { attribute: attribute.name })
         continue
       }
 

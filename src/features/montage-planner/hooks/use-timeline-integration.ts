@@ -8,14 +8,15 @@ import type { MediaFile } from "@/features/media/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineActions } from "@/features/timeline/hooks/use-timeline-actions"
 import { useTimelineMarkers } from "@/features/timeline/hooks/use-timeline-markers"
-
+import { createLogger } from "@/lib/tauri-logger"
 import {
   applyPlanToTimeline as applyPlanToTimelineService,
   createMarkersFromPlan,
   type TimelineIntegrationOptions,
 } from "../services/timeline-integration-service"
-
 import type { MontagePlan, PlannedClip, Sequence } from "../types"
+
+const logger = createLogger({ module: "UseTimelineIntegration" })
 
 export interface UseTimelineIntegrationReturn {
   // Основные действия
@@ -105,11 +106,11 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
           addMarkers(markers)
         }
 
-        console.log(`Successfully applied montage plan: ${plan.name}`)
+        logger.info(`Successfully applied montage plan: ${plan.name}`)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to apply montage plan"
         setError(errorMessage)
-        console.error("Failed to apply montage plan:", err)
+        logger.error("Failed to apply montage plan:", err)
       } finally {
         setIsApplying(false)
       }
@@ -130,11 +131,11 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
       try {
         const markers = createMarkersFromPlan(plan, timeOffset)
         addMarkers(markers)
-        console.log(`Added ${markers.length} markers from montage plan`)
+        logger.info(`Added ${markers.length} markers from montage plan`)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to create markers"
         setError(errorMessage)
-        console.error("Failed to create markers:", err)
+        logger.error("Failed to create markers:", err)
       }
     },
     [project, addMarkers],

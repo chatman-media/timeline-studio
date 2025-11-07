@@ -328,18 +328,18 @@ export const montagePlannerMachine = setup({
 
     // Timeline integration actions
     applyPlanToTimeline: async ({ context }: { context: MontagePlannerContext }) => {
-      console.log("[Montage Planner] Applying plan to timeline")
+      logger.infoSync("Applying plan to timeline")
       if (context.currentPlan) {
         try {
           await invoke("apply_montage_plan", { plan: context.currentPlan })
         } catch (error) {
-          console.error("[Montage Planner] Failed to apply plan:", error)
+          logger.errorSync("Failed to apply plan", { error })
         }
       }
     },
 
     exportPlan: async ({ context, event }: { context: MontagePlannerContext; event: MontagePlannerEvent }) => {
-      console.log("[Montage Planner] Exporting plan")
+      logger.infoSync("Exporting plan")
       if (context.currentPlan && event.type === "EXPORT_PLAN") {
         try {
           await invoke("export_montage_plan", {
@@ -347,7 +347,7 @@ export const montagePlannerMachine = setup({
             format: event.format,
           })
         } catch (error) {
-          console.error("[Montage Planner] Failed to export plan:", error)
+          logger.errorSync("Failed to export plan", { error })
         }
       }
     },

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"
+import { createLogger } from "@/lib/tauri-logger"
 import { useExportSettings } from "../hooks/use-export-settings"
 import { useSocialExport } from "../hooks/use-social-export"
 import type { ExportSettings, SocialExportSettings } from "../types/export-types"
@@ -15,6 +16,8 @@ import { BatchExportTab } from "./batch-export-tab"
 import { DetailedExportInterface } from "./detailed-export-interface"
 import { SectionExportTab } from "./section-export-tab"
 import { SocialExportTab } from "./social-export-tab"
+
+const logger = createLogger({ module: "ExportModal" })
 
 export function ExportModal() {
   const { t } = useTranslation()
@@ -54,7 +57,7 @@ export function ExportModal() {
       // Запускаем экспорт
       await startRender(projectSchema, settings.savePath)
     } catch (error) {
-      console.error("Export failed:", error)
+      logger.error("Export failed:", error)
       toast.error(t("dialogs.export.errors.exportFailed"))
     }
   }, [project, getCurrentSettings, getExportConfig, startRender, t])
@@ -80,7 +83,7 @@ export function ExportModal() {
 
         toast.success(t("dialogs.export.uploadSuccess", { platform: socialNetwork }))
       } catch (error) {
-        console.error("Social export failed:", error)
+        logger.error("Social export failed:", error)
         toast.error(t("dialogs.export.errors.socialExportFailed"))
       }
     },
@@ -176,7 +179,7 @@ export function ExportModal() {
               toast.success(t("dialogs.export.sectionsExportSuccess"))
               closeModal()
             } catch (error) {
-              console.error("Section export failed:", error)
+              logger.error("Section export failed:", error)
               toast.error(t("dialogs.export.errors.exportFailed"))
             }
           }}

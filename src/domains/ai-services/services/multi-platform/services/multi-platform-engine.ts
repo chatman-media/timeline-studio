@@ -17,6 +17,10 @@ import type {
   TrendingElements,
 } from "../types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MultiPlatformEngine")
+
 import { BatchProcessor } from "./batch-processor"
 import { LanguageAdapter } from "./language-adapter"
 import { PlatformAdapter } from "./platform-adapter"
@@ -685,7 +689,7 @@ export class MultiPlatformEngine {
       // 4. Используем AI для более точного определения
       return await this.detectLanguageWithAI(textSamples)
     } catch (error) {
-      console.warn("Language detection failed, defaulting to English:", error)
+      logger.warn("Language detection failed, defaulting to English:", { data: error })
       return "en"
     }
   }
@@ -771,7 +775,7 @@ export class MultiPlatformEngine {
       // Default fallback
       return "en"
     } catch (error) {
-      console.warn("AI language detection failed:", error)
+      logger.warn("AI language detection failed:", { data: error })
       return "en"
     }
   }

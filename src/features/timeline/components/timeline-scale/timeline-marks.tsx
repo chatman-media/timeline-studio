@@ -1,6 +1,8 @@
 import { useId, useMemo } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { TimelineMark } from "./timeline-mark"
+
+const logger = createLogger({ module: "TimelineMarks" })
 
 interface TimelineMarksProps {
   startTime: number
@@ -55,7 +57,7 @@ export function TimelineMarks({
     const firstMark = Math.floor(startTime / iterationStep) * iterationStep
 
     // Отключаем логирование для уменьшения количества сообщений
-    // console.log(
+    // logger.info(
     //   `[TimelineMarks] Шаги: L1=${level1Step}с, L2=${level2Step}с, L3=${level3Step}с, L4=${level4Step}с, Итерация=${iterationStep}с`,
     // )
 

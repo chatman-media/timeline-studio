@@ -4,7 +4,10 @@
  */
 
 import type { AudioDetections, SceneAnalysis, SpeechDetection } from "@/domains/ai-services/types"
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleItem } from "../subtitle-tools"
+
+const logger = createLogger("SubtitleSynchronization")
 
 export interface SynchronizationOptions {
   // Временные ограничения
@@ -86,7 +89,7 @@ export class SubtitleSynchronizationService {
     },
     options: SynchronizationOptions = {},
   ): Promise<SynchronizationResult> {
-    console.log("Starting advanced subtitle synchronization...")
+    logger.info("Starting advanced subtitle synchronization...")
 
     const opts = this.normalizeOptions(options)
     let synchronized = [...subtitles]
@@ -133,7 +136,7 @@ export class SubtitleSynchronizationService {
       const recommendations = this.generateRecommendations(synchronized, quality, context)
       const warnings = this.generateWarnings(synchronized, quality)
 
-      console.log(`Synchronization completed: ${synchronized.length} subtitles, quality score: ${quality.overallScore}`)
+      logger.info(`Synchronization completed: ${synchronized.length} subtitles`, { qualityScore: quality.overallScore })
 
       return {
         synchronizedSubtitles: synchronized,
@@ -143,7 +146,7 @@ export class SubtitleSynchronizationService {
         warnings,
       }
     } catch (error) {
-      console.error("Synchronization failed:", error)
+      logger.error("Synchronization failed:", { error })
       throw error
     }
   }
@@ -287,7 +290,7 @@ export class SubtitleSynchronizationService {
       const wordCount = subtitle.text.split(" ").length
       if (wordCount > options.maxWordsPerSubtitle!) {
         // В реальной реализации здесь можно разбить субтитр на части
-        console.warn(`Subtitle too long: ${wordCount} words`)
+        logger.warn("Warning", { data: `Subtitle too long: ${wordCount} words` })
       }
 
       return subtitle

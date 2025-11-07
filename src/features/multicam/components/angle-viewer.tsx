@@ -7,10 +7,13 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { MulticamAngle } from "../hooks/use-multicam"
 import { useMulticam } from "../hooks/use-multicam"
 import { SyncControls } from "./sync-controls"
+
+const logger = createLogger({ module: "AngleViewer" })
 
 interface AngleViewerProps {
   /**
@@ -89,7 +92,7 @@ export function AngleViewer({
     videoRefs.current.forEach((video) => {
       if (video) {
         if (newIsPlaying) {
-          video.play().catch(console.error)
+          video.play().catch((error) => logger.error("Operation failed", { error }))
         } else {
           video.pause()
         }
@@ -134,7 +137,7 @@ export function AngleViewer({
           baseClipId={baseClipId}
           className="shadow-lg"
           onSyncComplete={() => {
-            console.log("[AngleViewer] Sync completed")
+            logger.info("[AngleViewer] Sync completed")
           }}
         />
         <Button size="sm" variant="secondary" onClick={togglePlayback} className="shadow-lg">

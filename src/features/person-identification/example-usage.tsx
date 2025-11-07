@@ -2,8 +2,11 @@
  * Пример использования Person Identification
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { usePersonIdentification } from "./hooks/use-person-identification"
 import type { DetectedFace } from "./types/person"
+
+const logger = createLogger({ module: "ExampleUsage" })
 
 export function PersonIdentificationExample() {
   const {
@@ -24,7 +27,7 @@ export function PersonIdentificationExample() {
       description: "Актер в главной роли",
       tags: ["actor", "main_role"],
     })
-    console.log("Создана персона:", newPerson)
+    logger.info("Создана персона:", newPerson)
   }
 
   // Пример 2: Идентификация лица
@@ -32,23 +35,23 @@ export function PersonIdentificationExample() {
     const result = await identifyPerson(detectedFace)
 
     if (result) {
-      console.log(`Опознан: ${result.person.name} с уверенностью ${result.confidence}`)
+      logger.info(`Опознан: ${result.person.name} с уверенностью ${result.confidence}`)
     } else {
-      console.log("Лицо не опознано")
+      logger.info("Лицо не опознано")
 
       // Создаем новую персону из неопознанного лица
       const newPerson = await createPersonFromFace(detectedFace, {
         name: "Неизвестный",
         tags: ["unidentified"],
       })
-      console.log("Создана новая персона:", newPerson)
+      logger.info("Создана новая персона:", newPerson)
     }
   }
 
   // Пример 3: Кластеризация неопознанных лиц
   const handleClusterFaces = async (unidentifiedFaces: DetectedFace[]) => {
     const newPersons = await clusterUnknownFaces(unidentifiedFaces, 0.8)
-    console.log(`Создано ${newPersons.length} персон из кластеров`)
+    logger.info(`Создано ${newPersons.length} персон из кластеров`)
   }
 
   // Пример 4: Получение статистики

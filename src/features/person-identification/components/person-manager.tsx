@@ -7,10 +7,13 @@ import { useEffect, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useModal } from "@/features/modals/services"
+import { createLogger } from "@/lib/tauri-logger"
 import { PersonDatabaseService } from "../services/person-database-service"
 import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"
 import { PersonList } from "./person-list"
+
+const logger = createLogger({ module: "PersonManager" })
 
 interface PersonManagerProps {
   className?: string
@@ -50,7 +53,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       setPersons(allPersons)
     } catch (err) {
       setError("Ошибка загрузки персон")
-      console.error("Failed to load persons:", err)
+      logger.error("Failed to load persons:", err)
     } finally {
       setIsLoading(false)
     }
@@ -68,7 +71,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       }
     } catch (err) {
       setError("Ошибка загрузки данных персоны")
-      console.error("Failed to load person details:", err)
+      logger.error("Failed to load person details:", err)
     }
   }
 
@@ -107,7 +110,7 @@ export function PersonManager({ className }: PersonManagerProps) {
         }
       } catch (err) {
         setError("Ошибка удаления персоны")
-        console.error("Failed to delete person:", err)
+        logger.error("Failed to delete person:", err)
       }
     }
   }
@@ -130,7 +133,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       await loadPersons()
     } catch (err) {
       setError("Ошибка сохранения персоны")
-      console.error("Failed to save person:", err)
+      logger.error("Failed to save person:", err)
       throw err // Пробрасываем ошибку для обработки в форме
     }
   }

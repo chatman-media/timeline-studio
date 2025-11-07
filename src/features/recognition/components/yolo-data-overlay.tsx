@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import type { YoloDetection } from "@/features/recognition/types/yolo"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useYoloData } from "../hooks/use-yolo-data"
+
+const logger = createLogger({ module: "YoloDataOverlay" })
 
 interface YoloDataOverlayProps {
   video: {
@@ -41,7 +43,7 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
         const data = await getYoloDataAtTimestamp(video.id, timestamp)
         setDetections(data)
       } catch (error) {
-        console.error("[YoloDataOverlay] Ошибка при получении данных YOLO:", error)
+        logger.error("[YoloDataOverlay] Ошибка при получении данных YOLO:", error)
       }
     }
 

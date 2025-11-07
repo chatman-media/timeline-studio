@@ -4,8 +4,10 @@
  */
 
 import { isRegistered, register, unregister } from "@tauri-apps/plugin-global-shortcut"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { type ShortcutDefinition, shortcutsRegistry } from "./shortcuts-registry"
+
+const logger = createLogger({ module: "TauriGlobalShortcuts" })
 
 export class TauriGlobalShortcuts {
   private static instance: TauriGlobalShortcuts
@@ -77,7 +79,7 @@ export class TauriGlobalShortcuts {
       // Проверяем, не занят ли уже этот shortcut
       const alreadyRegistered = await isRegistered(tauriKeys)
       if (alreadyRegistered) {
-        console.warn(`Global shortcut ${tauriKeys} is already registered by another application`)
+        logger.warn(`Global shortcut ${tauriKeys} is already registered by another application`)
         return
       }
 
@@ -96,9 +98,9 @@ export class TauriGlobalShortcuts {
       })
 
       this.registeredShortcuts.add(shortcut.id)
-      console.log(`Registered global shortcut: ${shortcut.name} (${tauriKeys})`)
+      logger.info(`Registered global shortcut: ${shortcut.name} (${tauriKeys})`)
     } catch (error) {
-      console.error(`Failed to register global shortcut ${shortcut.name}:`, error)
+      logger.error(`Failed to register global shortcut ${shortcut.name}:`, error)
     }
   }
 
@@ -118,9 +120,9 @@ export class TauriGlobalShortcuts {
 
       await unregister(tauriKeys)
       this.registeredShortcuts.delete(shortcut.id)
-      console.log(`Unregistered global shortcut: ${shortcut.name} (${tauriKeys})`)
+      logger.info(`Unregistered global shortcut: ${shortcut.name} (${tauriKeys})`)
     } catch (error) {
-      console.error(`Failed to unregister global shortcut ${shortcut.name}:`, error)
+      logger.error(`Failed to unregister global shortcut ${shortcut.name}:`, error)
     }
   }
 

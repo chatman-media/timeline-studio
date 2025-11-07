@@ -10,9 +10,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import type { AudioSyncProgress, SyncResult } from "../services/audio-sync"
+
+const logger = createLogger({ module: "AudioSyncDialog" })
 
 interface AudioSyncDialogProps {
   isOpen: boolean
@@ -79,7 +81,7 @@ export function AudioSyncDialog({ isOpen, onClose, onSync, angleCount }: AudioSy
         message: "Синхронизация завершена!",
       })
     } catch (err) {
-      console.error("[AudioSyncDialog] Sync error:", err)
+      logger.error("[AudioSyncDialog] Sync error:", err)
       setError("Произошла ошибка при синхронизации. Попробуйте еще раз.")
     } finally {
       setIsProcessing(false)

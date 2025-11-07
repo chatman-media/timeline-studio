@@ -9,9 +9,12 @@ import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 import { usePlayer } from "@/features/video-player/services/player-provider"
+import { createLogger } from "@/lib/tauri-logger"
 import { multicamManager } from "../services/multicam-manager"
 import { useCameraSync } from "./use-camera-sync"
 import { useMulticamShortcuts } from "./use-multicam-shortcuts"
+
+const logger = createLogger({ module: "UseMulticam" })
 
 export interface MulticamAngle {
   id: string
@@ -117,11 +120,11 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
         const angle = angles[angleIndex]
         if (angle) {
           playerSelectClip(angle.clipId).catch((error: unknown) => {
-            console.error("[useMulticam] Failed to switch player clip:", error)
+            logger.error("[useMulticam] Failed to switch player clip:", error)
           })
         }
       } else {
-        console.warn(`[useMulticam] Camera ${angleIndex + 1} not available (only ${angles.length} cameras in group)`)
+        logger.warn(`[useMulticam] Camera ${angleIndex + 1} not available (only ${angles.length} cameras in group)`)
       }
     }
 
@@ -145,10 +148,10 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
         // Переключаем плеер на выбранный клип
         const angle = angles[angleIndex]
         if (angle) {
-          console.log(`[useMulticam] Switching to angle ${angleIndex + 1}:`, angle.name)
+          logger.info(`[useMulticam] Switching to angle ${angleIndex + 1}:`, angle.name)
           // Вызываем API плеера для переключения на другой клип
           playerSelectClip(angle.clipId).catch((error: unknown) => {
-            console.error("[useMulticam] Failed to switch player clip:", error)
+            logger.error("[useMulticam] Failed to switch player clip:", error)
           })
         }
       }
@@ -200,7 +203,7 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
   // Автоматическая синхронизация по аудио
   const autoSyncByAudio = useCallback(async () => {
     if (!baseClipId || angles.length < 2) {
-      console.warn("[useMulticam] Need base clip and at least 2 angles for sync")
+      logger.warn("[useMulticam] Need base clip and at least 2 angles for sync")
       return
     }
 
@@ -210,7 +213,7 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
   // Автоматическая синхронизация по таймкоду
   const autoSyncByTimecode = useCallback(async () => {
     if (!baseClipId || angles.length < 2) {
-      console.warn("[useMulticam] Need base clip and at least 2 angles for sync")
+      logger.warn("[useMulticam] Need base clip and at least 2 angles for sync")
       return
     }
 
@@ -247,7 +250,7 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
   // Изменение порядка углов
   const reorderAngles = useCallback((_fromIndex: number, _toIndex: number) => {
     // TODO: Реализовать изменение порядка углов
-    console.log("[useMulticam] Reorder angles - not implemented yet")
+    logger.info("[useMulticam] Reorder angles - not implemented yet")
   }, [])
 
   // Получение угла по ID клипа

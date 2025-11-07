@@ -1,4 +1,7 @@
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("TransitionProcessor")
 
 /**
  * Интерфейс для сырых данных перехода из JSON
@@ -139,7 +142,7 @@ function createFFmpegCommand(template: string | undefined | null, parameters?: R
   return (params: { fps: number; width?: number; height?: number; scale?: number; duration?: number }) => {
     // Return empty string if template is not a string
     if (typeof template !== "string") {
-      console.warn("createFFmpegCommand: template is not a string:", template)
+      logger.warn("Invalid FFmpeg template", { template })
       return ""
     }
 

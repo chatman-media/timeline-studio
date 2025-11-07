@@ -3,6 +3,10 @@
  * Полная реализация DeepSeek API с поддержкой reasoning моделей
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("DeepSeekProvider")
+
 import { ApiKeyLoader } from "../../services/api-key-loader"
 import type { AiMessage, AiRequestOptions, AiResponse, IAIProvider, StreamingOptions } from "../../types"
 
@@ -155,7 +159,7 @@ export class DeepSeekProvider implements IAIProvider {
 
       return result
     } catch (error) {
-      console.error("DeepSeek request failed:", error)
+      logger.error("DeepSeek request failed", { error, model })
       throw error
     }
   }
@@ -281,7 +285,7 @@ export class DeepSeekProvider implements IAIProvider {
                   }
                 }
               } catch (parseError) {
-                console.warn("Error parsing DeepSeek streaming event:", parseError)
+                logger.warn("Error parsing DeepSeek streaming event", { parseError })
               }
             }
           }
@@ -306,7 +310,7 @@ export class DeepSeekProvider implements IAIProvider {
         reader.releaseLock()
       }
     } catch (error) {
-      console.error("DeepSeek streaming request failed:", error)
+      logger.error("DeepSeek streaming request failed", { error, model })
       if (options.onError) {
         options.onError(error instanceof Error ? error : new Error("Unknown error"))
       } else {

@@ -2,7 +2,10 @@
  * LRU Cache for preview frames
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { Effect } from "../types"
+
+const logger = createLogger({ module: "PreviewCache" })
 
 interface CacheEntry {
   bitmap: ImageBitmap
@@ -131,7 +134,7 @@ export class PreviewCache {
               }
             })
             .catch((err: unknown) => {
-              console.warn(`Failed to prefetch frame at ${t}:`, err)
+              logger.warn(`Failed to prefetch frame at ${t}:`, err)
             }),
         )
       }

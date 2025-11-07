@@ -1,5 +1,9 @@
 import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/features/recognition/types/yolo"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("YoloDataService")
+
 /**
  * Сервис для работы с данными YOLO
  * Обеспечивает загрузку, кэширование и обработку данных распознавания объектов
@@ -78,12 +82,12 @@ export class YoloDataService {
 
       // Если сохраненных данных нет и есть путь к видео, анализируем видео
       if (videoPath) {
-        console.log(`[YoloDataService] Анализируем видео ${videoPath} с YOLO`)
+        logger.info("Анализируем видео ${videoPath} с YOLO", { module: "YoloDataService" })
 
         // Инициализируем YOLO процессор если еще не инициализирован
         const isInitialized = await this.ensureYoloInitialized()
         if (!isInitialized) {
-          console.error("[YoloDataService] Не удалось инициализировать YOLO процессор")
+          logger.error("[YoloDataService] Не удалось инициализировать YOLO процессор", { error: null })
           this.nonExistentFiles[videoId] = true
           return null
         }
@@ -134,7 +138,7 @@ export class YoloDataService {
       this.nonExistentFiles[videoId] = true
       return null
     } catch (error) {
-      console.error(`[YoloDataService] Ошибка загрузки данных YOLO для видео ${videoId}:`, error)
+      logger.error("Ошибка загрузки данных YOLO для видео ${videoId}:", { module: "YoloDataService", error: error })
       this.nonExistentFiles[videoId] = true
       return null
     }
@@ -318,7 +322,7 @@ export class YoloDataService {
       delete this.nonExistentFiles[videoId]
     }
 
-    console.log(`[YoloDataService] Данные YOLO сохранены для видео ${videoId}`)
+    logger.info("Данные YOLO сохранены для видео ${videoId}", { module: "YoloDataService" })
   }
 
   /**
@@ -338,10 +342,10 @@ export class YoloDataService {
       })
 
       this.yoloInitialized = true
-      console.log("[YoloDataService] YOLO процессор успешно инициализирован")
+      logger.debug("[YoloDataService] YOLO процессор успешно инициализирован")
       return true
     } catch (error) {
-      console.error("[YoloDataService] Ошибка инициализации YOLO процессора:", error)
+      logger.error("[YoloDataService] Ошибка инициализации YOLO процессора:", { error })
       return false
     }
   }

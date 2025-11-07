@@ -59,7 +59,10 @@ const aiIntelligenceMachine = setup({
 })
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+
+const logger = createLogger({ module: "AiIntelligenceProvider" })
 
 interface AIIntelligenceContextType {
   actor: Actor<typeof aiIntelligenceMachine> | null
@@ -111,7 +114,7 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
                   },
                 })
                 .catch((err) => {
-                  console.error("[AIIntelligence] Failed to sync START_ANALYSIS:", err)
+                  logger.error("[AIIntelligence] Failed to sync START_ANALYSIS:", err)
                   setError(err.message)
                 })
               break
@@ -129,7 +132,7 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
                   },
                 })
                 .catch((err) => {
-                  console.error("[AIIntelligence] Failed to sync ANALYSIS_COMPLETE:", err)
+                  logger.error("[AIIntelligence] Failed to sync ANALYSIS_COMPLETE:", err)
                   setError(err.message)
                 })
               break
@@ -147,7 +150,7 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
                   },
                 })
                 .catch((err) => {
-                  console.error("[AIIntelligence] Failed to sync SCRIPT_GENERATED:", err)
+                  logger.error("[AIIntelligence] Failed to sync SCRIPT_GENERATED:", err)
                   setError(err.message)
                 })
               break
@@ -165,7 +168,7 @@ export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps
                   },
                 })
                 .catch((err) => {
-                  console.error("[AIIntelligence] Failed to sync PLATFORM_ADAPTATION_COMPLETE:", err)
+                  logger.error("[AIIntelligence] Failed to sync PLATFORM_ADAPTATION_COMPLETE:", err)
                   setError(err.message)
                 })
               break

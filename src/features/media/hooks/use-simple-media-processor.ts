@@ -2,6 +2,9 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SimpleMediaProcessor")
 
 interface SimpleMediaMetadata {
   duration?: number
@@ -121,7 +124,7 @@ export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions 
 
             processedFiles.push(mediaFile)
           } catch (error) {
-            console.error(`Failed to process file ${filePath}:`, error)
+            logger.errorSync("Failed to process file", { filePath, error })
 
             // Даже при ошибке добавляем файл с базовой информацией
             const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || "Unknown"

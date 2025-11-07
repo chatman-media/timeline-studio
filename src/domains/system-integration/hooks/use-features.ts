@@ -3,8 +3,11 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
+
+const logger = createLogger("UseFeatures")
 
 export function useFeatures() {
   const [orchestrator] = useState(() => getSystemIntegrationOrchestrator())
@@ -40,7 +43,7 @@ export function useFeatures() {
   useEffect(() => {
     // Проверяем, разрешены ли обновления фич
     if (!isServiceEnabled("FEATURES")) {
-      console.log("[useFeatures] Features updates are disabled by service config")
+      logger.info("[useFeatures] Features updates are disabled by service config")
       // Устанавливаем дефолтные значения и выходим
       const defaultFeatures: Record<string, boolean> = {}
       knownFeatures.forEach((feature) => {
@@ -50,7 +53,7 @@ export function useFeatures() {
       return
     }
 
-    console.log("[useFeatures] Setting up features update interval")
+    logger.info("[useFeatures] Setting up features update interval")
     updateFeatures()
 
     let updateCount = 0
@@ -63,17 +66,17 @@ export function useFeatures() {
 
       const duration = performance.now() - startTime
       if (duration > 10) {
-        console.warn(`[useFeatures] Features update #${updateCount} took ${duration.toFixed(2)}ms`)
+        logger.warn(`[useFeatures] Features update #${updateCount} took ${duration.toFixed(2)}ms`)
       }
 
       // Логируем каждые 60 обновлений (раз в минуту)
       if (updateCount % 60 === 0) {
-        console.log(`[useFeatures] Processed ${updateCount} feature updates`)
+        logger.info("[useFeatures] Processed", { updateCount })
       }
     }, 1000)
 
     return () => {
-      console.log(`[useFeatures] Cleaning up features interval (processed ${updateCount} updates)`)
+      logger.info("[useFeatures] Cleaning up features interval (processed", { updateCount })
       clearInterval(interval)
     }
   }, [updateFeatures, knownFeatures])

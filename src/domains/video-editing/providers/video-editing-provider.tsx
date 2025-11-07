@@ -5,7 +5,10 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { getVideoEditingOrchestrator, type VideoEditingOrchestrator } from "../services/video-editing-orchestrator"
+
+const logger = createLogger("VideoEditingProvider")
 
 interface VideoEditingContextValue {
   orchestrator: VideoEditingOrchestrator
@@ -21,10 +24,10 @@ export function VideoEditingProvider({ children }: VideoEditingProviderProps) {
   const [orchestrator] = useState(() => getVideoEditingOrchestrator())
 
   useEffect(() => {
-    console.log("[Video Editing Provider] Initialized")
+    logger.info("[Video Editing Provider] Initialized")
 
     return () => {
-      console.log("[Video Editing Provider] Cleanup")
+      logger.info("[Video Editing Provider] Cleanup")
     }
   }, [])
 

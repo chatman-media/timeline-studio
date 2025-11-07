@@ -4,8 +4,11 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
+import { createLogger } from "@/lib/tauri-logger"
 import type { RenderProgress } from "../types/render"
 import { RenderStatus } from "../types/render"
+
+const logger = createLogger({ module: "VideoCompilerService" })
 
 /**
  * Запуск рендеринга проекта
@@ -19,7 +22,7 @@ export async function renderProject(project: ProjectSchema, outputPath: string):
 
     return jobId
   } catch (error) {
-    console.error("Failed to start video compilation:", error)
+    logger.error("Failed to start video compilation:", error)
     throw error
   }
 }
@@ -44,7 +47,7 @@ export async function trackRenderProgress(
         }
       }
     } catch (error) {
-      console.error("Failed to get render progress:", error)
+      logger.error("Failed to get render progress:", error)
     }
   }
 
@@ -69,7 +72,7 @@ export async function generatePreview(
 
     return new Uint8Array(jpegData)
   } catch (error) {
-    console.error("Failed to generate preview:", error)
+    logger.error("Failed to generate preview:", error)
     throw error
   }
 }
@@ -81,7 +84,7 @@ export async function cancelRender(jobId: string): Promise<boolean> {
   try {
     return await invoke<boolean>("cancel_render", { jobId })
   } catch (error) {
-    console.error("Failed to cancel render:", error)
+    logger.error("Failed to cancel render:", error)
     return false
   }
 }
@@ -93,7 +96,7 @@ export async function getActiveJobs() {
   try {
     return await invoke("get_active_jobs")
   } catch (error) {
-    console.error("Failed to get active jobs:", error)
+    logger.error("Failed to get active jobs:", error)
     throw error
   }
 }
@@ -105,7 +108,7 @@ export async function getRenderJob(jobId: string) {
   try {
     return await invoke("get_render_job", { jobId })
   } catch (error) {
-    console.error("Failed to get render job:", error)
+    logger.error("Failed to get render job:", error)
     return null
   }
 }
@@ -148,7 +151,7 @@ export async function prerenderSegment(request: PrerenderRequest): Promise<Prere
 
     return result
   } catch (error) {
-    console.error("Failed to prerender segment:", error)
+    logger.error("Failed to prerender segment:", error)
     throw error
   }
 }
@@ -217,7 +220,7 @@ export async function checkGpuCapabilities() {
   try {
     return await invoke("get_gpu_capabilities_full")
   } catch (error) {
-    console.error("Failed to get GPU capabilities:", error)
+    logger.error("Failed to get GPU capabilities:", error)
     throw error
   }
 }
@@ -229,7 +232,7 @@ export async function updateCompilerSettings(settings: any) {
   try {
     return await invoke("update_compiler_settings_advanced", { settings })
   } catch (error) {
-    console.error("Failed to update compiler settings:", error)
+    logger.error("Failed to update compiler settings:", error)
     throw error
   }
 }
@@ -241,7 +244,7 @@ export async function checkGpuEncoderAvailability(encoder: string) {
   try {
     return await invoke("check_gpu_encoder_availability", { encoder })
   } catch (error) {
-    console.error("Failed to check GPU encoder availability:", error)
+    logger.error("Failed to check GPU encoder availability:", error)
     throw error
   }
 }
@@ -253,7 +256,7 @@ export async function clearMediaMetadataCache() {
   try {
     return await invoke("clear_media_metadata_cache")
   } catch (error) {
-    console.error("Failed to clear media metadata cache:", error)
+    logger.error("Failed to clear media metadata cache:", error)
     throw error
   }
 }

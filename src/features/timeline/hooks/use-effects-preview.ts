@@ -4,8 +4,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useEffects } from "@/features/effects/hooks/use-effects"
+import { createLogger } from "@/lib/tauri-logger"
 import { type EffectsPlayerConfig, getEffectsPlayerIntegration } from "../services/effects-player-integration"
 import type { TimelineClip } from "../types"
+
+const logger = createLogger({ module: "UseEffectsPreview" })
 
 export interface UseEffectsPreviewOptions extends EffectsPlayerConfig {
   enabled?: boolean
@@ -65,7 +68,7 @@ export function useEffectsPreview(options: UseEffectsPreviewOptions = {}): UseEf
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to initialize effects")
-        console.error("Effects preview initialization error:", err)
+        logger.error("Effects preview initialization error:", err)
       }
     }
 
@@ -148,7 +151,7 @@ export function useEffectsPreview(options: UseEffectsPreviewOptions = {}): UseEf
         // Обновляем статистику кеша
         setCacheStats(integrationRef.current.getCacheStats())
       } catch (err) {
-        console.warn("Ошибка предзагрузки кадров:", err)
+        logger.warn("Ошибка предзагрузки кадров:", err)
       }
     },
     [isInitialized, enabled],

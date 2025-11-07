@@ -75,7 +75,7 @@ export class FiltersPreviewService {
     try {
       // Skip initialization during SSR
       if (typeof document === "undefined") {
-        console.warn("Filters WebGL initialization skipped (SSR)")
+        logger.warn("Filters WebGL initialization skipped (SSR)")
         return
       }
 
@@ -89,9 +89,9 @@ export class FiltersPreviewService {
         throw new Error("WebGL2 not supported")
       }
 
-      console.log("Filters preview WebGL2 initialized")
+      logger.info("Filters preview WebGL2 initialized")
     } catch (error) {
-      console.error("Filters WebGL initialization failed:", error)
+      logger.error("Filters WebGL initialization failed:", error)
     }
   }
 
@@ -450,7 +450,7 @@ export class FiltersPreviewService {
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error(`${name} program linking error:`, gl.getProgramInfoLog(program))
+      logger.error(`${name} program linking error:`, gl.getProgramInfoLog(program))
       gl.deleteProgram(program)
       return
     }
@@ -471,7 +471,7 @@ export class FiltersPreviewService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
+      logger.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
       this.gl.deleteShader(shader)
       return null
     }
@@ -628,7 +628,7 @@ export class FiltersPreviewService {
 
       return true
     } catch (error) {
-      console.error("Color grading failed:", error)
+      logger.error("Color grading failed:", error)
       return false
     }
   }
@@ -655,7 +655,7 @@ export class FiltersPreviewService {
       })
       return true
     } catch (error) {
-      console.error("Custom LUT loading failed:", error)
+      logger.error("Custom LUT loading failed:", error)
       return false
     }
   }

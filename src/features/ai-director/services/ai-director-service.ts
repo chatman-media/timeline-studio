@@ -5,6 +5,10 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import type {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "AiDirectorService" })
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
   ConfigValidationResult,
@@ -186,7 +190,7 @@ export class AIDirectorService {
    */
   async updateConfiguration(config: Partial<AIDirectorConfig>): Promise<void> {
     // TODO: Implement when backend command is available
-    console.log("Updating AI Director config:", config)
+    logger.info("Updating AI Director config:", config)
   }
 
   /**
@@ -194,7 +198,7 @@ export class AIDirectorService {
    */
   async resetConfiguration(): Promise<void> {
     // TODO: Implement when backend command is available
-    console.log("Resetting AI Director config to defaults")
+    logger.info("Resetting AI Director config to defaults")
   }
 
   // === System Status & Monitoring ===
@@ -269,7 +273,7 @@ export class AIDirectorService {
       await this.getCapabilities()
       return true
     } catch (error) {
-      console.error("AI Director not available:", error)
+      logger.error("AI Director not available:", error)
       return false
     }
   }

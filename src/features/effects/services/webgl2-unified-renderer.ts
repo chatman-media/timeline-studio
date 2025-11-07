@@ -3,8 +3,11 @@
  * Единый рендерер эффектов на базе новой WebGL2 библиотеки
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect, BaseEffect, EffectProcessingType, WebGLProcessor } from "../types/unified-effects"
 import { WebGL2EffectProcessor } from "./webgl2-effect-processor"
+
+const logger = createLogger({ module: "Webgl2UnifiedRenderer" })
 
 export interface RenderContext {
   // Источник
@@ -134,7 +137,7 @@ export class WebGL2UnifiedRenderer {
         const success = await this.processor.compileEffect(appliedEffect.effectId, convertedProcessor)
 
         if (!success) {
-          console.warn(`Failed to compile shader for effect ${appliedEffect.effectId}`)
+          logger.warn(`Failed to compile shader for effect ${appliedEffect.effectId}`)
         }
       }
 
@@ -174,7 +177,7 @@ export class WebGL2UnifiedRenderer {
       }
     } catch (error) {
       // Fallback на CSS фильтры при ошибке
-      console.warn("WebGL2 rendering failed, falling back to CSS:", error)
+      logger.warn("WebGL2 rendering failed, falling back to CSS:", error)
       return await this.renderCSSEffects(appliedEffects, baseEffects, context)
     }
   }

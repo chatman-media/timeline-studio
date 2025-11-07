@@ -3,6 +3,10 @@ import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import type { ProjectFile } from "@/features/project-settings/types/project"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "ProjectFileService" })
+
 /**
  * Сервис для работы с файлами проектов (.tls)
  * Обеспечивает сохранение и загрузку проектов с медиабиблиотекой
@@ -27,7 +31,7 @@ export async function loadProject(projectPath: string): Promise<ProjectFile> {
 
     return projectData as ProjectFile
   } catch (error) {
-    console.error(`Error loading project from ${projectPath}:`, error)
+    logger.error(`Error loading project from ${projectPath}:`, error)
 
     // Если это уже наша ошибка валидации, пробрасываем её как есть
     if (
@@ -63,9 +67,9 @@ export async function saveProject(projectPath: string, projectData: ProjectFile)
     const content = JSON.stringify(updatedProject, null, 2)
     await writeTextFile(projectPath, content)
 
-    console.log(`Project saved to ${projectPath}`)
+    logger.info(`Project saved to ${projectPath}`)
   } catch (error) {
-    console.error(`Error saving project to ${projectPath}:`, error)
+    logger.error(`Error saving project to ${projectPath}:`, error)
     throw new Error(`Failed to save project: ${String(error)}`)
   }
 }

@@ -4,11 +4,13 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { useTimeline } from "../hooks/use-timeline"
 import { useTracks } from "../hooks/use-tracks"
 import type { TimelineTrack, TrackType } from "../types/timeline"
+
+const logger = createLogger({ module: "AudioMixer" })
 
 interface AudioMixerProps {
   className?: string
@@ -116,7 +118,7 @@ export function AudioMixer({ className }: AudioMixerProps) {
             defaultValue={[1]}
             onValueChange={(value) => {
               // TODO: Implement master volume
-              console.log("Master volume:", value[0])
+              logger.info("Master volume:", value[0])
             }}
           />
         </div>

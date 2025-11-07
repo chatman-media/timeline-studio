@@ -7,6 +7,11 @@
 
 import { assign, setup } from "xstate"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("TimelineMachine")
+
+
 // Локальный тип для буфера обмена
 interface ClipboardData {
   clips: any[]
@@ -131,7 +136,7 @@ export const timelineMachine = setup({
     syncPlaybackState: assign({
       isPlaying: ({ event }) => {
         if (event.type !== "SYNC_PLAYBACK_STATE") return false
-        console.log(`[Timeline Domain] Syncing playback state: ${event.isPlaying}`)
+        logger.info("[Timeline Domain] Syncing playback state:", { event.isPlaying })
         return event.isPlaying
       },
       currentTime: ({ event }) => {
@@ -150,7 +155,7 @@ export const timelineMachine = setup({
     setPlaybackRate: assign({
       playbackRate: ({ event }) => {
         if (event.type !== "SET_PLAYBACK_RATE") return 1
-        console.log(`[Timeline Domain] Setting playback rate: ${event.rate}`)
+        logger.info("[Timeline Domain] Setting playback rate:", { event.rate })
         return event.rate
       },
     }),
@@ -159,7 +164,7 @@ export const timelineMachine = setup({
     setTimeScale: assign({
       timeScale: ({ event }) => {
         if (event.type !== "SET_TIME_SCALE") return 100
-        console.log(`[Timeline Domain] Setting time scale: ${event.scale}`)
+        logger.info("[Timeline Domain] Setting time scale:", { event.scale })
         return Math.max(10, Math.min(1000, event.scale))
       },
     }),
@@ -174,7 +179,7 @@ export const timelineMachine = setup({
     setEditMode: assign({
       editMode: ({ event }) => {
         if (event.type !== "SET_EDIT_MODE") return "select"
-        console.log(`[Timeline Domain] Setting edit mode: ${event.mode}`)
+        logger.info("[Timeline Domain] Setting edit mode:", { event.mode })
         return event.mode
       },
     }),
@@ -182,7 +187,7 @@ export const timelineMachine = setup({
     setSnapMode: assign({
       snapMode: ({ event }) => {
         if (event.type !== "SET_SNAP_MODE") return "clips"
-        console.log(`[Timeline Domain] Setting snap mode: ${event.mode}`)
+        logger.info("[Timeline Domain] Setting snap mode:", { event.mode })
         return event.mode
       },
     }),
@@ -199,7 +204,7 @@ export const timelineMachine = setup({
           return [...context.selectedClipIds, event.clipId]
         }
 
-        console.log(`[Timeline Domain] Selecting clip: ${event.clipId}`)
+        logger.info("[Timeline Domain] Selecting clip:", { event.clipId })
         return [event.clipId]
       },
     }),
@@ -215,7 +220,7 @@ export const timelineMachine = setup({
           return [...context.selectedTrackIds, event.trackId]
         }
 
-        console.log(`[Timeline Domain] Selecting track: ${event.trackId}`)
+        logger.info("[Timeline Domain] Selecting track:", { event.trackId })
         return [event.trackId]
       },
     }),
@@ -231,7 +236,7 @@ export const timelineMachine = setup({
           return [...context.selectedSectionIds, event.sectionId]
         }
 
-        console.log(`[Timeline Domain] Selecting section: ${event.sectionId}`)
+        logger.info("[Timeline Domain] Selecting section:", { event.sectionId })
         return [event.sectionId]
       },
     }),
@@ -247,7 +252,7 @@ export const timelineMachine = setup({
       isDragging: () => true,
       draggedClipId: ({ event }) => {
         if (event.type !== "START_DRAG_CLIP") return null
-        console.log(`[Timeline Domain] Starting drag clip: ${event.clipId}`)
+        logger.info("[Timeline Domain] Starting drag clip:", { event.clipId })
         return event.clipId
       },
     }),
@@ -256,7 +261,7 @@ export const timelineMachine = setup({
       isDragging: () => true,
       draggedTrackId: ({ event }) => {
         if (event.type !== "START_DRAG_TRACK") return null
-        console.log(`[Timeline Domain] Starting drag track: ${event.trackId}`)
+        logger.info("[Timeline Domain] Starting drag track:", { event.trackId })
         return event.trackId
       },
     }),
@@ -265,7 +270,7 @@ export const timelineMachine = setup({
       isDragging: () => true,
       draggedResourceType: ({ event }) => {
         if (event.type !== "START_DRAG_RESOURCE") return null
-        console.log(`[Timeline Domain] Starting drag resource: ${event.resourceType}`)
+        logger.info("[Timeline Domain] Starting drag resource:", { event.resourceType })
         return event.resourceType
       },
       draggedResourceId: ({ event }) => {
@@ -286,7 +291,7 @@ export const timelineMachine = setup({
     copyToClipboard: assign({
       clipboard: ({ event }) => {
         if (event.type !== "COPY_TO_CLIPBOARD") return null
-        console.log("[Timeline Domain] Copying to clipboard")
+        logger.info("[Timeline Domain] Copying to clipboard")
         return event.data
       },
     }),
@@ -299,7 +304,7 @@ export const timelineMachine = setup({
     toggleRecording: assign({
       isRecording: ({ context }) => {
         const newState = !context.isRecording
-        console.log(`[Timeline Domain] Recording: ${newState}`)
+        logger.info("[Timeline Domain] Recording:", { newState })
         return newState
       },
     }),
@@ -320,7 +325,7 @@ export const timelineMachine = setup({
     setUIError: assign({
       uiError: ({ event }) => {
         if (event.type !== "SET_UI_ERROR") return null
-        console.error(`[Timeline Domain] UI Error: ${event.error}`)
+        logger.error("Error occurred", { error: `[Timeline Domain] UI Error: ${event.error}` })
         return event.error
       },
     }),

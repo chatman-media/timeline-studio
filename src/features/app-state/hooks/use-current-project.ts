@@ -1,4 +1,7 @@
+import { createLogger } from "@/lib/tauri-logger"
 import { useApp } from "../services/app-provider"
+
+const logger = createLogger({ module: "UseCurrentProject" })
 
 /**
  * Хук для доступа к текущему проекту
@@ -71,7 +74,7 @@ export function useCurrentProject() {
   const setProjectDirty = (dirty: boolean) => {
     // Эта функция больше не нужна, так как Tauri backend
     // автоматически отслеживает изменения проекта
-    console.log("Project dirty state:", dirty)
+    logger.info("Project dirty state:", dirty)
   }
 
   // Проверка, является ли проект временным

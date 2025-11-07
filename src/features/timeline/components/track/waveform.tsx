@@ -3,6 +3,10 @@ import { memo, useEffect, useRef, useState } from "react"
 
 import WaveSurfer from "wavesurfer.js"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "Waveform" })
+
 interface WaveformProps {
   audioUrl: string
   className?: string
@@ -55,16 +59,16 @@ function Waveform({ audioUrl, className }: WaveformProps) {
           "audio/aac",
         ]
         if (!supportedFormats.some((format) => blob.type.includes(format.split("/")[1]))) {
-          console.warn(`Potentially unsupported audio format: ${blob.type}`)
+          logger.warn(`Potentially unsupported audio format: ${blob.type}`)
         }
 
         setAudioBlob(blob)
       } catch (error: unknown) {
         if (error instanceof Error && error.name === "AbortError") {
-          console.log("Fetch aborted")
+          logger.info("Fetch aborted")
           return
         }
-        console.error("Error fetching audio:", error)
+        logger.error("Error fetching audio:", error)
       }
     }
 
@@ -110,18 +114,18 @@ function Waveform({ audioUrl, className }: WaveformProps) {
       })
 
       wavesurferRef.current.on("ready", () => {
-        console.log("WaveSurfer is ready")
+        logger.info("WaveSurfer is ready")
       })
 
       wavesurferRef.current.on("error", (err) => {
-        console.error("WaveSurfer error:", err)
+        logger.error("WaveSurfer error:", err)
       })
 
       wavesurferRef.current.on("loading", (percent) => {
-        console.log("Loading:", percent)
+        logger.info("Loading:", percent)
       })
     } catch (error: unknown) {
-      console.error("Error creating WaveSurfer:", error)
+      logger.error("Error creating WaveSurfer:", error)
     }
 
     return () => {

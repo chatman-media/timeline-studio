@@ -7,10 +7,13 @@ import type { VideoFilter } from "@/features/filters/types/filters"
 import { useResources } from "@/features/resources"
 import type { FilterResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
+import { createLogger } from "@/lib/tauri-logger"
 import { convertVideoSrc } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"
 import { FavoriteButton } from "../../browser/components/layout/favorite-button"
+
+const logger = createLogger("FilterPreview")
 
 /**
  * Интерфейс пропсов для компонента FilterPreview
@@ -48,7 +51,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
   // Обработчик применения фильтра
   const handleApplyFilter = useCallback(
     (_resource: TimelineResource, _type: string) => {
-      console.log("[FilterPreview] Applying filter:", filter.name)
+      logger.info("Applying filter", { filterName: filter.name, filterId: filter.id })
       applyFilter({
         id: filter.id,
         name: filter.name,
@@ -150,7 +153,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
       // Запускаем воспроизведение с обработкой ошибок autoplay
       videoElement.play().catch((error) => {
         // Игнорируем ошибки autoplay, которые блокируются браузером
-        console.debug("[FilterPreview] Autoplay blocked:", error.message)
+        logger.debug("Autoplay blocked", { error: error.message })
       })
 
       // Устанавливаем таймер для повторного воспроизведения через 2 секунды

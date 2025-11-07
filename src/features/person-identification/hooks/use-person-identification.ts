@@ -5,8 +5,11 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines"
+import { createLogger } from "@/lib/tauri-logger"
 import { PersonDatabaseService } from "../services/person-database-service"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
+
+const logger = createLogger({ module: "UsePersonIdentification" })
 
 interface UsePersonIdentificationOptions {
   autoSave?: boolean
@@ -39,7 +42,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
       setPersons(allPersons)
     } catch (err) {
       setError("Ошибка загрузки персон")
-      console.error("Failed to load persons:", err)
+      logger.error("Failed to load persons:", err)
     } finally {
       setIsLoading(false)
     }
@@ -70,7 +73,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return newPerson
       } catch (err) {
         setError("Ошибка добавления персоны")
-        console.error("Failed to add person:", err)
+        logger.error("Failed to add person:", err)
         throw err
       }
     },
@@ -89,7 +92,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         }
       } catch (err) {
         setError("Ошибка обновления персоны")
-        console.error("Failed to update person:", err)
+        logger.error("Failed to update person:", err)
         throw err
       }
     },
@@ -108,7 +111,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         }
       } catch (err) {
         setError("Ошибка удаления персоны")
-        console.error("Failed to delete person:", err)
+        logger.error("Failed to delete person:", err)
         throw err
       }
     },
@@ -123,7 +126,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return await personDatabase.searchPersons(query, options)
       } catch (err) {
         setError("Ошибка поиска персон")
-        console.error("Failed to search persons:", err)
+        logger.error("Failed to search persons:", err)
         throw err
       }
     },
@@ -139,7 +142,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return faces
       } catch (err) {
         setError("Ошибка обнаружения лиц")
-        console.error("Failed to detect faces:", err)
+        logger.error("Failed to detect faces:", err)
         throw err
       }
     },
@@ -154,7 +157,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
 
         // Проверяем наличие embedding
         if (!detectedFace.embedding || detectedFace.embedding.length === 0) {
-          console.warn("Нет embedding для лица, идентификация невозможна")
+          logger.warn("Нет embedding для лица, идентификация невозможна")
           return null
         }
 
@@ -178,7 +181,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return null
       } catch (err) {
         setError("Ошибка идентификации персоны")
-        console.error("Failed to identify person:", err)
+        logger.error("Failed to identify person:", err)
         throw err
       }
     },
@@ -232,7 +235,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return newPerson
       } catch (err) {
         setError("Ошибка создания персоны")
-        console.error("Failed to create person from face:", err)
+        logger.error("Failed to create person from face:", err)
         throw err
       }
     },
@@ -283,7 +286,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         }
       } catch (err) {
         setError("Ошибка добавления лица к персоне")
-        console.error("Failed to add face to person:", err)
+        logger.error("Failed to add face to person:", err)
         throw err
       }
     },
@@ -311,7 +314,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return appearances
       } catch (err) {
         setError("Ошибка анализа видео")
-        console.error("Failed to analyze video:", err)
+        logger.error("Failed to analyze video:", err)
         throw err
       }
     },
@@ -335,7 +338,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
         return newPersons
       } catch (err) {
         setError("Ошибка кластеризации лиц")
-        console.error("Failed to cluster faces:", err)
+        logger.error("Failed to cluster faces:", err)
         throw err
       }
     },

@@ -13,7 +13,10 @@ import { MediaInfo } from "@/domains/media-management"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { UnifiedDashboard } from "@/features/ai-content-intelligence"
 import { useTimeline } from "@/features/timeline"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
+
+const logger = createLogger({ module: "EnhancedAiPanel" })
 
 interface EnhancedAIPanelProps {
   className?: string
@@ -68,24 +71,24 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
   }, [clips])
 
   const handleFileUpload = useCallback((files: File[]) => {
-    console.log("AI Panel: File upload requested", files)
+    logger.info("AI Panel: File upload requested", files)
     // TODO: Реализовать загрузку файлов в таймлайн
   }, [])
 
   const handleAnalysisComplete = useCallback((analysis: any) => {
-    console.log("AI Panel: Analysis completed", analysis)
+    logger.info("AI Panel: Analysis completed", analysis)
     setError(null)
     // TODO: Применить AI рекомендации к таймлайну
   }, [])
 
   const handleProcessingComplete = useCallback((content: any) => {
-    console.log("AI Panel: Processing completed", content)
+    logger.info("AI Panel: Processing completed", content)
     setIsProcessing(false)
     // TODO: Применить обработанный контент к таймлайну
   }, [])
 
   const handleError = useCallback((error: Error) => {
-    console.error("AI Panel: Error occurred", error)
+    logger.error("AI Panel: Error occurred", error)
     setError(error)
     setIsProcessing(false)
   }, [])
@@ -155,9 +158,9 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
           timestamp: new Date().toISOString(),
         })
 
-        console.log(`AI Panel: ${analysis.name} completed`, result)
+        logger.info(`AI Panel: ${analysis.name} completed`, result)
       } catch (error) {
-        console.error(`AI Panel: ${analysis.name} failed`, error)
+        logger.error(`AI Panel: ${analysis.name} failed`, error)
         setError(error instanceof Error ? error : new Error("Ошибка анализа"))
       } finally {
         setIsProcessing(false)

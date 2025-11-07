@@ -11,6 +11,11 @@ import type {
   MomentScore,
   VideoAnalysis,
 } from "@/features/montage-planner/types/index"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ContentAnalyzer")
+
 import {
   CameraMovement,
   EmotionalTone,
@@ -47,7 +52,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeVideoWithAI(file)
       }
     } catch (error) {
-      console.warn("[ContentAnalyzer] AI analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI analysis failed, using fallback:", { data: error })
     }
 
     // Fallback to simulated analysis
@@ -101,7 +106,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeAudioWithAI(file)
       }
     } catch (error) {
-      console.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", { data: error })
     }
 
     // Fallback to simulated analysis

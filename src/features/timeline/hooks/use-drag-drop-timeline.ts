@@ -9,6 +9,7 @@
 
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core"
 import { useCallback, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { handleInterModuleDrag, isInterModuleDrag } from "../services/drag-drop-bridge"
 import type { TrackType } from "../types"
 import type { DragData, DragState } from "../types/drag-drop"
@@ -22,6 +23,8 @@ import {
 } from "../utils/drag-calculations"
 import { useTimeline } from "./use-timeline"
 import { useTimelineActions } from "./use-timeline-actions"
+
+const logger = createLogger({ module: "UseDragDropTimeline" })
 
 export interface UseDragDropTimelineReturn {
   dragState: DragState
@@ -66,11 +69,11 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           draggedResource: resource,
         })
 
-        console.log(`[DragDrop] Started dragging ${resourceType}:`, resource.name)
+        logger.info(`[DragDrop] Started dragging ${resourceType}:`, resource.name)
 
         // Логируем начало операции drag в backend (не блокируя)
         // TODO: Реализовать аналитику drag&drop
-        console.log(`[Analytics] Drag start: ${resourceType} - ${resource.name}`)
+        logger.info(`[Analytics] Drag start: ${resourceType} - ${resource.name}`)
 
         return
       }
@@ -89,14 +92,14 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           draggedCount,
         })
 
-        console.log(
+        logger.info(
           "[DragDrop] Drag started:",
           dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
         )
 
         // Логируем начало операции в backend
         // TODO: Реализовать аналитику drag&drop
-        console.log(`[Analytics] Drag start: ${dragData.mediaFile.name}, files: ${draggedCount}`)
+        logger.info(`[Analytics] Drag start: ${dragData.mediaFile.name}, files: ${draggedCount}`)
       }
     },
     // [backendSync], // TODO: Восстановить после реализации аналитики
@@ -234,11 +237,11 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           { dropPosition: dragState.dropPosition ? { startTime: dragState.dropPosition.startTime } : undefined },
         )
         if (bridgeHandled) {
-          console.log("[DragDrop] Inter-module drag handled by bridge")
+          logger.info("[DragDrop] Inter-module drag handled by bridge")
 
           // Логируем успешный drop в backend
           // TODO: Реализовать аналитику drag&drop
-          console.log("[Analytics] Drop complete: inter-module to timeline")
+          logger.info("[Analytics] Drop complete: inter-module to timeline")
 
           // Сбрасываем состояние
           setDragState({
@@ -267,7 +270,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             const trackType = getTrackTypeForMediaFile(dragData.mediaFile)
             const trackName = `${trackType.charAt(0).toUpperCase() + trackType.slice(1)} Track`
 
-            console.log("[DragDrop] Creating new track:", trackName, "for media:", dragData.mediaFile.name)
+            logger.info("[DragDrop] Creating new track:", trackName, "for media:", dragData.mediaFile.name)
 
             // Create new track and add media to it
             void addTrack(trackType as any, trackName)
@@ -287,7 +290,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             }
           } else if (dropData.type === "transition-drop" && dragState.dropPosition?.type === "transition") {
             // Handle transition drop
-            console.log(
+            logger.info(
               "[DragDrop] Dropping transition between clips:",
               dragState.dropPosition.leftClipId,
               dragState.dropPosition.rightClipId,
@@ -303,7 +306,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             }
           } else if (dropData.type === "clip-drop" && dragState.draggedResourceType) {
             // Handle resource drop on clip
-            console.log("[DragDrop] Dropping", dragState.draggedResourceType, "on clip:", dropData.clipId)
+            logger.info("[DragDrop] Dropping", dragState.draggedResourceType, "on clip:", dropData.clipId)
 
             // The actual resource application is handled by the ClipDropZone component
             // Resources are applied through TimelineEffectsProvider
@@ -318,7 +321,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             const isValid = canDropOnTrack(dragData.mediaFile, dropData.trackType)
 
             if (isValid) {
-              console.log(
+              logger.info(
                 "[DragDrop] Dropping media:",
                 dragData.mediaFile.name,
                 "on track:",
@@ -347,10 +350,10 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           // Логируем результат операции drop в backend
           if (dropSuccess) {
             // TODO: Реализовать аналитику drag&drop
-            console.log("[Analytics] Drop complete:", dropDetails)
+            logger.info("[Analytics] Drop complete:", dropDetails)
 
             // TODO: Реализовать историю операций для undo/redo
-            console.log("[History] Record drag&drop operation:", dropDetails)
+            logger.info("[History] Record drag&drop operation:", dropDetails)
           }
         }
       }
@@ -365,7 +368,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
         snapActive: false,
       })
 
-      console.log("[DragDrop] Drag ended")
+      logger.info("[DragDrop] Drag ended")
     },
     [dragState.draggedItem, dragState.dropPosition, addSingleMediaToTimeline, addTrack],
   )

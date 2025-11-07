@@ -3,6 +3,9 @@ import { open } from "@tauri-apps/plugin-dialog"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaRestoration")
 
 import {
   convertFromSavedMediaFile,
@@ -69,7 +72,7 @@ export async function restoreProjectMedia(
   const relocatedFiles: Array<{ original: SavedMediaFile; newPath: string }> = []
   const corruptedFiles: SavedMediaFile[] = []
 
-  console.log(`Начинаем восстановление ${allFiles.length} файлов для проекта`)
+  logger.infoSync("Starting project media restoration", { totalFiles: allFiles.length })
 
   // Восстанавливаем файлы по одному
   for (const savedFile of allFiles) {
@@ -114,7 +117,7 @@ export async function restoreProjectMedia(
           break
       }
     } catch (error) {
-      console.error(`Ошибка при восстановлении файла ${savedFile.name}:`, error)
+      logger.errorSync("Failed to restore file", { fileName: savedFile.name, error })
       missingFiles.push(savedFile)
     }
   }
@@ -127,7 +130,7 @@ export async function restoreProjectMedia(
     corrupted: corruptedFiles.length,
   }
 
-  console.log("Результат восстановления:", stats)
+  logger.infoSync("Media restoration completed", { stats })
 
   return {
     restoredMedia,
@@ -193,7 +196,7 @@ export async function restoreFile(savedFile: SavedMediaFile, projectDir: string)
         }
       }
     } catch (error) {
-      console.warn("Ошибка при проверке относительного пути:", error)
+      logger.warnSync("Failed to check relative path", { error })
     }
   }
 
@@ -262,13 +265,13 @@ export async function promptUserToFindFile(savedFile: SavedMediaFile): Promise<s
         // Минимальная уверенность 30%
         return selectedPath
       }
-      console.warn("Выбранный файл не соответствует ожидаемому:", validation.issues)
+      logger.warnSync("Selected file does not match expected", { issues: validation.issues })
       return null
     }
 
     return null
   } catch (error) {
-    console.error("Ошибка при выборе файла пользователем:", error)
+    logger.errorSync("Failed to prompt user for file", { error })
     return null
   }
 }

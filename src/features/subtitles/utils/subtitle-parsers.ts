@@ -2,7 +2,10 @@
  * Парсеры для различных форматов субтитров
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
+
+const logger = createLogger({ module: "SubtitleParsers" })
 
 /**
  * Конвертирует время из формата SRT (00:00:00,000) в секунды
@@ -122,7 +125,7 @@ export function parseSRT(content: string): Omit<SubtitleClip, "id" | "trackId">[
       }
     } catch (e) {
       // Пропускаем неверные блоки
-      // console.warn(`Skipping invalid SRT block: ${String(e)}`, { startTimeStr: startTimeStr?.trim(), endTimeStr: endTimeStr?.trim() })
+      // logger.warn(`Skipping invalid SRT block: ${String(e)}`, { startTimeStr: startTimeStr?.trim(), endTimeStr: endTimeStr?.trim() })
     }
   }
 
@@ -197,7 +200,7 @@ export function parseVTT(content: string): Omit<SubtitleClip, "id" | "trackId">[
       }
     } catch (e) {
       // Пропускаем неверные блоки
-      console.warn(`Skipping invalid VTT block: ${String(e)}`)
+      logger.warn(`Skipping invalid VTT block: ${String(e)}`)
     }
   }
 

@@ -4,8 +4,10 @@
  */
 
 import { EventEmitter } from "events"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { MulticamCommand } from "../types/multicam"
+
+const logger = createLogger({ module: "MulticamManager" })
 
 export interface MulticamManagerEvents {
   "camera-switched": (angleIndex: number) => void
@@ -41,7 +43,7 @@ class MulticamManager extends EventEmitter {
 
   // Переключение на конкретную камеру
   switchToCamera(angleIndex: number) {
-    console.log(`[MulticamManager] Switching to camera ${angleIndex + 1}`)
+    logger.info(`[MulticamManager] Switching to camera ${angleIndex + 1}`)
     this.currentAngleIndex = angleIndex
     this.emit("camera-switched", angleIndex)
   }
@@ -74,7 +76,7 @@ class MulticamManager extends EventEmitter {
         this.emit("angle-removed", command.angleIndex)
         break
       default:
-        console.warn(`[MulticamManager] Unknown command: ${(command as any).type}`)
+        logger.warn(`[MulticamManager] Unknown command: ${(command as any).type}`)
     }
   }
 

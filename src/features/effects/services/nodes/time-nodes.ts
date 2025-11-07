@@ -1,4 +1,7 @@
+import { createLogger } from "@/lib/tauri-logger"
 import type { NodeProcessor } from "../../types/node-compositing"
+
+const logger = createLogger({ module: "TimeNodes" })
 
 /**
  * Time and Animation Nodes
@@ -288,7 +291,7 @@ export const frameHoldProcessor: NodeProcessor = {
         targetFrame = context.frameNumber
         break
       default:
-        console.warn(`Unknown hold type: ${holdType}`)
+        logger.warn(`Unknown hold type: ${holdType}`)
         targetFrame = holdFrame
     }
 
@@ -513,7 +516,7 @@ export const timeExpressionProcessor: NodeProcessor = {
         break
       }
       default:
-        console.warn(`Unknown expression type: ${expression}`)
+        logger.warn(`Unknown expression type: ${expression}`)
         value = time * frequency
     }
 

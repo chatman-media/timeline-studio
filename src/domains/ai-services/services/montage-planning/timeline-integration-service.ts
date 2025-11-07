@@ -20,6 +20,10 @@ import {
   type TrackType,
 } from "../../../../features/timeline/types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("TimelineIntegrationService")
+
 export interface TimelineIntegrationOptions {
   // Создать новую секцию для плана
   createNewSection?: boolean
@@ -148,7 +152,7 @@ function createTimelineClips(
   return montageClips
     .map((montageClip, index) => {
       if (!montageClip.fragment || !montageClip.fragment.sourceFile) {
-        console.warn(`Fragment or source file not found for clip ${montageClip.fragmentId}`)
+        logger.warn(`Fragment or source file not found for clip ${montageClip.fragmentId}`)
         return null
       }
 

@@ -6,7 +6,11 @@
  */
 
 import { assign, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "../types"
+
+const logger = createLogger("PlayerMachine")
+
 
 export interface PlayerContext {
   video: MediaFile | null
@@ -117,7 +121,7 @@ export const playerMachine = setup({
     loadVideo: assign({
       video: ({ event }) => {
         if (event.type !== "LOAD_VIDEO") return null
-        console.log(`[Player Domain] Loading video: ${event.video.name}`)
+        logger.info("[Player Domain] Loading video:", { event.video.name })
         return event.video
       },
       isVideoLoading: () => true,
@@ -131,7 +135,7 @@ export const playerMachine = setup({
       isVideoReady: () => true,
       duration: ({ event }) => {
         if (event.type !== "VIDEO_LOADED") return 0
-        console.log(`[Player Domain] Video loaded, duration: ${event.duration}s`)
+        logger.info("[Player Domain] Video loaded, duration:", { event.duration })
         return event.duration
       },
     }),
@@ -143,14 +147,14 @@ export const playerMachine = setup({
 
     play: assign({
       isPlaying: () => {
-        console.log("[Player Domain] Playing")
+        logger.info("[Player Domain] Playing")
         return true
       },
     }),
 
     pause: assign({
       isPlaying: () => {
-        console.log("[Player Domain] Paused")
+        logger.info("[Player Domain] Paused")
         return false
       },
     }),
@@ -163,7 +167,7 @@ export const playerMachine = setup({
     seek: assign({
       currentTime: ({ event }) => {
         if (event.type !== "SEEK") return 0
-        console.log(`[Player Domain] Seeking to ${event.time}s`)
+        logger.info("[Player Domain] Seeking to", { event.time })
         return event.time
       },
       isSeeking: () => true,
@@ -181,7 +185,7 @@ export const playerMachine = setup({
       volume: ({ event }) => {
         if (event.type !== "SET_VOLUME") return 0.5
         const clampedVolume = Math.max(0, Math.min(1, event.volume))
-        console.log(`[Player Domain] Setting volume: ${clampedVolume}`)
+        logger.info("[Player Domain] Setting volume:", { clampedVolume })
         return clampedVolume
       },
     }),
@@ -189,7 +193,7 @@ export const playerMachine = setup({
     setPlaybackRate: assign({
       currentPlaybackRate: ({ event }) => {
         if (event.type !== "SET_PLAYBACK_RATE") return 1
-        console.log(`[Player Domain] Setting playback rate: ${event.rate}`)
+        logger.info("[Player Domain] Setting playback rate:", { event.rate })
         return event.rate
       },
     }),
@@ -204,7 +208,7 @@ export const playerMachine = setup({
     toggleSpeedRamping: assign({
       speedRampingEnabled: ({ context }) => {
         const newState = !context.speedRampingEnabled
-        console.log(`[Player Domain] Speed ramping: ${newState}`)
+        logger.info("[Player Domain] Speed ramping:", { newState })
         return newState
       },
     }),
@@ -212,7 +216,7 @@ export const playerMachine = setup({
     setVideoSource: assign({
       videoSource: ({ event }) => {
         if (event.type !== "SET_VIDEO_SOURCE") return "browser"
-        console.log(`[Player Domain] Video source: ${event.source}`)
+        logger.info("[Player Domain] Video source:", { event.source })
         return event.source
       },
     }),
@@ -227,7 +231,7 @@ export const playerMachine = setup({
     applyEffect: assign({
       appliedEffects: ({ context, event }) => {
         if (event.type !== "APPLY_EFFECT") return context.appliedEffects
-        console.log(`[Player Domain] Applying effect: ${event.effect.name}`)
+        logger.info("[Player Domain] Applying effect:", { event.effect.name })
         return [...context.appliedEffects, event.effect]
       },
     }),
@@ -242,7 +246,7 @@ export const playerMachine = setup({
     applyFilter: assign({
       appliedFilters: ({ context, event }) => {
         if (event.type !== "APPLY_FILTER") return context.appliedFilters
-        console.log(`[Player Domain] Applying filter: ${event.filter.name}`)
+        logger.info("[Player Domain] Applying filter:", { event.filter.name })
         return [...context.appliedFilters, event.filter]
       },
     }),
@@ -257,7 +261,7 @@ export const playerMachine = setup({
     applyTemplate: assign({
       appliedTemplate: ({ event }) => {
         if (event.type !== "APPLY_TEMPLATE") return null
-        console.log(`[Player Domain] Applying template: ${event.template.name}`)
+        logger.info("[Player Domain] Applying template:", { event.template.name })
         return event.template
       },
     }),
@@ -269,21 +273,21 @@ export const playerMachine = setup({
     setResizableMode: assign({
       isResizableMode: ({ event }) => {
         if (event.type !== "SET_RESIZABLE_MODE") return false
-        console.log(`[Player Domain] Resizable mode: ${event.enabled}`)
+        logger.info("[Player Domain] Resizable mode:", { event.enabled })
         return event.enabled
       },
     }),
 
     startRecording: assign({
       isRecording: () => {
-        console.log("[Player Domain] Recording started")
+        logger.info("[Player Domain] Recording started")
         return true
       },
     }),
 
     stopRecording: assign({
       isRecording: () => {
-        console.log("[Player Domain] Recording stopped")
+        logger.info("[Player Domain] Recording stopped")
         return false
       },
     }),

@@ -2,6 +2,10 @@ import { load, type Store } from "@tauri-apps/plugin-store"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import type { MediaFile } from "@/features/media"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "StoreService" })
+
 /**
  * Путь к файлу хранилища пользовательских настроек
  * Используется для сохранения и загрузки настроек приложения
@@ -105,17 +109,17 @@ export class StoreService {
       // Используем метод load вместо конструктора Store
       this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
       this.isInitialized = true
-      console.log("[StoreService] Store initialized successfully")
+      logger.info("[StoreService] Store initialized successfully")
 
       // Проверяем, что хранилище действительно работает
       const testRead = await this.store.get<any>("app-settings")
       if (testRead !== undefined) {
-        console.log("[StoreService] Store is working correctly, found existing settings")
+        logger.info("[StoreService] Store is working correctly, found existing settings")
       } else {
-        console.log("[StoreService] Store is empty, will use default settings")
+        logger.info("[StoreService] Store is empty, will use default settings")
       }
     } catch (error) {
-      console.error("[StoreService] Error initializing store:", error)
+      logger.error("[StoreService] Error initializing store:", error)
       // Попытаемся создать новое хранилище
       try {
         this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
@@ -123,9 +127,9 @@ export class StoreService {
           await this.store.save()
         }
         this.isInitialized = true
-        console.log("[StoreService] Created new store after initialization error")
+        logger.info("[StoreService] Created new store after initialization error")
       } catch (createError) {
-        console.error("[StoreService] Failed to create new store:", createError)
+        logger.error("[StoreService] Failed to create new store:", createError)
         this.store = null
         this.isInitialized = true
       }
@@ -145,7 +149,7 @@ export class StoreService {
       const settings = await this.store.get<AppSettings>("app-settings")
       return settings ?? null
     } catch (error) {
-      console.error("[StoreService] Error getting settings:", error)
+      logger.error("[StoreService] Error getting settings:", error)
       return null
     }
   }
@@ -175,9 +179,9 @@ export class StoreService {
       await this.store.save()
 
       // Убираем лог для уменьшения шума в консоли
-      // console.log("[StoreService] Settings saved successfully")
+      // logger.info("[StoreService] Settings saved successfully")
     } catch (error) {
-      console.error("[StoreService] Error saving settings:", error)
+      logger.error("[StoreService] Error saving settings:", error)
     }
   }
 

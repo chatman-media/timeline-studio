@@ -7,6 +7,11 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("UndoRedoProvider")
+
+
 // Временные типы
 interface Clip {
   id: string
@@ -79,7 +84,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
 
       // Восстанавливаем историю из backend при загрузке
       if (state.undo_redo_state && state.undo_redo_state.history) {
-        console.log("[UndoRedo] Restored history from backend:", state.undo_redo_state.history.length, "actions")
+        logger.debug("[UndoRedo] Restored history from backend:", { data: state.undo_redo_state.history.length, "actions" })
         // Здесь можно восстановить историю в UndoRedoService
         // Для этого потребуется добавить метод в сервис
       }
@@ -88,9 +93,9 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
       if (event.type === "UNDO_PERFORMED") {
-        console.log("[UndoRedo] Undo performed on backend:", event.data.actionId)
+        logger.debug("[UndoRedo] Undo performed on backend:", { data: event.data.actionId })
       } else if (event.type === "REDO_PERFORMED") {
-        console.log("[UndoRedo] Redo performed on backend:", event.data.actionId)
+        logger.debug("[UndoRedo] Redo performed on backend:", { data: event.data.actionId })
       }
     })
 
@@ -121,7 +126,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
         },
       })
       .catch((err) => {
-        console.error("[UndoRedo] Failed to sync action:", err)
+        logger.error("[UndoRedo] Failed to sync action:", { error: err })
         setError(err.message)
       })
 
@@ -146,7 +151,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
           },
         })
       } catch (err) {
-        console.error("[UndoRedo] Failed to sync undo:", err)
+        logger.error("[UndoRedo] Failed to sync undo:", { error: err })
         setError(err.message)
       }
     }
@@ -161,7 +166,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
           },
         })
       } catch (err) {
-        console.error("[UndoRedo] Failed to sync redo:", err)
+        logger.error("[UndoRedo] Failed to sync redo:", { error: err })
         setError(err.message)
       }
     }
@@ -207,7 +212,7 @@ export function useClipUndoRedo() {
     const actionId = registerAction(UndoRedoHelpers.createAddClipAction(clipId, trackId, mediaFile, time))
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -217,7 +222,7 @@ export function useClipUndoRedo() {
     const actionId = registerAction(UndoRedoHelpers.createRemoveClipAction(clip))
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -235,7 +240,7 @@ export function useClipUndoRedo() {
     )
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -247,7 +252,7 @@ export function useClipUndoRedo() {
     )
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -265,7 +270,7 @@ export function useClipUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -289,7 +294,7 @@ export function useClipUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -307,7 +312,7 @@ export function useClipUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -344,7 +349,7 @@ export function useTrackUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -370,7 +375,7 @@ export function useTrackUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -388,7 +393,7 @@ export function useTrackUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -406,7 +411,7 @@ export function useTrackUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -440,7 +445,7 @@ export function useKeyframeUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -458,7 +463,7 @@ export function useKeyframeUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId
@@ -476,7 +481,7 @@ export function useKeyframeUndoRedo() {
     })
 
     if (!isConnected) {
-      console.warn("[UndoRedo] Backend not connected, action may not be persisted")
+      logger.warn("Warning", { data: "[UndoRedo] Backend not connected, action may not be persisted" })
     }
 
     return actionId

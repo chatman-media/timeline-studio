@@ -6,6 +6,10 @@ import { convertMediaFileToPoolItem } from "@/features/media/utils/media-pool-ut
 import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
 import type { MediaResource, MusicResource } from "@/features/resources/types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "SyncResourcesToProject" })
+
 /**
  * Синхронизирует ресурсы из ResourcesProvider с MediaPool проекта
  */
@@ -101,7 +105,7 @@ export function getResourcesFromStorage(): {
       }
     }
   } catch (error) {
-    console.warn("Failed to get resources from localStorage:", error)
+    logger.warn("Failed to get resources from localStorage:", error)
   }
 
   return {

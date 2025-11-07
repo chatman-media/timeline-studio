@@ -12,9 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { useLinkedClips } from "../hooks/use-linked-clips"
+
+const logger = createLogger({ module: "LinkedClipsPanel" })
 
 interface LinkedClipsPanelProps {
   className?: string
@@ -53,7 +55,7 @@ export function LinkedClipsPanel({ className, compact = false }: LinkedClipsPane
   const handleAutoLink = (mediaFileId: string) => {
     const linkedCount = autoLinkClipsByMedia(mediaFileId)
     // Здесь можно добавить уведомление о результате
-    console.log(`Auto-linked ${linkedCount} clips`)
+    logger.info(`Auto-linked ${linkedCount} clips`)
   }
 
   const visiblePairs = showInactive ? linkedPairs : linkedPairs.filter((pair) => pair.isActive)

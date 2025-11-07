@@ -12,7 +12,10 @@
  */
 
 import { assign, fromPromise, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile, Timeline, TimelineClip, Track, TrackType } from "../types"
+
+const logger = createLogger("TimelineExtendedMachine")
 
 // Импорты удалены - теперь трансформация происходит в timeline-providers
 
@@ -239,7 +242,7 @@ function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
 // Actors для backend операций
 const executeCommandActor = fromPromise(async ({ input }: { input: { command: ProjectCommand } }) => {
   // Mock implementation - в реальном приложении здесь будет вызов backend API
-  console.log("Executing command:", input.command)
+  logger.debug("Executing command:", { data: input.command })
   return Promise.resolve({ success: true })
 })
 

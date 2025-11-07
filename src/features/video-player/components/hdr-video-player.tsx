@@ -13,6 +13,10 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:hdr-video-player")
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -85,7 +89,7 @@ export function HDRVideoPlayer() {
           }))
         }
       } catch (error) {
-        console.warn("HDR initialization failed:", error)
+        logger.warn("HDR initialization failed", { error })
       }
     }
 
@@ -123,7 +127,7 @@ export function HDRVideoPlayer() {
           toast.info(`HDR ${metadata.format} видео обнаружено`)
         }
       } catch (error) {
-        console.error("Video analysis failed:", error)
+        logger.error("video analysis failed", { error })
         toast.error("Не удалось проанализировать видео")
       }
     }
@@ -146,7 +150,7 @@ export function HDRVideoPlayer() {
     })
 
     if (!success) {
-      console.warn("HDR tone mapping failed, falling back to standard rendering")
+      logger.warn("HDR tone mapping failed, falling back to standard rendering")
     }
   }, [hdrMetadata, hdrSettings])
 

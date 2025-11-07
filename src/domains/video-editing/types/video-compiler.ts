@@ -5,6 +5,11 @@
 
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("VideoCompiler")
+
   OutputFormat,
   type VideoRenderJob as RenderJob,
   type RenderProgress,
@@ -740,7 +745,7 @@ export async function renderProject(project: ProjectSchema, outputPath: string):
 
     return jobId
   } catch (error) {
-    console.error("Failed to start video compilation:", error)
+    logger.error("Failed to start video compilation:", { error })
     throw error
   }
 }
@@ -767,7 +772,7 @@ export async function trackRenderProgress(
         }
       }
     } catch (error) {
-      console.error("Failed to get render progress:", error)
+      logger.error("Failed to get render progress:", { error })
     }
   }
 

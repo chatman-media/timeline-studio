@@ -15,9 +15,11 @@ import type React from "react"
 import { useEffect } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
 import { initializeDragDropBridge } from "../services/drag-drop-bridge"
+
+const logger = createLogger({ module: "DragDropProvider" })
 
 interface DragDropProviderProps {
   children: React.ReactNode
@@ -66,7 +68,7 @@ export function DragDropProvider({ children }: DragDropProviderProps) {
 
   // Инициализируем bridge при монтировании провайдера
   useEffect(() => {
-    console.log("[DragDropProvider] Initializing with BackendSync integration")
+    logger.info("[DragDropProvider] Initializing with BackendSync integration")
     initializeDragDropBridge()
   }, [])
 

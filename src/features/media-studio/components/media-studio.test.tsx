@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { MediaStudio } from "./media-studio"
+
+const logger = createLogger({ module: "MediaStudio.test" })
 
 // Мокаем useUserSettings
 const mockUseUserSettings = vi.hoisted(() => vi.fn())

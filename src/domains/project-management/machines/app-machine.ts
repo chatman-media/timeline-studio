@@ -7,6 +7,10 @@
 
 import { assign, fromCallback, fromPromise, setup } from "xstate"
 import { type BackendSync, getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AppMachine")
+
 import type {
   JsonValue,
   PlayerSource,
@@ -78,7 +82,7 @@ export const appMachine = setup({
     backendConnection: fromCallback(({ sendBack, input }: { sendBack: any; input: { backendSync: BackendSync } }) => {
       // Check if input and backendSync are available
       if (!input || !input.backendSync) {
-        console.error("[Project Management] Backend sync service is not available")
+        logger.errorSync("Backend sync service is not available")
         sendBack({ type: "CONNECTION_ERROR", error: "Backend sync service is not available" })
         return () => {}
       }
@@ -87,7 +91,7 @@ export const appMachine = setup({
 
       // Additional safety check
       if (!backendSync || typeof backendSync.connect !== "function") {
-        console.error("[Project Management] Backend sync service is not properly initialized")
+        logger.errorSync("Backend sync service is not properly initialized")
         sendBack({ type: "CONNECTION_ERROR", error: "Backend sync service is not properly initialized" })
         return () => {}
       }
@@ -107,7 +111,7 @@ export const appMachine = setup({
         backendSync
           .connect()
           .then(() => {
-            console.log("[Project Management] Connected to backend")
+            logger.infoSync("Connected to backend")
             sendBack({ type: "CONNECT" })
           })
           .catch((error: unknown) => {
@@ -215,7 +219,7 @@ export const appMachine = setup({
         BACKEND_EVENT: {
           // Log event for debugging
           actions: ({ event }) => {
-            console.log("[Project Management] Backend event:", event.event)
+            logger.debugSync("Backend event", { event: event.event })
           },
         },
 
@@ -271,7 +275,7 @@ export const appMachine = setup({
                   context.commandQueue.shift()
                 },
                 ({ event }) => {
-                  console.log("Command executed successfully:", event.output)
+                  logger.infoSync("Command executed successfully", { output: event.output })
                 },
               ],
             },
@@ -283,7 +287,7 @@ export const appMachine = setup({
                   context.commandQueue.shift()
                 },
                 ({ event }) => {
-                  console.error("Command execution failed:", event.error)
+                  logger.errorSync("Command execution failed", { error: event.error })
                 },
               ],
             },

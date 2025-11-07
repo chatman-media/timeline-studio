@@ -9,6 +9,10 @@ import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import { useModal } from "@/features/modals/services"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseMediaRestoration" })
+
 /**
  * Состояние процесса восстановления
  */
@@ -69,7 +73,7 @@ export function useMediaRestoration() {
         })
 
         // Фаза 1: Автоматическое восстановление
-        console.log("Начинаем автоматическое восстановление медиафайлов...")
+        logger.info("Начинаем автоматическое восстановление медиафайлов...")
 
         const result = await restoreProjectMediaService(mediaFiles, musicFiles, projectPath)
 
@@ -94,7 +98,7 @@ export function useMediaRestoration() {
               phase: "user_input",
             })
           } else if (options?.autoResolve) {
-            console.log(`Пропускаем ${result.missingFiles.length} отсутствующих файлов (автоматический режим)`)
+            logger.info(`Пропускаем ${result.missingFiles.length} отсутствующих файлов (автоматический режим)`)
           }
         }
 
@@ -108,7 +112,7 @@ export function useMediaRestoration() {
 
         // Генерируем отчет
         const report = generateRestorationReport(result)
-        console.log("Отчет о восстановлении:", report)
+        logger.info("Отчет о восстановлении:", report)
 
         return {
           restoredMedia: result.restoredMedia,
@@ -117,7 +121,7 @@ export function useMediaRestoration() {
           result,
         }
       } catch (error) {
-        console.error("Ошибка при восстановлении медиафайлов:", error)
+        logger.error("Ошибка при восстановлении медиафайлов:", error)
 
         updateState({
           isRestoring: false,

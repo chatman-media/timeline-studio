@@ -2,6 +2,10 @@
 
 import { useEffect } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "TauriMockProvider" })
+
 const isTauri = () => {
   if (typeof window === "undefined") return false
   return (window as any).__TAURI_INTERNALS__ !== undefined && (window as any).__TAURI_INTERNALS__ !== null
@@ -18,19 +22,19 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
           writable: true,
           value: {
             getUserMedia: () => {
-              console.warn(
+              logger.warn(
                 "[TauriMock] navigator.mediaDevices.getUserMedia not available in Tauri. Camera/microphone features disabled.",
               )
               return Promise.reject(new Error("MediaDevices API not available in Tauri environment"))
             },
             getDisplayMedia: () => {
-              console.warn(
+              logger.warn(
                 "[TauriMock] navigator.mediaDevices.getDisplayMedia not available in Tauri. Screen capture features disabled.",
               )
               return Promise.reject(new Error("MediaDevices API not available in Tauri environment"))
             },
             enumerateDevices: () => {
-              console.warn(
+              logger.warn(
                 "[TauriMock] navigator.mediaDevices.enumerateDevices not available in Tauri. Device enumeration disabled.",
               )
               return Promise.resolve([])
@@ -45,10 +49,10 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {
         listeners: new Map(),
         emit: (event: string, payload?: any) => {
-          console.log(`[TauriMock] Event emit: ${event}`, payload)
+          logger.info(`[TauriMock] Event emit: ${event}`, payload)
         },
         unregisterListener: (id: string) => {
-          console.log(`[TauriMock] Unregister listener: ${id}`)
+          logger.info(`[TauriMock] Unregister listener: ${id}`)
           const listeners = (window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners
           listeners.delete(id)
         },
@@ -60,7 +64,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
           return { callback, once, id }
         },
         invoke: async (cmd: string, args?: any) => {
-          console.log(`[TauriMock] Command: ${cmd}`, args)
+          logger.info(`[TauriMock] Command: ${cmd}`, args)
 
           // Mock responses for common commands
           switch (cmd) {
@@ -197,7 +201,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               }
               return false
             case "plugin:fs|read_text_file":
-              console.log("[TauriMock] read_text_file called with path:", args?.path)
+              logger.info("[TauriMock] read_text_file called with path:", args?.path)
               // Check if it's a project file
               if (args?.path && args.path.includes(".tlsp")) {
                 // For any .tlsp file, return a valid v2.0.0 project structure
@@ -311,7 +315,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
                   },
                 }
                 const jsonString = JSON.stringify(projectData)
-                console.log(`[TauriMock] Returning project JSON for: ${args.path}`)
+                logger.info(`[TauriMock] Returning project JSON for: ${args.path}`)
                 return jsonString
               }
               // For other files that expect JSON, return valid empty JSON
@@ -380,7 +384,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               // Возвращаем успешный результат
               return { success: true }
             default:
-              console.warn(`[TauriMock] Unhandled command: ${cmd}`, args)
+              logger.warn(`[TauriMock] Unhandled command: ${cmd}`, args)
               // Return sensible defaults for unknown commands instead of throwing
               if (cmd.includes("store")) return null
               if (cmd.includes("path")) return ""

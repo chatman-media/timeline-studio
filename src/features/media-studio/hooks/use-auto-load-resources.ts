@@ -4,6 +4,10 @@ import { appDirectoriesService } from "@/features/app-state/services"
 import { useResources } from "@/features/resources"
 
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseAutoLoadResources" })
   validateEffect,
   validateFilter,
   validateStyleTemplate,
@@ -80,7 +84,7 @@ export function useAutoLoadResources() {
         scanCacheRef.current.set(dirPath, jsonFiles)
         return jsonFiles
       } catch (error) {
-        console.error(`Error scanning ${dirPath}:`, error)
+        logger.error(`Error scanning ${dirPath}:`, error)
         return []
       }
     },
@@ -100,7 +104,7 @@ export function useAutoLoadResources() {
         }
         return await response.json()
       } catch (error) {
-        console.error(`Error loading ${filePath}:`, error)
+        logger.error(`Error loading ${filePath}:`, error)
         return null
       }
     },
@@ -154,7 +158,7 @@ export function useAutoLoadResources() {
                     addFunction(validated)
                     validCount++
                   } catch (err) {
-                    console.error(`Error adding ${resourceType} ${validated.id}:`, err)
+                    logger.error(`Error adding ${resourceType} ${validated.id}:`, err)
                   }
                 }
               })
@@ -162,10 +166,10 @@ export function useAutoLoadResources() {
           })
         }
 
-        console.log(`[useAutoLoadResources] Loaded ${validCount} ${resourceType}s`)
+        logger.info(`[useAutoLoadResources] Loaded ${validCount} ${resourceType}s`)
         return validCount
       } catch (error) {
-        console.error(`Error processing ${resourceType} files:`, error)
+        logger.error(`Error processing ${resourceType} files:`, error)
         return 0
       }
     },
@@ -205,7 +209,7 @@ export function useAutoLoadResources() {
             styleTemplates: appDirectoriesService.getMediaSubdirectory("style_templates"),
           }
         } catch (error) {
-          console.warn("Failed to get app directories:", error)
+          logger.warn("Failed to get app directories:", error)
         }
       }
 
@@ -248,9 +252,9 @@ export function useAutoLoadResources() {
       lastLoadTimeRef.current = Date.now()
 
       const totalLoaded = Object.values(stats).reduce((sum, count) => sum + count, 0)
-      console.log(`[useAutoLoadResources] Loaded ${totalLoaded} total resources`)
+      logger.info(`[useAutoLoadResources] Loaded ${totalLoaded} total resources`)
     } catch (error) {
-      console.error("Error loading resources:", error)
+      logger.error("Error loading resources:", error)
       setError(error instanceof Error ? error.message : "Unknown error")
     } finally {
       setIsLoading(false)
@@ -302,7 +306,7 @@ export function useAutoLoadResources() {
     */
 
     // Логируем, что автозагрузка отключена
-    console.log("[useAutoLoadResources] Auto-loading is disabled")
+    logger.info("[useAutoLoadResources] Auto-loading is disabled")
   }, []) // Пустой массив зависимостей - выполняется только при монтировании
 
   const clearCache = useCallback(() => {

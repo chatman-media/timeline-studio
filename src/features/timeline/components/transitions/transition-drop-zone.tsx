@@ -5,9 +5,12 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import type { DragDropManager, DraggableItem, DropTarget } from "@/features/drag-drop/services/drag-drop-manager"
 import type { Transition } from "@/features/transitions/types/transitions"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useTimelineEffects } from "../../hooks/use-timeline-effects"
 import type { TimelineClip } from "../../types"
+
+const logger = createLogger({ module: "TransitionDropZone" })
 
 interface TransitionDropZoneProps {
   leftClip: TimelineClip
@@ -161,7 +164,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
           }
         }
       } catch (error) {
-        console.warn("Could not parse drag data:", error)
+        logger.warn("Could not parse drag data:", error)
       }
     },
     [handleDrop],

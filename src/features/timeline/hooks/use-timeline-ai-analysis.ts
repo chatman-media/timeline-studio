@@ -12,8 +12,11 @@ import SceneAnalysisEngine, {
 import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
+import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
+
+const logger = createLogger({ module: "UseTimelineAiAnalysis" })
 
 interface TimelineAnalysisState {
   isAnalyzing: boolean
@@ -216,7 +219,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           isAnalyzing: false,
         }))
       } catch (error) {
-        console.error("Clip analysis failed:", error)
+        logger.error("Clip analysis failed:", error)
         setAnalysisState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -259,7 +262,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         }
       }
     } catch (error) {
-      console.error("Timeline analysis failed:", error)
+      logger.error("Timeline analysis failed:", error)
       setAnalysisState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : "Ошибка анализа Timeline",
@@ -331,18 +334,18 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           case "effect":
           case "color":
             // TODO: Реализовать применение эффектов и переходов
-            console.log(`Applying ${suggestion.type} suggestion:`, suggestion)
+            logger.info(`Applying ${suggestion.type} suggestion:`, suggestion)
             break
 
           default:
-            console.log(`Unknown suggestion type: ${suggestion.type}`)
+            logger.info(`Unknown suggestion type: ${suggestion.type}`)
             break
         }
 
         // Удаляем применённое предложение
         setSuggestions((prev) => prev.filter((s) => s.id !== suggestion.id))
       } catch (error) {
-        console.error("Failed to apply suggestion:", error)
+        logger.error("Failed to apply suggestion:", error)
       }
     },
     [send],
@@ -413,7 +416,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
 
         return Array.isArray(analysis) ? analysis.flatMap((s: any) => s.keyMoments || []) : []
       } catch (error) {
-        console.error("Failed to find key moments:", error)
+        logger.error("Failed to find key moments:", error)
         return []
       }
     },

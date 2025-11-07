@@ -4,9 +4,12 @@
  */
 
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
+import { createLogger } from "@/lib/tauri-logger"
 import type { AnimatedProperty, AnimationTrack, MotionPreset } from "../types/keyframe"
 import { createAnimationTrack, evaluateTrackAtTime } from "./animation-layers"
 import { applyPreset } from "./preset-manager"
+
+const logger = createLogger({ module: "TimelineIntegration" })
 
 /**
  * Motion Graphics data extension for timeline clips
@@ -309,7 +312,7 @@ export function importMotionGraphics(clip: TimelineClip, jsonData: string): Moti
       motionEnabled: true,
     }
   } catch (error) {
-    console.error("Failed to import motion graphics:", error)
+    logger.error("Failed to import motion graphics:", error)
     return null
   }
 }

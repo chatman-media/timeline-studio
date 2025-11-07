@@ -250,7 +250,7 @@ export class SurroundAudioProcessor {
           break
         default:
           // Unknown channel, mute it
-          console.warn(`Unknown surround channel: ${channel}`)
+          logger.warn(`Unknown surround channel: ${channel}`)
           channelGain.gain.value = 0
           break
       }

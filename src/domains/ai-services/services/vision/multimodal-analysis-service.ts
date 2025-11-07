@@ -8,6 +8,10 @@ import { invoke } from "@tauri-apps/api/core"
 import { ApiKeyLoader } from "@/domains/ai-core"
 import type { FrameAnalysis, IVisionService } from "@/domains/ai-services/types/interfaces"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MultimodalAnalysisService")
+
 /**
  * Типы мультимодального анализа
  */
@@ -269,7 +273,7 @@ export class MultimodalAnalysisService {
         },
       }
     } catch (error) {
-      console.warn("Ошибка shared Vision service, используем legacy GPT-4V:", error)
+      logger.warn("Ошибка shared Vision service, используем legacy GPT-4V:", { data: error })
 
       // Legacy fallback
       const apiKey = await this.apiKeyLoader.getApiKey("openai")
@@ -323,7 +327,7 @@ export class MultimodalAnalysisService {
    */
   public async analyzeVideo(params: VideoAnalysisParams): Promise<VideoAnalysisResult> {
     const startTime = Date.now()
-    console.log(`Начинаем мультимодальный анализ видео ${params.clipId}`)
+    logger.debug(`Начинаем мультимодальный анализ видео ${params.clipId}`)
 
     // Извлекаем кадры из видео
     const frames = await this.extractFramesForAnalysis(params.clipId, {
@@ -353,7 +357,7 @@ export class MultimodalAnalysisService {
             frameTimestamp: frame.timestamp,
           })
         } catch (error) {
-          console.error(`Ошибка анализа кадра ${frame.timestamp}:`, error)
+          logger.error("Error occurred", { error: `Ошибка анализа кадра ${frame.timestamp}:`, error })
         }
       }
     }
@@ -413,7 +417,7 @@ export class MultimodalAnalysisService {
 
         suggestions.push(suggestion)
       } catch (error) {
-        console.error(`Ошибка анализа кадра для превью ${frame.timestamp}:`, error)
+        logger.error("Error occurred", { error: `Ошибка анализа кадра для превью ${frame.timestamp}:`, error })
       }
     }
 
@@ -460,7 +464,7 @@ export class MultimodalAnalysisService {
             })
           }
         } catch (error) {
-          console.error(`Ошибка анализа видео ${clipId}:`, error)
+          logger.error("Error occurred", { error: `Ошибка анализа видео ${clipId}:`, error })
         }
       })
 

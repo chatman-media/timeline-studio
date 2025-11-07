@@ -7,8 +7,11 @@ import { useCallback, useEffect, useState } from "react"
 
 import { usePersonIdentification } from "@/features/person-identification/hooks/use-person-identification"
 import type { BoundingBox, PersonProfile } from "@/features/person-identification/types/person"
+import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
+
+const logger = createLogger({ module: "UseTimelinePersons" })
 
 // Упрощенная версия PersonAppearance для Timeline (использует numbers вместо Timecode)
 export interface TimelinePersonAppearance {
@@ -152,7 +155,7 @@ export function useTimelinePersons(): TimelinePersonsHook {
             newAppearances.push(appearance)
           } else if (face.confidence >= confidenceThreshold) {
             // Неизвестное лицо с высокой уверенностью - можно предложить создать персону
-            console.log("Unknown face detected with high confidence:", face)
+            logger.info("Unknown face detected with high confidence:", face)
           }
 
           setState((prev) => ({
@@ -172,7 +175,7 @@ export function useTimelinePersons(): TimelinePersonsHook {
           isAnalyzing: false,
         }))
       } catch (error) {
-        console.error("Failed to analyze clip for persons:", error)
+        logger.error("Failed to analyze clip for persons:", error)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -213,7 +216,7 @@ export function useTimelinePersons(): TimelinePersonsHook {
         }))
       }
     } catch (error) {
-      console.error("Timeline persons analysis failed:", error)
+      logger.error("Timeline persons analysis failed:", error)
       setState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : "Ошибка анализа Timeline",
@@ -226,7 +229,7 @@ export function useTimelinePersons(): TimelinePersonsHook {
   // Показать детали персоны
   const showPersonDetail = useCallback((personId: string) => {
     // TODO: Имплементировать отображение деталей персоны
-    console.log("Show person detail:", personId)
+    logger.info("Show person detail:", personId)
   }, [])
 
   // Очистка анализа персон

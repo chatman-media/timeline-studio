@@ -3,6 +3,10 @@
  * Полная реализация Claude API с поддержкой tools и streaming
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ClaudeProvider")
+
 import { ApiKeyLoader } from "../../services/api-key-loader"
 import type { AiMessage, AiRequestOptions, AiResponse, IAIProvider, StreamingOptions } from "../../types"
 
@@ -164,7 +168,7 @@ export class ClaudeProvider implements IAIProvider {
           : undefined,
       }
     } catch (error) {
-      console.error("Claude request failed:", error)
+      logger.error("Claude request failed", { error, model })
       throw error
     }
   }
@@ -270,7 +274,7 @@ export class ClaudeProvider implements IAIProvider {
                   }
                 }
               } catch (parseError) {
-                console.warn("Error parsing Claude streaming event:", parseError)
+                logger.warn("Error parsing Claude streaming event", { parseError })
               }
             }
           }
@@ -290,7 +294,7 @@ export class ClaudeProvider implements IAIProvider {
         reader.releaseLock()
       }
     } catch (error) {
-      console.error("Claude streaming request failed:", error)
+      logger.error("Claude streaming request failed", { error, model })
       if (options.onError) {
         options.onError(error instanceof Error ? error : new Error("Unknown error"))
       } else {

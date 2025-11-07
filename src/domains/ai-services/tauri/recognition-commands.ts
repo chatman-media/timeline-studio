@@ -3,6 +3,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("Recognition")
 
 /**
  * YOLO Object Detection Commands
@@ -19,7 +22,7 @@ export interface YOLODetectionResult {
 }
 
 export async function initYOLOProcessor(modelPath?: string, useGPU?: boolean): Promise<string> {
-  console.log("[Recognition] Initializing YOLO processor")
+  logger.info("Initializing YOLO processor", { modelPath, useGPU: useGPU ?? true })
   return invoke("init_yolo_processor", {
     modelPath,
     useGPU: useGPU ?? true,
@@ -31,7 +34,7 @@ export async function detectObjectsInImage(
   imagePath: string,
   confidenceThreshold?: number,
 ): Promise<YOLODetectionResult> {
-  console.log("[Recognition] Detecting objects in image:", imagePath)
+  logger.info("Detecting objects in image", { processorId, imagePath, confidenceThreshold: confidenceThreshold ?? 0.5 })
   return invoke("detect_objects_in_image", {
     processorId,
     imagePath,
@@ -48,7 +51,7 @@ export async function analyzeVideoWithYOLO(
     confidenceThreshold?: number
   },
 ): Promise<YOLODetectionResult[]> {
-  console.log("[Recognition] Analyzing video with YOLO:", videoPath)
+  logger.info("Analyzing video with YOLO", { processorId, videoPath, options })
   return invoke("analyze_video_with_yolo", {
     processorId,
     videoPath,
@@ -90,12 +93,12 @@ export interface FaceDetectionResult {
 }
 
 export async function initRetinaFaceProcessor(): Promise<string> {
-  console.log("[Recognition] Initializing RetinaFace processor")
+  logger.info("Initializing RetinaFace processor")
   return invoke("init_retinaface_processor")
 }
 
 export async function detectFacesWithLandmarks(processorId: string, imagePath: string): Promise<FaceDetectionResult> {
-  console.log("[Recognition] Detecting faces with landmarks:", imagePath)
+  logger.info("Detecting faces with landmarks", { processorId, imagePath })
   return invoke("detect_faces_with_landmarks", {
     processorId,
     imagePath,
@@ -103,7 +106,7 @@ export async function detectFacesWithLandmarks(processorId: string, imagePath: s
 }
 
 export async function initFaceNetProcessor(): Promise<string> {
-  console.log("[Recognition] Initializing FaceNet processor")
+  logger.info("Initializing FaceNet processor")
   return invoke("init_facenet_processor")
 }
 
@@ -112,7 +115,7 @@ export async function generateFaceEmbedding(
   imagePath: string,
   faceBox?: { x: number; y: number; width: number; height: number },
 ): Promise<number[]> {
-  console.log("[Recognition] Generating face embedding:", imagePath)
+  logger.info("Generating face embedding", { processorId, imagePath, faceBox })
   return invoke("generate_face_embedding", {
     processorId,
     imagePath,
@@ -131,12 +134,12 @@ export async function calculateCosineSimilarity(embedding1: number[], embedding2
  * MediaPipe Commands
  */
 export async function initMediaPipeProcessor(): Promise<string> {
-  console.log("[Recognition] Initializing MediaPipe processor")
+  logger.info("Initializing MediaPipe processor")
   return invoke("init_mediapipe_processor")
 }
 
 export async function detectFacesBlazeFace(processorId: string, imagePath: string): Promise<FaceDetectionResult> {
-  console.log("[Recognition] Detecting faces with BlazeFace:", imagePath)
+  logger.info("Detecting faces with BlazeFace", { processorId, imagePath })
   return invoke("detect_faces_blazeface", {
     processorId,
     imagePath,
@@ -147,7 +150,7 @@ export async function extractFaceMeshLandmarks(
   processorId: string,
   imagePath: string,
 ): Promise<Array<{ x: number; y: number; z?: number }>> {
-  console.log("[Recognition] Extracting face mesh landmarks:", imagePath)
+  logger.info("Extracting face mesh landmarks", { processorId, imagePath })
   return invoke("extract_face_mesh_landmarks", {
     processorId,
     imagePath,
@@ -161,7 +164,7 @@ export async function analyzeFacialExpressions(
   expressions: Record<string, number>
   confidence: number
 }> {
-  console.log("[Recognition] Analyzing facial expressions:", imagePath)
+  logger.info("Analyzing facial expressions", { processorId, imagePath })
   return invoke("analyze_facial_expressions", {
     processorId,
     imagePath,
@@ -185,7 +188,7 @@ export interface PersonData {
 }
 
 export async function createPerson(name: string): Promise<PersonData> {
-  console.log("[Recognition] Creating person:", name)
+  logger.info("Creating person", { name })
   return invoke("create_person", { name })
 }
 
@@ -194,7 +197,7 @@ export async function getPerson(personId: string): Promise<PersonData | null> {
 }
 
 export async function addFaceEmbedding(personId: string, embedding: number[], sourcePath: string): Promise<void> {
-  console.log("[Recognition] Adding face embedding for person:", personId)
+  logger.info("Adding face embedding for person", { personId, sourcePath, embeddingSize: embedding.length })
   return invoke("add_face_embedding", {
     personId,
     embedding,
@@ -207,7 +210,11 @@ export async function searchSimilarPersons(
   threshold?: number,
   maxResults?: number,
 ): Promise<Array<{ personId: string; similarity: number; name: string }>> {
-  console.log("[Recognition] Searching similar persons")
+  logger.info("Searching similar persons", {
+    embeddingSize: embedding.length,
+    threshold: threshold ?? 0.7,
+    maxResults: maxResults ?? 5,
+  })
   return invoke("search_similar_persons", {
     embedding,
     threshold: threshold ?? 0.7,
@@ -222,7 +229,7 @@ export async function addPersonAppearance(
   bbox: { x: number; y: number; width: number; height: number },
   confidence: number,
 ): Promise<void> {
-  console.log("[Recognition] Adding person appearance:", personId)
+  logger.info("Adding person appearance", { personId, videoPath, timestamp, confidence })
   return invoke("add_person_appearance", {
     personId,
     videoPath,
@@ -233,7 +240,7 @@ export async function addPersonAppearance(
 }
 
 export async function deletePerson(personId: string): Promise<void> {
-  console.log("[Recognition] Deleting person:", personId)
+  logger.info("Deleting person", { personId })
   return invoke("delete_person", { personId })
 }
 
@@ -249,7 +256,7 @@ export async function getPersonDatabaseStats(): Promise<{
  * Privacy Commands
  */
 export async function initPrivacyProcessor(): Promise<string> {
-  console.log("[Recognition] Initializing privacy processor")
+  logger.info("Initializing privacy processor")
   return invoke("init_privacy_processor")
 }
 
@@ -259,7 +266,7 @@ export async function blurFacesInImage(
   outputPath: string,
   blurIntensity?: number,
 ): Promise<void> {
-  console.log("[Recognition] Blurring faces in image:", imagePath)
+  logger.info("Blurring faces in image", { processorId, imagePath, outputPath, blurIntensity: blurIntensity ?? 15 })
   return invoke("blur_faces_in_image", {
     processorId,
     imagePath,
@@ -278,7 +285,7 @@ export async function blurFacesInVideoFrames(
     preserveAudioTimestamp?: boolean
   },
 ): Promise<string[]> {
-  console.log("[Recognition] Blurring faces in video frames:", videoPath)
+  logger.info("Blurring faces in video frames", { processorId, videoPath, outputDir, options })
   return invoke("blur_faces_in_video_frames", {
     processorId,
     videoPath,
@@ -291,7 +298,7 @@ export async function blurFacesInVideoFrames(
  * Clustering Commands
  */
 export async function initClusteringEngine(): Promise<string> {
-  console.log("[Recognition] Initializing clustering engine")
+  logger.info("Initializing clustering engine")
   return invoke("init_clustering_engine")
 }
 
@@ -304,7 +311,7 @@ export async function clusterFaces(
     algorithm?: string
   },
 ): Promise<number[]> {
-  console.log("[Recognition] Clustering faces:", embeddings.length)
+  logger.info("Clustering faces", { engineId, embeddingCount: embeddings.length, options })
   return invoke("cluster_faces", {
     engineId,
     embeddings,
@@ -336,7 +343,7 @@ export async function autoClusterVideoFaces(
   totalFaces: number
   processingTime: number
 }> {
-  console.log("[Recognition] Auto-clustering video faces:", videoPath)
+  logger.info("Auto-clustering video faces", { engineId, videoPath, options })
   return invoke("auto_cluster_video_faces", {
     engineId,
     videoPath,

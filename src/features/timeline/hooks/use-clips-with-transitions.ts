@@ -4,10 +4,12 @@
  */
 
 import { useCallback } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useClips } from "./use-clips"
 import { useTimeline } from "./use-timeline"
 import { useTransitionSync } from "./use-transition-sync"
+
+const logger = createLogger({ module: "UseClipsWithTransitions" })
 
 export function useClipsWithTransitions() {
   const clips = useClips()
@@ -16,7 +18,7 @@ export function useClipsWithTransitions() {
   // Временная заглушка для updateProject
   // В реальной реализации это должно обновлять проект через backend
   const updateProject = useCallback(() => {
-    console.warn("Project transition updates not yet integrated with backend")
+    logger.warn("Project transition updates not yet integrated with backend")
   }, [])
 
   const { syncMoveClip, syncTrimClip, syncRemoveClip, syncSplitClip, findClip } = useTransitionSync({
@@ -101,7 +103,7 @@ export function useClipsWithTransitions() {
       // TODO: Получить IDs новых клипов после разделения
       // В текущей реализации splitClip не возвращает новые IDs
       // Это нужно будет исправить в основном хуке
-      console.warn("Split clip transition sync requires clip IDs from split operation")
+      logger.warn("Split clip transition sync requires clip IDs from split operation")
     },
     [clips],
   )

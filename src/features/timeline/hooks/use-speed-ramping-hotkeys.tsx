@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useSpeedRamping } from "./use-speed-ramping"
 import { useTimeline } from "./use-timeline"
+
+const logger = createLogger({ module: "UseSpeedRampingHotkeys" })
 
 export function useSpeedRampingHotkeys() {
   const { send, selectedClipIds } = useTimeline()
@@ -63,7 +65,7 @@ export function useSpeedRampingHotkeys() {
           const clipIds = selectedClipIds || []
           clipIds.forEach((clipId: string) => {
             // TODO: Implement reverse speed
-            console.log("Reverse speed for clip:", clipId)
+            logger.info("Reverse speed for clip:", clipId)
           })
         },
       },

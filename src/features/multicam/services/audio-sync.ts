@@ -6,6 +6,10 @@
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "AudioSync" })
+
 export interface SyncResult {
   clipId: string
   offset: number // Смещение в секундах относительно базового клипа
@@ -179,7 +183,7 @@ export async function syncByAudio(
   // Получаем медиафайл для базового клипа
   const baseMedia = mediaFiles.find((m) => m.id === baseClip.mediaId)
   if (!baseMedia || !hasAudioTrack(baseMedia)) {
-    console.warn("[syncByAudio] Base clip has no audio")
+    logger.warn("[syncByAudio] Base clip has no audio")
     return results
   }
 
@@ -248,7 +252,7 @@ export async function syncByAudio(
       method: "audio" as const,
     })
 
-    console.log(`[syncByAudio] Clip ${clip.id} offset: ${correlation.offset}s, confidence: ${correlation.confidence}`)
+    logger.info(`[syncByAudio] Clip ${clip.id} offset: ${correlation.offset}s, confidence: ${correlation.confidence}`)
   }
 
   onProgress?.({

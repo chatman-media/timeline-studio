@@ -9,9 +9,12 @@ import type { BaseEffect, VideoEffect } from "@/features/effects/types"
 import { useResources } from "@/features/resources"
 import type { EffectResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
+import { createLogger } from "@/lib/tauri-logger"
 import { generateCSSFilterForEffect, getPlaybackRate } from "../utils/css-effects"
 import { getEffectPreview } from "../utils/effect-previews"
 import { EffectIndicators } from "./effect-indicators"
+
+const logger = createLogger({ module: "EffectPreview" })
 
 // Получаем путь к превью видео для конкретного эффекта
 const getPreviewPath = (effect: BaseEffect) => {
@@ -107,7 +110,7 @@ export function EffectPreview({
           ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
           : processedEffect.name || processedEffect.id
 
-      console.log("[EffectPreview] Applying effect:", effectName)
+      logger.info("[EffectPreview] Applying effect:", effectName)
 
       // Собираем параметры из новой структуры
       const params: Record<string, any> = {}
@@ -193,7 +196,7 @@ export function EffectPreview({
 
       // Запускаем воспроизведение видео
       videoElement.play().catch((err: unknown) => {
-        console.log("Autoplay prevented:", err)
+        logger.info("Autoplay prevented:", err)
       })
 
       // Устанавливаем таймер для повторного воспроизведения через 2 секунды

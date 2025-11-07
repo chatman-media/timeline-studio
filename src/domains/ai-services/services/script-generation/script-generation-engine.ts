@@ -5,9 +5,13 @@
 
 import { type UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import type { Person } from "@/features/montage-planner/types"
+import { createLogger } from "@/lib/tauri-logger"
 import { BaseAIEngine, type EngineCapabilities } from "./base-engine"
 import { DialogueGenerator } from "./dialogue-generator"
 import { TemplateEngine } from "./template-engine"
+
+const logger = createLogger("ScriptGenerationEngine")
+
 import {
   Act,
   AudioElementType,
@@ -64,7 +68,7 @@ export class ScriptGenerationEngine extends BaseAIEngine {
 
       this._isReady = true
     } catch (error) {
-      console.error("Failed to initialize Script Generation Engine:", error)
+      logger.errorSync("Failed to initialize Script Generation Engine", { error })
       throw error
     }
   }
@@ -116,7 +120,7 @@ export class ScriptGenerationEngine extends BaseAIEngine {
         alternatives,
       }
     } catch (error) {
-      console.error("Script generation failed:", error)
+      logger.errorSync("Script generation failed", { error })
       throw error
     }
   }
@@ -698,7 +702,7 @@ Return only the voiceover text.`
       // Fallback: анализируем связность локально
       return this.calculateLocalCoherence(script)
     } catch (error) {
-      console.warn("AI coherence evaluation failed, using local analysis:", error)
+      logger.warnSync("AI coherence evaluation failed, using local analysis", { error })
       return this.calculateLocalCoherence(script)
     }
   }
@@ -1013,7 +1017,7 @@ Return only the voiceover text.`
 
       return alternatives.slice(0, 3) // Ограничиваем до 3 альтернатив
     } catch (error) {
-      console.error("Failed to generate alternatives:", error)
+      logger.errorSync("Failed to generate alternatives", { error })
       return []
     }
   }

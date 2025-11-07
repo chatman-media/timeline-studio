@@ -50,8 +50,7 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
-          logInfo("useFiltersImport", `Imported ${filtersData.length} filters`)
-          console.log(`Импортировано ${filtersData.length} фильтров`)
+          logInfo("useFiltersImport", `Imported ${filtersData.length} filters`, { count: filtersData.length })
         } else if (filtersData.filters && Array.isArray(filtersData.filters)) {
           // Альтернативный формат с обёрткой
           for (const filterData of filtersData.filters) {
@@ -59,13 +58,13 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
-          logInfo("useFiltersImport", `Imported ${filtersData.filters.length} filters`)
-          console.log(`Импортировано ${filtersData.filters.length} фильтров`)
+          logInfo("useFiltersImport", `Imported ${filtersData.filters.length} filters`, {
+            count: filtersData.filters.length,
+          })
         }
       }
     } catch (error) {
       logError("useFiltersImport", "Error importing filters file", error)
-      console.error("Ошибка при импорте фильтров:", error)
     } finally {
       setIsImporting(false)
     }
@@ -127,12 +126,10 @@ export function useFiltersImport() {
           void addFilter(filter)
         }
 
-        logInfo("useFiltersImport", `Imported ${files.length} filter files`)
-        console.log(`Импортировано ${files.length} файлов фильтров`)
+        logInfo("useFiltersImport", `Imported ${files.length} filter files`, { count: files.length })
       }
     } catch (error) {
       logError("useFiltersImport", "Error importing filter files", error)
-      console.error("Ошибка при импорте файлов фильтров:", error)
     } finally {
       setIsImporting(false)
     }

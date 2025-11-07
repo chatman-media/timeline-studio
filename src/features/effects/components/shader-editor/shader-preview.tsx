@@ -3,9 +3,11 @@ import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import type { ShaderCompilationResult, ShaderUniform } from "../../types/shader-system"
+
+const logger = createLogger({ module: "ShaderPreview" })
 
 interface ShaderPreviewProps {
   vertexShader: string
@@ -46,7 +48,7 @@ export function ShaderPreview({
     })
 
     if (!gl) {
-      console.error("WebGL2 not supported")
+      logger.error("WebGL2 not supported")
       return
     }
 
@@ -84,7 +86,7 @@ export function ShaderPreview({
     gl.compileShader(vertShader)
 
     if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-      console.error("Vertex shader error:", gl.getShaderInfoLog(vertShader))
+      logger.error("Vertex shader error:", gl.getShaderInfoLog(vertShader))
       gl.deleteShader(vertShader)
       return
     }
@@ -94,7 +96,7 @@ export function ShaderPreview({
     gl.compileShader(fragShader)
 
     if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-      console.error("Fragment shader error:", gl.getShaderInfoLog(fragShader))
+      logger.error("Fragment shader error:", gl.getShaderInfoLog(fragShader))
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)
       return
@@ -109,7 +111,7 @@ export function ShaderPreview({
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Program link error:", gl.getProgramInfoLog(program))
+      logger.error("Program link error:", gl.getProgramInfoLog(program))
       gl.deleteProgram(program)
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)
@@ -213,7 +215,7 @@ export function ShaderPreview({
           break
         default:
           // Handle unknown uniform types
-          console.warn(`Unknown uniform type: ${uniform.type}`)
+          logger.warn(`Unknown uniform type: ${uniform.type}`)
       }
     })
 

@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useColorGrading } from "../../services/color-grading-provider"
 import { ParameterSlider } from "../controls/parameter-slider"
+
+const logger = createLogger({ module: "LutSection" })
 
 // Предустановленные LUT
 const PRESET_LUTS = [
@@ -120,7 +122,7 @@ export function LUTSection() {
         handleLUTChange(newLUT.id)
       }
     } catch (error) {
-      console.error("Error importing LUT:", error)
+      logger.error("Error importing LUT:", error)
     } finally {
       setIsLoading(false)
     }
@@ -140,7 +142,7 @@ export function LUTSection() {
   // Обновление превью
   const handleRefreshPreviews = useCallback(() => {
     // В реальном приложении здесь будет обновление превью через WebGL
-    console.log("Refreshing LUT previews...")
+    logger.info("Refreshing LUT previews...")
   }, [])
 
   return (

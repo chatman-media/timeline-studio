@@ -7,9 +7,11 @@
 import React, { createContext, useCallback, useEffect, useState } from "react"
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
-
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
+
+const logger = createLogger({ module: "ProjectSettingsProvider" })
 
 interface ProjectSettingsContextType {
   // Настройки проекта (синхронизированы с backend)
@@ -62,7 +64,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Unknown error"
         setError(errorMessage)
-        console.error("Project settings command failed:", err)
+        logger.error("Project settings command failed:", err)
         throw err
       } finally {
         setIsLoading(false)
@@ -76,7 +78,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
     async (_newSettings: Partial<ProjectSettings>) => {
       // Пока backend не имеет команды для обновления настроек проекта,
       // используем общую команду обновления проекта
-      console.warn("Project settings update not yet implemented in backend")
+      logger.warn("Project settings update not yet implemented in backend")
 
       // В будущем это будет:
       // await executeCommand({

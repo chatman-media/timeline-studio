@@ -1,7 +1,10 @@
 // YouTube API сервис для загрузки видео
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
+
+const logger = createLogger({ module: "YoutubeService" })
 
 interface YouTubeVideoMetadata {
   title: string
@@ -78,7 +81,7 @@ export async function uploadVideo(
       status: result.status?.uploadStatus || "uploaded",
     }
   } catch (error) {
-    console.error("YouTube upload error:", error)
+    logger.error("YouTube upload error:", error)
     throw error
   }
 }
@@ -135,10 +138,10 @@ async function uploadThumbnail(videoId: string, thumbnailPath: string, accessTok
     })
 
     if (!uploadResponse.ok) {
-      console.warn("Failed to upload thumbnail:", await uploadResponse.text())
+      logger.warn("Failed to upload thumbnail:", await uploadResponse.text())
     }
   } catch (error) {
-    console.warn("Thumbnail upload failed:", error)
+    logger.warn("Thumbnail upload failed:", error)
     // Не прерываем основной процесс из-за ошибки thumbnail
   }
 }

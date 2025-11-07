@@ -4,7 +4,7 @@
 
 import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useMemo } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 // Удалена зависимость от @/features/drag-drop для устранения конфликта архитектур
 // Оставляем только @dnd-kit/core систему
 import { cn } from "@/lib/utils"
@@ -21,6 +21,8 @@ import { TransitionCollisionIndicator } from "../transition/transition-collision
 import { TransitionDropZone } from "../transition/transition-drop-zone"
 import { TimelineTransitionComponent } from "../transitions/timeline-transition"
 import { TrackRollHandles } from "./track-roll-handles"
+
+const logger = createLogger({ module: "TrackContent" })
 
 interface TrackContentProps {
   track: TimelineTrack
@@ -122,9 +124,9 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
         // Обновляем проект через сохранение
         await saveProject()
 
-        console.log("Переход успешно добавлен к проекту")
+        logger.info("Переход успешно добавлен к проекту")
       } catch (error) {
-        console.error("Failed to add transition:", error)
+        logger.error("Failed to add transition:", error)
       }
     },
     [project, track.id, saveProject],
@@ -231,16 +233,16 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
                   trackHeight={48}
                   onUpdate={(updates) => {
                     // TODO: Обновление перехода через backend API
-                    console.log("Updating transition parameters:", outTransition.id, updates)
+                    logger.info("Updating transition parameters:", outTransition.id, updates)
                   }}
                   onDelete={async () => {
                     // Удаление перехода через backend API
                     try {
                       // TODO: Добавить removeTransition команду в backend
-                      console.log("Deleting transition:", outTransition.id)
+                      logger.info("Deleting transition:", outTransition.id)
                       await saveProject()
                     } catch (error) {
-                      console.error("Failed to delete transition:", error)
+                      logger.error("Failed to delete transition:", error)
                     }
                   }}
                 />
@@ -271,7 +273,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
             // This would typically trigger a roll edit operation
-            console.log("Roll edit started:", leftClipId, rightClipId, mouseX)
+            logger.info("Roll edit started:", leftClipId, rightClipId, mouseX)
           }}
         />
       </div>
@@ -283,7 +285,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             collisions={collisions}
             compact
             onResolve={(collision) => {
-              console.log("Resolve collision:", collision)
+              logger.info("Resolve collision:", collision)
               // TODO: Интегрировать с системой исправления коллизий
             }}
           />

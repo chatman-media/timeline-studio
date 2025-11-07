@@ -1,6 +1,9 @@
 // Telegram Bot API service для загрузки видео
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
+
+const logger = createLogger({ module: "TelegramService" })
 
 export interface TelegramUploadResult {
   success: boolean
@@ -40,7 +43,7 @@ export async function getUserInfo(accessToken?: string): Promise<any> {
 
     return data.result
   } catch (error) {
-    console.error("Failed to get Telegram bot info:", error)
+    logger.error("Failed to get Telegram bot info:", error)
     throw error
   }
 }
@@ -118,7 +121,7 @@ export async function uploadVideo(
       id: videoFileId,
     }
   } catch (error) {
-    console.error("Telegram upload failed:", error)
+    logger.error("Telegram upload failed:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -218,7 +221,7 @@ export async function getChatInfo(chatId: string): Promise<any> {
 
     return data.result
   } catch (error) {
-    console.error("Failed to get Telegram chat info:", error)
+    logger.error("Failed to get Telegram chat info:", error)
     throw error
   }
 }
@@ -244,7 +247,7 @@ export async function sendTestMessage(chatId: string, message = "Test message fr
     const data = await response.json()
     return data.ok
   } catch (error) {
-    console.error("Failed to send test message:", error)
+    logger.error("Failed to send test message:", error)
     return false
   }
 }

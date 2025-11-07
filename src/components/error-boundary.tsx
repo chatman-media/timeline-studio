@@ -3,6 +3,10 @@
 import { AlertTriangle, RefreshCw } from "lucide-react"
 import { Component, type ErrorInfo, type ReactNode } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ErrorBoundary")
+
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -27,7 +31,10 @@ export class AppErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("AppErrorBoundary caught an error:", error, errorInfo)
+    logger.errorSync("AppErrorBoundary caught an error", {
+      error,
+      componentStack: errorInfo.componentStack,
+    })
   }
 
   componentDidMount() {

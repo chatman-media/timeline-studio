@@ -8,11 +8,12 @@ import { useCallback, useEffect, useRef } from "react"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineSelection } from "@/features/timeline/hooks/use-timeline-selection"
 import { usePlayer } from "@/features/video-player/services/player-provider"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { EffectPipelineManager } from "../services/effect-pipeline-manager"
 import type { PreviewRenderer } from "../services/preview-renderer"
-
 import type { Effect, GPUTier, PreviewQuality } from "../types"
+
+const logger = createLogger({ module: "UseTimelineIntegration" })
 
 interface UseTimelineIntegrationOptions {
   renderer: PreviewRenderer | null
@@ -119,7 +120,7 @@ export function useTimelineIntegration({ renderer, pipelineManager, quality }: U
 
       return renderedFrame
     } catch (error) {
-      console.error("Failed to update preview:", error)
+      logger.error("Failed to update preview:", error)
       return null
     }
   }, [renderer, currentMediaFile, currentTime, getActiveEffects])

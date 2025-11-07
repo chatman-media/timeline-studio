@@ -21,6 +21,10 @@ import type {
   VideoMetadata,
 } from "@/domains/ai-services/types/interfaces"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("FfmpegAnalysisService")
+
 // Реэкспортируем типы для обратной совместимости
 export type {
   AudioAnalysisResult,
@@ -61,7 +65,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка получения метаданных видео:", error)
+      logger.error("Ошибка получения метаданных видео:", { error })
       throw new Error(`Не удалось получить метаданные: ${String(error)}`)
     }
   }
@@ -78,7 +82,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка детекции сцен:", error)
+      logger.error("Ошибка детекции сцен:", { error })
       throw new Error(`Не удалось определить сцены: ${String(error)}`)
     }
   }
@@ -96,7 +100,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка анализа качества:", error)
+      logger.error("Ошибка анализа качества:", { error })
       throw new Error(`Не удалось проанализировать качество: ${String(error)}`)
     }
   }
@@ -113,7 +117,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка детекции тишины:", error)
+      logger.error("Ошибка детекции тишины:", { error })
       throw new Error(`Не удалось определить тишину: ${String(error)}`)
     }
   }
@@ -129,7 +133,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка анализа движения:", error)
+      logger.error("Ошибка анализа движения:", { error })
       throw new Error(`Не удалось проанализировать движение: ${String(error)}`)
     }
   }
@@ -153,7 +157,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка извлечения ключевых кадров:", error)
+      logger.error("Ошибка извлечения ключевых кадров:", { error })
       throw new Error(`Не удалось извлечь ключевые кадры: ${String(error)}`)
     }
   }
@@ -188,7 +192,7 @@ export class FFmpegAnalysisService {
 
       return imageData
     } catch (error) {
-      console.error("Ошибка извлечения кадра:", error)
+      logger.error("Ошибка извлечения кадра:", { error })
       return null
     }
   }
@@ -205,7 +209,7 @@ export class FFmpegAnalysisService {
       })
       return result
     } catch (error) {
-      console.error("Ошибка анализа аудио:", error)
+      logger.error("Ошибка анализа аудио:", { error })
       throw new Error(`Не удалось проанализировать аудио: ${String(error)}`)
     }
   }
@@ -247,7 +251,7 @@ export class FFmpegAnalysisService {
         audio,
       }
     } catch (error) {
-      console.error("Ошибка комплексного анализа:", error)
+      logger.error("Ошибка комплексного анализа:", { error })
       throw new Error(`Не удалось выполнить комплексный анализ: ${String(error)}`)
     }
   }
@@ -278,7 +282,7 @@ export class FFmpegAnalysisService {
         estimatedScenes: quickQuality.estimatedScenes,
       }
     } catch (error) {
-      console.error("Ошибка быстрого анализа:", error)
+      logger.error("Ошибка быстрого анализа:", { error })
       throw new Error(`Не удалось выполнить быстрый анализ: ${String(error)}`)
     }
   }

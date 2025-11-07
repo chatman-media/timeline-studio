@@ -6,6 +6,9 @@
 import { env, type InferenceSession, Tensor } from "onnxruntime-web"
 
 import type { YoloDetection } from "@/features/recognition/types/yolo"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("onnx-runtime")
 
 // Настройка ONNX Runtime
 if (typeof window !== "undefined") {
@@ -159,9 +162,9 @@ export class ONNXRuntimeService {
       }
 
       this.isInitialized = true
-      console.log("ONNX Runtime Service initialized successfully")
+      logger.info("ONNX Runtime Service initialized successfully")
     } catch (error) {
-      console.error("Failed to initialize ONNX Runtime Service:", error)
+      logger.error("Failed to initialize ONNX Runtime Service", { error })
       throw error
     }
   }
@@ -171,7 +174,7 @@ export class ONNXRuntimeService {
    */
   private async loadModel(model: ONNXModel): Promise<void> {
     try {
-      console.log(`Loading ONNX model: ${model.name}`)
+      logger.info("Loading ONNX model", { modelName: model.name })
 
       // В реальном приложении модель загружается с сервера
       // Сейчас создаем mock-сессию
@@ -182,9 +185,9 @@ export class ONNXRuntimeService {
         model,
       })
 
-      console.log(`Model ${model.name} loaded successfully`)
+      logger.info("Model loaded successfully", { modelName: model.name })
     } catch (error) {
-      console.error(`Failed to load model ${model.name}:`, error)
+      logger.error("Failed to load model", { error, modelName: model.name })
       // Продолжаем работу без этой модели
     }
   }
@@ -225,7 +228,7 @@ export class ONNXRuntimeService {
       // Обработка результатов
       return this.postprocessYOLO(results, modelSession.model)
     } catch (error) {
-      console.error("YOLO inference failed:", error)
+      logger.error("YOLO inference failed", { error })
       throw error
     }
   }
@@ -426,7 +429,7 @@ export class ONNXRuntimeService {
       try {
         await session.session.release?.()
       } catch (error) {
-        console.error(`Failed to release session ${name}:`, error)
+        logger.error("Error occurred", { error: `Failed to release session ${name}:`, error })
       }
     }
     this.sessions.clear()

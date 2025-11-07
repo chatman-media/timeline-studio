@@ -3,6 +3,10 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "SpeedSettings" })
+
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
@@ -107,7 +111,7 @@ export function SpeedSettings() {
 
   const handleApplySpeedRampingPreset = (presetId: string) => {
     // Применение пресета к выбранным клипам
-    console.log("Applying speed ramping preset:", presetId)
+    logger.info("Applying speed ramping preset", { presetId })
   }
 
   const handleReset = () => {
@@ -126,7 +130,7 @@ export function SpeedSettings() {
 
   const handleApply = () => {
     // Применить настройки к выбранным клипам
-    console.log("Applying speed settings:", settings)
+    logger.info("Applying speed settings", { settings })
   }
 
   return (

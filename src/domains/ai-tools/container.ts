@@ -3,10 +3,13 @@
  * Управляет зависимостями и жизненным циклом сервисов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { ConsoleAIToolLogger, NoOpAIToolLogger } from "./base/base-ai-tool"
 import { ExecutionEngine } from "./base/execution-engine"
 import { ToolRegistry } from "./base/tool-registry"
 import type { AIToolLogger, AIToolsConfig } from "./types"
+
+const logger = createLogger("Container")
 
 /**
  * Интерфейс DI контейнера для AI Tools
@@ -91,7 +94,7 @@ export class AIToolsContainer implements IAIToolsContainer {
     }
 
     try {
-      console.log("[AIToolsContainer] Инициализация контейнера AI Tools...")
+      logger.info("[AIToolsContainer] Инициализация контейнера AI Tools...")
 
       // Настраиваем ExecutionEngine
       const executionEngine = this.getExecutionEngine()
@@ -122,9 +125,9 @@ export class AIToolsContainer implements IAIToolsContainer {
       }
 
       this.initialized = true
-      console.log("[AIToolsContainer] Контейнер AI Tools инициализирован успешно")
+      logger.info("[AIToolsContainer] Контейнер AI Tools инициализирован успешно")
     } catch (error) {
-      console.error("[AIToolsContainer] Ошибка инициализации контейнера:", error)
+      logger.error("[AIToolsContainer] Ошибка инициализации контейнера:", { error })
       throw error
     }
   }
@@ -138,7 +141,7 @@ export class AIToolsContainer implements IAIToolsContainer {
     }
 
     try {
-      console.log("[AIToolsContainer] Завершение работы контейнера AI Tools...")
+      logger.info("[AIToolsContainer] Завершение работы контейнера AI Tools...")
 
       // Сбрасываем состояние ExecutionEngine
       const executionEngine = this.getExecutionEngine()
@@ -149,9 +152,9 @@ export class AIToolsContainer implements IAIToolsContainer {
       toolRegistry.clear()
 
       this.initialized = false
-      console.log("[AIToolsContainer] Контейнер AI Tools завершил работу")
+      logger.info("[AIToolsContainer] Контейнер AI Tools завершил работу")
     } catch (error) {
-      console.error("[AIToolsContainer] Ошибка при завершении работы контейнера:", error)
+      logger.error("[AIToolsContainer] Ошибка при завершении работы контейнера:", { error })
       throw error
     }
   }
@@ -212,7 +215,7 @@ export class AIToolsContainer implements IAIToolsContainer {
    */
   public registerService<T>(name: string, service: T): void {
     this.services.set(name, service)
-    console.log(`[AIToolsContainer] Зарегистрирован сервис: ${name}`)
+    logger.info("[AIToolsContainer] Зарегистрирован сервис:", { name })
   }
 
   /**

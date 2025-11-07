@@ -15,6 +15,10 @@ import type {
   VideoCompositionAnalysis,
 } from "../../../../features/montage-planner/types/index"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MontagePlannerAiIntegration")
+
 export interface MontagePlannerAIService {
   // Video analysis using shared AI services
   analyzeVideoWithAI(file: MediaFile): Promise<VideoAnalysis>
@@ -52,7 +56,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
 
       this.initialized = true
     } catch (error) {
-      console.error("[MontagePlannerAI] Failed to initialize AI services:", error)
+      logger.error("[MontagePlannerAI] Failed to initialize AI services:", { error })
       throw error
     }
   }
@@ -80,7 +84,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
       // Convert AI service response to VideoAnalysis format
       return this.convertToVideoAnalysis(aiAnalysis, file)
     } catch (error) {
-      console.error("[MontagePlannerAI] Video analysis failed:", error)
+      logger.error("[MontagePlannerAI] Video analysis failed:", { error })
       // Fallback to default analysis
       return this.getDefaultVideoAnalysis(file)
     }
@@ -104,7 +108,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
       // Convert to AudioAnalysis format
       return this.convertToAudioAnalysis(audioData)
     } catch (error) {
-      console.error("[MontagePlannerAI] Audio analysis failed:", error)
+      logger.error("[MontagePlannerAI] Audio analysis failed:", { error })
       return this.getDefaultAudioAnalysis()
     }
   }
@@ -141,7 +145,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
         },
       }
     } catch (error) {
-      console.error("[MontagePlannerAI] YOLO detection failed:", error)
+      logger.error("[MontagePlannerAI] YOLO detection failed:", { error })
       throw error
     }
   }
@@ -174,7 +178,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
         issues: [],
       }
     } catch (error) {
-      console.error("[MontagePlannerAI] Quality analysis failed:", error)
+      logger.error("[MontagePlannerAI] Quality analysis failed:", { error })
       throw error
     }
   }
@@ -215,7 +219,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
 
       return scores
     } catch (error) {
-      console.error("[MontagePlannerAI] Moment scoring failed:", error)
+      logger.error("[MontagePlannerAI] Moment scoring failed:", { error })
       // Return existing scores
       return fragments.map((f) => f.score)
     }
@@ -245,7 +249,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
 
       return await (this.aiService as any).complete?.(prompt)
     } catch (error) {
-      console.error("[MontagePlannerAI] Description generation failed:", error)
+      logger.error("[MontagePlannerAI] Description generation failed:", { error })
       return `A ${style} montage with ${fragments.length} carefully selected moments`
     }
   }

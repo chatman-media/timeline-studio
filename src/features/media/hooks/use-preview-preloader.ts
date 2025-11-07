@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import { useMediaPreview } from "./use-media-preview"
+
+const logger = createLogger("PreviewPreloader")
 
 export interface PreviewPreloaderOptions {
   /**
@@ -68,9 +72,9 @@ export function usePreviewPreloader(options: PreviewPreloaderOptions = {}) {
             chunk.map(async (item) => {
               try {
                 await getPreviewData(item.fileId)
-                console.log(`[PreviewPreloader] Preloaded preview for: ${item.fileId}`)
+                logger.debugSync("Preloaded preview", { fileId: item.fileId })
               } catch (error) {
-                console.error(`[PreviewPreloader] Failed to preload preview for: ${item.fileId}`, error)
+                logger.errorSync("Failed to preload preview", { fileId: item.fileId, error })
               }
             }),
           )
@@ -118,9 +122,11 @@ export function usePreviewPreloader(options: PreviewPreloaderOptions = {}) {
 
         // Запускаем предзагрузку
         if (itemsToPreload.length > 0) {
-          console.log(
-            `[PreviewPreloader] Preloading ${itemsToPreload.length} previews for range [${preloadStart}, ${preloadEnd}]`,
-          )
+          logger.debugSync("Preloading previews", {
+            count: itemsToPreload.length,
+            rangeStart: preloadStart,
+            rangeEnd: preloadEnd,
+          })
           void preloadPreviews(itemsToPreload)
         }
       }, debounceDelay)

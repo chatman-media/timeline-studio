@@ -3,6 +3,7 @@
  * Автоматически загружает все эффекты из JSON файлов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect } from "../types/unified-effects"
 // Импорт эффектов по категориям
 import artisticEffects from "./effects/artistic-effects.json"
@@ -13,6 +14,8 @@ import distortionEffects from "./effects/distortion-effects.json"
 import motionEffects from "./effects/motion-effects.json"
 import technicalEffects from "./effects/technical-effects.json"
 import vintageEffects from "./effects/vintage-effects.json"
+
+const logger = createLogger({ module: "EffectsLoader" })
 
 // Типизация для мигрированных данных
 interface MigratedEffectsData {
@@ -84,14 +87,14 @@ export function loadEffects(effectManager: any) {
       effectManager.registerEffect(effect)
       loaded++
     } catch (error) {
-      console.error(`Failed to register effect ${effect.id}:`, error)
+      logger.error(`Failed to register effect ${effect.id}:`, error)
       errors++
     }
   }
 
-  console.log(`✅ Loaded ${loaded} effects`)
+  logger.info(`✅ Loaded ${loaded} effects`)
   if (errors > 0) {
-    console.warn(`⚠️  Failed to load ${errors} effects`)
+    logger.warn(`⚠️  Failed to load ${errors} effects`)
   }
 
   return { loaded, errors }

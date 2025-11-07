@@ -6,10 +6,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 
 import { FrameCaptureService } from "../services/frame-capture-service"
 import { usePlayer } from "../services/player-provider"
+
+const logger = createLogger("video-player:use-player-ai-analysis")
 
 interface PlayerAIAnalysisState {
   isAnalyzing: boolean
@@ -37,7 +39,7 @@ export interface PlayerAIAnalysisHook {
 }
 
 export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
-  logInfo("[usePlayerAIAnalysis] Инициализация хука")
+  logger.debug("hook initialized")
 
   const { currentTime, isPlaying, duration } = usePlayer()
 
@@ -76,7 +78,7 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
         // захват кадров через backend API вместо прямого доступа к video элементу
 
         // Временно отключаем анализ кадров
-        console.log(`Frame analysis disabled - needs backend implementation at ${currentTime}s`)
+        logger.debug("frame analysis disabled - needs backend implementation", { currentTime })
 
         // Временная симуляция анализа
         setState((prev) => ({
@@ -106,7 +108,7 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
           ],
         }))
       } catch (error) {
-        logError("[usePlayerAIAnalysis] Ошибка анализа кадра", error)
+        logger.error("frame analysis error", { error })
       }
     }, intervalMs)
   }, [state.isAnalyzing, state.frameAnalysisRate, isPlaying, currentTime, frameCaptureService])

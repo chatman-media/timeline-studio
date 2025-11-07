@@ -1,13 +1,15 @@
 import { useCallback, useRef } from "react"
 import type { MediaFile } from "@/features/media/types/media"
-import { logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:use-video-element")
 
 /**
  * Хук для создания и управления видео элементами
  * @returns Функции для работы с видео элементами
  */
 export function useVideoElement() {
-  logInfo("[useVideoElement] Инициализация хука")
+  logger.debug("hook initialized")
 
   // Используем ref для отслеживания всех созданных видео элементов
   const allVideoElementsRef = useRef<Set<HTMLVideoElement>>(new Set())
@@ -32,7 +34,7 @@ export function useVideoElement() {
 
       // Если видео элемента нет или он был удален из DOM, создаем новый
       if (!videoElement || !document.body.contains(videoElement)) {
-        console.log(`[useVideoElement] Создаем новый видео элемент для ${video.id}`)
+        logger.debug("creating new video element", { videoId: video.id })
 
         // Создаем видео элемент программно
         videoElement = document.createElement("video")
@@ -60,15 +62,16 @@ export function useVideoElement() {
 
         // Добавляем видео элемент в глобальный реестр для отслеживания
         allVideoElementsRef.current.add(videoElement)
-        console.log(
-          `[useVideoElement] Добавлен видео элемент в глобальный реестр: ${video.id}, всего элементов: ${allVideoElementsRef.current.size}`,
-        )
+        logger.debug("video element added to registry", {
+          videoId: video.id,
+          totalElements: allVideoElementsRef.current.size,
+        })
 
         // Определяем источник видео
         const source = video.startTime !== undefined ? "timeline" : "media"
         setVideoSource(video.id, source)
       } else {
-        console.log(`[useVideoElement] Используем существующий видео элемент для ${video.id}`)
+        logger.debug("using existing video element", { videoId: video.id })
       }
 
       return videoElement
@@ -84,7 +87,7 @@ export function useVideoElement() {
   const updateVideoSrc = useCallback((videoElement: HTMLVideoElement, video: MediaFile) => {
     // Проверяем, что src установлен правильно
     if (videoElement && !videoElement.src?.includes(video.id) && video.path) {
-      console.log(`[useVideoElement] Обновляем src для видео ${video.id}: ${video.path}`)
+      logger.debug("updating video src", { videoId: video.id, path: video.path })
       videoElement.src = video.path
       videoElement.load()
     }
@@ -107,7 +110,7 @@ export function useVideoElement() {
       unusedVideoIds.forEach((id) => {
         const videoElement = videoRefs[id]
         if (videoElement && document.body.contains(videoElement)) {
-          console.log(`[useVideoElement] Удаляем неиспользуемый видео элемент: ${id}`)
+          logger.debug("removing unused video element", { videoId: id })
 
           // Останавливаем воспроизведение
           videoElement.pause()
@@ -124,7 +127,7 @@ export function useVideoElement() {
         }
       })
 
-      console.log(`[useVideoElement] Очищено ${unusedVideoIds.length} неиспользуемых видео элементов`)
+      logger.debug("cleaned up unused video elements", { count: unusedVideoIds.length })
     },
     [],
   )

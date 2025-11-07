@@ -8,6 +8,10 @@ import type { TimelineTransition } from "@/features/timeline/types/timeline-tran
 
 import type { ExportSettings } from "../types/export-types"
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "TransitionExportService" })
   FFMPEG_TRANSITION_TEMPLATES,
   type FFmpegTransitionCommand,
   type FFmpegTransitionConfig,
@@ -71,7 +75,7 @@ export class TransitionExportService {
         const resource = project.resources.transitions.find((r) => r.id === transition.transitionId)
 
         if (!resource) {
-          console.warn(`Transition resource not found: ${transition.transitionId}`)
+          logger.warn(`Transition resource not found: ${transition.transitionId}`)
           continue
         }
 
@@ -115,7 +119,7 @@ export class TransitionExportService {
           configs.push(config)
         }
       } catch (error) {
-        console.error(`Failed to create config for transition ${transitionInfo.transition.id}:`, error)
+        logger.error(`Failed to create config for transition ${transitionInfo.transition.id}:`, error)
 
         if (!this.optimizationSettings.skipFailedTransitions) {
           throw error
@@ -144,7 +148,7 @@ export class TransitionExportService {
     const inputB = transition.endClipId ? clipPaths.get(transition.endClipId) : null
 
     if (!inputA || !inputB) {
-      console.warn(`Missing clip paths for transition ${transition.id}`)
+      logger.warn(`Missing clip paths for transition ${transition.id}`)
       return null
     }
 

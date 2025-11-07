@@ -1,8 +1,10 @@
 import type { BaseEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { LoadResult } from "../types/browser-resources-provider"
+
+const logger = createLogger({ module: "ResourceLoaders" })
 
 /**
  * Ленивые загрузчики ресурсов для оптимизации памяти
@@ -25,7 +27,7 @@ export async function loadEffectsLazy(): Promise<LoadResult<BaseEffect[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    console.error("Failed to load effects:", error)
+    logger.error("Failed to load effects:", error)
     return {
       success: false,
       data: [],
@@ -52,7 +54,7 @@ export async function loadFiltersLazy(): Promise<LoadResult<VideoFilter[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    console.error("Failed to load filters:", error)
+    logger.error("Failed to load filters:", error)
     return {
       success: false,
       data: [],
@@ -79,7 +81,7 @@ export async function loadTransitionsLazy(): Promise<LoadResult<Transition[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    console.error("Failed to load transitions:", error)
+    logger.error("Failed to load transitions:", error)
     return {
       success: false,
       data: [],

@@ -5,8 +5,8 @@
 
 import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useMemo } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 import { useTimeline } from "../../hooks/use-timeline"
@@ -21,6 +21,8 @@ import { TransitionCollisionIndicator } from "../transition/transition-collision
 import { TransitionDropZone } from "../transition/transition-drop-zone"
 import { TimelineTransitionComponent } from "../transitions/timeline-transition"
 import { TrackRollHandles } from "./track-roll-handles"
+
+const logger = createLogger({ module: "VirtualizedTrackContent" })
 
 interface VirtualizedTrackContentProps {
   track: TimelineTrack
@@ -98,9 +100,9 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
       try {
         addTransitionBetweenClips(project, track.id, leftClipId, rightClipId, transition)
         await saveProject()
-        console.log("Переход успешно добавлен")
+        logger.info("Переход успешно добавлен")
       } catch (error) {
-        console.error("Failed to add transition:", error)
+        logger.error("Failed to add transition:", error)
       }
     },
     [project, track.id, saveProject],
@@ -259,10 +261,10 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                   timeScale={timeScale}
                   trackHeight={track.height}
                   onUpdate={(updates) => {
-                    console.log("Updating transition:", outTransition.id, updates)
+                    logger.info("Updating transition:", outTransition.id, updates)
                   }}
                   onDelete={async () => {
-                    console.log("Deleting transition:", outTransition.id)
+                    logger.info("Deleting transition:", outTransition.id)
                     await saveProject()
                   }}
                 />
@@ -290,7 +292,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
           }}
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
-            console.log("Roll edit started:", leftClipId, rightClipId, mouseX)
+            logger.info("Roll edit started:", leftClipId, rightClipId, mouseX)
           }}
         />
       </div>
@@ -302,7 +304,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
             collisions={collisions}
             compact
             onResolve={(collision) => {
-              console.log("Resolve collision:", collision)
+              logger.info("Resolve collision:", collision)
             }}
           />
         </div>

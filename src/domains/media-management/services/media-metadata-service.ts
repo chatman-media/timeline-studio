@@ -6,6 +6,11 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import type {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaMetadataService")
+
   MediaAnalysisResult,
   MediaMetadata,
   MediaMetadataService,
@@ -18,17 +23,17 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    * Извлечение метаданных из медиа файла
    */
   async extractMetadata(filePath: string): Promise<MediaMetadata> {
-    console.log(`[Media Metadata] Extracting metadata from: ${filePath}`)
+    logger.info("[Media Metadata] Extracting metadata from:", { filePath })
 
     try {
       const metadata = await invoke<MediaMetadata>("extract_media_metadata", {
         path: filePath,
       })
 
-      console.log("[Media Metadata] Extracted metadata:", metadata)
+      logger.debug("[Media Metadata] Extracted metadata:", { data: metadata })
       return metadata
     } catch (error) {
-      console.error("[Media Metadata] Failed to extract metadata:", error)
+      logger.error("[Media Metadata] Failed to extract metadata:", { error })
       throw new Error(`Failed to extract metadata: ${error}`)
     }
   }
@@ -37,7 +42,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    * Генерация thumbnail для видео файла
    */
   async generateThumbnail(filePath: string, time: number = 0): Promise<string> {
-    console.log(`[Media Metadata] Generating thumbnail for: ${filePath} at ${time}s`)
+    logger.info("[Media Metadata] Generating thumbnail for: ${filePath} at", { time })
 
     try {
       const thumbnailPath = await invoke<string>("generate_video_thumbnail", {
@@ -45,10 +50,10 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         time,
       })
 
-      console.log(`[Media Metadata] Generated thumbnail: ${thumbnailPath}`)
+      logger.info("[Media Metadata] Generated thumbnail:", { thumbnailPath })
       return thumbnailPath
     } catch (error) {
-      console.error("[Media Metadata] Failed to generate thumbnail:", error)
+      logger.error("[Media Metadata] Failed to generate thumbnail:", { error })
       throw new Error(`Failed to generate thumbnail: ${error}`)
     }
   }
@@ -57,7 +62,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    * Полный анализ медиа файла
    */
   async analyzeMedia(filePath: string): Promise<MediaAnalysisResult> {
-    console.log(`[Media Metadata] Analyzing media: ${filePath}`)
+    logger.info("[Media Metadata] Analyzing media:", { filePath })
 
     try {
       // Извлекаем метаданные
@@ -73,21 +78,21 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         try {
           thumbnailPath = await this.generateThumbnail(filePath)
         } catch (error) {
-          console.warn("[Media Metadata] Thumbnail generation failed:", error)
+          logger.warn("[Media Metadata] Thumbnail generation failed:", { data: error })
         }
 
         // Детекция сцен
         try {
           scenes = await this.detectScenes(filePath)
         } catch (error) {
-          console.warn("[Media Metadata] Scene detection failed:", error)
+          logger.warn("[Media Metadata] Scene detection failed:", { data: error })
         }
       } else if (metadata.type === "Audio") {
         // Генерируем waveform для аудио
         try {
           waveformData = await this.generateWaveform(filePath)
         } catch (error) {
-          console.warn("[Media Metadata] Waveform generation failed:", error)
+          logger.warn("[Media Metadata] Waveform generation failed:", { data: error })
         }
       }
 
@@ -102,7 +107,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         quality,
       }
     } catch (error) {
-      console.error("[Media Metadata] Media analysis failed:", error)
+      logger.error("[Media Metadata] Media analysis failed:", { error })
       throw new Error(`Media analysis failed: ${error}`)
     }
   }
@@ -111,17 +116,17 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    * Получение длительности медиа файла
    */
   async getMediaDuration(filePath: string): Promise<number> {
-    console.log(`[Media Metadata] Getting duration for: ${filePath}`)
+    logger.info("[Media Metadata] Getting duration for:", { filePath })
 
     try {
       const duration = await invoke<number>("get_media_duration", {
         path: filePath,
       })
 
-      console.log(`[Media Metadata] Duration: ${duration}s`)
+      logger.info("[Media Metadata] Duration:", { duration })
       return duration
     } catch (error) {
-      console.error("[Media Metadata] Failed to get duration:", error)
+      logger.error("[Media Metadata] Failed to get duration:", { error })
       throw new Error(`Failed to get media duration: ${error}`)
     }
   }
@@ -135,10 +140,10 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         path: filePath,
       })
 
-      console.log(`[Media Metadata] Detected ${scenes.length} scenes`)
+      logger.info("[Media Metadata] Detected", { scenes.length })
       return scenes
     } catch (error) {
-      console.error("[Media Metadata] Scene detection failed:", error)
+      logger.error("[Media Metadata] Scene detection failed:", { error })
       return []
     }
   }
@@ -152,10 +157,10 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         path: filePath,
       })
 
-      console.log(`[Media Metadata] Generated waveform with ${waveformData.length} samples`)
+      logger.info("[Media Metadata] Generated waveform with", { waveformData.length })
       return new Float32Array(waveformData)
     } catch (error) {
-      console.error("[Media Metadata] Waveform generation failed:", error)
+      logger.error("[Media Metadata] Waveform generation failed:", { error })
       return new Float32Array(0)
     }
   }

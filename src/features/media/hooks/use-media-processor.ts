@@ -4,6 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import { cacheMediaMetadata, getCachedMetadata } from "@/features/video-compiler/services/metadata-cache-service"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaProcessor")
 
 // Типы событий процессора
 export interface DiscoveredFile {
@@ -78,7 +81,7 @@ async function cacheMetadataIfValid(metadata: MediaFile) {
         cached_at: new Date().toISOString(),
       })
     } catch (error) {
-      console.error("Failed to cache metadata:", error)
+      logger.errorSync("Failed to cache metadata", { error })
     }
   }
 }
@@ -160,7 +163,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       })
       return files
     } catch (error) {
-      console.error("Failed to scan folder:", error)
+      logger.errorSync("Failed to scan folder", { folderPath, error })
       throw error
     } finally {
       setIsProcessing(false)
@@ -181,7 +184,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
         })
         return files
       } catch (error) {
-        console.error("Failed to scan folder with thumbnails:", error)
+        logger.errorSync("Failed to scan folder with thumbnails", { folderPath, width, height, error })
         throw error
       } finally {
         setIsProcessing(false)
@@ -207,7 +210,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       // Логируем статистику кэша
       const cachedCount = cachedMetadata.filter((m) => m !== null).length
       if (cachedCount > 0) {
-        console.log(`Found ${cachedCount}/${filePaths.length} files in metadata cache`)
+        logger.infoSync("Found files in metadata cache", { cachedCount, totalCount: filePaths.length })
       }
 
       const files = await invoke<MediaFile[]>("process_media_files", {
@@ -215,7 +218,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       })
       return files
     } catch (error) {
-      console.error("Failed to process files:", error)
+      logger.errorSync("Failed to process files", { filesCount: filePaths.length, error })
       throw error
     } finally {
       setIsProcessing(false)
@@ -236,7 +239,12 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
         })
         return files
       } catch (error) {
-        console.error("Failed to process files with thumbnails:", error)
+        logger.errorSync("Failed to process files with thumbnails", {
+          filesCount: filePaths.length,
+          width,
+          height,
+          error,
+        })
         throw error
       } finally {
         setIsProcessing(false)
@@ -255,7 +263,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       setIsProcessing(false)
       setProgress({ current: 0, total: 0 })
     } catch (error) {
-      console.error("Failed to cancel processing:", error)
+      logger.errorSync("Failed to cancel processing", { error })
     }
   }, [])
 

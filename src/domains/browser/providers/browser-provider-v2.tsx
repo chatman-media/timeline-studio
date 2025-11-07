@@ -8,6 +8,11 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 import { BackendSync } from "@/features/app-state/services/backend-sync"
 import type {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("BrowserProviderV2")
+
   BrowserState,
   BrowserTab,
   ProjectCommand,
@@ -97,7 +102,7 @@ export function BrowserProviderV2({ children, backendSync }: BrowserProviderV2Pr
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to refresh browser state")
-      console.error("Failed to refresh browser state:", err)
+      logger.error("Failed to refresh browser state:", { error: err })
     } finally {
       setIsLoading(false)
     }

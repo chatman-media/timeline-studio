@@ -3,6 +3,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AudioCommands")
 
 /**
  * Audio Analysis Commands
@@ -33,7 +36,7 @@ export async function analyzeAudioPeaks(
     threshold?: number
   },
 ): Promise<AudioPeakData> {
-  console.log("[Audio Commands] Analyzing audio peaks:", audioPath)
+  logger.infoSync("Analyzing audio peaks", { audioPath })
   return invoke("analyze_audio_peaks", {
     audioPath,
     options: options || {},
@@ -48,7 +51,7 @@ export async function detectSpeechOnsets(
     threshold?: number
   },
 ): Promise<SpeechOnsetData> {
-  console.log("[Audio Commands] Detecting speech onsets:", audioPath)
+  logger.infoSync("Detecting speech onsets", { audioPath })
   return invoke("detect_speech_onsets", {
     audioPath,
     options: options || {},
@@ -103,7 +106,7 @@ export async function whisperTranscribeOpenAI(
     temperature?: number
   },
 ): Promise<TranscriptionResult> {
-  console.log("[Audio Commands] Transcribing with OpenAI Whisper:", audioPath)
+  logger.infoSync("Transcribing with OpenAI Whisper", { audioPath })
   return invoke("whisper_transcribe_openai", {
     audioPath,
     options: options || {},
@@ -119,7 +122,7 @@ export async function whisperTranslateOpenAI(
     temperature?: number
   },
 ): Promise<TranslationResult> {
-  console.log("[Audio Commands] Translating with OpenAI Whisper:", audioPath)
+  logger.infoSync("Translating with OpenAI Whisper", { audioPath, targetLanguage })
   return invoke("whisper_translate_openai", {
     audioPath,
     targetLanguage,
@@ -139,7 +142,7 @@ export async function whisperTranscribeLocal(
     outputFormat?: string
   },
 ): Promise<TranscriptionResult> {
-  console.log("[Audio Commands] Transcribing with local Whisper:", audioPath)
+  logger.infoSync("Transcribing with local Whisper", { audioPath, model: options?.model })
   return invoke("whisper_transcribe_local", {
     audioPath,
     options: options || {},
@@ -151,7 +154,7 @@ export async function getWhisperLocalModels(): Promise<string[]> {
 }
 
 export async function downloadWhisperModel(modelName: string, _onProgress?: (progress: number) => void): Promise<void> {
-  console.log("[Audio Commands] Downloading Whisper model:", modelName)
+  logger.infoSync("Downloading Whisper model", { modelName })
   // Note: Progress callback would need special handling in Tauri
   return invoke("whisper_download_model", {
     modelName,
@@ -175,7 +178,7 @@ export async function initWhisperPython(): Promise<{
   version?: string
   availableModels: string[]
 }> {
-  console.log("[Audio Commands] Initializing Faster Whisper")
+  logger.infoSync("Initializing Faster Whisper")
   return invoke("init_whisper_python")
 }
 
@@ -190,7 +193,7 @@ export async function transcribeWithFasterWhisper(
     temperature?: number
   },
 ): Promise<TranscriptionResult> {
-  console.log("[Audio Commands] Transcribing with Faster Whisper:", audioPath)
+  logger.infoSync("Transcribing with Faster Whisper", { audioPath, model: options?.modelSize })
   return invoke("transcribe_with_faster_whisper", {
     audioPath,
     options: options || {},
@@ -209,7 +212,7 @@ export async function getWhisperModels(): Promise<
 }
 
 export async function downloadWhisperModelFaster(modelName: string): Promise<void> {
-  console.log("[Audio Commands] Downloading Faster Whisper model:", modelName)
+  logger.infoSync("Downloading Faster Whisper model", { modelName })
   return invoke("download_whisper_model", {
     modelName,
   })
@@ -229,7 +232,7 @@ export async function extractAudioForWhisper(
     duration?: number
   },
 ): Promise<string> {
-  console.log("[Audio Commands] Extracting audio for Whisper:", videoPath)
+  logger.infoSync("Extracting audio for Whisper", { videoPath })
   return invoke("extract_audio_for_whisper", {
     videoPath,
     outputPath,
@@ -246,7 +249,7 @@ export async function prepareAudioForWhisper(
     targetChannels?: number
   },
 ): Promise<string> {
-  console.log("[Audio Commands] Preparing audio for Whisper:", audioPath)
+  logger.infoSync("Preparing audio for Whisper", { audioPath })
   return invoke("prepare_audio_for_whisper", {
     audioPath,
     options: options || {},
@@ -269,7 +272,7 @@ export async function generateSubtitlesFromTranscription(
   formattedText: string
   format: string
 }> {
-  console.log("[Audio Commands] Generating subtitles from transcription")
+  logger.debugSync("Generating subtitles from transcription", { format: options?.format })
   return invoke("generate_subtitles_from_transcription", {
     transcriptionResult,
     options: options || {},

@@ -1,6 +1,9 @@
 import dayjs from "dayjs"
 
 import { DEFAULT_LANGUAGE, formatDateByLanguage, type LanguageCode } from "@/i18n/constants"
+import { createLogger } from "./tauri-logger"
+
+const logger = createLogger("DateUtils")
 
 /**
  * Форматирует UNIX-timestamp в строку даты с учетом текущего языка приложения
@@ -31,7 +34,7 @@ export function formatDate(timestamp: number): string {
       }
     }
   } catch (error) {
-    console.error("Error getting current language:", error)
+    logger.errorSync("Error getting current language", { error })
   }
 
   // Используем универсальный метод форматирования даты

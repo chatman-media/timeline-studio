@@ -5,9 +5,13 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import { type ModalData, type ModalType, modalMachine } from "../machines/modal-machine"
 import { updateMachine } from "../machines/update-machine"
 import type { SystemNotification } from "../types"
+
+const logger = createLogger("SystemIntegrationOrchestrator")
+
 
 export class SystemIntegrationOrchestrator {
   private modalActor: ActorRefFrom<typeof modalMachine>
@@ -17,7 +21,7 @@ export class SystemIntegrationOrchestrator {
   private notificationCounter = 0
 
   constructor() {
-    console.log("[System Integration Orchestrator] Initializing...")
+    logger.info("[System Integration Orchestrator] Initializing...")
 
     // Создаем акторы для машин
     this.modalActor = createActor(modalMachine)
@@ -30,7 +34,7 @@ export class SystemIntegrationOrchestrator {
     // Настраиваем синхронизацию
     this.setupSynchronization()
 
-    console.log("[System Integration Orchestrator] Initialized successfully")
+    logger.info("[System Integration Orchestrator] Initialized successfully")
   }
 
   /**
@@ -40,7 +44,7 @@ export class SystemIntegrationOrchestrator {
     // Подписываемся на события модальных окон
     this.modalActor.subscribe((state) => {
       if (state.matches("opened")) {
-        console.log(`[System Integration] Modal opened: ${state.context.modalType}`)
+        logger.info("[System Integration] Modal opened:", { state.context.modalType })
       }
     })
 
@@ -67,7 +71,7 @@ export class SystemIntegrationOrchestrator {
    * Управление модальными окнами
    */
   openModal(modal: ModalType, data?: ModalData) {
-    console.log(`[System Integration Orchestrator] Opening modal: ${modal}`)
+    logger.info("[System Integration Orchestrator] Opening modal:", { modal })
     this.modalActor.send({
       type: "OPEN_MODAL",
       modalType: modal,
@@ -76,12 +80,12 @@ export class SystemIntegrationOrchestrator {
   }
 
   closeModal() {
-    console.log("[System Integration Orchestrator] Closing modal")
+    logger.info("[System Integration Orchestrator] Closing modal")
     this.modalActor.send({ type: "CLOSE_MODAL" })
   }
 
   submitModal(data?: ModalData) {
-    console.log("[System Integration Orchestrator] Submitting modal")
+    logger.info("[System Integration Orchestrator] Submitting modal")
     this.modalActor.send({
       type: "SUBMIT_MODAL",
       data,
@@ -102,27 +106,27 @@ export class SystemIntegrationOrchestrator {
    * Управление обновлениями
    */
   checkForUpdates() {
-    console.log("[System Integration Orchestrator] Checking for updates")
+    logger.info("[System Integration Orchestrator] Checking for updates")
     this.updateActor.send({ type: "CHECK_FOR_UPDATES" })
   }
 
   downloadUpdate() {
-    console.log("[System Integration Orchestrator] Downloading update")
+    logger.info("[System Integration Orchestrator] Downloading update")
     this.updateActor.send({ type: "DOWNLOAD_UPDATE" })
   }
 
   installUpdate() {
-    console.log("[System Integration Orchestrator] Installing update")
+    logger.info("[System Integration Orchestrator] Installing update")
     this.updateActor.send({ type: "INSTALL_UPDATE" })
   }
 
   dismissUpdate() {
-    console.log("[System Integration Orchestrator] Dismissing update")
+    logger.info("[System Integration Orchestrator] Dismissing update")
     this.updateActor.send({ type: "DISMISS" })
   }
 
   enableAutoUpdate(intervalMinutes: number) {
-    console.log(`[System Integration Orchestrator] Enabling auto-update with interval: ${intervalMinutes}min`)
+    logger.info("[System Integration Orchestrator] Enabling auto-update with interval:", { intervalMinutes })
     this.updateActor.send({
       type: "ENABLE_AUTO_CHECK",
       intervalMinutes,
@@ -130,7 +134,7 @@ export class SystemIntegrationOrchestrator {
   }
 
   disableAutoUpdate() {
-    console.log("[System Integration Orchestrator] Disabling auto-update")
+    logger.info("[System Integration Orchestrator] Disabling auto-update")
     this.updateActor.send({ type: "DISABLE_AUTO_CHECK" })
   }
 
@@ -145,19 +149,17 @@ export class SystemIntegrationOrchestrator {
       timestamp: new Date(),
     }
 
-    console.log(`[System Integration Orchestrator] Showing notification: ${notification.title}`)
+    logger.info("[System Integration Orchestrator] Showing notification:", { notification.title })
     this.notifications.push(fullNotification)
 
     // Автоматически удаляем уведомление после заданного времени
     if (notification.duration) {
       const startTime = performance.now()
-      console.log(`[System Integration Orchestrator] Scheduling notification dismissal in ${notification.duration}ms`)
+      logger.info("[System Integration Orchestrator] Scheduling notification dismissal in", { notification.duration })
 
       setTimeout(() => {
         const duration = performance.now() - startTime
-        console.log(
-          `[System Integration Orchestrator] Dismissing notification after ${duration.toFixed(2)}ms (scheduled: ${notification.duration}ms)`,
-        )
+        logger.debug(`[System Integration Orchestrator] Dismissing notification after ${duration.toFixed(2)}ms (scheduled: ${notification.duration}ms)`)
         this.dismissNotification(id)
       }, notification.duration)
     }
@@ -166,12 +168,12 @@ export class SystemIntegrationOrchestrator {
   }
 
   dismissNotification(id: string) {
-    console.log(`[System Integration Orchestrator] Dismissing notification: ${id}`)
+    logger.info("[System Integration Orchestrator] Dismissing notification:", { id })
     this.notifications = this.notifications.filter((n) => n.id !== id)
   }
 
   clearNotifications() {
-    console.log("[System Integration Orchestrator] Clearing all notifications")
+    logger.info("[System Integration Orchestrator] Clearing all notifications")
     this.notifications = []
   }
 
@@ -183,7 +185,7 @@ export class SystemIntegrationOrchestrator {
    * Управление функциями
    */
   toggleFeature(feature: string, enabled: boolean) {
-    console.log(`[System Integration Orchestrator] Feature '${feature}' ${enabled ? "enabled" : "disabled"}`)
+    logger.info("[System Integration Orchestrator] Feature '${feature}'", { enabled ? "enabled" : "disabled" })
     this.features[feature] = enabled
   }
 
@@ -217,7 +219,7 @@ export class SystemIntegrationOrchestrator {
    * Очистка ресурсов
    */
   dispose() {
-    console.log("[System Integration Orchestrator] Disposing...")
+    logger.info("[System Integration Orchestrator] Disposing...")
     this.modalActor.stop()
     this.updateActor.stop()
     this.clearNotifications()

@@ -3,8 +3,10 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useMediaFiles, useMusicFiles } from "@/features/app-state/hooks"
 import { appDirectoriesService } from "@/features/app-state/services"
 import type { MediaFile } from "@/features/media/types/media"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { getMediaExtensions, getMusicExtensions } from "../utils/validation"
+
+const logger = createLogger({ module: "UseAutoLoadMedia" })
 
 /**
  * Хук для автозагрузки медиа и музыкальных файлов
@@ -77,7 +79,7 @@ export function useAutoLoadMedia() {
         scanCacheRef.current.set(cacheKey, files)
         return files
       } catch (error) {
-        console.error(`Error scanning ${dirPath}:`, error)
+        logger.error(`Error scanning ${dirPath}:`, error)
         return []
       }
     },
@@ -169,7 +171,7 @@ export function useAutoLoadMedia() {
 
         return processedFiles
       } catch (error) {
-        console.error("Error processing media files:", error)
+        logger.error("Error processing media files:", error)
         return []
       }
     },
@@ -199,7 +201,7 @@ export function useAutoLoadMedia() {
           mediaDir = appDirectoriesService.getMediaSubdirectory("videos")
           musicDir = appDirectoriesService.getMediaSubdirectory("music")
         } catch (error) {
-          console.warn("Failed to get app directories:", error)
+          logger.warn("Failed to get app directories:", error)
         }
       }
 
@@ -230,11 +232,11 @@ export function useAutoLoadMedia() {
 
       lastLoadTimeRef.current = Date.now()
 
-      console.log(
+      logger.info(
         `[useAutoLoadMedia] Loaded ${processedMedia.length} media files and ${processedMusic.length} music files`,
       )
     } catch (error) {
-      console.error("Error loading media files:", error)
+      logger.error("Error loading media files:", error)
       setError(error instanceof Error ? error.message : "Unknown error")
     } finally {
       setIsLoading(false)
@@ -272,7 +274,7 @@ export function useAutoLoadMedia() {
     const isNewProject = currentProject?.isNew && currentProject?.path === null
 
     if (isNewProject) {
-      console.log("[useAutoLoadMedia] Skipping auto-load for new project")
+      logger.info("[useAutoLoadMedia] Skipping auto-load for new project")
       return
     }
 
@@ -293,7 +295,7 @@ export function useAutoLoadMedia() {
     */
 
     // Логируем, что автозагрузка отключена
-    console.log("[useAutoLoadMedia] Auto-loading is disabled")
+    logger.info("[useAutoLoadMedia] Auto-loading is disabled")
   }, []) // Убираем зависимости, так как эффект теперь не активен
 
   // Функция для очистки кэша

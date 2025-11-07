@@ -1,12 +1,15 @@
 // Объединяющий сервис для всех социальных сетей
 
 import { toast } from "sonner"
+import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
 import * as TelegramService from "./telegram-service"
 import * as TikTokService from "./tiktok-service"
 import * as VimeoService from "./vimeo-service"
 import * as YouTubeService from "./youtube-service"
+
+const logger = createLogger({ module: "SocialNetworksService" })
 
 export interface SocialUploadResult {
   success: boolean
@@ -36,7 +39,7 @@ export async function login(network: string): Promise<boolean> {
     toast.success(`Successfully connected to ${network}`)
     return true
   } catch (error) {
-    console.error(`Login failed for ${network}:`, error)
+    logger.error(`Login failed for ${network}:`, error)
     toast.error(`Failed to connect to ${network}: ${error instanceof Error ? error.message : "Unknown error"}`)
     return false
   }
@@ -127,7 +130,7 @@ export async function uploadVideo(
       id: result.id || result.publish_id,
     }
   } catch (error) {
-    console.error(`Upload failed for ${network}:`, error)
+    logger.error(`Upload failed for ${network}:`, error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -196,7 +199,7 @@ export async function refreshTokenIfNeeded(network: string): Promise<boolean> {
       return true
     }
   } catch (error) {
-    console.error("Token refresh failed:", error)
+    logger.error("Token refresh failed:", error)
     // Логаут при неудачном обновлении токена
     await logout(network)
   }

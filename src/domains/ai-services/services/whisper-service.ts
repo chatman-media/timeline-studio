@@ -4,6 +4,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("WhisperService")
 
 // Типы для Whisper транскрипции
 export interface WhisperTranscriptionOptions {
@@ -191,7 +194,7 @@ export class WhisperService {
       }
       return false
     } catch (error) {
-      console.warn("Не удалось загрузить API ключ OpenAI:", error)
+      logger.warnSync("Не удалось загрузить API ключ OpenAI", { error })
       return false
     }
   }
@@ -208,7 +211,7 @@ export class WhisperService {
     }
 
     const startTime = Date.now()
-    console.log(`Начинаем транскрипцию через OpenAI: ${audioFilePath}`)
+    logger.infoSync("Начинаем транскрипцию через OpenAI", { audioFilePath })
 
     try {
       // Используем Tauri команду для отправки файла в OpenAI
@@ -226,7 +229,10 @@ export class WhisperService {
       const endTime = Date.now()
       const processingTime = endTime - startTime
 
-      console.log(`Транскрипция завершена за ${processingTime}мс (${(processingTime / 1000).toFixed(2)}с)`)
+      logger.infoSync("Транскрипция завершена", {
+        processingTimeMs: processingTime,
+        processingTimeSec: (processingTime / 1000).toFixed(2),
+      })
 
       // Добавляем информацию о времени обработки в результат
       return {
@@ -243,7 +249,7 @@ export class WhisperService {
     } catch (error) {
       const endTime = Date.now()
       const processingTime = endTime - startTime
-      console.error(`Ошибка транскрипции через OpenAI (${processingTime}мс):`, error)
+      logger.errorSync("Ошибка транскрипции через OpenAI", { error, processingTimeMs: processingTime })
       throw new Error(`Не удалось выполнить транскрипцию: ${String(error)}`)
     }
   }
@@ -271,7 +277,7 @@ export class WhisperService {
 
       return result
     } catch (error) {
-      console.error("Ошибка перевода через OpenAI:", error)
+      logger.errorSync("Ошибка перевода через OpenAI", { error })
       throw new Error(`Не удалось выполнить перевод: ${String(error)}`)
     }
   }
@@ -289,7 +295,7 @@ export class WhisperService {
     } = {},
   ): Promise<WhisperTranscriptionResult> {
     const startTime = Date.now()
-    console.log(`Начинаем локальную транскрипцию: ${audioFilePath} (модель: ${modelName})`)
+    logger.infoSync("Начинаем локальную транскрипцию", { audioFilePath, modelName })
 
     try {
       const result = await invoke<WhisperTranscriptionResult>("whisper_transcribe_local", {
@@ -303,7 +309,10 @@ export class WhisperService {
       const endTime = Date.now()
       const processingTime = endTime - startTime
 
-      console.log(`Локальная транскрипция завершена за ${processingTime}мс (${(processingTime / 1000).toFixed(2)}с)`)
+      logger.infoSync("Локальная транскрипция завершена", {
+        processingTimeMs: processingTime,
+        processingTimeSec: (processingTime / 1000).toFixed(2),
+      })
 
       // Добавляем информацию о времени обработки в результат
       return {
@@ -322,7 +331,7 @@ export class WhisperService {
     } catch (error) {
       const endTime = Date.now()
       const processingTime = endTime - startTime
-      console.error(`Ошибка локальной транскрипции (${processingTime}мс):`, error)
+      logger.errorSync("Ошибка локальной транскрипции", { error, processingTimeMs: processingTime })
       throw new Error(`Не удалось выполнить локальную транскрипцию: ${String(error)}`)
     }
   }
@@ -335,7 +344,7 @@ export class WhisperService {
       const models = await invoke<LocalWhisperModel[]>("whisper_get_local_models")
       return models
     } catch (error) {
-      console.warn("Ошибка получения локальных моделей:", error)
+      logger.warnSync("Ошибка получения локальных моделей", { error })
       return AVAILABLE_LOCAL_MODELS
     }
   }
@@ -376,7 +385,7 @@ export class WhisperService {
 
       return success
     } catch (error) {
-      console.error("Ошибка скачивания модели:", error)
+      logger.errorSync("Ошибка скачивания модели", { error, modelName })
       throw new Error(`Не удалось скачать модель ${modelName}: ${String(error)}`)
     }
   }
@@ -388,7 +397,7 @@ export class WhisperService {
     try {
       return await invoke<boolean>("whisper_check_local_availability")
     } catch (error) {
-      console.warn("Локальный Whisper недоступен:", error)
+      logger.warnSync("Локальный Whisper недоступен", { error })
       return false
     }
   }
@@ -402,7 +411,7 @@ export class WhisperService {
       this.fasterWhisperInitialized = result
       return result
     } catch (error) {
-      console.error("Ошибка инициализации Faster Whisper:", error)
+      logger.errorSync("Ошибка инициализации Faster Whisper", { error })
       return false
     }
   }
@@ -429,7 +438,7 @@ export class WhisperService {
     }
 
     const startTime = Date.now()
-    console.log(`Начинаем транскрипцию через Faster Whisper: ${audioFilePath}`)
+    logger.infoSync("Начинаем транскрипцию через Faster Whisper", { audioFilePath })
 
     try {
       const transcriptionOptions = {
@@ -459,7 +468,7 @@ export class WhisperService {
       const endTime = Date.now()
       const processingTime = endTime - startTime
 
-      console.log(`Транскрипция через Faster Whisper завершена за ${processingTime}мс`)
+      logger.infoSync("Транскрипция через Faster Whisper завершена", { processingTimeMs: processingTime })
 
       return {
         ...result,
@@ -475,7 +484,7 @@ export class WhisperService {
     } catch (error) {
       const endTime = Date.now()
       const processingTime = endTime - startTime
-      console.error(`Ошибка транскрипции через Faster Whisper (${processingTime}мс):`, error)
+      logger.errorSync("Ошибка транскрипции через Faster Whisper", { error, processingTimeMs: processingTime })
       throw new Error(`Не удалось выполнить транскрипцию: ${String(error)}`)
     }
   }
@@ -493,7 +502,7 @@ export class WhisperService {
         isDownloaded: model.is_downloaded,
       }))
     } catch (error) {
-      console.warn("Ошибка получения моделей Faster Whisper:", error)
+      logger.warnSync("Ошибка получения моделей Faster Whisper", { error })
       return []
     }
   }
@@ -530,7 +539,7 @@ export class WhisperService {
         modelName,
       })
     } catch (error) {
-      console.error("Ошибка скачивания модели Faster Whisper:", error)
+      logger.errorSync("Ошибка скачивания модели Faster Whisper", { error, modelName })
       throw new Error(`Не удалось скачать модель ${modelName}: ${String(error)}`)
     }
   }
@@ -626,7 +635,7 @@ export class WhisperService {
       })
       return audioPath
     } catch (error) {
-      console.error("Ошибка извлечения аудио:", error)
+      logger.errorSync("Ошибка извлечения аудио", { error, videoFilePath })
       throw new Error(`Не удалось извлечь аудио: ${String(error)}`)
     }
   }

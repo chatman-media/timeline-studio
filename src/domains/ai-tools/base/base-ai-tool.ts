@@ -12,6 +12,10 @@ import type {
   IAITool,
 } from "../types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("BaseAiTool")
+
 /**
  * Простая реализация логгера для консоли
  */
@@ -23,15 +27,15 @@ export class ConsoleAIToolLogger implements AIToolLogger {
   }
 
   info(message: string, data?: any): void {
-    console.log(`${this.prefix} INFO: ${message}`, data ? data : "")
+    logger.debug(`${this.prefix} INFO: ${message}`, data ? { data } : {})
   }
 
   warn(message: string, data?: any): void {
-    console.warn(`${this.prefix} WARN: ${message}`, data ? data : "")
+    logger.warn(`${this.prefix} WARN: ${message}`, data ? { data } : {})
   }
 
   error(message: string, data?: any): void {
-    console.error(`${this.prefix} ERROR: ${message}`, data ? data : "")
+    logger.error(`${this.prefix} ERROR: ${message}`, data ? { data } : {})
   }
 }
 

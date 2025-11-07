@@ -8,7 +8,10 @@
 import { invoke } from "@tauri-apps/api/core"
 import { ClaudeTool } from "@/domains/ai-core/providers/claude"
 import { ContentCategory, PlatformOptimizationService, SupportedPlatform } from "@/domains/ai-services"
+import { createLogger } from "@/lib/tauri-logger"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+
+const logger = createLogger({ module: "PlatformIntegrationTools" })
 
 // Типы для операций оптимизации платформ
 export interface PlatformOptimizationInput {
@@ -731,7 +734,7 @@ async function executePlatformOptimizationToolOld(toolName: string, input: any):
         throw new Error(`Неизвестный инструмент: ${toolName}`)
     }
   } catch (error) {
-    console.error(`Ошибка выполнения инструмента ${toolName}:`, error)
+    logger.error(`Ошибка выполнения инструмента ${toolName}:`, error)
     throw error
   }
 }

@@ -3,6 +3,7 @@
  * Объединенная версия с лучшими возможностями из ai-chat и shared
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { getAIProviderFactory } from "../providers/factory"
 import type {
   AIProviderFactory,
@@ -16,6 +17,8 @@ import type {
   StreamingOptions,
 } from "../types"
 import { ModelManagerImpl } from "./model-manager"
+
+const logger = createLogger("EnhancedUnifiedAIService")
 
 // Расширенные типы для объединенного сервиса
 export interface UnifiedResponse extends AiResponse {
@@ -89,7 +92,10 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
     this.contentIntelligenceService = dependencies?.contentIntelligenceService
 
     if (!this.providerFactory || !this.modelManager) {
-      console.warn("EnhancedUnifiedAIService created without dependencies, some features will be unavailable")
+      logger.warn("Created without dependencies, some features will be unavailable", {
+        hasProviderFactory: !!this.providerFactory,
+        hasModelManager: !!this.modelManager,
+      })
     }
 
     // Автоочистка кэша каждые 5 минут
@@ -237,7 +243,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
       try {
         this.ensureDependencies()
       } catch {
-        console.warn("ModelManager not initialized, returning empty models list")
+        logger.warn("ModelManager not initialized, returning empty models list")
         return []
       }
     }
@@ -246,7 +252,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
 
   async getBestModelForTask(task: string, taskOptions?: any): Promise<ModelConfiguration | null> {
     if (!this.modelManager) {
-      console.warn("ModelManager not initialized, returning null")
+      logger.warn("ModelManager not initialized, returning null", { task })
       return null
     }
     return await this.modelManager.getBestModelForTask(task as any, taskOptions)
@@ -254,7 +260,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
 
   async isModelAvailable(model: string): Promise<boolean> {
     if (!this.modelManager) {
-      console.warn("ModelManager not initialized, returning false")
+      logger.warn("ModelManager not initialized, returning false", { model })
       return false
     }
     return await this.modelManager.isModelAvailable(model)
@@ -265,7 +271,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
       try {
         this.ensureDependencies()
       } catch {
-        console.warn("ProviderFactory not initialized, returning empty statuses")
+        logger.warn("ProviderFactory not initialized, returning empty statuses")
         return {}
       }
     }
@@ -298,7 +304,7 @@ export class EnhancedUnifiedAIService implements IUnifiedAIService {
     try {
       return await this.contentIntelligenceService.analyze(content, analysisType)
     } catch (error) {
-      console.error("Content Intelligence analysis failed:", error)
+      logger.error("Content Intelligence analysis failed", { error, analysisType })
       throw error
     }
   }

@@ -4,9 +4,11 @@
  */
 
 import { useEffect, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { type MidiDevice, MidiEngine } from "../services/midi/midi-engine"
 import { MidiRouter } from "../services/midi/midi-router"
+
+const logger = createLogger({ module: "UseMidiEngine" })
 
 // Global instance for the MIDI engine
 let globalMidiEngine: MidiEngine | null = null
@@ -83,7 +85,7 @@ export function useMidiEngine(): UseMidiEngineReturn {
           globalMidiEngine?.off("devicesChanged", updateDevices)
         }
       } catch (err) {
-        console.error("Failed to initialize MIDI engine:", err)
+        logger.error("Failed to initialize MIDI engine:", err)
         setError(err instanceof Error ? err.message : "Failed to initialize MIDI")
       }
     }

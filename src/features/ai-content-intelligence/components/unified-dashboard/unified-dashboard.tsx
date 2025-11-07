@@ -32,11 +32,14 @@ import { PipelineProgress } from "@/domains/ai-services"
 import { IntelligentContent, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { MediaInfo } from "@/domains/media-management"
 import { createDefaultAIConfig } from "@/domains/shared/utils/config"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
 import { useContentPipeline } from "../../hooks/use-content-pipeline"
 import { AnalysisViewer } from "../analysis-viewer/analysis-viewer"
 import { PreviewGrid } from "../preview-grid/preview-grid"
+
+const logger = createLogger({ module: "UnifiedDashboard" })
 
 interface UnifiedDashboardProps {
   className?: string
@@ -348,8 +351,8 @@ export const UnifiedDashboard: FC<UnifiedDashboardProps> = ({
           <TabsContent value="analysis" className="h-full mt-0">
             <AnalysisTab
               analysis={currentAnalysis}
-              onSceneSelect={(sceneId) => console.log("Scene selected:", sceneId)}
-              onMomentSelect={(momentId) => console.log("Moment selected:", momentId)}
+              onSceneSelect={(sceneId) => logger.info("Scene selected:", sceneId)}
+              onMomentSelect={(momentId) => logger.info("Moment selected:", momentId)}
             />
           </TabsContent>
 
@@ -748,9 +751,9 @@ const ResultsTab: FC<ResultsTabProps> = ({ results, analysis }) => {
             viewMode={previewMode}
             className="h-full"
             enableSelection={true}
-            onItemSelect={(item) => console.log("Item selected:", item)}
-            onItemPlay={(item) => console.log("Play item:", item)}
-            onItemDownload={(item) => console.log("Download item:", item)}
+            onItemSelect={(item) => logger.info("Item selected:", item)}
+            onItemPlay={(item) => logger.info("Play item:", item)}
+            onItemDownload={(item) => logger.info("Download item:", item)}
           />
         )}
       </div>

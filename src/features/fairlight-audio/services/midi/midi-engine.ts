@@ -4,11 +4,13 @@
  */
 
 import { EventEmitter } from "events"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { MidiClock } from "./midi-clock"
 import { MidiFile } from "./midi-file"
 import type { MidiRouter } from "./midi-router"
 import { MidiSequencer } from "./midi-sequencer"
+
+const logger = createLogger({ module: "MidiEngine" })
 
 export interface MidiDevice {
   id: string
@@ -92,7 +94,7 @@ export class MidiEngine extends EventEmitter {
     try {
       // Check if Web MIDI API is available
       if (!navigator.requestMIDIAccess) {
-        console.warn("Web MIDI API is not supported in this browser")
+        logger.warn("Web MIDI API is not supported in this browser")
         this.emit("initialized") // Still emit initialized but with no devices
         return
       }
@@ -108,7 +110,7 @@ export class MidiEngine extends EventEmitter {
       this.isInitialized = true
       this.emit("initialized")
     } catch (error) {
-      console.error("Failed to initialize MIDI:", error)
+      logger.error("Failed to initialize MIDI:", error)
       // Don't throw, just log the error and emit initialized
       this.emit("initialized")
     }
@@ -424,13 +426,13 @@ export class MidiEngine extends EventEmitter {
   // Send MIDI message
   async sendMessage(deviceId: string, message: number[]): Promise<void> {
     if (!this.midiAccess) {
-      console.warn("MIDI not initialized or not supported")
+      logger.warn("MIDI not initialized or not supported")
       return
     }
 
     const output = this.midiAccess.outputs.get(deviceId)
     if (!output) {
-      console.warn(`MIDI output device ${deviceId} not found`)
+      logger.warn(`MIDI output device ${deviceId} not found`)
       return
     }
 
@@ -445,7 +447,7 @@ export class MidiEngine extends EventEmitter {
       try {
         output.send(message)
       } catch (error) {
-        console.error("Failed to send MIDI message to output:", error)
+        logger.error("Failed to send MIDI message to output:", error)
       }
     }
   }

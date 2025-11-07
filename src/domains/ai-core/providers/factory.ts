@@ -3,6 +3,10 @@
  * Фабрика для создания AI провайдеров с dependency injection
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AIProviderFactory")
+
 import type { AIProviderFactory, IAIProvider, ModelConfiguration } from "../types"
 import { ClaudeProvider } from "./claude/claude-provider"
 import { DeepSeekProvider } from "./deepseek/deepseek-provider"
@@ -73,7 +77,7 @@ export class AIProviderFactoryImpl implements AIProviderFactory {
           availableProviders.push(provider.name)
         }
       } catch (error) {
-        console.warn(`Provider ${provider.name} not available:`, error)
+        logger.warn("Provider not available", { provider: provider.name, error })
       }
     }
 
@@ -176,7 +180,7 @@ export class AIProviderFactoryImpl implements AIProviderFactory {
           allModels.push(config)
         }
       } catch (error) {
-        console.warn(`Failed to get models for ${name}:`, error)
+        logger.warn("Failed to get models", { provider: name, error })
       }
     }
 

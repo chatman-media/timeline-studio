@@ -16,9 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Slider } from "@/components/ui/slider"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useMulticam } from "../hooks/use-multicam"
 import { AudioSyncDialog } from "./audio-sync-dialog"
+
+const logger = createLogger({ module: "SyncControls" })
 
 interface SyncControlsProps {
   baseClipId: string
@@ -62,7 +65,7 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
         setSyncMethod(null)
       }, 3000)
     } catch (error) {
-      console.error("[SyncControls] Timecode sync failed:", error)
+      logger.error("[SyncControls] Timecode sync failed:", error)
       setSyncStatus("error")
     } finally {
       setIsSyncing(false)

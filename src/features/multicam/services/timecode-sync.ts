@@ -6,6 +6,10 @@
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "TimecodeSync" })
+
 export interface TimecodeInfo {
   timecode: string
   frameRate: number
@@ -153,7 +157,7 @@ export function syncByTimecode(baseClip: TimelineClip, clips: TimelineClip[], me
   // Получаем медиафайл для базового клипа
   const baseMedia = mediaFiles.find((m) => m.id === baseClip.mediaId)
   if (!baseMedia) {
-    console.warn("[syncByTimecode] Base media not found")
+    logger.warn("[syncByTimecode] Base media not found")
     return results
   }
 
@@ -165,11 +169,11 @@ export function syncByTimecode(baseClip: TimelineClip, clips: TimelineClip[], me
 
   if (baseTimecode) {
     baseTimecodeInfo = parseTimecode(baseTimecode, baseFrameRate)
-    console.log("[syncByTimecode] Base timecode:", baseTimecodeInfo)
+    logger.info("[syncByTimecode] Base timecode:", baseTimecodeInfo)
   } else {
     // Fallback на время создания
     baseCreationTime = extractCreationTime(baseMedia)
-    console.log("[syncByTimecode] Using creation time:", baseCreationTime)
+    logger.info("[syncByTimecode] Using creation time:", baseCreationTime)
   }
 
   // Синхронизируем остальные клипы
@@ -206,7 +210,7 @@ export function syncByTimecode(baseClip: TimelineClip, clips: TimelineClip[], me
           method: "timecode",
         })
 
-        console.log(`[syncByTimecode] Clip ${clip.id} offset: ${offset}s`)
+        logger.info(`[syncByTimecode] Clip ${clip.id} offset: ${offset}s`)
         continue
       }
     }
@@ -224,7 +228,7 @@ export function syncByTimecode(baseClip: TimelineClip, clips: TimelineClip[], me
         method: "creation_time",
       })
 
-      console.log(`[syncByTimecode] Clip ${clip.id} creation time offset: ${offset}s`)
+      logger.info(`[syncByTimecode] Clip ${clip.id} creation time offset: ${offset}s`)
       continue
     }
 

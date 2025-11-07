@@ -4,8 +4,11 @@
  */
 
 import { EventEmitter } from "events"
+import { createLogger } from "../tauri-logger"
 import { contextManager, type GPUCapabilities } from "./context-manager"
 import { type ShaderProgram, shaderPool } from "./shader-pool"
+
+const logger = createLogger("WebGLBaseRenderer")
 
 /**
  * Параметры рендерера
@@ -116,7 +119,7 @@ export abstract class BaseRenderer extends EventEmitter {
 
       return true
     } catch (error) {
-      console.error(`Ошибка инициализации рендерера ${this.name}:`, error)
+      logger.errorSync("Ошибка инициализации рендерера", { name: this.name, error })
       this.emit("error", error)
       return false
     }
@@ -260,7 +263,7 @@ export abstract class BaseRenderer extends EventEmitter {
 
       return texture
     } catch (error) {
-      console.error(`Ошибка загрузки текстуры "${name}":`, error)
+      logger.errorSync("Ошибка загрузки текстуры", { name, error })
       return null
     }
   }
@@ -343,7 +346,10 @@ export abstract class BaseRenderer extends EventEmitter {
     // Проверяем статус фреймбуфера
     const status = this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER)
     if (status !== this.gl.FRAMEBUFFER_COMPLETE) {
-      console.error(`Фреймбуфер "${name}" не завершен:`, this.getFramebufferStatusString(status))
+      logger.errorSync("Фреймбуфер не завершен", {
+        name,
+        status: this.getFramebufferStatusString(status),
+      })
       this.gl.deleteFramebuffer(framebuffer)
       return null
     }

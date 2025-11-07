@@ -14,6 +14,10 @@ import type {
   ToolSearchResult,
 } from "../types"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ToolRegistry")
+
 /**
  * Реализация реестра AI инструментов
  */
@@ -78,9 +82,10 @@ export class ToolRegistry implements IToolRegistry {
     // Обновляем индексы
     this.updateIndexes(tool, "add")
 
-    console.log(
-      `[ToolRegistry] Зарегистрирован инструмент: ${toolName} (${tool.metadata.domain}/${tool.metadata.category})`,
-    )
+    logger.debug(`[ToolRegistry] Зарегистрирован инструмент: ${toolName}`, {
+      domain: tool.metadata.domain,
+      category: tool.metadata.category,
+    })
   }
 
   /**
@@ -99,7 +104,7 @@ export class ToolRegistry implements IToolRegistry {
     this.tools.delete(toolName)
     this.toolInfo.delete(toolName)
 
-    console.log(`[ToolRegistry] Отменена регистрация инструмента: ${toolName}`)
+    logger.info("[ToolRegistry] Отменена регистрация инструмента:", { toolName })
   }
 
   /**

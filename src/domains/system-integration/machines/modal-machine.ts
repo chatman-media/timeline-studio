@@ -7,6 +7,10 @@
 
 import { assign, setup } from "xstate"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ModalMachine")
+
 /**
  * Типы модальных окон в приложении
  */
@@ -65,7 +69,7 @@ export const modalMachine = setup({
      */
     logFormSubmission: ({ context, event }) => {
       if (event.type === "SUBMIT_MODAL") {
-        console.log(`[System Integration] Modal ${context.modalType} submitted with data:`, event.data)
+        logger.debug(`[System Integration] Modal ${context.modalType} submitted with data`, { data: event.data })
       }
     },
   },

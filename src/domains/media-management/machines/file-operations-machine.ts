@@ -5,7 +5,11 @@
  */
 
 import { assign, emit, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import type { FileOperationsContext, FileOperationsEvent } from "../types"
+
+const logger = createLogger("FileOperationsMachine")
+
 
 const initialContext: FileOperationsContext = {
   operations: new Map(),
@@ -25,7 +29,7 @@ export const fileOperationsMachine = setup({
         if (event.type !== "START_OPERATION") return context.operations
         const newOperations = new Map(context.operations)
         newOperations.set(event.operation.id, event.operation)
-        console.log(`[File Operations] Starting operation ${event.operation.id} (${event.operation.type})`)
+        logger.info("[File Operations] Starting operation ${event.operation.id} (", { event.operation.type })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -46,7 +50,7 @@ export const fileOperationsMachine = setup({
           progress: event.progress,
           status: "processing",
         })
-        console.log(`[File Operations] Progress ${event.operationId}: ${event.progress}%`)
+        logger.info("[File Operations] Progress ${event.operationId}:", { event.progress })
         return newOperations
       },
     }),
@@ -64,7 +68,7 @@ export const fileOperationsMachine = setup({
           progress: 100,
           result: event.result,
         })
-        console.log(`[File Operations] Completed ${event.operationId}`)
+        logger.info("[File Operations] Completed", { event.operationId })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -89,7 +93,7 @@ export const fileOperationsMachine = setup({
           status: "failed",
           error: event.error,
         })
-        console.error(`[File Operations] Failed ${event.operationId}:`, event.error)
+        logger.error("[File Operations] Failed", { event.operationId, event.error })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -107,7 +111,7 @@ export const fileOperationsMachine = setup({
         if (event.type !== "CANCEL_OPERATION") return context.operations
         const newOperations = new Map(context.operations)
         newOperations.delete(event.operationId)
-        console.log(`[File Operations] Cancelled ${event.operationId}`)
+        logger.info("[File Operations] Cancelled", { event.operationId })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -124,7 +128,7 @@ export const fileOperationsMachine = setup({
             newOperations.set(id, op)
           }
         })
-        console.log(`[File Operations] Cleared ${context.completedOperations.length} completed operations`)
+        logger.info("[File Operations] Cleared", { context.completedOperations.length })
         return newOperations
       },
       completedOperations: () => [],
@@ -143,7 +147,7 @@ export const fileOperationsMachine = setup({
           progress: 0,
           error: undefined,
         })
-        console.log(`[File Operations] Retrying ${event.operationId}`)
+        logger.info("[File Operations] Retrying", { event.operationId })
         return newOperations
       },
       failedOperations: ({ context, event }) => {

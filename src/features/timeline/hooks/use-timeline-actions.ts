@@ -6,11 +6,13 @@ import { useCallback } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TrackType } from "../types"
 import { useClips } from "./use-clips"
 import { useTracks } from "./use-tracks"
+
+const logger = createLogger({ module: "UseTimelineActions" })
 
 export interface UseTimelineActionsReturn {
   // Добавление медиафайлов
@@ -115,7 +117,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
     (file: MediaFile, customTrackId?: string, customStartTime?: number) => {
       // Если нет проекта, создаем новый
       if (!project) {
-        console.log("No timeline project found, creating new project...")
+        logger.info("No timeline project found, creating new project...")
         void createProject("Untitled Project")
 
         // Откладываем добавление медиафайла до создания проекта
@@ -132,7 +134,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       if (!targetTrackId) {
         const trackName = `${trackType.charAt(0).toUpperCase() + trackType.slice(1)} Track`
 
-        console.log(`Creating new ${trackType} track for file: ${file.name}`)
+        logger.info(`Creating new ${trackType} track for file: ${file.name}`)
 
         // Создаем трек
         void addTrack(trackType, trackName, undefined)
@@ -156,7 +158,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
             // Пробуем еще раз
             setTimeout(checkForTrack, retryDelay)
           } else {
-            console.error(
+            logger.error(
               `Failed to create ${trackType} track for media file: ${file.name} after ${maxRetries} attempts`,
             )
           }
@@ -174,7 +176,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       void addMedia(file)
 
       void addClip(targetTrackId, file, startTime)
-      console.log(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
+      logger.info(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
     [
       project,
@@ -194,7 +196,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
         return
       }
 
-      console.log(`Adding ${files.length} files to timeline`)
+      logger.info(`Adding ${files.length} files to timeline`)
 
       // Добавляем файлы по одному
       files.forEach((file, index) => {

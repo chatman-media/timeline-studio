@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useModal } from "@/features/modals/services"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineAIAnalysis } from "../../hooks/use-timeline-ai-analysis"
 import { type AIMarkerConfig, AIMarkerService } from "../../services/ai-marker-service"
+
+const logger = createLogger({ module: "AiMarkerControls" })
 
 interface AIMarkerControlsProps {
   className?: string
@@ -124,7 +126,7 @@ export function AIMarkerControls({ className }: AIMarkerControlsProps) {
         setGenerationProgress(0)
       }, 2000)
     } catch (error) {
-      console.error("Failed to generate markers:", error)
+      logger.error("Failed to generate markers:", error)
       setLastResult({
         success: false,
         message: "Ошибка при создании маркеров",

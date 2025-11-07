@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "../services/store-service"
+
+const logger = createLogger({ module: "UseRecentProjects" })
 
 /**
  * Хук для доступа к списку последних открытых проектов
@@ -27,10 +29,10 @@ export function useRecentProjects() {
     addRecentProject,
     // TODO: Implement removeRecentProject and clearRecentProjects in store-service
     removeRecentProject: async (_path: string) => {
-      console.warn("removeRecentProject not implemented yet")
+      logger.warn("removeRecentProject not implemented yet")
     },
     clearRecentProjects: async () => {
-      console.warn("clearRecentProjects not implemented yet")
+      logger.warn("clearRecentProjects not implemented yet")
     },
   }
 }

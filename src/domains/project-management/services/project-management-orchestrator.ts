@@ -5,10 +5,14 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
 import { type UserSettingsContextType, userSettingsMachine } from "../machines/user-settings-machine"
+
+const logger = createLogger("ProjectManagementOrchestrator")
+
 
 export class ProjectManagementOrchestrator {
   private appActor: ActorRefFrom<typeof appMachine>
@@ -16,7 +20,7 @@ export class ProjectManagementOrchestrator {
   private autoSaveTimer: NodeJS.Timeout | null = null
 
   constructor() {
-    console.log("[Project Management Orchestrator] Initializing...")
+    logger.info("[Project Management Orchestrator] Initializing...")
 
     // Создаем акторы для машин
     this.appActor = createActor(appMachine)
@@ -32,7 +36,7 @@ export class ProjectManagementOrchestrator {
     // Подключаемся к backend
     this.connect()
 
-    console.log("[Project Management Orchestrator] Initialized successfully")
+    logger.info("[Project Management Orchestrator] Initialized successfully")
   }
 
   /**
@@ -53,7 +57,7 @@ export class ProjectManagementOrchestrator {
     this.appActor.subscribe((state) => {
       const context = state.context
       if (context.error) {
-        console.error("[Project Management Orchestrator] App error:", context.error)
+        logger.error("[Project Management Orchestrator] App error:", { error: context.error })
       }
     })
   }
@@ -70,7 +74,7 @@ export class ProjectManagementOrchestrator {
    */
   async executeCommand(command: ProjectCommand): Promise<any> {
     const startTime = performance.now()
-    console.log(`[ProjectManagementOrchestrator] Executing command: ${command.type}`)
+    logger.info("[ProjectManagementOrchestrator] Executing command:", { command.type })
 
     return new Promise((resolve, reject) => {
       const subscription = this.appActor.subscribe((state) => {
@@ -79,12 +83,12 @@ export class ProjectManagementOrchestrator {
         if (state.matches({ connected: "idle" })) {
           subscription.unsubscribe()
           if (duration > 100) {
-            console.warn(`[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms`)
+            logger.warn("Warning", { data: `[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms` })
           }
           resolve(true)
         } else if (state.matches("error")) {
           subscription.unsubscribe()
-          console.error(`[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms`)
+          logger.error("Error occurred", { error: `[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms` })
           reject(new Error(state.context.error || "Command failed"))
         }
       })
@@ -100,7 +104,7 @@ export class ProjectManagementOrchestrator {
    * Создание нового проекта
    */
   async createProject(settings: ProjectSettings) {
-    console.log("[Project Management Orchestrator] Creating new project")
+    logger.info("[Project Management Orchestrator] Creating new project")
 
     const command: ProjectCommand = {
       type: "CreateProject",
@@ -114,7 +118,7 @@ export class ProjectManagementOrchestrator {
    * Открытие проекта
    */
   async openProject(path: string) {
-    console.log(`[Project Management Orchestrator] Opening project: ${path}`)
+    logger.info("[Project Management Orchestrator] Opening project:", { path })
 
     const command: ProjectCommand = {
       type: "OpenProject",
@@ -128,7 +132,7 @@ export class ProjectManagementOrchestrator {
    * Сохранение проекта
    */
   async saveProject() {
-    console.log("[Project Management Orchestrator] Saving project")
+    logger.info("[Project Management Orchestrator] Saving project")
 
     const command: ProjectCommand = {
       type: "SaveProject",
@@ -142,7 +146,7 @@ export class ProjectManagementOrchestrator {
    * Сохранение проекта как
    */
   async saveProjectAs(path: string) {
-    console.log(`[Project Management Orchestrator] Saving project as: ${path}`)
+    logger.info("[Project Management Orchestrator] Saving project as:", { path })
 
     const command: ProjectCommand = {
       type: "SaveProject",
@@ -156,7 +160,7 @@ export class ProjectManagementOrchestrator {
    * Закрытие проекта
    */
   async closeProject() {
-    console.log("[Project Management Orchestrator] Closing project")
+    logger.info("[Project Management Orchestrator] Closing project")
 
     const command: ProjectCommand = {
       type: "CloseProject",
@@ -169,7 +173,7 @@ export class ProjectManagementOrchestrator {
    * Обновление пользовательских настроек
    */
   updateUserSettings(settings: Partial<UserSettingsContextType>) {
-    console.log("[Project Management Orchestrator] Updating user settings")
+    logger.info("[Project Management Orchestrator] Updating user settings")
 
     // Отправляем события для каждой настройки
     Object.entries(settings).forEach(([key, value]) => {
@@ -207,7 +211,7 @@ export class ProjectManagementOrchestrator {
   private enableAutoSave(interval: number) {
     // Проверяем, разрешено ли автосохранение
     if (!isServiceEnabled("AUTO_SAVE")) {
-      console.log("[Project Management Orchestrator] Auto-save is disabled by service config")
+      logger.info("[Project Management Orchestrator] Auto-save is disabled by service config")
       return
     }
 
@@ -215,7 +219,7 @@ export class ProjectManagementOrchestrator {
       clearInterval(this.autoSaveTimer)
     }
 
-    console.log(`[Project Management Orchestrator] Enabling auto-save with interval: ${interval}s`)
+    logger.info("[Project Management Orchestrator] Enabling auto-save with interval:", { interval })
 
     let saveCounter = 0
     this.autoSaveTimer = setInterval(async () => {
@@ -225,21 +229,21 @@ export class ProjectManagementOrchestrator {
       try {
         const projectState = this.getProjectState()
         if (projectState) {
-          console.log(`[Project Management Orchestrator] Auto-save #${saveCounter} started`)
+          logger.info("[Project Management Orchestrator] Auto-save #", { saveCounter })
           await this.saveProject()
           const duration = performance.now() - startTime
 
           if (duration > 500) {
             // Если сохранение занимает более 500ms
-            console.warn(
+            logger.warn("Warning", { data: 
               `[Project Management Orchestrator] Auto-save #${saveCounter} took ${duration}ms - potential performance issue`,
-            )
+             })
           } else {
-            console.log(`[Project Management Orchestrator] Auto-save #${saveCounter} completed in ${duration}ms`)
+            logger.info("[Project Management Orchestrator] Auto-save #${saveCounter} completed in", { duration })
           }
         }
       } catch (error) {
-        console.error(`[Project Management Orchestrator] Auto-save #${saveCounter} failed:`, error)
+        logger.error("[Project Management Orchestrator] Auto-save #", { saveCounter, error })
       }
     }, interval * 1000)
   }
@@ -249,7 +253,7 @@ export class ProjectManagementOrchestrator {
    */
   private disableAutoSave() {
     if (this.autoSaveTimer) {
-      console.log("[Project Management Orchestrator] Disabling auto-save")
+      logger.info("[Project Management Orchestrator] Disabling auto-save")
       clearInterval(this.autoSaveTimer)
       this.autoSaveTimer = null
     }
@@ -319,7 +323,7 @@ export class ProjectManagementOrchestrator {
    * Очистка ресурсов
    */
   dispose() {
-    console.log("[Project Management Orchestrator] Disposing...")
+    logger.info("[Project Management Orchestrator] Disposing...")
 
     this.disableAutoSave()
     this.appActor.stop()

@@ -3,8 +3,11 @@
  * Унифицированная обработка эффектов через WebGL2
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { BaseRenderer, type ShaderSource, shaderPool, vaoManager } from "@/lib/webgl"
 import type { AppliedEffect, WebGLProcessor } from "../types"
+
+const logger = createLogger({ module: "Webgl2EffectProcessor" })
 
 /**
  * Результат обработки эффекта
@@ -66,7 +69,7 @@ export class WebGL2EffectProcessor extends BaseRenderer {
 
       return true
     } catch (error) {
-      console.error(`Ошибка компиляции эффекта ${effectId}:`, error)
+      logger.error(`Ошибка компиляции эффекта ${effectId}:`, error)
       return false
     }
   }
@@ -186,7 +189,7 @@ export class WebGL2EffectProcessor extends BaseRenderer {
 
       return true
     } catch (error) {
-      console.error("Ошибка обработки видео:", error)
+      logger.error("Ошибка обработки видео:", error)
       return false
     }
   }

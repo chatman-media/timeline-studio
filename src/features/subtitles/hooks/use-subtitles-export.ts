@@ -4,8 +4,11 @@ import { useCallback, useState } from "react"
 import { toast } from "sonner"
 
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip, SubtitleExportOptions } from "../types/subtitles"
 import { exportSubtitles, getSubtitleFileExtension } from "../utils/subtitle-exporters"
+
+const logger = createLogger({ module: "UseSubtitlesExport" })
 
 /**
  * Хук для экспорта субтитров в различные форматы
@@ -97,7 +100,7 @@ export function useSubtitlesExport() {
           description: `Экспортировано ${subtitlesToExport.length} субтитров в формате ${format.toUpperCase()}`,
         })
       } catch (error) {
-        console.error("Ошибка при экспорте субтитров:", error)
+        logger.error("Ошибка при экспорте субтитров:", error)
         toast.error("Ошибка экспорта", {
           description: "Не удалось экспортировать субтитры",
         })

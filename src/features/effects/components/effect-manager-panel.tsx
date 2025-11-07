@@ -13,12 +13,14 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useEffectCategories, useEffects } from "../hooks/use-effects"
 import { useEffectsImport } from "../hooks/use-effects-import"
 import type { BaseEffect } from "../types"
 import { EffectDetail } from "./effect-detail"
 import { EffectGroup } from "./effect-group"
+
+const logger = createLogger({ module: "EffectManagerPanel" })
 
 // Категории эффектов с локализацией
 const EFFECT_CATEGORIES = {
@@ -114,7 +116,7 @@ export function EffectManagerPanel({
     const result = await importEffectsFile()
     if (result.success) {
       // TODO: Показать уведомление об успешном импорте
-      console.log(result.message)
+      logger.info(result.message)
     }
   }, [importEffectsFile])
 
@@ -122,7 +124,7 @@ export function EffectManagerPanel({
     const result = await importEffectFile()
     if (result.success) {
       // TODO: Показать уведомление об успешном импорте
-      console.log(result.message)
+      logger.info(result.message)
     }
   }, [importEffectFile])
 

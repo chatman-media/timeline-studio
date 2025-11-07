@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../../timeline/types"
+
+const logger = createLogger({ module: "UseTimelineAiIntegration" })
 
 // Временно определяем типы локально
 interface TimelineStateAccess {
@@ -145,7 +146,7 @@ export function useTimelineAIIntegration() {
       updateProject: async (_updates: any) => {
         logInfo("[useTimelineAIIntegration] Обновление проекта")
         // TODO: Implement project update
-        console.warn("updateProject not implemented yet")
+        logger.warn("updateProject not implemented yet")
       },
       createSection: async (section: any) => {
         logInfo("[useTimelineAIIntegration] Создание секции", { sectionName: section.name })
@@ -176,7 +177,7 @@ export function useTimelineAIIntegration() {
         try {
           const id = `clip_${Date.now()}`
           // TODO: Need mediaFile parameter in addClip
-          console.warn("addClip needs proper implementation")
+          logger.warn("addClip needs proper implementation")
           logInfo("[useTimelineAIIntegration] Клип добавлен", { id })
           return { ...clip, id }
         } catch (error) {
@@ -221,7 +222,7 @@ export function useTimelineAIIntegration() {
               }
               break
             default:
-              console.warn(`Unknown timeline command: ${command}`)
+              logger.warn(`Unknown timeline command: ${command}`)
           }
           logInfo("[useTimelineAIIntegration] Команда выполнена", { command })
         } catch (error) {

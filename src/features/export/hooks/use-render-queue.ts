@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 import { OutputFormat, ProjectSchema, RenderJob, RenderStatus } from "@/domains/video-editing"
 import { loadProject } from "@/features/app-state/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseRenderQueue" })
 
 function calculateProjectDuration(projectFile: any): number {
   try {
@@ -27,7 +29,7 @@ function calculateProjectDuration(projectFile: any): number {
     // Fallback - стандартная длительность
     return 30
   } catch (error) {
-    console.warn("Failed to calculate project duration:", error)
+    logger.warn("Failed to calculate project duration:", error)
     return 30
   }
 }

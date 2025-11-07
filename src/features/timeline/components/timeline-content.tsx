@@ -15,7 +15,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { useTimelineAIIntegration } from "@/features/ai-chat/hooks/use-timeline-ai-integration"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useClips } from "../hooks/use-clips"
 import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
 import { EditModeProvider } from "../hooks/use-edit-mode"
@@ -41,6 +41,8 @@ import { Track } from "./track/track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
+
+const logger = createLogger({ module: "TimelineContent" })
 
 export function TimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -86,7 +88,7 @@ export function TimelineContent() {
     if (!project && currentProject && projectSettings) {
       // Создаем проект синхронно
       createProject(currentProject.name).then(() => {
-        console.log("[TimelineContent] Timeline project created for:", currentProject.name)
+        logger.info("[TimelineContent] Timeline project created for:", currentProject.name)
       })
     }
   }, [project, currentProject, projectSettings, createProject])
@@ -95,7 +97,7 @@ export function TimelineContent() {
   useEffect(() => {
     if (project && project.sections.length === 0) {
       addSection("Main Section", 0, 300).then(() => {
-        console.log("[TimelineContent] Main section added")
+        logger.info("[TimelineContent] Main section added")
       })
     }
   }, [project, addSection])

@@ -2,6 +2,10 @@
  * Vision Service для анализа изображений с использованием YOLO/ONNX моделей
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("vision-service")
+
 export interface VisionServiceConfig {
   enableObjectDetection?: boolean
   enableFaceDetection?: boolean
@@ -55,15 +59,15 @@ export class VisionService {
 
     try {
       // TODO: Инициализация ONNX Runtime и загрузка моделей YOLO
-      console.log("VisionService: Initializing ONNX Runtime...")
+      logger.info("Initializing ONNX Runtime")
 
       // Симуляция загрузки моделей
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       this.initialized = true
-      console.log("VisionService: Initialized successfully")
+      logger.info("VisionService initialized successfully")
     } catch (error) {
-      console.error("VisionService: Failed to initialize", error)
+      logger.error("Failed to initialize VisionService", { error })
       throw error
     }
   }

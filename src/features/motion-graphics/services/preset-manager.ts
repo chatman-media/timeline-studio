@@ -4,6 +4,7 @@
  */
 
 import { nanoid } from "nanoid"
+import { createLogger } from "@/lib/tauri-logger"
 import motionPresetsData from "../data/motion-presets.json"
 import type {
   AnimatedProperty,
@@ -14,6 +15,8 @@ import type {
 } from "../types/keyframe"
 import { createAnimationLayer } from "./animation-layers"
 import { offsetKeyframesToTime, scaleKeyframesToDuration } from "./keyframe-manager"
+
+const logger = createLogger({ module: "PresetManager" })
 
 /**
  * Preset categories
@@ -281,7 +284,7 @@ export function importPresets(json: string): MotionPreset[] {
       id: nanoid(), // Generate new IDs
     }))
   } catch (error) {
-    console.error("Failed to import presets:", error)
+    logger.error("Failed to import presets:", error)
     return []
   }
 }

@@ -3,8 +3,11 @@
  * Чистая реализация OpenAI API без смешивания с другими провайдерами
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { ApiKeyLoader } from "../../services/api-key-loader"
 import type { AiMessage, AiRequestOptions, AiResponse, IAIProvider, StreamingOptions } from "../../types"
+
+const logger = createLogger("OpenAIProvider")
 
 // Доступные модели OpenAI
 export const OPENAI_MODELS = {
@@ -201,7 +204,7 @@ export class OpenAIProvider implements IAIProvider {
           : undefined,
       }
     } catch (error) {
-      console.error("OpenAI request failed:", error)
+      logger.error("OpenAI request failed", { error, model })
       throw error
     }
   }
@@ -328,7 +331,7 @@ export class OpenAIProvider implements IAIProvider {
                   }
                 }
               } catch (parseError) {
-                console.warn("Error parsing OpenAI streaming event:", parseError)
+                logger.warn("Error parsing OpenAI streaming event", { parseError })
               }
             }
           }
@@ -348,7 +351,7 @@ export class OpenAIProvider implements IAIProvider {
         reader.releaseLock()
       }
     } catch (error) {
-      console.error("OpenAI streaming request failed:", error)
+      logger.error("OpenAI streaming request failed", { error, model })
       if (options.onError) {
         options.onError(error instanceof Error ? error : new Error("Unknown error"))
       } else {
@@ -391,7 +394,7 @@ export class OpenAIProvider implements IAIProvider {
         return this.models.filter((model) => apiModels.includes(model))
       }
     } catch (error) {
-      console.warn("Failed to fetch OpenAI models from API:", error)
+      logger.warn("Failed to fetch OpenAI models from API", { error })
     }
 
     // Возвращаем статический список если API недоступен

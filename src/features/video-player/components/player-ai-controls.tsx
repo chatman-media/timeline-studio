@@ -19,9 +19,11 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"
+
+const logger = createLogger({ module: "PlayerAiControls" })
 
 interface PlayerAIControlsProps {
   className?: string
@@ -162,7 +164,7 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
             <DropdownMenuSeparator />
 
             {/* Быстрые действия */}
-            <DropdownMenuItem onClick={() => console.log("Export AI data")}>
+            <DropdownMenuItem onClick={() => logger.info("Export AI data")}>
               <Gauge className="h-4 w-4 mr-2" />
               Экспортировать данные анализа
             </DropdownMenuItem>

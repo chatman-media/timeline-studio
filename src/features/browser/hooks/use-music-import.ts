@@ -6,6 +6,10 @@ import { useMusicFiles } from "@/features/app-state/hooks/use-music-files"
 import { convertToSavedMusicFile, getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/features/media"
 import type { MediaFile } from "@/features/media/types/media"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseMusicImport" })
+
 /**
  * Максимальное количество одновременных запросов к Tauri
  */
@@ -72,12 +76,12 @@ export function useMusicImport() {
         // Используем существующее имя проекта или создаем новое
         const projectName = currentProject?.name || "Untitled Project"
         await saveProject(projectName)
-        console.log(`Сохранено ${savedFiles.length} музыкальных файлов в проект`)
+        logger.info(`Сохранено ${savedFiles.length} музыкальных файлов в проект`)
 
         // Отмечаем проект как измененный
         setProjectDirty(true)
       } catch (error) {
-        console.error("Ошибка при сохранении музыкальных файлов в проект:", error)
+        logger.error("Ошибка при сохранении музыкальных файлов в проект:", error)
       }
     },
     [currentProject?.path, setProjectDirty],
@@ -120,14 +124,14 @@ export function useMusicImport() {
       const totalFiles = filePaths.length
 
       // ШАГ 1: Быстро создаем базовые объекты для всех файлов
-      console.log(`Создание ${totalFiles} базовых музыкальных файлов...`)
+      logger.info(`Создание ${totalFiles} базовых музыкальных файлов...`)
       const basicMusicFiles = filePaths.map(createBasicMusicFile)
 
       void updateMusicFiles(basicMusicFiles)
-      console.log("Добавлено файлов:", basicMusicFiles.length)
+      logger.info("Добавлено файлов:", basicMusicFiles.length)
 
       // ШАГ 2: Асинхронно загружаем метаданные для каждого файла по очереди
-      console.log(`Начинаем загрузку метаданных для ${totalFiles} музыкальных файлов...`)
+      logger.info(`Начинаем загрузку метаданных для ${totalFiles} музыкальных файлов...`)
 
       // Запускаем асинхронную загрузку метаданных (не блокируем UI)
       const timeoutId = setTimeout(() => {
@@ -156,7 +160,7 @@ export function useMusicImport() {
       activeRequests++
 
       try {
-        console.log(`[${fileIndex + 1}/${totalFiles}] 🎵 Загрузка метаданных музыки: ${filePath.split("/").pop()}`)
+        logger.info(`[${fileIndex + 1}/${totalFiles}] 🎵 Загрузка метаданных музыки: ${filePath.split("/").pop()}`)
 
         // Получаем метаданные файла
         const metadata = await getMediaMetadata(filePath)
@@ -185,10 +189,10 @@ export function useMusicImport() {
 
           if (isMountedRef.current) {
             void updateMusicFiles([updatedMusicFile])
-            console.log("Метаданные загружены для:", updatedMusicFile.name)
+            logger.info("Метаданные загружены для:", updatedMusicFile.name)
           }
 
-          console.log(`[${fileIndex + 1}/${totalFiles}] ✅ Метаданные музыки загружены: ${filePath.split("/").pop()}`)
+          logger.info(`[${fileIndex + 1}/${totalFiles}] ✅ Метаданные музыки загружены: ${filePath.split("/").pop()}`)
         } else {
           // Если метаданные не получены, просто снимаем флаг загрузки
           const fallbackMusicFile: MediaFile = {
@@ -198,13 +202,13 @@ export function useMusicImport() {
 
           if (isMountedRef.current) {
             void updateMusicFiles([fallbackMusicFile])
-            console.log("Fallback для:", fallbackMusicFile.name)
+            logger.info("Fallback для:", fallbackMusicFile.name)
           }
 
-          console.log(`[${fileIndex + 1}/${totalFiles}] ⚠️ Метаданные музыки не получены: ${filePath.split("/").pop()}`)
+          logger.info(`[${fileIndex + 1}/${totalFiles}] ⚠️ Метаданные музыки не получены: ${filePath.split("/").pop()}`)
         }
       } catch (error) {
-        console.error(
+        logger.error(
           `[${fileIndex + 1}/${totalFiles}] ❌ Ошибка при загрузке метаданных музыки ${filePath.split("/").pop()}:`,
           error,
         )
@@ -217,7 +221,7 @@ export function useMusicImport() {
 
         if (isMountedRef.current) {
           void updateMusicFiles([errorMusicFile])
-          console.log("Ошибка для:", errorMusicFile.name)
+          logger.info("Ошибка для:", errorMusicFile.name)
         }
       } finally {
         activeRequests--
@@ -250,7 +254,7 @@ export function useMusicImport() {
     }
 
     // Запускаем начальные запросы
-    console.log(
+    logger.info(
       `🎵 Начинаем загрузку метаданных для ${totalFiles} музыкальных файлов (пул: ${MAX_CONCURRENT_REQUESTS})`,
     )
 
@@ -268,7 +272,7 @@ export function useMusicImport() {
       await new Promise((resolve) => setTimeout(resolve, 100))
     }
 
-    console.log(`🎉 Загрузка метаданных музыки завершена для всех ${totalFiles} файлов`)
+    logger.info(`🎉 Загрузка метаданных музыки завершена для всех ${totalFiles} файлов`)
   }
 
   /**
@@ -293,7 +297,7 @@ export function useMusicImport() {
         }
       }
 
-      console.log(`Выбрано ${selectedFiles.length} аудиофайлов`)
+      logger.info(`Выбрано ${selectedFiles.length} аудиофайлов`)
 
       // Быстро создаем файлы и запускаем асинхронную загрузку метаданных
       const processedFiles = await processFiles(selectedFiles)
@@ -312,7 +316,7 @@ export function useMusicImport() {
         files: processedFiles,
       }
     } catch (error: unknown) {
-      console.error("Ошибка при импорте музыкальных файлов:", error)
+      logger.error("Ошибка при импорте музыкальных файлов:", error)
       if (isMountedRef.current) {
         setIsImporting(false)
       }
@@ -344,7 +348,7 @@ export function useMusicImport() {
         }
       }
 
-      console.log("Директория выбрана:", selectedDir)
+      logger.info("Директория выбрана:", selectedDir)
 
       // Получаем список медиафайлов в директории
       const mediaFiles = await invoke<string[]>("get_media_files", {
@@ -357,7 +361,7 @@ export function useMusicImport() {
         return ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"].includes(extension)
       })
 
-      console.log(`Найдено ${audioFiles.length} аудиофайлов в директории`)
+      logger.info(`Найдено ${audioFiles.length} аудиофайлов в директории`)
 
       if (audioFiles.length === 0) {
         setIsImporting(false)
@@ -385,7 +389,7 @@ export function useMusicImport() {
         files: processedFiles,
       }
     } catch (error: unknown) {
-      console.error("Ошибка при импорте папки с музыкой:", error)
+      logger.error("Ошибка при импорте папки с музыкой:", error)
       if (isMountedRef.current) {
         setIsImporting(false)
       }

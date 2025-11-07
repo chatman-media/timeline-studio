@@ -4,9 +4,12 @@
  * Синхронизирует выбранный клип в timeline с video player
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "../../../shared/config/service-config"
 import type { TimelineClip } from "../types"
 import { interpolateSpeed } from "../utils/speed-ramping-utils"
+
+const logger = createLogger({ module: "TimelinePlayerSync" })
 
 interface PlayerContext {
   // Backend команды для управления плеером
@@ -56,7 +59,7 @@ export class TimelinePlayerSync {
       return
     }
     this.playerContext = context
-    console.log("[TimelinePlayerSync] Player context set")
+    logger.info("[TimelinePlayerSync] Player context set")
   }
 
   /**
@@ -75,7 +78,7 @@ export class TimelinePlayerSync {
 
     // Если нет контекста плеера, пропускаем
     if (!this.playerContext) {
-      console.warn("[TimelinePlayerSync] No player context")
+      logger.warn("[TimelinePlayerSync] No player context")
       return
     }
 
@@ -86,14 +89,14 @@ export class TimelinePlayerSync {
 
     // ИСПРАВЛЕНИЕ: Проверяем наличие медиафайла ДО установки currentSelectedClip
     if (!clip.mediaFile) {
-      console.warn("[TimelinePlayerSync] Clip has no media file")
+      logger.warn("[TimelinePlayerSync] Clip has no media file")
       return
     }
 
     try {
       this.currentSelectedClip = clip
 
-      console.log("[TimelinePlayerSync] Syncing clip to player:", clip.name)
+      logger.info("[TimelinePlayerSync] Syncing clip to player:", clip.name)
 
       // Устанавливаем источник как timeline через backend
       await this.playerContext.playerSetSource("timeline")
@@ -109,7 +112,7 @@ export class TimelinePlayerSync {
       // Применяем эффекты, фильтры и шаблоны клипа
       await this.applyClipResources(clip)
     } catch (error) {
-      console.error("[TimelinePlayerSync] Failed to sync clip:", error)
+      logger.error("[TimelinePlayerSync] Failed to sync clip:", error)
     }
   }
 
@@ -149,7 +152,7 @@ export class TimelinePlayerSync {
         await this.playerContext.playerApplyTemplate(clip.templateId, mediaIds)
       }
     } catch (error) {
-      console.error("[TimelinePlayerSync] Failed to apply clip resources:", error)
+      logger.error("[TimelinePlayerSync] Failed to apply clip resources:", error)
     }
   }
 
@@ -178,7 +181,7 @@ export class TimelinePlayerSync {
         // Обновляем скорость воспроизведения если включен speed ramping
         await this.updateSpeedRamping(clipRelativeTime)
       } catch (error) {
-        console.error("[TimelinePlayerSync] Failed to sync playback time:", error)
+        logger.error("[TimelinePlayerSync] Failed to sync playback time:", error)
       }
     }
   }
@@ -222,7 +225,7 @@ export class TimelinePlayerSync {
     try {
       await this.playerContext.setPlaybackRate(finalRate)
     } catch (error) {
-      console.error("[TimelinePlayerSync] Failed to update playback rate:", error)
+      logger.error("[TimelinePlayerSync] Failed to update playback rate:", error)
     }
   }
 
@@ -249,11 +252,11 @@ export class TimelinePlayerSync {
         await this.playerContext.playerClearFilters()
         await this.playerContext.playerClearTemplate()
       } catch (error) {
-        console.error("[TimelinePlayerSync] Failed to clear selection:", error)
+        logger.error("[TimelinePlayerSync] Failed to clear selection:", error)
       }
     }
 
-    console.log("[TimelinePlayerSync] Selection cleared")
+    logger.info("[TimelinePlayerSync] Selection cleared")
   }
 
   /**

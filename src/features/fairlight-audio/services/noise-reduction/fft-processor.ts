@@ -317,7 +317,7 @@ export class SpectralSubtraction {
    */
   process(input: Float32Array): Float32Array {
     if (!this.noiseProfile) {
-      console.warn("No noise profile learned, returning original audio")
+      logger.warn("No noise profile learned, returning original audio")
       return input
     }
 

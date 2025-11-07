@@ -201,15 +201,15 @@ export class AdvancedFaceDetectionService {
       if (this.config.useGPU) {
         const gpuAvailable = await invoke<boolean>("check_gpu_availability")
         if (!gpuAvailable) {
-          console.warn("GPU недоступен, переключаемся на CPU")
+          logger.warn("GPU недоступен, переключаемся на CPU")
           this.config.useGPU = false
         }
       }
 
       this.isInitialized = true
-      console.log("Advanced Face Detection Service инициализирован")
+      logger.info("Advanced Face Detection Service инициализирован")
     } catch (error) {
-      console.error("Ошибка инициализации Advanced Face Detection Service:", error)
+      logger.error("Ошибка инициализации Advanced Face Detection Service:", error)
       throw error
     }
   }
@@ -245,7 +245,7 @@ export class AdvancedFaceDetectionService {
 
       return results
     } catch (error) {
-      console.error("Ошибка продвинутой детекции лиц:", error)
+      logger.error("Ошибка продвинутой детекции лиц:", error)
       return []
     }
   }
@@ -324,7 +324,7 @@ export class AdvancedFaceDetectionService {
 
       return new Float32Array(result.vector)
     } catch (error) {
-      console.error("Ошибка генерации embedding:", error)
+      logger.error("Ошибка генерации embedding:", error)
       return null
     }
   }
@@ -350,7 +350,7 @@ export class AdvancedFaceDetectionService {
 
       return quality
     } catch (error) {
-      console.error("Ошибка анализа качества:", error)
+      logger.error("Ошибка анализа качества:", error)
       // Возвращаем значения по умолчанию
       return {
         overall: 0,
@@ -395,7 +395,7 @@ export class AdvancedFaceDetectionService {
       // Сохраняем функцию отписки
       ;(this as any)._realtimeUnlisten = unlisten
     } catch (error) {
-      console.error("Ошибка запуска real-time обработки:", error)
+      logger.error("Ошибка запуска real-time обработки:", error)
       callbacks.onError?.(error as Error)
     }
   }
@@ -417,7 +417,7 @@ export class AdvancedFaceDetectionService {
         delete (this as any)._realtimeUnlisten
       }
     } catch (error) {
-      console.error("Ошибка остановки real-time обработки:", error)
+      logger.error("Ошибка остановки real-time обработки:", error)
     }
   }
 
@@ -459,7 +459,7 @@ export class AdvancedFaceDetectionService {
     // В реальной реализации здесь будут Tauri event listeners
     // Пока возвращаем заглушку
     return () => {
-      console.log("Realtime listeners cleanup")
+      logger.info("Realtime listeners cleanup")
     }
   }
 
@@ -494,7 +494,7 @@ export class AdvancedFaceDetectionService {
 
       return blurredImage
     } catch (error) {
-      console.error("Ошибка размытия лиц:", error)
+      logger.error("Ошибка размытия лиц:", error)
       return imageData as string
     }
   }

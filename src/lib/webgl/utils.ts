@@ -2,6 +2,10 @@
  * Утилиты для работы с WebGL
  */
 
+import { createLogger } from "../tauri-logger"
+
+const logger = createLogger("WebGLUtils")
+
 /**
  * Проверка, является ли число степенью двойки
  */
@@ -232,7 +236,10 @@ export function getWebGLErrorString(gl: WebGL2RenderingContext, error: number): 
 export function checkWebGLError(gl: WebGL2RenderingContext, operation: string): void {
   const error = gl.getError()
   if (error !== gl.NO_ERROR) {
-    console.error(`WebGL error after ${operation}: ${getWebGLErrorString(gl, error)}`)
+    logger.errorSync("WebGL error", {
+      operation,
+      error: getWebGLErrorString(gl, error),
+    })
   }
 }
 
@@ -245,11 +252,11 @@ export async function measurePerformance<T>(operation: () => T | Promise<T>, lab
   try {
     const result = await operation()
     const duration = performance.now() - start
-    console.log(`${label} took ${duration.toFixed(2)}ms`)
+    logger.debugSync("Operation completed", { label, durationMs: duration.toFixed(2) })
     return result
   } catch (error) {
     const duration = performance.now() - start
-    console.error(`${label} failed after ${duration.toFixed(2)}ms:`, error)
+    logger.errorSync("Operation failed", { label, durationMs: duration.toFixed(2), error })
     throw error
   }
 }

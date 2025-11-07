@@ -4,7 +4,10 @@ import { useTranslation } from "react-i18next"
 
 import { useResources } from "@/features/resources"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
+
+const logger = createLogger({ module: "AddMediaButton" })
 
 interface AddMediaButtonProps {
   resource: TimelineResource
@@ -134,7 +137,7 @@ export const AddMediaButton = memo(function AddMediaButton({
             void addStyleTemplate(resource.template)
             break
           default:
-            console.warn(`Unknown resource type: ${(resource as any).type}`)
+            logger.warn(`Unknown resource type: ${(resource as any).type}`)
         }
         // Немедленно обновляем визуальное состояние
         setIsRecentlyAdded(true)

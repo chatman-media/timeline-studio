@@ -3,9 +3,11 @@
  */
 
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/domains/video-editing/types/timeline"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { getTimelineStateAccess } from "../types"
 import { determineContentType } from "./detectors"
+
+const logger = createLogger({ module: "Helpers" })
 
 export async function getCurrentTimelineProject(): Promise<TimelineProject | null> {
   const timelineStateAccess = getTimelineStateAccess()
@@ -28,11 +30,11 @@ export async function saveTimelineProject(project: TimelineProject): Promise<voi
     const timelineContext = (window as any).timelineContext
     if (timelineContext.saveProject) {
       await timelineContext.saveProject()
-      console.log(`Проект сохранен: ${project.name}`)
+      logger.info(`Проект сохранен: ${project.name}`)
     }
   } else {
     // Fallback - логируем попытку сохранения
-    console.log(`Попытка сохранения проекта: ${project.name} (timeline context недоступен)`)
+    logger.info(`Попытка сохранения проекта: ${project.name} (timeline context недоступен)`)
   }
 }
 

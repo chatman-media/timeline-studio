@@ -7,13 +7,15 @@ import React from "react"
 
 import { Button } from "@/components/ui/button"
 import { useModal } from "@/features/modals/services"
+import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"
-
 import { useClips } from "../../hooks"
 import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import type { AppliedEffect, TimelineClip, TimelineTrack } from "../../types"
 import Waveform from "../track/waveform"
+
+const logger = createLogger({ module: "AudioClip" })
 
 interface AudioClipProps {
   clip: TimelineClip
@@ -48,12 +50,12 @@ export function AudioClip({ clip, track, onUpdate, onRemove }: AudioClipProps) {
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation()
-    console.log("Copy audio clip:", clip.id)
+    logger.info("Copy audio clip:", clip.id)
   }
 
   const handleSplit = (e: React.MouseEvent) => {
     e.stopPropagation()
-    console.log("Split audio clip:", clip.id)
+    logger.info("Split audio clip:", clip.id)
   }
 
   const handleRemove = (e: React.MouseEvent) => {

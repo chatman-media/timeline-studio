@@ -6,10 +6,13 @@
  */
 
 import { assign, emit, fromPromise, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 // Service imports (will be replaced with domain services)
 // Import services from domain
 // import { getAIContainer } from "@/domains/ai-core"
 import type { IContentAnalysisService, IFFmpegAnalysisService, IVisionService } from "../types/interfaces"
+
+const logger = createLogger("AIIntelligenceMachine")
 
 // Service getters for compatibility
 let ffmpegService: IFFmpegAnalysisService | null = null
@@ -233,7 +236,7 @@ const analyzeContentActor = fromPromise(
       aiService: any
     }
   }) => {
-    console.log("[AI Intelligence] Starting content analysis")
+    logger.infoSync("Starting content analysis")
     const { mediaFiles, ffmpegService, aiService } = input
 
     // Базовый анализ через FFmpeg
@@ -316,7 +319,7 @@ const analyzeContentActor = fromPromise(
       } as ContentInsights,
     }
 
-    console.log("[AI Intelligence] Content analysis completed")
+    logger.infoSync("Content analysis completed")
     return unifiedAnalysis
   },
 )
@@ -331,7 +334,7 @@ const generateScriptActor = fromPromise(
       aiService: any
     }
   }) => {
-    console.log("[AI Intelligence] Starting script generation")
+    logger.infoSync("Starting script generation")
     const { analysis, params } = input
 
     // Временная заглушка для генерации сценария
@@ -354,7 +357,7 @@ const generateScriptActor = fromPromise(
       },
     }
 
-    console.log("[AI Intelligence] Script generation completed")
+    logger.infoSync("Script generation completed")
     return script
   },
 )
@@ -370,7 +373,7 @@ const adaptForPlatformsActor = fromPromise(
       aiService: any
     }
   }) => {
-    console.log("[AI Intelligence] Starting platform adaptation")
+    logger.infoSync("Starting platform adaptation")
     const { platforms } = input
 
     // Временная заглушка для адаптации
@@ -401,7 +404,7 @@ const adaptForPlatformsActor = fromPromise(
       },
     }))
 
-    console.log("[AI Intelligence] Platform adaptation completed")
+    logger.infoSync("Platform adaptation completed")
     return adaptations
   },
 )

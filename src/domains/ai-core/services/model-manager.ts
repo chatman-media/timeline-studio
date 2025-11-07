@@ -3,8 +3,11 @@
  * Управление моделями и их конфигурациями
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import { CLAUDE_MODELS, DEEPSEEK_MODELS, OPENAI_MODELS } from "../providers"
 import type { AIProviderFactory, ModelConfiguration, ModelManager } from "../types"
+
+const logger = createLogger("ModelManager")
 
 // Типы AI провайдеров
 export type AIProvider = "claude" | "openai" | "deepseek" | "ollama" | "grok"
@@ -140,7 +143,7 @@ export class ModelManagerImpl implements ModelManager {
         }
       }
     } catch (error) {
-      console.warn("Failed to load Claude models:", error)
+      logger.warn("Failed to load Claude models", { error })
     }
 
     // OpenAI модели
@@ -163,7 +166,7 @@ export class ModelManagerImpl implements ModelManager {
         }
       }
     } catch (error) {
-      console.warn("Failed to load OpenAI models:", error)
+      logger.warn("Failed to load OpenAI models", { error })
     }
 
     // DeepSeek модели
@@ -186,7 +189,7 @@ export class ModelManagerImpl implements ModelManager {
         }
       }
     } catch (error) {
-      console.warn("Failed to load DeepSeek models:", error)
+      logger.warn("Failed to load DeepSeek models", { error })
     }
 
     // Ollama модели
@@ -208,7 +211,7 @@ export class ModelManagerImpl implements ModelManager {
         }
       }
     } catch (error) {
-      console.warn("Failed to load Ollama models:", error)
+      logger.warn("Failed to load Ollama models", { error })
     }
 
     // Grok модели
@@ -248,7 +251,7 @@ export class ModelManagerImpl implements ModelManager {
         }
       }
     } catch (error) {
-      console.warn("Failed to load Grok models:", error)
+      logger.warn("Failed to load Grok models", { error })
     }
 
     // Обновляем кэш
@@ -259,7 +262,17 @@ export class ModelManagerImpl implements ModelManager {
     }
     this.lastUpdate = Date.now()
 
-    console.log(`Loaded ${models.length} AI models from ${new Set(models.map((m) => m.provider)).size} providers`)
+    logger.info("Loaded AI models", {
+      totalModels: models.length,
+      providers: new Set(models.map((m) => m.provider)).size,
+      modelsByProvider: models.reduce(
+        (acc, m) => {
+          acc[m.provider] = (acc[m.provider] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>,
+      ),
+    })
   }
 
   getProviderByModel(model: string): string {

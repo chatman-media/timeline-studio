@@ -155,7 +155,7 @@ pub enum AudioContentType {
 }
 
 /// Moment detection result for montage planning
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct DetectedMoment {
   pub timestamp: f64,
   pub duration: f64,
@@ -167,7 +167,7 @@ pub struct DetectedMoment {
 }
 
 /// Categories of detected moments
-#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq, specta::Type)]
 pub enum MomentCategory {
   Action,
   Drama,
@@ -180,7 +180,7 @@ pub enum MomentCategory {
 }
 
 /// Detailed scoring for moments
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct MomentScores {
   pub visual: f32,      // 0-100: visual appeal
   pub technical: f32,   // 0-100: technical quality
@@ -359,6 +359,53 @@ pub struct AnalysisProgress {
   pub current_file: Option<String>,
   pub eta_seconds: Option<u64>,
   pub message: String,
+}
+
+/// Plan validation result
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct PlanValidation {
+  pub is_valid: bool,
+  pub errors: Vec<String>,
+  pub warnings: Vec<String>,
+  pub suggestions: Vec<String>,
+  pub quality: f32, // overall quality score 0-1
+}
+
+/// Plan statistics
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct PlanStatistics {
+  pub total_duration: f64,
+  pub average_fragment_duration: f64,
+  pub fragment_count: u32,
+  pub transition_count: u32,
+  pub average_quality: f32,
+  pub quality_distribution: QualityDistribution,
+  pub motion_intensity: f32,
+  pub face_time: f64,
+  pub object_diversity: u32,
+  pub audio_quality: f32,
+}
+
+/// Quality distribution stats
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct QualityDistribution {
+  pub low: u32,    // 0-0.3
+  pub medium: u32, // 0.3-0.7
+  pub high: u32,   // 0.7-1.0
+}
+
+/// Montage analysis result (simplified from ComprehensiveAnalysisResult)
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct MontageAnalysisResult {
+  pub video_id: String,
+  pub duration: f64,
+  pub quality_score: f32,
+  pub motion_score: f32,
+  pub faces_detected: u32,
+  pub objects_detected: Vec<String>,
+  pub audio_quality: f32,
+  pub key_moments: Vec<DetectedMoment>,
+  pub analysis_id: String,
 }
 
 /// Error types for montage planner

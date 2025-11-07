@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { MediaFile } from "@/features/media/types/media"
 import { useModal } from "@/features/modals"
 import { useResources } from "@/features/resources"
+import { createLogger } from "@/lib/tauri-logger"
 import { useAudioDevices } from "../hooks/use-audio-devices"
 import { useAudioPermissions } from "../hooks/use-audio-permissions"
 import { useVoiceRecording } from "../hooks/use-voice-recording"
@@ -20,6 +21,8 @@ import {
   saveVoiceRecording,
 } from "../types/tauri"
 import { AudioPermissionRequest } from "./audio-permission-request"
+
+const logger = createLogger({ module: "VoiceRecordingModal" })
 
 export function VoiceRecordModal() {
   const { t } = useTranslation()
@@ -61,7 +64,7 @@ export function VoiceRecordModal() {
           useSubdirectory: true,
         })
 
-        console.log("Аудиозапись сохранена:", result)
+        logger.info("Аудиозапись сохранена:", result)
 
         // Создаем объект MediaFile для добавления в медиатеку
         const mediaFile: MediaFile = {
@@ -82,7 +85,7 @@ export function VoiceRecordModal() {
         // Закрываем диалог после успешного сохранения
         closeModal()
       } catch (error) {
-        console.error("Ошибка при сохранении аудиозаписи:", error)
+        logger.error("Ошибка при сохранении аудиозаписи:", error)
         setErrorMessage(t("dialogs.voiceRecord.saveError", "Ошибка при сохранении аудиозаписи"))
       }
     },
@@ -122,7 +125,7 @@ export function VoiceRecordModal() {
         await getDevices()
       }
     } catch (error) {
-      console.error("Ошибка при получении устройств после разрешений:", error)
+      logger.error("Ошибка при получении устройств после разрешений:", error)
     }
   }, [requestPermissions, getDevices])
 

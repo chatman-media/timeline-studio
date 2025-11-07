@@ -5,8 +5,11 @@
 
 import { WebGL2UnifiedRenderer } from "@/features/effects/services/webgl2-unified-renderer"
 import type { BaseEffect } from "@/features/effects/types"
+import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect, TimelineClip } from "../types"
 import { EffectsCache } from "./effects-cache"
+
+const logger = createLogger({ module: "EffectsPlayerIntegration" })
 
 export interface EffectsPlayerConfig {
   targetCanvas?: HTMLCanvasElement
@@ -162,13 +165,13 @@ export class EffectsPlayerIntegration {
       }
 
       // При ошибке возвращаем оригинальное видео
-      console.warn("Effect rendering failed:", result.error)
+      logger.warn("Effect rendering failed:", result.error)
       this.targetCanvas.width = videoElement.videoWidth
       this.targetCanvas.height = videoElement.videoHeight
       this.ctx.drawImage(videoElement, 0, 0)
       return this.targetCanvas
     } catch (error) {
-      console.error("Error processing video frame:", error)
+      logger.error("Error processing video frame:", error)
       return null
     }
   }
@@ -330,7 +333,7 @@ export class EffectsPlayerIntegration {
       }
       return previewCanvas
     } catch (error) {
-      console.error("Error creating effect preview:", error)
+      logger.error("Error creating effect preview:", error)
       return null
     }
   }

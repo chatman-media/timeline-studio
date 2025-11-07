@@ -3,6 +3,10 @@
  * Полная реализация Ollama API с поддержкой локальных моделей
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("OllamaProvider")
+
 import type { AiMessage, AiRequestOptions, AiResponse, IAIProvider, StreamingOptions } from "../../types"
 
 // Популярные модели Ollama
@@ -177,7 +181,7 @@ export class OllamaProvider implements IAIProvider {
 
       return result
     } catch (error) {
-      console.error("Ollama request failed:", error)
+      logger.error("Ollama request failed", { error, model })
       throw error
     }
   }
@@ -285,7 +289,7 @@ export class OllamaProvider implements IAIProvider {
                 return
               }
             } catch (parseError) {
-              console.warn("Error parsing Ollama streaming event:", parseError)
+              logger.warn("Error parsing Ollama streaming event", { parseError })
             }
           }
         }
@@ -304,7 +308,7 @@ export class OllamaProvider implements IAIProvider {
         reader.releaseLock()
       }
     } catch (error) {
-      console.error("Ollama streaming request failed:", error)
+      logger.error("Ollama streaming request failed", { error, model })
       if (options.onError) {
         options.onError(error instanceof Error ? error : new Error("Unknown error"))
       } else {
@@ -387,7 +391,7 @@ export class OllamaProvider implements IAIProvider {
       const data = await response.json()
       return data.models || []
     } catch (error) {
-      console.error("Failed to get installed Ollama models:", error)
+      logger.error("Failed to get installed Ollama models", { error })
       throw error
     }
   }

@@ -12,12 +12,15 @@ import {
   eventBus,
   type MontagePlanGeneratedEvent,
 } from "@/domains/shared/events"
+import { createLogger } from "@/lib/tauri-logger"
 import { type AIIntelligenceMachine, aiIntelligenceMachine } from "../machines/ai-intelligence-machine"
 import { type ChatMachine, chatMachine } from "../machines/chat-machine"
 import { type MontagePlannerMachine, montagePlannerMachine } from "../machines/montage-planner-machine"
 
 // Import types from ai-intelligence
 import type { AIConfig, IntelligentContent, MediaFile } from "../types/ai-intelligence"
+
+const logger = createLogger("AIServicesOrchestrator")
 
 export class AIServicesOrchestrator {
   private static instance: AIServicesOrchestrator | null = null
@@ -58,7 +61,7 @@ export class AIServicesOrchestrator {
     // Слушаем события из других доменов
     eventBus.subscribe(
       async (event) => {
-        console.log("[AI Orchestrator] Received event:", event.type)
+        logger.debugSync("Received event", { type: event.type })
 
         switch (event.type) {
           case DOMAIN_EVENTS.MEDIA.FILES_IMPORTED:
@@ -71,7 +74,7 @@ export class AIServicesOrchestrator {
 
           case DOMAIN_EVENTS.VIDEO.TIMELINE_CREATED:
             // Можем предложить AI оптимизацию для нового таймлайна
-            console.log("New timeline created, AI can suggest improvements")
+            logger.infoSync("New timeline created, AI can suggest improvements")
             break
         }
       },
@@ -271,9 +274,9 @@ export class AIIntelligenceOrchestrator {
       // Load engines via DI factory
       try {
         // TODO: Implement DI container integration
-        console.log("DI container integration not yet implemented")
+        logger.debugSync("DI container integration not yet implemented")
       } catch (error) {
-        console.warn("Failed to load engines via DI:", error)
+        logger.warnSync("Failed to load engines via DI", { error })
       }
     }
   }

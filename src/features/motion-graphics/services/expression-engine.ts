@@ -3,7 +3,10 @@
  * Evaluates JavaScript expressions for procedural animations
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { ExpressionContext, KeyframeValue } from "../types/keyframe"
+
+const logger = createLogger({ module: "ExpressionEngine" })
 
 /**
  * Built-in expression functions
@@ -126,7 +129,7 @@ export class ExpressionEvaluator {
       // Evaluate
       return compiledFn.call(safeContext)
     } catch (error) {
-      console.error("Expression evaluation error:", error)
+      logger.error("Expression evaluation error:", error)
       return context.value // Return current value on error
     }
   }
@@ -149,7 +152,7 @@ export class ExpressionEvaluator {
         const fn = new Function(functionBody)
         return fn.call(this)
       } catch (error) {
-        console.error("Expression compilation error:", error)
+        logger.error("Expression compilation error:", error)
         return 0 // Return default value on error
       }
     }

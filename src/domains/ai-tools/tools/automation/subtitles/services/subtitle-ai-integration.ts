@@ -10,6 +10,11 @@ import type {
   TextDetection,
   UnifiedContentAnalysis,
 } from "@/domains/ai-services/types"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SubtitleAiIntegration")
+
 // Импортируем сервисы AI Content Intelligence
 import { IVisionService } from "@/domains/ai-services/types/interfaces"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
@@ -60,9 +65,9 @@ export class SubtitleAIIntegrationService {
 
       this.isInitialized = true
 
-      console.log("SubtitleAIIntegrationService initialized successfully")
+      logger.info("SubtitleAIIntegrationService initialized successfully")
     } catch (error) {
-      console.error("Failed to initialize SubtitleAIIntegrationService:", error)
+      logger.error("Failed to initialize SubtitleAIIntegrationService:", { error })
       throw error
     }
   }
@@ -85,10 +90,10 @@ export class SubtitleAIIntegrationService {
 
     const { enableOCR = true, enableSpeechAnalysis = true, enableSceneAnalysis = true, language = "ru" } = options
 
-    console.log("Starting content analysis for subtitles:", {
+    logger.debug("Starting content analysis for subtitles:", { data: {
       mediaPath,
       options,
-    })
+    } })
 
     try {
       // Извлекаем информацию о файле
@@ -155,15 +160,15 @@ export class SubtitleAIIntegrationService {
         },
       }
 
-      console.log("Content analysis completed:", {
+      logger.debug("Content analysis completed:", { data: {
         textDetections: textDetections.length,
         speechSegments: audioAnalysis.speech.length,
         scenes: sceneAnalysis.length,
-      })
+      } })
 
       return unifiedAnalysis
     } catch (error) {
-      console.error("Error during content analysis:", error)
+      logger.error("Error during content analysis:", { error })
       throw error
     }
   }
@@ -172,7 +177,7 @@ export class SubtitleAIIntegrationService {
    * OCR анализ для извлечения текста с экрана
    */
   private async performOCRAnalysis(_mediaPath: string, language: string): Promise<TextDetection[]> {
-    console.log("Starting OCR analysis...")
+    logger.info("Starting OCR analysis...")
 
     try {
       // Здесь будет реальная интеграция с VisionService
@@ -205,10 +210,10 @@ export class SubtitleAIIntegrationService {
       //   frames.map(frame => this.visionService.analyzeFrame(frame.imageData, frame.number))
       // )
 
-      console.log(`OCR analysis completed: found ${mockTextDetections.length} text blocks`)
+      logger.info("OCR analysis completed: found", { mockTextDetections.length })
       return mockTextDetections
     } catch (error) {
-      console.error("OCR analysis failed:", error)
+      logger.error("OCR analysis failed:", { error })
       return []
     }
   }
@@ -217,7 +222,7 @@ export class SubtitleAIIntegrationService {
    * Анализ речи и аудио для извлечения речевых сегментов
    */
   private async performSpeechAnalysis(mediaPath: string, language: string): Promise<AudioDetections> {
-    console.log("Starting speech analysis...")
+    logger.info("Starting speech analysis...")
 
     try {
       if (!this.whisperService) {
@@ -260,13 +265,13 @@ export class SubtitleAIIntegrationService {
         silence: this.detectSilenceSegments(enhancedSpeech),
       }
 
-      console.log(`Speech analysis completed: found ${enhancedSpeech.length} speech segments`)
+      logger.info("Speech analysis completed: found", { enhancedSpeech.length })
       return audioDetections
     } catch (error) {
-      console.error("Speech analysis failed:", error)
+      logger.error("Speech analysis failed:", { error })
 
       // Fallback на симулированные данные если Whisper недоступен
-      console.warn("Using fallback mock speech data")
+      logger.warn("Warning", { data: "Using fallback mock speech data" })
       const mockSpeechSegments: SpeechDetection[] = [
         {
           startTime: 2.5,
@@ -291,7 +296,7 @@ export class SubtitleAIIntegrationService {
    * Анализ сцен для контекстной информации
    */
   private async performSceneAnalysis(_mediaPath: string): Promise<SceneAnalysis[]> {
-    console.log("Starting scene analysis...")
+    logger.info("Starting scene analysis...")
 
     try {
       // Здесь будет реальная интеграция с scene analysis движком
@@ -346,10 +351,10 @@ export class SubtitleAIIntegrationService {
         },
       ]
 
-      console.log(`Scene analysis completed: found ${mockScenes.length} scenes`)
+      logger.info("Scene analysis completed: found", { mockScenes.length })
       return mockScenes
     } catch (error) {
-      console.error("Scene analysis failed:", error)
+      logger.error("Scene analysis failed:", { error })
       return []
     }
   }
@@ -457,11 +462,11 @@ export class SubtitleAIIntegrationService {
     } = {},
   ) {
     if (!this.synchronizationService) {
-      console.warn("SynchronizationService not available, using basic synchronization")
+      logger.warn("Warning", { data: "SynchronizationService not available, using basic synchronization" })
       return this.basicSynchronization(subtitles, options)
     }
 
-    console.log("Starting advanced subtitle synchronization...")
+    logger.info("Starting advanced subtitle synchronization...")
 
     try {
       const syncOptions: SynchronizationOptions = {
@@ -485,24 +490,24 @@ export class SubtitleAIIntegrationService {
 
       const result = await this.synchronizationService.synchronizeSubtitles(subtitles, context, syncOptions)
 
-      console.log("Advanced synchronization completed:", {
+      logger.debug("Advanced synchronization completed:", { data: {
         quality: result.quality.overallScore,
         adjustments: result.statistics.adjustmentsMade,
         warnings: result.warnings.length,
-      })
+      } })
 
       // Логируем рекомендации и предупреждения
       if (result.recommendations.length > 0) {
-        console.log("Synchronization recommendations:", result.recommendations)
+        logger.debug("Synchronization recommendations:", { data: result.recommendations })
       }
 
       if (result.warnings.length > 0) {
-        console.warn("Synchronization warnings:", result.warnings)
+        logger.warn("Synchronization warnings:", { data: result.warnings })
       }
 
       return result.synchronizedSubtitles
     } catch (error) {
-      console.error("Advanced synchronization failed, falling back to basic:", error)
+      logger.error("Advanced synchronization failed, falling back to basic:", { error })
       return this.basicSynchronization(subtitles, options)
     }
   }

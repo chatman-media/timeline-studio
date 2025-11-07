@@ -18,9 +18,11 @@ import {
   getResolutionsForAspectRatio,
   type ResolutionOption,
 } from "@/features/project-settings/types/project"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useProjectSettings } from "../hooks/use-project-settings"
 import { getAspectRatioLabel, getAspectRatioString } from "../utils"
+
+const logger = createLogger({ module: "ProjectSettingsModal" })
 
 /**
  * Модальное окно настроек проекта
@@ -61,7 +63,7 @@ export function ProjectSettingsModal() {
     setCustomWidth(settings.aspectRatio.value.width)
     setCustomHeight(settings.aspectRatio.value.height)
 
-    console.log("[ProjectSettingsDialog] Доступные разрешения обновлены:", resolutions)
+    logger.info("[ProjectSettingsDialog] Доступные разрешения обновлены:", resolutions)
   }, [settings.aspectRatio]) // Зависимость от соотношения сторон
 
   /**
@@ -120,7 +122,7 @@ export function ProjectSettingsModal() {
       void updateSettings(newSettings)
 
       // Отладочный вывод
-      console.log("[ProjectSettingsDialog] Соотношение сторон изменено:", {
+      logger.info("[ProjectSettingsDialog] Соотношение сторон изменено:", {
         aspectRatio: newAspectRatio.label,
         resolution: newSettings.resolution,
         width: newSettings.aspectRatio.value.width,
@@ -519,7 +521,7 @@ export function ProjectSettingsModal() {
             void updateSettings(currentSettings)
 
             // Отладочный вывод
-            console.log("[ProjectSettingsDialog] Applied settings:", currentSettings)
+            logger.info("[ProjectSettingsDialog] Applied settings:", currentSettings)
 
             // Закрываем диалог с небольшой задержкой, чтобы дать время обновиться всем компонентам
             setTimeout(() => {

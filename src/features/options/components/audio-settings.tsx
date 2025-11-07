@@ -23,6 +23,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "AudioSettings" })
+
 interface AudioSettingsState {
   deviceSettings: boolean
   mixerControls: boolean
@@ -131,7 +135,7 @@ export function AudioSettings() {
 
   const handleApply = () => {
     // Применить настройки к выбранным аудио клипам
-    console.log("Applying audio settings:", settings)
+    logger.info("Applying audio settings:", settings)
   }
 
   return (

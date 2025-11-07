@@ -4,8 +4,11 @@
  */
 
 import type { VersionInfo } from "@/features/version-control/types"
+import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { UndoRedoService } from "./undo-redo-service"
+
+const logger = createLogger({ module: "VersionControlIntegration" })
 
 export interface VersionControlIntegrationConfig {
   // Автоматическое создание снапшотов
@@ -332,26 +335,26 @@ export class VersionControlIntegration {
 
     // Проверяем, разрешены ли автоснапшоты
     if (!isServiceEnabled("AUTO_SNAPSHOT")) {
-      console.log("[VersionControlIntegration] Auto-snapshot is disabled by service config")
+      logger.info("[VersionControlIntegration] Auto-snapshot is disabled by service config")
       return
     }
 
-    console.log("[VersionControlIntegration] Starting auto-snapshot timer")
+    logger.info("[VersionControlIntegration] Starting auto-snapshot timer")
     let timerRuns = 0
 
     this.autoSnapshotTimer = setInterval(() => {
       timerRuns++
       const startTime = performance.now()
-      console.log(`[VersionControlIntegration] Auto-snapshot timer run #${timerRuns}`)
+      logger.info(`[VersionControlIntegration] Auto-snapshot timer run #${timerRuns}`)
 
       if (this.state.pendingActions > 0) {
         const minutesSinceSnapshot = (Date.now() - this.state.lastSnapshotTime.getTime()) / (1000 * 60)
-        console.log(
+        logger.info(
           `[VersionControlIntegration] Minutes since snapshot: ${minutesSinceSnapshot.toFixed(1)}, pending actions: ${this.state.pendingActions}`,
         )
 
         if (minutesSinceSnapshot >= this.state.config.autoSnapshotInterval) {
-          console.log(
+          logger.info(
             `[VersionControlIntegration] Creating auto-snapshot by timer (interval: ${this.state.config.autoSnapshotInterval}min)`,
           )
           this.createAutoSnapshot("interval", {
@@ -362,18 +365,18 @@ export class VersionControlIntegration {
             reason: "interval",
           }).then((success) => {
             const duration = performance.now() - startTime
-            console.log(
+            logger.info(
               `[VersionControlIntegration] Auto-snapshot creation ${success ? "succeeded" : "failed"} in ${duration.toFixed(2)}ms`,
             )
           })
         }
       } else {
-        console.log("[VersionControlIntegration] No pending actions, skipping snapshot creation")
+        logger.info("[VersionControlIntegration] No pending actions, skipping snapshot creation")
       }
 
       const totalDuration = performance.now() - startTime
       if (totalDuration > 50) {
-        console.warn(
+        logger.warn(
           `[VersionControlIntegration] WARNING: Auto-snapshot timer run #${timerRuns} took ${totalDuration.toFixed(2)}ms`,
         )
       }

@@ -3,8 +3,10 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { CacheMemoryUsage } from "../types/cache"
+
+const logger = createLogger({ module: "MetadataCacheService" })
 
 /**
  * Получить метаданные файла из кэша
@@ -13,7 +15,7 @@ export async function getCachedMetadata(filePath: string): Promise<MediaMetadata
   try {
     return await invoke<MediaMetadata | null>("get_cached_metadata", { filePath })
   } catch (error) {
-    console.error("Failed to get cached metadata:", error)
+    logger.error("Failed to get cached metadata:", error)
     return null
   }
 }
@@ -25,7 +27,7 @@ export async function cacheMediaMetadata(filePath: string, metadata: MediaMetada
   try {
     await invoke("cache_media_metadata", { filePath, metadata })
   } catch (error) {
-    console.error("Failed to cache metadata:", error)
+    logger.error("Failed to cache metadata:", error)
     throw error
   }
 }
@@ -37,7 +39,7 @@ export async function getCacheMemoryUsage(): Promise<CacheMemoryUsage> {
   try {
     return await invoke<CacheMemoryUsage>("get_cache_memory_usage")
   } catch (error) {
-    console.error("Failed to get cache memory usage:", error)
+    logger.error("Failed to get cache memory usage:", error)
     throw error
   }
 }
@@ -90,5 +92,5 @@ export async function invalidateFileCache(filePath: string): Promise<void> {
   // Пока нет отдельной команды для удаления конкретного файла из кэша,
   // но можно переписать метаданные с новой временной меткой
   // или дождаться автоматической инвалидации по TTL
-  console.log(`Cache invalidation requested for: ${filePath}`)
+  logger.info(`Cache invalidation requested for: ${filePath}`)
 }

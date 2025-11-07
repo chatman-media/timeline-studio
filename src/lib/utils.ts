@@ -3,6 +3,9 @@ import { twMerge } from "tailwind-merge"
 
 import type { FfprobeData } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "./tauri-logger"
+
+const logger = createLogger("Utils")
 
 /**
  * Объединяет классы CSS с помощью clsx и tailwind-merge
@@ -231,14 +234,17 @@ export function getMediaCreationTime(probeData: FfprobeData): number {
   // 3. Try to get from probeData start_time
   const startTime = probeData.format.start_time
   if (startTime) {
-    console.log(`[getMediaCreationTime] Время из start_time: ${new Date(startTime * 1000).toISOString()}`)
+    logger.debugSync("Using start_time", {
+      time: new Date(startTime * 1000).toISOString(),
+      filename: probeData.format.filename,
+    })
     return startTime
   }
 
   // 4. If all else fails, return current time
-  console.warn(
-    `[getMediaCreationTime] Не удалось определить время создания файла ${probeData.format.filename}, используем текущее время`,
-  )
+  logger.warnSync("Could not determine file creation time, using current time", {
+    filename: probeData.format.filename,
+  })
   return Math.floor(Date.now() / 1000)
 }
 

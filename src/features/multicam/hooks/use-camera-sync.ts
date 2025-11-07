@@ -9,11 +9,13 @@ import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { syncByAudio as syncByAudioService } from "../services/audio-sync-adapter"
 import { syncByTimecode as syncByTimecodeService } from "../services/timecode-sync"
 import type { SyncMethod, SyncResult, SyncStatus } from "../types/multicam"
 import { mediaItemsToMediaFiles } from "../utils/media-mapper"
+
+const logger = createLogger({ module: "UseCameraSync" })
 
 export interface UseCameraSyncProps {
   baseClipId: string
@@ -96,9 +98,9 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(100)
       setSyncStatus("success")
 
-      console.log("[useCameraSync] Timecode sync completed:", mappedResults)
+      logger.info("[useCameraSync] Timecode sync completed:", mappedResults)
     } catch (error) {
-      console.error("[useCameraSync] Timecode sync failed:", error)
+      logger.error("[useCameraSync] Timecode sync failed:", error)
       setSyncError(error instanceof Error ? error.message : "Ошибка синхронизации")
       setSyncStatus("error")
     }
@@ -147,7 +149,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
         const media = mediaFiles.find((m) => m.id === clip.mediaId)
 
         if (!media) {
-          console.warn(`[useCameraSync] Media not found for clip ${clip.id}`)
+          logger.warn(`[useCameraSync] Media not found for clip ${clip.id}`)
           continue
         }
 
@@ -187,7 +189,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
             })
           }
         } catch (audioError) {
-          console.error(`[useCameraSync] Audio sync failed for clip ${clip.id}:`, audioError)
+          logger.error(`[useCameraSync] Audio sync failed for clip ${clip.id}:`, audioError)
           // Продолжаем с другими клипами
         }
       }
@@ -196,9 +198,9 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(100)
       setSyncStatus("success")
 
-      console.log("[useCameraSync] Audio sync completed:", results)
+      logger.info("[useCameraSync] Audio sync completed:", results)
     } catch (error) {
-      console.error("[useCameraSync] Audio sync failed:", error)
+      logger.error("[useCameraSync] Audio sync failed:", error)
       setSyncError(error instanceof Error ? error.message : "Ошибка синхронизации")
       setSyncStatus("error")
     } finally {
@@ -242,7 +244,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       }
     })
 
-    console.log("[useCameraSync] Sync results applied")
+    logger.info("[useCameraSync] Sync results applied")
   }, [syncResults, allClips, moveLinkedClips])
 
   /**

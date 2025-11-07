@@ -23,7 +23,11 @@ import { Slider } from "@/components/ui/slider"
 import type { MediaFile } from "@/features/media/types/media"
 import { getFrameTime } from "@/features/media/utils/video"
 import { useMulticam } from "@/features/multicam"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
+
+const logger = createLogger("video-player:player-controls")
+
 import { useFullscreen } from "../hooks/use-fullscreen"
 import { usePlayer } from "../services/player-provider"
 import { PlaybackSpeedControl } from "./playback-speed-control"
@@ -83,12 +87,12 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
     const playerContainer = document.querySelector(".media-player-container")
 
     if (!playerContainer) {
-      console.error("[handleFullscreen] Не найден контейнер медиаплеера")
+      logger.error("media player container not found")
       return
     }
     toggleFullscreen(playerContainer as HTMLElement)
 
-    console.log(`[handleFullscreen] ${isFullscreen ? "Выход из" : "Вход в"} полноэкранный режим`)
+    logger.debug("fullscreen toggled", { isFullscreen })
   }, [isFullscreen])
 
   // Нормализуем currentTime для отображения, если это Unix timestamp
@@ -121,7 +125,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
     (value: number[]) => {
       const newTime = value[0]
       setLocalDisplayTime(newTime)
-      seek(newTime).catch(console.error)
+      seek(newTime).catch((error) => logger.error("seek failed", { error, newTime }))
       setIsSeeking(true)
     },
     [setLocalDisplayTime, seek, setIsSeeking],
@@ -133,37 +137,37 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
 
   const handlePlayPause = useCallback(() => {
     if (isPlaying) {
-      pause().catch(console.error)
+      pause().catch((error) => logger.error("pause failed", { error }))
     } else {
-      play().catch(console.error)
+      play().catch((error) => logger.error("play failed", { error }))
     }
   }, [isPlaying, play, pause])
 
   const handleSkipForward = useCallback(() => {
     const newTime = Math.min(currentTime + frameTime, file.endTime ?? file.duration ?? 0)
     setLocalDisplayTime(newTime)
-    seek(newTime).catch(console.error)
+    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
     setIsSeeking(true)
   }, [currentTime, frameTime, file.endTime, file.duration, setLocalDisplayTime, seek, setIsSeeking])
 
   const handleSkipBackward = useCallback(() => {
     const newTime = Math.max(currentTime - frameTime, file.startTime ?? 0)
     setLocalDisplayTime(newTime)
-    seek(newTime).catch(console.error)
+    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
     setIsSeeking(true)
   }, [currentTime, frameTime, file.startTime, setLocalDisplayTime, seek, setIsSeeking])
 
   const handleChevronFirst = useCallback(() => {
     const newTime = file.startTime ?? 0
     setLocalDisplayTime(newTime)
-    seek(newTime).catch(console.error)
+    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
     setIsSeeking(true)
   }, [file.startTime, setLocalDisplayTime, seek, setIsSeeking])
 
   const handleChevronLast = useCallback(() => {
     const newTime = file.endTime ?? 0
     setLocalDisplayTime(newTime)
-    seek(newTime).catch(console.error)
+    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
     setIsSeeking(true)
   }, [file.endTime, setLocalDisplayTime, seek, setIsSeeking])
 
@@ -173,12 +177,12 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
     if (volume === 0) {
       const newVolume = volumeRef.current > 0 ? volumeRef.current : 100
       setVolume(newVolume)
-      console.log("[handleToggleMute] Unmute, volume:", newVolume)
+      logger.debug("unmute", { volume: newVolume })
     } else {
       // Сохраняем текущее значение громкости перед выключением
       volumeRef.current = volume
       setVolume(0)
-      console.log("[handleToggleMute] Mute, saved volume:", volumeRef.current)
+      logger.debug("mute", { savedVolume: volumeRef.current })
     }
   }, [volume, setVolume])
 
@@ -193,7 +197,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
 
   // Функция, вызываемая при завершении изменения громкости
   const handleVolumeChangeEnd = useCallback(() => {
-    console.log("[handleVolumeChangeEnd] Volume change completed:", volume)
+    logger.debug("volume change completed", { volume })
   }, [volume])
 
   // Функция для переключения источника видео
@@ -218,7 +222,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
 
     // TODO: Здесь нужно будет вызвать функцию переключения на другой клип
     // через timeline API или player API
-    console.log(`[handleSwitchCamera] Переключение на камеру ${nextIndex + 1}`)
+    logger.debug("switching camera", { cameraIndex: nextIndex + 1 })
   }, [activeCameraIndex, parallelVideos, multicam])
 
   return (

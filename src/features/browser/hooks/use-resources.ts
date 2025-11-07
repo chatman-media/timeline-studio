@@ -9,6 +9,10 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import { useEffectsProvider } from "../providers/browser-resources-provider"
 
 import type {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseResources" })
   LoadingState,
   Resource,
   ResourceSource,
@@ -27,7 +31,7 @@ export function useEffects(source?: ResourceSource) {
   useEffect(() => {
     const updateEffects = () => {
       const allEffects = api.getEffects(source)
-      console.log("[useEffects] Getting effects:", {
+      logger.info("[useEffects] Getting effects:", {
         source,
         isInitialized,
         effects: allEffects,
@@ -41,7 +45,7 @@ export function useEffects(source?: ResourceSource) {
     // Подписываемся на обновления
     const unsubscribe = api.onResourcesUpdate((type, _resources) => {
       if (type === "effect") {
-        console.log("[useEffects] Effects update event received")
+        logger.info("[useEffects] Effects update event received")
         updateEffects()
       }
     })
@@ -193,7 +197,7 @@ export function useResourcesSearch(type: ResourceType, options: SearchOptions) {
   useEffect(() => {
     const updateResults = () => {
       const searchResults = api.searchResources(type, memoizedOptions)
-      console.log(`[useResourcesSearch] Searching ${type}:`, {
+      logger.info(`[useResourcesSearch] Searching ${type}:`, {
         options: memoizedOptions,
         results: searchResults,
       })
@@ -206,7 +210,7 @@ export function useResourcesSearch(type: ResourceType, options: SearchOptions) {
     // Подписываемся на обновления
     const unsubscribe = api.onResourcesUpdate((resourceType) => {
       if (resourceType === type) {
-        console.log(`[useResourcesSearch] Resource update for ${type}`)
+        logger.info(`[useResourcesSearch] Resource update for ${type}`)
         updateResults()
       }
     })

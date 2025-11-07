@@ -49,10 +49,7 @@ export function useFilters(): UseFiltersReturn {
 
       setFilters(processedFilters)
 
-      logInfo("useFilters", `Loaded ${processedFilters.length} filters from JSON`)
-      console.log(
-        `✅ ${t("filters.messages.filtersLoaded", "Loaded {{count}} filters from JSON", { count: processedFilters.length })}`,
-      )
+      logInfo("useFilters", `Loaded ${processedFilters.length} filters from JSON`, { count: processedFilters.length })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t("filters.errors.unknownError", "Unknown error")
       setError(t("filters.errors.failedToLoadFilters", "Failed to load filters: {{error}}", { error: errorMessage }))
@@ -67,7 +64,6 @@ export function useFilters(): UseFiltersReturn {
       setFilters(fallbackFilters)
 
       logError("useFilters", "Failed to load filters, using fallback", err)
-      console.error(`❌ ${t("filters.errors.fallbackFilters", "Failed to load filters, using fallback")}:`, err)
     } finally {
       setLoading(false)
     }

@@ -3,6 +3,10 @@
  * Централизованное управление зависимостями AI сервисов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("AICoreDIContainer")
+
 import type { AIServiceConfig } from "../types"
 
 // Типы для регистрации сервисов
@@ -224,7 +228,7 @@ export class AICoreDIContainer implements AIDIContainer {
         }
       }),
     ]).catch((error) => {
-      console.error("Failed to register core services:", error)
+      logger.error("Failed to register core services", { error })
     })
   }
 

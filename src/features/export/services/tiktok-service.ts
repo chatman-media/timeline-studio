@@ -1,7 +1,10 @@
 // TikTok API сервис для загрузки видео
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
+
+const logger = createLogger({ module: "TiktokService" })
 
 interface TikTokVideoMetadata {
   title: string
@@ -44,7 +47,7 @@ export async function uploadVideo(
 
     return publishResponse
   } catch (error) {
-    console.error("TikTok upload error:", error)
+    logger.error("TikTok upload error:", error)
     throw error
   }
 }

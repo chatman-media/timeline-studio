@@ -12,7 +12,10 @@ import {
   UnifiedContentAnalysis,
 } from "@/domains/ai-services/types"
 import { MediaInfo } from "@/domains/media-management"
+import { createLogger } from "@/lib/tauri-logger"
 import { AIIntelligenceContext } from "../services/ai-intelligence-provider"
+
+const logger = createLogger({ module: "UseAiIntelligence" })
 
 interface UseAIIntelligenceOptions {
   autoInitialize?: boolean
@@ -303,15 +306,15 @@ export function useAIIntelligence({
   // Управление pipeline
   const pausePipeline = useCallback(async () => {
     // These methods are now handled by the pipeline control
-    console.warn("pausePipeline is deprecated. Use pipeline control from processProject instead.")
+    logger.warn("pausePipeline is deprecated. Use pipeline control from processProject instead.")
   }, [])
 
   const resumePipeline = useCallback(async () => {
-    console.warn("resumePipeline is deprecated. Use pipeline control from processProject instead.")
+    logger.warn("resumePipeline is deprecated. Use pipeline control from processProject instead.")
   }, [])
 
   const cancelPipeline = useCallback(async () => {
-    console.warn("cancelPipeline is deprecated. Use pipeline control from processProject instead.")
+    logger.warn("cancelPipeline is deprecated. Use pipeline control from processProject instead.")
   }, [])
 
   // Сброс состояния

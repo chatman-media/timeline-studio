@@ -9,6 +9,10 @@ import { promptUserToFindFile } from "@/features/media/services/media-restoratio
 import type { SavedMediaFile } from "@/features/media/types/saved-media"
 import { useModal } from "@/features/modals/services"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "MissingFilesModal" })
+
 interface FileResolution {
   file: SavedMediaFile
   action: "pending" | "found" | "remove" | "skip"
@@ -59,7 +63,7 @@ export function MissingFilesModal() {
         ),
       )
     } catch (error) {
-      console.error("Ошибка при поиске файла:", error)
+      logger.error("Ошибка при поиске файла:", error)
       setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, isProcessing: false } : r)))
     }
   }

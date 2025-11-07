@@ -242,7 +242,7 @@ export class ReverbProcessor {
       const audioBuffer = await this.context.decodeAudioData(arrayBuffer)
       this.convolver.buffer = audioBuffer
     } catch (error) {
-      console.error("Failed to load impulse response:", error)
+      logger.error("Failed to load impulse response:", error)
       // Fall back to synthetic impulse
       this.updateImpulseResponse(this.config.roomSize, this.config.decay)
     }

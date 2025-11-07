@@ -1,11 +1,13 @@
 import { Loader2 } from "lucide-react"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { AudioPreview } from "./audio-preview"
 import { ImagePreview } from "./image-preview"
 import { VideoPreview } from "./video-preview"
+
+const logger = createLogger({ module: "MediaPreview" })
 
 interface MediaPreviewProps {
   file: MediaFile
@@ -39,7 +41,7 @@ export function MediaPreview({
   ignoreRatio = false,
 }: MediaPreviewProps) {
   // Логируем состояние файла для отладки
-  console.log(
+  logger.info(
     `[MediaPreview] File ${file.name}: isLoadingMetadata=${file.isLoadingMetadata}, hasProbeData=${!!file.probeData}`,
   )
 

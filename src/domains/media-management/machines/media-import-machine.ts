@@ -6,7 +6,11 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { assign, fromPromise, sendParent, setup } from "xstate"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFileOperation, MediaImportContext, MediaImportEvent, MediaImportOptions } from "../types"
+
+const logger = createLogger("MediaImportMachine")
+
 
 const defaultOptions: MediaImportOptions = {
   copyToProject: true,
@@ -27,7 +31,7 @@ const initialContext: MediaImportContext = {
 
 // Actors for import tasks
 const importFilesActor = fromPromise(async ({ input }: { input: { files: string[]; options: MediaImportOptions } }) => {
-  console.log(`[Media Import] Importing ${input.files.length} files`)
+  logger.info("[Media Import] Importing", { input.files.length })
 
   try {
     // Call Tauri command to import files
@@ -44,7 +48,7 @@ const importFilesActor = fromPromise(async ({ input }: { input: { files: string[
 
     return result
   } catch (error) {
-    console.error("[Media Import] Import failed:", error)
+    logger.error("[Media Import] Import failed:", { error })
     throw error
   }
 })
@@ -63,7 +67,7 @@ export const mediaImportMachine = setup({
         if (event.type !== "ADD_FILES") return context.files
         // Remove duplicates
         const newFiles = [...new Set([...context.files, ...event.files])]
-        console.log(`[Media Import] Added ${event.files.length} files, total: ${newFiles.length}`)
+        logger.info("[Media Import] Added ${event.files.length} files, total:", { newFiles.length })
         return newFiles
       },
     }),
@@ -72,7 +76,7 @@ export const mediaImportMachine = setup({
       files: ({ context, event }) => {
         if (event.type !== "REMOVE_FILE") return context.files
         const newFiles = context.files.filter((f) => f !== event.file)
-        console.log(`[Media Import] Removed file: ${event.file}`)
+        logger.info("[Media Import] Removed file:", { event.file })
         return newFiles
       },
     }),
@@ -81,7 +85,7 @@ export const mediaImportMachine = setup({
       options: ({ context, event }) => {
         if (event.type !== "UPDATE_OPTIONS") return context.options
         const newOptions = { ...context.options, ...event.options }
-        console.log("[Media Import] Updated options:", event.options)
+        logger.debug("[Media Import] Updated options:", { data: event.options })
         return newOptions
       },
     }),
@@ -94,7 +98,7 @@ export const mediaImportMachine = setup({
           status: "pending",
           progress: 0,
         }))
-        console.log(`[Media Import] Created ${operations.length} import operations`)
+        logger.info("[Media Import] Created", { operations.length })
         return operations
       },
     }),
@@ -247,7 +251,7 @@ export const mediaImportMachine = setup({
     },
 
     completed: {
-      entry: () => console.log("[Media Import] Import completed successfully"),
+      entry: () => logger.info("[Media Import] Import completed successfully"),
       on: {
         RESET: {
           target: "idle",
@@ -257,7 +261,7 @@ export const mediaImportMachine = setup({
     },
 
     failed: {
-      entry: () => console.error("[Media Import] Import failed"),
+      entry: () => logger.error("Error occurred", { error: "[Media Import] Import failed" }),
       on: {
         RESET: {
           target: "idle",
@@ -271,7 +275,7 @@ export const mediaImportMachine = setup({
     },
 
     cancelled: {
-      entry: () => console.log("[Media Import] Import cancelled"),
+      entry: () => logger.info("[Media Import] Import cancelled"),
       on: {
         RESET: {
           target: "idle",

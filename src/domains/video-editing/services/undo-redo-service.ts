@@ -10,6 +10,11 @@
 
 export type ActionPriority = "low" | "medium" | "high" | "critical"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("UndoRedoService")
+
+
 export type ActionType =
   | "ADD_CLIP"
   | "REMOVE_CLIP"
@@ -77,8 +82,8 @@ export class UndoRedoService {
 
   private constructor() {
     UndoRedoService.initializationCounter++
-    console.log(`[UndoRedoService] Initialized (instance #${UndoRedoService.initializationCounter})`)
-    console.log("[UndoRedoService] Stack trace:", new Error().stack)
+    logger.info("[UndoRedoService] Initialized (instance #", { UndoRedoService.initializationCounter })
+    logger.debug("[UndoRedoService] Stack trace:", { data: new Error( }).stack)
     this.isInitialized = true
   }
 
@@ -87,10 +92,10 @@ export class UndoRedoService {
    */
   public static getInstance(): UndoRedoService {
     if (!UndoRedoService.instance) {
-      console.log("[UndoRedoService] Creating new instance")
+      logger.info("[UndoRedoService] Creating new instance")
       UndoRedoService.instance = new UndoRedoService()
     } else {
-      console.log("[UndoRedoService] Returning existing instance")
+      logger.info("[UndoRedoService] Returning existing instance")
     }
     return UndoRedoService.instance
   }
@@ -142,7 +147,7 @@ export class UndoRedoService {
     const endTime = performance.now()
     if (endTime - startTime > 16) {
       // Больше 16ms (1 кадр при 60fps)
-      console.warn(`[UndoRedoService] addAction slow: ${endTime - startTime}ms`, newAction.type)
+      logger.warn("[UndoRedoService] addAction slow", { duration: endTime - startTime, type: newAction.type })
     }
 
     return newAction.id
@@ -201,7 +206,7 @@ export class UndoRedoService {
    */
   startGrouping(description?: string): string {
     if (this.currentGroup) {
-      console.warn("[UndoRedoService] Grouping already in progress")
+      logger.warn("[UndoRedoService] Grouping already in progress")
       return this.currentGroup.id
     }
 
@@ -220,7 +225,7 @@ export class UndoRedoService {
    */
   endGrouping(): void {
     if (!this.currentGroup) {
-      console.warn("[UndoRedoService] No grouping in progress")
+      logger.warn("[UndoRedoService] No grouping in progress")
       return
     }
 

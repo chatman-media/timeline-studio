@@ -6,8 +6,11 @@
 import type { ReactNode } from "react"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
 import { type AIDIContainer, initializeAIServices } from "./di-container"
 import type { IUnifiedAIService } from "./providers/interfaces"
+
+const logger = createLogger("AIServicesProvider")
 
 // Типы для AI сервисов доступных в React
 export interface AIServices {
@@ -68,7 +71,7 @@ export function AIServicesProvider({ children, config }: AIServicesProviderProps
           })
         }
       } catch (error) {
-        console.error("Failed to initialize AI services:", error)
+        logger.errorSync("Failed to initialize AI services", { error })
         if (mounted) {
           setServices((prev) => ({
             ...prev,

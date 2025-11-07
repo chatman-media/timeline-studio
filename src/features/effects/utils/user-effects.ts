@@ -5,7 +5,10 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
+import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect, EffectPreset } from "../types/unified-effects"
+
+const logger = createLogger({ module: "UserEffects" })
 
 // Счетчик для генерации уникальных ID пресетов
 let presetIdCounter = 1
@@ -51,7 +54,7 @@ export async function saveUserEffect(effect: BaseEffect, fileName: string): Prom
 
     return filePath
   } catch (error) {
-    console.error("Error saving user effect:", error)
+    logger.error("Error saving user effect:", error)
     throw error
   }
 }
@@ -64,7 +67,7 @@ export async function loadUserEffect(filePath: string): Promise<UserEffect> {
     const effectData = await invoke<string>("load_user_effect", { filePath })
     return JSON.parse(effectData) as UserEffect
   } catch (error) {
-    console.error("Error loading user effect:", error)
+    logger.error("Error loading user effect:", error)
     throw error
   }
 }
@@ -81,7 +84,7 @@ export async function saveEffectsCollection(collection: UserEffectsCollection, f
 
     return filePath
   } catch (error) {
-    console.error("Error saving effects collection:", error)
+    logger.error("Error saving effects collection:", error)
     throw error
   }
 }
@@ -94,7 +97,7 @@ export async function loadEffectsCollection(filePath: string): Promise<UserEffec
     const collectionData = await invoke<string>("load_effects_collection", { filePath })
     return JSON.parse(collectionData) as UserEffectsCollection
   } catch (error) {
-    console.error("Error loading effects collection:", error)
+    logger.error("Error loading effects collection:", error)
     throw error
   }
 }
@@ -145,7 +148,7 @@ export async function getUserEffectsList(): Promise<string[]> {
     const files = await invoke<string[]>("get_user_effects_list")
     return files
   } catch (error) {
-    console.error("Error getting user effects list:", error)
+    logger.error("Error getting user effects list:", error)
     return []
   }
 }
@@ -157,7 +160,7 @@ export async function deleteUserEffect(filePath: string): Promise<void> {
   try {
     await invoke("delete_user_effect", { filePath })
   } catch (error) {
-    console.error("Error deleting user effect:", error)
+    logger.error("Error deleting user effect:", error)
     throw error
   }
 }
@@ -270,7 +273,7 @@ export async function addEffectToClip(
       projectSchema,
     })
   } catch (error) {
-    console.error("Failed to add effect to clip:", error)
+    logger.error("Failed to add effect to clip:", error)
     throw error
   }
 }
@@ -290,7 +293,7 @@ export async function addFilterToClip(
       projectSchema,
     })
   } catch (error) {
-    console.error("Failed to add filter to clip:", error)
+    logger.error("Failed to add filter to clip:", error)
     throw error
   }
 }
@@ -310,7 +313,7 @@ export async function removeEffectFromClip(
       projectSchema,
     })
   } catch (error) {
-    console.error("Failed to remove effect from clip:", error)
+    logger.error("Failed to remove effect from clip:", error)
     throw error
   }
 }
@@ -330,7 +333,7 @@ export async function removeFilterFromClip(
       projectSchema,
     })
   } catch (error) {
-    console.error("Failed to remove filter from clip:", error)
+    logger.error("Failed to remove filter from clip:", error)
     throw error
   }
 }
@@ -345,7 +348,7 @@ export async function createEffect(effectType: string, parameters: Record<string
       parameters,
     })
   } catch (error) {
-    console.error("Failed to create effect:", error)
+    logger.error("Failed to create effect:", error)
     throw error
   }
 }
@@ -360,7 +363,7 @@ export async function createFilter(filterType: string, parameters: Record<string
       parameters,
     })
   } catch (error) {
-    console.error("Failed to create filter:", error)
+    logger.error("Failed to create filter:", error)
     throw error
   }
 }

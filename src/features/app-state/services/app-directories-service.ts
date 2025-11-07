@@ -1,5 +1,9 @@
 import { invoke } from "@tauri-apps/api/core"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "AppDirectoriesService" })
+
 /**
  * Структура директорий приложения
  */
@@ -62,7 +66,7 @@ export class AppDirectoriesService {
       this.directories = await invoke<AppDirectories>("get_app_directories")
       return this.directories
     } catch (error) {
-      console.error("Failed to get app directories:", error)
+      logger.error("Failed to get app directories:", error)
       throw error
     }
   }
@@ -75,7 +79,7 @@ export class AppDirectoriesService {
       this.directories = await invoke<AppDirectories>("create_app_directories")
       return this.directories
     } catch (error) {
-      console.error("Failed to create app directories:", error)
+      logger.error("Failed to create app directories:", error)
       throw error
     }
   }
@@ -87,7 +91,7 @@ export class AppDirectoriesService {
     try {
       return await invoke<DirectorySizes>("get_directory_sizes")
     } catch (error) {
-      console.error("Failed to get directory sizes:", error)
+      logger.error("Failed to get directory sizes:", error)
       throw error
     }
   }
@@ -99,7 +103,7 @@ export class AppDirectoriesService {
     try {
       await invoke("clear_app_cache")
     } catch (error) {
-      console.error("Failed to clear app cache:", error)
+      logger.error("Failed to clear app cache:", error)
       throw error
     }
   }

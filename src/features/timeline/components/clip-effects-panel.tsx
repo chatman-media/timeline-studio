@@ -24,9 +24,12 @@ import { EffectManagerPanel } from "@/features/effects/components/effect-manager
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"
 import { useEffects } from "@/features/effects/hooks/use-effects"
 import type { BaseEffect } from "@/features/effects/types"
+import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
 import { useTimelineEffects } from "../hooks/use-timeline-effects"
 import type { AppliedEffect, TimelineClip } from "../types"
+
+const logger = createLogger({ module: "ClipEffectsPanel" })
 
 interface ClipEffectsPanelProps {
   clip: TimelineClip | null
@@ -140,7 +143,7 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
       if (!clip) return
 
       // TODO: Add reorderEffects to useTimelineEffects hook
-      console.warn("Reordering effects not yet implemented", { fromIndex, toIndex })
+      logger.warn("Reordering effects not yet implemented", { fromIndex, toIndex })
     },
     [clip],
   )

@@ -10,6 +10,11 @@
 
 import { type ActorRefFrom, createActor } from "xstate"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("VideoEditingOrchestrator")
+
+
 // Временные типы и mock
 interface ClipAddedEvent {
   type: "CLIP_ADDED"
@@ -49,7 +54,7 @@ interface EventBus {
 }
 
 const mockEventBus: EventBus = {
-  publish: (type, source, data) => console.log("Event:", { type, source, data }),
+  publish: (type, source, data) => logger.debug("Event:", { data: { type, source, data } }),
   subscribe: (_callback, _options) => () => {},
 }
 
@@ -102,7 +107,7 @@ export class VideoEditingOrchestrator {
   private backendUnsubscribe: (() => void) | null = null
 
   private constructor() {
-    console.log("[Video Editing Orchestrator] Initializing...")
+    logger.info("[Video Editing Orchestrator] Initializing...")
 
     // Создаем акторы
     this.timelineExtendedActor = createActor(timelineExtendedMachine)
@@ -134,7 +139,7 @@ export class VideoEditingOrchestrator {
   private setupBackendSync() {
     // Подписка на изменения состояния backend
     this.backendUnsubscribe = this.backendSync.onStateChange((state: ProjectState) => {
-      console.log("[Video Editing Orchestrator] Backend state updated")
+      logger.info("[Video Editing Orchestrator] Backend state updated")
 
       // Обновляем timeline машину
       if (state.project) {
@@ -168,17 +173,17 @@ export class VideoEditingOrchestrator {
     // Слушаем события из media домена
     eventBus.subscribe(
       async (event) => {
-        console.log(`[Video Editing Orchestrator] Received event: ${event.type}`)
+        logger.info("[Video Editing Orchestrator] Received event:", { event.type })
 
         switch (event.type) {
           case DOMAIN_EVENTS.MEDIA.FILES_IMPORTED:
             // Можно автоматически добавить файлы на timeline
-            console.log("Media files imported, ready to add to timeline")
+            logger.info("Media files imported, ready to add to timeline")
             break
 
           case DOMAIN_EVENTS.AI_SERVICES.MONTAGE_PLAN_GENERATED:
             // Автоматически применить план монтажа
-            console.log("Montage plan generated, ready to apply")
+            logger.info("Montage plan generated, ready to apply")
             break
         }
       },
@@ -264,12 +269,12 @@ export class VideoEditingOrchestrator {
    * Выполнить команду backend
    */
   async executeCommand(command: ProjectCommand): Promise<void> {
-    console.log(`[Video Editing Orchestrator] Executing command: ${command.type}`)
+    logger.info("[Video Editing Orchestrator] Executing command:", { command.type })
 
     try {
       await this.backendSync.executeCommand(command)
     } catch (error) {
-      console.error("[Video Editing Orchestrator] Command failed:", error)
+      logger.error("[Video Editing Orchestrator] Command failed:", { error })
       throw error
     }
   }
@@ -427,7 +432,7 @@ export class VideoEditingOrchestrator {
    * Остановить оркестратор
    */
   stop() {
-    console.log("[Video Editing Orchestrator] Stopping...")
+    logger.info("[Video Editing Orchestrator] Stopping...")
 
     // Отписываемся от backend
     if (this.backendUnsubscribe) {

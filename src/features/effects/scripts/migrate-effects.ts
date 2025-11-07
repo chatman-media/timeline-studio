@@ -5,10 +5,11 @@
 
 import { readFileSync, writeFileSync } from "fs"
 import { join } from "path"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { EffectMigrator } from "../services/effect-migrator"
-
 import type { BaseEffect } from "../types/unified-effects"
+
+const logger = createLogger({ module: "MigrateEffects" })
 
 // Интерфейс старого эффекта
 interface OldEffect {
@@ -55,7 +56,7 @@ function readOldEffects(): OldEffect[] {
     const data = JSON.parse(content)
     return data.effects || []
   } catch (error) {
-    console.error("Ошибка чтения файла эффектов:", error)
+    logger.error("Ошибка чтения файла эффектов:", error)
     return []
   }
 }
@@ -79,19 +80,19 @@ function saveMigratedEffects(category: string, effects: BaseEffect[], stats: Ret
   }
 
   writeFileSync(outputPath, JSON.stringify(data, null, 2))
-  console.log(`✅ Сохранено ${effects.length} эффектов в ${outputPath}`)
+  logger.info(`✅ Сохранено ${effects.length} эффектов в ${outputPath}`)
 }
 
 // Функция для миграции по категориям
 async function migrateByCategory(category: string) {
-  console.log(`\n🔄 Начинаем миграцию категории: ${category}`)
+  logger.info(`\n🔄 Начинаем миграцию категории: ${category}`)
 
   const migrator = new EffectMigrator()
   const oldEffects = readOldEffects()
 
   // Фильтруем эффекты по категории
   const categoryEffects = oldEffects.filter((e) => e.category === category)
-  console.log(`📊 Найдено ${categoryEffects.length} эффектов в категории ${category}`)
+  logger.info(`📊 Найдено ${categoryEffects.length} эффектов в категории ${category}`)
 
   // Мигрируем
   const migratedEffects = migrator.migrateEffects(categoryEffects)
@@ -99,15 +100,15 @@ async function migrateByCategory(category: string) {
   // Получаем статистику
   const stats = migrator.getStats()
 
-  console.log("\n📈 Статистика миграции:")
-  console.log(`   - Успешно мигрировано: ${stats.migrated}`)
-  console.log(`   - Пропущено: ${stats.skipped}`)
-  console.log(`   - Успешность: ${stats.successRate.toFixed(2)}%`)
+  logger.info("\n📈 Статистика миграции:")
+  logger.info(`   - Успешно мигрировано: ${stats.migrated}`)
+  logger.info(`   - Пропущено: ${stats.skipped}`)
+  logger.info(`   - Успешность: ${stats.successRate.toFixed(2)}%`)
 
   if (stats.errors.length > 0) {
-    console.log("\n⚠️  Ошибки при миграции:")
+    logger.info("\n⚠️  Ошибки при миграции:")
     stats.errors.forEach((err) => {
-      console.log(`   - ${err.effectId}: ${err.error}`)
+      logger.info(`   - ${err.effectId}: ${err.error}`)
     })
   }
 
@@ -121,7 +122,7 @@ async function migrateByCategory(category: string) {
 
 // Функция для тестовой миграции одной категории
 async function testMigration() {
-  console.log("🚀 Запуск тестовой миграции эффектов...\n")
+  logger.info("🚀 Запуск тестовой миграции эффектов...\n")
 
   // Мигрируем категорию color-correction как тест
   const testCategory = "color-correction"
@@ -131,31 +132,31 @@ async function testMigration() {
 
     // Выводим примеры мигрированных эффектов
     if (migratedEffects.length > 0) {
-      console.log("\n📋 Примеры мигрированных эффектов:")
+      logger.info("\n📋 Примеры мигрированных эффектов:")
       migratedEffects.slice(0, 3).forEach((effect) => {
-        console.log(`\n   🎨 ${effect.name.en} (${effect.name.ru})`)
-        console.log(`      ID: ${effect.id}`)
-        console.log(`      Категория: ${effect.category}`)
-        console.log(`      Область: ${effect.scope.join(", ")}`)
-        console.log(`      Процессоры: ${Object.keys(effect.processors).join(", ")}`)
-        console.log(`      Параметры: ${effect.parameters.length}`)
+        logger.info(`\n   🎨 ${effect.name.en} (${effect.name.ru})`)
+        logger.info(`      ID: ${effect.id}`)
+        logger.info(`      Категория: ${effect.category}`)
+        logger.info(`      Область: ${effect.scope.join(", ")}`)
+        logger.info(`      Процессоры: ${Object.keys(effect.processors).join(", ")}`)
+        logger.info(`      Параметры: ${effect.parameters.length}`)
       })
     }
 
-    console.log("\n✅ Тестовая миграция завершена успешно!")
-    console.log("\n💡 Для миграции других категорий используйте:")
-    console.log("   bun run migrate-effects.ts --category=<category>")
-    console.log("\n   Доступные категории:")
-    console.log("   - color-correction")
-    console.log("   - vintage")
-    console.log("   - artistic")
-    console.log("   - cinematic")
-    console.log("   - creative")
-    console.log("   - technical")
-    console.log("   - motion")
-    console.log("   - distortion")
+    logger.info("\n✅ Тестовая миграция завершена успешно!")
+    logger.info("\n💡 Для миграции других категорий используйте:")
+    logger.info("   bun run migrate-effects.ts --category=<category>")
+    logger.info("\n   Доступные категории:")
+    logger.info("   - color-correction")
+    logger.info("   - vintage")
+    logger.info("   - artistic")
+    logger.info("   - cinematic")
+    logger.info("   - creative")
+    logger.info("   - technical")
+    logger.info("   - motion")
+    logger.info("   - distortion")
   } catch (error) {
-    console.error("❌ Ошибка при миграции:", error)
+    logger.error("❌ Ошибка при миграции:", error)
   }
 }
 
@@ -173,4 +174,4 @@ async function main() {
 }
 
 // Запускаем
-main().catch(console.error)
+main().catch((error) => logger.errorSync("Migration failed", { error }))

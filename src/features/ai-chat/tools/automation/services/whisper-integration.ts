@@ -7,6 +7,10 @@ import { TranscriptionService } from "@/domains/ai-services/services/transcripti
 import type { SpeechDetection } from "@/domains/ai-services/types"
 import type { TranscriptionResult, WhisperIntegrationOptions } from "@/domains/ai-services/types/transcription"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "WhisperIntegration" })
+
 // WhisperIntegrationOptions теперь в domains/ai-services/types/transcription
 
 /**
@@ -45,7 +49,7 @@ export class WhisperIntegrationService {
     mediaPath: string,
     options: WhisperIntegrationOptions = {},
   ): Promise<SpeechDetection[]> {
-    console.log("Starting speech recognition with speaker identification")
+    logger.info("Starting speech recognition with speaker identification")
 
     try {
       // Базовое распознавание речи
@@ -54,12 +58,12 @@ export class WhisperIntegrationService {
       // Применяем простую эвристику для определения говорящих
       const withSpeakers = this.applySpeakerIdentification(speechDetections)
 
-      console.log(
+      logger.info(
         `Speech recognition with speakers completed: ${withSpeakers.length} segments, ${this.countSpeakers(withSpeakers)} speakers`,
       )
       return withSpeakers
     } catch (error) {
-      console.error("Speech recognition with speakers failed:", error)
+      logger.error("Speech recognition with speakers failed:", error)
       return []
     }
   }
@@ -82,7 +86,7 @@ export class WhisperIntegrationService {
       ...whisperOptions
     } = options
 
-    console.log("Starting optimized speech recognition for subtitles")
+    logger.info("Starting optimized speech recognition for subtitles")
 
     try {
       // Базовое распознавание
@@ -96,10 +100,10 @@ export class WhisperIntegrationService {
         })
       }
 
-      console.log(`Optimized speech recognition completed: ${speechDetections.length} subtitle segments`)
+      logger.info(`Optimized speech recognition completed: ${speechDetections.length} subtitle segments`)
       return speechDetections
     } catch (error) {
-      console.error("Optimized speech recognition failed:", error)
+      logger.error("Optimized speech recognition failed:", error)
       return []
     }
   }
@@ -231,10 +235,10 @@ export class WhisperIntegrationService {
       const available = ["tiny", "base", "small", "medium"] // Базовый набор
       const recommended = "base" // Компромисс скорость/качество
 
-      console.log("Available Whisper models:", available)
+      logger.info("Available Whisper models:", available)
       return { available, recommended }
     } catch (error) {
-      console.error("Failed to check model availability:", error)
+      logger.error("Failed to check model availability:", error)
       return { available: ["tiny"], recommended: "tiny" }
     }
   }

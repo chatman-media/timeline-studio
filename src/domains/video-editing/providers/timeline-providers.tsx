@@ -7,6 +7,11 @@
 
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("TimelineProviders")
+
 // Используем типы из доменов
 import type { TimelineClip as DomainTimelineClip, MediaFile, Timeline, Track } from "../types"
 
@@ -115,14 +120,14 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const finalProject = project || transformProjectStateToTimeline(backendProject)
 
   // Отладочная информация для project provider
-  console.log("[TimelineProjectProvider] Project transformation:", {
+  logger.debug("[TimelineProjectProvider] Project transformation:", { data: {
     hasProject: !!project,
     hasBackendProject: !!backendProject,
     hasFinalProject: !!finalProject,
     finalProjectSections: finalProject?.sections?.length || 0,
     finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
     backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
-  })
+  } })
 
   const contextValue: TimelineProjectContext = {
     project: finalProject,
@@ -189,7 +194,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         })
         playerActor.send({ type: "PLAY" })
       } catch (error) {
-        console.error("Failed to play:", error)
+        logger.error("Failed to play:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         playerActor.send({ type: "PLAY" })
       }
@@ -203,7 +208,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         })
         playerActor.send({ type: "PAUSE" })
       } catch (error) {
-        console.error("Failed to pause:", error)
+        logger.error("Failed to pause:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         playerActor.send({ type: "PAUSE" })
       }
@@ -217,7 +222,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         })
         playerActor.send({ type: "STOP" })
       } catch (error) {
-        console.error("Failed to stop:", error)
+        logger.error("Failed to stop:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         playerActor.send({ type: "STOP" })
       }
@@ -231,7 +236,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         })
         playerActor.send({ type: "SEEK", time })
       } catch (error) {
-        console.error("Failed to seek:", error)
+        logger.error("Failed to seek:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         playerActor.send({ type: "SEEK", time })
       }
@@ -245,7 +250,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         })
         playerActor.send({ type: "SET_PLAYBACK_RATE", rate })
       } catch (error) {
-        console.error("Failed to set playback rate:", error)
+        logger.error("Failed to set playback rate:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         playerActor.send({ type: "SET_PLAYBACK_RATE", rate })
       }
@@ -307,7 +312,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "REMOVE_TRACK", trackId })
       } catch (error) {
-        console.error("Failed to remove track:", error)
+        logger.error("Failed to remove track:", { error: error })
         throw error
       }
     },
@@ -322,7 +327,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние
         timelineActor.send({ type: "UPDATE_TRACK", trackId, updates })
       } catch (error) {
-        console.error("Failed to update track:", error)
+        logger.error("Failed to update track:", { error: error })
         throw error
       }
     },
@@ -337,7 +342,7 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние
         timelineActor.send({ type: "REORDER_TRACKS", sectionId, trackIds })
       } catch (error) {
-        console.error("Failed to reorder tracks:", error)
+        logger.error("Failed to reorder tracks:", { error: error })
         throw error
       }
     },
@@ -387,13 +392,13 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   ]
 
   // Отладочная информация
-  console.log("[TimelineClipsProvider] Project structure:", {
+  logger.debug("[TimelineClipsProvider] Project structure:", { data: {
     hasProject: !!project,
     hasGlobalTracks: !!project?.globalTracks,
     globalTracksLength: project?.globalTracks?.length || 0,
     hasSections: !!project?.sections,
     sectionsLength: project?.sections?.length || 0,
-    sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
+    sectionsTracksCount: project?.sections?.reduce((acc, section }) => acc + section.tracks.length, 0) || 0,
     totalClips: clips.length,
     projectType: project ? typeof project : "null/undefined",
   })
@@ -412,7 +417,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "REMOVE_CLIP", clipId })
       } catch (error) {
-        console.error("Failed to remove clip:", error)
+        logger.error("Failed to remove clip:", { error: error })
         throw error
       }
     },
@@ -427,7 +432,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "MOVE_CLIP", clipId, trackId, time })
       } catch (error) {
-        console.error("Failed to move clip:", error)
+        logger.error("Failed to move clip:", { error: error })
         throw error
       }
     },
@@ -442,7 +447,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние только после успешного backend вызова
         timelineActor.send({ type: "TRIM_CLIP", clipId, startTime, endTime })
       } catch (error) {
-        console.error("Failed to trim clip:", error)
+        logger.error("Failed to trim clip:", { error: error })
         throw error
       }
     },
@@ -457,7 +462,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние
         timelineActor.send({ type: "SPLIT_CLIP", clipId, time })
       } catch (error) {
-        console.warn("SplitClip command not available in backend, updating UI only:", error)
+        logger.warn("SplitClip command not available in backend, updating UI only:", { data: error })
         // Если команда не доступна, просто обновляем UI состояние
         timelineActor.send({ type: "SPLIT_CLIP", clipId, time })
       }
@@ -473,7 +478,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние
         timelineActor.send({ type: "UPDATE_CLIP", clipId, updates })
       } catch (error) {
-        console.error("Failed to update clip:", error)
+        logger.error("Failed to update clip:", { error: error })
         throw error
       }
     },
@@ -488,7 +493,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Обновляем локальное состояние
         timelineActor.send({ type: "BATCH_UPDATE_CLIPS", clips })
       } catch (error) {
-        console.error("Failed to batch update clips:", error)
+        logger.error("Failed to batch update clips:", { error: error })
         throw error
       }
     },
@@ -546,7 +551,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "SELECT_CLIPS", clipIds, addToSelection })
       } catch (error) {
-        console.error("Failed to select clips:", error)
+        logger.error("Failed to select clips:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "SELECT_CLIPS", clipIds, addToSelection })
       }
@@ -560,7 +565,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "SELECT_TRACKS", trackIds, addToSelection })
       } catch (error) {
-        console.error("Failed to select tracks:", error)
+        logger.error("Failed to select tracks:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "SELECT_TRACKS", trackIds, addToSelection })
       }
@@ -574,7 +579,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
       } catch (error) {
-        console.error("Failed to select sections:", error)
+        logger.error("Failed to select sections:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
       }
@@ -588,7 +593,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "CLEAR_SELECTION" })
       } catch (error) {
-        console.error("Failed to clear selection:", error)
+        logger.error("Failed to clear selection:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "CLEAR_SELECTION" })
       }
@@ -602,7 +607,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "COPY_CLIPS" })
       } catch (error) {
-        console.error("Failed to copy clips:", error)
+        logger.error("Failed to copy clips:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "COPY_CLIPS" })
       }
@@ -616,7 +621,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "CUT_CLIPS" })
       } catch (error) {
-        console.error("Failed to cut clips:", error)
+        logger.error("Failed to cut clips:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "CUT_CLIPS" })
       }
@@ -630,7 +635,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "PASTE_CLIPS", trackId, time })
       } catch (error) {
-        console.error("Failed to paste clips:", error)
+        logger.error("Failed to paste clips:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "PASTE_CLIPS", trackId, time })
       }
@@ -648,7 +653,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         })
         timelineActor.send({ type: "DELETE_SELECTED" })
       } catch (error) {
-        console.error("Failed to delete selected:", error)
+        logger.error("Failed to delete selected:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "DELETE_SELECTED" })
       }
@@ -695,7 +700,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "APPLY_EFFECT", clipId, effectId, params })
       } catch (error) {
-        console.error("Failed to apply effect:", error)
+        logger.error("Failed to apply effect:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "APPLY_EFFECT", clipId, effectId, params })
       }
@@ -709,7 +714,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "REMOVE_EFFECT", clipId, effectId })
       } catch (error) {
-        console.error("Failed to remove effect:", error)
+        logger.error("Failed to remove effect:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "REMOVE_EFFECT", clipId, effectId })
       }
@@ -723,7 +728,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "APPLY_FILTER", clipId, filterId, params })
       } catch (error) {
-        console.error("Failed to apply filter:", error)
+        logger.error("Failed to apply filter:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "APPLY_FILTER", clipId, filterId, params })
       }
@@ -737,7 +742,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "REMOVE_FILTER", clipId, filterId })
       } catch (error) {
-        console.error("Failed to remove filter:", error)
+        logger.error("Failed to remove filter:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "REMOVE_FILTER", clipId, filterId })
       }
@@ -751,7 +756,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "APPLY_TRANSITION", clipId, transitionId, params })
       } catch (error) {
-        console.error("Failed to apply transition:", error)
+        logger.error("Failed to apply transition:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "APPLY_TRANSITION", clipId, transitionId, params })
       }
@@ -765,7 +770,7 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
         })
         timelineActor.send({ type: "REMOVE_TRANSITION", clipId, transitionId })
       } catch (error) {
-        console.error("Failed to remove transition:", error)
+        logger.error("Failed to remove transition:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
         timelineActor.send({ type: "REMOVE_TRANSITION", clipId, transitionId })
       }

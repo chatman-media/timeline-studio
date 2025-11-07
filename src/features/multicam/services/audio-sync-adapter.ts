@@ -3,7 +3,10 @@
  * Обертка над основной функцией syncByAudio для работы с путями файлов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { AudioCorrelationResult } from "./audio-sync"
+
+const logger = createLogger({ module: "AudioSyncAdapter" })
 
 /**
  * Синхронизирует два аудиофайла по их путям
@@ -19,7 +22,7 @@ export async function syncByAudio(
   // Заглушка для демонстрации
   // В реальной реализации здесь должна быть интеграция с FFmpeg или Web Audio API
 
-  console.log(`[syncByAudio] Syncing ${targetPath} to ${basePath}`)
+  logger.info(`[syncByAudio] Syncing ${targetPath} to ${basePath}`)
 
   // Имитируем прогресс
   if (options?.onProgress) {

@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
+
+const logger = createLogger({ module: "SubtitleSyncTools" })
 
 /**
  * Инструменты синхронизации субтитров
@@ -89,7 +91,7 @@ export function SubtitleSyncTools() {
       setIsOpen(false)
       setTimeOffset(0)
     } catch (error) {
-      console.error("Ошибка при синхронизации субтитров:", error)
+      logger.error("Ошибка при синхронизации субтитров:", error)
       toast.error(t("subtitles.sync.error", "Ошибка синхронизации"), {
         description: t("subtitles.sync.errorDesc", "Не удалось синхронизировать субтитры"),
       })

@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next"
 
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-
+import { createLogger } from "@/lib/tauri-logger"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { ApiKeyInput } from "../widgets/api-key-input"
+
+const logger = createLogger({ module: "AiServicesTab" })
 
 /**
  * Вкладка настроек AI сервисов

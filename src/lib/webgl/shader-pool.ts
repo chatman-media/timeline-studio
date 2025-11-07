@@ -3,7 +3,10 @@
  * Избегает дублирования компиляции шейдеров
  */
 
+import { createLogger } from "../tauri-logger"
 import { contextManager } from "./context-manager"
+
+const logger = createLogger("ShaderPool")
 
 /**
  * Описание шейдера
@@ -257,7 +260,7 @@ export class ShaderPool {
     if (!source) {
       source = BUILTIN_SHADERS[name as keyof typeof BUILTIN_SHADERS]
       if (!source) {
-        console.error(`Шейдер "${name}" не найден`)
+        logger.errorSync("Шейдер не найден", { name })
         return null
       }
     }
@@ -400,7 +403,7 @@ export class ShaderPool {
       // Создаем программу
       const program = gl.createProgram()
       if (!program) {
-        console.error("Не удалось создать шейдерную программу")
+        logger.errorSync("Не удалось создать шейдерную программу")
         return null
       }
 
@@ -411,7 +414,7 @@ export class ShaderPool {
       // Проверяем статус линковки
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         const info = gl.getProgramInfoLog(program)
-        console.error(`Ошибка линковки программы "${name}":`, info)
+        logger.errorSync("Ошибка линковки программы", { name, info })
         gl.deleteProgram(program)
         return null
       }
@@ -420,7 +423,7 @@ export class ShaderPool {
       gl.validateProgram(program)
       if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
         const info = gl.getProgramInfoLog(program)
-        console.warn(`Предупреждение валидации программы "${name}":`, info)
+        logger.warnSync("Предупреждение валидации программы", { name, info })
       }
 
       return {
@@ -431,7 +434,7 @@ export class ShaderPool {
         refCount: 1,
       }
     } catch (error) {
-      console.error(`Ошибка компиляции программы "${name}":`, error)
+      logger.errorSync("Ошибка компиляции программы", { name, error })
       return null
     }
   }
@@ -454,7 +457,7 @@ export class ShaderPool {
     try {
       const shader = gl.createShader(type)
       if (!shader) {
-        console.error("Не удалось создать шейдер")
+        logger.errorSync("Не удалось создать шейдер")
         return null
       }
 
@@ -465,12 +468,12 @@ export class ShaderPool {
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         const info = gl.getShaderInfoLog(shader)
         const shaderType = type === gl.VERTEX_SHADER ? "vertex" : "fragment"
-        console.error(`Ошибка компиляции ${shaderType} шейдера:`, info)
+        logger.errorSync("Ошибка компиляции шейдера", { shaderType, info })
 
         // Выводим исходный код с номерами строк для отладки
         const lines = source.split("\n")
         lines.forEach((line, index) => {
-          console.log(`${index + 1}: ${line}`)
+          logger.debugSync(`Shader source line ${index + 1}`, { line })
         })
 
         gl.deleteShader(shader)
@@ -482,7 +485,7 @@ export class ShaderPool {
 
       return shader
     } catch (error) {
-      console.error("Ошибка компиляции шейдера:", error)
+      logger.errorSync("Ошибка компиляции шейдера", { error })
       return null
     }
   }

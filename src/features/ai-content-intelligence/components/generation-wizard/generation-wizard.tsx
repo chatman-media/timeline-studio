@@ -38,8 +38,11 @@ import {
   TemplateCategory,
   VisualStyle,
 } from "@/domains/shared/types/ai-tools/script-generation"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
+
+const logger = createLogger({ module: "GenerationWizard" })
 
 interface GenerationWizardProps {
   className?: string
@@ -351,7 +354,7 @@ export const GenerationWizard: FC<GenerationWizardProps> = ({ className, analysi
       onGenerate?.(script)
       onClose?.()
     } catch (error) {
-      console.error("Script generation failed:", error)
+      logger.error("Script generation failed:", error)
       setError(error instanceof Error ? error.message : "Ошибка генерации скрипта")
     } finally {
       setIsGenerating(false)

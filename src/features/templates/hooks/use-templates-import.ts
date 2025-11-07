@@ -1,6 +1,10 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "UseTemplatesImport" })
+
 /**
  * Хук для импорта пользовательских многокамерных шаблонов
  * Позволяет импортировать JSON файлы с шаблонами
@@ -33,12 +37,12 @@ export function useTemplatesImport() {
       })
 
       if (selected) {
-        console.log("Импорт JSON файла с многокамерными шаблонами:", selected)
+        logger.info("Импорт JSON файла с многокамерными шаблонами:", selected)
         // TODO: Обработка импорта JSON файла с шаблонами
         // Валидация структуры, добавление в пользовательскую коллекцию
       }
     } catch (error) {
-      console.error("Ошибка при импорте шаблонов:", error)
+      logger.error("Ошибка при импорте шаблонов:", error)
     } finally {
       setIsImporting(false)
     }
@@ -65,12 +69,12 @@ export function useTemplatesImport() {
 
       if (selected) {
         const files = Array.isArray(selected) ? selected : [selected]
-        console.log("Импорт файлов многокамерных шаблонов:", files)
+        logger.info("Импорт файлов многокамерных шаблонов:", files)
         // TODO: Обработка импорта файлов шаблонов
         // Парсинг разных форматов, конвертация в наш формат
       }
     } catch (error) {
-      console.error("Ошибка при импорте файлов шаблонов:", error)
+      logger.error("Ошибка при импорте файлов шаблонов:", error)
     } finally {
       setIsImporting(false)
     }

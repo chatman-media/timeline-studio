@@ -15,6 +15,11 @@ import {
   SceneAnalysis,
   SceneType,
 } from "@/domains/shared/types/ai-tools/content-analysis"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SceneAnalysisEngine")
+
 import type { Person } from "@/features/montage-planner/types"
 import type { DetectedFace, PersonProfile } from "@/features/person-identification/types/person"
 import { BaseAIEngine, type EngineCapabilities } from "../../types"
@@ -94,7 +99,7 @@ export class SceneAnalysisEngine extends BaseAIEngine {
 
   async initialize(): Promise<void> {
     try {
-      console.log("Initializing Scene Analysis Engine with YOLO/ONNX support...")
+      logger.debug("Initializing Scene Analysis Engine with YOLO/ONNX support...")
 
       // Инициализация VisionService с YOLO/ONNX
       if (this.config.vision.enableObjectDetection || this.config.vision.enableFaceDetection) {
@@ -110,16 +115,16 @@ export class SceneAnalysisEngine extends BaseAIEngine {
         })
 
         await this.visionService.initialize()
-        console.log("VisionService initialized with YOLO/ONNX models")
+        logger.debug("VisionService initialized with YOLO/ONNX models")
       }
 
       // Загружаем существующие профили персонажей
       await this.loadPersonProfiles()
 
       this._isReady = true
-      console.log("Scene Analysis Engine ready")
+      logger.debug("Scene Analysis Engine ready")
     } catch (error) {
-      console.error("Failed to initialize Scene Analysis Engine:", error)
+      logger.error("Failed to initialize Scene Analysis Engine:", { error })
       throw error
     }
   }
@@ -161,17 +166,17 @@ export class SceneAnalysisEngine extends BaseAIEngine {
       let characterAnalysis: CharacterAnalysisResult | undefined
       if (finalConfig.enableCharacterAnalysis && allDetectedPersons.length > 1) {
         try {
-          console.log("Performing character relationship analysis...")
+          logger.debug("Performing character relationship analysis...")
           characterAnalysis = await this.characterAnalysisService.analyzeCharacters(
             scenes,
             allDetectedPersons,
             data.mediaFile,
           )
-          console.log(
+          logger.debug(
             `Found ${characterAnalysis.relationships.length} relationships between ${characterAnalysis.characters.length} characters`,
           )
         } catch (error) {
-          console.warn("Character analysis failed:", error)
+          logger.warn("Character analysis failed:", { data: error })
         }
       }
 
@@ -199,7 +204,7 @@ export class SceneAnalysisEngine extends BaseAIEngine {
 
       return result
     } catch (error) {
-      console.error("Scene analysis failed:", error)
+      logger.error("Scene analysis failed:", { error })
       throw error
     }
   }
@@ -309,7 +314,7 @@ export class SceneAnalysisEngine extends BaseAIEngine {
 
     // VisionService уже инициализирован в initialize()
     if (!this.visionService) {
-      console.warn("VisionService not initialized, skipping computer vision analysis")
+      logger.warn("VisionService not initialized, skipping computer vision analysis", { data: null })
       return content
     }
 
@@ -413,10 +418,9 @@ export class SceneAnalysisEngine extends BaseAIEngine {
         const identifiedPersons = await this.identifyPersons(content.faces, scene.id)
         content.identifiedPersons = identifiedPersons
 
-        console.log(
-          `Scene ${scene.id}: Found ${identifiedPersons.length} persons`,
-          identifiedPersons.map((p) => `${p.name}(${Math.round(p.confidence * 100)}%)`),
-        )
+        logger.debug(`Scene ${scene.id}: Found ${identifiedPersons.length} persons`, {
+          persons: identifiedPersons.map((p) => `${p.name} (${Math.round(p.confidence * 100)}%)`),
+        })
       }
 
       // Определяем настроение сцены с помощью AI
@@ -449,14 +453,14 @@ export class SceneAnalysisEngine extends BaseAIEngine {
 
           if (sceneSegments.length > 0) {
             content.musicSegments = sceneSegments
-            console.log(`Scene ${scene.id}: Found ${sceneSegments.length} music segments`)
+            logger.debug(`Scene ${scene.id}: Found ${sceneSegments.length} music segments`)
           }
         } catch (error) {
-          console.warn("Failed to analyze music for scene:", error)
+          logger.warn("Failed to analyze music for scene", { error })
         }
       }
     } catch (error) {
-      console.error("Failed to analyze scene content:", error)
+      logger.error("Failed to analyze scene content:", { error })
     }
 
     return content
@@ -505,10 +509,10 @@ export class SceneAnalysisEngine extends BaseAIEngine {
       // Определяем доминирующее настроение
       const dominantMood = this.getDominantMood(moodScores)
 
-      console.log(`Scene mood analysis: ${dominantMood} (scores:`, moodScores, ")")
+      logger.debug("Scene mood analysis", { mood: dominantMood, scores: moodScores })
       return dominantMood
     } catch (error) {
-      console.error("Failed to detect scene mood:", error)
+      logger.error("Failed to detect scene mood", { error })
       // Fallback к простой эвристике
       return this.fallbackMoodDetection(content, scene)
     }
@@ -1043,7 +1047,7 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
 
               totalKeyFrames++
             } catch (error) {
-              console.warn(`Failed to extract colors from keyframe ${keyFrame.thumbnailPath}:`, error)
+              logger.warn(`Failed to extract colors from keyframe ${keyFrame.thumbnailPath}`, { error })
             }
           }
         }
@@ -1061,12 +1065,12 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
       // Возвращаем топ-5 доминирующих цветов
       const dominantColors = sortedColors.slice(0, 5)
 
-      console.log(
+      logger.debug(
         `Extracted ${dominantColors.length} dominant colors from ${totalKeyFrames} keyframes across ${scenes.length} scenes`,
       )
       return dominantColors.length > 0 ? dominantColors : ["#000000", "#FFFFFF", "#808080"]
     } catch (error) {
-      console.error("Failed to extract dominant colors:", error)
+      logger.error("Failed to extract dominant colors:", { error })
       return ["#000000", "#FFFFFF", "#808080"] // Fallback в случае ошибки
     }
   }
@@ -1174,9 +1178,9 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
         }
       })
 
-      console.log(`Analyzed ${transitions.length} scene transitions`)
+      logger.debug(`Analyzed ${transitions.length} scene transitions`)
     } catch (error) {
-      console.error("Failed to analyze scene transitions:", error)
+      logger.error("Failed to analyze scene transitions", { error })
       // Продолжаем без анализа переходов
     }
   }
@@ -1318,9 +1322,9 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
         this.personProfilesCache.set(profile.id, profile)
       }
 
-      console.log(`Loaded ${mockProfiles.length} person profiles`)
+      logger.debug(`Loaded ${mockProfiles.length} person profiles`)
     } catch (error) {
-      console.warn("Failed to load person profiles:", error)
+      logger.warn("Failed to load person profiles", { error })
     }
   }
 
@@ -1519,7 +1523,7 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
    */
   public clearPersonCache(): void {
     this.detectedPersonsCache.clear()
-    console.log("Person detection cache cleared")
+    logger.debug("Person detection cache cleared")
   }
 
   /**
@@ -1598,7 +1602,7 @@ Format as JSON: { contentType: string, genres: string[], confidence: number }`
 
       return detectedFaces
     } catch (error) {
-      console.error("Failed to detect persons:", error)
+      logger.error("Failed to detect persons:", { error })
       return detectedFaces
     }
   }

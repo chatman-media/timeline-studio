@@ -13,12 +13,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 import { useIntegratedAnalysis } from "../../hooks/use-integrated-analysis"
 import { MONTAGE_STYLES } from "../../types"
 import { PlanViewer } from "./plan-viewer"
 import { ProjectAnalyzer } from "./project-analyzer"
 import { Suggestions } from "./suggestions"
+
+const logger = createLogger({ module: "IntegratedPlannerDashboard" })
 
 // Добавляем React import для useState
 
@@ -69,7 +72,7 @@ export function IntegratedPlannerDashboard() {
 
       await analyzeProject(convertedMediaFiles)
     } catch (error) {
-      console.error("Analysis failed:", error)
+      logger.error("Analysis failed:", error)
     }
   }
 
@@ -80,7 +83,7 @@ export function IntegratedPlannerDashboard() {
     try {
       await generateSmartPlan(selectedStyle, targetDuration[0])
     } catch (error) {
-      console.error("Plan generation failed:", error)
+      logger.error("Plan generation failed:", error)
     }
   }
 

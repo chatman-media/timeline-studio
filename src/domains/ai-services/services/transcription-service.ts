@@ -7,6 +7,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
 import { SpeechDetection } from "@/domains/shared/types/ai-tools/content-analysis"
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   ModelInfo,
   SubtitleFormat,
@@ -16,6 +17,8 @@ import type {
   WhisperIntegrationOptions,
 } from "../types/transcription"
 import { WhisperService } from "./whisper-service"
+
+const logger = createLogger("TranscriptionService")
 
 export class TranscriptionService {
   private static instance: TranscriptionService | null = null
@@ -123,10 +126,7 @@ export class TranscriptionService {
    * Распознавание речи для AI Chat (из WhisperIntegrationService)
    */
   async recognizeSpeech(mediaPath: string, options: WhisperIntegrationOptions = {}): Promise<SpeechDetection[]> {
-    console.log("Starting speech recognition with Whisper:", {
-      mediaPath,
-      options,
-    })
+    logger.infoSync("Starting speech recognition with Whisper", { mediaPath, options })
 
     try {
       // Конвертируем наши опции в формат TranscriptionOptions
@@ -160,10 +160,10 @@ export class TranscriptionService {
         })),
       }))
 
-      console.log(`Speech recognition completed: ${speechDetections.length} segments detected`)
+      logger.infoSync("Speech recognition completed", { segmentCount: speechDetections.length })
       return speechDetections
     } catch (error) {
-      console.error("Speech recognition failed:", error)
+      logger.errorSync("Speech recognition failed", { error })
       throw error
     }
   }

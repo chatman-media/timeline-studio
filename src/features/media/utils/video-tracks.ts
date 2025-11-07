@@ -2,9 +2,12 @@ import { nanoid } from "nanoid"
 
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "../types/media"
 import type { Sector } from "../types/types"
 import { doTimeRangesOverlap } from "./media-utils"
+
+const logger = createLogger("VideoTracks")
 
 /**
  * Обрабатывает видеофайлы и добавляет их на соответствующие дорожки
@@ -34,10 +37,10 @@ export function processVideoFiles(dayFiles: MediaFile[], sector: Sector): void {
     } else {
       // Если разрешение не определено, используем уникальный идентификатор
       cameraId = `camera-${nanoid(6)}`
-      console.log(`Using generated camera ID for ${file.name}: ${cameraId}`)
+      logger.debugSync("Using generated camera ID", { fileName: file.name, cameraId })
     }
 
-    console.log(`Extracted camera ID for file ${file.name}: ${cameraId || "unknown"}`)
+    logger.debugSync("Extracted camera ID", { fileName: file.name, cameraId: cameraId || "unknown" })
 
     // Сначала проверяем существующие дорожки в порядке их индекса (сверху вниз)
     const sortedTracks = sector.tracks
@@ -74,7 +77,7 @@ export function processVideoFiles(dayFiles: MediaFile[], sector: Sector): void {
           } else {
             // Если разрешение не определено, используем уникальный идентификатор
             trackCameraId = `camera-${nanoid(6)}`
-            console.log(`Using generated camera ID for track with video ${trackVideo.name}: ${trackCameraId}`)
+            logger.debugSync("Using generated camera ID for track", { videoName: trackVideo.name, trackCameraId })
           }
         }
 

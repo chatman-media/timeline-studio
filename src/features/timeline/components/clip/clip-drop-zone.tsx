@@ -4,10 +4,12 @@
 
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import type { DragDropManager, DraggableItem, DropTarget } from "@/features/drag-drop/services/drag-drop-manager"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-
 import { useClipResources } from "../../hooks/use-clip-resources"
 import type { TimelineClip } from "../../types"
+
+const logger = createLogger({ module: "ClipDropZone" })
 
 interface ClipDropZoneProps {
   clip: TimelineClip
@@ -60,7 +62,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
             break
         }
       } catch (error) {
-        console.error("Error applying resource to clip:", error)
+        logger.error("Error applying resource to clip:", error)
       }
     },
     [clip.id, canAcceptDrag, applyEffectToClip, applyFilterToClip, applyTransitionToClip],
@@ -177,7 +179,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
           handleDrop(item, event.nativeEvent)
         }
       } catch (error) {
-        console.warn("Could not parse drag data:", error)
+        logger.warn("Could not parse drag data:", error)
       }
     },
     [handleDrop],

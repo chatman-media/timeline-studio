@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
+import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "../services/store-service"
+
+const logger = createLogger({ module: "UseUserSettings" })
 
 /**
  * Хук для доступа к пользовательским настройкам через новую архитектуру
@@ -26,7 +29,7 @@ export function useUserSettings() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load user settings"
       setError(errorMessage)
-      console.error("[useUserSettings] Error loading settings:", err)
+      logger.error("[useUserSettings] Error loading settings:", err)
     } finally {
       setIsLoading(false)
     }
@@ -50,7 +53,7 @@ export function useUserSettings() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to save user settings"
         setError(errorMessage)
-        console.error("[useUserSettings] Error saving settings:", err)
+        logger.error("[useUserSettings] Error saving settings:", err)
         return { success: false, error: errorMessage }
       }
     },

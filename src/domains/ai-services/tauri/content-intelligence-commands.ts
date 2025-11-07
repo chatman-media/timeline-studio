@@ -3,6 +3,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   AdaptedContent,
   GeneratedScript,
@@ -11,32 +12,34 @@ import type {
   UnifiedContentAnalysis,
 } from "../types/ai-intelligence"
 
+const logger = createLogger("ContentIntelligence")
+
 /**
  * Video Analysis Commands via FFmpeg
  */
 export async function ffmpegDetectScenes(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Detecting scenes in video:", videoPath)
+  logger.info("Detecting scenes in video", { videoPath })
   return invoke("ffmpeg_detect_scenes", {
     videoPath,
   })
 }
 
 export async function ffmpegAnalyzeQuality(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Analyzing video quality:", videoPath)
+  logger.info("Analyzing video quality", { videoPath })
   return invoke("ffmpeg_analyze_quality", {
     videoPath,
   })
 }
 
 export async function ffmpegDetectSilence(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Detecting silence in video:", videoPath)
+  logger.info("Detecting silence in video", { videoPath })
   return invoke("ffmpeg_detect_silence", {
     videoPath,
   })
 }
 
 export async function ffmpegAnalyzeMotion(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Analyzing motion in video:", videoPath)
+  logger.info("Analyzing motion in video", { videoPath })
   return invoke("ffmpeg_analyze_motion", {
     videoPath,
   })
@@ -46,7 +49,7 @@ export async function ffmpegExtractKeyframes(
   videoPath: string,
   options?: { interval?: number; maxFrames?: number },
 ): Promise<string[]> {
-  console.log("[Content Intelligence] Extracting keyframes:", videoPath)
+  logger.info("Extracting keyframes", { videoPath, options })
   return invoke("ffmpeg_extract_keyframes", {
     videoPath,
     options: options || {},
@@ -54,14 +57,14 @@ export async function ffmpegExtractKeyframes(
 }
 
 export async function ffmpegAnalyzeAudio(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Analyzing audio:", videoPath)
+  logger.info("Analyzing audio", { videoPath })
   return invoke("ffmpeg_analyze_audio", {
     videoPath,
   })
 }
 
 export async function ffmpegQuickAnalysis(videoPath: string): Promise<any> {
-  console.log("[Content Intelligence] Running quick analysis:", videoPath)
+  logger.info("Running quick analysis", { videoPath })
   return invoke("ffmpeg_quick_analysis", {
     videoPath,
   })
@@ -78,7 +81,7 @@ export async function extractFramesForMultimodalAnalysis(
     resolution?: { width: number; height: number }
   },
 ): Promise<string[]> {
-  console.log("[Content Intelligence] Extracting frames for multimodal analysis:", videoPath)
+  logger.info("Extracting frames for multimodal analysis", { videoPath, options })
   return invoke("extract_frames_for_multimodal_analysis", {
     videoPath,
     options: options || {},
@@ -86,14 +89,14 @@ export async function extractFramesForMultimodalAnalysis(
 }
 
 export async function convertImageToBase64(imagePath: string): Promise<string> {
-  console.log("[Content Intelligence] Converting image to base64:", imagePath)
+  logger.info("Converting image to base64", { imagePath })
   return invoke("convert_image_to_base64", {
     imagePath,
   })
 }
 
 export async function extractThumbnailCandidates(videoPath: string, count: number = 5): Promise<string[]> {
-  console.log("[Content Intelligence] Extracting thumbnail candidates:", videoPath)
+  logger.info("Extracting thumbnail candidates", { videoPath, count })
   return invoke("extract_thumbnail_candidates", {
     videoPath,
     count,
@@ -109,7 +112,7 @@ export async function createFrameCollage(
     spacing?: number
   },
 ): Promise<string> {
-  console.log("[Content Intelligence] Creating frame collage with", framePaths.length, "frames")
+  logger.info("Creating frame collage", { frameCount: framePaths.length, outputPath, options })
   return invoke("create_frame_collage", {
     framePaths,
     outputPath,
@@ -125,7 +128,7 @@ export async function optimizeImageForAnalysis(
     quality?: number
   },
 ): Promise<string> {
-  console.log("[Content Intelligence] Optimizing image for analysis:", imagePath)
+  logger.info("Optimizing image for analysis", { imagePath, options })
   return invoke("optimize_image_for_analysis", {
     imagePath,
     options: options || {},
@@ -145,7 +148,7 @@ export async function analyzeContentWithAI(
     analysisTypes?: string[]
   },
 ): Promise<Partial<UnifiedContentAnalysis>> {
-  console.log("[Content Intelligence] Analyzing content with AI:", mediaPath)
+  logger.info("Analyzing content with AI", { mediaPath, frameCount: _frames.length, options: _options })
 
   // Placeholder implementation - would call actual AI analysis
   // This could integrate with OpenAI Vision API, Claude Vision, etc.
@@ -178,7 +181,7 @@ export async function generateScriptWithAI(
     length?: number
   },
 ): Promise<GeneratedScript> {
-  console.log("[Content Intelligence] Generating script with AI")
+  logger.info("Generating script with AI", { duration: analysis.technicalSpecs.duration, options })
 
   // Placeholder implementation - would call actual script generation
   return {
@@ -215,7 +218,7 @@ export async function adaptContentForPlatforms(
   platforms: PlatformId[],
   _script?: GeneratedScript,
 ): Promise<AdaptedContent[]> {
-  console.log("[Content Intelligence] Adapting content for platforms:", platforms)
+  logger.info("Adapting content for platforms", { platforms, duration: analysis.technicalSpecs.duration })
 
   // Placeholder implementation - would call actual platform adaptation
   return platforms.map((platform) => ({

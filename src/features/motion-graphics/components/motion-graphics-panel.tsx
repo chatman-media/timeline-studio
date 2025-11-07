@@ -28,9 +28,12 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { createLogger } from "@/lib/tauri-logger"
 import { getAllPresets, getPresetCategories, getPresetsByCategory, searchPresets } from "../services/preset-manager"
 import type { AnimationLayer, AnimationTrack, MotionPreset } from "../types/keyframe"
 import { CurveEditor } from "./curve-editor"
+
+const logger = createLogger({ module: "MotionGraphicsPanel" })
 
 interface MotionGraphicsPanelProps {
   tracks: AnimationTrack[]
@@ -350,19 +353,19 @@ export function MotionGraphicsPanel({
               onTimeChange={onTimeChange}
               onKeyframeAdd={(curveId, time, value) => {
                 // Handle keyframe addition
-                console.log("Add keyframe", curveId, time, value)
+                logger.info("Add keyframe", curveId, time, value)
               }}
               onKeyframeUpdate={(curveId, keyframeId, updates) => {
                 // Handle keyframe update
-                console.log("Update keyframe", curveId, keyframeId, updates)
+                logger.info("Update keyframe", curveId, keyframeId, updates)
               }}
               onKeyframeDelete={(curveId, keyframeId) => {
                 // Handle keyframe deletion
-                console.log("Delete keyframe", curveId, keyframeId)
+                logger.info("Delete keyframe", curveId, keyframeId)
               }}
               onCurveSelect={(curveId) => {
                 // Handle curve selection
-                console.log("Select curve", curveId)
+                logger.info("Select curve", curveId)
               }}
               height={400}
             />

@@ -2,6 +2,10 @@ import { AlertTriangle, RefreshCw } from "lucide-react"
 import type React from "react"
 import { Component, type ErrorInfo, type ReactNode } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "StyleTemplateErrorBoundary" })
+
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -29,7 +33,7 @@ export class StyleTemplateErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Логируем ошибку для отладки
-    console.error("StyleTemplateErrorBoundary caught an error:", error, errorInfo)
+    logger.error("StyleTemplateErrorBoundary caught an error:", error, errorInfo)
   }
 
   handleRetry = () => {

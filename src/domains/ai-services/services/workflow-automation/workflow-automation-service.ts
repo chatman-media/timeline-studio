@@ -5,6 +5,10 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("WorkflowAutomationService")
+
 /**
  * Типы автоматизированных workflow
  */
@@ -202,7 +206,7 @@ export class WorkflowAutomationService {
           })
 
           if (!result.success) {
-            console.warn(`Workflow step ${step.name} failed:`, result.errors)
+            logger.warn(`Workflow step ${step.name} failed`, { errors: result.errors })
             // Продолжаем выполнение несмотря на ошибки в некритичных шагах
           }
 
@@ -214,7 +218,7 @@ export class WorkflowAutomationService {
             duration: Date.now() - stepStartTime,
             details: String(error),
           })
-          console.error(`Critical error in workflow step ${step.name}:`, error)
+          logger.error("Error occurred", { error: `Critical error in workflow step ${step.name}:`, error })
         }
       }
 
@@ -240,7 +244,7 @@ export class WorkflowAutomationService {
 
       return result
     } catch (error) {
-      console.error(`Workflow ${workflowId} failed:`, error)
+      logger.error("Error occurred", { error: `Workflow ${workflowId} failed:`, error })
       throw new Error(`Workflow execution failed: ${String(error)}`)
     } finally {
       this.activeWorkflows.delete(workflowId)
@@ -839,7 +843,7 @@ export class WorkflowAutomationService {
         await remove(tempDir, { recursive: true })
       }
     } catch (error) {
-      console.warn(`Failed to cleanup temp directory ${tempDir}:`, error)
+      logger.warn(`Failed to cleanup temp directory ${tempDir}`, { error })
     }
   }
 }

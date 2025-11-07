@@ -9,6 +9,11 @@ import React, { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import {
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SystemIntegrationProvider")
+
   getSystemIntegrationOrchestrator,
   type SystemIntegrationOrchestrator,
 } from "../services/system-integration-orchestrator"
@@ -44,7 +49,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
 
   // Синхронизация с backend
   useEffect(() => {
-    console.log("[System Integration Provider] Initializing with BackendSync")
+    logger.info("[System Integration Provider] Initializing with BackendSync")
 
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
@@ -60,7 +65,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
           orchestrator.toggleFeature(feature, enabled as boolean)
         })
 
-        console.log("[System Integration] Feature flags synced from backend:", backendFeatures)
+        logger.debug("[System Integration] Feature flags synced from backend:", { data: backendFeatures })
       }
 
       // Синхронизируем системные уведомления
@@ -129,12 +134,12 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
         })
       })
       .catch((err) => {
-        console.error("[System Integration] Failed to sync feature flags:", err)
+        logger.error("[System Integration] Failed to sync feature flags:", { error: err })
         setError(err.message)
       })
 
     return () => {
-      console.log("[System Integration Provider] Cleanup")
+      logger.info("[System Integration Provider] Cleanup")
       unsubscribe()
       unsubscribeEvents()
     }
@@ -157,7 +162,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
           },
         })
         .catch((err) => {
-          console.error(`[System Integration] Failed to sync feature flag ${feature}:`, err)
+          logger.error("[System Integration] Failed to sync feature flag", { feature, err })
           setError(err.message)
         })
     }
@@ -189,7 +194,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
             },
           })
           .catch((err) => {
-            console.error("[System Integration] Failed to sync notifications:", err)
+            logger.error("[System Integration] Failed to sync notifications:", { error: err })
           })
       }
     }
@@ -232,7 +237,7 @@ export function useFeatureFlags() {
 
   const toggleFeature = (feature: string, enabled: boolean) => {
     if (!isConnected) {
-      console.warn("[System Integration] Backend not connected, feature flag change may not persist")
+      logger.warn("Warning", { data: "[System Integration] Backend not connected, feature flag change may not persist" })
     }
     orchestrator.toggleFeature(feature, enabled)
   }

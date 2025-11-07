@@ -10,6 +10,11 @@ import {
   contentIntelligenceTools,
   executeContentIntelligenceTool,
 } from "@/domains/ai-tools/tools/analysis/content-intelligence"
+
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("TimelineAiService")
+
 import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
 import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
 import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
@@ -118,7 +123,7 @@ export class TimelineAIService {
 
       return initializedCount > 0
     } catch (error) {
-      console.error("Failed to initialize API keys:", error)
+      logger.error("Failed to initialize API keys:", { error })
       return false
     }
   }
@@ -450,7 +455,7 @@ export class TimelineAIService {
     const { name, input } = toolUse
 
     try {
-      console.log(`Executing tool: ${name} with input:`, input)
+      logger.debug(`Executing tool: ${name} with input`, { input })
 
       let result: any
 
@@ -704,7 +709,7 @@ export class TimelineAIService {
         result = await executeEffectsFiltersTool(name, input)
       } else {
         // Пока заглушка для остальных инструментов
-        console.warn(`Tool execution not implemented for: ${name}`)
+        logger.warn(`Tool execution not implemented for: ${name}`)
         result = {
           success: false,
           message: `Инструмент ${name} пока не реализован`,
@@ -719,7 +724,7 @@ export class TimelineAIService {
         data: result,
       }
     } catch (error) {
-      console.error(`Error executing tool ${name}:`, error)
+      logger.error(`Error executing tool ${name}`, { error })
       return {
         success: false,
         message: `Ошибка выполнения инструмента ${name}: ${String(error)}`,

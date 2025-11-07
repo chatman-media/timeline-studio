@@ -3,6 +3,9 @@ import { basename, dirname, join } from "@tauri-apps/api/path"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { FileStatus, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SavedMediaUtils")
 
 /**
  * Генерирует уникальный ID для медиафайла
@@ -16,7 +19,7 @@ export function generateFileId(filePath: string, metadata: any): string {
     // Берем больше символов для уникальности, но ограничиваем разумным размером
     return hash.substring(0, 24) || `fallback_${Date.now()}`
   } catch (error) {
-    console.warn("Error generating file ID:", error)
+    logger.warnSync("Error generating file ID", { error })
     // Fallback: используем timestamp + случайное число
     return `file_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
   }
@@ -39,7 +42,7 @@ export async function calculateRelativePath(filePath: string, projectPath: strin
       return relativePath || undefined
     }
   } catch (error) {
-    console.warn("Could not calculate relative path:", error)
+    logger.warnSync("Could not calculate relative path", { error })
   }
 
   return undefined
@@ -53,7 +56,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
     const result = await invoke<boolean>("file_exists", { path: filePath })
     return result
   } catch (error) {
-    console.warn(`Error checking file existence for ${filePath}:`, error)
+    logger.warnSync("Error checking file existence", { filePath, error })
     return false
   }
 }
@@ -71,7 +74,7 @@ export async function getFileStats(filePath: string): Promise<{
     })
     return stats
   } catch (error) {
-    console.warn(`Error getting file stats for ${filePath}:`, error)
+    logger.warnSync("Error getting file stats", { filePath, error })
     return null
   }
 }
@@ -84,7 +87,7 @@ export async function getPlatform(): Promise<string> {
     const platform = await invoke<string>("get_platform")
     return platform
   } catch (error) {
-    console.warn("Error getting platform:", error)
+    logger.warnSync("Error getting platform", { error })
     return "unknown"
   }
 }
@@ -219,10 +222,10 @@ export async function generateAlternativePaths(originalPath: string, projectDir:
       const foundPaths = await searchFilesByName(projectDir, fileName, 3) // Максимум 3 уровня
       alternatives.push(...foundPaths)
     } catch (searchError) {
-      console.warn("System search failed:", searchError)
+      logger.warnSync("System search failed", { searchError })
     }
   } catch (error) {
-    console.warn("Error generating alternative paths:", error)
+    logger.warnSync("Error generating alternative paths", { error })
   }
 
   // Убираем дубликаты
@@ -241,7 +244,7 @@ export async function searchFilesByName(directory: string, filename: string, max
     })
     return result
   } catch (error) {
-    console.warn(`Error searching for files named ${filename}:`, error)
+    logger.warnSync("Error searching for files", { filename, error })
     return []
   }
 }
@@ -254,7 +257,7 @@ export async function getAbsolutePath(path: string): Promise<string | null> {
     const result = await invoke<string>("get_absolute_path", { path })
     return result
   } catch (error) {
-    console.warn(`Error getting absolute path for ${path}:`, error)
+    logger.warnSync("Error getting absolute path", { path, error })
     return null
   }
 }
@@ -335,7 +338,7 @@ export async function getProjectCreationTime(projectPath: string): Promise<numbe
     const stats = await getFileStats(projectPath)
     return stats?.lastModified || getDefaultProjectCreationTime()
   } catch (error) {
-    console.warn("Error getting project creation time:", error)
+    logger.warnSync("Error getting project creation time", { error })
     return getDefaultProjectCreationTime()
   }
 }

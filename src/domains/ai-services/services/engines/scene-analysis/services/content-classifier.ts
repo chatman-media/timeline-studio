@@ -14,6 +14,10 @@ import {
   SceneAnalysis,
 } from "@/domains/shared/types/ai-tools/content-analysis"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ContentClassifier")
+
 interface ClassifierConfig {
   useAI: boolean
   aiModel?: string
@@ -404,7 +408,7 @@ export class ContentClassifier {
       // A real implementation would use the AI service API
       return await this.classifyWithHeuristics(features)
     } catch (error) {
-      console.error("AI classification failed, falling back to heuristics:", error)
+      logger.error("AI classification failed, falling back to heuristics:", { error })
       return await this.classifyWithHeuristics(features)
     }
   }
@@ -583,7 +587,7 @@ Format your response as JSON with this structure:
       const varietyScore = sceneCount > 0 ? Math.min(1, allColors.size / (sceneCount * 3)) : 0.5
       return varietyScore
     } catch (error) {
-      console.error("Failed to calculate color variety:", error)
+      logger.error("Failed to calculate color variety:", { error })
       return 0.5
     }
   }
@@ -651,7 +655,7 @@ Format your response as JSON with this structure:
       // Дефолтное значение
       return 30
     } catch (error) {
-      console.error("Failed to calculate music percentage:", error)
+      logger.error("Failed to calculate music percentage:", { error })
       return 30
     }
   }
@@ -753,7 +757,7 @@ Format your response as JSON with this structure:
       // Фильтруем вторичные классификации по минимальной уверенности
       return secondary.filter((s) => s.confidence >= 0.3)
     } catch (error) {
-      console.error("Failed to generate secondary classifications:", error)
+      logger.error("Failed to generate secondary classifications:", { error })
       return []
     }
   }
