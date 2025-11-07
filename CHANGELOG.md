@@ -1,3 +1,23 @@
+# [2.6.0](https://github.com/chatman-media/timeline-studio/compare/v2.5.0...v2.6.0) (2025-11-07)
+
+
+### Bug Fixes
+
+* Добавлен semicolon в тесте test_language_state_mutex_recovery ([7bef55e](https://github.com/chatman-media/timeline-studio/commit/7bef55e38facdb1707220d2bec3754e33f6f5155))
+* Исправлены layout presets для точного соответствия оригинальным ([384ff3b](https://github.com/chatman-media/timeline-studio/commit/384ff3bbfda3ea4f80062201a685521a91414209))
+* Убран ненужный вызов drop() для tauri::State ([558c132](https://github.com/chatman-media/timeline-studio/commit/558c132b2ef3627434a44ae9130be93ea11303c1))
+
+
+### Features
+
+* Добавлен 5-й preset Chat Layout с AI виджетами ([1fd0434](https://github.com/chatman-media/timeline-studio/commit/1fd043458f5290c380d2d29a5107b027240af326))
+* Добавлено Tauri Logger логирование в AI Chat модуль ([1c468a1](https://github.com/chatman-media/timeline-studio/commit/1c468a1108cb532ecc7cb4b0fac8f3ab8edbd779))
+* Добавлено Tauri Logger логирование в Browser модуль ([64af0a2](https://github.com/chatman-media/timeline-studio/commit/64af0a201a58b707e7965144150b7345843f255e))
+* Добавлено Tauri Logger логирование в Montage Planner модуль ([3304ed4](https://github.com/chatman-media/timeline-studio/commit/3304ed4730be4920fe3119467255481ce35986a3))
+* Добавлено Tauri Logger логирование в Templates и Color Grading модули ([cea8353](https://github.com/chatman-media/timeline-studio/commit/cea8353e3d145601f516144a86bcad8dc47789db))
+* Обновление до Next.js 16 и восстановление layout ([68360b5](https://github.com/chatman-media/timeline-studio/commit/68360b5cb9bb3cbb57324cd29ecf5999fa8a1cd7))
+* Реализована виджетная система workspace на базе [@dnd-kit](https://github.com/dnd-kit) ([9620548](https://github.com/chatman-media/timeline-studio/commit/96205481de18cc66ae4a44b6c5318ada378d57a3))
+
 # [2.5.0](https://github.com/chatman-media/timeline-studio/compare/v2.4.0...v2.5.0) (2025-11-07)
 
 
