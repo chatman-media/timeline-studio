@@ -70,19 +70,22 @@ import "@/test/mocks/libraries/react-hotkeys-hook"
 
 // Mock Tauri Logger
 vi.mock("@/lib/tauri-logger", () => ({
-  logInfo: vi.fn(),
-  logError: vi.fn(),
-  logWarn: vi.fn(),
+  logTrace: vi.fn(),
   logDebug: vi.fn(),
+  logInfo: vi.fn(),
+  logWarn: vi.fn(),
+  logError: vi.fn(),
   createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    infoSync: vi.fn(),
-    error: vi.fn(),
-    errorSync: vi.fn(),
-    warn: vi.fn(),
-    warnSync: vi.fn(),
+    trace: vi.fn(),
+    traceSync: vi.fn(),
     debug: vi.fn(),
     debugSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
   })),
 }))
 
