@@ -382,7 +382,7 @@ mod tests {
         let recovered_data = poisoned.into_inner();
         assert_eq!(*recovered_data, "initial");
       }
-    }
+    };
 
     // Важно: изолированный test_mutex будет уничтожен и не повлияет на другие тесты
   }
