@@ -1,3 +1,18 @@
+# [2.5.0](https://github.com/chatman-media/timeline-studio/compare/v2.4.0...v2.5.0) (2025-11-07)
+
+
+### Bug Fixes
+
+* Исправлен тест mutex poisoning в language_tauri для предотвращения ошибок ([738e4ed](https://github.com/chatman-media/timeline-studio/commit/738e4ed5f3dc60c282544c474c94005d1e7ea431))
+* Исправлена совместимость Tauri Logger с e2e тестами и тестовым окружением ([7debd2e](https://github.com/chatman-media/timeline-studio/commit/7debd2e36b18d115c5c497c0f9458f35b17ea04a))
+
+
+### Features
+
+* Добавлено Tauri Logger логирование в Fairlight Audio модуль ([11d29e6](https://github.com/chatman-media/timeline-studio/commit/11d29e6bf1b6a405a1e2e025f9ebe54f0eeecc8d))
+* Добавлено Tauri Logger логирование в Person Identification модуль ([4c09ce1](https://github.com/chatman-media/timeline-studio/commit/4c09ce11b94b6787019576eef10ef29b5ee8db2e))
+* Добавлено Tauri Logger логирование в Updates и Modals модули ([31e6bfb](https://github.com/chatman-media/timeline-studio/commit/31e6bfb54d4882ea73569cef455402c7788b3769))
+
 # [2.4.0](https://github.com/chatman-media/timeline-studio/compare/v2.3.5...v2.4.0) (2025-11-07)
 
 
