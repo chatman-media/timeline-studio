@@ -496,13 +496,10 @@ pub fn run() {
             }
 
             // PersonDatabase shutdown
-            if let Some(person_db) = app_handle.try_state::<Arc<PersonDatabase>>() {
+            if let Some(_person_db) = app_handle.try_state::<Arc<PersonDatabase>>() {
               log::info!("Shutdown: PersonDatabase");
-              tauri::async_runtime::block_on(async {
-                // PersonDatabase будет закрыт через Drop trait
-                // Здесь мы только логируем
-                drop(person_db);
-              });
+              // PersonDatabase будет закрыт автоматически через Drop trait
+              // когда последняя Arc ссылка будет удалена
             }
 
             // Даем время на завершение всех операций
