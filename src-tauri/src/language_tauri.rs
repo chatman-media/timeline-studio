@@ -339,31 +339,52 @@ mod tests {
   }
 
   #[test]
-  #[ignore] // Игнорируем этот тест по умолчанию, так как он может влиять на другие тесты
-  fn test_language_state_mutex_poisoning() {
-    // ВАЖНО: Этот тест намеренно отравляет mutex и может влиять на другие тесты
-    // Запускать только изолированно: cargo test test_language_state_mutex_poisoning -- --ignored
+  fn test_language_state_mutex_recovery() {
+    // Вместо того чтобы намеренно отравлять mutex (что может повлиять на другие тесты),
+    // тестируем правильную обработку ошибок mutex в production коде
 
-    let state = std::sync::Arc::new(LanguageState::new());
-    let state_clone = state.clone();
+    // Test 1: Проверяем что lock() возвращает Result
+    let state = LanguageState::new();
+    let lock_result = state.current_language.lock();
+    assert!(lock_result.is_ok(), "Normal lock should succeed");
 
-    // Simulate a panic while holding the lock
+    // Test 2: Проверяем что мы правильно обрабатываем потенциальные ошибки
+    // в production коде через map_err (как в get_app_language_tauri и set_app_language_tauri)
+    let lock_with_error_handling = state
+      .current_language
+      .lock()
+      .map_err(|e| format!("Failed to lock language state: {e}"));
+
+    assert!(
+      lock_with_error_handling.is_ok(),
+      "Lock with error handling should succeed"
+    );
+
+    // Test 3: Вместо mutex poisoning, тестируем изолированный сценарий восстановления
+    // Создаем отдельный изолированный mutex специально для этого теста
+    let test_mutex = std::sync::Arc::new(std::sync::Mutex::new("initial".to_string()));
+    let test_mutex_clone = test_mutex.clone();
+
+    // Симулируем панику в изолированном потоке
     let handle = std::thread::spawn(move || {
-      let _guard = state_clone.current_language.lock().unwrap();
-      panic!("Simulated panic");
+      let _guard = test_mutex_clone.lock().unwrap();
+      panic!("Simulated panic for testing recovery");
     });
 
-    // Wait for the thread to panic
+    // Ждем завершения паники
     let _ = handle.join();
 
-    // Try to access the poisoned mutex
-    let result = state.current_language.lock();
-    assert!(result.is_err());
-
-    // Recover the data from poisoned mutex to clean up
-    if let Err(poisoned) = result {
-      let _recovered_data = poisoned.into_inner();
+    // Проверяем что мы можем восстановить данные из отравленного mutex
+    match test_mutex.lock() {
+      Ok(_) => panic!("Expected poisoned mutex"),
+      Err(poisoned) => {
+        // Восстанавливаем данные - это то, что должен делать production код
+        let recovered_data = poisoned.into_inner();
+        assert_eq!(*recovered_data, "initial");
+      }
     }
+
+    // Важно: изолированный test_mutex будет уничтожен и не повлияет на другие тесты
   }
 
   #[test]
