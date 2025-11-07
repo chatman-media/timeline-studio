@@ -1,8 +1,7 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import type { BaseEffect } from "@/features/effects/types"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { EffectManager } from "../services/effect-manager"
 import { loadEffectsCollection, loadUserEffect } from "../utils/user-effects"

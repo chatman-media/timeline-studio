@@ -4,10 +4,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { FrameCaptureService } from "../services/frame-capture-service"
 import { usePlayer } from "../services/player-provider"

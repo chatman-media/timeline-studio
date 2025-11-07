@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import type { BaseEffect } from "@/features/effects/types"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { allMigratedEffects, migratedEffects } from "../data/effects-loader"
 

@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import type { VideoFilter } from "@/features/filters/types/filters"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import filtersData from "../data/filters.json"
 import { createFallbackFilter, processFilters, validateFiltersData } from "../utils/filter-processor"

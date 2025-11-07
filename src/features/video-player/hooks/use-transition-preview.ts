@@ -3,10 +3,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { getTransitionsPreviewService, type TransitionParams } from "../services/transitions-preview"
 

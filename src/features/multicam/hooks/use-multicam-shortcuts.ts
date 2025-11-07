@@ -3,9 +3,8 @@
  */
 
 import { useEffect } from "react"
-
-import { logInfo } from "@/lib/tauri-logger"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts/services/shortcuts-registry"
+import { logInfo } from "@/lib/tauri-logger"
 
 import { multicamManager } from "../services/multicam-manager"
 

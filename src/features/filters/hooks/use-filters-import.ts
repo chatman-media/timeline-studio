@@ -1,9 +1,8 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import { useResources } from "@/features/resources"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { VideoFilter } from "../types/filters"
 

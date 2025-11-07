@@ -4,10 +4,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePlayer } from "@/features/video-player"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { basicEffectsLibrary } from "../presets/basic-effects"
 import { EffectManager } from "../services/effect-manager"

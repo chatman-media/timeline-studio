@@ -1,7 +1,6 @@
 import { useCallback, useRef } from "react"
-
-import { logInfo } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
+import { logInfo } from "@/lib/tauri-logger"
 
 /**
  * Хук для создания и управления видео элементами

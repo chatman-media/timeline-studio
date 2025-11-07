@@ -105,7 +105,7 @@ export function useTimeline(): TimelineContextType {
   logInfo("[useTimeline] Timeline хук готов", {
     hasProject: !!project.project,
     tracksCount: tracks.tracks?.length || 0,
-    clipsCount: clips.clips?.length || 0
+    clipsCount: clips.clips?.length || 0,
   })
 
   return {

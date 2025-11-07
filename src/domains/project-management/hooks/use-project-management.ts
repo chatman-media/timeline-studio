@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { logInfo } from "@/lib/tauri-logger"
 import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"

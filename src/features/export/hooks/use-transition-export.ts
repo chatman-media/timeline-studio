@@ -4,9 +4,8 @@
  */
 
 import { useCallback, useMemo, useRef, useState } from "react"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
 import type { TimelineProject } from "@/features/timeline/types/timeline"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { TransitionExportService } from "../services/transition-export-service"
 import type { ExportSettings } from "../types/export-types"
