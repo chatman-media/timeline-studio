@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 
@@ -41,6 +42,8 @@ interface UseTransitionPreviewReturn {
 }
 
 export function useTransitionPreview(options: UseTransitionPreviewOptions = {}): UseTransitionPreviewReturn {
+  logInfo("[useTransitionPreview] Инициализация хука", { options })
+
   const { enablePreview = true, autoPlay = false, loop = false } = options
   const { project, currentTime, isPlaying } = useTimeline()
   const [transitionService] = useState(() => getTransitionsPreviewService())
@@ -154,7 +157,7 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
           canvas,
         )
       } catch (error) {
-        console.error("Failed to render transition:", error)
+        logError("[useTransitionPreview] Ошибка рендеринга перехода", error)
         return false
       }
     },

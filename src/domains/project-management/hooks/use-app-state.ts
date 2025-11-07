@@ -3,10 +3,14 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+
+import { logInfo } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectState, TrackType } from "@/types/generated/tauri-bindings"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 
 export function useAppState() {
+  logInfo("[useAppState] Инициализация хука")
+
   const [orchestrator] = useState(() => getProjectManagementOrchestrator())
   const [projectState, setProjectState] = useState<ProjectState | null>(() => orchestrator.getProjectState())
   const [isConnected, setIsConnected] = useState(() => orchestrator.isConnected())

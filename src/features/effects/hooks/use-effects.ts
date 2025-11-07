@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { BaseEffect } from "@/features/effects/types"
 
 import { allMigratedEffects, migratedEffects } from "../data/effects-loader"
@@ -17,7 +18,7 @@ interface UseEffectsReturn {
 }
 
 /**
- * Хук для загрузки и управления эффектами из новой унифицированной системы
+ * Хок для загрузки и управления эффектами из новой унифицированной системы
  */
 export function useEffects(): UseEffectsReturn {
   const { t } = useTranslation()
@@ -29,6 +30,8 @@ export function useEffects(): UseEffectsReturn {
    * Загружает эффекты из новой унифицированной системы
    */
   const loadEffects = useCallback(() => {
+    logInfo("useEffects", "Loading effects from unified system")
+
     try {
       setLoading(true)
       setError(null)
@@ -36,6 +39,7 @@ export function useEffects(): UseEffectsReturn {
       // Используем мигрированные эффекты
       setEffects(allMigratedEffects)
 
+      logInfo("useEffects", `Loaded ${allMigratedEffects.length} effects from unified system`)
       console.log(
         `✅ ${t("effects.messages.effectsLoaded", "Loaded {{count}} effects from unified system", { count: allMigratedEffects.length })}`,
       )
@@ -46,6 +50,7 @@ export function useEffects(): UseEffectsReturn {
       // В случае ошибки используем пустой массив
       setEffects([])
 
+      logError("useEffects", "Failed to load effects", err)
       console.error(`❌ ${t("effects.errors.fallbackEffects", "Failed to load effects")}:`, err)
     } finally {
       setLoading(false)

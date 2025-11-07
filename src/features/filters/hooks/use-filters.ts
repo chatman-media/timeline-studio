@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { VideoFilter } from "@/features/filters/types/filters"
 
 import filtersData from "../data/filters.json"
@@ -30,6 +31,8 @@ export function useFilters(): UseFiltersReturn {
    * Загружает фильтры из импортированного JSON файла
    */
   const loadFilters = useCallback(() => {
+    logInfo("useFilters", "Loading filters from JSON data")
+
     try {
       setLoading(true)
       setError(null)
@@ -47,6 +50,7 @@ export function useFilters(): UseFiltersReturn {
 
       setFilters(processedFilters)
 
+      logInfo("useFilters", `Loaded ${processedFilters.length} filters from JSON`)
       console.log(
         `✅ ${t("filters.messages.filtersLoaded", "Loaded {{count}} filters from JSON", { count: processedFilters.length })}`,
       )
@@ -63,6 +67,7 @@ export function useFilters(): UseFiltersReturn {
 
       setFilters(fallbackFilters)
 
+      logError("useFilters", "Failed to load filters, using fallback", err)
       console.error(`❌ ${t("filters.errors.fallbackFilters", "Failed to load filters, using fallback")}:`, err)
     } finally {
       setLoading(false)

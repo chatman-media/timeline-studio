@@ -1,5 +1,6 @@
 import { useCallback } from "react"
 
+import { logInfo } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
 
 import { usePlayer } from "../services/player-provider"
@@ -19,6 +20,8 @@ interface VideoSelectionHook {
  * для функции "Применить" в превью компонентах
  */
 export function useVideoSelection(): VideoSelectionHook {
+  logInfo("[useVideoSelection] Инициализация хука")
+
   const { videoSource, previewMedia } = usePlayer()
 
   // TODO: Раскомментировать когда будут доступны хуки

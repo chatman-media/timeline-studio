@@ -12,6 +12,7 @@ import {
   useTimelineSelection,
   useTimelineTracks,
 } from "@/domains/video-editing"
+import { logInfo } from "@/lib/tauri-logger"
 
 export interface TimelineContextType {
   // Project управление
@@ -92,12 +93,20 @@ export interface TimelineContextType {
  * Объединяет все модульные провайдеры в единый интерфейс
  */
 export function useTimeline(): TimelineContextType {
+  logInfo("[useTimeline] Инициализация timeline хука")
+
   const project = useTimelineProject()
   const playback = useTimelinePlayback()
   const tracks = useTimelineTracks()
   const clips = useTimelineClips()
   const selection = useTimelineSelection()
   const effects = useTimelineEffects()
+
+  logInfo("[useTimeline] Timeline хук готов", {
+    hasProject: !!project.project,
+    tracksCount: tracks.tracks?.length || 0,
+    clipsCount: clips.clips?.length || 0
+  })
 
   return {
     // Project

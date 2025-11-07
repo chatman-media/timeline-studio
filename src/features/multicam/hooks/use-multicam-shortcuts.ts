@@ -4,11 +4,14 @@
 
 import { useEffect } from "react"
 
+import { logInfo } from "@/lib/tauri-logger"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts/services/shortcuts-registry"
 
 import { multicamManager } from "../services/multicam-manager"
 
 export function useMulticamShortcuts() {
+  logInfo("[useMulticamShortcuts] Инициализация хука")
+
   useEffect(() => {
     // Регистрируем обработчики для переключения камер 1-9
     const shortcuts = Array.from({ length: 9 }, (_, i) => ({

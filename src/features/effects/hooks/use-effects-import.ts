@@ -1,6 +1,7 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { BaseEffect } from "@/features/effects/types"
 
 import { EffectManager } from "../services/effect-manager"
@@ -46,7 +47,10 @@ export function useEffectsImport() {
    * Импорт JSON файла с эффектами
    */
   const importEffectsFile = useCallback(async (): Promise<ImportResult> => {
+    logInfo("useEffectsImport", "Starting effects file import")
+
     if (isImporting) {
+      logInfo("useEffectsImport", "Import already in progress")
       return {
         success: false,
         message: "Импорт уже выполняется",
@@ -140,7 +144,7 @@ export function useEffectsImport() {
           }
         }
       } catch (error) {
-        console.error("Ошибка чтения файла:", error)
+        logError("useEffectsImport", "Error reading effects file", error)
         setIsImporting(false)
         return {
           success: false,
@@ -173,7 +177,7 @@ export function useEffectsImport() {
         try {
           effectManager.registerEffect(effect)
         } catch (error) {
-          console.error(`Failed to register effect ${effect.id}:`, error)
+          logError("useEffectsImport", `Failed to register effect ${effect.id}`, error)
         }
       })
 
@@ -185,6 +189,7 @@ export function useEffectsImport() {
           ? `Успешно импортировано ${imported} эффектов. Не удалось импортировать: ${failed}`
           : `Успешно импортировано ${imported} эффектов`
 
+      logInfo("useEffectsImport", `Effects import completed: ${imported} imported, ${failed} failed`)
       return {
         success: true,
         message,
@@ -193,7 +198,7 @@ export function useEffectsImport() {
         failed,
       }
     } catch (error) {
-      console.error("Ошибка при импорте эффектов:", error)
+      logError("useEffectsImport", "Error during effects import", error)
       setIsImporting(false)
       return {
         success: false,
@@ -207,7 +212,10 @@ export function useEffectsImport() {
    * Импорт отдельного файла эффекта (например, .cube для LUT)
    */
   const importEffectFile = useCallback(async (): Promise<ImportResult> => {
+    logInfo("useEffectsImport", "Starting effect file import")
+
     if (isImporting) {
+      logInfo("useEffectsImport", "Import already in progress")
       return {
         success: false,
         message: "Импорт уже выполняется",
@@ -318,13 +326,14 @@ export function useEffectsImport() {
         try {
           effectManager.registerEffect(effect)
         } catch (error) {
-          console.error(`Failed to register LUT effect ${effect.id}:`, error)
+          logError("useEffectsImport", `Failed to register LUT effect ${effect.id}`, error)
         }
       })
 
       setProgress(100)
       setIsImporting(false)
 
+      logInfo("useEffectsImport", `Imported ${imported} effect files`)
       return {
         success: true,
         message: `Успешно импортировано ${imported} файлов эффектов`,
@@ -332,7 +341,7 @@ export function useEffectsImport() {
         imported,
       }
     } catch (error) {
-      console.error("Ошибка при импорте файлов эффектов:", error)
+      logError("useEffectsImport", "Error during effect files import", error)
       setIsImporting(false)
       return {
         success: false,

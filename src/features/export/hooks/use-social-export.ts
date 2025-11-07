@@ -3,6 +3,8 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 import { SOCIAL_NETWORKS } from "../constants/export-constants"
 import * as SocialNetworksService from "../services/social-networks-service"
 import {
@@ -13,6 +15,8 @@ import {
 import type { SocialExportSettings } from "../types/export-types"
 
 export function useSocialExport() {
+  logInfo("[useSocialExport] Инициализация хука")
+
   const { t } = useTranslation()
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -23,7 +27,7 @@ export function useSocialExport() {
         const success = await SocialNetworksService.login(network)
         return success
       } catch (error) {
-        console.error(`Failed to login to ${network}:`, error)
+        logError(`[useSocialExport] Ошибка входа в ${network}`, error)
         toast.error(t("dialogs.export.errors.loginFailed", { network }))
         return false
       }
@@ -75,7 +79,7 @@ export function useSocialExport() {
         return result
       } catch (error) {
         setIsUploading(false)
-        console.error(`Upload to ${network.name} failed:`, error)
+        logError(`[useSocialExport] Ошибка загрузки в ${network.name}`, error)
         toast.error(t("dialogs.export.errors.uploadFailed", { network: network.name }))
         throw error
       }

@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useEffect, useState } from "react"
+
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { OutputFormat, ProjectSchema, RenderJob, RenderStatus } from "@/domains/video-editing"
 import { loadProject } from "@/features/app-state/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
@@ -49,6 +51,8 @@ interface UseRenderQueueReturn {
 }
 
 export function useRenderQueue(): UseRenderQueueReturn {
+  logInfo("[useRenderQueue] Инициализация хука")
+
   const [renderJobs, setRenderJobs] = useState<RenderJob[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -78,7 +82,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
       )
       setIsProcessing(hasActiveJobs)
     } catch (error) {
-      console.error("Failed to get render jobs:", error)
+      logError("[useRenderQueue] Ошибка получения задач рендеринга", error)
     }
   }, [])
 
@@ -104,7 +108,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
       }
       return [selected]
     } catch (error) {
-      console.error("Failed to select projects:", error)
+      logError("[useRenderQueue] Ошибка выбора проектов", error)
       return []
     }
   }, [])
@@ -169,16 +173,16 @@ export function useRenderQueue(): UseRenderQueueReturn {
               outputPath: project.outputPath,
             })
 
-            console.log(`Started render job: ${jobId} for ${project.path}`)
+            logInfo(`[useRenderQueue] Запущена задача рендеринга: ${jobId} для ${project.path}`)
           } catch (error) {
-            console.error(`Failed to start render for ${project.path}:`, error)
+            logError(`[useRenderQueue] Ошибка запуска рендеринга для ${project.path}`, error)
           }
         }
 
         // Обновляем список задач
         await refreshQueue()
       } catch (error) {
-        console.error("Failed to start render queue:", error)
+        logError("[useRenderQueue] Ошибка запуска очереди рендеринга", error)
       }
     },
     [refreshQueue],
@@ -193,7 +197,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
           await refreshQueue()
         }
       } catch (error) {
-        console.error(`Failed to cancel job ${jobId}:`, error)
+        logError(`[useRenderQueue] Ошибка отмены задачи ${jobId}`, error)
       }
     },
     [refreshQueue],

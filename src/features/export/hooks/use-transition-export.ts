@@ -5,6 +5,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { TimelineProject } from "@/features/timeline/types/timeline"
 
 import { TransitionExportService } from "../services/transition-export-service"
@@ -32,6 +33,8 @@ interface UseTransitionExportOptions {
 }
 
 export function useTransitionExport(options: UseTransitionExportOptions = {}) {
+  logInfo("[useTransitionExport] Инициализация хука", { options })
+
   const { onProgress, onComplete, onError, enableOptimizations = true } = options
 
   const [state, setState] = useState<UseTransitionExportState>({
@@ -179,6 +182,8 @@ export function useTransitionExport(options: UseTransitionExportOptions = {}) {
         return result
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
+
+        logError("[useTransitionExport] Ошибка экспорта переходов", error)
 
         setState((prev) => ({
           ...prev,

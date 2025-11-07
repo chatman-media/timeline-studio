@@ -2,6 +2,7 @@ import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { useResources } from "@/features/resources"
 
 import type { VideoFilter } from "../types/filters"
@@ -18,7 +19,12 @@ export function useFiltersImport() {
    * Импорт JSON файла с фильтрами
    */
   const importFiltersFile = useCallback(async () => {
-    if (isImporting) return
+    logInfo("useFiltersImport", "Starting filters file import")
+
+    if (isImporting) {
+      logInfo("useFiltersImport", "Import already in progress")
+      return
+    }
 
     setIsImporting(true)
     try {
@@ -45,6 +51,7 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
+          logInfo("useFiltersImport", `Imported ${filtersData.length} filters`)
           console.log(`Импортировано ${filtersData.length} фильтров`)
         } else if (filtersData.filters && Array.isArray(filtersData.filters)) {
           // Альтернативный формат с обёрткой
@@ -53,10 +60,12 @@ export function useFiltersImport() {
               void addFilter(filterData as VideoFilter)
             }
           }
+          logInfo("useFiltersImport", `Imported ${filtersData.filters.length} filters`)
           console.log(`Импортировано ${filtersData.filters.length} фильтров`)
         }
       }
     } catch (error) {
+      logError("useFiltersImport", "Error importing filters file", error)
       console.error("Ошибка при импорте фильтров:", error)
     } finally {
       setIsImporting(false)
@@ -67,7 +76,12 @@ export function useFiltersImport() {
    * Импорт отдельных файлов фильтров (.cube, .3dl, .lut)
    */
   const importFilterFile = useCallback(async () => {
-    if (isImporting) return
+    logInfo("useFiltersImport", "Starting filter files import")
+
+    if (isImporting) {
+      logInfo("useFiltersImport", "Import already in progress")
+      return
+    }
 
     setIsImporting(true)
     try {
@@ -114,9 +128,11 @@ export function useFiltersImport() {
           void addFilter(filter)
         }
 
+        logInfo("useFiltersImport", `Imported ${files.length} filter files`)
         console.log(`Импортировано ${files.length} файлов фильтров`)
       }
     } catch (error) {
+      logError("useFiltersImport", "Error importing filter files", error)
       console.error("Ошибка при импорте файлов фильтров:", error)
     } finally {
       setIsImporting(false)

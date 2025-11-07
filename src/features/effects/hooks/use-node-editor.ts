@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react"
 
+import { logInfo } from "@/lib/tauri-logger"
 import type { CompositeNode, NodeGraph } from "../types/node-compositing"
 
 interface Viewport {
@@ -63,6 +64,8 @@ export function useNodeEditor(_initialGraph: NodeGraph) {
 
   // Fit nodes to screen
   const fitToScreen = useCallback((nodes: CompositeNode[], padding = 50) => {
+    logInfo("useNodeEditor", `Fitting ${nodes.length} nodes to screen`)
+
     if (nodes.length === 0) return
 
     // Calculate bounding box
@@ -161,6 +164,7 @@ export function useNodeSelection() {
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([])
 
   const selectNode = useCallback((nodeId: string, multi = false) => {
+    logInfo("useNodeSelection", `Selecting node ${nodeId} (multi: ${multi})`)
     if (multi) {
       setSelectedNodeIds((prev) => (prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]))
     } else {
@@ -169,10 +173,12 @@ export function useNodeSelection() {
   }, [])
 
   const selectNodes = useCallback((nodeIds: string[]) => {
+    logInfo("useNodeSelection", `Selecting ${nodeIds.length} nodes`)
     setSelectedNodeIds(nodeIds)
   }, [])
 
   const deselectAll = useCallback(() => {
+    logInfo("useNodeSelection", "Deselecting all nodes")
     setSelectedNodeIds([])
   }, [])
 
@@ -209,6 +215,7 @@ export function useNodeGraphOperations() {
   // Add to history
   const addToHistory = useCallback(
     (newGraph: NodeGraph) => {
+      logInfo("useNodeGraphOperations", `Adding to history at index ${historyIndex + 1}`)
       setHistory((prev) => [...prev.slice(0, historyIndex + 1), newGraph])
       setHistoryIndex((prev) => prev + 1)
     },
@@ -218,6 +225,7 @@ export function useNodeGraphOperations() {
   // Undo
   const undo = useCallback(() => {
     if (historyIndex > 0) {
+      logInfo("useNodeGraphOperations", `Undoing - moving to history index ${historyIndex - 1}`)
       setHistoryIndex((prev) => prev - 1)
       setGraph(history[historyIndex - 1])
     }
@@ -226,6 +234,7 @@ export function useNodeGraphOperations() {
   // Redo
   const redo = useCallback(() => {
     if (historyIndex < history.length - 1) {
+      logInfo("useNodeGraphOperations", `Redoing - moving to history index ${historyIndex + 1}`)
       setHistoryIndex((prev) => prev + 1)
       setGraph(history[historyIndex + 1])
     }
@@ -244,6 +253,7 @@ export function useNodeGraphOperations() {
   // Add node
   const addNode = useCallback(
     (node: CompositeNode) => {
+      logInfo("useNodeGraphOperations", `Adding node ${node.id}`)
       updateGraph((g) => ({
         ...g,
         nodes: {
@@ -258,6 +268,7 @@ export function useNodeGraphOperations() {
   // Remove nodes
   const removeNodes = useCallback(
     (nodeIds: string[]) => {
+      logInfo("useNodeGraphOperations", `Removing ${nodeIds.length} nodes`)
       updateGraph((g) => {
         const newNodes = { ...g.nodes }
         const newConnections = g.connections.filter(
@@ -280,6 +291,7 @@ export function useNodeGraphOperations() {
   // Duplicate nodes
   const duplicateNodes = useCallback(
     (nodeIds: string[]) => {
+      logInfo("useNodeGraphOperations", `Duplicating ${nodeIds.length} nodes`)
       updateGraph((g) => {
         const newNodes = { ...g.nodes }
         const offset = 50

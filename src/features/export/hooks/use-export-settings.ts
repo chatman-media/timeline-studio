@@ -2,6 +2,8 @@ import { save } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
+
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { OutputFormat } from "@/domains/video-editing/types"
 import { QUALITY_PRESETS, RESOLUTION_PRESETS } from "../constants/export-constants"
 import type { ExportSettings } from "../types/export-types"
@@ -19,6 +21,8 @@ const DEFAULT_EXPORT_SETTINGS: ExportSettings = {
 }
 
 export function useExportSettings() {
+  logInfo("[useExportSettings] Инициализация хука")
+
   const { t } = useTranslation()
   const [exportSettings, setExportSettings] = useState<ExportSettings>({
     ...DEFAULT_EXPORT_SETTINGS,
@@ -42,7 +46,7 @@ export function useExportSettings() {
         setExportSettings((prev) => ({ ...prev, savePath: selectedPath }))
       }
     } catch (error) {
-      console.error("Failed to select folder:", error)
+      logError("[useExportSettings] Ошибка выбора папки", error)
       toast.error(t("dialogs.export.errors.folderSelection"))
     }
   }, [exportSettings, t])

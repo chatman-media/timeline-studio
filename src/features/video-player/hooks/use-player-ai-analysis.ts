@@ -4,6 +4,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
 
@@ -36,6 +38,8 @@ export interface PlayerAIAnalysisHook {
 }
 
 export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
+  logInfo("[usePlayerAIAnalysis] Инициализация хука")
+
   const { currentTime, isPlaying, duration } = usePlayer()
 
   const [state, setState] = useState<PlayerAIAnalysisState>({
@@ -103,7 +107,7 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
           ],
         }))
       } catch (error) {
-        console.error("Frame analysis error:", error)
+        logError("[usePlayerAIAnalysis] Ошибка анализа кадра", error)
       }
     }, intervalMs)
   }, [state.isAnalyzing, state.frameAnalysisRate, isPlaying, currentTime, frameCaptureService])

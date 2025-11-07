@@ -1,5 +1,7 @@
 import { useCallback } from "react"
 
+import { logInfo } from "@/lib/tauri-logger"
+
 import { usePlayer } from "../services/player-provider"
 
 export interface UsePlayerSpeedRampingReturn {
@@ -19,6 +21,8 @@ export interface UsePlayerSpeedRampingReturn {
  * Хук для управления speed ramping в video player
  */
 export function usePlayerSpeedRamping(): UsePlayerSpeedRampingReturn {
+  logInfo("[usePlayerSpeedRamping] Инициализация хука")
+
   const player = usePlayer()
   const { speedRampingEnabled, currentPlaybackRate, basePlaybackRate } = player
 
@@ -46,6 +50,12 @@ export function usePlayerSpeedRamping(): UsePlayerSpeedRampingReturn {
   const resetToBaseRate = useCallback(() => {
     player.updatePlaybackRate(basePlaybackRate)
   }, [player, basePlaybackRate])
+
+  logInfo("[usePlayerSpeedRamping] Хук готов", {
+    speedRampingEnabled,
+    currentPlaybackRate,
+    basePlaybackRate,
+  })
 
   return {
     // Состояние

@@ -3,11 +3,15 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 
 export function useProjectManagement() {
+  logInfo("[useProjectManagement] Инициализация хука")
+
   const [orchestrator] = useState(() => getProjectManagementOrchestrator())
   const [projectState, setProjectState] = useState<ProjectState | null>(() => orchestrator.getProjectState())
   const [userSettings, setUserSettings] = useState<UserSettingsContextType>(() => orchestrator.getUserSettings())

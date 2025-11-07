@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react"
 
+import { logInfo } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
 
 /**
@@ -7,6 +8,8 @@ import type { MediaFile } from "@/features/media/types/media"
  * @returns Функции для работы с видео элементами
  */
 export function useVideoElement() {
+  logInfo("[useVideoElement] Инициализация хука")
+
   // Используем ref для отслеживания всех созданных видео элементов
   const allVideoElementsRef = useRef<Set<HTMLVideoElement>>(new Set())
 

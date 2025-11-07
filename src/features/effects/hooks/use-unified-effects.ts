@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePlayer } from "@/features/video-player"
 
@@ -86,6 +87,8 @@ export function useUnifiedEffects(
   // ============================================================================
 
   useEffect(() => {
+    logInfo("useUnifiedEffects", `Initializing unified effects for ${targetType} - ${targetId}`)
+
     if (loadBasicEffects) {
       // Регистрируем базовые эффекты
       effectManager.current.registerEffects(basicEffectsLibrary)
@@ -100,6 +103,8 @@ export function useUnifiedEffects(
         availableEffects: effects,
         effectsById: effectsMap,
       }))
+
+      logInfo("useUnifiedEffects", `Loaded ${effects.length} basic effects`)
     }
 
     // Создаем стек эффектов для объекта
@@ -147,6 +152,7 @@ export function useUnifiedEffects(
         parameters?: Record<string, any>
       } = {},
     ): AppliedEffect => {
+      logInfo("useUnifiedEffects", `Applying effect ${effectId} to ${targetType}`)
       const appliedEffect = effectManager.current.applyEffect(effectId, targetId, targetType, options)
       updateEffectsState()
       return appliedEffect
@@ -223,6 +229,8 @@ export function useUnifiedEffects(
    */
   const renderEffects = useCallback(
     async (source?: HTMLVideoElement | HTMLCanvasElement | ImageBitmap, customTime?: number): Promise<RenderResult> => {
+      logInfo("useUnifiedEffects", `Rendering effects at time ${customTime ?? currentTime}`)
+
       if (state.appliedEffects.length === 0) {
         return { success: true, output: source as any, processingTime: 0 }
       }
@@ -247,8 +255,11 @@ export function useUnifiedEffects(
           previewBitmap: result.output instanceof ImageBitmap ? result.output : null,
         }))
 
+        logInfo("useUnifiedEffects", `Effects rendered successfully in ${result.processingTime}ms`)
         return result
       } catch (error) {
+        logError("useUnifiedEffects", "Error rendering effects", error)
+
         const errorResult: RenderResult = {
           success: false,
           error: error instanceof Error ? error.message : "Unknown error",
