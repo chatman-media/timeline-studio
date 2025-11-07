@@ -43,7 +43,7 @@ export function useRecording(
   const startRecording = useCallback(() => {
     logInfo("[useRecording] Начало записи")
     if (!streamRef.current) {
-      logError("[useRecording] Поток не доступен", new Error("Stream is null"))
+      logError("[useRecording] Поток не доступен", { error: new Error("Stream is null") })
       return
     }
 
@@ -53,14 +53,14 @@ export function useRecording(
     try {
       mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
     } catch (e) {
-      logError("[useRecording] MediaRecorder не поддерживает данный формат", e)
+      logError("[useRecording] MediaRecorder не поддерживает данный формат", { error: e })
       try {
         // Пробуем другой формат
         mediaRecorderRef.current = new MediaRecorder(streamRef.current, {
           mimeType: "video/webm",
         })
       } catch (e) {
-        logError("[useRecording] MediaRecorder не поддерживается браузером", e)
+        logError("[useRecording] MediaRecorder не поддерживается браузером", { error: e })
         return
       }
     }

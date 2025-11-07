@@ -193,7 +193,9 @@ export function useEnhancedSubtitleAutomation() {
 
         if (!toolResult.success) {
           const error = toolResult.errors?.[0] || "Ошибка обработки субтитров"
-          logError("[useEnhancedSubtitleAutomation] Ошибка обработки", new Error(error))
+          logError("[useEnhancedSubtitleAutomation] Ошибка обработки", {
+            error: new Error(error),
+          })
           throw new Error(error)
         }
 
@@ -223,7 +225,7 @@ export function useEnhancedSubtitleAutomation() {
         return enhancedResult
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Неизвестная ошибка"
-        logError("[useEnhancedSubtitleAutomation] Критическая ошибка при генерации", err)
+        logError("[useEnhancedSubtitleAutomation] Критическая ошибка при генерации", { error: err })
         setError(errorMessage)
         setProgress({ stage: "error", progress: 0, message: errorMessage })
 
@@ -256,11 +258,13 @@ export function useEnhancedSubtitleAutomation() {
           return toolResult.data!
         }
         const error = toolResult.errors?.[0] || "Ошибка генерации"
-        logError("[useEnhancedSubtitleAutomation] Ошибка быстрой генерации", new Error(error))
+        logError("[useEnhancedSubtitleAutomation] Ошибка быстрой генерации", {
+          error: new Error(error),
+        })
         setError(error)
         return null
       } catch (err) {
-        logError("[useEnhancedSubtitleAutomation] Исключение при быстрой генерации", err)
+        logError("[useEnhancedSubtitleAutomation] Исключение при быстрой генерации", { error: err })
         throw err
       }
     },
@@ -282,11 +286,13 @@ export function useEnhancedSubtitleAutomation() {
           return toolResult.data!
         }
         const error = toolResult.errors?.[0] || "Ошибка OCR"
-        logError("[useEnhancedSubtitleAutomation] Ошибка извлечения текста", new Error(error))
+        logError("[useEnhancedSubtitleAutomation] Ошибка извлечения текста", {
+          error: new Error(error),
+        })
         setError(error)
         return null
       } catch (err) {
-        logError("[useEnhancedSubtitleAutomation] Исключение при извлечении текста", err)
+        logError("[useEnhancedSubtitleAutomation] Исключение при извлечении текста", { error: err })
         throw err
       }
     },
@@ -308,11 +314,13 @@ export function useEnhancedSubtitleAutomation() {
           return toolResult.data!
         }
         const error = toolResult.errors?.[0] || "Ошибка многоязычной генерации"
-        logError("[useEnhancedSubtitleAutomation] Ошибка многоязычной генерации", new Error(error))
+        logError("[useEnhancedSubtitleAutomation] Ошибка многоязычной генерации", {
+          error: new Error(error),
+        })
         setError(error)
         return null
       } catch (err) {
-        logError("[useEnhancedSubtitleAutomation] Исключение при многоязычной генерации", err)
+        logError("[useEnhancedSubtitleAutomation] Исключение при многоязычной генерации", { error: err })
         throw err
       }
     },

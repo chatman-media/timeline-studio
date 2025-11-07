@@ -5,7 +5,8 @@
  */
 
 import { useCallback, useEffect } from "react"
-import { DOMAIN_EVENTS, useDomainEvents } from "@/domains/shared/events"
+import { DOMAIN_EVENTS } from "@/domains/shared/events"
+import { useDomainEvents } from "@/domains/shared/hooks/use-domain-events"
 import type {
   AIDirectorAnalysisCompletedEvent,
   AIDirectorAnalysisErrorEvent,

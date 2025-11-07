@@ -12,7 +12,10 @@ global.MediaRecorder = vi.fn().mockImplementation(() => ({
   state: "inactive",
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
-}))
+})) as unknown as typeof MediaRecorder
+
+// Добавляем метод isTypeSupported
+;(global.MediaRecorder as any).isTypeSupported = vi.fn(() => true)
 
 // Мокируем useTranslation
 vi.mock("react-i18next", () => ({
@@ -25,7 +28,7 @@ describe("useRecording", () => {
   // Мокируем функции для записи
   const mockOnRecordingStart = vi.fn()
   const mockOnRecordingStop = vi.fn()
-  const mockStreamRef = { current: { getTracks: () => [{ stop: vi.fn() }] } }
+  const mockStreamRef = { current: { getTracks: () => [{ stop: vi.fn() }] } } as unknown as React.RefObject<MediaStream | null>
   const mockVideoRef = { current: document.createElement("video") }
   const mockSetErrorMessage = vi.fn()
 
@@ -40,7 +43,7 @@ describe("useRecording", () => {
 
   it("should initialize with default values", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     expect(result.current.isRecording).toBe(false)
@@ -52,7 +55,7 @@ describe("useRecording", () => {
 
   it("should set countdown", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     act(() => {
@@ -64,7 +67,7 @@ describe("useRecording", () => {
 
   it("should start countdown", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     // Устанавливаем обратный отсчет
@@ -92,7 +95,7 @@ describe("useRecording", () => {
 
   it("should have stopRecording method", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     // Проверяем, что метод stopRecording существует
@@ -101,7 +104,7 @@ describe("useRecording", () => {
 
   it("should have recordingTime property", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     // Проверяем, что свойство recordingTime существует и имеет числовое значение
@@ -110,7 +113,7 @@ describe("useRecording", () => {
 
   it("should format recording time correctly", () => {
     const { result } = renderHook(() =>
-      useRecording(mockStreamRef, mockVideoRef, mockOnRecordingStart, mockOnRecordingStop, mockSetErrorMessage),
+      useRecording(mockStreamRef, 3, mockOnRecordingStop),
     )
 
     // Мокируем метод форматирования времени

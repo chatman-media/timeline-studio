@@ -126,9 +126,10 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
           },
         },
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
+        const errorMessage = err instanceof Error ? err.message : String(err)
         logger.error("[UndoRedo] Failed to sync action:", { error: err })
-        setError(err.message)
+        setError(errorMessage)
       })
 
     return actionId
@@ -151,9 +152,10 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
             params: {},
           },
         })
-      } catch (err) {
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : String(err)
         logger.error("[UndoRedo] Failed to sync undo:", { error: err })
-        setError(err.message)
+        setError(errorMessage)
       }
     }
 
@@ -166,9 +168,10 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
             params: {},
           },
         })
-      } catch (err) {
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : String(err)
         logger.error("[UndoRedo] Failed to sync redo:", { error: err })
-        setError(err.message)
+        setError(errorMessage)
       }
     }
 

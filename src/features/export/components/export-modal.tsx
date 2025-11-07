@@ -52,12 +52,12 @@ export function ExportModal() {
 
     try {
       // Используем ProjectSchemaBuilder для создания схемы с настройками экспорта
-      const projectSchema = ProjectSchemaBuilder.createForExport(project, settings)
+      const projectSchema = ProjectSchemaBuilder.createForExport(project as any, settings)
 
       // Запускаем экспорт
       await startRender(projectSchema, settings.savePath)
     } catch (error) {
-      logger.error("Export failed:", error)
+      logger.error(`Export failed: ${String(error)}`)
       toast.error(t("dialogs.export.errors.exportFailed"))
     }
   }, [project, getCurrentSettings, getExportConfig, startRender, t])
@@ -72,7 +72,7 @@ export function ExportModal() {
 
       try {
         // Используем ProjectSchemaBuilder для создания схемы с настройками экспорта
-        const projectSchema = ProjectSchemaBuilder.createForExport(project, socialSettings)
+        const projectSchema = ProjectSchemaBuilder.createForExport(project as any, socialSettings)
 
         // Запускаем экспорт и загрузку в социальную сеть
         const tempPath = `/tmp/export_${Date.now()}.mp4`
@@ -83,7 +83,7 @@ export function ExportModal() {
 
         toast.success(t("dialogs.export.uploadSuccess", { platform: socialNetwork }))
       } catch (error) {
-        logger.error("Social export failed:", error)
+        logger.error(`Social export failed: ${String(error)}`)
         toast.error(t("dialogs.export.errors.socialExportFailed"))
       }
     },
@@ -162,7 +162,7 @@ export function ExportModal() {
                   savePath: settings.savePath,
                 }
                 const projectSchema = ProjectSchemaBuilder.createForSectionExport(
-                  project,
+                  project as any,
                   sectionExportSettings,
                   section.startTime,
                   section.endTime,
@@ -179,7 +179,7 @@ export function ExportModal() {
               toast.success(t("dialogs.export.sectionsExportSuccess"))
               closeModal()
             } catch (error) {
-              logger.error("Section export failed:", error)
+              logger.error(`Section export failed: ${String(error)}`)
               toast.error(t("dialogs.export.errors.exportFailed"))
             }
           }}

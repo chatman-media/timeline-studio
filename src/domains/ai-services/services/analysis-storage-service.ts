@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ComprehensiveAnalysisResult, MontageAnalysisResult } from "@/types/generated/ai-director-types"
+import type { ComprehensiveAnalysisResult, MontageAnalysisResult } from "@/types/generated/tauri-bindings"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 
 const logger = createLogger({ module: "AnalysisStorageService" })

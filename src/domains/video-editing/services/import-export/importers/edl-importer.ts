@@ -307,9 +307,6 @@ export class EDLImporter implements Importer {
       volume: 1.0,
       height: 60,
       pan: 0,
-      trackEffects: [],
-      trackFilters: [],
-      transitions: [],
     }
   }
 
@@ -354,8 +351,6 @@ export class EDLImporter implements Importer {
         transitions: this.createTransitions(event),
         isSelected: false,
         isLocked: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }
 
       return clip
@@ -433,17 +428,17 @@ export class EDLImporter implements Importer {
 
     // Добавляем медиафайлы из mediaReferences
     for (const [path, reference] of Array.from(this.mediaReferences)) {
+      const isVideo = this.isVideoFile(path)
+      const isAudio = this.isAudioFile(path)
       mediaFiles.push({
         id: `media-file-${index++}`,
         name: path.split("/").pop() || path,
         path: reference.resolvedPath || path,
         size: 0,
         duration: 0,
-        createdAt: new Date().toISOString(),
-        isVideo: this.isVideoFile(path),
-        isAudio: this.isAudioFile(path),
-        isImage: false,
-      })
+        createdAt: new Date(),
+        type: isVideo ? "video" : isAudio ? "audio" : "unknown",
+      } as MediaFile)
     }
 
     return mediaFiles
@@ -465,6 +460,8 @@ export class EDLImporter implements Importer {
 
     for (const [path, reference] of Array.from(this.mediaReferences)) {
       const fileName = path.split("/").pop() || path
+      const isVideo = this.isVideoFile(path)
+      const isAudio = this.isAudioFile(path)
 
       mediaFiles.push({
         id: `imported-media-${index++}`,
@@ -472,11 +469,9 @@ export class EDLImporter implements Importer {
         path: reference.resolvedPath || reference.originalPath,
         size: 0,
         duration: 0,
-        createdAt: new Date().toISOString(),
-        isVideo: this.isVideoFile(path),
-        isAudio: this.isAudioFile(path),
-        isImage: false,
-      })
+        createdAt: new Date(),
+        type: isVideo ? "video" : isAudio ? "audio" : "unknown",
+      } as MediaFile)
     }
 
     return mediaFiles

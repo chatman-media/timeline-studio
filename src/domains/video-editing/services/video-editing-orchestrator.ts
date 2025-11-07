@@ -17,17 +17,36 @@ const logger = createLogger("VideoEditingOrchestrator")
 // Временные типы и mock
 interface ClipAddedEvent {
   type: "CLIP_ADDED"
-  data: any
+  data: {
+    trackId: string
+    clip: {
+      id: string
+      trackId: string
+      startTime: number
+      endTime: number
+      duration: number
+      mediaId: string
+    }
+  }
 }
 
 interface PlaybackStateChangedEvent {
   type: "PLAYBACK_STATE_CHANGED"
-  data: any
+  data: {
+    isPlaying: boolean
+    currentTime: number
+    duration: number
+    progress: number
+  }
 }
 
 interface TimelineUpdatedEvent {
   type: "TIMELINE_UPDATED"
-  data: any
+  data: {
+    hasUnsavedChanges: boolean
+    duration: number
+    trackCount: number
+  }
 }
 
 const DOMAIN_EVENTS = {
@@ -86,6 +105,12 @@ interface ProjectCommand {
 
 interface ProjectState {
   project?: any
+  playback_state?: {
+    is_playing: boolean
+    current_time: number
+    playback_rate: number
+    volume: number
+  }
 }
 
 import { playerMachine } from "../machines/player-machine"
@@ -242,8 +267,7 @@ export class VideoEditingOrchestrator {
 
       // Публикуем обновление timeline
       if (project && snapshot.matches("active")) {
-        eventBus.publish<TimelineUpdatedEvent>(DOMAIN_EVENTS.VIDEO.TIMELINE_UPDATED, "video-editing", {
-          projectId: project.id,
+        eventBus.publish(DOMAIN_EVENTS.VIDEO.TIMELINE_UPDATED, "video-editing", {
           hasUnsavedChanges,
           duration: project.duration,
           trackCount: project.globalTracks.length,
@@ -255,7 +279,7 @@ export class VideoEditingOrchestrator {
     this.playerActor.subscribe((snapshot) => {
       const { isPlaying, currentTime, duration } = snapshot.context
 
-      eventBus.publish<PlaybackStateChangedEvent>(DOMAIN_EVENTS.VIDEO.PLAYBACK_STATE_CHANGED, "video-editing", {
+      eventBus.publish(DOMAIN_EVENTS.VIDEO.PLAYBACK_STATE_CHANGED, "video-editing", {
         isPlaying,
         currentTime,
         duration,
@@ -372,8 +396,7 @@ export class VideoEditingOrchestrator {
 
     // Публикуем событие
     const clipId = `clip-${Date.now()}` // Временный ID
-    eventBus.publish<ClipAddedEvent>(DOMAIN_EVENTS.VIDEO.CLIP_ADDED, "video-editing", {
-      timelineId: "current", // TODO: получить реальный ID timeline
+    eventBus.publish(DOMAIN_EVENTS.VIDEO.CLIP_ADDED, "video-editing", {
       trackId,
       clip: {
         id: clipId,

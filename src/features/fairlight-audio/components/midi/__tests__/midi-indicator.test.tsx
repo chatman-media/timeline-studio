@@ -51,13 +51,18 @@ describe("MidiIndicator", () => {
     const { container } = render(<MidiIndicator />)
 
     const wrapperDiv = container.firstChild as HTMLElement
-    expect(wrapperDiv).toHaveClass("flex", "items-center", "gap-2")
+    expect(wrapperDiv).toHaveClass("flex")
+    expect(wrapperDiv).toHaveClass("items-center")
+    expect(wrapperDiv).toHaveClass("gap-2")
 
     const activityIcon = screen.getByTestId("activity-icon")
-    expect(activityIcon).toHaveClass("w-4", "h-4", "transition-colors")
+    expect(activityIcon).toHaveClass("w-4")
+    expect(activityIcon).toHaveClass("h-4")
+    expect(activityIcon).toHaveClass("transition-colors")
 
     const label = screen.getByText("MIDI")
-    expect(label).toHaveClass("text-xs", "text-zinc-500")
+    expect(label).toHaveClass("text-xs")
+    expect(label).toHaveClass("text-zinc-500")
   })
 
   it("should render without errors", () => {

@@ -18,9 +18,13 @@ import type { DragType } from "../../types/drag-drop"
 // Моки для внешних зависимостей
 const mockAddSingleMediaToTimeline = vi.fn()
 const mockAddTrack = vi.fn()
-const mockUiState = {
+const mockUiState: {
+  timeScale: number
+  snapMode: "none" | "grid" | "clips" | "markers"
+  selectedTrackIds: string[]
+} = {
   timeScale: 1,
-  snapMode: "none" as const,
+  snapMode: "none",
   selectedTrackIds: [],
 }
 
@@ -237,6 +241,7 @@ describe("useDragDropTimeline", () => {
             id: "drop-zone-1",
             data: { current: overData },
             rect: { left: 100, right: 500, top: 50, bottom: 150, width: 400, height: 100 },
+            disabled: false,
           }
         : null,
       delta: { x: 0, y: 0 },
@@ -369,6 +374,7 @@ describe("useDragDropTimeline", () => {
             id: "drop-zone-1",
             data: { current: overData },
             rect: { left: 100, right: 500, top: 50, bottom: 150, width: 400, height: 100 },
+            disabled: false,
           }
         : null,
       delta: { x: 100, y: 0 },
@@ -433,6 +439,7 @@ describe("useDragDropTimeline", () => {
               },
             },
             rect: { left: 0, right: 100, top: 0, bottom: 100, width: 100, height: 100 },
+            disabled: false,
           },
           delta: { x: 0, y: 0 },
           activatorEvent: new MouseEvent("mousemove"),
@@ -509,6 +516,7 @@ describe("useDragDropTimeline", () => {
               },
             },
             rect: { left: 100, right: 500, top: 50, bottom: 150, width: 400, height: 100 },
+            disabled: false,
           },
           delta: { x: 0, y: 0 },
           activatorEvent: new MouseEvent("mousemove", { clientX: 200 }),
@@ -595,6 +603,7 @@ describe("useDragDropTimeline", () => {
             },
           },
           rect: { left: 100, right: 500, top: 50, bottom: 150, width: 400, height: 100 },
+          disabled: false,
         },
         delta: { x: 0, y: 0 },
         activatorEvent: new MouseEvent("mousemove", { clientX: 300 }), // Середина трека
@@ -663,6 +672,7 @@ describe("useDragDropTimeline", () => {
             },
           },
           rect: { left: 100, right: 500, top: 50, bottom: 150, width: 400, height: 100 },
+          disabled: false,
         },
         delta: { x: 0, y: 0 },
         activatorEvent: new MouseEvent("mousemove", { clientX: 218 }), // Должно снэппиться к 120

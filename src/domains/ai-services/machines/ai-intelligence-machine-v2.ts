@@ -218,7 +218,7 @@ const createDefaultContext = (): AIIntelligenceContextV2 => ({
   comprehensiveResults: new Map(),
   montageResults: new Map(),
   unifiedAnalyses: new Map(),
-  currentMontagePlan: null,
+  currentMontageplan: null,
   currentWorkflowId: null,
   currentBatchId: null,
   progress: {
@@ -277,15 +277,18 @@ export const aiIntelligenceMachineV2 = setup({
         },
         ANALYZE_BATCH: {
           target: "analyzingBatch",
-          actions: assign({
-            mediaFiles: ({ event }) => event?.videoPaths || [],
-            error: null,
-            isBatchAnalyzing: true,
-            progress: {
-              stage: "initialization",
-              progress: 0,
-              message: `Подготовка batch анализа (${event?.videoPaths?.length || 0} файлов)...`,
-            },
+          actions: assign(({ event }) => {
+            const videoPaths = "videoPaths" in event ? event.videoPaths : []
+            return {
+              mediaFiles: videoPaths,
+              error: null,
+              isBatchAnalyzing: true,
+              progress: {
+                stage: "initialization",
+                progress: 0,
+                message: `Подготовка batch анализа (${videoPaths.length} файлов)...`,
+              },
+            }
           }),
         },
         GENERATE_MONTAGE_PLAN: {
@@ -330,7 +333,7 @@ export const aiIntelligenceMachineV2 = setup({
             comprehensiveResults: new Map(),
             montageResults: new Map(),
             unifiedAnalyses: new Map(),
-            currentMontagePlan: null,
+            currentMontageplan: null,
             currentWorkflowId: null,
             currentBatchId: null,
           }),
@@ -381,11 +384,11 @@ export const aiIntelligenceMachineV2 = setup({
                 message: "Анализ завершен",
               },
             }),
-            emit({
+            emit(({ context, event }) => ({
               type: "ANALYSIS_COMPLETED",
-              videoPath: ({ context }) => context.currentVideoPath!,
-              result: ({ event }) => event.output.unified,
-            }),
+              videoPath: context.currentVideoPath!,
+              result: event.output.unified,
+            })),
           ],
         },
         onError: {
@@ -538,7 +541,7 @@ export const aiIntelligenceMachineV2 = setup({
                 })
                 return newMap
               },
-              currentMontagePlan: ({ event }) => event.output.plan || null,
+              currentMontageplan: ({ event }) => event.output.plan || null,
               isGeneratingPlan: false,
               progress: {
                 stage: "complete",

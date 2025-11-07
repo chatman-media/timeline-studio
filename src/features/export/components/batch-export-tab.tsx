@@ -74,7 +74,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
         )
       }
     } catch (error) {
-      logger.error("Failed to select output folder:", error)
+      logger.error(`Failed to select output folder: ${String(error)}`)
     }
   }, [t])
 
@@ -99,7 +99,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
       setPendingProjects((prev) => [...prev, ...newProjects])
     } catch (error) {
-      logger.error("Failed to add projects:", error)
+      logger.error(`Failed to add projects: ${String(error)}`)
     }
   }, [addProjectsToQueue, globalSettings, outputFolder])
 

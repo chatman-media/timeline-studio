@@ -84,7 +84,7 @@ describe("PersonDatabaseService Integration", () => {
     // Simulate successful open
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -107,7 +107,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -143,7 +143,7 @@ describe("PersonDatabaseService Integration", () => {
     // Mock successful transaction
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -170,7 +170,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -203,7 +203,7 @@ describe("PersonDatabaseService Integration", () => {
     // Mock successful getAll
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       getAll: vi.fn().mockImplementation(() => {
-        const req = { result: mockPersons, onsuccess: null, onerror: null }
+        const req = { result: mockPersons, onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -229,7 +229,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -304,7 +304,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -334,7 +334,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onerror) {
-        openRequest.onerror()
+        ;(openRequest.onerror as () => void)()
       }
     }, 0)
 
@@ -355,7 +355,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -389,7 +389,7 @@ describe("PersonDatabaseService Integration", () => {
     // Mock successful put
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -415,7 +415,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -424,7 +424,7 @@ describe("PersonDatabaseService Integration", () => {
     // Mock successful delete
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       delete: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -449,7 +449,7 @@ describe("PersonDatabaseService Integration", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -461,7 +461,14 @@ describe("PersonDatabaseService Integration", () => {
         name: "John Doe",
         isVerified: true,
         faceEmbeddings: [
-          { faceId: "face-1", vector: new Float32Array([0.1, 0.2]), quality: 0.9, timestamp: { seconds: 10 } },
+          {
+            faceId: "face-1",
+            vector: new Float32Array([0.1, 0.2]),
+            quality: 0.9,
+            timestamp: { seconds: 10 },
+            frameNumber: 300,
+            createdAt: new Date().toISOString(),
+          },
         ],
         appearances: [
           {

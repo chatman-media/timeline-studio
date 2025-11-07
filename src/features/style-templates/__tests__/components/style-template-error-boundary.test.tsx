@@ -90,12 +90,7 @@ describe("StyleTemplateErrorBoundary", () => {
     )
 
     expect(renderResult.container.firstChild).toHaveClass(
-      "flex",
-      "h-64",
-      "w-full",
-      "flex-col",
-      "items-center",
-      "justify-center",
+      "flex h-64 w-full flex-col items-center justify-center",
     )
   })
 
@@ -107,7 +102,7 @@ describe("StyleTemplateErrorBoundary", () => {
     )
 
     const errorContainer = screen.getByText("Ошибка загрузки шаблонов").parentElement
-    expect(errorContainer).toHaveClass("flex", "h-64", "w-full", "flex-col", "items-center", "justify-center")
+    expect(errorContainer).toHaveClass("flex h-64 w-full flex-col items-center justify-center")
   })
 
   it("должен отображать иконку ошибки", () => {

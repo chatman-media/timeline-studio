@@ -145,7 +145,7 @@ describe("useEffects", () => {
         <div data-testid="effects-count">{effects.length}</div>
         {effects.map((effect) => (
           <div key={effect.id} data-testid="effect-item">
-            {effect.name}
+            {typeof effect.name === "string" ? effect.name : effect.name.en || ""}
           </div>
         ))}
       </div>
@@ -230,10 +230,13 @@ describe("useTransitions", () => {
 describe("useResourceById", () => {
   function TestComponent({ id }: { id: string }) {
     const { resource, loading } = useResourceById("effect", id)
+    const resourceName = resource?.name
+    const displayName =
+      typeof resourceName === "string" ? resourceName : resourceName?.en || "Not found"
     return (
       <div>
         <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="resource-name">{resource?.name || "Not found"}</div>
+        <div data-testid="resource-name">{displayName}</div>
       </div>
     )
   }
@@ -272,7 +275,7 @@ describe("useResourcesSearch", () => {
         <div data-testid="results-count">{results.length}</div>
         {results.map((item) => (
           <div key={item.id} data-testid="search-result">
-            {item.name}
+            {typeof item.name === "string" ? item.name : item.name?.en || ""}
           </div>
         ))}
       </div>
@@ -467,7 +470,7 @@ describe("useResources", () => {
         <div data-testid="resources-count">{resources.length}</div>
         {resources.map((resource) => (
           <div key={resource.id} data-testid="resource-item">
-            {resource.name}
+            {typeof resource.name === "string" ? resource.name : resource.name?.en || ""}
           </div>
         ))}
       </div>
@@ -621,7 +624,7 @@ describe("useResourcesAdapter", () => {
         <div data-testid="total-stats">{adapter.stats.total}</div>
         {adapter.items.map((item) => (
           <div key={item.id} data-testid="adapter-item">
-            {item.name}
+            {typeof item.name === "string" ? item.name : item.name?.en || ""}
           </div>
         ))}
       </div>

@@ -95,7 +95,7 @@ export class FiltersPreviewService {
 
       logger.info("Filters preview WebGL2 initialized")
     } catch (error) {
-      logger.error("Filters WebGL initialization failed:", error)
+      logger.error("Filters WebGL initialization failed:", { error })
     }
   }
 
@@ -454,7 +454,8 @@ export class FiltersPreviewService {
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      logger.error(`${name} program linking error:`, gl.getProgramInfoLog(program))
+      const error = gl.getProgramInfoLog(program)
+      logger.error(`${name} program linking error:`, { error })
       gl.deleteProgram(program)
       return
     }
@@ -475,7 +476,8 @@ export class FiltersPreviewService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      logger.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
+      const error = this.gl.getShaderInfoLog(shader)
+      logger.error("Shader compilation error:", { error })
       this.gl.deleteShader(shader)
       return null
     }
@@ -632,7 +634,7 @@ export class FiltersPreviewService {
 
       return true
     } catch (error) {
-      logger.error("Color grading failed:", error)
+      logger.error("Color grading failed:", { error })
       return false
     }
   }
@@ -659,7 +661,7 @@ export class FiltersPreviewService {
       })
       return true
     } catch (error) {
-      logger.error("Custom LUT loading failed:", error)
+      logger.error("Custom LUT loading failed:", { error })
       return false
     }
   }

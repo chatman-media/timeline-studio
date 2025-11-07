@@ -14,7 +14,7 @@ describe("StyleTemplateLoading", () => {
     expect(screen.getByText("Загрузка шаблонов...")).toBeInTheDocument()
 
     const loader = screen.getByText("Загрузка шаблонов...").previousElementSibling
-    expect(loader).toHaveClass("h-8", "w-8", "animate-spin")
+    expect(loader).toHaveClass("h-8 w-8 animate-spin")
   })
 
   it("should render with custom message", () => {
@@ -30,7 +30,7 @@ describe("StyleTemplateLoading", () => {
     expect(container).toHaveClass("p-4")
 
     const loader = screen.getByText("Загрузка шаблонов...").previousElementSibling
-    expect(loader).toHaveClass("h-4", "w-4")
+    expect(loader).toHaveClass("h-4 w-4")
   })
 
   it("should render with medium size", () => {
@@ -40,7 +40,7 @@ describe("StyleTemplateLoading", () => {
     expect(container).toHaveClass("p-8")
 
     const loader = screen.getByText("Загрузка шаблонов...").previousElementSibling
-    expect(loader).toHaveClass("h-8", "w-8")
+    expect(loader).toHaveClass("h-8 w-8")
   })
 
   it("should render with large size", () => {
@@ -50,20 +50,20 @@ describe("StyleTemplateLoading", () => {
     expect(container).toHaveClass("p-12")
 
     const loader = screen.getByText("Загрузка шаблонов...").previousElementSibling
-    expect(loader).toHaveClass("h-12", "w-12")
+    expect(loader).toHaveClass("h-12 w-12")
   })
 
   it("should have proper styling", () => {
     render(<StyleTemplateLoading />)
 
     const container = screen.getByText("Загрузка шаблонов...").parentElement
-    expect(container).toHaveClass("flex", "flex-col", "items-center", "justify-center")
+    expect(container).toHaveClass("flex flex-col items-center justify-center")
 
     const message = screen.getByText("Загрузка шаблонов...")
-    expect(message).toHaveClass("mt-2", "text-sm", "text-gray-600", "dark:text-gray-400")
+    expect(message).toHaveClass("mt-2 text-sm text-gray-600 dark:text-gray-400")
 
     const loader = message.previousElementSibling
-    expect(loader).toHaveClass("animate-spin", "text-blue-500")
+    expect(loader).toHaveClass("animate-spin text-blue-500")
   })
 })
 
@@ -104,7 +104,7 @@ describe("StyleTemplatePreviewSkeleton", () => {
     const { container } = render(<StyleTemplatePreviewSkeleton size={200} />)
 
     const skeleton = container.querySelector(".animate-pulse")
-    expect(skeleton).toHaveClass("animate-pulse", "overflow-hidden", "rounded-lg")
+    expect(skeleton).toHaveClass("animate-pulse overflow-hidden rounded-lg")
   })
 
   it("should calculate height based on aspect ratio", () => {
@@ -142,13 +142,7 @@ describe("StyleTemplateListSkeleton", () => {
 
     const grid = container.querySelector(".grid")
     expect(grid).toHaveClass(
-      "grid",
-      "grid-cols-1",
-      "gap-4",
-      "sm:grid-cols-2",
-      "md:grid-cols-3",
-      "lg:grid-cols-4",
-      "xl:grid-cols-5",
+      "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
     )
   })
 

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
-import type { TranscriptionResult, TranscriptionSegment } from "../types"
+import type { TranscriptionResult, TranscriptionSegment, TranscriptionWord } from "../types"
 
 interface TranscriptionEditorProps {
   result: TranscriptionResult
@@ -17,7 +17,7 @@ export function TranscriptionEditor({ result, onAddToTimeline }: TranscriptionEd
   const [editedSegments, setEditedSegments] = useState<Map<number, TranscriptionSegment>>(new Map())
 
   const getSegment = (id: number): TranscriptionSegment => {
-    return editedSegments.get(id) || result.segments.find((s) => s.id === id)!
+    return editedSegments.get(id) || result.segments.find((s: TranscriptionSegment) => s.id === id)!
   }
 
   const handleEdit = (segment: TranscriptionSegment) => {
@@ -43,7 +43,7 @@ export function TranscriptionEditor({ result, onAddToTimeline }: TranscriptionEd
   }
 
   const handleAddAllToTimeline = () => {
-    const segments = result.segments.map((seg) => editedSegments.get(seg.id) || seg)
+    const segments = result.segments.map((seg: TranscriptionSegment) => editedSegments.get(seg.id) || seg)
     onAddToTimeline?.(segments)
   }
 
@@ -61,7 +61,7 @@ export function TranscriptionEditor({ result, onAddToTimeline }: TranscriptionEd
 
       <ScrollArea className="h-[400px] rounded-lg border">
         <div className="p-4 space-y-3">
-          {result.segments.map((segment) => {
+          {result.segments.map((segment: TranscriptionSegment) => {
             const currentSegment = getSegment(segment.id)
             const isEditing = editingId === segment.id
             const isEdited = editedSegments.has(segment.id)
@@ -138,7 +138,7 @@ export function TranscriptionEditor({ result, onAddToTimeline }: TranscriptionEd
                         {t("transcription.wordTimings", "Временные метки слов")}
                       </summary>
                       <div className="mt-2 space-y-1">
-                        {segment.words.map((word, idx) => (
+                        {segment.words.map((word: TranscriptionWord, idx: number) => (
                           <span key={idx} className="inline-block mr-2">
                             {word.word} ({formatTime(word.start)})
                           </span>

@@ -32,7 +32,7 @@ export function useDevices(
     logInfo("[useDevices] Получение списка устройств")
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-      logError("[useDevices] MediaDevices API недоступен", new Error("API not available"))
+      logError("[useDevices] MediaDevices API недоступен", { error: new Error("API not available") })
       setErrorMessage(
         t(
           "dialogs.cameraCapture.mediaDevicesNotSupported",
@@ -107,7 +107,7 @@ export function useDevices(
 
       return true
     } catch (error) {
-      logError("[useDevices] Ошибка при получении устройств", error)
+      logError("[useDevices] Ошибка при получении устройств", { error })
       if (setErrorMessage) {
         setErrorMessage(t("dialogs.cameraCapture.errorGettingDevices", "Failed to get device list"))
       }

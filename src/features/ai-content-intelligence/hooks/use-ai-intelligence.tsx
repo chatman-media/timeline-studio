@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
+// TODO: Migrate to use AI Director directly instead of orchestrator wrapper
 import {
   AdaptedContent,
   AIConfig,
@@ -45,7 +45,7 @@ interface UseAIIntelligenceReturn {
 
   // Утилиты
   reset: () => void
-  getOrchestrator: () => AIIntelligenceOrchestrator
+  getOrchestrator: () => any // TODO: Remove after migration to AI Director
 }
 
 export function useAIIntelligence({
@@ -64,12 +64,13 @@ export function useAIIntelligence({
   const actor = context?.actor
 
   // Refs
-  const orchestratorRef = useRef<AIIntelligenceOrchestrator>(null)
+  const orchestratorRef = useRef<any>(null) // TODO: Migrate to AI Director
 
   // Инициализация оркестратора
   useEffect(() => {
     if (autoInitialize && !orchestratorRef.current && actor) {
-      orchestratorRef.current = new AIIntelligenceOrchestrator(actor)
+      // TODO: Replace with AI Director integration
+      logger.warn("AIIntelligenceOrchestrator is deprecated. Use AI Director hooks instead.")
       setIsInitialized(true)
     }
   }, [autoInitialize, actor])
@@ -77,7 +78,8 @@ export function useAIIntelligence({
   // Получить оркестратор
   const getOrchestrator = useCallback(() => {
     if (!orchestratorRef.current && actor) {
-      orchestratorRef.current = new AIIntelligenceOrchestrator(actor)
+      // TODO: Replace with AI Director integration
+      logger.warn("getOrchestrator is deprecated. Use AI Director hooks instead.")
       setIsInitialized(true)
     }
     if (!orchestratorRef.current) {

@@ -22,15 +22,29 @@ const mockMediaFile: MediaFile = {
   name: "test-video.mp4",
   size: 1000000,
   duration: 60,
-  width: 1920,
-  height: 1080,
-  lastModified: Date.now(),
-  codec: "h264",
-  bitrate: 5000000,
-  hasAudio: true,
-  hasVideo: true,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  isVideo: true,
+  isAudio: false,
+  isImage: false,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  probeData: {
+    streams: [
+      {
+        index: 0,
+        codec_type: "video",
+        codec_name: "h264",
+        width: 1920,
+        height: 1080,
+        duration: "60.0",
+      },
+    ],
+    format: {
+      format_name: "mp4",
+      duration: 60.0,
+      size: 1000000,
+      bit_rate: 5000000,
+    },
+  },
 }
 
 const mockClip: TimelineClip = {

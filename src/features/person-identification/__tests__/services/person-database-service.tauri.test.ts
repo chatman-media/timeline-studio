@@ -40,7 +40,7 @@ describe("PersonDatabaseService Tauri Integration", () => {
       const mockPerson: PersonProfile = {
         id: "person_123",
         name: "Test Person",
-        description: "Test description",
+        notes: "Test description",
         tags: ["test"],
         isVerified: false,
         faceEmbeddings: [],
@@ -64,7 +64,7 @@ describe("PersonDatabaseService Tauri Integration", () => {
 
       const result = await service.createPerson({
         name: "Test Person",
-        description: "Test description",
+        notes: "Test description",
         tags: ["test"],
         isVerified: false,
         faceEmbeddings: [],
@@ -143,7 +143,10 @@ describe("PersonDatabaseService Tauri Integration", () => {
         clipId: "clip_123",
         frameNumber: 100,
         timestamp: { seconds: 10.5 },
-        landmarks: [],
+        landmarks: {
+          points: [],
+          quality: 0.9,
+        },
         createdAt: new Date().toISOString(),
       }
 
@@ -321,28 +324,37 @@ describe("PersonDatabaseService Tauri Integration", () => {
           id: "face_1",
           confidence: 0.9,
           bbox: { x: 0, y: 0, width: 100, height: 100 },
-          landmarks: [],
+          landmarks: { points: [], quality: 0.9 },
           timestamp: { seconds: 10, frames: 0 },
           clipId: "clip_1",
           embedding: new Float32Array([0.1, 0.2, 0.3]),
+          blur: 0.1,
+          occlusion: 0.1,
+          pose: { yaw: 0, pitch: 0, roll: 0 },
         },
         {
           id: "face_2",
           confidence: 0.85,
           bbox: { x: 50, y: 50, width: 100, height: 100 },
-          landmarks: [],
+          landmarks: { points: [], quality: 0.85 },
           timestamp: { seconds: 15, frames: 0 },
           clipId: "clip_1",
           embedding: new Float32Array([0.11, 0.21, 0.31]), // Similar to face_1
+          blur: 0.1,
+          occlusion: 0.1,
+          pose: { yaw: 0, pitch: 0, roll: 0 },
         },
         {
           id: "face_3",
           confidence: 0.95,
           bbox: { x: 200, y: 200, width: 100, height: 100 },
-          landmarks: [],
+          landmarks: { points: [], quality: 0.95 },
           timestamp: { seconds: 20, frames: 0 },
           clipId: "clip_2",
           embedding: new Float32Array([0.9, 0.8, 0.7]), // Different person
+          blur: 0.1,
+          occlusion: 0.1,
+          pose: { yaw: 0, pitch: 0, roll: 0 },
         },
       ]
 

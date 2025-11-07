@@ -68,7 +68,7 @@ describe("Equalizer", () => {
     expect(svg).toHaveAttribute("viewBox", "0 0 100 100")
 
     // Check for the curve path
-    const path = svg.querySelector("path")
+    const path = svg?.querySelector("path")
     expect(path).toBeInTheDocument()
     expect(path).toHaveAttribute("stroke", "#3b82f6")
   })

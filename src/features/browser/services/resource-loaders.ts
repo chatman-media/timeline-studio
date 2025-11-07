@@ -27,7 +27,7 @@ export async function loadEffectsLazy(): Promise<LoadResult<BaseEffect[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    logger.error("Failed to load effects:", error)
+    logger.error("Failed to load effects:", { error })
     return {
       success: false,
       data: [],
@@ -54,7 +54,7 @@ export async function loadFiltersLazy(): Promise<LoadResult<VideoFilter[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    logger.error("Failed to load filters:", error)
+    logger.error("Failed to load filters:", { error })
     return {
       success: false,
       data: [],
@@ -81,7 +81,7 @@ export async function loadTransitionsLazy(): Promise<LoadResult<Transition[]>> {
       timestamp: Date.now(),
     }
   } catch (error) {
-    logger.error("Failed to load transitions:", error)
+    logger.error("Failed to load transitions:", { error })
     return {
       success: false,
       data: [],

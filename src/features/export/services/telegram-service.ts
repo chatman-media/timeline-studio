@@ -43,7 +43,7 @@ export async function getUserInfo(accessToken?: string): Promise<any> {
 
     return data.result
   } catch (error) {
-    logger.error("Failed to get Telegram bot info:", error)
+    logger.error(`Failed to get Telegram bot info: ${String(error)}`)
     throw error
   }
 }
@@ -121,7 +121,7 @@ export async function uploadVideo(
       id: videoFileId,
     }
   } catch (error) {
-    logger.error("Telegram upload failed:", error)
+    logger.error(`Telegram upload failed: ${String(error)}`)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -221,7 +221,7 @@ export async function getChatInfo(chatId: string): Promise<any> {
 
     return data.result
   } catch (error) {
-    logger.error("Failed to get Telegram chat info:", error)
+    logger.error(`Failed to get Telegram chat info: ${String(error)}`)
     throw error
   }
 }
@@ -247,7 +247,7 @@ export async function sendTestMessage(chatId: string, message = "Test message fr
     const data = await response.json()
     return data.ok
   } catch (error) {
-    logger.error("Failed to send test message:", error)
+    logger.error(`Failed to send test message: ${String(error)}`)
     return false
   }
 }

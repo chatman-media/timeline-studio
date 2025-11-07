@@ -6,7 +6,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ComprehensiveAnalysisResult, MontageAnalysisResult } from "@/types/generated/ai-director-types"
+import type { ComprehensiveAnalysisResult, MontageAnalysisResult } from "@/types/generated/tauri-bindings"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 import {
   type AnalysisMetadata,

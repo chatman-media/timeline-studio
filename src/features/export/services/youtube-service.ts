@@ -81,7 +81,7 @@ export async function uploadVideo(
       status: result.status?.uploadStatus || "uploaded",
     }
   } catch (error) {
-    logger.error("YouTube upload error:", error)
+    logger.error(`YouTube upload error: ${String(error)}`)
     throw error
   }
 }
@@ -138,10 +138,11 @@ async function uploadThumbnail(videoId: string, thumbnailPath: string, accessTok
     })
 
     if (!uploadResponse.ok) {
-      logger.warn("Failed to upload thumbnail:", await uploadResponse.text())
+      const text = await uploadResponse.text()
+      logger.warn(`Failed to upload thumbnail: ${text}`)
     }
   } catch (error) {
-    logger.warn("Thumbnail upload failed:", error)
+    logger.warn(`Thumbnail upload failed: ${String(error)}`)
     // Не прерываем основной процесс из-за ошибки thumbnail
   }
 }

@@ -237,11 +237,9 @@ export class FCPXMLImporter implements Importer {
       path: resource.src,
       size: 0,
       duration: this.parseDurationToSeconds(resource.duration || "0s"),
-      createdAt: new Date().toISOString(),
-      isVideo,
-      isAudio,
-      isImage: false,
-    }
+      createdAt: new Date(),
+      type: isVideo ? "video" : isAudio ? "audio" : "unknown",
+    } as MediaFile
 
     this.mediaReferences.set(resource.id, mediaFile)
   }
@@ -386,16 +384,13 @@ export class FCPXMLImporter implements Importer {
       type,
       order: index,
       clips: [],
-      isLocked: false,
-      isMuted: false,
-      isHidden: false,
-      isSolo: false,
+      locked: false,
+      muted: false,
+      solo: false,
+      expanded: true,
       volume: 1.0,
       height: 60,
       pan: 0,
-      trackEffects: [],
-      trackFilters: [],
-      transitions: [],
     }
   }
 
@@ -415,21 +410,26 @@ export class FCPXMLImporter implements Importer {
       trackId,
       startTime,
       duration,
-      mediaStartTime: mediaStart,
-      mediaEndTime: mediaStart + duration,
-      offset: 0,
-      mediaDuration: duration,
+      sourceIn: mediaStart,
+      sourceOut: mediaStart + duration,
+      playbackRate: 1.0,
       volume: 1.0,
-      speed: 1.0,
-      isReversed: false,
       opacity: fcpClip.enabled !== false ? 1.0 : 0.0,
+      isMuted: false,
       effects: [],
       filters: [],
       transitions: [],
       isSelected: false,
       isLocked: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      position: {
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 1,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      },
     }
   }
 

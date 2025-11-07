@@ -27,7 +27,7 @@ export function useSocialExport() {
         const success = await SocialNetworksService.login(network)
         return success
       } catch (error) {
-        logError(`[useSocialExport] Ошибка входа в ${network}`, error)
+        logError(`[useSocialExport] Ошибка входа в ${network}: ${String(error)}`)
         toast.error(t("dialogs.export.errors.loginFailed", { network }))
         return false
       }
@@ -79,7 +79,7 @@ export function useSocialExport() {
         return result
       } catch (error) {
         setIsUploading(false)
-        logError(`[useSocialExport] Ошибка загрузки в ${network.name}`, error)
+        logError(`[useSocialExport] Ошибка загрузки в ${network.name}: ${String(error)}`)
         toast.error(t("dialogs.export.errors.uploadFailed", { network: network.name }))
         throw error
       }

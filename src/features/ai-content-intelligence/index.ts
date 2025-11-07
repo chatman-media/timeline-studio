@@ -1,9 +1,10 @@
 /**
  * AI Content Intelligence Module
  * Единая точка входа для всех AI функций
+ *
+ * MIGRATION NOTE: AIIntelligenceOrchestrator removed - use AI Director integration
+ * See: @/domains/ai-services/services/unified-orchestrator
  */
-
-export { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
 export type {
   AIConfig,
   AIProvider,
@@ -42,9 +43,9 @@ export { DashboardHeader } from "./components/unified-dashboard/dashboard-header
 export { PipelineStatus } from "./components/unified-dashboard/pipeline-status"
 // ===== Hooks =====
 export { useAIIntelligence } from "./hooks/use-ai-intelligence"
-export { useAIIntelligenceOrchestrator } from "./hooks/use-ai-intelligence-orchestrator"
-export { useAIOrchestrator } from "./hooks/use-ai-orchestrator"
 export { useContentPipeline } from "./hooks/use-content-pipeline"
+// MIGRATION: useAIIntelligenceOrchestrator and useAIOrchestrator removed
+// Use AI Director hooks instead: useUnifiedAnalysis, useAIDirectorEvents
 // ===== Services & Providers =====
 export {
   AIIntelligenceContext,

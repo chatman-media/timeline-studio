@@ -290,11 +290,9 @@ export class AAFImporter implements Importer {
       path: descriptor.locator || `aaf://${mob.mobID}`,
       size: 0,
       duration: 0, // AAF не хранит длительность в дескрипторе
-      createdAt: new Date().toISOString(),
-      isVideo,
-      isAudio,
-      isImage: false,
-    }
+      createdAt: new Date(),
+      type: isVideo ? "video" : isAudio ? "audio" : "unknown",
+    } as MediaFile
 
     // descriptor.videoFormat не поддерживается в MediaFile
 
@@ -375,9 +373,6 @@ export class AAFImporter implements Importer {
         volume: 1.0,
         pan: 0,
         height: 60,
-        trackEffects: [],
-        trackFilters: [],
-        transitions: [],
       }
 
       // Создаем клипы из сегментов
@@ -458,8 +453,6 @@ export class AAFImporter implements Importer {
       transitions: [],
       isSelected: false,
       isLocked: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     }
   }
 

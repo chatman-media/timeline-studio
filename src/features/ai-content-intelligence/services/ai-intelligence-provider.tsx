@@ -1,71 +1,17 @@
 "use client"
 
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { type Actor, createActor, setup } from "xstate"
+import { type Actor, createActor } from "xstate"
 
-// import { aiIntelligenceMachine } from "@/domains/ai-services/machines/ai-intelligence-machine"
-// Временно используем упрощенную машину-заглушку
+// Используем настоящую V2 машину с интеграцией AI Director
+import { aiIntelligenceMachineV2 } from "@/domains/ai-services/machines"
 
-// Упрощенная машина для AI Intelligence
-const aiIntelligenceMachine = setup({
-  types: {} as {
-    context: {
-      currentProject: any
-      analysisResults: any
-      error: string | null
-    }
-    events:
-      | { type: "START_ANALYSIS"; mediaFiles: any[]; config: any }
-      | { type: "ANALYSIS_COMPLETE"; results: any; analysis: any }
-      | { type: "SCRIPT_GENERATED"; script: any }
-      | { type: "PLATFORM_ADAPTATION_COMPLETE"; content: any }
-      | { type: "UPDATE_PROGRESS"; step: string; progress: number }
-      | { type: "ERROR"; error: string }
-  },
-}).createMachine({
-  id: "aiIntelligence",
-  initial: "idle",
-  context: {
-    currentProject: null,
-    analysisResults: null,
-    error: null,
-  },
-  states: {
-    idle: {
-      on: {
-        START_ANALYSIS: "analyzing",
-      },
-    },
-    analyzing: {
-      on: {
-        ANALYSIS_COMPLETE: "completed",
-        UPDATE_PROGRESS: "analyzing",
-        ERROR: "error",
-      },
-    },
-    completed: {
-      on: {
-        START_ANALYSIS: "analyzing",
-        SCRIPT_GENERATED: "completed",
-        PLATFORM_ADAPTATION_COMPLETE: "completed",
-      },
-    },
-    error: {
-      on: {
-        START_ANALYSIS: "analyzing",
-      },
-    },
-  },
-})
-
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger({ module: "AiIntelligenceProvider" })
 
 interface AIIntelligenceContextType {
-  actor: Actor<typeof aiIntelligenceMachine> | null
+  actor: Actor<typeof aiIntelligenceMachineV2> | null
   isConnected: boolean
   error: string | null
 }
@@ -82,151 +28,40 @@ interface AIIntelligenceProviderProps {
  * Синхронизирует состояние AI анализа с backend через BackendSync
  */
 export function AIIntelligenceProvider({ children }: AIIntelligenceProviderProps) {
-  const [actor, setActor] = useState<Actor<typeof aiIntelligenceMachine> | null>(null)
+  const [actor, setActor] = useState<Actor<typeof aiIntelligenceMachineV2> | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const initializedRef = useRef(false)
-  const backendSync = getBackendSync()
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
 
-      // Создаем актор машины
-      const newActor = createActor(aiIntelligenceMachine)
+      // Создаем актор V2 машины с AI Director интеграцией
+      const newActor = createActor(aiIntelligenceMachineV2)
 
-      // Подписываемся на события актора для синхронизации с backend
+      // Подписываемся на события актора для отслеживания состояния
       newActor.subscribe((snapshot) => {
-        // Синхронизируем ключевые события с backend
-        if (snapshot.event) {
-          switch (snapshot.event.type) {
-            case "START_ANALYSIS":
-              // Отправляем команду начала анализа на backend
-              backendSync
-                .executeCommand({
-                  type: "AI",
-                  params: {
-                    type: "StartContentAnalysis",
-                    params: {
-                      mediaFiles: snapshot.event.mediaFiles,
-                      config: snapshot.event.config,
-                    },
-                  },
-                })
-                .catch((err) => {
-                  logger.error("[AIIntelligence] Failed to sync START_ANALYSIS:", err)
-                  setError(err.message)
-                })
-              break
+        // V2 машина интегрирована с AI Director через AIEventBridge
+        // События синхронизируются автоматически через Tauri events
 
-            case "ANALYSIS_COMPLETE":
-              // Сохраняем результаты анализа в backend
-              backendSync
-                .executeCommand({
-                  type: "AI",
-                  params: {
-                    type: "SaveAnalysisResults",
-                    params: {
-                      analysis: snapshot.event.analysis,
-                    },
-                  },
-                })
-                .catch((err) => {
-                  logger.error("[AIIntelligence] Failed to sync ANALYSIS_COMPLETE:", err)
-                  setError(err.message)
-                })
-              break
-
-            case "SCRIPT_GENERATED":
-              // Сохраняем сгенерированный скрипт
-              backendSync
-                .executeCommand({
-                  type: "AI",
-                  params: {
-                    type: "SaveGeneratedScript",
-                    params: {
-                      script: snapshot.event.script,
-                    },
-                  },
-                })
-                .catch((err) => {
-                  logger.error("[AIIntelligence] Failed to sync SCRIPT_GENERATED:", err)
-                  setError(err.message)
-                })
-              break
-
-            case "PLATFORM_ADAPTATION_COMPLETE":
-              // Сохраняем адаптированный контент
-              backendSync
-                .executeCommand({
-                  type: "AI",
-                  params: {
-                    type: "SaveAdaptedContent",
-                    params: {
-                      content: snapshot.event.content,
-                    },
-                  },
-                })
-                .catch((err) => {
-                  logger.error("[AIIntelligence] Failed to sync PLATFORM_ADAPTATION_COMPLETE:", err)
-                  setError(err.message)
-                })
-              break
-          }
+        // Отслеживаем ошибки
+        if (snapshot.context.error) {
+          setError(snapshot.context.error)
         }
+
+        // Отслеживаем подключение (активность машины)
+        setIsConnected(snapshot.status === "active")
       })
 
       newActor.start()
       setActor(newActor)
 
-      // Подписываемся на изменения backend состояния
-      const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-        setIsConnected(true)
-
-        // Синхронизируем состояние AI анализа из backend
-        if (state.ai_state) {
-          // Обновляем состояние машины на основе backend
-          if (state.ai_state.analysis_results) {
-            newActor.send({
-              type: "ANALYSIS_COMPLETE",
-              analysis: state.ai_state.analysis_results,
-            })
-          }
-
-          if (state.ai_state.generated_scripts) {
-            newActor.send({
-              type: "SCRIPT_GENERATED",
-              script: state.ai_state.generated_scripts,
-            })
-          }
-
-          if (state.ai_state.adapted_content) {
-            newActor.send({
-              type: "PLATFORM_ADAPTATION_COMPLETE",
-              content: state.ai_state.adapted_content,
-            })
-          }
-        }
-      })
-
-      // Подписываемся на события backend
-      const unsubscribeEvents = backendSync.onEvent((event) => {
-        if (event.type === "AI_ANALYSIS_PROGRESS") {
-          newActor.send({
-            type: "UPDATE_PROGRESS",
-            step: event.data.step,
-            progress: event.data.progress,
-          })
-        }
-      })
-
       return () => {
         newActor.stop()
-        unsubscribe()
-        unsubscribeEvents()
       }
     }
-  }, [backendSync])
+  }, [])
 
   const contextValue = useMemo(() => ({ actor, isConnected, error }), [actor, isConnected, error])
 

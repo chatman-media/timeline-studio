@@ -325,9 +325,9 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     value={mode === "basic" ? transcriptionOptions.language : enhancedOptions.language || "auto"}
                     onChange={(value) => {
                       if (mode === "basic") {
-                        setTranscriptionOptions((prev) => ({ ...prev, language: value }))
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, language: value }))
                       } else {
-                        setEnhancedOptions((prev) => ({ ...prev, language: value }))
+                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({ ...prev, language: value }))
                       }
                     }}
                   />
@@ -339,9 +339,9 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     value={mode === "basic" ? transcriptionOptions.task : enhancedOptions.task}
                     onValueChange={(value: "transcribe" | "translate") => {
                       if (mode === "basic") {
-                        setTranscriptionOptions((prev) => ({ ...prev, task: value }))
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, task: value }))
                       } else {
-                        setEnhancedOptions((prev) => ({ ...prev, task: value }))
+                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({ ...prev, task: value }))
                       }
                     }}
                   >
@@ -365,7 +365,9 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     <Label>Размер модели</Label>
                     <ModelSizeSelector
                       value={transcriptionOptions.modelSize}
-                      onChange={(value) => setTranscriptionOptions((prev) => ({ ...prev, modelSize: value }))}
+                      onChange={(value) =>
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, modelSize: value }))
+                      }
                     />
                   </div>
                 </>

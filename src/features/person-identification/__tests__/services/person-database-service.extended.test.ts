@@ -65,7 +65,7 @@ describe("PersonDatabaseService Extended Tests", () => {
 
     setTimeout(() => {
       if (openRequest.onsuccess) {
-        openRequest.onsuccess()
+        ;(openRequest.onsuccess as () => void)()
       }
     }, 0)
 
@@ -94,7 +94,7 @@ describe("PersonDatabaseService Extended Tests", () => {
     // Mock successful put
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -123,12 +123,14 @@ describe("PersonDatabaseService Extended Tests", () => {
       quality: 0.9,
       timestamp: { seconds: 10 },
       clipId: "clip-1",
+      frameNumber: 300,
+      createdAt: new Date().toISOString(),
     }
 
     // Mock getAllEmbeddings
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       getAll: vi.fn().mockImplementation(() => {
-        const req = { result: [mockEmbedding], onsuccess: null, onerror: null }
+        const req = { result: [mockEmbedding], onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -172,7 +174,7 @@ describe("PersonDatabaseService Extended Tests", () => {
     // Mock storeEmbedding
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -183,6 +185,8 @@ describe("PersonDatabaseService Extended Tests", () => {
       vector: new Float32Array([0.1, 0.2, 0.3]),
       quality: 0.9,
       timestamp: { seconds: 10 },
+      frameNumber: 300,
+      createdAt: new Date().toISOString(),
     }
 
     const result = await service.addEmbedding("person-1", embedding)
@@ -222,7 +226,7 @@ describe("PersonDatabaseService Extended Tests", () => {
     // Mock storeAppearance
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -429,7 +433,7 @@ describe("PersonDatabaseService Extended Tests", () => {
     // Trigger an event by creating a person
     mockTransaction.objectStore = vi.fn().mockReturnValue({
       put: vi.fn().mockImplementation(() => {
-        const req = { onsuccess: null, onerror: null }
+        const req = { onsuccess: null as (() => void) | null, onerror: null }
         setTimeout(() => req.onsuccess && req.onsuccess(), 0)
         return req
       }),
@@ -474,6 +478,8 @@ describe("PersonDatabaseService Extended Tests", () => {
       vector: new Float32Array([0.1, 0.2, 0.3]),
       quality: 0.9,
       timestamp: { seconds: 10 },
+      frameNumber: 300,
+      createdAt: new Date().toISOString(),
     }
 
     const result = await service.addEmbedding("person-1", embedding)

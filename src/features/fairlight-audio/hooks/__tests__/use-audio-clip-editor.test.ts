@@ -30,25 +30,26 @@ vi.mock("../use-audio-engine", () => ({
   useAudioEngine: mockUseAudioEngine,
 }))
 
+// Create a mock AudioBuffer
+const createMockAudioBuffer = (): AudioBuffer => {
+  const audioContext = new AudioContext()
+  return audioContext.createBuffer(2, 44100 * 10, 44100) // 10 seconds stereo buffer
+}
+
 const mockClip: AudioClip = {
   id: "clip-1",
+  trackId: "track-1",
+  audioBuffer: createMockAudioBuffer(),
   startTime: 0,
   duration: 10,
-  volume: 1,
-  audioBuffer: new ArrayBuffer(1024),
-  sampleRate: 44100,
-  channels: 2,
-  metadata: {
-    name: "Test Clip",
-    format: "wav",
-    bitRate: 16,
-  },
+  fadeIn: 0,
+  fadeOut: 0,
+  gain: 1,
 }
 
 const mockFadeOptions: FadeOptions = {
   duration: 2,
   type: "linear",
-  curve: 1,
 }
 
 describe("useAudioClipEditor", () => {
@@ -288,7 +289,7 @@ describe("useAudioClipEditor", () => {
     it("handles zero duration fade", () => {
       const { result } = renderHook(() => useAudioClipEditor())
 
-      const zeroFadeOptions: FadeOptions = { duration: 0, type: "linear", curve: 1 }
+      const zeroFadeOptions: FadeOptions = { duration: 0, type: "linear" }
       const fadedClip = { ...mockClip }
       mockAudioEngine.clipEditor.applyFadeIn.mockReturnValue(fadedClip)
 

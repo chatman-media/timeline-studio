@@ -18,7 +18,7 @@ export function useTranscription() {
   const [result, setResult] = useState<TranscriptionResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const serviceRef = useRef<TranscriptionService>(null)
+  const serviceRef = useRef<TranscriptionService | null>(null)
 
   // Инициализация сервиса
   if (!serviceRef.current) {
@@ -51,7 +51,7 @@ export function useTranscription() {
         return transcriptionResult
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Неизвестная ошибка"
-        logError("[useTranscription] Ошибка при транскрипции", err)
+        logError("[useTranscription] Ошибка при транскрипции", { error: err })
         setError(errorMessage)
         setProgress({ status: "error", progress: 0, message: errorMessage })
         return null
@@ -69,7 +69,9 @@ export function useTranscription() {
     async (format: SubtitleFormat = "srt"): Promise<string | null> => {
       logInfo("[useTranscription] Генерация субтитров", { format })
       if (!result) {
-        logError("[useTranscription] Нет результата транскрипции", new Error("No transcription result"))
+        logError("[useTranscription] Нет результата транскрипции", {
+          error: new Error("No transcription result"),
+        })
         setError("Нет результата транскрипции")
         return null
       }
@@ -80,7 +82,7 @@ export function useTranscription() {
         return subtitles
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Неизвестная ошибка"
-        logError("[useTranscription] Ошибка при генерации субтитров", err)
+        logError("[useTranscription] Ошибка при генерации субтитров", { error: err })
         setError(errorMessage)
         return null
       }
@@ -124,10 +126,10 @@ export function useWhisperModels() {
   const [isLoading, setIsLoading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState<Record<string, number>>({})
 
-  const serviceRef = useRef<TranscriptionService>()
+  const serviceRef = useRef<TranscriptionService | null>(null)
 
   if (!serviceRef.current) {
-    serviceRef.current = new TranscriptionService()
+    serviceRef.current = TranscriptionService.getInstance()
   }
 
   /**
@@ -141,7 +143,7 @@ export function useWhisperModels() {
       setModels(availableModels)
       logInfo("[useWhisperModels] Модели загружены", { count: availableModels.length })
     } catch (error) {
-      logError("[useWhisperModels] Ошибка загрузки моделей", error)
+      logError("[useWhisperModels] Ошибка загрузки моделей", { error })
     } finally {
       setIsLoading(false)
     }
@@ -170,7 +172,7 @@ export function useWhisperModels() {
 
         return success
       } catch (error) {
-        logError("[useWhisperModels] Ошибка скачивания модели", error)
+        logError("[useWhisperModels] Ошибка скачивания модели", { error })
         return false
       } finally {
         // Очищаем прогресс

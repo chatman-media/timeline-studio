@@ -58,7 +58,7 @@ export function useCameraStream(
 
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      logError("[useCameraStream] MediaDevices API недоступен", new Error("API not available"))
+      logError("[useCameraStream] MediaDevices API недоступен", { error: new Error("API not available") })
       updateErrorMessage(
         t(
           "dialogs.cameraCapture.mediaDevicesNotSupported",
@@ -182,7 +182,7 @@ export function useCameraStream(
         logInfo("[useCameraStream] Поток получен")
 
         if (!stream) {
-          logError("[useCameraStream] Не удалось получить медиа-поток", new Error("Stream is null"))
+          logError("[useCameraStream] Не удалось получить медиа-поток", { error: new Error("Stream is null") })
           throw new Error("Медиа-поток недоступен")
         }
 
@@ -207,7 +207,7 @@ export function useCameraStream(
           return
         }
 
-        logError("[useCameraStream] Ошибка при получении потока с запрошенным разрешением", error)
+        logError("[useCameraStream] Ошибка при получении потока с запрошенным разрешением", { error })
         updateErrorMessage(
           t(
             "dialogs.cameraCapture.errorRequestingStream",
@@ -241,7 +241,7 @@ export function useCameraStream(
           if (!stream) {
             logError(
               "[useCameraStream] Не удалось получить медиа-поток с резервными настройками",
-              new Error("Stream is null"),
+              { error: new Error("Stream is null") },
             )
             throw new Error("Медиа-поток недоступен")
           }
@@ -254,7 +254,7 @@ export function useCameraStream(
             return
           }
 
-          logError("[useCameraStream] Ошибка при получении потока с резервными настройками", fallbackError)
+          logError("[useCameraStream] Ошибка при получении потока с резервными настройками", { error: fallbackError })
           updateErrorMessage(
             t(
               "dialogs.cameraCapture.errorRequestingStreamFallback",
@@ -288,7 +288,7 @@ export function useCameraStream(
             }
 
             logInfo("[useCameraStream] Видео метаданные загружены, начинаем воспроизведение")
-            video.play().catch((e: unknown) => logError("[useCameraStream] Ошибка воспроизведения", e))
+            video.play().catch((e: unknown) => logError("[useCameraStream] Ошибка воспроизведения", { error: e }))
 
             // Получаем фактическое разрешение видео для логирования
             const actualWidth = video.videoWidth
@@ -300,7 +300,7 @@ export function useCameraStream(
 
           // Добавляем обработчик ошибок
           video.onerror = (_e) => {
-            logError("[useCameraStream] Ошибка видео элемента", new Error("Video element error"))
+            logError("[useCameraStream] Ошибка видео элемента", { error: new Error("Video element error") })
             updateErrorMessage(
               t(
                 "dialogs.cameraCapture.videoElementError",
@@ -310,13 +310,13 @@ export function useCameraStream(
             setIsDeviceReady(false)
           }
         } else {
-          logError("[useCameraStream] Ссылка на видео элемент отсутствует", new Error("Video ref is null"))
+          logError("[useCameraStream] Ссылка на видео элемент отсутствует", { error: new Error("Video ref is null") })
           setIsDeviceReady(false)
         }
       } else {
         logError(
           "[useCameraStream] Ссылка на видео элемент или поток отсутствует",
-          new Error("Video ref or stream is null"),
+          { error: new Error("Video ref or stream is null") },
         )
         setIsDeviceReady(false)
       }
@@ -327,7 +327,7 @@ export function useCameraStream(
         return
       }
 
-      logError("[useCameraStream] Ошибка при инициализации камеры", error)
+      logError("[useCameraStream] Ошибка при инициализации камеры", { error })
       updateErrorMessage(
         t(
           "dialogs.cameraCapture.cameraInitError",

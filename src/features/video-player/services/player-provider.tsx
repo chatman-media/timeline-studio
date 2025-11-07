@@ -158,7 +158,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     }
 
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      setBackendState(state)
+      setBackendState(state as ProjectState | null)
     })
 
     return unsubscribe

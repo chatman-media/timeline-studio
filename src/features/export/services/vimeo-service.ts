@@ -45,7 +45,7 @@ export async function getUserInfo(accessToken?: string): Promise<any> {
 
     return await response.json()
   } catch (error) {
-    logger.error("Failed to get Vimeo user info:", error)
+    logger.error(`Failed to get Vimeo user info: ${String(error)}`)
     throw error
   }
 }
@@ -131,7 +131,7 @@ export async function uploadVideo(
       id: videoUri.replace("/videos/", ""),
     }
   } catch (error) {
-    logger.error("Vimeo upload failed:", error)
+    logger.error(`Vimeo upload failed: ${String(error)}`)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

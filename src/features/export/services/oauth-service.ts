@@ -97,7 +97,7 @@ export async function loginToNetwork(network: string): Promise<OAuthToken | null
       window.addEventListener("message", messageHandler)
     })
   } catch (error) {
-    logger.error(`OAuth login failed for ${network}:`, error)
+    logger.error(`OAuth login failed for ${network}: ${String(error)}`)
     throw error
   }
 }
@@ -119,7 +119,7 @@ export async function refreshToken(network: string, refreshToken: string): Promi
         throw new Error(`Token refresh not implemented for ${network}`)
     }
   } catch (error) {
-    logger.error(`Token refresh failed for ${network}:`, error)
+    logger.error(`Token refresh failed for ${network}: ${String(error)}`)
     return null
   }
 }

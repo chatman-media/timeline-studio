@@ -124,7 +124,7 @@ const mockCanvasElement = () => {
       drawImage: vi.fn(),
       globalAlpha: 1.0,
     }
-  })
+  }) as any
 
   return canvas as any
 }

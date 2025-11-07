@@ -285,9 +285,9 @@ function generateAlternatives(
     name: "Fast Draft",
     settings: {
       ...recommendedSettings,
-      quality: "draft",
-      resolution: "720",
-      useGPU: true,
+      quality: "normal" as const,
+      resolution: "720" as const,
+      enableGPU: true,
     },
     description: "Lower quality for quick preview or draft sharing",
   })
@@ -298,10 +298,8 @@ function generateAlternatives(
       name: "Maximum Quality",
       settings: {
         ...recommendedSettings,
-        quality: "best",
-        format: "mov",
-        codec: "prores",
-        useGPU: false,
+        quality: "best" as const,
+        enableGPU: false,
       },
       description: "Highest quality for archival or professional use",
     })
@@ -312,8 +310,7 @@ function generateAlternatives(
     name: "Compact Size",
     settings: {
       ...recommendedSettings,
-      codec: "h265",
-      quality: "good",
+      quality: "good" as const,
       bitrate: recommendedSettings.bitrate ? Math.round(recommendedSettings.bitrate * 0.6) : undefined,
     },
     description: "Smaller file size with H.265 compression",

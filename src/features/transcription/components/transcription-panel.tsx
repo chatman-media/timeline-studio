@@ -141,7 +141,12 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
               <Label>{t("transcription.model", "Модель")}</Label>
               <Select
                 value={options.modelSize}
-                onValueChange={(value: any) => setOptions((prev) => ({ ...prev, modelSize: value }))}
+                onValueChange={(value) =>
+                  setOptions((prev: TranscriptionOptions) => ({
+                    ...prev,
+                    modelSize: value as TranscriptionOptions["modelSize"],
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -159,7 +164,7 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
             {/* Язык */}
             <LanguageSelector
               value={options.language}
-              onChange={(language) => setOptions((prev) => ({ ...prev, language }))}
+              onChange={(language) => setOptions((prev: TranscriptionOptions) => ({ ...prev, language }))}
             />
 
             {/* Задача */}
@@ -167,7 +172,12 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
               <Label>{t("transcription.task", "Задача")}</Label>
               <Select
                 value={options.task}
-                onValueChange={(value: any) => setOptions((prev) => ({ ...prev, task: value }))}
+                onValueChange={(value) =>
+                  setOptions((prev: TranscriptionOptions) => ({
+                    ...prev,
+                    task: value as TranscriptionOptions["task"],
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -186,7 +196,12 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
               <Label>{t("transcription.provider", "Провайдер")}</Label>
               <Select
                 value={options.provider}
-                onValueChange={(value: any) => setOptions((prev) => ({ ...prev, provider: value }))}
+                onValueChange={(value) =>
+                  setOptions((prev: TranscriptionOptions) => ({
+                    ...prev,
+                    provider: value as TranscriptionOptions["provider"],
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -204,7 +219,12 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
               <Label>{t("transcription.device", "Устройство")}</Label>
               <Select
                 value={options.device}
-                onValueChange={(value: any) => setOptions((prev) => ({ ...prev, device: value }))}
+                onValueChange={(value) =>
+                  setOptions((prev: TranscriptionOptions) => ({
+                    ...prev,
+                    device: value as TranscriptionOptions["device"],
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -242,7 +262,9 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                 <Switch
                   id="word-timestamps"
                   checked={options.wordTimestamps}
-                  onCheckedChange={(checked) => setOptions((prev) => ({ ...prev, wordTimestamps: checked }))}
+                  onCheckedChange={(checked) =>
+                    setOptions((prev: TranscriptionOptions) => ({ ...prev, wordTimestamps: checked }))
+                  }
                 />
               </div>
 
@@ -251,7 +273,9 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                 <Switch
                   id="vad-filter"
                   checked={options.vadFilter}
-                  onCheckedChange={(checked) => setOptions((prev) => ({ ...prev, vadFilter: checked }))}
+                  onCheckedChange={(checked) =>
+                    setOptions((prev: TranscriptionOptions) => ({ ...prev, vadFilter: checked }))
+                  }
                 />
               </div>
             </div>

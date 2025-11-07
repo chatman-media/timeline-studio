@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { SceneAnalysisResult } from "@/domains/ai-services/services"
-import { AIIntelligenceOrchestrator } from "@/domains/ai-services/services/ai-orchestrator"
+// TODO: Migrate to use AI Director directly
 import SceneAnalysisEngine, {
   AdvancedSceneAnalysis,
 } from "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
@@ -103,7 +103,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
 
   // Инициализация сервисов
   const [sceneEngine] = useState(() => SceneAnalysisEngine.getInstance())
-  const [orchestrator] = useState<AIIntelligenceOrchestrator | null>(() => null)
+  const [orchestrator] = useState<any | null>(() => null) // TODO: Migrate to AI Director
 
   // AI engines инициализируются автоматически при первом использовании
 

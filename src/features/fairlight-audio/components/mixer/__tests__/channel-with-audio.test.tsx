@@ -15,6 +15,11 @@ vi.mock("../../../hooks/use-channel-audio", () => ({
     error: null,
     isLoading: false,
     audioElement: null,
+    audioElements: new Map(),
+    activeClipId: null,
+    play: vi.fn(),
+    pause: vi.fn(),
+    seek: vi.fn(),
   })),
 }))
 
@@ -61,6 +66,11 @@ describe("ChannelWithAudio", () => {
       error: null,
       isLoading: false,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
   })
 
@@ -77,6 +87,11 @@ describe("ChannelWithAudio", () => {
       error: null,
       isLoading: true,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} />)
@@ -90,6 +105,11 @@ describe("ChannelWithAudio", () => {
       error: "Failed to load audio",
       isLoading: false,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} />)
@@ -111,6 +131,11 @@ describe("ChannelWithAudio", () => {
       error: null,
       isLoading: false,
       audioElement,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
@@ -131,7 +156,7 @@ describe("ChannelWithAudio", () => {
   it("should apply custom className", () => {
     const { container } = render(<ChannelWithAudio {...defaultProps} className="custom-class" />)
 
-    const wrapper = container.firstChild
+    const wrapper = container.firstChild as HTMLElement | null
     expect(wrapper?.className).toContain("custom-class")
     expect(wrapper?.className).toContain("flex")
     expect(wrapper?.className).toContain("flex-col")
@@ -169,6 +194,11 @@ describe("ChannelWithAudio", () => {
       error: null,
       isLoading: false,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
@@ -182,6 +212,11 @@ describe("ChannelWithAudio", () => {
       error: null,
       isLoading: true,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} />)
@@ -198,6 +233,11 @@ describe("ChannelWithAudio", () => {
       error: "Audio load failed",
       isLoading: false,
       audioElement: null,
+      audioElements: new Map(),
+      activeClipId: null,
+      play: vi.fn(),
+      pause: vi.fn(),
+      seek: vi.fn(),
     })
 
     render(<ChannelWithAudio {...defaultProps} />)

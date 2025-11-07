@@ -114,7 +114,7 @@ describe("TransitionsPreviewService", () => {
 
     global.requestAnimationFrame = vi.fn((callback) => {
       animationFrameId++
-      const timeoutId = setTimeout(() => callback(Date.now()), 16)
+      const timeoutId = setTimeout(() => callback(Date.now()), 16) as unknown as number
       animationFrameCallbacks.set(animationFrameId, timeoutId)
       return animationFrameId
     })
@@ -141,7 +141,7 @@ describe("TransitionsPreviewService", () => {
     // Reset mock implementations
     mockGL.getShaderParameter.mockReturnValue(true)
     mockGL.getProgramParameter.mockReturnValue(true)
-    mockGL.createShader.mockReturnValue({ _isShader: true })
+    mockGL.createShader.mockReturnValue({ type: mockGL.VERTEX_SHADER, _isShader: true })
     mockGL.createProgram.mockReturnValue({ _isProgram: true })
     mockGL.createTexture.mockReturnValue({ _isTexture: true })
     mockGL.createBuffer.mockReturnValue({ _isBuffer: true })
@@ -202,7 +202,7 @@ describe("TransitionsPreviewService", () => {
     it("should handle WebGL2 not supported", () => {
       const mockCreateElement = vi.fn(() => ({
         getContext: vi.fn(() => null),
-      }))
+      })) as any
 
       document.createElement = mockCreateElement
 
@@ -374,7 +374,7 @@ describe("TransitionsPreviewService", () => {
 
     it("should handle WebGL errors gracefully", async () => {
       // Make createTexture return null twice (for textureA and textureB)
-      mockGL.createTexture.mockReturnValueOnce(null).mockReturnValueOnce(null)
+      mockGL.createTexture.mockReturnValueOnce({ _isTexture: false }).mockReturnValueOnce({ _isTexture: false })
 
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 

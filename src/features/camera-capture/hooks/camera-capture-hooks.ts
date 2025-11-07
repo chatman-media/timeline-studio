@@ -36,7 +36,7 @@ export function useCameraPermissions(getDevices: () => Promise<boolean>): UseCam
         setErrorMessage(
           t("camera.permissionError", "Не удалось получить доступ к камере и микрофону. Проверьте настройки."),
         )
-        logError("[useCameraPermissions] Не удалось получить поток", new Error("No stream received"))
+        logError("[useCameraPermissions] Не удалось получить поток", { error: new Error("No stream received") })
         return
       }
 
@@ -48,7 +48,7 @@ export function useCameraPermissions(getDevices: () => Promise<boolean>): UseCam
       logInfo("[useCameraPermissions] Разрешения предоставлены")
       await getDevices()
     } catch (error) {
-      logError("[useCameraPermissions] Ошибка при запросе разрешений", error)
+      logError("[useCameraPermissions] Ошибка при запросе разрешений", { error })
       setPermissionStatus("error")
 
       if (error instanceof DOMException) {
@@ -113,7 +113,7 @@ export function useDeviceCapabilities(
         })
 
         if (!stream) {
-          logError("[useDeviceCapabilities] Не удалось получить поток", new Error("Stream is null"))
+          logError("[useDeviceCapabilities] Не удалось получить поток", { error: new Error("Stream is null") })
           return
         }
 
@@ -256,7 +256,7 @@ export function useDeviceCapabilities(
         // Завершаем поток
         stream.getTracks().forEach((track) => track.stop())
       } catch (error) {
-        logError("[useDeviceCapabilities] Ошибка при получении возможностей устройства", error)
+        logError("[useDeviceCapabilities] Ошибка при получении возможностей устройства", { error })
         // Используем стандартные значения в случае ошибки
         setAvailableResolutions(COMMON_RESOLUTIONS)
         setSupportedResolutions(COMMON_RESOLUTIONS)

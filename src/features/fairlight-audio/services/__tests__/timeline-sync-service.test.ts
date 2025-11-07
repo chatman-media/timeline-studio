@@ -15,6 +15,25 @@ vi.mock("@/features/timeline/hooks", () => ({
   useTimeline: () => mockTimeline,
 }))
 
+const createMockTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => ({
+  id: "track-1",
+  name: "Test Track",
+  type: "audio",
+  order: 0,
+  clips: [],
+  transitions: [],
+  isLocked: false,
+  isMuted: false,
+  isHidden: false,
+  isSolo: false,
+  volume: 0.75,
+  pan: 0.5,
+  height: 60,
+  trackEffects: [],
+  trackFilters: [],
+  ...overrides,
+})
+
 describe("TimelineSyncService", () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -22,18 +41,6 @@ describe("TimelineSyncService", () => {
   })
 
   describe("convertTrackToChannel", () => {
-    const createMockTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => ({
-      id: "track-1",
-      name: "Test Track",
-      type: "audio",
-      volume: 0.75,
-      pan: 0.5,
-      isMuted: false,
-      isSolo: false,
-      position: { x: 0, y: 0 },
-      duration: 10,
-      ...overrides,
-    })
 
     it("should convert audio track to channel", () => {
       const track = createMockTrack({
@@ -107,7 +114,7 @@ describe("TimelineSyncService", () => {
     })
 
     it("should return null for text track", () => {
-      const track = createMockTrack({ type: "text" })
+      const track = createMockTrack({ type: "subtitle" as any })
       const channel = convertTrackToChannel(track)
       expect(channel).toBeNull()
     })
@@ -483,17 +490,10 @@ describe("TimelineSyncService", () => {
     })
 
     it("should handle very large volume and pan values", () => {
-      const extremeTrack = {
-        id: "extreme-track",
-        name: "Extreme Track",
-        type: "audio" as const,
+      const extremeTrack = createMockTrack({
         volume: 999,
         pan: -999,
-        isMuted: false,
-        isSolo: false,
-        position: { x: 0, y: 0 },
-        duration: 10,
-      } as TimelineTrack
+      })
 
       const channel = convertTrackToChannel(extremeTrack)
       expect(channel?.volume).toBe(99900) // 999 * 100
@@ -501,17 +501,10 @@ describe("TimelineSyncService", () => {
     })
 
     it("should handle fractional volume and pan values", () => {
-      const fractionalTrack = {
-        id: "fractional-track",
-        name: "Fractional Track",
-        type: "audio" as const,
+      const fractionalTrack = createMockTrack({
         volume: 0.123456,
         pan: 0.987654,
-        isMuted: false,
-        isSolo: false,
-        position: { x: 0, y: 0 },
-        duration: 10,
-      } as TimelineTrack
+      })
 
       const channel = convertTrackToChannel(fractionalTrack)
       expect(channel?.volume).toBeCloseTo(12.3456)

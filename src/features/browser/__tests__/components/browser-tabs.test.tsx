@@ -126,7 +126,7 @@ describe("BrowserTabs", () => {
     const { container } = renderWithProvider(<BrowserTabs {...defaultProps} />)
 
     const tabsContainer = container.querySelector("div")
-    expect(tabsContainer).toHaveClass(
+    const expectedClasses = [
       "h-[50px]",
       "flex-shrink-0",
       "flex",
@@ -136,7 +136,10 @@ describe("BrowserTabs", () => {
       "dark:bg-[#2D2D2D]",
       "m-0",
       "p-0",
-    )
+    ]
+    expectedClasses.forEach((className) => {
+      expect(tabsContainer).toHaveClass(className)
+    })
   })
 
   it("должен обновляться при изменении activeTab", () => {

@@ -1,5 +1,5 @@
 import { OutputFormat, ProjectSchema } from "@/domains/video-editing"
-import type { TimelineProject as Timeline } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/features/timeline/types/timeline"
 import { timelineToProjectSchema } from "@/features/timeline/utils/timeline-to-project"
 import { AUDIO_BITRATE } from "../constants/export-constants"
 import type { ExportSettings } from "../types/export-types"
@@ -65,7 +65,7 @@ export function qualityToNumber(quality: string): number {
 export class ProjectSchemaBuilder {
   private projectSchema: ProjectSchema
 
-  constructor(timeline: Timeline, projectName?: string) {
+  constructor(timeline: TimelineProject, projectName?: string) {
     this.projectSchema = timelineToProjectSchema(timeline)
     if (projectName) {
       this.projectSchema.metadata.name = projectName
@@ -237,14 +237,14 @@ export class ProjectSchemaBuilder {
   /**
    * Create ProjectSchema with sensible defaults from Timeline
    */
-  static createDefault(timeline: Timeline, projectName?: string): ProjectSchema {
+  static createDefault(timeline: TimelineProject, projectName?: string): ProjectSchema {
     return new ProjectSchemaBuilder(timeline, projectName).build()
   }
 
   /**
    * Create ProjectSchema optimized for export
    */
-  static createForExport(timeline: Timeline, exportSettings: ExportSettings, projectName?: string): ProjectSchema {
+  static createForExport(timeline: TimelineProject, exportSettings: ExportSettings, projectName?: string): ProjectSchema {
     return new ProjectSchemaBuilder(timeline, projectName).withExportSettings(exportSettings).build()
   }
 
@@ -252,7 +252,7 @@ export class ProjectSchemaBuilder {
    * Create ProjectSchema optimized for preview
    */
   static createForPreview(
-    timeline: Timeline,
+    timeline: TimelineProject,
     previewSettings?: {
       resolution?: [number, number]
       fps?: number
@@ -275,7 +275,7 @@ export class ProjectSchemaBuilder {
    * Create ProjectSchema for section export with time range
    */
   static createForSectionExport(
-    timeline: Timeline,
+    timeline: TimelineProject,
     exportSettings: ExportSettings,
     startTime: number,
     endTime: number,

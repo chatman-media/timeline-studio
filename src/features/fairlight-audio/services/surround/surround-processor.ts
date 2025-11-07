@@ -3,6 +3,10 @@
  * Supports stereo, 5.1, and 7.1 surround formats using Web Audio API
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("SurroundProcessor")
+
 export type SurroundFormat = "stereo" | "5.1" | "7.1"
 
 export interface SurroundPosition {

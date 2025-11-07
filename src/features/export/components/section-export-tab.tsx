@@ -52,10 +52,11 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
   // Convert markers to sections
   useEffect(() => {
     if (exportMode === "markers" && project) {
-      if (project.markers && project.markers.length > 0) {
+      const markers = (project as any).markers
+      if (markers && markers.length > 0) {
         // Используем маркеры для создания секций
         const markerSections: ExportSection[] = []
-        const sortedMarkers = [...project.markers].sort((a, b) => a.time - b.time)
+        const sortedMarkers = [...markers].sort((a: any, b: any) => a.time - b.time)
 
         for (let i = 0; i < sortedMarkers.length; i++) {
           const currentMarker = sortedMarkers[i]

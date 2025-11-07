@@ -14,7 +14,7 @@
  */
 
 // Core services
-export * from "./ai-orchestrator" // ⚠️ Legacy: Still used by ai-content-intelligence, migrate to @/features/ai-director
+// export * from "./ai-orchestrator" // ⚠️ REMOVED: Migrated to unified-orchestrator with AI Director integration
 // Specialized services
 // export * from "./audio"
 // export * from "./batch-processing-service" // ⚠️ Deprecated: Use AI Director batch analysis

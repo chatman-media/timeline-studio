@@ -36,23 +36,26 @@ const createMockClip = (id: string, startTime: number, duration: number): Timeli
 
 const createMockTransition = (
   id: string,
-  type: "in" | "out" | "between",
+  type: "in" | "out" | "between" | "adjustment",
   position: number,
   duration: number,
   startClipId?: string,
   endClipId?: string,
-  trackId?: string,
+  trackId: string = "track-1",
 ): TimelineTransition => ({
   id,
-  resourceId: "fade-transition",
-  name: `Transition ${id}`,
+  transitionId: "fade-transition",
   type,
   position,
   duration,
   parameters: {},
+  keyframes: [],
+  curve: { type: "ease", points: [] },
   startClipId,
   endClipId,
   trackId,
+  isEnabled: true,
+  isLocked: false,
 })
 
 const createMockTrack = (id: string, clips: TimelineClip[] = [], transitions: string[] = []): TimelineTrack => ({

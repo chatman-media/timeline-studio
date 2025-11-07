@@ -3,9 +3,11 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 
 import { useResources } from "@/features/resources"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 
 import type { StyleTemplate } from "../types"
+
+const logger = createLogger({ module: "useStyleTemplatesImport" })
 
 /**
  * Хук для импорта пользовательских стилистических шаблонов
@@ -26,12 +28,12 @@ export function useStyleTemplatesImport() {
    */
   const importStyleTemplatesFile = useCallback(async () => {
     if (isImporting) {
-      logInfo("useStyleTemplatesImport", "Import already in progress")
+      void logger.info("Import already in progress")
       return
     }
 
     setIsImporting(true)
-    logInfo("useStyleTemplatesImport", "Starting style templates file import")
+    void logger.info("Starting style templates file import")
     try {
       const selected = await open({
         multiple: false,
@@ -44,39 +46,39 @@ export function useStyleTemplatesImport() {
       })
 
       if (selected) {
-        logInfo("useStyleTemplatesImport", `File selected: ${selected}`)
+        void logger.info(`File selected: ${selected}`)
         // Читаем содержимое JSON файла
         const content = await readTextFile(selected)
         const templatesData = JSON.parse(content)
 
         // Проверяем формат данных
         if (Array.isArray(templatesData)) {
-          logInfo("useStyleTemplatesImport", `Importing ${templatesData.length} templates from array format`)
+          void logger.info(`Importing ${templatesData.length} templates from array format`)
           // Импортируем каждый шаблон
           for (const templateData of templatesData) {
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
             }
           }
-          logInfo("useStyleTemplatesImport", `Successfully imported ${templatesData.length} style templates`)
+          void logger.info(`Successfully imported ${templatesData.length} style templates`)
         } else if (templatesData.templates && Array.isArray(templatesData.templates)) {
-          logInfo("useStyleTemplatesImport", `Importing ${templatesData.templates.length} templates from object format`)
+          void logger.info(`Importing ${templatesData.templates.length} templates from object format`)
           // Альтернативный формат с обёрткой
           for (const templateData of templatesData.templates) {
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
             }
           }
-          logInfo("useStyleTemplatesImport", `Successfully imported ${templatesData.templates.length} style templates`)
+          void logger.info(`Successfully imported ${templatesData.templates.length} style templates`)
         } else {
-          logError("useStyleTemplatesImport", "Invalid style templates file format")
+          void logger.error("Invalid style templates file format")
         }
       } else {
-        logInfo("useStyleTemplatesImport", "File selection cancelled by user")
+        void logger.info("File selection cancelled by user")
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)
-      logError("useStyleTemplatesImport", `Import failed: ${errorMsg}`)
+      void logger.error("Import failed", { error: errorMsg })
     } finally {
       setIsImporting(false)
     }
@@ -88,12 +90,12 @@ export function useStyleTemplatesImport() {
    */
   const importStyleTemplateFile = useCallback(async () => {
     if (isImporting) {
-      logInfo("useStyleTemplatesImport", "Import already in progress")
+      void logger.info("Import already in progress")
       return
     }
 
     setIsImporting(true)
-    logInfo("useStyleTemplatesImport", "Starting style template files import")
+    void logger.info("Starting style template files import")
     try {
       const selected = await open({
         multiple: true,
@@ -107,14 +109,14 @@ export function useStyleTemplatesImport() {
 
       if (selected) {
         const files = Array.isArray(selected) ? selected : [selected]
-        logInfo("useStyleTemplatesImport", `Selected ${files.length} style template files`)
+        void logger.info(`Selected ${files.length} style template files`)
 
         // Обрабатываем каждый файл
         for (const filePath of files) {
           const fileName = filePath.split("/").pop() || ""
           const fileExtension = fileName.split(".").pop()?.toLowerCase()
 
-          logInfo("useStyleTemplatesImport", `Processing file: ${fileName}`)
+          void logger.info(`Processing file: ${fileName}`)
 
           if (fileExtension === "json") {
             // Читаем JSON файл
@@ -123,22 +125,22 @@ export function useStyleTemplatesImport() {
 
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
-              logInfo("useStyleTemplatesImport", `Successfully imported template from file: ${fileName}`)
+              void logger.info(`Successfully imported template from file: ${fileName}`)
             } else {
-              logInfo("useStyleTemplatesImport", `File ${fileName} has invalid template structure`)
+              void logger.info(`File ${fileName} has invalid template structure`)
             }
           } else {
-            logInfo("useStyleTemplatesImport", `File format ${fileExtension} not supported yet`)
+            void logger.info(`File format ${fileExtension} not supported yet`)
           }
         }
 
-        logInfo("useStyleTemplatesImport", `Completed processing ${files.length} style template files`)
+        void logger.info(`Completed processing ${files.length} style template files`)
       } else {
-        logInfo("useStyleTemplatesImport", "File selection cancelled by user")
+        void logger.info("File selection cancelled by user")
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)
-      logError("useStyleTemplatesImport", `Failed to import style template files: ${errorMsg}`)
+      void logger.error("Failed to import style template files", { error: errorMsg })
     } finally {
       setIsImporting(false)
     }

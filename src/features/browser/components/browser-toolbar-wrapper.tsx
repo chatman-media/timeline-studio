@@ -48,7 +48,17 @@ export const BrowserToolbarWrapper = memo(
     onZoomOut,
   }: BrowserToolbarWrapperProps) => {
     // Получаем конфигурацию тулбара для текущей вкладки
-    const toolbarConfig = getToolbarConfigForContent(activeTab)
+    const toolbarConfig = getToolbarConfigForContent(
+      activeTab as
+        | "media"
+        | "music"
+        | "effects"
+        | "filters"
+        | "transitions"
+        | "subtitles"
+        | "templates"
+        | "style-templates",
+    )
 
     const handleChangeOrder = () => {
       const newOrder = sortOrder === "asc" ? "desc" : "asc"

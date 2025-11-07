@@ -45,7 +45,7 @@ export function useExportSettings() {
         setExportSettings((prev) => ({ ...prev, savePath: selectedPath }))
       }
     } catch (error) {
-      logError("[useExportSettings] Ошибка выбора папки", error)
+      logError(`[useExportSettings] Ошибка выбора папки: ${String(error)}`)
       toast.error(t("dialogs.export.errors.folderSelection"))
     }
   }, [exportSettings, t])

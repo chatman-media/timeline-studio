@@ -202,6 +202,13 @@ describe("BrowserLoadingIndicator", () => {
           template: 0,
           styleTemplate: 0,
         },
+        bySource: {
+          "built-in": 100,
+          local: 0,
+          remote: 0,
+        },
+        cacheSize: 0,
+        memoryUsage: 0,
       })
 
       render(<BrowserLoadingIndicator />)
@@ -222,7 +229,10 @@ describe("BrowserResourcesSkeleton", () => {
 
     // Проверяем структуру сетки
     const grid = skeletons[2].parentElement?.parentElement
-    expect(grid).toHaveClass("grid", "grid-cols-2", "md:grid-cols-3", "lg:grid-cols-4", "xl:grid-cols-6")
+    const expectedClasses = ["grid", "grid-cols-2", "md:grid-cols-3", "lg:grid-cols-4", "xl:grid-cols-6"]
+    expectedClasses.forEach((className) => {
+      expect(grid).toHaveClass(className)
+    })
   })
 
   it("должен рендерить 12 карточек", () => {
@@ -280,10 +290,23 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 100,
       byType: {
+        media: 0,
+        music: 0,
+        subtitle: 0,
         effect: 25,
         filter: 0,
         transition: 0,
+        template: 0,
+        styleTemplate: 0,
       },
+      bySource: {
+        "built-in": 100,
+        local: 0,
+        remote: 0,
+        imported: 0,
+      },
+      cacheSize: 0,
+      memoryUsage: 0,
     })
 
     render(<BrowserTabLoadingBadge resourceType="effect" />)
@@ -309,10 +332,23 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 10,
       byType: {
+        media: 0,
+        music: 0,
+        subtitle: 0,
         effect: 10,
         filter: 0,
         transition: 0,
+        template: 0,
+        styleTemplate: 0,
       },
+      bySource: {
+        "built-in": 10,
+        local: 0,
+        remote: 0,
+        imported: 0,
+      },
+      cacheSize: 0,
+      memoryUsage: 0,
     })
 
     // Без загрузки
@@ -332,10 +368,23 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 60,
       byType: {
+        media: 0,
+        music: 0,
+        subtitle: 0,
         effect: 20,
-        filters: 15,
-        transitions: 25,
+        filter: 15,
+        transition: 25,
+        template: 0,
+        styleTemplate: 0,
       },
+      bySource: {
+        "built-in": 60,
+        local: 0,
+        remote: 0,
+        imported: 0,
+      },
+      cacheSize: 0,
+      memoryUsage: 0,
     })
 
     const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" />)

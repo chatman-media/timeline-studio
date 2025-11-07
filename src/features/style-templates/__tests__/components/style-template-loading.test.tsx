@@ -21,13 +21,13 @@ describe("StyleTemplateLoading", () => {
   it("должен иметь правильную структуру", () => {
     const renderResult = render(<StyleTemplateLoading />)
 
-    expect(renderResult.container.firstChild).toHaveClass("flex", "flex-col", "items-center", "justify-center")
+    expect(renderResult.container.firstChild).toHaveClass("flex flex-col items-center justify-center")
   })
 
   it("должен центрировать содержимое", () => {
     render(<StyleTemplateLoading />)
 
     const loadingContainer = screen.getByText("Загрузка шаблонов...").parentElement
-    expect(loadingContainer).toHaveClass("flex", "flex-col", "items-center", "justify-center")
+    expect(loadingContainer).toHaveClass("flex flex-col items-center justify-center")
   })
 })

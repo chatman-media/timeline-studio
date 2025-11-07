@@ -152,7 +152,7 @@ export function CameraCaptureModal() {
       // Закрываем модальное окно
       closeModal()
     } catch (error) {
-      logger.error("Ошибка при сохранении записи:", error)
+      logger.error("Ошибка при сохранении записи:", { error })
       toast({
         title: t("dialogs.cameraCapture.recordingError", "Ошибка при сохранении записи"),
         description: String(error),
@@ -301,7 +301,7 @@ export function CameraCaptureModal() {
           audio: !!selectedAudioDevice,
         })
       } catch (error) {
-        logger.error("Failed to start screen capture:", error)
+        logger.error("Failed to start screen capture:", { error })
         setErrorMessage(screenError || "Failed to start screen capture")
       }
     } else if (mode === "camera") {

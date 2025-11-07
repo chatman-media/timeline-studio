@@ -217,7 +217,7 @@ export class NoiseReductionEngine extends EventEmitter {
    * Analyze audio for noise characteristics
    */
   async analyzeAudio(audioBuffer: AudioBuffer): Promise<AnalysisResult> {
-    const analyzer = new AudioAnalyzer(this.context)
+    const analyzer = new AudioAnalyzer()
     return analyzer.analyze(audioBuffer)
   }
 

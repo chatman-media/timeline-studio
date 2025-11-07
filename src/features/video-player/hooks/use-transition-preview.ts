@@ -71,15 +71,17 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
     }> = []
 
     // Собираем переходы из всех треков
-    const allTracks: TimelineTrack[] = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
+    const sectionTracks = project.sections.flatMap((s) => s.tracks)
+    const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
       if (!track.transitions || !project.resources.timelineTransitions) continue
 
-      const trackTransitions = track.transitions
+      const validTransitions = track.transitions
         .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
-        .filter((t): t is TimelineTransition => t !== undefined)
-        .map((transition: TimelineTransition) => ({ transition, trackId: track.id }))
+        .filter((t): t is TimelineTransition => t !== undefined && t !== null)
+
+      const trackTransitions = validTransitions.map((transition) => ({ transition, trackId: track.id }))
 
       transitions.push(...trackTransitions)
     }
@@ -137,7 +139,7 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
 
   // Рендеринг перехода
   const renderTransition = useCallback(
-    async (videoA: HTMLVideoElement, videoB: HTMLVideoElement, canvas: HTMLCanvasElement): Promise<boolean> => {
+    (videoA: HTMLVideoElement, videoB: HTMLVideoElement, canvas: HTMLCanvasElement): boolean => {
       if (!state.activeTransition || !enablePreview) return false
 
       try {
@@ -149,13 +151,15 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
           customParams: state.activeTransition.parameters || {},
         }
 
-        return await transitionService.applyTransition(
+        // Используем синхронную версию applyTransition
+        transitionService.applyTransition(
           videoA,
           videoB,
           state.activeTransition.transitionId,
           params,
           canvas,
         )
+        return true
       } catch (error) {
         logError("[useTransitionPreview] Ошибка рендеринга перехода", { error })
         return false
@@ -274,16 +278,17 @@ export function useActiveTransition() {
     if (!project || !currentTime) return null
 
     // Ищем активный переход
-    const allTracks: TimelineTrack[] = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
+    const sectionTracks = project.sections.flatMap((s) => s.tracks)
+    const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
       if (!track.transitions || !project.resources.timelineTransitions) continue
 
-      const transitions = track.transitions
+      const validTransitions = track.transitions
         .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
-        .filter((t): t is TimelineTransition => t !== undefined)
+        .filter((t): t is TimelineTransition => t !== undefined && t !== null)
 
-      for (const transition of transitions) {
+      for (const transition of validTransitions) {
         const transitionEnd = transition.position + transition.duration
         if (currentTime >= transition.position && currentTime <= transitionEnd) {
           const progress = (currentTime - transition.position) / transition.duration

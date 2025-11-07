@@ -15,7 +15,7 @@ vi.mock("../../../hooks/use-midi-engine")
 // Mock data
 const mockEngine = {
   router: {
-    getRoutes: vi.fn(() => []),
+    getRoutes: vi.fn(() => [] as MidiRoute[]),
     createKeyboardSplitRoute: vi.fn(),
     createChannelFilterRoute: vi.fn(),
     createCCRemapRoute: vi.fn(),
@@ -41,7 +41,7 @@ describe("MidiRouterView", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     resetSelectStates()
-    mockEngine.router.getRoutes.mockReturnValue([])
+    mockEngine.router.getRoutes.mockReturnValue([] as MidiRoute[])
 
     // Setup default mock implementation
     vi.mocked(useMidiEngine).mockReturnValue({

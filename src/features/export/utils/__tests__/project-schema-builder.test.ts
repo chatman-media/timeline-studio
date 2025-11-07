@@ -225,7 +225,7 @@ describe("ProjectSchemaBuilder", () => {
     it("should apply export format", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const exportSettings: Partial<ExportSettings> = {
-        format: "WebM",
+        format: OutputFormat.WebM,
       }
 
       const schema = builder.withExportSettings(exportSettings).build()
@@ -324,7 +324,7 @@ describe("ProjectSchemaBuilder", () => {
     it("should chain multiple settings", () => {
       const builder = new ProjectSchemaBuilder(mockTimeline)
       const exportSettings: Partial<ExportSettings> = {
-        format: "Mov",
+        format: OutputFormat.Mov,
         quality: "best",
         resolution: "1440",
         enableGPU: true,
@@ -522,7 +522,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "test",
           savePath: "/tmp",
-          format: "WebM",
+          format: OutputFormat.WebM,
           quality: "best",
           resolution: "4k",
           frameRate: "60",
@@ -569,7 +569,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "section",
           savePath: "/tmp",
-          format: "Mp4",
+          format: OutputFormat.Mp4,
           quality: "good",
           resolution: "1080",
           frameRate: "30",
@@ -591,7 +591,7 @@ describe("ProjectSchemaBuilder", () => {
         const exportSettings: ExportSettings = {
           fileName: "section",
           savePath: "/tmp",
-          format: "Mp4",
+          format: OutputFormat.Mp4,
           quality: "good",
           resolution: "1080",
           frameRate: "30",
@@ -608,7 +608,7 @@ describe("ProjectSchemaBuilder", () => {
   describe("method chaining", () => {
     it("should allow chaining multiple methods", () => {
       const exportSettings: Partial<ExportSettings> = {
-        format: "Mov",
+        format: OutputFormat.Mov,
         quality: "best",
       }
 

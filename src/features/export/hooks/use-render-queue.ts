@@ -29,7 +29,7 @@ function calculateProjectDuration(projectFile: any): number {
     // Fallback - стандартная длительность
     return 30
   } catch (error) {
-    logger.warn("Failed to calculate project duration:", error)
+    logger.warn(`Failed to calculate project duration: ${String(error)}`)
     return 30
   }
 }
@@ -83,7 +83,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
       )
       setIsProcessing(hasActiveJobs)
     } catch (error) {
-      logError("[useRenderQueue] Ошибка получения задач рендеринга", error)
+      logError(`[useRenderQueue] Ошибка получения задач рендеринга: ${String(error)}`)
     }
   }, [])
 
@@ -109,7 +109,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
       }
       return [selected]
     } catch (error) {
-      logError("[useRenderQueue] Ошибка выбора проектов", error)
+      logError(`[useRenderQueue] Ошибка выбора проектов: ${String(error)}`)
       return []
     }
   }, [])
@@ -176,14 +176,14 @@ export function useRenderQueue(): UseRenderQueueReturn {
 
             logInfo(`[useRenderQueue] Запущена задача рендеринга: ${jobId} для ${project.path}`)
           } catch (error) {
-            logError(`[useRenderQueue] Ошибка запуска рендеринга для ${project.path}`, error)
+            logError(`[useRenderQueue] Ошибка запуска рендеринга для ${project.path}: ${String(error)}`)
           }
         }
 
         // Обновляем список задач
         await refreshQueue()
       } catch (error) {
-        logError("[useRenderQueue] Ошибка запуска очереди рендеринга", error)
+        logError(`[useRenderQueue] Ошибка запуска очереди рендеринга: ${String(error)}`)
       }
     },
     [refreshQueue],
@@ -198,7 +198,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
           await refreshQueue()
         }
       } catch (error) {
-        logError(`[useRenderQueue] Ошибка отмены задачи ${jobId}`, error)
+        logError(`[useRenderQueue] Ошибка отмены задачи ${jobId}: ${String(error)}`)
       }
     },
     [refreshQueue],

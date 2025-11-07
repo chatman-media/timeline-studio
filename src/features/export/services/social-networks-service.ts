@@ -39,7 +39,7 @@ export async function login(network: string): Promise<boolean> {
     toast.success(`Successfully connected to ${network}`)
     return true
   } catch (error) {
-    logger.error(`Login failed for ${network}:`, error)
+    logger.error(`Login failed for ${network}: ${String(error)}`)
     toast.error(`Failed to connect to ${network}: ${error instanceof Error ? error.message : "Unknown error"}`)
     return false
   }
@@ -130,7 +130,7 @@ export async function uploadVideo(
       id: result.id || result.publish_id,
     }
   } catch (error) {
-    logger.error(`Upload failed for ${network}:`, error)
+    logger.error(`Upload failed for ${network}: ${String(error)}`)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -199,7 +199,7 @@ export async function refreshTokenIfNeeded(network: string): Promise<boolean> {
       return true
     }
   } catch (error) {
-    logger.error("Token refresh failed:", error)
+    logger.error(`Token refresh failed: ${String(error)}`)
     // Логаут при неудачном обновлении токена
     await logout(network)
   }

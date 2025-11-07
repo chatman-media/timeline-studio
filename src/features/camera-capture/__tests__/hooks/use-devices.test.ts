@@ -43,7 +43,9 @@ describe("useDevices", () => {
   })
 
   it("should initialize with empty devices", () => {
-    const { result } = renderHook(() => useDevices())
+    const mockGetDeviceCapabilities = vi.fn()
+    const mockSetErrorMessage = vi.fn()
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     expect(result.current.devices).toEqual([])
     expect(result.current.audioDevices).toEqual([])
@@ -53,9 +55,10 @@ describe("useDevices", () => {
 
   it("should get devices when getDevices is called", async () => {
     // Создаем мок для setErrorMessage
+    const mockGetDeviceCapabilities = vi.fn()
     const mockSetErrorMessage = vi.fn()
 
-    const { result } = renderHook(() => useDevices(mockSetErrorMessage))
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     // Вызываем getDevices
     await act(async () => {
@@ -85,9 +88,10 @@ describe("useDevices", () => {
     ])
 
     // Создаем мок для setErrorMessage
+    const mockGetDeviceCapabilities = vi.fn()
     const mockSetErrorMessage = vi.fn()
 
-    const { result } = renderHook(() => useDevices(mockSetErrorMessage))
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     // Вызываем getDevices
     await act(async () => {
@@ -103,9 +107,10 @@ describe("useDevices", () => {
 
   it("should set selected device", async () => {
     // Создаем мок для setErrorMessage
+    const mockGetDeviceCapabilities = vi.fn()
     const mockSetErrorMessage = vi.fn()
 
-    const { result } = renderHook(() => useDevices(mockSetErrorMessage))
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     // Получаем устройства
     await act(async () => {
@@ -123,9 +128,10 @@ describe("useDevices", () => {
 
   it("should set selected audio device", async () => {
     // Создаем мок для setErrorMessage
+    const mockGetDeviceCapabilities = vi.fn()
     const mockSetErrorMessage = vi.fn()
 
-    const { result } = renderHook(() => useDevices(mockSetErrorMessage))
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     // Получаем устройства
     await act(async () => {
@@ -146,9 +152,10 @@ describe("useDevices", () => {
     mockEnumerateDevices.mockRejectedValueOnce(new Error("Failed to enumerate devices"))
 
     // Создаем мок для setErrorMessage
+    const mockGetDeviceCapabilities = vi.fn()
     const mockSetErrorMessage = vi.fn()
 
-    const { result } = renderHook(() => useDevices(mockSetErrorMessage))
+    const { result } = renderHook(() => useDevices(mockGetDeviceCapabilities, mockSetErrorMessage))
 
     // Вызываем getDevices
     await act(async () => {

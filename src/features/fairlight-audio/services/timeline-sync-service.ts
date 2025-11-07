@@ -3,51 +3,27 @@ import { useEffect } from "react"
 import { useTimeline } from "@/features/timeline/hooks"
 import type { TimelineTrack } from "@/features/timeline/types"
 
-import type { AudioChannel, ChannelEffect } from "../types"
+import type { AudioChannel } from "../types"
 
 /**
- * Converts timeline effects to channel effects
+ * Converts timeline effects to effect IDs
  */
-function convertTrackEffects(track: TimelineTrack): ChannelEffect[] {
-  const effects: ChannelEffect[] = []
+function convertTrackEffects(track: TimelineTrack): string[] {
+  const effectIds: string[] = []
 
   // Check if track has effects property
   if (!track.trackEffects || !Array.isArray(track.trackEffects)) {
-    return effects
+    return effectIds
   }
 
-  // Convert each effect
-  track.trackEffects.forEach((appliedEffect, index) => {
-    // Map timeline effect types to audio effect types
-    let effectType: "eq" | "compressor" | "reverb" | "delay" | "gate" | undefined
-
-    // Extract effect type from effect ID or custom params
-    // Since AppliedEffect only has effectId, we need to infer the type
-    const effectId = appliedEffect.effectId?.toLowerCase() || ""
-
-    if (effectId.includes("equalizer") || effectId.includes("eq")) {
-      effectType = "eq"
-    } else if (effectId.includes("compressor") || effectId.includes("dynamics")) {
-      effectType = "compressor"
-    } else if (effectId.includes("reverb") || effectId.includes("ambience")) {
-      effectType = "reverb"
-    } else if (effectId.includes("delay") || effectId.includes("echo")) {
-      effectType = "delay"
-    } else if (effectId.includes("gate") || effectId.includes("noise-gate")) {
-      effectType = "gate"
-    }
-
-    if (effectType) {
-      effects.push({
-        id: appliedEffect.id || `effect-${index}`,
-        type: effectType,
-        enabled: appliedEffect.enabled,
-        parameters: appliedEffect.customParams || {},
-      })
+  // Extract effect IDs from track effects
+  track.trackEffects.forEach((appliedEffect) => {
+    if (appliedEffect.id) {
+      effectIds.push(appliedEffect.id)
     }
   })
 
-  return effects
+  return effectIds
 }
 
 /**
@@ -93,7 +69,7 @@ export function useTimelineMixerSync(onChannelsUpdate: (channels: AudioChannel[]
 
     timeline.project.sections.forEach((section) => {
       section.tracks.forEach((track) => {
-        const channel = convertTrackToChannel(track)
+        const channel = convertTrackToChannel(track as unknown as TimelineTrack)
         if (channel) {
           audioChannels.push(channel)
         }
@@ -124,7 +100,7 @@ export function useTimelineMixerSync(onChannelsUpdate: (channels: AudioChannel[]
     }
 
     // Update timeline track
-    void timeline.updateTrack(channelId, timelineUpdates)
+    void timeline.updateTrack(channelId, timelineUpdates as any)
   }
 
   return {

@@ -50,21 +50,21 @@ describe("PersonDatabaseService", () => {
     const validPerson: Person = {
       id: "person-1",
       name: "Test Person",
-      description: "Test description",
-      avatarUrl: "https://example.com/avatar.jpg",
+      isVerified: false,
+      faceEmbeddings: [],
+      appearances: [],
+      totalScreenTime: 0,
+      firstSeen: { seconds: 0 },
+      lastSeen: { seconds: 0 },
       tags: ["actor", "main"],
-      privacySettings: {
+      notes: "Test description",
+      thumbnails: [],
+      privacy: {
         blurFace: false,
+        hideFromSearch: false,
         anonymize: false,
-        excludeFromExport: false,
-      },
-      clips: [],
-      statistics: {
-        totalAppearances: 0,
-        totalScreenTime: 0,
-        lastSeen: null,
-        firstSeen: null,
-        averageScreenTime: 0,
+        blurIntensity: 5,
+        blurTracking: true,
       },
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -72,8 +72,8 @@ describe("PersonDatabaseService", () => {
 
     expect(validPerson.id).toBeDefined()
     expect(validPerson.name).toBeDefined()
-    expect(validPerson.privacySettings).toBeDefined()
-    expect(validPerson.statistics).toBeDefined()
+    expect(validPerson.privacy).toBeDefined()
+    expect(validPerson.faceEmbeddings).toBeDefined()
   })
 
   it("should handle search operations logic", () => {

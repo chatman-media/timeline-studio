@@ -136,7 +136,7 @@ export function SocialExportTab({
         })
       }
     } catch (error) {
-      logger.error(`Login to ${networkId} failed:`, error)
+      logger.error(`Login to ${networkId} failed: ${String(error)}`)
     }
   }
 
@@ -147,7 +147,7 @@ export function SocialExportTab({
       setLoginStates((prev) => ({ ...prev, [networkId]: false }))
       onSettingsChange({ isLoggedIn: false })
     } catch (error) {
-      logger.error(`Logout from ${networkId} failed:`, error)
+      logger.error(`Logout from ${networkId} failed: ${String(error)}`)
     }
   }
 
@@ -159,7 +159,7 @@ export function SocialExportTab({
       // Сначала проверяем видео
       const validation = validateSocialExport(settings)
       if (!validation.valid) {
-        logger.warn("Video validation failed:", validation.error)
+        logger.warn(`Video validation failed: ${String(validation.error)}`)
         // Показать ошибки валидации пользователю
         return
       }
@@ -167,7 +167,7 @@ export function SocialExportTab({
       // Запускаем экспорт
       onExport(selectedNetwork)
     } catch (error) {
-      logger.error("Social export failed:", error)
+      logger.error(`Social export failed: ${String(error)}`)
     }
   }
 

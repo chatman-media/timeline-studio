@@ -27,6 +27,9 @@ interface Project {
   metadata: {
     name: string
     created_at: string
+    modified_at: string
+    file_path?: string | null
+    is_dirty?: boolean
     version: string
   }
   settings: {
@@ -41,6 +44,9 @@ interface Project {
     fps: number
     sample_rate: number
   }
+  media_pool?: {
+    items?: Record<string, any>
+  }
 }
 
 interface ProjectCommand {
@@ -50,6 +56,20 @@ interface ProjectCommand {
 
 interface ProjectState {
   project?: Project
+  ui_state?: {
+    selected_clips: string[]
+    selected_tracks: string[]
+    timeline_zoom: number
+    timeline_scroll: number
+    active_tool: string
+  }
+  playback_state?: {
+    is_playing: boolean
+    current_time: number
+    playback_rate: number
+    volume: number
+  }
+  version?: number
 }
 
 import { createLogger } from "@/lib/tauri-logger"
@@ -170,7 +190,7 @@ function getUsedMediaFiles(backendProject: Project): MediaFile[] {
   })
 
   // Возвращаем только используемые медиа файлы
-  const allMedia = Object.values(backendProject.media_pool.items || {})
+  const allMedia = Object.values(backendProject.media_pool?.items || {})
   return allMedia
     .filter(Boolean)
     .filter((media): media is any => Boolean(media && typeof media === "object" && "id" in media))
@@ -232,7 +252,7 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         scaleX: 1,
         scaleY: 1,
       },
-      effects: clip.effects.map((effectId) => ({
+      effects: (clip.effects || []).map((effectId: string) => ({
         id: effectId,
         effectId,
         name: `Effect ${effectId}`, // TODO: получить имя из backend
@@ -241,7 +261,7 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         keyframes: [],
       })),
       filters: [],
-      transitions: clip.transitions.map((t) => ({
+      transitions: (clip.transitions || []).map((t: any) => ({
         id: t.id,
         transitionId: t.transition_type,
         name: `Transition ${t.transition_type}`,
@@ -324,7 +344,6 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
     id: timeline.id,
     metadata: {
       name: timeline.name,
-      description: null,
       created_at: timeline.createdAt.toISOString(),
       modified_at: timeline.updatedAt.toISOString(),
       file_path: existingProject?.metadata.file_path || null,
@@ -364,7 +383,6 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
         volume: track.volume,
         pan: track.pan,
       })),
-      markers: [],
     },
     media_pool: {
       items: timeline.resources.media.reduce(
@@ -510,7 +528,7 @@ export function getTimelineSyncStats(timeline: Timeline, projectState: ProjectSt
     isBackendSync: isBackendSyncTimeline(timeline),
     timelineVersion: timeline.stateVersion || 0,
     backendVersion: projectState?.version || 0,
-    isStale: projectState ? isTimelineStale(timeline, projectState.version) : true,
+    isStale: projectState ? isTimelineStale(timeline, projectState.version || 0) : true,
     hasProject: !!projectState?.project,
     lastSync: timeline.updatedAt,
   }

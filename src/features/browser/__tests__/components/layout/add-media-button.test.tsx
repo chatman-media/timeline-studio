@@ -131,7 +131,7 @@ describe("AddMediaButton", () => {
 
   it("should render check icon when isAdded is true", () => {
     // Рендерим компонент
-    const { addResource, removeResource, isAdded } = vi.mocked(useResources())
+    const { isAdded } = vi.mocked(useResources())
     isAdded.mockReturnValue(true)
 
     render(<AddMediaButton resource={testResource} type="media" size={150} />)

@@ -70,11 +70,19 @@ class MockMediaStreamTrack implements Partial<MediaStreamTrack> {
     }
   }
 
-  dispatchEvent(event: string) {
-    if (this.listeners[event]) {
-      this.listeners[event].forEach((listener) => listener())
+  dispatchEvent(event: Event): boolean {
+    const eventType = event.type
+    if (this.listeners[eventType]) {
+      this.listeners[eventType].forEach((listener) => listener(event))
     }
+    return true
   }
+
+  // Добавляем недостающие методы
+  applyConstraints = vi.fn()
+  clone = vi.fn()
+  getCapabilities = vi.fn(() => ({}))
+  getConstraints = vi.fn(() => ({}))
 
   getSettings() {
     return this.settings
@@ -106,7 +114,7 @@ describe("useScreenCapture", () => {
   })
 
   it("should start screen capture successfully", async () => {
-    const mockVideoTrack = new MockMediaStreamTrack("video")
+    const mockVideoTrack = new MockMediaStreamTrack("video") as unknown as MediaStreamTrack
     const mockStream = new MockMediaStream([mockVideoTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 
@@ -174,8 +182,8 @@ describe("useScreenCapture", () => {
   })
 
   it("should stop screen capture", async () => {
-    const mockVideoTrack = new MockMediaStreamTrack("video")
-    const mockAudioTrack = new MockMediaStreamTrack("audio")
+    const mockVideoTrack = new MockMediaStreamTrack("video") as unknown as MediaStreamTrack
+    const mockAudioTrack = new MockMediaStreamTrack("audio") as unknown as MediaStreamTrack
     const mockStream = new MockMediaStream([mockVideoTrack, mockAudioTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 
@@ -196,7 +204,7 @@ describe("useScreenCapture", () => {
   })
 
   it("should handle ended event from video track", async () => {
-    const mockVideoTrack = new MockMediaStreamTrack("video")
+    const mockVideoTrack = new MockMediaStreamTrack("video") as unknown as MediaStreamTrack
     const mockStream = new MockMediaStream([mockVideoTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 
@@ -208,7 +216,8 @@ describe("useScreenCapture", () => {
 
     // Симулируем событие ended
     act(() => {
-      mockVideoTrack.dispatchEvent("ended")
+      const endedEvent = new Event("ended")
+      ;(mockVideoTrack as any).dispatchEvent(endedEvent)
     })
 
     expect(result.current.isScreenSharing).toBe(false)
@@ -221,7 +230,7 @@ describe("useScreenCapture", () => {
       height: 1440,
       frameRate: 60,
       displaySurface: "window" as any,
-    } as Partial<MediaTrackSettings>)
+    } as Partial<MediaTrackSettings>) as unknown as MediaStreamTrack
     const mockStream = new MockMediaStream([mockVideoTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 
@@ -241,7 +250,7 @@ describe("useScreenCapture", () => {
   })
 
   it("should accept custom constraints", async () => {
-    const mockVideoTrack = new MockMediaStreamTrack("video")
+    const mockVideoTrack = new MockMediaStreamTrack("video") as unknown as MediaStreamTrack
     const mockStream = new MockMediaStream([mockVideoTrack])
     mockGetDisplayMedia.mockResolvedValue(mockStream)
 

@@ -117,7 +117,7 @@ export class TransitionExportService {
           configs.push(config)
         }
       } catch (error) {
-        logger.error(`Failed to create config for transition ${transitionInfo.transition.id}:`, error)
+        logger.error(`Failed to create config for transition ${transitionInfo.transition.id}: ${String(error)}`)
 
         if (!this.optimizationSettings.skipFailedTransitions) {
           throw error

@@ -4,11 +4,11 @@ import { AutomationEngine, type AutomationMode } from "../automation-engine"
 
 describe("AutomationEngine", () => {
   let engine: AutomationEngine
-  let mockCallback: ReturnType<typeof vi.fn>
+  let mockCallback: (value: number) => void
 
   beforeEach(() => {
     engine = new AutomationEngine()
-    mockCallback = vi.fn()
+    mockCallback = vi.fn((value: number) => {})
   })
 
   afterEach(() => {

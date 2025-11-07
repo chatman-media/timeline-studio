@@ -18,6 +18,10 @@ export function useBlogPosts() {
         const loadedPosts: PostMetadata[] = []
 
         for (const content of langPosts) {
+          if (!content) {
+            continue
+          }
+
           const { metadata } = parseMarkdown(content)
 
           // Если slug не задан, генерируем из заголовка

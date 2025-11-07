@@ -93,10 +93,10 @@ export class HDRSupportService {
         this.isWebGL2Supported = true
         // Проверяем поддержку HDR расширений
         const supportedExtensions = this.gl.getSupportedExtensions()
-        logger.info(
-          "WebGL2 HDR extensions:",
-          supportedExtensions?.filter((ext) => ext.includes("color") || ext.includes("hdr") || ext.includes("float")),
+        const hdrExtensions = supportedExtensions?.filter(
+          (ext) => ext.includes("color") || ext.includes("hdr") || ext.includes("float"),
         )
+        logger.info("WebGL2 HDR extensions:", { extensions: hdrExtensions })
       }
     } catch (error) {
       logger.warn("WebGL2 initialization failed", { error })

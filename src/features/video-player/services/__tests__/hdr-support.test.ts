@@ -65,7 +65,7 @@ const mockVideoElement = (overrides: Partial<HTMLVideoElement> = {}): HTMLVideoE
   }) as any
 
 // Mock MediaStream and VideoTrack
-const mockMediaStream = (settings: any = {}) => ({
+const mockMediaStream = (settings: any = {}): any => ({
   getVideoTracks: vi.fn(() => [
     {
       getSettings: vi.fn(() => settings),
@@ -406,9 +406,10 @@ describe("HDRSupportService", () => {
         videoWidth: 3840,
         videoHeight: 2160,
         currentSrc: "http://example.com/video_hdr.mp4",
-        requestVideoFrameCallback: vi.fn((callback) => {
+        requestVideoFrameCallback: vi.fn((callback: any) => {
           setTimeout(callback, 16) // Simulate frame callback
-        }),
+          return 1
+        }) as any,
       })
 
       const codecInfo = await service.getVideoCodecInfo(video)
@@ -447,12 +448,13 @@ describe("HDRSupportService", () => {
       let frameCallbackCount = 0
       const video = mockVideoElement({
         readyState: 4, // HAVE_ENOUGH_DATA
-        requestVideoFrameCallback: vi.fn((callback) => {
+        requestVideoFrameCallback: vi.fn((callback: any) => {
           frameCallbackCount++
           if (frameCallbackCount <= 30) {
             setTimeout(callback, 16) // 60fps simulation
           }
-        }),
+          return frameCallbackCount
+        }) as any,
       })
 
       const codecInfo = await service.getVideoCodecInfo(video)

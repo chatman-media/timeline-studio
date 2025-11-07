@@ -264,7 +264,7 @@ export class CodecSupportService {
 
       return "unsupported"
     } catch (error) {
-      logger.warn(`Codec support check failed for ${codecName}:`, error)
+      logger.warn(`Codec support check failed for ${codecName}:`, { error })
       return "unsupported"
     }
   }
@@ -393,7 +393,7 @@ export class CodecSupportService {
       // Измеряем производительность декодирования
       await this.measureDecodingPerformance(videoElement, result.codec)
     } catch (error) {
-      logger.error("Video format detection failed:", error)
+      logger.error("Video format detection failed:", { error })
     }
 
     return result
@@ -447,7 +447,7 @@ export class CodecSupportService {
         result.hdr.isHdr = true
       }
     } catch (error) {
-      logger.warn("HDR analysis failed:", error)
+      logger.warn("HDR analysis failed:", { error })
     }
   }
 
@@ -487,7 +487,7 @@ export class CodecSupportService {
         }
       })
     } catch (error) {
-      logger.warn("Performance measurement failed:", error)
+      logger.warn("Performance measurement failed:", { error })
       return 0
     }
   }

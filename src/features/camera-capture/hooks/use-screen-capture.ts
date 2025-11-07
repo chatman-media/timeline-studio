@@ -31,7 +31,7 @@ export function useScreenCapture() {
     // Проверяем доступность API getDisplayMedia
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
       const errorMsg = "Запись экрана не поддерживается в данном приложении. Функция доступна только в веб-браузере."
-      logError("[useScreenCapture] API getDisplayMedia недоступен", new Error(errorMsg))
+      logError("[useScreenCapture] API getDisplayMedia недоступен", { error: new Error(errorMsg) })
       setError(errorMsg)
       throw new Error(errorMsg)
     }
@@ -67,7 +67,7 @@ export function useScreenCapture() {
       const stream = await navigator.mediaDevices?.getDisplayMedia?.(constraints as DisplayMediaStreamOptions)
 
       if (!stream) {
-        logError("[useScreenCapture] Не удалось получить поток захвата экрана", new Error("Stream is null"))
+        logError("[useScreenCapture] Не удалось получить поток захвата экрана", { error: new Error("Stream is null") })
         throw new Error("Захват экрана недоступен")
       }
 
@@ -88,7 +88,7 @@ export function useScreenCapture() {
       return stream
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error"
-      logError("[useScreenCapture] Ошибка при запуске записи экрана", new Error(errorMessage))
+      logError("[useScreenCapture] Ошибка при запуске записи экрана", { error: new Error(errorMessage) })
 
       if (errorMessage.includes("Permission denied")) {
         setError("Доступ к записи экрана запрещен")

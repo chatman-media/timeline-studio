@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 import type { StyleTemplate, StyleTemplateFilter, StyleTemplateSortBy, StyleTemplateSortOrder } from "../types"
+
+const logger = createLogger({ module: "useStyleTemplates" })
 
 interface UseStyleTemplatesReturn {
   templates: StyleTemplate[]
@@ -28,7 +30,7 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
   // Загрузка шаблонов из JSON файла
   useEffect(() => {
     const loadTemplates = async () => {
-      logInfo("useStyleTemplates", "Starting style templates loading")
+      void logger.info("Starting style templates loading")
       try {
         setLoading(true)
         setError(null)
@@ -41,10 +43,10 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
             throw new Error("Неверная структура данных шаблонов")
           }
 
-          logInfo("useStyleTemplates", `Successfully loaded ${data.templates.length} style templates from JSON`)
+          void logger.info(`Successfully loaded ${data.templates.length} style templates from JSON`)
           setTemplates(data.templates as unknown as StyleTemplate[])
         } catch (importError) {
-          logInfo("useStyleTemplates", "JSON import failed, falling back to test data")
+          void logger.info("JSON import failed, falling back to test data")
 
           // Fallback: тестовые данные
           const testTemplates: StyleTemplate[] = [
@@ -121,12 +123,12 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
             },
           ]
 
-          logInfo("useStyleTemplates", `Loaded ${testTemplates.length} test style templates as fallback`)
+          void logger.info(`Loaded ${testTemplates.length} test style templates as fallback`)
           setTemplates(testTemplates)
         }
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Неизвестная ошибка"
-        logError("useStyleTemplates", `Failed to load style templates: ${errorMsg}`)
+        void logger.error("Failed to load style templates", { error: errorMsg })
         setError(errorMsg)
       } finally {
         setLoading(false)

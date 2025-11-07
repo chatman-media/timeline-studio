@@ -1,7 +1,6 @@
 import mdx from "@mdx-js/rollup"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import { viteStaticCopy } from "vite-plugin-static-copy"
 import { visualizer } from "rollup-plugin-visualizer"
 import compression from "vite-plugin-compression"
 import { fixImports } from "./vite-plugin-fix-imports.js"
@@ -12,14 +11,6 @@ export default defineConfig({
     fixImports(),
     mdx(),
     react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: "content/blog",
-          dest: "content"
-        }
-      ]
-    }),
     // Brotli compression для максимального сжатия
     compression({
       algorithm: "brotliCompress",

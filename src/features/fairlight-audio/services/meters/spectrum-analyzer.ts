@@ -76,13 +76,13 @@ export class SpectrumAnalyzer extends EventEmitter {
     this.resolution = this.nyquistFrequency / this.binCount
 
     // Инициализируем буферы
-    this.frequencyData = new Uint8Array(this.binCount)
-    this.frequencyDataFloat = new Float32Array(this.binCount)
-    this.peakData = new Float32Array(this.binCount)
-    this.peakHoldTimes = new Float32Array(this.binCount)
+    this.frequencyData = new Uint8Array(this.binCount) as Uint8Array<ArrayBuffer>
+    this.frequencyDataFloat = new Float32Array(this.binCount) as Float32Array<ArrayBuffer>
+    this.peakData = new Float32Array(this.binCount) as Float32Array<ArrayBuffer>
+    this.peakHoldTimes = new Float32Array(this.binCount) as Float32Array<ArrayBuffer>
 
     // Создаём массив частот
-    this.frequencies = new Float32Array(this.binCount)
+    this.frequencies = new Float32Array(this.binCount) as Float32Array<ArrayBuffer>
     for (let i = 0; i < this.binCount; i++) {
       this.frequencies[i] = i * this.resolution
     }
@@ -123,8 +123,8 @@ export class SpectrumAnalyzer extends EventEmitter {
     this.lastUpdate = now
 
     // Получаем данные частотного анализа
-    this.analyser.getByteFrequencyData(this.frequencyData)
-    this.analyser.getFloatFrequencyData(this.frequencyDataFloat)
+    this.analyser.getByteFrequencyData(this.frequencyData as Uint8Array<ArrayBuffer>)
+    this.analyser.getFloatFrequencyData(this.frequencyDataFloat as Float32Array<ArrayBuffer>)
 
     // Обновляем пики
     if (this.config.enablePeakHold) {
@@ -348,12 +348,14 @@ export class SpectrumAnalyzer extends EventEmitter {
       }
     }
 
-    this.analyser.getFloatFrequencyData(this.frequencyDataFloat)
+    this.analyser.getFloatFrequencyData(this.frequencyDataFloat as Float32Array<ArrayBuffer>)
 
     return {
       frequencies: this.frequencies,
-      magnitudes: this.frequencyDataFloat.slice(),
-      peaks: this.config.enablePeakHold ? this.peakData.slice() : new Float32Array(0),
+      magnitudes: this.frequencyDataFloat.slice() as Float32Array<ArrayBuffer>,
+      peaks: this.config.enablePeakHold
+        ? (this.peakData.slice() as Float32Array<ArrayBuffer>)
+        : (new Float32Array(0) as Float32Array<ArrayBuffer>),
       binCount: this.binCount,
       nyquistFrequency: this.nyquistFrequency,
       resolution: this.resolution,

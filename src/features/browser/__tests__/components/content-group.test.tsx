@@ -98,7 +98,10 @@ describe("ContentGroup", () => {
       render(<ContentGroup title="Test Group" items={items} viewMode="thumbnails" renderItem={defaultRenderItem} />)
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      expect(itemsContainer).toHaveClass("flex", "flex-wrap", "justify-between", "gap-3")
+      const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
+      expectedClasses.forEach((className) => {
+        expect(itemsContainer).toHaveClass(className)
+      })
     })
 
     it("должен применять правильные классы для режима grid", () => {
@@ -106,7 +109,10 @@ describe("ContentGroup", () => {
       render(<ContentGroup title="Test Group" items={items} viewMode="grid" renderItem={defaultRenderItem} />)
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      expect(itemsContainer).toHaveClass("items-left", "flex", "flex-wrap", "gap-3")
+      const expectedClasses = ["items-left", "flex", "flex-wrap", "gap-3"]
+      expectedClasses.forEach((className) => {
+        expect(itemsContainer).toHaveClass(className)
+      })
     })
 
     it("должен применять правильные классы для режима list", () => {
@@ -122,7 +128,10 @@ describe("ContentGroup", () => {
       render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} />)
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      expect(itemsContainer).toHaveClass("flex", "flex-wrap", "justify-between", "gap-3")
+      const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
+      expectedClasses.forEach((className) => {
+        expect(itemsContainer).toHaveClass(className)
+      })
     })
   })
 
@@ -177,7 +186,10 @@ describe("ContentGroup", () => {
       const button = screen.getByTestId("group-button")
       expect(button).toHaveTextContent("All files added")
       expect(button).toBeDisabled()
-      expect(button).toHaveClass("cursor-not-allowed", "opacity-50")
+      const expectedClasses = ["cursor-not-allowed", "opacity-50"]
+      expectedClasses.forEach((className) => {
+        expect(button).toHaveClass(className)
+      })
     })
 
     it("должен использовать кастомный текст для кнопок", () => {
@@ -227,7 +239,10 @@ describe("ContentGroup", () => {
       )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      expect(itemsContainer).toHaveClass("custom-class-1", "custom-class-2")
+      const expectedClasses = ["custom-class-1", "custom-class-2"]
+      expectedClasses.forEach((className) => {
+        expect(itemsContainer).toHaveClass(className)
+      })
     })
 
     it("должен применять кастомные стили для контейнера элементов", () => {

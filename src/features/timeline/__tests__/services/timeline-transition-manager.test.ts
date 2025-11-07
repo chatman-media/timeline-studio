@@ -313,15 +313,18 @@ describe("timeline-transition-manager", () => {
     it("должен возвращать переходы трека", () => {
       const transition: TimelineTransition = {
         id: "test-transition",
-        resourceId: "fade",
-        name: "Test Transition",
+        transitionId: "fade",
         type: "between",
         position: 5,
         duration: 2,
         parameters: {},
+        keyframes: [],
+        curve: { type: "ease", points: [] },
         startClipId: "clip-1",
         endClipId: "clip-2",
         trackId: "track-1",
+        isEnabled: true,
+        isLocked: false,
       }
 
       // Добавляем переход в проект
@@ -356,24 +359,30 @@ describe("timeline-transition-manager", () => {
       // Добавляем тестовые переходы
       const transition1: TimelineTransition = {
         id: "transition-1",
-        resourceId: "fade",
-        name: "Transition 1",
+        transitionId: "fade",
         type: "between",
         position: 5,
         duration: 2, // 5-7
         parameters: {},
+        keyframes: [],
+        curve: { type: "ease", points: [] },
         trackId: "track-1",
+        isEnabled: true,
+        isLocked: false,
       }
 
       const transition2: TimelineTransition = {
         id: "transition-2",
-        resourceId: "fade",
-        name: "Transition 2",
+        transitionId: "fade",
         type: "in",
         position: 10,
         duration: 3, // 10-13
         parameters: {},
+        keyframes: [],
+        curve: { type: "ease", points: [] },
         trackId: "track-1",
+        isEnabled: true,
+        isLocked: false,
       }
 
       mockProject.resources.timelineTransitions = [transition1, transition2]
@@ -422,37 +431,46 @@ describe("timeline-transition-manager", () => {
       testTransitions = [
         {
           id: "between-transition",
-          resourceId: "fade",
-          name: "Between Transition",
+          transitionId: "fade",
           type: "between",
           position: 9,
           duration: 2,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           startClipId: "clip-1",
           endClipId: "clip-2",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
         {
           id: "in-transition",
-          resourceId: "fade",
-          name: "In Transition",
+          transitionId: "fade",
           type: "in",
           position: 10,
           duration: 1,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           endClipId: "clip-2",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
         {
           id: "out-transition",
-          resourceId: "fade",
-          name: "Out Transition",
+          transitionId: "fade",
           type: "out",
           position: 9,
           duration: 1,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           startClipId: "clip-1",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
       ]
 
@@ -513,13 +531,16 @@ describe("timeline-transition-manager", () => {
     it("должен удалять переход из ресурсов и треков", () => {
       const transition: TimelineTransition = {
         id: "test-transition",
-        resourceId: "fade",
-        name: "Test Transition",
+        transitionId: "fade",
         type: "between",
         position: 5,
         duration: 2,
         parameters: {},
+        keyframes: [],
+        curve: { type: "ease", points: [] },
         trackId: "track-1",
+        isEnabled: true,
+        isLocked: false,
       }
 
       mockProject.resources.timelineTransitions = [transition]
@@ -534,13 +555,16 @@ describe("timeline-transition-manager", () => {
     it("должен удалять переход из всех треков (включая секции)", () => {
       const transition: TimelineTransition = {
         id: "test-transition",
-        resourceId: "fade",
-        name: "Test Transition",
+        transitionId: "fade",
         type: "between",
         position: 5,
         duration: 2,
         parameters: {},
+        keyframes: [],
+        curve: { type: "ease", points: [] },
         trackId: "track-1",
+        isEnabled: true,
+        isLocked: false,
       }
 
       const sectionTrack = createMockTrack("section-track", [])
@@ -584,49 +608,61 @@ describe("timeline-transition-manager", () => {
       const transitions: TimelineTransition[] = [
         {
           id: "in-transition",
-          resourceId: "fade",
-          name: "In Transition",
+          transitionId: "fade",
           type: "in",
           position: 0,
           duration: 1,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           endClipId: "clip-1",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
         {
           id: "out-transition",
-          resourceId: "fade",
-          name: "Out Transition",
+          transitionId: "fade",
           type: "out",
           position: 9,
           duration: 1,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           startClipId: "clip-1",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
         {
           id: "between-before",
-          resourceId: "fade",
-          name: "Between Before",
+          transitionId: "fade",
           type: "between",
           position: -1,
           duration: 2,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           startClipId: "clip-0",
           endClipId: "clip-1",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
         {
           id: "between-after",
-          resourceId: "fade",
-          name: "Between After",
+          transitionId: "fade",
           type: "between",
           position: 9,
           duration: 2,
           parameters: {},
+          keyframes: [],
+          curve: { type: "ease", points: [] },
           startClipId: "clip-1",
           endClipId: "clip-2",
           trackId: "track-1",
+          isEnabled: true,
+          isLocked: false,
         },
       ]
 

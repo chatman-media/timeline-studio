@@ -135,18 +135,20 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
 
   // Обнаружение лиц на изображении/видео
   const detectFaces = useCallback(
-    async (mediaPath: string, timerange?: { start: number; end: number }): Promise<DetectedFace[]> => {
+    async (mediaPath: string, _timerange?: { start: number; end: number }): Promise<DetectedFace[]> => {
       try {
         setError(null)
-        const faces = await sceneAnalysisEngine.detectPersons(mediaPath, timerange)
-        return faces
+        // TODO: Implement face detection via SceneAnalysisEngine
+        // Need to call analyzeScenes with enablePersonTracking option
+        logger.warnSync("Face detection not yet implemented in SceneAnalysisEngine")
+        return []
       } catch (err) {
         setError("Ошибка обнаружения лиц")
-        logger.errorSync("Failed to detect faces:", { error: err })
+        logger.errorSync("Failed to detect faces", { error: err })
         throw err
       }
     },
-    [sceneAnalysisEngine],
+    [],
   )
 
   // Идентификация персоны по лицу

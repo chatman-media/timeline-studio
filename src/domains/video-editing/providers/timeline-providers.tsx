@@ -82,7 +82,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+    const unsubscribe = backendSync.onStateChange((state: any) => {
       setBackendProject(state)
 
       // Преобразуем ProjectState в Timeline структуру
@@ -96,7 +96,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     })
 
     // Получаем начальное состояние
-    backendSync.getProjectState().then((state) => {
+    backendSync.getProjectState().then((state: any) => {
       if (state) {
         setBackendProject(state)
 

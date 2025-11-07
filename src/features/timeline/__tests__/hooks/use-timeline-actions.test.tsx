@@ -31,8 +31,8 @@ const mockVideoFile: MediaFile = {
   isVideo: true,
   isAudio: false,
   isImage: false,
-  createdAt: Date.now(),
-  modifiedAt: Date.now(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   probeData: {
     streams: [
       {
@@ -46,8 +46,8 @@ const mockVideoFile: MediaFile = {
     ],
     format: {
       format_name: "mp4",
-      duration: "30.0",
-      size: "1024000",
+      duration: 30.0,
+      size: 1024000,
     },
   },
 }
@@ -61,8 +61,8 @@ const mockAudioFile: MediaFile = {
   isVideo: false,
   isAudio: true,
   isImage: false,
-  createdAt: Date.now(),
-  modifiedAt: Date.now(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   probeData: {
     streams: [
       {
@@ -74,8 +74,8 @@ const mockAudioFile: MediaFile = {
     ],
     format: {
       format_name: "mp3",
-      duration: "60.0",
-      size: "512000",
+      duration: 60.0,
+      size: 512000,
     },
   },
 }
@@ -89,8 +89,8 @@ const mockImageFile: MediaFile = {
   isVideo: false,
   isAudio: false,
   isImage: true,
-  createdAt: Date.now(),
-  modifiedAt: Date.now(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 }
 
 describe("useTimelineActions", () => {

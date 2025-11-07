@@ -47,7 +47,7 @@ export async function uploadVideo(
 
     return publishResponse
   } catch (error) {
-    logger.error("TikTok upload error:", error)
+    logger.error(`TikTok upload error: ${String(error)}`)
     throw error
   }
 }

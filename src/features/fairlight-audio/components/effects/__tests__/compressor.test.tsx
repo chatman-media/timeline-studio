@@ -189,11 +189,11 @@ describe("Compressor", () => {
     expect(svg).toHaveAttribute("viewBox", "0 0 100 100")
 
     // Check for grid lines
-    const lines = svg.querySelectorAll("line")
-    expect(lines.length).toBeGreaterThan(0)
+    const lines = svg?.querySelectorAll("line")
+    expect(lines?.length).toBeGreaterThan(0)
 
     // Check for compression curve path
-    const path = svg.querySelector("path")
+    const path = svg?.querySelector("path")
     expect(path).toBeInTheDocument()
     expect(path).toHaveAttribute("stroke", "#3b82f6")
   })

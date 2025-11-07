@@ -182,7 +182,7 @@ export function useTransitionExport(options: UseTransitionExportOptions = {}) {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
 
-        logError("[useTransitionExport] Ошибка экспорта переходов", error)
+        logError(`[useTransitionExport] Ошибка экспорта переходов: ${String(error)}`)
 
         setState((prev) => ({
           ...prev,

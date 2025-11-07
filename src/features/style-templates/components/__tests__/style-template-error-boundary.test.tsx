@@ -139,7 +139,7 @@ describe("StyleTemplateErrorBoundary", () => {
     expect(errorIcon).toBeInTheDocument()
 
     const retryButton = screen.getByText("Попробовать снова")
-    expect(retryButton).toHaveClass("flex", "items-center", "gap-2", "rounded-md", "bg-red-600")
+    expect(retryButton).toHaveClass("flex items-center gap-2 rounded-md bg-red-600")
   })
 
   it("should have refresh icon in retry button", () => {
