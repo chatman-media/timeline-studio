@@ -8,6 +8,8 @@ export interface VideoCompilerCacheStats {
   preview_misses: number
   metadata_hits: number
   metadata_misses: number
+  cache_hits: number
+  cache_misses: number
   memory_usage: CacheMemoryUsage
   cache_size_mb: number
   total_size_mb: number

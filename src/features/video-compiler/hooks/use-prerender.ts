@@ -26,8 +26,6 @@ export interface PrerenderState {
 }
 
 export function usePrerender() {
-  logInfo("[usePrerender] Инициализация usePrerender хука")
-
   const { t } = useTranslation()
   const { project } = useTimeline()
   const [state, setState] = useState<PrerenderState>({
@@ -40,30 +38,19 @@ export function usePrerender() {
    */
   const prerender = useCallback(
     async (startTime: number, endTime: number, applyEffects = true, quality = 75) => {
-      logInfo("[usePrerender] Запуск пререндера сегмента", {
-        startTime,
-        endTime,
-        duration: endTime - startTime,
-        applyEffects,
-        quality,
-      })
-
       if (!project) {
-        logError("[usePrerender] Проект не загружен")
         toast.error(t("videoCompiler.prerender.projectNotLoaded"))
         return null
       }
 
       // Валидация временного диапазона
       if (startTime >= endTime) {
-        logError("[usePrerender] Неверный временной диапазон", { startTime, endTime })
         toast.error(t("videoCompiler.prerender.invalidTimeRange"))
         return null
       }
 
       const duration = endTime - startTime
       if (duration > 60) {
-        logError("[usePrerender] Превышен лимит длительности", { duration })
         toast.error(t("videoCompiler.prerender.limitExceeded"))
         return null
       }
@@ -81,8 +68,6 @@ export function usePrerender() {
           quality: quality || 75,
         })
 
-        logInfo("[usePrerender] Запуск пререндера через сервис")
-
         // Запускаем пререндер
         const result = await prerenderSegment({
           projectSchema,
@@ -99,18 +84,11 @@ export function usePrerender() {
           currentResult: result,
         }))
 
-        logInfo("[usePrerender] Пререндер завершен успешно", {
-          filePath: result.filePath,
-          duration: result.duration,
-          fileSize: result.fileSize,
-          renderTimeMs: result.renderTimeMs,
-        })
-
         toast.success(t("videoCompiler.prerender.completed", { time: result.renderTimeMs }))
         return result
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : t("common.unknownError")
-        logError("[usePrerender] Ошибка пререндера", error)
+        // logError("[usePrerender] Ошибка пререндера", error)
 
         setState((prev) => ({
           ...prev,
@@ -130,7 +108,7 @@ export function usePrerender() {
    * Очистить результат пререндера
    */
   const clearResult = useCallback(() => {
-    logInfo("[usePrerender] Очистка результата пререндера")
+    // logInfo("[usePrerender] Очистка результата пререндера")
     setState((prev) => ({
       ...prev,
       currentResult: undefined,
@@ -149,7 +127,7 @@ export function usePrerender() {
  * Hook для кеширования пререндеров с использованием файловой системы
  */
 export function usePrerenderCache() {
-  logInfo("[usePrerenderCache] Инициализация usePrerenderCache хука")
+  // logInfo("[usePrerenderCache] Инициализация usePrerenderCache хука")
 
   const { t } = useTranslation()
   const [cacheFiles, setCacheFiles] = useState<PrerenderCacheFile[]>([])
@@ -160,18 +138,14 @@ export function usePrerenderCache() {
    * Загрузить информацию о кеше
    */
   const loadCacheInfo = useCallback(async () => {
-    logInfo("[usePrerenderCache] Загрузка информации о кеше")
+    // logInfo("[usePrerenderCache] Загрузка информации о кеше")
     setIsLoading(true)
     try {
       const info = await getPrerenderCacheInfo()
       setCacheFiles(info.files)
       setTotalSize(info.totalSize)
-      logInfo("[usePrerenderCache] Информация о кеше загружена", {
-        filesCount: info.files.length,
-        totalSize: info.totalSize,
-      })
     } catch (error) {
-      logError("[usePrerenderCache] Ошибка загрузки информации о кеше", error)
+      // Error loading cache info
     } finally {
       setIsLoading(false)
     }
@@ -234,18 +208,18 @@ export function usePrerenderCache() {
    * Очистить кеш
    */
   const clearPrerenderCache = useCallback(async () => {
-    logInfo("[usePrerenderCache] Очистка кеша")
+    // logInfo("[usePrerenderCache] Очистка кеша")
 
     try {
       const deletedSize = await clearCache()
-      logInfo("[usePrerenderCache] Кеш очищен успешно", { deletedSize })
+      // logInfo("[usePrerenderCache] Кеш очищен успешно", { deletedSize })
       toast.success(t("videoCompiler.prerender.cacheCleared", { size: (deletedSize / 1024 / 1024).toFixed(2) }))
 
       // Обновляем информацию
       setCacheFiles([])
       setTotalSize(0)
     } catch (error) {
-      logError("[usePrerenderCache] Ошибка очистки кеша", error)
+      // logError("[usePrerenderCache] Ошибка очистки кеша", error)
       toast.error(t("videoCompiler.prerender.errorClearingCache"))
     }
   }, [])

@@ -7,16 +7,30 @@ import { describe, expect, it, vi } from "vitest"
 import { fireEvent, render, screen, waitFor } from "@/test/test-utils"
 
 import { SubtitleEditor } from "../../components/subtitle-editor"
-import type { TimelineClip } from "../../types/timeline"
+import type { SubtitleClip } from "@/features/subtitles/types"
 
 // Мокаем данные субтитра
-const mockSubtitle: TimelineClip = {
+const mockSubtitle: SubtitleClip = {
   id: "subtitle-1",
-  trackId: "track-1",
+  name: "Test Subtitle",
   type: "subtitle",
+  mediaId: "subtitle-media-1",
+  trackId: "track-1",
   text: "Test subtitle text",
   startTime: 5,
   duration: 3,
+  mediaStartTime: 5,
+  mediaEndTime: 8,
+  offset: 0,
+  volume: 1,
+  speed: 1,
+  isReversed: false,
+  opacity: 1,
+  effects: [],
+  filters: [],
+  transitions: [],
+  isSelected: false,
+  isLocked: false,
   subtitleStyleId: "style-1",
   animationIn: { type: "fade", duration: 0.5 },
   animationOut: { type: "slide", duration: 0.3 },

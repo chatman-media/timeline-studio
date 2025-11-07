@@ -8,7 +8,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { type EffectsPlayerConfig, getEffectsPlayerIntegration } from "../services/effects-player-integration"
 import type { TimelineClip } from "../types"
 
-const logger = createLogger({ module: "UseEffectsPreview" })
+const logger = createLogger("UseEffectsPreview")
 
 export interface UseEffectsPreviewOptions extends EffectsPlayerConfig {
   enabled?: boolean

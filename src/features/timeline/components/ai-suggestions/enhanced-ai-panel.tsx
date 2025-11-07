@@ -16,7 +16,7 @@ import { useTimeline } from "@/features/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
-const logger = createLogger({ module: "EnhancedAiPanel" })
+const logger = createLogger("EnhancedAiPanel")
 
 interface EnhancedAIPanelProps {
   className?: string

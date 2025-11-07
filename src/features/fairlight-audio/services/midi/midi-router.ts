@@ -7,7 +7,7 @@ import { EventEmitter } from "events"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MidiMessage } from "./midi-engine"
 
-const logger = createLogger({ module: "MidiRouter" })
+const logger = createLogger("MidiRouter")
 
 export interface MidiRoute {
   id: string
@@ -409,12 +409,12 @@ export class MidiRouter extends EventEmitter {
           try {
             destination.callback(finalMessage)
           } catch (error) {
-            logger.error("Error in MIDI route callback:", error)
+            logger.error("Error in MIDI route callback:", { error })
           }
         }
         break
       default:
-        logger.warn("Unknown destination type:", destination.type)
+        logger.warn("Unknown destination type:", { type: destination.type })
         break
     }
   }

@@ -43,11 +43,11 @@ interface UseTransitionsReturn {
  */
 function initializeTransitions(t: (key: string, fallback?: string, options?: any) => string) {
   if (globalInitialized) {
-    logInfo("useTransitions", "Transitions already initialized, skipping")
+    void logInfo("Transitions already initialized, skipping")
     return
   }
 
-  logInfo("useTransitions", "Starting transitions initialization")
+  void logInfo("Starting transitions initialization")
 
   try {
     // Загружаем базовые переходы
@@ -55,30 +55,30 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
     if (!validateTransitionsData(baseData)) {
       throw new Error(t("transitions.errors.invalidTransitionsData", "Invalid base transitions data structure"))
     }
-    logInfo("useTransitions", `Loaded ${baseData.transitions.length} base transitions`)
+    void logInfo(`Loaded ${baseData.transitions.length} base transitions`)
 
     // Загружаем расширенные переходы
     const advancedData = advancedTransitionsData
     if (!validateTransitionsData(advancedData)) {
-      logInfo("useTransitions", "Invalid advanced transitions data, skipping")
+      void logInfo("Invalid advanced transitions data, skipping")
     } else {
-      logInfo("useTransitions", `Loaded ${advancedData.transitions.length} advanced transitions`)
+      void logInfo(`Loaded ${advancedData.transitions.length} advanced transitions`)
     }
 
     // Загружаем динамические переходы
     const dynamicData = dynamicTransitionsData
     if (!validateTransitionsData(dynamicData)) {
-      logInfo("useTransitions", "Invalid dynamic transitions data, skipping")
+      void logInfo("Invalid dynamic transitions data, skipping")
     } else {
-      logInfo("useTransitions", `Loaded ${dynamicData.transitions.length} dynamic transitions`)
+      void logInfo(`Loaded ${dynamicData.transitions.length} dynamic transitions`)
     }
 
     // Загружаем glitch переходы
     const glitchData = glitchTransitionsData
     if (!validateTransitionsData(glitchData)) {
-      logInfo("useTransitions", "Invalid glitch transitions data, skipping")
+      void logInfo("Invalid glitch transitions data, skipping")
     } else {
-      logInfo("useTransitions", `Loaded ${glitchData.transitions.length} glitch transitions`)
+      void logInfo(`Loaded ${glitchData.transitions.length} glitch transitions`)
     }
 
     // Объединяем переходы из всех файлов
@@ -89,8 +89,7 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
       ...(glitchData && validateTransitionsData(glitchData) ? glitchData.transitions : []),
     ]
 
-    logInfo(
-      "useTransitions",
+    void logInfo(
       `Total transitions before processing: ${allTransitions.length} (${baseData.transitions.length} base + ${advancedData?.transitions?.length || 0} advanced + ${dynamicData?.transitions?.length || 0} dynamic + ${glitchData?.transitions?.length || 0} glitch)`,
     )
 
@@ -98,8 +97,7 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
     globalTransitions = processTransitions(allTransitions)
     globalError = null
 
-    logInfo(
-      "useTransitions",
+    void logInfo(
       `Successfully processed and initialized ${globalTransitions.length} transitions from JSON`,
     )
   } catch (err) {
@@ -108,7 +106,7 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
       error: errorMessage,
     })
 
-    logError("useTransitions", `Initialization failed: ${errorMessage}, using fallback transitions`)
+    void logError(`Initialization failed: ${errorMessage}, using fallback transitions`)
 
     // Создаем fallback переходы в случае ошибки
     globalTransitions = [
@@ -117,7 +115,7 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
       createFallbackTransition("slide"),
     ]
 
-    logInfo("useTransitions", "Created 3 fallback transitions")
+    void logInfo("Created 3 fallback transitions")
   } finally {
     globalLoading = false
     globalInitialized = true

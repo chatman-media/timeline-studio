@@ -12,7 +12,7 @@ import {
   migrationStats,
 } from "../index"
 
-const logger = createLogger({ module: "UseMigratedEffects" })
+const logger = createLogger("UseMigratedEffects")
 
 // Создаем менеджер эффектов с загрузкой всех эффектов
 const effectManager = createEffectManager({

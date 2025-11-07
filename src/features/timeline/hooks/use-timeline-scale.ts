@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "UseTimelineScale" })
+const logger = createLogger("UseTimelineScale")
 
 interface TimeScale {
   main: number

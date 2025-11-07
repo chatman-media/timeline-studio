@@ -104,8 +104,8 @@ describe("MidiRouterView", () => {
         sourceChannel: 1,
         sourceType: ["noteon", "noteoff"],
         destinations: [
-          { type: "device", deviceId: "output1" },
-          { type: "channel", targetChannel: 2 },
+          { id: "dest1", type: "device", deviceId: "output1" },
+          { id: "dest2", type: "channel", targetChannel: 2 },
         ],
         processors: [],
       },
@@ -113,13 +113,13 @@ describe("MidiRouterView", () => {
         id: "route2",
         name: "Test Route 2",
         enabled: false,
-        sourceDevice: null,
-        sourceChannel: null,
+        sourceDevice: undefined,
+        sourceChannel: undefined,
         sourceType: [],
-        destinations: [{ type: "virtual", virtualId: "virtual1" }],
+        destinations: [{ id: "dest3", type: "virtual", virtualId: "virtual1" }],
         processors: [
-          { type: "filter", config: {} },
-          { type: "transform", config: {} },
+          { id: "proc1", type: "filter", enabled: true, config: {} },
+          { id: "proc2", type: "transform", enabled: true, config: {} },
         ],
       },
     ]
@@ -180,31 +180,31 @@ describe("MidiRouterView", () => {
           name: "Test Route 1",
           enabled: true,
           sourceDevice: "input1",
-          destinations: [{ type: "device", deviceId: "output1" }],
-          processors: [{ type: "split", config: {} }],
+          destinations: [{ id: "dest1", type: "device", deviceId: "output1" }],
+          processors: [{ id: "proc1", type: "split", enabled: true, config: {} }],
         },
         {
           id: "route2",
           name: "Test Route 2",
           enabled: false,
-          sourceDevice: null,
-          destinations: [{ type: "device", deviceId: "output2", channel: 2 }],
-          processors: [{ type: "filter", config: {} }],
+          sourceDevice: undefined,
+          destinations: [{ id: "dest2", type: "device", deviceId: "output2" }],
+          processors: [{ id: "proc2", type: "filter", enabled: true, config: {} }],
         },
         {
           id: "route3",
           name: "Test Route 3",
           enabled: true,
           sourceDevice: "input2",
-          destinations: [{ type: "device", deviceId: "output1" }],
-          processors: [{ type: "transform", config: {} }],
+          destinations: [{ id: "dest3", type: "device", deviceId: "output1" }],
+          processors: [{ id: "proc3", type: "transform", enabled: true, config: {} }],
         },
         {
           id: "route4",
           name: "Test Route 4",
           enabled: true,
           sourceDevice: "input1",
-          destinations: [{ type: "device", deviceId: "output1" }],
+          destinations: [{ id: "dest4", type: "device", deviceId: "output1" }],
           processors: [],
         },
       ]
@@ -232,7 +232,7 @@ describe("MidiRouterView", () => {
       name: "Test Route",
       enabled: true,
       sourceDevice: "input1",
-      destinations: [{ type: "device", deviceId: "output1" }],
+      destinations: [{ id: "dest1", type: "device", deviceId: "output1" }],
       processors: [],
     }
 
@@ -411,8 +411,8 @@ describe("MidiRouterView", () => {
         id: "route1",
         name: "Any Device Route",
         enabled: true,
-        sourceDevice: null,
-        destinations: [{ type: "device", deviceId: "output1" }],
+        sourceDevice: undefined,
+        destinations: [{ id: "dest1", type: "device", deviceId: "output1" }],
         processors: [],
       }
 
@@ -429,7 +429,7 @@ describe("MidiRouterView", () => {
         name: "Unknown Device Route",
         enabled: true,
         sourceDevice: "unknown-device",
-        destinations: [{ type: "device", deviceId: "unknown-output" }],
+        destinations: [{ id: "dest1", type: "device", deviceId: "unknown-output" }],
         processors: [],
       }
 
@@ -446,7 +446,7 @@ describe("MidiRouterView", () => {
         id: "route1",
         name: "Function Route",
         enabled: true,
-        destinations: [{ type: "function" as any }],
+        destinations: [{ id: "dest1", type: "function" as any }],
         processors: [],
       }
 
@@ -462,7 +462,7 @@ describe("MidiRouterView", () => {
         id: "route1",
         name: "Unknown Route",
         enabled: true,
-        destinations: [{ type: "unknown" as any }],
+        destinations: [{ id: "dest1", type: "unknown" as any }],
         processors: [],
       }
 

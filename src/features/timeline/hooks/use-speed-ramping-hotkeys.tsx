@@ -5,7 +5,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useSpeedRamping } from "./use-speed-ramping"
 import { useTimeline } from "./use-timeline"
 
-const logger = createLogger({ module: "UseSpeedRampingHotkeys" })
+const logger = createLogger("UseSpeedRampingHotkeys")
 
 export function useSpeedRampingHotkeys() {
   const { send, selectedClipIds } = useTimeline()

@@ -37,8 +37,8 @@ describe("IndexedDBCacheService", () => {
     // Reset singleton instance
     ;(IndexedDBCacheService as any).instance = null
 
-    // Mock store creation
-    mockCreateStore.mockReturnValue({})
+    // Mock store creation - return a mock store object
+    mockCreateStore.mockReturnValue({} as any)
 
     service = IndexedDBCacheService.getInstance()
   })
@@ -351,10 +351,10 @@ describe("IndexedDBCacheService", () => {
       const mockPreviewEntries = [
         ["file1", { fileId: "file1", thumbnail: "data1", timestamp: Date.now(), size: 1000 }],
         ["file2", { fileId: "file2", thumbnail: "data2", timestamp: Date.now(), size: 1500 }],
-      ]
-      const mockFrameEntries = [["video1", { fileId: "video1", frames: [], timestamp: Date.now(), size: 2000 }]]
-      const mockRecognitionEntries = [["recog1", { fileId: "recog1", frames: [], timestamp: Date.now(), size: 3000 }]]
-      const mockSubtitleEntries = [["sub1", { fileId: "sub1", frames: [], timestamp: Date.now(), size: 500 }]]
+      ] as any
+      const mockFrameEntries = [["video1", { fileId: "video1", frames: [], timestamp: Date.now(), size: 2000 }]] as any
+      const mockRecognitionEntries = [["recog1", { fileId: "recog1", frames: [], timestamp: Date.now(), size: 3000 }]] as any
+      const mockSubtitleEntries = [["sub1", { fileId: "sub1", frames: [], timestamp: Date.now(), size: 500 }]] as any
 
       mockEntries
         .mockResolvedValueOnce(mockPreviewEntries)
@@ -423,7 +423,7 @@ describe("IndexedDBCacheService", () => {
       const mockExpiredEntries = [
         ["expired1", { fileId: "expired1", thumbnail: "data", timestamp: expiredTime, size: 1000 }],
         ["valid1", { fileId: "valid1", thumbnail: "data", timestamp: validTime, size: 1000 }],
-      ]
+      ] as any
 
       mockEntries.mockResolvedValue(mockExpiredEntries)
 
@@ -487,7 +487,7 @@ describe("IndexedDBCacheService", () => {
       const oldEntries = [
         ["old1", { fileId: "old1", timestamp: Date.now() - 10000, size: 100 * 1024 * 1024 }],
         ["old2", { fileId: "old2", timestamp: Date.now() - 20000, size: 100 * 1024 * 1024 }],
-      ]
+      ] as any
       mockEntries.mockResolvedValue(oldEntries)
 
       // This should trigger cleanup internally
@@ -503,17 +503,17 @@ describe("IndexedDBCacheService", () => {
       const newTime = Date.now() - 10000
 
       // Mock entries for preview store (first call)
-      const previewEntries = [["old", { fileId: "old", timestamp: oldTime, size: 1000 }]]
+      const previewEntries = [["old", { fileId: "old", timestamp: oldTime, size: 1000 }]] as any
 
       // Mock entries for frame store (second call)
-      const frameEntries = [["new", { fileId: "new", timestamp: newTime, size: 1000 }]]
+      const frameEntries = [["new", { fileId: "new", timestamp: newTime, size: 1000 }]] as any
 
       // Mock the entries call for each store in order
       mockEntries
         .mockResolvedValueOnce(previewEntries) // preview store
         .mockResolvedValueOnce(frameEntries) // frame store
-        .mockResolvedValueOnce([]) // recognition store
-        .mockResolvedValueOnce([]) // subtitle store
+        .mockResolvedValueOnce([] as any) // recognition store
+        .mockResolvedValueOnce([] as any) // subtitle store
 
       await removeOldestEntries(1500) // Need to free 1500 bytes
 

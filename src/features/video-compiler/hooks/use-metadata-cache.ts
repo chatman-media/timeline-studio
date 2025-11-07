@@ -14,7 +14,7 @@ import {
 } from "../services/metadata-cache-service"
 import type { CacheMemoryUsage } from "../types/cache"
 
-const logger = createLogger({ module: "UseMetadataCache" })
+const logger = createLogger("UseMetadataCache")
 
 interface UseMetadataCacheReturn {
   // Получение метаданных
@@ -102,7 +102,7 @@ export function useMetadataCache(): UseMetadataCacheReturn {
   }, [])
 
   return {
-    getMetadata,
+    getMetadata: getMetadata as (filePath: string) => Promise<MediaMetadata | null>,
     saveMetadata,
     saveMultipleMetadata,
     checkCached,
@@ -144,7 +144,7 @@ export function useAutoMetadataCache(files: Array<{ path: string; needsMetadata?
         await saveMetadata(filePath, metadata)
         setCachedStatus((prev) => new Map(prev).set(filePath, true))
       } catch (error) {
-        logger.error(`Failed to cache metadata for ${filePath}:`, error)
+        void logger.error(`Failed to cache metadata for ${filePath}:`, { error })
       }
     },
     [saveMetadata],

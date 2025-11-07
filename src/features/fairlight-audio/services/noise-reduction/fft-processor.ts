@@ -3,6 +3,10 @@
  * Handles Fast Fourier Transform operations for spectral processing
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("FFTProcessor")
+
 export class FFTProcessor {
   private fftSize: number
   private sampleRate: number
@@ -11,10 +15,17 @@ export class FFTProcessor {
 
   // Buffers
   private inputBuffer: Float32Array
+  private outputBuffer: Float32Array
+  private overlapBuffer: Float32Array
+  private realBuffer: Float32Array
+  private imagBuffer: Float32Array
 
   // Pre-computed values
   private windowSum: number
   private scaleFactor: number
+
+  // Noise profile
+  private noiseProfile: Float32Array | null = null
 
   constructor(fftSize = 2048, sampleRate = 48000, overlap = 0.5) {
     this.fftSize = fftSize

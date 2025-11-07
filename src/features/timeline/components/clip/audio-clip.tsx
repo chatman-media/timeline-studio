@@ -15,7 +15,7 @@ import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import type { AppliedEffect, TimelineClip, TimelineTrack } from "../../types"
 import Waveform from "../track/waveform"
 
-const logger = createLogger({ module: "AudioClip" })
+const logger = createLogger("AudioClip")
 
 interface AudioClipProps {
   clip: TimelineClip

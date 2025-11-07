@@ -19,7 +19,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useMidiEngine } from "../../hooks/use-midi-engine"
 import type { MidiDestination, MidiRoute } from "../../services/midi/midi-router"
 
-const logger = createLogger({ module: "MidiRouterView" })
+const logger = createLogger("MidiRouterView")
 
 interface RouteItemProps {
   route: MidiRoute
@@ -204,7 +204,7 @@ export function MidiRouterView() {
         )
         break
       default:
-        logger.warn("Unknown preset:", selectedPreset)
+        logger.warn("Unknown preset:", { preset: selectedPreset })
         break
     }
 

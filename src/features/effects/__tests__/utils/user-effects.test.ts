@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { VideoEffect } from "../../types/unified-effects"
+import type { BaseEffect } from "../../types/unified-effects"
 
 import {
   deleteUserEffect,
@@ -34,7 +34,7 @@ describe("user-effects", () => {
     vi.resetAllMocks()
   })
 
-  const createMockEffect = (id: string): VideoEffect => ({
+  const createMockEffect = (id: string): BaseEffect => ({
     id,
     name: {
       ru: `Тестовый эффект ${id}`,

@@ -20,7 +20,7 @@ import type { BaseEffect } from "../types"
 import { EffectDetail } from "./effect-detail"
 import { EffectGroup } from "./effect-group"
 
-const logger = createLogger({ module: "EffectManagerPanel" })
+const logger = createLogger("EffectManagerPanel")
 
 // Категории эффектов с локализацией
 const EFFECT_CATEGORIES = {

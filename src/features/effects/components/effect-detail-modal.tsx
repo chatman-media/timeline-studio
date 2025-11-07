@@ -15,7 +15,7 @@ import { EffectParameterControls } from "./effect-parameter-controls"
 import { EffectPresets } from "./effect-presets"
 import { EffectPreview } from "./effect-preview"
 
-const logger = createLogger({ module: "EffectDetailModal" })
+const logger = createLogger("EffectDetailModal")
 
 /**
  * Компонент для детального просмотра эффекта с возможностью настройки параметров
@@ -93,7 +93,7 @@ export function EffectDetailModal() {
         localStorage.setItem(storageKey, JSON.stringify(presets))
 
         // Уведомляем пользователя об успешном сохранении
-        logger.info("Custom preset saved:", name, params)
+        logger.info("Custom preset saved:", { name, params })
 
         // Обновляем состояние компонента, если нужно показать новый пресет
         // Можно добавить toast уведомление здесь
@@ -132,7 +132,7 @@ export function EffectDetailModal() {
       )
 
       const filePath = await saveUserEffect(effectToExport, exportName)
-      logger.info("Effect exported to:", filePath)
+      logger.info("Effect exported to:", { filePath })
 
       // Можем добавить toast уведомление об успешном экспорте
     } catch (error) {

@@ -149,8 +149,8 @@ describe("EffectPreview", () => {
       render(<EffectPreview {...mockProps} onClick={onClick} />)
 
       // Кликаем на превью
-      const preview = document.querySelector(".cursor-pointer")!
-      if (preview) {
+      const preview = document.querySelector(".cursor-pointer")
+      if (preview && "click" in preview && typeof preview.click === "function") {
         preview.click()
       }
 

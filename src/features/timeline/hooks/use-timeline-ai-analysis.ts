@@ -16,7 +16,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
-const logger = createLogger({ module: "UseTimelineAiAnalysis" })
+const logger = createLogger("UseTimelineAiAnalysis")
 
 interface TimelineAnalysisState {
   isAnalyzing: boolean

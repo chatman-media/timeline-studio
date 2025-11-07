@@ -97,11 +97,11 @@ describe("useMediaProcessor", () => {
   describe("event handling", () => {
     it("should handle FilesDiscovered event", async () => {
       const onFilesDiscovered = vi.fn()
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -110,7 +110,7 @@ describe("useMediaProcessor", () => {
 
       // Simulate FilesDiscovered event
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "FilesDiscovered",
             data: {
@@ -126,11 +126,11 @@ describe("useMediaProcessor", () => {
 
     it("should handle MetadataReady event and cache metadata", async () => {
       const onMetadataReady = vi.fn()
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -139,7 +139,7 @@ describe("useMediaProcessor", () => {
 
       // Simulate MetadataReady event
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "MetadataReady",
             data: {
@@ -171,11 +171,11 @@ describe("useMediaProcessor", () => {
 
     it("should handle ThumbnailReady event", async () => {
       const onThumbnailReady = vi.fn()
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -184,7 +184,7 @@ describe("useMediaProcessor", () => {
 
       // Simulate ThumbnailReady event
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "ThumbnailReady",
             data: {
@@ -206,11 +206,11 @@ describe("useMediaProcessor", () => {
 
     it("should handle ProcessingError event", async () => {
       const onError = vi.fn()
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -219,7 +219,7 @@ describe("useMediaProcessor", () => {
 
       // Simulate ProcessingError event
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "ProcessingError",
             data: {
@@ -237,11 +237,11 @@ describe("useMediaProcessor", () => {
 
     it("should handle ScanProgress event", async () => {
       const onProgress = vi.fn()
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -250,7 +250,7 @@ describe("useMediaProcessor", () => {
 
       // Simulate ScanProgress event
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "ScanProgress",
             data: {
@@ -472,11 +472,11 @@ describe("useMediaProcessor", () => {
 
   describe("clearErrors", () => {
     it("should clear all errors", async () => {
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -485,7 +485,7 @@ describe("useMediaProcessor", () => {
 
       // Add some errors
       await act(async () => {
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "ProcessingError",
             data: {
@@ -495,7 +495,7 @@ describe("useMediaProcessor", () => {
             },
           },
         })
-        eventCallback.current({
+        eventCallback({
           payload: {
             type: "ProcessingError",
             data: {
@@ -563,11 +563,11 @@ describe("useMediaProcessor", () => {
 
   describe("parseFrameRate helper", () => {
     it("should parse various frame rate formats", async () => {
-      const eventCallback = vi.fn()
+      let eventCallback: any
 
       mockListen.mockImplementation((eventName, callback) => {
         if (eventName === "media-processor") {
-          eventCallback.current = callback
+          eventCallback = callback
         }
         return Promise.resolve(() => {})
       })
@@ -600,7 +600,7 @@ describe("useMediaProcessor", () => {
         }
 
         await act(async () => {
-          eventCallback.current({
+          eventCallback({
             payload: {
               type: "MetadataReady",
               data: {

@@ -7,7 +7,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip, TimelineProject, TimelineTransition } from "../types"
 import { generateId } from "../utils/id-generator"
 
-const logger = createLogger({ module: "TransitionManager" })
+const logger = createLogger("TransitionManager")
 
 export interface TransitionApplication {
   leftClipId: string

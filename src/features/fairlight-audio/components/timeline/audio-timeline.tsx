@@ -6,7 +6,7 @@ import type { AudioClip } from "../../services/audio-clip-editor"
 import { AudioClipEditorComponent } from "../editor/audio-clip-editor"
 import { AudioClipComponent } from "./audio-clip"
 
-const logger = createLogger({ module: "AudioTimeline" })
+const logger = createLogger("AudioTimeline")
 
 interface AudioTrack {
   id: string
@@ -68,7 +68,7 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
 
         onTracksUpdate(updatedTracks)
       } catch (error) {
-        logger.error("Failed to split clip:", error)
+        logger.error("Failed to split clip:", { error })
       }
     },
     [tracks, onTracksUpdate, splitClip],

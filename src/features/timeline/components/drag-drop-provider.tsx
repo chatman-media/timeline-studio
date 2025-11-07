@@ -19,7 +19,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
 import { initializeDragDropBridge } from "../services/drag-drop-bridge"
 
-const logger = createLogger({ module: "DragDropProvider" })
+const logger = createLogger("DragDropProvider")
 
 interface DragDropProviderProps {
   children: React.ReactNode

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { useClipResources } from "../../hooks/use-clip-resources"
 import type { TimelineClip } from "../../types"
 
-const logger = createLogger({ module: "ClipDropZone" })
+const logger = createLogger("ClipDropZone")
 
 interface ClipDropZoneProps {
   clip: TimelineClip

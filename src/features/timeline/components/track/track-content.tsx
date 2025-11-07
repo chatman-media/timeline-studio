@@ -22,7 +22,7 @@ import { TransitionDropZone } from "../transition/transition-drop-zone"
 import { TimelineTransitionComponent } from "../transitions/timeline-transition"
 import { TrackRollHandles } from "./track-roll-handles"
 
-const logger = createLogger({ module: "TrackContent" })
+const logger = createLogger("TrackContent")
 
 interface TrackContentProps {
   track: TimelineTrack

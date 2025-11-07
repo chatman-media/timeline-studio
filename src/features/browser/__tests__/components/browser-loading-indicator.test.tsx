@@ -7,6 +7,7 @@ import {
   BrowserTabLoadingBadge,
 } from "../../components/browser-loading-indicator"
 import { useLoadingState, useResourcesStats } from "../../hooks/use-resources"
+import type { ResourceStats } from "../../types/browser-resources-provider"
 
 // Мокаем хуки
 vi.mock("../../hooks/use-resources")
@@ -42,9 +43,14 @@ describe("BrowserLoadingIndicator", () => {
   const mockStats = {
     total: 0,
     byType: {
-      effects: 0,
-      filters: 0,
-      transitions: 0,
+      media: 0,
+      music: 0,
+      subtitle: 0,
+      effect: 0,
+      filter: 0,
+      transition: 0,
+      template: 0,
+      styleTemplate: 0,
     },
     bySource: {
       "built-in": 0,
@@ -145,7 +151,7 @@ describe("BrowserLoadingIndicator", () => {
       vi.mocked(useLoadingState).mockReturnValue({
         ...mockLoadingState,
         isLoading: true,
-        loadingQueue: ["effects", "filters"],
+        loadingQueue: ["built-in", "local"],
       })
 
       render(<BrowserLoadingIndicator />)
@@ -172,7 +178,7 @@ describe("BrowserLoadingIndicator", () => {
       vi.mocked(useLoadingState).mockReturnValue({
         ...mockLoadingState,
         isLoading: true,
-        loadedSources: new Set(["built-in", "custom"]),
+        loadedSources: new Set(["built-in", "local"]),
       })
 
       render(<BrowserLoadingIndicator />)
@@ -187,10 +193,15 @@ describe("BrowserLoadingIndicator", () => {
       vi.mocked(useResourcesStats).mockReturnValue({
         total: 100,
         byType: {
-          effect: 50,
-          filter: 30,
-          transition: 20,
-        },
+      media: 0,
+      music: 0,
+      subtitle: 0,
+      effect: 50,
+      filter: 30,
+      transition: 20,
+      template: 0,
+      styleTemplate: 0,
+    },
       })
 
       render(<BrowserLoadingIndicator />)
@@ -236,9 +247,14 @@ describe("BrowserTabLoadingBadge", () => {
   const mockStats = {
     total: 0,
     byType: {
-      effects: 0,
-      filters: 0,
-      transitions: 0,
+      media: 0,
+      music: 0,
+      subtitle: 0,
+      effect: 0,
+      filter: 0,
+      transition: 0,
+      template: 0,
+      styleTemplate: 0,
     },
     bySource: {
       "built-in": 0,
@@ -256,7 +272,7 @@ describe("BrowserTabLoadingBadge", () => {
   })
 
   it("не должен отображаться когда нет ресурсов и загрузки", () => {
-    const { container } = render(<BrowserTabLoadingBadge resourceType="effects" />)
+    const { container } = render(<BrowserTabLoadingBadge resourceType="effect" />)
     expect(container.firstChild).toBeNull()
   })
 
@@ -264,13 +280,13 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 100,
       byType: {
-        effects: 25,
-        filters: 0,
-        transitions: 0,
+        effect: 25,
+        filter: 0,
+        transition: 0,
       },
     })
 
-    render(<BrowserTabLoadingBadge resourceType="effects" />)
+    render(<BrowserTabLoadingBadge resourceType="effect" />)
     expect(screen.getByText("25")).toBeInTheDocument()
   })
 
@@ -280,7 +296,7 @@ describe("BrowserTabLoadingBadge", () => {
       isLoading: true,
     })
 
-    render(<BrowserTabLoadingBadge resourceType="effects" />)
+    render(<BrowserTabLoadingBadge resourceType="effect" />)
 
     const badge = screen.getByTestId("badge")
     expect(badge).toHaveAttribute("data-variant", "secondary")
@@ -293,14 +309,14 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 10,
       byType: {
-        effects: 10,
-        filters: 0,
-        transitions: 0,
+        effect: 10,
+        filter: 0,
+        transition: 0,
       },
     })
 
     // Без загрузки
-    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effects" />)
+    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" />)
     expect(screen.getByTestId("badge")).toHaveAttribute("data-variant", "outline")
 
     // С загрузкой
@@ -308,7 +324,7 @@ describe("BrowserTabLoadingBadge", () => {
       ...mockLoadingState,
       isLoading: true,
     })
-    rerender(<BrowserTabLoadingBadge resourceType="effects" />)
+    rerender(<BrowserTabLoadingBadge resourceType="effect" />)
     expect(screen.getByTestId("badge")).toHaveAttribute("data-variant", "secondary")
   })
 
@@ -316,19 +332,19 @@ describe("BrowserTabLoadingBadge", () => {
     vi.mocked(useResourcesStats).mockReturnValue({
       total: 60,
       byType: {
-        effects: 20,
+        effect: 20,
         filters: 15,
         transitions: 25,
       },
     })
 
-    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effects" />)
+    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" />)
     expect(screen.getByText("20")).toBeInTheDocument()
 
-    rerender(<BrowserTabLoadingBadge resourceType="filters" />)
+    rerender(<BrowserTabLoadingBadge resourceType="filter" />)
     expect(screen.getByText("15")).toBeInTheDocument()
 
-    rerender(<BrowserTabLoadingBadge resourceType="transitions" />)
+    rerender(<BrowserTabLoadingBadge resourceType="transition" />)
     expect(screen.getByText("25")).toBeInTheDocument()
   })
 })

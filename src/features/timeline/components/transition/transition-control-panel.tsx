@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 import { TransitionCurveEditor } from "./transition-curve-editor"
 import { TransitionCurveVisualizer } from "./transition-curve-visualizer"
 
-const logger = createLogger({ module: "TransitionControlPanel" })
+const logger = createLogger("TransitionControlPanel")
 
 interface TransitionControlPanelProps {
   transition: TimelineTransition

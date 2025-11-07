@@ -5,7 +5,7 @@ import type { BaseEffect } from "@/features/effects/types"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 import { allMigratedEffects, migratedEffects } from "../data/effects-loader"
 
-const logger = createLogger({ module: "UseEffects" })
+const logger = createLogger("UseEffects")
 
 // Используем мигрированные эффекты из новой системы
 

@@ -12,7 +12,7 @@ import {
   SystemInfo,
 } from "@/domains/video-editing"
 
-const logger = createLogger({ module: "UseGpuCapabilities" })
+const logger = createLogger("UseGpuCapabilities")
 
 interface UseGpuCapabilitiesReturn {
   // Состояние
@@ -46,29 +46,29 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       setIsLoading(true)
       setError(null)
 
-      logger.info("Refreshing GPU capabilities...")
+      void logger.info("Refreshing GPU capabilities...")
 
       // Загружаем все данные параллельно
       const [gpuResponse, system, ffmpeg, settings] = await Promise.all([
         invoke<any>("get_gpu_capabilities_full").catch((err: unknown) => {
-          logger.error("Failed to get GPU capabilities:", err)
+          void logger.error("Failed to get GPU capabilities:", { error: err })
           throw err
         }),
         invoke<SystemInfo>("get_system_info").catch((err: unknown) => {
-          logger.error("Failed to get system info:", err)
+          void logger.error("Failed to get system info:", { error: err })
           throw err
         }),
         invoke<FfmpegCapabilities>("check_ffmpeg_capabilities").catch((err: unknown) => {
-          logger.error("Failed to check FFmpeg:", err)
+          void logger.error("Failed to check FFmpeg:", { error: err })
           throw err
         }),
         invoke<CompilerSettings>("get_compiler_settings_advanced").catch((err: unknown) => {
-          logger.error("Failed to get compiler settings:", err)
+          void logger.error("Failed to get compiler settings:", { error: err })
           throw err
         }),
       ])
 
-      logger.info("GPU Response:", gpuResponse)
+      void logger.info("GPU Response:", { gpuResponse })
 
       // Преобразуем ответ в нужный формат
       const gpu: GpuCapabilities = {
@@ -106,7 +106,7 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       }
 
       setError(errorMsg)
-      logger.error("GPU capabilities error:", err)
+      void logger.error("GPU capabilities error:", { error: err })
 
       // Не показываем toast при первой загрузке, только логируем
       if (!isLoading) {
@@ -140,7 +140,7 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
     try {
       return await invoke<boolean>("check_hardware_acceleration_support")
     } catch (err) {
-      logger.error("Failed to check hardware acceleration:", err)
+      void logger.error("Failed to check hardware acceleration:", { error: err })
       return false
     }
   }, [])

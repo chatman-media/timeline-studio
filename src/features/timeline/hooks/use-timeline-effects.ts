@@ -14,7 +14,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineProject } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
-const logger = createLogger({ module: "UseTimelineEffects" })
+const logger = createLogger("UseTimelineEffects")
 
 // Простой адаптер для конвертации TimelineProject в ProjectSchema
 function timelineProjectToSchema(project: TimelineProject): ProjectSchema {

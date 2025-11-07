@@ -41,14 +41,17 @@ describe("ChannelWithAudio", () => {
   const defaultProps = {
     channelId: "channel-1",
     name: "Test Channel",
+    type: "stereo" as const,
     volume: 0.75,
     pan: 0,
-    mute: false,
+    muted: false,
     solo: false,
+    armed: false,
     onVolumeChange: vi.fn(),
     onPanChange: vi.fn(),
-    onMuteToggle: vi.fn(),
-    onSoloToggle: vi.fn(),
+    onMute: vi.fn(),
+    onSolo: vi.fn(),
+    onArm: vi.fn(),
   }
 
   beforeEach(() => {

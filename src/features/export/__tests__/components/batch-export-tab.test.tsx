@@ -1,13 +1,13 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { OutputFormat, RenderStatus } from "@/domains/video-editing/types"
+import { OutputFormat, RenderStatus, type VideoRenderJob } from "@/features/video-compiler/types/render"
 
 import { BatchExportTab } from "../../components/batch-export-tab"
 
 // Mock useRenderQueue hook
 const mockRenderQueue = {
-  renderJobs: [],
+  renderJobs: [] as VideoRenderJob[],
   isProcessing: false,
   activeJobsCount: 0,
   addProjectsToQueue: vi.fn(),
@@ -51,12 +51,12 @@ describe("BatchExportTab", () => {
     onClose: vi.fn(),
     defaultSettings: {
       format: OutputFormat.Mp4,
-      quality: "good",
-      resolution: "1920x1080",
-      fps: "30",
-      codec: "h264",
-      outputFolder: "/default/output",
+      quality: "good" as const,
+      resolution: "1080" as const,
+      frameRate: "30",
+      enableGPU: false,
       fileName: "output",
+      savePath: "/default/output",
     },
   }
 

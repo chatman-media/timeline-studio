@@ -9,7 +9,7 @@ import { useClips } from "./use-clips"
 import { useTimeline } from "./use-timeline"
 import { useTransitionSync } from "./use-transition-sync"
 
-const logger = createLogger({ module: "UseClipsWithTransitions" })
+const logger = createLogger("UseClipsWithTransitions")
 
 export function useClipsWithTransitions() {
   const clips = useClips()

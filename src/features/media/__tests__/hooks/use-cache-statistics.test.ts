@@ -22,15 +22,11 @@ describe("useCacheStatistics", () => {
 
   it("should load statistics on mount", async () => {
     const mockStatistics: CacheStatistics = {
-      totalEntries: 100,
-      totalSize: 1024 * 1024 * 50, // 50MB
-      categories: {
-        thumbnails: { count: 50, size: 1024 * 1024 * 10 },
-        metadata: { count: 30, size: 1024 * 1024 * 5 },
-        preview: { count: 20, size: 1024 * 1024 * 35 },
-      },
-      oldestEntry: new Date("2023-01-01").getTime(),
-      newestEntry: new Date("2023-12-31").getTime(),
+      previewCache: { count: 50, size: 1024 * 1024 * 10 },
+      frameCache: { count: 30, size: 1024 * 1024 * 5 },
+      recognitionCache: { count: 20, size: 1024 * 1024 * 35 },
+      subtitleCache: { count: 10, size: 1024 * 1024 * 10 },
+      totalSize: 1024 * 1024 * 60,
     }
 
     const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
@@ -87,27 +83,19 @@ describe("useCacheStatistics", () => {
 
   it("should refetch statistics", async () => {
     const mockStatistics1: CacheStatistics = {
-      totalEntries: 50,
-      totalSize: 1024 * 1024 * 25,
-      categories: {
-        thumbnails: { count: 25, size: 1024 * 1024 * 5 },
-        metadata: { count: 15, size: 1024 * 1024 * 3 },
-        preview: { count: 10, size: 1024 * 1024 * 17 },
-      },
-      oldestEntry: new Date("2023-01-01").getTime(),
-      newestEntry: new Date("2023-06-30").getTime(),
+      previewCache: { count: 25, size: 1024 * 1024 * 5 },
+      frameCache: { count: 15, size: 1024 * 1024 * 3 },
+      recognitionCache: { count: 10, size: 1024 * 1024 * 17 },
+      subtitleCache: { count: 5, size: 1024 * 1024 * 5 },
+      totalSize: 1024 * 1024 * 30,
     }
 
     const mockStatistics2: CacheStatistics = {
-      totalEntries: 100,
-      totalSize: 1024 * 1024 * 50,
-      categories: {
-        thumbnails: { count: 50, size: 1024 * 1024 * 10 },
-        metadata: { count: 30, size: 1024 * 1024 * 5 },
-        preview: { count: 20, size: 1024 * 1024 * 35 },
-      },
-      oldestEntry: new Date("2023-01-01").getTime(),
-      newestEntry: new Date("2023-12-31").getTime(),
+      previewCache: { count: 50, size: 1024 * 1024 * 10 },
+      frameCache: { count: 30, size: 1024 * 1024 * 5 },
+      recognitionCache: { count: 20, size: 1024 * 1024 * 35 },
+      subtitleCache: { count: 10, size: 1024 * 1024 * 10 },
+      totalSize: 1024 * 1024 * 60,
     }
 
     const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
@@ -146,15 +134,11 @@ describe("useCacheStatistics", () => {
   it("should clear error on successful refetch", async () => {
     const mockError = new Error("Database error")
     const mockStatistics: CacheStatistics = {
-      totalEntries: 10,
-      totalSize: 1024 * 1024,
-      categories: {
-        thumbnails: { count: 5, size: 512 * 1024 },
-        metadata: { count: 3, size: 256 * 1024 },
-        preview: { count: 2, size: 256 * 1024 },
-      },
-      oldestEntry: Date.now() - 86400000,
-      newestEntry: Date.now(),
+      previewCache: { count: 5, size: 512 * 1024 },
+      frameCache: { count: 3, size: 256 * 1024 },
+      recognitionCache: { count: 2, size: 256 * 1024 },
+      subtitleCache: { count: 1, size: 128 * 1024 },
+      totalSize: 1024 * 1024 + 128 * 1024,
     }
 
     const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
@@ -189,15 +173,11 @@ describe("useCacheStatistics", () => {
 
   it("should handle empty statistics", async () => {
     const mockEmptyStatistics: CacheStatistics = {
-      totalEntries: 0,
+      previewCache: { count: 0, size: 0 },
+      frameCache: { count: 0, size: 0 },
+      recognitionCache: { count: 0, size: 0 },
+      subtitleCache: { count: 0, size: 0 },
       totalSize: 0,
-      categories: {
-        thumbnails: { count: 0, size: 0 },
-        metadata: { count: 0, size: 0 },
-        preview: { count: 0, size: 0 },
-      },
-      oldestEntry: 0,
-      newestEntry: 0,
     }
 
     const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
@@ -215,15 +195,11 @@ describe("useCacheStatistics", () => {
 
   it("should not update state after unmount", async () => {
     const mockStatistics: CacheStatistics = {
-      totalEntries: 10,
-      totalSize: 1024 * 1024,
-      categories: {
-        thumbnails: { count: 5, size: 512 * 1024 },
-        metadata: { count: 3, size: 256 * 1024 },
-        preview: { count: 2, size: 256 * 1024 },
-      },
-      oldestEntry: Date.now() - 86400000,
-      newestEntry: Date.now(),
+      previewCache: { count: 5, size: 512 * 1024 },
+      frameCache: { count: 3, size: 256 * 1024 },
+      recognitionCache: { count: 2, size: 256 * 1024 },
+      subtitleCache: { count: 1, size: 128 * 1024 },
+      totalSize: 1024 * 1024 + 128 * 1024,
     }
 
     const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")

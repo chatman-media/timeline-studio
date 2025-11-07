@@ -1,9 +1,9 @@
-import type { OutputFormat } from "@/domains/video-editing/types"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 export interface ExportSettings {
   fileName: string
   savePath: string
-  format: keyof typeof OutputFormat
+  format: OutputFormat
   quality: "normal" | "good" | "best"
   resolution: "720" | "1080" | "1440" | "4k" | "timeline"
   frameRate: string

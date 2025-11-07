@@ -25,7 +25,7 @@ import type { VideoFadeOptions } from "../../services/video-fade-service"
 import { VideoFadeService } from "../../services/video-fade-service"
 import type { TimelineClip } from "../../types"
 
-const logger = createLogger({ module: "VideoCrossfade" })
+const logger = createLogger("VideoCrossfade")
 
 interface VideoCrossfadeProps {
   clipA: TimelineClip

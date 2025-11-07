@@ -8,7 +8,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { UndoRedoService } from "./undo-redo-service"
 
-const logger = createLogger({ module: "VersionControlIntegration" })
+const logger = createLogger("VersionControlIntegration")
 
 export interface VersionControlIntegrationConfig {
   // Автоматическое создание снапшотов

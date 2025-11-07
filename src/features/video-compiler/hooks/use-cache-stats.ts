@@ -1,9 +1,11 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 
 import type { VideoCompilerCacheStats } from "../types/cache"
+
+const logger = createLogger("UseCacheStats")
 
 export interface CacheStatsWithRatios extends VideoCompilerCacheStats {
   hit_ratio: number
@@ -20,7 +22,7 @@ interface UseCacheStatsReturn {
 }
 
 export function useCacheStats(): UseCacheStatsReturn {
-  logInfo("[useCacheStats] Инициализация useCacheStats хука")
+  void logger.info("Инициализация useCacheStats хука")
 
   const [stats, setStats] = useState<CacheStatsWithRatios | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -28,7 +30,7 @@ export function useCacheStats(): UseCacheStatsReturn {
 
   // Получить статистику кэша
   const refreshStats = useCallback(async () => {
-    logInfo("[useCacheStats] Запрос статистики кеша")
+    void logger.info("Запрос статистики кеша")
 
     try {
       setIsLoading(true)
@@ -36,14 +38,14 @@ export function useCacheStats(): UseCacheStatsReturn {
       // Теперь бэкенд возвращает CacheStatsWithRatios с уже вычисленными значениями
       const cacheStats = await invoke<CacheStatsWithRatios>("get_cache_stats")
       setStats(cacheStats)
-      logInfo("[useCacheStats] Статистика кеша получена успешно", {
+      void logger.info("Статистика кеша получена успешно", {
         totalEntries: cacheStats.total_entries,
         cacheHits: cacheStats.cache_hits,
         cacheMisses: cacheStats.cache_misses,
         hitRatio: cacheStats.hit_ratio,
       })
     } catch (err) {
-      logError("[useCacheStats] Ошибка получения статистики кеша", err)
+      void logger.error("Ошибка получения статистики кеша", { error: err })
       setError(err instanceof Error ? err.message : "Не удалось получить статистику кэша")
     } finally {
       setIsLoading(false)
@@ -52,15 +54,15 @@ export function useCacheStats(): UseCacheStatsReturn {
 
   // Очистить кэш превью
   const clearPreviewCache = useCallback(async (): Promise<boolean> => {
-    logInfo("[useCacheStats] Очистка кеша превью")
+    void logger.info("Очистка кеша превью")
 
     try {
       await invoke("clear_preview_cache")
-      logInfo("[useCacheStats] Кеш превью очищен успешно")
+      void logger.info("Кеш превью очищен успешно")
       await refreshStats() // Обновляем статистику после очистки
       return true
     } catch (err) {
-      logError("[useCacheStats] Ошибка очистки кеша превью", err)
+      void logger.error("Ошибка очистки кеша превью", { error: err })
       setError(err instanceof Error ? err.message : "Не удалось очистить кэш превью")
       return false
     }
@@ -68,15 +70,15 @@ export function useCacheStats(): UseCacheStatsReturn {
 
   // Очистить весь кэш
   const clearAllCache = useCallback(async (): Promise<boolean> => {
-    logInfo("[useCacheStats] Очистка всего кеша")
+    void logger.info("Очистка всего кеша")
 
     try {
       await invoke("clear_all_cache")
-      logInfo("[useCacheStats] Весь кеш очищен успешно")
+      void logger.info("Весь кеш очищен успешно")
       await refreshStats() // Обновляем статистику после очистки
       return true
     } catch (err) {
-      logError("[useCacheStats] Ошибка очистки всего кеша", err)
+      void logger.error("Ошибка очистки всего кеша", { error: err })
       setError(err instanceof Error ? err.message : "Не удалось очистить весь кэш")
       return false
     }

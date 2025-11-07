@@ -35,7 +35,7 @@ vi.mock("../../components/file-metadata", () => ({
 
 // Мокаем useFavorites
 vi.mock("@/features/app-state", async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual: any = await importOriginal()
   return {
     ...actual,
     useFavorites: vi.fn(() => ({
@@ -147,14 +147,18 @@ describe("MediaItem", () => {
     // Настраиваем мок так, чтобы файл был в избранном
     vi.mocked(useFavorites).mockReturnValue({
       favorites: {
-        media: [{ id: "added-file" }], // Добавляем файл в избранное
+        media: [{ id: "added-file" }],
         audio: [],
         transition: [],
         effect: [],
         template: [],
         filter: [],
       },
-    })
+      updateFavorites: vi.fn(),
+      addToFavorites: vi.fn(),
+      removeFromFavorites: vi.fn(),
+      isItemFavorite: vi.fn(),
+    } as any)
 
     renderWithProviders(<MediaItem file={mockAddedFile} index={0} viewMode="list" previewSize={100} />)
 

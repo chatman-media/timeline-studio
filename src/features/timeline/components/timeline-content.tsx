@@ -42,7 +42,7 @@ import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
 
-const logger = createLogger({ module: "TimelineContent" })
+const logger = createLogger("TimelineContent")
 
 export function TimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)

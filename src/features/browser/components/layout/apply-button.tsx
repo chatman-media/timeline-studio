@@ -6,7 +6,7 @@ import type { ResourceType, TimelineResource } from "@/features/resources/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
-const logger = createLogger({ module: "ApplyButton" })
+const logger = createLogger("ApplyButton")
 
 interface ApplyButtonProps {
   resource: TimelineResource
@@ -41,7 +41,7 @@ export const ApplyButton = memo(function ApplyButton({
       if (onApply) {
         onApply(resource, type)
       } else {
-        logger.info("ApplyButton clicked", resource.id, type)
+        logger.info("ApplyButton clicked", { resourceId: resource.id, type })
       }
     },
     [resource, type, onApply],

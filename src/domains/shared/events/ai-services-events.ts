@@ -99,6 +99,48 @@ export interface ObjectsDetectedEvent {
   }>
 }
 
+// === AI Director Events (NEW - Rust Backend Integration) ===
+
+export interface AIDirectorAnalysisProgressEvent {
+  analysisId: string
+  stage: string // "initialization" | "audio" | "video" | "integration" | "complete"
+  progress: number // 0.0 - 1.0
+  message: string
+  estimatedTimeRemaining?: number // seconds
+}
+
+export interface AIDirectorAnalysisCompletedEvent {
+  analysisId: string
+  videoPath: string
+  success: boolean
+  totalDuration: number // ms
+  stagesCompleted: string[]
+  errors: string[]
+}
+
+export interface AIDirectorAnalysisErrorEvent {
+  analysisId: string
+  stage: string
+  error: string
+  timestamp: number
+}
+
+export interface AIDirectorStageCompletedEvent {
+  analysisId: string
+  stage: string
+  duration: number // ms
+  success: boolean
+  error?: string
+}
+
+export interface AIDirectorBatchCompletedEvent {
+  batchId: string
+  totalFiles: number
+  successCount: number
+  failedCount: number
+  totalDuration: number // ms
+}
+
 // === Event Type Constants ===
 
 export const AI_SERVICES_EVENTS = {
@@ -119,4 +161,11 @@ export const AI_SERVICES_EVENTS = {
   // Recognition
   PERSONS_IDENTIFIED: "ai-services.recognition.persons-identified",
   OBJECTS_DETECTED: "ai-services.recognition.objects-detected",
+
+  // AI Director (NEW - Rust Backend)
+  AI_DIRECTOR_ANALYSIS_PROGRESS: "ai-services.ai-director.analysis-progress",
+  AI_DIRECTOR_ANALYSIS_COMPLETED: "ai-services.ai-director.analysis-completed",
+  AI_DIRECTOR_ANALYSIS_ERROR: "ai-services.ai-director.analysis-error",
+  AI_DIRECTOR_STAGE_COMPLETED: "ai-services.ai-director.stage-completed",
+  AI_DIRECTOR_BATCH_COMPLETED: "ai-services.ai-director.batch-completed",
 } as const

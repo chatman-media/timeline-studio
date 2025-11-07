@@ -9,7 +9,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineTrack, TrackType } from "../types"
 
-const logger = createLogger({ module: "UseTracks" })
+const logger = createLogger("UseTracks")
 
 // Адаптер для преобразования domain трека в feature трек
 const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack => {

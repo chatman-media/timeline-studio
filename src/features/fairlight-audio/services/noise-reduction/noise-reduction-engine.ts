@@ -7,7 +7,7 @@ import { EventEmitter } from "events"
 import { createLogger } from "@/lib/tauri-logger"
 import { FFTProcessor } from "./fft-processor"
 
-const logger = createLogger({ module: "NoiseReductionEngine" })
+const logger = createLogger("NoiseReductionEngine")
 
 export interface NoiseProfile {
   id: string
@@ -39,6 +39,7 @@ export interface AnalysisResult {
 export class NoiseReductionEngine extends EventEmitter {
   private context: AudioContext
   private noiseProfiles = new Map<string, NoiseProfile>()
+  private isProcessing = false
 
   // Algorithm processors
   private spectralProcessor: SpectralNoiseGate | null = null
@@ -66,7 +67,7 @@ export class NoiseReductionEngine extends EventEmitter {
       ])
       this.emit("workletsLoaded")
     } catch (error) {
-      logger.error("Failed to load AudioWorklet modules:", error)
+      logger.error("Failed to load AudioWorklet modules:", { error })
       throw new Error("AudioWorklet is required for noise reduction")
     }
   }

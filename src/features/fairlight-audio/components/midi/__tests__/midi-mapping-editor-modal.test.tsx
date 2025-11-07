@@ -45,7 +45,7 @@ vi.mock("@/components/ui/select", () => ({
       data-value={value}
       onClick={() => {
         const select = document.querySelector('[data-testid="select"]')
-        const input = select?.querySelector('[data-testid="select-input"]')
+        const input = select?.querySelector('[data-testid="select-input"]') as HTMLInputElement | null
         if (input) {
           input.value = value
           input.dispatchEvent(new Event("change", { bubbles: true }))
@@ -344,7 +344,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should handle save without onSave callback", () => {
-      mockModalData.onSave = undefined
+      mockModalData.onSave = undefined as any
 
       render(<MidiMappingEditorModal />)
 

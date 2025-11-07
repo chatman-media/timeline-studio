@@ -10,7 +10,7 @@ import { MidiFile } from "./midi-file"
 import type { MidiRouter } from "./midi-router"
 import { MidiSequencer } from "./midi-sequencer"
 
-const logger = createLogger({ module: "MidiEngine" })
+const logger = createLogger("MidiEngine")
 
 export interface MidiDevice {
   id: string
@@ -110,7 +110,7 @@ export class MidiEngine extends EventEmitter {
       this.isInitialized = true
       this.emit("initialized")
     } catch (error) {
-      logger.error("Failed to initialize MIDI:", error)
+      logger.error("Failed to initialize MIDI:", { error })
       // Don't throw, just log the error and emit initialized
       this.emit("initialized")
     }
@@ -447,7 +447,7 @@ export class MidiEngine extends EventEmitter {
       try {
         output.send(message)
       } catch (error) {
-        logger.error("Failed to send MIDI message to output:", error)
+        logger.error("Failed to send MIDI message to output:", { error })
       }
     }
   }

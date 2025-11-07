@@ -68,8 +68,8 @@ describe("EffectPresets", () => {
     name: { ru: "Тестовый эффект", en: "Test Effect" },
     description: { ru: "Тестовый эффект", en: "Test Effect" },
     category: "blur_sharpen",
-    scope: ["video"],
-    processingType: "css",
+    scope: ["clip"],
+    processingType: "realtime",
     version: "1.0.0",
     tags: ["popular"],
     complexity: "low",
@@ -78,7 +78,7 @@ describe("EffectPresets", () => {
     presets: mockPresets,
     processors: {
       css: {
-        shader: "blur(1px)",
+        filter: () => "blur(1px)",
       },
     },
   }
@@ -143,7 +143,7 @@ describe("EffectPresets", () => {
     })
 
     it("не должен отображаться если нет пресетов", () => {
-      const effectWithoutPresets = { ...baseEffect, presets: undefined }
+      const effectWithoutPresets = { ...baseEffect, presets: [] as any }
       const { container } = render(<EffectPresets {...mockProps} effect={effectWithoutPresets} />)
 
       expect(container.firstChild).toBeNull()
@@ -446,14 +446,16 @@ describe("EffectPresets", () => {
       const { container } = render(<EffectPresets {...mockProps} />)
       const mainContainer = container.firstChild
 
-      expect(mainContainer).toHaveClass("border", "rounded-lg")
+      expect(mainContainer).toHaveClass("border")
+      expect(mainContainer).toHaveClass("rounded-lg")
     })
 
     it("должен применять hover эффекты к заголовку", () => {
       render(<EffectPresets {...mockProps} />)
       const header = screen.getByRole("button")
 
-      expect(header).toHaveClass("hover:bg-gray-50", "dark:hover:bg-gray-800")
+      expect(header).toHaveClass("hover:bg-gray-50")
+      expect(header).toHaveClass("dark:hover:bg-gray-800")
     })
 
     it("должен применять правильную высоту к кнопкам пресетов", () => {
@@ -463,7 +465,8 @@ describe("EffectPresets", () => {
 
       const presetButtons = screen.getAllByText("Легкий")
       const presetButton = presetButtons[0].closest("button")
-      expect(presetButton).toHaveClass("h-auto", "py-2")
+      expect(presetButton).toHaveClass("h-auto")
+      expect(presetButton).toHaveClass("py-2")
     })
   })
 

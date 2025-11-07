@@ -17,6 +17,7 @@ const mockTrack = {
   name: "Test Track",
   type: "video" as const,
   clips: [],
+  transitions: [],
   isLocked: false,
   isMuted: false,
   isHidden: false,

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
-const logger = createLogger({ module: "SimpleWaveform" })
+const logger = createLogger("SimpleWaveform")
 
 interface SimpleWaveformProps {
   audioElement?: HTMLAudioElement | null
@@ -133,7 +133,7 @@ export function SimpleWaveform({ audioElement, height = 60, className }: SimpleW
         setWaveformData(downsampled)
         drawWaveform(downsampled)
       } catch (error) {
-        logger.error("Failed to analyze audio:", error)
+        logger.error("Failed to analyze audio:", { error })
         drawWaveform() // Draw placeholder on error
       } finally {
         setIsAnalyzing(false)

@@ -9,7 +9,7 @@ import type { TimelineClip, TimelineSection, TimelineTrack } from "../types"
 import { useClips } from "./use-clips"
 import { useTracks } from "./use-tracks"
 
-const logger = createLogger({ module: "UseTimelineSelection" })
+const logger = createLogger("UseTimelineSelection")
 
 export interface UseTimelineSelectionReturn {
   // Текущее выделение

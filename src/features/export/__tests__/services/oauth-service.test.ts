@@ -46,7 +46,7 @@ const { toast } = await import("sonner")
 const { SecureTokenStorage } = await import("../../services/secure-token-storage")
 
 // Mock window.open and message handling
-let mockWindow: Partial<Window>
+let mockWindow: Partial<Window> & { closed?: boolean }
 const mockWindowOpen = vi.fn()
 const mockWindowClose = vi.fn()
 const mockAddEventListener = vi.fn()
@@ -126,7 +126,7 @@ describe("OAuthService - Comprehensive", () => {
       try {
         await OAuthService.loginToNetwork("youtube")
       } catch (error) {
-        expect(error.message).toBe("Failed to open authentication window")
+        expect((error as Error).message).toBe("Failed to open authentication window")
       }
 
       expect(mockWindowOpen).toHaveBeenCalledWith(
@@ -144,7 +144,7 @@ describe("OAuthService - Comprehensive", () => {
       try {
         await OAuthService.loginToNetwork("tiktok")
       } catch (error) {
-        expect(error.message).toBe("Failed to open authentication window")
+        expect((error as Error).message).toBe("Failed to open authentication window")
       }
 
       expect(mockWindowOpen).toHaveBeenCalledWith(

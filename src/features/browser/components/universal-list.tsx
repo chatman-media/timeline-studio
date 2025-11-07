@@ -27,8 +27,16 @@ export function UniversalList<T extends ListItem>({
 
   // Получаем настройки из состояния браузера
   const { currentTabSettings } = useBrowserState()
-  const { searchQuery, showFavoritesOnly, viewMode, sortBy, filterType, groupBy, sortOrder, previewSizeIndex } =
-    currentTabSettings
+  const {
+    search_query: searchQuery,
+    show_favorites_only: showFavoritesOnly,
+    view_mode: viewMode,
+    sort_by: sortBy,
+    filter_type: filterType,
+    group_by: groupBy,
+    sort_order: sortOrder,
+    preview_size_index: previewSizeIndex,
+  } = currentTabSettings
 
   // Получаем текущий размер превью
   const currentPreviewSize = PREVIEW_SIZES[previewSizeIndex]

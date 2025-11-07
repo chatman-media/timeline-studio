@@ -7,7 +7,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect, BaseEffect, EffectProcessingType, WebGLProcessor } from "../types/unified-effects"
 import { WebGL2EffectProcessor } from "./webgl2-effect-processor"
 
-const logger = createLogger({ module: "Webgl2UnifiedRenderer" })
+const logger = createLogger("Webgl2UnifiedRenderer")
 
 export interface RenderContext {
   // Источник

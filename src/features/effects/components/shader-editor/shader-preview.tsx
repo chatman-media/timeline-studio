@@ -7,7 +7,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { ShaderCompilationResult, ShaderUniform } from "../../types/shader-system"
 
-const logger = createLogger({ module: "ShaderPreview" })
+const logger = createLogger("ShaderPreview")
 
 interface ShaderPreviewProps {
   vertexShader: string

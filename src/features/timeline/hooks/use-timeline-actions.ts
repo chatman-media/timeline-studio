@@ -12,7 +12,7 @@ import type { TrackType } from "../types"
 import { useClips } from "./use-clips"
 import { useTracks } from "./use-tracks"
 
-const logger = createLogger({ module: "UseTimelineActions" })
+const logger = createLogger("UseTimelineActions")
 
 export interface UseTimelineActionsReturn {
   // Добавление медиафайлов

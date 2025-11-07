@@ -22,6 +22,8 @@ export interface RenderProgress {
   estimated_remaining?: number
   status: RenderStatus
   message?: string
+  // Backward compatibility alias
+  progress?: number
 }
 
 export enum RenderStatus {

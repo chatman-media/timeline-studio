@@ -8,6 +8,10 @@
  * - Автоматическая оптимизация настроек
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:codec-support")
+
 export interface CodecProfile {
   name: string
   displayName: string

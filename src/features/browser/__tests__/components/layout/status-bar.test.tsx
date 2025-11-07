@@ -43,10 +43,10 @@ vi.mock("@/features/media", () => ({
   getRemainingMediaCounts: vi.fn((media: MediaFile[], addedFilesSet: Set<string>) => {
     const remainingFiles = media.filter((file) => !addedFilesSet.has(file.path))
     const remainingVideoCount = remainingFiles.filter(
-      (file) => file.extension === "mp4" || file.extension === "mov",
+      (file) => file.path.split(".").pop() === "mp4" || file.path.split(".").pop() === "mov",
     ).length
     const remainingAudioCount = remainingFiles.filter(
-      (file) => file.extension === "mp3" || file.extension === "wav",
+      (file) => file.path.split(".").pop() === "mp3" || file.path.split(".").pop() === "wav",
     ).length
     return {
       remainingVideoCount,
@@ -129,9 +129,9 @@ describe("StatusBar", () => {
   describe("кнопки добавления по типу", () => {
     it("должен отображать кнопку добавления видео файлов", () => {
       const media = [
-        createMockMediaFile({ extension: "mp4" }),
-        createMockMediaFile({ extension: "mov" }),
-        createMockMediaFile({ extension: "mp3" }),
+        createMockMediaFile({ path: "/file.mp4" }),
+        createMockMediaFile({ path: "/file.mov" }),
+        createMockMediaFile({ path: "/file.mp3" }),
       ]
 
       render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
@@ -141,9 +141,9 @@ describe("StatusBar", () => {
 
     it("должен отображать кнопку добавления аудио файлов", () => {
       const media = [
-        createMockMediaFile({ extension: "mp3" }),
-        createMockMediaFile({ extension: "wav" }),
-        createMockMediaFile({ extension: "mp4" }),
+        createMockMediaFile({ path: "/file.mp3" }),
+        createMockMediaFile({ path: "/file.wav" }),
+        createMockMediaFile({ path: "/file.mp4" }),
       ]
 
       render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
@@ -152,8 +152,8 @@ describe("StatusBar", () => {
     })
 
     it("не должен отображать кнопки для добавленных файлов", () => {
-      const videoFile = createMockMediaFile({ extension: "mp4", path: "/video1.mp4" })
-      const audioFile = createMockMediaFile({ extension: "mp3", path: "/audio1.mp3" })
+      const videoFile = createMockMediaFile({ path: "/video1.mp4" })
+      const audioFile = createMockMediaFile({ path: "/audio1.mp3" })
 
       render(<StatusBar {...defaultProps} media={[videoFile, audioFile]} addedFiles={[videoFile, audioFile]} />)
 
@@ -196,7 +196,7 @@ describe("StatusBar", () => {
 
   describe("обработчики событий", () => {
     it("должен вызывать onAddAllVideoFiles при клике", () => {
-      const media = [createMockMediaFile({ extension: "mp4" }), createMockMediaFile({ extension: "mov" })]
+      const media = [createMockMediaFile({ path: "/file.mp4" }), createMockMediaFile({ path: "/file.mov" })]
 
       render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
 
@@ -207,7 +207,7 @@ describe("StatusBar", () => {
     })
 
     it("должен вызывать onAddAllAudioFiles при клике", () => {
-      const media = [createMockMediaFile({ extension: "mp3" }), createMockMediaFile({ extension: "wav" })]
+      const media = [createMockMediaFile({ path: "/file.mp3" }), createMockMediaFile({ path: "/file.wav" })]
 
       render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
 
@@ -236,7 +236,7 @@ describe("StatusBar", () => {
     })
 
     it("должен вызывать onAddAllFiles при клике", () => {
-      const media = [createMockMediaFile({ extension: "mp4" }), createMockMediaFile({ extension: "mp3" })]
+      const media = [createMockMediaFile({ path: "/file.mp4" }), createMockMediaFile({ path: "/file.mp3" })]
 
       render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
 
@@ -249,9 +249,9 @@ describe("StatusBar", () => {
 
   describe("комплексные сценарии", () => {
     it("должен корректно обрабатывать частично добавленные файлы", () => {
-      const video1 = createMockMediaFile({ extension: "mp4", path: "/video1.mp4" })
-      const video2 = createMockMediaFile({ extension: "mp4", path: "/video2.mp4" })
-      const audio1 = createMockMediaFile({ extension: "mp3", path: "/audio1.mp3" })
+      const video1 = createMockMediaFile({ path: "/video1.mp4" })
+      const video2 = createMockMediaFile({ path: "/video2.mp4" })
+      const audio1 = createMockMediaFile({ path: "/audio1.mp3" })
 
       const media = [video1, video2, audio1]
       const addedFiles = [video1] // Только один видео файл добавлен

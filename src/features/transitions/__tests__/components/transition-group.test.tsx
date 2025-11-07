@@ -38,7 +38,7 @@ describe("TransitionGroup", () => {
       },
       category: "basic",
       complexity: "basic",
-      tags: ["professional", "standard"],
+      tags: ["smooth", "classic"],
       duration: { min: 0.5, max: 2.0, default: 1.0 },
       parameters: { easing: "ease-in-out", intensity: 1.0 },
       ffmpegCommand: () => "fade=t=in:st=0:d=1.0",
@@ -56,7 +56,7 @@ describe("TransitionGroup", () => {
       },
       category: "creative",
       complexity: "intermediate",
-      tags: ["professional", "standard"],
+      tags: ["zoom", "scale"],
       duration: { min: 0.5, max: 3.0, default: 1.5 },
       parameters: { easing: "ease-out", intensity: 0.8, scale: 2.0 },
       ffmpegCommand: () => "zoompan=z='zoom+0.002':d=125",
@@ -68,21 +68,17 @@ describe("TransitionGroup", () => {
       id: "source",
       path: "/demo1.mp4",
       name: "Source Video",
-      type: "video",
+      isVideo: true,
       size: 1000000,
       duration: 10,
-      createdAt: new Date(),
-      modifiedAt: new Date(),
     } as MediaFile,
     target: {
       id: "target",
       path: "/demo2.mp4",
       name: "Target Video",
-      type: "video",
+      isVideo: true,
       size: 1000000,
       duration: 10,
-      createdAt: new Date(),
-      modifiedAt: new Date(),
     } as MediaFile,
   }
 
@@ -258,7 +254,7 @@ describe("TransitionGroup", () => {
 
     const title = screen.getByText("Basic Transitions")
     expect(title.tagName).toBe("H3")
-    expect(title).toHaveClass("text-sm", "font-medium", "text-gray-700", "dark:text-gray-300")
+    expect(title).toHaveClass("text-sm font-medium text-gray-700 dark:text-gray-300")
   })
 
   it("должен применять правильные CSS классы к контейнеру", () => {

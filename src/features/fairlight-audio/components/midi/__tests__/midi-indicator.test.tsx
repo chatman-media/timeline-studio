@@ -4,12 +4,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MidiIndicator } from "../midi-indicator"
 
 // Store callbacks to simulate MIDI messages
-const midiCallbacks = new Set<() => void>()
+const midiCallbacks = new Set<(data: { deviceId: string; message: any }) => void>()
 
 // Mock the useMidi hook with minimal implementation
 vi.mock("../../hooks/use-midi", () => ({
   useMidi: () => ({
-    onMidiMessage: (callback: () => void) => {
+    onMidiMessage: (callback: (data: { deviceId: string; message: any }) => void) => {
       midiCallbacks.add(callback)
       return () => {
         midiCallbacks.delete(callback)

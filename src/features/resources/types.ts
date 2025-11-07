@@ -7,7 +7,7 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 import type { VideoFilter } from "../filters/types/filters"
 
-const logger = createLogger({ module: "Types" })
+const logger = createLogger("Resources:Types")
 
 // Общий интерфейс для всех ресурсов
 export interface Resource {
@@ -138,7 +138,7 @@ export function createSubtitleResource(style: SubtitleStyleTemplate): SubtitleRe
 // Функция для создания ресурса эффекта
 export function createEffectResource(effect: VideoEffect): EffectResource {
   if (!effect || !effect.id || !effect.name) {
-    logger.error("[createEffectResource] Invalid effect object:", effect)
+    logger.errorSync("[createEffectResource] Invalid effect object", { effect })
     throw new Error("Invalid effect object provided to createEffectResource")
   }
 
@@ -161,7 +161,7 @@ export function createEffectResource(effect: VideoEffect): EffectResource {
 // Функция для создания ресурса фильтра
 export function createFilterResource(filter: VideoFilter): FilterResource {
   if (!filter || !filter.id || !filter.name) {
-    logger.error("[createFilterResource] Invalid filter object:", filter)
+    logger.errorSync("[createFilterResource] Invalid filter object", { filter })
     throw new Error("Invalid filter object provided to createFilterResource")
   }
 
@@ -179,11 +179,11 @@ export function createFilterResource(filter: VideoFilter): FilterResource {
 // Функция для создания ресурса перехода
 export function createTransitionResource(transition: Transition): TransitionResource {
   if (!transition || !transition.id) {
-    logger.error("[createTransitionResource] Invalid transition object:", transition)
+    logger.errorSync("[createTransitionResource] Invalid transition object", { transition })
     throw new Error("Invalid transition object provided to createTransitionResource")
   }
 
-  logger.info("Creating transition resource from:", transition)
+  logger.infoSync("Creating transition resource from", { transitionId: transition.id })
   const resource: TransitionResource = {
     id: `transition-${transition.id}-${Date.now()}`,
     type: "transition",
@@ -193,7 +193,7 @@ export function createTransitionResource(transition: Transition): TransitionReso
     transition,
     params: transition.parameters ? { ...transition.parameters } : {},
   }
-  logger.info("Created transition resource:", resource)
+  logger.infoSync("Created transition resource", { resourceId: resource.id })
   return resource
 }
 

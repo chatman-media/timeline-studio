@@ -7,7 +7,7 @@ import { EventEmitter } from "events"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "MidiClock" })
+const logger = createLogger("MidiClock")
 
 export interface ClockState {
   isRunning: boolean

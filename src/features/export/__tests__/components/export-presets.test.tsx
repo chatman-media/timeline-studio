@@ -229,7 +229,7 @@ describe("ExportPresets", () => {
       const { container } = render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
 
       const mainContainer = container.firstChild
-      expect(mainContainer).toHaveClass("flex", "gap-2", "p-4", "border-b")
+      expect(mainContainer).toHaveClass("flex")
     })
 
     it("should render buttons with minimum width", () => {

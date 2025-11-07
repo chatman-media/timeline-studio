@@ -179,29 +179,85 @@ vi.mock("@/features/multicam/hooks/use-multicam", () => ({
   }),
 }))
 
+// Helper для создания полного mock PlayerContextType
+const createMockPlayerContext = (overrides = {}) => ({
+  currentTime: 0,
+  isPlaying: false,
+  playbackRate: 1,
+  speedRampingEnabled: false,
+  currentPlaybackRate: 1,
+  basePlaybackRate: 1,
+  volume: 0.75,
+  duration: 0,
+  isVideoLoading: false,
+  isVideoReady: false,
+  isSeeking: false,
+  isChangingCamera: false,
+  isRecording: false,
+  isResizableMode: false,
+  currentVideo: null,
+  previewMedia: null,
+  videoSource: "timeline" as const,
+  selectedClipId: null,
+  appliedEffects: [],
+  appliedFilters: [],
+  appliedTemplate: null,
+  prerenderSettings: {
+    prerenderEnabled: false,
+    prerenderQuality: 80,
+    prerenderSegmentDuration: 10,
+    prerenderApplyEffects: true,
+    prerenderAutoPrerender: false,
+  },
+  setCurrentVideo: vi.fn(),
+  setVolume: vi.fn(),
+  setDuration: vi.fn(),
+  setVideoLoading: vi.fn(),
+  setVideoReady: vi.fn(),
+  setIsSeeking: vi.fn(),
+  setIsChangingCamera: vi.fn(),
+  setIsRecording: vi.fn(),
+  setIsResizableMode: vi.fn(),
+  setPreviewMedia: vi.fn(),
+  setVideoSource: vi.fn(),
+  applyEffect: vi.fn(),
+  applyFilter: vi.fn(),
+  applyTemplate: vi.fn(),
+  clearEffects: vi.fn(),
+  clearFilters: vi.fn(),
+  clearTemplate: vi.fn(),
+  setPrerenderSettings: vi.fn(),
+  setSpeedRampingEnabled: vi.fn(),
+  updatePlaybackRate: vi.fn(),
+  setBasePlaybackRate: vi.fn(),
+  play: vi.fn().mockResolvedValue(undefined),
+  pause: vi.fn().mockResolvedValue(undefined),
+  seek: vi.fn().mockResolvedValue(undefined),
+  setPlaybackRate: vi.fn().mockResolvedValue(undefined),
+  playerSetMedia: vi.fn().mockResolvedValue(undefined),
+  playerSetVolume: vi.fn().mockResolvedValue(undefined),
+  playerSelectClip: vi.fn().mockResolvedValue(undefined),
+  playerClearSelection: vi.fn().mockResolvedValue(undefined),
+  playerSetSource: vi.fn().mockResolvedValue(undefined),
+  playerApplyEffect: vi.fn().mockResolvedValue(undefined),
+  playerApplyFilter: vi.fn().mockResolvedValue(undefined),
+  playerApplyTemplate: vi.fn().mockResolvedValue(undefined),
+  playerClearEffects: vi.fn().mockResolvedValue(undefined),
+  playerClearFilters: vi.fn().mockResolvedValue(undefined),
+  playerClearTemplate: vi.fn().mockResolvedValue(undefined),
+  ...overrides,
+})
+
 // Мокаем хуки
 vi.mock("@/features/video-player/services/player-provider", () => ({
-  usePlayer: vi.fn(() => ({
-    isPlaying: false,
-    play: vi.fn().mockResolvedValue(undefined),
-    pause: vi.fn().mockResolvedValue(undefined),
-    seek: vi.fn().mockResolvedValue(undefined),
-    volume: 0.75,
-    setVolume: vi.fn(),
-    isRecording: false,
-    setIsRecording: vi.fn(),
-    setIsSeeking: vi.fn(),
-    isChangingCamera: false,
-    isResizableMode: false,
-    setIsResizableMode: vi.fn(),
-    videoSource: "timeline" as const,
-    setVideoSource: vi.fn(),
-  })),
+  usePlayer: vi.fn(() => createMockPlayerContext()),
 }))
 
 vi.mock("@/features/video-player/hooks/use-fullscreen", () => ({
   useFullscreen: vi.fn(() => ({
     isFullscreen: false,
+    enterFullscreen: vi.fn(),
+    exitFullscreen: vi.fn(),
     toggleFullscreen: vi.fn(),
   })),
 }))
@@ -350,6 +406,8 @@ describe("PlayerControls", () => {
       // Mock useFullscreen to return isFullscreen: true
       vi.mocked(useFullscreen).mockReturnValue({
         isFullscreen: true,
+        enterFullscreen: vi.fn(),
+        exitFullscreen: vi.fn(),
         toggleFullscreen: vi.fn(),
       })
 
@@ -363,22 +421,12 @@ describe("PlayerControls", () => {
   describe("Управление воспроизведением", () => {
     it("должен переключать воспроизведение при клике на play/pause", () => {
       const mockPlay = vi.fn().mockResolvedValue(undefined)
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: mockPlay,
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          isPlaying: false,
+          play: mockPlay,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -390,22 +438,12 @@ describe("PlayerControls", () => {
 
     it("должен переключать паузу при воспроизведении", () => {
       const mockPause = vi.fn().mockResolvedValue(undefined)
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: true,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: mockPause,
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          isPlaying: true,
+          pause: mockPause,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -417,22 +455,12 @@ describe("PlayerControls", () => {
 
     it("должен переключать запись", () => {
       const mockSetIsRecording = vi.fn()
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: mockSetIsRecording,
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          isRecording: false,
+          setIsRecording: mockSetIsRecording,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -445,22 +473,12 @@ describe("PlayerControls", () => {
 
     it("должен останавливать запись", () => {
       const mockSetIsRecording = vi.fn()
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: true,
-        setIsRecording: mockSetIsRecording,
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          isRecording: true,
+          setIsRecording: mockSetIsRecording,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -474,22 +492,11 @@ describe("PlayerControls", () => {
   describe("Навигация по времени", () => {
     it("должен обновлять время при изменении слайдера", () => {
       const mockSeek = vi.fn().mockResolvedValue(undefined)
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: mockSeek,
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          seek: mockSeek,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={30} file={mockFile} />)
 
@@ -502,22 +509,12 @@ describe("PlayerControls", () => {
     it("должен устанавливать isSeeking при начале перемещения", () => {
       const mockSetIsSeeking = vi.fn()
       const mockSeek = vi.fn().mockResolvedValue(undefined)
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: mockSeek,
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: mockSetIsSeeking,
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          seek: mockSeek,
+          setIsSeeking: mockSetIsSeeking,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -566,22 +563,11 @@ describe("PlayerControls", () => {
 
     it("должен обновлять громкость при клике на слайдер", () => {
       const mockSetVolume = vi.fn()
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: mockSetVolume,
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          setVolume: mockSetVolume,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -597,6 +583,8 @@ describe("PlayerControls", () => {
       const mockToggleFullscreen = vi.fn()
       vi.mocked(useFullscreen).mockReturnValue({
         isFullscreen: false,
+        enterFullscreen: vi.fn(),
+        exitFullscreen: vi.fn(),
         toggleFullscreen: mockToggleFullscreen,
       })
 
@@ -621,6 +609,8 @@ describe("PlayerControls", () => {
       const mockToggleFullscreen = vi.fn()
       vi.mocked(useFullscreen).mockReturnValue({
         isFullscreen: false,
+        enterFullscreen: vi.fn(),
+        exitFullscreen: vi.fn(),
         toggleFullscreen: mockToggleFullscreen,
       })
 
@@ -692,22 +682,12 @@ describe("PlayerControls", () => {
   describe("Переключение источника видео", () => {
     it("должен переключать источник видео при клике", () => {
       const mockSetVideoSource = vi.fn()
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: mockSetVideoSource,
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          videoSource: "timeline",
+          setVideoSource: mockSetVideoSource,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -720,22 +700,12 @@ describe("PlayerControls", () => {
 
     it("должен переключать обратно на timeline", () => {
       const mockSetVideoSource = vi.fn()
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "browser" as const,
-        setVideoSource: mockSetVideoSource,
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          videoSource: "browser",
+          setVideoSource: mockSetVideoSource,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -748,22 +718,11 @@ describe("PlayerControls", () => {
 
     it("должен показывать правильную иконку для текущего источника", () => {
       // Сбрасываем мок обратно к дефолтному videoSource: "timeline"
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          videoSource: "timeline",
+        }),
+      )
 
       const { rerender } = renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 
@@ -772,22 +731,11 @@ describe("PlayerControls", () => {
       expect(screen.queryByTestId("imageplay-icon")).not.toBeInTheDocument()
 
       // Переключаем на browser
-      usePlayer.mockImplementation(() => ({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: false,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "browser" as const,
-        setVideoSource: vi.fn(),
-      }))
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          videoSource: "browser",
+        }),
+      )
 
       rerender(
         <TimelineProjectProvider>
@@ -833,22 +781,11 @@ describe("PlayerControls", () => {
   describe("Отключенные состояния", () => {
     it("должен отключать элементы управления при смене камеры", () => {
       // Override the mock for this specific test
-      vi.mocked(usePlayer).mockReturnValue({
-        isPlaying: false,
-        play: vi.fn().mockResolvedValue(undefined),
-        pause: vi.fn().mockResolvedValue(undefined),
-        seek: vi.fn().mockResolvedValue(undefined),
-        volume: 0.75,
-        setVolume: vi.fn(),
-        isRecording: false,
-        setIsRecording: vi.fn(),
-        setIsSeeking: vi.fn(),
-        isChangingCamera: true,
-        isResizableMode: false,
-        setIsResizableMode: vi.fn(),
-        videoSource: "timeline" as const,
-        setVideoSource: vi.fn(),
-      })
+      vi.mocked(usePlayer).mockReturnValue(
+        createMockPlayerContext({
+          isChangingCamera: true,
+        }),
+      )
 
       renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
 

@@ -10,7 +10,7 @@ import { useTimeline } from "../hooks/use-timeline"
 import { useTracks } from "../hooks/use-tracks"
 import type { TimelineTrack, TrackType } from "../types/timeline"
 
-const logger = createLogger({ module: "AudioMixer" })
+const logger = createLogger("AudioMixer")
 
 interface AudioMixerProps {
   className?: string

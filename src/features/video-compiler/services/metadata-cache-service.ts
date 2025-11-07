@@ -6,7 +6,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
 import type { CacheMemoryUsage } from "../types/cache"
 
-const logger = createLogger({ module: "MetadataCacheService" })
+const logger = createLogger("MetadataCacheService")
 
 /**
  * Получить метаданные файла из кэша
@@ -15,7 +15,7 @@ export async function getCachedMetadata(filePath: string): Promise<MediaMetadata
   try {
     return await invoke<MediaMetadata | null>("get_cached_metadata", { filePath })
   } catch (error) {
-    logger.error("Failed to get cached metadata:", error)
+    void logger.error("Failed to get cached metadata:", { error })
     return null
   }
 }
@@ -27,7 +27,7 @@ export async function cacheMediaMetadata(filePath: string, metadata: MediaMetada
   try {
     await invoke("cache_media_metadata", { filePath, metadata })
   } catch (error) {
-    logger.error("Failed to cache metadata:", error)
+    void logger.error("Failed to cache metadata:", { error })
     throw error
   }
 }
@@ -39,7 +39,7 @@ export async function getCacheMemoryUsage(): Promise<CacheMemoryUsage> {
   try {
     return await invoke<CacheMemoryUsage>("get_cache_memory_usage")
   } catch (error) {
-    logger.error("Failed to get cache memory usage:", error)
+    void logger.error("Failed to get cache memory usage:", { error })
     throw error
   }
 }

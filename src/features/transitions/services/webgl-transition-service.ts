@@ -183,7 +183,7 @@ export class WebGLTransitionService {
    */
   public initialize(canvas: HTMLCanvasElement): boolean {
     try {
-      this.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+      this.gl = (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")) as WebGLRenderingContext | null
 
       if (!this.gl) {
         logger.error("WebGL not supported")
@@ -198,7 +198,7 @@ export class WebGLTransitionService {
 
       return true
     } catch (error) {
-      logger.error("WebGL initialization error", error)
+      logger.error("WebGL initialization error", { error })
       return false
     }
   }
@@ -243,7 +243,7 @@ export class WebGLTransitionService {
       const renderTime = performance.now() - startTime
       return { success: true, renderTime }
     } catch (error) {
-      logger.error("Transition render error", error)
+      logger.error("Transition render error", { error })
       return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
     }
   }

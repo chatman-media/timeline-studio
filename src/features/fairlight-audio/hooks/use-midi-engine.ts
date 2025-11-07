@@ -8,7 +8,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { type MidiDevice, MidiEngine } from "../services/midi/midi-engine"
 import { MidiRouter } from "../services/midi/midi-router"
 
-const logger = createLogger({ module: "UseMidiEngine" })
+const logger = createLogger("UseMidiEngine")
 
 // Global instance for the MIDI engine
 let globalMidiEngine: MidiEngine | null = null
@@ -85,7 +85,7 @@ export function useMidiEngine(): UseMidiEngineReturn {
           globalMidiEngine?.off("devicesChanged", updateDevices)
         }
       } catch (err) {
-        logger.error("Failed to initialize MIDI engine:", err)
+        logger.error("Failed to initialize MIDI engine:", { error: err })
         setError(err instanceof Error ? err.message : "Failed to initialize MIDI")
       }
     }

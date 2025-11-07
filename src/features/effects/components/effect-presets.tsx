@@ -8,7 +8,7 @@ import type { EffectPreset, VideoEffect } from "@/features/effects/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "EffectPresets" })
+const logger = createLogger("EffectPresets")
 
 interface EffectPresetsProps {
   effect: VideoEffect

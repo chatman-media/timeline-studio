@@ -185,7 +185,7 @@ describe("FileMetadata", () => {
 
     // Проверяем, что стиль font-size установлен на 13px
     const durationElement = screen.getByText("120 сек")
-    expect(durationElement).toHaveStyle("font-size: 13px")
+    expect(durationElement).toHaveStyle({ fontSize: "13px" })
 
     // Перерендериваем с размером <= 100
     act(() => {
@@ -193,7 +193,7 @@ describe("FileMetadata", () => {
     })
 
     // Проверяем, что стиль font-size установлен на 12px
-    expect(durationElement).toHaveStyle("font-size: 12px")
+    expect(durationElement).toHaveStyle({ fontSize: "12px" })
   })
 
   it("should use default size if not provided", () => {
@@ -224,6 +224,6 @@ describe("FileMetadata", () => {
 
     // Проверяем, что контейнер имеет высоту 100px (значение по умолчанию)
     const mainContainer = renderResult.container.firstChild as HTMLElement
-    expect(mainContainer).toHaveStyle("height: 100px")
+    expect(mainContainer).toHaveStyle({ height: "100px" })
   })
 })

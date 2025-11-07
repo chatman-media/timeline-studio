@@ -7,7 +7,7 @@ import type { ResourceType, TimelineResource } from "@/features/resources/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
-const logger = createLogger({ module: "AddMediaButton" })
+const logger = createLogger("AddMediaButton")
 
 interface AddMediaButtonProps {
   resource: TimelineResource

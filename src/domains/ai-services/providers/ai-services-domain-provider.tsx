@@ -1,8 +1,9 @@
 /**
- * AI Services Domain Provider с интеграцией BackendSync
+ * AI Services Domain Provider с интеграцией BackendSync и AI Event Bridge
  *
  * Provides centralized access to all AI services state machines and services
  * Добавлена синхронизация состояния AI сервисов с backend
+ * Интегрирован AI Event Bridge для синхронизации Tauri ↔ TypeScript events
  */
 
 import { useActor } from "@xstate/react"
@@ -10,7 +11,14 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
-import { aiIntelligenceMachine } from "../machines/ai-intelligence-machine"
+// NEW: Use AI Intelligence Machine V2 with AI Director integration
+import {
+  aiIntelligenceMachineV2,
+  type AIIntelligenceContextV2,
+  type AIIntelligenceEventV2,
+} from "../machines/ai-intelligence-machine-v2"
+// NEW: Import AI Event Bridge
+import { aiEventBridge } from "../services/ai-event-bridge"
 
 const logger = createLogger("AiServicesDomainProvider")
 
@@ -19,13 +27,7 @@ import { ChatMachineContext, chatMachine } from "../machines/chat-machine"
 import { MontagePlannerContext, montagePlannerMachine } from "../machines/montage-planner-machine"
 
 // Import domain types
-import type {
-  AIIntelligenceContext,
-  AIIntelligenceEvent,
-  AIServicesDomainConfig,
-  ChatMachineEvent,
-  MontagePlannerEvent,
-} from "../types"
+import type { AIServicesDomainConfig, ChatMachineEvent, MontagePlannerEvent } from "../types"
 
 // Domain Provider Context
 interface AIServicesDomainContextValue {
@@ -40,9 +42,9 @@ interface AIServicesDomainContextValue {
   montagePlannerState: MontagePlannerContext
   montagePlannerSend: (event: MontagePlannerEvent) => void
 
-  // AI Intelligence machine
-  aiIntelligenceState: AIIntelligenceContext
-  aiIntelligenceSend: (event: AIIntelligenceEvent) => void
+  // AI Intelligence machine V2
+  aiIntelligenceState: AIIntelligenceContextV2
+  aiIntelligenceSend: (event: AIIntelligenceEventV2) => void
 
   // Domain-level actions
   resetAllServices: () => void
@@ -85,8 +87,8 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   // Initialize montage planner machine
   const [montagePlannerState, montagePlannerSend] = useActor(montagePlannerMachine)
 
-  // Initialize AI intelligence machine
-  const [aiIntelligenceState, aiIntelligenceSend] = useActor(aiIntelligenceMachine)
+  // Initialize AI intelligence machine V2 (with AI Director integration)
+  const [aiIntelligenceState, aiIntelligenceSend] = useActor(aiIntelligenceMachineV2)
 
   // Синхронизация состояния AI с backend
   const syncAIState = async () => {
@@ -103,9 +105,9 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
           currentPlan: montagePlannerState.context.currentPlan,
         },
         intelligenceStatus: {
-          isAnalyzing:
-            (aiIntelligenceState.context.progress || 0) > 0 && (aiIntelligenceState.context.progress || 0) < 100,
-          analysisResults: aiIntelligenceState.context.analysis,
+          isAnalyzing: aiIntelligenceState.context.isAnalyzing || false,
+          analysisResults: aiIntelligenceState.context.unifiedAnalyses,
+          currentWorkflow: aiIntelligenceState.context.currentWorkflowId,
         },
         usageStats: aiUsageStats,
       } as any)
@@ -126,8 +128,20 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     }
   }
 
-  // Подписка на состояние backend и машин
+  // Подписка на состояние backend и машин + Инициализация AI Event Bridge
   useEffect(() => {
+    // NEW: Инициализируем AI Event Bridge для синхронизации Tauri events
+    let bridgeInitialized = false
+    aiEventBridge
+      .initialize()
+      .then(() => {
+        bridgeInitialized = true
+        logger.info("AI Event Bridge successfully initialized")
+      })
+      .catch((error) => {
+        logger.error("Failed to initialize AI Event Bridge", { error })
+      })
+
     // Мониторинг соединения с backend
     const unsubscribeBackend = backendSync.onStateChange((state: ProjectState) => {
       setIsBackendConnected(true)
@@ -163,6 +177,11 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     return () => {
       unsubscribeBackend()
       unsubscribeEvents()
+
+      // NEW: Cleanup AI Event Bridge
+      if (bridgeInitialized) {
+        aiEventBridge.cleanup().catch((error) => logger.error("Failed to cleanup AI Event Bridge", { error }))
+      }
     }
   }, [backendSync])
 
@@ -178,7 +197,8 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   }, [
     chatState.context.chatMessages,
     montagePlannerState.context.currentPlan,
-    aiIntelligenceState.context.result,
+    aiIntelligenceState.context.currentWorkflowId,
+    aiIntelligenceState.context.unifiedAnalyses,
     isBackendConnected,
   ])
 

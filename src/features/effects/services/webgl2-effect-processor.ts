@@ -7,7 +7,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { BaseRenderer, type ShaderSource, shaderPool, vaoManager } from "@/lib/webgl"
 import type { AppliedEffect, WebGLProcessor } from "../types"
 
-const logger = createLogger({ module: "Webgl2EffectProcessor" })
+const logger = createLogger("Webgl2EffectProcessor")
 
 /**
  * Результат обработки эффекта

@@ -58,8 +58,8 @@ describe("EffectComparison", () => {
       en: "Test effect description",
     },
     category: "blur_sharpen",
-    scope: ["video"],
-    processingType: "css",
+    scope: ["clip"],
+    processingType: "realtime",
     version: "1.0.0",
     tags: ["test"],
     complexity: "low",
@@ -68,22 +68,27 @@ describe("EffectComparison", () => {
       {
         id: "intensity",
         name: { ru: "Интенсивность", en: "Intensity" },
-        type: "number",
+        type: "number" as const,
         defaultValue: 50,
-        range: { min: 0, max: 100 },
+        min: 0,
+        max: 100,
+        animatable: true,
       },
       {
         id: "brightness",
         name: { ru: "Яркость", en: "Brightness" },
-        type: "number",
+        type: "number" as const,
         defaultValue: 100,
-        range: { min: 0, max: 200 },
+        min: 0,
+        max: 200,
+        animatable: true,
       },
     ],
     presets: [],
     processors: {
       css: {
-        shader: "brightness({{brightness}}%) blur({{intensity}}px)",
+        filter: (params: Record<string, any>) =>
+          `brightness(${params.brightness || 100}%) blur(${params.intensity || 0}px)`,
       },
     },
   }
@@ -210,7 +215,7 @@ describe("EffectComparison", () => {
         ...mockEffect,
         parameters: mockEffect.parameters.map((param) => ({
           ...param,
-          defaultValue: customParams[param.id] ?? param.defaultValue,
+          defaultValue: customParams[param.id as keyof typeof customParams] ?? param.defaultValue,
         })),
       }
 
@@ -440,7 +445,7 @@ describe("EffectComparison", () => {
       const newEffect: VideoEffect = {
         ...mockEffect,
         id: "new-effect",
-        name: "New Effect",
+        name: { en: "New Effect", ru: "Новый эффект" },
       }
 
       rerender(<EffectComparison effect={newEffect} />)

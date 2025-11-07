@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { OutputFormat } from "@/features/video-compiler/types/render"
+
 import { SocialExportTab } from "../../components/social-export-tab"
 import type { SocialExportSettings } from "../../types/export-types"
 
@@ -60,9 +62,9 @@ vi.mock("../../hooks/use-social-export", () => ({
 const mockSettings: SocialExportSettings = {
   fileName: "test-video",
   savePath: "/test/path",
-  format: "mp4",
-  quality: "good",
-  resolution: "1080",
+  format: OutputFormat.Mp4,
+  quality: "good" as const,
+  resolution: "1080" as const,
   frameRate: "30",
   enableGPU: false,
   socialNetwork: "youtube",

@@ -13,9 +13,12 @@ import {
 describe("hasAudioStream", () => {
   it("должен вернуть true, если файл содержит аудиопоток", () => {
     const file: MediaFile = {
+      id: "test-1",
+      name: "test.mp4",
       path: "test.mp4",
       probeData: {
         streams: [{ codec_type: "video" }, { codec_type: "audio" }],
+        format: {},
       },
     }
     expect(hasAudioStream(file)).toBe(true)
@@ -23,9 +26,12 @@ describe("hasAudioStream", () => {
 
   it("должен вернуть false, если файл не содержит аудиопоток", () => {
     const file: MediaFile = {
+      id: "test-2",
+      name: "test.mp4",
       path: "test.mp4",
       probeData: {
         streams: [{ codec_type: "video" }],
+        format: {},
       },
     }
     expect(hasAudioStream(file)).toBe(false)
@@ -33,6 +39,8 @@ describe("hasAudioStream", () => {
 
   it("должен вернуть false, если probeData отсутствует", () => {
     const file: MediaFile = {
+      id: "test-3",
+      name: "test.mp4",
       path: "test.mp4",
     }
     expect(hasAudioStream(file)).toBe(false)
@@ -42,6 +50,8 @@ describe("hasAudioStream", () => {
 describe("getFileType", () => {
   it("должен вернуть 'image', если файл является изображением", () => {
     const file: MediaFile = {
+      id: "test-4",
+      name: "test.jpg",
       path: "test.jpg",
       isImage: true,
     }
@@ -50,9 +60,12 @@ describe("getFileType", () => {
 
   it("должен вернуть 'video', если файл содержит видеопоток", () => {
     const file: MediaFile = {
+      id: "test-5",
+      name: "test.mp4",
       path: "test.mp4",
       probeData: {
         streams: [{ codec_type: "video" }],
+        format: {},
       },
     }
     expect(getFileType(file)).toBe("video")
@@ -60,9 +73,12 @@ describe("getFileType", () => {
 
   it("должен вернуть 'audio', если файл не содержит видеопоток и не является изображением", () => {
     const file: MediaFile = {
+      id: "test-6",
+      name: "test.mp3",
       path: "test.mp3",
       probeData: {
         streams: [{ codec_type: "audio" }],
+        format: {},
       },
     }
     expect(getFileType(file)).toBe("audio")
@@ -73,21 +89,30 @@ describe("getRemainingMediaCounts", () => {
   it("должен правильно подсчитывать оставшиеся видео и аудио файлы", () => {
     const mediaFiles: MediaFile[] = [
       {
+        id: "video1",
+        name: "video1.mp4",
         path: "video1.mp4",
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
+          format: {},
         },
       },
       {
+        id: "audio1",
+        name: "audio1.mp3",
         path: "audio1.mp3",
         probeData: {
           streams: [{ codec_type: "audio" }],
+          format: {},
         },
       },
       {
+        id: "video2",
+        name: "video2.mp4",
         path: "video2.mp4",
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
+          format: {},
         },
       },
     ]
@@ -104,15 +129,21 @@ describe("getRemainingMediaCounts", () => {
   it("должен вернуть allFilesAdded=true, если все файлы с аудио добавлены", () => {
     const mediaFiles: MediaFile[] = [
       {
+        id: "video1",
+        name: "video1.mp4",
         path: "video1.mp4",
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
+          format: {},
         },
       },
       {
+        id: "audio1",
+        name: "audio1.mp3",
         path: "audio1.mp3",
         probeData: {
           streams: [{ codec_type: "audio" }],
+          format: {},
         },
       },
     ]

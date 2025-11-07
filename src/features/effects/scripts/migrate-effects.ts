@@ -9,7 +9,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { EffectMigrator } from "../services/effect-migrator"
 import type { BaseEffect } from "../types/unified-effects"
 
-const logger = createLogger({ module: "MigrateEffects" })
+const logger = createLogger("MigrateEffects")
 
 // Интерфейс старого эффекта
 interface OldEffect {

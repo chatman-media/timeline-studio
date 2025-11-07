@@ -8,7 +8,7 @@ import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect, EffectPreset } from "../types/unified-effects"
 
-const logger = createLogger({ module: "UserEffects" })
+const logger = createLogger("UserEffects")
 
 // Счетчик для генерации уникальных ID пресетов
 let presetIdCounter = 1

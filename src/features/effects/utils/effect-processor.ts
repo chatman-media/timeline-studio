@@ -6,7 +6,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect, EffectParameter, EffectPreset } from "../types/unified-effects"
 
-const logger = createLogger({ module: "EffectProcessor" })
+const logger = createLogger("EffectProcessor")
 
 /**
  * Интерфейс для сырых данных эффекта из JSON (старый формат)

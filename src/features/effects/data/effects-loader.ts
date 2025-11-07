@@ -15,7 +15,7 @@ import motionEffects from "./effects/motion-effects.json"
 import technicalEffects from "./effects/technical-effects.json"
 import vintageEffects from "./effects/vintage-effects.json"
 
-const logger = createLogger({ module: "EffectsLoader" })
+const logger = createLogger("EffectsLoader")
 
 // Типизация для мигрированных данных
 interface MigratedEffectsData {

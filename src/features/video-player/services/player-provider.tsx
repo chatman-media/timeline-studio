@@ -13,7 +13,7 @@ import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectState } from "@/types/generated/state-types"
 
 const logger = createLogger("video-player:player-provider")
 

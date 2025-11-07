@@ -13,7 +13,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useMidi } from "../../hooks/use-midi"
 import type { MidiTrack } from "../../services/midi/midi-sequencer"
 
-const logger = createLogger({ module: "MidiSequencerView" })
+const logger = createLogger("MidiSequencerView")
 
 export function MidiSequencerView() {
   const { t } = useTranslation()
@@ -299,7 +299,7 @@ export function MidiSequencerView() {
           setSelectedTrack(trackIds[0])
         }
       } catch (error) {
-        logger.error("Failed to import MIDI file:", error)
+        logger.error("Failed to import MIDI file:", { error })
       }
     },
     [midi],
@@ -321,7 +321,7 @@ export function MidiSequencerView() {
 
       URL.revokeObjectURL(url)
     } catch (error) {
-      logger.error("Failed to export MIDI file:", error)
+      logger.error("Failed to export MIDI file:", { error })
     }
   }, [midi, t])
 

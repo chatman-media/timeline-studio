@@ -1,3 +1,7 @@
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ReverbProcessor")
+
 export interface ReverbConfig {
   roomSize: number // 0 to 100
   decay: number // 0.1 to 10 seconds
@@ -242,7 +246,7 @@ export class ReverbProcessor {
       const audioBuffer = await this.context.decodeAudioData(arrayBuffer)
       this.convolver.buffer = audioBuffer
     } catch (error) {
-      logger.error("Failed to load impulse response:", error)
+      logger.error("Failed to load impulse response:", { error })
       // Fall back to synthetic impulse
       this.updateImpulseResponse(this.config.roomSize, this.config.decay)
     }

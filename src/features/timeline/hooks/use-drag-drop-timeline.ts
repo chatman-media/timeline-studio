@@ -24,7 +24,7 @@ import {
 import { useTimeline } from "./use-timeline"
 import { useTimelineActions } from "./use-timeline-actions"
 
-const logger = createLogger({ module: "UseDragDropTimeline" })
+const logger = createLogger("UseDragDropTimeline")
 
 export interface UseDragDropTimelineReturn {
   dragState: DragState

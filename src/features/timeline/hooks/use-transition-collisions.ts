@@ -14,7 +14,7 @@ import {
 import type { TimelineTrack } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
-const logger = createLogger({ module: "UseTransitionCollisions" })
+const logger = createLogger("UseTransitionCollisions")
 
 interface UseTransitionCollisionsReturn {
   // Все коллизии в проекте

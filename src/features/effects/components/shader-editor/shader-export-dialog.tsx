@@ -37,8 +37,8 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
   })
 
   const [effectMetadata, setEffectMetadata] = useState({
-    category: "custom",
-    complexity: "advanced" as const,
+    category: "stylize" as const,
+    complexity: "high" as const,
     tags: ["custom", "shader", "glsl"],
   })
 
@@ -51,32 +51,38 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
         ru: project.name,
       },
       category: effectMetadata.category,
+      scope: ["clip"],
+      processingType: "realtime",
       description: {
         en: project.description || "Custom GLSL shader effect",
         ru: project.description || "Пользовательский GLSL шейдер",
       },
       complexity: effectMetadata.complexity,
+      gpuAccelerated: true,
       parameters: project.uniforms.map((uniform) => ({
-        name: uniform.name,
+        id: uniform.name,
+        name: {
+          en: uniform.name,
+          ru: uniform.name,
+        },
         type: mapUniformTypeToParameterType(uniform.type),
         defaultValue: uniform.value,
         min: uniform.min,
         max: uniform.max,
         step: uniform.step,
-        description: uniform.description,
-        group: uniform.group,
+        animatable: true,
       })),
-      processor: {
-        type: "webgl",
-        vertexShader: exportOptions.minify ? minifyShader(project.vertexShader) : project.vertexShader,
-        fragmentShader: exportOptions.minify ? minifyShader(project.fragmentShader) : project.fragmentShader,
-        uniforms: project.uniforms.map((u) => u.name),
-        version: exportOptions.targetVersion,
+      processors: {
+        webgl: {
+          vertexShader: exportOptions.minify ? minifyShader(project.vertexShader) : project.vertexShader,
+          fragmentShader: exportOptions.minify ? minifyShader(project.fragmentShader) : project.fragmentShader,
+          uniforms: Object.fromEntries(project.uniforms.map((u) => [u.name, u.value])),
+        },
       },
       tags: effectMetadata.tags,
       version: project.version,
       author: project.metadata?.author,
-      presets: exportOptions.includePresets ? generatePresets(project) : undefined,
+      presets: exportOptions.includePresets ? (generatePresets(project) || []) : [],
     }
 
     onExport(effect)

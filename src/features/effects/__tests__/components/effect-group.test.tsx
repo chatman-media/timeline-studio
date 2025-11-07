@@ -19,11 +19,11 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
 vi.mock("../../components/effect-preview", () => ({
   EffectPreview: vi.fn(({ onClick, effect, size, width, height }) => (
     <div
-      data-testid={`effect-preview-${effect?.type || "undefined"}`}
+      data-testid={`effect-preview-${effect?.id || "undefined"}`}
       onClick={onClick}
       style={{ width: `${width}px`, height: `${height}px` }}
     >
-      Effect Preview {effect?.type || "undefined"} ({size}x{width}x{height})
+      Effect Preview {effect?.id || "undefined"} ({size}x{width}x{height})
     </div>
   )),
 }))
@@ -51,44 +51,47 @@ const mockEffects: VideoEffect[] = [
   {
     id: "effect-1",
     name: { en: "Blur Effect", ru: "Эффект размытия" },
-    type: "blur",
-    duration: 1000,
-    category: "artistic",
+    category: "blur_sharpen",
     description: { ru: "Базовый эффект размытия", en: "A basic blur effect" },
-    complexity: "basic",
-    params: { intensity: 50 },
-    ffmpegCommand: () => "",
-    previewPath: "/test.mp4",
-    labels: { en: "Blur Effect", ru: "Эффект размытия" },
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    complexity: "low",
+    gpuAccelerated: true,
+    parameters: [],
+    presets: [],
     tags: ["popular"],
+    processors: {},
   },
   {
     id: "effect-2",
     name: { en: "Brightness Effect", ru: "Эффект яркости" },
-    type: "brightness",
-    duration: 1000,
-    category: "color-correction",
+    category: "color_correction",
     description: { ru: "Настройка яркости", en: "Adjust brightness" },
-    complexity: "intermediate",
-    params: { amount: 100 },
-    ffmpegCommand: () => "",
-    previewPath: "/test.mp4",
-    labels: { en: "Brightness Effect", ru: "Эффект яркости" },
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    complexity: "medium",
+    gpuAccelerated: true,
+    parameters: [],
+    presets: [],
     tags: ["popular"],
+    processors: {},
   },
   {
     id: "effect-3",
     name: { en: "Contrast Effect", ru: "Эффект контрастности" },
-    type: "contrast",
-    duration: 1000,
-    category: "color-correction",
+    category: "color_correction",
     description: { ru: "Настройка контрастности", en: "Adjust contrast" },
-    complexity: "advanced",
-    params: { amount: 150 },
-    ffmpegCommand: () => "",
-    previewPath: "/test.mp4",
-    labels: { en: "Contrast Effect", ru: "Эффект контрастности" },
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    complexity: "high",
+    gpuAccelerated: true,
+    parameters: [],
+    presets: [],
     tags: ["popular"],
+    processors: {},
   },
 ]
 
@@ -266,7 +269,7 @@ describe("EffectGroup", () => {
       expect(element.tagName).toBe("BUTTON")
       expect(element).toHaveAttribute(
         "aria-label",
-        `${mockEffects[index].labels?.en || mockEffects[index].name} effect`,
+        `${typeof mockEffects[index].name === "string" ? mockEffects[index].name : (mockEffects[index].name as any).en} effect`,
       )
       expect(element).toHaveClass("focus:outline-none", "focus:ring-2", "focus:ring-primary", "rounded-sm")
     })

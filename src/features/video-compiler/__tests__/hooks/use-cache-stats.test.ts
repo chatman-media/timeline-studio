@@ -41,6 +41,8 @@ describe("useCacheStats", () => {
       size_mb: 0,
     },
     cache_efficiency: 0,
+    cache_hits: 180,
+    cache_misses: 45,
   }
 
   beforeEach(async () => {
@@ -195,6 +197,8 @@ describe("useCacheStats", () => {
         size_mb: 0,
       },
       cache_efficiency: 0,
+      cache_hits: 180,
+      cache_misses: 45,
     }
 
     mockInvoke.mockResolvedValueOnce(emptyStats) // refreshStats
@@ -277,6 +281,8 @@ describe("useCacheStats", () => {
         size_mb: 0,
       },
       cache_efficiency: 0,
+      cache_hits: 180,
+      cache_misses: 45,
     }
 
     mockInvoke.mockResolvedValueOnce(statsWithNoHits)
@@ -317,6 +323,8 @@ describe("useCacheStats", () => {
         size_mb: 0,
       },
       cache_efficiency: 0,
+      cache_hits: 180,
+      cache_misses: 45,
     }
 
     mockInvoke.mockResolvedValueOnce(emptyStats)

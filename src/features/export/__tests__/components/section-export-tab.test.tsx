@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { OutputFormat } from "@/features/video-compiler/types/render"
+
 import { SectionExportTab } from "../../components/section-export-tab"
 
 import type { ExportSettings } from "../../types/export-types"
@@ -99,30 +101,13 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
 
 describe("SectionExportTab", () => {
   const defaultSettings: ExportSettings = {
-    format: "mp4",
-    codec: "h264",
-    resolution: "1920x1080",
-    fps: 30,
-    bitrate: 8000,
-    bitrateMode: "vbr",
-    quality: "high",
-    preset: "medium",
-    outputPath: "/test/path",
+    format: OutputFormat.Mp4,
+    quality: "good" as const,
+    resolution: "1080" as const,
+    frameRate: "30",
+    enableGPU: false,
     fileName: "export",
-    includeAudio: true,
-    includeSubtitles: true,
-    audioCodec: "aac",
-    audioBitrate: 192,
-    channels: "stereo",
-    sampleRate: 48000,
-    pixelFormat: "yuv420p",
-    colorSpace: "bt709",
-    startFrame: 0,
-    endFrame: null,
-    includeAlpha: false,
-    twoPass: false,
-    hardwareAcceleration: false,
-    preserveMetadata: true,
+    savePath: "/test/path",
   }
 
   const mockOnExport = vi.fn()

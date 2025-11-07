@@ -13,7 +13,7 @@ import { getDragDropManager } from "@/features/drag-drop"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "DragDropBridge" })
+const logger = createLogger("DragDropBridge")
 
 /**
  * Конвертирует DragData из @dnd-kit в формат DragDropManager

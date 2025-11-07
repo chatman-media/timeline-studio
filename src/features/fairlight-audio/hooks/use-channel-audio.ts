@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { type MediaFile } from "@/features/media"
 import { useTimeline } from "@/features/timeline/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 import { AudioFileManager } from "../services/audio-file-manager"
 import { useAudioEngine } from "./use-audio-engine"
 
-const logger = createLogger({ module: "UseChannelAudio" })
+const logger = createLogger("UseChannelAudio")
 
 export function useChannelAudio(channelId: string, trackId?: string) {
   const timeline = useTimeline()
@@ -67,7 +68,7 @@ export function useChannelAudio(channelId: string, trackId?: string) {
           logger.info(`[AudioLoader] Loading clip ${clip.id} with media ${clip.mediaId}`)
 
           // Get media file path from project resources
-          const mediaFile = timeline.project?.resources?.media?.find((m) => m.id === clip.mediaId)
+          const mediaFile = timeline.project?.resources?.media?.find((m) => m.id === clip.mediaId) as MediaFile | undefined
           if (!mediaFile) {
             logger.error(`[AudioLoader] Media file ${clip.mediaId} not found in project resources`)
             continue
@@ -91,7 +92,7 @@ export function useChannelAudio(channelId: string, trackId?: string) {
               audioFile.element.dataset.startTime = clip.startTime.toString()
             }
           } catch (clipErr) {
-            logger.error(`[AudioLoader] Failed to load clip ${clip.id}:`, clipErr)
+            logger.error(`[AudioLoader] Failed to load clip ${clip.id}:`, { error: clipErr })
           }
         }
 

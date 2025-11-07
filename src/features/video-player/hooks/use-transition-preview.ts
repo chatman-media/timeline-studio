@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import type { TimelineTrack } from "@/features/timeline/types/timeline"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
@@ -70,15 +71,15 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
     }> = []
 
     // Собираем переходы из всех треков
-    const allTracks = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
+    const allTracks: TimelineTrack[] = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
 
     for (const track of allTracks) {
-      if (!track.transitions) continue
+      if (!track.transitions || !project.resources.timelineTransitions) continue
 
       const trackTransitions = track.transitions
-        .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
+        .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
         .filter((t): t is TimelineTransition => t !== undefined)
-        .map((transition) => ({ transition, trackId: track.id }))
+        .map((transition: TimelineTransition) => ({ transition, trackId: track.id }))
 
       transitions.push(...trackTransitions)
     }
@@ -156,7 +157,7 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
           canvas,
         )
       } catch (error) {
-        logError("[useTransitionPreview] Ошибка рендеринга перехода", error)
+        logError("[useTransitionPreview] Ошибка рендеринга перехода", { error })
         return false
       }
     },
@@ -273,13 +274,13 @@ export function useActiveTransition() {
     if (!project || !currentTime) return null
 
     // Ищем активный переход
-    const allTracks = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
+    const allTracks: TimelineTrack[] = [...project.sections.flatMap((s) => s.tracks), ...project.globalTracks]
 
     for (const track of allTracks) {
-      if (!track.transitions) continue
+      if (!track.transitions || !project.resources.timelineTransitions) continue
 
       const transitions = track.transitions
-        .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
+        .map((id: string) => project.resources.timelineTransitions?.find((t) => t.id === id))
         .filter((t): t is TimelineTransition => t !== undefined)
 
       for (const transition of transitions) {

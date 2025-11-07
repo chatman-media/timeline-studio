@@ -16,7 +16,7 @@ import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineAIAnalysis } from "../../hooks/use-timeline-ai-analysis"
 import { type AIMarkerConfig, AIMarkerService } from "../../services/ai-marker-service"
 
-const logger = createLogger({ module: "AiMarkerControls" })
+const logger = createLogger("AiMarkerControls")
 
 interface AIMarkerControlsProps {
   className?: string

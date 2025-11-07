@@ -2,7 +2,7 @@ import { useId, useMemo } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { TimelineMark } from "./timeline-mark"
 
-const logger = createLogger({ module: "TimelineMarks" })
+const logger = createLogger("TimelineMarks")
 
 interface TimelineMarksProps {
   startTime: number

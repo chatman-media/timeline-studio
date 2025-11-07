@@ -12,6 +12,12 @@ export type {
   OrchestratorOptions,
 } from "./services/unified-orchestrator"
 
+// AI Event Bridge (NEW - Tauri ↔ TypeScript Event Sync)
+export { AIEventBridge, aiEventBridge, TAURI_EVENTS } from "./services/ai-event-bridge"
+
+// Providers
+export * from "./providers"
+
 // Mappers
 export {
   mapComprehensiveAnalysisToUnified,
@@ -22,11 +28,27 @@ export {
 export type { UnifiedContentAnalysis } from "./mappers/ai-director-mapper"
 
 // Hooks
-export { useUnifiedAnalysis } from "./hooks/use-unified-analysis"
-export type {
-  UnifiedAnalysisState,
-  UnifiedAnalysisHook,
-} from "./hooks/use-unified-analysis"
+export * from "./hooks"
+
+// State Machines
+export {
+  // AI Intelligence V2 (NEW - with AI Director integration)
+  aiIntelligenceMachineV2,
+  type AIIntelligenceContextV2,
+  type AIIntelligenceEventV2,
+  type AIIntelligenceMachineV2,
+  type AIIntelligenceSnapshotV2,
+  // Montage Planner
+  montagePlannerMachine,
+  type MontagePlannerContext,
+  type MontagePlannerEvent,
+  type MontagePlannerMachine,
+  // Chat
+  chatMachine,
+  type ChatMachine,
+  type ChatMachineContext,
+  type ChatMachineEvent,
+} from "./machines"
 
 // Factories
 export {

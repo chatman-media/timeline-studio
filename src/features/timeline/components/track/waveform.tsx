@@ -5,7 +5,7 @@ import WaveSurfer from "wavesurfer.js"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "Waveform" })
+const logger = createLogger("Waveform")
 
 interface WaveformProps {
   audioUrl: string

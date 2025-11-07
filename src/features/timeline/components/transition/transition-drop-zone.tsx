@@ -9,7 +9,7 @@ import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineEffects } from "../../hooks/use-timeline-effects"
 import type { TimelineClip } from "../../types/timeline"
 
-const logger = createLogger({ module: "TransitionDropZone" })
+const logger = createLogger("TransitionDropZone")
 
 interface TransitionDropZoneProps {
   leftClip: TimelineClip

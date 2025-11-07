@@ -6,7 +6,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect } from "../types"
 
-const logger = createLogger({ module: "EffectsCache" })
+const logger = createLogger("EffectsCache")
 
 interface CacheEntry {
   bitmap: ImageBitmap

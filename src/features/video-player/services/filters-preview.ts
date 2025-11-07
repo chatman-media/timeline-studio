@@ -8,6 +8,10 @@
  * - Real-time обработка с WebGL
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("video-player:filters-preview")
+
 export interface FilterLUT {
   name: string
   data: Float32Array // RGB lookup data

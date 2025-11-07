@@ -8,7 +8,7 @@ import { useWebGL2Preview } from "@/features/preview/hooks/use-webgl2-preview"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
-const logger = createLogger({ module: "TimelinePreview" })
+const logger = createLogger("TimelinePreview")
 
 interface TimelinePreviewProps {
   className?: string

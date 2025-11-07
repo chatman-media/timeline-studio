@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { OutputFormat } from "@/features/video-compiler/types/render"
 import { setTranslations } from "@/test/mocks/libraries"
 
 import { useExportSettings } from "../../hooks/use-export-settings"
@@ -19,7 +20,7 @@ describe("useExportSettings", () => {
 
     const settings = result.current.getCurrentSettings()
     expect(settings.fileName).toBe("Untitled Export 1")
-    expect(settings.format).toBe("Mp4")
+    expect(settings.format).toBe(OutputFormat.Mp4)
     expect(settings.quality).toBe("good")
     expect(settings.resolution).toBe("1080")
     expect(settings.frameRate).toBe("25")
@@ -54,13 +55,13 @@ describe("useExportSettings", () => {
     act(() => {
       result.current.updateSettings({
         fileName: "Updated Video",
-        format: "Mov",
+        format: OutputFormat.Mov,
       })
     })
 
     const updatedSettings = result.current.getCurrentSettings()
     expect(updatedSettings.fileName).toBe("Updated Video")
-    expect(updatedSettings.format).toBe("Mov")
+    expect(updatedSettings.format).toBe(OutputFormat.Mov)
   })
 
   it("should generate export config with proper values", () => {
@@ -72,7 +73,7 @@ describe("useExportSettings", () => {
         resolution: "4k",
         frameRate: "60",
         enableGPU: true,
-        format: "Mp4",
+        format: OutputFormat.Mp4,
       })
     })
 
@@ -113,7 +114,7 @@ describe("useExportSettings", () => {
   it("should handle different formats", () => {
     const { result } = renderHook(() => useExportSettings())
 
-    const formats = ["Mp4", "Mkv", "WebM"]
+    const formats = [OutputFormat.Mp4, OutputFormat.Mkv, OutputFormat.WebM]
 
     formats.forEach((format) => {
       act(() => {

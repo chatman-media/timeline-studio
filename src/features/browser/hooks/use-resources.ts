@@ -16,7 +16,7 @@ import type {
   SearchOptions,
 } from "../types/browser-resources-provider"
 
-const logger = createLogger({ module: "UseResources" })
+const logger = createLogger("UseResources")
 
 /**
  * Хук для получения всех эффектов

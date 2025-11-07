@@ -12,7 +12,7 @@ import {
   NoiseReductionEngine,
 } from "../services/noise-reduction/noise-reduction-engine"
 
-const logger = createLogger({ module: "UseNoiseReduction" })
+const logger = createLogger("UseNoiseReduction")
 
 interface UseNoiseReductionProps {
   audioContext?: AudioContext
@@ -66,7 +66,7 @@ export function useNoiseReduction({
     })
 
     noiseEngine.on("processingError", (error) => {
-      logger.error("Noise reduction error:", error)
+      logger.error("Noise reduction error:", { error })
       setIsProcessing(false)
     })
 
@@ -85,7 +85,7 @@ export function useNoiseReduction({
       try {
         return engine.createProcessor(config)
       } catch (error) {
-        logger.error("Failed to create noise processor:", error)
+        logger.error("Failed to create noise processor:", { error })
         return null
       }
     },

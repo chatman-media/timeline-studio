@@ -14,7 +14,7 @@ import {
 } from "@/domains/video-editing"
 import { createLogger, logInfo } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "UseTimeline" })
+const logger = createLogger("UseTimeline")
 
 export interface TimelineContextType {
   // Project управление

@@ -14,7 +14,7 @@ import { generateCSSFilterForEffect, getPlaybackRate } from "../utils/css-effect
 import { getEffectPreview } from "../utils/effect-previews"
 import { EffectIndicators } from "./effect-indicators"
 
-const logger = createLogger({ module: "EffectPreview" })
+const logger = createLogger("EffectPreview")
 
 // Получаем путь к превью видео для конкретного эффекта
 const getPreviewPath = (effect: BaseEffect) => {

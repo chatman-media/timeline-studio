@@ -3,6 +3,18 @@
  * Modern replacement for ScriptProcessorNode
  */
 
+// Type definitions for AudioWorklet context
+declare class AudioWorkletProcessor {
+  readonly port: MessagePort
+  process(
+    inputs: Float32Array[][],
+    outputs: Float32Array[][],
+    parameters: Record<string, Float32Array>,
+  ): boolean
+}
+
+declare function registerProcessor(name: string, processorCtor: typeof AudioWorkletProcessor): void
+
 // Minimal FFT implementation for worklet
 class FFTProcessor {
   constructor(private size: number) {}
@@ -27,6 +39,14 @@ class NoiseReductionProcessor extends AudioWorkletProcessor {
     strength: 0.5,
     preserveVoice: true,
   }
+
+  // Buffers
+  private inputBuffer: Float32Array
+  private outputBuffer: Float32Array
+  private overlapBuffer: Float32Array
+  private window: Float32Array
+  private hopSize: number
+  private fftProcessor: FFTProcessor
 
   constructor() {
     super()

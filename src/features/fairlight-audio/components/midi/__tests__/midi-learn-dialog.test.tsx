@@ -36,8 +36,8 @@ describe("MidiLearnDialog", () => {
   const mockOnComplete = vi.fn()
 
   const mockDevices: MidiDevice[] = [
-    { id: "device1", name: "MIDI Device 1", type: "input", manufacturer: "", connected: true },
-    { id: "device2", name: "MIDI Device 2", type: "input", manufacturer: "", connected: true },
+    { id: "device1", name: "MIDI Device 1", type: "input", manufacturer: "", state: "connected" },
+    { id: "device2", name: "MIDI Device 2", type: "input", manufacturer: "", state: "connected" },
   ]
 
   const defaultProps = {

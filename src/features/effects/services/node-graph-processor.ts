@@ -8,7 +8,7 @@ import type {
 } from "../types/node-compositing"
 import { getNodeProcessor } from "./node-library"
 
-const logger = createLogger({ module: "NodeGraphProcessor" })
+const logger = createLogger("NodeGraphProcessor")
 
 /**
  * Node Graph Processor

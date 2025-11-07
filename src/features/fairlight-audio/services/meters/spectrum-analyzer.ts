@@ -34,6 +34,7 @@ export interface FrequencyBand {
 
 export class SpectrumAnalyzer extends EventEmitter {
   private config: SpectrumConfig
+  private context: AudioContext | null = null
   private analyser: AnalyserNode | null = null
   private splitter: ChannelSplitterNode | null = null
   private merger: ChannelMergerNode | null = null

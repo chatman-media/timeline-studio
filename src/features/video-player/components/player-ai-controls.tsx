@@ -23,7 +23,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"
 
-const logger = createLogger({ module: "PlayerAiControls" })
+const logger = createLogger("video-player:player-ai-controls")
 
 interface PlayerAIControlsProps {
   className?: string

@@ -1,7 +1,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import type { NodeProcessor } from "../../types/node-compositing"
 
-const logger = createLogger({ module: "TimeNodes" })
+const logger = createLogger("TimeNodes")
 
 /**
  * Time and Animation Nodes

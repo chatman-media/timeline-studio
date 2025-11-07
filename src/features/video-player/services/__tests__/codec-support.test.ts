@@ -170,7 +170,10 @@ describe("CodecSupportService", () => {
   describe("video format detection", () => {
     it("should detect basic video format info", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/video.mp4"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/video.mp4",
+        writable: true,
+      })
 
       // Mock the actual method to avoid timeout issues
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -215,7 +218,10 @@ describe("CodecSupportService", () => {
 
     it("should detect WebM format", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/video.webm"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/video.webm",
+        writable: true,
+      })
 
       // Mock for WebM
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -247,7 +253,10 @@ describe("CodecSupportService", () => {
 
     it("should detect MKV format", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/video.mkv"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/video.mkv",
+        writable: true,
+      })
 
       // Mock for MKV
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -279,7 +288,10 @@ describe("CodecSupportService", () => {
 
     it("should handle video with tracks", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/video.mp4"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/video.mp4",
+        writable: true,
+      })
 
       // Mock the method to avoid timeout
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -321,7 +333,10 @@ describe("CodecSupportService", () => {
 
     it("should detect HDR content from filename", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/movie_4k_hdr10.mp4"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/movie_4k_hdr10.mp4",
+        writable: true,
+      })
 
       // Mock the method to avoid timeout
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -355,7 +370,10 @@ describe("CodecSupportService", () => {
 
     it("should detect Dolby Vision content", async () => {
       const video = mockVideoElement()
-      video.currentSrc = "http://example.com/movie_dolby_vision.mp4"
+      Object.defineProperty(video, "currentSrc", {
+        value: "http://example.com/movie_dolby_vision.mp4",
+        writable: true,
+      })
 
       // Mock the method to avoid timeout
       const detectSpy = vi.spyOn(service, "detectVideoFormat").mockResolvedValue({
@@ -410,7 +428,10 @@ describe("CodecSupportService", () => {
 
     it("should handle video not ready", async () => {
       const video = mockVideoElement()
-      video.readyState = 1 // HAVE_METADATA
+      Object.defineProperty(video, "readyState", {
+        value: 1, // HAVE_METADATA
+        writable: true,
+      })
 
       const performance = await (service as any).measureDecodingPerformance(video, "h264")
 

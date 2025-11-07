@@ -20,7 +20,7 @@ export interface FfprobeFormat {
 
 export interface FfprobeStream {
   [key: string]: any
-  index: number
+  index?: number
   streamKey?: string
   codec_name?: string | undefined
   codec_long_name?: string | undefined

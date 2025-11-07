@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { OutputFormat } from "@/domains/video-editing/types"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 import { DetailedExportInterface } from "../../components/detailed-export-interface"
 
@@ -31,15 +31,14 @@ vi.mock("lucide-react", async (importOriginal) => {
 describe("DetailedExportInterface", () => {
   const mockSettings = {
     format: OutputFormat.Mp4,
-    quality: "good",
-    resolution: "1920x1080",
-    fps: "30",
-    codec: "h264",
-    outputFolder: "/path/to/output",
+    quality: "good" as const,
+    resolution: "1080" as const,
+    frameRate: "30",
+    enableGPU: false,
     fileName: "output",
     exportVideo: true,
     exportAudio: true,
-    savePath: "/path/to/output", // Added savePath
+    savePath: "/path/to/output",
   }
 
   const mockProps = {

@@ -293,7 +293,7 @@ describe("useFramePreview", () => {
         wrapper: MediaProviders,
       })
 
-      let success: boolean
+      let success = false
       await act(async () => {
         success = await result.current.clearTimelineFrames("test-file-123")
       })

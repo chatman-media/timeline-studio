@@ -4,7 +4,7 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 import type { LoadResult } from "../types/browser-resources-provider"
 
-const logger = createLogger({ module: "ResourceLoaders" })
+const logger = createLogger("ResourceLoaders")
 
 /**
  * Ленивые загрузчики ресурсов для оптимизации памяти

@@ -13,7 +13,7 @@ import {
   type TimelineFrame,
 } from "../services/frame-extraction-service"
 
-const logger = createLogger({ module: "UseFrameExtraction" })
+const logger = createLogger("UseFrameExtraction")
 
 export interface UseFrameExtractionOptions {
   /** Кэшировать ли результаты в IndexedDB */
@@ -67,10 +67,10 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
   // Используем интегрированный хук для работы с Preview Manager только для timeline frames
   const { extractTimelineFrames: extractFramesWithCache } = useFramePreview({
     onFramesExtracted: (frames) => {
-      logger.info(`Извлечено ${frames.length} кадров через Preview Manager`)
+      void logger.info(`Извлечено ${frames.length} кадров через Preview Manager`)
     },
     onError: (error) => {
-      logger.error("Ошибка Preview Manager:", error)
+      void logger.error("Ошибка Preview Manager:", { error })
     },
   })
 
@@ -111,7 +111,7 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
         setProgress(100)
       } catch (err) {
         const error = err as Error
-        logger.error("Failed to extract timeline frames:", error)
+        void logger.error("Failed to extract timeline frames:", { error })
         setError(error)
         toast.error(t("videoCompiler.frameExtraction.errorTimeline"))
       } finally {
@@ -143,7 +143,7 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
         setProgress(100)
       } catch (err) {
         const error = err as Error
-        logger.error("Failed to extract recognition frames:", error)
+        void logger.error("Failed to extract recognition frames:", { error })
         setError(error)
         toast.error(t("videoCompiler.frameExtraction.errorRecognition"))
       } finally {
@@ -168,7 +168,7 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
       setProgress(100)
     } catch (err) {
       const error = err as Error
-      logger.error("Failed to extract subtitle frames:", error)
+      void logger.error("Failed to extract subtitle frames:", { error })
       setError(error)
       toast.error(t("videoCompiler.frameExtraction.errorSubtitles"))
     } finally {
@@ -184,7 +184,7 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
       await frameExtractionService.clearFrameCache()
       toast.success(t("videoCompiler.frameExtraction.cacheCleared"))
     } catch (err) {
-      logger.error("Failed to clear cache:", err)
+      void logger.error("Failed to clear cache:", { error: err })
       toast.error(t("videoCompiler.frameExtraction.errorClearCache"))
     }
   }, [])

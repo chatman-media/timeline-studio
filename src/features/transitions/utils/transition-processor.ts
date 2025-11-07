@@ -349,9 +349,9 @@ export function sortTransitions(
       }
 
       case "complexity": {
-        const complexityOrder = { basic: 0, intermediate: 1, advanced: 2 }
-        const complexityA = complexityOrder[a.complexity || "basic"]
-        const complexityB = complexityOrder[b.complexity || "basic"]
+        const complexityOrder: Record<string, number> = { basic: 0, intermediate: 1, advanced: 2, "gpu-required": 3 }
+        const complexityA = complexityOrder[a.complexity || "basic"] || 0
+        const complexityB = complexityOrder[b.complexity || "basic"] || 0
         result = complexityA - complexityB
         break
       }

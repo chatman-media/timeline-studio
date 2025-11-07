@@ -9,7 +9,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedEffect, TimelineClip } from "../types"
 import { EffectsCache } from "./effects-cache"
 
-const logger = createLogger({ module: "EffectsPlayerIntegration" })
+const logger = createLogger("EffectsPlayerIntegration")
 
 export interface EffectsPlayerConfig {
   targetCanvas?: HTMLCanvasElement

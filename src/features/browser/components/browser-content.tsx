@@ -38,8 +38,16 @@ export const BrowserContent = memo(() => {
   } = useBrowserState()
 
   // Извлекаем настройки для текущей вкладки
-  const { searchQuery, showFavoritesOnly, viewMode, sortBy, filterType, groupBy, sortOrder, previewSizeIndex } =
-    currentTabSettings
+  const {
+    search_query: searchQuery,
+    show_favorites_only: showFavoritesOnly,
+    view_mode: viewMode,
+    sort_by: sortBy,
+    filter_type: filterType,
+    group_by: groupBy,
+    sort_order: sortOrder,
+    preview_size_index: previewSizeIndex,
+  } = currentTabSettings
 
   // Используем useCallback для стабильных ссылок на функции
   const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])

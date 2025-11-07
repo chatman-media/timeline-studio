@@ -4,7 +4,7 @@
  */
 
 import type { Effect } from "@/features/effects/types"
-import type { TimelineSegment } from "@/features/timeline/types"
+import type { TimelineSection } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { BaseRenderer, type RendererOptions, type ShaderSource, shaderPool, vaoManager } from "@/lib/webgl"
 
@@ -29,7 +29,7 @@ export interface PreviewFrame {
 export class WebGL2PreviewRenderer extends BaseRenderer {
   private sourceTexture: WebGLTexture | null = null
   private videoElement: HTMLVideoElement | null = null
-  private segments: TimelineSegment[] = []
+  private segments: TimelineSection[] = []
   private currentTime = 0
   private quadVAO: WebGLVertexArrayObject | null = null
 
@@ -82,7 +82,7 @@ export class WebGL2PreviewRenderer extends BaseRenderer {
   /**
    * Установить сегменты таймлайна
    */
-  public setSegments(segments: TimelineSegment[]): void {
+  public setSegments(segments: TimelineSection[]): void {
     this.segments = segments
   }
 

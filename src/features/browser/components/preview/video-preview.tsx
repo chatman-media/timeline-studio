@@ -74,7 +74,7 @@ export const VideoPreview = memo(
         try {
           // Проверяем, что у файла есть id
           if (!file.id) {
-            logger.errorSync("[VideoPreview] File has no id:", file)
+            logger.errorSync("[VideoPreview] File has no id:", { file })
             setPreviewMedia(file)
             return
           }
@@ -87,7 +87,7 @@ export const VideoPreview = memo(
 
           logger.debugSync(`[VideoPreview] Media sent to main player: ${file.name}`)
         } catch (error) {
-          logger.errorSync("[VideoPreview] Failed to send media to player:", error)
+          logger.errorSync("[VideoPreview] Failed to send media to player:", { error })
           // Fallback к старому поведению
           setPreviewMedia(file)
         }
@@ -182,7 +182,7 @@ export const VideoPreview = memo(
             `[VideoPreview] Video sent to main player from preview: ${file.name} at time ${hoverTime || 0}`,
           )
         } catch (error) {
-          logger.errorSync("[VideoPreview] Failed to send video to main player:", error)
+          logger.errorSync("[VideoPreview] Failed to send video to main player:", { error })
 
           // Fallback: локальное воспроизведение в превью (старое поведение)
           const key = stream.streamKey ?? `stream-${stream.index}`
@@ -197,15 +197,15 @@ export const VideoPreview = memo(
             }
             videoRef
               .play()
-              .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения в превью:", err))
+              .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения в превью:", { err }))
           } else {
             videoRef.pause()
           }
 
           setIsPlaying(newPlayingState)
           logger.debugSync(
-            `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в превью:`,
-            file.name,
+            `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в превью`,
+            { fileName: file.name },
           )
         }
       },
@@ -233,10 +233,11 @@ export const VideoPreview = memo(
 
       // Используем file:// протокол для видео через convertVideoSrc
       const videoUrl = convertVideoSrc(path)
-      logger.debugSync("[VideoPreview] Converting path:")
-      logger.debugSync(`  Original: ${path}`)
-      logger.debugSync(`  Video URL: ${videoUrl}`)
-      logger.debugSync(`  URL starts with asset://: ${videoUrl.startsWith("asset://")}`)
+      logger.debugSync("[VideoPreview] Converting path", {
+        original: path,
+        videoUrl,
+        isAsset: videoUrl.startsWith("asset://"),
+      })
       return videoUrl
     }, [])
 
@@ -253,7 +254,7 @@ export const VideoPreview = memo(
       void checkFileAccess(filePath).then((hasAccess) => {
         logger.debugSync(`[VideoPreview] File access check result: ${hasAccess}`)
         if (!hasAccess) {
-          logger.errorSync(`[VideoPreview] No access to file: ${filePath}`)
+          logger.errorSync(`[VideoPreview] No access to file: ${filePath}`, { filePath })
           // Попробуем загрузить все равно, может проблема в проверке доступа
         }
 
@@ -320,7 +321,7 @@ export const VideoPreview = memo(
                     `[VideoPreview] Video sent to main player from placeholder: ${file.name} at time ${hoverTime || 0}`,
                   )
                 } catch (error) {
-                  logger.errorSync("[VideoPreview] Failed to send video to main player from placeholder:", error)
+                  logger.errorSync("[VideoPreview] Failed to send video to main player from placeholder:", { error })
 
                   // Fallback: локальное воспроизведение
                   const video = e.currentTarget.querySelector("video")
@@ -331,15 +332,15 @@ export const VideoPreview = memo(
                   if (newPlayingState) {
                     video
                       .play()
-                      .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", err))
+                      .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", { err }))
                   } else {
                     video.pause()
                   }
 
                   setIsPlaying(newPlayingState)
                   logger.debugSync(
-                    `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в плейсхолдере:`,
-                    file.name,
+                    `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в плейсхолдере`,
+                    { fileName: file.name },
                   )
                 }
               }}
@@ -416,7 +417,7 @@ export const VideoPreview = memo(
                     if (newPlayingState) {
                       video
                         .play()
-                        .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", err))
+                        .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", { err }))
                     } else {
                       video.pause()
                     }
@@ -560,11 +561,11 @@ export const VideoPreview = memo(
                       position: "relative",
                     }}
                     onEnded={() => {
-                      logger.debugSync("Video ended for stream:", stream.index)
+                      logger.debugSync("Video ended for stream", { streamIndex: stream.index })
                       setIsPlaying(false)
                     }}
                     onPlay={(e) => {
-                      logger.debugSync("Video playing for stream:", stream.index)
+                      logger.debugSync("Video playing for stream", { streamIndex: stream.index })
                       const video = e.currentTarget
                       const currentTime = hoverTime
                       if (currentTime !== null) {
@@ -576,47 +577,38 @@ export const VideoPreview = memo(
                       const now = Date.now()
                       if (now - lastUpdateTimeRef.current > 500) {
                         lastUpdateTimeRef.current = now
-                        logger.debugSync(
-                          "Time update for stream:",
-                          typeof stream.index !== "undefined" ? stream.index : key,
-                          "current time:",
-                          e.currentTarget.currentTime.toFixed(2),
-                        )
+                        logger.debugSync("Time update for stream", {
+                          streamIndex: typeof stream.index !== "undefined" ? stream.index : key,
+                          currentTime: e.currentTarget.currentTime.toFixed(2),
+                        })
                       }
                     }}
                     onError={(e) => {
-                      logger.debugSync(
-                        "Video error for stream:",
-                        typeof stream.index !== "undefined" ? stream.index : key,
-                        e,
-                      )
+                      logger.debugSync("Video error for stream", {
+                        streamIndex: typeof stream.index !== "undefined" ? stream.index : key,
+                        error: e,
+                      })
 
                       // Получаем элемент видео
                       const video = e.currentTarget as HTMLVideoElement
 
                       // Проверяем, какая ошибка произошла
                       if (video.error) {
-                        logger.errorSync(
-                          "[VideoPreview] Ошибка загрузки видео:",
-                          video.error.code,
-                          video.error.message,
-                          "для файла:",
-                          file.name,
-                          "URL:",
-                          video.src,
-                        )
-
-                        // Дополнительная диагностика
-                        logger.errorSync("[VideoPreview] Детали ошибки:")
-                        logger.errorSync(`  - Путь файла: ${file.path}`)
-                        logger.errorSync(`  - Сгенерированный URL: ${videoUrl}`)
-                        logger.errorSync(`  - Код ошибки: ${video.error.code}`)
-                        logger.errorSync("  - MEDIA_ERR_ABORTED (1): Загрузка прервана пользователем")
-                        logger.errorSync("  - MEDIA_ERR_NETWORK (2): Сетевая ошибка")
-                        logger.errorSync("  - MEDIA_ERR_DECODE (3): Ошибка декодирования")
-                        logger.errorSync(
-                          "  - MEDIA_ERR_SRC_NOT_SUPPORTED (4): Формат не поддерживается или URL недоступен",
-                        )
+                        const errorMessages = [
+                          "MEDIA_ERR_ABORTED (1): Загрузка прервана пользователем",
+                          "MEDIA_ERR_NETWORK (2): Сетевая ошибка",
+                          "MEDIA_ERR_DECODE (3): Ошибка декодирования",
+                          "MEDIA_ERR_SRC_NOT_SUPPORTED (4): Формат не поддерживается или URL недоступен",
+                        ]
+                        logger.errorSync("[VideoPreview] Ошибка загрузки видео", {
+                          code: video.error.code,
+                          message: video.error.message,
+                          fileName: file.name,
+                          filePath: file.path,
+                          videoSrc: video.src,
+                          generatedUrl: videoUrl,
+                          errorDescription: errorMessages[video.error.code - 1] || "Unknown error",
+                        })
 
                         // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                         if (video.error.code === 4) {
@@ -630,7 +622,7 @@ export const VideoPreview = memo(
                           logger.debugSync("[VideoPreview] Trying alternative approach...")
                           // Попробуем использовать прямой путь к файлу (только для диагностики)
                           const testUrl = `http://localhost:3000/api/video?path=${encodeURIComponent(file.path)}`
-                          logger.debugSync("[VideoPreview] Test URL:", testUrl)
+                          logger.debugSync("[VideoPreview] Test URL", { testUrl })
                         }
                       }
                     }}
@@ -641,10 +633,9 @@ export const VideoPreview = memo(
                       }
                     }}
                     onLoadedData={(e) => {
-                      logger.debugSync(
-                        "Video loaded for stream:",
-                        typeof stream.index !== "undefined" ? stream.index : key,
-                      )
+                      logger.debugSync("Video loaded for stream", {
+                        streamIndex: typeof stream.index !== "undefined" ? stream.index : key,
+                      })
                       setIsLoaded(true)
 
                       // Устанавливаем на первый кадр и останавливаем
@@ -660,7 +651,7 @@ export const VideoPreview = memo(
 
                       // Проверяем, есть ли у файла probeData и streams
                       if (!file.probeData?.streams || file.probeData.streams.length === 0) {
-                        logger.debugSync("No streams found in probeData for file:", file.name)
+                        logger.debugSync("No streams found in probeData for file", { fileName: file.name })
                       }
                     }}
                     onLoadedMetadata={(e) => {

@@ -29,7 +29,7 @@ import { useTimeline } from "../hooks/use-timeline"
 import { useTimelineEffects } from "../hooks/use-timeline-effects"
 import type { AppliedEffect, TimelineClip } from "../types"
 
-const logger = createLogger({ module: "ClipEffectsPanel" })
+const logger = createLogger("ClipEffectsPanel")
 
 interface ClipEffectsPanelProps {
   clip: TimelineClip | null

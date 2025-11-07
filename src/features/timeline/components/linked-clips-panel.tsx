@@ -16,7 +16,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useLinkedClips } from "../hooks/use-linked-clips"
 
-const logger = createLogger({ module: "LinkedClipsPanel" })
+const logger = createLogger("LinkedClipsPanel")
 
 interface LinkedClipsPanelProps {
   className?: string

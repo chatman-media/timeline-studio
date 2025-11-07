@@ -7,7 +7,7 @@ import { AudioPreview } from "./audio-preview"
 import { ImagePreview } from "./image-preview"
 import { VideoPreview } from "./video-preview"
 
-const logger = createLogger({ module: "MediaPreview" })
+const logger = createLogger("MediaPreview")
 
 interface MediaPreviewProps {
   file: MediaFile

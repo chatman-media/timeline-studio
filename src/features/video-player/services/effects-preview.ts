@@ -12,7 +12,7 @@ import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "EffectsPreview" })
+const logger = createLogger("video-player:effects-preview")
 
 export interface EffectShader {
   name: string
@@ -91,7 +91,7 @@ export class EffectsPreviewService {
 
       logger.info("Effects preview WebGL2 initialized")
     } catch (error) {
-      logger.error("Effects preview WebGL initialization failed:", error)
+      logger.error("Effects preview WebGL initialization failed:", { error })
     }
   }
 
@@ -425,7 +425,7 @@ export class EffectsPreviewService {
     this.gl.compileShader(shader)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      logger.error("Shader compilation error:", this.gl.getShaderInfoLog(shader))
+      logger.error("Shader compilation error:", { error: this.gl.getShaderInfoLog(shader) })
       this.gl.deleteShader(shader)
       return null
     }
@@ -455,7 +455,7 @@ export class EffectsPreviewService {
     this.gl.linkProgram(program)
 
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-      logger.error("Program linking error:", this.gl.getProgramInfoLog(program))
+      logger.error("Program linking error:", { error: this.gl.getProgramInfoLog(program) })
       this.gl.deleteProgram(program)
       return null
     }
@@ -600,7 +600,7 @@ export class EffectsPreviewService {
 
       return true
     } catch (error) {
-      logger.error("Effect application failed:", error)
+      logger.error("Effect application failed:", { error })
       return false
     }
   }
@@ -682,7 +682,7 @@ export class EffectsPreviewService {
 
       return true
     } catch (error) {
-      logger.error("Effect chain application failed:", error)
+      logger.error("Effect chain application failed:", { error })
       return false
     }
   }

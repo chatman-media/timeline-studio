@@ -11,7 +11,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
-const logger = createLogger({ module: "UseTimelinePersons" })
+const logger = createLogger("UseTimelinePersons")
 
 // Упрощенная версия PersonAppearance для Timeline (использует numbers вместо Timecode)
 export interface TimelinePersonAppearance {

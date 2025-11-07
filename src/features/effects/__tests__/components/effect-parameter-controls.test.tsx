@@ -106,7 +106,7 @@ describe("EffectParameterControls", () => {
   })
 
   it("renders null for effect without params", () => {
-    const effectWithoutParams = { ...mockEffect, parameters: undefined }
+    const effectWithoutParams = { ...mockEffect, parameters: [] as any }
 
     render(
       <BrowserProviders>
@@ -357,7 +357,7 @@ describe("EffectParameterControls", () => {
         {
           id: "customParam",
           name: { en: "Custom Param", ru: "Кастомный параметр" },
-          type: "number",
+          type: "number" as const,
           defaultValue: 100,
           min: 0,
           max: 200,

@@ -9,7 +9,7 @@ import { isServiceEnabled } from "../../../shared/config/service-config"
 import type { TimelineClip } from "../types"
 import { interpolateSpeed } from "../utils/speed-ramping-utils"
 
-const logger = createLogger({ module: "TimelinePlayerSync" })
+const logger = createLogger("TimelinePlayerSync")
 
 interface PlayerContext {
   // Backend команды для управления плеером

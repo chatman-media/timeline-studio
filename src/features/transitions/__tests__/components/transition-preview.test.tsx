@@ -37,8 +37,10 @@ vi.mock("../../hooks/use-transitions", () => ({
         type: "fade",
         name: "Fade",
         labels: { ru: "Затухание", en: "Fade" },
+        description: { ru: "Плавное затухание", en: "Smooth fade" },
         category: "basic",
         complexity: "basic",
+        tags: ["smooth", "classic"],
         duration: { default: 1.0, min: 0.5, max: 3.0 },
         ffmpegCommand: () => "fade",
       },
@@ -47,8 +49,10 @@ vi.mock("../../hooks/use-transitions", () => ({
         type: "zoom",
         name: "Zoom",
         labels: { ru: "Увеличение", en: "Zoom" },
+        description: { ru: "Эффект увеличения", en: "Zoom effect" },
         category: "advanced",
         complexity: "intermediate",
+        tags: ["zoom", "scale"],
         duration: { default: 1.5, min: 0.5, max: 3.0 },
         ffmpegCommand: () => "zoompan",
       },
@@ -62,15 +66,8 @@ describe("TransitionPreview", () => {
     path: "/path/to/source.mp4",
     name: "source.mp4",
     size: 1000,
-    type: "video",
+    isVideo: true,
     duration: 10,
-    metadata: {
-      width: 1920,
-      height: 1080,
-      fps: 30,
-      codec: "h264",
-      bitrate: 5000000,
-    },
   }
 
   const mockTargetVideo: MediaFile = {
@@ -78,15 +75,8 @@ describe("TransitionPreview", () => {
     path: "/path/to/target.mp4",
     name: "target.mp4",
     size: 1000,
-    type: "video",
+    isVideo: true,
     duration: 10,
-    metadata: {
-      width: 1920,
-      height: 1080,
-      fps: 30,
-      codec: "h264",
-      bitrate: 5000000,
-    },
   }
 
   const mockTransition: Transition = {
@@ -94,8 +84,10 @@ describe("TransitionPreview", () => {
     type: "fade",
     name: "Fade",
     labels: { ru: "Затухание", en: "Fade" },
+    description: { ru: "Плавное затухание", en: "Smooth fade" },
     category: "basic",
     complexity: "basic",
+    tags: ["smooth", "classic"],
     duration: { default: 1.0, min: 0.5, max: 3.0 },
     ffmpegCommand: () => "fade",
   }
