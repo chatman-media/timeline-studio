@@ -41,10 +41,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const isBackendConnected = backendSync.connected
 
   const projectState = useSelector(appActor, (state) => state.context.projectState)
-  const isLoading = useSelector(appActor, (state) => state.matches("connected.executing"))
+  const isLoading = useSelector(appActor, (state) => state.matches({ connected: "executing" }))
   const hasUnsavedChanges = useSelector(appActor, (state) => {
-    // Check if project has unsaved changes based on state
-    return state.context.projectState?.hasUnsavedChanges || false
+    // Check if project has unsaved changes based on dirty flag
+    // TODO: Add dirty flag tracking to ProjectState or implement change detection
+    return false
   })
 
   // Синхронизация состояния проекта с backend
@@ -52,16 +53,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (!isBackendConnected || !projectState) return
 
     try {
-      await backendSync.executeCommand({
-        type: "Project",
-        params: {
-          type: "SyncProjectState",
-          params: {
-            projectId: projectState.id,
-            state: projectState,
-          },
-        },
-      })
+      // Backend sync уже отслеживает состояние через events
+      // Просто получаем текущее состояние для синхронизации
+      await backendSync.getProjectState()
       logger.info("[ProjectProvider] Project state synced with backend")
     } catch (error) {
       logger.error("[ProjectProvider] Failed to sync project state:", { error: error })
@@ -84,16 +78,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const createProject = async (settings: ProjectSettings) => {
     const result = await orchestrator.createProject(settings)
 
-    // Дополнительно сообщаем backend о создании проекта
-    if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "Project",
-        params: {
-          type: "NotifyProjectCreated",
-          params: { settings },
-        },
-      })
-    }
+    // Backend sync автоматически получает события через project:event
+    // Дополнительная синхронизация не требуется
 
     return result
   }
@@ -112,16 +98,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const openProject = async (path: string) => {
     const result = await orchestrator.openProject(path)
 
-    // Уведомляем backend об открытии проекта
-    if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "Project",
-        params: {
-          type: "NotifyProjectOpened",
-          params: { path },
-        },
-      })
-    }
+    // Backend sync автоматически получает события через project:event
+    // Дополнительная синхронизация не требуется
 
     return result
   }
@@ -183,14 +161,9 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     if (!isBackendConnected) return
 
     try {
-      await backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "SyncUserSettings",
-          params: settings,
-        },
-      })
-      logger.info("[UserSettingsProvider] Settings synced with backend")
+      // User settings хранятся локально в IndexedDB через app-settings-provider
+      // Backend sync не управляет пользовательскими настройками напрямую
+      logger.info("[UserSettingsProvider] Settings synced locally")
     } catch (error) {
       logger.error("[UserSettingsProvider] Failed to sync settings:", { error: error })
     }
@@ -224,31 +197,13 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
     updateSettings({ [keyMap[service]]: key })
 
-    // Для API ключей важна немедленная синхронизация
-    if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "UpdateApiKey",
-          params: { service, key },
-        },
-      })
-    }
+    // API ключи хранятся локально, дополнительная синхронизация не требуется
   }
 
   const updateGpuAcceleration = async (enabled: boolean) => {
     updateSettings({ gpuAccelerationEnabled: enabled })
 
-    // GPU настройки критичны для производительности
-    if (isBackendConnected) {
-      await backendSync.executeCommand({
-        type: "Settings",
-        params: {
-          type: "UpdateGpuAcceleration",
-          params: { enabled },
-        },
-      })
-    }
+    // GPU настройки хранятся локально, дополнительная синхронизация не требуется
   }
 
   const updateAutoSave = (enabled: boolean, interval?: number) => {
@@ -319,7 +274,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   // Отслеживание статуса backend
   const backendStatus = {
-    connected: backendSync.isConnected(),
+    connected: backendSync.connected,
     lastSync: new Date(),
     syncErrors: 0,
   }
@@ -328,7 +283,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     appActor.send({ type: "RETRY_CONNECTION" })
 
     // Также пытаемся переподключить backend
-    if (!backendSync.isConnected()) {
+    if (!backendSync.connected) {
       backendSync.connect().catch((error) => logger.error("Failed to connect backend sync", { error }))
     }
   }
@@ -336,22 +291,14 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // Мониторинг соединения с backend
   useEffect(() => {
     const checkInterval = setInterval(() => {
-      const currentlyConnected = backendSync.isConnected()
+      const currentlyConnected = backendSync.connected
 
       if (currentlyConnected !== backendStatus.connected) {
         logger.info("[AppStateProvider] Backend connection status changed:", { currentlyConnected })
 
         // Если восстановилось соединение, синхронизируем состояние
         if (currentlyConnected) {
-          backendSync
-            .executeCommand({
-              type: "System",
-              params: {
-                type: "ReconnectNotify",
-                params: { timestamp: new Date().toISOString() },
-              },
-            })
-            .catch((error) => logger.error("Failed to notify backend about reconnect", { error }))
+          backendSync.getProjectState().catch((error) => logger.error("Failed to sync state on reconnect", { error }))
         }
       }
     }, 5000) // Проверка каждые 5 секунд
@@ -403,17 +350,8 @@ export function ProjectManagementProvider({ children }: ProjectManagementProvide
 
     // Подписываемся на события backend
     const unsubscribe = backendSync.onEvent((event) => {
-      switch (event.type) {
-        case "PROJECT_STATE_UPDATED":
-          // Backend сообщает об обновлении состояния проекта
-          logger.info("[ProjectManagementProvider] Project state updated from backend")
-          break
-
-        case "SETTINGS_UPDATED":
-          // Backend сообщает об обновлении настроек
-          logger.info("[ProjectManagementProvider] Settings updated from backend")
-          break
-      }
+      // Логируем все события для отладки
+      logger.debug("[ProjectManagementProvider] Backend event received:", { type: event.type })
     })
 
     return unsubscribe

@@ -3,7 +3,7 @@
  * Defines structures for montage plans, fragments, and analysis results
  */
 
-import type { MediaFile } from "../../../domains/video-editing/types/media"
+import type { MediaFile as FeatureMediaFile } from "../../media/types/media"
 import type { BaseEffect as VideoEffect } from "../../../features/effects/types/unified-effects"
 import type { Transition } from "../../../features/transitions/types/transitions"
 
@@ -18,7 +18,7 @@ export interface Person {
 export interface Fragment {
   id: string
   videoId: string
-  sourceFile?: MediaFile
+  sourceFile?: FeatureMediaFile
   startTime: number // in seconds
   endTime: number // in seconds
   duration: number

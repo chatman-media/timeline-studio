@@ -159,6 +159,19 @@ describe("useSubtitlesExport", () => {
     // Override the mock to return empty tracks
     vi.mocked(useTracks).mockReturnValueOnce({
       tracks: [],
+      globalTracks: [],
+      sectionTracks: [],
+      getTracksByType: vi.fn(() => []),
+      getTracksBySection: vi.fn(() => []),
+      findTrack: vi.fn(() => null),
+      selectedTracks: [],
+      selectTrack: vi.fn(),
+      toggleTrackSelection: vi.fn(),
+      clearTrackSelection: vi.fn(),
+      sortedTracks: [],
+      videoTracks: [],
+      audioTracks: [],
+      subtitleTracks: [],
     })
 
     const { result } = renderHook(() => useSubtitlesExport())

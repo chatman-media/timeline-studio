@@ -27,12 +27,12 @@ vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: () => <button>Избранное</button>,
 }))
 
-const mockSubtitles = [
+const mockSubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = [
   {
     id: "basic-white",
     name: "Basic White",
-    category: "basic",
-    complexity: "basic",
+    category: "basic" as const,
+    complexity: "basic" as const,
     tags: ["simple", "clean"],
     description: { en: "Simple white subtitles", ru: "Простые белые субтитры" },
     labels: { en: "Basic White", ru: "Базовый белый" },
@@ -45,9 +45,9 @@ const mockSubtitles = [
   {
     id: "basic-yellow",
     name: "Basic Yellow",
-    category: "basic",
-    complexity: "basic",
-    tags: ["simple", "bright"],
+    category: "basic" as const,
+    complexity: "basic" as const,
+    tags: ["simple", "colorful"],
     description: { en: "Simple yellow subtitles", ru: "Простые желтые субтитры" },
     labels: { en: "Basic Yellow", ru: "Базовый желтый" },
     style: {
@@ -123,7 +123,7 @@ describe("SubtitleGroup", () => {
   })
 
   it("должен обрабатывать большое количество субтитров", () => {
-    const manySubtitles = Array.from({ length: 20 }, (_, i) => ({
+    const manySubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = Array.from({ length: 20 }, (_, i) => ({
       ...mockSubtitles[0],
       id: `subtitle-${i}`,
       name: `Subtitle ${i}`,
@@ -138,10 +138,10 @@ describe("SubtitleGroup", () => {
   })
 
   it("должен сохранять порядок субтитров", () => {
-    const orderedSubtitles = [
-      { ...mockSubtitles[0], id: "first", labels: { ru: "Первый" } },
-      { ...mockSubtitles[1], id: "second", labels: { ru: "Второй" } },
-      { ...mockSubtitles[0], id: "third", labels: { ru: "Третий" } },
+    const orderedSubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = [
+      { ...mockSubtitles[0], id: "first", labels: { en: "First", ru: "Первый" } },
+      { ...mockSubtitles[1], id: "second", labels: { en: "Second", ru: "Второй" } },
+      { ...mockSubtitles[0], id: "third", labels: { en: "Third", ru: "Третий" } },
     ]
 
     const onSubtitleClick = vi.fn()

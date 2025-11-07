@@ -98,10 +98,10 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
             effects.push(
               ...clipEffects.map((e) => ({
                 id: e.id,
-                type: e.type as any,
+                type: e.effectId as any, // AppliedEffect uses effectId, not type
                 enabled: e.enabled,
                 parameters: e.parameters || {},
-                intensity: e.intensity || 1.0,
+                intensity: 1.0, // Default intensity for compatibility
               })),
             )
 
@@ -110,10 +110,10 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
             effects.push(
               ...clipFilters.map((f) => ({
                 id: f.id,
-                type: f.type as any,
+                type: f.filterId as any, // AppliedFilter uses filterId, not type
                 enabled: f.enabled,
                 parameters: f.parameters || {},
-                intensity: f.intensity || 1.0,
+                intensity: 1.0, // Default intensity for compatibility
               })),
             )
 
@@ -160,10 +160,10 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
           effects.push(
             ...clipEffects.map((e) => ({
               id: e.id,
-              type: e.type as any,
+              type: e.effectId as any, // AppliedEffect uses effectId, not type
               enabled: e.enabled,
               parameters: e.parameters || {},
-              intensity: e.intensity || 1.0,
+              intensity: 1.0, // Default intensity for compatibility
             })),
           )
         }
@@ -209,7 +209,7 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
         setIsInitialized(true)
       })
       .catch((err: unknown) => {
-        logger.error("Failed to initialize WebGL2 preview renderer:", err)
+        logger.error("Failed to initialize WebGL2 preview renderer:", { error: err })
       })
 
     return () => {
@@ -255,7 +255,8 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
         const cached = await cacheRef.current.getOrCompute(time, effects, async () => {
           // Set video source and segments
           rendererRef.current!.setVideoSource(videoRef.current!)
-          rendererRef.current!.setSegments(timeline.segments || [])
+          // Cast to TimelineSection[] for compatibility
+          rendererRef.current!.setSegments((timeline.project?.sections || []) as any)
           rendererRef.current!.setCurrentTime(time)
 
           // Apply quality settings
@@ -278,12 +279,12 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
         })
 
         return cached
-      } catch (error) {
-        logger.error("Failed to render preview frame:", error)
+      } catch (error: unknown) {
+        logger.error("Failed to render preview frame:", { error })
         return null
       }
     },
-    [isInitialized, timeline.segments, quality],
+    [isInitialized, timeline.project?.sections, quality],
   )
 
   // Update preview (throttled)

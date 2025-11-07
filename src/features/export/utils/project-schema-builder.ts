@@ -244,7 +244,11 @@ export class ProjectSchemaBuilder {
   /**
    * Create ProjectSchema optimized for export
    */
-  static createForExport(timeline: TimelineProject, exportSettings: ExportSettings, projectName?: string): ProjectSchema {
+  static createForExport(
+    timeline: TimelineProject,
+    exportSettings: ExportSettings,
+    projectName?: string,
+  ): ProjectSchema {
     return new ProjectSchemaBuilder(timeline, projectName).withExportSettings(exportSettings).build()
   }
 

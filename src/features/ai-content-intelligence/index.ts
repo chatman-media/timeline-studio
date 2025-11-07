@@ -35,12 +35,6 @@ export type {
 export { AnalysisViewer } from "./components/analysis-viewer"
 export { GenerationWizard } from "./components/generation-wizard"
 export { PreviewGrid } from "./components/preview-grid"
-export { UnifiedDashboard } from "./components/unified-dashboard"
-// Dashboard Components
-export { ActionPanel } from "./components/unified-dashboard/action-panel"
-export { AnalysisResults } from "./components/unified-dashboard/analysis-results"
-export { DashboardHeader } from "./components/unified-dashboard/dashboard-header"
-export { PipelineStatus } from "./components/unified-dashboard/pipeline-status"
 // ===== Hooks =====
 export { useAIIntelligence } from "./hooks/use-ai-intelligence"
 export { useContentPipeline } from "./hooks/use-content-pipeline"

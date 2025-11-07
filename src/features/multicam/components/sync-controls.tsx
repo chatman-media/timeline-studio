@@ -65,7 +65,7 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
         setSyncMethod(null)
       }, 3000)
     } catch (error) {
-      logger.error("[SyncControls] Timecode sync failed:", error)
+      logger.error("[SyncControls] Timecode sync failed:", { error })
       setSyncStatus("error")
     } finally {
       setIsSyncing(false)
@@ -264,9 +264,9 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
         isOpen={audioSyncOpen}
         onClose={() => setAudioSyncOpen(false)}
         onSync={async () => {
-          const results = await multicam.autoSyncByAudio()
+          await multicam.autoSyncByAudio()
           await handleAudioSyncComplete()
-          return results || []
+          return []
         }}
         angleCount={multicam.angles.length}
       />

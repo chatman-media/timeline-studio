@@ -71,7 +71,7 @@ async function cacheMetadataIfValid(metadata: MediaFile) {
         file_path: metadata.path,
         file_size: metadata.size || 0,
         modified_time: new Date().toISOString(), // или из metadata если есть
-        duration: metadata.duration,
+        duration: metadata.duration || 0,
         resolution:
           videoStream && videoStream.width && videoStream.height ? [videoStream.width, videoStream.height] : undefined,
         fps: videoStream?.r_frame_rate ? parseFrameRate(videoStream.r_frame_rate) : undefined,

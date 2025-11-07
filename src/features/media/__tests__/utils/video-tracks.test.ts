@@ -59,7 +59,7 @@ describe("video-tracks", () => {
       startTime: 0,
       endTime: 100,
       tracks: [],
-      isVisible: true,
+      timeRanges: [],
       isLocked: false,
       combinedDuration: 0,
     }
@@ -82,14 +82,14 @@ describe("video-tracks", () => {
     id,
     name,
     path: `/path/to/${name}`,
-    type: "video",
     size: 1000000,
     duration,
-    dateAdded: new Date().toISOString(),
-    lastModified: new Date().toISOString(),
-    extension: "mp4",
-    mimeType: "video/mp4",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isVideo: true,
     startTime,
+    width,
+    height,
     probeData:
       width && height
         ? {
@@ -98,15 +98,15 @@ describe("video-tracks", () => {
                 codec_type: "video",
                 width,
                 height,
-                duration: duration,
+                duration: duration.toString(),
                 bit_rate: "1000000",
                 codec_name: "h264",
               },
             ],
             format: {
-              duration: duration.toString(),
-              size: "1000000",
-              bit_rate: "1000000",
+              duration,
+              size: 1000000,
+              bit_rate: 1000000,
               format_name: "mp4",
             },
           }

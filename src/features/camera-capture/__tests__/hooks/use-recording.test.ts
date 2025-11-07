@@ -28,7 +28,9 @@ describe("useRecording", () => {
   // Мокируем функции для записи
   const mockOnRecordingStart = vi.fn()
   const mockOnRecordingStop = vi.fn()
-  const mockStreamRef = { current: { getTracks: () => [{ stop: vi.fn() }] } } as unknown as React.RefObject<MediaStream | null>
+  const mockStreamRef = {
+    current: { getTracks: () => [{ stop: vi.fn() }] },
+  } as unknown as React.RefObject<MediaStream | null>
   const mockVideoRef = { current: document.createElement("video") }
   const mockSetErrorMessage = vi.fn()
 
@@ -42,9 +44,7 @@ describe("useRecording", () => {
   })
 
   it("should initialize with default values", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     expect(result.current.isRecording).toBe(false)
     expect(result.current.recordingTime).toBe(0)
@@ -54,9 +54,7 @@ describe("useRecording", () => {
   })
 
   it("should set countdown", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     act(() => {
       result.current.setCountdown(5)
@@ -66,9 +64,7 @@ describe("useRecording", () => {
   })
 
   it("should start countdown", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     // Устанавливаем обратный отсчет
     act(() => {
@@ -94,27 +90,21 @@ describe("useRecording", () => {
   })
 
   it("should have stopRecording method", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     // Проверяем, что метод stopRecording существует
     expect(typeof result.current.stopRecording).toBe("function")
   })
 
   it("should have recordingTime property", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     // Проверяем, что свойство recordingTime существует и имеет числовое значение
     expect(typeof result.current.recordingTime).toBe("number")
   })
 
   it("should format recording time correctly", () => {
-    const { result } = renderHook(() =>
-      useRecording(mockStreamRef, 3, mockOnRecordingStop),
-    )
+    const { result } = renderHook(() => useRecording(mockStreamRef, 3, mockOnRecordingStop))
 
     // Мокируем метод форматирования времени
     const formatTime = (ms: number) => {

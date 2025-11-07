@@ -81,7 +81,7 @@ export function AudioSyncDialog({ isOpen, onClose, onSync, angleCount }: AudioSy
         message: "Синхронизация завершена!",
       })
     } catch (err) {
-      logger.error("[AudioSyncDialog] Sync error:", err)
+      logger.error("[AudioSyncDialog] Sync error:", { error: err })
       setError("Произошла ошибка при синхронизации. Попробуйте еще раз.")
     } finally {
       setIsProcessing(false)

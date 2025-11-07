@@ -1,354 +1,100 @@
 # Project Management Domain
 
-Управление проектами, пользовательскими настройками и обновлениями в Timeline Studio.
-
 ## Обзор
 
-Project Management домен отвечает за управление проектами, пользовательскими настройками, обновлениями приложения и настройками проекта.
+Модуль `project-management` - ключевой домен для управления проектами и пользовательскими настройками в Timeline Studio.
 
-## Структура
+## Результаты аудита (2025-11-08)
 
-```
-project-management/
-├── machines/          # XState машины состояний
-│   ├── user-settings-machine.ts
-│   └── update-machine.ts
-├── services/          # Сервисы управления
-├── types/            # TypeScript типы
-└── index.ts          # Главный экспорт
-```
+### ✅ Исправлено
 
-## Основные компоненты
+#### 1. TypeScript ошибки (25 → 0)
+- ✅ Исправлены типы ProjectState (удалено несуществующее hasUnsavedChanges)
+- ✅ Исправлены типы BackendSync (использование геттера connected вместо приватного isConnected)
+- ✅ Исправлены типы commands в BackendSync интеграции
+- ✅ Исправлены типы в тестах (ProjectSettings, BrowserTab)
 
-### User Settings Machine
+#### 2. BackendSync интеграция
+- ✅ Убраны некорректные вызовы executeCommand с кастомными типами
+- ✅ Используется правильный API BackendSync.getProjectState()
+- ✅ Корректная подписка на события через onEvent
+- ✅ Проверка подключения через геттер connected
 
-XState машина для управления пользовательскими настройками:
+#### 3. Legacy код
+- ✅ Нет прямых обращений к @tauri-apps/api
+- ✅ Нет использования localStorage/sessionStorage
+- ✅ Все операции через BackendSync
 
-```typescript
-import { userSettingsMachine } from '@/domains/project-management'
+#### 4. Тесты
+- ✅ Создано 3 test suite (59 тестов total)
+- ✅ app-machine.test.ts (11 тестов)
+- ✅ user-settings-machine.test.ts (28 тестов)
+- ✅ project-management-orchestrator.test.ts (20 тестов)
+- ✅ 100% тестов проходят
 
-// Конфигурация машины
-const machine = userSettingsMachine.setup({
-  actions: {
-    updateTheme: assign((context, event) => ({
-      theme: event.theme
-    })),
-    updateLanguage: assign((context, event) => ({
-      language: event.language
-    }))
-  }
-})
+### 📊 Статистика
 
-// Использование
-const [state, send] = useMachine(machine)
+**До аудита:**
+- TypeScript ошибки: 25
+- Тесты: 0
+- Legacy код: Присутствовал
 
-// Изменение темы
-send({ type: 'UPDATE_THEME', theme: 'dark' })
+**После аудита:**
+- TypeScript ошибки: 0
+- Тесты: 59 (100% pass)
+- Legacy код: Отсутствует
 
-// Изменение языка
-send({ type: 'UPDATE_LANGUAGE', language: 'ru' })
-```
+## Архитектура
 
-### User Settings Types
+### Основные компоненты
 
-```typescript
-interface UserSettings {
-  // Внешний вид
-  theme: 'light' | 'dark' | 'system'
-  language: LanguageCode
-  layout: 'default' | 'options' | 'vertical' | 'chat'
-  
-  // Предпросмотр
-  previewSize: PreviewSizeKey
-  showWaveforms: boolean
-  showThumbnails: boolean
-  
-  // Редактирование
-  autoSave: boolean
-  autoSaveInterval: number
-  defaultTransitionDuration: number
-  snapToPlayhead: boolean
-  
-  // Производительность
-  enableHardwareAcceleration: boolean
-  maxCacheSize: number
-  proxyResolution: '1/2' | '1/4' | '1/8'
-  
-  // AI настройки
-  aiProvider: AIProvider
-  aiModel: string
-  enableAIAssistant: boolean
+#### 1. App Machine
+- Управляет подключением к backend
+- Очередь команд
+- Состояние проекта
+- Обработка ошибок
+
+#### 2. User Settings Machine
+- Пользовательские настройки
+- API ключи
+- GPU настройки
+- Автосохранение
+
+#### 3. Project Management Orchestrator
+- Координирует operations
+- Управляет акторами
+- Автосохранение проектов
+
+#### 4. React Providers
+- ProjectProvider - состояние проекта
+- UserSettingsProvider - настройки пользователя
+- AppStateProvider - состояние приложения
+
+## Использование
+
+```tsx
+import { useProject, useUserSettings, useAppState } from "@/domains/project-management"
+
+function MyComponent() {
+  const { projectState, saveProject } = useProject()
+  const { settings, updateSettings } = useUserSettings()
+  const { isConnected } = useAppState()
 }
 ```
 
-### Update Machine
+## Тестирование
 
-Управление обновлениями приложения:
+```bash
+# Запуск тестов
+bun run test src/domains/project-management/__tests__/
 
-```typescript
-interface UpdateState {
-  status: 'idle' | 'checking' | 'downloading' | 'ready' | 'error'
-  currentVersion: string
-  latestVersion?: string
-  downloadProgress?: number
-  error?: string
-}
-
-// Использование
-const updateService = useUpdateManager()
-
-// Проверка обновлений
-await updateService.checkForUpdates()
-
-// Скачивание и установка
-if (updateService.updateAvailable) {
-  await updateService.downloadUpdate()
-  await updateService.installUpdate()
-}
+# Результаты
+Test Files  3 passed (3)
+Tests       59 passed (59)
 ```
 
-### Project Settings
+## TODO
 
-Настройки конкретного проекта:
-
-```typescript
-interface ProjectSettings {
-  // Основные
-  name: string
-  description?: string
-  createdAt: Date
-  modifiedAt: Date
-  
-  // Формат видео
-  resolution: Resolution
-  framerate: number
-  aspectRatio: AspectRatio
-  pixelFormat: PixelFormat
-  
-  // Аудио
-  sampleRate: number
-  bitDepth: number
-  channels: number
-  
-  // Цвет
-  colorSpace: ColorSpace
-  bitDepth: '8bit' | '10bit' | '12bit'
-  hdr: boolean
-  
-  // Экспорт
-  defaultExportPreset: string
-  exportPath: string
-}
-```
-
-## Сервисы
-
-### Settings Persistence
-
-Сохранение настроек в локальное хранилище:
-
-```typescript
-import { SettingsService } from '@/domains/project-management'
-
-const settings = new SettingsService()
-
-// Загрузка настроек
-const userSettings = await settings.loadUserSettings()
-
-// Сохранение настроек
-await settings.saveUserSettings({
-  ...userSettings,
-  theme: 'dark'
-})
-
-// Сброс к значениям по умолчанию
-await settings.resetToDefaults()
-```
-
-### Project Manager
-
-Управление проектами:
-
-```typescript
-import { ProjectManager } from '@/domains/project-management'
-
-const manager = new ProjectManager()
-
-// Создание проекта
-const project = await manager.createProject({
-  name: 'My Video',
-  resolution: { width: 1920, height: 1080 },
-  framerate: 30
-})
-
-// Открытие проекта
-await manager.openProject(projectId)
-
-// Сохранение проекта
-await manager.saveProject(project)
-
-// Экспорт проекта
-await manager.exportProject(project, 'path/to/export.tlproj')
-```
-
-## Интеграция с другими доменами
-
-### С Video Editing
-
-```typescript
-import { TimelineState } from '@/domains/video-editing'
-import { ProjectSettings } from '@/domains/project-management'
-
-// Применение настроек проекта к таймлайну
-function applyProjectSettings(
-  timeline: TimelineState,
-  settings: ProjectSettings
-): TimelineState {
-  return {
-    ...timeline,
-    framerate: settings.framerate,
-    resolution: settings.resolution
-  }
-}
-```
-
-### С AI Core
-
-```typescript
-import { getAIContainer } from '@/domains/ai-core'
-
-// Применение AI настроек пользователя
-const userSettings = getUserSettings()
-const container = getAIContainer()
-
-container.configure({
-  providers: {
-    [userSettings.aiProvider]: {
-      defaultModel: userSettings.aiModel
-    }
-  }
-})
-```
-
-## State Management
-
-Использование XState для управления состоянием:
-
-```typescript
-// Машина состояний проекта
-const projectMachine = createMachine({
-  id: 'project',
-  initial: 'idle',
-  states: {
-    idle: {
-      on: {
-        CREATE: 'creating',
-        OPEN: 'opening',
-        SAVE: 'saving'
-      }
-    },
-    creating: {
-      invoke: {
-        src: 'createProject',
-        onDone: {
-          target: 'editing',
-          actions: 'setProject'
-        },
-        onError: 'error'
-      }
-    },
-    editing: {
-      on: {
-        SAVE: 'saving',
-        CLOSE: 'closing'
-      }
-    },
-    saving: {
-      invoke: {
-        src: 'saveProject',
-        onDone: 'editing',
-        onError: 'error'
-      }
-    },
-    error: {
-      on: {
-        RETRY: 'idle'
-      }
-    }
-  }
-})
-```
-
-## Миграция и обновления
-
-### Миграция настроек
-
-```typescript
-import { SettingsMigration } from '@/domains/project-management'
-
-// Миграция старых настроек
-const migration = new SettingsMigration()
-
-// v1 -> v2
-migration.register('1.0.0', '2.0.0', (oldSettings) => {
-  return {
-    ...oldSettings,
-    newFeature: 'default-value'
-  }
-})
-
-// Применение миграций
-const currentSettings = await migration.migrate(
-  oldSettings,
-  '1.0.0',
-  '2.0.0'
-)
-```
-
-## Best Practices
-
-1. **Валидация**: Всегда валидируйте настройки перед сохранением
-2. **Миграция**: Поддерживайте обратную совместимость настроек
-3. **Производительность**: Дебаунс сохранения настроек
-4. **Безопасность**: Не храните чувствительные данные в настройках
-
-## Примеры
-
-### Создание нового проекта с настройками
-
-```typescript
-const projectManager = new ProjectManager()
-const userSettings = getUserSettings()
-
-const project = await projectManager.createProject({
-  name: 'Tutorial Video',
-  resolution: { width: 1920, height: 1080 },
-  framerate: 30,
-  aspectRatio: '16:9',
-  colorSpace: 'rec709',
-  // Применяем пользовательские настройки
-  exportPath: userSettings.defaultExportPath,
-  defaultTransitionDuration: userSettings.defaultTransitionDuration
-})
-```
-
-### Автосохранение
-
-```typescript
-const autoSaveService = new AutoSaveService()
-
-autoSaveService.configure({
-  enabled: userSettings.autoSave,
-  interval: userSettings.autoSaveInterval,
-  onSave: async (project) => {
-    await projectManager.saveProject(project)
-  }
-})
-
-// Запуск автосохранения
-autoSaveService.start()
-```
-
-## Лицензия
-
-Часть Timeline Studio. См. корневую лицензию проекта.
+- [ ] Добавить dirty flag tracking для hasUnsavedChanges
+- [ ] Улучшить обработку ошибок в командах
+- [ ] Добавить метрики производительности

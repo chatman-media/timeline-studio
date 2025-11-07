@@ -3,7 +3,7 @@
  * Использует унифицированную WebGL2 библиотеку
  */
 
-import type { Effect } from "@/features/effects/types"
+import type { AppliedEffect } from "@/features/effects/types/unified-effects"
 import type { TimelineSection } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { BaseRenderer, type RendererOptions, type ShaderSource, shaderPool, vaoManager } from "@/lib/webgl"
@@ -11,7 +11,16 @@ import { BaseRenderer, type RendererOptions, type ShaderSource, shaderPool, vaoM
 const logger = createLogger({ module: "Webgl2PreviewRenderer" })
 
 // Re-export or map to local types if needed
-type PreviewEffect = Effect
+type PreviewEffect = AppliedEffect
+
+// Simple effect representation for internal use
+interface Effect {
+  id: string
+  type: string
+  enabled: boolean
+  parameters: Record<string, any>
+  intensity: number
+}
 
 /**
  * Интерфейс для рендеринга превью
@@ -393,18 +402,10 @@ export class WebGL2PreviewRenderer extends BaseRenderer {
    * Получить активные эффекты для текущего времени
    */
   private getActiveEffects(): Effect[] {
-    const effects: Effect[] = []
-
-    for (const segment of this.segments) {
-      if (this.currentTime >= segment.startTime && this.currentTime < segment.endTime) {
-        // Добавляем эффекты сегмента
-        if (segment.effects) {
-          effects.push(...segment.effects)
-        }
-      }
-    }
-
-    return effects
+    // TimelineSection doesn't have effects property directly
+    // Effects are applied at clip level through timeline system
+    // This method is kept for compatibility but returns empty array
+    return []
   }
 
   /**

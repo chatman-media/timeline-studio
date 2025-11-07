@@ -31,7 +31,9 @@ describe("ApplyButton", () => {
   it("should call onApply callback when clicked", () => {
     const onApply = vi.fn()
 
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />,
+    )
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -72,17 +74,31 @@ describe("ApplyButton", () => {
 
   it("should handle different resource types", () => {
     const onApply = vi.fn()
-    const types: ResourceType[] = ["media", "effect", "filter", "template", "transition", "music", "subtitle", "styleTemplate"]
+    const types: ResourceType[] = [
+      "media",
+      "effect",
+      "filter",
+      "template",
+      "transition",
+      "music",
+      "subtitle",
+      "styleTemplate",
+    ]
 
     types.forEach((type) => {
       const { unmount } = render(
-        <ApplyButton resource={{ ...mockResource as unknown as TimelineResource, type }} size={150} type={type} onApply={onApply} />,
+        <ApplyButton
+          resource={{ ...(mockResource as unknown as TimelineResource), type }}
+          size={150}
+          type={type}
+          onApply={onApply}
+        />,
       )
 
       const button = screen.getByRole("button")
       fireEvent.click(button)
 
-      expect(onApply).toHaveBeenLastCalledWith({ ...mockResource as unknown as TimelineResource, type }, type)
+      expect(onApply).toHaveBeenLastCalledWith({ ...(mockResource as unknown as TimelineResource), type }, type)
 
       unmount()
     })
@@ -94,7 +110,9 @@ describe("ApplyButton", () => {
     const sizes = [50, 100, 150, 200]
 
     sizes.forEach((size) => {
-      const { container, unmount } = render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={size} type="media" />)
+      const { container, unmount } = render(
+        <ApplyButton resource={mockResource as unknown as TimelineResource} size={size} type="media" />,
+      )
 
       const button = container.querySelector("button")
       expect(button).toHaveStyle({
@@ -130,7 +148,9 @@ describe("ApplyButton", () => {
   it("should prevent default on onApply call", () => {
     const onApply = vi.fn()
 
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />,
+    )
 
     const button = screen.getByRole("button")
     const event = new MouseEvent("click", { bubbles: true })
@@ -142,7 +162,9 @@ describe("ApplyButton", () => {
   })
 
   it("should render ArrowRight icon", () => {
-    const { container } = render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
+    const { container } = render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />,
+    )
 
     const icon = container.querySelector("svg")
     expect(icon).toBeInTheDocument()

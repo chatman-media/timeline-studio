@@ -21,6 +21,15 @@ export interface MediaFile {
   lastCheckedAt?: number // Время последней проверки файла (timestamp)
   isLoadingMetadata?: boolean // Флаг, указывающий, что метаданные файла еще загружаются
   source?: "browser" | "timeline"
+
+  // Video properties (добавлено для совместимости с domains/video-editing)
+  width?: number
+  height?: number
+  fps?: number
+  bitrate?: number
+  videoCodec?: string
+  audioCodec?: string
+
   proxy?: {
     path: string
     width: number

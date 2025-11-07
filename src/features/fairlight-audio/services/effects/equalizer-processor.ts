@@ -123,11 +123,7 @@ export class EqualizerProcessor {
       const bandMag = new Float32Array(frequencies.length) as Float32Array<ArrayBuffer>
       const bandPhase = new Float32Array(frequencies.length) as Float32Array<ArrayBuffer>
 
-      band.getFrequencyResponse(
-        frequencies as Float32Array<ArrayBuffer>,
-        bandMag,
-        bandPhase,
-      )
+      band.getFrequencyResponse(frequencies as Float32Array<ArrayBuffer>, bandMag, bandPhase)
 
       // Multiply magnitudes (they're in linear scale)
       for (let i = 0; i < frequencies.length; i++) {

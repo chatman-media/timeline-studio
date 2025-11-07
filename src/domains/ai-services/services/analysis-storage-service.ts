@@ -126,8 +126,8 @@ export class AnalysisStorageService {
           createdAt: analyses[videoPath] ? Date.now() : Date.now(),
           updatedAt: Date.now(),
           workflowId: result.analysis_id,
-          duration: result.total_duration_ms,
-          success: result.status === "completed",
+          duration: result.performance_metrics.total_processing_time,
+          success: result.status === "Completed",
           errors: result.errors.length > 0 ? result.errors : undefined,
         }
         await this.saveAnalysisMetadata(metadata)

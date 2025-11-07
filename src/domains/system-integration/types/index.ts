@@ -64,14 +64,17 @@ export interface SystemIntegrationContext {
 }
 
 // System notification type
+// Extends backend SystemNotification with frontend-specific fields
 export interface SystemNotification {
   id: string
-  type: "info" | "success" | "warning" | "error"
+  notification_type: string // Backend field name
+  type: "info" | "success" | "warning" | "error" // Frontend convenience field
   title: string
   message: string
   timestamp: Date
   duration?: number
   actions?: NotificationAction[]
+  read?: boolean // Track read status on frontend
 }
 
 export interface NotificationAction {

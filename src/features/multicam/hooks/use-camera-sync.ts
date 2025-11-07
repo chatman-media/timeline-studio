@@ -66,7 +66,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(0)
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: any) => c.id === baseClipId) as TimelineClip
+      const baseClip = allClips.find((c: any) => c.id === baseClipId)
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }
@@ -98,9 +98,9 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(100)
       setSyncStatus("success")
 
-      logger.info("[useCameraSync] Timecode sync completed:", mappedResults)
+      logger.info("[useCameraSync] Timecode sync completed:", { results: mappedResults })
     } catch (error) {
-      logger.error("[useCameraSync] Timecode sync failed:", error)
+      logger.error("[useCameraSync] Timecode sync failed:", { error })
       setSyncError(error instanceof Error ? error.message : "Ошибка синхронизации")
       setSyncStatus("error")
     }
@@ -119,7 +119,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       abortControllerRef.current = new AbortController()
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: any) => c.id === baseClipId) as TimelineClip
+      const baseClip = allClips.find((c: any) => c.id === baseClipId)
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }
@@ -189,7 +189,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
             })
           }
         } catch (audioError) {
-          logger.error(`[useCameraSync] Audio sync failed for clip ${clip.id}:`, audioError)
+          logger.error(`[useCameraSync] Audio sync failed for clip ${clip.id}:`, { error: audioError })
           // Продолжаем с другими клипами
         }
       }
@@ -198,9 +198,9 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(100)
       setSyncStatus("success")
 
-      logger.info("[useCameraSync] Audio sync completed:", results)
+      logger.info("[useCameraSync] Audio sync completed:", { results })
     } catch (error) {
-      logger.error("[useCameraSync] Audio sync failed:", error)
+      logger.error("[useCameraSync] Audio sync failed:", { error })
       setSyncError(error instanceof Error ? error.message : "Ошибка синхронизации")
       setSyncStatus("error")
     } finally {
@@ -236,7 +236,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
   const applySyncResults = useCallback(() => {
     // allClips уже доступен из useTimeline
     syncResults.forEach((result) => {
-      const clip = allClips.find((c: any) => c.id === result.clipId) as TimelineClip
+      const clip = allClips.find((c: any) => c.id === result.clipId)
       if (clip) {
         // Применяем смещение к startTime клипа
         const newStartTime = clip.startTime + result.offset

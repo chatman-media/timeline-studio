@@ -85,7 +85,7 @@ describe("Modal Machine", () => {
   })
 
   it("should handle modal navigation with returnTo", () => {
-    const modalStack = []
+    const modalStack: Array<{ type: string; returnTo?: string }> = []
 
     const openModal = (type: string, returnTo?: string) => {
       if (returnTo) {

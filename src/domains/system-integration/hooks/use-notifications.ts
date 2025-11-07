@@ -70,6 +70,7 @@ export function useNotifications() {
       },
     ) => {
       return orchestrator.showNotification({
+        notification_type: type,
         type,
         title,
         message,

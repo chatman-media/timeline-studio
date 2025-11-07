@@ -178,7 +178,9 @@ describe("ColorSettings", () => {
     render(<ColorSettings />)
 
     const container = screen.getByTestId("color-settings")
-    expect(container).toHaveClass("h-full", "flex", "flex-col")
+    expect(container).toHaveClass("h-full")
+    expect(container).toHaveClass("flex")
+    expect(container).toHaveClass("flex-col")
 
     // Проверяем структуру flex контейнеров
     const scrollableContent = container.querySelector(".flex-1.min-h-0")

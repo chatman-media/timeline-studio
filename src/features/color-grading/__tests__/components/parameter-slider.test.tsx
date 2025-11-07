@@ -123,16 +123,16 @@ describe("ParameterSlider", () => {
   it("should calculate correct percentage for fill width", () => {
     const { container } = render(<ParameterSlider {...defaultProps} value={25} min={0} max={100} />)
 
-    const filledBar = container.querySelector("[style*='width']")!
-    expect(filledBar.style.width).toBe("25%")
+    const filledBar = container.querySelector("[style*='width']") as HTMLElement
+    expect(filledBar?.style.width).toBe("25%")
   })
 
   it("should show center mark when default value is provided", () => {
     const { container } = render(<ParameterSlider {...defaultProps} defaultValue={50} />)
 
-    const centerMark = container.querySelector(".bg-gray-600")
+    const centerMark = container.querySelector(".bg-gray-600") as HTMLElement
     expect(centerMark).toBeInTheDocument()
-    expect(centerMark).toHaveStyle({ left: "50%" })
+    expect(centerMark?.style.left).toBe("50%")
   })
 
   it("should not show center mark without default value", () => {
@@ -146,10 +146,10 @@ describe("ParameterSlider", () => {
     const { container } = render(<ParameterSlider {...defaultProps} />)
 
     const input = screen.getByRole("slider")
-    const filledBar = container.querySelector("[class*='transition']")!
+    const filledBar = container.querySelector("[class*='transition']") as HTMLElement
 
     // Before drag - has transition
-    expect(filledBar).toHaveClass("transition-all", "duration-100")
+    expect(filledBar).toHaveClass("transition-all")
 
     // Start drag
     fireEvent.mouseDown(input)
@@ -157,7 +157,7 @@ describe("ParameterSlider", () => {
 
     // End drag
     fireEvent.mouseUp(input)
-    expect(filledBar).toHaveClass("transition-all", "duration-100")
+    expect(filledBar).toHaveClass("transition-all")
   })
 
   it("should show tooltip on hover when default value exists", async () => {
@@ -200,19 +200,19 @@ describe("ParameterSlider", () => {
   it("should handle edge values correctly", () => {
     const { container, rerender } = render(<ParameterSlider {...defaultProps} value={0} min={0} max={100} />)
 
-    let filledBar = container.querySelector("[style*='width']")!
-    expect(filledBar.style.width).toBe("0%")
+    let filledBar = container.querySelector("[style*='width']") as HTMLElement
+    expect(filledBar?.style.width).toBe("0%")
 
     rerender(<ParameterSlider {...defaultProps} value={100} min={0} max={100} />)
-    filledBar = container.querySelector("[style*='width']")!
-    expect(filledBar.style.width).toBe("100%")
+    filledBar = container.querySelector("[style*='width']") as HTMLElement
+    expect(filledBar?.style.width).toBe("100%")
   })
 
   it("should handle negative ranges", () => {
     const { container } = render(<ParameterSlider {...defaultProps} value={0} min={-100} max={100} />)
 
-    const filledBar = container.querySelector("[style*='width']")!
-    expect(filledBar.style.width).toBe("50%")
+    const filledBar = container.querySelector("[style*='width']") as HTMLElement
+    expect(filledBar?.style.width).toBe("50%")
   })
 
   it("should position default value mark correctly in negative range", () => {

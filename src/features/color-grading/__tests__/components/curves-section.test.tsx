@@ -266,6 +266,7 @@ describe("CurvesSection", () => {
     render(<CurvesSection />)
 
     const editor = screen.getByTestId("curve-editor")
-    expect(editor).toHaveClass("w-full", "h-64")
+    expect(editor).toHaveClass("w-full")
+    expect(editor).toHaveClass("h-64")
   })
 })

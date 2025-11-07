@@ -89,9 +89,7 @@ describe("StyleTemplateErrorBoundary", () => {
       </StyleTemplateErrorBoundary>,
     )
 
-    expect(renderResult.container.firstChild).toHaveClass(
-      "flex h-64 w-full flex-col items-center justify-center",
-    )
+    expect(renderResult.container.firstChild).toHaveClass("flex h-64 w-full flex-col items-center justify-center")
   })
 
   it("должен центрировать содержимое ошибки", () => {

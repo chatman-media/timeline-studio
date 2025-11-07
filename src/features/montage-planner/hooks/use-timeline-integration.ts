@@ -59,7 +59,6 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
           name: marker.name,
           time: marker.time,
           type: marker.type || "comment",
-          trackId: marker.trackId,
           color: marker.color,
           description: marker.description || "",
         })

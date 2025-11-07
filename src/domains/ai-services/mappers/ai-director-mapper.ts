@@ -5,8 +5,13 @@
  * для использования в TypeScript приложении
  */
 
-import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
-import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
+import type {
+  ComprehensiveAnalysisResult,
+  MontageAnalysisResult,
+  SceneAnalysis,
+  KeyMomentInsight,
+  EditingRecommendation,
+} from "@/types/generated/tauri-bindings"
 
 // ============================================================================
 // Unified Content Analysis Interface
@@ -138,75 +143,116 @@ export interface UnifiedContentAnalysis {
  * Преобразует ComprehensiveAnalysisResult в UnifiedContentAnalysis
  */
 export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisResult): UnifiedContentAnalysis {
+  // Извлекаем scenes и конвертируем в нужный формат
+  const scenes = result.scene_analysis?.scenes?.map((scene: SceneAnalysis) => ({
+    startTime: scene.startTime,
+    endTime: scene.endTime,
+    sceneType: String(scene.sceneType),
+    confidence: scene.confidence,
+    description: scene.description || "",
+  })) ?? []
+
+  // Извлекаем key moments из combined_insights
+  const keyMoments = result.combined_insights?.key_moments?.map((km: KeyMomentInsight) => ({
+    timestamp: km.timestamp,
+    duration: km.duration,
+    category: km.moment_type,
+    score: km.importance,
+    description: km.reason, // Используем reason как description
+    tags: [], // Tags не доступны в новой структуре
+  })) ?? []
+
   return {
     // Metadata
     analysisId: result.analysis_id,
-    videoPath: result.video_path,
-    status: result.status,
-    createdAt: result.created_at,
-    processingTimeMs: result.processing_time_ms,
+    videoPath: "", // TODO: Передавать из вызывающего кода
+    status: mapAnalysisStatus(result.status),
+    createdAt: new Date().toISOString(), // metadata не содержит timestamp
+    processingTimeMs: result.performance_metrics.total_processing_time,
 
-    // Video Info
+    // Video Info (минимальная информация, т.к. детали не доступны в новой структуре)
     videoInfo: {
-      duration: result.video_analysis?.basic_info.duration ?? 0,
-      fps: result.video_analysis?.basic_info.fps ?? 0,
-      resolution: result.video_analysis?.basic_info.resolution ?? { width: 0, height: 0 },
-      codec: result.video_analysis?.basic_info.codec ?? "unknown",
-      fileSize: result.video_analysis?.basic_info.file_size ?? 0,
+      duration: result.scene_analysis?.avg_scene_duration ?
+        result.scene_analysis.avg_scene_duration * result.scene_analysis.total_scenes : 0,
+      fps: 0, // Не доступно
+      resolution: { width: 0, height: 0 }, // Не доступно
+      codec: "unknown",
+      fileSize: 0, // Не доступно
     },
 
-    // Audio Analysis
+    // Audio Analysis (упрощенная версия - многие поля недоступны в новой структуре)
     audioAnalysis: result.audio_analysis
       ? {
           hasAudio: result.audio_analysis.basic_metrics.has_audio,
-          duration: result.audio_analysis.basic_metrics.duration,
+          duration: 0, // TODO: Преобразовать из структуры { seconds: number }
           channels: result.audio_analysis.basic_metrics.channels,
-          sampleRate: result.audio_analysis.basic_metrics.sample_rate,
-          bitrate: result.audio_analysis.basic_metrics.bitrate,
-          quality: calculateAudioQuality(result.audio_analysis),
+          sampleRate: 0, // TODO: Преобразовать из структуры { hz: number }
+          bitrate: result.audio_analysis.basic_metrics.bitrate || 0,
+          quality: 0, // TODO: Рассчитать из доступных метрик
 
-          speechSegments: result.audio_analysis.montage_analysis?.speech_segments ?? [],
-          musicSegments: result.audio_analysis.montage_analysis?.music_segments ?? [],
+          speechSegments: [], // TODO: Не доступно в текущей структуре
+          musicSegments: [], // TODO: Не доступно в текущей структуре
 
-          transcription: result.audio_analysis.whisper_transcription
-            ? {
-                fullText: result.audio_analysis.whisper_transcription.full_text,
-                segments: result.audio_analysis.whisper_transcription.segments,
-                language: result.audio_analysis.whisper_transcription.detected_language,
-              }
-            : undefined,
+          transcription: undefined, // TODO: Не доступно в текущей структуре
 
-          emotionalTone: result.audio_analysis.montage_analysis?.emotional_tone ?? "neutral",
-          energyLevel: result.audio_analysis.montage_analysis?.energy_level ?? 50,
+          emotionalTone: "neutral", // TODO: Преобразовать из AudioEmotionalTone
+          energyLevel: 50, // TODO: Не доступно
         }
       : undefined,
 
     // Visual Analysis
-    visualAnalysis: result.video_analysis
-      ? {
-          scenes: result.video_analysis.scene_analysis ?? [],
-          objects: result.video_analysis.object_detection ?? [],
-          faces:
-            result.video_analysis.face_analysis?.map((fa) => ({
-              timestamp: fa.timestamp,
-              detectedFaces: fa.faces,
-            })) ?? [],
-          composition: result.video_analysis.composition_analysis
+    visualAnalysis: result.scene_analysis
+      ? ({
+          scenes,
+          objects: [],
+          faces: [],
+          composition: result.content_analysis?.avg_composition
             ? {
-                overallQuality: result.video_analysis.composition_analysis.overall_quality * 100,
-                aestheticScore: result.video_analysis.composition_analysis.aesthetic_score * 100,
-                ruleOfThirds: result.video_analysis.composition_analysis.rule_of_thirds,
-                symmetryScore: result.video_analysis.composition_analysis.symmetry_score * 100,
+                overallQuality: result.content_analysis.avg_composition.overall * 100,
+                aestheticScore: 0, // TODO: Поле aesthetic не существует в CompositionScore
+                ruleOfThirds: result.content_analysis.avg_composition.ruleOfThirds,
+                symmetryScore: result.content_analysis.avg_composition.symmetry * 100,
               }
             : undefined,
-        }
+        } as UnifiedContentAnalysis["visualAnalysis"])
       : undefined,
+
+    // Key Moments
+    keyMoments,
 
     // Quality Metrics
     qualityMetrics: calculateQualityMetrics(result),
 
     // Recommendations
-    editingRecommendations: result.editing_recommendations,
+    editingRecommendations: result.editing_recommendations?.map((rec: EditingRecommendation) => ({
+      type: rec.recommendation_type,
+      description: rec.description,
+      confidence: rec.priority / 100,
+      suggestedAction: rec.description, // Using description as action
+      timeRange: rec.timestamp !== null && rec.duration !== null
+        ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
+        : undefined,
+    })) ?? [],
+  }
+}
+
+/**
+ * Преобразует AnalysisStatus из Rust в TypeScript формат
+ */
+function mapAnalysisStatus(status: string): "pending" | "in_progress" | "completed" | "failed" | "partially_completed" {
+  switch (status) {
+    case "Pending":
+      return "pending"
+    case "InProgress":
+      return "in_progress"
+    case "Completed":
+      return "completed"
+    case "Failed":
+      return "failed"
+    case "PartiallyCompleted":
+      return "partially_completed"
+    default:
+      return "completed"
   }
 }
 
@@ -272,16 +318,18 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
   audio: number
   technical: number
 } {
-  // Video quality
-  const videoQuality = result.video_analysis?.composition_analysis?.overall_quality
-    ? result.video_analysis.composition_analysis.overall_quality * 100
+  // Video quality из content_analysis
+  const videoQuality = result.content_analysis?.quality.overall
+    ? result.content_analysis.quality.overall * 100
     : 50
 
   // Audio quality
-  const audioQuality = result.audio_analysis ? calculateAudioQuality(result.audio_analysis) : 50
+  const audioQuality = 50 // TODO: Рассчитать из доступных audio метрик
 
-  // Technical quality (resolution, codec, etc.)
-  const technicalQuality = calculateTechnicalQuality(result)
+  // Technical quality из vision_analysis
+  const technicalQuality = result.vision_analysis?.visual_quality_avg
+    ? result.vision_analysis.visual_quality_avg * 100
+    : 50
 
   // Overall quality
   const overall = (videoQuality + audioQuality + technicalQuality) / 3
@@ -298,8 +346,14 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
  * Рассчитывает техническое качество (разрешение, кодек, etc.)
  */
 function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number {
-  if (!result.video_analysis) return 50
+  // Новая структура не содержит детальной video информации
+  // Используем visual_quality_avg из vision_analysis
+  return result.vision_analysis?.visual_quality_avg
+    ? result.vision_analysis.visual_quality_avg * 100
+    : 50
 
+  // DEPRECATED CODE BELOW (kept for reference)
+  /*
   const { resolution, fps, codec } = result.video_analysis.basic_info
 
   // Resolution score
@@ -325,6 +379,7 @@ function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number 
   const codecScore = goodCodecs.some((c) => codec.toLowerCase().includes(c)) ? 100 : 60
 
   return (resolutionScore + fpsScore + codecScore) / 3
+  */
 }
 
 /**

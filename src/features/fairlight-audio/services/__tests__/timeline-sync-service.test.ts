@@ -41,7 +41,6 @@ describe("TimelineSyncService", () => {
   })
 
   describe("convertTrackToChannel", () => {
-
     it("should convert audio track to channel", () => {
       const track = createMockTrack({
         id: "audio-track",

@@ -41,6 +41,11 @@ export interface Sector {
   scrollPosition?: number
   startTime: number
   endTime: number
+  isLocked: boolean
+  combinedDuration: number
 }
+
+// Экспорт Track как алиаса для MediaTrack (для обратной совместимости)
+export type Track = MediaTrack
 
 export type { TimeRange }

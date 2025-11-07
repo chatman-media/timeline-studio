@@ -3,7 +3,7 @@
  * Coordinates video and audio analysis to extract meaningful data
  */
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisOptions, AudioAnalysis, Fragment, MomentScore, VideoAnalysis } from "../types"
 import { CameraMovement, EmotionalTone, FlowDirection, LightingCondition, SceneType } from "../types"
@@ -29,7 +29,7 @@ export class ContentAnalyzer {
    */
   async analyzeVideo(
     _videoId: string,
-    file: MediaFile,
+    file: FeatureMediaFile,
     options: AnalysisOptions["videoAnalysis"],
   ): Promise<VideoAnalysis> {
     try {
@@ -77,7 +77,7 @@ export class ContentAnalyzer {
    */
   async analyzeAudio(
     _videoId: string,
-    file: MediaFile,
+    file: FeatureMediaFile,
     options: AnalysisOptions["audioAnalysis"],
   ): Promise<AudioAnalysis> {
     const hasAudio = file.isAudio !== false
@@ -125,7 +125,7 @@ export class ContentAnalyzer {
    */
   extractFragments(
     videoId: string,
-    file: MediaFile,
+    file: FeatureMediaFile,
     videoAnalysis: VideoAnalysis,
     audioAnalysis: AudioAnalysis,
     momentScores: MomentScore[],

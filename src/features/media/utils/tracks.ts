@@ -121,6 +121,8 @@ export const createTracksFromFiles = (files: MediaFile[], existingTracks: MediaT
       endTime: 0,
       zoomLevel: 1,
       scrollPosition: 0,
+      isLocked: false,
+      combinedDuration: 0,
     }
 
     logger.debugSync("Using sector", { sectorName: sector.name, tracksCount: sector.tracks.length })

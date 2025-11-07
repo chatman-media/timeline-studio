@@ -81,7 +81,7 @@ export function useMontagePlanner() {
 
   const updateAnalysisOptions = useCallback(
     (options: Partial<AnalysisOptions>) => {
-      send({ type: "UPDATE_ANALYSIS_OPTIONS", options })
+      send({ type: "UPDATE_ANALYSIS_OPTIONS", options: options as any })
     },
     [send],
   )

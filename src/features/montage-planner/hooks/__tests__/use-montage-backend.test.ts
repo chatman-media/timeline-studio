@@ -33,14 +33,14 @@ const mockMomentScores = [
     duration: 5,
     scores: { visual: 85, technical: 88, emotional: 75, narrative: 80, action: 90, composition: 82 },
     totalScore: 84,
-    category: "action",
+    category: "action" as const,
   },
   {
     timestamp: 25,
     duration: 3,
     scores: { visual: 78, technical: 80, emotional: 85, narrative: 75, action: 60, composition: 80 },
     totalScore: 76,
-    category: "highlight",
+    category: "highlight" as const,
   },
 ]
 
@@ -259,7 +259,7 @@ describe("useMontageBackend", () => {
       const sourceFiles = ["/video1.mp4", "/video2.mp4"]
 
       await act(async () => {
-        await result.current.generateMontagePlan(mockMomentScores, config, sourceFiles)
+        await result.current.generateMontagePlan(mockMomentScores as any, config, sourceFiles)
       })
 
       expect(mockInvoke).toHaveBeenCalledWith("generate_montage_plan", {

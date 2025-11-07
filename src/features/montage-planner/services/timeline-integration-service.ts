@@ -104,12 +104,14 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isVideo === true || clip.fragment.sourceFile.isImage === true
+    const file = clip.fragment.sourceFile
+    return (file.isVideo === true || file.isImage === true) ?? false
   })
 
   const audioClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isAudio === true
+    const file = clip.fragment.sourceFile
+    return file.isAudio === true
   })
 
   // Добавляем видео клипы

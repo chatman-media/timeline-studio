@@ -67,7 +67,7 @@ export function getAudioInfo(mediaFile: MediaFile): AudioAnalysisResult | null {
       Number.parseFloat(String(audioStream.duration || "0")) ||
       Number.parseFloat(String(mediaFile.probeData.format.duration || "0")) ||
       0,
-    audioStreamIndex: audioStream.index,
+    audioStreamIndex: audioStream.index || 0,
   }
 }
 

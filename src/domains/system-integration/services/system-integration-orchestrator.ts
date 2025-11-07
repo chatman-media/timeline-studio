@@ -51,6 +51,7 @@ export class SystemIntegrationOrchestrator {
     this.updateActor.subscribe((state) => {
       if (state.matches("updateAvailable")) {
         this.showNotification({
+          notification_type: "info",
           type: "info",
           title: "Доступно обновление",
           message: `Версия ${state.context.availableUpdate?.version} готова к установке`,
@@ -146,6 +147,7 @@ export class SystemIntegrationOrchestrator {
       ...notification,
       id,
       timestamp: new Date(),
+      notification_type: notification.type, // Ensure backend field is set
     }
 
     logger.info("[System Integration Orchestrator] Showing notification:", { title: notification.title })

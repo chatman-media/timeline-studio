@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useLanguage } from "../contexts/LanguageContext"
-import { blogPostsList, blogPostsRaw } from "../data/blog-posts"
+import { blogPostsConfig, blogPostsOrder } from "../data/blog-posts"
 import type { Post, PostMetadata } from "../utils/markdown"
 import { parseMarkdown } from "../utils/markdown"
 
@@ -13,31 +13,50 @@ export function useBlogPosts() {
   useEffect(() => {
     async function loadPosts() {
       try {
-        // Используем явно импортированные посты для текущего языка
-        const langPosts = blogPostsList[language as "en" | "ru" | "zh"] || blogPostsList.en
+        const langKey = language as "en" | "ru" | "zh"
+        const langConfig = blogPostsConfig[langKey] || blogPostsConfig.en
         const loadedPosts: PostMetadata[] = []
 
-        for (const content of langPosts) {
-          if (!content) {
+        console.log('[useBlogPosts] Loading posts for language:', language)
+
+        for (const slug of blogPostsOrder) {
+          const path = langConfig[slug as keyof typeof langConfig]
+          if (!path) {
+            console.warn('[useBlogPosts] No path found for slug:', slug)
             continue
           }
 
-          const { metadata } = parseMarkdown(content)
+          try {
+            console.log('[useBlogPosts] Fetching:', path)
+            const response = await fetch(path)
+            if (!response.ok) {
+              console.error('[useBlogPosts] Failed to fetch:', path, response.status)
+              continue
+            }
 
-          // Если slug не задан, генерируем из заголовка
-          if (!metadata.slug) {
-            metadata.slug = metadata.title
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .replace(/[^a-z0-9-]/g, "")
+            const content = await response.text()
+            console.log('[useBlogPosts] Loaded content for', slug, 'type:', typeof content, 'length:', content.length)
+
+            if (typeof content !== 'string' || content.length === 0) {
+              console.warn('[useBlogPosts] Invalid content for slug:', slug)
+              continue
+            }
+
+            const { metadata } = parseMarkdown(content)
+            console.log('[useBlogPosts] Parsed metadata:', metadata.title, metadata.slug)
+
+            // Если slug не задан, используем из конфига
+            if (!metadata.slug) {
+              metadata.slug = slug
+            }
+
+            loadedPosts.push(metadata)
+          } catch (error) {
+            console.error('[useBlogPosts] Error loading post:', slug, error)
           }
-
-          loadedPosts.push(metadata)
         }
 
-        // Сортируем по дате (новые первые)
-        loadedPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
+        console.log('[useBlogPosts] Total loaded posts:', loadedPosts.length)
         setPosts(loadedPosts)
       } catch (error) {
         console.error("Error loading blog posts:", error)
@@ -47,7 +66,7 @@ export function useBlogPosts() {
     }
 
     loadPosts()
-  }, [language]) // Перезагружаем посты при смене языка
+  }, [language])
 
   return { posts, isLoading }
 }
@@ -61,15 +80,30 @@ export function useBlogPost(slug: string) {
   useEffect(() => {
     async function loadPost() {
       try {
-        // Используем явные импорты для текущего языка
-        const langPosts = blogPostsRaw[language as "en" | "ru" | "zh"] || blogPostsRaw.en
-        const content = langPosts[slug as keyof typeof langPosts]
+        const langKey = language as "en" | "ru" | "zh"
+        const langConfig = blogPostsConfig[langKey] || blogPostsConfig.en
+        const path = langConfig[slug as keyof typeof langConfig]
 
-        if (content) {
+        if (!path) {
+          console.error("Post path not found for slug:", slug, "in language:", language)
+          setIsLoading(false)
+          return
+        }
+
+        const response = await fetch(path)
+        if (!response.ok) {
+          console.error("Failed to fetch post:", path, response.status)
+          setIsLoading(false)
+          return
+        }
+
+        const content = await response.text()
+
+        if (typeof content === 'string' && content.length > 0) {
           const parsedPost = parseMarkdown(content)
           setPost(parsedPost)
         } else {
-          console.error("Post not found for slug:", slug, "in language:", language)
+          console.error("Invalid content for slug:", slug)
         }
       } catch (error) {
         console.error("Error loading blog post:", error)
@@ -79,7 +113,7 @@ export function useBlogPost(slug: string) {
     }
 
     loadPost()
-  }, [slug, language]) // Перезагружаем пост при смене языка
+  }, [slug, language])
 
   return { post, isLoading }
 }

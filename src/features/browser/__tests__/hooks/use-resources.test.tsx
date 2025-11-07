@@ -231,8 +231,7 @@ describe("useResourceById", () => {
   function TestComponent({ id }: { id: string }) {
     const { resource, loading } = useResourceById("effect", id)
     const resourceName = resource?.name
-    const displayName =
-      typeof resourceName === "string" ? resourceName : resourceName?.en || "Not found"
+    const displayName = typeof resourceName === "string" ? resourceName : resourceName?.en || "Not found"
     return (
       <div>
         <div data-testid="loading">{String(loading)}</div>

@@ -209,7 +209,7 @@ export function EffectChainList({ className }: EffectChainListProps) {
                 <div className="flex items-center gap-2 p-3">
                   <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
 
-                  <Switch checked={chain.enabled} onCheckedChange={() => toggleChainEnabled(chain.id)} size="sm" />
+                  <Switch checked={chain.enabled} onCheckedChange={() => toggleChainEnabled(chain.id)} />
 
                   <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
                     {expandedChains.has(chain.id) ? (
@@ -256,7 +256,6 @@ export function EffectChainList({ className }: EffectChainListProps) {
                             <Switch
                               checked={effect.enabled}
                               onCheckedChange={() => toggleEffectEnabled(chain.id, effect.id)}
-                              size="sm"
                             />
 
                             <span className="text-lg">{getEffectIcon(effect.type)}</span>

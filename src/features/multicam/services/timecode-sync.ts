@@ -169,11 +169,11 @@ export function syncByTimecode(baseClip: TimelineClip, clips: TimelineClip[], me
 
   if (baseTimecode) {
     baseTimecodeInfo = parseTimecode(baseTimecode, baseFrameRate)
-    logger.info("[syncByTimecode] Base timecode:", baseTimecodeInfo)
+    logger.info("[syncByTimecode] Base timecode:", { timecodeInfo: baseTimecodeInfo })
   } else {
     // Fallback на время создания
     baseCreationTime = extractCreationTime(baseMedia)
-    logger.info("[syncByTimecode] Using creation time:", baseCreationTime)
+    logger.info("[syncByTimecode] Using creation time:", { creationTime: baseCreationTime })
   }
 
   // Синхронизируем остальные клипы

@@ -6,7 +6,6 @@
 
 import { useCallback, useEffect } from "react"
 import { DOMAIN_EVENTS } from "@/domains/shared/events"
-import { useDomainEvents } from "@/domains/shared/hooks/use-domain-events"
 import type {
   AIDirectorAnalysisCompletedEvent,
   AIDirectorAnalysisErrorEvent,
@@ -14,6 +13,7 @@ import type {
   AIDirectorBatchCompletedEvent,
   AIDirectorStageCompletedEvent,
 } from "@/domains/shared/events/ai-services-events"
+import { useDomainEvents } from "@/domains/shared/hooks/use-domain-events"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseAIDirectorEvents")

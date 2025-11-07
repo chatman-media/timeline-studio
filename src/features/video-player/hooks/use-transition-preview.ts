@@ -152,13 +152,7 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
         }
 
         // Используем синхронную версию applyTransition
-        transitionService.applyTransition(
-          videoA,
-          videoB,
-          state.activeTransition.transitionId,
-          params,
-          canvas,
-        )
+        transitionService.applyTransition(videoA, videoB, state.activeTransition.transitionId, params, canvas)
         return true
       } catch (error) {
         logError("[useTransitionPreview] Ошибка рендеринга перехода", { error })

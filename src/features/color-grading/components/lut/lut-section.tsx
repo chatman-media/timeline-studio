@@ -122,7 +122,7 @@ export function LUTSection() {
         handleLUTChange(newLUT.id)
       }
     } catch (error) {
-      logger.error("Error importing LUT:", error)
+      logger.error("Error importing LUT", { error })
     } finally {
       setIsLoading(false)
     }

@@ -74,7 +74,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
       // Use unified AI service for video analysis
       const params: VideoAnalysisParams = {
         videoPath: file.path,
-        analysisTypes: ["video_analysis", "object_detection", "quality_analysis"],
+        analysisTypes: ["object_detection" as const],
         outputFormat: "detailed",
       }
 

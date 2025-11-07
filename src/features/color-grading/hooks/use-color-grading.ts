@@ -200,7 +200,7 @@ export function useColorGrading() {
   const loadPreset = useCallback((presetId: string) => {
     const preset = BUILT_IN_PRESETS.find((p) => p.id === presetId)
     if (!preset) {
-      logger.warn("Preset not found:", presetId)
+      logger.warn("Preset not found", { presetId })
       return
     }
 
@@ -235,7 +235,7 @@ export function useColorGrading() {
       customPresets.push(preset)
       localStorage.setItem("colorGradingPresets", JSON.stringify(customPresets))
 
-      logger.info("Saved preset:", name)
+      logger.info("Saved preset", { name })
     },
     [state],
   )

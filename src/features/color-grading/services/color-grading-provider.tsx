@@ -77,10 +77,10 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       setIsConnected(true)
 
       // Синхронизируем состояние цветокоррекции из backend
-      if (state.color_grading_state) {
+      if (state.color_grading) {
         // Здесь можно восстановить состояние из backend
         // Например, загрузить сохраненные пресеты, последние настройки и т.д.
-        logger.debugSync("Synced state from backend", { state: state.color_grading_state })
+        logger.debugSync("Synced state from backend", { state: state.color_grading })
       }
     })
 

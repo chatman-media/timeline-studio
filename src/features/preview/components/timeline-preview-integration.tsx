@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { useRealtimePreview } from "../hooks/use-realtime-preview"
+import { useWebGL2Preview } from "../hooks/use-webgl2-preview"
 import { QualityControls } from "./quality-controls"
 
 interface TimelinePreviewIntegrationProps {
@@ -54,7 +54,7 @@ export function TimelinePreviewIntegration({
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { canvasRef, videoRef, previewFrame, isInitialized, gpuTier, quality, setQuality, cacheStats } =
-    useRealtimePreview({
+    useWebGL2Preview({
       cacheSize: 50, // Smaller cache for timeline integration
       prefetchRange: 1, // Less aggressive prefetching
       updateInterval: position === "overlay" ? 16 : 33, // Higher fps for overlay

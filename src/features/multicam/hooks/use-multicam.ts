@@ -120,7 +120,7 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
         const angle = angles[angleIndex]
         if (angle) {
           playerSelectClip(angle.clipId).catch((error: unknown) => {
-            logger.error("[useMulticam] Failed to switch player clip:", error)
+            logger.error("[useMulticam] Failed to switch player clip:", { error })
           })
         }
       } else {
@@ -148,10 +148,10 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
         // Переключаем плеер на выбранный клип
         const angle = angles[angleIndex]
         if (angle) {
-          logger.info(`[useMulticam] Switching to angle ${angleIndex + 1}:`, angle.name)
+          logger.info(`[useMulticam] Switching to angle ${angleIndex + 1}:`, { angleName: angle.name })
           // Вызываем API плеера для переключения на другой клип
           playerSelectClip(angle.clipId).catch((error: unknown) => {
-            logger.error("[useMulticam] Failed to switch player clip:", error)
+            logger.error("[useMulticam] Failed to switch player clip:", { error })
           })
         }
       }

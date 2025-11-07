@@ -52,54 +52,37 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     // Подписываемся на изменения backend состояния
     const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
       setIsConnected(true)
-
-      // Синхронизируем feature flags из backend
-      if (state.system_state?.feature_flags) {
-        const backendFeatures = state.system_state.feature_flags
-        setFeatures(backendFeatures)
-
-        // Обновляем feature flags в оркестраторе
-        Object.entries(backendFeatures).forEach(([feature, enabled]) => {
-          orchestrator.toggleFeature(feature, enabled as boolean)
-        })
-
-        logger.debug("[System Integration] Feature flags synced from backend:", { data: backendFeatures })
-      }
-
-      // Синхронизируем системные уведомления
-      if (state.system_state?.notifications) {
-        state.system_state.notifications.forEach((notification: any) => {
-          orchestrator.showNotification({
-            type: notification.type,
-            title: notification.title,
-            message: notification.message,
-            actions: notification.actions,
-          })
-        })
-      }
+      logger.debug("[System Integration] State synced from backend")
     })
 
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
       switch (event.type) {
-        case "SYSTEM_NOTIFICATION":
-          orchestrator.showNotification({
-            type: event.data.type,
-            title: event.data.title,
-            message: event.data.message,
-            actions: event.data.actions,
-          })
+        case "NotificationShown":
+          if (event.payload && "notification" in event.payload) {
+            const notification = event.payload.notification
+            orchestrator.showNotification({
+              notification_type: notification.notification_type,
+              type: notification.notification_type as "info" | "success" | "warning" | "error",
+              title: notification.title,
+              message: notification.message,
+              duration: notification.duration ?? undefined,
+            })
+          }
           break
 
-        case "FEATURE_FLAG_UPDATED":
-          orchestrator.toggleFeature(event.data.feature, event.data.enabled)
-          setFeatures((prev) => ({
-            ...prev,
-            [event.data.feature]: event.data.enabled,
-          }))
+        case "FeatureToggled":
+          if (event.payload && "feature" in event.payload && "enabled" in event.payload) {
+            const { feature, enabled } = event.payload
+            orchestrator.toggleFeature(feature, enabled)
+            setFeatures((prev) => ({
+              ...prev,
+              [feature]: enabled,
+            }))
+          }
           break
 
-        case "UPDATE_AVAILABLE":
+        case "UpdateAvailable":
           orchestrator.checkForUpdates()
           break
       }
@@ -114,27 +97,12 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
       ...initialFeatures,
     }
 
-    // Синхронизируем начальные feature flags с backend
-    backendSync
-      .executeCommand({
-        type: "System",
-        params: {
-          type: "UpdateFeatureFlags",
-          params: {
-            features: defaultFeatures,
-          },
-        },
-      })
-      .then(() => {
-        setFeatures(defaultFeatures)
-        Object.entries(defaultFeatures).forEach(([feature, enabled]) => {
-          orchestrator.toggleFeature(feature, enabled)
-        })
-      })
-      .catch((err) => {
-        logger.error("[System Integration] Failed to sync feature flags:", { error: err })
-        setError(err.message)
-      })
+    // Инициализируем feature flags локально
+    // TODO: Когда backend будет поддерживать feature flags, добавить синхронизацию
+    setFeatures(defaultFeatures)
+    Object.entries(defaultFeatures).forEach(([feature, enabled]) => {
+      orchestrator.toggleFeature(feature, enabled)
+    })
 
     return () => {
       logger.info("[System Integration Provider] Cleanup")
@@ -145,28 +113,9 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
 
   // Синхронизация изменений feature flags
   useEffect(() => {
-    // Подписываемся на изменения feature flags в оркестраторе
-    const handleFeatureToggle = (feature: string, enabled: boolean) => {
-      // Синхронизируем изменение с backend
-      backendSync
-        .executeCommand({
-          type: "System",
-          params: {
-            type: "UpdateFeatureFlag",
-            params: {
-              feature,
-              enabled,
-            },
-          },
-        })
-        .catch((err) => {
-          logger.error("[System Integration] Failed to sync feature flag", { feature, err })
-          setError(err.message)
-        })
-    }
-
-    // Здесь можно добавить подписку на события оркестратора
-    // если он поддерживает event emitter
+    // TODO: Когда backend будет поддерживать feature flag commands,
+    // добавить синхронизацию изменений с backend
+    // Пока feature flags управляются только локально
 
     return () => {
       // Cleanup
@@ -175,32 +124,12 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
 
   // Синхронизация системных уведомлений
   useEffect(() => {
-    // Периодически синхронизируем непрочитанные уведомления с backend
-    const syncNotifications = () => {
-      const notifications = orchestrator.getNotifications()
-      const unreadNotifications = notifications.filter((n) => !n.read)
-
-      if (unreadNotifications.length > 0) {
-        backendSync
-          .executeCommand({
-            type: "System",
-            params: {
-              type: "SyncNotifications",
-              params: {
-                notifications: unreadNotifications,
-              },
-            },
-          })
-          .catch((err) => {
-            logger.error("[System Integration] Failed to sync notifications:", { error: err })
-          })
-      }
-    }
-
-    const interval = setInterval(syncNotifications, 30000) // Каждые 30 секунд
+    // TODO: Когда backend будет поддерживать notification sync commands,
+    // добавить периодическую синхронизацию непрочитанных уведомлений
+    // Пока уведомления управляются только локально
 
     return () => {
-      clearInterval(interval)
+      // Cleanup
     }
   }, [orchestrator, backendSync])
 

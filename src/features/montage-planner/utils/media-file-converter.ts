@@ -4,8 +4,7 @@
  * Конвертирует MediaFile из features в формат для AI Services domain
  */
 
-import type { MediaFile as DomainMediaFile } from "@/domains/ai-services/types/montage-planner"
-import { MediaType } from "@/domains/video-editing/types/media"
+import type { MediaFile as DomainMediaFile } from "@/domains/ai-services/types/interfaces"
 import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
 
 /**
@@ -13,27 +12,25 @@ import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media
  */
 export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMediaFile {
   // Определяем тип на основе boolean флагов
-  let type: MediaType = MediaType.Unknown
+  let type: "video" | "audio" | "image" = "video"
 
   if (file.isVideo) {
-    const hasAudio = file.probeData?.streams?.some((stream) => stream.codec_type === "audio")
-    type = hasAudio ? MediaType.VideoWithAudio : MediaType.Video
+    type = "video"
   } else if (file.isAudio) {
-    type = MediaType.Audio
+    type = "audio"
   } else if (file.isImage) {
-    type = MediaType.StillImage
+    type = "image"
   }
 
   return {
     id: file.id,
     path: file.path,
-    name: file.name,
+    filename: file.name, // DomainMediaFile uses 'filename' instead of 'name'
+    size: file.size || 0,
     type,
     duration: file.duration,
-    size: file.size,
-    createdAt: file.createdAt ? new Date(file.createdAt) : undefined,
-    updatedAt: file.updatedAt ? new Date(file.updatedAt) : undefined,
-  } as DomainMediaFile
+    format: file.probeData?.format?.format_name,
+  }
 }
 
 import type { Fragment as DomainFragment } from "@/domains/ai-services/types/montage-planner"
@@ -44,13 +41,53 @@ import type { Fragment as FeatureFragment } from "../types"
  * Конвертирует Fragment для использования в AI Services domain
  */
 export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>): Partial<DomainFragment> {
+  // Конвертируем score в analysis если есть
+  const analysis = fragment.score
+    ? {
+        quality: fragment.score.scores.technical / 100,
+        motion: fragment.score.scores.action / 100,
+        faceCount: 0,
+        objectsOfInterest: fragment.objects || [],
+        audioQuality: 0.8,
+        duration: fragment.duration || 0,
+        brightnessVariation: 0.5,
+        colorfulness: fragment.score.scores.visual / 100,
+        sharpness: fragment.score.scores.technical / 100,
+        contrast: 0.7,
+        visualComplexity: fragment.score.scores.composition / 100,
+        audioLoudness: -20,
+        speechPresence: false,
+      }
+    : {
+        quality: 0.8,
+        motion: 0.5,
+        faceCount: 0,
+        objectsOfInterest: [],
+        audioQuality: 0.8,
+        duration: fragment.duration || 0,
+        brightnessVariation: 0.5,
+        colorfulness: 0.7,
+        sharpness: 0.8,
+        contrast: 0.7,
+        visualComplexity: 0.6,
+        audioLoudness: -20,
+        speechPresence: false,
+      }
+
   const converted: Partial<DomainFragment> = {
-    ...fragment,
+    id: fragment.id,
+    videoId: fragment.videoId,
+    startTime: fragment.startTime,
+    endTime: fragment.endTime,
+    duration: fragment.duration,
+    objects: fragment.objects || [],
+    people: fragment.people || [],
+    analysis,
   }
 
   // Конвертируем sourceFile если есть
   if (fragment.sourceFile) {
-    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile)
+    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile as FeatureMediaFile)
   }
 
   return converted

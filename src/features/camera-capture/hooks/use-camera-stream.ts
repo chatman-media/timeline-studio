@@ -239,10 +239,9 @@ export function useCameraStream(
           logInfo("[useCameraStream] Поток получен с резервными настройками")
 
           if (!stream) {
-            logError(
-              "[useCameraStream] Не удалось получить медиа-поток с резервными настройками",
-              { error: new Error("Stream is null") },
-            )
+            logError("[useCameraStream] Не удалось получить медиа-поток с резервными настройками", {
+              error: new Error("Stream is null"),
+            })
             throw new Error("Медиа-поток недоступен")
           }
 
@@ -314,10 +313,9 @@ export function useCameraStream(
           setIsDeviceReady(false)
         }
       } else {
-        logError(
-          "[useCameraStream] Ссылка на видео элемент или поток отсутствует",
-          { error: new Error("Video ref or stream is null") },
-        )
+        logError("[useCameraStream] Ссылка на видео элемент или поток отсутствует", {
+          error: new Error("Video ref or stream is null"),
+        })
         setIsDeviceReady(false)
       }
     } catch (error) {

@@ -10,6 +10,9 @@ export const Blog: React.FC = () => {
   const { posts, isLoading } = useBlogPosts()
   const { t } = useLanguage()
 
+  console.log('[Blog Component] Render - isLoading:', isLoading, 'posts.length:', posts.length)
+  console.log('[Blog Component] Posts:', posts)
+
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
       <Navigation />
@@ -62,6 +65,17 @@ export const Blog: React.FC = () => {
                   </div>
                   <div className="glass-card-content text-center">
                     <p className="text-lg text-gray-400">{t("blog.loading")}</p>
+                  </div>
+                </div>
+              ) : posts.length === 0 ? (
+                <div className="glass-card">
+                  <div className="glass-card-bg" />
+                  <div className="glass-card-overlay" />
+                  <div className="glass-card-border">
+                    <div className="glass-card-inner" />
+                  </div>
+                  <div className="glass-card-content text-center">
+                    <p className="text-lg text-gray-400">No blog posts found</p>
                   </div>
                 </div>
               ) : (

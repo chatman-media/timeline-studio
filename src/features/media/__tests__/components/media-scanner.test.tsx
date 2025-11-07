@@ -24,11 +24,15 @@ describe("MediaScanner", () => {
     // Мокаем useMediaProcessor для этого теста
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: vi.fn(),
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -44,11 +48,15 @@ describe("MediaScanner", () => {
     // Мокаем useMediaProcessor для этого теста
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: vi.fn(),
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -63,11 +71,15 @@ describe("MediaScanner", () => {
 
     vi.mocked(open).mockResolvedValue("/path/to/test/folder")
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: vi.fn(),
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -99,11 +111,15 @@ describe("MediaScanner", () => {
 
     vi.mocked(open).mockResolvedValue(null) // Пользователь отменил выбор
     vi.mocked(useMediaProcessor).mockReturnValue({
+      scanFolder: vi.fn(),
       scanFolderWithThumbnails: vi.fn(),
+      processFiles: vi.fn(),
+      processFilesWithThumbnails: vi.fn(),
       isProcessing: false,
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -153,6 +169,7 @@ describe("MediaScanner", () => {
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -190,6 +207,7 @@ describe("MediaScanner", () => {
       progress: { current: 5, total: 10 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -218,6 +236,7 @@ describe("MediaScanner", () => {
       progress: { current: 0, total: 0 },
       errors: mockErrors,
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -272,6 +291,7 @@ describe("MediaScanner", () => {
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -338,6 +358,7 @@ describe("MediaScanner", () => {
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)
@@ -368,6 +389,7 @@ describe("MediaScanner", () => {
       progress: { current: 0, total: 0 },
       errors: new Map(),
       clearErrors: vi.fn(),
+      cancelProcessing: vi.fn(),
     })
 
     renderWithProviders(<MediaScanner />)

@@ -57,60 +57,38 @@ export function ModalProvider({ children }: ModalProviderProps) {
   const [isConnected, setIsConnected] = useState(false)
   const backendSync = getBackendSync()
 
-  // Синхронизация с backend только для важных модальных окон
+  // Проверка подключения к backend
   useEffect(() => {
-    // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+    // Подписываемся на изменения backend состояния для проверки подключения
+    const unsubscribe = backendSync.onStateChange(() => {
       setIsConnected(true)
-
-      // Восстанавливаем состояние модальных окон из backend при необходимости
-      if (state.ui_state?.active_modal && BACKEND_SYNCED_MODALS.includes(state.ui_state.active_modal as ModalType)) {
-        send({
-          type: "OPEN_MODAL",
-          modalType: state.ui_state.active_modal as ModalType,
-          modalData: state.ui_state.modal_data,
-        })
-      }
     })
 
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "MODAL_REQUESTED") {
-        // Backend может запросить открытие модального окна
-        send({
-          type: "OPEN_MODAL",
-          modalType: event.data.modalType,
-          modalData: event.data.modalData,
-        })
-      }
+      // Обработка событий, связанных с модалами (если потребуется в будущем)
+      // Например: event.type === "ModalRequested"
     })
 
     return () => {
       unsubscribe()
       unsubscribeEvents()
     }
-  }, [backendSync, send])
+  }, [backendSync])
 
-  // Синхронизация действий с модальными окнами
+  // Синхронизация закрытия модального окна с backend
   useEffect(() => {
-    // Синхронизируем только важные модальные окна
-    if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType)) {
-      const isOpen = state.matches("opened")
+    const isOpen = state?.matches("opened")
+    const modalType = state?.context?.modalType
 
-      // Уведомляем backend об открытии/закрытии важных модальных окон
+    // Если модальное окно закрыто и это было важное модальное окно
+    if (!isOpen && modalType && BACKEND_SYNCED_MODALS.includes(modalType)) {
       backendSync
         .executeCommand({
-          type: "SaveUIPreferences",
-          params: {
-            preferences: {
-              modalType: isOpen ? state.context.modalType : null,
-              modalData: isOpen ? state.context.modalData : null,
-              isOpen,
-            },
-          },
+          type: "CloseModal",
         })
         .catch((err) => {
-          void logger.error("Failed to sync modal state", { error: String(err) })
+          void logger.error("Failed to sync modal close", { error: String(err) })
         })
     }
   }, [state, backendSync])
@@ -124,15 +102,18 @@ export function ModalProvider({ children }: ModalProviderProps) {
         logger.debugSync("Opening modal window", { modalType })
         send({ type: "OPEN_MODAL", modalType, modalData })
 
-        // Для модальных окон с данными проекта, загружаем актуальные данные
-        if (modalType === "project-settings" && isConnected) {
+        // Уведомляем backend об открытии модального окна
+        if (isConnected && BACKEND_SYNCED_MODALS.includes(modalType)) {
           backendSync
             .executeCommand({
-              type: "LoadProjectSettings",
-              params: {},
+              type: "OpenModal",
+              params: {
+                modal_type: modalType,
+                modal_data: (modalData as any) || null,
+              },
             })
             .catch((error) => {
-              void logger.error("Failed to load project settings", { error: String(error) })
+              void logger.error("Failed to notify backend about modal opening", { error: String(error) })
             })
         }
       },
@@ -143,38 +124,15 @@ export function ModalProvider({ children }: ModalProviderProps) {
       submitModal: async (data?: ModalData) => {
         logger.debugSync("Submitting modal data", { data })
 
-        // Для важных модальных окон синхронизируем результат с backend
-        if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType)) {
+        // Уведомляем backend о закрытии модального окна с данными
+        if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType) && isConnected) {
           try {
-            switch (state.context.modalType) {
-              case "project-settings":
-                await backendSync.executeCommand({
-                  type: "UpdateProjectSettings",
-                  params: data,
-                })
-                break
-
-              case "export":
-                await backendSync.executeCommand({
-                  type: "Export",
-                  params: data,
-                })
-                break
-
-              case "user-settings":
-                await backendSync.executeCommand({
-                  type: "UpdateUserSettings",
-                  params: data,
-                })
-                break
-
-              case "cache-settings":
-                await backendSync.executeCommand({
-                  type: "UpdateCacheSettings",
-                  params: data,
-                })
-                break
-            }
+            await backendSync.executeCommand({
+              type: "SubmitModal",
+              params: {
+                data: (data as any) || null,
+              },
+            })
           } catch (error) {
             void logger.error("Failed to sync modal submission", {
               modalType: state.context.modalType,

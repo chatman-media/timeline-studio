@@ -102,6 +102,21 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
 
   const getComputedStyle = useCallback(
     (styleId?: string, overrides?: SubtitleInlineStyle): ComputedSubtitleStyle => {
+      // Вспомогательная функция для парсинга textShadow (определяем в начале)
+      const parseTextShadow = (shadowStr?: string) => {
+        if (!shadowStr) return undefined
+        const match = shadowStr.match(/(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(.+)/)
+        if (match) {
+          return {
+            offsetX: Number.parseInt(match[1], 10) || 0,
+            offsetY: Number.parseInt(match[2], 10) || 0,
+            blur: Number.parseInt(match[3], 10) || 0,
+            color: match[4] || "#000000",
+          }
+        }
+        return undefined
+      }
+
       // Получаем базовый стиль
       const baseStyle = styleId ? getStyleById(styleId) : getDefaultStyle()
 
@@ -134,7 +149,16 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
       }
 
       if (!baseStyle) {
-        return { ...defaultStyle, ...overrides }
+        // Если есть overrides, обрабатываем textShadow
+        if (overrides) {
+          const parsedOverrides = { ...overrides }
+          if (typeof overrides.textShadow === "string") {
+            const textShadowValue = overrides.textShadow
+            parsedOverrides.textShadow = parseTextShadow(textShadowValue) as any
+          }
+          return { ...defaultStyle, ...parsedOverrides } as ComputedSubtitleStyle
+        }
+        return defaultStyle
       }
 
       // Парсим padding из строки в объект
@@ -153,20 +177,9 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         return defaultStyle.padding
       }
 
-      // Парсим textShadow из строки
-      const parseTextShadow = (shadowStr?: string) => {
-        if (!shadowStr) return undefined
-        const match = shadowStr.match(/(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(.+)/)
-        if (match) {
-          return {
-            offsetX: Number.parseInt(match[1], 10) || 0,
-            offsetY: Number.parseInt(match[2], 10) || 0,
-            blur: Number.parseInt(match[3], 10) || 0,
-            color: match[4] || "#000000",
-          }
-        }
-        return undefined
-      }
+      // Обрабатываем textShadow - может быть строкой из baseStyle или undefined
+      const textShadowValue = overrides?.textShadow || baseStyle.style?.textShadow
+      const parsedTextShadow = typeof textShadowValue === "string" ? parseTextShadow(textShadowValue) : undefined
 
       // Применяем стиль и переопределения
       const computedStyle: ComputedSubtitleStyle = {
@@ -179,7 +192,7 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         backgroundColor: overrides?.backgroundColor || baseStyle.style?.backgroundColor || defaultStyle.backgroundColor,
         strokeColor: overrides?.strokeColor,
         strokeWidth: overrides?.strokeWidth || defaultStyle.strokeWidth,
-        textShadow: parseTextShadow(overrides?.textShadow || baseStyle.style?.textShadow),
+        textShadow: parsedTextShadow,
         padding: parsePadding(
           overrides?.padding || (baseStyle.style?.padding ? String(baseStyle.style.padding) : undefined),
         ),

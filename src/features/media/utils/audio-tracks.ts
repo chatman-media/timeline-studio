@@ -80,6 +80,8 @@ export function processAudioFiles(
       endTime: 0,
       zoomLevel: 1,
       scrollPosition: 0,
+      isLocked: false,
+      combinedDuration: 0,
     }
 
     // Обрабатываем каждый файл и добавляем его на подходящую дорожку

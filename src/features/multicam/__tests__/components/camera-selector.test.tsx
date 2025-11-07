@@ -21,6 +21,19 @@ const createMockAngles = (count: number): MulticamAngle[] => {
       offset: 0,
       mediaId: `media-${i}`,
       type: "video" as const,
+      mediaStartTime: 0,
+      mediaEndTime: 10,
+      speed: 1,
+      volume: 1,
+      opacity: 1,
+      isReversed: false,
+      isSelected: false,
+      isLocked: false,
+      effects: [],
+      filters: [],
+      transitions: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     mediaPath: `/path/to/media${i}.mp4`,
     syncOffset: i === 2 ? 0.5 : 0, // Третья камера имеет смещение
@@ -160,7 +173,7 @@ describe("CameraSelector", () => {
       expect(onSelectAngle).toHaveBeenCalledTimes(1)
     })
 
-    it("не должен вызывать onSelectAngle при клике на уже активную камеру", () => {
+    it("должен вызывать onSelectAngle даже при клике на уже активную камеру", () => {
       const onSelectAngle = vi.fn()
       render(<CameraSelector {...defaultProps} onSelectAngle={onSelectAngle} />)
 
@@ -171,7 +184,7 @@ describe("CameraSelector", () => {
       const menuItems = screen.getAllByTestId("dropdown-menu-item")
       fireEvent.click(menuItems[0])
 
-      // onSelectAngle все равно должен быть вызван
+      // onSelectAngle должен быть вызван даже для активной камеры
       expect(onSelectAngle).toHaveBeenCalledWith(0)
     })
   })
@@ -181,7 +194,8 @@ describe("CameraSelector", () => {
       render(<CameraSelector {...defaultProps} className="custom-class-1 custom-class-2" />)
 
       const button = screen.getByRole("button")
-      expect(button).toHaveClass("custom-class-1", "custom-class-2")
+      expect(button).toHaveClass("custom-class-1")
+      expect(button).toHaveClass("custom-class-2")
       // Также должны сохраняться базовые классы
       expect(button).toHaveClass("gap-2")
     })

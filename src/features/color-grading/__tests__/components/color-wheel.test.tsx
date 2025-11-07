@@ -20,7 +20,12 @@ const mockContext = {
   lineWidth: 0,
 }
 
-HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext)
+HTMLCanvasElement.prototype.getContext = vi.fn((contextId: string) => {
+  if (contextId === "2d") {
+    return mockContext as unknown as CanvasRenderingContext2D
+  }
+  return null
+}) as typeof HTMLCanvasElement.prototype.getContext
 
 describe("ColorWheel", () => {
   const defaultProps = {

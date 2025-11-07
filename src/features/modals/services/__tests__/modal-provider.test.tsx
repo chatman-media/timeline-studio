@@ -4,12 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
 
-// Очищаем моки только для этого файла
-vi.unmock("@/features/modals")
-vi.unmock("@/features/modals/services/modal-provider")
-vi.unmock("@/features/modals/services")
-
-import type { ModalType } from "../modal-machine"
+import type { ModalType } from "@/domains/system-integration/machines/modal-machine"
 import { ModalProvider, useModal } from "../modal-provider"
 
 // Мокаем консоль для проверки логов

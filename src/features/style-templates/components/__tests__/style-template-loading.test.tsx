@@ -141,9 +141,7 @@ describe("StyleTemplateListSkeleton", () => {
     const { container } = render(<StyleTemplateListSkeleton />)
 
     const grid = container.querySelector(".grid")
-    expect(grid).toHaveClass(
-      "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
-    )
+    expect(grid).toHaveClass("grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5")
   })
 
   it("should render no skeletons when count is 0", () => {

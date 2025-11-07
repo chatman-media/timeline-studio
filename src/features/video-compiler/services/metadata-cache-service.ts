@@ -4,6 +4,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
+import type { MediaMetadata } from "@/domains/shared/types/media"
 import type { CacheMemoryUsage } from "../types/cache"
 
 const logger = createLogger("MetadataCacheService")

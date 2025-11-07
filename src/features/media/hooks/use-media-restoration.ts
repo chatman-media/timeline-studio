@@ -112,7 +112,7 @@ export function useMediaRestoration() {
 
         // Генерируем отчет
         const report = generateRestorationReport(result)
-        logger.info("Отчет о восстановлении:", report)
+        logger.info("Отчет о восстановлении", { report })
 
         return {
           restoredMedia: result.restoredMedia,
@@ -121,7 +121,7 @@ export function useMediaRestoration() {
           result,
         }
       } catch (error) {
-        logger.error("Ошибка при восстановлении медиафайлов:", error)
+        logger.error("Ошибка при восстановлении медиафайлов", { error })
 
         updateState({
           isRestoring: false,

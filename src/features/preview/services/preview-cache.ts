@@ -134,7 +134,7 @@ export class PreviewCache {
               }
             })
             .catch((err: unknown) => {
-              logger.warn(`Failed to prefetch frame at ${t}:`, err)
+              logger.warn(`Failed to prefetch frame at ${t}:`, { error: err })
             }),
         )
       }

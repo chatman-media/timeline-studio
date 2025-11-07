@@ -81,7 +81,7 @@ vi.mock("../../components/controls/parameter-slider", () => ({
 // Мокаем хук useColorGrading
 const mockState = {
   lut: {
-    file: null,
+    file: null as string | null,
     isEnabled: false,
     intensity: 100,
   },
