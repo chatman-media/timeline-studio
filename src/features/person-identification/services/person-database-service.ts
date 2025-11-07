@@ -6,6 +6,8 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import type {
   DetectedFace,
   FaceEmbedding,
@@ -69,6 +71,7 @@ export interface DatabaseStats {
  */
 export class PersonDatabaseService {
   private static instance: PersonDatabaseService
+  private static logger = createLogger("PersonDatabase")
   private config: DatabaseConfig
   private db: IDBDatabase | null = null
   private cache = new Map<string, PersonProfile>()
@@ -106,9 +109,17 @@ export class PersonDatabaseService {
    * Инициализация базы данных
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return
+    if (this.isInitialized) {
+      PersonDatabaseService.logger.debugSync("Already initialized, skipping")
+      return
+    }
 
     try {
+      await PersonDatabaseService.logger.info("Initializing Person Database Service", {
+        storage: this.config.storage,
+        dbName: this.config.dbName,
+      })
+
       if (this.config.storage === "indexeddb") {
         await this.initializeIndexedDB()
       } else if (this.config.storage === "tauri") {
@@ -116,9 +127,12 @@ export class PersonDatabaseService {
       }
 
       this.isInitialized = true
-      console.log("Person Database Service инициализирован")
+      await PersonDatabaseService.logger.info("Person Database Service initialized successfully")
     } catch (error) {
-      console.error("Ошибка инициализации Person Database Service:", error)
+      await PersonDatabaseService.logger.error("Failed to initialize Person Database Service", {
+        error: String(error),
+        storage: this.config.storage,
+      })
       throw error
     }
   }
@@ -1198,6 +1212,12 @@ export class PersonDatabaseService {
     thumbnailPath?: string
     detectedFaces?: DetectedFace[]
   }): Promise<PersonProfile> {
+    await PersonDatabaseService.logger.info("Adding new person", {
+      name: personData.name,
+      hasThumbnail: !!personData.thumbnailPath,
+      facesCount: personData.detectedFaces?.length || 0,
+    })
+
     const thumbnails: PersonThumbnail[] = personData.thumbnailPath
       ? [
           {
@@ -1258,6 +1278,11 @@ export class PersonDatabaseService {
       }))
       await this.updatePerson(profile.id, { appearances: updatedAppearances })
     }
+
+    await PersonDatabaseService.logger.info("Person added successfully", {
+      personId: profile.id,
+      name: profile.name,
+    })
 
     return profile
   }

@@ -5,6 +5,8 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import type { DetectedFace, FaceAttributes } from "../types/person"
 
 // Конфигурация продвинутой детекции
@@ -136,6 +138,7 @@ export interface RealtimeProcessingStatus {
  */
 export class AdvancedFaceDetectionService {
   private static instance: AdvancedFaceDetectionService
+  private static logger = createLogger("AdvancedFaceDetection")
   private config: AdvancedDetectionConfig
   private isInitialized = false
   private realtimeStatus: RealtimeProcessingStatus = {

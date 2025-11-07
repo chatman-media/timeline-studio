@@ -5,6 +5,8 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import type { DetectedFace, PersonAppearance } from "../types/person"
 
 // Трекинг конфигурация
@@ -110,6 +112,7 @@ export type TrackingEvent =
  */
 export class AdvancedTrackingService {
   private static instance: AdvancedTrackingService
+  private static logger = createLogger("AdvancedTracking")
   private config: TrackingConfig
   private isInitialized = false
   private isTracking = false
