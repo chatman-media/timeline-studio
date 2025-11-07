@@ -102,7 +102,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
         await saveProject()
         logger.info("Переход успешно добавлен")
       } catch (error) {
-        logger.error("Failed to add transition:", error)
+        logger.error("Failed to add transition:", { error })
       }
     },
     [project, track.id, saveProject],
@@ -261,10 +261,10 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                   timeScale={timeScale}
                   trackHeight={track.height}
                   onUpdate={(updates) => {
-                    logger.info("Updating transition:", outTransition.id, updates)
+                    logger.info("Updating transition:", { transitionId: outTransition.id, updates })
                   }}
                   onDelete={async () => {
-                    logger.info("Deleting transition:", outTransition.id)
+                    logger.info("Deleting transition:", { transitionId: outTransition.id })
                     await saveProject()
                   }}
                 />
@@ -292,7 +292,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
           }}
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
-            logger.info("Roll edit started:", leftClipId, rightClipId, mouseX)
+            logger.info("Roll edit started:", { leftClipId, rightClipId, mouseX })
           }}
         />
       </div>
@@ -304,7 +304,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
             collisions={collisions}
             compact
             onResolve={(collision) => {
-              logger.info("Resolve collision:", collision)
+              logger.info("Resolve collision:", { collision })
             }}
           />
         </div>

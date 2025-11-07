@@ -68,7 +68,7 @@ export function useEffectsPreview(options: UseEffectsPreviewOptions = {}): UseEf
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to initialize effects")
-        logger.error("Effects preview initialization error:", err)
+        logger.error("Effects preview initialization error:", { error: err })
       }
     }
 
@@ -151,7 +151,7 @@ export function useEffectsPreview(options: UseEffectsPreviewOptions = {}): UseEf
         // Обновляем статистику кеша
         setCacheStats(integrationRef.current.getCacheStats())
       } catch (err) {
-        logger.warn("Ошибка предзагрузки кадров:", err)
+        logger.warn("Ошибка предзагрузки кадров:", { error: err })
       }
     },
     [isInitialized, enabled],

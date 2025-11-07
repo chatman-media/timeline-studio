@@ -15,7 +15,6 @@ import {
 import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useTimeline } from "../../hooks/use-timeline"
 import { type GroupColorKey, GroupColors } from "../../types/clip-groups"
-
 import type { TimelineClip } from "../../types/timeline"
 
 interface GroupContextMenuProps {
@@ -25,7 +24,7 @@ interface GroupContextMenuProps {
 export function GroupContextMenu({ children }: GroupContextMenuProps) {
   const { project, selectedClipIds } = useTimeline()
   const { createGroup, ungroupClips, getGroupByClip, toggleCollapse, lockGroup, setGroupColor, createNestedSequence } =
-    useClipGroups(project!)
+    useClipGroups()
 
   const selectedClipCount = selectedClipIds?.length || 0
   const firstSelectedClipId = selectedClipIds?.[0]
@@ -35,7 +34,7 @@ export function GroupContextMenu({ children }: GroupContextMenuProps) {
     if (!project || selectedClipCount < 2) return
 
     // Получаем выбранные клипы
-    const selectedClips: TimelineClip[] = []
+    const selectedClips: (typeof project.globalTracks)[0]["clips"] = []
 
     project.globalTracks?.forEach((track) => {
       track.clips?.forEach((clip) => {
@@ -56,7 +55,7 @@ export function GroupContextMenu({ children }: GroupContextMenuProps) {
     })
 
     if (selectedClips.length >= 2) {
-      createGroup(selectedClips)
+      createGroup(selectedClips as unknown as TimelineClip[])
     }
   }
 
@@ -88,7 +87,7 @@ export function GroupContextMenu({ children }: GroupContextMenuProps) {
     if (!project || selectedClipCount < 1) return
 
     // Получаем выбранные клипы
-    const selectedClips: TimelineClip[] = []
+    const selectedClips: (typeof project.globalTracks)[0]["clips"] = []
 
     project.globalTracks?.forEach((track) => {
       track.clips?.forEach((clip) => {
@@ -109,7 +108,7 @@ export function GroupContextMenu({ children }: GroupContextMenuProps) {
     })
 
     if (selectedClips.length >= 1) {
-      createNestedSequence(selectedClips)
+      createNestedSequence(selectedClips as unknown as TimelineClip[])
     }
   }
 

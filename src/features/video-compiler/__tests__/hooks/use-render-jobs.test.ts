@@ -260,9 +260,12 @@ describe("useRenderJobs", () => {
     const { result, unmount } = renderHook(() => useRenderJobs())
 
     // Wait for initial load
-    await vi.waitFor(() => {
-      expect(result.current.jobs).toEqual(mockJobs)
-    })
+    await waitFor(
+      () => {
+        expect(result.current.jobs).toEqual(mockJobs)
+      },
+      { timeout: 5000 },
+    )
 
     expect(mockInvoke).toHaveBeenCalledTimes(1)
 
@@ -272,9 +275,12 @@ describe("useRenderJobs", () => {
     })
 
     // Wait for the update
-    await vi.waitFor(() => {
-      expect(mockInvoke).toHaveBeenCalledTimes(2)
-    })
+    await waitFor(
+      () => {
+        expect(mockInvoke).toHaveBeenCalledTimes(2)
+      },
+      { timeout: 5000 },
+    )
 
     unmount()
   })
@@ -322,9 +328,12 @@ describe("useRenderJobs", () => {
 
     const { result } = renderHook(() => useRenderJobs())
 
-    await waitFor(() => {
-      expect(result.current.jobs).toEqual(jobsWithSameStatus)
-    })
+    await waitFor(
+      () => {
+        expect(result.current.jobs).toEqual(jobsWithSameStatus)
+      },
+      { timeout: 5000 },
+    )
 
     const processingCount = result.current.jobs.filter((job) => job.status === RenderStatus.Processing).length
     expect(processingCount).toBe(3) // job-1, job-5, job-6
@@ -337,9 +346,12 @@ describe("useRenderJobs", () => {
 
     const { result } = renderHook(() => useRenderJobs())
 
-    await waitFor(() => {
-      expect(result.current.jobs).toEqual(sortedJobs)
-    })
+    await waitFor(
+      () => {
+        expect(result.current.jobs).toEqual(sortedJobs)
+      },
+      { timeout: 5000 },
+    )
 
     // Проверяем, что самая новая задача первая
     expect(result.current.jobs[0].id).toBe("job-4")

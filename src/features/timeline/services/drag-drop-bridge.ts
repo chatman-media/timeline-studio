@@ -141,10 +141,10 @@ export function handleInterModuleDrag(
     manager.emit("drop", dragData, { id: dropId })
     manager.emit("dragEnd")
 
-    logger.info("[DragDropBridge] Successfully bridged inter-module drag:", dragData.type)
+    logger.info("[DragDropBridge] Successfully bridged inter-module drag:", { type: dragData.type })
     return true
   } catch (error) {
-    logger.error("[DragDropBridge] Failed to bridge drag:", error)
+    logger.error("[DragDropBridge] Failed to bridge drag:", { error })
     return false
   }
 }

@@ -322,10 +322,12 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен корректно работать без переводов", () => {
-      // @ts-expect-error - Mock doesn't need full TFunction interface
       vi.mocked(useTranslation).mockReturnValue({
-        t: vi.fn(() => ""),
-      })
+        t: Object.assign(
+          vi.fn(() => ""),
+          { $TFunctionBrand: Symbol("TFunction") as any },
+        ),
+      } as any)
 
       expect(() => {
         render(<TimelineWorkspaceTabs {...defaultProps} />)

@@ -19,7 +19,7 @@ interface JLCutToolProps {
 }
 
 export function JLCutTool({ clip, className }: JLCutToolProps) {
-  const { uiState } = useTimeline()
+  // const { uiState } = useTimeline() // uiState currently not available in TimelineContextType
   const {
     createJCut,
     createLCut,

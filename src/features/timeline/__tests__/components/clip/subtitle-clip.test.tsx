@@ -5,13 +5,12 @@ import { SubtitleClip } from "../../../components/clip/subtitle-clip"
 
 // Мокаем хуки timeline
 const mockSelectClip = vi.fn()
-const mockUiState = {
-  timeScale: 10, // 10 пикселей в секунду
-}
+
+// В компоненте используется фиксированное значение pixelsPerSecond = 50
+const PIXELS_PER_SECOND = 50
 
 vi.mock("../../../hooks/use-timeline", () => ({
   useTimeline: () => ({
-    uiState: mockUiState,
     updateClip: vi.fn(),
   }),
 }))
@@ -79,8 +78,6 @@ const createMockSubtitleClip = (overrides: Partial<SubtitleClipType> = {}): Subt
 describe("SubtitleClip", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Сбрасываем timeScale к дефолтному значению
-    mockUiState.timeScale = 10
   })
 
   describe("Базовый рендеринг", () => {
@@ -92,8 +89,8 @@ describe("SubtitleClip", () => {
       // Проверяем что текст отображается
       expect(screen.getByText("Test subtitle text")).toBeInTheDocument()
 
-      // Длительность не отображается для узкого клипа (30px < 80px)
-      expect(screen.queryByText("3.0s")).not.toBeInTheDocument()
+      // Длительность отображается для широкого клипа (3 * 50 = 150px > 80px)
+      expect(screen.getByText("3.0s")).toBeInTheDocument()
     })
 
     it("должен рассчитывать позицию и размер на основе timeScale", () => {
@@ -106,8 +103,8 @@ describe("SubtitleClip", () => {
 
       const clipElement = container.firstChild as HTMLElement
       expect(clipElement).toHaveStyle({
-        left: "20px", // startTime(2) * timeScale(10)
-        width: "40px", // duration(4) * timeScale(10)
+        left: "100px", // startTime(2) * PIXELS_PER_SECOND(50)
+        width: "200px", // duration(4) * PIXELS_PER_SECOND(50)
         height: "52px", // trackHeight(60) - 8
         top: "4px",
       })
@@ -259,9 +256,7 @@ describe("SubtitleClip", () => {
         duration: 2.5,
       })
 
-      // Устанавливаем timeScale так, чтобы width > 80
-      mockUiState.timeScale = 40 // 2.5 * 40 = 100px > 80px
-
+      // С PIXELS_PER_SECOND = 50: 2.5 * 50 = 125px > 80px
       render(<SubtitleClip clip={clip} trackHeight={60} />)
 
       expect(screen.getByText("2.5s")).toBeInTheDocument()
@@ -272,9 +267,7 @@ describe("SubtitleClip", () => {
         duration: 1,
       })
 
-      // Устанавливаем timeScale так, чтобы width <= 80
-      mockUiState.timeScale = 50 // 1 * 50 = 50px <= 80px
-
+      // С PIXELS_PER_SECOND = 50: 1 * 50 = 50px < 80px
       render(<SubtitleClip clip={clip} trackHeight={60} />)
 
       expect(screen.queryByText("1.0s")).not.toBeInTheDocument()
@@ -410,12 +403,11 @@ describe("SubtitleClip", () => {
         duration: 0.1,
       })
 
-      // Устанавливаем большой timeScale чтобы клип был широким
-      mockUiState.timeScale = 1000 // 0.1 * 1000 = 100px > 80px
-
+      // С PIXELS_PER_SECOND = 50: 0.1 * 50 = 5px < 80px
+      // Длительность не должна отображаться для узкого клипа
       render(<SubtitleClip clip={clip} trackHeight={60} />)
 
-      expect(screen.getByText("0.1s")).toBeInTheDocument()
+      expect(screen.queryByText("0.1s")).not.toBeInTheDocument()
     })
 
     it("должен корректно обрабатывать очень длинную длительность", () => {
@@ -456,14 +448,14 @@ describe("SubtitleClip", () => {
 
     it("должен обрабатывать отрицательное startTime", () => {
       const clip = createMockSubtitleClip({
-        startTime: -10, // Исправляем на -10 чтобы соответствовать ожидаемому значению
+        startTime: -10,
       })
 
       const { container } = render(<SubtitleClip clip={clip} trackHeight={60} />)
 
       const clipElement = container.firstChild as HTMLElement
       expect(clipElement).toHaveStyle({
-        left: "-100px", // -10 * 10
+        left: "-500px", // -10 * PIXELS_PER_SECOND(50)
       })
     })
 

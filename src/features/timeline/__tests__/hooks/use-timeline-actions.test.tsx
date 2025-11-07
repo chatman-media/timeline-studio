@@ -5,7 +5,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile, MediaType } from "@/features/media/types/media"
 
 import { useClips } from "../../hooks/use-clips"
 import { useTimeline } from "../../hooks/use-timeline"
@@ -27,13 +27,14 @@ const mockVideoFile: MediaFile = {
   id: "test-video-1",
   name: "test-video.mp4",
   path: "/test/video.mp4",
+  type: "video" as MediaType,
   size: 1024000,
   duration: 30,
   isVideo: true,
   isAudio: false,
   isImage: false,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
   probeData: {
     streams: [
       {
@@ -57,13 +58,14 @@ const mockAudioFile: MediaFile = {
   id: "test-audio-1",
   name: "test-audio.mp3",
   path: "/test/audio.mp3",
+  type: "audio" as MediaType,
   size: 512000,
   duration: 60,
   isVideo: false,
   isAudio: true,
   isImage: false,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
   probeData: {
     streams: [
       {
@@ -85,13 +87,14 @@ const mockImageFile: MediaFile = {
   id: "test-image-1",
   name: "test-image.jpg",
   path: "/test/image.jpg",
+  type: "still_image" as MediaType,
   size: 256000,
   duration: undefined,
   isVideo: false,
   isAudio: false,
   isImage: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
 }
 
 describe("useTimelineActions", () => {
@@ -490,7 +493,7 @@ describe("useTimelineActions", () => {
       act(() => {
         vi.advanceTimersByTime(100)
         // Имитируем что проект теперь существует
-        mockTimeline.project = { id: "new-project" }
+        mockTimeline.project = { id: "new-project", name: "New Project" }
       })
 
       vi.useRealTimers()

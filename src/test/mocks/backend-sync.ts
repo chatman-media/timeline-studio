@@ -122,7 +122,10 @@ function triggerStateChange() {
     },
     chat_sessions: [],
   }
-  stateChangeHandlers.forEach((handler) => handler(state))
+  // Use queueMicrotask to ensure React has time to process state updates
+  queueMicrotask(() => {
+    stateChangeHandlers.forEach((handler) => handler(state))
+  })
 }
 
 // Command handlers

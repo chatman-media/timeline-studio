@@ -32,10 +32,10 @@ export function useTimelineEffects() {
         // Применяем эффект через backend API
         await addEffectToClip(timelineProjectToSchema(project), clipId, effectId)
 
-        // Сохраняем проект
+        // Сохраняем проект (без параметров в новой архитектуре)
         await saveProject()
       } catch (error) {
-        logger.error("Failed to apply effect:", error)
+        logger.error("Failed to apply effect:", { error })
         throw error
       }
     },
@@ -50,10 +50,10 @@ export function useTimelineEffects() {
         // Удаляем эффект через backend API
         await removeEffectFromClip(timelineProjectToSchema(project), clipId, effectId)
 
-        // Сохраняем проект
+        // Сохраняем проект (без параметров в новой архитектуре)
         await saveProject()
       } catch (error) {
-        logger.error("Failed to remove effect:", error)
+        logger.error("Failed to remove effect:", { error })
         throw error
       }
     },
@@ -68,10 +68,10 @@ export function useTimelineEffects() {
         // Применяем фильтр через backend API
         await addFilterToClip(timelineProjectToSchema(project), clipId, filterId)
 
-        // Сохраняем проект
+        // Сохраняем проект (без параметров в новой архитектуре)
         await saveProject()
       } catch (error) {
-        logger.error("Failed to apply filter:", error)
+        logger.error("Failed to apply filter:", { error })
         throw error
       }
     },
@@ -86,10 +86,10 @@ export function useTimelineEffects() {
         // Удаляем фильтр через backend API
         await removeFilterFromClip(timelineProjectToSchema(project), clipId, filterId)
 
-        // Сохраняем проект
+        // Сохраняем проект (без параметров в новой архитектуре)
         await saveProject()
       } catch (error) {
-        logger.error("Failed to remove filter:", error)
+        logger.error("Failed to remove filter:", { error })
         throw error
       }
     },
@@ -105,14 +105,14 @@ export function useTimelineEffects() {
         // Пока что оставляем заглушку, поскольку backend команда еще не создана
         // await applyTransitionToClip(project, clipId, transitionId)
 
-        // Сохраняем проект
+        // Сохраняем проект (без параметров в новой архитектуре)
         await saveProject()
       } catch (error) {
-        logger.error("Failed to apply transition:", error)
+        logger.error("Failed to apply transition:", { error })
         throw error
       }
     },
-    [project, saveProject],
+    [saveProject],
   )
 
   // Методы для получения эффектов/фильтров/переходов

@@ -50,12 +50,12 @@ export function AudioClip({ clip, track, onUpdate, onRemove }: AudioClipProps) {
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation()
-    logger.info("Copy audio clip:", clip.id)
+    logger.info("Copy audio clip:", { clipId: clip.id })
   }
 
   const handleSplit = (e: React.MouseEvent) => {
     e.stopPropagation()
-    logger.info("Split audio clip:", clip.id)
+    logger.info("Split audio clip:", { clipId: clip.id })
   }
 
   const handleRemove = (e: React.MouseEvent) => {

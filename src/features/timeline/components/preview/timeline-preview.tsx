@@ -24,8 +24,8 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
   // Логирование для отладки
   useEffect(() => {
     if (isInitialized) {
-      logger.info("[Timeline Preview] Initialized with GPU tier:", gpuTier)
-      logger.info("[Timeline Preview] Quality settings:", quality)
+      logger.info("[Timeline Preview] Initialized with GPU tier:", { gpuTier })
+      logger.info("[Timeline Preview] Quality settings:", { quality })
     }
   }, [isInitialized, gpuTier, quality])
 

@@ -2,18 +2,33 @@ import { invoke } from "@tauri-apps/api/core"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaMetadata } from "@/domains/shared/types"
 import type { CacheMemoryUsage } from "../../types/cache"
-import {
+
+// Mock logger
+const mockLogger = {
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+  trace: vi.fn(),
+}
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
+
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(),
+}))
+
+// Import after mocking
+const {
   cacheMediaMetadata,
   cacheMultipleMetadata,
   checkCachedFiles,
   getCachedMetadata,
   getCacheMemoryUsage,
   invalidateFileCache,
-} from "../metadata-cache-service"
-
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
-}))
+} = await import("../metadata-cache-service")
 
 const mockMetadata: MediaMetadata = {
   file_path: "/path/to/test-video.mp4",
@@ -40,18 +55,16 @@ const mockCacheMemoryUsage: CacheMemoryUsage = {
 }
 
 describe("metadata-cache-service", () => {
-  let consoleErrorSpy: any
-  let consoleLogSpy: any
-
   beforeEach(() => {
     vi.clearAllMocks()
-    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-    consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockLogger.error.mockClear()
+    mockLogger.info.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.debug.mockClear()
+    mockLogger.trace.mockClear()
   })
 
   afterEach(() => {
-    consoleErrorSpy.mockRestore()
-    consoleLogSpy.mockRestore()
     vi.resetAllMocks()
   })
 
@@ -85,7 +98,7 @@ describe("metadata-cache-service", () => {
       const result = await getCachedMetadata("/path/to/test-video.mp4")
 
       expect(result).toBeNull()
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to get cached metadata:", error)
+      expect(mockLogger.error).toHaveBeenCalledWith("Failed to get cached metadata:", { error })
     })
   })
 
@@ -107,7 +120,7 @@ describe("metadata-cache-service", () => {
 
       await expect(cacheMediaMetadata("/path/to/test-video.mp4", mockMetadata)).rejects.toThrow(error)
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to cache metadata:", error)
+      expect(mockLogger.error).toHaveBeenCalledWith("Failed to cache metadata:", { error })
     })
   })
 
@@ -127,7 +140,7 @@ describe("metadata-cache-service", () => {
 
       await expect(getCacheMemoryUsage()).rejects.toThrow(error)
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to get cache memory usage:", error)
+      expect(mockLogger.error).toHaveBeenCalledWith("Failed to get cache memory usage:", { error })
     })
   })
 
@@ -247,7 +260,7 @@ describe("metadata-cache-service", () => {
       // First file will be treated as not cached due to error
       expect(result.cached).toEqual(["/path/to/video-2.mp4"])
       expect(result.notCached).toEqual(["/path/to/video-1.mp4"])
-      expect(consoleErrorSpy).toHaveBeenCalled()
+      expect(mockLogger.error).toHaveBeenCalled()
     })
   })
 
@@ -257,7 +270,7 @@ describe("metadata-cache-service", () => {
 
       await invalidateFileCache(filePath)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(`Cache invalidation requested for: ${filePath}`)
+      expect(mockLogger.info).toHaveBeenCalledWith(`Cache invalidation requested for: ${filePath}`)
     })
 
     it("should handle multiple invalidation requests", async () => {
@@ -265,9 +278,9 @@ describe("metadata-cache-service", () => {
 
       await Promise.all(filePaths.map(invalidateFileCache))
 
-      expect(consoleLogSpy).toHaveBeenCalledTimes(2)
+      expect(mockLogger.info).toHaveBeenCalledTimes(2)
       filePaths.forEach((path) => {
-        expect(consoleLogSpy).toHaveBeenCalledWith(`Cache invalidation requested for: ${path}`)
+        expect(mockLogger.info).toHaveBeenCalledWith(`Cache invalidation requested for: ${path}`)
       })
     })
   })

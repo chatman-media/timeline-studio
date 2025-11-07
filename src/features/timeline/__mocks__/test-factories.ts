@@ -2,7 +2,7 @@
  * Фабрики для создания тестовых данных
  */
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile, MediaType } from "@/features/media/types/media"
 
 import type {
   ProjectResources,
@@ -71,18 +71,18 @@ export function createMockClip(overrides?: Partial<TimelineClip>): TimelineClip 
  * Создает mock-объект медиафайла
  */
 export function createMockMediaFile(overrides?: Partial<MediaFile>): MediaFile {
-  const now = new Date().toISOString()
   return {
     id: "media-1",
     path: "/path/to/video.mp4",
     name: "test-video.mp4",
+    type: "video_with_audio" as MediaType,
     size: 1000000,
     duration: 60,
     isVideo: true,
     isAudio: true,
     isImage: false,
-    createdAt: now,
-    updatedAt: now,
+    createdAt: new Date(),
+    updatedAt: new Date(),
     ...overrides,
   }
 }

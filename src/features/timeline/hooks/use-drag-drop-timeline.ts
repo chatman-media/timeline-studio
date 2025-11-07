@@ -92,10 +92,9 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
           draggedCount,
         })
 
-        logger.info(
-          "[DragDrop] Drag started:",
-          dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
-        )
+        logger.info("[DragDrop] Drag started:", {
+          description: dragData.isMultiSelect ? `${draggedCount} files (multi-select)` : dragData.mediaFile.name,
+        })
 
         // Логируем начало операции в backend
         // TODO: Реализовать аналитику drag&drop

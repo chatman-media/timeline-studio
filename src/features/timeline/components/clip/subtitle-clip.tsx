@@ -23,12 +23,13 @@ export function SubtitleClip({
   onMouseDown,
   onDoubleClick,
 }: SubtitleClipProps) {
-  const { uiState, updateClip } = useTimeline()
+  const { updateClip } = useTimeline()
   const { selectClip } = useTimelineSelection()
   const { getComputedStyle, getStyleById } = useSubtitleStyles()
 
-  // Получаем pixelsPerSecond из uiState.timeScale
-  const pixelsPerSecond = (uiState as any)?.timeScale || 50
+  // Используем фиксированное значение pixelsPerSecond
+  // TODO: Получать из UI state provider когда он будет реализован
+  const pixelsPerSecond = 50
 
   // Расчет позиции и размера
   const left = clip.startTime * pixelsPerSecond
@@ -96,7 +97,6 @@ export function SubtitleClip({
       void updateClip(clip.id, {
         startTime: newStartTime,
         duration: newDuration,
-        mediaEndTime: clip.mediaStartTime + newDuration,
       })
     },
     [clip.id, clip.mediaStartTime, pixelsPerSecond, updateClip],

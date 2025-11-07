@@ -17,6 +17,23 @@ vi.mock("../shortcuts-registry", () => ({
   },
 }))
 
+// Mock tauri-logger to use console methods directly
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn((message: string) => console.debug(`[TauriGlobalShortcuts] ${message}`)),
+    debug: vi.fn((message: string) => console.debug(`[TauriGlobalShortcuts] ${message}`)),
+    info: vi.fn((message: string) => console.info(`[TauriGlobalShortcuts] ${message}`)),
+    warn: vi.fn((message: string) => console.warn(`[TauriGlobalShortcuts] ${message}`)),
+    error: vi.fn((message: string, context?: unknown) => {
+      if (context && typeof context === "object" && "error" in context) {
+        console.error(`[TauriGlobalShortcuts] ${message}`, context.error)
+      } else {
+        console.error(`[TauriGlobalShortcuts] ${message}`)
+      }
+    }),
+  })),
+}))
+
 describe("TauriGlobalShortcuts", () => {
   let instance: TauriGlobalShortcuts
 
@@ -123,7 +140,7 @@ describe("TauriGlobalShortcuts", () => {
 
       expect(register).not.toHaveBeenCalled()
       expect(console.warn).toHaveBeenCalledWith(
-        "Global shortcut CommandOrControl+G is already registered by another application",
+        "[TauriGlobalShortcuts] Global shortcut CommandOrControl+G is already registered by another application",
       )
     })
 
@@ -138,7 +155,7 @@ describe("TauriGlobalShortcuts", () => {
       await instance.enableGlobal()
 
       expect(console.error).toHaveBeenCalledWith(
-        `Failed to register global shortcut ${mockGlobalShortcut.name}:`,
+        expect.stringContaining(`Failed to register global shortcut ${mockGlobalShortcut.name}:`),
         expect.any(Error),
       )
       // Но общий статус все равно должен быть включен
@@ -190,7 +207,7 @@ describe("TauriGlobalShortcuts", () => {
       await instance.disableGlobal()
 
       expect(console.error).toHaveBeenCalledWith(
-        `Failed to unregister global shortcut ${mockGlobalShortcut.name}:`,
+        expect.stringContaining(`Failed to unregister global shortcut ${mockGlobalShortcut.name}:`),
         expect.any(Error),
       )
       // Но общий статус все равно должен быть выключен
@@ -253,7 +270,7 @@ describe("TauriGlobalShortcuts", () => {
       await instance.enableGlobal()
 
       expect(console.error).toHaveBeenCalledWith(
-        `Failed to register global shortcut ${mockGlobalShortcut.name}:`,
+        expect.stringContaining(`Failed to register global shortcut ${mockGlobalShortcut.name}:`),
         expect.any(Error),
       )
     })

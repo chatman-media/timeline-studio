@@ -8,6 +8,7 @@ import { renderWithProviders } from "@/test/test-utils"
 import { mockUseDragDropTimeline } from "../../../__mocks__/hooks"
 import { TrackContent } from "../../../components/track/track-content"
 import type { TimelineClip, TimelineTrack } from "../../../types"
+import type { DropPosition } from "../../../types/drag-drop"
 
 // Import the global mock
 
@@ -300,6 +301,8 @@ describe("TrackContent", () => {
             trackId: "track-1",
             startTime: 10,
           },
+          snapPoint: null,
+          snapActive: false,
         },
         isValidDropTarget: vi.fn(() => true),
         handleDragStart: vi.fn(),
@@ -325,6 +328,8 @@ describe("TrackContent", () => {
             trackId: "track-2", // Другой трек
             startTime: 10,
           },
+          snapPoint: null,
+          snapActive: false,
         },
         isValidDropTarget: vi.fn(() => true),
         handleDragStart: vi.fn(),

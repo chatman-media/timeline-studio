@@ -4,7 +4,7 @@
 
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import type { MediaType } from "@/features/media/types/media"
 import { AudioClip } from "@/features/timeline/components/clip/audio-clip"
 
 import type { TimelineClip, TimelineTrack, TrackType } from "../../../types"
@@ -124,6 +124,7 @@ const mockAudioClip: TimelineClip = {
     id: "media-1",
     path: "/path/to/audio.mp3",
     name: "audio.mp3",
+    type: "audio" as MediaType,
     size: 5000000,
     duration: 30,
     isAudio: true,
@@ -383,7 +384,7 @@ describe("AudioClip", () => {
       const copyButton = screen.getByTitle("Копировать")
       fireEvent.click(copyButton)
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Copy audio clip:", "clip-1")
+      expect(mockLogger.info).toHaveBeenCalledWith("Copy audio clip:", { clipId: "clip-1" })
     })
 
     it("should handle split button click", () => {
@@ -397,7 +398,7 @@ describe("AudioClip", () => {
       const splitButton = screen.getByTitle("Разделить")
       fireEvent.click(splitButton)
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Split audio clip:", "clip-1")
+      expect(mockLogger.info).toHaveBeenCalledWith("Split audio clip:", { clipId: "clip-1" })
     })
 
     it("should handle remove button click", () => {

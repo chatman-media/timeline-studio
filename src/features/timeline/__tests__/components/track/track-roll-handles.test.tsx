@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import type { MediaType } from "@/features/media/types/media"
+
 import { RollEditHandle } from "../../../components/edit-tools/roll-edit-handle"
 import { TrackRollHandles } from "../../../components/track/track-roll-handles"
 import { useEditModeContext } from "../../../hooks/use-edit-mode"
@@ -31,10 +33,11 @@ const createClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
     id: "media-1",
     name: "test-video.mp4",
     path: "/path/to/test-video.mp4",
+    type: "video" as MediaType,
     duration: 100,
     size: 1000000,
     isVideo: true,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   },
   trackId: "track-1",
   startTime: 10,

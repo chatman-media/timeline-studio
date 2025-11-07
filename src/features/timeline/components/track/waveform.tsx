@@ -68,7 +68,7 @@ function Waveform({ audioUrl, className }: WaveformProps) {
           logger.info("Fetch aborted")
           return
         }
-        logger.error("Error fetching audio:", error)
+        logger.error("Error fetching audio:", { error })
       }
     }
 
@@ -118,14 +118,14 @@ function Waveform({ audioUrl, className }: WaveformProps) {
       })
 
       wavesurferRef.current.on("error", (err) => {
-        logger.error("WaveSurfer error:", err)
+        logger.error("WaveSurfer error:", { error: err })
       })
 
       wavesurferRef.current.on("loading", (percent) => {
-        logger.info("Loading:", percent)
+        logger.info("Loading:", { percent })
       })
     } catch (error: unknown) {
-      logger.error("Error creating WaveSurfer:", error)
+      logger.error("Error creating WaveSurfer:", { error })
     }
 
     return () => {

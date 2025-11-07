@@ -26,7 +26,7 @@ export interface UseJLCutsReturn {
 }
 
 export function useJLCuts(): UseJLCutsReturn {
-  const { project, send } = useTimeline()
+  const { project, updateClip } = useTimeline()
 
   // Проверка типа клипа
   const isVideoClip = useCallback(
@@ -103,80 +103,81 @@ export function useJLCuts(): UseJLCutsReturn {
 
   // Создание J-Cut
   const createJCut = useCallback(
-    (clipId: string, offset: number) => {
+    async (clipId: string, offset: number) => {
       const pair = getLinkedPair(clipId)
       if (!pair) return
 
-      // Отправляем событие в машину состояний
-      send({
-        type: "CREATE_JL_CUT",
-        clipId: pair.audioClipId,
-        cutType: "j-cut",
-        offset: Math.abs(offset),
+      // Обновляем audioOffset для создания J-cut (аудио начинается раньше видео)
+      await updateClip(pair.audioClipId, {
+        audioOffset: -Math.abs(offset), // Отрицательное значение для J-cut
       })
     },
-    [getLinkedPair, send],
+    [getLinkedPair, updateClip],
   )
 
   // Создание L-Cut
   const createLCut = useCallback(
-    (clipId: string, offset: number) => {
+    async (clipId: string, offset: number) => {
       const pair = getLinkedPair(clipId)
       if (!pair) return
 
-      // Отправляем событие в машину состояний
-      send({
-        type: "CREATE_JL_CUT",
-        clipId: pair.audioClipId,
-        cutType: "l-cut",
-        offset: Math.abs(offset),
+      // Обновляем audioOffset для создания L-cut (аудио продолжается после видео)
+      await updateClip(pair.audioClipId, {
+        audioOffset: Math.abs(offset), // Положительное значение для L-cut
       })
     },
-    [getLinkedPair, send],
+    [getLinkedPair, updateClip],
   )
 
   // Сброс cut
   const resetCut = useCallback(
-    (clipId: string) => {
+    async (clipId: string) => {
       const pair = getLinkedPair(clipId)
       if (!pair) return
 
-      // Отправляем событие в машину состояний
-      send({
-        type: "RESET_JL_CUT",
-        clipId: pair.audioClipId,
+      // Сбрасываем audioOffset обратно в 0
+      await updateClip(pair.audioClipId, {
+        audioOffset: 0,
       })
     },
-    [getLinkedPair, send],
+    [getLinkedPair, updateClip],
   )
 
   // Связывание клипов
   const linkClips = useCallback(
-    (videoClipId: string, audioClipId: string) => {
-      // Отправляем событие в машину состояний
-      send({
-        type: "LINK_CLIPS",
-        videoClipId,
-        audioClipId,
+    async (videoClipId: string, audioClipId: string) => {
+      // Обновляем оба клипа для создания связи
+      await updateClip(videoClipId, {
+        linkedClipId: audioClipId,
+        isLinked: true,
+      })
+      await updateClip(audioClipId, {
+        linkedClipId: videoClipId,
+        isLinked: true,
       })
     },
-    [send],
+    [updateClip],
   )
 
   // Разрыв связи
   const unlinkClips = useCallback(
-    (clipId: string) => {
+    async (clipId: string) => {
       const linkedClip = getLinkedClip(clipId)
       if (!linkedClip) return
 
-      // Отправляем событие в машину состояний
-      send({
-        type: "UNLINK_CLIPS",
-        clipId,
-        linkedClipId: linkedClip.id,
+      // Обновляем оба клипа для разрыва связи
+      await updateClip(clipId, {
+        linkedClipId: undefined,
+        isLinked: false,
+        audioOffset: 0, // Сбрасываем offset при разрыве связи
+      })
+      await updateClip(linkedClip.id, {
+        linkedClipId: undefined,
+        isLinked: false,
+        audioOffset: 0,
       })
     },
-    [getLinkedClip, send],
+    [getLinkedClip, updateClip],
   )
 
   // Предпросмотр cut

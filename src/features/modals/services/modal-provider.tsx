@@ -1,7 +1,7 @@
 // Используем типы и машину из домена
 
 import { useMachine } from "@xstate/react"
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
@@ -87,7 +87,9 @@ export function ModalProvider({ children }: ModalProviderProps) {
           type: "CloseModal",
         })
         .catch((err) => {
-          void logger.error("Failed to sync modal close", { error: String(err) })
+          void logger.error("Failed to sync modal close", {
+            error: String(err),
+          })
         })
     }
   }, [state, backendSync])
@@ -108,7 +110,9 @@ export function ModalProvider({ children }: ModalProviderProps) {
           },
         })
         .catch((error) => {
-          void logger.error("Failed to notify backend about modal opening", { error: String(error) })
+          void logger.error("Failed to notify backend about modal opening", {
+            error: String(error),
+          })
         })
     }
   }

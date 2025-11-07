@@ -28,6 +28,18 @@ vi.mock("../../services/secure-token-storage", () => ({
   },
 }))
 
+// Mock logger
+const mockLogger = {
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+}
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
+
 const mockEnv = {
   NEXT_PUBLIC_YOUTUBE_CLIENT_ID: "youtube_client_id",
   NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET: "youtube_client_secret",
@@ -63,6 +75,10 @@ Object.assign(global.window, {
 describe("OAuthService - Comprehensive", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockLogger.error.mockClear()
+    mockLogger.info.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.debug.mockClear()
     mockWindow = {
       closed: false,
       close: mockWindowClose,
@@ -531,30 +547,22 @@ describe("OAuthService - Comprehensive", () => {
     })
 
     it("should log errors on token refresh failure", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       vi.mocked(fetch).mockRejectedValue(new Error("Network timeout"))
 
       const result = await OAuthService.refreshToken("youtube", "token")
 
       expect(result).toBeNull()
-      expect(consoleSpy).toHaveBeenCalledWith("Token refresh failed for youtube:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith("Token refresh failed for youtube: Error: Network timeout")
     })
 
     it("should log errors on OAuth login failure", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       mockWindowOpen.mockImplementation(() => {
         throw new Error("Popup blocked")
       })
 
       await expect(OAuthService.loginToNetwork("youtube")).rejects.toThrow("Popup blocked")
 
-      expect(consoleSpy).toHaveBeenCalledWith("OAuth login failed for youtube:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith("OAuth login failed for youtube: Error: Popup blocked")
     })
   })
 })

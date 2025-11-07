@@ -66,7 +66,7 @@ const mockProject = {
             {
               id: "clip-1",
               name: "Test Video Clip",
-              type: "video",
+              type: "video" as const,
               mediaId: "media-1",
               trackId: "track-1",
               startTime: 0,
@@ -86,16 +86,18 @@ const mockProject = {
               createdAt: new Date(),
               updatedAt: new Date(),
               mediaFile: {
+                id: "media-1",
                 path: "/test/video.mp4",
                 name: "video.mp4",
+                type: "video" as const,
                 duration: 10,
                 format: "video/mp4",
               },
-            } as TimelineClip,
+            },
             {
               id: "clip-2",
               name: "Test Audio Clip",
-              type: "audio",
+              type: "audio" as const,
               mediaId: "media-2",
               trackId: "track-1",
               startTime: 10,
@@ -115,12 +117,14 @@ const mockProject = {
               createdAt: new Date(),
               updatedAt: new Date(),
               mediaFile: {
+                id: "media-2",
                 path: "/test/audio.mp3",
                 name: "audio.mp3",
+                type: "audio" as const,
                 duration: 5,
                 format: "audio/mp3",
               },
-            } as TimelineClip,
+            },
           ],
         },
       ],
@@ -128,6 +132,9 @@ const mockProject = {
   ],
   globalTracks: [],
 }
+
+// Helper для получения типизированного клипа
+const getTestClip = () => mockProject.sections[0].tracks[0].clips[0] as unknown as TimelineClip
 
 vi.mock("../../hooks/use-timeline", () => ({
   useTimeline: vi.fn(() => ({
@@ -207,7 +214,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -235,7 +242,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -272,7 +279,7 @@ describe("useTimelinePersons", () => {
       confidence: 0.85,
     })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -289,7 +296,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -308,7 +315,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -347,7 +354,7 @@ describe("useTimelinePersons", () => {
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     // Сначала анализируем
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -395,7 +402,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -444,10 +451,29 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const clipWithoutMedia: TimelineClip = {
+    const clipWithoutMedia = {
       id: "clip-no-media",
       name: "Empty Clip",
-    } as TimelineClip
+      type: "video" as const,
+      mediaId: "",
+      trackId: "track-1",
+      startTime: 0,
+      duration: 0,
+      mediaStartTime: 0,
+      mediaEndTime: 0,
+      offset: 0,
+      volume: 1,
+      speed: 1,
+      isReversed: false,
+      opacity: 1,
+      effects: [],
+      filters: [],
+      transitions: [],
+      isSelected: false,
+      isLocked: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
 
     await act(async () => {
       await result.current.analyzeClipForPersons(clipWithoutMedia)
@@ -467,7 +493,7 @@ describe("useTimelinePersons", () => {
       result.current.setEnablePersonDetection(false)
     })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)
@@ -483,7 +509,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     // Задерживаем выполнение detectFaces
     let resolveDetectFaces: () => void
@@ -551,7 +577,7 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     // Настраиваем моки для первого анализа
     mockDetectFaces.mockResolvedValueOnce([
@@ -624,7 +650,7 @@ describe("useTimelinePersons", () => {
 
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
 
-    const testClip = mockProject.sections[0].tracks[0].clips[0]
+    const testClip = getTestClip()
 
     await act(async () => {
       await result.current.analyzeClipForPersons(testClip)

@@ -271,6 +271,15 @@ describe("EffectsProvider API", () => {
     await waitFor(() => {
       expect(api).toBeDefined()
     })
+
+    // Wait for resources to be actually loaded
+    await waitFor(
+      () => {
+        const loadingState = api.getLoadingState()
+        expect(loadingState.loadedSources.has("built-in")).toBe(true)
+      },
+      { timeout: 5000 },
+    )
   })
 
   it("должен предоставлять методы для получения ресурсов", () => {

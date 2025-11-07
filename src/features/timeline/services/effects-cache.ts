@@ -51,7 +51,7 @@ export class EffectsCache {
       this.cache.set(key, entry)
       this.currentSizeBytes += size
     } catch (error) {
-      logger.warn("Failed to cache frame:", error)
+      logger.warn("Failed to cache frame:", { error })
     }
   }
 

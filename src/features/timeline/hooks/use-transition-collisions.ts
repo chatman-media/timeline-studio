@@ -140,7 +140,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
     const fixedProject = autoFixCollisions(project, collisions)
 
     // TODO: Обновить проект через систему управления состоянием
-    logger.info("Auto-fixed project:", fixedProject)
+    logger.info("Auto-fixed project:", { fixedProject })
   }, [project, collisions])
 
   return {

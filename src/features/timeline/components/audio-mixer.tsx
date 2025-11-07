@@ -118,7 +118,7 @@ export function AudioMixer({ className }: AudioMixerProps) {
             defaultValue={[1]}
             onValueChange={(value) => {
               // TODO: Implement master volume
-              logger.info("Master volume:", value[0])
+              logger.info("Master volume:", { volume: value[0] })
             }}
           />
         </div>

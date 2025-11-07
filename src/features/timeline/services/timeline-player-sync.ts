@@ -96,7 +96,7 @@ export class TimelinePlayerSync {
     try {
       this.currentSelectedClip = clip
 
-      logger.info("[TimelinePlayerSync] Syncing clip to player:", clip.name)
+      logger.info("[TimelinePlayerSync] Syncing clip to player:", { clipName: clip.name })
 
       // Устанавливаем источник как timeline через backend
       await this.playerContext.playerSetSource("timeline")
@@ -112,7 +112,7 @@ export class TimelinePlayerSync {
       // Применяем эффекты, фильтры и шаблоны клипа
       await this.applyClipResources(clip)
     } catch (error) {
-      logger.error("[TimelinePlayerSync] Failed to sync clip:", error)
+      logger.error("[TimelinePlayerSync] Failed to sync clip:", { error })
     }
   }
 
@@ -152,7 +152,7 @@ export class TimelinePlayerSync {
         await this.playerContext.playerApplyTemplate(clip.templateId, mediaIds)
       }
     } catch (error) {
-      logger.error("[TimelinePlayerSync] Failed to apply clip resources:", error)
+      logger.error("[TimelinePlayerSync] Failed to apply clip resources:", { error })
     }
   }
 
@@ -181,7 +181,7 @@ export class TimelinePlayerSync {
         // Обновляем скорость воспроизведения если включен speed ramping
         await this.updateSpeedRamping(clipRelativeTime)
       } catch (error) {
-        logger.error("[TimelinePlayerSync] Failed to sync playback time:", error)
+        logger.error("[TimelinePlayerSync] Failed to sync playback time:", { error })
       }
     }
   }
@@ -225,7 +225,7 @@ export class TimelinePlayerSync {
     try {
       await this.playerContext.setPlaybackRate(finalRate)
     } catch (error) {
-      logger.error("[TimelinePlayerSync] Failed to update playback rate:", error)
+      logger.error("[TimelinePlayerSync] Failed to update playback rate:", { error })
     }
   }
 
@@ -252,7 +252,7 @@ export class TimelinePlayerSync {
         await this.playerContext.playerClearFilters()
         await this.playerContext.playerClearTemplate()
       } catch (error) {
-        logger.error("[TimelinePlayerSync] Failed to clear selection:", error)
+        logger.error("[TimelinePlayerSync] Failed to clear selection:", { error })
       }
     }
 

@@ -23,6 +23,17 @@ vi.mock("@/features/media/services/indexeddb-cache-service", () => ({
   },
 }))
 
+// Мокаем Tauri Logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
+}))
+
 describe("frameExtractionService", () => {
   let mockInvoke: any
   let mockIndexedDBCacheService: any
@@ -376,25 +387,21 @@ describe("frameExtractionService", () => {
   describe("cacheFramesInIndexedDB", () => {
     it("should cache frames in IndexedDB", async () => {
       mockIndexedDBCacheService.cacheTimelineFrames.mockResolvedValueOnce(undefined)
-      const consoleSpy = vi.spyOn(console, "log")
 
       await frameExtractionService.cacheFramesInIndexedDB("/video.mp4", mockTimelineFrames)
 
       expect(mockIndexedDBCacheService.cacheTimelineFrames).toHaveBeenCalledWith("/video.mp4", mockTimelineFrames)
-      expect(consoleSpy).toHaveBeenCalledWith(`Cached ${mockTimelineFrames.length} timeline frames for /video.mp4`)
     })
   })
 
   describe("getCachedFrames", () => {
     it("should return cached frames from IndexedDB", async () => {
       mockIndexedDBCacheService.getCachedTimelineFrames.mockResolvedValueOnce(mockTimelineFrames)
-      const consoleSpy = vi.spyOn(console, "log")
 
       const result = await frameExtractionService.getCachedFrames("/video.mp4")
 
       expect(result).toEqual(mockTimelineFrames)
       expect(mockIndexedDBCacheService.getCachedTimelineFrames).toHaveBeenCalledWith("/video.mp4")
-      expect(consoleSpy).toHaveBeenCalledWith(`Retrieved ${mockTimelineFrames.length} cached frames for /video.mp4`)
     })
 
     it("should return null when no cached frames", async () => {
@@ -408,12 +415,10 @@ describe("frameExtractionService", () => {
     it("should handle cache retrieval error", async () => {
       const errorMessage = "IndexedDB error"
       mockIndexedDBCacheService.getCachedTimelineFrames.mockRejectedValueOnce(new Error(errorMessage))
-      const consoleSpy = vi.spyOn(console, "error")
 
       const result = await frameExtractionService.getCachedFrames("/video.mp4")
 
       expect(result).toBeNull()
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to retrieve cached frames:", expect.any(Error))
     })
   })
 })

@@ -1,5 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+// Mock logger before importing services
+const mockLogger = {
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  debug: vi.fn(),
+}
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
+
 // Mock environment utilities before importing services
 vi.mock("@/lib/environment", () => ({
   isDesktop: vi.fn().mockReturnValue(false),
@@ -80,6 +92,12 @@ describe("SecureTokenStorage - Comprehensive", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(isDesktop).mockReturnValue(false)
+
+    // Reset logger mocks
+    mockLogger.info.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.error.mockClear()
+    mockLogger.debug.mockClear()
 
     // Reset crypto mocks
     mockCrypto.subtle.importKey.mockResolvedValue({} as CryptoKey)
@@ -278,16 +296,13 @@ describe("SecureTokenStorage - Comprehensive", () => {
 
     it("should handle Tauri delete errors gracefully", async () => {
       vi.mocked(isDesktop).mockReturnValue(true)
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
       mockStore.delete.mockRejectedValue(new Error("Tauri delete failed"))
 
       await SecureTokenStorage.removeToken("youtube")
 
       expect(mockStore.delete).toHaveBeenCalledWith("youtube_oauth_token")
       expect(mockStore.delete).toHaveBeenCalledWith("youtube_user_info")
-      expect(consoleSpy).toHaveBeenCalledWith("Tauri store not available:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining("Tauri store not available"))
     })
 
     it("should handle different networks correctly", async () => {
@@ -435,8 +450,6 @@ describe("SecureTokenStorage - Comprehensive", () => {
 
   describe("Error Handling", () => {
     it("should log errors when storage operations fail", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       // Make both encryption and localStorage fail
       mockCrypto.subtle.encrypt.mockRejectedValue(new Error("Encryption failed"))
       mockLocalStorage.setItem.mockImplementation(() => {
@@ -449,14 +462,10 @@ describe("SecureTokenStorage - Comprehensive", () => {
         // Expected to throw since all storage methods fail
       }
 
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to store token for youtube:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining("Failed to store token for youtube"))
     })
 
     it("should log errors when token retrieval fails", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       // Make localStorage.getItem throw during the fallback
       mockLocalStorage.getItem.mockImplementation(() => {
         throw new Error("Storage access denied")
@@ -468,14 +477,10 @@ describe("SecureTokenStorage - Comprehensive", () => {
       const result = await SecureTokenStorage.getStoredToken("youtube")
 
       expect(result).toBeNull()
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to decrypt token:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining("Failed to decrypt token"))
     })
 
     it("should log errors when token removal fails", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       // Simulate being on web (not desktop) where localStorage is used directly
       vi.mocked(isDesktop).mockReturnValue(false)
       mockLocalStorage.removeItem.mockImplementation(() => {
@@ -488,9 +493,7 @@ describe("SecureTokenStorage - Comprehensive", () => {
         // Expected to throw since localStorage.removeItem fails
       }
 
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to remove token for youtube:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining("Failed to remove token for youtube"))
     })
   })
 

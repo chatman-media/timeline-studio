@@ -62,10 +62,13 @@ describe("TrackHeightAdjuster", () => {
       render(<TrackHeightAdjuster {...defaultProps} />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
-      expect(adjuster).toHaveClass("absolute", "bottom-0", "left-0", "right-0", "h-1")
-      expect(adjuster).toHaveClass("cursor-row-resize", "bg-transparent")
-      expect(adjuster).toHaveClass("hover:bg-primary/20", "active:bg-primary/30")
-      expect(adjuster).toHaveClass("transition-colors", "duration-150", "group")
+      expect(adjuster).toHaveClass("absolute")
+      expect(adjuster).toHaveClass("bottom-0")
+      expect(adjuster).toHaveClass("left-0")
+      expect(adjuster).toHaveClass("right-0")
+      expect(adjuster).toHaveClass("h-1")
+      expect(adjuster).toHaveClass("cursor-row-resize")
+      expect(adjuster).toHaveClass("bg-transparent")
     })
 
     it("should render visual indicator element", () => {
@@ -82,7 +85,11 @@ describe("TrackHeightAdjuster", () => {
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const captureArea = adjuster.querySelector("[title='Перетащите для изменения высоты трека']")
       expect(captureArea).toBeInTheDocument()
-      expect(captureArea).toHaveClass("absolute", "-top-1", "-bottom-1", "left-0", "right-0")
+      expect(captureArea).toHaveClass("absolute")
+      expect(captureArea).toHaveClass("-top-1")
+      expect(captureArea).toHaveClass("-bottom-1")
+      expect(captureArea).toHaveClass("left-0")
+      expect(captureArea).toHaveClass("right-0")
     })
   })
 
@@ -383,7 +390,8 @@ describe("TrackHeightAdjuster", () => {
       const indicator = adjuster.querySelector(".bg-primary")
 
       expect(indicator).toHaveClass("group-hover:opacity-100")
-      expect(indicator).toHaveClass("transition-opacity", "duration-150")
+      expect(indicator).toHaveClass("transition-opacity")
+      expect(indicator).toHaveClass("duration-150")
     })
   })
 

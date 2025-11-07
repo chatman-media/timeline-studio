@@ -219,7 +219,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           isAnalyzing: false,
         }))
       } catch (error) {
-        logger.error("Clip analysis failed:", error)
+        logger.error("Clip analysis failed:", { error })
         setAnalysisState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -262,7 +262,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         }
       }
     } catch (error) {
-      logger.error("Timeline analysis failed:", error)
+      logger.error("Timeline analysis failed:", { error })
       setAnalysisState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : "Ошибка анализа Timeline",
@@ -334,7 +334,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           case "effect":
           case "color":
             // TODO: Реализовать применение эффектов и переходов
-            logger.info(`Applying ${suggestion.type} suggestion:`, suggestion)
+            logger.info(`Applying ${suggestion.type} suggestion:`, { suggestion })
             break
 
           default:
@@ -345,7 +345,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         // Удаляем применённое предложение
         setSuggestions((prev) => prev.filter((s) => s.id !== suggestion.id))
       } catch (error) {
-        logger.error("Failed to apply suggestion:", error)
+        logger.error("Failed to apply suggestion:", { error })
       }
     },
     [send],
@@ -416,7 +416,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
 
         return Array.isArray(analysis) ? analysis.flatMap((s: any) => s.keyMoments || []) : []
       } catch (error) {
-        logger.error("Failed to find key moments:", error)
+        logger.error("Failed to find key moments:", { error })
         return []
       }
     },

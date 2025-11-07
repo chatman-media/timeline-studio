@@ -164,7 +164,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
           }
         }
       } catch (error) {
-        logger.warn("Could not parse drag data:", error)
+        logger.warn("Could not parse drag data:", { error })
       }
     },
     [handleDrop],

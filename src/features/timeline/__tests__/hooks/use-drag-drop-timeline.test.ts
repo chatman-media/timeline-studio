@@ -203,7 +203,7 @@ describe("useDragDropTimeline", () => {
       const event: DragStartEvent = {
         active: {
           id: "media-item-1",
-          data: { current: null },
+          data: { current: undefined },
           rect: { current: { initial: null, translated: null } },
         },
         activatorEvent: new MouseEvent("mousedown"),

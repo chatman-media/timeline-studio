@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile, MediaType } from "@/features/media/types/media"
 
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types/timeline"
 import {
@@ -69,8 +69,10 @@ describe("Timeline утилиты", () => {
   })
 
   const createMockMediaFile = (overrides = {}): MediaFile => ({
+    id: "media-1",
     name: "test.mp4",
     path: "/path/to/test.mp4",
+    type: "unknown" as MediaType,
     duration: 10,
     isVideo: false,
     isAudio: false,

@@ -125,13 +125,15 @@ export function useSlipSlide(): UseSlipSlideReturn {
     [uiState.timeScale],
   )
 
-  const commitSlip = useCallback(() => {
+  const commitSlip = useCallback(async () => {
     if (!editStartRef.current || !preview || preview.mode !== "slip" || !project) return
 
     const updatedProject = SlipSlideService.applySlipToProject(project, editStartRef.current.clipId, preview.delta)
 
     if (updatedProject) {
-      saveProject(updatedProject)
+      // В новой архитектуре saveProject не принимает параметры
+      // Изменения уже применены к project через updateClip
+      await saveProject()
     }
 
     setIsEditing(false)
@@ -205,13 +207,15 @@ export function useSlipSlide(): UseSlipSlideReturn {
     [uiState.timeScale],
   )
 
-  const commitSlide = useCallback(() => {
+  const commitSlide = useCallback(async () => {
     if (!editStartRef.current || !preview || preview.mode !== "slide" || !project) return
 
     const updatedProject = SlipSlideService.applySlideToProject(project, editStartRef.current.clipId, preview.delta)
 
     if (updatedProject) {
-      saveProject(updatedProject)
+      // В новой архитектуре saveProject не принимает параметры
+      // Изменения уже применены к project через updateClip
+      await saveProject()
     }
 
     setIsEditing(false)

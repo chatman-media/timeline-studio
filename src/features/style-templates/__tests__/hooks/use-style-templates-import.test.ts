@@ -3,7 +3,7 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
-import { logError } from "@/lib/tauri-logger"
+import { mockLoggerError, mockLoggerInfo } from "@/lib/tauri-logger"
 import { MediaProviders } from "@/test/test-utils"
 
 import { useStyleTemplatesImport } from "../../hooks/use-style-templates-import"
@@ -17,6 +17,21 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 vi.mock("@tauri-apps/plugin-fs", () => ({
   readTextFile: vi.fn(),
 }))
+
+// Мокаем tauri-logger для возврата мокированного logger
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLoggerError = vi.fn()
+  const mockLoggerInfo = vi.fn()
+
+  return {
+    createLogger: vi.fn(() => ({
+      error: mockLoggerError,
+      info: mockLoggerInfo,
+    })),
+    mockLoggerError,
+    mockLoggerInfo,
+  }
+})
 
 // Создаем мок функции для addStyleTemplate
 const mockAddStyleTemplate = vi.fn()
@@ -39,7 +54,6 @@ vi.mock("@/features/resources", async () => {
 // Получаем мок функции
 const mockOpen = vi.mocked(open)
 const mockReadTextFile = vi.mocked(readTextFile)
-const mockLogError = vi.mocked(logError)
 
 describe("useStyleTemplatesImport", () => {
   beforeEach(() => {
@@ -158,7 +172,7 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplatesFile()
       })
 
-      expect(mockLogError).toHaveBeenCalledWith("useStyleTemplatesImport", "Import failed: Dialog error")
+      expect(mockLoggerError).toHaveBeenCalledWith("Import failed", { error: "Dialog error" })
       expect(result.current.isImporting).toBe(false)
     })
 
@@ -283,10 +297,7 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(mockLogError).toHaveBeenCalledWith(
-        "useStyleTemplatesImport",
-        "Failed to import style template files: Dialog error",
-      )
+      expect(mockLoggerError).toHaveBeenCalledWith("Failed to import style template files", { error: "Dialog error" })
       expect(result.current.isImporting).toBe(false)
     })
 

@@ -4,7 +4,25 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+
+// Создаем мок внутри фабрики для правильного хоистинга
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  }
+  return {
+    createLogger: vi.fn(() => mockLogger),
+    mockLogger, // Экспортируем для доступа в тестах
+  }
+})
+
 import type { TimelineClip } from "@/features/timeline/types/timeline"
+// Импортируем мок logger
+import { mockLogger } from "@/lib/tauri-logger"
 import { type EffectChain, type EffectPreviewOptions, EffectsPreviewService } from "../effects-preview"
 
 // Mock WebGL2 context with complete implementation
@@ -235,13 +253,10 @@ describe("EffectsPreviewService", () => {
 
       document.createElement = mockCreateElement as any
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const serviceWithoutWebGL = new EffectsPreviewService()
 
-      expect(consoleSpy).toHaveBeenCalledWith("Effects preview WebGL initialization failed:", expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith("Effects preview WebGL initialization failed:", expect.any(Object))
 
-      consoleSpy.mockRestore()
       serviceWithoutWebGL.dispose()
     })
 
@@ -249,13 +264,10 @@ describe("EffectsPreviewService", () => {
       const originalDocument = global.document
       delete (global as any).document
 
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       const serviceSSR = new EffectsPreviewService()
 
-      expect(consoleSpy).toHaveBeenCalledWith("Effects preview WebGL initialization skipped (SSR)")
+      expect(mockLogger.warn).toHaveBeenCalledWith("Effects preview WebGL initialization skipped (SSR)")
 
-      consoleSpy.mockRestore()
       global.document = originalDocument
       serviceSSR.dispose()
     })
@@ -281,28 +293,20 @@ describe("EffectsPreviewService", () => {
       mockGL.getShaderParameter.mockReturnValue(false)
       mockGL.getShaderInfoLog.mockReturnValue("Compilation error")
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = await service.applyEffect(mockVideo, "brightness-contrast", {}, mockCanvas)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Shader compilation error:", "Compilation error")
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith("Shader compilation error:", expect.any(Object))
     })
 
     it("should handle program linking errors", async () => {
       mockGL.getProgramParameter.mockReturnValue(false)
       mockGL.getProgramInfoLog.mockReturnValue("Linking error")
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = await service.applyEffect(mockVideo, "brightness-contrast", {}, mockCanvas)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Program linking error:", "Linking error")
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith("Program linking error:", expect.any(Object))
     })
   })
 
@@ -512,14 +516,10 @@ describe("EffectsPreviewService", () => {
         opacity: 1.0,
       }
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = await service.applyEffectChain(mockVideo, effectChain, mockCanvas)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to apply effect: brightness-contrast")
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith("Failed to apply effect: brightness-contrast")
     })
   })
 
@@ -656,20 +656,15 @@ describe("EffectsPreviewService", () => {
       const origCreateTexture = mockGL.createTexture
       mockGL.createTexture = vi.fn().mockReturnValue(null)
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = await service.applyEffect(mockVideo, "brightness-contrast", {}, mockCanvas)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Effect application failed:", expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith("Effect application failed:", expect.any(Object))
 
-      consoleSpy.mockRestore()
       mockGL.createTexture = origCreateTexture
     })
 
     it("should handle unsupported uniform types", async () => {
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       // Mock an effect with unsupported uniform type
       const service2 = new EffectsPreviewService()
       ;(service2 as any).effectShaders.set("test-effect", {
@@ -684,9 +679,8 @@ describe("EffectsPreviewService", () => {
 
       await service2.applyEffect(mockVideo, "test-effect", {}, mockCanvas)
 
-      expect(consoleSpy).toHaveBeenCalledWith("Unsupported uniform type: mat4")
+      expect(mockLogger.warn).toHaveBeenCalledWith("Unsupported uniform type: mat4")
 
-      consoleSpy.mockRestore()
       service2.dispose()
     })
   })

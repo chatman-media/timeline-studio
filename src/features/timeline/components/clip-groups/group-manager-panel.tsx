@@ -14,9 +14,7 @@ import type { TimelineClip } from "../../types/timeline"
 
 export function GroupManagerPanel() {
   const { project, selectedClipIds } = useTimeline()
-  const { groups, createGroup, renameGroup, setGroupColor, toggleCollapse, lockGroup, ungroupClips } = useClipGroups(
-    project!,
-  )
+  const { groups, createGroup, renameGroup, setGroupColor, toggleCollapse, lockGroup, ungroupClips } = useClipGroups()
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState("")
 
@@ -26,7 +24,7 @@ export function GroupManagerPanel() {
     if (!project || selectedClipCount < 2) return
 
     // Получаем выбранные клипы
-    const selectedClips: TimelineClip[] = []
+    const selectedClips: (typeof project.globalTracks)[0]["clips"] = []
 
     project.globalTracks?.forEach((track) => {
       track.clips?.forEach((clip) => {
@@ -47,7 +45,7 @@ export function GroupManagerPanel() {
     })
 
     if (selectedClips.length >= 2) {
-      createGroup(selectedClips)
+      createGroup(selectedClips as unknown as TimelineClip[])
     }
   }
 

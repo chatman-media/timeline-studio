@@ -78,7 +78,7 @@ export const VideoCrossfade = memo(function VideoCrossfade({ clipA, clipB, class
 
       setIsOpen(false)
     } catch (error) {
-      logger.error("Failed to create crossfade:", error)
+      logger.error("Failed to create crossfade:", { error })
     }
   }, [clipA, clipB, duration, fadeType, overlap.isValid, updateClip])
 

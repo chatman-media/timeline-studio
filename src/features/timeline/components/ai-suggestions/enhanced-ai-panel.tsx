@@ -75,7 +75,7 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
   // These will be reimplemented with AI Director integration
 
   const handleError = useCallback((error: Error) => {
-    logger.error("AI Panel: Error occurred", error)
+    logger.error("AI Panel: Error occurred", { error })
     setError(error)
     setIsProcessing(false)
   }, [])
@@ -145,9 +145,9 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
           timestamp: new Date().toISOString(),
         })
 
-        logger.info(`AI Panel: ${analysis.name} completed`, result)
+        logger.info(`AI Panel: ${analysis.name} completed`, { result })
       } catch (error) {
-        logger.error(`AI Panel: ${analysis.name} failed`, error)
+        logger.error(`AI Panel: ${analysis.name} failed`, { error })
         setError(error instanceof Error ? error : new Error("Ошибка анализа"))
       } finally {
         setIsProcessing(false)

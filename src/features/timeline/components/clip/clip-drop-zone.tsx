@@ -62,7 +62,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
             break
         }
       } catch (error) {
-        logger.error("Error applying resource to clip:", error)
+        logger.error("Error applying resource to clip:", { error })
       }
     },
     [clip.id, canAcceptDrag, applyEffectToClip, applyFilterToClip, applyTransitionToClip],
@@ -179,7 +179,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
           handleDrop(item, event.nativeEvent)
         }
       } catch (error) {
-        logger.warn("Could not parse drag data:", error)
+        logger.warn("Could not parse drag data:", { error })
       }
     },
     [handleDrop],

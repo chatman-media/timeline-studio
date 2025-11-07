@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { BrowserProvider } from "@/domains/browser"
@@ -25,8 +25,11 @@ function TestWrapper({ children }: { children: React.ReactNode }) {
 }
 
 describe("useFileSelection", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Важно: сброс состояния должен быть синхронным
     resetMockBrowserState()
+    // Даем время на обработку изменений состояния
+    await new Promise((resolve) => setTimeout(resolve, 0))
   })
 
   it("должен возвращать правильное начальное состояние", () => {
@@ -50,19 +53,19 @@ describe("useFileSelection", () => {
 
     await act(async () => {
       await result.current.toggleSelection()
+      // Ждем завершения микротасков
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(true)
-    })
+    expect(result.current.isSelected).toBe(true)
 
     await act(async () => {
       await result.current.toggleSelection()
+      // Ждем завершения микротасков
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(false)
-    })
+    expect(result.current.isSelected).toBe(false)
   })
 
   it("должен выбирать файл", async () => {
@@ -74,11 +77,11 @@ describe("useFileSelection", () => {
 
     await act(async () => {
       await result.current.selectFile()
+      // Ждем завершения микротасков
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(true)
-    })
+    expect(result.current.isSelected).toBe(true)
   })
 
   it("должен отменять выбор файла", async () => {
@@ -89,20 +92,20 @@ describe("useFileSelection", () => {
     // Сначала выберем файл
     await act(async () => {
       await result.current.selectFile()
+      // Ждем завершения микротасков
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(true)
-    })
+    expect(result.current.isSelected).toBe(true)
 
     // Теперь отменим выбор
     await act(async () => {
       await result.current.deselectFile()
+      // Ждем завершения микротасков
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(false)
-    })
+    expect(result.current.isSelected).toBe(false)
   })
 
   it("должен предотвращать всплытие события в handleToggleSelection", async () => {
@@ -114,16 +117,19 @@ describe("useFileSelection", () => {
       stopPropagation: vi.fn(),
     } as unknown as React.MouseEvent
 
-    await act(async () => {
+    // handleToggleSelection вызывает toggleSelection асинхронно (fire and forget)
+    // но мы можем проверить, что stopPropagation был вызван
+    act(() => {
       result.current.handleToggleSelection(mockEvent)
-      // Wait for the async toggleSelection to complete
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
     expect(mockEvent.stopPropagation).toHaveBeenCalledOnce()
 
-    await waitFor(() => {
-      expect(result.current.isSelected).toBe(true)
+    // Подождем завершения асинхронной операции
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
+
+    expect(result.current.isSelected).toBe(true)
   })
 })

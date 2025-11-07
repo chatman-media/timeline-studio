@@ -1,6 +1,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import type { MediaType } from "@/features/media/types/media"
+
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 import { useTimeline } from "../../hooks/use-timeline"
 
@@ -41,10 +43,11 @@ const mockProject: TimelineProject = {
                 id: "media-1",
                 name: "video.mp4",
                 path: "/path/to/video.mp4",
+                type: "video" as MediaType,
                 duration: 20,
                 size: 1000000,
                 isVideo: true,
-                createdAt: new Date().toISOString(),
+                createdAt: new Date(),
               },
               trackId: "video-track",
               startTime: 10,
@@ -92,10 +95,11 @@ const mockProject: TimelineProject = {
                 id: "media-2",
                 name: "audio.mp3",
                 path: "/path/to/audio.mp3",
+                type: "audio" as MediaType,
                 duration: 20,
                 size: 500000,
                 isVideo: false,
-                createdAt: new Date().toISOString(),
+                createdAt: new Date(),
               },
               trackId: "audio-track",
               startTime: 10,

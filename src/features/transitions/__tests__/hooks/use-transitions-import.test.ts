@@ -270,7 +270,7 @@ describe("useTransitionsImport", () => {
 
       expect(importResult.success).toBe(false)
       expect(importResult.message).toContain("Ошибка при импорте")
-      expect(mockLogError).toHaveBeenCalledWith("useTransitionsImport", "Import failed: Network error")
+      expect(mockLogError).toHaveBeenCalledWith("Import failed: Network error")
       expect(result.current.isImporting).toBe(false)
     })
 
@@ -408,7 +408,7 @@ describe("useTransitionsImport", () => {
 
       expect(importResult.success).toBe(false)
       expect(importResult.message).toContain("Ошибка при импорте")
-      expect(mockLogError).toHaveBeenCalledWith("useTransitionsImport", "Transition files import failed: Dialog error")
+      expect(mockLogError).toHaveBeenCalledWith("Transition files import failed: Dialog error")
       expect(result.current.isImporting).toBe(false)
     })
 

@@ -42,7 +42,7 @@ interface ClipEffectsPanelProps {
 export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
   const { t, i18n } = useTranslation()
   const { effects: availableEffects } = useEffects()
-  const { applyEffect, removeEffect, updateEffect } = useTimelineEffects()
+  const { applyEffect, removeEffect } = useTimelineEffects()
   const { send } = useTimeline()
 
   const [showEffectSelector, setShowEffectSelector] = useState(false)
@@ -132,9 +132,14 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
     (appliedEffectId: string, params: Record<string, any>) => {
       if (!clip) return
 
-      void updateEffect(clip.id, appliedEffectId, { customParams: params })
+      send({
+        type: "UPDATE_CLIP_EFFECT",
+        clipId: clip.id,
+        effectId: appliedEffectId,
+        updates: { customParams: params },
+      })
     },
-    [clip, updateEffect],
+    [clip, send],
   )
 
   // Обработчик изменения порядка эффектов

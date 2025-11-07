@@ -65,7 +65,7 @@ export function useSpeedRampingHotkeys() {
           const clipIds = selectedClipIds || []
           clipIds.forEach((clipId: string) => {
             // TODO: Implement reverse speed
-            logger.info("Reverse speed for clip:", clipId)
+            logger.info("Reverse speed for clip:", { clipId })
           })
         },
       },

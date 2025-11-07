@@ -88,7 +88,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
         // Вызываем callback если предоставлен
         onDrop?.(transition)
       } catch (error) {
-        logger.error("Failed to apply transition:", error)
+        logger.error("Failed to apply transition:", { error })
       }
     },
     [leftClip, rightClip, applyTransition, onDrop, saveProject],

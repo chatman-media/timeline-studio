@@ -126,7 +126,7 @@ export function AIMarkerControls({ className }: AIMarkerControlsProps) {
         setGenerationProgress(0)
       }, 2000)
     } catch (error) {
-      logger.error("Failed to generate markers:", error)
+      logger.error("Failed to generate markers:", { error })
       setLastResult({
         success: false,
         message: "Ошибка при создании маркеров",

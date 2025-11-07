@@ -49,7 +49,7 @@ describe("TimelinePreviewStrip", () => {
       src: "data:image/jpeg;base64,test-frame-data",
       onload: null,
       className: "",
-    })
+    } as HTMLImageElement)
   })
 
   afterEach(() => {

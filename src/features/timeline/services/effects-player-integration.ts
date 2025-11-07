@@ -165,13 +165,13 @@ export class EffectsPlayerIntegration {
       }
 
       // При ошибке возвращаем оригинальное видео
-      logger.warn("Effect rendering failed:", result.error)
+      logger.warn("Effect rendering failed:", { error: result.error })
       this.targetCanvas.width = videoElement.videoWidth
       this.targetCanvas.height = videoElement.videoHeight
       this.ctx.drawImage(videoElement, 0, 0)
       return this.targetCanvas
     } catch (error) {
-      logger.error("Error processing video frame:", error)
+      logger.error("Error processing video frame:", { error })
       return null
     }
   }
@@ -333,7 +333,7 @@ export class EffectsPlayerIntegration {
       }
       return previewCanvas
     } catch (error) {
-      logger.error("Error creating effect preview:", error)
+      logger.error("Error creating effect preview:", { error })
       return null
     }
   }

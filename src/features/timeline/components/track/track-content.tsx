@@ -33,7 +33,7 @@ interface TrackContentProps {
 
 export const TrackContent = memo(function TrackContent({ track, timeScale, currentTime, onUpdate }: TrackContentProps) {
   const { dragState, isValidDropTarget } = useDragDropTimeline()
-  const { selectClips } = useTimelineSelection()
+  const { selectClips: selectClipsSelection } = useTimelineSelection()
   const { project, saveProject } = useTimeline()
   const { groups, toggleCollapse } = useClipGroups()
 
@@ -59,7 +59,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
   // Получаем переходы для этого трека
   const trackTransitions = useMemo(() => {
     if (!project) return []
-    return getTrackTransitions(project, track.id)
+    return getTrackTransitions(project as any, track.id)
   }, [project, track.id])
 
   // Мемоизируем отсортированные клипы и группы
@@ -119,14 +119,16 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
       if (!project) return
 
       try {
-        const result = addTransitionBetweenClips(project, track.id, leftClipId, rightClipId, transition)
+        // addTransitionBetweenClips возвращает обновленный проект, но мы не используем его
+        // так как в новой архитектуре saveProject() сохраняет текущее состояние
+        addTransitionBetweenClips(project as any, track.id, leftClipId, rightClipId, transition)
 
         // Обновляем проект через сохранение
         await saveProject()
 
         logger.info("Переход успешно добавлен к проекту")
       } catch (error) {
-        logger.error("Failed to add transition:", error)
+        logger.error("Failed to add transition:", { error })
       }
     },
     [project, track.id, saveProject],
@@ -206,7 +208,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             clips={clips}
             timeScale={timeScale}
             onToggleCollapse={() => toggleCollapse(group.id)}
-            onSelect={() => selectClips(clips.map((c) => c.id))}
+            onSelect={() => selectClipsSelection(clips.map((c) => c.id))}
             isSelected={clips.some((c) => c.isSelected)}
           />
         ))}
@@ -233,16 +235,16 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
                   trackHeight={48}
                   onUpdate={(updates) => {
                     // TODO: Обновление перехода через backend API
-                    logger.info("Updating transition parameters:", outTransition.id, updates)
+                    logger.info("Updating transition parameters:", { transitionId: outTransition.id, updates })
                   }}
                   onDelete={async () => {
                     // Удаление перехода через backend API
                     try {
                       // TODO: Добавить removeTransition команду в backend
-                      logger.info("Deleting transition:", outTransition.id)
+                      logger.info("Deleting transition:", { transitionId: outTransition.id })
                       await saveProject()
                     } catch (error) {
-                      logger.error("Failed to delete transition:", error)
+                      logger.error("Failed to delete transition:", { error })
                     }
                   }}
                 />
@@ -273,7 +275,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
             // This would typically trigger a roll edit operation
-            logger.info("Roll edit started:", leftClipId, rightClipId, mouseX)
+            logger.info("Roll edit started:", { leftClipId, rightClipId, mouseX })
           }}
         />
       </div>
@@ -285,7 +287,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             collisions={collisions}
             compact
             onResolve={(collision) => {
-              logger.info("Resolve collision:", collision)
+              logger.info("Resolve collision:", { collision })
               // TODO: Интегрировать с системой исправления коллизий
             }}
           />

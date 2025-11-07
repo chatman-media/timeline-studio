@@ -127,9 +127,9 @@ describe("EffectGroup", () => {
       </BrowserProviders>,
     )
 
-    expect(screen.getByTestId("effect-preview-blur")).toBeInTheDocument()
-    expect(screen.getByTestId("effect-preview-brightness")).toBeInTheDocument()
-    expect(screen.getByTestId("effect-preview-contrast")).toBeInTheDocument()
+    expect(screen.getByTestId("effect-preview-effect-1")).toBeInTheDocument()
+    expect(screen.getByTestId("effect-preview-effect-2")).toBeInTheDocument()
+    expect(screen.getByTestId("effect-preview-effect-3")).toBeInTheDocument()
   })
 
   it("passes correct props to EffectPreview components", () => {
@@ -140,9 +140,9 @@ describe("EffectGroup", () => {
     )
 
     // Check that the mocked EffectPreview components are rendered with correct text
-    expect(screen.getByText("Effect Preview blur (120x120x120)")).toBeInTheDocument()
-    expect(screen.getByText("Effect Preview brightness (120x120x120)")).toBeInTheDocument()
-    expect(screen.getByText("Effect Preview contrast (120x120x120)")).toBeInTheDocument()
+    expect(screen.getByText("Effect Preview effect-1 (120x120x120)")).toBeInTheDocument()
+    expect(screen.getByText("Effect Preview effect-2 (120x120x120)")).toBeInTheDocument()
+    expect(screen.getByText("Effect Preview effect-3 (120x120x120)")).toBeInTheDocument()
   })
 
   it("calls onEffectClick when effect is clicked", async () => {
@@ -155,7 +155,7 @@ describe("EffectGroup", () => {
       </BrowserProviders>,
     )
 
-    await user.click(screen.getByTestId("effect-preview-blur"))
+    await user.click(screen.getByTestId("effect-preview-effect-1"))
 
     expect(onEffectClick).toHaveBeenCalledWith(mockEffects[0], 0)
   })
@@ -171,7 +171,7 @@ describe("EffectGroup", () => {
       </BrowserProviders>,
     )
 
-    await user.click(screen.getByTestId("effect-preview-brightness"))
+    await user.click(screen.getByTestId("effect-preview-effect-2"))
 
     expect(onEffectClick).toHaveBeenCalledWith(mockEffects[1], 11) // startIndex + index (10 + 1)
   })
@@ -245,9 +245,9 @@ describe("EffectGroup", () => {
     )
 
     const previews = [
-      screen.getByTestId("effect-preview-blur"),
-      screen.getByTestId("effect-preview-brightness"),
-      screen.getByTestId("effect-preview-contrast"),
+      screen.getByTestId("effect-preview-effect-1"),
+      screen.getByTestId("effect-preview-effect-2"),
+      screen.getByTestId("effect-preview-effect-3"),
     ]
 
     previews.forEach((preview) => {
@@ -309,7 +309,7 @@ describe("EffectGroup", () => {
       </BrowserProviders>,
     )
 
-    const firstEffectPreview = screen.getByTestId("effect-preview-blur")
+    const firstEffectPreview = screen.getByTestId("effect-preview-effect-1")
 
     // Click on the actual EffectPreview component
     await user.click(firstEffectPreview)
