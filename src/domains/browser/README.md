@@ -1,263 +1,376 @@
 # Browser Domain
 
-Управление медиа браузером и файловой системой в Timeline Studio.
+Домен для управления браузером медиа файлов и ресурсов с полной интеграцией backend state management.
 
-## Обзор
+## Архитектура
 
-Browser домен отвечает за навигацию по файловой системе, отображение медиафайлов, управление вкладками и выбором файлов для работы в редакторе.
-
-## Структура
+Browser domain использует паттерн **BackendSync** - все состояние хранится на Rust-бэкенде и автоматически синхронизируется с фронтендом.
 
 ```
-browser/
-├── hooks/             # React хуки для работы с браузером
-├── machines/          # XState машина состояний браузера
-├── providers/         # React провайдеры
-├── tauri/            # Интеграция с Tauri API
-├── types/            # TypeScript типы
-└── index.ts          # Главный экспорт
+┌─────────────────────────────────────────┐
+│ Rust Backend (ProjectState)            │
+│ ┌─────────────────────────────────────┐ │
+│ │ browser_state: BrowserState         │ │
+│ │  - active_tab: BrowserTab           │ │
+│ │  - tab_settings: Map<Tab, Settings> │ │
+│ │  - selected_files: Map<Tab, Vec>    │ │
+│ └─────────────────────────────────────┘ │
+└───────────────┬─────────────────────────┘
+                │ BackendSync (Tauri IPC)
+                │ Commands ↓  Events ↑
+                ↓
+┌─────────────────────────────────────────┐
+│ Frontend (React)                        │
+│ BrowserProvider                         │
+│  - Syncs state automatically            │
+│  - Provides convenient getters          │
+│  - Exposes async actions                │
+└─────────────────────────────────────────┘
 ```
 
-## Основные компоненты
+### Преимущества
 
-### Browser Machine
+- ✅ **Единый источник истины** - состояние на бэкенде, синхронизация автоматическая
+- ✅ **Персистентность** - состояние сохраняется в проекте
+- ✅ **Типобезопасность** - типы генерируются автоматически из Rust через Specta
+- ✅ **Реактивность** - изменения на бэкенде мгновенно отражаются на фронтенде
+- ✅ **Тестируемость** - легко тестировать без моков localStorage
 
-XState машина для управления состоянием браузера:
+## Использование
+
+### Подключение провайдера
+
+BrowserProvider уже подключен в `src/features/media-studio/services/providers.tsx`:
 
 ```typescript
-import { browserMachine } from '@/domains/browser'
+import { BrowserProvider } from "@/domains/browser"
 
-// Состояние браузера
-interface BrowserState {
-  activeTab: BrowserTab
-  tabs: BrowserTab[]
-  currentPath: string
-  selectedFiles: MediaFile[]
-  viewMode: 'grid' | 'list'
-  sortBy: 'name' | 'date' | 'size'
-  filterBy: 'all' | 'video' | 'audio' | 'image'
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <AppProviderComposite>
+      {/* ... другие провайдеры ... */}
+      <BrowserProvider>
+        {children}
+      </BrowserProvider>
+    </AppProviderComposite>
+  )
 }
 ```
 
-### Browser Tabs
-
-Поддержка вкладок для навигации:
+### Использование хука
 
 ```typescript
-type BrowserTab = 
-  | 'media'    // Медиафайлы
-  | 'effects'  // Эффекты
-  | 'titles'   // Титры
-  | 'generators' // Генераторы
-  | 'templates' // Шаблоны
-```
+import { useBrowser } from "@/domains/browser"
 
-### Browser Hooks
+function MyComponent() {
+  const {
+    // Состояние
+    activeTab,              // текущая активная вкладка
+    currentTabSettings,     // настройки текущей вкладки
+    selectedFiles,          // Set<string> выбранных файлов
+    previewSize,           // размер превью в px
+    isLoading,             // загрузка состояния
+    error,                 // ошибка если есть
 
-React хуки для работы с браузером:
+    // Действия с вкладками
+    switchTab,             // (tab: BrowserTab) => Promise<void>
+    setSearchQuery,        // (query: string, tab?) => Promise<void>
+    toggleFavorites,       // (tab?) => Promise<void>
+    setSort,               // (sortBy, sortOrder, tab?) => Promise<void>
+    setGroupBy,            // (groupBy, tab?) => Promise<void>
+    setFilter,             // (filterType, tab?) => Promise<void>
+    setViewMode,           // (viewMode, tab?) => Promise<void>
+    setPreviewSize,        // (sizeIndex, tab?) => Promise<void>
+    resetTabSettings,      // (tab) => Promise<void>
 
-```typescript
-import { 
-  useBrowserDomain,
-  useBrowserSelection,
-  useBrowserSettings 
-} from '@/domains/browser'
+    // Действия с выбором файлов
+    selectFile,            // (fileId, tab?) => Promise<void>
+    deselectFile,          // (fileId, tab?) => Promise<void>
+    toggleFileSelection,   // (fileId, tab?) => Promise<void>
+    selectAllFiles,        // (fileIds[], tab?) => Promise<void>
+    deselectAllFiles,      // (tab?) => Promise<void>
+    isFileSelected,        // (fileId, tab?) => boolean
+  } = useBrowser()
 
-// Основной хук браузера
-const browser = useBrowserDomain()
-
-// Управление выбором файлов
-const selection = useBrowserSelection()
-selection.selectFile(file)
-selection.selectMultiple(files)
-selection.clearSelection()
-
-// Настройки отображения
-const settings = useBrowserSettings()
-settings.setViewMode('grid')
-settings.setSortBy('date')
-```
-
-## Навигация по файлам
-
-### Работа с путями
-
-```typescript
-// Навигация по директориям
-browser.navigateTo('/path/to/folder')
-browser.goBack()
-browser.goForward()
-browser.goToParent()
-
-// История навигации
-const history = browser.getHistory()
-const canGoBack = browser.canGoBack()
-const canGoForward = browser.canGoForward()
-```
-
-### Фильтрация и сортировка
-
-```typescript
-// Фильтрация файлов
-browser.setFilter({
-  type: 'video',
-  extensions: ['.mp4', '.mov', '.avi'],
-  minSize: 1024 * 1024, // 1MB
-  dateRange: {
-    from: new Date('2024-01-01'),
-    to: new Date()
+  // Пример использования
+  const handleSearch = async (query: string) => {
+    await setSearchQuery(query)
   }
-})
+
+  return (
+    <div>
+      <input
+        value={currentTabSettings.search_query}
+        onChange={(e) => handleSearch(e.target.value)}
+      />
+      <div>Selected: {selectedFiles.size} files</div>
+    </div>
+  )
+}
+```
+
+### Миграция со старого API
+
+Для совместимости со старым кодом доступен alias `useBrowserState`:
+
+```typescript
+// Старый код
+import { useBrowserState } from "@/domains/browser"
+
+// Работает точно так же
+const { activeTab, selectedFiles } = useBrowserState()
+```
+
+## API Reference
+
+### Types
+
+```typescript
+type BrowserTab = "media" | "effects" | "filters" | "transitions" | "templates" | "style-templates"
+
+type ViewMode = "thumbnails" | "list" | "grid"
+
+interface TabSettings {
+  search_query: string
+  show_favorites_only: boolean
+  sort_by: string
+  sort_order: "asc" | "desc"
+  group_by: string
+  filter_type: string
+  view_mode: ViewMode
+  preview_size_index: number
+}
+
+interface BrowserState {
+  active_tab: BrowserTab
+  tab_settings: Record<BrowserTab, TabSettings>
+  selected_files: Record<BrowserTab, string[]>
+}
+```
+
+### Convenient Getters
+
+Все getters - это computed values, они автоматически обновляются при изменении состояния:
+
+- `activeTab: BrowserTab` - текущая активная вкладка
+- `currentTabSettings: TabSettings` - настройки текущей вкладки
+- `selectedFiles: Set<string>` - Set выбранных файлов на текущей вкладке
+- `previewSize: number` - размер превью в пикселях (вычисляется из preview_size_index)
+
+### Actions
+
+Все действия **асинхронные** - они отправляют команду на бэкенд через Tauri IPC.
+
+#### Управление вкладками
+
+```typescript
+// Переключить вкладку
+await switchTab("effects")
+
+// Поиск (опционально для конкретной вкладки)
+await setSearchQuery("sky", "media")  // для вкладки media
+await setSearchQuery("blur")          // для текущей вкладки
+
+// Показать только избранное
+await toggleFavorites()
 
 // Сортировка
-browser.setSortBy('date', 'desc')
+await setSort("name", "asc")          // по имени, возрастание
+await setSort("date", "desc", "media") // для конкретной вкладки
+
+// Группировка
+await setGroupBy("type")              // группировать по типу
+await setGroupBy("none")              // без группировки
+
+// Фильтрация
+await setFilter("video")              // только видео
+await setFilter("all")                // все типы
+
+// Режим отображения
+await setViewMode("grid")             // сетка
+await setViewMode("list")             // список
+await setViewMode("thumbnails")       // превью
+
+// Размер превью (индекс от 0 до 4)
+await setPreviewSize(2)               // средний размер
+
+// Сброс настроек вкладки
+await resetTabSettings("media")
 ```
 
-## Интеграция с другими доменами
-
-### С Media Management
+#### Управление выбором файлов
 
 ```typescript
-import { useMediaImport } from '@/domains/media-management'
+// Выбрать файл
+await selectFile("file-id-123")
 
-// Импорт выбранных файлов
-const mediaImport = useMediaImport()
-const selectedFiles = browser.getSelectedFiles()
-await mediaImport.importFiles(selectedFiles)
+// Снять выбор
+await deselectFile("file-id-123")
+
+// Переключить выбор
+await toggleFileSelection("file-id-123")
+
+// Выбрать все файлы (передать список ID)
+const allFileIds = mediaFiles.map(f => f.id)
+await selectAllFiles(allFileIds)
+
+// Снять все выборы
+await deselectAllFiles()
+
+// Проверить выбран ли файл (синхронная функция)
+const isSelected = isFileSelected("file-id-123")
 ```
 
-### С Video Editing
+### Legacy Compatibility
+
+Для постепенной миграции доступен объект `state` в старом формате:
 
 ```typescript
-import { useTimeline } from '@/domains/video-editing'
-import { createLogger } from '@/lib/tauri-logger'
+const { state } = useBrowser()
 
-const logger = createLogger('Example')
-
-// Добавление файлов на таймлайн
-const timeline = useTimeline()
-browser.onFileDrop((files) => {
-  timeline.addMediaFiles(files)
-})
+// state.activeTab - то же что и activeTab
+// state.tabSettings - Record всех настроек
+// state.selectedFiles - Record<BrowserTab, Set<string>>
 ```
-
-## События браузера
-
-```typescript
-// Подписка на события
-browser.on('selectionChanged', (files) => {
-  logger.debugSync('Selected:', files)
-})
-
-browser.on('pathChanged', (path) => {
-  logger.debugSync('Navigated to:', path)
-})
-
-browser.on('fileDoubleClick', (file) => {
-  // Открыть файл в редакторе
-})
-```
-
-## Поиск файлов
-
-```typescript
-// Поиск по имени
-const results = await browser.search({
-  query: 'vacation',
-  in: 'currentFolder', // или 'allFolders'
-  matchCase: false
-})
-
-// Расширенный поиск
-const advanced = await browser.advancedSearch({
-  name: '*vacation*',
-  type: 'video',
-  codec: 'h264',
-  minDuration: 60, // секунды
-  tags: ['family', 'summer']
-})
-```
-
-## Предпросмотр файлов
-
-```typescript
-// Генерация превью
-const thumbnail = await browser.generateThumbnail(file, {
-  width: 320,
-  height: 180,
-  time: 5 // секунда видео
-})
-
-// Быстрый предпросмотр
-browser.quickLook(file, {
-  autoplay: true,
-  loop: false
-})
-```
-
-## Контекстное меню
-
-```typescript
-// Регистрация действий контекстного меню
-browser.registerContextAction({
-  id: 'analyze',
-  label: 'Analyze with AI',
-  icon: 'brain',
-  enabled: (files) => files.every(f => f.type === 'video'),
-  action: async (files) => {
-    // Анализ файлов
-  }
-})
-```
-
-## Best Practices
-
-1. **Производительность**: Используйте виртуализацию для больших списков файлов
-2. **Кэширование**: Кэшируйте превью и метаданные файлов
-3. **Асинхронность**: Все операции с файлами должны быть асинхронными
-4. **Обработка ошибок**: Обрабатывайте случаи недоступных файлов
 
 ## Примеры
 
-### Создание файлового браузера
+### Компонент списка файлов с выбором
 
 ```typescript
-function FileBrowser() {
-  const browser = useBrowserDomain()
-  const { files, currentPath, isLoading } = browser.state
-  
+function FileList({ files }: { files: MediaFile[] }) {
+  const { selectedFiles, toggleFileSelection } = useBrowser()
+
   return (
     <div>
-      <PathBreadcrumb path={currentPath} />
-      <FileGrid 
-        files={files}
-        onFileClick={browser.selectFile}
-        onFileDoubleClick={browser.openFile}
-      />
+      {files.map(file => (
+        <FileCard
+          key={file.id}
+          file={file}
+          isSelected={selectedFiles.has(file.id)}
+          onToggle={() => toggleFileSelection(file.id)}
+        />
+      ))}
     </div>
   )
 }
 ```
 
-### Drag & Drop
+### Строка поиска с фильтрацией
 
 ```typescript
-function DropZone() {
-  const browser = useBrowserDomain()
-  
-  const handleDrop = (e: DragEvent) => {
-    const files = Array.from(e.dataTransfer.files)
-    browser.handleFileDrop(files)
-  }
-  
+function SearchBar() {
+  const {
+    currentTabSettings,
+    setSearchQuery,
+    toggleFavorites,
+    setFilter
+  } = useBrowser()
+
   return (
-    <div onDrop={handleDrop}>
-      Drop files here
+    <div>
+      <input
+        placeholder="Поиск..."
+        value={currentTabSettings.search_query}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+
+      <button onClick={toggleFavorites}>
+        {currentTabSettings.show_favorites_only ? "Все" : "Избранное"}
+      </button>
+
+      <select
+        value={currentTabSettings.filter_type}
+        onChange={(e) => setFilter(e.target.value)}
+      >
+        <option value="all">Все</option>
+        <option value="video">Видео</option>
+        <option value="audio">Аудио</option>
+        <option value="image">Изображения</option>
+      </select>
     </div>
   )
 }
 ```
 
-## Лицензия
+### Переключатель вкладок
 
-Часть Timeline Studio. См. корневую лицензию проекта.
+```typescript
+function BrowserTabs() {
+  const { activeTab, switchTab } = useBrowser()
+
+  const tabs: BrowserTab[] = [
+    "media",
+    "effects",
+    "filters",
+    "transitions",
+    "templates",
+    "style-templates"
+  ]
+
+  return (
+    <div>
+      {tabs.map(tab => (
+        <button
+          key={tab}
+          className={activeTab === tab ? "active" : ""}
+          onClick={() => switchTab(tab)}
+        >
+          {tab}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+## Тестирование
+
+Для тестирования компонентов, использующих `useBrowser`, оберните их в `BrowserProvider`:
+
+```typescript
+import { render } from "@testing-library/react"
+import { BrowserProvider } from "@/domains/browser"
+
+describe("MyComponent", () => {
+  it("should render", () => {
+    render(
+      <BrowserProvider>
+        <MyComponent />
+      </BrowserProvider>
+    )
+  })
+})
+```
+
+**Важно**: Таури API должен быть замокан в тестовой среде (это делается автоматически в `src/test/setup.ts`).
+
+## Backend Integration
+
+Backend реализация находится в:
+- `src-tauri/src/browser/mod.rs` - модуль browser
+- `src-tauri/src/browser/state.rs` - BrowserState структура
+- `src-tauri/src/browser/commands.rs` - Tauri команды
+
+Типы автоматически генерируются в `src/types/generated/tauri-bindings.ts` через Specta.
+
+## События
+
+Browser domain генерирует следующие события (через BackendSync):
+
+- `BrowserTabSwitched` - вкладка переключена
+- `BrowserSearchQueryChanged` - поисковый запрос изменен
+- `BrowserFavoritesToggled` - переключен режим избранного
+- `BrowserSortChanged` - сортировка изменена
+- `BrowserGroupByChanged` - группировка изменена
+- `BrowserFilterChanged` - фильтр изменен
+- `BrowserViewModeChanged` - режим отображения изменен
+- `BrowserPreviewSizeChanged` - размер превью изменен
+- `BrowserTabSettingsReset` - настройки вкладки сброшены
+- `BrowserFileSelected` - файл выбран
+- `BrowserFileDeselected` - файл снят с выбора
+- `BrowserFileSelectionToggled` - выбор файла переключен
+- `BrowserAllFilesSelected` - все файлы выбраны
+- `BrowserAllFilesDeselected` - все файлы сняты с выбора
+
+BrowserProvider автоматически подписывается на эти события и обновляет состояние.
