@@ -51,8 +51,8 @@ const mockTimelineState = {
     selectedTrackIds: [],
   },
   currentTime: 0,
-  createProject: vi.fn(),
-  addSection: vi.fn(),
+  createProject: vi.fn().mockResolvedValue(undefined),
+  addSection: vi.fn().mockResolvedValue(undefined),
   addTrack: vi.fn(),
   updateTrack: vi.fn(),
   selectTracks: vi.fn(),
@@ -197,11 +197,12 @@ describe("TimelineContent", () => {
   })
 
   describe("Loading and error states", () => {
-    it("should show loading state when project is not initialized", () => {
+    it("should render without loading state when project is not initialized", () => {
       render(<TimelineContent />)
 
-      expect(screen.getByText("Загрузка Timeline...")).toBeInTheDocument()
-      expect(screen.getByText("Инициализация проекта...")).toBeInTheDocument()
+      // Компонент больше не показывает loading state - Timeline рендерится сразу
+      // Проект создается автоматически в useEffect
+      expect(mockTimelineState.createProject).toHaveBeenCalled()
     })
 
     it("should show error state when there is an error", () => {
