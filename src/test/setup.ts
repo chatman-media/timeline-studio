@@ -68,6 +68,14 @@ import "@/test/mocks/libraries"
 import "@/test/mocks/libraries/lucide-react"
 import "@/test/mocks/libraries/react-hotkeys-hook"
 
+// Mock Tauri Logger
+vi.mock("@/lib/tauri-logger", () => ({
+  logInfo: vi.fn(),
+  logError: vi.fn(),
+  logWarn: vi.fn(),
+  logDebug: vi.fn(),
+}))
+
 // Mock scrollIntoView globally for all tests (needed for Radix UI components)
 beforeAll(async () => {
   Element.prototype.scrollIntoView = vi.fn()
