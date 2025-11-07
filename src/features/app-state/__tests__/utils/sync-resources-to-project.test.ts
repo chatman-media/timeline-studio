@@ -364,6 +364,8 @@ describe("sync-resources-to-project", () => {
           if (args.length === 0) {
             super(mockDate.getTime())
           } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore - Dynamic Date construction
             super(...args)
           }
         }
@@ -598,6 +600,8 @@ describe("sync-resources-to-project", () => {
           if (args.length === 0) {
             super(mockDate.getTime())
           } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore - Dynamic Date construction
             super(...args)
           }
         }

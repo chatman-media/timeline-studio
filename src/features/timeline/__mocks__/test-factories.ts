@@ -71,21 +71,18 @@ export function createMockClip(overrides?: Partial<TimelineClip>): TimelineClip 
  * Создает mock-объект медиафайла
  */
 export function createMockMediaFile(overrides?: Partial<MediaFile>): MediaFile {
+  const now = new Date().toISOString()
   return {
     id: "media-1",
     path: "/path/to/video.mp4",
     name: "test-video.mp4",
     size: 1000000,
     duration: 60,
-    width: 1920,
-    height: 1080,
-    lastModified: Date.now(),
-    codec: "h264",
-    bitrate: 5000000,
-    hasAudio: true,
-    hasVideo: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    isVideo: true,
+    isAudio: true,
+    isImage: false,
+    createdAt: now,
+    updatedAt: now,
     ...overrides,
   }
 }

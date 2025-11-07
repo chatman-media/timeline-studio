@@ -86,7 +86,7 @@ export function ShaderPreview({
     gl.compileShader(vertShader)
 
     if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-      logger.error("Vertex shader error:", gl.getShaderInfoLog(vertShader))
+      void logger.error("Vertex shader error", { log: gl.getShaderInfoLog(vertShader) })
       gl.deleteShader(vertShader)
       return
     }
@@ -96,7 +96,7 @@ export function ShaderPreview({
     gl.compileShader(fragShader)
 
     if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-      logger.error("Fragment shader error:", gl.getShaderInfoLog(fragShader))
+      void logger.error("Fragment shader error", { log: gl.getShaderInfoLog(fragShader) })
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)
       return
@@ -111,7 +111,7 @@ export function ShaderPreview({
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      logger.error("Program link error:", gl.getProgramInfoLog(program))
+      void logger.error("Program link error", { log: gl.getProgramInfoLog(program) })
       gl.deleteProgram(program)
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)

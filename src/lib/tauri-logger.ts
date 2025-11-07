@@ -34,7 +34,7 @@ if (isTauriEnv) {
     })
 }
 
-interface LogContext {
+export interface LogContext {
   [key: string]: unknown
 }
 
@@ -156,7 +156,8 @@ export class TauriLogger {
 /**
  * Create logger instance for a module
  */
-export function createLogger(module: string): TauriLogger {
+export function createLogger(options: string | { module: string }): TauriLogger {
+  const module = typeof options === "string" ? options : options.module
   return new TauriLogger(module)
 }
 

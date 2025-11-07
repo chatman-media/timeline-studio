@@ -17,16 +17,91 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
+import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
+import type { LogContext } from "@/lib/tauri-logger"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "AiAnalysisDashboard" })
+const logger = createLogger("AiAnalysisDashboard")
 
 type AnalysisMode = "fast" | "balanced" | "quality"
 
+// Helper types for rendering
+type SceneData = {
+  id: string
+  start_time: number
+  end_time: number
+  duration: number
+  scene_type: string
+  confidence: number
+  description?: string
+}
+
+type MomentData = {
+  id?: string
+  timestamp: number
+  moment_type: string
+  importance_score: number
+  description?: string
+  content_tags?: string[]
+}
+
+type AudioAnalysisData = {
+  rms_level: number
+  peak_level: number
+  spectral_centroid: number
+  energy: number
+  has_music: boolean
+  music_confidence: number
+  has_speech: boolean
+  speech_confidence: number
+  silence_ratio: number
+}
+
+type ContentAnalysisData = {
+  mood: string
+  mood_confidence: number
+  style: string
+  style_confidence: number
+  tags: string[]
+  overall_quality: number
+  visual_quality: number
+  audio_quality: number
+}
+
+type VisionAnalysisData = {
+  faces_count: number
+  objects_detected: string[]
+  avg_composition_score: number
+}
+
+// Extended result type with UI-specific fields
+type DashboardAnalysisResult = ComprehensiveAnalysisResult & {
+  analysis_status?: string
+  success_rate?: number
+  scene_analysis?: {
+    total_scenes: number
+    avg_scene_duration: number
+    scenes: SceneData[]
+  }
+  moment_analysis?: {
+    total_moments: number
+    avg_importance_score: number
+    top_moments?: MomentData[]
+    moments: MomentData[]
+  }
+  audio_analysis?: AudioAnalysisData
+  content_analysis?: ContentAnalysisData
+  vision_analysis?: VisionAnalysisData
+}
+
 export function AIAnalysisDashboard() {
   const { analyzeComprehensive, analyzeQuick, state } = useAIDirector()
-  const { isAnalyzing, currentProgress, result, errors, progressPercentage, currentStage } = useAIDirectorAnalysis()
+  const { isAnalyzing, currentProgress, result: rawResult, errors, progressPercentage, currentStage } = useAIDirectorAnalysis()
+
+  // Cast result to dashboard type for UI rendering
+  const result = rawResult as DashboardAnalysisResult | null
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
@@ -49,7 +124,7 @@ export function AIAnalysisDashboard() {
         setSelectedFile(selected)
       }
     } catch (error) {
-      logger.error("Failed to select file:", error)
+      logger.error("Failed to select file:", { error } as LogContext)
     }
   }
 
@@ -61,11 +136,11 @@ export function AIAnalysisDashboard() {
       if (analysisMode === "fast") {
         await analyzeQuick(selectedFile)
       } else {
-        const config = await invoke("ai_director_get_default_config", { mode: analysisMode })
+        const config = await invoke<AIDirectorConfig>("ai_director_get_default_config", { mode: analysisMode })
         await analyzeComprehensive(selectedFile, config)
       }
     } catch (error) {
-      logger.error("Failed to start analysis:", error)
+      logger.error("Failed to start analysis:", { error } as LogContext)
     }
   }
 
@@ -247,7 +322,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                         </div>
 
-                        {result.scene_analysis.scenes.slice(0, 5).map((scene, index) => (
+                        {result.scene_analysis.scenes.slice(0, 5).map((scene: SceneData, index: number) => (
                           <Card key={scene.id}>
                             <CardContent className="pt-4">
                               <div className="flex justify-between items-start">
@@ -307,7 +382,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                         </div>
 
-                        {result.moment_analysis.moments.slice(0, 10).map((moment, index) => (
+                        {result.moment_analysis.moments.slice(0, 10).map((moment: MomentData, index: number) => (
                           <Card key={moment.id || index}>
                             <CardContent className="pt-4">
                               <div className="flex justify-between items-start">
@@ -317,7 +392,7 @@ export function AIAnalysisDashboard() {
                                   {moment.description && <p className="text-sm mt-1">{moment.description}</p>}
                                   {moment.content_tags && moment.content_tags.length > 0 && (
                                     <div className="flex flex-wrap gap-1 mt-2">
-                                      {moment.content_tags.map((tag, i) => (
+                                      {moment.content_tags.map((tag: string, i: number) => (
                                         <span key={i} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                                           {tag}
                                         </span>
@@ -443,7 +518,7 @@ export function AIAnalysisDashboard() {
                             </CardHeader>
                             <CardContent>
                               <div className="flex flex-wrap gap-2">
-                                {result.content_analysis.tags.map((tag, i) => (
+                                {result.content_analysis.tags.map((tag: string, i: number) => (
                                   <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                                     {tag}
                                   </span>
@@ -520,7 +595,7 @@ export function AIAnalysisDashboard() {
                             </CardHeader>
                             <CardContent>
                               <div className="flex flex-wrap gap-2">
-                                {result.vision_analysis.objects_detected.map((obj, i) => (
+                                {result.vision_analysis.objects_detected.map((obj: string, i: number) => (
                                   <span
                                     key={i}
                                     className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"

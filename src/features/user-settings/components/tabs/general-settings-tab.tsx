@@ -47,7 +47,7 @@ export function GeneralSettingsTab() {
   const handleLanguageSelect = (value: string) => {
     const newLanguage = value as LanguageCode
     setSelectedLanguage(newLanguage)
-    logger.info("Applying language change via new system:", newLanguage)
+    void logger.info("Applying language change via new system:", { language: newLanguage })
     void changeLanguage(newLanguage)
   }
 
@@ -110,10 +110,10 @@ export function GeneralSettingsTab() {
 
                   if (selectedFolder && !Array.isArray(selectedFolder)) {
                     handleScreenshotsPathChange(selectedFolder)
-                    logger.info("Screenshots path updated from folder dialog:", selectedFolder)
+                    void logger.info("Screenshots path updated from folder dialog:", { path: selectedFolder })
                   }
                 } catch (error) {
-                  logger.error("Ошибка при выборе директории:", error)
+                  void logger.error("Ошибка при выборе директории:", { error: String(error) })
                   const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/screenshots")
                   if (promptResult) {
                     handleScreenshotsPathChange(promptResult.trim())
@@ -167,10 +167,10 @@ export function GeneralSettingsTab() {
 
                   if (selectedFolder && !Array.isArray(selectedFolder)) {
                     handlePlayerScreenshotsPathChange(selectedFolder)
-                    logger.info("Player screenshots path updated from folder dialog:", selectedFolder)
+                    void logger.info("Player screenshots path updated from folder dialog:", { path: selectedFolder })
                   }
                 } catch (error) {
-                  logger.error("Ошибка при выборе директории:", error)
+                  void logger.error("Ошибка при выборе директории:", { error: String(error) })
                   const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/media")
                   if (promptResult) {
                     handlePlayerScreenshotsPathChange(promptResult.trim())

@@ -17,7 +17,7 @@ import type { Sequence } from "@/features/timeline/types/sequence"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "TimelineStudioProjectService" })
+const logger = createLogger("TimelineStudioProjectService")
 
 /**
  * Класс сервиса для управления проектами Timeline Studio
@@ -220,7 +220,7 @@ export class TimelineStudioProjectService implements ProjectOperations {
       }
       throw new Error("Unknown project format")
     } catch (error) {
-      logger.error("Failed to open project:", error)
+      logger.error("Failed to open project:", { error })
       throw new Error(`Failed to open project: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
@@ -243,7 +243,7 @@ export class TimelineStudioProjectService implements ProjectOperations {
 
       logger.info(`Project saved to ${path}`)
     } catch (error) {
-      logger.error("Failed to save project:", error)
+      logger.error("Failed to save project:", { error })
       throw new Error(`Failed to save project: ${error instanceof Error ? error.message : String(error)}`)
     }
   }

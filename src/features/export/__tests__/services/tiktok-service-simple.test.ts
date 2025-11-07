@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import * as TikTokService from "../../services/tiktok-service"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 // Мокаем зависимости
 vi.mock("../../services/oauth-service", () => ({
@@ -22,9 +23,9 @@ describe("TikTokService (simplified)", () => {
     const baseSettings = {
       fileName: "test",
       savePath: "",
-      format: "Mp4" as const,
+      format: OutputFormat.Mp4,
       quality: "good" as const,
-      resolution: "1080",
+      resolution: "1080" as const,
       frameRate: "30",
       enableGPU: true,
       socialNetwork: "tiktok",
@@ -72,7 +73,7 @@ describe("TikTokService (simplified)", () => {
     const baseSettings = {
       fileName: "test",
       savePath: "",
-      format: "Mp4" as const,
+      format: OutputFormat.Mp4,
       quality: "good" as const,
       resolution: "1080",
       frameRate: "30",
@@ -82,7 +83,7 @@ describe("TikTokService (simplified)", () => {
     }
 
     it("should export settings with all fields", async () => {
-      const settings = {
+      const settings: any = {
         ...baseSettings,
         title: "Test TikTok Video",
         description: "Test description",
@@ -103,9 +104,9 @@ describe("TikTokService (simplified)", () => {
     })
 
     it("should map privacy settings correctly", async () => {
-      const publicSettings = { ...baseSettings, title: "Test", privacy: "public" as const }
-      const privateSettings = { ...baseSettings, title: "Test", privacy: "private" as const }
-      const unlistedSettings = { ...baseSettings, title: "Test", privacy: "unlisted" as const }
+      const publicSettings: any = { ...baseSettings, title: "Test", privacy: "public" as const }
+      const privateSettings: any = { ...baseSettings, title: "Test", privacy: "private" as const }
+      const unlistedSettings: any = { ...baseSettings, title: "Test", privacy: "unlisted" as const }
 
       const publicResult = await TikTokService.exportSettings(publicSettings)
       const privateResult = await TikTokService.exportSettings(privateSettings)
@@ -193,7 +194,7 @@ describe("TikTokService (simplified)", () => {
     })
 
     it("should throw error if not authenticated", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockReturnValue(null)
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue(null)
 
       await expect(TikTokService.getUserInfo()).rejects.toThrow("Not authenticated")
     })
@@ -210,7 +211,7 @@ describe("TikTokService (simplified)", () => {
 
   describe("uploadVideo authentication", () => {
     it("should throw error if not authenticated", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockReturnValue(null)
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue(null)
 
       const mockVideoFile = new File(["video content"], "test.mp4", { type: "video/mp4" })
       const mockMetadata = {

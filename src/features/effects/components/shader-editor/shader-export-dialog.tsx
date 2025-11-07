@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import type { ShaderExportOptions, ShaderProject } from "../../types/shader-system"
-import type { BaseEffect } from "../../types/unified-effects"
+import type { BaseEffect, EffectParameter } from "../../types/unified-effects"
 
 interface ShaderExportDialogProps {
   open: boolean
@@ -59,7 +59,7 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
       },
       complexity: effectMetadata.complexity,
       gpuAccelerated: true,
-      parameters: project.uniforms.map((uniform) => ({
+      parameters: project.uniforms.map((uniform): EffectParameter => ({
         id: uniform.name,
         name: {
           en: uniform.name,
@@ -67,9 +67,9 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
         },
         type: mapUniformTypeToParameterType(uniform.type),
         defaultValue: uniform.value,
-        min: uniform.min,
-        max: uniform.max,
-        step: uniform.step,
+        ...(uniform.min !== undefined && { min: uniform.min }),
+        ...(uniform.max !== undefined && { max: uniform.max }),
+        ...(uniform.step !== undefined && { step: uniform.step }),
         animatable: true,
       })),
       processors: {
@@ -144,7 +144,7 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                 onValueChange={(value) =>
                   setEffectMetadata({
                     ...effectMetadata,
-                    category: value,
+                    category: value as "stylize",
                   })
                 }
               >
@@ -337,15 +337,20 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
 }
 
 // Helper functions
-function mapUniformTypeToParameterType(uniformType: string): string {
-  const typeMap: Record<string, string> = {
+function mapUniformTypeToParameterType(
+  uniformType: string,
+): "number" | "boolean" | "point" | "color" | "file" | "text" | "angle" | "dropdown" | "keyframes" {
+  const typeMap: Record<
+    string,
+    "number" | "boolean" | "point" | "color" | "file" | "text" | "angle" | "dropdown" | "keyframes"
+  > = {
     float: "number",
     int: "number",
     bool: "boolean",
-    vec2: "vec2",
-    vec3: "vec3",
-    vec4: "vec4",
-    sampler2D: "texture",
+    vec2: "point",
+    vec3: "color",
+    vec4: "color",
+    sampler2D: "file",
   }
   return typeMap[uniformType] || "number"
 }

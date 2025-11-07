@@ -5,6 +5,7 @@
 
 import { useCallback, useMemo } from "react"
 
+import type { MediaFile as AIMediaFile } from "@/domains/ai-services/types/montage-planner"
 import type { MediaFile } from "@/features/media/types/media"
 import { formatTime } from "@/lib/date"
 import { useMontagePlanner as useMontagePlannerContext } from "../services/montage-planner-provider"
@@ -157,21 +158,21 @@ export function useMontagePlanner() {
   // Computed values
   const totalVideoDuration = useMemo(() => {
     if (!context.mediaFiles) return 0
-    const files = Array.from(context.mediaFiles.values())
-    return files.reduce((total: number, file: MediaFile) => {
+    const files = Array.from(context.mediaFiles.values()) as AIMediaFile[]
+    return files.reduce((total, file) => {
       return total + (file?.duration || 0)
-    }, 0)
+    }, 0 as number)
   }, [context.mediaFiles])
 
   const totalFragmentsDuration = useMemo(() => {
     if (!context.fragments) return 0
-    return context.fragments.reduce((total: number, fragment: Fragment) => {
+    return (context.fragments as Fragment[]).reduce((total, fragment) => {
       return total + (fragment.duration || 0)
-    }, 0)
+    }, 0 as number)
   }, [context.fragments])
 
   const utilizationRate = useMemo(() => {
-    const videoDuration = totalVideoDuration
+    const videoDuration = totalVideoDuration as number
     if (videoDuration === 0) return 0
     return (totalFragmentsDuration / videoDuration) * 100
   }, [totalFragmentsDuration, totalVideoDuration])

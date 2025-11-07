@@ -4,7 +4,7 @@ import type { MediaFile } from "@/features/media"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "StoreService" })
+const logger = createLogger("StoreService")
 
 /**
  * Путь к файлу хранилища пользовательских настроек
@@ -119,7 +119,7 @@ export class StoreService {
         logger.info("[StoreService] Store is empty, will use default settings")
       }
     } catch (error) {
-      logger.error("[StoreService] Error initializing store:", error)
+      logger.error("[StoreService] Error initializing store:", { error })
       // Попытаемся создать новое хранилище
       try {
         this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
@@ -129,7 +129,7 @@ export class StoreService {
         this.isInitialized = true
         logger.info("[StoreService] Created new store after initialization error")
       } catch (createError) {
-        logger.error("[StoreService] Failed to create new store:", createError)
+        logger.error("[StoreService] Failed to create new store:", { error: createError })
         this.store = null
         this.isInitialized = true
       }
@@ -149,7 +149,7 @@ export class StoreService {
       const settings = await this.store.get<AppSettings>("app-settings")
       return settings ?? null
     } catch (error) {
-      logger.error("[StoreService] Error getting settings:", error)
+      logger.error("[StoreService] Error getting settings:", { error })
       return null
     }
   }
@@ -181,7 +181,7 @@ export class StoreService {
       // Убираем лог для уменьшения шума в консоли
       // logger.info("[StoreService] Settings saved successfully")
     } catch (error) {
-      logger.error("[StoreService] Error saving settings:", error)
+      logger.error("[StoreService] Error saving settings:", { error })
     }
   }
 

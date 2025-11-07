@@ -535,16 +535,16 @@ describe("EffectComparison", () => {
       const initialValue = slider.getAttribute("value")
 
       // Симулируем mousemove без предварительного mousedown
-      fireEvent(
-        window,
-        new MouseEvent("mousemove", {
-          clientX: 300,
-          clientY: 200,
-        }),
-      )
+      const mouseMoveEvent = new MouseEvent("mousemove", {
+        clientX: 300,
+        clientY: 200,
+        bubbles: true,
+        cancelable: true,
+      })
+      fireEvent(window, mouseMoveEvent)
 
       // Значение слайдера не должно измениться
-      expect(slider).toHaveValue(initialValue)
+      expect(slider).toHaveAttribute("value", initialValue)
     })
 
     it("должен игнорировать mousemove когда containerRef недоступен", () => {
@@ -562,13 +562,13 @@ describe("EffectComparison", () => {
       const initialValue = slider.getAttribute("value")
 
       // Симулируем mousemove
-      fireEvent(
-        window,
-        new MouseEvent("mousemove", {
-          clientX: 300,
-          clientY: 200,
-        }),
-      )
+      const mouseMoveEvent = new MouseEvent("mousemove", {
+        clientX: 300,
+        clientY: 200,
+        bubbles: true,
+        cancelable: true,
+      })
+      fireEvent(window, mouseMoveEvent)
 
       // Значение не должно измениться
       expect(slider).toHaveValue(initialValue)

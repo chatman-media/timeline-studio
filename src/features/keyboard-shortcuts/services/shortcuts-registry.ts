@@ -257,7 +257,7 @@ class ShortcutsRegistry {
       const shortcuts = this.getAll()
       await shortcutsPersistence.saveSettings(shortcuts, globalEnabled)
     } catch (error) {
-      logger.error("Failed to save shortcuts settings:", error)
+      logger.error("Failed to save shortcuts settings:", { error })
       throw error
     }
   }
@@ -284,7 +284,7 @@ class ShortcutsRegistry {
 
       return { globalEnabled: settings.globalEnabled }
     } catch (error) {
-      logger.error("Failed to load shortcuts settings:", error)
+      logger.error("Failed to load shortcuts settings:", { error })
       return null
     }
   }

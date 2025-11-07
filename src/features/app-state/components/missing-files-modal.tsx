@@ -11,7 +11,7 @@ import { useModal } from "@/features/modals/services"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "MissingFilesModal" })
+const logger = createLogger("MissingFilesModal")
 
 interface FileResolution {
   file: SavedMediaFile
@@ -63,7 +63,7 @@ export function MissingFilesModal() {
         ),
       )
     } catch (error) {
-      logger.error("Ошибка при поиске файла:", error)
+      logger.error("Ошибка при поиске файла:", { error })
       setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, isProcessing: false } : r)))
     }
   }

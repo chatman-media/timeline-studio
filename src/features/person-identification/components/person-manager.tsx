@@ -13,7 +13,7 @@ import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"
 import { PersonList } from "./person-list"
 
-const logger = createLogger({ module: "PersonManager" })
+const logger = createLogger("PersonManager")
 
 interface PersonManagerProps {
   className?: string
@@ -53,7 +53,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       setPersons(allPersons)
     } catch (err) {
       setError("Ошибка загрузки персон")
-      logger.error("Failed to load persons:", err)
+      logger.errorSync("Failed to load persons:", { error: err })
     } finally {
       setIsLoading(false)
     }
@@ -71,7 +71,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       }
     } catch (err) {
       setError("Ошибка загрузки данных персоны")
-      logger.error("Failed to load person details:", err)
+      logger.errorSync("Failed to load person details:", { error: err })
     }
   }
 
@@ -110,7 +110,7 @@ export function PersonManager({ className }: PersonManagerProps) {
         }
       } catch (err) {
         setError("Ошибка удаления персоны")
-        logger.error("Failed to delete person:", err)
+        logger.errorSync("Failed to delete person:", { error: err })
       }
     }
   }
@@ -133,7 +133,7 @@ export function PersonManager({ className }: PersonManagerProps) {
       await loadPersons()
     } catch (err) {
       setError("Ошибка сохранения персоны")
-      logger.error("Failed to save person:", err)
+      logger.errorSync("Failed to save person:", { error: err })
       throw err // Пробрасываем ошибку для обработки в форме
     }
   }

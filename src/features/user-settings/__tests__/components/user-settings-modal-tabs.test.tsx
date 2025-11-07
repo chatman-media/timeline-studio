@@ -7,6 +7,7 @@ import { useModal } from "@/features/modals/services/modal-provider"
 import { UserSettingsModalTabs } from "../../components/user-settings-modal-tabs"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { useUserSettings } from "../../hooks/use-user-settings"
+import { createMockApiKeys, createMockUserSettings } from "../test-utils"
 
 // Мокаем хуки
 vi.mock("../../hooks/use-user-settings")
@@ -29,48 +30,10 @@ describe("UserSettingsModalTabs", () => {
     vi.clearAllMocks()
 
     // Мок для useUserSettings
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "public/screenshots",
-      playerScreenshotsPath: "public/media",
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      isTimelineVisible: true,
-      isOptionsVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      playerVolume: 100,
-      handleScreenshotsPathChange: vi.fn(),
-      handleAiApiKeyChange: vi.fn(),
-      handleClaudeApiKeyChange: vi.fn(),
-      handlePlayerScreenshotsPathChange: vi.fn(),
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-      handlePlayerVolumeChange: vi.fn(),
-      toggleTimelineVisibility: vi.fn(),
-      toggleOptionsVisibility: vi.fn(),
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() => createMockUserSettings())
 
     // Мок для useApiKeys
-    vi.mocked(useApiKeys).mockImplementation(() => ({
-      getApiKeyStatus: vi.fn().mockReturnValue("not_set"),
-      updateApiKeyStatus: vi.fn(),
-      testApiKey: vi.fn(),
-      initiateOAuth: vi.fn(),
-      youtubeCredentials: { clientId: "", clientSecret: "" },
-      updateYoutubeCredentials: vi.fn(),
-      tiktokCredentials: { clientId: "", clientSecret: "" },
-      updateTiktokCredentials: vi.fn(),
-      vimeoCredentials: { clientId: "", clientSecret: "", accessToken: "" },
-      updateVimeoCredentials: vi.fn(),
-      telegramCredentials: { botToken: "", chatId: "" },
-      updateTelegramCredentials: vi.fn(),
-      codecovToken: "",
-      updateCodecovToken: vi.fn(),
-      tauriAnalyticsKey: "",
-      updateTauriAnalyticsKey: vi.fn(),
-    }))
+    vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
 
     // Мок для useLanguage
 
@@ -88,6 +51,7 @@ describe("UserSettingsModalTabs", () => {
       openModal: vi.fn(),
       closeModal: vi.fn(),
       modalType: "none",
+      isConnected: false,
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),

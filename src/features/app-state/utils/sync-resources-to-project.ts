@@ -8,7 +8,7 @@ import type { MediaResource, MusicResource } from "@/features/resources/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "SyncResourcesToProject" })
+const logger = createLogger("SyncResourcesToProject")
 
 /**
  * Синхронизирует ресурсы из ResourcesProvider с MediaPool проекта
@@ -105,7 +105,7 @@ export function getResourcesFromStorage(): {
       }
     }
   } catch (error) {
-    logger.warn("Failed to get resources from localStorage:", error)
+    logger.warn("Failed to get resources from localStorage:", { error })
   }
 
   return {

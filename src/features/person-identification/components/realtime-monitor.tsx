@@ -24,7 +24,7 @@ import {
 } from "../services/advanced-face-detection-service"
 import { PersonDatabaseService } from "../services/person-database-service"
 
-const logger = createLogger({ module: "RealtimeMonitor" })
+const logger = createLogger("RealtimeMonitor")
 
 interface RealtimeMonitorProps {
   videoStream?: MediaStream
@@ -99,7 +99,7 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
           },
           onStatusUpdate: setStatus,
           onError: (error) => {
-            logger.error("Real-time processing error:", error)
+            logger.errorSync("Real-time processing error:", { error })
             setIsProcessing(false)
           },
         })
@@ -107,7 +107,7 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
         renderLoop()
       }
     } catch (error) {
-      logger.error("Error toggling processing:", error)
+      logger.errorSync("Error toggling processing:", { error })
     }
   }, [isProcessing, videoStream, onPersonDetected])
 

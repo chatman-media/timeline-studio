@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "../services/store-service"
 
-const logger = createLogger({ module: "UseRecentProjects" })
+const logger = createLogger("UseRecentProjects")
 
 /**
  * Хук для доступа к списку последних открытых проектов

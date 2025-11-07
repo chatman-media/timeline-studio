@@ -1,5 +1,12 @@
 import { OutputFormat } from "@/features/video-compiler/types/render"
 
+export interface OAuthToken {
+  accessToken: string
+  refreshToken?: string
+  expiresIn: number
+  tokenType: string
+}
+
 export interface ExportSettings {
   fileName: string
   savePath: string

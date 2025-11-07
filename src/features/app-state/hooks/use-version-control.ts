@@ -11,7 +11,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { CommandResult, ProjectEvent } from "@/types/generated/tauri-bindings"
 import { getBackendSync } from "../services/backend-sync"
 
-const logger = createLogger({ module: "UseVersionControl" })
+const logger = createLogger("UseVersionControl")
 
 // This is a different interface for hook state, not the same as backend VersionControlState
 export interface VersionControlHookState {

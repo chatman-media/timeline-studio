@@ -16,7 +16,7 @@ import {
   type ProjectState,
 } from "@/types/generated/tauri-bindings"
 
-const logger = createLogger({ module: "BackendSync" })
+const logger = createLogger("BackendSync")
 
 export type EventHandler = (event: ProjectEvent) => void
 export type StateChangeHandler = (state: ProjectState) => void
@@ -59,7 +59,7 @@ export class BackendSync {
       this.isConnected = true
       logger.info("Backend sync connected")
     } catch (error) {
-      logger.error("Failed to connect backend sync:", error)
+      logger.error("Failed to connect backend sync:", { error })
       throw error
     }
   }
@@ -85,14 +85,14 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      logger.error("Command execution failed:", result.error)
+      logger.error("Command execution failed:", { error: result.error })
       return {
         success: false,
         error: result.error,
         data: null,
       }
     } catch (error) {
-      logger.error("Command execution failed:", error)
+      logger.error("Command execution failed:", { error })
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -110,10 +110,10 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      logger.error("Failed to get project state:", result.error)
+      logger.error("Failed to get project state:", { error: result.error })
       return null
     } catch (error) {
-      logger.error("Failed to get project state:", error)
+      logger.error("Failed to get project state:", { error })
       return null
     }
   }
@@ -127,10 +127,10 @@ export class BackendSync {
       if (result.status === "ok") {
         return result.data
       }
-      logger.error("Failed to get event history:", result.error)
+      logger.error("Failed to get event history:", { error: result.error })
       return []
     } catch (error) {
-      logger.error("Failed to get event history:", error)
+      logger.error("Failed to get event history:", { error })
       return []
     }
   }
@@ -262,7 +262,7 @@ export class BackendSync {
    * Handle incoming backend event
    */
   private handleBackendEvent(envelope: EventEnvelope) {
-    logger.info("BackendSync: Received event", envelope)
+    logger.info("BackendSync: Received event", { envelope })
     // Update last version
     this.lastVersion = envelope.metadata.version
 
@@ -271,7 +271,7 @@ export class BackendSync {
       try {
         handler(envelope.event)
       } catch (error) {
-        logger.error("Event handler error:", error)
+        logger.error("Event handler error:", { error })
       }
     })
 
@@ -325,7 +325,7 @@ export class BackendSync {
    */
   private async fetchAndNotifyState() {
     const state = await this.getProjectState()
-    logger.info("BackendSync: Fetched project state", state)
+    logger.info("BackendSync: Fetched project state", { state })
     if (state) {
       this.notifyStateChange(state)
     }
@@ -335,12 +335,12 @@ export class BackendSync {
    * Notify state change handlers
    */
   private notifyStateChange(state: ProjectState) {
-    logger.info("BackendSync: Notifying state change to", this.stateChangeHandlers.size, "handlers")
+    logger.info("BackendSync: Notifying state change to handlers", { handlersCount: this.stateChangeHandlers.size })
     this.stateChangeHandlers.forEach((handler) => {
       try {
         handler(state)
       } catch (error) {
-        logger.error("State change handler error:", error)
+        logger.error("State change handler error:", { error })
       }
     })
   }

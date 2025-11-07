@@ -60,7 +60,7 @@ export function OAuthConnection({ service, credentials, onUpdate, fields, links 
         await saveOAuthCredentials(service, credentials.clientId, credentials.clientSecret)
       }
     } catch (error) {
-      logger.error(`OAuth error for ${service}:`, error)
+      void logger.error(`OAuth error for ${service}:`, { error: String(error) })
     }
   }
 

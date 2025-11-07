@@ -2,10 +2,10 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useLanguage } from "@/features/language"
-import { ModalType } from "@/features/modals"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { GeneralSettingsTab } from "../../../components/tabs/general-settings-tab"
 import { useUserSettings } from "../../../hooks/use-user-settings"
+import { createMockUserSettings } from "../../test-utils"
 
 vi.mock("../../../hooks/use-user-settings")
 vi.mock("@/features/modals/services/modal-provider")
@@ -71,36 +71,21 @@ describe("GeneralSettingsTab", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    vi.mocked(useUserSettings).mockImplementation(() => ({
-      screenshotsPath: "public/screenshots",
-      playerScreenshotsPath: "public/media",
-      handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
-      handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
-      openAiApiKey: "",
-      claudeApiKey: "",
-      isBrowserVisible: true,
-      isTimelineVisible: true,
-      isOptionsVisible: true,
-      activeTab: "media",
-      layoutMode: "default",
-      playerVolume: 100,
-      handleAiApiKeyChange: vi.fn(),
-      handleClaudeApiKeyChange: vi.fn(),
-      handleTabChange: vi.fn(),
-      handleLayoutChange: vi.fn(),
-      toggleBrowserVisibility: vi.fn(),
-      handlePlayerVolumeChange: vi.fn(),
-      toggleTimelineVisibility: vi.fn(),
-      toggleOptionsVisibility: vi.fn(),
-    }))
+    vi.mocked(useUserSettings).mockImplementation(() =>
+      createMockUserSettings({
+        handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
+        handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
+      }),
+    )
 
     vi.mocked(useModal).mockImplementation(() => ({
       openModal: mockOpenModal,
       closeModal: vi.fn(),
-      modalType: "none" as ModalType,
+      modalType: "none",
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
+      isConnected: false,
     }))
 
     vi.mocked(useLanguage).mockImplementation(() => ({

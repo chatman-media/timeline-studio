@@ -83,7 +83,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to analyze video composition"
         setError(errorMessage)
-        logger.error("Video composition analysis failed:", err)
+        logger.error("Video composition analysis failed:", { error: err })
         throw new Error(errorMessage)
       } finally {
         setIsAnalyzing(false)
@@ -111,7 +111,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to detect key moments"
       setError(errorMessage)
-      logger.error("Key moment detection failed:", err)
+      logger.error("Key moment detection failed:", { error: err })
       throw new Error(errorMessage)
     } finally {
       setIsAnalyzing(false)
@@ -139,7 +139,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to generate montage plan"
         setError(errorMessage)
-        logger.error("Montage plan generation failed:", err)
+        logger.error("Montage plan generation failed:", { error: err })
         throw new Error(errorMessage)
       } finally {
         setIsGenerating(false)
@@ -166,7 +166,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to analyze video quality"
       setError(errorMessage)
-      logger.error("Video quality analysis failed:", err)
+      logger.error("Video quality analysis failed:", { error: err })
       throw new Error(errorMessage)
     } finally {
       setIsAnalyzing(false)
@@ -193,7 +193,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to analyze frame quality"
         setError(errorMessage)
-        logger.error("Frame quality analysis failed:", err)
+        logger.error("Frame quality analysis failed:", { error: err })
         throw new Error(errorMessage)
       } finally {
         setIsAnalyzing(false)
@@ -220,7 +220,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to analyze audio content"
       setError(errorMessage)
-      logger.error("Audio content analysis failed:", err)
+      logger.error("Audio content analysis failed:", { error: err })
       throw new Error(errorMessage)
     } finally {
       setIsAnalyzing(false)

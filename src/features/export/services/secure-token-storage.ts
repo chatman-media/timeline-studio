@@ -8,14 +8,11 @@
 import { isDesktop } from "@/lib/environment"
 
 import { createLogger } from "@/lib/tauri-logger"
+import { OAuthToken } from "../types/export-types"
 
 const logger = createLogger({ module: "SecureTokenStorage" })
 
-interface OAuthToken {
-  accessToken: string
-  refreshToken?: string
-  expiresIn: number
-  tokenType: string
+interface OAuthTokenWithExpiry extends OAuthToken {
   expiresAt?: number
 }
 
@@ -32,7 +29,7 @@ const MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 дней
  * Сохраняет OAuth токен безопасным способом
  */
 export async function storeToken(network: string, token: OAuthToken): Promise<void> {
-  const tokenWithExpiry = {
+  const tokenWithExpiry: OAuthTokenWithExpiry = {
     ...token,
     expiresAt: Date.now() + token.expiresIn * 1000,
   }
@@ -76,7 +73,8 @@ export async function getStoredToken(network: string): Promise<OAuthToken | null
     }
 
     // Проверяем, не истек ли токен
-    if (token.expiresAt && Date.now() > token.expiresAt) {
+    const tokenWithExpiry = token as OAuthTokenWithExpiry
+    if (tokenWithExpiry.expiresAt && Date.now() > tokenWithExpiry.expiresAt) {
       await removeToken(network)
       return null
     }
@@ -131,7 +129,7 @@ export async function clearAllTokens(): Promise<void> {
 /**
  * Сохраняет токен через Tauri secure storage
  */
-async function storeTauriSecure(key: string, token: OAuthToken): Promise<void> {
+async function storeTauriSecure(key: string, token: OAuthTokenWithExpiry): Promise<void> {
   try {
     // Динамический импорт Tauri API
     const { Store } = await import("@tauri-apps/plugin-store")
@@ -153,7 +151,7 @@ async function getTauriSecure(key: string): Promise<OAuthToken | null> {
     const { Store } = await import("@tauri-apps/plugin-store")
 
     const store = await Store.load("oauth-tokens.dat")
-    const token = await store.get<OAuthToken>(key)
+    const token = await store.get<OAuthTokenWithExpiry>(key)
     return token || null
   } catch (error) {
     logger.error("Tauri store not available, falling back to encrypted localStorage:", error)
@@ -179,7 +177,7 @@ async function removeTauriSecure(key: string): Promise<void> {
 /**
  * Сохраняет зашифрованный токен в localStorage
  */
-async function storeEncrypted(key: string, token: OAuthToken): Promise<void> {
+async function storeEncrypted(key: string, token: OAuthTokenWithExpiry): Promise<void> {
   try {
     const encrypted = await encrypt(JSON.stringify(token))
     localStorage.setItem(key, JSON.stringify(encrypted))

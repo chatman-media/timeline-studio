@@ -1,11 +1,6 @@
 // Mock OAuth service for testing
 
-export interface OAuthToken {
-  accessToken: string
-  refreshToken?: string
-  expiresIn: number
-  tokenType: string
-}
+import { OAuthToken } from "../types/export-types"
 
 // Mock storage for tokens
 const mockTokens: Record<string, OAuthToken | null> = {}

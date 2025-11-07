@@ -160,9 +160,9 @@ export class AdvancedTrackingService {
       })
 
       this.isInitialized = true
-      logger.info("Advanced Tracking Service инициализирован")
+      AdvancedTrackingService.logger.infoSync("Advanced Tracking Service инициализирован")
     } catch (error) {
-      logger.error("Ошибка инициализации Advanced Tracking Service:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка инициализации Advanced Tracking Service:", { error })
       throw error
     }
   }
@@ -187,9 +187,9 @@ export class AdvancedTrackingService {
       this.frameNumber = 0
       this.tracks.clear()
 
-      logger.info(`Трекинг запущен для видео ${videoId}`)
+      AdvancedTrackingService.logger.infoSync(`Трекинг запущен для видео ${videoId}`)
     } catch (error) {
-      logger.error("Ошибка запуска трекинга:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка запуска трекинга:", { error })
       throw error
     }
   }
@@ -272,7 +272,7 @@ export class AdvancedTrackingService {
         statistics: result.statistics,
       }
     } catch (error) {
-      logger.error("Ошибка обработки кадра:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка обработки кадра:", { error })
       throw error
     }
   }
@@ -301,7 +301,7 @@ export class AdvancedTrackingService {
         }
       }
     } catch (error) {
-      logger.error("Ошибка предсказания позиций:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка предсказания позиций:", { error })
 
       // Fallback: простая линейная экстраполяция
       for (const [trackId, track] of this.tracks) {
@@ -340,7 +340,7 @@ export class AdvancedTrackingService {
         personId,
       })
     } catch (error) {
-      logger.error("Ошибка назначения персоны треку:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка назначения персоны треку:", { error })
       throw error
     }
   }
@@ -378,7 +378,7 @@ export class AdvancedTrackingService {
         targetTrackId,
       })
     } catch (error) {
-      logger.error("Ошибка объединения треков:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка объединения треков:", { error })
       throw error
     }
   }
@@ -438,7 +438,7 @@ export class AdvancedTrackingService {
 
       return interpolated
     } catch (error) {
-      logger.error("Ошибка интерполяции позиций:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка интерполяции позиций:", { error })
       return []
     }
   }
@@ -498,12 +498,12 @@ export class AdvancedTrackingService {
 
       // Сохраняем финальное состояние треков
       const finalTracks = this.getActiveTracks()
-      logger.info(`Трекинг остановлен. Финальных треков: ${finalTracks.length}`)
+      AdvancedTrackingService.logger.infoSync(`Трекинг остановлен. Финальных треков: ${finalTracks.length}`)
 
       // Очищаем треки только после сохранения
       // this.tracks.clear() // Не очищаем сразу, чтобы можно было экспортировать
     } catch (error) {
-      logger.error("Ошибка остановки трекинга:", error)
+      AdvancedTrackingService.logger.errorSync("Ошибка остановки трекинга:", { error })
       throw error
     }
   }
@@ -540,7 +540,7 @@ export class AdvancedTrackingService {
       try {
         listener(event)
       } catch (error) {
-        logger.error("Ошибка в обработчике события трекинга:", error)
+        AdvancedTrackingService.logger.errorSync("Ошибка в обработчике события трекинга:", { error })
       }
     })
   }

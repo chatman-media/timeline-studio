@@ -47,7 +47,7 @@ export class NodeGraphProcessor {
         const result = await this.processNode(node, graph, context)
         results.set(nodeId, result)
       } catch (error) {
-        logger.error(`Error processing node ${nodeId}:`, error)
+        void logger.error(`Error processing node ${nodeId}:`, { error: error })
         results.set(nodeId, {
           data: null,
           metadata: {

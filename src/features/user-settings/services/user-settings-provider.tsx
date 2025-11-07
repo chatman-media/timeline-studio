@@ -45,6 +45,11 @@ export interface UserSettingsContextValue {
   autoSaveEnabled: boolean
   autoSaveInterval: number
 
+  // Настройки оптимизации Timeline
+  timelineVirtualizationEnabled: boolean
+  timelineVirtualizationOverscan: number
+  timelineClipDetailsThreshold: number
+
   // Методы для изменения настроек
   handleTabChange: (value: string) => void // Изменение активной вкладки
   handleLayoutChange: (value: LayoutMode) => void // Изменение макета интерфейса
@@ -76,6 +81,11 @@ export interface UserSettingsContextValue {
   // Методы для автосохранения
   handleAutoSaveEnabledChange: (value: boolean) => void
   handleAutoSaveIntervalChange: (value: number) => void
+
+  // Методы для оптимизации Timeline
+  handleTimelineVirtualizationEnabledChange: (value: boolean) => void
+  handleTimelineVirtualizationOverscanChange: (value: number) => void
+  handleTimelineClipDetailsThresholdChange: (value: number) => void
 }
 
 /**
@@ -149,6 +159,11 @@ export function UserSettingsProvider({
     // Автосохранение
     autoSaveEnabled: settings?.autoSaveEnabled ?? true,
     autoSaveInterval: settings?.autoSaveInterval ?? 300,
+
+    // Оптимизация Timeline
+    timelineVirtualizationEnabled: settings?.timelineVirtualizationEnabled ?? true,
+    timelineVirtualizationOverscan: settings?.timelineVirtualizationOverscan ?? 5,
+    timelineClipDetailsThreshold: settings?.timelineClipDetailsThreshold ?? 50,
 
     // Методы изменения
     handleTabChange: (value: string) => {
@@ -250,6 +265,19 @@ export function UserSettingsProvider({
 
     handleAutoSaveIntervalChange: (value: number) => {
       orchestrator.updateUserSettings({ autoSaveInterval: value })
+    },
+
+    // Оптимизация Timeline
+    handleTimelineVirtualizationEnabledChange: (value: boolean) => {
+      orchestrator.updateUserSettings({ timelineVirtualizationEnabled: value })
+    },
+
+    handleTimelineVirtualizationOverscanChange: (value: number) => {
+      orchestrator.updateUserSettings({ timelineVirtualizationOverscan: value })
+    },
+
+    handleTimelineClipDetailsThresholdChange: (value: number) => {
+      orchestrator.updateUserSettings({ timelineClipDetailsThreshold: value })
     },
   }
 

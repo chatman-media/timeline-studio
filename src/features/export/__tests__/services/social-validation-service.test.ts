@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import * as SocialValidationService from "../../services/social-validation-service"
 import type { SocialExportSettings } from "../../types/export-types"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 describe("SocialValidationService", () => {
   describe("validateExportSettings", () => {
@@ -15,7 +16,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -36,7 +37,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -57,7 +58,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -79,7 +80,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -101,7 +102,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -123,7 +124,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -144,7 +145,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -171,7 +172,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -200,7 +201,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -227,7 +228,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -254,7 +255,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -276,7 +277,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -298,7 +299,7 @@ describe("SocialValidationService", () => {
         isLoggedIn: true,
         fileName: "test",
         savePath: "/test",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
         quality: "normal",
         resolution: "1080",
         frameRate: "30",
@@ -346,7 +347,7 @@ describe("SocialValidationService", () => {
         resolution: "1080",
         frameRate: "30",
         quality: "good",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
       })
     })
 
@@ -357,7 +358,7 @@ describe("SocialValidationService", () => {
         resolution: "1080",
         frameRate: "30",
         quality: "good",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
       })
     })
 
@@ -368,7 +369,7 @@ describe("SocialValidationService", () => {
         resolution: "1080",
         frameRate: "30",
         quality: "best",
-        format: "Mp4",
+        format: OutputFormat.Mp4,
       })
     })
 

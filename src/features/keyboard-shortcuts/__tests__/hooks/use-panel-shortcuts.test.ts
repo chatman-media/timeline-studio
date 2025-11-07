@@ -80,7 +80,7 @@ describe("usePanelShortcuts", () => {
       const mockEvent = new KeyboardEvent("keydown")
       vi.spyOn(mockEvent, "preventDefault")
 
-      shortcut?.action?.(mockEvent, {})
+      shortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
 
       expect(mockEvent.preventDefault).toHaveBeenCalled()
       expect(mockToggleBrowserVisibility).toHaveBeenCalled()
@@ -106,7 +106,7 @@ describe("usePanelShortcuts", () => {
 
       // New action should work
       const mockEvent = new KeyboardEvent("keydown")
-      shortcut?.action?.(mockEvent, {})
+      shortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
 
       expect(mockToggleBrowserVisibility).toHaveBeenCalled()
       expect(originalAction).not.toHaveBeenCalled()
@@ -121,7 +121,7 @@ describe("usePanelShortcuts", () => {
       const mockEvent = new KeyboardEvent("keydown")
       vi.spyOn(mockEvent, "preventDefault")
 
-      shortcut?.action?.(mockEvent, {})
+      shortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
 
       expect(mockEvent.preventDefault).toHaveBeenCalled()
       expect(mockToggleOptionsVisibility).toHaveBeenCalled()
@@ -136,7 +136,7 @@ describe("usePanelShortcuts", () => {
       const mockEvent = new KeyboardEvent("keydown")
       vi.spyOn(mockEvent, "preventDefault")
 
-      shortcut?.action?.(mockEvent, {})
+      shortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
 
       expect(mockEvent.preventDefault).toHaveBeenCalled()
       expect(mockToggleTimelineVisibility).toHaveBeenCalled()
@@ -173,15 +173,15 @@ describe("usePanelShortcuts", () => {
 
       // Test each shortcut uses the custom functions
       const browserShortcut = shortcutsRegistry.get("toggle-browser")
-      browserShortcut?.action?.(new KeyboardEvent("keydown"), {})
+      browserShortcut?.action?.(new KeyboardEvent("keydown"), { hotkey: "cmd+b" })
       expect(customToggleBrowser).toHaveBeenCalled()
 
       const optionsShortcut = shortcutsRegistry.get("toggle-options")
-      optionsShortcut?.action?.(new KeyboardEvent("keydown"), {})
+      optionsShortcut?.action?.(new KeyboardEvent("keydown"), { hotkey: "cmd+o" })
       expect(customToggleOptions).toHaveBeenCalled()
 
       const timelineShortcut = shortcutsRegistry.get("toggle-timeline")
-      timelineShortcut?.action?.(new KeyboardEvent("keydown"), {})
+      timelineShortcut?.action?.(new KeyboardEvent("keydown"), { hotkey: "cmd+t" })
       expect(customToggleTimeline).toHaveBeenCalled()
     })
   })
@@ -207,7 +207,7 @@ describe("usePanelShortcuts", () => {
       rerender()
 
       const shortcut = shortcutsRegistry.get("toggle-browser")
-      shortcut?.action?.(new KeyboardEvent("keydown"), {})
+      shortcut?.action?.(new KeyboardEvent("keydown"), { hotkey: "cmd+b" })
 
       // Should use the new function
       expect(newToggleBrowser).toHaveBeenCalled()
@@ -223,7 +223,6 @@ describe("usePanelShortcuts", () => {
         keys: ["cmd+b", "ctrl+b"],
         description: "Toggle browser panel visibility",
         enabled: false,
-        options: { someOption: true },
       }
 
       shortcutsRegistry.register(originalShortcut)
@@ -238,7 +237,6 @@ describe("usePanelShortcuts", () => {
       expect(updatedShortcut?.keys).toEqual(originalShortcut.keys)
       expect(updatedShortcut?.description).toBe(originalShortcut.description)
       expect(updatedShortcut?.enabled).toBe(originalShortcut.enabled)
-      expect(updatedShortcut?.options).toEqual(originalShortcut.options)
 
       // Should have new action
       expect(updatedShortcut?.action).toBeDefined()
@@ -256,7 +254,7 @@ describe("usePanelShortcuts", () => {
 
       // Should still work correctly
       const shortcut = shortcutsRegistry.get("toggle-browser")
-      shortcut?.action?.(new KeyboardEvent("keydown"), {})
+      shortcut?.action?.(new KeyboardEvent("keydown"), { hotkey: "cmd+b" })
 
       // Should only call once per action trigger
       expect(mockToggleBrowserVisibility).toHaveBeenCalledTimes(1)

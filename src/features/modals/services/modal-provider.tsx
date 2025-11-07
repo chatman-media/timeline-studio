@@ -7,12 +7,15 @@ import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 
-const logger = createLogger("ModalProvider")
+const logger = createLogger({ module: "ModalProvider" })
+
+// Re-export types for convenience
+export type { ModalType, ModalData }
 
 /**
  * Интерфейс для контекста модальных окон
  */
-interface ModalContextType {
+export interface ModalContextType {
   modalType: ModalType
   modalData: ModalData | null
   isOpen: boolean

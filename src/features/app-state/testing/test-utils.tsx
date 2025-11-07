@@ -13,7 +13,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { CommandResult, ProjectCommand } from "@/types/generated/tauri-bindings"
 import { createTestScenarios, MockBackendProvider, type MockProjectState } from "./mock-backend-provider"
 
-const logger = createLogger({ module: "TestUtils" })
+const logger = createLogger("TestUtils")
 
 // Re-export will be done later in the file to avoid duplicates
 

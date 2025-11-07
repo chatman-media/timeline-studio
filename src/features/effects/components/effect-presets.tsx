@@ -49,11 +49,11 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
             setCustomPresets(converted)
           }
         } catch (parseError) {
-          logger.error("Error parsing custom presets:", parseError)
+          void logger.error("Error parsing custom presets", { error: parseError })
         }
       }
     } catch (storageError) {
-      logger.error("Error accessing localStorage:", storageError)
+      void logger.error("Error accessing localStorage", { error: storageError })
     }
   }, [effect.id])
 

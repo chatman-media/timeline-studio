@@ -40,7 +40,7 @@ vi.mock("@/features/browser/components/content-group", () => ({
           </button>
         )}
         <div className={itemsContainerClassName} style={itemsContainerStyle} data-testid="items-container">
-          {items.map((item, index) => renderItem(item, index))}
+          {items.map((item: any, index: number) => renderItem(item, index))}
         </div>
       </div>
     ),

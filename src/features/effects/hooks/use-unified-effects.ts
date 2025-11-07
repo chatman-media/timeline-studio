@@ -6,7 +6,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePlayer } from "@/features/video-player"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("useUnifiedEffects")
 
 import { basicEffectsLibrary } from "../presets/basic-effects"
 import { EffectManager } from "../services/effect-manager"
@@ -86,7 +88,7 @@ export function useUnifiedEffects(
   // ============================================================================
 
   useEffect(() => {
-    logInfo("useUnifiedEffects", `Initializing unified effects for ${targetType} - ${targetId}`)
+    void logger.info( `Initializing unified effects for ${targetType} - ${targetId}`)
 
     if (loadBasicEffects) {
       // Регистрируем базовые эффекты
@@ -103,7 +105,7 @@ export function useUnifiedEffects(
         effectsById: effectsMap,
       }))
 
-      logInfo("useUnifiedEffects", `Loaded ${effects.length} basic effects`)
+      void logger.info( `Loaded ${effects.length} basic effects`)
     }
 
     // Создаем стек эффектов для объекта
@@ -151,7 +153,7 @@ export function useUnifiedEffects(
         parameters?: Record<string, any>
       } = {},
     ): AppliedEffect => {
-      logInfo("useUnifiedEffects", `Applying effect ${effectId} to ${targetType}`)
+      void logger.info( `Applying effect ${effectId} to ${targetType}`)
       const appliedEffect = effectManager.current.applyEffect(effectId, targetId, targetType, options)
       updateEffectsState()
       return appliedEffect
@@ -228,7 +230,7 @@ export function useUnifiedEffects(
    */
   const renderEffects = useCallback(
     async (source?: HTMLVideoElement | HTMLCanvasElement | ImageBitmap, customTime?: number): Promise<RenderResult> => {
-      logInfo("useUnifiedEffects", `Rendering effects at time ${customTime ?? currentTime}`)
+      void logger.info( `Rendering effects at time ${customTime ?? currentTime}`)
 
       if (state.appliedEffects.length === 0) {
         return { success: true, output: source as any, processingTime: 0 }
@@ -254,10 +256,10 @@ export function useUnifiedEffects(
           previewBitmap: result.output instanceof ImageBitmap ? result.output : null,
         }))
 
-        logInfo("useUnifiedEffects", `Effects rendered successfully in ${result.processingTime}ms`)
+        void logger.info( `Effects rendered successfully in ${result.processingTime}ms`)
         return result
       } catch (error) {
-        logError("useUnifiedEffects", "Error rendering effects", error)
+        void logger.error( "Error rendering effects", error)
 
         const errorResult: RenderResult = {
           success: false,

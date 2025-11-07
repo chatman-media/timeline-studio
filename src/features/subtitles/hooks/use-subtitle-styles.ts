@@ -11,7 +11,7 @@ import {
   validateSubtitleStyleTemplatesData,
 } from "../utils/subtitle-processor"
 
-const logger = createLogger({ module: "UseSubtitleStyles" })
+const logger = createLogger("UseSubtitleStyles")
 
 // Импортируем JSON файл напрямую - в Tauri это работает отлично
 

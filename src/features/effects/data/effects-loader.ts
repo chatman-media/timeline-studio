@@ -87,14 +87,14 @@ export function loadEffects(effectManager: any) {
       effectManager.registerEffect(effect)
       loaded++
     } catch (error) {
-      logger.error(`Failed to register effect ${effect.id}:`, error)
+      void logger.error(`Failed to register effect ${effect.id}`, { error })
       errors++
     }
   }
 
-  logger.info(`✅ Loaded ${loaded} effects`)
+  void logger.info(`✅ Loaded ${loaded} effects`)
   if (errors > 0) {
-    logger.warn(`⚠️  Failed to load ${errors} effects`)
+    void logger.warn(`⚠️  Failed to load ${errors} effects`)
   }
 
   return { loaded, errors }

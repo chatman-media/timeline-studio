@@ -4,8 +4,9 @@
 
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
+import { createSubtitleClip } from "./subtitle-importers"
 
-const logger = createLogger({ module: "SubtitleParsers" })
+const logger = createLogger("SubtitleParsers")
 
 /**
  * Конвертирует время из формата SRT (00:00:00,000) в секунды
@@ -97,31 +98,32 @@ export function parseSRT(content: string): Omit<SubtitleClip, "id" | "trackId">[
       const text = textLines.join("\n")
 
       if (text.trim()) {
-        subtitles.push({
-          type: "subtitle",
-          startTime,
-          duration: endTime - startTime,
-          text: text.trim(),
-          style: {
-            fontFamily: "Arial",
-            fontSize: 24,
-            color: "#FFFFFF",
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            textAlign: "center",
-          },
-          position: {
-            x: 0.5,
-            y: 0.9,
-            width: 1,
-            height: 0.1,
-            rotation: 0,
-            scaleX: 1,
-            scaleY: 1,
-          },
-          subtitlePosition: {
-            alignment: "bottom-center",
-          },
-        })
+        subtitles.push(
+          createSubtitleClip({
+            startTime,
+            duration: endTime - startTime,
+            text: text.trim(),
+            style: {
+              fontFamily: "Arial",
+              fontSize: 24,
+              color: "#FFFFFF",
+              backgroundColor: "rgba(0, 0, 0, 0.75)",
+              textAlign: "center",
+            },
+            position: {
+              x: 0.5,
+              y: 0.9,
+              width: 1,
+              height: 0.1,
+              rotation: 0,
+              scaleX: 1,
+              scaleY: 1,
+            },
+            subtitlePosition: {
+              alignment: "bottom-center",
+            },
+          }),
+        )
       }
     } catch (e) {
       // Пропускаем неверные блоки
@@ -172,31 +174,32 @@ export function parseVTT(content: string): Omit<SubtitleClip, "id" | "trackId">[
       const text = lines.slice(timingLineIndex + 1).join("\n")
 
       if (text.trim()) {
-        subtitles.push({
-          type: "subtitle",
-          startTime,
-          duration: endTime - startTime,
-          text,
-          style: {
-            fontFamily: "Arial",
-            fontSize: 24,
-            color: "#FFFFFF",
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            textAlign: "center",
-          },
-          position: {
-            x: 0.5,
-            y: 0.9,
-            width: 1,
-            height: 0.1,
-            rotation: 0,
-            scaleX: 1,
-            scaleY: 1,
-          },
-          subtitlePosition: {
-            alignment: "bottom-center",
-          },
-        })
+        subtitles.push(
+          createSubtitleClip({
+            startTime,
+            duration: endTime - startTime,
+            text,
+            style: {
+              fontFamily: "Arial",
+              fontSize: 24,
+              color: "#FFFFFF",
+              backgroundColor: "rgba(0, 0, 0, 0.75)",
+              textAlign: "center",
+            },
+            position: {
+              x: 0.5,
+              y: 0.9,
+              width: 1,
+              height: 0.1,
+              rotation: 0,
+              scaleX: 1,
+              scaleY: 1,
+            },
+            subtitlePosition: {
+              alignment: "bottom-center",
+            },
+          }),
+        )
       }
     } catch (e) {
       // Пропускаем неверные блоки
@@ -251,31 +254,32 @@ export function parseASS(content: string): Omit<SubtitleClip, "id" | "trackId">[
     // Удаляем теги стилей ASS
     text = text.replace(/\{[^}]+\}/g, "")
 
-    subtitles.push({
-      type: "subtitle",
-      startTime,
-      duration: endTime - startTime,
-      text,
-      style: {
-        fontFamily: "Arial",
-        fontSize: 24,
-        color: "#FFFFFF",
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
-        textAlign: "center",
-      },
-      position: {
-        x: 0.5,
-        y: 0.9,
-        width: 1,
-        height: 0.1,
-        rotation: 0,
-        scaleX: 1,
-        scaleY: 1,
-      },
-      subtitlePosition: {
-        alignment: "bottom-center",
-      },
-    })
+    subtitles.push(
+      createSubtitleClip({
+        startTime,
+        duration: endTime - startTime,
+        text,
+        style: {
+          fontFamily: "Arial",
+          fontSize: 24,
+          color: "#FFFFFF",
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          textAlign: "center",
+        },
+        position: {
+          x: 0.5,
+          y: 0.9,
+          width: 1,
+          height: 0.1,
+          rotation: 0,
+          scaleX: 1,
+          scaleY: 1,
+        },
+        subtitlePosition: {
+          alignment: "bottom-center",
+        },
+      }),
+    )
   }
 
   return subtitles

@@ -157,10 +157,12 @@ export const batchOperations = {
         },
       })
       .addAll(
-        mediaPaths.map((path) => ({
-          type: "AddMedia" as const,
-          params: { path, media_type: "Video" as const },
-        })),
+        mediaPaths.map(
+          (path): ProjectCommand => ({
+            type: "AddMedia",
+            params: { path, media_type: "Video" },
+          }),
+        ),
       )
       .execute()
   },
@@ -259,6 +261,8 @@ export const batchOperations = {
   }): Promise<BatchCommandResult> => {
     const batch = createBatch("Setup Timeline with Content")
 
+    type MediaType = "Video" | "Audio" | "Image"
+
     // Add tracks first
     config.tracks.forEach((track, index) => {
       batch.add({
@@ -277,7 +281,7 @@ export const batchOperations = {
         type: "AddMedia",
         params: {
           path: media.path,
-          media_type: media.type,
+          media_type: media.type as MediaType,
         },
       })
     })

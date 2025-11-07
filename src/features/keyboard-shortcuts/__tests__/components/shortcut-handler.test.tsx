@@ -99,7 +99,7 @@ describe("ShortcutHandler", () => {
       expect(typeof registeredAction).toBe("function")
 
       // Should not throw when called
-      expect(() => registeredAction({} as any, {})).not.toThrow()
+      expect(() => registeredAction({} as any, { hotkey: "cmd+t" })).not.toThrow()
     })
   })
 

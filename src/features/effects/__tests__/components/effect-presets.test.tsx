@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { EffectPresets } from "../../components/effect-presets"
 
-import type { VideoEffect } from "../../types"
+import type { BaseEffect, VideoEffect } from "../../types"
 
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({
@@ -347,12 +347,12 @@ describe("EffectPresets", () => {
 
   describe("Локализация", () => {
     it("должен использовать fallback на английский для названий", () => {
-      const presetWithoutRu = {
+      const presetWithoutRu: BaseEffect = {
         ...baseEffect,
         presets: [
           {
             id: "test",
-            name: { en: "English Only" },
+            name: { en: "English Only", ru: "English Only" },
             description: { ru: "Описание", en: "Description" },
             parameters: { intensity: 50 },
             tags: [],
@@ -368,13 +368,13 @@ describe("EffectPresets", () => {
     })
 
     it("должен использовать fallback на английский для описаний", () => {
-      const presetWithoutRu = {
+      const presetWithoutRu: BaseEffect = {
         ...baseEffect,
         presets: [
           {
             id: "test",
             name: { ru: "Тест", en: "Test" },
-            description: { en: "English Description" },
+            description: { en: "English Description", ru: "English Description" },
             parameters: { intensity: 50 },
             tags: [],
           },
@@ -482,7 +482,7 @@ describe("EffectPresets", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(customPresets))
 
-      const effectWithoutBuiltinPresets = { ...baseEffect, presets: undefined }
+      const effectWithoutBuiltinPresets: BaseEffect = { ...baseEffect, presets: [] }
 
       render(<EffectPresets {...mockProps} effect={effectWithoutBuiltinPresets} />)
 

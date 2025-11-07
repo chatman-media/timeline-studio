@@ -10,7 +10,7 @@ import type { ExportSettings } from "../types/export-types"
 const DEFAULT_EXPORT_SETTINGS: ExportSettings = {
   fileName: "",
   savePath: "",
-  format: "Mp4",
+  format: OutputFormat.Mp4,
   quality: "good",
   resolution: "1080",
   frameRate: "25",

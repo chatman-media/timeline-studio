@@ -48,7 +48,7 @@ const mockTimelineState = {
   project: null as any,
   uiState: {
     timeScale: 10,
-    selectedTrackIds: [],
+    selectedTrackIds: [] as string[],
   },
   currentTime: 0,
   createProject: vi.fn().mockResolvedValue(undefined),

@@ -45,8 +45,8 @@ describe("user-effects", () => {
       en: "Test Effect",
     },
     category: "blur_sharpen",
-    scope: ["video"],
-    processingType: "css",
+    scope: ["clip"],
+    processingType: "realtime",
     version: "1.0.0",
     tags: ["test"],
     complexity: "low",
@@ -60,13 +60,15 @@ describe("user-effects", () => {
         },
         type: "number",
         defaultValue: 50,
-        range: { min: 0, max: 100 },
+        min: 0,
+        max: 100,
       },
     ],
     presets: [],
     processors: {
-      css: {
-        shader: "blur({{intensity}}px)",
+      webgl: {
+        fragmentShader: "blur({{intensity}}px)",
+        uniforms: {},
       },
     },
   })
@@ -196,13 +198,15 @@ describe("user-effects", () => {
 
     it("should parse complex effect data correctly", async () => {
       const complexEffect = createMockEffect("complex-1")
-      complexEffect.presets = {
-        preset1: {
+      complexEffect.presets = [
+        {
+          id: "preset1",
           name: { ru: "Пресет 1", en: "Preset 1" },
-          params: { intensity: 75 },
+          parameters: { intensity: 75 },
           description: { ru: "Описание", en: "Description" },
+          tags: [],
         },
-      }
+      ]
 
       const mockUserEffect: UserEffect = {
         ...complexEffect,

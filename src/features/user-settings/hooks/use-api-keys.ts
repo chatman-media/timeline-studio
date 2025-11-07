@@ -80,7 +80,7 @@ export function useApiKeys() {
       }, {})
       setApiKeysInfo(keysMap)
     } catch (error) {
-      logger.error("Failed to load API keys info:", error)
+      void logger.error("Failed to load API keys info:", { error: String(error) })
     }
   }, [])
 
@@ -131,10 +131,10 @@ export function useApiKeys() {
           setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
           return true
         }
-        logger.error(`Failed to save ${service} API key:`, result.message)
+        void logger.error(`Failed to save ${service} API key:`, { message: result.message })
         return false
       } catch (error) {
-        logger.error(`Error saving ${service} API key:`, error)
+        void logger.error(`Error saving ${service} API key:`, { error: String(error) })
         return false
       }
     },
@@ -156,7 +156,7 @@ export function useApiKeys() {
 
         // Store the specific error message if validation failed
         if (!result.is_valid && result.error_message) {
-          setValidationErrors((prev: any) => ({ ...prev, [service]: result.error_message }))
+          setValidationErrors((prev) => ({ ...prev, [service]: result.error_message || "" }))
         }
 
         await loadApiKeysInfo() // Обновляем информацию после валидации
@@ -164,7 +164,7 @@ export function useApiKeys() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
         setValidationErrors((prev) => ({ ...prev, [service]: errorMessage }))
-        logger.error(`Error testing ${service} API key:`, error)
+        void logger.error(`Error testing ${service} API key:`, { error: String(error) })
         return false
       } finally {
         setLoadingStatuses((prev) => ({ ...prev, [service]: false }))
@@ -199,10 +199,10 @@ export function useApiKeys() {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        logger.error(`Failed to save ${service} OAuth credentials:`, result.message)
+        void logger.error(`Failed to save ${service} OAuth credentials:`, { message: result.message })
         return false
       } catch (error) {
-        logger.error(`Error saving ${service} OAuth credentials:`, error)
+        void logger.error(`Error saving ${service} OAuth credentials:`, { error: String(error) })
         return false
       }
     },
@@ -222,7 +222,7 @@ export function useApiKeys() {
         })
         return url
       } catch (error) {
-        logger.error(`Error generating OAuth URL for ${service}:`, error)
+        void logger.error(`Error generating OAuth URL for ${service}:`, { error: String(error) })
         return null
       }
     },
@@ -246,10 +246,10 @@ export function useApiKeys() {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        logger.error(`Failed to exchange OAuth code for ${service}:`, result.message)
+        void logger.error(`Failed to exchange OAuth code for ${service}:`, { message: result.message })
         return false
       } catch (error) {
-        logger.error(`Error exchanging OAuth code for ${service}:`, error)
+        void logger.error(`Error exchanging OAuth code for ${service}:`, { error: String(error) })
         return false
       }
     },
@@ -271,10 +271,10 @@ export function useApiKeys() {
           setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
           return true
         }
-        logger.error(`Failed to delete ${service} API key:`, result.message)
+        void logger.error(`Failed to delete ${service} API key:`, { message: result.message })
         return false
       } catch (error) {
-        logger.error(`Error deleting ${service} API key:`, error)
+        void logger.error(`Error deleting ${service} API key:`, { error: String(error) })
         return false
       }
     },
@@ -295,10 +295,10 @@ export function useApiKeys() {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        logger.error("Failed to import from .env:", result.message)
+        void logger.error("Failed to import from .env:", { message: result.message })
         return false
       } catch (error) {
-        logger.error("Error importing from .env:", error)
+        void logger.error("Error importing from .env:", { error: String(error) })
         return false
       }
     },
@@ -310,7 +310,7 @@ export function useApiKeys() {
       const envContent: string = await invoke("export_to_env_format")
       return envContent
     } catch (error) {
-      logger.error("Error exporting to .env format:", error)
+      void logger.error("Error exporting to .env format:", { error: String(error) })
       return null
     }
   }, [])
@@ -339,10 +339,10 @@ export function useApiKeys() {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        logger.error(`Failed to refresh OAuth token for ${service}:`, result.message)
+        void logger.error(`Failed to refresh OAuth token for ${service}:`, { message: result.message })
         return false
       } catch (error) {
-        logger.error(`Error refreshing OAuth token for ${service}:`, error)
+        void logger.error(`Error refreshing OAuth token for ${service}:`, { error: String(error) })
         return false
       }
     },
@@ -359,7 +359,7 @@ export function useApiKeys() {
       })
       return userInfo as Record<string, unknown>
     } catch (error) {
-      logger.error(`Error getting OAuth user info for ${service}:`, error)
+      void logger.error(`Error getting OAuth user info for ${service}:`, { error: String(error) })
       return null
     }
   }, [])
@@ -374,7 +374,7 @@ export function useApiKeys() {
       })
       return result as Record<string, unknown>
     } catch (error) {
-      logger.error("Error parsing OAuth callback URL:", error)
+      void logger.error("Error parsing OAuth callback URL:", { error: String(error) })
       return null
     }
   }, [])

@@ -8,6 +8,7 @@ import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelinePlayerSync } from "../../hooks/use-timeline-player-sync"
 import { useTimelineSelection } from "../../hooks/use-timeline-selection"
 import * as timelinePlayerSync from "../../services/timeline-player-sync"
+import { createMockClip } from "../../__mocks__/test-factories"
 
 // Mock dependencies
 vi.mock("@/features/video-player/services/player-provider", () => ({
@@ -32,29 +33,26 @@ vi.mock("../../services/timeline-player-sync", () => ({
 }))
 
 // Test data
-const mockClip1 = {
+const mockClip1 = createMockClip({
   id: "clip-1",
   trackId: "track-1",
-  sourceId: "source-1",
+  mediaId: "source-1",
   startTime: 10,
   duration: 20,
   offset: 0,
-  trimStart: 0,
-  trimEnd: 0,
   effects: [],
   speed: 1,
   volume: 1,
   opacity: 1,
   filters: [],
-  transitions: { in: null, out: null },
-  metadata: {},
-}
+  transitions: [],
+})
 
-const mockClip2 = {
+const mockClip2 = createMockClip({
   ...mockClip1,
   id: "clip-2",
   startTime: 35,
-}
+})
 
 const mockPlayerContext = {
   play: vi.fn(),
@@ -79,7 +77,6 @@ describe("useTimelinePlayerSync", () => {
     vi.mocked(useTimeline).mockReturnValue({
       currentTime: 15,
       project: null,
-      uiState: {} as any,
       send: vi.fn(),
       state: {} as any,
       duration: 300,
@@ -87,7 +84,6 @@ describe("useTimelinePlayerSync", () => {
       playbackRate: 1,
       volume: 1,
       isMuted: false,
-      selectedClipIds: [],
       selectedTrackIds: [],
       activeTrackId: null,
       markers: [],
@@ -95,7 +91,6 @@ describe("useTimelinePlayerSync", () => {
     })
     vi.mocked(useTimelineSelection).mockReturnValue({
       selectedClips: [],
-      selectedClipIds: [],
       selectedTracks: [],
       selectedTrackIds: [],
       selectClip: vi.fn(),
@@ -132,7 +127,6 @@ describe("useTimelinePlayerSync", () => {
     it("должен синхронизировать один выбранный клип", () => {
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1],
-        selectedClipIds: ["clip-1"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -154,7 +148,6 @@ describe("useTimelinePlayerSync", () => {
     it("должен очищать синхронизацию когда нет выбранных клипов", () => {
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [],
-        selectedClipIds: [],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -176,7 +169,6 @@ describe("useTimelinePlayerSync", () => {
     it("не должен синхронизировать когда выбрано несколько клипов", () => {
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1, mockClip2],
-        selectedClipIds: ["clip-1", "clip-2"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -205,7 +197,6 @@ describe("useTimelinePlayerSync", () => {
       // Выбираем один клип
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1],
-        selectedClipIds: ["clip-1"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -224,7 +215,6 @@ describe("useTimelinePlayerSync", () => {
       // Выбираем другой клип
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip2],
-        selectedClipIds: ["clip-2"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -256,7 +246,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: 25,
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -264,7 +253,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: [],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],
@@ -281,7 +269,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: 0,
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -289,7 +276,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: [],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],
@@ -305,7 +291,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: 15.567,
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -313,7 +298,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: [],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],
@@ -340,7 +324,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(usePlayer).mockReturnValue(newPlayerContext)
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1],
-        selectedClipIds: ["clip-1"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -354,7 +337,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: 30,
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -362,7 +344,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: ["clip-1"],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],
@@ -383,7 +364,6 @@ describe("useTimelinePlayerSync", () => {
       // Устанавливаем синхронизацию с клипом
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1],
-        selectedClipIds: ["clip-1"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -417,7 +397,6 @@ describe("useTimelinePlayerSync", () => {
       // Сначала выбираем клип
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [mockClip1],
-        selectedClipIds: ["clip-1"],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -436,7 +415,6 @@ describe("useTimelinePlayerSync", () => {
       // Затем очищаем выбор
       vi.mocked(useTimelineSelection).mockReturnValue({
         selectedClips: [],
-        selectedClipIds: [],
         selectedTracks: [],
         selectedTrackIds: [],
         selectClip: vi.fn(),
@@ -457,7 +435,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: -5, // Может случиться при перемотке
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -465,7 +442,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: [],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],
@@ -481,7 +457,6 @@ describe("useTimelinePlayerSync", () => {
       vi.mocked(useTimeline).mockReturnValue({
         currentTime: 999999,
         project: null,
-        uiState: {} as any,
         send: vi.fn(),
         state: {} as any,
         duration: 300,
@@ -489,7 +464,6 @@ describe("useTimelinePlayerSync", () => {
         playbackRate: 1,
         volume: 1,
         isMuted: false,
-        selectedClipIds: [],
         selectedTrackIds: [],
         activeTrackId: null,
         markers: [],

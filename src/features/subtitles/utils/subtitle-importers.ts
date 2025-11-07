@@ -5,6 +5,58 @@
 import type { SubtitleClip } from "../types/subtitles"
 
 /**
+ * Создает SubtitleClip с дефолтными значениями
+ */
+export function createSubtitleClip(
+  partial: Pick<SubtitleClip, "startTime" | "duration" | "text"> & Partial<SubtitleClip>,
+): SubtitleClip {
+  const now = new Date()
+  return {
+    // Обязательные базовые поля
+    id: partial.id || `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+    name: partial.name || "Subtitle",
+    type: "subtitle",
+    mediaId: partial.mediaId || "",
+    trackId: partial.trackId || "",
+
+    // Временные параметры
+    startTime: partial.startTime,
+    duration: partial.duration,
+    mediaStartTime: partial.mediaStartTime || 0,
+    mediaEndTime: partial.mediaEndTime || partial.duration,
+    offset: partial.offset || 0,
+
+    // Настройки клипа
+    volume: partial.volume ?? 1.0,
+    speed: partial.speed ?? 1.0,
+    isReversed: partial.isReversed ?? false,
+    opacity: partial.opacity ?? 1.0,
+
+    // Ресурсы
+    effects: partial.effects || [],
+    filters: partial.filters || [],
+    transitions: partial.transitions || [],
+
+    // Состояние
+    isSelected: partial.isSelected ?? false,
+    isLocked: partial.isLocked ?? false,
+
+    // Метаданные
+    createdAt: partial.createdAt || now,
+    updatedAt: partial.updatedAt || now,
+
+    // Специфичные поля субтитров
+    text: partial.text,
+    style: partial.style,
+    position: partial.position,
+    subtitlePosition: partial.subtitlePosition,
+    subtitleStyleId: partial.subtitleStyleId,
+    animationIn: partial.animationIn,
+    animationOut: partial.animationOut,
+  }
+}
+
+/**
  * Парсит время из формата SRT (00:00:00,000) в секунды
  */
 function parseSRTTime(timeString: string): number {
@@ -84,14 +136,13 @@ export function importFromSRT(content: string): SubtitleClip[] {
     // Остальные строки - текст субтитра
     const text = lines.slice(2).join("\n")
 
-    subtitles.push({
-      id: `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-      trackId: "", // Будет установлен при добавлении на трек
-      type: "subtitle",
-      startTime,
-      duration: endTime - startTime,
-      text: text.trim(),
-    })
+    subtitles.push(
+      createSubtitleClip({
+        startTime,
+        duration: endTime - startTime,
+        text: text.trim(),
+      }),
+    )
   }
 
   return subtitles
@@ -143,18 +194,22 @@ export function importFromVTT(content: string): SubtitleClip[] {
       position = {
         x: Number.parseInt(positionMatch[1], 10) / 100,
         y: 0.9, // По умолчанию внизу
+        width: 1.0,
+        height: 0.1,
+        rotation: 0,
+        scaleX: 1.0,
+        scaleY: 1.0,
       }
     }
 
-    subtitles.push({
-      id: `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-      trackId: "",
-      type: "subtitle",
-      startTime,
-      duration: endTime - startTime,
-      text: text.trim(),
-      position,
-    })
+    subtitles.push(
+      createSubtitleClip({
+        startTime,
+        duration: endTime - startTime,
+        text: text.trim(),
+        position,
+      }),
+    )
   }
 
   return subtitles
@@ -235,15 +290,14 @@ export function importFromASS(content: string): SubtitleClip[] {
       style = styles[styleName]
     }
 
-    subtitles.push({
-      id: `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-      trackId: "",
-      type: "subtitle",
-      startTime,
-      duration: endTime - startTime,
-      text: cleanText,
-      style,
-    })
+    subtitles.push(
+      createSubtitleClip({
+        startTime,
+        duration: endTime - startTime,
+        text: cleanText,
+        style,
+      }),
+    )
   }
 
   return subtitles

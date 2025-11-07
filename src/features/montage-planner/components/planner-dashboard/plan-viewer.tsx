@@ -40,15 +40,9 @@ export function PlanViewer({ plan }: PlanViewerProps) {
       id: item.id,
       path: item.path,
       name: item.name,
-      isVideo: item.media_type === "Video",
-      isAudio: item.media_type === "Audio",
+      isVideo: item.media_type.toLowerCase().includes("video"),
+      isAudio: item.media_type.toLowerCase() === "audio",
       duration: item.duration || 0,
-      format: item.metadata?.format || "",
-      codec: item.metadata?.codec || "",
-      width: item.metadata?.resolution?.width || 0,
-      height: item.metadata?.resolution?.height || 0,
-      frameRate: item.metadata?.frame_rate || 0,
-      bitrate: item.metadata?.bitrate || 0,
     }))
 
     await applyPlanToTimeline(plan, convertedMediaFiles, {

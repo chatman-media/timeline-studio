@@ -38,7 +38,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeVideoWithAI(file)
       }
     } catch (error) {
-      logger.warn("[ContentAnalyzer] AI analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI analysis failed, using fallback:", { error })
     }
 
     // Fallback to simulated analysis
@@ -92,7 +92,7 @@ export class ContentAnalyzer {
         return await this.aiService.analyzeAudioWithAI(file)
       }
     } catch (error) {
-      logger.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", error)
+      logger.warn("[ContentAnalyzer] AI audio analysis failed, using fallback:", { error })
     }
 
     // Fallback to simulated analysis

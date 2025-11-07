@@ -43,7 +43,7 @@ export class ShortcutsPersistence {
       // Попробуем использовать Tauri Store если доступен
       if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
-        const store = new Store("shortcuts.json")
+        const store = await Store.load("shortcuts.json")
         await store.set(STORAGE_KEY, settings)
         await store.save()
       } else {
@@ -53,13 +53,13 @@ export class ShortcutsPersistence {
 
       logger.info("Shortcuts settings saved successfully")
     } catch (error) {
-      logger.error("Failed to save shortcuts settings:", error)
+      logger.error("Failed to save shortcuts settings:", { error })
 
       // Fallback на localStorage в случае ошибки
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
       } catch (localStorageError) {
-        logger.error("Failed to save to localStorage:", localStorageError)
+        logger.error("Failed to save to localStorage:", { error: localStorageError })
         throw error
       }
     }
@@ -75,8 +75,9 @@ export class ShortcutsPersistence {
       // Попробуем использовать Tauri Store если доступен
       if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
-        const store = new Store("shortcuts.json")
-        settings = await store.get<ShortcutSettings>(STORAGE_KEY)
+        const store = await Store.load("shortcuts.json")
+        const result = await store.get<ShortcutSettings>(STORAGE_KEY)
+        settings = result === undefined ? null : result
       }
 
       // Fallback на localStorage
@@ -95,7 +96,7 @@ export class ShortcutsPersistence {
 
       return settings
     } catch (error) {
-      logger.error("Failed to load shortcuts settings:", error)
+      logger.error("Failed to load shortcuts settings:", { error })
       return null
     }
   }
@@ -123,7 +124,7 @@ export class ShortcutsPersistence {
     try {
       if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
-        const store = new Store("shortcuts.json")
+        const store = await Store.load("shortcuts.json")
         await store.delete(STORAGE_KEY)
         await store.save()
       } else {
@@ -132,7 +133,7 @@ export class ShortcutsPersistence {
 
       logger.info("Shortcuts settings cleared")
     } catch (error) {
-      logger.error("Failed to clear shortcuts settings:", error)
+      logger.error("Failed to clear shortcuts settings:", { error })
       throw error
     }
   }
@@ -167,7 +168,7 @@ export class ShortcutsPersistence {
       // Сохраняем
       if (isDesktop()) {
         const { Store } = await import("@tauri-apps/plugin-store")
-        const store = new Store("shortcuts.json")
+        const store = await Store.load("shortcuts.json")
         await store.set(STORAGE_KEY, migratedSettings)
         await store.save()
       } else {
@@ -176,7 +177,7 @@ export class ShortcutsPersistence {
 
       logger.info("Settings imported successfully")
     } catch (error) {
-      logger.error("Failed to import settings:", error)
+      logger.error("Failed to import settings:", { error })
       throw error
     }
   }

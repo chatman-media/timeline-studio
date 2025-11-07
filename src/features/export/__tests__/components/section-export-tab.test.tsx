@@ -22,7 +22,7 @@ vi.mock("react-i18next", () => ({
 
 // Мокаем lucide-react иконки
 vi.mock("lucide-react", async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = (await importOriginal()) as Record<string, any>
   return {
     ...actual,
     Clock: () => <div data-testid="clock-icon">Clock</div>,

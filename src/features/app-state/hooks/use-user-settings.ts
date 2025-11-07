@@ -3,7 +3,7 @@ import type { UserSettingsContextType } from "@/domains/project-management/machi
 import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "../services/store-service"
 
-const logger = createLogger({ module: "UseUserSettings" })
+const logger = createLogger("UseUserSettings")
 
 /**
  * Хук для доступа к пользовательским настройкам через новую архитектуру
@@ -29,7 +29,7 @@ export function useUserSettings() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load user settings"
       setError(errorMessage)
-      logger.error("[useUserSettings] Error loading settings:", err)
+      logger.error("[useUserSettings] Error loading settings:", { error: err })
     } finally {
       setIsLoading(false)
     }
@@ -53,7 +53,7 @@ export function useUserSettings() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to save user settings"
         setError(errorMessage)
-        logger.error("[useUserSettings] Error saving settings:", err)
+        logger.error("[useUserSettings] Error saving settings:", { error: err })
         return { success: false, error: errorMessage }
       }
     },

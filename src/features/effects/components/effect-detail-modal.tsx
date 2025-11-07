@@ -93,12 +93,12 @@ export function EffectDetailModal() {
         localStorage.setItem(storageKey, JSON.stringify(presets))
 
         // Уведомляем пользователя об успешном сохранении
-        logger.info("Custom preset saved:", { name, params })
+        void logger.info("Custom preset saved", { name, params })
 
         // Обновляем состояние компонента, если нужно показать новый пресет
         // Можно добавить toast уведомление здесь
       } catch (error) {
-        logger.error("Error saving custom preset:", error)
+        void logger.error("Error saving custom preset", { error })
       }
     },
     [effect?.id, currentLang, t],
@@ -132,11 +132,11 @@ export function EffectDetailModal() {
       )
 
       const filePath = await saveUserEffect(effectToExport, exportName)
-      logger.info("Effect exported to:", { filePath })
+      void logger.info("Effect exported to", { filePath })
 
       // Можем добавить toast уведомление об успешном экспорте
     } catch (error) {
-      logger.error("Error exporting effect:", error)
+      void logger.error("Error exporting effect", { error })
     }
   }, [effect, currentParameters, selectedPreset, t])
 

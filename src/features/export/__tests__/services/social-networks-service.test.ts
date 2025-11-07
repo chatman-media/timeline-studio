@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import * as SocialNetworksService from "../../services/social-networks-service"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 // Мокаем зависимости
 vi.mock("sonner", () => ({
@@ -50,7 +51,7 @@ describe("SocialNetworksService", () => {
 
   describe("login", () => {
     it("should successfully log in to a network", async () => {
-      const mockToken = { accessToken: "token123", refreshToken: "refresh123" }
+      const mockToken = { accessToken: "token123", refreshToken: "refresh123", expiresIn: 3600, tokenType: "Bearer" }
       const mockUserInfo = { name: "Test User", id: "user123" }
 
       vi.mocked(OAuthService.loginToNetwork).mockResolvedValue(mockToken)
@@ -95,7 +96,7 @@ describe("SocialNetworksService", () => {
 
   describe("isLoggedIn", () => {
     it("should return true if token exists", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token" })
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
 
       const result = await SocialNetworksService.isLoggedIn("youtube")
 
@@ -172,9 +173,9 @@ describe("SocialNetworksService", () => {
     const mockSettings = {
       fileName: "test",
       savePath: "",
-      format: "Mp4" as const,
+      format: OutputFormat.Mp4,
       quality: "good" as const,
-      resolution: "1080",
+      resolution: "1080" as const,
       frameRate: "30",
       enableGPU: true,
       socialNetwork: "youtube",
@@ -183,12 +184,12 @@ describe("SocialNetworksService", () => {
     }
 
     beforeEach(() => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token" })
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
     })
 
     it("should successfully upload to YouTube", async () => {
       const mockMetadata = { title: "Test Video" }
-      const mockUploadResult = { id: "video123", url: "https://youtube.com/watch?v=video123" }
+      const mockUploadResult = { id: "video123", url: "https://youtube.com/watch?v=video123", status: "uploaded" }
 
       vi.mocked(YouTubeService.validateSettings).mockReturnValue([])
       vi.mocked(YouTubeService.exportSettings).mockResolvedValue(mockMetadata)
@@ -269,9 +270,9 @@ describe("SocialNetworksService", () => {
     const mockSettings = {
       fileName: "test",
       savePath: "",
-      format: "Mp4" as const,
+      format: OutputFormat.Mp4,
       quality: "good" as const,
-      resolution: "1080",
+      resolution: "1080" as const,
       frameRate: "30",
       enableGPU: true,
       socialNetwork: "youtube",
@@ -310,15 +311,15 @@ describe("SocialNetworksService", () => {
       const result = SocialNetworksService.getOptimalSettings("youtube")
 
       expect(result).toEqual({
-        resolution: "1080",
+        resolution: "1080" as const,
         frameRate: "30",
         format: "Mp4",
-        quality: "good",
+        quality: "good" as const,
       })
     })
 
     it("should return TikTok optimal settings", () => {
-      const mockSettings = { resolution: "1080", useVerticalResolution: true }
+      const mockSettings: Partial<import("../../types/export-types").SocialExportSettings> = { resolution: "1080", useVerticalResolution: true }
       vi.mocked(TikTokService.getOptimalSettings).mockReturnValue(mockSettings)
 
       const result = SocialNetworksService.getOptimalSettings("tiktok")
@@ -330,10 +331,10 @@ describe("SocialNetworksService", () => {
       const result = SocialNetworksService.getOptimalSettings("telegram")
 
       expect(result).toEqual({
-        resolution: "720",
+        resolution: "720" as const,
         frameRate: "30",
         format: "Mp4",
-        quality: "normal",
+        quality: "normal" as const,
       })
     })
 
@@ -354,7 +355,7 @@ describe("SocialNetworksService", () => {
     })
 
     it("should return false if no refresh token", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token" } as any)
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
 
       const result = await SocialNetworksService.refreshTokenIfNeeded("youtube")
 
@@ -366,6 +367,8 @@ describe("SocialNetworksService", () => {
       vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
         accessToken: "token",
         refreshToken: "refresh",
+        expiresIn: 3600,
+        tokenType: "Bearer",
         expiresAt: futureTime,
       } as any)
 
@@ -376,11 +379,13 @@ describe("SocialNetworksService", () => {
 
     it("should refresh token if near expiration", async () => {
       const nearExpiration = Date.now() + 2 * 60 * 1000 // 2 минуты в будущем
-      const newToken = { accessToken: "newToken", refreshToken: "newRefresh" }
+      const newToken = { accessToken: "newToken", refreshToken: "newRefresh", expiresIn: 3600, tokenType: "Bearer" }
 
       vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
         accessToken: "oldToken",
         refreshToken: "refresh",
+        expiresIn: 3600,
+        tokenType: "Bearer",
         expiresAt: nearExpiration,
       } as any)
       vi.mocked(OAuthService.refreshToken).mockResolvedValue(newToken)
@@ -397,6 +402,8 @@ describe("SocialNetworksService", () => {
       vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
         accessToken: "oldToken",
         refreshToken: "refresh",
+        expiresIn: 3600,
+        tokenType: "Bearer",
         expiresAt: nearExpiration,
       } as any)
       vi.mocked(OAuthService.refreshToken).mockRejectedValue(new Error("Refresh failed"))

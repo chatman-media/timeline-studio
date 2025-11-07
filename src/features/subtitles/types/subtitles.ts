@@ -211,7 +211,7 @@ export interface SubtitleClip {
   startTime: number
   duration: number
 
-  // Обрезка исходного медиа (для субтитров)
+  // Обрезка исходного медиа (для субтитров используем startTime и duration)
   mediaStartTime: number
   mediaEndTime: number
   offset: number
@@ -222,7 +222,7 @@ export interface SubtitleClip {
   linkedClipId?: string
   isLinked?: boolean
 
-  // Настройки клипа
+  // Настройки клипа (со значениями по умолчанию для субтитров)
   volume: number // 0-1 (не применимо к субтитрам, но нужно для совместимости)
   speed: number // Скорость воспроизведения
   playbackRate?: number
@@ -264,7 +264,7 @@ export interface SubtitleClip {
   templateId?: string
   templateCell?: number
 
-  // Применяемые ресурсы
+  // Применяемые ресурсы (пустые массивы для субтитров)
   effects: any[]
   filters: any[]
   transitions: any[]

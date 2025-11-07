@@ -324,15 +324,14 @@ import type { MediaFile } from "@/features/media/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../../hooks/use-timeline"
 
-// Получаем моки из модуля
-const {
-  _mockOnStateChange: mockOnStateChange,
-  _mockOnEvent: mockOnEvent,
-  _mockConnect: mockConnect,
-  _mockDisconnect: mockDisconnect,
-  _mockGetProjectState: mockGetProjectState,
-  _mockGetEventHistory: mockGetEventHistory,
-} = await import("@/features/app-state/services/backend-sync")
+// Импортируем моки - они будут доступны благодаря vi.mock выше
+const backendSyncModule = (await import("@/features/app-state/services/backend-sync")) as any
+const mockOnStateChange = backendSyncModule._mockOnStateChange as ReturnType<typeof vi.fn>
+const mockOnEvent = backendSyncModule._mockOnEvent as ReturnType<typeof vi.fn>
+const mockConnect = backendSyncModule._mockConnect as ReturnType<typeof vi.fn>
+const mockDisconnect = backendSyncModule._mockDisconnect as ReturnType<typeof vi.fn>
+const mockGetProjectState = backendSyncModule._mockGetProjectState as ReturnType<typeof vi.fn>
+const mockGetEventHistory = backendSyncModule._mockGetEventHistory as ReturnType<typeof vi.fn>
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <TimelineProviders>

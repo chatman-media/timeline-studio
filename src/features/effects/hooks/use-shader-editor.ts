@@ -1,19 +1,21 @@
 import { useCallback, useRef, useState } from "react"
 
-import { logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 import { DEFAULT_FRAGMENT_SHADER, DEFAULT_VERTEX_SHADER } from "../components/shader-editor/shader-editor"
 
 import type { ShaderCompilationResult, ShaderProject, ShaderType, ShaderUniform } from "../types/shader-system"
+
+const logger = createLogger("useShaderEditor")
 
 /**
  * Hook for managing shader editor state
  */
 export function useShaderEditor(initialProject?: ShaderProject) {
-  logInfo("useShaderEditor", "Initializing shader editor")
+  void logger.info( "Initializing shader editor")
 
   const [project, setProject] = useState<ShaderProject>(() => {
     if (initialProject) {
-      logInfo("useShaderEditor", `Loading existing shader project: ${initialProject.id}`)
+      void logger.info( `Loading existing shader project: ${initialProject.id}`)
       return { ...initialProject, isDirty: false }
     }
 
@@ -38,7 +40,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Update shader source
   const updateShader = useCallback((type: ShaderType, source: string) => {
-    logInfo("useShaderEditor", `Updating ${type} shader`)
+    void logger.info( `Updating ${type} shader`)
     setProject((prev) => ({
       ...prev,
       [type === "vertex" ? "vertexShader" : "fragmentShader"]: source,
@@ -58,7 +60,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Add uniform
   const addUniform = useCallback((uniform: ShaderUniform) => {
-    logInfo("useShaderEditor", `Adding uniform: ${uniform.name}`)
+    void logger.info( `Adding uniform: ${uniform.name}`)
     setProject((prev) => ({
       ...prev,
       uniforms: [...prev.uniforms, uniform],
@@ -68,7 +70,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Remove uniform
   const removeUniform = useCallback((name: string) => {
-    logInfo("useShaderEditor", `Removing uniform: ${name}`)
+    void logger.info( `Removing uniform: ${name}`)
     setProject((prev) => ({
       ...prev,
       uniforms: prev.uniforms.filter((u) => u.name !== name),
@@ -103,7 +105,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Save to history
   const saveToHistory = useCallback(() => {
-    logInfo("useShaderEditor", "Saving to history")
+    void logger.info( "Saving to history")
     const currentState = { ...project }
     historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1)
     historyRef.current.push(currentState)
@@ -113,7 +115,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
   // Undo
   const undo = useCallback(() => {
     if (historyIndexRef.current > 0) {
-      logInfo("useShaderEditor", `Undoing - moving to history index ${historyIndexRef.current - 1}`)
+      void logger.info( `Undoing - moving to history index ${historyIndexRef.current - 1}`)
       historyIndexRef.current--
       setProject(historyRef.current[historyIndexRef.current])
     }
@@ -122,7 +124,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
   // Redo
   const redo = useCallback(() => {
     if (historyIndexRef.current < historyRef.current.length - 1) {
-      logInfo("useShaderEditor", `Redoing - moving to history index ${historyIndexRef.current + 1}`)
+      void logger.info( `Redoing - moving to history index ${historyIndexRef.current + 1}`)
       historyIndexRef.current++
       setProject(historyRef.current[historyIndexRef.current])
     }
@@ -130,7 +132,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Reset project
   const resetProject = useCallback(() => {
-    logInfo("useShaderEditor", "Resetting project")
+    void logger.info( "Resetting project")
     setProject({
       id: `shader-${Date.now()}`,
       name: "New Shader",
@@ -150,7 +152,7 @@ export function useShaderEditor(initialProject?: ShaderProject) {
 
   // Load project
   const loadProject = useCallback((newProject: ShaderProject) => {
-    logInfo("useShaderEditor", `Loading project: ${newProject.id}`)
+    void logger.info( `Loading project: ${newProject.id}`)
     setProject({
       ...newProject,
       isDirty: false,

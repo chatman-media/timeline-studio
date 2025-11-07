@@ -69,14 +69,13 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     if (!isBackendConnected) return
 
     try {
-      const customShortcuts = shortcuts.filter((s) => s.isCustom || s.keys.join("+") !== s.defaultKeys?.join("+"))
-
+      // TODO: Implement proper shortcuts sync command in backend
+      // For now, sync via SyncUserSettings
       await backendSync.executeCommand({
-        type: "Settings",
+        type: "SyncUserSettings",
         params: {
-          type: "SyncShortcuts",
-          params: {
-            shortcuts: customShortcuts,
+          settings: {
+            shortcuts: shortcuts.map((s) => ({ id: s.id, keys: s.keys })),
             globalEnabled: isGlobalEnabled,
             context: currentContext,
             usageStats: shortcutUsageStats,
@@ -86,7 +85,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
       logger.info("[ShortcutsProvider] Shortcuts synced with backend")
     } catch (error) {
-      logger.error("[ShortcutsProvider] Failed to sync shortcuts:", error)
+      logger.error("[ShortcutsProvider] Failed to sync shortcuts:", { error })
     }
   }
 
@@ -96,28 +95,15 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
       setIsBackendConnected(true)
 
       // Восстанавливаем shortcuts из backend
-      if (state.user_settings?.shortcuts) {
-        const restoredShortcuts = state.user_settings.shortcuts as any
-
-        // Обновляем пользовательские shortcuts
-        if (restoredShortcuts.custom) {
-          restoredShortcuts.custom.forEach((custom: any) => {
-            shortcutsRegistry.updateKeys(custom.id, custom.keys)
-          })
-        }
-
-        // Восстанавливаем статистику использования
-        if (restoredShortcuts.usageStats) {
-          setShortcutUsageStats(restoredShortcuts.usageStats)
-        }
-
-        logger.info("[ShortcutsProvider] Shortcuts restored from backend")
-      }
+      // TODO: ProjectState doesn't have user_settings property yet
+      // Need to implement proper state structure in backend
+      logger.info("[ShortcutsProvider] Backend connection established")
     })
 
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "SHORTCUTS_UPDATED") {
-        // Backend обновил shortcuts
+      // TODO: Add SHORTCUTS_UPDATED event type to ProjectEvent
+      if (event.type === "ProjectOpened") {
+        // Reload shortcuts when project is opened
         loadSettings().catch((error) => logger.error("Operation failed", { error }))
       }
     })
@@ -147,11 +133,11 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
           if (isBackendConnected) {
             backendSync
               .executeCommand({
-                type: "Analytics",
+                type: "LogUserAction",
                 params: {
-                  type: "LogShortcutUsage",
-                  params: {
-                    shortcutId: shortcut.id,
+                  action: `shortcut:${shortcut.id}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: {
                     keys: shortcut.keys,
                     context: currentContext,
                   },
@@ -162,7 +148,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
           // Выполняем оригинальное действие или стандартные действия
           if (originalAction) {
-            originalAction(event)
+            originalAction(event, { hotkey: shortcut.keys.join(",") })
           } else {
             // Добавляем действия для модальных окон
             switch (shortcut.id) {
@@ -205,13 +191,13 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             try {
               await tauriGlobalShortcuts.enableGlobal()
             } catch (error) {
-              logger.error("Failed to enable global shortcuts:", error)
+              logger.error("Failed to enable global shortcuts:", { error })
               setIsGlobalEnabled(false)
             }
           }
         }
       } catch (error) {
-        logger.error("Failed to load shortcuts settings:", error)
+        logger.error("Failed to load shortcuts settings:", { error })
       }
     }
 
@@ -264,7 +250,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
       // Синхронизация с backend
       await syncShortcuts()
     } catch (error) {
-      logger.error("Failed to toggle global shortcuts:", error)
+      logger.error("Failed to toggle global shortcuts:", { error })
       // Возвращаем предыдущее состояние при ошибке
       setIsGlobalEnabled(tauriGlobalShortcuts.isEnabled())
       throw error
@@ -286,10 +272,11 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     if (isBackendConnected) {
       backendSync
         .executeCommand({
-          type: "Settings",
+          type: "LogUserAction",
           params: {
-            type: "UpdateShortcut",
-            params: { id, keys },
+            action: "shortcut:update",
+            timestamp: new Date().toISOString(),
+            metadata: { id, keys },
           },
         })
         .catch((error) => logger.error("Operation failed", { error }))
@@ -309,10 +296,11 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     // Уведомляем backend
     if (isBackendConnected) {
       await backendSync.executeCommand({
-        type: "Settings",
+        type: "LogUserAction",
         params: {
-          type: "ResetAllShortcuts",
-          params: { timestamp: new Date().toISOString() },
+          action: "shortcuts:reset",
+          timestamp: new Date().toISOString(),
+          metadata: {},
         },
       })
     }
@@ -349,7 +337,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             await tauriGlobalShortcuts.disableGlobal()
           }
         } catch (error) {
-          logger.error("Failed to sync global shortcuts:", error)
+          logger.error("Failed to sync global shortcuts:", { error })
         }
       }
     }

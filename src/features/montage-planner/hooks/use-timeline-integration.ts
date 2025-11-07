@@ -110,7 +110,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to apply montage plan"
         setError(errorMessage)
-        logger.error("Failed to apply montage plan:", err)
+        logger.error("Failed to apply montage plan:", { error: err })
       } finally {
         setIsApplying(false)
       }
@@ -135,7 +135,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to create markers"
         setError(errorMessage)
-        logger.error("Failed to create markers:", err)
+        logger.error("Failed to create markers:", { error: err })
       }
     },
     [project, addMarkers],

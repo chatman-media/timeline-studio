@@ -219,7 +219,7 @@ export function KeyboardShortcutsModal() {
 
         logger.info(`Scrolled container to position ${relativeTop}`)
       } catch (error) {
-        logger.error("Error scrolling to category:", error)
+        logger.error("Error scrolling to category:", { error })
       }
     } else {
       logger.warn(`Cannot scroll to category ${index}: section or container is null`)
@@ -244,7 +244,7 @@ export function KeyboardShortcutsModal() {
 
     // Функция для обработки клавиатурных событий на уровне окна
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      logger.info("Key event received:", e.key)
+      logger.info("Key event received:", { key: e.key })
 
       // Проверяем, что мы все еще в режиме прослушивания
       if (!listeningForKeys || !editingShortcut) {
@@ -256,18 +256,13 @@ export function KeyboardShortcutsModal() {
       e.preventDefault()
       e.stopPropagation()
 
-      logger.info(
-        "Global key down event:",
-        e.key,
-        "Meta:",
-        e.metaKey,
-        "Ctrl:",
-        e.ctrlKey,
-        "Alt:",
-        e.altKey,
-        "Shift:",
-        e.shiftKey,
-      )
+      logger.info("Global key down event:", {
+        key: e.key,
+        metaKey: e.metaKey,
+        ctrlKey: e.ctrlKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey,
+      })
 
       // Получаем нажатые модификаторы
       const modifiers = []
@@ -290,13 +285,13 @@ export function KeyboardShortcutsModal() {
 
       // Игнорируем нажатия только модификаторов
       if (["Meta", "Control", "Alt", "Shift"].includes(e.key)) {
-        logger.info("Ignoring modifier key:", e.key)
+        logger.info("Ignoring modifier key:", { key: e.key })
         return
       }
 
       // Формируем строку с горячей клавишей
       const keyString = [...modifiers, key].join("")
-      logger.info("Generated key string:", keyString)
+      logger.info("Generated key string:", { keyString })
 
       try {
         // Обновляем предустановку в PRESETS напрямую
@@ -314,7 +309,7 @@ export function KeyboardShortcutsModal() {
 
         logger.info("Shortcut updated successfully")
       } catch (error) {
-        logger.error("Error updating shortcut:", error)
+        logger.error("Error updating shortcut:", { error })
       }
 
       // Завершаем режим редактирования
@@ -355,18 +350,13 @@ export function KeyboardShortcutsModal() {
       e.preventDefault()
       e.stopPropagation()
 
-      logger.info(
-        "Key down event:",
-        e.key,
-        "Meta:",
-        e.metaKey,
-        "Ctrl:",
-        e.ctrlKey,
-        "Alt:",
-        e.altKey,
-        "Shift:",
-        e.shiftKey,
-      )
+      logger.info("Key down event:", {
+        key: e.key,
+        metaKey: e.metaKey,
+        ctrlKey: e.ctrlKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey,
+      })
 
       // Получаем нажатые модификаторы
       const modifiers = []
@@ -394,7 +384,7 @@ export function KeyboardShortcutsModal() {
 
       // Формируем строку с горячей клавишей
       const keyString = [...modifiers, key].join("")
-      logger.info("Generated key string:", keyString)
+      logger.info("Generated key string:", { keyString })
 
       try {
         // Вместо обновления категорий, просто обновляем выбранную предустановку
@@ -409,7 +399,7 @@ export function KeyboardShortcutsModal() {
 
         logger.info("Shortcut updated successfully")
       } catch (error) {
-        logger.error("Error updating shortcut:", error)
+        logger.error("Error updating shortcut:", { error })
       }
 
       // Завершаем режим редактирования
@@ -526,9 +516,9 @@ export function KeyboardShortcutsModal() {
                           e.stopPropagation()
                           startEditing(index, shortcutIndex)
                         }}
-                        onKeyDown={(e) => {
+                        onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
                           e.stopPropagation()
-                          handleKeyDown(e)
+                          handleKeyDown(e as unknown as React.KeyboardEvent<HTMLDivElement>)
                         }}
                         aria-label={`Edit shortcut ${shortcut.name}`}
                       >

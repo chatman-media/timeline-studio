@@ -20,7 +20,7 @@ import type { SavedMediaFile } from "@/features/media/types/saved-media"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "MissingFilesDialog" })
+const logger = createLogger("MissingFilesDialog")
 
 interface MissingFilesDialogProps {
   open: boolean
@@ -69,7 +69,7 @@ export function MissingFilesDialog({ open, onOpenChange, missingFiles, onResolve
         ),
       )
     } catch (error) {
-      logger.error("Ошибка при поиске файла:", error)
+      logger.error("Ошибка при поиске файла:", { error })
       setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, isProcessing: false } : r)))
     }
   }

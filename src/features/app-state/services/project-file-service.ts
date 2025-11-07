@@ -5,7 +5,7 @@ import type { ProjectFile } from "@/features/project-settings/types/project"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "ProjectFileService" })
+const logger = createLogger("ProjectFileService")
 
 /**
  * Сервис для работы с файлами проектов (.tls)
@@ -31,7 +31,7 @@ export async function loadProject(projectPath: string): Promise<ProjectFile> {
 
     return projectData as ProjectFile
   } catch (error) {
-    logger.error(`Error loading project from ${projectPath}:`, error)
+    logger.error(`Error loading project from ${projectPath}:`, { error })
 
     // Если это уже наша ошибка валидации, пробрасываем её как есть
     if (
@@ -69,7 +69,7 @@ export async function saveProject(projectPath: string, projectData: ProjectFile)
 
     logger.info(`Project saved to ${projectPath}`)
   } catch (error) {
-    logger.error(`Error saving project to ${projectPath}:`, error)
+    logger.error(`Error saving project to ${projectPath}:`, { error })
     throw new Error(`Failed to save project: ${String(error)}`)
   }
 }

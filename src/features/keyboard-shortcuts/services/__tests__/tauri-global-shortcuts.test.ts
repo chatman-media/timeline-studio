@@ -205,15 +205,18 @@ describe("TauriGlobalShortcuts", () => {
       vi.mocked(shortcutsRegistry.getAll).mockReturnValue([mockGlobalShortcut])
       vi.mocked(isRegistered).mockResolvedValue(false)
 
-      let registeredCallback: (() => void) | null = null
-      vi.mocked(register).mockImplementation(async (_, callback) => {
-        registeredCallback = callback
+      let registeredCallback: (() => void) | undefined
+      vi.mocked(register).mockImplementation(async (_keys, callback) => {
+        // Cast to avoid type errors - we're mocking the callback
+        registeredCallback = callback as () => void
       })
 
       await instance.enableGlobal()
 
       // Вызываем зарегистрированный callback
-      registeredCallback?.()
+      if (registeredCallback) {
+        registeredCallback()
+      }
 
       expect(mockGlobalShortcut.action).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -221,6 +224,9 @@ describe("TauriGlobalShortcuts", () => {
           key: "Cmd+G",
           bubbles: false,
           cancelable: false,
+        }),
+        expect.objectContaining({
+          hotkey: "CommandOrControl+G",
         }),
       )
     })

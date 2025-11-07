@@ -177,14 +177,14 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         textAlign: (overrides?.textAlign || baseStyle.style?.textAlign || defaultStyle.textAlign) as string,
         color: overrides?.color || baseStyle.style?.color || defaultStyle.color,
         backgroundColor: overrides?.backgroundColor || baseStyle.style?.backgroundColor || defaultStyle.backgroundColor,
-        strokeColor: overrides?.strokeColor || baseStyle.style?.strokeColor,
-        strokeWidth: overrides?.strokeWidth || baseStyle.style?.strokeWidth || defaultStyle.strokeWidth,
+        strokeColor: overrides?.strokeColor,
+        strokeWidth: overrides?.strokeWidth || defaultStyle.strokeWidth,
         textShadow: parseTextShadow(overrides?.textShadow || baseStyle.style?.textShadow),
-        padding: parsePadding(overrides?.padding || baseStyle.style?.padding),
+        padding: parsePadding(overrides?.padding || (baseStyle.style?.padding ? String(baseStyle.style.padding) : undefined)),
         borderRadius:
-          Number.parseInt(overrides?.borderRadius || baseStyle.style?.borderRadius || "4", 10) ||
+          Number.parseInt(String(overrides?.borderRadius || baseStyle.style?.borderRadius || "4"), 10) ||
           defaultStyle.borderRadius,
-        maxWidth: overrides?.maxWidth || baseStyle.style?.maxWidth || defaultStyle.maxWidth,
+        maxWidth: overrides?.maxWidth || defaultStyle.maxWidth,
         wordWrap: defaultStyle.wordWrap,
         letterSpacing: overrides?.letterSpacing || baseStyle.style?.letterSpacing || defaultStyle.letterSpacing,
         lineHeight: overrides?.lineHeight || baseStyle.style?.lineHeight || defaultStyle.lineHeight,

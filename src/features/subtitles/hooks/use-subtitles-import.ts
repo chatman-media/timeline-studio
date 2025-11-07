@@ -4,11 +4,12 @@ import { useCallback, useState } from "react"
 import { toast } from "sonner"
 
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleImportResult } from "../types/subtitles"
 import { parseSubtitleFile } from "../utils/subtitle-parsers"
 
-const logger = createLogger({ module: "UseSubtitlesImport" })
+const logger = createLogger("UseSubtitlesImport")
 
 // Генерация уникального ID для субтитров
 const generateSubtitleId = () => `subtitle-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
@@ -41,7 +42,8 @@ export function useSubtitlesImport() {
       },
     ) => {
       // Находим или создаем трек для субтитров
-      const subtitleTrack = project?.sections[0]?.tracks.find((track) => track.type === "subtitle")
+      const subtitleType: TrackType = "subtitle"
+      const subtitleTrack = project?.sections[0]?.tracks.find((track) => track.type === ("subtitle" as TrackType))
 
       if (!subtitleTrack) {
         // Создаем новый трек для субтитров
@@ -119,7 +121,8 @@ export function useSubtitlesImport() {
 
             // Добавляем субтитры на таймлайн
             // Находим или создаем трек для субтитров
-            let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === "subtitle")?.id
+            const subtitleType: TrackType = "subtitle"
+            let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === ("subtitle" as TrackType))?.id
 
             if (!subtitleTrackId) {
               subtitleTrackId = `subtitle-track-${Date.now()}`
@@ -134,7 +137,7 @@ export function useSubtitlesImport() {
 
             totalImported += subtitles.length
           } catch (error) {
-            logger.error(`Ошибка при импорте файла ${filePath}:`, error)
+            logger.error(`Ошибка при импорте файла ${filePath}:`, { error })
             toast.error("Ошибка импорта", {
               description: `Не удалось импортировать файл ${filePath}`,
             })
@@ -148,7 +151,7 @@ export function useSubtitlesImport() {
         }
       }
     } catch (error) {
-      logger.error("Ошибка при импорте субтитров:", error)
+      logger.error("Ошибка при импорте субтитров:", { error })
       toast.error("Ошибка", {
         description: "Не удалось импортировать субтитры",
       })
@@ -186,7 +189,8 @@ export function useSubtitlesImport() {
           const subtitles = parseSubtitleFile(result.content, result.format as any)
 
           // Добавляем субтитры на таймлайн
-          let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === "subtitle")?.id
+          const subtitleType: TrackType = "subtitle"
+          let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === ("subtitle" as TrackType))?.id
 
           if (!subtitleTrackId) {
             subtitleTrackId = `subtitle-track-${Date.now()}`
@@ -203,14 +207,14 @@ export function useSubtitlesImport() {
             description: `Импортировано ${subtitles.length} субтитров из файла ${result.file_name}`,
           })
         } catch (error) {
-          logger.error("Ошибка при импорте файла:", error)
+          logger.error("Ошибка при импорте файла:", { error })
           toast.error("Ошибка импорта", {
             description: "Не удалось импортировать файл субтитров",
           })
         }
       }
     } catch (error) {
-      logger.error("Ошибка при выборе файла:", error)
+      logger.error("Ошибка при выборе файла:", { error })
       toast.error("Ошибка", {
         description: "Не удалось выбрать файл",
       })

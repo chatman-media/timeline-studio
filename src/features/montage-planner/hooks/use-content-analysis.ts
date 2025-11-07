@@ -25,7 +25,7 @@ export function useContentAnalysis() {
     const analyses = Array.from(context.videoAnalyses.values())
     if (analyses.length === 0) return 0
 
-    const totalQuality = analyses.reduce((sum: number, analysis: VideoAnalysis) => {
+    const totalQuality = analyses.reduce<number>((sum, analysis) => {
       const sharpness = analysis.quality.sharpness || 0
       const stability = analysis.quality.stability || 0
       const exposure = analysis.quality.exposure || 0
@@ -34,7 +34,7 @@ export function useContentAnalysis() {
       return sum + qualityScore
     }, 0)
 
-    return totalQuality / analyses.length
+    return (totalQuality as number) / analyses.length
   }, [context.videoAnalyses])
 
   const averageAudioQuality = useMemo(() => {
@@ -42,14 +42,14 @@ export function useContentAnalysis() {
     const analyses = Array.from(context.audioAnalyses.values())
     if (analyses.length === 0) return 0
 
-    const totalQuality = analyses.reduce((sum: number, analysis: AudioAnalysis) => {
+    const totalQuality = analyses.reduce<number>((sum, analysis) => {
       const clarity = analysis.quality.clarity || 0
       const noiseLevel = analysis.quality.noiseLevel || 0
       const qualityScore = (clarity + (100 - noiseLevel)) / 2
       return sum + qualityScore
     }, 0)
 
-    return totalQuality / analyses.length
+    return (totalQuality as number) / analyses.length
   }, [context.audioAnalyses])
 
   // Best moments
@@ -113,14 +113,11 @@ export function useContentAnalysis() {
       analyzedVideos: videoAnalyses.length,
       totalMoments: context.momentScores?.length || 0,
       averageActionLevel:
-        videoAnalyses.reduce((sum: number, a: VideoAnalysis) => sum + (a.content.actionLevel || 0), 0) /
-        (videoAnalyses.length || 1),
+        videoAnalyses.reduce<number>((sum, a) => sum + (a.content.actionLevel || 0), 0) / (videoAnalyses.length || 1),
       speechPresence:
-        audioAnalyses.reduce((sum: number, a: AudioAnalysis) => sum + (a.content.speechPresence || 0), 0) /
-        (audioAnalyses.length || 1),
+        audioAnalyses.reduce<number>((sum, a) => sum + (a.content.speechPresence || 0), 0) / (audioAnalyses.length || 1),
       musicPresence:
-        audioAnalyses.reduce((sum: number, a: AudioAnalysis) => sum + (a.content.musicPresence || 0), 0) /
-        (audioAnalyses.length || 1),
+        audioAnalyses.reduce<number>((sum, a) => sum + (a.content.musicPresence || 0), 0) / (audioAnalyses.length || 1),
     }
   }, [context.videoIds, context.videoAnalyses, context.audioAnalyses, context.momentScores])
 

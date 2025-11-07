@@ -13,7 +13,7 @@ const mockMusicFiles: MediaItem[] = [
     id: "music1",
     path: "/path/to/song1.mp3",
     name: "song1.mp3",
-    media_type: "Audio",
+    media_type: "Audio" as const,
     duration: 210,
     metadata: {
       format: "mp3",
@@ -31,7 +31,7 @@ const mockMusicFiles: MediaItem[] = [
     id: "music2",
     path: "/path/to/song2.wav",
     name: "song2.wav",
-    media_type: "Audio",
+    media_type: "Audio" as const,
     duration: 180,
     metadata: {
       format: "wav",
@@ -75,7 +75,7 @@ const mockProjectState = {
           id: "video1",
           path: "/path/to/video.mp4",
           name: "video.mp4",
-          media_type: "Video",
+          media_type: "Video" as const,
           duration: 120,
           metadata: {
             format: "mp4",

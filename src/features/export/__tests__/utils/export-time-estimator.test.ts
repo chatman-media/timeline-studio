@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import type { ExportSettings } from "../../types/export-types"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 import {
   estimateExportTime,
   formatEstimatedTime,
@@ -11,13 +12,13 @@ import {
 
 describe("ExportTimeEstimator", () => {
   const basicSettings: ExportSettings = {
-    resolution: "1080",
-    fps: "30",
-    quality: "good",
-    format: "mp4",
-    bitrate: 8000,
-    useGPU: false,
+    fileName: "test",
     savePath: "/test",
+    format: OutputFormat.Mp4,
+    quality: "good",
+    resolution: "1080",
+    frameRate: "30",
+    enableGPU: false,
   }
 
   const basicProject: ProjectMetrics = {
@@ -54,8 +55,8 @@ describe("ExportTimeEstimator", () => {
     })
 
     it("should adjust for different resolutions", () => {
-      const settings720p = { ...basicSettings, resolution: "720" }
-      const settings4k = { ...basicSettings, resolution: "2160" }
+      const settings720p = { ...basicSettings, resolution: "720" as const }
+      const settings4k = { ...basicSettings, resolution: "4k" as const }
 
       const estimate720p = estimateExportTime(settings720p, basicProject)
       const estimate4k = estimateExportTime(settings4k, basicProject)
@@ -64,8 +65,8 @@ describe("ExportTimeEstimator", () => {
     })
 
     it("should adjust for different codecs", () => {
-      const h264Settings = { ...basicSettings, format: "mp4", quality: "good" }
-      const h265Settings = { ...basicSettings, format: "mp4", quality: "good" }
+      const h264Settings = { ...basicSettings, format: OutputFormat.Mp4, quality: "good" as const }
+      const h265Settings = { ...basicSettings, format: OutputFormat.Mp4, quality: "good" as const }
 
       // Force different codec detection by using specific format strings
       const h264Project = { ...basicProject }

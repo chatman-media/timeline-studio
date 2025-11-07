@@ -84,7 +84,7 @@ export class TauriGlobalShortcuts {
       }
 
       // Регистрируем глобальный shortcut
-      await register(tauriKeys, () => {
+      await register(tauriKeys, (event) => {
         if (shortcut.action) {
           // Создаем синтетическое KeyboardEvent для совместимости
           const syntheticEvent = new KeyboardEvent("keydown", {
@@ -93,14 +93,14 @@ export class TauriGlobalShortcuts {
             cancelable: false,
           })
 
-          shortcut.action(syntheticEvent as any)
+          shortcut.action(syntheticEvent, { hotkey: tauriKeys })
         }
       })
 
       this.registeredShortcuts.add(shortcut.id)
       logger.info(`Registered global shortcut: ${shortcut.name} (${tauriKeys})`)
     } catch (error) {
-      logger.error(`Failed to register global shortcut ${shortcut.name}:`, error)
+      logger.error(`Failed to register global shortcut ${shortcut.name}:`, { error })
     }
   }
 
@@ -122,7 +122,7 @@ export class TauriGlobalShortcuts {
       this.registeredShortcuts.delete(shortcut.id)
       logger.info(`Unregistered global shortcut: ${shortcut.name} (${tauriKeys})`)
     } catch (error) {
-      logger.error(`Failed to unregister global shortcut ${shortcut.name}:`, error)
+      logger.error(`Failed to unregister global shortcut ${shortcut.name}:`, { error })
     }
   }
 

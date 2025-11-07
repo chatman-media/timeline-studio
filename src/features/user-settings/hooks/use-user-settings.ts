@@ -47,6 +47,14 @@ export function useUserSettings(): UserSettingsContextValue {
   const handleAutoSaveEnabledChange = (value: boolean) => d.updateAutoSave(value)
   const handleAutoSaveIntervalChange = (value: number) => d.updateAutoSaveInterval(value)
 
+  // Timeline optimization
+  const handleTimelineVirtualizationEnabledChange = (value: boolean) =>
+    d.updateSettings({ timelineVirtualizationEnabled: value })
+  const handleTimelineVirtualizationOverscanChange = (value: number) =>
+    d.updateSettings({ timelineVirtualizationOverscan: value })
+  const handleTimelineClipDetailsThresholdChange = (value: number) =>
+    d.updateSettings({ timelineClipDetailsThreshold: value })
+
   return {
     // Данные настроек (сквозняк из доменного стора)
     activeTab: d.activeTab,
@@ -80,6 +88,11 @@ export function useUserSettings(): UserSettingsContextValue {
     autoSaveEnabled: d.autoSaveEnabled,
     autoSaveInterval: d.autoSaveInterval,
 
+    // Timeline optimization
+    timelineVirtualizationEnabled: d.timelineVirtualizationEnabled ?? true,
+    timelineVirtualizationOverscan: d.timelineVirtualizationOverscan ?? 5,
+    timelineClipDetailsThreshold: d.timelineClipDetailsThreshold ?? 50,
+
     // Методы изменения (совместимый API)
     handleTabChange,
     handleLayoutChange,
@@ -111,5 +124,10 @@ export function useUserSettings(): UserSettingsContextValue {
     // Auto-save
     handleAutoSaveEnabledChange,
     handleAutoSaveIntervalChange,
+
+    // Timeline optimization
+    handleTimelineVirtualizationEnabledChange,
+    handleTimelineVirtualizationOverscanChange,
+    handleTimelineClipDetailsThresholdChange,
   }
 }

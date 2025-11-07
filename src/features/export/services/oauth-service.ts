@@ -3,6 +3,7 @@
 import { toast } from "sonner"
 import { createLogger } from "@/lib/tauri-logger"
 import { SecureTokenStorage } from "./secure-token-storage"
+import { OAuthToken } from "../types/export-types"
 
 const logger = createLogger({ module: "OauthService" })
 
@@ -11,13 +12,6 @@ interface OAuthConfig {
   redirectUri: string
   scope: string[]
   authUrl: string
-}
-
-interface OAuthToken {
-  accessToken: string
-  refreshToken?: string
-  expiresIn: number
-  tokenType: string
 }
 
 const configs: Record<string, OAuthConfig> = {

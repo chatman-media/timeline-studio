@@ -104,12 +104,12 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isVideo || clip.fragment.sourceFile.isImage
+    return clip.fragment.sourceFile.isVideo === true || clip.fragment.sourceFile.isImage === true
   })
 
   const audioClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return clip.fragment.sourceFile.isAudio
+    return clip.fragment.sourceFile.isAudio === true
   })
 
   // Добавляем видео клипы
@@ -181,9 +181,10 @@ function createTimelineClips(
 
         // Стабилизация
         if (adjustments.stabilization) {
+          // TODO: Add stabilization effect support to TimelineClip
           // Добавляем эффект стабилизации
-          timelineClip.appliedEffects = [
-            ...(timelineClip.appliedEffects || []),
+          ;(timelineClip as any).appliedEffects = [
+            ...((timelineClip as any).appliedEffects || []),
             {
               effectId: "stabilization",
               enabled: true,
@@ -194,13 +195,15 @@ function createTimelineClips(
 
         // Кроп
         if (adjustments.crop) {
-          timelineClip.cropSettings = adjustments.crop
+          // TODO: Add crop settings support to TimelineClip
+          ;(timelineClip as any).cropSettings = adjustments.crop
         }
       }
 
       // Добавляем метаданные о моменте
-      timelineClip.metadata = {
-        ...timelineClip.metadata,
+      // TODO: Add metadata support to TimelineClip
+      ;(timelineClip as any).metadata = {
+        ...(timelineClip as any).metadata,
         montageMetadata: {
           momentCategory: montageClip.fragment?.score.category || "",
           momentScore: montageClip.fragment?.score.totalScore || 0,
@@ -227,8 +230,9 @@ function applyTransitionsToClips(clips: TimelineClip[], transitions: TransitionP
 
     if (fromClip && toClip) {
       // Применяем переход к концу первого клипа
-      fromClip.appliedTransitions = [
-        ...(fromClip.appliedTransitions || []),
+      // TODO: Add transitions support to TimelineClip
+      ;(fromClip as any).appliedTransitions = [
+        ...((fromClip as any).appliedTransitions || []),
         {
           transitionId: transition.transitionId,
           position: "out",
@@ -383,7 +387,6 @@ export function createMarkersFromPlan(plan: MontagePlan, timeOffset = 0): Timeli
  */
 function getEmotionalToneFromScore(emotionalScore: number): EmotionalTone {
   if (emotionalScore >= 80) return EmotionalTone.Energetic
-  if (emotionalScore >= 70) return EmotionalTone.Excited
   if (emotionalScore >= 60) return EmotionalTone.Happy
   if (emotionalScore >= 40) return EmotionalTone.Calm
   if (emotionalScore >= 20) return EmotionalTone.Tense

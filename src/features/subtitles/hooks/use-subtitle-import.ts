@@ -8,6 +8,7 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import type { TrackType } from "@/features/timeline/types"
 import { useToast } from "@/hooks/use-toast"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
@@ -87,7 +88,8 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
 
       if (!targetTrackId) {
         // Ищем существующий трек субтитров
-        const subtitleTrack = project?.globalTracks.find((track) => track.type === "subtitle")
+        const subtitleType: TrackType = "subtitle"
+        const subtitleTrack = project?.globalTracks.find((track) => track.type === ("subtitle" as TrackType))
 
         if (subtitleTrack) {
           targetTrackId = subtitleTrack.id

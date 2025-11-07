@@ -2,6 +2,7 @@
 
 import { SOCIAL_NETWORKS } from "../constants/export-constants"
 import type { SocialExportSettings } from "../types/export-types"
+import { OutputFormat } from "@/features/video-compiler/types/render"
 
 export interface ValidationResult {
   isValid: boolean
@@ -314,34 +315,34 @@ export function getOptimalSettings(networkId: string): Partial<SocialExportSetti
   switch (networkId) {
     case "youtube":
       return {
-        resolution: "1080",
+        resolution: "1080" as const,
         frameRate: "30",
-        quality: "good",
-        format: "Mp4",
+        quality: "good" as const,
+        format: OutputFormat.Mp4,
       }
 
     case "tiktok":
       return {
-        resolution: "1080",
+        resolution: "1080" as const,
         frameRate: "30",
-        quality: "good",
-        format: "Mp4",
+        quality: "good" as const,
+        format: OutputFormat.Mp4,
       }
 
     case "vimeo":
       return {
-        resolution: "1080",
+        resolution: "1080" as const,
         frameRate: "30",
-        quality: "best",
-        format: "Mp4",
+        quality: "best" as const,
+        format: OutputFormat.Mp4,
       }
 
     case "telegram":
       return {
-        resolution: "720",
+        resolution: "720" as const,
         frameRate: "30",
-        quality: "normal",
-        format: "Mp4",
+        quality: "normal" as const,
+        format: OutputFormat.Mp4,
       }
 
     default:

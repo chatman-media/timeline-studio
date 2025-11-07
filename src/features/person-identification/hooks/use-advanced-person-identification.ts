@@ -12,7 +12,7 @@ import { AdvancedTrackingService, type TrackedPerson } from "../services/advance
 import { PersonDatabaseService } from "../services/person-database-service"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 
-const logger = createLogger({ module: "UseAdvancedPersonIdentification" })
+const logger = createLogger("UseAdvancedPersonIdentification")
 
 export interface UseAdvancedPersonIdentificationOptions {
   // Конфигурация детекции
@@ -104,7 +104,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
           await trackingService.current.initialize()
         }
       } catch (error) {
-        logger.error("Error initializing services:", error)
+        logger.errorSync("Error initializing services:", { error })
         setState((prev) => ({ ...prev, error: error as Error }))
       }
     }
@@ -268,7 +268,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
           statistics: state.statistics,
         }
       } catch (error) {
-        logger.error("Error analyzing video:", error)
+        logger.errorSync("Error analyzing video:", { error })
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -325,7 +325,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
 
         return blurredImage
       } catch (error) {
-        logger.error("Error applying privacy blur:", error)
+        logger.errorSync("Error applying privacy blur:", { error })
         throw error
       }
     },
@@ -382,7 +382,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
         setState((prev) => ({ ...prev, isProcessing: false }))
         return results
       } catch (error) {
-        logger.error("Error finding similar persons:", error)
+        logger.errorSync("Error finding similar persons:", { error })
         setState((prev) => ({
           ...prev,
           isProcessing: false,
@@ -474,7 +474,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
 
         return person
       } catch (error) {
-        logger.error("Error creating person from face:", error)
+        logger.errorSync("Error creating person from face:", { error })
         throw error
       }
     },
@@ -540,6 +540,6 @@ async function extractVideoFrames(
 > {
   // В реальной реализации здесь будет вызов Tauri команды
   // для извлечения кадров из видео
-  logger.info("Extracting frames from video:", videoPath, options)
+  logger.infoSync("Extracting frames from video:", { videoPath, options })
   return []
 }

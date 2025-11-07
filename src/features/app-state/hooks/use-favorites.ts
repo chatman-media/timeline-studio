@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { useApp } from "../services/app-provider"
 
-const logger = createLogger({ module: "UseFavorites" })
+const logger = createLogger("UseFavorites")
 
 /**
  * Хук для доступа к избранным элементам

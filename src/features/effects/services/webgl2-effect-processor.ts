@@ -69,7 +69,7 @@ export class WebGL2EffectProcessor extends BaseRenderer {
 
       return true
     } catch (error) {
-      logger.error(`Ошибка компиляции эффекта ${effectId}:`, error)
+      void logger.error(`Ошибка компиляции эффекта ${effectId}:`, { error: error })
       return false
     }
   }
@@ -189,7 +189,7 @@ export class WebGL2EffectProcessor extends BaseRenderer {
 
       return true
     } catch (error) {
-      logger.error("Ошибка обработки видео:", error)
+      void logger.error("Ошибка обработки видео:", { error: error })
       return false
     }
   }

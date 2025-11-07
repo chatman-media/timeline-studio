@@ -56,7 +56,7 @@ function readOldEffects(): OldEffect[] {
     const data = JSON.parse(content)
     return data.effects || []
   } catch (error) {
-    logger.error("Ошибка чтения файла эффектов:", error)
+    void logger.error("Ошибка чтения файла эффектов:", { error: error })
     return []
   }
 }
@@ -156,7 +156,7 @@ async function testMigration() {
     logger.info("   - motion")
     logger.info("   - distortion")
   } catch (error) {
-    logger.error("❌ Ошибка при миграции:", error)
+    void logger.error("❌ Ошибка при миграции:", { error: error })
   }
 }
 

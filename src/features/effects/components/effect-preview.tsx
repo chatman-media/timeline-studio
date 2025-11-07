@@ -110,7 +110,7 @@ export function EffectPreview({
           ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
           : processedEffect.name || processedEffect.id
 
-      logger.info("[EffectPreview] Applying effect:", effectName)
+      void logger.info(`[EffectPreview] Applying effect: ${effectName}`)
 
       // Собираем параметры из новой структуры
       const params: Record<string, any> = {}
@@ -196,7 +196,7 @@ export function EffectPreview({
 
       // Запускаем воспроизведение видео
       videoElement.play().catch((err: unknown) => {
-        logger.info("Autoplay prevented:", err)
+        void logger.info("Autoplay prevented", { error: err })
       })
 
       // Устанавливаем таймер для повторного воспроизведения через 2 секунды
