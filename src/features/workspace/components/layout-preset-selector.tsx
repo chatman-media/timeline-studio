@@ -6,7 +6,7 @@
 
 "use client"
 
-import { LayoutGrid, PanelLeft, PanelTop, FolderOpen, MessageSquare } from "lucide-react"
+import { LayoutGrid, PanelLeft, PanelTop, MessageSquare } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,6 @@ const PRESET_ICONS: Record<string, LucideIcon> = {
   default: LayoutGrid,
   vertical: PanelLeft,
   options: PanelTop,
-  browser: FolderOpen,
   chat: MessageSquare,
 }
 
