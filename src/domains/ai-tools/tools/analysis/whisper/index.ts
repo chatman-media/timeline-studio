@@ -169,7 +169,6 @@ export class WhisperTranscriptionTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -241,7 +240,6 @@ export class SpeechAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"

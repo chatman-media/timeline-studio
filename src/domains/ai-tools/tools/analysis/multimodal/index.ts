@@ -122,7 +122,6 @@ export class MultimodalAnalysisTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }

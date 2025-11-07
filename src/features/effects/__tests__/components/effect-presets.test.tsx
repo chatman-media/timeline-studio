@@ -1,12 +1,9 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { EffectPresets } from "../../components/effect-presets"
-
-import type { BaseEffect, VideoEffect } from "../../types"
-
 // Импортируем mockLogger из мока
 import { mockLogger } from "@/lib/tauri-logger"
+import { EffectPresets } from "../../components/effect-presets"
+import type { BaseEffect, VideoEffect } from "../../types"
 
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({
@@ -413,7 +410,10 @@ describe("EffectPresets", () => {
       }).not.toThrow()
 
       await waitFor(() => {
-        expect(mockLogger.error).toHaveBeenCalledWith("Error parsing custom presets", expect.objectContaining({ error: expect.any(SyntaxError) }))
+        expect(mockLogger.error).toHaveBeenCalledWith(
+          "Error parsing custom presets",
+          expect.objectContaining({ error: expect.any(SyntaxError) }),
+        )
       })
     })
 
@@ -427,7 +427,10 @@ describe("EffectPresets", () => {
       }).not.toThrow()
 
       await waitFor(() => {
-        expect(mockLogger.error).toHaveBeenCalledWith("Error accessing localStorage", expect.objectContaining({ error: expect.any(Error) }))
+        expect(mockLogger.error).toHaveBeenCalledWith(
+          "Error accessing localStorage",
+          expect.objectContaining({ error: expect.any(Error) }),
+        )
       })
     })
 

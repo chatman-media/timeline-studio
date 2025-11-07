@@ -169,7 +169,6 @@ export class VideoMetadataAnalysisTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -232,7 +231,6 @@ export class SceneDetectionTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
@@ -297,7 +295,6 @@ export class VideoQualityAnalysisTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -360,7 +357,6 @@ export class MotionAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
@@ -425,7 +421,6 @@ export class ColorAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"

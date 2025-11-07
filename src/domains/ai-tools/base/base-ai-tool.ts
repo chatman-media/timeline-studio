@@ -56,7 +56,7 @@ export abstract class BaseAITool implements IAITool {
 
   constructor(metadata?: AIToolMetadata, logger?: AIToolLogger) {
     if (metadata) {
-      // @ts-ignore - Allow assignment to readonly property in constructor
+      // @ts-expect-error - Allow assignment to readonly property in constructor
       this.metadata = metadata
     }
     this.logger = logger

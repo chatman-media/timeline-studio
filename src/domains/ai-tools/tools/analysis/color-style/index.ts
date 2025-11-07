@@ -106,7 +106,6 @@ export class ColorPaletteAnalysisTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -140,7 +139,6 @@ export class CinematicGradingTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
@@ -176,7 +174,6 @@ export class ColorMatchingTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -210,7 +207,6 @@ export class StyleTransferTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
@@ -246,7 +242,6 @@ export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
     )
   }
 
-
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
   }
@@ -280,7 +275,6 @@ export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
       options,
     )
   }
-
 
   validate(input: any): boolean {
     return typeof input === "object" && input !== null && typeof input.operation === "string"
