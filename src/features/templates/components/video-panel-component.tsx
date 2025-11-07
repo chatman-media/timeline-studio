@@ -63,7 +63,9 @@ export function VideoPanelComponent({
             if (wasPlaying) {
               videoRef.current
                 .play()
-                .catch((e: unknown) => logger.error(`[VideoPanel] Ошибка воспроизведения видео ${video.id}:`, { error: e }))
+                .catch((e: unknown) =>
+                  logger.error(`[VideoPanel] Ошибка воспроизведения видео ${video.id}:`, { error: e }),
+                )
             }
           }
         }, 100)

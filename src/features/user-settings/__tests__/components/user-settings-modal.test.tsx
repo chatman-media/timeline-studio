@@ -3,11 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useLanguage } from "@/features/language"
 import { useModal } from "@/features/modals/services/modal-provider"
-
+import { createMockApiKeys, createMockUserSettings } from "../../__tests__/test-utils"
 import { UserSettingsModal } from "../../components/user-settings-modal"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { useUserSettings } from "../../hooks/use-user-settings"
-import { createMockApiKeys, createMockUserSettings } from "../../__tests__/test-utils"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({

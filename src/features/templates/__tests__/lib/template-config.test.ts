@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest"
 import { createElement } from "react"
+import { describe, expect, it } from "vitest"
 
 import {
   type CellConfiguration,

@@ -6,8 +6,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import { createLogger } from "@/lib/tauri-logger"
+import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import type {
   AnalysisOptions,
   MontageAnalysisResult,

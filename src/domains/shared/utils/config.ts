@@ -1,14 +1,14 @@
 import {
+  AccuracyLevel,
   AIConfig,
-  AIProviderConfig,
-  AIProvider,
   AIFeatures,
+  AIProvider,
+  AIProviderConfig,
+  AnalysisDepth,
+  LanguageConfig,
   ProcessingConfig,
   QualityConfig,
-  AnalysisDepth,
-  AccuracyLevel,
   SpeedPriority,
-  LanguageConfig,
 } from "../types/ai-tools/ai-config"
 
 export function createDefaultAIConfig(overrides?: Partial<AIConfig>): AIConfig {

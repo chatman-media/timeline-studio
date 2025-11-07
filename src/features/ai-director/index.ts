@@ -6,10 +6,14 @@
  * Event types (AnalysisProgress, AnalysisError) moved to @/domains/ai-services/types/ai-director-events
  */
 
+export type {
+  AnalysisError,
+  AnalysisProgress,
+  HealthCheckResult,
+  SystemCapabilities,
+} from "@/domains/ai-services/types/ai-director-events"
+// Re-export main types for convenience
+export type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 export * from "./hooks"
 export * from "./services/ai-director-machine"
 export * from "./services/ai-director-service"
-
-// Re-export main types for convenience
-export type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
-export type { AnalysisProgress, AnalysisError, SystemCapabilities, HealthCheckResult } from "@/domains/ai-services/types/ai-director-events"
