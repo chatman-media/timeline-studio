@@ -2,7 +2,8 @@
  * Типы для Multi-Platform Engine
  */
 
-import type { AdaptedContent, PlatformId } from "../../types/platform"
+import type { AdaptedContent, Platform } from "@/domains/shared/types/ai-tools/platform-adaptation"
+import type { PlatformId } from "../../types/platform"
 import type { GeneratedScript } from "../../types/script"
 import type { UnifiedContentAnalysis } from "../../types/unified-analysis"
 

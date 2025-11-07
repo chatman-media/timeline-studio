@@ -4,7 +4,7 @@
  */
 
 import { EnhancedUnifiedAIService } from "@/domains/ai-core/services"
-import type { AdaptedContent } from "@/domains/ai-services/types"
+import type { AdaptedContent } from "@/domains/shared/types/ai-tools/platform-adaptation"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -83,14 +83,14 @@ export class LanguageAdapter {
       targetLanguages.map(async (targetLang) => {
         const titlePrompt = `Translate this video title from ${sourceLanguage} to ${targetLang}.
         Maintain the tone and SEO keywords.
-        Title: "${content.title || ""}"
-        
+        Title: "${content.metadata.title || ""}"
+
         Provide only the translation, no explanation.`
 
         const descPrompt = `Translate this video description from ${sourceLanguage} to ${targetLang}.
         Maintain the tone, structure, and SEO keywords.
-        Description: "${content.description || ""}"
-        
+        Description: "${content.metadata.description || ""}"
+
         Provide only the translation, no explanation.`
 
         const [translatedTitle, translatedDesc] = await Promise.all([
@@ -103,7 +103,11 @@ export class LanguageAdapter {
         ])
 
         // Переводим хэштеги
-        const translatedHashtags = await this.translateHashtags(content.hashtags || [], sourceLanguage, targetLang)
+        const translatedHashtags = await this.translateHashtags(
+          content.metadata.hashtags || [],
+          sourceLanguage,
+          targetLang,
+        )
 
         return {
           language: targetLang,
@@ -261,10 +265,11 @@ export class LanguageAdapter {
     try {
       const suggestions = JSON.parse(response)
       // Сохраняем культурные адаптации как метаданные
-      if (!content.metadata.culturalAdaptations) {
-        content.metadata.culturalAdaptations = {}
+      const metadata = content.metadata as any
+      if (!metadata.culturalAdaptations) {
+        metadata.culturalAdaptations = {}
       }
-      content.metadata.culturalAdaptations[targetLanguage] = suggestions
+      metadata.culturalAdaptations[targetLanguage] = suggestions
     } catch (error) {
       logger.error("Failed to parse cultural adaptation suggestions:", { error })
     }

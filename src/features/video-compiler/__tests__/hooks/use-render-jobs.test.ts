@@ -266,9 +266,9 @@ describe("useRenderJobs", () => {
 
     expect(mockInvoke).toHaveBeenCalledTimes(1)
 
-    // Advance timers by 2 seconds
+    // Advance timers by 5 seconds (interval in useRenderJobs is 5000ms)
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(5000)
     })
 
     // Wait for the update

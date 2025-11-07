@@ -110,7 +110,8 @@ export class WhisperTranscriptionTool extends BaseAITool implements IAITool {
     name: "whisper-transcription",
     displayName: "Whisper транскрипция",
     description: "Транскрипция речи в текст с использованием OpenAI Whisper",
-    category: "analysis/whisper",
+    domain: "analysis",
+    category: "whisper-tools",
     tags: ["whisper", "transcription", "speech", "ai"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -167,6 +168,18 @@ export class WhisperTranscriptionTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class SpeechAnalysisTool extends BaseAITool implements IAITool {
@@ -174,7 +187,8 @@ export class SpeechAnalysisTool extends BaseAITool implements IAITool {
     name: "speech-analysis",
     displayName: "Анализ речи",
     description: "Анализ характеристик речи: темп, паузы, тональность",
-    category: "analysis/whisper",
+    domain: "analysis",
+    category: "whisper-tools",
     tags: ["speech", "analysis", "voice", "characteristics"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -226,6 +240,18 @@ export class SpeechAnalysisTool extends BaseAITool implements IAITool {
       input,
       options,
     )
+  }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 }
 

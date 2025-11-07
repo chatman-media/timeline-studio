@@ -89,7 +89,8 @@ export class ColorPaletteAnalysisTool extends BaseAITool implements IAITool {
     name: "color-palette-analysis",
     displayName: "Анализ цветовой палитры",
     description: "Анализирует цветовую палитру проекта",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["color", "palette", "analysis"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -104,6 +105,18 @@ export class ColorPaletteAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class CinematicGradingTool extends BaseAITool implements IAITool {
@@ -111,7 +124,8 @@ export class CinematicGradingTool extends BaseAITool implements IAITool {
     name: "cinematic-grading",
     displayName: "Кинематографическая градация",
     description: "Применяет кинематографическую цветокоррекцию",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["color", "grading", "cinematic"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -126,6 +140,18 @@ export class CinematicGradingTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class ColorMatchingTool extends BaseAITool implements IAITool {
@@ -133,7 +159,8 @@ export class ColorMatchingTool extends BaseAITool implements IAITool {
     name: "color-matching",
     displayName: "Сопоставление цветов",
     description: "Создает цветовое соответствие между клипами",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["color", "matching"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -148,6 +175,18 @@ export class ColorMatchingTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class StyleTransferTool extends BaseAITool implements IAITool {
@@ -155,7 +194,8 @@ export class StyleTransferTool extends BaseAITool implements IAITool {
     name: "style-transfer",
     displayName: "Передача стиля",
     description: "Применяет стилистическую передачу",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["style", "transfer"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -170,6 +210,18 @@ export class StyleTransferTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
@@ -177,7 +229,8 @@ export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
     name: "color-scheme-creation",
     displayName: "Создание цветовых схем",
     description: "Создает динамические цветовые схемы",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["color", "scheme"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -192,6 +245,18 @@ export class ColorSchemeCreationTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
@@ -199,7 +264,8 @@ export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
     name: "consistency-optimization",
     displayName: "Оптимизация консистентности",
     description: "Оптимизирует визуальную консистентность",
-    category: "analysis/color-style",
+    domain: "analysis",
+    category: "content-intelligence",
     tags: ["consistency", "optimization"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -213,6 +279,18 @@ export class ConsistencyOptimizationTool extends BaseAITool implements IAITool {
       input,
       options,
     )
+  }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 }
 

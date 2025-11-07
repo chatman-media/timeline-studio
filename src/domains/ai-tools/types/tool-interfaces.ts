@@ -2,23 +2,8 @@
  * Интерфейсы для AI инструментов
  */
 
-// Результат выполнения AI инструмента
-export interface AIToolResult<T = any> {
-  success: boolean
-  data?: T
-  message?: string
-  errors?: string[]
-  warnings?: string[]
-  executionTime: number
-  toolName: string
-  metadata?: {
-    model?: string
-    provider?: string
-    tokenCount?: number
-    cacheHit?: boolean
-    [key: string]: any
-  }
-}
+// Импортируем AIToolResult из result-types для избежания дублирования
+export type { AIToolResult } from "./result-types"
 
 // Опции выполнения инструмента
 export interface AIToolExecutionOptions {
@@ -48,9 +33,10 @@ export interface AIToolLogger {
 // Метаданные инструмента
 export interface AIToolMetadata {
   name: string
+  displayName?: string
   description: string
   domain: AIToolDomain
-  category: string
+  category: AIToolCategory
   version: string
   author?: string
   tags?: string[]
@@ -107,7 +93,7 @@ export interface IToolRegistry {
   getByDomain(domain: AIToolDomain): IAITool[]
   getByCategory(category: AIToolCategory): IAITool[]
   list(): AIIToolInfo[]
-  search(query: string): IAITool[]
+  search(query: string, filters?: ToolSearchFilters): ToolSearchResult
 }
 
 // Информация об инструменте в реестре
@@ -179,14 +165,6 @@ export interface DomainStats {
   averageExecutionTime: number
   successRate: number
   lastUsed?: Date
-}
-
-// Результат поиска инструментов
-export interface ToolSearchResult {
-  tools: IAITool[]
-  totalCount: number
-  query: string
-  executionTime: number
 }
 
 // Фильтры для поиска инструментов

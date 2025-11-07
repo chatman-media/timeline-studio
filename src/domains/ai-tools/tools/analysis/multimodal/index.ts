@@ -69,7 +69,8 @@ export class MultimodalAnalysisTool extends BaseAITool implements IAITool {
     name: "multimodal-analysis",
     displayName: "Мультимодальный анализ",
     description: "Анализ корреляций между различными модальностями контента",
-    category: "analysis/multimodal",
+    domain: "analysis",
+    category: "multimodal",
     tags: ["multimodal", "correlation", "analysis", "ai"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -119,6 +120,18 @@ export class MultimodalAnalysisTool extends BaseAITool implements IAITool {
       input,
       options,
     )
+  }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 }
 

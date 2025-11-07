@@ -34,7 +34,7 @@ export interface AIToolResultMetadata {
   cacheKey?: string
 
   // Производительность
-  executionTime: number
+  executionTime?: number
   memoryUsage?: number
   cpuUsage?: number
 

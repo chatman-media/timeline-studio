@@ -136,33 +136,97 @@ export async function mockTauriAPI(page: Page) {
               return null
           }
         },
+        convertFileSrc: (src: string) => src,
+      },
+
+      event: {
+        listen: async (event: string, handler: (event: any) => void) => {
+          console.log("Mock Tauri listen:", event)
+          return () => {}
+        },
+        once: async (event: string, handler: (event: any) => void) => {
+          console.log("Mock Tauri once:", event)
+          return () => {}
+        },
+        emit: async (event: string, payload?: any) => {
+          console.log("Mock Tauri emit:", event, payload)
+        },
       },
 
       dialog: {
         open: async (options?: any) => {
+          console.log("Mock Tauri dialog.open:", options)
           // Эмулируем выбор файлов
           if (options?.multiple) {
             return ["/test/video1.mp4", "/test/video2.mp4"]
           }
           return "/test/video.mp4"
         },
-        save: async () => "/test/project.json",
+        save: async (options?: any) => {
+          console.log("Mock Tauri dialog.save:", options)
+          return "/test/project.json"
+        },
+        message: async (message: string, options?: any) => {
+          console.log("Mock Tauri dialog.message:", message, options)
+        },
+        ask: async (message: string, options?: any) => {
+          console.log("Mock Tauri dialog.ask:", message, options)
+          return true
+        },
+        confirm: async (message: string, options?: any) => {
+          console.log("Mock Tauri dialog.confirm:", message, options)
+          return true
+        },
       },
 
       fs: {
-        readTextFile: async () => "{}",
-        writeTextFile: async () => {},
-        exists: async () => true,
+        readTextFile: async (path: string) => {
+          console.log("Mock Tauri fs.readTextFile:", path)
+          return "{}"
+        },
+        writeTextFile: async (path: string, content: string) => {
+          console.log("Mock Tauri fs.writeTextFile:", path, content)
+        },
+        exists: async (path: string) => {
+          console.log("Mock Tauri fs.exists:", path)
+          return true
+        },
+        readDir: async (path: string) => {
+          console.log("Mock Tauri fs.readDir:", path)
+          return []
+        },
+        createDir: async (path: string, options?: { recursive?: boolean }) => {
+          console.log("Mock Tauri fs.createDir:", path, options)
+        },
+        removeFile: async (path: string) => {
+          console.log("Mock Tauri fs.removeFile:", path)
+        },
+        removeDir: async (path: string, options?: { recursive?: boolean }) => {
+          console.log("Mock Tauri fs.removeDir:", path, options)
+        },
       },
 
       path: {
         homeDir: async () => "/home/user",
         appDataDir: async () => "/home/user/.timeline-studio",
+        appConfigDir: async () => "/home/user/.config/timeline-studio",
+        appLocalDataDir: async () => "/home/user/.local/timeline-studio",
+        join: async (...paths: string[]) => paths.join("/"),
+        dirname: async (path: string) => path.split("/").slice(0, -1).join("/"),
+        basename: async (path: string) => path.split("/").pop() || "",
+        extname: async (path: string) => {
+          const parts = path.split(".")
+          return parts.length > 1 ? `.${parts.pop()}` : ""
+        },
       },
 
       notification: {
-        sendNotification: async () => {},
+        sendNotification: async (options: string | { title: string; body?: string }) => {
+          console.log("Mock Tauri notification:", options)
+        },
       },
+
+      tauri: {},
     }
   })
 }

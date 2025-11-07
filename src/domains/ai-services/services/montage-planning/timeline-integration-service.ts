@@ -10,6 +10,8 @@ import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
 import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
 import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 import {
+  type AppliedEffect,
+  type AppliedTransition,
   createTimelineClip,
   createTimelineSection,
   createTimelineTrack,
@@ -183,14 +185,14 @@ function createTimelineClips(
         // Стабилизация
         if (adjustments.stabilization) {
           // Добавляем эффект стабилизации
-          timelineClip.effects = [
-            ...(timelineClip.effects || []),
-            {
-              effectId: "stabilization",
-              enabled: true,
-              customParams: {},
-            },
-          ]
+          const stabilizationEffect: AppliedEffect = {
+            id: `effect_stabilization_${timelineClip.id}`,
+            effectId: "stabilization",
+            enabled: true,
+            order: (timelineClip.effects || []).length,
+            customParams: {},
+          }
+          timelineClip.effects = [...(timelineClip.effects || []), stabilizationEffect]
         }
 
         // Кроп (через позицию клипа)
@@ -218,16 +220,15 @@ function applyTransitionsToClips(clips: TimelineClip[], transitions: TransitionP
 
     if (fromClip && toClip) {
       // Применяем переход к концу первого клипа
-      fromClip.transitions = [
-        ...(fromClip.transitions || []),
-        {
-          transitionId: transition.transitionId,
-          position: "out",
-          duration: transition.duration,
-          targetClipId: toClip.id,
-          customParams: {},
-        },
-      ]
+      const appliedTransition: AppliedTransition = {
+        id: `transition_${fromClip.id}_to_${toClip.id}`,
+        transitionId: transition.transitionId,
+        type: "out",
+        duration: transition.duration,
+        isEnabled: true,
+        customParams: {},
+      }
+      fromClip.transitions = [...(fromClip.transitions || []), appliedTransition]
 
       // Корректируем время начала следующего клипа для перекрытия
       const overlap = transition.duration / 2

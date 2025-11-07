@@ -123,7 +123,8 @@ export class VideoMetadataAnalysisTool extends BaseAITool implements IAITool {
     name: "video-metadata-analysis",
     displayName: "Анализ метаданных видео",
     description: "Извлекает и анализирует метаданные видеофайлов",
-    category: "analysis/video-analysis",
+    domain: "analysis",
+    category: "video-analysis",
     tags: ["video", "metadata", "analysis", "ffmpeg"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -167,6 +168,18 @@ export class VideoMetadataAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class SceneDetectionTool extends BaseAITool implements IAITool {
@@ -174,7 +187,8 @@ export class SceneDetectionTool extends BaseAITool implements IAITool {
     name: "scene-detection",
     displayName: "Детекция сцен",
     description: "Автоматически определяет границы сцен в видео",
-    category: "analysis/video-analysis",
+    domain: "analysis",
+    category: "video-analysis",
     tags: ["video", "scenes", "detection", "ai"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -218,6 +232,18 @@ export class SceneDetectionTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class VideoQualityAnalysisTool extends BaseAITool implements IAITool {
@@ -225,7 +251,8 @@ export class VideoQualityAnalysisTool extends BaseAITool implements IAITool {
     name: "video-quality-analysis",
     displayName: "Анализ качества видео",
     description: "Анализирует качество видео и предлагает улучшения",
-    category: "analysis/video-analysis",
+    domain: "analysis",
+    category: "video-analysis",
     tags: ["video", "quality", "analysis", "enhancement"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -269,6 +296,18 @@ export class VideoQualityAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class MotionAnalysisTool extends BaseAITool implements IAITool {
@@ -276,7 +315,8 @@ export class MotionAnalysisTool extends BaseAITool implements IAITool {
     name: "motion-analysis",
     displayName: "Анализ движения",
     description: "Анализирует движение в видео и выделяет статичные/динамичные области",
-    category: "analysis/video-analysis",
+    domain: "analysis",
+    category: "video-analysis",
     tags: ["video", "motion", "analysis", "tracking"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -320,6 +360,18 @@ export class MotionAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class ColorAnalysisTool extends BaseAITool implements IAITool {
@@ -327,7 +379,8 @@ export class ColorAnalysisTool extends BaseAITool implements IAITool {
     name: "color-analysis",
     displayName: "Анализ цветов",
     description: "Анализирует цветовую палитру и характеристики видео",
-    category: "analysis/video-analysis",
+    domain: "analysis",
+    category: "video-analysis",
     tags: ["video", "color", "analysis", "palette"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -371,6 +424,18 @@ export class ColorAnalysisTool extends BaseAITool implements IAITool {
       input,
       options,
     )
+  }
+
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 }
 

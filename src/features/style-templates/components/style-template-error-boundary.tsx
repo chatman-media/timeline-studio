@@ -32,8 +32,8 @@ export class StyleTemplateErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Логируем ошибку для отладки
-    void logger.error("StyleTemplateErrorBoundary caught an error", { error, errorInfo })
+    // Логируем ошибку для отладки (используем sync версию для Error Boundary)
+    logger.errorSync("StyleTemplateErrorBoundary caught an error", { error, errorInfo })
   }
 
   handleRetry = () => {

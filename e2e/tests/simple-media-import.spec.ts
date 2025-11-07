@@ -48,8 +48,8 @@ test.describe("Simple Media Import Tests", () => {
       // Inject command tracker before clicking
       await page.evaluate(() => {
         ;(window as any).__commandsCalled = []
-        const originalInvoke = window.__TAURI__?.core?.invoke
-        if (originalInvoke) {
+        if (window.__TAURI__?.core?.invoke) {
+          const originalInvoke = window.__TAURI__.core.invoke
           window.__TAURI__.core.invoke = async (cmd: string, args?: any) => {
             console.log("Tauri command called:", cmd)
             ;(window as any).__commandsCalled.push(cmd)

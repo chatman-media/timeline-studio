@@ -5,9 +5,21 @@ import { describe, expect, it, vi } from "vitest"
 
 import { LUTSection } from "../../components/lut/lut-section"
 
+// Мокаем logger - используем vi.hoisted для правильного hoisting
+const mockLogger = vi.hoisted(() => ({
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+}))
+
 // Мокаем Tauri dialog
 vi.mock("@tauri-apps/plugin-dialog", () => ({
   open: vi.fn(),
+}))
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => mockLogger,
 }))
 
 // Мокаем lucide-react иконки
@@ -99,6 +111,10 @@ vi.mock("../../services/color-grading-provider", () => ({
 describe("LUTSection", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockLogger.info.mockClear()
+    mockLogger.error.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.debug.mockClear()
     mockState.lut = {
       file: null,
       isEnabled: false,
@@ -256,17 +272,12 @@ describe("LUTSection", () => {
     mockState.lut.isEnabled = true
     const user = userEvent.setup()
 
-    // Mock console.log
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-
     render(<LUTSection />)
 
     const refreshButton = screen.getByText("Refresh")
     await user.click(refreshButton)
 
-    expect(consoleSpy).toHaveBeenCalledWith("Refreshing LUT previews...")
-
-    consoleSpy.mockRestore()
+    expect(mockLogger.info).toHaveBeenCalledWith("Refreshing LUT previews...")
   })
 
   it("should disable intensity slider when LUT is disabled", () => {

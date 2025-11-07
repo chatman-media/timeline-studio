@@ -38,7 +38,13 @@ export interface Scene {
 }
 
 // Re-export from shared types
-export type { KeyFrameExtractionOptions, KeyFrameExtractionResult } from "@/domains/shared/types/media-analysis"
+export type {
+  KeyFrameExtractionOptions,
+  KeyFrameExtractionResult,
+} from "@/domains/shared/types/media-analysis"
+
+// Import for local usage
+import type { KeyFrameExtractionOptions as KeyFrameOptions } from "@/domains/shared/types/media-analysis"
 
 export interface QualityAnalysisResult {
   overall: number // 0-100
@@ -216,10 +222,9 @@ export interface MotionAnalysisOptions {
   blockSize?: number
 }
 
-export interface KeyFrameExtractionOptions {
-  interval?: number
-  maxFrames?: number
-}
+// KeyFrameExtractionOptions импортируется из shared types (строка 41)
+// Если нужно расширить, создайте новый интерфейс:
+// export interface ExtendedKeyFrameExtractionOptions extends KeyFrameExtractionOptions { ... }
 
 export interface AudioAnalysisOptions {
   enableSpectralAnalysis?: boolean
@@ -237,7 +242,7 @@ export interface VideoAnalysisOptions {
   qualityAnalysis?: QualityAnalysisOptions
   silenceDetection?: SilenceDetectionOptions
   motionAnalysis?: MotionAnalysisOptions
-  keyFrameExtraction?: KeyFrameExtractionOptions
+  keyFrameExtraction?: KeyFrameOptions
   audioAnalysis?: AudioAnalysisOptions
 }
 

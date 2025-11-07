@@ -6,7 +6,10 @@
 import type {
   AnalysisOptions,
   AudioAnalysis,
+  MomentCluster,
   MomentScore,
+  TemporalDistribution,
+  TimeGap,
   VideoAnalysis,
 } from "../../../../features/montage-planner/types/index"
 import {

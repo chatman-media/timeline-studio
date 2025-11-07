@@ -16,6 +16,10 @@ import {
   SceneAnalysis as SharedSceneAnalysis,
   SceneTransition as SharedSceneTransition,
 } from "@/domains/shared/types/ai-tools/content-analysis"
+
+// Реэкспортируем для использования в других модулях
+export type { SceneAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
+
 import { PersonDatabaseService } from "@/features/person-identification/services/person-database-service"
 import type {
   DetectedFace,

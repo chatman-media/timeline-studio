@@ -7,6 +7,7 @@ import { UnifiedAIService } from "@/domains/ai-core"
 import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import {
   AdaptedContent,
+  AspectRatio,
   AudioSpecs,
   CaptionPosition,
   Platform,
@@ -184,9 +185,12 @@ export class PlatformAdapter {
     // Рассчитываем битрейт
     const bitrate = this.calculateBitrate(resolution, frameRate, targetSpecs.bitrate, strategy.qualityPreset)
 
+    // Конвертируем строку aspectRatio в объект
+    const aspectRatio = this.parseAspectRatio(strategy.targetAspectRatio, targetSpecs.aspectRatio)
+
     return {
       resolution: [resolution],
-      aspectRatio: [strategy.targetAspectRatio],
+      aspectRatio: [aspectRatio],
       frameRate: [frameRate],
       codec: [codec],
       bitrate,
@@ -470,5 +474,32 @@ export class PlatformAdapter {
 
     // Размер в байтах = (битрейт в битах/сек * длительность в сек) / 8
     return Math.floor((totalBitrate * duration) / 8)
+  }
+
+  private parseAspectRatio(ratioString: string, availableRatios: AspectRatio[]): AspectRatio {
+    // Пытаемся найти соответствие в доступных соотношениях
+    const found = availableRatios.find((ar) => ar.ratio === ratioString)
+    if (found) {
+      return found
+    }
+
+    // Парсим строку вида "16:9" или "9:16"
+    const parts = ratioString.split(":")
+    if (parts.length === 2) {
+      const width = Number.parseInt(parts[0], 10)
+      const height = Number.parseInt(parts[1], 10)
+
+      if (!Number.isNaN(width) && !Number.isNaN(height)) {
+        return {
+          ratio: ratioString,
+          width,
+          height,
+          preferred: true,
+        }
+      }
+    }
+
+    // Возвращаем первое доступное как fallback
+    return availableRatios[0]
   }
 }

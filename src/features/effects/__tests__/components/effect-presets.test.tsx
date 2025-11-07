@@ -5,6 +5,9 @@ import { EffectPresets } from "../../components/effect-presets"
 
 import type { BaseEffect, VideoEffect } from "../../types"
 
+// Импортируем mockLogger из мока
+import { mockLogger } from "@/lib/tauri-logger"
+
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -44,6 +47,21 @@ vi.mock("lucide-react", () => ({
   Settings: () => <span data-testid="settings-icon">Settings</span>,
   Trash2: () => <span data-testid="trash-icon">Trash2</span>,
 }))
+
+// Мокаем logger
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+  }
+  return {
+    createLogger: () => mockLogger,
+    mockLogger, // Экспортируем для использования в тестах
+  }
+})
 
 describe("EffectPresets", () => {
   const mockPresets = [
@@ -113,9 +131,6 @@ describe("EffectPresets", () => {
       value: mockLocalStorage,
       writable: true,
     })
-
-    // Мокаем console
-    vi.spyOn(console, "error").mockImplementation(() => {})
 
     // Сброс состояния localStorage
     mockLocalStorage.clear()
@@ -390,17 +405,19 @@ describe("EffectPresets", () => {
   })
 
   describe("Обработка ошибок", () => {
-    it("должен обрабатывать ошибки при загрузке из localStorage", () => {
+    it("должен обрабатывать ошибки при загрузке из localStorage", async () => {
       mockLocalStorage.getItem.mockReturnValue("invalid json")
 
       expect(() => {
         render(<EffectPresets {...mockProps} />)
       }).not.toThrow()
 
-      expect(console.error).toHaveBeenCalledWith("Error parsing custom presets:", expect.any(SyntaxError))
+      await waitFor(() => {
+        expect(mockLogger.error).toHaveBeenCalledWith("Error parsing custom presets", expect.objectContaining({ error: expect.any(SyntaxError) }))
+      })
     })
 
-    it("должен работать когда localStorage недоступен", () => {
+    it("должен работать когда localStorage недоступен", async () => {
       mockLocalStorage.getItem.mockImplementation(() => {
         throw new Error("localStorage not available")
       })
@@ -409,7 +426,9 @@ describe("EffectPresets", () => {
         render(<EffectPresets {...mockProps} />)
       }).not.toThrow()
 
-      expect(console.error).toHaveBeenCalledWith("Error accessing localStorage:", expect.any(Error))
+      await waitFor(() => {
+        expect(mockLogger.error).toHaveBeenCalledWith("Error accessing localStorage", expect.objectContaining({ error: expect.any(Error) }))
+      })
     })
 
     it("должен обрабатывать пустые пресеты", () => {

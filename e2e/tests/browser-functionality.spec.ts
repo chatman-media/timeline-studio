@@ -96,14 +96,14 @@ test.describe("Browser Functionality", () => {
     const importButtonVisible = await browserPage.importButton.isVisible().catch(() => false)
 
     if (importButtonVisible) {
-      // Настраиваем перехват команд Tauri
+      // Настраиваем перехват команд Tauri для отслеживания вызовов
+      let dialogCalled = false
       await page.evaluate(() => {
         if (window.__TAURI__) {
-          window.__TAURI__._importClicked = false
           const originalInvoke = window.__TAURI__.core.invoke
           window.__TAURI__.core.invoke = async (cmd: string, args?: any) => {
             if (cmd.includes("dialog") || cmd.includes("import")) {
-              window.__TAURI__._importClicked = true
+              ;(window as any).__dialogCalled = true
             }
             return originalInvoke ? originalInvoke(cmd, args) : null
           }
@@ -115,10 +115,12 @@ test.describe("Browser Functionality", () => {
       await page.waitForTimeout(300)
 
       // Проверяем что команда была вызвана или кнопка остается активной
-      const importClicked = await page.evaluate(() => (window as any).__TAURI__?._importClicked)
+      dialogCalled = await page.evaluate(() => {
+        return (window as any).__dialogCalled === true
+      })
       const buttonStillVisible = await browserPage.importButton.isVisible()
 
-      expect(importClicked || buttonStillVisible).toBeTruthy()
+      expect(dialogCalled || buttonStillVisible).toBeTruthy()
     } else {
       console.log("Import button not found, skipping test")
     }

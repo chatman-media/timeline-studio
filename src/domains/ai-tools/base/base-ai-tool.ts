@@ -52,10 +52,13 @@ export class NoOpAIToolLogger implements AIToolLogger {
  */
 export abstract class BaseAITool implements IAITool {
   protected logger?: AIToolLogger
-  public readonly metadata: AIToolMetadata
+  public abstract readonly metadata: AIToolMetadata
 
-  constructor(metadata: AIToolMetadata, logger?: AIToolLogger) {
-    this.metadata = metadata
+  constructor(metadata?: AIToolMetadata, logger?: AIToolLogger) {
+    if (metadata) {
+      // @ts-ignore - Allow assignment to readonly property in constructor
+      this.metadata = metadata
+    }
     this.logger = logger
   }
 
@@ -124,7 +127,7 @@ export abstract class BaseAITool implements IAITool {
       maxRetries: retries,
       options,
       priority: "medium",
-      logger: enableLogging ? this.createContextLogger() : undefined,
+      logger: enableLogging && this.logger ? this.logger : undefined,
       enableMetrics: true,
       status: "pending",
       dependencies: this.metadata.dependencies || [],
@@ -280,17 +283,6 @@ export abstract class BaseAITool implements IAITool {
         domain: this.metadata.domain,
         category: this.metadata.category,
       },
-    }
-  }
-
-  /**
-   * Создать контекстный логгер
-   */
-  private createContextLogger(): (level: "info" | "warn" | "error", message: string, data?: any) => void {
-    return (level, message, data) => {
-      if (this.logger) {
-        this.logger[level](`[${this.metadata.name}] ${message}`, data)
-      }
     }
   }
 

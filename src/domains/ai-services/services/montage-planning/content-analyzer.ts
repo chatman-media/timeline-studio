@@ -3,7 +3,8 @@
  * Coordinates video and audio analysis to extract meaningful data
  */
 
-import { MediaFile, MediaFileUtils } from "@/domains/video-editing/types/media"
+import type { MediaFile } from "@/domains/video-editing/types/media"
+import { MediaFileUtils } from "@/domains/video-editing/types/media"
 import type {
   AnalysisOptions,
   AudioAnalysis,

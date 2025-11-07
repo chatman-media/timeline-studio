@@ -122,7 +122,8 @@ export class AudioLevelsAnalysisTool extends BaseAITool implements IAITool {
     name: "audio-levels-analysis",
     displayName: "Анализ уровней аудио",
     description: "Анализирует уровни громкости аудио (peak, RMS, LUFS)",
-    category: "analysis/audio-analysis",
+    domain: "analysis",
+    category: "audio-analysis",
     tags: ["audio", "levels", "analysis", "loudness"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -166,6 +167,23 @@ export class AudioLevelsAnalysisTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      input.operation === "analyze_levels" &&
+      (!input.targetTracks || Array.isArray(input.targetTracks)) &&
+      (!input.analysisType || ["peak", "rms", "lufs", "comprehensive"].includes(input.analysisType))
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class AudioNormalizationTool extends BaseAITool implements IAITool {
@@ -173,7 +191,8 @@ export class AudioNormalizationTool extends BaseAITool implements IAITool {
     name: "audio-normalization",
     displayName: "Нормализация аудио",
     description: "Нормализует уровни аудио до заданных значений",
-    category: "analysis/audio-analysis",
+    domain: "analysis",
+    category: "audio-analysis",
     tags: ["audio", "normalization", "processing", "levels"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -218,6 +237,24 @@ export class AudioNormalizationTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      input.operation === "normalize" &&
+      (!input.normalizationType || ["peak", "rms", "lufs", "perceived"].includes(input.normalizationType)) &&
+      (!input.targetLevel || typeof input.targetLevel === "number") &&
+      (!input.preserveDynamics || typeof input.preserveDynamics === "boolean")
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class AudioIssueDetectionTool extends BaseAITool implements IAITool {
@@ -225,7 +262,8 @@ export class AudioIssueDetectionTool extends BaseAITool implements IAITool {
     name: "audio-issue-detection",
     displayName: "Детекция проблем аудио",
     description: "Автоматически обнаруживает проблемы в аудио (клиппирование, шум, искажения)",
-    category: "analysis/audio-analysis",
+    domain: "analysis",
+    category: "audio-analysis",
     tags: ["audio", "issues", "detection", "quality"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -270,6 +308,24 @@ export class AudioIssueDetectionTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      input.operation === "detect_issues" &&
+      (!input.issueTypes || Array.isArray(input.issueTypes)) &&
+      (!input.sensitivity || ["low", "medium", "high", "custom"].includes(input.sensitivity)) &&
+      (!input.autoFix || typeof input.autoFix === "boolean")
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 export class AudioFeatureExtractionTool extends BaseAITool implements IAITool {
@@ -277,7 +333,8 @@ export class AudioFeatureExtractionTool extends BaseAITool implements IAITool {
     name: "audio-feature-extraction",
     displayName: "Извлечение признаков аудио",
     description: "Извлекает музыкальные и акустические признаки из аудио",
-    category: "analysis/audio-analysis",
+    domain: "analysis",
+    category: "audio-analysis",
     tags: ["audio", "features", "analysis", "music"],
     version: "1.0.0",
     author: "Timeline Studio",
@@ -320,6 +377,23 @@ export class AudioFeatureExtractionTool extends BaseAITool implements IAITool {
       input,
       options,
     )
+  }
+
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      input.operation === "extract_features" &&
+      (!input.featureTypes || Array.isArray(input.featureTypes)) &&
+      (!input.analysisDepth || ["basic", "detailed", "comprehensive"].includes(input.analysisDepth))
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 }
 

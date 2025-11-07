@@ -79,6 +79,8 @@ export interface KeyFrameExtractionResult {
 
 export interface KeyFrameExtractionOptions {
   count?: number // количество ключевых кадров
+  interval?: number // интервал между кадрами в секундах (альтернатива count)
+  maxFrames?: number // максимальное количество кадров (используется вместе с interval)
   quality?: "low" | "medium" | "high"
   aiDescription?: boolean // использовать AI для описания кадров
   minInterval?: number // минимальный интервал между кадрами в секундах

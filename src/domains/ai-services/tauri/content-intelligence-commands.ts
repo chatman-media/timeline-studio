@@ -184,31 +184,39 @@ export async function generateScriptWithAI(
   logger.info("Generating script with AI", { duration: analysis.technicalSpecs.duration, options })
 
   // Placeholder implementation - would call actual script generation
+  const generatedStyle: ScriptStyle =
+    options?.style ??
+    ({
+      format: "documentary",
+      pacing: "moderate",
+      structure: "linear",
+      narrativeStyle: "documentary",
+      visualStyle: "cinematic",
+      musicStyle: "calm",
+    } as ScriptStyle)
+
   return {
     id: `script-${Date.now()}`,
     title: "AI Generated Script",
-    genre: [],
+    synopsis: "Auto-generated script based on content analysis",
     duration: analysis.technicalSpecs.duration,
-    structure: {
-      type: "three-act" as any,
-      acts: [],
-      turningPoints: [],
-    },
     scenes: [],
+    voiceover: undefined,
+    visuals: [],
+    music: [],
     metadata: {
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      version: 1,
-      language: "en",
-      tone: { primary: "calm" as any, intensity: 0.5 },
-      pacing: { overall: "moderate" as any, variations: [] },
-      style:
-        options?.style ??
-        ({
-          visual: "cinematic",
-          narrative: "linear",
-          editing: "montage",
-        } as ScriptStyle),
+      generatedAt: new Date(),
+      model: options?.model || "claude-4-sonnet-latest",
+      params: {
+        topic: "AI Generated Content",
+        style: generatedStyle,
+        duration: analysis.technicalSpecs.duration,
+        tone: (options?.tone as any) || "professional",
+        targetAudience: "general",
+        language: "en",
+        includeHooks: true,
+        includeCTA: true,
+      },
     },
   }
 }
@@ -222,53 +230,35 @@ export async function adaptContentForPlatforms(
 
   // Placeholder implementation - would call actual platform adaptation
   return platforms.map((platform) => ({
-    id: `adapted-${platform}-${Date.now()}`,
-    platform,
-    originalContent: {
-      sceneIds: [],
-      duration: analysis.technicalSpecs.duration,
-    },
-    adaptations: {
-      video: {
-        resolution: { width: 1920, height: 1080, preferred: true },
-        aspectRatio: { ratio: "16:9", width: 16, height: 9, preferred: true },
-        frameRate: 30,
-        codec: "h264",
-        bitrate: 5000000,
-      },
-      audio: {
-        volume: [],
-        compression: { threshold: -20, ratio: 4, attack: 5, release: 50 },
-        normalization: true,
-        enhancements: [],
-      },
-      text: {
-        title: { text: "Platform Title", language: "en", characterCount: 13 },
-        description: {
-          text: "Platform Description",
-          language: "en",
-          characterCount: 20,
-        },
-        captions: {
-          enabled: false,
-          style: {} as any,
-          language: "en",
-          content: [],
-        },
-        hashtags: [`#${platform}`],
-        mentions: [],
-      },
-      graphics: {
-        overlays: [],
-      },
-      timing: {
-        cuts: [],
-        speed: [],
-      },
-    },
+    platformId: platform,
+    title: "Platform-Optimized Content",
+    description: `Content optimized for ${platform}`,
+    hashtags: [`#${platform}`],
+    thumbnail: undefined,
+    videoUrl: undefined,
     metadata: {
-      createdAt: new Date(),
-      language: "en",
+      duration: analysis.technicalSpecs.duration,
+      fileSize: 0, // Would be calculated during actual processing
+      format: {
+        resolution: "1920x1080",
+        fps: 30,
+        bitrate: 5000000,
+        codec: "h264",
+      },
+      aspectRatio: {
+        ratio: "16:9",
+        width: 16,
+        height: 9,
+      },
+    },
+    optimizations: {
+      seo: true,
+      accessibility: true,
+      engagement: true,
+    },
+    publishSettings: {
+      visibility: "public" as const,
+      category: "General",
       tags: [platform],
     },
   }))

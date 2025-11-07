@@ -94,13 +94,16 @@ export function useRenderJobs(): UseRenderJobsReturn {
     void refreshJobs()
 
     // Обновляем список каждые 5 секунд (увеличено с 2 для снижения нагрузки)
-    const interval = setInterval(refreshJobs, 5000)
+    const interval = setInterval(() => {
+      void refreshJobs()
+    }, 5000)
 
     return () => {
       void logger.info("Размонтирование useRenderJobs хука")
       clearInterval(interval)
     }
-  }, [refreshJobs])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     jobs,

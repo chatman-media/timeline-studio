@@ -138,7 +138,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
         bridgeInitialized = true
         logger.info("AI Event Bridge successfully initialized")
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         logger.error("Failed to initialize AI Event Bridge", { error })
       })
 
@@ -180,7 +180,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
 
       // NEW: Cleanup AI Event Bridge
       if (bridgeInitialized) {
-        aiEventBridge.cleanup().catch((error) => logger.error("Failed to cleanup AI Event Bridge", { error }))
+        aiEventBridge.cleanup().catch((error: unknown) => logger.error("Failed to cleanup AI Event Bridge", { error }))
       }
     }
   }, [backendSync])
@@ -190,7 +190,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
     if (!isBackendConnected) return
 
     const syncTimeout = setTimeout(() => {
-      syncAIState().catch((error) => logger.error("Operation failed", { error }))
+      syncAIState().catch((error: unknown) => logger.error("Operation failed", { error }))
     }, 2000) // Задержка 2 секунды для debouncing
 
     return () => clearTimeout(syncTimeout)
@@ -266,7 +266,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
           eventType: "message_sent",
           timestamp: new Date().toISOString(),
         })
-        .catch((error) => logger.error("Operation failed", { error }))
+        .catch((error: unknown) => logger.error("Operation failed", { error }))
     }
   }, [chatState.context.chatMessages?.length, isBackendConnected, backendSync])
 

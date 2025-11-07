@@ -73,7 +73,7 @@ export type { AIConfig } from "./ai-config"
 export type { ContentInsights } from "./content-analysis"
 export type { MediaFile } from "./interfaces"
 export type { AdaptedContent, PlatformId } from "./platform"
-export type { GeneratedScript, ScriptGenerationParams } from "./script"
+export type { GeneratedScript, ScriptGenerationParams, ScriptStyle } from "./script"
 // Re-export types needed by the machine
 export type { UnifiedContentAnalysis } from "./unified-analysis"
 

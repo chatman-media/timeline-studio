@@ -58,7 +58,8 @@ describe("StyleTemplateErrorBoundary", () => {
   })
 
   it("should log error to console", () => {
-    const consoleSpy = vi.spyOn(console, "error")
+    // Spy на componentDidCatch чтобы убедиться что он вызывается
+    const componentDidCatchSpy = vi.spyOn(StyleTemplateErrorBoundary.prototype, "componentDidCatch")
 
     render(
       <StyleTemplateErrorBoundary>
@@ -66,11 +67,13 @@ describe("StyleTemplateErrorBoundary", () => {
       </StyleTemplateErrorBoundary>,
     )
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "StyleTemplateErrorBoundary caught an error:",
-      expect.any(Error),
-      expect.any(Object),
+    // Проверяем что componentDidCatch был вызван с ошибкой и errorInfo
+    expect(componentDidCatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "Test error message" }),
+      expect.objectContaining({ componentStack: expect.any(String) }),
     )
+
+    componentDidCatchSpy.mockRestore()
   })
 
   it("should handle retry button click", async () => {

@@ -363,7 +363,7 @@ pub async fn validate_montage_plan(plan: MontagePlan) -> Result<PlanValidation, 
 
   let is_valid = errors.is_empty();
   let quality = if is_valid {
-    (plan.quality_score / 100.0)
+    plan.quality_score / 100.0
   } else {
     0.0
   };

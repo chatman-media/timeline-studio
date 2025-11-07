@@ -6,6 +6,29 @@ import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
 import { usePlayer } from "@/features/video-player/services/player-provider"
 import { PlayerControls } from "../player-controls"
 
+// Создаем мок функции для logger используя vi.hoisted
+const { mockLoggerError, mockLogInfo, mockLogError } = vi.hoisted(() => ({
+  mockLoggerError: vi.fn(),
+  mockLogInfo: vi.fn(),
+  mockLogError: vi.fn(),
+}))
+
+// Мокаем tauri-logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    debug: vi.fn(),
+    error: mockLoggerError,
+    warn: vi.fn(),
+    trace: vi.fn(),
+  })),
+  logInfo: mockLogInfo,
+  logError: mockLogError,
+  logDebug: vi.fn(),
+  logWarn: vi.fn(),
+  logTrace: vi.fn(),
+}))
+
 // Вспомогательная функция для рендеринга с провайдерами
 const renderWithProviders = (ui: React.ReactElement) => {
   return render(
@@ -329,6 +352,7 @@ describe("PlayerControls", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockLoggerError.mockClear()
 
     // Mock the fullscreen API
     Element.prototype.requestFullscreen = vi.fn().mockResolvedValue(undefined)
@@ -605,7 +629,6 @@ describe("PlayerControls", () => {
     })
 
     it("должен показывать ошибку если контейнер не найден", () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
       const mockToggleFullscreen = vi.fn()
       vi.mocked(useFullscreen).mockReturnValue({
         isFullscreen: false,
@@ -619,10 +642,8 @@ describe("PlayerControls", () => {
       const fullscreenButton = screen.getByTitle("timeline.controls.fullscreen")
       fireEvent.click(fullscreenButton)
 
-      expect(consoleSpy).toHaveBeenCalledWith("[handleFullscreen] Не найден контейнер медиаплеера")
+      expect(mockLoggerError).toHaveBeenCalledWith("media player container not found")
       expect(mockToggleFullscreen).not.toHaveBeenCalled()
-
-      consoleSpy.mockRestore()
     })
   })
 
