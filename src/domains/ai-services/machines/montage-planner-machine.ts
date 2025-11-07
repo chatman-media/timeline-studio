@@ -8,6 +8,10 @@
 import { invoke } from "@tauri-apps/api/core"
 import { assign, fromPromise, setup } from "xstate"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MontagePlannerMachine")
+
 // Import types from domain
 import type {
   AnalysisOptions,

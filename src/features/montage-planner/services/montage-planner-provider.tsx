@@ -6,8 +6,11 @@
 import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
 import { createContext, useContext, useEffect, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 import { useAppSettings } from "../../app-state"
 import { type MontagePlannerEvent, montagePlannerMachine } from "./montage-planner-machine"
+
+const logger = createLogger("MontagePlannerProvider")
 
 // Context type
 interface MontagePlannerContextType {
