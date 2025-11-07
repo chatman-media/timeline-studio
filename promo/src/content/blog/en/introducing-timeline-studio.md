@@ -23,7 +23,7 @@ Creating video content for multiple platforms has never been more challenging. E
 ## Key Features
 
 ### 🤖 AI Integration
-- Support for Claude, OpenAI, DeepSeek, and Ollama
+- Support for cloud AI (Claude, GPT) and local models
 - Smart montage planning
 - Automatic scene detection
 - Content-aware editing suggestions

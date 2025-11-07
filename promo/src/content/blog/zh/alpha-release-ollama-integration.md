@@ -21,7 +21,7 @@ readTime: "7分钟阅读"
 - **无需订阅** — 免费无限制使用AI
 - **完全隐私** — 您的数据保留在您的设备上
 - **离线工作** — 下载模型后无需互联网
-- **模型选择** — Llama 3.2、Phi-3、Gemma 2、Qwen 2.5等更多选择
+- **模型选择** — 通过本地推理支持Llama、Phi、Gemma、Qwen等更多模型
 
 ### Alpha版本中AI可以做什么：
 
@@ -57,25 +57,21 @@ Timeline Studio不只是"另一个编辑器"。即使在Alpha版本中，您也�
 ## 📦 如何开始
 
 ### 1. 安装本地AI运行时（5分钟）
-```bash
-# macOS/Linux
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Windows
-# 从 https://ollama.com/download 下载
-```
+选择以下支持的选项之一：
+- Ollama（最适合初学者）
+- LM Studio
+- llama.cpp
+- 其他兼容的本地推理工具
 
 ### 2. 下载AI模型（3-5分钟）
-```bash
-# 推荐的入门模型
-ollama pull llama3.2
-
-# 或更轻量的版本
-ollama pull phi3
-```
+推荐的模型：
+- Llama 3.2（平衡性能）
+- Phi-3（轻量级）
+- Gemma 2（来自Google）
+- Qwen 2.5（多语言）
 
 ### 3. 启动Timeline Studio
-只需打开应用程序——它会自动检测本地AI和可用模型！
+只需打开应用程序——它会自动检测您的本地AI设置和可用模型！
 
 ## 🆚 与竞争对手的比较
 
