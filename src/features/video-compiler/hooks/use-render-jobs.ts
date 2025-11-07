@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 import { type VideoRenderJob as RenderJob, RenderStatus } from "../types/render"
 
 interface UseRenderJobsReturn {
@@ -13,19 +15,24 @@ interface UseRenderJobsReturn {
 }
 
 export function useRenderJobs(): UseRenderJobsReturn {
+  logInfo("[useRenderJobs] Инициализация useRenderJobs хука")
+
   const [jobs, setJobs] = useState<RenderJob[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Получить список активных задач
   const refreshJobs = useCallback(async () => {
+    logInfo("[useRenderJobs] Запрос списка активных задач")
+
     try {
       setIsLoading(true)
       setError(null)
       const activeJobs = await invoke<RenderJob[]>("get_active_jobs")
       setJobs(activeJobs)
+      logInfo("[useRenderJobs] Список активных задач получен успешно", { jobsCount: activeJobs.length })
     } catch (err) {
-      console.error("Failed to get active jobs:", err)
+      logError("[useRenderJobs] Ошибка получения списка активных задач", err)
       setError(err instanceof Error ? err.message : "Не удалось получить список задач")
     } finally {
       setIsLoading(false)
@@ -34,11 +41,18 @@ export function useRenderJobs(): UseRenderJobsReturn {
 
   // Получить конкретную задачу по ID
   const getJob = useCallback(async (jobId: string): Promise<RenderJob | null> => {
+    logInfo("[useRenderJobs] Запрос задачи по ID", { jobId })
+
     try {
       const job = await invoke<RenderJob | null>("get_render_job", { jobId })
+      if (job) {
+        logInfo("[useRenderJobs] Задача получена успешно", { jobId, status: job.status })
+      } else {
+        logInfo("[useRenderJobs] Задача не найдена", { jobId })
+      }
       return job
     } catch (err) {
-      console.error(`Failed to get job ${jobId}:`, err)
+      logError("[useRenderJobs] Ошибка получения задачи", err)
       return null
     }
   }, [])
@@ -46,15 +60,20 @@ export function useRenderJobs(): UseRenderJobsReturn {
   // Отменить задачу
   const cancelJob = useCallback(
     async (jobId: string): Promise<boolean> => {
+      logInfo("[useRenderJobs] Отмена задачи", { jobId })
+
       try {
         const success = await invoke<boolean>("cancel_render", { jobId })
         if (success) {
+          logInfo("[useRenderJobs] Задача отменена успешно", { jobId })
           // Обновляем список после отмены
           await refreshJobs()
+        } else {
+          logError("[useRenderJobs] Не удалось отменить задачу", { jobId })
         }
         return success
       } catch (err) {
-        console.error(`Failed to cancel job ${jobId}:`, err)
+        logError("[useRenderJobs] Ошибка отмены задачи", err)
         return false
       }
     },
