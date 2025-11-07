@@ -7,7 +7,6 @@ import {
   BrowserTabLoadingBadge,
 } from "../../components/browser-loading-indicator"
 import { useLoadingState, useResourcesStats } from "../../hooks/use-resources"
-import type { ResourceStats } from "../../types/browser-resources-provider"
 
 // Мокаем хуки
 vi.mock("../../hooks/use-resources")

@@ -8,7 +8,7 @@ describe("AutomationEngine", () => {
 
   beforeEach(() => {
     engine = new AutomationEngine()
-    mockCallback = vi.fn((value: number) => {})
+    mockCallback = vi.fn((_value: number) => {})
   })
 
   afterEach(() => {

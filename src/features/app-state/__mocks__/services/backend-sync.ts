@@ -33,7 +33,7 @@ export class BackendSync {
     this.isConnected = false
   }
 
-  async executeCommand(command: ProjectCommand): Promise<CommandResult> {
+  async executeCommand(_command: ProjectCommand): Promise<CommandResult> {
     return {
       success: true,
       error: null,

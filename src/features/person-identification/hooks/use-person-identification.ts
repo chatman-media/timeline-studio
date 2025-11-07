@@ -135,7 +135,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
 
   // Обнаружение лиц на изображении/видео
   const detectFaces = useCallback(
-    async (mediaPath: string, _timerange?: { start: number; end: number }): Promise<DetectedFace[]> => {
+    async (_mediaPath: string, _timerange?: { start: number; end: number }): Promise<DetectedFace[]> => {
       try {
         setError(null)
         // TODO: Implement face detection via SceneAnalysisEngine

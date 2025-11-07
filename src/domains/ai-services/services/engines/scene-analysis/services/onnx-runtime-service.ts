@@ -429,7 +429,7 @@ export class ONNXRuntimeService {
       try {
         await session.session.release?.()
       } catch (error) {
-        logger.error("Error occurred", { error: `Failed to release session ${name}:`, error })
+        logger.error("Error occurred", { error })
       }
     }
     this.sessions.clear()

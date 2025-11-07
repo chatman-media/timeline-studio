@@ -50,7 +50,7 @@ export function SystemIntegrationProvider({ children, initialFeatures = {} }: Sy
     logger.info("[System Integration Provider] Initializing with BackendSync")
 
     // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+    const unsubscribe = backendSync.onStateChange((_state: ProjectState) => {
       setIsConnected(true)
       logger.debug("[System Integration] State synced from backend")
     })

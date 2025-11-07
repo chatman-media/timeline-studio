@@ -91,7 +91,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
   // Подписка на backend события
   useEffect(() => {
-    const unsubscribeConnection = backendSync.onStateChange((state: ProjectState) => {
+    const unsubscribeConnection = backendSync.onStateChange((_state: ProjectState) => {
       setIsBackendConnected(true)
 
       // Восстанавливаем shortcuts из backend

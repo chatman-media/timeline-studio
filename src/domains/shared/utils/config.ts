@@ -1,15 +1,4 @@
-import {
-  AccuracyLevel,
-  AIConfig,
-  AIFeatures,
-  AIProvider,
-  AIProviderConfig,
-  AnalysisDepth,
-  LanguageConfig,
-  ProcessingConfig,
-  QualityConfig,
-  SpeedPriority,
-} from "../types/ai-tools/ai-config"
+import { AccuracyLevel, AIConfig, AIProvider, AnalysisDepth, SpeedPriority } from "../types/ai-tools/ai-config"
 
 export function createDefaultAIConfig(overrides?: Partial<AIConfig>): AIConfig {
   const defaultConfig: AIConfig = {

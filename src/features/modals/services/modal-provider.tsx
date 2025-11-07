@@ -5,7 +5,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger({ module: "ModalProvider" })
 
@@ -65,7 +64,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
     })
 
     // Подписываемся на события backend
-    const unsubscribeEvents = backendSync.onEvent((event) => {
+    const unsubscribeEvents = backendSync.onEvent((_event) => {
       // Обработка событий, связанных с модалами (если потребуется в будущем)
       // Например: event.type === "ModalRequested"
     })

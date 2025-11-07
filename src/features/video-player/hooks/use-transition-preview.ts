@@ -4,7 +4,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import type { TimelineTrack } from "@/features/timeline/types/timeline"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import { logError, logInfo } from "@/lib/tauri-logger"
 

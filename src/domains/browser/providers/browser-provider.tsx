@@ -14,7 +14,6 @@ import type {
   BrowserTab,
   ProjectCommand,
   ProjectEvent,
-  SortOrder,
   TabSettings,
   ViewMode,
 } from "@/types/generated/tauri-bindings"

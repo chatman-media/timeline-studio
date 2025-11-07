@@ -4,7 +4,6 @@
  */
 
 import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core"
-import { VideoAnalysisParams } from "@/domains/ai-services"
 import type { MediaFile } from "@/features/media/types/media"
 
 import { createLogger } from "@/lib/tauri-logger"

@@ -42,7 +42,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   const projectState = useSelector(appActor, (state) => state.context.projectState)
   const isLoading = useSelector(appActor, (state) => state.matches({ connected: "executing" }))
-  const hasUnsavedChanges = useSelector(appActor, (state) => {
+  const hasUnsavedChanges = useSelector(appActor, (_state) => {
     // Check if project has unsaved changes based on dirty flag
     // TODO: Add dirty flag tracking to ProjectState or implement change detection
     return false

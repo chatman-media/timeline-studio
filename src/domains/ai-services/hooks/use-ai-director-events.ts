@@ -4,7 +4,7 @@
  * Удобный hook для подписки на события AI Director из Rust backend
  */
 
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import { DOMAIN_EVENTS } from "@/domains/shared/events"
 import type {
   AIDirectorAnalysisCompletedEvent,

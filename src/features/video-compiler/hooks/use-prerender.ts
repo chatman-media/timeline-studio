@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import { logError, logInfo } from "@/lib/tauri-logger"
 
 import {
   clearPrerenderCache as clearCache,

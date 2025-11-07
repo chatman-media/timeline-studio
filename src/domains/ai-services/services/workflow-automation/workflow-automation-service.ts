@@ -218,7 +218,7 @@ export class WorkflowAutomationService {
             duration: Date.now() - stepStartTime,
             details: String(error),
           })
-          logger.error("Error occurred", { error: `Critical error in workflow step ${step.name}:`, error })
+          logger.error("Error occurred", { error })
         }
       }
 
@@ -244,7 +244,7 @@ export class WorkflowAutomationService {
 
       return result
     } catch (error) {
-      logger.error("Error occurred", { error: `Workflow ${workflowId} failed:`, error })
+      logger.error("Error occurred", { error })
       throw new Error(`Workflow execution failed: ${String(error)}`)
     } finally {
       this.activeWorkflows.delete(workflowId)

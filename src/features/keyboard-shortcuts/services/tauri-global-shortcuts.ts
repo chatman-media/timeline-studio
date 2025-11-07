@@ -84,7 +84,7 @@ export class TauriGlobalShortcuts {
       }
 
       // Регистрируем глобальный shortcut
-      await register(tauriKeys, (event) => {
+      await register(tauriKeys, (_event) => {
         if (shortcut.action) {
           // Создаем синтетическое KeyboardEvent для совместимости
           const syntheticEvent = new KeyboardEvent("keydown", {

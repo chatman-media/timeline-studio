@@ -357,7 +357,7 @@ export class MultimodalAnalysisService {
             frameTimestamp: frame.timestamp,
           })
         } catch (error) {
-          logger.error("Error occurred", { error: `Ошибка анализа кадра ${frame.timestamp}:`, error })
+          logger.error("Error occurred", { error })
         }
       }
     }
@@ -417,7 +417,7 @@ export class MultimodalAnalysisService {
 
         suggestions.push(suggestion)
       } catch (error) {
-        logger.error("Error occurred", { error: `Ошибка анализа кадра для превью ${frame.timestamp}:`, error })
+        logger.error("Error occurred", { error })
       }
     }
 
@@ -464,7 +464,7 @@ export class MultimodalAnalysisService {
             })
           }
         } catch (error) {
-          logger.error("Error occurred", { error: `Ошибка анализа видео ${clipId}:`, error })
+          logger.error("Error occurred", { error })
         }
       })
 
