@@ -6,8 +6,8 @@
 
 "use client"
 
-import { LayoutGrid, PanelLeft, PanelTop, MessageSquare } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { LayoutGrid, MessageSquare, PanelLeft, PanelTop } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -28,11 +28,7 @@ const PRESET_ICONS: Record<string, LucideIcon> = {
   chat: MessageSquare,
 }
 
-export function LayoutPresetSelector({
-  currentPresetId,
-  onPresetChange,
-  className,
-}: LayoutPresetSelectorProps) {
+export function LayoutPresetSelector({ currentPresetId, onPresetChange, className }: LayoutPresetSelectorProps) {
   return (
     <TooltipProvider>
       <div className={cn("flex items-center gap-1", className)}>
@@ -56,9 +52,7 @@ export function LayoutPresetSelector({
               <TooltipContent side="bottom">
                 <div className="text-center">
                   <div className="font-medium">{preset.name}</div>
-                  {preset.description && (
-                    <div className="mt-1 text-xs text-muted-foreground">{preset.description}</div>
-                  )}
+                  {preset.description && <div className="mt-1 text-xs text-muted-foreground">{preset.description}</div>}
                 </div>
               </TooltipContent>
             </Tooltip>

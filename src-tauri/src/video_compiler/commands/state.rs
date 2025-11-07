@@ -116,9 +116,7 @@ impl Drop for VideoCompilerState {
       }
       Err(_) => {
         // Runtime уже был dropped, делаем best-effort cleanup
-        log::warn!(
-          "VideoCompilerState: токio runtime недоступен, выполняется минимальный cleanup"
-        );
+        log::warn!("VideoCompilerState: токio runtime недоступен, выполняется минимальный cleanup");
 
         // Пытаемся очистить коллекции синхронно (try_write не блокируется)
         if let Ok(mut jobs) = self.active_jobs.try_write() {

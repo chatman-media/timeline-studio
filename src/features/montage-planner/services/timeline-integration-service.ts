@@ -4,7 +4,6 @@
  * Сервис для применения монтажных планов к Timeline
  */
 
-import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
 import {
   createTimelineClip,
@@ -16,6 +15,7 @@ import {
   type TimelineTrack,
   type TrackType,
 } from "@/features/timeline/types"
+import { createLogger } from "@/lib/tauri-logger"
 
 import { EmotionalTone, type MontagePlan, type PlannedClip, type TransitionPlan } from "../types"
 

@@ -7,7 +7,7 @@
 "use client"
 
 import { useActor } from "@xstate/react"
-import { createContext, useContext, type ReactNode } from "react"
+import { createContext, type ReactNode, useContext } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 

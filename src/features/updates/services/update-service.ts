@@ -153,14 +153,14 @@ export class UpdateService {
           const duration = performance.now() - startTime
           UpdateService.logger.debugSync("Auto-check completed", {
             checkNumber: checkCount,
-            durationMs: duration.toFixed(2)
+            durationMs: duration.toFixed(2),
           })
 
           if (duration > 5000) {
             UpdateService.logger.warnSync("Auto-check took too long", {
               checkNumber: checkCount,
               durationMs: duration.toFixed(2),
-              message: "This might block the UI"
+              message: "This might block the UI",
             })
           }
         })

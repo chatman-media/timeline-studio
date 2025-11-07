@@ -4,24 +4,25 @@
  * Widget-based workspace layout system
  */
 
-// Types
-export type { Widget, WidgetType, WidgetBounds, LayoutPreset, WorkspaceLayout } from "./types/widget"
-
-// Layout Presets
-export { LAYOUT_PRESETS, DEFAULT_LAYOUT_PRESET_ID, getLayoutPreset, getDefaultLayoutPreset } from "./config/layout-presets"
-
-// State Machine
-export {
-  workspaceLayoutMachine,
-  type WorkspaceLayoutMachine,
-  type WorkspaceLayoutEvent,
-  type WorkspaceLayoutContext,
-} from "./services/workspace-layout-machine"
-
-// Provider & Hook
-export { WorkspaceLayoutProvider, useWorkspaceLayout } from "./services/workspace-layout-provider"
-
+export { LayoutPresetSelector } from "./components/layout-preset-selector"
 // Components
 export { WidgetContainer } from "./components/widget-container"
 export { WidgetWorkspace } from "./components/widget-workspace"
-export { LayoutPresetSelector } from "./components/layout-preset-selector"
+// Layout Presets
+export {
+  DEFAULT_LAYOUT_PRESET_ID,
+  getDefaultLayoutPreset,
+  getLayoutPreset,
+  LAYOUT_PRESETS,
+} from "./config/layout-presets"
+// State Machine
+export {
+  type WorkspaceLayoutContext,
+  type WorkspaceLayoutEvent,
+  type WorkspaceLayoutMachine,
+  workspaceLayoutMachine,
+} from "./services/workspace-layout-machine"
+// Provider & Hook
+export { useWorkspaceLayout, WorkspaceLayoutProvider } from "./services/workspace-layout-provider"
+// Types
+export type { LayoutPreset, Widget, WidgetBounds, WidgetType, WorkspaceLayout } from "./types/widget"

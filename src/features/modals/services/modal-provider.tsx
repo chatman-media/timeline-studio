@@ -175,7 +175,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           } catch (error) {
             void logger.error("Failed to sync modal submission", {
               modalType: state.context.modalType,
-              error: String(error)
+              error: String(error),
             })
           }
         }

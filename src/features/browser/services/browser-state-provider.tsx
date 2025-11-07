@@ -2,8 +2,8 @@ import type React from "react"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import type { BrowserContext, BrowserTab, ViewMode } from "@/domains/browser"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import { createLogger } from "@/lib/tauri-logger"
 import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("BrowserStateProvider")
 

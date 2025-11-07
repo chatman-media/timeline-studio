@@ -9,14 +9,7 @@ import type { LayoutPreset, Widget } from "../types/widget"
 /**
  * Helper to create widget with default values
  */
-function createWidget(
-  id: string,
-  type: Widget["type"],
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Widget {
+function createWidget(id: string, type: Widget["type"], x: number, y: number, width: number, height: number): Widget {
   return {
     id,
     type,

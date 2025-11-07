@@ -57,7 +57,7 @@ export const workspaceLayoutMachine = setup({
     events: {} as LayoutEvent,
   },
   actions: {
-    switchPreset: assign(({ context, event }) => {
+    switchPreset: assign(({ _context, event }) => {
       if (event.type !== "SWITCH_PRESET") return {}
 
       const preset = getLayoutPreset(event.presetId)

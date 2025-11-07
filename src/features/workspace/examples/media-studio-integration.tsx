@@ -30,37 +30,37 @@ export function MediaStudioWidgetExample() {
   const widgetRenderers = useMemo(
     () =>
       ({
-        timeline: (widget: Widget) => (
+        timeline: (_widget: Widget) => (
           <div className="h-full w-full">
             <Timeline />
           </div>
         ),
 
-        player: (widget: Widget) => (
+        player: (_widget: Widget) => (
           <div className="h-full w-full">
             <VideoPlayer />
           </div>
         ),
 
-        browser: (widget: Widget) => (
+        browser: (_widget: Widget) => (
           <div className="h-full w-full">
             <Browser />
           </div>
         ),
 
-        options: (widget: Widget) => (
+        options: (_widget: Widget) => (
           <div className="h-full w-full">
             <Options />
           </div>
         ),
 
-        "ai-chat": (widget: Widget) => (
+        "ai-chat": (_widget: Widget) => (
           <div className="h-full w-full">
             <AiChat />
           </div>
         ),
 
-        "ai-suggestions": (widget: Widget) => (
+        "ai-suggestions": (_widget: Widget) => (
           <div className="h-full w-full">
             <AISuggestionsPanel />
           </div>

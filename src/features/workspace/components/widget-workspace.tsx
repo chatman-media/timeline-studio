@@ -113,9 +113,7 @@ export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspacePro
         })}
 
         {/* Drag overlay indicator */}
-        {isDragging && (
-          <div className="pointer-events-none absolute inset-0 bg-primary/5 transition-colors" />
-        )}
+        {isDragging && <div className="pointer-events-none absolute inset-0 bg-primary/5 transition-colors" />}
       </div>
     </DndContext>
   )

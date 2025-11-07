@@ -1,5 +1,5 @@
-import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 
 import type { CellConfig, MediaTemplate } from "../lib/templates"
 

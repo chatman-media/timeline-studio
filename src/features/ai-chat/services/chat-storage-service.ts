@@ -333,7 +333,10 @@ export class LocalChatStorageService implements ChatStorageService {
         localStorage.setItem(`chat_${session.id}`, data)
       }
     } catch (error) {
-      void LocalChatStorageService.logger.error("Failed to save session", { sessionId: session.id, error: String(error) })
+      void LocalChatStorageService.logger.error("Failed to save session", {
+        sessionId: session.id,
+        error: String(error),
+      })
       throw error
     }
   }
