@@ -794,6 +794,44 @@ impl PersonDatabase {
 
     Ok(count)
   }
+
+  /// Graceful shutdown базы данных
+  pub async fn shutdown(&self) -> Result<()> {
+    log::info!("PersonDatabase: начало graceful shutdown");
+
+    let conn = self.conn.lock().await;
+
+    // Выполняем финальный checkpoint для WAL
+    conn
+      .execute("PRAGMA wal_checkpoint(TRUNCATE)", [])
+      .context("Failed to checkpoint WAL")?;
+
+    // Оптимизируем базу данных перед закрытием
+    conn
+      .execute("PRAGMA optimize", [])
+      .context("Failed to optimize database")?;
+
+    log::info!("PersonDatabase: graceful shutdown завершен");
+    Ok(())
+  }
+}
+
+impl Drop for PersonDatabase {
+  fn drop(&mut self) {
+    log::info!("PersonDatabase: вызван Drop trait");
+
+    // Пытаемся выполнить минимальный cleanup
+    // Используем try_lock для неблокирующей попытки
+    if let Ok(conn) = self.conn.try_lock() {
+      // Best-effort checkpoint
+      let _ = conn.execute("PRAGMA wal_checkpoint(PASSIVE)", []);
+      log::info!("PersonDatabase: выполнен пассивный checkpoint при drop");
+    } else {
+      log::warn!("PersonDatabase: не удалось получить lock при drop, пропускаем cleanup");
+    }
+
+    log::info!("PersonDatabase: Drop trait завершен");
+  }
 }
 
 /// Утилитные функции для работы с векторами

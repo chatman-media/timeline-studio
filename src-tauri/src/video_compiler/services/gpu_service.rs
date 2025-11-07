@@ -489,8 +489,16 @@ mod tests {
 
     /// Установить результат бенчмарка для кодировщика
     pub fn set_benchmark_result(&self, encoder: GpuEncoder, result: GpuBenchmarkResult) {
-      let mut results = self.benchmark_results.lock().unwrap();
-      results.insert(encoder, result);
+      match self.benchmark_results.lock() {
+        Ok(mut results) => {
+          results.insert(encoder, result);
+        }
+        Err(poisoned) => {
+          log::error!("Benchmark results mutex poisoned, recovering...");
+          let mut results = poisoned.into_inner();
+          results.insert(encoder, result);
+        }
+      }
     }
 
     /// Установить флаг ошибки
@@ -582,7 +590,14 @@ mod tests {
         ));
       }
 
-      let results = self.benchmark_results.lock().unwrap();
+      let results = match self.benchmark_results.lock() {
+        Ok(results) => results,
+        Err(poisoned) => {
+          log::error!("Benchmark results mutex poisoned while reading, recovering...");
+          poisoned.into_inner()
+        }
+      };
+
       if let Some(result) = results.get(&encoder) {
         return Ok(result.clone());
       }

@@ -8,7 +8,10 @@
 import { assign, setup } from "xstate"
 
 import { DEFAULT_PREVIEW_SIZE_INDEX } from "@/features/media/utils/preview-sizes"
+import { createLogger } from "@/lib/tauri-logger"
 import type { BrowserContext, BrowserMachineEvent, BrowserTab, TabSettings, ViewMode } from "../types"
+
+const logger = createLogger("BrowserMachine")
 
 /**
  * Начальные настройки для каждой вкладки
