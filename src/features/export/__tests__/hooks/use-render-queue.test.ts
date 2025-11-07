@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { type RenderJob, RenderStatus } from "@/domains/video-editing/types"
+import { logError } from "@/lib/tauri-logger"
 
 import { useRenderQueue } from "../../hooks/use-render-queue"
 
@@ -16,6 +17,9 @@ const mockOpen = vi.fn()
 vi.mock("@tauri-apps/plugin-dialog", () => ({
   open: (options: any) => mockOpen(options),
 }))
+
+// Get mocked logError
+const mockLogError = vi.mocked(logError)
 
 // Mock loadProject function
 vi.mock("@/features/app-state/services/project-file-service", () => ({
@@ -281,7 +285,6 @@ describe("useRenderQueue", () => {
   })
 
   it("should handle errors when refreshing queue", async () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
     mockInvoke.mockRejectedValueOnce(new Error("Failed to get jobs"))
 
     const { result } = renderHook(() => useRenderQueue())
@@ -291,8 +294,7 @@ describe("useRenderQueue", () => {
       expect(result.current.isProcessing).toBe(false)
     })
 
-    expect(consoleError).toHaveBeenCalledWith("Failed to get render jobs:", expect.any(Error))
-    consoleError.mockRestore()
+    expect(mockLogError).toHaveBeenCalledWith("[useRenderQueue] Ошибка получения задач рендеринга", expect.any(Error))
   })
 
   it("should update isProcessing based on job statuses", async () => {

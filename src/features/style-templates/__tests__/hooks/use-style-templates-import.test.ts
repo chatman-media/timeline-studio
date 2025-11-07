@@ -3,6 +3,7 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
+import { logError } from "@/lib/tauri-logger"
 import { MediaProviders } from "@/test/test-utils"
 
 import { useStyleTemplatesImport } from "../../hooks/use-style-templates-import"
@@ -38,13 +39,11 @@ vi.mock("@/features/resources", async () => {
 // Получаем мок функции
 const mockOpen = vi.mocked(open)
 const mockReadTextFile = vi.mocked(readTextFile)
+const mockLogError = vi.mocked(logError)
 
 describe("useStyleTemplatesImport", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Мокаем console.log и console.error
-    vi.spyOn(console, "log").mockImplementation(() => {})
-    vi.spyOn(console, "error").mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -114,7 +113,8 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplatesFile()
       })
 
-      expect(console.log).not.toHaveBeenCalledWith(expect.stringContaining("Импортировано"))
+      // Проверяем что addStyleTemplate не был вызван
+      expect(mockAddStyleTemplate).not.toHaveBeenCalled()
     })
 
     it("должен логировать выбранный файл", async () => {
@@ -158,7 +158,7 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplatesFile()
       })
 
-      expect(console.error).toHaveBeenCalledWith("Ошибка при импорте стилистических шаблонов:", error)
+      expect(mockLogError).toHaveBeenCalledWith("useStyleTemplatesImport", "Import failed: Dialog error")
       expect(result.current.isImporting).toBe(false)
     })
 
@@ -270,7 +270,8 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(console.log).not.toHaveBeenCalledWith(expect.stringContaining("Обработано"))
+      // Проверяем что addStyleTemplate не был вызван
+      expect(mockAddStyleTemplate).not.toHaveBeenCalled()
     })
 
     it("должен обрабатывать ошибки", async () => {
@@ -282,7 +283,7 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(console.error).toHaveBeenCalledWith("Ошибка при импорте файлов стилистических шаблонов:", error)
+      expect(mockLogError).toHaveBeenCalledWith("useStyleTemplatesImport", "Failed to import style template files: Dialog error")
       expect(result.current.isImporting).toBe(false)
     })
 

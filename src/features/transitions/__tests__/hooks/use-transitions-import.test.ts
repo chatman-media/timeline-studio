@@ -2,6 +2,8 @@ import { open } from "@tauri-apps/plugin-dialog"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
+import { logError } from "@/lib/tauri-logger"
+
 import { useTransitionsImport } from "../../hooks/use-transitions-import"
 
 // Мокаем Tauri dialog API
@@ -9,8 +11,9 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
   open: vi.fn(),
 }))
 
-// Получаем мок функцию
+// Получаем мок функции
 const mockOpen = vi.mocked(open)
+const mockLogError = vi.mocked(logError)
 
 // Мокаем fetch
 global.fetch = vi.fn()
@@ -19,9 +22,6 @@ const mockFetch = vi.mocked(fetch)
 describe("useTransitionsImport", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Мокаем console.log и console.error
-    vi.spyOn(console, "log").mockImplementation(() => {})
-    vi.spyOn(console, "error").mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -270,7 +270,7 @@ describe("useTransitionsImport", () => {
 
       expect(importResult.success).toBe(false)
       expect(importResult.message).toContain("Ошибка при импорте")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при импорте переходов:", error)
+      expect(mockLogError).toHaveBeenCalledWith("useTransitionsImport", "Import failed: Network error")
       expect(result.current.isImporting).toBe(false)
     })
 
@@ -408,7 +408,7 @@ describe("useTransitionsImport", () => {
 
       expect(importResult.success).toBe(false)
       expect(importResult.message).toContain("Ошибка при импорте")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при импорте файлов переходов:", error)
+      expect(mockLogError).toHaveBeenCalledWith("useTransitionsImport", "Transition files import failed: Dialog error")
       expect(result.current.isImporting).toBe(false)
     })
 

@@ -74,6 +74,16 @@ vi.mock("@/lib/tauri-logger", () => ({
   logError: vi.fn(),
   logWarn: vi.fn(),
   logDebug: vi.fn(),
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+  })),
 }))
 
 // Mock scrollIntoView globally for all tests (needed for Radix UI components)
