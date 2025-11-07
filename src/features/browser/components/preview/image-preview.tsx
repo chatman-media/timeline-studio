@@ -62,6 +62,17 @@ export const ImagePreview = memo(function ImagePreview({
     try {
       logger.debugSync("Начинаем загрузку изображения", { path })
 
+      // Проверяем расширение файла - отклоняем видео и аудио форматы
+      const extension = path.split(".").pop()?.toLowerCase()
+      const videoExtensions = ["mp4", "mov", "avi", "mkv", "webm", "m4v", "flv", "wmv", "mpg", "mpeg"]
+      const audioExtensions = ["mp3", "wav", "ogg", "m4a", "flac", "aac", "wma"]
+
+      if (extension && (videoExtensions.includes(extension) || audioExtensions.includes(extension))) {
+        logger.warnSync("Попытка загрузить видео/аудио файл как изображение", { path, extension })
+        // Возвращаем пустую строку, чтобы показать fallback иконку
+        return ""
+      }
+
       // Сначала проверяем существование файла
       const fileExists = await checkFileAccess(path)
       if (!fileExists) {
@@ -76,7 +87,6 @@ export const ImagePreview = memo(function ImagePreview({
       logger.debugSync("Файл успешно прочитан", { path, dataSize: fileData.length })
 
       // Определяем MIME тип по расширению
-      const extension = path.split(".").pop()?.toLowerCase()
       const mimeTypes: Record<string, string> = {
         jpg: "image/jpeg",
         jpeg: "image/jpeg",
@@ -84,6 +94,9 @@ export const ImagePreview = memo(function ImagePreview({
         gif: "image/gif",
         webp: "image/webp",
         svg: "image/svg+xml",
+        bmp: "image/bmp",
+        tiff: "image/tiff",
+        tif: "image/tiff",
       }
       const mimeType = mimeTypes[extension || ""] || "image/jpeg"
 
@@ -188,6 +201,28 @@ export const ImagePreview = memo(function ImagePreview({
           className="h-full w-full object-contain"
           onError={(e) => {
             const target = e.currentTarget as HTMLImageElement
+
+            // Если src пустой (видео/аудио файл), просто скрываем без логирования ошибки
+            if (!target.src || target.src === window.location.href) {
+              target.style.display = "none"
+              logger.debugSync("Пустой src для изображения (вероятно видео/аудио файл)", {
+                fileName: file.name,
+              })
+
+              // Показываем fallback иконку
+              const parent = target.parentElement
+              if (parent && !parent.querySelector(".fallback-icon")) {
+                const fallbackDiv = document.createElement("div")
+                fallbackDiv.className = "fallback-icon absolute inset-0 flex items-center justify-center"
+                fallbackDiv.innerHTML = `<svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>`
+                parent.appendChild(fallbackDiv)
+                logger.debugSync("Fallback иконка добавлена", { fileName: file.name })
+              }
+              return
+            }
+
             // Извлекаем данные из события сразу (до event pooling)
             const errorInfo = {
               src: target.src,
