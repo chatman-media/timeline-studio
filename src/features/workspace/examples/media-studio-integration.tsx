@@ -8,8 +8,10 @@
 
 import { useMemo } from "react"
 
+import { AiChat } from "@/features/ai-chat/components/ai-chat"
 import { Browser } from "@/features/browser/components"
 import { Options } from "@/features/options"
+import { AISuggestionsPanel } from "@/features/timeline/components/ai-suggestions/ai-suggestions-panel"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 
@@ -49,6 +51,18 @@ export function MediaStudioWidgetExample() {
         options: (widget: Widget) => (
           <div className="h-full w-full">
             <Options />
+          </div>
+        ),
+
+        "ai-chat": (widget: Widget) => (
+          <div className="h-full w-full">
+            <AiChat />
+          </div>
+        ),
+
+        "ai-suggestions": (widget: Widget) => (
+          <div className="h-full w-full">
+            <AISuggestionsPanel />
           </div>
         ),
       }) as Record<WidgetType, (widget: Widget) => JSX.Element>,

@@ -7,7 +7,7 @@
 /**
  * Available widget types in the workspace
  */
-export type WidgetType = "timeline" | "player" | "browser" | "options"
+export type WidgetType = "timeline" | "player" | "browser" | "options" | "ai-chat" | "ai-suggestions"
 
 /**
  * Widget position and size

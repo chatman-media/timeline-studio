@@ -106,9 +106,36 @@ const browserLayout: LayoutPreset = {
 }
 
 /**
+ * Preset 5: Chat Layout
+ * AI Chat assistant on the right side
+ */
+const chatLayout: LayoutPreset = {
+  id: "chat",
+  name: "Chat",
+  description: "AI assistant for editing help",
+  icon: "message-square",
+  widgets: [
+    // Browser - top left
+    createWidget("browser-5", "browser", 0, 0, 35, 60),
+    // Player - top center
+    createWidget("player-5", "player", 35, 0, 35, 60),
+    // AI Chat - right sidebar, full height
+    createWidget("ai-chat-5", "ai-chat", 70, 0, 30, 100),
+    // Timeline - bottom left (under browser + player)
+    createWidget("timeline-5", "timeline", 0, 60, 70, 40),
+  ],
+}
+
+/**
  * All available layout presets
  */
-export const LAYOUT_PRESETS: LayoutPreset[] = [defaultLayout, verticalLayout, optionsLayout, browserLayout]
+export const LAYOUT_PRESETS: LayoutPreset[] = [
+  defaultLayout,
+  verticalLayout,
+  optionsLayout,
+  browserLayout,
+  chatLayout,
+]
 
 /**
  * Default layout preset ID

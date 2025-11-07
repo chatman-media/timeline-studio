@@ -17,6 +17,8 @@
 - `player` - Video Player
 - `browser` - Media Browser
 - `options` - Clip Options/Properties
+- `ai-chat` - AI Chat Assistant
+- `ai-suggestions` - AI Suggestions Panel
 
 ## Быстрый старт
 
@@ -52,6 +54,8 @@ function MediaStudio() {
     player: (widget) => <VideoPlayer />,
     browser: (widget) => <Browser />,
     options: (widget) => <Options />,
+    "ai-chat": (widget) => <AiChat />,
+    "ai-suggestions": (widget) => <AISuggestionsPanel />,
   }
 
   return (
@@ -94,6 +98,13 @@ function MediaStudio() {
 - Browser (60% слева, увеличен)
 - Player (40% справа)
 - Timeline (100% снизу)
+
+### 5. Chat Layout
+AI помощник для редактирования:
+- Browser (35% слева вверху)
+- Player (35% центр вверху)
+- AI Chat (30% справа, на всю высоту)
+- Timeline (70% снизу, под Browser + Player)
 
 ## API
 
