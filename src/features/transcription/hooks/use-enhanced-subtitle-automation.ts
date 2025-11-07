@@ -7,6 +7,8 @@ import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 // Импортируем новый enhanced инструмент
 import {
   autoGenerateSubtitlesFromVideo,
@@ -102,6 +104,7 @@ export function useEnhancedSubtitleAutomation() {
       clipId: string,
       options: EnhancedSubtitleOptions = {},
     ): Promise<EnhancedSubtitleResult | null> => {
+      logInfo("[useEnhancedSubtitleAutomation] Начало генерации улучшенных субтитров", { clipId, options })
       setIsProcessing(true)
       setError(null)
       setResult(null)
@@ -110,6 +113,7 @@ export function useEnhancedSubtitleAutomation() {
       abortControllerRef.current = new AbortController()
 
       try {
+        logInfo("[useEnhancedSubtitleAutomation] Инициализация обработки")
         setProgress({ stage: "initializing", progress: 0 })
 
         // Определяем операцию на основе опций
@@ -181,13 +185,16 @@ export function useEnhancedSubtitleAutomation() {
         await new Promise((resolve) => setTimeout(resolve, 400))
 
         // Вызов enhanced subtitle automation
+        logInfo("[useEnhancedSubtitleAutomation] Вызов enhanced subtitle automation", { input })
         const toolResult = await enhancedSubtitleAutomation.processEnhancedSubtitles(input, {
           timeout: 300000, // 5 минут
           enableLogging: true,
         })
 
         if (!toolResult.success) {
-          throw new Error(toolResult.errors?.[0] || "Ошибка обработки субтитров")
+          const error = toolResult.errors?.[0] || "Ошибка обработки субтитров"
+          logError("[useEnhancedSubtitleAutomation] Ошибка обработки", new Error(error))
+          throw new Error(error)
         }
 
         setProgress({ stage: "finalizing", progress: 95 })
@@ -196,6 +203,11 @@ export function useEnhancedSubtitleAutomation() {
         const enhancedResult = toolResult.data!
         setResult(enhancedResult)
         setProgress({ stage: "completed", progress: 100 })
+
+        logInfo("[useEnhancedSubtitleAutomation] Субтитры успешно созданы", {
+          count: enhancedResult.subtitles.length,
+          confidence: enhancedResult.quality.overallConfidence,
+        })
 
         toast.success(t("subtitles.enhanced.success", "Субтитры созданы"), {
           description: t(
@@ -211,6 +223,7 @@ export function useEnhancedSubtitleAutomation() {
         return enhancedResult
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Неизвестная ошибка"
+        logError("[useEnhancedSubtitleAutomation] Критическая ошибка при генерации", err)
         setError(errorMessage)
         setProgress({ stage: "error", progress: 0, message: errorMessage })
 
@@ -222,6 +235,7 @@ export function useEnhancedSubtitleAutomation() {
       } finally {
         setIsProcessing(false)
         abortControllerRef.current = null
+        logInfo("[useEnhancedSubtitleAutomation] Обработка завершена")
       }
     },
     [t],
@@ -232,14 +246,23 @@ export function useEnhancedSubtitleAutomation() {
    */
   const quickGenerateFromVideo = useCallback(
     async (clipId: string, language?: string): Promise<EnhancedSubtitleResult | null> => {
-      const toolResult = await autoGenerateSubtitlesFromVideo(clipId, { language })
+      logInfo("[useEnhancedSubtitleAutomation] Быстрая генерация субтитров из видео", { clipId, language })
+      try {
+        const toolResult = await autoGenerateSubtitlesFromVideo(clipId, { language })
 
-      if (toolResult.success) {
-        setResult(toolResult.data!)
-        return toolResult.data!
+        if (toolResult.success) {
+          setResult(toolResult.data!)
+          logInfo("[useEnhancedSubtitleAutomation] Субтитры успешно сгенерированы", { clipId })
+          return toolResult.data!
+        }
+        const error = toolResult.errors?.[0] || "Ошибка генерации"
+        logError("[useEnhancedSubtitleAutomation] Ошибка быстрой генерации", new Error(error))
+        setError(error)
+        return null
+      } catch (err) {
+        logError("[useEnhancedSubtitleAutomation] Исключение при быстрой генерации", err)
+        throw err
       }
-      setError(toolResult.errors?.[0] || "Ошибка генерации")
-      return null
     },
     [],
   )
@@ -249,14 +272,23 @@ export function useEnhancedSubtitleAutomation() {
    */
   const extractFromScreenText = useCallback(
     async (clipId: string, language?: string): Promise<EnhancedSubtitleResult | null> => {
-      const toolResult = await extractSubtitlesFromScreenText(clipId, language)
+      logInfo("[useEnhancedSubtitleAutomation] Извлечение субтитров из текста на экране", { clipId, language })
+      try {
+        const toolResult = await extractSubtitlesFromScreenText(clipId, language)
 
-      if (toolResult.success) {
-        setResult(toolResult.data!)
-        return toolResult.data!
+        if (toolResult.success) {
+          setResult(toolResult.data!)
+          logInfo("[useEnhancedSubtitleAutomation] Текст успешно извлечен", { clipId })
+          return toolResult.data!
+        }
+        const error = toolResult.errors?.[0] || "Ошибка OCR"
+        logError("[useEnhancedSubtitleAutomation] Ошибка извлечения текста", new Error(error))
+        setError(error)
+        return null
+      } catch (err) {
+        logError("[useEnhancedSubtitleAutomation] Исключение при извлечении текста", err)
+        throw err
       }
-      setError(toolResult.errors?.[0] || "Ошибка OCR")
-      return null
     },
     [],
   )
@@ -266,14 +298,23 @@ export function useEnhancedSubtitleAutomation() {
    */
   const generateMultilingual = useCallback(
     async (clipId: string, languages: string[]): Promise<EnhancedSubtitleResult | null> => {
-      const toolResult = await generateMultilingualSubtitles(clipId, languages)
+      logInfo("[useEnhancedSubtitleAutomation] Генерация мультиязычных субтитров", { clipId, languages })
+      try {
+        const toolResult = await generateMultilingualSubtitles(clipId, languages)
 
-      if (toolResult.success) {
-        setResult(toolResult.data!)
-        return toolResult.data!
+        if (toolResult.success) {
+          setResult(toolResult.data!)
+          logInfo("[useEnhancedSubtitleAutomation] Мультиязычные субтитры созданы", { clipId, count: languages.length })
+          return toolResult.data!
+        }
+        const error = toolResult.errors?.[0] || "Ошибка многоязычной генерации"
+        logError("[useEnhancedSubtitleAutomation] Ошибка многоязычной генерации", new Error(error))
+        setError(error)
+        return null
+      } catch (err) {
+        logError("[useEnhancedSubtitleAutomation] Исключение при многоязычной генерации", err)
+        throw err
       }
-      setError(toolResult.errors?.[0] || "Ошибка многоязычной генерации")
-      return null
     },
     [],
   )
@@ -306,10 +347,12 @@ export function useEnhancedSubtitleAutomation() {
    * Отмена текущей операции
    */
   const cancel = useCallback(() => {
+    logInfo("[useEnhancedSubtitleAutomation] Отмена операции")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
       setIsProcessing(false)
       setProgress({ stage: "initializing", progress: 0 })
+      logInfo("[useEnhancedSubtitleAutomation] Операция отменена пользователем")
       toast.info(t("subtitles.enhanced.cancelled", "Операция отменена"))
     }
   }, [t])
@@ -318,6 +361,7 @@ export function useEnhancedSubtitleAutomation() {
    * Сброс состояния
    */
   const reset = useCallback(() => {
+    logInfo("[useEnhancedSubtitleAutomation] Сброс состояния")
     setIsProcessing(false)
     setProgress({ stage: "initializing", progress: 0 })
     setResult(null)

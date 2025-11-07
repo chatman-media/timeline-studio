@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react"
-
 import { useResources } from "@/features/resources/services/resources-provider"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Временная заглушка для setResourcesStateAccess
 let resourcesStateAccess: any = null
@@ -24,10 +24,14 @@ export interface AIResourceStats {
  * позволяя им управлять ресурсами проекта через естественный язык
  */
 export function useResourcesAIIntegration() {
+  logInfo("[useResourcesAIIntegration] Инициализация")
+
   const resources = useResources()
 
   // Функция для получения статистики ресурсов
   const getResourceStats = useCallback(() => {
+    logInfo("[useResourcesAIIntegration] Получение статистики ресурсов")
+
     const totalMedia = resources.mediaResources.length
     const totalMusic = resources.musicResources.length
     const totalEffects = resources.effectResources.length
@@ -43,7 +47,7 @@ export function useResourcesAIIntegration() {
       0,
     )
 
-    return {
+    const stats = {
       totalMedia,
       totalEffects,
       totalFilters,
@@ -51,12 +55,23 @@ export function useResourcesAIIntegration() {
       totalDuration,
       totalMusic,
     }
+
+    logInfo("[useResourcesAIIntegration] Статистика получена", stats)
+    return stats
   }, [resources])
 
   // Функция для добавления медиафайла
   const addMediaFile = useCallback(
     async (file: any) => {
-      return resources.addMedia(file)
+      logInfo("[useResourcesAIIntegration] Добавление медиафайла", { fileName: file?.name })
+      try {
+        const result = await resources.addMedia(file)
+        logInfo("[useResourcesAIIntegration] Медиафайл добавлен", { result })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка добавления медиафайла", error)
+        throw error
+      }
     },
     [resources],
   )
@@ -64,7 +79,15 @@ export function useResourcesAIIntegration() {
   // Функция для добавления эффекта
   const addEffect = useCallback(
     async (effect: any) => {
-      return resources.addEffect(effect)
+      logInfo("[useResourcesAIIntegration] Добавление эффекта", { effectId: effect?.id })
+      try {
+        const result = await resources.addEffect(effect)
+        logInfo("[useResourcesAIIntegration] Эффект добавлен", { result })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка добавления эффекта", error)
+        throw error
+      }
     },
     [resources],
   )
@@ -72,7 +95,15 @@ export function useResourcesAIIntegration() {
   // Функция для добавления фильтра
   const addFilter = useCallback(
     async (filter: any) => {
-      return resources.addFilter(filter)
+      logInfo("[useResourcesAIIntegration] Добавление фильтра", { filterId: filter?.id })
+      try {
+        const result = await resources.addFilter(filter)
+        logInfo("[useResourcesAIIntegration] Фильтр добавлен", { result })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка добавления фильтра", error)
+        throw error
+      }
     },
     [resources],
   )
@@ -80,25 +111,42 @@ export function useResourcesAIIntegration() {
   // Функция для добавления любого ресурса
   const addResource = useCallback(
     async (resourceType: string, resource: any) => {
-      switch (resourceType) {
-        case "media":
-          return resources.addMedia(resource)
-        case "music":
-          return resources.addMusic(resource)
-        case "effect":
-          return resources.addEffect(resource)
-        case "filter":
-          return resources.addFilter(resource)
-        case "transition":
-          return resources.addTransition(resource)
-        case "template":
-          return resources.addTemplate(resource)
-        case "styleTemplate":
-          return resources.addStyleTemplate(resource)
-        case "subtitle":
-          return resources.addSubtitle(resource)
-        default:
-          throw new Error(`Unknown resource type: ${resourceType}`)
+      logInfo("[useResourcesAIIntegration] Добавление ресурса", { resourceType, resourceId: resource?.id })
+      try {
+        let result: any
+        switch (resourceType) {
+          case "media":
+            result = await resources.addMedia(resource)
+            break
+          case "music":
+            result = await resources.addMusic(resource)
+            break
+          case "effect":
+            result = await resources.addEffect(resource)
+            break
+          case "filter":
+            result = await resources.addFilter(resource)
+            break
+          case "transition":
+            result = await resources.addTransition(resource)
+            break
+          case "template":
+            result = await resources.addTemplate(resource)
+            break
+          case "styleTemplate":
+            result = await resources.addStyleTemplate(resource)
+            break
+          case "subtitle":
+            result = await resources.addSubtitle(resource)
+            break
+          default:
+            throw new Error(`Unknown resource type: ${resourceType}`)
+        }
+        logInfo("[useResourcesAIIntegration] Ресурс добавлен", { resourceType, result })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка добавления ресурса", error)
+        throw error
       }
     },
     [resources],
@@ -107,7 +155,15 @@ export function useResourcesAIIntegration() {
   // Функция для удаления ресурса
   const removeResource = useCallback(
     async (resourceId: string, _type: string) => {
-      return resources.removeResource(resourceId)
+      logInfo("[useResourcesAIIntegration] Удаление ресурса", { resourceId })
+      try {
+        const result = await resources.removeResource(resourceId)
+        logInfo("[useResourcesAIIntegration] Ресурс удален", { resourceId })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка удаления ресурса", error)
+        throw error
+      }
     },
     [resources],
   )
@@ -115,7 +171,15 @@ export function useResourcesAIIntegration() {
   // Функция для обновления ресурса
   const updateResource = useCallback(
     async (resourceId: string, params: Record<string, any>) => {
-      return resources.updateResource(resourceId, params)
+      logInfo("[useResourcesAIIntegration] Обновление ресурса", { resourceId, params })
+      try {
+        const result = await resources.updateResource(resourceId, params)
+        logInfo("[useResourcesAIIntegration] Ресурс обновлен", { resourceId })
+        return result
+      } catch (error) {
+        logError("[useResourcesAIIntegration] Ошибка обновления ресурса", error)
+        throw error
+      }
     },
     [resources],
   )
@@ -134,15 +198,20 @@ export function useResourcesAIIntegration() {
     }
 
     setResourcesStateAccess(resourcesAccess)
+    logInfo("[useResourcesAIIntegration] Доступ к ресурсам установлен")
 
     // Очищаем при размонтировании
     return () => {
       setResourcesStateAccess(null)
+      logInfo("[useResourcesAIIntegration] Доступ к ресурсам очищен")
     }
   }, [resources, addMediaFile, addEffect, addFilter, addResource, removeResource, updateResource, getResourceStats])
 
+  const stats = getResourceStats()
+  logInfo("[useResourcesAIIntegration] Готов", { isIntegrated: true, stats })
+
   return {
     isIntegrated: true,
-    resourceStats: getResourceStats() as AIResourceStats,
+    resourceStats: stats as AIResourceStats,
   }
 }

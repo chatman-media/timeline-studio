@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { StyleTemplate, StyleTemplateFilter, StyleTemplateSortBy, StyleTemplateSortOrder } from "../types"
 
 interface UseStyleTemplatesReturn {
@@ -28,6 +28,7 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
   // Загрузка шаблонов из JSON файла
   useEffect(() => {
     const loadTemplates = async () => {
+      logInfo("useStyleTemplates", "Starting style templates loading")
       try {
         setLoading(true)
         setError(null)
@@ -40,10 +41,10 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
             throw new Error("Неверная структура данных шаблонов")
           }
 
-          console.log("✅ Загружено", data.templates.length, "стильных шаблонов из JSON")
+          logInfo("useStyleTemplates", `Successfully loaded ${data.templates.length} style templates from JSON`)
           setTemplates(data.templates as unknown as StyleTemplate[])
         } catch (importError) {
-          console.warn("Не удалось загрузить JSON файл, используем тестовые данные:", importError)
+          logInfo("useStyleTemplates", "JSON import failed, falling back to test data")
 
           // Fallback: тестовые данные
           const testTemplates: StyleTemplate[] = [
@@ -120,12 +121,13 @@ export function useStyleTemplates(): UseStyleTemplatesReturn {
             },
           ]
 
-          console.log("✅ Загружено", testTemplates.length, "тестовых стильных шаблонов")
+          logInfo("useStyleTemplates", `Loaded ${testTemplates.length} test style templates as fallback`)
           setTemplates(testTemplates)
         }
       } catch (err) {
-        console.error("Ошибка загрузки стилистических шаблонов:", err)
-        setError(err instanceof Error ? err.message : "Неизвестная ошибка")
+        const errorMsg = err instanceof Error ? err.message : "Неизвестная ошибка"
+        logError("useStyleTemplates", `Failed to load style templates: ${errorMsg}`)
+        setError(errorMsg)
       } finally {
         setLoading(false)
       }

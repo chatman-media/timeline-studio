@@ -1,16 +1,18 @@
 import { useCallback, useEffect } from "react"
-
 import type { BrowserStateAccess } from "@/features/ai-chat/tools/core/browser/types"
 import { setBrowserStateAccess } from "@/features/ai-chat/tools/core/browser/utils/helpers"
 import { useApp } from "@/features/app-state/services/app-provider"
 import { useBrowserState } from "@/features/browser/services/browser-state-provider"
 import type { MediaFile } from "@/features/media/types/media"
+import { logInfo } from "@/lib/tauri-logger"
 
 /**
  * Хук для интеграции Browser с AI функциональностью
  * Предоставляет доступ к состоянию браузера для AI инструментов
  */
 export function useBrowserAIIntegration() {
+  logInfo("[useBrowserAIIntegration] Инициализация")
+
   const browserState = useBrowserState()
   const { projectState } = useApp()
 
@@ -23,23 +25,31 @@ export function useBrowserAIIntegration() {
     const { activeTab } = browserState
 
     // Фильтруем файлы в зависимости от активной вкладки
+    let files: MediaFile[] = []
     switch (activeTab) {
       case "media":
-        return mediaFiles.filter((file: MediaFile) => file.isVideo || file.isImage)
+        files = mediaFiles.filter((file: MediaFile) => file.isVideo || file.isImage)
+        break
       case "music":
-        return mediaFiles.filter((file: MediaFile) => file.isAudio)
+        files = mediaFiles.filter((file: MediaFile) => file.isAudio)
+        break
       default:
         // Для остальных вкладок возвращаем пустой массив
         // так как они не связаны с медиафайлами
-        return []
+        files = []
     }
+
+    logInfo("[useBrowserAIIntegration] Получены файлы вкладки", { activeTab, count: files.length })
+    return files
   }, [browserState.activeTab, mediaFiles])
 
   // Функция для получения выбранных файлов
   const getSelectedFiles = useCallback((): MediaFile[] => {
     const selectedIds = browserState.selectedFiles
     const tabFiles = getTabFiles()
-    return tabFiles.filter((file: MediaFile) => selectedIds.has(file.id))
+    const selected = tabFiles.filter((file: MediaFile) => selectedIds.has(file.id))
+    logInfo("[useBrowserAIIntegration] Выбрано файлов", { count: selected.length })
+    return selected
   }, [browserState.selectedFiles, getTabFiles])
 
   // Функция для получения файлов с фильтрами
@@ -88,6 +98,7 @@ export function useBrowserAIIntegration() {
       return sortOrder === "asc" ? comparison : -comparison
     })
 
+    logInfo("[useBrowserAIIntegration] Отфильтровано файлов", { count: filtered.length })
     return filtered
   }, [getTabFiles, browserState])
 
@@ -112,6 +123,7 @@ export function useBrowserAIIntegration() {
       getSelectedFiles,
       getFilters: () => browserState.currentTabSettings,
       setFilters: (filters: any) => {
+        logInfo("[useBrowserAIIntegration] Установка фильтров", filters)
         // Применяем фильтры к текущей вкладке
         if (filters.searchQuery !== undefined) {
           browserState.setSearchQuery(filters.searchQuery)
@@ -121,20 +133,25 @@ export function useBrowserAIIntegration() {
         }
       },
       selectFiles: (fileIds: string[]) => {
+        logInfo("[useBrowserAIIntegration] Выбор файлов", { count: fileIds.length })
         // Выбираем все переданные файлы
         fileIds.forEach((fileId) => browserState.selectFile(fileId))
       },
       deselectFiles: (fileIds: string[]) => {
+        logInfo("[useBrowserAIIntegration] Снятие выбора файлов", { count: fileIds.length })
         // Отменяем выбор всех переданных файлов
         fileIds.forEach((fileId) => browserState.deselectFile(fileId))
       },
       searchFiles: (query: string) => {
+        logInfo("[useBrowserAIIntegration] Поиск файлов", { query })
         const filtered = getTabFiles().filter((file: MediaFile) =>
           file.name.toLowerCase().includes(query.toLowerCase()),
         )
+        logInfo("[useBrowserAIIntegration] Найдено файлов", { count: filtered.length })
         return filtered
       },
       getFileGroups: (groupBy: string) => {
+        logInfo("[useBrowserAIIntegration] Группировка файлов", { groupBy })
         // Группировка файлов
         const files = getTabFiles()
         const groups: Record<string, MediaFile[]> = {}
@@ -160,12 +177,14 @@ export function useBrowserAIIntegration() {
           groups[groupKey].push(file)
         })
 
-        return Object.entries(groups).map(([key, files]) => ({
+        const result = Object.entries(groups).map(([key, files]) => ({
           id: key,
           name: key,
           files,
           count: files.length,
         }))
+        logInfo("[useBrowserAIIntegration] Группы файлов", { groupsCount: result.length })
+        return result
       },
       getBrowserStats: () => {
         const files = getTabFiles()
@@ -180,27 +199,34 @@ export function useBrowserAIIntegration() {
 
         const selectedFilesCount = browserState.selectedFiles.size
 
-        return {
+        const stats = {
           totalFiles: files.length,
           selectedFiles: selectedFilesCount,
           filesByType,
           totalSize,
         }
+        logInfo("[useBrowserAIIntegration] Статистика браузера", stats)
+        return stats
       },
     }
 
     // Устанавливаем доступ для AI инструментов
     setBrowserStateAccess(browserAccess)
+    logInfo("[useBrowserAIIntegration] Доступ к браузеру установлен")
 
     // Очищаем при размонтировании
     return () => {
       setBrowserStateAccess(null)
+      logInfo("[useBrowserAIIntegration] Доступ к браузеру очищен")
     }
   }, [browserState, mediaFiles, isLoading, getTabFiles, getSelectedFiles, getFilteredFiles])
 
-  return {
+  const result = {
     isReady: !isLoading && mediaFiles.length > 0,
     filesCount: mediaFiles.length,
     activeTab: browserState.activeTab,
   }
+
+  logInfo("[useBrowserAIIntegration] Готов", result)
+  return result
 }

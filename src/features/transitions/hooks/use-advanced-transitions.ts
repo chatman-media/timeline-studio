@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { webglTransitionService } from "../services/webgl-transition-service"
 import type { Transition } from "../types/transitions"
 import { useTransitions } from "./use-transitions"
@@ -36,6 +37,7 @@ export function useAdvancedTransitions() {
    * Инициализация WebGL
    */
   const initializeWebGL = useCallback((canvas: HTMLCanvasElement) => {
+    logInfo("useAdvancedTransitions", "Initializing WebGL for advanced transitions")
     try {
       const success = webglTransitionService.initialize(canvas)
       setIsWebGLInitialized(success)
@@ -43,8 +45,10 @@ export function useAdvancedTransitions() {
       if (success) {
         canvasRef.current = canvas
         setInitError(null)
+        logInfo("useAdvancedTransitions", "WebGL initialization successful")
       } else {
         setInitError("Не удалось инициализировать WebGL")
+        logError("useAdvancedTransitions", "WebGL initialization failed")
       }
 
       return success
@@ -52,6 +56,7 @@ export function useAdvancedTransitions() {
       const message = error instanceof Error ? error.message : "Неизвестная ошибка WebGL"
       setInitError(message)
       setIsWebGLInitialized(false)
+      logError("useAdvancedTransitions", `WebGL initialization error: ${message}`)
       return false
     }
   }, [])
@@ -85,17 +90,22 @@ export function useAdvancedTransitions() {
   const previewTransition = useCallback(
     async (params: PreviewParams): Promise<PreviewResult> => {
       if (!isWebGLInitialized) {
+        logError("useAdvancedTransitions", "Preview attempted but WebGL not initialized")
         return { success: false, error: "WebGL не инициализирован" }
       }
 
+      logInfo("useAdvancedTransitions", `Starting preview for transition: ${params.transition.id}`)
       try {
         // Создаем текстуры из изображений
         const sourceTexture = webglTransitionService.createTextureFromImage(params.sourceImage)
         const targetTexture = webglTransitionService.createTextureFromImage(params.targetImage)
 
         if (!sourceTexture || !targetTexture) {
+          logError("useAdvancedTransitions", "Failed to create textures for preview")
           return { success: false, error: "Не удалось создать текстуры" }
         }
+
+        logInfo("useAdvancedTransitions", "Textures created, rendering transition preview")
 
         // Рендерим переход
         const result = await webglTransitionService.renderTransition({
@@ -106,12 +116,14 @@ export function useAdvancedTransitions() {
           parameters: params.transition.parameters,
         })
 
+        logInfo("useAdvancedTransitions", `Preview rendered successfully, time: ${result.renderTime}ms`)
         return result
       } catch (error) {
-        console.error("Ошибка предварительного просмотра:", error)
+        const errorMsg = error instanceof Error ? error.message : "Неизвестная ошибка"
+        logError("useAdvancedTransitions", `Preview error: ${errorMsg}`)
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Неизвестная ошибка",
+          error: errorMsg,
         }
       }
     },

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { COMMON_FRAMERATES, COMMON_RESOLUTIONS, type ResolutionOption } from "../../project-settings/types/project"
 
 interface UseCameraPermissionsResult {
@@ -19,6 +20,7 @@ export function useCameraPermissions(getDevices: () => Promise<boolean>): UseCam
   const [errorMessage, setErrorMessage] = useState<string>("")
 
   const requestPermissions = useCallback(async () => {
+    logInfo("[useCameraPermissions] Запрос разрешений на доступ к камере и микрофону")
     try {
       setPermissionStatus("pending")
       setErrorMessage("")
@@ -34,6 +36,7 @@ export function useCameraPermissions(getDevices: () => Promise<boolean>): UseCam
         setErrorMessage(
           t("camera.permissionError", "Не удалось получить доступ к камере и микрофону. Проверьте настройки."),
         )
+        logError("[useCameraPermissions] Не удалось получить поток", new Error("No stream received"))
         return
       }
 
@@ -42,9 +45,10 @@ export function useCameraPermissions(getDevices: () => Promise<boolean>): UseCam
 
       // Теперь можем получить полный список устройств с названиями
       setPermissionStatus("granted")
+      logInfo("[useCameraPermissions] Разрешения предоставлены")
       await getDevices()
     } catch (error) {
-      console.error("Error requesting permissions:", error)
+      logError("[useCameraPermissions] Ошибка при запросе разрешений", error)
       setPermissionStatus("error")
 
       if (error instanceof DOMException) {
@@ -98,6 +102,7 @@ export function useDeviceCapabilities(
 
   const getDeviceCapabilities = useCallback(
     async (deviceId: string) => {
+      logInfo("[useDeviceCapabilities] Получение возможностей устройства", { deviceId })
       setIsLoadingCapabilities(true)
       try {
         // Временно запрашиваем поток для определения возможностей
@@ -108,7 +113,7 @@ export function useDeviceCapabilities(
         })
 
         if (!stream) {
-          console.error("Не удалось получить поток для определения возможностей устройства")
+          logError("[useDeviceCapabilities] Не удалось получить поток", new Error("Stream is null"))
           return
         }
 
@@ -118,7 +123,7 @@ export function useDeviceCapabilities(
         if (videoTrack && "getCapabilities" in videoTrack) {
           // Современный подход через getCapabilities
           const capabilities = videoTrack.getCapabilities()
-          console.log("Возможности камеры:", capabilities)
+          logInfo("[useDeviceCapabilities] Возможности камеры получены", { capabilities })
 
           // Получаем разрешения
           const resolutions: ResolutionOption[] = []
@@ -128,7 +133,10 @@ export function useDeviceCapabilities(
             const deviceWidthMax = capabilities.width?.max || 1920
             const deviceHeightMax = capabilities.height?.max || 1080
 
-            console.log(`Максимальное разрешение устройства: ${deviceWidthMax}x${deviceHeightMax}`)
+            logInfo("[useDeviceCapabilities] Максимальное разрешение устройства", {
+              width: deviceWidthMax,
+              height: deviceHeightMax,
+            })
 
             // Проверяем, что максимальное разрешение имеет стандартное соотношение сторон
             const aspectRatio = deviceWidthMax / deviceHeightMax
@@ -149,9 +157,10 @@ export function useDeviceCapabilities(
                 value: `${deviceWidthMax}x${deviceHeightMax}`,
               })
             } else {
-              console.log(
-                `Максимальное разрешение устройства ${deviceWidthMax}x${deviceHeightMax} имеет нестандартное соотношение сторон ${aspectRatio.toFixed(2)}`,
-              )
+              logInfo("[useDeviceCapabilities] Нестандартное соотношение сторон", {
+                resolution: `${deviceWidthMax}x${deviceHeightMax}`,
+                aspectRatio: aspectRatio.toFixed(2),
+              })
             }
 
             // Добавляем стандартные разрешения, которые меньше максимального
@@ -170,7 +179,7 @@ export function useDeviceCapabilities(
               const frMin = capabilities.frameRate.min || 0
               const frMax = capabilities.frameRate.max || 60
 
-              console.log(`Диапазон частот кадров: ${frMin}-${frMax} fps`)
+              logInfo("[useDeviceCapabilities] Диапазон частот кадров", { min: frMin, max: frMax })
 
               // Добавляем стандартные частоты кадров, которые в пределах диапазона
               const standard = [24, 25, 30, 50, 60]
@@ -194,10 +203,9 @@ export function useDeviceCapabilities(
               return pixelsB - pixelsA
             })
 
-            console.log(
-              "Доступные разрешения:",
-              sortedResolutions.map((r) => r.label),
-            )
+            logInfo("[useDeviceCapabilities] Доступные разрешения", {
+              resolutions: sortedResolutions.map((r) => r.label),
+            })
 
             // Устанавливаем отсортированные разрешения
             setSupportedResolutions(sortedResolutions)
@@ -206,10 +214,11 @@ export function useDeviceCapabilities(
             // Всегда выбираем максимальное разрешение по умолчанию
             if (sortedResolutions.length > 0) {
               const maxResolution = sortedResolutions[0]
-              console.log("Выбрано максимальное разрешение:", maxResolution.label)
+              logInfo("[useDeviceCapabilities] Выбрано максимальное разрешение", { resolution: maxResolution.label })
               setSelectedResolution(maxResolution.value)
             } else {
               // Если по какой-то причине нет разрешений, используем стандартные
+              logInfo("[useDeviceCapabilities] Разрешения не найдены, используем стандартные")
               setAvailableResolutions(COMMON_RESOLUTIONS)
               setSupportedResolutions(COMMON_RESOLUTIONS)
               setSelectedResolution(COMMON_RESOLUTIONS[0].value)
@@ -227,7 +236,7 @@ export function useDeviceCapabilities(
             }
           } else {
             // Если нет информации о разрешении, используем стандартные значения
-            console.log("Нет информации о разрешении, используем стандартные значения")
+            logInfo("[useDeviceCapabilities] Нет информации о разрешении, используем стандартные значения")
             setAvailableResolutions(COMMON_RESOLUTIONS)
             setSupportedResolutions(COMMON_RESOLUTIONS)
             setSelectedResolution(COMMON_RESOLUTIONS[0].value)
@@ -236,7 +245,7 @@ export function useDeviceCapabilities(
           }
         } else {
           // Для старых браузеров используем предопределенные разрешения
-          console.log("Браузер не поддерживает getCapabilities, используем стандартные значения")
+          logInfo("[useDeviceCapabilities] Браузер не поддерживает getCapabilities, используем стандартные значения")
           setAvailableResolutions(COMMON_RESOLUTIONS)
           setSupportedResolutions(COMMON_RESOLUTIONS)
           setSelectedResolution(COMMON_RESOLUTIONS[0].value)
@@ -247,21 +256,13 @@ export function useDeviceCapabilities(
         // Завершаем поток
         stream.getTracks().forEach((track) => track.stop())
       } catch (error) {
-        console.error("Ошибка при получении возможностей устройства:", error)
+        logError("[useDeviceCapabilities] Ошибка при получении возможностей устройства", error)
         // Используем стандартные значения в случае ошибки
         setAvailableResolutions(COMMON_RESOLUTIONS)
         setSupportedResolutions(COMMON_RESOLUTIONS)
         setSelectedResolution(COMMON_RESOLUTIONS[0].value)
         setSupportedFrameRates(COMMON_FRAMERATES)
         setFrameRate(30)
-
-        // Логируем ошибку
-        console.error(
-          t(
-            "dialogs.cameraCapture.errorGettingCapabilities",
-            "Не удалось получить информацию о возможностях камеры. Используются стандартные настройки.",
-          ),
-        )
       } finally {
         setIsLoadingCapabilities(false)
       }

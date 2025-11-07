@@ -1,5 +1,7 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 interface UseRecordingResult {
   isRecording: boolean
   recordingTime: number
@@ -39,7 +41,11 @@ export function useRecording(
 
   // Запускаем запись
   const startRecording = useCallback(() => {
-    if (!streamRef.current) return
+    logInfo("[useRecording] Начало записи")
+    if (!streamRef.current) {
+      logError("[useRecording] Поток не доступен", new Error("Stream is null"))
+      return
+    }
 
     chunksRef.current = []
 
@@ -47,14 +53,14 @@ export function useRecording(
     try {
       mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
     } catch (e) {
-      console.error("MediaRecorder не поддерживает данный формат:", e)
+      logError("[useRecording] MediaRecorder не поддерживает данный формат", e)
       try {
         // Пробуем другой формат
         mediaRecorderRef.current = new MediaRecorder(streamRef.current, {
           mimeType: "video/webm",
         })
       } catch (e) {
-        console.error("MediaRecorder не поддерживается браузером:", e)
+        logError("[useRecording] MediaRecorder не поддерживается браузером", e)
         return
       }
     }
@@ -62,6 +68,7 @@ export function useRecording(
     mediaRecorderRef.current.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) {
         chunksRef.current.push(event.data)
+        logInfo("[useRecording] Получена часть видео данных", { size: event.data.size })
       }
     }
 
@@ -69,11 +76,13 @@ export function useRecording(
       const blob = new Blob(chunksRef.current, { type: "video/webm" })
       const now = new Date()
       const fileName = `camera_recording_${now.toISOString().replace(/:/g, "-")}.webm`
+      logInfo("[useRecording] Запись завершена", { fileName, size: blob.size })
       onVideoRecorded(blob, fileName)
     }
 
     mediaRecorderRef.current.start()
     setIsRecording(true)
+    logInfo("[useRecording] MediaRecorder запущен")
 
     // Запускаем таймер для отслеживания времени записи
     let seconds = 0
@@ -85,6 +94,7 @@ export function useRecording(
 
   // Останавливаем запись
   const stopRecording = useCallback(() => {
+    logInfo("[useRecording] Остановка записи")
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop()
     }
@@ -96,12 +106,15 @@ export function useRecording(
 
     setIsRecording(false)
     setRecordingTime(0)
+    logInfo("[useRecording] Запись остановлена")
   }, [])
 
   // Начинаем обратный отсчет или сразу запись
   const startCountdown = useCallback(() => {
+    logInfo("[useRecording] Запуск обратного отсчета", { countdown })
     if (countdown <= 0) {
       // Если обратный отсчет установлен в 0, сразу начинаем запись
+      logInfo("[useRecording] Обратный отсчет отключен, начинаем запись сразу")
       startRecording()
       return
     }
@@ -113,10 +126,12 @@ export function useRecording(
     const timer = setInterval(() => {
       currentCount -= 1
       setCountdown(currentCount)
+      logInfo("[useRecording] Обратный отсчет", { current: currentCount })
 
       if (currentCount <= 0) {
         clearInterval(timer)
         setShowCountdown(false)
+        logInfo("[useRecording] Обратный отсчет завершен, начинаем запись")
         startRecording()
       }
     }, 1000)

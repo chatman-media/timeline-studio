@@ -2,6 +2,7 @@ import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type { CaptureDevice } from "../types"
 
 interface UseDevicesResult {
@@ -28,9 +29,10 @@ export function useDevices(
   const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>("")
 
   const getDevices = useCallback(async () => {
+    logInfo("[useDevices] Получение списка устройств")
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-      console.error("MediaDevices API недоступен")
+      logError("[useDevices] MediaDevices API недоступен", new Error("API not available"))
       setErrorMessage(
         t(
           "dialogs.cameraCapture.mediaDevicesNotSupported",
@@ -84,8 +86,8 @@ export function useDevices(
       setDevices(videoDevices)
       setAudioDevices(audioDevices)
 
-      console.log("Найдены видео устройства:", videoDevices)
-      console.log("Найдены аудио устройства:", audioDevices)
+      logInfo("[useDevices] Найдены видео устройства", { count: videoDevices.length, devices: videoDevices })
+      logInfo("[useDevices] Найдены аудио устройства", { count: audioDevices.length, devices: audioDevices })
 
       // Выбираем первое устройство, если еще не выбрано
       let deviceIdToUse = selectedDevice
@@ -105,7 +107,7 @@ export function useDevices(
 
       return true
     } catch (error) {
-      console.error("Error getting devices:", error)
+      logError("[useDevices] Ошибка при получении устройств", error)
       if (setErrorMessage) {
         setErrorMessage(t("dialogs.cameraCapture.errorGettingDevices", "Failed to get device list"))
       }

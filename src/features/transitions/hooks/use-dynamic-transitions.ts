@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { type DynamicShaderType, DynamicTransitionService } from "../services/dynamic-transition-service"
 
 interface UseDynamicTransitionsOptions {
@@ -90,12 +90,14 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
 
   // Инициализация сервиса
   const initialize = useCallback(async () => {
+    logInfo("useDynamicTransitions", "Initializing DynamicTransitionService")
     try {
       const canvas = createCanvas()
       const service = new DynamicTransitionService()
 
       if (service.initialize(canvas)) {
         serviceRef.current = service
+        logInfo("useDynamicTransitions", "DynamicTransitionService initialized successfully")
 
         // Определяем возможности
         const gl = canvas.getContext("webgl2")
@@ -103,15 +105,22 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
           const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
           const maxVertexUniformVectors = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS)
 
+          const capabilities = {
+            webgl2: true,
+            computeShaders: !!gl.getExtension("WEBGL_compute_shader"),
+            maxTextureSize,
+            maxParticles: Math.min(maxVertexUniformVectors * 100, 10000),
+          }
+
+          logInfo(
+            "useDynamicTransitions",
+            `WebGL2 capabilities detected: maxTexture=${maxTextureSize}, maxParticles=${capabilities.maxParticles}`,
+          )
+
           setState((prev) => ({
             ...prev,
             isInitialized: true,
-            capabilities: {
-              webgl2: true,
-              computeShaders: !!gl.getExtension("WEBGL_compute_shader"),
-              maxTextureSize,
-              maxParticles: Math.min(maxVertexUniformVectors * 100, 10000),
-            },
+            capabilities,
           }))
 
           // Запускаем мониторинг производительности
@@ -123,9 +132,11 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
         throw new Error("Не удалось инициализировать DynamicTransitionService")
       }
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "Неизвестная ошибка инициализации"
+      logError("useDynamicTransitions", `Initialization failed: ${errorMsg}`)
       setState((prev) => ({
         ...prev,
-        error: error instanceof Error ? error.message : "Неизвестная ошибка инициализации",
+        error: errorMsg,
       }))
     }
   }, [createCanvas])
@@ -168,15 +179,16 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
   const renderDynamicTransition = useCallback(
     async (params: RenderDynamicTransitionParams) => {
       if (!serviceRef.current || !canvasRef.current) {
-        console.error("Сервис не инициализирован")
+        logError("useDynamicTransitions", "Service not initialized for rendering")
         return null
       }
 
       if (state.isRendering) {
-        console.warn("Рендеринг уже выполняется")
+        logInfo("useDynamicTransitions", "Render already in progress, skipping")
         return null
       }
 
+      logInfo("useDynamicTransitions", `Starting render: shaderType=${params.shaderType}, progress=${params.progress}`)
       setState((prev) => ({ ...prev, isRendering: true, error: null }))
 
       try {
@@ -187,6 +199,7 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
         // Подгоняем размер canvas под изображения
         canvas.width = Math.max(sourceImage.width, targetImage.width)
         canvas.height = Math.max(sourceImage.height, targetImage.height)
+        logInfo("useDynamicTransitions", `Canvas resized to ${canvas.width}x${canvas.height}`)
 
         // Создаем текстуры
         const sourceTexture = service.createTextureFromImage(sourceImage as HTMLImageElement)
@@ -195,6 +208,8 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
         if (!sourceTexture || !targetTexture) {
           throw new Error("Не удалось создать текстуры")
         }
+
+        logInfo("useDynamicTransitions", "Textures created, starting shader rendering")
 
         // Рендерим переход
         const success = await service.renderDynamicTransition({
@@ -210,6 +225,8 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
           throw new Error("Ошибка рендеринга перехода")
         }
 
+        logInfo("useDynamicTransitions", `Shader rendering successful for ${shaderType}`)
+
         // Возвращаем результат как ImageData
         const ctx = canvas.getContext("2d")
         if (ctx) {
@@ -218,9 +235,11 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
 
         return null
       } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : "Ошибка рендеринга"
+        logError("useDynamicTransitions", `Render failed: ${errorMsg}`)
         setState((prev) => ({
           ...prev,
-          error: error instanceof Error ? error.message : "Ошибка рендеринга",
+          error: errorMsg,
         }))
         return null
       } finally {
@@ -274,7 +293,10 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
   // Проверка поддержки конкретного типа перехода
   const isTransitionSupported = useCallback(
     (shaderType: DynamicShaderType): boolean => {
-      if (!state.isInitialized) return false
+      if (!state.isInitialized) {
+        logInfo("useDynamicTransitions", `Transition ${shaderType} not supported: service not initialized`)
+        return false
+      }
 
       // Некоторые переходы требуют особых возможностей
       const requiresHighPerformance: DynamicShaderType[] = [
@@ -287,10 +309,15 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
       const requiresComputeShaders: DynamicShaderType[] = ["particle-dissolve", "organic-growth"]
 
       if (requiresHighPerformance.includes(shaderType) && state.performance.fps < 30) {
+        logInfo(
+          "useDynamicTransitions",
+          `Transition ${shaderType} requires high performance but fps=${state.performance.fps}`,
+        )
         return false
       }
 
       if (requiresComputeShaders.includes(shaderType) && !state.capabilities.computeShaders) {
+        logInfo("useDynamicTransitions", `Transition ${shaderType} requires compute shaders but not available`)
         return false
       }
 

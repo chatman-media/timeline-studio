@@ -1,3 +1,5 @@
+import { logInfo } from "@/lib/tauri-logger"
+
 import type { ChatContextType } from "../services/chat-provider"
 import { useChat } from "./use-chat"
 
@@ -17,8 +19,12 @@ export function useChatActions(): Pick<
   | "clearMessages"
   | "removeMessage"
 > {
+  logInfo("[useChatActions] Инициализация")
+
   const { sendChatMessage, receiveChatMessage, selectAgent, setProcessing, setError, clearMessages, removeMessage } =
     useChat()
+
+  logInfo("[useChatActions] Готов")
 
   return {
     sendChatMessage,

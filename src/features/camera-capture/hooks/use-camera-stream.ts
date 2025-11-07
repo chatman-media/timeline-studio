@@ -1,8 +1,8 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-
 import type { ResolutionOption } from "@/features/project-settings/types/project"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { cleanupMediaStream } from "../utils"
 
@@ -44,20 +44,21 @@ export function useCameraStream(
 
   // Инициализация потока с камеры
   const initCamera = useCallback(async () => {
+    logInfo("[useCameraStream] Инициализация потока с камеры")
     // Предотвращаем параллельные вызовы
     if (initializingRef.current) {
-      console.log("Инициализация камеры уже в процессе, пропускаем вызов")
+      logInfo("[useCameraStream] Инициализация камеры уже в процессе, пропускаем вызов")
       return
     }
 
     if (!selectedDevice) {
-      console.log("Устройство не выбрано")
+      logInfo("[useCameraStream] Устройство не выбрано")
       return
     }
 
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error("MediaDevices API недоступен")
+      logError("[useCameraStream] MediaDevices API недоступен", new Error("API not available"))
       updateErrorMessage(
         t(
           "dialogs.cameraCapture.mediaDevicesNotSupported",
@@ -81,11 +82,11 @@ export function useCameraStream(
     const currentAbortController = abortControllerRef.current
 
     try {
-      console.log("Инициализация камеры с устройством:", selectedDevice)
+      logInfo("[useCameraStream] Инициализация камеры с устройством", { device: selectedDevice })
 
       // Проверяем, не была ли операция отменена
       if (currentAbortController.signal.aborted) {
-        console.log("Инициализация камеры отменена")
+        logInfo("[useCameraStream] Инициализация камеры отменена")
         return
       }
 
@@ -101,22 +102,22 @@ export function useCameraStream(
 
       if (selectedResolution) {
         // Извлекаем числа из строки разрешения (например, "1920x1080")
-        console.log("Выбранное разрешение для обработки:", selectedResolution)
+        logInfo("[useCameraStream] Выбранное разрешение для обработки", { resolution: selectedResolution })
 
         const resolutionMatch = /(\d+)x(\d+)/.exec(selectedResolution)
         if (resolutionMatch && resolutionMatch.length >= 3) {
           width = Number.parseInt(resolutionMatch[1], 10)
           height = Number.parseInt(resolutionMatch[2], 10)
-          console.log(`Извлечено разрешение: ${width}x${height}`)
+          logInfo("[useCameraStream] Извлечено разрешение", { width, height })
         } else {
-          console.warn("Не удалось извлечь разрешение из строки:", selectedResolution)
+          logInfo("[useCameraStream] Не удалось извлечь разрешение из строки", { resolution: selectedResolution })
 
           // Ищем разрешение в доступных разрешениях
           const resolution = availableResolutions.find((r) => r.value === selectedResolution)
           if (resolution) {
             width = resolution.width
             height = resolution.height
-            console.log(`Найдено разрешение в списке: ${width}x${height}`)
+            logInfo("[useCameraStream] Найдено разрешение в списке", { width, height })
           }
         }
       } else {
@@ -134,22 +135,22 @@ export function useCameraStream(
           width = maxResolution.width
           height = maxResolution.height
 
-          console.log("Разрешение не выбрано, используем максимальное:", width, "x", height)
+          logInfo("[useCameraStream] Разрешение не выбрано, используем максимальное", { width, height })
         }
       }
 
-      console.log(`Запрашиваем разрешение: ${width}x${height}, частота кадров: ${frameRate}`)
+      logInfo("[useCameraStream] Запрашиваем разрешение", { width, height, frameRate })
 
       // Проверяем, что разрешение имеет разумные значения
       if (width < 640 || height < 480) {
-        console.warn(`Обнаружено слишком низкое разрешение ${width}x${height}, устанавливаем минимальное 640x480`)
+        logInfo("[useCameraStream] Обнаружено слишком низкое разрешение, устанавливаем минимальное", { width, height })
         width = 640
         height = 480
       }
 
       // Проверяем снова, не была ли операция отменена перед запросом потока
       if (currentAbortController.signal.aborted) {
-        console.log("Инициализация камеры отменена перед запросом медиа-потока")
+        logInfo("[useCameraStream] Инициализация камеры отменена перед запросом медиа-потока")
         return
       }
 
@@ -165,23 +166,23 @@ export function useCameraStream(
         audio: selectedAudioDevice ? { deviceId: { exact: selectedAudioDevice } } : false,
       }
 
-      console.log("Запрашиваем медиа-поток с ограничениями:", constraints)
+      logInfo("[useCameraStream] Запрашиваем медиа-поток с ограничениями", { constraints })
       try {
         const stream = await navigator.mediaDevices?.getUserMedia?.(constraints)
 
         // Проверяем после асинхронной операции
         if (currentAbortController.signal.aborted) {
-          console.log("Инициализация камеры отменена после получения потока")
+          logInfo("[useCameraStream] Инициализация камеры отменена после получения потока")
           if (stream) {
             cleanupMediaStream(stream, "Aborted stream cleanup")
           }
           return
         }
 
-        console.log("Поток получен:", stream)
+        logInfo("[useCameraStream] Поток получен")
 
         if (!stream) {
-          console.error("Не удалось получить медиа-поток")
+          logError("[useCameraStream] Не удалось получить медиа-поток", new Error("Stream is null"))
           throw new Error("Медиа-поток недоступен")
         }
 
@@ -191,19 +192,22 @@ export function useCameraStream(
         const videoTrack = stream.getVideoTracks()[0]
         if (videoTrack) {
           const settings = videoTrack.getSettings()
-          console.log("Фактические настройки трека:", settings)
+          logInfo("[useCameraStream] Фактические настройки трека", { settings })
           if (settings.width && settings.height) {
-            console.log(`Фактическое разрешение трека: ${settings.width}x${settings.height}`)
+            logInfo("[useCameraStream] Фактическое разрешение трека", {
+              width: settings.width,
+              height: settings.height,
+            })
           }
         }
       } catch (error) {
         // Проверяем, не была ли операция отменена
         if (currentAbortController.signal.aborted) {
-          console.log("Инициализация камеры отменена во время обработки ошибки")
+          logInfo("[useCameraStream] Инициализация камеры отменена во время обработки ошибки")
           return
         }
 
-        console.error("Ошибка при получении потока с запрошенным разрешением:", error)
+        logError("[useCameraStream] Ошибка при получении потока с запрошенным разрешением", error)
         updateErrorMessage(
           t(
             "dialogs.cameraCapture.errorRequestingStream",
@@ -212,7 +216,7 @@ export function useCameraStream(
         )
 
         // Пробуем получить поток без указания разрешения
-        console.log("Пробуем получить поток без указания разрешения")
+        logInfo("[useCameraStream] Пробуем получить поток без указания разрешения")
         const fallbackConstraints: MediaStreamConstraints = {
           video: {
             deviceId: { exact: selectedDevice },
@@ -225,17 +229,20 @@ export function useCameraStream(
 
           // Проверяем после асинхронной операции
           if (currentAbortController.signal.aborted) {
-            console.log("Инициализация камеры отменена после получения fallback потока")
+            logInfo("[useCameraStream] Инициализация камеры отменена после получения fallback потока")
             if (stream) {
               cleanupMediaStream(stream, "Aborted fallback stream cleanup")
             }
             return
           }
 
-          console.log("Поток получен с резервными настройками:", stream)
+          logInfo("[useCameraStream] Поток получен с резервными настройками")
 
           if (!stream) {
-            console.error("Не удалось получить медиа-поток с резервными настройками")
+            logError(
+              "[useCameraStream] Не удалось получить медиа-поток с резервными настройками",
+              new Error("Stream is null"),
+            )
             throw new Error("Медиа-поток недоступен")
           }
 
@@ -243,11 +250,11 @@ export function useCameraStream(
         } catch (fallbackError) {
           // Проверяем, не была ли операция отменена
           if (currentAbortController.signal.aborted) {
-            console.log("Инициализация камеры отменена во время обработки fallback ошибки")
+            logInfo("[useCameraStream] Инициализация камеры отменена во время обработки fallback ошибки")
             return
           }
 
-          console.error("Ошибка при получении потока с резервными настройками:", fallbackError)
+          logError("[useCameraStream] Ошибка при получении потока с резервными настройками", fallbackError)
           updateErrorMessage(
             t(
               "dialogs.cameraCapture.errorRequestingStreamFallback",
@@ -261,12 +268,12 @@ export function useCameraStream(
 
       // Финальная проверка перед установкой видео элемента
       if (currentAbortController.signal.aborted) {
-        console.log("Инициализация камеры отменена перед установкой видео элемента")
+        logInfo("[useCameraStream] Инициализация камеры отменена перед установкой видео элемента")
         return
       }
 
       if (videoRef.current && streamRef.current) {
-        console.log("Устанавливаем srcObject для видео элемента")
+        logInfo("[useCameraStream] Устанавливаем srcObject для видео элемента")
         // Дополнительная проверка, что videoRef.current не null
         const video = videoRef.current
         if (video) {
@@ -276,24 +283,24 @@ export function useCameraStream(
           video.onloadedmetadata = () => {
             // Проверяем, не была ли операция отменена
             if (currentAbortController.signal.aborted) {
-              console.log("Инициализация камеры отменена в onloadedmetadata")
+              logInfo("[useCameraStream] Инициализация камеры отменена в onloadedmetadata")
               return
             }
 
-            console.log("Видео метаданные загружены, начинаем воспроизведение")
-            video.play().catch((e: unknown) => console.error("Ошибка воспроизведения:", e))
+            logInfo("[useCameraStream] Видео метаданные загружены, начинаем воспроизведение")
+            video.play().catch((e: unknown) => logError("[useCameraStream] Ошибка воспроизведения", e))
 
             // Получаем фактическое разрешение видео для логирования
             const actualWidth = video.videoWidth
             const actualHeight = video.videoHeight
-            console.log(`Фактическое разрешение видео: ${actualWidth}x${actualHeight}`)
+            logInfo("[useCameraStream] Фактическое разрешение видео", { width: actualWidth, height: actualHeight })
 
             setIsDeviceReady(true)
           }
 
           // Добавляем обработчик ошибок
-          video.onerror = (e) => {
-            console.error("Ошибка видео элемента:", e)
+          video.onerror = (_e) => {
+            logError("[useCameraStream] Ошибка видео элемента", new Error("Video element error"))
             updateErrorMessage(
               t(
                 "dialogs.cameraCapture.videoElementError",
@@ -303,21 +310,24 @@ export function useCameraStream(
             setIsDeviceReady(false)
           }
         } else {
-          console.error("Ссылка на видео элемент отсутствует")
+          logError("[useCameraStream] Ссылка на видео элемент отсутствует", new Error("Video ref is null"))
           setIsDeviceReady(false)
         }
       } else {
-        console.error("Ссылка на видео элемент или поток отсутствует")
+        logError(
+          "[useCameraStream] Ссылка на видео элемент или поток отсутствует",
+          new Error("Video ref or stream is null"),
+        )
         setIsDeviceReady(false)
       }
     } catch (error) {
       // Проверяем, не была ли операция отменена
       if (currentAbortController.signal.aborted) {
-        console.log("Инициализация камеры отменена в блоке catch")
+        logInfo("[useCameraStream] Инициализация камеры отменена в блоке catch")
         return
       }
 
-      console.error("Ошибка при инициализации камеры:", error)
+      logError("[useCameraStream] Ошибка при инициализации камеры", error)
       updateErrorMessage(
         t(
           "dialogs.cameraCapture.cameraInitError",
@@ -330,9 +340,9 @@ export function useCameraStream(
       if (abortControllerRef.current === currentAbortController) {
         initializingRef.current = false
         abortControllerRef.current = null
-        console.log("Инициализация камеры завершена, флаги сброшены")
+        logInfo("[useCameraStream] Инициализация камеры завершена, флаги сброшены")
       } else {
-        console.log("Инициализация камеры завершена для устаревшего запроса")
+        logInfo("[useCameraStream] Инициализация камеры завершена для устаревшего запроса")
       }
     }
   }, [

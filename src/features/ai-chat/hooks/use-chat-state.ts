@@ -1,3 +1,5 @@
+import { logInfo } from "@/lib/tauri-logger"
+
 import type { ChatContextType } from "../services/chat-provider"
 import { useChat } from "./use-chat"
 
@@ -9,10 +11,12 @@ export function useChatState(): Pick<
   ChatContextType,
   "chatMessages" | "selectedAgentId" | "isProcessing" | "error" | "currentSessionId" | "sessions" | "isCreatingNewChat"
 > {
+  logInfo("[useChatState] Инициализация")
+
   const { chatMessages, selectedAgentId, isProcessing, error, currentSessionId, sessions, isCreatingNewChat } =
     useChat()
 
-  return {
+  const result = {
     chatMessages,
     selectedAgentId,
     isProcessing,
@@ -21,4 +25,12 @@ export function useChatState(): Pick<
     sessions,
     isCreatingNewChat,
   }
+
+  logInfo("[useChatState] Готов", {
+    messagesCount: chatMessages.length,
+    isProcessing,
+    sessionsCount: sessions.length,
+  })
+
+  return result
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
 import { cleanupMediaStream } from "../utils"
 
 interface ScreenCaptureOptions {
@@ -26,9 +27,11 @@ export function useScreenCapture() {
   const streamRef = useRef<MediaStream | null>(null)
 
   const startScreenCapture = useCallback(async (options: ScreenCaptureOptions = {}) => {
+    logInfo("[useScreenCapture] Начало захвата экрана")
     // Проверяем доступность API getDisplayMedia
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
       const errorMsg = "Запись экрана не поддерживается в данном приложении. Функция доступна только в веб-браузере."
+      logError("[useScreenCapture] API getDisplayMedia недоступен", new Error(errorMsg))
       setError(errorMsg)
       throw new Error(errorMsg)
     }
@@ -59,12 +62,12 @@ export function useScreenCapture() {
         preferCurrentTab: options.preferCurrentTab,
       }
 
-      console.log("Запрашиваем разрешение на запись экрана с параметрами:", constraints)
+      logInfo("[useScreenCapture] Запрашиваем разрешение на запись экрана", { constraints })
 
       const stream = await navigator.mediaDevices?.getDisplayMedia?.(constraints as DisplayMediaStreamOptions)
 
       if (!stream) {
-        console.error("Не удалось получить поток захвата экрана")
+        logError("[useScreenCapture] Не удалось получить поток захвата экрана", new Error("Stream is null"))
         throw new Error("Захват экрана недоступен")
       }
 
@@ -72,7 +75,7 @@ export function useScreenCapture() {
       const videoTrack = stream.getVideoTracks()[0]
       if (videoTrack) {
         videoTrack.addEventListener("ended", () => {
-          console.log("Пользователь остановил запись экрана")
+          logInfo("[useScreenCapture] Пользователь остановил запись экрана")
           stopScreenCapture()
         })
       }
@@ -81,11 +84,11 @@ export function useScreenCapture() {
       setScreenStream(stream)
       setIsScreenSharing(true)
 
-      console.log("Запись экрана начата успешно")
+      logInfo("[useScreenCapture] Запись экрана начата успешно")
       return stream
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error"
-      console.error("Ошибка при запуске записи экрана:", errorMessage)
+      logError("[useScreenCapture] Ошибка при запуске записи экрана", new Error(errorMessage))
 
       if (errorMessage.includes("Permission denied")) {
         setError("Доступ к записи экрана запрещен")
@@ -100,6 +103,7 @@ export function useScreenCapture() {
   }, [])
 
   const stopScreenCapture = useCallback(() => {
+    logInfo("[useScreenCapture] Остановка захвата экрана")
     if (streamRef.current) {
       cleanupMediaStream(streamRef.current, "Screen capture stop")
       streamRef.current = null
@@ -107,7 +111,7 @@ export function useScreenCapture() {
     }
     setIsScreenSharing(false)
     setError(null)
-    console.log("Запись экрана остановлена")
+    logInfo("[useScreenCapture] Запись экрана остановлена")
   }, [])
 
   // Получение информации о захватываемом источнике

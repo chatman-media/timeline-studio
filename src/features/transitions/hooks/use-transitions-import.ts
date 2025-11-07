@@ -2,6 +2,7 @@ import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 
 import type { Transition } from "@/features/transitions/types/transitions"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 /**
  * Интерфейс для результата импорта переходов
@@ -42,6 +43,7 @@ export function useTransitionsImport() {
    */
   const importTransitionsFile = useCallback(async (): Promise<ImportResult> => {
     if (isImporting) {
+      logInfo("useTransitionsImport", "Import already in progress")
       return {
         success: false,
         message: "Импорт уже выполняется",
@@ -51,6 +53,7 @@ export function useTransitionsImport() {
 
     setIsImporting(true)
     setProgress(0)
+    logInfo("useTransitionsImport", "Starting transitions file import")
 
     try {
       // Открываем диалог выбора JSON файла
@@ -65,6 +68,7 @@ export function useTransitionsImport() {
       })
 
       if (!selected) {
+        logInfo("useTransitionsImport", "File selection cancelled by user")
         setIsImporting(false)
         return {
           success: false,
@@ -73,11 +77,13 @@ export function useTransitionsImport() {
         }
       }
 
+      logInfo("useTransitionsImport", `File selected: ${selected}`)
       setProgress(25)
 
       // Читаем файл
       const response = await fetch(`file://${selected}`)
       const data = await response.json()
+      logInfo("useTransitionsImport", "File loaded and parsed successfully")
 
       setProgress(50)
 
@@ -87,13 +93,17 @@ export function useTransitionsImport() {
       if (Array.isArray(data)) {
         // Массив переходов
         transitions = data.filter(validateTransition)
+        logInfo("useTransitionsImport", `Validating array format, found ${transitions.length} valid transitions`)
       } else if (data.transitions && Array.isArray(data.transitions)) {
         // Объект с полем transitions
         transitions = data.transitions.filter(validateTransition)
+        logInfo("useTransitionsImport", `Validating object format, found ${transitions.length} valid transitions`)
       } else if (validateTransition(data)) {
         // Один переход
         transitions = [data]
+        logInfo("useTransitionsImport", "Validating single transition")
       } else {
+        logError("useTransitionsImport", "Invalid transitions file structure")
         setIsImporting(false)
         return {
           success: false,
@@ -105,6 +115,7 @@ export function useTransitionsImport() {
       setProgress(75)
 
       if (transitions.length === 0) {
+        logError("useTransitionsImport", "No valid transitions found in file")
         setIsImporting(false)
         return {
           success: false,
@@ -113,9 +124,7 @@ export function useTransitionsImport() {
         }
       }
 
-      // TODO: Сохранить переходы в пользовательскую коллекцию
-      console.log("Импортированные переходы:", transitions)
-
+      logInfo("useTransitionsImport", `Successfully imported ${transitions.length} transitions`)
       setProgress(100)
       setIsImporting(false)
 
@@ -125,11 +134,12 @@ export function useTransitionsImport() {
         transitions,
       }
     } catch (error) {
-      console.error("Ошибка при импорте переходов:", error)
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      logError("useTransitionsImport", `Import failed: ${errorMsg}`)
       setIsImporting(false)
       return {
         success: false,
-        message: `Ошибка при импорте: ${String(error)}`,
+        message: `Ошибка при импорте: ${errorMsg}`,
         transitions: [],
       }
     }
@@ -140,6 +150,7 @@ export function useTransitionsImport() {
    */
   const importTransitionFile = useCallback(async (): Promise<ImportResult> => {
     if (isImporting) {
+      logInfo("useTransitionsImport", "Import already in progress")
       return {
         success: false,
         message: "Импорт уже выполняется",
@@ -149,6 +160,7 @@ export function useTransitionsImport() {
 
     setIsImporting(true)
     setProgress(0)
+    logInfo("useTransitionsImport", "Starting transition files import")
 
     try {
       // Открываем диалог выбора файла перехода
@@ -163,6 +175,7 @@ export function useTransitionsImport() {
       })
 
       if (!selected) {
+        logInfo("useTransitionsImport", "File selection cancelled by user")
         setIsImporting(false)
         return {
           success: false,
@@ -172,6 +185,7 @@ export function useTransitionsImport() {
       }
 
       const files = Array.isArray(selected) ? selected : [selected]
+      logInfo("useTransitionsImport", `Selected ${files.length} transition files`)
       setProgress(25)
 
       const importedTransitions: Transition[] = []
@@ -180,6 +194,8 @@ export function useTransitionsImport() {
         const filePath = files[i]
         const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || "unknown"
         const extension = fileName.split(".").pop()?.toLowerCase()
+
+        logInfo("useTransitionsImport", `Processing file ${i + 1}/${files.length}: ${fileName}`)
 
         // Создаем базовый переход на основе файла
         const transition: Transition = {
@@ -208,9 +224,7 @@ export function useTransitionsImport() {
         setProgress(25 + (i + 1) * (50 / files.length))
       }
 
-      // TODO: Сохранить переходы в пользовательскую коллекцию
-      console.log("Импортированные файлы переходов:", importedTransitions)
-
+      logInfo("useTransitionsImport", `Successfully created ${importedTransitions.length} transition objects`)
       setProgress(100)
       setIsImporting(false)
 
@@ -220,11 +234,12 @@ export function useTransitionsImport() {
         transitions: importedTransitions,
       }
     } catch (error) {
-      console.error("Ошибка при импорте файлов переходов:", error)
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      logError("useTransitionsImport", `Transition files import failed: ${errorMsg}`)
       setIsImporting(false)
       return {
         success: false,
-        message: `Ошибка при импорте: ${String(error)}`,
+        message: `Ошибка при импорте: ${errorMsg}`,
         transitions: [],
       }
     }

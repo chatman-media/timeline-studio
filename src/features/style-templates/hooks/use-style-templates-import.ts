@@ -3,6 +3,7 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 
 import { useResources } from "@/features/resources"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { StyleTemplate } from "../types"
 
@@ -24,9 +25,13 @@ export function useStyleTemplatesImport() {
    * Импорт JSON файла со стилистическими шаблонами
    */
   const importStyleTemplatesFile = useCallback(async () => {
-    if (isImporting) return
+    if (isImporting) {
+      logInfo("useStyleTemplatesImport", "Import already in progress")
+      return
+    }
 
     setIsImporting(true)
+    logInfo("useStyleTemplatesImport", "Starting style templates file import")
     try {
       const selected = await open({
         multiple: false,
@@ -39,44 +44,56 @@ export function useStyleTemplatesImport() {
       })
 
       if (selected) {
+        logInfo("useStyleTemplatesImport", `File selected: ${selected}`)
         // Читаем содержимое JSON файла
         const content = await readTextFile(selected)
         const templatesData = JSON.parse(content)
 
         // Проверяем формат данных
         if (Array.isArray(templatesData)) {
+          logInfo("useStyleTemplatesImport", `Importing ${templatesData.length} templates from array format`)
           // Импортируем каждый шаблон
           for (const templateData of templatesData) {
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
             }
           }
-          console.log(`Импортировано ${templatesData.length} стилистических шаблонов`)
+          logInfo("useStyleTemplatesImport", `Successfully imported ${templatesData.length} style templates`)
         } else if (templatesData.templates && Array.isArray(templatesData.templates)) {
+          logInfo("useStyleTemplatesImport", `Importing ${templatesData.templates.length} templates from object format`)
           // Альтернативный формат с обёрткой
           for (const templateData of templatesData.templates) {
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
             }
           }
-          console.log(`Импортировано ${templatesData.templates.length} стилистических шаблонов`)
+          logInfo("useStyleTemplatesImport", `Successfully imported ${templatesData.templates.length} style templates`)
+        } else {
+          logError("useStyleTemplatesImport", "Invalid style templates file format")
         }
+      } else {
+        logInfo("useStyleTemplatesImport", "File selection cancelled by user")
       }
     } catch (error) {
-      console.error("Ошибка при импорте стилистических шаблонов:", error)
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      logError("useStyleTemplatesImport", `Import failed: ${errorMsg}`)
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting])
+  }, [isImporting, addStyleTemplate])
 
   /**
    * Импорт отдельных файлов стилистических шаблонов
    * Пока поддерживает только JSON, в будущем добавим другие форматы
    */
   const importStyleTemplateFile = useCallback(async () => {
-    if (isImporting) return
+    if (isImporting) {
+      logInfo("useStyleTemplatesImport", "Import already in progress")
+      return
+    }
 
     setIsImporting(true)
+    logInfo("useStyleTemplatesImport", "Starting style template files import")
     try {
       const selected = await open({
         multiple: true,
@@ -90,11 +107,14 @@ export function useStyleTemplatesImport() {
 
       if (selected) {
         const files = Array.isArray(selected) ? selected : [selected]
+        logInfo("useStyleTemplatesImport", `Selected ${files.length} style template files`)
 
         // Обрабатываем каждый файл
         for (const filePath of files) {
           const fileName = filePath.split("/").pop() || ""
           const fileExtension = fileName.split(".").pop()?.toLowerCase()
+
+          logInfo("useStyleTemplatesImport", `Processing file: ${fileName}`)
 
           if (fileExtension === "json") {
             // Читаем JSON файл
@@ -103,21 +123,26 @@ export function useStyleTemplatesImport() {
 
             if (validateStyleTemplate(templateData)) {
               void addStyleTemplate(templateData as StyleTemplate)
-              console.log(`Импортирован шаблон из файла: ${fileName}`)
+              logInfo("useStyleTemplatesImport", `Successfully imported template from file: ${fileName}`)
+            } else {
+              logInfo("useStyleTemplatesImport", `File ${fileName} has invalid template structure`)
             }
           } else {
-            console.warn(`Формат файла ${fileExtension} пока не поддерживается`)
+            logInfo("useStyleTemplatesImport", `File format ${fileExtension} not supported yet`)
           }
         }
 
-        console.log(`Обработано ${files.length} файлов`)
+        logInfo("useStyleTemplatesImport", `Completed processing ${files.length} style template files`)
+      } else {
+        logInfo("useStyleTemplatesImport", "File selection cancelled by user")
       }
     } catch (error) {
-      console.error("Ошибка при импорте файлов стилистических шаблонов:", error)
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      logError("useStyleTemplatesImport", `Failed to import style template files: ${errorMsg}`)
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting])
+  }, [isImporting, addStyleTemplate])
 
   return {
     importStyleTemplatesFile,

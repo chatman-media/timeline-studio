@@ -2,6 +2,8 @@ import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 interface CaptureDevice {
   deviceId: string
   label: string
@@ -18,6 +20,7 @@ export function useAudioDevices({ setErrorMessage }: UseAudioDevicesProps) {
 
   // Получаем список доступных аудио устройств
   const getDevices = useCallback(async () => {
+    logInfo("[useAudioDevices] Получение списка аудио устройств")
     try {
       const devices = (await navigator.mediaDevices?.enumerateDevices?.()) || []
 
@@ -42,16 +45,17 @@ export function useAudioDevices({ setErrorMessage }: UseAudioDevicesProps) {
 
       setAudioDevices(audioDevices)
 
-      console.log("Найдены аудио устройства:", audioDevices)
+      logInfo("[useAudioDevices] Найдены аудио устройства", { count: audioDevices.length, devices: audioDevices })
 
       // Выбираем первое устройство, если еще не выбрано
       if (audioDevices.length > 0 && !selectedAudioDevice) {
         setSelectedAudioDevice(audioDevices[0].deviceId)
+        logInfo("[useAudioDevices] Выбрано первое устройство", { deviceId: audioDevices[0].deviceId })
       }
 
       return true
     } catch (error) {
-      console.error("Ошибка при получении устройств:", error)
+      logError("[useAudioDevices] Ошибка при получении устройств", error)
       setErrorMessage(t("dialogs.voiceRecord.errorGettingDevices", "Не удалось получить список устройств"))
       return false
     }

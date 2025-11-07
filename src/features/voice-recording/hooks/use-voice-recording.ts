@@ -2,6 +2,8 @@ import { useCallback, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { logError, logInfo } from "@/lib/tauri-logger"
+
 interface UseVoiceRecordingProps {
   selectedAudioDevice: string
   isMuted: boolean
@@ -41,6 +43,7 @@ export function useVoiceRecording({
 
   // Останавливаем запись
   const stopRecording = useCallback(() => {
+    logInfo("[useVoiceRecording] Остановка записи")
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop()
     }
@@ -52,11 +55,16 @@ export function useVoiceRecording({
 
     setIsRecording(false)
     setRecordingTime(0)
+    logInfo("[useVoiceRecording] Запись остановлена")
   }, [])
 
   // Запускаем запись
   const startRecording = useCallback(() => {
-    if (!streamRef.current) return
+    logInfo("[useVoiceRecording] Начало записи")
+    if (!streamRef.current) {
+      logError("[useVoiceRecording] Поток не доступен", new Error("Stream is null"))
+      return
+    }
 
     chunksRef.current = []
 
@@ -82,15 +90,17 @@ export function useVoiceRecording({
       }
     }
 
+    logInfo("[useVoiceRecording] Параметры записи", { format: audioFormat, mimeType: options.mimeType })
+
     try {
       mediaRecorderRef.current = new MediaRecorder(streamRef.current, options)
     } catch (e) {
-      console.error("MediaRecorder не поддерживает данный формат:", e)
+      logError("[useVoiceRecording] MediaRecorder не поддерживает данный формат", e)
       try {
         // Пробуем без опций
         mediaRecorderRef.current = new MediaRecorder(streamRef.current)
       } catch (e) {
-        console.error("MediaRecorder не поддерживается браузером:", e)
+        logError("[useVoiceRecording] MediaRecorder не поддерживается браузером", e)
         setErrorMessage(t("dialogs.voiceRecord.recordingNotSupported", "Запись не поддерживается браузером"))
         return
       }
@@ -99,6 +109,7 @@ export function useVoiceRecording({
     mediaRecorderRef.current.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) {
         chunksRef.current.push(event.data)
+        logInfo("[useVoiceRecording] Получена часть аудио данных", { size: event.data.size })
       }
     }
 
@@ -107,11 +118,13 @@ export function useVoiceRecording({
       const blob = new Blob(chunksRef.current, { type: blobType })
       const now = new Date()
       const fileName = `voice_recording_${now.toISOString().replace(/:/g, "-")}.${audioFormat}`
+      logInfo("[useVoiceRecording] Запись завершена", { fileName, size: blob.size })
       void onSaveRecording(blob, fileName)
     }
 
     mediaRecorderRef.current.start()
     setIsRecording(true)
+    logInfo("[useVoiceRecording] MediaRecorder запущен")
 
     // Запускаем таймер для отслеживания времени записи
     let seconds = 0
@@ -123,7 +136,11 @@ export function useVoiceRecording({
 
   // Запускаем обратный отсчет перед записью
   const startCountdown = useCallback(() => {
-    if (!isDeviceReady) return
+    logInfo("[useVoiceRecording] Запуск обратного отсчета", { countdown })
+    if (!isDeviceReady) {
+      logError("[useVoiceRecording] Устройство не готово", new Error("Device not ready"))
+      return
+    }
 
     setShowCountdown(true)
     let count = countdown
@@ -132,6 +149,7 @@ export function useVoiceRecording({
     countdownTimerRef.current = window.setInterval(() => {
       count--
       setCountdown(count)
+      logInfo("[useVoiceRecording] Обратный отсчет", { current: count })
 
       if (count <= 0) {
         if (countdownTimerRef.current) {
@@ -139,6 +157,7 @@ export function useVoiceRecording({
           countdownTimerRef.current = null
         }
         setShowCountdown(false)
+        logInfo("[useVoiceRecording] Обратный отсчет завершен, начинаем запись")
         startRecording()
       }
     }, 1000)
@@ -146,14 +165,15 @@ export function useVoiceRecording({
 
   // Инициализация потока с микрофона
   const initAudio = useCallback(async () => {
+    logInfo("[useVoiceRecording] Инициализация микрофона")
     if (!selectedAudioDevice) {
-      console.log("Устройство не выбрано")
+      logInfo("[useVoiceRecording] Устройство не выбрано")
       return
     }
 
     // Проверяем доступность API mediaDevices
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error("MediaDevices API недоступен")
+      logError("[useVoiceRecording] MediaDevices API недоступен", new Error("API not available"))
       setErrorMessage(
         t(
           "dialogs.voiceRecord.mediaDevicesNotSupported",
@@ -165,7 +185,7 @@ export function useVoiceRecording({
     }
 
     try {
-      console.log("Инициализация микрофона с устройством:", selectedAudioDevice)
+      logInfo("[useVoiceRecording] Инициализация микрофона с устройством", { device: selectedAudioDevice })
 
       // Останавливаем предыдущий поток, если есть
       if (streamRef.current) {
@@ -184,7 +204,7 @@ export function useVoiceRecording({
       const stream = await navigator.mediaDevices?.getUserMedia?.(constraints)
 
       if (!stream) {
-        console.error("Не удалось получить поток с микрофона")
+        logError("[useVoiceRecording] Не удалось получить поток с микрофона", new Error("Stream is null"))
         setErrorMessage(t("dialogs.voiceRecord.streamError", "Не удалось инициализировать микрофон"))
         setIsDeviceReady(false)
         return
@@ -199,9 +219,9 @@ export function useVoiceRecording({
       }
 
       setIsDeviceReady(true)
-      console.log("Микрофон инициализирован успешно")
+      logInfo("[useVoiceRecording] Микрофон инициализирован успешно")
     } catch (error) {
-      console.error("Ошибка при инициализации микрофона:", error)
+      logError("[useVoiceRecording] Ошибка при инициализации микрофона", error)
       setErrorMessage(
         t("dialogs.voiceRecord.initError", {
           defaultValue: "Failed to initialize microphone. Please check settings and permissions.",
@@ -213,6 +233,7 @@ export function useVoiceRecording({
 
   // Очистка ресурсов
   const cleanup = useCallback(() => {
+    logInfo("[useVoiceRecording] Очистка ресурсов")
     if (isRecording) {
       stopRecording()
     }
@@ -228,6 +249,7 @@ export function useVoiceRecording({
     }
 
     setIsDeviceReady(false)
+    logInfo("[useVoiceRecording] Ресурсы очищены")
   }, [isRecording, stopRecording])
 
   return {
