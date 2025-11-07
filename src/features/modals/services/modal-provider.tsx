@@ -4,7 +4,10 @@ import { useMachine } from "@xstate/react"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+
+const logger = createLogger("ModalProvider")
 
 /**
  * Интерфейс для контекста модальных окон

@@ -6,6 +6,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { emit, listen } from "@tauri-apps/api/event"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import type { UpdateCheckResult, UpdateEventPayload, UpdateProgress, UpdateStatus } from "../types"
 
 /**
@@ -13,6 +15,7 @@ import type { UpdateCheckResult, UpdateEventPayload, UpdateProgress, UpdateStatu
  */
 export class UpdateService {
   private static instance: UpdateService | null = null
+  private static logger = createLogger("UpdateService")
   private currentStatus: UpdateStatus = "idle"
   private listeners: Array<(payload: UpdateEventPayload) => void> = []
   private checkInterval: NodeJS.Timeout | null = null
@@ -20,6 +23,7 @@ export class UpdateService {
   private autoCheckIntervalMinutes = 60 // Проверка каждый час по умолчанию
 
   private constructor() {
+    UpdateService.logger.infoSync("Initializing UpdateService")
     // Инициализируем слушатели только на клиенте
     if (typeof window !== "undefined") {
       void this.setupEventListeners()
