@@ -1,5 +1,9 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("ColorGradingProvider")
+
 // Временные типы до создания backend-sync
 interface ProjectState {
   color_grading?: any

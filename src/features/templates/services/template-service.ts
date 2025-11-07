@@ -1,6 +1,9 @@
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "@/features/media/types/media"
 
 import type { CellConfig, MediaTemplate } from "../lib/templates"
+
+const logger = createLogger("TemplateService")
 
 // Интерфейс для хранения информации о применяемом шаблоне
 export interface AppliedTemplate {
