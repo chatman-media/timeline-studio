@@ -6,10 +6,13 @@ import { LiveAudioVisualizer } from "react-audio-visualize"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
+import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
+
+const logger = createLogger("AudioPreview")
 
 interface AudioPreviewProps {
   file: MediaFile
@@ -67,47 +70,69 @@ export const AudioPreview = memo(function AudioPreview({
   const handlePlayPause = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault()
+      logger.debugSync("Клик по аудио для воспроизведения/паузы", {
+        fileName: file.name,
+        isPlaying,
+        hoverTime,
+      })
 
       try {
         // Проверяем, что у файла есть id
         if (!file.id) {
-          console.error("[AudioPreview] File has no id:", file)
+          logger.errorSync("У аудио файла нет ID", { fileName: file.name, file })
           // Fallback к локальному воспроизведению
           if (audioRef.current) {
             if (isPlaying) {
               audioRef.current.pause()
+              logger.debugSync("Fallback: Аудио на паузе (нет ID)", { fileName: file.name })
             } else {
               if (hoverTime !== null) {
                 audioRef.current.currentTime = hoverTime
               }
               void audioRef.current.play()
+              logger.debugSync("Fallback: Аудио воспроизводится (нет ID)", { fileName: file.name, time: hoverTime })
             }
             setIsPlaying(!isPlaying)
           }
           return
         }
 
+        logger.debugSync("Отправляем аудио в главный плеер", {
+          fileId: file.id,
+          fileName: file.name,
+          time: hoverTime || 0,
+        })
+
         // Отправляем аудио в главный плеер через backend
         await playerSetSource("browser")
         await playerSetMedia(file.id, hoverTime || 0)
 
-        console.log(`[AudioPreview] Audio sent to main player: ${file.name} at time ${hoverTime || 0}`)
+        logger.infoSync("Аудио успешно отправлено в плеер", {
+          fileName: file.name,
+          fileId: file.id,
+          time: hoverTime || 0,
+        })
       } catch (error) {
-        console.error("[AudioPreview] Failed to send audio to main player:", error)
+        logger.errorSync("Ошибка отправки аудио в плеер", {
+          error: String(error),
+          fileName: file.name,
+          fileId: file.id,
+        })
 
         // Fallback: локальное воспроизведение в превью
         if (!audioRef.current) return
 
         if (isPlaying) {
           audioRef.current.pause()
+          logger.debugSync("Fallback: Аудио на паузе", { fileName: file.name })
         } else {
           if (hoverTime !== null) {
             audioRef.current.currentTime = hoverTime
           }
           void audioRef.current.play()
+          logger.debugSync("Fallback: Аудио воспроизводится", { fileName: file.name, time: hoverTime })
         }
         setIsPlaying(!isPlaying)
-        console.log(`[AudioPreview] Fallback: Audio ${!isPlaying ? "playing" : "paused"} in preview`)
       }
     },
     [hoverTime, file, playerSetSource, playerSetMedia, isPlaying],
@@ -127,22 +152,36 @@ export const AudioPreview = memo(function AudioPreview({
   // Функция для чтения файла и создания объекта URL
   const loadAudioFile = useCallback(async (path: string) => {
     try {
-      console.log("[AudioPreview] Чтение файла через readFile:", path)
+      logger.debugSync("Начинаем загрузку аудио файла", { path })
       const fileData = await readFile(path)
-      const blob = new Blob([fileData as BlobPart], { type: "audio/mp3" }) // Можно определить тип по расширению файла
+      logger.debugSync("Аудио файл успешно прочитан", { path, dataSize: fileData.length })
+
+      // Определяем тип аудио по расширению
+      const extension = path.split(".").pop()?.toLowerCase()
+      const audioMimeTypes: Record<string, string> = {
+        mp3: "audio/mpeg",
+        wav: "audio/wav",
+        ogg: "audio/ogg",
+        flac: "audio/flac",
+        aac: "audio/aac",
+        m4a: "audio/m4a",
+      }
+      const mimeType = audioMimeTypes[extension || ""] || "audio/mpeg"
+
+      const blob = new Blob([fileData as BlobPart], { type: mimeType })
       const url = URL.createObjectURL(blob)
-      console.log("[AudioPreview] Создан объект URL:", url)
+      logger.infoSync("Создан blob URL для аудио", { path, blobUrl: url, mimeType, extension })
       return url
     } catch (error) {
-      console.error("[AudioPreview] Ошибка при загрузке аудио:", {
-        error,
+      logger.errorSync("Ошибка при загрузке аудио", {
+        error: String(error),
         message: error instanceof Error ? error.message : String(error),
         path,
         stack: error instanceof Error ? error.stack : undefined,
       })
       // В случае ошибки используем convertToAssetUrl
       const assetUrl = convertToAssetUrl(path)
-      console.log("[AudioPreview] Используем fallback asset URL:", assetUrl)
+      logger.debugSync("Используем fallback asset URL для аудио", { assetUrl, originalPath: path })
       return assetUrl
     }
   }, [])
@@ -150,10 +189,12 @@ export const AudioPreview = memo(function AudioPreview({
   // Эффект для загрузки аудио при монтировании компонента
   useEffect(() => {
     let isMounted = true
+    logger.debugSync("Монтирование AudioPreview", { fileName: file.name, filePath: file.path })
 
     void loadAudioFile(file.path).then((url) => {
       if (isMounted) {
         setAudioUrl(url)
+        logger.debugSync("URL аудио установлен", { url, fileName: file.name })
       }
     })
 
@@ -161,49 +202,72 @@ export const AudioPreview = memo(function AudioPreview({
     return () => {
       isMounted = false
       if (audioUrl?.startsWith("blob:")) {
+        logger.debugSync("Размонтирование AudioPreview - очистка blob URL", {
+          blobUrl: audioUrl,
+          fileName: file.name,
+        })
         URL.revokeObjectURL(audioUrl)
       }
     }
-  }, [file.path, loadAudioFile]) // Убираем audioUrl из зависимостей
+  }, [file.path, file.name, loadAudioFile]) // Убираем audioUrl из зависимостей
 
   useEffect(() => {
     const audioElement = audioRef.current
-    if (!audioElement) return
+    if (!audioElement) {
+      logger.debugSync("AudioElement не доступен для инициализации AudioContext", { fileName: file.name })
+      return
+    }
 
     const initAudioContext = () => {
       try {
+        logger.debugSync("Инициализация AudioContext", { fileName: file.name })
         audioContextRef.current ??= new AudioContext()
 
         const audioContext = audioContextRef.current
+        logger.debugSync("AudioContext создан/получен", {
+          fileName: file.name,
+          state: audioContext.state,
+          sampleRate: audioContext.sampleRate,
+        })
 
         sourceRef.current ??= audioContext.createMediaElementSource(audioElement)
+        logger.debugSync("MediaElementSource создан", { fileName: file.name })
 
         const destination = audioContext.createMediaStreamDestination()
         sourceRef.current.connect(destination)
         sourceRef.current.connect(audioContext.destination)
+        logger.debugSync("Audio nodes connected", { fileName: file.name })
 
         const recorder = new MediaRecorder(destination.stream)
         setMediaRecorder(recorder)
         recorder.start()
+        logger.infoSync("MediaRecorder запущен для визуализации", { fileName: file.name })
       } catch (error) {
-        console.error("Error initializing audio context:", error)
+        logger.errorSync("Ошибка инициализации AudioContext", {
+          error: String(error),
+          fileName: file.name,
+        })
       }
     }
 
     setTimeout(initAudioContext, 100)
 
     return () => {
+      logger.debugSync("Очистка AudioContext и MediaRecorder", { fileName: file.name })
       if (mediaRecorder) {
         mediaRecorder.stop()
+        logger.debugSync("MediaRecorder остановлен", { fileName: file.name })
       }
       if (sourceRef.current) {
         sourceRef.current.disconnect()
+        logger.debugSync("Audio source disconnected", { fileName: file.name })
       }
       if (audioContextRef.current) {
         void audioContextRef.current.close()
+        logger.debugSync("AudioContext closed", { fileName: file.name })
       }
     }
-  }, [mediaRecorder])
+  }, [file.name, mediaRecorder])
 
   return (
     <div
@@ -222,9 +286,28 @@ export const AudioPreview = memo(function AudioPreview({
         preload="metadata"
         tabIndex={0}
         className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"
-        onEnded={() => setIsPlaying(false)}
-        onLoadedMetadata={() => setIsLoaded(true)}
-        onError={(e) => console.error("[AudioPreview] Ошибка загрузки аудио:", e)}
+        onEnded={() => {
+          setIsPlaying(false)
+          logger.debugSync("Воспроизведение аудио завершено", { fileName: file.name })
+        }}
+        onLoadedMetadata={() => {
+          setIsLoaded(true)
+          logger.infoSync("Метаданные аудио загружены", { fileName: file.name })
+        }}
+        onError={(e) => {
+          const audio = e.currentTarget as HTMLAudioElement
+          const errorInfo = {
+            fileName: file.name,
+            src: audio.src,
+            error: audio.error
+              ? {
+                  code: audio.error.code,
+                  message: audio.error.message,
+                }
+              : null,
+          }
+          logger.errorSync("Ошибка загрузки аудио", errorInfo)
+        }}
         onKeyDown={(e) => {
           if (e.code === "Space") {
             e.preventDefault()

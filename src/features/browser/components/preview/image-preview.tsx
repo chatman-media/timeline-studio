@@ -7,10 +7,13 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
+import { createLogger } from "@/lib/tauri-logger"
 import { checkFileAccess, convertToAssetUrl } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
+
+const logger = createLogger("ImagePreview")
 
 interface ImagePreviewProps {
   file: MediaFile
@@ -57,15 +60,20 @@ export const ImagePreview = memo(function ImagePreview({
   // Функция для чтения файла и создания объекта URL
   const loadImageFile = useCallback(async (path: string) => {
     try {
+      logger.debugSync("Начинаем загрузку изображения", { path })
+
       // Сначала проверяем существование файла
       const fileExists = await checkFileAccess(path)
       if (!fileExists) {
-        console.warn("[ImagePreview] Файл не существует:", path)
-        return convertToAssetUrl(path)
+        logger.warnSync("Файл не существует", { path })
+        const assetUrl = convertToAssetUrl(path)
+        logger.debugSync("Используем asset URL для несуществующего файла", { assetUrl })
+        return assetUrl
       }
 
-      console.log("[ImagePreview] Чтение файла через readFile:", path)
+      logger.debugSync("Чтение файла через readFile", { path })
       const fileData = await readFile(path)
+      logger.debugSync("Файл успешно прочитан", { path, dataSize: fileData.length })
 
       // Определяем MIME тип по расширению
       const extension = path.split(".").pop()?.toLowerCase()
@@ -81,18 +89,18 @@ export const ImagePreview = memo(function ImagePreview({
 
       const blob = new Blob([fileData as BlobPart], { type: mimeType })
       const url = URL.createObjectURL(blob)
-      console.log("[ImagePreview] Создан объект URL:", url)
+      logger.infoSync("Создан blob URL для изображения", { path, blobUrl: url, mimeType, extension })
       return url
     } catch (error) {
-      console.error("[ImagePreview] Ошибка при загрузке изображения:", {
-        error,
+      logger.errorSync("Ошибка при загрузке изображения", {
+        error: String(error),
         message: error instanceof Error ? error.message : String(error),
         path,
         stack: error instanceof Error ? error.stack : undefined,
       })
       // В случае ошибки используем convertToAssetUrl
       const assetUrl = convertToAssetUrl(path)
-      console.log("[ImagePreview] Используем fallback asset URL:", assetUrl)
+      logger.debugSync("Используем fallback asset URL после ошибки", { assetUrl, originalPath: path })
       return assetUrl
     }
   }, [])
@@ -100,16 +108,20 @@ export const ImagePreview = memo(function ImagePreview({
   // Эффект для загрузки изображения при монтировании компонента
   useEffect(() => {
     let isMounted = true
+    logger.debugSync("Монтирование ImagePreview", { fileName: file.name, filePath: file.path })
 
     void loadImageFile(file.path).then((url) => {
       if (isMounted) {
         // Очищаем предыдущий blob URL если он есть
         if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
+          logger.debugSync("Очищаем предыдущий blob URL", { oldUrl: blobUrlRef.current })
           URL.revokeObjectURL(blobUrlRef.current)
         }
         // Сохраняем новый URL в ref
-        blobUrlRef.current = url.startsWith("blob:") ? url : null
+        const isBlob = url.startsWith("blob:")
+        blobUrlRef.current = isBlob ? url : null
         setImageUrl(url)
+        logger.debugSync("URL изображения установлен", { url, isBlob, fileName: file.name })
       }
     })
 
@@ -117,27 +129,38 @@ export const ImagePreview = memo(function ImagePreview({
     return () => {
       isMounted = false
       if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
+        logger.debugSync("Размонтирование ImagePreview - очистка blob URL", {
+          blobUrl: blobUrlRef.current,
+          fileName: file.name,
+        })
         URL.revokeObjectURL(blobUrlRef.current)
         blobUrlRef.current = null
       }
     }
-  }, [file.path, loadImageFile])
+  }, [file.path, file.name, loadImageFile])
 
   // Обработчик клика для отправки изображения в плеер
   const handleImageClick = useCallback(async () => {
     try {
+      logger.debugSync("Клик по изображению", { fileName: file.name, fileId: file.id })
+
       // Проверяем, что у файла есть id
       if (!file.id) {
-        console.error("[ImagePreview] File has no id:", file)
+        logger.errorSync("У файла нет ID", { fileName: file.name, file })
         return
       }
 
+      logger.debugSync("Отправляем изображение в главный плеер", { fileId: file.id, fileName: file.name })
       await playerSetSource("browser")
       await playerSetMedia(file.id, 0)
 
-      console.log(`[ImagePreview] Image sent to main player: ${file.name}`)
+      logger.infoSync("Изображение успешно отправлено в плеер", { fileName: file.name, fileId: file.id })
     } catch (error) {
-      console.error("[ImagePreview] Failed to send image to main player:", error)
+      logger.errorSync("Ошибка отправки изображения в плеер", {
+        error: String(error),
+        fileName: file.name,
+        fileId: file.id,
+      })
     }
   }, [file, playerSetSource, playerSetMedia])
 
@@ -175,9 +198,10 @@ export const ImagePreview = memo(function ImagePreview({
               naturalHeight: target.naturalHeight,
               currentSrc: target.currentSrc,
             }
-            console.error("[ImagePreview] Ошибка загрузки изображения:", errorInfo)
+            logger.errorSync("Ошибка загрузки изображения в img элементе", errorInfo)
             // Заменяем на иконку при ошибке
             target.style.display = "none"
+            logger.debugSync("Скрываем img элемент и показываем fallback иконку", { fileName: file.name })
 
             // Показываем fallback иконку
             const parent = target.parentElement
@@ -188,6 +212,7 @@ export const ImagePreview = memo(function ImagePreview({
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>`
               parent.appendChild(fallbackDiv)
+              logger.debugSync("Fallback иконка добавлена", { fileName: file.name })
             }
           }}
         />

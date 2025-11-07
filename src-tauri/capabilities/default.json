@@ -16,6 +16,8 @@
     "websocket:default",
     "dialog:default",
     "fs:default",
+    "log:default",
+    "log:allow-log",
     "notification:default",
     "notification:allow-is-permission-granted",
     "notification:allow-request-permission",

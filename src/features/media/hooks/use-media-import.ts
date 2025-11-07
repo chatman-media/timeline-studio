@@ -7,6 +7,9 @@ import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/u
 import type { MediaFile } from "@/features/media/types/media"
 import { convertToSavedMediaFile } from "@/features/media/utils/saved-media-utils"
 import { useResources } from "@/features/resources/services/resources-provider"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaImport")
 
 /**
  * Интерфейс для результата импорта
@@ -69,12 +72,19 @@ export function useMediaImport() {
     // Когда обнаружены файлы - сразу добавляем их с флагом загрузки
     onFilesDiscovered: useCallback(
       (discoveredFiles: DiscoveredFile[]) => {
-        console.log(`Обнаружено ${discoveredFiles.length} файлов`)
+        logger.infoSync(`Обнаружено ${discoveredFiles.length} файлов`, {
+          count: discoveredFiles.length,
+          files: discoveredFiles.map((f) => ({ path: f.path, size: f.size })),
+        })
 
         const basicFiles = discoveredFiles.map((file) => createBasicMediaFile(file.path, file.size))
 
         // Добавляем файлы в ресурсы для синхронизации с проектом (Resources - единственный источник истины)
         basicFiles.forEach((file) => {
+          logger.debugSync(`Добавляем базовый файл: ${file.name}`, {
+            id: file.id,
+            type: file.isVideo ? "video" : file.isAudio ? "audio" : "image",
+          })
           void addMedia(file)
         })
       },
@@ -84,7 +94,14 @@ export function useMediaImport() {
     // Когда готовы метаданные - обновляем конкретный файл
     onMetadataReady: useCallback(
       (fileId: string, metadata: MediaFile) => {
-        console.log(`Метаданные готовы для: ${metadata.name}`)
+        logger.infoSync(`Метаданные готовы для: ${metadata.name}`, {
+          fileId,
+          fileName: metadata.name,
+          duration: metadata.duration,
+          width: metadata.width,
+          height: metadata.height,
+          hasProbeData: !!metadata.probeData,
+        })
 
         // Обновляем существующий файл, сохраняя его id
         const updatedFile: MediaFile = {
@@ -93,6 +110,7 @@ export function useMediaImport() {
           isLoadingMetadata: false,
         }
 
+        logger.debugSync(`Обновляем файл с метаданными: ${metadata.name}`)
         // Обновляем файл в ресурсах для синхронизации с проектом (Resources - единственный источник истины)
         void addMedia(updatedFile)
       },
@@ -102,7 +120,7 @@ export function useMediaImport() {
     // Когда готово превью - обновляем путь и генерируем через Preview Manager
     onThumbnailReady: useCallback(
       (fileId: string, _thumbnailPath: string) => {
-        console.log(`Превью готово для: ${fileId}, но пока не можем обновить без доступа к файлу`)
+        logger.debugSync(`Превью готово для: ${fileId}`, { fileId, thumbnailPath: _thumbnailPath })
 
         // TODO: Нужен способ получить текущий файл по ID для обновления thumbnail
         // Пока просто логируем для отладки
@@ -112,7 +130,7 @@ export function useMediaImport() {
 
     // Обработка ошибок
     onError: useCallback((fileId: string, error: string) => {
-      console.error(`Ошибка обработки файла ${fileId}:`, error)
+      logger.errorSync(`Ошибка обработки файла ${fileId}`, { fileId, error })
 
       // TODO: Нужен способ обновить файл и снять флаг загрузки при ошибке
     }, []),
@@ -132,18 +150,26 @@ export function useMediaImport() {
   const saveFilesToProject = useCallback(
     async (files: MediaFile[]) => {
       if (!currentProject?.path || files.length === 0) {
+        logger.debugSync("Пропускаем сохранение файлов", {
+          hasProject: !!currentProject?.path,
+          filesCount: files.length,
+        })
         return
       }
 
       try {
+        logger.infoSync(`Сохраняем ${files.length} медиафайлов в проект`, {
+          projectPath: currentProject?.path,
+          filesCount: files.length,
+        })
         const savedFiles = await Promise.all(
           files.map((file) => convertToSavedMediaFile(file, currentProject?.path || undefined)),
         )
 
-        console.log(`Сохранено ${savedFiles.length} медиафайлов в проект`)
+        logger.infoSync(`Сохранено ${savedFiles.length} медиафайлов в проект`)
         setProjectDirty(true)
       } catch (error) {
-        console.error("Ошибка при сохранении файлов в проект:", error)
+        logger.errorSync("Ошибка при сохранении файлов в проект", { error: String(error), filesCount: files.length })
       }
     },
     [currentProject?.path, setProjectDirty],
@@ -153,14 +179,17 @@ export function useMediaImport() {
    * Импортирует медиафайлы
    */
   const importFile = useCallback(async (): Promise<ImportResult> => {
+    logger.infoSync("Начинаем импорт файлов")
     setIsImporting(true)
     setProgress(0)
 
     try {
       // Используем Tauri API для выбора файлов
+      logger.debugSync("Открываем диалог выбора файлов")
       const selectedFiles = await selectMediaFile()
 
       if (!selectedFiles || selectedFiles.length === 0) {
+        logger.warnSync("Файлы не выбраны")
         setIsImporting(false)
         return {
           success: false,
@@ -169,21 +198,29 @@ export function useMediaImport() {
         }
       }
 
-      console.log(`Выбрано ${selectedFiles.length} файлов`)
+      logger.infoSync(`Выбрано ${selectedFiles.length} файлов`, {
+        filesCount: selectedFiles.length,
+        files: selectedFiles,
+      })
 
       // Обрабатываем выбранные файлы и ждем результат (добавим только после обработки с метаданными)
+      logger.debugSync("Начинаем обработку файлов")
       const processedFiles = await processFiles(selectedFiles).catch((error: unknown) => {
-        console.error("Ошибка обработки файлов:", error)
+        logger.errorSync("Ошибка обработки файлов", { error: String(error) })
         return [] as MediaFile[]
       })
 
-      console.log(`Обработка завершена. Импортировано ${processedFiles.length} файлов`)
+      logger.infoSync(`Обработка завершена. Импортировано ${processedFiles.length} файлов`, {
+        processedCount: processedFiles.length,
+        selectedCount: selectedFiles.length,
+      })
 
       // Сохраняем финальные файлы для возврата
       let finalFiles: MediaFile[]
 
       // Если получили обработанные файлы, добавляем их в ресурсы
       if (processedFiles.length > 0) {
+        logger.debugSync("Финализация обработанных файлов", { count: processedFiles.length })
         // Устанавливаем isLoadingMetadata: false для финализации
         const filesWithMetadata = processedFiles.map((file) => ({
           ...file,
@@ -192,6 +229,7 @@ export function useMediaImport() {
 
         // Добавляем обработанные файлы в ресурсы (Resources - единственный источник истины)
         // ВАЖНО: Добавляем ТОЛЬКО ОДИН РАЗ, после полной обработки с метаданными
+        logger.debugSync("Добавляем файлы в ресурсы", { count: filesWithMetadata.length })
         filesWithMetadata.forEach((file) => {
           void addMedia(file)
         })
@@ -200,6 +238,7 @@ export function useMediaImport() {
         await saveFilesToProject(filesWithMetadata)
         finalFiles = filesWithMetadata
       } else {
+        logger.warnSync("Обработка не удалась, создаем базовые файлы")
         // Если обработка не удалась, создаем базовые файлы и сохраняем их
         const basicFiles = selectedFiles.map((filePath) => createBasicMediaFile(filePath))
         basicFiles.forEach((file) => {
@@ -210,6 +249,7 @@ export function useMediaImport() {
       }
 
       setIsImporting(false)
+      logger.infoSync("Импорт завершен успешно", { filesCount: finalFiles.length })
 
       return {
         success: true,
@@ -217,7 +257,7 @@ export function useMediaImport() {
         files: finalFiles,
       }
     } catch (error) {
-      console.error("Ошибка при импорте файлов:", error)
+      logger.errorSync("Ошибка при импорте файлов", { error: String(error) })
       setIsImporting(false)
       return {
         success: false,
@@ -231,14 +271,17 @@ export function useMediaImport() {
    * Импортирует папку с медиафайлами
    */
   const importFolder = useCallback(async (): Promise<ImportResult> => {
+    logger.infoSync("Начинаем импорт папки")
     setIsImporting(true)
     setProgress(0)
 
     try {
       // Используем Tauri API для выбора директории
+      logger.debugSync("Открываем диалог выбора директории")
       const selectedDir = await selectMediaDirectory()
 
       if (!selectedDir) {
+        logger.warnSync("Директория не выбрана")
         setIsImporting(false)
         return {
           success: false,
@@ -247,13 +290,16 @@ export function useMediaImport() {
         }
       }
 
-      console.log("Начинаем сканирование директории:", selectedDir)
+      logger.infoSync("Начинаем сканирование директории", { directory: selectedDir })
 
       // Запускаем сканирование с превью
       // Backend будет отправлять события по мере обнаружения файлов и готовности метаданных
       void scanFolderWithThumbnails(selectedDir)
         .then((finalFiles) => {
-          console.log(`Сканирование завершено. Обработано ${finalFiles.length} файлов`)
+          logger.infoSync(`Сканирование завершено. Обработано ${finalFiles.length} файлов`, {
+            filesCount: finalFiles.length,
+            directory: selectedDir,
+          })
           setIsImporting(false)
 
           // Убеждаемся, что isLoadingMetadata установлен в false для всех файлов
@@ -262,6 +308,7 @@ export function useMediaImport() {
             isLoadingMetadata: false,
           }))
 
+          logger.debugSync("Добавляем файлы из папки в ресурсы", { count: filesWithMetadata.length })
           // Добавляем файлы в ресурсы (Resources - единственный источник истины)
           filesWithMetadata.forEach((file) => {
             void addMedia(file)
@@ -271,7 +318,7 @@ export function useMediaImport() {
           void saveFilesToProject(filesWithMetadata)
         })
         .catch((error: unknown) => {
-          console.error("Ошибка сканирования папки:", error)
+          logger.errorSync("Ошибка сканирования папки", { error: String(error), directory: selectedDir })
           setIsImporting(false)
         })
 
@@ -281,7 +328,7 @@ export function useMediaImport() {
         files: [], // Файлы будут добавляться через события
       }
     } catch (error) {
-      console.error("Ошибка при импорте папки:", error)
+      logger.errorSync("Ошибка при импорте папки", { error: String(error) })
       setIsImporting(false)
       return {
         success: false,

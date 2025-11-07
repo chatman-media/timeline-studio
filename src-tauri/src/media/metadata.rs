@@ -74,15 +74,31 @@ pub fn get_media_metadata(file_path: String) -> Result<MediaFile, String> {
     for (i, stream) in streams_array.iter().enumerate() {
       let parsed_stream = parse_stream_data(stream, i);
 
-      // Определяем тип файла
-      if parsed_stream.codec_type == "video"
-        && stream
+      // Определяем тип файла по codec_type
+      if parsed_stream.codec_type == "video" {
+        // Проверяем, является ли это embedded picture в аудио файле
+        let is_attached_pic = stream
           .get("disposition")
           .and_then(|d| d.get("attached_pic"))
           .and_then(|v| v.as_i64())
-          != Some(1)
-      {
-        is_video = true;
+          == Some(1);
+
+        if !is_attached_pic {
+          // Это не attached picture - определяем по наличию duration
+          // Если duration > 0 или duration отсутствует - это видео
+          // Если duration == 0 - это изображение
+          if let Some(duration) = ffprobe_format.duration {
+            if duration > 0.0 {
+              is_video = true;
+            } else {
+              is_image = true;
+            }
+          } else {
+            // Если duration нет, считаем видео (безопасный fallback для .mp4)
+            is_video = true;
+          }
+        }
+        // attached_pic игнорируем - это обложка аудио
       } else if parsed_stream.codec_type == "audio" {
         is_audio = true;
       }
@@ -90,8 +106,8 @@ pub fn get_media_metadata(file_path: String) -> Result<MediaFile, String> {
       ffprobe_streams.push(parsed_stream);
     }
 
-    // Если нет видео и аудио, но есть размеры, считаем изображением
-    if !is_video && !is_audio && !ffprobe_streams.is_empty() {
+    // Если тип еще не определен, но есть размеры - это изображение
+    if !is_video && !is_audio && !is_image && !ffprobe_streams.is_empty() {
       if let (Some(_width), Some(_height)) = (ffprobe_streams[0].width, ffprobe_streams[0].height) {
         is_image = true;
       }

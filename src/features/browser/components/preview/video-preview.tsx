@@ -11,11 +11,14 @@ import type { DragData } from "@/features/timeline/types/drag-drop"
 import { getTrackTypeForMediaFile } from "@/features/timeline/utils/drag-calculations"
 import { usePlayer } from "@/features/video-player"
 import { formatDuration } from "@/lib/date"
+import { createLogger } from "@/lib/tauri-logger"
 import { checkFileAccess, convertToAssetUrl, convertVideoSrc } from "@/lib/tauri-utils"
 import { cn, formatResolution } from "@/lib/utils"
 import { ApplyButton } from "../layout"
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
+
+const logger = createLogger("VideoPreview")
 
 interface VideoPreviewProps {
   file: MediaFile
@@ -71,7 +74,7 @@ export const VideoPreview = memo(
         try {
           // Проверяем, что у файла есть id
           if (!file.id) {
-            console.error("[VideoPreview] File has no id:", file)
+            logger.errorSync("[VideoPreview] File has no id:", file)
             setPreviewMedia(file)
             return
           }
@@ -82,9 +85,9 @@ export const VideoPreview = memo(
           // Устанавливаем медиа в плеер
           await playerSetMedia(file.id, 0)
 
-          console.log(`[VideoPreview] Media sent to main player: ${file.name}`)
+          logger.debugSync(`[VideoPreview] Media sent to main player: ${file.name}`)
         } catch (error) {
-          console.error("[VideoPreview] Failed to send media to player:", error)
+          logger.errorSync("[VideoPreview] Failed to send media to player:", error)
           // Fallback к старому поведению
           setPreviewMedia(file)
         }
@@ -175,9 +178,11 @@ export const VideoPreview = memo(
           await playerSetSource("browser")
           await playerSetMedia(file.id, hoverTime || 0)
 
-          console.log(`[VideoPreview] Video sent to main player from preview: ${file.name} at time ${hoverTime || 0}`)
+          logger.debugSync(
+            `[VideoPreview] Video sent to main player from preview: ${file.name} at time ${hoverTime || 0}`,
+          )
         } catch (error) {
-          console.error("[VideoPreview] Failed to send video to main player:", error)
+          logger.errorSync("[VideoPreview] Failed to send video to main player:", error)
 
           // Fallback: локальное воспроизведение в превью (старое поведение)
           const key = stream.streamKey ?? `stream-${stream.index}`
@@ -192,13 +197,13 @@ export const VideoPreview = memo(
             }
             videoRef
               .play()
-              .catch((err: unknown) => console.error("[VideoPreview] Ошибка воспроизведения в превью:", err))
+              .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения в превью:", err))
           } else {
             videoRef.pause()
           }
 
           setIsPlaying(newPlayingState)
-          console.log(
+          logger.debugSync(
             `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в превью:`,
             file.name,
           )
@@ -219,7 +224,7 @@ export const VideoPreview = memo(
         const windowWithTauri = window as any
         const hasTauri = windowWithTauri.__TAURI__ !== undefined
         const hasTauriInternals = windowWithTauri.__TAURI_INTERNALS__ !== undefined
-        console.log("[VideoPreview] Tauri environment check:", {
+        logger.debugSync("[VideoPreview] Tauri environment check:", {
           hasTauri,
           hasTauriInternals,
           isTauriEnv: hasTauri || hasTauriInternals,
@@ -228,10 +233,10 @@ export const VideoPreview = memo(
 
       // Используем file:// протокол для видео через convertVideoSrc
       const videoUrl = convertVideoSrc(path)
-      console.log("[VideoPreview] Converting path:")
-      console.log(`  Original: ${path}`)
-      console.log(`  Video URL: ${videoUrl}`)
-      console.log(`  URL starts with asset://: ${videoUrl.startsWith("asset://")}`)
+      logger.debugSync("[VideoPreview] Converting path:")
+      logger.debugSync(`  Original: ${path}`)
+      logger.debugSync(`  Video URL: ${videoUrl}`)
+      logger.debugSync(`  URL starts with asset://: ${videoUrl.startsWith("asset://")}`)
       return videoUrl
     }, [])
 
@@ -242,20 +247,20 @@ export const VideoPreview = memo(
     useEffect(() => {
       let isMounted = true
 
-      console.log(`[VideoPreview] Attempting to load video from path: ${filePath}`)
+      logger.debugSync(`[VideoPreview] Attempting to load video from path: ${filePath}`)
 
       // Проверяем доступ к файлу через Tauri API
       void checkFileAccess(filePath).then((hasAccess) => {
-        console.log(`[VideoPreview] File access check result: ${hasAccess}`)
+        logger.debugSync(`[VideoPreview] File access check result: ${hasAccess}`)
         if (!hasAccess) {
-          console.error(`[VideoPreview] No access to file: ${filePath}`)
+          logger.errorSync(`[VideoPreview] No access to file: ${filePath}`)
           // Попробуем загрузить все равно, может проблема в проверке доступа
         }
 
         void loadVideoFile(filePath).then((url) => {
           if (isMounted) {
-            console.log(`[VideoPreview] Video URL generated: ${url}`)
-            console.log(`[VideoPreview] URL protocol: ${url.split(":")[0]}`)
+            logger.debugSync(`[VideoPreview] Video URL generated: ${url}`)
+            logger.debugSync(`[VideoPreview] URL protocol: ${url.split(":")[0]}`)
             setVideoUrl(url)
           }
         })
@@ -311,11 +316,11 @@ export const VideoPreview = memo(
                   await playerSetSource("browser")
                   await playerSetMedia(file.id, hoverTime || 0)
 
-                  console.log(
+                  logger.debugSync(
                     `[VideoPreview] Video sent to main player from placeholder: ${file.name} at time ${hoverTime || 0}`,
                   )
                 } catch (error) {
-                  console.error("[VideoPreview] Failed to send video to main player from placeholder:", error)
+                  logger.errorSync("[VideoPreview] Failed to send video to main player from placeholder:", error)
 
                   // Fallback: локальное воспроизведение
                   const video = e.currentTarget.querySelector("video")
@@ -324,13 +329,15 @@ export const VideoPreview = memo(
                   const newPlayingState = !isPlaying
 
                   if (newPlayingState) {
-                    video.play().catch((err: unknown) => console.error("[VideoPreview] Ошибка воспроизведения:", err))
+                    video
+                      .play()
+                      .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", err))
                   } else {
                     video.pause()
                   }
 
                   setIsPlaying(newPlayingState)
-                  console.log(
+                  logger.debugSync(
                     `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в плейсхолдере:`,
                     file.name,
                   )
@@ -380,7 +387,7 @@ export const VideoPreview = memo(
                   display: "block",
                 }}
                 onLoadedData={(e) => {
-                  console.log("Video loaded (placeholder)")
+                  logger.debugSync("Video loaded (placeholder)")
                   setIsLoaded(true)
                   // Устанавливаем на первый кадр и останавливаем автопроигрывание
                   const video = e.currentTarget as HTMLVideoElement
@@ -389,16 +396,16 @@ export const VideoPreview = memo(
                 }}
                 onLoadedMetadata={(e) => {
                   const video = e.currentTarget as HTMLVideoElement
-                  console.log(`[VideoPreview] Metadata loaded: ${video.videoWidth}x${video.videoHeight}`)
+                  logger.debugSync(`[VideoPreview] Metadata loaded: ${video.videoWidth}x${video.videoHeight}`)
                   // Устанавливаем на первый кадр и останавливаем
                   video.currentTime = 0
                   video.pause()
                 }}
                 onLoadStart={() => {
-                  console.log("[VideoPreview] Load start for placeholder")
+                  logger.debugSync("[VideoPreview] Load start for placeholder")
                 }}
                 onCanPlayThrough={() => {
-                  console.log("[VideoPreview] Can play through for placeholder")
+                  logger.debugSync("[VideoPreview] Can play through for placeholder")
                 }}
                 onKeyDown={(e) => {
                   if (e.code === "Space") {
@@ -407,7 +414,9 @@ export const VideoPreview = memo(
                     const newPlayingState = !isPlaying
 
                     if (newPlayingState) {
-                      video.play().catch((err: unknown) => console.error("[VideoPreview] Ошибка воспроизведения:", err))
+                      video
+                        .play()
+                        .catch((err: unknown) => logger.errorSync("[VideoPreview] Ошибка воспроизведения:", err))
                     } else {
                       video.pause()
                     }
@@ -418,15 +427,17 @@ export const VideoPreview = memo(
                 onError={(e) => {
                   const video = e.currentTarget as HTMLVideoElement
                   if (video.error) {
-                    console.error("[VideoPreview Placeholder] Ошибка загрузки видео:")
-                    console.error(`  - Путь файла: ${file.path}`)
-                    console.error(`  - URL: ${video.src}`)
-                    console.error(`  - Код ошибки: ${video.error.code}`)
-                    console.error(`  - Сообщение: ${video.error.message}`)
+                    logger.errorSync("[VideoPreview Placeholder] Ошибка загрузки видео:")
+                    logger.errorSync(`  - Путь файла: ${file.path}`)
+                    logger.errorSync(`  - URL: ${video.src}`)
+                    logger.errorSync(`  - Код ошибки: ${video.error.code}`)
+                    logger.errorSync(`  - Сообщение: ${video.error.message}`)
 
                     // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                     if (video.error.code === 4) {
-                      console.log(`[VideoPreview Placeholder] Автоматическое удаление файла из проекта: ${file.name}`)
+                      logger.debugSync(
+                        `[VideoPreview Placeholder] Автоматическое удаление файла из проекта: ${file.name}`,
+                      )
                       void removeResource(file.id, "media")
                       return // Прекращаем дальнейшую обработку
                     }
@@ -549,11 +560,11 @@ export const VideoPreview = memo(
                       position: "relative",
                     }}
                     onEnded={() => {
-                      console.log("Video ended for stream:", stream.index)
+                      logger.debugSync("Video ended for stream:", stream.index)
                       setIsPlaying(false)
                     }}
                     onPlay={(e) => {
-                      console.log("Video playing for stream:", stream.index)
+                      logger.debugSync("Video playing for stream:", stream.index)
                       const video = e.currentTarget
                       const currentTime = hoverTime
                       if (currentTime !== null) {
@@ -565,7 +576,7 @@ export const VideoPreview = memo(
                       const now = Date.now()
                       if (now - lastUpdateTimeRef.current > 500) {
                         lastUpdateTimeRef.current = now
-                        console.log(
+                        logger.debugSync(
                           "Time update for stream:",
                           typeof stream.index !== "undefined" ? stream.index : key,
                           "current time:",
@@ -574,7 +585,7 @@ export const VideoPreview = memo(
                       }
                     }}
                     onError={(e) => {
-                      console.log(
+                      logger.debugSync(
                         "Video error for stream:",
                         typeof stream.index !== "undefined" ? stream.index : key,
                         e,
@@ -585,7 +596,7 @@ export const VideoPreview = memo(
 
                       // Проверяем, какая ошибка произошла
                       if (video.error) {
-                        console.error(
+                        logger.errorSync(
                           "[VideoPreview] Ошибка загрузки видео:",
                           video.error.code,
                           video.error.message,
@@ -596,30 +607,30 @@ export const VideoPreview = memo(
                         )
 
                         // Дополнительная диагностика
-                        console.error("[VideoPreview] Детали ошибки:")
-                        console.error(`  - Путь файла: ${file.path}`)
-                        console.error(`  - Сгенерированный URL: ${videoUrl}`)
-                        console.error(`  - Код ошибки: ${video.error.code}`)
-                        console.error("  - MEDIA_ERR_ABORTED (1): Загрузка прервана пользователем")
-                        console.error("  - MEDIA_ERR_NETWORK (2): Сетевая ошибка")
-                        console.error("  - MEDIA_ERR_DECODE (3): Ошибка декодирования")
-                        console.error(
+                        logger.errorSync("[VideoPreview] Детали ошибки:")
+                        logger.errorSync(`  - Путь файла: ${file.path}`)
+                        logger.errorSync(`  - Сгенерированный URL: ${videoUrl}`)
+                        logger.errorSync(`  - Код ошибки: ${video.error.code}`)
+                        logger.errorSync("  - MEDIA_ERR_ABORTED (1): Загрузка прервана пользователем")
+                        logger.errorSync("  - MEDIA_ERR_NETWORK (2): Сетевая ошибка")
+                        logger.errorSync("  - MEDIA_ERR_DECODE (3): Ошибка декодирования")
+                        logger.errorSync(
                           "  - MEDIA_ERR_SRC_NOT_SUPPORTED (4): Формат не поддерживается или URL недоступен",
                         )
 
                         // Автоматически удаляем файл из проекта при ошибке 4 (файл не найден или не поддерживается)
                         if (video.error.code === 4) {
-                          console.log(`[VideoPreview] Автоматическое удаление файла из проекта: ${file.name}`)
+                          logger.debugSync(`[VideoPreview] Автоматическое удаление файла из проекта: ${file.name}`)
                           void removeResource(file.id, "media")
                           return // Прекращаем дальнейшую обработку
                         }
 
                         // Попробуем альтернативный подход для видео
                         if (video.error.code === 4 && videoUrl && videoUrl.includes("asset.localhost")) {
-                          console.log("[VideoPreview] Trying alternative approach...")
+                          logger.debugSync("[VideoPreview] Trying alternative approach...")
                           // Попробуем использовать прямой путь к файлу (только для диагностики)
                           const testUrl = `http://localhost:3000/api/video?path=${encodeURIComponent(file.path)}`
-                          console.log("[VideoPreview] Test URL:", testUrl)
+                          logger.debugSync("[VideoPreview] Test URL:", testUrl)
                         }
                       }
                     }}
@@ -630,7 +641,10 @@ export const VideoPreview = memo(
                       }
                     }}
                     onLoadedData={(e) => {
-                      console.log("Video loaded for stream:", typeof stream.index !== "undefined" ? stream.index : key)
+                      logger.debugSync(
+                        "Video loaded for stream:",
+                        typeof stream.index !== "undefined" ? stream.index : key,
+                      )
                       setIsLoaded(true)
 
                       // Устанавливаем на первый кадр и останавливаем
@@ -639,14 +653,14 @@ export const VideoPreview = memo(
                       video.pause()
 
                       // Отладочная информация
-                      console.log(`[VideoPreview] Video dimensions: ${video.videoWidth}x${video.videoHeight}`)
-                      console.log(`[VideoPreview] Video src: ${video.src}`)
-                      console.log(`[VideoPreview] Video visibility: ${getComputedStyle(video).visibility}`)
-                      console.log(`[VideoPreview] Video display: ${getComputedStyle(video).display}`)
+                      logger.debugSync(`[VideoPreview] Video dimensions: ${video.videoWidth}x${video.videoHeight}`)
+                      logger.debugSync(`[VideoPreview] Video src: ${video.src}`)
+                      logger.debugSync(`[VideoPreview] Video visibility: ${getComputedStyle(video).visibility}`)
+                      logger.debugSync(`[VideoPreview] Video display: ${getComputedStyle(video).display}`)
 
                       // Проверяем, есть ли у файла probeData и streams
                       if (!file.probeData?.streams || file.probeData.streams.length === 0) {
-                        console.log("No streams found in probeData for file:", file.name)
+                        logger.debugSync("No streams found in probeData for file:", file.name)
                       }
                     }}
                     onLoadedMetadata={(e) => {
@@ -779,7 +793,7 @@ export const VideoPreview = memo(
       !nextProps.file.isLoadingMetadata && isSameStreamsCount && isSameFile && isSameProps && isSameThumbnail
 
     if (!shouldSkipRender) {
-      console.log(`[VideoPreview] Re-rendering ${nextProps.file.name}:`, {
+      logger.debugSync(`[VideoPreview] Re-rendering ${nextProps.file.name}:`, {
         isSameFile,
         isSameMetadataState,
         isSameThumbnail,
