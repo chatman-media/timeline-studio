@@ -74,7 +74,7 @@ export class ProjectManagementOrchestrator {
    */
   async executeCommand(command: ProjectCommand): Promise<any> {
     const startTime = performance.now()
-    logger.info("[ProjectManagementOrchestrator] Executing command:", { command.type })
+    logger.info("[ProjectManagementOrchestrator] Executing command:", { data: command.type })
 
     return new Promise((resolve, reject) => {
       const subscription = this.appActor.subscribe((state) => {

@@ -398,10 +398,10 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     globalTracksLength: project?.globalTracks?.length || 0,
     hasSections: !!project?.sections,
     sectionsLength: project?.sections?.length || 0,
-    sectionsTracksCount: project?.sections?.reduce((acc, section }) => acc + section.tracks.length, 0) || 0,
+    sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
     totalClips: clips.length,
     projectType: project ? typeof project : "null/undefined",
-  })
+  } })
 
   const contextValue: TimelineClipsContext = {
     clips,

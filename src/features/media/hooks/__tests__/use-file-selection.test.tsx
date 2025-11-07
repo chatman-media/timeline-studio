@@ -1,7 +1,8 @@
-import { act, renderHook } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { BrowserStateProvider } from "@/features/browser/services/browser-state-provider"
+import { BrowserProvider } from "@/domains/browser"
+import { resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { useFileSelection } from "../use-file-selection"
 
 // Mock данные
@@ -18,10 +19,14 @@ const mockFile = {
 
 // Wrapper для тестов
 function TestWrapper({ children }: { children: React.ReactNode }) {
-  return <BrowserStateProvider>{children}</BrowserStateProvider>
+  return <BrowserProvider>{children}</BrowserProvider>
 }
 
 describe("useFileSelection", () => {
+  beforeEach(() => {
+    resetMockBrowserState()
+  })
+
   it("должен возвращать правильное начальное состояние", () => {
     const { result } = renderHook(() => useFileSelection(mockFile), {
       wrapper: TestWrapper,
@@ -34,61 +39,71 @@ describe("useFileSelection", () => {
     expect(typeof result.current.handleToggleSelection).toBe("function")
   })
 
-  it("должен переключать состояние выбора файла", () => {
+  it("должен переключать состояние выбора файла", async () => {
     const { result } = renderHook(() => useFileSelection(mockFile), {
       wrapper: TestWrapper,
     })
 
     expect(result.current.isSelected).toBe(false)
 
-    act(() => {
-      result.current.toggleSelection()
+    await act(async () => {
+      await result.current.toggleSelection()
     })
 
-    expect(result.current.isSelected).toBe(true)
-
-    act(() => {
-      result.current.toggleSelection()
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(true)
     })
 
-    expect(result.current.isSelected).toBe(false)
+    await act(async () => {
+      await result.current.toggleSelection()
+    })
+
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(false)
+    })
   })
 
-  it("должен выбирать файл", () => {
+  it("должен выбирать файл", async () => {
     const { result } = renderHook(() => useFileSelection(mockFile), {
       wrapper: TestWrapper,
     })
 
     expect(result.current.isSelected).toBe(false)
 
-    act(() => {
-      result.current.selectFile()
+    await act(async () => {
+      await result.current.selectFile()
     })
 
-    expect(result.current.isSelected).toBe(true)
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(true)
+    })
   })
 
-  it("должен отменять выбор файла", () => {
+  it("должен отменять выбор файла", async () => {
     const { result } = renderHook(() => useFileSelection(mockFile), {
       wrapper: TestWrapper,
     })
 
     // Сначала выберем файл
-    act(() => {
-      result.current.selectFile()
+    await act(async () => {
+      await result.current.selectFile()
     })
 
-    expect(result.current.isSelected).toBe(true)
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(true)
+    })
 
     // Теперь отменим выбор
-    act(() => {
-      result.current.deselectFile()
+    await act(async () => {
+      await result.current.deselectFile()
     })
 
-    expect(result.current.isSelected).toBe(false)
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(false)
+    })
   })
 
-  it("должен предотвращать всплытие события в handleToggleSelection", () => {
+  it("должен предотвращать всплытие события в handleToggleSelection", async () => {
     const { result } = renderHook(() => useFileSelection(mockFile), {
       wrapper: TestWrapper,
     })
@@ -97,11 +112,16 @@ describe("useFileSelection", () => {
       stopPropagation: vi.fn(),
     } as unknown as React.MouseEvent
 
-    act(() => {
+    await act(async () => {
       result.current.handleToggleSelection(mockEvent)
+      // Wait for the async toggleSelection to complete
+      await new Promise(resolve => setTimeout(resolve, 0))
     })
 
     expect(mockEvent.stopPropagation).toHaveBeenCalledOnce()
-    expect(result.current.isSelected).toBe(true)
+
+    await waitFor(() => {
+      expect(result.current.isSelected).toBe(true)
+    })
   })
 })

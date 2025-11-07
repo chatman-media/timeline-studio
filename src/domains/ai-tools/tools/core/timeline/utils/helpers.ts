@@ -31,11 +31,11 @@ export async function saveTimelineProject(project: TimelineProject): Promise<voi
     const timelineContext = (window as any).timelineContext
     if (timelineContext.saveProject) {
       await timelineContext.saveProject()
-      logger.info("Проект сохранен:", { project.name })
+      logger.info("Проект сохранен:", { projectName: project.name })
     }
   } else {
     // Fallback - логируем попытку сохранения
-    logger.info("Попытка сохранения проекта:", { project.name })
+    logger.info("Попытка сохранения проекта:", { projectName: project.name })
   }
 }
 

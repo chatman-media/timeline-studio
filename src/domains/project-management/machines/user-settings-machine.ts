@@ -833,7 +833,7 @@ export const userSettingsMachine = createMachine(
        */
       updatePreviewSize: assign(({ context, event }) => {
         const typedEvent = event as UpdatePreviewSizeEvent
-        logger.debug("Updating preview size:", { data: typedEvent.key, typedEvent.size })
+        logger.debug("Updating preview size:", { data: { key: typedEvent.key, size: typedEvent.size } })
 
         // Создаем копию объекта previewSizes
         const newPreviewSizes = {
@@ -916,7 +916,7 @@ export const userSettingsMachine = createMachine(
       updateOpenAiApiKey: assign(({ context, event }) => {
         const typedEvent = event as UpdateOpenAiApiKeyEvent
         // Скрываем API ключ в логах для безопасности
-        logger.debug("Updating OpenAI API key:", { data: typedEvent.apiKey ? "***" : "(empty })")
+        logger.debug("Updating OpenAI API key:", { data: typedEvent.apiKey ? "***" : "(empty)" })
 
         // Возвращаем обновленный контекст
         return {
@@ -929,10 +929,10 @@ export const userSettingsMachine = createMachine(
        * Действие для обновления API ключа Claude
        * Устанавливает новый API ключ для Claude
        */
-      updateClaudeApiKey: assign((context, event ) => {
+      updateClaudeApiKey: assign(({ context, event }) => {
         const typedEvent = event as UpdateClaudeApiKeyEvent
         // Скрываем API ключ в логах для безопасности
-        logger.debug("Updating Claude API key:", { data: typedEvent.apiKey ? "***" : "(empty })")
+        logger.debug("Updating Claude API key:", { data: typedEvent.apiKey ? "***" : "(empty)" })
 
         // Возвращаем обновленный контекст
         return {
@@ -944,40 +944,43 @@ export const userSettingsMachine = createMachine(
       /**
        * Действие для переключения видимости браузера
        */
-      toggleBrowserVisibility: assign((context ) => 
-        logger.debug("Toggling browser visibility:", data: !context.isBrowserVisible )
+      toggleBrowserVisibility: assign(({ context }) => {
+        logger.debug("Toggling browser visibility:", { data: !context.isBrowserVisible })
 
         // Возвращаем обновленный контекст
         return {
           ...context,
           isBrowserVisible: !context.isBrowserVisible, // Инвертируем текущее значение
-        }),
+        }
+      }),
 
       /**
        * Действие для переключения видимости временной шкалы
        */
-      toggleTimelineVisibility: assign((context ) => 
-        logger.debug("Toggling timeline visibility:", data: !context.isTimelineVisible )
+      toggleTimelineVisibility: assign(({ context }) => {
+        logger.debug("Toggling timeline visibility:", { data: !context.isTimelineVisible })
         return {
           ...context,
           isTimelineVisible: !context.isTimelineVisible,
-        }),
+        }
+      }),
 
       /**
        * Действие для переключения видимости опций
        */
-      toggleOptionsVisibility: assign((context ) => 
-        logger.debug("Toggling options visibility:", data: !context.isOptionsVisible )
+      toggleOptionsVisibility: assign(({ context }) => {
+        logger.debug("Toggling options visibility:", { data: !context.isOptionsVisible })
         return {
           ...context,
           isOptionsVisible: !context.isOptionsVisible,
-        }),
+        }
+      }),
 
       /**
        * Действие для обновления громкости плеера
        * Устанавливает новое значение громкости
        */
-      updatePlayerVolume: assign((context, event ) => {
+      updatePlayerVolume: assign(({ context, event }) => {
         const typedEvent = event as UpdatePlayerVolumeEvent
         logger.debug("Updating player volume:", { data: typedEvent.volume })
 
@@ -991,7 +994,7 @@ export const userSettingsMachine = createMachine(
       /**
        * Действия для управления API ключами социальных сетей
        */
-      updateYoutubeCredentials: assign((context, event ) => {
+      updateYoutubeCredentials: assign(({ context, event }) => {
         const typedEvent = event as UpdateYoutubeCredentialsEvent
         logger.info("Updating YouTube credentials")
 
@@ -1010,7 +1013,7 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateTiktokCredentials: assign((context, event ) => {
+      updateTiktokCredentials: assign(({ context, event }) => {
         const typedEvent = event as UpdateTiktokCredentialsEvent
         logger.info("Updating TikTok credentials")
 
@@ -1029,7 +1032,7 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateVimeoCredentials: assign((context, event ) => {
+      updateVimeoCredentials: assign(({ context, event }) => {
         const typedEvent = event as UpdateVimeoCredentialsEvent
         logger.info("Updating Vimeo credentials")
 
@@ -1049,7 +1052,7 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateTelegramCredentials: assign((context, event ) => {
+      updateTelegramCredentials: assign(({ context, event }) => {
         const typedEvent = event as UpdateTelegramCredentialsEvent
         logger.info("Updating Telegram credentials")
 
@@ -1064,9 +1067,9 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateCodecovToken: assign((context, event ) => {
+      updateCodecovToken: assign(({ context, event }) => {
         const typedEvent = event as UpdateCodecovTokenEvent
-        logger.debug("Updating Codecov token:", { data: typedEvent.token ? "***" : "(empty })")
+        logger.debug("Updating Codecov token:", { data: typedEvent.token ? "***" : "(empty)" })
 
         return {
           ...context,
@@ -1078,9 +1081,9 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateTauriAnalyticsKey: assign((context, event ) => {
+      updateTauriAnalyticsKey: assign(({ context, event }) => {
         const typedEvent = event as UpdateTauriAnalyticsKeyEvent
-        logger.debug("Updating Tauri Analytics key:", { data: typedEvent.key ? "***" : "(empty })")
+        logger.debug("Updating Tauri Analytics key:", { data: typedEvent.key ? "***" : "(empty)" })
 
         return {
           ...context,
@@ -1092,9 +1095,9 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      updateApiKeyStatus: assign((context, event ) => {
+      updateApiKeyStatus: assign(({ context, event }) => {
         const typedEvent = event as UpdateApiKeyStatusEvent
-        logger.debug("Log", { data: `Updating API key status for ${typedEvent.service}:`, typedEvent.status })
+        logger.debug("Updating API key status", { data: { service: typedEvent.service, status: typedEvent.status } })
 
         return {
           ...context,
@@ -1105,9 +1108,9 @@ export const userSettingsMachine = createMachine(
         }
       }),
 
-      testApiKey: assign((context, event ) => {
+      testApiKey: assign(({ context, event }) => {
         const typedEvent = event as TestApiKeyEvent
-        logger.info("Testing API key for service:", { typedEvent.service })
+        logger.info("Testing API key for service:", { data: typedEvent.service })
 
         // Устанавливаем статус "testing" пока идет проверка
         return {
@@ -1120,74 +1123,74 @@ export const userSettingsMachine = createMachine(
       }),
 
       // GPU и производительность действия
-      updateGpuAcceleration: assign((context, event ) => {
+      updateGpuAcceleration: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_GPU_ACCELERATION"; enabled: boolean }
         logger.debug("Updating GPU acceleration:", { data: typedEvent.enabled })
         return { ...context, gpuAccelerationEnabled: typedEvent.enabled }
       }),
 
-      updatePreferredGpuEncoder: assign((context, event ) => {
+      updatePreferredGpuEncoder: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PREFERRED_GPU_ENCODER"; encoder: string }
         logger.debug("Updating preferred GPU encoder:", { data: typedEvent.encoder })
         return { ...context, preferredGpuEncoder: typedEvent.encoder }
       }),
 
-      updateMaxConcurrentJobs: assign((context, event ) => {
+      updateMaxConcurrentJobs: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_MAX_CONCURRENT_JOBS"; jobs: number }
         logger.debug("Updating max concurrent jobs:", { data: typedEvent.jobs })
         return { ...context, maxConcurrentJobs: typedEvent.jobs }
       }),
 
-      updateRenderQuality: assign((context, event ) => {
+      updateRenderQuality: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_RENDER_QUALITY"; quality: string }
         logger.debug("Updating render quality:", { data: typedEvent.quality })
         return { ...context, renderQuality: typedEvent.quality }
       }),
 
-      updateBackgroundRendering: assign((context, event ) => {
+      updateBackgroundRendering: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_BACKGROUND_RENDERING"; enabled: boolean }
         logger.debug("Updating background rendering:", { data: typedEvent.enabled })
         return { ...context, backgroundRenderingEnabled: typedEvent.enabled }
       }),
 
-      updateRenderDelay: assign((context, event ) => {
+      updateRenderDelay: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_RENDER_DELAY"; delay: number }
         logger.debug("Updating render delay:", { data: typedEvent.delay })
         return { ...context, renderDelay: typedEvent.delay }
       }),
 
       // Прокси действия
-      updateProxyEnabled: assign((context, event ) => {
+      updateProxyEnabled: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_ENABLED"; enabled: boolean }
         logger.debug("Updating proxy enabled:", { data: typedEvent.enabled })
         return { ...context, proxyEnabled: typedEvent.enabled }
       }),
 
-      updateProxyType: assign((context, event ) => {
+      updateProxyType: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_TYPE"; proxyType: string }
         logger.debug("Updating proxy type:", { data: typedEvent.proxyType })
         return { ...context, proxyType: typedEvent.proxyType }
       }),
 
-      updateProxyHost: assign((context, event ) => {
+      updateProxyHost: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_HOST"; host: string }
         logger.debug("Updating proxy host:", { data: typedEvent.host })
         return { ...context, proxyHost: typedEvent.host }
       }),
 
-      updateProxyPort: assign((context, event ) => {
+      updateProxyPort: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_PORT"; port: string }
         logger.debug("Updating proxy port:", { data: typedEvent.port })
         return { ...context, proxyPort: typedEvent.port }
       }),
 
-      updateProxyUsername: assign((context, event ) => {
+      updateProxyUsername: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_USERNAME"; username: string }
         logger.debug("Updating proxy username:", { data: typedEvent.username })
         return { ...context, proxyUsername: typedEvent.username }
       }),
 
-      updateProxyPassword: assign((context, event ) => {
+      updateProxyPassword: assign(({ context, event }) => {
         const typedEvent = event as { type: "UPDATE_PROXY_PASSWORD"; password: string }
         logger.debug("Updating proxy password:", { data: "***" })
         return { ...context, proxyPassword: typedEvent.password }
@@ -1197,7 +1200,7 @@ export const userSettingsMachine = createMachine(
        * Действие для обновления статуса автосохранения
        * Включает или отключает автоматическое сохранение проекта
        */
-      updateAutoSaveEnabled: assign((context, event ) => {
+      updateAutoSaveEnabled: assign(({ context, event }) => {
         const typedEvent = event as UpdateAutoSaveEnabledEvent
         logger.debug("Updating auto save enabled:", { data: typedEvent.enabled })
         return {
@@ -1210,7 +1213,7 @@ export const userSettingsMachine = createMachine(
        * Действие для обновления интервала автосохранения
        * Устанавливает интервал между автоматическими сохранениями в секундах
        */
-      updateAutoSaveInterval: assign((context, event ) => {
+      updateAutoSaveInterval: assign(({ context, event }) => {
         const typedEvent = event as UpdateAutoSaveIntervalEvent
         logger.debug("Updating auto save interval:", { data: typedEvent.interval })
         return {
@@ -1220,40 +1223,40 @@ export const userSettingsMachine = createMachine(
       }),
 
       // AI Analysis действия
-      updateAIAnalysisEnabled: assign((context, event ) => {
+      updateAIAnalysisEnabled: assign(({ context, event }) => {
         const typedEvent = event as UpdateAIAnalysisEnabledEvent
         logger.debug("Updating AI analysis enabled:", { data: typedEvent.enabled })
         return { ...context, aiAnalysisEnabled: typedEvent.enabled }
       }),
 
-      updateAIAnalysisFrameRate: assign((context, event ) => {
+      updateAIAnalysisFrameRate: assign(({ context, event }) => {
         const typedEvent = event as UpdateAIAnalysisFrameRateEvent
         logger.debug("Updating AI analysis frame rate:", { data: typedEvent.frameRate })
         return { ...context, aiAnalysisFrameRate: typedEvent.frameRate }
       }),
 
-      updateAIContentDetectionTypes: assign((context, event ) => {
+      updateAIContentDetectionTypes: assign(({ context, event }) => {
         const typedEvent = event as UpdateAIContentDetectionTypesEvent
         logger.debug("Updating AI content detection types:", { data: typedEvent.types })
         return { ...context, aiContentDetectionTypes: typedEvent.types }
       }),
 
-      updateAIAnalysisConfidenceThreshold: assign((context, event ) => {
+      updateAIAnalysisConfidenceThreshold: assign(({ context, event }) => {
         const typedEvent = event as UpdateAIAnalysisConfidenceThresholdEvent
         logger.debug("Updating AI analysis confidence threshold:", { data: typedEvent.threshold })
         return { ...context, aiAnalysisConfidenceThreshold: typedEvent.threshold }
       }),
 
       // Vision Service действия
-      updateVisionServiceEnabled: assign((context, event ) => {
+      updateVisionServiceEnabled: assign(({ context, event }) => {
         const typedEvent = event as UpdateVisionServiceEnabledEvent
         logger.debug("Updating vision service enabled:", { data: typedEvent.enabled })
         return { ...context, visionServiceEnabled: typedEvent.enabled }
       }),
 
-      updateVisionThreshold: assign((context, event ) => {
+      updateVisionThreshold: assign(({ context, event }) => {
         const typedEvent = event as UpdateVisionThresholdEvent
-        logger.debug("Log", { data: `Updating vision ${typedEvent.thresholdType} threshold:`, typedEvent.value })
+        logger.debug("Updating vision threshold", { data: { type: typedEvent.thresholdType, value: typedEvent.value } })
 
         switch (typedEvent.thresholdType) {
           case "object":
@@ -1268,19 +1271,19 @@ export const userSettingsMachine = createMachine(
       }),
 
       // Языковые настройки действия
-      updatePreferredLanguage: assign((context, event ) => {
+      updatePreferredLanguage: assign(({ context, event }) => {
         const typedEvent = event as UpdatePreferredLanguageEvent
         logger.debug("Updating preferred language:", { data: typedEvent.language })
         return { ...context, preferredLanguage: typedEvent.language }
       }),
 
-      updateDateFormat: assign((context, event ) => {
+      updateDateFormat: assign(({ context, event }) => {
         const typedEvent = event as UpdateDateFormatEvent
         logger.debug("Updating date format:", { data: typedEvent.format })
         return { ...context, dateFormat: typedEvent.format }
       }),
 
-      updateTimeFormat: assign((context, event ) => {
+      updateTimeFormat: assign(({ context, event }) => {
         const typedEvent = event as UpdateTimeFormatEvent
         logger.debug("Updating time format:", { data: typedEvent.format })
         return { ...context, timeFormat: typedEvent.format }

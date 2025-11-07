@@ -1,6 +1,6 @@
 import { memo, useCallback } from "react"
 
-import { useBrowserState } from "@/features/browser/services/browser-state-provider"
+import { useBrowserState } from "@/domains/browser"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"

@@ -4,17 +4,16 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import type {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "AiDirectorService" })
+import type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
   ConfigValidationResult,
   HealthCheckResult,
   SystemCapabilities,
 } from "../types/ai-director"
+
+const logger = createLogger({ module: "AiDirectorService" })
 
 export class AIDirectorService {
   private static instance: AIDirectorService | null = null

@@ -4,17 +4,15 @@
  */
 
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("VideoCompiler")
-
+import {
   OutputFormat,
   type VideoRenderJob as RenderJob,
   type RenderProgress,
   RenderStatus,
 } from "@/features/video-compiler/types/render"
+
+const logger = createLogger("VideoCompiler")
 
 // Импортируем новые типы эффектов
 

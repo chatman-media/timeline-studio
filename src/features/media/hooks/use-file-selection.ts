@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 
-import { useBrowserState } from "@/features/browser/services/browser-state-provider"
+import { useBrowserState } from "@/domains/browser"
 import type { MediaFile } from "@/features/media/types/media"
 
 /**
@@ -20,25 +20,25 @@ export function useFileSelection(file: MediaFile) {
   const isSelected = browserState.isFileSelected(file.id)
 
   // Переключение состояния выбора файла
-  const toggleSelection = useCallback(() => {
-    browserState.toggleFileSelection(file.id)
+  const toggleSelection = useCallback(async () => {
+    await browserState.toggleFileSelection(file.id)
   }, [file.id, browserState])
 
   // Выбор файла
-  const selectFile = useCallback(() => {
-    browserState.selectFile(file.id)
+  const selectFile = useCallback(async () => {
+    await browserState.selectFile(file.id)
   }, [file.id, browserState])
 
   // Отмена выбора файла
-  const deselectFile = useCallback(() => {
-    browserState.deselectFile(file.id)
+  const deselectFile = useCallback(async () => {
+    await browserState.deselectFile(file.id)
   }, [file.id, browserState])
 
   // Обработчик клика для чекбокса (предотвращает всплытие события)
   const handleToggleSelection = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
-      toggleSelection()
+      void toggleSelection() // Fire and forget - UI обновится автоматически через state sync
     },
     [toggleSelection],
   )

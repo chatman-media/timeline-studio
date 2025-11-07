@@ -82,8 +82,8 @@ export class UndoRedoService {
 
   private constructor() {
     UndoRedoService.initializationCounter++
-    logger.info("[UndoRedoService] Initialized (instance #", { UndoRedoService.initializationCounter })
-    logger.debug("[UndoRedoService] Stack trace:", { data: new Error( }).stack)
+    logger.info("[UndoRedoService] Initialized (instance #", { data: UndoRedoService.initializationCounter })
+    logger.debug("[UndoRedoService] Stack trace:", { data: new Error().stack })
     this.isInitialized = true
   }
 

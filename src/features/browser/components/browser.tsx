@@ -1,5 +1,5 @@
 import { useBrowserAIIntegration } from "@/features/ai-chat/hooks/use-browser-ai-integration"
-import { BrowserStateProvider, useBrowserState } from "@/features/browser/services/browser-state-provider"
+import { useBrowserState } from "@/domains/browser"
 import { EffectsProvider } from "../providers/browser-resources-provider"
 import { BrowserContent } from "./browser-content"
 import { BrowserTabs } from "./browser-tabs"
@@ -25,22 +25,21 @@ function BrowserWithState() {
 }
 
 // Клиентский компонент Browser
+// Note: BrowserProvider теперь на верхнем уровне (providers.tsx)
 export function Browser() {
   return (
-    <BrowserStateProvider>
-      <EffectsProvider
-        config={{
-          initialSources: ["built-in"],
-          backgroundLoadDelay: 1500,
-          enableCaching: true,
-          maxCacheSize: 50 * 1024 * 1024, // 50MB
-        }}
-        onError={(_error) => {
-          // Handle effects provider error
-        }}
-      >
-        <BrowserWithState />
-      </EffectsProvider>
-    </BrowserStateProvider>
+    <EffectsProvider
+      config={{
+        initialSources: ["built-in"],
+        backgroundLoadDelay: 1500,
+        enableCaching: true,
+        maxCacheSize: 50 * 1024 * 1024, // 50MB
+      }}
+      onError={(_error) => {
+        // Handle effects provider error
+      }}
+    >
+      <BrowserWithState />
+    </EffectsProvider>
   )
 }

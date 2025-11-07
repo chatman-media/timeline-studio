@@ -45,7 +45,7 @@ export function useDomainEvents(options: UseDomainEventsOptions): UseDomainEvent
   const publish = useCallback(
     async <T = unknown>(type: string, payload: T, metadata?: Record<string, unknown>): Promise<PublishResult> => {
       if (debug) {
-        logger.debug("Log", { data: `[${domain}] Publishing event:`, type, payload })
+        logger.debug(`[${domain}] Publishing event:`, { type, payload })
       }
 
       return eventBus.publish(type, domain, payload, {
@@ -61,7 +61,7 @@ export function useDomainEvents(options: UseDomainEventsOptions): UseDomainEvent
     <T = unknown>(handler: EventHandler<T>, options?: SubscriptionOptions): void => {
       const wrappedHandler: EventHandler<T> = (event) => {
         if (debug) {
-          logger.debug("Log", { data: `[${domain}] Received event:`, event.type, event.payload })
+          logger.debug(`[${domain}] Received event:`, { eventType: event.type, payload: event.payload })
         }
         return handler(event)
       }

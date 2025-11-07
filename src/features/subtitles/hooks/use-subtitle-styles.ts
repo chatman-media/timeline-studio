@@ -4,15 +4,14 @@ import { useTranslation } from "react-i18next"
 
 import subtitleStylesData from "../data/subtitle-styles.json"
 import type { SubtitleStyleTemplate } from "../types/subtitles"
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseSubtitleStyles" })
+import {
   createFallbackSubtitleStyleTemplate,
   processSubtitleStyleTemplates,
   validateSubtitleStyleTemplatesData,
 } from "../utils/subtitle-processor"
+
+const logger = createLogger({ module: "UseSubtitleStyles" })
 
 // Импортируем JSON файл напрямую - в Tauri это работает отлично
 

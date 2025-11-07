@@ -31,7 +31,7 @@ const initialContext: MediaImportContext = {
 
 // Actors for import tasks
 const importFilesActor = fromPromise(async ({ input }: { input: { files: string[]; options: MediaImportOptions } }) => {
-  logger.info("[Media Import] Importing", { input.files.length })
+  logger.info("[Media Import] Importing files", { filesCount: input.files.length })
 
   try {
     // Call Tauri command to import files
@@ -67,7 +67,7 @@ export const mediaImportMachine = setup({
         if (event.type !== "ADD_FILES") return context.files
         // Remove duplicates
         const newFiles = [...new Set([...context.files, ...event.files])]
-        logger.info("[Media Import] Added ${event.files.length} files, total:", { newFiles.length })
+        logger.info(`[Media Import] Added ${event.files.length} files`, { totalFiles: newFiles.length })
         return newFiles
       },
     }),
@@ -76,7 +76,7 @@ export const mediaImportMachine = setup({
       files: ({ context, event }) => {
         if (event.type !== "REMOVE_FILE") return context.files
         const newFiles = context.files.filter((f) => f !== event.file)
-        logger.info("[Media Import] Removed file:", { event.file })
+        logger.info("[Media Import] Removed file", { filePath: event.file })
         return newFiles
       },
     }),
@@ -98,7 +98,7 @@ export const mediaImportMachine = setup({
           status: "pending",
           progress: 0,
         }))
-        logger.info("[Media Import] Created", { operations.length })
+        logger.info("[Media Import] Created operations", { operationsCount: operations.length })
         return operations
       },
     }),

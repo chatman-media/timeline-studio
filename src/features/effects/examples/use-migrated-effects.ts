@@ -2,11 +2,8 @@
  * Пример использования мигрированных эффектов
  */
 
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseMigratedEffects" })
+import {
   createEffectManager,
   createEffectRenderer,
   findMigratedEffect,
@@ -14,6 +11,8 @@ const logger = createLogger({ module: "UseMigratedEffects" })
   getMigratedEffectsByTags,
   migrationStats,
 } from "../index"
+
+const logger = createLogger({ module: "UseMigratedEffects" })
 
 // Создаем менеджер эффектов с загрузкой всех эффектов
 const effectManager = createEffectManager({

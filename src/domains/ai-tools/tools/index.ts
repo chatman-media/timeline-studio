@@ -100,7 +100,7 @@ export function getAllToolSchemas() {
       try {
         schemas[tool.metadata.name] = tool.getSchema()
       } catch (error) {
-        logger.warn("Ошибка получения схемы для инструмента", { tool.metadata.name, error })
+        logger.warn("Ошибка получения схемы для инструмента", { toolName: tool.metadata.name, error })
       }
       return schemas
     },
@@ -241,12 +241,12 @@ export function registerAllToolsInContainer(container: any) {
   allAITools.forEach((tool) => {
     try {
       registry.register(tool)
-      logger.info("[AI Tools] Зарегистрирован инструмент:", { tool.metadata.name })
+      logger.info("[AI Tools] Зарегистрирован инструмент:", { toolName: tool.metadata.name })
     } catch (error) {
-      logger.error("[AI Tools] Ошибка регистрации инструмента", { tool.metadata.name, error })
+      logger.error("[AI Tools] Ошибка регистрации инструмента", { toolName: tool.metadata.name, error })
     }
   })
 
-  logger.info("[AI Tools] Зарегистрировано", { allAITools.length })
+  logger.info("[AI Tools] Зарегистрировано", { count: allAITools.length })
   return registry.getStatistics()
 }

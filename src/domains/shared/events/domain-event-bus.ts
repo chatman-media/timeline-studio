@@ -5,12 +5,8 @@
  */
 
 import { nanoid } from "nanoid"
-import type {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("DomainEventBus")
-
+import type {
   DomainEvent,
   DomainName,
   EventFilter,
@@ -19,6 +15,8 @@ const logger = createLogger("DomainEventBus")
   SubscriptionOptions,
   Unsubscribe,
 } from "./domain-event"
+
+const logger = createLogger("DomainEventBus")
 
 interface Subscription {
   id: string
@@ -157,7 +155,7 @@ export class DomainEventBus {
         } catch (error) {
           errors.push(error as Error)
           if (this.isLogging) {
-            logger.error("[EventBus] Handler error for", { event.type, error })
+            logger.error("[EventBus] Handler error for", { eventType: event.type, error })
           }
         }
       }),

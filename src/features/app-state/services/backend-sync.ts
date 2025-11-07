@@ -5,12 +5,9 @@
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 
+import { createLogger } from "@/lib/tauri-logger"
 // Use generated types from Specta
 import {
-
-import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "BackendSync" })
   type CommandResult,
   commands,
   type EventEnvelope,
@@ -18,6 +15,8 @@ const logger = createLogger({ module: "BackendSync" })
   type ProjectEvent,
   type ProjectState,
 } from "@/types/generated/tauri-bindings"
+
+const logger = createLogger({ module: "BackendSync" })
 
 export type EventHandler = (event: ProjectEvent) => void
 export type StateChangeHandler = (state: ProjectState) => void

@@ -121,7 +121,7 @@ export const playerMachine = setup({
     loadVideo: assign({
       video: ({ event }) => {
         if (event.type !== "LOAD_VIDEO") return null
-        logger.info("[Player Domain] Loading video:", { event.video.name })
+        logger.info("[Player Domain] Loading video:", { data: event.video.name })
         return event.video
       },
       isVideoLoading: () => true,
@@ -135,7 +135,7 @@ export const playerMachine = setup({
       isVideoReady: () => true,
       duration: ({ event }) => {
         if (event.type !== "VIDEO_LOADED") return 0
-        logger.info("[Player Domain] Video loaded, duration:", { event.duration })
+        logger.info("[Player Domain] Video loaded, duration:", { data: event.duration })
         return event.duration
       },
     }),
@@ -167,7 +167,7 @@ export const playerMachine = setup({
     seek: assign({
       currentTime: ({ event }) => {
         if (event.type !== "SEEK") return 0
-        logger.info("[Player Domain] Seeking to", { event.time })
+        logger.info("[Player Domain] Seeking to", { data: event.time })
         return event.time
       },
       isSeeking: () => true,
@@ -193,7 +193,7 @@ export const playerMachine = setup({
     setPlaybackRate: assign({
       currentPlaybackRate: ({ event }) => {
         if (event.type !== "SET_PLAYBACK_RATE") return 1
-        logger.info("[Player Domain] Setting playback rate:", { event.rate })
+        logger.info("[Player Domain] Setting playback rate:", { data: event.rate })
         return event.rate
       },
     }),
@@ -216,7 +216,7 @@ export const playerMachine = setup({
     setVideoSource: assign({
       videoSource: ({ event }) => {
         if (event.type !== "SET_VIDEO_SOURCE") return "browser"
-        logger.info("[Player Domain] Video source:", { event.source })
+        logger.info("[Player Domain] Video source:", { data: event.source })
         return event.source
       },
     }),
@@ -231,7 +231,7 @@ export const playerMachine = setup({
     applyEffect: assign({
       appliedEffects: ({ context, event }) => {
         if (event.type !== "APPLY_EFFECT") return context.appliedEffects
-        logger.info("[Player Domain] Applying effect:", { event.effect.name })
+        logger.info("[Player Domain] Applying effect:", { data: event.effect.name })
         return [...context.appliedEffects, event.effect]
       },
     }),
@@ -246,7 +246,7 @@ export const playerMachine = setup({
     applyFilter: assign({
       appliedFilters: ({ context, event }) => {
         if (event.type !== "APPLY_FILTER") return context.appliedFilters
-        logger.info("[Player Domain] Applying filter:", { event.filter.name })
+        logger.info("[Player Domain] Applying filter:", { data: event.filter.name })
         return [...context.appliedFilters, event.filter]
       },
     }),
@@ -261,7 +261,7 @@ export const playerMachine = setup({
     applyTemplate: assign({
       appliedTemplate: ({ event }) => {
         if (event.type !== "APPLY_TEMPLATE") return null
-        logger.info("[Player Domain] Applying template:", { event.template.name })
+        logger.info("[Player Domain] Applying template:", { data: event.template.name })
         return event.template
       },
     }),
@@ -273,7 +273,7 @@ export const playerMachine = setup({
     setResizableMode: assign({
       isResizableMode: ({ event }) => {
         if (event.type !== "SET_RESIZABLE_MODE") return false
-        logger.info("[Player Domain] Resizable mode:", { event.enabled })
+        logger.info("[Player Domain] Resizable mode:", { data: event.enabled })
         return event.enabled
       },
     }),

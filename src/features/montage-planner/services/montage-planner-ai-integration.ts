@@ -6,11 +6,10 @@
 import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core"
 import { VideoAnalysisParams } from "@/domains/ai-services"
 import type { MediaFile } from "@/features/media/types/media"
-import type {
 
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "MontagePlannerAiIntegration" })
+import type {
   AudioAnalysis,
   Fragment,
   MomentScore,
@@ -18,6 +17,8 @@ const logger = createLogger({ module: "MontagePlannerAiIntegration" })
   VideoAnalysis,
   VideoCompositionAnalysis,
 } from "../types"
+
+const logger = createLogger({ module: "MontagePlannerAiIntegration" })
 
 export interface MontagePlannerAIService {
   // Video analysis using shared AI services

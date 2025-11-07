@@ -4,6 +4,30 @@
  * Централизованное место для всех AI сервисов анализа и обработки медиа
  */
 
+// Unified Orchestrator (NEW - AI Director Integration)
+export { UnifiedOrchestrator, unifiedOrchestrator } from "./services/unified-orchestrator"
+export type {
+  AnalysisWorkflow,
+  BatchAnalysisWorkflow,
+  OrchestratorOptions,
+} from "./services/unified-orchestrator"
+
+// Mappers
+export {
+  mapComprehensiveAnalysisToUnified,
+  mapMontageAnalysisToUnified,
+  isComprehensiveAnalysisResult,
+  isMontageAnalysisResult,
+} from "./mappers/ai-director-mapper"
+export type { UnifiedContentAnalysis } from "./mappers/ai-director-mapper"
+
+// Hooks
+export { useUnifiedAnalysis } from "./hooks/use-unified-analysis"
+export type {
+  UnifiedAnalysisState,
+  UnifiedAnalysisHook,
+} from "./hooks/use-unified-analysis"
+
 // Factories
 export {
   createMediaAnalysisFactory,

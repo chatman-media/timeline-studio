@@ -5,11 +5,9 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
-import type {
-
 import { createLogger } from "@/lib/tauri-logger"
 
-const logger = createLogger({ module: "UseMontageBackend" })
+import type {
   AudioContentAnalysis,
   MomentScore,
   MontageAnalysisConfig,
@@ -19,6 +17,8 @@ const logger = createLogger({ module: "UseMontageBackend" })
   PlanGeneratorConfig,
   VideoCompositionAnalysis,
 } from "../types"
+
+const logger = createLogger({ module: "UseMontageBackend" })
 
 export interface UseMontageBackendReturn {
   // Основные команды

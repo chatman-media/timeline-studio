@@ -173,7 +173,7 @@ export class VideoEditingOrchestrator {
     // Слушаем события из media домена
     eventBus.subscribe(
       async (event) => {
-        logger.info("[Video Editing Orchestrator] Received event:", { event.type })
+        logger.info("[Video Editing Orchestrator] Received event:", { data: event.type })
 
         switch (event.type) {
           case DOMAIN_EVENTS.MEDIA.FILES_IMPORTED:
@@ -269,7 +269,7 @@ export class VideoEditingOrchestrator {
    * Выполнить команду backend
    */
   async executeCommand(command: ProjectCommand): Promise<void> {
-    logger.info("[Video Editing Orchestrator] Executing command:", { command.type })
+    logger.info("[Video Editing Orchestrator] Executing command:", { data: command.type })
 
     try {
       await this.backendSync.executeCommand(command)

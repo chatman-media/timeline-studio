@@ -84,7 +84,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
 
       // Восстанавливаем историю из backend при загрузке
       if (state.undo_redo_state && state.undo_redo_state.history) {
-        logger.debug("[UndoRedo] Restored history from backend:", { data: state.undo_redo_state.history.length, "actions" })
+        logger.debug("[UndoRedo] Restored history from backend:", { data: `${state.undo_redo_state.history.length} actions` })
         // Здесь можно восстановить историю в UndoRedoService
         // Для этого потребуется добавить метод в сервис
       }

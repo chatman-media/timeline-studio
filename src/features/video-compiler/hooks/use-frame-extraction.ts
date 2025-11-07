@@ -4,17 +4,16 @@ import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { Subtitle } from "@/domains/video-editing/types"
 import { useFramePreview } from "@/features/media/hooks/use-frame-preview"
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseFrameExtraction" })
+import {
   type ExtractionPurpose,
   frameExtractionService,
   type RecognitionFrame,
   type SubtitleFrame,
   type TimelineFrame,
 } from "../services/frame-extraction-service"
+
+const logger = createLogger({ module: "UseFrameExtraction" })
 
 export interface UseFrameExtractionOptions {
   /** Кэшировать ли результаты в IndexedDB */

@@ -8,10 +8,6 @@ import type { TimelineTransition } from "@/features/timeline/types/timeline-tran
 
 import type { ExportSettings } from "../types/export-types"
 import {
-
-import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "TransitionExportService" })
   FFMPEG_TRANSITION_TEMPLATES,
   type FFmpegTransitionCommand,
   type FFmpegTransitionConfig,
@@ -22,6 +18,9 @@ const logger = createLogger({ module: "TransitionExportService" })
   type TransitionOptimizationSettings,
   type TransitionType,
 } from "../types/transition-export-types"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger({ module: "TransitionExportService" })
 
 export class TransitionExportService {
   private static instance: TransitionExportService

@@ -2,18 +2,16 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { appDirectoriesService } from "@/features/app-state/services"
 import { useResources } from "@/features/resources"
-
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseAutoLoadResources" })
+import {
   validateEffect,
   validateFilter,
   validateStyleTemplate,
   validateSubtitleStyle,
   validateTransition,
 } from "../utils/validation"
+
+const logger = createLogger({ module: "UseAutoLoadResources" })
 
 interface ResourceLoadStats {
   effects: number

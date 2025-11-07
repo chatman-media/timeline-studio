@@ -4,17 +4,15 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseNoiseReduction" })
+import {
   type AnalysisResult,
   type NoiseProfile,
   type NoiseReductionConfig,
   NoiseReductionEngine,
 } from "../services/noise-reduction/noise-reduction-engine"
+
+const logger = createLogger({ module: "UseNoiseReduction" })
 
 interface UseNoiseReductionProps {
   audioContext?: AudioContext

@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { useBrowserState } from "@/features/browser/services/browser-state-provider"
+import { useBrowserState } from "@/domains/browser"
 import { PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
 import { cn } from "@/lib/utils"
 import type { ListItem, UniversalListProps } from "../types/list"

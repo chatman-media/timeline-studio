@@ -8,15 +8,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
-import {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("SystemIntegrationProvider")
-
+import {
   getSystemIntegrationOrchestrator,
   type SystemIntegrationOrchestrator,
 } from "../services/system-integration-orchestrator"
+
+const logger = createLogger("SystemIntegrationProvider")
 
 interface SystemIntegrationContextValue {
   orchestrator: SystemIntegrationOrchestrator

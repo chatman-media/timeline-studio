@@ -8,9 +8,9 @@
 
 import { type ReactNode } from "react"
 import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
+import { BrowserProvider } from "@/domains/browser"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AppProvider } from "@/features/app-state/services/app-provider"
-import { BrowserStateProvider } from "@/features/browser/services/browser-state-provider"
 import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/theme-context"
 import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-provider"
 import { ModalProvider } from "@/features/modals/services/modal-provider"
@@ -49,7 +49,7 @@ const AppProviderComposite = composeProviders(
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
   // ShortcutsProvider, // ОТКЛЮЧЕНО: отключено по запросу
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
-  BrowserStateProvider, // ✅ Включен для поддержки браузерных операций
+  BrowserProvider, // ✅ Провайдер браузера с полной интеграцией backend state
 
   // ✅ НОВАЯ TIMELINE АРХИТЕКТУРА
   TimelineProvider, // Новый провайдер timeline с backend интеграцией

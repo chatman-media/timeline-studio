@@ -210,7 +210,7 @@ export class SubtitleAIIntegrationService {
       //   frames.map(frame => this.visionService.analyzeFrame(frame.imageData, frame.number))
       // )
 
-      logger.info("OCR analysis completed: found", { mockTextDetections.length })
+      logger.info("OCR analysis completed: found", { count: mockTextDetections.length })
       return mockTextDetections
     } catch (error) {
       logger.error("OCR analysis failed:", { error })
@@ -265,7 +265,7 @@ export class SubtitleAIIntegrationService {
         silence: this.detectSilenceSegments(enhancedSpeech),
       }
 
-      logger.info("Speech analysis completed: found", { enhancedSpeech.length })
+      logger.info("Speech analysis completed: found", { count: enhancedSpeech.length })
       return audioDetections
     } catch (error) {
       logger.error("Speech analysis failed:", { error })
@@ -351,7 +351,7 @@ export class SubtitleAIIntegrationService {
         },
       ]
 
-      logger.info("Scene analysis completed: found", { mockScenes.length })
+      logger.info("Scene analysis completed: found", { count: mockScenes.length })
       return mockScenes
     } catch (error) {
       logger.error("Scene analysis failed:", { error })

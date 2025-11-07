@@ -7,18 +7,16 @@ import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 
 import { useEffectsProvider } from "../providers/browser-resources-provider"
-
-import type {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger({ module: "UseResources" })
+import type {
   LoadingState,
   Resource,
   ResourceSource,
   ResourceStats,
   SearchOptions,
 } from "../types/browser-resources-provider"
+
+const logger = createLogger({ module: "UseResources" })
 
 /**
  * Хук для получения всех эффектов

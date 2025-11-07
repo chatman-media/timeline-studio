@@ -29,7 +29,7 @@ export const fileOperationsMachine = setup({
         if (event.type !== "START_OPERATION") return context.operations
         const newOperations = new Map(context.operations)
         newOperations.set(event.operation.id, event.operation)
-        logger.info("[File Operations] Starting operation ${event.operation.id} (", { event.operation.type })
+        logger.info(`[File Operations] Starting operation ${event.operation.id}`, { operationType: event.operation.type })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -50,7 +50,7 @@ export const fileOperationsMachine = setup({
           progress: event.progress,
           status: "processing",
         })
-        logger.info("[File Operations] Progress ${event.operationId}:", { event.progress })
+        logger.info(`[File Operations] Progress ${event.operationId}`, { progress: event.progress })
         return newOperations
       },
     }),
@@ -68,7 +68,7 @@ export const fileOperationsMachine = setup({
           progress: 100,
           result: event.result,
         })
-        logger.info("[File Operations] Completed", { event.operationId })
+        logger.info("[File Operations] Completed operation", { operationId: event.operationId })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -93,7 +93,7 @@ export const fileOperationsMachine = setup({
           status: "failed",
           error: event.error,
         })
-        logger.error("[File Operations] Failed", { event.operationId, event.error })
+        logger.error("[File Operations] Operation failed", { operationId: event.operationId, error: event.error })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -111,7 +111,7 @@ export const fileOperationsMachine = setup({
         if (event.type !== "CANCEL_OPERATION") return context.operations
         const newOperations = new Map(context.operations)
         newOperations.delete(event.operationId)
-        logger.info("[File Operations] Cancelled", { event.operationId })
+        logger.info("[File Operations] Cancelled operation", { operationId: event.operationId })
         return newOperations
       },
       activeOperations: ({ context, event }) => {
@@ -128,7 +128,7 @@ export const fileOperationsMachine = setup({
             newOperations.set(id, op)
           }
         })
-        logger.info("[File Operations] Cleared", { context.completedOperations.length })
+        logger.info("[File Operations] Cleared completed operations", { count: context.completedOperations.length })
         return newOperations
       },
       completedOperations: () => [],
@@ -147,7 +147,7 @@ export const fileOperationsMachine = setup({
           progress: 0,
           error: undefined,
         })
-        logger.info("[File Operations] Retrying", { event.operationId })
+        logger.info("[File Operations] Retrying operation", { operationId: event.operationId })
         return newOperations
       },
       failedOperations: ({ context, event }) => {

@@ -80,7 +80,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
   const mediaManagementService: MediaManagementService = {
     importFiles: async (files: string[], _options: MediaImportOptions) => {
-      logger.info("[Media Management] Importing", { files.length })
+      logger.info("[Media Management] Importing files", { filesCount: files.length })
       setIsLoading(true)
       setError(null)
       setMediaImportStatus("importing")

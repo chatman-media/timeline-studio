@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react"
 import type { BrowserStateAccess } from "@/features/ai-chat/tools/core/browser/types"
 import { setBrowserStateAccess } from "@/features/ai-chat/tools/core/browser/utils/helpers"
 import { useApp } from "@/features/app-state/services/app-provider"
-import { useBrowserState } from "@/features/browser/services/browser-state-provider"
+import { useBrowserState } from "@/domains/browser"
 import type { MediaFile } from "@/features/media/types/media"
 import { logInfo } from "@/lib/tauri-logger"
 

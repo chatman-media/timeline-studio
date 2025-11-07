@@ -44,7 +44,7 @@ export class SystemIntegrationOrchestrator {
     // Подписываемся на события модальных окон
     this.modalActor.subscribe((state) => {
       if (state.matches("opened")) {
-        logger.info("[System Integration] Modal opened:", { state.context.modalType })
+        logger.info("[System Integration] Modal opened:", { modalType: state.context.modalType })
       }
     })
 
@@ -149,13 +149,13 @@ export class SystemIntegrationOrchestrator {
       timestamp: new Date(),
     }
 
-    logger.info("[System Integration Orchestrator] Showing notification:", { notification.title })
+    logger.info("[System Integration Orchestrator] Showing notification:", { title: notification.title })
     this.notifications.push(fullNotification)
 
     // Автоматически удаляем уведомление после заданного времени
     if (notification.duration) {
       const startTime = performance.now()
-      logger.info("[System Integration Orchestrator] Scheduling notification dismissal in", { notification.duration })
+      logger.info("[System Integration Orchestrator] Scheduling notification dismissal in", { duration: notification.duration })
 
       setTimeout(() => {
         const duration = performance.now() - startTime
@@ -185,7 +185,7 @@ export class SystemIntegrationOrchestrator {
    * Управление функциями
    */
   toggleFeature(feature: string, enabled: boolean) {
-    logger.info("[System Integration Orchestrator] Feature '${feature}'", { enabled ? "enabled" : "disabled" })
+    logger.info(`[System Integration Orchestrator] Feature '${feature}' ${enabled ? "enabled" : "disabled"}`)
     this.features[feature] = enabled
   }
 

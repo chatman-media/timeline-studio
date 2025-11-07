@@ -5,18 +5,16 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import type {
-
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("MediaMetadataService")
-
+import type {
   MediaAnalysisResult,
   MediaMetadata,
   MediaMetadataService,
   QualityMetrics,
   SceneDetectionResult,
 } from "../types"
+
+const logger = createLogger("MediaMetadataService")
 
 class MediaMetadataServiceImpl implements MediaMetadataService {
   /**
@@ -42,7 +40,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    * Генерация thumbnail для видео файла
    */
   async generateThumbnail(filePath: string, time: number = 0): Promise<string> {
-    logger.info("[Media Metadata] Generating thumbnail for: ${filePath} at", { time })
+    logger.info(`[Media Metadata] Generating thumbnail for: ${filePath} at`, { time })
 
     try {
       const thumbnailPath = await invoke<string>("generate_video_thumbnail", {
@@ -140,7 +138,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         path: filePath,
       })
 
-      logger.info("[Media Metadata] Detected", { scenes.length })
+      logger.info("[Media Metadata] Detected scenes", { scenesCount: scenes.length })
       return scenes
     } catch (error) {
       logger.error("[Media Metadata] Scene detection failed:", { error })
@@ -157,7 +155,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
         path: filePath,
       })
 
-      logger.info("[Media Metadata] Generated waveform with", { waveformData.length })
+      logger.info("[Media Metadata] Generated waveform with samples", { samplesCount: waveformData.length })
       return new Float32Array(waveformData)
     } catch (error) {
       logger.error("[Media Metadata] Waveform generation failed:", { error })
