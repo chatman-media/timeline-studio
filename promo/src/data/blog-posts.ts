@@ -1,22 +1,22 @@
 // Явный импорт всех постов блога
 
 // English posts
-import enAiEditingRaw from "../../../content/blog/en/ai-video-editing-guide.md?raw"
-import enAlphaReleaseRaw from "../../../content/blog/en/alpha-release-ollama-integration.md?raw"
-import enIntroducingRaw from "../../../content/blog/en/introducing-timeline-studio.md?raw"
-import enVersionRaw from "../../../content/blog/en/version-079-documentation-investment.md?raw"
+import enAiEditingRaw from "../../content/blog/en/ai-video-editing-guide.md?raw"
+import enAlphaReleaseRaw from "../../content/blog/en/alpha-release-ollama-integration.md?raw"
+import enIntroducingRaw from "../../content/blog/en/introducing-timeline-studio.md?raw"
+import enVersionRaw from "../../content/blog/en/version-079-documentation-investment.md?raw"
 
 // Russian posts
-import ruAiEditingRaw from "../../../content/blog/ru/ai-video-editing-guide.md?raw"
-import ruAlphaReleaseRaw from "../../../content/blog/ru/alpha-release-ollama-integration.md?raw"
-import ruIntroducingRaw from "../../../content/blog/ru/introducing-timeline-studio.md?raw"
-import ruVersionRaw from "../../../content/blog/ru/version-079-documentation-investment.md?raw"
+import ruAiEditingRaw from "../../content/blog/ru/ai-video-editing-guide.md?raw"
+import ruAlphaReleaseRaw from "../../content/blog/ru/alpha-release-ollama-integration.md?raw"
+import ruIntroducingRaw from "../../content/blog/ru/introducing-timeline-studio.md?raw"
+import ruVersionRaw from "../../content/blog/ru/version-079-documentation-investment.md?raw"
 
 // Chinese posts
-import zhAiEditingRaw from "../../../content/blog/zh/ai-video-editing-guide.md?raw"
-import zhAlphaReleaseRaw from "../../../content/blog/zh/alpha-release-ollama-integration.md?raw"
-import zhIntroducingRaw from "../../../content/blog/zh/introducing-timeline-studio.md?raw"
-import zhVersionRaw from "../../../content/blog/zh/version-079-documentation-investment.md?raw"
+import zhAiEditingRaw from "../../content/blog/zh/ai-video-editing-guide.md?raw"
+import zhAlphaReleaseRaw from "../../content/blog/zh/alpha-release-ollama-integration.md?raw"
+import zhIntroducingRaw from "../../content/blog/zh/introducing-timeline-studio.md?raw"
+import zhVersionRaw from "../../content/blog/zh/version-079-documentation-investment.md?raw"
 
 export const blogPostsRaw = {
   en: {

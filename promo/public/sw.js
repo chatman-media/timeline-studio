@@ -1,109 +1,109 @@
-const CACHE_NAME = "timeline-studio-promo-v2"
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/favicon/favicon.ico",
-  "/favicon/favicon-96x96.png",
-  "/favicon/apple-touch-icon.png",
-  "/fav.svg",
+// Timeline Studio Promo Service Worker
+// Кэширование для быстрой загрузки
+
+const CACHE_VERSION = 'timeline-studio-v2.6.0'
+const CACHE_NAME = `${CACHE_VERSION}-static`
+const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`
+
+// Файлы для кэширования при установке
+const PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/favicon/favicon.svg',
+  '/fav.svg',
 ]
 
-// Определяем типы ресурсов для разных стратегий кеширования
-const isStaticAsset = (url) => {
-  return /\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|otf)$/i.test(url)
-}
-
-const isAPICall = (url) => {
-  return url.includes("/api/") || url.includes("github.com")
-}
-
 // Установка Service Worker
-self.addEventListener("install", (event) => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting()),
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Opened cache')
+      return cache.addAll(PRECACHE_URLS)
+    })
   )
+  self.skipWaiting()
 })
 
 // Активация Service Worker
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              return caches.delete(cacheName)
-            }
-          }),
-        )
-      })
-      .then(() => self.clients.claim()),
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE) {
+            console.log('Deleting old cache:', cacheName)
+            return caches.delete(cacheName)
+          }
+        })
+      )
+    })
   )
+  self.clients.claim()
 })
 
-// Стратегия кэширования
-self.addEventListener("fetch", (event) => {
-  // Пропускаем не-GET запросы
-  if (event.request.method !== "GET") return
+// Обработка запросов
+self.addEventListener('fetch', (event) => {
+  const { request } = event
+  const url = new URL(request.url)
 
-  const url = event.request.url
-
-  // Для API запросов - всегда сеть
-  if (isAPICall(url)) {
-    event.respondWith(fetch(event.request))
+  if (url.origin !== location.origin) {
     return
   }
 
-  // Для статических ресурсов - кэш с откатом на сеть
-  if (isStaticAsset(url)) {
+  // Стратегия для навигации (HTML)
+  if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match(event.request).then((response) => {
-        if (response) {
-          return response
-        }
-        return fetch(event.request).then((response) => {
-          // Проверяем валидность ответа
-          if (!response || response.status !== 200 || response.type !== "basic") {
-            return response
-          }
-          // Клонируем ответ для кэша
-          const responseToCache = response.clone()
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache)
+      fetch(request)
+        .then((response) => {
+          const responseClone = response.clone()
+          caches.open(RUNTIME_CACHE).then((cache) => {
+            cache.put(request, responseClone)
           })
           return response
         })
-      }),
+        .catch(() => {
+          return caches.match(request).then((cachedResponse) => {
+            return cachedResponse || caches.match('/index.html')
+          })
+        })
     )
     return
   }
 
-  // Для HTML и остальных - сеть с откатом на кэш
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Проверяем валидность ответа
-        if (!response || response.status !== 200 || response.type !== "basic") {
-          return response
+  // Cache First для статики
+  if (url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|eot)$/)) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse
         }
-        // Для HTML не кэшируем
-        if (event.request.headers.get("accept")?.includes("text/html")) {
+        return fetch(request).then((response) => {
+          if (!response || response.status !== 200 || response.type === 'error') {
+            return response
+          }
+          const responseToCache = response.clone()
+          caches.open(RUNTIME_CACHE).then((cache) => {
+            cache.put(request, responseToCache)
+          })
           return response
-        }
-        // Клонируем ответ для кэша
-        const responseToCache = response.clone()
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache)
         })
+      })
+    )
+    return
+  }
+
+  // Network First для остального
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (request.method === 'GET' && response.status === 200) {
+          const responseClone = response.clone()
+          caches.open(RUNTIME_CACHE).then((cache) => {
+            cache.put(request, responseClone)
+          })
+        }
         return response
       })
-      .catch(() => {
-        // Если сеть недоступна, пробуем кэш
-        return caches.match(event.request)
-      }),
+      .catch(() => caches.match(request))
   )
 })
