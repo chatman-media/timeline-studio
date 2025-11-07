@@ -1,3 +1,36 @@
+# [2.7.0](https://github.com/chatman-media/timeline-studio/compare/v2.6.0...v2.7.0) (2025-11-07)
+
+
+### Bug Fixes
+
+* **ai-tools:** Дополнительные исправления после автоформатирования ([63dcffa](https://github.com/chatman-media/timeline-studio/commit/63dcffa8d441f90b837fd6a236752759d043284e))
+* **timeline:** Массовое исправление TypeScript ошибок - 5 агентов (129 ошибок) ([27670bd](https://github.com/chatman-media/timeline-studio/commit/27670bde2f8ef322539598c5ef2cb14518e42b5d))
+* **types:** Исправление TypeScript ошибок в AI-инструментах, медиа типах и тестах ([290caba](https://github.com/chatman-media/timeline-studio/commit/290cabaabb6cea6d32eb2846714ff5d90e2afad9))
+* **types:** Массовое исправление TypeScript ошибок - 5 модулей ([f97a4ce](https://github.com/chatman-media/timeline-studio/commit/f97a4ce14430f5c5b22eacb030b5c776b3e7a169))
+* **wave-4:** Комплексный аудит и исправление 10 модулей - 217 ошибок ([4abd050](https://github.com/chatman-media/timeline-studio/commit/4abd0506a340aec6372f03cbdfa26fa34dd87622))
+* **wave-5:** Исправление TypeScript ошибок в 10 модулях - 165 ошибок ([6b144d2](https://github.com/chatman-media/timeline-studio/commit/6b144d250e521a9d83e10d1535ad1f5aa0b61a4a))
+* **wave-6:** Исправление TypeScript ошибок в 7 модулях - 68 ошибок ([3873d51](https://github.com/chatman-media/timeline-studio/commit/3873d51e02ea70d3c3d37f649213fed84255da2c))
+* Восстановлены отсутствующие типы и константы browser domain ([794c708](https://github.com/chatman-media/timeline-studio/commit/794c708fda1eed8220c0f4322361625959d8b40c))
+* Добавлена опциональная цепочка для event в AI Intelligence Machine V2 ([af84cd6](https://github.com/chatman-media/timeline-studio/commit/af84cd6dfa0715cdb53cc84a15557a0ac5f1caf5))
+* Исправлена ошибка Specta export для usize типа ([70e4e4e](https://github.com/chatman-media/timeline-studio/commit/70e4e4ec418022bc876eb81b268f958324fec133))
+* Исправлено 465 TypeScript ошибок - волна 3 (параллельная обработка) ([3f5f4ce](https://github.com/chatman-media/timeline-studio/commit/3f5f4ceb0b08b59cb592045ed4ca092d52ce67dc))
+* Исправлено 487 TypeScript ошибок в 10 модулях (параллельная обработка) ([8d7ec53](https://github.com/chatman-media/timeline-studio/commit/8d7ec53567bb158b156f787d31cf8e07d38d97a3))
+* Исправлено 566 TypeScript ошибок - волна 2 (параллельная обработка) ([1809f3d](https://github.com/chatman-media/timeline-studio/commit/1809f3d04c306dc12bd2859d779a500ba561f165))
+* Исправлены changelog и blog на промо-сайте ([f78ecc6](https://github.com/chatman-media/timeline-studio/commit/f78ecc6e63ee3c104dc0b562159416ba6005a7c2))
+* Исправлены все синтаксические ошибки TypeScript после миграции на logger ([41cdf7d](https://github.com/chatman-media/timeline-studio/commit/41cdf7da1d63fed251f6d442d2c2b4f1296e716b))
+* Обновлены тексты промо-сайта для видеоредактора ([d4e2ba1](https://github.com/chatman-media/timeline-studio/commit/d4e2ba1e03ec186d41d41a6de93dbb7ff16f1039))
+* Убраны неэффективные preload/prefetch директивы ([8a906ec](https://github.com/chatman-media/timeline-studio/commit/8a906ec43f550957842e34d37370450e068ec4b4))
+
+
+### Features
+
+* **ai-core:** Оптимизирована стратегия распределения AI моделей ([b967549](https://github.com/chatman-media/timeline-studio/commit/b9675491aa410e3fb787fa1a05c1b3cea24d451c))
+
+
+### Performance Improvements
+
+* Оптимизация промо-сайта - Service Worker и план улучшений ([e7074f9](https://github.com/chatman-media/timeline-studio/commit/e7074f9de994e7661bfa47137b957692467a6a72))
+
 # [2.6.0](https://github.com/chatman-media/timeline-studio/compare/v2.5.0...v2.6.0) (2025-11-07)
 
 
