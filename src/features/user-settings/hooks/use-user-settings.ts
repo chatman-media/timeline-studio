@@ -1,4 +1,4 @@
-import { type BrowserTab } from "@/domains/browser/types"
+import { type BrowserTab } from "@/domains/browser"
 import { useUserSettings as useDomainUserSettings } from "@/domains/project-management"
 import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
 import { type UserSettingsContextValue } from "../services/user-settings-provider"

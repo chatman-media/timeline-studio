@@ -6,7 +6,7 @@
  */
 
 import { assign, createMachine } from "xstate"
-import { BrowserContext, BrowserTab, DEFAULT_TAB } from "@/domains/browser/types"
+import { BrowserContext, BrowserTab, DEFAULT_TAB } from "@/domains/browser"
 import { DEFAULT_CONTENT_SIZES, type PreviewSize, type PreviewSizeKey } from "@/features/media/utils/preview-sizes"
 
 import { createLogger } from "@/lib/tauri-logger"

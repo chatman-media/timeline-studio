@@ -1,7 +1,7 @@
 // Используем типы и машину из домена
 
 import { createContext, useEffect, useState } from "react"
-import { type BrowserTab } from "@/domains/browser/types"
+import { type BrowserTab } from "@/domains/browser"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
