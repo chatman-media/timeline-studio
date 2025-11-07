@@ -380,6 +380,9 @@ const LinkedAccountsSection: React.FC = () => {
 ### Обработка токенов и автообновление
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('SocialAuthIntegration')
+
 // Token Manager Service
 class TokenManager {
   private refreshTimers = new Map<string, NodeJS.Timeout>()
@@ -410,7 +413,7 @@ class TokenManager {
         try {
           await this.refreshToken(provider, tokens)
         } catch (error) {
-          console.error(`Failed to refresh token for ${provider}:`, error)
+          logger.errorSync(`Failed to refresh token for ${provider}:`, error)
           // Уведомляем пользователя о необходимости повторной авторизации
           this.notifyReauthRequired(provider)
         }

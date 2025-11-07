@@ -421,6 +421,9 @@ jobs:
 ### Сбор метрик производительности
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TestingRealMediaNew')
+
 // e2e/utils/performance-monitor.ts
 export class PerformanceMonitor {
   private metrics: Map<string, number> = new Map();
@@ -443,7 +446,7 @@ export class PerformanceMonitor {
   }
 
   logMetrics(): void {
-    console.log('Performance Metrics:', this.getMetrics());
+    logger.infoSync('Performance Metrics:', this.getMetrics());
   }
 }
 ```

@@ -32,6 +32,9 @@ const vimeo = await initializeVimeo({
 ### Personal Access Token
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // Using personal token
 const vimeo = new VimeoClient({
   accessToken: 'your_personal_access_token'
@@ -39,7 +42,7 @@ const vimeo = new VimeoClient({
 
 // Verify token
 const user = await vimeo.request('/me')
-console.log(`Authenticated as: ${user.name}`)
+logger.infoSync(`Authenticated as: ${user.name}`)
 ```
 
 ### OAuth 2.0
@@ -69,6 +72,9 @@ await saveTokens('vimeo', tokens)
 ### Basic Upload
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // Simple upload
 const upload = await vimeo.upload({
   file: '/path/to/video.mp4',
@@ -85,15 +91,15 @@ const upload = await vimeo.upload({
 
 // Track progress
 upload.on('progress', (progress) => {
-  console.log(`Uploaded: ${progress.percentage}%`)
-  console.log(`Speed: ${progress.bytesPerSecond} bytes/sec`)
-  console.log(`Time remaining: ${progress.estimatedTimeRemaining}s`)
+  logger.debugSync(`Uploaded: ${progress.percentage}%`)
+  logger.debugSync(`Speed: ${progress.bytesPerSecond} bytes/sec`)
+  logger.debugSync(`Time remaining: ${progress.estimatedTimeRemaining}s`)
 })
 
 // Upload complete
 upload.on('complete', (video) => {
-  console.log(`Video uploaded: ${video.link}`)
-  console.log(`Video ID: ${video.resource_key}`)
+  logger.infoSync(`Video uploaded: ${video.link}`)
+  logger.infoSync(`Video ID: ${video.resource_key}`)
 })
 ```
 
@@ -127,6 +133,9 @@ const advancedUpload = await vimeo.upload({
 ### Tus Resumable Upload
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // Create resumable upload (Tus protocol)
 const tusUpload = await vimeo.createTusUpload({
   size: videoFile.size,
@@ -143,7 +152,7 @@ const uploader = vimeo.uploadWithTus(tusUpload.upload_link, {
     updateProgressBar(bytesUploaded / bytesTotal)
   },
   onError: (error) => {
-    console.error('Upload error:', error)
+    logger.errorSync('Upload error:', error)
     // Upload will automatically resume
   }
 })
@@ -191,14 +200,17 @@ await vimeo.uploadPicture(videoId, {
 ### Get Information
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // Detailed video information
 const video = await vimeo.request(`/videos/${videoId}`, {
   fields: 'uri,name,description,duration,width,height,created_time,stats,pictures,download,files'
 })
 
-console.log(`Views: ${video.stats.plays}`)
-console.log(`Duration: ${video.duration}s`)
-console.log(`Resolution: ${video.width}x${video.height}`)
+logger.infoSync(`Views: ${video.stats.plays}`)
+logger.infoSync(`Duration: ${video.duration}s`)
+logger.infoSync(`Resolution: ${video.width}x${video.height}`)
 
 // Get video list
 const videos = await vimeo.request('/me/videos', {
@@ -352,13 +364,16 @@ await vimeo.request(`/videos/${videoId}/privacy/domains/yourdomain.com`, {
 ### Video Statistics
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // General statistics
 const stats = await vimeo.request(`/videos/${videoId}/stats`)
 
-console.log(`Total plays: ${stats.plays}`)
-console.log(`Unique viewers: ${stats.unique_viewers}`)
-console.log(`Average time watched: ${stats.average_time_watched}`)
-console.log(`Total time watched: ${stats.total_time_watched}`)
+logger.infoSync(`Total plays: ${stats.plays}`)
+logger.infoSync(`Unique viewers: ${stats.unique_viewers}`)
+logger.infoSync(`Average time watched: ${stats.average_time_watched}`)
+logger.infoSync(`Total time watched: ${stats.total_time_watched}`)
 
 // Detailed analytics (requires Vimeo Pro)
 const analytics = await vimeo.request(`/videos/${videoId}/analytics`, {
@@ -383,6 +398,9 @@ const timeSeriesData = await vimeo.request(`/videos/${videoId}/analytics/timeser
 ### Create Broadcast
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 // Create live event (requires Vimeo Premium)
 const liveEvent = await vimeo.request('/me/live_events', {
   method: 'POST',
@@ -405,8 +423,8 @@ const liveEvent = await vimeo.request('/me/live_events', {
 })
 
 // Get RTMP data
-console.log(`RTMP URL: ${liveEvent.rtmp.url}`)
-console.log(`Stream Key: ${liveEvent.rtmp.stream_key}`)
+logger.infoSync(`RTMP URL: ${liveEvent.rtmp.url}`)
+logger.infoSync(`Stream Key: ${liveEvent.rtmp.stream_key}`)
 
 // Manage broadcast
 await vimeo.request(`/live_events/${liveEvent.resource_key}/activate`, {
@@ -453,23 +471,26 @@ await vimeo.request(`/videos/${videoId}/permissions`, {
 ## Error Handling
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VimeoApi')
+
 try {
   await vimeo.upload(videoData)
 } catch (error) {
   if (error.name === 'QUOTA_EXCEEDED') {
-    console.error('Storage quota exceeded')
+    logger.errorSync('Storage quota exceeded')
     showUpgradePrompt()
   } else if (error.name === 'INVALID_FILE') {
-    console.error('Unsupported file format')
+    logger.errorSync('Unsupported file format')
     showSupportedFormats()
   } else if (error.name === 'UPLOAD_ERROR') {
-    console.error('Upload error:', error.message)
+    logger.errorSync('Upload error:', error.message)
     // Attempt to resume for Tus uploads
     if (error.uploadUrl) {
       resumeUpload(error.uploadUrl)
     }
   } else if (error.name === 'RATE_LIMIT') {
-    console.error('Rate limit exceeded')
+    logger.errorSync('Rate limit exceeded')
     await delay(error.retryAfter * 1000)
   }
 }

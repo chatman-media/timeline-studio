@@ -111,7 +111,9 @@ function PreviewComponent() {
 
 ```typescript
 import { PreviewCache } from '@/features/preview/services'
+import { createLogger } from '@/lib/tauri-logger'
 
+const logger = createLogger('PreviewCache')
 const cache = new PreviewCache(100) // 100MB limit
 
 // Получение или вычисление кадра
@@ -135,7 +137,7 @@ await cache.prefetch(
 
 // Статистика кэша
 const stats = cache.getStats()
-console.log(`Cache: ${stats.entries} entries, ${stats.sizeMB}MB`)
+logger.debugSync('Cache statistics', { entries: stats.entries, sizeMB: stats.sizeMB })
 ```
 
 ## 🚀 Быстрый старт
@@ -295,9 +297,12 @@ setQuality(customQuality)
 ### Cache Statistics
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('CacheStats')
 const { cacheStats } = useWebGL2Preview()
 
-console.log('Cache Stats:', {
+logger.debugSync('Cache Stats:', {
   entries: cacheStats.entries,        // Количество кэшированных кадров
   sizeMB: cacheStats.sizeMB,         // Размер кэша в MB
   hitRate: cacheStats.hitRate,       // Коэффициент попаданий
@@ -309,14 +314,17 @@ console.log('Cache Stats:', {
 
 ```typescript
 import { PerformanceMonitor } from '@/features/preview/utils'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const monitor = new PerformanceMonitor()
 
 monitor.on('frameRendered', (stats) => {
-  console.log(`Frame rendered in ${stats.renderTime}ms`)
+  logger.debugSync(`Frame rendered in ${stats.renderTime}ms`)
   
   if (stats.renderTime > 33) { // Больше 33ms = менее 30 FPS
-    console.warn('Frame drop detected, consider reducing quality')
+    logger.warnSync('Frame drop detected, consider reducing quality')
   }
 })
 ```
@@ -403,10 +411,14 @@ setQuality({
 
 **Проблемы с видео:**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('VideoCheck')
+
 // Проверить поддержку формата
 const video = videoRef.current
 if (video.readyState < 2) {
-  console.warn('Video not ready for processing')
+  logger.warnSync('Video not ready for processing')
 }
 ```
 

@@ -55,11 +55,14 @@ isTempProject(): boolean
 ### Автоматическая инициализация
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TempProjectAutoSave')
+
 // В AppSettingsProvider - автоматически вызывается при загрузке
 useEffect(() => {
   if (!state.context.isLoading && !state.context.currentProject.path && state.context.currentProject.isNew) {
     loadOrCreateTempProject().catch(error => {
-      console.error("Failed to load or create temp project:", error)
+      logger.errorSync("Failed to load or create temp project:", error)
     })
   }
 }, [state.context.isLoading, state.context.currentProject.path, state.context.currentProject.isNew, send])
@@ -68,12 +71,15 @@ useEffect(() => {
 ### Автоматическое сохранение с синхронизацией ресурсов
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TempProjectAutoSave')
+
 const autoSaveTempProject = async () => {
   try {
     const currentProject = getCurrentProject()
     
     if (currentProject.path && currentProject.path.includes(TEMP_PROJECT_FILENAME)) {
-      console.log("Auto-saving temp project...")
+      logger.infoSync("Auto-saving temp project...")
       
       const projectService = TimelineStudioProjectService.getInstance()
       const project = await projectService.openProject(currentProject.path)
@@ -87,10 +93,10 @@ const autoSaveTempProject = async () => {
       // Сохраняем обновленный проект
       await projectService.saveProject(updatedProject, currentProject.path)
       
-      console.log(`Temp project auto-saved with ${updatedProject.mediaPool.items.size} media items`)
+      logger.infoSync(`Temp project auto-saved with ${updatedProject.mediaPool.items.size} media items`)
     }
   } catch (error) {
-    console.error("Failed to auto-save temp project:", error)
+    logger.errorSync("Failed to auto-save temp project:", error)
   }
 }
 ```

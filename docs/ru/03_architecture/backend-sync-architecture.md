@@ -59,6 +59,9 @@ interface BackendSyncService {
 Стандартный паттерн интеграции для React провайдеров:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('BackendSyncArchitecture')
+
 // 1. Полная интеграция BackendSync
 const backendSync = getBackendSync()
 const [isConnected, setIsConnected] = useState(backendSync.connected)
@@ -86,9 +89,11 @@ useEffect(() => {
 // 4. Debounced синхронизация для частых обновлений
 useEffect(() => {
   const syncTimeout = setTimeout(() => {
-    syncState().catch(console.error)
+    syncState().catch((error) => {
+      logger.errorSync('Failed to sync state', { error })
+    })
   }, 2000) // 2 секунды задержка
-  
+
   return () => clearTimeout(syncTimeout)
 }, [state, isConnected])
 ```
@@ -133,12 +138,17 @@ useEffect(() => {
 Для компонентов с частыми обновлениями (слайдеры, инпуты):
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('BackendSyncArchitecture')
+
 // ColorGradingProvider - 500ms debounce
 useEffect(() => {
   const syncTimeout = setTimeout(() => {
-    syncColorGradingState().catch(console.error)
+    syncColorGradingState().catch((error) => {
+      logger.errorSync('Failed to sync color grading state', { error })
+    })
   }, 500)
-  
+
   return () => clearTimeout(syncTimeout)
 }, [colorState, isConnected])
 ```
@@ -148,6 +158,9 @@ useEffect(() => {
 Для отслеживания пользовательских действий:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('BackendSyncArchitecture')
+
 // BrowserStateProvider
 const switchTab = (tab: BrowserTab) => {
   setState((prev) => ({ ...prev, activeTab: tab }))
@@ -160,7 +173,9 @@ const switchTab = (tab: BrowserTab) => {
         type: "LogBrowserAction",
         params: { action: "switch_tab", tab },
       },
-    }).catch(console.error)
+    }).catch((error) => {
+      logger.errorSync('Failed to log browser action', { error })
+    })
   }
 }
 ```
@@ -170,6 +185,9 @@ const switchTab = (tab: BrowserTab) => {
 Автоматическое восстановление состояния при reconnect:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('BackendSyncArchitecture')
+
 useEffect(() => {
   const unsubscribe = backendSync.onStateChange((projectState) => {
     setIsConnected(true)
@@ -180,7 +198,7 @@ useEffect(() => {
         ...prevState,
         ...projectState.domain_state,
       }))
-      console.log("State restored from backend")
+      logger.infoSync("State restored from backend")
     }
   })
   

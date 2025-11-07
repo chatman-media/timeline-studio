@@ -1,6 +1,17 @@
-# Вызовы console.error в кодовой базе Timeline Studio
+# ⚠️ DEPRECATED: Использование console.* в Timeline Studio
 
-Этот документ содержит сводку всех вызовов console.error, найденных в TypeScript/JavaScript коде в директории src/features/.
+> **ВНИМАНИЕ:** Этот документ устарел. Timeline Studio больше НЕ использует `console.log`, `console.error`, `console.warn`.
+>
+> **Используйте TauriLogger:**
+> См. [TauriLogger Руководство](/docs/ru/03_architecture/backend/telemetry-tauri-logger.md)
+>
+> **Этот файл сохранён для исторической справки.**
+
+---
+
+## Историческая сводка вызовов console.error
+
+Этот документ содержит сводку всех вызовов console.error, найденных в TypeScript/JavaScript коде в директории src/features/ (на момент миграции на TauriLogger).
 
 ## Сводка по функциональным модулям
 

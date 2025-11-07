@@ -57,7 +57,7 @@ const files = await open({
 import { listen } from '@tauri-apps/api/event';
 
 const unlisten = await listen('file-drop', (event) => {
-  console.log('Files dropped:', event.payload);
+  logger.debugSync('Files dropped:', event.payload);
 });
 ```
 
@@ -143,6 +143,9 @@ afterEach(() => {
 ### Кастомизация поведения
 ```typescript
 import { invoke } from '@tauri-apps/api/core';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Настройка специфического ответа
 vi.mocked(invoke).mockImplementation(async (cmd, args) => {

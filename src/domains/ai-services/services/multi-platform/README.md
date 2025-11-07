@@ -61,6 +61,9 @@ multi-platform/
 
 ```typescript
 import { MultiPlatformEngine } from './services/multi-platform-engine'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const engine = new MultiPlatformEngine()
 
@@ -71,9 +74,9 @@ const adaptations = await engine.adaptContent(
 )
 
 // Получить рекомендации для YouTube
-console.log(adaptations.youtube.recommendations)
-console.log(adaptations.youtube.metadata)
-console.log(adaptations.youtube.optimizedContent)
+logger.debugSync(adaptations.youtube.recommendations)
+logger.debugSync(adaptations.youtube.metadata)
+logger.debugSync(adaptations.youtube.optimizedContent)
 ```
 
 ### Адаптация для конкретной платформы
@@ -100,8 +103,8 @@ const validation = await engine.validateContent(
 )
 
 if (!validation.isValid) {
-  console.log(validation.issues) // Что нужно исправить
-  console.log(validation.suggestions) // Как исправить
+  logger.debugSync(validation.issues) // Что нужно исправить
+  logger.debugSync(validation.suggestions) // Как исправить
 }
 ```
 

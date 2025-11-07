@@ -11,6 +11,9 @@ React хуки для функциональности AI Chat - актуаль�
 
 **Возвращаемые значения:**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface ChatContextType {
   // Текущая сессия и сообщения
   currentSession: ChatSession | null
@@ -222,7 +225,7 @@ function TimelineCreator() {
     `)
     
     if (result.success) {
-      console.log('Проект создан:', result.data?.createdProject)
+      logger.debugSync('Проект создан:', result.data?.createdProject)
       
       // Выполняем дополнительную обработку
       await executeCommand("add-romantic-effects", {
@@ -230,7 +233,7 @@ function TimelineCreator() {
         style: "soft"
       })
     } else {
-      console.error('Ошибки:', result.errors)
+      logger.errorSync('Ошибки:', result.errors)
     }
   }
 
@@ -239,7 +242,7 @@ function TimelineCreator() {
       "Проанализируй качество всех видео и предложи улучшения"
     )
     
-    console.log('Предложения:', result.data?.suggestions)
+    logger.debugSync('Предложения:', result.data?.suggestions)
   }
 
   return (
@@ -270,17 +273,17 @@ function SafeTimelineAccess() {
   
   const processCurrentProject = () => {
     if (!timeline) {
-      console.warn('Timeline не доступен')
+      logger.warnSync('Timeline не доступен')
       return
     }
     
     // Безопасное использование timeline
     const project = timeline.currentProject
     if (project) {
-      console.log('Текущий проект:', project.name)
-      console.log('Длительность:', project.duration, 'секунд')
+      logger.debugSync('Текущий проект:', project.name)
+      logger.debugSync('Длительность:', project.duration, 'секунд')
     } else {
-      console.log('Проект не загружен')
+      logger.debugSync('Проект не загружен')
     }
   }
 
@@ -589,9 +592,9 @@ const { clearMessages, removeMessage } = useChatActions()
 const cleanupChat = useCallback(async () => {
   try {
     await clearMessages()
-    console.log('Чат очищен')
+    logger.debugSync('Чат очищен')
   } catch (error) {
-    console.error('Ошибка очистки чата:', error)
+    logger.errorSync('Ошибка очистки чата:', error)
   }
 }, [clearMessages])
 

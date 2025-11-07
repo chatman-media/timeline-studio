@@ -639,6 +639,9 @@ const { isAnalyzing, currentProgress, errors } = useAIDirectorAnalysis()
 ### Create Project and Analyze
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorDashboardIntegration')
+
 import { useAnalysisAdapter } from "@/features/analysis-dashboard/hooks/use-analysis-adapter"
 
 function CreateProjectDialog() {
@@ -667,7 +670,7 @@ function CreateProjectDialog() {
 
     // 3. Get results
     const scenes = await getProjectScenes(projectId)
-    console.log("Found scenes:", scenes)
+    logger.infoSync("Found scenes:", scenes)
   }
 }
 ```

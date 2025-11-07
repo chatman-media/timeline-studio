@@ -35,20 +35,23 @@ src/lib/webgl/
 
 ```typescript
 import { contextManager } from '@/lib/webgl'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('WebGLExample')
 
 // Инициализация контекста
 const success = contextManager.initialize({ canvas })
 
 // Получение возможностей GPU
 const capabilities = contextManager.getCapabilities()
-console.log(capabilities.tier) // "low" | "medium" | "high"
+logger.debugSync('GPU capabilities detected', { tier: capabilities.tier })
 
 // Изменение размера
 contextManager.resize(1920, 1080)
 
 // События
-contextManager.on('contextLost', () => console.log('Context lost'))
-contextManager.on('contextRestored', () => console.log('Context restored'))
+contextManager.on('contextLost', () => logger.warnSync('WebGL context lost'))
+contextManager.on('contextRestored', () => logger.infoSync('WebGL context restored'))
 ```
 
 ### ShaderPool
@@ -120,12 +123,15 @@ class MyRenderer extends BaseRenderer {
 1. **Инициализация контекста:**
 ```typescript
 import { contextManager } from '@/lib/webgl'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('WebGLInit')
 
 const canvas = document.createElement('canvas')
 const success = contextManager.initialize({ canvas })
 
 if (success) {
-  console.log('WebGL2 initialized successfully')
+  logger.infoSync('WebGL2 initialized successfully')
 }
 ```
 
@@ -202,17 +208,21 @@ switch (capabilities.tier) {
 Библиотека поддерживает события для реагирования на изменения контекста:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('WebGLEvents')
+
 contextManager.on('contextLost', () => {
-  console.log('WebGL context lost - pausing rendering')
+  logger.warnSync('WebGL context lost - pausing rendering')
 })
 
 contextManager.on('contextRestored', () => {
-  console.log('WebGL context restored - resuming rendering')
+  logger.infoSync('WebGL context restored - resuming rendering')
   // Перезагрузка ресурсов
 })
 
 contextManager.on('resize', ({ width, height, dpr }) => {
-  console.log(`Canvas resized: ${width}x${height} (DPR: ${dpr})`)
+  logger.debugSync('Canvas resized', { width, height, dpr })
 })
 ```
 

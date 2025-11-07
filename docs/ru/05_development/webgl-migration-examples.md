@@ -103,6 +103,9 @@ export function PreviewPanel() {
 ### После (WebGL2 хук)
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('WebglMigrationExamples')
+
 // Компонент использующий новое WebGL2 превью
 export function PreviewPanel() {
   const { canvasRef, isInitialized, gpuTier } = useWebGL2Preview({
@@ -110,7 +113,7 @@ export function PreviewPanel() {
   })
   
   // Уровень GPU определяется автоматически
-  console.log(`Работает на ${gpuTier} GPU`)
+  logger.infoSync(`Работает на ${gpuTier} GPU`)
 }
 ```
 

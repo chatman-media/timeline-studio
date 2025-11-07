@@ -186,6 +186,9 @@ pub async fn ai_director_analyze_comprehensive(
 
 1. **Обновите компоненты анализа:**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('UnifiedAudioMigrationGuide')
+
 // src/features/analysis-dashboard/components/analysis-dashboard.tsx
 export function AnalysisDashboard() {
   const { analyzeComprehensive } = useAIDirector();
@@ -197,10 +200,10 @@ export function AnalysisDashboard() {
       // Unified результаты теперь имеют f64 точность
       if (result.audio_analysis?.unified_result) {
         const quality = result.audio_analysis.unified_result.overall_quality;
-        console.log(`Audio quality: ${(quality * 100).toFixed(2)}%`);
+        logger.infoSync(`Audio quality: ${(quality * 100).toFixed(2)}%`);
       }
     } catch (error) {
-      console.error('Analysis failed:', error);
+      logger.errorSync('Analysis failed:', error);
     }
   };
   

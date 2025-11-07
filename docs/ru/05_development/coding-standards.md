@@ -41,7 +41,24 @@ const MAX = 3  // Неясно максимум чего
 
 ### Основные правила
 
-1. **Используйте TypeScript strict mode**
+1. **Логирование с TauriLogger**
+   ```typescript
+   import { createLogger } from '@/lib/tauri-logger'
+
+   // ✅ Хорошо - структурированное логирование
+   const logger = createLogger('VideoProcessor')
+
+   logger.debugSync('Processing started', { videoId, settings })
+   logger.infoSync('Frame processed', { frameNumber, timestamp })
+   logger.warnSync('Low memory warning', { available: memoryMb })
+   logger.errorSync('Processing failed', { error, videoId })
+
+   // ❌ Плохо - никогда не используйте console в production коде
+   console.log('Processing video:', videoId)
+   console.error('Failed to process:', error)
+   ```
+
+2. **Используйте TypeScript strict mode**
    ```json
    {
      "compilerOptions": {
@@ -52,45 +69,46 @@ const MAX = 3  // Неясно максимум чего
    }
    ```
 
-2. **Избегайте `any` типов**
+3. **Избегайте `any` типов**
    ```typescript
    // ❌ Плохо
    const processData = (data: any) => {}
-   
+
    // ✅ Хорошо
    const processData = (data: MediaFile) => {}
    const processGenericData = <T>(data: T) => {}
    ```
 
-3. **Порядок импортов**
+4. **Порядок импортов**
    ```typescript
    // 1. Встроенные модули Node.js
    import { readFile } from 'fs/promises'
-   
+
    // 2. Внешние зависимости
    import React, { useState } from 'react'
    import { motion } from 'framer-motion'
-   
+
    // 3. Внутренние абсолютные импорты
+   import { createLogger } from '@/lib/tauri-logger'
    import { useTimeline } from '@/features/timeline'
    import { Button } from '@/components/ui'
-   
+
    // 4. Относительные импорты
    import { VideoPlayer } from './components/video-player'
    import type { MediaFile } from './types'
-   
+
    // 5. CSS импорты
    import './styles.css'
    ```
 
-4. **Именование файлов**
+5. **Именование файлов**
    - Компоненты: `kebab-case` (например, `video-player.tsx`)
    - Хуки: `use-` префикс (например, `use-timeline.ts`)
    - Утилиты: `kebab-case` (например, `media-utils.ts`)
    - Типы: `kebab-case` (например, `timeline-types.ts`)
    - Константы: `kebab-case` (например, `app-constants.ts`)
 
-5. **Экспорты**
+6. **Экспорты**
    ```typescript
    // ✅ Предпочитайте именованные экспорты
    export const VideoPlayer = () => {}
@@ -133,29 +151,32 @@ export const process = async (f: any, opts: any) => {
 ### Async/Await и обработка ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaLoader')
+
 // ✅ Хорошо
 export const loadMediaFile = async (path: string): Promise<MediaFile> => {
   try {
     const metadata = await getFileMetadata(path)
     const thumbnail = await generateThumbnail(path)
-    
+
     return {
       path,
       metadata,
       thumbnail
     }
   } catch (error) {
-    console.error(`Failed to load media file: ${path}`, error)
+    logger.errorSync('Failed to load media file', { path, error })
     throw new MediaLoadError(`Cannot load file: ${path}`, { cause: error })
   }
 }
 
-// ❌ Плохо
+// ❌ Плохо - использует console и неправильную обработку ошибок
 export const loadMedia = (path: string) => {
   return getFileMetadata(path)
     .then(metadata => generateThumbnail(path)
       .then(thumbnail => ({ path, metadata, thumbnail })))
-    .catch(e => console.log(e))
+    .catch(e => console.log(e))  // Никогда не используйте console в production
 }
 ```
 
@@ -622,7 +643,7 @@ hotfix/critical-security-issue
 - [ ] Линтеры не показывают ошибок (`bun run lint`)
 - [ ] Добавлена/обновлена документация
 - [ ] Нет закомментированного кода
-- [ ] Нет console.log() в production коде
+- [ ] Нет console.log/error/warn() в production коде - используйте TauriLogger
 - [ ] Коммиты следуют conventional commits
 
 ### При ревью кода

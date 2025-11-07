@@ -70,7 +70,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 ```typescript
 import { useHotkeys } from 'react-hotkeys-hook';
 
-useHotkeys('ctrl+s', () => console.log('Save'));
+useHotkeys('ctrl+s', () => logger.debugSync('Save'));
 ```
 
 ### `resizable.ts`
@@ -89,6 +89,9 @@ import { PanelGroup, Panel } from 'react-resizable-panels';
 1. **Импортируйте моки из централизованного места:**
    ```typescript
    import { mockLibraries } from '@/test/mocks';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
    ```
 
 2. **Настройте моки в beforeEach:**

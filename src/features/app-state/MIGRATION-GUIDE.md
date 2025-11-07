@@ -39,6 +39,9 @@
 
 #### Legacy (продолжает работать)
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 function MyComponent() {
   const { 
     currentProject, 
@@ -265,10 +268,10 @@ async function handleCreateProject() {
     })
     
     if (result.success) {
-      console.log('Project created:', result.message)
+      logger.debugSync('Project created:', result.message)
     }
   } catch (error) {
-    console.error('Failed to create project:', error)
+    logger.errorSync('Failed to create project:', error)
   }
 }
 ```

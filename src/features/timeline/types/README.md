@@ -24,6 +24,9 @@ src/features/timeline/types/
 Базовые типы для Timeline с полной поддержкой субтитров и новых возможностей.
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface TimelineProject {
   id: string
   name: string
@@ -382,20 +385,20 @@ import type {
 // Типизированная работа с различными типами клипов
 function processClip(clip: TimelineClip): void {
   // Type-safe работа с базовым клипом
-  console.log(`Clip: ${clip.name}, Duration: ${clip.duration}s`)
+  logger.debugSync(`Clip: ${clip.name}, Duration: ${clip.duration}s`)
   
   // Проверка конкретного типа клипа
   if (isSubtitleClip(clip)) {
     // TypeScript знает, что это SubtitleClip
-    console.log(`Subtitle text: ${clip.text}`)
-    console.log(`Word wrap: ${clip.wordWrap}`)
+    logger.debugSync(`Subtitle text: ${clip.text}`)
+    logger.debugSync(`Word wrap: ${clip.wordWrap}`)
   }
   
   if (isMusicClip(clip)) {
     // TypeScript знает, что это MusicClip
-    console.log(`BPM: ${clip.bpm}, Key: ${clip.key}`)
+    logger.debugSync(`BPM: ${clip.bpm}, Key: ${clip.key}`)
     if (clip.fadeIn) {
-      console.log(`Fade in: ${clip.fadeIn.duration}s`)
+      logger.debugSync(`Fade in: ${clip.fadeIn.duration}s`)
     }
   }
 }

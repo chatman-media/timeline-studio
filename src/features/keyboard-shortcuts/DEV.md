@@ -28,6 +28,9 @@ react-hotkeys-hook (обработка)
 ### ShortcutDefinition
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface ShortcutDefinition {
   id: string                    // Уникальный идентификатор
   name: string                  // Локализованное название
@@ -320,7 +323,7 @@ describe("ShortcutsProvider", () => {
 const DEBUG = true
 
 if (DEBUG) {
-  console.log("Registering shortcut:", shortcut)
+  logger.debugSync("Registering shortcut:", shortcut)
 }
 ```
 

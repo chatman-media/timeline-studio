@@ -17,26 +17,31 @@
 ### Простейший анализ
 
 ```typescript
-import { invoke } from '@tauri-apps/api/core';
+import { invoke } from '@tauri-apps/api/core'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('AIDirector')
 
 async function quickAnalyze(videoPath: string) {
   try {
     const result = await invoke('ai_director_analyze_quick', {
       videoPath
-    });
+    })
 
-    console.log(`✓ Analysis completed in ${result.performance_metrics.total_processing_time}ms`);
-    console.log(`✓ Audio quality: ${result.audio_analysis?.ffmpeg_analysis?.quality_level}`);
+    logger.infoSync('Analysis completed', {
+      duration: result.performance_metrics.total_processing_time,
+      audioQuality: result.audio_analysis?.ffmpeg_analysis?.quality_level
+    })
 
-    return result;
+    return result
   } catch (error) {
-    console.error('Analysis failed:', error);
-    throw error;
+    logger.errorSync('Analysis failed', { videoPath, error })
+    throw error
   }
 }
 
 // Использование
-const result = await quickAnalyze('/path/to/video.mp4');
+const result = await quickAnalyze('/path/to/video.mp4')
 ```
 
 ### Проверка возможностей системы
@@ -80,15 +85,17 @@ async function comprehensiveAnalysis({ mode, videoPath, onProgress }: AnalysisOp
   const validation = await invoke('ai_director_validate_config', { config });
 
   if (!validation.isValid) {
-    throw new Error(`Invalid config: ${validation.errors.join(', ')}`);
+    throw new Error(`Invalid config: ${validation.errors.join(', ')}`)
   }
 
   if (validation.warnings.length > 0) {
-    console.warn('Config warnings:', validation.warnings);
+    logger.warnSync('Config validation warnings', { warnings: validation.warnings })
   }
 
-  console.log(`Estimated time: ${validation.estimatedTime}s`);
-  console.log(`Estimated memory: ${validation.estimatedMemory}MB`);
+  logger.infoSync('Analysis estimates', {
+    estimatedTime: validation.estimatedTime,
+    estimatedMemory: validation.estimatedMemory
+  })
 
   // 3. Запуск анализа
   onProgress?.('starting', 0);
@@ -135,11 +142,11 @@ const { result, summary } = await comprehensiveAnalysis({
   mode: 'balanced',
   videoPath: '/path/to/video.mp4',
   onProgress: (stage, progress) => {
-    console.log(`${stage}: ${progress}%`);
+    logger.debugSync('Analysis progress', { stage, progress })
   }
-});
+})
 
-console.log('Analysis summary:', summary);
+logger.infoSync('Analysis complete', { summary })
 ```
 
 ### Извлечение ключевых моментов
@@ -174,11 +181,8 @@ async function extractKeyMoments(videoPath: string) {
 }
 
 // Использование
-const topMoments = await extractKeyMoments('/path/to/video.mp4');
-topMoments.forEach((moment, index) => {
-  console.log(`${index + 1}. ${moment.type} at ${moment.timestamp}s (${moment.importance.toFixed(2)})`);
-  console.log(`   ${moment.reason}`);
-});
+const topMoments = await extractKeyMoments('/path/to/video.mp4')
+logger.infoSync('Top moments extracted', { count: topMoments.length, moments: topMoments })
 ```
 
 ## Batch Processing
@@ -187,14 +191,17 @@ topMoments.forEach((moment, index) => {
 
 ```typescript
 async function analyzeBatch(filePaths: string[], mode: 'fast' | 'balanced' = 'fast') {
-  const config = await invoke('ai_director_get_default_config', { mode });
+  const config = await invoke('ai_director_get_default_config', { mode })
 
-  console.log(`Analyzing ${filePaths.length} files in ${mode} mode...`);
+  logger.infoSync('Starting batch analysis', {
+    fileCount: filePaths.length,
+    mode
+  })
 
   const results = await invoke('ai_director_analyze_batch', {
     filePaths,
     config
-  });
+  })
 
   const summary = {
     total: results.length,
@@ -202,9 +209,10 @@ async function analyzeBatch(filePaths: string[], mode: 'fast' | 'balanced' = 'fa
     partial: results.filter(r => r.status === 'PartiallyCompleted').length,
     failed: results.filter(r => r.status === 'Failed').length,
     totalTime: results.reduce((sum, r) => sum + r.performance_metrics.total_processing_time, 0)
-  };
+  }
 
-  return { results, summary };
+  logger.infoSync('Batch analysis complete', summary)
+  return { results, summary }
 }
 
 // Использование
@@ -212,11 +220,9 @@ const files = [
   '/videos/clip1.mp4',
   '/videos/clip2.mp4',
   '/videos/clip3.mp4'
-];
+]
 
-const { results, summary } = await analyzeBatch(files, 'fast');
-console.log(`✓ ${summary.successful}/${summary.total} successful`);
-console.log(`Total time: ${summary.totalTime}ms`);
+const { results, summary } = await analyzeBatch(files, 'fast')
 ```
 
 ### Прогрессивная batch обработка
@@ -226,22 +232,27 @@ async function progressiveBatchAnalysis(
   filePaths: string[],
   onFileComplete: (index: number, result: any) => void
 ) {
-  const config = await invoke('ai_director_get_default_config', { mode: 'balanced' });
+  const config = await invoke('ai_director_get_default_config', { mode: 'balanced' })
 
   for (let i = 0; i < filePaths.length; i++) {
-    const filePath = filePaths[i];
+    const filePath = filePaths[i]
 
-    console.log(`[${i + 1}/${filePaths.length}] Analyzing ${filePath}...`);
+    logger.debugSync('Analyzing file', {
+      index: i + 1,
+      total: filePaths.length,
+      filePath
+    })
 
     try {
       const result = await invoke('ai_director_analyze_comprehensive', {
         videoPath: filePath,
         config
-      });
+      })
 
-      onFileComplete(i, { success: true, result });
+      onFileComplete(i, { success: true, result })
     } catch (error) {
-      onFileComplete(i, { success: false, error: error.message });
+      logger.errorSync('File analysis failed', { index: i + 1, filePath, error })
+      onFileComplete(i, { success: false, error: error.message })
     }
   }
 }
@@ -249,12 +260,12 @@ async function progressiveBatchAnalysis(
 // Использование
 await progressiveBatchAnalysis(files, (index, data) => {
   if (data.success) {
-    console.log(`✓ File ${index + 1} completed`);
+    logger.infoSync('File completed', { index: index + 1 })
     // Update UI progress
   } else {
-    console.error(`✗ File ${index + 1} failed:`, data.error);
+    logger.errorSync('File failed', { index: index + 1, error: data.error })
   }
-});
+})
 ```
 
 ## Custom Configuration
@@ -331,8 +342,10 @@ async function robustAnalysis(videoPath: string) {
     }
 
     if (result.status === 'PartiallyCompleted') {
-      console.warn('Some engines failed:', result.errors);
-      console.warn(`Success rate: ${(result.performance_metrics.success_rate * 100).toFixed(1)}%`);
+      logger.warnSync('Partial analysis complete', {
+        errors: result.errors,
+        successRate: (result.performance_metrics.success_rate * 100).toFixed(1) + '%'
+      })
 
       // Используем доступные результаты
       return {
@@ -354,11 +367,11 @@ async function robustAnalysis(videoPath: string) {
     };
 
   } catch (error) {
-    console.error('Analysis error:', error);
+    logger.errorSync('Analysis error', { error })
 
     // Fallback: попробовать quick analysis
-    console.log('Falling back to quick analysis...');
-    const quickResult = await invoke('ai_director_analyze_quick', { videoPath });
+    logger.infoSync('Falling back to quick analysis')
+    const quickResult = await invoke('ai_director_analyze_quick', { videoPath })
 
     return {
       partial: true,
@@ -380,24 +393,24 @@ async function analyzeWithRetry(
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`Attempt ${attempt}/${maxRetries}...`);
+      logger.debugSync('Retry attempt', { attempt, maxRetries })
 
       const result = await invoke('ai_director_analyze_comprehensive', {
         videoPath,
         config: await invoke('ai_director_get_default_config', {
           mode: attempt === 1 ? 'balanced' : 'fast' // Снижаем нагрузку при retry
         })
-      });
+      })
 
       if (result.status !== 'Failed') {
-        return result;
+        return result
       }
 
-      lastError = new Error(`Analysis failed: ${result.errors.join(', ')}`);
+      lastError = new Error(`Analysis failed: ${result.errors.join(', ')}`)
 
     } catch (error) {
-      lastError = error as Error;
-      console.warn(`Attempt ${attempt} failed:`, error.message);
+      lastError = error as Error
+      logger.warnSync('Attempt failed', { attempt, error: error.message })
 
       if (attempt < maxRetries) {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
@@ -493,18 +506,18 @@ function VideoAnalyzer({ videoPath }: { videoPath: string }) {
   const { analyze, isAnalyzing, result, error } = useAIDirector({
     mode: 'balanced',
     onProgress: (stage, progress) => {
-      console.log(`${stage}: ${progress}%`);
+      logger.debugSync('Analysis progress', { stage, progress });
     }
   });
 
   const handleAnalyze = async () => {
     try {
-      await analyze(videoPath);
-      console.log('Analysis complete!');
+      await analyze(videoPath)
+      logger.infoSync('Analysis complete')
     } catch (error) {
-      console.error('Analysis failed:', error);
+      logger.errorSync('Analysis failed', { error })
     }
-  };
+  }
 
   return (
     <div>

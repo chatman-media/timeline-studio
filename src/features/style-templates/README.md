@@ -79,6 +79,9 @@
 ### Структура данных
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface StyleTemplate {
   id: string;
   name: string;
@@ -314,7 +317,7 @@ const isTauriEnvironment = () => {
 };
 
 if (!isTauriEnvironment()) {
-  console.log("Веб-браузер: пропускаем сканирование");
+  logger.debugSync("Веб-браузер: пропускаем сканирование");
   return [];
 }
 ```

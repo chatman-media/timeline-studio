@@ -30,6 +30,9 @@ const tiktok = await initializeTikTok({
 ### OAuth 2.0 Flow
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Начало OAuth процесса
 const authUrl = tiktok.getAuthorizationUrl({
   scopes: [
@@ -47,7 +50,7 @@ await openBrowser(authUrl)
 tiktok.on('authenticated', async (tokens) => {
   await saveTokens('tiktok', tokens)
   const userInfo = await tiktok.getUserInfo()
-  console.log(`Authenticated as: ${userInfo.displayName}`)
+  logger.infoSync(`Authenticated as: ${userInfo.displayName}`)
 })
 ```
 
@@ -70,6 +73,9 @@ if (await tiktok.isTokenExpired()) {
 ### Базовая публикация
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Простая публикация
 const post = await tiktok.publishVideo({
   videoPath: '/path/to/video.mp4',
@@ -79,13 +85,13 @@ const post = await tiktok.publishVideo({
 
 // Отслеживание загрузки
 post.on('uploadProgress', (progress) => {
-  console.log(`Загрузка: ${progress.percentage}%`)
+  logger.debugSync(`Загрузка: ${progress.percentage}%`)
 })
 
 // Завершение публикации
 post.on('published', (video) => {
-  console.log(`Опубликовано: ${video.shareUrl}`)
-  console.log(`Video ID: ${video.id}`)
+  logger.infoSync(`Опубликовано: ${video.shareUrl}`)
+  logger.infoSync(`Video ID: ${video.id}`)
 })
 ```
 
@@ -209,13 +215,16 @@ const validatedHashtags = await tiktok.validateHashtags(hashtags, {
 ### Получение информации о видео
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Информация о видео
 const videoInfo = await tiktok.getVideo(videoId)
 
-console.log(`Просмотры: ${videoInfo.stats.viewCount}`)
-console.log(`Лайки: ${videoInfo.stats.likeCount}`)
-console.log(`Комментарии: ${videoInfo.stats.commentCount}`)
-console.log(`Репосты: ${videoInfo.stats.shareCount}`)
+logger.infoSync(`Просмотры: ${videoInfo.stats.viewCount}`)
+logger.infoSync(`Лайки: ${videoInfo.stats.likeCount}`)
+logger.infoSync(`Комментарии: ${videoInfo.stats.commentCount}`)
+logger.infoSync(`Репосты: ${videoInfo.stats.shareCount}`)
 
 // Список моих видео
 const myVideos = await tiktok.listMyVideos({
@@ -338,6 +347,9 @@ await tiktok.moderateComments(videoId, {
 ### Создание трансляции
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Создание live stream
 const liveStream = await tiktok.createLiveStream({
   title: 'Монтаж в реальном времени',
@@ -348,19 +360,19 @@ const liveStream = await tiktok.createLiveStream({
 })
 
 // Получение RTMP данных
-console.log(`Stream URL: ${liveStream.rtmpUrl}`)
-console.log(`Stream Key: ${liveStream.streamKey}`)
+logger.infoSync(`Stream URL: ${liveStream.rtmpUrl}`)
+logger.infoSync(`Stream Key: ${liveStream.streamKey}`)
 
 // Начало трансляции
 await liveStream.start()
 
 // Мониторинг
 liveStream.on('viewers', (count) => {
-  console.log(`Зрителей: ${count}`)
+  logger.infoSync(`Зрителей: ${count}`)
 })
 
 liveStream.on('gift', (gift) => {
-  console.log(`${gift.user} подарил ${gift.name}`)
+  logger.infoSync(`${gift.user} подарил ${gift.name}`)
 })
 ```
 
@@ -393,6 +405,9 @@ const videoWithTemplate = await tiktok.applyTemplate({
 ### Пакетная обработка
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Пакетная публикация
 const batchUpload = await tiktok.batchPublish([
   {
@@ -412,27 +427,30 @@ const batchUpload = await tiktok.batchPublish([
 
 // Отслеживание прогресса
 batchUpload.on('progress', (status) => {
-  console.log(`Обработано: ${status.completed}/${status.total}`)
+  logger.infoSync(`Обработано: ${status.completed}/${status.total}`)
 })
 ```
 
 ## Обработка ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 try {
   await tiktok.publishVideo(videoData)
 } catch (error) {
   if (error.code === 'VIDEO_TOO_LARGE') {
-    console.error('Видео превышает лимит 287MB')
+    logger.errorSync('Видео превышает лимит 287MB')
     // Сжатие видео
     const compressed = await compressForTikTok(videoData)
     await tiktok.publishVideo(compressed)
   } else if (error.code === 'RATE_LIMIT') {
-    console.error('Превышен лимит запросов')
+    logger.errorSync('Превышен лимит запросов')
     // Повтор через время
     await delay(error.retryAfter * 1000)
   } else if (error.code === 'BANNED_CONTENT') {
-    console.error('Контент нарушает правила TikTok')
+    logger.errorSync('Контент нарушает правила TikTok')
     showContentGuidelines()
   }
 }

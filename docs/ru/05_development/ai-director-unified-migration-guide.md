@@ -323,6 +323,9 @@ ai_director_health_check()
 ### Быстрый анализ
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 import { invoke } from '@tauri-apps/api/core';
 
 // Быстрый анализ (только audio)
@@ -330,13 +333,16 @@ const result = await invoke('ai_director_analyze_quick', {
   videoPath: '/path/to/video.mp4'
 });
 
-console.log('Analysis completed:', result.status);
-console.log('Audio analysis:', result.audio_analysis);
+logger.infoSync('Analysis completed:', result.status);
+logger.infoSync('Audio analysis:', result.audio_analysis);
 ```
 
 ### Comprehensive анализ
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 // Получить preset конфигурацию
 const config = await invoke('ai_director_get_default_config', {
   mode: 'balanced' // 'fast', 'balanced', 'quality'
@@ -349,8 +355,8 @@ config.max_key_moments = 100;
 // Валидация
 const validation = await invoke('ai_director_validate_config', { config });
 if (!validation.isValid) {
-  console.error('Config errors:', validation.errors);
-  console.warn('Config warnings:', validation.warnings);
+  logger.errorSync('Config errors:', validation.errors);
+  logger.warnSync('Config warnings:', validation.warnings);
 }
 
 // Запуск анализа
@@ -360,18 +366,21 @@ const result = await invoke('ai_director_analyze_comprehensive', {
 });
 
 // Результаты
-console.log('Status:', result.status);
-console.log('Scenes:', result.scene_analysis);
-console.log('Key moments:', result.moment_analysis);
-console.log('Content:', result.content_analysis);
-console.log('Insights:', result.combined_insights);
-console.log('Recommendations:', result.editing_recommendations);
-console.log('Performance:', result.performance_metrics);
+logger.infoSync('Status:', result.status);
+logger.infoSync('Scenes:', result.scene_analysis);
+logger.infoSync('Key moments:', result.moment_analysis);
+logger.infoSync('Content:', result.content_analysis);
+logger.infoSync('Insights:', result.combined_insights);
+logger.infoSync('Recommendations:', result.editing_recommendations);
+logger.infoSync('Performance:', result.performance_metrics);
 ```
 
 ### Пакетный анализ
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 const results = await invoke('ai_director_analyze_batch', {
   filePaths: [
     '/path/to/video1.mp4',
@@ -382,17 +391,20 @@ const results = await invoke('ai_director_analyze_batch', {
 });
 
 results.forEach((result, index) => {
-  console.log(`File ${index + 1}:`, result.status);
+  logger.infoSync(`File ${index + 1}:`, result.status);
 });
 ```
 
 ### Health Check
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 const health = await invoke('ai_director_health_check');
 
-console.log('Overall status:', health.overallStatus); // "healthy", "warning", "error"
-console.log('Services:', health.services);
+logger.infoSync('Overall status:', health.overallStatus); // "healthy", "warning", "error"
+logger.infoSync('Services:', health.services);
 // {
 //   audio_analysis: "healthy",
 //   scene_detection: "healthy",
@@ -406,18 +418,21 @@ console.log('Services:', health.services);
 ### Проверка возможностей
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 const capabilities = await invoke('ai_director_get_capabilities');
 
 if (capabilities.audioAnalysis) {
-  console.log('Audio analysis available');
+  logger.infoSync('Audio analysis available');
 }
 
 if (capabilities.transcription) {
-  console.log('Transcription available (Whisper)');
+  logger.infoSync('Transcription available (Whisper)');
 }
 
 if (capabilities.gpuAcceleration) {
-  console.log('GPU acceleration available');
+  logger.infoSync('GPU acceleration available');
 }
 ```
 
@@ -603,9 +618,12 @@ const result = await invoke('ai_director_analyze_comprehensive', {
 
 **Решение:**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
 const health = await invoke('ai_director_health_check');
 if (health.services.audio_analysis !== 'healthy') {
-  console.error('FFmpeg is not installed or not in PATH');
+  logger.errorSync('FFmpeg is not installed or not in PATH');
   // Показать пользователю инструкции по установке FFmpeg
 }
 ```
@@ -656,15 +674,21 @@ config.max_key_moments = 20; // Ограничить
 
 4. **Обрабатывайте PartiallyCompleted статус**
    ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
    if (result.status === 'PartiallyCompleted') {
-     console.warn('Some engines failed:', result.errors);
+     logger.warnSync('Some engines failed:', result.errors);
      // Но используем успешные результаты
    }
    ```
 
 5. **Используйте метрики для оптимизации**
    ```typescript
-   console.log(`Analysis took ${result.performance_metrics.total_processing_time}ms`);
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorUnifiedMigrationGuide')
+
+   logger.infoSync(`Analysis took ${result.performance_metrics.total_processing_time}ms`);
    if (result.performance_metrics.total_processing_time > 60000) {
      // Предложить пользователю использовать fast mode
    }

@@ -723,10 +723,13 @@ const service = await container.resolve<IService>('Service')
 ### 4. Error Handling
 Always handle dependency resolution errors:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiService')
+
 try {
   const service = await container.resolve('Service')
 } catch (error) {
-  console.error('Failed to resolve service:', error)
+  logger.errorSync('Failed to resolve service:', error)
   // Fallback logic
 }
 ```

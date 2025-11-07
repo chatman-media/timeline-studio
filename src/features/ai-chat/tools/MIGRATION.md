@@ -83,7 +83,7 @@ tools/
 ```typescript
 import { allTools, AI_TOOLS_STATS } from '@/features/ai-chat/tools'
 
-console.log(`Всего инструментов: ${AI_TOOLS_STATS.total}`)
+logger.debugSync(`Всего инструментов: ${AI_TOOLS_STATS.total}`)
 ```
 
 ### Импорт по доменам
@@ -97,6 +97,9 @@ import { integrationTools } from '@/features/ai-chat/tools/integration'
 ### Динамическая загрузка по доменам
 ```typescript
 import { getToolsByDomain, AIToolsUtils } from '@/features/ai-chat/tools'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Lazy loading конкретного домена
 const coreTools = getToolsByDomain('core')

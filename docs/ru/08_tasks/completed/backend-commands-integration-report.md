@@ -110,12 +110,12 @@ ProjectCommand::CommandName {
 Каждая команда имеет соответствующий async метод в CommandHandler:
 ```rust
 async fn command_name(&self, param1: Type1, param2: Type2) -> CommandResult {
-  // Логирование
+  // Логирование (на фронтенде используется TauriLogger)
   log::info!("Executing command: {}", command_name);
-  
+
   // Реализация
   // ...
-  
+
   // Возврат результата
   CommandResult::success(Some(response_data))
 }

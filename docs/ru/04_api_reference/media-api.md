@@ -125,6 +125,9 @@ class ProjectFileService {
 #### Пример использования
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 // Загрузить проект
 const projectData = await ProjectFileService.loadProject(
   "/path/to/project.tls",
@@ -158,7 +161,7 @@ await ProjectFileService.saveProject("/path/to/project.tls", projectWithWorkspac
 
 // Получить статистику проекта
 const stats = ProjectFileService.getProjectStats(project);
-console.log(`Всего файлов: ${stats.totalMediaFiles + stats.totalMusicFiles}`);
+logger.infoSync(`Всего файлов: ${stats.totalMediaFiles + stats.totalMusicFiles}`);
 ```
 
 ### MediaRestorationService
@@ -209,6 +212,9 @@ class MediaRestorationService {
 #### Пример использования
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 // Восстановить медиа проекта
 const result = await MediaRestorationService.restoreProjectMedia(
   mediaFiles,
@@ -221,14 +227,14 @@ if (result.missingFiles.length > 0) {
   const userResult = await MediaRestorationService.handleMissingFiles(
     result.missingFiles,
     (current, total, fileName) => {
-      console.log(`Обработка ${current}/${total}: ${fileName}`);
+      logger.infoSync(`Обработка ${current}/${total}: ${fileName}`);
     },
   );
 }
 
 // Сгенерировать отчет
 const report = MediaRestorationService.generateRestorationReport(result);
-console.log(report);
+logger.infoSync(report);
 ```
 
 ## Утилитарные функции
@@ -528,6 +534,9 @@ const openProject = async (path: string) => {
 ### Полный пример использования с хуком
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 function ProjectManager() {
   const {
     restoreProjectMedia,
@@ -552,10 +561,10 @@ function ProjectManager() {
         )
 
         // Обработать восстановленные файлы
-        console.log(`Восстановлено: ${result.restoredMedia.length + result.restoredMusic.length} файлов`)
+        logger.infoSync(`Восстановлено: ${result.restoredMedia.length + result.restoredMusic.length} файлов`)
       }
     } catch (error) {
-      console.error('Ошибка при открытии проекта:', error)
+      logger.errorSync('Ошибка при открытии проекта:', error)
     }
   }
 
@@ -584,11 +593,14 @@ function ProjectManager() {
 ### Паттерны обработки ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 // Обработка ошибок загрузки проекта
 try {
   const projectData = await ProjectFileService.loadProject(path);
 } catch (error) {
-  console.error("Ошибка загрузки проекта:", error);
+  logger.errorSync("Ошибка загрузки проекта:", error);
   // Показать пользователю сообщение об ошибке
   showErrorNotification(`Не удалось загрузить проект: ${String(error)}`);
 }
@@ -597,7 +609,7 @@ try {
 try {
   const result = await restoreProjectMedia(mediaFiles, musicFiles, projectPath);
 } catch (error) {
-  console.error("Ошибка восстановления медиа:", error);
+  logger.errorSync("Ошибка восстановления медиа:", error);
   // Обновить состояние хука с ошибкой
   setState(prev => ({ ...prev, phase: "error", error: String(error) }));
 }
@@ -607,11 +619,11 @@ try {
   await ProjectFileService.saveProject(path, projectData);
 } catch (error) {
   if (String(error).includes("Invalid project structure")) {
-    console.error("Структура проекта повреждена:", error);
+    logger.errorSync("Структура проекта повреждена:", error);
   } else if (String(error).includes("Unsupported project version")) {
-    console.error("Неподдерживаемая версия проекта:", error);
+    logger.errorSync("Неподдерживаемая версия проекта:", error);
   } else {
-    console.error("Неожиданная ошибка сохранения:", error);
+    logger.errorSync("Неожиданная ошибка сохранения:", error);
   }
 }
 ```
@@ -621,6 +633,9 @@ try {
 ### Последовательная обработка файлов
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 // MediaRestorationService обрабатывает файлы последовательно
 // для избежания блокировки UI и лучшего контроля ошибок
 for (const savedFile of allFiles) {
@@ -628,7 +643,7 @@ for (const savedFile of allFiles) {
     const result = await MediaRestorationService.restoreFile(savedFile, projectDir)
     // Обработка результата...
   } catch (error) {
-    console.error(`Ошибка при восстановлении файла ${savedFile.name}:`, error)
+    logger.errorSync(`Ошибка при восстановлении файла ${savedFile.name}:`, error)
     missingFiles.push(savedFile)
   }
 }

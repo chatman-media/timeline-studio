@@ -50,16 +50,23 @@
 
 ### 1. Полная интеграция BackendSync
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ProviderMigration')
+
 const backendSync = getBackendSync()
 const [isBackendConnected, setIsBackendConnected] = useState(backendSync.isConnected())
 
 // Синхронизация состояния
 const syncState = async () => {
   if (!isBackendConnected) return
-  await backendSync.executeCommand({
-    type: "Domain",
-    params: { type: "SyncState", params: state }
-  })
+  try {
+    await backendSync.executeCommand({
+      type: "Domain",
+      params: { type: "SyncState", params: state }
+    })
+  } catch (error) {
+    logger.errorSync('Failed to sync state', { error })
+  }
 }
 ```
 
@@ -67,7 +74,9 @@ const syncState = async () => {
 ```typescript
 useEffect(() => {
   const syncTimeout = setTimeout(() => {
-    syncState().catch(console.error)
+    syncState().catch((error) => {
+      logger.errorSync('Failed to sync state', { error })
+    })
   }, 2000) // 2 секунды задержка
   return () => clearTimeout(syncTimeout)
 }, [state, isBackendConnected])

@@ -137,6 +137,9 @@ const models = await provider.getAvailableModels()
 
 ```typescript
 import { GrokProvider } from '@/domains/ai-core/providers/grok'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const provider = new GrokProvider({
   apiKey: process.env.GROK_API_KEY
@@ -296,7 +299,7 @@ async function sendWithFallback(messages: ChatMessage[]) {
       const provider = providerFactory.getProvider(providerName)
       return await provider.sendMessage('default', messages)
     } catch (error) {
-      console.warn(`Provider ${providerName} failed:`, error)
+      logger.warnSync(`Provider ${providerName} failed:`, error)
       continue
     }
   }

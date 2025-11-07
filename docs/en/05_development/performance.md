@@ -29,9 +29,12 @@
 // Enable profiling in development
 import { Profiler } from 'react'
 
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TimelineProfiler')
+
 function TimelineWrapper() {
   const onRender = (id, phase, actualDuration) => {
-    console.log(`${id} (${phase}) took ${actualDuration}ms`)
+    logger.debugSync(`${id} (${phase}) took ${actualDuration}ms`)
   }
 
   return (
@@ -68,7 +71,8 @@ export class PerformanceTracker {
 
   private sendMetric(label: string, duration: number) {
     if (duration > 16) { // More than one frame
-      console.warn(`Slow operation: ${label} took ${duration}ms`)
+      const logger = createLogger('PerformanceTracker')
+      logger.warnSync(`Slow operation: ${label} took ${duration}ms`)
     }
   }
 }

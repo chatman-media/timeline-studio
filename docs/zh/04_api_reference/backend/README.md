@@ -30,6 +30,9 @@ This section contains documentation for Tauri commands - the main way of interac
 ### Calling Commands from Frontend
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('Readme')
+
 import { invoke } from '@tauri-apps/api/core'
 
 // Simple call
@@ -48,9 +51,9 @@ try {
       bitrate: 5000
     }
   })
-  console.log('Success:', data)
+  logger.infoSync('Success:', data)
 } catch (error) {
-  console.error('Command failed:', error)
+  logger.errorSync('Command failed:', error)
 }
 ```
 

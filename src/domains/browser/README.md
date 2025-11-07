@@ -130,6 +130,9 @@ await mediaImport.importFiles(selectedFiles)
 
 ```typescript
 import { useTimeline } from '@/domains/video-editing'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Добавление файлов на таймлайн
 const timeline = useTimeline()
@@ -143,11 +146,11 @@ browser.onFileDrop((files) => {
 ```typescript
 // Подписка на события
 browser.on('selectionChanged', (files) => {
-  console.log('Selected:', files)
+  logger.debugSync('Selected:', files)
 })
 
 browser.on('pathChanged', (path) => {
-  console.log('Navigated to:', path)
+  logger.debugSync('Navigated to:', path)
 })
 
 browser.on('fileDoubleClick', (file) => {

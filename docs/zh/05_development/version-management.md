@@ -176,10 +176,13 @@ Use conventional commits for automatic version type determination:
 ### Current Application Version
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VersionManagement')
+
 import { getVersion } from '@tauri-apps/api/app';
 
 const version = await getVersion();
-console.log('App version:', version);
+logger.infoSync('App version:', version);
 ```
 
 ### In Rust Code

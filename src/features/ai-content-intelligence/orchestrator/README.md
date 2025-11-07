@@ -43,6 +43,9 @@ orchestrator/
 
 ```typescript
 import { AIIntelligenceOrchestrator } from '@/features/ai-content-intelligence/shared/services/ai-intelligence-orchestrator'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const orchestrator = AIIntelligenceOrchestrator.getInstance()
 await orchestrator.initialize()
@@ -98,8 +101,8 @@ const result = await orchestrator.processProject(
 ```typescript
 // Получить прогресс
 const progress = orchestrator.getProgress()
-console.log(progress.overall) // 0-100%
-console.log(progress.currentStep) // Текущий шаг
+logger.debugSync(progress.overall) // 0-100%
+logger.debugSync(progress.currentStep) // Текущий шаг
 
 // Управление
 orchestrator.pause()   // Пауза
@@ -108,12 +111,12 @@ orchestrator.cancel()  // Отменить
 
 // События
 orchestrator.onProgress((progress) => {
-  console.log(`Прогресс: ${progress.overall}%`)
+  logger.debugSync(`Прогресс: ${progress.overall}%`)
 })
 
 orchestrator.onEvent((event) => {
   if (event.type === 'STEP_COMPLETED') {
-    console.log(`Завершен шаг: ${event.step}`)
+    logger.debugSync(`Завершен шаг: ${event.step}`)
   }
 })
 ```
@@ -286,14 +289,14 @@ orchestrator.debug = true
 
 // Логирование событий
 orchestrator.onEvent((event) => {
-  console.log(`[${event.timestamp}] ${event.type}:`, event.data)
+  logger.debugSync(`[${event.timestamp}] ${event.type}:`, event.data)
 })
 
 // Получить статистику
 const stats = orchestrator.getStats()
-console.log(stats.processedFiles)
-console.log(stats.totalProcessingTime)
-console.log(stats.averageFileTime)
+logger.debugSync(stats.processedFiles)
+logger.debugSync(stats.totalProcessingTime)
+logger.debugSync(stats.averageFileTime)
 ```
 
 ## 📝 Примеры использования
@@ -308,8 +311,8 @@ const control = orchestrator.createPipelineControl()
 
 // Подписываемся на события прогресса
 control.onProgress((progress) => {
-  console.log(`Общий прогресс: ${progress.overall}%`)
-  console.log(`Текущий шаг: ${progress.currentStep}`)
+  logger.debugSync(`Общий прогресс: ${progress.overall}%`)
+  logger.debugSync(`Текущий шаг: ${progress.currentStep}`)
 })
 
 // Запускаем обработку
@@ -347,9 +350,9 @@ const result = await orchestrator.processProject(
 )
 
 // 4. Использовать результаты
-console.log(result.analysis)      // Анализ
-console.log(result.scripts)       // Скрипты
-console.log(result.adaptations)   // Адаптации
+logger.debugSync(result.analysis)      // Анализ
+logger.debugSync(result.scripts)       // Скрипты
+logger.debugSync(result.adaptations)   // Адаптации
 ```
 
 ### Интеграция с UI
@@ -395,7 +398,7 @@ try {
 // Или через события
 orchestrator.onEvent((event) => {
   if (event.type === 'ERROR') {
-    console.error(event.error)
+    logger.errorSync(event.error)
   }
 })
 ```

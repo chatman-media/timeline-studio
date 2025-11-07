@@ -23,6 +23,9 @@ src/features/timeline/utils/
 Операции с клипами.
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 // Проверка пересечения клипов
 export function clipsOverlap(
   clip1: TimelineClip, 
@@ -323,7 +326,7 @@ import {
 
 // Проверка пересечения
 if (clipsOverlap(clip1, clip2)) {
-  console.log('Клипы пересекаются!')
+  logger.debugSync('Клипы пересекаются!')
 }
 
 // Форматирование времени

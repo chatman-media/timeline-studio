@@ -422,12 +422,16 @@ await exportRegion.export({
 ## События таймлайна
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('Timeline')
+
 // Подписка на события
 timeline.on('clipAdded', (clip) => {
-  console.log('Clip added:', clip)
+  logger.infoSync('Clip added', { clipId: clip.id, trackId: clip.trackId })
 })
 
 timeline.on('selectionChanged', (selection) => {
+  logger.debugSync('Selection changed', { selection })
   updateUI(selection)
 })
 
@@ -436,6 +440,7 @@ timeline.on('playheadChanged', (time) => {
 })
 
 timeline.on('zoomChanged', (zoom) => {
+  logger.debugSync('Zoom changed', { zoom })
   updateZoomSlider(zoom)
 })
 

@@ -297,6 +297,9 @@ interface PersonPrivacySettings {
 ## 📊 Статистика (✅ реализована)
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('PersonIdentificationCore')
+
 interface PersonStatistics {
   totalPersons: number             // Общее количество
   totalFaces: number              // Обнаруженных лиц
@@ -306,7 +309,7 @@ interface PersonStatistics {
 
 // Использование
 const stats = getStatistics()
-console.log(`Найдено ${stats.totalPersons} персон`)
+logger.infoSync(`Найдено ${stats.totalPersons} персон`)
 ```
 
 ## 🔄 Автоматизация (✅ реализована)

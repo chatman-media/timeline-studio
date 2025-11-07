@@ -30,6 +30,9 @@ const tiktok = await initializeTikTok({
 ### OAuth 2.0 Flow
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Start OAuth process
 const authUrl = tiktok.getAuthorizationUrl({
   scopes: [
@@ -47,7 +50,7 @@ await openBrowser(authUrl)
 tiktok.on('authenticated', async (tokens) => {
   await saveTokens('tiktok', tokens)
   const userInfo = await tiktok.getUserInfo()
-  console.log(`Authenticated as: ${userInfo.displayName}`)
+  logger.infoSync(`Authenticated as: ${userInfo.displayName}`)
 })
 ```
 
@@ -70,6 +73,9 @@ if (await tiktok.isTokenExpired()) {
 ### Basic Publishing
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Simple publish
 const post = await tiktok.publishVideo({
   videoPath: '/path/to/video.mp4',
@@ -79,13 +85,13 @@ const post = await tiktok.publishVideo({
 
 // Track upload
 post.on('uploadProgress', (progress) => {
-  console.log(`Upload: ${progress.percentage}%`)
+  logger.debugSync(`Upload: ${progress.percentage}%`)
 })
 
 // Publishing complete
 post.on('published', (video) => {
-  console.log(`Published: ${video.shareUrl}`)
-  console.log(`Video ID: ${video.id}`)
+  logger.infoSync(`Published: ${video.shareUrl}`)
+  logger.infoSync(`Video ID: ${video.id}`)
 })
 ```
 
@@ -209,13 +215,16 @@ const validatedHashtags = await tiktok.validateHashtags(hashtags, {
 ### Get Video Information
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Video info
 const videoInfo = await tiktok.getVideo(videoId)
 
-console.log(`Views: ${videoInfo.stats.viewCount}`)
-console.log(`Likes: ${videoInfo.stats.likeCount}`)
-console.log(`Comments: ${videoInfo.stats.commentCount}`)
-console.log(`Shares: ${videoInfo.stats.shareCount}`)
+logger.infoSync(`Views: ${videoInfo.stats.viewCount}`)
+logger.infoSync(`Likes: ${videoInfo.stats.likeCount}`)
+logger.infoSync(`Comments: ${videoInfo.stats.commentCount}`)
+logger.infoSync(`Shares: ${videoInfo.stats.shareCount}`)
 
 // List my videos
 const myVideos = await tiktok.listMyVideos({
@@ -338,6 +347,9 @@ await tiktok.moderateComments(videoId, {
 ### Create Broadcast
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Create live stream
 const liveStream = await tiktok.createLiveStream({
   title: 'Real-time editing',
@@ -348,19 +360,19 @@ const liveStream = await tiktok.createLiveStream({
 })
 
 // Get RTMP data
-console.log(`Stream URL: ${liveStream.rtmpUrl}`)
-console.log(`Stream Key: ${liveStream.streamKey}`)
+logger.infoSync(`Stream URL: ${liveStream.rtmpUrl}`)
+logger.infoSync(`Stream Key: ${liveStream.streamKey}`)
 
 // Start broadcast
 await liveStream.start()
 
 // Monitoring
 liveStream.on('viewers', (count) => {
-  console.log(`Viewers: ${count}`)
+  logger.infoSync(`Viewers: ${count}`)
 })
 
 liveStream.on('gift', (gift) => {
-  console.log(`${gift.user} sent ${gift.name}`)
+  logger.infoSync(`${gift.user} sent ${gift.name}`)
 })
 ```
 
@@ -393,6 +405,9 @@ const videoWithTemplate = await tiktok.applyTemplate({
 ### Batch Processing
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 // Batch publish
 const batchUpload = await tiktok.batchPublish([
   {
@@ -412,27 +427,30 @@ const batchUpload = await tiktok.batchPublish([
 
 // Track progress
 batchUpload.on('progress', (status) => {
-  console.log(`Processed: ${status.completed}/${status.total}`)
+  logger.infoSync(`Processed: ${status.completed}/${status.total}`)
 })
 ```
 
 ## Error Handling
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TiktokApi')
+
 try {
   await tiktok.publishVideo(videoData)
 } catch (error) {
   if (error.code === 'VIDEO_TOO_LARGE') {
-    console.error('Video exceeds 287MB limit')
+    logger.errorSync('Video exceeds 287MB limit')
     // Compress video
     const compressed = await compressForTikTok(videoData)
     await tiktok.publishVideo(compressed)
   } else if (error.code === 'RATE_LIMIT') {
-    console.error('Rate limit exceeded')
+    logger.errorSync('Rate limit exceeded')
     // Retry after delay
     await delay(error.retryAfter * 1000)
   } else if (error.code === 'BANNED_CONTENT') {
-    console.error('Content violates TikTok guidelines')
+    logger.errorSync('Content violates TikTok guidelines')
     showContentGuidelines()
   }
 }

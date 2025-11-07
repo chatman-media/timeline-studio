@@ -198,11 +198,14 @@ const recommendedConfig = await invoke('get_recommended_audio_config', {
 ### Event System
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ArchitectureOverview')
+
 // Frontend подписка
 import { listen } from '@tauri-apps/api/event';
 
 const unlisten = await listen('render-progress', (event) => {
-    console.log('Progress:', event.payload.percent);
+    logger.debugSync('Progress:', event.payload.percent);
 });
 
 // Backend отправка

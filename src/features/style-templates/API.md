@@ -29,7 +29,7 @@ import { StyleTemplatePreview } from "@/features/style-templates";
 <StyleTemplatePreview
   template={template}
   size={150}
-  onSelect={(id) => console.log("Selected:", id)}
+  onSelect={(id) => logger.debugSync("Selected:", id)}
 />;
 ```
 
@@ -356,6 +356,9 @@ function CustomTemplateList() {
 
 ```tsx
 import { useStyleTemplatesImport } from "@/features/style-templates";
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 function ImportTemplates() {
   const { isImporting, importStyleTemplatesFile } = useStyleTemplatesImport();

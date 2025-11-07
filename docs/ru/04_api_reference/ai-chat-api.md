@@ -245,9 +245,12 @@ useEffect(() => {
 ### События
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiChatApi')
+
 // Обработка событий
 chat.on('toolExecuted', (tool, result) => {
-  console.log(`Tool ${tool} executed:`, result)
+  logger.infoSync(`Tool ${tool} executed:`, result)
 })
 
 chat.on('suggestionAccepted', (suggestion) => {

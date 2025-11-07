@@ -76,6 +76,9 @@ On application startup, Timeline Studio automatically scans the following direct
 
 #### Usage in Code:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ApplicationDirectories')
+
 import { useAutoLoadUserData } from '@/features/media-studio/services';
 
 // In React component
@@ -85,8 +88,8 @@ function MyComponent() {
   if (isLoading) return <div>Loading resources...</div>;
   if (error) return <div>Error: {error}</div>;
   
-  console.log('Loaded media files:', loadedData.media);
-  console.log('Loaded effects:', loadedData.effects);
+  logger.infoSync('Loaded media files:', loadedData.media);
+  logger.infoSync('Loaded effects:', loadedData.effects);
 }
 ```
 
@@ -105,12 +108,15 @@ let projects_dir = AppDirectoriesService::get_projects_directory().await?;
 
 **TypeScript (Frontend):**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ApplicationDirectories')
+
 import { appDirectoriesService } from '@/features/app-state/services';
 
 // Get all directories
 const directories = await appDirectoriesService.getAppDirectories();
-console.log(directories.projects_dir);
-console.log(directories.media_dir);
+logger.infoSync(directories.projects_dir);
+logger.infoSync(directories.media_dir);
 ```
 
 ## Usage Notes

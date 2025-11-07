@@ -41,6 +41,9 @@ src/features/multicam/
 
 ```tsx
 import { useMulticam, AngleViewer } from '@/features/multicam'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 function MulticamEditor() {
   const baseClipId = "clip-123" // ID базового клипа
@@ -52,7 +55,7 @@ function MulticamEditor() {
       <AngleViewer 
         baseClipId={baseClipId}
         onAngleClick={(angle, index) => {
-          console.log(`Выбрана камера ${index + 1}`)
+          logger.debugSync(`Выбрана камера ${index + 1}`)
         }}
       />
       
@@ -120,7 +123,7 @@ multicam.syncAngles()
 ```tsx
 <SyncControls
   baseClipId={clipId}
-  onSyncComplete={() => console.log('Синхронизировано!')}
+  onSyncComplete={() => logger.debugSync('Синхронизировано!')}
   className="shadow-lg"
 />
 ```
@@ -233,7 +236,7 @@ manager.switchToCameraByNumber(cameraNumber) // 1-9
 
 // События
 manager.on('camera-switched', (angleIndex) => {
-  console.log(`Переключено на камеру ${angleIndex + 1}`)
+  logger.debugSync(`Переключено на камеру ${angleIndex + 1}`)
 })
 ```
 

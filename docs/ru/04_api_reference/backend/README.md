@@ -30,6 +30,9 @@
 ### Вызов команды из Frontend
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('Readme')
+
 import { invoke } from '@tauri-apps/api/core'
 
 // Простой вызов
@@ -48,9 +51,9 @@ try {
       bitrate: 5000
     }
   })
-  console.log('Success:', data)
+  logger.infoSync('Success:', data)
 } catch (error) {
-  console.error('Command failed:', error)
+  logger.errorSync('Command failed:', error)
 }
 ```
 

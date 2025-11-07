@@ -422,9 +422,12 @@ await exportRegion.export({
 ## Timeline Events
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TimelineApi')
+
 // Subscribe to events
 timeline.on('clipAdded', (clip) => {
-  console.log('Clip added:', clip)
+  logger.infoSync('Clip added:', clip)
 })
 
 timeline.on('selectionChanged', (selection) => {

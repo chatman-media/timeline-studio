@@ -17,6 +17,9 @@ Telegram API integration allows you to send videos to channels and chats, create
 ### In-app Configuration
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 // Initialize Telegram client
 const telegram = await initializeTelegram({
   botToken: process.env.TELEGRAM_BOT_TOKEN,
@@ -27,7 +30,7 @@ const telegram = await initializeTelegram({
 
 // Check connection
 const bot = await telegram.getMe()
-console.log(`Bot connected: @${bot.username}`)
+logger.infoSync(`Bot connected: @${bot.username}`)
 ```
 
 ## Bot API
@@ -35,6 +38,9 @@ console.log(`Bot connected: @${bot.username}`)
 ### Sending Videos
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 // Simple video send
 const message = await telegram.sendVideo({
   chatId: '@channel_username', // or chat_id
@@ -69,7 +75,7 @@ const upload = telegram.uploadVideo({
   chatId: '@channel',
   videoPath: '/path/to/large-video.mp4',
   onProgress: (progress) => {
-    console.log(`Uploaded: ${progress.percentage}%`)
+    logger.debugSync(`Uploaded: ${progress.percentage}%`)
   }
 })
 ```
@@ -151,15 +157,18 @@ const scheduled = await telegram.scheduleVideo({
 ### Channel Management
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 // Get channel information
 const channel = await telegram.getChat('@channel_username')
-console.log(`Subscribers: ${channel.memberCount}`)
-console.log(`Description: ${channel.description}`)
+logger.infoSync(`Subscribers: ${channel.memberCount}`)
+logger.infoSync(`Description: ${channel.description}`)
 
 // View statistics
 const stats = await telegram.getChatStatistics('@channel')
-console.log(`Views per day: ${stats.viewsPerDay}`)
-console.log(`Growth rate: ${stats.growthRate}`)
+logger.infoSync(`Views per day: ${stats.viewsPerDay}`)
+logger.infoSync(`Growth rate: ${stats.growthRate}`)
 
 // Pin message
 await telegram.pinChatMessage({
@@ -354,13 +363,16 @@ await telegram.sendMessage({
 ### Receiving Videos from Users
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 // Handle incoming video
 telegram.on('video', async (message) => {
   const video = message.video
   
-  console.log(`Received video: ${video.fileName}`)
-  console.log(`Size: ${video.fileSize} bytes`)
-  console.log(`Duration: ${video.duration}s`)
+  logger.infoSync(`Received video: ${video.fileName}`)
+  logger.infoSync(`Size: ${video.fileSize} bytes`)
+  logger.infoSync(`Duration: ${video.duration}s`)
   
   // Download file
   const file = await telegram.getFile(video.fileId)
@@ -384,6 +396,9 @@ telegram.on('video', async (message) => {
 ### Working with Large Files
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 // Chunked upload for large files
 const uploadLargeVideo = async (chatId, videoPath) => {
   const stats = await fs.stat(videoPath)
@@ -414,7 +429,7 @@ const uploadViaMTProto = async (chatId, videoPath) => {
     file: videoPath,
     caption: 'Large file uploaded via MTProto',
     progressCallback: (progress) => {
-      console.log(`Progress: ${progress.percentage}%`)
+      logger.debugSync(`Progress: ${progress.percentage}%`)
     }
   })
   
@@ -513,27 +528,30 @@ telegram.on('message', async (message) => {
 ## Error Handling
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TelegramApi')
+
 try {
   await telegram.sendVideo(videoData)
 } catch (error) {
   if (error.code === 400) {
     if (error.description.includes('FILE_TOO_BIG')) {
-      console.error('File exceeds 50MB limit')
+      logger.errorSync('File exceeds 50MB limit')
       // Compress and retry
       const compressed = await compressVideo(videoData)
       await telegram.sendVideo(compressed)
     } else if (error.description.includes('VIDEO_FORMAT_UNSUPPORTED')) {
-      console.error('Unsupported video format')
+      logger.errorSync('Unsupported video format')
       // Convert to MP4
       const converted = await convertToMP4(videoData)
       await telegram.sendVideo(converted)
     }
   } else if (error.code === 429) {
-    console.error('Rate limit exceeded')
+    logger.errorSync('Rate limit exceeded')
     const retryAfter = error.parameters.retry_after || 60
     await delay(retryAfter * 1000)
   } else if (error.code === 403) {
-    console.error('Bot blocked by user or removed from channel')
+    logger.errorSync('Bot blocked by user or removed from channel')
   }
 }
 ```

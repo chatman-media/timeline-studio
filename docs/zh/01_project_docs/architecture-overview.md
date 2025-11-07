@@ -157,11 +157,14 @@ const result = await invoke('process_video', {
 ### 事件系统
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ArchitectureOverview')
+
 // 前端订阅
 import { listen } from '@tauri-apps/api/event';
 
 const unlisten = await listen('render-progress', (event) => {
-    console.log('进度:', event.payload.percent);
+    logger.infoSync('进度:', event.payload.percent);
 });
 
 // 后端发射

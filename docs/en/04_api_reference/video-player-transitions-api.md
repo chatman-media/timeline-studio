@@ -258,13 +258,16 @@ function TimelineIntegratedPlayer() {
 ### State Management
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoPlayerTransitionsApi')
+
 const transitionPreview = useTransitionPreview({
   enablePreview: true,
   onTransitionStart: (transition) => {
-    console.log('Transition started:', transition.id)
+    logger.infoSync('Transition started:', transition.id)
   },
   onTransitionEnd: (transition) => {
-    console.log('Transition completed:', transition.id)
+    logger.infoSync('Transition completed:', transition.id)
   }
 })
 

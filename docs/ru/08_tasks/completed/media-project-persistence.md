@@ -316,10 +316,13 @@ const calculateRelativePath = async (filePath: string, projectPath: string) => {
 Все операции логируются для отладки:
 
 ```typescript
-console.log("Начинаем восстановление медиафайлов...");
-console.log("Медиафайлы восстановлены:", restorationResult.stats);
-console.warn("Файл не найден:", savedFile.originalPath);
-console.error("Ошибка при восстановлении:", error);
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaProjectPersistence')
+
+logger.infoSync("Начинаем восстановление медиафайлов...");
+logger.infoSync("Медиафайлы восстановлены:", restorationResult.stats);
+logger.warnSync("Файл не найден:", savedFile.originalPath);
+logger.errorSync("Ошибка при восстановлении:", error);
 ```
 
 ## Производительность

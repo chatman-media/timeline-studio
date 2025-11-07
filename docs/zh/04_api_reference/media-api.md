@@ -427,14 +427,17 @@ interface StreamingOptions {
 Media operations emit progress events:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('MediaApi')
+
 // Listen for import progress
 mediaApi.on('import:progress', (event: ImportProgress) => {
-  console.log(`Importing: ${event.percent}%`);
+  logger.infoSync(`Importing: ${event.percent}%`);
 });
 
 // Listen for processing progress
 mediaApi.on('process:progress', (event: ProcessProgress) => {
-  console.log(`Processing: ${event.current}/${event.total}`);
+  logger.infoSync(`Processing: ${event.current}/${event.total}`);
 });
 ```
 

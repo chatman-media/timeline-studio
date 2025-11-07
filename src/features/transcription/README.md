@@ -76,7 +76,7 @@ import { TranscriptionPanel } from '@/features/transcription';
 function MyComponent() {
   const handleAddToTimeline = (segments) => {
     // Добавление субтитров на таймлайн
-    console.log('Добавлено сегментов:', segments.length);
+    logger.debugSync('Добавлено сегментов:', segments.length);
   };
 
   return (
@@ -103,7 +103,7 @@ function TranscribeButton() {
     });
     
     if (result) {
-      console.log(`Распознано: ${result.segments.length} сегментов`);
+      logger.debugSync(`Распознано: ${result.segments.length} сегментов`);
     }
   };
   
@@ -125,6 +125,9 @@ function TranscribeButton() {
 
 ```typescript
 import { useWhisperModels } from '@/features/transcription';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 function ModelManager() {
   const { models, loadModels, downloadModel, downloadProgress } = useWhisperModels();

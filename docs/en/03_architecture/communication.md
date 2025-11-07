@@ -158,7 +158,7 @@ export function useMediaScanner() {
       setFiles(result)
       return result
     } catch (error) {
-      console.error('Scan failed:', error)
+      logger.errorSync('Scan failed', { error })
       throw error
     } finally {
       setIsScanning(false)
@@ -340,11 +340,11 @@ export function VideoPlayer({ file }: { file: MediaFile }) {
   const videoUrl = getMediaUrl(file.path)
   
   return (
-    <video 
+    <video
       src={videoUrl}
       controls
       onError={(e) => {
-        console.error('Video load error:', e)
+        logger.errorSync('Video load error', { error: e })
         // Fallback to another loading method
       }}
     />

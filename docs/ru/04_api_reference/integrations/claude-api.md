@@ -581,6 +581,9 @@ const saveConversation = async (
 ## Обработка ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ClaudeApi')
+
 // Обработка ошибок API
 const makeClaudeRequest = async (requestFn: () => Promise<any>) => {
   try {
@@ -588,19 +591,19 @@ const makeClaudeRequest = async (requestFn: () => Promise<any>) => {
   } catch (error) {
     if (error.status === 429) {
       // Rate limit
-      console.error('Превышен лимит запросов')
+      logger.errorSync('Превышен лимит запросов')
       const retryAfter = error.headers?.['retry-after'] || 60
       await delay(retryAfter * 1000)
       return await requestFn() // Повтор
     } else if (error.status === 401) {
-      console.error('Неверный API ключ')
+      logger.errorSync('Неверный API ключ')
       throw new Error('Проверьте API ключ Anthropic')
     } else if (error.status === 400) {
-      console.error('Неверный запрос:', error.message)
+      logger.errorSync('Неверный запрос:', error.message)
       // Логирование для отладки
       logError('claude_api_error', error)
     } else if (error.status === 500) {
-      console.error('Ошибка сервера Anthropic')
+      logger.errorSync('Ошибка сервера Anthropic')
       // Fallback на другую модель
       return await fallbackRequest(requestFn)
     }

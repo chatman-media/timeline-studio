@@ -70,6 +70,9 @@ println!("Анализ завершен! Найдено {} сцен", result.sce
 ### Frontend (TypeScript/React)
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 import { useAIDirector } from "@/features/ai-director"
 
 function VideoAnalyzer() {
@@ -86,7 +89,7 @@ function VideoAnalyzer() {
     // Запуск анализа
     const result = await analyzeComprehensive(videoPath, config)
 
-    console.log("Анализ завершен:", result)
+    logger.infoSync("Анализ завершен:", result)
   }
 
   return (
@@ -198,14 +201,17 @@ const qualityConfig = await commands.aiDirectorGetDefaultConfig("quality")
 **Валидация конфигурации перед анализом.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const validation = await commands.aiDirectorValidateConfig(config)
 
 if (!validation.is_valid) {
-  console.error("Ошибки конфигурации:", validation.errors)
-  console.warn("Предупреждения конфигурации:", validation.warnings)
+  logger.errorSync("Ошибки конфигурации:", validation.errors)
+  logger.warnSync("Предупреждения конфигурации:", validation.warnings)
 } else {
-  console.log("Ориентировочное время:", validation.estimated_time, "мс")
-  console.log("Ориентировочная память:", validation.estimated_memory, "байт")
+  logger.infoSync("Ориентировочное время:", validation.estimated_time, "мс")
+  logger.infoSync("Ориентировочная память:", validation.estimated_memory, "байт")
 }
 ```
 
@@ -216,11 +222,14 @@ if (!validation.is_valid) {
 **Проверка возможностей системы.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const capabilities = await commands.aiDirectorGetCapabilities()
 
-console.log("Анализ аудио:", capabilities.audio_analysis)
-console.log("Детекция сцен:", capabilities.scene_detection)
-console.log("GPU ускорение:", capabilities.gpu_acceleration)
+logger.infoSync("Анализ аудио:", capabilities.audio_analysis)
+logger.infoSync("Детекция сцен:", capabilities.scene_detection)
+logger.infoSync("GPU ускорение:", capabilities.gpu_acceleration)
 ```
 
 ---
@@ -230,10 +239,13 @@ console.log("GPU ускорение:", capabilities.gpu_acceleration)
 **Проверка здоровья всех движков.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const health = await commands.aiDirectorHealthCheck()
 
-console.log("Общий статус:", health.overall_status) // "healthy" | "warning" | "error"
-console.log("Сервисы:", health.services)
+logger.infoSync("Общий статус:", health.overall_status) // "healthy" | "warning" | "error"
+logger.infoSync("Сервисы:", health.services)
 ```
 
 ---
@@ -428,15 +440,18 @@ import { commands } from "@/types/generated/tauri-bindings"
 AI Director использует graceful degradation (корректную деградацию):
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const result = await analyzeComprehensive(videoPath)
 
 if (result.analysis_status === "PartiallyCompleted") {
-  console.warn("Некоторые движки завершились с ошибкой:", result.errors)
+  logger.warnSync("Некоторые движки завершились с ошибкой:", result.errors)
   // Все еще доступны частичные результаты
 }
 
 if (result.success_rate < 0.5) {
-  console.error("Более 50% движков завершились с ошибкой")
+  logger.errorSync("Более 50% движков завершились с ошибкой")
 }
 ```
 
@@ -462,6 +477,9 @@ const finalResult = await analyzeComprehensive(videoPath, qualityConfig)
 Для нескольких файлов используйте пакетный анализ:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const results = await analyzeBatch([
   "/video1.mp4",
   "/video2.mp4",
@@ -470,7 +488,7 @@ const results = await analyzeBatch([
 
 // Обработка каждого результата
 results.forEach((result, index) => {
-  console.log(`Видео ${index + 1}: ${result.analysis_status}`)
+  logger.infoSync(`Видео ${index + 1}: ${result.analysis_status}`)
 })
 ```
 

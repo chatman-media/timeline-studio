@@ -581,6 +581,9 @@ const saveConversation = async (
 ## Error Handling
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ClaudeApi')
+
 // API error handling
 const makeClaudeRequest = async (requestFn: () => Promise<any>) => {
   try {
@@ -588,19 +591,19 @@ const makeClaudeRequest = async (requestFn: () => Promise<any>) => {
   } catch (error) {
     if (error.status === 429) {
       // Rate limit
-      console.error('Rate limit exceeded')
+      logger.errorSync('Rate limit exceeded')
       const retryAfter = error.headers?.['retry-after'] || 60
       await delay(retryAfter * 1000)
       return await requestFn() // Retry
     } else if (error.status === 401) {
-      console.error('Invalid API key')
+      logger.errorSync('Invalid API key')
       throw new Error('Check your Anthropic API key')
     } else if (error.status === 400) {
-      console.error('Bad request:', error.message)
+      logger.errorSync('Bad request:', error.message)
       // Log for debugging
       logError('claude_api_error', error)
     } else if (error.status === 500) {
-      console.error('Anthropic server error')
+      logger.errorSync('Anthropic server error')
       // Fallback to another model
       return await fallbackRequest(requestFn)
     }

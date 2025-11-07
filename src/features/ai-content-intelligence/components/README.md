@@ -44,7 +44,7 @@ import { UnifiedDashboard } from '@/features/ai-content-intelligence/components/
   onFileUpload={(files) => handleFileUpload(files)}
   onAnalysisComplete={(analysis) => handleAnalysisComplete(analysis)}
   onProcessingComplete={(content) => handleProcessingComplete(content)}
-  onError={(error) => console.error(error)}
+  onError={(error) => logger.errorSync(error)}
 />
 ```
 
@@ -252,13 +252,13 @@ function App() {
           mediaFiles={mediaFiles}
           onFileUpload={handleFileUpload}
           onAnalysisComplete={(analysis) => {
-            console.log('Analysis completed:', analysis)
+            logger.debugSync('Analysis completed:', analysis)
           }}
           onProcessingComplete={(content) => {
-            console.log('Processing completed:', content)
+            logger.debugSync('Processing completed:', content)
           }}
           onError={(error) => {
-            console.error('AI Error:', error)
+            logger.errorSync('AI Error:', error)
           }}
         />
       )}
@@ -297,6 +297,9 @@ function App() {
 
 ```tsx
 import { createDefaultAIConfig } from '@/features/ai-content-intelligence/shared/utils/config'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const aiConfig = createDefaultAIConfig({
   features: {

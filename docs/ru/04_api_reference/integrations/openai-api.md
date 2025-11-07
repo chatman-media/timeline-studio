@@ -17,6 +17,9 @@
 ### Конфигурация в приложении
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Инициализация OpenAI клиента
 const openai = await initializeOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -29,7 +32,7 @@ const openai = await initializeOpenAI({
 
 // Проверка подключения
 const models = await openai.models.list()
-console.log('Доступные модели:', models.data.map(m => m.id))
+logger.infoSync('Доступные модели:', models.data.map(m => m.id))
 ```
 
 ## Модели GPT
@@ -86,6 +89,9 @@ const selectGPTModel = (task: TaskType, needsVision: boolean = false) => {
 ### Chat Completions
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Базовый запрос
 const response = await openai.chat.completions.create({
   model: 'gpt-4-turbo-preview',
@@ -103,7 +109,7 @@ const response = await openai.chat.completions.create({
   max_tokens: 1000
 })
 
-console.log(response.choices[0].message.content)
+logger.infoSync(response.choices[0].message.content)
 
 // С изображениями (Vision)
 const visionResponse = await openai.chat.completions.create({
@@ -224,6 +230,9 @@ if (response.choices[0].message.tool_calls) {
 ### Базовая транскрипция
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Транскрипция аудио файла
 const transcription = await openai.audio.transcriptions.create({
   file: fs.createReadStream('/path/to/audio.mp3'),
@@ -233,7 +242,7 @@ const transcription = await openai.audio.transcriptions.create({
   prompt: 'Видео о монтаже в Timeline Studio' // Контекст
 })
 
-console.log(transcription.text)
+logger.infoSync(transcription.text)
 
 // С временными метками
 const verboseTranscription = await openai.audio.transcriptions.create({
@@ -245,13 +254,16 @@ const verboseTranscription = await openai.audio.transcriptions.create({
 
 // Обработка сегментов
 verboseTranscription.segments.forEach(segment => {
-  console.log(`[${segment.start} - ${segment.end}] ${segment.text}`)
+  logger.infoSync(`[${segment.start} - ${segment.end}] ${segment.text}`)
 })
 ```
 
 ### Перевод аудио
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Перевод на английский
 const translation = await openai.audio.translations.create({
   file: fs.createReadStream('/path/to/russian-audio.mp3'),
@@ -259,7 +271,7 @@ const translation = await openai.audio.translations.create({
   response_format: 'json'
 })
 
-console.log('Переведенный текст:', translation.text)
+logger.infoSync('Переведенный текст:', translation.text)
 
 // Создание многоязычных субтитров
 const createMultilingualSubtitles = async (audioPath: string) => {
@@ -408,6 +420,9 @@ await openai.beta.assistants.files.create(assistant.id, {
 ### Использование ассистента
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Создание треда
 const thread = await openai.beta.threads.create()
 
@@ -461,7 +476,7 @@ while (true) {
 // Получение ответа
 const messages = await openai.beta.threads.messages.list(thread.id)
 const lastMessage = messages.data[0]
-console.log(lastMessage.content[0].text.value)
+logger.infoSync(lastMessage.content[0].text.value)
 ```
 
 ## Embeddings
@@ -518,6 +533,9 @@ const cosineSimilarity = (a: number[], b: number[]) => {
 ### Подготовка данных
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Подготовка данных для fine-tuning
 const prepareTrainingData = async (examples: TrainingExample[]) => {
   const jsonlData = examples.map(example => 
@@ -566,13 +584,13 @@ const createFineTuningJob = async (fileId: string) => {
   // Мониторинг прогресса
   while (true) {
     const status = await openai.fineTuning.jobs.retrieve(job.id)
-    console.log(`Статус: ${status.status}`)
+    logger.infoSync(`Статус: ${status.status}`)
     
     if (status.status === 'succeeded') {
-      console.log(`Модель готова: ${status.fine_tuned_model}`)
+      logger.infoSync(`Модель готова: ${status.fine_tuned_model}`)
       break
     } else if (status.status === 'failed') {
-      console.error('Fine-tuning failed:', status.error)
+      logger.errorSync('Fine-tuning failed:', status.error)
       break
     }
     
@@ -624,6 +642,9 @@ const response = await streamChat(
 ## Обработка ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Обработка ошибок OpenAI API
 const makeOpenAIRequest = async <T>(
   requestFn: () => Promise<T>
@@ -634,14 +655,14 @@ const makeOpenAIRequest = async <T>(
     if (error.status === 429) {
       // Rate limit
       const retryAfter = error.headers?.['retry-after'] || 60
-      console.log(`Rate limited. Повтор через ${retryAfter}s`)
+      logger.infoSync(`Rate limited. Повтор через ${retryAfter}s`)
       await delay(retryAfter * 1000)
       return await requestFn()
     } else if (error.status === 401) {
       throw new Error('Неверный API ключ OpenAI')
     } else if (error.status === 503) {
       // Service unavailable
-      console.log('OpenAI временно недоступен, повтор...')
+      logger.infoSync('OpenAI временно недоступен, повтор...')
       await delay(5000)
       return await requestFn()
     } else if (error.code === 'context_length_exceeded') {
@@ -670,7 +691,7 @@ const withFallback = async (primaryModel: string, messages: any[]) => {
     if (error.code === 'model_not_found' || error.code === 'context_length_exceeded') {
       const fallback = fallbackModels[primaryModel]
       if (fallback) {
-        console.log(`Переключение на ${fallback}`)
+        logger.infoSync(`Переключение на ${fallback}`)
         return await openai.chat.completions.create({
           model: fallback,
           messages

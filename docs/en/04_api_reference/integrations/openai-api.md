@@ -17,6 +17,9 @@ OpenAI API integration provides access to the GPT-4 model family, DALL-E for ima
 ### In-app Configuration
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Initialize OpenAI client
 const openai = await initializeOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -29,7 +32,7 @@ const openai = await initializeOpenAI({
 
 // Check connection
 const models = await openai.models.list()
-console.log('Available models:', models.data.map(m => m.id))
+logger.infoSync('Available models:', models.data.map(m => m.id))
 ```
 
 ## GPT Models
@@ -86,6 +89,9 @@ const selectGPTModel = (task: TaskType, needsVision: boolean = false) => {
 ### Chat Completions
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Basic request
 const response = await openai.chat.completions.create({
   model: 'gpt-4-turbo-preview',
@@ -103,7 +109,7 @@ const response = await openai.chat.completions.create({
   max_tokens: 1000
 })
 
-console.log(response.choices[0].message.content)
+logger.infoSync(response.choices[0].message.content)
 
 // With images (Vision)
 const visionResponse = await openai.chat.completions.create({
@@ -224,6 +230,9 @@ if (response.choices[0].message.tool_calls) {
 ### Basic Transcription
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Transcribe audio file
 const transcription = await openai.audio.transcriptions.create({
   file: fs.createReadStream('/path/to/audio.mp3'),
@@ -233,7 +242,7 @@ const transcription = await openai.audio.transcriptions.create({
   prompt: 'Video about editing in Timeline Studio' // Context
 })
 
-console.log(transcription.text)
+logger.infoSync(transcription.text)
 
 // With timestamps
 const verboseTranscription = await openai.audio.transcriptions.create({
@@ -245,13 +254,16 @@ const verboseTranscription = await openai.audio.transcriptions.create({
 
 // Process segments
 verboseTranscription.segments.forEach(segment => {
-  console.log(`[${segment.start} - ${segment.end}] ${segment.text}`)
+  logger.infoSync(`[${segment.start} - ${segment.end}] ${segment.text}`)
 })
 ```
 
 ### Audio Translation
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Translate to English
 const translation = await openai.audio.translations.create({
   file: fs.createReadStream('/path/to/foreign-audio.mp3'),
@@ -259,7 +271,7 @@ const translation = await openai.audio.translations.create({
   response_format: 'json'
 })
 
-console.log('Translated text:', translation.text)
+logger.infoSync('Translated text:', translation.text)
 
 // Create multilingual subtitles
 const createMultilingualSubtitles = async (audioPath: string) => {
@@ -401,6 +413,9 @@ await openai.beta.assistants.files.create(assistant.id, {
 ### Using Assistant
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Create thread
 const thread = await openai.beta.threads.create()
 
@@ -454,7 +469,7 @@ while (true) {
 // Get response
 const messages = await openai.beta.threads.messages.list(thread.id)
 const lastMessage = messages.data[0]
-console.log(lastMessage.content[0].text.value)
+logger.infoSync(lastMessage.content[0].text.value)
 ```
 
 ## Embeddings
@@ -511,6 +526,9 @@ const cosineSimilarity = (a: number[], b: number[]) => {
 ### Data Preparation
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Prepare training data
 const prepareTrainingData = async (examples: TrainingExample[]) => {
   const jsonlData = examples.map(example => 
@@ -559,13 +577,13 @@ const createFineTuningJob = async (fileId: string) => {
   // Monitor progress
   while (true) {
     const status = await openai.fineTuning.jobs.retrieve(job.id)
-    console.log(`Status: ${status.status}`)
+    logger.infoSync(`Status: ${status.status}`)
     
     if (status.status === 'succeeded') {
-      console.log(`Model ready: ${status.fine_tuned_model}`)
+      logger.infoSync(`Model ready: ${status.fine_tuned_model}`)
       break
     } else if (status.status === 'failed') {
-      console.error('Fine-tuning failed:', status.error)
+      logger.errorSync('Fine-tuning failed:', status.error)
       break
     }
     
@@ -617,6 +635,9 @@ const response = await streamChat(
 ## Error Handling
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('OpenaiApi')
+
 // Handle OpenAI API errors
 const makeOpenAIRequest = async <T>(
   requestFn: () => Promise<T>
@@ -627,14 +648,14 @@ const makeOpenAIRequest = async <T>(
     if (error.status === 429) {
       // Rate limit
       const retryAfter = error.headers?.['retry-after'] || 60
-      console.log(`Rate limited. Retry in ${retryAfter}s`)
+      logger.infoSync(`Rate limited. Retry in ${retryAfter}s`)
       await delay(retryAfter * 1000)
       return await requestFn()
     } else if (error.status === 401) {
       throw new Error('Invalid OpenAI API key')
     } else if (error.status === 503) {
       // Service unavailable
-      console.log('OpenAI temporarily unavailable, retrying...')
+      logger.infoSync('OpenAI temporarily unavailable, retrying...')
       await delay(5000)
       return await requestFn()
     } else if (error.code === 'context_length_exceeded') {
@@ -663,7 +684,7 @@ const withFallback = async (primaryModel: string, messages: any[]) => {
     if (error.code === 'model_not_found' || error.code === 'context_length_exceeded') {
       const fallback = fallbackModels[primaryModel]
       if (fallback) {
-        console.log(`Switching to ${fallback}`)
+        logger.infoSync(`Switching to ${fallback}`)
         return await openai.chat.completions.create({
           model: fallback,
           messages

@@ -127,6 +127,9 @@ pub async fn scan_media_folder(
 import { useState, useCallback } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('MediaScanner')
 
 interface ScanProgress {
   current: number
@@ -142,12 +145,12 @@ export function useMediaScanner() {
   const scanFolder = useCallback(async (folder: string) => {
     setIsScanning(true)
     setProgress(null)
-    
+
     // Подписка на события прогресса
     const unlisten = await listen<ScanProgress>('scan-progress', (event) => {
       setProgress(event.payload)
     })
-    
+
     try {
       const result = await invoke<MediaFile[]>('scan_media_folder', {
         options: {
@@ -156,11 +159,12 @@ export function useMediaScanner() {
           extensions: ['mp4', 'mov', 'avi', 'mkv']
         }
       })
-      
+
       setFiles(result)
+      logger.infoSync('Scan completed', { folder, count: result.length })
       return result
     } catch (error) {
-      console.error('Scan failed:', error)
+      logger.errorSync('Scan failed', { folder, error })
       throw error
     } finally {
       setIsScanning(false)
@@ -235,6 +239,10 @@ pub async fn export_video(
 
 ```typescript
 // hooks/useAppEvents.ts
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('AppEvents')
+
 export function useAppEvents() {
   useEffect(() => {
     const unlistenPromise = listen<AppEvent>('app-event', (event) => {
@@ -246,6 +254,7 @@ export function useAppEvents() {
           handleMediaProcessed(event.payload)
           break
         case 'ErrorOccurred':
+          logger.errorSync('App event error', event.payload)
           handleError(event.payload)
           break
       }
@@ -338,15 +347,19 @@ export function getMediaUrl(filePath: string): string {
 }
 
 // components/VideoPlayer.tsx
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('VideoPlayer')
+
 export function VideoPlayer({ file }: { file: MediaFile }) {
   const videoUrl = getMediaUrl(file.path)
-  
+
   return (
-    <video 
+    <video
       src={videoUrl}
       controls
       onError={(e) => {
-        console.error('Video load error:', e)
+        logger.errorSync('Video load error', { file: file.path, error: e })
         // Fallback на другой метод загрузки
       }}
     />
@@ -494,12 +507,18 @@ export async function invokeWithErrorHandling<T>(
 }
 
 // Использование
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Commands')
+
 try {
   const result = await invokeWithErrorHandling('risky_operation')
 } catch (error) {
   if (error instanceof CommandError && error.recoverable) {
+    logger.warnSync('Recoverable command error', { error })
     // Показать диалог с возможностью повтора
   } else {
+    logger.errorSync('Critical command error', { error })
     // Показать критическую ошибку
   }
 }

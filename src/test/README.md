@@ -203,6 +203,9 @@ test('debug output', () => {
 ### Снимки состояния
 ```typescript
 import { logRoles } from '@testing-library/react';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 test('accessibility', () => {
   const { container } = render(<MyComponent />);
@@ -212,8 +215,8 @@ test('accessibility', () => {
 
 ### Проверка моков
 ```typescript
-console.log(vi.mocked(invoke).mock.calls);
-console.log(vi.mocked(invoke).mock.results);
+logger.debugSync(vi.mocked(invoke).mock.calls);
+logger.debugSync(vi.mocked(invoke).mock.results);
 ```
 
 ## Расширение тестовой инфраструктуры

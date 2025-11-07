@@ -42,7 +42,7 @@ await mediaImport.importFiles([
 
 // Отслеживание прогресса
 mediaImport.onProgress((progress) => {
-  console.log(`Imported ${progress.completed}/${progress.total}`)
+  logger.debugSync(`Imported ${progress.completed}/${progress.total}`)
 })
 ```
 
@@ -164,7 +164,7 @@ const proxy = await proxyGen.generateProxy(sourceFile, {
 // Пакетная генерация
 await proxyGen.batchGenerate(files, {
   onProgress: (file, progress) => {
-    console.log(`${file.name}: ${progress}%`)
+    logger.debugSync(`${file.name}: ${progress}%`)
   }
 })
 ```
@@ -252,6 +252,9 @@ const analysis = await analysisFactory
 
 ```typescript
 import { useTimeline } from '@/domains/video-editing'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Добавление импортированных файлов на таймлайн
 const timeline = useTimeline()
@@ -268,20 +271,20 @@ timeline.addClips(imported.map(file => ({
 ```typescript
 // Подписка на события импорта
 mediaManagement.on('importStarted', (files) => {
-  console.log('Importing:', files)
+  logger.debugSync('Importing:', files)
 })
 
 mediaManagement.on('fileImported', (file) => {
-  console.log('Imported:', file)
+  logger.debugSync('Imported:', file)
 })
 
 mediaManagement.on('importCompleted', (results) => {
-  console.log('Import results:', results)
+  logger.debugSync('Import results:', results)
 })
 
 // События файловых операций
 mediaManagement.on('fileRenamed', ({ oldName, newName }) => {
-  console.log(`Renamed: ${oldName} -> ${newName}`)
+  logger.debugSync(`Renamed: ${oldName} -> ${newName}`)
 })
 ```
 

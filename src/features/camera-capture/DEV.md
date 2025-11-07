@@ -49,6 +49,9 @@ User → CameraCaptureModal → useCameraStream → MediaStream
 Главный компонент-контейнер. Управляет состоянием и координирует работу дочерних компонентов.
 
 ```tsx
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 // Основные состояния
 const [selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string>()
 const [selectedAudioDeviceId, setSelectedAudioDeviceId] = useState<string>()
@@ -123,7 +126,7 @@ const handleVideoRecorded = async (blob: Blob) => {
       onClose() // Закрываем модальное окно
     }
   } catch (error) {
-    console.error('Failed to save recording:', error)
+    logger.errorSync('Failed to save recording:', error)
     toast.error(t('cameraCapture.saveFailed'))
   } finally {
     setIsSaving(false)
@@ -199,7 +202,7 @@ export function useScreenCapture() {
       setIsScreenSharing(true)
       return stream
     } catch (error) {
-      console.error('Screen capture failed:', error)
+      logger.errorSync('Screen capture failed:', error)
       throw error
     }
   }

@@ -354,7 +354,11 @@ it('should load media file', async () => {
 # Run single test with debugging
 bun run test:debug path/to/test.ts
 
-# Use console.log in tests
+# Use TauriLogger in tests
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('TestModule')
+logger.debugSync('Test debug message')
+
 DEBUG=* bun run test
 ```
 

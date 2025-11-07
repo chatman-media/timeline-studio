@@ -32,9 +32,15 @@ const success = contextManager.initialize({
 // Получение контекста
 const gl = contextManager.getContext()
 
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('WebGL')
+
 // Получение возможностей GPU
 const capabilities = contextManager.getCapabilities()
-console.log(`Уровень GPU: ${capabilities.tier}`) // "low" | "medium" | "high"
+logger.infoSync('GPU capabilities detected', {
+  tier: capabilities.tier, // "low" | "medium" | "high"
+  maxTextureSize: capabilities.maxTextureSize
+})
 ```
 
 ### 2. Пул шейдеров (`shaderPool`)

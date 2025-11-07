@@ -25,6 +25,9 @@ shared/
 ### Базовая структура события
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface DomainEvent<T = unknown> {
   id: string
   type: string
@@ -42,7 +45,7 @@ import { domainEventBus } from '@/domains/shared/events'
 
 // Подписка на события
 const unsubscribe = domainEventBus.on('media:imported', (event) => {
-  console.log('Files imported:', event.payload.files)
+  logger.debugSync('Files imported:', event.payload.files)
 })
 
 // Отправка события

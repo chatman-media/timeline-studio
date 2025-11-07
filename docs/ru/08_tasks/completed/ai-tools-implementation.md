@@ -246,10 +246,10 @@ private analyzeTimelineIssues(): any[] {
 
 #### 4.1 Улучшение обработки ошибок
 **Задачи:**
-- [ ] Заменить простые `console.warn` на полноценную обработку ошибок
+- [x] Заменить простые `console.warn` на полноценную обработку ошибок через TauriLogger
 - [ ] Добавить retry логику для сетевых запросов
 - [ ] Добавить graceful degradation для недоступных сервисов
-- [ ] Реализовать детальное логирование ошибок
+- [x] Реализовать детальное логирование ошибок через TauriLogger
 
 #### 4.2 Валидация результатов
 **Задачи:**
@@ -263,8 +263,11 @@ private analyzeTimelineIssues(): any[] {
 ### Структура функций выполнения
 Каждая категория должна иметь функцию вида:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AITools')
+
 export async function executeXxxTool(
-  name: string, 
+  name: string,
   parameters: any
 ): Promise<AIToolResult> {
   try {
@@ -273,12 +276,14 @@ export async function executeXxxTool(
         return await handleToolName(parameters)
       // ... другие инструменты
       default:
+        logger.warnSync(`Unknown tool: ${name}`)
         return {
           success: false,
           message: `Неизвестный инструмент: ${name}`,
         }
     }
   } catch (error) {
+    logger.errorSync(`Tool execution failed: ${name}`, { error, parameters })
     return {
       success: false,
       message: `Ошибка выполнения ${name}: ${error.message}`,

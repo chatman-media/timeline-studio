@@ -76,6 +76,9 @@ Timeline Studio/
 
 #### Использование в коде:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ApplicationDirectories')
+
 import { useAutoLoadUserData } from '@/features/media-studio/services';
 
 // В компоненте React
@@ -85,8 +88,8 @@ function MyComponent() {
   if (isLoading) return <div>Загрузка ресурсов...</div>;
   if (error) return <div>Ошибка: {error}</div>;
   
-  console.log('Загруженные медиафайлы:', loadedData.media);
-  console.log('Загруженные эффекты:', loadedData.effects);
+  logger.infoSync('Загруженные медиафайлы:', loadedData.media);
+  logger.infoSync('Загруженные эффекты:', loadedData.effects);
 }
 ```
 
@@ -105,12 +108,15 @@ let projects_dir = AppDirectoriesService::get_projects_directory().await?;
 
 **TypeScript (Фронтенд):**
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ApplicationDirectories')
+
 import { appDirectoriesService } from '@/features/app-state/services';
 
 // Получить все директории
 const directories = await appDirectoriesService.getAppDirectories();
-console.log(directories.projects_dir);
-console.log(directories.media_dir);
+logger.infoSync(directories.projects_dir);
+logger.infoSync(directories.media_dir);
 ```
 
 ## Примечания по использованию

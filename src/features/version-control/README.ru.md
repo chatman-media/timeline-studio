@@ -61,6 +61,9 @@ src/features/version-control/
 ### Типы команд для execute_command
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 type ProjectCommand =
   | { type: "CreateSnapshot", params: { message?: string } }
   | { type: "RestoreVersion", params: { version_id: string } }
@@ -106,7 +109,7 @@ function ProjectHeader() {
   const handleSave = async () => {
     const success = await createSnapshot("Сохранение изменений макета");
     if (success) {
-      console.log("Версия сохранена");
+      logger.debugSync("Версия сохранена");
     }
   };
 
@@ -155,8 +158,8 @@ import { VersionHistoryPanel } from '@/features/version-control';
 function HistoryView() {
   return (
     <VersionHistoryPanel
-      onRestore={(versionId) => console.log('Восстановление', versionId)}
-      onCompare={(v1, v2) => console.log('Сравнение', v1, v2)}
+      onRestore={(versionId) => logger.debugSync('Восстановление', versionId)}
+      onCompare={(v1, v2) => logger.debugSync('Сравнение', v1, v2)}
     />
   );
 }

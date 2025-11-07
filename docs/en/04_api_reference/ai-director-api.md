@@ -70,6 +70,9 @@ println!("Analysis complete! Found {} scenes", result.scene_analysis.total_scene
 ### Frontend (TypeScript/React)
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 import { useAIDirector } from "@/features/ai-director"
 
 function VideoAnalyzer() {
@@ -86,7 +89,7 @@ function VideoAnalyzer() {
     // Run analysis
     const result = await analyzeComprehensive(videoPath, config)
 
-    console.log("Analysis complete:", result)
+    logger.infoSync("Analysis complete:", result)
   }
 
   return (
@@ -198,14 +201,17 @@ const qualityConfig = await commands.aiDirectorGetDefaultConfig("quality")
 **Validate configuration before analysis.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const validation = await commands.aiDirectorValidateConfig(config)
 
 if (!validation.is_valid) {
-  console.error("Config errors:", validation.errors)
-  console.warn("Config warnings:", validation.warnings)
+  logger.errorSync("Config errors:", validation.errors)
+  logger.warnSync("Config warnings:", validation.warnings)
 } else {
-  console.log("Estimated time:", validation.estimated_time, "ms")
-  console.log("Estimated memory:", validation.estimated_memory, "bytes")
+  logger.infoSync("Estimated time:", validation.estimated_time, "ms")
+  logger.infoSync("Estimated memory:", validation.estimated_memory, "bytes")
 }
 ```
 
@@ -216,11 +222,14 @@ if (!validation.is_valid) {
 **Check system capabilities.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const capabilities = await commands.aiDirectorGetCapabilities()
 
-console.log("Audio analysis:", capabilities.audio_analysis)
-console.log("Scene detection:", capabilities.scene_detection)
-console.log("GPU acceleration:", capabilities.gpu_acceleration)
+logger.infoSync("Audio analysis:", capabilities.audio_analysis)
+logger.infoSync("Scene detection:", capabilities.scene_detection)
+logger.infoSync("GPU acceleration:", capabilities.gpu_acceleration)
 ```
 
 ---
@@ -230,10 +239,13 @@ console.log("GPU acceleration:", capabilities.gpu_acceleration)
 **Health check for all engines.**
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const health = await commands.aiDirectorHealthCheck()
 
-console.log("Overall status:", health.overall_status) // "healthy" | "warning" | "error"
-console.log("Services:", health.services)
+logger.infoSync("Overall status:", health.overall_status) // "healthy" | "warning" | "error"
+logger.infoSync("Services:", health.services)
 ```
 
 ---
@@ -428,15 +440,18 @@ import { commands } from "@/types/generated/tauri-bindings"
 AI Director uses graceful degradation:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const result = await analyzeComprehensive(videoPath)
 
 if (result.analysis_status === "PartiallyCompleted") {
-  console.warn("Some engines failed:", result.errors)
+  logger.warnSync("Some engines failed", { errors: result.errors })
   // Still have partial results
 }
 
 if (result.success_rate < 0.5) {
-  console.error("More than 50% of engines failed")
+  logger.errorSync("More than 50% of engines failed", { success_rate: result.success_rate })
 }
 ```
 
@@ -462,6 +477,9 @@ const finalResult = await analyzeComprehensive(videoPath, qualityConfig)
 For multiple files, use batch analysis:
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AiDirectorApi')
+
 const results = await analyzeBatch([
   "/video1.mp4",
   "/video2.mp4",
@@ -470,7 +488,7 @@ const results = await analyzeBatch([
 
 // Process each result
 results.forEach((result, index) => {
-  console.log(`Video ${index + 1}: ${result.analysis_status}`)
+  logger.infoSync(`Video ${index + 1}: ${result.analysis_status}`)
 })
 ```
 

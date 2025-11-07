@@ -61,8 +61,8 @@ const response = await aiService.sendRequest('gpt-4o', [
 
 // Streaming запрос
 await aiService.sendStreamingRequest('claude-3.5-sonnet', messages, {
-  onContent: (content) => console.log(content),
-  onComplete: (response) => console.log('Done:', response)
+  onContent: (content) => logger.debugSync(content),
+  onComplete: (response) => logger.debugSync('Done:', response)
 })
 ```
 
@@ -119,6 +119,9 @@ API ключи управляются через ApiKeyLoader:
 
 ```typescript
 import { ApiKeyLoader } from '@/domains/ai-core'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const loader = ApiKeyLoader.getInstance()
 

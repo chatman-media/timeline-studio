@@ -13,6 +13,11 @@
 - [Version Management](version-management.md) 📦 **Centralized version management**
 - [Contributing](contributing.md)
 
+### 🎯 Quality Assurance
+
+- [Module Finalization Checklist](../14_quality_assurance/module-finalization-checklist.md) ✅ **Module readiness criteria**
+- [Module Finalization Progress](../14_quality_assurance/modules-finalization-progress.md) 📊 **Progress tracking**
+
 ## 🎯 Who This Guide Is For
 
 This guide is designed for:

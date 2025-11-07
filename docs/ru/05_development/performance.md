@@ -28,10 +28,17 @@
 ```typescript
 // Включение профилирования в development
 import { Profiler } from 'react'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Performance')
 
 function TimelineWrapper() {
   const onRender = (id, phase, actualDuration) => {
-    console.log(`${id} (${phase}) took ${actualDuration}ms`)
+    logger.debugSync('Component render', {
+      id,
+      phase,
+      duration: actualDuration
+    })
   }
 
   return (
@@ -46,6 +53,10 @@ function TimelineWrapper() {
 
 ```typescript
 // utils/performance.ts
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('PerformanceTracker')
+
 export class PerformanceTracker {
   private marks = new Map<string, number>()
 
@@ -56,19 +67,22 @@ export class PerformanceTracker {
   end(label: string): number {
     const start = this.marks.get(label)
     if (!start) return 0
-    
+
     const duration = performance.now() - start
     this.marks.delete(label)
-    
+
     // Отправка метрик
     this.sendMetric(label, duration)
-    
+
     return duration
   }
 
   private sendMetric(label: string, duration: number) {
     if (duration > 16) { // Больше одного кадра
-      console.warn(`Slow operation: ${label} took ${duration}ms`)
+      logger.warnSync('Slow operation detected', {
+        operation: label,
+        duration: `${duration}ms`
+      })
     }
   }
 }

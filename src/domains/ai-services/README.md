@@ -112,7 +112,7 @@ const analysis = await contentService.analyzeMediaFile({
 // Пакетный анализ
 const results = await contentService.batchAnalyze(mediaFiles, {
   concurrency: 3,
-  progressCallback: (progress) => console.log(`${progress}% complete`)
+  progressCallback: (progress) => logger.debugSync(`${progress}% complete`)
 })
 ```
 
@@ -189,6 +189,9 @@ AI Services интегрируется с AI Core доменом для испо
 ```typescript
 import { getAIContainer } from '@/domains/ai-core'
 import { createMediaAnalysisFactory } from '@/domains/ai-services'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Регистрация в DI контейнере
 const container = getAIContainer()
@@ -257,7 +260,7 @@ const peopleFrames = frameAnalyses.filter(
 const quality = await ffmpeg.analyzeQuality('video.mp4')
 
 if (quality.overall < 70) {
-  console.warn('Low quality video detected')
+  logger.warnSync('Low quality video detected')
   // Рекомендации по улучшению
 }
 ```

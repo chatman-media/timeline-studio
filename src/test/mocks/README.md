@@ -210,8 +210,8 @@ export const NewProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 ### Проверка вызовов моков
 ```typescript
-console.log(vi.mocked(invoke).mock.calls);
-console.log(vi.mocked(open).mock.results);
+logger.debugSync(vi.mocked(invoke).mock.calls);
+logger.debugSync(vi.mocked(open).mock.results);
 ```
 
 ### Сброс конкретного мока
@@ -223,7 +223,7 @@ vi.mocked(invoke).mockRestore();
 ### Проверка состояния моков
 ```typescript
 import { getMockState } from '@/test/mocks';
-console.log(getMockState());
+logger.debugSync(getMockState());
 ```
 
 ## Связанные файлы
@@ -244,6 +244,9 @@ import { setupEssentialMocks } from '@/test/mocks';
 
 // ❌ Неправильно
 import { setupEssentialMocks } from '../test/mocks';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 ```
 
 ### Моки не работают

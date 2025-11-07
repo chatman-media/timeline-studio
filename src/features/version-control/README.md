@@ -58,6 +58,9 @@ The module uses a unified command system through `execute_command`:
 ### Command Types for execute_command
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 type ProjectCommand = 
   | { type: "CreateSnapshot", params: { message?: string } }
   | { type: "RestoreVersion", params: { version_id: string } }
@@ -103,7 +106,7 @@ function ProjectHeader() {
   const handleSave = async () => {
     const success = await createSnapshot("Saving layout changes");
     if (success) {
-      console.log("Version saved");
+      logger.debugSync("Version saved");
     }
   };
   
@@ -152,8 +155,8 @@ import { VersionHistoryPanel } from '@/features/version-control';
 function HistoryView() {
   return (
     <VersionHistoryPanel 
-      onRestore={(versionId) => console.log('Restoring', versionId)}
-      onCompare={(v1, v2) => console.log('Comparing', v1, v2)}
+      onRestore={(versionId) => logger.debugSync('Restoring', versionId)}
+      onCompare={(v1, v2) => logger.debugSync('Comparing', v1, v2)}
     />
   );
 }

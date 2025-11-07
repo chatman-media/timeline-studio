@@ -618,10 +618,13 @@ const service = await container.resolve<IService>('Service')
 ### 4. Обработка ошибок
 Всегда обрабатывайте ошибки разрешения зависимостей:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('AIContainer')
+
 try {
   const service = await container.resolve('Service')
 } catch (error) {
-  console.error('Failed to resolve service:', error)
+  logger.errorSync('Failed to resolve service', { error, serviceName: 'Service' })
   // Fallback logic
 }
 ```

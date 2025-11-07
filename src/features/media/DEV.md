@@ -24,6 +24,9 @@ media/
 Основной хук для обработки медиафайлов. Интегрируется с Tauri backend для извлечения метаданных через FFmpeg.
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 const { 
   scanFolder,
   scanFolderWithThumbnails,
@@ -442,7 +445,7 @@ async function operation() {
   try {
     return await riskyOperation()
   } catch (error) {
-    console.error('Operation failed:', error)
+    logger.errorSync('Operation failed:', error)
     // Восстановление или fallback
     return fallbackValue
   }

@@ -147,6 +147,9 @@ const intervalResults = await recognizeInterval({
 ### Full Video
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionApi')
+
 // Analyze entire video
 const videoAnalysis = await recognizeVideo({
   videoPath: '/path/to/video.mp4',
@@ -157,7 +160,7 @@ const videoAnalysis = await recognizeVideo({
     trackObjects: true   // Track between frames
   },
   onProgress: (progress) => {
-    console.log(`Progress: ${progress.percentage}%`)
+    logger.debugSync(`Progress: ${progress.percentage}%`)
   }
 })
 ```
@@ -165,6 +168,9 @@ const videoAnalysis = await recognizeVideo({
 ### Stream Processing
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionApi')
+
 // Stream recognition
 const stream = await startRecognitionStream({
   videoPath: '/path/to/video.mp4',
@@ -177,7 +183,7 @@ stream.on('chunk', (results) => {
 })
 
 stream.on('complete', () => {
-  console.log('Recognition complete')
+  logger.infoSync('Recognition complete')
 })
 
 // Stop stream
@@ -432,11 +438,14 @@ const cachedRecognition = withCache(recognition, {
 ### Monitoring
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionApi')
+
 // Performance metrics
 const metrics = recognition.getMetrics()
-console.log(`FPS: ${metrics.fps}`)
-console.log(`Latency: ${metrics.latency}ms`)
-console.log(`GPU Usage: ${metrics.gpuUsage}%`)
+logger.debugSync(`FPS: ${metrics.fps}`)
+logger.infoSync(`Latency: ${metrics.latency}ms`)
+logger.infoSync(`GPU Usage: ${metrics.gpuUsage}%`)
 
 // Profiling
 const profile = await recognition.profile({
@@ -448,17 +457,20 @@ const profile = await recognition.profile({
 ## Events
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionApi')
+
 // Subscribe to events
 recognition.on('detection', (detection) => {
-  console.log('New detection:', detection)
+  logger.infoSync('New detection:', detection)
 })
 
 recognition.on('sceneChange', (scene) => {
-  console.log('Scene changed:', scene)
+  logger.infoSync('Scene changed:', scene)
 })
 
 recognition.on('personIdentified', (person) => {
-  console.log('Person identified:', person.name)
+  logger.infoSync('Person identified:', person.name)
 })
 
 recognition.on('progress', (progress) => {

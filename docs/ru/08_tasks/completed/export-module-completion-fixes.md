@@ -128,6 +128,9 @@ const uploadToSocialNetwork = useCallback(async (videoPath: string, settings: So
 
 ### Что должно быть:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportModuleCompletionFixes')
+
 const uploadToSocialNetwork = useCallback(async (videoPath: string, settings: SocialExportSettings) => {
   try {
     const fileData = await readBinaryFile(videoPath)
@@ -143,7 +146,7 @@ const uploadToSocialNetwork = useCallback(async (videoPath: string, settings: So
     
     return result
   } catch (error) {
-    console.error('Upload failed:', error)
+    logger.errorSync('Upload failed:', error)
     throw error
   }
 }, [])

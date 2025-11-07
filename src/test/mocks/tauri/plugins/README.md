@@ -79,7 +79,7 @@ export interface NotificationOptions {
 }
 
 export async function sendNotification(options: NotificationOptions) {
-  console.log('Mock notification:', options);
+  logger.debugSync('Mock notification:', options);
   return { id: Math.random().toString() };
 }
 
@@ -96,12 +96,12 @@ export async function isPermissionGranted() {
 ```typescript
 // shell.ts
 export async function open(url: string) {
-  console.log('Mock: Opening URL:', url);
+  logger.debugSync('Mock: Opening URL:', url);
   return true;
 }
 
 export async function execute(command: string, args?: string[]) {
-  console.log('Mock: Executing command:', command, args);
+  logger.debugSync('Mock: Executing command:', command, args);
   return {
     code: 0,
     stdout: 'Mock output',
@@ -135,6 +135,9 @@ describe('Platform specific features', () => {
 ### Проверка локализации
 ```typescript
 import { locale } from '@tauri-apps/plugin-os';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 test('should auto-detect Russian locale', async () => {
   vi.mocked(locale).mockResolvedValue('ru-RU');

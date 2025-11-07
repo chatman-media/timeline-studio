@@ -525,6 +525,9 @@ Modal window with detailed cache statistics:
 
 ```typescript
 import { CacheStatisticsModal } from '@/features/video-compiler';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 function CacheSettings() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1123,7 +1126,7 @@ class VideoCompilerError extends Error {
 
 // Centralized error handling
 const handleError = (error: unknown, context: string): string => {
-  console.error(`[VideoCompiler:${context}]`, error);
+  logger.errorSync(`[VideoCompiler:${context}]`, error);
   
   if (error instanceof VideoCompilerError) {
     return error.message;
@@ -1240,10 +1243,10 @@ When adding new capabilities, follow this checklist:
 const DEBUG = process.env.NODE_ENV === 'development';
 
 const log = {
-  debug: (...args: any[]) => DEBUG && console.log('[VideoCompiler:DEBUG]', ...args),
-  info: (...args: any[]) => console.log('[VideoCompiler:INFO]', ...args),
-  warn: (...args: any[]) => console.warn('[VideoCompiler:WARN]', ...args),
-  error: (...args: any[]) => console.error('[VideoCompiler:ERROR]', ...args)
+  debug: (...args: any[]) => DEBUG && logger.debugSync('[VideoCompiler:DEBUG]', ...args),
+  info: (...args: any[]) => logger.debugSync('[VideoCompiler:INFO]', ...args),
+  warn: (...args: any[]) => logger.warnSync('[VideoCompiler:WARN]', ...args),
+  error: (...args: any[]) => logger.errorSync('[VideoCompiler:ERROR]', ...args)
 };
 ```
 
@@ -1345,8 +1348,8 @@ function ExportMenu() {
 const { refreshCapabilities } = useGpuCapabilities();
 const capabilities = await refreshCapabilities();
 
-console.log('FFmpeg encoders:', capabilities.ffmpeg_capabilities?.encoders);
-console.log('Available GPUs:', capabilities.gpus);
+logger.debugSync('FFmpeg encoders:', capabilities.ffmpeg_capabilities?.encoders);
+logger.debugSync('Available GPUs:', capabilities.gpus);
 ```
 
 #### Render Fails with Error

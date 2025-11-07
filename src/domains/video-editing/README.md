@@ -28,6 +28,9 @@ video-editing/
 ### Timeline Types
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface TimelineState {
   tracks: Track[]
   duration: number
@@ -216,7 +219,7 @@ const analysis = await factory.createFFmpegService()
 
 // Использование результатов анализа
 if (analysis.quality.overall < 50) {
-  console.warn('Low quality video')
+  logger.warnSync('Low quality video')
 }
 ```
 

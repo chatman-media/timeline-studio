@@ -111,7 +111,9 @@ Intelligent frame caching system:
 
 ```typescript
 import { PreviewCache } from '@/features/preview/services'
+import { createLogger } from '@/lib/tauri-logger'
 
+const logger = createLogger('PreviewCache')
 const cache = new PreviewCache(100) // 100MB limit
 
 // Get or compute frame
@@ -135,7 +137,7 @@ await cache.prefetch(
 
 // Cache statistics
 const stats = cache.getStats()
-console.log(`Cache: ${stats.entries} entries, ${stats.sizeMB}MB`)
+logger.debugSync('Cache statistics', { entries: stats.entries, sizeMB: stats.sizeMB })
 ```
 
 ## 🚀 Quick Start
@@ -297,7 +299,7 @@ setQuality(customQuality)
 ```typescript
 const { cacheStats } = useWebGL2Preview()
 
-console.log('Cache Stats:', {
+logger.debugSync('Cache Stats:', {
   entries: cacheStats.entries,        // Number of cached frames
   sizeMB: cacheStats.sizeMB,         // Cache size in MB
   hitRate: cacheStats.hitRate,       // Cache hit rate
@@ -309,14 +311,17 @@ console.log('Cache Stats:', {
 
 ```typescript
 import { PerformanceMonitor } from '@/features/preview/utils'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const monitor = new PerformanceMonitor()
 
 monitor.on('frameRendered', (stats) => {
-  console.log(`Frame rendered in ${stats.renderTime}ms`)
+  logger.debugSync(`Frame rendered in ${stats.renderTime}ms`)
   
   if (stats.renderTime > 33) { // More than 33ms = less than 30 FPS
-    console.warn('Frame drop detected, consider reducing quality')
+    logger.warnSync('Frame drop detected, consider reducing quality')
   }
 })
 ```
@@ -406,7 +411,7 @@ setQuality({
 // Check format support
 const video = videoRef.current
 if (video.readyState < 2) {
-  console.warn('Video not ready for processing')
+  logger.warnSync('Video not ready for processing')
 }
 ```
 

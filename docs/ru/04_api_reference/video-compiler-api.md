@@ -122,27 +122,39 @@ const advancedJob = await compile({
 ### Мониторинг прогресса
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompiler')
+
 // Подписка на прогресс
 renderJob.on('progress', (progress) => {
-  console.log(`Frame: ${progress.frame}/${progress.totalFrames}`)
-  console.log(`Time: ${progress.timeElapsed}/${progress.timeRemaining}`)
-  console.log(`Speed: ${progress.fps} fps (${progress.speed}x)`)
-  console.log(`Bitrate: ${progress.bitrate} kbps`)
+  logger.debugSync('Render progress', {
+    frame: progress.frame,
+    totalFrames: progress.totalFrames,
+    timeElapsed: progress.timeElapsed,
+    timeRemaining: progress.timeRemaining,
+    fps: progress.fps,
+    speed: progress.speed,
+    bitrate: progress.bitrate
+  })
 })
 
 // Детальная статистика
 renderJob.on('statistics', (stats) => {
-  console.log(`Dropped frames: ${stats.droppedFrames}`)
-  console.log(`Encoding speed: ${stats.encodingSpeed}`)
-  console.log(`GPU usage: ${stats.gpuUsage}%`)
-  console.log(`Memory usage: ${stats.memoryUsage} MB`)
+  logger.debugSync('Render statistics', {
+    droppedFrames: stats.droppedFrames,
+    encodingSpeed: stats.encodingSpeed,
+    gpuUsage: stats.gpuUsage,
+    memoryUsage: stats.memoryUsage
+  })
 })
 
 // Завершение
 renderJob.on('complete', (result) => {
-  console.log(`Output: ${result.outputPath}`)
-  console.log(`Size: ${result.fileSize}`)
-  console.log(`Duration: ${result.duration}`)
+  logger.infoSync('Render complete', {
+    outputPath: result.outputPath,
+    fileSize: result.fileSize,
+    duration: result.duration
+  })
 })
 ```
 
@@ -207,10 +219,13 @@ const sprite = await generateThumbnailSprite({
 ### Hardware Capabilities
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('HardwareCapabilities')
+
 // Получение возможностей системы
 const capabilities = await getCapabilities()
 
-console.log('GPU Encoders:', capabilities.encoders)
+logger.infoSync('GPU Encoders detected', { encoders: capabilities.encoders })
 // {
 //   nvenc: { available: true, codecs: ['h264', 'h265', 'av1'] },
 //   amf: { available: false },
@@ -218,7 +233,7 @@ console.log('GPU Encoders:', capabilities.encoders)
 //   videotoolbox: { available: false }
 // }
 
-console.log('GPU Filters:', capabilities.filters)
+logger.infoSync('GPU Filters available', { filters: capabilities.filters })
 // {
 //   scale: true,
 //   colorspace: true,
@@ -248,7 +263,11 @@ const gpuConfig = {
 // Мониторинг памяти
 const memoryMonitor = createGPUMemoryMonitor()
 memoryMonitor.on('warning', (usage) => {
-  console.warn(`GPU memory usage high: ${usage.used}/${usage.total} MB`)
+  logger.warnSync('GPU memory usage high', {
+    used: usage.used,
+    total: usage.total,
+    unit: 'MB'
+  })
 })
 ```
 
@@ -481,9 +500,11 @@ stream.stop()
 
 // Мониторинг
 stream.on('statistics', (stats) => {
-  console.log(`Bitrate: ${stats.bitrate}`)
-  console.log(`Dropped frames: ${stats.droppedFrames}`)
-  console.log(`Network buffer: ${stats.bufferLevel}`)
+  logger.debugSync('Stream statistics', {
+    bitrate: stats.bitrate,
+    droppedFrames: stats.droppedFrames,
+    bufferLevel: stats.bufferLevel
+  })
 })
 ```
 
@@ -522,9 +543,12 @@ compiler.setCache(cache)
 ## События и callbacks
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('Compiler')
+
 // Глобальные события
 compiler.on('start', (job) => {
-  console.log(`Starting render: ${job.id}`)
+  logger.infoSync('Starting render', { jobId: job.id })
 })
 
 compiler.on('frame', (frame) => {
@@ -532,10 +556,12 @@ compiler.on('frame', (frame) => {
 })
 
 compiler.on('error', (error) => {
+  logger.errorSync('Compiler error', { error })
   handleError(error)
 })
 
 compiler.on('complete', (result) => {
+  logger.infoSync('Render completed', { result })
   notifyUser(result)
 })
 
@@ -543,8 +569,14 @@ compiler.on('complete', (result) => {
 const job = await compile(config, {
   onProgress: (progress) => updateUI(progress),
   onFrame: (frame) => saveFrame(frame),
-  onError: (error) => logError(error),
-  onComplete: (result) => celebrate(result)
+  onError: (error) => {
+    logger.errorSync('Job error', { error })
+    logError(error)
+  },
+  onComplete: (result) => {
+    logger.infoSync('Job completed', { result })
+    celebrate(result)
+  }
 })
 ```
 

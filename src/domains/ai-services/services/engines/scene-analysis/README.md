@@ -30,6 +30,9 @@ scene-analysis/
 
 ```typescript
 import { SceneAnalysisEngine } from './services/scene-analysis-engine'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 const engine = new SceneAnalysisEngine()
 await engine.initialize()
@@ -42,9 +45,9 @@ const result = await engine.process({
   }
 })
 
-console.log(result.scenes) // Массив обнаруженных сцен
-console.log(result.keyMoments) // Важные моменты
-console.log(result.classification) // Тип контента
+logger.debugSync(result.scenes) // Массив обнаруженных сцен
+logger.debugSync(result.keyMoments) // Важные моменты
+logger.debugSync(result.classification) // Тип контента
 ```
 
 ### Анализ отдельного кадра

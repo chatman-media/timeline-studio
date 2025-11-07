@@ -56,13 +56,16 @@ function ChatInterface() {
 
 ```typescript
 import { ContentIntelligencePanel } from '@/features/ai-chat/components'
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 function VideoAnalysis() {
   return (
     <ContentIntelligencePanel
       videoId={currentVideoId}
       onAnalysisComplete={(results) => {
-        console.log('Результаты анализа:', results)
+        logger.debugSync('Результаты анализа:', results)
       }}
     />
   )

@@ -358,6 +358,9 @@ class ExternalRecognitionService {
 
 #### Real-time Architecture:
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('PersonIdentificationAdvanced')
+
 class RealtimePersonRecognition {
   private videoStream: MediaStream
   private processingPipeline: ProcessingPipeline
@@ -379,7 +382,7 @@ class RealtimePersonRecognition {
           // Pass frame forward
           controller.enqueue(videoFrame)
         } catch (error) {
-          console.error('Real-time processing error:', error)
+          logger.errorSync('Real-time processing error:', error)
           controller.enqueue(videoFrame) // Skip frame
         }
       }

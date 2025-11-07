@@ -122,27 +122,30 @@ const advancedJob = await compile({
 ### Progress Monitoring
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompilerApi')
+
 // Subscribe to progress
 renderJob.on('progress', (progress) => {
-  console.log(`Frame: ${progress.frame}/${progress.totalFrames}`)
-  console.log(`Time: ${progress.timeElapsed}/${progress.timeRemaining}`)
-  console.log(`Speed: ${progress.fps} fps (${progress.speed}x)`)
-  console.log(`Bitrate: ${progress.bitrate} kbps`)
+  logger.debugSync(`Frame: ${progress.frame}/${progress.totalFrames}`)
+  logger.debugSync(`Time: ${progress.timeElapsed}/${progress.timeRemaining}`)
+  logger.debugSync(`Speed: ${progress.fps} fps (${progress.speed}x)`)
+  logger.debugSync(`Bitrate: ${progress.bitrate} kbps`)
 })
 
 // Detailed statistics
 renderJob.on('statistics', (stats) => {
-  console.log(`Dropped frames: ${stats.droppedFrames}`)
-  console.log(`Encoding speed: ${stats.encodingSpeed}`)
-  console.log(`GPU usage: ${stats.gpuUsage}%`)
-  console.log(`Memory usage: ${stats.memoryUsage} MB`)
+  logger.debugSync(`Dropped frames: ${stats.droppedFrames}`)
+  logger.infoSync(`Encoding speed: ${stats.encodingSpeed}`)
+  logger.infoSync(`GPU usage: ${stats.gpuUsage}%`)
+  logger.infoSync(`Memory usage: ${stats.memoryUsage} MB`)
 })
 
 // Completion
 renderJob.on('complete', (result) => {
-  console.log(`Output: ${result.outputPath}`)
-  console.log(`Size: ${result.fileSize}`)
-  console.log(`Duration: ${result.duration}`)
+  logger.infoSync(`Output: ${result.outputPath}`)
+  logger.infoSync(`Size: ${result.fileSize}`)
+  logger.infoSync(`Duration: ${result.duration}`)
 })
 ```
 
@@ -207,10 +210,13 @@ const sprite = await generateThumbnailSprite({
 ### Hardware Capabilities
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompilerApi')
+
 // Get system capabilities
 const capabilities = await getCapabilities()
 
-console.log('GPU Encoders:', capabilities.encoders)
+logger.infoSync('GPU Encoders:', capabilities.encoders)
 // {
 //   nvenc: { available: true, codecs: ['h264', 'h265', 'av1'] },
 //   amf: { available: false },
@@ -218,7 +224,7 @@ console.log('GPU Encoders:', capabilities.encoders)
 //   videotoolbox: { available: false }
 // }
 
-console.log('GPU Filters:', capabilities.filters)
+logger.infoSync('GPU Filters:', capabilities.filters)
 // {
 //   scale: true,
 //   colorspace: true,
@@ -237,6 +243,9 @@ const bestEncoder = selectBestEncoder({
 ### GPU Memory Management
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompilerApi')
+
 // Configure memory usage
 const gpuConfig = {
   maxMemory: 4096, // MB
@@ -248,7 +257,7 @@ const gpuConfig = {
 // Monitor memory
 const memoryMonitor = createGPUMemoryMonitor()
 memoryMonitor.on('warning', (usage) => {
-  console.warn(`GPU memory usage high: ${usage.used}/${usage.total} MB`)
+  logger.warnSync(`GPU memory usage high: ${usage.used}/${usage.total} MB`)
 })
 ```
 
@@ -461,6 +470,9 @@ const issues = await detectIssues({
 ### Live Streaming
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompilerApi')
+
 // Create stream
 const stream = await createLiveStream({
   input: 'camera:0', // or file path
@@ -481,9 +493,9 @@ stream.stop()
 
 // Monitoring
 stream.on('statistics', (stats) => {
-  console.log(`Bitrate: ${stats.bitrate}`)
-  console.log(`Dropped frames: ${stats.droppedFrames}`)
-  console.log(`Network buffer: ${stats.bufferLevel}`)
+  logger.infoSync(`Bitrate: ${stats.bitrate}`)
+  logger.debugSync(`Dropped frames: ${stats.droppedFrames}`)
+  logger.infoSync(`Network buffer: ${stats.bufferLevel}`)
 })
 ```
 
@@ -522,9 +534,12 @@ compiler.setCache(cache)
 ## Events and Callbacks
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('VideoCompilerApi')
+
 // Global events
 compiler.on('start', (job) => {
-  console.log(`Starting render: ${job.id}`)
+  logger.infoSync(`Starting render: ${job.id}`)
 })
 
 compiler.on('frame', (frame) => {

@@ -65,6 +65,9 @@ const refreshedTokens = await youtube.refreshAccessToken()
 ### Базовая загрузка
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('YoutubeApi')
+
 // Простая загрузка
 const upload = await youtube.uploadVideo({
   videoPath: '/path/to/video.mp4',
@@ -79,13 +82,13 @@ const upload = await youtube.uploadVideo({
 
 // Отслеживание прогресса
 upload.on('progress', (progress) => {
-  console.log(`Upload progress: ${progress.percentage}%`)
-  console.log(`Bytes sent: ${progress.bytesUploaded}/${progress.totalBytes}`)
+  logger.debugSync(`Upload progress: ${progress.percentage}%`)
+  logger.debugSync(`Bytes sent: ${progress.bytesUploaded}/${progress.totalBytes}`)
 })
 
 // Завершение загрузки
 upload.on('complete', (video) => {
-  console.log(`Video uploaded: https://youtube.com/watch?v=${video.id}`)
+  logger.infoSync(`Video uploaded: https://youtube.com/watch?v=${video.id}`)
 })
 ```
 
@@ -180,14 +183,17 @@ await youtube.setThumbnail(videoId, {
 ### Получение информации
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('YoutubeApi')
+
 // Получение деталей видео
 const video = await youtube.getVideo(videoId, {
   parts: ['snippet', 'statistics', 'status', 'contentDetails']
 })
 
-console.log(`Views: ${video.statistics.viewCount}`)
-console.log(`Likes: ${video.statistics.likeCount}`)
-console.log(`Duration: ${video.contentDetails.duration}`)
+logger.infoSync(`Views: ${video.statistics.viewCount}`)
+logger.infoSync(`Likes: ${video.statistics.likeCount}`)
+logger.infoSync(`Duration: ${video.contentDetails.duration}`)
 
 // Получение списка видео
 const myVideos = await youtube.listVideos({
@@ -330,6 +336,9 @@ await youtube.exportReport(report, '/path/to/report.csv')
 ### Создание трансляции
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('YoutubeApi')
+
 // Создание live stream
 const broadcast = await youtube.createBroadcast({
   title: 'Live from Timeline Studio',
@@ -355,13 +364,16 @@ const stream = await youtube.createStream({
 await youtube.bindBroadcastToStream(broadcast.id, stream.id)
 
 // Получение RTMP URL
-console.log(`Stream URL: ${stream.cdn.ingestionInfo.ingestionAddress}`)
-console.log(`Stream Key: ${stream.cdn.ingestionInfo.streamName}`)
+logger.infoSync(`Stream URL: ${stream.cdn.ingestionInfo.ingestionAddress}`)
+logger.infoSync(`Stream Key: ${stream.cdn.ingestionInfo.streamName}`)
 ```
 
 ### Управление трансляцией
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('YoutubeApi')
+
 // Начало трансляции
 await youtube.transitionBroadcast(broadcast.id, 'live')
 
@@ -373,26 +385,29 @@ await youtube.transitionBroadcast(broadcast.id, 'complete')
 
 // Мониторинг состояния
 const status = await youtube.getBroadcastStatus(broadcast.id)
-console.log(`Status: ${status.lifeCycleStatus}`)
-console.log(`Health: ${status.healthStatus.status}`)
+logger.infoSync(`Status: ${status.lifeCycleStatus}`)
+logger.infoSync(`Health: ${status.healthStatus.status}`)
 ```
 
 ## Обработка ошибок
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('YoutubeApi')
+
 try {
   await youtube.uploadVideo(videoData)
 } catch (error) {
   if (error.code === 'quotaExceeded') {
-    console.error('API quota exceeded')
+    logger.errorSync('API quota exceeded')
     showQuotaWarning()
   } else if (error.code === 'videoNotFound') {
-    console.error('Video not found')
+    logger.errorSync('Video not found')
   } else if (error.code === 'forbidden') {
-    console.error('Access forbidden')
+    logger.errorSync('Access forbidden')
     refreshAuthentication()
   } else if (error.code === 'uploadFailed') {
-    console.error('Upload failed:', error.message)
+    logger.errorSync('Upload failed:', error.message)
     // Попытка возобновления
     attemptResume(error.uploadUrl)
   }

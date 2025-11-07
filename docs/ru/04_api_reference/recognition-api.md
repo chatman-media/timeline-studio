@@ -147,6 +147,9 @@ const intervalResults = await recognizeInterval({
 ### Полное видео
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('Recognition')
+
 // Анализ всего видео
 const videoAnalysis = await recognizeVideo({
   videoPath: '/path/to/video.mp4',
@@ -157,7 +160,7 @@ const videoAnalysis = await recognizeVideo({
     trackObjects: true   // Отслеживание между кадрами
   },
   onProgress: (progress) => {
-    console.log(`Progress: ${progress.percentage}%`)
+    logger.debugSync('Recognition progress', { percentage: progress.percentage })
   }
 })
 ```
@@ -177,7 +180,7 @@ stream.on('chunk', (results) => {
 })
 
 stream.on('complete', () => {
-  console.log('Recognition complete')
+  logger.infoSync('Recognition complete', { streamId: stream.id })
 })
 
 // Остановка потока
@@ -432,11 +435,16 @@ const cachedRecognition = withCache(recognition, {
 ### Мониторинг
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionMetrics')
+
 // Метрики производительности
 const metrics = recognition.getMetrics()
-console.log(`FPS: ${metrics.fps}`)
-console.log(`Latency: ${metrics.latency}ms`)
-console.log(`GPU Usage: ${metrics.gpuUsage}%`)
+logger.debugSync('Performance metrics', {
+  fps: metrics.fps,
+  latency: metrics.latency,
+  gpuUsage: metrics.gpuUsage
+})
 
 // Профилирование
 const profile = await recognition.profile({
@@ -448,17 +456,20 @@ const profile = await recognition.profile({
 ## События
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('RecognitionEvents')
+
 // Подписка на события
 recognition.on('detection', (detection) => {
-  console.log('New detection:', detection)
+  logger.debugSync('New detection', { detection })
 })
 
 recognition.on('sceneChange', (scene) => {
-  console.log('Scene changed:', scene)
+  logger.infoSync('Scene changed', { scene })
 })
 
 recognition.on('personIdentified', (person) => {
-  console.log('Person identified:', person.name)
+  logger.infoSync('Person identified', { personName: person.name, personId: person.id })
 })
 
 recognition.on('progress', (progress) => {
@@ -466,6 +477,7 @@ recognition.on('progress', (progress) => {
 })
 
 recognition.on('error', (error) => {
+  logger.errorSync('Recognition error', { error })
   handleError(error)
 })
 ```

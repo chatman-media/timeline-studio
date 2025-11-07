@@ -64,6 +64,9 @@ src/features/templates/
 ### Интерфейсы конфигурации шаблонов
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 // Основная конфигурация шаблона
 interface MediaTemplateConfig {
   id: string
@@ -470,7 +473,7 @@ bun run lint
 ### Отладка шаблонов
 ```typescript
 // В консоли браузера во время разработки
-console.log("Конфигурация шаблона:", getAllTemplateConfig("your-template-id"))
+logger.debugSync("Конфигурация шаблона:", getAllTemplateConfig("your-template-id"))
 
 // Тестовый рендеринг
 <TemplateRenderer 
@@ -488,7 +491,7 @@ console.log("Конфигурация шаблона:", getAllTemplateConfig("yo
 // Проверить, что шаблон существует в all-template-configs.ts
 const config = getAllTemplateConfig("my-template-id")
 if (!config) {
-  console.error("Шаблон не найден:", "my-template-id")
+  logger.errorSync("Шаблон не найден:", "my-template-id")
 }
 ```
 
@@ -496,7 +499,7 @@ if (!config) {
 ```typescript
 // Проверить корректность конфигурации шаблона
 if (!template.screens || template.screens < 1) {
-  console.error("Некорректная конфигурация шаблона:", template)
+  logger.errorSync("Некорректная конфигурация шаблона:", template)
 }
 ```
 
@@ -506,7 +509,7 @@ if (!template.screens || template.screens < 1) {
 if (template.resizable && isResizableMode) {
   // Изменение размеров должно работать
 } else {
-  console.warn("Шаблон не поддерживает изменение размеров:", template.id)
+  logger.warnSync("Шаблон не поддерживает изменение размеров:", template.id)
 }
 ```
 

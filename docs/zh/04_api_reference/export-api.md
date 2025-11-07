@@ -144,12 +144,15 @@ const exportId = await startExportWithPreset('youtube', {
 ### Progress Monitoring
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportApi')
+
 // Subscribe to progress
 const unsubscribe = onExportProgress((progress) => {
-  console.log(`Progress: ${progress.percentage}%`)
-  console.log(`Stage: ${progress.stage}`)
-  console.log(`ETA: ${progress.timeRemaining}`)
-  console.log(`Speed: ${progress.speed}x`)
+  logger.debugSync(`Progress: ${progress.percentage}%`)
+  logger.debugSync(`Stage: ${progress.stage}`)
+  logger.debugSync(`ETA: ${progress.timeRemaining}`)
+  logger.debugSync(`Speed: ${progress.speed}x`)
 })
 
 // Detailed progress
@@ -184,6 +187,9 @@ type ExportStage =
 ### Batch Export
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportApi')
+
 // Export to multiple formats
 const batchExport = await startBatchExport([
   {
@@ -205,7 +211,7 @@ const batchExport = await startBatchExport([
 
 // Monitor batch export
 batchExport.on('itemComplete', (item, index) => {
-  console.log(`Completed ${item.name} (${index + 1}/${batchExport.total})`)
+  logger.infoSync(`Completed ${item.name} (${index + 1}/${batchExport.total})`)
 })
 ```
 
@@ -230,6 +236,9 @@ const segments = await exportMarkedSegments(markers, {
 ### Direct Upload
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportApi')
+
 // Export with platform upload
 const uploadExport = await exportAndUpload({
   exportSettings: {
@@ -248,7 +257,7 @@ const uploadExport = await exportAndUpload({
 
 // Track upload
 uploadExport.on('uploadProgress', (progress) => {
-  console.log(`Upload: ${progress.percentage}%`)
+  logger.debugSync(`Upload: ${progress.percentage}%`)
 })
 ```
 
@@ -353,10 +362,13 @@ try {
 ### Settings Validation
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportApi')
+
 // Validate settings before export
 const validation = validateExportSettings(settings)
 if (!validation.valid) {
-  console.error('Invalid settings:', validation.errors)
+  logger.errorSync('Invalid settings:', validation.errors)
   // {
   //   errors: [
   //     { field: 'bitrate', message: 'Bitrate too high for resolution' },
@@ -388,9 +400,12 @@ const qualityScore = await analyzeExportQuality(outputFile)
 ## Export Events
 
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+const logger = createLogger('ExportApi')
+
 // Subscribe to events
 export.on('start', (exportId) => {
-  console.log('Export started:', exportId)
+  logger.infoSync('Export started:', exportId)
 })
 
 export.on('progress', (progress) => {
@@ -398,13 +413,13 @@ export.on('progress', (progress) => {
 })
 
 export.on('stageChange', (stage) => {
-  console.log('New stage:', stage)
+  logger.infoSync('New stage:', stage)
 })
 
 export.on('complete', (result) => {
-  console.log('Export complete:', result.outputPath)
-  console.log('Duration:', result.duration)
-  console.log('File size:', result.fileSize)
+  logger.infoSync('Export complete:', result.outputPath)
+  logger.infoSync('Duration:', result.duration)
+  logger.infoSync('File size:', result.fileSize)
 })
 
 export.on('error', (error) => {
@@ -412,7 +427,7 @@ export.on('error', (error) => {
 })
 
 export.on('cancelled', () => {
-  console.log('Export cancelled')
+  logger.infoSync('Export cancelled')
 })
 ```
 

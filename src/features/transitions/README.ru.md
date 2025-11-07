@@ -70,6 +70,9 @@ src/features/transitions/
 
 ### TimelineTransition
 ```typescript
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 interface TimelineTransition {
   id: string
   transitionId: string        // Ссылка на ресурс перехода
@@ -182,8 +185,8 @@ import { useTransitionExport } from '@/features/export/hooks/use-transition-expo
 
 function ExportDialog() {
   const { exportTransitions, isExporting, progress } = useTransitionExport({
-    onProgress: (status) => console.log(`Прогресс экспорта: ${status.progress}%`),
-    onComplete: (result) => console.log('Экспорт завершен:', result)
+    onProgress: (status) => logger.debugSync(`Прогресс экспорта: ${status.progress}%`),
+    onComplete: (result) => logger.debugSync('Экспорт завершен:', result)
   })
   
   const handleExport = async () => {
@@ -301,7 +304,7 @@ const exportSettings = {
 // Проверка поддержки GPU
 const isSupported = useAdvancedTransitions().isGPUSupported
 if (!isSupported) {
-  console.log('GPU ускорение недоступно, используется программный fallback')
+  logger.debugSync('GPU ускорение недоступно, используется программный fallback')
 }
 ```
 
@@ -324,7 +327,7 @@ window.TRANSITIONS_DEBUG = true
 
 // Мониторинг памяти GPU
 const memoryInfo = renderer.info.memory
-console.log('Использование памяти GPU:', memoryInfo)
+logger.debugSync('Использование памяти GPU:', memoryInfo)
 ```
 
 ## Участие в разработке

@@ -35,6 +35,9 @@ test('should display app version', async () => {
 ```typescript
 import { getVersion } from '@tauri-apps/api/app';
 import { vi } from 'vitest';
+import { createLogger } from '@/lib/tauri-logger'
+
+const logger = createLogger('Example')
 
 // Изменение версии для теста обновлений
 vi.mocked(getVersion).mockResolvedValueOnce('0.9.0');
@@ -75,11 +78,11 @@ export async function getAll() {
 ```typescript
 // process.ts
 export async function exit(code: number = 0) {
-  console.log(`Mock: Exiting with code ${code}`);
+  logger.debugSync(`Mock: Exiting with code ${code}`);
 }
 
 export async function relaunch() {
-  console.log('Mock: Relaunching application');
+  logger.debugSync('Mock: Relaunching application');
 }
 ```
 
