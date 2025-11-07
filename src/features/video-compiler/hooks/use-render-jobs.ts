@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { logError, logInfo } from "@/lib/tauri-logger"
 
@@ -15,14 +15,19 @@ interface UseRenderJobsReturn {
 }
 
 export function useRenderJobs(): UseRenderJobsReturn {
-  logInfo("[useRenderJobs] Инициализация useRenderJobs хука")
-
   const [jobs, setJobs] = useState<RenderJob[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const isRefreshingRef = useRef(false)
 
   // Получить список активных задач
   const refreshJobs = useCallback(async () => {
+    // Пропускаем запрос, если предыдущий еще выполняется
+    if (isRefreshingRef.current) {
+      return
+    }
+
+    isRefreshingRef.current = true
     logInfo("[useRenderJobs] Запрос списка активных задач")
 
     try {
@@ -36,6 +41,7 @@ export function useRenderJobs(): UseRenderJobsReturn {
       setError(err instanceof Error ? err.message : "Не удалось получить список задач")
     } finally {
       setIsLoading(false)
+      isRefreshingRef.current = false
     }
   }, [])
 
@@ -82,12 +88,16 @@ export function useRenderJobs(): UseRenderJobsReturn {
 
   // Автоматическое обновление списка задач
   useEffect(() => {
+    logInfo("[useRenderJobs] Инициализация useRenderJobs хука")
     void refreshJobs()
 
-    // Обновляем список каждые 2 секунды
-    const interval = setInterval(refreshJobs, 2000)
+    // Обновляем список каждые 5 секунд (увеличено с 2 для снижения нагрузки)
+    const interval = setInterval(refreshJobs, 5000)
 
-    return () => clearInterval(interval)
+    return () => {
+      logInfo("[useRenderJobs] Размонтирование useRenderJobs хука")
+      clearInterval(interval)
+    }
   }, [refreshJobs])
 
   return {

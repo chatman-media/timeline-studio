@@ -3,6 +3,8 @@
  * Система маршрутизации аудио сигналов между каналами, группами и шинами
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
 export interface AudioBus {
   id: string
   name: string
@@ -43,6 +45,7 @@ export interface RoutingMatrix {
 }
 
 export class BusRouter {
+  private static logger = createLogger("BusRouter")
   private context: AudioContext
   private matrix: RoutingMatrix
   private masterBus: AudioBus

@@ -3,6 +3,8 @@
  * Система автоматизации параметров для Fairlight Audio
  */
 
+import { createLogger } from "@/lib/tauri-logger"
+
 export interface AutomationPoint {
   time: number // время в секундах
   value: number // значение параметра (0-1)
@@ -28,6 +30,7 @@ export interface AutomationState {
 }
 
 export class AutomationEngine {
+  private static logger = createLogger("AutomationEngine")
   private state: AutomationState
   private recordingLanes = new Set<string>()
   private callbacks = new Map<string, (value: number) => void>()
@@ -36,6 +39,7 @@ export class AutomationEngine {
   private lastTouchTime?: number
 
   constructor() {
+    AutomationEngine.logger.infoSync("Initializing AutomationEngine")
     this.state = {
       mode: "read",
       isRecording: false,

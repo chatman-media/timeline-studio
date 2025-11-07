@@ -1,3 +1,5 @@
+import { createLogger } from "@/lib/tauri-logger"
+
 import { AudioClipEditor } from "./audio-clip-editor"
 import type { EqualizerProcessor } from "./effects/equalizer-processor"
 import { SurroundAudioProcessor, type SurroundFormat, type SurroundPosition } from "./surround/surround-processor"
@@ -16,6 +18,7 @@ export interface ChannelNode {
 }
 
 export class AudioEngine {
+  private static logger = createLogger("AudioEngine")
   private context: AudioContext
   private masterGain: GainNode
   private masterLimiter: DynamicsCompressorNode
@@ -25,6 +28,10 @@ export class AudioEngine {
   public clipEditor: AudioClipEditor
 
   constructor() {
+    AudioEngine.logger.infoSync("Initializing AudioEngine", {
+      sampleRate: 48000,
+      latencyHint: "interactive",
+    })
     this.context = new AudioContext({
       sampleRate: 48000,
       latencyHint: "interactive",
