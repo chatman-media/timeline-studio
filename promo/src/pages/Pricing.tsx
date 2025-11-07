@@ -48,8 +48,7 @@ export const Pricing: React.FC = () => {
       description: t("pricing.tiers.pro.description"),
       features: [
         t("pricing.features.everythingInFree"),
-        "Claude 3.5 - 50K tokens/mo",
-        "GPT-4o - 30K tokens/mo",
+        "10K AI tokens/mo (Haiku, GPT-4o-mini, GPT-4o)",
         "AI avatars - 10 hours/mo",
         "AI video - 100 clips/mo",
         "34 premium transitions (3D, glitch)",
@@ -58,7 +57,7 @@ export const Pricing: React.FC = () => {
         "Priority support",
       ],
       cloudStorage: "100GB",
-      aiTokens: "50K Claude\n30K GPT-4",
+      aiTokens: "10K mixed AI\n$2.95/1M avg",
       buttonText: t("pricing.tiers.pro.buttonText"),
       highlighted: true,
     },
@@ -69,7 +68,7 @@ export const Pricing: React.FC = () => {
       description: t("pricing.tiers.max.description"),
       features: [
         t("pricing.features.everythingInPro"),
-        "500K AI tokens/mo",
+        "500K AI tokens/mo (all models)",
         "100 hours avatar generation",
         "1000 video clips/mo",
         "Unlimited Stock footage",
@@ -79,7 +78,7 @@ export const Pricing: React.FC = () => {
         "Personal Discord channel",
       ],
       cloudStorage: "1TB",
-      aiTokens: "500K tokens\n100 hours",
+      aiTokens: "500K all models\n100 hours",
       buttonText: t("pricing.tiers.max.buttonText"),
     },
   ]

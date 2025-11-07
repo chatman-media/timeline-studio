@@ -167,7 +167,7 @@ export const translations = {
       cloudStorage: "Cloud Storage",
       aiTokens: "AI Tokens",
       localStorage: "Local storage",
-      localAI: "Local AI (Ollama)",
+      localAI: "Local AI runtime",
       perUserMonth: "/user/month",
       contactUs: "Contact us",
       tiers: {
@@ -517,7 +517,7 @@ export const translations = {
       cloudStorage: "Облачное хранилище",
       aiTokens: "Токены ИИ",
       localStorage: "Локальное хранилище",
-      localAI: "Локальный ИИ (Ollama)",
+      localAI: "Локальный ИИ runtime",
       perUserMonth: "/пользователь/месяц",
       contactUs: "Связаться с нами",
       tiers: {
@@ -860,7 +860,7 @@ export const translations = {
       cloudStorage: "云存储",
       aiTokens: "AI令牌",
       localStorage: "本地存储",
-      localAI: "本地AI (Ollama)",
+      localAI: "本地AI运行时",
       perUserMonth: "/用户/月",
       contactUs: "联系我们",
       tiers: {
