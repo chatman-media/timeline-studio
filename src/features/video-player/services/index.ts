@@ -15,10 +15,7 @@ export type {
   PlayerEvent,
 } from "./player-machine"
 export { playerMachine } from "./player-machine"
-export type {
-  PlayerContextType,
-  PlayerContextType,
-} from "./player-provider"
+export type { PlayerContextType } from "./player-provider"
 // Export from player-provider
 export {
   PlayerProvider,
