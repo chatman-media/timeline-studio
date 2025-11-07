@@ -184,8 +184,11 @@ vi.mock("@/features/modals", () => ({
   useModal: () => ({
     openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
     isOpen: false,
     modalData: null,
+    modalType: "none",
+    isConnected: false,
   }),
   ModalProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
@@ -195,8 +198,11 @@ vi.mock("@/features/modals/services/modal-provider", () => ({
   useModal: () => ({
     openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
     isOpen: false,
     modalData: null,
+    modalType: "none",
+    isConnected: false,
   }),
 }))
 
@@ -204,8 +210,11 @@ vi.mock("@/features/modals/services", () => ({
   useModal: () => ({
     openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
     isOpen: false,
     modalData: null,
+    modalType: "none",
+    isConnected: false,
   }),
   ModalProvider: ({ children }: { children: React.ReactNode }) => children,
 }))

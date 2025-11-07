@@ -1,10 +1,30 @@
 import type { FfprobeData, FfprobeStream } from "./ffprobe"
 import type { TimeRange } from "./time-range"
 
+// Import MediaType from domains for compatibility
+export enum MediaType {
+  Video = "video",
+  VideoWithAudio = "video_with_audio",
+  StillImage = "still_image",
+  ImageSequence = "image_sequence",
+  Audio = "audio",
+  Music = "music",
+  Voiceover = "voiceover",
+  SFX = "sfx",
+  Ambient = "ambient",
+  Subtitle = "subtitle",
+  Title = "title",
+  Graphics = "graphics",
+  LUT = "lut",
+  Project = "project",
+  Unknown = "unknown",
+}
+
 export interface MediaFile {
   id: string
   name: string
   path: string
+  type: MediaType // Now required for compatibility
   probeData?: FfprobeData
   startTime?: number
   endTime?: number
@@ -13,8 +33,8 @@ export interface MediaFile {
   isImage?: boolean
   isAudio?: boolean
   size?: number
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date // Changed from string to Date for compatibility
+  updatedAt?: Date // Changed from string to Date for compatibility
   isAddedToTimeline?: boolean
   isIncluded?: boolean // Флаг, указывающий, включен ли файл в проект
   isUnavailable?: boolean // Флаг, указывающий, недоступен ли файл

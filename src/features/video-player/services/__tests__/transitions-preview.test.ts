@@ -6,6 +6,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { type EasingFunction, type TransitionParams, TransitionsPreviewService } from "../transitions-preview"
 
+// Mock the logger with a spy - use vi.hoisted to ensure these are created before the mock
+const { mockInfo, mockWarn, mockError, mockDebug, mockTrace } = vi.hoisted(() => ({
+  mockInfo: vi.fn(),
+  mockWarn: vi.fn(),
+  mockError: vi.fn(),
+  mockDebug: vi.fn(),
+  mockTrace: vi.fn(),
+}))
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => ({
+    info: mockInfo,
+    warn: mockWarn,
+    error: mockError,
+    debug: mockDebug,
+    trace: mockTrace,
+  }),
+}))
+
 // Mock WebGL2 context
 const mockGL = {
   // Constants
@@ -206,13 +225,15 @@ describe("TransitionsPreviewService", () => {
 
       document.createElement = mockCreateElement
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      mockError.mockClear()
 
       const serviceWithoutWebGL = new TransitionsPreviewService()
 
-      expect(consoleSpy).toHaveBeenCalledWith("Transitions WebGL initialization failed:", expect.any(Error))
+      expect(mockError).toHaveBeenCalledWith(
+        "WebGL initialization failed",
+        expect.objectContaining({ error: expect.any(Error) }),
+      )
 
-      consoleSpy.mockRestore()
       serviceWithoutWebGL.dispose()
     })
   })
@@ -225,13 +246,15 @@ describe("TransitionsPreviewService", () => {
       mockGL.getShaderParameter.mockReturnValueOnce(false)
       mockGL.getShaderInfoLog.mockReturnValueOnce("Shader compilation error")
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      mockError.mockClear()
 
       ;(serviceWithErrors as any).loadTransitionShaders()
 
-      expect(consoleSpy).toHaveBeenCalledWith("Transition shader compilation error:", "Shader compilation error")
+      expect(mockError).toHaveBeenCalledWith(
+        "shader compilation failed",
+        expect.objectContaining({ info: "Shader compilation error" }),
+      )
 
-      consoleSpy.mockRestore()
       serviceWithErrors.dispose()
     })
 
@@ -242,13 +265,15 @@ describe("TransitionsPreviewService", () => {
       mockGL.getProgramParameter.mockReturnValueOnce(false)
       mockGL.getProgramInfoLog.mockReturnValueOnce("Linking error")
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      mockError.mockClear()
 
       ;(serviceWithErrors as any).loadTransitionShaders()
 
-      expect(consoleSpy).toHaveBeenCalledWith("fade transition program linking error:", "Linking error")
+      expect(mockError).toHaveBeenCalledWith(
+        "transition program linking failed",
+        expect.objectContaining({ info: "Linking error" }),
+      )
 
-      consoleSpy.mockRestore()
       serviceWithErrors.dispose()
     })
   })
@@ -373,10 +398,10 @@ describe("TransitionsPreviewService", () => {
     })
 
     it("should handle WebGL errors gracefully", async () => {
-      // Make createTexture return null twice (for textureA and textureB)
-      mockGL.createTexture.mockReturnValueOnce({ _isTexture: false }).mockReturnValueOnce({ _isTexture: false })
+      // Make createTexture return null twice (for textureA and textureB) to trigger an error
+      mockGL.createTexture.mockReturnValueOnce(null).mockReturnValueOnce(null)
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      mockError.mockClear()
 
       const params: TransitionParams = {
         duration: 1.0,
@@ -389,9 +414,10 @@ describe("TransitionsPreviewService", () => {
       const success = await service.applyTransition(mockElementA, mockElementB, "fade", params, mockOutputCanvas)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Transition application failed:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockError).toHaveBeenCalledWith(
+        "transition application failed",
+        expect.objectContaining({ error: expect.any(Error) }),
+      )
     })
   })
 
@@ -681,7 +707,7 @@ describe("TransitionsPreviewService", () => {
     })
 
     it("should handle unsupported uniform types", async () => {
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+      mockWarn.mockClear()
 
       // Add a test transition with unsupported uniform type
       const serviceWithUnsupported = new TransitionsPreviewService()
@@ -719,9 +745,8 @@ describe("TransitionsPreviewService", () => {
         mockOutputCanvas,
       )
 
-      expect(consoleSpy).toHaveBeenCalledWith("Unsupported uniform type: mat4")
+      expect(mockWarn).toHaveBeenCalledWith("unsupported uniform type", expect.objectContaining({ type: "mat4" }))
 
-      consoleSpy.mockRestore()
       serviceWithUnsupported.dispose()
     })
   })

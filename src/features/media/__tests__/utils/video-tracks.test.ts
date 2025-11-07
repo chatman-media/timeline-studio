@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import type { Sector, Track } from "@/features/media/types/types"
 
 import { processVideoFiles } from "../../utils/video-tracks"
@@ -82,10 +83,11 @@ describe("video-tracks", () => {
     id,
     name,
     path: `/path/to/${name}`,
+    type: MediaType.Video,
     size: 1000000,
     duration,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     isVideo: true,
     startTime,
     width,

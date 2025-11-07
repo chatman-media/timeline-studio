@@ -13,6 +13,35 @@ vi.mock("@/features/language")
 vi.mock("@tauri-apps/plugin-dialog", () => ({
   open: vi.fn(),
 }))
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => ({
+    info: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.info(formattedMessage)
+      return Promise.resolve()
+    },
+    error: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.error(formattedMessage)
+      return Promise.resolve()
+    },
+    warn: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.warn(formattedMessage)
+      return Promise.resolve()
+    },
+    debug: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.debug(formattedMessage)
+      return Promise.resolve()
+    },
+    trace: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.debug(formattedMessage)
+      return Promise.resolve()
+    },
+  }),
+}))
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, defaultValue?: string) => defaultValue || key,
@@ -132,10 +161,16 @@ describe("GeneralSettingsTab", () => {
       fireEvent.click(dropdownOption)
     })
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      '[GeneralSettingsTab] Applying language change via new system: {\n  "language": "en"\n}',
-    )
-    expect(mockChangeLanguage).toHaveBeenCalledWith("en")
+    // Wait for both the language change and console log
+    await waitFor(() => {
+      expect(mockChangeLanguage).toHaveBeenCalledWith("en")
+    })
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[GeneralSettingsTab] Applying language change via new system: {\n  "language": "en"\n}',
+      )
+    })
   })
 
   it("should update selectedLanguage state when language is changed", async () => {
@@ -249,16 +284,23 @@ describe("GeneralSettingsTab", () => {
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]
 
-    act(() => {
-      fireEvent.click(screenshotsFolderButton)
+    fireEvent.click(screenshotsFolderButton)
+
+    // Wait for prompt to be called first
+    await waitFor(() => {
+      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/screenshots")
     })
 
+    // Then wait for the path change handler
+    await waitFor(() => {
+      expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("fallback/path")
+    })
+
+    // Finally check the error log
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith(
         '[GeneralSettingsTab] Ошибка при выборе директории: {\n  "error": "Error: Permission denied"\n}',
       )
-      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/screenshots")
-      expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("fallback/path")
     })
 
     mockPrompt.mockRestore()
@@ -277,16 +319,23 @@ describe("GeneralSettingsTab", () => {
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const playerFolderButton = folderButtons[1]
 
-    act(() => {
-      fireEvent.click(playerFolderButton)
+    fireEvent.click(playerFolderButton)
+
+    // Wait for prompt to be called first
+    await waitFor(() => {
+      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/media")
     })
 
+    // Then wait for the path change handler
+    await waitFor(() => {
+      expect(mockHandlePlayerScreenshotsPathChange).toHaveBeenCalledWith("player/fallback/path")
+    })
+
+    // Finally check the error log
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith(
         '[GeneralSettingsTab] Ошибка при выборе директории: {\n  "error": "Error: Permission denied"\n}',
       )
-      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/media")
-      expect(mockHandlePlayerScreenshotsPathChange).toHaveBeenCalledWith("player/fallback/path")
     })
 
     mockPrompt.mockRestore()
@@ -392,10 +441,14 @@ describe("GeneralSettingsTab", () => {
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]
 
-    act(() => {
-      fireEvent.click(screenshotsFolderButton)
+    fireEvent.click(screenshotsFolderButton)
+
+    // First wait for the handler to be called (confirming async operation completed)
+    await waitFor(() => {
+      expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("new/selected/path")
     })
 
+    // Then check the console log (which happens after the handler in the code)
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith(
         '[GeneralSettingsTab] Screenshots path updated from folder dialog: {\n  "path": "new/selected/path"\n}',

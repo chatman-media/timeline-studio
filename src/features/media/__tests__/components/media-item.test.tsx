@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useFavorites } from "@/features/app-state"
+import { MediaType } from "@/features/media/types/media"
 import { fireEvent, renderWithProviders, screen } from "@/test/test-utils"
 
 import { MediaItem } from "../../components/media-item"
@@ -70,6 +71,7 @@ describe("MediaItem", () => {
     id: "test-file",
     name: "test-file.mp4",
     path: "/path/to/test-file.mp4",
+    type: MediaType.Video,
     isVideo: true,
     size: 1000,
     creationTime: "2023-01-01T00:00:00.000Z",
@@ -79,6 +81,7 @@ describe("MediaItem", () => {
     id: "added-file",
     name: "added-file.mp4",
     path: "/path/to/added-file.mp4",
+    type: MediaType.Video,
     isVideo: true,
     size: 1000,
     creationTime: "2023-01-01T00:00:00.000Z",

@@ -10,17 +10,24 @@ import { AudioClip } from "@/features/timeline/components/clip/audio-clip"
 import type { TimelineClip, TimelineTrack, TrackType } from "../../../types"
 
 // Mock tauri-logger
-const mockLogger = {
-  info: vi.fn(),
-  debug: vi.fn(),
-  warn: vi.fn(),
-  error: vi.fn(),
-  trace: vi.fn(),
-}
-
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => mockLogger),
-}))
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    trace: vi.fn(),
+    infoSync: vi.fn(),
+    debugSync: vi.fn(),
+    warnSync: vi.fn(),
+    errorSync: vi.fn(),
+    traceSync: vi.fn(),
+  }
+  return {
+    createLogger: vi.fn(() => mockLogger),
+    mockLogger, // Export for test access
+  }
+})
 
 // Mock hooks
 vi.mock("../../../hooks", () => ({
@@ -174,13 +181,14 @@ describe("AudioClip", () => {
   const mockOnRemove = vi.fn()
   const mockUpdateClip = vi.fn()
 
+  // Get the mockLogger from the mocked module
+  let mockLogger: any
+
   beforeEach(async () => {
     vi.clearAllMocks()
-    mockLogger.info.mockClear()
-    mockLogger.debug.mockClear()
-    mockLogger.warn.mockClear()
-    mockLogger.error.mockClear()
-    mockLogger.trace.mockClear()
+    // Get mockLogger from the mocked module
+    const tauriLoggerModule = await import("@/lib/tauri-logger")
+    mockLogger = (tauriLoggerModule as any).mockLogger
     const { useClips } = await import("../../../hooks")
     vi.mocked(useClips).mockReturnValue({
       updateClip: mockUpdateClip,

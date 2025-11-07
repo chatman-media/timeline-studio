@@ -3,10 +3,25 @@
  * Инструменты идентификации и анализа людей
  */
 
-// Импорты типов из shared
-import type { PersonIdentificationInput, PersonIdentificationResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Person Identification
+interface PersonIdentificationInput {
+  operation: string
+  contentId: string
+  contentType: string
+  minConfidence?: number
+  trackPersons?: boolean
+}
+
+interface PersonIdentificationResult {
+  operation: string
+  success: boolean
+  faces?: any[]
+  persons?: any[]
+  processingTime: number
+}
 
 // Временные заглушки для демонстрации архитектуры
 async function adaptFaceDetection(input: PersonIdentificationInput): Promise<PersonIdentificationResult> {
@@ -133,6 +148,25 @@ export class FaceDetectionTool extends BaseAITool implements IAITool {
     ],
   }
 
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      typeof input.operation === "string" &&
+      input.operation === "detect_faces" &&
+      typeof input.contentId === "string" &&
+      typeof input.contentType === "string" &&
+      ["video", "image"].includes(input.contentType)
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
+
   async execute(
     input: PersonIdentificationInput,
     options?: AIToolExecutionOptions,
@@ -193,6 +227,25 @@ export class PersonRecognitionTool extends BaseAITool implements IAITool {
         },
       },
     ],
+  }
+
+  validate(input: any): boolean {
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      typeof input.operation === "string" &&
+      input.operation === "recognize_persons" &&
+      typeof input.contentId === "string" &&
+      typeof input.contentType === "string" &&
+      ["video", "image"].includes(input.contentType)
+    )
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
   }
 
   async execute(

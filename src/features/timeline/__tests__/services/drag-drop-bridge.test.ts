@@ -5,25 +5,30 @@
 import type { DragEndEvent } from "@dnd-kit/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-// Мокаем модули с использованием factory function
-const mockDragDropManager = {
-  emit: vi.fn(),
-}
+// Используем vi.hoisted() для создания моков, доступных в vi.mock()
+const { mockLogger, mockDragDropManager } = vi.hoisted(() => {
+  const logger = {
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+  }
 
-const mockLogger = {
-  info: vi.fn(),
-  error: vi.fn(),
-  warn: vi.fn(),
-  debug: vi.fn(),
-  trace: vi.fn(),
-}
+  const manager = {
+    emit: vi.fn(),
+  }
+
+  return { mockLogger: logger, mockDragDropManager: manager }
+})
+
+// Мокаем модули с полной имплементацией
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
 
 vi.mock("@/features/drag-drop", () => ({
   getDragDropManager: vi.fn(() => mockDragDropManager),
-}))
-
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => mockLogger),
 }))
 
 import {

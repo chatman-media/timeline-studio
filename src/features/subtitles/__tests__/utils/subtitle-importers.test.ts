@@ -124,8 +124,24 @@ Right positioned`
 
       const subtitles = importFromVTT(vttContent)
 
-      expect(subtitles[0].position).toEqual({ x: 0.25, y: 0.9 })
-      expect(subtitles[1].position).toEqual({ x: 0.75, y: 0.9 })
+      expect(subtitles[0].position).toEqual({
+        x: 0.25,
+        y: 0.9,
+        width: 1,
+        height: 0.1,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      })
+      expect(subtitles[1].position).toEqual({
+        x: 0.75,
+        y: 0.9,
+        width: 1,
+        height: 0.1,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      })
     })
 
     it("should handle VTT header metadata", () => {

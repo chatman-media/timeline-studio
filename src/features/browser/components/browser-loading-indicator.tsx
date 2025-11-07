@@ -5,6 +5,17 @@ import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { useLoadingState, useResourcesStats } from "../hooks/use-resources"
+import type { ResourceSource } from "../types/browser-resources-provider"
+
+/**
+ * Маппинг источников данных к человекочитаемым названиям
+ */
+const SOURCE_DISPLAY_NAMES: Record<ResourceSource, string> = {
+  "built-in": "effects",
+  local: "filters",
+  remote: "transitions",
+  imported: "templates",
+}
 
 /**
  * Индикатор загрузки ресурсов для Browser
@@ -63,7 +74,8 @@ export function BrowserLoadingIndicator() {
           <Progress value={loadingState.progress} className="h-1.5" />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>
-              {loadingState.loadingQueue.length > 0 && `Загружается: ${loadingState.loadingQueue.join(", ")}`}
+              {loadingState.loadingQueue.length > 0 &&
+                `Загружается: ${loadingState.loadingQueue.map((source) => SOURCE_DISPLAY_NAMES[source]).join(", ")}`}
             </span>
             <span>{Math.round(loadingState.progress)}%</span>
           </div>

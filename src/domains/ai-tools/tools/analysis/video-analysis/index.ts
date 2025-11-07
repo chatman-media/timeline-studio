@@ -3,10 +3,27 @@
  * Инструменты анализа видео с использованием доменной архитектуры
  */
 
-// Импорты типов из shared
-import type { VideoAnalysisInput, VideoAnalysisResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Video Analysis
+interface VideoAnalysisInput {
+  operation: string
+  detectionTypes?: string[]
+  threshold?: number
+  includeFrameData?: boolean
+  frameInterval?: number
+}
+
+interface VideoAnalysisResult {
+  operation: string
+  success: boolean
+  objects?: any[]
+  motion?: any
+  scenes?: any[]
+  quality?: any
+  processingTime: number
+}
 
 // Временные заглушки для демонстрации архитектуры
 async function adaptVideoMetadata(input: VideoAnalysisInput): Promise<VideoAnalysisResult> {

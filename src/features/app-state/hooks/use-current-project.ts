@@ -74,7 +74,7 @@ export function useCurrentProject() {
   const setProjectDirty = (dirty: boolean) => {
     // Эта функция больше не нужна, так как Tauri backend
     // автоматически отслеживает изменения проекта
-    logger.info("Project dirty state:", { dirty })
+    console.log("Project dirty state:", dirty)
   }
 
   // Проверка, является ли проект временным

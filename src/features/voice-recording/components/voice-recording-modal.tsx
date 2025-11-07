@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import { useModal } from "@/features/modals"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
@@ -75,11 +76,12 @@ export function VoiceRecordModal() {
           id: `audio-${Date.now()}`, // Генерируем временный ID
           path: result.filePath,
           name: result.fileName,
+          type: MediaType.Audio,
           size: result.fileSize,
           isAudio: true,
           isVideo: false,
           isImage: false,
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(),
           // Дополнительные поля можно будет заполнить позже через getMediaMetadata
         }
 

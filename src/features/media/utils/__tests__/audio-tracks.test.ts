@@ -62,7 +62,7 @@ describe("audio-tracks", () => {
     size: 1024000,
     startTime,
     duration,
-    createdAt: Date.now().toLocaleString(),
+    createdAt: new Date(),
   })
 
   const createMockSector = (id: string, name: string, tracks: any[] = []): Sector => ({

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import type { FfprobeStream } from "@/features/media/types/ffprobe"
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import {
   calculateAdaptiveWidth,
@@ -26,6 +27,7 @@ describe("calculateTimeRanges", () => {
         id: "V1",
         name: "video1.mp4",
         path: "/path/to/video1.mp4",
+        type: MediaType.Video,
         startTime: 10,
         duration: 5,
       },
@@ -43,6 +45,7 @@ describe("calculateTimeRanges", () => {
         id: "V1",
         name: "video1.mp4",
         path: "/path/to/video1.mp4",
+        type: MediaType.Video,
         startTime: 10,
         duration: 5,
       },
@@ -50,6 +53,7 @@ describe("calculateTimeRanges", () => {
         id: "V2",
         name: "video2.mp4",
         path: "/path/to/video2.mp4",
+        type: MediaType.Video,
         startTime: 15,
         duration: 5,
       },
@@ -67,6 +71,7 @@ describe("calculateTimeRanges", () => {
         id: "V1",
         name: "video1.mp4",
         path: "/path/to/video1.mp4",
+        type: MediaType.Video,
         startTime: 10,
         duration: 5,
       },
@@ -74,6 +79,7 @@ describe("calculateTimeRanges", () => {
         id: "V2",
         name: "video2.mp4",
         path: "/path/to/video2.mp4",
+        type: MediaType.Video,
         startTime: 4000, // More than MAX_GAP_SECONDS (3600) after the end of the first video
         duration: 5,
       },

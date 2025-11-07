@@ -205,6 +205,20 @@ export interface EffectsProviderAPI {
 
   /** Подписаться на ошибки */
   onError(callback: (error: string, source?: ResourceSource) => void): () => void
+
+  // === Backend Sync ===
+
+  /** Установить статус подключения к backend */
+  setBackendConnected(connected: boolean): void
+
+  /** Синхронизировать ресурсы с backend */
+  syncResourcesWithBackend(source: ResourceSource): Promise<void>
+
+  /** Импортировать ресурс */
+  importResource(type: ResourceType, resource: Resource): Promise<boolean>
+
+  /** Удалить ресурс */
+  deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean>
 }
 
 /**
@@ -214,6 +228,7 @@ export interface EffectsProviderContext {
   api: EffectsProviderAPI
   config: LoadingConfig
   isInitialized: boolean
+  isBackendConnected: boolean
 }
 
 /**

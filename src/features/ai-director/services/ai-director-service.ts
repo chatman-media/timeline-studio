@@ -189,7 +189,7 @@ export class AIDirectorService {
    */
   async updateConfiguration(config: Partial<AIDirectorConfig>): Promise<void> {
     // TODO: Implement when backend command is available
-    logger.info("Updating AI Director config:", config)
+    console.log("Updating AI Director config:", config)
   }
 
   /**
@@ -197,7 +197,7 @@ export class AIDirectorService {
    */
   async resetConfiguration(): Promise<void> {
     // TODO: Implement when backend command is available
-    logger.info("Resetting AI Director config to defaults")
+    console.log("Resetting AI Director config to defaults")
   }
 
   // === System Status & Monitoring ===
@@ -272,7 +272,7 @@ export class AIDirectorService {
       await this.getCapabilities()
       return true
     } catch (error) {
-      logger.error("AI Director not available:", error)
+      console.error("AI Director not available:", error)
       return false
     }
   }

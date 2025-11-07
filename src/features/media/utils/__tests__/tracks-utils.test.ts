@@ -12,7 +12,7 @@ describe("tracks-utils", () => {
     size: 1024000,
     startTime,
     duration,
-    createdAt: Date.now().toLocaleString(),
+    createdAt: new Date(),
   })
 
   const createMockSector = (tracks: any[] = []): Sector => ({

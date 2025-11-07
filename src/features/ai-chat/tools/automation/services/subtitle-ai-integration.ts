@@ -3,26 +3,13 @@
  * Реализует реальные вызовы OCR, анализа сцен и распознавания речи
  */
 
-import type { SceneAnalysis, UnifiedContentAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
-
-// Временные определения для отсутствующих типов
-interface AudioDetections {
-  speech: SpeechDetection[]
-  music: any[]
-  soundEffects: any[]
-  silence: Array<{ start: number; end: number }>
-}
-
-interface SpeechDetection {
-  startTime: number
-  endTime: number
-  confidence: number
-  text: string
-  speaker?: string
-}
-
-// Используем shared тип
-import type { TextDetection } from "@/domains/shared/types/ai-tools/content-analysis"
+import type {
+  AudioDetections,
+  SceneAnalysis,
+  SpeechDetection,
+  TextDetection,
+  UnifiedContentAnalysis,
+} from "@/domains/shared/types/ai-tools/content-analysis"
 
 // Временная заглушка для IVisionService
 interface IVisionService {

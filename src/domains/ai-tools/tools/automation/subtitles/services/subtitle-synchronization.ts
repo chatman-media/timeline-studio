@@ -3,7 +3,7 @@
  * Использует анализ аудио, сцен и временных меток для точной синхронизации
  */
 
-import type { AudioDetections, SceneAnalysis, SpeechDetection } from "@/domains/ai-services/types"
+import type { AudioDetections, SceneAnalysis, SpeechDetection } from "@/domains/shared/types/ai-tools/content-analysis"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleItem } from "../subtitle-tools"
 

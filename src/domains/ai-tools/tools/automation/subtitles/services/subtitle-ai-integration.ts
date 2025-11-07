@@ -9,7 +9,7 @@ import type {
   SpeechDetection,
   TextDetection,
   UnifiedContentAnalysis,
-} from "@/domains/ai-services/types"
+} from "@/domains/shared/types/ai-tools/content-analysis"
 
 import { createLogger } from "@/lib/tauri-logger"
 

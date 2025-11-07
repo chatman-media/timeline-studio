@@ -11,27 +11,27 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/features/browser/services/browser-state-provider", () => ({
+vi.mock("@/domains/browser", () => ({
   useBrowserState: () => ({
     currentTabSettings: {
-      searchQuery: "",
-      showFavoritesOnly: false,
-      viewMode: "grid",
-      sortBy: "name",
-      filterType: "all",
-      groupBy: null,
-      sortOrder: "asc",
-      previewSizeIndex: 1,
+      search_query: "",
+      show_favorites_only: false,
+      view_mode: "thumbnails",
+      sort_by: "name",
+      filter_type: "all",
+      group_by: "none",
+      sort_order: "asc",
+      preview_size_index: 1,
     },
   }),
 }))
 
 vi.mock("@/features/media/utils/preview-sizes", () => ({
-  PREVIEW_SIZES: [
-    { key: "small", width: 160, height: 90 },
-    { key: "medium", width: 240, height: 135 },
-    { key: "large", width: 320, height: 180 },
-  ],
+  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
+  DEFAULT_PREVIEW_SIZE_INDEX: 3,
+  DEFAULT_SIZE: 200,
+  MIN_SIZE: 125,
+  MAX_SIZE: 500,
 }))
 
 vi.mock("../../utils", () => ({

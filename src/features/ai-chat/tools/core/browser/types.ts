@@ -2,7 +2,7 @@
  * Типы для AI инструментов работы с медиа браузером
  */
 
-import type { BrowserTab } from "../../../../../shared/types/browser"
+import type { BrowserTab } from "@/domains/browser"
 
 /**
  * Результат выполнения инструмента для браузера

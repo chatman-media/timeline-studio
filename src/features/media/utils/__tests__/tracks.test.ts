@@ -65,7 +65,7 @@ describe("tracks", () => {
     size: 1024000,
     startTime,
     duration: 60,
-    createdAt: Date.now().toLocaleString(),
+    createdAt: new Date(),
     probeData: {
       streams: [
         ...(hasVideo ? [{ codec_type: "video" as const, codec_name: "h264", index: 0 }] : []),

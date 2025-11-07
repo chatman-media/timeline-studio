@@ -3,10 +3,25 @@
  * Инструменты для работы с цветом и стилем
  */
 
-// Импорты типов из shared (пока что будут локальными)
-import type { ColorStyleInput, ColorStyleResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Color & Style
+interface ColorStyleInput {
+  operation: string
+  analysisType?: string
+  includeRecommendations?: boolean
+}
+
+interface ColorStyleResult {
+  operation: string
+  success: boolean
+  palette?: any
+  grading?: any
+  temperature?: any
+  luts?: any[]
+  processingTime: number
+}
 
 // TODO: Перенести эти типы в shared/types/ai-tools
 

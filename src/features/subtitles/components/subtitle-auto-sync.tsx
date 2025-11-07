@@ -274,7 +274,7 @@ export function SubtitleAutoSync() {
   }
 
   const audioTracks = getAudioTracks()
-  const audioFiles = mediaFiles.filter((file) => file.media_type === "Audio" || file.media_type === "Video")
+  const audioFiles = mediaFiles.filter((file) => file.media_type === "audio" || file.media_type === "video")
 
   return (
     <Card>

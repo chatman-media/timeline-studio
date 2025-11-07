@@ -5,6 +5,7 @@ import { selectMediaDirectory, selectMediaFile } from "@/features/media"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/use-media-processor"
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import { convertToSavedMediaFile } from "@/features/media/utils/saved-media-utils"
 import { useResources } from "@/features/resources/services/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
@@ -47,10 +48,20 @@ export function useMediaImport() {
     const isAudio = ["mp3", "wav", "ogg", "flac", "aac", "m4a"].includes(fileExtension)
     const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "tiff"].includes(fileExtension)
 
+    // Определяем MediaType
+    const mediaType = isVideo
+      ? MediaType.Video
+      : isAudio
+        ? MediaType.Audio
+        : isImage
+          ? MediaType.StillImage
+          : MediaType.Unknown
+
     return {
       id: filePath,
       name: fileName,
       path: filePath,
+      type: mediaType,
       isVideo,
       isAudio,
       isImage,

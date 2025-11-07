@@ -3,10 +3,27 @@
  * Инструменты речевого анализа с использованием OpenAI Whisper
  */
 
-// Импорты типов из shared
-import type { WhisperInput, WhisperResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Whisper
+interface WhisperInput {
+  operation: string
+  audioPath?: string
+  language?: string
+  model?: string
+  task?: string
+  enableDiarization?: boolean
+}
+
+interface WhisperResult {
+  operation: string
+  success: boolean
+  transcription?: any
+  translation?: any
+  diarization?: any
+  processingTime: number
+}
 
 // Временные заглушки для демонстрации архитектуры
 async function adaptTranscription(input: WhisperInput): Promise<WhisperResult> {

@@ -196,17 +196,18 @@ describe("StoreService", () => {
     it("должен обрабатывать ошибки при инициализации", async () => {
       const service = StoreService.getInstance()
 
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      // Первый вызов load должен провалиться
       vi.mocked(load).mockRejectedValueOnce(new Error("Failed to load"))
+      // Второй вызов load (в блоке catch) тоже провалится
+      vi.mocked(load).mockRejectedValueOnce(new Error("Failed to create"))
 
-      await service.initialize()
+      // Не должно выбрасывать исключение, а обработать ошибку gracefully
+      await expect(service.initialize()).resolves.not.toThrow()
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "[StoreService] Error initializing store:",
-        new Error("Failed to load"),
-      )
-
-      consoleErrorSpy.mockRestore()
+      // После ошибки store должен быть null и isInitialized должен быть true
+      // (проверяем через поведение - getSettings должен вернуть null)
+      const settings = await service.getSettings()
+      expect(settings).toBeNull()
     })
   })
 
@@ -236,28 +237,21 @@ describe("StoreService", () => {
       // Настраиваем мок store с ошибкой при получении настроек
       mockStore.get.mockRejectedValue(new Error("Failed to get"))
 
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
+      // Должен обработать ошибку gracefully и вернуть null
       const settings = await service.getSettings()
 
       expect(settings).toBeNull()
-      // Проверяем, что была вызвана ошибка получения настроек
-      expect(consoleErrorSpy).toHaveBeenCalledWith("[StoreService] Error getting settings:", expect.any(Error))
-
-      consoleErrorSpy.mockRestore()
+      // Проверяем, что метод get был вызван (подтверждает, что попытка получения была)
+      expect(mockStore.get).toHaveBeenCalledWith("app-settings")
     })
 
     it("должен возвращать null, если хранилище не инициализировано и не удалось инициализировать", async () => {
       const service = StoreService.getInstance()
       vi.mocked(load).mockRejectedValue(new Error("Failed to initialize"))
 
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const settings = await service.getSettings()
 
       expect(settings).toBeNull()
-
-      consoleErrorSpy.mockRestore()
     })
   })
 
@@ -284,15 +278,22 @@ describe("StoreService", () => {
 
     it("должен обрабатывать ошибки при сохранении", async () => {
       const service = StoreService.getInstance()
+
       mockStore.set.mockRejectedValue(new Error("Failed to save"))
 
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      // Не должно выбрасывать исключение, а обработать ошибку gracefully
+      await expect(service.saveSettings(mockSettings)).resolves.not.toThrow()
 
-      await service.saveSettings(mockSettings)
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith("[StoreService] Error saving settings:", new Error("Failed to save"))
-
-      consoleErrorSpy.mockRestore()
+      // Проверяем, что метод set был вызван (подтверждает, что попытка сохранения была)
+      expect(mockStore.set).toHaveBeenCalledWith(
+        "app-settings",
+        expect.objectContaining({
+          ...mockSettings,
+          meta: expect.objectContaining({
+            lastUpdated: expect.any(Number),
+          }),
+        }),
+      )
     })
 
     it("не должен сохранять, если хранилище не инициализировано", async () => {
@@ -308,13 +309,10 @@ describe("StoreService", () => {
       })
 
       const service = StoreService.getInstance()
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       await service.saveSettings(mockSettings)
 
       expect(mockStore.set).not.toHaveBeenCalled()
-
-      consoleErrorSpy.mockRestore()
     })
   })
 

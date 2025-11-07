@@ -24,19 +24,6 @@ import type {
   PersonProfile,
 } from "@/features/person-identification/types/person"
 
-// Legacy тип для обратной совместимости
-export interface SceneAnalysis {
-  id: string
-  startTime: number
-  endTime: number
-  type: "dialog" | "action" | "landscape" | "closeup" | "transition"
-  confidence: number
-  keyFrames: string[]
-  description: string
-  objects?: any[]
-  persons?: any[]
-}
-
 // Дополнительные типы для Scene Analysis
 export interface SceneDetectionOptions {
   sensitivity: number

@@ -3,10 +3,33 @@
  * Инструменты анализа и обработки аудио с использованием доменной архитектуры
  */
 
-// Импорты типов из shared
-import type { AudioAnalysisInput, AudioAnalysisResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Audio Analysis (будут заменены на реальные типы из shared)
+interface AudioAnalysisInput {
+  operation: string
+  targetTracks?: string[]
+  analysisType?: string
+  normalizationType?: string
+  targetLevel?: number
+  preserveDynamics?: boolean
+  issueTypes?: string[]
+  sensitivity?: string
+  autoFix?: boolean
+  featureTypes?: string[]
+  analysisDepth?: string
+}
+
+interface AudioAnalysisResult {
+  operation: string
+  success: boolean
+  levels?: any
+  normalization?: any
+  issues?: any[]
+  features?: any
+  processingTime: number
+}
 
 // Временные заглушки для демонстрации архитектуры
 async function adaptAudioLevels(input: AudioAnalysisInput): Promise<AudioAnalysisResult> {

@@ -2,6 +2,7 @@
  * Script Generation Types
  */
 
+import type { SceneAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
 import type { Person } from "@/features/montage-planner/types"
 
 // Базовые типы для генерации сценариев
@@ -169,17 +170,7 @@ export enum Emotion {
 }
 
 // Scene and Script types
-export interface SceneAnalysis {
-  confidence: number
-  keyFrames: never[]
-  id: string
-  type: string
-  startTime: number
-  endTime: number
-  duration: number
-  content?: any
-  description?: string
-}
+// SceneAnalysis импортируется из @/domains/shared/types/ai-tools/content-analysis
 
 export interface GeneratedScript {
   id: string

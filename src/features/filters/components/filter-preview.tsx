@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
+import { MediaType } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
 import type { FilterResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -254,7 +255,11 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
         </div>
 
         {/* Кнопка добавления в избранное */}
-        <FavoriteButton file={{ id: filter.id, path: "", name: filter.name }} size={size} type="filter" />
+        <FavoriteButton
+          file={{ id: filter.id, path: "", name: filter.name, type: MediaType.Unknown }}
+          size={size}
+          type="filter"
+        />
 
         {/* Кнопка применения фильтра */}
         {filter && (

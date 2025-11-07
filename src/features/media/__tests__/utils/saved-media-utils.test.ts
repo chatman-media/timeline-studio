@@ -3,6 +3,7 @@ import { basename, dirname, join } from "@tauri-apps/api/path"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import {
   calculateRelativePath,
@@ -170,13 +171,14 @@ describe("saved-media-utils", () => {
         id: "test-id",
         name: "test.mp4",
         path: "/path/to/test.mp4",
+        type: MediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
         size: 1024,
         duration: 120,
         startTime: 0,
-        createdAt: "2023-01-01T00:00:00Z",
+        createdAt: new Date("2023-01-01T00:00:00Z"),
         probeData: { streams: [], format: {} },
       }
 
@@ -194,7 +196,7 @@ describe("saved-media-utils", () => {
         metadata: {
           duration: 120,
           startTime: 0,
-          createdAt: "2023-01-01T00:00:00Z",
+          createdAt: new Date("2023-01-01T00:00:00Z"),
           probeData: { streams: [], format: {} },
         },
       })
@@ -208,6 +210,7 @@ describe("saved-media-utils", () => {
         id: "music-id",
         name: "song.mp3",
         path: "/path/to/song.mp3",
+        type: MediaType.Audio,
         isVideo: false,
         isAudio: true,
         isImage: false,
@@ -254,7 +257,7 @@ describe("saved-media-utils", () => {
         metadata: {
           duration: 120,
           startTime: 0,
-          createdAt: "2023-01-01T00:00:00Z",
+          createdAt: new Date("2023-01-01T00:00:00Z"),
           probeData: { streams: [], format: {} },
         },
         status: "available" as const,
@@ -273,7 +276,7 @@ describe("saved-media-utils", () => {
         size: 1024,
         duration: 120,
         startTime: 0,
-        createdAt: "2023-01-01T00:00:00Z",
+        createdAt: new Date("2023-01-01T00:00:00Z"),
         probeData: { streams: [], format: {} },
         isLoadingMetadata: false,
         lastCheckedAt: expect.any(Number),

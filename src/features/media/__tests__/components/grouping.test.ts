@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import * as i18nConstants from "@/i18n/constants"
 
 import { getGroupedFiles, getTopDateWithRemainingFiles, groupFilesByDate } from "../../utils"
@@ -20,18 +21,21 @@ describe("groupFilesByDate", () => {
         id: "1",
         path: "video1.mp4",
         name: "video1.mp4",
+        type: MediaType.Video,
         startTime: 1609459200, // 2021-01-01
       },
       {
         id: "2",
         path: "video2.mp4",
         name: "video2.mp4",
+        type: MediaType.Video,
         startTime: 1609459200, // 2021-01-01
       },
       {
         id: "3",
         path: "video3.mp4",
         name: "video3.mp4",
+        type: MediaType.Video,
         startTime: 1612137600, // 2021-02-01
       },
     ]
@@ -51,12 +55,14 @@ describe("groupFilesByDate", () => {
         id: "1",
         path: "video1.mp4",
         name: "video1.mp4",
+        type: MediaType.Video,
         startTime: 1609459200, // 2021-01-01
       },
       {
         id: "2",
         path: "video2.mp4",
         name: "video2.mp4",
+        type: MediaType.Video,
         startTime: undefined,
       },
     ]
@@ -78,18 +84,21 @@ describe("getGroupedFiles", () => {
         id: "1",
         path: "video_1.mp4",
         name: "video_1.mp4",
+        type: MediaType.Video,
         startTime: 100,
       },
       {
         id: "2",
         path: "video_2.mp4",
         name: "video_2.mp4",
+        type: MediaType.Video,
         startTime: 200,
       },
       {
         id: "3",
         path: "other_1.mp4",
         name: "other_1.mp4",
+        type: MediaType.Video,
         startTime: 300,
       },
     ]
@@ -107,12 +116,14 @@ describe("getGroupedFiles", () => {
         id: "1",
         path: "video_2.mp4",
         name: "video_2.mp4",
+        type: MediaType.Video,
         startTime: 200,
       },
       {
         id: "2",
         path: "video_1.mp4",
         name: "video_1.mp4",
+        type: MediaType.Video,
         startTime: 100,
       },
     ]
@@ -134,6 +145,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "1",
             name: "video1.mp4",
             path: "video1.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [
                 { index: 0, codec_type: "video" },
@@ -146,6 +158,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "2",
             name: "video2.mp4",
             path: "video2.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [
                 { index: 0, codec_type: "video" },
@@ -163,6 +176,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "3",
             name: "video3.mp4",
             path: "video3.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [
                 { index: 0, codec_type: "video" },
@@ -193,6 +207,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "1",
             name: "video1.mp4",
             path: "video1.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [
                 { index: 0, codec_type: "video" },
@@ -221,6 +236,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "1",
             name: "video1.mp4",
             path: "video1.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [{ index: 0, codec_type: "video" }], // Без аудио
               format: { duration: 60 },
@@ -230,6 +246,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "2",
             name: "audio1.mp3",
             path: "audio1.mp3",
+            type: MediaType.Audio,
             probeData: {
               streams: [{ index: 0, codec_type: "audio" }], // Только аудио
               format: { duration: 60 },
@@ -239,6 +256,7 @@ describe("getTopDateWithRemainingFiles", () => {
             id: "3",
             name: "video2.mp4",
             path: "video2.mp4",
+            type: MediaType.Video,
             probeData: {
               streams: [
                 { index: 0, codec_type: "video" },

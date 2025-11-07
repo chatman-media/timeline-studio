@@ -3,10 +3,23 @@
  * Инструменты мультимодального анализа
  */
 
-// Импорты типов из shared
-import type { MultimodalInput, MultimodalResult } from "../../../../../shared/types/ai-tools"
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
+
+// Временные типы для Multimodal Analysis
+interface MultimodalInput {
+  operation: string
+  targetMedia?: string[]
+  analysisDepth?: string
+}
+
+interface MultimodalResult {
+  operation: string
+  success: boolean
+  combined?: any
+  correlation?: any
+  processingTime: number
+}
 
 // Временная заглушка для демонстрации архитектуры
 async function adaptMultimodalAnalysis(input: MultimodalInput): Promise<MultimodalResult> {

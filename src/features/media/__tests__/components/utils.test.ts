@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import {
   doTimeRangesOverlap,
@@ -16,6 +17,7 @@ describe("hasAudioStream", () => {
       id: "test-1",
       name: "test.mp4",
       path: "test.mp4",
+      type: MediaType.Video,
       probeData: {
         streams: [{ codec_type: "video" }, { codec_type: "audio" }],
         format: {},
@@ -29,6 +31,7 @@ describe("hasAudioStream", () => {
       id: "test-2",
       name: "test.mp4",
       path: "test.mp4",
+      type: MediaType.Video,
       probeData: {
         streams: [{ codec_type: "video" }],
         format: {},
@@ -42,6 +45,7 @@ describe("hasAudioStream", () => {
       id: "test-3",
       name: "test.mp4",
       path: "test.mp4",
+      type: MediaType.Video,
     }
     expect(hasAudioStream(file)).toBe(false)
   })
@@ -53,6 +57,7 @@ describe("getFileType", () => {
       id: "test-4",
       name: "test.jpg",
       path: "test.jpg",
+      type: MediaType.StillImage,
       isImage: true,
     }
     expect(getFileType(file)).toBe("image")
@@ -63,6 +68,7 @@ describe("getFileType", () => {
       id: "test-5",
       name: "test.mp4",
       path: "test.mp4",
+      type: MediaType.Video,
       probeData: {
         streams: [{ codec_type: "video" }],
         format: {},
@@ -76,6 +82,7 @@ describe("getFileType", () => {
       id: "test-6",
       name: "test.mp3",
       path: "test.mp3",
+      type: MediaType.Audio,
       probeData: {
         streams: [{ codec_type: "audio" }],
         format: {},
@@ -92,6 +99,7 @@ describe("getRemainingMediaCounts", () => {
         id: "video1",
         name: "video1.mp4",
         path: "video1.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
           format: {},
@@ -101,6 +109,7 @@ describe("getRemainingMediaCounts", () => {
         id: "audio1",
         name: "audio1.mp3",
         path: "audio1.mp3",
+        type: MediaType.Audio,
         probeData: {
           streams: [{ codec_type: "audio" }],
           format: {},
@@ -110,6 +119,7 @@ describe("getRemainingMediaCounts", () => {
         id: "video2",
         name: "video2.mp4",
         path: "video2.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
           format: {},
@@ -132,6 +142,7 @@ describe("getRemainingMediaCounts", () => {
         id: "video1",
         name: "video1.mp4",
         path: "video1.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [{ codec_type: "video" }, { codec_type: "audio" }],
           format: {},
@@ -141,6 +152,7 @@ describe("getRemainingMediaCounts", () => {
         id: "audio1",
         name: "audio1.mp3",
         path: "audio1.mp3",
+        type: MediaType.Audio,
         probeData: {
           streams: [{ codec_type: "audio" }],
           format: {},

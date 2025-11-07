@@ -2,6 +2,7 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("SimpleMediaProcessor")
@@ -71,18 +72,28 @@ export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions 
             const isAudio = processed.metadata?.has_audio || false
             const isImage = !isVideo && !isAudio && /\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i.test(processed.name)
 
+            // Определяем MediaType
+            const mediaType = isVideo
+              ? MediaType.Video
+              : isAudio
+                ? MediaType.Audio
+                : isImage
+                  ? MediaType.StillImage
+                  : MediaType.Unknown
+
             // Создаем объект MediaFile
             const mediaFile: MediaFile = {
               id: processed.id,
               name: processed.name,
               path: processed.path,
+              type: mediaType,
               size: processed.size,
               duration: processed.metadata?.duration,
               isVideo,
               isAudio: isAudio && !isVideo,
               isImage,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
+              createdAt: new Date(),
+              updatedAt: new Date(),
               source: "browser",
               thumbnailPath: processed.thumbnail_path,
               // Не устанавливаем isLoadingMetadata - файл сразу готов к использованию
@@ -128,16 +139,28 @@ export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions 
 
             // Даже при ошибке добавляем файл с базовой информацией
             const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || "Unknown"
+            const isVideo = /\.(mp4|avi|mov|mkv|webm)$/i.test(fileName)
+            const isAudio = /\.(mp3|wav|ogg|m4a|aac)$/i.test(fileName)
+            const isImage = /\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i.test(fileName)
+            const errorMediaType = isVideo
+              ? MediaType.Video
+              : isAudio
+                ? MediaType.Audio
+                : isImage
+                  ? MediaType.StillImage
+                  : MediaType.Unknown
+
             processedFiles.push({
               id: `file-${Date.now()}-${i}`,
               name: fileName,
               path: filePath,
+              type: errorMediaType,
               size: 0,
-              isVideo: /\.(mp4|avi|mov|mkv|webm)$/i.test(fileName),
-              isAudio: /\.(mp3|wav|ogg|m4a|aac)$/i.test(fileName),
-              isImage: /\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i.test(fileName),
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
+              isVideo,
+              isAudio,
+              isImage,
+              createdAt: new Date(),
+              updatedAt: new Date(),
               source: "browser",
             })
           }

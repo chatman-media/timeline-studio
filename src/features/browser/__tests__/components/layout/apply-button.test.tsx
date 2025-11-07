@@ -4,6 +4,25 @@ import { describe, expect, it, vi } from "vitest"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
 
+// Mock the logger with a spy - use vi.hoisted to ensure these are created before the mock
+const { mockInfo, mockWarn, mockError, mockDebug, mockTrace } = vi.hoisted(() => ({
+  mockInfo: vi.fn(),
+  mockWarn: vi.fn(),
+  mockError: vi.fn(),
+  mockDebug: vi.fn(),
+  mockTrace: vi.fn(),
+}))
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => ({
+    info: mockInfo,
+    warn: mockWarn,
+    error: mockError,
+    debug: mockDebug,
+    trace: mockTrace,
+  }),
+}))
+
 describe("ApplyButton", () => {
   const mockResource = {
     id: "test-resource",
@@ -42,17 +61,18 @@ describe("ApplyButton", () => {
     expect(onApply).toHaveBeenCalledWith(mockResource as unknown as TimelineResource, "media")
   })
 
-  it("should log to console when onApply is not provided", () => {
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+  it("should log to logger when onApply is not provided", () => {
+    mockInfo.mockClear()
 
     render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
 
-    expect(consoleSpy).toHaveBeenCalledWith("ApplyButton clicked", "test-resource", "media")
-
-    consoleSpy.mockRestore()
+    expect(mockInfo).toHaveBeenCalledWith(
+      "ApplyButton clicked",
+      expect.objectContaining({ resourceId: "test-resource", type: "media" }),
+    )
   })
 
   it("should stop event propagation", () => {

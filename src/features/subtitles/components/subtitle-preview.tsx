@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ApplyButton } from "@/features/browser"
+import { MediaType } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
 import type { SubtitleResource } from "@/features/resources/types"
 
@@ -138,7 +139,11 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
         </div>
 
         {/* Кнопка добавления в избранное */}
-        <FavoriteButton file={{ id: style.id, path: "", name: style.name }} size={size} type="subtitle" />
+        <FavoriteButton
+          file={{ id: style.id, path: "", name: style.name, type: MediaType.Subtitle }}
+          size={size}
+          type="subtitle"
+        />
 
         {/* Кнопка удаления стиля из проекта */}
         <ApplyButton resource={fileObject as SubtitleResource} size={size} type="subtitle" />

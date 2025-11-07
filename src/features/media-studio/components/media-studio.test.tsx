@@ -1,9 +1,19 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { createLogger } from "@/lib/tauri-logger"
 import { MediaStudio } from "./media-studio"
 
-const logger = createLogger({ module: "MediaStudio.test" })
+// Мокаем tauri-logger
+const mockLogger = vi.hoisted(() => ({
+  info: vi.fn(),
+  error: vi.fn(),
+  debug: vi.fn(),
+  warn: vi.fn(),
+  trace: vi.fn(),
+}))
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => mockLogger,
+}))
 
 // Мокаем useUserSettings
 const mockUseUserSettings = vi.hoisted(() => vi.fn())
@@ -75,17 +85,9 @@ vi.mock("./layout", () => ({
   ChatLayout: () => <div data-testid="chat-layout">ChatLayout</div>,
 }))
 
-// Мокаем console для тестирования логирования
-const originalConsoleLog = console.log
-const originalConsoleError = console.error
-const consoleLogSpy = vi.fn()
-const consoleErrorSpy = vi.fn()
-
 describe("MediaStudio", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    console.log = consoleLogSpy
-    console.error = consoleErrorSpy
 
     // Дефолтные значения для моков
     mockUseUserSettings.mockReturnValue({
@@ -105,11 +107,6 @@ describe("MediaStudio", () => {
       },
       error: null,
     })
-  })
-
-  afterEach(() => {
-    console.log = originalConsoleLog
-    console.error = originalConsoleError
   })
 
   it("рендерит основные компоненты", () => {
@@ -183,7 +180,7 @@ describe("MediaStudio", () => {
 
       render(<MediaStudio />)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith("Загружаем пользовательские данные...")
+      expect(mockLogger.info).toHaveBeenCalledWith("Загружаем пользовательские данные...")
     })
 
     it("логирует ошибку при неудачной загрузке", () => {
@@ -204,7 +201,7 @@ describe("MediaStudio", () => {
 
       render(<MediaStudio />)
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Ошибка автозагрузки пользовательских данных:", error)
+      expect(mockLogger.error).toHaveBeenCalledWith("Ошибка автозагрузки пользовательских данных", { error })
     })
 
     it("логирует загруженные данные когда есть ненулевые значения", () => {
@@ -226,7 +223,7 @@ describe("MediaStudio", () => {
 
       render(<MediaStudio />)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith("Загружены пользовательские данные:", loadedData)
+      expect(mockLogger.info).toHaveBeenCalledWith("Загружены пользовательские данные", { loadedData })
     })
 
     it("не логирует данные когда все значения нулевые", () => {
@@ -246,7 +243,8 @@ describe("MediaStudio", () => {
 
       render(<MediaStudio />)
 
-      expect(consoleLogSpy).not.toHaveBeenCalled()
+      expect(mockLogger.info).not.toHaveBeenCalled()
+      expect(mockLogger.error).not.toHaveBeenCalled()
     })
   })
 

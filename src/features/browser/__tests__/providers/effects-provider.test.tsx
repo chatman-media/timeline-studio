@@ -490,7 +490,7 @@ describe("EffectsProvider BackendSync Integration", () => {
   let api: any
 
   function APITestComponent() {
-    const { api: providerAPI, isInitialized } = useEffectsProvider()
+    const { api: providerAPI, isInitialized, isBackendConnected } = useEffectsProvider()
 
     React.useEffect(() => {
       if (isInitialized && providerAPI) {
@@ -501,6 +501,7 @@ describe("EffectsProvider BackendSync Integration", () => {
     return (
       <div>
         <div data-testid="api-ready">{String(isInitialized)}</div>
+        <div data-testid="backend-connected">{String(isBackendConnected)}</div>
       </div>
     )
   }

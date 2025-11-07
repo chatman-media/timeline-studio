@@ -1,6 +1,8 @@
 import { act, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { MediaType } from "@/features/media/types/media"
+
 import { FileMetadata } from "../../components/file-metadata"
 
 // Мокаем useTranslation
@@ -39,6 +41,7 @@ describe("FileMetadata", () => {
       id: "video-file",
       name: "video-file.mp4",
       path: "/path/to/video-file.mp4",
+      type: MediaType.Video,
       isVideo: true,
       isImage: false,
       isAudio: false,
@@ -94,6 +97,7 @@ describe("FileMetadata", () => {
       id: "audio-file",
       name: "audio-file.mp3",
       path: "/path/to/audio-file.mp3",
+      type: MediaType.Audio,
       isVideo: false,
       isImage: false,
       isAudio: true,
@@ -128,10 +132,11 @@ describe("FileMetadata", () => {
       id: "image-file",
       name: "image-file.jpg",
       path: "/path/to/image-file.jpg",
+      type: MediaType.StillImage,
       isVideo: false,
       isImage: true,
       isAudio: false,
-      createdAt: "2023-01-01T00:00:00.000Z",
+      createdAt: new Date("2023-01-01T00:00:00.000Z"),
       probeData: {
         streams: [
           {
@@ -161,6 +166,7 @@ describe("FileMetadata", () => {
       id: "video-file",
       name: "video-file.mp4",
       path: "/path/to/video-file.mp4",
+      type: MediaType.Video,
       isVideo: true,
       isImage: false,
       isAudio: false,
@@ -201,6 +207,7 @@ describe("FileMetadata", () => {
       id: "video-file",
       name: "video-file.mp4",
       path: "/path/to/video-file.mp4",
+      type: MediaType.Video,
       isVideo: true,
       isImage: false,
       isAudio: false,

@@ -32,8 +32,17 @@ vi.mock("../use-audio-engine", () => ({
 
 // Create a mock AudioBuffer
 const createMockAudioBuffer = (): AudioBuffer => {
-  const audioContext = new AudioContext()
-  return audioContext.createBuffer(2, 44100 * 10, 44100) // 10 seconds stereo buffer
+  // Create a mock AudioBuffer without using AudioContext
+  const mockBuffer = {
+    length: 44100 * 10,
+    duration: 10,
+    sampleRate: 44100,
+    numberOfChannels: 2,
+    getChannelData: vi.fn().mockReturnValue(new Float32Array(44100 * 10)),
+    copyFromChannel: vi.fn(),
+    copyToChannel: vi.fn(),
+  } as unknown as AudioBuffer
+  return mockBuffer
 }
 
 const mockClip: AudioClip = {

@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { BrowserProvider } from "@/domains/browser"
+import { MediaType } from "@/features/media/types/media"
 import { resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { useFileSelection } from "../use-file-selection"
 
@@ -10,6 +11,7 @@ const mockFile = {
   id: "test-file-1",
   name: "test.mp4",
   path: "/path/test.mp4",
+  type: MediaType.Video,
   isVideo: true,
   isAudio: false,
   isImage: false,

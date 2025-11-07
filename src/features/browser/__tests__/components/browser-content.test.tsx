@@ -30,14 +30,14 @@ const mockSetPreviewSize = vi.fn()
 const mockBrowserState = {
   activeTab: "media",
   currentTabSettings: {
-    searchQuery: "",
-    showFavoritesOnly: false,
-    viewMode: "grid",
-    sortBy: "name",
-    filterType: "all",
-    groupBy: null,
-    sortOrder: "asc",
-    previewSizeIndex: 1,
+    search_query: "",
+    show_favorites_only: false,
+    view_mode: "grid",
+    sort_by: "name",
+    filter_type: "all",
+    group_by: null,
+    sort_order: "asc",
+    preview_size_index: 1,
   },
   setSearchQuery: mockSetSearchQuery,
   toggleFavorites: mockToggleFavorites,
@@ -48,7 +48,7 @@ const mockBrowserState = {
   setPreviewSize: mockSetPreviewSize,
 }
 
-vi.mock("../../services/browser-state-provider", () => ({
+vi.mock("@/domains/browser", () => ({
   useBrowserState: () => mockBrowserState,
 }))
 
@@ -283,11 +283,21 @@ vi.mock("@/features/browser/providers/effects-provider", () => ({
 }))
 
 vi.mock("@/features/media/utils/preview-sizes", () => ({
-  PREVIEW_SIZES: [
-    { key: "small", width: 160, height: 90 },
-    { key: "medium", width: 240, height: 135 },
-    { key: "large", width: 320, height: 180 },
-  ],
+  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
+  DEFAULT_PREVIEW_SIZE_INDEX: 3,
+  DEFAULT_SIZE: 200,
+  MIN_SIZE: 125,
+  MAX_SIZE: 500,
+  DEFAULT_CONTENT_SIZES: {
+    MEDIA: 250,
+    TEMPLATES: 250,
+    STYLE_TEMPLATES: 250,
+    EFFECTS: 250,
+    FILTERS: 250,
+    TRANSITIONS: 250,
+    SUBTITLES: 250,
+    MUSIC: 250,
+  },
 }))
 
 describe("BrowserContent", () => {
@@ -295,8 +305,8 @@ describe("BrowserContent", () => {
     vi.clearAllMocks()
     // Сбрасываем состояние к дефолтному
     mockBrowserState.activeTab = "media"
-    mockBrowserState.currentTabSettings.sortOrder = "asc"
-    mockBrowserState.currentTabSettings.previewSizeIndex = 1
+    mockBrowserState.currentTabSettings.sort_order = "asc"
+    mockBrowserState.currentTabSettings.preview_size_index = 1
   })
 
   describe("Рендеринг", () => {
@@ -368,7 +378,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен переключать порядок сортировки с desc на asc", () => {
-      mockBrowserState.currentTabSettings.sortOrder = "desc"
+      mockBrowserState.currentTabSettings.sort_order = "desc"
       render(<BrowserContent />)
 
       const orderBtn = screen.getByTestId("order-btn")
@@ -425,7 +435,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setPreviewSize с увеличенным индексом даже при максимальном размере", () => {
-      mockBrowserState.currentTabSettings.previewSizeIndex = 2 // максимальный индекс
+      mockBrowserState.currentTabSettings.preview_size_index = 2 // максимальный индекс
       render(<BrowserContent />)
 
       const zoomInBtn = screen.getByTestId("zoom-in-btn")
@@ -436,7 +446,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setPreviewSize с уменьшенным индексом даже при минимальном размере", () => {
-      mockBrowserState.currentTabSettings.previewSizeIndex = 0 // минимальный индекс
+      mockBrowserState.currentTabSettings.preview_size_index = 0 // минимальный индекс
       render(<BrowserContent />)
 
       const zoomOutBtn = screen.getByTestId("zoom-out-btn")
