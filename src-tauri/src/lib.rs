@@ -444,14 +444,70 @@ pub fn run() {
 
       // Получаем окно и добавляем обработчик закрытия
       if let Some(window) = app.get_webview_window("main") {
-        window.on_window_event(|event| {
+        let app_handle = app.handle().clone();
+
+        window.on_window_event(move |event| {
           if let tauri::WindowEvent::CloseRequested { .. } = event {
-            log::info!("Window close requested, performing cleanup...");
+            log::info!("Window close requested, performing graceful shutdown...");
 
-            // Даем время завершить активные операции
-            std::thread::sleep(std::time::Duration::from_millis(100));
+            // Выполняем graceful shutdown для всех состояний
+            if let Some(video_state) = app_handle.try_state::<VideoCompilerState>() {
+              log::info!("Shutdown: VideoCompilerState");
+              tauri::async_runtime::block_on(async {
+                // Отменяем активные задачи
+                if let Ok(mut jobs) = video_state.active_jobs.try_write() {
+                  let job_count = jobs.len();
+                  if job_count > 0 {
+                    log::warn!("Shutdown: отмена {job_count} активных задач рендеринга");
+                  }
+                  jobs.clear();
+                }
 
-            log::info!("Application cleanup completed");
+                if let Ok(mut pipelines) = video_state.active_pipelines.try_write() {
+                  let pipeline_count = pipelines.len();
+                  if pipeline_count > 0 {
+                    log::warn!("Shutdown: отмена {pipeline_count} активных конвейеров");
+                  }
+                  pipelines.clear();
+                }
+
+                // Shutdown сервисов с таймаутом
+                let _ = tokio::time::timeout(
+                  std::time::Duration::from_secs(2),
+                  video_state.services.shutdown_all(),
+                )
+                .await;
+              });
+            }
+
+            // Очищаем YoloProcessorState
+            if let Some(yolo_state) = app_handle.try_state::<YoloProcessorState>() {
+              log::info!("Shutdown: YoloProcessorState");
+              tauri::async_runtime::block_on(async {
+                if let Ok(mut processors) = yolo_state.processors.try_write() {
+                  let processor_count = processors.len();
+                  if processor_count > 0 {
+                    log::warn!("Shutdown: остановка {processor_count} YOLO процессоров");
+                  }
+                  processors.clear();
+                }
+              });
+            }
+
+            // PersonDatabase shutdown
+            if let Some(person_db) = app_handle.try_state::<Arc<PersonDatabase>>() {
+              log::info!("Shutdown: PersonDatabase");
+              tauri::async_runtime::block_on(async {
+                // PersonDatabase будет закрыт через Drop trait
+                // Здесь мы только логируем
+                drop(person_db);
+              });
+            }
+
+            // Даем время на завершение всех операций
+            std::thread::sleep(std::time::Duration::from_millis(500));
+
+            log::info!("Application graceful shutdown completed");
             // Окно закроется автоматически после возврата из обработчика
           }
         });

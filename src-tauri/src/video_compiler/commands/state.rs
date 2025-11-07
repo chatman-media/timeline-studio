@@ -57,6 +57,83 @@ pub struct VideoCompilerState {
   pub settings: Arc<RwLock<CompilerSettings>>,
 }
 
+impl Drop for VideoCompilerState {
+  fn drop(&mut self) {
+    log::info!("VideoCompilerState: начало graceful shutdown");
+
+    // Пытаемся получить текущий tokio runtime для асинхронного cleanup
+    match tokio::runtime::Handle::try_current() {
+      Ok(handle) => {
+        // Выполняем cleanup в рамках существующего runtime
+        handle.block_on(async {
+          log::info!("VideoCompilerState: отмена активных задач рендеринга");
+
+          // Очищаем активные задачи (старая архитектура)
+          if let Ok(mut jobs) = self.active_jobs.try_write() {
+            let job_count = jobs.len();
+            if job_count > 0 {
+              log::warn!("VideoCompilerState: принудительное завершение {job_count} активных задач");
+            }
+            jobs.clear();
+          } else {
+            log::warn!("VideoCompilerState: не удалось получить lock на active_jobs, пропускаем");
+          }
+
+          // Очищаем активные конвейеры (новая архитектура)
+          if let Ok(mut pipelines) = self.active_pipelines.try_write() {
+            let pipeline_count = pipelines.len();
+            if pipeline_count > 0 {
+              log::warn!("VideoCompilerState: принудительное завершение {pipeline_count} активных конвейеров");
+            }
+            pipelines.clear();
+          } else {
+            log::warn!(
+              "VideoCompilerState: не удалось получить lock на active_pipelines, пропускаем"
+            );
+          }
+
+          // Shutdown сервисов с таймаутом
+          log::info!("VideoCompilerState: shutdown сервисов");
+          match tokio::time::timeout(
+            std::time::Duration::from_secs(3),
+            self.services.shutdown_all(),
+          )
+          .await
+          {
+            Ok(Ok(())) => {
+              log::info!("VideoCompilerState: сервисы успешно остановлены");
+            }
+            Ok(Err(e)) => {
+              log::error!("VideoCompilerState: ошибка остановки сервисов: {e:?}");
+            }
+            Err(_) => {
+              log::error!("VideoCompilerState: таймаут при остановке сервисов (3 сек)");
+            }
+          }
+        });
+
+        log::info!("VideoCompilerState: graceful shutdown завершен");
+      }
+      Err(_) => {
+        // Runtime уже был dropped, делаем best-effort cleanup
+        log::warn!(
+          "VideoCompilerState: токio runtime недоступен, выполняется минимальный cleanup"
+        );
+
+        // Пытаемся очистить коллекции синхронно (try_write не блокируется)
+        if let Ok(mut jobs) = self.active_jobs.try_write() {
+          jobs.clear();
+        }
+        if let Ok(mut pipelines) = self.active_pipelines.try_write() {
+          pipelines.clear();
+        }
+
+        log::warn!("VideoCompilerState: минимальный cleanup завершен");
+      }
+    }
+  }
+}
+
 impl VideoCompilerState {
   pub async fn new() -> Self {
     let settings = Arc::new(RwLock::new(CompilerSettings::default()));

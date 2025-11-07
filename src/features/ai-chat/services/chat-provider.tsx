@@ -8,7 +8,10 @@ import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { UnifiedAIService } from "@/domains/ai-core/services"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+
+const logger = createLogger("ChatProvider")
 
 // Локальные типы для UI (с Date объектами вместо строк)
 interface ChatMessage {

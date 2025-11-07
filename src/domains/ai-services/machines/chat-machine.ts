@@ -1,6 +1,10 @@
 import { assign, setup } from "xstate"
 
+import { createLogger } from "@/lib/tauri-logger"
+
 import type { ChatListItem, ChatMessage } from "../types/chat"
+
+const logger = createLogger("ChatMachine")
 
 // Интерфейс контекста машины состояний чата
 export interface ChatMachineContext {

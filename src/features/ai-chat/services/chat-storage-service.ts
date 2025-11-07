@@ -1,6 +1,7 @@
 import type { ChatListItem, ChatMessage, ChatSession, ChatStorageService } from "@/domains/ai-services/types/chat"
 import { appDirectoriesService } from "@/features/app-state/services"
 import { isDesktop } from "@/lib/environment"
+import { createLogger } from "@/lib/tauri-logger"
 
 /**
  * Сервис для сохранения и управления чатами
@@ -8,10 +9,13 @@ import { isDesktop } from "@/lib/environment"
  */
 export class LocalChatStorageService implements ChatStorageService {
   private static instance: LocalChatStorageService
+  private static logger = createLogger("ChatStorage")
   private chatsDir?: string
   private initialized = false
 
-  private constructor() {}
+  private constructor() {
+    LocalChatStorageService.logger.debugSync("ChatStorageService instance created")
+  }
 
   static getInstance(): LocalChatStorageService {
     if (!LocalChatStorageService.instance) {
@@ -27,6 +31,7 @@ export class LocalChatStorageService implements ChatStorageService {
     if (this.initialized) return
 
     try {
+      await LocalChatStorageService.logger.info("Initializing chat storage")
       const dirs = await appDirectoriesService.getAppDirectories()
       this.chatsDir = `${dirs.base_dir}/Chats`
 
@@ -36,12 +41,14 @@ export class LocalChatStorageService implements ChatStorageService {
 
         if (!(await exists(this.chatsDir))) {
           await mkdir(this.chatsDir, { recursive: true })
+          await LocalChatStorageService.logger.info("Created chats directory", { path: this.chatsDir })
         }
       }
 
       this.initialized = true
+      await LocalChatStorageService.logger.info("Chat storage initialized successfully")
     } catch (error) {
-      console.error("Failed to initialize chat storage:", error)
+      await LocalChatStorageService.logger.error("Failed to initialize chat storage", { error: String(error) })
       throw error
     }
   }
