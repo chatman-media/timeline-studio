@@ -202,7 +202,7 @@ pub struct MontageConfig {
 }
 
 /// Montage style presets
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, specta::Type)]
 pub enum MontageStyle {
   DynamicAction,
   CinematicDrama,
@@ -215,7 +215,7 @@ pub enum MontageStyle {
 }
 
 /// Generated montage plan
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct MontagePlan {
   pub id: String,
   pub name: String,
@@ -229,7 +229,7 @@ pub struct MontagePlan {
 }
 
 /// Individual clip in montage plan
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct MontageClip {
   pub id: String,
   pub source_file: String,
@@ -242,7 +242,7 @@ pub struct MontageClip {
 }
 
 /// Adjustments to apply to a clip
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ClipAdjustments {
   pub speed_multiplier: Option<f32>,
   pub color_correction: Option<ColorCorrection>,
@@ -253,7 +253,7 @@ pub struct ClipAdjustments {
 }
 
 /// Color correction parameters
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ColorCorrection {
   pub brightness: f32, // -100 to 100
   pub contrast: f32,   // -100 to 100
@@ -262,7 +262,7 @@ pub struct ColorCorrection {
 }
 
 /// Crop region definition
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct CropRegion {
   pub x: f32,      // 0-1 (percentage)
   pub y: f32,      // 0-1 (percentage)
@@ -271,7 +271,7 @@ pub struct CropRegion {
 }
 
 /// Transition between clips
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct TransitionPlan {
   pub from_clip: String,
   pub to_clip: String,
@@ -281,7 +281,7 @@ pub struct TransitionPlan {
 }
 
 /// Types of transitions
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub enum TransitionType {
   Cut,
   Fade,
@@ -293,7 +293,7 @@ pub enum TransitionType {
 }
 
 /// Easing functions for transitions
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub enum EasingType {
   Linear,
   EaseIn,
@@ -303,7 +303,7 @@ pub enum EasingType {
 }
 
 /// Analysis options for montage planning
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct AnalysisOptions {
   pub enable_object_detection: bool,
   pub enable_face_detection: bool,
@@ -312,7 +312,7 @@ pub struct AnalysisOptions {
   pub enable_audio_analysis: bool,
   pub frame_sample_rate: f32,     // frames per second to analyze
   pub quality_threshold: f32,     // minimum quality for inclusion
-  pub max_moments: Option<usize>, // limit number of detected moments
+  pub max_moments: Option<u32>,   // limit number of detected moments
   pub frame_sampling_rate: f32,   // frames per second sampling rate
 }
 

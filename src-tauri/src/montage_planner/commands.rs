@@ -11,7 +11,7 @@ use crate::recognition::commands::yolo_commands::YoloProcessorState;
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
-use tauri::{command, Builder, Runtime, State};
+use tauri::{Builder, Runtime, State};
 use tokio::sync::RwLock;
 
 /// Global state for montage planner services
@@ -42,7 +42,7 @@ impl MontageState {
 }
 
 /// Analyze video file and generate enhanced YOLO results with composition analysis
-#[command]
+#[tauri::command]
 pub async fn analyze_video_composition(
   file_path: String,
   analysis_options: AnalysisOptions,
@@ -115,7 +115,7 @@ pub async fn analyze_video_composition(
   enhanced_results.sort_by(|a, b| a.timestamp.partial_cmp(&b.timestamp).unwrap());
 
   if let Some(max_moments) = analysis_options.max_moments {
-    enhanced_results.truncate(max_moments);
+    enhanced_results.truncate(max_moments as usize);
   }
 
   log::info!(
@@ -127,7 +127,7 @@ pub async fn analyze_video_composition(
 }
 
 /// Detect key moments in video based on enhanced YOLO analysis
-#[command]
+#[tauri::command]
 pub async fn detect_key_moments(
   enhanced_detections: Vec<CompositionEnhancedDetection>,
   _config: MontageConfig,
@@ -181,7 +181,7 @@ pub async fn detect_key_moments(
 }
 
 /// Generate montage plan from detected moments
-#[command]
+#[tauri::command]
 pub async fn generate_montage_plan(
   moments: Vec<DetectedMoment>,
   config: MontageConfig,
@@ -219,7 +219,7 @@ pub async fn analyze_montage_videos(
     enable_vision_analysis: options.enable_object_detection,
     enable_moment_detection: true,
     enable_content_classification: true,
-    performance_mode: crate::analysis::types::PerformanceMode::Balanced,
+    performance_mode: crate::analysis::types::AudioPerformanceMode::Balanced,
     ..Default::default()
   };
 
@@ -478,12 +478,12 @@ fn convert_to_montage_result(
           _ => MomentCategory::BRoll,
         },
         scores: MomentScores {
-          visual: (km.scoring.visual_appeal * 100.0) as f32,
-          technical: (km.scoring.technical_quality * 100.0) as f32,
-          emotional: (km.scoring.emotional_impact * 100.0) as f32,
+          visual: (km.scoring.visual_quality * 100.0) as f32,
+          technical: (km.scoring.composition_quality * 100.0) as f32,
+          emotional: (km.scoring.emotion_intensity * 100.0) as f32,
           narrative: (km.importance_score * 100.0) as f32,
-          action: (km.scoring.action_intensity * 100.0) as f32,
-          composition: (km.scoring.composition * 100.0) as f32,
+          action: (km.scoring.motion_interest * 100.0) as f32,
+          composition: (km.scoring.composition_quality * 100.0) as f32,
         },
         total_score: (km.importance_score * 100.0) as f32,
         description: km.description.clone(),
@@ -513,13 +513,18 @@ fn convert_to_montage_result(
   };
 
   let audio_quality = if let Some(audio) = &comprehensive.audio_analysis {
-    // overall_quality_score is a method, not a field
-    audio.quality_metrics.overall_quality
+    // overall_quality_score is a method
+    audio.overall_quality_score()
   } else {
     0.0
   } as f32;
 
-  let duration = comprehensive.metadata.duration_seconds;
+  // Calculate duration from scenes or use default
+  let duration = if let Some(scene_analysis) = &comprehensive.scene_analysis {
+    scene_analysis.scenes.iter().map(|s| s.duration).sum::<f64>()
+  } else {
+    0.0
+  };
 
   MontageAnalysisResult {
     video_id: video_id.to_string(),
@@ -535,7 +540,7 @@ fn convert_to_montage_result(
 }
 
 /// Get analysis progress for long-running operations
-#[command]
+#[tauri::command]
 pub async fn get_analysis_progress(_operation_id: String) -> Result<AnalysisProgress, String> {
   // TODO: Implement progress tracking
   Ok(AnalysisProgress {
@@ -548,7 +553,7 @@ pub async fn get_analysis_progress(_operation_id: String) -> Result<AnalysisProg
 }
 
 /// Update composition analysis weights
-#[command]
+#[tauri::command]
 pub async fn update_composition_weights(
   weights: CompositionWeights,
   state: tauri::State<'_, MontageState>,
