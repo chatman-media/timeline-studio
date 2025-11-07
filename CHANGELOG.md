@@ -1,3 +1,22 @@
+# [2.4.0](https://github.com/chatman-media/timeline-studio/compare/v2.3.5...v2.4.0) (2025-11-07)
+
+
+### Bug Fixes
+
+* Добавлены моки для Tauri Logger в тестовое окружение ([98c59e0](https://github.com/chatman-media/timeline-studio/commit/98c59e017dd8430b00d730e992d1589de90fafd5))
+* Исправлен баг определения типа медиа и восстановлены шаблоны ([ee93c8c](https://github.com/chatman-media/timeline-studio/commit/ee93c8ccd913164cce4186e0c7c7bea28c7bfd19))
+* Исправлены timeline-content тесты после изменений в компоненте ([b97b120](https://github.com/chatman-media/timeline-studio/commit/b97b120ceb9be7ca24beafc848e66235daf9c7a1))
+* Исправлены упавшие тесты после добавления Tauri Logger ([39fe39c](https://github.com/chatman-media/timeline-studio/commit/39fe39c49fdf66326898028109fb0d8e4ca6c9d1))
+* Обновлены тесты templates после восстановления полного набора шаблонов ([e6e9d5a](https://github.com/chatman-media/timeline-studio/commit/e6e9d5a96c8426d46f4ec501a603b570f2edd9b5))
+
+
+### Features
+
+* Добавлено Tauri Logger логирование в Recognition, AI-Director и Subtitles модули ([d844a6c](https://github.com/chatman-media/timeline-studio/commit/d844a6c122761cee0eb6b86129bc09016858ea67))
+* Добавлено комплексное Tauri Logger логирование во все ключевые модули ([0cfb368](https://github.com/chatman-media/timeline-studio/commit/0cfb36869ec4f3c3cd3f6904bcfdc6fd60bc675c))
+* Расширено логирование Tauri Logger на AI, медиа и ресурсные модули ([1916dfe](https://github.com/chatman-media/timeline-studio/commit/1916dfec9c936f316586a71a8f4845e307176e6a))
+* Расширено логирование Tauri Logger на AI, медиа и ресурсные модули ([f04dad2](https://github.com/chatman-media/timeline-studio/commit/f04dad284e496ca319c971d64890878c6af56590))
+
 ## [2.3.5](https://github.com/chatman-media/timeline-studio/compare/v2.3.4...v2.3.5) (2025-11-06)
 
 
