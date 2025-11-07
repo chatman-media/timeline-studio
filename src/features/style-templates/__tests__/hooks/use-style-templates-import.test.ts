@@ -283,7 +283,10 @@ describe("useStyleTemplatesImport", () => {
         await result.current.importStyleTemplateFile()
       })
 
-      expect(mockLogError).toHaveBeenCalledWith("useStyleTemplatesImport", "Failed to import style template files: Dialog error")
+      expect(mockLogError).toHaveBeenCalledWith(
+        "useStyleTemplatesImport",
+        "Failed to import style template files: Dialog error",
+      )
       expect(result.current.isImporting).toBe(false)
     })
 
