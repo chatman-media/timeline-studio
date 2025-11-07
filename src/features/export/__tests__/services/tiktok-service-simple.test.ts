@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import * as TikTokService from "../../services/tiktok-service"
 import { OutputFormat } from "@/features/video-compiler/types/render"
+import * as TikTokService from "../../services/tiktok-service"
 
 // Мокаем зависимости
 vi.mock("../../services/oauth-service", () => ({

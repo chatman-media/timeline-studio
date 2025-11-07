@@ -115,7 +115,8 @@ export function useContentAnalysis() {
       averageActionLevel:
         videoAnalyses.reduce<number>((sum, a) => sum + (a.content.actionLevel || 0), 0) / (videoAnalyses.length || 1),
       speechPresence:
-        audioAnalyses.reduce<number>((sum, a) => sum + (a.content.speechPresence || 0), 0) / (audioAnalyses.length || 1),
+        audioAnalyses.reduce<number>((sum, a) => sum + (a.content.speechPresence || 0), 0) /
+        (audioAnalyses.length || 1),
       musicPresence:
         audioAnalyses.reduce<number>((sum, a) => sum + (a.content.musicPresence || 0), 0) / (audioAnalyses.length || 1),
     }

@@ -1,5 +1,5 @@
-import { useBrowserAIIntegration } from "@/features/ai-chat/hooks/use-browser-ai-integration"
 import { useBrowserState } from "@/domains/browser"
+import { useBrowserAIIntegration } from "@/features/ai-chat/hooks/use-browser-ai-integration"
 import { EffectsProvider } from "../providers/browser-resources-provider"
 import { BrowserContent } from "./browser-content"
 import { BrowserTabs } from "./browser-tabs"

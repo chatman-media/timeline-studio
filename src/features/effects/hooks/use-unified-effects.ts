@@ -88,7 +88,7 @@ export function useUnifiedEffects(
   // ============================================================================
 
   useEffect(() => {
-    void logger.info( `Initializing unified effects for ${targetType} - ${targetId}`)
+    void logger.info(`Initializing unified effects for ${targetType} - ${targetId}`)
 
     if (loadBasicEffects) {
       // Регистрируем базовые эффекты
@@ -105,7 +105,7 @@ export function useUnifiedEffects(
         effectsById: effectsMap,
       }))
 
-      void logger.info( `Loaded ${effects.length} basic effects`)
+      void logger.info(`Loaded ${effects.length} basic effects`)
     }
 
     // Создаем стек эффектов для объекта
@@ -153,7 +153,7 @@ export function useUnifiedEffects(
         parameters?: Record<string, any>
       } = {},
     ): AppliedEffect => {
-      void logger.info( `Applying effect ${effectId} to ${targetType}`)
+      void logger.info(`Applying effect ${effectId} to ${targetType}`)
       const appliedEffect = effectManager.current.applyEffect(effectId, targetId, targetType, options)
       updateEffectsState()
       return appliedEffect
@@ -230,7 +230,7 @@ export function useUnifiedEffects(
    */
   const renderEffects = useCallback(
     async (source?: HTMLVideoElement | HTMLCanvasElement | ImageBitmap, customTime?: number): Promise<RenderResult> => {
-      void logger.info( `Rendering effects at time ${customTime ?? currentTime}`)
+      void logger.info(`Rendering effects at time ${customTime ?? currentTime}`)
 
       if (state.appliedEffects.length === 0) {
         return { success: true, output: source as any, processingTime: 0 }
@@ -256,10 +256,10 @@ export function useUnifiedEffects(
           previewBitmap: result.output instanceof ImageBitmap ? result.output : null,
         }))
 
-        void logger.info( `Effects rendered successfully in ${result.processingTime}ms`)
+        void logger.info(`Effects rendered successfully in ${result.processingTime}ms`)
         return result
       } catch (error) {
-        void logger.error( "Error rendering effects", error)
+        void logger.error("Error rendering effects", error)
 
         const errorResult: RenderResult = {
           success: false,

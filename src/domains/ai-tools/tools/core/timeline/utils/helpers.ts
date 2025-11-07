@@ -9,7 +9,6 @@ import { determineContentType } from "./detectors"
 
 const logger = createLogger("Helpers")
 
-
 export async function getCurrentTimelineProject(): Promise<TimelineProject | null> {
   const timelineStateAccess = getTimelineStateAccess()
 

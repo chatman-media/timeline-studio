@@ -2,6 +2,7 @@
  * Vision Adapter - адаптер для интеграции VisionService с AI архитектурой
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   ColorAnalysis,
   CompositionAnalysis,
@@ -11,8 +12,6 @@ import type {
   FrameAnalysisResult,
   IVisionService,
 } from "../../types/interfaces"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("VisionAdapter")
 

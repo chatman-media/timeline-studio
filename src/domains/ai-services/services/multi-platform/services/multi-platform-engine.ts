@@ -5,6 +5,7 @@
 
 import { UnifiedAIService } from "@/domains/ai-core"
 import { AdaptedContent, Platform, PlatformId } from "@/features/ai-content-intelligence"
+import { createLogger } from "@/lib/tauri-logger"
 import { getOptimalAspectRatio, getOptimalResolution, getPlatformConfig } from "../platform-configs"
 import type {
   AdaptationResult,
@@ -16,8 +17,6 @@ import type {
   PlatformOptimizationResult,
   TrendingElements,
 } from "../types"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MultiPlatformEngine")
 

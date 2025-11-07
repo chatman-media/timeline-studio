@@ -13,7 +13,6 @@ import { type UserSettingsContextType, userSettingsMachine } from "../machines/u
 
 const logger = createLogger("ProjectManagementOrchestrator")
 
-
 export class ProjectManagementOrchestrator {
   private appActor: ActorRefFrom<typeof appMachine>
   private userSettingsActor: ActorRefFrom<typeof userSettingsMachine>
@@ -83,12 +82,16 @@ export class ProjectManagementOrchestrator {
         if (state.matches({ connected: "idle" })) {
           subscription.unsubscribe()
           if (duration > 100) {
-            logger.warn("Warning", { data: `[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms` })
+            logger.warn("Warning", {
+              data: `[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms`,
+            })
           }
           resolve(true)
         } else if (state.matches("error")) {
           subscription.unsubscribe()
-          logger.error("Error occurred", { error: `[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms` })
+          logger.error("Error occurred", {
+            error: `[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms`,
+          })
           reject(new Error(state.context.error || "Command failed"))
         }
       })
@@ -235,9 +238,9 @@ export class ProjectManagementOrchestrator {
 
           if (duration > 500) {
             // Если сохранение занимает более 500ms
-            logger.warn("Warning", { data: 
-              `[Project Management Orchestrator] Auto-save #${saveCounter} took ${duration}ms - potential performance issue`,
-             })
+            logger.warn("Warning", {
+              data: `[Project Management Orchestrator] Auto-save #${saveCounter} took ${duration}ms - potential performance issue`,
+            })
           } else {
             logger.info("[Project Management Orchestrator] Auto-save #${saveCounter} completed in", { duration })
           }

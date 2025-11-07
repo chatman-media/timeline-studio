@@ -8,7 +8,6 @@ import { type DomainName, type EventHandler, eventBus, type PublishResult, type 
 
 const logger = createLogger("UseDomainEvents")
 
-
 export interface UseDomainEventsOptions {
   /** Домен, от имени которого публикуются события */
   domain: DomainName

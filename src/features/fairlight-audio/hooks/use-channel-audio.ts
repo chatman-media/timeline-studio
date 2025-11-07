@@ -68,7 +68,9 @@ export function useChannelAudio(channelId: string, trackId?: string) {
           logger.info(`[AudioLoader] Loading clip ${clip.id} with media ${clip.mediaId}`)
 
           // Get media file path from project resources
-          const mediaFile = timeline.project?.resources?.media?.find((m) => m.id === clip.mediaId) as MediaFile | undefined
+          const mediaFile = timeline.project?.resources?.media?.find((m) => m.id === clip.mediaId) as
+            | MediaFile
+            | undefined
           if (!mediaFile) {
             logger.error(`[AudioLoader] Media file ${clip.mediaId} not found in project resources`)
             continue

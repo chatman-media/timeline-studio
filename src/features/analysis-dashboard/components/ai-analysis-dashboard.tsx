@@ -18,10 +18,9 @@ import { AIDirectorProgress } from "@/features/ai-director/components/ai-directo
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
 import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
-import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import type { LogContext } from "@/lib/tauri-logger"
-
 import { createLogger } from "@/lib/tauri-logger"
+import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("AiAnalysisDashboard")
 
@@ -98,7 +97,14 @@ type DashboardAnalysisResult = ComprehensiveAnalysisResult & {
 
 export function AIAnalysisDashboard() {
   const { analyzeComprehensive, analyzeQuick, state } = useAIDirector()
-  const { isAnalyzing, currentProgress, result: rawResult, errors, progressPercentage, currentStage } = useAIDirectorAnalysis()
+  const {
+    isAnalyzing,
+    currentProgress,
+    result: rawResult,
+    errors,
+    progressPercentage,
+    currentStage,
+  } = useAIDirectorAnalysis()
 
   // Cast result to dashboard type for UI rendering
   const result = rawResult as DashboardAnalysisResult | null

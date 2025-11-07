@@ -3,6 +3,7 @@
  * Управляет жизненным циклом выполнения, параллельностью и мониторингом
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   AIToolExecutionOptions,
   AIToolExecutionStatus,
@@ -13,8 +14,6 @@ import type {
   ExecutionMetrics,
   IExecutionEngine,
 } from "../types"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ExecutionEngine")
 

@@ -4,13 +4,13 @@
  */
 
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
-import { createLogger } from "@/lib/tauri-logger"
 import {
   OutputFormat,
   type VideoRenderJob as RenderJob,
   type RenderProgress,
   RenderStatus,
 } from "@/features/video-compiler/types/render"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("VideoCompiler")
 

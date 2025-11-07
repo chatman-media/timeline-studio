@@ -13,9 +13,9 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 // NEW: Use AI Intelligence Machine V2 with AI Director integration
 import {
-  aiIntelligenceMachineV2,
   type AIIntelligenceContextV2,
   type AIIntelligenceEventV2,
+  aiIntelligenceMachineV2,
 } from "../machines/ai-intelligence-machine-v2"
 // NEW: Import AI Event Bridge
 import { aiEventBridge } from "../services/ai-event-bridge"

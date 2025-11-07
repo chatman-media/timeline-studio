@@ -5,9 +5,8 @@ import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
-
-import { useEffectsProvider } from "../providers/browser-resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
+import { useEffectsProvider } from "../providers/browser-resources-provider"
 import type {
   LoadingState,
   Resource,

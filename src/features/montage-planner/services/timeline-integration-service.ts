@@ -199,7 +199,6 @@ function createTimelineClips(
           ;(timelineClip as any).cropSettings = adjustments.crop
         }
       }
-
       // Добавляем метаданные о моменте
       // TODO: Add metadata support to TimelineClip
       ;(timelineClip as any).metadata = {

@@ -122,7 +122,9 @@ export function useSubtitlesImport() {
             // Добавляем субтитры на таймлайн
             // Находим или создаем трек для субтитров
             const subtitleType: TrackType = "subtitle"
-            let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === ("subtitle" as TrackType))?.id
+            let subtitleTrackId = project?.sections[0]?.tracks.find(
+              (track) => track.type === ("subtitle" as TrackType),
+            )?.id
 
             if (!subtitleTrackId) {
               subtitleTrackId = `subtitle-track-${Date.now()}`
@@ -190,7 +192,9 @@ export function useSubtitlesImport() {
 
           // Добавляем субтитры на таймлайн
           const subtitleType: TrackType = "subtitle"
-          let subtitleTrackId = project?.sections[0]?.tracks.find((track) => track.type === ("subtitle" as TrackType))?.id
+          let subtitleTrackId = project?.sections[0]?.tracks.find(
+            (track) => track.type === ("subtitle" as TrackType),
+          )?.id
 
           if (!subtitleTrackId) {
             subtitleTrackId = `subtitle-track-${Date.now()}`

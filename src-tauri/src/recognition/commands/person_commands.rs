@@ -3,7 +3,6 @@ use crate::recognition::person_database::{PersonProfile, SimilaritySearchResult}
 use crate::recognition::types::FaceEmbedding;
 use serde;
 use tauri::State;
-use uuid;
 
 #[tauri::command]
 pub async fn get_all_persons(
@@ -235,24 +234,6 @@ pub async fn update_timeline_subtitles(
   Ok(())
 }
 
-/// Analyze montage videos (для montage planner)
-#[tauri::command]
-pub async fn analyze_montage_videos(
-  video_paths: Vec<String>,
-  _analysis_options: MontageAnalysisOptions,
-) -> Result<MontageAnalysisResult, String> {
-  log::info!("Analyzing {} videos for montage", video_paths.len());
-
-  // TODO: Implement actual montage analysis
-  Ok(MontageAnalysisResult {
-    analyzed_videos: video_paths.len(),
-    total_duration: 0.0,
-    key_moments: Vec::new(),
-    recommended_cuts: Vec::new(),
-    analysis_id: uuid::Uuid::new_v4().to_string(),
-  })
-}
-
 // Helper structures for new commands
 
 // RenderJobInfo, BatchCommand и связанные структуры перенесены в соответствующие модули
@@ -263,23 +244,6 @@ pub struct SubtitleEntry {
   pub end_time: f64,
   pub text: String,
   pub style: Option<String>,
-}
-
-#[derive(serde::Deserialize)]
-pub struct MontageAnalysisOptions {
-  pub detect_faces: bool,
-  pub detect_scenes: bool,
-  pub analyze_audio: bool,
-  pub generate_thumbnails: bool,
-}
-
-#[derive(serde::Serialize)]
-pub struct MontageAnalysisResult {
-  pub analyzed_videos: usize,
-  pub total_duration: f64,
-  pub key_moments: Vec<String>,      // TODO: Define proper structure
-  pub recommended_cuts: Vec<String>, // TODO: Define proper structure
-  pub analysis_id: String,
 }
 
 // Helper functions перенесены в соответствующие модули

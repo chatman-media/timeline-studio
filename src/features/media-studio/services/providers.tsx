@@ -7,8 +7,8 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { BrowserProvider } from "@/domains/browser"
+import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AppProvider } from "@/features/app-state/services/app-provider"
 import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/theme-context"

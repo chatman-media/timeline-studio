@@ -5,15 +5,15 @@
  */
 
 import { useCallback, useEffect } from "react"
-import { createLogger } from "@/lib/tauri-logger"
 import { DOMAIN_EVENTS, useDomainEvents } from "@/domains/shared/events"
 import type {
-  AIDirectorAnalysisProgressEvent,
   AIDirectorAnalysisCompletedEvent,
   AIDirectorAnalysisErrorEvent,
-  AIDirectorStageCompletedEvent,
+  AIDirectorAnalysisProgressEvent,
   AIDirectorBatchCompletedEvent,
+  AIDirectorStageCompletedEvent,
 } from "@/domains/shared/events/ai-services-events"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseAIDirectorEvents")
 
@@ -61,10 +61,7 @@ export interface AIDirectorEventHandlers {
  * }
  * ```
  */
-export function useAIDirectorEvents(
-  handlers: AIDirectorEventHandlers,
-  options: UseAIDirectorEventsOptions = {},
-): void {
+export function useAIDirectorEvents(handlers: AIDirectorEventHandlers, options: UseAIDirectorEventsOptions = {}): void {
   const { debug = false } = options
   const { subscribe } = useDomainEvents({ domain: "ai-services", debug })
 

@@ -4,10 +4,10 @@
  * Сервис для применения монтажных планов к Timeline
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
 import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
-
 import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 import {
   createTimelineClip,
@@ -19,8 +19,6 @@ import {
   type TimelineTrack,
   type TrackType,
 } from "../../../../features/timeline/types"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineIntegrationService")
 

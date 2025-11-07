@@ -115,8 +115,8 @@ export interface UnifiedContentAnalysis {
   // Quality Metrics
   qualityMetrics: {
     overall: number // 0-100
-    video: number   // 0-100
-    audio: number   // 0-100
+    video: number // 0-100
+    audio: number // 0-100
     technical: number // 0-100
   }
 
@@ -137,9 +137,7 @@ export interface UnifiedContentAnalysis {
 /**
  * Преобразует ComprehensiveAnalysisResult в UnifiedContentAnalysis
  */
-export function mapComprehensiveAnalysisToUnified(
-  result: ComprehensiveAnalysisResult
-): UnifiedContentAnalysis {
+export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisResult): UnifiedContentAnalysis {
   return {
     // Metadata
     analysisId: result.analysis_id,
@@ -188,10 +186,11 @@ export function mapComprehensiveAnalysisToUnified(
       ? {
           scenes: result.video_analysis.scene_analysis ?? [],
           objects: result.video_analysis.object_detection ?? [],
-          faces: result.video_analysis.face_analysis?.map(fa => ({
-            timestamp: fa.timestamp,
-            detectedFaces: fa.faces,
-          })) ?? [],
+          faces:
+            result.video_analysis.face_analysis?.map((fa) => ({
+              timestamp: fa.timestamp,
+              detectedFaces: fa.faces,
+            })) ?? [],
           composition: result.video_analysis.composition_analysis
             ? {
                 overallQuality: result.video_analysis.composition_analysis.overall_quality * 100,
@@ -214,9 +213,7 @@ export function mapComprehensiveAnalysisToUnified(
 /**
  * Преобразует MontageAnalysisResult в упрощенный UnifiedContentAnalysis
  */
-export function mapMontageAnalysisToUnified(
-  result: MontageAnalysisResult
-): Partial<UnifiedContentAnalysis> {
+export function mapMontageAnalysisToUnified(result: MontageAnalysisResult): Partial<UnifiedContentAnalysis> {
   return {
     analysisId: result.analysis_id,
     videoPath: result.video_id,
@@ -232,7 +229,7 @@ export function mapMontageAnalysisToUnified(
       fileSize: 0,
     },
 
-    keyMoments: result.key_moments.map(km => ({
+    keyMoments: result.key_moments.map((km) => ({
       timestamp: km.timestamp,
       duration: km.duration,
       category: km.category,
@@ -281,9 +278,7 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
     : 50
 
   // Audio quality
-  const audioQuality = result.audio_analysis
-    ? calculateAudioQuality(result.audio_analysis)
-    : 50
+  const audioQuality = result.audio_analysis ? calculateAudioQuality(result.audio_analysis) : 50
 
   // Technical quality (resolution, codec, etc.)
   const technicalQuality = calculateTechnicalQuality(result)
@@ -310,9 +305,12 @@ function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number 
   // Resolution score
   const pixels = resolution.width * resolution.height
   let resolutionScore = 0
-  if (pixels >= 3840 * 2160) resolutionScore = 100 // 4K+
-  else if (pixels >= 1920 * 1080) resolutionScore = 85 // 1080p
-  else if (pixels >= 1280 * 720) resolutionScore = 70 // 720p
+  if (pixels >= 3840 * 2160)
+    resolutionScore = 100 // 4K+
+  else if (pixels >= 1920 * 1080)
+    resolutionScore = 85 // 1080p
+  else if (pixels >= 1280 * 720)
+    resolutionScore = 70 // 720p
   else resolutionScore = 50
 
   // FPS score
@@ -324,7 +322,7 @@ function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number 
 
   // Codec score (простая эвристика)
   const goodCodecs = ["h264", "h265", "hevc", "vp9", "av1"]
-  const codecScore = goodCodecs.some(c => codec.toLowerCase().includes(c)) ? 100 : 60
+  const codecScore = goodCodecs.some((c) => codec.toLowerCase().includes(c)) ? 100 : 60
 
   return (resolutionScore + fpsScore + codecScore) / 3
 }
@@ -332,15 +330,9 @@ function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number 
 /**
  * Type guard для проверки ComprehensiveAnalysisResult
  */
-export function isComprehensiveAnalysisResult(
-  value: unknown
-): value is ComprehensiveAnalysisResult {
+export function isComprehensiveAnalysisResult(value: unknown): value is ComprehensiveAnalysisResult {
   return (
-    typeof value === "object" &&
-    value !== null &&
-    "analysis_id" in value &&
-    "status" in value &&
-    "video_path" in value
+    typeof value === "object" && value !== null && "analysis_id" in value && "status" in value && "video_path" in value
   )
 }
 

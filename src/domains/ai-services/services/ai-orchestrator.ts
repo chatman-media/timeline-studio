@@ -13,7 +13,7 @@ import {
   type MontagePlanGeneratedEvent,
 } from "@/domains/shared/events"
 import { createLogger } from "@/lib/tauri-logger"
-import { type AIIntelligenceMachine, aiIntelligenceMachine } from "../machines/ai-intelligence-machine"
+import { type AIIntelligenceMachineV2, aiIntelligenceMachineV2 } from "../machines/ai-intelligence-machine-v2"
 import { type ChatMachine, chatMachine } from "../machines/chat-machine"
 import { type MontagePlannerMachine, montagePlannerMachine } from "../machines/montage-planner-machine"
 
@@ -26,13 +26,13 @@ export class AIServicesOrchestrator {
   private static instance: AIServicesOrchestrator | null = null
 
   private chatActor: ActorRefFrom<ChatMachine>
-  private intelligenceActor: ActorRefFrom<AIIntelligenceMachine>
+  private intelligenceActor: ActorRefFrom<AIIntelligenceMachineV2>
   private montagePlannerActor: ActorRefFrom<MontagePlannerMachine>
 
   private constructor() {
     // Создаем акторы
     this.chatActor = createActor(chatMachine)
-    this.intelligenceActor = createActor(aiIntelligenceMachine)
+    this.intelligenceActor = createActor(aiIntelligenceMachineV2)
     this.montagePlannerActor = createActor(montagePlannerMachine)
 
     // Запускаем акторы
@@ -232,7 +232,7 @@ interface AIEngine {
  * Uses XState machine for state management
  */
 export class AIIntelligenceOrchestrator {
-  private actor: Actor<typeof aiIntelligenceMachine>
+  private actor: Actor<typeof aiIntelligenceMachineV2>
   private eventListeners = new Map<string, Set<(event: PipelineEvent) => void>>()
   private progressListeners = new Set<(progress: PipelineProgress) => void>()
 
@@ -242,7 +242,7 @@ export class AIIntelligenceOrchestrator {
   private multiPlatformAdapter?: AIEngine
   private engineFactory?: any
 
-  constructor(actor: Actor<typeof aiIntelligenceMachine>) {
+  constructor(actor: Actor<typeof aiIntelligenceMachineV2>) {
     this.actor = actor
   }
 

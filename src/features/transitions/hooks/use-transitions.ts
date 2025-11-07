@@ -97,9 +97,7 @@ function initializeTransitions(t: (key: string, fallback?: string, options?: any
     globalTransitions = processTransitions(allTransitions)
     globalError = null
 
-    void logInfo(
-      `Successfully processed and initialized ${globalTransitions.length} transitions from JSON`,
-    )
+    void logInfo(`Successfully processed and initialized ${globalTransitions.length} transitions from JSON`)
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : t("transitions.errors.unknownError", "Unknown error")
     globalError = t("transitions.errors.failedToLoadTransitions", "Failed to load transitions: {{error}}", {

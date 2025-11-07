@@ -1,8 +1,8 @@
 // Сервис для валидации контента перед загрузкой в социальные сети
 
+import { OutputFormat } from "@/features/video-compiler/types/render"
 import { SOCIAL_NETWORKS } from "../constants/export-constants"
 import type { SocialExportSettings } from "../types/export-types"
-import { OutputFormat } from "@/features/video-compiler/types/render"
 
 export interface ValidationResult {
   isValid: boolean

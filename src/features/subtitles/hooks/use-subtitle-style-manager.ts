@@ -180,7 +180,9 @@ export function useSubtitleStyleManager(): UseSubtitleStyleManagerReturn {
         strokeColor: overrides?.strokeColor,
         strokeWidth: overrides?.strokeWidth || defaultStyle.strokeWidth,
         textShadow: parseTextShadow(overrides?.textShadow || baseStyle.style?.textShadow),
-        padding: parsePadding(overrides?.padding || (baseStyle.style?.padding ? String(baseStyle.style.padding) : undefined)),
+        padding: parsePadding(
+          overrides?.padding || (baseStyle.style?.padding ? String(baseStyle.style.padding) : undefined),
+        ),
         borderRadius:
           Number.parseInt(String(overrides?.borderRadius || baseStyle.style?.borderRadius || "4"), 10) ||
           defaultStyle.borderRadius,

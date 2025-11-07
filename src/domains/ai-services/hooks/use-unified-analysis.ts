@@ -6,21 +6,18 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { createLogger } from "@/lib/tauri-logger"
-import { unifiedOrchestrator } from "../services/unified-orchestrator"
-import type {
-  AnalysisWorkflow,
-  BatchAnalysisWorkflow,
-} from "../services/unified-orchestrator"
-import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
+import { createLogger } from "@/lib/tauri-logger"
 import type {
+  AnalysisOptions,
   MontageAnalysisResult,
   MontagePlan,
-  AnalysisOptions,
-  PlanValidation,
   PlanStatistics,
+  PlanValidation,
 } from "@/types/montage-planner-rust"
+import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
+import type { AnalysisWorkflow, BatchAnalysisWorkflow } from "../services/unified-orchestrator"
+import { unifiedOrchestrator } from "../services/unified-orchestrator"
 
 const logger = createLogger({ module: "useUnifiedAnalysis" })
 
@@ -98,10 +95,7 @@ export interface UnifiedAnalysisHook {
     plan?: MontagePlan
   }>
 
-  optimizeMontagePlan: (
-    plan: MontagePlan,
-    preferences?: Record<string, unknown>,
-  ) => Promise<MontagePlan>
+  optimizeMontagePlan: (plan: MontagePlan, preferences?: Record<string, unknown>) => Promise<MontagePlan>
 
   validateMontagePlan: (plan: MontagePlan) => Promise<PlanValidation>
 

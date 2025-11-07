@@ -2,13 +2,12 @@ import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { usePlayer } from "@/features/video-player/services/player-provider"
-
+import { createMockClip } from "../../__mocks__/test-factories"
 // Import mocked functions
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelinePlayerSync } from "../../hooks/use-timeline-player-sync"
 import { useTimelineSelection } from "../../hooks/use-timeline-selection"
 import * as timelinePlayerSync from "../../services/timeline-player-sync"
-import { createMockClip } from "../../__mocks__/test-factories"
 
 // Mock dependencies
 vi.mock("@/features/video-player/services/player-provider", () => ({

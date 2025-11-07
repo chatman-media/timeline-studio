@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
-
-import type { ExportSettings } from "../../types/export-types"
 import { OutputFormat } from "@/features/video-compiler/types/render"
+import type { ExportSettings } from "../../types/export-types"
 import {
   estimateExportTime,
   formatEstimatedTime,

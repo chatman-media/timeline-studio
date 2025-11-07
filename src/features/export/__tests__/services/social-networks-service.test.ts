@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import * as SocialNetworksService from "../../services/social-networks-service"
 import { OutputFormat } from "@/features/video-compiler/types/render"
+import * as SocialNetworksService from "../../services/social-networks-service"
 
 // Мокаем зависимости
 vi.mock("sonner", () => ({
@@ -96,7 +95,11 @@ describe("SocialNetworksService", () => {
 
   describe("isLoggedIn", () => {
     it("should return true if token exists", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
+        accessToken: "token",
+        expiresIn: 3600,
+        tokenType: "Bearer",
+      })
 
       const result = await SocialNetworksService.isLoggedIn("youtube")
 
@@ -184,7 +187,11 @@ describe("SocialNetworksService", () => {
     }
 
     beforeEach(() => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
+        accessToken: "token",
+        expiresIn: 3600,
+        tokenType: "Bearer",
+      })
     })
 
     it("should successfully upload to YouTube", async () => {
@@ -319,7 +326,10 @@ describe("SocialNetworksService", () => {
     })
 
     it("should return TikTok optimal settings", () => {
-      const mockSettings: Partial<import("../../types/export-types").SocialExportSettings> = { resolution: "1080", useVerticalResolution: true }
+      const mockSettings: Partial<import("../../types/export-types").SocialExportSettings> = {
+        resolution: "1080",
+        useVerticalResolution: true,
+      }
       vi.mocked(TikTokService.getOptimalSettings).mockReturnValue(mockSettings)
 
       const result = SocialNetworksService.getOptimalSettings("tiktok")
@@ -355,7 +365,11 @@ describe("SocialNetworksService", () => {
     })
 
     it("should return false if no refresh token", async () => {
-      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({ accessToken: "token", expiresIn: 3600, tokenType: "Bearer" })
+      vi.mocked(OAuthService.getStoredToken).mockResolvedValue({
+        accessToken: "token",
+        expiresIn: 3600,
+        tokenType: "Bearer",
+      })
 
       const result = await SocialNetworksService.refreshTokenIfNeeded("youtube")
 

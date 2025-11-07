@@ -174,10 +174,7 @@ export class AnalysisStorageService {
    * Загрузить все comprehensive analyses
    */
   async loadComprehensiveAnalyses(): Promise<Record<string, ComprehensiveAnalysisResult>> {
-    return this.loadFromStorage<Record<string, ComprehensiveAnalysisResult>>(
-      STORAGE_KEYS.COMPREHENSIVE_ANALYSES,
-      {},
-    )
+    return this.loadFromStorage<Record<string, ComprehensiveAnalysisResult>>(STORAGE_KEYS.COMPREHENSIVE_ANALYSES, {})
   }
 
   /**

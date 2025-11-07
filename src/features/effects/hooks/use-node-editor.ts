@@ -166,7 +166,7 @@ export function useNodeSelection() {
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([])
 
   const selectNode = useCallback((nodeId: string, multi = false) => {
-    void logger.info( `Selecting node ${nodeId} (multi: ${multi})`)
+    void logger.info(`Selecting node ${nodeId} (multi: ${multi})`)
     if (multi) {
       setSelectedNodeIds((prev) => (prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]))
     } else {
@@ -175,12 +175,12 @@ export function useNodeSelection() {
   }, [])
 
   const selectNodes = useCallback((nodeIds: string[]) => {
-    void logger.info( `Selecting ${nodeIds.length} nodes`)
+    void logger.info(`Selecting ${nodeIds.length} nodes`)
     setSelectedNodeIds(nodeIds)
   }, [])
 
   const deselectAll = useCallback(() => {
-    void logger.info( "Deselecting all nodes")
+    void logger.info("Deselecting all nodes")
     setSelectedNodeIds([])
   }, [])
 
@@ -217,7 +217,7 @@ export function useNodeGraphOperations() {
   // Add to history
   const addToHistory = useCallback(
     (newGraph: NodeGraph) => {
-      void logger.info( `Adding to history at index ${historyIndex + 1}`)
+      void logger.info(`Adding to history at index ${historyIndex + 1}`)
       setHistory((prev) => [...prev.slice(0, historyIndex + 1), newGraph])
       setHistoryIndex((prev) => prev + 1)
     },
@@ -227,7 +227,7 @@ export function useNodeGraphOperations() {
   // Undo
   const undo = useCallback(() => {
     if (historyIndex > 0) {
-      void logger.info( `Undoing - moving to history index ${historyIndex - 1}`)
+      void logger.info(`Undoing - moving to history index ${historyIndex - 1}`)
       setHistoryIndex((prev) => prev - 1)
       setGraph(history[historyIndex - 1])
     }
@@ -236,7 +236,7 @@ export function useNodeGraphOperations() {
   // Redo
   const redo = useCallback(() => {
     if (historyIndex < history.length - 1) {
-      void logger.info( `Redoing - moving to history index ${historyIndex + 1}`)
+      void logger.info(`Redoing - moving to history index ${historyIndex + 1}`)
       setHistoryIndex((prev) => prev + 1)
       setGraph(history[historyIndex + 1])
     }
@@ -255,7 +255,7 @@ export function useNodeGraphOperations() {
   // Add node
   const addNode = useCallback(
     (node: CompositeNode) => {
-      void logger.info( `Adding node ${node.id}`)
+      void logger.info(`Adding node ${node.id}`)
       updateGraph((g) => ({
         ...g,
         nodes: {
@@ -270,7 +270,7 @@ export function useNodeGraphOperations() {
   // Remove nodes
   const removeNodes = useCallback(
     (nodeIds: string[]) => {
-      void logger.info( `Removing ${nodeIds.length} nodes`)
+      void logger.info(`Removing ${nodeIds.length} nodes`)
       updateGraph((g) => {
         const newNodes = { ...g.nodes }
         const newConnections = g.connections.filter(
@@ -293,7 +293,7 @@ export function useNodeGraphOperations() {
   // Duplicate nodes
   const duplicateNodes = useCallback(
     (nodeIds: string[]) => {
-      void logger.info( `Duplicating ${nodeIds.length} nodes`)
+      void logger.info(`Duplicating ${nodeIds.length} nodes`)
       updateGraph((g) => {
         const newNodes = { ...g.nodes }
         const offset = 50

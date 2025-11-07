@@ -2,8 +2,8 @@
 
 import { toast } from "sonner"
 import { createLogger } from "@/lib/tauri-logger"
-import { SecureTokenStorage } from "./secure-token-storage"
 import { OAuthToken } from "../types/export-types"
+import { SecureTokenStorage } from "./secure-token-storage"
 
 const logger = createLogger({ module: "OauthService" })
 

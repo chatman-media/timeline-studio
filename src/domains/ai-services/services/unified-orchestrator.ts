@@ -13,24 +13,21 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { eventBus, DOMAIN_EVENTS } from "@/domains/shared/events"
 import type {
-  ContentAnalysisStartedEvent,
   ContentAnalysisCompletedEvent,
+  ContentAnalysisStartedEvent,
   MontagePlanGeneratedEvent,
 } from "@/domains/shared/events"
-import { createLogger } from "@/lib/tauri-logger"
+import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import { createLogger } from "@/lib/tauri-logger"
 import type {
-  AIDirectorConfig,
-  ComprehensiveAnalysisResult,
-} from "@/features/ai-director/types/ai-director"
-import type {
+  AnalysisOptions,
   MontageAnalysisResult,
   MontagePlan,
-  AnalysisOptions,
-  PlanValidation,
   PlanStatistics,
+  PlanValidation,
 } from "@/types/montage-planner-rust"
 import {
   mapComprehensiveAnalysisToUnified,
@@ -201,10 +198,7 @@ export class UnifiedOrchestrator {
     try {
       // Stage 1: AI Director Comprehensive Analysis
       logger.info("Stage 1: AI Director comprehensive analysis", { workflowId })
-      const comprehensiveResult = await aiDirectorService.analyzeComprehensive(
-        videoPath,
-        config?.aiDirectorConfig,
-      )
+      const comprehensiveResult = await aiDirectorService.analyzeComprehensive(videoPath, config?.aiDirectorConfig)
 
       workflow.stages.aiDirector = "completed"
       workflow.results.comprehensive = comprehensiveResult
@@ -301,9 +295,7 @@ export class UnifiedOrchestrator {
 
       logger.error("Comprehensive analysis workflow провален", { workflowId, error })
 
-      throw new Error(
-        `Comprehensive analysis failed: ${error instanceof Error ? error.message : String(error)}`,
-      )
+      throw new Error(`Comprehensive analysis failed: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 
@@ -438,10 +430,7 @@ export class UnifiedOrchestrator {
   /**
    * Оптимизирует существующий plan монтажа
    */
-  async optimizeMontagePlan(
-    plan: MontagePlan,
-    preferences?: Record<string, unknown>,
-  ): Promise<MontagePlan> {
+  async optimizeMontagePlan(plan: MontagePlan, preferences?: Record<string, unknown>): Promise<MontagePlan> {
     logger.info("Оптимизация montage plan", { planId: plan.id })
 
     try {

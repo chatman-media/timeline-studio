@@ -105,11 +105,13 @@ export class DomainEventBus {
 
     // Логирование в dev режиме
     if (this.isLogging) {
-      logger.debug("[EventBus] Publishing event:", { data: {
-        type: event.type,
-        source: event.source,
-        payload: event.payload,
-      } })
+      logger.debug("[EventBus] Publishing event:", {
+        data: {
+          type: event.type,
+          source: event.source,
+          payload: event.payload,
+        },
+      })
     }
 
     // Сохраняем в историю
@@ -143,9 +145,9 @@ export class DomainEventBus {
 
           if (handlerDuration > 16) {
             // Больше 16ms (1 кадр при 60fps)
-            logger.warn("Warning", { data: 
-              `[EventBus] Slow handler detected: ${handlerDuration}ms for event ${event.type}, handler ${index}`,
-             })
+            logger.warn("Warning", {
+              data: `[EventBus] Slow handler detected: ${handlerDuration}ms for event ${event.type}, handler ${index}`,
+            })
           }
 
           // Если once, удаляем обработчик
@@ -164,9 +166,9 @@ export class DomainEventBus {
     const totalDuration = performance.now() - startTime
     if (totalDuration > 50) {
       // Больше 50ms - потенциальная проблема
-      logger.warn("Warning", { data: 
-        `[EventBus] Slow event processing: ${totalDuration}ms for ${event.type} with ${handlers.length} handlers`,
-       })
+      logger.warn("Warning", {
+        data: `[EventBus] Slow event processing: ${totalDuration}ms for ${event.type} with ${handlers.length} handlers`,
+      })
     }
 
     return {

@@ -3,6 +3,7 @@
  * Управляет регистрацией, поиском и загрузкой инструментов
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   AIIToolInfo,
   AIToolCategory,
@@ -13,8 +14,6 @@ import type {
   ToolSearchMatch,
   ToolSearchResult,
 } from "../types"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ToolRegistry")
 

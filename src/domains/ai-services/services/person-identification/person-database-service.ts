@@ -285,7 +285,7 @@ export class PersonDatabaseService {
 
       return person
     } catch (error) {
-      logger.error("Error occurred", { error: `Ошибка получения персоны ${personId}:`, error })
+      logger.error(`Ошибка получения персоны ${personId}:`, { error })
       return null
     }
   }
@@ -357,7 +357,7 @@ export class PersonDatabaseService {
       this.emitEvent({ type: "person_deleted", data: { personId } })
       return true
     } catch (error) {
-      logger.error("Error occurred", { error: `Ошибка удаления персоны ${personId}:`, error })
+      logger.error(`Ошибка удаления персоны ${personId}:`, { error })
       return false
     }
   }

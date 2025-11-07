@@ -12,7 +12,6 @@ import type { SystemNotification } from "../types"
 
 const logger = createLogger("SystemIntegrationOrchestrator")
 
-
 export class SystemIntegrationOrchestrator {
   private modalActor: ActorRefFrom<typeof modalMachine>
   private updateActor: ActorRefFrom<typeof updateMachine>
@@ -155,11 +154,15 @@ export class SystemIntegrationOrchestrator {
     // Автоматически удаляем уведомление после заданного времени
     if (notification.duration) {
       const startTime = performance.now()
-      logger.info("[System Integration Orchestrator] Scheduling notification dismissal in", { duration: notification.duration })
+      logger.info("[System Integration Orchestrator] Scheduling notification dismissal in", {
+        duration: notification.duration,
+      })
 
       setTimeout(() => {
         const duration = performance.now() - startTime
-        logger.debug(`[System Integration Orchestrator] Dismissing notification after ${duration.toFixed(2)}ms (scheduled: ${notification.duration}ms)`)
+        logger.debug(
+          `[System Integration Orchestrator] Dismissing notification after ${duration.toFixed(2)}ms (scheduled: ${notification.duration}ms)`,
+        )
         this.dismissNotification(id)
       }, notification.duration)
     }

@@ -14,7 +14,6 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UndoRedoService")
 
-
 export type ActionType =
   | "ADD_CLIP"
   | "REMOVE_CLIP"

@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest"
-
+import { OutputFormat } from "@/features/video-compiler/types/render"
 import * as SocialValidationService from "../../services/social-validation-service"
 import type { SocialExportSettings } from "../../types/export-types"
-import { OutputFormat } from "@/features/video-compiler/types/render"
 
 describe("SocialValidationService", () => {
   describe("validateExportSettings", () => {

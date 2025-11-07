@@ -7,8 +7,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 import {
   getSystemIntegrationOrchestrator,
   type SystemIntegrationOrchestrator,
@@ -235,7 +235,9 @@ export function useFeatureFlags() {
 
   const toggleFeature = (feature: string, enabled: boolean) => {
     if (!isConnected) {
-      logger.warn("Warning", { data: "[System Integration] Backend not connected, feature flag change may not persist" })
+      logger.warn("Warning", {
+        data: "[System Integration] Backend not connected, feature flag change may not persist",
+      })
     }
     orchestrator.toggleFeature(feature, enabled)
   }

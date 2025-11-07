@@ -16,7 +16,6 @@ import type { MediaImportOptions, MediaManagementService, MediaType } from "../t
 
 const logger = createLogger("MediaManagementProvider")
 
-
 interface MediaManagementContextValue extends MediaManagementService {
   fileOperationsState: any
   mediaImportState: any

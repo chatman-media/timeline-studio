@@ -3,11 +3,9 @@
  */
 
 import { describe, expect, it, vi } from "vitest"
-
-import { fireEvent, render, screen, waitFor } from "@/test/test-utils"
-
-import { SubtitleEditor } from "../../components/subtitle-editor"
 import type { SubtitleClip } from "@/features/subtitles/types"
+import { fireEvent, render, screen, waitFor } from "@/test/test-utils"
+import { SubtitleEditor } from "../../components/subtitle-editor"
 
 // Мокаем данные субтитра
 const mockSubtitle: SubtitleClip = {

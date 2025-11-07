@@ -14,7 +14,6 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("VideoEditingOrchestrator")
 
-
 // Временные типы и mock
 interface ClipAddedEvent {
   type: "CLIP_ADDED"

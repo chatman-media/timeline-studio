@@ -120,14 +120,16 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const finalProject = project || transformProjectStateToTimeline(backendProject)
 
   // Отладочная информация для project provider
-  logger.debug("[TimelineProjectProvider] Project transformation:", { data: {
-    hasProject: !!project,
-    hasBackendProject: !!backendProject,
-    hasFinalProject: !!finalProject,
-    finalProjectSections: finalProject?.sections?.length || 0,
-    finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
-    backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
-  } })
+  logger.debug("[TimelineProjectProvider] Project transformation:", {
+    data: {
+      hasProject: !!project,
+      hasBackendProject: !!backendProject,
+      hasFinalProject: !!finalProject,
+      finalProjectSections: finalProject?.sections?.length || 0,
+      finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
+      backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
+    },
+  })
 
   const contextValue: TimelineProjectContext = {
     project: finalProject,
@@ -392,16 +394,18 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   ]
 
   // Отладочная информация
-  logger.debug("[TimelineClipsProvider] Project structure:", { data: {
-    hasProject: !!project,
-    hasGlobalTracks: !!project?.globalTracks,
-    globalTracksLength: project?.globalTracks?.length || 0,
-    hasSections: !!project?.sections,
-    sectionsLength: project?.sections?.length || 0,
-    sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
-    totalClips: clips.length,
-    projectType: project ? typeof project : "null/undefined",
-  } })
+  logger.debug("[TimelineClipsProvider] Project structure:", {
+    data: {
+      hasProject: !!project,
+      hasGlobalTracks: !!project?.globalTracks,
+      globalTracksLength: project?.globalTracks?.length || 0,
+      hasSections: !!project?.sections,
+      sectionsLength: project?.sections?.length || 0,
+      sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
+      totalClips: clips.length,
+      projectType: project ? typeof project : "null/undefined",
+    },
+  })
 
   const contextValue: TimelineClipsContext = {
     clips,

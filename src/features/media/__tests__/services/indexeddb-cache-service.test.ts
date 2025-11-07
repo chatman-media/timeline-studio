@@ -353,7 +353,9 @@ describe("IndexedDBCacheService", () => {
         ["file2", { fileId: "file2", thumbnail: "data2", timestamp: Date.now(), size: 1500 }],
       ] as any
       const mockFrameEntries = [["video1", { fileId: "video1", frames: [], timestamp: Date.now(), size: 2000 }]] as any
-      const mockRecognitionEntries = [["recog1", { fileId: "recog1", frames: [], timestamp: Date.now(), size: 3000 }]] as any
+      const mockRecognitionEntries = [
+        ["recog1", { fileId: "recog1", frames: [], timestamp: Date.now(), size: 3000 }],
+      ] as any
       const mockSubtitleEntries = [["sub1", { fileId: "sub1", frames: [], timestamp: Date.now(), size: 500 }]] as any
 
       mockEntries

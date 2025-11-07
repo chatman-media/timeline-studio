@@ -84,6 +84,11 @@ pub fn export_typescript_bindings() {
       crate::analysis::commands::ai_director_get_default_config,
       crate::analysis::commands::ai_director_validate_config,
       crate::analysis::commands::ai_director_health_check,
+      // 🆕 Smart Montage Planner commands
+      crate::montage_planner::commands::analyze_montage_videos,
+      crate::montage_planner::commands::optimize_montage_plan,
+      crate::montage_planner::commands::validate_montage_plan,
+      crate::montage_planner::commands::calculate_plan_statistics,
     ])
     .events(tauri_specta::collect_events![]);
 

@@ -3,7 +3,13 @@
  */
 
 import { vi } from "vitest"
-import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
+import type {
+  CommandResult,
+  EventEnvelope,
+  ProjectCommand,
+  ProjectEvent,
+  ProjectState,
+} from "@/types/generated/tauri-bindings"
 
 export const _mockOnStateChange = vi.fn()
 export const _mockOnEvent = vi.fn()

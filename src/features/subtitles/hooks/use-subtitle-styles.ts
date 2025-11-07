@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-
+import { createLogger } from "@/lib/tauri-logger"
 import subtitleStylesData from "../data/subtitle-styles.json"
 import type { SubtitleStyleTemplate } from "../types/subtitles"
-import { createLogger } from "@/lib/tauri-logger"
 import {
   createFallbackSubtitleStyleTemplate,
   processSubtitleStyleTemplates,
@@ -71,10 +70,7 @@ export function useSubtitles(): UseSubtitlesReturn {
 
       setSubtitles(fallbackStyles)
 
-      logger.error(
-        `❌ ${t("subtitles.errors.fallbackStyles", "Failed to load subtitle styles, using fallback")}:`,
-        err,
-      )
+      logger.error(`❌ ${t("subtitles.errors.fallbackStyles", "Failed to load subtitle styles, using fallback")}:`, err)
     } finally {
       setLoading(false)
     }

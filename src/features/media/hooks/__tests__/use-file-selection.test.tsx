@@ -115,7 +115,7 @@ describe("useFileSelection", () => {
     await act(async () => {
       result.current.handleToggleSelection(mockEvent)
       // Wait for the async toggleSelection to complete
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
     expect(mockEvent.stopPropagation).toHaveBeenCalledOnce()

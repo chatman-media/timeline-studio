@@ -2,7 +2,6 @@ import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-import { createLogger } from "@/lib/tauri-logger"
 import {
   CompilerSettings,
   FfmpegCapabilities,
@@ -11,6 +10,7 @@ import {
   GpuInfo,
   SystemInfo,
 } from "@/domains/video-editing"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseGpuCapabilities")
 

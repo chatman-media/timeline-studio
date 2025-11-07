@@ -15,10 +15,10 @@ const logger = createLogger("MontagePlannerMachine")
 // Import Rust types (generated from backend)
 import type {
   MontageAnalysisResult,
+  AnalysisOptions as RustAnalysisOptions,
+  MontagePlan as RustMontagePlan,
   PlanStatistics as RustPlanStatistics,
   PlanValidation as RustPlanValidation,
-  MontagePlan as RustMontagePlan,
-  AnalysisOptions as RustAnalysisOptions,
 } from "@/types/montage-planner-rust"
 
 // Import types from domain

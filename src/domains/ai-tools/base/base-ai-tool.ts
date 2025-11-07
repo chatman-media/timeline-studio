@@ -3,6 +3,7 @@
  * Расширенная версия с поддержкой новой архитектуры
  */
 
+import { createLogger } from "@/lib/tauri-logger"
 import type {
   AIToolExecutionOptions,
   AIToolLogger,
@@ -11,8 +12,6 @@ import type {
   FullExecutionContext,
   IAITool,
 } from "../types"
-
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("BaseAiTool")
 

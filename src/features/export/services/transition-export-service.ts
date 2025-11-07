@@ -5,7 +5,7 @@
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { ExportSettings } from "../types/export-types"
 import {
   FFMPEG_TRANSITION_TEMPLATES,
@@ -18,7 +18,6 @@ import {
   type TransitionOptimizationSettings,
   type TransitionType,
 } from "../types/transition-export-types"
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "TransitionExportService" })
 

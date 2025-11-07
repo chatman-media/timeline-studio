@@ -203,10 +203,9 @@ export const VideoPreview = memo(
           }
 
           setIsPlaying(newPlayingState)
-          logger.debugSync(
-            `[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в превью`,
-            { fileName: file.name },
-          )
+          logger.debugSync(`[VideoPreview] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"} в превью`, {
+            fileName: file.name,
+          })
         }
       },
       [hoverTime, file, playerSetSource, playerSetMedia, isPlaying],

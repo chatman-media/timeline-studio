@@ -30,9 +30,7 @@ export function createMockApiKeys(overrides?: any) {
 /**
  * Создает полный мок для UserSettingsContextValue со всеми обязательными полями
  */
-export function createMockUserSettings(
-  overrides?: Partial<UserSettingsContextValue>,
-): UserSettingsContextValue {
+export function createMockUserSettings(overrides?: Partial<UserSettingsContextValue>): UserSettingsContextValue {
   return {
     // Базовые настройки
     screenshotsPath: "public/screenshots",

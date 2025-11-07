@@ -434,7 +434,6 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::recognition::person_commands::log_ai_performance_metric,
     crate::recognition::person_commands::ffmpeg_generate_thumbnail,
     crate::recognition::person_commands::update_timeline_subtitles,
-    crate::recognition::person_commands::analyze_montage_videos,
     // Advanced tracking commands
     crate::recognition::commands::advanced_tracking_commands::init_advanced_tracking,
     crate::recognition::commands::advanced_tracking_commands::start_person_tracking,

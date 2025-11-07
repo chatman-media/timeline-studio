@@ -11,7 +11,6 @@ import type { MediaFileOperation, MediaImportContext, MediaImportEvent, MediaImp
 
 const logger = createLogger("MediaImportMachine")
 
-
 const defaultOptions: MediaImportOptions = {
   copyToProject: true,
   createProxies: false,

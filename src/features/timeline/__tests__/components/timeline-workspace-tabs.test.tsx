@@ -52,7 +52,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("rendering", () => {
     it("должен рендерить контейнер с правильными классами", () => {
-      const { container} = render(<TimelineWorkspaceTabs {...defaultProps} />)
+      const { container } = render(<TimelineWorkspaceTabs {...defaultProps} />)
 
       const wrapper = container.firstChild as HTMLElement
       expect(wrapper.className).toContain("flex")

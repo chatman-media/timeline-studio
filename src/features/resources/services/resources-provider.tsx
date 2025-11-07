@@ -95,7 +95,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const backendState = projectState
 
   logInfo("ResourcesProvider: Initialized with projectState", {
-    projectId: backendState?.project?.id || "no-project"
+    projectId: backendState?.project?.id || "no-project",
   })
 
   // Функция для выполнения backend команд
@@ -118,7 +118,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         setError(errorMessage)
         logError("ResourcesProvider: Command execution failed", {
           commandType: command.type,
-          error: errorMessage
+          error: errorMessage,
         })
         throw err
       } finally {
@@ -134,7 +134,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       logInfo("ResourcesProvider: Adding media file", {
         name: file.name,
         path: file.path,
-        duration: file.duration
+        duration: file.duration,
       })
 
       // Сохраняем метаданные в кэш перед добавлением в backend
@@ -142,15 +142,15 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         metadataCacheRef.current.set(file.path, file.probeData)
         logInfo("ResourcesProvider: Cached metadata", {
           path: file.path,
-          streamsCount: file.probeData.streams.length
+          streamsCount: file.probeData.streams.length,
         })
       }
 
       // ДЕДУПЛИКАЦИЯ: Проверяем существование медиа по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some((item): item is MediaItem =>
-          item !== null && item !== undefined && item.path === file.path
+        const alreadyExists = Object.values(mediaPool.items).some(
+          (item): item is MediaItem => item !== null && item !== undefined && item.path === file.path,
         )
         if (alreadyExists) {
           logInfo("ResourcesProvider: Media already exists, skipping", { path: file.path })
@@ -171,7 +171,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       logInfo("ResourcesProvider: Adding music file", {
         name: file.name,
         path: file.path,
-        duration: file.duration
+        duration: file.duration,
       })
 
       // Сохраняем метаданные в кэш перед добавлением в backend
@@ -179,15 +179,15 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         metadataCacheRef.current.set(file.path, file.probeData)
         logInfo("ResourcesProvider: Cached metadata for music", {
           path: file.path,
-          streamsCount: file.probeData.streams.length
+          streamsCount: file.probeData.streams.length,
         })
       }
 
       // ДЕДУПЛИКАЦИЯ: Проверяем существование музыки по path перед добавлением
       const mediaPool = backendState?.project?.media_pool
       if (mediaPool?.items) {
-        const alreadyExists = Object.values(mediaPool.items).some((item): item is MediaItem =>
-          item !== null && item !== undefined && item.path === file.path
+        const alreadyExists = Object.values(mediaPool.items).some(
+          (item): item is MediaItem => item !== null && item !== undefined && item.path === file.path,
         )
         if (alreadyExists) {
           logInfo("ResourcesProvider: Music already exists, skipping", { path: file.path })
@@ -220,7 +220,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add subtitle", {
           styleId: style.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -232,7 +232,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (effect: VideoEffect) => {
       logInfo("ResourcesProvider: Adding effect resource", {
         effectId: effect.id,
-        name: effect.name
+        name: effect.name,
       })
       try {
         await executeCommand({
@@ -248,7 +248,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add effect", {
           effectId: effect.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -260,7 +260,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (filter: VideoFilter) => {
       logInfo("ResourcesProvider: Adding filter resource", {
         filterId: filter.id,
-        name: filter.name
+        name: filter.name,
       })
       try {
         await executeCommand({
@@ -276,7 +276,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add filter", {
           filterId: filter.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -288,7 +288,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (transition: Transition) => {
       logInfo("ResourcesProvider: Adding transition resource", {
         transitionId: transition.id,
-        label: transition.labels?.ru || transition.labels?.en
+        label: transition.labels?.ru || transition.labels?.en,
       })
       try {
         await executeCommand({
@@ -304,7 +304,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add transition", {
           transitionId: transition.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -315,7 +315,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const addTemplate = useCallback(
     async (template: MediaTemplate) => {
       logInfo("ResourcesProvider: Adding template resource", {
-        templateId: template.id
+        templateId: template.id,
       })
       try {
         await executeCommand({
@@ -331,7 +331,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add template", {
           templateId: template.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -344,7 +344,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       const templateName = typeof template.name === "string" ? template.name : template.name?.ru || template.name?.en
       logInfo("ResourcesProvider: Adding style template resource", {
         templateId: template.id,
-        name: templateName
+        name: templateName,
       })
       try {
         await executeCommand({
@@ -360,7 +360,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to add style template", {
           templateId: template.id,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -372,7 +372,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (resourceId: string, resourceType: string = "media") => {
       logInfo("ResourcesProvider: Removing resource", {
         resourceId,
-        resourceType
+        resourceType,
       })
       try {
         if (resourceType === "media") {
@@ -393,7 +393,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to remove resource", {
           resourceId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -405,7 +405,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     async (resourceId: string, params: Record<string, any>) => {
       logInfo("ResourcesProvider: Updating resource", {
         resourceId,
-        paramsKeys: Object.keys(params)
+        paramsKeys: Object.keys(params),
       })
       try {
         await executeCommand({
@@ -416,7 +416,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       } catch (error) {
         logError("ResourcesProvider: Failed to update resource", {
           resourceId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         })
         throw error
       }
@@ -442,7 +442,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       logInfo("ResourcesProvider: All resources cleared successfully")
     } catch (error) {
       logError("ResourcesProvider: Failed to clear resources", {
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       })
       throw error
     }
@@ -488,7 +488,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           if (cachedProbeData) {
             logInfo("ResourcesProvider: Restored cached metadata", {
               path: item.path,
-              streamsCount: cachedProbeData.streams?.length || 0
+              streamsCount: cachedProbeData.streams?.length || 0,
             })
           }
 
@@ -507,10 +507,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
   const musicResources: MusicResource[] = mediaPool?.items
     ? Object.values(mediaPool.items)
-        .filter(
-          (item): item is MediaItem =>
-            item !== null && item !== undefined && item.media_type === "Audio",
-        )
+        .filter((item): item is MediaItem => item !== null && item !== undefined && item.media_type === "Audio")
         .map((item) => {
           // Проверяем кэш метаданных для этого файла
           const cachedProbeData = metadataCacheRef.current.get(item.path)
@@ -533,7 +530,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           if (cachedProbeData) {
             logInfo("ResourcesProvider: Restored cached metadata for music", {
               path: item.path,
-              streamsCount: cachedProbeData.streams?.length || 0
+              streamsCount: cachedProbeData.streams?.length || 0,
             })
           }
 

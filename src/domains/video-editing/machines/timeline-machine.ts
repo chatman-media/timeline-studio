@@ -11,7 +11,6 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineMachine")
 
-
 // Локальный тип для буфера обмена
 interface ClipboardData {
   clips: any[]

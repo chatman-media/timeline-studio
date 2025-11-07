@@ -11,7 +11,6 @@ import type { MediaFile } from "../types"
 
 const logger = createLogger("PlayerMachine")
 
-
 export interface PlayerContext {
   video: MediaFile | null
   currentTime: number

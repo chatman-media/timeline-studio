@@ -59,19 +59,21 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
       },
       complexity: effectMetadata.complexity,
       gpuAccelerated: true,
-      parameters: project.uniforms.map((uniform): EffectParameter => ({
-        id: uniform.name,
-        name: {
-          en: uniform.name,
-          ru: uniform.name,
-        },
-        type: mapUniformTypeToParameterType(uniform.type),
-        defaultValue: uniform.value,
-        ...(uniform.min !== undefined && { min: uniform.min }),
-        ...(uniform.max !== undefined && { max: uniform.max }),
-        ...(uniform.step !== undefined && { step: uniform.step }),
-        animatable: true,
-      })),
+      parameters: project.uniforms.map(
+        (uniform): EffectParameter => ({
+          id: uniform.name,
+          name: {
+            en: uniform.name,
+            ru: uniform.name,
+          },
+          type: mapUniformTypeToParameterType(uniform.type),
+          defaultValue: uniform.value,
+          ...(uniform.min !== undefined && { min: uniform.min }),
+          ...(uniform.max !== undefined && { max: uniform.max }),
+          ...(uniform.step !== undefined && { step: uniform.step }),
+          animatable: true,
+        }),
+      ),
       processors: {
         webgl: {
           vertexShader: exportOptions.minify ? minifyShader(project.vertexShader) : project.vertexShader,
@@ -82,7 +84,7 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
       tags: effectMetadata.tags,
       version: project.version,
       author: project.metadata?.author,
-      presets: exportOptions.includePresets ? (generatePresets(project) || []) : [],
+      presets: exportOptions.includePresets ? generatePresets(project) || [] : [],
     }
 
     onExport(effect)

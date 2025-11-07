@@ -90,10 +90,12 @@ export class SubtitleAIIntegrationService {
 
     const { enableOCR = true, enableSpeechAnalysis = true, enableSceneAnalysis = true, language = "ru" } = options
 
-    logger.debug("Starting content analysis for subtitles:", { data: {
-      mediaPath,
-      options,
-    } })
+    logger.debug("Starting content analysis for subtitles:", {
+      data: {
+        mediaPath,
+        options,
+      },
+    })
 
     try {
       // Извлекаем информацию о файле
@@ -160,11 +162,13 @@ export class SubtitleAIIntegrationService {
         },
       }
 
-      logger.debug("Content analysis completed:", { data: {
-        textDetections: textDetections.length,
-        speechSegments: audioAnalysis.speech.length,
-        scenes: sceneAnalysis.length,
-      } })
+      logger.debug("Content analysis completed:", {
+        data: {
+          textDetections: textDetections.length,
+          speechSegments: audioAnalysis.speech.length,
+          scenes: sceneAnalysis.length,
+        },
+      })
 
       return unifiedAnalysis
     } catch (error) {
@@ -490,11 +494,13 @@ export class SubtitleAIIntegrationService {
 
       const result = await this.synchronizationService.synchronizeSubtitles(subtitles, context, syncOptions)
 
-      logger.debug("Advanced synchronization completed:", { data: {
-        quality: result.quality.overallScore,
-        adjustments: result.statistics.adjustmentsMade,
-        warnings: result.warnings.length,
-      } })
+      logger.debug("Advanced synchronization completed:", {
+        data: {
+          quality: result.quality.overallScore,
+          adjustments: result.statistics.adjustmentsMade,
+          warnings: result.warnings.length,
+        },
+      })
 
       // Логируем рекомендации и предупреждения
       if (result.recommendations.length > 0) {

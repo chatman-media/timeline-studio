@@ -105,7 +105,9 @@ describe("MidiLearnModal", () => {
       expect(selects).toHaveLength(2)
 
       // Simulate modal data change
-      mockModalData.devices = [{ id: "device3", name: "New Device", type: "input", manufacturer: "", state: "connected" }]
+      mockModalData.devices = [
+        { id: "device3", name: "New Device", type: "input", manufacturer: "", state: "connected" },
+      ]
       rerender(<MidiLearnModal />)
 
       // Check that selects still exist after data change

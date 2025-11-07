@@ -10,7 +10,6 @@ import type { FileOperationsContext, FileOperationsEvent } from "../types"
 
 const logger = createLogger("FileOperationsMachine")
 
-
 const initialContext: FileOperationsContext = {
   operations: new Map(),
   activeOperations: [],
@@ -29,7 +28,9 @@ export const fileOperationsMachine = setup({
         if (event.type !== "START_OPERATION") return context.operations
         const newOperations = new Map(context.operations)
         newOperations.set(event.operation.id, event.operation)
-        logger.info(`[File Operations] Starting operation ${event.operation.id}`, { operationType: event.operation.type })
+        logger.info(`[File Operations] Starting operation ${event.operation.id}`, {
+          operationType: event.operation.type,
+        })
         return newOperations
       },
       activeOperations: ({ context, event }) => {

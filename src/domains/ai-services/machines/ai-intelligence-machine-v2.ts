@@ -10,16 +10,12 @@
  */
 
 import { assign, emit, fromPromise, setup } from "xstate"
-import { createLogger } from "@/lib/tauri-logger"
-import { unifiedOrchestrator } from "../services/unified-orchestrator"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
 import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import { createLogger } from "@/lib/tauri-logger"
+import type { AnalysisOptions, MontageAnalysisResult, MontagePlan } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
-import type {
-  MontageAnalysisResult,
-  MontagePlan,
-  AnalysisOptions,
-} from "@/types/montage-planner-rust"
+import { unifiedOrchestrator } from "../services/unified-orchestrator"
 
 const logger = createLogger({ module: "AIIntelligenceV2" })
 
@@ -313,18 +309,20 @@ export const aiIntelligenceMachineV2 = setup({
         },
         UPDATE_AI_DIRECTOR_CONFIG: {
           actions: assign({
-            aiDirectorConfig: ({ context, event }) => ({
-              ...(context.aiDirectorConfig || {}),
-              ...event.config,
-            } as AIDirectorConfig),
+            aiDirectorConfig: ({ context, event }) =>
+              ({
+                ...(context.aiDirectorConfig || {}),
+                ...event.config,
+              }) as AIDirectorConfig,
           }),
         },
         UPDATE_MONTAGE_OPTIONS: {
           actions: assign({
-            montageOptions: ({ context, event }) => ({
-              ...(context.montageOptions || {}),
-              ...event.options,
-            } as AnalysisOptions),
+            montageOptions: ({ context, event }) =>
+              ({
+                ...(context.montageOptions || {}),
+                ...event.options,
+              }) as AnalysisOptions,
           }),
         },
         CLEAR_RESULTS: {

@@ -12,15 +12,15 @@
  */
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
-import { createLogger } from "@/lib/tauri-logger"
-import { eventBus, DOMAIN_EVENTS } from "@/domains/shared/events"
+import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import type {
-  AIDirectorAnalysisProgressEvent,
   AIDirectorAnalysisCompletedEvent,
   AIDirectorAnalysisErrorEvent,
-  AIDirectorStageCompletedEvent,
+  AIDirectorAnalysisProgressEvent,
   AIDirectorBatchCompletedEvent,
+  AIDirectorStageCompletedEvent,
 } from "@/domains/shared/events/ai-services-events"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "AIEventBridge" })
 
@@ -139,53 +139,38 @@ export class AIEventBridge {
    */
   private async setupTauriListeners(): Promise<void> {
     // Analysis Progress
-    const unlistenProgress = await listen<TauriAnalysisProgress>(
-      TAURI_EVENTS.ANALYSIS_PROGRESS,
-      (event) => {
-        if (!this.isEnabled) return
-        this.handleAnalysisProgress(event.payload)
-      },
-    )
+    const unlistenProgress = await listen<TauriAnalysisProgress>(TAURI_EVENTS.ANALYSIS_PROGRESS, (event) => {
+      if (!this.isEnabled) return
+      this.handleAnalysisProgress(event.payload)
+    })
     this.unlisteners.push(unlistenProgress)
 
     // Analysis Completed
-    const unlistenCompleted = await listen<TauriAnalysisCompleted>(
-      TAURI_EVENTS.ANALYSIS_COMPLETED,
-      (event) => {
-        if (!this.isEnabled) return
-        this.handleAnalysisCompleted(event.payload)
-      },
-    )
+    const unlistenCompleted = await listen<TauriAnalysisCompleted>(TAURI_EVENTS.ANALYSIS_COMPLETED, (event) => {
+      if (!this.isEnabled) return
+      this.handleAnalysisCompleted(event.payload)
+    })
     this.unlisteners.push(unlistenCompleted)
 
     // Analysis Error
-    const unlistenError = await listen<TauriAnalysisError>(
-      TAURI_EVENTS.ANALYSIS_ERROR,
-      (event) => {
-        if (!this.isEnabled) return
-        this.handleAnalysisError(event.payload)
-      },
-    )
+    const unlistenError = await listen<TauriAnalysisError>(TAURI_EVENTS.ANALYSIS_ERROR, (event) => {
+      if (!this.isEnabled) return
+      this.handleAnalysisError(event.payload)
+    })
     this.unlisteners.push(unlistenError)
 
     // Stage Completed
-    const unlistenStage = await listen<TauriStageCompleted>(
-      TAURI_EVENTS.ANALYSIS_STAGE_COMPLETED,
-      (event) => {
-        if (!this.isEnabled) return
-        this.handleStageCompleted(event.payload)
-      },
-    )
+    const unlistenStage = await listen<TauriStageCompleted>(TAURI_EVENTS.ANALYSIS_STAGE_COMPLETED, (event) => {
+      if (!this.isEnabled) return
+      this.handleStageCompleted(event.payload)
+    })
     this.unlisteners.push(unlistenStage)
 
     // Batch Completed
-    const unlistenBatch = await listen<TauriBatchCompleted>(
-      TAURI_EVENTS.BATCH_COMPLETED,
-      (event) => {
-        if (!this.isEnabled) return
-        this.handleBatchCompleted(event.payload)
-      },
-    )
+    const unlistenBatch = await listen<TauriBatchCompleted>(TAURI_EVENTS.BATCH_COMPLETED, (event) => {
+      if (!this.isEnabled) return
+      this.handleBatchCompleted(event.payload)
+    })
     this.unlisteners.push(unlistenBatch)
 
     logger.info("Tauri event listeners настроены", {
@@ -215,11 +200,7 @@ export class AIEventBridge {
       estimatedTimeRemaining: payload.estimated_time_remaining,
     }
 
-    eventBus.publish(
-      DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_PROGRESS,
-      "ai-services",
-      domainEvent,
-    )
+    eventBus.publish(DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_PROGRESS, "ai-services", domainEvent)
   }
 
   /**
@@ -241,11 +222,7 @@ export class AIEventBridge {
       errors: payload.errors,
     }
 
-    eventBus.publish(
-      DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED,
-      "ai-services",
-      domainEvent,
-    )
+    eventBus.publish(DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED, "ai-services", domainEvent)
   }
 
   /**
@@ -265,11 +242,7 @@ export class AIEventBridge {
       timestamp: Date.now(),
     }
 
-    eventBus.publish(
-      DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_ERROR,
-      "ai-services",
-      domainEvent,
-    )
+    eventBus.publish(DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_ERROR, "ai-services", domainEvent)
   }
 
   /**
@@ -290,11 +263,7 @@ export class AIEventBridge {
       error: payload.error,
     }
 
-    eventBus.publish(
-      DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_STAGE_COMPLETED,
-      "ai-services",
-      domainEvent,
-    )
+    eventBus.publish(DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_STAGE_COMPLETED, "ai-services", domainEvent)
   }
 
   /**
@@ -315,11 +284,7 @@ export class AIEventBridge {
       totalDuration: payload.total_duration_ms,
     }
 
-    eventBus.publish(
-      DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_BATCH_COMPLETED,
-      "ai-services",
-      domainEvent,
-    )
+    eventBus.publish(DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_BATCH_COMPLETED, "ai-services", domainEvent)
   }
 
   // ============================================================================

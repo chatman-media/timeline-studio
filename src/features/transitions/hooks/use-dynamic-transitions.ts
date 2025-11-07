@@ -309,9 +309,7 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
       const requiresComputeShaders: DynamicShaderType[] = ["particle-dissolve", "organic-growth"]
 
       if (requiresHighPerformance.includes(shaderType) && state.performance.fps < 30) {
-        void logInfo(
-          `Transition ${shaderType} requires high performance but fps=${state.performance.fps}`,
-        )
+        void logInfo(`Transition ${shaderType} requires high performance but fps=${state.performance.fps}`)
         return false
       }
 

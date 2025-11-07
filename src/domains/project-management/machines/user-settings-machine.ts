@@ -13,7 +13,6 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UserSettingsMachine")
 
-
 /**
  * Допустимые значения для макета интерфейса
  * Определяют, как организованы элементы интерфейса

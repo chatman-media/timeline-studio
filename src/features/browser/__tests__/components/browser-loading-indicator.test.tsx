@@ -193,15 +193,15 @@ describe("BrowserLoadingIndicator", () => {
       vi.mocked(useResourcesStats).mockReturnValue({
         total: 100,
         byType: {
-      media: 0,
-      music: 0,
-      subtitle: 0,
-      effect: 50,
-      filter: 30,
-      transition: 20,
-      template: 0,
-      styleTemplate: 0,
-    },
+          media: 0,
+          music: 0,
+          subtitle: 0,
+          effect: 50,
+          filter: 30,
+          transition: 20,
+          template: 0,
+          styleTemplate: 0,
+        },
       })
 
       render(<BrowserLoadingIndicator />)

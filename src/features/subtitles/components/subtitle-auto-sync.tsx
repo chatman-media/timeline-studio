@@ -12,8 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import type { TrackType } from "@/features/timeline/types"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
+import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
 

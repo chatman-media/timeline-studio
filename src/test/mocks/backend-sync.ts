@@ -94,7 +94,7 @@ function triggerStateChange() {
     },
     browser_state: mockBrowserState,
   }
-  stateChangeHandlers.forEach(handler => handler(state))
+  stateChangeHandlers.forEach((handler) => handler(state))
 }
 
 // Command handlers
@@ -127,9 +127,7 @@ function handleBrowserCommand(command: ProjectCommand) {
           ...mockBrowserState,
           selected_files: {
             ...mockBrowserState.selected_files,
-            [tab]: mockBrowserState.selected_files[tab].filter(
-              id => id !== command.params.file_id
-            ),
+            [tab]: mockBrowserState.selected_files[tab].filter((id) => id !== command.params.file_id),
           },
         }
         triggerStateChange()
@@ -146,7 +144,7 @@ function handleBrowserCommand(command: ProjectCommand) {
           selected_files: {
             ...mockBrowserState.selected_files,
             [tab]: files.includes(command.params.file_id)
-              ? files.filter(id => id !== command.params.file_id)
+              ? files.filter((id) => id !== command.params.file_id)
               : [...files, command.params.file_id],
           },
         }
