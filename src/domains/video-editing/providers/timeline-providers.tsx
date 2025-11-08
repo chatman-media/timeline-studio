@@ -302,8 +302,9 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
         // Преобразуем TimelineTrack updates в TrackUpdates для backend
         const trackUpdates = {
           name: updates.name ?? null,
-          enabled: updates.isLocked !== undefined ? !updates.isLocked : (updates.locked !== undefined ? !updates.locked : null),
-          locked: (updates.isLocked ?? updates.locked) ?? null,
+          enabled:
+            updates.isLocked !== undefined ? !updates.isLocked : updates.locked !== undefined ? !updates.locked : null,
+          locked: updates.isLocked ?? updates.locked ?? null,
           volume: updates.volume ?? null,
           height: updates.height ?? null,
         }
@@ -455,7 +456,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
         // Преобразуем TimelineClip updates в ClipUpdates для backend
         const clipUpdates = {
           name: updates.name ?? null,
-          playback_rate: (updates.playbackRate ?? updates.speed) ?? null,
+          playback_rate: updates.playbackRate ?? updates.speed ?? null,
           volume: updates.volume ?? null,
           enabled: updates.isMuted !== undefined ? !updates.isMuted : null,
         }

@@ -216,6 +216,55 @@ export function useTimeline() {
     [orchestrator],
   )
 
+  const moveClip = useCallback(
+    (clipId: string, newTrackId: string, newTime: number) => {
+      orchestrator.moveClip(clipId, newTrackId, newTime)
+    },
+    [orchestrator],
+  )
+
+  const deleteClip = useCallback(
+    (clipId: string) => {
+      orchestrator.deleteClip(clipId)
+    },
+    [orchestrator],
+  )
+
+  const trimClip = useCallback(
+    (clipId: string, start: number, end: number) => {
+      orchestrator.trimClip(clipId, start, end)
+    },
+    [orchestrator],
+  )
+
+  const splitClip = useCallback(
+    (clipId: string, time: number) => {
+      orchestrator.splitClip(clipId, time)
+    },
+    [orchestrator],
+  )
+
+  const updateClip = useCallback(
+    (clipId: string, updates: any) => {
+      orchestrator.updateClip(clipId, updates)
+    },
+    [orchestrator],
+  )
+
+  const batchUpdateClips = useCallback(
+    (updates: Array<{ clip_id: string; updates: any }>) => {
+      orchestrator.batchUpdateClips(updates)
+    },
+    [orchestrator],
+  )
+
+  const selectClipsById = useCallback(
+    (clipIds: string[], addToSelection: boolean = false) => {
+      orchestrator.selectClips(clipIds, addToSelection)
+    },
+    [orchestrator],
+  )
+
   const addTrack = useCallback(
     (type: any, name?: string, sectionId?: string) => {
       orchestrator.addTrack(type, name, sectionId)
@@ -237,6 +286,7 @@ export function useTimeline() {
     selectClip,
     selectTrack,
     selectMultipleClips,
+    selectClipsById,
     clearSelection,
 
     // Clipboard
@@ -262,8 +312,16 @@ export function useTimeline() {
     loadProject,
     saveProject,
 
-    // Clip/Track операции
+    // Clip операции (с backend синхронизацией)
     addClip,
+    moveClip,
+    deleteClip,
+    trimClip,
+    splitClip,
+    updateClip,
+    batchUpdateClips,
+
+    // Track операции
     addTrack,
 
     // Вспомогательные свойства

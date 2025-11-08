@@ -336,6 +336,10 @@ pub enum ProjectCommand {
     track_ids: Vec<String>,
     add_to_selection: bool,
   },
+  SelectSections {
+    section_ids: Vec<String>,
+    add_to_selection: bool,
+  },
   ClearSelection,
 }
 

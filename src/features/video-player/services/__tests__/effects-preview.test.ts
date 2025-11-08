@@ -27,13 +27,15 @@ import { type EffectChain, type EffectPreviewOptions, EffectsPreviewService } fr
 // Получаем мок logger
 const getMockLogger = () => {
   const mockCreateLogger = vi.mocked(createLogger)
-  return mockCreateLogger.mock.results[0]?.value || {
-    trace: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }
+  return (
+    mockCreateLogger.mock.results[0]?.value || {
+      trace: vi.fn(),
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    }
+  )
 }
 
 // Mock WebGL2 context with complete implementation
@@ -266,7 +268,10 @@ describe("EffectsPreviewService", () => {
 
       const serviceWithoutWebGL = new EffectsPreviewService()
 
-      expect(getMockLogger().error).toHaveBeenCalledWith("Effects preview WebGL initialization failed:", expect.any(Object))
+      expect(getMockLogger().error).toHaveBeenCalledWith(
+        "Effects preview WebGL initialization failed:",
+        expect.any(Object),
+      )
 
       serviceWithoutWebGL.dispose()
     })

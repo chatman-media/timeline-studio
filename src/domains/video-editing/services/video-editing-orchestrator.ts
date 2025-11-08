@@ -78,40 +78,9 @@ const mockEventBus: EventBus = {
 
 const eventBus = mockEventBus
 
-interface BackendSync {
-  executeCommand: (command: any) => Promise<any>
-  onStateChange: (callback: (state: ProjectState) => void) => () => void
-  onEvent: (callback: (event: any) => void) => () => void
-}
-
-const mockBackendSync: BackendSync = {
-  executeCommand: (_command) => Promise.resolve({ success: true }),
-  onStateChange: (_callback) => {
-    // Mock подписка - возвращаем функцию отписки
-    return () => {}
-  },
-  onEvent: (_callback) => {
-    // Mock подписка на события - возвращаем функцию отписки
-    return () => {}
-  },
-}
-
-const getBackendSync = () => mockBackendSync
-
-interface ProjectCommand {
-  type: string
-  params: any
-}
-
-interface ProjectState {
-  project?: any
-  playback_state?: {
-    is_playing: boolean
-    current_time: number
-    playback_rate: number
-    volume: number
-  }
-}
+// Import real BackendSync service
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import type { ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
 
 import { playerMachine } from "../machines/player-machine"
 // Import machines
@@ -162,14 +131,14 @@ export class VideoEditingOrchestrator {
    */
   private setupBackendSync() {
     // Подписка на изменения состояния backend
-    this.backendUnsubscribe = this.backendSync.onStateChange((state: ProjectState) => {
+    this.backendUnsubscribe = this.backendSync.onStateChange((state) => {
       logger.info("[Video Editing Orchestrator] Backend state updated")
 
       // Обновляем timeline машину
       if (state.project) {
         this.timelineExtendedActor.send({
           type: "PROJECT_UPDATED",
-          project: state.project,
+          project: state.project as any,
         })
       }
 
@@ -406,6 +375,239 @@ export class VideoEditingOrchestrator {
         duration: mediaFile.duration || 5,
         mediaId: typeof mediaFile === "string" ? mediaFile : mediaFile.id,
       },
+    })
+  }
+
+  async moveClip(clipId: string, newTrackId: string, newTime: number) {
+    logger.info("[Video Editing Orchestrator] Moving clip:", {
+      data: { clipId, newTrackId, newTime },
+    })
+
+    const command: ProjectCommand = {
+      type: "MoveClip",
+      params: {
+        clip_id: clipId,
+        track_id: newTrackId,
+        time: newTime,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "MOVE_CLIP",
+      clipId,
+      trackId: newTrackId,
+      time: newTime,
+    })
+  }
+
+  async deleteClip(clipId: string) {
+    logger.info("[Video Editing Orchestrator] Deleting clip:", { data: { clipId } })
+
+    const command: ProjectCommand = {
+      type: "DeleteClip",
+      params: {
+        clip_id: clipId,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "REMOVE_CLIP",
+      clipId,
+    })
+  }
+
+  async trimClip(clipId: string, start: number, end: number) {
+    logger.info("[Video Editing Orchestrator] Trimming clip:", {
+      data: { clipId, start, end },
+    })
+
+    const command: ProjectCommand = {
+      type: "TrimClip",
+      params: {
+        clip_id: clipId,
+        start,
+        end,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "TRIM_CLIP",
+      clipId,
+      startTime: start,
+      endTime: end,
+    })
+  }
+
+  async splitClip(clipId: string, time: number) {
+    logger.info("[Video Editing Orchestrator] Splitting clip:", {
+      data: { clipId, time },
+    })
+
+    const command: ProjectCommand = {
+      type: "SplitClip",
+      params: {
+        clip_id: clipId,
+        time,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "SPLIT_CLIP",
+      clipId,
+      time,
+    })
+  }
+
+  async updateClip(clipId: string, updates: any) {
+    logger.info("[Video Editing Orchestrator] Updating clip:", {
+      data: { clipId, updates },
+    })
+
+    const command: ProjectCommand = {
+      type: "UpdateClip",
+      params: {
+        clip_id: clipId,
+        updates,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "UPDATE_CLIP",
+      clipId,
+      updates,
+    })
+  }
+
+  async copyClips(clipIds: string[]) {
+    logger.info("[Video Editing Orchestrator] Copying clips:", {
+      data: { clipIds },
+    })
+
+    const command: ProjectCommand = {
+      type: "CopyClips",
+      params: {
+        clip_ids: clipIds,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    // Machine не принимает параметры для COPY_CLIPS, она копирует выбранные клипы
+    this.timelineExtendedActor.send({
+      type: "COPY_CLIPS",
+    })
+  }
+
+  async cutClips(clipIds: string[]) {
+    logger.info("[Video Editing Orchestrator] Cutting clips:", {
+      data: { clipIds },
+    })
+
+    const command: ProjectCommand = {
+      type: "CutClips",
+      params: {
+        clip_ids: clipIds,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    // Machine не принимает параметры для CUT_CLIPS, она вырезает выбранные клипы
+    this.timelineExtendedActor.send({
+      type: "CUT_CLIPS",
+    })
+  }
+
+  async pasteClips(trackId: string, time: number) {
+    logger.info("[Video Editing Orchestrator] Pasting clips:", {
+      data: { trackId, time },
+    })
+
+    const command: ProjectCommand = {
+      type: "PasteClips",
+      params: {
+        track_id: trackId,
+        time,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "PASTE_CLIPS",
+      trackId,
+      time,
+    })
+  }
+
+  async batchUpdateClips(updates: Array<{ clip_id: string; updates: any }>) {
+    logger.info("[Video Editing Orchestrator] Batch updating clips:", {
+      data: { count: updates.length },
+    })
+
+    const command: ProjectCommand = {
+      type: "BatchUpdateClips",
+      params: {
+        updates,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    // Отправляем индивидуальные обновления в machine для синхронизации
+    for (const update of updates) {
+      this.timelineExtendedActor.send({
+        type: "UPDATE_CLIP",
+        clipId: update.clip_id,
+        updates: update.updates,
+      })
+    }
+  }
+
+  async selectClips(clipIds: string[], addToSelection: boolean = false) {
+    logger.info("[Video Editing Orchestrator] Selecting clips:", {
+      data: { clipIds, addToSelection },
+    })
+
+    const command: ProjectCommand = {
+      type: "SelectClips",
+      params: {
+        clip_ids: clipIds,
+        add_to_selection: addToSelection,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "SELECT_CLIPS",
+      clipIds,
+      addToSelection,
+    })
+  }
+
+  async clearSelection() {
+    logger.info("[Video Editing Orchestrator] Clearing selection")
+
+    // TODO: Добавить команду ClearSelection в backend
+    // const command: ProjectCommand = {
+    //   type: "ClearSelection",
+    //   params: {},
+    // }
+    // await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "CLEAR_SELECTION",
     })
   }
 

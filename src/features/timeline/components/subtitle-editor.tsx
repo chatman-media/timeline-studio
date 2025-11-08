@@ -30,11 +30,26 @@ export function SubtitleEditor({ open, onOpenChange, subtitle, onSave, available
   const [startTime, setStartTime] = useState(subtitle?.startTime || 0)
   const [duration, setDuration] = useState(subtitle?.duration || 2)
   const [styleId, setStyleId] = useState(subtitle?.subtitleStyleId || "")
-  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve">(
-    (subtitle?.animationIn?.type as "none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve") || "none",
+  const [animationIn, setAnimationIn] = useState<
+    "none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve"
+  >(
+    (subtitle?.animationIn?.type as
+      | "none"
+      | "fade"
+      | "slide"
+      | "typewriter"
+      | "scale"
+      | "wave"
+      | "bounce"
+      | "shake"
+      | "blink"
+      | "dissolve") || "none",
   )
-  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve">(
-    (subtitle?.animationOut?.type as "none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve") || "none",
+  const [animationOut, setAnimationOut] = useState<
+    "none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve"
+  >(
+    (subtitle?.animationOut?.type as "none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve") ||
+      "none",
   )
   const [animationInDuration, setAnimationInDuration] = useState(subtitle?.animationIn?.duration || 0.5)
   const [animationOutDuration, setAnimationOutDuration] = useState(subtitle?.animationOut?.duration || 0.5)

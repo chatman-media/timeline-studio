@@ -37,8 +37,8 @@ pub use crate::state::browser::{
 #[allow(unused_imports)]
 pub use crate::video_compiler::commands::ai_api_proxy::{
   AIMessage, AIProvider, AITool, AIToolCall, CacheStats, ProviderConfig, ProviderStatus,
-  TokenUsage, ToolChoice, UnifiedAIRequest, UnifiedAIResponse,
-  ValidateApiKeyRequest, ValidateApiKeyResponse,
+  TokenUsage, ToolChoice, UnifiedAIRequest, UnifiedAIResponse, ValidateApiKeyRequest,
+  ValidateApiKeyResponse,
 };
 
 // Simple command for demonstration

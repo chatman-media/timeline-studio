@@ -143,9 +143,7 @@ export interface UnifiedContentAnalysis {
 /**
  * Преобразует ComprehensiveAnalysisResult в UnifiedContentAnalysis
  */
-export function mapComprehensiveAnalysisToUnified(
-  result: ComprehensiveAnalysisResult,
-): UnifiedContentAnalysis {
+export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisResult): UnifiedContentAnalysis {
   // Извлекаем scenes и конвертируем в нужный формат
   const scenes =
     result.scene_analysis?.scenes?.map((scene) => ({
@@ -230,17 +228,16 @@ export function mapComprehensiveAnalysisToUnified(
     qualityMetrics: calculateQualityMetrics(result),
 
     // Recommendations
-    editingRecommendations:
-      result.editing_recommendations.map((rec: EditingRecommendation) => ({
-        type: rec.recommendation_type,
-        description: rec.description,
-        confidence: rec.priority / 100,
-        suggestedAction: rec.description, // Using description as action
-        timeRange:
-          rec.timestamp !== null && rec.duration !== null
-            ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
-            : undefined,
-      })),
+    editingRecommendations: result.editing_recommendations.map((rec: EditingRecommendation) => ({
+      type: rec.recommendation_type,
+      description: rec.description,
+      confidence: rec.priority / 100,
+      suggestedAction: rec.description, // Using description as action
+      timeRange:
+        rec.timestamp !== null && rec.duration !== null
+          ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
+          : undefined,
+    })),
   }
 }
 

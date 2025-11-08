@@ -24,8 +24,8 @@ import { createLogger } from "@/lib/tauri-logger"
 // Use only Rust backend types
 import type {
   AIDirectorConfig,
-  ComprehensiveAnalysisResult,
   AnalysisInsights,
+  ComprehensiveAnalysisResult,
   PerformanceMetrics,
 } from "@/types/generated/tauri-bindings"
 import type {
@@ -208,7 +208,7 @@ export class UnifiedOrchestrator {
       // We cast it to the Rust backend type since they are structurally compatible
       const comprehensiveResult = (await aiDirectorService.analyzeComprehensive(
         videoPath,
-        config?.aiDirectorConfig as any || undefined,
+        (config?.aiDirectorConfig as any) || undefined,
       )) as unknown as ComprehensiveAnalysisResult
 
       workflow.stages.aiDirector = "completed"
@@ -266,7 +266,7 @@ export class UnifiedOrchestrator {
       workflow.stages.integration = "in_progress"
 
       const unifiedResult: UnifiedContentAnalysis = mapComprehensiveAnalysisToUnified(
-        comprehensiveResult as ComprehensiveAnalysisResult
+        comprehensiveResult as ComprehensiveAnalysisResult,
       )
 
       // Дополняем unified result данными из montage analysis

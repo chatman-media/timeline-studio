@@ -55,8 +55,7 @@ pub struct AICacheManager {
 impl AICacheManager {
   /// Создать новый кэш-менеджер
   pub fn new(db_path: &Path, config: CacheConfig) -> Result<Self> {
-    let conn = Connection::open(db_path)
-      .context("Failed to open cache database")?;
+    let conn = Connection::open(db_path).context("Failed to open cache database")?;
 
     // Создаем таблицу если не существует
     conn.execute(
@@ -92,11 +91,7 @@ impl AICacheManager {
   }
 
   /// Генерировать хэш запроса
-  pub fn generate_hash(
-    provider: &AIProvider,
-    model: &str,
-    messages: &[AIMessage],
-  ) -> String {
+  pub fn generate_hash(provider: &AIProvider, model: &str, messages: &[AIMessage]) -> String {
     let mut hasher = Sha256::new();
 
     // Добавляем провайдер
@@ -139,8 +134,8 @@ impl AICacheManager {
         params![request_hash],
       )?;
 
-      let response: UnifiedAIResponse = serde_json::from_str(&response_json)
-        .context("Failed to deserialize cached response")?;
+      let response: UnifiedAIResponse =
+        serde_json::from_str(&response_json).context("Failed to deserialize cached response")?;
 
       log::info!("Cache HIT for hash: {}", request_hash);
       Ok(Some(response))
@@ -151,11 +146,7 @@ impl AICacheManager {
   }
 
   /// Сохранить в кэш
-  pub fn set(
-    &self,
-    request: &UnifiedAIRequest,
-    response: &UnifiedAIResponse,
-  ) -> Result<()> {
+  pub fn set(&self, request: &UnifiedAIRequest, response: &UnifiedAIResponse) -> Result<()> {
     if !self.config.enabled {
       return Ok(());
     }
@@ -164,16 +155,10 @@ impl AICacheManager {
     let now = chrono::Utc::now().timestamp();
     let expires_at = now + self.config.ttl_seconds;
 
-    let request_hash = Self::generate_hash(
-      &request.provider,
-      &request.model,
-      &request.messages,
-    );
+    let request_hash = Self::generate_hash(&request.provider, &request.model, &request.messages);
 
-    let request_json = serde_json::to_string(request)
-      .context("Failed to serialize request")?;
-    let response_json = serde_json::to_string(response)
-      .context("Failed to serialize response")?;
+    let request_json = serde_json::to_string(request).context("Failed to serialize request")?;
+    let response_json = serde_json::to_string(response).context("Failed to serialize response")?;
 
     // Вставляем или обновляем
     conn.execute(
@@ -205,10 +190,7 @@ impl AICacheManager {
     let conn = self.conn.lock().unwrap();
     let now = chrono::Utc::now().timestamp();
 
-    let deleted = conn.execute(
-      "DELETE FROM ai_cache WHERE expires_at <= ?",
-      params![now],
-    )?;
+    let deleted = conn.execute("DELETE FROM ai_cache WHERE expires_at <= ?", params![now])?;
 
     if deleted > 0 {
       log::info!("Cleaned up {} expired cache entries", deleted);
@@ -219,11 +201,7 @@ impl AICacheManager {
 
   /// Очистить если превышен лимит
   fn cleanup_if_needed(&self, conn: &Connection) -> Result<()> {
-    let count: i64 = conn.query_row(
-      "SELECT COUNT(*) FROM ai_cache",
-      [],
-      |row| row.get(0),
-    )?;
+    let count: i64 = conn.query_row("SELECT COUNT(*) FROM ai_cache", [], |row| row.get(0))?;
 
     if count as u32 > self.config.max_entries {
       // Удаляем самые старые и редко используемые записи
@@ -256,11 +234,8 @@ impl AICacheManager {
   pub fn get_stats(&self) -> Result<CacheStats> {
     let conn = self.conn.lock().unwrap();
 
-    let total_entries: i64 = conn.query_row(
-      "SELECT COUNT(*) FROM ai_cache",
-      [],
-      |row| row.get(0),
-    )?;
+    let total_entries: i64 =
+      conn.query_row("SELECT COUNT(*) FROM ai_cache", [], |row| row.get(0))?;
 
     let total_hits: i64 = conn.query_row(
       "SELECT COALESCE(SUM(access_count), 0) FROM ai_cache",
@@ -336,11 +311,7 @@ mod tests {
     };
 
     // Первый запрос - кэш пуст
-    let hash = AICacheManager::generate_hash(
-      &request.provider,
-      &request.model,
-      &request.messages,
-    );
+    let hash = AICacheManager::generate_hash(&request.provider, &request.model, &request.messages);
     assert!(cache.get(&hash).unwrap().is_none());
 
     // Сохраняем в кэш

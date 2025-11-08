@@ -30,7 +30,9 @@ use crate::analysis::types::MoodAnalysis;
 use crate::analysis::types::{
   AudioPerformanceMode, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
 };
-use crate::video_compiler::commands::ai_api_proxy::{AIProvider, AIProviderManager};
+use crate::video_compiler::commands::ai_api_proxy::{
+  AIMessage, AIProvider, AIProviderManager, UnifiedAIRequest, UnifiedAIResponse,
+};
 
 /// Результат полного анализа через AI Director
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
@@ -1058,6 +1060,161 @@ impl AIDirector {
       transcription: audio_caps.whisper_available,
       gpu_acceleration: audio_caps.gpu_acceleration_available,
     })
+  }
+
+  /// 🆕 AI-enhanced описание сцены
+  ///
+  /// Использует унифицированный AI API для генерации детального описания сцены
+  async fn enhance_scene_with_ai(
+    &self,
+    scene: &SceneAnalysis,
+    api_key: &str,
+    provider: AIProvider,
+    model: &str,
+  ) -> Result<String> {
+    // Формируем промпт для AI
+    let scene_info = format!(
+      "Scene at {:.1}s-{:.1}s ({}s duration):\n\
+       Type: {:?}\n\
+       Objects: {}\n\
+       Persons: {}\n\
+       Visual: brightness={:.2}, contrast={:.2}, motion={:.2}\n\
+       Audio: has_speech={}, has_music={}",
+      scene.start_time,
+      scene.end_time,
+      scene.duration,
+      scene.scene_type,
+      scene.objects.join(", "),
+      scene.persons.join(", "),
+      scene.visual.as_ref().map(|v| v.brightness).unwrap_or(0.0),
+      scene.visual.as_ref().map(|v| v.contrast).unwrap_or(0.0),
+      scene.visual.as_ref().map(|v| v.motion_level).unwrap_or(0.0),
+      scene.audio.as_ref().map(|a| a.has_speech).unwrap_or(false),
+      scene.audio.as_ref().map(|a| a.has_music).unwrap_or(false),
+    );
+
+    let request = UnifiedAIRequest {
+      provider,
+      model: model.to_string(),
+      messages: vec![AIMessage {
+        role: "user".to_string(),
+        content: format!(
+          "Analyze this video scene and provide a concise, engaging description (2-3 sentences):\n\n{}",
+          scene_info
+        ),
+      }],
+      max_tokens: Some(200),
+      temperature: Some(0.7),
+      stream: Some(false),
+      system: Some("You are a professional video editor analyzing video content.".to_string()),
+      tools: None,
+      tool_choice: None,
+    };
+
+    let response = self
+      .ai_manager
+      .send_request(api_key, request)
+      .await
+      .map_err(|e| anyhow::anyhow!("AI enhanced description failed: {}", e))?;
+
+    Ok(response.content)
+  }
+
+  /// 🆕 AI-enhanced анализ настроения
+  ///
+  /// Использует AI для более точного определения эмоционального тона контента
+  async fn analyze_mood_with_ai(
+    &self,
+    scenes: &[SceneAnalysis],
+    api_key: &str,
+    provider: AIProvider,
+    model: &str,
+  ) -> Result<MoodAnalysis> {
+    // Формируем общий обзор сцен
+    let scenes_overview: Vec<String> = scenes
+      .iter()
+      .take(10) // Берем первые 10 сцен для анализа
+      .map(|s| {
+        format!(
+          "{:.1}s: {:?}, objects: {}, emotion indicators: brightness={:.2}, motion={:.2}",
+          s.start_time,
+          s.scene_type,
+          s.objects.join(","),
+          s.visual.as_ref().map(|v| v.brightness).unwrap_or(0.0),
+          s.visual.as_ref().map(|v| v.motion_level).unwrap_or(0.0),
+        )
+      })
+      .collect();
+
+    let request = UnifiedAIRequest {
+      provider,
+      model: model.to_string(),
+      messages: vec![AIMessage {
+        role: "user".to_string(),
+        content: format!(
+          "Analyze the emotional tone and mood of this video based on these scenes:\n\n{}\n\n\
+           Provide a JSON response with:\n\
+           - primary: main mood (e.g., 'joyful', 'dramatic', 'peaceful', 'energetic')\n\
+           - valence: emotional positivity (0.0-1.0)\n\
+           - arousal: energy level (0.0-1.0)\n\
+           - dominance: control/power level (0.0-1.0)",
+          scenes_overview.join("\n")
+        ),
+      }],
+      max_tokens: Some(300),
+      temperature: Some(0.5),
+      stream: Some(false),
+      system: Some(
+        "You are an expert in video content analysis and emotion detection. \
+         Respond with valid JSON only."
+          .to_string(),
+      ),
+      tools: None,
+      tool_choice: None,
+    };
+
+    let response = self
+      .ai_manager
+      .send_request(api_key, request)
+      .await
+      .map_err(|e| anyhow::anyhow!("AI mood analysis failed: {}", e))?;
+
+    // Пытаемся распарсить JSON response
+    #[derive(serde::Deserialize)]
+    struct AIMoodResult {
+      primary: String,
+      valence: f64,
+      arousal: f64,
+      dominance: f64,
+    }
+
+    match serde_json::from_str::<AIMoodResult>(&response.content) {
+      Ok(ai_mood) => Ok(MoodAnalysis {
+        primary: ai_mood.primary,
+        secondary: Vec::new(),
+        valence: ai_mood.valence,
+        arousal: ai_mood.arousal,
+        dominance: ai_mood.dominance,
+        emotional_arc: Vec::new(),
+      }),
+      Err(_) => {
+        // Если парсинг не удался, возвращаем базовый анализ из текста
+        warn!("Failed to parse AI mood JSON, using text analysis");
+        Ok(MoodAnalysis {
+          primary: response
+            .content
+            .lines()
+            .next()
+            .unwrap_or("neutral")
+            .to_lowercase(),
+          secondary: Vec::new(),
+          valence: 0.5,
+          arousal: 0.5,
+          dominance: 0.5,
+          emotional_arc: Vec::new(),
+        })
+      }
+    }
   }
 
   /// 🆕 Публичный доступ к AI Provider Manager

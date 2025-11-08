@@ -295,7 +295,10 @@ export const ResourceBrowser = memo(function ResourceBrowser() {
 
   // Фильтрация по поисковому запросу
   const filterBySearch = <
-    T extends { name?: string | { en: string; ru: string; [key: string]: string }; labels?: { ru?: string; en: string } },
+    T extends {
+      name?: string | { en: string; ru: string; [key: string]: string }
+      labels?: { ru?: string; en: string }
+    },
   >(
     items: T[],
   ) => {

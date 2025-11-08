@@ -11,6 +11,7 @@ import type {
   AIMessage,
   AIProvider,
   AITool,
+  CacheStats,
   ProviderStatus,
   ToolChoice,
   UnifiedAIRequest,
@@ -264,29 +265,64 @@ export class BackendAIService {
 
   /**
    * Get AI cache statistics
-   * Note: Not yet implemented in backend
    */
-  async getCacheStats() {
-    logger.warnSync("getCacheStats not yet implemented in backend")
-    return { hitRate: 0, totalRequests: 0, cacheHits: 0, cacheMisses: 0 }
+  async getCacheStats(): Promise<CacheStats> {
+    try {
+      const result = await commands.aiGetCacheStats()
+
+      if (result.status === "error") {
+        const error = result.error || "Failed to get cache stats"
+        logger.errorSync("Failed to get cache stats", { error })
+        throw new Error(error)
+      }
+
+      return result.data
+    } catch (error) {
+      logger.errorSync("Failed to get cache stats", { error })
+      throw error
+    }
   }
 
   /**
    * Clear all AI cache
-   * Note: Not yet implemented in backend
    */
   async clearCache(): Promise<number> {
-    logger.warnSync("clearCache not yet implemented in backend")
-    return 0
+    try {
+      const result = await commands.aiClearCache()
+
+      if (result.status === "error") {
+        const error = result.error || "Failed to clear cache"
+        logger.errorSync("Failed to clear cache", { error })
+        throw new Error(error)
+      }
+
+      logger.infoSync("Cache cleared", { deletedEntries: result.data })
+      return result.data
+    } catch (error) {
+      logger.errorSync("Failed to clear cache", { error })
+      throw error
+    }
   }
 
   /**
    * Cleanup expired cache entries
-   * Note: Not yet implemented in backend
    */
   async cleanupExpiredCache(): Promise<number> {
-    logger.warnSync("cleanupExpiredCache not yet implemented in backend")
-    return 0
+    try {
+      const result = await commands.aiCleanupExpiredCache()
+
+      if (result.status === "error") {
+        const error = result.error || "Failed to cleanup expired cache"
+        logger.errorSync("Failed to cleanup expired cache", { error })
+        throw new Error(error)
+      }
+
+      logger.infoSync("Expired cache cleaned", { deletedEntries: result.data })
+      return result.data
+    } catch (error) {
+      logger.errorSync("Failed to cleanup expired cache", { error })
+      throw error
+    }
   }
 }
 

@@ -185,6 +185,7 @@ pub struct ProjectSettings {
 pub struct UiState {
   pub selected_clips: Vec<String>,
   pub selected_tracks: Vec<String>,
+  pub selected_sections: Vec<String>,
   pub timeline_zoom: f64,
   pub timeline_scroll: f64,
   pub active_tool: String,
@@ -196,6 +197,7 @@ impl Default for UiState {
     Self {
       selected_clips: Vec::new(),
       selected_tracks: Vec::new(),
+      selected_sections: Vec::new(),
       timeline_zoom: 1.0,
       timeline_scroll: 0.0,
       active_tool: "select".to_string(),

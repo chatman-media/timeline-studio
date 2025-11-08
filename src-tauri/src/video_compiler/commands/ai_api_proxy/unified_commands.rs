@@ -39,15 +39,14 @@ pub async fn ai_send_unified_request(
   // Проверяем кэш если это не streaming запрос
   if !request.stream.unwrap_or(false) {
     let cache = cache_state.cache.lock().await;
-    let hash = AICacheManager::generate_hash(
-      &request.provider,
-      &request.model,
-      &request.messages,
-    );
+    let hash = AICacheManager::generate_hash(&request.provider, &request.model, &request.messages);
 
     // Пытаемся получить из кэша
     if let Ok(Some(cached_response)) = cache.get(&hash) {
-      log::info!("Returning cached response for provider {:?}", request.provider);
+      log::info!(
+        "Returning cached response for provider {:?}",
+        request.provider
+      );
       return Ok(cached_response);
     }
   }
@@ -418,9 +417,7 @@ pub async fn ai_clear_cache(cache_state: State<'_, AICacheState>) -> Result<u32,
 /// Cleanup expired AI cache entries
 #[tauri::command]
 #[specta::specta]
-pub async fn ai_cleanup_expired_cache(
-  cache_state: State<'_, AICacheState>,
-) -> Result<u32, String> {
+pub async fn ai_cleanup_expired_cache(cache_state: State<'_, AICacheState>) -> Result<u32, String> {
   let cache = cache_state.cache.lock().await;
   cache
     .cleanup_expired()

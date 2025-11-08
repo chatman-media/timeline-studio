@@ -447,6 +447,10 @@ impl CommandHandler {
         track_ids,
         add_to_selection,
       } => self.select_tracks(track_ids, add_to_selection).await,
+      ProjectCommand::SelectSections {
+        section_ids,
+        add_to_selection,
+      } => self.select_sections(section_ids, add_to_selection).await,
       ProjectCommand::ClearSelection => self.clear_selection().await,
 
       // System commands
@@ -3849,6 +3853,52 @@ impl CommandHandler {
     })))
   }
 
+  async fn select_sections(
+    &self,
+    section_ids: Vec<String>,
+    add_to_selection: bool,
+  ) -> CommandResult {
+    log::info!(
+      "Selecting sections: {:?}, add_to_selection: {}",
+      section_ids,
+      add_to_selection
+    );
+
+    let mut state = self.state.write().await;
+
+    if add_to_selection {
+      // Add to existing selection
+      state.ui_state.selected_sections.extend(section_ids.clone());
+    } else {
+      // Replace selection
+      state.ui_state.selected_sections = section_ids.clone();
+    }
+
+    // Remove duplicates
+    state.ui_state.selected_sections.sort();
+    state.ui_state.selected_sections.dedup();
+
+    state.mark_dirty();
+
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::SelectionChanged {
+          selected_clips: state.ui_state.selected_clips.clone(),
+          selected_tracks: state.ui_state.selected_tracks.clone(),
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "selected_sections": section_ids,
+      "add_to_selection": add_to_selection
+    })))
+  }
+
   async fn clear_selection(&self) -> CommandResult {
     log::info!("Clearing all selection");
 
@@ -3856,6 +3906,7 @@ impl CommandHandler {
 
     state.ui_state.selected_clips.clear();
     state.ui_state.selected_tracks.clear();
+    state.ui_state.selected_sections.clear();
     state.mark_dirty();
 
     self

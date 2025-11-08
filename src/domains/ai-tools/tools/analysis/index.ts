@@ -5,6 +5,13 @@
 
 // Audio Analysis Tools
 export * from "./audio-analysis"
+export type {
+  ContentAnalysisResult,
+  ContentIntelligenceInput,
+  ContentIntelligenceResult,
+  ContentIntelligenceToolResult,
+  ContentVariant,
+} from "./content-intelligence"
 // Content Intelligence Tools - явный экспорт для избежания конфликтов
 export {
   adaptContentToPlatform,
@@ -19,13 +26,6 @@ export {
   generateContentVariants,
   generateMultiLanguageBatch,
   optimizeEngagementFactors,
-} from "./content-intelligence"
-export type {
-  ContentAnalysisResult,
-  ContentIntelligenceInput,
-  ContentIntelligenceResult,
-  ContentIntelligenceToolResult,
-  ContentVariant,
 } from "./content-intelligence"
 // Multimodal & Person ID Tools
 export * from "./multimodal"

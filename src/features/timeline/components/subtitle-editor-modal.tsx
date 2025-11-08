@@ -21,8 +21,12 @@ export function SubtitleEditorModal() {
   const [startTime, setStartTime] = useState(0)
   const [duration, setDuration] = useState(2)
   const [styleId, setStyleId] = useState("")
-  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve">("none")
-  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve">("none")
+  const [animationIn, setAnimationIn] = useState<
+    "none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve"
+  >("none")
+  const [animationOut, setAnimationOut] = useState<
+    "none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve"
+  >("none")
   const [animationInDuration, setAnimationInDuration] = useState(0.5)
   const [animationOutDuration, setAnimationOutDuration] = useState(0.5)
   const [position, setPosition] = useState<
