@@ -146,7 +146,7 @@ pub struct MediaItem {
   pub usage_count: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
 pub enum MediaType {
   Video,
   Audio,

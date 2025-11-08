@@ -4,28 +4,28 @@
 pub mod types;
 
 // Feature modules
-pub mod timeline;
 pub mod advanced_edits;
 pub mod effects;
-pub mod transitions;
 pub mod markers;
-pub mod project;
 pub mod media;
+pub mod project;
+pub mod timeline;
 pub mod tracks;
+pub mod transitions;
 
 // Main handler (contains remaining commands and CommandHandler)
 pub mod handler;
 
 // Re-exports for backward compatibility
+pub use handler::{ClipBatchUpdate, ClipUpdates, CommandHandler, MediaUpdates, TrackUpdates};
 pub use types::*;
-pub use handler::{CommandHandler, TrackUpdates, ClipUpdates, MediaUpdates, ClipBatchUpdate};
 
 // Public interfaces for each module
-pub use timeline::TimelineCommands;
 pub use advanced_edits::AdvancedEditsCommands;
 pub use effects::EffectsCommands;
-pub use transitions::TransitionsCommands;
 pub use markers::MarkerCommands;
-pub use project::ProjectCommands;
 pub use media::MediaCommands;
+pub use project::ProjectCommands;
+pub use timeline::TimelineCommands;
 pub use tracks::TracksCommands;
+pub use transitions::TransitionsCommands;

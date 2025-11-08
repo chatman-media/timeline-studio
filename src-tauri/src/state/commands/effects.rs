@@ -1,7 +1,7 @@
-use crate::state::{EventBus, ProjectEvent, ProjectState};
-use crate::state::project_state::*;
-use crate::state::events::*;
 use super::types::CommandResult;
+use crate::state::events::*;
+use crate::state::project_state::*;
+use crate::state::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -147,5 +147,4 @@ impl EffectsCommands {
       "filter_id": filter_id
     })))
   }
-
 }

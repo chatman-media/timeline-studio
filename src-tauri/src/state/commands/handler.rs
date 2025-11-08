@@ -1197,32 +1197,6 @@ pub struct MediaOptimizationSettings {
   pub max_resolution: Option<String>,
 }
 
-/// Result of a command execution
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-pub struct CommandResult {
-  pub success: bool,
-  pub error: Option<String>,
-  pub data: Option<serde_json::Value>,
-}
-
-impl CommandResult {
-  pub fn success(data: Option<serde_json::Value>) -> Self {
-    Self {
-      success: true,
-      error: None,
-      data,
-    }
-  }
-
-  pub fn error(message: String) -> Self {
-    Self {
-      success: false,
-      error: Some(message),
-      data: None,
-    }
-  }
-}
-
 /// Update structures
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct TrackUpdates {
@@ -4499,12 +4473,14 @@ impl CommandHandler {
             clip.transitions[idx].params = param_map.clone();
           } else {
             // Add new transition
-            clip.transitions.push(crate::state::project_state::Transition {
-              id: transition_id.clone(),
-              transition_type: transition_type.clone(),
-              duration,
-              params: param_map.clone(),
-            });
+            clip
+              .transitions
+              .push(crate::state::project_state::Transition {
+                id: transition_id.clone(),
+                transition_type: transition_type.clone(),
+                duration,
+                params: param_map.clone(),
+              });
             transition_added = true;
           }
 

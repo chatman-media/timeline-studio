@@ -1,7 +1,8 @@
-use crate::state::{EventBus, ProjectEvent, ProjectState};
-use crate::state::project_state::*;
-use crate::state::events::*;
+use super::handler::ClipUpdates;
 use super::types::CommandResult;
+use crate::state::events::*;
+use crate::state::project_state::*;
+use crate::state::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -635,5 +636,4 @@ impl TimelineCommands {
       CommandResult::error(format!("Clip not found: {}", clip_id))
     }
   }
-
 }
