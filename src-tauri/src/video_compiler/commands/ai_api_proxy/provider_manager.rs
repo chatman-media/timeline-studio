@@ -4,10 +4,13 @@
 //! Поддерживает Claude, OpenAI, DeepSeek, Ollama с автоматическим fallback.
 
 use super::types::*;
+use crate::core::events::AppEvent;
 use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use futures::StreamExt;
 use reqwest::Client;
 use serde_json::Value;
 use std::time::Duration;
+use tauri::{AppHandle, Emitter};
 
 /// AI Provider Manager
 ///
@@ -43,6 +46,40 @@ impl AIProviderManager {
       AIProvider::OpenAI => self.send_openai_request(api_key, request).await,
       AIProvider::DeepSeek => self.send_deepseek_request(api_key, request).await,
       AIProvider::Ollama => self.send_ollama_request(request).await,
+    }
+  }
+
+  /// Send unified streaming request with real-time events
+  ///
+  /// Отправляет streaming запрос и emit события через Tauri Event System
+  pub async fn send_request_stream(
+    &self,
+    api_key: &str,
+    request: UnifiedAIRequest,
+    app_handle: AppHandle,
+    request_id: String,
+  ) -> Result<()> {
+    match request.provider {
+      AIProvider::Claude => {
+        self
+          .send_claude_stream(api_key, request, app_handle, request_id)
+          .await
+      }
+      AIProvider::OpenAI => {
+        self
+          .send_openai_stream(api_key, request, app_handle, request_id)
+          .await
+      }
+      AIProvider::DeepSeek => {
+        self
+          .send_deepseek_stream(api_key, request, app_handle, request_id)
+          .await
+      }
+      AIProvider::Ollama => {
+        self
+          .send_ollama_stream(request, app_handle, request_id)
+          .await
+      }
     }
   }
 
@@ -257,6 +294,157 @@ impl AIProviderManager {
         "Invalid Claude API key".to_string(),
       ))
     }
+  }
+
+  /// Send Claude streaming request with events
+  async fn send_claude_stream(
+    &self,
+    api_key: &str,
+    request: UnifiedAIRequest,
+    app_handle: AppHandle,
+    request_id: String,
+  ) -> Result<()> {
+    let messages: Vec<ClaudeMessage> = request.messages.into_iter().map(|m| m.into()).collect();
+
+    let mut body = serde_json::json!({
+      "model": request.model.clone(),
+      "messages": messages,
+      "max_tokens": request.max_tokens.unwrap_or(4096),
+      "stream": true,
+    });
+
+    if let Some(temp) = request.temperature {
+      body["temperature"] = serde_json::json!(temp);
+    }
+
+    if let Some(system) = request.system {
+      body["system"] = serde_json::json!(system);
+    }
+
+    // Emit StreamStarted event
+    let _ = app_handle.emit(
+      "ai-stream-started",
+      &AppEvent::AIStreamStarted {
+        request_id: request_id.clone(),
+        provider: "claude".to_string(),
+        model: request.model.clone(),
+      },
+    );
+
+    let response = self
+      .client
+      .post("https://api.anthropic.com/v1/messages")
+      .header("x-api-key", api_key)
+      .header("content-type", "application/json")
+      .header("anthropic-version", "2023-06-01")
+      .json(&body)
+      .send()
+      .await
+      .map_err(|e| {
+        let error_msg = format!("Claude API error: {}", e);
+        let _ = app_handle.emit(
+          "ai-stream-error",
+          &AppEvent::AIStreamError {
+            request_id: request_id.clone(),
+            error: error_msg.clone(),
+          },
+        );
+        VideoCompilerError::Io(error_msg)
+      })?;
+
+    if !response.status().is_success() {
+      let status = response.status();
+      let error_text = response
+        .text()
+        .await
+        .unwrap_or_else(|_| "Unknown error".to_string());
+      let error_msg = format!("Claude API error {}: {}", status, error_text);
+
+      let _ = app_handle.emit(
+        "ai-stream-error",
+        &AppEvent::AIStreamError {
+          request_id: request_id.clone(),
+          error: error_msg.clone(),
+        },
+      );
+
+      return Err(VideoCompilerError::ValidationError(error_msg));
+    }
+
+    // Process stream
+    let mut stream = response.bytes_stream();
+    let mut buffer = String::new();
+    let mut chunk_index = 0;
+    let mut total_tokens: Option<u32> = None;
+    let mut finish_reason: Option<String> = None;
+
+    while let Some(item) = stream.next().await {
+      match item {
+        Ok(bytes) => {
+          buffer.push_str(&String::from_utf8_lossy(&bytes));
+
+          // Parse SSE events (format: "data: {...}\n\n")
+          while let Some(pos) = buffer.find("\n\n") {
+            let event_str = buffer[..pos].to_string();
+            buffer = buffer[pos + 2..].to_string();
+
+            if let Some(data_line) = event_str.strip_prefix("data: ") {
+              if data_line == "[DONE]" {
+                break;
+              }
+
+              if let Ok(json) = serde_json::from_str::<Value>(data_line) {
+                // Extract text delta from content blocks
+                if let Some(content_array) = json["delta"]["text"].as_str() {
+                  let _ = app_handle.emit(
+                    "ai-stream-chunk",
+                    &AppEvent::AIStreamChunk {
+                      request_id: request_id.clone(),
+                      content: content_array.to_string(),
+                      index: chunk_index,
+                    },
+                  );
+                  chunk_index += 1;
+                }
+
+                // Extract usage info
+                if let Some(usage) = json["usage"].as_object() {
+                  total_tokens = usage["output_tokens"].as_u64().map(|t| t as u32);
+                }
+
+                // Extract finish reason
+                if let Some(reason) = json["delta"]["stop_reason"].as_str() {
+                  finish_reason = Some(reason.to_string());
+                }
+              }
+            }
+          }
+        }
+        Err(e) => {
+          let error_msg = format!("Stream error: {}", e);
+          let _ = app_handle.emit(
+            "ai-stream-error",
+            &AppEvent::AIStreamError {
+              request_id: request_id.clone(),
+              error: error_msg.clone(),
+            },
+          );
+          return Err(VideoCompilerError::Io(error_msg));
+        }
+      }
+    }
+
+    // Emit StreamCompleted event
+    let _ = app_handle.emit(
+      "ai-stream-completed",
+      &AppEvent::AIStreamCompleted {
+        request_id,
+        total_tokens,
+        finish_reason,
+      },
+    );
+
+    Ok(())
   }
 
   // ============================================================================
@@ -721,6 +909,424 @@ impl AIProviderManager {
       .default_models()
       .iter()
       .any(|m| m.contains(model) || model.contains(m))
+  }
+
+  // ============================================================================
+  // STREAMING IMPLEMENTATIONS (OpenAI, DeepSeek, Ollama)
+  // ============================================================================
+
+  /// Send OpenAI streaming request (similar to Claude)
+  async fn send_openai_stream(
+    &self,
+    api_key: &str,
+    request: UnifiedAIRequest,
+    app_handle: AppHandle,
+    request_id: String,
+  ) -> Result<()> {
+    // Similar implementation to Claude but with OpenAI's SSE format
+    let messages: Vec<OpenAIMessage> = request.messages.into_iter().map(|m| m.into()).collect();
+
+    let mut body = serde_json::json!({
+      "model": request.model.clone(),
+      "messages": messages,
+      "stream": true,
+    });
+
+    if let Some(max_tokens) = request.max_tokens {
+      body["max_tokens"] = serde_json::json!(max_tokens);
+    }
+
+    if let Some(temp) = request.temperature {
+      body["temperature"] = serde_json::json!(temp);
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-started",
+      &AppEvent::AIStreamStarted {
+        request_id: request_id.clone(),
+        provider: "openai".to_string(),
+        model: request.model.clone(),
+      },
+    );
+
+    let response = self
+      .client
+      .post("https://api.openai.com/v1/chat/completions")
+      .header("Authorization", format!("Bearer {}", api_key))
+      .header("Content-Type", "application/json")
+      .json(&body)
+      .send()
+      .await
+      .map_err(|e| {
+        let error_msg = format!("OpenAI API error: {}", e);
+        let _ = app_handle.emit(
+          "ai-stream-error",
+          &AppEvent::AIStreamError {
+            request_id: request_id.clone(),
+            error: error_msg.clone(),
+          },
+        );
+        VideoCompilerError::Io(error_msg)
+      })?;
+
+    if !response.status().is_success() {
+      let status = response.status();
+      let error_text = response
+        .text()
+        .await
+        .unwrap_or_else(|_| "Unknown error".to_string());
+      let error_msg = format!("OpenAI API error {}: {}", status, error_text);
+
+      let _ = app_handle.emit(
+        "ai-stream-error",
+        &AppEvent::AIStreamError {
+          request_id: request_id.clone(),
+          error: error_msg.clone(),
+        },
+      );
+
+      return Err(VideoCompilerError::ValidationError(error_msg));
+    }
+
+    let mut stream = response.bytes_stream();
+    let mut buffer = String::new();
+    let mut chunk_index = 0;
+    let mut total_tokens: Option<u32> = None;
+    let mut finish_reason: Option<String> = None;
+
+    while let Some(item) = stream.next().await {
+      match item {
+        Ok(bytes) => {
+          buffer.push_str(&String::from_utf8_lossy(&bytes));
+
+          while let Some(pos) = buffer.find("\n\n") {
+            let event_str = buffer[..pos].to_string();
+            buffer = buffer[pos + 2..].to_string();
+
+            if let Some(data_line) = event_str.strip_prefix("data: ") {
+              if data_line == "[DONE]" {
+                break;
+              }
+
+              if let Ok(json) = serde_json::from_str::<Value>(data_line) {
+                // OpenAI format: choices[0].delta.content
+                if let Some(delta_content) = json["choices"][0]["delta"]["content"].as_str() {
+                  let _ = app_handle.emit(
+                    "ai-stream-chunk",
+                    &AppEvent::AIStreamChunk {
+                      request_id: request_id.clone(),
+                      content: delta_content.to_string(),
+                      index: chunk_index,
+                    },
+                  );
+                  chunk_index += 1;
+                }
+
+                if let Some(reason) = json["choices"][0]["finish_reason"].as_str() {
+                  finish_reason = Some(reason.to_string());
+                }
+              }
+            }
+          }
+        }
+        Err(e) => {
+          let error_msg = format!("Stream error: {}", e);
+          let _ = app_handle.emit(
+            "ai-stream-error",
+            &AppEvent::AIStreamError {
+              request_id: request_id.clone(),
+              error: error_msg.clone(),
+            },
+          );
+          return Err(VideoCompilerError::Io(error_msg));
+        }
+      }
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-completed",
+      &AppEvent::AIStreamCompleted {
+        request_id,
+        total_tokens,
+        finish_reason,
+      },
+    );
+
+    Ok(())
+  }
+
+  /// Send DeepSeek streaming request (OpenAI-compatible)
+  async fn send_deepseek_stream(
+    &self,
+    api_key: &str,
+    request: UnifiedAIRequest,
+    app_handle: AppHandle,
+    request_id: String,
+  ) -> Result<()> {
+    // DeepSeek uses same format as OpenAI
+    let messages: Vec<OpenAIMessage> = request.messages.into_iter().map(|m| m.into()).collect();
+
+    let mut body = serde_json::json!({
+      "model": request.model.clone(),
+      "messages": messages,
+      "stream": true,
+    });
+
+    if let Some(max_tokens) = request.max_tokens {
+      body["max_tokens"] = serde_json::json!(max_tokens);
+    }
+
+    if let Some(temp) = request.temperature {
+      body["temperature"] = serde_json::json!(temp);
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-started",
+      &AppEvent::AIStreamStarted {
+        request_id: request_id.clone(),
+        provider: "deepseek".to_string(),
+        model: request.model.clone(),
+      },
+    );
+
+    let response = self
+      .client
+      .post("https://api.deepseek.com/v1/chat/completions")
+      .header("Authorization", format!("Bearer {}", api_key))
+      .header("Content-Type", "application/json")
+      .json(&body)
+      .send()
+      .await
+      .map_err(|e| {
+        let error_msg = format!("DeepSeek API error: {}", e);
+        let _ = app_handle.emit(
+          "ai-stream-error",
+          &AppEvent::AIStreamError {
+            request_id: request_id.clone(),
+            error: error_msg.clone(),
+          },
+        );
+        VideoCompilerError::Io(error_msg)
+      })?;
+
+    if !response.status().is_success() {
+      let status = response.status();
+      let error_text = response
+        .text()
+        .await
+        .unwrap_or_else(|_| "Unknown error".to_string());
+      let error_msg = format!("DeepSeek API error {}: {}", status, error_text);
+
+      let _ = app_handle.emit(
+        "ai-stream-error",
+        &AppEvent::AIStreamError {
+          request_id: request_id.clone(),
+          error: error_msg.clone(),
+        },
+      );
+
+      return Err(VideoCompilerError::ValidationError(error_msg));
+    }
+
+    let mut stream = response.bytes_stream();
+    let mut buffer = String::new();
+    let mut chunk_index = 0;
+    let mut total_tokens: Option<u32> = None;
+    let mut finish_reason: Option<String> = None;
+
+    while let Some(item) = stream.next().await {
+      match item {
+        Ok(bytes) => {
+          buffer.push_str(&String::from_utf8_lossy(&bytes));
+
+          while let Some(pos) = buffer.find("\n\n") {
+            let event_str = buffer[..pos].to_string();
+            buffer = buffer[pos + 2..].to_string();
+
+            if let Some(data_line) = event_str.strip_prefix("data: ") {
+              if data_line == "[DONE]" {
+                break;
+              }
+
+              if let Ok(json) = serde_json::from_str::<Value>(data_line) {
+                if let Some(delta_content) = json["choices"][0]["delta"]["content"].as_str() {
+                  let _ = app_handle.emit(
+                    "ai-stream-chunk",
+                    &AppEvent::AIStreamChunk {
+                      request_id: request_id.clone(),
+                      content: delta_content.to_string(),
+                      index: chunk_index,
+                    },
+                  );
+                  chunk_index += 1;
+                }
+
+                if let Some(reason) = json["choices"][0]["finish_reason"].as_str() {
+                  finish_reason = Some(reason.to_string());
+                }
+              }
+            }
+          }
+        }
+        Err(e) => {
+          let error_msg = format!("Stream error: {}", e);
+          let _ = app_handle.emit(
+            "ai-stream-error",
+            &AppEvent::AIStreamError {
+              request_id: request_id.clone(),
+              error: error_msg.clone(),
+            },
+          );
+          return Err(VideoCompilerError::Io(error_msg));
+        }
+      }
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-completed",
+      &AppEvent::AIStreamCompleted {
+        request_id,
+        total_tokens,
+        finish_reason,
+      },
+    );
+
+    Ok(())
+  }
+
+  /// Send Ollama streaming request
+  async fn send_ollama_stream(
+    &self,
+    request: UnifiedAIRequest,
+    app_handle: AppHandle,
+    request_id: String,
+  ) -> Result<()> {
+    let messages: Vec<OllamaMessage> = request.messages.into_iter().map(|m| m.into()).collect();
+
+    let mut body = serde_json::json!({
+      "model": request.model.clone(),
+      "messages": messages,
+      "stream": true,
+    });
+
+    if request.temperature.is_some() || request.max_tokens.is_some() {
+      let mut options = serde_json::json!({});
+      if let Some(temp) = request.temperature {
+        options["temperature"] = serde_json::json!(temp);
+      }
+      if let Some(max_tokens) = request.max_tokens {
+        options["num_predict"] = serde_json::json!(max_tokens);
+      }
+      body["options"] = options;
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-started",
+      &AppEvent::AIStreamStarted {
+        request_id: request_id.clone(),
+        provider: "ollama".to_string(),
+        model: request.model.clone(),
+      },
+    );
+
+    let response = self
+      .client
+      .post("http://localhost:11434/api/chat")
+      .header("Content-Type", "application/json")
+      .json(&body)
+      .send()
+      .await
+      .map_err(|e| {
+        let error_msg = format!("Ollama API error: {}", e);
+        let _ = app_handle.emit(
+          "ai-stream-error",
+          &AppEvent::AIStreamError {
+            request_id: request_id.clone(),
+            error: error_msg.clone(),
+          },
+        );
+        VideoCompilerError::Io(error_msg)
+      })?;
+
+    if !response.status().is_success() {
+      let status = response.status();
+      let error_text = response
+        .text()
+        .await
+        .unwrap_or_else(|_| "Unknown error".to_string());
+      let error_msg = format!("Ollama API error {}: {}", status, error_text);
+
+      let _ = app_handle.emit(
+        "ai-stream-error",
+        &AppEvent::AIStreamError {
+          request_id: request_id.clone(),
+          error: error_msg.clone(),
+        },
+      );
+
+      return Err(VideoCompilerError::ValidationError(error_msg));
+    }
+
+    let mut stream = response.bytes_stream();
+    let mut buffer = String::new();
+    let mut chunk_index = 0;
+    let mut finish_reason: Option<String> = None;
+
+    while let Some(item) = stream.next().await {
+      match item {
+        Ok(bytes) => {
+          buffer.push_str(&String::from_utf8_lossy(&bytes));
+
+          while let Some(pos) = buffer.find('\n') {
+            let line = buffer[..pos].to_string();
+            buffer = buffer[pos + 1..].to_string();
+
+            if let Ok(json) = serde_json::from_str::<Value>(&line) {
+              if let Some(content) = json["message"]["content"].as_str() {
+                let _ = app_handle.emit(
+                  "ai-stream-chunk",
+                  &AppEvent::AIStreamChunk {
+                    request_id: request_id.clone(),
+                    content: content.to_string(),
+                    index: chunk_index,
+                  },
+                );
+                chunk_index += 1;
+              }
+
+              if let Some(done) = json["done"].as_bool() {
+                if done {
+                  finish_reason = Some("stop".to_string());
+                  break;
+                }
+              }
+            }
+          }
+        }
+        Err(e) => {
+          let error_msg = format!("Stream error: {}", e);
+          let _ = app_handle.emit(
+            "ai-stream-error",
+            &AppEvent::AIStreamError {
+              request_id: request_id.clone(),
+              error: error_msg.clone(),
+            },
+          );
+          return Err(VideoCompilerError::Io(error_msg));
+        }
+      }
+    }
+
+    let _ = app_handle.emit(
+      "ai-stream-completed",
+      &AppEvent::AIStreamCompleted {
+        request_id,
+        total_tokens: None, // Ollama doesn't provide token counts in stream
+        finish_reason,
+      },
+    );
+
+    Ok(())
   }
 }
 

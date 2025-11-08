@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid;
 
-// Re-export types from types module
+// Re-export types from types module (includes UpdateInfo)
 use super::types::*;
 
 pub struct CommandHandler {

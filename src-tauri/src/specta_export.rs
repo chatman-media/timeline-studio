@@ -36,8 +36,9 @@ pub use crate::state::browser::{
 // AI Provider types (unified multi-provider support)
 #[allow(unused_imports)]
 pub use crate::video_compiler::commands::ai_api_proxy::{
-  AIMessage, AIProvider, AITool, AIToolCall, ProviderConfig, ProviderStatus, TokenUsage,
-  ToolChoice, UnifiedAIRequest, UnifiedAIResponse, ValidateApiKeyRequest, ValidateApiKeyResponse,
+  AIMessage, AIProvider, AITool, AIToolCall, CacheStats, ProviderConfig, ProviderStatus,
+  TokenUsage, ToolChoice, UnifiedAIRequest, UnifiedAIResponse,
+  ValidateApiKeyRequest, ValidateApiKeyResponse,
 };
 
 // Simple command for demonstration
@@ -104,6 +105,16 @@ pub fn export_typescript_bindings() {
       crate::video_compiler::commands::ai_api_proxy::ai_get_supported_providers,
       crate::video_compiler::commands::ai_api_proxy::ai_check_providers_health,
       crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_tools,
+      // 🆕 AI Secure requests (using stored API keys)
+      crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request,
+      crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request_with_tools,
+      // 🆕 AI Streaming commands (real-time events)
+      crate::video_compiler::commands::ai_api_proxy::ai_send_streaming_request,
+      crate::video_compiler::commands::ai_api_proxy::ai_send_secure_streaming_request,
+      // 🆕 AI Cache commands
+      crate::video_compiler::commands::ai_api_proxy::ai_get_cache_stats,
+      crate::video_compiler::commands::ai_api_proxy::ai_clear_cache,
+      crate::video_compiler::commands::ai_api_proxy::ai_cleanup_expired_cache,
       // 🆕 Script Generation commands (AI-powered)
       crate::analysis::commands::generate_video_script,
       crate::analysis::commands::generate_script_dialogue,

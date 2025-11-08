@@ -109,6 +109,27 @@ pub enum AppEvent {
     error: String,
   },
 
+  // AI Stream events (for real-time AI responses)
+  AIStreamStarted {
+    request_id: String,
+    provider: String, // "claude", "openai", "deepseek", "ollama"
+    model: String,
+  },
+  AIStreamChunk {
+    request_id: String,
+    content: String,
+    index: u32,
+  },
+  AIStreamCompleted {
+    request_id: String,
+    total_tokens: Option<u32>,
+    finish_reason: Option<String>,
+  },
+  AIStreamError {
+    request_id: String,
+    error: String,
+  },
+
   // Plugin events
   PluginLoaded {
     plugin_id: String,

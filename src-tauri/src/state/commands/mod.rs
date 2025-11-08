@@ -19,7 +19,7 @@ pub mod handler;
 // Re-exports for backward compatibility
 pub use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 pub use handler::CommandHandler;
-pub use types::*;
+pub use types::{CommandResult, ProjectCommand, PlayerSource};
 
 // Public interfaces for each module
 pub use advanced_edits::AdvancedEditsCommands;

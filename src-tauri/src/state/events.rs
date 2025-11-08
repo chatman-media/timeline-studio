@@ -1,5 +1,6 @@
 use super::browser::BrowserEvent;
 use super::chat::ChatEvent;
+use crate::state::commands::types::{SystemNotification, UpdateInfo};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -197,7 +198,7 @@ pub enum ProjectEvent {
     data: Option<serde_json::Value>,
   },
   NotificationShown {
-    notification: super::commands::SystemNotification,
+    notification: SystemNotification,
   },
   NotificationDismissed {
     id: String,
@@ -208,7 +209,7 @@ pub enum ProjectEvent {
     has_update: bool,
   },
   UpdateAvailable {
-    update_info: super::commands::UpdateInfo,
+    update_info: UpdateInfo,
   },
   UpdateDownloadStarted,
   UpdateDownloadCompleted,

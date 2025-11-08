@@ -339,6 +339,13 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_tools,
     crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request,
     crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request_with_tools,
+    // AI Streaming commands (real-time events)
+    crate::video_compiler::commands::ai_api_proxy::ai_send_streaming_request,
+    crate::video_compiler::commands::ai_api_proxy::ai_send_secure_streaming_request,
+    // AI Cache commands
+    crate::video_compiler::commands::ai_api_proxy::ai_get_cache_stats,
+    crate::video_compiler::commands::ai_api_proxy::ai_clear_cache,
+    crate::video_compiler::commands::ai_api_proxy::ai_cleanup_expired_cache,
     // Batch processing commands
     crate::video_compiler::commands::create_batch_job,
     crate::video_compiler::commands::get_batch_job_info,

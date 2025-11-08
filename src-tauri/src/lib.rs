@@ -328,6 +328,50 @@ pub fn run() {
       let content_engine_state = ContentEngineState::new();
       app.manage(content_engine_state);
 
+      // Create AI Streaming State for real-time AI events
+      use video_compiler::commands::ai_api_proxy::AIStreamingState;
+      let ai_streaming_state = AIStreamingState::new(app.handle().clone());
+      app.manage(ai_streaming_state);
+
+      // Create AI Cache State
+      use video_compiler::commands::ai_api_proxy::{AICacheManager, AICacheState, CacheConfig};
+      let cache_db_path = app
+        .path()
+        .app_cache_dir()
+        .unwrap_or_default()
+        .join("ai_cache.db");
+
+      // Создаем директорию для кэша если не существует
+      if let Some(parent) = cache_db_path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+      }
+
+      match AICacheManager::new(&cache_db_path, CacheConfig::default()) {
+        Ok(cache_manager) => {
+          let ai_cache_state = AICacheState {
+            cache: Arc::new(tokio::sync::Mutex::new(cache_manager)),
+          };
+          app.manage(ai_cache_state);
+          log::info!("AI Cache initialized at: {:?}", cache_db_path);
+        }
+        Err(e) => {
+          log::error!("Failed to initialize AI Cache: {}", e);
+          // Создаем пустой State чтобы приложение запустилось
+          let cache_manager = AICacheManager::new(
+            &cache_db_path,
+            CacheConfig {
+              enabled: false,
+              ..Default::default()
+            },
+          )
+          .unwrap();
+          let ai_cache_state = AICacheState {
+            cache: Arc::new(tokio::sync::Mutex::new(cache_manager)),
+          };
+          app.manage(ai_cache_state);
+        }
+      }
+
       // Create AI Director State
       let ai_director_state = AIDirectorState::new();
       app.manage(ai_director_state);

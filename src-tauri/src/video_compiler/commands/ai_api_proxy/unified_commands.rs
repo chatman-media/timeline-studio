@@ -3,11 +3,30 @@
 //! Tauri команды для работы с множественными AI провайдерами
 //! через единый унифицированный интерфейс.
 
+use super::cache::{AICacheManager, CacheStats};
 use super::provider_manager::AIProviderManager;
 use super::types::*;
 use crate::security::{ApiKeyType, SecureStorage};
-use tauri::State;
+use std::sync::Arc;
+use tauri::{AppHandle, State};
 use tokio::sync::Mutex;
+use uuid::Uuid;
+
+/// State для AI Streaming - хранит AppHandle для emit событий
+pub struct AIStreamingState {
+  pub app_handle: AppHandle,
+}
+
+impl AIStreamingState {
+  pub fn new(app_handle: AppHandle) -> Self {
+    Self { app_handle }
+  }
+}
+
+/// State для AI Cache
+pub struct AICacheState {
+  pub cache: Arc<Mutex<AICacheManager>>,
+}
 
 /// Send unified AI request (works with any provider)
 #[tauri::command]
@@ -15,12 +34,40 @@ use tokio::sync::Mutex;
 pub async fn ai_send_unified_request(
   api_key: String,
   request: UnifiedAIRequest,
+  cache_state: State<'_, AICacheState>,
 ) -> Result<UnifiedAIResponse, String> {
+  // Проверяем кэш если это не streaming запрос
+  if !request.stream.unwrap_or(false) {
+    let cache = cache_state.cache.lock().await;
+    let hash = AICacheManager::generate_hash(
+      &request.provider,
+      &request.model,
+      &request.messages,
+    );
+
+    // Пытаемся получить из кэша
+    if let Ok(Some(cached_response)) = cache.get(&hash) {
+      log::info!("Returning cached response for provider {:?}", request.provider);
+      return Ok(cached_response);
+    }
+  }
+
+  // Отправляем запрос к провайдеру
   let manager = AIProviderManager::new();
-  manager
-    .send_request(&api_key, request)
+  let response = manager
+    .send_request(&api_key, request.clone())
     .await
-    .map_err(|e| e.to_string())
+    .map_err(|e| e.to_string())?;
+
+  // Сохраняем в кэш если не streaming
+  if !request.stream.unwrap_or(false) {
+    let cache = cache_state.cache.lock().await;
+    if let Err(e) = cache.set(&request, &response) {
+      log::warn!("Failed to cache response: {}", e);
+    }
+  }
+
+  Ok(response)
 }
 
 /// Send AI request with automatic fallback
@@ -243,6 +290,142 @@ pub async fn ai_send_secure_request_with_tools(
   };
 
   ai_send_secure_request(storage, request).await
+}
+
+/// Send AI streaming request with real-time events
+///
+/// Отправляет streaming запрос и emit события через Tauri Event System.
+/// События: ai-stream-started, ai-stream-chunk, ai-stream-completed, ai-stream-error
+///
+/// # Arguments
+/// * `streaming_state` - AI Streaming State с AppHandle
+/// * `api_key` - API ключ провайдера
+/// * `request` - Унифицированный запрос
+///
+/// # Returns
+/// * `request_id` - Уникальный ID запроса для отслеживания событий
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_send_streaming_request(
+  streaming_state: State<'_, AIStreamingState>,
+  api_key: String,
+  request: UnifiedAIRequest,
+) -> Result<String, String> {
+  let manager = AIProviderManager::new();
+  let request_id = Uuid::new_v4().to_string();
+  let app_handle = streaming_state.app_handle.clone();
+
+  // Spawn async task to handle streaming
+  let request_id_clone = request_id.clone();
+  tokio::spawn(async move {
+    if let Err(e) = manager
+      .send_request_stream(&api_key, request, app_handle, request_id_clone)
+      .await
+    {
+      log::error!("Streaming request failed: {}", e);
+    }
+  });
+
+  Ok(request_id)
+}
+
+/// Send AI streaming request using stored API key (secure)
+///
+/// Эта команда не требует передачи API ключа с frontend.
+/// Ключ автоматически загружается из secure storage.
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_send_secure_streaming_request(
+  streaming_state: State<'_, AIStreamingState>,
+  storage: State<'_, Mutex<SecureStorage>>,
+  request: UnifiedAIRequest,
+) -> Result<String, String> {
+  let app_handle = streaming_state.app_handle.clone();
+
+  // Определяем тип ключа по провайдеру
+  let key_type = match request.provider {
+    AIProvider::Claude => ApiKeyType::Claude,
+    AIProvider::OpenAI => ApiKeyType::OpenAI,
+    AIProvider::DeepSeek => ApiKeyType::DeepSeek,
+    AIProvider::Ollama => {
+      // Ollama не требует API ключ
+      let manager = AIProviderManager::new();
+      let request_id = Uuid::new_v4().to_string();
+
+      let request_id_clone = request_id.clone();
+      tokio::spawn(async move {
+        if let Err(e) = manager
+          .send_request_stream("", request, app_handle, request_id_clone)
+          .await
+        {
+          log::error!("Streaming request failed: {}", e);
+        }
+      });
+
+      return Ok(request_id);
+    }
+  };
+
+  // Получаем API ключ из secure storage
+  let mut storage_guard = storage.lock().await;
+  let api_key_value = storage_guard
+    .get_api_key_value(key_type)
+    .await
+    .map_err(|e| format!("Failed to get API key: {e}"))?
+    .ok_or_else(|| format!("API key not found for provider: {:?}", request.provider))?;
+
+  drop(storage_guard); // Освобождаем lock
+
+  // Отправляем streaming запрос
+  let manager = AIProviderManager::new();
+  let request_id = Uuid::new_v4().to_string();
+  let app_handle = streaming_state.app_handle.clone();
+
+  let request_id_clone = request_id.clone();
+  tokio::spawn(async move {
+    if let Err(e) = manager
+      .send_request_stream(&api_key_value, request, app_handle, request_id_clone)
+      .await
+    {
+      log::error!("Streaming request failed: {}", e);
+    }
+  });
+
+  Ok(request_id)
+}
+
+/// Get AI cache statistics
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_get_cache_stats(
+  cache_state: State<'_, AICacheState>,
+) -> Result<CacheStats, String> {
+  let cache = cache_state.cache.lock().await;
+  cache.get_stats().map_err(|e| e.to_string())
+}
+
+/// Clear all AI cache
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_clear_cache(cache_state: State<'_, AICacheState>) -> Result<u32, String> {
+  let cache = cache_state.cache.lock().await;
+  cache
+    .clear_all()
+    .map(|count| count as u32)
+    .map_err(|e| e.to_string())
+}
+
+/// Cleanup expired AI cache entries
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_cleanup_expired_cache(
+  cache_state: State<'_, AICacheState>,
+) -> Result<u32, String> {
+  let cache = cache_state.cache.lock().await;
+  cache
+    .cleanup_expired()
+    .map(|count| count as u32)
+    .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]
