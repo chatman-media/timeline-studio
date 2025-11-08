@@ -3,6 +3,7 @@
  */
 
 import { useCallback } from "react"
+import { useTimelineKeyframes as useDomainTimelineKeyframes } from "@/domains/video-editing"
 import {
   type AnimatableProperty,
   type AnimationResult,
@@ -96,7 +97,8 @@ export interface UseKeyframeAnimationReturn {
 }
 
 export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
-  const { clips, updateClip } = useTimeline()
+  const { clips } = useTimeline()
+  const domainKeyframes = useDomainTimelineKeyframes()
 
   // Получает клип по ID
   const getClip = useCallback(
@@ -106,18 +108,7 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
     [clips],
   )
 
-  // Обновляет клип с результатом анимации
-  const updateClipWithResult = useCallback(
-    async (result: AnimationResult): Promise<AnimationResult> => {
-      if (result.success && result.updatedClip) {
-        await updateClip(result.updatedClip.id, result.updatedClip)
-      }
-      return result
-    },
-    [updateClip],
-  )
-
-  // Основные операции с keyframes
+  // Основные операции с keyframes - делегируем в domain provider
   const addKeyframe = useCallback(
     async (
       clipId: string,
@@ -131,10 +122,14 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.addKeyframe(clip, property, time, value, interpolation)
-      return updateClipWithResult(result)
+      try {
+        await domainKeyframes.addKeyframe(clipId, property, time, value, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const removeKeyframe = useCallback(
@@ -144,10 +139,14 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.removeKeyframe(clip, keyframeId)
-      return updateClipWithResult(result)
+      try {
+        await domainKeyframes.removeKeyframe(clipId, keyframeId)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const updateKeyframe = useCallback(
@@ -157,13 +156,23 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.updateKeyframe(clip, keyframeId, updates)
-      return updateClipWithResult(result)
+      try {
+        await domainKeyframes.updateKeyframe(clipId, keyframeId, {
+          time: updates.time,
+          value: updates.value,
+          interpolation: updates.interpolation,
+          easeIn: updates.easeIn,
+          easeOut: updates.easeOut,
+        })
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
-  // Получение данных
+  // Получение данных - используем domain provider
   const getValueAtTime = useCallback(
     (clipId: string, property: AnimatableProperty, time: number): any => {
       const clip = getClip(clipId)
@@ -176,12 +185,10 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
 
   const getPropertyKeyframes = useCallback(
     (clipId: string, property: AnimatableProperty): TimelineKeyframe[] => {
-      const clip = getClip(clipId)
-      if (!clip) return []
-
-      return KeyframeAnimationService.getPropertyKeyframes(clip, property)
+      // Используем domain provider для получения keyframes
+      return domainKeyframes.getPropertyKeyframes(clipId, property) as TimelineKeyframe[]
     },
-    [getClip],
+    [domainKeyframes],
   )
 
   // Создание анимаций
