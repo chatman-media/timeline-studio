@@ -31,7 +31,7 @@ use crate::analysis::types::{
   AudioPerformanceMode, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
 };
 use crate::video_compiler::commands::ai_api_proxy::{
-  AIMessage, AIProvider, AIProviderManager, UnifiedAIRequest, UnifiedAIResponse,
+  AIMessage, AIProvider, AIProviderManager, UnifiedAIRequest,
 };
 
 /// Результат полного анализа через AI Director
