@@ -95,7 +95,7 @@ export function TimelineContent() {
 
   // Добавляем демо секцию после создания проекта
   useEffect(() => {
-    if (project && project.sections.length === 0) {
+    if (project && (project.sections?.length ?? 0) === 0) {
       addSection("Main Section", 0, 300).then(() => {
         logger.info("[TimelineContent] Main section added")
       })
