@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 
-import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types"
 import {
   calculateProjectDuration,
   canPlaceClipOnTrack,
@@ -98,7 +98,7 @@ describe("Timeline утилиты", () => {
     isMuted: false,
     isHidden: false,
     isSolo: false,
-    expanded: false,
+    expanded: true,
     volume: 1,
     pan: 0,
     height: 100,
