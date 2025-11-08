@@ -81,17 +81,42 @@ export class AnalyzeQualityTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
+  validate(input: any): boolean {
+    return input && typeof input === "object" && input.operation === "analyze_quality"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["analyze_quality"] },
+          targetFiles: { type: "array", items: { type: "string" } },
+          qualityMetrics: { type: "array", items: { type: "string" } },
+          analysisDepth: { type: "string", enum: ["quick", "standard", "comprehensive", "forensic"] },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          qualityAnalysis: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array", items: { type: "string" } },
+        },
+      },
+    }
+  }
+
   async execute(
     input: MediaProcessingInput,
     options?: AIToolExecutionOptions,
   ): Promise<AIToolResult<MediaProcessingResult>> {
-    return this.executeWithErrorHandling(
-      async (_context) => {
-        return await adaptAnalyzeQuality(input)
-      },
-      input,
-      options,
-    )
+    return this.executeWithErrorHandling(async (_context) => {
+      return await adaptAnalyzeQuality(input)
+    }, options)
   }
 }
 

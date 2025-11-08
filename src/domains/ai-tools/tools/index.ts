@@ -62,7 +62,7 @@ export function getToolsByCategory(category: string) {
  * Получение инструментов по тегам
  */
 export function getToolsByTags(tags: string[]) {
-  return allAITools.filter((tool) => tool.metadata.tags?.some((tag) => tags.includes(tag)))
+  return allAITools.filter((tool) => tool.metadata.tags?.some((tag: string) => tags.includes(tag)))
 }
 
 /**
@@ -155,7 +155,7 @@ export function getToolsGroupedByCategory() {
 export function getTagsStatistics() {
   const tagCounts = allAITools.reduce(
     (counts, tool) => {
-      tool.metadata.tags?.forEach((tag) => {
+      tool.metadata.tags?.forEach((tag: string) => {
         counts[tag] = (counts[tag] || 0) + 1
       })
       return counts
@@ -164,7 +164,7 @@ export function getTagsStatistics() {
   )
 
   return Object.entries(tagCounts)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, a], [, b]) => (b as number) - (a as number))
     .map(([tag, count]) => ({ tag, count }))
 }
 
@@ -218,8 +218,8 @@ export function checkToolsIntegrity() {
 
   const missingDependencies = Object.entries(dependencies.dependencies).flatMap(([toolName, deps]) =>
     deps
-      .filter((dep) => !allAITools.some((tool) => tool.metadata.name === dep))
-      .map((dep) => ({ toolName, missingDep: dep })),
+      .filter((dep: string) => !allAITools.some((tool) => tool.metadata.name === dep))
+      .map((dep: string) => ({ toolName, missingDep: dep })),
   )
 
   return {

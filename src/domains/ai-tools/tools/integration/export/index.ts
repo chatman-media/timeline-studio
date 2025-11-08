@@ -98,14 +98,39 @@ export class OptimizeSettingsTool extends BaseAITool implements IAITool {
     author: "Timeline Studio",
   }
 
-  async execute(input: ExportInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ExportResult>> {
-    return this.executeWithErrorHandling(
-      async (_context) => {
-        return await adaptOptimizeSettings(input)
+  validate(input: any): boolean {
+    return input && typeof input === "object" && input.operation === "optimize_settings"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["optimize_settings"] },
+          contentType: { type: "string" },
+          targetPlatform: { type: "string" },
+          priorityOptimization: { type: "string", enum: ["quality", "file-size", "compatibility", "balanced"] },
+        },
+        required: ["operation"],
       },
-      input,
-      options,
-    )
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          optimizedSettings: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array", items: { type: "string" } },
+        },
+      },
+    }
+  }
+
+  async execute(input: ExportInput, options?: AIToolExecutionOptions): Promise<AIToolResult<ExportResult>> {
+    return this.executeWithErrorHandling(async (_context) => {
+      return await adaptOptimizeSettings(input)
+    }, options)
   }
 }
 
