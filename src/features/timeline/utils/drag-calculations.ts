@@ -141,6 +141,15 @@ export function getTrackTypeForMediaFile(mediaFile: MediaFile): TrackType {
   if (mediaFile.type === MediaType.Video) return "video"
   if (mediaFile.type === MediaType.Audio) return "audio"
 
+  // Check probeData if available
+  if (mediaFile.probeData?.streams) {
+    const hasVideo = mediaFile.probeData.streams.some((stream: any) => stream.codec_type === "video")
+    const hasAudio = mediaFile.probeData.streams.some((stream: any) => stream.codec_type === "audio")
+
+    if (hasVideo) return "video"
+    if (hasAudio) return "audio"
+  }
+
   // Default to video track
   return "video"
 }
