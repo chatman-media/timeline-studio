@@ -54,43 +54,39 @@ export class AnalyzeResourcesTool extends BaseAITool {
     input: AnalyzeResourcesInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<AnalyzeResourcesResult>> {
-    return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
-        // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
-          const errors: string[] = []
+    return this.executeWithErrorHandling(async () => {
+      // Валидация входных данных
+      const validation = this.validateInput(input, (data) => {
+        const errors: string[] = []
 
-          if (data.operation !== "analyze_available_resources") {
-            errors.push(`Неподдерживаемая операция: ${data.operation}`)
-          }
-
-          if (!data.resourceType) {
-            errors.push("Требуется указать resourceType для анализа ресурсов")
-          }
-
-          if (!data.reason) {
-            errors.push("Требуется указать причину анализа ресурсов")
-          }
-
-          return { isValid: errors.length === 0, errors }
-        })
-
-        if (!validation.isValid) {
-          throw new Error(validation.errors.join(", "))
+        if (data.operation !== "analyze_available_resources") {
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
         }
 
-        // Проверка доступа к ресурсам
-        if (!hasResourcesAccess()) {
-          throw new Error("Доступ к ресурсам не сконфигурирован")
+        if (!data.resourceType) {
+          errors.push("Требуется указать resourceType для анализа ресурсов")
         }
 
-        const result = await this.analyzeResources(input)
+        if (!data.reason) {
+          errors.push("Требуется указать причину анализа ресурсов")
+        }
 
-        return result
-      },
-      options,
-    )
+        return { isValid: errors.length === 0, errors }
+      })
+
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(", "))
+      }
+
+      // Проверка доступа к ресурсам
+      if (!hasResourcesAccess()) {
+        throw new Error("Доступ к ресурсам не сконфигурирован")
+      }
+
+      const result = await this.analyzeResources(input)
+
+      return result
+    }, options)
   }
 
   private async analyzeResources(params: AnalyzeResourcesInput): Promise<AnalyzeResourcesResult> {

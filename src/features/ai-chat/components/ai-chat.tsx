@@ -114,7 +114,7 @@ export function AiChat() {
 
         setAvailableModels(agents)
       } catch (error) {
-        logger.error("Failed to load available models:", error)
+        logger.error("Failed to load available models:", { error: String(error) })
         // Используем минимальный набор моделей в случае ошибки
         const fallbackModels: Agent[] = [
           { id: "claude-4-opus", name: "Claude 4 Sonnet", useTools: true, provider: "claude" },
@@ -207,7 +207,7 @@ export function AiChat() {
           // Добавляем сообщение
           await chatStorageService.addMessage(currentSessionId, userMessage)
         } catch (error) {
-          logger.error("Failed to save message:", error)
+          logger.error("Failed to save message:", { error: String(error) })
         }
       }
       void performSave()
@@ -340,7 +340,7 @@ export function AiChat() {
 
         // Общий обработчик ошибок
         const handleStreamError = (error: Error) => {
-          logger.error("Error in streaming:", error)
+          logger.error("Error in streaming:", { error: String(error) })
           setIsStreaming(false)
           setStreamingContent("")
           throw error
@@ -367,7 +367,7 @@ export function AiChat() {
           ...(provider === "claude" && { system: systemPrompt }),
         })
       } catch (error) {
-        logger.error("Error sending message to AI:", error)
+        logger.error("Error sending message to AI:", { error: String(error) })
         setIsStreaming(false)
         setStreamingContent("")
 
@@ -904,7 +904,7 @@ export function AiChat() {
                       await switchSession(newSession.id)
                     }
                   } catch (error) {
-                    logger.error("Failed to copy session:", error)
+                    logger.error("Failed to copy session:", { error: String(error) })
                   }
                 }}
               />

@@ -150,7 +150,7 @@ export class ContentAnalysisTool extends BaseAITool {
             operation: input.operation,
             success: true,
             importSources: {
-              sources: sourcesResult.data?.importSources?.sources || [],
+              sources: sourcesResult.data?.importSources?.websites || [],
               recommendations: sourcesResult.data?.importSources?.recommendations || [],
               categories: [],
             },
@@ -173,9 +173,9 @@ export class ContentAnalysisTool extends BaseAITool {
             success: true,
             exportData: {
               format: exportResult.data?.exportData?.format || input.format!,
-              fileCount: exportResult.data?.exportData?.fileCount || 0,
-              exportPath: exportResult.data?.exportData?.exportPath || "",
-              statistics: exportResult.data?.exportData?.statistics || {},
+              fileCount: exportResult.data?.exportData?.metadata?.fileCount || 0,
+              exportPath: exportResult.data?.exportData?.metadata?.exportPath || "",
+              statistics: exportResult.data?.exportData?.metadata?.statistics || {},
             },
             message: exportResult.message,
             recommendations: exportResult.data?.suggestions || [],
@@ -611,13 +611,13 @@ export async function analyzeMissingContent(params: AnalyzeMissingContentParams)
     checkExternal: params.checkExternal,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data.message || result.message || "Анализ завершен",
       data: {
         missingContent: result.data.missingContent,
-        suggestions: result.data?.recommendations,
+        suggestions: result.data.recommendations,
       },
       nextActions: ["Добавить недостающий контент", "Проверить источники"],
     }
@@ -641,13 +641,20 @@ export async function suggestImportSources(params: SuggestImportParams): Promise
     includePremium: params.includePremium,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data.message || result.message || "Источники найдены",
       data: {
-        importSources: result.data?.importSources,
-        suggestions: result.data?.recommendations,
+        importSources: result.data.importSources
+          ? {
+              websites: result.data.importSources.sources || [],
+              stockSites: [],
+              aiTools: [],
+              recommendations: result.data.importSources.recommendations || [],
+            }
+          : { websites: [], stockSites: [], aiTools: [], recommendations: [] },
+        suggestions: result.data.recommendations,
       },
       nextActions: ["Просмотреть источники", "Импортировать контент"],
     }
@@ -667,13 +674,23 @@ export async function exportFileList(params: ExportFileListParams): Promise<Brow
     filterCriteria: params.filterCriteria,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data.message || result.message || "Экспорт завершен",
       data: {
-        exportData: result.data.exportData,
-        suggestions: result.data?.recommendations,
+        exportData: result.data.exportData
+          ? {
+              format: result.data.exportData.format,
+              content: [],
+              metadata: {
+                fileCount: result.data.exportData.fileCount,
+                exportPath: result.data.exportData.exportPath,
+                statistics: result.data.exportData.statistics,
+              },
+            }
+          : { format: params.format, content: [], metadata: {} },
+        suggestions: result.data.recommendations,
       },
       nextActions: ["Скачать файл", "Проверить экспорт"],
     }

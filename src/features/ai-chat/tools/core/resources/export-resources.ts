@@ -54,50 +54,46 @@ export class ExportResourcesTool extends BaseAITool {
     input: ExportResourcesInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ExportResourcesResult>> {
-    return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
-        // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
-          const errors: string[] = []
+    return this.executeWithErrorHandling(async () => {
+      // Валидация входных данных
+      const validation = this.validateInput(input, (data) => {
+        const errors: string[] = []
 
-          const validFormats = ["json", "csv", "text", "markdown"]
-          if (!validFormats.includes(data.format)) {
-            errors.push(`Неподдерживаемый формат: ${data.format}`)
-          }
-
-          return { isValid: errors.length === 0, errors }
-        })
-
-        if (!validation.isValid) {
-          throw new Error(validation.errors.join(", "))
+        const validFormats = ["json", "csv", "text", "markdown"]
+        if (!validFormats.includes(data.format)) {
+          errors.push(`Неподдерживаемый формат: ${data.format}`)
         }
 
-        // Проверка доступа к ресурсам
-        if (!hasResourcesAccess()) {
-          throw new Error("Доступ к ресурсам не сконфигурирован")
-        }
+        return { isValid: errors.length === 0, errors }
+      })
 
-        const result = await this.exportResourceList({
-          format: input.format,
-          includeMetadata: input.includeMetadata ?? true,
-          filterCriteria: input.filterCriteria ?? {},
-        })
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(", "))
+      }
 
-        if (!result.success) {
-          throw new Error(result.message)
-        }
+      // Проверка доступа к ресурсам
+      if (!hasResourcesAccess()) {
+        throw new Error("Доступ к ресурсам не сконфигурирован")
+      }
 
-        return {
-          operation: input.operation,
-          success: true,
-          exportData: result.data?.analysis,
-          message: result.message,
-          recommendations: result.data?.suggestions || [],
-        }
-      },
-      options,
-    )
+      const result = await this.exportResourceList({
+        format: input.format,
+        includeMetadata: input.includeMetadata ?? true,
+        filterCriteria: input.filterCriteria ?? {},
+      })
+
+      if (!result.success) {
+        throw new Error(result.message)
+      }
+
+      return {
+        operation: input.operation,
+        success: true,
+        exportData: result.data?.analysis,
+        message: result.message,
+        recommendations: result.data?.suggestions || [],
+      }
+    }, options)
   }
 
   private async exportResourceList(params: ExportListParams): Promise<ResourceToolResult> {

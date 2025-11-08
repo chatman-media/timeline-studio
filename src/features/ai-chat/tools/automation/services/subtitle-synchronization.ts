@@ -146,7 +146,7 @@ export class SubtitleSynchronizationService {
         warnings,
       }
     } catch (error) {
-      logger.error("Synchronization failed:", error)
+      logger.error("Synchronization failed:", { error: String(error) })
       throw error
     }
   }

@@ -75,47 +75,43 @@ export class SuggestResourcesTool extends BaseAITool {
     input: SuggestResourcesInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SuggestResourcesResult>> {
-    return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
-        // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
-          const errors: string[] = []
+    return this.executeWithErrorHandling(async () => {
+      // Валидация входных данных
+      const validation = this.validateInput(input, (data) => {
+        const errors: string[] = []
 
-          if (data.operation !== "suggest_complementary_resources") {
-            errors.push(`Неподдерживаемая операция: ${data.operation}`)
-          }
-
-          if (!data.projectType) {
-            errors.push("Требуется указать projectType")
-          }
-
-          if (!data.mood) {
-            errors.push("Требуется указать mood")
-          }
-
-          if (!data.reason) {
-            errors.push("Требуется указать причину предложения ресурсов")
-          }
-
-          return { isValid: errors.length === 0, errors }
-        })
-
-        if (!validation.isValid) {
-          throw new Error(validation.errors.join(", "))
+        if (data.operation !== "suggest_complementary_resources") {
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
         }
 
-        // Проверка доступа к ресурсам
-        if (!hasResourcesAccess()) {
-          throw new Error("Доступ к ресурсам не сконфигурирован")
+        if (!data.projectType) {
+          errors.push("Требуется указать projectType")
         }
 
-        const result = await this.suggestComplementaryResources(input)
+        if (!data.mood) {
+          errors.push("Требуется указать mood")
+        }
 
-        return result
-      },
-      options,
-    )
+        if (!data.reason) {
+          errors.push("Требуется указать причину предложения ресурсов")
+        }
+
+        return { isValid: errors.length === 0, errors }
+      })
+
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(", "))
+      }
+
+      // Проверка доступа к ресурсам
+      if (!hasResourcesAccess()) {
+        throw new Error("Доступ к ресурсам не сконфигурирован")
+      }
+
+      const result = await this.suggestComplementaryResources(input)
+
+      return result
+    }, options)
   }
 
   private async suggestComplementaryResources(params: SuggestResourcesInput): Promise<SuggestResourcesResult> {

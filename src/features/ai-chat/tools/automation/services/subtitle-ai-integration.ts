@@ -60,7 +60,7 @@ export class SubtitleAIIntegrationService {
 
       // Инициализируем Whisper сервис
       this.whisperService = WhisperIntegrationService.getInstance()
-      await this.whisperService.initialize()
+      // WhisperIntegrationService не имеет метода initialize - убираем вызов
 
       // Инициализируем сервис синхронизации
       this.synchronizationService = SubtitleSynchronizationService.getInstance()
@@ -69,7 +69,7 @@ export class SubtitleAIIntegrationService {
 
       logger.info("SubtitleAIIntegrationService initialized successfully")
     } catch (error) {
-      logger.error("Failed to initialize SubtitleAIIntegrationService:", error)
+      logger.error("Failed to initialize SubtitleAIIntegrationService:", { error: String(error) })
       throw error
     }
   }
@@ -152,6 +152,14 @@ export class SubtitleAIIntegrationService {
           })),
         },
         insights: {
+          summary: "Анализ контента завершен",
+          highlights: [
+            "Обнаружен текст на экране для OCR",
+            "Проведен анализ речевых сегментов",
+            "Выполнена сегментация сцен",
+          ],
+          suggestions: [],
+          warnings: [],
           strengths: [
             "Обнаружен текст на экране для OCR",
             "Проведен анализ речевых сегментов",
@@ -159,6 +167,7 @@ export class SubtitleAIIntegrationService {
           ],
           improvements: [],
           recommendations: [],
+          risks: [],
         },
       }
 
@@ -170,7 +179,7 @@ export class SubtitleAIIntegrationService {
 
       return unifiedAnalysis
     } catch (error) {
-      logger.error("Error during content analysis:", error)
+      logger.error("Error during content analysis:", { error: String(error) })
       throw error
     }
   }
@@ -215,7 +224,7 @@ export class SubtitleAIIntegrationService {
       logger.info(`OCR analysis completed: found ${mockTextDetections.length} text blocks`)
       return mockTextDetections
     } catch (error) {
-      logger.error("OCR analysis failed:", error)
+      logger.error("OCR analysis failed:", { error: String(error) })
       return []
     }
   }
@@ -249,9 +258,9 @@ export class SubtitleAIIntegrationService {
       })
 
       // Комбинируем результаты (берем временные метки из оптимизированной версии, говорящих из speaker-aware версии)
-      const enhancedSpeech = speechSegments.map((segment) => {
+      const enhancedSpeech = speechSegments.map((segment: any) => {
         const speakerInfo = speechWithSpeakers.find(
-          (s) => Math.abs(s.startTime - segment.startTime) < 1, // Находим ближайший сегмент
+          (s: any) => Math.abs(s.startTime - segment.startTime) < 1, // Находим ближайший сегмент
         )
 
         return {
@@ -270,7 +279,7 @@ export class SubtitleAIIntegrationService {
       logger.info(`Speech analysis completed: found ${enhancedSpeech.length} speech segments`)
       return audioDetections
     } catch (error) {
-      logger.error("Speech analysis failed:", error)
+      logger.error("Speech analysis failed:", { error: String(error) })
 
       // Fallback на симулированные данные если Whisper недоступен
       logger.warn("Using fallback mock speech data")
@@ -283,6 +292,7 @@ export class SubtitleAIIntegrationService {
           speaker: "Говорящий 1",
           language: language,
           confidence: 0.7,
+          wordTimestamps: [],
         },
       ]
 
@@ -357,7 +367,7 @@ export class SubtitleAIIntegrationService {
       logger.info(`Scene analysis completed: found ${mockScenes.length} scenes`)
       return mockScenes
     } catch (error) {
-      logger.error("Scene analysis failed:", error)
+      logger.error("Scene analysis failed:", { error: String(error) })
       return []
     }
   }
@@ -501,16 +511,16 @@ export class SubtitleAIIntegrationService {
 
       // Логируем рекомендации и предупреждения
       if (result.recommendations.length > 0) {
-        logger.info("Synchronization recommendations:", result.recommendations)
+        logger.info("Synchronization recommendations:", { recommendations: result.recommendations })
       }
 
       if (result.warnings.length > 0) {
-        logger.warn("Synchronization warnings:", result.warnings)
+        logger.warn("Synchronization warnings:", { warnings: result.warnings })
       }
 
       return result.synchronizedSubtitles
     } catch (error) {
-      logger.error("Advanced synchronization failed, falling back to basic:", error)
+      logger.error("Advanced synchronization failed, falling back to basic:", { error: String(error) })
       return this.basicSynchronization(subtitles, options)
     }
   }

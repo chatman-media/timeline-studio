@@ -63,27 +63,30 @@ export async function executeResourceTool(toolName: string, params: any): Promis
         const addResult = await executeManageResourcesTool("add_resource_to_pool", params)
         return {
           success: addResult.success,
-          message: addResult.data?.message || addResult.error?.message || "Ошибка добавления ресурса",
+          message: addResult.data?.message || addResult.message || "Ошибка добавления ресурса",
           data: addResult.data?.addedResource,
-          errors: addResult.error ? [addResult.error.message] : undefined,
+          errors: addResult.errors,
         }
 
       case "bulk_add_resources":
         const bulkResult = await executeManageResourcesTool("bulk_add_resources", params)
         return {
           success: bulkResult.success,
-          message: bulkResult.data?.message || bulkResult.error?.message || "Ошибка массового добавления",
-          data: bulkResult.data?.bulkResults,
-          errors: bulkResult.error ? [bulkResult.error.message] : undefined,
+          message: bulkResult.data?.message || bulkResult.message || "Ошибка массового добавления",
+          data: {
+            addedResources: bulkResult.data?.bulkResults?.map((r: any) => r.resourceId) || [],
+            analysis: bulkResult.data?.bulkResults,
+          },
+          errors: bulkResult.errors,
         }
 
       case "remove_resource_from_pool":
         const removeResult = await executeManageResourcesTool("remove_resource_from_pool", params)
         return {
           success: removeResult.success,
-          message: removeResult.data?.message || removeResult.error?.message || "Ошибка удаления ресурса",
+          message: removeResult.data?.message || removeResult.message || "Ошибка удаления ресурса",
           data: removeResult.data?.removedResource,
-          errors: removeResult.error ? [removeResult.error.message] : undefined,
+          errors: removeResult.errors,
         }
 
       case "suggest_complementary_resources":

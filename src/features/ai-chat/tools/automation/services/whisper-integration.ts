@@ -63,7 +63,7 @@ export class WhisperIntegrationService {
       )
       return withSpeakers
     } catch (error) {
-      logger.error("Speech recognition with speakers failed:", error)
+      logger.error("Speech recognition with speakers failed:", { error: String(error) })
       return []
     }
   }
@@ -103,7 +103,7 @@ export class WhisperIntegrationService {
       logger.info(`Optimized speech recognition completed: ${speechDetections.length} subtitle segments`)
       return speechDetections
     } catch (error) {
-      logger.error("Optimized speech recognition failed:", error)
+      logger.error("Optimized speech recognition failed:", { error: String(error) })
       return []
     }
   }
@@ -118,10 +118,12 @@ export class WhisperIntegrationService {
     return result.segments.map((segment, _index) => ({
       startTime: segment.start,
       endTime: segment.end,
+      text: segment.text.trim(),
       transcript: segment.text.trim(),
       speaker: undefined, // Будет определен позже
       language: options.language === "auto" ? result.language : options.language,
       confidence: segment.confidence || 0.8, // По умолчанию хорошая уверенность
+      wordTimestamps: [],
     }))
   }
 
@@ -207,10 +209,12 @@ export class WhisperIntegrationService {
         parts.push({
           startTime,
           endTime,
+          text: partText,
           transcript: partText,
           speaker: detection.speaker,
           language: detection.language,
           confidence: detection.confidence,
+          wordTimestamps: [],
         })
       }
     }
@@ -235,10 +239,10 @@ export class WhisperIntegrationService {
       const available = ["tiny", "base", "small", "medium"] // Базовый набор
       const recommended = "base" // Компромисс скорость/качество
 
-      logger.info("Available Whisper models:", available)
+      logger.info("Available Whisper models:", { models: available })
       return { available, recommended }
     } catch (error) {
-      logger.error("Failed to check model availability:", error)
+      logger.error("Failed to check model availability:", { error: String(error) })
       return { available: ["tiny"], recommended: "tiny" }
     }
   }

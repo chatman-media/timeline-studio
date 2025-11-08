@@ -61,43 +61,39 @@ export class CompatibilityAnalysisTool extends BaseAITool {
     input: CompatibilityAnalysisInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<CompatibilityAnalysisResult>> {
-    return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
-        // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
-          const errors: string[] = []
+    return this.executeWithErrorHandling(async () => {
+      // Валидация входных данных
+      const validation = this.validateInput(input, (data) => {
+        const errors: string[] = []
 
-          if (data.operation !== "analyze_resource_compatibility") {
-            errors.push(`Неподдерживаемая операция: ${data.operation}`)
-          }
-
-          if (!data.resourceIds || data.resourceIds.length === 0) {
-            errors.push("Требуется указать resourceIds для анализа совместимости")
-          }
-
-          if (!data.reason) {
-            errors.push("Требуется указать причину анализа совместимости")
-          }
-
-          return { isValid: errors.length === 0, errors }
-        })
-
-        if (!validation.isValid) {
-          throw new Error(validation.errors.join(", "))
+        if (data.operation !== "analyze_resource_compatibility") {
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
         }
 
-        // Проверка доступа к ресурсам
-        if (!hasResourcesAccess()) {
-          throw new Error("Доступ к ресурсам не сконфигурирован")
+        if (!data.resourceIds || data.resourceIds.length === 0) {
+          errors.push("Требуется указать resourceIds для анализа совместимости")
         }
 
-        const result = await this.analyzeCompatibility(input)
+        if (!data.reason) {
+          errors.push("Требуется указать причину анализа совместимости")
+        }
 
-        return result
-      },
-      options,
-    )
+        return { isValid: errors.length === 0, errors }
+      })
+
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(", "))
+      }
+
+      // Проверка доступа к ресурсам
+      if (!hasResourcesAccess()) {
+        throw new Error("Доступ к ресурсам не сконфигурирован")
+      }
+
+      const result = await this.analyzeCompatibility(input)
+
+      return result
+    }, options)
   }
 
   private async analyzeCompatibility(params: CompatibilityAnalysisInput): Promise<CompatibilityAnalysisResult> {

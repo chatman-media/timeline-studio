@@ -56,90 +56,86 @@ export class UsageStatsTool extends BaseAITool {
     input: UsageStatsInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<UsageStatsResult>> {
-    return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
-        // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
-          const errors: string[] = []
+    return this.executeWithErrorHandling(async () => {
+      // Валидация входных данных
+      const validation = this.validateInput(input, (data) => {
+        const errors: string[] = []
 
-          const validOperations = ["get_resource_usage_stats", "cleanup_unused_resources"]
-          if (!validOperations.includes(data.operation)) {
-            errors.push(`Неподдерживаемая операция: ${data.operation}`)
+        const validOperations = ["get_resource_usage_stats", "cleanup_unused_resources"]
+        if (!validOperations.includes(data.operation)) {
+          errors.push(`Неподдерживаемая операция: ${data.operation}`)
+        }
+
+        // Специфичные валидации
+        if (data.operation === "cleanup_unused_resources" && !data.reason) {
+          errors.push("Требуется reason для операции cleanup_unused_resources")
+        }
+
+        return { isValid: errors.length === 0, errors }
+      })
+
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(", "))
+      }
+
+      // Проверка доступа к ресурсам
+      if (!hasResourcesAccess()) {
+        throw new Error("Доступ к ресурсам не сконфигурирован")
+      }
+
+      let result: UsageStatsResult
+
+      switch (input.operation) {
+        case "get_resource_usage_stats":
+          const statsResult = await this.getResourceUsageStats({
+            timeRange: input.timeRange,
+            groupBy: input.groupBy || "type",
+            includeUnused: input.includeUnused ?? true,
+          })
+          if (!statsResult.success) {
+            throw new Error(statsResult.message)
           }
-
-          // Специфичные валидации
-          if (data.operation === "cleanup_unused_resources" && !data.reason) {
-            errors.push("Требуется reason для операции cleanup_unused_resources")
+          result = {
+            operation: input.operation,
+            success: true,
+            analysis: statsResult.data?.analysis,
+            message: statsResult.message,
+            recommendations: statsResult.data?.suggestions || [],
           }
+          break
 
-          return { isValid: errors.length === 0, errors }
-        })
+        case "cleanup_unused_resources":
+          const cleanupResult = await this.cleanupUnusedResources({
+            dryRun: input.dryRun ?? true,
+            criteria: input.criteria || {},
+            reason: input.reason!,
+          })
+          if (!cleanupResult.success) {
+            throw new Error(cleanupResult.message)
+          }
+          result = {
+            operation: input.operation,
+            success: true,
+            analysis: cleanupResult.data?.analysis,
+            removedResources: cleanupResult.data?.removedResources,
+            message: cleanupResult.message,
+            recommendations: cleanupResult.data?.suggestions || [],
+            warnings: cleanupResult.data?.warnings,
+          }
+          break
 
-        if (!validation.isValid) {
-          throw new Error(validation.errors.join(", "))
-        }
+        default:
+          result = {
+            operation: input.operation,
+            success: false,
+            message: "Функция пока не реализована",
+            recommendations: ["Функция будет добавлена в следующих версиях"],
+          }
+          break
+      }
 
-        // Проверка доступа к ресурсам
-        if (!hasResourcesAccess()) {
-          throw new Error("Доступ к ресурсам не сконфигурирован")
-        }
-
-        let result: UsageStatsResult
-
-        switch (input.operation) {
-          case "get_resource_usage_stats":
-            const statsResult = await this.getResourceUsageStats({
-              timeRange: input.timeRange,
-              groupBy: input.groupBy || "type",
-              includeUnused: input.includeUnused ?? true,
-            })
-            if (!statsResult.success) {
-              throw new Error(statsResult.message)
-            }
-            result = {
-              operation: input.operation,
-              success: true,
-              analysis: statsResult.data?.analysis,
-              message: statsResult.message,
-              recommendations: statsResult.data?.suggestions || [],
-            }
-            break
-
-          case "cleanup_unused_resources":
-            const cleanupResult = await this.cleanupUnusedResources({
-              dryRun: input.dryRun ?? true,
-              criteria: input.criteria || {},
-              reason: input.reason!,
-            })
-            if (!cleanupResult.success) {
-              throw new Error(cleanupResult.message)
-            }
-            result = {
-              operation: input.operation,
-              success: true,
-              analysis: cleanupResult.data?.analysis,
-              removedResources: cleanupResult.data?.removedResources,
-              message: cleanupResult.message,
-              recommendations: cleanupResult.data?.suggestions || [],
-              warnings: cleanupResult.data?.warnings,
-            }
-            break
-
-          default:
-            result = {
-              operation: input.operation,
-              success: false,
-              message: "Функция пока не реализована",
-              recommendations: ["Функция будет добавлена в следующих версиях"],
-            }
-            break
-        }
-
-        return result
-      },
-      options,
-    )
+      return result
+    }, options)
   }
 
   private async getResourceUsageStats(params: UsageStatsParams): Promise<ResourceToolResult> {

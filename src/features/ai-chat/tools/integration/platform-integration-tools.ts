@@ -734,7 +734,7 @@ async function executePlatformOptimizationToolOld(toolName: string, input: any):
         throw new Error(`Неизвестный инструмент: ${toolName}`)
     }
   } catch (error) {
-    logger.error(`Ошибка выполнения инструмента ${toolName}:`, error)
+    logger.error(`Ошибка выполнения инструмента ${toolName}:`, { error: String(error) })
     throw error
   }
 }
