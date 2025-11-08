@@ -906,6 +906,155 @@ export function useTimelineMarkers() {
 }
 
 // ===========================
+// Keyframes Provider
+// ===========================
+interface TimelineKeyframesContext {
+  // Получение keyframes
+  getClipKeyframes: (clipId: string) => any[]
+  getPropertyKeyframes: (clipId: string, property: string) => any[]
+
+  // Операции с keyframes
+  addKeyframe: (
+    clipId: string,
+    property: string,
+    time: number,
+    value: any,
+    interpolation?: string,
+    easeIn?: number,
+    easeOut?: number,
+  ) => Promise<void>
+  removeKeyframe: (clipId: string, keyframeId: string) => Promise<void>
+  updateKeyframe: (
+    clipId: string,
+    keyframeId: string,
+    updates: {
+      time?: number
+      value?: any
+      interpolation?: string
+      easeIn?: number
+      easeOut?: number
+    },
+  ) => Promise<void>
+  clearPropertyKeyframes: (clipId: string, property: string) => Promise<void>
+}
+
+const TimelineKeyframesContext = createContext<TimelineKeyframesContext | null>(null)
+
+export function TimelineKeyframesProvider({ children }: { children: ReactNode }) {
+  const backendSync = getBackendSync()
+  const orchestrator = getVideoEditingOrchestrator()
+  const timelineActor = orchestrator.getActors().timeline
+  const project = useSelector(timelineActor, (state) => state.context.project)
+
+  // Получение всех клипов из проекта
+  const clips = useMemo(() => {
+    if (!project?.timeline?.tracks) return []
+    return project.timeline.tracks.flatMap((track) => track.clips || [])
+  }, [project?.timeline?.tracks])
+
+  const getClipKeyframes = useCallback(
+    (clipId: string) => {
+      const clip = clips.find((c) => c.id === clipId)
+      return clip?.keyframes || []
+    },
+    [clips],
+  )
+
+  const getPropertyKeyframes = useCallback(
+    (clipId: string, property: string) => {
+      const keyframes = getClipKeyframes(clipId)
+      return keyframes.filter((kf) => kf.property === property)
+    },
+    [getClipKeyframes],
+  )
+
+  const contextValue: TimelineKeyframesContext = {
+    getClipKeyframes,
+    getPropertyKeyframes,
+    addKeyframe: async (clipId, property, time, value, interpolation = "linear", easeIn, easeOut) => {
+      try {
+        await backendSync.executeCommand({
+          type: "AddKeyframe",
+          params: {
+            clip_id: clipId,
+            property,
+            time,
+            value,
+            interpolation,
+            ease_in: easeIn || null,
+            ease_out: easeOut || null,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to add keyframe:", { error })
+        throw error
+      }
+    },
+    removeKeyframe: async (clipId, keyframeId) => {
+      try {
+        await backendSync.executeCommand({
+          type: "RemoveKeyframe",
+          params: {
+            clip_id: clipId,
+            keyframe_id: keyframeId,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to remove keyframe:", { error })
+        throw error
+      }
+    },
+    updateKeyframe: async (clipId, keyframeId, updates) => {
+      try {
+        await backendSync.executeCommand({
+          type: "UpdateKeyframe",
+          params: {
+            clip_id: clipId,
+            keyframe_id: keyframeId,
+            time: updates.time || null,
+            value: updates.value || null,
+            interpolation: updates.interpolation || null,
+            ease_in: updates.easeIn || null,
+            ease_out: updates.easeOut || null,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to update keyframe:", { error })
+        throw error
+      }
+    },
+    clearPropertyKeyframes: async (clipId, property) => {
+      try {
+        await backendSync.executeCommand({
+          type: "ClearPropertyKeyframes",
+          params: {
+            clip_id: clipId,
+            property,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to clear property keyframes:", { error })
+        throw error
+      }
+    },
+  }
+
+  return <TimelineKeyframesContext.Provider value={contextValue}>{children}</TimelineKeyframesContext.Provider>
+}
+
+export function useTimelineKeyframes() {
+  const context = useContext(TimelineKeyframesContext)
+  if (!context) {
+    throw new Error("useTimelineKeyframes must be used within TimelineKeyframesProvider")
+  }
+  return context
+}
+
+// ===========================
 // Combined Timeline Provider
 // ===========================
 export function TimelineProvider({ children }: { children: ReactNode }) {
@@ -916,7 +1065,9 @@ export function TimelineProvider({ children }: { children: ReactNode }) {
           <TimelineClipsProvider>
             <TimelineSelectionProvider>
               <TimelineEffectsProvider>
-                <TimelineMarkersProvider>{children}</TimelineMarkersProvider>
+                <TimelineMarkersProvider>
+                  <TimelineKeyframesProvider>{children}</TimelineKeyframesProvider>
+                </TimelineMarkersProvider>
               </TimelineEffectsProvider>
             </TimelineSelectionProvider>
           </TimelineClipsProvider>
