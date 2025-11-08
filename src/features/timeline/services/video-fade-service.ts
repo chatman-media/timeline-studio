@@ -3,18 +3,13 @@
  * Provides video fade in/out operations for timeline clips
  */
 
+import type { VideoFadeKeyframe } from "@/domains/video-editing/types"
 import type { TimelineClip } from "../types"
 
 export interface VideoFadeOptions {
   type: "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out"
   duration: number // в секундах
   targetOpacity?: number // конечная прозрачность (0-1)
-}
-
-export interface VideoFadeKeyframe {
-  time: number // время в секундах относительно начала клипа
-  opacity: number // значение прозрачности (0-1)
-  easing?: VideoFadeOptions["type"]
 }
 
 export class VideoFadeService {
@@ -190,7 +185,7 @@ export class VideoFadeService {
     return {
       ...clip,
       fadeIn: undefined,
-      opacityKeyframes: clip.opacityKeyframes?.filter((kf) => kf.time > fadeInDuration) || [],
+      opacityKeyframes: clip.opacityKeyframes?.filter((kf: VideoFadeKeyframe) => kf.time > fadeInDuration) || [],
     }
   }
 
@@ -203,7 +198,7 @@ export class VideoFadeService {
     return {
       ...clip,
       fadeOut: undefined,
-      opacityKeyframes: clip.opacityKeyframes?.filter((kf) => kf.time < fadeOutStartTime) || [],
+      opacityKeyframes: clip.opacityKeyframes?.filter((kf: VideoFadeKeyframe) => kf.time < fadeOutStartTime) || [],
     }
   }
 

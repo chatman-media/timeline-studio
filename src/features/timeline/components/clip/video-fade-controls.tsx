@@ -27,7 +27,9 @@ export const VideoFadeControls = memo(function VideoFadeControls({ clip, classNa
   const handleFadeInChange = useCallback(
     (duration: number, type?: string) => {
       const updatedClip = VideoFadeService.applyFadeIn(clip, {
-        type: (type as any) || "linear",
+        type:
+          (type as "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out") ||
+          "linear",
         duration,
       })
 
@@ -42,7 +44,9 @@ export const VideoFadeControls = memo(function VideoFadeControls({ clip, classNa
   const handleFadeOutChange = useCallback(
     (duration: number, type?: string) => {
       const updatedClip = VideoFadeService.applyFadeOut(clip, {
-        type: (type as any) || "linear",
+        type:
+          (type as "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out") ||
+          "linear",
         duration,
       })
 

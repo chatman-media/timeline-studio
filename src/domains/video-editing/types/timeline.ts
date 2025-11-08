@@ -7,6 +7,12 @@
 import type { AppliedEffect, AppliedFilter, AppliedTransition, EffectType, FilterType, TransitionType } from "./effects"
 import type { MediaFile } from "./media"
 
+export interface VideoFadeKeyframe {
+  time: number // время в секундах относительно начала клипа
+  opacity: number // значение прозрачности (0-1)
+  easing?: "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out"
+}
+
 export interface Timeline {
   id: string
   name: string
@@ -117,7 +123,13 @@ export interface Track {
   parentTrackId?: string
 }
 
-export type TrackType = "video" | "audio" | "image" | "title" | "music" | "voiceover" | "sfx" | "ambient"
+export type TrackType = "video" | "audio" | "image" | "title" | "subtitle" | "music" | "voiceover" | "sfx" | "ambient"
+
+export interface VideoFadeKeyframe {
+  time: number // время в секундах относительно начала клипа
+  opacity: number // значение прозрачности (0-1)
+  easing?: "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out"
+}
 
 export interface TimelineClip {
   id: string
@@ -172,6 +184,25 @@ export interface TimelineClip {
   audioOffset?: number
   linkedClipId?: string
   isLinked?: boolean
+
+  // Video fade эффекты
+  fadeIn?: {
+    duration: number // Длительность fade-in в секундах
+    type?: "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out"
+    keyframes?: VideoFadeKeyframe[]
+  }
+
+  fadeOut?: {
+    duration: number // Длительность fade-out в секундах
+    type?: "linear" | "exponential" | "logarithmic" | "cosine" | "ease-in" | "ease-out" | "ease-in-out"
+    keyframes?: VideoFadeKeyframe[]
+  }
+
+  // Keyframes для анимации opacity
+  opacityKeyframes?: VideoFadeKeyframe[]
+
+  // Keyframe анимации
+  keyframes?: TimelineKeyframe[]
 
   // Metadata
   createdAt: Date
