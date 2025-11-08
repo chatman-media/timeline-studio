@@ -1,6 +1,6 @@
 use crate::state::browser::{BrowserEvent, BrowserTab, SortOrder, ViewMode};
 use crate::state::chat::{ChatCommand, ChatEvent, ChatSession};
-use crate::state::project_state::{Clip, MediaType, ProjectSettings, Track, TrackType};
+use crate::state::project_state::{Clip, MediaType, ProjectSettings, Resolution, Track, TrackType};
 use crate::state::{EventBus, PersistenceService, ProjectEvent, ProjectState};
 use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 use chrono;

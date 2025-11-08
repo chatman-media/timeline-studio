@@ -3,17 +3,16 @@
  */
 
 import { useCallback, useState } from "react"
-
-import type { MediaFile } from "@/features/media/types/media"
+import {
+  applyPlanToTimeline as applyPlanToTimelineService,
+  createMarkersFromPlan as createMarkersFromPlanService,
+  type TimelineIntegrationOptions,
+} from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
+import type { MediaFile } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineActions } from "@/features/timeline/hooks/use-timeline-actions"
 import { useTimelineMarkers } from "@/features/timeline/hooks/use-timeline-markers"
 import { createLogger } from "@/lib/tauri-logger"
-import {
-  applyPlanToTimeline as applyPlanToTimelineService,
-  createMarkersFromPlan,
-  type TimelineIntegrationOptions,
-} from "../services/timeline-integration-service"
 import type { MontagePlan, PlannedClip, Sequence } from "../types"
 
 const logger = createLogger({ module: "UseTimelineIntegration" })
@@ -101,7 +100,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
 
         // Добавляем маркеры если нужно
         if (options.createNewSection) {
-          const markers = createMarkersFromPlan(plan, options.timeOffset || 0)
+          const markers = createMarkersFromPlanService(plan, options.timeOffset || 0)
           addMarkers(markers)
         }
 
@@ -128,7 +127,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
       }
 
       try {
-        const markers = createMarkersFromPlan(plan, timeOffset)
+        const markers = createMarkersFromPlanService(plan, timeOffset)
         addMarkers(markers)
         logger.info(`Added ${markers.length} markers from montage plan`)
       } catch (err) {

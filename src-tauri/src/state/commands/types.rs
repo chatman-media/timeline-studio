@@ -1,6 +1,6 @@
 use crate::state::browser::{BrowserTab, SortOrder, ViewMode};
 use crate::state::chat::ChatCommand;
-use crate::state::project_state::{MediaType, ProjectSettings, TrackType};
+use crate::state::project_state::{Keyframe, MediaType, ProjectSettings, Resolution, TrackType};
 use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 use chrono;
 use serde::{Deserialize, Serialize};
@@ -909,8 +909,9 @@ pub struct FilterConfig {
   pub enabled: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-pub struct Keyframe {
+// Note: Using Keyframe from project_state.rs to avoid duplicate type exports
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KeyframeSimple {
   pub time: f64,
   pub value: serde_json::Value,
   pub easing: Option<String>,
@@ -926,11 +927,8 @@ pub struct RenderSettings {
   pub gpu_acceleration: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-pub struct Resolution {
-  pub width: u32,
-  pub height: u32,
-}
+// Note: Using Resolution from project_state.rs to avoid duplicate type exports
+// Resolution is imported at the top of the file
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct TimeRange {
