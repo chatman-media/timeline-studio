@@ -65,7 +65,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(0)
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: any) => c.id === baseClipId)
+      const baseClip = allClips.find((c) => c.id === baseClipId)
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }
@@ -90,7 +90,11 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
         offset: r.offset,
         confidence: r.confidence,
         method:
-          r.method === "timecode" ? "timecode" : r.method === "creation_time" ? "manual" : ("manual" as SyncMethod),
+          r.method === "timecode"
+            ? "timecode"
+            : r.method === "creation_time"
+              ? "creation_time"
+              : ("manual" as SyncMethod),
       }))
 
       setSyncResults(mappedResults)
@@ -118,7 +122,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       abortControllerRef.current = new AbortController()
 
       // allClips уже доступен из useTimeline
-      const baseClip = allClips.find((c: any) => c.id === baseClipId)
+      const baseClip = allClips.find((c) => c.id === baseClipId)
       if (!baseClip) {
         throw new Error("Базовый клип не найден")
       }

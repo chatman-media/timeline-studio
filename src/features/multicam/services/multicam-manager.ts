@@ -3,20 +3,20 @@
  * Глобальный синглтон для управления мультикамерным монтажом
  */
 
-import { EventEmitter } from "events"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MulticamCommand } from "../types/multicam"
+import { SimpleEventBus } from "../utils/simple-event-bus"
 
 const logger = createLogger({ module: "MulticamManager" })
 
-export interface MulticamManagerEvents {
+export interface MulticamManagerEvents extends Record<string, (...args: any) => void> {
   "camera-switched": (angleIndex: number) => void
   "sync-updated": (angleIndex: number, offset: number) => void
   "angle-added": (clipId: string) => void
   "angle-removed": (angleIndex: number) => void
 }
 
-class MulticamManager extends EventEmitter {
+class MulticamManager extends SimpleEventBus<MulticamManagerEvents> {
   private static instance: MulticamManager
   private currentAngleIndex = 0
   private baseClipId: string | null = null
@@ -76,17 +76,8 @@ class MulticamManager extends EventEmitter {
         this.emit("angle-removed", command.angleIndex)
         break
       default:
-        logger.warn(`[MulticamManager] Unknown command: ${(command as any).type}`)
+        logger.warn("[MulticamManager] Unknown command type")
     }
-  }
-
-  // Типизированные методы для событий
-  on<K extends keyof MulticamManagerEvents>(event: K, listener: MulticamManagerEvents[K]): this {
-    return super.on(event, listener as any)
-  }
-
-  emit<K extends keyof MulticamManagerEvents>(event: K, ...args: Parameters<MulticamManagerEvents[K]>): boolean {
-    return super.emit(event, ...args)
   }
 }
 

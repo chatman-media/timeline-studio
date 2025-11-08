@@ -54,8 +54,7 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
     setSyncStatus("syncing")
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500)) // Имитация задержки
-      void multicam.autoSyncByTimecode()
+      await multicam.autoSyncByTimecode()
       setSyncStatus("success")
       onSyncComplete?.()
 

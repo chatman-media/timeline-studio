@@ -2,10 +2,26 @@
  * Типы для мультикамерной системы
  */
 
+import type { TimelineClip } from "@/features/timeline/types/timeline"
+
 /**
  * Метод синхронизации камер
  */
-export type SyncMethod = "audio" | "timecode" | "manual" | "clapperboard"
+export type SyncMethod = "audio" | "timecode" | "manual" | "clapperboard" | "none" | "creation_time"
+
+/**
+ * Угол камеры в мультикамерной группе
+ */
+export interface MulticamAngle {
+  id: string
+  name: string
+  clipId: string
+  clip: TimelineClip
+  mediaPath?: string
+  preview?: string
+  syncOffset: number
+  isActive: boolean
+}
 
 /**
  * Статус синхронизации

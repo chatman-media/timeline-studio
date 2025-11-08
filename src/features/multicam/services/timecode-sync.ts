@@ -7,6 +7,7 @@ import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"
+import type { SyncResult } from "../types/multicam"
 
 const logger = createLogger({ module: "TimecodeSync" })
 
@@ -15,13 +16,6 @@ export interface TimecodeInfo {
   frameRate: number
   dropFrame: boolean
   totalFrames: number
-}
-
-export interface SyncResult {
-  clipId: string
-  offset: number // Смещение в секундах относительно базового клипа
-  confidence: number // 0-1, уверенность в синхронизации
-  method: "timecode" | "creation_time" | "none"
 }
 
 /**

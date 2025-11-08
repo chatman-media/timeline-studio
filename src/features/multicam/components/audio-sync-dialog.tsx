@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Progress } from "@/components/ui/progress"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import type { AudioSyncProgress, SyncResult } from "../services/audio-sync"
+import type { AudioSyncProgress } from "../services/audio-sync"
+import type { SyncResult } from "../types/multicam"
 
 const logger = createLogger({ module: "AudioSyncDialog" })
 

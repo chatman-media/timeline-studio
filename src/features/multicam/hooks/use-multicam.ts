@@ -7,25 +7,17 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import type { TimelineClip } from "@/features/timeline/types/timeline"
 import { usePlayer } from "@/features/video-player/services/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { multicamManager } from "../services/multicam-manager"
+import type { MulticamAngle } from "../types/multicam"
 import { useCameraSync } from "./use-camera-sync"
 import { useMulticamShortcuts } from "./use-multicam-shortcuts"
 
 const logger = createLogger({ module: "UseMulticam" })
 
-export interface MulticamAngle {
-  id: string
-  name: string
-  clipId: string
-  clip: TimelineClip
-  mediaPath?: string
-  preview?: string
-  syncOffset: number
-  isActive: boolean
-}
+// Ре-экспорт для обратной совместимости
+export type { MulticamAngle }
 
 export interface MulticamState {
   angles: MulticamAngle[]
@@ -78,7 +70,6 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
 
   // Состояние активного угла
   const [activeAngleIndex, setActiveAngleIndex] = useState(0)
-  const [syncOffsets, setSyncOffsets] = useState<number[]>([])
 
   // Получаем все клипы мультикамерной группы
   const multicamClips = useMemo(() => {
@@ -98,11 +89,11 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
         clipId: clip.id,
         clip,
         mediaPath: mediaFile?.path,
-        syncOffset: syncOffsets[index] || 0,
+        syncOffset: cameraSync.getSyncOffset(clip.id),
         isActive: index === activeAngleIndex,
       }
     })
-  }, [multicamClips, activeAngleIndex, syncOffsets, project])
+  }, [multicamClips, activeAngleIndex, project, cameraSync])
 
   // Синхронизируем состояние с менеджером
   useEffect(() => {
@@ -248,9 +239,21 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
   )
 
   // Изменение порядка углов
-  const reorderAngles = useCallback((_fromIndex: number, _toIndex: number) => {
-    // TODO: Реализовать изменение порядка углов
-    logger.info("[useMulticam] Reorder angles - not implemented yet")
+  const reorderAngles = useCallback((fromIndex: number, toIndex: number) => {
+    // TODO: Требует расширения архитектуры
+    // Текущая реализация хранит мультикамерные связи как граф (каждый клип связан с каждым)
+    // Порядок определяется порядком обхода графа в getMulticamGroup
+    //
+    // Для реализации reorder нужно:
+    // 1. Добавить поле multicamOrder?: number в TimelineClip
+    // 2. Обновить getMulticamGroup для сортировки по multicamOrder
+    // 3. Реализовать логику перестановки здесь
+    //
+    // Альтернатива: использовать trackId для визуального порядка
+    // (клипы на разных треках сортируются по trackId)
+
+    logger.info("[useMulticam] Reorder angles:", { fromIndex, toIndex })
+    logger.warn("[useMulticam] reorderAngles requires architecture extension (multicamOrder field)")
   }, [])
 
   // Получение угла по ID клипа
@@ -269,13 +272,16 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
     [angles],
   )
 
+  // Мемоизированные смещения синхронизации
+  const syncOffsets = useMemo(() => angles.map((angle) => cameraSync.getSyncOffset(angle.clipId)), [angles, cameraSync])
+
   return {
     // Состояние
     angles,
     activeAngleIndex,
     activeAngle,
     isSync: cameraSync.syncStatus === "success",
-    syncOffsets: angles.map((angle) => cameraSync.getSyncOffset(angle.clipId)),
+    syncOffsets,
 
     // Методы переключения
     switchToAngle,

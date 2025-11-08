@@ -9,7 +9,7 @@ export { AngleViewer } from "./components/angle-viewer"
 export { SyncControls } from "./components/sync-controls"
 export type { UseCameraSyncProps, UseCameraSyncReturn } from "./hooks/use-camera-sync"
 export { useCameraSync } from "./hooks/use-camera-sync"
-export type { MulticamAngle, MulticamState, UseMulticamReturn } from "./hooks/use-multicam"
+export type { MulticamState, UseMulticamReturn } from "./hooks/use-multicam"
 // Хуки
 export { useMulticam } from "./hooks/use-multicam"
 export { useMulticamShortcuts } from "./hooks/use-multicam-shortcuts"
@@ -20,6 +20,7 @@ export * from "./services/timecode-sync"
 // Типы
 export type {
   CameraSwitchEvent,
+  MulticamAngle,
   MulticamCommand,
   MulticamConfig,
   MulticamDisplaySettings,
@@ -27,4 +28,6 @@ export type {
   SyncAnalysisResult,
   SyncMethod,
   SyncPoint,
+  SyncResult,
+  SyncStatus,
 } from "./types/multicam"
