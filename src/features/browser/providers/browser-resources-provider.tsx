@@ -92,6 +92,10 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   private backendSync = getBackendSync()
   private isBackendConnected = false
 
+  // Кэш для мемоизации результатов getResources
+  private resourcesCache = new Map<string, { resources: Resource[]; timestamp: number }>()
+  private readonly CACHE_TTL = 1000 // 1 секунда
+
   constructor(private config: LoadingConfig) {}
 
   // === Получение ресурсов ===
@@ -110,26 +114,49 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
   getResources<T extends Resource>(type: ResourceType, source?: ResourceSource): T[] {
     const key = source ? `${type}:${source}` : type
-    const resources = this.resources.get(key) || []
 
+    // Если запрашиваем конкретный источник - возвращаем напрямую без кэша
     if (source) {
+      const resources = this.resources.get(key) || []
       return resources as T[]
+    }
+
+    // Проверяем кэш для агрегированных ресурсов
+    const cacheKey = `aggregated:${type}`
+    const cached = this.resourcesCache.get(cacheKey)
+    const now = Date.now()
+
+    if (cached && (now - cached.timestamp) < this.CACHE_TTL) {
+      // Кэш еще актуален - возвращаем закэшированный результат
+      return cached.resources as T[]
     }
 
     // Если источник не указан, объединяем ресурсы из всех загруженных источников
     const allResources: T[] = []
-    logger.debugSync("Looking for resources in loaded sources", {
-      type,
-      loadedSources: Array.from(this.loadingState.loadedSources),
-      availableKeys: Array.from(this.resources.keys()),
-    })
+
+    // Логируем только если кэш устарел или отсутствует
+    if (!cached) {
+      logger.debugSync("Looking for resources in loaded sources", {
+        type,
+        loadedSources: Array.from(this.loadingState.loadedSources),
+        availableKeys: Array.from(this.resources.keys()),
+      })
+    }
 
     for (const loadedSource of this.loadingState.loadedSources) {
       const sourceKey = `${type}:${loadedSource}`
       const sourceResources = this.resources.get(sourceKey) || []
-      logger.debugSync("Checking source resources", { sourceKey, count: sourceResources.length })
+
+      // Логируем только при первой загрузке
+      if (!cached) {
+        logger.debugSync("Checking source resources", { sourceKey, count: sourceResources.length })
+      }
+
       allResources.push(...(sourceResources as T[]))
     }
+
+    // Сохраняем результат в кэш
+    this.resourcesCache.set(cacheKey, { resources: allResources, timestamp: now })
 
     return allResources
   }
@@ -765,6 +792,11 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   private updateLoadingState(updates: Partial<LoadingState>): void {
     this.loadingState = { ...this.loadingState, ...updates }
     this.eventListeners.loadingStateChange.forEach((callback) => callback(this.loadingState))
+
+    // Очищаем кэш агрегированных ресурсов при изменении загруженных источников
+    if (updates.loadedSources) {
+      this.resourcesCache.clear()
+    }
   }
 }
 
