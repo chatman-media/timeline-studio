@@ -78,7 +78,7 @@ export class DialogueGenerator {
         temperature: style.naturalism || 0.8,
         maxTokens: 1500,
       })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     // Парсим ответ в диалоги
     return this.parseDialogueResponse(response, characters, scene)
@@ -101,7 +101,7 @@ Generate only the dialogue line, no attribution or stage directions.`
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.8, maxTokens: 100 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     return this.cleanDialogueLine(response)
   }
@@ -121,7 +121,7 @@ Provide an improved version that sounds more ${style.naturalism > 0.7 ? "natural
 
     const improvedText = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.6, maxTokens: 150 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     return {
       ...dialogue,
@@ -310,7 +310,7 @@ Return only the dialogue line.`
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.7 + intensity * 0.3, maxTokens: 100 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     return this.cleanDialogueLine(response)
   }

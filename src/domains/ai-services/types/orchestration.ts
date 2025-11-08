@@ -3,8 +3,18 @@
  * Pipeline, workflow и оркестрация различных AI сервисов
  */
 
-// REMOVED: import type { ModelConfiguration } from "@/domains/ai-core/types" // ai-core module deleted - use backend AI proxy instead
 import type { ContentAnalysisResult, MediaFile } from "./interfaces"
+
+// Временный тип для замены удаленного ModelConfiguration
+// TODO: Использовать типы из backend AI proxy
+export interface ModelConfiguration {
+  model: string
+  temperature?: number
+  maxTokens?: number
+  topP?: number
+  frequencyPenalty?: number
+  presencePenalty?: number
+}
 
 // Базовые типы для оркестрации
 export interface PipelineStep {

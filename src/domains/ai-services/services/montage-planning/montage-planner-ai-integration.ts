@@ -47,12 +47,9 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
     if (this.initialized) return
 
     try {
-      const container = null as any /* getAIContainer from deleted ai-core */
-
-      // Resolve AI services from DI container
-      this.aiService = await container.resolve<IUnifiedAIService>("UnifiedAIService")
-      this.analysisFactory = await container.resolve<MediaAnalysisFactory>("MediaAnalysisFactory")
-
+      // TODO: Replace with backend AI proxy integration
+      // ai-core module was deleted, need to use backend proxy instead
+      logger.warn("[MontagePlannerAI] AI services initialization skipped - ai-core module deleted")
       this.initialized = true
     } catch (error) {
       logger.error("[MontagePlannerAI] Failed to initialize AI services:", {

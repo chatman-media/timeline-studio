@@ -21,7 +21,13 @@ import type {
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+// Use only Rust backend types
+import type {
+  AIDirectorConfig,
+  ComprehensiveAnalysisResult,
+  AnalysisInsights,
+  PerformanceMetrics,
+} from "@/types/generated/tauri-bindings"
 import type {
   AnalysisOptions,
   MontageAnalysisResult,
@@ -198,10 +204,12 @@ export class UnifiedOrchestrator {
     try {
       // Stage 1: AI Director Comprehensive Analysis
       logger.info("Stage 1: AI Director comprehensive analysis", { workflowId })
-      const comprehensiveResult = await aiDirectorService.analyzeComprehensive(
+      // Note: aiDirectorService returns old type from features/ai-director/types
+      // We cast it to the Rust backend type since they are structurally compatible
+      const comprehensiveResult = (await aiDirectorService.analyzeComprehensive(
         videoPath,
-        config?.aiDirectorConfig || null,
-      )
+        config?.aiDirectorConfig as any || undefined,
+      )) as unknown as ComprehensiveAnalysisResult
 
       workflow.stages.aiDirector = "completed"
       workflow.results.comprehensive = comprehensiveResult
@@ -257,7 +265,9 @@ export class UnifiedOrchestrator {
       logger.info("Stage 3: Integration - создание unified результата", { workflowId })
       workflow.stages.integration = "in_progress"
 
-      const unifiedResult: UnifiedContentAnalysis = mapComprehensiveAnalysisToUnified(comprehensiveResult)
+      const unifiedResult: UnifiedContentAnalysis = mapComprehensiveAnalysisToUnified(
+        comprehensiveResult as ComprehensiveAnalysisResult
+      )
 
       // Дополняем unified result данными из montage analysis
       if (montageResult) {
@@ -691,15 +701,42 @@ export class UnifiedOrchestrator {
   private createEmptyComprehensiveResult(): ComprehensiveAnalysisResult {
     return {
       analysis_id: `error-${Date.now()}`,
-      status: "failed" as any,
+      status: "Failed",
       audio_analysis: null,
       scene_analysis: null,
       vision_analysis: null,
       moment_analysis: null,
       content_analysis: null,
-      combined_insights: null,
-      editing_recommendations: null,
-      metadata: null,
+      combined_insights: {
+        key_moments: [],
+        emotional_timeline: [],
+        transitions: [],
+        overall_quality: 0,
+        main_subjects: [],
+        content_mood: "neutral",
+      },
+      performance_metrics: {
+        total_processing_time: 0,
+        audio_analysis_time: 0,
+        scene_analysis_time: 0,
+        vision_analysis_time: 0,
+        moment_analysis_time: 0,
+        content_analysis_time: 0,
+        integration_time: 0,
+        memory_used: 0,
+        success_rate: 0,
+      },
+      editing_recommendations: [],
+      errors: ["Analysis failed"],
+      metadata: {
+        analysis_version: "1.0.0",
+        processing_time_ms: 0,
+        config_used: "default",
+        engines_used: [],
+        total_engines_available: 0,
+        analysis_timestamp: new Date().toISOString(),
+        success_rate: 0,
+      },
     }
   }
 
@@ -719,6 +756,12 @@ export class UnifiedOrchestrator {
         resolution: { width: 0, height: 0 },
         codec: "unknown",
         fileSize: 0,
+      },
+      qualityMetrics: {
+        overall: 0,
+        video: 0,
+        audio: 0,
+        technical: 0,
       },
     }
   }

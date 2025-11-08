@@ -97,10 +97,10 @@ export class LanguageAdapter {
         const [translatedTitle, translatedDesc] = await Promise.all([
           this.aiService
             .sendRequest("gpt-4", [{ role: "user", content: titlePrompt }], { temperature: 0.3 })
-            .then((r) => r.content),
+            .then((r: { content: string }) => r.content),
           this.aiService
             .sendRequest("gpt-4", [{ role: "user", content: descPrompt }], { temperature: 0.3 })
-            .then((r) => r.content),
+            .then((r: { content: string }) => r.content),
         ])
 
         // Переводим хэштеги
@@ -154,12 +154,12 @@ export class LanguageAdapter {
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.3 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     return response
       .trim()
       .split(/\s+/)
-      .filter((tag) => tag.startsWith("#"))
+      .filter((tag: string) => tag.startsWith("#"))
   }
 
   /**
@@ -206,7 +206,7 @@ export class LanguageAdapter {
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.3 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     // Парсим ответ
     const translatedLines = response.trim().split("\n")
@@ -235,7 +235,7 @@ export class LanguageAdapter {
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0, maxTokens: 10 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     const langCode = response.trim().toLowerCase()
     return this.supportedLanguages.has(langCode) ? langCode : "en"
@@ -261,7 +261,7 @@ export class LanguageAdapter {
 
     const response = await this.aiService
       .sendRequest("gpt-4", [{ role: "user", content: culturalPrompt }], { temperature: 0.5 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     try {
       const suggestions = JSON.parse(response)

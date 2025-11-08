@@ -5,8 +5,7 @@
  * для использования в TypeScript приложении
  */
 
-// For type compatibility
-import type { ComprehensiveAnalysisResult as AIDirectorComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+// Use only types from Rust backend
 import type {
   ComprehensiveAnalysisResult,
   EditingRecommendation,
@@ -145,27 +144,27 @@ export interface UnifiedContentAnalysis {
  * Преобразует ComprehensiveAnalysisResult в UnifiedContentAnalysis
  */
 export function mapComprehensiveAnalysisToUnified(
-  result: ComprehensiveAnalysisResult | AIDirectorComprehensiveAnalysisResult,
+  result: ComprehensiveAnalysisResult,
 ): UnifiedContentAnalysis {
   // Извлекаем scenes и конвертируем в нужный формат
   const scenes =
-    result.scene_analysis?.scenes?.map((scene: SceneAnalysis) => ({
+    result.scene_analysis?.scenes?.map((scene) => ({
       startTime: scene.startTime,
       endTime: scene.endTime,
-      sceneType: String(scene.sceneType),
+      sceneType: String(scene.sceneType || "unknown"),
       confidence: scene.confidence,
       description: scene.description || "",
     })) ?? []
 
   // Извлекаем key moments из combined_insights
   const keyMoments =
-    result.combined_insights?.key_moments?.map((km: KeyMomentInsight) => ({
+    result.combined_insights.key_moments?.map((km: KeyMomentInsight) => ({
       timestamp: km.timestamp,
       duration: km.duration,
       category: km.moment_type,
       score: km.importance,
       description: km.reason, // Используем reason как description
-      tags: [], // Tags не доступны в новой структуре
+      tags: [], // Tags не доступны в KeyMomentInsight
     })) ?? []
 
   return {
@@ -173,7 +172,7 @@ export function mapComprehensiveAnalysisToUnified(
     analysisId: result.analysis_id,
     videoPath: "", // TODO: Передавать из вызывающего кода
     status: mapAnalysisStatus(result.status),
-    createdAt: new Date().toISOString(), // metadata не содержит timestamp
+    createdAt: result.metadata.analysis_timestamp,
     processingTimeMs: result.performance_metrics.total_processing_time,
 
     // Video Info (минимальная информация, т.к. детали не доступны в новой структуре)
@@ -191,9 +190,9 @@ export function mapComprehensiveAnalysisToUnified(
     audioAnalysis: result.audio_analysis
       ? {
           hasAudio: result.audio_analysis.basic_metrics.has_audio,
-          duration: 0, // TODO: Преобразовать из структуры { seconds: number }
+          duration: result.audio_analysis.basic_metrics.duration.seconds,
           channels: result.audio_analysis.basic_metrics.channels,
-          sampleRate: 0, // TODO: Преобразовать из структуры { hz: number }
+          sampleRate: result.audio_analysis.basic_metrics.sample_rate.hz,
           bitrate: result.audio_analysis.basic_metrics.bitrate || 0,
           quality: 0, // TODO: Рассчитать из доступных метрик
 
@@ -232,7 +231,7 @@ export function mapComprehensiveAnalysisToUnified(
 
     // Recommendations
     editingRecommendations:
-      result.editing_recommendations?.map((rec: EditingRecommendation) => ({
+      result.editing_recommendations.map((rec: EditingRecommendation) => ({
         type: rec.recommendation_type,
         description: rec.description,
         confidence: rec.priority / 100,
@@ -241,7 +240,7 @@ export function mapComprehensiveAnalysisToUnified(
           rec.timestamp !== null && rec.duration !== null
             ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
             : undefined,
-      })) ?? [],
+      })),
   }
 }
 

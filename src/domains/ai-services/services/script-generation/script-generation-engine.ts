@@ -184,7 +184,7 @@ export class ScriptGenerationEngine extends BaseAIEngine {
     const prompt = this.buildNarrativeAnalysisPrompt(context)
     const response = await this.aiService
       .sendRequest("claude-4-sonnet-latest", [{ role: "user", content: prompt }], { temperature: 0.3 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     const narrativeType = this.parseNarrativeType(response) || NarrativeType.THREE_ACT
     return this.createNarrativeStructure(narrativeType, context)
@@ -282,7 +282,7 @@ export class ScriptGenerationEngine extends BaseAIEngine {
     const prompt = this.buildSceneGenerationPrompt(sceneAnalysis, act, context, params)
     const response = await this.aiService
       .sendRequest(this.config.ai.model, [{ role: "user", content: prompt }], { temperature: 0.7, maxTokens: 1500 })
-      .then((r) => r.content)
+      .then((r: { content: string }) => r.content)
 
     const parsedScene = this.parseSceneResponse(response, sceneAnalysis)
 
@@ -357,7 +357,7 @@ export class ScriptGenerationEngine extends BaseAIEngine {
             temperature: 0.6,
             maxTokens: 500,
           })
-          .then((r) => r.content)
+          .then((r: { content: string }) => r.content)
 
         scene.audioElements.push({
           type: "VOICEOVER" as AudioElementType,

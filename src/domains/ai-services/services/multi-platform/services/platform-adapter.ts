@@ -283,7 +283,7 @@ export class PlatformAdapter {
         key,
         value: await this.aiService
           .sendRequest("gpt-4", [{ role: "user", content: prompt }], { temperature: 0.7 })
-          .then((r) => r.content),
+          .then((r: { content: string }) => r.content),
       })),
     )
 
