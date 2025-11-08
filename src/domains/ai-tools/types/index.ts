@@ -38,7 +38,7 @@ export type {
   ToolConflict,
   ToolExportResult,
   ToolImportResult,
-  ToolSearchMatch,
+  ToolSearchMatch as ToolSearchMatchFromResults,
   ToolValidationResult,
   ValidationError,
   ValidationWarning,
@@ -70,6 +70,7 @@ export type {
   IToolRegistry,
   LazyLoadingConfig,
   ToolSearchFilters,
+  ToolSearchMatch,
   ToolSearchResult,
 } from "./tool-interfaces"
 

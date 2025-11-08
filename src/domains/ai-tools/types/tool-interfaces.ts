@@ -184,3 +184,27 @@ export interface LazyLoadingConfig {
   cacheSize: number
   unloadTimeout: number
 }
+
+// Результат поиска инструментов (для обратной совместимости)
+export interface ToolSearchResult {
+  query: string
+  totalResults: number
+  executionTime: number
+  tools: ToolSearchMatch[]
+  appliedFilters: Record<string, any>
+  suggestions: string[]
+  metadata: {
+    searchAlgorithm: string
+    indexVersion: string
+    [key: string]: any
+  }
+}
+
+// Совпадение в поиске инструментов
+export interface ToolSearchMatch {
+  toolName: string
+  score: number
+  matchedFields: string[]
+  highlights: Record<string, string>
+  metadata: any
+}
