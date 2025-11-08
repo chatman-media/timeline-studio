@@ -31,16 +31,17 @@ export function calculateProjectDuration(project: TimelineProject): number {
 /**
  * Получает все треки проекта (включая глобальные и из секций)
  */
-export function getAllTracks(project: TimelineProject): TimelineTrack[] {
-  const sectionTracks = project.sections.flatMap((section) => section.tracks)
-  return [...project.globalTracks, ...sectionTracks]
+export function getAllTracks(project: TimelineProject | null | undefined): TimelineTrack[] {
+  if (!project) return []
+  const sectionTracks = (project.sections || []).flatMap((section) => section.tracks || [])
+  return [...(project.globalTracks || []), ...sectionTracks]
 }
 
 /**
  * Получает все клипы проекта
  */
-export function getAllClips(project: TimelineProject): TimelineClip[] {
-  return getAllTracks(project).flatMap((track) => track.clips)
+export function getAllClips(project: TimelineProject | null | undefined): TimelineClip[] {
+  return getAllTracks(project).flatMap((track) => track.clips || [])
 }
 
 /**

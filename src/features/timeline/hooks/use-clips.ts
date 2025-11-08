@@ -39,25 +39,26 @@ const adaptDomainClipToFeatureClip = (
 }
 
 // Локальные утилиты для работы с domain типами
-const getAllClips = (timeline: Timeline) => {
+const getAllClips = (timeline: Timeline | null | undefined) => {
+  if (!timeline) return []
   const clips = []
-  for (const track of timeline.globalTracks) {
-    clips.push(...track.clips)
+  for (const track of timeline.globalTracks || []) {
+    clips.push(...(track.clips || []))
   }
-  for (const section of timeline.sections) {
-    for (const track of section.tracks) {
-      clips.push(...track.clips)
+  for (const section of timeline.sections || []) {
+    for (const track of section.tracks || []) {
+      clips.push(...(track.clips || []))
     }
   }
   return clips
 }
 
-const findClipById = (timeline: Timeline, clipId: string) => {
+const findClipById = (timeline: Timeline | null | undefined, clipId: string) => {
   const allClips = getAllClips(timeline)
   return allClips.find((clip) => clip.id === clipId) || null
 }
 
-const getClipsInTimeRange = (timeline: Timeline, startTime: number, endTime: number) => {
+const getClipsInTimeRange = (timeline: Timeline | null | undefined, startTime: number, endTime: number) => {
   const allClips = getAllClips(timeline)
   return allClips.filter((clip) => {
     const clipEnd = clip.startTime + clip.duration
@@ -65,16 +66,18 @@ const getClipsInTimeRange = (timeline: Timeline, startTime: number, endTime: num
   })
 }
 
-const findNearestClip = (timeline: Timeline, time: number, trackType?: TrackType) => {
+const findNearestClip = (timeline: Timeline | null | undefined, time: number, trackType?: TrackType) => {
+  if (!timeline) return null
   const allClips = getAllClips(timeline)
   let nearestClip = null
   let minDistance = Number.POSITIVE_INFINITY
 
   for (const clip of allClips) {
     if (trackType) {
-      const track = [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)].find(
-        (t) => t.id === clip.trackId,
-      )
+      const track = [
+        ...(timeline.globalTracks || []),
+        ...(timeline.sections?.flatMap((s) => s.tracks || []) || []),
+      ].find((t) => t.id === clip.trackId)
       if (!track || track.type !== trackType) continue
     }
 
@@ -88,12 +91,20 @@ const findNearestClip = (timeline: Timeline, time: number, trackType?: TrackType
   return nearestClip
 }
 
-const canPlaceClipOnTrack = (timeline: Timeline, trackId: string, startTime: number, duration: number) => {
-  const track = [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)].find((t) => t.id === trackId)
+const canPlaceClipOnTrack = (
+  timeline: Timeline | null | undefined,
+  trackId: string,
+  startTime: number,
+  duration: number,
+) => {
+  if (!timeline) return false
+  const track = [...(timeline.globalTracks || []), ...(timeline.sections?.flatMap((s) => s.tracks || []) || [])].find(
+    (t) => t.id === trackId,
+  )
   if (!track) return false
 
   const endTime = startTime + duration
-  return !track.clips.some((clip) => {
+  return !(track.clips || []).some((clip) => {
     const clipEnd = clip.startTime + clip.duration
     return !(startTime >= clipEnd || endTime <= clip.startTime)
   })
@@ -233,13 +244,13 @@ export function useClips(): UseClipsReturn {
       if (!project) return []
 
       // Получаем все треки указанного типа
-      const tracks = project.sections
-        .flatMap((s) => s.tracks)
-        .concat(project.globalTracks)
+      const tracks = (project.sections || [])
+        .flatMap((s) => s.tracks || [])
+        .concat(project.globalTracks || [])
         .filter((track) => track.type === trackType)
 
       // Получаем все клипы с этих треков и преобразуем их
-      const domainClips = tracks.flatMap((track) => track.clips)
+      const domainClips = tracks.flatMap((track) => track.clips || [])
       return domainClips.map((clip) => {
         const mediaFile = project.resources.media.find((file) => file.id === clip.mediaId)
         return adaptDomainClipToFeatureClip(clip, mediaFile)
@@ -409,7 +420,7 @@ export function useClips(): UseClipsReturn {
 
     // Подсчитываем клипы по типам треков
     if (project) {
-      const allTracks = project.sections.flatMap((s) => s.tracks).concat(project.globalTracks)
+      const allTracks = (project.sections || []).flatMap((s) => s.tracks || []).concat(project.globalTracks || [])
       clips.forEach((clip) => {
         const track = allTracks.find((t) => t.id === clip.trackId)
         if (track) {
