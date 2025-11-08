@@ -544,7 +544,7 @@ describe("EffectComparison", () => {
       fireEvent(window, mouseMoveEvent)
 
       // Значение слайдера не должно измениться
-      expect(slider).toHaveAttribute("value", initialValue)
+      expect(slider.getAttribute("value")).toBe(initialValue)
     })
 
     it("должен игнорировать mousemove когда containerRef недоступен", () => {
@@ -571,7 +571,7 @@ describe("EffectComparison", () => {
       fireEvent(window, mouseMoveEvent)
 
       // Значение не должно измениться
-      expect(slider).toHaveValue(initialValue)
+      expect(slider.getAttribute("value")).toBe(initialValue)
     })
 
     it("должен правильно рассчитывать позицию при mousemove на краях", () => {

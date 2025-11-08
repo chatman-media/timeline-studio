@@ -93,6 +93,7 @@ function triggerStateChange() {
       auto_save_interval_seconds: 30,
     },
     browser_state: mockBrowserState,
+    clipboard: null,
     project: null,
     ui_state: {
       selected_clips: [],
@@ -261,6 +262,7 @@ export const mockBackendSync = {
         auto_save_interval_seconds: 30,
       },
       browser_state: mockBrowserState,
+      clipboard: null,
       project: null,
       ui_state: {
         selected_clips: [],

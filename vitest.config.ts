@@ -63,7 +63,6 @@ export default defineConfig({
       ],
       include: ["src/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
-      all: false,
       skipFull: true,
       clean: true,
     },
