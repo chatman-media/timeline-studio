@@ -101,75 +101,77 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
   return (
     <div className="flex flex-col h-full" data-testid="info-settings">
       {/* Основной контент с прокруткой */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-[#2D2D30] scrollbar-thumb-[#464647] hover:scrollbar-thumb-[#5A5A5C]">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground/50 hover:scrollbar-thumb-muted-foreground">
         <div className="p-4 space-y-4">
           {/* Информация о медиафайле */}
           <Collapsible open={openSections.mediaInfo} onOpenChange={() => toggleSection("mediaInfo")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-400" />
                 <FileText className="h-4 w-4 text-blue-400" />
-                <h3 className="font-medium text-white">{t("options.info.mediaInfo", "Media Information")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.info.mediaInfo", "Media Information")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.mediaInfo ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.mediaInfo ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {displayMediaFile ? (
                   <div className="space-y-3">
                     {/* Имя файла */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.fileName", "File Name")}
                       </Label>
                       <div className="flex items-center gap-2">
                         {getMediaTypeIcon(displayMediaFile.type)}
-                        <span className="text-sm text-white">{displayMediaFile.name}</span>
+                        <span className="text-sm text-foreground">{displayMediaFile.name}</span>
                       </div>
                     </div>
 
                     {/* Путь к файлу */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.filePath", "File Path")}
                       </Label>
-                      <span className="text-sm text-gray-400 truncate max-w-64" title={displayMediaFile.path}>
+                      <span className="text-sm text-muted-foreground truncate max-w-64" title={displayMediaFile.path}>
                         {displayMediaFile.path}
                       </span>
                     </div>
 
                     {/* Размер файла */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.fileSize", "File Size")}
                       </Label>
-                      <span className="text-sm text-white">{formatFileSize(displayMediaFile.size || 0)}</span>
+                      <span className="text-sm text-foreground">{formatFileSize(displayMediaFile.size || 0)}</span>
                     </div>
 
                     {/* Длительность */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.duration", "Duration")}
                       </Label>
-                      <span className="text-sm text-white">{formatDuration(displayMediaFile.duration || 0)}</span>
+                      <span className="text-sm text-foreground">{formatDuration(displayMediaFile.duration || 0)}</span>
                     </div>
 
                     {/* Тип файла */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.fileType", "File Type")}
                       </Label>
-                      <span className="text-sm text-white uppercase">{getFileExtension(displayMediaFile.name)}</span>
+                      <span className="text-sm text-foreground uppercase">
+                        {getFileExtension(displayMediaFile.name)}
+                      </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <FileText className="h-12 w-12 mx-auto mb-3 text-gray-600" />
+                  <div className="text-center text-muted-foreground/70 py-8">
+                    <FileText className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
                     <div className="text-sm">{t("options.info.noMediaSelected", "No media file selected")}</div>
-                    <div className="text-xs text-gray-600 mt-1">
+                    <div className="text-xs text-muted-foreground/70 mt-1">
                       {t("options.info.selectMediaHint", "Select a media file or clip to view information")}
                     </div>
                   </div>
@@ -180,67 +182,69 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
 
           {/* Информация о проекте */}
           <Collapsible open={openSections.projectInfo} onOpenChange={() => toggleSection("projectInfo")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <Monitor className="h-4 w-4 text-green-400" />
-                <h3 className="font-medium text-white">{t("options.info.projectInfo", "Project Information")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.info.projectInfo", "Project Information")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.projectInfo ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.projectInfo ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {project ? (
                   <div className="space-y-3">
                     {/* Название проекта */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.projectName", "Project Name")}
                       </Label>
-                      <span className="text-sm text-white">{project.name || "Untitled Project"}</span>
+                      <span className="text-sm text-foreground">{project.name || "Untitled Project"}</span>
                     </div>
 
                     {/* Разрешение */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.resolution", "Resolution")}
                       </Label>
-                      <span className="text-sm text-white">
+                      <span className="text-sm text-foreground">
                         {project.settings?.resolution?.width || 1920} × {project.settings?.resolution?.height || 1080}
                       </span>
                     </div>
 
                     {/* Частота кадров */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.frameRate", "Frame Rate")}
                       </Label>
-                      <span className="text-sm text-white">{project.fps || 30} fps</span>
+                      <span className="text-sm text-foreground">{project.fps || 30} fps</span>
                     </div>
 
                     {/* Длительность проекта */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.projectDuration", "Project Duration")}
                       </Label>
-                      <span className="text-sm text-white">{formatDuration(project.duration || 0)}</span>
+                      <span className="text-sm text-foreground">{formatDuration(project.duration || 0)}</span>
                     </div>
 
                     {/* Количество секций */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.sections", "Sections")}
                       </Label>
-                      <span className="text-sm text-white">{project.sections?.length || 0}</span>
+                      <span className="text-sm text-foreground">{project.sections?.length || 0}</span>
                     </div>
 
                     {/* Количество треков */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">{t("options.info.tracks", "Tracks")}</Label>
-                      <span className="text-sm text-white">
+                      <Label className="text-sm font-medium text-foreground/90">
+                        {t("options.info.tracks", "Tracks")}
+                      </Label>
+                      <span className="text-sm text-foreground">
                         {(project.globalTracks?.length || 0) +
                           (project.sections?.reduce(
                             (sum: number, section: any) => sum + (section.tracks?.length || 0),
@@ -250,8 +254,8 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <Monitor className="h-12 w-12 mx-auto mb-3 text-gray-600" />
+                  <div className="text-center text-muted-foreground/70 py-8">
+                    <Monitor className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
                     <div className="text-sm">{t("options.info.noProject", "No project loaded")}</div>
                   </div>
                 )}
@@ -261,36 +265,38 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
 
           {/* Техническая информация */}
           <Collapsible open={openSections.technicalInfo} onOpenChange={() => toggleSection("technicalInfo")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-400" />
                 <Info className="h-4 w-4 text-yellow-400" />
-                <h3 className="font-medium text-white">{t("options.info.technicalInfo", "Technical Information")}</h3>
+                <h3 className="font-medium text-foreground">
+                  {t("options.info.technicalInfo", "Technical Information")}
+                </h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.technicalInfo ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.technicalInfo ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {displayMediaFile ? (
                   <div className="space-y-3">
                     {/* Видео кодек */}
                     {displayMediaFile.type === "video" && (
                       <>
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium text-gray-300">
+                          <Label className="text-sm font-medium text-foreground/90">
                             {t("options.info.videoCodec", "Video Codec")}
                           </Label>
-                          <span className="text-sm text-white">{displayMediaFile.videoCodec || "Unknown"}</span>
+                          <span className="text-sm text-foreground">{displayMediaFile.videoCodec || "Unknown"}</span>
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium text-gray-300">
+                          <Label className="text-sm font-medium text-foreground/90">
                             {t("options.info.videoBitrate", "Video Bitrate")}
                           </Label>
-                          <span className="text-sm text-white">
+                          <span className="text-sm text-foreground">
                             {displayMediaFile.bitrate ? `${displayMediaFile.bitrate} kbps` : "Unknown"}
                           </span>
                         </div>
@@ -301,36 +307,36 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
                     {(displayMediaFile.type === "audio" || displayMediaFile.type === "video") && (
                       <>
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium text-gray-300">
+                          <Label className="text-sm font-medium text-foreground/90">
                             {t("options.info.audioCodec", "Audio Codec")}
                           </Label>
-                          <span className="text-sm text-white">{displayMediaFile.audioCodec || "Unknown"}</span>
+                          <span className="text-sm text-foreground">{displayMediaFile.audioCodec || "Unknown"}</span>
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium text-gray-300">
+                          <Label className="text-sm font-medium text-foreground/90">
                             {t("options.info.sampleRate", "Sample Rate")}
                           </Label>
-                          <span className="text-sm text-white">
+                          <span className="text-sm text-foreground">
                             {displayMediaFile.sampleRate ? `${displayMediaFile.sampleRate} Hz` : "Unknown"}
                           </span>
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium text-gray-300">
+                          <Label className="text-sm font-medium text-foreground/90">
                             {t("options.info.channels", "Audio Channels")}
                           </Label>
-                          <span className="text-sm text-white">{displayMediaFile.channels || "Unknown"}</span>
+                          <span className="text-sm text-foreground">{displayMediaFile.channels || "Unknown"}</span>
                         </div>
                       </>
                     )}
 
                     {/* Дата создания */}
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.createdAt", "Created")}
                       </Label>
-                      <span className="text-sm text-white">
+                      <span className="text-sm text-foreground">
                         {displayMediaFile.createdAt
                           ? new Date(displayMediaFile.createdAt).toLocaleDateString()
                           : "Unknown"}
@@ -338,8 +344,8 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <Info className="h-12 w-12 mx-auto mb-3 text-gray-600" />
+                  <div className="text-center text-muted-foreground/70 py-8">
+                    <Info className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
                     <div className="text-sm">
                       {t("options.info.noTechnicalInfo", "No technical information available")}
                     </div>
@@ -351,64 +357,64 @@ export function InfoSettings({ selectedMediaFile }: InfoSettingsProps) {
 
           {/* Дополнительная информация */}
           <Collapsible open={openSections.advanced} onOpenChange={() => toggleSection("advanced")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-400" />
                 <Settings className="h-4 w-4 text-purple-400" />
-                <h3 className="font-medium text-white">{t("options.info.advanced", "Advanced Information")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.info.advanced", "Advanced Information")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Информация о выбранном клипе */}
                 {currentClip ? (
                   <div className="space-y-3">
-                    <div className="text-sm font-medium text-gray-300 mb-3">
+                    <div className="text-sm font-medium text-foreground/90 mb-3">
                       {t("options.info.selectedClip", "Selected Clip")}
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.clipName", "Clip Name")}
                       </Label>
-                      <span className="text-sm text-white">{currentClip.name}</span>
+                      <span className="text-sm text-foreground">{currentClip.name}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.clipDuration", "Clip Duration")}
                       </Label>
-                      <span className="text-sm text-white">{formatDuration(currentClip.duration || 0)}</span>
+                      <span className="text-sm text-foreground">{formatDuration(currentClip.duration || 0)}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.clipStartTime", "Start Time")}
                       </Label>
-                      <span className="text-sm text-white">{formatDuration(currentClip.startTime || 0)}</span>
+                      <span className="text-sm text-foreground">{formatDuration(currentClip.startTime || 0)}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.clipVolume", "Volume")}
                       </Label>
-                      <span className="text-sm text-white">{Math.round((currentClip.volume || 1) * 100)}%</span>
+                      <span className="text-sm text-foreground">{Math.round((currentClip.volume || 1) * 100)}%</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.info.clipSpeed", "Speed")}
                       </Label>
-                      <span className="text-sm text-white">{(currentClip.speed || 1).toFixed(2)}x</span>
+                      <span className="text-sm text-foreground">{(currentClip.speed || 1).toFixed(2)}x</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <Settings className="h-12 w-12 mx-auto mb-3 text-gray-600" />
+                  <div className="text-center text-muted-foreground/70 py-8">
+                    <Settings className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
                     <div className="text-sm">{t("options.info.noClipSelected", "No clip selected")}</div>
                   </div>
                 )}

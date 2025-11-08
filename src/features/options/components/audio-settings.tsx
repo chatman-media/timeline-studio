@@ -141,26 +141,26 @@ export function AudioSettings() {
   return (
     <div className="flex flex-col h-full" data-testid="audio-settings">
       {/* Основной контент с прокруткой */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-[#2D2D30] scrollbar-thumb-[#464647] hover:scrollbar-thumb-[#5A5A5C]">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground/50 hover:scrollbar-thumb-muted-foreground">
         <div className="p-4 space-y-4">
           {/* Настройки устройств */}
           <Collapsible open={openSections.deviceSettings} onOpenChange={() => toggleSection("deviceSettings")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-400" />
                 <Headphones className="h-4 w-4 text-blue-400" />
-                <h3 className="font-medium text-white">{t("options.audio.deviceSettings", "Device Settings")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.audio.deviceSettings", "Device Settings")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.deviceSettings ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.deviceSettings ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Частота дискретизации */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.audio.sampleRate", "Sample Rate")}
                   </Label>
                   <Select
@@ -182,7 +182,9 @@ export function AudioSettings() {
 
                 {/* Количество каналов */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">{t("options.audio.channels", "Channels")}</Label>
+                  <Label className="text-sm font-medium text-foreground/90">
+                    {t("options.audio.channels", "Channels")}
+                  </Label>
                   <Select
                     value={settings.channels}
                     onValueChange={(value) => setSettings((prev) => ({ ...prev, channels: value }))}
@@ -202,7 +204,9 @@ export function AudioSettings() {
 
                 {/* Аудиокодек */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">{t("options.audio.codec", "Audio Codec")}</Label>
+                  <Label className="text-sm font-medium text-foreground/90">
+                    {t("options.audio.codec", "Audio Codec")}
+                  </Label>
                   <Select
                     value={settings.codec}
                     onValueChange={(value) => setSettings((prev) => ({ ...prev, codec: value }))}
@@ -225,22 +229,22 @@ export function AudioSettings() {
 
           {/* Микшер и громкость */}
           <Collapsible open={openSections.mixerControls} onOpenChange={() => toggleSection("mixerControls")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <Volume2 className="h-4 w-4 text-green-400" />
-                <h3 className="font-medium text-white">{t("options.audio.mixerControls", "Mixer Controls")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.audio.mixerControls", "Mixer Controls")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.mixerControls ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.mixerControls ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Громкость по умолчанию */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.audio.defaultVolume", "Default Volume")}
                   </Label>
                   <div className="space-y-2">
@@ -251,7 +255,7 @@ export function AudioSettings() {
                       step={1}
                       className="w-full"
                     />
-                    <div className="flex justify-between text-xs text-gray-400">
+                    <div className="flex justify-between text-xs text-muted-foreground">
                       <span>0%</span>
                       <span>{settings.defaultVolume}%</span>
                       <span>100%</span>
@@ -261,7 +265,9 @@ export function AudioSettings() {
 
                 {/* Битрейт */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">{t("options.audio.bitrate", "Bitrate")}</Label>
+                  <Label className="text-sm font-medium text-foreground/90">
+                    {t("options.audio.bitrate", "Bitrate")}
+                  </Label>
                   <Select
                     value={settings.bitrate}
                     onValueChange={(value) => setSettings((prev) => ({ ...prev, bitrate: value }))}
@@ -286,7 +292,7 @@ export function AudioSettings() {
                     checked={settings.autoGain}
                     onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoGain: !!checked }))}
                   />
-                  <Label htmlFor="auto-gain" className="text-sm text-gray-300">
+                  <Label htmlFor="auto-gain" className="text-sm text-foreground/90">
                     {t("options.audio.autoGain", "Automatic gain control")}
                   </Label>
                 </div>
@@ -296,19 +302,19 @@ export function AudioSettings() {
 
           {/* Аудио эффекты (Fairlight) */}
           <Collapsible open={openSections.effects} onOpenChange={() => toggleSection("effects")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-400" />
                 <Zap className="h-4 w-4 text-yellow-400" />
-                <h3 className="font-medium text-white">{t("options.audio.effects", "Audio Effects")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.audio.effects", "Audio Effects")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.effects ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.effects ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Эффекты в виде карточек */}
                 <div className="grid grid-cols-2 gap-3">
                   {/* Шумоподавление */}
@@ -316,19 +322,19 @@ export function AudioSettings() {
                     className={`p-3 rounded-lg border transition-all cursor-pointer ${
                       settings.noiseReduction
                         ? "border-blue-500 bg-blue-500/10"
-                        : "border-[#464647] bg-[#1E1E1E] hover:border-blue-400"
+                        : "border-border bg-background hover:border-blue-400"
                     }`}
                     onClick={() => setSettings((prev) => ({ ...prev, noiseReduction: !prev.noiseReduction }))}
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Filter className={`h-4 w-4 ${settings.noiseReduction ? "text-blue-400" : "text-gray-400"}`} />
                       <span
-                        className={`text-sm font-medium ${settings.noiseReduction ? "text-blue-400" : "text-gray-300"}`}
+                        className={`text-sm font-medium ${settings.noiseReduction ? "text-blue-400" : "text-foreground/90"}`}
                       >
                         {t("options.audio.noiseReduction", "Noise Reduction")}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                       {t("options.audio.noiseReductionDesc", "Remove background noise")}
                     </div>
                   </div>
@@ -338,7 +344,7 @@ export function AudioSettings() {
                     className={`p-3 rounded-lg border transition-all cursor-pointer ${
                       settings.compressorEnabled
                         ? "border-orange-500 bg-orange-500/10"
-                        : "border-[#464647] bg-[#1E1E1E] hover:border-orange-400"
+                        : "border-border bg-background hover:border-orange-400"
                     }`}
                     onClick={() => setSettings((prev) => ({ ...prev, compressorEnabled: !prev.compressorEnabled }))}
                   >
@@ -347,12 +353,12 @@ export function AudioSettings() {
                         className={`h-4 w-4 ${settings.compressorEnabled ? "text-orange-400" : "text-gray-400"}`}
                       />
                       <span
-                        className={`text-sm font-medium ${settings.compressorEnabled ? "text-orange-400" : "text-gray-300"}`}
+                        className={`text-sm font-medium ${settings.compressorEnabled ? "text-orange-400" : "text-foreground/90"}`}
                       >
                         {t("options.audio.compressor", "Compressor")}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                       {t("options.audio.compressorDesc", "Dynamic range control")}
                     </div>
                   </div>
@@ -362,7 +368,7 @@ export function AudioSettings() {
                     className={`p-3 rounded-lg border transition-all cursor-pointer ${
                       settings.equalizerEnabled
                         ? "border-green-500 bg-green-500/10"
-                        : "border-[#464647] bg-[#1E1E1E] hover:border-green-400"
+                        : "border-border bg-background hover:border-green-400"
                     }`}
                     onClick={() => setSettings((prev) => ({ ...prev, equalizerEnabled: !prev.equalizerEnabled }))}
                   >
@@ -371,12 +377,12 @@ export function AudioSettings() {
                         className={`h-4 w-4 ${settings.equalizerEnabled ? "text-green-400" : "text-gray-400"}`}
                       />
                       <span
-                        className={`text-sm font-medium ${settings.equalizerEnabled ? "text-green-400" : "text-gray-300"}`}
+                        className={`text-sm font-medium ${settings.equalizerEnabled ? "text-green-400" : "text-foreground/90"}`}
                       >
                         {t("options.audio.equalizer", "Equalizer")}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                       {t("options.audio.equalizerDesc", "Frequency adjustment")}
                     </div>
                   </div>
@@ -386,26 +392,30 @@ export function AudioSettings() {
                     className={`p-3 rounded-lg border transition-all cursor-pointer ${
                       settings.reverbEnabled
                         ? "border-purple-500 bg-purple-500/10"
-                        : "border-[#464647] bg-[#1E1E1E] hover:border-purple-400"
+                        : "border-border bg-background hover:border-purple-400"
                     }`}
                     onClick={() => setSettings((prev) => ({ ...prev, reverbEnabled: !prev.reverbEnabled }))}
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Speaker className={`h-4 w-4 ${settings.reverbEnabled ? "text-purple-400" : "text-gray-400"}`} />
                       <span
-                        className={`text-sm font-medium ${settings.reverbEnabled ? "text-purple-400" : "text-gray-300"}`}
+                        className={`text-sm font-medium ${settings.reverbEnabled ? "text-purple-400" : "text-foreground/90"}`}
                       >
                         {t("options.audio.reverb", "Reverb")}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">{t("options.audio.reverbDesc", "Spatial audio effect")}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("options.audio.reverbDesc", "Spatial audio effect")}
+                    </div>
                   </div>
                 </div>
 
                 {/* Статус эффектов */}
-                <div className="mt-4 p-3 bg-[#1E1E1E] rounded border border-[#464647]">
+                <div className="mt-4 p-3 bg-background rounded border border-border">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="text-xs text-gray-400">{t("options.audio.effectsStatus", "Effects Status")}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("options.audio.effectsStatus", "Effects Status")}
+                    </div>
                     <div className="flex items-center gap-1">
                       {[
                         settings.noiseReduction,
@@ -413,7 +423,7 @@ export function AudioSettings() {
                         settings.equalizerEnabled,
                         settings.reverbEnabled,
                       ].filter(Boolean).length > 0 && <div className="w-2 h-2 rounded-full bg-green-400" />}
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-muted-foreground">
                         {
                           [
                             settings.noiseReduction,
@@ -431,14 +441,14 @@ export function AudioSettings() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <Music className="h-3 w-3 text-blue-400" />
-                        <span className="text-sm text-white">{currentAudioClip.name}</span>
+                        <span className="text-sm text-foreground">{currentAudioClip.name}</span>
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-muted-foreground">
                         {t("options.audio.duration", "Duration")}: {Math.round(currentAudioClip.duration || 0)}s
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center text-gray-500 text-sm">
+                    <div className="text-center text-muted-foreground/70 text-sm">
                       {t("options.audio.noClipSelected", "No audio clip selected")}
                     </div>
                   )}
@@ -449,22 +459,22 @@ export function AudioSettings() {
 
           {/* Дополнительные настройки */}
           <Collapsible open={openSections.advanced} onOpenChange={() => toggleSection("advanced")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-400" />
                 <Settings className="h-4 w-4 text-purple-400" />
-                <h3 className="font-medium text-white">{t("options.audio.advanced", "Advanced Settings")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.audio.advanced", "Advanced Settings")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Размер буфера */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.audio.bufferSize", "Buffer Size (samples)")}
                   </Label>
                   <Input
@@ -482,7 +492,7 @@ export function AudioSettings() {
 
                 {/* Задержка */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.audio.latency", "Latency (ms)")}
                   </Label>
                   <Input
@@ -504,7 +514,7 @@ export function AudioSettings() {
       </div>
 
       {/* Нижняя панель с кнопками */}
-      <div className="flex-shrink-0 bg-[#2D2D30] border-t border-[#464647] p-3">
+      <div className="flex-shrink-0 bg-card border-t border-border p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Fairlight интеграция */}
@@ -518,9 +528,9 @@ export function AudioSettings() {
             </Button>
 
             {/* Индикатор MIDI */}
-            <div className="flex items-center gap-1 px-2 py-1 bg-[#1E1E1E] rounded border border-[#464647]">
+            <div className="flex items-center gap-1 px-2 py-1 bg-background rounded border border-border">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-gray-400">MIDI</span>
+              <span className="text-xs text-muted-foreground">MIDI</span>
             </div>
           </div>
           <div className="flex items-center gap-2">

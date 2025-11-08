@@ -136,26 +136,26 @@ export function SpeedSettings() {
   return (
     <div className="flex flex-col h-full" data-testid="speed-settings">
       {/* Основной контент с прокруткой */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-[#2D2D30] scrollbar-thumb-[#464647] hover:scrollbar-thumb-[#5A5A5C]">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground/50 hover:scrollbar-thumb-muted-foreground">
         <div className="p-4 space-y-4">
           {/* Базовые настройки скорости */}
           <Collapsible open={openSections.basicSpeed} onOpenChange={() => toggleSection("basicSpeed")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-400" />
                 <Play className="h-4 w-4 text-blue-400" />
-                <h3 className="font-medium text-white">{t("options.speed.basicSpeed", "Basic Speed")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.speed.basicSpeed", "Basic Speed")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.basicSpeed ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.basicSpeed ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Быстрые пресеты */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.quickPresets", "Quick Presets")}
                   </Label>
                   <div className="grid grid-cols-4 gap-2">
@@ -175,7 +175,7 @@ export function SpeedSettings() {
 
                 {/* Пользовательская скорость */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.customSpeed", "Custom Speed")}
                   </Label>
                   <div className="flex items-center space-x-3">
@@ -190,7 +190,7 @@ export function SpeedSettings() {
                       step="0.1"
                       className="w-20 h-8"
                     />
-                    <span className="text-sm text-gray-400">x</span>
+                    <span className="text-sm text-muted-foreground">x</span>
                     <Slider
                       value={[settings.customSpeed]}
                       onValueChange={([value]) => setSettings((prev) => ({ ...prev, customSpeed: value }))}
@@ -209,7 +209,7 @@ export function SpeedSettings() {
                     checked={settings.preservePitch}
                     onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, preservePitch: !!checked }))}
                   />
-                  <Label htmlFor="preserve-pitch-basic" className="text-sm text-gray-300">
+                  <Label htmlFor="preserve-pitch-basic" className="text-sm text-foreground/90">
                     {t("options.speed.preservePitch", "Preserve pitch when changing speed")}
                   </Label>
                 </div>
@@ -219,22 +219,22 @@ export function SpeedSettings() {
 
           {/* Speed Ramping */}
           <Collapsible open={openSections.speedRamping} onOpenChange={() => toggleSection("speedRamping")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <Zap className="h-4 w-4 text-green-400" />
-                <h3 className="font-medium text-white">{t("options.speed.speedRamping", "Speed Ramping")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.speed.speedRamping", "Speed Ramping")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.speedRamping ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.speedRamping ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Speed Ramping пресеты */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.rampingPresets", "Ramping Presets")}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
@@ -254,17 +254,17 @@ export function SpeedSettings() {
 
                 {/* Визуальный редактор кривой скорости */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.speedCurve", "Speed Curve")}
                   </Label>
-                  <div className="bg-[#1E1E1E] rounded border border-[#464647] p-2 h-32 flex items-center justify-center">
+                  <div className="bg-background rounded border border-border p-2 h-32 flex items-center justify-center">
                     {currentClip ? (
-                      <div className="text-center text-gray-400">
+                      <div className="text-center text-muted-foreground">
                         <div className="text-sm">Speed Curve Editor</div>
                         <div className="text-xs mt-1">Clip: {currentClip.name}</div>
                       </div>
                     ) : (
-                      <div className="text-center text-gray-500">
+                      <div className="text-center text-muted-foreground/70">
                         <div className="text-sm">Select a clip to edit speed curve</div>
                       </div>
                     )}
@@ -278,7 +278,7 @@ export function SpeedSettings() {
                     checked={settings.autoKeyframes}
                     onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoKeyframes: !!checked }))}
                   />
-                  <Label htmlFor="maintain-duration" className="text-sm text-gray-300">
+                  <Label htmlFor="maintain-duration" className="text-sm text-foreground/90">
                     {t("options.speed.maintainDuration", "Maintain clip duration")}
                   </Label>
                 </div>
@@ -288,24 +288,24 @@ export function SpeedSettings() {
 
           {/* Интерполяция кадров */}
           <Collapsible open={openSections.interpolation} onOpenChange={() => toggleSection("interpolation")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-400" />
                 <Gauge className="h-4 w-4 text-yellow-400" />
-                <h3 className="font-medium text-white">
+                <h3 className="font-medium text-foreground">
                   {t("options.speed.frameInterpolation", "Frame Interpolation")}
                 </h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.interpolation ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.interpolation ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Метод интерполяции */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.interpolationMethod", "Interpolation Method")}
                   </Label>
                   <Select
@@ -327,7 +327,7 @@ export function SpeedSettings() {
 
                 {/* Motion Blur */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.motionBlurTitle", "Motion Blur")}
                   </Label>
                   <Select
@@ -355,14 +355,14 @@ export function SpeedSettings() {
                       checked={settings.smoothPlayback}
                       onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, smoothPlayback: !!checked }))}
                     />
-                    <Label htmlFor="smooth-playback" className="text-sm text-gray-300">
+                    <Label htmlFor="smooth-playback" className="text-sm text-foreground/90">
                       {t("options.speed.smoothPlayback", "Smooth Playback")}
                     </Label>
                   </div>
 
                   {settings.smoothPlayback && (
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-gray-300">
+                      <Label className="text-sm font-medium text-foreground/90">
                         {t("options.speed.smoothnessLevel", "Smoothness Level")}
                       </Label>
                       <div className="space-y-2">
@@ -373,7 +373,7 @@ export function SpeedSettings() {
                           step={1}
                           className="w-full"
                         />
-                        <div className="flex justify-between text-xs text-gray-400">
+                        <div className="flex justify-between text-xs text-muted-foreground">
                           <span>{t("options.speed.performance", "Performance")}</span>
                           <span>{settings.smoothnessLevel}%</span>
                           <span>{t("options.speed.quality", "Quality")}</span>
@@ -388,19 +388,19 @@ export function SpeedSettings() {
 
           {/* Дополнительные настройки */}
           <Collapsible open={openSections.advanced} onOpenChange={() => toggleSection("advanced")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-400" />
                 <Settings className="h-4 w-4 text-purple-400" />
-                <h3 className="font-medium text-white">{t("options.speed.advanced", "Advanced Settings")}</h3>
+                <h3 className="font-medium text-foreground">{t("options.speed.advanced", "Advanced Settings")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
                 {/* Автоматические ключевые кадры */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -408,14 +408,14 @@ export function SpeedSettings() {
                     checked={settings.autoKeyframes}
                     onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoKeyframes: !!checked }))}
                   />
-                  <Label htmlFor="auto-keyframes" className="text-sm text-gray-300">
+                  <Label htmlFor="auto-keyframes" className="text-sm text-foreground/90">
                     {t("options.speed.autoKeyframes", "Auto keyframes")}
                   </Label>
                 </div>
 
                 {/* Максимальная скорость */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-300">
+                  <Label className="text-sm font-medium text-foreground/90">
                     {t("options.speed.maxSpeed", "Maximum Speed")}
                   </Label>
                   <div className="flex items-center space-x-3">
@@ -430,7 +430,7 @@ export function SpeedSettings() {
                       step="1"
                       className="w-20 h-8"
                     />
-                    <span className="text-sm text-gray-400">x</span>
+                    <span className="text-sm text-muted-foreground">x</span>
                   </div>
                 </div>
               </div>
@@ -440,7 +440,7 @@ export function SpeedSettings() {
       </div>
 
       {/* Нижняя панель с кнопками */}
-      <div className="flex-shrink-0 bg-[#2D2D30] border-t border-[#464647] p-3">
+      <div className="flex-shrink-0 bg-card border-t border-border p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Пресеты */}
