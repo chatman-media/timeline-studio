@@ -38,13 +38,13 @@
 
 Current Team:
 • Alexander Kireyev - Tech Director/CTO (founder)
-  └─ $0 salary first 6 months (founder equity)
-  └─ Roles: CEO, Product, Backend, Frontend
+  └─ $2,500/month × 6 = $15,000
+  └─ Roles: CEO, Product, Backend, Frontend, Tech Lead
 
 New Hires (4 people):
 
 1. Senior AI/ML Engineer (Universal AI Specialist)
-   • Salary: $6,000/month × 6 = $36,000
+   • Salary: $4,700/month × 6 = $28,200
    • Location: Remote (Eastern Europe / Asia)
    • Experience: 7+ years ML (Computer Vision + NLP)
    • Universal specialist - does the work of two:
@@ -56,7 +56,7 @@ New Hires (4 people):
    • Justification: One senior does the work of senior + mid engineer
 
 2. Senior Rust Engineer
-   • Salary: $4,500/month × 6 = $27,000
+   • Salary: $4,000/month × 6 = $24,000
    • Location: Remote (Eastern Europe / LatAm)
    • Experience: 5+ years Rust, systems programming
    • Responsibilities:
@@ -67,7 +67,7 @@ New Hires (4 people):
      - Backend API development
 
 3. Senior UI/UX Designer
-   • Salary: $4,000/month × 6 = $24,000
+   • Salary: $3,500/month × 6 = $21,000
    • Location: Remote (Eastern Europe / LatAm)
    • Experience: 5+ years product design, video editing UX
    • Responsibilities:
@@ -78,7 +78,7 @@ New Hires (4 people):
      - Marketing assets (landing page, social media)
 
 4. Growth Marketing Specialist (Mid-level)
-   • Salary: $2,500/month × 6 = $15,000
+   • Salary: $2,000/month × 6 = $12,000
    • Location: Remote (Eastern Europe / LatAm)
    • Experience: 3-5 years growth marketing, SaaS
    • Responsibilities:
@@ -88,7 +88,7 @@ New Hires (4 people):
      - Community building (Discord, Twitter)
      - Social media management
 
-Team Total: $100,000
+Team Total: $100,200
 ```
 
 ```
