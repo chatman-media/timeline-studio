@@ -9,9 +9,9 @@
  * 5. Интеграция с системой ресурсов (эффекты, фильтры, переходы)
  */
 
+import type { MediaFile } from "@/domains/video-editing/types"
 import type { VideoEffect } from "../../effects/types"
 import type { VideoFilter } from "../../filters/types/filters"
-import type { MediaFile } from "../../media/types/media"
 import type { StyleTemplate } from "../../style-templates/types/style-template"
 import type { SubtitleClip } from "../../subtitles/types"
 import type { MediaTemplate } from "../../templates/lib/template-config"

@@ -30,7 +30,7 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
 
     return Array.from(groups.entries()).map(([property, keyframes]) => ({
       property,
-      keyframes: keyframes.sort((a, b) => a.time - b.time),
+      keyframes: keyframes.sort((a: { time: number }, b: { time: number }) => a.time - b.time),
       color: getPropertyColor(property),
     }))
   }, [clip.keyframes])
@@ -41,7 +41,7 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
     <div className={cn("absolute inset-0 pointer-events-none", className)}>
       {keyframeGroups.map(({ property, keyframes, color }, groupIndex) => (
         <div key={property} className="relative h-full">
-          {keyframes.map((keyframe, index) => {
+          {keyframes.map((keyframe: { id: string; time: number }, index: number) => {
             const leftPosition = (keyframe.time / clip.duration) * 100
 
             return (

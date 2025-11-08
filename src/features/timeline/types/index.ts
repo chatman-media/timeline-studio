@@ -1,22 +1,22 @@
 // Экспорт всех типов timeline
 // Реэкспорт основных типов из domains для обратной совместимости
+// Локальные типы и алиасы для обратной совместимости
 export type {
   AppliedEffect,
   AppliedFilter,
   AppliedTransition,
   Section,
+  Section as TimelineSection,
+  Timeline as TimelineProject,
   TimelineClip,
   TimelineKeyframe,
-  TimelineProject,
   TimelineTransition,
   Track,
+  Track as TimelineTrack,
 } from "@/domains/video-editing/types"
-
-// Локальные типы и алиасы для обратной совместимости
-export type { Track as TimelineTrack, Section as TimelineSection } from "@/domains/video-editing/types"
-
+export * from "./factories"
 // Export TrackType from timeline.ts
 export type { TrackType } from "./timeline"
-
-export * from "./factories"
+// Export utility functions from timeline module
+export { isSubtitleClip } from "./timeline"
 export * from "./timeline-transition"
