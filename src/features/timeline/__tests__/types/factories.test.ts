@@ -18,7 +18,6 @@ describe("Timeline Factories", () => {
 
       expect(project).toHaveProperty("id")
       expect(project.name).toBe("Test Project")
-      expect(project.description).toBe("")
       expect(project.duration).toBe(0)
       expect(project.fps).toBe(30)
       expect(project.sampleRate).toBe(48000)

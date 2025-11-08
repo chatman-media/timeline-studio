@@ -1,8 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaType } from "@/features/media/types/media"
-
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 import { useTimeline } from "../../hooks/use-timeline"
 
@@ -44,10 +42,9 @@ const mockProject: TimelineProject = {
                 id: "media-1",
                 name: "video.mp4",
                 path: "/path/to/video.mp4",
-                type: "video" as MediaType,
+                type: "video" as any,
                 duration: 20,
                 size: 1000000,
-                isVideo: true,
                 createdAt: new Date(),
               },
               trackId: "video-track",
@@ -98,10 +95,9 @@ const mockProject: TimelineProject = {
                 id: "media-2",
                 name: "audio.mp3",
                 path: "/path/to/audio.mp3",
-                type: "audio" as MediaType,
+                type: "audio" as any,
                 duration: 20,
                 size: 500000,
-                isVideo: false,
                 createdAt: new Date(),
               },
               trackId: "audio-track",
@@ -285,8 +281,8 @@ describe("useJLCuts", () => {
   it("should identify video clips correctly", () => {
     const { result } = renderHook(() => useJLCuts(), {})
 
-    const videoClip = mockProject.sections[0].tracks[0].clips[0]
-    const audioClip = mockProject.sections[0].tracks[1].clips[0]
+    const videoClip = mockProject.sections[0].tracks[0].clips[0] as any
+    const audioClip = mockProject.sections[0].tracks[1].clips[0] as any
 
     expect(result.current.isVideoClip(videoClip)).toBe(true)
     expect(result.current.isVideoClip(audioClip)).toBe(false)
@@ -295,8 +291,8 @@ describe("useJLCuts", () => {
   it("should identify audio clips correctly", () => {
     const { result } = renderHook(() => useJLCuts(), {})
 
-    const videoClip = mockProject.sections[0].tracks[0].clips[0]
-    const audioClip = mockProject.sections[0].tracks[1].clips[0]
+    const videoClip = mockProject.sections[0].tracks[0].clips[0] as any
+    const audioClip = mockProject.sections[0].tracks[1].clips[0] as any
 
     expect(result.current.isAudioClip(audioClip)).toBe(true)
     expect(result.current.isAudioClip(videoClip)).toBe(false)

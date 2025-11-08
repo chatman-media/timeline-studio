@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { TimelineClip } from "../../../types/timeline"
+import type { TimelineClip } from "@/domains/video-editing/types"
 import { JLCutTool } from "../jl-cut-tool"
 
 // Mock hooks
@@ -49,21 +49,31 @@ const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => 
     id: "media-1",
     name: "test.mp4",
     path: "/test.mp4",
+    type: "video" as any,
     duration: 10,
     size: 1000,
     createdAt: new Date(),
-    isAudio: false,
-    isVideo: true,
-    isImage: false,
-    type: "video" as any,
   },
   mediaStartTime: 0,
   volume: 1,
   opacity: 1,
   isReversed: false,
   speed: 1,
+  playbackRate: 1,
   trackId: "track-1",
   mediaEndTime: 10,
+  sourceIn: 0,
+  sourceOut: 10,
+  isMuted: false,
+  position: {
+    x: 0,
+    y: 0,
+    width: 1920,
+    height: 1080,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+  },
   isSelected: false,
   isLocked: false,
   createdAt: new Date(),

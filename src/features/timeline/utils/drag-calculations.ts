@@ -2,7 +2,7 @@
  * Utilities for drag and drop position calculations
  */
 
-import type { MediaFile } from "../../media/types/media"
+import { type MediaFile, MediaType } from "../../media/types/media"
 
 import type { TimelineClip, TimelineProject, TrackType } from "../types"
 
@@ -79,7 +79,7 @@ export function snapToTargets(
 
   // Marker snapping
   if (snapMode === "markers" && project?.markers) {
-    const markerTargets = getMarkerSnapTargets(project.markers, position, timeScale, snapThreshold)
+    const markerTargets = getMarkerSnapTargets(project.markers as any, position, timeScale, snapThreshold)
     snapTargets.push(...markerTargets)
   }
 
@@ -137,14 +137,9 @@ export function getTrackTypeForMediaFile(mediaFile: MediaFile): TrackType {
     return "video" // Images are displayed on video tracks
   }
 
-  // Check metadata if available
-  if (mediaFile.probeData?.streams) {
-    const hasVideo = mediaFile.probeData.streams.some((stream) => stream.codec_type === "video")
-    const hasAudio = mediaFile.probeData.streams.some((stream) => stream.codec_type === "audio")
-
-    if (hasVideo) return "video"
-    if (hasAudio) return "audio"
-  }
+  // Check media type from file
+  if (mediaFile.type === MediaType.Video) return "video"
+  if (mediaFile.type === MediaType.Audio) return "audio"
 
   // Default to video track
   return "video"

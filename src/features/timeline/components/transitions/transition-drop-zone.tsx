@@ -57,7 +57,8 @@ export const TransitionDropZone = memo(function TransitionDropZone({
       const transition = item.data as Transition
 
       // Определяем длительность перехода (по умолчанию 1 секунда)
-      const duration = transition.duration || 1.0
+      const duration =
+        typeof transition.duration === "number" ? transition.duration : transition.duration?.default || 1.0
 
       // Применяем переход к обоим клипам
       // Переход начинается за duration/2 до конца левого клипа

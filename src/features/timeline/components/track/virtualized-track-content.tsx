@@ -94,7 +94,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
   )
 
   const handleTransitionDrop = useCallback(
-    async (leftClipId: string, rightClipId: string, transition: Record<string, any>) => {
+    async (leftClipId: string, rightClipId: string, transition: any) => {
       if (!project) return
 
       try {
@@ -250,25 +250,37 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
             const inTransition = rightClip.transitions?.find((t) => t.type === "in")
 
             if (outTransition && inTransition && outTransition.transitionId === inTransition.transitionId) {
-              return (
-                <TimelineTransitionComponent
-                  key={`transition-${leftClip.id}-${rightClip.id}`}
-                  leftClipId={leftClip.id}
-                  rightClipId={rightClip.id}
-                  leftClipEnd={leftClip.startTime + leftClip.duration}
-                  rightClipStart={rightClip.startTime}
-                  transition={outTransition}
-                  timeScale={timeScale}
-                  trackHeight={track.height}
-                  onUpdate={(updates) => {
-                    logger.info("Updating transition:", { transitionId: outTransition.id, updates })
-                  }}
-                  onDelete={async () => {
-                    logger.info("Deleting transition:", { transitionId: outTransition.id })
-                    await saveProject()
-                  }}
-                />
-              )
+              // Найдем соответствующий TimelineTransition из ресурсов
+              const timelineTransition = trackTransitions.find((t) => t.id === outTransition.transitionId)
+              if (timelineTransition) {
+                // Создаем совместимый объект для компонента из разных типов TimelineTransition
+                const compatibleTransition: any = {
+                  ...(timelineTransition as any),
+                  name: "Transition",
+                  startTime: leftClip.startTime + leftClip.duration - timelineTransition.duration / 2,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                }
+                return (
+                  <TimelineTransitionComponent
+                    key={`transition-${leftClip.id}-${rightClip.id}`}
+                    leftClipId={leftClip.id}
+                    rightClipId={rightClip.id}
+                    leftClipEnd={leftClip.startTime + leftClip.duration}
+                    rightClipStart={rightClip.startTime}
+                    transition={compatibleTransition}
+                    timeScale={timeScale}
+                    trackHeight={track.height}
+                    onUpdate={(updates) => {
+                      logger.info("Updating transition:", { transitionId: outTransition.id, updates })
+                    }}
+                    onDelete={async () => {
+                      logger.info("Deleting transition:", { transitionId: outTransition.id })
+                      await saveProject()
+                    }}
+                  />
+                )
+              }
             }
 
             // Зона для сброса перехода

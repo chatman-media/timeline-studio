@@ -115,7 +115,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
 
   // Обработчик добавления перехода между клипами
   const handleTransitionDrop = useCallback(
-    async (leftClipId: string, rightClipId: string, transition: Record<string, any>) => {
+    async (leftClipId: string, rightClipId: string, transition: any) => {
       if (!project) return
 
       try {
@@ -223,32 +223,44 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             const inTransition = rightClip.transitions?.find((t) => t.type === "in")
 
             if (outTransition && inTransition && outTransition.transitionId === inTransition.transitionId) {
-              return (
-                <TimelineTransitionComponent
-                  key={`transition-${leftClip.id}-${rightClip.id}`}
-                  leftClipId={leftClip.id}
-                  rightClipId={rightClip.id}
-                  leftClipEnd={leftClip.startTime + leftClip.duration}
-                  rightClipStart={rightClip.startTime}
-                  transition={outTransition}
-                  timeScale={timeScale}
-                  trackHeight={48}
-                  onUpdate={(updates) => {
-                    // TODO: Обновление перехода через backend API
-                    logger.info("Updating transition parameters:", { transitionId: outTransition.id, updates })
-                  }}
-                  onDelete={async () => {
-                    // Удаление перехода через backend API
-                    try {
-                      // TODO: Добавить removeTransition команду в backend
-                      logger.info("Deleting transition:", { transitionId: outTransition.id })
-                      await saveProject()
-                    } catch (error) {
-                      logger.error("Failed to delete transition:", { error })
-                    }
-                  }}
-                />
-              )
+              // Найдем соответствующий TimelineTransition из ресурсов
+              const timelineTransition = trackTransitions.find((t) => t.id === outTransition.transitionId)
+              if (timelineTransition) {
+                // Создаем совместимый объект для компонента из разных типов TimelineTransition
+                const compatibleTransition: any = {
+                  ...(timelineTransition as any),
+                  name: "Transition",
+                  startTime: leftClip.startTime + leftClip.duration - timelineTransition.duration / 2,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                }
+                return (
+                  <TimelineTransitionComponent
+                    key={`transition-${leftClip.id}-${rightClip.id}`}
+                    leftClipId={leftClip.id}
+                    rightClipId={rightClip.id}
+                    leftClipEnd={leftClip.startTime + leftClip.duration}
+                    rightClipStart={rightClip.startTime}
+                    transition={compatibleTransition}
+                    timeScale={timeScale}
+                    trackHeight={48}
+                    onUpdate={(updates) => {
+                      // TODO: Обновление перехода через backend API
+                      logger.info("Updating transition parameters:", { transitionId: outTransition.id, updates })
+                    }}
+                    onDelete={async () => {
+                      // Удаление перехода через backend API
+                      try {
+                        // TODO: Добавить removeTransition команду в backend
+                        logger.info("Deleting transition:", { transitionId: outTransition.id })
+                        await saveProject()
+                      } catch (error) {
+                        logger.error("Failed to delete transition:", { error })
+                      }
+                    }}
+                  />
+                )
+              }
             }
             return null
           })}

@@ -4,8 +4,8 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import type { MediaFile, MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/video-editing/types/media"
+import { MediaType } from "@/domains/video-editing/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useClips } from "../../hooks/use-clips"
@@ -20,12 +20,9 @@ const mockMediaFile: MediaFile = {
   id: "media-1",
   path: "/path/to/video.mp4",
   name: "test-video.mp4",
-  type: "video" as MediaType,
+  type: MediaType.Video,
   size: 1000000,
   duration: 60,
-  isVideo: true,
-  isAudio: false,
-  isImage: false,
   createdAt: new Date(),
   updatedAt: new Date(),
   probeData: {
@@ -56,6 +53,8 @@ const mockClip: TimelineClip = {
   mediaId: "media-1",
   startTime: 0,
   duration: 10,
+  sourceIn: 0,
+  sourceOut: 10,
   mediaStartTime: 0,
   mediaEndTime: 10,
   offset: 0,
@@ -64,6 +63,7 @@ const mockClip: TimelineClip = {
   playbackRate: 1,
   opacity: 1,
   isReversed: false,
+  isMuted: false,
   effects: [],
   filters: [],
   transitions: [],
@@ -131,6 +131,10 @@ const mockProject: TimelineProject = {
           isMuted: false,
           isHidden: false,
           isSolo: false,
+          muted: false,
+          solo: false,
+          locked: false,
+          expanded: true,
           volume: 1,
           pan: 0,
           height: 80,
@@ -148,6 +152,10 @@ const mockProject: TimelineProject = {
           isMuted: false,
           isHidden: false,
           isSolo: false,
+          muted: false,
+          solo: false,
+          locked: false,
+          expanded: true,
           volume: 1,
           pan: 0,
           height: 60,
@@ -169,6 +177,10 @@ const mockProject: TimelineProject = {
       isMuted: false,
       isHidden: false,
       isSolo: false,
+      muted: false,
+      solo: false,
+      locked: false,
+      expanded: true,
       volume: 1,
       pan: 0,
       height: 60,

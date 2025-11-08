@@ -43,7 +43,6 @@ const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => 
     type: "video" as any,
     duration: 10,
     size: 1000,
-    isVideo: true,
     createdAt: new Date(),
   },
   mediaStartTime: 0,

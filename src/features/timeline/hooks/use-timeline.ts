@@ -7,12 +7,13 @@
 import {
   useTimelineClips,
   useTimelineEffects,
+  useTimelineMarkers,
   useTimelinePlayback,
   useTimelineProject,
   useTimelineSelection,
   useTimelineTracks,
 } from "@/domains/video-editing"
-import { createLogger, logInfo } from "@/lib/tauri-logger"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseTimeline")
 
@@ -75,6 +76,13 @@ export interface TimelineContextType {
   applyTransition: ReturnType<typeof useTimelineEffects>["applyTransition"]
   removeTransition: ReturnType<typeof useTimelineEffects>["removeTransition"]
 
+  // Markers управление
+  markers: ReturnType<typeof useTimelineMarkers>["markers"]
+  addMarker: ReturnType<typeof useTimelineMarkers>["addMarker"]
+  updateMarker: ReturnType<typeof useTimelineMarkers>["updateMarker"]
+  removeMarker: ReturnType<typeof useTimelineMarkers>["removeMarker"]
+  goToMarker: ReturnType<typeof useTimelineMarkers>["goToMarker"]
+
   // Legacy методы для обратной совместимости
   addSection: (name: string, start: number, end: number) => Promise<void>
   removeSection: (sectionId: string) => Promise<void>
@@ -98,20 +106,13 @@ export interface TimelineContextType {
  * Объединяет все модульные провайдеры в единый интерфейс
  */
 export function useTimeline(): TimelineContextType {
-  logInfo("[useTimeline] Инициализация timeline хука")
-
   const project = useTimelineProject()
   const playback = useTimelinePlayback()
   const tracks = useTimelineTracks()
   const clips = useTimelineClips()
   const selection = useTimelineSelection()
   const effects = useTimelineEffects()
-
-  logInfo("[useTimeline] Timeline хук готов", {
-    hasProject: !!project.project,
-    tracksCount: tracks.tracks?.length || 0,
-    clipsCount: clips.clips?.length || 0,
-  })
+  const markers = useTimelineMarkers()
 
   return {
     // Project
@@ -171,6 +172,13 @@ export function useTimeline(): TimelineContextType {
     removeFilter: effects.removeFilter,
     applyTransition: effects.applyTransition,
     removeTransition: effects.removeTransition,
+
+    // Markers
+    markers: markers.markers,
+    addMarker: markers.addMarker,
+    updateMarker: markers.updateMarker,
+    removeMarker: markers.removeMarker,
+    goToMarker: markers.goToMarker,
 
     // Legacy методы для обратной совместимости
     addSection: async (_name: string, _start: number, _end: number) => {

@@ -1,5 +1,6 @@
 import { vi } from "vitest"
-import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack, TrackType } from "../types"
+import type { Section, Timeline } from "@/domains/video-editing/types"
+import type { TimelineClip, TimelineTrack, TrackType } from "../types"
 import {
   createTimelineClip,
   createTimelineProject,
@@ -10,14 +11,14 @@ import {
 type EventListener = (...args: any[]) => void
 
 export class MockTimelineService {
-  private project: TimelineProject
+  private project: Timeline
   private listeners = new Map<string, Set<EventListener>>()
 
-  constructor(initialProject?: TimelineProject) {
+  constructor(initialProject?: Timeline) {
     this.project = initialProject || this.createDefaultProject()
   }
 
-  private createDefaultProject(): TimelineProject {
+  private createDefaultProject(): Timeline {
     const project = createTimelineProject("Test Project")
 
     // Add default section with tracks
@@ -47,7 +48,7 @@ export class MockTimelineService {
     return this.project
   })
 
-  saveProject = vi.fn((project: TimelineProject) => {
+  saveProject = vi.fn((project: Timeline) => {
     this.project = project
     this.emit("projectSaved", this.project)
     return Promise.resolve()
@@ -77,7 +78,7 @@ export class MockTimelineService {
   // Track management
   addTrack = vi.fn((type: TrackType, sectionId?: string, index?: number) => {
     let targetTracks: TimelineTrack[]
-    let section: TimelineSection | undefined
+    let section: Section | undefined
 
     if (sectionId) {
       section = this.project.sections.find((s) => s.id === sectionId)
@@ -264,7 +265,7 @@ export class MockTimelineService {
     vi.clearAllMocks()
   }
 
-  setProject(project: TimelineProject) {
+  setProject(project: Timeline) {
     this.project = project
   }
 

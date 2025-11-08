@@ -30,9 +30,6 @@ const mockVideoFile: MediaFile = {
   type: "video" as MediaType,
   size: 1024000,
   duration: 30,
-  isVideo: true,
-  isAudio: false,
-  isImage: false,
   createdAt: new Date(),
   updatedAt: new Date(),
   probeData: {
@@ -61,9 +58,6 @@ const mockAudioFile: MediaFile = {
   type: "audio" as MediaType,
   size: 512000,
   duration: 60,
-  isVideo: false,
-  isAudio: true,
-  isImage: false,
   createdAt: new Date(),
   updatedAt: new Date(),
   probeData: {
@@ -90,9 +84,6 @@ const mockImageFile: MediaFile = {
   type: "still_image" as MediaType,
   size: 256000,
   duration: undefined,
-  isVideo: false,
-  isAudio: false,
-  isImage: true,
   createdAt: new Date(),
   updatedAt: new Date(),
 }
@@ -185,38 +176,24 @@ describe("useTimelineActions", () => {
       expect(trackType).toBe("image")
     })
 
-    it("должен определить тип video по probeData если нет флагов", () => {
-      const fileWithoutFlags = {
-        ...mockVideoFile,
-        isVideo: false,
-        isAudio: false,
-        isImage: false,
-      }
+    it("должен определить тип video по probeData", () => {
       const { result } = renderHook(() => useTimelineActions())
 
-      const trackType = result.current.getTrackTypeForMedia(fileWithoutFlags)
+      const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
       expect(trackType).toBe("video")
     })
 
     it("должен определить тип audio по probeData если есть только аудио поток", () => {
-      const audioOnlyFile = {
-        ...mockAudioFile,
-        isVideo: false,
-        isAudio: false,
-        isImage: false,
-      }
       const { result } = renderHook(() => useTimelineActions())
 
-      const trackType = result.current.getTrackTypeForMedia(audioOnlyFile)
+      const trackType = result.current.getTrackTypeForMedia(mockAudioFile)
       expect(trackType).toBe("audio")
     })
 
     it("должен возвращать video по умолчанию для неизвестного типа", () => {
       const unknownFile = {
         ...mockVideoFile,
-        isVideo: false,
-        isAudio: false,
-        isImage: false,
+        type: "video" as MediaType,
         probeData: undefined,
       }
       const { result } = renderHook(() => useTimelineActions())
@@ -313,7 +290,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile, 0)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile.id, 0)
     })
 
     it("должен создать новый трек если подходящий не найден", () => {
@@ -335,7 +312,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile, undefined, 15)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile, 15)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile.id, 15)
     })
 
     it("должен использовать customTrackId если указан", () => {
@@ -345,7 +322,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile, "custom-track", 10)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("custom-track", mockVideoFile, 10)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("custom-track", mockVideoFile.id, 10)
     })
 
     it("должен использовать дефолтную длительность для изображений", () => {
@@ -356,7 +333,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockImageFile)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("image-track-1", mockImageFile, 0)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("image-track-1", mockImageFile.id, 0)
     })
 
     it("должен использовать дефолтную длительность для файлов без duration", () => {
@@ -368,7 +345,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(fileWithoutDuration)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", fileWithoutDuration, 0)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", fileWithoutDuration.id, 0)
     })
   })
 
@@ -442,15 +419,13 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(fileWithoutProbe)
-      expect(trackType).toBe("video") // По флагу isVideo
+      expect(trackType).toBe("video") // По типу type
     })
 
     it("должен обработать файл с пустыми streams", () => {
       const fileWithEmptyStreams = {
         ...mockVideoFile,
-        isVideo: false,
-        isAudio: false,
-        isImage: false,
+        type: "video" as MediaType,
         probeData: { ...mockVideoFile.probeData!, streams: [] },
       }
       const { result } = renderHook(() => useTimelineActions())
@@ -554,7 +529,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
       })
 
-      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile, 10)
+      expect(mockTimeline.addClip).toHaveBeenCalledWith("video-track-1", mockVideoFile.id, 10)
     })
   })
 })

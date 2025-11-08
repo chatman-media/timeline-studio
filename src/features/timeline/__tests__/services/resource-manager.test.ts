@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
-
+import type { MediaFile } from "@/domains/video-editing/types/media"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { MediaFile } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/template-config"
 import type { Transition } from "@/features/transitions/types/transitions"
@@ -29,7 +28,6 @@ describe("resource-manager", () => {
     mockProject = {
       id: "test-project",
       name: "Test Project",
-      description: "",
       version: "0.0.1",
       createdAt: new Date(),
       updatedAt: new Date(),

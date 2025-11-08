@@ -59,15 +59,7 @@ describe("Speed Ramping Player Sync Integration", () => {
 
   it("должен синхронизировать клип со speed ramping", () => {
     const clipWithSpeedRamping = createMockClip({
-      speedRamping: {
-        enabled: true,
-        keyframes: [
-          { id: "1", time: 0, value: 1.0, interpolation: "linear" },
-          { id: "2", time: 5, value: 2.0, interpolation: "ease-in" },
-          { id: "3", time: 10, value: 0.5, interpolation: "linear" },
-        ],
-        maintainPitch: false,
-      },
+      // Speed ramping stored in project config, not in clip
     })
 
     vi.mocked(useTimelineSelection).mockReturnValue({
@@ -83,15 +75,7 @@ describe("Speed Ramping Player Sync Integration", () => {
     const clipWithSpeedRamping = createMockClip({
       startTime: 10,
       duration: 20,
-      speedRamping: {
-        enabled: true,
-        keyframes: [
-          { id: "1", time: 0, value: 1.0, interpolation: "linear" },
-          { id: "2", time: 10, value: 2.0, interpolation: "linear" },
-          { id: "3", time: 20, value: 1.0, interpolation: "linear" },
-        ],
-        maintainPitch: false,
-      },
+      // Speed ramping stored in project config, not in clip
     })
 
     vi.mocked(useTimelineSelection).mockReturnValue({
@@ -114,7 +98,7 @@ describe("Speed Ramping Player Sync Integration", () => {
 
   it("должен отключать speed ramping при выборе клипа без speed ramping", () => {
     const clipWithoutSpeedRamping = createMockClip({
-      speedRamping: undefined,
+      // No speed ramping
     })
 
     vi.mocked(useTimelineSelection).mockReturnValue({

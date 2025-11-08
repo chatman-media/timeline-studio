@@ -10,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 
-import type { TimelineClip } from "../../types/timeline"
+import type { TimelineClip } from "../../types"
 
 interface JLCutToolProps {
   clip: TimelineClip

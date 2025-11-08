@@ -29,16 +29,16 @@ export interface UseTimelineActionsReturn {
  * Определяет тип трека для медиафайла
  */
 function getTrackTypeForMediaFile(file: MediaFile): TrackType {
-  // Проверяем по расширению файла
-  if (file.isImage) {
+  // Проверяем по типу файла
+  if (file.type === "still_image") {
     return "image"
   }
 
-  if (file.isVideo) {
+  if (file.type === "video") {
     return "video"
   }
 
-  if (file.isAudio) {
+  if (file.type === "audio") {
     return "audio"
   }
 
@@ -170,7 +170,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
 
       // Если трек уже существует, добавляем клип сразу
       const startTime = customStartTime !== undefined ? customStartTime : calculateClipStartTime(targetTrackId)
-      const duration = file.duration || (file.isImage ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
+      const duration = file.duration || (file.type === "still_image" ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
 
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       void addMedia(file)

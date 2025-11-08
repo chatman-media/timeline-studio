@@ -30,12 +30,16 @@ const createClip = (id: string, startTime: number, duration: number, trackId = "
   name: "",
   mediaId: "",
   mediaStartTime: 0,
-  mediaEndTime: 0,
+  mediaEndTime: duration,
   isReversed: false,
   isSelected: false,
   isLocked: false,
   createdAt: new Date(),
   updatedAt: new Date(),
+  sourceIn: 0,
+  sourceOut: duration,
+  isMuted: false,
+  position: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
 })
 
 const createTrack = (id: string, clips: TimelineClip[], order = 0): TimelineTrack => ({
@@ -54,6 +58,11 @@ const createTrack = (id: string, clips: TimelineClip[], order = 0): TimelineTrac
   isSolo: false,
   trackEffects: [],
   trackFilters: [],
+  muted: false,
+  solo: false,
+  locked: false,
+  expanded: false,
+  color: "#ffffff",
 })
 
 const createProject = (tracks: TimelineTrack[] = [], markers: Array<{ time: number }> = []): TimelineProject => ({

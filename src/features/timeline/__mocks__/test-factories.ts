@@ -148,6 +148,8 @@ export function createMockProjectResources(overrides?: Partial<TimelineResources
     effects: [],
     filters: [],
     transitions: [],
+    music: [],
+    media: [],
     ...overrides,
   }
 }
@@ -156,13 +158,14 @@ export function createMockProjectResources(overrides?: Partial<TimelineResources
  * Создает mock-объект проекта
  */
 export function createMockProject(overrides?: Partial<Timeline>): Timeline {
+  const defaultSettings = createMockProjectSettings()
   return {
     id: "project-1",
     name: "Test Project",
     duration: 300,
-    fps: 30,
-    sampleRate: 48000,
-    settings: createMockProjectSettings(),
+    fps: defaultSettings.fps,
+    sampleRate: defaultSettings.sampleRate,
+    settings: defaultSettings,
     resources: createMockProjectResources(),
     sections: [],
     globalTracks: [],

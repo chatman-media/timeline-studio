@@ -31,47 +31,49 @@ export function TransitionCurveVisualizer({
   onTimeChange,
 }: TransitionCurveVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
   const padding = 20
 
   // Вычисление значения по кривой в момент времени t (0-1)
-  const getValueAtTime = useMemo(() => {
-    return (t: number): number => {
-      if (curve.type === "linear") {
-        return t
-      }
-
-      // Для стандартных easing функций
-      if (["ease-in", "ease-out", "ease-in-out"].includes(curve.type)) {
-        return calculateEasing(curve.type, t)
-      }
-
-      // Для custom кривых используем интерполяцию Безье
-      if (curve.points.length < 2) return t
-
-      // Находим сегмент кривой для времени t
-      let segmentIndex = 0
-      for (let i = 1; i < curve.points.length; i++) {
-        if (t <= curve.points[i].x) {
-          segmentIndex = i - 1
-          break
+  const getValueAtTime = useMemo(
+    () =>
+      (t: number): number => {
+        if (curve.type === "linear") {
+          return t
         }
-      }
 
-      const p0 = curve.points[segmentIndex]
-      const p1 = curve.points[Math.min(segmentIndex + 1, curve.points.length - 1)]
+        // Для стандартных easing функций
+        if (["ease-in", "ease-out", "ease-in-out"].includes(curve.type)) {
+          return calculateEasing(curve.type, t)
+        }
 
-      if (!p0.handleOut || !p1.handleIn) {
-        // Линейная интерполяция
+        // Для custom кривых используем интерполяцию Безье
+        if (curve.points.length < 2) return t
+
+        // Находим сегмент кривой для времени t
+        let segmentIndex = 0
+        for (let i = 1; i < curve.points.length; i++) {
+          if (t <= curve.points[i].x) {
+            segmentIndex = i - 1
+            break
+          }
+        }
+
+        const p0 = curve.points[segmentIndex]
+        const p1 = curve.points[Math.min(segmentIndex + 1, curve.points.length - 1)]
+
+        if (!p0.handleOut || !p1.handleIn) {
+          // Линейная интерполяция
+          const localT = (t - p0.x) / (p1.x - p0.x)
+          return p0.y + (p1.y - p0.y) * localT
+        }
+
+        // Кубическая интерполяция Безье
         const localT = (t - p0.x) / (p1.x - p0.x)
-        return p0.y + (p1.y - p0.y) * localT
-      }
-
-      // Кубическая интерполяция Безье
-      const localT = (t - p0.x) / (p1.x - p0.x)
-      return cubicBezier(localT, p0.y, p0.handleOut.y, p1.handleIn.y, p1.y)
-    }
-  }, [curve])
+        return cubicBezier(localT, p0.y, p0.handleOut.y, p1.handleIn.y, p1.y)
+      },
+    [curve],
+  )
 
   // Отрисовка на canvas
   useEffect(() => {

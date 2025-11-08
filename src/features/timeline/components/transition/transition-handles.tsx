@@ -31,7 +31,7 @@ export function TransitionHandles({
   isLocked = false,
 }: TransitionHandlesProps) {
   const [isDragging, setIsDragging] = useState<"start" | "end" | null>(null)
-  const dragStartRef = useRef<{ x: number; duration: number; position: number }>()
+  const dragStartRef = useRef<{ x: number; duration: number; position: number } | undefined>(undefined)
 
   // Обработчик начала перетаскивания
   const handleMouseDown = useCallback(

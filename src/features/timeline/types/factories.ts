@@ -2,19 +2,17 @@
  * Factory functions for creating Timeline objects
  */
 
-import { SubtitleClip } from "../../subtitles/types"
 import type {
-  MusicClip,
-  MusicFile,
-  ProjectResources,
-  SubtitleStyle,
+  Section,
+  Timeline,
   TimelineClip,
-  TimelineProject,
-  TimelineProjectSettings,
-  TimelineSection,
-  TimelineTrack,
+  TimelineResources,
+  TimelineSettings,
+  Track,
   TrackType,
-} from "./timeline"
+} from "@/domains/video-editing/types"
+import { SubtitleClip } from "../../subtitles/types"
+import type { MusicClip, MusicFile, SubtitleStyle } from "./timeline"
 
 // ============================================================================
 // FACTORY FUNCTIONS
@@ -23,31 +21,32 @@ import type {
 /**
  * Создает новый проект Timeline
  */
-export function createTimelineProject(name: string, settings?: Partial<TimelineProjectSettings>): TimelineProject {
+export function createTimelineProject(name: string, settings?: Partial<TimelineSettings>): Timeline {
+  const defaultSettings: TimelineSettings = {
+    resolution: { width: 1920, height: 1080 },
+    fps: 30,
+    aspectRatio: "16:9",
+    sampleRate: 48000,
+    channels: 2,
+    bitDepth: 24,
+    timeFormat: "timecode",
+    snapToGrid: true,
+    gridSize: 1,
+    autoSave: true,
+    autoSaveInterval: 300,
+    ...settings,
+  }
+
   return {
     id: `project-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
     name,
-    description: "",
     duration: 0,
-    fps: settings?.fps || 30,
-    sampleRate: settings?.sampleRate || 48000,
+    fps: defaultSettings.fps,
+    sampleRate: defaultSettings.sampleRate,
     sections: [],
     globalTracks: [],
     resources: createEmptyResources(),
-    settings: {
-      resolution: { width: 1920, height: 1080 },
-      fps: 30,
-      aspectRatio: "16:9",
-      sampleRate: 48000,
-      channels: 2,
-      bitDepth: 24,
-      timeFormat: "timecode",
-      snapToGrid: true,
-      gridSize: 1,
-      autoSave: true,
-      autoSaveInterval: 300,
-      ...settings,
-    },
+    settings: defaultSettings,
     createdAt: new Date(),
     updatedAt: new Date(),
     version: "2.0.0",
@@ -57,17 +56,13 @@ export function createTimelineProject(name: string, settings?: Partial<TimelineP
 /**
  * Создает пустой объект ресурсов
  */
-function createEmptyResources(): ProjectResources {
+function createEmptyResources(): TimelineResources {
   return {
     effects: [],
     filters: [],
     transitions: [],
-    templates: [],
-    styleTemplates: [],
-    subtitleStyles: createDefaultSubtitleStyles(), // Добавляем встроенные стили
     music: [],
     media: [],
-    timelineTransitions: [],
   }
 }
 
@@ -80,7 +75,7 @@ export function createTimelineSection(
   duration: number,
   realStartTime?: Date,
   index = 0,
-): TimelineSection {
+): Section {
   return {
     id: `section-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
     index,
@@ -98,7 +93,7 @@ export function createTimelineSection(
 /**
  * Создает новый трек Timeline
  */
-export function createTimelineTrack(name: string, type: TrackType, sectionId?: string): TimelineTrack {
+export function createTimelineTrack(name: string, type: TrackType, sectionId?: string): Track {
   return {
     id: `track-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
     name,

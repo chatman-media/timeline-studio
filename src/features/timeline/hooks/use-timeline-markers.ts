@@ -1,6 +1,6 @@
 import { useMemo } from "react"
+import { useTimelineMarkers as useDomainTimelineMarkers } from "@/domains/video-editing"
 import { createMarker, type ExtendedTimelineMarker, type MarkerType } from "../types/markers"
-import { useTimeline } from "./use-timeline"
 
 export interface AddMarkerData {
   time: number
@@ -24,23 +24,21 @@ export interface UseTimelineMarkersReturn {
 
 /**
  * Хук для работы с маркерами timeline
+ * Использует domain provider + добавляет export функциональность
  */
 export function useTimelineMarkers(): UseTimelineMarkersReturn {
-  const { project, send, seek } = useTimeline()
+  // Используем domain provider для основных операций
+  const domainMarkers = useDomainTimelineMarkers()
 
-  // Получаем маркеры из проекта и сортируем по времени
+  // Преобразуем domain markers в feature markers с дополнительными полями
   const markers = useMemo(() => {
-    if (!project?.markers) return []
+    return domainMarkers.markers.map((marker) => ({
+      ...marker,
+      isLocked: false,
+    })) as ExtendedTimelineMarker[]
+  }, [domainMarkers.markers])
 
-    return [...project.markers]
-      .sort((a, b) => a.time - b.time)
-      .map((marker) => ({
-        ...marker,
-        isLocked: false,
-      })) as ExtendedTimelineMarker[]
-  }, [project?.markers])
-
-  const addMarker = (data: AddMarkerData) => {
+  const addMarker = async (data: AddMarkerData) => {
     const marker = createMarker(data.time, data.name, data.type, data.description)
 
     // Устанавливаем пользовательский цвет если указан
@@ -48,41 +46,29 @@ export function useTimelineMarkers(): UseTimelineMarkersReturn {
       marker.color = data.color
     }
 
-    if (data.duration) {
-      marker.duration = data.duration
-    }
-
-    send({
-      type: "ADD_MARKER",
-      marker,
+    // Backend команда через domain provider
+    await domainMarkers.addMarker({
+      name: data.name,
+      time: data.time,
+      type: data.type,
+      color: data.color,
+      description: data.description,
     })
   }
 
-  const updateMarker = (markerId: string, updates: Partial<ExtendedTimelineMarker>) => {
-    const updatesWithTimestamp = {
-      ...updates,
-      modifiedAt: new Date(),
-    }
-
-    send({
-      type: "UPDATE_MARKER",
-      markerId,
-      updates: updatesWithTimestamp,
-    })
+  const updateMarker = async (markerId: string, updates: Partial<ExtendedTimelineMarker>) => {
+    // Backend команда через domain provider
+    await domainMarkers.updateMarker(markerId, updates)
   }
 
-  const removeMarker = (markerId: string) => {
-    send({
-      type: "REMOVE_MARKER",
-      markerId,
-    })
+  const removeMarker = async (markerId: string) => {
+    // Backend команда через domain provider
+    await domainMarkers.removeMarker(markerId)
   }
 
   const goToMarker = (markerId: string) => {
-    const marker = markers.find((m) => m.id === markerId)
-    if (marker && seek) {
-      void seek(marker.time)
-    }
+    // Используем domain provider
+    domainMarkers.goToMarker(markerId)
   }
 
   const getMarkerTypes = (): MarkerType[] => {
