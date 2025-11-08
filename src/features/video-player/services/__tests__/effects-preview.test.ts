@@ -5,38 +5,25 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-// Создаем мок внутри фабрики для правильного хоистинга
-vi.mock("@/lib/tauri-logger", () => {
-  const mockLogger = {
-    trace: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }
-  return {
-    createLogger: vi.fn(() => mockLogger),
-    mockLogger, // Экспортируем для доступа в тестах
-  }
-})
+// Создаем mockLogger через vi.hoisted для корректного hoisting
+const mockLogger = vi.hoisted(() => ({
+  trace: vi.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+}))
+
+// Мокируем createLogger чтобы всегда возвращать один и тот же mockLogger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
 
 import type { TimelineClip } from "@/features/timeline/types/timeline"
-import { createLogger } from "@/lib/tauri-logger"
 import { type EffectChain, type EffectPreviewOptions, EffectsPreviewService } from "../effects-preview"
 
 // Получаем мок logger
-const getMockLogger = () => {
-  const mockCreateLogger = vi.mocked(createLogger)
-  return (
-    mockCreateLogger.mock.results[0]?.value || {
-      trace: vi.fn(),
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    }
-  )
-}
+const getMockLogger = () => mockLogger
 
 // Mock WebGL2 context with complete implementation
 const mockGL = {
