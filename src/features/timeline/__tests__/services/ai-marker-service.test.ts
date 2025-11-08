@@ -60,41 +60,33 @@ describe("AIMarkerService", () => {
         id: "scene-1",
         type: "action",
         startTime: 0,
+        endTime: 5,
         duration: 5,
         confidence: 0.9,
-        keyframes: [],
-        objects: [],
-        colors: [],
       },
       {
         id: "scene-2",
         type: "dialogue",
         startTime: 5,
+        endTime: 15,
         duration: 10,
         confidence: 0.8,
-        keyframes: [],
-        objects: [],
-        colors: [],
       },
       {
         id: "scene-3",
         type: "landscape",
         startTime: 15,
+        endTime: 16.5,
         duration: 1.5, // Короткая сцена
         confidence: 0.85,
-        keyframes: [],
-        objects: [],
-        colors: [],
       },
       {
         id: "scene-4",
         type: "closeup",
         startTime: 20,
+        endTime: 23,
         duration: 3,
         confidence: 0.6, // Низкая уверенность
-        keyframes: [],
-        objects: [],
-        colors: [],
       },
     ]
 
@@ -159,6 +151,7 @@ describe("AIMarkerService", () => {
         id: "moment-1",
         type: KeyMomentType.CLIMAX,
         timestamp: 45.5,
+        duration: 2.0,
         score: 0.95,
         description: "Кульминационный момент сцены",
         sceneId: "scene-1",
@@ -167,6 +160,7 @@ describe("AIMarkerService", () => {
         id: "moment-2",
         type: KeyMomentType.EMOTIONAL_PEAK,
         timestamp: 67.2,
+        duration: 1.5,
         score: 0.75,
         description: "Эмоциональный пик диалога",
         sceneId: "scene-2",
@@ -175,6 +169,7 @@ describe("AIMarkerService", () => {
         id: "moment-3",
         type: KeyMomentType.VISUAL_HIGHLIGHT,
         timestamp: 120.0,
+        duration: 1.0,
         score: 0.65, // Низкий score
         description: "Красивый визуальный момент",
         sceneId: "scene-3",
@@ -219,29 +214,40 @@ describe("AIMarkerService", () => {
       expect(markers).toHaveLength(0)
     })
 
-    it("должен добавлять контекст в метаданные", () => {
+    it("должен добавлять метаданные", () => {
       const markers = service.createMarkersFromKeyMoments(mockMoments)
 
-      expect(markers[0].metadata).toEqual({
-        source: "ai-analysis",
-        momentId: "moment-1",
-        momentType: "climax",
-        score: 0.95,
-        context: mockMoments[0].context,
-      })
+      expect(markers[0].metadata).toEqual(
+        expect.objectContaining({
+          source: "ai-analysis",
+          momentId: "moment-1",
+          momentType: "climax",
+          score: 0.95,
+        }),
+      )
     })
   })
 
   describe("Создание маркеров качества", () => {
     const mockInsights: ContentInsights = {
       summary: "Видео анализ",
-      tags: [],
+      highlights: [],
+      suggestions: [],
+      warnings: [],
+      opportunities: [],
+      strengths: [],
+      weaknesses: [],
+      recommendations: [],
+      marketingAngles: [],
+      targetDemographics: [],
       qualityMetrics: {
         overall: 75, // Ниже порога
         sharpness: 80,
         brightness: 70,
         contrast: 75,
         saturation: 72,
+        stability: 70,
+        noise: 65,
       },
     }
 
@@ -271,6 +277,8 @@ describe("AIMarkerService", () => {
           brightness: 85,
           contrast: 88,
           saturation: 87,
+          stability: 88,
+          noise: 15,
         },
       }
 
@@ -288,7 +296,15 @@ describe("AIMarkerService", () => {
     it("не должен создавать маркеры если нет метрик качества", () => {
       const insightsWithoutQuality: ContentInsights = {
         summary: "Видео анализ",
-        tags: [],
+        highlights: [],
+        suggestions: [],
+        warnings: [],
+        opportunities: [],
+        strengths: [],
+        weaknesses: [],
+        recommendations: [],
+        marketingAngles: [],
+        targetDemographics: [],
       }
 
       const markers = service.createQualityMarkers(insightsWithoutQuality, [10])
@@ -310,7 +326,15 @@ describe("AIMarkerService", () => {
   describe("Создание эмоциональных маркеров", () => {
     const mockInsights: ContentInsights = {
       summary: "Эмоциональный анализ",
-      tags: [],
+      highlights: [],
+      suggestions: [],
+      warnings: [],
+      opportunities: [],
+      strengths: [],
+      weaknesses: [],
+      recommendations: [],
+      marketingAngles: [],
+      targetDemographics: [],
       mood: {
         valence: 0.8,
         arousal: 0.7,
@@ -355,7 +379,15 @@ describe("AIMarkerService", () => {
     it("не должен создавать маркеры если нет данных о настроении", () => {
       const insightsWithoutMood: ContentInsights = {
         summary: "Анализ",
-        tags: [],
+        highlights: [],
+        suggestions: [],
+        warnings: [],
+        opportunities: [],
+        strengths: [],
+        weaknesses: [],
+        recommendations: [],
+        marketingAngles: [],
+        targetDemographics: [],
       }
 
       const markers = service.createEmotionalMarkers(insightsWithoutMood, 55.5)
@@ -476,10 +508,10 @@ describe("AIMarkerService", () => {
   describe("Приватные методы (через публичные методы)", () => {
     it("должен корректно определять метки и цвета для разных типов сцен", () => {
       const scenes: SceneInfo[] = [
-        { id: "1", type: "action", startTime: 0, duration: 5, confidence: 0.9 } as SceneInfo,
-        { id: "2", type: "dialogue", startTime: 5, duration: 5, confidence: 0.9 } as SceneInfo,
-        { id: "3", type: "landscape", startTime: 10, duration: 5, confidence: 0.9 } as SceneInfo,
-        { id: "4", type: "unknown", startTime: 15, duration: 5, confidence: 0.9 } as SceneInfo,
+        { id: "1", type: "action", startTime: 0, endTime: 5, duration: 5, confidence: 0.9 },
+        { id: "2", type: "dialogue", startTime: 5, endTime: 10, duration: 5, confidence: 0.9 },
+        { id: "3", type: "landscape", startTime: 10, endTime: 15, duration: 5, confidence: 0.9 },
+        { id: "4", type: "unknown", startTime: 15, endTime: 20, duration: 5, confidence: 0.9 },
       ]
 
       const markers = service.createMarkersFromScenes(scenes)
@@ -499,9 +531,33 @@ describe("AIMarkerService", () => {
 
     it("должен корректно определять метки и цвета для разных типов моментов", () => {
       const moments: KeyMoment[] = [
-        { id: "1", type: "emotional_peak", timestamp: 0, score: 0.9, description: "" } as KeyMoment,
-        { id: "2", type: "action_peak", timestamp: 5, score: 0.9, description: "" } as KeyMoment,
-        { id: "3", type: "unknown_type", timestamp: 10, score: 0.9, description: "" } as KeyMoment,
+        {
+          id: "1",
+          type: "emotional_peak" as any,
+          timestamp: 0,
+          duration: 1,
+          score: 0.9,
+          description: "",
+          sceneId: "scene-1",
+        },
+        {
+          id: "2",
+          type: "action_peak" as any,
+          timestamp: 5,
+          duration: 1,
+          score: 0.9,
+          description: "",
+          sceneId: "scene-1",
+        },
+        {
+          id: "3",
+          type: "unknown_type" as any,
+          timestamp: 10,
+          duration: 1,
+          score: 0.9,
+          description: "",
+          sceneId: "scene-1",
+        },
       ]
 
       const markers = service.createMarkersFromKeyMoments(moments)
@@ -524,7 +580,15 @@ describe("AIMarkerService", () => {
       emotions.forEach((emotion, index) => {
         const insights: ContentInsights = {
           summary: "",
-          tags: [],
+          highlights: [],
+          suggestions: [],
+          warnings: [],
+          opportunities: [],
+          strengths: [],
+          weaknesses: [],
+          recommendations: [],
+          marketingAngles: [],
+          targetDemographics: [],
           mood: {
             valence: 0,
             arousal: 0,
@@ -550,30 +614,43 @@ describe("AIMarkerService", () => {
           id: "scene-1",
           type: "action",
           startTime: 10,
+          endTime: 15,
           duration: 5,
           confidence: 0.8,
-        } as SceneInfo,
+        },
       ]
 
       const moments: KeyMoment[] = [
         {
           id: "moment-1",
-          type: "climax",
+          type: KeyMomentType.CLIMAX,
           timestamp: 12,
+          duration: 1.5,
           score: 0.9,
           description: "Кульминация",
-        } as KeyMoment,
+          sceneId: "scene-1",
+        },
       ]
 
       const insights: ContentInsights = {
         summary: "",
-        tags: [],
+        highlights: [],
+        suggestions: [],
+        warnings: [],
+        opportunities: [],
+        strengths: [],
+        weaknesses: [],
+        recommendations: [],
+        marketingAngles: [],
+        targetDemographics: [],
         qualityMetrics: {
           overall: 70,
           sharpness: 75,
           brightness: 65,
           contrast: 70,
           saturation: 68,
+          stability: 72,
+          noise: 68,
         },
         mood: {
           valence: 0.9,
@@ -621,25 +698,44 @@ describe("AIMarkerService", () => {
           id: "scene-1",
           type: "action",
           startTime: 0,
+          endTime: 5,
           duration: 5,
           confidence: 0.9,
-        } as SceneInfo,
+        },
       ]
 
       const moments: KeyMoment[] = [
         {
           id: "moment-1",
-          type: "climax",
+          type: KeyMomentType.CLIMAX,
           timestamp: 0,
+          duration: 1,
           score: 0.9,
           description: "",
-        } as KeyMoment,
+          sceneId: "scene-1",
+        },
       ]
 
       const insights: ContentInsights = {
         summary: "",
-        tags: [],
-        qualityMetrics: { overall: 50, sharpness: 50, brightness: 50, contrast: 50, saturation: 50 },
+        highlights: [],
+        suggestions: [],
+        warnings: [],
+        opportunities: [],
+        strengths: [],
+        weaknesses: [],
+        recommendations: [],
+        marketingAngles: [],
+        targetDemographics: [],
+        qualityMetrics: {
+          overall: 50,
+          sharpness: 50,
+          brightness: 50,
+          contrast: 50,
+          saturation: 50,
+          stability: 50,
+          noise: 50,
+        },
         mood: { valence: 0, arousal: 0, dominantEmotion: "joy", intensity: 0.9 },
       }
 

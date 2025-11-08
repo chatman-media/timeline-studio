@@ -39,12 +39,18 @@ const ACTION_ICONS: Record<ActionType, any> = {
   REMOVE_KEYFRAME: Trash2,
   UPDATE_KEYFRAME: Settings,
   BATCH_OPERATION: Layers,
-  APPLY_EFFECT: Settings,
+  ADD_EFFECT: Layers,
   REMOVE_EFFECT: Trash2,
-  APPLY_FILTER: Settings,
+  UPDATE_EFFECT: Settings,
+  APPLY_EFFECT: Settings,
+  ADD_FILTER: Layers,
   REMOVE_FILTER: Trash2,
-  APPLY_TRANSITION: Settings,
+  UPDATE_FILTER: Settings,
+  APPLY_FILTER: Settings,
+  ADD_TRANSITION: Layers,
   REMOVE_TRANSITION: Trash2,
+  UPDATE_TRANSITION: Settings,
+  APPLY_TRANSITION: Settings,
   CUSTOM: Settings,
 }
 
@@ -64,12 +70,18 @@ const ACTION_LABELS: Record<ActionType, string> = {
   REMOVE_KEYFRAME: "Удаление keyframe",
   UPDATE_KEYFRAME: "Изменение keyframe",
   BATCH_OPERATION: "Массовая операция",
-  APPLY_EFFECT: "Применение эффекта",
+  ADD_EFFECT: "Добавление эффекта",
   REMOVE_EFFECT: "Удаление эффекта",
-  APPLY_FILTER: "Применение фильтра",
+  UPDATE_EFFECT: "Изменение эффекта",
+  APPLY_EFFECT: "Применение эффекта",
+  ADD_FILTER: "Добавление фильтра",
   REMOVE_FILTER: "Удаление фильтра",
-  APPLY_TRANSITION: "Применение перехода",
+  UPDATE_FILTER: "Изменение фильтра",
+  APPLY_FILTER: "Применение фильтра",
+  ADD_TRANSITION: "Добавление перехода",
   REMOVE_TRANSITION: "Удаление перехода",
+  UPDATE_TRANSITION: "Изменение перехода",
+  APPLY_TRANSITION: "Применение перехода",
   CUSTOM: "Пользовательское действие",
 }
 
@@ -192,7 +204,9 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
                           <Icon className="h-4 w-4" />
                           <div className="flex-1">
                             <div className="font-medium">{action.description}</div>
-                            <div className="text-xs text-muted-foreground">{action.timestamp.toLocaleTimeString()}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(action.timestamp).toLocaleTimeString()}
+                            </div>
                           </div>
                           {action.groupId && (
                             <Badge variant="outline" className="text-xs">
@@ -240,7 +254,9 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
                           <Icon className="h-4 w-4" />
                           <div className="flex-1">
                             <div className="font-medium">{action.description}</div>
-                            <div className="text-xs text-muted-foreground">{action.timestamp.toLocaleTimeString()}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(action.timestamp).toLocaleTimeString()}
+                            </div>
                           </div>
                           {action.groupId && (
                             <Badge variant="outline" className="text-xs">

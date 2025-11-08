@@ -7,9 +7,9 @@
 
 // Re-export everything from the new domain location
 export type {
+  TimelineContext as TimelineUIContext,
   TimelineEvent,
   TimelineMachine,
-  TimelineUIContext,
 } from "@/domains/video-editing/machines/timeline-machine"
 // Для обратной совместимости экспортируем под старым именем
 export {

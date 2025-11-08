@@ -19,17 +19,16 @@ import {
   AnimationType,
   AspectRatio,
   type Clip as BackendClip,
-  // Effect as BackendEffect, // Not exported from video-compiler
-  type Filter as BackendFilter,
   type StyleTemplate as BackendStyleTemplate,
   type Subtitle as BackendSubtitle,
   type SubtitleAnimation as BackendSubtitleAnimation,
   type SubtitlePosition as BackendSubtitlePosition,
   type SubtitleStyle as BackendSubtitleStyle,
-  type Template as BackendTemplate,
   type Track as BackendTrack,
+  // Effect as BackendEffect, // Not exported from video-compiler
   CompilerTemplateType,
   type ElementAnimation,
+  FilterType,
   FitMode,
   FontWeight,
   ObjectFit,
@@ -45,10 +44,23 @@ import {
   SubtitleDirection,
   SubtitleEasing,
   SubtitleFontWeight,
-  type TemplateCell,
+  TemplateType,
   TextAlign,
   toRustEnumCase,
 } from "../../../domains/video-editing/types"
+
+// Aliases for compatibility
+type BackendFilter = FilterType
+type BackendTemplate = TemplateType
+type TemplateCell = {
+  index: number
+  x: number
+  y: number
+  width: number
+  height: number
+  clip_id?: string
+}
+
 import {
   type AppliedTransition,
   isSubtitleClip,

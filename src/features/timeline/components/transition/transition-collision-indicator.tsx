@@ -143,7 +143,7 @@ export function createCollision(
   severity: TransitionCollision["severity"] = "warning",
   message?: string,
 ): TransitionCollision {
-  const defaultMessages = {
+  const defaultMessages: Record<TransitionCollision["type"], string> = {
     overlap: "Переходы пересекаются по времени",
     adjacent: "Переходы расположены слишком близко",
     clip_boundary: "Переход выходит за границы клипа",

@@ -10,7 +10,7 @@ import { useUndoRedo } from "../../hooks/use-undo-redo"
 
 interface UndoRedoButtonsProps {
   variant?: "default" | "outline" | "ghost" | "secondary"
-  size?: "sm" | "md" | "lg"
+  size?: "default" | "sm" | "lg" | "icon"
   showBadge?: boolean
   showTooltips?: boolean
   className?: string
