@@ -2,7 +2,13 @@
  * AI инструмент для управления воспроизведением с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { PlaybackControlParams, PlayerToolResult } from "./types"
 import { getPlayerState, hasLoadedMedia, setPlayerState } from "./utils/helpers"
@@ -32,7 +38,54 @@ export interface PlaybackControlResult {
  */
 export class PlaybackControlTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("PlaybackControlTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "PlaybackControlTool",
+      displayName: "Playback Control Tool",
+      description: "Управляет воспроизведением медиа в плеере",
+      domain: "core",
+      category: "player",
+      version: "1.0.0",
+      tags: ["player", "playback", "control"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processPlaybackControl(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validActions = ["play", "pause", "stop", "seek", "volume", "speed"]
+    return input && input.operation === "control_playback" && validActions.includes(input.action)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["control_playback"] },
+          action: { type: "string", enum: ["play", "pause", "stop", "seek", "volume", "speed"] },
+          value: { type: "number" },
+          position: { type: "number" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "action", "reason"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          action: { type: "string" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -44,7 +97,7 @@ export class PlaybackControlTool extends BaseAITool {
   ): Promise<AIToolResult<PlaybackControlResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         if (data.operation !== "control_playback") {
@@ -216,7 +269,7 @@ export async function controlPlayback(params: PlaybackControlParams): Promise<Pl
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message ?? "",
+      message: result.data?.message || result.message || "Управление завершено",
       data: {
         action: result.data?.action,
         previousState: result.data?.previousState,
@@ -226,8 +279,8 @@ export async function controlPlayback(params: PlaybackControlParams): Promise<Pl
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка управления воспроизведением",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.message || "Ошибка управления воспроизведением",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

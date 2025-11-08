@@ -2,7 +2,13 @@
  * AI инструмент для анализа медиа в плеере с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { MediaAnalysisParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, parseFps } from "./utils/helpers"
@@ -31,7 +37,54 @@ export interface MediaAnalysisResult {
  */
 export class MediaAnalysisTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("MediaAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "MediaAnalysisTool",
+      displayName: "Media Analysis Tool",
+      description: "Анализирует текущее медиа в плеере",
+      domain: "core",
+      category: "player",
+      version: "1.0.0",
+      tags: ["player", "media", "analysis"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processMediaAnalysis(input, options)
+  }
+
+  validate(input: any): boolean {
+    return input && input.operation === "analyze_current_media"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["analyze_current_media"] },
+          includeMetadata: { type: "boolean" },
+          includeQualityMetrics: { type: "boolean" },
+          includeFormatInfo: { type: "boolean" },
+          includeAudioInfo: { type: "boolean" },
+          includeVideoInfo: { type: "boolean" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          analysis: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -43,7 +96,7 @@ export class MediaAnalysisTool extends BaseAITool {
   ): Promise<AIToolResult<MediaAnalysisResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         if (data.operation !== "analyze_current_media") {
@@ -270,17 +323,16 @@ export async function analyzeCurrentMedia(params: MediaAnalysisParams): Promise<
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || result.message || "Анализ завершен",
       data: {
         analysis: result.data?.analysis,
       },
-      nextActions: ["Просмотреть детали", "Применить улучшения"],
     }
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа медиа",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || result.message || "Ошибка анализа медиа",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

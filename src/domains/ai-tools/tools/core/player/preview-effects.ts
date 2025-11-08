@@ -3,7 +3,13 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import type { EffectApplicationParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, hasLoadedMedia } from "./utils/helpers"
 
@@ -34,7 +40,54 @@ export interface PreviewEffectsResult {
  */
 export class PreviewEffectsTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("PreviewEffectsTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "PreviewEffectsTool",
+      displayName: "Preview Effects Tool",
+      description: "Применяет эффекты и фильтры к превью медиа в плеере",
+      domain: "core",
+      category: "player",
+      version: "1.0.0",
+      tags: ["player", "effects", "filters", "preview"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processPreviewEffects(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = ["apply_preview_effects", "apply_preview_filters"]
+    return input && validOperations.includes(input.operation) && input.reason
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["apply_preview_effects", "apply_preview_filters"] },
+          effects: { type: "array" },
+          filters: { type: "array" },
+          replace: { type: "boolean" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "reason"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          appliedItems: { type: "array" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -46,7 +99,7 @@ export class PreviewEffectsTool extends BaseAITool {
   ): Promise<AIToolResult<PreviewEffectsResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = ["apply_preview_effects", "apply_preview_filters"]
@@ -228,7 +281,7 @@ export async function applyPreviewEffects(params: {
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || result.message || "Эффекты применены",
       data: {
         appliedEffects: result.data?.appliedItems,
         totalActiveEffects: result.data?.totalActiveItems,
@@ -238,8 +291,8 @@ export async function applyPreviewEffects(params: {
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка применения эффектов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.message || "Ошибка применения эффектов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
@@ -257,7 +310,7 @@ export async function applyPreviewFilters(params: {
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || result.message || "Фильтры применены",
       data: {
         appliedFilters: result.data?.appliedItems,
         totalActiveFilters: result.data?.totalActiveItems,
@@ -267,8 +320,8 @@ export async function applyPreviewFilters(params: {
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка применения фильтров",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.message || "Ошибка применения фильтров",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
