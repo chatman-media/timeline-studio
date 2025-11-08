@@ -299,6 +299,17 @@ export class BatchProcessingTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: this.metadata.inputSchema,
+      output: this.metadata.outputSchema,
+    }
+  }
 }
 
 // Экспорт всех Batch Processing инструментов

@@ -145,6 +145,30 @@ export class AutoGenerateFromVideoTool extends BaseAITool implements IAITool {
       options,
     )
   }
+
+  validate(input: any): boolean {
+    return typeof input === "object" && input !== null && typeof input.operation === "string"
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          videoPath: { type: "string" },
+        },
+        required: ["operation", "videoPath"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+        },
+      },
+    }
+  }
 }
 
 // ... other tool classes

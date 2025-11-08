@@ -81,7 +81,42 @@ export class SubtitleTool extends BaseAITool implements IAITool {
   }
 
   constructor(logger?: AIToolLogger) {
-    super("SubtitleTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "generate_subtitles",
+      "translate_subtitles",
+      "sync_subtitles",
+      "format_subtitles",
+      "edit_subtitle_timing",
+      "merge_subtitle_files",
+      "extract_subtitles",
+      "improve_subtitle_quality",
+      "add_subtitle_styles",
+      "validate_subtitles",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        operation: "string (required)",
+        clipId: "string (optional)",
+        subtitles: "array (optional)",
+        language: "string (optional)",
+        format: "string (optional)",
+      },
+      output: {
+        operation: "string",
+        success: "boolean",
+        subtitles: "array (optional)",
+        filePath: "string (optional)",
+        recommendations: "array",
+      },
+    }
   }
 
   /**
@@ -92,7 +127,7 @@ export class SubtitleTool extends BaseAITool implements IAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SubtitleResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = [
@@ -159,7 +194,8 @@ export class SubtitleTool extends BaseAITool implements IAITool {
         errors: validation.errors,
         message: "Ошибка валидации входных данных для субтитров",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: this.metadata.name,
+        executionId: this.generateExecutionId(),
       }
     }
 

@@ -5,7 +5,7 @@
 
 import type { AudioDetections, SceneAnalysis, SpeechDetection } from "@/domains/shared/types/ai-tools/content-analysis"
 import { createLogger } from "@/lib/tauri-logger"
-import type { SubtitleItem } from "../subtitle-tools"
+import type { SubtitleItem } from "../index"
 
 const logger = createLogger("SubtitleSynchronization")
 

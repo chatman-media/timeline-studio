@@ -17,8 +17,9 @@ const logger = createLogger("SubtitleAiIntegration")
 
 // Импортируем сервисы AI Content Intelligence
 import { IVisionService } from "@/domains/ai-services/types/interfaces"
+import { WhisperIntegrationService } from "@/domains/ai-tools/tools/analysis/whisper/services/whisper-integration"
+import { getAIContainer } from "@/shared/services/ai/di-container"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
-import { WhisperIntegrationService } from "./whisper-integration"
 
 /**
  * Адаптер для интеграции Enhanced Subtitle Automation с ai-content-intelligence
@@ -49,16 +50,14 @@ export class SubtitleAIIntegrationService {
     if (this.isInitialized) return
 
     try {
-      // Динамический импорт для избежания circular dependency
-      const { getAIContainer } = await import("@/domains/ai-core")
+      // Получаем AI контейнер
       const aiContainer = getAIContainer()
-      const visionService = await aiContainer.resolve<IVisionService>("VisionService")
+      const visionService = (await aiContainer.resolve("VisionService")) as IVisionService
 
       this.visionService = visionService
 
       // Инициализируем Whisper сервис
       this.whisperService = WhisperIntegrationService.getInstance()
-      await this.whisperService.initialize()
 
       // Инициализируем сервис синхронизации
       this.synchronizationService = SubtitleSynchronizationService.getInstance()
@@ -152,13 +151,24 @@ export class SubtitleAIIntegrationService {
           })),
         },
         insights: {
+          summary: "Автоматический анализ видео для генерации субтитров",
+          highlights: [
+            "Обнаружен текст на экране для OCR",
+            "Проведен анализ речевых сегментов",
+            "Выполнена сегментация сцен",
+          ],
+          suggestions: [],
+          warnings: [],
+          opportunities: [],
           strengths: [
             "Обнаружен текст на экране для OCR",
             "Проведен анализ речевых сегментов",
             "Выполнена сегментация сцен",
           ],
-          improvements: [],
+          weaknesses: [],
           recommendations: [],
+          marketingAngles: [],
+          targetDemographics: [],
         },
       }
 
@@ -280,6 +290,7 @@ export class SubtitleAIIntegrationService {
         {
           startTime: 2.5,
           endTime: 7.8,
+          text: "Пример распознанной речи (fallback)",
           transcript: "Пример распознанной речи (fallback)",
           speaker: "Говорящий 1",
           language: language,

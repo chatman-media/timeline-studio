@@ -91,7 +91,37 @@ export class PerformanceTool extends BaseAITool implements IAITool {
   }
 
   constructor(logger?: AIToolLogger) {
-    super("PerformanceTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "analyze_render_performance",
+      "optimize_render_settings",
+      "manage_render_queue",
+      "optimize_timeline_performance",
+      "generate_proxy_media",
+      "monitor_system_resources",
+      "estimate_render_time",
+      "optimize_export_workflow",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        operation: "string (required)",
+        analysisScope: "string (optional)",
+        optimizationTarget: "string (optional)",
+      },
+      output: {
+        operation: "string",
+        success: "boolean",
+        performanceMetrics: "object (optional)",
+        recommendations: "array",
+      },
+    }
   }
 
   /**
@@ -103,7 +133,7 @@ export class PerformanceTool extends BaseAITool implements IAITool {
   ): Promise<AIToolResult<RenderPerformanceResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = [

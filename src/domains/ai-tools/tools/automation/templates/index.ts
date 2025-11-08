@@ -79,7 +79,39 @@ export class TemplateTool extends BaseAITool implements IAITool {
   }
 
   constructor(logger?: AIToolLogger) {
-    super("TemplateTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "analyze_layout_templates",
+      "apply_layout_template",
+      "create_custom_template",
+      "manage_multi_camera_layout",
+      "generate_title_sequences",
+      "optimize_responsive_layout",
+      "create_overlay_graphics",
+      "manage_template_library",
+      "create_animated_elements",
+      "generate_social_media_adaptations",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        operation: "string (required)",
+        templateId: "string (optional)",
+        layoutConfig: "object (optional)",
+      },
+      output: {
+        operation: "string",
+        success: "boolean",
+        result: "object (optional)",
+        recommendations: "array",
+      },
+    }
   }
 
   /**
@@ -91,7 +123,7 @@ export class TemplateTool extends BaseAITool implements IAITool {
   ): Promise<AIToolResult<TemplateLayoutResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = [

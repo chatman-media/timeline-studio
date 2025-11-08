@@ -67,8 +67,39 @@ export class WorkflowTool extends BaseAITool implements IAITool {
   private workflowService: WorkflowAutomationService
 
   constructor(logger?: AIToolLogger) {
-    super("WorkflowTool", logger)
+    super(undefined, logger)
     this.workflowService = WorkflowAutomationService.getInstance()
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "get_available_workflows",
+      "execute_workflow",
+      "create_custom_workflow",
+      "analyze_video_for_recommendations",
+      "batch_process_videos",
+      "optimize_workflow_performance",
+      "manage_workflow_templates",
+      "validate_workflow_compatibility",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        operation: "string (required)",
+        workflowType: "string (optional)",
+        videoPaths: "array (optional)",
+        config: "object (optional)",
+      },
+      output: {
+        operation: "string",
+        success: "boolean",
+        result: "object (optional)",
+        recommendations: "array",
+      },
+    }
   }
 
   /**
@@ -80,7 +111,7 @@ export class WorkflowTool extends BaseAITool implements IAITool {
   ): Promise<AIToolResult<WorkflowAutomationResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = [
