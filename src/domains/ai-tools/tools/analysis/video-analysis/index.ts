@@ -22,6 +22,8 @@ interface VideoAnalysisResult {
   motion?: any
   scenes?: any[]
   quality?: any
+  metadata?: any
+  colors?: any
   processingTime: number
 }
 

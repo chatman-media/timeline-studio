@@ -18,6 +18,7 @@ interface MultimodalResult {
   success: boolean
   combined?: any
   correlation?: any
+  analysis?: any
   processingTime: number
 }
 

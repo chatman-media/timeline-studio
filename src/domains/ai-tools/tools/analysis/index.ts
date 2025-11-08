@@ -81,7 +81,7 @@ export function findAnalysisToolByName(name: string) {
 }
 
 export function getAnalysisToolsByTags(tags: string[]) {
-  return analysisTools.filter((tool) => tool.metadata.tags?.some((tag) => tags.includes(tag)))
+  return analysisTools.filter((tool) => tool.metadata.tags?.some((tag: any) => tags.includes(tag)))
 }
 
 export function validateAnalysisTools() {

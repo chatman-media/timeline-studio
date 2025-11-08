@@ -119,6 +119,7 @@ export class WhisperIntegrationService {
     return result.segments.map((segment, _index) => ({
       startTime: segment.start,
       endTime: segment.end,
+      text: segment.text.trim(),
       transcript: segment.text.trim(),
       speaker: undefined, // Будет определен позже
       language: options.language === "auto" ? result.language : options.language,
@@ -208,6 +209,7 @@ export class WhisperIntegrationService {
         parts.push({
           startTime,
           endTime,
+          text: partText,
           transcript: partText,
           speaker: detection.speaker,
           language: detection.language,

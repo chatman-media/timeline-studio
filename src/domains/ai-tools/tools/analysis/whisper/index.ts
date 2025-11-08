@@ -14,6 +14,8 @@ interface WhisperInput {
   model?: string
   task?: string
   enableDiarization?: boolean
+  temperature?: number
+  word_timestamps?: boolean
 }
 
 interface WhisperResult {
@@ -22,6 +24,8 @@ interface WhisperResult {
   transcription?: any
   translation?: any
   diarization?: any
+  model_used?: string
+  speech_analysis?: any
   processingTime: number
 }
 

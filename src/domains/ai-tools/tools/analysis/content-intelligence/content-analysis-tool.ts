@@ -3,6 +3,7 @@
  */
 
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines/scene-analysis"
+import { getAIContainer } from "@/shared/services/ai/di-container"
 
 import {
   type AIToolExecutionOptions,
@@ -36,11 +37,11 @@ export class ContentIntelligenceTool extends BaseAITool {
   }
 
   constructor(logger?: AIToolLogger) {
-    super("ContentIntelligenceTool", logger)
+    super(undefined, logger)
   }
 
   validate(input: any): boolean {
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = [
@@ -118,7 +119,7 @@ export class ContentIntelligenceTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ContentIntelligenceResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = [
@@ -184,7 +185,8 @@ export class ContentIntelligenceTool extends BaseAITool {
         errors: validation.errors,
         message: "Ошибка валидации входных данных для анализа контента",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: this.metadata.name,
+        executionId: this.generateExecutionId(),
       }
     }
 
@@ -372,6 +374,17 @@ export class ContentIntelligenceTool extends BaseAITool {
         type: scene.sceneType || "content",
         confidence: scene.confidence || 0.85,
         content: scene.content,
+        keyFrames: scene.keyFrames || [],
+        quality: scene.quality || {
+          overall: 70,
+          sharpness: 70,
+          brightness: 70,
+          contrast: 70,
+          saturation: 70,
+          stability: 70,
+          noise: 30,
+        },
+        transitions: scene.transitions || [],
       }))
 
       // Классифицируем контент
@@ -560,6 +573,17 @@ export class ContentIntelligenceTool extends BaseAITool {
         type: scene.sceneType || "content",
         confidence: scene.confidence || 0.85,
         content: scene.content,
+        keyFrames: scene.keyFrames || [],
+        quality: scene.quality || {
+          overall: 70,
+          sharpness: 70,
+          brightness: 70,
+          contrast: 70,
+          saturation: 70,
+          stability: 70,
+          noise: 30,
+        },
+        transitions: scene.transitions || [],
       }))
 
       // Классифицируем контент
@@ -608,9 +632,8 @@ export class ContentIntelligenceTool extends BaseAITool {
       const platformConfig = this.getPlatformConfig(input.targetPlatform || "youtube")
 
       // Используем AI для генерации оптимизаций
-      const { getAIContainer } = await import("@/domains/ai-core")
       const aiContainer = getAIContainer()
-      const contentAnalyzer = await aiContainer.resolve<any>("ContentAnalyzer")
+      const contentAnalyzer = (await aiContainer.resolve("ContentAnalyzer")) as any
 
       // Анализируем исходный контент
       const contentInfo = input.sourceContent || {}
@@ -780,9 +803,8 @@ export class ContentIntelligenceTool extends BaseAITool {
     })
 
     try {
-      const { getAIContainer } = await import("@/domains/ai-core")
       const aiContainer = getAIContainer()
-      const aiService = await aiContainer.resolve<any>("UnifiedAIService")
+      const aiService = (await aiContainer.resolve("UnifiedAIService")) as any
 
       const results = []
       const sourceContent = input.sourceContent || {
@@ -926,9 +948,8 @@ export class ContentIntelligenceTool extends BaseAITool {
     })
 
     try {
-      const { getAIContainer } = await import("@/domains/ai-core")
       const aiContainer = getAIContainer()
-      const aiService = await aiContainer.resolve<any>("UnifiedAIService")
+      const aiService = (await aiContainer.resolve("UnifiedAIService")) as any
 
       const variants: ContentVariant[] = []
       const sourceContent = input.sourceContent || {
@@ -1113,10 +1134,9 @@ export class ContentIntelligenceTool extends BaseAITool {
     this.logger?.info("Выполняем анализ аудитории")
 
     try {
-      const { getAIContainer } = await import("@/domains/ai-core")
       // Используем SceneAnalysisEngine для анализа возраста и пола
       const aiContainer = getAIContainer()
-      const contentAnalyzer = await aiContainer.resolve<any>("ContentAnalyzer")
+      const contentAnalyzer = (await aiContainer.resolve("ContentAnalyzer")) as any
       const ageGenderService = SceneAnalysisEngine.getInstance()
 
       // Создаем конфиг для анализа (заглушка для совместимости)
