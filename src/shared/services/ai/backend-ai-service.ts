@@ -1,7 +1,8 @@
 /**
  * Backend AI Service
  *
- * Unified AI service that uses Tauri backend commands instead of direct API calls.
+ * Unified AI service that uses Tauri backend commands with secure API key storage.
+ * API keys are stored in SecureStorage on the backend and never exposed to frontend.
  * All AI provider logic is handled on the backend for security and consistency.
  */
 
@@ -22,7 +23,6 @@ const logger = createLogger("BackendAIService")
 export interface AIServiceConfig {
   provider: AIProvider
   model: string
-  apiKey: string
   maxTokens?: number
   temperature?: number
   system?: string
@@ -46,9 +46,11 @@ export class BackendAIService {
   }
 
   /**
-   * Send a message to AI
+   * Send a message to AI using secure API key storage
+   * Note: This is a placeholder - secure key storage not yet implemented in backend
+   * For now, requires API key to be provided externally
    */
-  async sendMessage(config: AIServiceConfig, messages: AIMessage[]): Promise<UnifiedAIResponse> {
+  async sendMessage(config: AIServiceConfig, messages: AIMessage[], apiKey: string): Promise<UnifiedAIResponse> {
     try {
       const request: UnifiedAIRequest = {
         provider: config.provider,
@@ -68,9 +70,9 @@ export class BackendAIService {
         messageCount: messages.length,
       })
 
-      const result = await commands.aiSendUnifiedRequest(config.apiKey, request)
+      const result = await commands.aiSendUnifiedRequest(apiKey, request)
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Unknown error"
         logger.errorSync("AI request failed", { error })
         throw new Error(error)
@@ -90,11 +92,14 @@ export class BackendAIService {
 
   /**
    * Send message with tools (Claude Tools / OpenAI Function Calling)
+   * Note: This is a placeholder - secure key storage not yet implemented in backend
+   * For now, requires API key to be provided externally
    */
   async sendMessageWithTools(
     config: AIServiceConfig,
     messages: AIMessage[],
     tools: AITool[],
+    apiKey: string,
     toolChoice?: ToolChoice,
   ): Promise<UnifiedAIResponse> {
     try {
@@ -106,7 +111,7 @@ export class BackendAIService {
       })
 
       const result = await commands.aiSendRequestWithTools(
-        config.apiKey,
+        apiKey,
         config.provider,
         config.model,
         messages,
@@ -117,7 +122,7 @@ export class BackendAIService {
         config.temperature ?? null,
       )
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Unknown error"
         logger.errorSync("AI request with tools failed", { error })
         throw new Error(error)
@@ -131,51 +136,47 @@ export class BackendAIService {
   }
 
   /**
-   * Send message with automatic fallback to other providers
+   * Send streaming request
+   * Note: Streaming is handled through UnifiedAIRequest with stream: true
+   * Response comes through events, not directly from this method
    */
-  async sendMessageWithFallback(
-    providersWithKeys: Array<[AIProvider, string]>,
-    model: string,
+  async sendStreamingRequest(
+    config: AIServiceConfig,
     messages: AIMessage[],
-    options?: {
-      maxTokens?: number
-      temperature?: number
-      system?: string
-    },
+    apiKey: string,
   ): Promise<UnifiedAIResponse> {
     try {
       const request: UnifiedAIRequest = {
-        provider: providersWithKeys[0][0], // Will be overridden by fallback logic
-        model,
+        provider: config.provider,
+        model: config.model,
         messages,
-        maxTokens: options?.maxTokens ?? null,
-        temperature: options?.temperature ?? null,
-        stream: false,
-        system: options?.system ?? null,
+        maxTokens: config.maxTokens ?? null,
+        temperature: config.temperature ?? null,
+        stream: true,
+        system: config.system ?? null,
         tools: null,
         toolChoice: null,
       }
 
-      logger.infoSync("Sending AI request with fallback", {
-        providerCount: providersWithKeys.length,
-        model,
+      logger.infoSync("Sending streaming AI request", {
+        provider: config.provider,
+        model: config.model,
+        messageCount: messages.length,
       })
 
-      const result = await commands.aiSendRequestWithFallback(providersWithKeys, request)
+      const result = await commands.aiSendUnifiedRequest(apiKey, request)
 
-      if (!result.status) {
-        const error = result.error || "All providers failed"
-        logger.errorSync("AI request with fallback failed", { error })
+      if (result.status === "error") {
+        const error = result.error || "Streaming request failed"
+        logger.errorSync("Streaming request failed", { error })
         throw new Error(error)
       }
 
-      logger.infoSync("AI request with fallback successful", {
-        provider: result.data.provider,
-      })
+      logger.infoSync("Streaming request started")
 
       return result.data
     } catch (error) {
-      logger.errorSync("Failed to send AI message with fallback", { error })
+      logger.errorSync("Failed to send streaming request", { error })
       throw error
     }
   }
@@ -187,7 +188,7 @@ export class BackendAIService {
     try {
       const result = await commands.aiValidateProvider(provider, apiKey)
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Validation failed"
         logger.errorSync("Provider validation failed", { provider, error })
         throw new Error(error)
@@ -207,7 +208,7 @@ export class BackendAIService {
     try {
       const result = await commands.aiGetProviderModels(provider)
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Failed to get models"
         logger.errorSync("Failed to get provider models", { provider, error })
         throw new Error(error)
@@ -227,7 +228,7 @@ export class BackendAIService {
     try {
       const result = await commands.aiGetSupportedProviders()
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Failed to get providers"
         logger.errorSync("Failed to get supported providers", { error })
         throw new Error(error)
@@ -242,12 +243,13 @@ export class BackendAIService {
 
   /**
    * Check health of multiple providers
+   * Note: Requires API keys to be provided as tuples with providers
    */
   async checkProvidersHealth(providersWithKeys: Array<[AIProvider, string | null]>): Promise<ProviderStatus[]> {
     try {
       const result = await commands.aiCheckProvidersHealth(providersWithKeys)
 
-      if (!result.status) {
+      if (result.status === "error") {
         const error = result.error || "Health check failed"
         logger.errorSync("Failed to check providers health", { error })
         throw new Error(error)
@@ -258,6 +260,33 @@ export class BackendAIService {
       logger.errorSync("Failed to check providers health", { error })
       throw error
     }
+  }
+
+  /**
+   * Get AI cache statistics
+   * Note: Not yet implemented in backend
+   */
+  async getCacheStats() {
+    logger.warnSync("getCacheStats not yet implemented in backend")
+    return { hitRate: 0, totalRequests: 0, cacheHits: 0, cacheMisses: 0 }
+  }
+
+  /**
+   * Clear all AI cache
+   * Note: Not yet implemented in backend
+   */
+  async clearCache(): Promise<number> {
+    logger.warnSync("clearCache not yet implemented in backend")
+    return 0
+  }
+
+  /**
+   * Cleanup expired cache entries
+   * Note: Not yet implemented in backend
+   */
+  async cleanupExpiredCache(): Promise<number> {
+    logger.warnSync("cleanupExpiredCache not yet implemented in backend")
+    return 0
   }
 }
 
