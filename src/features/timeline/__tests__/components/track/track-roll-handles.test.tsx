@@ -28,6 +28,7 @@ vi.mock("../../../components/edit-tools/roll-edit-handle", () => ({
 const createClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
   id: "clip-1",
   name: "Test Clip",
+  type: "video",
   mediaId: "media-1",
   mediaFile: {
     id: "media-1",
@@ -47,6 +48,7 @@ const createClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
   offset: 0,
   volume: 1,
   speed: 1,
+  playbackRate: 1,
   isReversed: false,
   opacity: 1,
   effects: [],

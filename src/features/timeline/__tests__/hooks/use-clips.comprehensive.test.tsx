@@ -61,6 +61,7 @@ const mockClip: TimelineClip = {
   offset: 0,
   volume: 1,
   speed: 1,
+  playbackRate: 1,
   opacity: 1,
   isReversed: false,
   effects: [],

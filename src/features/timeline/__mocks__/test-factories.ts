@@ -2,27 +2,30 @@
  * Фабрики для создания тестовых данных
  */
 
-import type { MediaFile, MediaType } from "@/features/media/types/media"
-
 import type {
-  ProjectResources,
+  Section,
+  Timeline,
   TimelineClip,
-  TimelineProject,
-  TimelineProjectSettings,
-  TimelineSection,
-  TimelineTrack,
-} from "../types"
+  TimelineResources,
+  TimelineSettings,
+  Track,
+} from "@/domains/video-editing/types"
+import type { MediaFile, MediaType } from "@/features/media/types/media"
 
 /**
  * Создает mock-объект трека со всеми обязательными полями
  */
-export function createMockTrack(overrides?: Partial<TimelineTrack>): TimelineTrack {
+export function createMockTrack(overrides?: Partial<Track>): Track {
   return {
     id: "track-1",
     name: "Test Track",
     type: "video",
     clips: [],
     transitions: [],
+    muted: false,
+    solo: false,
+    locked: false,
+    expanded: true,
     isLocked: false,
     isMuted: false,
     isHidden: false,
@@ -49,13 +52,26 @@ export function createMockClip(overrides?: Partial<TimelineClip>): TimelineClip 
     trackId: "track-1",
     startTime: 0,
     duration: 10,
+    sourceIn: 0,
+    sourceOut: 10,
     mediaStartTime: 0,
     mediaEndTime: 10,
     offset: 0,
     volume: 1,
     speed: 1,
+    playbackRate: 1,
     isReversed: false,
     opacity: 1,
+    isMuted: false,
+    position: {
+      x: 0,
+      y: 0,
+      width: 1,
+      height: 1,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+    },
     effects: [],
     filters: [],
     transitions: [],
@@ -90,7 +106,7 @@ export function createMockMediaFile(overrides?: Partial<MediaFile>): MediaFile {
 /**
  * Создает mock-объект секции
  */
-export function createMockSection(overrides?: Partial<TimelineSection>): TimelineSection {
+export function createMockSection(overrides?: Partial<Section>): Section {
   return {
     id: "section-1",
     index: 0,
@@ -107,7 +123,7 @@ export function createMockSection(overrides?: Partial<TimelineSection>): Timelin
 /**
  * Создает mock-объект настроек проекта
  */
-export function createMockProjectSettings(overrides?: Partial<TimelineProjectSettings>): TimelineProjectSettings {
+export function createMockProjectSettings(overrides?: Partial<TimelineSettings>): TimelineSettings {
   return {
     resolution: { width: 1920, height: 1080 },
     fps: 30,
@@ -127,17 +143,11 @@ export function createMockProjectSettings(overrides?: Partial<TimelineProjectSet
 /**
  * Создает mock-объект ресурсов проекта
  */
-export function createMockProjectResources(overrides?: Partial<ProjectResources>): ProjectResources {
+export function createMockProjectResources(overrides?: Partial<TimelineResources>): TimelineResources {
   return {
     effects: [],
     filters: [],
     transitions: [],
-    timelineTransitions: [],
-    templates: [],
-    styleTemplates: [],
-    subtitleStyles: [],
-    music: [],
-    media: [],
     ...overrides,
   }
 }
@@ -145,7 +155,7 @@ export function createMockProjectResources(overrides?: Partial<ProjectResources>
 /**
  * Создает mock-объект проекта
  */
-export function createMockProject(overrides?: Partial<TimelineProject>): TimelineProject {
+export function createMockProject(overrides?: Partial<Timeline>): Timeline {
   return {
     id: "project-1",
     name: "Test Project",

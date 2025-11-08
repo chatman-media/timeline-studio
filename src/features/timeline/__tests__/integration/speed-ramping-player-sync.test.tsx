@@ -67,11 +67,6 @@ describe("Speed Ramping Player Sync Integration", () => {
           { id: "3", time: 10, value: 0.5, interpolation: "linear" },
         ],
         maintainPitch: false,
-        minSpeed: 0,
-        maxSpeed: 0,
-        showGraph: false,
-        graphHeight: 0,
-        graphOpacity: 0,
       },
     })
 
@@ -96,11 +91,6 @@ describe("Speed Ramping Player Sync Integration", () => {
           { id: "3", time: 20, value: 1.0, interpolation: "linear" },
         ],
         maintainPitch: false,
-        minSpeed: 0,
-        maxSpeed: 0,
-        showGraph: false,
-        graphHeight: 0,
-        graphOpacity: 0,
       },
     })
 

@@ -38,6 +38,7 @@ const mockProject: TimelineProject = {
             {
               id: "video-clip-1",
               name: "Video Clip 1",
+              type: "video",
               mediaId: "media-1",
               mediaFile: {
                 id: "media-1",
@@ -57,6 +58,7 @@ const mockProject: TimelineProject = {
               offset: 0,
               volume: 1,
               speed: 1,
+              playbackRate: 1,
               isReversed: false,
               opacity: 1,
               effects: [],
@@ -90,6 +92,7 @@ const mockProject: TimelineProject = {
             {
               id: "audio-clip-1",
               name: "Audio Clip 1",
+              type: "audio",
               mediaId: "media-2",
               mediaFile: {
                 id: "media-2",
@@ -109,6 +112,7 @@ const mockProject: TimelineProject = {
               offset: 0,
               volume: 1,
               speed: 1,
+              playbackRate: 1,
               isReversed: false,
               opacity: 1,
               effects: [],

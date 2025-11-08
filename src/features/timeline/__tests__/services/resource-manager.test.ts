@@ -620,6 +620,7 @@ describe("resource-manager", () => {
                   volume: 1,
                   opacity: 1,
                   speed: 1,
+                  playbackRate: 1,
                   isLocked: false,
                   fadeIn: { duration: 0 },
                   fadeOut: { duration: 0 },

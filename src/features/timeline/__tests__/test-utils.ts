@@ -1,6 +1,5 @@
-import { type MediaFile, MediaType } from "@/features/media/types/media"
-
-import type { TimelineClip, TimelineTrack, TrackType } from "../types"
+import type { MediaFile, TimelineClip, Track, TrackType } from "@/domains/video-editing/types"
+import { MediaType } from "@/features/media/types/media"
 
 // Test data creation utilities
 
@@ -10,26 +9,40 @@ export const createMockMediaFile = (id = "media-1"): MediaFile => ({
   path: "/path/to/test-video.mp4",
   duration: 100,
   size: 1000000,
-  isVideo: true,
   createdAt: new Date(),
+  updatedAt: new Date(),
   type: MediaType.Video,
 })
 
 export const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
   id: "clip-1",
   name: "Test Clip",
+  type: "video",
   mediaId: "media-1",
   mediaFile: createMockMediaFile("media-1"),
   trackId: "track-1",
   startTime: 10,
   duration: 20,
+  sourceIn: 5,
+  sourceOut: 25,
   mediaStartTime: 5,
   mediaEndTime: 25,
   offset: 0,
   volume: 1,
   speed: 1,
+  playbackRate: 1,
   isReversed: false,
   opacity: 1,
+  isMuted: false,
+  position: {
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+  },
   effects: [],
   filters: [],
   transitions: [],
@@ -43,7 +56,7 @@ export const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineC
 // Alias for createMockClip to match test expectations
 export const createMockTimelineClip = createMockClip
 
-export const createMockTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => ({
+export const createMockTrack = (overrides: Partial<Track> = {}): Track => ({
   id: "track-1",
   type: "video" as TrackType,
   order: 0,
@@ -51,6 +64,10 @@ export const createMockTrack = (overrides: Partial<TimelineTrack> = {}): Timelin
   name: "Video Track 1",
   clips: [],
   transitions: [],
+  muted: false,
+  solo: false,
+  locked: false,
+  expanded: true,
   isHidden: false,
   isLocked: false,
   isMuted: false,
@@ -75,7 +92,7 @@ export const createMockClips = (count: number, overrides: Partial<TimelineClip> 
 }
 
 // Helper to create multiple tracks
-export const createMockTracks = (count: number, type: TrackType = "video"): TimelineTrack[] => {
+export const createMockTracks = (count: number, type: TrackType = "video"): Track[] => {
   return Array.from({ length: count }, (_, i) =>
     createMockTrack({
       id: `track-${i + 1}`,

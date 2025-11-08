@@ -3,16 +3,27 @@ import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useTimelineProject } from "@/domains/video-editing"
 
+// Создаем моки с помощью vi.hoisted(), чтобы они были доступны в vi.mock() фабрике
+const {
+  mockExecuteCommand,
+  mockOnStateChange,
+  mockOnEvent,
+  mockConnect,
+  mockDisconnect,
+  mockGetProjectState,
+  mockGetEventHistory,
+} = vi.hoisted(() => ({
+  mockExecuteCommand: vi.fn(),
+  mockOnStateChange: vi.fn(),
+  mockOnEvent: vi.fn(),
+  mockConnect: vi.fn(),
+  mockDisconnect: vi.fn(),
+  mockGetProjectState: vi.fn(),
+  mockGetEventHistory: vi.fn(),
+}))
+
 // Мокаем backend-sync ДО импорта компонентов
 vi.mock("@/features/app-state/services/backend-sync", () => {
-  const mockExecuteCommand = vi.fn()
-  const mockOnStateChange = vi.fn()
-  const mockOnEvent = vi.fn()
-  const mockConnect = vi.fn()
-  const mockDisconnect = vi.fn()
-  const mockGetProjectState = vi.fn()
-  const mockGetEventHistory = vi.fn()
-
   // Создаем мок класса BackendSync внутри фабрики
   class MockBackendSync {
     onStateChange = mockOnStateChange
@@ -29,13 +40,6 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
   return {
     getBackendSync: vi.fn(() => mockBackendSyncInstance),
     BackendSync: MockBackendSync,
-    _mockExecuteCommand: mockExecuteCommand,
-    _mockOnStateChange: mockOnStateChange,
-    _mockOnEvent: mockOnEvent,
-    _mockConnect: mockConnect,
-    _mockDisconnect: mockDisconnect,
-    _mockGetProjectState: mockGetProjectState,
-    _mockGetEventHistory: mockGetEventHistory,
   }
 })
 
@@ -83,7 +87,6 @@ vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
 }))
 
 // Create mock functions that can be tracked
-const mockExecuteCommand = vi.fn()
 const mockPlay = vi.fn(() => mockExecuteCommand({ type: "Play" }))
 const mockPause = vi.fn(() => mockExecuteCommand({ type: "Pause" }))
 const mockStop = vi.fn(() => mockExecuteCommand({ type: "Stop" }))
@@ -324,14 +327,7 @@ import type { MediaFile, MediaType } from "@/features/media/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../../hooks/use-timeline"
 
-// Импортируем моки - они будут доступны благодаря vi.mock выше
-const backendSyncModule = (await import("@/features/app-state/services/backend-sync")) as any
-const mockOnStateChange = backendSyncModule._mockOnStateChange as ReturnType<typeof vi.fn>
-const mockOnEvent = backendSyncModule._mockOnEvent as ReturnType<typeof vi.fn>
-const mockConnect = backendSyncModule._mockConnect as ReturnType<typeof vi.fn>
-const mockDisconnect = backendSyncModule._mockDisconnect as ReturnType<typeof vi.fn>
-const mockGetProjectState = backendSyncModule._mockGetProjectState as ReturnType<typeof vi.fn>
-const mockGetEventHistory = backendSyncModule._mockGetEventHistory as ReturnType<typeof vi.fn>
+// Моки уже доступны из глобального скоупа (определены в начале файла)
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <TimelineProviders>

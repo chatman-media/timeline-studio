@@ -22,6 +22,7 @@ const createClip = (id: string, startTime: number, duration: number, trackId = "
   offset: 0,
   effects: [],
   speed: 1,
+  playbackRate: 1,
   volume: 1,
   opacity: 1,
   filters: [],

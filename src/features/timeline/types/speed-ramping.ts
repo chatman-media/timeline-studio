@@ -37,13 +37,13 @@ export interface SpeedRampingConfig {
   maintainPitch: boolean
 
   // Ограничения
-  minSpeed: number // Минимальная скорость (по умолчанию 0.1)
-  maxSpeed: number // Максимальная скорость (по умолчанию 10.0)
+  minSpeed?: number // Минимальная скорость (по умолчанию 0.1)
+  maxSpeed?: number // Максимальная скорость (по умолчанию 10.0)
 
   // Визуализация
-  showGraph: boolean
-  graphHeight: number // Высота графика в пикселях
-  graphOpacity: number // Прозрачность графика
+  showGraph?: boolean
+  graphHeight?: number // Высота графика в пикселях
+  graphOpacity?: number // Прозрачность графика
 }
 
 // Пресеты speed ramping
