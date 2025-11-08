@@ -186,7 +186,7 @@ export class SlipSlideService {
     // Ищем в секциях
     for (const section of project.sections) {
       for (const track of section.tracks) {
-        const clip = track.clips.find((c) => c.id === clipId)
+        const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
         if (clip) {
           targetTrack = track
           targetClip = clip
@@ -199,7 +199,7 @@ export class SlipSlideService {
     // Ищем в глобальных треках
     if (!targetClip) {
       for (const track of project.globalTracks) {
-        const clip = track.clips.find((c) => c.id === clipId)
+        const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
         if (clip) {
           targetTrack = track
           targetClip = clip
@@ -228,7 +228,7 @@ export class SlipSlideService {
     }
 
     // Обновляем секции
-    updatedProject.sections = project.sections.map((section) => ({
+    updatedProject.sections = project.sections.map((section: TimelineProject["sections"][0]) => ({
       ...section,
       tracks: section.tracks.map(updateTrack),
     }))
@@ -250,7 +250,7 @@ export class SlipSlideService {
     // Ищем клип
     for (const section of project.sections) {
       for (const track of section.tracks) {
-        const clip = track.clips.find((c) => c.id === clipId)
+        const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
         if (clip) {
           targetTrack = track
           targetClip = clip
@@ -262,7 +262,7 @@ export class SlipSlideService {
 
     if (!targetClip) {
       for (const track of project.globalTracks) {
-        const clip = track.clips.find((c) => c.id === clipId)
+        const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
         if (clip) {
           targetTrack = track
           targetClip = clip
@@ -280,21 +280,21 @@ export class SlipSlideService {
     const updatedProject = { ...project }
 
     // Создаем map обновленных клипов для быстрого поиска
-    const updatedClipsMap = new Map(result.updatedClips.map((clip) => [clip.id, clip]))
+    const updatedClipsMap = new Map(result.updatedClips.map((clip: TimelineClip) => [clip.id, clip]))
 
     // Обновляем треки
     const updateTrack = (track: TimelineTrack): TimelineTrack => {
       if (track.id === targetTrack!.id) {
         return {
           ...track,
-          clips: track.clips.map((c) => updatedClipsMap.get(c.id) || c),
+          clips: track.clips.map((c: TimelineClip) => updatedClipsMap.get(c.id) || c),
         }
       }
       return track
     }
 
     // Обновляем секции
-    updatedProject.sections = project.sections.map((section) => ({
+    updatedProject.sections = project.sections.map((section: TimelineProject["sections"][0]) => ({
       ...section,
       tracks: section.tracks.map(updateTrack),
     }))

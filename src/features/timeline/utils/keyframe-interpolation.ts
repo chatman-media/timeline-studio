@@ -20,6 +20,8 @@ export interface InterpolatedValues {
   speed?: number
 }
 
+export type InterpolatedPosition = NonNullable<InterpolatedValues["position"]>
+
 /**
  * Получает все интерполированные значения для клипа в указанное время
  */
@@ -55,7 +57,7 @@ export function getInterpolatedClipValues(clip: TimelineClip, relativeTime: numb
 /**
  * Интерполирует значение свойства между keyframes
  */
-function interpolateProperty(keyframes: TimelineKeyframe[], time: number): any {
+function interpolateProperty(keyframes: TimelineKeyframe[], time: number): unknown {
   if (keyframes.length === 0) return undefined
   if (keyframes.length === 1) return keyframes[0].value
 
@@ -85,7 +87,7 @@ function interpolateProperty(keyframes: TimelineKeyframe[], time: number): any {
 /**
  * Интерполирует между двумя keyframes
  */
-function interpolateBetweenKeyframes(currentKf: TimelineKeyframe, nextKf: TimelineKeyframe, time: number): any {
+function interpolateBetweenKeyframes(currentKf: TimelineKeyframe, nextKf: TimelineKeyframe, time: number): unknown {
   const duration = nextKf.time - currentKf.time
   const progress = duration > 0 ? (time - currentKf.time) / duration : 0
 
@@ -145,55 +147,75 @@ function applyEasing(progress: number, type: TimelineKeyframe["interpolation"]):
 function applyInterpolatedValue(
   values: InterpolatedValues,
   property: AnimatableProperty,
-  value: any,
+  value: unknown,
   clip: TimelineClip,
 ): void {
   switch (property) {
     case "opacity":
-      values.opacity = value
+      if (typeof value === "number") {
+        values.opacity = value
+      }
       break
 
     case "position.x":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.x = value
+      if (typeof value === "number") {
+        values.position.x = value
+      }
       break
 
     case "position.y":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.y = value
+      if (typeof value === "number") {
+        values.position.y = value
+      }
       break
 
     case "position.width":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.width = value
+      if (typeof value === "number") {
+        values.position.width = value
+      }
       break
 
     case "position.height":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.height = value
+      if (typeof value === "number") {
+        values.position.height = value
+      }
       break
 
     case "position.rotation":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.rotation = value
+      if (typeof value === "number") {
+        values.position.rotation = value
+      }
       break
 
     case "position.scaleX":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.scaleX = value
+      if (typeof value === "number") {
+        values.position.scaleX = value
+      }
       break
 
     case "position.scaleY":
       if (!values.position) values.position = getDefaultPosition(clip)
-      values.position.scaleY = value
+      if (typeof value === "number") {
+        values.position.scaleY = value
+      }
       break
 
     case "volume":
-      values.volume = value
+      if (typeof value === "number") {
+        values.volume = value
+      }
       break
 
     case "speed":
-      values.speed = value
+      if (typeof value === "number") {
+        values.speed = value
+      }
       break
   }
 }
@@ -213,7 +235,7 @@ function getDefaultClipValues(clip: TimelineClip): InterpolatedValues {
 /**
  * Получает дефолтную позицию для клипа
  */
-function getDefaultPosition(clip: TimelineClip) {
+function getDefaultPosition(clip: TimelineClip): InterpolatedPosition {
   return {
     x: clip.position?.x ?? 0,
     y: clip.position?.y ?? 0,
@@ -230,17 +252,18 @@ function getDefaultPosition(clip: TimelineClip) {
  */
 function fillDefaultValues(values: InterpolatedValues, clip: TimelineClip): InterpolatedValues {
   const defaults = getDefaultClipValues(clip)
+  const defaultPosition = defaults.position ?? getDefaultPosition(clip)
 
   return {
     opacity: values.opacity ?? defaults.opacity,
     position: {
-      x: values.position?.x ?? defaults.position!.x,
-      y: values.position?.y ?? defaults.position!.y,
-      width: values.position?.width ?? defaults.position!.width,
-      height: values.position?.height ?? defaults.position!.height,
-      rotation: values.position?.rotation ?? defaults.position!.rotation,
-      scaleX: values.position?.scaleX ?? defaults.position!.scaleX,
-      scaleY: values.position?.scaleY ?? defaults.position!.scaleY,
+      x: values.position?.x ?? defaultPosition.x,
+      y: values.position?.y ?? defaultPosition.y,
+      width: values.position?.width ?? defaultPosition.width,
+      height: values.position?.height ?? defaultPosition.height,
+      rotation: values.position?.rotation ?? defaultPosition.rotation,
+      scaleX: values.position?.scaleX ?? defaultPosition.scaleX,
+      scaleY: values.position?.scaleY ?? defaultPosition.scaleY,
     },
     volume: values.volume ?? defaults.volume,
     speed: values.speed ?? defaults.speed,
@@ -293,7 +316,7 @@ export function getPropertyValueRange(
 /**
  * Создает CSS transform строку для позиционных свойств
  */
-export function createTransformString(position: InterpolatedValues["position"]): string {
+export function createTransformString(position: InterpolatedPosition | undefined): string {
   if (!position) return ""
 
   const transforms: string[] = []
@@ -316,7 +339,7 @@ export function createTransformString(position: InterpolatedValues["position"]):
 /**
  * Создает CSS свойства для размеров
  */
-export function createSizeStyles(position: InterpolatedValues["position"]): React.CSSProperties {
+export function createSizeStyles(position: InterpolatedPosition | undefined): React.CSSProperties {
   if (!position) return {}
 
   return {

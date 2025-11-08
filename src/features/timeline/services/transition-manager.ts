@@ -5,7 +5,7 @@
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
-import type { AppliedTransition, TimelineClip, TimelineProject } from "../types"
+import type { AppliedTransition, TimelineClip, TimelineProject, TimelineTrack } from "../types"
 
 const logger = createLogger("TransitionManager")
 
@@ -14,7 +14,7 @@ export interface TransitionApplication {
   rightClipId: string
   transitionId: string
   duration: number
-  parameters?: Record<string, any>
+  parameters?: Record<string, unknown>
 }
 
 export class TransitionManager {
@@ -70,11 +70,11 @@ export class TransitionManager {
 
     // Обновляем клипы
     const updatedProject = TransitionManager.updateClipInProject(project, leftClipId, {
-      transitions: [...leftClip.transitions.filter((t) => t.type !== "out"), outTransition],
+      transitions: [...(leftClip.transitions || []).filter((t) => t.type !== "out"), outTransition],
     })
 
     return TransitionManager.updateClipInProject(updatedProject, rightClipId, {
-      transitions: [...rightClip.transitions.filter((t) => t.type !== "in"), inTransition],
+      transitions: [...(rightClip.transitions || []).filter((t) => t.type !== "in"), inTransition],
     })
   }
 
@@ -96,12 +96,12 @@ export class TransitionManager {
 
     // Удаляем out переход из левого клипа
     const updatedProject = TransitionManager.updateClipInProject(project, leftClipId, {
-      transitions: leftClip.transitions.filter((t) => t.type !== "out"),
+      transitions: (leftClip.transitions || []).filter((t) => t.type !== "out"),
     })
 
     // Удаляем in переход из правого клипа
     return TransitionManager.updateClipInProject(updatedProject, rightClipId, {
-      transitions: rightClip.transitions.filter((t) => t.type !== "in"),
+      transitions: (rightClip.transitions || []).filter((t) => t.type !== "in"),
     })
   }
 
@@ -112,12 +112,12 @@ export class TransitionManager {
     project: TimelineProject,
     clipId: string,
     transitionId: string,
-    parameters: Record<string, any>,
+    parameters: Record<string, unknown>,
   ): TimelineProject {
     const clip = TransitionManager.findClipInProject(project, clipId)
     if (!clip) return project
 
-    const updatedTransitions = clip.transitions.map((t) =>
+    const updatedTransitions = (clip.transitions || []).map((t) =>
       t.id === transitionId ? { ...t, customParams: { ...t.customParams, ...parameters } } : t,
     )
 
@@ -156,8 +156,8 @@ export class TransitionManager {
       const rightClip = sortedClips[i + 1]
 
       // Проверяем есть ли переход
-      const outTransition = leftClip.transitions.find((t) => t.type === "out")
-      const inTransition = rightClip.transitions.find((t) => t.type === "in")
+      const outTransition = (leftClip.transitions || []).find((t: AppliedTransition) => t.type === "out")
+      const inTransition = (rightClip.transitions || []).find((t: AppliedTransition) => t.type === "in")
 
       if (outTransition && inTransition && outTransition.transitionId === inTransition.transitionId) {
         transitions.push({
@@ -231,26 +231,26 @@ export class TransitionManager {
   private static findClipInProject(project: TimelineProject, clipId: string): TimelineClip | null {
     for (const section of project.sections) {
       for (const track of section.tracks) {
-        const clip = track.clips.find((c) => c.id === clipId)
+        const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
         if (clip) return clip
       }
     }
 
     for (const track of project.globalTracks) {
-      const clip = track.clips.find((c) => c.id === clipId)
+      const clip = track.clips.find((c: TimelineClip) => c.id === clipId)
       if (clip) return clip
     }
 
     return null
   }
 
-  private static findTrackInProject(project: TimelineProject, trackId: string) {
+  private static findTrackInProject(project: TimelineProject, trackId: string): TimelineTrack | null {
     for (const section of project.sections) {
-      const track = section.tracks.find((t) => t.id === trackId)
+      const track = section.tracks.find((t: TimelineTrack) => t.id === trackId)
       if (track) return track
     }
 
-    const globalTrack = project.globalTracks.find((t) => t.id === trackId)
+    const globalTrack = project.globalTracks.find((t: TimelineTrack) => t.id === trackId)
     if (globalTrack) return globalTrack
 
     return null
@@ -263,16 +263,16 @@ export class TransitionManager {
   ): TimelineProject {
     return {
       ...project,
-      sections: project.sections.map((section) => ({
+      sections: project.sections.map((section: TimelineProject["sections"][0]) => ({
         ...section,
-        tracks: section.tracks.map((track) => ({
+        tracks: section.tracks.map((track: TimelineTrack) => ({
           ...track,
-          clips: track.clips.map((clip) => (clip.id === clipId ? { ...clip, ...updates } : clip)),
+          clips: track.clips.map((clip: TimelineClip) => (clip.id === clipId ? { ...clip, ...updates } : clip)),
         })),
       })),
-      globalTracks: project.globalTracks.map((track) => ({
+      globalTracks: project.globalTracks.map((track: TimelineTrack) => ({
         ...track,
-        clips: track.clips.map((clip) => (clip.id === clipId ? { ...clip, ...updates } : clip)),
+        clips: track.clips.map((clip: TimelineClip) => (clip.id === clipId ? { ...clip, ...updates } : clip)),
       })),
     }
   }
