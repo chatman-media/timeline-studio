@@ -64,7 +64,9 @@ export function useLanguage(): UseLanguageReturn {
       // Сохраняем в localStorage для совместимости
       localStorage.setItem("app-language", appLang)
     } catch (err) {
-      logger.error("Error fetching language:", err)
+      logger.error("Error fetching language:", {
+        error: err instanceof Error ? err.message : String(err),
+      })
       setError(err instanceof Error ? err.message : String(err))
 
       // Пытаемся получить язык из localStorage
@@ -74,7 +76,9 @@ export function useLanguage(): UseLanguageReturn {
           await i18n.changeLanguage(storedLanguage as LanguageCode)
         }
       } catch (e) {
-        logger.error("Error reading language from localStorage:", e)
+        logger.error("Error reading language from localStorage:", {
+          error: e instanceof Error ? e.message : String(e),
+        })
       }
     } finally {
       setIsLoading(false)
@@ -99,7 +103,9 @@ export function useLanguage(): UseLanguageReturn {
         // Синхронизируем с бэкендом Tauri
         await invoke<LanguageResponse>("set_app_language_tauri", { lang })
       } catch (err) {
-        logger.error("Error changing language:", err)
+        logger.error("Error changing language:", {
+          error: err instanceof Error ? err.message : String(err),
+        })
         setError(err instanceof Error ? err.message : String(err))
       } finally {
         setIsLoading(false)

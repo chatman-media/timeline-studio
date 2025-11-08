@@ -25,12 +25,13 @@ const mockMediaFile: MediaFile = {
   id: "test-media-1",
   name: "test-video.mp4",
   path: "/path/to/test-video.mp4",
+  type: "video" as any,
   isVideo: true,
   isAudio: false,
   isImage: false,
   size: 1024000,
   duration: 120,
-  createdAt: "2023-01-01T00:00:00Z",
+  createdAt: new Date("2023-01-01T00:00:00Z"),
   probeData: {
     streams: [
       {

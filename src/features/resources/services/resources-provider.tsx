@@ -11,7 +11,7 @@ import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
@@ -481,6 +481,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             id: item.id,
             name: item.name,
             path: item.path,
+            type: mediaType === "Video" ? MediaType.Video : MediaType.StillImage,
             size: 0, // Backend не предоставляет размер файла
             isVideo: mediaType === "Video",
             isAudio: false,
@@ -528,6 +529,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             id: item.id,
             name: item.name,
             path: item.path,
+            type: MediaType.Audio,
             size: 0, // Backend не предоставляет размер файла
             isVideo: false,
             isAudio: true,
