@@ -10,52 +10,82 @@ import { memo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { VideoEffect } from "@/features/effects/types"
+import type { BaseEffect } from "@/features/effects/types/unified-effects"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { cn } from "@/lib/utils"
 
 // Временные моковые данные - потом заменить на реальные из контекста
-const mockEffects: VideoEffect[] = [
+const mockEffects: BaseEffect[] = [
   {
     id: "blur",
-    name: "Blur",
-    category: "distortion",
-    enabled: true,
-    type: "filter",
+    name: { en: "Blur", ru: "Размытие" },
+    category: "blur_sharpen",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["blur", "sharpen"],
+    complexity: "low",
+    gpuAccelerated: true,
     parameters: [],
+    presets: [],
+    processors: {},
   },
   {
     id: "glow",
-    name: "Glow",
-    category: "stylize",
-    enabled: true,
-    type: "filter",
+    name: { en: "Glow", ru: "Свечение" },
+    category: "lighting",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["glow", "light"],
+    complexity: "low",
+    gpuAccelerated: true,
     parameters: [],
+    presets: [],
+    processors: {},
   },
   {
     id: "shake",
-    name: "Shake",
+    name: { en: "Shake", ru: "Тряска" },
     category: "motion",
-    enabled: true,
-    type: "filter",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["motion", "shake"],
+    complexity: "medium",
+    gpuAccelerated: true,
     parameters: [],
+    presets: [],
+    processors: {},
   },
   {
     id: "zoom",
-    name: "Zoom",
+    name: { en: "Zoom", ru: "Зум" },
     category: "motion",
-    enabled: true,
-    type: "filter",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["motion", "zoom"],
+    complexity: "low",
+    gpuAccelerated: true,
     parameters: [],
+    presets: [],
+    processors: {},
   },
   {
     id: "glitch",
-    name: "Glitch",
-    category: "distortion",
-    enabled: true,
-    type: "filter",
+    name: { en: "Glitch", ru: "Глитч" },
+    category: "distort",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["glitch", "distort"],
+    complexity: "medium",
+    gpuAccelerated: true,
     parameters: [],
+    presets: [],
+    processors: {},
   },
 ]
 
@@ -171,7 +201,7 @@ const mockTransitions: Transition[] = [
 ]
 
 interface ResourceItemProps {
-  resource: VideoEffect | VideoFilter | Transition
+  resource: BaseEffect | VideoFilter | Transition
   type: "effect" | "filter" | "transition"
   icon: React.ReactNode
 }
@@ -184,6 +214,17 @@ const ResourceItem = memo(function ResourceItem({ resource, type, icon }: Resour
       resource,
     },
   })
+
+  // Получаем имя ресурса в зависимости от типа
+  const getResourceName = () => {
+    if ("name" in resource && resource.name) {
+      return typeof resource.name === "string" ? resource.name : resource.name.ru || resource.name.en
+    }
+    if ("labels" in resource && resource.labels) {
+      return resource.labels.ru || resource.labels.en
+    }
+    return resource.id
+  }
 
   return (
     <div
@@ -198,14 +239,14 @@ const ResourceItem = memo(function ResourceItem({ resource, type, icon }: Resour
       )}
     >
       <div className="text-muted-foreground">{icon}</div>
-      <span className="text-sm">{resource.name}</span>
+      <span className="text-sm">{getResourceName()}</span>
     </div>
   )
 })
 
 interface CategorySectionProps {
   title: string
-  items: Array<VideoEffect | VideoFilter | Transition>
+  items: Array<BaseEffect | VideoFilter | Transition>
   type: "effect" | "filter" | "transition"
   icon: React.ReactNode
 }
@@ -253,22 +294,31 @@ export const ResourceBrowser = memo(function ResourceBrowser() {
   }
 
   // Фильтрация по поисковому запросу
-  const filterBySearch = <T extends { name?: string; labels?: { ru: string; en: string } }>(items: T[]) => {
+  const filterBySearch = <
+    T extends { name?: string | { en: string; ru: string; [key: string]: string }; labels?: { ru?: string; en: string } },
+  >(
+    items: T[],
+  ) => {
     if (!searchQuery) return items
     const query = searchQuery.toLowerCase()
     return items.filter((item) => {
-      const name = item.name || item.labels?.ru || item.labels?.en || ""
+      const name =
+        typeof item.name === "string"
+          ? item.name
+          : typeof item.name === "object"
+            ? item.name.en || item.name.ru
+            : item.labels?.ru || item.labels?.en || ""
       return name.toLowerCase().includes(query)
     })
   }
 
-  const filteredEffects = filterBySearch(mockEffects)
-  const filteredFilters = filterBySearch(mockFilters)
-  const filteredTransitions = filterBySearch(mockTransitions)
+  const filteredEffects = filterBySearch<BaseEffect>(mockEffects)
+  const filteredFilters = filterBySearch<VideoFilter>(mockFilters)
+  const filteredTransitions = filterBySearch<Transition>(mockTransitions)
 
-  const groupedEffects = groupByCategory(filteredEffects)
-  const groupedFilters = groupByCategory(filteredFilters)
-  const groupedTransitions = groupByCategory(filteredTransitions)
+  const groupedEffects = groupByCategory<BaseEffect>(filteredEffects)
+  const groupedFilters = groupByCategory<VideoFilter>(filteredFilters)
+  const groupedTransitions = groupByCategory<Transition>(filteredTransitions)
 
   return (
     <div className="h-full flex flex-col bg-background border-l">

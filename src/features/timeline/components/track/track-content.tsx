@@ -33,7 +33,7 @@ interface TrackContentProps {
 
 export const TrackContent = memo(function TrackContent({ track, timeScale, currentTime, onUpdate }: TrackContentProps) {
   const { dragState, isValidDropTarget } = useDragDropTimeline()
-  const { selectClips: selectClipsSelection } = useTimelineSelection()
+  const { selectMultiple } = useTimelineSelection()
   const { project, saveProject } = useTimeline()
   const { groups, toggleCollapse } = useClipGroups()
 
@@ -208,7 +208,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             clips={clips}
             timeScale={timeScale}
             onToggleCollapse={() => toggleCollapse(group.id)}
-            onSelect={() => selectClipsSelection(clips.map((c) => c.id))}
+            onSelect={() => selectMultiple({ clipIds: clips.map((c) => c.id) })}
             isSelected={clips.some((c) => c.isSelected)}
           />
         ))}

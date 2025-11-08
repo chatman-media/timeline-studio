@@ -42,7 +42,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
   onUpdate,
 }: VirtualizedTrackContentProps) {
   const { dragState, isValidDropTarget } = useDragDropTimeline()
-  const { selectClips } = useTimelineSelection()
+  const { selectMultiple } = useTimelineSelection()
   const { project, saveProject } = useTimeline()
   const { groups, toggleCollapse } = useClipGroups()
 
@@ -73,7 +73,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
   // Получаем переходы для этого трека
   const trackTransitions = useMemo(() => {
     if (!project) return []
-    return getTrackTransitions(project, track.id)
+    return getTrackTransitions(project as any, track.id)
   }, [project, track.id])
 
   // Обработчики
@@ -98,7 +98,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
       if (!project) return
 
       try {
-        addTransitionBetweenClips(project, track.id, leftClipId, rightClipId, transition)
+        addTransitionBetweenClips(project as any, track.id, leftClipId, rightClipId, transition)
         await saveProject()
         logger.info("Переход успешно добавлен")
       } catch (error) {
@@ -231,7 +231,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                 clips={clips}
                 timeScale={timeScale}
                 onToggleCollapse={() => toggleCollapse(group.id)}
-                onSelect={() => selectClips(clips.map((c) => c.id))}
+                onSelect={() => selectMultiple({ clipIds: clips.map((c) => c.id) })}
                 isSelected={clips.some((c) => c.isSelected)}
               />
             </div>

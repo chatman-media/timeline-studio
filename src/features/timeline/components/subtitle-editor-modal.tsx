@@ -21,8 +21,8 @@ export function SubtitleEditorModal() {
   const [startTime, setStartTime] = useState(0)
   const [duration, setDuration] = useState(2)
   const [styleId, setStyleId] = useState("")
-  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave">("none")
-  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale">("none")
+  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve">("none")
+  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve">("none")
   const [animationInDuration, setAnimationInDuration] = useState(0.5)
   const [animationOutDuration, setAnimationOutDuration] = useState(0.5)
   const [position, setPosition] = useState<
@@ -46,8 +46,8 @@ export function SubtitleEditorModal() {
       setStartTime(subtitle.startTime || 0)
       setDuration(subtitle.duration || 2)
       setStyleId(subtitle.subtitleStyleId || "")
-      setAnimationIn(subtitle.animationIn?.type || "none")
-      setAnimationOut(subtitle.animationOut?.type || "none")
+      setAnimationIn((subtitle.animationIn?.type as typeof animationIn) || "none")
+      setAnimationOut((subtitle.animationOut?.type as typeof animationOut) || "none")
       setAnimationInDuration(subtitle.animationIn?.duration || 0.5)
       setAnimationOutDuration(subtitle.animationOut?.duration || 0.5)
       setPosition(subtitle.subtitlePosition?.alignment || "bottom-center")
@@ -186,6 +186,10 @@ export function SubtitleEditorModal() {
               <SelectItem value="typewriter">Печатная машинка</SelectItem>
               <SelectItem value="scale">Масштабирование</SelectItem>
               <SelectItem value="wave">Волна</SelectItem>
+              <SelectItem value="bounce">Отскок</SelectItem>
+              <SelectItem value="shake">Встряхивание</SelectItem>
+              <SelectItem value="blink">Мигание</SelectItem>
+              <SelectItem value="dissolve">Растворение</SelectItem>
             </SelectContent>
           </Select>
           {animationIn !== "none" && (
@@ -212,6 +216,10 @@ export function SubtitleEditorModal() {
               <SelectItem value="fade">Затухание</SelectItem>
               <SelectItem value="slide">Скольжение</SelectItem>
               <SelectItem value="scale">Масштабирование</SelectItem>
+              <SelectItem value="bounce">Отскок</SelectItem>
+              <SelectItem value="shake">Встряхивание</SelectItem>
+              <SelectItem value="blink">Мигание</SelectItem>
+              <SelectItem value="dissolve">Растворение</SelectItem>
             </SelectContent>
           </Select>
           {animationOut !== "none" && (

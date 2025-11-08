@@ -30,11 +30,11 @@ export function SubtitleEditor({ open, onOpenChange, subtitle, onSave, available
   const [startTime, setStartTime] = useState(subtitle?.startTime || 0)
   const [duration, setDuration] = useState(subtitle?.duration || 2)
   const [styleId, setStyleId] = useState(subtitle?.subtitleStyleId || "")
-  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave">(
-    subtitle?.animationIn?.type || "none",
+  const [animationIn, setAnimationIn] = useState<"none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve">(
+    (subtitle?.animationIn?.type as "none" | "fade" | "slide" | "typewriter" | "scale" | "wave" | "bounce" | "shake" | "blink" | "dissolve") || "none",
   )
-  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale">(
-    subtitle?.animationOut?.type || "none",
+  const [animationOut, setAnimationOut] = useState<"none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve">(
+    (subtitle?.animationOut?.type as "none" | "fade" | "slide" | "scale" | "bounce" | "shake" | "blink" | "dissolve") || "none",
   )
   const [animationInDuration, setAnimationInDuration] = useState(subtitle?.animationIn?.duration || 0.5)
   const [animationOutDuration, setAnimationOutDuration] = useState(subtitle?.animationOut?.duration || 0.5)
@@ -189,6 +189,10 @@ export function SubtitleEditor({ open, onOpenChange, subtitle, onSave, available
                   <SelectItem value="typewriter">Печатная машинка</SelectItem>
                   <SelectItem value="scale">Масштабирование</SelectItem>
                   <SelectItem value="wave">Волна</SelectItem>
+                  <SelectItem value="bounce">Отскок</SelectItem>
+                  <SelectItem value="shake">Встряхивание</SelectItem>
+                  <SelectItem value="blink">Мигание</SelectItem>
+                  <SelectItem value="dissolve">Растворение</SelectItem>
                 </SelectContent>
               </Select>
               {animationIn !== "none" && (
@@ -215,6 +219,10 @@ export function SubtitleEditor({ open, onOpenChange, subtitle, onSave, available
                   <SelectItem value="fade">Затухание</SelectItem>
                   <SelectItem value="slide">Скольжение</SelectItem>
                   <SelectItem value="scale">Масштабирование</SelectItem>
+                  <SelectItem value="bounce">Отскок</SelectItem>
+                  <SelectItem value="shake">Встряхивание</SelectItem>
+                  <SelectItem value="blink">Мигание</SelectItem>
+                  <SelectItem value="dissolve">Растворение</SelectItem>
                 </SelectContent>
               </Select>
               {animationOut !== "none" && (

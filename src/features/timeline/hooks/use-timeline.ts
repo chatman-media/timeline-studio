@@ -87,6 +87,10 @@ export interface TimelineContextType {
   cutSelection: () => Promise<void>
   paste: (targetId: string, position: number) => Promise<void>
   send: (event: any) => void
+
+  // Error handling
+  error: string | null
+  clearError: () => void
 }
 
 /**
@@ -201,6 +205,12 @@ export function useTimeline(): TimelineContextType {
     },
     send: (_event: any) => {
       logger.warn("send is deprecated - use specific provider methods instead")
+    },
+
+    // Error handling
+    error: null,
+    clearError: () => {
+      // No-op for now - errors handled by individual providers
     },
   }
 }
