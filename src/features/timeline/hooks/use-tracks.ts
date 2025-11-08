@@ -25,16 +25,19 @@ const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack
 }
 
 // Локальные утилиты для работы с domain типами
-const getAllTracks = (timeline: Timeline) => {
-  return [...timeline.globalTracks, ...timeline.sections.flatMap((s) => s.tracks)]
+const getAllTracks = (timeline: Timeline | null | undefined) => {
+  if (!timeline) return []
+  const globalTracks = timeline.globalTracks || []
+  const sectionTracks = timeline.sections?.flatMap((s) => s.tracks || []) || []
+  return [...globalTracks, ...sectionTracks]
 }
 
-const findTrackById = (timeline: Timeline, trackId: string) => {
+const findTrackById = (timeline: Timeline | null | undefined, trackId: string) => {
   const allTracks = getAllTracks(timeline)
   return allTracks.find((track) => track.id === trackId) || null
 }
 
-const getTracksByType = (timeline: Timeline, trackType: TrackType) => {
+const getTracksByType = (timeline: Timeline | null | undefined, trackType: TrackType) => {
   const allTracks = getAllTracks(timeline)
   return allTracks.filter((track) => track.type === trackType)
 }
@@ -101,13 +104,13 @@ export function useTracks(): UseTracksReturn {
 
   const globalTracks = useMemo(() => {
     if (!project) return []
-    const sortedTracks = sortTracksByOrder(project.globalTracks)
+    const sortedTracks = sortTracksByOrder(project.globalTracks || [])
     return sortedTracks.map(adaptDomainTrackToFeatureTrack)
   }, [project])
 
   const sectionTracks = useMemo(() => {
     if (!project) return []
-    const allSectionTracks = project.sections.flatMap((section) => section.tracks)
+    const allSectionTracks = project.sections?.flatMap((section) => section.tracks || []) || []
     const sortedTracks = sortTracksByOrder(allSectionTracks)
     return sortedTracks.map(adaptDomainTrackToFeatureTrack)
   }, [project])
@@ -136,9 +139,9 @@ export function useTracks(): UseTracksReturn {
   const getTracksBySection = useMemo(
     () => (sectionId: string) => {
       if (!project) return []
-      const section = project.sections.find((s) => s.id === sectionId)
+      const section = project.sections?.find((s) => s.id === sectionId)
       if (!section) return []
-      const sortedTracks = sortTracksByOrder(section.tracks)
+      const sortedTracks = sortTracksByOrder(section.tracks || [])
       return sortedTracks.map(adaptDomainTrackToFeatureTrack)
     },
     [project],
@@ -229,11 +232,11 @@ export function useTracks(): UseTracksReturn {
   const canAddTrackToSection = (sectionId: string, trackType: TrackType): boolean => {
     // Проверяем, существует ли секция
     if (!project) return false
-    const section = project.sections.find((s) => s.id === sectionId)
+    const section = project.sections?.find((s) => s.id === sectionId)
     if (!section) return false
 
     // Проверяем ограничения по типам треков
-    const existingTypes = section.tracks.map((t) => t.type)
+    const existingTypes = (section.tracks || []).map((t) => t.type)
 
     // Например, можно ограничить количество видео треков
     if (trackType === "video" && existingTypes.filter((t) => t === "video").length >= 10) {

@@ -486,6 +486,8 @@ export interface TimelineKeyframe {
   property: string
   value: any
   interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
+  easeIn?: number
+  easeOut?: number
 }
 
 // ============================================================================

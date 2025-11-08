@@ -74,6 +74,31 @@ pub enum TrackType {
   Ambient,
 }
 
+// Keyframe interpolation types
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(tag = "type")]
+pub enum InterpolationType {
+  Linear,
+  EaseIn,
+  EaseOut,
+  EaseInOut,
+  Step,
+  Bezier { control_points: Vec<(f64, f64)> },
+}
+
+// Keyframe for clip property animation
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct Keyframe {
+  pub id: String,
+  pub clip_id: String,
+  pub property: String,
+  pub time: f64,
+  pub value: serde_json::Value,
+  pub interpolation: InterpolationType,
+  pub ease_in: Option<f64>,
+  pub ease_out: Option<f64>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct Clip {
   pub id: String,
@@ -87,6 +112,7 @@ pub struct Clip {
   pub enabled: bool,
   pub effects: Vec<String>,
   pub transitions: Vec<Transition>,
+  pub keyframes: Vec<Keyframe>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -341,6 +367,34 @@ pub enum ProjectCommand {
     add_to_selection: bool,
   },
   ClearSelection,
+
+  // Keyframe commands
+  AddKeyframe {
+    clip_id: String,
+    property: String,
+    time: f64,
+    value: serde_json::Value,
+    interpolation: String,
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  },
+  RemoveKeyframe {
+    clip_id: String,
+    keyframe_id: String,
+  },
+  UpdateKeyframe {
+    clip_id: String,
+    keyframe_id: String,
+    time: Option<f64>,
+    value: Option<serde_json::Value>,
+    interpolation: Option<String>,
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  },
+  ClearPropertyKeyframes {
+    clip_id: String,
+    property: String,
+  },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

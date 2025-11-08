@@ -283,17 +283,16 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createScaleAnimation(
-        clip,
-        fromScale,
-        toScale,
-        startTime,
-        duration,
-        interpolation,
-      )
-      return updateClipWithResult(result)
+      try {
+        // Scale animation: изменение масштаба
+        await domainKeyframes.addKeyframe(clipId, "scale", startTime, fromScale, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "scale", startTime + duration, toScale, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const createMovementAnimation = useCallback(
@@ -312,19 +311,18 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createMovementAnimation(
-        clip,
-        fromX,
-        fromY,
-        toX,
-        toY,
-        startTime,
-        duration,
-        interpolation,
-      )
-      return updateClipWithResult(result)
+      try {
+        // Movement animation: position.x и position.y
+        await domainKeyframes.addKeyframe(clipId, "position.x", startTime, fromX, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "position.x", startTime + duration, toX, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "position.y", startTime, fromY, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "position.y", startTime + duration, toY, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const createRotationAnimation = useCallback(
@@ -341,17 +339,16 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createRotationAnimation(
-        clip,
-        fromRotation,
-        toRotation,
-        startTime,
-        duration,
-        interpolation,
-      )
-      return updateClipWithResult(result)
+      try {
+        // Rotation animation: изменение угла поворота
+        await domainKeyframes.addKeyframe(clipId, "rotation", startTime, fromRotation, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "rotation", startTime + duration, toRotation, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   // Утилиты - используем domain provider
@@ -384,10 +381,30 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Target clip ${targetClipId} not found` }
       }
 
-      const result = KeyframeAnimationService.copyKeyframes(sourceClip, targetClip, property)
-      return updateClipWithResult(result)
+      try {
+        // Получаем keyframes из source clip
+        const keyframes = property
+          ? domainKeyframes.getPropertyKeyframes(sourceClipId, property)
+          : domainKeyframes.getClipKeyframes(sourceClipId)
+
+        // Копируем каждый keyframe в target clip
+        for (const kf of keyframes) {
+          await domainKeyframes.addKeyframe(
+            targetClipId,
+            kf.property,
+            kf.time,
+            kf.value,
+            kf.interpolation,
+            kf.easeIn,
+            kf.easeOut,
+          )
+        }
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const optimizeKeyframes = useCallback(
@@ -397,13 +414,42 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
+      // Используем KeyframeAnimationService для оптимизации (локальное вычисление)
       const result = KeyframeAnimationService.optimizeKeyframes(clip, tolerance)
-      return updateClipWithResult(result)
+
+      // Если оптимизация успешна, применяем изменения через backend
+      if (result.success && result.updatedClip) {
+        try {
+          // Очищаем все keyframes
+          const properties = new Set(domainKeyframes.getClipKeyframes(clipId).map((kf) => kf.property))
+          for (const prop of properties) {
+            await domainKeyframes.clearPropertyKeyframes(clipId, prop)
+          }
+
+          // Добавляем оптимизированные keyframes
+          for (const kf of result.updatedClip.keyframes || []) {
+            await domainKeyframes.addKeyframe(
+              clipId,
+              kf.property,
+              kf.time,
+              kf.value,
+              kf.interpolation,
+              kf.easeIn,
+              kf.easeOut,
+            )
+          }
+          return { success: true }
+        } catch (error) {
+          return { success: false, error: String(error) }
+        }
+      }
+
+      return result
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
-  // Предустановленные анимации
+  // Предустановленные анимации - используем обновленные функции
   const createPresetAnimation = useCallback(
     async (
       clipId: string,
@@ -424,59 +470,41 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      let result: AnimationResult
-
       switch (preset) {
         case "fadeIn":
-          result = KeyframeAnimationService.createFadeIn(clip, duration)
-          break
+          return createFadeIn(clipId, duration)
 
         case "fadeOut":
-          result = KeyframeAnimationService.createFadeOut(clip, duration)
-          break
+          return createFadeOut(clipId, duration)
 
         case "zoomIn":
-          result = KeyframeAnimationService.createScaleAnimation(clip, 0, 1, 0, duration, "ease-out")
-          break
+          return createScaleAnimation(clipId, 0, 1, 0, duration, "ease-out")
 
-        case "zoomOut":
-          result = KeyframeAnimationService.createScaleAnimation(
-            clip,
-            1,
-            0,
-            clip.duration - duration,
-            duration,
-            "ease-in",
-          )
-          break
+        case "zoomOut": {
+          const clipDuration = (clip as any).duration || 1
+          return createScaleAnimation(clipId, 1, 0, clipDuration - duration, duration, "ease-in")
+        }
 
         case "slideInLeft":
-          result = KeyframeAnimationService.createMovementAnimation(clip, -1, 0, 0, 0, 0, duration, "ease-out")
-          break
+          return createMovementAnimation(clipId, -1, 0, 0, 0, 0, duration, "ease-out")
 
         case "slideInRight":
-          result = KeyframeAnimationService.createMovementAnimation(clip, 1, 0, 0, 0, 0, duration, "ease-out")
-          break
+          return createMovementAnimation(clipId, 1, 0, 0, 0, 0, duration, "ease-out")
 
         case "slideInUp":
-          result = KeyframeAnimationService.createMovementAnimation(clip, 0, 1, 0, 0, 0, duration, "ease-out")
-          break
+          return createMovementAnimation(clipId, 0, 1, 0, 0, 0, duration, "ease-out")
 
         case "slideInDown":
-          result = KeyframeAnimationService.createMovementAnimation(clip, 0, -1, 0, 0, 0, duration, "ease-out")
-          break
+          return createMovementAnimation(clipId, 0, -1, 0, 0, 0, duration, "ease-out")
 
         case "rotate360":
-          result = KeyframeAnimationService.createRotationAnimation(clip, 0, 360, 0, duration, "linear")
-          break
+          return createRotationAnimation(clipId, 0, 360, 0, duration, "linear")
 
         default:
           return { success: false, error: `Unknown preset: ${preset}` }
       }
-
-      return updateClipWithResult(result)
     },
-    [getClip, updateClipWithResult],
+    [getClip, createFadeIn, createFadeOut, createScaleAnimation, createMovementAnimation, createRotationAnimation],
   )
 
   return {

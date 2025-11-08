@@ -949,12 +949,12 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   // Получение всех клипов из проекта
   const clips = useMemo(() => {
     if (!project?.timeline?.tracks) return []
-    return project.timeline.tracks.flatMap((track) => track.clips || [])
+    return project.timeline.tracks.flatMap((track: any) => track.clips || [])
   }, [project?.timeline?.tracks])
 
   const getClipKeyframes = useCallback(
     (clipId: string) => {
-      const clip = clips.find((c) => c.id === clipId)
+      const clip = clips.find((c: any) => c.id === clipId)
       return clip?.keyframes || []
     },
     [clips],
@@ -963,7 +963,7 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   const getPropertyKeyframes = useCallback(
     (clipId: string, property: string) => {
       const keyframes = getClipKeyframes(clipId)
-      return keyframes.filter((kf) => kf.property === property)
+      return keyframes.filter((kf: any) => kf.property === property)
     },
     [getClipKeyframes],
   )
@@ -971,7 +971,7 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   const contextValue: TimelineKeyframesContext = {
     getClipKeyframes,
     getPropertyKeyframes,
-    addKeyframe: async (clipId, property, time, value, easeIn, easeOut, interpolation = "linear") => {
+    addKeyframe: async (clipId, property, time, value, interpolation = "linear", easeIn, easeOut) => {
       try {
         await backendSync.executeCommand({
           type: "AddKeyframe",
