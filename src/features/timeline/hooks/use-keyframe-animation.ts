@@ -191,7 +191,7 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
     [domainKeyframes],
   )
 
-  // Создание анимаций
+  // Создание анимаций - используем domain provider напрямую
   const createAnimation = useCallback(
     async (
       clipId: string,
@@ -207,18 +207,16 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createAnimation(
-        clip,
-        property,
-        fromValue,
-        toValue,
-        startTime,
-        duration,
-        interpolation,
-      )
-      return updateClipWithResult(result)
+      try {
+        // Добавляем два keyframe: начальный и конечный
+        await domainKeyframes.addKeyframe(clipId, property, startTime, fromValue, interpolation)
+        await domainKeyframes.addKeyframe(clipId, property, startTime + duration, toValue, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const createFadeIn = useCallback(
@@ -232,10 +230,16 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createFadeIn(clip, duration, interpolation)
-      return updateClipWithResult(result)
+      try {
+        // Fade in: opacity от 0 до 1
+        await domainKeyframes.addKeyframe(clipId, "opacity", 0, 0, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "opacity", duration, 1, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const createFadeOut = useCallback(
@@ -249,10 +253,20 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.createFadeOut(clip, duration, interpolation)
-      return updateClipWithResult(result)
+      try {
+        // Fade out: opacity от 1 до 0 в конце клипа
+        const clip = getClip(clipId)
+        if (!clip) return { success: false, error: `Clip ${clipId} not found` }
+
+        const clipDuration = (clip as any).duration || 1
+        await domainKeyframes.addKeyframe(clipId, "opacity", clipDuration - duration, 1, interpolation)
+        await domainKeyframes.addKeyframe(clipId, "opacity", clipDuration, 0, interpolation)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const createScaleAnimation = useCallback(
@@ -340,7 +354,7 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
     [getClip, updateClipWithResult],
   )
 
-  // Утилиты
+  // Утилиты - используем domain provider
   const clearPropertyKeyframes = useCallback(
     async (clipId: string, property: AnimatableProperty): Promise<AnimationResult> => {
       const clip = getClip(clipId)
@@ -348,10 +362,14 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
         return { success: false, error: `Clip ${clipId} not found` }
       }
 
-      const result = KeyframeAnimationService.clearPropertyKeyframes(clip, property)
-      return updateClipWithResult(result)
+      try {
+        await domainKeyframes.clearPropertyKeyframes(clipId, property)
+        return { success: true }
+      } catch (error) {
+        return { success: false, error: String(error) }
+      }
     },
-    [getClip, updateClipWithResult],
+    [getClip, domainKeyframes],
   )
 
   const copyKeyframes = useCallback(
