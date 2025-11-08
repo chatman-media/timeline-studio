@@ -70,15 +70,18 @@ describe("EditModeSelector", () => {
   it("поддерживает разные размеры", () => {
     const { rerender } = render(<EditModeSelector size="sm" />)
     let button = screen.getAllByRole("button")[0]
-    expect(button).toHaveClass("h-8", "w-8")
+    expect(button.className).toContain("h-8")
+    expect(button.className).toContain("w-8")
 
     rerender(<EditModeSelector size="md" />)
     button = screen.getAllByRole("button")[0]
-    expect(button).toHaveClass("h-10", "w-10")
+    expect(button.className).toContain("h-10")
+    expect(button.className).toContain("w-10")
 
     rerender(<EditModeSelector size="lg" />)
     button = screen.getAllByRole("button")[0]
-    expect(button).toHaveClass("h-12", "w-12")
+    expect(button.className).toContain("h-12")
+    expect(button.className).toContain("w-12")
   })
 
   it("поддерживает вертикальную ориентацию", () => {

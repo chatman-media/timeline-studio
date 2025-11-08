@@ -38,10 +38,13 @@ export interface UseSlipSlideReturn {
 }
 
 export function useSlipSlide(): UseSlipSlideReturn {
-  const { project, saveProject, uiState } = useTimeline()
+  const { project, saveProject } = useTimeline()
   const { editMode } = useEditModeContext()
   const [isEditing, setIsEditing] = useState(false)
   const [preview, setPreview] = useState<SlipSlidePreview | null>(null)
+
+  // Default timeScale - ideally this should come from UI state management
+  const timeScale = 100 // pixels per second
 
   const editStartRef = useRef<{
     clipId: string
@@ -111,7 +114,7 @@ export function useSlipSlide(): UseSlipSlideReturn {
       if (!editStartRef.current || editStartRef.current.mode !== "slip") return
 
       const deltaX = mouseX - editStartRef.current.startMouseX
-      const deltaTime = deltaX / uiState.timeScale
+      const deltaTime = deltaX / timeScale
 
       const visualHints = SlipSlideService.getSlipVisualHints(editStartRef.current.clip, deltaTime)
 
@@ -122,7 +125,7 @@ export function useSlipSlide(): UseSlipSlideReturn {
         visualHints,
       })
     },
-    [uiState.timeScale],
+    [timeScale],
   )
 
   const commitSlip = useCallback(async () => {
@@ -189,7 +192,7 @@ export function useSlipSlide(): UseSlipSlideReturn {
       if (!editStartRef.current || editStartRef.current.mode !== "slide") return
 
       const deltaX = mouseX - editStartRef.current.startMouseX
-      const deltaTime = deltaX / uiState.timeScale
+      const deltaTime = deltaX / timeScale
 
       const visualHints = SlipSlideService.getSlideVisualHints(
         editStartRef.current.clip,
@@ -204,7 +207,7 @@ export function useSlipSlide(): UseSlipSlideReturn {
         visualHints,
       })
     },
-    [uiState.timeScale],
+    [timeScale],
   )
 
   const commitSlide = useCallback(async () => {

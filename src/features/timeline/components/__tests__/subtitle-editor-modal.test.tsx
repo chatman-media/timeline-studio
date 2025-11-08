@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { SubtitleClip } from "../../types/timeline"
+import type { SubtitleClip } from "@/features/subtitles/types"
 import { SubtitleEditorModal } from "../subtitle-editor-modal"
 
 // Мокаем модальный хук
@@ -43,9 +43,16 @@ describe("SubtitleEditorModal", () => {
       id: "sub1",
       type: "subtitle",
       trackId: "track1",
+      mediaId: "",
       text: "Тестовый текст",
       startTime: 5,
       duration: 3,
+      mediaStartTime: 0,
+      mediaEndTime: 3,
+      offset: 0,
+      volume: 0,
+      speed: 1,
+      isReversed: false,
       subtitleStyleId: "bold",
       animationIn: { type: "fade", duration: 0.5 },
       animationOut: { type: "slide", duration: 0.3 },
@@ -53,11 +60,14 @@ describe("SubtitleEditorModal", () => {
       wordWrap: false,
       maxWidth: 60,
       name: "Subtitle 1",
-      endTime: 8,
       isLocked: false,
-      isMuted: false,
       opacity: 1,
-      layer: 0,
+      effects: [],
+      filters: [],
+      transitions: [],
+      isSelected: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     render(<SubtitleEditorModal />)

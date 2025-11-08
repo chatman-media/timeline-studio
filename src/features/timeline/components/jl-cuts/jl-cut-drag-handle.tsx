@@ -10,21 +10,14 @@ import type { TimelineClip } from "../../types/timeline"
 
 interface JLCutDragHandleProps {
   clip: TimelineClip
-  linkedClip: TimelineClip
+  linkedClip?: TimelineClip
   cutType: CutType
   pixelsPerSecond: number
   onOffsetChange?: (offset: number) => void
   className?: string
 }
 
-export function JLCutDragHandle({
-  clip,
-  _linkedClip,
-  cutType,
-  pixelsPerSecond,
-  onOffsetChange,
-  className,
-}: JLCutDragHandleProps) {
+export function JLCutDragHandle({ clip, cutType, pixelsPerSecond, onOffsetChange, className }: JLCutDragHandleProps) {
   const { createJCut, createLCut } = useJLCuts()
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartX, setDragStartX] = useState(0)

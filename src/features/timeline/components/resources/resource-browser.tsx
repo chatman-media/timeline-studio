@@ -10,7 +10,7 @@ import { memo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { VideoEffect } from "@/features/effects/types/effects"
+import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { cn } from "@/lib/utils"
@@ -253,10 +253,13 @@ export const ResourceBrowser = memo(function ResourceBrowser() {
   }
 
   // Фильтрация по поисковому запросу
-  const filterBySearch = <T extends { name: string }>(items: T[]) => {
+  const filterBySearch = <T extends { name?: string; labels?: { ru: string; en: string } }>(items: T[]) => {
     if (!searchQuery) return items
     const query = searchQuery.toLowerCase()
-    return items.filter((item) => item.name.toLowerCase().includes(query))
+    return items.filter((item) => {
+      const name = item.name || item.labels?.ru || item.labels?.en || ""
+      return name.toLowerCase().includes(query)
+    })
   }
 
   const filteredEffects = filterBySearch(mockEffects)

@@ -34,7 +34,18 @@ export function AudioMixer({ className }: AudioMixerProps) {
     project.sections?.forEach((section) => {
       section.tracks.forEach((track) => {
         if (isAudioTrack(track.type)) {
-          tracks.push({ ...track, sectionName: section.name })
+          tracks.push({
+            ...track,
+            sectionName: section.name,
+            // Map from domain Track to features TimelineTrack properties
+            transitions: [],
+            isLocked: track.locked ?? false,
+            isMuted: track.muted ?? false,
+            isHidden: false,
+            isSolo: track.solo ?? false,
+            trackEffects: [],
+            trackFilters: [],
+          } as AudioTrackWithSection)
         }
       })
     })
@@ -42,7 +53,18 @@ export function AudioMixer({ className }: AudioMixerProps) {
     // Добавляем глобальные треки
     project.globalTracks?.forEach((track) => {
       if (isAudioTrack(track.type)) {
-        tracks.push({ ...track, sectionName: "Global" })
+        tracks.push({
+          ...track,
+          sectionName: "Global",
+          // Map from domain Track to features TimelineTrack properties
+          transitions: [],
+          isLocked: track.locked ?? false,
+          isMuted: track.muted ?? false,
+          isHidden: false,
+          isSolo: track.solo ?? false,
+          trackEffects: [],
+          trackFilters: [],
+        } as AudioTrackWithSection)
       }
     })
 

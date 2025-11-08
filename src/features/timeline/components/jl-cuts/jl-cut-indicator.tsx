@@ -5,13 +5,13 @@ import { getCutType } from "../../types/jl-cuts"
 import type { TimelineClip } from "../../types/timeline"
 
 interface JLCutIndicatorProps {
-  videoClip: TimelineClip
+  videoClip?: TimelineClip
   audioClip: TimelineClip
   pixelsPerSecond: number
   className?: string
 }
 
-export function JLCutIndicator({ _videoClip, audioClip, pixelsPerSecond, className }: JLCutIndicatorProps) {
+export function JLCutIndicator({ audioClip, pixelsPerSecond, className }: JLCutIndicatorProps) {
   const audioOffset = audioClip.audioOffset || 0
 
   if (audioOffset === 0) return null

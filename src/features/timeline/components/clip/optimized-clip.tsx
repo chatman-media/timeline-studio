@@ -58,7 +58,7 @@ export const OptimizedClip = memo(function OptimizedClip({
   const [isHovered, setIsHovered] = useState(false)
   const [showSpeedCurve, setShowSpeedCurve] = useState(false)
   const [showEffectsPanel, setShowEffectsPanel] = useState(false)
-  const { getGroupByClip, toggleCollapse, lockGroup } = useClipGroups(track.projectId || "")
+  const { getGroupByClip, toggleCollapse, lockGroup } = useClipGroups()
   const { getLinkedClip } = useJLCuts()
   const { getConfig } = useSpeedRamping()
   const { getPersonsForClip, getAppearancesForClip, showPersonDetail } = useTimelinePersons()
@@ -127,15 +127,7 @@ export const OptimizedClip = memo(function OptimizedClip({
       case "video":
       case "image":
         return (
-          <VideoClip
-            clip={clip}
-            track={track}
-            pixelsPerSecond={timeScale}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            // Передаем качество превью
-            previewQuality={previewQuality}
-          />
+          <VideoClip clip={clip} track={track} pixelsPerSecond={timeScale} onUpdate={onUpdate} onRemove={onRemove} />
         )
 
       case "audio":
@@ -143,16 +135,7 @@ export const OptimizedClip = memo(function OptimizedClip({
       case "voiceover":
       case "sfx":
       case "ambient":
-        return (
-          <AudioClip
-            clip={clip}
-            track={track}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            // Отключаем waveform для низкого качества
-            showWaveform={previewQuality !== "low"}
-          />
-        )
+        return <AudioClip clip={clip} track={track} onUpdate={onUpdate} onRemove={onRemove} />
 
       case "subtitle":
       case "title":

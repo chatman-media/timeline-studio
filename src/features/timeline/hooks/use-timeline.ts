@@ -59,7 +59,6 @@ export interface TimelineContextType {
   // Selection управление
   selectedClipIds: ReturnType<typeof useTimelineSelection>["selectedClipIds"]
   selectedTrackIds: ReturnType<typeof useTimelineSelection>["selectedTrackIds"]
-  clipboardClips: ReturnType<typeof useTimelineSelection>["clipboardClips"]
   selectClips: ReturnType<typeof useTimelineSelection>["selectClips"]
   selectTracks: ReturnType<typeof useTimelineSelection>["selectTracks"]
   clearSelection: ReturnType<typeof useTimelineSelection>["clearSelection"]
@@ -153,7 +152,6 @@ export function useTimeline(): TimelineContextType {
     // Selection
     selectedClipIds: selection.selectedClipIds,
     selectedTrackIds: selection.selectedTrackIds,
-    clipboardClips: selection.clipboardClips,
     selectClips: selection.selectClips,
     selectTracks: selection.selectTracks,
     clearSelection: selection.clearSelection,
