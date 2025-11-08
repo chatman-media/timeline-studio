@@ -6,7 +6,7 @@
  */
 
 import { useSelector } from "@xstate/react"
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -971,7 +971,7 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   const contextValue: TimelineKeyframesContext = {
     getClipKeyframes,
     getPropertyKeyframes,
-    addKeyframe: async (clipId, property, time, value, interpolation = "linear", easeIn, easeOut) => {
+    addKeyframe: async (clipId, property, time, value, easeIn, easeOut, interpolation = "linear") => {
       try {
         await backendSync.executeCommand({
           type: "AddKeyframe",
