@@ -5,8 +5,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-
-import type { MediaFile, MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types/timeline"
 import {
@@ -33,43 +33,44 @@ import {
 } from "../../utils/utils"
 
 describe("Timeline утилиты", () => {
-  const createMockProject = (overrides = {}): TimelineProject => ({
-    id: "project-1",
-    name: "Test Project",
-    duration: 0,
-    fps: 30,
-    sampleRate: 48000,
-    sections: [],
-    globalTracks: [],
-    resources: {
-      effects: [],
-      filters: [],
-      transitions: [],
-      timelineTransitions: [],
-      templates: [],
-      styleTemplates: [],
-      subtitleStyles: [],
-      music: [],
-      media: [],
-    },
-    settings: {
-      resolution: { width: 1920, height: 1080 },
+  const createMockProject = (overrides = {}): TimelineProject =>
+    ({
+      id: "project-1",
+      name: "Test Project",
+      duration: 0,
       fps: 30,
-      aspectRatio: "16:9",
       sampleRate: 48000,
-      channels: 2,
-      bitDepth: 16,
-      timeFormat: "timecode" as const,
-      snapToGrid: true,
-      gridSize: 1,
-      autoSave: true,
-      autoSaveInterval: 60,
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    version: "1.0.0",
-    ...overrides,
-  })
+      sections: [],
+      globalTracks: [],
+      resources: {
+        effects: [],
+        filters: [],
+        transitions: [],
+        timelineTransitions: [],
+        templates: [],
+        styleTemplates: [],
+        subtitleStyles: [],
+        music: [],
+        media: [],
+      },
+      settings: {
+        resolution: { width: 1920, height: 1080 },
+        fps: 30,
+        aspectRatio: "16:9",
+        sampleRate: 48000,
+        channels: 2,
+        bitDepth: 16,
+        timeFormat: "timecode" as const,
+        snapToGrid: true,
+        gridSize: 1,
+        autoSave: true,
+        autoSaveInterval: 60,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      version: "1.0.0",
+      ...overrides,
+    }) as TimelineProject
 
   const createMockSection = (overrides = {}): TimelineSection => ({
     id: "section-1",
@@ -90,10 +91,14 @@ describe("Timeline утилиты", () => {
     order: 0,
     clips: [],
     transitions: [],
+    muted: false,
+    solo: false,
+    locked: false,
     isLocked: false,
     isMuted: false,
     isHidden: false,
     isSolo: false,
+    expanded: false,
     volume: 1,
     pan: 0,
     height: 100,
@@ -109,13 +114,26 @@ describe("Timeline утилиты", () => {
     trackId: "track-1",
     startTime: 0,
     duration: 5,
+    sourceIn: 0,
+    sourceOut: 5,
     mediaStartTime: 0,
     mediaEndTime: 5,
     offset: 0,
     volume: 1,
+    playbackRate: 1,
     speed: 1,
     isReversed: false,
+    isMuted: false,
     opacity: 1,
+    position: {
+      x: 0,
+      y: 0,
+      width: 1,
+      height: 1,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+    },
     effects: [],
     filters: [],
     transitions: [],
@@ -130,11 +148,8 @@ describe("Timeline утилиты", () => {
     id: "media-1",
     name: "test.mp4",
     path: "/path/to/test.mp4",
-    type: "unknown" as MediaType,
+    type: MediaType.Unknown,
     duration: 10,
-    isVideo: false,
-    isAudio: false,
-    isImage: false,
     ...overrides,
   })
 
@@ -748,7 +763,7 @@ describe("Timeline утилиты", () => {
 
     describe("isMediaCompatibleWithTrack", () => {
       it("проверяет совместимость видео", () => {
-        const videoFile = createMockMediaFile({ isVideo: true })
+        const videoFile = createMockMediaFile({ type: MediaType.Video, isVideo: true })
         const videoTrack = createMockTrack({ type: "video" })
         const audioTrack = createMockTrack({ type: "audio" })
 
@@ -757,7 +772,7 @@ describe("Timeline утилиты", () => {
       })
 
       it("проверяет совместимость аудио", () => {
-        const audioFile = createMockMediaFile({ isAudio: true })
+        const audioFile = createMockMediaFile({ type: MediaType.Audio, isAudio: true })
         const audioTrack = createMockTrack({ type: "audio" })
         const musicTrack = createMockTrack({ type: "music" })
         const voiceoverTrack = createMockTrack({ type: "voiceover" })
@@ -774,7 +789,7 @@ describe("Timeline утилиты", () => {
       })
 
       it("проверяет совместимость изображений", () => {
-        const imageFile = createMockMediaFile({ isImage: true })
+        const imageFile = createMockMediaFile({ type: MediaType.StillImage, isImage: true })
         const imageTrack = createMockTrack({ type: "image" })
         const videoTrack = createMockTrack({ type: "video" })
         const audioTrack = createMockTrack({ type: "audio" })
@@ -785,14 +800,14 @@ describe("Timeline утилиты", () => {
       })
 
       it("обрабатывает неизвестные типы треков", () => {
-        const videoFile = createMockMediaFile({ isVideo: true })
+        const videoFile = createMockMediaFile({ type: MediaType.Video, isVideo: true })
         const unknownTrack = createMockTrack({ type: "unknown" as any })
 
         expect(isMediaCompatibleWithTrack(videoFile, unknownTrack)).toBe(false)
       })
 
       it("обрабатывает файлы без типа", () => {
-        const unknownFile = createMockMediaFile() // все флаги false
+        const unknownFile = createMockMediaFile({ type: MediaType.Unknown })
         const videoTrack = createMockTrack({ type: "video" })
 
         expect(isMediaCompatibleWithTrack(unknownFile, videoTrack)).toBe(false)
