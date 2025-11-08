@@ -972,7 +972,7 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   const contextValue: TimelineKeyframesContext = {
     getClipKeyframes,
     getPropertyKeyframes,
-    addKeyframe: async (clipId, property, time, value, interpolation = "linear", easeIn, easeOut) => {
+    addKeyframe: async (clipId, property, time, value, interpolation = "linear", easeIn?, easeOut?) => {
       try {
         await backendSync.executeCommand({
           type: "AddKeyframe",
@@ -982,8 +982,8 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
             time,
             value,
             interpolation,
-            ease_in: easeIn || null,
-            ease_out: easeOut || null,
+            ease_in: easeIn ?? null,
+            ease_out: easeOut ?? null,
           },
         })
         // Backend обновит состояние через события

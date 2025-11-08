@@ -3,27 +3,19 @@ import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useTimelineProject } from "@/domains/video-editing"
 
-// Создаем моки с помощью vi.hoisted(), чтобы они были доступны в vi.mock() фабрике
-const {
-  mockExecuteCommand,
-  mockOnStateChange,
-  mockOnEvent,
-  mockConnect,
-  mockDisconnect,
-  mockGetProjectState,
-  mockGetEventHistory,
-} = vi.hoisted(() => ({
-  mockExecuteCommand: vi.fn(),
-  mockOnStateChange: vi.fn(),
-  mockOnEvent: vi.fn(),
-  mockConnect: vi.fn(),
-  mockDisconnect: vi.fn(),
-  mockGetProjectState: vi.fn(),
-  mockGetEventHistory: vi.fn(),
-}))
-
 // Мокаем backend-sync ДО импорта компонентов
 vi.mock("@/features/app-state/services/backend-sync", () => {
+  // Создаем моки внутри фабрики
+  const createMockFn = () => vi.fn()
+
+  const mockExecuteCommand = createMockFn()
+  const mockOnStateChange = createMockFn()
+  const mockOnEvent = createMockFn()
+  const mockConnect = createMockFn()
+  const mockDisconnect = createMockFn()
+  const mockGetProjectState = createMockFn()
+  const mockGetEventHistory = createMockFn()
+
   // Создаем мок класса BackendSync внутри фабрики
   class MockBackendSync {
     onStateChange = mockOnStateChange
@@ -40,6 +32,16 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
   return {
     getBackendSync: vi.fn(() => mockBackendSyncInstance),
     BackendSync: MockBackendSync,
+    // Экспортируем моки, чтобы к ним можно было обращаться извне
+    __mocks: {
+      mockExecuteCommand,
+      mockOnStateChange,
+      mockOnEvent,
+      mockConnect,
+      mockDisconnect,
+      mockGetProjectState,
+      mockGetEventHistory,
+    },
   }
 })
 
@@ -296,6 +298,13 @@ vi.mock("@/domains/video-editing", () => ({
     applyTransition: mockApplyTransition,
     removeTransition: mockRemoveTransition,
   })),
+  useTimelineMarkers: vi.fn(() => ({
+    markers: [],
+    addMarker: vi.fn(),
+    removeMarker: vi.fn(),
+    updateMarker: vi.fn(),
+    getMarkerAt: vi.fn(() => null),
+  })),
 }))
 
 // Мокаем useMachine для UI машины
@@ -323,11 +332,23 @@ vi.mock("@xstate/react", () => ({
   useMachine: vi.fn(() => [mockUIState, mockUISend]),
 }))
 
+// Импортируем моки из мокированного модуля
+// Используем vi.mocked чтобы получить доступ к мокам
+import * as backendSyncModule from "@/features/app-state/services/backend-sync"
 import type { MediaFile, MediaType } from "@/features/media/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../../hooks/use-timeline"
 
-// Моки уже доступны из глобального скоупа (определены в начале файла)
+const backendSyncMocks = (backendSyncModule as any).__mocks
+const {
+  mockExecuteCommand,
+  mockOnStateChange,
+  mockOnEvent,
+  mockConnect,
+  mockDisconnect,
+  mockGetProjectState,
+  mockGetEventHistory,
+} = backendSyncMocks
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <TimelineProviders>
