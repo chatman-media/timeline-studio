@@ -948,9 +948,10 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
 
   // Получение всех клипов из проекта
   const clips = useMemo(() => {
-    if (!project?.timeline?.tracks) return []
-    return project.timeline.tracks.flatMap((track: any) => track.clips || [])
-  }, [project?.timeline?.tracks])
+    const proj = project as any
+    if (!proj?.timeline?.tracks) return []
+    return proj.timeline.tracks.flatMap((track: any) => track.clips || [])
+  }, [project])
 
   const getClipKeyframes = useCallback(
     (clipId: string) => {

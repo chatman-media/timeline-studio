@@ -161,8 +161,8 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
           time: updates.time,
           value: updates.value,
           interpolation: updates.interpolation,
-          easeIn: updates.easeIn,
-          easeOut: updates.easeOut,
+          easeIn: (updates as any).easeIn,
+          easeOut: (updates as any).easeOut,
         })
         return { success: true }
       } catch (error) {
@@ -434,8 +434,8 @@ export function useKeyframeAnimation(): UseKeyframeAnimationReturn {
               kf.time,
               kf.value,
               kf.interpolation,
-              kf.easeIn,
-              kf.easeOut,
+              (kf as any).easeIn,
+              (kf as any).easeOut,
             )
           }
           return { success: true }
