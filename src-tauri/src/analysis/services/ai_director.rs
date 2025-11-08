@@ -793,7 +793,16 @@ impl AIDirector {
     }
 
     if config.enable_mood_analysis {
-      mood = Some(engine.analyze_mood(scenes).await?);
+      let content_mood = engine.analyze_mood(scenes).await?;
+      // Convert ContentEngineMoodAnalysis to MoodAnalysis
+      mood = Some(MoodAnalysis {
+        primary: content_mood.mood.clone(),
+        secondary: Vec::new(),
+        valence: 0.0,
+        arousal: content_mood.energy_level as f64,
+        dominance: content_mood.emotional_intensity as f64,
+        emotional_arc: Vec::new(),
+      });
     }
 
     if config.enable_quality_analysis {

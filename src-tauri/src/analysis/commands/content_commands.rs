@@ -219,15 +219,25 @@ pub async fn analyze_mood(
   log::info!("Analyzing mood from {} scenes", scenes.len());
 
   let engine = state.engine.read().await;
-  let mood = engine
+  let content_mood = engine
     .analyze_mood(&scenes)
     .await
     .map_err(|e| format!("Failed to analyze mood: {}", e))?;
 
+  // Convert ContentEngineMoodAnalysis to MoodAnalysis
+  let mood = MoodAnalysis {
+    primary: content_mood.mood.clone(),
+    secondary: Vec::new(),
+    valence: 0.0,
+    arousal: content_mood.energy_level as f64,
+    dominance: content_mood.emotional_intensity as f64,
+    emotional_arc: Vec::new(),
+  };
+
   log::info!(
     "Mood analyzed: {} (energy: {:.2})",
-    mood.mood,
-    mood.energy_level
+    mood.primary,
+    mood.arousal
   );
   Ok(mood)
 }
@@ -289,10 +299,20 @@ pub async fn analyze_content_comprehensive(
     .await
     .map_err(|e| format!("Classification failed: {}", e))?;
 
-  let mood = engine
+  let content_mood = engine
     .analyze_mood(&scenes)
     .await
     .map_err(|e| format!("Mood analysis failed: {}", e))?;
+
+  // Convert ContentEngineMoodAnalysis to MoodAnalysis
+  let mood = MoodAnalysis {
+    primary: content_mood.mood.clone(),
+    secondary: Vec::new(),
+    valence: 0.0,
+    arousal: content_mood.energy_level as f64,
+    dominance: content_mood.emotional_intensity as f64,
+    emotional_arc: Vec::new(),
+  };
 
   let quality = engine
     .calculate_quality(&scenes)

@@ -17,7 +17,8 @@ pub mod transitions;
 pub mod handler;
 
 // Re-exports for backward compatibility
-pub use handler::{ClipBatchUpdate, ClipUpdates, CommandHandler, MediaUpdates, TrackUpdates};
+pub use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
+pub use handler::CommandHandler;
 pub use types::*;
 
 // Public interfaces for each module

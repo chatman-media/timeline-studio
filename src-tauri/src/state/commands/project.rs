@@ -1,5 +1,4 @@
 use super::types::CommandResult;
-use crate::state::events::*;
 use crate::state::persistence::PersistenceService;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};

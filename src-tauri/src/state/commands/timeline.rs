@@ -1,8 +1,7 @@
-use super::handler::ClipUpdates;
 use super::types::CommandResult;
-use crate::state::events::*;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::types_export::ClipUpdates;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 

@@ -765,7 +765,7 @@ mod tests {
       id: "test-id".to_string(),
       path: "/path/to/video.mp4".to_string(),
       filename: "video.mp4".to_string(),
-      size: 1024000,
+      size: 1024000.0,
       media_type: UnifiedMediaType::Video,
       duration: Some(120.5),
       format: Some("mp4".to_string()),

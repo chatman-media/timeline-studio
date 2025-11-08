@@ -329,6 +329,16 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::video_compiler::commands::claude_send_streaming_message,
     crate::video_compiler::commands::claude_validate_api_key,
     crate::video_compiler::commands::claude_get_available_models,
+    // Unified AI API commands (multi-provider support)
+    crate::video_compiler::commands::ai_api_proxy::ai_send_unified_request,
+    crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_fallback,
+    crate::video_compiler::commands::ai_api_proxy::ai_validate_provider,
+    crate::video_compiler::commands::ai_api_proxy::ai_get_provider_models,
+    crate::video_compiler::commands::ai_api_proxy::ai_get_supported_providers,
+    crate::video_compiler::commands::ai_api_proxy::ai_check_providers_health,
+    crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_tools,
+    crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request,
+    crate::video_compiler::commands::ai_api_proxy::ai_send_secure_request_with_tools,
     // Batch processing commands
     crate::video_compiler::commands::create_batch_job,
     crate::video_compiler::commands::get_batch_job_info,

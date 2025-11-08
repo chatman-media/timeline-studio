@@ -363,6 +363,13 @@ pub struct ClipUpdates {
   pub enabled: Option<bool>,
 }
 
+/// Batch update for multiple clips
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct ClipBatchUpdate {
+  pub clip_id: String,
+  pub updates: ClipUpdates,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct MediaUpdates {
   pub name: Option<String>,
