@@ -36,7 +36,7 @@ pub struct UnifiedMediaFile {
   pub filename: String,
 
   /// Размер файла в байтах
-  pub size: u64,
+  pub size: f64,
 
   /// Тип медиа
   #[serde(rename = "type")]
@@ -73,11 +73,11 @@ pub struct UnifiedMediaMetadata {
   pub height: Option<u32>,
   pub fps: Option<f64>,
   pub video_codec: Option<String>,
-  pub video_bitrate: Option<u64>,
+  pub video_bitrate: Option<f64>,
 
   // Audio metadata
   pub audio_codec: Option<String>,
-  pub audio_bitrate: Option<u64>,
+  pub audio_bitrate: Option<f64>,
   pub sample_rate: Option<u32>,
   pub channels: Option<u8>,
   pub has_audio: bool,
@@ -597,7 +597,7 @@ pub struct VideoAnalysisMetadata {
   pub fps: f64,
   pub resolution: ResolutionData,
   pub codec: String,
-  pub bitrate: u64,
+  pub bitrate: f64,
 }
 
 /// Resolution Data
@@ -686,7 +686,7 @@ impl From<crate::media::types::MediaFile> for UnifiedMediaFile {
       id: media.id,
       path: media.path.clone(),
       filename: media.name,
-      size: media.size,
+      size: media.size as f64,
       media_type,
       duration: media.duration,
       format: media.probe_data.format.format_name.clone(),

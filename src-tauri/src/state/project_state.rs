@@ -20,6 +20,8 @@ pub struct ProjectState {
   pub chat_sessions: Vec<ChatSession>,
   /// Browser state
   pub browser_state: BrowserState,
+  /// Clipboard for copy/paste operations
+  pub clipboard: Option<ClipboardData>,
 }
 
 /// Main project structure
@@ -336,6 +338,14 @@ pub struct ProjectStateDelta {
   pub settings_changes: Vec<SettingsChange>,
   pub ui_state_changes: Vec<UiStateChange>,
   pub playback_changes: Vec<PlaybackChange>,
+}
+
+/// Clipboard data for copy/paste operations
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct ClipboardData {
+  pub clips: Vec<Clip>,
+  pub copied_at: DateTime<Utc>,
+  pub original_track_ids: Vec<String>,
 }
 
 /// Types of changes for delta compression

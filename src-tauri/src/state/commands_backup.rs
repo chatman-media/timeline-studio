@@ -72,10 +72,6 @@ pub enum ProjectCommand {
     clip_id: String,
     updates: ClipUpdates,
   },
-  SplitClip {
-    clip_id: String,
-    time: f64,
-  },
 
   // Media pool commands
   AddMedia {
@@ -398,6 +394,45 @@ pub enum ProjectCommand {
     time: f64,
   },
   DeleteSelected,
+
+  // Advanced Edit Commands
+  RippleEdit {
+    clip_id: String,
+    delta: f64,
+  },
+  RollEdit {
+    clip_id: String,
+    adjacent_clip_id: String,
+    delta: f64,
+  },
+  SlipEdit {
+    clip_id: String,
+    delta: f64,
+  },
+  SlideEdit {
+    clip_id: String,
+    delta: f64,
+  },
+
+  // Marker Commands
+  AddMarker {
+    name: String,
+    time: f64,
+    color: String,
+    marker_type: String,
+    description: Option<String>,
+  },
+  RemoveMarker {
+    marker_id: String,
+  },
+  UpdateMarker {
+    marker_id: String,
+    name: Option<String>,
+    time: Option<f64>,
+    color: Option<String>,
+    description: Option<String>,
+  },
+
   ApplyEffect {
     clip_id: String,
     effect_id: String,
@@ -2029,6 +2064,41 @@ impl CommandHandler {
       } => {
         self
           .update_style_template_elements(template_id, elements)
+          .await
+      }
+      ProjectCommand::RippleEdit { clip_id, delta } => {
+        self.ripple_edit(clip_id, delta).await
+      }
+      ProjectCommand::RollEdit {
+        clip_id,
+        adjacent_clip_id,
+        delta,
+      } => self.roll_edit(clip_id, adjacent_clip_id, delta).await,
+      ProjectCommand::SlipEdit { clip_id, delta } => self.slip_edit(clip_id, delta).await,
+      ProjectCommand::SlideEdit { clip_id, delta } => self.slide_edit(clip_id, delta).await,
+
+      // Marker Commands
+      ProjectCommand::AddMarker {
+        name,
+        time,
+        color,
+        marker_type,
+        description,
+      } => {
+        self
+          .add_marker(name, time, color, marker_type, description)
+          .await
+      }
+      ProjectCommand::RemoveMarker { marker_id } => self.remove_marker(marker_id).await,
+      ProjectCommand::UpdateMarker {
+        marker_id,
+        name,
+        time,
+        color,
+        description,
+      } => {
+        self
+          .update_marker(marker_id, name, time, color, description)
           .await
       }
     }
@@ -3804,7 +3874,12 @@ impl CommandHandler {
     let mut clip_index: Option<usize> = None;
 
     for track in &mut project.timeline.tracks {
-      if let Some((idx, clip)) = track.clips.iter().enumerate().find(|(_, c)| c.id == clip_id) {
+      if let Some((idx, clip)) = track
+        .clips
+        .iter()
+        .enumerate()
+        .find(|(_, c)| c.id == clip_id)
+      {
         found_clip = Some(clip.clone());
         track_id_found = Some(track.id.clone());
         clip_index = Some(idx);
@@ -3935,10 +4010,44 @@ impl CommandHandler {
   async fn copy_clips(&self, clip_ids: Vec<String>) -> CommandResult {
     log::info!("Copying {} clips", clip_ids.len());
 
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_ref() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find all clips with given IDs
+    let mut clips_to_copy: Vec<Clip> = Vec::new();
+    let mut track_ids: Vec<String> = Vec::new();
+
+    for track in &project.timeline.tracks {
+      for clip in &track.clips {
+        if clip_ids.contains(&clip.id) {
+          clips_to_copy.push(clip.clone());
+          if !track_ids.contains(&track.id) {
+            track_ids.push(track.id.clone());
+          }
+        }
+      }
+    }
+
+    if clips_to_copy.is_empty() {
+      return CommandResult::error("No clips found to copy".to_string());
+    }
+
+    // Store in clipboard
+    state.clipboard = Some(super::project_state::ClipboardData {
+      clips: clips_to_copy.clone(),
+      copied_at: chrono::Utc::now(),
+      original_track_ids: track_ids.clone(),
+    });
+
     CommandResult::success(Some(serde_json::json!({
       "copied": true,
-      "count": clip_ids.len(),
-      "timestamp": chrono::Utc::now()
+      "count": clips_to_copy.len(),
+      "clip_ids": clip_ids,
+      "track_ids": track_ids
     })))
   }
 
@@ -3955,11 +4064,99 @@ impl CommandHandler {
   async fn paste_clips(&self, track_id: String, time: f64) -> CommandResult {
     log::info!("Pasting clips to track {} at time {}", track_id, time);
 
+    let mut state = self.state.write().await;
+
+    // Get clipboard data first (before mutable borrow)
+    let clipboard_data = match &state.clipboard {
+      Some(data) => data.clone(),
+      None => return CommandResult::error("Clipboard is empty".to_string()),
+    };
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find target track
+    let track = match project
+      .timeline
+      .tracks
+      .iter_mut()
+      .find(|t| t.id == track_id)
+    {
+      Some(t) => t,
+      None => return CommandResult::error("Track not found".to_string()),
+    };
+
+    // Calculate time offset (from first clip's original position to paste position)
+    let min_original_time = clipboard_data
+      .clips
+      .iter()
+      .map(|c| c.timeline_in)
+      .min_by(|a, b| a.partial_cmp(b).unwrap())
+      .unwrap_or(0.0);
+    let time_offset = time - min_original_time;
+
+    // Create new clips with updated IDs and positions
+    let mut new_clip_ids = Vec::new();
+    for clip in &clipboard_data.clips {
+      let new_clip_id = uuid::Uuid::new_v4().to_string();
+      let new_clip = Clip {
+        id: new_clip_id.clone(),
+        media_id: clip.media_id.clone(),
+        name: format!("{} (copy)", clip.name),
+        timeline_in: clip.timeline_in + time_offset,
+        timeline_out: clip.timeline_out + time_offset,
+        source_in: clip.source_in,
+        source_out: clip.source_out,
+        playback_rate: clip.playback_rate,
+        enabled: clip.enabled,
+        effects: clip.effects.clone(),
+        transitions: clip.transitions.clone(),
+      };
+
+      track.clips.push(new_clip);
+      new_clip_ids.push(new_clip_id);
+    }
+
+    // Sort clips by timeline position
+    track
+      .clips
+      .sort_by(|a, b| a.timeline_in.partial_cmp(&b.timeline_in).unwrap());
+
+    state.mark_dirty();
+    let version = state.version;
+
+    // Publish events for each pasted clip
+    for clip_id in &new_clip_ids {
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::ClipAdded {
+            track_id: track_id.clone(),
+            clip: super::events::ClipData {
+              id: clip_id.clone(),
+              media_id: String::new(), // Will be filled from actual clip
+              name: String::new(),
+              timeline_in: time,
+              timeline_out: time,
+              source_in: 0.0,
+              source_out: 0.0,
+            },
+          },
+          "command_handler".to_string(),
+          version,
+        )
+        .await
+        .ok();
+    }
+
     CommandResult::success(Some(serde_json::json!({
       "pasted": true,
       "track_id": track_id,
       "time": time,
-      "timestamp": chrono::Utc::now()
+      "count": new_clip_ids.len(),
+      "new_clip_ids": new_clip_ids
     })))
   }
 
@@ -3980,22 +4177,131 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!("Applying effect {} to clip {}", effect_id, clip_id);
 
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and add effect if not already present
+    let mut clip_found = false;
+    let mut effect_added = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          // Check if effect is already applied
+          if !clip.effects.contains(&effect_id) {
+            clip.effects.push(effect_id.clone());
+            effect_added = true;
+          }
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: Some(vec![effect_id.clone()]),
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
       "applied": true,
       "clip_id": clip_id,
       "effect_id": effect_id,
-      "timestamp": chrono::Utc::now()
+      "is_new": effect_added
     })))
   }
 
   async fn remove_effect(&self, clip_id: String, effect_id: String) -> CommandResult {
     log::info!("Removing effect {} from clip {}", effect_id, clip_id);
 
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and remove effect
+    let mut clip_found = false;
+    let mut effect_removed = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          let initial_len = clip.effects.len();
+          clip.effects.retain(|e| e != &effect_id);
+          effect_removed = clip.effects.len() < initial_len;
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    if !effect_removed {
+      return CommandResult::error(format!("Effect not found on clip: {}", effect_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
       "removed": true,
       "clip_id": clip_id,
-      "effect_id": effect_id,
-      "timestamp": chrono::Utc::now()
+      "effect_id": effect_id
     })))
   }
 
@@ -4007,22 +4313,131 @@ impl CommandHandler {
   ) -> CommandResult {
     log::info!("Applying filter {} to clip {}", filter_id, clip_id);
 
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and add filter if not already present
+    let mut clip_found = false;
+    let mut filter_added = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          // Check if filter is already applied
+          if !clip.effects.contains(&filter_id) {
+            clip.effects.push(filter_id.clone());
+            filter_added = true;
+          }
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: Some(vec![filter_id.clone()]),
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
       "applied": true,
       "clip_id": clip_id,
       "filter_id": filter_id,
-      "timestamp": chrono::Utc::now()
+      "is_new": filter_added
     })))
   }
 
   async fn remove_filter(&self, clip_id: String, filter_id: String) -> CommandResult {
     log::info!("Removing filter {} from clip {}", filter_id, clip_id);
 
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and remove filter
+    let mut clip_found = false;
+    let mut filter_removed = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          let initial_len = clip.effects.len();
+          clip.effects.retain(|e| e != &filter_id);
+          filter_removed = clip.effects.len() < initial_len;
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    if !filter_removed {
+      return CommandResult::error(format!("Filter not found on clip: {}", filter_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
       "removed": true,
       "clip_id": clip_id,
-      "filter_id": filter_id,
-      "timestamp": chrono::Utc::now()
+      "filter_id": filter_id
     })))
   }
 
@@ -4030,15 +4445,114 @@ impl CommandHandler {
     &self,
     clip_id: String,
     transition_id: String,
-    _params: serde_json::Value,
+    params: serde_json::Value,
   ) -> CommandResult {
     log::info!("Applying transition {} to clip {}", transition_id, clip_id);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Extract transition type and duration from params
+    let transition_type = params
+      .get("type")
+      .and_then(|v| v.as_str())
+      .unwrap_or("crossfade")
+      .to_string();
+
+    let duration = params
+      .get("duration")
+      .and_then(|v| v.as_f64())
+      .unwrap_or(1.0);
+
+    // Validate duration
+    if duration <= 0.0 {
+      return CommandResult::error(format!("Invalid transition duration: {}", duration));
+    }
+
+    // Convert params to HashMap, excluding type and duration
+    let mut param_map = std::collections::HashMap::new();
+    if let serde_json::Value::Object(map) = params {
+      for (key, value) in map {
+        if key != "type" && key != "duration" {
+          param_map.insert(key, value);
+        }
+      }
+    }
+
+    // Find the clip and add/update transition
+    let mut clip_found = false;
+    let mut transition_added = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          // Check if transition already exists
+          let existing_idx = clip
+            .transitions
+            .iter()
+            .position(|t| t.id == transition_id);
+
+          if let Some(idx) = existing_idx {
+            // Update existing transition
+            clip.transitions[idx].transition_type = transition_type.clone();
+            clip.transitions[idx].duration = duration;
+            clip.transitions[idx].params = param_map.clone();
+          } else {
+            // Add new transition
+            clip.transitions.push(super::project_state::Transition {
+              id: transition_id.clone(),
+              transition_type: transition_type.clone(),
+              duration,
+              params: param_map.clone(),
+            });
+            transition_added = true;
+          }
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
 
     CommandResult::success(Some(serde_json::json!({
       "applied": true,
       "clip_id": clip_id,
       "transition_id": transition_id,
-      "timestamp": chrono::Utc::now()
+      "transition_type": transition_type,
+      "duration": duration,
+      "is_new": transition_added
     })))
   }
 
@@ -4049,11 +4563,70 @@ impl CommandHandler {
       clip_id
     );
 
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and remove transition
+    let mut clip_found = false;
+    let mut transition_removed = false;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          clip_found = true;
+
+          // Find and remove transition
+          let initial_len = clip.transitions.len();
+          clip.transitions.retain(|t| t.id != transition_id);
+          transition_removed = clip.transitions.len() < initial_len;
+
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    if !transition_removed {
+      return CommandResult::error(format!(
+        "Transition not found on clip: {}",
+        transition_id
+      ));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
       "removed": true,
       "clip_id": clip_id,
-      "transition_id": transition_id,
-      "timestamp": chrono::Utc::now()
+      "transition_id": transition_id
     })))
   }
 
@@ -4788,42 +5361,90 @@ impl CommandHandler {
       None => return CommandResult::error("No project open".to_string()),
     };
 
-    // Find the clip across all tracks
-    let mut clip_found = false;
+    // Find the clip and track
+    let mut found_clip: Option<Clip> = None;
+    let mut track_id_found: Option<String> = None;
+
     for track in &mut project.timeline.tracks {
-      if let Some(clip) = track.clips.iter_mut().find(|c| c.id == clip_id) {
-        clip.timeline_in = start;
-        clip.timeline_out = end;
-        clip_found = true;
+      if let Some(clip) = track.clips.iter().find(|c| c.id == clip_id) {
+        found_clip = Some(clip.clone());
+        track_id_found = Some(track.id.clone());
         break;
       }
     }
 
-    if clip_found {
-      state.mark_dirty();
+    let original_clip = match found_clip {
+      Some(c) => c,
+      None => return CommandResult::error("Clip not found".to_string()),
+    };
 
-      self
-        .event_bus
-        .publish(
-          ProjectEvent::ClipTrimmed {
-            clip_id: clip_id.clone(),
-            new_in: start,
-            new_out: end,
-          },
-          "command_handler".to_string(),
-          state.version,
-        )
-        .await
-        .ok();
+    let track_id = track_id_found.unwrap();
 
-      CommandResult::success(Some(serde_json::json!({
-        "trimmed_clip_id": clip_id,
-        "start": start,
-        "end": end
-      })))
-    } else {
-      CommandResult::error(format!("Clip not found: {}", clip_id))
+    // Validate new bounds
+    if start >= end {
+      return CommandResult::error("Start must be before end".to_string());
     }
+
+    let new_duration = end - start;
+    if new_duration < 0.01 {
+      // Minimum 0.01 seconds (10ms)
+      return CommandResult::error("Clip duration too short".to_string());
+    }
+
+    // Calculate source adjustments
+    let start_delta = start - original_clip.timeline_in;
+    let end_delta = original_clip.timeline_out - end;
+
+    // Update source in/out based on timeline trim
+    let new_source_in = original_clip.source_in + start_delta;
+    let new_source_out = original_clip.source_out - end_delta;
+
+    // Validate source bounds (can't trim beyond source media)
+    if new_source_in < 0.0 {
+      return CommandResult::error("Cannot trim before source media start".to_string());
+    }
+    if new_source_out > original_clip.source_out {
+      return CommandResult::error("Cannot trim beyond source media end".to_string());
+    }
+
+    // Apply trim
+    for track in &mut project.timeline.tracks {
+      if track.id == track_id {
+        if let Some(clip) = track.clips.iter_mut().find(|c| c.id == clip_id) {
+          clip.timeline_in = start;
+          clip.timeline_out = end;
+          clip.source_in = new_source_in;
+          clip.source_out = new_source_out;
+          break;
+        }
+      }
+    }
+
+    state.mark_dirty();
+    let version = state.version;
+
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipTrimmed {
+          clip_id: clip_id.clone(),
+          new_in: start,
+          new_out: end,
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "trimmed_clip_id": clip_id,
+      "timeline_in": start,
+      "timeline_out": end,
+      "source_in": new_source_in,
+      "source_out": new_source_out,
+      "track_id": track_id
+    })))
   }
 
   async fn delete_clip(&self, clip_id: String) -> CommandResult {
@@ -8787,6 +9408,796 @@ impl CommandHandler {
       "template_id": template_id,
       "updated_elements": elements.len(),
       "elements": elements
+    })))
+  }
+
+  // Advanced Edit Commands
+  async fn ripple_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+    log::info!("Ripple edit: clip_id={}, delta={}", clip_id, delta);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and its track
+    let mut target_track_id: Option<String> = None;
+    let mut target_clip_timeline_out: Option<f64> = None;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          // Apply delta to target clip
+          clip.timeline_in += delta;
+          clip.timeline_out += delta;
+
+          // Validate clip doesn't go negative
+          if clip.timeline_in < 0.0 {
+            return CommandResult::error(format!(
+              "Ripple edit would move clip before timeline start (new in: {})",
+              clip.timeline_in
+            ));
+          }
+
+          target_track_id = Some(track.id.clone());
+          target_clip_timeline_out = Some(clip.timeline_out - delta); // Original end position
+          break;
+        }
+      }
+      if target_track_id.is_some() {
+        break;
+      }
+    }
+
+    let target_track_id = match target_track_id {
+      Some(id) => id,
+      None => return CommandResult::error(format!("Clip not found: {}", clip_id)),
+    };
+
+    let original_end = target_clip_timeline_out.unwrap();
+
+    // Find and move all subsequent clips on the same track
+    let mut moved_clip_ids = vec![clip_id.clone()];
+
+    for track in &mut project.timeline.tracks {
+      if track.id == target_track_id {
+        for clip in &mut track.clips {
+          // Skip the original clip
+          if clip.id == clip_id {
+            continue;
+          }
+
+          // Move clips that start at or after the original clip's end
+          if clip.timeline_in >= original_end {
+            clip.timeline_in += delta;
+            clip.timeline_out += delta;
+
+            // Validate
+            if clip.timeline_in < 0.0 {
+              return CommandResult::error(format!(
+                "Ripple edit would move clip {} before timeline start",
+                clip.id
+              ));
+            }
+
+            moved_clip_ids.push(clip.id.clone());
+          }
+        }
+        break;
+      }
+    }
+
+    state.mark_dirty();
+
+    // Publish event for each moved clip
+    for moved_id in &moved_clip_ids {
+      self
+        .event_bus
+        .publish(
+          ProjectEvent::ClipMoved {
+            clip_id: moved_id.clone(),
+            new_track_id: target_track_id.clone(),
+            new_time: 0.0, // Frontend will get actual position from state
+          },
+          "command_handler".to_string(),
+          state.version,
+        )
+        .await
+        .ok();
+    }
+
+    CommandResult::success(Some(serde_json::json!({
+      "clip_id": clip_id,
+      "delta": delta,
+      "moved_clips": moved_clip_ids.len(),
+      "type": "ripple"
+    })))
+  }
+
+  async fn roll_edit(
+    &self,
+    clip_id: String,
+    adjacent_clip_id: String,
+    delta: f64,
+  ) -> CommandResult {
+    log::info!(
+      "Roll edit: clip_id={}, adjacent_clip_id={}, delta={}",
+      clip_id,
+      adjacent_clip_id,
+      delta
+    );
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find both clips and validate they're on the same track
+    let mut first_clip_info: Option<(String, f64, f64, f64, f64)> = None; // (track_id, timeline_out, source_out, media_id, duration)
+    let mut second_clip_info: Option<(f64, f64, f64, f64)> = None; // (timeline_in, source_in, source_out, duration)
+
+    for track in &project.timeline.tracks {
+      let mut first_found = false;
+      let mut second_found = false;
+
+      for clip in &track.clips {
+        if clip.id == clip_id {
+          first_clip_info = Some((
+            track.id.clone(),
+            clip.timeline_out,
+            clip.source_out,
+            clip.timeline_out - clip.timeline_in,
+            clip.source_out - clip.source_in,
+          ));
+          first_found = true;
+        }
+        if clip.id == adjacent_clip_id {
+          second_clip_info = Some((
+            clip.timeline_in,
+            clip.source_in,
+            clip.source_out,
+            clip.timeline_out - clip.timeline_in,
+          ));
+          second_found = true;
+        }
+      }
+
+      if first_found && second_found {
+        break;
+      }
+
+      // Reset if not both on same track
+      if first_found || second_found {
+        first_clip_info = None;
+        second_clip_info = None;
+      }
+    }
+
+    if first_clip_info.is_none() || second_clip_info.is_none() {
+      return CommandResult::error("Both clips must exist on the same track".to_string());
+    }
+
+    let (track_id, first_timeline_out, _first_source_out, first_duration, _first_source_duration) =
+      first_clip_info.unwrap();
+    let (second_timeline_in, _second_source_in, second_source_out, second_duration) =
+      second_clip_info.unwrap();
+
+    // Validate clips are adjacent
+    let gap = (second_timeline_in - first_timeline_out).abs();
+    if gap > 0.01 {
+      return CommandResult::error(format!(
+        "Clips are not adjacent (gap: {})",
+        gap
+      ));
+    }
+
+    // Calculate new durations
+    let new_first_duration = first_duration + delta;
+    let new_second_duration = second_duration - delta;
+
+    // Validate minimum clip durations
+    const MIN_CLIP_DURATION: f64 = 0.033; // ~1 frame at 30fps
+    if new_first_duration < MIN_CLIP_DURATION {
+      return CommandResult::error(format!(
+        "Roll edit would make first clip too short ({} < {})",
+        new_first_duration, MIN_CLIP_DURATION
+      ));
+    }
+    if new_second_duration < MIN_CLIP_DURATION {
+      return CommandResult::error(format!(
+        "Roll edit would make second clip too short ({} < {})",
+        new_second_duration, MIN_CLIP_DURATION
+      ));
+    }
+
+    // Apply changes
+    for track in &mut project.timeline.tracks {
+      if track.id != track_id {
+        continue;
+      }
+
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          // Extend/shrink first clip's end
+          clip.timeline_out += delta;
+          clip.source_out += delta;
+
+          // Validate source bounds
+          let source_duration = clip.source_out - clip.source_in;
+          if clip.source_out > source_duration || clip.source_in < 0.0 {
+            return CommandResult::error(
+              "Roll edit would exceed source media bounds for first clip".to_string(),
+            );
+          }
+        } else if clip.id == adjacent_clip_id {
+          // Shrink/extend second clip's start
+          clip.timeline_in += delta;
+          clip.source_in += delta;
+
+          // Validate source bounds
+          if clip.source_in < 0.0 || clip.source_in > second_source_out {
+            return CommandResult::error(
+              "Roll edit would exceed source media bounds for second clip".to_string(),
+            );
+          }
+        }
+      }
+      break;
+    }
+
+    state.mark_dirty();
+
+    // Publish events
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: adjacent_clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "clip_id": clip_id,
+      "adjacent_clip_id": adjacent_clip_id,
+      "delta": delta,
+      "type": "roll"
+    })))
+  }
+
+  async fn slip_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+    log::info!("Slip edit: clip_id={}, delta={}", clip_id, delta);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and get media duration
+    let mut clip_found = false;
+    let mut media_id: Option<String> = None;
+
+    for track in &mut project.timeline.tracks {
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          media_id = Some(clip.media_id.clone());
+
+          // Calculate new source in/out
+          let new_source_in = clip.source_in + delta;
+          let new_source_out = clip.source_out + delta;
+
+          // Get media duration from media pool
+          let media_duration = if let Some(media) = project.media_pool.items.get(&clip.media_id) {
+            media.duration.unwrap_or(0.0)
+          } else {
+            return CommandResult::error(format!("Media not found: {}", clip.media_id));
+          };
+
+          // Validate source bounds
+          if new_source_in < 0.0 {
+            return CommandResult::error(format!(
+              "Slip edit would move source start before media start (new source_in: {})",
+              new_source_in
+            ));
+          }
+
+          if new_source_out > media_duration {
+            return CommandResult::error(format!(
+              "Slip edit would move source end beyond media duration (new source_out: {} > {})",
+              new_source_out,
+              media_duration
+            ));
+          }
+
+          // Apply slip - only source points change, timeline position stays same
+          clip.source_in = new_source_in;
+          clip.source_out = new_source_out;
+
+          clip_found = true;
+          break;
+        }
+      }
+      if clip_found {
+        break;
+      }
+    }
+
+    if !clip_found {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: clip_id.clone(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "clip_id": clip_id,
+      "delta": delta,
+      "media_id": media_id,
+      "type": "slip"
+    })))
+  }
+
+  async fn slide_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+    log::info!("Slide edit: clip_id={}, delta={}", clip_id, delta);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // First pass: find the clip and collect info about adjacent clips
+    let mut target_track_id: Option<String> = None;
+    let mut target_clip_in: Option<f64> = None;
+    let mut target_clip_out: Option<f64> = None;
+    let mut prev_clip_id: Option<String> = None;
+    let mut next_clip_id: Option<String> = None;
+
+    for track in &project.timeline.tracks {
+      let mut found_target = false;
+      let mut target_in = 0.0;
+      let mut target_out = 0.0;
+
+      // Find the target clip
+      for clip in &track.clips {
+        if clip.id == clip_id {
+          target_in = clip.timeline_in;
+          target_out = clip.timeline_out;
+          found_target = true;
+          break;
+        }
+      }
+
+      if !found_target {
+        continue;
+      }
+
+      target_track_id = Some(track.id.clone());
+      target_clip_in = Some(target_in);
+      target_clip_out = Some(target_out);
+
+      // Find adjacent clips on the same track
+      for clip in &track.clips {
+        if clip.id == clip_id {
+          continue;
+        }
+
+        // Previous clip (ends where target starts)
+        if (clip.timeline_out - target_in).abs() < 0.01 {
+          prev_clip_id = Some(clip.id.clone());
+        }
+
+        // Next clip (starts where target ends)
+        if (clip.timeline_in - target_out).abs() < 0.01 {
+          next_clip_id = Some(clip.id.clone());
+        }
+      }
+
+      break;
+    }
+
+    if target_track_id.is_none() {
+      return CommandResult::error(format!("Clip not found: {}", clip_id));
+    }
+
+    let track_id = target_track_id.unwrap();
+    let clip_in = target_clip_in.unwrap();
+    let clip_out = target_clip_out.unwrap();
+
+    // Calculate new positions
+    let new_clip_in = clip_in + delta;
+    let new_clip_out = clip_out + delta;
+
+    // Validate new position doesn't go negative
+    if new_clip_in < 0.0 {
+      return CommandResult::error(format!(
+        "Slide edit would move clip before timeline start (new in: {})",
+        new_clip_in
+      ));
+    }
+
+    const MIN_CLIP_DURATION: f64 = 0.033; // ~1 frame at 30fps
+
+    // Second pass: apply changes
+    let mut updated_clips = vec![clip_id.clone()];
+
+    for track in &mut project.timeline.tracks {
+      if track.id != track_id {
+        continue;
+      }
+
+      for clip in &mut track.clips {
+        if clip.id == clip_id {
+          // Move the target clip
+          clip.timeline_in = new_clip_in;
+          clip.timeline_out = new_clip_out;
+        } else if let Some(ref prev_id) = prev_clip_id {
+          if clip.id == *prev_id {
+            // Extend/shrink previous clip to meet new target position
+            let new_prev_out = new_clip_in;
+            let new_duration = new_prev_out - clip.timeline_in;
+
+            if new_duration < MIN_CLIP_DURATION {
+              return CommandResult::error(format!(
+                "Slide edit would make previous clip too short ({} < {})",
+                new_duration, MIN_CLIP_DURATION
+              ));
+            }
+
+            clip.timeline_out = new_prev_out;
+            // Adjust source_out proportionally
+            let duration_delta = new_prev_out - clip_out;
+            clip.source_out += duration_delta;
+
+            // Validate source bounds
+            if clip.source_out < clip.source_in {
+              return CommandResult::error(
+                "Slide edit would exceed source bounds for previous clip".to_string(),
+              );
+            }
+
+            updated_clips.push(clip.id.clone());
+          }
+        } else if let Some(ref next_id) = next_clip_id {
+          if clip.id == *next_id {
+            // Extend/shrink next clip to meet new target position
+            let new_next_in = new_clip_out;
+            let new_duration = clip.timeline_out - new_next_in;
+
+            if new_duration < MIN_CLIP_DURATION {
+              return CommandResult::error(format!(
+                "Slide edit would make next clip too short ({} < {})",
+                new_duration, MIN_CLIP_DURATION
+              ));
+            }
+
+            clip.timeline_in = new_next_in;
+            // Adjust source_in proportionally
+            let duration_delta = new_next_in - clip_in;
+            clip.source_in += duration_delta;
+
+            // Validate source bounds
+            if clip.source_in > clip.source_out || clip.source_in < 0.0 {
+              return CommandResult::error(
+                "Slide edit would exceed source bounds for next clip".to_string(),
+              );
+            }
+
+            updated_clips.push(clip.id.clone());
+          }
+        }
+      }
+
+      break;
+    }
+
+    state.mark_dirty();
+
+    // Publish events for all updated clips
+    for updated_id in &updated_clips {
+      if *updated_id == clip_id {
+        self
+          .event_bus
+          .publish(
+            ProjectEvent::ClipMoved {
+              clip_id: updated_id.clone(),
+              new_track_id: track_id.clone(),
+              new_time: new_clip_in,
+            },
+            "command_handler".to_string(),
+            state.version,
+          )
+          .await
+          .ok();
+      } else {
+        self
+          .event_bus
+          .publish(
+            ProjectEvent::ClipUpdated {
+              clip_id: updated_id.clone(),
+              changes: super::events::ClipChanges {
+                name: None,
+                playback_rate: None,
+                volume: None,
+                effects: None,
+              },
+            },
+            "command_handler".to_string(),
+            state.version,
+          )
+          .await
+          .ok();
+      }
+    }
+
+    CommandResult::success(Some(serde_json::json!({
+      "clip_id": clip_id,
+      "delta": delta,
+      "updated_clips": updated_clips.len(),
+      "type": "slide"
+    })))
+  }
+
+  // Marker Commands
+  async fn add_marker(
+    &self,
+    name: String,
+    time: f64,
+    color: String,
+    marker_type: String,
+    description: Option<String>,
+  ) -> CommandResult {
+    log::info!("Adding marker '{}' at time {}", name, time);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Validate time
+    if time < 0.0 {
+      return CommandResult::error(format!("Invalid marker time: {}", time));
+    }
+
+    // Parse marker type
+    let parsed_marker_type = match marker_type.as_str() {
+      "chapter" => super::project_state::MarkerType::Chapter,
+      "section" => super::project_state::MarkerType::Section,
+      "note" => super::project_state::MarkerType::Note,
+      "export" => super::project_state::MarkerType::Export,
+      _ => return CommandResult::error(format!("Invalid marker type: {}", marker_type)),
+    };
+
+    // Generate marker ID
+    let marker_id = uuid::Uuid::new_v4().to_string();
+
+    // Create marker
+    let marker = super::project_state::Marker {
+      id: marker_id.clone(),
+      name: name.clone(),
+      time,
+      color: color.clone(),
+      marker_type: parsed_marker_type,
+      description: description.clone(),
+    };
+
+    // Add to timeline
+    project.timeline.markers.push(marker);
+
+    // Sort markers by time
+    project
+      .timeline
+      .markers
+      .sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: "timeline".to_string(), // Marker is timeline-level, not clip-level
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "added": true,
+      "marker_id": marker_id,
+      "name": name,
+      "time": time
+    })))
+  }
+
+  async fn remove_marker(&self, marker_id: String) -> CommandResult {
+    log::info!("Removing marker {}", marker_id);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find and remove marker
+    let initial_len = project.timeline.markers.len();
+    project.timeline.markers.retain(|m| m.id != marker_id);
+    let marker_removed = project.timeline.markers.len() < initial_len;
+
+    if !marker_removed {
+      return CommandResult::error(format!("Marker not found: {}", marker_id));
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: "timeline".to_string(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "removed": true,
+      "marker_id": marker_id
+    })))
+  }
+
+  async fn update_marker(
+    &self,
+    marker_id: String,
+    name: Option<String>,
+    time: Option<f64>,
+    color: Option<String>,
+    description: Option<String>,
+  ) -> CommandResult {
+    log::info!("Updating marker {}", marker_id);
+
+    let mut state = self.state.write().await;
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Validate time if provided
+    if let Some(t) = time {
+      if t < 0.0 {
+        return CommandResult::error(format!("Invalid marker time: {}", t));
+      }
+    }
+
+    // Find and update marker
+    let mut marker_found = false;
+    let mut needs_resort = false;
+
+    for marker in &mut project.timeline.markers {
+      if marker.id == marker_id {
+        marker_found = true;
+
+        if let Some(n) = &name {
+          marker.name = n.clone();
+        }
+        if let Some(t) = time {
+          marker.time = t;
+          needs_resort = true;
+        }
+        if let Some(c) = &color {
+          marker.color = c.clone();
+        }
+        if let Some(d) = &description {
+          marker.description = Some(d.clone());
+        }
+
+        break;
+      }
+    }
+
+    if !marker_found {
+      return CommandResult::error(format!("Marker not found: {}", marker_id));
+    }
+
+    // Re-sort if time changed
+    if needs_resort {
+      project
+        .timeline
+        .markers
+        .sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
+    }
+
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipUpdated {
+          clip_id: "timeline".to_string(),
+          changes: super::events::ClipChanges {
+            name: None,
+            playback_rate: None,
+            volume: None,
+            effects: None,
+          },
+        },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "updated": true,
+      "marker_id": marker_id
     })))
   }
 }

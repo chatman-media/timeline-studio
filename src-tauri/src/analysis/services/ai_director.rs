@@ -19,8 +19,9 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 use crate::analysis::engines::content_engine::{
-  CompositionScore, ContentClassification, MoodAnalysis, QualityScore,
+  CompositionScore, ContentClassification, QualityScore,
 };
+use crate::analysis::types::MoodAnalysis;
 use crate::analysis::engines::{ContentEngine, MomentEngine, SceneEngine};
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
 use crate::analysis::types::unified_types::{
@@ -29,6 +30,7 @@ use crate::analysis::types::unified_types::{
 use crate::analysis::types::{
   AudioPerformanceMode, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
 };
+use crate::video_compiler::commands::ai_api_proxy::{AIProvider, AIProviderManager};
 
 /// Результат полного анализа через AI Director
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
@@ -67,7 +69,7 @@ pub struct ComprehensiveAnalysisResult {
   pub errors: Vec<String>,
 
   /// Метаданные анализа
-  pub metadata: AnalysisMetadata,
+  pub metadata: AIDirectorAnalysisMetadata,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
@@ -192,7 +194,7 @@ pub struct PerformanceMetrics {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
-pub struct AnalysisMetadata {
+pub struct AIDirectorAnalysisMetadata {
   pub analysis_version: String,
   pub processing_time_ms: u32,
   pub config_used: String,
@@ -267,6 +269,21 @@ pub struct AIDirectorConfig {
 
   /// Включить MCP агенты
   pub enable_mcp_agents: bool,
+
+  /// 🆕 AI Provider для улучшенного анализа
+  pub ai_provider: Option<AIProvider>,
+
+  /// 🆕 AI Model (модель для использования)
+  pub ai_model: Option<String>,
+
+  /// 🆕 Использовать AI для улучшения анализа контента
+  pub enable_ai_enhanced_analysis: bool,
+
+  /// 🆕 Использовать AI для генерации описаний
+  pub enable_ai_descriptions: bool,
+
+  /// 🆕 Использовать AI для анализа настроения
+  pub enable_ai_mood_analysis: bool,
 }
 
 impl Default for AIDirectorConfig {
@@ -293,6 +310,11 @@ impl Default for AIDirectorConfig {
       enable_caching: true,
       generate_editing_recommendations: true,
       enable_mcp_agents: false,
+      ai_provider: None, // По умолчанию AI не используется
+      ai_model: None,
+      enable_ai_enhanced_analysis: false,
+      enable_ai_descriptions: false,
+      enable_ai_mood_analysis: false,
     }
   }
 }
@@ -311,6 +333,9 @@ pub struct AIDirector {
   /// Content analysis engine
   content_engine: Arc<RwLock<ContentEngine>>,
 
+  /// 🆕 AI Provider Manager для улучшенного анализа
+  ai_manager: Arc<AIProviderManager>,
+
   /// Конфигурация по умолчанию
   default_config: AIDirectorConfig,
 }
@@ -322,12 +347,14 @@ impl AIDirector {
     let scene_engine = Arc::new(RwLock::new(SceneEngine::new()));
     let moment_engine = Arc::new(RwLock::new(MomentEngine::new()));
     let content_engine = Arc::new(RwLock::new(ContentEngine::new()));
+    let ai_manager = Arc::new(AIProviderManager::new());
 
     Self {
       unified_audio_analyzer,
       scene_engine,
       moment_engine,
       content_engine,
+      ai_manager,
       default_config: AIDirectorConfig::default(),
     }
   }
@@ -392,7 +419,7 @@ impl AIDirector {
       },
       editing_recommendations: Vec::new(),
       errors: Vec::new(),
-      metadata: AnalysisMetadata {
+      metadata: AIDirectorAnalysisMetadata {
         analysis_version: "4.0-unified-engines".to_string(),
         processing_time_ms: 0,
         config_used: serde_json::to_string(&config).unwrap_or_default(),
@@ -1020,6 +1047,11 @@ impl AIDirector {
       transcription: audio_caps.whisper_available,
       gpu_acceleration: audio_caps.gpu_acceleration_available,
     })
+  }
+
+  /// 🆕 Публичный доступ к AI Provider Manager
+  pub fn get_ai_manager(&self) -> &Arc<AIProviderManager> {
+    &self.ai_manager
   }
 }
 

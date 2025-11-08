@@ -36,8 +36,8 @@ pub use crate::state::browser::{
 // AI Provider types (unified multi-provider support)
 #[allow(unused_imports)]
 pub use crate::video_compiler::commands::ai_api_proxy::{
-  AIMessage, AIProvider, ProviderConfig, ProviderStatus, TokenUsage, UnifiedAIRequest,
-  UnifiedAIResponse, ValidateApiKeyRequest, ValidateApiKeyResponse,
+  AIMessage, AIProvider, AITool, AIToolCall, ProviderConfig, ProviderStatus, TokenUsage,
+  ToolChoice, UnifiedAIRequest, UnifiedAIResponse, ValidateApiKeyRequest, ValidateApiKeyResponse,
 };
 
 // Simple command for demonstration
@@ -103,11 +103,18 @@ pub fn export_typescript_bindings() {
       crate::video_compiler::commands::ai_api_proxy::ai_get_provider_models,
       crate::video_compiler::commands::ai_api_proxy::ai_get_supported_providers,
       crate::video_compiler::commands::ai_api_proxy::ai_check_providers_health,
+      crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_tools,
       // 🆕 Script Generation commands (AI-powered)
       crate::analysis::commands::generate_video_script,
       crate::analysis::commands::generate_script_dialogue,
       crate::analysis::commands::generate_script_voiceover,
       crate::analysis::commands::get_default_script_config,
+      // 🆕 AI Metadata Generation commands (platform optimization)
+      crate::video_compiler::commands::platform_optimization::generate_platform_metadata,
+      crate::video_compiler::commands::platform_optimization::generate_multi_platform_metadata,
+      crate::video_compiler::commands::platform_optimization::validate_platform_metadata,
+      crate::video_compiler::commands::platform_optimization::get_platform_constraints,
+      crate::video_compiler::commands::platform_optimization::get_default_metadata_config,
     ])
     .events(tauri_specta::collect_events![]);
 

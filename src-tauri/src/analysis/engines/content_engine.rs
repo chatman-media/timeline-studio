@@ -310,9 +310,9 @@ impl ContentEngine {
   // ========================================================================
 
   /// Analyze mood from scenes
-  pub async fn analyze_mood(&self, scenes: &[SceneAnalysis]) -> Result<MoodAnalysis> {
+  pub async fn analyze_mood(&self, scenes: &[SceneAnalysis]) -> Result<ContentEngineMoodAnalysis> {
     if !self.config.enable_mood {
-      return Ok(MoodAnalysis::default());
+      return Ok(ContentEngineMoodAnalysis::default());
     }
 
     info!("Analyzing mood from {} scenes", scenes.len());
@@ -357,7 +357,7 @@ impl ContentEngine {
 
     let confidence = self.calculate_classification_confidence(scenes);
 
-    Ok(MoodAnalysis {
+    Ok(ContentEngineMoodAnalysis {
       mood,
       energy_level,
       emotional_intensity,
@@ -476,14 +476,14 @@ impl Default for CompositionScore {
 /// Mood Analysis Result
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
-pub struct MoodAnalysis {
+pub struct ContentEngineMoodAnalysis {
   pub mood: String,
   pub energy_level: f64,
   pub emotional_intensity: f64,
   pub confidence: f64,
 }
 
-impl Default for MoodAnalysis {
+impl Default for ContentEngineMoodAnalysis {
   fn default() -> Self {
     Self {
       mood: "Neutral".to_string(),

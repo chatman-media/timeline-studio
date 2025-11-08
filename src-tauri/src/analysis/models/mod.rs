@@ -150,7 +150,7 @@ pub struct AnalysisMediaFile {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, specta::Type)]
 #[serde(rename_all = "snake_case")]
-pub enum MediaType {
+pub enum AnalysisMediaType {
   Video,
   Audio,
   Image,

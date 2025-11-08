@@ -132,7 +132,7 @@ pub struct MediaItem {
   pub usage_count: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MediaType {
   Video,
   Audio,
@@ -150,7 +150,7 @@ pub struct MediaMetadata {
   pub sample_rate: Option<u32>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Resolution {
   pub width: u32,
   pub height: u32,

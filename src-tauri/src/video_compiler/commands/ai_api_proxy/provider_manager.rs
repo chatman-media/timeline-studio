@@ -119,6 +119,40 @@ impl AIProviderManager {
       body["system"] = serde_json::json!(system);
     }
 
+    // 🆕 Add tools if provided (Claude Tool Use)
+    if let Some(tools) = &request.tools {
+      let claude_tools: Vec<Value> = tools
+        .iter()
+        .map(|tool| {
+          serde_json::json!({
+            "name": tool.name,
+            "description": tool.description,
+            "input_schema": tool.input_schema,
+          })
+        })
+        .collect();
+      body["tools"] = serde_json::json!(claude_tools);
+    }
+
+    // 🆕 Add tool_choice if provided
+    if let Some(tool_choice) = &request.tool_choice {
+      match tool_choice {
+        ToolChoice::Auto => {
+          body["tool_choice"] = serde_json::json!({"type": "auto"});
+        }
+        ToolChoice::Required => {
+          body["tool_choice"] = serde_json::json!({"type": "any"});
+        }
+        ToolChoice::Tool { name } => {
+          body["tool_choice"] = serde_json::json!({"type": "tool", "name": name});
+        }
+        ToolChoice::None => {
+          // Don't include tools in this case
+          body.as_object_mut().unwrap().remove("tools");
+        }
+      }
+    }
+
     let response = self
       .client
       .post("https://api.anthropic.com/v1/messages")
@@ -146,12 +180,35 @@ impl AIProviderManager {
     let json: Value = serde_json::from_str(&response_text)
       .map_err(|e| VideoCompilerError::SerializationError(format!("JSON parse error: {}", e)))?;
 
-    let content = json["content"]
-      .as_array()
-      .and_then(|arr| arr.first())
-      .and_then(|c| c["text"].as_str())
-      .unwrap_or("")
-      .to_string();
+    // 🆕 Parse content array for both text and tool_use blocks
+    let mut text_content = String::new();
+    let mut tool_calls = Vec::new();
+
+    if let Some(content_array) = json["content"].as_array() {
+      for block in content_array {
+        match block["type"].as_str() {
+          Some("text") => {
+            if let Some(text) = block["text"].as_str() {
+              text_content.push_str(text);
+            }
+          }
+          Some("tool_use") => {
+            if let (Some(id), Some(name), Some(input)) = (
+              block["id"].as_str(),
+              block["name"].as_str(),
+              block.get("input"),
+            ) {
+              tool_calls.push(AIToolCall {
+                id: id.to_string(),
+                name: name.to_string(),
+                input: input.clone(),
+              });
+            }
+          }
+          _ => {}
+        }
+      }
+    }
 
     let usage = json["usage"].as_object().map(|u| TokenUsage {
       input_tokens: u["input_tokens"].as_u64().unwrap_or(0) as u32,
@@ -164,9 +221,14 @@ impl AIProviderManager {
       id: json["id"].as_str().unwrap_or("").to_string(),
       provider: AIProvider::Claude,
       model: json["model"].as_str().unwrap_or("").to_string(),
-      content,
+      content: text_content,
       usage,
       finish_reason: json["stop_reason"].as_str().map(|s| s.to_string()),
+      tool_calls: if tool_calls.is_empty() {
+        None
+      } else {
+        Some(tool_calls)
+      },
     })
   }
 
@@ -221,6 +283,45 @@ impl AIProviderManager {
       body["temperature"] = serde_json::json!(temp);
     }
 
+    // 🆕 Add tools if provided (OpenAI Function Calling)
+    if let Some(tools) = &request.tools {
+      let openai_tools: Vec<Value> = tools
+        .iter()
+        .map(|tool| {
+          serde_json::json!({
+            "type": "function",
+            "function": {
+              "name": tool.name,
+              "description": tool.description,
+              "parameters": tool.input_schema,
+            }
+          })
+        })
+        .collect();
+      body["tools"] = serde_json::json!(openai_tools);
+    }
+
+    // 🆕 Add tool_choice if provided
+    if let Some(tool_choice) = &request.tool_choice {
+      match tool_choice {
+        ToolChoice::Auto => {
+          body["tool_choice"] = serde_json::json!("auto");
+        }
+        ToolChoice::Required => {
+          body["tool_choice"] = serde_json::json!("required");
+        }
+        ToolChoice::Tool { name } => {
+          body["tool_choice"] = serde_json::json!({
+            "type": "function",
+            "function": {"name": name}
+          });
+        }
+        ToolChoice::None => {
+          body["tool_choice"] = serde_json::json!("none");
+        }
+      }
+    }
+
     let response = self
       .client
       .post("https://api.openai.com/v1/chat/completions")
@@ -259,6 +360,39 @@ impl AIProviderManager {
       .unwrap_or("")
       .to_string();
 
+    // 🆕 Parse tool_calls if present
+    let tool_calls = if let Some(tool_calls_array) = choice["message"]["tool_calls"].as_array() {
+      let mut calls = Vec::new();
+      for call in tool_calls_array {
+        if let (Some(id), Some(function)) = (call["id"].as_str(), call["function"].as_object()) {
+          if let (Some(name), Some(arguments_str)) = (
+            function.get("name").and_then(|n| n.as_str()),
+            function.get("arguments"),
+          ) {
+            // Parse arguments string as JSON
+            let arguments = if let Some(args_str) = arguments_str.as_str() {
+              serde_json::from_str(args_str).unwrap_or(serde_json::json!({}))
+            } else {
+              arguments_str.clone()
+            };
+
+            calls.push(AIToolCall {
+              id: id.to_string(),
+              name: name.to_string(),
+              input: arguments,
+            });
+          }
+        }
+      }
+      if calls.is_empty() {
+        None
+      } else {
+        Some(calls)
+      }
+    } else {
+      None
+    };
+
     let usage = json["usage"].as_object().map(|u| TokenUsage {
       input_tokens: u["prompt_tokens"].as_u64().unwrap_or(0) as u32,
       output_tokens: u["completion_tokens"].as_u64().unwrap_or(0) as u32,
@@ -272,6 +406,7 @@ impl AIProviderManager {
       content,
       usage,
       finish_reason: choice["finish_reason"].as_str().map(|s| s.to_string()),
+      tool_calls,
     })
   }
 
@@ -326,6 +461,45 @@ impl AIProviderManager {
       body["temperature"] = serde_json::json!(temp);
     }
 
+    // 🆕 Add tools if provided (OpenAI-compatible)
+    if let Some(tools) = &request.tools {
+      let openai_tools: Vec<Value> = tools
+        .iter()
+        .map(|tool| {
+          serde_json::json!({
+            "type": "function",
+            "function": {
+              "name": tool.name,
+              "description": tool.description,
+              "parameters": tool.input_schema,
+            }
+          })
+        })
+        .collect();
+      body["tools"] = serde_json::json!(openai_tools);
+    }
+
+    // 🆕 Add tool_choice if provided
+    if let Some(tool_choice) = &request.tool_choice {
+      match tool_choice {
+        ToolChoice::Auto => {
+          body["tool_choice"] = serde_json::json!("auto");
+        }
+        ToolChoice::Required => {
+          body["tool_choice"] = serde_json::json!("required");
+        }
+        ToolChoice::Tool { name } => {
+          body["tool_choice"] = serde_json::json!({
+            "type": "function",
+            "function": {"name": name}
+          });
+        }
+        ToolChoice::None => {
+          body["tool_choice"] = serde_json::json!("none");
+        }
+      }
+    }
+
     let response = self
       .client
       .post("https://api.deepseek.com/v1/chat/completions")
@@ -364,6 +538,39 @@ impl AIProviderManager {
       .unwrap_or("")
       .to_string();
 
+    // 🆕 Parse tool_calls if present (same as OpenAI)
+    let tool_calls = if let Some(tool_calls_array) = choice["message"]["tool_calls"].as_array() {
+      let mut calls = Vec::new();
+      for call in tool_calls_array {
+        if let (Some(id), Some(function)) = (call["id"].as_str(), call["function"].as_object()) {
+          if let (Some(name), Some(arguments_str)) = (
+            function.get("name").and_then(|n| n.as_str()),
+            function.get("arguments"),
+          ) {
+            // Parse arguments string as JSON
+            let arguments = if let Some(args_str) = arguments_str.as_str() {
+              serde_json::from_str(args_str).unwrap_or(serde_json::json!({}))
+            } else {
+              arguments_str.clone()
+            };
+
+            calls.push(AIToolCall {
+              id: id.to_string(),
+              name: name.to_string(),
+              input: arguments,
+            });
+          }
+        }
+      }
+      if calls.is_empty() {
+        None
+      } else {
+        Some(calls)
+      }
+    } else {
+      None
+    };
+
     let usage = json["usage"].as_object().map(|u| TokenUsage {
       input_tokens: u["prompt_tokens"].as_u64().unwrap_or(0) as u32,
       output_tokens: u["completion_tokens"].as_u64().unwrap_or(0) as u32,
@@ -377,6 +584,7 @@ impl AIProviderManager {
       content,
       usage,
       finish_reason: choice["finish_reason"].as_str().map(|s| s.to_string()),
+      tool_calls,
     })
   }
 
@@ -467,6 +675,7 @@ impl AIProviderManager {
       content,
       usage: None, // Ollama doesn't provide token usage
       finish_reason: Some("stop".to_string()),
+      tool_calls: None, // Ollama doesn't support tools yet
     })
   }
 

@@ -1,0 +1,173 @@
+use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::state::project_state::*;
+use crate::state::events::*;
+use super::types::CommandResult;
+use std::sync::Arc;
+use tokio::sync::RwLock;
+
+/// Media commands implementation
+pub struct MediaCommands {
+  state: Arc<RwLock<ProjectState>>,
+  event_bus: Arc<EventBus>,
+}
+
+impl MediaCommands {
+  pub fn new(state: Arc<RwLock<ProjectState>>, event_bus: Arc<EventBus>) -> Self {
+    Self { state, event_bus }
+  }
+
+  async fn add_media(&self, path: String, media_type: MediaType) -> CommandResult {
+    use crate::state::project_state::{MediaItem, MediaMetadata};
+    use std::path::Path;
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Generate unique ID for the media item
+    let media_id = uuid::Uuid::new_v4().to_string();
+
+    // Extract file name from path
+    let file_name = Path::new(&path)
+      .file_name()
+      .and_then(|n| n.to_str())
+      .unwrap_or("Unknown")
+      .to_string();
+
+    // Create media item
+    let media_item = MediaItem {
+      id: media_id.clone(),
+      path: path.clone(),
+      name: file_name.clone(),
+      media_type: media_type.clone(),
+      duration: None, // Will be set by frontend after media loading
+      metadata: MediaMetadata {
+        format: String::new(),
+        codec: None,
+        resolution: None,
+        frame_rate: None,
+        bitrate: None,
+        audio_channels: None,
+        sample_rate: None,
+      },
+      thumbnail: None,
+      usage_count: 0,
+    };
+
+    // Add to media pool
+    project
+      .media_pool
+      .items
+      .insert(media_id.clone(), media_item);
+    state.mark_dirty();
+
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaAdded {
+          media: crate::state::events::MediaData {
+            id: media_id.clone(),
+            path: path.clone(),
+            name: file_name.clone(),
+            media_type: match media_type {
+              MediaType::Video => "Video".to_string(),
+              MediaType::Audio => "Audio".to_string(),
+              MediaType::Image => "Image".to_string(),
+            },
+            duration: None,
+          },
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({ "media_id": media_id })))
+  }
+
+  async fn remove_media(&self, media_id: String) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Check if media item exists
+    if !project.media_pool.items.contains_key(&media_id) {
+      return CommandResult::error(format!("Media item not found: {}", media_id));
+    }
+
+    // Remove from media pool
+    project.media_pool.items.remove(&media_id);
+    state.mark_dirty();
+
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaRemoved {
+          media_id: media_id.clone(),
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
+  }
+
+  async fn update_media(&self, media_id: String, updates: MediaUpdates) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Get media item and apply updates
+    let updated_name = if let Some(media_item) = project.media_pool.items.get_mut(&media_id) {
+      if let Some(name) = updates.name {
+        media_item.name = name.clone();
+        Some(name)
+      } else {
+        Some(media_item.name.clone())
+      }
+    } else {
+      return CommandResult::error(format!("Media item not found: {}", media_id));
+    };
+
+    state.mark_dirty();
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaUpdated {
+          media_id: media_id.clone(),
+          changes: crate::state::events::MediaChanges {
+            name: updated_name,
+            thumbnail: None, // Not updating thumbnail in this command
+          },
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
+  }
+
+}

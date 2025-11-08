@@ -124,6 +124,52 @@ pub async fn ai_check_providers_health(
   Ok(statuses)
 }
 
+/// Send AI request with tools (Function Calling)
+///
+/// Упрощенная команда для отправки запросов с инструментами.
+/// # Arguments
+/// * `api_key` - API ключ провайдера
+/// * `provider` - AI провайдер
+/// * `model` - Модель для использования
+/// * `messages` - Сообщения для AI
+/// * `tools` - Список доступных инструментов
+/// * `tool_choice` - Стратегия выбора инструментов
+/// * `system` - Системный промпт (опционально)
+/// * `max_tokens` - Максимум токенов (опционально)
+/// * `temperature` - Температура генерации (опционально)
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_send_request_with_tools(
+  api_key: String,
+  provider: AIProvider,
+  model: String,
+  messages: Vec<AIMessage>,
+  tools: Vec<AITool>,
+  tool_choice: Option<ToolChoice>,
+  system: Option<String>,
+  max_tokens: Option<u32>,
+  temperature: Option<f64>,
+) -> Result<UnifiedAIResponse, String> {
+  let manager = AIProviderManager::new();
+
+  let request = UnifiedAIRequest {
+    provider,
+    model,
+    messages,
+    max_tokens,
+    temperature,
+    stream: Some(false),
+    system,
+    tools: Some(tools),
+    tool_choice,
+  };
+
+  manager
+    .send_request(&api_key, request)
+    .await
+    .map_err(|e| e.to_string())
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

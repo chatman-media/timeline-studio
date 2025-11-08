@@ -8,8 +8,9 @@
 
 use crate::analysis::engines::content_engine::{
   CompositionScore, CompositionWeights, ContentClassification, ContentEngine, ContentEngineConfig,
-  MoodAnalysis, QualityScore,
+  QualityScore,
 };
+use crate::analysis::types::MoodAnalysis;
 use crate::analysis::types::unified_types::{SceneAnalysis, VisualCharacteristics};
 use anyhow::Result;
 use serde::{Deserialize, Serialize};

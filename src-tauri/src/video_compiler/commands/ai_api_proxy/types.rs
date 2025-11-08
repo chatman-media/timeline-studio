@@ -15,6 +15,51 @@ pub enum AIProvider {
   Ollama,
 }
 
+/// AI Tool Definition (Claude Tool Use / OpenAI Function Calling)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct AITool {
+  /// Tool name
+  pub name: String,
+
+  /// Tool description
+  pub description: String,
+
+  /// Input schema (JSON Schema)
+  pub input_schema: serde_json::Value,
+}
+
+/// AI Tool Call (when AI decides to use a tool)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct AIToolCall {
+  /// Tool call ID
+  pub id: String,
+
+  /// Tool name
+  pub name: String,
+
+  /// Tool input (JSON)
+  pub input: serde_json::Value,
+}
+
+/// Tool Choice Strategy
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "snake_case")]
+pub enum ToolChoice {
+  /// AI decides whether to use tools
+  Auto,
+
+  /// Force AI to use a specific tool
+  Required,
+
+  /// Specific tool to use
+  Tool { name: String },
+
+  /// Don't use tools
+  None,
+}
+
 /// Unified AI Request (works with all providers)
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
@@ -26,6 +71,10 @@ pub struct UnifiedAIRequest {
   pub temperature: Option<f64>,
   pub stream: Option<bool>,
   pub system: Option<String>,
+  /// 🆕 Tools для Function Calling / Claude Tool Use
+  pub tools: Option<Vec<AITool>>,
+  /// 🆕 Tool choice strategy
+  pub tool_choice: Option<ToolChoice>,
 }
 
 /// Unified AI Message
@@ -45,6 +94,8 @@ pub struct UnifiedAIResponse {
   pub content: String,
   pub usage: Option<TokenUsage>,
   pub finish_reason: Option<String>,
+  /// 🆕 Tool calls если AI вызвал инструменты
+  pub tool_calls: Option<Vec<AIToolCall>>,
 }
 
 /// Token Usage (unified across providers)

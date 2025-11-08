@@ -1,6 +1,7 @@
 //! Типы для модуля platform_optimization
 
 use serde::{Deserialize, Serialize};
+use specta::Type;
 
 /// Результат оптимизации для платформы
 #[derive(Debug, Serialize, Deserialize)]
@@ -66,7 +67,8 @@ pub struct PlatformThumbnailParams {
 }
 
 /// Типы платформ для оптимизации
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
+#[serde(rename_all = "PascalCase")]
 pub enum PlatformType {
   YouTube,
   Instagram,

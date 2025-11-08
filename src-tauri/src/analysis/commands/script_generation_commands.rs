@@ -67,9 +67,9 @@ pub fn get_default_script_config() -> Result<ScriptGenerationConfig, String> {
 mod tests {
   use super::*;
 
-  #[tokio::test]
-  async fn test_get_default_config() {
-    let config = get_default_script_config().await.unwrap();
+  #[test]
+  fn test_get_default_config() {
+    let config = get_default_script_config().unwrap();
     assert!(config.include_dialogue);
   }
 }

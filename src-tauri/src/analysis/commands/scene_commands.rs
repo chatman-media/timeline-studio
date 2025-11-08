@@ -190,7 +190,7 @@ pub async fn analyze_scenes_by_path_command(
     id: uuid::Uuid::new_v4().to_string(),
     path: file_path.clone(),
     filename,
-    size: file_size,
+    size: file_size as f64,
     media_type: crate::analysis::types::UnifiedMediaType::Video,
     duration: None,
     format: None,

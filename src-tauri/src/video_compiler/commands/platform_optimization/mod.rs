@@ -5,7 +5,11 @@
 //! - Генерация миниатюр
 //! - Проверка совместимости
 //! - Автоматическая оптимизация под профили платформ
+//! - 🆕 AI-powered генерация метаданных (title, description, tags, hashtags, SEO)
 
+pub mod ai_metadata_commands; // 🆕 AI metadata generation commands
+pub mod ai_metadata_generator; // 🆕 AI metadata generation service
+pub mod ai_metadata_types; // 🆕 AI metadata types
 pub mod business_logic;
 pub mod commands;
 pub mod types;
@@ -14,5 +18,7 @@ pub mod types;
 mod tests;
 
 // Re-export основных типов и команд
+pub use ai_metadata_commands::*;
+pub use ai_metadata_types::*;
 pub use commands::*;
 pub use types::*;

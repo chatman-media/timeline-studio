@@ -4,14 +4,14 @@
 //! Интегрируется с AI Director и analysis engines для создания
 //! качественных скриптов на основе анализа видео.
 
-use anyhow::Result;
-use log::info;
-use serde::{Deserialize, Serialize};
-use specta::Type;
 use crate::analysis::types::unified_types::UnifiedAnalysisResult;
 use crate::video_compiler::commands::ai_api_proxy::{
   AIMessage, AIProvider, AIProviderManager, UnifiedAIRequest, UnifiedAIResponse,
 };
+use anyhow::Result;
+use log::info;
+use serde::{Deserialize, Serialize};
+use specta::Type;
 
 // ============================================================================
 // TYPES
@@ -228,6 +228,8 @@ impl ScriptGenerator {
       temperature: Some(config.temperature),
       stream: Some(false),
       system: Some(self.get_system_prompt(&config.genre)),
+      tools: None,
+      tool_choice: None,
     };
 
     let response = self
@@ -270,6 +272,8 @@ impl ScriptGenerator {
       temperature: Some(0.8),
       stream: Some(false),
       system: Some("You are a professional dialogue writer.".to_string()),
+      tools: None,
+      tool_choice: None,
     };
 
     let response = self
@@ -304,6 +308,8 @@ impl ScriptGenerator {
       temperature: Some(0.7),
       stream: Some(false),
       system: Some("You are a professional voiceover writer.".to_string()),
+      tools: None,
+      tool_choice: None,
     };
 
     let response = self
@@ -459,20 +465,20 @@ impl ScriptGenerator {
     let mut scenes = vec![];
 
     for (i, scene) in analysis.scenes.iter().enumerate() {
-        scenes.push(ScriptScene {
-          scene_number: (i + 1) as u32,
-          title: format!("Scene {}", i + 1),
-          start_time: scene.start_time,
-          end_time: scene.end_time,
-          description: scene
-            .description
-            .clone()
-            .unwrap_or_else(|| format!("{:?} scene", scene.scene_type)),
-          scene_type: format!("{:?}", scene.scene_type),
-          visual_notes: vec![],
-          audio_notes: vec![],
-          actions: vec![],
-        });
+      scenes.push(ScriptScene {
+        scene_number: (i + 1) as u32,
+        title: format!("Scene {}", i + 1),
+        start_time: scene.start_time,
+        end_time: scene.end_time,
+        description: scene
+          .description
+          .clone()
+          .unwrap_or_else(|| format!("{:?} scene", scene.scene_type)),
+        scene_type: format!("{:?}", scene.scene_type),
+        visual_notes: vec![],
+        audio_notes: vec![],
+        actions: vec![],
+      });
     }
 
     scenes
