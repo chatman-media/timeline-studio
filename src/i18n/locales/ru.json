@@ -139,6 +139,7 @@
     "editingTasks": "Задачи монтажа",
     "projectTasks": "Задачи Проекта",
     "userSettings": "Настройки пользователя",
+    "montagePlanner": "Планировщик монтажа",
     "export": "Экспорт",
     "unknownError": "Неизвестная ошибка",
     "unknown": "Неизвестно",
@@ -207,6 +208,9 @@
       },
       "cacheStatistics": {
         "title": "Статистика кэша"
+      },
+      "montagePlanner": {
+        "title": "Умный планировщик монтажа"
       }
     },
     "keyboardShortcuts": {

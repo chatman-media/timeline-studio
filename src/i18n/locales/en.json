@@ -139,6 +139,7 @@
     "editingTasks": "Editing Tasks",
     "projectTasks": "Project Tasks",
     "userSettings": "User Settings",
+    "montagePlanner": "Montage Planner",
     "export": "Export",
     "toggleBrowser": "Toggle browser (Cmd+B)",
     "unknownError": "Unknown error",
@@ -216,6 +217,9 @@
     },
     "cacheStatistics": {
       "title": "Cache Statistics"
+    },
+    "montagePlanner": {
+      "title": "Smart Montage Planner"
     }
   },
   "dialogs": {
