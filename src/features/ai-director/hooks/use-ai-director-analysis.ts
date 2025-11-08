@@ -42,7 +42,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
     const setupEventListeners = async () => {
       // Listen to analysis started
       const unlistenStarted = await listen("analysis-started", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis started", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis started", event.payload as Record<string, unknown>)
         setIsAnalyzing(true)
         setCurrentProgress(null)
         setResult(null)
@@ -52,15 +52,15 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
       // Listen to analysis progress
       const unlistenProgress = await listen("analysis-progress", (event) => {
-        const progress = event.payload as AnalysisProgress
-        logInfo("[useAIDirectorAnalysis] Analysis progress", progress)
+        const progress = event.payload as unknown as AnalysisProgress
+        logInfo("[useAIDirectorAnalysis] Analysis progress", progress as unknown as Record<string, unknown>)
         setCurrentProgress(progress)
       })
       unlistenFunctions.push(unlistenProgress)
 
       // Listen to analysis completed
       const unlistenCompleted = await listen("analysis-completed", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload as Record<string, unknown>)
         setIsAnalyzing(false)
         setCurrentProgress(null)
         // result будет установлен из возвращаемого значения команды
@@ -69,15 +69,15 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
       // Listen to analysis errors
       const unlistenError = await listen("analysis-error", (event) => {
-        const error = event.payload as AnalysisError
-        logError("[useAIDirectorAnalysis] Analysis error", error)
+        const error = event.payload as unknown as AnalysisError
+        logError("[useAIDirectorAnalysis] Analysis error", error as unknown as Record<string, unknown>)
         setErrors((prev) => [...prev, error])
       })
       unlistenFunctions.push(unlistenError)
 
       // Listen to stage completed
       const unlistenStageCompleted = await listen("analysis-stage-completed", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload)
+        logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload as Record<string, unknown>)
         // Можно добавить дополнительную логику для отслеживания завершенных этапов
       })
       unlistenFunctions.push(unlistenStageCompleted)
@@ -94,7 +94,10 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Start comprehensive analysis
   const startAnalysis = useCallback(async (videoPath: string, config?: AIDirectorConfig) => {
     try {
-      logInfo("[useAIDirectorAnalysis] Запуск комплексного AI Director анализа", { videoPath })
+      logInfo("[useAIDirectorAnalysis] Запуск комплексного AI Director анализа", { videoPath } as Record<
+        string,
+        unknown
+      >)
 
       const analysisResult = await invoke<ComprehensiveAnalysisResult>("ai_director_analyze_comprehensive", {
         videoPath,
@@ -112,10 +115,10 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
         },
       })
 
-      logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult })
+      logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult } as Record<string, unknown>)
       setResult(analysisResult)
     } catch (error) {
-      logError("[useAIDirectorAnalysis] Ошибка запуска AI Director анализа", error)
+      logError("[useAIDirectorAnalysis] Ошибка запуска AI Director анализа", error as Record<string, unknown>)
       setIsAnalyzing(false)
       setErrors((prev) => [
         ...prev,
@@ -131,16 +134,19 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Start quick analysis
   const startQuickAnalysis = useCallback(async (videoPath: string) => {
     try {
-      logInfo("[useAIDirectorAnalysis] Запуск быстрого AI Director анализа", { videoPath })
+      logInfo("[useAIDirectorAnalysis] Запуск быстрого AI Director анализа", { videoPath } as Record<string, unknown>)
 
       const analysisResult = await invoke<ComprehensiveAnalysisResult>("ai_director_analyze_quick", {
         videoPath,
       })
 
-      logInfo("[useAIDirectorAnalysis] Быстрый AI Director анализ завершен", { analysisResult })
+      logInfo("[useAIDirectorAnalysis] Быстрый AI Director анализ завершен", { analysisResult } as Record<
+        string,
+        unknown
+      >)
       setResult(analysisResult)
     } catch (error) {
-      logError("[useAIDirectorAnalysis] Ошибка запуска быстрого AI Director анализа", error)
+      logError("[useAIDirectorAnalysis] Ошибка запуска быстрого AI Director анализа", error as Record<string, unknown>)
       setIsAnalyzing(false)
       setErrors((prev) => [
         ...prev,

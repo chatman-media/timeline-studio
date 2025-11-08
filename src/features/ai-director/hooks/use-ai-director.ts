@@ -58,7 +58,7 @@ export function useAIDirector(): AIDirectorHook {
   // Comprehensive Analysis
   const analyzeComprehensive = useCallback(
     async (videoPath: string, config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult> => {
-      logInfo("[useAIDirector] Запуск комплексного анализа", { videoPath, config })
+      logInfo("[useAIDirector] Запуск комплексного анализа", { videoPath, config } as Record<string, unknown>)
       setState((prev) => ({
         ...prev,
         isAnalyzing: true,
@@ -71,7 +71,7 @@ export function useAIDirector(): AIDirectorHook {
         const result = await commands.aiDirectorAnalyzeComprehensive(videoPath, config)
 
         if (result.status === "ok") {
-          logInfo("[useAIDirector] Комплексный анализ завершен успешно", { videoPath })
+          logInfo("[useAIDirector] Комплексный анализ завершен успешно", { videoPath } as Record<string, unknown>)
           setState((prev) => ({
             ...prev,
             isAnalyzing: false,
@@ -83,7 +83,7 @@ export function useAIDirector(): AIDirectorHook {
         throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
-        logError("[useAIDirector] Ошибка комплексного анализа", error)
+        logError("[useAIDirector] Ошибка комплексного анализа", error as Record<string, unknown>)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -97,7 +97,7 @@ export function useAIDirector(): AIDirectorHook {
 
   // Quick Analysis
   const analyzeQuick = useCallback(async (videoPath: string): Promise<ComprehensiveAnalysisResult> => {
-    logInfo("[useAIDirector] Запуск быстрого анализа", { videoPath })
+    logInfo("[useAIDirector] Запуск быстрого анализа", { videoPath } as Record<string, unknown>)
     setState((prev) => ({
       ...prev,
       isAnalyzing: true,
@@ -110,7 +110,7 @@ export function useAIDirector(): AIDirectorHook {
       const result = await commands.aiDirectorAnalyzeQuick(videoPath)
 
       if (result.status === "ok") {
-        logInfo("[useAIDirector] Быстрый анализ завершен успешно", { videoPath })
+        logInfo("[useAIDirector] Быстрый анализ завершен успешно", { videoPath } as Record<string, unknown>)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,
@@ -122,7 +122,7 @@ export function useAIDirector(): AIDirectorHook {
       throw new Error(result.error)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      logError("[useAIDirector] Ошибка быстрого анализа", error)
+      logError("[useAIDirector] Ошибка быстрого анализа", error as Record<string, unknown>)
       setState((prev) => ({
         ...prev,
         isAnalyzing: false,
@@ -135,7 +135,7 @@ export function useAIDirector(): AIDirectorHook {
   // Batch Analysis
   const analyzeBatch = useCallback(
     async (filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> => {
-      logInfo("[useAIDirector] Запуск batch анализа", { filesCount: filePaths.length })
+      logInfo("[useAIDirector] Запуск batch анализа", { filesCount: filePaths.length } as Record<string, unknown>)
       setState((prev) => ({
         ...prev,
         isAnalyzing: true,
@@ -147,7 +147,10 @@ export function useAIDirector(): AIDirectorHook {
         const result = await commands.aiDirectorAnalyzeBatch(filePaths, config)
 
         if (result.status === "ok") {
-          logInfo("[useAIDirector] Batch анализ завершен успешно", { resultsCount: result.data.length })
+          logInfo("[useAIDirector] Batch анализ завершен успешно", { resultsCount: result.data.length } as Record<
+            string,
+            unknown
+          >)
           setState((prev) => ({
             ...prev,
             isAnalyzing: false,
@@ -160,7 +163,7 @@ export function useAIDirector(): AIDirectorHook {
         throw new Error(result.error)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
-        logError("[useAIDirector] Ошибка batch анализа", error)
+        logError("[useAIDirector] Ошибка batch анализа", error as Record<string, unknown>)
         setState((prev) => ({
           ...prev,
           isAnalyzing: false,

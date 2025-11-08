@@ -32,14 +32,10 @@ describe("AI Director XState Machine", () => {
     performance_mode: "balanced",
     enable_audio_analysis: true,
     enable_video_analysis: true,
-    enable_face_analysis: true,
-    enable_object_analysis: true,
-    enable_emotion_analysis: true,
-    enable_composition_analysis: true,
+    enable_face_recognition: true,
+    enable_object_detection: true,
     enable_scene_detection: true,
-    enable_mcp_agents: false,
-    max_processing_time: 3600,
-    generate_editing_recommendations: true,
+    enable_transcription: true,
   }
 
   const mockCapabilities: SystemCapabilities = {
@@ -55,21 +51,16 @@ describe("AI Director XState Machine", () => {
   const mockAnalysisResult: ComprehensiveAnalysisResult = {
     analysis_id: "test-analysis-123",
     status: "completed",
-    video_path: "/path/to/video.mp4",
     audio_analysis: {
-      unified_result: {},
-      basic_metrics: {
-        has_audio: true,
-        duration: 120,
-        channels: 2,
-        sample_rate: 44100,
-        bitrate: 192000,
-        file_size_bytes: 5242880,
-        codec: "aac",
-      },
+      duration: 120,
+      loudness: -14.5,
+      tempo: 120,
+      silence_percentage: 5,
     },
-    processing_time_ms: 45000,
-    created_at: "2024-01-01T12:00:00Z",
+    started_at: "2024-01-01T12:00:00Z",
+    completed_at: "2024-01-01T12:01:00Z",
+    total_duration_ms: 60000,
+    errors: [],
   }
 
   const mockHealthResult: HealthCheckResult = {
