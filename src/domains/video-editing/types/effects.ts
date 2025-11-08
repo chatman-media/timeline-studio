@@ -7,28 +7,38 @@
 export interface AppliedEffect {
   id: string
   effectId: string
-  name: string
+  name?: string
   enabled: boolean
-  parameters: Record<string, any>
-  keyframes: TimelineKeyframe[]
+  order: number
+  startTime?: number
+  duration?: number
+  customParams?: Record<string, any>
+  parameters?: Record<string, any>
+  keyframes?: TimelineKeyframe[]
 }
 
 export interface AppliedFilter {
   id: string
   filterId: string
-  name: string
-  enabled: boolean
-  parameters: Record<string, any>
-  keyframes: TimelineKeyframe[]
+  name?: string
+  enabled?: boolean
+  isEnabled: boolean
+  order: number
+  startTime?: number
+  duration?: number
+  customParams?: Record<string, any>
+  parameters?: Record<string, any>
+  keyframes?: TimelineKeyframe[]
 }
 
 export interface AppliedTransition {
   id: string
   transitionId: string
-  name: string
+  name?: string
   type: "in" | "out" | "cross"
   duration: number
-  parameters: Record<string, any>
+  parameters?: Record<string, any>
+  customParams?: Record<string, any>
   isEnabled: boolean
 }
 
@@ -36,7 +46,8 @@ export interface TimelineKeyframe {
   id: string
   time: number
   value: any
-  interpolation: "linear" | "ease" | "bezier" | "step"
+  property?: string
+  interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
 }
 
 // Effect Types

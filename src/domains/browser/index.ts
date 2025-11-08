@@ -4,6 +4,8 @@
  * Домен для управления браузером медиа файлов и ресурсов
  */
 
+import type { BrowserTab } from "@/types/generated/tauri-bindings"
+
 // Types (re-exported from generated bindings)
 // Legacy type alias for backward compatibility
 export type {

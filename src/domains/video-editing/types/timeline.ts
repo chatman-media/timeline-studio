@@ -21,6 +21,12 @@ export interface Timeline {
   updatedAt: Date
   version: string
 
+  // Markers for navigation and export
+  markers?: TimelineMarker[]
+
+  // Speed ramping configurations
+  speedRampingConfigs?: Record<string, any>
+
   // BackendSync specific fields
   uiState?: TimelineUiState
   playbackState?: TimelinePlaybackState
@@ -61,12 +67,17 @@ export interface TimelineSettings {
 
 export interface Section {
   id: string
+  index: number
   name: string
   startTime: number
   endTime: number
+  duration: number
   tracks: Track[]
   isCollapsed: boolean
   color?: string
+  tags?: string[]
+  realStartTime?: Date
+  realEndTime?: Date
 }
 
 export interface Track {
@@ -75,14 +86,35 @@ export interface Track {
   type: TrackType
   order: number
   clips: TimelineClip[]
+
+  // Transitions on track
+  transitions: string[]
+
+  // State flags
   muted: boolean
   solo: boolean
   locked: boolean
+  isLocked: boolean
+  isMuted: boolean
+  isHidden: boolean
+  isSolo: boolean
+
+  // Visual
   height: number
   expanded: boolean
+  color?: string
+
+  // Audio
   volume: number
   pan: number
-  color?: string
+
+  // Track resources
+  trackEffects: AppliedEffect[]
+  trackFilters: AppliedFilter[]
+
+  // Hierarchy
+  sectionId?: string
+  parentTrackId?: string
 }
 
 export type TrackType = "video" | "audio" | "image" | "title" | "music" | "voiceover" | "sfx" | "ambient"
@@ -90,6 +122,7 @@ export type TrackType = "video" | "audio" | "image" | "title" | "music" | "voice
 export interface TimelineClip {
   id: string
   name: string
+  type?: "video" | "audio" | "image" | "subtitle" | "title"
   mediaId: string
   mediaFile?: MediaFile
   trackId: string
@@ -97,11 +130,28 @@ export interface TimelineClip {
   duration: number
   sourceIn: number
   sourceOut: number
+
+  // Media timing
+  mediaStartTime: number
+  mediaEndTime: number
+  offset: number
+  mediaDuration?: number
+
+  // Playback
   playbackRate: number
+  speed: number
+  isReversed: boolean
+  maintainPitch?: boolean
+
+  // State
   isSelected: boolean
   isLocked: boolean
   isMuted: boolean
+
+  // Audio
   volume: number
+
+  // Visual
   opacity: number
   position: {
     x: number
@@ -112,31 +162,54 @@ export interface TimelineClip {
     scaleX: number
     scaleY: number
   }
+
+  // Resources
   effects: AppliedEffect[]
   filters: AppliedFilter[]
   transitions: AppliedTransition[]
+
   // J-Cut / L-Cut support
-  audioOffset?: number // Смещение аудио относительно видео (+ для J-cut, - для L-cut)
-  linkedClipId?: string // ID связанного клипа (для аудио/видео пары)
-  isLinked?: boolean // Связаны ли аудио и видео
+  audioOffset?: number
+  linkedClipId?: string
+  isLinked?: boolean
+
+  // Metadata
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface TimelineTransition {
   id: string
   transitionId: string
   name: string
+  position: "in" | "out" | "cross"
+  trackId: string
   startTime: number
   duration: number
   parameters: Record<string, any>
+  keyframes: TimelineKeyframe[]
   isEnabled: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface TimelineKeyframe {
+  id: string
+  time: number
+  property: string
+  value: any
+  interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
 }
 
 export interface TimelineMarker {
   id: string
   name: string
   time: number
-  color: string
+  color?: string
+  type?: "chapter" | "section" | "note" | "export" | "todo" | "sync" | "cue" | "important" | "warning" | "timeline"
   description?: string
+  metadata?: Record<string, any>
+  projectId?: string
 }
 
 export interface TimelineResources {
