@@ -5,7 +5,13 @@
  * оптимизации и создания визуальных эффектов
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../base"
 
 // Типы для операций с эффектами
 export interface EffectsInput {
@@ -101,7 +107,74 @@ export interface EffectsResult {
  */
 export class EffectsFiltersTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("EffectsFiltersTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "EffectsFiltersTool",
+      displayName: "Effects & Filters Tool",
+      description: "Управляет эффектами и фильтрами для видео",
+      domain: "core",
+      category: "timeline",
+      version: "1.0.0",
+      tags: ["effects", "filters", "video", "grading"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processEffects(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "suggest_effects",
+      "optimize_chain",
+      "create_color_grading",
+      "apply_lut",
+      "create_transitions",
+      "build_effect_chain",
+      "apply_batch_effects",
+      "analyze_performance",
+      "create_style_presets",
+      "adjust_realtime",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: {
+            type: "string",
+            enum: [
+              "suggest_effects",
+              "optimize_chain",
+              "create_color_grading",
+              "apply_lut",
+              "create_transitions",
+              "build_effect_chain",
+              "apply_batch_effects",
+              "analyze_performance",
+              "create_style_presets",
+              "adjust_realtime",
+            ],
+          },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -112,7 +185,7 @@ export class EffectsFiltersTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<EffectsResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = [
@@ -176,7 +249,8 @@ export class EffectsFiltersTool extends BaseAITool {
         errors: validation.errors,
         message: "Ошибка валидации входных данных для эффектов",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: this.metadata.name,
+        executionId: this.generateExecutionId(),
       }
     }
 

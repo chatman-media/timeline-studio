@@ -5,7 +5,13 @@
  * управления проектами и системными параметрами
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base/base-ai-tool"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../base"
 
 // Типы для настроек конфигурации
 export interface SettingsInput {
@@ -55,7 +61,61 @@ export interface SettingsResult {
  */
 export class SettingsTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("SettingsTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "SettingsTool",
+      displayName: "Settings & Configuration Tool",
+      description: "Управляет настройками приложения и проекта",
+      domain: "core",
+      category: "timeline",
+      version: "1.0.0",
+      tags: ["settings", "configuration", "preferences"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processSettings(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = [
+      "analyze_app_settings",
+      "configure_project_settings",
+      "manage_export_presets",
+      "configure_keyboard_shortcuts",
+      "setup_workspace_layouts",
+      "manage_plugin_settings",
+      "configure_system_performance",
+      "backup_restore_settings",
+    ]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          analysisScope: { type: "string" },
+          projectSettings: { type: "object" },
+          exportPreset: { type: "object" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -66,7 +126,7 @@ export class SettingsTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SettingsResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = [
@@ -134,7 +194,8 @@ export class SettingsTool extends BaseAITool {
         errors: validation.errors,
         message: "Ошибка валидации входных данных для настроек",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: this.metadata.name,
+        executionId: `settings-${Date.now()}`,
       }
     }
 

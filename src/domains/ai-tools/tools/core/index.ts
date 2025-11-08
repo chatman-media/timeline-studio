@@ -3,13 +3,25 @@
  * Основные инструменты для работы с Timeline Studio
  */
 
+export { browserTools } from "./browser"
 // Browser Tools
-export * from "./browser"
+export * from "./browser/analyze-browser"
+export * from "./browser/browser-state"
+export * from "./browser/content-analysis"
+export * from "./browser/file-operations"
+export * from "./browser/search-files"
+
 // Player Tools
 export * from "./player"
-
+export { executeResourceTool, resourceTools } from "./resources"
 // Resources Tools
-export * from "./resources"
+export * from "./resources/analyze-resources"
+export * from "./resources/compatibility-analysis"
+export * from "./resources/export-resources"
+export * from "./resources/manage-resources"
+export * from "./resources/suggest-resources"
+export * from "./resources/usage-stats"
+
 // Timeline Tools
 export * from "./timeline"
 
