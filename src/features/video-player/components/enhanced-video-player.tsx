@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
@@ -159,7 +160,7 @@ export function EnhancedVideoPlayer() {
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", path: "", name: "Нет видео", size: 0, isVideo: true }}
+          file={video || { id: "", path: "", name: "Нет видео", type: MediaType.Video, size: 0, isVideo: true }}
         />
       </div>
     )

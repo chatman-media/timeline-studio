@@ -285,7 +285,7 @@ function generateAlternatives(
     name: "Fast Draft",
     settings: {
       ...recommendedSettings,
-      quality: "normal" as const,
+      quality: "draft" as const,
       resolution: "720" as const,
       enableGPU: true,
     },
@@ -312,9 +312,11 @@ function generateAlternatives(
       ...recommendedSettings,
       quality: "good" as const,
       bitrate: recommendedSettings.bitrate ? Math.round(recommendedSettings.bitrate * 0.6) : undefined,
-    },
+    } as any,
     description: "Smaller file size with H.265 compression",
   })
+  // Добавляем кодек h265 для компактного варианта
+  ;(alternatives[alternatives.length - 1].settings as any).codec = "h265"
 
   return alternatives
 }

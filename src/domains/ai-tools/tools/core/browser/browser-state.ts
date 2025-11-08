@@ -2,7 +2,7 @@
  * AI инструменты для управления состоянием браузера с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { BrowserToolResult, UpdateFiltersParams } from "./types"
 import { getBrowserStateAccess, getBrowserStats, getCurrentTab, hasBrowserAccess } from "./utils/helpers"

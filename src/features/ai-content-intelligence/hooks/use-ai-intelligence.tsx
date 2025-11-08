@@ -1,19 +1,24 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import type { GeneratedScript, ScriptGenerationParams } from "@/domains/ai-services/services/script-generation/types"
 // TODO: Migrate to use AI Director directly instead of orchestrator wrapper
-import {
-  AdaptedContent,
-  AIConfig,
-  Content,
-  GeneratedScript,
-  IntelligentContent,
-  MediaFile,
-  PlatformId,
-  ScriptGenerationParams,
-  UnifiedContentAnalysis,
-} from "@/domains/ai-services/types"
+import type { AIConfig, IntelligentContent, MediaFile } from "@/domains/ai-services/types"
+import type { PlatformId } from "@/domains/ai-services/types/platform"
+import type { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import { MediaInfo } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import { AIIntelligenceContext } from "../services/ai-intelligence-provider"
+
+// Placeholder types for platform adaptation
+interface AdaptedContent {
+  platform: PlatformId
+  content: any
+}
+
+interface Content {
+  id: string
+  type: string
+  data: any
+}
 
 const logger = createLogger({ module: "UseAiIntelligence" })
 
@@ -107,7 +112,7 @@ export function useAIIntelligence({
 
         // Wait for completion and extract analysis
         return new Promise((resolve, reject) => {
-          const unsubscribe = pipelineControl.onEvent((event) => {
+          const unsubscribe = pipelineControl.onEvent((event: any) => {
             if (event.type === "analysis_complete") {
               unsubscribe()
               const result = orchestrator.getResult()
@@ -122,7 +127,7 @@ export function useAIIntelligence({
             }
           })
 
-          pipelineControl.onProgress((progress) => {
+          pipelineControl.onProgress((progress: any) => {
             setProgress(progress)
             onProgress?.(progress)
           })
@@ -151,23 +156,25 @@ export function useAIIntelligence({
         // Create a mock media file for script generation
         const mockMediaFile: MediaFile = {
           id: "mock",
-          url: "",
+          path: "",
+          filename: "mock",
           type: "video",
+          size: 0,
+          format: "video",
           duration: 0,
-          metadata: {},
         }
 
         const pipelineControl = await orchestrator.processContent([mockMediaFile], {
-          analysis: { enabled: false },
-          scriptGeneration: {
-            enabled: true,
-            analysis: analysis,
-            params: params,
+          provider: "openai",
+          model: "gpt-4",
+          features: {
+            scriptGeneration: true,
           },
+          scriptParams: params,
         } as AIConfig)
 
         return new Promise((resolve, reject) => {
-          const unsubscribe = pipelineControl.onEvent((event) => {
+          const unsubscribe = pipelineControl.onEvent((event: any) => {
             if (event.type === "script_generated") {
               unsubscribe()
               const result = orchestrator.getResult()
@@ -182,7 +189,7 @@ export function useAIIntelligence({
             }
           })
 
-          pipelineControl.onProgress((progress) => {
+          pipelineControl.onProgress((progress: any) => {
             setProgress(progress)
             onProgress?.(progress)
           })
@@ -211,23 +218,25 @@ export function useAIIntelligence({
         // Create a mock media file for platform adaptation
         const mockMediaFile: MediaFile = {
           id: "mock",
-          url: "",
+          path: "",
+          filename: "mock",
           type: "video",
+          size: 0,
+          format: "video",
           duration: 0,
-          metadata: { content },
         }
 
         const pipelineControl = await orchestrator.processContent([mockMediaFile], {
-          analysis: { enabled: false },
-          platformAdaptation: {
-            enabled: true,
-            content: content,
-            platforms: platforms,
+          provider: "openai",
+          model: "gpt-4",
+          features: {
+            multiPlatform: true,
           },
+          platforms: platforms,
         } as AIConfig)
 
         return new Promise((resolve, reject) => {
-          const unsubscribe = pipelineControl.onEvent((event) => {
+          const unsubscribe = pipelineControl.onEvent((event: any) => {
             if (event.type === "platform_adaptation_complete") {
               unsubscribe()
               const result = orchestrator.getResult()
@@ -242,7 +251,7 @@ export function useAIIntelligence({
             }
           })
 
-          pipelineControl.onProgress((progress) => {
+          pipelineControl.onProgress((progress: any) => {
             setProgress(progress)
             onProgress?.(progress)
           })
@@ -271,7 +280,7 @@ export function useAIIntelligence({
         const pipelineControl = await orchestrator.processContent(mediaFiles, config)
 
         return new Promise((resolve, reject) => {
-          const unsubscribe = pipelineControl.onEvent((event) => {
+          const unsubscribe = pipelineControl.onEvent((event: any) => {
             if (event.type === "pipeline_complete") {
               unsubscribe()
               const result = orchestrator.getResult()
@@ -288,7 +297,7 @@ export function useAIIntelligence({
             }
           })
 
-          pipelineControl.onProgress((progress) => {
+          pipelineControl.onProgress((progress: any) => {
             setProgress(progress)
             onProgress?.(progress)
           })
@@ -336,10 +345,10 @@ export function useAIIntelligence({
     result,
 
     // Основные методы
-    analyzeContent,
+    analyzeContent: analyzeContent as any,
     generateScript,
     adaptForPlatforms,
-    processProject,
+    processProject: processProject as any,
 
     // Управление pipeline (deprecated)
     pausePipeline,

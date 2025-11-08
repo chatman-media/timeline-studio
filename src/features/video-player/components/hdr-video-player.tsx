@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { convertVideoSrc } from "@/lib/tauri-utils"
 import { getHDRSupportService, type HDRMetadata, type VideoCodecInfo } from "../services/hdr-support"
@@ -223,7 +224,7 @@ export function HDRVideoPlayer() {
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", path: "", name: "Нет видео", size: 0, isVideo: true }}
+          file={video || { id: "", path: "", name: "Нет видео", type: MediaType.Video, size: 0, isVideo: true }}
         />
       </div>
     )

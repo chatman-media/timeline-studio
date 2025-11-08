@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { MediaType } from "@/domains/video-editing/types/media"
 import type { MediaFile } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
 
@@ -81,6 +82,7 @@ describe("AddMediaButton", () => {
     id: "test-file-id",
     name: "test-file.mp4",
     path: "/path/to/test-file.mp4",
+    type: MediaType.Video,
     isVideo: true,
     isAudio: false,
     isImage: false,

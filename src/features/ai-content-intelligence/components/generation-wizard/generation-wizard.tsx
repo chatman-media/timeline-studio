@@ -24,18 +24,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { UnifiedContentAnalysis } from "@/domains/ai-services/services"
-import { Emotion, EmotionalTone } from "@/domains/ai-services/services/script-generation"
-import { ScriptTemplate } from "@/domains/ai-services/services/script-generation/template-engine"
+import type {
+  EmotionalTone,
+  GeneratedScript,
+  ScriptGenerationParams,
+} from "@/domains/ai-services/services/script-generation/types"
+import { Emotion, NarrativeType, PaceType } from "@/domains/ai-services/services/script-generation/types"
+import type { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import { Genre } from "@/domains/shared/types/ai-tools/content-analysis"
 import {
   EditingStyle,
-  GeneratedScript,
   NarrativeStyle,
-  NarrativeType,
-  PaceType,
   ScriptStyle,
-  TemplateCategory,
   VisualStyle,
 } from "@/domains/shared/types/ai-tools/script-generation"
 import { createLogger } from "@/lib/tauri-logger"
@@ -43,6 +43,41 @@ import { cn } from "@/lib/utils"
 import { useAIIntelligence } from "../../hooks/use-ai-intelligence"
 
 const logger = createLogger({ module: "GenerationWizard" })
+
+// Local ScriptTemplate definition for wizard
+interface ScriptTemplate {
+  id: string
+  name: string
+  description: string
+  narrativeType: NarrativeType
+  defaultStyle: {
+    narrative: string
+    visual: string
+    pacing: string
+  }
+  structure: {
+    acts: Array<{
+      name: string
+      description: string
+      percentageOfTotal: number
+      requiredElements: string[]
+    }>
+    requiredScenes: Array<{
+      type: string
+      purpose: string
+      suggestedPlacement: string
+      duration: { min: number; max: number }
+    }>
+    pacing: {
+      pattern: string
+      keyMoments: Array<{
+        percentage: number
+        intensity: number
+        description: string
+      }>
+    }
+  }
+}
 
 interface GenerationWizardProps {
   className?: string
@@ -100,136 +135,196 @@ const SCRIPT_TEMPLATES: ScriptTemplate[] = [
     id: "cinematic-narrative",
     name: "Кинематографический рассказ",
     description: "Классический трёхактный фильм с драматической структурой",
-    category: TemplateCategory.FILM,
+    narrativeType: NarrativeType.THREE_ACT,
+    defaultStyle: {
+      narrative: "dramatic",
+      visual: "cinematic",
+      pacing: "medium",
+    },
     structure: {
-      type: NarrativeType.THREE_ACT,
       acts: [
-        { number: 1, title: "Завязка", description: "Установка персонажей и конфликта", scenes: [], duration: 30 },
-        { number: 2, title: "Развитие", description: "Развитие конфликта и препятствия", scenes: [], duration: 60 },
-        { number: 3, title: "Развязка", description: "Разрешение конфликта", scenes: [], duration: 30 },
+        {
+          name: "Завязка",
+          description: "Установка персонажей и конфликта",
+          percentageOfTotal: 25,
+          requiredElements: ["exposition", "inciting_incident"],
+        },
+        {
+          name: "Развитие",
+          description: "Развитие конфликта и препятствия",
+          percentageOfTotal: 50,
+          requiredElements: ["obstacles", "midpoint"],
+        },
+        {
+          name: "Развязка",
+          description: "Разрешение конфликта",
+          percentageOfTotal: 25,
+          requiredElements: ["climax", "resolution"],
+        },
       ],
-      turningPoints: [],
-    },
-    defaultParams: {
-      style: {
-        visual: VisualStyle.CINEMATIC,
-        narrative: NarrativeStyle.LINEAR,
-        editing: EditingStyle.CONTINUITY,
+      requiredScenes: [
+        {
+          type: "opening",
+          purpose: "Hook the audience",
+          suggestedPlacement: "beginning",
+          duration: { min: 30, max: 120 },
+        },
+      ],
+      pacing: {
+        pattern: "building",
+        keyMoments: [
+          { percentage: 10, intensity: 0.3, description: "Hook" },
+          { percentage: 75, intensity: 0.9, description: "Climax" },
+        ],
       },
-      genre: [Genre.DRAMA],
-      includeDialogue: true,
-      includeVoiceover: false,
-      narrativeStructure: NarrativeType.THREE_ACT,
     },
-    examples: ["Драма", "Короткометражка", "Художественный фильм"],
   },
   {
     id: "documentary",
     name: "Документальный",
     description: "Информационный документальный формат с закадровым голосом",
-    category: TemplateCategory.DOCUMENTARY,
+    narrativeType: NarrativeType.THREE_ACT,
+    defaultStyle: {
+      narrative: "documentary",
+      visual: "cinematic",
+      pacing: "medium",
+    },
     structure: {
-      type: NarrativeType.LINEAR,
       acts: [
-        { number: 1, title: "Введение", description: "Представление темы", scenes: [], duration: 20 },
-        { number: 2, title: "Исследование", description: "Раскрытие темы", scenes: [], duration: 80 },
-        { number: 3, title: "Заключение", description: "Выводы", scenes: [], duration: 20 },
+        {
+          name: "Введение",
+          description: "Представление темы",
+          percentageOfTotal: 20,
+          requiredElements: ["introduction"],
+        },
+        {
+          name: "Исследование",
+          description: "Раскрытие темы",
+          percentageOfTotal: 60,
+          requiredElements: ["exploration"],
+        },
+        { name: "Заключение", description: "Выводы", percentageOfTotal: 20, requiredElements: ["conclusion"] },
       ],
-      turningPoints: [],
-    },
-    defaultParams: {
-      style: {
-        visual: VisualStyle.DOCUMENTARY,
-        narrative: NarrativeStyle.LINEAR,
-        editing: EditingStyle.CONTINUITY,
+      requiredScenes: [
+        {
+          type: "introduction",
+          purpose: "Introduce topic",
+          suggestedPlacement: "beginning",
+          duration: { min: 20, max: 60 },
+        },
+      ],
+      pacing: {
+        pattern: "steady",
+        keyMoments: [
+          { percentage: 10, intensity: 0.3, description: "Introduction" },
+          { percentage: 90, intensity: 0.5, description: "Conclusion" },
+        ],
       },
-      genre: [Genre.DOCUMENTARY],
-      includeDialogue: false,
-      includeVoiceover: true,
-      narrativeStructure: NarrativeType.LINEAR,
     },
-    examples: ["Обучающее видео", "Репортаж", "Образовательный контент"],
   },
   {
     id: "social-media",
     name: "Социальные сети",
     description: "Короткий динамичный контент для соцсетей",
-    category: TemplateCategory.SOCIAL_MEDIA,
+    narrativeType: NarrativeType.NONLINEAR,
+    defaultStyle: {
+      narrative: "informative",
+      visual: "dynamic",
+      pacing: "fast",
+    },
     structure: {
-      type: NarrativeType.NONLINEAR,
       acts: [
-        { number: 1, title: "Хук", description: "Привлечение внимания", scenes: [], duration: 5 },
-        { number: 2, title: "Контент", description: "Основное сообщение", scenes: [], duration: 20 },
-        { number: 3, title: "CTA", description: "Призыв к действию", scenes: [], duration: 5 },
+        { name: "Хук", description: "Привлечение внимания", percentageOfTotal: 15, requiredElements: ["hook"] },
+        { name: "Контент", description: "Основное сообщение", percentageOfTotal: 70, requiredElements: ["content"] },
+        { name: "CTA", description: "Призыв к действию", percentageOfTotal: 15, requiredElements: ["cta"] },
       ],
-      turningPoints: [],
-    },
-    defaultParams: {
-      style: {
-        visual: VisualStyle.DYNAMIC,
-        narrative: NarrativeStyle.MONTAGE,
-        editing: EditingStyle.JUMP_CUT,
+      requiredScenes: [
+        { type: "hook", purpose: "Grab attention", suggestedPlacement: "beginning", duration: { min: 3, max: 10 } },
+      ],
+      pacing: {
+        pattern: "episodic",
+        keyMoments: [
+          { percentage: 5, intensity: 0.9, description: "Hook" },
+          { percentage: 95, intensity: 0.7, description: "CTA" },
+        ],
       },
-      genre: [Genre.GENERAL],
-      includeDialogue: false,
-      includeVoiceover: true,
-      narrativeStructure: NarrativeType.NONLINEAR,
     },
-    examples: ["TikTok", "Instagram Reels", "YouTube Shorts"],
   },
   {
     id: "commercial",
     name: "Коммерческий",
     description: "Рекламный ролик с фокусом на продукт",
-    category: TemplateCategory.COMMERCIAL,
+    narrativeType: NarrativeType.THREE_ACT,
+    defaultStyle: {
+      narrative: "dramatic",
+      visual: "dynamic",
+      pacing: "fast",
+    },
     structure: {
-      type: NarrativeType.THREE_ACT,
       acts: [
-        { number: 1, title: "Проблема", description: "Представление потребности", scenes: [], duration: 10 },
-        { number: 2, title: "Решение", description: "Демонстрация продукта", scenes: [], duration: 15 },
-        { number: 3, title: "Результат", description: "Призыв к покупке", scenes: [], duration: 5 },
+        {
+          name: "Проблема",
+          description: "Представление потребности",
+          percentageOfTotal: 30,
+          requiredElements: ["problem"],
+        },
+        {
+          name: "Решение",
+          description: "Демонстрация продукта",
+          percentageOfTotal: 50,
+          requiredElements: ["solution"],
+        },
+        { name: "Результат", description: "Призыв к покупке", percentageOfTotal: 20, requiredElements: ["cta"] },
       ],
-      turningPoints: [],
-    },
-    defaultParams: {
-      style: {
-        visual: VisualStyle.DYNAMIC,
-        narrative: NarrativeStyle.LINEAR,
-        editing: EditingStyle.MONTAGE,
+      requiredScenes: [
+        { type: "problem", purpose: "Show pain point", suggestedPlacement: "beginning", duration: { min: 5, max: 15 } },
+      ],
+      pacing: {
+        pattern: "building",
+        keyMoments: [
+          { percentage: 30, intensity: 0.5, description: "Problem" },
+          { percentage: 90, intensity: 0.9, description: "CTA" },
+        ],
       },
-      genre: [Genre.GENERAL],
-      includeDialogue: true,
-      includeVoiceover: true,
-      narrativeStructure: NarrativeType.THREE_ACT,
     },
-    examples: ["Продающий ролик", "Презентация продукта", "Реклама услуг"],
   },
   {
     id: "vlog",
     name: "Видеоблог",
     description: "Личный видеоблог с естественным повествованием",
-    category: TemplateCategory.VLOG,
+    narrativeType: NarrativeType.EPISODIC,
+    defaultStyle: {
+      narrative: "informative",
+      visual: "minimal",
+      pacing: "medium",
+    },
     structure: {
-      type: NarrativeType.EPISODIC,
       acts: [
-        { number: 1, title: "Введение", description: "Приветствие и планы", scenes: [], duration: 15 },
-        { number: 2, title: "Активность", description: "Основные события", scenes: [], duration: 70 },
-        { number: 3, title: "Заключение", description: "Выводы и прощание", scenes: [], duration: 15 },
+        { name: "Введение", description: "Приветствие и планы", percentageOfTotal: 15, requiredElements: ["greeting"] },
+        {
+          name: "Активность",
+          description: "Основные события",
+          percentageOfTotal: 70,
+          requiredElements: ["activities"],
+        },
+        { name: "Заключение", description: "Выводы и прощание", percentageOfTotal: 15, requiredElements: ["outro"] },
       ],
-      turningPoints: [],
-    },
-    defaultParams: {
-      style: {
-        visual: VisualStyle.REALISTIC,
-        narrative: NarrativeStyle.STREAM_OF_CONSCIOUSNESS,
-        editing: EditingStyle.JUMP_CUT,
+      requiredScenes: [
+        {
+          type: "greeting",
+          purpose: "Introduce vlog",
+          suggestedPlacement: "beginning",
+          duration: { min: 10, max: 30 },
+        },
+      ],
+      pacing: {
+        pattern: "episodic",
+        keyMoments: [
+          { percentage: 10, intensity: 0.5, description: "Greeting" },
+          { percentage: 90, intensity: 0.4, description: "Outro" },
+        ],
       },
-      genre: [Genre.LIFESTYLE],
-      includeDialogue: true,
-      includeVoiceover: false,
-      narrativeStructure: NarrativeType.EPISODIC,
     },
-    examples: ["Влог путешествий", "Ежедневная жизнь", "Обзор дня"],
   },
 ]
 
@@ -312,14 +407,10 @@ export const GenerationWizard: FC<GenerationWizardProps> = ({ className, analysi
           narrativeStructure: defaultWizardState.narrativeStructure,
         })
       } else {
-        // Выбираем новый шаблон
+        // Выбираем новый шаблон и применяем его настройки по умолчанию
         updateState({
           template,
-          style: template.defaultParams.style || state.style,
-          genre: template.defaultParams.genre || state.genre,
-          includeDialogue: template.defaultParams.includeDialogue ?? state.includeDialogue,
-          includeVoiceover: template.defaultParams.includeVoiceover ?? state.includeVoiceover,
-          narrativeStructure: template.defaultParams.narrativeStructure || state.narrativeStructure,
+          narrativeStructure: template.narrativeType,
         })
       }
     },
@@ -339,22 +430,42 @@ export const GenerationWizard: FC<GenerationWizardProps> = ({ className, analysi
       setGenerationProgress(0)
 
       const params: ScriptGenerationParams = {
-        style: state.style,
-        genre: state.genre,
-        duration: state.duration || analysis.mediaFile.duration,
-        targetAudience: state.targetAudience,
+        narrativeStructure: state.narrativeStructure,
+        genre: state.genre.map((g) => g as string),
         tone: state.tone,
+        style: {
+          narrative:
+            state.style.narrative === NarrativeStyle.LINEAR
+              ? "documentary"
+              : state.style.narrative === NarrativeStyle.NONLINEAR
+                ? "artistic"
+                : "dramatic",
+          visual:
+            state.style.visual === VisualStyle.CINEMATIC
+              ? "cinematic"
+              : state.style.visual === VisualStyle.MINIMALIST
+                ? "minimal"
+                : "dynamic",
+          pacing:
+            state.pacing === PaceType.SLOW
+              ? "slow"
+              : state.pacing === PaceType.FAST
+                ? "fast"
+                : state.pacing === PaceType.VARIABLE
+                  ? "variable"
+                  : "medium",
+        },
         includeDialogue: state.includeDialogue,
         includeVoiceover: state.includeVoiceover,
-        narrativeStructure: state.narrativeStructure,
-        customPrompt: state.customPrompt,
+        targetDuration: state.duration || analysis.mediaFile.duration,
+        adaptToContent: true,
       }
 
       const script = await generateScript(analysis, params)
       onGenerate?.(script)
       onClose?.()
     } catch (error) {
-      logger.error("Script generation failed:", error)
+      logger.error("Script generation failed:", error as any)
       setError(error instanceof Error ? error.message : "Ошибка генерации скрипта")
     } finally {
       setIsGenerating(false)
@@ -506,18 +617,10 @@ const TemplateStep: FC<TemplateStepProps> = ({ templates, selectedTemplate, onSe
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">{template.name}</CardTitle>
-                  <Badge variant="outline">{template.category}</Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
-                <div className="flex flex-wrap gap-1">
-                  {template.examples?.map((example) => (
-                    <Badge key={example} variant="secondary" className="text-xs">
-                      {example}
-                    </Badge>
-                  ))}
-                </div>
               </CardContent>
             </Card>
           ))}
@@ -560,11 +663,11 @@ const StyleStep: FC<StyleStepProps> = ({ state, onUpdate }) => {
     { value: Emotion.HAPPY, label: "Радостный" },
     { value: Emotion.CALM, label: "Спокойный" },
     { value: Emotion.EXCITED, label: "Возбуждённый" },
-    { value: Emotion.INSPIRING, label: "Вдохновляющий" },
-    { value: Emotion.DRAMATIC, label: "Драматичный" },
-    { value: Emotion.COMEDIC, label: "Комичный" },
-    { value: Emotion.MYSTERIOUS, label: "Таинственный" },
-    { value: Emotion.ROMANTIC, label: "Романтичный" },
+    { value: Emotion.INSPIRATIONAL, label: "Вдохновляющий" },
+    { value: Emotion.SAD, label: "Грустный" },
+    { value: Emotion.ANGRY, label: "Гневный" },
+    { value: Emotion.SURPRISED, label: "Удивлённый" },
+    { value: Emotion.NOSTALGIC, label: "Ностальгический" },
   ]
 
   return (
@@ -713,14 +816,14 @@ const NarrativeStep: FC<StyleStepProps> = ({ state, onUpdate }) => {
       description: "Мономиф: вызов, путешествие, возвращение",
     },
     {
-      value: NarrativeType.LINEAR,
-      label: "Линейное повествование",
-      description: "Прямая хронологическая последовательность",
-    },
-    {
       value: NarrativeType.NONLINEAR,
       label: "Нелинейное повествование",
       description: "Фрагментарная структура с переходами во времени",
+    },
+    {
+      value: NarrativeType.CIRCULAR,
+      label: "Циклическое повествование",
+      description: "История возвращается к начальной точке",
     },
     { value: NarrativeType.EPISODIC, label: "Эпизодическая структура", description: "Серия связанных эпизодов" },
   ]

@@ -62,6 +62,7 @@ interface UseContentPipelineReturn {
 interface MediaFile {
   path: string
   name: string
+  type: "video" | "audio" | "image"
   size?: number
 }
 
@@ -106,7 +107,7 @@ export function useContentPipeline(options: UseContentPipelineOptions = {}): Use
       setCurrentStep(ai.progress.currentStep)
 
       // Записываем timing для шагов
-      ai.progress.steps.forEach((step) => {
+      ai.progress.steps?.forEach((step: any) => {
         if (step.status === ProcessingStatus.COMPLETED && step.progress === 100) {
           // Здесь можно записать timing, если он доступен
         }
@@ -130,10 +131,18 @@ export function useContentPipeline(options: UseContentPipelineOptions = {}): Use
         // Преобразуем PipelineConfig в AIConfig
         const aiConfig = convertPipelineConfigToAIConfig(pipelineConfig)
 
-        const result = await ai.processProject(mediaFiles, aiConfig)
-        setResults((prev) => [...prev, result])
+        // Преобразуем MediaFile[] в MediaInfo[]
+        const mediaInfos = mediaFiles.map((f) => ({
+          path: f.path,
+          name: f.name,
+          type: (f.type.charAt(0).toUpperCase() + f.type.slice(1)) as "Video" | "Audio" | "Image",
+          size: f.size || 0,
+        }))
 
-        return result
+        const result = await ai.processProject(mediaInfos, aiConfig as any)
+        setResults((prev) => [...prev, result as any])
+
+        return result as any
       } catch (error) {
         const err = error instanceof Error ? error : new Error(String(error))
         setErrors((prev) => [...prev, err])
@@ -227,19 +236,20 @@ export function useContentPipeline(options: UseContentPipelineOptions = {}): Use
                 }
               : convertPipelineConfigToAIConfig(defaultConfig!)
 
-            const result = await ai.processProject(
-              item.mediaFiles.map((path) => ({
-                path,
-                name: path.split("/").pop()!,
-              })),
-              aiConfig,
-            )
+            const mediaInfos = item.mediaFiles.map((path) => ({
+              path,
+              name: path.split("/").pop()!,
+              type: "Video" as const,
+              size: 0,
+            }))
+
+            const result = await ai.processProject(mediaInfos, aiConfig as any)
 
             completedItems++
-            results.push(result)
+            results.push(result as any)
             updateBatchProgress()
 
-            return result
+            return result as any
           } catch (error) {
             failedItems++
             const err = error instanceof Error ? error : new Error(String(error))
@@ -296,14 +306,12 @@ export function useContentPipeline(options: UseContentPipelineOptions = {}): Use
         return new Blob([data], { type: "application/json" })
       }
       // CSV экспорт - упрощенная версия
-      const headers = ["ID", "Project ID", "Created", "Content Type", "Duration", "Quality"]
-      const rows = results.map((r) => [
-        r.id,
-        r.projectId,
-        r.createdAt.toISOString(),
-        r.analysis.contentType,
-        r.analysis.technicalSpecs.duration,
-        r.analysis.qualityMetrics.overall,
+      const headers = ["ID", "Type", "Analyzed At", "Confidence"]
+      const rows = results.map((r: any) => [
+        r.id || "unknown",
+        r.type || "unknown",
+        r.metadata?.analyzedAt?.toISOString() || new Date().toISOString(),
+        r.metadata?.confidence || 0,
       ])
 
       const csv = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n")

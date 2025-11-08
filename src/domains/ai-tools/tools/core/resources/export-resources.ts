@@ -2,7 +2,7 @@
  * AI инструмент для экспорта списка ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { ExportListParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, groupResourcesByType, hasResourcesAccess } from "./utils/helpers"
@@ -357,10 +357,10 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.exportData,
-        suggestions: result.data.recommendations,
+        analysis: result.data?.exportData,
+        suggestions: result.data?.recommendations,
       },
       nextActions: ["Открыть экспортированный файл", "Поделиться экспортом"],
     }

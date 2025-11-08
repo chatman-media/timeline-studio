@@ -2,7 +2,7 @@
  * AI инструменты для статистики и управления использованием ресурсов с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { CleanupParams, ResourceToolResult, UsageStatsParams } from "./types"
 import {
@@ -547,10 +547,10 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.analysis,
-        suggestions: result.data.recommendations,
+        analysis: result.data?.analysis,
+        suggestions: result.data?.recommendations,
       },
       nextActions: ["Оптимизировать ресурсы", "Экспортировать статистику"],
     }
@@ -573,12 +573,12 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.analysis,
-        removedResources: result.data.removedResources,
-        suggestions: result.data.recommendations,
-        warnings: result.data.warnings,
+        analysis: result.data?.analysis,
+        removedResources: result.data?.removedResources,
+        suggestions: result.data?.recommendations,
+        warnings: result.data?.warnings,
       },
       nextActions: ["Проверить освобожденное место", "Оптимизировать оставшиеся ресурсы"],
     }

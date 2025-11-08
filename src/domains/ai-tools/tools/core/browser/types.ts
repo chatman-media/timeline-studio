@@ -81,80 +81,19 @@ export interface AnalyzeMissingContentParams {
   checkExternal?: boolean
 }
 
-/**
- * Параметры для предложения источников импорта
- */
-export interface SuggestImportParams {
-  contentType: string
-  style?: string
-  mood?: string
-  projectType?: string
-  includeAI?: boolean
-  includeFree?: boolean
-  includePremium?: boolean
-}
-
-/**
- * Параметры для экспорта списка файлов
- */
-export interface ExportFileListParams {
-  format: "json" | "csv" | "text" | "xml"
-  includeMetadata?: boolean
-  filterCriteria?: {
-    selectedOnly?: boolean
-    tab?: string
-    fileTypes?: string[]
-    sizeRange?: {
-      min?: number
-      max?: number
-    }
-    dateRange?: {
-      start?: string
-      end?: string
-    }
-  }
-}
+// Интерфейс SuggestImportParams определён ниже с точными типами
+// Интерфейс ExportFileListParams определён ниже с точными типами
 
 /**
  * Параметры для получения групп файлов
  */
 export interface GetFileGroupsParams {
-  groupBy: "type" | "date" | "size" | "location" | "tags"
+  groupBy: "type" | "date" | "size" | "location" | "series" | "project" | "tags"
   tab: "media" | "effects" | "filters" | "transitions" | "templates" | "music"
   includeEmpty?: boolean
 }
 
-/**
- * Параметры для анализа связей файлов
- */
-export interface AnalyzeRelationshipsParams {
-  tab: "media" | "effects" | "filters" | "transitions" | "templates" | "music"
-  analysisDepth?: "basic" | "detailed"
-  includeUsage?: boolean
-}
-
-/**
- * Параметры для массового выбора файлов
- */
-export interface BulkSelectParams {
-  method: "all" | "pattern" | "random" | "filtered" | "smart"
-  filters?: {
-    fileTypes?: string[]
-    dateRange?: {
-      start?: string
-      end?: string
-    }
-    sizeRange?: {
-      min?: number
-      max?: number
-    }
-    searchPattern?: string
-    tags?: string[]
-    location?: string
-  }
-  count?: number
-  pattern?: string
-}
+// Удалены дублированные интерфейсы - используются версии ниже с расширенными типами
 
 /**
  * Параметры для поиска медиа файлов
@@ -172,8 +111,6 @@ export interface SearchMediaParams {
   maxResults?: number
 }
 
-// Удален дублированный интерфейс GetFileGroupsParams
-
 // Псевдонимы типов для совместимости с browser-tools.ts
 export type FileGroupsParams = GetFileGroupsParams
 
@@ -181,9 +118,12 @@ export type FileGroupsParams = GetFileGroupsParams
  * Параметры для анализа связей между файлами
  */
 export interface AnalyzeRelationshipsParams {
-  analysisType: "series" | "project" | "similarity" | "dependencies"
+  analysisType: "series" | "project" | "similarity" | "dependencies" | "temporal" | "format" | "custom"
   fileIds?: string[]
   includeMetadata?: boolean
+  tab?: "media" | "effects" | "filters" | "transitions" | "templates" | "music"
+  analysisDepth?: "basic" | "detailed"
+  includeUsage?: boolean
 }
 
 export type FileRelationshipsParams = AnalyzeRelationshipsParams
@@ -196,14 +136,20 @@ export interface BulkSelectParams {
     method: "all" | "filtered" | "pattern" | "random" | "smart"
     filters?: {
       fileTypes?: string[]
-      dateRange?: { start: string; end: string }
-      sizeRange?: { min: number; max: number }
+      dateRange?: { start?: string; end?: string }
+      sizeRange?: { min?: number; max?: number }
       searchPattern?: string
       tags?: string[]
-      location?: string
+      location?: string | string[]
+      pattern?: string
     }
     count?: number
     pattern?: string
+    smartCriteria?: {
+      quality?: string
+      diversity?: boolean
+      recentFirst?: boolean
+    }
   }
   action: "select" | "deselect" | "toggle"
   reason: string
@@ -254,7 +200,8 @@ export interface ExportFileListParams {
     selectedOnly?: boolean
     tab?: string
     fileTypes?: string[]
-    dateRange?: { start: string; end: string }
+    sizeRange?: { min?: number; max?: number }
+    dateRange?: { start?: string; end?: string }
   }
 }
 

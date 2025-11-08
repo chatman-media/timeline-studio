@@ -2,6 +2,7 @@ import { fireEvent, screen } from "@testing-library/react"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { MediaType } from "@/features/media/types/media"
 import { renderWithTemplates } from "@/test/test-utils"
 
 import { ResizableTemplate } from "../../components/resizable-template"
@@ -91,7 +92,7 @@ describe("ResizableTemplate", () => {
       id: "video-1",
       name: "Test Video 1",
       path: "/test/video1.mp4",
-      type: "video",
+      type: MediaType.Video,
       size: 1024,
       duration: 60,
       startTime: 0,
@@ -101,7 +102,7 @@ describe("ResizableTemplate", () => {
       id: "video-2",
       name: "Test Video 2",
       path: "/test/video2.mp4",
-      type: "video",
+      type: MediaType.Video,
       size: 1024,
       duration: 60,
       startTime: 0,
@@ -115,7 +116,7 @@ describe("ResizableTemplate", () => {
       id: "video-3",
       name: "Test Video 3",
       path: "/test/video3.mp4",
-      type: "video",
+      type: MediaType.Video,
       size: 3072,
       duration: 90,
       startTime: 0,
@@ -125,7 +126,7 @@ describe("ResizableTemplate", () => {
       id: "video-4",
       name: "Test Video 4",
       path: "/test/video4.mp4",
-      type: "video",
+      type: MediaType.Video,
       size: 4096,
       duration: 150,
       startTime: 0,
@@ -524,7 +525,7 @@ describe("ResizableTemplate", () => {
           id: "video-1",
           name: "Test Video 1",
           path: "", // Пустой путь
-          type: "video",
+          type: MediaType.Video,
           size: 1024,
           duration: 60,
           startTime: 0,
@@ -534,7 +535,7 @@ describe("ResizableTemplate", () => {
           id: "video-2",
           name: "Test Video 2",
           // path отсутствует
-          type: "video",
+          type: MediaType.Video,
           size: 1024,
           duration: 60,
           startTime: 0,
@@ -592,7 +593,7 @@ describe("ResizableTemplate", () => {
         id: `video-${i + 1}`,
         name: `Test Video ${i + 1}`,
         path: `/test/video${i + 1}.mp4`,
-        type: "video",
+        type: MediaType.Video,
         size: 1024,
         duration: 60,
         startTime: 0,

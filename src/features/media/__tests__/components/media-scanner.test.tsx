@@ -360,8 +360,6 @@ describe("MediaScanner", () => {
   })
 
   it("should handle scan errors gracefully", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
     const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
@@ -392,10 +390,10 @@ describe("MediaScanner", () => {
     fireEvent.click(screen.getByRole("button", { name: /начать сканирование/i }))
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith("Ошибка сканирования:", expect.any(Error))
+      // Logger использует format: [MediaScanner] Scan failed {error: ...}
+      // console.error уже замокирован в setup.ts
+      expect(console.error).toHaveBeenCalledWith(expect.stringContaining("[MediaScanner] Scan failed"))
     })
-
-    consoleSpy.mockRestore()
   })
 
   it("should not scan without selected folder", async () => {

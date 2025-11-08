@@ -170,6 +170,7 @@ const mockProject: TimelineProject = {
 
 describe("useJLCuts", () => {
   const mockSend = vi.fn()
+  const mockUpdateClip = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -181,6 +182,7 @@ describe("useJLCuts", () => {
     vi.mocked(useTimeline).mockReturnValue({
       project: mockProject,
       send: mockSend,
+      updateClip: mockUpdateClip,
     } as any)
   })
 
@@ -209,9 +211,9 @@ describe("useJLCuts", () => {
       result.current.createJCut("video-clip-1", 0.5)
     })
 
-    // In a real test, we'd check the state update through the timeline context
-    // For now, we're testing that the function doesn't throw
-    expect(result.current.hasJLCut("audio-clip-1")).toBe(false) // Would be true after state update
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-clip-1", {
+      audioOffset: -0.5,
+    })
   })
 
   it("should create L-Cut correctly", () => {
@@ -221,38 +223,39 @@ describe("useJLCuts", () => {
       result.current.createLCut("video-clip-1", 0.5)
     })
 
-    // Similar to J-Cut test
-    expect(result.current.hasJLCut("audio-clip-1")).toBe(false)
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-clip-1", {
+      audioOffset: 0.5,
+    })
   })
 
   it("should reset cut correctly", () => {
     const { result } = renderHook(() => useJLCuts(), {})
 
-    // First create a J-Cut
-    act(() => {
-      result.current.createJCut("video-clip-1", 0.5)
-    })
-
-    // Then reset it
     act(() => {
       result.current.resetCut("video-clip-1")
     })
 
-    expect(result.current.hasJLCut("audio-clip-1")).toBe(false)
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-clip-1", {
+      audioOffset: 0,
+    })
   })
 
   it("should link clips correctly", () => {
     const { result } = renderHook(() => useJLCuts(), {})
 
-    // Create unlinked clips for this test
-    const unlinkedVideoClip = "video-clip-2"
-    const unlinkedAudioClip = "audio-clip-2"
-
     act(() => {
-      result.current.linkClips(unlinkedVideoClip, unlinkedAudioClip)
+      result.current.linkClips("video-clip-2", "audio-clip-2")
     })
 
-    // Would verify through state update
+    expect(mockUpdateClip).toHaveBeenCalledTimes(2)
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(1, "video-clip-2", {
+      linkedClipId: "audio-clip-2",
+      isLinked: true,
+    })
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(2, "audio-clip-2", {
+      linkedClipId: "video-clip-2",
+      isLinked: true,
+    })
   })
 
   it("should unlink clips correctly", () => {
@@ -262,7 +265,17 @@ describe("useJLCuts", () => {
       result.current.unlinkClips("video-clip-1")
     })
 
-    // Would verify through state update
+    expect(mockUpdateClip).toHaveBeenCalledTimes(2)
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(1, "video-clip-1", {
+      linkedClipId: undefined,
+      isLinked: false,
+      audioOffset: 0,
+    })
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(2, "audio-clip-1", {
+      linkedClipId: undefined,
+      isLinked: false,
+      audioOffset: 0,
+    })
   })
 
   it("should identify video clips correctly", () => {

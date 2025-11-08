@@ -128,32 +128,12 @@ export interface GetFileGroupsParams {
  * Параметры для анализа связей файлов
  */
 export interface AnalyzeRelationshipsParams {
-  tab: "media" | "effects" | "filters" | "transitions" | "templates" | "music"
+  tab?: "media" | "effects" | "filters" | "transitions" | "templates" | "music"
   analysisDepth?: "basic" | "detailed"
   includeUsage?: boolean
-}
-
-/**
- * Параметры для массового выбора файлов
- */
-export interface BulkSelectParams {
-  method: "all" | "pattern" | "random" | "filtered" | "smart"
-  filters?: {
-    fileTypes?: string[]
-    dateRange?: {
-      start?: string
-      end?: string
-    }
-    sizeRange?: {
-      min?: number
-      max?: number
-    }
-    searchPattern?: string
-    tags?: string[]
-    location?: string
-  }
-  count?: number
-  pattern?: string
+  analysisType?: "series" | "project" | "similarity" | "dependencies"
+  fileIds?: string[]
+  includeMetadata?: boolean
 }
 
 /**
@@ -176,15 +156,6 @@ export interface SearchMediaParams {
 
 // Псевдонимы типов для совместимости с browser-tools.ts
 export type FileGroupsParams = GetFileGroupsParams
-
-/**
- * Параметры для анализа связей между файлами
- */
-export interface AnalyzeRelationshipsParams {
-  analysisType: "series" | "project" | "similarity" | "dependencies"
-  fileIds?: string[]
-  includeMetadata?: boolean
-}
 
 export type FileRelationshipsParams = AnalyzeRelationshipsParams
 
@@ -220,43 +191,7 @@ export interface UpdateFiltersParams {
   reason: string
 }
 
-/**
- * Параметры для анализа отсутствующего контента
- */
-export interface AnalyzeMissingContentParams {
-  analysisScope: "project" | "resources" | "timeline" | "all"
-  includeRecent?: boolean
-  checkExternal?: boolean
-}
-
 export type AnalyzeMissingParams = AnalyzeMissingContentParams
-
-/**
- * Параметры для предложения источников импорта
- */
-export interface SuggestImportParams {
-  contentType: "video" | "audio" | "image" | "effect" | "filter" | "transition" | "template" | "music"
-  style?: string
-  mood?: string
-  projectType?: string
-  includeAI?: boolean
-  includeFree?: boolean
-  includePremium?: boolean
-}
-
-/**
- * Параметры для экспорта списка файлов
- */
-export interface ExportFileListParams {
-  format: "json" | "csv" | "text" | "xml"
-  includeMetadata?: boolean
-  filterCriteria?: {
-    selectedOnly?: boolean
-    tab?: string
-    fileTypes?: string[]
-    dateRange?: { start: string; end: string }
-  }
-}
 
 // Дополнительные псевдонимы типов для совместимости
 export type BrowserStateParams = Record<string, any>

@@ -13,7 +13,19 @@ import type { MediaResource, MusicResource } from "@/features/resources/types"
 
 import { getResourcesFromStorage, syncResourcesToProject } from "../../utils/sync-resources-to-project"
 
+// Use vi.hoisted to ensure mocks are available before vi.mock calls
+const mockLoggerFunctions = vi.hoisted(() => ({
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  debug: vi.fn(),
+}))
+
 // Mock dependencies
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLoggerFunctions),
+}))
+
 vi.mock("@/features/media/utils/media-pool-utils", () => ({
   convertMediaFileToPoolItem: vi.fn(),
 }))
@@ -230,6 +242,7 @@ describe("sync-resources-to-project", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockLocalStorage.getItem.mockReturnValue(null)
+    mockLoggerFunctions.warn.mockClear()
   })
 
   describe("syncResourcesToProject", () => {
@@ -474,7 +487,6 @@ describe("sync-resources-to-project", () => {
 
     it("should handle invalid JSON in localStorage", () => {
       mockLocalStorage.getItem.mockReturnValue("invalid json{")
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
 
       const result = getResourcesFromStorage()
 
@@ -482,16 +494,16 @@ describe("sync-resources-to-project", () => {
         mediaResources: [],
         musicResources: [],
       })
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to get resources from localStorage:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLoggerFunctions.warn).toHaveBeenCalledWith(
+        "Failed to get resources from localStorage:",
+        expect.any(Object),
+      )
     })
 
     it("should handle localStorage.getItem throwing an error", () => {
       mockLocalStorage.getItem.mockImplementation(() => {
         throw new Error("localStorage error")
       })
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
 
       const result = getResourcesFromStorage()
 
@@ -499,9 +511,10 @@ describe("sync-resources-to-project", () => {
         mediaResources: [],
         musicResources: [],
       })
-      expect(consoleSpy).toHaveBeenCalledWith("Failed to get resources from localStorage:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLoggerFunctions.warn).toHaveBeenCalledWith(
+        "Failed to get resources from localStorage:",
+        expect.any(Object),
+      )
     })
 
     it("should handle empty stored data", () => {

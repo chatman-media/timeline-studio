@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
 import { usePlayer } from "@/features/video-player/services/player-provider"
 import { PlayerControls } from "../player-controls"
@@ -341,6 +341,7 @@ describe("PlayerControls", () => {
     id: "test-video",
     path: "/path/to/video.mp4",
     name: "Test Video.mp4",
+    type: MediaType.Video,
     size: 1024000,
     isVideo: true,
     duration: 120, // 2 минуты в секундах

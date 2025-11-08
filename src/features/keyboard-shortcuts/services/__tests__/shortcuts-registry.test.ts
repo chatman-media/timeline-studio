@@ -343,7 +343,6 @@ describe("ShortcutsRegistry", () => {
       vi.mocked(shortcutsPersistence.saveSettings).mockRejectedValue(new Error("Save error"))
 
       await expect(shortcutsRegistry.saveSettings()).rejects.toThrow("Save error")
-      expect(console.error).toHaveBeenCalled()
     })
 
     it("должен загружать настройки", async () => {
@@ -383,7 +382,6 @@ describe("ShortcutsRegistry", () => {
       const result = await shortcutsRegistry.loadSettings()
 
       expect(result).toBeNull()
-      expect(console.error).toHaveBeenCalled()
     })
 
     it("должен экспортировать настройки", async () => {

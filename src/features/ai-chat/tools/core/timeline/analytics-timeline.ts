@@ -2,7 +2,7 @@
  * AI инструмент для аналитики Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection } from "@/features/timeline/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 
 // Типы для аналитики timeline
@@ -338,11 +338,14 @@ export class TimelineAnalyticsTool extends BaseAITool {
   private async collectUsageMetrics(project: TimelineProject, timeRange: any): Promise<UsageMetrics> {
     // Симулируем данные использования на основе структуры проекта
     const allTracks = [...project.globalTracks]
-    project.sections.forEach((section) => allTracks.push(...section.tracks))
+    project.sections.forEach((section: TimelineSection) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
-    const totalEffects = allClips.reduce((sum, clip) => sum + (clip.effects?.length || 0), 0)
-    const totalTransitions = allClips.reduce((sum, clip) => sum + (clip.transitions?.length || 0), 0)
+    const allClips = allTracks.reduce((clips: TimelineClip[], track) => clips.concat(track.clips), [] as TimelineClip[])
+    const totalEffects = allClips.reduce((sum: number, clip: TimelineClip) => sum + (clip.effects?.length || 0), 0)
+    const totalTransitions = allClips.reduce(
+      (sum: number, clip: TimelineClip) => sum + (clip.transitions?.length || 0),
+      0,
+    )
 
     // Симулируем активность на основе сложности проекта
     const complexity = this.calculateProjectComplexity(allTracks.length, allClips.length, totalEffects)
@@ -375,9 +378,13 @@ export class TimelineAnalyticsTool extends BaseAITool {
   private async collectPerformanceMetrics(project: TimelineProject, _timeRange: any): Promise<PerformanceMetrics> {
     // Симулируем данные производительности
     const complexity = this.calculateProjectComplexity(
-      project.globalTracks.length + project.sections.reduce((sum, s) => sum + s.tracks.length, 0),
-      project.globalTracks.reduce((sum, t) => sum + t.clips.length, 0) +
-        project.sections.reduce((sum, s) => sum + s.tracks.reduce((tSum, t) => tSum + t.clips.length, 0), 0),
+      project.globalTracks.length +
+        project.sections.reduce((sum: number, s: TimelineSection) => sum + s.tracks.length, 0),
+      project.globalTracks.reduce((sum: number, t) => sum + t.clips.length, 0) +
+        project.sections.reduce(
+          (sum: number, s: TimelineSection) => sum + s.tracks.reduce((tSum: number, t) => tSum + t.clips.length, 0),
+          0,
+        ),
       0, // effects count
     )
 
@@ -413,16 +420,16 @@ export class TimelineAnalyticsTool extends BaseAITool {
    */
   private async collectContentMetrics(project: TimelineProject, _timeRange: any): Promise<ContentMetrics> {
     const allTracks = [...project.globalTracks]
-    project.sections.forEach((section) => allTracks.push(...section.tracks))
+    project.sections.forEach((section: TimelineSection) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce((clips: TimelineClip[], track) => clips.concat(track.clips), [] as TimelineClip[])
 
     // Анализируем типы контента
-    const videoClips = allClips.filter((clip) => clip.mediaFile?.isVideo).length
-    const audioClips = allClips.filter((clip) => clip.mediaFile?.isAudio).length
-    const imageClips = allClips.filter((clip) => clip.mediaFile?.isImage).length
+    const videoClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isVideo).length
+    const audioClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isAudio).length
+    const imageClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isImage).length
 
-    const totalContentDuration = allClips.reduce((sum, clip) => sum + clip.duration, 0)
+    const totalContentDuration = allClips.reduce((sum: number, clip: TimelineClip) => sum + clip.duration, 0)
 
     return {
       projectsCreated: 1, // Текущий проект

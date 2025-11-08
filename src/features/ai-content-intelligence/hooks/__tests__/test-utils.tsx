@@ -249,15 +249,14 @@ export function createMockAnalysis(): UnifiedContentAnalysis {
     insights: {
       summary: "High-quality action video with good pacing",
       highlights: ["Impressive action sequence at 15s", "Good visual quality"],
-      suggestions: [
-        {
-          type: "edit" as any,
-          description: "Consider color grading for consistency",
-          priority: "medium" as any,
-        },
-      ],
+      suggestions: ["Consider color grading for consistency"],
       warnings: [],
       opportunities: [],
+      strengths: ["High visual quality", "Good pacing"],
+      weaknesses: ["Color grading inconsistency"],
+      recommendations: ["Add color grading", "Enhance audio"],
+      marketingAngles: ["Action-packed", "High quality"],
+      targetDemographics: ["18-35 year olds", "Action enthusiasts"],
     },
   } as UnifiedContentAnalysis
 }

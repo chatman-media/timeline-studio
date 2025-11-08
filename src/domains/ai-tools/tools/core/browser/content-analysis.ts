@@ -2,7 +2,7 @@
  * AI инструменты для анализа контента и предложения источников с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { AnalyzeMissingContentParams, BrowserToolResult, ExportFileListParams, SuggestImportParams } from "./types"
 import { formatFileSize, getBrowserFiles, getBrowserStats, hasBrowserAccess } from "./utils/helpers"
@@ -616,7 +616,7 @@ export async function analyzeMissingContent(params: AnalyzeMissingContentParams)
       success: true,
       message: result.data?.message || result.message,
       data: {
-        missingContent: result.data.missingContent,
+        missingContent: result.data?.missingContent,
         suggestions: result.data?.recommendations,
       },
       nextActions: ["Добавить недостающий контент", "Проверить источники"],
@@ -672,7 +672,7 @@ export async function exportFileList(params: ExportFileListParams): Promise<Brow
       success: true,
       message: result.data?.message || result.message,
       data: {
-        exportData: result.data.exportData,
+        exportData: result.data?.exportData,
         suggestions: result.data?.recommendations,
       },
       nextActions: ["Скачать файл", "Проверить экспорт"],

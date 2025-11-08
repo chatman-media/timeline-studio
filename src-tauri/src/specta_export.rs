@@ -33,6 +33,13 @@ pub use crate::state::browser::{
   BrowserEvent, BrowserState, BrowserTab, SortOrder, TabSettings, ViewMode,
 };
 
+// AI Provider types (unified multi-provider support)
+#[allow(unused_imports)]
+pub use crate::video_compiler::commands::ai_api_proxy::{
+  AIMessage, AIProvider, ProviderConfig, ProviderStatus, TokenUsage, UnifiedAIRequest,
+  UnifiedAIResponse, ValidateApiKeyRequest, ValidateApiKeyResponse,
+};
+
 // Simple command for demonstration
 #[tauri::command]
 #[specta::specta]
@@ -89,6 +96,18 @@ pub fn export_typescript_bindings() {
       crate::montage_planner::commands::optimize_montage_plan,
       crate::montage_planner::commands::validate_montage_plan,
       crate::montage_planner::commands::calculate_plan_statistics,
+      // 🆕 Unified AI Provider commands (multi-provider support)
+      crate::video_compiler::commands::ai_api_proxy::ai_send_unified_request,
+      crate::video_compiler::commands::ai_api_proxy::ai_send_request_with_fallback,
+      crate::video_compiler::commands::ai_api_proxy::ai_validate_provider,
+      crate::video_compiler::commands::ai_api_proxy::ai_get_provider_models,
+      crate::video_compiler::commands::ai_api_proxy::ai_get_supported_providers,
+      crate::video_compiler::commands::ai_api_proxy::ai_check_providers_health,
+      // 🆕 Script Generation commands (AI-powered)
+      crate::analysis::commands::generate_video_script,
+      crate::analysis::commands::generate_script_dialogue,
+      crate::analysis::commands::generate_script_voiceover,
+      crate::analysis::commands::get_default_script_config,
     ])
     .events(tauri_specta::collect_events![]);
 

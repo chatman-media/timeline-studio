@@ -24,6 +24,22 @@ vi.mock("@/types/media", () => ({
   metadataToMediaFileFields: vi.fn(),
 }))
 
+// Mock logger
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    errorSync: vi.fn(),
+    infoSync: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  }
+  return {
+    createLogger: vi.fn(() => mockLogger),
+    mockLogger,
+  }
+})
+
 describe("useMediaProcessor", () => {
   let mockInvoke: ReturnType<typeof vi.fn>
   let mockListen: ReturnType<typeof vi.fn>
@@ -550,17 +566,15 @@ describe("useMediaProcessor", () => {
       const error = new Error("Cancel failed")
       mockInvoke.mockRejectedValue(error)
 
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const { result } = renderHook(() => useMediaProcessor())
 
       await act(async () => {
         await result.current.cancelProcessing()
       })
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to cancel processing:", error)
-
-      consoleErrorSpy.mockRestore()
+      // Verify that the error was logged
+      const { mockLogger } = await import("@/lib/tauri-logger")
+      expect(mockLogger.errorSync).toHaveBeenCalledWith("Failed to cancel processing", { error })
     })
   })
 

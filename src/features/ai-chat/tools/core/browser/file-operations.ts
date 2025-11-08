@@ -59,6 +59,7 @@ export interface FileOperationsResult {
   groups?: any[]
   analysis?: any
   relationships?: any[]
+  files?: any[]
   selectionResult?: {
     action: string
     selectedCount: number
@@ -127,7 +128,7 @@ export class FileOperationsTool extends BaseAITool {
       switch (input.operation) {
         case "get_file_groups":
           const groupsResult = await this.getFileGroups({
-            groupBy: input.groupBy!,
+            groupBy: (input.groupBy || "type") as "type" | "date" | "size" | "location" | "tags",
             tab: input.tab!,
             includeEmpty: input.includeEmpty || false,
           })
@@ -147,7 +148,7 @@ export class FileOperationsTool extends BaseAITool {
         case "analyze_file_relationships":
           const relationshipsResult = await this.analyzeFileRelationships({
             tab: input.tab!,
-            analysisDepth: input.analysisType === "detailed" ? "detailed" : "basic",
+            analysisDepth: "basic",
             includeUsage: input.includeMetadata ?? true,
           })
           if (!relationshipsResult.success) {
@@ -163,8 +164,30 @@ export class FileOperationsTool extends BaseAITool {
           break
 
         case "bulk_select_files":
+          // Преобразуем filters к ожидаемому формату
+          const convertedCriteria = input.selectionCriteria
+            ? {
+                ...input.selectionCriteria,
+                filters: input.selectionCriteria.filters
+                  ? {
+                      fileTypes: input.selectionCriteria.filters.fileTypes,
+                      dateRange: input.selectionCriteria.filters.dateRange
+                        ? {
+                            start: input.selectionCriteria.filters.dateRange.start || "",
+                            end: input.selectionCriteria.filters.dateRange.end || "",
+                          }
+                        : undefined,
+                      sizeRange: input.selectionCriteria.filters.sizeRange,
+                      searchPattern: input.selectionCriteria.filters.pattern,
+                      tags: input.selectionCriteria.filters.tags,
+                      location: input.selectionCriteria.filters.location?.[0],
+                    }
+                  : undefined,
+              }
+            : undefined
+
           const selectResult = await this.bulkSelectFiles({
-            selectionCriteria: input.selectionCriteria!,
+            selectionCriteria: convertedCriteria as any,
             action: input.action!,
             reason: input.reason!,
           })
@@ -327,7 +350,7 @@ export class FileOperationsTool extends BaseAITool {
       }
 
       // Выполняем анализ связей
-      const relationships = await analyzeFileRelationshipsData(files, analysisType)
+      const relationships = await analyzeFileRelationshipsData(files, analysisType || "series")
 
       // Дополнительная статистика
       const analysis = {
@@ -721,15 +744,15 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
     reason: "Анализ связей файлов",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message || "Анализ связей выполнен",
       data: {
-        analysis: result.data.analysis,
-        relationships: result.data.relationships,
+        analysis: result.data?.analysis,
+        relationships: result.data?.relationships,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {
@@ -745,19 +768,19 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
 export async function bulkSelectFiles(params: BulkSelectParams): Promise<BrowserToolResult> {
   const result = await fileOperationsTool.processFileOperations({
     operation: "bulk_select_files",
-    selectionCriteria: params.selectionCriteria,
+    selectionCriteria: params.selectionCriteria as any,
     action: params.action,
     reason: params.reason,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message || "Файлы выбраны",
       data: {
-        selectionResult: result.data.selectionResult,
+        files: result.data?.files,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {
@@ -773,20 +796,20 @@ export async function bulkSelectFiles(params: BulkSelectParams): Promise<Browser
 export async function getFileGroups(params: GetFileGroupsParams): Promise<BrowserToolResult> {
   const result = await fileOperationsTool.processFileOperations({
     operation: "get_file_groups",
-    groupBy: params.groupBy,
+    groupBy: params.groupBy as "type" | "date" | "size" | "location" | "project" | "series",
     tab: params.tab,
     includeEmpty: params.includeEmpty,
     reason: "Группировка файлов",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message || "Файлы сгруппированы",
       data: {
-        groups: result.data.groups,
-        analysis: result.data.analysis,
-        suggestions: result.data.recommendations,
+        groups: result.data?.groups,
+        analysis: result.data?.analysis,
+        suggestions: result.data?.recommendations,
       },
       nextActions: ["Просмотреть группы", "Организовать файлы"],
     }

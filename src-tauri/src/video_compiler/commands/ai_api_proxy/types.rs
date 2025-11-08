@@ -1,4 +1,64 @@
 use serde::{Deserialize, Serialize};
+use specta::Type;
+
+// ============================================================================
+// UNIFIED AI PROVIDER TYPES
+// ============================================================================
+
+/// AI Provider Type
+#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum AIProvider {
+  Claude,
+  OpenAI,
+  DeepSeek,
+  Ollama,
+}
+
+/// Unified AI Request (works with all providers)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct UnifiedAIRequest {
+  pub provider: AIProvider,
+  pub model: String,
+  pub messages: Vec<AIMessage>,
+  pub max_tokens: Option<u32>,
+  pub temperature: Option<f64>,
+  pub stream: Option<bool>,
+  pub system: Option<String>,
+}
+
+/// Unified AI Message
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct AIMessage {
+  pub role: String,
+  pub content: String,
+}
+
+/// Unified AI Response
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct UnifiedAIResponse {
+  pub id: String,
+  pub provider: AIProvider,
+  pub model: String,
+  pub content: String,
+  pub usage: Option<TokenUsage>,
+  pub finish_reason: Option<String>,
+}
+
+/// Token Usage (unified across providers)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct TokenUsage {
+  pub input_tokens: u32,
+  pub output_tokens: u32,
+  pub total_tokens: u32,
+}
+
+// ============================================================================
+// CLAUDE-SPECIFIC TYPES (legacy compatibility)
+// ============================================================================
 
 /// Запрос к Claude API
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,17 +116,232 @@ pub struct ClaudeDelta {
   pub text: Option<String>,
 }
 
-/// Запрос на валидацию API ключа
+// ============================================================================
+// OPENAI-SPECIFIC TYPES
+// ============================================================================
+
+/// OpenAI API Request
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIRequest {
+  pub model: String,
+  pub messages: Vec<OpenAIMessage>,
+  pub max_tokens: Option<u32>,
+  pub temperature: Option<f64>,
+  pub stream: Option<bool>,
+}
+
+/// OpenAI Message
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIMessage {
+  pub role: String,
+  pub content: String,
+}
+
+/// OpenAI Response
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIResponse {
+  pub id: String,
+  pub object: String,
+  pub created: u64,
+  pub model: String,
+  pub choices: Vec<OpenAIChoice>,
+  pub usage: Option<OpenAIUsage>,
+}
+
+/// OpenAI Choice
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIChoice {
+  pub index: u32,
+  pub message: OpenAIMessage,
+  pub finish_reason: Option<String>,
+}
+
+/// OpenAI Usage
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIUsage {
+  pub prompt_tokens: u32,
+  pub completion_tokens: u32,
+  pub total_tokens: u32,
+}
+
+// ============================================================================
+// DEEPSEEK-SPECIFIC TYPES
+// ============================================================================
+
+/// DeepSeek uses OpenAI-compatible API
+pub type DeepSeekRequest = OpenAIRequest;
+pub type DeepSeekResponse = OpenAIResponse;
+pub type DeepSeekMessage = OpenAIMessage;
+
+// ============================================================================
+// OLLAMA-SPECIFIC TYPES
+// ============================================================================
+
+/// Ollama API Request
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OllamaRequest {
+  pub model: String,
+  pub messages: Vec<OllamaMessage>,
+  pub stream: Option<bool>,
+  pub options: Option<OllamaOptions>,
+}
+
+/// Ollama Message
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OllamaMessage {
+  pub role: String,
+  pub content: String,
+}
+
+/// Ollama Options
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OllamaOptions {
+  pub temperature: Option<f64>,
+  pub num_predict: Option<u32>, // equivalent to max_tokens
+}
+
+/// Ollama Response
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OllamaResponse {
+  pub model: String,
+  pub created_at: String,
+  pub message: OllamaMessage,
+  pub done: bool,
+}
+
+// ============================================================================
+// VALIDATION TYPES
+// ============================================================================
+
+/// Запрос на валидацию API ключа
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct ValidateApiKeyRequest {
   pub api_key: String,
-  pub provider: String, // "claude", "openai", etc.
+  pub provider: AIProvider,
 }
 
 /// Результат валидации
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct ValidateApiKeyResponse {
   pub valid: bool,
   pub message: String,
   pub models: Option<Vec<String>>,
+}
+
+// ============================================================================
+// PROVIDER CONFIG
+// ============================================================================
+
+/// AI Provider Configuration
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ProviderConfig {
+  pub provider: AIProvider,
+  pub api_key: Option<String>,
+  pub base_url: Option<String>,
+  pub default_model: Option<String>,
+  pub timeout: Option<u64>, // seconds
+}
+
+/// Provider Status
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ProviderStatus {
+  pub provider: AIProvider,
+  pub available: bool,
+  pub models: Vec<String>,
+  pub error: Option<String>,
+}
+
+// ============================================================================
+// CONVERSION IMPLEMENTATIONS
+// ============================================================================
+
+impl From<ClaudeMessage> for AIMessage {
+  fn from(msg: ClaudeMessage) -> Self {
+    AIMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl From<AIMessage> for ClaudeMessage {
+  fn from(msg: AIMessage) -> Self {
+    ClaudeMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl From<OpenAIMessage> for AIMessage {
+  fn from(msg: OpenAIMessage) -> Self {
+    AIMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl From<AIMessage> for OpenAIMessage {
+  fn from(msg: AIMessage) -> Self {
+    OpenAIMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl From<OllamaMessage> for AIMessage {
+  fn from(msg: OllamaMessage) -> Self {
+    AIMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl From<AIMessage> for OllamaMessage {
+  fn from(msg: AIMessage) -> Self {
+    OllamaMessage {
+      role: msg.role,
+      content: msg.content,
+    }
+  }
+}
+
+impl AIProvider {
+  /// Get default models for provider
+  pub fn default_models(&self) -> Vec<String> {
+    match self {
+      AIProvider::Claude => vec![
+        "claude-3-5-sonnet-20241022".to_string(),
+        "claude-3-opus-20240229".to_string(),
+        "claude-3-sonnet-20240229".to_string(),
+        "claude-3-haiku-20240307".to_string(),
+      ],
+      AIProvider::OpenAI => vec![
+        "gpt-4-turbo-preview".to_string(),
+        "gpt-4".to_string(),
+        "gpt-3.5-turbo".to_string(),
+      ],
+      AIProvider::DeepSeek => vec!["deepseek-chat".to_string(), "deepseek-coder".to_string()],
+      AIProvider::Ollama => vec![
+        "llama3".to_string(),
+        "codellama".to_string(),
+        "mistral".to_string(),
+      ],
+    }
+  }
+
+  /// Get default API endpoint
+  pub fn default_endpoint(&self) -> String {
+    match self {
+      AIProvider::Claude => "https://api.anthropic.com/v1/messages".to_string(),
+      AIProvider::OpenAI => "https://api.openai.com/v1/chat/completions".to_string(),
+      AIProvider::DeepSeek => "https://api.deepseek.com/v1/chat/completions".to_string(),
+      AIProvider::Ollama => "http://localhost:11434/api/chat".to_string(),
+    }
+  }
 }

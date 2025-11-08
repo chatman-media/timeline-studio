@@ -3,10 +3,13 @@ import { readTextFile } from "@tauri-apps/plugin-fs"
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
-import { mockLoggerError, mockLoggerInfo } from "@/lib/tauri-logger"
 import { MediaProviders } from "@/test/test-utils"
 
 import { useStyleTemplatesImport } from "../../hooks/use-style-templates-import"
+
+// Создаем мок функции для logger используя vi.hoisted
+const mockLoggerError = vi.hoisted(() => vi.fn())
+const mockLoggerInfo = vi.hoisted(() => vi.fn())
 
 // Мокаем Tauri dialog API
 vi.mock("@tauri-apps/plugin-dialog", () => ({
@@ -19,6 +22,7 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 }))
 
 // Мокаем tauri-logger для возврата мокированного logger
+<<<<<<< HEAD
 vi.mock("@/lib/tauri-logger", () => {
   const mockLoggerError = vi.fn()
   const mockLoggerInfo = vi.fn()
@@ -32,6 +36,14 @@ vi.mock("@/lib/tauri-logger", () => {
     mockLoggerInfo,
   }
 })
+=======
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    error: mockLoggerError,
+    info: mockLoggerInfo,
+  })),
+}))
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
 
 // Создаем мок функции для addStyleTemplate
 const mockAddStyleTemplate = vi.fn()

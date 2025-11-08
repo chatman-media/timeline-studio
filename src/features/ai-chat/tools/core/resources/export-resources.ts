@@ -367,8 +367,8 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка экспорта",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка экспорта",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

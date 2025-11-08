@@ -1,7 +1,7 @@
 import { useCallback } from "react"
+import type { TimelineClip } from "@/domains/video-editing/types/timeline"
 import type { CutType, JLCutPreview, LinkedClipPair } from "../types/jl-cuts"
 import { getAudioOffsetForCut } from "../types/jl-cuts"
-import type { TimelineClip } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
 export interface UseJLCutsReturn {
@@ -108,7 +108,11 @@ export function useJLCuts(): UseJLCutsReturn {
       if (!pair) return
 
       // Обновляем audioOffset для создания J-cut (аудио начинается раньше видео)
+<<<<<<< HEAD
       await updateClip(pair.audioClipId, {
+=======
+      updateClip(pair.audioClipId, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         audioOffset: -Math.abs(offset), // Отрицательное значение для J-cut
       })
     },
@@ -122,7 +126,11 @@ export function useJLCuts(): UseJLCutsReturn {
       if (!pair) return
 
       // Обновляем audioOffset для создания L-cut (аудио продолжается после видео)
+<<<<<<< HEAD
       await updateClip(pair.audioClipId, {
+=======
+      updateClip(pair.audioClipId, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         audioOffset: Math.abs(offset), // Положительное значение для L-cut
       })
     },
@@ -136,7 +144,11 @@ export function useJLCuts(): UseJLCutsReturn {
       if (!pair) return
 
       // Сбрасываем audioOffset обратно в 0
+<<<<<<< HEAD
       await updateClip(pair.audioClipId, {
+=======
+      updateClip(pair.audioClipId, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         audioOffset: 0,
       })
     },
@@ -145,6 +157,7 @@ export function useJLCuts(): UseJLCutsReturn {
 
   // Связывание клипов
   const linkClips = useCallback(
+<<<<<<< HEAD
     async (videoClipId: string, audioClipId: string) => {
       // Обновляем оба клипа для создания связи
       await updateClip(videoClipId, {
@@ -152,6 +165,15 @@ export function useJLCuts(): UseJLCutsReturn {
         isLinked: true,
       })
       await updateClip(audioClipId, {
+=======
+    (videoClipId: string, audioClipId: string) => {
+      // Обновляем оба клипа для создания связи
+      updateClip(videoClipId, {
+        linkedClipId: audioClipId,
+        isLinked: true,
+      })
+      updateClip(audioClipId, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         linkedClipId: videoClipId,
         isLinked: true,
       })
@@ -166,12 +188,20 @@ export function useJLCuts(): UseJLCutsReturn {
       if (!linkedClip) return
 
       // Обновляем оба клипа для разрыва связи
+<<<<<<< HEAD
       await updateClip(clipId, {
+=======
+      updateClip(clipId, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         linkedClipId: undefined,
         isLinked: false,
         audioOffset: 0, // Сбрасываем offset при разрыве связи
       })
+<<<<<<< HEAD
       await updateClip(linkedClip.id, {
+=======
+      updateClip(linkedClip.id, {
+>>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
         linkedClipId: undefined,
         isLinked: false,
         audioOffset: 0,

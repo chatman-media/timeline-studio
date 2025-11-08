@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { useResources } from "@/features/resources"
 import type { TemplateResource, TimelineResource } from "@/features/resources/types"
@@ -154,7 +154,11 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
       })}
 
       {/* Кнопка добавления в избранное */}
-      <FavoriteButton file={{ id: template.id, path: "", name: template.id }} size={size} type="template" />
+      <FavoriteButton
+        file={{ id: template.id, path: "", name: template.id, type: MediaType.Graphics }}
+        size={size}
+        type="template"
+      />
 
       {/* Кнопка применения шаблона */}
       <ApplyButton

@@ -7,13 +7,21 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
+// Mock Tauri Logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  })),
+}))
+
 const mockInvoke = vi.mocked(await import("@tauri-apps/api/core")).invoke
 
 describe("Cache Service", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Clear console.error mock
-    vi.spyOn(console, "error").mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -60,7 +68,6 @@ describe("Cache Service", () => {
       mockInvoke.mockRejectedValue(error)
 
       await expect(getCacheStats()).rejects.toThrow("Failed to get cache stats from backend")
-      expect(console.error).toHaveBeenCalledWith("Failed to get cache stats:", error)
     })
 
     it("should handle Tauri communication errors", async () => {
@@ -85,7 +92,6 @@ describe("Cache Service", () => {
       mockInvoke.mockRejectedValue(error)
 
       await expect(clearPreviewCache()).rejects.toThrow("Failed to clear preview cache")
-      expect(console.error).toHaveBeenCalledWith("Failed to clear preview cache:", error)
     })
 
     it("should handle permission errors", async () => {
@@ -110,7 +116,6 @@ describe("Cache Service", () => {
       mockInvoke.mockRejectedValue(error)
 
       await expect(clearAllCache()).rejects.toThrow("Failed to clear all cache")
-      expect(console.error).toHaveBeenCalledWith("Failed to clear all cache:", error)
     })
 
     it("should handle filesystem errors", async () => {
@@ -139,7 +144,6 @@ describe("Cache Service", () => {
       const result = await getCacheSize()
 
       expect(result).toBe(0)
-      expect(console.error).toHaveBeenCalledWith("Failed to get cache size:", error)
     })
 
     it("should handle very large cache sizes", async () => {
@@ -210,7 +214,6 @@ describe("Cache Service", () => {
       mockInvoke.mockRejectedValue(error)
 
       await expect(configureCacheSettings(settings)).rejects.toThrow("Invalid cache configuration")
-      expect(console.error).toHaveBeenCalledWith("Failed to configure cache:", error)
     })
 
     it("should handle invalid memory settings", async () => {

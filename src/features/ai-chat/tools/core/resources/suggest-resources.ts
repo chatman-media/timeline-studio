@@ -279,8 +279,8 @@ export async function suggestComplementaryResources(params: SuggestResourcesPara
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка предложения ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка предложения ресурсов",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

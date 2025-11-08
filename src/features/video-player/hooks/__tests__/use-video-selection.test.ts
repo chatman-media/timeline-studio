@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 
 // Мокаем backend-sync ДО импорта компонентов
 const mockPlayerState = {
@@ -59,6 +59,7 @@ const createMockMediaFile = (name: string): MediaFile => ({
   id: `file-${name}`,
   name,
   path: `/test/${name}`,
+  type: MediaType.Video,
   isVideo: true,
   isAudio: false,
   isImage: false,

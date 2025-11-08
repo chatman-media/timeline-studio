@@ -4,7 +4,25 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import * as TauriLogger from "@/lib/tauri-logger"
 import { HDRSupportService, type VideoCodecInfo } from "../hdr-support"
+
+// Create mock logger instance that will be returned by all createLogger calls
+const mockLogger = {
+  trace: vi.fn(),
+  traceSync: vi.fn(),
+  debug: vi.fn(),
+  debugSync: vi.fn(),
+  info: vi.fn(),
+  infoSync: vi.fn(),
+  warn: vi.fn(),
+  warnSync: vi.fn(),
+  error: vi.fn(),
+  errorSync: vi.fn(),
+}
+
+// Get reference to the mocked createLogger function
+const mockCreateLogger = vi.mocked(TauriLogger.createLogger)
 
 // Mock WebGL2 context
 const mockGL = {
@@ -89,8 +107,25 @@ describe("HDRSupportService", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    // Mock document.createElement for canvas
-    if (typeof document !== "undefined") {
+    // Configure createLogger to return our mock logger
+    mockCreateLogger.mockReturnValue(mockLogger as any)
+
+    // Mock document globally for all tests
+    if (typeof global.document === "undefined") {
+      ;(global as any).document = {
+        createElement: vi.fn((tagName: string) => {
+          if (tagName === "canvas") {
+            return {
+              getContext: vi.fn((type: string) => {
+                if (type === "webgl2") return mockGL
+                return null
+              }),
+            } as any
+          }
+          return {}
+        }),
+      }
+    } else {
       const originalCreateElement = document.createElement.bind(document)
       document.createElement = vi.fn((tagName: string) => {
         if (tagName === "canvas") {
@@ -128,6 +163,10 @@ describe("HDRSupportService", () => {
     })
 
     service = new HDRSupportService()
+
+    // Ensure WebGL2 is marked as supported in the service
+    // since our mock returns a valid WebGL2 context
+    ;(service as any).isWebGL2Supported = true
   })
 
   afterEach(() => {
@@ -170,13 +209,11 @@ describe("HDRSupportService", () => {
       const originalDocument = global.document
       delete (global as any).document
 
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       const serviceSSR = new HDRSupportService()
 
-      expect(consoleSpy).toHaveBeenCalledWith("HDR support WebGL initialization skipped (SSR)")
+      // The service should call logger.debug when in SSR mode
+      expect(mockLogger.debug).toHaveBeenCalledWith("WebGL initialization skipped (SSR)")
 
-      consoleSpy.mockRestore()
       global.document = originalDocument
       serviceSSR.dispose()
     })
@@ -646,7 +683,8 @@ describe("HDRSupportService", () => {
   describe("HDR tone mapping", () => {
     it("should apply HDR tone mapping successfully", () => {
       const video = mockVideoElement()
-      const canvas = document.createElement("canvas")
+      // Create canvas using the mocked document.createElement
+      const canvas = { getContext: vi.fn() } as any
       const options = {
         targetNits: 400,
         gammaCorrection: 2.2,
@@ -673,21 +711,18 @@ describe("HDRSupportService", () => {
       ;(serviceNoWebGL as any).isWebGL2Supported = false
 
       const video = mockVideoElement()
-      const canvas = document.createElement("canvas")
+      const canvas = { getContext: vi.fn() } as any
       const options = {
         targetNits: 400,
         gammaCorrection: 2.2,
         saturation: 1.0,
       }
 
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       const success = serviceNoWebGL.applyHDRToneMapping(video, canvas, options)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("WebGL2 not available for HDR tone mapping")
+      expect(mockLogger.warn).toHaveBeenCalledWith("WebGL2 not available for HDR tone mapping")
 
-      consoleSpy.mockRestore()
       serviceNoWebGL.dispose()
     })
 
@@ -696,21 +731,23 @@ describe("HDRSupportService", () => {
       mockGL.getShaderInfoLog.mockReturnValue("Compilation error")
 
       const video = mockVideoElement()
-      const canvas = document.createElement("canvas")
+      const canvas = { getContext: vi.fn() } as any
       const options = {
         targetNits: 400,
         gammaCorrection: 2.2,
         saturation: 1.0,
       }
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = service.applyHDRToneMapping(video, canvas, options)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("Shader compilation error:", "Compilation error")
+      expect(mockLogger.error).toHaveBeenCalledWith("shader compilation error", {
+        info: "Compilation error",
+      })
 
-      consoleSpy.mockRestore()
+      // Restore mocks for other tests
+      mockGL.getShaderParameter.mockReturnValue(true)
+      mockGL.getShaderInfoLog.mockReturnValue("")
     })
 
     it("should handle program linking failure", () => {
@@ -718,22 +755,21 @@ describe("HDRSupportService", () => {
       mockGL.getProgramParameter.mockReturnValue(false) // But program linking fails
 
       const video = mockVideoElement()
-      const canvas = document.createElement("canvas")
+      const canvas = { getContext: vi.fn() } as any
       const options = {
         targetNits: 400,
         gammaCorrection: 2.2,
         saturation: 1.0,
       }
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = service.applyHDRToneMapping(video, canvas, options)
 
       expect(success).toBe(false)
       // Check that error was logged
-      expect(consoleSpy).toHaveBeenCalled()
+      expect(mockLogger.error).toHaveBeenCalledWith("shader program failed to link")
 
-      consoleSpy.mockRestore()
+      // Restore mocks for other tests
+      mockGL.getProgramParameter.mockReturnValue(true)
     })
 
     it("should handle tone mapping errors gracefully", () => {
@@ -742,21 +778,22 @@ describe("HDRSupportService", () => {
       })
 
       const video = mockVideoElement()
-      const canvas = document.createElement("canvas")
+      const canvas = { getContext: vi.fn() } as any
       const options = {
         targetNits: 400,
         gammaCorrection: 2.2,
         saturation: 1.0,
       }
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
       const success = service.applyHDRToneMapping(video, canvas, options)
 
       expect(success).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith("HDR tone mapping failed:", expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith("tone mapping failed", {
+        error: expect.any(Error),
+      })
 
-      consoleSpy.mockRestore()
+      // Restore mock for other tests
+      mockGL.createTexture.mockReturnValue({})
     })
   })
 
@@ -815,14 +852,12 @@ describe("HDRSupportService", () => {
         } as any,
       })
 
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       const metadata = await service.parseHDRMetadata(video)
 
       expect(metadata.format).toBe("SDR")
-      expect(consoleSpy).toHaveBeenCalledWith("HDR metadata parsing failed:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.warn).toHaveBeenCalledWith("HDR metadata parsing failed", {
+        error: expect.any(Error),
+      })
     })
 
     it("should handle codec info detection errors", async () => {
@@ -832,14 +867,12 @@ describe("HDRSupportService", () => {
         },
       })
 
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-
       const codecInfo = await service.getVideoCodecInfo(video)
 
       expect(codecInfo.supportedDecoders).toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith("Codec info detection failed:", expect.any(Error))
-
-      consoleSpy.mockRestore()
+      expect(mockLogger.warn).toHaveBeenCalledWith("codec info detection failed", {
+        error: expect.any(Error),
+      })
     })
   })
 })

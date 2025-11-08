@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils"
 
 const logger = createLogger("video-player:player-controls")
 
+import { useDebouncedSeek } from "../hooks/use-debounced-seek"
 import { useFullscreen } from "../hooks/use-fullscreen"
 import { usePlayer } from "../services/player-provider"
 import { PlaybackSpeedControl } from "./playback-speed-control"
@@ -78,6 +79,18 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
   // Используем хук для отслеживания полноэкранного режима
   const { isFullscreen, toggleFullscreen } = useFullscreen()
 
+  // Используем debounced seek для оптимизации
+  const { debouncedSeek, immediateSeek } = useDebouncedSeek(seek, {
+    delay: 100, // Задержка 100ms для debounce
+    onSeekStart: (time) => {
+      setLocalDisplayTime(time) // Мгновенное обновление UI
+      setIsSeeking(true)
+    },
+    onSeekEnd: () => {
+      setIsSeeking(false) // Сброс флага после завершения seek
+    },
+  })
+
   // Создаем ref для хранения текущего значения громкости
   const volumeRef = useRef<number>(volume)
 
@@ -124,11 +137,10 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
   const handleTimeChange = useCallback(
     (value: number[]) => {
       const newTime = value[0]
-      setLocalDisplayTime(newTime)
-      seek(newTime).catch((error) => logger.error("seek failed", { error, newTime }))
-      setIsSeeking(true)
+      // Используем debounced seek для плавного перетаскивания слайдера
+      debouncedSeek(newTime)
     },
-    [setLocalDisplayTime, seek, setIsSeeking],
+    [debouncedSeek],
   )
 
   const handleRecordToggle = useCallback(() => {
@@ -145,31 +157,27 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
 
   const handleSkipForward = useCallback(() => {
     const newTime = Math.min(currentTime + frameTime, file.endTime ?? file.duration ?? 0)
-    setLocalDisplayTime(newTime)
-    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
-    setIsSeeking(true)
-  }, [currentTime, frameTime, file.endTime, file.duration, setLocalDisplayTime, seek, setIsSeeking])
+    // Используем immediate seek для мгновенной навигации
+    immediateSeek(newTime).catch((error) => logger.error("Operation failed", { error }))
+  }, [currentTime, frameTime, file.endTime, file.duration, immediateSeek])
 
   const handleSkipBackward = useCallback(() => {
     const newTime = Math.max(currentTime - frameTime, file.startTime ?? 0)
-    setLocalDisplayTime(newTime)
-    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
-    setIsSeeking(true)
-  }, [currentTime, frameTime, file.startTime, setLocalDisplayTime, seek, setIsSeeking])
+    // Используем immediate seek для мгновенной навигации
+    immediateSeek(newTime).catch((error) => logger.error("Operation failed", { error }))
+  }, [currentTime, frameTime, file.startTime, immediateSeek])
 
   const handleChevronFirst = useCallback(() => {
     const newTime = file.startTime ?? 0
-    setLocalDisplayTime(newTime)
-    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
-    setIsSeeking(true)
-  }, [file.startTime, setLocalDisplayTime, seek, setIsSeeking])
+    // Используем immediate seek для мгновенной навигации
+    immediateSeek(newTime).catch((error) => logger.error("Operation failed", { error }))
+  }, [file.startTime, immediateSeek])
 
   const handleChevronLast = useCallback(() => {
     const newTime = file.endTime ?? 0
-    setLocalDisplayTime(newTime)
-    seek(newTime).catch((error) => logger.error("Operation failed", { error }))
-    setIsSeeking(true)
-  }, [file.endTime, setLocalDisplayTime, seek, setIsSeeking])
+    // Используем immediate seek для мгновенной навигации
+    immediateSeek(newTime).catch((error) => logger.error("Operation failed", { error }))
+  }, [file.endTime, immediateSeek])
 
   // Функция для переключения звука (вкл/выкл)
   const handleToggleMute = useCallback(() => {

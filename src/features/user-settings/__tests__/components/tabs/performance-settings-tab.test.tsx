@@ -4,7 +4,7 @@ import { vi } from "vitest"
 
 import { renderWithModal } from "@/test/test-utils"
 
-import { PerformanceSettingsTab } from "../performance-settings-tab"
+import { PerformanceSettingsTab } from "../../../components/tabs/performance-settings-tab"
 
 // Mock the GPU status component
 vi.mock("@/features/video-compiler/components/gpu-status", () => ({

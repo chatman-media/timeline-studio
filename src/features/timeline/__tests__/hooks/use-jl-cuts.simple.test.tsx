@@ -11,6 +11,7 @@ vi.mock("../../hooks/use-timeline", () => ({
 
 describe("useJLCuts - Simple Tests", () => {
   const mockSend = vi.fn()
+  const mockUpdateClip = vi.fn()
 
   const mockVideoClip = {
     id: "video-1",
@@ -53,77 +54,81 @@ describe("useJLCuts - Simple Tests", () => {
     ;(useTimeline as any).mockReturnValue({
       project: mockProject,
       send: mockSend,
+      updateClip: mockUpdateClip,
     })
   })
 
-  it("should create J-Cut correctly", () => {
+  it("should create J-Cut correctly", async () => {
     const { result } = renderHook(() => useJLCuts())
 
-    act(() => {
-      result.current.createJCut("video-1", 0.5)
+    await act(async () => {
+      await result.current.createJCut("video-1", 0.5)
     })
 
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "CREATE_JL_CUT",
-      clipId: "audio-1",
-      cutType: "j-cut",
-      offset: 0.5,
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-1", {
+      audioOffset: -0.5,
     })
   })
 
-  it("should create L-Cut correctly", () => {
+  it("should create L-Cut correctly", async () => {
     const { result } = renderHook(() => useJLCuts())
 
-    act(() => {
-      result.current.createLCut("video-1", 0.5)
+    await act(async () => {
+      await result.current.createLCut("video-1", 0.5)
     })
 
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "CREATE_JL_CUT",
-      clipId: "audio-1",
-      cutType: "l-cut",
-      offset: 0.5,
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-1", {
+      audioOffset: 0.5,
     })
   })
 
-  it("should reset cut correctly", () => {
+  it("should reset cut correctly", async () => {
     const { result } = renderHook(() => useJLCuts())
 
-    act(() => {
-      result.current.resetCut("video-1")
+    await act(async () => {
+      await result.current.resetCut("video-1")
     })
 
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "RESET_JL_CUT",
-      clipId: "audio-1",
+    expect(mockUpdateClip).toHaveBeenCalledWith("audio-1", {
+      audioOffset: 0,
     })
   })
 
-  it("should link clips correctly", () => {
+  it("should link clips correctly", async () => {
     const { result } = renderHook(() => useJLCuts())
 
-    act(() => {
-      result.current.linkClips("video-2", "audio-2")
+    await act(async () => {
+      await result.current.linkClips("video-2", "audio-2")
     })
 
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "LINK_CLIPS",
-      videoClipId: "video-2",
-      audioClipId: "audio-2",
+    expect(mockUpdateClip).toHaveBeenCalledTimes(2)
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(1, "video-2", {
+      linkedClipId: "audio-2",
+      isLinked: true,
+    })
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(2, "audio-2", {
+      linkedClipId: "video-2",
+      isLinked: true,
     })
   })
 
-  it("should unlink clips correctly", () => {
+  it("should unlink clips correctly", async () => {
     const { result } = renderHook(() => useJLCuts())
 
-    act(() => {
-      result.current.unlinkClips("video-1")
+    await act(async () => {
+      await result.current.unlinkClips("video-1")
     })
 
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "UNLINK_CLIPS",
-      clipId: "video-1",
-      linkedClipId: "audio-1",
+    expect(mockUpdateClip).toHaveBeenCalledTimes(2)
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(1, "video-1", {
+      linkedClipId: undefined,
+      isLinked: false,
+      audioOffset: 0,
+    })
+    expect(mockUpdateClip).toHaveBeenNthCalledWith(2, "audio-1", {
+      linkedClipId: undefined,
+      isLinked: false,
+      audioOffset: 0,
     })
   })
 

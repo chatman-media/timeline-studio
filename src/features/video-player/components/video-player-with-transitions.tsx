@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { usePlayerAIIntegration } from "@/features/ai-chat/hooks/use-player-ai-integration"
+import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { convertVideoSrc } from "@/lib/tauri-utils"
@@ -91,7 +92,7 @@ export function VideoPlayerWithTransitions({
       path: "",
       name: "Нет видео",
       size: 0,
-      type: "video/mp4",
+      type: MediaType.Video,
     }
 
     return (
@@ -238,6 +239,7 @@ export function VideoPlayerWithTransitions({
           id: video.id,
           path: video.path,
           name: video.name || "Video",
+          type: video.type || MediaType.Video,
           size: video.size || 0,
         }}
       />

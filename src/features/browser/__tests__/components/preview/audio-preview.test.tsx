@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 // Import lucide-react mock before any component imports
 import "@/test/mocks/libraries/lucide-react"
 
+import { MediaType } from "@/domains/video-editing/types/media"
 import type { MediaFile } from "@/features/media/types/media"
 
 import { AudioPreview } from "../../../components/preview/audio-preview"
@@ -111,6 +112,7 @@ describe("AudioPreview", () => {
     id: "audio1",
     name: "audio.mp3",
     path: "/path/to/audio.mp3",
+    type: MediaType.Audio,
     isVideo: false,
     isAudio: true,
     isImage: false,

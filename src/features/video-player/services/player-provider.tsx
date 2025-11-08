@@ -5,12 +5,13 @@
  */
 
 import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
+import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
@@ -163,6 +164,33 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
     return unsubscribe
   }, [backendSync, isVideoPlayerServiceEnabled])
+
+  // Периодическая синхронизация времени с backend (L2)
+  const handleBackendTimeSync = useCallback(
+    (time: number) => {
+      if (!isVideoPlayerServiceEnabled) {
+        return
+      }
+
+      // Отправляем checkpoint в backend (throttled - раз в секунду)
+      executeCommand({
+        type: "UpdatePlaybackTime",
+        params: { time },
+      }).catch((error) => {
+        logger.error("Failed to sync playback time with backend", { error })
+      })
+    },
+    [isVideoPlayerServiceEnabled],
+  )
+
+  // Используем хук для плавного обновления времени (L1: 60fps)
+  const playbackState = backendState?.playback_state
+  const currentDisplayTime = usePlaybackTimeSync({
+    isPlaying: playbackState?.is_playing ?? false,
+    syncInterval: 1000, // Синхронизация с backend раз в секунду
+    onBackendSync: handleBackendTimeSync,
+    initialTime: playbackState?.current_time ?? 0,
+  })
 
   // Backend команды
   const executeCommand = async (command: any) => {
@@ -380,12 +408,10 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     duration: 0,
   }
 
-  const playbackState = backendState?.playback_state
-
   // Контекстное значение
   const contextValue: PlayerContextType = {
-    // Backend состояние
-    currentTime: playbackState ? playbackState.current_time : defaultPlaybackState.currentTime,
+    // Backend состояние с локальным временем для плавного обновления
+    currentTime: currentDisplayTime, // L1: Локальное время, обновляемое 60fps
     isPlaying: playbackState ? playbackState.is_playing : defaultPlaybackState.isPlaying,
     playbackRate: playbackState ? playbackState.playback_rate : defaultPlaybackState.playbackRate,
 

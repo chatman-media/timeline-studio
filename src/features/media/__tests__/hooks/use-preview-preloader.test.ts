@@ -143,24 +143,21 @@ describe("usePreviewPreloader", () => {
   })
 
   it("should handle errors gracefully", async () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
     mockGetPreviewData.mockRejectedValue(new Error("Failed to load preview"))
 
     const { result } = renderHook(() => usePreviewPreloader())
 
     const items = [{ fileId: "file1", index: 0 }]
 
+    // Should not throw error even when preview loading fails
     await act(async () => {
-      await result.current.preloadPreviews(items)
+      await expect(result.current.preloadPreviews(items)).resolves.not.toThrow()
     })
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "[PreviewPreloader] Failed to preload preview for: file1",
-      expect.any(Error),
-    )
+    // Should have attempted to load the preview
+    expect(mockGetPreviewData).toHaveBeenCalledWith("file1")
+    // Should complete loading state properly despite error
     expect(result.current.isPreloading).toBe(false)
-
-    consoleErrorSpy.mockRestore()
   })
 
   it("should handle empty items list", async () => {

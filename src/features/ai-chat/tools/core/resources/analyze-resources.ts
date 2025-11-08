@@ -230,8 +230,8 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка анализа ресурсов",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

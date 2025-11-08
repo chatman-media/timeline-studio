@@ -124,9 +124,9 @@ export class PreviewEffectsTool extends BaseAITool {
 
         // Здесь бы был код применения эффекта к preview
         // Пока что просто логируем
-        logger.info(`Применение эффекта ${effect.effectId} с параметрами:`, effect.parameters)
+        logger.info(`Применение эффекта ${effect.effectId} с параметрами:`, { parameters: effect.parameters })
       } catch (error) {
-        logger.warn(`Ошибка применения эффекта ${effect.effectId}:`, error)
+        logger.warn(`Ошибка применения эффекта ${effect.effectId}:`, { error })
       }
     }
 
@@ -172,9 +172,9 @@ export class PreviewEffectsTool extends BaseAITool {
         }
 
         // Здесь бы был код применения фильтра к preview
-        logger.info(`Применение фильтра ${filter.effectId} с параметрами:`, filter.parameters)
+        logger.info(`Применение фильтра ${filter.effectId} с параметрами:`, { parameters: filter.parameters })
       } catch (error) {
-        logger.warn(`Ошибка применения фильтра ${filter.effectId}:`, error)
+        logger.warn(`Ошибка применения фильтра ${filter.effectId}:`, { error })
       }
     }
 
@@ -225,21 +225,21 @@ export async function applyPreviewEffects(params: {
     reason: "Применение эффектов для превью",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message || "Эффекты применены",
       data: {
-        appliedEffects: result.data.appliedItems,
-        totalActiveEffects: result.data.totalActiveItems,
-        activeEffects: result.data.activeItems,
+        appliedEffects: result.data?.appliedItems,
+        totalActiveEffects: result.data?.totalActiveItems,
+        activeEffects: result.data?.activeItems,
       },
     }
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка применения эффектов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка применения эффектов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
@@ -254,21 +254,21 @@ export async function applyPreviewFilters(params: {
     reason: "Применение фильтров для превью",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message || "Фильтры применены",
       data: {
-        appliedFilters: result.data.appliedItems,
-        totalActiveFilters: result.data.totalActiveItems,
-        activeFilters: result.data.activeItems,
+        appliedFilters: result.data?.appliedItems,
+        totalActiveFilters: result.data?.totalActiveItems,
+        activeFilters: result.data?.activeItems,
       },
     }
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка применения фильтров",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка применения фильтров",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

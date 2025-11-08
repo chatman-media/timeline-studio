@@ -137,7 +137,7 @@ export function AngleViewer({
           baseClipId={baseClipId}
           className="shadow-lg"
           onSyncComplete={() => {
-            logger.info("[AngleViewer] Sync completed")
+            console.log("[AngleViewer] Sync completed")
           }}
         />
         <Button size="sm" variant="secondary" onClick={togglePlayback} className="shadow-lg">

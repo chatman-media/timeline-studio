@@ -2,7 +2,7 @@
  * AI инструмент для интеллектуального управления клипами Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip, TimelineProject } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 
 // Типы для управления клипами

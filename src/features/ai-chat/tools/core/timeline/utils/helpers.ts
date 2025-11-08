@@ -2,7 +2,7 @@
  * Вспомогательные функции для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject, TimelineTrack } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { getTimelineStateAccess } from "../types"
 import { determineContentType } from "./detectors"

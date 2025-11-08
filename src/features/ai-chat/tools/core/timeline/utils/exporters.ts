@@ -2,7 +2,7 @@
  * Функции экспорта для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
 
 import { escapeCsv, escapeXml, formatTimecode } from "./formatters"
 
@@ -23,24 +23,26 @@ export function exportAsJSON(project: TimelineProject, includeData: any): any {
       start_time: section.startTime,
       duration: section.duration,
       real_start_time: section.realStartTime?.toISOString(),
-    })),
+    })) as any[],
   }
 
   // Дополнительные данные
   if (includeData.includeTracks) {
-    exportData.tracks = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)].map((track) => ({
-      id: track.id,
-      name: track.name,
-      type: track.type,
-      clips_count: track.clips.length,
-    }))
+    exportData.tracks = [...project.globalTracks, ...project.sections.flatMap((s: TimelineSection) => s.tracks)].map(
+      (track: TimelineTrack) => ({
+        id: track.id,
+        name: track.name,
+        type: track.type,
+        clips_count: track.clips.length,
+      }),
+    )
   }
 
   if (includeData.includeClips) {
     const allClips: TimelineClip[] = []
-    project.globalTracks.forEach((track) => allClips.push(...track.clips))
-    project.sections.forEach((section) => {
-      section.tracks.forEach((track) => allClips.push(...track.clips))
+    project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+    project.sections.forEach((section: TimelineSection) => {
+      section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
     })
 
     exportData.clips = allClips.map((clip) => ({
@@ -69,7 +71,7 @@ export function exportAsXML(project: TimelineProject, includeData: any): string 
 
   // Секции
   xml += "  <sections>\n"
-  project.sections.forEach((section) => {
+  project.sections.forEach((section: TimelineSection) => {
     xml += `    <section id="${section.id}">\n`
     xml += `      <name>${escapeXml(section.name)}</name>\n`
     xml += `      <start_time>${section.startTime}</start_time>\n`
@@ -81,8 +83,8 @@ export function exportAsXML(project: TimelineProject, includeData: any): string 
   // Треки (если запрошено)
   if (includeData.includeTracks) {
     xml += "  <tracks>\n"
-    const allTracks = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)]
-    allTracks.forEach((track) => {
+    const allTracks = [...project.globalTracks, ...project.sections.flatMap((s: TimelineSection) => s.tracks)]
+    allTracks.forEach((track: TimelineTrack) => {
       xml += `    <track id="${track.id}" type="${track.type}">\n`
       xml += `      <name>${escapeXml(track.name)}</name>\n`
       xml += `      <clips_count>${track.clips.length}</clips_count>\n`
@@ -103,9 +105,9 @@ export function exportAsCSV(project: TimelineProject, includeData: any): string 
     csv += "Clip ID,Name,Start Time,Duration,Track ID,Media File\n"
 
     const allClips: TimelineClip[] = []
-    project.globalTracks.forEach((track) => allClips.push(...track.clips))
-    project.sections.forEach((section) => {
-      section.tracks.forEach((track) => allClips.push(...track.clips))
+    project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+    project.sections.forEach((section: TimelineSection) => {
+      section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
     })
 
     allClips.forEach((clip) => {
@@ -114,7 +116,7 @@ export function exportAsCSV(project: TimelineProject, includeData: any): string 
   } else {
     // Экспорт секций
     csv += "Section ID,Name,Start Time,Duration\n"
-    project.sections.forEach((section) => {
+    project.sections.forEach((section: TimelineSection) => {
       csv += `${section.id},"${escapeCsv(section.name)}",${section.startTime},${section.duration}\n`
     })
   }
@@ -131,9 +133,9 @@ export function exportAsEDL(project: TimelineProject, _includeData: any): string
 
   // Собираем все клипы и сортируем по времени
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   const sortedClips = allClips.sort((a, b) => a.startTime - b.startTime)
@@ -160,9 +162,9 @@ export function exportAsFCPXML(project: TimelineProject, _includeData: any): str
 
   // Медиа ресурсы
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   const uniqueMedia = new Map<string, TimelineClip>()
@@ -213,9 +215,9 @@ export function exportAsDaVinciResolve(project: TimelineProject, _includeData: a
   drt += `# Resolution: ${project.settings.resolution.width}x${project.settings.resolution.height}\n\n`
 
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   const sortedClips = allClips.sort((a, b) => a.startTime - b.startTime)

@@ -2,7 +2,7 @@
  * AI инструмент для анализа доступных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { AnalyzeResourcesParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, getResourcesStats, hasResourcesAccess } from "./utils/helpers"
@@ -220,12 +220,12 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.analysis,
-        suggestions: result.data.suggestions,
+        analysis: result.data?.analysis,
+        suggestions: result.data?.suggestions,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {

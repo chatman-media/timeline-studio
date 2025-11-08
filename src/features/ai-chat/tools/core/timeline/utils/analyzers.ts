@@ -2,7 +2,7 @@
  * Функции анализа для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject, TimelineTrack } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
 
 import { getTimelineStateAccess } from "../types"
 import { detectClipOverlaps } from "./detectors"
@@ -17,9 +17,9 @@ export function getTrackTypeDistribution(tracks: TimelineTrack[]): Record<string
 export function calculateTimelineDensity(project: TimelineProject): number {
   // Убираем зависимость от timelineStateAccess и считаем плотность
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   if (allClips.length === 0) return 0
@@ -57,7 +57,7 @@ export function generateStructureRecommendations(project: TimelineProject): stri
 
   // Собираем все треки
   const allTracks: TimelineTrack[] = [...project.globalTracks]
-  project.sections.forEach((section) => allTracks.push(...section.tracks))
+  project.sections.forEach((section: TimelineSection) => allTracks.push(...section.tracks))
 
   const trackTypeDistribution = getTrackTypeDistribution(allTracks)
   const hasVideo = trackTypeDistribution.video > 0
@@ -105,7 +105,7 @@ export function detectStructureIssues(project: TimelineProject): any[] {
 
   // Проверяем пустые треки
   const allTracks: TimelineTrack[] = [...project.globalTracks]
-  project.sections.forEach((section) => allTracks.push(...section.tracks))
+  project.sections.forEach((section: TimelineSection) => allTracks.push(...section.tracks))
   const emptyTracks = allTracks.filter((track) => !track.clips || track.clips.length === 0)
 
   if (emptyTracks.length > 0) {
@@ -119,9 +119,9 @@ export function detectStructureIssues(project: TimelineProject): any[] {
 
   // Проверяем перекрытия клипов
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
   const overlappingClips = detectClipOverlaps(allClips)
   if (overlappingClips.length > 0) {
@@ -138,9 +138,9 @@ export function detectStructureIssues(project: TimelineProject): any[] {
 
 export function analyzeNarrativeStructure(project: TimelineProject): any {
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   if (allClips.length === 0) {
@@ -168,9 +168,9 @@ export function analyzeNarrativeStructure(project: TimelineProject): any {
 
 export function analyzePacing(project: TimelineProject): any {
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
+  project.sections.forEach((section: TimelineSection) => {
+    section.tracks.forEach((track: TimelineTrack) => allClips.push(...track.clips))
   })
 
   if (allClips.length === 0) {

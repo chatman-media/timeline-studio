@@ -7,6 +7,7 @@ pub mod ai_director_commands;
 pub mod content_classification_commands;
 pub mod content_commands;
 pub mod scene_commands; // 🆕 Scene Analysis commands
+pub mod script_generation_commands; // 🆕 AI-powered script generation commands
 pub mod unified_audio_commands; // 🆕 Modern unified audio commands
 pub mod vision_commands; // 🆕 Vision Service commands // 🆕 Content Engine commands
 
@@ -18,6 +19,7 @@ pub use ai_director_commands::*;
 pub use content_classification_commands::*;
 pub use content_commands::*;
 pub use scene_commands::*;
+pub use script_generation_commands::*;
 pub use unified_audio_commands::*;
 pub use vision_commands::*;
 

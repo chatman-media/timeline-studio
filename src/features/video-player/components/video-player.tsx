@@ -2,14 +2,19 @@ import { useRef, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { usePlayerAIIntegration } from "@/features/ai-chat/hooks/use-player-ai-integration"
+import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineEffects } from "@/features/timeline/hooks/use-timeline-effects"
+import { createLogger } from "@/lib/tauri-logger"
 import { convertVideoSrc } from "@/lib/tauri-utils"
+import { useVideoEvents } from "../hooks/use-video-events"
 import { usePlayer } from "../services/player-provider"
 import { PlayerAIOverlay } from "./player-ai-overlay"
 import { PlayerControls } from "./player-controls"
+
+const logger = createLogger("video-player:video-player")
 
 /**
  * Компонент медиа-плеера для воспроизведения видео
@@ -18,7 +23,7 @@ export function VideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const { currentVideo: video } = usePlayer()
+  const { currentVideo: video, setDuration, pause } = usePlayer()
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { project } = useTimeline()
@@ -28,6 +33,25 @@ export function VideoPlayer() {
 
   // Подключаем AI интеграцию
   const { isReady: aiReady } = usePlayerAIIntegration()
+
+  // Подписываемся на события video элемента
+  useVideoEvents(videoRef, {
+    onEnded: () => {
+      logger.debug("Video ended")
+      pause().catch((error) => logger.error("Failed to pause on video end", { error }))
+    },
+    onError: (error) => {
+      logger.error("Video playback error", { error })
+    },
+    onDurationChange: (duration) => {
+      logger.debug("Video duration changed", { duration })
+      setDuration(duration)
+    },
+    onLoadedMetadata: (metadata) => {
+      logger.debug("Video metadata loaded", metadata)
+      setDuration(metadata.duration)
+    },
+  })
 
   // Вычисляем соотношение сторон для AspectRatio
   const aspectRatioValue = aspectRatio.value.width / aspectRatio.value.height
@@ -71,7 +95,7 @@ export function VideoPlayer() {
       path: "",
       name: "Нет видео",
       size: 0,
-      type: "video/mp4",
+      type: MediaType.Video,
     }
     return (
       <div className="media-player-container relative flex h-full flex-col">
@@ -121,6 +145,7 @@ export function VideoPlayer() {
               <div className="relative h-full w-full">
                 <video
                   ref={videoRef}
+                  data-player-video // Атрибут для поиска через querySelector в usePlaybackTimeSync
                   key={video.id || "no-video"}
                   src={convertVideoSrc(video.path)}
                   controls={false}

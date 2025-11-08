@@ -85,7 +85,7 @@ export interface Track {
   color?: string
 }
 
-export type TrackType = "video" | "audio" | "title" | "music" | "voiceover" | "sfx" | "ambient"
+export type TrackType = "video" | "audio" | "image" | "title" | "music" | "voiceover" | "sfx" | "ambient"
 
 export interface TimelineClip {
   id: string
@@ -115,6 +115,10 @@ export interface TimelineClip {
   effects: AppliedEffect[]
   filters: AppliedFilter[]
   transitions: AppliedTransition[]
+  // J-Cut / L-Cut support
+  audioOffset?: number // Смещение аудио относительно видео (+ для J-cut, - для L-cut)
+  linkedClipId?: string // ID связанного клипа (для аудио/видео пары)
+  isLinked?: boolean // Связаны ли аудио и видео
 }
 
 export interface TimelineTransition {

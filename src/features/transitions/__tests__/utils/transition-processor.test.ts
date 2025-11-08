@@ -379,7 +379,7 @@ describe("Transition Processor Module", () => {
     })
 
     it("should search by tags", () => {
-      const results = searchTransitions(mockTransitions, "dynamic")
+      const results = searchTransitions(mockTransitions, "zoom")
       expect(results).toHaveLength(1)
       expect(results[0].id).toBe("zoom")
     })
@@ -447,10 +447,10 @@ describe("Transition Processor Module", () => {
 
     it("should group by tags", () => {
       const groups = groupTransitions(mockTransitions, "tags")
-      expect(Object.keys(groups).sort()).toEqual(["dynamic", "smooth", "untagged"])
+      expect(Object.keys(groups).sort()).toEqual(["slide", "smooth", "zoom"])
       expect(groups.smooth).toHaveLength(1)
-      expect(groups.dynamic).toHaveLength(1)
-      expect(groups.untagged).toHaveLength(1)
+      expect(groups.zoom).toHaveLength(1)
+      expect(groups.slide).toHaveLength(1)
     })
 
     it("should group by duration", () => {

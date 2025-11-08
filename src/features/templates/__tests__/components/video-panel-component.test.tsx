@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-
+import { MediaType } from "@/features/media/types/media"
 import { renderWithTemplates, screen } from "@/test/test-utils"
 
 import { VideoPanelComponent } from "../../components/video-panel-component"
@@ -9,7 +9,7 @@ describe("VideoPanelComponent", () => {
     id: "test-video-1",
     name: "Test Video",
     path: "/test/video.mp4",
-    type: "video",
+    type: MediaType.Video,
     size: 1024,
     duration: 60,
     startTime: 0,

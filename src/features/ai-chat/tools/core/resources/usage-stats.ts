@@ -557,8 +557,8 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка получения статистики",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка получения статистики",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 
@@ -585,8 +585,8 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка очистки ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка очистки ресурсов",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

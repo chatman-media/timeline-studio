@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 
 import { VideoPlayer } from "../video-player"
 
@@ -206,6 +206,7 @@ describe("VideoPlayer", () => {
       id: "test-video",
       path: "/path/to/video.mp4",
       name: "Test Video.mp4",
+      type: MediaType.Video,
       size: 1024000,
       isVideo: true,
       duration: 60000,
@@ -338,6 +339,7 @@ describe("VideoPlayer", () => {
         id: "new-video",
         path: "/new/video.mp4",
         name: "New Video.mp4",
+        type: MediaType.Video,
         size: 2048000,
         isVideo: true,
         duration: 120000,
@@ -355,6 +357,7 @@ describe("VideoPlayer", () => {
         id: "temp-video",
         path: "/temp/video.mp4",
         name: "Temp Video.mp4",
+        type: MediaType.Video,
         size: 1024000,
         isVideo: true,
         duration: 30000,
@@ -381,10 +384,11 @@ describe("VideoPlayer", () => {
         id: "",
         path: "/path/to/video.mp4",
         name: "Video without ID.mp4",
+        type: MediaType.Video,
         size: 1024000,
         isVideo: true,
         duration: 45000,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
       }
 
       render(<VideoPlayer />)

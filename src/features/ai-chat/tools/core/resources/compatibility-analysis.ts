@@ -268,8 +268,8 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа совместимости",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка анализа совместимости",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

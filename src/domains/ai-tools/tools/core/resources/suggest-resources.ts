@@ -2,7 +2,7 @@
  * AI инструмент для предложения дополнительных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { ResourceToolResult, SuggestResourcesParams } from "./types"
 import {
@@ -265,14 +265,14 @@ export async function suggestComplementaryResources(params: SuggestResourcesPara
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        suggestions: result.data.suggestions,
-        analysis: result.data.analysis,
-        addedResources: result.data.addedResources,
+        suggestions: result.data?.suggestions,
+        analysis: result.data?.analysis,
+        addedResources: result.data?.addedResources,
       },
       nextActions:
-        result.data.addedResources.length > 0
+        result.data?.addedResources.length > 0
           ? ["Проверить автоматически добавленные ресурсы", "Настроить параметры добавленных ресурсов"]
           : ["Просмотреть рекомендации", "Добавить рекомендуемые ресурсы вручную"],
     }

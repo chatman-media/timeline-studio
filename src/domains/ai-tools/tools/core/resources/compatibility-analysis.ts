@@ -2,7 +2,7 @@
  * AI инструмент для анализа совместимости ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { CompatibilityParams, ResourceToolResult } from "./types"
 import {
@@ -258,12 +258,12 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.analysis,
-        suggestions: result.data.suggestions,
+        analysis: result.data?.analysis,
+        suggestions: result.data?.suggestions,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {

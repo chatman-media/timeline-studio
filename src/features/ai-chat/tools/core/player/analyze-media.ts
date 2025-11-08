@@ -279,8 +279,8 @@ export async function analyzeCurrentMedia(params: MediaAnalysisParams): Promise<
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа медиа",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка анализа медиа",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

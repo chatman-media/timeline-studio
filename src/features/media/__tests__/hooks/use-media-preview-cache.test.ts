@@ -218,36 +218,46 @@ describe("useMediaPreview with IndexedDB cache", () => {
       expect(indexedDBCacheService.cachePreview).not.toHaveBeenCalled()
     })
 
-    it("should log cache hits and misses", async () => {
-      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-      const fileId = "test-logging"
+    it("should handle cache hits and misses correctly", async () => {
+      const fileId = "test-caching"
 
-      // Cache hit
+      // Test cache hit - should return cached data without calling backend
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue("cached-data")
       const { result } = renderHook(() => useMediaPreview())
 
-      await act(async () => {
-        await result.current.getPreviewData(fileId)
+      const cachedResult = await act(async () => {
+        return result.current.getPreviewData(fileId)
       })
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        `[useMediaPreview] Preview found in IndexedDB cache for file: ${fileId}`,
-      )
+      // Verify cache was checked
+      expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
+      // Verify backend was NOT called (cache hit)
+      expect(mockInvoke).not.toHaveBeenCalled()
+      // Verify we got the cached data
+      expect(cachedResult?.browser_thumbnail?.base64_data).toBe("cached-data")
 
-      // Cache miss and save
+      // Reset mocks for cache miss test
+      vi.clearAllMocks()
+
+      // Test cache miss - should call backend and cache the result
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
       mockInvoke.mockResolvedValue({
         file_id: fileId,
         browser_thumbnail: { base64_data: "new-data" },
       })
 
-      await act(async () => {
-        await result.current.getPreviewData(fileId)
+      const backendResult = await act(async () => {
+        return result.current.getPreviewData(fileId)
       })
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(`[useMediaPreview] Preview cached in IndexedDB for file: ${fileId}`)
-
-      consoleLogSpy.mockRestore()
+      // Verify cache was checked
+      expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
+      // Verify backend WAS called (cache miss)
+      expect(mockInvoke).toHaveBeenCalledWith("get_media_preview_data", { fileId })
+      // Verify result was cached
+      expect(indexedDBCacheService.cachePreview).toHaveBeenCalledWith(fileId, "new-data")
+      // Verify we got the backend data
+      expect(backendResult?.browser_thumbnail?.base64_data).toBe("new-data")
     })
   })
 })

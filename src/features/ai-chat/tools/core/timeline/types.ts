@@ -5,7 +5,7 @@
  * импортируются из @/features/timeline/types/timeline
  */
 
-import type { TimelineClip, TimelineSection, TimelineTrack } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
 
 /**
  * Типы для функций обратного вызова в reduce операциях

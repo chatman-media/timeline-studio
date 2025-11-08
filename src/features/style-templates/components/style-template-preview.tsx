@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
+import { MediaType } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
 import type { StyleTemplateResource } from "@/features/resources/types"
 import type { StyleTemplate } from "../types"
@@ -159,6 +160,7 @@ export function StyleTemplatePreview({
             id: template.id,
             path: "",
             name: template.name[currentLanguage],
+            type: MediaType.Graphics,
           }}
           size={size}
           type="styleTemplate"

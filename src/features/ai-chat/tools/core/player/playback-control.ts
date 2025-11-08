@@ -226,8 +226,8 @@ export async function controlPlayback(params: PlaybackControlParams): Promise<Pl
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка управления воспроизведением",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0]?.message || "Ошибка управления воспроизведением",
+    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
   }
 }
 

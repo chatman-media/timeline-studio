@@ -2,8 +2,8 @@
  * AI инструмент для применения автоматических улучшений к Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject } from "@/domains/video-editing/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import type { TimelineProject } from "@/features/timeline/types/timeline"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 // Типы для применения улучшений
 export interface EnhancementsInput {

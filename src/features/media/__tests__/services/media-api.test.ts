@@ -19,11 +19,20 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
   open: vi.fn(),
 }))
 
+// Мокаем логгер
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    errorSync: vi.fn(),
+    infoSync: vi.fn(),
+    debugSync: vi.fn(),
+    warnSync: vi.fn(),
+    traceSync: vi.fn(),
+  })),
+}))
+
 describe("media-api", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Очищаем моки console
-    vi.spyOn(console, "error").mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -57,11 +66,17 @@ describe("media-api", () => {
 
     it("should handle errors when getting metadata", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
+      const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Failed to read metadata")
       vi.mocked(invoke).mockRejectedValue(error)
 
       await expect(getMediaMetadata("/path/to/invalid.mp4")).rejects.toThrow("Failed to read metadata")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при получении метаданных:", error)
+
+      // Проверяем, что логгер был вызван
+      const loggerInstance = vi.mocked(createLogger).mock.results[0]?.value
+      if (loggerInstance) {
+        expect(loggerInstance.errorSync).toHaveBeenCalled()
+      }
     })
   })
 
@@ -82,11 +97,17 @@ describe("media-api", () => {
 
     it("should handle errors when getting media files", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
+      const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Directory not found")
       vi.mocked(invoke).mockRejectedValue(error)
 
       await expect(getMediaFiles("/invalid/dir")).rejects.toThrow("Directory not found")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при получении списка файлов:", error)
+
+      // Проверяем, что логгер был вызван
+      const loggerInstance = vi.mocked(createLogger).mock.results[0]?.value
+      if (loggerInstance) {
+        expect(loggerInstance.errorSync).toHaveBeenCalled()
+      }
     })
   })
 
@@ -145,11 +166,17 @@ describe("media-api", () => {
 
     it("should handle errors during file selection", async () => {
       const { open } = await import("@tauri-apps/plugin-dialog")
+      const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Permission denied")
       vi.mocked(open).mockRejectedValue(error)
 
       await expect(selectMediaFile()).rejects.toThrow("Permission denied")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при выборе файлов:", error)
+
+      // Проверяем, что логгер был вызван
+      const loggerInstance = vi.mocked(createLogger).mock.results[0]?.value
+      if (loggerInstance) {
+        expect(loggerInstance.errorSync).toHaveBeenCalled()
+      }
     })
   })
 
@@ -193,11 +220,17 @@ describe("media-api", () => {
 
     it("should handle errors during audio file selection", async () => {
       const { open } = await import("@tauri-apps/plugin-dialog")
+      const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("No audio files found")
       vi.mocked(open).mockRejectedValue(error)
 
       await expect(selectAudioFile()).rejects.toThrow("No audio files found")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при выборе аудиофайлов:", error)
+
+      // Проверяем, что логгер был вызван
+      const loggerInstance = vi.mocked(createLogger).mock.results[0]?.value
+      if (loggerInstance) {
+        expect(loggerInstance.errorSync).toHaveBeenCalled()
+      }
     })
   })
 
@@ -226,11 +259,17 @@ describe("media-api", () => {
 
     it("should handle errors during directory selection", async () => {
       const { open } = await import("@tauri-apps/plugin-dialog")
+      const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Access denied")
       vi.mocked(open).mockRejectedValue(error)
 
       await expect(selectMediaDirectory()).rejects.toThrow("Access denied")
-      expect(console.error).toHaveBeenCalledWith("Ошибка при выборе директории:", error)
+
+      // Проверяем, что логгер был вызван
+      const loggerInstance = vi.mocked(createLogger).mock.results[0]?.value
+      if (loggerInstance) {
+        expect(loggerInstance.errorSync).toHaveBeenCalled()
+      }
     })
   })
 

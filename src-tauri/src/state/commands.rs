@@ -72,6 +72,10 @@ pub enum ProjectCommand {
     clip_id: String,
     updates: ClipUpdates,
   },
+  SplitClip {
+    clip_id: String,
+    time: f64,
+  },
 
   // Media pool commands
   AddMedia {
@@ -3787,13 +3791,134 @@ impl CommandHandler {
   async fn split_clip(&self, clip_id: String, time: f64) -> CommandResult {
     log::info!("Splitting clip: id={}, time={}", clip_id, time);
 
-    // Mock implementation - in real app would modify project state
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Find the clip and its track
+    let mut found_clip: Option<Clip> = None;
+    let mut track_id_found: Option<String> = None;
+    let mut clip_index: Option<usize> = None;
+
+    for track in &mut project.timeline.tracks {
+      if let Some((idx, clip)) = track.clips.iter().enumerate().find(|(_, c)| c.id == clip_id) {
+        found_clip = Some(clip.clone());
+        track_id_found = Some(track.id.clone());
+        clip_index = Some(idx);
+        break;
+      }
+    }
+
+    let original_clip = match found_clip {
+      Some(c) => c,
+      None => return CommandResult::error("Clip not found".to_string()),
+    };
+
+    let track_id = track_id_found.unwrap();
+    let clip_idx = clip_index.unwrap();
+
+    // Validate split time is within clip bounds
+    if time <= original_clip.timeline_in || time >= original_clip.timeline_out {
+      return CommandResult::error("Split time must be within clip bounds".to_string());
+    }
+
+    // Calculate split parameters
+    let split_offset = time - original_clip.timeline_in;
+    let left_duration = split_offset;
+    let right_duration = (original_clip.timeline_out - original_clip.timeline_in) - split_offset;
+    let right_source_in = original_clip.source_in + split_offset;
+
+    // Create left clip (keeps original ID)
+    let left_clip = Clip {
+      id: original_clip.id.clone(),
+      media_id: original_clip.media_id.clone(),
+      name: original_clip.name.clone(),
+      timeline_in: original_clip.timeline_in,
+      timeline_out: time,
+      source_in: original_clip.source_in,
+      source_out: original_clip.source_in + left_duration,
+      playback_rate: original_clip.playback_rate,
+      enabled: original_clip.enabled,
+      effects: original_clip.effects.clone(),
+      transitions: original_clip.transitions.clone(),
+    };
+
+    // Create right clip (new ID)
+    let right_clip_id = uuid::Uuid::new_v4().to_string();
+    let right_clip = Clip {
+      id: right_clip_id.clone(),
+      media_id: original_clip.media_id.clone(),
+      name: format!("{} (split)", original_clip.name),
+      timeline_in: time,
+      timeline_out: time + right_duration,
+      source_in: right_source_in,
+      source_out: original_clip.source_out,
+      playback_rate: original_clip.playback_rate,
+      enabled: original_clip.enabled,
+      effects: original_clip.effects.clone(),
+      transitions: original_clip.transitions.clone(),
+    };
+
+    // Replace original clip with left and right clips
+    let track = project
+      .timeline
+      .tracks
+      .iter_mut()
+      .find(|t| t.id == track_id)
+      .unwrap();
+
+    track.clips.remove(clip_idx);
+    track.clips.push(left_clip.clone());
+    track.clips.push(right_clip.clone());
+
+    // Sort clips by timeline position
+    track
+      .clips
+      .sort_by(|a, b| a.timeline_in.partial_cmp(&b.timeline_in).unwrap());
+
+    state.mark_dirty();
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ClipSplit {
+          original_clip_id: clip_id.clone(),
+          left_clip: super::events::ClipData {
+            id: left_clip.id.clone(),
+            media_id: left_clip.media_id.clone(),
+            name: left_clip.name.clone(),
+            timeline_in: left_clip.timeline_in,
+            timeline_out: left_clip.timeline_out,
+            source_in: left_clip.source_in,
+            source_out: left_clip.source_out,
+          },
+          right_clip: super::events::ClipData {
+            id: right_clip.id.clone(),
+            media_id: right_clip.media_id.clone(),
+            name: right_clip.name.clone(),
+            timeline_in: right_clip.timeline_in,
+            timeline_out: right_clip.timeline_out,
+            source_in: right_clip.source_in,
+            source_out: right_clip.source_out,
+          },
+          track_id: track_id.clone(),
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
     CommandResult::success(Some(serde_json::json!({
-      "split": true,
       "original_clip_id": clip_id,
-      "new_clip_id": format!("{}_split", clip_id),
-      "split_time": time,
-      "timestamp": chrono::Utc::now()
+      "left_clip_id": left_clip.id,
+      "right_clip_id": right_clip_id,
+      "track_id": track_id
     })))
   }
 

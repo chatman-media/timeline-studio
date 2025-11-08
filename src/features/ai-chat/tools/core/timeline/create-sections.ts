@@ -2,7 +2,7 @@
  * AI инструмент для создания секций на Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip, TimelineSection } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineSection } from "@/features/timeline/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 import { calculateSectionsCoverage } from "./utils/calculators"
 import {

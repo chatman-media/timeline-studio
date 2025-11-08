@@ -2,7 +2,7 @@
  * Функции создания элементов для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineSection, TimelineTrack } from "@/domains/video-editing/types/timeline"
+import type { TimelineClip, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
 
 import { getTimelineStateAccess } from "../types"
 import { determineContentType, getColorForContentType } from "./detectors"

@@ -399,7 +399,7 @@ describe("TransitionsPreviewService", () => {
 
     it("should handle WebGL errors gracefully", async () => {
       // Make createTexture return null twice (for textureA and textureB) to trigger an error
-      mockGL.createTexture.mockReturnValueOnce(null).mockReturnValueOnce(null)
+      mockGL.createTexture.mockReturnValueOnce(null as any).mockReturnValueOnce(null as any)
 
       mockError.mockClear()
 

@@ -2,7 +2,7 @@
  * AI инструмент для анализа медиа браузера с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { AnalyzeBrowserParams, BrowserToolResult } from "./types"
 import {

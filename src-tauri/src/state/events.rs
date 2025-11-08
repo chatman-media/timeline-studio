@@ -51,6 +51,12 @@ pub enum ProjectEvent {
     clip_id: String,
     changes: ClipChanges,
   },
+  ClipSplit {
+    original_clip_id: String,
+    left_clip: ClipData,
+    right_clip: ClipData,
+    track_id: String,
+  },
 
   // Track events
   TrackAdded {

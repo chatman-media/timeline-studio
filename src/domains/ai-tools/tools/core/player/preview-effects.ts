@@ -3,7 +3,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 import type { EffectApplicationParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, hasLoadedMedia } from "./utils/helpers"
 
@@ -228,11 +228,11 @@ export async function applyPreviewEffects(params: {
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        appliedEffects: result.data.appliedItems,
-        totalActiveEffects: result.data.totalActiveItems,
-        activeEffects: result.data.activeItems,
+        appliedEffects: result.data?.appliedItems,
+        totalActiveEffects: result.data?.totalActiveItems,
+        activeEffects: result.data?.activeItems,
       },
     }
   }
@@ -257,11 +257,11 @@ export async function applyPreviewFilters(params: {
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        appliedFilters: result.data.appliedItems,
-        totalActiveFilters: result.data.totalActiveItems,
-        activeFilters: result.data.activeItems,
+        appliedFilters: result.data?.appliedItems,
+        totalActiveFilters: result.data?.totalActiveItems,
+        activeFilters: result.data?.activeItems,
       },
     }
   }

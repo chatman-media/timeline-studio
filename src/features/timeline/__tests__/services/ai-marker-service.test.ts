@@ -5,6 +5,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type { ContentInsights, KeyMoment, SceneInfo } from "@/domains/ai-services/types"
+import { KeyMomentType } from "@/domains/ai-services/types"
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 import { AIMarkerService } from "../../services/ai-marker-service"
 import type { TimelineMarker } from "../../types/timeline"
@@ -61,7 +62,6 @@ describe("AIMarkerService", () => {
         startTime: 0,
         duration: 5,
         confidence: 0.9,
-        frameRange: { start: 0, end: 150 },
         keyframes: [],
         objects: [],
         colors: [],
@@ -72,7 +72,6 @@ describe("AIMarkerService", () => {
         startTime: 5,
         duration: 10,
         confidence: 0.8,
-        frameRange: { start: 150, end: 450 },
         keyframes: [],
         objects: [],
         colors: [],
@@ -83,7 +82,6 @@ describe("AIMarkerService", () => {
         startTime: 15,
         duration: 1.5, // Короткая сцена
         confidence: 0.85,
-        frameRange: { start: 450, end: 495 },
         keyframes: [],
         objects: [],
         colors: [],
@@ -94,7 +92,6 @@ describe("AIMarkerService", () => {
         startTime: 20,
         duration: 3,
         confidence: 0.6, // Низкая уверенность
-        frameRange: { start: 600, end: 690 },
         keyframes: [],
         objects: [],
         colors: [],
@@ -160,39 +157,27 @@ describe("AIMarkerService", () => {
     const mockMoments: KeyMoment[] = [
       {
         id: "moment-1",
-        type: "climax",
+        type: KeyMomentType.CLIMAX,
         timestamp: 45.5,
         score: 0.95,
         description: "Кульминационный момент сцены",
-        context: {
-          visualIntensity: 0.9,
-          audioIntensity: 0.85,
-          emotionalImpact: 0.95,
-        },
+        sceneId: "scene-1",
       },
       {
         id: "moment-2",
-        type: "emotional_peak",
+        type: KeyMomentType.EMOTIONAL_PEAK,
         timestamp: 67.2,
         score: 0.75,
         description: "Эмоциональный пик диалога",
-        context: {
-          visualIntensity: 0.6,
-          audioIntensity: 0.7,
-          emotionalImpact: 0.9,
-        },
+        sceneId: "scene-2",
       },
       {
         id: "moment-3",
-        type: "visual_highlight",
+        type: KeyMomentType.VISUAL_HIGHLIGHT,
         timestamp: 120.0,
         score: 0.65, // Низкий score
         description: "Красивый визуальный момент",
-        context: {
-          visualIntensity: 0.8,
-          audioIntensity: 0.5,
-          emotionalImpact: 0.6,
-        },
+        sceneId: "scene-3",
       },
     ]
 

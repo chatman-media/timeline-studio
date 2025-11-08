@@ -2,7 +2,7 @@
  * AI инструменты для операций с файлами в браузере с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 import type { AnalyzeRelationshipsParams, BrowserToolResult, BulkSelectParams, GetFileGroupsParams } from "./types"
 import {
@@ -724,12 +724,12 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        analysis: result.data.analysis,
-        relationships: result.data.relationships,
+        analysis: result.data?.analysis,
+        relationships: result.data?.relationships,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {
@@ -753,11 +753,11 @@ export async function bulkSelectFiles(params: BulkSelectParams): Promise<Browser
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        selectionResult: result.data.selectionResult,
+        selectionResult: result.data?.selectionResult,
       },
-      nextActions: result.data.recommendations,
+      nextActions: result.data?.recommendations,
     }
   }
   return {
@@ -782,11 +782,11 @@ export async function getFileGroups(params: GetFileGroupsParams): Promise<Browse
   if (result.success) {
     return {
       success: true,
-      message: result.data.message,
+      message: result.data?.message,
       data: {
-        groups: result.data.groups,
-        analysis: result.data.analysis,
-        suggestions: result.data.recommendations,
+        groups: result.data?.groups,
+        analysis: result.data?.analysis,
+        suggestions: result.data?.recommendations,
       },
       nextActions: ["Просмотреть группы", "Организовать файлы"],
     }

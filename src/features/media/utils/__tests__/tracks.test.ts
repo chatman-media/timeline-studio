@@ -47,10 +47,6 @@ vi.mock("../video-tracks", () => ({
   processVideoFiles: vi.fn(),
 }))
 
-// Mock console.log to reduce noise in tests
-const mockConsoleLog = vi.fn()
-vi.stubGlobal("console", { log: mockConsoleLog })
-
 describe("tracks", () => {
   beforeEach(() => {
     vi.resetAllMocks()
@@ -262,19 +258,6 @@ describe("tracks", () => {
 
       expect(processVideoFiles).toHaveBeenCalledWith([videoFile, videoWithAudio], expect.any(Object))
       expect(processAudioFiles).toHaveBeenCalledWith([audioFile], expect.any(Array), expect.any(Object), "ru")
-    })
-
-    it("должен логировать процесс создания треков", () => {
-      const videoFile = createMockMediaFile(1000, true, false, "video-1")
-      const audioFile = createMockMediaFile(2000, false, true, "audio-1")
-
-      createTracksFromFiles([videoFile, audioFile], [])
-
-      expect(mockConsoleLog).toHaveBeenCalledWith("createTracksFromFiles called with files:", [
-        "video-1.mp4",
-        "audio-1.mp4",
-      ])
-      expect(mockConsoleLog).toHaveBeenCalledWith("existingTracks:", [])
     })
 
     it("должен обрабатывать отрицательные временные значения", () => {

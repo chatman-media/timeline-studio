@@ -336,7 +336,7 @@ describe("DragDropBridge", () => {
 
       expect(result).toBe(false)
       // Проверяем что logger.error был вызван с правильным сообщением
-      expect(mockLogger.error).toHaveBeenCalledWith("[DragDropBridge] Failed to bridge drag:", expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith("[DragDropBridge] Failed to bridge drag:", { error: expect.any(Error) })
     })
   })
 

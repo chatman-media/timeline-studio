@@ -7,6 +7,7 @@ import { memo, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { usePlayerAIIntegration } from "@/features/ai-chat/hooks/use-player-ai-integration"
+import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
@@ -53,7 +54,7 @@ export const VideoPlayerWithPreview = memo(function VideoPlayerWithPreview() {
       path: "",
       name: "Нет видео",
       size: 0,
-      type: "video/mp4",
+      type: MediaType.Video,
     }
     return (
       <div className="media-player-container relative flex h-full flex-col">
