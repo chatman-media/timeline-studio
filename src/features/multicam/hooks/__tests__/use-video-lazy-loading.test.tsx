@@ -64,7 +64,7 @@ describe("useVideoLazyLoading", () => {
     // Mock IntersectionObserver as class that can be tracked
     global.IntersectionObserver = class MockIO {
       constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-        constructorSpy(callback, options)
+        ;(constructorSpy as any)(callback, options)
         mockObserver = new MockIntersectionObserver(callback, options)
         // biome-ignore lint/correctness/noConstructorReturn: необходимо для корректной работы mock - возвращаем mockObserver вместо this
         return mockObserver as any

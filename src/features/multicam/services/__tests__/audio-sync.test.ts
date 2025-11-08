@@ -3,7 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 import type { SyncResult } from "../../types/multicam"
 import {
@@ -20,7 +20,7 @@ const createMockMediaFile = (id: string, hasAudio: boolean): MediaFile => ({
   id,
   name: `media-${id}.mp4`,
   path: `/path/to/${id}.mp4`,
-  type: "video",
+  type: MediaType.Video,
   size: 1000000,
   duration: 60,
   createdAt: new Date(),
@@ -41,7 +41,7 @@ const createMockMediaFile = (id: string, hasAudio: boolean): MediaFile => ({
           },
         ],
         format: {
-          duration: "60.0",
+          duration: 60.0,
         },
       }
     : {
@@ -52,7 +52,7 @@ const createMockMediaFile = (id: string, hasAudio: boolean): MediaFile => ({
           },
         ],
         format: {
-          duration: "60.0",
+          duration: 60.0,
         },
       },
 })
@@ -99,7 +99,7 @@ describe("Audio Sync Service", () => {
         id: "test3",
         name: "test.mp4",
         path: "/test.mp4",
-        type: "video",
+        type: MediaType.Video,
         size: 1000,
         duration: 10,
         createdAt: new Date(),
@@ -169,7 +169,7 @@ describe("Audio Sync Service", () => {
             },
           ],
           format: {
-            duration: "60.0",
+            duration: 60.0,
           },
         },
       }

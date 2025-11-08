@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import {
@@ -59,6 +59,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [
             {
@@ -81,6 +82,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [],
           format: {
@@ -99,6 +101,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [],
           format: {
@@ -117,6 +120,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [],
           format: {
@@ -139,6 +143,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
         probeData: {
           streams: [
             {
@@ -159,6 +164,7 @@ describe("timecode-sync", () => {
         id: "1",
         name: "test.mp4",
         path: "/test.mp4",
+        type: MediaType.Video,
       }
 
       expect(getFrameRate(mediaFile)).toBe(30)
@@ -221,6 +227,7 @@ describe("timecode-sync", () => {
           id: "media1",
           name: "camera1.mp4",
           path: "/camera1.mp4",
+          type: MediaType.Video,
           probeData: {
             streams: [{ index: 0, timecode: "10:00:00:00" }],
             format: {},
@@ -230,6 +237,7 @@ describe("timecode-sync", () => {
           id: "media2",
           name: "camera2.mp4",
           path: "/camera2.mp4",
+          type: MediaType.Video,
           probeData: {
             streams: [{ index: 0, timecode: "10:00:05:00" }],
             format: {},

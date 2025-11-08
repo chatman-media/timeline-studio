@@ -32,7 +32,8 @@ describe("useMulticamShortcuts", () => {
     // По умолчанию все shortcuts существуют с правильными ID
     vi.mocked(shortcutsRegistry.get).mockImplementation((id) => ({
       id,
-      key: id.replace("switch-camera-", ""),
+      name: `Switch to camera ${id.replace("switch-camera-", "")}`,
+      keys: [id.replace("switch-camera-", "")],
       description: `Switch to camera ${id.replace("switch-camera-", "")}`,
       category: "multicam" as const,
       enabled: true,
@@ -78,7 +79,8 @@ describe("useMulticamShortcuts", () => {
         if (num <= 3) {
           return {
             id,
-            key: id.replace("switch-camera-", ""),
+            name: `Switch to camera ${id.replace("switch-camera-", "")}`,
+            keys: [id.replace("switch-camera-", "")],
             description: `Switch to camera ${id.replace("switch-camera-", "")}`,
             category: "multicam" as const,
             enabled: true,
@@ -108,7 +110,8 @@ describe("useMulticamShortcuts", () => {
 
       // Trigger the action
       const mockEvent = new KeyboardEvent("keydown", { key: "1" })
-      action!(mockEvent)
+      const mockHotkeysEvent = { hotkey: "1", keys: ["1"] }
+      action!(mockEvent, mockHotkeysEvent as any)
 
       expect(multicamManager.switchToCameraByNumber).toHaveBeenCalledWith(1)
     })
@@ -125,9 +128,10 @@ describe("useMulticamShortcuts", () => {
 
         const action = call![0].action
         const mockEvent = new KeyboardEvent("keydown", { key: String(i) })
+        const mockHotkeysEvent = { hotkey: String(i), keys: [String(i)] }
 
         vi.mocked(multicamManager.switchToCameraByNumber).mockClear()
-        action!(mockEvent)
+        action!(mockEvent, mockHotkeysEvent as any)
 
         expect(multicamManager.switchToCameraByNumber).toHaveBeenCalledWith(i)
       }
@@ -142,8 +146,9 @@ describe("useMulticamShortcuts", () => {
       const mockEvent = {
         preventDefault: vi.fn(),
       } as any
+      const mockHotkeysEvent = { hotkey: "1", keys: ["1"] }
 
-      action!(mockEvent)
+      action!(mockEvent, mockHotkeysEvent as any)
 
       expect(mockEvent.preventDefault).toHaveBeenCalled()
     })
@@ -178,7 +183,8 @@ describe("useMulticamShortcuts", () => {
 
       expect(cleanupCall[0]).toMatchObject({
         id: expect.stringMatching(/^switch-camera-\d$/),
-        key: expect.any(String),
+        name: expect.any(String),
+        keys: expect.any(Array),
         description: expect.any(String),
         category: "multicam",
         enabled: true,
@@ -232,7 +238,8 @@ describe("useMulticamShortcuts", () => {
       // Change mock to return different shortcut
       vi.mocked(shortcutsRegistry.get).mockImplementation((id) => ({
         id,
-        key: id.replace("switch-camera-", ""),
+        name: `Switch to camera ${id.replace("switch-camera-", "")}`,
+        keys: [id.replace("switch-camera-", "")],
         description: `Switch to camera ${id.replace("switch-camera-", "")}`,
         category: "multicam" as const,
         enabled: false, // Changed from true to false
@@ -285,9 +292,10 @@ describe("useMulticamShortcuts", () => {
 
         const action = call![0].action
         const mockEvent = new KeyboardEvent("keydown", { key: String(key) })
+        const mockHotkeysEvent = { hotkey: String(key), keys: [String(key)] }
 
         vi.mocked(multicamManager.switchToCameraByNumber).mockClear()
-        action!(mockEvent)
+        action!(mockEvent, mockHotkeysEvent as any)
 
         expect(multicamManager.switchToCameraByNumber).toHaveBeenCalledWith(expectedCamera)
       })
@@ -301,7 +309,8 @@ describe("useMulticamShortcuts", () => {
       calls.slice(0, 3).forEach((call) => {
         const action = call[0].action
         const mockEvent = new KeyboardEvent("keydown")
-        action!(mockEvent)
+        const mockHotkeysEvent = { hotkey: "1", keys: ["1"] }
+        action!(mockEvent, mockHotkeysEvent as any)
       })
 
       // Should only call switchToCameraByNumber, nothing else
