@@ -18,6 +18,7 @@ use tauri::{AppHandle, Emitter};
 /// - Автоматического fallback между провайдерами
 /// - Унифицированного интерфейса для всех провайдеров
 /// - Retry логики при ошибках
+#[allow(dead_code)]
 pub struct AIProviderManager {
   client: Client,
   timeout: Duration,

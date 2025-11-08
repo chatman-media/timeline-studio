@@ -186,6 +186,7 @@ pub async fn ai_check_providers_health(
 /// * `system` - Системный промпт (опционально)
 /// * `max_tokens` - Максимум токенов (опционально)
 /// * `temperature` - Температура генерации (опционально)
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 #[specta::specta]
 pub async fn ai_send_request_with_tools(
@@ -300,6 +301,7 @@ pub async fn ai_send_secure_request(
 }
 
 /// Send AI request with tools using stored API key (secure) with caching
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 #[specta::specta]
 pub async fn ai_send_secure_request_with_tools(

@@ -49,7 +49,8 @@ impl CommandHandler {
     let effects_commands = EffectsCommands::new(state.clone(), event_bus.clone());
     let transitions_commands = TransitionsCommands::new(state.clone(), event_bus.clone());
     let advanced_edits_commands = AdvancedEditsCommands::new(state.clone(), event_bus.clone());
-    let project_commands = ProjectCommands::new(state.clone(), event_bus.clone(), persistence.clone());
+    let project_commands =
+      ProjectCommands::new(state.clone(), event_bus.clone(), persistence.clone());
 
     Self {
       state,
@@ -409,7 +410,10 @@ impl CommandHandler {
         params,
       } => self.apply_effect(clip_id, effect_id, params).await,
       ProjectCommand::RemoveEffect { clip_id, effect_id } => {
-        self.effects_commands.remove_effect(clip_id, effect_id).await
+        self
+          .effects_commands
+          .remove_effect(clip_id, effect_id)
+          .await
       }
       ProjectCommand::ApplyFilter {
         clip_id,
@@ -417,7 +421,10 @@ impl CommandHandler {
         params,
       } => self.apply_filter(clip_id, filter_id, params).await,
       ProjectCommand::RemoveFilter { clip_id, filter_id } => {
-        self.effects_commands.remove_filter(clip_id, filter_id).await
+        self
+          .effects_commands
+          .remove_filter(clip_id, filter_id)
+          .await
       }
       ProjectCommand::ApplyTransition {
         clip_id,
@@ -900,7 +907,10 @@ impl CommandHandler {
       }
       // Advanced editing commands - delegated to AdvancedEditsCommands
       ProjectCommand::RippleEdit { clip_id, delta } => {
-        self.advanced_edits_commands.ripple_edit(clip_id, delta).await
+        self
+          .advanced_edits_commands
+          .ripple_edit(clip_id, delta)
+          .await
       }
       ProjectCommand::RollEdit {
         clip_id,
@@ -916,7 +926,10 @@ impl CommandHandler {
         self.advanced_edits_commands.slip_edit(clip_id, delta).await
       }
       ProjectCommand::SlideEdit { clip_id, delta } => {
-        self.advanced_edits_commands.slide_edit(clip_id, delta).await
+        self
+          .advanced_edits_commands
+          .slide_edit(clip_id, delta)
+          .await
       }
 
       // Marker Commands
