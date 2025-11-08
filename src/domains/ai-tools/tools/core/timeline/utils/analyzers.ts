@@ -17,9 +17,9 @@ export function getTrackTypeDistribution(tracks: TimelineTrack[]): Record<string
 export function calculateTimelineDensity(project: TimelineProject): number {
   // Убираем зависимость от timelineStateAccess и считаем плотность
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks?.forEach((track) => allClips.push(...(track.clips || [])))
+  project.sections?.forEach((section) => {
+    section.tracks?.forEach((track) => allClips.push(...(track.clips || [])))
   })
 
   if (allClips.length === 0) return 0
@@ -56,8 +56,8 @@ export function generateStructureRecommendations(project: TimelineProject): stri
   }
 
   // Собираем все треки
-  const allTracks: TimelineTrack[] = [...project.globalTracks]
-  project.sections.forEach((section) => allTracks.push(...section.tracks))
+  const allTracks: TimelineTrack[] = [...(project.globalTracks || [])]
+  project.sections?.forEach((section) => allTracks.push(...(section.tracks || [])))
 
   const trackTypeDistribution = getTrackTypeDistribution(allTracks)
   const hasVideo = trackTypeDistribution.video > 0
@@ -104,8 +104,8 @@ export function detectStructureIssues(project: TimelineProject): any[] {
   }
 
   // Проверяем пустые треки
-  const allTracks: TimelineTrack[] = [...project.globalTracks]
-  project.sections.forEach((section) => allTracks.push(...section.tracks))
+  const allTracks: TimelineTrack[] = [...(project.globalTracks || [])]
+  project.sections?.forEach((section) => allTracks.push(...(section.tracks || [])))
   const emptyTracks = allTracks.filter((track) => !track.clips || track.clips.length === 0)
 
   if (emptyTracks.length > 0) {
@@ -119,9 +119,9 @@ export function detectStructureIssues(project: TimelineProject): any[] {
 
   // Проверяем перекрытия клипов
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks?.forEach((track) => allClips.push(...(track.clips || [])))
+  project.sections?.forEach((section) => {
+    section.tracks?.forEach((track) => allClips.push(...(track.clips || [])))
   })
   const overlappingClips = detectClipOverlaps(allClips)
   if (overlappingClips.length > 0) {
@@ -138,9 +138,9 @@ export function detectStructureIssues(project: TimelineProject): any[] {
 
 export function analyzeNarrativeStructure(project: TimelineProject): any {
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks?.forEach((track) => allClips.push(...(track.clips || [])))
+  project.sections?.forEach((section) => {
+    section.tracks?.forEach((track) => allClips.push(...(track.clips || [])))
   })
 
   if (allClips.length === 0) {
@@ -168,9 +168,9 @@ export function analyzeNarrativeStructure(project: TimelineProject): any {
 
 export function analyzePacing(project: TimelineProject): any {
   const allClips: TimelineClip[] = []
-  project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
+  project.globalTracks?.forEach((track) => allClips.push(...(track.clips || [])))
+  project.sections?.forEach((section) => {
+    section.tracks?.forEach((track) => allClips.push(...(track.clips || [])))
   })
 
   if (allClips.length === 0) {
@@ -192,7 +192,7 @@ export function analyzePacing(project: TimelineProject): any {
 }
 
 export function analyzeEmotionalFlow(project: TimelineProject): any {
-  const sections = project.sections
+  const sections = project.sections || []
 
   if (sections.length === 0) {
     return {
@@ -278,7 +278,7 @@ function detectSectionEmotion(section: any): string {
 
 function calculateEmotionalIntensity(section: any): number {
   // Простая логика на основе количества клипов и их длительности
-  const clipsCount = section.tracks.reduce((sum: number, track: any) => sum + track.clips.length, 0)
+  const clipsCount = section.tracks?.reduce((sum: number, track: any) => sum + (track.clips?.length || 0), 0) || 0
   return Math.min(1, clipsCount / 10)
 }
 
