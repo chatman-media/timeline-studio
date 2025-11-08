@@ -208,22 +208,18 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
       },
 
       // Resources
-      effects: (clip.effects || []).map((effectId: string) => ({
+      effects: (clip.effects || []).map((effectId: string, index: number) => ({
         id: effectId,
         effectId,
-        name: `Effect ${effectId}`, // TODO: получить имя из backend
         enabled: true,
-        parameters: {},
-        keyframes: [],
+        order: index,
       })),
       filters: [],
       transitions: (clip.transitions || []).map((t: any) => ({
         id: t.id,
         transitionId: t.transition_type,
-        name: `Transition ${t.transition_type}`,
-        type: "cross" as const, // TODO: определить тип из backend
+        type: "cross" as const,
         duration: t.duration,
-        parameters: t.params || {},
         isEnabled: true,
       })),
 
@@ -321,6 +317,7 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
     id: timeline.id,
     metadata: {
       name: timeline.name,
+      description: "",
       created_at: timeline.createdAt.toISOString(),
       modified_at: timeline.updatedAt.toISOString(),
       file_path: existingProject?.metadata.file_path || null,
@@ -331,6 +328,7 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
       duration: timeline.duration,
       fps: timeline.fps,
       sample_rate: timeline.sampleRate,
+      markers: [],
       tracks: allTracks.map((track) => ({
         id: track.id,
         name: track.name,
@@ -353,7 +351,7 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
             id: t.id,
             transition_type: t.transitionId,
             duration: t.duration,
-            params: t.parameters,
+            params: t.customParams || {},
           })),
         })),
         effects: [],
@@ -388,6 +386,7 @@ function reverseMapTrackType(frontendType: Track["type"]): string {
     audio: "Audio",
     image: "Image",
     title: "Title",
+    subtitle: "Title",
     music: "Music",
     voiceover: "Voiceover",
     sfx: "Sfx",

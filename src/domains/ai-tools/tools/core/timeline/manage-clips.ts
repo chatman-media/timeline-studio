@@ -2,6 +2,7 @@
  * AI инструмент для интеллектуального управления клипами Timeline с использованием BaseAITool
  */
 
+import { MediaFileUtils } from "@/domains/video-editing/types/media"
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
 import {
   type AIToolExecutionOptions,
@@ -410,9 +411,9 @@ export class ClipManagementTool extends BaseAITool {
    * Определяет тип клипа
    */
   private getClipType(clip: TimelineClip): string {
-    if (clip.mediaFile?.isVideo) return "video"
-    if (clip.mediaFile?.isAudio) return "audio"
-    if (clip.mediaFile?.isImage) return "image"
+    if (clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile)) return "video"
+    if (clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile)) return "audio"
+    if (clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile)) return "image"
     return "unknown"
   }
 

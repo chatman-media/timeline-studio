@@ -130,37 +130,24 @@ function applyEffectsToClips(project: TimelineProject): void {
   firstClip.effects.push({
     id: `effect-${Date.now()}`,
     effectId: "brightness-effect",
-    name: "Brightness",
     enabled: true,
-    parameters: {
-      brightness: 1.2,
-      contrast: 1.1,
-    },
-    keyframes: [],
+    order: 0,
   })
 
   // Добавляем фильтр
   firstClip.filters.push({
     id: `filter-${Date.now()}`,
     filterId: "vintage-filter",
-    name: "Vintage Filter",
     isEnabled: true,
-    parameters: {
-      intensity: 0.7,
-      warmth: 0.3,
-    },
+    order: 0,
   })
 
   // Добавляем переход в конце клипа
   firstClip.transitions.push({
     id: `transition-${Date.now()}`,
     transitionId: "fade-transition",
-    name: "Fade Out",
     type: "out",
     duration: 1, // 1 секунда
-    parameters: {
-      curve: "ease-out",
-    },
     isEnabled: true,
   })
 }

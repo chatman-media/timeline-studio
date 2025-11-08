@@ -2,6 +2,7 @@
  * AI инструмент для аналитики Timeline с использованием BaseAITool
  */
 
+import { MediaFileUtils } from "@/domains/video-editing/types/media"
 import type { TimelineClip, TimelineProject, TimelineSection } from "@/features/timeline/types/timeline"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 
@@ -425,9 +426,15 @@ export class TimelineAnalyticsTool extends BaseAITool {
     const allClips = allTracks.reduce((clips: TimelineClip[], track) => clips.concat(track.clips), [] as TimelineClip[])
 
     // Анализируем типы контента
-    const videoClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isVideo).length
-    const audioClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isAudio).length
-    const imageClips = allClips.filter((clip: TimelineClip) => clip.mediaFile?.isImage).length
+    const videoClips = allClips.filter(
+      (clip: TimelineClip) => clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile),
+    ).length
+    const audioClips = allClips.filter(
+      (clip: TimelineClip) => clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile),
+    ).length
+    const imageClips = allClips.filter(
+      (clip: TimelineClip) => clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile),
+    ).length
 
     const totalContentDuration = allClips.reduce((sum: number, clip: TimelineClip) => sum + clip.duration, 0)
 

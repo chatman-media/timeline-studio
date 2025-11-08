@@ -114,7 +114,7 @@ export interface MediaFile {
   isUnavailable?: boolean
   lastCheckedAt?: number
   isLoadingMetadata?: boolean
-  source?: "browser" | "timeline" | "import"
+  source?: "browser" | "timeline"
 
   // Proxy and optimization
   proxy?: {

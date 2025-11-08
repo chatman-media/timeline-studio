@@ -292,7 +292,7 @@ export class AAFImporter implements Importer {
       duration: 0, // AAF не хранит длительность в дескрипторе
       createdAt: new Date(),
       type: isVideo ? "video" : isAudio ? "audio" : "unknown",
-      source: "import" as const,
+      source: "browser" as const,
     } as MediaFile
 
     // descriptor.videoFormat не поддерживается в MediaFile
