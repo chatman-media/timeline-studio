@@ -17,6 +17,7 @@ interface IVisionService {
 }
 
 import { createLogger } from "@/lib/tauri-logger"
+import { getAIContainer } from "@/shared/services/ai/di-container"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 import { WhisperIntegrationService } from "./whisper-integration"
 
@@ -52,7 +53,6 @@ export class SubtitleAIIntegrationService {
 
     try {
       // Динамический импорт для избежания circular dependency
-      const { getAIContainer } = await import("@/domains/ai-core")
       const aiContainer = getAIContainer()
       const visionService = await aiContainer.resolve<IVisionService>("VisionService")
 
@@ -160,14 +160,16 @@ export class SubtitleAIIntegrationService {
           ],
           suggestions: [],
           warnings: [],
+          opportunities: [],
           strengths: [
             "Обнаружен текст на экране для OCR",
             "Проведен анализ речевых сегментов",
             "Выполнена сегментация сцен",
           ],
-          improvements: [],
+          weaknesses: [],
           recommendations: [],
-          risks: [],
+          marketingAngles: [],
+          targetDemographics: [],
         },
       }
 
@@ -292,7 +294,6 @@ export class SubtitleAIIntegrationService {
           speaker: "Говорящий 1",
           language: language,
           confidence: 0.7,
-          wordTimestamps: [],
         },
       ]
 

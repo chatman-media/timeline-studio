@@ -60,20 +60,21 @@ export function useBrowserAIIntegration() {
     let filtered = [...tabFiles]
 
     // Применяем поиск
-    if (currentTabSettings.searchQuery) {
-      const query = currentTabSettings.searchQuery.toLowerCase()
+    if (currentTabSettings.search_query) {
+      const query = currentTabSettings.search_query.toLowerCase()
       filtered = filtered.filter((file) => file.name.toLowerCase().includes(query))
     }
 
     // Применяем фильтр по избранным
-    if (currentTabSettings.showFavoritesOnly) {
+    if (currentTabSettings.show_favorites_only) {
       // В текущей реализации нет функционала избранного
       // Оставляем как есть
     }
 
     // Применяем сортировку
     filtered.sort((a, b) => {
-      const { sortBy, sortOrder } = currentTabSettings
+      const sortBy = currentTabSettings.sort_by
+      const sortOrder = currentTabSettings.sort_order
       let comparison = 0
 
       switch (sortBy) {

@@ -4,7 +4,6 @@
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../base-ai-tool"
 
-import type { AddResourceParams, BulkAddResourcesParams, RemoveResourceParams, UpdateResourceParams } from "./types"
 import { getResourcesProvider, hasResourcesAccess, resourceExists } from "./utils/helpers"
 
 // Типы для операций управления ресурсами

@@ -267,20 +267,19 @@ export async function analyzeCurrentMedia(params: MediaAnalysisParams): Promise<
     includeVideoInfo: params.includeVideoInfo,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
       data: {
         analysis: result.data.analysis,
       },
-      nextActions: ["Просмотреть детали", "Применить улучшения"],
     }
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка анализа медиа",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка анализа медиа",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

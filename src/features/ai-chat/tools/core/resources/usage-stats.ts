@@ -88,7 +88,10 @@ export class UsageStatsTool extends BaseAITool {
       switch (input.operation) {
         case "get_resource_usage_stats":
           const statsResult = await this.getResourceUsageStats({
-            timeRange: input.timeRange,
+            timeRange:
+              input.timeRange?.start && input.timeRange?.end
+                ? { start: input.timeRange.start, end: input.timeRange.end }
+                : undefined,
             groupBy: input.groupBy || "type",
             includeUnused: input.includeUnused ?? true,
           })
@@ -540,7 +543,7 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
     includeUnused: params.includeUnused,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -553,8 +556,8 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка получения статистики",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка получения статистики",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
@@ -566,7 +569,7 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
     reason: params.reason,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -581,8 +584,8 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка очистки ресурсов",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка очистки ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

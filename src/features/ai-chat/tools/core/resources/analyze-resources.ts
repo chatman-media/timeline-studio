@@ -213,7 +213,7 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
     reason: "Анализ доступных ресурсов",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -226,8 +226,8 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка анализа ресурсов",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка анализа ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

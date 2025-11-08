@@ -6,12 +6,22 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { ClaudeTool } from "@/domains/ai-core/providers/claude"
 import { ContentCategory, PlatformOptimizationService, SupportedPlatform } from "@/domains/ai-services"
 import { createLogger } from "@/lib/tauri-logger"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
 
 const logger = createLogger({ module: "PlatformIntegrationTools" })
+
+// Claude Tool interface (was imported from ai-core/providers)
+export interface ClaudeTool {
+  name: string
+  description: string
+  input_schema: {
+    type: string
+    properties: Record<string, any>
+    required?: string[]
+  }
+}
 
 // Типы для операций оптимизации платформ
 export interface PlatformOptimizationInput {
@@ -134,10 +144,7 @@ export class PlatformOptimizationTool extends BaseAITool {
           break
 
         case "analyze_content":
-          const analysis = await this.platformService.analyzeContent(input.videoPath!, {
-            category: input.contentCategory,
-            targetAudience: input.targetAudience,
-          })
+          const analysis = await this.platformService.analyzeVideoForPlatforms(input.videoPath!)
           result = {
             operation: input.operation,
             success: true,
@@ -151,10 +158,11 @@ export class PlatformOptimizationTool extends BaseAITool {
           break
 
         case "optimize_for_platform":
-          const optimized = await this.platformService.optimizeForPlatform(input.videoPath!, input.platform!, {
-            category: input.contentCategory,
-            generateVariants: input.generateVariants,
-            outputPath: input.outputPath,
+          const optimized = await this.platformService.optimizeForPlatform({
+            inputVideoPath: input.videoPath!,
+            platform: input.platform!,
+            contentCategory: input.contentCategory || "standard",
+            outputDirectory: input.outputPath || "./output",
           })
           result = {
             operation: input.operation,
@@ -169,10 +177,13 @@ export class PlatformOptimizationTool extends BaseAITool {
           break
 
         case "suggest_formats":
-          const suggestions = await this.platformService.suggestOptimalFormats(input.videoPath!, {
-            contentCategory: input.contentCategory,
-            targetAudience: input.targetAudience,
-          })
+          // Получаем рекомендации на основе анализа видео
+          const videoAnalysis = await this.platformService.analyzeVideoForPlatforms(input.videoPath!)
+          const suggestions = videoAnalysis.recommendedPlatforms.map((rec) => ({
+            platform: rec.platform,
+            score: rec.suitabilityScore,
+            reasons: rec.reasons,
+          }))
           result = {
             operation: input.operation,
             success: true,
@@ -185,21 +196,21 @@ export class PlatformOptimizationTool extends BaseAITool {
         case "validate_specifications":
           // Используем анализ видео для валидации
           const analysisResults = await this.platformService.analyzeVideoForPlatforms(input.videoPath!)
-          const platformAnalysis = analysisResults.platforms.find((p) => p.platform === input.platform)
-          const isValid = platformAnalysis?.compatibility.overallScore
-            ? platformAnalysis.compatibility.overallScore > 0.8
-            : false
+          const platformAnalysis = analysisResults.recommendedPlatforms.find(
+            (p: { platform: SupportedPlatform }) => p.platform === input.platform,
+          )
+          const isValid = platformAnalysis ? platformAnalysis.suitabilityScore > 0.8 : false
           result = {
             operation: input.operation,
             success: true,
             validation: {
               isValid,
-              issues: platformAnalysis?.compatibility.issues || [],
-              score: platformAnalysis?.compatibility.overallScore || 0,
+              issues: platformAnalysis?.requiredChanges || [],
+              score: platformAnalysis?.suitabilityScore || 0,
             },
             message: isValid ? "Видео соответствует требованиям платформы" : "Обнаружены несоответствия требованиям",
-            recommendations: platformAnalysis?.compatibility.suggestions || [],
-            warnings: platformAnalysis?.compatibility.issues,
+            recommendations: platformAnalysis?.reasons || [],
+            warnings: platformAnalysis?.requiredChanges,
           }
           break
 

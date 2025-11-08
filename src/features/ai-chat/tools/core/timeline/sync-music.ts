@@ -336,12 +336,16 @@ export class MusicSyncTool extends BaseAITool {
         if (clip.transitions && clip.transitions.length > 0) {
           for (const transition of clip.transitions) {
             // Найти ближайший бит для синхронизации перехода
-            const transitionTime = transition.startTime || clip.startTime
+            // Переходы применяются к клипу, используем время клипа
+            const transitionTime = clip.startTime
             const nearestBeat = this.findNearestBeat(transitionTime, musicAnalysis.beats)
 
             if (nearestBeat && Math.abs(nearestBeat.time - transitionTime) < 0.5) {
-              // Синхронизируем переход с битом
-              transition.startTime = nearestBeat.time
+              // Синхронизируем длительность перехода с битом
+              const beatDuration = Math.abs(nearestBeat.time - transitionTime)
+              if (beatDuration > 0) {
+                transition.duration = Math.max(transition.duration, beatDuration)
+              }
               modifiedTransitions.push(transition.id || `transition_${clip.id}`)
               modificationsCount++
             }

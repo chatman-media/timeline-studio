@@ -251,7 +251,7 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
     reason: "Анализ совместимости ресурсов",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -264,8 +264,8 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка анализа совместимости",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка анализа совместимости",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

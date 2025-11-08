@@ -313,7 +313,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     // Определяем сложность проекта
     let complexity: TemplateAnalysis["projectComplexity"] = "simple"
@@ -891,7 +891,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     return allTracks.length < 2 && allClips.length < 5
   }
@@ -903,7 +903,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     let score = 1
     if (allTracks.length > 5) score = 2

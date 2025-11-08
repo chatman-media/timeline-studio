@@ -6,7 +6,7 @@
 
 import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useState } from "react"
-import { UnifiedAIService } from "@/domains/ai-core/services"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
@@ -85,7 +85,6 @@ interface ChatProviderProps {
 export function ChatProvider({ children }: ChatProviderProps) {
   const [backendSync] = useState(() => getBackendSync())
   const [backendState, setBackendState] = useState<ProjectState | null>(null)
-  const [aiService] = useState(() => UnifiedAIService.getInstance())
 
   // Backend состояние
   const [sessions, setSessions] = useState<ChatSession[]>([])

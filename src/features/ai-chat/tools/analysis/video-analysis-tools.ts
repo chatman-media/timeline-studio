@@ -83,7 +83,7 @@ export class VideoAnalysisTool extends BaseAITool {
   private async getFFmpegService(): Promise<IFFmpegAnalysisService> {
     if (!this.ffmpegService) {
       try {
-        const { getAIContainer } = await import("@/domains/ai-core")
+        // REMOVED:         const { getAIContainer } = await import("@/domains/ai-core")
         const aiContainer = getAIContainer()
         this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
       } catch (error) {

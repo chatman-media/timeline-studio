@@ -350,7 +350,7 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
     filterCriteria: params.filterCriteria,
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -363,8 +363,8 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка экспорта",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка экспорта",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

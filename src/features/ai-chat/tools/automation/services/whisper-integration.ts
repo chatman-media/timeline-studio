@@ -123,7 +123,6 @@ export class WhisperIntegrationService {
       speaker: undefined, // Будет определен позже
       language: options.language === "auto" ? result.language : options.language,
       confidence: segment.confidence || 0.8, // По умолчанию хорошая уверенность
-      wordTimestamps: [],
     }))
   }
 
@@ -214,7 +213,6 @@ export class WhisperIntegrationService {
           speaker: detection.speaker,
           language: detection.language,
           confidence: detection.confidence,
-          wordTimestamps: [],
         })
       }
     }

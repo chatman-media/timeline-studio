@@ -258,7 +258,7 @@ export async function suggestComplementaryResources(params: SuggestResourcesPara
     reason: "Предложение дополнительных ресурсов",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
       message: result.data.message,
@@ -275,8 +275,8 @@ export async function suggestComplementaryResources(params: SuggestResourcesPara
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка предложения ресурсов",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка предложения ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

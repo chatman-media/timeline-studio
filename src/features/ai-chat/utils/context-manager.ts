@@ -2,7 +2,7 @@
  * Утилиты для управления размером контекста AI чатов
  */
 
-import { AiMessage } from "@/domains/ai-core"
+// REMOVED: import { AiMessage } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 
 // Примерные лимиты токенов для разных моделей
 const MODEL_CONTEXT_LIMITS = {

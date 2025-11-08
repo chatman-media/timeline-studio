@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react"
-import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
+import { createLogger, type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../../timeline/types"
 
@@ -139,7 +139,7 @@ export function useTimelineAIIntegration() {
           await timeline.createProject(project.name, project.settings || {})
           logInfo("[useTimelineAIIntegration] Проект создан", { projectName: project.name })
         } catch (error) {
-          logError("[useTimelineAIIntegration] Ошибка создания проекта", error)
+          logError("[useTimelineAIIntegration] Ошибка создания проекта", error as LogContext)
           throw error
         }
       },
@@ -156,7 +156,7 @@ export function useTimelineAIIntegration() {
           logInfo("[useTimelineAIIntegration] Секция создана", { id })
           return { ...section, id }
         } catch (error) {
-          logError("[useTimelineAIIntegration] Ошибка создания секции", error)
+          logError("[useTimelineAIIntegration] Ошибка создания секции", error as LogContext)
           throw error
         }
       },
@@ -168,7 +168,7 @@ export function useTimelineAIIntegration() {
           logInfo("[useTimelineAIIntegration] Трек создан", { id })
           return { ...track, id, clips: [] }
         } catch (error) {
-          logError("[useTimelineAIIntegration] Ошибка создания трека", error)
+          logError("[useTimelineAIIntegration] Ошибка создания трека", error as LogContext)
           throw error
         }
       },
@@ -181,7 +181,7 @@ export function useTimelineAIIntegration() {
           logInfo("[useTimelineAIIntegration] Клип добавлен", { id })
           return { ...clip, id }
         } catch (error) {
-          logError("[useTimelineAIIntegration] Ошибка добавления клипа", error)
+          logError("[useTimelineAIIntegration] Ошибка добавления клипа", error as LogContext)
           throw error
         }
       },
@@ -226,7 +226,7 @@ export function useTimelineAIIntegration() {
           }
           logInfo("[useTimelineAIIntegration] Команда выполнена", { command })
         } catch (error) {
-          logError("[useTimelineAIIntegration] Ошибка выполнения команды", error)
+          logError("[useTimelineAIIntegration] Ошибка выполнения команды", error as LogContext)
           throw error
         }
       },

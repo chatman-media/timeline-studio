@@ -77,10 +77,11 @@ export class ClipPlacementTool extends BaseAITool {
         if (!clip.duration || clip.duration <= 0) {
           errors.push(`Клип ${index + 1}: некорректная длительность`)
         }
-        if (clip.spacing !== undefined && clip.spacing < 0) {
-          errors.push(`Клип ${index + 1}: отрицательное значение spacing`)
-        }
       })
+
+      if (data.spacing !== undefined && data.spacing < 0) {
+        errors.push("Отрицательное значение spacing")
+      }
 
       const validStrategies = ["sequential", "manual", "smart", "chronological", "content-based"]
       if (data.strategy && !validStrategies.includes(data.strategy)) {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react"
 import { useResources } from "@/features/resources/services/resources-provider"
-import { logError, logInfo } from "@/lib/tauri-logger"
+import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 
 // Временная заглушка для setResourcesStateAccess
 let resourcesStateAccess: any = null
@@ -69,7 +69,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Медиафайл добавлен", { result })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка добавления медиафайла", error)
+        logError("[useResourcesAIIntegration] Ошибка добавления медиафайла", error as LogContext)
         throw error
       }
     },
@@ -85,7 +85,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Эффект добавлен", { result })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка добавления эффекта", error)
+        logError("[useResourcesAIIntegration] Ошибка добавления эффекта", error as LogContext)
         throw error
       }
     },
@@ -101,7 +101,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Фильтр добавлен", { result })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка добавления фильтра", error)
+        logError("[useResourcesAIIntegration] Ошибка добавления фильтра", error as LogContext)
         throw error
       }
     },
@@ -145,7 +145,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Ресурс добавлен", { resourceType, result })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка добавления ресурса", error)
+        logError("[useResourcesAIIntegration] Ошибка добавления ресурса", error as LogContext)
         throw error
       }
     },
@@ -161,7 +161,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Ресурс удален", { resourceId })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка удаления ресурса", error)
+        logError("[useResourcesAIIntegration] Ошибка удаления ресурса", error as LogContext)
         throw error
       }
     },
@@ -177,7 +177,7 @@ export function useResourcesAIIntegration() {
         logInfo("[useResourcesAIIntegration] Ресурс обновлен", { resourceId })
         return result
       } catch (error) {
-        logError("[useResourcesAIIntegration] Ошибка обновления ресурса", error)
+        logError("[useResourcesAIIntegration] Ошибка обновления ресурса", error as LogContext)
         throw error
       }
     },

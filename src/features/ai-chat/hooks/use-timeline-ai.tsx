@@ -190,12 +190,13 @@ export function useTimelineAI() {
   }, [timelineAI])
 
   /**
-   * Устанавливает API ключ для Claude
+   * Устанавливает API ключ для провайдера
+   * @param provider Провайдер AI (claude, openai, и т.д.)
    * @param apiKey API ключ
    */
   const setApiKey = useCallback(
-    (apiKey: string) => {
-      timelineAI.setApiKey(apiKey)
+    (provider: string, apiKey: string) => {
+      timelineAI.setApiKey(provider, apiKey)
     },
     [timelineAI],
   )

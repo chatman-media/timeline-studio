@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { UnifiedAIService } from "@/domains/ai-core/services"
-import type { AiResponse } from "@/domains/ai-core/types/providers"
 import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/chat"
 import { useTimeline } from "@/domains/video-editing/hooks"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
@@ -16,7 +14,8 @@ import { useModal } from "@/features/modals"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-// Импорты констант моделей больше не нужны - будем получать через UnifiedAIService
+import { backendAI } from "@/shared/services/ai/backend-ai-service"
+import type { AIProvider } from "@/types/generated/tauri-bindings"
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
 import { chatStorageService } from "../services/chat-storage-service"
@@ -25,8 +24,6 @@ import { createTimelineContextPrompt } from "../utils/timeline-context"
 import { ChatList } from "./chat-list"
 
 const logger = createLogger({ module: "AiChat" })
-
-// Модели теперь получаем динамически из UnifiedAIService
 
 // Chat modes
 type ChatMode = "chat" | "agent"
@@ -101,25 +98,32 @@ export function AiChat() {
     const loadModels = async () => {
       try {
         setIsLoadingModels(true)
-        const unifiedService = UnifiedAIService.getInstance()
-        const models = await unifiedService.getAvailableModels()
 
-        // Преобразуем модели в формат Agent
-        const agents: Agent[] = models.map((model) => ({
-          id: model.model,
-          name: model.displayName || model.model,
-          useTools: model.supportTools || false,
-          provider: model.provider,
-        }))
+        // Получаем список поддерживаемых провайдеров
+        const providers = await backendAI.getSupportedProviders()
+
+        // Создаём список моделей на основе провайдеров
+        const agents: Agent[] = []
+        for (const provider of providers) {
+          const models = await backendAI.getProviderModels(provider)
+          for (const model of models) {
+            agents.push({
+              id: model,
+              name: model,
+              useTools: provider === "claude" || provider === "openai",
+              provider: provider as string,
+            })
+          }
+        }
 
         setAvailableModels(agents)
       } catch (error) {
         logger.error("Failed to load available models:", { error: String(error) })
         // Используем минимальный набор моделей в случае ошибки
         const fallbackModels: Agent[] = [
-          { id: "claude-4-opus", name: "Claude 4 Sonnet", useTools: true, provider: "claude" },
-          { id: "gpt-5", name: "GPT-5", useTools: false, provider: "openai" },
-          { id: "qwen-2-5", name: "Qwen 2.5", useTools: false, provider: "qwen" },
+          { id: "claude-3-5-sonnet-20241022", name: "Claude 3.5 Sonnet", useTools: true, provider: "claude" },
+          { id: "gpt-4o", name: "GPT-4o", useTools: true, provider: "openai" },
+          { id: "deepseek-chat", name: "DeepSeek Chat", useTools: false, provider: "deepseek" },
         ]
         setAvailableModels(fallbackModels)
       } finally {
@@ -346,26 +350,38 @@ export function AiChat() {
           throw error
         }
 
-        // Используем UnifiedAIService для всех провайдеров
-        const unifiedService = UnifiedAIService.getInstance()
+        // Получаем API ключ для провайдера
+        const apiKeyInfo = provider !== "ollama" ? getApiKeyInfo(provider) : null
+        const apiKey = apiKeyInfo?.value || ""
 
-        // Подготавливаем сообщения с системным промптом
-        const messagesWithSystem =
-          provider === "claude"
-            ? messages // Claude обрабатывает system prompt отдельно
-            : [{ role: "system" as const, content: systemPrompt }, ...messages]
+        // Преобразуем сообщения в формат AIMessage[]
+        const aiMessages: AIMessage[] = messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        }))
 
-        // Отправляем запрос через единый сервис
-        await unifiedService.sendStreamingRequest(currentModel, messagesWithSystem, {
-          maxTokens: 2000,
-          temperature: provider === "ollama" ? 0.7 : undefined,
-          signal: abortControllerRef.current.signal,
-          onContent: (content) => setStreamingContent((prev) => prev + content),
-          onComplete: handleStreamComplete,
-          onError: handleStreamError,
-          // Передаем system prompt для Claude
-          ...(provider === "claude" && { system: systemPrompt }),
-        })
+        // Отправляем запрос через backend AI service
+        setIsStreaming(true)
+        const response = await backendAI.sendMessage(
+          {
+            provider: provider as AIProvider,
+            model: currentModel,
+            apiKey,
+            maxTokens: 2000,
+            temperature: provider === "ollama" ? 0.7 : undefined,
+            system: systemPrompt,
+          },
+          aiMessages,
+        )
+
+        // Обрабатываем ответ
+        const aiResponse = {
+          content: response.content,
+          model: response.model,
+          usage: response.usage,
+        }
+
+        await handleStreamComplete(aiResponse as any)
       } catch (error) {
         logger.error("Error sending message to AI:", { error: String(error) })
         setIsStreaming(false)

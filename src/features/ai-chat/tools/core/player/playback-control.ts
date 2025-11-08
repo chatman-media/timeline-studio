@@ -213,21 +213,21 @@ export async function controlPlayback(params: PlaybackControlParams): Promise<Pl
     reason: "Управление воспроизведением",
   })
 
-  if (result.success) {
+  if (result.success && result.data) {
     return {
       success: true,
-      message: result.data?.message ?? "",
+      message: result.data.message ?? "",
       data: {
-        action: result.data?.action,
-        previousState: result.data?.previousState,
-        newState: result.data?.newState,
+        action: result.data.action,
+        previousState: result.data.previousState,
+        newState: result.data.newState,
       },
     }
   }
   return {
     success: false,
-    message: result.errors?.[0]?.message || "Ошибка управления воспроизведением",
-    errors: [result.errors?.[0]?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка управления воспроизведением",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
