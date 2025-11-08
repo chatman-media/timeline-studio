@@ -66,6 +66,7 @@ describe("useVideoLazyLoading", () => {
       constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
         constructorSpy(callback, options)
         mockObserver = new MockIntersectionObserver(callback, options)
+        // biome-ignore lint/correctness/noConstructorReturn: необходимо для корректной работы mock - возвращаем mockObserver вместо this
         return mockObserver as any
       }
     } as any

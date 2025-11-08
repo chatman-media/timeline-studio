@@ -22,7 +22,6 @@ const logger = createLogger({ module: "AngleViewer" })
 interface AngleVideoItemProps {
   angle: MulticamAngle
   index: number
-  isPlaying: boolean
   syncOffset: number
   showLabels: boolean
   showTimecode: boolean
@@ -33,7 +32,6 @@ interface AngleVideoItemProps {
 const AngleVideoItem = memo(function AngleVideoItem({
   angle,
   index,
-  isPlaying,
   syncOffset,
   showLabels,
   showTimecode,
@@ -292,7 +290,6 @@ export function AngleViewer({
             key={angle.id}
             angle={angle}
             index={index}
-            isPlaying={isPlaying}
             syncOffset={multicam.syncOffsets[index] || 0}
             showLabels={showLabels}
             showTimecode={showTimecode}
