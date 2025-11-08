@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import { MediaPreview } from "../../../components/preview/media-preview"
 
@@ -69,6 +70,7 @@ describe("MediaPreview", () => {
     id: "video1",
     name: "video.mp4",
     path: "/path/to/video.mp4",
+    type: MediaType.VideoWithAudio,
     isVideo: true,
     isAudio: false,
     isImage: false,
@@ -78,6 +80,7 @@ describe("MediaPreview", () => {
     id: "audio1",
     name: "audio.mp3",
     path: "/path/to/audio.mp3",
+    type: MediaType.Audio,
     isVideo: false,
     isAudio: true,
     isImage: false,
@@ -87,6 +90,7 @@ describe("MediaPreview", () => {
     id: "image1",
     name: "image.jpg",
     path: "/path/to/image.jpg",
+    type: MediaType.StillImage,
     isVideo: false,
     isAudio: false,
     isImage: true,

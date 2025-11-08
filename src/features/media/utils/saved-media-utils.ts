@@ -111,7 +111,7 @@ export async function convertToSavedMediaFile(file: MediaFile, projectPath?: str
     metadata: {
       duration: file.duration,
       startTime: file.startTime,
-      createdAt: file.createdAt,
+      createdAt: file.createdAt ? file.createdAt.toISOString() : undefined,
       probeData: file.probeData,
     },
     status: "available" as FileStatus,

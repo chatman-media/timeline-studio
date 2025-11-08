@@ -4,6 +4,7 @@ import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
 import type { MediaFile, MediaTrack } from "../../types/media"
+import { MediaType } from "../../types/media"
 import { processAudioFiles } from "../audio-tracks"
 import { createTracksFromFiles } from "../tracks"
 import { updateSectorTimeRange } from "../tracks-utils"
@@ -56,6 +57,7 @@ describe("tracks", () => {
     id,
     path: `/path/to/${id}.mp4`,
     name: `${id}.mp4`,
+    type: hasVideo ? MediaType.Video : MediaType.Audio,
     isVideo: hasVideo,
     isAudio: !hasVideo,
     size: 1024000,

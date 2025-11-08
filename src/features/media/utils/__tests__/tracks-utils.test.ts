@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { MediaFile } from "../../types/media"
+import { MediaType } from "../../types/media"
 import type { Sector } from "../../types/types"
 import { updateSectorTimeRange } from "../tracks-utils"
 
@@ -8,6 +9,7 @@ describe("tracks-utils", () => {
     id,
     path: `/path/to/${id}.mp4`,
     name: `${id}.mp4`,
+    type: MediaType.Video,
     isVideo: true,
     size: 1024000,
     startTime,

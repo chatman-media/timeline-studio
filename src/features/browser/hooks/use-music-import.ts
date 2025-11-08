@@ -5,6 +5,7 @@ import { useCurrentProject } from "@/features/app-state/hooks/use-current-projec
 import { useMusicFiles } from "@/features/app-state/hooks/use-music-files"
 import { convertToSavedMusicFile, getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/features/media"
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -103,6 +104,7 @@ export function useMusicImport() {
       id: filePath,
       name: fileName,
       path: filePath,
+      type: MediaType.Music,
       isVideo: false,
       isAudio,
       isImage: false,
@@ -171,6 +173,7 @@ export function useMusicImport() {
             id: filePath,
             name: filePath.split("/").pop() ?? "unknown",
             path: filePath,
+            type: MediaType.Music,
             isVideo: false,
             isAudio: metadata.is_audio,
             isImage: false,

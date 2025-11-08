@@ -196,7 +196,7 @@ describe("saved-media-utils", () => {
         metadata: {
           duration: 120,
           startTime: 0,
-          createdAt: new Date("2023-01-01T00:00:00Z"),
+          createdAt: new Date("2023-01-01T00:00:00Z").toISOString(),
           probeData: { streams: [], format: {} },
         },
       })
@@ -257,7 +257,7 @@ describe("saved-media-utils", () => {
         metadata: {
           duration: 120,
           startTime: 0,
-          createdAt: new Date("2023-01-01T00:00:00Z"),
+          createdAt: new Date("2023-01-01T00:00:00Z").toISOString(),
           probeData: { streams: [], format: {} },
         },
         status: "available" as const,

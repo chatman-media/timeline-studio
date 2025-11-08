@@ -142,7 +142,8 @@ export function useMusicAdapter(): ListAdapter<MusicListItem> {
   const { isItemFavorite } = useFavorites()
   const { importFile, importDirectory, isImporting } = useMusicImport()
 
-  const allMusicFiles = (musicFiles || []) as MusicListItem[]
+  // MediaFile уже содержит id и name, поэтому совместим с ListItem
+  const allMusicFiles = (musicFiles || []) as unknown as MusicListItem[]
 
   return {
     // Хук для получения данных

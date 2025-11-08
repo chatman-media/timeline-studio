@@ -4,6 +4,7 @@ import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
 import type { MediaFile } from "../../types/media"
+import { MediaType } from "../../types/media"
 import type { Sector } from "../../types/types"
 import { processAudioFiles } from "../audio-tracks"
 import { doTimeRangesOverlap } from "../media-utils"
@@ -58,6 +59,7 @@ describe("audio-tracks", () => {
     id,
     path: `/path/to/${id}.mp3`,
     name: `${id}.mp3`,
+    type: MediaType.Audio,
     isAudio: true,
     size: 1024000,
     startTime,

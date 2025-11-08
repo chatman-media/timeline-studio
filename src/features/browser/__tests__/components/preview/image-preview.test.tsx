@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-
+import { MediaType } from "@/features/media/types/media"
 import { ImagePreview } from "../../../components/preview/image-preview"
 
 // PlayerProvider is already mocked globally in setup.ts
@@ -86,7 +86,7 @@ const mockFile = {
   name: "test-image.jpg",
   path: "/path/to/test-image.jpg",
   size: 1024,
-  type: "image/jpeg",
+  type: MediaType.StillImage,
   isImage: true,
   isVideo: false,
   isAudio: false,

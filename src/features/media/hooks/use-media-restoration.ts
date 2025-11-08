@@ -159,13 +159,18 @@ export function useMediaRestoration() {
             id: resolution.file.id,
             name: resolution.file.name,
             path: resolution.newPath,
+            type: resolution.file.isVideo
+              ? ("video" as any)
+              : resolution.file.isAudio
+                ? ("audio" as any)
+                : ("image" as any),
             isVideo: resolution.file.isVideo,
             isAudio: resolution.file.isAudio,
             isImage: resolution.file.isImage,
             size: resolution.file.size,
             duration: resolution.file.metadata.duration,
             startTime: resolution.file.metadata.startTime,
-            createdAt: resolution.file.metadata.createdAt,
+            createdAt: resolution.file.metadata.createdAt ? new Date(resolution.file.metadata.createdAt) : undefined,
             probeData: resolution.file.metadata.probeData || {
               streams: [],
               format: {},
