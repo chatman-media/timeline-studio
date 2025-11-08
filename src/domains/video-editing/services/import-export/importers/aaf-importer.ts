@@ -366,13 +366,30 @@ export class AAFImporter implements Importer {
         type: trackType,
         order: aafTrack.trackID - 1, // AAF trackID начинается с 1
         clips: [],
+
+        // Transitions on track
+        transitions: [],
+
+        // State flags (both old and new naming)
         locked: false,
         muted: false,
         solo: false,
+        isLocked: false,
+        isMuted: false,
+        isHidden: false,
+        isSolo: false,
+
+        // Visual
         expanded: true,
+        height: 60,
+
+        // Audio
         volume: 1.0,
         pan: 0,
-        height: 60,
+
+        // Track resources
+        trackEffects: [],
+        trackFilters: [],
       }
 
       // Создаем клипы из сегментов
@@ -435,8 +452,23 @@ export class AAFImporter implements Importer {
       duration,
       sourceIn: mediaStartTime,
       sourceOut: mediaStartTime + duration,
+
+      // Media timing (required fields)
+      mediaStartTime,
+      mediaEndTime: mediaStartTime + duration,
+      offset: 0,
+
+      // Playback
       playbackRate: 1.0,
+      speed: 1.0,
+      isReversed: false,
+
+      // State
+      isSelected: false,
+      isLocked: false,
       isMuted: false,
+
+      // Audio/Visual
       volume: 1.0,
       opacity: 1.0,
       position: {
@@ -448,11 +480,15 @@ export class AAFImporter implements Importer {
         scaleX: 1,
         scaleY: 1,
       },
+
+      // Resources
       effects: [],
       filters: [],
       transitions: [],
-      isSelected: false,
-      isLocked: false,
+
+      // Metadata
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
   }
 

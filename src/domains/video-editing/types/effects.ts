@@ -4,6 +4,8 @@
  * Типы для эффектов, фильтров и переходов в видеоредакторе
  */
 
+import type { TimelineKeyframe } from "./timeline"
+
 export interface AppliedEffect {
   id: string
   effectId: string
@@ -42,13 +44,7 @@ export interface AppliedTransition {
   isEnabled: boolean
 }
 
-export interface TimelineKeyframe {
-  id: string
-  time: number
-  value: any
-  property?: string
-  interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
-}
+// TimelineKeyframe moved to timeline.ts to avoid duplicate exports
 
 // Effect Types
 export interface EffectType {

@@ -300,13 +300,30 @@ export class EDLImporter implements Importer {
       type,
       order,
       clips: [],
+
+      // Transitions on track
+      transitions: [],
+
+      // State flags (both old and new naming)
       locked: false,
       muted: false,
       solo: false,
+      isLocked: false,
+      isMuted: false,
+      isHidden: false,
+      isSolo: false,
+
+      // Visual
       expanded: true,
-      volume: 1.0,
       height: 60,
+
+      // Audio
+      volume: 1.0,
       pan: 0,
+
+      // Track resources
+      trackEffects: [],
+      trackFilters: [],
     }
   }
 
@@ -333,8 +350,23 @@ export class EDLImporter implements Importer {
         duration,
         sourceIn,
         sourceOut,
+
+        // Media timing (required fields)
+        mediaStartTime: sourceIn,
+        mediaEndTime: sourceOut,
+        offset: 0,
+
+        // Playback
         playbackRate: 1.0,
+        speed: 1.0,
+        isReversed: false,
+
+        // State
+        isSelected: false,
+        isLocked: false,
         isMuted: false,
+
+        // Audio/Visual
         volume: 1.0,
         opacity: 1.0,
         position: {
@@ -346,11 +378,15 @@ export class EDLImporter implements Importer {
           scaleX: 1,
           scaleY: 1,
         },
+
+        // Resources
         effects: [],
         filters: [],
         transitions: this.createTransitions(event),
-        isSelected: false,
-        isLocked: false,
+
+        // Metadata
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
 
       return clip

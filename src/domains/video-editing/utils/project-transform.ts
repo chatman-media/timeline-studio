@@ -9,70 +9,8 @@
  * - Реактивная синхронизация через события
  */
 
-// Временные типы до создания tauri-bindings
-interface BackendTrack {
-  id: string
-  name: string
-  track_type: string
-  clips: any[]
-  locked: boolean
-  enabled: boolean
-  volume: number
-  pan: number
-  height: number
-}
-
-interface Project {
-  id: string
-  metadata: {
-    name: string
-    created_at: string
-    modified_at: string
-    file_path?: string | null
-    is_dirty?: boolean
-    version: string
-  }
-  settings: {
-    resolution: { width: number; height: number }
-    frame_rate: number
-    audio_sample_rate: number
-    audio_channels: number
-  }
-  timeline: {
-    tracks: BackendTrack[]
-    duration: number
-    fps: number
-    sample_rate: number
-  }
-  media_pool?: {
-    items?: Record<string, any>
-  }
-}
-
-interface ProjectCommand {
-  type: string
-  params: any
-}
-
-interface ProjectState {
-  project?: Project
-  ui_state?: {
-    selected_clips: string[]
-    selected_tracks: string[]
-    timeline_zoom: number
-    timeline_scroll: number
-    active_tool: string
-  }
-  playback_state?: {
-    is_playing: boolean
-    current_time: number
-    playback_rate: number
-    volume: number
-  }
-  version?: number
-}
-
 import { createLogger } from "@/lib/tauri-logger"
+import type { Project, ProjectState, Track as BackendTrack } from "@/types/generated/state-types"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -104,9 +42,11 @@ export function transformProjectStateToTimeline(projectState: ProjectState | nul
     sections: [
       {
         id: "main-section",
+        index: 0,
         name: "Main",
         startTime: 0,
         endTime: backendTimeline.duration || 0,
+        duration: backendTimeline.duration || 0,
         tracks: transformBackendTracks(backendTimeline.tracks),
         isCollapsed: false,
       },
@@ -237,10 +177,23 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
       duration: clip.timeline_out - clip.timeline_in,
       sourceIn: clip.source_in,
       sourceOut: clip.source_out,
+
+      // Media timing (required fields)
+      mediaStartTime: clip.source_in,
+      mediaEndTime: clip.source_out,
+      offset: 0,
+
+      // Playback
       playbackRate: clip.playback_rate,
+      speed: clip.playback_rate,
+      isReversed: false,
+
+      // State
       isSelected: false,
       isLocked: false,
       isMuted: !clip.enabled,
+
+      // Audio/Visual
       volume: track.volume,
       opacity: 1,
       position: {
@@ -252,6 +205,8 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         scaleX: 1,
         scaleY: 1,
       },
+
+      // Resources
       effects: (clip.effects || []).map((effectId: string) => ({
         id: effectId,
         effectId,
@@ -270,15 +225,36 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         parameters: t.params || {},
         isEnabled: true,
       })),
+
+      // Metadata
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })),
+
+    // Transitions on track
+    transitions: [],
+
+    // State flags (both old and new naming)
     muted: false,
     solo: false,
     locked: track.locked,
+    isLocked: track.locked,
+    isMuted: false,
+    isHidden: false,
+    isSolo: false,
+
+    // Visual
     height: track.height,
     expanded: true,
+    color: getTrackColor(track.track_type),
+
+    // Audio
     volume: track.volume,
     pan: track.pan,
-    color: getTrackColor(track.track_type),
+
+    // Track resources
+    trackEffects: [],
+    trackFilters: [],
   }))
 }
 

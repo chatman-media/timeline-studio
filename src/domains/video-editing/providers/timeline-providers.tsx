@@ -21,7 +21,7 @@ type TimelineTrack = Track
 type TimelineClip = DomainTimelineClip
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectState } from "@/types/generated/state-types"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { transformProjectStateToTimeline } from "../utils/project-transform"
 
@@ -174,8 +174,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         // Синхронизируем воспроизведение с backend
         await backendSync.executeCommand({
           type: "Play",
-          params: {},
-        })
+        } as any)
         playerActor.send({ type: "PLAY" })
       } catch (error) {
         logger.error("Failed to play:", { error: error })
@@ -188,8 +187,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         // Синхронизируем паузу с backend
         await backendSync.executeCommand({
           type: "Pause",
-          params: {},
-        })
+        } as any)
         playerActor.send({ type: "PAUSE" })
       } catch (error) {
         logger.error("Failed to pause:", { error: error })
@@ -202,8 +200,7 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
         // Синхронизируем остановку с backend
         await backendSync.executeCommand({
           type: "Stop",
-          params: {},
-        })
+        } as any)
         playerActor.send({ type: "STOP" })
       } catch (error) {
         logger.error("Failed to stop:", { error: error })
@@ -302,10 +299,19 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
     },
     updateTrack: async (trackId: string, updates: Partial<TimelineTrack>) => {
       try {
+        // Преобразуем TimelineTrack updates в TrackUpdates для backend
+        const trackUpdates = {
+          name: updates.name ?? null,
+          enabled: updates.isLocked !== undefined ? !updates.isLocked : (updates.locked !== undefined ? !updates.locked : null),
+          locked: (updates.isLocked ?? updates.locked) ?? null,
+          volume: updates.volume ?? null,
+          height: updates.height ?? null,
+        }
+
         // Выполняем команду на backend
         await backendSync.executeCommand({
           type: "UpdateTrack",
-          params: { track_id: trackId, updates },
+          params: { track_id: trackId, updates: trackUpdates },
         })
 
         // Обновляем локальное состояние
@@ -446,10 +452,18 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     updateClip: async (clipId: string, updates: Partial<TimelineClip>) => {
       try {
+        // Преобразуем TimelineClip updates в ClipUpdates для backend
+        const clipUpdates = {
+          name: updates.name ?? null,
+          playback_rate: (updates.playbackRate ?? updates.speed) ?? null,
+          volume: updates.volume ?? null,
+          enabled: updates.isMuted !== undefined ? !updates.isMuted : null,
+        }
+
         // Выполняем команду на backend - state обновится через событие
         await backendSync.executeCommand({
           type: "UpdateClip",
-          params: { clip_id: clipId, updates },
+          params: { clip_id: clipId, updates: clipUpdates },
         })
         // НЕ обновляем локально - ждем событие ClipUpdated от backend
       } catch (error) {
@@ -459,11 +473,19 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     batchUpdateClips: async (clips: TimelineClip[]) => {
       try {
-        // Выполняем команду на backend - state обновится через событие
-        await backendSync.executeCommand({
-          type: "BatchUpdateClips",
-          params: { clips },
-        })
+        // BatchUpdateClips не существует в backend, используем последовательные UpdateClip
+        for (const clip of clips) {
+          const clipUpdates = {
+            name: clip.name,
+            playback_rate: clip.playbackRate ?? clip.speed,
+            volume: clip.volume,
+            enabled: !clip.isMuted,
+          }
+          await backendSync.executeCommand({
+            type: "UpdateClip",
+            params: { clip_id: clip.id, updates: clipUpdates },
+          })
+        }
         // НЕ обновляем локально - ждем события от backend
       } catch (error) {
         logger.error("Failed to batch update clips:", { error: error })
@@ -520,7 +542,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем выбор клипов с backend
         await backendSync.executeCommand({
           type: "SelectClips",
-          params: { clip_ids: clipIds, add_to_selection: addToSelection },
+          params: { clip_ids: clipIds, add_to_selection: addToSelection ?? false },
         })
         timelineActor.send({ type: "SELECT_CLIPS", clipIds, addToSelection })
       } catch (error) {
@@ -534,7 +556,7 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем выбор треков с backend
         await backendSync.executeCommand({
           type: "SelectTracks",
-          params: { track_ids: trackIds, add_to_selection: addToSelection },
+          params: { track_ids: trackIds, add_to_selection: addToSelection ?? false },
         })
         timelineActor.send({ type: "SELECT_TRACKS", trackIds, addToSelection })
       } catch (error) {
@@ -545,11 +567,8 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     selectSections: async (sectionIds: string[], addToSelection?: boolean) => {
       try {
-        // Синхронизируем выбор секций с backend
-        await backendSync.executeCommand({
-          type: "SelectSections",
-          params: { section_ids: sectionIds, add_to_selection: addToSelection },
-        })
+        // SelectSections не существует в backend, только локальное обновление
+        // TODO: добавить команду SelectSections в backend
         timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
       } catch (error) {
         logger.error("Failed to select sections:", { error: error })
@@ -559,11 +578,8 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     clearSelection: async () => {
       try {
-        // Синхронизируем очистку выбора с backend
-        await backendSync.executeCommand({
-          type: "ClearSelection",
-          params: {},
-        })
+        // ClearSelection не существует в backend, только локальное обновление
+        // TODO: добавить команду ClearSelection в backend
         timelineActor.send({ type: "CLEAR_SELECTION" })
       } catch (error) {
         logger.error("Failed to clear selection:", { error: error })
@@ -615,15 +631,20 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     deleteSelected: async () => {
       try {
-        // Синхронизируем удаление выбранных элементов с backend
-        await backendSync.executeCommand({
-          type: "DeleteSelected",
-          params: {
-            clip_ids: selectedClipIds,
-            track_ids: selectedTrackIds,
-            section_ids: selectedSectionIds,
-          },
-        })
+        // DeleteSelected не существует, удаляем выбранные элементы по отдельности
+        // TODO: добавить команду DeleteSelected в backend
+        for (const clipId of selectedClipIds) {
+          await backendSync.executeCommand({
+            type: "DeleteClip",
+            params: { clip_id: clipId },
+          })
+        }
+        for (const trackId of selectedTrackIds) {
+          await backendSync.executeCommand({
+            type: "DeleteTrack",
+            params: { track_id: trackId },
+          })
+        }
         timelineActor.send({ type: "DELETE_SELECTED" })
       } catch (error) {
         logger.error("Failed to delete selected:", { error: error })

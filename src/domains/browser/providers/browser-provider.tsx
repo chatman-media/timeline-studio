@@ -300,9 +300,32 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       selectedFilesRecord[tab as BrowserTab] = new Set(Array.isArray(files) ? files : [])
     }
 
+    // Create proper tabSettings with all tabs
+    const defaultTabSettings: TabSettings = {
+      search_query: "",
+      show_favorites_only: false,
+      sort_by: "name",
+      sort_order: "asc",
+      group_by: "none",
+      filter_type: "all",
+      view_mode: "grid",
+      preview_size_index: DEFAULT_PREVIEW_SIZE_INDEX,
+    }
+
+    const tabSettings: Record<BrowserTab, TabSettings> = {
+      media: browserState.tab_settings.media || defaultTabSettings,
+      music: browserState.tab_settings.music || defaultTabSettings,
+      subtitles: browserState.tab_settings.subtitles || defaultTabSettings,
+      transitions: browserState.tab_settings.transitions || defaultTabSettings,
+      effects: browserState.tab_settings.effects || defaultTabSettings,
+      filters: browserState.tab_settings.filters || defaultTabSettings,
+      templates: browserState.tab_settings.templates || defaultTabSettings,
+      style_templates: browserState.tab_settings.style_templates || defaultTabSettings,
+    }
+
     return {
       activeTab: browserState.active_tab,
-      tabSettings: browserState.tab_settings || ({} as Record<BrowserTab, TabSettings>),
+      tabSettings,
       selectedFiles: selectedFilesRecord,
     }
   }, [browserState])

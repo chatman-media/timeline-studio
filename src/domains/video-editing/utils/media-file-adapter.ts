@@ -70,6 +70,10 @@ export function featureToDomainMediaFile(file: FeatureMediaFile): DomainMediaFil
  * Конвертирует новый MediaFile в старый формат
  */
 export function domainToFeatureMediaFile(file: DomainMediaFile): FeatureMediaFile {
+  // Преобразуем source: "import" в "browser" для совместимости с features
+  const featureSource: "browser" | "timeline" | undefined =
+    file.source === "import" ? "browser" : (file.source as "browser" | "timeline" | undefined)
+
   return {
     id: file.id,
     name: file.name,
@@ -94,7 +98,7 @@ export function domainToFeatureMediaFile(file: DomainMediaFile): FeatureMediaFil
     isUnavailable: file.isUnavailable,
     lastCheckedAt: file.lastCheckedAt,
     isLoadingMetadata: file.isLoadingMetadata,
-    source: file.source === "import" ? "browser" : file.source,
+    source: featureSource,
 
     // Proxy
     proxy: file.proxy

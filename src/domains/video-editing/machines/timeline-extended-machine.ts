@@ -215,10 +215,23 @@ function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
     duration: clip.timeline_out - clip.timeline_in,
     sourceIn: clip.source_in,
     sourceOut: clip.source_out,
+
+    // Media timing (required fields)
+    mediaStartTime: clip.source_in,
+    mediaEndTime: clip.source_out,
+    offset: 0,
+
+    // Playback
     playbackRate: clip.playback_rate,
+    speed: clip.playback_rate,
+    isReversed: false,
+
+    // State
     isSelected: false,
     isLocked: !clip.enabled,
     isMuted: false,
+
+    // Audio/Visual
     volume: 1.0,
     opacity: 1.0,
     position: {
@@ -230,9 +243,15 @@ function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
       scaleX: 1,
       scaleY: 1,
     },
+
+    // Resources
     effects: [],
     filters: [],
     transitions: [],
+
+    // Metadata
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }
 }
 

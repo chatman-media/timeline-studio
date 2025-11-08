@@ -384,13 +384,30 @@ export class FCPXMLImporter implements Importer {
       type,
       order: index,
       clips: [],
+
+      // Transitions on track
+      transitions: [],
+
+      // State flags (both old and new naming)
       locked: false,
       muted: false,
       solo: false,
+      isLocked: false,
+      isMuted: false,
+      isHidden: false,
+      isSolo: false,
+
+      // Visual
       expanded: true,
-      volume: 1.0,
       height: 60,
+
+      // Audio
+      volume: 1.0,
       pan: 0,
+
+      // Track resources
+      trackEffects: [],
+      trackFilters: [],
     }
   }
 
@@ -412,15 +429,25 @@ export class FCPXMLImporter implements Importer {
       duration,
       sourceIn: mediaStart,
       sourceOut: mediaStart + duration,
+
+      // Media timing (required fields)
+      mediaStartTime: mediaStart,
+      mediaEndTime: mediaStart + duration,
+      offset: 0,
+
+      // Playback
       playbackRate: 1.0,
-      volume: 1.0,
-      opacity: fcpClip.enabled !== false ? 1.0 : 0.0,
-      isMuted: false,
-      effects: [],
-      filters: [],
-      transitions: [],
+      speed: 1.0,
+      isReversed: false,
+
+      // State
       isSelected: false,
       isLocked: false,
+      isMuted: false,
+
+      // Audio/Visual
+      volume: 1.0,
+      opacity: fcpClip.enabled !== false ? 1.0 : 0.0,
       position: {
         x: 0,
         y: 0,
@@ -430,6 +457,15 @@ export class FCPXMLImporter implements Importer {
         scaleX: 1,
         scaleY: 1,
       },
+
+      // Resources
+      effects: [],
+      filters: [],
+      transitions: [],
+
+      // Metadata
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
   }
 
