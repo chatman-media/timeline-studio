@@ -21,7 +21,7 @@ export type InterpolationType = "linear" | "ease" | "ease-in" | "ease-out" | "ea
 
 export interface KeyframeValue {
   time: number // время в секундах относительно начала клипа
-  value: any // значение свойства
+  value: number | string | boolean // значение свойства
   interpolation: InterpolationType
   // Для bezier кривых
   bezierControlPoints?: {
@@ -42,8 +42,13 @@ export interface AnimationTrack {
 
 export interface AnimationResult {
   success: boolean
-  updatedClip?: TimelineClip
+  updatedClip?: TimelineClipWithKeyframes
   error?: string
+}
+
+// Расширяем TimelineClip для поддержки keyframes
+export interface TimelineClipWithKeyframes extends TimelineClip {
+  keyframes?: TimelineKeyframe[]
 }
 
 export class KeyframeAnimationService {
@@ -51,10 +56,10 @@ export class KeyframeAnimationService {
    * Добавляет keyframe для указанного свойства
    */
   static addKeyframe(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     property: AnimatableProperty,
     time: number,
-    value: any,
+    value: number | string | boolean,
     interpolation: InterpolationType = "linear",
   ): AnimationResult {
     try {
@@ -84,13 +89,15 @@ export class KeyframeAnimationService {
       }
 
       // Удаляем существующий keyframe в этом времени для этого свойства
-      updatedClip.keyframes = updatedClip.keyframes.filter((kf) => !(kf.time === time && kf.property === property))
+      updatedClip.keyframes = updatedClip.keyframes.filter(
+        (kf: TimelineKeyframe) => !(kf.time === time && kf.property === property),
+      )
 
       // Добавляем новый keyframe
       updatedClip.keyframes.push(newKeyframe)
 
       // Сортируем keyframes по времени
-      updatedClip.keyframes.sort((a, b) => a.time - b.time)
+      updatedClip.keyframes.sort((a: TimelineKeyframe, b: TimelineKeyframe) => a.time - b.time)
 
       return {
         success: true,
@@ -107,7 +114,7 @@ export class KeyframeAnimationService {
   /**
    * Удаляет keyframe
    */
-  static removeKeyframe(clip: TimelineClip, keyframeId: string): AnimationResult {
+  static removeKeyframe(clip: TimelineClipWithKeyframes, keyframeId: string): AnimationResult {
     try {
       const updatedClip = { ...clip }
 
@@ -115,7 +122,7 @@ export class KeyframeAnimationService {
         return { success: true, updatedClip }
       }
 
-      updatedClip.keyframes = updatedClip.keyframes.filter((kf) => kf.id !== keyframeId)
+      updatedClip.keyframes = updatedClip.keyframes.filter((kf: TimelineKeyframe) => kf.id !== keyframeId)
 
       return {
         success: true,
@@ -132,7 +139,11 @@ export class KeyframeAnimationService {
   /**
    * Обновляет keyframe
    */
-  static updateKeyframe(clip: TimelineClip, keyframeId: string, updates: Partial<TimelineKeyframe>): AnimationResult {
+  static updateKeyframe(
+    clip: TimelineClipWithKeyframes,
+    keyframeId: string,
+    updates: Partial<TimelineKeyframe>,
+  ): AnimationResult {
     try {
       const updatedClip = { ...clip }
 
@@ -143,7 +154,7 @@ export class KeyframeAnimationService {
         }
       }
 
-      const keyframeIndex = updatedClip.keyframes.findIndex((kf) => kf.id === keyframeId)
+      const keyframeIndex = updatedClip.keyframes.findIndex((kf: TimelineKeyframe) => kf.id === keyframeId)
       if (keyframeIndex === -1) {
         return {
           success: false,
@@ -159,7 +170,7 @@ export class KeyframeAnimationService {
 
       // Пересортируем если время изменилось
       if (updates.time !== undefined) {
-        updatedClip.keyframes.sort((a, b) => a.time - b.time)
+        updatedClip.keyframes.sort((a: TimelineKeyframe, b: TimelineKeyframe) => a.time - b.time)
       }
 
       return {
@@ -177,13 +188,19 @@ export class KeyframeAnimationService {
   /**
    * Получает значение свойства в указанное время с интерполяцией
    */
-  static getValueAtTime(clip: TimelineClip, property: AnimatableProperty, time: number): any {
+  static getValueAtTime(
+    clip: TimelineClipWithKeyframes,
+    property: AnimatableProperty,
+    time: number,
+  ): number | string | boolean {
     if (!clip.keyframes || clip.keyframes.length === 0) {
       return KeyframeAnimationService.getDefaultValue(clip, property)
     }
 
     // Получаем keyframes для этого свойства, отсортированные по времени
-    const propertyKeyframes = clip.keyframes.filter((kf) => kf.property === property).sort((a, b) => a.time - b.time)
+    const propertyKeyframes = clip.keyframes
+      .filter((kf: TimelineKeyframe) => kf.property === property)
+      .sort((a: TimelineKeyframe, b: TimelineKeyframe) => a.time - b.time)
 
     if (propertyKeyframes.length === 0) {
       return KeyframeAnimationService.getDefaultValue(clip, property)
@@ -215,24 +232,24 @@ export class KeyframeAnimationService {
   /**
    * Получает дефолтное значение для свойства
    */
-  private static getDefaultValue(clip: TimelineClip, property: AnimatableProperty): any {
+  private static getDefaultValue(clip: TimelineClipWithKeyframes, property: AnimatableProperty): number {
     switch (property) {
       case "opacity":
         return clip.opacity ?? 1
       case "position.x":
-        return clip.position?.x ?? 0
+        return clip.position.x ?? 0
       case "position.y":
-        return clip.position?.y ?? 0
+        return clip.position.y ?? 0
       case "position.width":
-        return clip.position?.width ?? 1
+        return clip.position.width ?? 1
       case "position.height":
-        return clip.position?.height ?? 1
+        return clip.position.height ?? 1
       case "position.rotation":
-        return clip.position?.rotation ?? 0
+        return clip.position.rotation ?? 0
       case "position.scaleX":
-        return clip.position?.scaleX ?? 1
+        return clip.position.scaleX ?? 1
       case "position.scaleY":
-        return clip.position?.scaleY ?? 1
+        return clip.position.scaleY ?? 1
       case "volume":
         return clip.volume ?? 1
       case "speed":
@@ -245,7 +262,11 @@ export class KeyframeAnimationService {
   /**
    * Интерполирует значения между двумя keyframes
    */
-  private static interpolateValues(currentKf: TimelineKeyframe, nextKf: TimelineKeyframe, time: number): any {
+  private static interpolateValues(
+    currentKf: TimelineKeyframe,
+    nextKf: TimelineKeyframe,
+    time: number,
+  ): number | string | boolean {
     const duration = nextKf.time - currentKf.time
     const progress = (time - currentKf.time) / duration
 
@@ -298,10 +319,10 @@ export class KeyframeAnimationService {
    * Создает анимацию между двумя значениями
    */
   static createAnimation(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     property: AnimatableProperty,
-    fromValue: any,
-    toValue: any,
+    fromValue: number | string | boolean,
+    toValue: number | string | boolean,
     startTime: number = 0,
     duration: number = 1,
     interpolation: InterpolationType = "ease-in-out",
@@ -343,7 +364,7 @@ export class KeyframeAnimationService {
   /**
    * Удаляет все keyframes для указанного свойства
    */
-  static clearPropertyKeyframes(clip: TimelineClip, property: AnimatableProperty): AnimationResult {
+  static clearPropertyKeyframes(clip: TimelineClipWithKeyframes, property: AnimatableProperty): AnimationResult {
     try {
       const updatedClip = { ...clip }
 
@@ -351,7 +372,7 @@ export class KeyframeAnimationService {
         return { success: true, updatedClip }
       }
 
-      updatedClip.keyframes = updatedClip.keyframes.filter((kf) => kf.property !== property)
+      updatedClip.keyframes = updatedClip.keyframes.filter((kf: TimelineKeyframe) => kf.property !== property)
 
       return {
         success: true,
@@ -368,17 +389,19 @@ export class KeyframeAnimationService {
   /**
    * Получает все keyframes для указанного свойства
    */
-  static getPropertyKeyframes(clip: TimelineClip, property: AnimatableProperty): TimelineKeyframe[] {
+  static getPropertyKeyframes(clip: TimelineClipWithKeyframes, property: AnimatableProperty): TimelineKeyframe[] {
     if (!clip.keyframes) return []
 
-    return clip.keyframes.filter((kf) => kf.property === property).sort((a, b) => a.time - b.time)
+    return clip.keyframes
+      .filter((kf: TimelineKeyframe) => kf.property === property)
+      .sort((a: TimelineKeyframe, b: TimelineKeyframe) => a.time - b.time)
   }
 
   /**
    * Создает fade in анимацию для opacity
    */
   static createFadeIn(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     duration: number = 1,
     interpolation: InterpolationType = "ease-out",
   ): AnimationResult {
@@ -389,7 +412,7 @@ export class KeyframeAnimationService {
    * Создает fade out анимацию для opacity
    */
   static createFadeOut(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     duration: number = 1,
     interpolation: InterpolationType = "ease-in",
   ): AnimationResult {
@@ -401,7 +424,7 @@ export class KeyframeAnimationService {
    * Создает масштабирование (zoom in/out)
    */
   static createScaleAnimation(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     fromScale: number,
     toScale: number,
     startTime: number = 0,
@@ -450,7 +473,7 @@ export class KeyframeAnimationService {
    * Создает анимацию движения
    */
   static createMovementAnimation(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     fromX: number,
     fromY: number,
     toX: number,
@@ -501,7 +524,7 @@ export class KeyframeAnimationService {
    * Создает анимацию вращения
    */
   static createRotationAnimation(
-    clip: TimelineClip,
+    clip: TimelineClipWithKeyframes,
     fromRotation: number,
     toRotation: number,
     startTime: number = 0,
@@ -523,8 +546,8 @@ export class KeyframeAnimationService {
    * Копирует keyframes с одного клипа на другой
    */
   static copyKeyframes(
-    sourceClip: TimelineClip,
-    targetClip: TimelineClip,
+    sourceClip: TimelineClipWithKeyframes,
+    targetClip: TimelineClipWithKeyframes,
     property?: AnimatableProperty,
   ): AnimationResult {
     try {
@@ -536,7 +559,7 @@ export class KeyframeAnimationService {
 
       // Фильтруем keyframes если указано конкретное свойство
       const keyframesToCopy = property
-        ? sourceClip.keyframes.filter((kf) => kf.property === property)
+        ? sourceClip.keyframes.filter((kf: TimelineKeyframe) => kf.property === property)
         : sourceClip.keyframes
 
       if (!updatedClip.keyframes) {
@@ -544,8 +567,8 @@ export class KeyframeAnimationService {
       }
 
       // Удаляем существующие keyframes для копируемых свойств
-      const propertiesToCopy = new Set(keyframesToCopy.map((kf) => kf.property))
-      updatedClip.keyframes = updatedClip.keyframes.filter((kf) => !propertiesToCopy.has(kf.property))
+      const propertiesToCopy = new Set(keyframesToCopy.map((kf: TimelineKeyframe) => kf.property))
+      updatedClip.keyframes = updatedClip.keyframes.filter((kf: TimelineKeyframe) => !propertiesToCopy.has(kf.property))
 
       // Добавляем скопированные keyframes с новыми ID
       for (const kf of keyframesToCopy) {
@@ -556,7 +579,7 @@ export class KeyframeAnimationService {
       }
 
       // Сортируем по времени
-      updatedClip.keyframes.sort((a, b) => a.time - b.time)
+      updatedClip.keyframes.sort((a: TimelineKeyframe, b: TimelineKeyframe) => a.time - b.time)
 
       return {
         success: true,
@@ -573,7 +596,7 @@ export class KeyframeAnimationService {
   /**
    * Оптимизирует keyframes (удаляет избыточные)
    */
-  static optimizeKeyframes(clip: TimelineClip, tolerance: number = 0.001): AnimationResult {
+  static optimizeKeyframes(clip: TimelineClipWithKeyframes, tolerance: number = 0.001): AnimationResult {
     try {
       const updatedClip = { ...clip }
 
@@ -583,7 +606,7 @@ export class KeyframeAnimationService {
 
       // Группируем по свойствам
       const keyframesByProperty = new Map<string, TimelineKeyframe[]>()
-      for (const kf of updatedClip.keyframes) {
+      for (const kf of updatedClip.keyframes as TimelineKeyframe[]) {
         if (!keyframesByProperty.has(kf.property)) {
           keyframesByProperty.set(kf.property, [])
         }
@@ -611,12 +634,18 @@ export class KeyframeAnimationService {
           const current = keyframes[i]
           const next = keyframes[i + 1]
 
-          // Вычисляем ожидаемое значение через линейную интерполяцию
-          const expectedValue =
-            prev.value + (next.value - prev.value) * ((current.time - prev.time) / (next.time - prev.time))
+          // Оптимизируем только числовые значения
+          if (typeof prev.value === "number" && typeof current.value === "number" && typeof next.value === "number") {
+            // Вычисляем ожидаемое значение через линейную интерполяцию
+            const expectedValue =
+              prev.value + (next.value - prev.value) * ((current.time - prev.time) / (next.time - prev.time))
 
-          // Если текущее значение существенно отличается, сохраняем keyframe
-          if (Math.abs(current.value - expectedValue) > tolerance) {
+            // Если текущее значение существенно отличается, сохраняем keyframe
+            if (Math.abs(current.value - expectedValue) > tolerance) {
+              optimizedKeyframes.push(current)
+            }
+          } else {
+            // Для не-числовых значений всегда сохраняем keyframe
             optimizedKeyframes.push(current)
           }
         }
