@@ -9,6 +9,24 @@ import { useTimelinePersons } from "../../hooks/use-timeline-persons"
 import type { TimelineClip } from "../../types/timeline"
 import { MockTimelineProvider } from "../test-providers"
 
+// Mock logger
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    error: vi.fn().mockResolvedValue(undefined),
+    warn: vi.fn().mockResolvedValue(undefined),
+    info: vi.fn().mockResolvedValue(undefined),
+    debug: vi.fn().mockResolvedValue(undefined),
+  }
+
+  return {
+    createLogger: () => mockLogger,
+    __mockLogger: mockLogger, // Экспортируем для доступа в тестах
+  }
+})
+
+// Получаем доступ к mockLogger через модуль
+const { __mockLogger: mockLogger } = (await import("@/lib/tauri-logger")) as any
+
 // Mock timeline-machine
 vi.mock("../../services/timeline-machine", () => ({
   timelineMachine: {},
@@ -382,15 +400,11 @@ describe("useTimelinePersons", () => {
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-
     act(() => {
       result.current.showPersonDetail("person-1")
     })
 
-    expect(consoleSpy).toHaveBeenCalledWith("Show person detail:", "person-1")
-
-    consoleSpy.mockRestore()
+    expect(mockLogger.info).toHaveBeenCalledWith("Show person detail:", { personId: "person-1" })
   })
 
   it("должен обрабатывать ошибки при анализе", async () => {
@@ -648,8 +662,6 @@ describe("useTimelinePersons", () => {
     // Мок возвращает null для идентификации (неизвестное лицо)
     mockIdentifyPerson.mockResolvedValue(null)
 
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-
     const testClip = getTestClip()
 
     await act(async () => {
@@ -657,16 +669,16 @@ describe("useTimelinePersons", () => {
     })
 
     // Проверяем, что было залогировано неизвестное лицо
-    expect(consoleSpy).toHaveBeenCalledWith(
+    expect(mockLogger.info).toHaveBeenCalledWith(
       "Unknown face detected with high confidence:",
       expect.objectContaining({
-        confidence: expect.any(Number),
+        face: expect.objectContaining({
+          confidence: expect.any(Number),
+        }),
       }),
     )
 
     // Не должно быть appearances для неизвестных лиц
     expect(result.current.state.appearances).toHaveLength(0)
-
-    consoleSpy.mockRestore()
   })
 })

@@ -162,7 +162,11 @@ export function convertFromSavedMediaFile(saved: SavedMediaFile): MediaFile {
     size: saved.size,
     duration: saved.metadata.duration,
     startTime: saved.metadata.startTime,
-    createdAt: saved.metadata.createdAt,
+    createdAt: saved.metadata.createdAt
+      ? typeof saved.metadata.createdAt === "string"
+        ? new Date(saved.metadata.createdAt)
+        : saved.metadata.createdAt
+      : undefined,
     probeData: saved.metadata.probeData,
     // Добавляем флаг, что файл загружен из проекта
     isLoadingMetadata: false,

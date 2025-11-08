@@ -3,19 +3,25 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { EffectPresets } from "../../components/effect-presets"
 import type { BaseEffect, VideoEffect } from "../../types"
 
-// Mock logger
-const mockLogger = {
-  errorSync: vi.fn(),
-  infoSync: vi.fn(),
-  info: vi.fn(),
-  error: vi.fn(),
-  warn: vi.fn(),
-  debug: vi.fn(),
-}
+// Mock logger - создаем внутри фабрики vi.mock
+vi.mock("@/lib/tauri-logger", () => {
+  const mockLogger = {
+    errorSync: vi.fn(),
+    infoSync: vi.fn(),
+    info: vi.fn().mockResolvedValue(undefined),
+    error: vi.fn().mockResolvedValue(undefined),
+    warn: vi.fn().mockResolvedValue(undefined),
+    debug: vi.fn().mockResolvedValue(undefined),
+  }
 
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => mockLogger),
-}))
+  return {
+    createLogger: () => mockLogger,
+    __mockLogger: mockLogger, // Экспортируем для доступа в тестах
+  }
+})
+
+// Получаем доступ к mockLogger через модуль
+const { __mockLogger: mockLogger } = (await import("@/lib/tauri-logger")) as any
 
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({
@@ -56,21 +62,6 @@ vi.mock("lucide-react", () => ({
   Settings: () => <span data-testid="settings-icon">Settings</span>,
   Trash2: () => <span data-testid="trash-icon">Trash2</span>,
 }))
-
-// Мокаем logger
-vi.mock("@/lib/tauri-logger", () => {
-  const mockLogger = {
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-    trace: vi.fn(),
-  }
-  return {
-    createLogger: () => mockLogger,
-    mockLogger, // Экспортируем для использования в тестах
-  }
-})
 
 describe("EffectPresets", () => {
   const mockPresets = [

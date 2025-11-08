@@ -273,12 +273,14 @@ describe("Speed Ramping State Machine Integration", () => {
       interpolation: "linear",
     })
 
-    // Проверяем, что клип был обновлен
+    // Проверяем, что keyframe был добавлен в конфигурацию
     const state = actor.getSnapshot()
-    const clip = state.context.project?.globalTracks[0]?.clips[0]
+    const config = state.context.speedRampingConfigs["clip-1"]
 
-    // При speed ramping клип должен иметь измененную продолжительность
-    expect(clip?.playbackRate).not.toBe(1.0)
+    // При speed ramping должен быть добавлен keyframe со значением 2.0
+    expect(config?.keyframes).toHaveLength(1)
+    expect(config?.keyframes[0].value).toBe(2.0)
+    expect(config?.keyframes[0].interpolation).toBe("linear")
   })
 
   it("сохраняет конфигурацию speed ramping при сохранении проекта", () => {

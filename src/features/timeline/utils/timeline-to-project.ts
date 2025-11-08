@@ -12,6 +12,8 @@ import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
 import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
+  AlignX,
+  AlignY,
   AnimationDirection,
   AnimationEasing,
   AnimationType,
@@ -27,6 +29,7 @@ import {
   CompilerTemplateType,
   type ElementAnimation,
   FilterType,
+  FitMode,
   FontWeight,
   ObjectFit,
   OutputFormat,
@@ -523,6 +526,9 @@ function convertTemplates(templates: MediaTemplate[]): any[] {
           y: 0,
           width,
           height: 100,
+          fit_mode: FitMode.Cover,
+          align_x: AlignX.Center,
+          align_y: AlignY.Center,
         } as any)
       }
     } else if (template.split === "horizontal") {
@@ -535,6 +541,9 @@ function convertTemplates(templates: MediaTemplate[]): any[] {
           y: i * height,
           width: 100,
           height,
+          fit_mode: FitMode.Cover,
+          align_x: AlignX.Center,
+          align_y: AlignY.Center,
         } as any)
       }
     } else if (template.split === "grid") {
@@ -553,6 +562,9 @@ function convertTemplates(templates: MediaTemplate[]): any[] {
           y: row * cellHeight,
           width: cellWidth,
           height: cellHeight,
+          fit_mode: FitMode.Cover,
+          align_x: AlignX.Center,
+          align_y: AlignY.Center,
         } as any)
       }
     }

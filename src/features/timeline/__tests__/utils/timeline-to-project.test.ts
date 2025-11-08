@@ -320,7 +320,7 @@ describe("timelineToProjectSchema", () => {
 
     const brightnessEffect = result.effects[0]
     expect(brightnessEffect.id).toBe("effect-1")
-    expect(brightnessEffect.name).toEqual({ en: "Brightness Effect", ru: "Brightness Effect" })
+    expect(brightnessEffect.name).toBe("Brightness Effect")
 
     const customEffect = result.effects[1]
     expect(customEffect.id).toBe("effect-2")

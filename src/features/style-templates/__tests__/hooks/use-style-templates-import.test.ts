@@ -22,28 +22,12 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 }))
 
 // Мокаем tauri-logger для возврата мокированного logger
-<<<<<<< HEAD
-vi.mock("@/lib/tauri-logger", () => {
-  const mockLoggerError = vi.fn()
-  const mockLoggerInfo = vi.fn()
-
-  return {
-    createLogger: vi.fn(() => ({
-      error: mockLoggerError,
-      info: mockLoggerInfo,
-    })),
-    mockLoggerError,
-    mockLoggerInfo,
-  }
-})
-=======
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     error: mockLoggerError,
     info: mockLoggerInfo,
   })),
 }))
->>>>>>> e6f6b244bcf (fix(types): Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок))
 
 // Создаем мок функции для addStyleTemplate
 const mockAddStyleTemplate = vi.fn()
