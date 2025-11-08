@@ -1,13 +1,29 @@
 /**
- * Export all services from the montage-planner module
+ * @deprecated
+ * Services have been migrated to @/domains/ai-services/services/montage-planning/
+ *
+ * This file re-exports from the new location for backward compatibility.
+ * Please update imports to use:
+ * import { ... } from '@/domains/ai-services/services/montage-planning'
  */
 
-export { ContentAnalyzer } from "./content-analyzer"
-export { MomentDetector } from "./moment-detector"
-export type { MontagePlannerContext, MontagePlannerEvent } from "./montage-planner-machine"
-export { montagePlannerMachine } from "./montage-planner-machine"
+// Re-export machine
+export type {
+  MontagePlannerContext,
+  MontagePlannerEvent,
+} from "@/domains/ai-services/machines/montage-planner-machine"
+export { montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
+// Re-export services from domains
+export {
+  applyPlanToTimeline,
+  ContentAnalyzer,
+  createMarkersFromPlan,
+  MomentDetector,
+  PlanGenerator,
+  RhythmCalculator,
+} from "@/domains/ai-services/services/montage-planning"
+// Re-export types
+export type { TimelineIntegrationOptions } from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
+
+// Provider stays in features (UI layer)
 export { MontagePlannerProvider, useMontagePlanner as useMontagePlannerContext } from "./montage-planner-provider"
-export { PlanGenerator } from "./plan-generator"
-export { RhythmCalculator } from "./rhythm-calculator"
-export type { TimelineIntegrationOptions } from "./timeline-integration-service"
-export { applyPlanToTimeline, createMarkersFromPlan } from "./timeline-integration-service"

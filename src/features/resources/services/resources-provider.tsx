@@ -160,12 +160,25 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         }
       }
 
-      // В V2 архитектуре backend сам управляет media_pool через события
-      // Файлы добавляются через importMediaFiles/processFiles, которые вызывают backend
-      // Backend отправляет STATE_UPDATED события, которые автоматически обновляют frontend
-      logInfo("ResourcesProvider: Media will be processed through backend events", { path: file.path })
+      // Добавляем медиа через backend команду
+      try {
+        await executeCommand({
+          type: "AddMedia",
+          params: {
+            path: file.path,
+            media_type: file.type,
+          },
+        })
+        logInfo("ResourcesProvider: Media added successfully", { path: file.path })
+      } catch (error) {
+        logError("ResourcesProvider: Failed to add media", {
+          path: file.path,
+          error: error instanceof Error ? error.message : String(error),
+        })
+        throw error
+      }
     },
-    [backendState],
+    [backendState, executeCommand],
   )
 
   const addMusic = useCallback(
@@ -199,12 +212,25 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         }
       }
 
-      // В V2 архитектуре backend сам управляет media_pool через события
-      // Файлы добавляются через importMediaFiles/processFiles, которые вызывают backend
-      // Backend отправляет STATE_UPDATED события, которые автоматически обновляют frontend
-      logInfo("ResourcesProvider: Music will be processed through backend events", { path: file.path })
+      // Добавляем музыку через backend команду (используем MediaType.Audio)
+      try {
+        await executeCommand({
+          type: "AddMedia",
+          params: {
+            path: file.path,
+            media_type: MediaType.Audio,
+          },
+        })
+        logInfo("ResourcesProvider: Music added successfully", { path: file.path })
+      } catch (error) {
+        logError("ResourcesProvider: Failed to add music", {
+          path: file.path,
+          error: error instanceof Error ? error.message : String(error),
+        })
+        throw error
+      }
     },
-    [backendState],
+    [backendState, executeCommand],
   )
 
   const addSubtitle = useCallback(

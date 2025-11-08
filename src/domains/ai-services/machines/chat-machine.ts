@@ -321,4 +321,5 @@ export const chatMachine = setup({
  */
 export type ChatMachine = typeof chatMachine
 
-// Types are already exported above, no need for re-export
+// Re-export types from chat types for convenience
+export type { ChatListItem, ChatMessage } from "../types/chat"

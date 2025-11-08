@@ -5,9 +5,13 @@ import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 
-function LeftLayout() {
-  const { isTimelineVisible, isBrowserVisible, isOptionsVisible } = useUserSettings()
+interface LeftLayoutProps {
+  isTimelineVisible: boolean
+  isBrowserVisible: boolean
+  isOptionsVisible: boolean
+}
 
+function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: LeftLayoutProps) {
   // Случай: только Options (Timeline и Browser скрыты)
   if (!isTimelineVisible && !isBrowserVisible) {
     return (
@@ -135,7 +139,11 @@ export function VerticalLayout() {
   return (
     <ResizablePanelGroup direction="horizontal" className="min-h-0 flex-grow" autoSaveId="vertical-main-layout">
       <ResizablePanel defaultSize={67} minSize={50}>
-        <LeftLayout />
+        <LeftLayout
+          isTimelineVisible={isTimelineVisible}
+          isBrowserVisible={isBrowserVisible}
+          isOptionsVisible={isOptionsVisible}
+        />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={33}>

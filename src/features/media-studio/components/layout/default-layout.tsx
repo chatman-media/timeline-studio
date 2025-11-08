@@ -5,9 +5,13 @@ import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 
-function TopDefaultLayout() {
-  const { isOptionsVisible, isTimelineVisible, isBrowserVisible } = useUserSettings()
+interface TopDefaultLayoutProps {
+  isOptionsVisible: boolean
+  isTimelineVisible: boolean
+  isBrowserVisible: boolean
+}
 
+function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVisible }: TopDefaultLayoutProps) {
   // Случай: только VideoPlayer (все панели скрыты)
   if (!isOptionsVisible && !isBrowserVisible) {
     return (
@@ -89,12 +93,16 @@ function TopDefaultLayout() {
 }
 
 export function DefaultLayout() {
-  const { isTimelineVisible } = useUserSettings()
+  const { isTimelineVisible, isOptionsVisible, isBrowserVisible } = useUserSettings()
 
   return (
     <ResizablePanelGroup direction="vertical" className="min-h-0 flex-grow" autoSaveId="default-layout-main">
       <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
-        <TopDefaultLayout />
+        <TopDefaultLayout
+          isTimelineVisible={isTimelineVisible}
+          isOptionsVisible={isOptionsVisible}
+          isBrowserVisible={isBrowserVisible}
+        />
       </ResizablePanel>
       {isTimelineVisible ? (
         <>

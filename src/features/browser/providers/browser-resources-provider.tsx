@@ -126,7 +126,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     const cached = this.resourcesCache.get(cacheKey)
     const now = Date.now()
 
-    if (cached && (now - cached.timestamp) < this.CACHE_TTL) {
+    if (cached && now - cached.timestamp < this.CACHE_TTL) {
       // Кэш еще актуален - возвращаем закэшированный результат
       return cached.resources as T[]
     }

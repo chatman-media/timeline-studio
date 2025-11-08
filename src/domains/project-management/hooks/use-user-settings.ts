@@ -9,13 +9,14 @@ import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 
 export function useUserSettings() {
-  logInfo("[useUserSettings] Инициализация хука")
-
   const [orchestrator] = useState(() => getProjectManagementOrchestrator())
   const [settings, setSettings] = useState<UserSettingsContextType>(() => orchestrator.getUserSettings())
 
   // Подписка на изменения настроек
   useEffect(() => {
+    // Логируем только один раз при монтировании
+    logInfo("[useUserSettings] Инициализация хука")
+
     const subscription = orchestrator.subscribeToUserSettings((newSettings) => {
       setSettings(newSettings)
     })

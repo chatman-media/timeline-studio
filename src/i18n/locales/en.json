@@ -1523,7 +1523,11 @@
       "savingProgress": "Saving progress",
       "saveSuccess": "Video saved successfully!",
       "stop": "Stop",
-      "processing": "Processing..."
+      "processing": "Processing...",
+      "ai_connected": "AI Connected",
+      "empty_project_hint": "Project is empty. Start with:",
+      "import_media": "Import Media",
+      "ask_ai_import": "Ask AI"
     },
     "title": "Timeline",
     "noTracks": "No tracks",

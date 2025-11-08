@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { createLogger, type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../../timeline/types"
@@ -130,7 +130,37 @@ export function useTimelineAIIntegration() {
   )
 
   // Эффект для установки доступа к состоянию timeline
+  // ОПТИМИЗИРОВАНО: теперь зависит только от timeline, функции создаются заново только при изменении timeline
   useEffect(() => {
+    // Создаем функции доступа к данным напрямую внутри effect
+    const getCurrentClips = (): TimelineClip[] => {
+      if (!timeline.project) return []
+      const clips: TimelineClip[] = []
+      timeline.project.globalTracks?.forEach((track: TimelineTrack) => {
+        if (track.clips) clips.push(...track.clips)
+      })
+      timeline.project.sections?.forEach((section: TimelineSection) => {
+        section.tracks?.forEach((track: TimelineTrack) => {
+          if (track.clips) clips.push(...track.clips)
+        })
+      })
+      return clips
+    }
+
+    const getCurrentTracks = (): TimelineTrack[] => {
+      if (!timeline.project) return []
+      const tracks: TimelineTrack[] = []
+      if (timeline.project.globalTracks) tracks.push(...timeline.project.globalTracks)
+      timeline.project.sections?.forEach((section: TimelineSection) => {
+        if (section.tracks) tracks.push(...section.tracks)
+      })
+      return tracks
+    }
+
+    const getCurrentSections = (): TimelineSection[] => {
+      return timeline.project?.sections || []
+    }
+
     const timelineAccess: TimelineStateAccess = {
       getCurrentProject: () => timeline.project,
       createProject: async (project: any) => {
@@ -186,12 +216,15 @@ export function useTimelineAIIntegration() {
         }
       },
       getProjectStats: () => {
-        const clips = getAllClips()
-        const tracks = getAllTracks()
-        const sections = getAllSections()
+        const clips = getCurrentClips()
+        const tracks = getCurrentTracks()
+        const sections = getCurrentSections()
 
         const stats = {
-          totalDuration: getProjectDuration(),
+          totalDuration: clips.reduce((max, clip) => {
+            const clipEnd = clip.startTime + clip.duration
+            return clipEnd > max ? clipEnd : max
+          }, 0),
           totalClips: clips.length,
           totalTracks: tracks.length,
           totalSections: sections.length,
@@ -241,16 +274,25 @@ export function useTimelineAIIntegration() {
       setTimelineStateAccess(null)
       logInfo("[useTimelineAIIntegration] Доступ к timeline очищен")
     }
-  }, [timeline, getAllClips, getAllTracks, getAllSections, getProjectDuration, getSelectedClips, getClipsAtTime])
+  }, [timeline]) // ОПТИМИЗИРОВАНО: только одна зависимость вместо 7!
 
-  const result = {
-    isReady: timeline.isReady && timeline.project !== null,
-    hasProject: timeline.project !== null,
-    clipsCount: getAllClips().length,
-    tracksCount: getAllTracks().length,
-    projectDuration: getProjectDuration(),
-  }
+  // Мемоизируем результат, чтобы избежать лишних ре-рендеров
+  const result = useMemo(() => {
+    const clips = getAllClips()
+    const tracks = getAllTracks()
+    const duration = getProjectDuration()
 
-  logInfo("[useTimelineAIIntegration] Готов", result)
+    const stats = {
+      isReady: timeline.isReady && timeline.project !== null,
+      hasProject: timeline.project !== null,
+      clipsCount: clips.length,
+      tracksCount: tracks.length,
+      projectDuration: duration,
+    }
+
+    logInfo("[useTimelineAIIntegration] Готов", stats)
+    return stats
+  }, [timeline.isReady, timeline.project, getAllClips, getAllTracks, getProjectDuration])
+
   return result
 }
