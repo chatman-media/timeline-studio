@@ -117,12 +117,11 @@ export function handleInterModuleDrag(
 
       if (isMultiSelectDrag && timelineActions.addMediaToTimeline) {
         // Multi-select drag & drop - добавляем все выбранные файлы
-        logger.info("[DragDropBridge] Multi-select drag detected:", dragItem.selectedFiles.length, "files")
+        logger.info("[DragDropBridge] Multi-select drag detected:", dragItem.selectedFiles.length)
         timelineActions.addMediaToTimeline(dragItem.selectedFiles)
         logger.info(
           "[DragDropBridge] Successfully added multiple media via Timeline actions:",
           dragItem.selectedFiles.length,
-          "files",
         )
       } else {
         // Single file drag & drop

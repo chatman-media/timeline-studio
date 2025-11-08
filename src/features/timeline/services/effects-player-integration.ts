@@ -4,12 +4,34 @@
  */
 
 import { WebGL2UnifiedRenderer } from "@/features/effects/services/webgl2-unified-renderer"
-import type { BaseEffect } from "@/features/effects/types"
+import type { BaseEffect, AppliedEffect as EffectsAppliedEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AppliedEffect, TimelineClip } from "../types"
+import type { AppliedEffect as TimelineAppliedEffect, TimelineClip } from "../types"
 import { EffectsCache } from "./effects-cache"
 
 const logger = createLogger("EffectsPlayerIntegration")
+
+/**
+ * Конвертировать Timeline AppliedEffect в Effects AppliedEffect
+ */
+function convertToEffectsAppliedEffect(timelineEffect: TimelineAppliedEffect): EffectsAppliedEffect {
+  return {
+    id: timelineEffect.id,
+    effectId: timelineEffect.effectId,
+    startTime: timelineEffect.startTime || 0,
+    duration: timelineEffect.duration,
+    parameters: timelineEffect.customParams || {},
+    enabled: timelineEffect.enabled,
+    order: timelineEffect.order,
+    keyframes: {},
+    masks: [],
+    blendMode: "normal",
+    opacity: 1.0,
+    effectVersion: "1.0",
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+  }
+}
 
 export interface EffectsPlayerConfig {
   targetCanvas?: HTMLCanvasElement
@@ -130,8 +152,11 @@ export class EffectsPlayerIntegration {
     }
 
     try {
+      // Конвертируем timeline эффекты в effects эффекты
+      const convertedEffects = activeEffects.map(convertToEffectsAppliedEffect)
+
       // Рендерим эффекты через WebGL
-      const result = await this.renderer.renderEffectStack(activeEffects, Array.from(this.baseEffects.values()), {
+      const result = await this.renderer.renderEffectStack(convertedEffects, this.baseEffects, {
         source: videoElement,
         target: this.targetCanvas,
         width: videoElement.videoWidth,
@@ -235,7 +260,10 @@ export class EffectsPlayerIntegration {
         videoElement.onseeked = () => resolve(undefined)
       })
 
-      const result = await this.renderer.renderEffectStack(activeEffects, Array.from(this.baseEffects.values()), {
+      // Конвертируем timeline эффекты в effects эффекты
+      const convertedEffects = activeEffects.map(convertToEffectsAppliedEffect)
+
+      const result = await this.renderer.renderEffectStack(convertedEffects, this.baseEffects, {
         source: videoElement,
         target: tempCanvas,
         width: videoElement.videoWidth,
@@ -304,16 +332,32 @@ export class EffectsPlayerIntegration {
 
     try {
       // Создаем временный applied effect с дефолтными параметрами
-      const appliedEffect: AppliedEffect = {
+      // Создаем параметры по умолчанию из определения эффекта
+      const defaultParams: Record<string, any> = {}
+      if (effect.parameters) {
+        effect.parameters.forEach((param) => {
+          defaultParams[param.id] = param.defaultValue
+        })
+      }
+
+      const appliedEffect: EffectsAppliedEffect = {
         id: `preview_${effect.id}`,
         effectId: effect.id,
         enabled: true,
         order: 0,
-        parameters: effect.defaultParams || {},
+        startTime: 0,
+        duration: undefined,
+        parameters: defaultParams,
         keyframes: {},
+        masks: [],
+        blendMode: "normal",
+        opacity: 1.0,
+        effectVersion: "1.0",
+        createdAt: new Date(),
+        modifiedAt: new Date(),
       }
 
-      const result = await this.renderer.renderEffectStack([appliedEffect], Array.from(this.baseEffects.values()), {
+      const result = await this.renderer.renderEffectStack([appliedEffect], this.baseEffects, {
         source: sourceImage,
         target: previewCanvas,
         width: size,
@@ -353,9 +397,17 @@ export class EffectsPlayerIntegration {
       const baseEffect = this.baseEffects.get(appliedEffect.effectId)
       if (!baseEffect?.processors?.ffmpeg) continue
 
+      // Создаем параметры по умолчанию из определения эффекта
+      const defaultParams: Record<string, any> = {}
+      if (baseEffect.parameters) {
+        baseEffect.parameters.forEach((param) => {
+          defaultParams[param.id] = param.defaultValue
+        })
+      }
+
       const params = {
-        ...baseEffect.defaultParams,
-        ...appliedEffect.parameters,
+        ...defaultParams,
+        ...appliedEffect.customParams,
       }
 
       // Проверяем наличие filter функции

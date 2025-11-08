@@ -4,8 +4,8 @@
 
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
-import type { TimelineClip, TimelineProject, TimelineTransition } from "../types"
-import { generateId } from "../utils/id-generator"
+import { generateId } from "@/lib/utils"
+import type { AppliedTransition, TimelineClip, TimelineProject } from "../types"
 
 const logger = createLogger("TransitionManager")
 
@@ -50,23 +50,21 @@ export class TransitionManager {
     }
 
     // Создаем переходы для обоих клипов
-    const outTransition: TimelineTransition = {
+    const outTransition: AppliedTransition = {
       id: generateId(),
       transitionId,
       type: "out",
       duration,
-      position: leftClip.duration - duration / 2,
-      parameters,
+      customParams: parameters,
       isEnabled: true,
     }
 
-    const inTransition: TimelineTransition = {
+    const inTransition: AppliedTransition = {
       id: generateId(),
       transitionId,
       type: "in",
       duration,
-      position: 0,
-      parameters,
+      customParams: parameters,
       isEnabled: true,
     }
 
@@ -120,7 +118,7 @@ export class TransitionManager {
     if (!clip) return project
 
     const updatedTransitions = clip.transitions.map((t) =>
-      t.id === transitionId ? { ...t, parameters: { ...t.parameters, ...parameters } } : t,
+      t.id === transitionId ? { ...t, customParams: { ...t.customParams, ...parameters } } : t,
     )
 
     return TransitionManager.updateClipInProject(project, clipId, {
@@ -137,12 +135,12 @@ export class TransitionManager {
   ): Array<{
     leftClip: TimelineClip
     rightClip: TimelineClip
-    transition: TimelineTransition
+    transition: AppliedTransition
   }> {
     const transitions: Array<{
       leftClip: TimelineClip
       rightClip: TimelineClip
-      transition: TimelineTransition
+      transition: AppliedTransition
     }> = []
 
     // Находим трек
@@ -199,7 +197,7 @@ export class TransitionManager {
     }
 
     // Проверяем минимальную длительность клипов для перехода
-    const minDuration = transition.duration || 1.0
+    const minDuration = transition.duration?.min || 1.0
     if (leftClip.duration < minDuration || rightClip.duration < minDuration) {
       return false
     }
@@ -215,11 +213,12 @@ export class TransitionManager {
     rightClip: TimelineClip,
     baseTransition: Transition,
   ): number {
-    const baseDuration = baseTransition.duration || 1.0
+    const baseDuration = baseTransition.duration?.default || 1.0
+    const maxAllowed = baseTransition.duration?.max || baseDuration * 2
     const maxDuration = Math.min(
       leftClip.duration * 0.5, // Не более половины длины клипа
       rightClip.duration * 0.5,
-      baseDuration * 2, // Не более двойной базовой длительности
+      maxAllowed, // Не более максимальной длительности перехода
     )
 
     return Math.min(baseDuration, maxDuration)

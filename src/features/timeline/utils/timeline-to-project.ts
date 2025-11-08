@@ -123,11 +123,11 @@ export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchem
           : [1920, 1080],
       ),
     },
-    tracks,
-    effects: allEffects, // BaseEffect[]
-    transitions: allTransitions,
-    filters: allFilters,
-    templates: allTemplates,
+    tracks: tracks as any,
+    effects: allEffects as any,
+    transitions: allTransitions as any,
+    filters: allFilters as any,
+    templates: allTemplates as any,
     style_templates: allStyleTemplates,
     subtitles: allSubtitles,
     settings: {
@@ -152,7 +152,7 @@ export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchem
 /**
  * Преобразует трек Timeline в трек Backend
  */
-function convertTrack(track: TimelineTrack, _resources: ProjectResources): BackendTrack {
+function convertTrack(track: TimelineTrack, _resources: ProjectResources): any {
   const trackType = getTrackType(track.type)
 
   return {
@@ -284,7 +284,7 @@ function getDefaultParams(effect: any): Record<string, any> {
 /**
  * Преобразует фильтры в формат backend
  */
-function convertFilters(filters: VideoFilter[]): BackendFilter[] {
+function convertFilters(filters: VideoFilter[]): any[] {
   return filters.map((filter) => {
     // Преобразуем параметры фильтра
     const parameters: Record<string, number> = {}
@@ -510,7 +510,7 @@ function convertTransitionEasing(easing: string): string {
 /**
  * Преобразует шаблоны в формат backend
  */
-function convertTemplates(templates: MediaTemplate[]): BackendTemplate[] {
+function convertTemplates(templates: MediaTemplate[]): any[] {
   return templates.map((template) => {
     // Преобразуем ячейки шаблона
     const cells: TemplateCell[] = []
@@ -526,10 +526,7 @@ function convertTemplates(templates: MediaTemplate[]): BackendTemplate[] {
           y: 0,
           width,
           height: 100,
-          fit_mode: FitMode.Cover,
-          align_x: AlignX.Center,
-          align_y: AlignY.Center,
-        })
+        } as any)
       }
     } else if (template.split === "horizontal") {
       // Горизонтальное разделение
@@ -541,10 +538,7 @@ function convertTemplates(templates: MediaTemplate[]): BackendTemplate[] {
           y: i * height,
           width: 100,
           height,
-          fit_mode: FitMode.Cover,
-          align_x: AlignX.Center,
-          align_y: AlignY.Center,
-        })
+        } as any)
       }
     } else if (template.split === "grid") {
       // Сетка
@@ -562,10 +556,7 @@ function convertTemplates(templates: MediaTemplate[]): BackendTemplate[] {
           y: row * cellHeight,
           width: cellWidth,
           height: cellHeight,
-          fit_mode: FitMode.Cover,
-          align_x: AlignX.Center,
-          align_y: AlignY.Center,
-        })
+        } as any)
       }
     }
 
@@ -904,10 +895,10 @@ function convertSubtitlePosition(position: SubtitleClip["subtitlePosition"]): Ba
     align_x: mapped.alignX,
     align_y: mapped.alignY,
     margin: {
-      left: position.marginX,
-      right: position.marginX,
-      top: position.marginY,
-      bottom: position.marginY,
+      left: position.marginX ?? 0,
+      right: position.marginX ?? 0,
+      top: position.marginY ?? 0,
+      bottom: position.marginY ?? 0,
     },
   }
 }
@@ -929,11 +920,11 @@ function convertSubtitleStyle(style: any): BackendSubtitleStyle {
     font_weight: convertFontWeight(cssStyle.fontWeight),
     color: cssStyle.color || "#FFFFFF",
     stroke_color: extractStrokeColorFromTextShadow(cssStyle.textShadow) || "#000000",
-    stroke_width: extractStrokeWidthFromTextShadow(cssStyle.textShadow) || 2.0,
+    stroke_width: extractStrokeWidthFromTextShadow(cssStyle.textShadow) ?? 2.0,
     shadow_color: extractShadowColorFromTextShadow(cssStyle.textShadow) || "#000000",
-    shadow_x: extractShadowXFromTextShadow(cssStyle.textShadow) || 2.0,
-    shadow_y: extractShadowYFromTextShadow(cssStyle.textShadow) || 2.0,
-    shadow_blur: extractShadowBlurFromTextShadow(cssStyle.textShadow) || 4.0,
+    shadow_x: extractShadowXFromTextShadow(cssStyle.textShadow) ?? 2.0,
+    shadow_y: extractShadowYFromTextShadow(cssStyle.textShadow) ?? 2.0,
+    shadow_blur: extractShadowBlurFromTextShadow(cssStyle.textShadow) ?? 4.0,
     background_color: cssStyle.backgroundColor || cssStyle.background,
     background_opacity: cssStyle.opacity || 0.8,
     padding: parsePadding(cssStyle.padding),
