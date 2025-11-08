@@ -7,15 +7,9 @@ import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"
+import type { SyncResult } from "../types/multicam"
 
 const logger = createLogger({ module: "AudioSync" })
-
-export interface SyncResult {
-  clipId: string
-  offset: number // Смещение в секундах относительно базового клипа
-  confidence: number // 0-1, уверенность в синхронизации
-  method: "timecode" | "creation_time" | "audio" | "none"
-}
 
 export interface AudioAnalysisResult {
   clipId: string
@@ -81,12 +75,22 @@ export function correlateAudioSignals(
   sampleRate: number,
   maxOffsetSeconds = 10,
 ): AudioCorrelationResult {
+  // Обработка пустых сигналов
+  if (signal1.length === 0 || signal2.length === 0) {
+    return {
+      offset: 0,
+      confidence: 0,
+      correlationPeak: 0,
+    }
+  }
+
   const maxOffsetSamples = Math.floor(maxOffsetSeconds * sampleRate)
   let bestOffset = 0
   let bestCorrelation = -1
 
   // Ищем лучшее совпадение в пределах maxOffsetSeconds
-  for (let offset = -maxOffsetSamples; offset <= maxOffsetSamples; offset += 1000) {
+  const step = Math.max(1, Math.floor(maxOffsetSamples / 100))
+  for (let offset = -maxOffsetSamples; offset <= maxOffsetSamples; offset += step) {
     const correlation = calculateCorrelation(signal1, signal2, offset)
 
     if (correlation > bestCorrelation) {
@@ -96,7 +100,7 @@ export function correlateAudioSignals(
   }
 
   // Уточняем результат в окрестности найденного пика
-  const fineSearchRange = 100
+  const fineSearchRange = Math.min(100, Math.floor(signal1.length / 10))
   for (let offset = bestOffset - fineSearchRange; offset <= bestOffset + fineSearchRange; offset++) {
     const correlation = calculateCorrelation(signal1, signal2, offset)
 
@@ -117,6 +121,9 @@ export function correlateAudioSignals(
  * Вычисляет корреляцию для конкретного смещения
  */
 function calculateCorrelation(signal1: Float32Array, signal2: Float32Array, offset: number): number {
+  // Обработка пустых сигналов
+  if (signal1.length === 0 || signal2.length === 0) return 0
+
   const length = Math.min(signal1.length, signal2.length)
   const overlapLength = length - Math.abs(offset)
 
@@ -130,8 +137,8 @@ function calculateCorrelation(signal1: Float32Array, signal2: Float32Array, offs
   const start2 = offset > 0 ? offset : 0
 
   for (let i = 0; i < overlapLength; i++) {
-    const val1 = signal1[start1 + i]
-    const val2 = signal2[start2 + i]
+    const val1 = signal1[start1 + i] || 0
+    const val2 = signal2[start2 + i] || 0
 
     sum += val1 * val2
     sum1Sq += val1 * val1
