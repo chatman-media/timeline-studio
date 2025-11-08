@@ -23,7 +23,7 @@ describe("TimelineGroupManager", () => {
     vi.useFakeTimers()
     manager = new TimelineGroupManager()
     eventListener = vi.fn()
-    manager.addEventListener(eventListener)
+    manager.addEventListener(eventListener as any)
   })
 
   afterEach(() => {

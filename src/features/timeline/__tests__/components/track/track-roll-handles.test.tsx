@@ -64,9 +64,11 @@ const createTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack => (
   name: "Test Track",
   type: "video" as TrackType,
   clips: [],
+  transitions: [],
   isHidden: false,
   isMuted: false,
   volume: 1,
+  pan: 0,
   order: 0,
   height: 80,
   color: "#3b82f6",
@@ -472,11 +474,8 @@ describe("TrackRollHandles", () => {
 
         const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
 
-        if (mode === EDIT_MODES.ROLL) {
-          expect(screen.getByTestId("roll-handle-clip-1-clip-2")).toBeInTheDocument()
-        } else {
-          expect(container.firstChild).toBeNull()
-        }
+        // Roll handles should NOT appear for these modes
+        expect(container.firstChild).toBeNull()
       })
     })
   })

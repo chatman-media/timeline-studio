@@ -99,11 +99,11 @@ const mockImageFile: MediaFile = {
 
 describe("useTimelineActions", () => {
   const mockTimeline = {
-    project: { id: "test-project", name: "Test Project" },
+    project: { id: "test-project", name: "Test Project" } as any,
     addTrack: vi.fn(),
     addClip: vi.fn(),
     createProject: vi.fn(),
-  }
+  } as any
 
   const mockTracks = {
     tracks: [
@@ -111,11 +111,11 @@ describe("useTimelineActions", () => {
       { id: "audio-track-1", type: "audio", name: "Audio Track 1" },
     ],
     getTracksByType: vi.fn(),
-  }
+  } as any
 
   const mockClips = {
     getClipsByTrack: vi.fn(),
-  }
+  } as any
 
   beforeEach(() => {
     vi.resetAllMocks()

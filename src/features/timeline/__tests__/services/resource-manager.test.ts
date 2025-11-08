@@ -318,8 +318,8 @@ describe("resource-manager", () => {
       path: "/path/to/test.mp4",
       size: 1000000,
       duration: 10,
-      createdAt: new Date().toISOString(),
-    }
+      createdAt: new Date(),
+    } as any
 
     it("should add media to resources", () => {
       const result = addMediaToResources(mockProject, mockMedia)
@@ -556,8 +556,8 @@ describe("resource-manager", () => {
         path: "/path/to/used.mp4",
         size: 1000000,
         duration: 10,
-        createdAt: new Date().toISOString(),
-      }
+        createdAt: new Date(),
+      } as any
 
       const unusedMedia: MediaFile = {
         id: "unused-media",
@@ -565,8 +565,8 @@ describe("resource-manager", () => {
         path: "/path/to/unused.mp4",
         size: 1000000,
         duration: 10,
-        createdAt: new Date().toISOString(),
-      }
+        createdAt: new Date(),
+      } as any
 
       mockProject.resources = {
         effects: [usedEffect, unusedEffect],

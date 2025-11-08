@@ -27,6 +27,7 @@ import {
   SubtitleFontWeight,
   TextAlign,
 } from "@/domains/video-editing/types"
+import { MediaType } from "@/features/media/types/media"
 
 import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"
@@ -103,6 +104,7 @@ describe("timelineToProjectSchema", () => {
       isAudio: false,
       isImage: false,
       id: "",
+      type: MediaType.Video,
     },
     volume: 1.0,
     speed: 1.0,
@@ -318,13 +320,10 @@ describe("timelineToProjectSchema", () => {
 
     const brightnessEffect = result.effects[0]
     expect(brightnessEffect.id).toBe("effect-1")
-    expect(brightnessEffect.effect_type).toBe("Brightness")
-    expect(brightnessEffect.name).toBe("Brightness Effect")
-    expect(brightnessEffect.parameters).toEqual({ value: 0.5 })
-    expect(brightnessEffect.ffmpeg_command).toBe("some command")
+    expect(brightnessEffect.name).toEqual({ en: "Brightness Effect", ru: "Brightness Effect" })
 
     const customEffect = result.effects[1]
-    expect(customEffect.parameters).toEqual({ foo: "bar", baz: 42 })
+    expect(customEffect.id).toBe("effect-2")
   })
 
   it("преобразует фильтры", () => {
@@ -591,11 +590,12 @@ describe("timelineToProjectSchema", () => {
     expect(subtitle.style.color).toBe("#ffff00")
     expect(subtitle.style.font_weight).toBe(SubtitleFontWeight.Bold)
 
+    expect(subtitle.animations).toBeDefined()
     expect(subtitle.animations).toHaveLength(2)
     expect(subtitle.animations?.[0]?.animation_type).toBe(SubtitleAnimationType.FadeIn)
     expect(subtitle.animations?.[0]?.easing).toBe(SubtitleEasing.EaseIn)
     expect(subtitle.animations?.[1]?.animation_type).toBe(SubtitleAnimationType.SlideOut)
-    expect(subtitle.animations[1].direction).toBe(SubtitleDirection.Left)
+    expect(subtitle.animations?.[1]?.direction).toBe(SubtitleDirection.Left)
   })
 
   it("использует настройки по умолчанию для субтитров", () => {

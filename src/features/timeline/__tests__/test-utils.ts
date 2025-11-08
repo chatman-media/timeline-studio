@@ -1,4 +1,4 @@
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 
 import type { TimelineClip, TimelineTrack, TrackType } from "../types"
 
@@ -11,8 +11,8 @@ export const createMockMediaFile = (id = "media-1"): MediaFile => ({
   duration: 100,
   size: 1000000,
   isVideo: true,
-  format: "video/mp4",
-  createdAt: new Date().toISOString(),
+  createdAt: new Date(),
+  type: MediaType.Video,
 })
 
 export const createMockClip = (overrides: Partial<TimelineClip> = {}): TimelineClip => ({
@@ -50,6 +50,7 @@ export const createMockTrack = (overrides: Partial<TimelineTrack> = {}): Timelin
   height: 100,
   name: "Video Track 1",
   clips: [],
+  transitions: [],
   isHidden: false,
   isLocked: false,
   isMuted: false,

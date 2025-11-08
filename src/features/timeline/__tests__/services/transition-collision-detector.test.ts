@@ -281,13 +281,13 @@ describe("transition-collision-detector", () => {
       project.sections = [
         {
           id: "section-1",
+          index: 0,
           name: "Section 1",
           startTime: 0,
+          endTime: 10,
           duration: 10,
-          realStartTime: new Date(),
+          isCollapsed: false,
           tracks: [sectionTrack],
-          clips: [],
-          transitions: [],
         },
       ]
 

@@ -14,27 +14,52 @@ describe("Speed Ramping State Machine Integration", () => {
   let actor: any
 
   beforeEach(() => {
-    const initialProject = createTimelineProject({
-      id: "test-project",
-      name: "Test Project",
-      sections: [],
-      globalTracks: [
-        {
-          id: "track-1",
-          clips: [
-            {
-              id: "clip-1",
-              startTime: 0,
-              duration: 10,
-              mediaDuration: 10,
-              playbackRate: 1.0,
-              mediaPath: "/test/video.mp4",
-              type: "video",
-            },
-          ],
-        },
-      ],
-    })
+    const initialProject = createTimelineProject("Test Project")
+    // Add custom track with clip
+    initialProject.id = "test-project"
+    initialProject.globalTracks = [
+      {
+        id: "track-1",
+        name: "Track 1",
+        type: "video",
+        order: 0,
+        height: 100,
+        isLocked: false,
+        isMuted: false,
+        isHidden: false,
+        isSolo: false,
+        volume: 1,
+        pan: 0,
+        transitions: [],
+        trackEffects: [],
+        trackFilters: [],
+        clips: [
+          {
+            id: "clip-1",
+            name: "Clip 1",
+            mediaId: "media-1",
+            trackId: "track-1",
+            startTime: 0,
+            duration: 10,
+            mediaStartTime: 0,
+            mediaEndTime: 10,
+            offset: 0,
+            volume: 1,
+            speed: 1,
+            playbackRate: 1.0,
+            isReversed: false,
+            opacity: 1,
+            effects: [],
+            filters: [],
+            transitions: [],
+            isSelected: false,
+            isLocked: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+      } as any,
+    ]
 
     actor = createActor(timelineMachine)
     actor.start()

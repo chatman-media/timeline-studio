@@ -17,38 +17,48 @@ import {
 } from "../../utils/edit-operations"
 
 // Test data
-const createClip = (id: string, startTime: number, duration: number, offset = 0): TimelineClip => ({
-  id,
-  trackId: "track-1",
-  sourceId: "source-1",
-  startTime,
-  duration,
-  offset,
-  trimStart: 0,
-  trimEnd: 0,
-  effects: [],
-  speed: 1,
-  volume: 1,
-  opacity: 1,
-  filters: [],
-  transitions: { in: null, out: null },
-  metadata: {},
-})
+const createClip = (id: string, startTime: number, duration: number, offset = 0): TimelineClip =>
+  ({
+    id,
+    trackId: "track-1",
+    name: "Test Clip",
+    mediaId: "media-1",
+    startTime,
+    duration,
+    mediaStartTime: 0,
+    mediaEndTime: duration,
+    offset,
+    volume: 1,
+    speed: 1,
+    isReversed: false,
+    opacity: 1,
+    effects: [],
+    filters: [],
+    transitions: [],
+    isSelected: false,
+    isLocked: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }) as any
 
-const createTrack = (clips: TimelineClip[]): TimelineTrack => ({
-  id: "track-1",
-  type: "video",
-  clips,
-  enabled: true,
-  locked: false,
-  muted: false,
-  height: 100,
-  minimized: false,
-  effects: [],
-  volume: 1,
-  pan: 0,
-  metadata: {},
-})
+const createTrack = (clips: TimelineClip[]): TimelineTrack =>
+  ({
+    id: "track-1",
+    name: "Track 1",
+    type: "video",
+    order: 0,
+    clips,
+    transitions: [],
+    isLocked: false,
+    isMuted: false,
+    isHidden: false,
+    isSolo: false,
+    volume: 1,
+    pan: 0,
+    height: 100,
+    trackEffects: [],
+    trackFilters: [],
+  }) as any
 
 describe("clipsOverlap", () => {
   it("должен определять перекрывающиеся клипы", () => {

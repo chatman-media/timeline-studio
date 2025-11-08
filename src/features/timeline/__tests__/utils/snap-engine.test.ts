@@ -78,11 +78,10 @@ const createProject = (tracks: TimelineTrack[] = [], markers: Array<{ time: numb
   updatedAt: new Date(),
   markers: markers.map((m, index) => ({
     id: `marker-${index}`,
-    projectId: "project-1",
+    name: `Marker ${index + 1}`,
     time: m.time,
     color: "#FF0000",
-    label: `Marker ${index + 1}`,
-    type: "timeline" as const,
+    type: "chapter" as const,
   })),
   fps: 0,
   sampleRate: 0,

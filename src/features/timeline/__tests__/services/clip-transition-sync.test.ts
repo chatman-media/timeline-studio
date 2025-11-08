@@ -46,10 +46,10 @@ vi.mock("../timeline-transition-manager", () => ({
     if (!track?.transitions) return false
 
     const transitions = track.transitions
-      .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
-      .filter((t) => t && t.id !== excludeId)
+      .map((id) => project.resources.timelineTransitions.find((transition: any) => transition.id === id))
+      .filter((t): t is NonNullable<typeof t> => t !== undefined && t.id !== excludeId)
 
-    return transitions.some((t: any) => {
+    return transitions.some((t) => {
       const tEnd = t.position + t.duration
       const posEnd = position + duration
       return (

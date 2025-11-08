@@ -525,7 +525,7 @@ describe("useTimeline", () => {
       const { result } = renderHook(() => useTimeline(), { wrapper })
 
       await act(async () => {
-        await result.current.addClip("track-1", mockMediaFile, 0)
+        await result.current.addClip("track-1", mockMediaFile as any, 0)
       })
 
       expect(mockExecuteCommand).toHaveBeenCalledWith({

@@ -292,18 +292,20 @@ describe("TrackContent", () => {
     })
 
     it("должен показывать insertion индикатор", () => {
+      const dropPosition: DropPosition = {
+        trackId: "track-1",
+        startTime: 10,
+      }
+
       mockUseDragDropTimeline.mockReturnValue({
         dragState: {
           isDragging: false,
           draggedItem: null,
           dragOverTrack: null,
-          dropPosition: {
-            trackId: "track-1",
-            startTime: 10,
-          },
+          dropPosition,
           snapPoint: null,
           snapActive: false,
-        },
+        } as any,
         isValidDropTarget: vi.fn(() => true),
         handleDragStart: vi.fn(),
         handleDragOver: vi.fn(),
@@ -319,18 +321,20 @@ describe("TrackContent", () => {
     })
 
     it("не должен показывать insertion индикатор для другого трека", () => {
+      const dropPosition: DropPosition = {
+        trackId: "track-2", // Другой трек
+        startTime: 10,
+      }
+
       mockUseDragDropTimeline.mockReturnValue({
         dragState: {
           isDragging: false,
           draggedItem: null,
           dragOverTrack: null,
-          dropPosition: {
-            trackId: "track-2", // Другой трек
-            startTime: 10,
-          },
+          dropPosition,
           snapPoint: null,
           snapActive: false,
-        },
+        } as any,
         isValidDropTarget: vi.fn(() => true),
         handleDragStart: vi.fn(),
         handleDragOver: vi.fn(),
