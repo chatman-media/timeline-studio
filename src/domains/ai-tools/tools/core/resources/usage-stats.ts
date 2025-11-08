@@ -152,7 +152,10 @@ export class UsageStatsTool extends BaseAITool {
         switch (input.operation) {
           case "get_resource_usage_stats":
             const statsResult = await this.getResourceUsageStats({
-              timeRange: input.timeRange,
+              timeRange:
+                input.timeRange?.start && input.timeRange?.end
+                  ? { start: input.timeRange.start, end: input.timeRange.end }
+                  : undefined,
               groupBy: input.groupBy || "type",
               includeUnused: input.includeUnused ?? true,
             })

@@ -3,6 +3,7 @@
  */
 
 // Импортируем AIToolResult из result-types для избежания дублирования
+import type { AIToolResult } from "./result-types"
 export type { AIToolResult } from "./result-types"
 
 // Опции выполнения инструмента

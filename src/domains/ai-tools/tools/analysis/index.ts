@@ -5,8 +5,28 @@
 
 // Audio Analysis Tools
 export * from "./audio-analysis"
-// Content Intelligence Tools
-export * from "./content-intelligence"
+// Content Intelligence Tools - явный экспорт для избежания конфликтов
+export {
+  adaptContentToPlatform,
+  analyzeAudienceSegments,
+  analyzeContentIntelligence,
+  ContentIntelligenceTool,
+  classifyContent,
+  contentIntelligenceTool,
+  contentIntelligenceTools,
+  detectSceneBoundaries,
+  executeContentIntelligenceTool,
+  generateContentVariants,
+  generateMultiLanguageBatch,
+  optimizeEngagementFactors,
+} from "./content-intelligence"
+export type {
+  ContentAnalysisResult,
+  ContentIntelligenceInput,
+  ContentIntelligenceResult,
+  ContentIntelligenceToolResult,
+  ContentVariant,
+} from "./content-intelligence"
 // Multimodal & Person ID Tools
 export * from "./multimodal"
 export * from "./person-identification"

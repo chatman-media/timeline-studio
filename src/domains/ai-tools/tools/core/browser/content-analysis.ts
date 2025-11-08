@@ -43,7 +43,7 @@ export interface ContentAnalysisInput {
   reason?: string
 }
 
-export interface ContentAnalysisResult {
+export interface BrowserContentAnalysisResult {
   operation: string
   success: boolean
   missingContent?: {
@@ -130,7 +130,7 @@ export class ContentAnalysisTool extends BaseAITool {
   public async processContentAnalysis(
     input: ContentAnalysisInput,
     options: AIToolExecutionOptions = {},
-  ): Promise<AIToolResult<ContentAnalysisResult>> {
+  ): Promise<AIToolResult<BrowserContentAnalysisResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
       const validation = this.validateInputDetailed(input, (data) => {
@@ -166,7 +166,7 @@ export class ContentAnalysisTool extends BaseAITool {
         throw new Error("Доступ к браузеру не сконфигурирован")
       }
 
-      let result: ContentAnalysisResult
+      let result: BrowserContentAnalysisResult
 
       switch (input.operation) {
         case "analyze_missing_content":
@@ -641,7 +641,7 @@ export async function executeContentAnalysisTool(
   operation: ContentAnalysisInput["operation"],
   params: Omit<ContentAnalysisInput, "operation">,
   options?: AIToolExecutionOptions,
-): Promise<AIToolResult<ContentAnalysisResult>> {
+): Promise<AIToolResult<BrowserContentAnalysisResult>> {
   return contentAnalysisTool.processContentAnalysis({ operation, ...params }, options)
 }
 

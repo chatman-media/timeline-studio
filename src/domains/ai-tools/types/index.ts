@@ -3,47 +3,23 @@
  * Экспорт всех типов для домена AI инструментов
  */
 
-// Контексты выполнения
-export type {
-  AIToolExecutionContext,
-  BatchExecutionContext,
-  DebugContext,
-  DebugLog,
-  FullExecutionContext,
-  NetworkRequestMetric,
-  PerformanceContext,
-  PerformanceError,
-  PerformanceWarning,
-  PipelineExecutionContext,
-  PipelineStep,
-  SecurityAuditEntry,
-  SecurityContext,
-} from "./execution-context"
-// Результаты выполнения
-// Переэкспорт AIToolResult из result-types для обратной совместимости
-export type {
-  AIToolResult as AIToolResultDetailed,
-  AIToolResultMetadata,
-  BatchExecutionResult,
-  BatchStatistics,
-  CacheMetrics,
-  CpuUsageMetrics,
-  MemoryUsageMetrics,
-  NetworkMetrics,
-  PerformanceAnalysisResult,
-  PerformanceComparison,
-  PerformanceRecommendation,
-  PipelineError,
-  PipelineExecutionResult,
-  ToolConflict,
-  ToolExportResult,
-  ToolImportResult,
-  ToolSearchMatch as ToolSearchMatchFromResults,
-  ToolValidationResult,
-  ValidationError,
-  ValidationWarning,
-} from "./result-types"
-// Основные интерфейсы инструментов
+// Импорт типов для использования в этом файле
+import type {
+  AIToolCategory,
+  AIToolDomain,
+  AIToolResult,
+  AnalysisToolCategory,
+  AutomationToolCategory,
+  CoreToolCategory,
+  DomainStats,
+  IntegrationToolCategory,
+} from "./tool-interfaces"
+
+import type { AIToolExecutionContext } from "./execution-context"
+
+import type { BatchExecutionResult, PipelineExecutionResult, ValidationError } from "./result-types"
+
+// Основные интерфейсы инструментов (импортируем первыми для использования в других типах)
 export type {
   AIIToolInfo,
   AIToolCategory,
@@ -74,6 +50,48 @@ export type {
   ToolSearchResult,
 } from "./tool-interfaces"
 
+// Контексты выполнения
+export type {
+  AIToolExecutionContext,
+  BatchExecutionContext,
+  DebugContext,
+  DebugLog,
+  FullExecutionContext,
+  NetworkRequestMetric,
+  PerformanceContext,
+  PerformanceError,
+  PerformanceWarning,
+  PipelineExecutionContext,
+  PipelineStep,
+  SecurityAuditEntry,
+  SecurityContext,
+} from "./execution-context"
+
+// Результаты выполнения
+// Переэкспорт AIToolResult из result-types для обратной совместимости
+export type {
+  AIToolResult as AIToolResultDetailed,
+  AIToolResultMetadata,
+  BatchExecutionResult,
+  BatchStatistics,
+  CacheMetrics,
+  CpuUsageMetrics,
+  MemoryUsageMetrics,
+  NetworkMetrics,
+  PerformanceAnalysisResult,
+  PerformanceComparison,
+  PerformanceRecommendation,
+  PipelineError,
+  PipelineExecutionResult,
+  ToolConflict,
+  ToolExportResult,
+  ToolImportResult,
+  ToolSearchMatch as ToolSearchMatchFromResults,
+  ToolValidationResult,
+  ValidationError,
+  ValidationWarning,
+} from "./result-types"
+
 // Константы доменов
 export const AI_TOOL_DOMAINS = ["core", "analysis", "automation", "integration"] as const
 
@@ -100,10 +118,15 @@ export const AI_TOOL_PRIORITIES = ["low", "medium", "high", "critical"] as const
 
 // Утилитарные типы
 export type AIToolDomainMap = {
-  core: CoreToolCategory
-  analysis: AnalysisToolCategory
-  automation: AutomationToolCategory
-  integration: IntegrationToolCategory
+  [K in AIToolDomain]: K extends "core"
+    ? CoreToolCategory
+    : K extends "analysis"
+      ? AnalysisToolCategory
+      : K extends "automation"
+        ? AutomationToolCategory
+        : K extends "integration"
+          ? IntegrationToolCategory
+          : never
 }
 
 // Типы для конфигурации

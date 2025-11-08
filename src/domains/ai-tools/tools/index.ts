@@ -188,7 +188,7 @@ export function analyzeDependencies() {
 
     dependencies.set(toolName, toolDeps)
 
-    toolDeps.forEach((dep) => {
+    toolDeps.forEach((dep: string) => {
       if (!dependents.has(dep)) {
         dependents.set(dep, [])
       }
