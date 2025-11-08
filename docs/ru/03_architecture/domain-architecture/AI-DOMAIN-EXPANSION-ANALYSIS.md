@@ -2,15 +2,20 @@
 
 ## 🎯 Обзор
 
-После завершения базовой миграции AI модулей на доменную архитектуру, обнаружен значительный объем функционала, который требует дальнейшего расширения доменного дизайна. Анализ показывает **~200+ AI-связанных компонентов, сервисов и инструментов**, которые нуждаются в систематизации.
+✅ **ОБНОВЛЕНО** (Ноябрь 2025): Базовая миграция AI модулей завершена. Function Calling интегрирован.
 
-## 📊 Статистика оставшегося функционала
+Текущее состояние:
+- **102 AI инструмента** полностью интегрированы с Function Calling
+- Унифицированная архитектура для всех AI провайдеров (Claude, OpenAI, DeepSeek)
+- Все инструменты доступны AI ассистенту для автоматического выполнения задач
 
-### AI Chat Tools (48 инструментов)
-- **Core Domain**: 18 инструментов (timeline, resources, browser, player)
-- **Analysis Domain**: 15 инструментов (video/audio analysis, content intelligence)
-- **Automation Domain**: 10 инструментов (batch processing, workflows)
-- **Integration Domain**: 5 инструментов (export, platform integration)
+## 📊 Статистика AI инструментов (обновлено)
+
+### ✅ AI Chat Tools (102 инструмента с Function Calling)
+- **Core Domain**: 56 инструментов (timeline, resources, browser, player, effects, settings)
+- **Analysis Domain**: 28 инструментов (video/audio analysis, content intelligence, whisper, multimodal)
+- **Automation Domain**: 6 инструментов (batch processing, workflows, smart templates, performance)
+- **Integration Domain**: 12 инструментов (export, platform integration, format conversion)
 
 ### Оставшиеся AI Features
 - **ai-content-intelligence**: 25+ компонентов/сервисов/хуков
