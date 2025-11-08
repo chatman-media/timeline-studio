@@ -146,7 +146,7 @@ export function useAIIntelligence({
 
   // Генерировать сценарий
   const generateScript = useCallback(
-    async (analysis: UnifiedContentAnalysis, params: ScriptGenerationParams): Promise<GeneratedScript> => {
+    async (_analysis: UnifiedContentAnalysis, params: ScriptGenerationParams): Promise<GeneratedScript> => {
       try {
         setError(null)
         setIsProcessing(true)
@@ -208,7 +208,7 @@ export function useAIIntelligence({
 
   // Адаптировать для платформ
   const adaptForPlatforms = useCallback(
-    async (content: Content, platforms: PlatformId[]): Promise<AdaptedContent[]> => {
+    async (_content: Content, platforms: PlatformId[]): Promise<AdaptedContent[]> => {
       try {
         setError(null)
         setIsProcessing(true)

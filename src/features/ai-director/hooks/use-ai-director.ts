@@ -68,7 +68,7 @@ export function useAIDirector(): AIDirectorHook {
       }))
 
       try {
-        const result = await commands.aiDirectorAnalyzeComprehensive(videoPath, config)
+        const result = await commands.aiDirectorAnalyzeComprehensive(videoPath, config || null)
 
         if (result.status === "ok") {
           logInfo("[useAIDirector] Комплексный анализ завершен успешно", { videoPath } as Record<string, unknown>)
@@ -144,7 +144,7 @@ export function useAIDirector(): AIDirectorHook {
       }))
 
       try {
-        const result = await commands.aiDirectorAnalyzeBatch(filePaths, config)
+        const result = await commands.aiDirectorAnalyzeBatch(filePaths, config || null)
 
         if (result.status === "ok") {
           logInfo("[useAIDirector] Batch анализ завершен успешно", { resultsCount: result.data.length } as Record<

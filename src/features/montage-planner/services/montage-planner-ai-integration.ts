@@ -3,7 +3,7 @@
  * Bridges the montage planner with DI Container and shared AI services
  */
 
-import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core"
+// REMOVED: import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import type { MediaFile } from "@/features/media/types/media"
 
 import { createLogger } from "@/lib/tauri-logger"
