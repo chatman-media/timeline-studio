@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useMediaFiles, useMusicFiles } from "@/features/app-state/hooks"
 import { appDirectoriesService } from "@/features/app-state/services"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 import { getMediaExtensions, getMusicExtensions } from "../utils/validation"
 
@@ -129,32 +129,62 @@ export function useAutoLoadMedia() {
                 const isAudio = processed.metadata?.has_audio || /\.(mp3|wav|ogg|m4a|aac)$/i.test(fileName)
                 const isImage = !isVideo && !isAudio && /\.(jpg|jpeg|png|gif|bmp)$/i.test(fileName)
 
+                // Determine media type
+                let type: MediaType
+                if (isVideo) {
+                  type = MediaType.Video
+                } else if (isAudio && !isVideo) {
+                  type = MediaType.Audio
+                } else if (isImage) {
+                  type = MediaType.StillImage
+                } else {
+                  type = MediaType.Unknown
+                }
+
                 return {
                   id: processed.id,
                   name: processed.name,
                   path: processed.path,
+                  type,
                   size: processed.size,
                   duration: processed.metadata?.duration,
                   isVideo,
                   isAudio: isAudio && !isVideo,
                   isImage,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
                   source: "browser" as const,
                 } as MediaFile
               } catch (error) {
                 // Создаем fallback объект
                 const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || ""
+                const isVideo = /\.(mp4|avi|mov|mkv|webm)$/i.test(fileName)
+                const isAudio = /\.(mp3|wav|ogg|m4a|aac)$/i.test(fileName)
+                const isImage = /\.(jpg|jpeg|png|gif|bmp)$/i.test(fileName)
+
+                // Determine media type for fallback
+                let type: MediaType
+                if (isVideo) {
+                  type = MediaType.Video
+                } else if (isAudio) {
+                  type = MediaType.Audio
+                } else if (isImage) {
+                  type = MediaType.StillImage
+                } else {
+                  type = MediaType.Unknown
+                }
+
                 return {
                   id: `file-${Date.now()}-${Math.random()}`,
                   name: fileName,
                   path: filePath,
+                  type,
                   size: 0,
-                  isVideo: /\.(mp4|avi|mov|mkv|webm)$/i.test(fileName),
-                  isAudio: /\.(mp3|wav|ogg|m4a|aac)$/i.test(fileName),
-                  isImage: /\.(jpg|jpeg|png|gif|bmp)$/i.test(fileName),
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
+                  isVideo,
+                  isAudio,
+                  isImage,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
                   source: "browser" as const,
                 } as MediaFile
               }

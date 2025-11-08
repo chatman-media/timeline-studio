@@ -63,7 +63,8 @@ export function usePrerender() {
 
       try {
         // Используем ProjectSchemaBuilder для создания схемы с настройками для preview
-        const projectSchema = ProjectSchemaBuilder.createForPreview(project, {
+        // Note: project is of type Timeline, which is compatible with TimelineProject
+        const projectSchema = ProjectSchemaBuilder.createForPreview(project as any, {
           quality: quality || 75,
         })
 

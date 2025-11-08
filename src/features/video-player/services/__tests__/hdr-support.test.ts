@@ -112,7 +112,7 @@ Object.defineProperty(global.navigator, "mediaCapabilities", {
 })
 
 describe("HDRSupportService", () => {
-  let service: HDRSupportService
+  let service: InstanceType<typeof HDRSupportService>
 
   beforeEach(() => {
     vi.clearAllMocks()

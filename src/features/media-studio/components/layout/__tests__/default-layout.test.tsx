@@ -135,7 +135,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-describe.skip("DefaultLayout", () => {
+describe("DefaultLayout", () => {
   beforeEach(() => {
     // Сбрасываем моки перед каждым тестом
     mockUseUserSettings.mockReturnValue({

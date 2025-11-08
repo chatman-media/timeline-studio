@@ -140,7 +140,7 @@ export function useVideoEvents(videoRef: RefObject<HTMLVideoElement | null>, han
 
     // Duration change event
     const handleDurationChange = () => {
-      if (!isNaN(video.duration) && isFinite(video.duration)) {
+      if (!Number.isNaN(video.duration) && Number.isFinite(video.duration)) {
         handlers.onDurationChange?.(video.duration)
       }
     }

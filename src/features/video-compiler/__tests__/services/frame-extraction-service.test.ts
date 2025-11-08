@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { Subtitle } from "@/domains/video-editing"
+import {
+  type Subtitle,
+  SubtitleAlignX,
+  SubtitleAlignY,
+  SubtitleFontWeight,
+  type SubtitlePosition,
+  type SubtitleStyle,
+} from "@/domains/video-editing"
 import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
 import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
 
@@ -60,14 +67,28 @@ describe("frameExtractionService", () => {
     },
   ]
 
+  const mockSubtitlePosition: SubtitlePosition = {
+    x: 50,
+    y: 90,
+    align_x: SubtitleAlignX.Center,
+    align_y: SubtitleAlignY.Bottom,
+  }
+
+  const mockSubtitleStyle: SubtitleStyle = {
+    font_family: "Arial",
+    font_size: 24,
+    font_weight: SubtitleFontWeight.Normal,
+    color: "#FFFFFF",
+  }
+
   const mockSubtitles: Subtitle[] = [
     {
       id: "sub1",
       text: "Test subtitle 1",
       start_time: 0,
       end_time: 2,
-      position: "bottom",
-      style: "default",
+      position: mockSubtitlePosition,
+      style: mockSubtitleStyle,
       animations: [],
       enabled: true,
     },
@@ -76,8 +97,8 @@ describe("frameExtractionService", () => {
       text: "Test subtitle 2",
       start_time: 2,
       end_time: 4,
-      position: "bottom",
-      style: "default",
+      position: mockSubtitlePosition,
+      style: mockSubtitleStyle,
       animations: [],
       enabled: true,
     },
