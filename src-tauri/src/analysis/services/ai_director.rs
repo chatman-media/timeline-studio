@@ -278,6 +278,9 @@ pub struct AIDirectorConfig {
   /// 🆕 AI Model (модель для использования)
   pub ai_model: Option<String>,
 
+  /// 🆕 AI API Key (если None, используется secure storage)
+  pub ai_api_key: Option<String>,
+
   /// 🆕 Использовать AI для улучшения анализа контента
   pub enable_ai_enhanced_analysis: bool,
 
@@ -314,6 +317,7 @@ impl Default for AIDirectorConfig {
       enable_mcp_agents: false,
       ai_provider: None, // По умолчанию AI не используется
       ai_model: None,
+      ai_api_key: None, // Использовать secure storage
       enable_ai_enhanced_analysis: false,
       enable_ai_descriptions: false,
       enable_ai_mood_analysis: false,
@@ -673,7 +677,7 @@ impl AIDirector {
   async fn run_scene_detection(
     &self,
     _media_path: &Path,
-    _config: &AIDirectorConfig,
+    config: &AIDirectorConfig,
   ) -> Result<Vec<SceneAnalysis>> {
     let _engine = self.scene_engine.read().await;
 
@@ -681,7 +685,7 @@ impl AIDirector {
     // Пока возвращаем заглушку
     let file_id = Uuid::new_v4().to_string();
 
-    Ok(vec![SceneAnalysis {
+    let mut scene = SceneAnalysis {
       id: Uuid::new_v4().to_string(),
       file_id: file_id.clone(),
       start_time: 0.0,
@@ -711,7 +715,34 @@ impl AIDirector {
       objects: vec!["person".to_string()],
       persons: vec!["speaker1".to_string()],
       transition: None,
-    }])
+    };
+
+    // 🆕 Используем AI-enhanced описания если включено
+    if config.enable_ai_descriptions
+      && config.ai_provider.is_some()
+      && config.ai_model.is_some()
+      && config.ai_api_key.is_some()
+    {
+      info!("Using AI-enhanced scene descriptions");
+      match self
+        .enhance_scene_with_ai(
+          &scene,
+          config.ai_api_key.as_ref().unwrap(),
+          config.ai_provider.clone().unwrap(),
+          config.ai_model.as_ref().unwrap(),
+        )
+        .await
+      {
+        Ok(ai_description) => {
+          scene.description = Some(ai_description);
+        }
+        Err(e) => {
+          warn!("AI scene description failed, using default: {}", e);
+        }
+      }
+    }
+
+    Ok(vec![scene])
   }
 
   /// Запуск vision analysis
@@ -795,16 +826,50 @@ impl AIDirector {
     }
 
     if config.enable_mood_analysis {
-      let content_mood = engine.analyze_mood(scenes).await?;
-      // Convert ContentEngineMoodAnalysis to MoodAnalysis
-      mood = Some(MoodAnalysis {
-        primary: content_mood.mood.clone(),
-        secondary: Vec::new(),
-        valence: 0.0,
-        arousal: content_mood.energy_level as f64,
-        dominance: content_mood.emotional_intensity as f64,
-        emotional_arc: Vec::new(),
-      });
+      // 🆕 Используем AI-enhanced mood analysis если включен и доступен API ключ
+      if config.enable_ai_mood_analysis
+        && config.ai_provider.is_some()
+        && config.ai_model.is_some()
+        && config.ai_api_key.is_some()
+      {
+        info!("Using AI-enhanced mood analysis");
+        match self
+          .analyze_mood_with_ai(
+            scenes,
+            config.ai_api_key.as_ref().unwrap(),
+            config.ai_provider.clone().unwrap(),
+            config.ai_model.as_ref().unwrap(),
+          )
+          .await
+        {
+          Ok(ai_mood) => {
+            mood = Some(ai_mood);
+          }
+          Err(e) => {
+            warn!("AI mood analysis failed, falling back to standard: {}", e);
+            let content_mood = engine.analyze_mood(scenes).await?;
+            mood = Some(MoodAnalysis {
+              primary: content_mood.mood.clone(),
+              secondary: Vec::new(),
+              valence: 0.0,
+              arousal: content_mood.energy_level as f64,
+              dominance: content_mood.emotional_intensity as f64,
+              emotional_arc: Vec::new(),
+            });
+          }
+        }
+      } else {
+        // Стандартный mood analysis
+        let content_mood = engine.analyze_mood(scenes).await?;
+        mood = Some(MoodAnalysis {
+          primary: content_mood.mood.clone(),
+          secondary: Vec::new(),
+          valence: 0.0,
+          arousal: content_mood.energy_level as f64,
+          dominance: content_mood.emotional_intensity as f64,
+          emotional_arc: Vec::new(),
+        });
+      }
     }
 
     if config.enable_quality_analysis {

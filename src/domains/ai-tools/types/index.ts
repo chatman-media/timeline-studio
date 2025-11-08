@@ -7,7 +7,6 @@ import type { AIToolExecutionContext } from "./execution-context"
 import type { BatchExecutionResult, PipelineExecutionResult, ValidationError } from "./result-types"
 // Импорт типов для использования в этом файле
 import type {
-  AIToolCategory,
   AIToolDomain,
   AIToolResult,
   AnalysisToolCategory,

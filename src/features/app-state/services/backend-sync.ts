@@ -27,6 +27,7 @@ export class BackendSync {
   private unlisten: UnlistenFn | null = null
   private isConnected = false
   private lastVersion = 0
+  private connectPromise: Promise<void> | null = null
 
   /**
    * Check if backend is connected
@@ -37,13 +38,42 @@ export class BackendSync {
 
   /**
    * Initialize the backend sync service
+   * Safe to call multiple times - will return the same promise if already connecting
    */
   async connect(): Promise<void> {
+    // If already connected, return immediately
     if (this.isConnected) {
       return
     }
 
+    // If currently connecting, return the same promise
+    if (this.connectPromise) {
+      return this.connectPromise
+    }
+
+    // Start new connection
+    this.connectPromise = this.doConnect()
+
     try {
+      await this.connectPromise
+    } finally {
+      this.connectPromise = null
+    }
+  }
+
+  /**
+   * Internal connection logic
+   */
+  private async doConnect(): Promise<void> {
+    try {
+      // Double-check not already connected (race condition protection)
+      if (this.isConnected) {
+        logger.info("Backend sync already connected, skipping")
+        return
+      }
+
+      logger.info("Backend sync connecting...")
+
       // Subscribe to backend events
       this.unlisten = await listen<EventEnvelope>("project:event", (event) => {
         this.handleBackendEvent(event.payload)
@@ -57,9 +87,10 @@ export class BackendSync {
       }
 
       this.isConnected = true
-      logger.info("Backend sync connected")
+      logger.info("Backend sync connected successfully")
     } catch (error) {
       logger.error("Failed to connect backend sync:", { error })
+      this.isConnected = false
       throw error
     }
   }

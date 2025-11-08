@@ -568,8 +568,11 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     selectSections: async (sectionIds: string[], addToSelection?: boolean) => {
       try {
-        // SelectSections не существует в backend, только локальное обновление
-        // TODO: добавить команду SelectSections в backend
+        // Синхронизируем выбор секций с backend
+        await backendSync.executeCommand({
+          type: "SelectSections",
+          params: { section_ids: sectionIds, add_to_selection: addToSelection ?? false },
+        })
         timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
       } catch (error) {
         logger.error("Failed to select sections:", { error: error })
@@ -579,8 +582,10 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     clearSelection: async () => {
       try {
-        // ClearSelection не существует в backend, только локальное обновление
-        // TODO: добавить команду ClearSelection в backend
+        // Синхронизируем очистку выбора с backend
+        await backendSync.executeCommand({
+          type: "ClearSelection",
+        })
         timelineActor.send({ type: "CLEAR_SELECTION" })
       } catch (error) {
         logger.error("Failed to clear selection:", { error: error })

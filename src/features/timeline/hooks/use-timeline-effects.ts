@@ -11,7 +11,6 @@ import {
   removeFilterFromClip,
 } from "@/features/effects/utils/user-effects"
 import { createLogger } from "@/lib/tauri-logger"
-import type { TimelineProject } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelineEffects")

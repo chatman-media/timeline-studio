@@ -80,7 +80,7 @@ const eventBus = mockEventBus
 
 // Import real BackendSync service
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 import { playerMachine } from "../machines/player-machine"
 // Import machines
@@ -599,15 +599,35 @@ export class VideoEditingOrchestrator {
   async clearSelection() {
     logger.info("[Video Editing Orchestrator] Clearing selection")
 
-    // TODO: Добавить команду ClearSelection в backend
-    // const command: ProjectCommand = {
-    //   type: "ClearSelection",
-    //   params: {},
-    // }
-    // await this.executeCommand(command)
+    const command: ProjectCommand = {
+      type: "ClearSelection",
+    }
+    await this.executeCommand(command)
 
     this.timelineExtendedActor.send({
       type: "CLEAR_SELECTION",
+    })
+  }
+
+  async selectSections(sectionIds: string[], addToSelection: boolean = false) {
+    logger.info("[Video Editing Orchestrator] Selecting sections:", {
+      data: { sectionIds, addToSelection },
+    })
+
+    const command: ProjectCommand = {
+      type: "SelectSections",
+      params: {
+        section_ids: sectionIds,
+        add_to_selection: addToSelection,
+      },
+    }
+
+    await this.executeCommand(command)
+
+    this.timelineExtendedActor.send({
+      type: "SELECT_SECTIONS",
+      sectionIds,
+      addToSelection,
     })
   }
 

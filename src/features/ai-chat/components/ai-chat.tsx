@@ -325,11 +325,8 @@ export function AiChat() {
           content: msg.content,
         }))
 
-        // Получаем API ключ для провайдера
-        const apiKeyInfo = getApiKeyInfo(provider)
-        const apiKey = apiKeyInfo?.key || ""
-
         // Отправляем запрос через backend AI service
+        // API ключ автоматически загружается из secure storage на бэкенде
         const response = await backendAI.sendMessage(
           {
             provider: provider as AIProvider,
@@ -339,7 +336,6 @@ export function AiChat() {
             system: systemPrompt,
           },
           aiMessages,
-          apiKey,
         )
 
         // Завершаем стриминг

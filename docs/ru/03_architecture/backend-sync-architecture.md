@@ -224,21 +224,36 @@ useEffect(() => {
 - **Debounced операции**: 500ms - 2s (в зависимости от типа)
 - **Memory overhead**: < 5MB дополнительно
 
+## ✅ Последние обновления (08 ноября 2024)
+
+### Timeline Clips API - Полностью реализовано
+
+Все команды для работы с клипами теперь полностью интегрированы с backend:
+
+**В `video-editing-orchestrator.ts` добавлены методы:**
+- ✅ `moveClip()` - перемещение клипа между треками
+- ✅ `deleteClip()` - удаление клипа
+- ✅ `trimClip()` - обрезка клипа (изменение in/out точек)
+- ✅ `splitClip()` - разделение клипа на два
+- ✅ `updateClip()` - обновление параметров клипа
+- ✅ `copyClips()` / `cutClips()` / `pasteClips()` - clipboard операции
+- ✅ `batchUpdateClips()` - массовое обновление клипов
+- ✅ `selectClips()` - выбор клипов
+- ✅ `selectSections()` - выбор секций (NEW!)
+- ✅ `clearSelection()` - очистка выбора
+
+**Backend команды реализованы:**
+- ✅ `SelectSections` - выбор секций timeline
+- ✅ `ClearSelection` - очистка всех выборов (clips, tracks, sections)
+- ✅ Добавлено поле `selected_sections` в `UiState`
+
+**Исправлены критические баги:**
+- ✅ Исправлена проблема с двойным event listener при подключении BackendSync из нескольких провайдеров
+- ✅ Добавлена защита от повторного подключения через `connectPromise`
+
 ## 🔮 Следующие шаги
 
 ### Фаза 1: Расширение backend команд (В разработке)
-
-Многие провайдеры используют заглушки (`if (false)`) для команд, которые еще не реализованы в backend:
-
-```typescript
-// TODO: Resources команда еще не реализована в backend
-// if (this.isBackendConnected) {
-//   await this.backendSync.executeCommand({
-//     type: "Resources",
-//     params: { type: "LoadResources", source }
-//   })
-// }
-```
 
 **Необходимо реализовать в backend:**
 
@@ -247,12 +262,7 @@ useEffect(() => {
    - `SaveResource` - сохранение ресурса
    - `DeleteResource` - удаление ресурса
 
-2. **Timeline API** - расширенные команды
-   - `SplitClip` - разделение клипа
-   - `BatchUpdateClips` - массовое обновление
-   - `SelectClips` - выбор клипов
-
-3. **Analytics API** - для логирования
+2. **Analytics API** - для логирования
    - `LogBrowserAction` - действия в браузере
    - `LogUserAction` - действия пользователя
 
@@ -276,5 +286,6 @@ useEffect(() => {
 
 ---
 
-**Автор:** AI Assistant  
-**Последнее обновление:** 29 октября 2025
+**Автор:** AI Assistant
+**Последнее обновление:** 08 ноября 2024
+**Версия:** 2.1 - Timeline Clips API Integration Complete

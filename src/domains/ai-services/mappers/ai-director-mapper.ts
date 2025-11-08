@@ -11,7 +11,6 @@ import type {
   EditingRecommendation,
   KeyMomentInsight,
   MontageAnalysisResult,
-  SceneAnalysis,
 } from "@/types/generated/tauri-bindings"
 
 // ============================================================================

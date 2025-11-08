@@ -48,10 +48,9 @@ export class BackendAIService {
 
   /**
    * Send a message to AI using secure API key storage
-   * Note: This is a placeholder - secure key storage not yet implemented in backend
-   * For now, requires API key to be provided externally
+   * API keys are automatically loaded from SecureStorage on backend
    */
-  async sendMessage(config: AIServiceConfig, messages: AIMessage[], apiKey: string): Promise<UnifiedAIResponse> {
+  async sendMessage(config: AIServiceConfig, messages: AIMessage[]): Promise<UnifiedAIResponse> {
     try {
       const request: UnifiedAIRequest = {
         provider: config.provider,
@@ -71,7 +70,7 @@ export class BackendAIService {
         messageCount: messages.length,
       })
 
-      const result = await commands.aiSendUnifiedRequest(apiKey, request)
+      const result = await commands.aiSendSecureRequest(request)
 
       if (result.status === "error") {
         const error = result.error || "Unknown error"
@@ -93,14 +92,12 @@ export class BackendAIService {
 
   /**
    * Send message with tools (Claude Tools / OpenAI Function Calling)
-   * Note: This is a placeholder - secure key storage not yet implemented in backend
-   * For now, requires API key to be provided externally
+   * API keys are automatically loaded from SecureStorage on backend
    */
   async sendMessageWithTools(
     config: AIServiceConfig,
     messages: AIMessage[],
     tools: AITool[],
-    apiKey: string,
     toolChoice?: ToolChoice,
   ): Promise<UnifiedAIResponse> {
     try {
@@ -111,8 +108,7 @@ export class BackendAIService {
         toolsCount: tools.length,
       })
 
-      const result = await commands.aiSendRequestWithTools(
-        apiKey,
+      const result = await commands.aiSendSecureRequestWithTools(
         config.provider,
         config.model,
         messages,
@@ -140,12 +136,9 @@ export class BackendAIService {
    * Send streaming request
    * Note: Streaming is handled through UnifiedAIRequest with stream: true
    * Response comes through events, not directly from this method
+   * API keys are automatically loaded from SecureStorage on backend
    */
-  async sendStreamingRequest(
-    config: AIServiceConfig,
-    messages: AIMessage[],
-    apiKey: string,
-  ): Promise<UnifiedAIResponse> {
+  async sendStreamingRequest(config: AIServiceConfig, messages: AIMessage[]): Promise<UnifiedAIResponse> {
     try {
       const request: UnifiedAIRequest = {
         provider: config.provider,
@@ -165,7 +158,7 @@ export class BackendAIService {
         messageCount: messages.length,
       })
 
-      const result = await commands.aiSendUnifiedRequest(apiKey, request)
+      const result = await commands.aiSendSecureRequest(request)
 
       if (result.status === "error") {
         const error = result.error || "Streaming request failed"

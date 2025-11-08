@@ -219,16 +219,33 @@ pub async fn ai_send_request_with_tools(
     .map_err(|e| e.to_string())
 }
 
-/// Send AI request using stored API key (secure)
+/// Send AI request using stored API key (secure) with caching
 ///
 /// Эта команда не требует передачи API ключа с frontend.
 /// Ключ автоматически загружается из secure storage.
+/// Поддерживает автоматическое кэширование ответов.
 #[tauri::command]
 #[specta::specta]
 pub async fn ai_send_secure_request(
   storage: State<'_, Mutex<SecureStorage>>,
   request: UnifiedAIRequest,
+  cache_state: State<'_, AICacheState>,
 ) -> Result<UnifiedAIResponse, String> {
+  // Проверяем кэш если это не streaming запрос
+  if !request.stream.unwrap_or(false) {
+    let cache = cache_state.cache.lock().await;
+    let hash = AICacheManager::generate_hash(&request.provider, &request.model, &request.messages);
+
+    // Пытаемся получить из кэша
+    if let Ok(Some(cached_response)) = cache.get(&hash) {
+      log::info!(
+        "Returning cached response for provider {:?}",
+        request.provider
+      );
+      return Ok(cached_response);
+    }
+  }
+
   // Определяем тип ключа по провайдеру
   let key_type = match request.provider {
     AIProvider::Claude => ApiKeyType::Claude,
@@ -237,10 +254,20 @@ pub async fn ai_send_secure_request(
     AIProvider::Ollama => {
       // Ollama не требует API ключ
       let manager = AIProviderManager::new();
-      return manager
-        .send_request("", request)
+      let response = manager
+        .send_request("", request.clone())
         .await
-        .map_err(|e| e.to_string());
+        .map_err(|e| e.to_string())?;
+
+      // Сохраняем в кэш если не streaming
+      if !request.stream.unwrap_or(false) {
+        let cache = cache_state.cache.lock().await;
+        if let Err(e) = cache.set(&request, &response) {
+          log::warn!("Failed to cache Ollama response: {}", e);
+        }
+      }
+
+      return Ok(response);
     }
   };
 
@@ -256,13 +283,23 @@ pub async fn ai_send_secure_request(
 
   // Отправляем запрос
   let manager = AIProviderManager::new();
-  manager
-    .send_request(&api_key_value, request)
+  let response = manager
+    .send_request(&api_key_value, request.clone())
     .await
-    .map_err(|e| e.to_string())
+    .map_err(|e| e.to_string())?;
+
+  // Сохраняем в кэш если не streaming
+  if !request.stream.unwrap_or(false) {
+    let cache = cache_state.cache.lock().await;
+    if let Err(e) = cache.set(&request, &response) {
+      log::warn!("Failed to cache response: {}", e);
+    }
+  }
+
+  Ok(response)
 }
 
-/// Send AI request with tools using stored API key (secure)
+/// Send AI request with tools using stored API key (secure) with caching
 #[tauri::command]
 #[specta::specta]
 pub async fn ai_send_secure_request_with_tools(
@@ -275,6 +312,7 @@ pub async fn ai_send_secure_request_with_tools(
   system: Option<String>,
   max_tokens: Option<u32>,
   temperature: Option<f64>,
+  cache_state: State<'_, AICacheState>,
 ) -> Result<UnifiedAIResponse, String> {
   let request = UnifiedAIRequest {
     provider: provider.clone(),
@@ -288,7 +326,7 @@ pub async fn ai_send_secure_request_with_tools(
     tool_choice,
   };
 
-  ai_send_secure_request(storage, request).await
+  ai_send_secure_request(storage, request, cache_state).await
 }
 
 /// Send AI streaming request with real-time events

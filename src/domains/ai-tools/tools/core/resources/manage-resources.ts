@@ -10,7 +10,6 @@ import {
   BaseAITool,
 } from "../../../base"
 
-import type { AddResourceParams, BulkAddResourcesParams, RemoveResourceParams, UpdateResourceParams } from "./types"
 import { getResourcesProvider, hasResourcesAccess, resourceExists } from "./utils/helpers"
 
 // Типы для операций управления ресурсами
