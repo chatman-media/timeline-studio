@@ -3,7 +3,13 @@
  */
 
 import type { TimelineClip } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import { generateClipId } from "./utils/generators"
 import { getCurrentTimelineProject, saveTimelineProject } from "./utils/helpers"
 
@@ -47,8 +53,32 @@ export interface PlaceClipsResult {
  * AI инструмент для размещения клипов с унифицированной обработкой ошибок
  */
 export class ClipPlacementTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "place-clips",
+    displayName: "Place Clips Tool",
+    description: "Размещение клипов на timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ClipPlacementTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -59,7 +89,7 @@ export class ClipPlacementTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<PlaceClipsResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (!data.clips || !Array.isArray(data.clips)) {
@@ -76,9 +106,6 @@ export class ClipPlacementTool extends BaseAITool {
         }
         if (!clip.duration || clip.duration <= 0) {
           errors.push(`Клип ${index + 1}: некорректная длительность`)
-        }
-        if (clip.spacing !== undefined && clip.spacing < 0) {
-          errors.push(`Клип ${index + 1}: отрицательное значение spacing`)
         }
       })
 
@@ -97,16 +124,6 @@ export class ClipPlacementTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации данных для размещения клипов",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     const clips = input.clips
     const strategy = input.strategy || "sequential"
@@ -213,6 +230,7 @@ export class ClipPlacementTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 45000,
         retries: options.retries || 1,

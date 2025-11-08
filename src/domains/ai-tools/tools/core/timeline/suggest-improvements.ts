@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для предложения улучшений
 export interface ImprovementsInput {
@@ -46,8 +52,32 @@ export interface ImprovementsResult {
  * AI инструмент для предложения улучшений с унифицированной обработкой ошибок
  */
 export class ImprovementsSuggestionTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "suggest-improvements",
+    displayName: "Suggest Improvements Tool",
+    description: "Предложения по улучшению timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ImprovementsSuggestionTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -58,7 +88,7 @@ export class ImprovementsSuggestionTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ImprovementsResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validCategories = ["performance", "quality", "storytelling", "technical", "accessibility"]
@@ -76,16 +106,6 @@ export class ImprovementsSuggestionTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров анализа улучшений",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     const analysisCategories = input.analysisCategories || ["performance", "quality", "storytelling", "technical"]
     const improvementPriority = input.improvementPriority || "high-priority"
@@ -175,6 +195,7 @@ export class ImprovementsSuggestionTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 60000,
         retries: options.retries || 1,

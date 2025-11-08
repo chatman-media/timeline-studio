@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для анализа истории
 export interface StoryAnalysisInput {
@@ -69,8 +75,43 @@ export interface StoryAnalysisResult {
  * AI инструмент для анализа истории Timeline с унифицированной обработкой ошибок
  */
 export class StoryAnalysisTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "story-analysis",
+    displayName: "Story Analysis Tool",
+    description: "Анализ нарративной структуры, пейсинга и эмоционального потока в timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("StoryAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    if (!input || typeof input !== "object") return true // Optional input
+    const validScopes = ["full-timeline", "selected-section", "time-range"]
+    if (input.analysisScope && !validScopes.includes(input.analysisScope)) return false
+    return true
+  }
+
+  getSchema() {
+    return {
+      input: {
+        analysisScope: "string (optional)",
+        storyElements: "array (optional)",
+      },
+      output: {
+        scope: "string",
+        analyzedElements: "array",
+        narrativeStructure: "object (optional)",
+        pacing: "object (optional)",
+      },
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult<StoryAnalysisResult>> {
+    return this.analyzeStoryContent(input, options)
   }
 
   /**
@@ -80,36 +121,6 @@ export class StoryAnalysisTool extends BaseAITool {
     input: StoryAnalysisInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<StoryAnalysisResult>> {
-    // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
-      const errors: string[] = []
-
-      const validScopes = ["full-timeline", "selected-section", "time-range"]
-      if (data.analysisScope && !validScopes.includes(data.analysisScope)) {
-        errors.push(`Неподдерживаемая область анализа: ${data.analysisScope}`)
-      }
-
-      const validElements = ["narrative-arc", "pacing", "emotional-flow", "visual-continuity", "audio-consistency"]
-      if (data.storyElements?.some((element: string) => !validElements.includes(element))) {
-        errors.push("Неподдерживаемые элементы истории для анализа")
-      }
-
-      return {
-        isValid: errors.length === 0,
-        errors,
-      }
-    })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров анализа истории",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
-
     const analysisScope = input.analysisScope || "full-timeline"
     const storyElements = input.storyElements || ["narrative-arc", "pacing", "emotional-flow"]
 
@@ -219,6 +230,7 @@ export class StoryAnalysisTool extends BaseAITool {
           warnings: warnings.length > 0 ? warnings : undefined,
         }
       },
+      input,
       {
         timeout: options.timeout || 60000,
         retries: options.retries || 1,

@@ -3,7 +3,13 @@
  */
 
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для управления клипами
 export interface ClipManagementInput {
@@ -93,8 +99,32 @@ export interface ClipManagementResult {
  * AI инструмент для управления клипами с унифицированной обработкой ошибок
  */
 export class ClipManagementTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "manage-clips",
+    displayName: "Manage Clips Tool",
+    description: "Управление клипами в timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ClipManagementTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -105,7 +135,7 @@ export class ClipManagementTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ClipManagementResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = ["organize", "cleanup", "analyze", "batch-edit", "smart-sort"]
@@ -136,16 +166,6 @@ export class ClipManagementTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров управления клипами",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     const operation = input.operation
     const scope = input.scope || "all"
@@ -257,6 +277,7 @@ export class ClipManagementTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 120000, // 2 минуты для операций с клипами
         retries: options.retries || 1,

@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для аналитики timeline
 export interface TimelineAnalyticsInput {
@@ -132,8 +138,48 @@ export interface TimelineAnalyticsResult {
  * AI инструмент для аналитики Timeline с унифицированной обработкой ошибок
  */
 export class TimelineAnalyticsTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "timeline-analytics",
+    displayName: "Timeline Analytics Tool",
+    description: "Анализ использования, производительности и контента timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("TimelineAnalyticsTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const validTypes = ["usage", "performance", "content", "workflow", "comprehensive"]
+    return validTypes.includes(input.analysisType)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        analysisType: "string",
+        timeRange: "object (optional)",
+        includeDetails: "boolean (optional)",
+        generateInsights: "boolean (optional)",
+      },
+      output: {
+        analysisType: "string",
+        timeRange: "object",
+        metrics: "object",
+        insights: "array",
+        summary: "object",
+      },
+    }
+  }
+
+  async execute(
+    input: TimelineAnalyticsInput,
+    options?: AIToolExecutionOptions,
+  ): Promise<AIToolResult<TimelineAnalyticsResult>> {
+    return this.analyzeTimelineUsage(input, options)
   }
 
   /**
@@ -143,44 +189,6 @@ export class TimelineAnalyticsTool extends BaseAITool {
     input: TimelineAnalyticsInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<TimelineAnalyticsResult>> {
-    // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
-      const errors: string[] = []
-
-      const validAnalysisTypes = ["usage", "performance", "content", "workflow", "comprehensive"]
-      if (!validAnalysisTypes.includes(data.analysisType)) {
-        errors.push(`Неподдерживаемый тип анализа: ${data.analysisType}`)
-      }
-
-      if (data.timeRange?.startDate && data.timeRange?.endDate) {
-        const start = new Date(data.timeRange.startDate)
-        const end = new Date(data.timeRange.endDate)
-
-        if (start > end) {
-          errors.push("Дата начала не может быть позже даты окончания")
-        }
-
-        if (start > new Date()) {
-          errors.push("Дата начала не может быть в будущем")
-        }
-      }
-
-      return {
-        isValid: errors.length === 0,
-        errors,
-      }
-    })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров аналитики timeline",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
-
     const analysisType = input.analysisType
     const includeDetails = input.includeDetails !== false
     const generateInsights = input.generateInsights !== false
@@ -292,6 +300,7 @@ export class TimelineAnalyticsTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 60000, // 1 минута для аналитики
         retries: options.retries || 1,
@@ -340,9 +349,9 @@ export class TimelineAnalyticsTool extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
-    const totalEffects = allClips.reduce((sum, clip) => sum + (clip.effects?.length || 0), 0)
-    const totalTransitions = allClips.reduce((sum, clip) => sum + (clip.transitions?.length || 0), 0)
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
+    const totalEffects = allClips.reduce<number>((sum, clip) => sum + (clip.effects?.length || 0), 0)
+    const totalTransitions = allClips.reduce<number>((sum, clip) => sum + (clip.transitions?.length || 0), 0)
 
     // Симулируем активность на основе сложности проекта
     const complexity = this.calculateProjectComplexity(allTracks.length, allClips.length, totalEffects)
@@ -415,14 +424,14 @@ export class TimelineAnalyticsTool extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     // Анализируем типы контента
     const videoClips = allClips.filter((clip) => clip.mediaFile?.isVideo).length
     const audioClips = allClips.filter((clip) => clip.mediaFile?.isAudio).length
     const imageClips = allClips.filter((clip) => clip.mediaFile?.isImage).length
 
-    const totalContentDuration = allClips.reduce((sum, clip) => sum + clip.duration, 0)
+    const totalContentDuration = allClips.reduce<number>((sum, clip) => sum + clip.duration, 0)
 
     return {
       projectsCreated: 1, // Текущий проект

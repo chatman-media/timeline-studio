@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject, TimelineSection, TimelineTrack, TrackType } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для умных шаблонов
 export interface SmartTemplatesInput {
@@ -124,8 +130,32 @@ export interface SmartTemplatesResult {
  * AI инструмент для умных шаблонов с унифицированной обработкой ошибок
  */
 export class SmartTemplatesTools extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "smart-templates",
+    displayName: "Smart Templates Tool",
+    description: "Умные шаблоны для timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("SmartTemplatesTools", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -136,7 +166,7 @@ export class SmartTemplatesTools extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SmartTemplatesResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       const validOperations = ["create", "apply", "analyze", "suggest", "customize"]
@@ -167,16 +197,6 @@ export class SmartTemplatesTools extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров умных шаблонов",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     const operation = input.operation
     const templateType = input.templateType || "project"
@@ -288,6 +308,7 @@ export class SmartTemplatesTools extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 90000, // 1.5 минуты для операций с шаблонами
         retries: options.retries || 1,
@@ -313,7 +334,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     // Определяем сложность проекта
     let complexity: TemplateAnalysis["projectComplexity"] = "simple"
@@ -891,7 +912,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     return allTracks.length < 2 && allClips.length < 5
   }
@@ -903,7 +924,7 @@ export class SmartTemplatesTools extends BaseAITool {
     const allTracks = [...project.globalTracks]
     project.sections.forEach((section) => allTracks.push(...section.tracks))
 
-    const allClips = allTracks.reduce((clips, track) => clips.concat(track.clips), [])
+    const allClips = allTracks.reduce<any[]>((clips, track) => clips.concat(track.clips), [])
 
     let score = 1
     if (allTracks.length > 5) score = 2

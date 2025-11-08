@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для экспорта данных Timeline
 export interface TimelineExportInput {
@@ -45,8 +51,32 @@ export interface TimelineExportResult {
  * AI инструмент для экспорта данных Timeline с унифицированной обработкой ошибок
  */
 export class TimelineExportTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "export-data",
+    displayName: "Export Data Tool",
+    description: "Экспорт данных timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("TimelineExportTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -57,7 +87,7 @@ export class TimelineExportTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<TimelineExportResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (!data.exportFormat) {
@@ -79,16 +109,6 @@ export class TimelineExportTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации входных данных для экспорта",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     // Устанавливаем значения по умолчанию
     const exportFormat = input.exportFormat
@@ -161,6 +181,7 @@ export class TimelineExportTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 30000,
         retries: options.retries || 1,

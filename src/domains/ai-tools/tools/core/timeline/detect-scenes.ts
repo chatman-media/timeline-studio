@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для детекции сцен
 export interface SceneDetectionInput {
@@ -59,8 +65,32 @@ export interface SceneDetectionResult {
  * AI инструмент для детектирования и разделения сцен с унифицированной обработкой ошибок
  */
 export class SceneDetectionTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "detect-scenes",
+    displayName: "Scene Detection Tool",
+    description: "Определение сцен в timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("SceneDetectionTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -71,7 +101,7 @@ export class SceneDetectionTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SceneDetectionResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (data.sensitivity && !["low", "medium", "high"].includes(data.sensitivity)) {
@@ -87,16 +117,6 @@ export class SceneDetectionTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации входных данных для детекции сцен",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     // Устанавливаем значения по умолчанию
     const targetClips = input.targetClips || []
@@ -199,6 +219,7 @@ export class SceneDetectionTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 60000,
         retries: options.retries || 1,

@@ -3,8 +3,14 @@
  */
 
 import { TimelineSection } from "@/features/timeline/types"
-import type { TimelineClip, Track } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import type { TimelineClip, TimelineTrack } from "@/features/timeline/types/timeline"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import { calculateSectionsCoverage } from "./utils/calculators"
 import {
   createManualSections,
@@ -53,9 +59,45 @@ export interface CreateSectionsResult {
  * AI инструмент для создания секций с унифицированной обработкой ошибок
  */
 export class SectionCreationTool extends BaseAITool {
-  toolName: string
+  public readonly metadata: AIToolMetadata = {
+    name: "create-sections",
+    displayName: "Create Sections Tool",
+    description: "Создание секций в timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("SectionCreationTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const validStrategies = ["by-date", "by-duration", "by-content-type", "by-location", "manual", "smart"]
+    return input.strategy && validStrategies.includes(input.strategy)
+  }
+
+  getSchema() {
+    return {
+      input: {
+        strategy: "string",
+        sectionSettings: "object (optional)",
+        targetClips: "array (optional)",
+      },
+      output: {
+        createdSections: "array",
+        analysis: "object",
+        warnings: "array (optional)",
+      },
+    }
+  }
+
+  async execute(
+    input: CreateSectionsInput,
+    options?: AIToolExecutionOptions,
+  ): Promise<AIToolResult<CreateSectionsResult>> {
+    return this.createSectionsByStrategy(input, options)
   }
 
   /**
@@ -66,7 +108,7 @@ export class SectionCreationTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<CreateSectionsResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (!data.strategy) {
@@ -99,16 +141,6 @@ export class SectionCreationTool extends BaseAITool {
       }
     })
 
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации данных для создания секций",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
-
     const strategy = input.strategy
     const sectionSettings = input.sectionSettings || {}
     const targetClips = input.targetClips || []
@@ -130,11 +162,11 @@ export class SectionCreationTool extends BaseAITool {
 
         // Собираем все клипы из проекта
         const allClips: TimelineClip[] = []
-        currentProject.globalTracks.forEach((track: Track) => {
+        currentProject.globalTracks.forEach((track: TimelineTrack) => {
           allClips.push(...track.clips)
         })
         currentProject.sections.forEach((section: TimelineSection) => {
-          section.tracks.forEach((track: Track) => {
+          section.tracks.forEach((track: TimelineTrack) => {
             allClips.push(...track.clips)
           })
         })
@@ -212,6 +244,7 @@ export class SectionCreationTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 30000,
         retries: options.retries || 1,

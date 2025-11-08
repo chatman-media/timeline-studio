@@ -3,7 +3,13 @@
  */
 
 import type { TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 // Типы для создания проекта
 export interface ProjectCreationInput {
@@ -62,8 +68,41 @@ export interface ProjectCreationResult {
  * AI инструмент для создания проекта Timeline с унифицированной обработкой ошибок
  */
 export class ProjectCreationTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "project-creation",
+    displayName: "Project Creation Tool",
+    description: "Создание новых проектов Timeline с настройками и структурой",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ProjectCreationTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    return input && typeof input === "object" && input.projectSettings
+  }
+
+  getSchema() {
+    return {
+      input: {
+        projectSettings: "object",
+        autoCreateStructure: "boolean (optional)",
+        templateType: "string (optional)",
+      },
+      output: {
+        projectId: "string",
+        projectName: "string",
+        createdElements: "array",
+        trackStructure: "object",
+      },
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult<ProjectCreationResult>> {
+    return this.createNewTimelineProject(input, options)
   }
 
   /**
@@ -74,7 +113,7 @@ export class ProjectCreationTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ProjectCreationResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       // Проверка обязательных полей
@@ -126,8 +165,9 @@ export class ProjectCreationTool extends BaseAITool {
         success: false,
         errors: validation.errors,
         message: "Ошибка валидации параметров создания проекта",
-        executionTime: 0,
-        toolName: this.toolName,
+        executionTime: 1,
+        toolName: this.metadata.name,
+        executionId: `${this.metadata.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       }
     }
 
@@ -281,6 +321,7 @@ export class ProjectCreationTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 30000, // 30 секунд для создания проекта
         retries: options.retries || 2,

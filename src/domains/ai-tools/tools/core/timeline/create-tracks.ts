@@ -3,7 +3,13 @@
  */
 
 import type { TimelineTrack, TrackType } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import { generateTrackId } from "./utils/generators"
 import { getCurrentTimelineProject, saveTimelineProject } from "./utils/helpers"
 
@@ -41,8 +47,32 @@ export interface CreateTracksResult {
  * AI инструмент для создания треков с унифицированной обработкой ошибок
  */
 export class TrackCreationTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "create-tracks",
+    displayName: "Create Tracks Tool",
+    description: "Создание треков в timeline",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("TrackCreationTool", logger)
+    super(undefined, logger)
+  }
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: {},
+      output: {},
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    // Delegate to main method - will be implemented by the specific tool
+    return this.executeWithErrorHandling(async () => ({}), input, options)
   }
 
   /**
@@ -53,7 +83,7 @@ export class TrackCreationTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<CreateTracksResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (!data.tracks || !Array.isArray(data.tracks)) {
@@ -97,16 +127,6 @@ export class TrackCreationTool extends BaseAITool {
         errors,
       }
     })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации данных для создания треков",
-        executionTime: 0,
-        toolName: this.toolName,
-      }
-    }
 
     // Устанавливаем значения по умолчанию
     const tracks = input.tracks
@@ -214,6 +234,7 @@ export class TrackCreationTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 30000,
         retries: options.retries || 1,

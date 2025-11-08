@@ -2,8 +2,14 @@
  * AI инструмент для анализа структуры Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import { getTimelineStateAccess } from "./types"
 import {
   calculateTimelineDensity,
@@ -106,8 +112,32 @@ export interface StructureAnalysisResult {
  * AI инструмент для анализа структуры с унифицированной обработкой ошибок
  */
 export class StructureAnalysisTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "structure-analysis",
+    displayName: "Structure Analysis Tool",
+    description: "Анализ структуры timeline, треков и клипов",
+    domain: "core",
+    category: "timeline",
+    version: "1.0.0",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("StructureAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  validate(input: any): boolean {
+    return input && typeof input === "object"
+  }
+
+  getSchema() {
+    return {
+      input: { analysisDepth: "string (optional)" },
+      output: { projectInfo: "object", tracks: "array", sections: "array" },
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult<StructureAnalysisResult>> {
+    return this.analyzeTimelineStructure(input, options)
   }
 
   /**
@@ -117,31 +147,6 @@ export class StructureAnalysisTool extends BaseAITool {
     input: StructureAnalysisInput,
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<StructureAnalysisResult>> {
-    // Валидация входных данных
-    const validation = this.validateInput(input, (data: any) => {
-      const errors: string[] = []
-
-      const validDepths = ["basic", "detailed", "comprehensive"]
-      if (data.analysisDepth && !validDepths.includes(data.analysisDepth)) {
-        errors.push(`Неподдерживаемая глубина анализа: ${data.analysisDepth}`)
-      }
-
-      return {
-        isValid: errors.length === 0,
-        errors,
-      }
-    })
-
-    if (!validation.isValid) {
-      return {
-        success: false,
-        errors: validation.errors,
-        message: "Ошибка валидации параметров анализа структуры",
-        executionTime: 0,
-        toolName: "StructureAnalysisTool",
-      }
-    }
-
     const includeClips = input.includeClips !== false
     const includeTracks = input.includeTracks !== false
     const includeSections = input.includeSections !== false
@@ -315,7 +320,9 @@ export class StructureAnalysisTool extends BaseAITool {
 
           result.statistics = {
             averageClipDuration:
-              allClips.length > 0 ? allClips.reduce((sum, clip) => sum + clip.duration, 0) / allClips.length : 0,
+              allClips.length > 0
+                ? allClips.reduce<number>((sum, clip) => sum + clip.duration, 0) / allClips.length
+                : 0,
             trackTypeDistribution: getTrackTypeDistribution(allTracks),
             timelineDensity: calculateTimelineDensity(currentProject),
             usedResources: {
@@ -346,6 +353,7 @@ export class StructureAnalysisTool extends BaseAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 45000,
         retries: options.retries || 1,
