@@ -19,7 +19,9 @@ import type { AIMessage, AIProvider } from "@/types/generated/tauri-bindings"
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
 import { chatStorageService } from "../services/chat-storage-service"
+import { AIToolsV2Utils } from "../tools"
 import { compressContext, isContextOverLimit } from "../utils/context-manager"
+import { convertToolsToUnifiedFormat, executeToolByName } from "../utils/convert-tools"
 import { createTimelineContextPrompt } from "../utils/timeline-context"
 import { ChatList } from "./chat-list"
 
@@ -325,37 +327,170 @@ export function AiChat() {
           content: msg.content,
         }))
 
+        // Получаем и конвертируем AI tools для режима "agent"
+        const tools = chatMode === "agent" ? convertToolsToUnifiedFormat(AIToolsV2Utils.getAllTools()) : []
+
+        logger.info(`Sending AI request in ${chatMode} mode`, {
+          provider,
+          model: currentModel,
+          toolsCount: tools.length,
+          messagesCount: aiMessages.length,
+        })
+
         // Отправляем запрос через backend AI service
         // API ключ автоматически загружается из secure storage на бэкенде
-        const response = await backendAI.sendMessage(
-          {
-            provider: provider as AIProvider,
-            model: currentModel,
-            maxTokens: 2000,
-            temperature: provider === "ollama" ? 0.7 : undefined,
-            system: systemPrompt,
-          },
-          aiMessages,
-        )
+        const response =
+          tools.length > 0
+            ? await backendAI.sendMessageWithTools(
+                {
+                  provider: provider as AIProvider,
+                  model: currentModel,
+                  maxTokens: 2000,
+                  temperature: provider === "ollama" ? 0.7 : undefined,
+                  system: systemPrompt,
+                },
+                aiMessages,
+                tools,
+                "auto", // tool_choice: AI решает, когда использовать tools
+              )
+            : await backendAI.sendMessage(
+                {
+                  provider: provider as AIProvider,
+                  model: currentModel,
+                  maxTokens: 2000,
+                  temperature: provider === "ollama" ? 0.7 : undefined,
+                  system: systemPrompt,
+                },
+                aiMessages,
+              )
 
         // Завершаем стриминг
         setIsStreaming(false)
         setStreamingContent("")
 
-        // Обрабатываем ответ
-        const agentMessage: ChatMessage = {
-          id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-          content: response.content,
-          role: "assistant",
-          timestamp: new Date(),
-          agent: (selectedAgentId as AgentId) ?? ("qwen-2-5" as AgentId),
-        }
+        // Проверяем, вызвал ли AI инструменты
+        if (response.toolCalls && response.toolCalls.length > 0) {
+          logger.info("AI requested tool calls", { count: response.toolCalls.length })
 
-        receiveChatMessage(agentMessage.content)
+          // Показываем пользователю, что AI использует инструменты
+          const toolsUsageMessage = `🛠️ Использую инструменты: ${response.toolCalls.map((tc) => tc.name).join(", ")}`
+          receiveChatMessage(toolsUsageMessage)
 
-        // Сохраняем сообщение в историю
-        if (currentSessionId) {
-          await chatStorageService.addMessage(currentSessionId, agentMessage)
+          // Выполняем каждый инструмент
+          const toolResults: Array<{ id: string; name: string; result: any; error?: string }> = []
+
+          for (const toolCall of response.toolCalls) {
+            try {
+              logger.info(`Executing tool: ${toolCall.name}`, { input: toolCall.input })
+
+              const result = await executeToolByName(AIToolsV2Utils.getAllTools(), toolCall.name, toolCall.input)
+
+              toolResults.push({
+                id: toolCall.id,
+                name: toolCall.name,
+                result,
+              })
+
+              logger.info(`Tool executed successfully: ${toolCall.name}`)
+            } catch (error) {
+              logger.error(`Tool execution failed: ${toolCall.name}`, { error })
+              toolResults.push({
+                id: toolCall.id,
+                name: toolCall.name,
+                result: null,
+                error: String(error),
+              })
+            }
+          }
+
+          // Формируем сообщение с результатами для AI
+          const toolResultsContent = JSON.stringify(
+            {
+              tool_results: toolResults.map((tr) => ({
+                tool_call_id: tr.id,
+                tool_name: tr.name,
+                success: !tr.error,
+                result: tr.result,
+                error: tr.error,
+              })),
+            },
+            null,
+            2,
+          )
+
+          // Добавляем сообщение assistant с tool calls в историю
+          const assistantToolMessage: AIMessage = {
+            role: "assistant",
+            content: response.content || "Использую инструменты для выполнения задачи...",
+          }
+
+          // Добавляем сообщение с результатами
+          const toolResultMessage: AIMessage = {
+            role: "user",
+            content: `Tool execution results:\n${toolResultsContent}`,
+          }
+
+          // Отправляем обновленную историю с результатами обратно AI для финального ответа
+          const updatedMessages = [...aiMessages, assistantToolMessage, toolResultMessage]
+
+          logger.info("Sending tool results back to AI for final response")
+
+          const finalResponse =
+            tools.length > 0
+              ? await backendAI.sendMessageWithTools(
+                  {
+                    provider: provider as AIProvider,
+                    model: currentModel,
+                    maxTokens: 2000,
+                    temperature: provider === "ollama" ? 0.7 : undefined,
+                    system: systemPrompt,
+                  },
+                  updatedMessages,
+                  tools,
+                  "auto",
+                )
+              : await backendAI.sendMessage(
+                  {
+                    provider: provider as AIProvider,
+                    model: currentModel,
+                    maxTokens: 2000,
+                    temperature: provider === "ollama" ? 0.7 : undefined,
+                    system: systemPrompt,
+                  },
+                  updatedMessages,
+                )
+
+          // Обрабатываем финальный ответ
+          const finalAgentMessage: ChatMessage = {
+            id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+            content: finalResponse.content,
+            role: "assistant",
+            timestamp: new Date(),
+            agent: (selectedAgentId as AgentId) ?? ("qwen-2-5" as AgentId),
+          }
+
+          receiveChatMessage(finalAgentMessage.content)
+
+          // Сохраняем финальное сообщение в историю
+          if (currentSessionId) {
+            await chatStorageService.addMessage(currentSessionId, finalAgentMessage)
+          }
+        } else {
+          // Обычный ответ без tool calls
+          const agentMessage: ChatMessage = {
+            id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+            content: response.content,
+            role: "assistant",
+            timestamp: new Date(),
+            agent: (selectedAgentId as AgentId) ?? ("qwen-2-5" as AgentId),
+          }
+
+          receiveChatMessage(agentMessage.content)
+
+          // Сохраняем сообщение в историю
+          if (currentSessionId) {
+            await chatStorageService.addMessage(currentSessionId, agentMessage)
+          }
         }
       } catch (error) {
         logger.error("Error sending message to AI:", { error: String(error) })
