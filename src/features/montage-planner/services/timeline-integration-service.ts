@@ -5,16 +5,14 @@
  */
 
 import type { MediaFile } from "@/features/media/types/media"
+import type { Section, Track, TrackType } from "@/features/timeline/types"
 import {
   createTimelineClip,
   createTimelineSection,
   createTimelineTrack,
   type TimelineClip,
   type TimelineProject,
-  type TimelineSection,
-  type TimelineTrack,
 } from "@/features/timeline/types"
-import type { TrackType } from "@/features/timeline/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { EmotionalTone, type MontagePlan, type PlannedClip, type TransitionPlan } from "../types"
@@ -68,24 +66,27 @@ export function applyPlanToTimeline(
   })
 
   // Определяем секцию для добавления клипов
-  let targetSection: TimelineSection
+  let targetSection: Section
 
   if (createNewSection) {
     // Создаем новую секцию для монтажного плана
-    targetSection = createTimelineSection(
+    const newSection = createTimelineSection(
       sectionName,
       calculateSectionStartTime(updatedProject),
       plan.totalDuration,
       new Date(),
-    )
-
-    updatedProject.sections = [...updatedProject.sections, targetSection]
+    ) as Section
+    targetSection = newSection
+    updatedProject.sections = [...updatedProject.sections, newSection]
   } else {
     // Используем последнюю секцию или создаем, если нет
-    targetSection = updatedProject.sections[updatedProject.sections.length - 1]
-    if (!targetSection) {
-      targetSection = createTimelineSection("Main Section", 0, plan.totalDuration)
-      updatedProject.sections = [targetSection]
+    const lastSection = updatedProject.sections[updatedProject.sections.length - 1]
+    if (!lastSection) {
+      const newSection = createTimelineSection("Main Section", 0, plan.totalDuration) as Section
+      targetSection = newSection
+      updatedProject.sections = [newSection]
+    } else {
+      targetSection = lastSection
     }
   }
 
@@ -96,7 +97,7 @@ export function applyPlanToTimeline(
   const allClips: PlannedClip[] = []
   const allTransitions: TransitionPlan[] = []
 
-  plan.sequences.forEach((sequence) => {
+  plan.sequences.forEach((sequence: { clips: PlannedClip[]; transitions: TransitionPlan[] }) => {
     allClips.push(...sequence.clips)
     allTransitions.push(...sequence.transitions)
   })
@@ -254,31 +255,33 @@ function applyTransitionsToClips(clips: TimelineClip[], transitions: TransitionP
  * Получить или создать треки для монтажа
  */
 function getOrCreateTracks(
-  section: TimelineSection,
+  section: Section,
   useExisting: boolean,
   options: TimelineIntegrationOptions,
-): { videoTrack?: TimelineTrack; audioTrack?: TimelineTrack } {
-  let videoTrack: TimelineTrack | undefined
-  let audioTrack: TimelineTrack | undefined
+): { videoTrack?: Track; audioTrack?: Track } {
+  let videoTrack: Track | undefined
+  let audioTrack: Track | undefined
 
   if (useExisting) {
     // Ищем существующие треки
-    videoTrack = section.tracks.find((t) => t.id === options.targetVideoTrack || (t.type === "video" && !t.isLocked))
+    videoTrack = section.tracks.find((t) => t.id === options.targetVideoTrack || (t.type === "video" && !t.locked))
 
-    audioTrack = section.tracks.find((t) => t.id === options.targetAudioTrack || (t.type === "audio" && !t.isLocked))
+    audioTrack = section.tracks.find((t) => t.id === options.targetAudioTrack || (t.type === "audio" && !t.locked))
   }
 
   // Создаем новые треки если нужно
   if (!videoTrack) {
-    videoTrack = createTimelineTrack("Montage Video", "video" as TrackType)
-    videoTrack.order = section.tracks.length
-    section.tracks.push(videoTrack)
+    const newTrack = createTimelineTrack("Montage Video", "video" as TrackType) as Track
+    newTrack.order = section.tracks.length
+    section.tracks.push(newTrack)
+    videoTrack = newTrack
   }
 
   if (!audioTrack) {
-    audioTrack = createTimelineTrack("Montage Audio", "audio" as TrackType)
-    audioTrack.order = section.tracks.length
-    section.tracks.push(audioTrack)
+    const newTrack = createTimelineTrack("Montage Audio", "audio" as TrackType) as Track
+    newTrack.order = section.tracks.length
+    section.tracks.push(newTrack)
+    audioTrack = newTrack
   }
 
   return { videoTrack, audioTrack }
@@ -303,13 +306,13 @@ function calculateProjectDuration(project: TimelineProject): number {
   let maxEndTime = 0
 
   // Проверяем все секции
-  project.sections.forEach((section) => {
+  project.sections.forEach((section: Section) => {
     const sectionEndTime = section.startTime + section.duration
     maxEndTime = Math.max(maxEndTime, sectionEndTime)
 
     // Проверяем все треки в секции
-    section.tracks.forEach((track) => {
-      track.clips?.forEach((clip) => {
+    section.tracks.forEach((track: Track) => {
+      track.clips?.forEach((clip: TimelineClip) => {
         const clipEndTime = clip.startTime + clip.duration
         maxEndTime = Math.max(maxEndTime, clipEndTime)
       })
@@ -317,8 +320,8 @@ function calculateProjectDuration(project: TimelineProject): number {
   })
 
   // Проверяем глобальные треки
-  project.globalTracks?.forEach((track) => {
-    track.clips?.forEach((clip) => {
+  project.globalTracks?.forEach((track: Track) => {
+    track.clips?.forEach((clip: TimelineClip) => {
       const clipEndTime = clip.startTime + clip.duration
       maxEndTime = Math.max(maxEndTime, clipEndTime)
     })
@@ -355,8 +358,8 @@ export function createMarkersFromPlan(plan: MontagePlan, timeOffset = 0): Timeli
 
   // Маркеры для ключевых моментов
   let clipIndex = 0
-  plan.sequences.forEach((sequence) => {
-    sequence.clips.forEach((clip) => {
+  plan.sequences.forEach((sequence: { clips: PlannedClip[] }) => {
+    sequence.clips.forEach((clip: PlannedClip) => {
       if (clip.fragment && clip.fragment.score.totalScore > 80) {
         markers.push({
           id: `moment_${clip.fragmentId}_${clipIndex}`,

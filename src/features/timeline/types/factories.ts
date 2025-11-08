@@ -106,6 +106,11 @@ export function createTimelineTrack(name: string, type: TrackType, sectionId?: s
     sectionId,
     order: 0,
     clips: [],
+    // Двойные флаги для совместимости
+    muted: false,
+    solo: false,
+    locked: false,
+    expanded: true,
     isLocked: false,
     isMuted: false,
     isHidden: false,
