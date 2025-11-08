@@ -98,6 +98,7 @@ function triggerStateChange() {
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
+      selected_sections: [],
       timeline_zoom: 1,
       timeline_scroll: 0,
       active_tool: "select",
@@ -267,6 +268,7 @@ export const mockBackendSync = {
       ui_state: {
         selected_clips: [],
         selected_tracks: [],
+        selected_sections: [],
         timeline_zoom: 1,
         timeline_scroll: 0,
         active_tool: "select",

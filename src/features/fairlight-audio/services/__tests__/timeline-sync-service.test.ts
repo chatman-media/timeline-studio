@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineTrack } from "@/features/timeline/types"
+import type { Track as TimelineTrack } from "@/domains/video-editing/types"
 import type { AudioChannel } from "../../types"
 import { convertTrackToChannel, useTimelineMixerSync } from "../timeline-sync-service"
 
@@ -22,10 +22,14 @@ const createMockTrack = (overrides: Partial<TimelineTrack> = {}): TimelineTrack 
   order: 0,
   clips: [],
   transitions: [],
+  muted: false,
+  solo: false,
+  locked: false,
   isLocked: false,
   isMuted: false,
   isHidden: false,
   isSolo: false,
+  expanded: false,
   volume: 0.75,
   pan: 0.5,
   height: 60,

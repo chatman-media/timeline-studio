@@ -74,7 +74,7 @@ export function EffectsPreviewPlayer() {
     id: "demo-clip",
     name: "Demo Clip",
     mediaId: video?.id || "preview-media",
-    mediaFile: video || undefined,
+    mediaFile: (video as any) || undefined,
     trackId: "preview-track",
     startTime: 0,
     duration: 10,
@@ -357,7 +357,7 @@ export function EffectsPreviewPlayer() {
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", path: "", name: "Нет видео", type: MediaType.Video, size: 0, isVideo: true }}
+          file={video || { id: "", name: "Нет видео", path: "", type: MediaType.Video, size: 0 }}
         />
       </div>
     )
