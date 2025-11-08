@@ -12,10 +12,19 @@ use uuid;
 // Re-export types from types module (includes UpdateInfo)
 use super::types::*;
 
+// Import modular command handlers
+use super::media::MediaCommands;
+use super::timeline::TimelineCommands;
+use super::tracks::TracksCommands;
+
 pub struct CommandHandler {
   state: Arc<RwLock<ProjectState>>,
   event_bus: Arc<EventBus>,
   persistence: Arc<PersistenceService>,
+  // Modular command handlers
+  media_commands: MediaCommands,
+  timeline_commands: TimelineCommands,
+  tracks_commands: TracksCommands,
 }
 
 #[allow(dead_code)]
@@ -25,10 +34,18 @@ impl CommandHandler {
     event_bus: Arc<EventBus>,
     persistence: Arc<PersistenceService>,
   ) -> Self {
+    // Initialize modular command handlers
+    let media_commands = MediaCommands::new(state.clone(), event_bus.clone());
+    let timeline_commands = TimelineCommands::new(state.clone(), event_bus.clone());
+    let tracks_commands = TracksCommands::new(state.clone(), event_bus.clone());
+
     Self {
       state,
       event_bus,
       persistence,
+      media_commands,
+      timeline_commands,
+      tracks_commands,
     }
   }
 
@@ -40,35 +57,35 @@ impl CommandHandler {
       ProjectCommand::SaveProject { path } => self.save_project(path).await,
       ProjectCommand::CloseProject => self.close_project().await,
 
-      // Track commands
+      // Track commands - delegated to TracksCommands
       ProjectCommand::AddTrack {
         name,
         track_type,
         index,
-      } => self.add_track(name, track_type, index).await,
-      ProjectCommand::DeleteTrack { track_id } => self.delete_track(track_id).await,
+      } => self.tracks_commands.add_track(name, track_type, index).await,
+      ProjectCommand::DeleteTrack { track_id } => self.tracks_commands.delete_track(track_id).await,
       ProjectCommand::UpdateTrack { track_id, updates } => {
-        self.update_track(track_id, updates).await
+        self.tracks_commands.update_track(track_id, updates).await
       }
 
-      // Clip commands
+      // Clip commands - delegated to TimelineCommands
       ProjectCommand::AddClip {
         track_id,
         media_id,
         time,
-      } => self.add_clip(track_id, media_id, time).await,
+      } => self.timeline_commands.add_clip(track_id, media_id, time).await,
       ProjectCommand::MoveClip {
         clip_id,
         track_id,
         time,
-      } => self.move_clip(clip_id, track_id, time).await,
+      } => self.timeline_commands.move_clip(clip_id, track_id, time).await,
       ProjectCommand::TrimClip {
         clip_id,
         start,
         end,
-      } => self.trim_clip(clip_id, start, end).await,
-      ProjectCommand::DeleteClip { clip_id } => self.delete_clip(clip_id).await,
-      ProjectCommand::UpdateClip { clip_id, updates } => self.update_clip(clip_id, updates).await,
+      } => self.timeline_commands.trim_clip(clip_id, start, end).await,
+      ProjectCommand::DeleteClip { clip_id } => self.timeline_commands.delete_clip(clip_id).await,
+      ProjectCommand::UpdateClip { clip_id, updates } => self.timeline_commands.update_clip(clip_id, updates).await,
 
       // Player commands
       ProjectCommand::Play => self.play().await,
@@ -99,10 +116,11 @@ impl CommandHandler {
       ProjectCommand::PlayerClearEffects => self.player_clear_effects().await,
       ProjectCommand::PlayerClearFilters => self.player_clear_filters().await,
       ProjectCommand::PlayerClearTemplate => self.player_clear_template().await,
-      ProjectCommand::AddMedia { path, media_type } => self.add_media(path, media_type).await,
-      ProjectCommand::RemoveMedia { media_id } => self.remove_media(media_id).await,
+      // Media commands - delegated to MediaCommands
+      ProjectCommand::AddMedia { path, media_type } => self.media_commands.add_media(path, media_type).await,
+      ProjectCommand::RemoveMedia { media_id } => self.media_commands.remove_media(media_id).await,
       ProjectCommand::UpdateMedia { media_id, updates } => {
-        self.update_media(media_id, updates).await
+        self.media_commands.update_media(media_id, updates).await
       }
 
       // Media Management commands

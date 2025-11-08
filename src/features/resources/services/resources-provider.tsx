@@ -11,13 +11,13 @@ import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
-import { type MediaFile, MediaType } from "@/features/media/types/media"
+import { MediaType as LocalMediaType, type MediaFile } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
-import type { MediaItem } from "@/types/generated/tauri-bindings"
+import type { MediaItem, MediaType } from "@/types/generated/tauri-bindings"
 
 import {
   type EffectResource,
@@ -30,6 +30,30 @@ import {
   type TimelineResource,
   type TransitionResource,
 } from "../types"
+
+/**
+ * Convert local MediaType enum to Rust MediaType
+ */
+function convertToRustMediaType(localType: LocalMediaType | undefined): MediaType {
+  if (!localType) return "Video"
+
+  switch (localType) {
+    case LocalMediaType.Video:
+    case LocalMediaType.VideoWithAudio:
+      return "Video"
+    case LocalMediaType.Audio:
+    case LocalMediaType.Music:
+    case LocalMediaType.Voiceover:
+    case LocalMediaType.SFX:
+    case LocalMediaType.Ambient:
+      return "Audio"
+    case LocalMediaType.StillImage:
+    case LocalMediaType.ImageSequence:
+      return "Image"
+    default:
+      return "Video"
+  }
+}
 
 interface ResourcesContextType {
   // Ресурсы (синхронизированы с backend через project state)
@@ -162,14 +186,20 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
       // Добавляем медиа через backend команду
       try {
+        // Convert local MediaType to Rust MediaType
+        const mediaType = convertToRustMediaType(file.type)
         await executeCommand({
           type: "AddMedia",
           params: {
             path: file.path,
-            media_type: file.type,
+            media_type: mediaType,
           },
         })
-        logInfo("ResourcesProvider: Media added successfully", { path: file.path })
+        logInfo("ResourcesProvider: Media added successfully", {
+          path: file.path,
+          localType: file.type,
+          rustType: mediaType,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add media", {
           path: file.path,
@@ -212,13 +242,13 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         }
       }
 
-      // Добавляем музыку через backend команду (используем MediaType.Audio)
+      // Добавляем музыку через backend команду (используем Rust MediaType "Audio")
       try {
         await executeCommand({
           type: "AddMedia",
           params: {
             path: file.path,
-            media_type: MediaType.Audio,
+            media_type: "Audio" as MediaType, // Rust expects "Audio" (PascalCase)
           },
         })
         logInfo("ResourcesProvider: Music added successfully", { path: file.path })
@@ -507,7 +537,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             id: item.id,
             name: item.name,
             path: item.path,
-            type: mediaType === "Video" ? MediaType.Video : MediaType.StillImage,
+            type: mediaType === "Video" ? LocalMediaType.Video : LocalMediaType.StillImage,
             size: 0, // Backend не предоставляет размер файла
             isVideo: mediaType === "Video",
             isAudio: false,
@@ -555,7 +585,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             id: item.id,
             name: item.name,
             path: item.path,
-            type: MediaType.Audio,
+            type: LocalMediaType.Audio,
             size: 0, // Backend не предоставляет размер файла
             isVideo: false,
             isAudio: true,
