@@ -23,6 +23,7 @@ export { timelineMachine } from "./machines/timeline-machine"
 export {
   TimelineClipsProvider,
   TimelineEffectsProvider,
+  TimelineMarkersProvider,
   TimelinePlaybackProvider,
   TimelineProjectProvider,
   TimelineProvider,
@@ -30,6 +31,7 @@ export {
   TimelineTracksProvider,
   useTimelineClips,
   useTimelineEffects,
+  useTimelineMarkers,
   useTimelinePlayback,
   useTimelineProject,
   useTimelineSelection,

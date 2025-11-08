@@ -6,22 +6,22 @@
  */
 
 import { useSelector } from "@xstate/react"
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineProviders")
 
 // Используем типы из доменов
-import type { TimelineClip as DomainTimelineClip, MediaFile, Timeline, Track } from "../types"
+import type { MediaFile, Section, Timeline, TimelineClip, Track } from "../types"
 
 // Временный alias для совместимости
 type TimelineProject = Timeline
 type TimelineTrack = Track
-type TimelineClip = DomainTimelineClip
+type TimelineSection = Section
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState } from "@/types/generated/state-types"
+import type { ProjectState as BackendProjectState } from "@/types/generated/state-types"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { transformProjectStateToTimeline } from "../utils/project-transform"
 
@@ -37,7 +37,7 @@ interface TimelineProjectContext {
   loadProject: (path: string) => Promise<void>
   backend: {
     isConnected: boolean
-    backendProject: ProjectState | null
+    backendProject: BackendProjectState | null
   }
 }
 
@@ -53,7 +53,8 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const hasUnsavedChanges = useSelector(timelineActor, (state) => state.context.hasUnsavedChanges)
 
   // Подписка на изменения backend состояния
-  const [backendProject, setBackendProject] = useState<ProjectState | null>(null)
+  const [backendProject, setBackendProject] = useState<BackendProjectState | null>(null)
+  const lastProcessedVersionRef = useRef<number>(0)
 
   useEffect(() => {
     // Инициализируем backend sync если еще не подключен
@@ -64,7 +65,18 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     }
 
     // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+    const unsubscribe = backendSync.onStateChange((state: any) => {
+      const newVersion = state.version || 0
+
+      // Пропускаем обновление, если версия не изменилась
+      if (newVersion <= lastProcessedVersionRef.current) {
+        logger.debug("[TimelineProjectProvider] Skipping duplicate state update", {
+          data: { currentVersion: lastProcessedVersionRef.current, newVersion },
+        })
+        return
+      }
+
+      lastProcessedVersionRef.current = newVersion
       setBackendProject(state)
 
       // Преобразуем ProjectState в Timeline структуру
@@ -78,8 +90,10 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     })
 
     // Получаем начальное состояние
-    backendSync.getProjectState().then((state: ProjectState | null) => {
+    backendSync.getProjectState().then((state: any) => {
       if (state) {
+        const newVersion = state.version || 0
+        lastProcessedVersionRef.current = newVersion
         setBackendProject(state)
 
         // Преобразуем начальное состояние
@@ -98,20 +112,28 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     }
   }, [backendSync, timelineActor])
 
-  // Используем преобразованный проект или проект из машины состояний
-  const finalProject = project || transformProjectStateToTimeline(backendProject)
+  // Мемоизируем преобразование backendProject для предотвращения лишних ререндеров
+  const transformedBackendProject = useMemo(() => {
+    if (!backendProject) return null
+    return transformProjectStateToTimeline(backendProject)
+  }, [backendProject])
 
-  // Отладочная информация для project provider
-  logger.debug("[TimelineProjectProvider] Project transformation:", {
-    data: {
-      hasProject: !!project,
-      hasBackendProject: !!backendProject,
-      hasFinalProject: !!finalProject,
-      finalProjectSections: finalProject?.sections?.length || 0,
-      finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
-      backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
-    },
-  })
+  // Используем преобразованный проект или проект из машины состояний
+  const finalProject = project || transformedBackendProject
+
+  // Отладочная информация для project provider (только при изменениях)
+  useEffect(() => {
+    logger.debug("[TimelineProjectProvider] Project transformation:", {
+      data: {
+        hasProject: !!project,
+        hasBackendProject: !!backendProject,
+        hasFinalProject: !!finalProject,
+        finalProjectSections: finalProject?.sections?.length || 0,
+        finalProjectGlobalTracks: finalProject?.globalTracks?.length || 0,
+        backendTimelineTracks: backendProject?.project?.timeline?.tracks?.length || 0,
+      },
+    })
+  }, [project, backendProject, finalProject])
 
   const contextValue: TimelineProjectContext = {
     project: finalProject,
@@ -789,6 +811,101 @@ export function useTimelineEffects() {
 }
 
 // ===========================
+// Markers Provider
+// ===========================
+interface TimelineMarkersContext {
+  markers: any[] // TimelineMarker[] from domain types
+  addMarker: (data: { name: string; time: number; type: string; color: string; description?: string }) => Promise<void>
+  updateMarker: (markerId: string, updates: any) => Promise<void>
+  removeMarker: (markerId: string) => Promise<void>
+  goToMarker: (markerId: string) => void
+}
+
+const TimelineMarkersContext = createContext<TimelineMarkersContext | null>(null)
+
+export function TimelineMarkersProvider({ children }: { children: ReactNode }) {
+  const orchestrator = getVideoEditingOrchestrator()
+  const timelineActor = orchestrator.getActors().timeline
+  const backendSync = getBackendSync()
+
+  const project = useSelector(timelineActor, (state) => state.context.project)
+
+  // Получаем маркеры из проекта, мемоизируем для предотвращения лишних ререндеров
+  const markers = useMemo(() => {
+    if (!project?.markers) return []
+    return [...project.markers].sort((a, b) => a.time - b.time)
+  }, [project?.markers])
+
+  const contextValue: TimelineMarkersContext = {
+    markers,
+    addMarker: async (data) => {
+      try {
+        await backendSync.executeCommand({
+          type: "AddMarker",
+          params: {
+            name: data.name,
+            time: data.time,
+            color: data.color,
+            marker_type: data.type,
+            description: data.description || null,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to add marker:", { error })
+        throw error
+      }
+    },
+    updateMarker: async (markerId: string, updates: any) => {
+      try {
+        await backendSync.executeCommand({
+          type: "UpdateMarker",
+          params: {
+            marker_id: markerId,
+            name: updates.name || null,
+            time: updates.time || null,
+            color: updates.color || null,
+            description: updates.description || null,
+          },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to update marker:", { error })
+        throw error
+      }
+    },
+    removeMarker: async (markerId: string) => {
+      try {
+        await backendSync.executeCommand({
+          type: "RemoveMarker",
+          params: { marker_id: markerId },
+        })
+        // Backend обновит состояние через события
+      } catch (error) {
+        logger.error("Failed to remove marker:", { error })
+        throw error
+      }
+    },
+    goToMarker: (markerId: string) => {
+      const marker = markers.find((m) => m.id === markerId)
+      if (marker) {
+        timelineActor.send({ type: "SEEK", time: marker.time })
+      }
+    },
+  }
+
+  return <TimelineMarkersContext.Provider value={contextValue}>{children}</TimelineMarkersContext.Provider>
+}
+
+export function useTimelineMarkers() {
+  const context = useContext(TimelineMarkersContext)
+  if (!context) {
+    throw new Error("useTimelineMarkers must be used within TimelineMarkersProvider")
+  }
+  return context
+}
+
+// ===========================
 // Combined Timeline Provider
 // ===========================
 export function TimelineProvider({ children }: { children: ReactNode }) {
@@ -798,7 +915,9 @@ export function TimelineProvider({ children }: { children: ReactNode }) {
         <TimelineTracksProvider>
           <TimelineClipsProvider>
             <TimelineSelectionProvider>
-              <TimelineEffectsProvider>{children}</TimelineEffectsProvider>
+              <TimelineEffectsProvider>
+                <TimelineMarkersProvider>{children}</TimelineMarkersProvider>
+              </TimelineEffectsProvider>
             </TimelineSelectionProvider>
           </TimelineClipsProvider>
         </TimelineTracksProvider>

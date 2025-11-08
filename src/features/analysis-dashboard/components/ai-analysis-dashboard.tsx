@@ -5,7 +5,6 @@
  * Simplified dashboard working directly with AI Director (file-centric, not project-based)
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { FileVideo, Play, Settings, Zap } from "lucide-react"
 import { useState } from "react"
@@ -19,22 +18,14 @@ import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
 import type { LogContext } from "@/lib/tauri-logger"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult, SceneAnalysis } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("AiAnalysisDashboard")
 
 type AnalysisMode = "fast" | "balanced" | "quality"
 
-// Helper types for rendering
-type SceneData = {
-  id: string
-  start_time: number
-  end_time: number
-  duration: number
-  scene_type: string
-  confidence: number
-  description?: string
-}
+// Helper types for rendering (using generated types)
+type SceneData = SceneAnalysis
 
 type MomentData = {
   id?: string
@@ -141,7 +132,36 @@ export function AIAnalysisDashboard() {
       if (analysisMode === "fast") {
         await analyzeQuick(selectedFile)
       } else {
-        const config = await invoke<AIDirectorConfig>("ai_director_get_default_config", { mode: analysisMode })
+        // Use default config based on mode
+        const config: AIDirectorConfig = {
+          performance_mode: "Balanced",
+          enable_audio_analysis: true,
+          enable_scene_detection: true,
+          enable_video_analysis: analysisMode === "quality",
+          enable_vision_analysis: analysisMode === "quality",
+          enable_face_detection: analysisMode === "quality",
+          enable_face_analysis: analysisMode === "quality",
+          enable_object_detection: analysisMode === "quality",
+          enable_object_analysis: analysisMode === "quality",
+          enable_emotion_analysis: false,
+          enable_moment_detection: true,
+          enable_content_classification: true,
+          enable_composition_analysis: analysisMode === "quality",
+          enable_mood_analysis: true,
+          enable_quality_analysis: analysisMode === "quality",
+          max_processing_time: null,
+          quality_threshold: 0.5,
+          max_key_moments: null,
+          enable_caching: true,
+          generate_editing_recommendations: true,
+          enable_mcp_agents: false,
+          ai_provider: null,
+          ai_model: null,
+          ai_api_key: null,
+          enable_ai_enhanced_analysis: analysisMode === "quality",
+          enable_ai_descriptions: analysisMode === "quality",
+          enable_ai_mood_analysis: true,
+        }
         await analyzeComprehensive(selectedFile, config)
       }
     } catch (error) {
@@ -327,16 +347,16 @@ export function AIAnalysisDashboard() {
                           </Card>
                         </div>
 
-                        {result.scene_analysis.scenes.slice(0, 5).map((scene: SceneData, index: number) => (
+                        {result.scene_analysis.scenes.slice(0, 5).map((scene, index: number) => (
                           <Card key={scene.id}>
                             <CardContent className="pt-4">
                               <div className="flex justify-between items-start">
                                 <div>
                                   <p className="font-medium">
-                                    Сцена {index + 1}: {scene.scene_type}
+                                    Сцена {index + 1}: {scene.sceneType}
                                   </p>
                                   <p className="text-sm text-muted-foreground">
-                                    {scene.start_time.toFixed(1)}s - {scene.end_time.toFixed(1)}s (
+                                    {scene.startTime.toFixed(1)}s - {scene.endTime.toFixed(1)}s (
                                     {scene.duration.toFixed(1)}s)
                                   </p>
                                   {scene.description && <p className="text-sm mt-1">{scene.description}</p>}
