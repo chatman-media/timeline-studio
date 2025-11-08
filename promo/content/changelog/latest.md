@@ -1,3 +1,12 @@
+## [2.9.1](https://github.com/chatman-media/timeline-studio/compare/v2.9.0...v2.9.1) (2025-11-08)
+
+
+### Bug Fixes
+
+* **tests:** Снизить порог времени в тесте таймаута (50мс -> 30мс) для быстрых машин ([ab44830](https://github.com/chatman-media/timeline-studio/commit/ab44830a08809b17dcb40b46dac0b38913ad3fa1))
+* **types:** Исправить конвертацию MediaType между TypeScript и Rust ([68758f4](https://github.com/chatman-media/timeline-studio/commit/68758f456edd11979cb1ad7e1bd768d048a4c977))
+* **types:** Исправление дубликатов Keyframe и Resolution в TypeScript биндингах ([08299d9](https://github.com/chatman-media/timeline-studio/commit/08299d92b4f844d916db9019e6258daac8ba5b21))
+
 # [2.9.0](https://github.com/chatman-media/timeline-studio/compare/v2.8.0...v2.9.0) (2025-11-08)
 
 
