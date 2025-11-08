@@ -2,7 +2,7 @@
  * Функции анализа для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
 
 import { getTimelineStateAccess } from "../types"
 import { detectClipOverlaps } from "./detectors"

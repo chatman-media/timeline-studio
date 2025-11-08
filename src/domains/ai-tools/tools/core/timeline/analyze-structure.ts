@@ -205,26 +205,26 @@ export class StructureAnalysisTool extends BaseAITool {
               name: track.name,
               type: track.type,
               clipsCount: track.clips.length,
-              isHidden: track.isHidden || false,
-              isMuted: track.isMuted || false,
-              isLocked: track.isLocked || false,
-              height: track.height || 50,
-              order: track.order || 0,
+              isHidden: track.isHidden,
+              isMuted: track.isMuted,
+              isLocked: track.isLocked,
+              height: track.height,
+              order: track.order,
             })
           })
 
           // Треки из секций
-          currentProject.sections.forEach((section: any) => {
-            section.tracks.forEach((track: any) => {
+          currentProject.sections.forEach((section: TimelineSection) => {
+            section.tracks.forEach((track: TimelineTrack) => {
               tracks.push({
                 id: track.id,
                 name: track.name,
                 type: track.type,
                 sectionId: section.id,
                 clipsCount: track.clips.length,
-                isHidden: track.isHidden || false,
-                isMuted: track.isMuted || false,
-                isLocked: track.isLocked || false,
+                isHidden: track.isHidden,
+                isMuted: track.isMuted,
+                isLocked: track.isLocked,
               })
             })
           })
@@ -255,7 +255,7 @@ export class StructureAnalysisTool extends BaseAITool {
           const clips: ClipInfo[] = []
 
           // Клипы с глобальных треков
-          currentProject.globalTracks.forEach((track: any) => {
+          currentProject.globalTracks.forEach((track: TimelineTrack) => {
             track.clips.forEach((clip: TimelineClip) => {
               clips.push({
                 id: clip.id,
@@ -276,8 +276,8 @@ export class StructureAnalysisTool extends BaseAITool {
           })
 
           // Клипы из секций
-          currentProject.sections.forEach((section: any) => {
-            section.tracks.forEach((track: any) => {
+          currentProject.sections.forEach((section: TimelineSection) => {
+            section.tracks.forEach((track: TimelineTrack) => {
               track.clips.forEach((clip: TimelineClip) => {
                 clips.push({
                   id: clip.id,
@@ -304,17 +304,17 @@ export class StructureAnalysisTool extends BaseAITool {
         // Детальная статистика
         if (analysisDepth === "detailed" || analysisDepth === "comprehensive") {
           const allClips: TimelineClip[] = []
-          currentProject.globalTracks.forEach((track: any) => {
+          currentProject.globalTracks.forEach((track: TimelineTrack) => {
             allClips.push(...track.clips)
           })
-          currentProject.sections.forEach((section: any) => {
+          currentProject.sections.forEach((section: TimelineSection) => {
             section.tracks.forEach((track: TimelineTrack) => {
               allClips.push(...track.clips)
             })
           })
 
           const allTracks: TimelineTrack[] = [...currentProject.globalTracks]
-          currentProject.sections.forEach((section: any) => {
+          currentProject.sections.forEach((section: TimelineSection) => {
             allTracks.push(...section.tracks)
           })
 

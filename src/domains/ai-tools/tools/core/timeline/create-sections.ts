@@ -2,8 +2,7 @@
  * AI инструмент для создания секций на Timeline с использованием BaseAITool
  */
 
-import { TimelineSection } from "@/features/timeline/types"
-import type { TimelineClip, TimelineTrack } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineSection } from "@/features/timeline/types/timeline"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -162,14 +161,24 @@ export class SectionCreationTool extends BaseAITool {
 
         // Собираем все клипы из проекта
         const allClips: TimelineClip[] = []
-        currentProject.globalTracks.forEach((track: TimelineTrack) => {
-          allClips.push(...track.clips)
-        })
-        currentProject.sections.forEach((section: TimelineSection) => {
-          section.tracks.forEach((track: TimelineTrack) => {
-            allClips.push(...track.clips)
+        if (currentProject.globalTracks) {
+          currentProject.globalTracks.forEach((track) => {
+            if (track.clips) {
+              allClips.push(...track.clips)
+            }
           })
-        })
+        }
+        if (currentProject.sections) {
+          currentProject.sections.forEach((section) => {
+            if (section.tracks) {
+              section.tracks.forEach((track) => {
+                if (track.clips) {
+                  allClips.push(...track.clips)
+                }
+              })
+            }
+          })
+        }
 
         // Фильтруем клипы если указаны конкретные
         const clipsToProcess =
@@ -210,6 +219,9 @@ export class SectionCreationTool extends BaseAITool {
         }
 
         // Добавляем секции в проект
+        if (!currentProject.sections) {
+          currentProject.sections = []
+        }
         currentProject.sections.push(...sections)
         await saveTimelineProject(currentProject)
 

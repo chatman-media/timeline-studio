@@ -156,9 +156,9 @@ export class TrackCreationTool extends BaseAITool {
           type: trackConfig.type as TrackType,
           order: index,
           clips: [],
-          isLocked: trackConfig.isLocked === true,
-          isMuted: trackConfig.isMuted === true,
-          isHidden: trackConfig.isHidden === true,
+          isLocked: trackConfig.isLocked ?? false,
+          isMuted: trackConfig.isMuted ?? false,
+          isHidden: trackConfig.isHidden ?? false,
           isSolo: false,
           volume: trackConfig.volume ?? 1,
           pan: trackConfig.pan ?? 0,
@@ -182,11 +182,16 @@ export class TrackCreationTool extends BaseAITool {
             if (section.tracks.length > 0) {
               warnings.push(`Заменено ${section.tracks.length} существующих треков в секции`)
             }
+            // Присваиваем каждому треку sectionId
+            newTracks.forEach((track) => {
+              track.sectionId = targetSectionId
+            })
             section.tracks = newTracks
           } else {
-            // Обновляем порядок для новых треков
+            // Обновляем порядок для новых треков и присваиваем sectionId
             newTracks.forEach((track, index) => {
               track.order = section.tracks.length + index
+              track.sectionId = targetSectionId
             })
             section.tracks.push(...newTracks)
           }
