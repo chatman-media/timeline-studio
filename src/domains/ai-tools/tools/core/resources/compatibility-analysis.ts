@@ -2,7 +2,7 @@
  * AI инструмент для анализа совместимости ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { CompatibilityParams, ResourceToolResult } from "./types"
 import {

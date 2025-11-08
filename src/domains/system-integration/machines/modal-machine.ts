@@ -34,6 +34,7 @@ export type ModalType =
   | "midi-configuration"
   | "effect-detail"
   | "color-grading"
+  | "montage-planner"
   | "none"
 
 /**

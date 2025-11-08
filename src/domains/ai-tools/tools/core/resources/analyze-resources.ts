@@ -2,7 +2,7 @@
  * AI инструмент для анализа доступных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 import type { AnalyzeResourcesParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, getResourcesStats, hasResourcesAccess } from "./utils/helpers"

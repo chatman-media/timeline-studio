@@ -15,6 +15,7 @@ import { createLogger } from "@/lib/tauri-logger"
 const logger = createLogger("UndoRedoService")
 
 export type ActionType =
+  | "CREATE_PROJECT"
   | "ADD_CLIP"
   | "REMOVE_CLIP"
   | "MOVE_CLIP"
@@ -32,9 +33,16 @@ export type ActionType =
   | "ADD_EFFECT"
   | "REMOVE_EFFECT"
   | "UPDATE_EFFECT"
+  | "APPLY_EFFECT"
+  | "ADD_FILTER"
+  | "REMOVE_FILTER"
+  | "UPDATE_FILTER"
+  | "APPLY_FILTER"
   | "ADD_TRANSITION"
   | "REMOVE_TRANSITION"
   | "UPDATE_TRANSITION"
+  | "APPLY_TRANSITION"
+  | "CUSTOM"
 
 export interface UndoRedoAction {
   id: string
@@ -371,7 +379,11 @@ export class UndoRedoService {
 
     return {
       totalActions: this.history.length,
+      undoCount: this.history.length,
       redoableActions: this.redoStack.length,
+      redoCount: this.redoStack.length,
+      historySize: this.history.length + this.redoStack.length,
+      currentIndex: this.history.length,
       actionsByType: Object.fromEntries(actionsByType),
       memoryUsage: JSON.stringify(this.history).length + JSON.stringify(this.redoStack).length,
       maxHistorySize: this.maxHistorySize,

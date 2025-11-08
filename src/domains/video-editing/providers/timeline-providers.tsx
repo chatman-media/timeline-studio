@@ -394,14 +394,12 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     addClip: orchestrator.addClip.bind(orchestrator),
     removeClip: async (clipId: string) => {
       try {
-        // Сначала выполняем команду на backend
+        // Выполняем команду на backend - state обновится через событие
         await orchestrator.executeCommand({
           type: "DeleteClip",
           params: { clip_id: clipId },
         })
-
-        // Обновляем локальное состояние только после успешного backend вызова
-        timelineActor.send({ type: "REMOVE_CLIP", clipId })
+        // НЕ обновляем локально - ждем событие ClipDeleted от backend
       } catch (error) {
         logger.error("Failed to remove clip:", { error: error })
         throw error
@@ -409,14 +407,12 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     moveClip: async (clipId: string, trackId: string, time: number) => {
       try {
-        // Сначала выполняем команду на backend
+        // Выполняем команду на backend - state обновится через событие
         await orchestrator.executeCommand({
           type: "MoveClip",
           params: { clip_id: clipId, track_id: trackId, time },
         })
-
-        // Обновляем локальное состояние только после успешного backend вызова
-        timelineActor.send({ type: "MOVE_CLIP", clipId, trackId, time })
+        // НЕ обновляем локально - ждем событие ClipMoved от backend
       } catch (error) {
         logger.error("Failed to move clip:", { error: error })
         throw error
@@ -424,14 +420,12 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     trimClip: async (clipId: string, startTime: number, endTime: number) => {
       try {
-        // Сначала выполняем команду на backend
+        // Выполняем команду на backend - state обновится через событие
         await orchestrator.executeCommand({
           type: "TrimClip",
           params: { clip_id: clipId, start: startTime, end: endTime },
         })
-
-        // Обновляем локальное состояние только после успешного backend вызова
-        timelineActor.send({ type: "TRIM_CLIP", clipId, startTime, endTime })
+        // НЕ обновляем локально - ждем событие ClipTrimmed от backend
       } catch (error) {
         logger.error("Failed to trim clip:", { error: error })
         throw error
@@ -439,30 +433,25 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     splitClip: async (clipId: string, time: number) => {
       try {
-        // Пытаемся выполнить команду на backend (если доступна)
+        // Выполняем команду на backend - state обновится через событие
         await backendSync.executeCommand({
           type: "SplitClip",
           params: { clip_id: clipId, time },
         })
-
-        // Обновляем локальное состояние
-        timelineActor.send({ type: "SPLIT_CLIP", clipId, time })
+        // НЕ обновляем локально - ждем событие ClipSplit от backend
       } catch (error) {
-        logger.warn("SplitClip command not available in backend, updating UI only:", { data: error })
-        // Если команда не доступна, просто обновляем UI состояние
-        timelineActor.send({ type: "SPLIT_CLIP", clipId, time })
+        logger.error("Failed to split clip:", { error: error })
+        throw error
       }
     },
     updateClip: async (clipId: string, updates: Partial<TimelineClip>) => {
       try {
-        // Выполняем команду на backend
+        // Выполняем команду на backend - state обновится через событие
         await backendSync.executeCommand({
           type: "UpdateClip",
           params: { clip_id: clipId, updates },
         })
-
-        // Обновляем локальное состояние
-        timelineActor.send({ type: "UPDATE_CLIP", clipId, updates })
+        // НЕ обновляем локально - ждем событие ClipUpdated от backend
       } catch (error) {
         logger.error("Failed to update clip:", { error: error })
         throw error
@@ -470,14 +459,12 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
     batchUpdateClips: async (clips: TimelineClip[]) => {
       try {
-        // Выполняем команду на backend
+        // Выполняем команду на backend - state обновится через событие
         await backendSync.executeCommand({
           type: "BatchUpdateClips",
           params: { clips },
         })
-
-        // Обновляем локальное состояние
-        timelineActor.send({ type: "BATCH_UPDATE_CLIPS", clips })
+        // НЕ обновляем локально - ждем события от backend
       } catch (error) {
         logger.error("Failed to batch update clips:", { error: error })
         throw error

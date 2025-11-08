@@ -3,7 +3,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import type { EffectApplicationParams, PlayerToolResult } from "./types"
 import { getCurrentMedia, hasLoadedMedia } from "./utils/helpers"
 

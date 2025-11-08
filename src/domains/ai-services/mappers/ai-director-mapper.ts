@@ -280,7 +280,7 @@ export function mapMontageAnalysisToUnified(result: MontageAnalysisResult): Part
       fileSize: 0,
     },
 
-    keyMoments: result.key_moments.map((km) => ({
+    keyMoments: result.key_moments.map((km: any) => ({
       timestamp: km.timestamp,
       duration: km.duration,
       category: km.category,

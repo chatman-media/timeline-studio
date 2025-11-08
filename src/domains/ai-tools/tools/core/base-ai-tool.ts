@@ -3,27 +3,10 @@
  * Обеспечивает унифицированную обработку ошибок и стандартизацию результатов
  */
 
+import type { AIToolMetadata, AIToolResult } from "@/domains/ai-tools/types/tool-interfaces"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("BaseAITool")
-
-// Результат выполнения AI инструмента
-export interface AIToolResult<T = any> {
-  success: boolean
-  data?: T
-  message?: string
-  errors?: string[]
-  warnings?: string[]
-  executionTime: number
-  toolName: string
-  metadata?: {
-    model?: string
-    provider?: string
-    tokenCount?: number
-    cacheHit?: boolean
-    [key: string]: any
-  }
-}
 
 // Опции выполнения инструмента
 export interface AIToolExecutionOptions {
@@ -60,6 +43,33 @@ export abstract class BaseAITool {
   constructor(toolName: string, logger?: AIToolLogger) {
     this.toolName = toolName
     this.logger = logger
+  }
+
+  /**
+   * Метаданные инструмента (должны быть реализованы в наследниках)
+   */
+  abstract get metadata(): AIToolMetadata
+
+  /**
+   * Основной метод выполнения инструмента (должен быть реализован в наследниках)
+   */
+  abstract execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult>
+
+  /**
+   * Валидация входных данных (должна быть реализована в наследниках)
+   */
+  abstract validate(input: any): boolean
+
+  /**
+   * Получение схемы входных и выходных данных (должна быть реализована в наследниках)
+   */
+  abstract getSchema(): { input: any; output: any }
+
+  /**
+   * Генерация уникального ID выполнения
+   */
+  protected generateExecutionId(): string {
+    return `${this.toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
   }
 
   /**
@@ -121,6 +131,7 @@ export abstract class BaseAITool {
           message: `Инструмент ${this.toolName} выполнен успешно`,
           executionTime,
           toolName: this.toolName,
+          executionId: this.generateExecutionId(),
           metadata: {
             ...metadata,
             attempt: attempt + 1,
@@ -211,6 +222,7 @@ export abstract class BaseAITool {
       errors: [errorMessage],
       executionTime,
       toolName: this.toolName,
+      executionId: this.generateExecutionId(),
       metadata: {
         ...metadata,
         attempts,
@@ -270,6 +282,7 @@ export abstract class BaseAITool {
       message: message || `Инструмент ${this.toolName} выполнен успешно`,
       warnings,
       metadata,
+      executionId: this.generateExecutionId(),
     }
   }
 
@@ -288,6 +301,7 @@ export abstract class BaseAITool {
       message: message || `Инструмент ${this.toolName} выполнен с предупреждениями`,
       warnings,
       metadata,
+      executionId: this.generateExecutionId(),
     }
   }
 

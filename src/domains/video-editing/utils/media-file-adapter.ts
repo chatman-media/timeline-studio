@@ -74,6 +74,7 @@ export function domainToFeatureMediaFile(file: DomainMediaFile): FeatureMediaFil
     id: file.id,
     name: file.name,
     path: file.path,
+    type: file.type,
 
     // Boolean флаги на основе enum
     isVideo: file.type === MediaType.Video || file.type === MediaType.VideoWithAudio,
@@ -84,8 +85,8 @@ export function domainToFeatureMediaFile(file: DomainMediaFile): FeatureMediaFil
 
     duration: file.duration,
     size: file.size,
-    createdAt: file.createdAt?.toISOString(),
-    updatedAt: file.updatedAt?.toISOString(),
+    createdAt: file.createdAt instanceof Date ? file.createdAt : file.createdAt ? new Date(file.createdAt) : undefined,
+    updatedAt: file.updatedAt instanceof Date ? file.updatedAt : file.updatedAt ? new Date(file.updatedAt) : undefined,
 
     // Timeline integration
     isAddedToTimeline: file.isAddedToTimeline,

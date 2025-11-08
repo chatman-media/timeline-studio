@@ -3,7 +3,7 @@
  */
 
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 
 // Типы для управления клипами
 export interface ClipManagementInput {

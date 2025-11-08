@@ -409,6 +409,7 @@ function reverseMapTrackType(frontendType: Track["type"]): string {
   const typeMap: Record<Track["type"], string> = {
     video: "Video",
     audio: "Audio",
+    image: "Image",
     title: "Title",
     music: "Music",
     voiceover: "Voiceover",

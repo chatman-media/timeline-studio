@@ -4,7 +4,13 @@
 
 import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines/scene-analysis"
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 import type {
   ContentAnalysisResult,
   ContentIntelligenceInput,
@@ -18,8 +24,90 @@ import type {
  * Использует shared Content Analysis service
  */
 export class ContentIntelligenceTool extends BaseAITool {
+  metadata: AIToolMetadata = {
+    name: "content-intelligence",
+    displayName: "Интеллектуальный анализ контента",
+    description: "Комплексный AI анализ контента с определением сцен, классификацией и оптимизацией",
+    domain: "analysis",
+    category: "content-intelligence",
+    tags: ["content", "intelligence", "analysis", "scenes"],
+    version: "1.0.0",
+    author: "Timeline Studio",
+  }
+
   constructor(logger?: AIToolLogger) {
     super("ContentIntelligenceTool", logger)
+  }
+
+  validate(input: any): boolean {
+    const validation = this.validateInput(input, (data) => {
+      const errors: string[] = []
+
+      const validOperations = [
+        "analyze_content",
+        "detect_scenes",
+        "classify_content",
+        "adapt_platform",
+        "generate_multilanguage",
+        "generate_variants",
+        "analyze_audience",
+        "optimize_engagement",
+      ]
+      if (!validOperations.includes(data.operation)) {
+        errors.push(`Неподдерживаемая операция: ${data.operation}`)
+      }
+
+      if (!data.reason) {
+        errors.push("Требуется указать причину анализа контента")
+      }
+
+      return { isValid: errors.length === 0, errors }
+    })
+
+    return validation.isValid
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        required: ["operation", "reason"],
+        properties: {
+          operation: {
+            type: "string",
+            enum: [
+              "analyze_content",
+              "detect_scenes",
+              "classify_content",
+              "adapt_platform",
+              "generate_multilanguage",
+              "generate_variants",
+              "analyze_audience",
+              "optimize_engagement",
+            ],
+          },
+          reason: { type: "string" },
+          mediaFiles: { type: "array" },
+          sourceContent: { type: "object" },
+          targetPlatform: { type: "string" },
+        },
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          data: { type: "object" },
+        },
+      },
+    }
+  }
+
+  async execute(
+    input: ContentIntelligenceInput,
+    options?: AIToolExecutionOptions,
+  ): Promise<AIToolResult<ContentIntelligenceResult>> {
+    return this.processContentIntelligence(input, options)
   }
 
   /**

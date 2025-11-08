@@ -4,7 +4,7 @@
 
 import { TimelineSection } from "@/features/timeline/types"
 import type { TimelineClip, Track } from "@/features/timeline/types/timeline"
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../base-ai-tool"
+import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import { calculateSectionsCoverage } from "./utils/calculators"
 import {
   createManualSections,
