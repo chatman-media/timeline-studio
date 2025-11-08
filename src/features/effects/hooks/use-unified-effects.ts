@@ -259,7 +259,7 @@ export function useUnifiedEffects(
         void logger.info(`Effects rendered successfully in ${result.processingTime}ms`)
         return result
       } catch (error) {
-        void logger.error("Error rendering effects", error)
+        void logger.error("Error rendering effects", { error: error instanceof Error ? error.message : String(error) })
 
         const errorResult: RenderResult = {
           success: false,

@@ -177,7 +177,9 @@ export class WebGL2UnifiedRenderer {
       }
     } catch (error) {
       // Fallback на CSS фильтры при ошибке
-      logger.warn("WebGL2 rendering failed, falling back to CSS:", error)
+      logger.warn("WebGL2 rendering failed, falling back to CSS:", {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return await this.renderCSSEffects(appliedEffects, baseEffects, context)
     }
   }
@@ -394,11 +396,7 @@ export class WebGL2UnifiedRenderer {
   // ПРЕОБРАЗОВАНИЕ ПРОЦЕССОРОВ
   // ============================================================================
 
-  private convertWebGLProcessor(processor: WebGLProcessor): {
-    fragmentShader: string
-    vertexShader?: string
-    uniforms?: Record<string, any>
-  } {
+  private convertWebGLProcessor(processor: WebGLProcessor): WebGLProcessor {
     // Конвертируем WebGL1 шейдеры в WebGL2
     const fragmentShader = this.convertToWebGL2Shader(processor.fragmentShader, "fragment")
     const vertexShader = processor.vertexShader
@@ -409,6 +407,7 @@ export class WebGL2UnifiedRenderer {
       fragmentShader,
       vertexShader,
       uniforms: processor.uniforms,
+      textures: processor.textures,
     }
   }
 

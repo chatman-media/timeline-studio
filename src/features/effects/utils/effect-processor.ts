@@ -283,7 +283,10 @@ export function processEffects(rawEffects: RawEffectData[]): BaseEffect[] {
       try {
         return processEffect(effect)
       } catch (error) {
-        logger.error("processEffects: Failed to process effect", effect, error)
+        logger.error("processEffects: Failed to process effect", {
+          effect,
+          error: error instanceof Error ? error.message : String(error),
+        })
         return null
       }
     })

@@ -6,6 +6,7 @@ import { AddMediaButton } from "@/features/browser/components/layout/add-media-b
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { BaseEffect, VideoEffect } from "@/features/effects/types"
+import { MediaType } from "@/features/media/types/media"
 import { useResources } from "@/features/resources"
 import type { EffectResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -311,6 +312,7 @@ export function EffectPreview({
                 typeof processedEffect.name === "object"
                   ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
                   : processedEffect.name || processedEffect.id,
+              type: MediaType.Unknown,
             }}
             size={size}
             type="effect"

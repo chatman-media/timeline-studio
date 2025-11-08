@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 
 import { TransitionPreview } from "../../components/transition-preview"
 import type { Transition } from "../../types/transitions"
@@ -65,6 +65,7 @@ describe("TransitionPreview", () => {
     id: "source",
     path: "/path/to/source.mp4",
     name: "source.mp4",
+    type: MediaType.Video,
     size: 1000,
     isVideo: true,
     duration: 10,
@@ -74,6 +75,7 @@ describe("TransitionPreview", () => {
     id: "target",
     path: "/path/to/target.mp4",
     name: "target.mp4",
+    type: MediaType.Video,
     size: 1000,
     isVideo: true,
     duration: 10,

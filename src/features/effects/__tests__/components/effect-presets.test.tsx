@@ -1,9 +1,21 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-// Импортируем mockLogger из мока
-import { mockLogger } from "@/lib/tauri-logger"
 import { EffectPresets } from "../../components/effect-presets"
 import type { BaseEffect, VideoEffect } from "../../types"
+
+// Mock logger
+const mockLogger = {
+  errorSync: vi.fn(),
+  infoSync: vi.fn(),
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+}
+
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+}))
 
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({

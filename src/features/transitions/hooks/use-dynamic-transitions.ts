@@ -360,8 +360,9 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
 
       if (!result || !canvasRef.current) return null
 
+      const canvas = canvasRef.current
       return new Promise((resolve) => {
-        canvasRef.current.toBlob((blob) => resolve(blob), `image/${format}`, quality)
+        canvas.toBlob((blob) => resolve(blob), `image/${format}`, quality)
       })
     },
     [renderDynamicTransition],

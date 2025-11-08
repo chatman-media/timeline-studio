@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import type { TransitionResource } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
@@ -94,6 +94,7 @@ export function TransitionPreview({
       id: currentTransition?.id || transitionType,
       path: "",
       name: currentTransition?.labels?.ru || transitionType,
+      type: MediaType.Unknown,
     }),
     [currentTransition?.id, currentTransition?.labels?.ru, transitionType],
   )
