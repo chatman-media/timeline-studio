@@ -991,7 +991,7 @@ impl AIProviderManager {
     let mut stream = response.bytes_stream();
     let mut buffer = String::new();
     let mut chunk_index = 0;
-    let mut total_tokens: Option<u32> = None;
+    let total_tokens: Option<u32> = None;
     let mut finish_reason: Option<String> = None;
 
     while let Some(item) = stream.next().await {
@@ -1131,7 +1131,7 @@ impl AIProviderManager {
     let mut stream = response.bytes_stream();
     let mut buffer = String::new();
     let mut chunk_index = 0;
-    let mut total_tokens: Option<u32> = None;
+    let total_tokens: Option<u32> = None;
     let mut finish_reason: Option<String> = None;
 
     while let Some(item) = stream.next().await {

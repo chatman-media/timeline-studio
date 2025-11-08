@@ -254,7 +254,7 @@ impl AICacheManager {
       total_entries: total_entries as u32,
       total_hits: total_hits as u32,
       expired_entries: expired_entries as u32,
-      max_entries: self.config.max_entries as u32,
+      max_entries: self.config.max_entries,
       enabled: self.config.enabled,
     })
   }
