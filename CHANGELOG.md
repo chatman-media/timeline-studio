@@ -1,3 +1,10 @@
+## [2.9.2](https://github.com/chatman-media/timeline-studio/compare/v2.9.1...v2.9.2) (2025-11-08)
+
+
+### Bug Fixes
+
+* **rust:** Исправить clippy warnings ([11fa521](https://github.com/chatman-media/timeline-studio/commit/11fa52194c6cf5a3c8eb468772ae4b08437e3200))
+
 ## [2.9.1](https://github.com/chatman-media/timeline-studio/compare/v2.9.0...v2.9.1) (2025-11-08)
 
 
