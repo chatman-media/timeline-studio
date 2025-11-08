@@ -99,9 +99,9 @@ describe("useMulticamShortcuts", () => {
       renderHook(() => useMulticamShortcuts())
 
       // Get the registered action for camera 1
-      const registerCall = vi.mocked(shortcutsRegistry.register).mock.calls.find((call) =>
-        call[0].id.includes("camera-1"),
-      )
+      const registerCall = vi
+        .mocked(shortcutsRegistry.register)
+        .mock.calls.find((call) => call[0].id.includes("camera-1"))
 
       expect(registerCall).toBeDefined()
       const action = registerCall![0].action

@@ -5,6 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { SyncResult } from "../../types/multicam"
 import {
   analyzeAudioSyncQuality,
   correlateAudioSignals,
@@ -13,7 +14,6 @@ import {
   hasAudioTrack,
   syncByAudio,
 } from "../audio-sync"
-import type { SyncResult } from "../../types/multicam"
 
 // Тестовые данные
 const createMockMediaFile = (id: string, hasAudio: boolean): MediaFile => ({

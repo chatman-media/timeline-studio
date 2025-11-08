@@ -359,9 +359,12 @@ describe("SyncControls", () => {
     })
 
     // Ошибка обрабатывается правильно
-    await waitFor(() => {
-      expect(screen.getByText("Ошибка синхронизации")).toBeInTheDocument()
-    }, { timeout: 5000 })
+    await waitFor(
+      () => {
+        expect(screen.getByText("Ошибка синхронизации")).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
 
     consoleSpy.mockRestore()
   })
