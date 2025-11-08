@@ -33,10 +33,9 @@ export function useJLCuts(): UseJLCutsReturn {
     (clip: TimelineClip): boolean => {
       if (!project) return false
 
-      const track = [
-        ...(project.globalTracks || []),
-        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
-      ].find((t) => t.id === clip.trackId)
+      const track = [...(project.globalTracks || []), ...(project.sections?.flatMap((s) => s.tracks || []) || [])].find(
+        (t) => t.id === clip.trackId,
+      )
 
       return track?.type === "video" || track?.type === "image"
     },
@@ -47,10 +46,9 @@ export function useJLCuts(): UseJLCutsReturn {
     (clip: TimelineClip): boolean => {
       if (!project) return false
 
-      const track = [
-        ...(project.globalTracks || []),
-        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
-      ].find((t) => t.id === clip.trackId)
+      const track = [...(project.globalTracks || []), ...(project.sections?.flatMap((s) => s.tracks || []) || [])].find(
+        (t) => t.id === clip.trackId,
+      )
 
       return ["audio", "music", "voiceover", "sfx", "ambient"].includes(track?.type || "")
     },
@@ -80,10 +78,7 @@ export function useJLCuts(): UseJLCutsReturn {
     (clipId: string): LinkedClipPair | null => {
       if (!project) return null
 
-      const clip = [
-        ...(project.globalTracks || []),
-        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
-      ]
+      const clip = [...(project.globalTracks || []), ...(project.sections?.flatMap((s) => s.tracks || []) || [])]
         .flatMap((track) => track.clips || [])
         .find((c) => c.id === clipId)
 
@@ -192,17 +187,11 @@ export function useJLCuts(): UseJLCutsReturn {
       const pair = getLinkedPair(clipId)
       if (!pair || !project) return null
 
-      const videoClip = [
-        ...(project.globalTracks || []),
-        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
-      ]
+      const videoClip = [...(project.globalTracks || []), ...(project.sections?.flatMap((s) => s.tracks || []) || [])]
         .flatMap((track) => track.clips || [])
         .find((c) => c.id === pair.videoClipId)
 
-      const audioClip = [
-        ...(project.globalTracks || []),
-        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
-      ]
+      const audioClip = [...(project.globalTracks || []), ...(project.sections?.flatMap((s) => s.tracks || []) || [])]
         .flatMap((track) => track.clips || [])
         .find((c) => c.id === pair.audioClipId)
 
