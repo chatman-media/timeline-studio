@@ -22,7 +22,7 @@ Timeline Studio follows the principle **"Local for free, cloud for a fee"**:
 
 #### Included:
 - ✅ **Full video editor** without limitations
-- ✅ **257 AI tools** (running locally):
+- ✅ **100+ AI tools** (running locally):
   - Scene Analysis Engine - scene and composition analysis
   - Object detection via YOLO/ONNX
   - OCR - text recognition in video
@@ -198,7 +198,7 @@ Timeline Studio follows the principle **"Local for free, cloud for a fee"**:
 | Feature | Timeline Studio FREE | DaVinci Resolve | Premiere Pro | Final Cut Pro |
 |---------|---------------------|-----------------|--------------|---------------|
 | Price | **$0** | $295 (Studio) | $23/month | $299 |
-| AI tools | **257** | 15 | 25 | 10 |
+| AI tools | **100+** | 15 | 25 | 10 |
 | Watermark | **No** | No (Studio) | No | No |
 | 4K/8K export | **Yes** | Yes | Yes | Yes |
 | Transitions | **40+** (74 total) | 30+ | 50+ | 40+ |
@@ -229,7 +229,7 @@ Timeline Studio follows the principle **"Local for free, cloud for a fee"**:
 - ✅ Smart Montage - AI assembles video automatically
 - ✅ Face recognition for automatic titles
 - ✅ Direct upload to YouTube/TikTok
-- ✅ 257 AI tools for content enhancement
+- ✅ 100+ AI tools for content enhancement
 - **Cost**: $0
 
 ### For Professional Videographer (PRO)

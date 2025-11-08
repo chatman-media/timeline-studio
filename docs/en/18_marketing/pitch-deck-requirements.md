@@ -8,7 +8,7 @@ Create a professional pitch deck focused on Timeline Studio's AI superiority to 
 ### 1. **Visual Materials** 🎨
 - [ ] **Timeline Studio Logo** (high resolution, PNG/SVG)
 - [ ] **Interface Screenshots** (main application screens)
-- [ ] **AI Tool Icons** (if you have unique icons for 257 AI functions)
+- [ ] **AI Tool Icons** (if you have unique icons for 100+ AI functions)
 - [ ] **Team Photos** (professional photos of founders and key members)
 
 ### 2. **Demo Materials** 🎬
@@ -22,7 +22,7 @@ Create a professional pitch deck focused on Timeline Studio's AI superiority to 
 
 ### 3. **Technical Details** ⚙️
 - [ ] **Architecture Diagram** (Tauri v2 + Rust + AI pipeline)
-- [ ] **Complete List of 257 AI Tools** (categorized)
+- [ ] **Complete List of 100+ AI Tools** (categorized)
 - [ ] **Technical Advantages** (unique algorithm details)
 - [ ] **Development Roadmap** (specific dates and milestones)
 
