@@ -108,13 +108,16 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
             // Добавляем фильтры клипа
             const clipFilters = getClipFilters(clip.id)
             effects.push(
-              ...clipFilters.map((f) => ({
-                id: f.id,
-                type: f.filterId as any, // AppliedFilter uses filterId, not type
-                enabled: f.enabled,
-                parameters: f.parameters || {},
-                intensity: 1.0, // Default intensity for compatibility
-              })),
+              ...clipFilters.map(
+                (f) =>
+                  ({
+                    id: f.id,
+                    type: f.filterId as any, // AppliedFilter uses filterId, not type
+                    enabled: f.enabled,
+                    parameters: f.parameters || {},
+                    intensity: 1.0, // Default intensity for compatibility
+                  }) as Effect,
+              ),
             )
 
             // Проверяем переходы

@@ -13,7 +13,7 @@ import { Slider } from "@/components/ui/slider"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
-import type { TrackType } from "@/features/timeline/types"
+import type { TrackType } from "@/features/timeline/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
 
@@ -274,7 +274,10 @@ export function SubtitleAutoSync() {
   }
 
   const audioTracks = getAudioTracks()
-  const audioFiles = mediaFiles.filter((file) => file.media_type === "audio" || file.media_type === "video")
+  const audioFiles = mediaFiles.filter((file) => {
+    const mediaTypeStr = (file.media_type as any as string).toLowerCase()
+    return mediaTypeStr === "audio" || mediaTypeStr.includes("video")
+  })
 
   return (
     <Card>

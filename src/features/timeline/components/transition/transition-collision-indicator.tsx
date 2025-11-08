@@ -146,7 +146,7 @@ export function createCollision(
   const defaultMessages: Record<TransitionCollision["type"], string> = {
     overlap: "Переходы пересекаются по времени",
     adjacent: "Переходы расположены слишком близко",
-    clip_boundary: "Переход выходит за границы клипа",
+    "clip-boundary": "Переход выходит за границы клипа",
   }
 
   return {

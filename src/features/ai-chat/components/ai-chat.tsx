@@ -15,7 +15,7 @@ import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { backendAI } from "@/shared/services/ai/backend-ai-service"
-import type { AIProvider } from "@/types/generated/tauri-bindings"
+import type { AIMessage, AIProvider } from "@/types/generated/tauri-bindings"
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
 import { chatStorageService } from "../services/chat-storage-service"
@@ -306,67 +306,30 @@ export function AiChat() {
         }
 
         // Управление размером контекста
-        let messages: { role: "user" | "assistant"; content: string }[] = allMessages
-        if (isContextOverLimit(allMessages, currentModel, systemPrompt)) {
+        let messages = allMessages as any as ChatMessage[]
+        if (isContextOverLimit(allMessages as any, currentModel, systemPrompt)) {
           logger.info("Контекст превышает лимиты модели, сжимаем...")
-          const compressedMessages = compressContext(allMessages, currentModel, systemPrompt)
-          // Фильтруем только user и assistant сообщения для API
-          messages = compressedMessages.filter((msg) => msg.role === "user" || msg.role === "assistant") as {
-            role: "user" | "assistant"
-            content: string
-          }[]
+          messages = compressContext(allMessages as any, currentModel, systemPrompt)
         }
+
+        // Фильтруем только user и assistant сообщения для API
+        const apiMessages = messages.filter((msg) => msg.role === "user" || msg.role === "assistant")
 
         // Начинаем потоковый ответ
         setIsStreaming(true)
         setStreamingContent("")
 
-        // Общий обработчик для завершения потокового ответа
-        const handleStreamComplete = async (response: AiResponse) => {
-          setIsStreaming(false)
-          setStreamingContent("")
-
-          const agentMessage: ChatMessage = {
-            id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-            content: response.content,
-            role: "assistant",
-            timestamp: new Date(),
-            agent: (selectedAgentId as AgentId) ?? ("qwen-2-5" as AgentId),
-          }
-
-          receiveChatMessage(agentMessage.content)
-
-          // Сохраняем сообщение в историю
-          if (currentSessionId) {
-            await chatStorageService.addMessage(currentSessionId, agentMessage)
-          }
-        }
-
-        // Общий обработчик ошибок
-        const handleStreamError = (error: Error) => {
-          logger.error("Error in streaming:", { error: String(error) })
-          setIsStreaming(false)
-          setStreamingContent("")
-          throw error
-        }
-
-        // Получаем API ключ для провайдера
-        const apiKeyInfo = provider !== "ollama" ? getApiKeyInfo(provider) : null
-        const apiKey = apiKeyInfo?.value || ""
-
         // Преобразуем сообщения в формат AIMessage[]
-        const aiMessages: AIMessage[] = messages.map((msg) => ({
+        const aiMessages: AIMessage[] = apiMessages.map((msg) => ({
           role: msg.role,
           content: msg.content,
         }))
 
         // Отправляем запрос через backend AI service
-        setIsStreaming(true)
         const response = await backendAI.sendMessage(
           {
             provider: provider as AIProvider,
             model: currentModel,
-            apiKey,
             maxTokens: 2000,
             temperature: provider === "ollama" ? 0.7 : undefined,
             system: systemPrompt,
@@ -374,14 +337,25 @@ export function AiChat() {
           aiMessages,
         )
 
+        // Завершаем стриминг
+        setIsStreaming(false)
+        setStreamingContent("")
+
         // Обрабатываем ответ
-        const aiResponse = {
+        const agentMessage: ChatMessage = {
+          id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           content: response.content,
-          model: response.model,
-          usage: response.usage,
+          role: "assistant",
+          timestamp: new Date(),
+          agent: (selectedAgentId as AgentId) ?? ("qwen-2-5" as AgentId),
         }
 
-        await handleStreamComplete(aiResponse as any)
+        receiveChatMessage(agentMessage.content)
+
+        // Сохраняем сообщение в историю
+        if (currentSessionId) {
+          await chatStorageService.addMessage(currentSessionId, agentMessage)
+        }
       } catch (error) {
         logger.error("Error sending message to AI:", { error: String(error) })
         setIsStreaming(false)

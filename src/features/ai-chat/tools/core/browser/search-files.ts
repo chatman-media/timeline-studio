@@ -101,7 +101,7 @@ export class FileSearchTool extends BaseAITool {
           tab: input.tab,
         })
 
-        const result = await this.performSearch(input)
+        const result = await this.performSearch(input, {})
 
         this.logger?.info("Поиск файлов завершен", {
           query: input.query,

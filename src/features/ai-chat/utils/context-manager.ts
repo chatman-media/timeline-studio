@@ -2,7 +2,10 @@
  * Утилиты для управления размером контекста AI чатов
  */
 
-// REMOVED: import { AiMessage } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
+import type { ChatMessage } from "@/domains/ai-services/types/chat"
+
+// Use ChatMessage instead of deleted AiMessage type
+type AiMessage = ChatMessage
 
 // Примерные лимиты токенов для разных моделей
 const MODEL_CONTEXT_LIMITS = {

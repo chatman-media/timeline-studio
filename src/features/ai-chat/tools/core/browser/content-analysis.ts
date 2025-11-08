@@ -632,7 +632,7 @@ export async function analyzeMissingContent(params: AnalyzeMissingContentParams)
 export async function suggestImportSources(params: SuggestImportParams): Promise<BrowserToolResult> {
   const result = await contentAnalysisTool.processContentAnalysis({
     operation: "suggest_import_sources",
-    contentType: params.contentType,
+    contentType: params.contentType as "video" | "audio" | "image" | "effect" | "filter" | "transition" | "template" | "music" | undefined,
     style: params.style,
     mood: params.mood,
     projectType: params.projectType,
