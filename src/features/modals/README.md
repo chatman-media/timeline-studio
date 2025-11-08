@@ -66,10 +66,10 @@ React Context provider for modal functionality.
 ## Usage
 
 ```typescript
-import { useModals } from '@/features/modals'
+import { useModal } from '@/features/modals'
 
 function MyComponent() {
-  const { openModal, closeModal } = useModals()
+  const { openModal, closeModal } = useModal()
   
   // Open a modal with data
   const handleExport = () => {

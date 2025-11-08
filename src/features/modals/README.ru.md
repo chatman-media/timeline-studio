@@ -66,10 +66,10 @@ React Context провайдер для функциональности мод�
 ## Использование
 
 ```typescript
-import { useModals } from '@/features/modals'
+import { useModal } from '@/features/modals'
 
 function MyComponent() {
-  const { openModal, closeModal } = useModals()
+  const { openModal, closeModal } = useModal()
   
   // Открытие модального окна с данными
   const handleExport = () => {

@@ -11,6 +11,7 @@ import { MidiLearnModal } from "@/features/fairlight-audio/components/midi/midi-
 import { MidiMappingEditorModal } from "@/features/fairlight-audio/components/midi/midi-mapping-editor-modal"
 import { KeyboardShortcutsModal } from "@/features/keyboard-shortcuts"
 import { CacheSettingsModal } from "@/features/media/components/cache-settings-modal"
+import { MontagePlannerModal } from "@/features/montage-planner/components/montage-planner-modal"
 import { PersonFormModal } from "@/features/person-identification/components/person-form-modal"
 import { ProjectSettingsModal } from "@/features/project-settings"
 import { SubtitleAIToolsModal } from "@/features/subtitles/components/subtitle-ai-tools-modal"
@@ -71,6 +72,8 @@ export function ModalContainer() {
         return <EffectDetailModal />
       case "color-grading":
         return <ColorGradingSavePresetModal />
+      case "montage-planner":
+        return <MontagePlannerModal />
       default:
         return null
     }
@@ -116,6 +119,8 @@ export function ModalContainer() {
         return "max-w-4xl max-h-[90vh] overflow-y-auto"
       case "color-grading":
         return "bg-[#2D2D30] border-[#464647]"
+      case "montage-planner":
+        return "h-[max(800px,min(90vh,1000px))] w-[max(1200px,min(95vw,1400px))]"
       default:
         return "h-[max(600px,min(50vh,800px))]"
     }
@@ -166,6 +171,8 @@ export function ModalContainer() {
         return t("modals.effectDetail.title", "Детали эффекта")
       case "color-grading":
         return t("modals.colorGrading.title", "Сохранить пресет цветокоррекции")
+      case "montage-planner":
+        return t("modals.montagePlanner.title", "Умный планировщик монтажа")
       case "none":
         return ""
       default:
