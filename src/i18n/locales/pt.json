@@ -1044,7 +1044,12 @@
       "savingProgress": "Salvando progresso",
       "saveSuccess": "Vídeo salvo com sucesso!",
       "stop": "Parar",
-      "processing": "Processando..."
+      "processing": "Processando...",
+      "ai_connected": "IA conectada",
+      "empty_project_hint": "O projeto está vazio. Comece com:",
+      "import_media": "Importar mídia",
+      "ask_ai_import": "Perguntar à IA",
+    "copy": "Copiar"
     }
   },
   "filters": {

@@ -1190,7 +1190,12 @@
       "savingProgress": "進行状況を保存中",
       "saveSuccess": "動画が正常に保存されました！",
       "stop": "停止",
-      "processing": "処理中..."
+      "processing": "処理中...",
+      "ai_connected": "AI接続済み",
+      "empty_project_hint": "プロジェクトは空です。次から始めてください：",
+      "import_media": "メディアをインポート",
+      "ask_ai_import": "AIに質問",
+    "copy": "コピー"
     },
     "title": "タイムライン",
     "noTracks": "トラックなし",

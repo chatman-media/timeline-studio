@@ -1018,7 +1018,8 @@
       "ai_connected": "AI подключен",
       "empty_project_hint": "Проект пока пустой. Начните с:",
       "import_media": "Импортировать медиа",
-      "ask_ai_import": "Спросить AI"
+      "ask_ai_import": "Спросить AI",
+    "copy": "Копировать"
     }
   },
   "titles": {

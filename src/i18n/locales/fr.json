@@ -963,7 +963,12 @@
       "saveSuccess": "Vidéo enregistrée avec succès !",
       "send": "Envoyer",
       "stop": "Arrêter",
-      "processing": "Traitement..."
+      "processing": "Traitement...",
+      "ai_connected": "IA connectée",
+      "empty_project_hint": "Le projet est vide. Commencez par :",
+      "import_media": "Importer des médias",
+      "ask_ai_import": "Demander à l'IA",
+    "copy": "Copier"
     },
     "source": {
       "timeline": "Timeline",

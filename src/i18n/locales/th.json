@@ -1242,7 +1242,12 @@
       "savingProgress": "กำลังบันทึกความคืบหน้า",
       "saveSuccess": "บันทึกวิดีโอสำเร็จแล้ว!",
       "stop": "หยุด",
-      "processing": "กำลังประมวลผล..."
+      "processing": "กำลังประมวลผล...",
+      "ai_connected": "เชื่อมต่อ AI แล้ว",
+      "empty_project_hint": "โปรเจกต์ว่างเปล่า เริ่มต้นด้วย:",
+      "import_media": "นำเข้าสื่อ",
+      "ask_ai_import": "ถาม AI",
+    "copy": "คัดลอก"
     },
     "title": "ไทม์ไลน์",
     "noTracks": "ไม่มีแทร็ก",

@@ -1415,7 +1415,12 @@
       "savingProgress": "प्रगति सहेजी जा रही है",
       "saveSuccess": "वीडियो सफलतापूर्वक सहेजा गया!",
       "stop": "रोकें",
-      "processing": "प्रोसेसिंग..."
+      "processing": "प्रोसेसिंग...",
+      "ai_connected": "AI कनेक्ट हो गया",
+      "empty_project_hint": "प्रोजेक्ट खाली है। इससे शुरू करें:",
+      "import_media": "मीडिया आयात करें",
+      "ask_ai_import": "AI से पूछें",
+    "copy": "कॉपी करें"
     },
     "title": "टाइमलाइन",
     "noTracks": "कोई ट्रैक नहीं",

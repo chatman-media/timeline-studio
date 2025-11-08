@@ -965,7 +965,12 @@
       "saveSuccess": "Video erfolgreich gespeichert!",
       "send": "Senden",
       "stop": "Stoppen",
-      "processing": "Verarbeitung..."
+      "processing": "Verarbeitung...",
+      "ai_connected": "KI verbunden",
+      "empty_project_hint": "Projekt ist leer. Beginnen Sie mit:",
+      "import_media": "Medien importieren",
+      "ask_ai_import": "KI fragen",
+    "copy": "Kopieren"
     },
     "title": "Timeline",
     "noTracks": "Keine Spuren",

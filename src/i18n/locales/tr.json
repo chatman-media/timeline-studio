@@ -1190,7 +1190,12 @@
       "savingProgress": "İlerleme kaydediliyor",
       "saveSuccess": "Video başarıyla kaydedildi!",
       "stop": "Durdur",
-      "processing": "İşleniyor..."
+      "processing": "İşleniyor...",
+      "ai_connected": "AI bağlandı",
+      "empty_project_hint": "Proje boş. Şununla başlayın:",
+      "import_media": "Medya içe aktar",
+      "ask_ai_import": "AI'ya sor",
+    "copy": "Kopyala"
     },
     "title": "Zaman Çizelgesi",
     "noTracks": "Parça yok",

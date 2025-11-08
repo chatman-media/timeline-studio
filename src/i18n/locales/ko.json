@@ -1190,7 +1190,12 @@
       "savingProgress": "저장 진행 중",
       "saveSuccess": "비디오가 성공적으로 저장되었습니다!",
       "stop": "중지",
-      "processing": "처리 중..."
+      "processing": "처리 중...",
+      "ai_connected": "AI 연결됨",
+      "empty_project_hint": "프로젝트가 비어 있습니다. 다음으로 시작하세요:",
+      "import_media": "미디어 가져오기",
+      "ask_ai_import": "AI에게 물어보기",
+    "copy": "복사"
     },
     "title": "타임라인",
     "noTracks": "트랙 없음",

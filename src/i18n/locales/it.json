@@ -1356,7 +1356,12 @@
       "savingProgress": "Salvataggio in corso",
       "saveSuccess": "Video salvato con successo!",
       "stop": "Ferma",
-      "processing": "Elaborazione..."
+      "processing": "Elaborazione...",
+      "ai_connected": "IA connessa",
+      "empty_project_hint": "Il progetto è vuoto. Inizia con:",
+      "import_media": "Importa media",
+      "ask_ai_import": "Chiedi all'IA",
+    "copy": "Copia"
     },
     "title": "Timeline",
     "noTracks": "Nessuna traccia",

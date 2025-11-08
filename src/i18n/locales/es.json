@@ -1085,7 +1085,12 @@
       "saveSuccess": "¡Video guardado exitosamente!",
       "send": "Enviar",
       "stop": "Detener",
-      "processing": "Procesando..."
+      "processing": "Procesando...",
+      "ai_connected": "IA conectada",
+      "empty_project_hint": "El proyecto está vacío. Comienza con:",
+      "import_media": "Importar medios",
+      "ask_ai_import": "Preguntar a IA",
+    "copy": "Copiar"
     }
   },
   "templates": {

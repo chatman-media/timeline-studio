@@ -1527,7 +1527,8 @@
       "ai_connected": "AI Connected",
       "empty_project_hint": "Project is empty. Start with:",
       "import_media": "Import Media",
-      "ask_ai_import": "Ask AI"
+      "ask_ai_import": "Ask AI",
+    "copy": "Copy"
     },
     "title": "Timeline",
     "noTracks": "No tracks",
@@ -1901,7 +1902,8 @@
     "ai_connected": "AI Connected",
     "empty_project_hint": "Project is empty. Start with:",
     "import_media": "Import Media",
-    "ask_ai_import": "Ask AI"
+    "ask_ai_import": "Ask AI",
+    "copy": "Copy"
   },
   "source": {
     "timeline": "Timeline",

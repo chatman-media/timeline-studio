@@ -1190,7 +1190,12 @@
       "savingProgress": "保存进度",
       "saveSuccess": "视频保存成功！",
       "stop": "停止",
-      "processing": "处理中..."
+      "processing": "处理中...",
+      "ai_connected": "AI已连接",
+      "empty_project_hint": "项目为空。从以下开始：",
+      "import_media": "导入媒体",
+      "ask_ai_import": "询问AI",
+    "copy": "复制"
     },
     "title": "时间轴",
     "noTracks": "无轨道",
