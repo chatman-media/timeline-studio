@@ -16,7 +16,7 @@ impl MediaCommands {
     Self { state, event_bus }
   }
 
-  async fn add_media(&self, path: String, media_type: MediaType) -> CommandResult {
+  pub async fn add_media(&self, path: String, media_type: MediaType) -> CommandResult {
     use crate::state::project_state::{MediaItem, MediaMetadata};
     use std::path::Path;
 
@@ -92,7 +92,7 @@ impl MediaCommands {
     CommandResult::success(Some(serde_json::json!({ "media_id": media_id })))
   }
 
-  async fn remove_media(&self, media_id: String) -> CommandResult {
+  pub async fn remove_media(&self, media_id: String) -> CommandResult {
     let mut state = self.state.write().await;
 
     let project = match state.project.as_mut() {
@@ -127,7 +127,7 @@ impl MediaCommands {
     CommandResult::success(None)
   }
 
-  async fn update_media(&self, media_id: String, updates: MediaUpdates) -> CommandResult {
+  pub async fn update_media(&self, media_id: String, updates: MediaUpdates) -> CommandResult {
     let mut state = self.state.write().await;
 
     let project = match state.project.as_mut() {

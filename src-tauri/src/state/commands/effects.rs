@@ -14,7 +14,7 @@ impl EffectsCommands {
     Self { state, event_bus }
   }
 
-  async fn remove_effect(&self, clip_id: String, effect_id: String) -> CommandResult {
+  pub async fn remove_effect(&self, clip_id: String, effect_id: String) -> CommandResult {
     log::info!("Removing effect {} from clip {}", effect_id, clip_id);
 
     let mut state = self.state.write().await;
@@ -80,7 +80,7 @@ impl EffectsCommands {
     })))
   }
 
-  async fn remove_filter(&self, clip_id: String, filter_id: String) -> CommandResult {
+  pub async fn remove_filter(&self, clip_id: String, filter_id: String) -> CommandResult {
     log::info!("Removing filter {} from clip {}", filter_id, clip_id);
 
     let mut state = self.state.write().await;

@@ -25,7 +25,7 @@ impl ProjectCommands {
     }
   }
 
-  async fn create_project(&self, name: String, settings: ProjectSettings) -> CommandResult {
+  pub async fn create_project(&self, name: String, settings: ProjectSettings) -> CommandResult {
     let project_id = {
       let mut state = self.state.write().await;
       let id = state.create_project(name.clone(), settings);
@@ -50,7 +50,7 @@ impl ProjectCommands {
     CommandResult::success(Some(serde_json::json!({ "project_id": project_id })))
   }
 
-  async fn open_project(&self, path: String) -> CommandResult {
+  pub async fn open_project(&self, path: String) -> CommandResult {
     log::info!("Opening project from path: {}", path);
 
     match self.persistence.load_project(&path).await {
@@ -78,7 +78,7 @@ impl ProjectCommands {
     }
   }
 
-  async fn save_project(&self, path: Option<String>) -> CommandResult {
+  pub async fn save_project(&self, path: Option<String>) -> CommandResult {
     let state = self.state.read().await;
 
     let project = match &state.project {
@@ -125,7 +125,7 @@ impl ProjectCommands {
     }
   }
 
-  async fn close_project(&self) -> CommandResult {
+  pub async fn close_project(&self) -> CommandResult {
     log::info!("Closing current project");
 
     let mut state = self.state.write().await;

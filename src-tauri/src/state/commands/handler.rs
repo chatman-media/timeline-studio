@@ -13,9 +13,13 @@ use uuid;
 use super::types::*;
 
 // Import modular command handlers
+use super::advanced_edits::AdvancedEditsCommands;
+use super::effects::EffectsCommands;
 use super::media::MediaCommands;
+use super::project::ProjectCommands;
 use super::timeline::TimelineCommands;
 use super::tracks::TracksCommands;
+use super::transitions::TransitionsCommands;
 
 pub struct CommandHandler {
   state: Arc<RwLock<ProjectState>>,
@@ -25,6 +29,10 @@ pub struct CommandHandler {
   media_commands: MediaCommands,
   timeline_commands: TimelineCommands,
   tracks_commands: TracksCommands,
+  effects_commands: EffectsCommands,
+  transitions_commands: TransitionsCommands,
+  advanced_edits_commands: AdvancedEditsCommands,
+  project_commands: ProjectCommands,
 }
 
 #[allow(dead_code)]
@@ -38,6 +46,10 @@ impl CommandHandler {
     let media_commands = MediaCommands::new(state.clone(), event_bus.clone());
     let timeline_commands = TimelineCommands::new(state.clone(), event_bus.clone());
     let tracks_commands = TracksCommands::new(state.clone(), event_bus.clone());
+    let effects_commands = EffectsCommands::new(state.clone(), event_bus.clone());
+    let transitions_commands = TransitionsCommands::new(state.clone(), event_bus.clone());
+    let advanced_edits_commands = AdvancedEditsCommands::new(state.clone(), event_bus.clone());
+    let project_commands = ProjectCommands::new(state.clone(), event_bus.clone(), persistence.clone());
 
     Self {
       state,
@@ -46,23 +58,35 @@ impl CommandHandler {
       media_commands,
       timeline_commands,
       tracks_commands,
+      effects_commands,
+      transitions_commands,
+      advanced_edits_commands,
+      project_commands,
     }
   }
 
   /// Execute a command
   pub async fn execute(&self, command: ProjectCommand) -> CommandResult {
     match command {
-      ProjectCommand::CreateProject { name, settings } => self.create_project(name, settings).await,
-      ProjectCommand::OpenProject { path } => self.open_project(path).await,
-      ProjectCommand::SaveProject { path } => self.save_project(path).await,
-      ProjectCommand::CloseProject => self.close_project().await,
+      // Project commands - delegated to ProjectCommands
+      ProjectCommand::CreateProject { name, settings } => {
+        self.project_commands.create_project(name, settings).await
+      }
+      ProjectCommand::OpenProject { path } => self.project_commands.open_project(path).await,
+      ProjectCommand::SaveProject { path } => self.project_commands.save_project(path).await,
+      ProjectCommand::CloseProject => self.project_commands.close_project().await,
 
       // Track commands - delegated to TracksCommands
       ProjectCommand::AddTrack {
         name,
         track_type,
         index,
-      } => self.tracks_commands.add_track(name, track_type, index).await,
+      } => {
+        self
+          .tracks_commands
+          .add_track(name, track_type, index.map(|i| i as usize))
+          .await
+      }
       ProjectCommand::DeleteTrack { track_id } => self.tracks_commands.delete_track(track_id).await,
       ProjectCommand::UpdateTrack { track_id, updates } => {
         self.tracks_commands.update_track(track_id, updates).await
@@ -73,19 +97,31 @@ impl CommandHandler {
         track_id,
         media_id,
         time,
-      } => self.timeline_commands.add_clip(track_id, media_id, time).await,
+      } => {
+        self
+          .timeline_commands
+          .add_clip(track_id, media_id, time)
+          .await
+      }
       ProjectCommand::MoveClip {
         clip_id,
         track_id,
         time,
-      } => self.timeline_commands.move_clip(clip_id, track_id, time).await,
+      } => {
+        self
+          .timeline_commands
+          .move_clip(clip_id, track_id, time)
+          .await
+      }
       ProjectCommand::TrimClip {
         clip_id,
         start,
         end,
       } => self.timeline_commands.trim_clip(clip_id, start, end).await,
       ProjectCommand::DeleteClip { clip_id } => self.timeline_commands.delete_clip(clip_id).await,
-      ProjectCommand::UpdateClip { clip_id, updates } => self.timeline_commands.update_clip(clip_id, updates).await,
+      ProjectCommand::UpdateClip { clip_id, updates } => {
+        self.timeline_commands.update_clip(clip_id, updates).await
+      }
 
       // Player commands
       ProjectCommand::Play => self.play().await,
@@ -117,7 +153,9 @@ impl CommandHandler {
       ProjectCommand::PlayerClearFilters => self.player_clear_filters().await,
       ProjectCommand::PlayerClearTemplate => self.player_clear_template().await,
       // Media commands - delegated to MediaCommands
-      ProjectCommand::AddMedia { path, media_type } => self.media_commands.add_media(path, media_type).await,
+      ProjectCommand::AddMedia { path, media_type } => {
+        self.media_commands.add_media(path, media_type).await
+      }
       ProjectCommand::RemoveMedia { media_id } => self.media_commands.remove_media(media_id).await,
       ProjectCommand::UpdateMedia { media_id, updates } => {
         self.media_commands.update_media(media_id, updates).await
@@ -355,11 +393,15 @@ impl CommandHandler {
       } => self.get_resource_library(resource_type, category).await,
 
       // Timeline Extended commands
-      ProjectCommand::SplitClip { clip_id, time } => self.split_clip(clip_id, time).await,
+      ProjectCommand::SplitClip { clip_id, time } => {
+        self.timeline_commands.split_clip(clip_id, time).await
+      }
       ProjectCommand::BatchUpdateClips { updates } => self.batch_update_clips(updates).await,
-      ProjectCommand::CopyClips { clip_ids } => self.copy_clips(clip_ids).await,
+      ProjectCommand::CopyClips { clip_ids } => self.timeline_commands.copy_clips(clip_ids).await,
       ProjectCommand::CutClips { clip_ids } => self.cut_clips(clip_ids).await,
-      ProjectCommand::PasteClips { track_id, time } => self.paste_clips(track_id, time).await,
+      ProjectCommand::PasteClips { track_id, time } => {
+        self.timeline_commands.paste_clips(track_id, time).await
+      }
       ProjectCommand::DeleteSelected => self.delete_selected().await,
       ProjectCommand::ApplyEffect {
         clip_id,
@@ -367,7 +409,7 @@ impl CommandHandler {
         params,
       } => self.apply_effect(clip_id, effect_id, params).await,
       ProjectCommand::RemoveEffect { clip_id, effect_id } => {
-        self.remove_effect(clip_id, effect_id).await
+        self.effects_commands.remove_effect(clip_id, effect_id).await
       }
       ProjectCommand::ApplyFilter {
         clip_id,
@@ -375,7 +417,7 @@ impl CommandHandler {
         params,
       } => self.apply_filter(clip_id, filter_id, params).await,
       ProjectCommand::RemoveFilter { clip_id, filter_id } => {
-        self.remove_filter(clip_id, filter_id).await
+        self.effects_commands.remove_filter(clip_id, filter_id).await
       }
       ProjectCommand::ApplyTransition {
         clip_id,
@@ -385,11 +427,21 @@ impl CommandHandler {
       ProjectCommand::RemoveTransition {
         clip_id,
         transition_id,
-      } => self.remove_transition(clip_id, transition_id).await,
+      } => {
+        self
+          .transitions_commands
+          .remove_transition(clip_id, transition_id)
+          .await
+      }
       ProjectCommand::ReorderTracks {
         section_id,
         track_ids,
-      } => self.reorder_tracks(section_id, track_ids).await,
+      } => {
+        self
+          .tracks_commands
+          .reorder_tracks(section_id, track_ids)
+          .await
+      }
 
       // Project Extended commands
       ProjectCommand::SyncProjectState { project_id, state } => {
@@ -846,14 +898,26 @@ impl CommandHandler {
           .update_style_template_elements(template_id, elements)
           .await
       }
-      ProjectCommand::RippleEdit { clip_id, delta } => self.ripple_edit(clip_id, delta).await,
+      // Advanced editing commands - delegated to AdvancedEditsCommands
+      ProjectCommand::RippleEdit { clip_id, delta } => {
+        self.advanced_edits_commands.ripple_edit(clip_id, delta).await
+      }
       ProjectCommand::RollEdit {
         clip_id,
         adjacent_clip_id,
         delta,
-      } => self.roll_edit(clip_id, adjacent_clip_id, delta).await,
-      ProjectCommand::SlipEdit { clip_id, delta } => self.slip_edit(clip_id, delta).await,
-      ProjectCommand::SlideEdit { clip_id, delta } => self.slide_edit(clip_id, delta).await,
+      } => {
+        self
+          .advanced_edits_commands
+          .roll_edit(clip_id, adjacent_clip_id, delta)
+          .await
+      }
+      ProjectCommand::SlipEdit { clip_id, delta } => {
+        self.advanced_edits_commands.slip_edit(clip_id, delta).await
+      }
+      ProjectCommand::SlideEdit { clip_id, delta } => {
+        self.advanced_edits_commands.slide_edit(clip_id, delta).await
+      }
 
       // Marker Commands
       ProjectCommand::AddMarker {

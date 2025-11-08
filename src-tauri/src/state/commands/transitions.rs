@@ -14,7 +14,7 @@ impl TransitionsCommands {
     Self { state, event_bus }
   }
 
-  async fn remove_transition(&self, clip_id: String, transition_id: String) -> CommandResult {
+  pub async fn remove_transition(&self, clip_id: String, transition_id: String) -> CommandResult {
     log::info!(
       "Removing transition {} from clip {}",
       transition_id,

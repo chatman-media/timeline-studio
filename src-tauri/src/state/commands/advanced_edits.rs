@@ -15,7 +15,7 @@ impl AdvancedEditsCommands {
   }
 
   // Advanced Edit Commands
-  async fn ripple_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+  pub async fn ripple_edit(&self, clip_id: String, delta: f64) -> CommandResult {
     log::info!("Ripple edit: clip_id={}, delta={}", clip_id, delta);
 
     let mut state = self.state.write().await;
@@ -118,7 +118,7 @@ impl AdvancedEditsCommands {
     })))
   }
 
-  async fn roll_edit(
+  pub async fn roll_edit(
     &self,
     clip_id: String,
     adjacent_clip_id: String,
@@ -294,7 +294,7 @@ impl AdvancedEditsCommands {
     })))
   }
 
-  async fn slip_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+  pub async fn slip_edit(&self, clip_id: String, delta: f64) -> CommandResult {
     log::info!("Slip edit: clip_id={}, delta={}", clip_id, delta);
 
     let mut state = self.state.write().await;
@@ -384,7 +384,7 @@ impl AdvancedEditsCommands {
     })))
   }
 
-  async fn slide_edit(&self, clip_id: String, delta: f64) -> CommandResult {
+  pub async fn slide_edit(&self, clip_id: String, delta: f64) -> CommandResult {
     log::info!("Slide edit: clip_id={}, delta={}", clip_id, delta);
 
     let mut state = self.state.write().await;

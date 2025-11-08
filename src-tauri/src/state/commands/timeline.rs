@@ -16,7 +16,7 @@ impl TimelineCommands {
     Self { state, event_bus }
   }
 
-  async fn add_clip(&self, track_id: String, media_id: String, time: f64) -> CommandResult {
+  pub async fn add_clip(&self, track_id: String, media_id: String, time: f64) -> CommandResult {
     let mut state = self.state.write().await;
 
     let project = match state.project.as_mut() {
@@ -94,7 +94,12 @@ impl TimelineCommands {
     CommandResult::success(Some(serde_json::json!({ "clip_id": clip_id })))
   }
 
-  async fn move_clip(&self, clip_id: String, new_track_id: String, new_time: f64) -> CommandResult {
+  pub async fn move_clip(
+    &self,
+    clip_id: String,
+    new_track_id: String,
+    new_time: f64,
+  ) -> CommandResult {
     let mut state = self.state.write().await;
 
     let project = match state.project.as_mut() {
@@ -160,7 +165,7 @@ impl TimelineCommands {
     CommandResult::success(None)
   }
 
-  async fn delete_clip(&self, clip_id: String) -> CommandResult {
+  pub async fn delete_clip(&self, clip_id: String) -> CommandResult {
     log::info!("Deleting clip: {}", clip_id);
 
     let mut state = self.state.write().await;
@@ -202,7 +207,7 @@ impl TimelineCommands {
     }
   }
 
-  async fn split_clip(&self, clip_id: String, time: f64) -> CommandResult {
+  pub async fn split_clip(&self, clip_id: String, time: f64) -> CommandResult {
     log::info!("Splitting clip: id={}, time={}", clip_id, time);
 
     let mut state = self.state.write().await;
@@ -343,7 +348,7 @@ impl TimelineCommands {
     })))
   }
 
-  async fn trim_clip(&self, clip_id: String, start: f64, end: f64) -> CommandResult {
+  pub async fn trim_clip(&self, clip_id: String, start: f64, end: f64) -> CommandResult {
     log::info!("Trimming clip: {} from {} to {}", clip_id, start, end);
 
     let mut state = self.state.write().await;
@@ -439,7 +444,7 @@ impl TimelineCommands {
     })))
   }
 
-  async fn copy_clips(&self, clip_ids: Vec<String>) -> CommandResult {
+  pub async fn copy_clips(&self, clip_ids: Vec<String>) -> CommandResult {
     log::info!("Copying {} clips", clip_ids.len());
 
     let mut state = self.state.write().await;
@@ -483,7 +488,7 @@ impl TimelineCommands {
     })))
   }
 
-  async fn paste_clips(&self, track_id: String, time: f64) -> CommandResult {
+  pub async fn paste_clips(&self, track_id: String, time: f64) -> CommandResult {
     log::info!("Pasting clips to track {} at time {}", track_id, time);
 
     let mut state = self.state.write().await;
@@ -583,7 +588,7 @@ impl TimelineCommands {
     })))
   }
 
-  async fn update_clip(&self, clip_id: String, updates: ClipUpdates) -> CommandResult {
+  pub async fn update_clip(&self, clip_id: String, updates: ClipUpdates) -> CommandResult {
     log::info!("Updating clip: {} with updates: {:?}", clip_id, updates);
 
     let mut state = self.state.write().await;
