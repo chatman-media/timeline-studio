@@ -289,7 +289,7 @@ export abstract class BaseAITool implements IAITool {
   /**
    * Генерация уникального ID выполнения
    */
-  private generateExecutionId(): string {
+  protected generateExecutionId(): string {
     return `${this.metadata.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
