@@ -5,6 +5,9 @@
 
 use super::provider_manager::AIProviderManager;
 use super::types::*;
+use crate::security::{SecureStorage, ApiKeyType};
+use tauri::State;
+use tokio::sync::Mutex;
 
 /// Send unified AI request (works with any provider)
 #[tauri::command]
@@ -168,6 +171,78 @@ pub async fn ai_send_request_with_tools(
     .send_request(&api_key, request)
     .await
     .map_err(|e| e.to_string())
+}
+
+/// Send AI request using stored API key (secure)
+///
+/// Эта команда не требует передачи API ключа с frontend.
+/// Ключ автоматически загружается из secure storage.
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_send_secure_request(
+  storage: State<'_, Mutex<SecureStorage>>,
+  request: UnifiedAIRequest,
+) -> Result<UnifiedAIResponse, String> {
+  // Определяем тип ключа по провайдеру
+  let key_type = match request.provider {
+    AIProvider::Claude => ApiKeyType::Claude,
+    AIProvider::OpenAI => ApiKeyType::OpenAI,
+    AIProvider::DeepSeek => ApiKeyType::DeepSeek,
+    AIProvider::Ollama => {
+      // Ollama не требует API ключ
+      let manager = AIProviderManager::new();
+      return manager
+        .send_request("", request)
+        .await
+        .map_err(|e| e.to_string());
+    }
+  };
+
+  // Получаем API ключ из secure storage
+  let mut storage_guard = storage.lock().await;
+  let api_key_value = storage_guard
+    .get_api_key_value(key_type)
+    .await
+    .map_err(|e| format!("Failed to get API key: {e}"))?
+    .ok_or_else(|| format!("API key not found for provider: {:?}", request.provider))?;
+
+  drop(storage_guard); // Освобождаем lock
+
+  // Отправляем запрос
+  let manager = AIProviderManager::new();
+  manager
+    .send_request(&api_key_value, request)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+/// Send AI request with tools using stored API key (secure)
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_send_secure_request_with_tools(
+  storage: State<'_, Mutex<SecureStorage>>,
+  provider: AIProvider,
+  model: String,
+  messages: Vec<AIMessage>,
+  tools: Vec<AITool>,
+  tool_choice: Option<ToolChoice>,
+  system: Option<String>,
+  max_tokens: Option<u32>,
+  temperature: Option<f64>,
+) -> Result<UnifiedAIResponse, String> {
+  let request = UnifiedAIRequest {
+    provider: provider.clone(),
+    model,
+    messages,
+    max_tokens,
+    temperature,
+    stream: Some(false),
+    system,
+    tools: Some(tools),
+    tool_choice,
+  };
+
+  ai_send_secure_request(storage, request).await
 }
 
 #[cfg(test)]
