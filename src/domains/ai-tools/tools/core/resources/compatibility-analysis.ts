@@ -2,7 +2,13 @@
  * AI инструмент для анализа совместимости ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { CompatibilityParams, ResourceToolResult } from "./types"
 import {
@@ -50,8 +56,67 @@ export interface CompatibilityAnalysisResult {
  * AI инструмент для анализа совместимости ресурсов с унифицированной обработкой ошибок
  */
 export class CompatibilityAnalysisTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "analyze_resource_compatibility",
+    description: "Анализирует совместимость ресурсов между собой и с текущим проектом",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("CompatibilityAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processCompatibilityAnalysis(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as CompatibilityAnalysisInput
+    return (
+      data.operation === "analyze_resource_compatibility" &&
+      Array.isArray(data.resourceIds) &&
+      data.resourceIds.length > 0 &&
+      !!data.reason
+    )
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["analyze_resource_compatibility"] },
+          resourceIds: { type: "array", items: { type: "string" } },
+          checkAgainst: { type: "string" },
+          includeRecommendations: { type: "boolean" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "resourceIds", "reason"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          analysis: { type: "object" },
+          suggestions: { type: "array" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -62,10 +127,9 @@ export class CompatibilityAnalysisTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<CompatibilityAnalysisResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           if (data.operation !== "analyze_resource_compatibility") {
@@ -96,6 +160,7 @@ export class CompatibilityAnalysisTool extends BaseAITool {
 
         return result
       },
+      input,
       options,
     )
   }
@@ -258,7 +323,7 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Анализ совместимости выполнен",
       data: {
         analysis: result.data?.analysis,
         suggestions: result.data?.suggestions,
@@ -268,8 +333,8 @@ export async function analyzeResourceCompatibility(params: CompatibilityParams):
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа совместимости",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка анализа совместимости",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

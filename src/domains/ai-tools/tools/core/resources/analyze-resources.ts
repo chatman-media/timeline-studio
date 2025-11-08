@@ -2,7 +2,13 @@
  * AI инструмент для анализа доступных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { AnalyzeResourcesParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, getResourcesStats, hasResourcesAccess } from "./utils/helpers"
@@ -43,8 +49,65 @@ export interface AnalyzeResourcesResult {
  * AI инструмент для анализа ресурсов с унифицированной обработкой ошибок
  */
 export class AnalyzeResourcesTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "analyze_available_resources",
+    description: "Анализирует все доступные ресурсы в Resources Provider и возвращает подробную статистику",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("AnalyzeResourcesTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processAnalyzeResources(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as AnalyzeResourcesInput
+    return data.operation === "analyze_available_resources" && !!data.resourceType && !!data.reason
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["analyze_available_resources"] },
+          resourceType: {
+            type: "string",
+            enum: ["all", "media", "music", "effect", "filter", "transition", "template", "styleTemplate"],
+          },
+          includeStats: { type: "boolean" },
+          filter: { type: "object" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "resourceType", "reason"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          analysis: { type: "object" },
+          suggestions: { type: "array" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -55,10 +118,9 @@ export class AnalyzeResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<AnalyzeResourcesResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           if (data.operation !== "analyze_available_resources") {
@@ -89,6 +151,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
 
         return result
       },
+      input,
       options,
     )
   }
@@ -220,7 +283,7 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Анализ ресурсов выполнен",
       data: {
         analysis: result.data?.analysis,
         suggestions: result.data?.suggestions,
@@ -230,8 +293,8 @@ export async function analyzeAvailableResources(params: AnalyzeResourcesParams):
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка анализа ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка анализа ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

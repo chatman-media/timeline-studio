@@ -2,7 +2,13 @@
  * AI инструмент для предложения дополнительных ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { ResourceToolResult, SuggestResourcesParams } from "./types"
 import {
@@ -64,8 +70,65 @@ export interface SuggestResourcesResult {
  * AI инструмент для предложения дополнительных ресурсов с унифицированной обработкой ошибок
  */
 export class SuggestResourcesTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "suggest_complementary_resources",
+    description: "Анализирует текущие ресурсы и предлагает дополнительные для улучшения проекта",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("SuggestResourcesTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processSuggestResources(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as SuggestResourcesInput
+    return data.operation === "suggest_complementary_resources" && !!data.projectType && !!data.mood && !!data.reason
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["suggest_complementary_resources"] },
+          baseContent: { type: "array" },
+          projectType: { type: "string" },
+          mood: { type: "string" },
+          targetDuration: { type: "number" },
+          includeAutoAdd: { type: "boolean" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "projectType", "mood", "reason"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          suggestions: { type: "array" },
+          analysis: { type: "object" },
+          addedResources: { type: "array" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -76,10 +139,9 @@ export class SuggestResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SuggestResourcesResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           if (data.operation !== "suggest_complementary_resources") {
@@ -114,6 +176,7 @@ export class SuggestResourcesTool extends BaseAITool {
 
         return result
       },
+      input,
       options,
     )
   }
@@ -265,22 +328,22 @@ export async function suggestComplementaryResources(params: SuggestResourcesPara
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Предложения сформированы",
       data: {
         suggestions: result.data?.suggestions,
         analysis: result.data?.analysis,
         addedResources: result.data?.addedResources,
       },
       nextActions:
-        result.data?.addedResources.length > 0
+        result.data && result.data.addedResources && result.data.addedResources.length > 0
           ? ["Проверить автоматически добавленные ресурсы", "Настроить параметры добавленных ресурсов"]
           : ["Просмотреть рекомендации", "Добавить рекомендуемые ресурсы вручную"],
     }
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка предложения ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка предложения ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

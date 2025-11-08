@@ -2,7 +2,13 @@
  * AI инструменты для управления ресурсами с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { AddResourceParams, BulkAddResourcesParams, RemoveResourceParams, UpdateResourceParams } from "./types"
 import { getResourcesProvider, hasResourcesAccess, resourceExists } from "./utils/helpers"
@@ -48,8 +54,83 @@ export interface ManageResourcesResult {
  * AI инструмент для управления ресурсами с унифицированной обработкой ошибок
  */
 export class ManageResourcesTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "manage_resources",
+    description: "Управление ресурсами проекта: добавление, удаление, обновление, массовые операции",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ManageResourcesTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processResourcesManagement(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as ManageResourcesInput
+    const validOperations = [
+      "add_resource_to_pool",
+      "remove_resource_from_pool",
+      "update_resource_properties",
+      "bulk_add_resources",
+      "bulk_remove_resources",
+      "sync_resource_changes",
+      "validate_resource_integrity",
+    ]
+    return validOperations.includes(data.operation)
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: {
+            type: "string",
+            enum: [
+              "add_resource_to_pool",
+              "remove_resource_from_pool",
+              "update_resource_properties",
+              "bulk_add_resources",
+              "bulk_remove_resources",
+              "sync_resource_changes",
+              "validate_resource_integrity",
+            ],
+          },
+          resourceType: { type: "string" },
+          resourceId: { type: "string" },
+          resourceIds: { type: "array" },
+          reason: { type: "string" },
+          autoApply: { type: "boolean" },
+          properties: { type: "object" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          affectedCount: { type: "number" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -60,10 +141,9 @@ export class ManageResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ManageResourcesResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           const validOperations = [
@@ -150,6 +230,7 @@ export class ManageResourcesTool extends BaseAITool {
 
         return result
       },
+      input,
       options,
     )
   }

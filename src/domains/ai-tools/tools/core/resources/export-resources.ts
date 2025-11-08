@@ -2,7 +2,13 @@
  * AI инструмент для экспорта списка ресурсов с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { ExportListParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, groupResourcesByType, hasResourcesAccess } from "./utils/helpers"
@@ -43,8 +49,62 @@ export interface ExportResourcesResult {
  * AI инструмент для экспорта ресурсов с унифицированной обработкой ошибок
  */
 export class ExportResourcesTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "export_resource_list",
+    description: "Экспортирует список ресурсов в различных форматах для внешнего использования",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("ExportResourcesTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processResourcesExport(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as ExportResourcesInput
+    const validFormats = ["json", "csv", "text", "markdown"]
+    return data.operation === "export_resource_list" && validFormats.includes(data.format)
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["export_resource_list"] },
+          format: { type: "string", enum: ["json", "csv", "text", "markdown"] },
+          includeMetadata: { type: "boolean" },
+          filterCriteria: { type: "object" },
+          reason: { type: "string" },
+        },
+        required: ["operation", "format"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          exportData: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -55,10 +115,9 @@ export class ExportResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<ExportResourcesResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           const validFormats = ["json", "csv", "text", "markdown"]
@@ -96,6 +155,7 @@ export class ExportResourcesTool extends BaseAITool {
           recommendations: result.data?.suggestions || [],
         }
       },
+      input,
       options,
     )
   }
@@ -357,7 +417,7 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Экспорт выполнен",
       data: {
         analysis: result.data?.exportData,
         suggestions: result.data?.recommendations,
@@ -367,8 +427,8 @@ export async function exportResourceList(params: ExportListParams): Promise<Reso
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка экспорта",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка экспорта",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 

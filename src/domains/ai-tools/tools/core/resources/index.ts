@@ -73,7 +73,9 @@ export async function executeResourceTool(toolName: string, params: any): Promis
         return {
           success: bulkResult.success,
           message: bulkResult.data?.message || bulkResult.errors?.[0] || "Ошибка массового добавления",
-          data: bulkResult.data?.bulkResults,
+          data: {
+            analysis: bulkResult.data?.bulkResults,
+          },
           errors: bulkResult.errors,
         }
 

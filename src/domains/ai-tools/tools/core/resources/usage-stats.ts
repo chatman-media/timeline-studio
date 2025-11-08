@@ -2,7 +2,13 @@
  * AI инструменты для статистики и управления использованием ресурсов с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { CleanupParams, ResourceToolResult, UsageStatsParams } from "./types"
 import {
@@ -45,8 +51,65 @@ export interface UsageStatsResult {
  * AI инструмент для статистики использования ресурсов с унифицированной обработкой ошибок
  */
 export class UsageStatsTool extends BaseAITool {
+  public readonly metadata: AIToolMetadata = {
+    name: "usage_stats",
+    description: "Получает статистику использования ресурсов и управляет неиспользуемыми ресурсами",
+    version: "1.0.0",
+    domain: "core",
+    category: "resources",
+  }
+
   constructor(logger?: AIToolLogger) {
-    super("UsageStatsTool", logger)
+    super(undefined, logger)
+  }
+
+  /**
+   * Основной метод выполнения инструмента
+   */
+  public async execute(input: any, options: AIToolExecutionOptions = {}): Promise<AIToolResult> {
+    return this.processUsageStats(input, options)
+  }
+
+  /**
+   * Валидация входных данных
+   */
+  public validate(input: any): boolean {
+    if (!input || typeof input !== "object") return false
+    const data = input as UsageStatsInput
+    const validOperations = ["get_resource_usage_stats", "cleanup_unused_resources"]
+    return validOperations.includes(data.operation)
+  }
+
+  /**
+   * Схема входных и выходных данных
+   */
+  public getSchema() {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["get_resource_usage_stats", "cleanup_unused_resources"] },
+          timeRange: { type: "object" },
+          groupBy: { type: "string" },
+          includeUnused: { type: "boolean" },
+          dryRun: { type: "boolean" },
+          criteria: { type: "object" },
+          reason: { type: "string" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          analysis: { type: "object" },
+          removedResources: { type: "array" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -57,10 +120,9 @@ export class UsageStatsTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<UsageStatsResult>> {
     return this.executeWithErrorHandling(
-      input.operation,
-      async () => {
+      async (context) => {
         // Валидация входных данных
-        const validation = this.validateInput(input, (data) => {
+        const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []
 
           const validOperations = ["get_resource_usage_stats", "cleanup_unused_resources"]
@@ -138,6 +200,7 @@ export class UsageStatsTool extends BaseAITool {
 
         return result
       },
+      input,
       options,
     )
   }
@@ -547,7 +610,7 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Статистика получена",
       data: {
         analysis: result.data?.analysis,
         suggestions: result.data?.recommendations,
@@ -557,8 +620,8 @@ export async function getResourceUsageStats(params: UsageStatsParams): Promise<R
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка получения статистики",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка получения статистики",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
@@ -573,7 +636,7 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || "Очистка выполнена",
       data: {
         analysis: result.data?.analysis,
         removedResources: result.data?.removedResources,
@@ -585,8 +648,8 @@ export async function cleanupUnusedResources(params: CleanupParams): Promise<Res
   }
   return {
     success: false,
-    message: result.error?.message || "Ошибка очистки ресурсов",
-    errors: [result.error?.message || "Неизвестная ошибка"],
+    message: result.errors?.[0] || "Ошибка очистки ресурсов",
+    errors: result.errors || ["Неизвестная ошибка"],
   }
 }
 
