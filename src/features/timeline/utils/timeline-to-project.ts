@@ -12,8 +12,6 @@ import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
 import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
-  AlignX,
-  AlignY,
   AnimationDirection,
   AnimationEasing,
   AnimationType,
@@ -29,7 +27,6 @@ import {
   CompilerTemplateType,
   type ElementAnimation,
   FilterType,
-  FitMode,
   FontWeight,
   ObjectFit,
   OutputFormat,

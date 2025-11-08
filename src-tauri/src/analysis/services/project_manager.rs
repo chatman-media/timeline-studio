@@ -7,10 +7,10 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
-use crate::state::project_state::MediaType;
 use crate::analysis::database::queries::ProjectStatistics;
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
+use crate::state::project_state::MediaType;
 // use crate::recognition::person_database::PersonDatabase;  // TODO: интегрировать с person database
 
 /// Менеджер проектов анализа

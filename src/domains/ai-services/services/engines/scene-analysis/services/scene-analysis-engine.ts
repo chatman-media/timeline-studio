@@ -80,7 +80,8 @@ export class SceneAnalysisEngine extends BaseAIEngine {
   constructor() {
     super()
     this.ffmpegService = FFmpegAnalysisService.getInstance()
-    this.aiService = UnifiedAIService.getInstance()
+    // REMOVED: this.aiService = UnifiedAIService.getInstance() // ai-core deleted
+    this.aiService = null as any // TODO: use backend AI proxy
     this.sceneDetectionService = new SceneDetectionService()
     this.objectTrackingService = new ObjectTrackingService()
     this.musicDetectionService = new MusicDetectionService()

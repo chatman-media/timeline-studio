@@ -30,7 +30,8 @@ export abstract class BaseAIEngine {
   protected aiService: any /* UnifiedAIService from deleted ai-core */
 
   constructor() {
-    this.aiService = UnifiedAIService.getInstance()
+    // REMOVED: this.aiService = UnifiedAIService.getInstance() // ai-core deleted
+    this.aiService = null as any // TODO: use backend AI proxy
   }
 
   abstract initialize(): Promise<void>

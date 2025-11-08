@@ -16,7 +16,8 @@ export class LanguageAdapter {
   private supportedLanguages: Set<string>
 
   constructor() {
-    this.aiService = EnhancedUnifiedAIService.getInstance()
+    // REMOVED: this.aiService = EnhancedUnifiedAIService.getInstance() // ai-core deleted
+    this.aiService = null as any // TODO: use backend AI proxy
     this.supportedLanguages = new Set([
       "en",
       "ru",

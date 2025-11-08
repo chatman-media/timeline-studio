@@ -37,7 +37,8 @@ export class MultiPlatformEngine {
     this.platformAdapter = new PlatformAdapter()
     this.languageAdapter = new LanguageAdapter()
     this.batchProcessor = new BatchProcessor(this.config.processing)
-    this.aiService = UnifiedAIService.getInstance()
+    // REMOVED: this.aiService = UnifiedAIService.getInstance() // ai-core deleted
+    this.aiService = null as any // TODO: use backend AI proxy
   }
 
   /**

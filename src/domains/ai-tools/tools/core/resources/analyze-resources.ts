@@ -118,7 +118,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<AnalyzeResourcesResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         // Валидация входных данных
         const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []

@@ -48,13 +48,12 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
     if (this.initialized) return
 
     try {
-      const container = getAIContainer()
+      // REMOVED: const container = getAIContainer() // ai-core deleted
+      // REMOVED: this.aiService = await container.resolve<IUnifiedAIService>("UnifiedAIService")
+      // REMOVED: this.analysisFactory = await container.resolve<MediaAnalysisFactory>("MediaAnalysisFactory")
 
-      // Resolve AI services from DI container
-      this.aiService = await container.resolve<IUnifiedAIService>("UnifiedAIService")
-      this.analysisFactory = await container.resolve<MediaAnalysisFactory>("MediaAnalysisFactory")
-
-      this.initialized = true
+      // TODO: Initialize with backend AI proxy instead
+      throw new Error("AI Container not available - use backend AI proxy instead")
     } catch (error) {
       logger.error("[MontagePlannerAI] Failed to initialize AI services:", { error })
       throw error

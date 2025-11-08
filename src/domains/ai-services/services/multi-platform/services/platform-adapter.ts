@@ -28,7 +28,8 @@ export class PlatformAdapter {
   private isInitialized = false
 
   constructor() {
-    this.aiService = UnifiedAIService.getInstance()
+    // REMOVED: this.aiService = UnifiedAIService.getInstance() // ai-core deleted
+    this.aiService = null as any // TODO: use backend AI proxy
   }
 
   async initialize(): Promise<void> {

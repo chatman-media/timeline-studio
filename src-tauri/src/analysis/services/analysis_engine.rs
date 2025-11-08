@@ -5,7 +5,6 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
-use crate::state::project_state::MediaType;
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
@@ -15,6 +14,7 @@ use crate::montage_planner::types::*;
 use crate::recognition::commands::yolo_commands::YoloProcessorState;
 use crate::recognition::person_database::PersonDatabase;
 use crate::recognition::types_professional::Emotion;
+use crate::state::project_state::MediaType;
 // use crate::recognition::frame_processor::YoloDetection; // Временно отключено
 
 /// Convert EmotionalTone to Emotion

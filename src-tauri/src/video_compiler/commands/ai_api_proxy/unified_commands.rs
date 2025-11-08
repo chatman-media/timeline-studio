@@ -5,7 +5,7 @@
 
 use super::provider_manager::AIProviderManager;
 use super::types::*;
-use crate::security::{SecureStorage, ApiKeyType};
+use crate::security::{ApiKeyType, SecureStorage};
 use tauri::State;
 use tokio::sync::Mutex;
 

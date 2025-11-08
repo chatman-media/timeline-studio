@@ -6,7 +6,7 @@
 import { invoke } from "@tauri-apps/api/core"
 
 // REMOVED: // REMOVED: import { ApiKeyLoader } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
-import type { FrameAnalysis, IVisionService } from "@/domains/ai-services/types/interfaces"
+import type { FrameAnalysis } from "@/domains/ai-services/types/interfaces"
 
 import { createLogger } from "@/lib/tauri-logger"
 

@@ -139,7 +139,7 @@ export class SuggestResourcesTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<SuggestResourcesResult>> {
     return this.executeWithErrorHandling(
-      async (context) => {
+      async (_context) => {
         // Валидация входных данных
         const validation = this.validateInputDetailed(input, (data) => {
           const errors: string[] = []

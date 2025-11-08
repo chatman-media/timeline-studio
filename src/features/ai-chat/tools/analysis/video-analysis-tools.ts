@@ -84,8 +84,9 @@ export class VideoAnalysisTool extends BaseAITool {
     if (!this.ffmpegService) {
       try {
         // REMOVED:         const { getAIContainer } = await import("@/domains/ai-core")
-        const aiContainer = getAIContainer()
-        this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
+        // REMOVED: const aiContainer = getAIContainer() // ai-core deleted
+        throw new Error("AI Container not available - use backend AI proxy instead")
+        // this.ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
       } catch (error) {
         // Fallback к локальному сервису если shared недоступен
         const { FFmpegAnalysisService } = await import(

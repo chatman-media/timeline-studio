@@ -1,5 +1,6 @@
 use super::types::CommandResult;
 use crate::state::events::*;
+use crate::state::persistence::PersistenceService;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
@@ -9,11 +10,20 @@ use tokio::sync::RwLock;
 pub struct ProjectCommands {
   state: Arc<RwLock<ProjectState>>,
   event_bus: Arc<EventBus>,
+  persistence: Arc<PersistenceService>,
 }
 
 impl ProjectCommands {
-  pub fn new(state: Arc<RwLock<ProjectState>>, event_bus: Arc<EventBus>) -> Self {
-    Self { state, event_bus }
+  pub fn new(
+    state: Arc<RwLock<ProjectState>>,
+    event_bus: Arc<EventBus>,
+    persistence: Arc<PersistenceService>,
+  ) -> Self {
+    Self {
+      state,
+      event_bus,
+      persistence,
+    }
   }
 
   async fn create_project(&self, name: String, settings: ProjectSettings) -> CommandResult {
