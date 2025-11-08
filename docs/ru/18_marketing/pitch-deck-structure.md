@@ -4,7 +4,7 @@
 ---
 
 ## 📊 Слайд 1: Title Slide
-**"Timeline Studio: 257 AI Tools Revolutionizing Video Creation"**
+**"Timeline Studio: 100+ AI Tools Revolutionizing Video Creation"**
 - Логотип Timeline Studio
 - Подзаголовок: "AI-First Video Editor for Creator Economy"
 - Контакты: aleksandr@timeline.studio
@@ -29,10 +29,10 @@
 ---
 
 ## 🚀 Слайд 3: Solution - AI Revolution
-**"257 AI Tools in One Local Application"**
+**"100+ AI Tools in One Local Application"**
 
 ### Уникальное предложение:
-- **🧠 257 AI инструментов** - больше чем у любого конкурента
+- **🧠 100+ AI инструментов** - больше чем у любого конкурента
 - **💻 Локальная обработка** - приватность и скорость
 - **🆓 Freemium модель** - доступность для всех
 - **⚡ Tauri v2 + Rust** - производительность нового поколения
@@ -89,7 +89,7 @@
 ### Сравнение AI функций:
 | Функция | Timeline Studio | Adobe Premiere | DaVinci Resolve | Final Cut Pro |
 |---------|----------------|----------------|-----------------|---------------|
-| **AI Tools Count** | **257** | 12 | 8 | 15 |
+| **AI Tools Count** | **100+** | 12 | 8 | 15 |
 | **Local Processing** | ✅ | ❌ | ❌ | ❌ |
 | **Free Tier** | ✅ | ❌ | ✅ | ❌ |
 | **Emotion Recognition** | ✅ | ❌ | ❌ | ❌ |
@@ -108,7 +108,7 @@
 **"Proven Monetization Strategy"**
 
 ### Модель монетизации:
-- **FREE**: 257 AI tools, локальная обработка
+- **FREE**: 100+ AI tools, локальная обработка
 - **PRO ($19/mo)**: Cloud sync, premium AI models
 - **MAX ($39/mo)**: Unlimited exports, advanced AI
 - **TEAM ($99/mo)**: Collaboration, team management

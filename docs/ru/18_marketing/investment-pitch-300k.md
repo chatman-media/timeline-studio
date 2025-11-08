@@ -9,7 +9,7 @@
 
 ## 📋 Executive Summary
 
-**Timeline Studio** - революционный AI-first видеоредактор с уникальным AI Orchestrator, который координирует работу 257 AI инструментов для автоматизации видеомонтажа.
+**Timeline Studio** - революционный AI-first видеоредактор с уникальным AI Orchestrator, который координирует работу 100+ AI инструментов для автоматизации видеомонтажа.
 
 **Ключевые метрики**:
 - 💰 Запрашиваем: $300,000
@@ -1166,7 +1166,7 @@ Year 3 (2027): 1.5M users, 300K paying
 - Real-time translation & localization
 - Personalization at scale
 
-**Timeline Studio advantage**: 257 AI tools (10x more than competitors)
+**Timeline Studio advantage**: 100+ AI tools (10x more than competitors)
 
 #### 3. Shift from Cloud to Local Processing
 
@@ -1228,7 +1228,7 @@ Year 3 (2027): 1.5M users, 300K paying
 - Content-Aware Fill
 
 **Timeline Studio advantage**:
-- 257 vs 18 AI tools (14x more)
+- 100+ vs 18 AI tools (14x more)
 - $19 vs $55/month (65% cheaper)
 - Local processing vs cloud-only
 - Faster performance (Rust vs Electron)
@@ -1262,7 +1262,7 @@ Year 3 (2027): 1.5M users, 300K paying
 - Smart Reframe
 
 **Timeline Studio advantage**:
-- 257 vs 12 AI tools (21x more)
+- 100+ vs 12 AI tools (21x more)
 - Better AI (emotion recognition, viral detection)
 - Easier to learn
 - Unified AI orchestrator
@@ -1297,7 +1297,7 @@ Year 3 (2027): 1.5M users, 300K paying
 
 **Timeline Studio advantage**:
 - Cross-platform (Mac/Windows/Linux)
-- 257 vs 22 AI tools (12x more)
+- 100+ vs 22 AI tools (12x more)
 - Subscription model (lower barrier to entry)
 - More advanced AI features
 
@@ -1333,7 +1333,7 @@ Year 3 (2027): 1.5M users, 300K paying
 - Voice changer
 
 **Timeline Studio advantage**:
-- 257 vs 45 AI tools (5x more)
+- 100+ vs 45 AI tools (5x more)
 - Local processing (privacy)
 - Professional-grade features
 - No Chinese data concerns
@@ -1371,7 +1371,7 @@ Year 3 (2027): 1.5M users, 300K paying
 | Feature | Timeline Studio | Premiere Pro | DaVinci | Final Cut | CapCut |
 |---------|----------------|--------------|---------|-----------|---------|
 | **Price** | $19/mo | $55/mo | $295 one-time | $299 one-time | $8/mo |
-| **AI Tools** | **257** | 18 | 12 | 22 | 45 |
+| **AI Tools** | **100+** | 18 | 12 | 22 | 45 |
 | **AI Orchestrator** | ✅ | ❌ | ❌ | ❌ | ❌ |
 | **Emotion Recognition** | ✅ | ❌ | ❌ | ❌ | ❌ |
 | **Viral Detection** | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -1391,7 +1391,7 @@ Year 3 (2027): 1.5M users, 300K paying
 
 **Why Timeline Studio will win**:
 
-1. **AI Superiority**: 257 tools vs 12-45 for competitors (5-20x more)
+1. **AI Superiority**: 100+ tools vs 12-45 for competitors (5-20x more)
 2. **AI Orchestrator**: Unique technology, no competitor has this
 3. **Performance**: Rust/Tauri 40% faster than Electron competitors
 4. **Privacy**: Local-first processing (vs cloud-only competitors)
@@ -1415,7 +1415,7 @@ Year 3 (2027): 1.5M users, 300K paying
 🆓 FREE TIER (Forever Free)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 What's included:
-✅ All 257 AI tools (local processing)
+✅ All 100+ AI tools (local processing)
 ✅ Unlimited timeline editing
 ✅ 1080p export (with Timeline Studio watermark)
 ✅ 10 exports per month
@@ -2629,7 +2629,7 @@ Week 5-6: Closing
 
 ## 📋 Appendix
 
-### A. Detailed AI Tools List (257 Total)
+### A. Detailed AI Tools List (100+ Total)
 
 See separate document: `AI-Tools-Inventory.md`
 
