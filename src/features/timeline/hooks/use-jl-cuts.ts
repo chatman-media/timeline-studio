@@ -33,9 +33,10 @@ export function useJLCuts(): UseJLCutsReturn {
     (clip: TimelineClip): boolean => {
       if (!project) return false
 
-      const track = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)].find(
-        (t) => t.id === clip.trackId,
-      )
+      const track = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ].find((t) => t.id === clip.trackId)
 
       return track?.type === "video" || track?.type === "image"
     },
@@ -46,9 +47,10 @@ export function useJLCuts(): UseJLCutsReturn {
     (clip: TimelineClip): boolean => {
       if (!project) return false
 
-      const track = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)].find(
-        (t) => t.id === clip.trackId,
-      )
+      const track = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ].find((t) => t.id === clip.trackId)
 
       return ["audio", "music", "voiceover", "sfx", "ambient"].includes(track?.type || "")
     },
@@ -60,9 +62,10 @@ export function useJLCuts(): UseJLCutsReturn {
     (clipId: string): TimelineClip | null => {
       if (!project) return null
 
-      const allClips = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)].flatMap(
-        (track) => track.clips,
-      )
+      const allClips = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ].flatMap((track) => track.clips || [])
 
       const clip = allClips.find((c) => c.id === clipId)
       if (!clip?.linkedClipId) return null
@@ -77,8 +80,11 @@ export function useJLCuts(): UseJLCutsReturn {
     (clipId: string): LinkedClipPair | null => {
       if (!project) return null
 
-      const clip = [...project.globalTracks, ...project.sections.flatMap((s) => s.tracks)]
-        .flatMap((track) => track.clips)
+      const clip = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ]
+        .flatMap((track) => track.clips || [])
         .find((c) => c.id === clipId)
 
       if (!clip) return null
@@ -184,14 +190,20 @@ export function useJLCuts(): UseJLCutsReturn {
   const getCutPreview = useCallback(
     (clipId: string, cutType: CutType, offset: number): JLCutPreview | null => {
       const pair = getLinkedPair(clipId)
-      if (!pair) return null
+      if (!pair || !project) return null
 
-      const videoClip = [...project!.globalTracks, ...project!.sections.flatMap((s) => s.tracks)]
-        .flatMap((track) => track.clips)
+      const videoClip = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ]
+        .flatMap((track) => track.clips || [])
         .find((c) => c.id === pair.videoClipId)
 
-      const audioClip = [...project!.globalTracks, ...project!.sections.flatMap((s) => s.tracks)]
-        .flatMap((track) => track.clips)
+      const audioClip = [
+        ...(project.globalTracks || []),
+        ...(project.sections?.flatMap((s) => s.tracks || []) || []),
+      ]
+        .flatMap((track) => track.clips || [])
         .find((c) => c.id === pair.audioClipId)
 
       if (!videoClip || !audioClip) return null
