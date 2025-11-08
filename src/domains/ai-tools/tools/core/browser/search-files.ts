@@ -5,9 +5,10 @@
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
+  type AIToolMetadata,
   type AIToolResult,
   BaseAITool,
-} from "@/features/ai-chat/tools/base-ai-tool"
+} from "../../../base"
 import type { BrowserToolResult, SearchMediaParams } from "./types"
 import { findFilesByPattern, getBrowserFiles, getBrowserStateAccess, hasBrowserAccess } from "./utils/helpers"
 
@@ -44,7 +45,51 @@ export interface FileSearchResult {
  */
 export class FileSearchTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("FileSearchTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "FileSearchTool",
+      displayName: "File Search Tool",
+      description: "Поиск медиафайлов в браузере по различным критериям",
+      domain: "core",
+      category: "browser",
+      version: "1.0.0",
+      tags: ["search", "files", "browser"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.searchFiles(input, options)
+  }
+
+  validate(input: any): boolean {
+    return input && typeof input.query === "string" && input.query.trim().length > 0
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          query: { type: "string" },
+          searchIn: { type: "array" },
+          tab: { type: "string" },
+          advanced: { type: "object" },
+          maxResults: { type: "number" },
+        },
+        required: ["query"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          files: { type: "array" },
+          analysis: { type: "object" },
+          suggestions: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -55,7 +100,7 @@ export class FileSearchTool extends BaseAITool {
     options: AIToolExecutionOptions = {},
   ): Promise<AIToolResult<FileSearchResult>> {
     // Валидация входных данных
-    const validation = this.validateInput(input, (data) => {
+    const validation = this.validateInputDetailed(input, (data) => {
       const errors: string[] = []
 
       if (!data.query || data.query.trim().length === 0) {
@@ -93,7 +138,8 @@ export class FileSearchTool extends BaseAITool {
         errors: validation.errors,
         message: "Ошибка валидации входных данных для поиска файлов",
         executionTime: 0,
-        toolName: this.toolName,
+        toolName: this.metadata.name,
+        executionId: `search-${Date.now()}`,
       }
     }
 
@@ -132,7 +178,7 @@ export class FileSearchTool extends BaseAITool {
   /**
    * Выполняет поиск файлов
    */
-  private async performSearch(input: FileSearchInput, _context?: any): Promise<FileSearchResult> {
+  private async performSearch(input: FileSearchInput): Promise<FileSearchResult> {
     const params: SearchMediaParams = {
       query: input.query,
       searchIn: input.searchIn || ["filename"],

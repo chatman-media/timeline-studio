@@ -2,7 +2,13 @@
  * AI инструменты для анализа контента и предложения источников с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { AnalyzeMissingContentParams, BrowserToolResult, ExportFileListParams, SuggestImportParams } from "./types"
 import { formatFileSize, getBrowserFiles, getBrowserStats, hasBrowserAccess } from "./utils/helpers"
@@ -47,15 +53,15 @@ export interface ContentAnalysisResult {
     analysis: any
   }
   importSources?: {
-    sources: any[]
-    recommendations: any[]
-    categories: string[]
+    websites: any[]
+    stockSites: any[]
+    aiTools: any[]
+    recommendations: string[]
   }
   exportData?: {
     format: string
-    fileCount: number
-    exportPath: string
-    statistics: any
+    content: any
+    metadata: any
   }
   message: string
   recommendations: string[]
@@ -67,7 +73,55 @@ export interface ContentAnalysisResult {
  */
 export class ContentAnalysisTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("ContentAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "ContentAnalysisTool",
+      displayName: "Content Analysis Tool",
+      description: "Анализирует отсутствующий контент и предлагает источники импорта",
+      domain: "core",
+      category: "browser",
+      version: "1.0.0",
+      tags: ["content", "analysis", "import", "export"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processContentAnalysis(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = ["analyze_missing_content", "suggest_import_sources", "export_file_list"]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: {
+            type: "string",
+            enum: ["analyze_missing_content", "suggest_import_sources", "export_file_list"],
+          },
+          analysisScope: { type: "string" },
+          contentType: { type: "string" },
+          format: { type: "string" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -79,7 +133,7 @@ export class ContentAnalysisTool extends BaseAITool {
   ): Promise<AIToolResult<ContentAnalysisResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = ["analyze_missing_content", "suggest_import_sources", "export_file_list"]
@@ -149,12 +203,7 @@ export class ContentAnalysisTool extends BaseAITool {
           result = {
             operation: input.operation,
             success: true,
-            importSources: {
-              websites: sourcesResult.data?.importSources?.sources || [],
-              stockSites: [],
-              aiTools: [],
-              recommendations: sourcesResult.data?.importSources?.recommendations || [],
-            },
+            importSources: sourcesResult.data?.importSources,
             message: sourcesResult.message,
             recommendations: sourcesResult.data?.suggestions || [],
           }
@@ -172,11 +221,7 @@ export class ContentAnalysisTool extends BaseAITool {
           result = {
             operation: input.operation,
             success: true,
-            exportData: {
-              format: exportResult.data?.exportData?.format || input.format!,
-              content: exportResult.data?.exportData?.content,
-              metadata: exportResult.data?.exportData?.statistics,
-            },
+            exportData: exportResult.data?.exportData,
             message: exportResult.message,
             recommendations: exportResult.data?.suggestions || [],
           }
@@ -614,7 +659,7 @@ export async function analyzeMissingContent(params: AnalyzeMissingContentParams)
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data?.message || result.message || "Анализ завершен",
       data: {
         missingContent: result.data?.missingContent,
         suggestions: result.data?.recommendations,
@@ -624,7 +669,7 @@ export async function analyzeMissingContent(params: AnalyzeMissingContentParams)
   }
   return {
     success: false,
-    message: result.errors?.[0] || "Ошибка анализа контента",
+    message: result.errors?.[0] || result.message || "Ошибка анализа контента",
     errors: result.errors || ["Неизвестная ошибка"],
   }
 }
@@ -644,7 +689,7 @@ export async function suggestImportSources(params: SuggestImportParams): Promise
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data?.message || result.message || "Источники найдены",
       data: {
         importSources: result.data?.importSources,
         suggestions: result.data?.recommendations,
@@ -654,7 +699,7 @@ export async function suggestImportSources(params: SuggestImportParams): Promise
   }
   return {
     success: false,
-    message: result.errors?.[0] || "Ошибка предложения источников",
+    message: result.errors?.[0] || result.message || "Ошибка предложения источников",
     errors: result.errors || ["Неизвестная ошибка"],
   }
 }
@@ -670,7 +715,7 @@ export async function exportFileList(params: ExportFileListParams): Promise<Brow
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message || result.message,
+      message: result.data?.message || result.message || "Экспорт завершен",
       data: {
         exportData: result.data?.exportData,
         suggestions: result.data?.recommendations,
@@ -680,7 +725,7 @@ export async function exportFileList(params: ExportFileListParams): Promise<Brow
   }
   return {
     success: false,
-    message: result.errors?.[0] || "Ошибка экспорта файлов",
+    message: result.errors?.[0] || result.message || "Ошибка экспорта файлов",
     errors: result.errors || ["Неизвестная ошибка"],
   }
 }

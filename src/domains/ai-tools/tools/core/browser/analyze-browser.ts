@@ -2,7 +2,13 @@
  * AI инструмент для анализа медиа браузера с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { AnalyzeBrowserParams, BrowserToolResult } from "./types"
 import {
@@ -59,7 +65,45 @@ export interface BrowserAnalysisResult {
  */
 export class BrowserAnalysisTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("BrowserAnalysisTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "BrowserAnalysisTool",
+      displayName: "Browser Analysis Tool",
+      description: "Анализирует все доступные медиафайлы в браузере по указанным критериям",
+      domain: "core",
+      category: "browser",
+      version: "1.0.0",
+      tags: ["browser", "media", "analysis"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processBrowserAnalysis(input, options)
+  }
+
+  validate(input: any): boolean {
+    return input && input.operation === "analyze_media_browser" && input.tab
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: analyzeMediaBrowserTool.input_schema,
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          files: { type: "array" },
+          groups: { type: "array" },
+          analysis: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -71,7 +115,7 @@ export class BrowserAnalysisTool extends BaseAITool {
   ): Promise<AIToolResult<BrowserAnalysisResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         if (data.operation !== "analyze_media_browser") {

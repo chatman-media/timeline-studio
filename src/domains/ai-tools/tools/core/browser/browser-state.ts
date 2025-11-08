@@ -2,7 +2,13 @@
  * AI инструменты для управления состоянием браузера с использованием BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { BrowserToolResult, UpdateFiltersParams } from "./types"
 import { getBrowserStateAccess, getBrowserStats, getCurrentTab, hasBrowserAccess } from "./utils/helpers"
@@ -40,7 +46,54 @@ export interface BrowserStateResult {
  */
 export class BrowserStateTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("BrowserStateTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "BrowserStateTool",
+      displayName: "Browser State Tool",
+      description: "Управляет состоянием медиа браузера и его фильтрами",
+      domain: "core",
+      category: "browser",
+      version: "1.0.0",
+      tags: ["browser", "state", "filters"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processBrowserState(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = ["get_browser_state", "update_browser_filters"]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: { type: "string", enum: ["get_browser_state", "update_browser_filters"] },
+          includeDetails: { type: "boolean" },
+          filterType: { type: "string" },
+          filterValue: {},
+          operationType: { type: "string", enum: ["set", "add", "remove", "clear"] },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          state: { type: "object" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -52,7 +105,7 @@ export class BrowserStateTool extends BaseAITool {
   ): Promise<AIToolResult<BrowserStateResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = ["get_browser_state", "update_browser_filters"]

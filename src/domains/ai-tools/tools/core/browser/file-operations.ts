@@ -2,7 +2,13 @@
  * AI инструменты для операций с файлами в браузере с BaseAITool
  */
 
-import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import {
+  type AIToolExecutionOptions,
+  type AIToolLogger,
+  type AIToolMetadata,
+  type AIToolResult,
+  BaseAITool,
+} from "../../../base"
 
 import type { AnalyzeRelationshipsParams, BrowserToolResult, BulkSelectParams, GetFileGroupsParams } from "./types"
 import {
@@ -59,12 +65,11 @@ export interface FileOperationsResult {
   groups?: any[]
   analysis?: any
   relationships?: any[]
-  selectionResult?: {
-    action: string
-    selectedCount: number
-    totalProcessed: number
-    criteria: any
-  }
+  files?: any[]
+  sources?: any[]
+  missingContent?: any
+  state?: any
+  suggestions?: string[]
   message: string
   recommendations: string[]
   warnings?: string[]
@@ -75,7 +80,56 @@ export interface FileOperationsResult {
  */
 export class FileOperationsTool extends BaseAITool {
   constructor(logger?: AIToolLogger) {
-    super("FileOperationsTool", logger)
+    super(undefined, logger)
+  }
+
+  get metadata(): AIToolMetadata {
+    return {
+      name: "FileOperationsTool",
+      displayName: "File Operations Tool",
+      description: "Выполняет операции с файлами в браузере: группировка, анализ связей, массовый выбор",
+      domain: "core",
+      category: "browser",
+      version: "1.0.0",
+      tags: ["files", "operations", "grouping", "selection"],
+    }
+  }
+
+  async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
+    return this.processFileOperations(input, options)
+  }
+
+  validate(input: any): boolean {
+    const validOperations = ["get_file_groups", "analyze_file_relationships", "bulk_select_files"]
+    return input && validOperations.includes(input.operation)
+  }
+
+  getSchema(): { input: any; output: any } {
+    return {
+      input: {
+        type: "object",
+        properties: {
+          operation: {
+            type: "string",
+            enum: ["get_file_groups", "analyze_file_relationships", "bulk_select_files"],
+          },
+          groupBy: { type: "string" },
+          tab: { type: "string" },
+          analysisType: { type: "string" },
+          selectionCriteria: { type: "object" },
+        },
+        required: ["operation"],
+      },
+      output: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          success: { type: "boolean" },
+          message: { type: "string" },
+          recommendations: { type: "array" },
+        },
+      },
+    }
   }
 
   /**
@@ -87,7 +141,7 @@ export class FileOperationsTool extends BaseAITool {
   ): Promise<AIToolResult<FileOperationsResult>> {
     return this.executeWithErrorHandling(async () => {
       // Валидация входных данных
-      const validation = this.validateInput(input, (data) => {
+      const validation = this.validateInputDetailed(input, (data) => {
         const errors: string[] = []
 
         const validOperations = ["get_file_groups", "analyze_file_relationships", "bulk_select_files"]
@@ -147,8 +201,9 @@ export class FileOperationsTool extends BaseAITool {
         case "analyze_file_relationships":
           const relationshipsResult = await this.analyzeFileRelationships({
             tab: input.tab!,
-            analysisDepth: input.analysisType === "detailed" ? "detailed" : "basic",
-            includeUsage: input.includeMetadata ?? true,
+            analysisType: input.analysisType || "similarity",
+            analysisDepth: "basic",
+            includeMetadata: input.includeMetadata ?? true,
           })
           if (!relationshipsResult.success) {
             throw new Error(relationshipsResult.message)
@@ -715,7 +770,7 @@ export async function executeFileOperationsTool(
 export async function analyzeFileRelationships(params: AnalyzeRelationshipsParams): Promise<BrowserToolResult> {
   const result = await fileOperationsTool.processFileOperations({
     operation: "analyze_file_relationships",
-    analysisType: params.analysisType,
+    analysisType: params.analysisType as any,
     fileIds: params.fileIds,
     includeMetadata: params.includeMetadata,
     reason: "Анализ связей файлов",
@@ -724,7 +779,7 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || result.message || "Анализ завершен",
       data: {
         analysis: result.data?.analysis,
         relationships: result.data?.relationships,
@@ -734,7 +789,7 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
   }
   return {
     success: false,
-    message: result.errors?.[0] || "Ошибка анализа связей файлов",
+    message: result.errors?.[0] || result.message || "Ошибка анализа связей файлов",
     errors: result.errors || ["Неизвестная ошибка"],
   }
 }
@@ -745,7 +800,7 @@ export async function analyzeFileRelationships(params: AnalyzeRelationshipsParam
 export async function bulkSelectFiles(params: BulkSelectParams): Promise<BrowserToolResult> {
   const result = await fileOperationsTool.processFileOperations({
     operation: "bulk_select_files",
-    selectionCriteria: params.selectionCriteria,
+    selectionCriteria: params.selectionCriteria as any,
     action: params.action,
     reason: params.reason,
   })
@@ -753,16 +808,13 @@ export async function bulkSelectFiles(params: BulkSelectParams): Promise<Browser
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
-      data: {
-        selectionResult: result.data?.selectionResult,
-      },
-      nextActions: result.data?.recommendations,
+      message: result.data?.message || result.message || "Выбор завершен",
+      data: result.data,
     }
   }
   return {
     success: false,
-    message: result.errors?.[0] || "Ошибка массового выбора файлов",
+    message: result.errors?.[0] || result.message || "Ошибка массового выбора файлов",
     errors: result.errors || ["Неизвестная ошибка"],
   }
 }
@@ -773,7 +825,7 @@ export async function bulkSelectFiles(params: BulkSelectParams): Promise<Browser
 export async function getFileGroups(params: GetFileGroupsParams): Promise<BrowserToolResult> {
   const result = await fileOperationsTool.processFileOperations({
     operation: "get_file_groups",
-    groupBy: params.groupBy,
+    groupBy: params.groupBy as any,
     tab: params.tab,
     includeEmpty: params.includeEmpty,
     reason: "Группировка файлов",
@@ -782,7 +834,7 @@ export async function getFileGroups(params: GetFileGroupsParams): Promise<Browse
   if (result.success) {
     return {
       success: true,
-      message: result.data?.message,
+      message: result.data?.message || result.message || "Группировка завершена",
       data: {
         groups: result.data?.groups,
         analysis: result.data?.analysis,
