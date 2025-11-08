@@ -325,6 +325,10 @@ export function AiChat() {
           content: msg.content,
         }))
 
+        // Получаем API ключ для провайдера
+        const apiKeyInfo = getApiKeyInfo(provider)
+        const apiKey = apiKeyInfo?.key || ""
+
         // Отправляем запрос через backend AI service
         const response = await backendAI.sendMessage(
           {
@@ -335,6 +339,7 @@ export function AiChat() {
             system: systemPrompt,
           },
           aiMessages,
+          apiKey,
         )
 
         // Завершаем стриминг

@@ -10,7 +10,8 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { Project, ProjectState, Track as BackendTrack } from "@/types/generated/state-types"
+import type { Track as BackendTrack, Project, ProjectState } from "@/types/generated/state-types"
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 

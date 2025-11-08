@@ -258,8 +258,22 @@ export class SectionCreationTool extends BaseAITool {
       },
     )
   }
-  validateInput(_input: CreateSectionsInput, _arg1: (data: any) => { isValid: boolean; errors: string[] }) {
-    throw new Error("Method not implemented.")
+  validateInput(_input: CreateSectionsInput): { isValid: boolean; errors: string[] } {
+    const errors: string[] = []
+
+    if (!_input.strategy) {
+      errors.push("Не указана стратегия создания секций")
+    }
+
+    const validStrategies = ["by-date", "by-duration", "by-content-type", "by-location", "manual", "smart"]
+    if (_input.strategy && !validStrategies.includes(_input.strategy)) {
+      errors.push(`Неподдерживаемая стратегия: ${_input.strategy}`)
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    }
   }
 }
 

@@ -239,6 +239,7 @@ export class FCPXMLImporter implements Importer {
       duration: this.parseDurationToSeconds(resource.duration || "0s"),
       createdAt: new Date(),
       type: isVideo ? "video" : isAudio ? "audio" : "unknown",
+      source: "import" as const,
     } as MediaFile
 
     this.mediaReferences.set(resource.id, mediaFile)
