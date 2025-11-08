@@ -15,6 +15,7 @@ import {
   Send,
   Upload,
   UserCog,
+  Wand2,
   Webcam,
 } from "lucide-react"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
@@ -163,6 +164,7 @@ const TopBarComponent = function TopBar() {
       voiceRecording: t("topBar.voiceRecording"),
       publish: t("topBar.publish"),
       editingTasks: t("topBar.editingTasks"),
+      montagePlanner: t("topBar.montagePlanner"),
       export: t("topBar.export"),
     }),
     [t, isBrowserVisible, isTimelineVisible, currentProject?.isDirty],
@@ -381,6 +383,17 @@ const TopBarComponent = function TopBar() {
           </Popover>
 
           <RenderJobsDropdown />
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={TOP_BAR_BUTTON_CLASS}
+            title={buttonTitles.montagePlanner}
+            onClick={() => handleOpenModal("montage-planner")}
+            data-testid="montage-planner-button"
+          >
+            <Wand2 className="h-5 w-5" />
+          </Button>
 
           <Button
             variant="outline"

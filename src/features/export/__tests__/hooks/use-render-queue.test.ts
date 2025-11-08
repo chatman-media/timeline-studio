@@ -294,7 +294,9 @@ describe("useRenderQueue", () => {
       expect(result.current.isProcessing).toBe(false)
     })
 
-    expect(mockLogError).toHaveBeenCalledWith("[useRenderQueue] Ошибка получения задач рендеринга: Error: Failed to get jobs")
+    expect(mockLogError).toHaveBeenCalledWith(
+      "[useRenderQueue] Ошибка получения задач рендеринга: Error: Failed to get jobs",
+    )
   })
 
   it("should update isProcessing based on job statuses", async () => {

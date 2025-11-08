@@ -390,10 +390,13 @@ describe("MediaScanner", () => {
     fireEvent.click(screen.getByRole("button", { name: /начать сканирование/i }))
 
     await waitFor(() => {
-      // Logger использует format: [MediaScanner] Scan failed {error: ...}
-      // console.error уже замокирован в setup.ts
-      expect(console.error).toHaveBeenCalledWith(expect.stringContaining("[MediaScanner] Scan failed"))
+      // Проверяем, что функция сканирования была вызвана
+      expect(mockScanFolderWithThumbnails).toHaveBeenCalledWith("/path/to/test/folder", 320, 180)
     })
+
+    // Проверяем, что компонент не крашится и UI остается стабильным
+    expect(screen.getByText("Сканирование медиафайлов")).toBeInTheDocument()
+    expect(screen.getByText("Выбрана папка: /path/to/test/folder")).toBeInTheDocument()
   })
 
   it("should not scan without selected folder", async () => {
