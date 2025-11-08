@@ -12,6 +12,7 @@ export { StyleController } from "./editor/style-controller"
 export { TimingAdjuster } from "./editor/timing-adjuster"
 // Main component
 export { MontagePlanner } from "./montage-planner"
+export { MontagePlannerModal } from "./montage-planner-modal"
 export { IntegratedPlannerDashboard } from "./planner-dashboard/integrated-planner-dashboard"
 export { PlanViewer } from "./planner-dashboard/plan-viewer"
 // Dashboard components
