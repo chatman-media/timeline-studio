@@ -4,7 +4,7 @@
  * Migrated from features/ai-content-intelligence/shared/services/media-analysis-interface.ts
  */
 
-import { getAIContainer } from "@/domains/ai-core"
+// REMOVED: import { null as any /* getAIContainer from deleted ai-core */ } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import { IContentAnalysisService, IFFmpegAnalysisService, IVisionService } from "../types/interfaces"
 
 let ffmpegService: IFFmpegAnalysisService | null = null
@@ -14,54 +14,34 @@ let aiService: any = null
 
 /**
  * Get FFmpeg analysis service
+ * DEPRECATED: ai-core module deleted - use backend AI proxy instead
  */
 export async function getFFmpegService(): Promise<IFFmpegAnalysisService> {
-  if (!ffmpegService) {
-    const aiContainer = getAIContainer()
-    ffmpegService = await aiContainer.resolve<IFFmpegAnalysisService>("FFmpegService")
-  }
-  return ffmpegService
+  throw new Error("getFFmpegService is deprecated - ai-core module deleted, use backend AI proxy instead")
 }
 
 /**
  * Get Vision service for scene analysis
+ * DEPRECATED: ai-core module deleted - use backend AI proxy instead
  */
 export async function getVisionService(): Promise<IVisionService> {
-  if (!visionService) {
-    const aiContainer = getAIContainer()
-    visionService = await aiContainer.resolve<IVisionService>("VisionService")
-  }
-  return visionService
+  throw new Error("getVisionService is deprecated - ai-core module deleted, use backend AI proxy instead")
 }
 
 /**
  * Get Content Analysis service
+ * DEPRECATED: ai-core module deleted - use backend AI proxy instead
  */
 export async function getContentAnalysisService(): Promise<IContentAnalysisService> {
-  if (!contentAnalysisService) {
-    const aiContainer = getAIContainer()
-    contentAnalysisService = await aiContainer.resolve<IContentAnalysisService>("ContentAnalysisService")
-  }
-  return contentAnalysisService
+  throw new Error("getContentAnalysisService is deprecated - ai-core module deleted, use backend AI proxy instead")
 }
 
 /**
  * Get AI service for content generation
+ * DEPRECATED: ai-core module deleted - use backend AI proxy instead
  */
 export async function getAIService(): Promise<any> {
-  if (!aiService) {
-    const aiContainer = getAIContainer()
-    try {
-      aiService = await aiContainer.resolve("UnifiedAIService")
-    } catch (error) {
-      // Fallback to mock service for development
-      aiService = {
-        generateScript: async () => ({ text: "Generated script", scenes: [] }),
-        adaptForPlatform: async () => ({ adaptedContent: [] }),
-      }
-    }
-  }
-  return aiService
+  throw new Error("getAIService is deprecated - ai-core module deleted, use backend AI proxy instead")
 }
 
 /**

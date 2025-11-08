@@ -3,7 +3,7 @@
  * Адаптер для преобразования контента под конкретную платформу
  */
 
-import { UnifiedAIService } from "@/domains/ai-core"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import { UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import {
   AdaptedContent,
@@ -24,7 +24,7 @@ import {
 } from "../types"
 
 export class PlatformAdapter {
-  private aiService: UnifiedAIService
+  private aiService: any /* UnifiedAIService from deleted ai-core */
   private isInitialized = false
 
   constructor() {

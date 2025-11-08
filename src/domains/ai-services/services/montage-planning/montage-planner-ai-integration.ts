@@ -4,7 +4,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { getAIContainer, IUnifiedAIService, MediaAnalysisFactory } from "../../../../domains/ai-core/index"
+// REMOVED: import { null as any /* getAIContainer from deleted ai-core */, IUnifiedAIService, MediaAnalysisFactory } from "../../../../domains/ai-core/index" // ai-core module deleted - use backend AI proxy instead
 import { VideoAnalysisParams } from "../../../../domains/ai-services/index"
 import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import type {
@@ -39,15 +39,15 @@ export interface MontagePlannerAIService {
 }
 
 export class MontagePlannerAIIntegration implements MontagePlannerAIService {
-  private aiService: IUnifiedAIService | null = null
-  private analysisFactory: MediaAnalysisFactory | null = null
+  private aiService: any | null = null // IUnifiedAIService from deleted ai-core
+  private analysisFactory: any | null = null // MediaAnalysisFactory from deleted ai-core
   private initialized = false
 
   async initialize(): Promise<void> {
     if (this.initialized) return
 
     try {
-      const container = getAIContainer()
+      const container = null as any /* getAIContainer from deleted ai-core */
 
       // Resolve AI services from DI container
       this.aiService = await container.resolve<IUnifiedAIService>("UnifiedAIService")
@@ -55,7 +55,9 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
 
       this.initialized = true
     } catch (error) {
-      logger.error("[MontagePlannerAI] Failed to initialize AI services:", { error })
+      logger.error("[MontagePlannerAI] Failed to initialize AI services:", {
+        error,
+      })
       throw error
     }
   }
@@ -199,7 +201,7 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
             - Duration: ${fragment.duration} seconds
             - Objects detected: ${fragment.objects.join(", ")}
             - People: ${fragment.people.map((p) => p.name).join(", ")}
-            
+
             Provide scores (0-100) for:
             - Visual appeal
             - Technical quality
@@ -242,12 +244,14 @@ export class MontagePlannerAIIntegration implements MontagePlannerAIService {
           .slice(0, 5)
           .map((f) => f.description)
           .join(", ")}
-        
+
         Generate a brief, engaging description of what this montage will showcase.`
 
       return await (this.aiService as any).complete?.(prompt)
     } catch (error) {
-      logger.error("[MontagePlannerAI] Description generation failed:", { error })
+      logger.error("[MontagePlannerAI] Description generation failed:", {
+        error,
+      })
       return `A ${style} montage with ${fragments.length} carefully selected moments`
     }
   }

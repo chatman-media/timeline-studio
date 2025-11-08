@@ -198,7 +198,10 @@ export class UnifiedOrchestrator {
     try {
       // Stage 1: AI Director Comprehensive Analysis
       logger.info("Stage 1: AI Director comprehensive analysis", { workflowId })
-      const comprehensiveResult = await aiDirectorService.analyzeComprehensive(videoPath, config?.aiDirectorConfig)
+      const comprehensiveResult = await aiDirectorService.analyzeComprehensive(
+        videoPath,
+        config?.aiDirectorConfig || null,
+      )
 
       workflow.stages.aiDirector = "completed"
       workflow.results.comprehensive = comprehensiveResult
@@ -364,8 +367,8 @@ export class UnifiedOrchestrator {
         results.push({
           videoPath,
           workflowId: "",
-          comprehensive: {} as ComprehensiveAnalysisResult,
-          unified: {} as UnifiedContentAnalysis,
+          comprehensive: this.createEmptyComprehensiveResult(),
+          unified: this.createEmptyUnifiedAnalysis(videoPath),
           success: false,
           error: error instanceof Error ? error.message : String(error),
         })
@@ -675,6 +678,48 @@ export class UnifiedOrchestrator {
     if (UnifiedOrchestrator.instance) {
       UnifiedOrchestrator.instance.cleanup()
       UnifiedOrchestrator.instance = null
+    }
+  }
+
+  // ============================================================================
+  // Helper Methods
+  // ============================================================================
+
+  /**
+   * Создать пустой ComprehensiveAnalysisResult для обработки ошибок
+   */
+  private createEmptyComprehensiveResult(): ComprehensiveAnalysisResult {
+    return {
+      analysis_id: `error-${Date.now()}`,
+      status: "failed" as any,
+      audio_analysis: null,
+      scene_analysis: null,
+      vision_analysis: null,
+      moment_analysis: null,
+      content_analysis: null,
+      combined_insights: null,
+      editing_recommendations: null,
+      metadata: null,
+    }
+  }
+
+  /**
+   * Создать пустой UnifiedContentAnalysis для обработки ошибок
+   */
+  private createEmptyUnifiedAnalysis(videoPath: string): UnifiedContentAnalysis {
+    return {
+      analysisId: `error-${Date.now()}`,
+      videoPath,
+      status: "failed",
+      createdAt: new Date().toISOString(),
+      processingTimeMs: 0,
+      videoInfo: {
+        duration: 0,
+        fps: 0,
+        resolution: { width: 0, height: 0 },
+        codec: "unknown",
+        fileSize: 0,
+      },
     }
   }
 }

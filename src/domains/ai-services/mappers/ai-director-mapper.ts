@@ -5,6 +5,8 @@
  * для использования в TypeScript приложении
  */
 
+// For type compatibility
+import type { ComprehensiveAnalysisResult as AIDirectorComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import type {
   ComprehensiveAnalysisResult,
   EditingRecommendation,
@@ -142,7 +144,9 @@ export interface UnifiedContentAnalysis {
 /**
  * Преобразует ComprehensiveAnalysisResult в UnifiedContentAnalysis
  */
-export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisResult): UnifiedContentAnalysis {
+export function mapComprehensiveAnalysisToUnified(
+  result: ComprehensiveAnalysisResult | AIDirectorComprehensiveAnalysisResult,
+): UnifiedContentAnalysis {
   // Извлекаем scenes и конвертируем в нужный формат
   const scenes =
     result.scene_analysis?.scenes?.map((scene: SceneAnalysis) => ({

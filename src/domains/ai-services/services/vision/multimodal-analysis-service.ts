@@ -5,7 +5,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
-import { ApiKeyLoader } from "@/domains/ai-core"
+// REMOVED: // REMOVED: import { ApiKeyLoader } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import type { FrameAnalysis, IVisionService } from "@/domains/ai-services/types/interfaces"
 
 import { createLogger } from "@/lib/tauri-logger"
@@ -160,10 +160,9 @@ export interface ThumbnailSuggestion {
  */
 export class MultimodalAnalysisService {
   private static instance: MultimodalAnalysisService
-  private apiKeyLoader: ApiKeyLoader
 
   private constructor() {
-    this.apiKeyLoader = ApiKeyLoader.getInstance()
+    // API keys are managed by backend AI proxy
   }
 
   /**
@@ -177,148 +176,29 @@ export class MultimodalAnalysisService {
   }
 
   /**
-   * Анализ одного кадра с использованием shared Vision service
+   * Анализ одного кадра с использованием backend AI proxy
    */
   public async analyzeFrame(params: FrameAnalysisParams): Promise<FrameAnalysisResult> {
     try {
-      // Используем shared Vision service
-      const { getAIContainer } = await import("@/domains/ai-core")
-      const aiContainer = getAIContainer()
-      const visionService = (await aiContainer.resolve("VisionService")) as IVisionService
+      // Use backend AI proxy - API calls should be made through Tauri backend
+      // For now, returning mock data until backend implementation is ready
+      logger.warn("analyzeFrame called but backend AI proxy integration not yet implemented")
 
-      // Vision service анализирует кадр
-      const frameAnalysis = await visionService.analyzeFrame(params.frameImagePath)
-
-      // Дополнительные анализы для полной информации
-      const [composition, colors] = await Promise.all([
-        visionService.analyzeComposition?.(params.frameImagePath) || {
-          ruleOfThirds: { score: 0.7, points: [] },
-          leadingLines: { score: 0.5, lines: [] },
-          balance: { score: 0.6, centerOfMass: { x: 0, y: 0 } },
-          symmetry: { score: 0.5 },
-        },
-        visionService.analyzeColors?.(params.frameImagePath) || {
-          dominantColors: [],
-          palette: [],
-          temperature: "neutral" as const,
-          saturation: "medium" as const,
-          brightness: "medium" as const,
-        },
-      ])
-
-      // Конвертируем FrameAnalysisResult в FrameAnalysis для совместимости
-      const adaptedAnalysis: FrameAnalysis = {
-        id: `frame_${Date.now()}`,
-        timestamp: Date.now(),
-        objects:
-          frameAnalysis.objects?.map((obj) => ({
-            class: obj.label,
-            confidence: obj.confidence,
-            boundingBox: {
-              x: obj.bbox.x,
-              y: obj.bbox.y,
-              width: obj.bbox.width,
-              height: obj.bbox.height,
-            },
-          })) || [],
-        text:
-          frameAnalysis.text?.map((t) => ({
-            text: t.text,
-            confidence: t.confidence,
-            boundingBox: {
-              x: t.bbox.x,
-              y: t.bbox.y,
-              width: t.bbox.width,
-              height: t.bbox.height,
-            },
-          })) || [],
-        composition,
-        colors,
-        quality: {
-          sharpness: 75, // Значения по умолчанию
-          brightness: 75,
-          contrast: 75,
-        },
-      }
-
-      // Конвертируем результат в legacy формат
       return {
         frameTimestamp: params.contextInfo?.frameTimestamp || 0,
         analysisType: params.analysisType,
-        description: this.generateDescriptionFromAnalysis(adaptedAnalysis, params),
-        confidence: this.calculateConfidenceFromAnalysis(adaptedAnalysis),
-        detectedObjects: frameAnalysis.objects?.map((obj) => ({
-          name: obj.label,
-          confidence: obj.confidence,
-          boundingBox: obj.bbox,
-        })),
-        detectedText: frameAnalysis.text?.map((text) => ({
-          text: text.text,
-          confidence: text.confidence,
-          language: "unknown",
-          position: { x: text.bbox.x, y: text.bbox.y },
-        })),
-        aestheticScore: {
-          composition: composition.ruleOfThirds.score * 10,
-          lighting: 7.5, // Заглушка, так как нет прямого доступа к качеству освещения
-          colorHarmony: colors.palette.length > 3 ? 8 : 5,
-          overall: (composition.ruleOfThirds.score * 10 + 7.5) / 2,
-        },
-        tags: this.extractTagsFromAnalysis(adaptedAnalysis, params.analysisType),
+        description: "Mock frame analysis - backend integration pending",
+        confidence: 0.5,
+        tags: ["mock", "pending_implementation"],
         metadata: {
-          processingTime: Date.now() - Date.now(), // Placeholder
-          modelUsed: "shared-vision-service",
+          processingTime: 0,
+          modelUsed: "mock",
           detailLevel: params.detailLevel || "medium",
           language: params.language || "ru",
         },
       }
     } catch (error) {
-      logger.warn("Ошибка shared Vision service, используем legacy GPT-4V:", { data: error })
-
-      // Legacy fallback
-      const apiKey = await this.apiKeyLoader.getApiKey("openai")
-      if (!apiKey) {
-        throw new Error("OpenAI API ключ не найден. Необходим для GPT-4V анализа.")
-      }
-
-      // Конвертируем изображение в base64
-      const imageBase64 = await this.imageToBase64(params.frameImagePath)
-
-      // Создаем промпт в зависимости от типа анализа
-      const prompt = this.buildAnalysisPrompt(params)
-
-      try {
-        const response = await this.callGPT4Vision(
-          {
-            model: "gpt-4o",
-            messages: [
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "text",
-                    text: prompt,
-                  },
-                  {
-                    type: "image_url",
-                    image_url: {
-                      url: `data:image/jpeg;base64,${imageBase64}`,
-                      detail: params.detailLevel || "medium",
-                    },
-                  },
-                ],
-              },
-            ],
-            max_tokens: 1000,
-            temperature: 0.1,
-          },
-          apiKey,
-        )
-
-        return this.parseFrameAnalysisResponse(response, params)
-      } catch (error) {
-        throw new Error(`Ошибка анализа кадра: ${error instanceof Error ? error.message : String(error)}`)
-      }
+      throw new Error(`Ошибка анализа кадра: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 

@@ -3,7 +3,7 @@
  * Pipeline, workflow и оркестрация различных AI сервисов
  */
 
-import type { ModelConfiguration } from "@/domains/ai-core/types"
+// REMOVED: import type { ModelConfiguration } from "@/domains/ai-core/types" // ai-core module deleted - use backend AI proxy instead
 import type { ContentAnalysisResult, MediaFile } from "./interfaces"
 
 // Базовые типы для оркестрации

@@ -3,7 +3,7 @@
  * Генератор диалогов для сценариев
  */
 
-import { UnifiedAIService } from "@/domains/ai-core/services"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
 import { createLogger } from "@/lib/tauri-logger"
 import type { Character, Dialogue, Timing } from "./types"
 
@@ -39,7 +39,7 @@ export interface DialogueConstraints {
 
 export class DialogueGenerator {
   private static instance: DialogueGenerator | null = null
-  private aiService: UnifiedAIService
+  private aiService: any /* UnifiedAIService from deleted ai-core */
   private isInitialized = false
 
   private constructor() {

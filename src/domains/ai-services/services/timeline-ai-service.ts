@@ -5,7 +5,7 @@
  * ресурсами, браузером, плеером и таймлайном
  */
 
-import { getAIContainer } from "@/domains/ai-core"
+// REMOVED: import { null as any /* getAIContainer from deleted ai-core */ } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import {
   contentIntelligenceTools,
   executeContentIntelligenceTool,
@@ -76,7 +76,7 @@ export interface TimelineAIResult {
  */
 export class TimelineAIService {
   private allTools: any[]
-  private aiContainer = getAIContainer()
+  private aiContainer: any = null /* getAIContainer from deleted ai-core */
 
   constructor(
     private resourcesProvider: ResourcesContextType,
@@ -229,7 +229,7 @@ export class TimelineAIService {
       const systemPrompt = this.createSystemPrompt(context)
 
       // Получаем UnifiedAIService из контейнера
-      const container = getAIContainer()
+      const container = null as any /* getAIContainer from deleted ai-core */
       const aiService = await container.resolve("UnifiedAIService")
 
       // Отправляем запрос с инструментами
@@ -276,7 +276,7 @@ export class TimelineAIService {
       const context = this.createContext()
       const systemPrompt = this.createAnalysisSystemPrompt(context)
 
-      const container = getAIContainer()
+      const container = null as any /* getAIContainer from deleted ai-core */
       const aiService = await container.resolve("UnifiedAIService")
 
       const response = await (aiService as any).sendRequest(

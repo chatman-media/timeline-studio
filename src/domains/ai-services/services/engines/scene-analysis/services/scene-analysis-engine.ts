@@ -3,7 +3,7 @@
  * Расширяет FFmpegAnalysisService для продвинутого анализа сцен
  */
 
-import { UnifiedAIService } from "@/domains/ai-core"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import { FFmpegAnalysisService } from "@/domains/ai-services"
 import {
   ContentType,
@@ -64,7 +64,7 @@ export class SceneAnalysisEngine extends BaseAIEngine {
   description = "Advanced scene analysis with AI-powered content understanding"
 
   private ffmpegService: FFmpegAnalysisService
-  private aiService: UnifiedAIService
+  private aiService: any /* UnifiedAIService from deleted ai-core */
   private visionService?: VisionService
   private sceneDetectionService: SceneDetectionService
   private objectTrackingService: ObjectTrackingService

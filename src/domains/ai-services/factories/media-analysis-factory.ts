@@ -168,12 +168,12 @@ export class MediaAnalysisFactoryImpl implements MediaAnalysisFactory {
 }
 
 // Singleton instance
-let factoryInstance: MediaAnalysisFactoryImpl | null = null
+let factoryInstance: any /* MediaAnalysisFactory from deleted ai-core Impl */ | null = null
 
 export function createMediaAnalysisFactory(
   ffmpegService?: IFFmpegAnalysisService,
   visionService?: IVisionService,
-): MediaAnalysisFactory {
+): any /* MediaAnalysisFactory from deleted ai-core */ {
   if (!factoryInstance) {
     if (ffmpegService && visionService) {
       factoryInstance = new MediaAnalysisFactoryImpl(ffmpegService, visionService)
@@ -187,6 +187,6 @@ export function createMediaAnalysisFactory(
   return factoryInstance
 }
 
-export function getMediaAnalysisFactory(): MediaAnalysisFactory {
+export function getMediaAnalysisFactory(): any /* MediaAnalysisFactory from deleted ai-core */ {
   return createMediaAnalysisFactory()
 }

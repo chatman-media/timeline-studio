@@ -3,7 +3,7 @@
  * Адаптер для многоязычной поддержки контента
  */
 
-import { EnhancedUnifiedAIService } from "@/domains/ai-core/services"
+// REMOVED: import { EnhancedUnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
 import type { AdaptedContent } from "@/domains/shared/types/ai-tools/platform-adaptation"
 
 import { createLogger } from "@/lib/tauri-logger"
@@ -11,7 +11,7 @@ import { createLogger } from "@/lib/tauri-logger"
 const logger = createLogger("LanguageAdapter")
 
 export class LanguageAdapter {
-  private aiService: EnhancedUnifiedAIService
+  private aiService: any /* EnhancedUnifiedAIService from deleted ai-core */
   private isInitialized = false
   private supportedLanguages: Set<string>
 

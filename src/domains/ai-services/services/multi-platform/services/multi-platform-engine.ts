@@ -3,7 +3,7 @@
  * Основной движок для адаптации контента под различные платформы
  */
 
-import { UnifiedAIService } from "@/domains/ai-core"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import { AdaptedContent, Platform, PlatformId } from "@/features/ai-content-intelligence"
 import { createLogger } from "@/lib/tauri-logger"
 import { getOptimalAspectRatio, getOptimalResolution, getPlatformConfig } from "../platform-configs"
@@ -30,7 +30,7 @@ export class MultiPlatformEngine {
   private batchProcessor: BatchProcessor
   private config: MultiPlatformConfig
   private isInitialized = false
-  aiService: UnifiedAIService
+  aiService: any /* UnifiedAIService from deleted ai-core */
 
   constructor(config?: Partial<MultiPlatformConfig>) {
     this.config = this.getDefaultConfig(config)

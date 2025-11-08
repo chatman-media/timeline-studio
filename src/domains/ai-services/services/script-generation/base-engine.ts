@@ -2,7 +2,7 @@
  * Base AI Engine for Script Generation
  */
 
-import { UnifiedAIService } from "@/domains/ai-core/services"
+// REMOVED: import { UnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
 
 export interface EngineCapabilities {
   supportsStreaming: boolean
@@ -27,7 +27,7 @@ export abstract class BaseAIEngine {
   abstract description: string
 
   protected _isReady = false
-  protected aiService: UnifiedAIService
+  protected aiService: any /* UnifiedAIService from deleted ai-core */
 
   constructor() {
     this.aiService = UnifiedAIService.getInstance()
