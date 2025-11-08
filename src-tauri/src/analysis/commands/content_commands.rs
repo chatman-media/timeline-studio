@@ -10,8 +10,8 @@ use crate::analysis::engines::content_engine::{
   CompositionScore, CompositionWeights, ContentClassification, ContentEngine, ContentEngineConfig,
   QualityScore,
 };
-use crate::analysis::types::MoodAnalysis;
 use crate::analysis::types::unified_types::{SceneAnalysis, VisualCharacteristics};
+use crate::analysis::types::MoodAnalysis;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use specta::Type;

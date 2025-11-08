@@ -7,6 +7,7 @@ use uuid::Uuid;
 
 // Импортируем типы из существующей person database
 use crate::recognition::types_professional::*;
+use crate::state::project_state::MediaType;
 
 // Дополнительные типы для совместимости
 pub type Timestamp = f32;

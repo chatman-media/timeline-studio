@@ -6,6 +6,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
+use crate::state::project_state::MediaType;
 use crate::analysis::database::AnalysisDatabase; // ✅ Database работает
 use crate::analysis::models::*;
 use crate::analysis::services::ProjectManager; // ✅ Включено обратно

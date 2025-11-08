@@ -21,12 +21,12 @@ use uuid::Uuid;
 use crate::analysis::engines::content_engine::{
   CompositionScore, ContentClassification, QualityScore,
 };
-use crate::analysis::types::MoodAnalysis;
 use crate::analysis::engines::{ContentEngine, MomentEngine, SceneEngine};
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
 use crate::analysis::types::unified_types::{
   AudioCharacteristics, KeyMoment, SceneAnalysis, SceneType, VisualCharacteristics,
 };
+use crate::analysis::types::MoodAnalysis;
 use crate::analysis::types::{
   AudioPerformanceMode, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
 };
@@ -837,10 +837,12 @@ impl AIDirector {
         confidence: 0.0,
       }),
       mood: mood.unwrap_or_else(|| MoodAnalysis {
-        mood: "neutral".to_string(),
-        energy_level: 0.5,
-        emotional_intensity: 0.5,
-        confidence: 0.0,
+        primary: "neutral".to_string(),
+        secondary: Vec::new(),
+        valence: 0.0,
+        arousal: 0.5,
+        dominance: 0.5,
+        emotional_arc: Vec::new(),
       }),
       quality: quality.unwrap_or(QualityScore {
         overall: 0.0,
@@ -909,7 +911,7 @@ impl AIDirector {
     // Качество из content_analysis
     if let Some(content) = &result.content_analysis {
       insights.overall_quality = content.quality.overall;
-      insights.content_mood = content.mood.mood.clone();
+      insights.content_mood = content.mood.primary.clone();
     }
 
     // Объекты из vision_analysis

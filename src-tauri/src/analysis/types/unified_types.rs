@@ -15,7 +15,7 @@ use specta::Type;
 use std::collections::HashMap;
 
 use super::content_classification::*;
-use crate::analysis::models::MediaType;
+use crate::state::project_state::MediaType;
 
 // ============================================================================
 // MEDIA FILE TYPES - Unified Media Representation

@@ -5,6 +5,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
+use crate::state::project_state::MediaType;
 use crate::analysis::database::AnalysisDatabase;
 use crate::analysis::models::*;
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
