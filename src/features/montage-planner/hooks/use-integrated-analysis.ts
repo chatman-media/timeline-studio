@@ -5,6 +5,7 @@
 import { useCallback, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import type { Fragment, MontagePlan } from "../types"
 import { convertToAIServicesMediaFile } from "../utils/media-file-converter"
 import { useContentAnalysis } from "./use-content-analysis"
@@ -122,20 +123,25 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
   const analyzeSelectedFiles = useCallback(
     async (filePaths: string[]): Promise<void> => {
       // Simple implementation - convert paths to MediaFiles and analyze
-      const mediaFiles: MediaFile[] = filePaths.map((path, index) => ({
-        id: `file-${index}`,
-        path,
-        name: path.split("/").pop() || path,
-        isVideo: path.endsWith(".mp4") || path.endsWith(".mov"),
-        isAudio: path.endsWith(".mp3") || path.endsWith(".wav"),
-        duration: 0,
-        format: "",
-        codec: "",
-        width: 0,
-        height: 0,
-        frameRate: 0,
-        bitrate: 0,
-      }))
+      const mediaFiles: MediaFile[] = filePaths.map((path, index) => {
+        const isVideo = path.endsWith(".mp4") || path.endsWith(".mov")
+        const isAudio = path.endsWith(".mp3") || path.endsWith(".wav")
+        return {
+          id: `file-${index}`,
+          path,
+          name: path.split("/").pop() || path,
+          type: isVideo ? MediaType.Video : isAudio ? MediaType.Audio : MediaType.Unknown,
+          isVideo,
+          isAudio,
+          duration: 0,
+          format: "",
+          codec: "",
+          width: 0,
+          height: 0,
+          frameRate: 0,
+          bitrate: 0,
+        }
+      })
 
       await analyzeProject(mediaFiles)
     },

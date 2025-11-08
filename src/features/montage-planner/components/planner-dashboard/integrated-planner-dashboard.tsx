@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 import { useIntegratedAnalysis } from "../../hooks/use-integrated-analysis"
@@ -55,14 +56,19 @@ export function IntegratedPlannerDashboard() {
   const handleAnalyzeProject = async () => {
     try {
       // Convert MediaItem[] to MediaFile[]
-      const convertedMediaFiles: MediaFile[] = mediaFiles.map((item: MediaItem) => ({
-        id: item.id,
-        path: item.path,
-        name: item.name,
-        isVideo: item.media_type.toLowerCase().includes("video"),
-        isAudio: item.media_type.toLowerCase() === "audio",
-        duration: item.duration || 0,
-      }))
+      const convertedMediaFiles: MediaFile[] = mediaFiles.map((item: MediaItem) => {
+        const isVideo = item.media_type.toLowerCase().includes("video")
+        const isAudio = item.media_type.toLowerCase() === "audio"
+        return {
+          id: item.id,
+          path: item.path,
+          name: item.name,
+          type: isVideo ? MediaType.Video : isAudio ? MediaType.Audio : MediaType.Unknown,
+          isVideo,
+          isAudio,
+          duration: item.duration || 0,
+        }
+      })
 
       await analyzeProject(convertedMediaFiles)
     } catch (error) {

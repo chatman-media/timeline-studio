@@ -13,8 +13,8 @@ import {
   type TimelineProject,
   type TimelineSection,
   type TimelineTrack,
-  type TrackType,
 } from "@/features/timeline/types"
+import type { TrackType } from "@/features/timeline/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { EmotionalTone, type MontagePlan, type PlannedClip, type TransitionPlan } from "../types"
@@ -104,13 +104,13 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    const file = clip.fragment.sourceFile
-    return (file.isVideo === true || file.isImage === true) ?? false
+    const file = clip.fragment.sourceFile as MediaFile
+    return file.isVideo === true || file.isImage === true
   })
 
   const audioClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    const file = clip.fragment.sourceFile
+    const file = clip.fragment.sourceFile as MediaFile
     return file.isAudio === true
   })
 

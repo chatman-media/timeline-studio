@@ -138,7 +138,7 @@ export class ContentAnalyzer {
       const fragment: Fragment = {
         id: `${videoId}-fragment-${index}`,
         videoId,
-        sourceFile: file,
+        sourceFile: file as any, // Type conversion between MediaFile definitions
         startTime: score.timestamp,
         endTime: Math.min(score.timestamp + score.duration, duration),
         duration: score.duration,

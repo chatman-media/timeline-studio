@@ -94,7 +94,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
         }
 
         // Применяем план к Timeline
-        const updatedProject = applyPlanToTimelineService(plan, project, mediaFiles, options)
+        const updatedProject = applyPlanToTimelineService(plan, project as any, mediaFiles, options)
 
         // Обновляем проект
         await updateProject(updatedProject)
