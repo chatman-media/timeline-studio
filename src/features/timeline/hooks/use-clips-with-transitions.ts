@@ -5,6 +5,7 @@
 
 import { useCallback } from "react"
 import { createLogger } from "@/lib/tauri-logger"
+import type { TimelineProject } from "../types/timeline"
 import { useClips } from "./use-clips"
 import { useTimeline } from "./use-timeline"
 import { useTransitionSync } from "./use-transition-sync"
@@ -22,7 +23,7 @@ export function useClipsWithTransitions() {
   }, [])
 
   const { syncMoveClip, syncTrimClip, syncRemoveClip, syncSplitClip, findClip } = useTransitionSync({
-    project,
+    project: project as TimelineProject | null,
     updateProject,
   })
 

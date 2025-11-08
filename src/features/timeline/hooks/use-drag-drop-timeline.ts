@@ -122,7 +122,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
       }
 
       const dragData = active.data.current as DragData
-      const dropData = over.data.current as any
+      const dropData = over.data.current as Record<string, any>
 
       if (!dropData || !dragData) {
         return
@@ -258,18 +258,18 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
       // Обычный внутренний Timeline drag & drop
       if (over && dragState.draggedItem && dragState.dropPosition) {
         const dragData = active.data.current as DragData
-        const dropData = over.data.current as any
+        const dropData = over.data.current as Record<string, any>
 
         if (dropData && dragData) {
           let dropSuccess = false
-          let dropDetails: any = {}
+          let dropDetails: Record<string, any> = {}
 
           // Handle track insertion (create new track)
           if (dropData.type === "track-insertion") {
             const trackType = getTrackTypeForMediaFile(dragData.mediaFile)
             const trackName = `${trackType.charAt(0).toUpperCase() + trackType.slice(1)} Track`
 
-            logger.info("[DragDrop] Creating new track:", trackName, "for media:", dragData.mediaFile.name)
+            logger.info("[DragDrop] Creating new track:", { trackName, mediaName: dragData.mediaFile.name })
 
             // Create new track and add media to it
             void addTrack(trackType as any, trackName)
@@ -289,11 +289,10 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             }
           } else if (dropData.type === "transition-drop" && dragState.dropPosition?.type === "transition") {
             // Handle transition drop
-            logger.info(
-              "[DragDrop] Dropping transition between clips:",
-              dragState.dropPosition.leftClipId,
-              dragState.dropPosition.rightClipId,
-            )
+            logger.info("[DragDrop] Dropping transition between clips:", {
+              leftClipId: dragState.dropPosition.leftClipId,
+              rightClipId: dragState.dropPosition.rightClipId,
+            })
 
             // The actual transition application is handled by the TransitionDropZone component
             // through its onDrop callback
@@ -305,7 +304,10 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             }
           } else if (dropData.type === "clip-drop" && dragState.draggedResourceType) {
             // Handle resource drop on clip
-            logger.info("[DragDrop] Dropping", dragState.draggedResourceType, "on clip:", dropData.clipId)
+            logger.info("[DragDrop] Dropping resource on clip:", {
+              resourceType: dragState.draggedResourceType,
+              clipId: dropData.clipId,
+            })
 
             // The actual resource application is handled by the ClipDropZone component
             // Resources are applied through TimelineEffectsProvider
@@ -320,14 +322,11 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             const isValid = canDropOnTrack(dragData.mediaFile, dropData.trackType)
 
             if (isValid) {
-              logger.info(
-                "[DragDrop] Dropping media:",
-                dragData.mediaFile.name,
-                "on track:",
-                dropData.trackId,
-                "at time:",
-                dragState.dropPosition.startTime,
-              )
+              logger.info("[DragDrop] Dropping media:", {
+                mediaName: dragData.mediaFile.name,
+                trackId: dropData.trackId,
+                startTime: dragState.dropPosition.startTime,
+              })
 
               // Use enhanced timeline action with custom positioning
               addSingleMediaToTimeline(
@@ -369,7 +368,14 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
 
       logger.info("[DragDrop] Drag ended")
     },
-    [dragState.draggedItem, dragState.dropPosition, addSingleMediaToTimeline, addTrack],
+    [
+      dragState.draggedItem,
+      dragState.dropPosition,
+      dragState.draggedResourceType,
+      addSingleMediaToTimeline,
+      addTrack,
+      addMediaToTimeline,
+    ],
   )
 
   // Check if a track is a valid drop target for the current drag

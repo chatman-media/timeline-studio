@@ -276,7 +276,12 @@ export function useIntegratedVersionControl(): UseIntegratedVersionControlReturn
       currentVersionId: versionControl.currentVersionId || "",
       branchName: versionControl.branchName || "main",
       hasUncommittedChanges: versionControl.hasUncommittedChanges || false,
-      lastSnapshotTime: versionControl.lastSnapshotTime || "",
+      lastSnapshotTime:
+        typeof versionControl.lastSnapshotTime === "string"
+          ? versionControl.lastSnapshotTime
+          : versionControl.lastSnapshotTime instanceof Date
+            ? versionControl.lastSnapshotTime.toISOString()
+            : "",
     },
 
     // Конфигурация

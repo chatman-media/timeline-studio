@@ -87,12 +87,6 @@ export class TimelinePlayerSync {
       return
     }
 
-    // ИСПРАВЛЕНИЕ: Проверяем наличие медиафайла ДО установки currentSelectedClip
-    if (!clip.mediaFile) {
-      logger.warn("[TimelinePlayerSync] Clip has no media file")
-      return
-    }
-
     try {
       this.currentSelectedClip = clip
 
@@ -147,9 +141,9 @@ export class TimelinePlayerSync {
       }
 
       // Применяем шаблон если есть через backend
-      if (clip.templateId) {
+      if ((clip as any).templateId) {
         const mediaIds = clip.mediaId ? [clip.mediaId] : []
-        await this.playerContext.playerApplyTemplate(clip.templateId, mediaIds)
+        await this.playerContext.playerApplyTemplate((clip as any).templateId, mediaIds)
       }
     } catch (error) {
       logger.error("[TimelinePlayerSync] Failed to apply clip resources:", { error })
@@ -175,7 +169,7 @@ export class TimelinePlayerSync {
     if (clipRelativeTime >= 0 && clipRelativeTime <= this.currentSelectedClip.duration) {
       try {
         // Конвертируем в время медиафайла
-        const mediaTime = this.currentSelectedClip.mediaStartTime + clipRelativeTime
+        const mediaTime = (this.currentSelectedClip.mediaStartTime || 0) + clipRelativeTime
         await this.playerContext.seek(mediaTime)
 
         // Обновляем скорость воспроизведения если включен speed ramping
@@ -199,8 +193,8 @@ export class TimelinePlayerSync {
     }
 
     // Проверяем, включен ли speed ramping для клипа
-    const speedRampingConfig = this.currentSelectedClip.speedRamping
-    if (!speedRampingConfig?.enabled || !speedRampingConfig.keyframes.length) {
+    const speedRampingConfig = (this.currentSelectedClip as any).speedRamping
+    if (!speedRampingConfig?.enabled || !speedRampingConfig?.keyframes?.length) {
       // Если speed ramping выключен, устанавливаем базовую скорость
       if (this.playerContext.speedRampingEnabled) {
         this.playerContext.setSpeedRampingEnabled?.(false)

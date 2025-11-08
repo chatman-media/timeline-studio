@@ -4,11 +4,11 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { SceneAnalysisResult } from "@/domains/ai-services/services"
 // TODO: Migrate to use AI Director directly
 import SceneAnalysisEngine, {
   AdvancedSceneAnalysis,
 } from "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
+import type { SceneAnalysisResult } from "@/domains/ai-services/services/engines/scene-analysis/types"
 import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"

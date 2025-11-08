@@ -154,13 +154,13 @@ export class BatchOperationsService {
 
           if (options.maintainDuration) {
             // Сдвигаем offset, сохраняя длительность
-            updatedClip.offset += options.trimStart
-            updatedClip.mediaStartTime += options.trimStart
+            updatedClip.offset = (updatedClip.offset || 0) + options.trimStart
+            updatedClip.mediaStartTime = (updatedClip.mediaStartTime || 0) + options.trimStart
           } else {
             // Уменьшаем длительность и сдвигаем начало
             updatedClip.startTime += options.trimStart
             updatedClip.duration -= options.trimStart
-            updatedClip.mediaStartTime += options.trimStart
+            updatedClip.mediaStartTime = (updatedClip.mediaStartTime || 0) + options.trimStart
           }
         }
 
@@ -178,7 +178,8 @@ export class BatchOperationsService {
           }
 
           updatedClip.duration -= options.trimEnd
-          updatedClip.mediaEndTime -= options.trimEnd
+          updatedClip.mediaEndTime =
+            (updatedClip.mediaEndTime || updatedClip.mediaStartTime + updatedClip.duration) - options.trimEnd
         }
 
         result.processedClips.push(updatedClip)
@@ -223,8 +224,10 @@ export class BatchOperationsService {
           updatedClip.duration = clip.duration * speedFactor
 
           // Корректируем mediaEndTime
-          const mediaDuration = clip.mediaEndTime - clip.mediaStartTime
-          updatedClip.mediaEndTime = clip.mediaStartTime + mediaDuration * speedFactor
+          const mediaStart = clip.mediaStartTime || 0
+          const mediaEnd = clip.mediaEndTime || mediaStart + clip.duration
+          const mediaDuration = mediaEnd - mediaStart
+          updatedClip.mediaEndTime = mediaStart + mediaDuration * speedFactor
         }
 
         result.processedClips.push(updatedClip)
@@ -333,7 +336,7 @@ export class BatchOperationsService {
 
         // Применяем цветокоррекцию
         if (options.colorGrading) {
-          updatedClip.colorGrading = {
+          ;(updatedClip as any).colorGrading = {
             ...options.colorGrading,
             id: `color_${Date.now()}_${Math.random()}`,
           }
@@ -581,7 +584,6 @@ export class BatchOperationsService {
           fadeIn: undefined,
           fadeOut: undefined,
           opacityKeyframes: undefined,
-          colorGrading: undefined,
         }
 
         result.processedClips.push(updatedClip)

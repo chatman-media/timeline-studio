@@ -151,7 +151,7 @@ export function addMediaToResources(project: TimelineProject, media: MediaFile):
 
   const exists = project.resources.media.some((m) => m.id === media.id)
   if (!exists) {
-    project.resources.media.push(media)
+    project.resources.media.push(media as any)
   }
 
   return project

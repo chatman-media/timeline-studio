@@ -16,9 +16,9 @@ import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelineEffects")
 
-// Простой адаптер для конвертации TimelineProject в ProjectSchema
-function timelineProjectToSchema(project: TimelineProject): ProjectSchema {
-  return project as any // Временное решение для совместимости типов
+// Простой адаптер для конвертации проекта в ProjectSchema
+function timelineProjectToSchema(project: any): ProjectSchema {
+  return project as ProjectSchema // Временное решение для совместимости типов
 }
 
 export function useTimelineEffects() {

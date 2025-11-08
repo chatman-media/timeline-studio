@@ -11,7 +11,7 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../services/transition-collision-detector"
-import type { TimelineTrack } from "../types/timeline"
+import type { TimelineProject, TimelineTrack } from "../types/timeline"
 import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTransitionCollisions")
@@ -57,7 +57,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
 
     // Используем setTimeout для предотвращения блокировки UI
     const timeoutId = setTimeout(() => {
-      const detected = detectAllCollisions(project)
+      const detected = detectAllCollisions(project as unknown as TimelineProject)
       setCollisions(detected)
       setLastCheckTime(new Date())
       setIsChecking(false)
@@ -115,7 +115,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
           const updates = fix.action()
 
           // TODO: Интегрировать с системой обновления проекта
-          logger.info("Apply fix:", collision.transition1.id, updates)
+          logger.info("Apply fix:", { transitionId: collision.transition1.id, updates })
         },
       }))
     },
@@ -137,7 +137,7 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
   const autoFixAll = useCallback(() => {
     if (!project || collisions.length === 0) return
 
-    const fixedProject = autoFixCollisions(project, collisions)
+    const fixedProject = autoFixCollisions(project as unknown as TimelineProject, collisions)
 
     // TODO: Обновить проект через систему управления состоянием
     logger.info("Auto-fixed project:", { fixedProject })
@@ -170,14 +170,14 @@ export function useTrackTransitionCollisions(trackId: string) {
     }
 
     // Находим трек
-    const track = findTrack(project, trackId)
+    const track = findTrack(project as unknown as TimelineProject, trackId)
     if (!track) {
       setCollisions([])
       return
     }
 
     // Обнаруживаем коллизии
-    const detected = detectTrackCollisions(project, track)
+    const detected = detectTrackCollisions(project as unknown as TimelineProject, track)
     setCollisions(detected)
   }, [project, trackId])
 
@@ -185,13 +185,13 @@ export function useTrackTransitionCollisions(trackId: string) {
 }
 
 // Вспомогательная функция для поиска трека
-function findTrack(project: any, trackId: string): TimelineTrack | undefined {
+function findTrack(project: TimelineProject, trackId: string): TimelineTrack | undefined {
   // Ищем в секциях
   for (const section of project.sections) {
-    const track = section.tracks.find((t: any) => t.id === trackId)
+    const track = section.tracks.find((t) => t.id === trackId)
     if (track) return track
   }
 
   // Ищем в глобальных треках
-  return project.globalTracks.find((t: any) => t.id === trackId)
+  return project.globalTracks.find((t) => t.id === trackId)
 }

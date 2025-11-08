@@ -175,7 +175,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       void addMedia(file)
 
-      void addClip(targetTrackId, file, startTime)
+      void addClip(targetTrackId, file.id, startTime)
       logger.info(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
     [

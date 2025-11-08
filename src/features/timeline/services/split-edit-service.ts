@@ -437,8 +437,8 @@ export class SplitEditServiceImpl implements SplitEditService {
     if (clip.linkedClipId) {
       const linkedClip = clips.find((c) => c.id === clip.linkedClipId)
       if (linkedClip) {
-        // Определяем, какой клип видео, а какой аудио
-        if (clip.mediaFile?.isVideo) {
+        // Определяем, какой клип видео, а какой аудио по типу клипа
+        if (clip.type === "video") {
           return { videoClip: clip, audioClip: linkedClip }
         }
         return { videoClip: linkedClip, audioClip: clip }

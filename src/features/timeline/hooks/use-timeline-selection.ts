@@ -82,8 +82,8 @@ export interface UseTimelineSelectionReturn {
 export function useTimelineSelection(): UseTimelineSelectionReturn {
   const {
     project,
-    selectedClipIds,
-    selectedTrackIds,
+    selectedClipIds = [],
+    selectedTrackIds = [],
     selectClips,
     selectTracks,
     selectSections,
@@ -347,9 +347,12 @@ export function useTimelineSelection(): UseTimelineSelectionReturn {
       new Set(
         selectedClips.map((clip) => {
           const mediaFile = clip.mediaFile
-          if (mediaFile?.isVideo) return "video"
-          if (mediaFile?.isAudio) return "audio"
-          if (mediaFile?.isImage) return "image"
+          // Используем type клипа вместо свойств mediaFile
+          if (clip.type === "video") return "video"
+          if (clip.type === "audio") return "audio"
+          if (clip.type === "image") return "image"
+          if (clip.type === "subtitle") return "subtitle"
+          if (clip.type === "title") return "title"
           return "unknown"
         }),
       ),
