@@ -1,3 +1,47 @@
+# [2.8.0](https://github.com/chatman-media/timeline-studio/compare/v2.7.0...v2.8.0) (2025-11-08)
+
+
+### Bug Fixes
+
+* **ai-chat:** Исправление типов в AI Chat интеграции ([b5e336f](https://github.com/chatman-media/timeline-studio/commit/b5e336fda43802b8ca0c138ca110c45d90749f05))
+* **ai-services:** Исправление импортов и типов ([66720d5](https://github.com/chatman-media/timeline-studio/commit/66720d53fe740dffb6b5bd880afba2cb43537e6a))
+* **ai-tools:** Исправление типов в Analysis tools ([4b4453f](https://github.com/chatman-media/timeline-studio/commit/4b4453f2d834ca16499f5174ff717316d7972a35))
+* **ai-tools:** Исправление типов в Automation tools ([95ccd8c](https://github.com/chatman-media/timeline-studio/commit/95ccd8c7f50e491e18e49ab3fed3f4f89129d9d6))
+* **ai-tools:** Исправление типов в Browser tools ([7edd06c](https://github.com/chatman-media/timeline-studio/commit/7edd06c4832113c64115946ac4cac5e806c308b5))
+* **ai-tools:** Исправление типов в Core tools ([56f73fe](https://github.com/chatman-media/timeline-studio/commit/56f73fed8530b61912a921aebaa1812369eb1f48))
+* **ai-tools:** Исправление типов в Integration tools ([7007a8e](https://github.com/chatman-media/timeline-studio/commit/7007a8e01c5f0aa4d463f4e448fc9b64a1613dc2))
+* **ai-tools:** Исправление типов в Player tools ([a6dff1a](https://github.com/chatman-media/timeline-studio/commit/a6dff1adfbf2f959662e4b7ebde93766fc08e214))
+* **ai-tools:** Исправление типов в Resources tools ([626d957](https://github.com/chatman-media/timeline-studio/commit/626d95723de1dbf9b643b458ef402511b63d3202))
+* **ai-tools:** Исправление типов в Timeline tools ([e2015db](https://github.com/chatman-media/timeline-studio/commit/e2015dbd6482a93f55017041942880b71c7569b6))
+* **ai-tools:** Обновление типов AI Tools ([a6db7a9](https://github.com/chatman-media/timeline-studio/commit/a6db7a93a8f0aa4a36cf527fcec2b7961b7c1ee1))
+* **backend:** Исправление Rust бэкенда - Analysis модуль ([584df50](https://github.com/chatman-media/timeline-studio/commit/584df50bbe6a444376dfc108e404efb3bb6d257d))
+* **backend:** Исправление Rust бэкенда - Exports и video compiler ([b6174b4](https://github.com/chatman-media/timeline-studio/commit/b6174b40e7b37707455a548016db8585735ff457))
+* **backend:** Исправление Rust бэкенда - State commands ([c6b50f6](https://github.com/chatman-media/timeline-studio/commit/c6b50f64a7b5fdb49456a44069c3afaa30af0294))
+* **backend:** Исправление TypeScript ошибок и интеграция AI Chat (44→0 ошибок) ([e9d6d06](https://github.com/chatman-media/timeline-studio/commit/e9d6d06a2d3c6d01571d4bdbee00621df8fd35ef))
+* **domains:** Синхронизация типов Timeline и Effects ([d5209eb](https://github.com/chatman-media/timeline-studio/commit/d5209ebc0f407a62d84915a319c47f7f78aac9fe))
+* **effects,transitions:** Исправление типов ([5c53167](https://github.com/chatman-media/timeline-studio/commit/5c53167fa402808e798eaf09294696d3b317c7a3))
+* **media,browser:** Исправление типов ([9c46af3](https://github.com/chatman-media/timeline-studio/commit/9c46af3503c1d63ddda21c865f059badcd2407c0))
+* **montage,ai-intelligence,ai-director:** Обновление типов ([cccc536](https://github.com/chatman-media/timeline-studio/commit/cccc5362a8b02af79b1281eed4232419969f0faf))
+* **multicam:** Исправление ошибок линтера ([42b8a53](https://github.com/chatman-media/timeline-studio/commit/42b8a5389f6b1921428fd890288dc71f268878e6))
+* **multicam:** Исправление типов TypeScript ([a819407](https://github.com/chatman-media/timeline-studio/commit/a819407bddee277d2a448108075c7c2225ad013a))
+* **options,resources,language:** Исправление типов ([4350c68](https://github.com/chatman-media/timeline-studio/commit/4350c6898ff11060eb9df4172e869835cbd530c9))
+* **timeline:** Исправление типов в components и hooks ([33481a5](https://github.com/chatman-media/timeline-studio/commit/33481a5ed9181de7ca99ebe9a667d7d66a836776))
+* **timeline:** Исправление типов в services и utils ([7347671](https://github.com/chatman-media/timeline-studio/commit/734767194e07632d7c2f1f32a7ec9e000834510a))
+* **timeline:** Исправление типов в тестах ([e3e2b92](https://github.com/chatman-media/timeline-studio/commit/e3e2b924af100ac220d0f72c158b5c557db96e7f))
+* **types:** Массовое исправление TypeScript ошибок - 5 агентов (616 ошибок) ([8959cbf](https://github.com/chatman-media/timeline-studio/commit/8959cbf3fafeaa5233888ec0f565e98f64bb50eb))
+* **video-compiler,player,media-studio:** Исправление типов ([1f23c37](https://github.com/chatman-media/timeline-studio/commit/1f23c370bd36e77871771d098f22a710e626faa5))
+* Исправление ошибок линтера ([cbfd98e](https://github.com/chatman-media/timeline-studio/commit/cbfd98efe974440dce45ff82f958dbe39565ae9f))
+
+
+### Features
+
+* **ai-director:** Улучшение типизации и рефакторинг ([bedfc4a](https://github.com/chatman-media/timeline-studio/commit/bedfc4a47faea8cea9f08f908f3c1ca785dd689f))
+* **backend:** Масштабный рефакторинг Rust бэкенда ([463ebd9](https://github.com/chatman-media/timeline-studio/commit/463ebd9e368f94f4f98df43a820bf71ebf5cd12f))
+* **i18n:** Добавлены новые переводы ([36e6a68](https://github.com/chatman-media/timeline-studio/commit/36e6a68914959410432b5526b450dbc35ee5ce92))
+* **montage-planner:** Добавлен компонент модального окна ([b58a86c](https://github.com/chatman-media/timeline-studio/commit/b58a86cbf1b93cf1d07e989aec431287a1bd472e))
+* **multicam:** Phase 2 улучшения производительности и UX ([768aaa1](https://github.com/chatman-media/timeline-studio/commit/768aaa1d08c6040b762c08dba37949ee5530a90a))
+* **video-player:** Улучшения надежности и обработки ошибок ([8b81f71](https://github.com/chatman-media/timeline-studio/commit/8b81f7129053ef5a97f54c695a553c021841af8a))
+
 # [2.7.0](https://github.com/chatman-media/timeline-studio/compare/v2.6.0...v2.7.0) (2025-11-07)
 
 
