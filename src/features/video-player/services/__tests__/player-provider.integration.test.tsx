@@ -110,6 +110,12 @@ let PlayerProvider: any
 let usePlayer: any
 
 beforeEach(async () => {
+  // Clear all mocks before each test
+  vi.clearAllMocks()
+
+  // Reset the mock implementation with proper success response
+  mockBackendSync.executeCommand.mockResolvedValue({ success: true })
+
   const mod = await vi.importActual<typeof import("../player-provider")>("../player-provider")
   PlayerProvider = mod.PlayerProvider
   usePlayer = mod.usePlayer

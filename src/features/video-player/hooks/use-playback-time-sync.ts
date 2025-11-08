@@ -64,6 +64,11 @@ export function usePlaybackTimeSync({
   const lastBackendSyncRef = useRef(0)
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
 
+  // Обновляем время при изменении initialTime (важно для тестов и синхронизации с backend)
+  useEffect(() => {
+    setCurrentDisplayTime(initialTime)
+  }, [initialTime])
+
   // Мемоизированный callback для оптимизации
   const handleBackendSync = useCallback(
     (time: number) => {

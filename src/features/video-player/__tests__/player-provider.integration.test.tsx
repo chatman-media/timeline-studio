@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react"
+import { render, waitFor } from "@testing-library/react"
 import { vi } from "vitest"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 
@@ -31,6 +31,10 @@ describe("PlayerProvider integration", () => {
     PlayerProvider = mod.PlayerProvider
     usePlayer = mod.usePlayer
 
+    const backend = getBackendSync()
+    // Setup mock to resolve successfully with proper success response
+    ;(backend.executeCommand as any).mockResolvedValue({ success: true })
+
     const { getByText } = render(
       <PlayerProvider>
         <TestComponent />
@@ -41,11 +45,14 @@ describe("PlayerProvider integration", () => {
     getByText("Pause").click()
     getByText("Seek").click()
 
-    // wait for promises to resolve
-    await new Promise((r) => setTimeout(r, 0))
-
-    const backend = getBackendSync()
-    expect(backend.executeCommand).toHaveBeenCalled()
+    // Wait for all commands to be executed
+    await waitFor(
+      () => {
+        const calls = (backend.executeCommand as any).mock.calls
+        expect(calls.length).toBeGreaterThanOrEqual(3)
+      },
+      { timeout: 2000 },
+    )
 
     // Verify called with expected commands
     const calls = (backend.executeCommand as any).mock.calls

@@ -295,6 +295,21 @@ vi.mock("@/features/media/utils/video", () => ({
   getFrameTime: (_file: MediaFile) => 1 / 30, // 30 fps
 }))
 
+// Мокаем useDebouncedSeek
+vi.mock("@/features/video-player/hooks/use-debounced-seek", () => ({
+  useDebouncedSeek: (seek: any, options: any) => ({
+    debouncedSeek: (time: number) => {
+      // Вызываем onSeekStart сразу
+      options?.onSeekStart?.(time)
+      // Вызываем seek сразу (без debounce для тестов)
+      seek(time)
+    },
+    immediateSeek: seek,
+    cancelPendingSeek: vi.fn(),
+    isPending: false,
+  }),
+}))
+
 // Мокаем video-editing-orchestrator
 vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: () => ({

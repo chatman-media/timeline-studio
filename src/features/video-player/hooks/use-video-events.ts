@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react'
+import { RefObject, useEffect } from "react"
 
 export interface VideoEventHandlers {
   /**
@@ -103,10 +103,7 @@ export interface VideoEventHandlers {
  * return <video ref={videoRef} src={src} />
  * ```
  */
-export function useVideoEvents(
-  videoRef: RefObject<HTMLVideoElement | null>,
-  handlers: VideoEventHandlers
-) {
+export function useVideoEvents(videoRef: RefObject<HTMLVideoElement | null>, handlers: VideoEventHandlers) {
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -197,39 +194,39 @@ export function useVideoEvents(
     }
 
     // Регистрируем обработчики
-    if (handlers.onPlay) video.addEventListener('play', handlePlay)
-    if (handlers.onPause) video.addEventListener('pause', handlePause)
-    if (handlers.onSeeking) video.addEventListener('seeking', handleSeeking)
-    if (handlers.onSeeked) video.addEventListener('seeked', handleSeeked)
-    if (handlers.onEnded) video.addEventListener('ended', handleEnded)
-    if (handlers.onTimeUpdate) video.addEventListener('timeupdate', handleTimeUpdate)
-    if (handlers.onDurationChange) video.addEventListener('durationchange', handleDurationChange)
-    if (handlers.onError) video.addEventListener('error', handleError)
-    if (handlers.onCanPlay) video.addEventListener('canplay', handleCanPlay)
-    if (handlers.onLoadedData) video.addEventListener('loadeddata', handleLoadedData)
-    if (handlers.onLoadedMetadata) video.addEventListener('loadedmetadata', handleLoadedMetadata)
-    if (handlers.onLoadStart) video.addEventListener('loadstart', handleLoadStart)
-    if (handlers.onWaiting) video.addEventListener('waiting', handleWaiting)
-    if (handlers.onRateChange) video.addEventListener('ratechange', handleRateChange)
-    if (handlers.onVolumeChange) video.addEventListener('volumechange', handleVolumeChange)
+    if (handlers.onPlay) video.addEventListener("play", handlePlay)
+    if (handlers.onPause) video.addEventListener("pause", handlePause)
+    if (handlers.onSeeking) video.addEventListener("seeking", handleSeeking)
+    if (handlers.onSeeked) video.addEventListener("seeked", handleSeeked)
+    if (handlers.onEnded) video.addEventListener("ended", handleEnded)
+    if (handlers.onTimeUpdate) video.addEventListener("timeupdate", handleTimeUpdate)
+    if (handlers.onDurationChange) video.addEventListener("durationchange", handleDurationChange)
+    if (handlers.onError) video.addEventListener("error", handleError)
+    if (handlers.onCanPlay) video.addEventListener("canplay", handleCanPlay)
+    if (handlers.onLoadedData) video.addEventListener("loadeddata", handleLoadedData)
+    if (handlers.onLoadedMetadata) video.addEventListener("loadedmetadata", handleLoadedMetadata)
+    if (handlers.onLoadStart) video.addEventListener("loadstart", handleLoadStart)
+    if (handlers.onWaiting) video.addEventListener("waiting", handleWaiting)
+    if (handlers.onRateChange) video.addEventListener("ratechange", handleRateChange)
+    if (handlers.onVolumeChange) video.addEventListener("volumechange", handleVolumeChange)
 
     // Очистка при размонтировании
     return () => {
-      if (handlers.onPlay) video.removeEventListener('play', handlePlay)
-      if (handlers.onPause) video.removeEventListener('pause', handlePause)
-      if (handlers.onSeeking) video.removeEventListener('seeking', handleSeeking)
-      if (handlers.onSeeked) video.removeEventListener('seeked', handleSeeked)
-      if (handlers.onEnded) video.removeEventListener('ended', handleEnded)
-      if (handlers.onTimeUpdate) video.removeEventListener('timeupdate', handleTimeUpdate)
-      if (handlers.onDurationChange) video.removeEventListener('durationchange', handleDurationChange)
-      if (handlers.onError) video.removeEventListener('error', handleError)
-      if (handlers.onCanPlay) video.removeEventListener('canplay', handleCanPlay)
-      if (handlers.onLoadedData) video.removeEventListener('loadeddata', handleLoadedData)
-      if (handlers.onLoadedMetadata) video.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      if (handlers.onLoadStart) video.removeEventListener('loadstart', handleLoadStart)
-      if (handlers.onWaiting) video.removeEventListener('waiting', handleWaiting)
-      if (handlers.onRateChange) video.removeEventListener('ratechange', handleRateChange)
-      if (handlers.onVolumeChange) video.removeEventListener('volumechange', handleVolumeChange)
+      if (handlers.onPlay) video.removeEventListener("play", handlePlay)
+      if (handlers.onPause) video.removeEventListener("pause", handlePause)
+      if (handlers.onSeeking) video.removeEventListener("seeking", handleSeeking)
+      if (handlers.onSeeked) video.removeEventListener("seeked", handleSeeked)
+      if (handlers.onEnded) video.removeEventListener("ended", handleEnded)
+      if (handlers.onTimeUpdate) video.removeEventListener("timeupdate", handleTimeUpdate)
+      if (handlers.onDurationChange) video.removeEventListener("durationchange", handleDurationChange)
+      if (handlers.onError) video.removeEventListener("error", handleError)
+      if (handlers.onCanPlay) video.removeEventListener("canplay", handleCanPlay)
+      if (handlers.onLoadedData) video.removeEventListener("loadeddata", handleLoadedData)
+      if (handlers.onLoadedMetadata) video.removeEventListener("loadedmetadata", handleLoadedMetadata)
+      if (handlers.onLoadStart) video.removeEventListener("loadstart", handleLoadStart)
+      if (handlers.onWaiting) video.removeEventListener("waiting", handleWaiting)
+      if (handlers.onRateChange) video.removeEventListener("ratechange", handleRateChange)
+      if (handlers.onVolumeChange) video.removeEventListener("volumechange", handleVolumeChange)
     }
   }, [videoRef, handlers])
 }

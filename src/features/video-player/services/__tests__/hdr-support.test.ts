@@ -4,8 +4,6 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import * as TauriLogger from "@/lib/tauri-logger"
-import { HDRSupportService, type VideoCodecInfo } from "../hdr-support"
 
 // Create mock logger instance that will be returned by all createLogger calls
 const mockLogger = {
@@ -21,8 +19,20 @@ const mockLogger = {
   errorSync: vi.fn(),
 }
 
-// Get reference to the mocked createLogger function
-const mockCreateLogger = vi.mocked(TauriLogger.createLogger)
+// Mock tauri-logger module BEFORE importing HDRSupportService
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => mockLogger),
+  logTrace: vi.fn(),
+  logDebug: vi.fn(),
+  logInfo: vi.fn(),
+  logWarn: vi.fn(),
+  logError: vi.fn(),
+}))
+
+// Import after mocking
+const { HDRSupportService } = await import("../hdr-support")
+
+import type { VideoCodecInfo } from "../hdr-support"
 
 // Mock WebGL2 context
 const mockGL = {
@@ -106,9 +116,6 @@ describe("HDRSupportService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-
-    // Configure createLogger to return our mock logger
-    mockCreateLogger.mockReturnValue(mockLogger as any)
 
     // Mock document globally for all tests
     if (typeof global.document === "undefined") {

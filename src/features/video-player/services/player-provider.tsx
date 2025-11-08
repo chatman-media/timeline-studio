@@ -5,13 +5,15 @@
  */
 
 import type React from "react"
-import { createContext, useCallback, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
 import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"
+import { type CommandPriority, CommandQueue } from "@/features/video-player/services/command-queue"
+import { defaultShouldRetry, retryWithBackoff } from "@/features/video-player/utils/retry-helper"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
@@ -119,6 +121,17 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   const [backendSync] = useState(() => getBackendSync())
   const isVideoPlayerServiceEnabled = isServiceEnabled("VIDEO_PLAYER")
 
+  // Создаем CommandQueue для гарантированного порядка выполнения команд
+  const commandQueue = useMemo(
+    () =>
+      new CommandQueue({
+        concurrency: 1, // Последовательное выполнение команд
+        maxQueueSize: 50,
+        commandTimeout: 10000, // 10 секунд на команду
+      }),
+    [],
+  )
+
   // Backend состояние (синхронизированное)
   const [backendState, setBackendState] = useState<ProjectState | null>(null)
 
@@ -192,21 +205,69 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     initialTime: playbackState?.current_time ?? 0,
   })
 
-  // Backend команды
-  const executeCommand = async (command: any) => {
-    try {
-      const result = await backendSync.executeCommand(command)
+  /**
+   * Определяет приоритет команды
+   */
+  const getCommandPriority = useCallback((command: any): CommandPriority => {
+    // Критичные команды (высокий приоритет)
+    const highPriorityCommands = ["Play", "Pause", "Stop", "Seek"]
 
-      logger.debug("player command executed", { result })
-      if (!result?.success) {
-        throw new Error(result?.error || "Command failed")
-      }
-      return result.data
-    } catch (error) {
-      logger.error("player command failed", { error })
-      // throw error
+    if (highPriorityCommands.includes(command.type)) {
+      return "high"
     }
-  }
+
+    // Синхронизация времени (низкий приоритет)
+    if (command.type === "UpdatePlaybackTime") {
+      return "low"
+    }
+
+    // Остальные команды (обычный приоритет)
+    return "normal"
+  }, [])
+
+  /**
+   * Выполняет команду с retry logic и через CommandQueue
+   */
+  const executeCommand = useCallback(
+    async (command: any) => {
+      if (!isVideoPlayerServiceEnabled) {
+        return
+      }
+
+      const priority = getCommandPriority(command)
+
+      return commandQueue.enqueue(async () => {
+        // Выполняем команду с retry logic
+        return retryWithBackoff(
+          async () => {
+            const result = await backendSync.executeCommand(command)
+
+            logger.debug("player command executed", { command: command.type, result })
+
+            if (!result?.success) {
+              throw new Error(result?.error || "Command failed")
+            }
+
+            return result.data
+          },
+          {
+            maxRetries: 3,
+            initialDelay: 100,
+            shouldRetry: defaultShouldRetry,
+            onRetry: (error, attempt, delay) => {
+              logger.warn("Retrying command", {
+                command: command.type,
+                attempt: attempt + 1,
+                delay: `${delay}ms`,
+                error: error.message,
+              })
+            },
+          },
+        )
+      }, priority)
+    },
+    [backendSync, commandQueue, getCommandPriority, isVideoPlayerServiceEnabled],
+  )
 
   const play = async () => {
     if (!isVideoPlayerServiceEnabled) {
