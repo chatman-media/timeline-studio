@@ -861,6 +861,57 @@ impl CommandHandler {
           .update_marker(marker_id, name, time, color, description)
           .await
       }
+
+      // Keyframe Commands
+      ProjectCommand::AddKeyframe {
+        clip_id,
+        property,
+        time,
+        value,
+        interpolation,
+        ease_in,
+        ease_out,
+      } => {
+        self
+          .add_keyframe(
+            clip_id,
+            property,
+            time,
+            value,
+            interpolation,
+            ease_in,
+            ease_out,
+          )
+          .await
+      }
+      ProjectCommand::RemoveKeyframe {
+        clip_id,
+        keyframe_id,
+      } => self.remove_keyframe(clip_id, keyframe_id).await,
+      ProjectCommand::UpdateKeyframe {
+        clip_id,
+        keyframe_id,
+        time,
+        value,
+        interpolation,
+        ease_in,
+        ease_out,
+      } => {
+        self
+          .update_keyframe(
+            clip_id,
+            keyframe_id,
+            time,
+            value,
+            interpolation,
+            ease_in,
+            ease_out,
+          )
+          .await
+      }
+      ProjectCommand::ClearPropertyKeyframes { clip_id, property } => {
+        self.clear_property_keyframes(clip_id, property).await
+      }
     }
   }
 
@@ -979,6 +1030,7 @@ impl CommandHandler {
       enabled: true,
       effects: Vec::new(),
       transitions: Vec::new(),
+      keyframes: Vec::new(),
     };
 
     // Add clip to track
@@ -2679,6 +2731,7 @@ impl CommandHandler {
       enabled: original_clip.enabled,
       effects: original_clip.effects.clone(),
       transitions: original_clip.transitions.clone(),
+      keyframes: original_clip.keyframes.clone(),
     };
 
     // Create right clip (new ID)
@@ -2695,6 +2748,7 @@ impl CommandHandler {
       enabled: original_clip.enabled,
       effects: original_clip.effects.clone(),
       transitions: original_clip.transitions.clone(),
+      keyframes: original_clip.keyframes.clone(),
     };
 
     // Replace original clip with left and right clips
@@ -2873,6 +2927,7 @@ impl CommandHandler {
         enabled: clip.enabled,
         effects: clip.effects.clone(),
         transitions: clip.transitions.clone(),
+        keyframes: clip.keyframes.clone(),
       };
 
       track.clips.push(new_clip);
@@ -8820,6 +8875,7 @@ impl CommandHandler {
     let marker_id = uuid::Uuid::new_v4().to_string();
 
     // Create marker
+    let now = chrono::Utc::now().to_rfc3339();
     let marker = crate::state::project_state::Marker {
       id: marker_id.clone(),
       name: name.clone(),
@@ -8827,6 +8883,11 @@ impl CommandHandler {
       color: color.clone(),
       marker_type: parsed_marker_type,
       description: description.clone(),
+      duration: None,
+      tags: None,
+      linked_markers: None,
+      created_at: Some(now.clone()),
+      modified_at: Some(now),
     };
 
     // Add to timeline
@@ -8998,5 +9059,72 @@ impl CommandHandler {
       "updated": true,
       "marker_id": marker_id
     })))
+  }
+
+  // Keyframe Commands
+  async fn add_keyframe(
+    &self,
+    clip_id: String,
+    property: String,
+    time: f64,
+    value: serde_json::Value,
+    interpolation: String,
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  ) -> CommandResult {
+    let keyframe_commands =
+      super::KeyframeCommands::new(self.state.clone(), self.event_bus.clone());
+    keyframe_commands
+      .add_keyframe(
+        clip_id,
+        property,
+        time,
+        value,
+        interpolation,
+        ease_in,
+        ease_out,
+      )
+      .await
+  }
+
+  async fn remove_keyframe(&self, clip_id: String, keyframe_id: String) -> CommandResult {
+    let keyframe_commands =
+      super::KeyframeCommands::new(self.state.clone(), self.event_bus.clone());
+    keyframe_commands
+      .remove_keyframe(clip_id, keyframe_id)
+      .await
+  }
+
+  async fn update_keyframe(
+    &self,
+    clip_id: String,
+    keyframe_id: String,
+    time: Option<f64>,
+    value: Option<serde_json::Value>,
+    interpolation: Option<String>,
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  ) -> CommandResult {
+    let keyframe_commands =
+      super::KeyframeCommands::new(self.state.clone(), self.event_bus.clone());
+    keyframe_commands
+      .update_keyframe(
+        clip_id,
+        keyframe_id,
+        time,
+        value,
+        interpolation,
+        ease_in,
+        ease_out,
+      )
+      .await
+  }
+
+  async fn clear_property_keyframes(&self, clip_id: String, property: String) -> CommandResult {
+    let keyframe_commands =
+      super::KeyframeCommands::new(self.state.clone(), self.event_bus.clone());
+    keyframe_commands
+      .clear_property_keyframes(clip_id, property)
+      .await
   }
 }

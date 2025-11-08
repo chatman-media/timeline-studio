@@ -433,6 +433,34 @@ pub enum ProjectCommand {
     description: Option<String>,
   },
 
+  // Keyframe Commands
+  AddKeyframe {
+    clip_id: String,
+    property: String,
+    time: f64,
+    value: serde_json::Value,
+    interpolation: String, // "linear", "ease-in", "ease-out", "ease-in-out", "step", "bezier"
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  },
+  RemoveKeyframe {
+    clip_id: String,
+    keyframe_id: String,
+  },
+  UpdateKeyframe {
+    clip_id: String,
+    keyframe_id: String,
+    time: Option<f64>,
+    value: Option<serde_json::Value>,
+    interpolation: Option<String>,
+    ease_in: Option<f64>,
+    ease_out: Option<f64>,
+  },
+  ClearPropertyKeyframes {
+    clip_id: String,
+    property: String,
+  },
+
   ApplyEffect {
     clip_id: String,
     effect_id: String,

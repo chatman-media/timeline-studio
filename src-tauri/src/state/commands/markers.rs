@@ -41,11 +41,17 @@ impl MarkerCommands {
       "section" => super::super::project_state::MarkerType::Section,
       "note" => super::super::project_state::MarkerType::Note,
       "export" => super::super::project_state::MarkerType::Export,
+      "todo" => super::super::project_state::MarkerType::Todo,
+      "sync" => super::super::project_state::MarkerType::Sync,
+      "cue" => super::super::project_state::MarkerType::Cue,
+      "important" => super::super::project_state::MarkerType::Important,
+      "warning" => super::super::project_state::MarkerType::Warning,
       _ => return CommandResult::error(format!("Invalid marker type: {}", marker_type)),
     };
 
     // Generate marker ID
     let marker_id = uuid::Uuid::new_v4().to_string();
+    let now = chrono::Utc::now().to_rfc3339();
 
     // Create marker
     let marker = super::super::project_state::Marker {
@@ -55,6 +61,11 @@ impl MarkerCommands {
       color: color.clone(),
       marker_type: parsed_marker_type,
       description: description.clone(),
+      duration: None,
+      tags: None,
+      linked_markers: None,
+      created_at: Some(now.clone()),
+      modified_at: Some(now),
     };
 
     // Add to timeline
@@ -166,6 +177,7 @@ impl MarkerCommands {
     // Find and update marker
     let mut marker_found = false;
     let mut needs_resort = false;
+    let now = chrono::Utc::now().to_rfc3339();
 
     for marker in &mut project.timeline.markers {
       if marker.id == marker_id {
@@ -184,6 +196,9 @@ impl MarkerCommands {
         if let Some(d) = &description {
           marker.description = Some(d.clone());
         }
+
+        // Update modified timestamp
+        marker.modified_at = Some(now);
 
         break;
       }

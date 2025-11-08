@@ -97,6 +97,7 @@ pub struct Clip {
   pub enabled: bool,
   pub effects: Vec<String>,
   pub transitions: Vec<Transition>,
+  pub keyframes: Vec<Keyframe>,
 }
 
 /// Transition between clips
@@ -108,6 +109,30 @@ pub struct Transition {
   pub params: HashMap<String, serde_json::Value>,
 }
 
+/// Keyframe interpolation type
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub enum InterpolationType {
+  Linear,
+  EaseIn,
+  EaseOut,
+  EaseInOut,
+  Step,
+  Bezier { control_points: Vec<(f64, f64)> },
+}
+
+/// Keyframe for clip property animation
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct Keyframe {
+  pub id: String,
+  pub clip_id: String,
+  pub property: String, // "opacity", "scale", "position.x", "position.y", "rotation", etc.
+  pub time: f64,        // Relative to clip start time
+  pub value: serde_json::Value, // Dynamic value - can be number, object, array, etc.
+  pub interpolation: InterpolationType,
+  pub ease_in: Option<f64>,  // 0.0 - 1.0 for custom easing
+  pub ease_out: Option<f64>, // 0.0 - 1.0 for custom easing
+}
+
 /// Timeline marker
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct Marker {
@@ -117,6 +142,12 @@ pub struct Marker {
   pub color: String,
   pub marker_type: MarkerType,
   pub description: Option<String>,
+  // Extended fields for advanced marker functionality
+  pub duration: Option<f64>,
+  pub tags: Option<Vec<String>>,
+  pub linked_markers: Option<Vec<String>>,
+  pub created_at: Option<String>,
+  pub modified_at: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -125,6 +156,11 @@ pub enum MarkerType {
   Section,
   Note,
   Export,
+  Todo,
+  Sync,
+  Cue,
+  Important,
+  Warning,
 }
 
 /// Media pool - centralized media storage

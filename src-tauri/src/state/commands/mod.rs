@@ -6,6 +6,7 @@ pub mod types;
 // Feature modules
 pub mod advanced_edits;
 pub mod effects;
+pub mod keyframes;
 pub mod markers;
 pub mod media;
 pub mod project;
@@ -24,6 +25,7 @@ pub use types::{CommandResult, PlayerSource, ProjectCommand};
 // Public interfaces for each module
 pub use advanced_edits::AdvancedEditsCommands;
 pub use effects::EffectsCommands;
+pub use keyframes::KeyframeCommands;
 pub use markers::MarkerCommands;
 pub use media::MediaCommands;
 pub use project::ProjectCommands;

@@ -57,6 +57,7 @@ impl TimelineCommands {
       enabled: true,
       effects: Vec::new(),
       transitions: Vec::new(),
+      keyframes: Vec::new(),
     };
 
     // Add clip to track
@@ -262,6 +263,7 @@ impl TimelineCommands {
       enabled: original_clip.enabled,
       effects: original_clip.effects.clone(),
       transitions: original_clip.transitions.clone(),
+      keyframes: original_clip.keyframes.clone(),
     };
 
     // Create right clip (new ID)
@@ -278,6 +280,7 @@ impl TimelineCommands {
       enabled: original_clip.enabled,
       effects: original_clip.effects.clone(),
       transitions: original_clip.transitions.clone(),
+      keyframes: original_clip.keyframes.clone(),
     };
 
     // Replace original clip with left and right clips
@@ -532,6 +535,7 @@ impl TimelineCommands {
         enabled: clip.enabled,
         effects: clip.effects.clone(),
         transitions: clip.transitions.clone(),
+        keyframes: clip.keyframes.clone(),
       };
 
       track.clips.push(new_clip);
