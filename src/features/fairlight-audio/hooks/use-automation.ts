@@ -1,31 +1,40 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { AutomationEngine, type AutomationMode } from "../services/automation-engine"
 import { useAudioEngine } from "./use-audio-engine"
 
 export function useAutomation() {
   const { engine: audioEngine } = useAudioEngine()
   const automationEngineRef = useRef<AutomationEngine | null>(null)
+  const [isInitialized, setIsInitialized] = useState(false)
 
   // Инициализируем automation engine
   useEffect(() => {
     if (!automationEngineRef.current) {
       automationEngineRef.current = new AutomationEngine()
+      setIsInitialized(true)
+    }
+
+    return () => {
+      setIsInitialized(false)
     }
   }, [])
 
   // Регистрируем callback'и для параметров
-  const registerParameter = useCallback((channelId: string, parameterId: string, callback: (value: number) => void) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const registerParameter = useCallback(
+    (channelId: string, parameterId: string, callback: (value: number) => void) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    const laneId = `${channelId}.${parameterId}`
-    automation.registerParameterCallback(laneId, callback)
-  }, [])
+      const laneId = `${channelId}.${parameterId}`
+      automation.registerParameterCallback(laneId, callback)
+    },
+    [isInitialized],
+  )
 
   // Автоматическая регистрация основных параметров микшера
   useEffect(() => {
     const automation = automationEngineRef.current
-    if (!automation || !audioEngine) return
+    if (!automation || !audioEngine || !isInitialized) return
 
     // Регистрируем volume для всех каналов
     const channels = audioEngine.getChannels()
@@ -50,94 +59,115 @@ export function useAutomation() {
         audioEngine.soloChannel(channelId, value > 0.5)
       })
     })
-  }, [audioEngine, registerParameter])
+  }, [audioEngine, registerParameter, isInitialized])
 
   // Запись параметра
-  const writeParameter = useCallback((channelId: string, parameterId: string, value: number) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const writeParameter = useCallback(
+    (channelId: string, parameterId: string, value: number) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    const laneId = `${channelId}.${parameterId}`
-    automation.writeParameter(laneId, value)
-  }, [])
+      const laneId = `${channelId}.${parameterId}`
+      automation.writeParameter(laneId, value)
+    },
+    [isInitialized],
+  )
 
   // Touch/Release для touch и latch режимов
-  const touchParameter = useCallback((channelId: string, parameterId: string) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const touchParameter = useCallback(
+    (channelId: string, parameterId: string) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    const laneId = `${channelId}.${parameterId}`
-    automation.touchParameter(laneId)
-  }, [])
+      const laneId = `${channelId}.${parameterId}`
+      automation.touchParameter(laneId)
+    },
+    [isInitialized],
+  )
 
-  const releaseParameter = useCallback((channelId: string, parameterId: string) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const releaseParameter = useCallback(
+    (channelId: string, parameterId: string) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    const laneId = `${channelId}.${parameterId}`
-    automation.releaseParameter(laneId)
-  }, [])
+      const laneId = `${channelId}.${parameterId}`
+      automation.releaseParameter(laneId)
+    },
+    [isInitialized],
+  )
 
   // Управление режимом
-  const setMode = useCallback((mode: AutomationMode) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const setMode = useCallback(
+    (mode: AutomationMode) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    automation.setMode(mode)
-  }, [])
+      automation.setMode(mode)
+    },
+    [isInitialized],
+  )
 
   const startRecording = useCallback(() => {
     const automation = automationEngineRef.current
-    if (!automation) return
+    if (!automation || !isInitialized) return
 
     automation.startRecording()
-  }, [])
+  }, [isInitialized])
 
   const stopRecording = useCallback(() => {
     const automation = automationEngineRef.current
-    if (!automation) return
+    if (!automation || !isInitialized) return
 
     automation.stopRecording()
-  }, [])
+  }, [isInitialized])
 
   // Обновление времени
-  const updateTime = useCallback((time: number) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const updateTime = useCallback(
+    (time: number) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    automation.updateTime(time)
-  }, [])
+      automation.updateTime(time)
+    },
+    [isInitialized],
+  )
 
   // Создание линии автоматизации
-  const createLane = useCallback((channelId: string, parameterId: string, initialValue = 0.5) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const createLane = useCallback(
+    (channelId: string, parameterId: string, initialValue = 0.5) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    return automation.createLane(channelId, parameterId, initialValue)
-  }, [])
+      return automation.createLane(channelId, parameterId, initialValue)
+    },
+    [isInitialized],
+  )
 
   // Получение состояния
   const getState = useCallback(() => {
     const automation = automationEngineRef.current
-    if (!automation) return null
+    if (!automation || !isInitialized) return null
 
     return automation.getState()
-  }, [])
+  }, [isInitialized])
 
   // Экспорт/импорт
   const exportAutomation = useCallback(() => {
     const automation = automationEngineRef.current
-    if (!automation) return null
+    if (!automation || !isInitialized) return null
 
     return automation.exportAutomation()
-  }, [])
+  }, [isInitialized])
 
-  const importAutomation = useCallback((data: any) => {
-    const automation = automationEngineRef.current
-    if (!automation) return
+  const importAutomation = useCallback(
+    (data: any) => {
+      const automation = automationEngineRef.current
+      if (!automation || !isInitialized) return
 
-    automation.importAutomation(data)
-  }, [])
+      automation.importAutomation(data)
+    },
+    [isInitialized],
+  )
 
   return {
     automationEngine: automationEngineRef.current,

@@ -1,112 +1,56 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-// Mock AutomationEngine using hoisted pattern
-const {
-  mockRegisterParameterCallback,
-  mockWriteParameter,
-  mockTouchParameter,
-  mockReleaseParameter,
-  mockSetMode,
-  mockStartRecording,
-  mockStopRecording,
-  mockUpdateTime,
-  mockCreateLane,
-  mockGetState,
-  mockExportAutomation,
-  mockImportAutomation,
-  MockAutomationEngine,
-} = vi.hoisted(() => {
-  const mockRegisterParameterCallback = vi.fn()
-  const mockWriteParameter = vi.fn()
-  const mockTouchParameter = vi.fn()
-  const mockReleaseParameter = vi.fn()
-  const mockSetMode = vi.fn()
-  const mockStartRecording = vi.fn()
-  const mockStopRecording = vi.fn()
-  const mockUpdateTime = vi.fn()
-  const mockCreateLane = vi.fn()
-  const mockGetState = vi.fn()
-  const mockExportAutomation = vi.fn()
-  const mockImportAutomation = vi.fn()
+// Create mock functions using vi.hoisted
+const mockRegisterParameterCallback = vi.hoisted(() => vi.fn())
+const mockWriteParameter = vi.hoisted(() => vi.fn())
+const mockTouchParameter = vi.hoisted(() => vi.fn())
+const mockReleaseParameter = vi.hoisted(() => vi.fn())
+const mockSetMode = vi.hoisted(() => vi.fn())
+const mockStartRecording = vi.hoisted(() => vi.fn())
+const mockStopRecording = vi.hoisted(() => vi.fn())
+const mockUpdateTime = vi.hoisted(() => vi.fn())
+const mockCreateLane = vi.hoisted(() => vi.fn())
+const mockGetState = vi.hoisted(() => vi.fn())
+const mockExportAutomation = vi.hoisted(() => vi.fn())
+const mockImportAutomation = vi.hoisted(() => vi.fn())
 
-  class MockAutomationEngine {
-    constructor() {
-      // Assign mocks in constructor to ensure they're on the instance
-      this.registerParameterCallback = mockRegisterParameterCallback
-      this.writeParameter = mockWriteParameter
-      this.touchParameter = mockTouchParameter
-      this.releaseParameter = mockReleaseParameter
-      this.setMode = mockSetMode
-      this.startRecording = mockStartRecording
-      this.stopRecording = mockStopRecording
-      this.updateTime = mockUpdateTime
-      this.createLane = mockCreateLane
-      this.getState = mockGetState
-      this.exportAutomation = mockExportAutomation
-      this.importAutomation = mockImportAutomation
-    }
-
-    registerParameterCallback!: typeof mockRegisterParameterCallback
-    writeParameter!: typeof mockWriteParameter
-    touchParameter!: typeof mockTouchParameter
-    releaseParameter!: typeof mockReleaseParameter
-    setMode!: typeof mockSetMode
-    startRecording!: typeof mockStartRecording
-    stopRecording!: typeof mockStopRecording
-    updateTime!: typeof mockUpdateTime
-    createLane!: typeof mockCreateLane
-    getState!: typeof mockGetState
-    exportAutomation!: typeof mockExportAutomation
-    importAutomation!: typeof mockImportAutomation
-  }
-
+// Mock AutomationEngine class
+vi.mock("../services/automation-engine", () => {
   return {
-    mockRegisterParameterCallback,
-    mockWriteParameter,
-    mockTouchParameter,
-    mockReleaseParameter,
-    mockSetMode,
-    mockStartRecording,
-    mockStopRecording,
-    mockUpdateTime,
-    mockCreateLane,
-    mockGetState,
-    mockExportAutomation,
-    mockImportAutomation,
-    MockAutomationEngine,
+    AutomationEngine: vi.fn().mockImplementation(function (this: any) {
+      this.registerParameterCallback = mockRegisterParameterCallback()
+      this.writeParameter = mockWriteParameter()
+      this.touchParameter = mockTouchParameter()
+      this.releaseParameter = mockReleaseParameter()
+      this.setMode = mockSetMode()
+      this.startRecording = mockStartRecording()
+      this.stopRecording = mockStopRecording()
+      this.updateTime = mockUpdateTime()
+      this.createLane = mockCreateLane()
+      this.getState = mockGetState()
+      this.exportAutomation = mockExportAutomation()
+      this.importAutomation = mockImportAutomation()
+      return this
+    }),
   }
 })
-
-vi.mock("../services/automation-engine", () => ({
-  AutomationEngine: MockAutomationEngine,
-}))
 
 // Mock useAudioEngine
-const { mockUpdateChannelVolume, mockUpdateChannelPan, mockMuteChannel, mockSoloChannel, mockGetChannels } = vi.hoisted(() => {
-  const mockUpdateChannelVolume = vi.fn()
-  const mockUpdateChannelPan = vi.fn()
-  const mockMuteChannel = vi.fn()
-  const mockSoloChannel = vi.fn()
-  const mockGetChannels = vi.fn()
-
-  return {
-    mockUpdateChannelVolume,
-    mockUpdateChannelPan,
-    mockMuteChannel,
-    mockSoloChannel,
-    mockGetChannels,
-  }
-})
+const mockUpdateChannelVolume = vi.hoisted(() => vi.fn())
+const mockUpdateChannelPan = vi.hoisted(() => vi.fn())
+const mockMuteChannel = vi.hoisted(() => vi.fn())
+const mockSoloChannel = vi.hoisted(() => vi.fn())
+const mockGetChannels = vi.hoisted(() => vi.fn())
 
 vi.mock("../use-audio-engine", () => ({
   useAudioEngine: () => ({
     engine: {
-      updateChannelVolume: mockUpdateChannelVolume,
-      updateChannelPan: mockUpdateChannelPan,
-      muteChannel: mockMuteChannel,
-      soloChannel: mockSoloChannel,
-      getChannels: mockGetChannels,
+      updateChannelVolume: mockUpdateChannelVolume(),
+      updateChannelPan: mockUpdateChannelPan(),
+      muteChannel: mockMuteChannel(),
+      soloChannel: mockSoloChannel(),
+      getChannels: mockGetChannels(),
     },
   }),
 }))
@@ -116,12 +60,23 @@ import { useAutomation } from "../use-automation"
 describe("useAutomation", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGetChannels.mockReturnValue(
+    // Reset mock return values to default
+    mockGetChannels().mockReturnValue(
       new Map([
         ["channel1", {}],
         ["channel2", {}],
       ]),
     )
+    mockGetState().mockReturnValue({ mode: "read", isRecording: false, currentTime: 0, lanes: new Map() })
+    mockCreateLane().mockImplementation((channelId: string, parameterId: string, initialValue = 0.5) => ({
+      id: `${channelId}.${parameterId}`,
+      parameterId,
+      channelId,
+      points: [{ time: 0, value: initialValue, curve: "linear" as const }],
+      isEnabled: true,
+      isVisible: false,
+    }))
+    mockExportAutomation().mockReturnValue({})
   })
 
   describe("Initialization", () => {
@@ -132,83 +87,89 @@ describe("useAutomation", () => {
     })
 
     it("should register parameters for all channels automatically", async () => {
-      renderHook(() => useAutomation())
+      const { result } = renderHook(() => useAutomation())
 
+      // Wait for automation to initialize
       await waitFor(() => {
-        expect(mockRegisterParameterCallback).toHaveBeenCalled()
+        expect(result.current.automationEngine).toBeDefined()
+      })
+
+      // The useEffect should register parameters automatically
+      await waitFor(() => {
+        expect(mockRegisterParameterCallback()).toHaveBeenCalled()
       })
 
       // Should register volume, pan, mute, solo for each channel
       const expectedCalls = 2 * 4 // 2 channels * 4 parameters
-      expect(mockRegisterParameterCallback.mock.calls.length).toBeGreaterThanOrEqual(expectedCalls)
+      expect(mockRegisterParameterCallback().mock.calls.length).toBeGreaterThanOrEqual(expectedCalls)
     })
 
     it("should register volume callback correctly", async () => {
       renderHook(() => useAutomation())
 
       await waitFor(() => {
-        expect(mockRegisterParameterCallback).toHaveBeenCalled()
+        expect(mockRegisterParameterCallback()).toHaveBeenCalled()
       })
 
       // Find the volume callback registration
-      const volumeCall = mockRegisterParameterCallback.mock.calls.find((call) => call[0] === "channel1.volume")
+      const volumeCall = mockRegisterParameterCallback().mock.calls.find((call: any) => call[0] === "channel1.volume")
       expect(volumeCall).toBeDefined()
 
       // Test the callback
       const callback = volumeCall![1]
       callback(75)
-      expect(mockUpdateChannelVolume).toHaveBeenCalledWith("channel1", 75)
+      expect(mockUpdateChannelVolume()).toHaveBeenCalledWith("channel1", 75)
     })
 
     it("should register pan callback correctly", async () => {
       renderHook(() => useAutomation())
 
       await waitFor(() => {
-        expect(mockRegisterParameterCallback).toHaveBeenCalled()
+        expect(mockRegisterParameterCallback()).toHaveBeenCalled()
       })
 
-      const panCall = mockRegisterParameterCallback.mock.calls.find((call) => call[0] === "channel1.pan")
+      const panCall = mockRegisterParameterCallback().mock.calls.find((call: any) => call[0] === "channel1.pan")
       expect(panCall).toBeDefined()
 
       const callback = panCall![1]
       callback(0.75) // 0.75 should convert to 0.5 (center to right)
-      expect(mockUpdateChannelPan).toHaveBeenCalledWith("channel1", 0.5)
+      expect(mockUpdateChannelPan()).toHaveBeenCalledWith("channel1", 0.5)
     })
 
     it("should register mute callback correctly", async () => {
       renderHook(() => useAutomation())
 
       await waitFor(() => {
-        expect(mockRegisterParameterCallback).toHaveBeenCalled()
+        expect(mockRegisterParameterCallback()).toHaveBeenCalled()
       })
 
-      const muteCall = mockRegisterParameterCallback.mock.calls.find((call) => call[0] === "channel1.mute")
+      const muteCall = mockRegisterParameterCallback().mock.calls.find((call: any) => call[0] === "channel1.mute")
       expect(muteCall).toBeDefined()
 
       const callback = muteCall![1]
       callback(0.6) // > 0.5 should mute
-      expect(mockMuteChannel).toHaveBeenCalledWith("channel1", true)
+      expect(mockMuteChannel()).toHaveBeenCalledWith("channel1", true)
 
       callback(0.4) // < 0.5 should unmute
-      expect(mockMuteChannel).toHaveBeenCalledWith("channel1", false)
+      expect(mockMuteChannel()).toHaveBeenCalledWith("channel1", false)
     })
 
     it("should register solo callback correctly", async () => {
       renderHook(() => useAutomation())
 
       await waitFor(() => {
-        expect(mockRegisterParameterCallback).toHaveBeenCalled()
+        expect(mockRegisterParameterCallback()).toHaveBeenCalled()
       })
 
-      const soloCall = mockRegisterParameterCallback.mock.calls.find((call) => call[0] === "channel1.solo")
+      const soloCall = mockRegisterParameterCallback().mock.calls.find((call: any) => call[0] === "channel1.solo")
       expect(soloCall).toBeDefined()
 
       const callback = soloCall![1]
       callback(0.6) // > 0.5 should solo
-      expect(mockSoloChannel).toHaveBeenCalledWith("channel1", true)
+      expect(mockSoloChannel()).toHaveBeenCalledWith("channel1", true)
 
       callback(0.4) // < 0.5 should unsolo
-      expect(mockSoloChannel).toHaveBeenCalledWith("channel1", false)
+      expect(mockSoloChannel()).toHaveBeenCalledWith("channel1", false)
     })
   })
 
@@ -219,7 +180,7 @@ describe("useAutomation", () => {
       const callback = vi.fn()
       result.current.registerParameter("channel1", "customParam", callback)
 
-      expect(mockRegisterParameterCallback).toHaveBeenCalledWith("channel1.customParam", callback)
+      expect(mockRegisterParameterCallback()).toHaveBeenCalledWith("channel1.customParam", callback)
     })
 
     it("should handle parameter registration without automation engine", () => {
@@ -241,7 +202,7 @@ describe("useAutomation", () => {
 
       result.current.writeParameter("channel1", "volume", 80)
 
-      expect(mockWriteParameter).toHaveBeenCalledWith("channel1.volume", 80)
+      expect(mockWriteParameter()).toHaveBeenCalledWith("channel1.volume", 80)
     })
 
     it("should handle different parameters", () => {
@@ -250,8 +211,8 @@ describe("useAutomation", () => {
       result.current.writeParameter("channel2", "pan", 0.5)
       result.current.writeParameter("channel2", "mute", 1)
 
-      expect(mockWriteParameter).toHaveBeenCalledWith("channel2.pan", 0.5)
-      expect(mockWriteParameter).toHaveBeenCalledWith("channel2.mute", 1)
+      expect(mockWriteParameter()).toHaveBeenCalledWith("channel2.pan", 0.5)
+      expect(mockWriteParameter()).toHaveBeenCalledWith("channel2.mute", 1)
     })
   })
 
@@ -261,7 +222,7 @@ describe("useAutomation", () => {
 
       result.current.touchParameter("channel1", "volume")
 
-      expect(mockTouchParameter).toHaveBeenCalledWith("channel1.volume")
+      expect(mockTouchParameter()).toHaveBeenCalledWith("channel1.volume")
     })
 
     it("should release parameter", () => {
@@ -269,7 +230,7 @@ describe("useAutomation", () => {
 
       result.current.releaseParameter("channel1", "volume")
 
-      expect(mockReleaseParameter).toHaveBeenCalledWith("channel1.volume")
+      expect(mockReleaseParameter()).toHaveBeenCalledWith("channel1.volume")
     })
 
     it("should handle touch/release sequence", () => {
@@ -279,9 +240,9 @@ describe("useAutomation", () => {
       result.current.writeParameter("channel1", "pan", 0.7)
       result.current.releaseParameter("channel1", "pan")
 
-      expect(mockTouchParameter).toHaveBeenCalledWith("channel1.pan")
-      expect(mockWriteParameter).toHaveBeenCalledWith("channel1.pan", 0.7)
-      expect(mockReleaseParameter).toHaveBeenCalledWith("channel1.pan")
+      expect(mockTouchParameter()).toHaveBeenCalledWith("channel1.pan")
+      expect(mockWriteParameter()).toHaveBeenCalledWith("channel1.pan", 0.7)
+      expect(mockReleaseParameter()).toHaveBeenCalledWith("channel1.pan")
     })
   })
 
@@ -291,20 +252,20 @@ describe("useAutomation", () => {
 
       result.current.setMode("write")
 
-      expect(mockSetMode).toHaveBeenCalledWith("write")
+      expect(mockSetMode()).toHaveBeenCalledWith("write")
     })
 
     it("should handle different modes", () => {
       const { result } = renderHook(() => useAutomation())
 
       result.current.setMode("read")
-      expect(mockSetMode).toHaveBeenCalledWith("read")
+      expect(mockSetMode()).toHaveBeenCalledWith("read")
 
       result.current.setMode("touch")
-      expect(mockSetMode).toHaveBeenCalledWith("touch")
+      expect(mockSetMode()).toHaveBeenCalledWith("touch")
 
       result.current.setMode("latch")
-      expect(mockSetMode).toHaveBeenCalledWith("latch")
+      expect(mockSetMode()).toHaveBeenCalledWith("latch")
     })
   })
 
@@ -314,7 +275,7 @@ describe("useAutomation", () => {
 
       result.current.startRecording()
 
-      expect(mockStartRecording).toHaveBeenCalled()
+      expect(mockStartRecording()).toHaveBeenCalled()
     })
 
     it("should stop recording", () => {
@@ -322,7 +283,7 @@ describe("useAutomation", () => {
 
       result.current.stopRecording()
 
-      expect(mockStopRecording).toHaveBeenCalled()
+      expect(mockStopRecording()).toHaveBeenCalled()
     })
 
     it("should handle recording session", () => {
@@ -332,9 +293,9 @@ describe("useAutomation", () => {
       result.current.writeParameter("channel1", "volume", 75)
       result.current.stopRecording()
 
-      expect(mockStartRecording).toHaveBeenCalled()
-      expect(mockWriteParameter).toHaveBeenCalledWith("channel1.volume", 75)
-      expect(mockStopRecording).toHaveBeenCalled()
+      expect(mockStartRecording()).toHaveBeenCalled()
+      expect(mockWriteParameter()).toHaveBeenCalledWith("channel1.volume", 75)
+      expect(mockStopRecording()).toHaveBeenCalled()
     })
   })
 
@@ -344,7 +305,7 @@ describe("useAutomation", () => {
 
       result.current.updateTime(5.5)
 
-      expect(mockUpdateTime).toHaveBeenCalledWith(5.5)
+      expect(mockUpdateTime()).toHaveBeenCalledWith(5.5)
     })
 
     it("should handle time updates during playback", () => {
@@ -354,10 +315,10 @@ describe("useAutomation", () => {
       result.current.updateTime(1.5)
       result.current.updateTime(3.0)
 
-      expect(mockUpdateTime).toHaveBeenCalledTimes(3)
-      expect(mockUpdateTime).toHaveBeenNthCalledWith(1, 0)
-      expect(mockUpdateTime).toHaveBeenNthCalledWith(2, 1.5)
-      expect(mockUpdateTime).toHaveBeenNthCalledWith(3, 3.0)
+      expect(mockUpdateTime()).toHaveBeenCalledTimes(3)
+      expect(mockUpdateTime()).toHaveBeenNthCalledWith(1, 0)
+      expect(mockUpdateTime()).toHaveBeenNthCalledWith(2, 1.5)
+      expect(mockUpdateTime()).toHaveBeenNthCalledWith(3, 3.0)
     })
   })
 
@@ -366,11 +327,11 @@ describe("useAutomation", () => {
       const { result } = renderHook(() => useAutomation())
 
       const mockLane = { id: "lane1" }
-      mockCreateLane.mockReturnValue(mockLane)
+      mockCreateLane().mockReturnValue(mockLane)
 
       const lane = result.current.createLane("channel1", "volume")
 
-      expect(mockCreateLane).toHaveBeenCalledWith("channel1", "volume", 0.5)
+      expect(mockCreateLane()).toHaveBeenCalledWith("channel1", "volume", 0.5)
       expect(lane).toBe(mockLane)
     })
 
@@ -379,7 +340,7 @@ describe("useAutomation", () => {
 
       result.current.createLane("channel1", "pan", 0.75)
 
-      expect(mockCreateLane).toHaveBeenCalledWith("channel1", "pan", 0.75)
+      expect(mockCreateLane()).toHaveBeenCalledWith("channel1", "pan", 0.75)
     })
 
     it("should return undefined when creating lane without engine", () => {
@@ -398,12 +359,12 @@ describe("useAutomation", () => {
     it("should get automation state", () => {
       const { result } = renderHook(() => useAutomation())
 
-      const mockState = { mode: "read", isRecording: false }
-      mockGetState.mockReturnValue(mockState)
+      const mockState = { mode: "read" as const, isRecording: false, currentTime: 0, lanes: new Map() }
+      mockGetState().mockReturnValue(mockState)
 
       const state = result.current.getState()
 
-      expect(mockGetState).toHaveBeenCalled()
+      expect(mockGetState()).toHaveBeenCalled()
       expect(state).toBe(mockState)
     })
 
@@ -424,11 +385,11 @@ describe("useAutomation", () => {
       const { result } = renderHook(() => useAutomation())
 
       const mockData = { lanes: [], mode: "read" }
-      mockExportAutomation.mockReturnValue(mockData)
+      mockExportAutomation().mockReturnValue(mockData)
 
       const data = result.current.exportAutomation()
 
-      expect(mockExportAutomation).toHaveBeenCalled()
+      expect(mockExportAutomation()).toHaveBeenCalled()
       expect(data).toBe(mockData)
     })
 
@@ -449,7 +410,7 @@ describe("useAutomation", () => {
       const mockData = { lanes: [], mode: "read" }
       result.current.importAutomation(mockData)
 
-      expect(mockImportAutomation).toHaveBeenCalledWith(mockData)
+      expect(mockImportAutomation()).toHaveBeenCalledWith(mockData)
     })
 
     it("should handle import without engine", () => {
@@ -461,7 +422,7 @@ describe("useAutomation", () => {
       const mockData = { lanes: [], mode: "read" }
       result.current.importAutomation(mockData)
 
-      expect(mockImportAutomation).not.toHaveBeenCalled()
+      expect(mockImportAutomation()).not.toHaveBeenCalled()
     })
 
     it("should handle export/import round trip", () => {
@@ -471,13 +432,13 @@ describe("useAutomation", () => {
         lanes: [{ channelId: "channel1", parameterId: "volume", points: [] }],
         mode: "write" as const,
       }
-      mockExportAutomation.mockReturnValue(mockData)
+      mockExportAutomation().mockReturnValue(mockData)
 
       const exported = result.current.exportAutomation()
       result.current.importAutomation(exported)
 
-      expect(mockExportAutomation).toHaveBeenCalled()
-      expect(mockImportAutomation).toHaveBeenCalledWith(mockData)
+      expect(mockExportAutomation()).toHaveBeenCalled()
+      expect(mockImportAutomation()).toHaveBeenCalledWith(mockData)
     })
   })
 
@@ -519,12 +480,12 @@ describe("useAutomation", () => {
 
   describe("Edge Cases", () => {
     it("should handle empty channel list", () => {
-      mockGetChannels.mockReturnValue(new Map())
+      mockGetChannels().mockReturnValue(new Map())
 
       renderHook(() => useAutomation())
 
       // Should not throw, automation engine still created
-      expect(mockRegisterParameterCallback).toHaveBeenCalled()
+      expect(mockRegisterParameterCallback()).toHaveBeenCalled()
     })
 
     it("should handle null audio engine", () => {

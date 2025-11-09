@@ -88,7 +88,7 @@ const {
   }
 })
 
-vi.mock("../services/audio-engine", () => ({
+vi.mock("@/features/fairlight-audio/services/audio-engine", () => ({
   AudioEngine: MockAudioEngine,
 }))
 
