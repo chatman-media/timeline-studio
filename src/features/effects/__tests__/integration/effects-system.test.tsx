@@ -3,21 +3,17 @@
  * Покрывает все аспекты работы с эффектами: применение, стекинг, анимацию, пресеты и производительность
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { colorCorrectionEffect, gaussianBlurEffect, vintageEffect } from "@/features/effects/presets/basic-effects"
 import { EffectManager } from "@/features/effects/services/effect-manager"
 import type {
-  BaseEffect,
   AppliedEffect,
-  EffectParameter,
+  BaseEffect,
   EffectKeyframe,
+  EffectParameter,
   EffectPreset,
   EffectStack,
 } from "@/features/effects/types/unified-effects"
-import {
-  colorCorrectionEffect,
-  gaussianBlurEffect,
-  vintageEffect,
-} from "@/features/effects/presets/basic-effects"
 
 describe("Effects System Integration Tests", () => {
   let effectManager: EffectManager
@@ -356,7 +352,7 @@ describe("Effects System Integration Tests", () => {
       const preset = effectManager.createPreset(
         appliedEffect.id,
         { en: "My Preset", ru: "Мой пресет" },
-        { en: "Custom preset", ru: "Пользовательский пресет" }
+        { en: "Custom preset", ru: "Пользовательский пресет" },
       )
 
       // Assertions (6)
@@ -372,10 +368,7 @@ describe("Effects System Integration Tests", () => {
       effectManager.registerEffect(colorCorrectionEffect)
       const appliedEffect = effectManager.applyEffect("color_correction_basic", "clip_1", "clip")
 
-      const preset = effectManager.createPreset(
-        appliedEffect.id,
-        { en: "Test Preset", ru: "Тестовый пресет" }
-      )
+      const preset = effectManager.createPreset(appliedEffect.id, { en: "Test Preset", ru: "Тестовый пресет" })
 
       // Меняем параметры
       effectManager.setEffectParameter(appliedEffect.id, "temperature", 100)
@@ -409,11 +402,7 @@ describe("Effects System Integration Tests", () => {
       expect(warmSunsetPreset).toBeDefined()
 
       // Создаем пресет в менеджере на основе встроенного
-      const preset = effectManager.createPreset(
-        appliedEffect.id,
-        warmSunsetPreset!.name,
-        warmSunsetPreset!.description
-      )
+      const preset = effectManager.createPreset(appliedEffect.id, warmSunsetPreset!.name, warmSunsetPreset!.description)
 
       // Обновляем параметры пресета
       preset.parameters = warmSunsetPreset!.parameters
@@ -588,7 +577,7 @@ describe("Effects System Integration Tests", () => {
         expect.objectContaining({
           type: "effect_applied",
           effectId: "gaussian_blur",
-        })
+        }),
       )
       expect(eventCallback.mock.calls.length).toBeGreaterThan(0)
     })
@@ -608,7 +597,7 @@ describe("Effects System Integration Tests", () => {
           type: "parameter_changed",
           parameterId: "temperature",
           newValue: 50,
-        })
+        }),
       )
       expect(eventCallback.mock.calls.length).toBeGreaterThan(1)
       expect(appliedEffect.parameters.temperature).toBe(50)
@@ -629,7 +618,7 @@ describe("Effects System Integration Tests", () => {
           type: "keyframe_added",
           parameterId: "radius",
           newValue: 20,
-        })
+        }),
       )
       expect(appliedEffect.keyframes.radius).toHaveLength(1)
     })
@@ -648,7 +637,7 @@ describe("Effects System Integration Tests", () => {
         expect.objectContaining({
           type: "effect_removed",
           effectId: "gaussian_blur",
-        })
+        }),
       )
       expect(effectManager.getEffectStack("clip_1")?.effects).toHaveLength(0)
     })

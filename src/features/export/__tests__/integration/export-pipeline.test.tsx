@@ -22,8 +22,8 @@ import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler
 import { AspectRatio, OutputFormat } from "@/domains/video-editing/types/video-compiler"
 import type { RenderProgress } from "@/features/video-compiler/types/render"
 import { RenderStatus } from "@/features/video-compiler/types/render"
-import type { ExportSettings, SocialExportSettings } from "../../types/export-types"
 import { QUALITY_PRESETS, RESOLUTION_PRESETS } from "../../constants/export-constants"
+import type { ExportSettings, SocialExportSettings } from "../../types/export-types"
 
 // Mock Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
@@ -223,8 +223,9 @@ describe("Export Pipeline Integration Tests", () => {
     vi.resetAllMocks()
 
     const { invoke } = await import("@tauri-apps/api/core")
-    const { renderProject, trackRenderProgress, cancelRender } =
-      await import("@/features/video-compiler/services/video-compiler-service")
+    const { renderProject, trackRenderProgress, cancelRender } = await import(
+      "@/features/video-compiler/services/video-compiler-service"
+    )
     mockSocialNetworksService = await import("../../services/social-networks-service")
 
     mockInvoke = vi.mocked(invoke)
@@ -252,11 +253,51 @@ describe("Export Pipeline Integration Tests", () => {
       const progressUpdates: RenderProgress[] = []
       mockTrackRenderProgress.mockImplementation((jobId, callback) => {
         const updates = [
-          { job_id: jobId, stage: "Initializing", percentage: 0, current_frame: 0, total_frames: 3600, elapsed_time: 0, status: RenderStatus.Processing },
-          { job_id: jobId, stage: "Encoding", percentage: 25, current_frame: 900, total_frames: 3600, elapsed_time: 30, status: RenderStatus.Processing },
-          { job_id: jobId, stage: "Encoding", percentage: 50, current_frame: 1800, total_frames: 3600, elapsed_time: 60, status: RenderStatus.Processing },
-          { job_id: jobId, stage: "Encoding", percentage: 75, current_frame: 2700, total_frames: 3600, elapsed_time: 90, status: RenderStatus.Processing },
-          { job_id: jobId, stage: "Finalizing", percentage: 100, current_frame: 3600, total_frames: 3600, elapsed_time: 120, status: RenderStatus.Completed },
+          {
+            job_id: jobId,
+            stage: "Initializing",
+            percentage: 0,
+            current_frame: 0,
+            total_frames: 3600,
+            elapsed_time: 0,
+            status: RenderStatus.Processing,
+          },
+          {
+            job_id: jobId,
+            stage: "Encoding",
+            percentage: 25,
+            current_frame: 900,
+            total_frames: 3600,
+            elapsed_time: 30,
+            status: RenderStatus.Processing,
+          },
+          {
+            job_id: jobId,
+            stage: "Encoding",
+            percentage: 50,
+            current_frame: 1800,
+            total_frames: 3600,
+            elapsed_time: 60,
+            status: RenderStatus.Processing,
+          },
+          {
+            job_id: jobId,
+            stage: "Encoding",
+            percentage: 75,
+            current_frame: 2700,
+            total_frames: 3600,
+            elapsed_time: 90,
+            status: RenderStatus.Processing,
+          },
+          {
+            job_id: jobId,
+            stage: "Finalizing",
+            percentage: 100,
+            current_frame: 3600,
+            total_frames: 3600,
+            elapsed_time: 120,
+            status: RenderStatus.Completed,
+          },
         ]
 
         updates.forEach((update, index) => {
@@ -302,15 +343,19 @@ describe("Export Pipeline Integration Tests", () => {
 
       mockRenderProject.mockResolvedValueOnce(mockJobId)
       mockTrackRenderProgress.mockImplementation((_, callback) => {
-        setTimeout(() => callback({
-          job_id: mockJobId,
-          stage: "Completed",
-          percentage: 100,
-          current_frame: 3600,
-          total_frames: 3600,
-          elapsed_time: 120,
-          status: RenderStatus.Completed,
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: mockJobId,
+              stage: "Completed",
+              percentage: 100,
+              current_frame: 3600,
+              total_frames: 3600,
+              elapsed_time: 120,
+              status: RenderStatus.Completed,
+            }),
+          100,
+        )
       })
 
       await mockRenderProject(project, settings.savePath)
@@ -322,7 +367,7 @@ describe("Export Pipeline Integration Tests", () => {
             description: "Project with custom metadata",
           }),
         }),
-        settings.savePath
+        settings.savePath,
       )
     })
   })
@@ -346,15 +391,19 @@ describe("Export Pipeline Integration Tests", () => {
 
         mockRenderProject.mockResolvedValueOnce(mockJobId)
         mockTrackRenderProgress.mockImplementation((_, callback) => {
-          setTimeout(() => callback({
-            job_id: mockJobId,
-            stage: "Completed",
-            percentage: 100,
-            current_frame: 3600,
-            total_frames: 3600,
-            elapsed_time: 120,
-            status: RenderStatus.Completed,
-          }), 100)
+          setTimeout(
+            () =>
+              callback({
+                job_id: mockJobId,
+                stage: "Completed",
+                percentage: 100,
+                current_frame: 3600,
+                total_frames: 3600,
+                elapsed_time: 120,
+                status: RenderStatus.Completed,
+              }),
+            100,
+          )
         })
 
         const jobId = await mockRenderProject(project, settings.savePath)
@@ -395,15 +444,19 @@ describe("Export Pipeline Integration Tests", () => {
 
         mockRenderProject.mockResolvedValueOnce(mockJobId)
         mockTrackRenderProgress.mockImplementation((_, callback) => {
-          setTimeout(() => callback({
-            job_id: mockJobId,
-            stage: "Completed",
-            percentage: 100,
-            current_frame: 3600,
-            total_frames: 3600,
-            elapsed_time: 120,
-            status: RenderStatus.Completed,
-          }), 100)
+          setTimeout(
+            () =>
+              callback({
+                job_id: mockJobId,
+                stage: "Completed",
+                percentage: 100,
+                current_frame: 3600,
+                total_frames: 3600,
+                elapsed_time: 120,
+                status: RenderStatus.Completed,
+              }),
+            100,
+          )
         })
 
         await mockRenderProject(project, settings.savePath)
@@ -433,15 +486,19 @@ describe("Export Pipeline Integration Tests", () => {
 
       mockRenderProject.mockResolvedValueOnce("4k-job")
       mockTrackRenderProgress.mockImplementation((_, callback) => {
-        setTimeout(() => callback({
-          job_id: "4k-job",
-          stage: "Completed",
-          percentage: 100,
-          current_frame: 7200,
-          total_frames: 7200,
-          elapsed_time: 300,
-          status: RenderStatus.Completed,
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: "4k-job",
+              stage: "Completed",
+              percentage: 100,
+              current_frame: 7200,
+              total_frames: 7200,
+              elapsed_time: 300,
+              status: RenderStatus.Completed,
+            }),
+          100,
+        )
       })
 
       await mockRenderProject(project, settings.savePath)
@@ -504,15 +561,19 @@ describe("Export Pipeline Integration Tests", () => {
 
       mockCancelRender.mockResolvedValueOnce(true)
       mockTrackRenderProgress.mockImplementation((_, callback) => {
-        setTimeout(() => callback({
-          job_id: mockJobId,
-          stage: "Cancelled",
-          percentage: 45,
-          current_frame: 1620,
-          total_frames: 3600,
-          elapsed_time: 50,
-          status: RenderStatus.Cancelled,
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: mockJobId,
+              stage: "Cancelled",
+              percentage: 45,
+              current_frame: 1620,
+              total_frames: 3600,
+              elapsed_time: 50,
+              status: RenderStatus.Cancelled,
+            }),
+          100,
+        )
       })
 
       const cancelled = await mockCancelRender(mockJobId)
@@ -605,7 +666,7 @@ describe("Export Pipeline Integration Tests", () => {
             expect.objectContaining({ track_type: "Audio" }),
           ]),
         }),
-        settings.savePath
+        settings.savePath,
       )
     })
 
@@ -704,7 +765,7 @@ describe("Export Pipeline Integration Tests", () => {
       mockRenderProject.mockResolvedValueOnce("subtitle-filter-job")
       await mockRenderProject(project, "/test/export.mp4")
 
-      const enabledSubtitles = project.subtitles.filter(s => s.enabled)
+      const enabledSubtitles = project.subtitles.filter((s) => s.enabled)
       expect(enabledSubtitles.length).toBe(1)
     })
   })
@@ -725,10 +786,7 @@ describe("Export Pipeline Integration Tests", () => {
       mockRenderProject.mockResolvedValueOnce("metadata-job")
       await mockRenderProject(project, settings.savePath)
 
-      expect(mockRenderProject).toHaveBeenCalledWith(
-        expect.objectContaining({ metadata }),
-        settings.savePath
-      )
+      expect(mockRenderProject).toHaveBeenCalledWith(expect.objectContaining({ metadata }), settings.savePath)
     })
 
     it("should add chapter markers from timeline markers", async () => {
@@ -753,8 +811,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       mockRenderProject.mockRejectedValueOnce(new Error("Failed to initialize render"))
 
-      await expect(mockRenderProject(project, settings.savePath))
-        .rejects.toThrow("Failed to initialize render")
+      await expect(mockRenderProject(project, settings.savePath)).rejects.toThrow("Failed to initialize render")
     })
 
     it("should handle render failure during processing", async () => {
@@ -763,16 +820,20 @@ describe("Export Pipeline Integration Tests", () => {
 
       mockRenderProject.mockResolvedValueOnce(mockJobId)
       mockTrackRenderProgress.mockImplementation((_, callback) => {
-        setTimeout(() => callback({
-          job_id: mockJobId,
-          stage: "Encoding",
-          percentage: 50,
-          current_frame: 1800,
-          total_frames: 3600,
-          elapsed_time: 60,
-          status: RenderStatus.Failed,
-          message: "Encoding error: corrupted video frame",
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: mockJobId,
+              stage: "Encoding",
+              percentage: 50,
+              current_frame: 1800,
+              total_frames: 3600,
+              elapsed_time: 60,
+              status: RenderStatus.Failed,
+              message: "Encoding error: corrupted video frame",
+            }),
+          100,
+        )
       })
 
       const progressUpdates: RenderProgress[] = []
@@ -798,8 +859,7 @@ describe("Export Pipeline Integration Tests", () => {
       mockRenderProject.mockClear()
       mockRenderProject.mockRejectedValueOnce(new Error("Insufficient disk space"))
 
-      await expect(mockRenderProject(project, "/test/export.mp4"))
-        .rejects.toThrow("Insufficient disk space")
+      await expect(mockRenderProject(project, "/test/export.mp4")).rejects.toThrow("Insufficient disk space")
     })
 
     it("should handle invalid output path", async () => {
@@ -809,8 +869,7 @@ describe("Export Pipeline Integration Tests", () => {
       mockRenderProject.mockClear()
       mockRenderProject.mockRejectedValueOnce(new Error("Invalid output path"))
 
-      await expect(mockRenderProject(project, invalidPath))
-        .rejects.toThrow("Invalid output path")
+      await expect(mockRenderProject(project, invalidPath)).rejects.toThrow("Invalid output path")
     })
   })
 
@@ -822,29 +881,37 @@ describe("Export Pipeline Integration Tests", () => {
       // First attempt - interrupted
       mockRenderProject.mockResolvedValueOnce(mockJobId)
       mockTrackRenderProgress.mockImplementationOnce((_, callback) => {
-        setTimeout(() => callback({
-          job_id: mockJobId,
-          stage: "Encoding",
-          percentage: interruptedProgress,
-          current_frame: 1620,
-          total_frames: 3600,
-          elapsed_time: 50,
-          status: RenderStatus.Cancelled,
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: mockJobId,
+              stage: "Encoding",
+              percentage: interruptedProgress,
+              current_frame: 1620,
+              total_frames: 3600,
+              elapsed_time: 50,
+              status: RenderStatus.Cancelled,
+            }),
+          100,
+        )
       })
 
       // Resume attempt
       mockInvoke.mockResolvedValueOnce(mockJobId)
       mockTrackRenderProgress.mockImplementationOnce((_, callback) => {
-        setTimeout(() => callback({
-          job_id: mockJobId,
-          stage: "Encoding",
-          percentage: 100,
-          current_frame: 3600,
-          total_frames: 3600,
-          elapsed_time: 120,
-          status: RenderStatus.Completed,
-        }), 100)
+        setTimeout(
+          () =>
+            callback({
+              job_id: mockJobId,
+              stage: "Encoding",
+              percentage: 100,
+              current_frame: 3600,
+              total_frames: 3600,
+              elapsed_time: 120,
+              status: RenderStatus.Completed,
+            }),
+          100,
+        )
       })
 
       // Verify job can be resumed
@@ -856,16 +923,18 @@ describe("Export Pipeline Integration Tests", () => {
   describe("10. Batch Export", () => {
     it("should export multiple projects in batch", async () => {
       const projects = [
-        createMockProject({ metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
-        createMockProject({ metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
-        createMockProject({ metadata: { name: "Project 3", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
+        createMockProject({
+          metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
+        createMockProject({
+          metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
+        createMockProject({
+          metadata: { name: "Project 3", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
       ]
 
-      const outputPaths = [
-        "/test/exports/project1.mp4",
-        "/test/exports/project2.mp4",
-        "/test/exports/project3.mp4",
-      ]
+      const outputPaths = ["/test/exports/project1.mp4", "/test/exports/project2.mp4", "/test/exports/project3.mp4"]
 
       const jobIds = ["batch-job-1", "batch-job-2", "batch-job-3"]
 
@@ -878,9 +947,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       // Execute batch export
       const results = await Promise.all(
-        projects.map((project, index) =>
-          mockRenderProject(project, outputPaths[index])
-        )
+        projects.map((project, index) => mockRenderProject(project, outputPaths[index])),
       )
 
       expect(results).toHaveLength(3)
@@ -892,8 +959,12 @@ describe("Export Pipeline Integration Tests", () => {
 
     it("should handle partial batch export failures", async () => {
       const projects = [
-        createMockProject({ metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
-        createMockProject({ metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
+        createMockProject({
+          metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
+        createMockProject({
+          metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
       ]
 
       mockRenderProject.mockClear()
@@ -930,15 +1001,19 @@ describe("Export Pipeline Integration Tests", () => {
 
         mockRenderProject.mockResolvedValueOnce("youtube-export-job")
         mockTrackRenderProgress.mockImplementation((_, callback) => {
-          setTimeout(() => callback({
-            job_id: "youtube-export-job",
-            stage: "Completed",
-            percentage: 100,
-            current_frame: 3600,
-            total_frames: 3600,
-            elapsed_time: 120,
-            status: RenderStatus.Completed,
-          }), 100)
+          setTimeout(
+            () =>
+              callback({
+                job_id: "youtube-export-job",
+                stage: "Completed",
+                percentage: 100,
+                current_frame: 3600,
+                total_frames: 3600,
+                elapsed_time: 120,
+                status: RenderStatus.Completed,
+              }),
+            100,
+          )
         })
 
         vi.mocked(mockSocialNetworksService.isLoggedIn).mockResolvedValueOnce(true)
@@ -955,11 +1030,7 @@ describe("Export Pipeline Integration Tests", () => {
 
         // Simulate file creation
         const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
-        const uploadResult = await mockSocialNetworksService.uploadVideo(
-          "youtube",
-          videoFile,
-          settings
-        )
+        const uploadResult = await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
         expect(uploadResult.url).toContain("youtube.com")
@@ -992,11 +1063,7 @@ describe("Export Pipeline Integration Tests", () => {
         await mockRenderProject(project, settings.savePath)
 
         const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
-        const uploadResult = await mockSocialNetworksService.uploadVideo(
-          "vimeo",
-          videoFile,
-          settings
-        )
+        const uploadResult = await mockSocialNetworksService.uploadVideo("vimeo", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
         expect(uploadResult.url).toContain("vimeo.com")
@@ -1031,11 +1098,7 @@ describe("Export Pipeline Integration Tests", () => {
         await mockRenderProject(project, settings.savePath)
 
         const videoFile = new Blob([new Uint8Array(512 * 1024)], { type: "video/mp4" })
-        const uploadResult = await mockSocialNetworksService.uploadVideo(
-          "telegram",
-          videoFile,
-          settings
-        )
+        const uploadResult = await mockSocialNetworksService.uploadVideo("telegram", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
         expect(uploadResult.url).toContain("t.me")
@@ -1093,25 +1156,20 @@ describe("Export Pipeline Integration Tests", () => {
           for (const progress of updates) {
             progressUpdates.push(progress)
             if (onProgress) onProgress(progress)
-            await new Promise(resolve => setTimeout(resolve, 50))
+            await new Promise((resolve) => setTimeout(resolve, 50))
           }
           return {
             success: true,
             url: "https://youtube.com/watch?v=test",
             id: "test",
           }
-        }
+        },
       )
 
       const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
-      await mockSocialNetworksService.uploadVideo(
-        "youtube",
-        videoFile,
-        settings,
-        (progress) => {
-          // Progress callback
-        }
-      )
+      await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (progress) => {
+        // Progress callback
+      })
 
       expect(progressUpdates.length).toBeGreaterThan(0)
       expect(progressUpdates[progressUpdates.length - 1]).toBe(100)
@@ -1228,12 +1286,7 @@ describe("Export Pipeline Integration Tests", () => {
         mode: "auto" | "limit" | "cbr" | "vbr" | "crf"
         bitrate?: number
         crf?: number
-      }> = [
-        { mode: "auto" },
-        { mode: "cbr", bitrate: 8000 },
-        { mode: "vbr", bitrate: 8000 },
-        { mode: "crf", crf: 23 },
-      ]
+      }> = [{ mode: "auto" }, { mode: "cbr", bitrate: 8000 }, { mode: "vbr", bitrate: 8000 }, { mode: "crf", crf: 23 }]
 
       for (const test of bitrateModesTests) {
         mockRenderProject.mockResolvedValueOnce(`bitrate-${test.mode}-job`)
@@ -1322,12 +1375,7 @@ describe("Export Pipeline Integration Tests", () => {
     })
 
     it("should handle different aspect ratios", async () => {
-      const aspectRatios = [
-        AspectRatio.Ratio16x9,
-        AspectRatio.Ratio4x3,
-        AspectRatio.Ratio1x1,
-        AspectRatio.Ratio9x16,
-      ]
+      const aspectRatios = [AspectRatio.Ratio16x9, AspectRatio.Ratio4x3, AspectRatio.Ratio1x1, AspectRatio.Ratio9x16]
 
       for (const aspectRatio of aspectRatios) {
         mockRenderProject.mockResolvedValueOnce(`aspect-${aspectRatio}-job`)
@@ -1414,8 +1462,12 @@ describe("Export Pipeline Integration Tests", () => {
 
     it("should handle concurrent exports with job tracking", async () => {
       const projects = [
-        createMockProject({ metadata: { name: "Project A", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
-        createMockProject({ metadata: { name: "Project B", created_at: new Date().toISOString(), modified_at: new Date().toISOString() } }),
+        createMockProject({
+          metadata: { name: "Project A", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
+        createMockProject({
+          metadata: { name: "Project B", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+        }),
       ]
 
       mockRenderProject.mockResolvedValueOnce("concurrent-1")

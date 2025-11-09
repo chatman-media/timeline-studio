@@ -11,12 +11,12 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
-// NEW: Use AI Intelligence Machine V2 with AI Director integration
+// NEW: Use AI Intelligence Machine with AI Director integration
 import {
-  type AIIntelligenceContextV2,
-  type AIIntelligenceEventV2,
-  aiIntelligenceMachineV2,
-} from "../machines/ai-intelligence-machine-v2"
+  type AIIntelligenceContext,
+  type AIIntelligenceEvent,
+  aiIntelligenceMachine,
+} from "../machines/ai-intelligence-machine"
 // NEW: Import AI Event Bridge
 import { aiEventBridge } from "../services/ai-event-bridge"
 
@@ -42,9 +42,9 @@ interface AIServicesDomainContextValue {
   montagePlannerState: MontagePlannerContext
   montagePlannerSend: (event: MontagePlannerEvent) => void
 
-  // AI Intelligence machine V2
-  aiIntelligenceState: AIIntelligenceContextV2
-  aiIntelligenceSend: (event: AIIntelligenceEventV2) => void
+  // AI Intelligence machine
+  aiIntelligenceState: AIIntelligenceContext
+  aiIntelligenceSend: (event: AIIntelligenceEvent) => void
 
   // Domain-level actions
   resetAllServices: () => void
@@ -87,8 +87,8 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
   // Initialize montage planner machine
   const [montagePlannerState, montagePlannerSend] = useActor(montagePlannerMachine)
 
-  // Initialize AI intelligence machine V2 (with AI Director integration)
-  const [aiIntelligenceState, aiIntelligenceSend] = useActor(aiIntelligenceMachineV2)
+  // Initialize AI intelligence machine (with AI Director integration)
+  const [aiIntelligenceState, aiIntelligenceSend] = useActor(aiIntelligenceMachine)
 
   // Синхронизация состояния AI с backend
   const syncAIState = async () => {

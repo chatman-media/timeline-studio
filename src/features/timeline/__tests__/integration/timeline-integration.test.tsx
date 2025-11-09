@@ -220,10 +220,10 @@ vi.mock("@/domains/video-editing/hooks/use-player", () => ({
   })),
 }))
 
+import { usePlayer } from "@/domains/video-editing/hooks/use-player"
 // Import hooks after mocks are set up
 import { useTimeline } from "@/domains/video-editing/hooks/use-timeline"
 import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
-import { usePlayer } from "@/domains/video-editing/hooks/use-player"
 
 // ============================================================================
 // TEST DATA

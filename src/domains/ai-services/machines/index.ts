@@ -2,14 +2,14 @@
  * AI Services Domain - State Machines
  */
 
-// AI Intelligence machine V2 (NEW - с интеграцией AI Director)
+// AI Intelligence machine (с интеграцией AI Director)
 export {
-  type AIIntelligenceContextV2,
-  type AIIntelligenceEventV2,
-  type AIIntelligenceMachineV2,
-  type AIIntelligenceSnapshotV2,
-  aiIntelligenceMachineV2,
-} from "./ai-intelligence-machine-v2"
+  type AIIntelligenceContext,
+  type AIIntelligenceEvent,
+  type AIIntelligenceMachine,
+  type AIIntelligenceSnapshot,
+  aiIntelligenceMachine,
+} from "./ai-intelligence-machine"
 // Chat machine
 export {
   type ChatMachine,

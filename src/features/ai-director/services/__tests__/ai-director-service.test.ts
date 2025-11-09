@@ -386,7 +386,6 @@ describe("AIDirectorService", () => {
     })
   })
 
-
   describe("Error Handling & Utilities", () => {
     it("should check availability when API is working", async () => {
       mockInvoke.mockResolvedValueOnce(mockCapabilities)

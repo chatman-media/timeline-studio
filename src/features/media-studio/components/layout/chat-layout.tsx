@@ -2,7 +2,6 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { AiChat } from "@/features/ai-chat/components/ai-chat"
 import { Browser } from "@/features/browser/components/browser"
 import { Options } from "@/features/options"
-import { AISuggestionsPanel } from "@/features/timeline/components/ai-suggestions/ai-suggestions-panel"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
@@ -212,9 +211,10 @@ export function ChatLayout() {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={30}>
-        <div className="h-full flex-1">
-          <AISuggestionsPanel />
-          <AiChat />
+        <div className="h-full flex-1 flex flex-col">
+          <div className="flex-1 min-h-0">
+            <AiChat />
+          </div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

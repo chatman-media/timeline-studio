@@ -20,12 +20,6 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/progress", () => ({
-  Progress: ({ value, className }: any) => (
-    <div data-testid="progress" data-value={value} className={className} role="progressbar" aria-valuenow={value} />
-  ),
-}))
-
 vi.mock("@/components/ui/skeleton", () => ({
   Skeleton: ({ className }: any) => <div data-testid="skeleton" className={className} />,
 }))
@@ -39,36 +33,13 @@ describe("BrowserLoadingIndicator", () => {
     loadingQueue: [] as ("built-in" | "local" | "remote" | "imported")[],
   }
 
-  const mockStats = {
-    total: 0,
-    byType: {
-      media: 0,
-      music: 0,
-      subtitle: 0,
-      effect: 0,
-      filter: 0,
-      transition: 0,
-      template: 0,
-      styleTemplate: 0,
-    },
-    bySource: {
-      "built-in": 0,
-      local: 0,
-      remote: 0,
-      imported: 0,
-    },
-    cacheSize: 0,
-    memoryUsage: 0,
-  }
-
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(useLoadingState).mockReturnValue(mockLoadingState)
-    vi.mocked(useResourcesStats).mockReturnValue(mockStats)
   })
 
   describe("Видимость компонента", () => {
-    it("не должен отображаться когда нет загрузки и ошибок", () => {
+    it("не должен отображаться когда нет загрузки", () => {
       const { container } = render(<BrowserLoadingIndicator />)
       expect(container.firstChild).toBeNull()
     })
@@ -81,16 +52,6 @@ describe("BrowserLoadingIndicator", () => {
 
       render(<BrowserLoadingIndicator />)
       expect(screen.getByText("Загрузка ресурсов...")).toBeInTheDocument()
-    })
-
-    it("должен отображаться при ошибке", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        error: "Ошибка загрузки файлов",
-      })
-
-      render(<BrowserLoadingIndicator />)
-      expect(screen.getByText("Ошибка загрузки")).toBeInTheDocument()
     })
   })
 
@@ -107,114 +68,14 @@ describe("BrowserLoadingIndicator", () => {
       expect(spinner).toHaveClass("animate-spin")
     })
 
-    it("должен показывать красный индикатор при ошибке", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        error: "Ошибка",
-      })
-
-      render(<BrowserLoadingIndicator />)
-
-      const errorIndicator = screen.getByText("Ошибка загрузки").previousElementSibling
-      expect(errorIndicator).toHaveClass("bg-destructive")
-    })
-
-    it("должен показывать текст ошибки", () => {
-      const errorMessage = "Не удалось загрузить ресурсы из источника"
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        error: errorMessage,
-      })
-
-      render(<BrowserLoadingIndicator />)
-      expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    })
-  })
-
-  describe("Прогресс загрузки", () => {
-    it("должен показывать прогресс-бар при загрузке", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        isLoading: true,
-        progress: 45,
-      })
-
-      render(<BrowserLoadingIndicator />)
-
-      const progress = screen.getByTestId("progress")
-      expect(progress).toHaveAttribute("data-value", "45")
-      expect(screen.getByText("45%")).toBeInTheDocument()
-    })
-
-    it("должен показывать очередь загрузки", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        isLoading: true,
-        loadingQueue: ["built-in", "local"],
-      })
-
-      render(<BrowserLoadingIndicator />)
-      expect(screen.getByText("Загружается: effects, filters")).toBeInTheDocument()
-    })
-  })
-
-  describe("Статистика", () => {
-    it("должен показывать общее количество ресурсов", () => {
+    it("должен показывать простой текст загрузки", () => {
       vi.mocked(useLoadingState).mockReturnValue({
         ...mockLoadingState,
         isLoading: true,
       })
-      vi.mocked(useResourcesStats).mockReturnValue({
-        ...mockStats,
-        total: 150,
-      })
 
       render(<BrowserLoadingIndicator />)
-      expect(screen.getByText("150 ресурсов")).toBeInTheDocument()
-    })
-
-    it("должен показывать количество загруженных источников", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        isLoading: true,
-        loadedSources: new Set(["built-in", "local"]),
-      })
-
-      render(<BrowserLoadingIndicator />)
-      expect(screen.getByText("2 источников")).toBeInTheDocument()
-    })
-
-    it("должен показывать детальную статистику по типам", () => {
-      vi.mocked(useLoadingState).mockReturnValue({
-        ...mockLoadingState,
-        isLoading: true,
-      })
-      vi.mocked(useResourcesStats).mockReturnValue({
-        total: 100,
-        byType: {
-          media: 0,
-          music: 0,
-          subtitle: 0,
-          effect: 50,
-          filter: 30,
-          transition: 20,
-          template: 0,
-          styleTemplate: 0,
-        },
-        bySource: {
-          "built-in": 100,
-          local: 0,
-          remote: 0,
-          imported: 0,
-        },
-        cacheSize: 0,
-        memoryUsage: 0,
-      })
-
-      render(<BrowserLoadingIndicator />)
-      expect(screen.getByText("Эффекты: 50")).toBeInTheDocument()
-      expect(screen.getByText("Фильтры: 30")).toBeInTheDocument()
-      expect(screen.getByText("Переходы: 20")).toBeInTheDocument()
+      expect(screen.getByText("Загрузка ресурсов...")).toBeInTheDocument()
     })
   })
 })

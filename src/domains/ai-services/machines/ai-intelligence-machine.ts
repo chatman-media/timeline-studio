@@ -1,12 +1,10 @@
 /**
- * AI Intelligence State Machine V2 - с интеграцией AI Director
+ * AI Intelligence State Machine
  *
- * Новая версия AI Intelligence Machine, использующая:
+ * Машина состояний для AI анализа с интеграцией AI Director:
  * - AI Director (Rust backend) для comprehensive analysis
  * - Unified Orchestrator для координации
  * - Реальные Tauri команды вместо mock сервисов
- *
- * Заменяет старую версию из ai-intelligence-machine.ts
  */
 
 import { assign, emit, fromPromise, setup } from "xstate"
@@ -17,13 +15,13 @@ import type { AnalysisOptions, MontageAnalysisResult, MontagePlan } from "@/type
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 import { unifiedOrchestrator } from "../services/unified-orchestrator"
 
-const logger = createLogger({ module: "AIIntelligenceV2" })
+const logger = createLogger({ module: "AIIntelligence" })
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface AIIntelligenceContextV2 {
+export interface AIIntelligenceContext {
   // Current media files
   mediaFiles: string[] // video paths
   currentVideoPath: string | null
@@ -63,7 +61,7 @@ export interface AIIntelligenceContextV2 {
   capabilities: any | null
 }
 
-export type AIIntelligenceEventV2 =
+export type AIIntelligenceEvent =
   // Analysis operations
   | { type: "ANALYZE_VIDEO"; videoPath: string; config?: AIDirectorConfig }
   | { type: "ANALYZE_BATCH"; videoPaths: string[]; config?: AIDirectorConfig }
@@ -210,7 +208,7 @@ const healthCheckActor = fromPromise(async () => {
 // Default Context
 // ============================================================================
 
-const createDefaultContext = (): AIIntelligenceContextV2 => ({
+const createDefaultContext = (): AIIntelligenceContext => ({
   mediaFiles: [],
   currentVideoPath: null,
   aiDirectorConfig: null,
@@ -239,10 +237,10 @@ const createDefaultContext = (): AIIntelligenceContextV2 => ({
 // State Machine Definition
 // ============================================================================
 
-export const aiIntelligenceMachineV2 = setup({
+export const aiIntelligenceMachine = setup({
   types: {
-    context: {} as AIIntelligenceContextV2,
-    events: {} as AIIntelligenceEventV2,
+    context: {} as AIIntelligenceContext,
+    events: {} as AIIntelligenceEvent,
   },
   actors: {
     analyzeVideoActor,
@@ -640,5 +638,5 @@ export const aiIntelligenceMachineV2 = setup({
 // Type Exports
 // ============================================================================
 
-export type AIIntelligenceMachineV2 = typeof aiIntelligenceMachineV2
-export type AIIntelligenceSnapshotV2 = ReturnType<AIIntelligenceMachineV2["getInitialSnapshot"]>
+export type AIIntelligenceMachine = typeof aiIntelligenceMachine
+export type AIIntelligenceSnapshot = ReturnType<AIIntelligenceMachine["getInitialSnapshot"]>

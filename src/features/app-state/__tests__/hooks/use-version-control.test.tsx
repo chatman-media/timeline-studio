@@ -210,10 +210,7 @@ describe("useVersionControl", () => {
       it("should set loading state during operation", async () => {
         // Add delay to mock to allow catching loading state
         mockBackendSync.createSnapshot.mockImplementation(
-          () =>
-            new Promise((resolve) =>
-              setTimeout(() => resolve({ success: true, error: null, data: null }), 50),
-            ),
+          () => new Promise((resolve) => setTimeout(() => resolve({ success: true, error: null, data: null }), 50)),
         )
 
         const { result } = renderHook(() => useVersionControl())

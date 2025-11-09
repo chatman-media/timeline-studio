@@ -239,7 +239,7 @@ export class VideoEditingOrchestrator {
         eventBus.publish(DOMAIN_EVENTS.VIDEO.TIMELINE_UPDATED, "video-editing", {
           hasUnsavedChanges,
           duration: project.duration,
-          trackCount: project.globalTracks.length,
+          trackCount: project.globalTracks?.length ?? 0,
         })
       }
     })

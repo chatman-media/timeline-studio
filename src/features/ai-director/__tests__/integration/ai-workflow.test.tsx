@@ -7,10 +7,7 @@
 
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type {
-  AIDirectorConfig,
-  ComprehensiveAnalysisResult,
-} from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import { useAIDirector } from "../../hooks/use-ai-director"
 
 // ============================================================================
@@ -91,9 +88,7 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
     total_objects: 2,
   },
   face_recognition: {
-    faces: [
-      { person_id: "person-1", confidence: 0.94, bbox: [0.4, 0.3, 0.15, 0.2], timestamp: 10 },
-    ],
+    faces: [{ person_id: "person-1", confidence: 0.94, bbox: [0.4, 0.3, 0.15, 0.2], timestamp: 10 }],
     total_faces: 1,
   },
   started_at: "2024-01-01T00:00:00Z",
@@ -732,9 +727,10 @@ describe("AI Director Workflow Integration Tests", () => {
       mockResult.total_duration_ms = 45000 // 45 seconds processing
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockImplementation(
-        () => new Promise((resolve) => {
-          setTimeout(() => resolve({ status: "ok", data: mockResult }), 100)
-        })
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ status: "ok", data: mockResult }), 100)
+          }),
       )
 
       const { result } = renderHook(() => useAIDirector())
@@ -760,16 +756,15 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should handle timeout scenarios", async () => {
       // Assertions: 4
       mockCommands.aiDirectorAnalyzeComprehensive.mockImplementation(
-        () => new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Analysis timeout")), 50)
-        })
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("Analysis timeout")), 50)
+          }),
       )
 
       const { result } = renderHook(() => useAIDirector())
 
-      await expect(
-        result.current.analyzeComprehensive("/test/video.mp4")
-      ).rejects.toThrow("Analysis timeout")
+      await expect(result.current.analyzeComprehensive("/test/video.mp4")).rejects.toThrow("Analysis timeout")
 
       await waitFor(() => {
         expect(result.current.state.error).toBe("Analysis timeout")
@@ -853,9 +848,7 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const { result } = renderHook(() => useAIDirector())
 
-      await expect(
-        result.current.analyzeComprehensive("/test/video.mp4")
-      ).rejects.toThrow("GPU out of memory")
+      await expect(result.current.analyzeComprehensive("/test/video.mp4")).rejects.toThrow("GPU out of memory")
 
       await waitFor(() => {
         expect(result.current.state.error).toBe("GPU out of memory")

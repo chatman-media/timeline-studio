@@ -14,8 +14,7 @@
  * 10. Buffering и preloading стратегии
  */
 
-import { renderHook, waitFor } from "@testing-library/react"
-import { act } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import type React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -106,9 +105,7 @@ const createMockVideoElement = (overrides: Partial<HTMLVideoElement> = {}): HTML
   return element
 }
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <PlayerProvider>{children}</PlayerProvider>
-)
+const wrapper = ({ children }: { children: React.ReactNode }) => <PlayerProvider>{children}</PlayerProvider>
 
 describe("Video Player Advanced Tests", () => {
   let mockVideoElement: HTMLVideoElement
@@ -932,7 +929,7 @@ describe("Video Player Advanced Tests", () => {
 
       // Simulate corrupted metadata with NaN duration
       Object.defineProperty(mockVideoElement, "duration", {
-        value: NaN,
+        value: Number.NaN,
         configurable: true,
       })
 

@@ -3,19 +3,19 @@
  * Tests file resolution UI, actions, and state management
  */
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { SavedMediaFile } from "@/features/media/types/saved-media";
-import { MissingFilesModal } from "../../components/missing-files-modal";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { SavedMediaFile } from "@/features/media/types/saved-media"
+import { MissingFilesModal } from "../../components/missing-files-modal"
 
 // Mock dependencies
 vi.mock("@/features/modals/services", () => ({
   useModal: vi.fn(),
-}));
+}))
 
 vi.mock("@/features/media/services/media-restoration-service", () => ({
   promptUserToFindFile: vi.fn(),
-}));
+}))
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
@@ -23,12 +23,10 @@ vi.mock("@/lib/tauri-logger", () => ({
     error: vi.fn(),
     warn: vi.fn(),
   })),
-}));
+}))
 
-const { useModal } = await import("@/features/modals/services");
-const { promptUserToFindFile } = await import(
-  "@/features/media/services/media-restoration-service"
-);
+const { useModal } = await import("@/features/modals/services")
+const { promptUserToFindFile } = await import("@/features/media/services/media-restoration-service")
 
 describe.skip("MissingFilesModal", () => {
   const mockMissingFiles: SavedMediaFile[] = [
@@ -64,15 +62,15 @@ describe.skip("MissingFilesModal", () => {
       status: "missing",
       lastChecked: Date.now(),
     },
-  ];
+  ]
 
-  let mockCloseModal: ReturnType<typeof vi.fn>;
-  let mockOnResolve: ReturnType<typeof vi.fn>;
+  let mockCloseModal: ReturnType<typeof vi.fn>
+  let mockOnResolve: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    mockCloseModal = vi.fn();
-    mockOnResolve = vi.fn();
+    vi.clearAllMocks()
+    mockCloseModal = vi.fn()
+    mockOnResolve = vi.fn()
 
     vi.mocked(useModal).mockReturnValue({
       modalData: {
@@ -80,189 +78,179 @@ describe.skip("MissingFilesModal", () => {
         onResolve: mockOnResolve,
       },
       closeModal: mockCloseModal,
-    } as any);
+    } as any)
 
-    vi.mocked(promptUserToFindFile).mockResolvedValue(null);
-  });
+    vi.mocked(promptUserToFindFile).mockResolvedValue(null)
+  })
 
   describe("Rendering", () => {
     it("should render modal with missing files", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText("video1.mp4")).toBeInTheDocument();
-      expect(screen.getByText("audio1.mp3")).toBeInTheDocument();
-    });
+      expect(screen.getByText("video1.mp4")).toBeInTheDocument()
+      expect(screen.getByText("audio1.mp3")).toBeInTheDocument()
+    })
 
     it("should display file count", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText(/Файлов: 2/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Файлов: 2/)).toBeInTheDocument()
+    })
 
     it("should display resolution progress", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText(/Обработано: 0\/2/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Обработано: 0\/2/)).toBeInTheDocument()
+    })
 
     it("should display file sizes", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText(/Размер: 100\.0 МБ/)).toBeInTheDocument();
-      expect(screen.getByText(/Размер: 10\.0 МБ/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Размер: 100\.0 МБ/)).toBeInTheDocument()
+      expect(screen.getByText(/Размер: 10\.0 МБ/)).toBeInTheDocument()
+    })
 
     it("should display original file paths", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText("/old/path/video1.mp4")).toBeInTheDocument();
-      expect(screen.getByText("/old/path/audio1.mp3")).toBeInTheDocument();
-    });
+      expect(screen.getByText("/old/path/video1.mp4")).toBeInTheDocument()
+      expect(screen.getByText("/old/path/audio1.mp3")).toBeInTheDocument()
+    })
 
     it("should show warning message", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(
-        screen.getByText(/При открытии проекта обнаружены отсутствующие файлы/),
-      ).toBeInTheDocument();
-    });
-  });
+      expect(screen.getByText(/При открытии проекта обнаружены отсутствующие файлы/)).toBeInTheDocument()
+    })
+  })
 
   describe("File actions", () => {
     it("should handle find file action", async () => {
-      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(
-        "/new/path/video1.mp4",
-      );
+      vi.mocked(promptUserToFindFile).mockResolvedValueOnce("/new/path/video1.mp4")
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       await waitFor(() => {
-        expect(promptUserToFindFile).toHaveBeenCalledWith(mockMissingFiles[0]);
-      });
+        expect(promptUserToFindFile).toHaveBeenCalledWith(mockMissingFiles[0])
+      })
 
       await waitFor(() => {
-        expect(screen.getByText("Найден")).toBeInTheDocument();
-      });
-    });
+        expect(screen.getByText("Найден")).toBeInTheDocument()
+      })
+    })
 
     it("should handle remove file action", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
+      )
 
-      fireEvent.click(firstRemoveButton!);
+      fireEvent.click(firstRemoveButton!)
 
-      expect(screen.getByText("Удалить")).toBeInTheDocument();
-    });
+      expect(screen.getByText("Удалить")).toBeInTheDocument()
+    })
 
     it("should handle skip file action after marking for removal", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
       // First mark as remove
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
-      fireEvent.click(firstRemoveButton!);
+      )
+      fireEvent.click(firstRemoveButton!)
 
       // Then click "Отменить"
-      const cancelButton = screen.getByText("Отменить");
-      fireEvent.click(cancelButton);
+      const cancelButton = screen.getByText("Отменить")
+      fireEvent.click(cancelButton)
 
-      expect(screen.getByText("Ожидает")).toBeInTheDocument();
-    });
+      expect(screen.getByText("Ожидает")).toBeInTheDocument()
+    })
 
     it("should disable find button while processing", async () => {
       vi.mocked(promptUserToFindFile).mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve(null), 100)),
-      );
+      )
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       // Button should be disabled during processing
       await waitFor(() => {
-        expect(firstFindButton).toBeDisabled();
-      });
-    });
+        expect(firstFindButton).toBeDisabled()
+      })
+    })
 
     it("should handle file not found (user cancels)", async () => {
-      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(null);
+      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(null)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       await waitFor(() => {
-        expect(screen.getByText("Пропущен")).toBeInTheDocument();
-      });
-    });
-  });
+        expect(screen.getByText("Пропущен")).toBeInTheDocument()
+      })
+    })
+  })
 
   describe("Resolution workflow", () => {
     it("should update resolution count when marking files", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
       // Mark first file for removal
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
-      fireEvent.click(firstRemoveButton!);
+      )
+      fireEvent.click(firstRemoveButton!)
 
-      expect(screen.getByText(/Обработано: 1\/2/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Обработано: 1\/2/)).toBeInTheDocument()
+    })
 
     it("should enable apply button when files are resolved", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const applyButton = screen.getByText("Применить изменения");
-      expect(applyButton).toBeDisabled();
+      const applyButton = screen.getByText("Применить изменения")
+      expect(applyButton).toBeDisabled()
 
       // Mark first file for removal
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
-      fireEvent.click(firstRemoveButton!);
+      )
+      fireEvent.click(firstRemoveButton!)
 
-      expect(applyButton).not.toBeDisabled();
-    });
+      expect(applyButton).not.toBeDisabled()
+    })
 
     it("should call onResolve with resolved files", async () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
       // Mark first file for removal
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
-      fireEvent.click(firstRemoveButton!);
+      )
+      fireEvent.click(firstRemoveButton!)
 
       // Click apply
-      const applyButton = screen.getByText("Применить изменения");
-      fireEvent.click(applyButton);
+      const applyButton = screen.getByText("Применить изменения")
+      fireEvent.click(applyButton)
 
       expect(mockOnResolve).toHaveBeenCalledWith([
         {
@@ -270,35 +258,35 @@ describe.skip("MissingFilesModal", () => {
           action: "remove",
           newPath: undefined,
         },
-      ]);
-      expect(mockCloseModal).toHaveBeenCalled();
-    });
+      ])
+      expect(mockCloseModal).toHaveBeenCalled()
+    })
 
     it("should handle skip all action", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const skipAllButton = screen.getByText("Пропустить все");
-      fireEvent.click(skipAllButton);
+      const skipAllButton = screen.getByText("Пропустить все")
+      fireEvent.click(skipAllButton)
 
-      expect(mockOnResolve).toHaveBeenCalledWith([]);
-      expect(mockCloseModal).toHaveBeenCalled();
-    });
+      expect(mockOnResolve).toHaveBeenCalledWith([])
+      expect(mockCloseModal).toHaveBeenCalled()
+    })
 
     it("should show resolved count in apply button", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
       // Mark two files
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const removeButtonsList = removeButtons.filter((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
+      )
 
-      fireEvent.click(removeButtonsList[0]);
-      fireEvent.click(removeButtonsList[1]);
+      fireEvent.click(removeButtonsList[0])
+      fireEvent.click(removeButtonsList[1])
 
-      expect(screen.getByText(/Будет обработано 2 файлов/)).toBeInTheDocument();
-    });
-  });
+      expect(screen.getByText(/Будет обработано 2 файлов/)).toBeInTheDocument()
+    })
+  })
 
   describe("Edge cases", () => {
     it("should handle empty missing files array", () => {
@@ -308,23 +296,23 @@ describe.skip("MissingFilesModal", () => {
           onResolve: mockOnResolve,
         },
         closeModal: mockCloseModal,
-      } as any);
+      } as any)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText(/Файлов: 0/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Файлов: 0/)).toBeInTheDocument()
+    })
 
     it("should handle missing modalData", () => {
       vi.mocked(useModal).mockReturnValue({
         modalData: null,
         closeModal: mockCloseModal,
-      } as any);
+      } as any)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      expect(screen.getByText(/Файлов: 0/)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Файлов: 0/)).toBeInTheDocument()
+    })
 
     it("should handle missing onResolve callback", () => {
       vi.mocked(useModal).mockReturnValue({
@@ -333,22 +321,22 @@ describe.skip("MissingFilesModal", () => {
           onResolve: undefined,
         },
         closeModal: mockCloseModal,
-      } as any);
+      } as any)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const skipAllButton = screen.getByText("Пропустить все");
-      fireEvent.click(skipAllButton);
+      const skipAllButton = screen.getByText("Пропустить все")
+      fireEvent.click(skipAllButton)
 
       // Should not crash
-      expect(mockCloseModal).toHaveBeenCalled();
-    });
+      expect(mockCloseModal).toHaveBeenCalled()
+    })
 
     it("should handle file without size", () => {
       const fileWithoutSize = {
         ...mockMissingFiles[0],
         size: undefined,
-      };
+      }
 
       vi.mocked(useModal).mockReturnValue({
         modalData: {
@@ -356,90 +344,80 @@ describe.skip("MissingFilesModal", () => {
           onResolve: mockOnResolve,
         },
         closeModal: mockCloseModal,
-      } as any);
+      } as any)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
       // Should not show size text
-      expect(screen.queryByText(/Размер:/)).not.toBeInTheDocument();
-    });
+      expect(screen.queryByText(/Размер:/)).not.toBeInTheDocument()
+    })
 
     it("should handle promptUserToFindFile error", async () => {
-      vi.mocked(promptUserToFindFile).mockRejectedValueOnce(
-        new Error("File dialog error"),
-      );
+      vi.mocked(promptUserToFindFile).mockRejectedValueOnce(new Error("File dialog error"))
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       // Should handle error gracefully and return to pending state
       await waitFor(() => {
-        expect(screen.getByText("Ожидает")).toBeInTheDocument();
-      });
-    });
-  });
+        expect(screen.getByText("Ожидает")).toBeInTheDocument()
+      })
+    })
+  })
 
   describe("UI states", () => {
     it("should show correct icon for pending state", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const statusIcons = screen.getAllByText("Ожидает");
-      expect(statusIcons).toHaveLength(2); // Two files pending
-    });
+      const statusIcons = screen.getAllByText("Ожидает")
+      expect(statusIcons).toHaveLength(2) // Two files pending
+    })
 
     it("should show correct icon for found state", async () => {
-      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(
-        "/new/path/video1.mp4",
-      );
+      vi.mocked(promptUserToFindFile).mockResolvedValueOnce("/new/path/video1.mp4")
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       await waitFor(() => {
-        expect(screen.getByText("Найден")).toBeInTheDocument();
-      });
-    });
+        expect(screen.getByText("Найден")).toBeInTheDocument()
+      })
+    })
 
     it("should show correct icon for remove state", () => {
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const removeButtons = screen.getAllByRole("button");
+      const removeButtons = screen.getAllByRole("button")
       const firstRemoveButton = removeButtons.find((btn) =>
         btn.querySelector("svg")?.classList.contains("lucide-trash-2"),
-      );
+      )
 
-      fireEvent.click(firstRemoveButton!);
+      fireEvent.click(firstRemoveButton!)
 
-      expect(screen.getByText("Удалить")).toBeInTheDocument();
-    });
+      expect(screen.getByText("Удалить")).toBeInTheDocument()
+    })
 
     it("should show correct icon for skip state", async () => {
-      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(null);
+      vi.mocked(promptUserToFindFile).mockResolvedValueOnce(null)
 
-      render(<MissingFilesModal />);
+      render(<MissingFilesModal />)
 
-      const findButtons = screen.getAllByRole("button");
-      const firstFindButton = findButtons.find((btn) =>
-        btn.querySelector("svg")?.classList.contains("lucide-search"),
-      );
+      const findButtons = screen.getAllByRole("button")
+      const firstFindButton = findButtons.find((btn) => btn.querySelector("svg")?.classList.contains("lucide-search"))
 
-      fireEvent.click(firstFindButton!);
+      fireEvent.click(firstFindButton!)
 
       await waitFor(() => {
-        expect(screen.getByText("Пропущен")).toBeInTheDocument();
-      });
-    });
-  });
-});
+        expect(screen.getByText("Пропущен")).toBeInTheDocument()
+      })
+    })
+  })
+})

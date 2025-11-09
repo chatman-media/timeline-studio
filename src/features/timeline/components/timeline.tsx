@@ -2,12 +2,10 @@ import type React from "react"
 import { useState } from "react"
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { AiChat } from "@/features/ai-chat/components/ai-chat"
 import { useUserSettings } from "@/features/app-state/hooks/use-user-settings"
 import { ResourcesPanel } from "@/features/resources"
 import { cn } from "@/lib/utils"
 
-import { AISuggestionsPanel } from "./ai-suggestions/ai-suggestions-panel"
 import { AudioMixerView } from "./audio-mixer-view"
 import { TimelineContent } from "./timeline-content"
 import { TimelineWorkspaceTabs, type WorkspaceView } from "./timeline-workspace-tabs"
@@ -38,13 +36,13 @@ export function Timeline({ className, style }: TimelineProps = {}) {
       data-testid="timeline"
       style={style}
     >
-      <ResizablePanel defaultSize={15} minSize={5} maxSize={30}>
+      <ResizablePanel defaultSize={20} minSize={5} maxSize={30}>
         <ResourcesPanel />
       </ResizablePanel>
       <ResizableHandle />
 
       {/* Средняя панель (основная часть) */}
-      <ResizablePanel defaultSize={activeView === "timeline" ? 65 : 80} minSize={40}>
+      <ResizablePanel defaultSize={80} minSize={40}>
         <div className="flex h-full w-full flex-col">
           {/* Вкладки для переключения видов */}
           <div className="flex-shrink-0">
@@ -56,18 +54,6 @@ export function Timeline({ className, style }: TimelineProps = {}) {
             {activeView === "timeline" ? <TimelineComponent /> : <AudioMixerView />}
           </div>
         </div>
-      </ResizablePanel>
-
-      <ResizableHandle />
-      <ResizablePanel defaultSize={20} minSize={10} maxSize={50}>
-        <div className="h-full flex-1">
-          <AISuggestionsPanel />
-        </div>
-      </ResizablePanel>
-
-      <ResizableHandle />
-      <ResizablePanel defaultSize={20} minSize={10} maxSize={50} className="flex-shrink-0">
-        <AiChat />
       </ResizablePanel>
     </ResizablePanelGroup>
   )

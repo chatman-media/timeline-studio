@@ -4,7 +4,7 @@
  */
 
 // REMOVED: import { UnifiedAIService } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
-import { AdaptedContent, Platform, PlatformId } from "@/features/ai-content-intelligence"
+import type { AdaptedContent, Platform, PlatformId } from "@/domains/shared/types/ai-tools/platform-adaptation"
 import { createLogger } from "@/lib/tauri-logger"
 import { getOptimalAspectRatio, getOptimalResolution, getPlatformConfig } from "../platform-configs"
 import type {

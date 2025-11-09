@@ -3,25 +3,20 @@
  * Покрывает все основные функции multicam editing
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
-
-import { multicamManager } from "../../services/multicam-manager"
-import type { SyncResult, SyncMethod, MulticamAngle } from "../../types/multicam"
 import * as audioSyncService from "../../services/audio-sync"
+import { multicamManager } from "../../services/multicam-manager"
 import * as timecodeSync from "../../services/timecode-sync"
+import type { MulticamAngle, SyncMethod, SyncResult } from "../../types/multicam"
 
 // ============================================================================
 // Mock Data
 // ============================================================================
 
-const createMockMediaFile = (
-  id: string,
-  timecode: string,
-  creationTime: string,
-): MediaFile => ({
+const createMockMediaFile = (id: string, timecode: string, creationTime: string): MediaFile => ({
   id,
   name: `video-${id}.mp4`,
   path: `/media/video-${id}.mp4`,
@@ -72,11 +67,7 @@ const mockMediaFiles: MediaFile[] = [
   createMockMediaFile("media-cam4", "10:00:01:00", "2024-01-01T10:00:01.000Z"),
 ]
 
-const createMockClip = (
-  id: string,
-  mediaId: string,
-  startTime = 0,
-): TimelineClip => ({
+const createMockClip = (id: string, mediaId: string, startTime = 0): TimelineClip => ({
   id,
   name: `Clip ${id}`,
   trackId: `track-${id}`,
@@ -335,11 +326,7 @@ describe("Multicam Editing Integration", () => {
     })
 
     it("should sync clips by timecode", () => {
-      const results = timecodeSync.syncByTimecode(
-        mockClips[0]!,
-        mockClips.slice(1),
-        mockMediaFiles,
-      )
+      const results = timecodeSync.syncByTimecode(mockClips[0]!, mockClips.slice(1), mockMediaFiles)
 
       expect(results.length).toBeGreaterThan(0)
       results.forEach((r) => {

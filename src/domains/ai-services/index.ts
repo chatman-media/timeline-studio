@@ -14,12 +14,12 @@ export {
 export * from "./hooks"
 // State Machines
 export {
-  type AIIntelligenceContextV2,
-  type AIIntelligenceEventV2,
-  type AIIntelligenceMachineV2,
-  type AIIntelligenceSnapshotV2,
-  // AI Intelligence V2 (NEW - with AI Director integration)
-  aiIntelligenceMachineV2,
+  type AIIntelligenceContext,
+  type AIIntelligenceEvent,
+  type AIIntelligenceMachine,
+  type AIIntelligenceSnapshot,
+  // AI Intelligence (with AI Director integration)
+  aiIntelligenceMachine,
   type ChatMachine,
   type ChatMachineContext,
   type ChatMachineEvent,

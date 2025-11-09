@@ -37,7 +37,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
   // Event listeners
   useEffect(() => {
-    let unlistenFunctions: UnlistenFn[] = []
+    const unlistenFunctions: UnlistenFn[] = []
 
     const setupEventListeners = async () => {
       // Listen to analysis started
