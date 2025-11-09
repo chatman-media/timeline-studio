@@ -6,20 +6,45 @@
 import { BaseAITool } from "../../../base"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, IAITool } from "../../../types"
 
-// Временные типы для Color & Style
+// Color & Style Types
 interface ColorStyleInput {
   operation: string
   analysisType?: string
   includeRecommendations?: boolean
 }
 
+interface ColorPalette {
+  dominant: string[]
+  accent: string[]
+  background: string[]
+}
+
+interface ColorGrading {
+  lift: { r: number; g: number; b: number }
+  gamma: { r: number; g: number; b: number }
+  gain: { r: number; g: number; b: number }
+  saturation: number
+  contrast: number
+}
+
+interface ColorTemperature {
+  kelvin: number
+  tint: number
+}
+
+interface LUTData {
+  name: string
+  path: string
+  intensity: number
+}
+
 interface ColorStyleResult {
   operation: string
   success: boolean
-  palette?: any
-  grading?: any
-  temperature?: any
-  luts?: any[]
+  palette?: ColorPalette
+  grading?: ColorGrading
+  temperature?: ColorTemperature
+  luts?: LUTData[]
   processingTime: number
 }
 

@@ -25,7 +25,7 @@ export * from "./content"
 // Removed: engines/content-classification - migrated to Rust backend
 export * from "./ffmpeg"
 export * from "./media-analysis"
-export * from "./media-analysis-interface"
+// Removed: media-analysis-interface - deprecated, use backend AI proxy instead
 export * from "./montage-planning"
 export * from "./multi-platform"
 export * from "./person-identification"

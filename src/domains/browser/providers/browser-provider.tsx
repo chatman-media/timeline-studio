@@ -51,13 +51,7 @@ interface BrowserContextType {
   deselectAllFiles: (tab?: BrowserTab) => Promise<void>
   isFileSelected: (fileId: string, tab?: BrowserTab) => boolean
 
-  // Legacy compatibility
-  state: {
-    activeTab: BrowserTab
-    tabSettings: Record<BrowserTab, TabSettings>
-    selectedFiles: Record<BrowserTab, Set<string>>
-  }
-  isBackendConnected: boolean
+  // Backwards compatibility for components that use these methods
   clearBrowserState: () => void
 }
 
@@ -284,52 +278,6 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     return files.includes(fileId)
   }
 
-  // Legacy compatibility: convert backend state to old format
-  const legacyState = useMemo(() => {
-    if (!browserState) {
-      return {
-        activeTab: "media" as BrowserTab,
-        tabSettings: {} as Record<BrowserTab, TabSettings>,
-        selectedFiles: {} as Record<BrowserTab, Set<string>>,
-      }
-    }
-
-    // Convert Vec<String> to Set<string> for all tabs
-    const selectedFilesRecord: Record<BrowserTab, Set<string>> = {} as any
-    for (const [tab, files] of Object.entries(browserState.selected_files || {})) {
-      selectedFilesRecord[tab as BrowserTab] = new Set(Array.isArray(files) ? files : [])
-    }
-
-    // Create proper tabSettings with all tabs
-    const defaultTabSettings: TabSettings = {
-      search_query: "",
-      show_favorites_only: false,
-      sort_by: "name",
-      sort_order: "asc",
-      group_by: "none",
-      filter_type: "all",
-      view_mode: "grid",
-      preview_size_index: DEFAULT_PREVIEW_SIZE_INDEX,
-    }
-
-    const tabSettings: Record<BrowserTab, TabSettings> = {
-      media: browserState.tab_settings.media || defaultTabSettings,
-      music: browserState.tab_settings.music || defaultTabSettings,
-      subtitles: browserState.tab_settings.subtitles || defaultTabSettings,
-      transitions: browserState.tab_settings.transitions || defaultTabSettings,
-      effects: browserState.tab_settings.effects || defaultTabSettings,
-      filters: browserState.tab_settings.filters || defaultTabSettings,
-      templates: browserState.tab_settings.templates || defaultTabSettings,
-      style_templates: browserState.tab_settings.style_templates || defaultTabSettings,
-    }
-
-    return {
-      activeTab: browserState.active_tab,
-      tabSettings,
-      selectedFiles: selectedFilesRecord,
-    }
-  }, [browserState])
-
   const clearBrowserState = () => {
     logger.info("Clearing browser state (no-op for backend-synced state)")
     // Backend-synced state doesn't use localStorage, so nothing to clear
@@ -365,9 +313,7 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     deselectAllFiles,
     isFileSelected,
 
-    // Legacy compatibility
-    state: legacyState,
-    isBackendConnected: backendSync.connected,
+    // Backwards compatibility
     clearBrowserState,
   }
 

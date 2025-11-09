@@ -206,7 +206,7 @@ export class EDLImporter implements Importer {
     if (!this.mediaReferences.has(path)) {
       this.mediaReferences.set(path, {
         originalPath: path,
-        exists: false, // TODO: проверить существование файла через Tauri
+        exists: false, // Проверка существования файла выполняется в MediaRestorationService
       })
     }
   }

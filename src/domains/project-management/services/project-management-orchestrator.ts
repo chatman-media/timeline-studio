@@ -8,6 +8,7 @@ import { type ActorRefFrom, createActor } from "xstate"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
+import { storeService } from "@/features/app-state/services/store-service"
 import { appMachine } from "../machines/app-machine"
 import { type UserSettingsContextType, userSettingsMachine } from "../machines/user-settings-machine"
 
@@ -17,6 +18,7 @@ export class ProjectManagementOrchestrator {
   private appActor: ActorRefFrom<typeof appMachine>
   private userSettingsActor: ActorRefFrom<typeof userSettingsMachine>
   private autoSaveTimer: NodeJS.Timeout | null = null
+  private isLoadingSettings = false
 
   constructor() {
     logger.info("[Project Management Orchestrator] Initializing...")
@@ -32,6 +34,9 @@ export class ProjectManagementOrchestrator {
     // Настраиваем синхронизацию
     this.setupSynchronization()
 
+    // Загружаем настройки из хранилища
+    this.loadUserSettings()
+
     // Подключаемся к backend
     this.connect()
 
@@ -42,13 +47,22 @@ export class ProjectManagementOrchestrator {
    * Настройка синхронизации между машинами
    */
   private setupSynchronization() {
-    // Подписываемся на изменения настроек для автосохранения
+    // Подписываемся на изменения настроек для автосохранения и персистентности
     this.userSettingsActor.subscribe((state) => {
       const settings = state.context
+
+      // Автосохранение проектов
       if (settings.autoSaveEnabled) {
         this.enableAutoSave(settings.autoSaveInterval)
       } else {
         this.disableAutoSave()
+      }
+
+      // Сохраняем настройки в Tauri Store (только если не загружаем)
+      if (!this.isLoadingSettings) {
+        this.saveUserSettingsToStore(settings).catch((error) => {
+          logger.error("[Project Management Orchestrator] Failed to persist settings:", { error })
+        })
       }
     })
 
@@ -320,6 +334,52 @@ export class ProjectManagementOrchestrator {
    */
   getUserSettingsActor(): ActorRefFrom<typeof userSettingsMachine> {
     return this.userSettingsActor
+  }
+
+  /**
+   * Загрузка пользовательских настроек из хранилища
+   */
+  private async loadUserSettings() {
+    try {
+      this.isLoadingSettings = true
+      logger.info("[Project Management Orchestrator] Loading user settings from store...")
+
+      // Инициализируем store если нужно
+      await storeService.initialize()
+
+      // Загружаем настройки
+      const savedSettings = await storeService.getUserSettings()
+
+      if (savedSettings) {
+        logger.info("[Project Management Orchestrator] Loaded user settings from store")
+
+        // Обновляем актора с загруженными настройками
+        this.userSettingsActor.send({
+          type: "UPDATE_ALL",
+          settings: savedSettings,
+        })
+      } else {
+        logger.info("[Project Management Orchestrator] No saved settings found, using defaults")
+      }
+    } catch (error) {
+      logger.error("[Project Management Orchestrator] Failed to load user settings:", { error })
+    } finally {
+      this.isLoadingSettings = false
+    }
+  }
+
+  /**
+   * Сохранение пользовательских настроек в хранилище
+   */
+  private async saveUserSettingsToStore(settings: UserSettingsContextType) {
+    try {
+      await storeService.saveUserSettings(settings)
+      // Не логируем для уменьшения шума
+      // logger.info("[Project Management Orchestrator] Saved user settings to store")
+    } catch (error) {
+      logger.error("[Project Management Orchestrator] Failed to save user settings:", { error })
+      throw error
+    }
   }
 
   /**

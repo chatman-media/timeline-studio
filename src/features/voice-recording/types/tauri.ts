@@ -55,22 +55,17 @@ export async function getSupportedAudioFormats(): Promise<AudioFormatInfo[]> {
 
 /**
  * Конвертировать Blob в Base64
+ * Использует современный API ArrayBuffer вместо FileReader для лучшей производительности
  */
 export async function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (reader.result && typeof reader.result === "string") {
-        // Убираем префикс "data:audio/webm;base64," или подобный
-        const base64 = reader.result.split(",")[1]
-        resolve(base64)
-      } else {
-        reject(new Error("Failed to convert blob to base64"))
-      }
-    }
-    reader.onerror = reject
-    reader.readAsDataURL(blob)
-  })
+  try {
+    const arrayBuffer = await blob.arrayBuffer()
+    const bytes = new Uint8Array(arrayBuffer)
+    const binary = bytes.reduce((data, byte) => data + String.fromCharCode(byte), "")
+    return btoa(binary)
+  } catch (error) {
+    throw new Error(`Failed to convert blob to base64: ${error instanceof Error ? error.message : String(error)}`)
+  }
 }
 
 /**

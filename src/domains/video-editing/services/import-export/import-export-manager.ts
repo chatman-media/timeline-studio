@@ -4,6 +4,8 @@
  * Централизованный менеджер для импорта и экспорта Timeline в различные форматы
  */
 
+import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
+
 import { Timeline } from "../../types"
 import { AAFExporter } from "./exporters/aaf-exporter"
 import { EDLExporter } from "./exporters/edl-exporter"
@@ -96,8 +98,8 @@ export class ImportExportManager {
     }
 
     try {
-      // TODO: Читаем файл через Tauri API
-      const content = await this.readFile(filePath)
+      // Читаем файл через Tauri fs plugin
+      const content = await readTextFile(filePath)
 
       const importOptions: ImportOptions = {
         format,
@@ -161,8 +163,8 @@ export class ImportExportManager {
 
     const content = await this.export(project, exportOptions)
 
-    // TODO: Записываем файл через Tauri API
-    await this.writeFile(filePath, content)
+    // Записываем файл через Tauri fs plugin
+    await writeTextFile(filePath, content)
   }
 
   /**
@@ -214,22 +216,6 @@ export class ImportExportManager {
       default:
         return null
     }
-  }
-
-  /**
-   * Читает файл (заглушка для Tauri API)
-   */
-  private async readFile(_filePath: string): Promise<string> {
-    // TODO: Использовать Tauri API для чтения файла
-    throw new Error("File reading not implemented. Use Tauri API.")
-  }
-
-  /**
-   * Записывает файл (заглушка для Tauri API)
-   */
-  private async writeFile(_filePath: string, _content: string): Promise<void> {
-    // TODO: Использовать Tauri API для записи файла
-    throw new Error("File writing not implemented. Use Tauri API.")
   }
 }
 

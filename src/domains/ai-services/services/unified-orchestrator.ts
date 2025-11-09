@@ -450,14 +450,17 @@ export class UnifiedOrchestrator {
       logger.info("Montage plan оптимизирован", { planId: optimizedPlan.id })
 
       // Публикуем событие о генерации плана
+      // NOTE: optimizedPlan is the Rust MontagePlan type (snake_case fields)
+      // but MontagePlanGeneratedEvent expects the TypeScript MontagePlan type (camelCase).
+      // This needs proper type conversion or unification of the types.
       await eventBus.publish<MontagePlanGeneratedEvent>(
         DOMAIN_EVENTS.AI_SERVICES.MONTAGE_PLAN_GENERATED,
         "ai-services",
         {
           planId: optimizedPlan.id,
-          plan: optimizedPlan as any, // TODO: Fix type mismatch
+          plan: optimizedPlan as any, // Type mismatch: Rust type vs TS type
           mediaFiles: [], // TODO: Get from context
-          style: optimizedPlan.style as any,
+          style: optimizedPlan.style as any, // Type mismatch: MontageStyle vs string
           duration: optimizedPlan.total_duration,
         },
       )

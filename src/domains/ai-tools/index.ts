@@ -264,25 +264,3 @@ export function checkCompatibility(): { compatible: boolean; issues: string[] } 
     issues,
   }
 }
-
-/**
- * Экспорт для обратной совместимости с существующими AI Chat tools
- */
-export const LegacyAIToolsCompat = {
-  /**
-   * Создание адаптера для старых инструментов
-   */
-  createLegacyAdapter(_legacyTool: any): import("./types").IAITool {
-    // Здесь будет логика адаптации старых инструментов
-    // к новому интерфейсу IAITool
-    throw new Error("Legacy adapter not implemented yet")
-  },
-
-  /**
-   * Миграция старых конфигураций
-   */
-  migrateLegacyConfig(_legacyConfig: any): import("./types").AIToolsConfig {
-    // Здесь будет логика миграции старых конфигураций
-    throw new Error("Legacy config migration not implemented yet")
-  },
-}

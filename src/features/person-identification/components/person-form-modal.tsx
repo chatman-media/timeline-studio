@@ -71,19 +71,28 @@ export function PersonFormModal() {
     }))
   }
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setThumbnailPreview(reader.result as string)
-        // В реальном приложении здесь должна быть логика сохранения файла
+      // Используем URL.createObjectURL для предпросмотра без чтения в память
+      // В Tauri это создаст blob: URL который браузерный движок может отобразить
+      try {
+        const objectUrl = URL.createObjectURL(file)
+        setThumbnailPreview(objectUrl)
+
+        // Для сохранения конвертируем в base64 используя современный API
+        const arrayBuffer = await file.arrayBuffer()
+        const bytes = new Uint8Array(arrayBuffer)
+        const binary = bytes.reduce((data, byte) => data + String.fromCharCode(byte), "")
+        const base64 = `data:${file.type};base64,${btoa(binary)}`
+
         setFormData((prev) => ({
           ...prev,
-          thumbnailUrl: reader.result as string,
+          thumbnailUrl: base64,
         }))
+      } catch (error) {
+        console.error("Failed to process file:", error)
       }
-      reader.readAsDataURL(file)
     }
   }
 

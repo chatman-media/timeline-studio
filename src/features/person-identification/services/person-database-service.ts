@@ -1149,14 +1149,14 @@ export class PersonDatabaseService {
         if (!thumbnailData.imageData) {
           // Конвертируем URL в base64 если нужно
           if (thumbnailData.imageUrl) {
+            // Для Tauri используем convertFileSrc для корректной загрузки локальных файлов
+            // или напрямую работаем с путями файлов через Tauri команды
             const response = await fetch(thumbnailData.imageUrl)
             const blob = await response.blob()
-            const reader = new FileReader()
-            const base64 = await new Promise<string>((resolve) => {
-              reader.onloadend = () => resolve(reader.result as string)
-              reader.readAsDataURL(blob)
-            })
-            thumbnailData.imageData = base64.split(",")[1]
+            // Используем arrayBuffer вместо FileReader для более современного подхода
+            const arrayBuffer = await blob.arrayBuffer()
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+            thumbnailData.imageData = base64
           } else {
             return false
           }

@@ -149,16 +149,26 @@ export function useClipResources(): UseClipResourcesReturn {
     (clipId: string, _effect: VideoEffect) => {
       if (!project) return false
 
-      const allClips = project.sections
-        .flatMap((section) => section.tracks.flatMap((track) => track.clips))
-        .concat(project.globalTracks.flatMap((track) => track.clips))
+      // Найти трек и клип
+      for (const section of project.sections) {
+        for (const track of section.tracks) {
+          const clip = track.clips.find((c) => c.id === clipId)
+          if (clip) {
+            // Эффекты можно применять только к видео и изображениям
+            return track.type === "video" || track.type === "image"
+          }
+        }
+      }
 
-      const clip = allClips.find((c) => c.id === clipId)
-      if (!clip) return false
+      // Проверяем глобальные треки
+      for (const track of project.globalTracks) {
+        const clip = track.clips.find((c) => c.id === clipId)
+        if (clip) {
+          return track.type === "video" || track.type === "image"
+        }
+      }
 
-      // По умолчанию эффекты можно применять к любым клипам
-      // TODO: Добавить проверку типа клипа через track type
-      return true
+      return false
     },
     [project],
   )
@@ -167,16 +177,26 @@ export function useClipResources(): UseClipResourcesReturn {
     (clipId: string, _filter: VideoFilter) => {
       if (!project) return false
 
-      const allClips = project.sections
-        .flatMap((section) => section.tracks.flatMap((track) => track.clips))
-        .concat(project.globalTracks.flatMap((track) => track.clips))
+      // Найти трек и клип
+      for (const section of project.sections) {
+        for (const track of section.tracks) {
+          const clip = track.clips.find((c) => c.id === clipId)
+          if (clip) {
+            // Фильтры (цветокоррекция) можно применять только к видео и изображениям
+            return track.type === "video" || track.type === "image"
+          }
+        }
+      }
 
-      const clip = allClips.find((c) => c.id === clipId)
-      if (!clip) return false
+      // Проверяем глобальные треки
+      for (const track of project.globalTracks) {
+        const clip = track.clips.find((c) => c.id === clipId)
+        if (clip) {
+          return track.type === "video" || track.type === "image"
+        }
+      }
 
-      // По умолчанию фильтры можно применять к любым клипам
-      // TODO: Добавить проверку типа клипа через track type
-      return true
+      return false
     },
     [project],
   )
@@ -185,16 +205,26 @@ export function useClipResources(): UseClipResourcesReturn {
     (clipId: string, _transition: Transition) => {
       if (!project) return false
 
-      const allClips = project.sections
-        .flatMap((section) => section.tracks.flatMap((track) => track.clips))
-        .concat(project.globalTracks.flatMap((track) => track.clips))
+      // Найти трек и клип
+      for (const section of project.sections) {
+        for (const track of section.tracks) {
+          const clip = track.clips.find((c) => c.id === clipId)
+          if (clip) {
+            // Переходы можно применять к видео, аудио и изображениям
+            return track.type === "video" || track.type === "audio" || track.type === "image"
+          }
+        }
+      }
 
-      const clip = allClips.find((c) => c.id === clipId)
-      if (!clip) return false
+      // Проверяем глобальные треки
+      for (const track of project.globalTracks) {
+        const clip = track.clips.find((c) => c.id === clipId)
+        if (clip) {
+          return track.type === "video" || track.type === "audio" || track.type === "image"
+        }
+      }
 
-      // По умолчанию переходы можно применять к любым клипам
-      // TODO: Добавить проверку типа клипа через track type
-      return true
+      return false
     },
     [project],
   )

@@ -223,45 +223,6 @@ export class AIDirectorService {
     }
   }
 
-  // === Legacy Analysis Commands (for compatibility) ===
-
-  /**
-   * Создать analysis project (legacy support)
-   */
-  async createAnalysisProject(config: { name?: string; description?: string }): Promise<any> {
-    return invoke("create_analysis_project", {
-      projectConfig: JSON.stringify(config),
-    })
-  }
-
-  /**
-   * Получить analysis project (legacy support)
-   */
-  async getAnalysisProject(projectId: string): Promise<any> {
-    return invoke("get_analysis_project", { projectId })
-  }
-
-  /**
-   * Получить progress analysis project (legacy support)
-   */
-  async getAnalysisProjectProgress(projectId: string): Promise<any> {
-    return invoke("get_analysis_project_progress", { projectId })
-  }
-
-  /**
-   * Получить scenes analysis project (legacy support)
-   */
-  async getProjectScenes(projectId: string): Promise<any> {
-    return invoke("get_project_scenes", { projectId })
-  }
-
-  /**
-   * Получить key moments analysis project (legacy support)
-   */
-  async getProjectKeyMoments(projectId: string): Promise<any> {
-    return invoke("get_project_key_moments", { projectId })
-  }
-
   // === Error Handling & Utilities ===
 
   /**
