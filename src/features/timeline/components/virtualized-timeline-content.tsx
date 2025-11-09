@@ -93,7 +93,7 @@ export function VirtualizedTimelineContent() {
 
   // Добавляем демо секцию
   useEffect(() => {
-    if (project && project.sections.length === 0) {
+    if (project && (!project.sections || project.sections.length === 0)) {
       void addSection("Main Section", 0, 300) // 5 минут
     }
   }, [project, addSection])

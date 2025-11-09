@@ -24,21 +24,23 @@ export function useChannelAudio(channelId: string, trackId?: string) {
 
     const clips: Array<{ id: string; mediaId: string; startTime: number }> = []
 
-    timeline.project.sections.forEach((section) => {
-      section.tracks.forEach((track) => {
-        if (track.id === trackId) {
-          track.clips.forEach((clip) => {
-            if (clip.mediaId) {
-              clips.push({
-                id: clip.id,
-                mediaId: clip.mediaId,
-                startTime: clip.startTime,
-              })
-            }
-          })
-        }
+    if (timeline.project.sections) {
+      timeline.project.sections.forEach((section) => {
+        section.tracks.forEach((track) => {
+          if (track.id === trackId) {
+            track.clips.forEach((clip) => {
+              if (clip.mediaId) {
+                clips.push({
+                  id: clip.id,
+                  mediaId: clip.mediaId,
+                  startTime: clip.startTime,
+                })
+              }
+            })
+          }
+        })
       })
-    })
+    }
 
     return clips
   }, [timeline.project, trackId])

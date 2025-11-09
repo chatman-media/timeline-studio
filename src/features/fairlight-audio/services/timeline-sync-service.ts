@@ -67,14 +67,16 @@ export function useTimelineMixerSync(onChannelsUpdate: (channels: AudioChannel[]
     // Get all audio tracks from all sections
     const audioChannels: AudioChannel[] = []
 
-    timeline.project.sections.forEach((section) => {
-      section.tracks.forEach((track) => {
-        const channel = convertTrackToChannel(track as unknown as TimelineTrack)
-        if (channel) {
-          audioChannels.push(channel)
-        }
+    if (timeline.project.sections) {
+      timeline.project.sections.forEach((section) => {
+        section.tracks.forEach((track) => {
+          const channel = convertTrackToChannel(track as unknown as TimelineTrack)
+          if (channel) {
+            audioChannels.push(channel)
+          }
+        })
       })
-    })
+    }
 
     // Update mixer with timeline tracks
     onChannelsUpdate(audioChannels)

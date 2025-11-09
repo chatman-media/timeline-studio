@@ -83,7 +83,7 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
 
   // Get enabled effects at current time
   const activeEffects = useMemo(() => {
-    if (!timeline.project) return []
+    if (!timeline.project || !timeline.project.sections) return []
 
     const effects: Effect[] = []
 

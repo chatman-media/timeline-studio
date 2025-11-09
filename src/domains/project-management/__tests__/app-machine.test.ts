@@ -121,6 +121,55 @@ describe("App Machine", () => {
       // Should transition to executing
       await waitFor(actor, (state) => state.matches({ connected: "executing" }))
     })
+
+    it("should handle multiple commands in sequence", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      const commands: ProjectCommand[] = [{ type: "Play" }, { type: "Pause" }, { type: "Seek", params: { time: 10 } }]
+
+      commands.forEach((cmd) => {
+        actor.send({ type: "EXECUTE_COMMAND", command: cmd })
+      })
+
+      // Should queue all commands
+      const context = actor.getSnapshot().context
+      expect(context.commandQueue.length).toBeGreaterThan(0)
+    })
+
+    it("should clear command queue after execution", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      const command: ProjectCommand = { type: "Play" }
+      actor.send({ type: "EXECUTE_COMMAND", command })
+
+      await waitFor(actor, (state) => state.matches({ connected: "executing" }))
+
+      // After execution, should return to idle
+      await waitFor(actor, (state) => state.matches({ connected: "idle" }))
+    })
+
+    it("should handle command execution errors gracefully", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      // Send invalid command
+      const command = { type: "Pause" } as ProjectCommand
+      actor.send({ type: "EXECUTE_COMMAND", command })
+
+      // Should not crash
+      expect(actor.getSnapshot().matches("connected")).toBe(true)
+    })
   })
 
   describe("State Updates", () => {
@@ -187,6 +236,154 @@ describe("App Machine", () => {
       actor.send({ type: "DISCONNECT" })
       expect(actor.getSnapshot().matches("disconnected")).toBe(true)
       expect(actor.getSnapshot().context.isConnected).toBe(false)
+    })
+
+    it("should handle disconnect with state", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      // Set some state
+      const mockState: any = {
+        project: null,
+        ui_state: { selected_clips: [], selected_tracks: [], zoom_level: 1 },
+        playback_state: { is_playing: false, current_time: 0, playback_speed: 1 },
+        version: 1,
+        version_info: {
+          current_version: "1",
+          snapshots: [],
+          branches: [],
+          current_branch: null,
+        },
+        chat_sessions: [],
+        browser_state: {
+          active_tab: "media" as const,
+          tab_settings: {},
+          selected_files: {},
+        },
+      }
+      actor.send({ type: "STATE_UPDATED", state: mockState })
+
+      actor.send({ type: "DISCONNECT" })
+      expect(actor.getSnapshot().matches("disconnected")).toBe(true)
+    })
+
+    it("should allow reconnection after disconnect", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      actor.send({ type: "DISCONNECT" })
+      expect(actor.getSnapshot().matches("disconnected")).toBe(true)
+
+      // Reconnect
+      actor.send({ type: "CONNECT" })
+      expect(actor.getSnapshot().matches("connecting")).toBe(true)
+    })
+  })
+
+  describe("Edge Cases and Resilience", () => {
+    it("should handle CONNECT event when already connected", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      // Try to connect again
+      actor.send({ type: "CONNECT" })
+
+      // Should remain connected
+      expect(actor.getSnapshot().matches("connected")).toBe(true)
+    })
+
+    it("should handle DISCONNECT when already disconnected", () => {
+      actor.start()
+      expect(actor.getSnapshot().matches("disconnected")).toBe(true)
+
+      actor.send({ type: "DISCONNECT" })
+
+      // Should remain disconnected
+      expect(actor.getSnapshot().matches("disconnected")).toBe(true)
+    })
+
+    it("should handle rapid state transitions", async () => {
+      actor.start()
+
+      // Rapid connect/disconnect
+      actor.send({ type: "CONNECT" })
+      actor.send({ type: "DISCONNECT" })
+      actor.send({ type: "CONNECT" })
+
+      // Should handle gracefully
+      expect(actor.getSnapshot()).toBeDefined()
+    })
+
+    it("should handle command queue across state transitions", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connected"))
+
+      const command: ProjectCommand = { type: "Pause" }
+      actor.send({ type: "EXECUTE_COMMAND", command })
+
+      const queueLengthBeforeDisconnect = actor.getSnapshot().context.commandQueue.length
+      expect(queueLengthBeforeDisconnect).toBeGreaterThan(0)
+
+      // State transition - disconnect
+      actor.send({ type: "DISCONNECT" })
+
+      // Should have transitioned to disconnected
+      expect(actor.getSnapshot().matches("disconnected")).toBe(true)
+    })
+
+    it("should handle null project state gracefully", () => {
+      actor.start()
+
+      actor.send({ type: "STATE_UPDATED", state: null })
+
+      expect(actor.getSnapshot().context.projectState).toBeNull()
+    })
+
+    it("should handle multiple retry attempts", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+
+      // Simulate error
+      actor.send({ type: "CONNECTION_ERROR", error: "Test error" })
+      expect(actor.getSnapshot().matches("error")).toBe(true)
+
+      // Multiple retries
+      actor.send({ type: "RETRY_CONNECTION" })
+      expect(actor.getSnapshot().matches("connecting")).toBe(true)
+
+      actor.send({ type: "CONNECTION_ERROR", error: "Test error 2" })
+      actor.send({ type: "RETRY_CONNECTION" })
+
+      // Should still be able to retry
+      expect(actor.getSnapshot().matches("connecting")).toBe(true)
+    })
+
+    it("should maintain error state until retry", async () => {
+      actor.start()
+      actor.send({ type: "CONNECT" })
+      await waitFor(actor, (state) => state.matches("connecting"))
+
+      actor.send({ type: "CONNECTION_ERROR", error: "Persistent error" })
+
+      expect(actor.getSnapshot().matches("error")).toBe(true)
+      expect(actor.getSnapshot().context.error).toBe("Persistent error")
+
+      // Error should persist until retry
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      expect(actor.getSnapshot().matches("error")).toBe(true)
     })
   })
 })

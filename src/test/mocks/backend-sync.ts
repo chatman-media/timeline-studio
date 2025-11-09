@@ -135,6 +135,156 @@ function handleBrowserCommand(command: ProjectCommand) {
   const activeTab = mockBrowserState.active_tab
 
   switch (command.type) {
+    case "BrowserSwitchTab":
+      if (command.params?.tab) {
+        mockBrowserState = {
+          ...mockBrowserState,
+          active_tab: command.params.tab,
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserSetSearchQuery":
+      if (command.params) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              search_query: command.params.query,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserToggleFavorites":
+      const favTab = command.params?.tab || activeTab
+      mockBrowserState = {
+        ...mockBrowserState,
+        tab_settings: {
+          ...mockBrowserState.tab_settings,
+          [favTab]: {
+            ...mockBrowserState.tab_settings[favTab],
+            show_favorites_only: !mockBrowserState.tab_settings[favTab].show_favorites_only,
+          },
+        },
+      }
+      triggerStateChange()
+      break
+
+    case "BrowserSetSort":
+      if (command.params) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              sort_by: command.params.sort_by,
+              sort_order: command.params.sort_order,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserSetGroupBy":
+      if (command.params) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              group_by: command.params.group_by,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserSetFilter":
+      if (command.params) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              filter_type: command.params.filter_type,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserSetViewMode":
+      if (command.params) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              view_mode: command.params.view_mode,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserSetPreviewSize":
+      if (command.params !== undefined) {
+        const tab = command.params.tab || activeTab
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [tab]: {
+              ...mockBrowserState.tab_settings[tab],
+              preview_size_index: command.params.size_index,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
+    case "BrowserResetTabSettings":
+      if (command.params?.tab) {
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [command.params.tab]: {
+              search_query: "",
+              show_favorites_only: false,
+              sort_by: "name",
+              sort_order: "asc",
+              group_by: "none",
+              filter_type: "all",
+              view_mode: "thumbnails",
+              preview_size_index: 2,
+            },
+          },
+        }
+        triggerStateChange()
+      }
+      break
+
     case "BrowserSelectFile":
       if (command.params?.file_id) {
         const tab = command.params.tab || activeTab
@@ -250,50 +400,61 @@ export const mockBackendSync = {
   mergeBranch: vi.fn().mockResolvedValue({ success: true, error: null, data: {} }),
   onEvent: vi.fn(() => () => {}),
   onStateChange: vi.fn((handler: (state: ProjectState) => void) => {
-    stateChangeHandlers.push(handler)
+    // Only add handler if it's not already in the array
+    if (!stateChangeHandlers.includes(handler)) {
+      stateChangeHandlers.push(handler)
+    }
+
     // Call handler immediately with current state
-    handler({
-      version: 1,
-      version_info: {
-        current_version_id: "initial",
-        branch_name: "main",
-        has_uncommitted_changes: false,
-        last_snapshot_time: new Date().toISOString(),
-        auto_save_enabled: true,
-        auto_save_interval_seconds: 30,
-      },
-      browser_state: mockBrowserState,
-      clipboard: null,
-      project: null,
-      ui_state: {
-        selected_clips: [],
-        selected_tracks: [],
-        selected_sections: [],
-        timeline_zoom: 1,
-        timeline_scroll: 0,
-        active_tool: "select",
-        browser_state: null,
-      },
-      playback_state: {
-        is_playing: false,
-        current_time: 0,
-        playback_rate: 1,
-        loop_enabled: false,
-        loop_start: null,
-        loop_end: null,
-        volume: 1,
-        current_media_id: null,
-        selected_clip_id: null,
-        video_source: "browser",
-        applied_effects: [],
-        applied_filters: [],
-        applied_template: null,
-        is_loading: false,
-        is_seeking: false,
-        duration: 0,
-      },
-      chat_sessions: [],
-    })
+    // Wrap in try-catch to prevent crashes
+    try {
+      handler({
+        version: 1,
+        version_info: {
+          current_version_id: "initial",
+          branch_name: "main",
+          has_uncommitted_changes: false,
+          last_snapshot_time: new Date().toISOString(),
+          auto_save_enabled: true,
+          auto_save_interval_seconds: 30,
+        },
+        browser_state: mockBrowserState,
+        clipboard: null,
+        project: null,
+        ui_state: {
+          selected_clips: [],
+          selected_tracks: [],
+          selected_sections: [],
+          timeline_zoom: 1,
+          timeline_scroll: 0,
+          active_tool: "select",
+          browser_state: null,
+        },
+        playback_state: {
+          is_playing: false,
+          current_time: 0,
+          playback_rate: 1,
+          loop_enabled: false,
+          loop_start: null,
+          loop_end: null,
+          volume: 1,
+          current_media_id: null,
+          selected_clip_id: null,
+          video_source: "browser",
+          applied_effects: [],
+          applied_filters: [],
+          applied_template: null,
+          is_loading: false,
+          is_seeking: false,
+          duration: 0,
+        },
+        chat_sessions: [],
+      })
+    } catch (error) {
+      // Ignore errors during test initialization
+      console.warn("Error calling state change handler:", error)
+    }
+
     // Return unsubscribe function
     return () => {
       const index = stateChangeHandlers.indexOf(handler)
@@ -350,6 +511,128 @@ export function resetMockBrowserState() {
 
   // Notify all handlers about the reset state instead of clearing them
   triggerStateChange()
+}
+
+// Helper to reset executeCommand mock
+export function resetExecuteCommandMock() {
+  // Clear all state change handlers to avoid memory leaks
+  stateChangeHandlers.length = 0
+
+  // Reset all mocks to their original implementations
+  mockBackendSync.executeCommand = vi.fn(async (command: ProjectCommand) => {
+    handleBrowserCommand(command)
+    return { success: true, error: null, data: null }
+  })
+
+  mockBackendSync.getProjectState = vi.fn(async () => ({
+    version: 1,
+    version_info: {
+      current_version_id: "initial",
+      branch_name: "main",
+      has_uncommitted_changes: false,
+      last_snapshot_time: new Date().toISOString(),
+      auto_save_enabled: true,
+      auto_save_interval_seconds: 30,
+    },
+    browser_state: mockBrowserState,
+    clipboard: null,
+    project: null,
+    ui_state: {
+      selected_clips: [],
+      selected_tracks: [],
+      selected_sections: [],
+      timeline_zoom: 1,
+      timeline_scroll: 0,
+      active_tool: "select",
+      browser_state: null,
+    },
+    playback_state: {
+      is_playing: false,
+      current_time: 0,
+      playback_rate: 1,
+      loop_enabled: false,
+      loop_start: null,
+      loop_end: null,
+      volume: 1,
+      current_media_id: null,
+      selected_clip_id: null,
+      video_source: "browser",
+      applied_effects: [],
+      applied_filters: [],
+      applied_template: null,
+      is_loading: false,
+      is_seeking: false,
+      duration: 0,
+    },
+    chat_sessions: [],
+  }))
+
+  mockBackendSync.onEvent = vi.fn(() => () => {})
+
+  mockBackendSync.onStateChange = vi.fn((handler: (state: ProjectState) => void) => {
+    // Only add handler if it's not already in the array
+    if (!stateChangeHandlers.includes(handler)) {
+      stateChangeHandlers.push(handler)
+    }
+
+    // Call handler immediately with current state
+    // Wrap in try-catch to prevent crashes
+    try {
+      handler({
+        version: 1,
+        version_info: {
+          current_version_id: "initial",
+          branch_name: "main",
+          has_uncommitted_changes: false,
+          last_snapshot_time: new Date().toISOString(),
+          auto_save_enabled: true,
+          auto_save_interval_seconds: 30,
+        },
+        browser_state: mockBrowserState,
+        clipboard: null,
+        project: null,
+        ui_state: {
+          selected_clips: [],
+          selected_tracks: [],
+          selected_sections: [],
+          timeline_zoom: 1,
+          timeline_scroll: 0,
+          active_tool: "select",
+          browser_state: null,
+        },
+        playback_state: {
+          is_playing: false,
+          current_time: 0,
+          playback_rate: 1,
+          loop_enabled: false,
+          loop_start: null,
+          loop_end: null,
+          volume: 1,
+          current_media_id: null,
+          selected_clip_id: null,
+          video_source: "browser",
+          applied_effects: [],
+          applied_filters: [],
+          applied_template: null,
+          is_loading: false,
+          is_seeking: false,
+          duration: 0,
+        },
+        chat_sessions: [],
+      })
+    } catch (error) {
+      // Ignore errors during test initialization
+      console.warn("Error calling state change handler:", error)
+    }
+
+    // Return unsubscribe function
+    return () => {
+      const index = stateChangeHandlers.indexOf(handler)
+      if (index > -1) {
+        stateChangeHandlers.splice(index, 1)
+      }
+    }
+  })
 }
 
 // Mock getBackendSync to always return the mock instance

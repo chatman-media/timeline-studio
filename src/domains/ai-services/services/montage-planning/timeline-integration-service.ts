@@ -280,7 +280,7 @@ function getOrCreateTracks(
  * Рассчитать время начала новой секции
  */
 function calculateSectionStartTime(project: TimelineProject): number {
-  if (project.sections.length === 0) {
+  if (!project?.sections || project.sections.length === 0) {
     return 0
   }
 

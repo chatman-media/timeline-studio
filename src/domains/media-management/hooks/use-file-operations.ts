@@ -4,40 +4,29 @@
  * Хук для работы с файловыми операциями
  */
 
-import type { MediaFileOperation } from "../types"
 import { useMediaManagement } from "./use-media-management"
 
 export function useFileOperations() {
   const { fileOperationsState } = useMediaManagement()
 
-  const context = fileOperationsState.context
-
   return {
     // All operations
-    operations: Array.from(context.operations.values()),
-
-    // Operation counts
-    activeCount: context.activeOperations.length,
-    completedCount: context.completedOperations.length,
-    failedCount: context.failedOperations.length,
+    operations: fileOperationsState.operations,
 
     // Operation lists
-    activeOperations: context.activeOperations
-      .map((id: string) => context.operations.get(id))
-      .filter(Boolean) as MediaFileOperation[],
+    activeOperations: fileOperationsState.operations.filter((op) => op.status === "in_progress"),
+    completedOperations: fileOperationsState.completedOperations,
+    failedOperations: fileOperationsState.failedOperations,
 
-    completedOperations: context.completedOperations
-      .map((id: string) => context.operations.get(id))
-      .filter(Boolean) as MediaFileOperation[],
-
-    failedOperations: context.failedOperations
-      .map((id: string) => context.operations.get(id))
-      .filter(Boolean) as MediaFileOperation[],
-
-    // Get specific operation
-    getOperation: (id: string) => context.operations.get(id),
+    // Operation counts
+    activeCount: fileOperationsState.operations.filter((op) => op.status === "in_progress").length,
+    completedCount: fileOperationsState.completedOperations.length,
+    failedCount: fileOperationsState.failedOperations.length,
 
     // Check if any operations are active
-    hasActiveOperations: context.activeOperations.length > 0,
+    hasActiveOperations: fileOperationsState.hasActiveOperations,
+
+    // Get specific operation by id
+    getOperation: (id: string) => fileOperationsState.operations.find((op) => op.id === id),
   }
 }

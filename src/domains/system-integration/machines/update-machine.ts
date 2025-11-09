@@ -191,7 +191,10 @@ export const updateMachine = setup({
     updateAvailable: {
       on: {
         DOWNLOAD_UPDATE: "downloading",
-        DISMISS: "idle",
+        DISMISS: {
+          target: "idle",
+          actions: "clearAvailableUpdate",
+        },
         CHECK_FOR_UPDATES: "checking",
       },
     },

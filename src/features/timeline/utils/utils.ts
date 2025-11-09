@@ -19,7 +19,7 @@ import type {
  * Вычисляет общую длительность проекта
  */
 export function calculateProjectDuration(project: TimelineProject): number {
-  if (project.sections.length === 0) return 0
+  if (!project?.sections || project.sections.length === 0) return 0
 
   const lastSection = project.sections.reduce((latest, section) =>
     section.endTime > latest.endTime ? section : latest,
@@ -48,6 +48,7 @@ export function getAllClips(project: TimelineProject | null | undefined): Timeli
  * Находит секцию по времени
  */
 export function findSectionAtTime(project: TimelineProject, time: number): TimelineSection | null {
+  if (!project?.sections) return null
   return project.sections.find((section) => time >= section.startTime && time <= section.endTime) || null
 }
 
@@ -248,7 +249,8 @@ export function validateProject(project: TimelineProject): string[] {
   const errors: string[] = []
 
   // Проверяем секции
-  project.sections.forEach((section) => {
+  if (project?.sections) {
+    project.sections.forEach((section) => {
     if (section.startTime < 0) {
       errors.push(`Section ${section.name}: start time cannot be negative`)
     }
@@ -258,7 +260,8 @@ export function validateProject(project: TimelineProject): string[] {
     if (section.endTime !== section.startTime + section.duration) {
       errors.push(`Section ${section.name}: end time mismatch`)
     }
-  })
+    })
+  }
 
   // Проверяем треки
   getAllTracks(project).forEach((track) => {

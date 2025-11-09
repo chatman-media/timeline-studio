@@ -279,4 +279,282 @@ describe("SystemIntegrationOrchestrator", () => {
       expect(notifications).toHaveLength(0)
     })
   })
+
+  describe("Error Handling", () => {
+    it("should handle invalid modal type gracefully", () => {
+      const invalidModal = "invalid-modal" as ModalType
+
+      expect(() => {
+        orchestrator.openModal(invalidModal)
+      }).not.toThrow()
+
+      const state = orchestrator.getModalState()
+      expect(state.context.modalType).toBe(invalidModal)
+    })
+
+    it("should handle notification with missing required fields", () => {
+      const id = orchestrator.showNotification({
+        notification_type: "info",
+        type: "info",
+        title: "",
+        message: "",
+      })
+
+      expect(id).toBeTruthy()
+      const notifications = orchestrator.getNotifications()
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0].title).toBe("")
+    })
+
+    it("should handle multiple rapid modal opens", () => {
+      orchestrator.openModal("user-settings")
+      orchestrator.openModal("project-settings")
+      orchestrator.openModal("export")
+
+      const state = orchestrator.getModalState()
+      expect(state.context.modalType).toBe("export")
+    })
+
+    it("should handle dismissing non-existent notification", () => {
+      expect(() => {
+        orchestrator.dismissNotification("non-existent-id")
+      }).not.toThrow()
+
+      expect(orchestrator.getNotifications()).toHaveLength(0)
+    })
+  })
+
+  describe("Edge Cases", () => {
+    it("should handle zero duration notification", () => {
+      const id = orchestrator.showNotification({
+        notification_type: "info",
+        type: "info",
+        title: "Test",
+        message: "Test",
+        duration: 0,
+      })
+
+      expect(orchestrator.getNotifications()).toHaveLength(1)
+      // Notification should persist since duration is 0
+    })
+
+    it("should handle extremely short duration notification", async () => {
+      vi.useFakeTimers()
+
+      const id = orchestrator.showNotification({
+        notification_type: "info",
+        type: "info",
+        title: "Test",
+        message: "Test",
+        duration: 1,
+      })
+
+      expect(orchestrator.getNotifications()).toHaveLength(1)
+
+      vi.advanceTimersByTime(1)
+      expect(orchestrator.getNotifications()).toHaveLength(0)
+
+      vi.useRealTimers()
+    })
+
+    it("should handle notification with multiple actions", () => {
+      const action1 = vi.fn()
+      const action2 = vi.fn()
+      const action3 = vi.fn()
+
+      const id = orchestrator.showNotification({
+        notification_type: "warning",
+        type: "warning",
+        title: "Multiple Actions",
+        message: "Choose an action",
+        actions: [
+          { label: "Action 1", action: action1, style: "primary" },
+          { label: "Action 2", action: action2, style: "secondary" },
+          { label: "Action 3", action: action3, style: "danger" },
+        ],
+      })
+
+      const notifications = orchestrator.getNotifications()
+      expect(notifications[0].actions).toHaveLength(3)
+
+      notifications[0].actions![0].action()
+      notifications[0].actions![1].action()
+      notifications[0].actions![2].action()
+
+      expect(action1).toHaveBeenCalledTimes(1)
+      expect(action2).toHaveBeenCalledTimes(1)
+      expect(action3).toHaveBeenCalledTimes(1)
+    })
+
+    it("should handle closing modal when no modal is open", () => {
+      expect(() => {
+        orchestrator.closeModal()
+      }).not.toThrow()
+
+      const state = orchestrator.getModalState()
+      expect(state.context.modalType).toBe("none")
+    })
+
+    it("should maintain notification order", () => {
+      const id1 = orchestrator.showNotification({
+        notification_type: "info",
+        type: "info",
+        title: "First",
+        message: "First notification",
+      })
+
+      const id2 = orchestrator.showNotification({
+        notification_type: "success",
+        type: "success",
+        title: "Second",
+        message: "Second notification",
+      })
+
+      const id3 = orchestrator.showNotification({
+        notification_type: "warning",
+        type: "warning",
+        title: "Third",
+        message: "Third notification",
+      })
+
+      const notifications = orchestrator.getNotifications()
+      expect(notifications).toHaveLength(3)
+      expect(notifications[0].title).toBe("First")
+      expect(notifications[1].title).toBe("Second")
+      expect(notifications[2].title).toBe("Third")
+    })
+
+    it("should handle feature toggle for same feature multiple times", () => {
+      orchestrator.toggleFeature("testFeature", true)
+      expect(orchestrator.isFeatureEnabled("testFeature")).toBe(true)
+
+      orchestrator.toggleFeature("testFeature", false)
+      expect(orchestrator.isFeatureEnabled("testFeature")).toBe(false)
+
+      orchestrator.toggleFeature("testFeature", true)
+      expect(orchestrator.isFeatureEnabled("testFeature")).toBe(true)
+    })
+
+    it("should handle enabling auto-update multiple times with different intervals", () => {
+      orchestrator.enableAutoUpdate(30)
+      let state = orchestrator.getUpdateState()
+      expect(state.context.autoCheckInterval).toBe(30)
+
+      orchestrator.enableAutoUpdate(60)
+      state = orchestrator.getUpdateState()
+      expect(state.context.autoCheckInterval).toBe(60)
+
+      orchestrator.enableAutoUpdate(120)
+      state = orchestrator.getUpdateState()
+      expect(state.context.autoCheckInterval).toBe(120)
+    })
+  })
+
+  describe("Concurrent Operations", () => {
+    it("should handle simultaneous notifications", () => {
+      const ids = [1, 2, 3, 4, 5].map((i) =>
+        orchestrator.showNotification({
+          notification_type: "info",
+          type: "info",
+          title: `Notification ${i}`,
+          message: `Message ${i}`,
+        }),
+      )
+
+      expect(orchestrator.getNotifications()).toHaveLength(5)
+      expect(ids).toHaveLength(5)
+      expect(new Set(ids).size).toBe(5) // All IDs should be unique
+    })
+
+    it("should handle rapid open/close modal cycles", () => {
+      for (let i = 0; i < 10; i++) {
+        orchestrator.openModal("user-settings")
+        orchestrator.closeModal()
+      }
+
+      const state = orchestrator.getModalState()
+      expect(state.context.modalType).toBe("none")
+      expect(state.matches("closed")).toBe(true)
+    })
+
+    it("should handle mixed notification operations", () => {
+      const id1 = orchestrator.showNotification({
+        notification_type: "info",
+        type: "info",
+        title: "First",
+        message: "First",
+      })
+
+      const id2 = orchestrator.showNotification({
+        notification_type: "success",
+        type: "success",
+        title: "Second",
+        message: "Second",
+      })
+
+      orchestrator.dismissNotification(id1)
+
+      const id3 = orchestrator.showNotification({
+        notification_type: "warning",
+        type: "warning",
+        title: "Third",
+        message: "Third",
+      })
+
+      const notifications = orchestrator.getNotifications()
+      expect(notifications).toHaveLength(2)
+      expect(notifications.find((n) => n.id === id1)).toBeUndefined()
+      expect(notifications.find((n) => n.id === id2)).toBeDefined()
+      expect(notifications.find((n) => n.id === id3)).toBeDefined()
+    })
+  })
+
+  describe("Subscription Edge Cases", () => {
+    it("should handle multiple subscriptions to same event", () => {
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
+      const callback3 = vi.fn()
+
+      const sub1 = orchestrator.subscribeToModals(callback1)
+      const sub2 = orchestrator.subscribeToModals(callback2)
+      const sub3 = orchestrator.subscribeToModals(callback3)
+
+      orchestrator.openModal("user-settings")
+
+      expect(callback1).toHaveBeenCalled()
+      expect(callback2).toHaveBeenCalled()
+      expect(callback3).toHaveBeenCalled()
+
+      sub1.unsubscribe()
+      sub2.unsubscribe()
+      sub3.unsubscribe()
+    })
+
+    it("should handle unsubscribing already unsubscribed subscription", () => {
+      const callback = vi.fn()
+      const subscription = orchestrator.subscribeToModals(callback)
+
+      subscription.unsubscribe()
+
+      expect(() => {
+        subscription.unsubscribe()
+      }).not.toThrow()
+    })
+
+    it("should stop receiving events after unsubscribe", () => {
+      const callback = vi.fn()
+      const subscription = orchestrator.subscribeToModals(callback)
+
+      orchestrator.openModal("user-settings")
+      const callCount1 = callback.mock.calls.length
+
+      subscription.unsubscribe()
+      callback.mockClear()
+
+      orchestrator.closeModal()
+      orchestrator.openModal("project-settings")
+
+      expect(callback).not.toHaveBeenCalled()
+    })
+  })
 })

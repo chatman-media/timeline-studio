@@ -55,10 +55,12 @@ export function calculateProjectComplexity(project: TimelineProject): number {
   const allTracks = [...project.globalTracks]
 
   project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    allTracks.push(...section.tracks)
-    section.tracks.forEach((track) => allClips.push(...track.clips))
-  })
+  if (project.sections) {
+    project.sections.forEach((section) => {
+      allTracks.push(...section.tracks)
+      section.tracks.forEach((track) => allClips.push(...track.clips))
+    })
+  }
 
   // 1. Количество клипов
   if (allClips.length > 100) complexity += 0.2
@@ -79,9 +81,9 @@ export function calculateProjectComplexity(project: TimelineProject): number {
   if (hasTransitions) complexity += 0.1
 
   // 5. Количество секций
-  if (project.sections.length > 10) complexity += 0.15
-  else if (project.sections.length > 5) complexity += 0.1
-  else if (project.sections.length > 2) complexity += 0.05
+  if (project?.sections && project.sections.length > 10) complexity += 0.15
+  else if (project?.sections && project.sections.length > 5) complexity += 0.1
+  else if (project?.sections && project.sections.length > 2) complexity += 0.05
 
   // 6. Длительность проекта
   if (project.duration > 3600)
@@ -118,9 +120,11 @@ export function calculateQualityScore(project: TimelineProject): number {
   // Собираем все клипы
   const allClips: TimelineClip[] = []
   project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
-  })
+  if (project.sections) {
+    project.sections.forEach((section) => {
+      section.tracks.forEach((track) => allClips.push(...track.clips))
+    })
+  }
 
   // Проверяем проблемы
   if (allClips.length === 0) {
@@ -144,11 +148,11 @@ export function calculateQualityScore(project: TimelineProject): number {
   // 3. Проверка на отсутствие аудио
   const hasAudio =
     project.globalTracks.some((track) => track.type === "audio" && track.clips.length > 0) ||
-    project.sections.some((section) => section.tracks.some((track) => track.type === "audio" && track.clips.length > 0))
+    (project.sections && project.sections.some((section) => section.tracks.some((track) => track.type === "audio" && track.clips.length > 0)))
   if (!hasAudio) score -= 20
 
   // 4. Проверка на организацию
-  if (project.sections.length === 0 && allClips.length > 10) {
+  if ((!project?.sections || project.sections.length === 0) && allClips.length > 10) {
     score -= 10 // Нет секций при большом количестве клипов
   }
 
@@ -158,9 +162,11 @@ export function calculateQualityScore(project: TimelineProject): number {
 export function calculatePacingMetrics(project: TimelineProject): any {
   const allClips: TimelineClip[] = []
   project.globalTracks.forEach((track) => allClips.push(...track.clips))
-  project.sections.forEach((section) => {
-    section.tracks.forEach((track) => allClips.push(...track.clips))
-  })
+  if (project.sections) {
+    project.sections.forEach((section) => {
+      section.tracks.forEach((track) => allClips.push(...track.clips))
+    })
+  }
 
   if (allClips.length === 0) {
     return {

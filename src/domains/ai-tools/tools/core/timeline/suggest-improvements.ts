@@ -133,7 +133,9 @@ export class ImprovementsSuggestionTool extends BaseAITool {
 
         // Получаем все треки и клипы для анализа
         const allTracks = [...currentProject.globalTracks]
-        currentProject.sections.forEach((section) => allTracks.push(...section.tracks))
+        if (currentProject.sections) {
+          currentProject.sections.forEach((section) => allTracks.push(...section.tracks))
+        }
 
         const allClips = allTracks.reduce((clips: any[], track) => {
           return clips.concat(track.clips)
@@ -253,7 +255,7 @@ export class ImprovementsSuggestionTool extends BaseAITool {
         break
 
       case "storytelling":
-        if (project.sections.length < 3) {
+        if (!project?.sections || project.sections.length < 3) {
           improvements.push({
             id: "story-1",
             category: "storytelling",
@@ -297,7 +299,7 @@ export class ImprovementsSuggestionTool extends BaseAITool {
         const effectsRatio = clips.filter((c: any) => c.effects?.length > 0).length / clips.length
         return effectsRatio > 0.5 ? 8.0 : 6.0
       case "storytelling":
-        return project.sections.length >= 3 ? 8.5 : 6.0
+        return project?.sections && project.sections.length >= 3 ? 8.5 : 6.0
       case "technical":
         const hasAudio = tracks.some((t) => t.type === "audio")
         return hasAudio ? 8.0 : 4.0

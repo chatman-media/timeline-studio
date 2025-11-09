@@ -223,7 +223,9 @@ export class TimelineExportTool extends BaseAITool {
 
     // Получаем все треки
     const allTracks = [...project.globalTracks]
-    project.sections.forEach((section: any) => allTracks.push(...section.tracks))
+    if (project.sections) {
+      project.sections.forEach((section: any) => allTracks.push(...section.tracks))
+    }
 
     // Секции
     if (includeData.sections) {
