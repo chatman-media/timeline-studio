@@ -159,140 +159,160 @@ export function setupVideoMocks() {
 
 // Web Audio API mocks
 export function setupAudioMocks() {
-  global.AudioContext = vi.fn().mockImplementation(() => ({
-    createMediaElementSource: vi.fn().mockReturnValue({
+  // Create a proper AudioContext mock class
+  class MockAudioContext {
+    createMediaElementSource = vi.fn().mockReturnValue({
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createMediaStreamDestination: vi.fn().mockReturnValue({
+    })
+    createMediaStreamDestination = vi.fn().mockReturnValue({
       stream: new MediaStream(),
-    }),
-    createGain: vi.fn().mockReturnValue({
-      gain: { value: 1 },
+    })
+    createGain = vi.fn().mockReturnValue({
+      gain: {
+        value: 1,
+        setValueAtTime: vi.fn(),
+        linearRampToValueAtTime: vi.fn(),
+      },
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createAnalyser: vi.fn().mockReturnValue({
+    })
+    createStereoPanner = vi.fn().mockReturnValue({
+      pan: {
+        value: 0,
+        setValueAtTime: vi.fn(),
+        linearRampToValueAtTime: vi.fn(),
+      },
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+    })
+    createAnalyser = vi.fn().mockReturnValue({
       frequencyBinCount: 1024,
+      fftSize: 2048,
+      smoothingTimeConstant: 0.8,
       getByteFrequencyData: vi.fn(),
       getByteTimeDomainData: vi.fn(),
       getFloatTimeDomainData: vi.fn(),
       getFloatFrequencyData: vi.fn(),
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createDynamicsCompressor: vi.fn().mockReturnValue({
-      threshold: { value: -24 },
-      knee: { value: 30 },
-      ratio: { value: 12 },
-      attack: { value: 0.003 },
-      release: { value: 0.25 },
+    })
+    createDynamicsCompressor = vi.fn().mockReturnValue({
+      threshold: {
+        value: -24,
+        setValueAtTime: vi.fn(),
+      },
+      knee: {
+        value: 30,
+        setValueAtTime: vi.fn(),
+      },
+      ratio: {
+        value: 12,
+        setValueAtTime: vi.fn(),
+      },
+      attack: {
+        value: 0.003,
+        setValueAtTime: vi.fn(),
+      },
+      release: {
+        value: 0.25,
+        setValueAtTime: vi.fn(),
+      },
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createBiquadFilter: vi.fn().mockReturnValue({
+    })
+    createBiquadFilter = vi.fn().mockReturnValue({
       type: "lowpass",
       frequency: { value: 350 },
       Q: { value: 1 },
       gain: { value: 0 },
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createConvolver: vi.fn().mockReturnValue({
+    })
+    createConvolver = vi.fn().mockReturnValue({
       buffer: null,
       normalize: true,
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createDelay: vi.fn().mockReturnValue({
+    })
+    createDelay = vi.fn().mockReturnValue({
       delayTime: { value: 0 },
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createOscillator: vi.fn().mockReturnValue({
+    })
+    createOscillator = vi.fn().mockReturnValue({
       type: "sine",
       frequency: { value: 440 },
       start: vi.fn(),
       stop: vi.fn(),
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    createWaveShaper: vi.fn().mockReturnValue({
+    })
+    createWaveShaper = vi.fn().mockReturnValue({
       curve: null,
       oversample: "none",
       connect: vi.fn(),
       disconnect: vi.fn(),
-    }),
-    destination: {},
-    close: vi.fn().mockResolvedValue(undefined),
-    resume: vi.fn().mockResolvedValue(undefined),
-    suspend: vi.fn().mockResolvedValue(undefined),
-    state: "running",
-    sampleRate: 44100,
-  }))
+    })
+    destination = {}
+    close = vi.fn().mockResolvedValue(undefined)
+    resume = vi.fn().mockResolvedValue(undefined)
+    suspend = vi.fn().mockResolvedValue(undefined)
+    state = "running" as AudioContextState
+    sampleRate = 48000
+    currentTime = 0
+  }
 
-  // MediaRecorder mock
-  const MockMediaRecorder = vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
-    stop: vi.fn(),
-    pause: vi.fn(),
-    resume: vi.fn(),
-    state: "inactive",
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })) as any
+  global.AudioContext = MockAudioContext as any
 
-  MockMediaRecorder.isTypeSupported = vi.fn().mockReturnValue(true)
-  global.MediaRecorder = MockMediaRecorder
+  // Also set window.AudioContext for browser compatibility
+  if (typeof window !== "undefined") {
+    ;(window as any).AudioContext = MockAudioContext
+  }
 
-  // MediaStream mock
-  global.MediaStream = vi.fn().mockImplementation(() => ({
-    getTracks: vi.fn().mockReturnValue([]),
-    getAudioTracks: vi.fn().mockReturnValue([]),
-    getVideoTracks: vi.fn().mockReturnValue([]),
-    addTrack: vi.fn(),
-    removeTrack: vi.fn(),
-    clone: vi.fn(),
-    active: true,
-    id: "mock-stream-id",
-  }))
+  // MediaStream mock class
+  class MockMediaStream {
+    getTracks = vi.fn().mockReturnValue([])
+    getAudioTracks = vi.fn().mockReturnValue([])
+    getVideoTracks = vi.fn().mockReturnValue([])
+    addTrack = vi.fn()
+    removeTrack = vi.fn()
+    getTrackById = vi.fn()
+    clone = vi.fn()
+    addEventListener = vi.fn()
+    removeEventListener = vi.fn()
+    dispatchEvent = vi.fn()
+    active = true
+    id = "mock-stream-id"
+  }
+
+  global.MediaStream = MockMediaStream as any
+
+  // MediaRecorder mock class
+  class MockMediaRecorder {
+    start = vi.fn()
+    stop = vi.fn()
+    pause = vi.fn()
+    resume = vi.fn()
+    state = "inactive"
+    addEventListener = vi.fn()
+    removeEventListener = vi.fn()
+    dispatchEvent = vi.fn()
+
+    static isTypeSupported = vi.fn().mockReturnValue(true)
+  }
+
+  global.MediaRecorder = MockMediaRecorder as any
 
   // Mock navigator.mediaDevices for getUserMedia, getDisplayMedia, enumerateDevices
   Object.defineProperty(navigator, "mediaDevices", {
     writable: true,
     value: {
       getUserMedia: vi.fn().mockImplementation(() => {
-        const stream = {
-          getTracks: vi.fn().mockReturnValue([]),
-          getAudioTracks: vi.fn().mockReturnValue([]),
-          getVideoTracks: vi.fn().mockReturnValue([]),
-          addTrack: vi.fn(),
-          removeTrack: vi.fn(),
-          getTrackById: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-          active: true,
-          id: "mock-stream-id",
-        }
-        return Promise.resolve(stream)
+        return Promise.resolve(new MockMediaStream())
       }),
       getDisplayMedia: vi.fn().mockImplementation(() => {
-        const stream = {
-          getTracks: vi.fn().mockReturnValue([]),
-          getAudioTracks: vi.fn().mockReturnValue([]),
-          getVideoTracks: vi.fn().mockReturnValue([]),
-          addTrack: vi.fn(),
-          removeTrack: vi.fn(),
-          getTrackById: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-          active: true,
-          id: "mock-stream-id",
-        }
-        return Promise.resolve(stream)
+        return Promise.resolve(new MockMediaStream())
       }),
       enumerateDevices: vi.fn().mockResolvedValue([
         {

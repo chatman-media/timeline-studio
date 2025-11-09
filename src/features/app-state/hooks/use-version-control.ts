@@ -150,10 +150,14 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
     [toast],
   )
 
-  // Subscribe to events on mount
+  // Subscribe to events and load initial state on mount
   useEffect(() => {
+    // Load initial state
     void updateFromProjectState()
+
+    // Subscribe to events
     const unsubscribe = backendSync.onEvent(handleVersionEvent)
+
     return unsubscribe
   }, [backendSync, handleVersionEvent, updateFromProjectState])
 
@@ -161,6 +165,7 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
   const handleCommandResult = useCallback(
     (result: CommandResult, successMessage: string): boolean => {
       if (result.success) {
+        setState((prev) => ({ ...prev, error: null }))
         toast({
           title: "Success",
           description: successMessage,

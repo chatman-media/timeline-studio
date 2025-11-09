@@ -37,7 +37,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
   // Event listeners
   useEffect(() => {
-    const unlistenFunctions: UnlistenFn[] = []
+    let unlistenFunctions: UnlistenFn[] = []
 
     const setupEventListeners = async () => {
       // Listen to analysis started
@@ -102,16 +102,33 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
       const analysisResult = await invoke<ComprehensiveAnalysisResult>("ai_director_analyze_comprehensive", {
         videoPath,
         config: config || {
-          performance_mode: "balanced",
+          performance_mode: "Balanced",
           enable_audio_analysis: true,
           enable_video_analysis: true,
+          enable_vision_analysis: true,
+          enable_face_detection: true,
           enable_face_analysis: true,
+          enable_object_detection: true,
           enable_object_analysis: true,
           enable_emotion_analysis: false,
+          enable_moment_detection: true,
+          enable_content_classification: true,
           enable_composition_analysis: false,
+          enable_mood_analysis: true,
+          enable_quality_analysis: true,
           enable_scene_detection: true,
           enable_mcp_agents: false,
           generate_editing_recommendations: true,
+          max_processing_time: null,
+          quality_threshold: 0.7,
+          max_key_moments: null,
+          enable_caching: true,
+          ai_provider: null,
+          ai_model: null,
+          ai_api_key: null,
+          enable_ai_enhanced_analysis: false,
+          enable_ai_descriptions: false,
+          enable_ai_mood_analysis: false,
         },
       })
 
@@ -167,7 +184,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Computed values
   const progressPercentage = currentProgress?.progress ? Math.round(currentProgress.progress * 100) : 0
   const currentStage = currentProgress?.stage || "idle"
-  const estimatedTimeRemaining = currentProgress?.estimatedTimeRemaining || null
+  const estimatedTimeRemaining = currentProgress?.estimatedTimeRemaining ?? null
 
   return {
     // State

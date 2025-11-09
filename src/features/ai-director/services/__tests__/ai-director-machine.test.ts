@@ -2,8 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import { invoke } from "@tauri-apps/api/core"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
 import {
   AIDirectorConfig,
@@ -16,16 +15,18 @@ import {
 } from "../../types/ai-director"
 import { aiDirectorMachine } from "../ai-director-machine"
 
-// Mock Tauri invoke
+// Mock Tauri invoke - use factory function to avoid hoisting issues
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
-const mockInvoke = vi.mocked(invoke)
-
 describe("AI Director XState Machine", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   const mockConfig: AIDirectorConfig = {
@@ -81,8 +82,9 @@ describe("AI Director XState Machine", () => {
   }
 
   describe("Initial State", () => {
-    it("should start in loading state", () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+    it("should start in loading state", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -92,21 +94,23 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should load capabilities on start and transition to idle", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
 
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_get_capabilities")
+      expect(invoke).toHaveBeenCalledWith("ai_director_get_capabilities")
       expect(actor.getSnapshot().context.capabilities).toEqual(mockCapabilities)
       expect(actor.getSnapshot().context.isLoading).toBe(false)
     })
 
     it("should handle initialization errors", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       const error = new Error("Initialization failed")
-      mockInvoke.mockRejectedValueOnce(error)
+      vi.mocked(invoke).mockRejectedValueOnce(error)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -120,7 +124,8 @@ describe("AI Director XState Machine", () => {
 
   describe("Comprehensive Analysis", () => {
     it("should perform comprehensive analysis", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockAnalysisResult) // analysis
 
@@ -138,7 +143,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("analyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: mockConfig,
       })
@@ -149,8 +154,9 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should handle comprehensive analysis errors", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       const error = new Error("Analysis failed")
-      mockInvoke
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockRejectedValueOnce(error) // analysis error
 
@@ -176,7 +182,8 @@ describe("AI Director XState Machine", () => {
 
   describe("Quick Analysis", () => {
     it("should perform quick analysis", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockAnalysisResult) // quick analysis
 
@@ -193,7 +200,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("quickAnalyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_quick", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_quick", {
         videoPath: "/path/to/video.mp4",
       })
 
@@ -205,8 +212,9 @@ describe("AI Director XState Machine", () => {
 
   describe("Batch Analysis", () => {
     it("should perform batch analysis", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       const batchResults = [mockAnalysisResult, { ...mockAnalysisResult, analysis_id: "test-2" }]
-      mockInvoke
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(batchResults) // batch analysis
 
@@ -224,7 +232,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("batchAnalyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_batch", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_batch", {
         filePaths: ["/path/to/video1.mp4", "/path/to/video2.mp4"],
         config: mockConfig,
       })
@@ -236,7 +244,8 @@ describe("AI Director XState Machine", () => {
 
   describe("Capabilities Management", () => {
     it("should get capabilities on demand", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockCapabilities) // get capabilities
 
@@ -250,14 +259,15 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("gettingCapabilities"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledTimes(2) // Once for init, once for get
+      expect(invoke).toHaveBeenCalledTimes(2) // Once for init, once for get
       expect(actor.getSnapshot().context.capabilities).toEqual(mockCapabilities)
     })
   })
 
   describe("Configuration Management", () => {
     it("should get default config", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockConfig) // get default config
 
@@ -274,14 +284,15 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("gettingConfig"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_get_default_config", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_get_default_config", {
         mode: "balanced",
       })
       expect(actor.getSnapshot().context.config).toEqual(mockConfig)
     })
 
     it("should validate config", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockValidationResult) // validate config
 
@@ -298,7 +309,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("validatingConfig"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_validate_config", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_validate_config", {
         config: mockConfig,
       })
     })
@@ -306,7 +317,8 @@ describe("AI Director XState Machine", () => {
 
   describe("Health Monitoring", () => {
     it("should perform health check", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockHealthResult) // health check
 
@@ -320,14 +332,15 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("healthChecking"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_health_check")
+      expect(invoke).toHaveBeenCalledWith("ai_director_health_check")
       expect(actor.getSnapshot().context.health).toEqual(mockHealthResult)
     })
   })
 
   describe("Progress Tracking", () => {
     it("should handle analysis progress updates", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -351,7 +364,8 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should handle analysis completion", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -369,7 +383,8 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should handle analysis errors", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -393,7 +408,8 @@ describe("AI Director XState Machine", () => {
 
   describe("State Management", () => {
     it("should clear errors", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -421,7 +437,8 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should clear results", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -446,7 +463,8 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should set auto refresh", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -464,7 +482,8 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should refresh status", async () => {
-      mockInvoke
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
         .mockResolvedValueOnce(mockCapabilities) // initial load
         .mockResolvedValueOnce(mockCapabilities) // refresh
 
@@ -478,14 +497,15 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("refreshing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(mockInvoke).toHaveBeenCalledTimes(2)
+      expect(invoke).toHaveBeenCalledTimes(2)
     })
   })
 
   describe("Error Recovery", () => {
     it("should recover from error state", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       const error = new Error("Initialization failed")
-      mockInvoke.mockRejectedValueOnce(error)
+      vi.mocked(invoke).mockRejectedValueOnce(error)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -500,8 +520,9 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should retry from error state", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       const error = new Error("Initialization failed")
-      mockInvoke
+      vi.mocked(invoke)
         .mockRejectedValueOnce(error) // first attempt fails
         .mockResolvedValueOnce(mockCapabilities) // retry succeeds
 
@@ -521,7 +542,8 @@ describe("AI Director XState Machine", () => {
 
   describe("Context Updates", () => {
     it("should update lastUpdate timestamp on successful operations", async () => {
-      mockInvoke.mockResolvedValueOnce(mockCapabilities)
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
 
       const actor = createActor(aiDirectorMachine)
       const initialContext = actor.getSnapshot().context
@@ -536,12 +558,13 @@ describe("AI Director XState Machine", () => {
     })
 
     it("should maintain loading state during operations", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
       let resolveCapabilities: (value: any) => void
       const capabilitiesPromise = new Promise((resolve) => {
         resolveCapabilities = resolve
       })
 
-      mockInvoke.mockReturnValueOnce(capabilitiesPromise)
+      vi.mocked(invoke).mockReturnValueOnce(capabilitiesPromise)
 
       const actor = createActor(aiDirectorMachine)
       actor.start()
@@ -554,6 +577,340 @@ describe("AI Director XState Machine", () => {
 
       await waitFor(actor, (state) => state.matches("idle"))
       expect(actor.getSnapshot().context.isLoading).toBe(false)
+    })
+  })
+
+  describe("Edge Cases", () => {
+    it("should handle multiple sequential analysis requests", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
+        .mockResolvedValueOnce(mockCapabilities) // initial load
+        .mockResolvedValueOnce(mockAnalysisResult) // first analysis
+        .mockResolvedValueOnce({ ...mockAnalysisResult, analysis_id: "test-2" }) // second analysis
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // First analysis
+      actor.send({
+        type: "START_COMPREHENSIVE_ANALYSIS",
+        videoPath: "/path/to/video1.mp4",
+      })
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Second analysis
+      actor.send({
+        type: "START_COMPREHENSIVE_ANALYSIS",
+        videoPath: "/path/to/video2.mp4",
+      })
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Should have processed both requests
+      expect(invoke).toHaveBeenCalledTimes(3) // capabilities + 2 analyses
+    })
+
+    it("should handle empty video path", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockRejectedValueOnce(new Error("Invalid path"))
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "START_QUICK_ANALYSIS",
+        videoPath: "",
+      })
+
+      await waitFor(actor, (state) => state.matches("quickAnalyzing"))
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      expect(actor.getSnapshot().context.errors.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it("should handle analysis with all optional fields missing", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const minimalResult: ComprehensiveAnalysisResult = {
+        analysis_id: "test-minimal",
+        status: "completed",
+        started_at: "2024-01-01T12:00:00Z",
+        errors: [],
+      }
+
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce(minimalResult)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "START_QUICK_ANALYSIS",
+        videoPath: "/path/to/video.mp4",
+      })
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      expect(actor.getSnapshot().context.currentAnalysis).toEqual(minimalResult)
+    })
+
+    it("should handle batch analysis with empty array", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce([])
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "START_BATCH_ANALYSIS",
+        filePaths: [],
+      })
+
+      await waitFor(actor, (state) => state.matches("batchAnalyzing"))
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      expect(Array.isArray(actor.getSnapshot().context.results)).toBe(true)
+    })
+
+    it("should handle very large batch analysis", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const largeBatch = Array.from({ length: 100 }, (_, i) => ({
+        ...mockAnalysisResult,
+        analysis_id: `test-${i}`,
+      }))
+
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce(largeBatch)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      const filePaths = Array.from({ length: 100 }, (_, i) => `/path/to/video${i}.mp4`)
+
+      actor.send({
+        type: "START_BATCH_ANALYSIS",
+        filePaths,
+      })
+
+      await waitFor(actor, (state) => state.matches("batchAnalyzing"))
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      expect(actor.getSnapshot().context.results.length).toBeGreaterThanOrEqual(100)
+    })
+
+    it("should handle analysis result with errors array", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const resultWithErrors: ComprehensiveAnalysisResult = {
+        ...mockAnalysisResult,
+        errors: ["Warning: Low audio quality", "Info: Scene detection skipped"],
+      }
+
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce(resultWithErrors)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "START_QUICK_ANALYSIS",
+        videoPath: "/path/to/video.mp4",
+      })
+
+      await waitFor(actor, (state) => state.matches("quickAnalyzing"))
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      const currentAnalysis = actor.getSnapshot().context.currentAnalysis
+      expect(currentAnalysis).toBeDefined()
+      expect(currentAnalysis?.errors).toBeDefined()
+      expect(currentAnalysis?.errors?.length).toBe(2)
+    })
+
+    it("should handle progress updates with 0 progress", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "ANALYSIS_PROGRESS",
+        progress: {
+          analysisId: "test-123",
+          stage: "initialization",
+          progress: 0,
+          message: "Starting...",
+          estimatedTimeRemaining: 0,
+        },
+      })
+
+      expect(actor.getSnapshot().context.analysisProgress?.progress).toBe(0)
+    })
+
+    it("should handle progress updates with 1.0 progress", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "ANALYSIS_PROGRESS",
+        progress: {
+          analysisId: "test-123",
+          stage: "complete",
+          progress: 1.0,
+          message: "Finished!",
+          estimatedTimeRemaining: 0,
+        },
+      })
+
+      expect(actor.getSnapshot().context.analysisProgress?.progress).toBe(1.0)
+    })
+
+    it("should handle invalid event types gracefully", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Send an invalid event (should be ignored)
+      actor.send({ type: "INVALID_EVENT" } as any)
+
+      // Should still be in idle state
+      expect(actor.getSnapshot().value).toBe("idle")
+    })
+
+    it("should handle concurrent clear operations", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Add some data
+      actor.send({ type: "ANALYSIS_COMPLETED", result: mockAnalysisResult })
+      actor.send({
+        type: "ANALYSIS_ERROR",
+        error: { analysisId: "test-123", stage: "audio", error: "Test error" },
+      })
+
+      expect(actor.getSnapshot().context.results).toHaveLength(1)
+      expect(actor.getSnapshot().context.errors).toHaveLength(1)
+
+      // Clear both simultaneously
+      actor.send({ type: "CLEAR_RESULTS" })
+      actor.send({ type: "CLEAR_ERRORS" })
+
+      expect(actor.getSnapshot().context.results).toHaveLength(0)
+      expect(actor.getSnapshot().context.errors).toHaveLength(0)
+    })
+
+    it("should handle validation result with warnings but valid config", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const validationWithWarnings: ConfigValidationResult = {
+        is_valid: true,
+        warnings: ["Performance may be slow on older hardware", "GPU acceleration recommended"],
+        errors: [],
+        estimated_time: 180,
+        estimated_memory: 2048,
+      }
+
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce(validationWithWarnings)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({
+        type: "VALIDATE_CONFIG",
+        config: mockConfig,
+      })
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Validation succeeded, no errors should be added
+      expect(actor.getSnapshot().context.errors).toHaveLength(0)
+    })
+
+    it("should handle health check with degraded services", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const degradedHealth: HealthCheckResult = {
+        overall_status: "degraded",
+        services: {
+          audio_service: "healthy",
+          video_service: "degraded",
+          ai_service: "unhealthy",
+        },
+        last_check: "2024-01-01T12:00:00Z",
+      }
+
+      vi.mocked(invoke).mockResolvedValueOnce(mockCapabilities).mockResolvedValueOnce(degradedHealth)
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({ type: "HEALTH_CHECK" })
+
+      await waitFor(actor, (state) => state.matches("healthChecking"))
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      const health = actor.getSnapshot().context.health
+      expect(health).toBeDefined()
+      expect(health?.overall_status).toBe("degraded")
+    })
+
+    it("should handle multiple sequential state transitions", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      vi.mocked(invoke)
+        .mockResolvedValueOnce(mockCapabilities) // initial
+        .mockResolvedValueOnce(mockConfig) // get config
+        .mockResolvedValueOnce(mockValidationResult) // validate config
+        .mockResolvedValueOnce(mockAnalysisResult) // analysis
+        .mockResolvedValueOnce(mockHealthResult) // health check
+
+      const actor = createActor(aiDirectorMachine)
+      actor.start()
+
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // Execute multiple operations in sequence
+      actor.send({ type: "GET_DEFAULT_CONFIG", mode: "balanced" })
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({ type: "VALIDATE_CONFIG", config: mockConfig })
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({ type: "START_QUICK_ANALYSIS", videoPath: "/path/to/video.mp4" })
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      actor.send({ type: "HEALTH_CHECK" })
+      await waitFor(actor, (state) => state.matches("idle"))
+
+      // All operations should have completed
+      expect(actor.getSnapshot().context.config).toBeDefined()
+      expect(actor.getSnapshot().context.currentAnalysis).toBeDefined()
+      expect(actor.getSnapshot().context.health).toBeDefined()
     })
   })
 })

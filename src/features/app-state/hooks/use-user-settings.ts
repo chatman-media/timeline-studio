@@ -20,42 +20,50 @@ export function useUserSettings() {
   }, [])
 
   // Функция для загрузки настроек
-  const loadUserSettings = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      const settings = await storeService.getUserSettings()
-      setUserSettings(settings)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load user settings"
-      setError(errorMessage)
-      logger.error("[useUserSettings] Error loading settings:", { error: err })
-    } finally {
-      setIsLoading(false)
+  const loadUserSettings = useCallback(() => {
+    setIsLoading(true)
+    setError(null)
+
+    const loadAsync = async () => {
+      try {
+        const settings = await storeService.getUserSettings()
+        setUserSettings(settings)
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to load user settings"
+        setError(errorMessage)
+        logger.error("[useUserSettings] Error loading settings:", { error: err })
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    return loadAsync()
   }, [])
 
   // Функция для сохранения настроек
   const saveUserSettings = useCallback(
-    async (newSettings: Partial<UserSettingsContextType>) => {
-      try {
-        setError(null)
+    (newSettings: Partial<UserSettingsContextType>) => {
+      const saveAsync = async () => {
+        try {
+          // Если текущие настройки существуют, объединяем с новыми
+          const updatedSettings = userSettings
+            ? { ...userSettings, ...newSettings }
+            : ({ ...newSettings } as UserSettingsContextType)
 
-        // Если текущие настройки существуют, объединяем с новыми
-        const updatedSettings = userSettings
-          ? { ...userSettings, ...newSettings }
-          : ({ ...newSettings } as UserSettingsContextType)
+          await storeService.saveUserSettings(updatedSettings)
+          setUserSettings(updatedSettings)
+          setError(null) // Очищаем ошибку только при успехе
 
-        await storeService.saveUserSettings(updatedSettings)
-        setUserSettings(updatedSettings)
-
-        return { success: true }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to save user settings"
-        setError(errorMessage)
-        logger.error("[useUserSettings] Error saving settings:", { error: err })
-        return { success: false, error: errorMessage }
+          return { success: true as const }
+        } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : "Failed to save user settings"
+          setError(errorMessage)
+          logger.error("[useUserSettings] Error saving settings:", { error: err })
+          return { success: false as const, error: errorMessage }
+        }
       }
+
+      return saveAsync()
     },
     [userSettings],
   )

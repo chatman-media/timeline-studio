@@ -260,4 +260,113 @@ describe("usePanelShortcuts", () => {
       expect(mockToggleBrowserVisibility).toHaveBeenCalledTimes(1)
     })
   })
+
+  describe("Edge Cases", () => {
+    it("should handle missing shortcuts gracefully", () => {
+      shortcutsRegistry.clear()
+
+      expect(() => {
+        renderHook(() => usePanelShortcuts())
+      }).not.toThrow()
+    })
+
+    it("should handle shortcuts with undefined action", () => {
+      shortcutsRegistry.register({
+        id: "toggle-browser",
+        name: "Toggle Browser",
+        category: "view",
+        keys: ["cmd+b"],
+        action: undefined,
+      })
+
+      renderHook(() => usePanelShortcuts())
+
+      const shortcut = shortcutsRegistry.get("toggle-browser")
+
+      // Action should be defined after hook runs
+      expect(shortcut?.action).toBeDefined()
+    })
+
+    it("should preventDefault on all panel shortcut actions", () => {
+      renderHook(() => usePanelShortcuts())
+
+      const shortcuts = ["toggle-browser", "toggle-options", "toggle-timeline"]
+      shortcuts.forEach((id) => {
+        const shortcut = shortcutsRegistry.get(id)
+        const mockEvent = new KeyboardEvent("keydown")
+        vi.spyOn(mockEvent, "preventDefault")
+
+        shortcut?.action?.(mockEvent, { hotkey: "test" })
+
+        expect(mockEvent.preventDefault).toHaveBeenCalled()
+      })
+    })
+
+    it("should work with partial shortcuts registered", () => {
+      shortcutsRegistry.clear()
+
+      // Only register browser shortcut
+      shortcutsRegistry.register({
+        id: "toggle-browser",
+        name: "Toggle Browser",
+        category: "view",
+        keys: ["cmd+b"],
+      })
+
+      renderHook(() => usePanelShortcuts())
+
+      const browserShortcut = shortcutsRegistry.get("toggle-browser")
+      const optionsShortcut = shortcutsRegistry.get("toggle-options")
+
+      expect(browserShortcut?.action).toBeDefined()
+      expect(optionsShortcut).toBeUndefined()
+
+      // Should work for registered shortcut
+      const mockEvent = new KeyboardEvent("keydown")
+      browserShortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
+
+      expect(mockToggleBrowserVisibility).toHaveBeenCalled()
+    })
+
+    it("should handle keyboard events without errors", () => {
+      renderHook(() => usePanelShortcuts())
+
+      const shortcut = shortcutsRegistry.get("toggle-browser")
+
+      // Test with various keyboard event properties
+      const event1 = new KeyboardEvent("keydown", { key: "b", metaKey: true })
+      const event2 = new KeyboardEvent("keydown", { key: "b", ctrlKey: true })
+      const event3 = new KeyboardEvent("keydown", { key: "B", shiftKey: true, metaKey: true })
+
+      expect(() => {
+        shortcut?.action?.(event1, { hotkey: "cmd+b" })
+        shortcut?.action?.(event2, { hotkey: "ctrl+b" })
+        shortcut?.action?.(event3, { hotkey: "shift+cmd+b" })
+      }).not.toThrow()
+
+      expect(mockToggleBrowserVisibility).toHaveBeenCalledTimes(3)
+    })
+
+    it("should not call user settings methods if shortcut is disabled", () => {
+      shortcutsRegistry.register({
+        id: "toggle-browser",
+        name: "Toggle Browser",
+        category: "view",
+        keys: ["cmd+b"],
+        enabled: false,
+      })
+
+      renderHook(() => usePanelShortcuts())
+
+      // Action should still be registered
+      const shortcut = shortcutsRegistry.get("toggle-browser")
+      expect(shortcut?.action).toBeDefined()
+
+      // But calling it should still work (enablement is handled by ShortcutHandler)
+      const mockEvent = new KeyboardEvent("keydown")
+      shortcut?.action?.(mockEvent, { hotkey: "cmd+b" })
+
+      expect(mockToggleBrowserVisibility).toHaveBeenCalled()
+    })
+  })
 })

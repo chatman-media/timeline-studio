@@ -11,7 +11,7 @@ import type {
   ConfigValidationResult,
   HealthCheckResult,
   SystemCapabilities,
-} from "@/domains/ai-services/types/ai-director-events"
+} from "../../../domains/ai-services/types/ai-director-events"
 
 // ============================================================================
 // Configuration Types

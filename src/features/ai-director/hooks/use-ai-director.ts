@@ -33,7 +33,7 @@ export interface AIDirectorHook {
   analyzeBatch: (filePaths: string[], config?: AIDirectorConfig) => Promise<ComprehensiveAnalysisResult[]>
 
   // Configuration
-  getDefaultConfig: (mode: "fast" | "balanced" | "quality" | "custom") => Promise<AIDirectorConfig>
+  getDefaultConfig: (mode: "Fast" | "Balanced" | "Quality" | "Custom") => Promise<AIDirectorConfig>
   validateConfig: (config: AIDirectorConfig) => Promise<ConfigValidationResult>
 
   // System
@@ -177,7 +177,7 @@ export function useAIDirector(): AIDirectorHook {
 
   // Get Default Config
   const getDefaultConfig = useCallback(
-    async (mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> => {
+    async (mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> => {
       const result = await commands.aiDirectorGetDefaultConfig(mode)
       if (result.status === "ok") {
         return result.data

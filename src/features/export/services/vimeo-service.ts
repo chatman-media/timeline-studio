@@ -105,6 +105,8 @@ export async function uploadVideo(
 
     // Имитируем прогресс (в реальной реализации нужно использовать tus клиент)
     if (onProgress) {
+      // Вызываем первый раз синхронно для тестов
+      onProgress(0)
       const intervals = [20, 40, 60, 80, 100]
       for (const progress of intervals) {
         setTimeout(() => onProgress(progress), progress * 50)

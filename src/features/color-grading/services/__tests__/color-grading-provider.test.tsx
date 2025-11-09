@@ -210,4 +210,249 @@ describe("useColorGradingContext", () => {
     expect(typeof contextValue.isActive).toBe("boolean")
     expect(Array.isArray(contextValue.availablePresets)).toBe(true)
   })
+
+  describe("backend sync integration", () => {
+    it("should initialize with connected state", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(contextValue.isConnected).toBeDefined()
+      expect(contextValue.error).toBeDefined()
+    })
+
+    it("should provide backend-enhanced applyToClip method", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(typeof contextValue.applyToClip).toBe("function")
+      expect(contextValue.applyToClip).not.toBe(mockColorGrading.applyToClip)
+    })
+
+    it("should provide backend-enhanced savePreset method", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(typeof contextValue.savePreset).toBe("function")
+      expect(contextValue.savePreset).not.toBe(mockColorGrading.savePreset)
+    })
+
+    it("should provide backend-enhanced loadPreset method", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(typeof contextValue.loadPreset).toBe("function")
+      expect(contextValue.loadPreset).not.toBe(mockColorGrading.loadPreset)
+    })
+
+    it("should expose connection status", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(typeof contextValue.isConnected).toBe("boolean")
+      expect(contextValue.error === null || typeof contextValue.error === "string").toBe(true)
+    })
+
+    it("should pass through state from hook", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(contextValue.state).toEqual(mockColorGrading.state)
+    })
+
+    it("should pass through hasChanges from hook", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(contextValue.hasChanges).toBe(mockColorGrading.hasChanges)
+    })
+
+    it("should pass through isActive from hook", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(contextValue.isActive).toBe(mockColorGrading.isActive)
+    })
+
+    it("should have availablePresets defined", () => {
+      let contextValue: any
+
+      function ContextCapture() {
+        contextValue = useColorGradingContext()
+        return null
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ContextCapture />
+        </ColorGradingProvider>,
+      )
+
+      expect(contextValue.availablePresets).toBeDefined()
+      expect(Array.isArray(contextValue.availablePresets)).toBe(true)
+      expect(contextValue.availablePresets.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe("edge cases", () => {
+    it("should handle multiple renders without issues", () => {
+      const { rerender } = render(
+        <ColorGradingProvider>
+          <TestComponent />
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.getByTestId("temperature")).toHaveTextContent("0")
+
+      rerender(
+        <ColorGradingProvider>
+          <TestComponent />
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.getByTestId("temperature")).toHaveTextContent("0")
+    })
+
+    it("should handle nested providers gracefully", () => {
+      // Suppress console.error for this test
+      const originalError = console.error
+      console.error = vi.fn()
+
+      function NestedComponent() {
+        const context = useColorGradingContext()
+        return <div data-testid="nested">{context.state.basicParameters.temperature}</div>
+      }
+
+      render(
+        <ColorGradingProvider>
+          <ColorGradingProvider>
+            <NestedComponent />
+          </ColorGradingProvider>
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.getByTestId("nested")).toHaveTextContent("0")
+
+      console.error = originalError
+    })
+
+    it("should maintain context across component updates", () => {
+      function DynamicComponent({ showContent }: { showContent: boolean }) {
+        const context = useColorGradingContext()
+
+        if (!showContent) return null
+
+        return <div data-testid="dynamic">{context.state.basicParameters.temperature}</div>
+      }
+
+      const { rerender } = render(
+        <ColorGradingProvider>
+          <DynamicComponent showContent={false} />
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.queryByTestId("dynamic")).not.toBeInTheDocument()
+
+      rerender(
+        <ColorGradingProvider>
+          <DynamicComponent showContent={true} />
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.getByTestId("dynamic")).toHaveTextContent("0")
+    })
+
+    it("should handle unmounting gracefully", () => {
+      const { unmount } = render(
+        <ColorGradingProvider>
+          <TestComponent />
+        </ColorGradingProvider>,
+      )
+
+      expect(screen.getByTestId("temperature")).toBeInTheDocument()
+
+      unmount()
+
+      expect(screen.queryByTestId("temperature")).not.toBeInTheDocument()
+    })
+  })
 })

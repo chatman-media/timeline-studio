@@ -165,8 +165,27 @@ export function validateSettings(settings: SocialExportSettings): string[] {
   }
 
   // Проверяем длину caption (максимум 1024 символа для видео)
-  const captionLength =
-    (settings.title?.length || 0) + (settings.description?.length || 0) + (settings.tags?.join(" ").length || 0)
+  // Считаем реальную длину с учетом форматирования как в exportSettings
+  let captionLength = 0
+
+  if (settings.title) {
+    captionLength += settings.title.length + 2 // *title*
+  }
+
+  if (settings.description) {
+    captionLength += settings.description.length
+    if (settings.title) {
+      captionLength += 2 // \n\n between title and description
+    }
+  }
+
+  if (settings.tags && settings.tags.length > 0) {
+    const hashtags = settings.tags.map((tag) => `#${tag.replace(/\s+/g, "_")}`).join(" ")
+    if (captionLength > 0) {
+      captionLength += 2 // \n\n before hashtags
+    }
+    captionLength += hashtags.length
+  }
 
   if (captionLength > 1000) {
     // Оставляем небольшой запас для markdown разметки

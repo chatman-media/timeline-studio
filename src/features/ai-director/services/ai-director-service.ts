@@ -4,7 +4,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { createLogger } from "@/lib/tauri-logger"
+import { createLogger } from "../../../lib/tauri-logger"
 import type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,

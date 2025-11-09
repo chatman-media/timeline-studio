@@ -535,5 +535,283 @@ describe("IndexedDBCacheService", () => {
       // Should not throw
       await expect(service.getCacheStatistics()).rejects.toThrow("Entries error")
     })
+
+    it("should handle deletion errors", async () => {
+      mockDel.mockRejectedValue(new Error("Deletion failed"))
+
+      await expect(service.deletePreview("test")).rejects.toThrow("Deletion failed")
+    })
+
+    it("should handle clear operation errors", async () => {
+      mockClear.mockRejectedValue(new Error("Clear failed"))
+
+      await expect(service.clearPreviewCache()).rejects.toThrow("Clear failed")
+    })
+  })
+
+  describe("Edge Cases", () => {
+    beforeEach(() => {
+      mockGet.mockResolvedValue(null)
+      mockSet.mockResolvedValue(undefined)
+      mockDel.mockResolvedValue(undefined)
+      mockEntries.mockResolvedValue([])
+    })
+
+    it("should handle empty string as fileId", async () => {
+      await service.cachePreview("", "data")
+
+      expect(mockSet).toHaveBeenCalledWith(
+        "",
+        expect.objectContaining({
+          fileId: "",
+        }),
+        expect.any(Object),
+      )
+    })
+
+    it("should handle very large thumbnails", async () => {
+      const largeThumbnail = `data:image/jpeg;base64,${"A".repeat(10000000)}` // 10MB
+
+      await service.cachePreview("large-file", largeThumbnail)
+
+      expect(mockSet).toHaveBeenCalled()
+    })
+
+    it("should handle empty frames array", async () => {
+      await service.cacheTimelineFrames("video-1", [])
+
+      expect(mockSet).toHaveBeenCalledWith(
+        "video-1",
+        expect.objectContaining({
+          frames: [],
+        }),
+        expect.any(Object),
+      )
+    })
+
+    it("should handle very large frame arrays", async () => {
+      const largeFrameArray = Array.from({ length: 10000 }, (_, i) => ({
+        timestamp: i * 1000,
+        frameData: `frame-${i}`,
+        isKeyframe: i % 10 === 0,
+      }))
+
+      await service.cacheTimelineFrames("video-large", largeFrameArray)
+
+      expect(mockSet).toHaveBeenCalled()
+    })
+
+    it("should handle special characters in fileId", async () => {
+      const specialFileId = "file://@#$%^&*()_+-=[]{}|;:',.<>?~`"
+
+      await service.cachePreview(specialFileId, "data")
+
+      expect(mockSet).toHaveBeenCalledWith(
+        specialFileId,
+        expect.objectContaining({
+          fileId: specialFileId,
+        }),
+        expect.any(Object),
+      )
+    })
+
+    it("should handle unicode characters in fileId", async () => {
+      const unicodeFileId = "файл-видео-测试-🎬"
+
+      await service.cachePreview(unicodeFileId, "data")
+
+      expect(mockSet).toHaveBeenCalledWith(
+        unicodeFileId,
+        expect.objectContaining({
+          fileId: unicodeFileId,
+        }),
+        expect.any(Object),
+      )
+    })
+
+    it("should handle concurrent cache operations", async () => {
+      const promises = Array.from({ length: 100 }, (_, i) => service.cachePreview(`file-${i}`, `data-${i}`))
+
+      await Promise.all(promises)
+
+      expect(mockSet).toHaveBeenCalledTimes(100)
+    })
+
+    it("should handle timestamp exactly at TTL boundary", async () => {
+      const fileId = "boundary-file"
+      const exactTTL = Date.now() - 30 * 24 * 60 * 60 * 1000 // Exactly 30 days
+      const cachedAtBoundary = {
+        fileId,
+        thumbnail: "data",
+        timestamp: exactTTL,
+        size: 1000,
+      }
+
+      mockGet.mockResolvedValue(cachedAtBoundary)
+
+      const result = await service.getCachedPreview(fileId)
+
+      // Should still be valid (not expired) at exactly TTL
+      expect(result).toBe("data")
+      expect(mockDel).not.toHaveBeenCalled()
+    })
+
+    it("should handle timestamp just over TTL boundary", async () => {
+      const fileId = "expired-boundary-file"
+      const justExpired = Date.now() - 30 * 24 * 60 * 60 * 1000 - 1 // Just over 30 days
+      const cachedJustExpired = {
+        fileId,
+        thumbnail: "data",
+        timestamp: justExpired,
+        size: 1000,
+      }
+
+      mockGet.mockResolvedValue(cachedJustExpired)
+
+      const result = await service.getCachedPreview(fileId)
+
+      expect(result).toBeNull()
+      expect(mockDel).toHaveBeenCalledWith(fileId, expect.any(Object))
+    })
+
+    it("should handle cache statistics with zero-size entries", async () => {
+      const zeroSizeEntries = [
+        ["file1", { fileId: "file1", thumbnail: "", timestamp: Date.now(), size: 0 }],
+        ["file2", { fileId: "file2", thumbnail: "", timestamp: Date.now(), size: 0 }],
+      ] as any
+
+      mockEntries.mockResolvedValue(zeroSizeEntries)
+
+      const stats = await service.getCacheStatistics()
+
+      expect(stats.previewCache.count).toBe(2)
+      expect(stats.previewCache.size).toBe(0)
+    })
+
+    it("should handle deletion of non-existent preview", async () => {
+      mockDel.mockResolvedValue(undefined)
+
+      await service.deletePreview("non-existent-file")
+
+      expect(mockDel).toHaveBeenCalledWith("non-existent-file", expect.any(Object))
+    })
+
+    it("should handle mixed expired and valid entries in cleanup", async () => {
+      const now = Date.now()
+      const mixedEntries = [
+        ["expired1", { fileId: "expired1", timestamp: now - 31 * 24 * 60 * 60 * 1000, size: 1000 }],
+        ["valid1", { fileId: "valid1", timestamp: now - 1 * 24 * 60 * 60 * 1000, size: 1000 }],
+        ["expired2", { fileId: "expired2", timestamp: now - 40 * 24 * 60 * 60 * 1000, size: 1000 }],
+        ["valid2", { fileId: "valid2", timestamp: now - 5 * 24 * 60 * 60 * 1000, size: 1000 }],
+      ] as any
+
+      mockEntries.mockResolvedValue(mixedEntries)
+
+      await service.cleanupExpiredCache()
+
+      expect(mockDel).toHaveBeenCalledWith("expired1", expect.any(Object))
+      expect(mockDel).toHaveBeenCalledWith("expired2", expect.any(Object))
+      expect(mockDel).not.toHaveBeenCalledWith("valid1", expect.any(Object))
+      expect(mockDel).not.toHaveBeenCalledWith("valid2", expect.any(Object))
+      expect(mockDel).toHaveBeenCalledTimes(8) // 2 expired entries x 4 stores
+    })
+  })
+
+  describe("Recognition and Subtitle Cache Integration", () => {
+    beforeEach(() => {
+      mockGet.mockResolvedValue(null)
+      mockSet.mockResolvedValue(undefined)
+      mockEntries.mockResolvedValue([])
+    })
+
+    it("should handle recognition frames with binary data", async () => {
+      const binaryFrame = {
+        timestamp: 1000,
+        frameData: new Uint8Array([255, 128, 64, 32, 16, 8, 4, 2, 1]),
+        resolution: [1920, 1080] as [number, number],
+        isKeyframe: true,
+        sceneChangeScore: 0.95,
+      }
+
+      await service.cacheRecognitionFrames("video-binary", [binaryFrame])
+
+      expect(mockSet).toHaveBeenCalledWith(
+        "video-binary",
+        expect.objectContaining({
+          frames: [binaryFrame],
+        }),
+        expect.any(Object),
+      )
+    })
+
+    it("should handle subtitle frames with multi-line text", async () => {
+      const multiLineSubtitle = {
+        subtitleId: "sub-multiline",
+        subtitleText: "Line 1\nLine 2\nLine 3\nLine 4",
+        timestamp: 5000,
+        frameData: new Uint8Array([1, 2, 3]),
+        startTime: 5000,
+        endTime: 8000,
+      }
+
+      await service.cacheSubtitleFrames("video-subtitle", [multiLineSubtitle])
+
+      expect(mockSet).toHaveBeenCalled()
+    })
+
+    it("should handle subtitle frames with special characters", async () => {
+      const specialCharSubtitle = {
+        subtitleId: "sub-special",
+        subtitleText: "Hello 世界 🎬 <>&\"'",
+        timestamp: 2000,
+        frameData: new Uint8Array([]),
+        startTime: 2000,
+        endTime: 4000,
+      }
+
+      await service.cacheSubtitleFrames("video-special", [specialCharSubtitle])
+
+      expect(mockSet).toHaveBeenCalled()
+    })
+  })
+
+  describe("Memory Management", () => {
+    it("should not trigger cleanup when under size limit", async () => {
+      const smallCacheStats = {
+        previewCache: { count: 10, size: 10 * 1024 * 1024 }, // 10MB
+        frameCache: { count: 5, size: 20 * 1024 * 1024 }, // 20MB
+        recognitionCache: { count: 3, size: 15 * 1024 * 1024 }, // 15MB
+        subtitleCache: { count: 2, size: 5 * 1024 * 1024 }, // 5MB
+        totalSize: 50 * 1024 * 1024, // 50MB (well under 500MB limit)
+      }
+
+      vi.spyOn(service, "getCacheStatistics").mockResolvedValue(smallCacheStats)
+      mockEntries.mockResolvedValue([])
+
+      await service.cachePreview("new-file", "small-data")
+
+      // Cleanup should not have been triggered (no calls to entries for cleanup)
+      expect(mockDel).not.toHaveBeenCalled()
+    })
+
+    it("should handle zero-byte cleanup request", async () => {
+      const removeOldestEntries = (service as any).removeOldestEntries.bind(service)
+
+      mockEntries.mockResolvedValue([])
+
+      await removeOldestEntries(0)
+
+      expect(mockDel).not.toHaveBeenCalled()
+    })
+
+    it("should handle negative cleanup request", async () => {
+      const removeOldestEntries = (service as any).removeOldestEntries.bind(service)
+
+      mockEntries.mockResolvedValue([])
+
+      await removeOldestEntries(-1000)
+
+      expect(mockDel).not.toHaveBeenCalled()
+    })
   })
 })

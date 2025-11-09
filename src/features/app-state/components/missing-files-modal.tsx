@@ -72,8 +72,8 @@ export function MissingFilesModal() {
     setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, action: "remove" } : r)))
   }
 
-  const handleSkipFile = (index: number) => {
-    setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, action: "skip" } : r)))
+  const handleResetFile = (index: number) => {
+    setResolutions((prev) => prev.map((r, i) => (i === index ? { ...r, action: "pending", newPath: undefined } : r)))
   }
 
   const handleResolveAll = () => {
@@ -190,7 +190,7 @@ export function MissingFilesModal() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => handleSkipFile(index)}
+                      onClick={() => handleResetFile(index)}
                       className="h-8 px-2 text-xs"
                     >
                       Отменить
