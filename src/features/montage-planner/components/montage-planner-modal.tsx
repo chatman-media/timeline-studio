@@ -3,6 +3,7 @@
  * Integrates IntegratedPlannerDashboard into modal system
  */
 
+import { MontagePlannerProvider } from "../services/montage-planner-provider"
 import { IntegratedPlannerDashboard } from "./planner-dashboard/integrated-planner-dashboard"
 
 /**
@@ -16,8 +17,10 @@ import { IntegratedPlannerDashboard } from "./planner-dashboard/integrated-plann
  */
 export function MontagePlannerModal() {
   return (
-    <div className="h-full w-full overflow-auto">
-      <IntegratedPlannerDashboard />
-    </div>
+    <MontagePlannerProvider>
+      <div className="h-full w-full overflow-auto">
+        <IntegratedPlannerDashboard />
+      </div>
+    </MontagePlannerProvider>
   )
 }
