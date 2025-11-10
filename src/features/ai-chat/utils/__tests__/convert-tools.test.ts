@@ -22,6 +22,14 @@ class MockTool implements IAITool {
     version: "1.0.0",
   }
 
+  getToolName(): string {
+    return this.metadata.name
+  }
+
+  getMetadata() {
+    return this.metadata
+  }
+
   validate(input: any): boolean {
     return input && typeof input === "object"
   }
@@ -58,6 +66,14 @@ class ValidationTool implements IAITool {
     domain: "core" as const,
     category: "timeline" as const,
     version: "1.0.0",
+  }
+
+  getToolName(): string {
+    return this.metadata.name
+  }
+
+  getMetadata() {
+    return this.metadata
   }
 
   validate(input: any): boolean {
@@ -99,6 +115,14 @@ class ErrorTool implements IAITool {
     version: "1.0.0",
   }
 
+  getToolName(): string {
+    return this.metadata.name
+  }
+
+  getMetadata() {
+    return this.metadata
+  }
+
   validate(_input: any): boolean {
     return true
   }
@@ -131,6 +155,14 @@ class AsyncTool implements IAITool {
     domain: "core" as const,
     category: "timeline" as const,
     version: "1.0.0",
+  }
+
+  getToolName(): string {
+    return this.metadata.name
+  }
+
+  getMetadata() {
+    return this.metadata
   }
 
   validate(input: any): boolean {
@@ -184,6 +216,14 @@ describe("Function Calling Integration", () => {
           domain: "core" as const,
           category: "timeline" as const,
           version: "1.0.0",
+        }
+
+        getToolName(): string {
+          return this.metadata.name
+        }
+
+        getMetadata() {
+          return this.metadata
         }
 
         validate(_input: any): boolean {
@@ -352,6 +392,14 @@ describe("Function Calling Integration", () => {
           version: "1.0.0",
         }
 
+        getToolName(): string {
+          return this.metadata.name
+        }
+
+        getMetadata() {
+          return this.metadata
+        }
+
         validate(_input: any): boolean {
           return true
         }
@@ -409,6 +457,14 @@ describe("Function Calling Integration", () => {
           domain: "core" as const,
           category: "timeline" as const,
           version: "1.0.0",
+        }
+
+        getToolName(): string {
+          return this.metadata.name
+        }
+
+        getMetadata() {
+          return this.metadata
         }
 
         validate(_input: any): boolean {

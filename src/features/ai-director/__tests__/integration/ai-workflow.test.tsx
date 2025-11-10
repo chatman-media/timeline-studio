@@ -7,7 +7,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult, SceneAnalysis } from "@/types/generated/tauri-bindings"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 import { useAIDirector } from "../../hooks/use-ai-director"
 
 // ============================================================================
@@ -55,56 +55,111 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
   status: "Completed",
   audio_analysis: {
     basic_metrics: {
-      duration: 120,
-      sample_rate: 44100,
+      duration: { seconds: 120 },
+      has_audio: true,
+      sample_rate: { hz: 44100 },
       channels: 2,
-      bit_depth: 16,
-      file_size: 1024000,
+      overall_volume: { level: 0.7 },
+      estimated_quality: 0.85,
+      file_size_bytes: 1024000,
+      codec: "aac",
+      bitrate: 128000,
     },
     ffmpeg_analysis: {
-      loudness: {
-        integrated: -12.5,
-        range: 8.0,
-        true_peak: -1.0,
+      volume_analysis: {
+        peak_volume: { level: 0.95 },
+        average_volume: { level: 0.65 },
+        rms_volume: { level: 0.7 },
+        dynamic_range: 18.5,
+        loudness_lufs: -12.5,
+        volume_histogram: [],
       },
-      dynamics: {
+      frequency_analysis: {
+        spectral_centroid: { hz: 2000 },
+        spectral_rolloff: { hz: 8000 },
+        frequency_distribution: {
+          bass_energy: 0.3,
+          mid_energy: 0.5,
+          treble_energy: 0.2,
+          total_energy: 1.0,
+        },
+        dominant_frequencies: [],
+        zero_crossing_rate: 0.1,
+      },
+      dynamics_analysis: {
         crest_factor: 6.0,
         dynamic_range: 18.5,
         compression_ratio: 2.0,
         attack_time: { seconds: 0.01 },
         release_time: { seconds: 0.1 },
       },
-      frequency: {
-        low_freq_energy: 0.3,
-        mid_freq_energy: 0.5,
-        high_freq_energy: 0.2,
-        spectral_centroid: 2000,
-        spectral_rolloff: 8000,
-      },
-      temporal: {
-        zero_crossing_rate: 0.1,
-        silence_ratio: 0.052,
-        speech_ratio: 0.8,
+      quality_metrics: {
+        overall_score: 0.9,
+        noise_level: 0.05,
+        clipping_detected: false,
+        distortion_level: 0.01,
+        signal_to_noise_ratio: 45.0,
+        issues: [],
       },
     },
     montage_analysis: {
-      tempo: 120,
-      beat_positions: [],
-      rhythm_stability: 0.9,
-      energy_curve: [],
+      dynamic_range: 18.5,
+      speech_probability: 0.8,
+      music_probability: 0.2,
+      overall_quality_score: 0.85,
+      content_segments: [],
       silence_segments: [],
+      beat_detection: null,
+      tempo_analysis: {
+        average_tempo: 120,
+        tempo_stability: 0.9,
+        tempo_changes: [],
+      },
+      key_detection: null,
+      emotional_tone: null,
+      energy_level: 0.8,
+      valence: 0.7,
+      sync_analysis: null,
     },
     transcription_analysis: {
+      engine_name: "whisper",
       full_text: "Test transcription text",
-      segments: [],
       detected_language: "en",
-      confidence: 0.95,
+      total_duration: { seconds: 120 },
+      segments: [],
+      words: [],
+      confidence_score: 0.95,
+      processing_time: { seconds: 5.0 },
+      transcription_text: "Test transcription text",
+      language_detected: "en",
+      overall_confidence: 0.95,
+      word_segments: [],
+      sentence_segments: [],
+      speaker_segments: [],
+      speech_rate: null,
+      pause_analysis: null,
+      pronunciation_quality: null,
+      model_used: "whisper-base",
+      provider_used: "openai",
     },
     analysis_metadata: {
+      analysis_version: "1.0.0",
       processing_time_ms: 1000,
+      config_used: {
+        enable_ffmpeg_analysis: true,
+        enable_montage_analysis: true,
+        enable_transcription: true,
+        ffmpeg_config: null,
+        montage_config: null,
+        whisper_config: null,
+        performance_mode: "Balanced",
+        max_processing_time_seconds: null,
+        enable_caching: true,
+      },
       engines_used: ["ffmpeg", "whisper"],
-      config_snapshot: "{}",
-      timestamp: "2024-01-01T00:00:00Z",
+      total_engines_available: 3,
+      analysis_timestamp: "2024-01-01T00:00:00Z",
+      success_rate: 1.0,
     },
   },
   scene_analysis: {
@@ -121,8 +176,9 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
         description: "Indoor scene",
         visual: null,
         audio: null,
-        emotional: null,
-        tags: [],
+        objects: [],
+        persons: [],
+        transition: null,
       },
       {
         id: "scene-2",
@@ -136,8 +192,9 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
         description: "Outdoor scene",
         visual: null,
         audio: null,
-        emotional: null,
-        tags: [],
+        objects: [],
+        persons: [],
+        transition: null,
       },
     ],
     total_scenes: 2,
@@ -148,24 +205,23 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
   moment_analysis: null,
   content_analysis: null,
   combined_insights: {
-    overall_quality_score: 0.85,
     key_moments: [],
-    content_tags: [],
-    dominant_emotions: [],
-    pacing_analysis: {
-      overall_pace: "medium",
-      pace_changes: [],
-      recommended_cuts: [],
-    },
-    quality_issues: [],
-    enhancement_suggestions: [],
+    emotional_timeline: [],
+    transitions: [],
+    overall_quality: 0.85,
+    main_subjects: [],
+    content_mood: "neutral",
   },
   performance_metrics: {
-    total_processing_time_ms: 60000,
-    peak_memory_usage_mb: 512,
-    cpu_usage_percent: 50,
-    gpu_usage_percent: null,
-    cache_hit_rate: null,
+    total_processing_time: 60.0,
+    audio_analysis_time: 20.0,
+    scene_analysis_time: 15.0,
+    vision_analysis_time: 10.0,
+    moment_analysis_time: 5.0,
+    content_analysis_time: 5.0,
+    integration_time: 5.0,
+    memory_used: 512,
+    success_rate: 1.0,
   },
   editing_recommendations: [],
   errors: [],
@@ -181,7 +237,7 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
 })
 
 const createMockConfig = (): AIDirectorConfig => ({
-  performance_mode: "balanced",
+  performance_mode: "Balanced",
   enable_audio_analysis: true,
   enable_scene_detection: true,
   enable_video_analysis: true,
@@ -189,13 +245,25 @@ const createMockConfig = (): AIDirectorConfig => ({
   enable_face_detection: true,
   enable_face_analysis: true,
   enable_object_detection: true,
+  enable_object_analysis: true,
+  enable_emotion_analysis: true,
   enable_moment_detection: true,
-  enable_content_analysis: true,
-  enable_transcription: true,
-  timeout_seconds: 300,
-  max_memory_mb: 2048,
+  enable_content_classification: true,
+  enable_composition_analysis: true,
+  enable_mood_analysis: true,
+  enable_quality_analysis: true,
+  enable_ai_descriptions: true,
+  max_processing_time: 300,
+  quality_threshold: 0.7,
+  max_key_moments: null,
   enable_caching: true,
-  cache_ttl_seconds: 3600,
+  generate_editing_recommendations: true,
+  enable_mcp_agents: false,
+  ai_provider: null,
+  ai_model: null,
+  ai_api_key: null,
+  enable_ai_enhanced_analysis: true,
+  enable_ai_mood_analysis: true,
 })
 
 // ============================================================================
@@ -225,7 +293,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(analysis.analysis_id).toBe("comprehensive-1")
       expect(analysis.status).toBe("Completed")
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.audio_analysis?.ffmpeg_analysis?.loudness.integrated).toBe(-12.5)
+      expect(analysis.audio_analysis?.ffmpeg_analysis?.volume_analysis.peak_volume.level).toBe(0.95)
       expect(analysis.scene_analysis).toBeDefined()
       expect(analysis.scene_analysis?.total_scenes).toBe(2)
       expect(analysis.vision_analysis).toBeNull()
@@ -372,7 +440,7 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const scenes = analysis.scene_analysis?.scenes || []
-      const duration = analysis.audio_analysis?.basic_metrics.duration || 0
+      const duration = analysis.audio_analysis?.basic_metrics.duration?.seconds || 0
 
       expect(scenes.length).toBeGreaterThan(0)
       expect(duration).toBeGreaterThan(0)
@@ -403,7 +471,7 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const keyMoments = analysis.combined_insights.key_moments
-      const qualityScore = analysis.combined_insights.overall_quality_score
+      const qualityScore = analysis.combined_insights.overall_quality
 
       expect(keyMoments).toBeDefined()
       expect(qualityScore).toBeGreaterThan(0)
@@ -450,7 +518,7 @@ describe("AI Director Workflow Integration Tests", () => {
       }
 
       // Verify within video duration
-      const duration = analysis.audio_analysis?.basic_metrics.duration || 120
+      const duration = analysis.audio_analysis?.basic_metrics.duration?.seconds || 120
       cutPoints.forEach((cut) => {
         expect(cut).toBeGreaterThanOrEqual(0)
         expect(cut).toBeLessThanOrEqual(duration)
@@ -472,13 +540,13 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeDefined()
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeGreaterThanOrEqual(0)
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeLessThanOrEqual(1)
-      expect(audio?.montage_analysis?.tempo).toBeDefined()
-      expect(audio?.montage_analysis?.tempo).toBeGreaterThan(0)
-      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBeDefined()
-      expect(audio?.basic_metrics.duration).toBeGreaterThan(0)
+      expect(audio?.montage_analysis?.silence_segments).toBeDefined()
+      expect(audio?.montage_analysis?.silence_segments.length).toBeGreaterThanOrEqual(0)
+      expect(audio?.montage_analysis?.overall_quality_score).toBeGreaterThanOrEqual(0)
+      expect(audio?.montage_analysis?.tempo_analysis).toBeDefined()
+      expect(audio?.montage_analysis?.tempo_analysis?.average_tempo).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.volume_analysis.peak_volume.level).toBeDefined()
+      expect(audio?.basic_metrics.duration.seconds).toBeGreaterThan(0)
     })
   })
 
@@ -498,20 +566,20 @@ describe("AI Director Workflow Integration Tests", () => {
       const scenes = analysis.scene_analysis?.scenes || []
 
       expect(audio).toBeDefined()
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeDefined()
+      expect(audio?.montage_analysis?.silence_segments).toBeDefined()
       expect(scenes.length).toBeGreaterThan(0)
 
-      // Check for quality issues
-      const qualityIssues = analysis.combined_insights.quality_issues
-      expect(qualityIssues).toBeDefined()
-      expect(Array.isArray(qualityIssues)).toBe(true)
+      // Check for quality analysis
+      const qualityScore = analysis.combined_insights.overall_quality
+      expect(qualityScore).toBeDefined()
+      expect(qualityScore).toBeGreaterThanOrEqual(0)
 
       scenes.forEach((scene) => {
         const duration = scene.endTime - scene.startTime
         expect(duration).toBeGreaterThan(0)
       })
 
-      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(120)
+      expect(analysis.audio_analysis?.basic_metrics.duration.seconds).toBe(120)
       expect(analysis.errors).toHaveLength(0)
     })
 
@@ -542,7 +610,7 @@ describe("AI Director Workflow Integration Tests", () => {
       })
 
       expect(scenes.length).toBeGreaterThan(0)
-      expect(analysis.combined_insights.overall_quality_score).toBeGreaterThan(0)
+      expect(analysis.combined_insights.overall_quality).toBeGreaterThan(0)
       expect(analysis.errors).toHaveLength(0)
     })
   })
@@ -561,25 +629,25 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.basic_metrics.duration).toBeGreaterThan(0)
-      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBeDefined()
-      expect(audio?.montage_analysis?.tempo).toBeGreaterThan(0)
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeGreaterThanOrEqual(0)
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeLessThanOrEqual(1)
+      expect(audio?.basic_metrics.duration.seconds).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.volume_analysis.peak_volume.level).toBeDefined()
+      expect(audio?.montage_analysis?.tempo_analysis?.average_tempo).toBeGreaterThan(0)
+      expect(audio?.montage_analysis?.silence_segments.length).toBeGreaterThanOrEqual(0)
+      expect(audio?.montage_analysis?.overall_quality_score).toBeGreaterThanOrEqual(0)
 
-      const dynamics = audio?.ffmpeg_analysis?.dynamics
+      const dynamics = audio?.ffmpeg_analysis?.dynamics_analysis
       expect(dynamics).toBeDefined()
       expect(dynamics?.crest_factor).toBeGreaterThan(0)
       expect(dynamics?.dynamic_range).toBeGreaterThan(0)
       expect(dynamics?.compression_ratio).toBeGreaterThan(0)
-      expect(audio?.ffmpeg_analysis?.loudness.true_peak).toBeDefined()
+      expect(audio?.ffmpeg_analysis?.volume_analysis.rms_volume.level).toBeDefined()
     })
 
     it("should detect audio quality issues", async () => {
       // Assertions: 8
       const mockResult = createMockAnalysisResult("audio-issues-1")
-      mockResult.audio_analysis!.ffmpeg_analysis!.loudness.integrated = -3.0
-      mockResult.audio_analysis!.ffmpeg_analysis!.temporal.silence_ratio = 0.45
+      mockResult.audio_analysis!.ffmpeg_analysis!.volume_analysis.peak_volume.level = 0.3
+      mockResult.audio_analysis!.montage_analysis!.overall_quality_score = 0.45
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
         status: "ok",
@@ -591,20 +659,20 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBe(-3.0)
-      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBe(0.45)
+      expect(audio?.ffmpeg_analysis?.volume_analysis.peak_volume.level).toBe(0.3)
+      expect(audio?.montage_analysis?.overall_quality_score).toBe(0.45)
 
-      // Check for loudness issues
-      if (audio?.ffmpeg_analysis && audio.ffmpeg_analysis.loudness.integrated > -6) {
-        expect(audio.ffmpeg_analysis.loudness.integrated).toBeGreaterThan(-6)
+      // Check for low volume issues
+      if (audio?.ffmpeg_analysis && audio.ffmpeg_analysis.volume_analysis.peak_volume.level < 0.5) {
+        expect(audio.ffmpeg_analysis.volume_analysis.peak_volume.level).toBeLessThan(0.5)
       }
 
-      // Check for excessive silence
-      if (audio?.ffmpeg_analysis && audio.ffmpeg_analysis.temporal.silence_ratio > 0.3) {
-        expect(audio.ffmpeg_analysis.temporal.silence_ratio).toBeGreaterThan(0.3)
+      // Check for low quality score
+      if (audio?.montage_analysis && audio.montage_analysis.overall_quality_score < 0.6) {
+        expect(audio.montage_analysis.overall_quality_score).toBeLessThan(0.6)
       }
 
-      expect(audio?.montage_analysis?.tempo).toBeDefined()
+      expect(audio?.montage_analysis?.tempo_analysis).toBeDefined()
       expect(analysis.errors).toHaveLength(0)
       expect(result.current.state.error).toBeNull()
     })
@@ -639,7 +707,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(visionAnalysis?.visual_quality_avg).toBeLessThanOrEqual(1)
 
       // Verify overall analysis quality
-      const qualityScore = analysis.combined_insights.overall_quality_score
+      const qualityScore = analysis.combined_insights.overall_quality
       expect(qualityScore).toBeGreaterThan(0)
       expect(qualityScore).toBeLessThanOrEqual(1)
 
@@ -731,14 +799,14 @@ describe("AI Director Workflow Integration Tests", () => {
 
       // Verify vision analysis has composition data
       expect(analysis.vision_analysis).toBeDefined()
-      expect(analysis.combined_insights.overall_quality_score).toBeGreaterThan(0)
+      expect(analysis.combined_insights.overall_quality).toBeGreaterThan(0)
       expect(analysis.scene_analysis?.scenes).toHaveLength(2)
       expect(analysis.scene_analysis?.total_scenes).toBe(2)
-      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(120)
+      expect(analysis.audio_analysis?.basic_metrics.duration.seconds).toBe(120)
 
-      // Verify enhancement suggestions are available
-      const suggestions = analysis.combined_insights.enhancement_suggestions
-      expect(suggestions).toBeDefined()
+      // Verify key moments are available
+      const keyMoments = analysis.combined_insights.key_moments
+      expect(keyMoments).toBeDefined()
       expect(result.current.state.error).toBeNull()
     })
   })
@@ -748,10 +816,25 @@ describe("AI Director Workflow Integration Tests", () => {
       // Assertions: 9
       const mockResult = createMockAnalysisResult("subtitle-1")
       mockResult.audio_analysis!.transcription_analysis = {
+        engine_name: "whisper",
         full_text: "Hello world. This is a test. We are testing subtitle generation.",
-        segments: [],
         detected_language: "en",
-        confidence: 0.95,
+        total_duration: { seconds: 120 },
+        segments: [],
+        words: [],
+        confidence_score: 0.95,
+        processing_time: { seconds: 5.0 },
+        transcription_text: "Hello world. This is a test. We are testing subtitle generation.",
+        language_detected: "en",
+        overall_confidence: 0.95,
+        word_segments: [],
+        sentence_segments: [],
+        speaker_segments: [],
+        speech_rate: null,
+        pause_analysis: null,
+        pronunciation_quality: null,
+        model_used: "whisper-base",
+        provider_used: "openai",
       }
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
@@ -769,7 +852,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(transcription?.length).toBeGreaterThan(0)
       expect(transcription?.split(". ")).toHaveLength(3)
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.audio_analysis?.basic_metrics.duration).toBeGreaterThan(0)
+      expect(analysis.audio_analysis?.basic_metrics.duration.seconds).toBeGreaterThan(0)
       expect(analysis.errors).toHaveLength(0)
       expect(result.current.state.error).toBeNull()
     })
@@ -815,8 +898,8 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should handle analysis of long videos", async () => {
       // Assertions: 9
       const mockResult = createMockAnalysisResult("long-video-1")
-      mockResult.audio_analysis!.basic_metrics.duration = 3600 // 1 hour
-      mockResult.performance_metrics.total_processing_time_ms = 45000 // 45 seconds processing
+      mockResult.audio_analysis!.basic_metrics.duration = { seconds: 3600 } // 1 hour
+      mockResult.performance_metrics.total_processing_time = 45.0 // 45 seconds processing
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockImplementation(
         () =>
@@ -832,11 +915,11 @@ describe("AI Director Workflow Integration Tests", () => {
       const endTime = Date.now()
 
       expect(analysis).toBeDefined()
-      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(3600)
+      expect(analysis.audio_analysis?.basic_metrics.duration.seconds).toBe(3600)
       expect(endTime - startTime).toBeLessThan(10000)
       expect(analysis.scene_analysis).toBeDefined()
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.performance_metrics.total_processing_time_ms).toBe(45000)
+      expect(analysis.performance_metrics.total_processing_time).toBe(45.0)
       expect(analysis.errors).toHaveLength(0)
 
       await waitFor(() => {
@@ -874,13 +957,13 @@ describe("AI Director Workflow Integration Tests", () => {
         audio_analysis: true,
         video_analysis: true,
         scene_detection: true,
-        object_detection: true,
+        vision_analysis: true,
         face_recognition: true,
+        object_detection: true,
+        moment_detection: true,
+        content_classification: true,
         transcription: true,
-        gpu_available: true,
-        max_video_resolution: { width: 4096, height: 2160 },
-        supported_codecs: ["h264", "h265", "vp9"],
-        max_parallel_analyses: 4,
+        gpu_acceleration: true,
       }
 
       mockCommands.aiDirectorGetCapabilities.mockResolvedValue({
@@ -894,12 +977,12 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(caps.audio_analysis).toBe(true)
       expect(caps.video_analysis).toBe(true)
       expect(caps.scene_detection).toBe(true)
-      expect(caps.object_detection).toBe(true)
+      expect(caps.vision_analysis).toBe(true)
       expect(caps.face_recognition).toBe(true)
+      expect(caps.object_detection).toBe(true)
+      expect(caps.moment_detection).toBe(true)
+      expect(caps.content_classification).toBe(true)
       expect(caps.transcription).toBe(true)
-      expect(caps.gpu_available).toBe(true)
-      expect(caps.supported_codecs).toContain("h264")
-      expect(caps.max_parallel_analyses).toBeGreaterThan(0)
     })
 
     it("should validate configuration", async () => {

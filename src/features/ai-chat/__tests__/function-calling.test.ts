@@ -17,6 +17,14 @@ class MockTool implements IAITool {
     version: "1.0.0",
   }
 
+  getToolName(): string {
+    return this.metadata.name
+  }
+
+  getMetadata() {
+    return this.metadata
+  }
+
   validate(input: any): boolean {
     return input && typeof input === "object"
   }
