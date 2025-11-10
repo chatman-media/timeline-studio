@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/chatman-media/timeline-studio/compare/v2.11.1...v2.11.2) (2025-11-10)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить playbackRate в integration тесте ([f233fa8](https://github.com/chatman-media/timeline-studio/commit/f233fa852a1351262683262a7d8847942c9defd9))
+
 ## [2.11.1](https://github.com/chatman-media/timeline-studio/compare/v2.11.0...v2.11.1) (2025-11-10)
 
 
