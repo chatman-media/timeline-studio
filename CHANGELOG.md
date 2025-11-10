@@ -1,3 +1,16 @@
+# [2.10.0](https://github.com/chatman-media/timeline-studio/compare/v2.9.2...v2.10.0) (2025-11-10)
+
+
+### Bug Fixes
+
+* **promo:** Добавить CNAME файл для кастомного домена timelinestudio.pro ([638c45f](https://github.com/chatman-media/timeline-studio/commit/638c45f89bca4a0d0d53ccce4ceeb667372ce65c))
+* **timeline:** Добавить null проверки для timeline.project.sections ([9ea57b2](https://github.com/chatman-media/timeline-studio/commit/9ea57b20ae1392a413bb727fa480019db6abe411))
+
+
+### Features
+
+* Добавить backend sync и очистить legacy код ([93b2550](https://github.com/chatman-media/timeline-studio/commit/93b255053b806960285a9de69a5bb03413aef239))
+
 ## [2.9.2](https://github.com/chatman-media/timeline-studio/compare/v2.9.1...v2.9.2) (2025-11-08)
 
 
