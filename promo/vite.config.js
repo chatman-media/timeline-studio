@@ -57,6 +57,11 @@ export default defineConfig({
     ],
     // Исключаем тяжелые библиотеки из предварительной оптимизации
     exclude: ["@react-three/fiber", "@react-three/drei", "three"],
+    esbuildOptions: {
+      define: {
+        global: "globalThis",
+      },
+    },
   },
   build: {
     // Оптимизация размера бандла
@@ -118,6 +123,8 @@ export default defineConfig({
       mangle: {
         // Не минифицировать имена свойств для gray-matter/js-yaml
         properties: false,
+        // Сохраняем имена для gray-matter/js-yaml
+        reserved: ["isNothing", "Type"],
       },
     },
     // Генерация source maps только для продакшена при необходимости
