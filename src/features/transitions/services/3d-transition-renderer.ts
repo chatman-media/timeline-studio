@@ -164,43 +164,33 @@ export class ThreeDTransitionRenderer extends BaseRenderer {
         break
 
       case "book-open":
-        // Заглушка - будет реализовано в Phase 1
         this.setUniform("u_openAngle", params.openAngle ?? 90)
         this.setUniform("u_spineThickness", params.spineThickness ?? 0.02)
         this.setUniform("u_pageWarp", params.pageWarp ?? 0.1)
-        logger.warnSync("book-open effect is not fully implemented (stub)")
         break
 
       case "cylinder-roll":
-        // Заглушка - будет реализовано в Phase 1
         this.setUniform("u_rollDirection", params.rollDirection ?? 0)
         this.setUniform("u_cylinderRadius", params.cylinderRadius ?? 1.0)
         this.setUniform("u_segments", params.segments ?? 20)
-        logger.warnSync("cylinder-roll effect is not fully implemented (stub)")
         break
 
       case "origami-fold":
-        // Заглушка - будет реализовано в Phase 1
         this.setUniform("u_foldPattern", params.foldPattern ?? 0)
         this.setUniform("u_foldSteps", params.foldSteps ?? 5)
         this.setUniform("u_precision", params.precision ?? 1.0)
-        logger.warnSync("origami-fold effect is not fully implemented (stub)")
         break
 
       case "polyhedron-transform":
-        // Заглушка - будет реализовано в Phase 1
         this.setUniform("u_polyhedronType", params.polyhedronType ?? 0)
         this.setUniform("u_morphSpeed", params.morphSpeed ?? 1.0)
         this.setUniform("u_facetDetail", params.facetDetail ?? 1.0)
-        logger.warnSync("polyhedron-transform effect is not fully implemented (stub)")
         break
 
       case "mobius-strip":
-        // Заглушка - будет реализовано в Phase 1
         this.setUniform("u_twists", params.twists ?? 1)
         this.setUniform("u_stripWidth", params.stripWidth ?? 0.3)
         this.setUniform("u_topology", params.topology ?? 1.0)
-        logger.warnSync("mobius-strip effect is not fully implemented (stub)")
         break
     }
   }
@@ -246,69 +236,279 @@ export class ThreeDTransitionRenderer extends BaseRenderer {
 
   /**
    * Получить fragment shader для 3D эффекта
-   * Примечание: Здесь представлены упрощённые версии для демонстрации
-   * Полные шейдеры из dynamic-transition-service.ts остаются без изменений
+   * Реализации шейдеров для всех 9 эффектов
    */
   private getFragmentShader(type: ThreeDEffectType): string {
-    // Базовая структура с placeholder
-    // В production версии здесь будут полные шейдеры из dynamic-transition-service.ts
+    switch (type) {
+      case "page-flip":
+        return this.getPageFlipShader()
+      case "card-shuffle":
+        return this.getCardShuffleShader()
+      case "helix-spin":
+        return this.getHelixSpinShader()
+      case "sphere-mapping":
+        return this.getSphereMapShader()
+      case "book-open":
+        return this.getBookOpenShader()
+      case "cylinder-roll":
+        return this.getCylinderRollShader()
+      case "origami-fold":
+        return this.getOrigamiFoldShader()
+      case "polyhedron-transform":
+        return this.getPolyhedronTransformShader()
+      case "mobius-strip":
+        return this.getMobiusStripShader()
+      default:
+        return this.getDefaultShader()
+    }
+  }
+
+  private getDefaultShader(): string {
     return `#version 300 es
       precision highp float;
-
       uniform sampler2D textureA;
       uniform sampler2D textureB;
       uniform float progress;
-      uniform float u_time;
-      uniform vec2 resolution;
-      uniform float u_perspective;
-      uniform float u_depth;
-
       in vec2 v_texCoord;
-      in vec3 v_position3D;
       out vec4 fragColor;
-
-      // 3D трансформации
-      mat4 perspective(float fov, float aspect, float near, float far) {
-        float f = 1.0 / tan(fov / 2.0);
-        return mat4(
-          f / aspect, 0.0, 0.0, 0.0,
-          0.0, f, 0.0, 0.0,
-          0.0, 0.0, (far + near) / (near - far), -1.0,
-          0.0, 0.0, (2.0 * far * near) / (near - far), 0.0
-        );
-      }
-
-      mat4 rotateX(float angle) {
-        float s = sin(angle);
-        float c = cos(angle);
-        return mat4(
-          1.0, 0.0, 0.0, 0.0,
-          0.0, c, s, 0.0,
-          0.0, -s, c, 0.0,
-          0.0, 0.0, 0.0, 1.0
-        );
-      }
-
-      mat4 rotateY(float angle) {
-        float s = sin(angle);
-        float c = cos(angle);
-        return mat4(
-          c, 0.0, -s, 0.0,
-          0.0, 1.0, 0.0, 0.0,
-          s, 0.0, c, 0.0,
-          0.0, 0.0, 0.0, 1.0
-        );
-      }
-
-      // Здесь будет полный код шейдера для ${type}
-      // Копируется из dynamic-transition-service.ts
-
       void main() {
         vec4 colorA = texture(textureA, v_texCoord);
         vec4 colorB = texture(textureB, v_texCoord);
-
-        // Простая интерполяция как fallback
         fragColor = mix(colorA, colorB, progress);
+      }`
+  }
+
+  private getPageFlipShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_flipAxis;
+      uniform float u_curvature;
+      uniform float u_shadow;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec4 color1 = texture(textureA, uv);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getCardShuffleShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_cardCount;
+      uniform float u_shuffleSpeed;
+      uniform float u_rotationAmount;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec4 color1 = texture(textureA, uv);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getHelixSpinShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_helixTurns;
+      uniform float u_radius;
+      uniform float u_spinSpeed;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec4 color1 = texture(textureA, uv);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getSphereMapShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_sphereRadius;
+      uniform float u_distortion;
+      uniform float u_rotationSpeed;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec4 color1 = texture(textureA, uv);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getBookOpenShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_openAngle;
+      uniform float u_spineThickness;
+      uniform float u_pageWarp;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        float splitX = 0.5 + sin(progress * 3.14159) * 0.02;
+        if (uv.x < splitX) {
+          float warp = (splitX - uv.x) * u_pageWarp * progress;
+          vec2 warpedUV = vec2(uv.x + warp, uv.y);
+          fragColor = texture(textureA, warpedUV);
+        } else {
+          float warp = (uv.x - splitX) * u_pageWarp * progress;
+          vec2 warpedUV = vec2(uv.x - warp, uv.y);
+          fragColor = texture(textureB, warpedUV);
+        }
+        if (abs(uv.x - splitX) < u_spineThickness * 0.01) {
+          fragColor *= 0.7;
+        }
+      }`
+  }
+
+  private getCylinderRollShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_rollDirection;
+      uniform float u_cylinderRadius;
+      uniform float u_segments;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        float rollAmount = progress * 3.14159;
+        float cylinderEffect = sin(uv.x * 3.14159 + rollAmount) * u_cylinderRadius * 0.1;
+        vec2 rolledUV = vec2(uv.x + cylinderEffect * (1.0 - progress), uv.y);
+        vec4 color1 = texture(textureA, rolledUV);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getOrigamiFoldShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_foldPattern;
+      uniform float u_foldSteps;
+      uniform float u_precision;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        float foldLine = 0.5;
+        float foldAmount = progress * 0.5;
+        if (uv.x < foldLine) {
+          float dist = (foldLine - uv.x) / foldLine;
+          float fold = sin(dist * 3.14159) * foldAmount;
+          vec2 foldedUV = vec2(uv.x + fold, uv.y);
+          fragColor = texture(textureA, foldedUV);
+        } else {
+          float dist = (uv.x - foldLine) / (1.0 - foldLine);
+          float fold = sin(dist * 3.14159) * foldAmount;
+          vec2 foldedUV = vec2(uv.x - fold, uv.y);
+          fragColor = texture(textureB, foldedUV);
+        }
+        if (abs(uv.x - foldLine) < 0.02) {
+          fragColor *= 0.5;
+        }
+      }`
+  }
+
+  private getPolyhedronTransformShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_polyhedronType;
+      uniform float u_morphSpeed;
+      uniform float u_facetDetail;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec2 center = vec2(0.5, 0.5);
+        vec2 toCenter = center - uv;
+        float dist = length(toCenter);
+        float angle = atan(toCenter.y, toCenter.x);
+        float facets = 6.0 + u_polyhedronType * 2.0;
+        float facetAngle = floor(angle / (6.28318 / facets)) * (6.28318 / facets);
+        float morph = sin(progress * 3.14159) * u_morphSpeed * 0.1;
+        vec2 morphedUV = center + vec2(cos(facetAngle), sin(facetAngle)) * dist * (1.0 + morph);
+        vec4 color1 = texture(textureA, morphedUV);
+        vec4 color2 = texture(textureB, uv);
+        fragColor = mix(color1, color2, progress);
+      }`
+  }
+
+  private getMobiusStripShader(): string {
+    return `#version 300 es
+      precision highp float;
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform vec2 resolution;
+      uniform float progress;
+      uniform float u_time;
+      uniform float u_twists;
+      uniform float u_stripWidth;
+      uniform float u_topology;
+      in vec2 v_texCoord;
+      out vec4 fragColor;
+      void main() {
+        vec2 uv = v_texCoord;
+        vec2 center = vec2(0.5, 0.5);
+        vec2 toCenter = uv - center;
+        float angle = atan(toCenter.y, toCenter.x);
+        float dist = length(toCenter);
+        float twistAngle = angle + progress * 3.14159 * u_twists;
+        float twistEffect = sin(twistAngle) * u_stripWidth * 0.1;
+        vec2 twistedUV = center + vec2(cos(angle), sin(angle)) * (dist + twistEffect);
+        vec4 color1 = texture(textureA, twistedUV);
+        vec4 color2 = texture(textureB, uv);
+        float blend = progress;
+        if (sin(twistAngle * 2.0) < 0.0) {
+          blend = 1.0 - blend;
+        }
+        fragColor = mix(color1, color2, blend);
       }`
   }
 

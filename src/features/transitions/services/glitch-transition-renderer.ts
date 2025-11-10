@@ -4,7 +4,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { BaseRenderer, type RendererOptions, type ShaderSource } from "@/lib/webgl"
+import { BaseRenderer, type RendererOptions } from "@/lib/webgl"
 
 const logger = createLogger("GlitchTransitionRenderer")
 

@@ -45,25 +45,25 @@ export {
 } from "./particle-transition-renderer"
 
 /**
- * LEGACY: Старые WebGL сервисы (будут удалены в Phase 2)
+ * LEGACY REMOVED! ✅
  *
- * ⚠️ Используйте новые специализированные рендереры вместо этих классов!
+ * Старые классы удалены:
+ * - webgl-transition-service.ts (489 строк) ❌ УДАЛЁН
+ * - dynamic-transition-service.ts (1858 строк) ❌ УДАЛЁН
+ * - base-webgl-service.ts (315 строк) ❌ УДАЛЁН
  *
- * Старая архитектура:
- * - webgl-transition-service.ts (489 строк) - WebGL1 basic transitions
- * - dynamic-transition-service.ts (1858 строк) - WebGL2 монолитный класс
- * - base-webgl-service.ts (УДАЛЁН) - дубликат BaseRenderer
+ * Новая архитектура на базе BaseRenderer:
+ * - BasicTransitionRenderer (~330 строк) - заменяет webgl-transition-service
+ * - GlitchTransitionRenderer (~260 строк) - заменяет часть dynamic-transition-service
+ * - ParticleTransitionRenderer (~300 строк) - заменяет часть dynamic-transition-service
+ * - ThreeDTransitionRenderer (~540 строк) - заменяет часть dynamic-transition-service
  *
- * Новая архитектура:
- * - BasicTransitionRenderer (~300 строк) - заменяет webgl-transition-service
- * - GlitchTransitionRenderer (~400 строк) - выделен из dynamic-transition-service
- * - ParticleTransitionRenderer (~350 строк) - выделен из dynamic-transition-service
- * - ThreeDTransitionRenderer (~400 строк) - выделен из dynamic-transition-service
+ * Итого: 2662 строки → ~1430 строк (-46%)
  *
- * Итого: 2662 строки → ~1450 строк (-45%)
+ * Миграция:
+ * - Вместо WebGLTransitionService используйте BasicTransitionRenderer
+ * - Вместо DynamicTransitionService используйте соответствующий рендерер:
+ *   - Для glitch эффектов → GlitchTransitionRenderer
+ *   - Для particle эффектов → ParticleTransitionRenderer
+ *   - Для 3D эффектов → ThreeDTransitionRenderer
  */
-
-export { DynamicTransitionService } from "./dynamic-transition-service"
-// Временно экспортируем старые сервисы для обратной совместимости
-// TODO: Удалить после миграции всего кода на новые рендереры
-export { WebGLTransitionService } from "./webgl-transition-service"

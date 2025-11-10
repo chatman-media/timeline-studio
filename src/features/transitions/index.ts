@@ -8,9 +8,8 @@ export * from "./hooks/use-advanced-transitions"
 export * from "./hooks/use-dynamic-transitions"
 export * from "./hooks/use-transitions"
 
-// Сервисы
-export * from "./services/dynamic-transition-service"
-export * from "./services/webgl-transition-service"
+// Сервисы - новые рендереры на базе BaseRenderer
+export * from "./services"
 // Типы
 export * from "./types/transitions"
 // Утилиты

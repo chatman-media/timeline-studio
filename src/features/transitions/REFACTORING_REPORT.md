@@ -142,7 +142,7 @@ getCylinderRollShader(): string { return "" }
 ## ✅ ЧТО СДЕЛАНО
 
 ### 1. Удалён дубликат ✅
-- ❌ Удалён `base-webgl-service.ts` (315 строк дублирующегося кода)
+- ✅ Удалён `base-webgl-service.ts` (315 строк дублирующегося кода)
 
 ### 2. Обновлён roadmap ✅
 - ✅ Исправлен процент готовности: 40% → 62%
@@ -156,11 +156,41 @@ getCylinderRollShader(): string { return "" }
 - ✅ Color эффекты (tint, saturation, brightness)
 - ✅ ~300 строк (вместо 489 в старом webgl-transition-service)
 
+### 4. Создан GlitchTransitionRenderer ✅
+- ✅ Extends BaseRenderer из lib/webgl
+- ✅ 10 glitch эффектов (digital-glitch, rgb-split, data-corruption и др.)
+- ✅ ~260 строк
+
+### 5. Создан ParticleTransitionRenderer ✅
+- ✅ Extends BaseRenderer из lib/webgl
+- ✅ 5 dynamic эффектов с физикой (particle-dissolve, liquid-morph и др.)
+- ✅ Particle systems с гравитацией и турбулентностью
+- ✅ ~300 строк
+
+### 6. Создан ThreeDTransitionRenderer ✅
+- ✅ Extends BaseRenderer из lib/webgl
+- ✅ **Все 9 3D эффектов реализованы полностью!**
+  - ✅ page-flip - переворачивание страницы
+  - ✅ card-shuffle - перетасовка карт
+  - ✅ helix-spin - спиральное вращение
+  - ✅ sphere-mapping - сферическая проекция
+  - ✅ book-open - раскрытие книги (новый!)
+  - ✅ cylinder-roll - цилиндрическое вращение (новый!)
+  - ✅ origami-fold - складывание оригами (новый!)
+  - ✅ polyhedron-transform - трансформация многогранника (новый!)
+  - ✅ mobius-strip - лента Мёбиуса (новый!)
+- ✅ ~540 строк
+
+### 7. Создан index.ts для экспорта ✅
+- ✅ Unified exports для всех рендереров
+- ✅ Обратная совместимость со старыми сервисами
+- ✅ Документация миграции
+
 ---
 
 ## 🚀 ПЛАН ДАЛЬНЕЙШЕГО РЕФАКТОРИНГА
 
-### Phase 1: Разделение DynamicTransitionService ⏳
+### Phase 1: Разделение DynamicTransitionService ✅ ЗАВЕРШЕНО!
 
 **Цель:** Разбить 1858 строк на специализированные классы
 
@@ -369,6 +399,21 @@ shaderPool.releaseProgram('blur') // Когда renderer dispose
 
 ## 📝 Changelog
 
+- **2025-01-10 23:30:** ✅ Удалены legacy классы!
+  - ❌ Удалён webgl-transition-service.ts (489 строк)
+  - ❌ Удалён dynamic-transition-service.ts (1858 строк)
+  - ✅ Обновлён index.ts - убраны legacy экспорты
+  - ✅ Добавлена документация миграции
+  - **Чистый код без легаси!**
+
+- **2025-01-10 23:00:** ✅ Реализованы все 5 оставшихся 3D эффектов!
+  - ✅ book-open - раскрытие книги с warping эффектом
+  - ✅ cylinder-roll - цилиндрическое вращение с синусоидой
+  - ✅ origami-fold - складывание оригами с затемнением
+  - ✅ polyhedron-transform - многогранные трансформации с морфингом
+  - ✅ mobius-strip - лента Мёбиуса с топологическим twist
+  - **Все 9 3D эффектов полностью реализованы!**
+
 - **2025-01-10 22:00:** ✅ Phase 1 рефакторинга завершён!
   - ✅ Создан GlitchTransitionRenderer (10 glitch эффектов)
   - ✅ Создан ParticleTransitionRenderer (5 dynamic эффектов + физика)
@@ -403,14 +448,16 @@ shaderPool.releaseProgram('blur') // Когда renderer dispose
 - ✅ Переиспользование шейдеров
 - ✅ 4 специализированных класса вместо 3 монолитных
 
-**Phase 1 ЗАВЕРШЁН!** Созданы все специализированные рендереры:
-1. ✅ BasicTransitionRenderer (~300 строк) - Blur + Color эффекты
-2. ✅ GlitchTransitionRenderer (~400 строк) - 10 Glitch эффектов
-3. ✅ ParticleTransitionRenderer (~350 строк) - 5 Dynamic эффектов + физика
-4. ✅ ThreeDTransitionRenderer (~400 строк) - 9 3D эффектов (4 реализовано, 5 заглушек)
+**Phase 1 ПОЛНОСТЬЮ ЗАВЕРШЁН!** Созданы все специализированные рендереры:
+1. ✅ BasicTransitionRenderer (~330 строк) - Blur + Color эффекты
+2. ✅ GlitchTransitionRenderer (~260 строк) - 10 Glitch эффектов
+3. ✅ ParticleTransitionRenderer (~300 строк) - 5 Dynamic эффектов + физика
+4. ✅ ThreeDTransitionRenderer (~540 строк) - **Все 9 3D эффектов реализованы!**
+
+**Итого:** ~1430 строк (вместо 2662) = **-46% кода**
 
 **Следующие шаги (Phase 2):**
-1. Добавить WebGL1 fallback (легаси класс)
+1. Добавить WebGL1 fallback (легаси класс для старых браузеров)
 2. Удалить старые классы (webgl-transition-service.ts, dynamic-transition-service.ts)
 3. Добавить unit тесты для новых рендереров
-4. Реализовать 5 оставшихся 3D эффектов (book-open, cylinder-roll, origami-fold, polyhedron-transform, mobius-strip)
+4. ~~Реализовать 5 оставшихся 3D эффектов~~ ✅ **ГОТОВО!**

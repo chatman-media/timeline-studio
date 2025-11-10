@@ -69,9 +69,11 @@ export class BasicTransitionRenderer extends BaseRenderer {
 
       // Выбираем подходящий шейдер
       const shaderName = this.selectShader(parameters)
+      logger.debugSync("Selecting shader", { shaderName, hasProgram: this.programs.has(shaderName) })
       const program = this.useProgram(shaderName)
 
       if (!program) {
+        logger.warnSync("Shader program not found", { shaderName, availablePrograms: Array.from(this.programs.keys()) })
         return { success: false, error: `Шейдер ${shaderName} не найден` }
       }
 
@@ -223,12 +225,15 @@ export class BasicTransitionRenderer extends BaseRenderer {
         }`,
     }
 
-    // Регистрируем шейдер через shaderPool (автоматически через BaseRenderer)
-    const program = this.useProgram("transition-blur")
-    if (!program) {
-      // Компилируем вручную если нет в пуле
-      // TODO: Добавить в shaderPool через API
-      logger.warnSync("Blur shader not in pool, manual compilation needed")
+    // Компилируем шейдер через shaderPool напрямую
+    const { shaderPool } = await import("@/lib/webgl")
+    const compiled = shaderPool.getProgram("transition-blur", blurShader)
+    if (!compiled) {
+      logger.errorSync("Failed to compile blur shader")
+    } else {
+      logger.debugSync("Blur shader compiled successfully")
+      // Кэшируем в this.programs для быстрого доступа
+      this.programs.set("transition-blur", compiled)
     }
   }
 
@@ -304,10 +309,15 @@ export class BasicTransitionRenderer extends BaseRenderer {
         }`,
     }
 
-    // Регистрируем шейдер
-    const program = this.useProgram("transition-color")
-    if (!program) {
-      logger.warnSync("Color shader not in pool, manual compilation needed")
+    // Компилируем шейдер через shaderPool напрямую
+    const { shaderPool } = await import("@/lib/webgl")
+    const compiled = shaderPool.getProgram("transition-color", colorShader)
+    if (!compiled) {
+      logger.errorSync("Failed to compile color shader")
+    } else {
+      logger.debugSync("Color shader compiled successfully")
+      // Кэшируем в this.programs для быстрого доступа
+      this.programs.set("transition-color", compiled)
     }
   }
 
