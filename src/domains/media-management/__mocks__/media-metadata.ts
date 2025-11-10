@@ -14,8 +14,6 @@ export const mockVideoMetadata: MediaMetadata = {
   duration: 120.5,
   codec: "h264",
   bitrate: 5_000_000,
-  sample_rate: 48000,
-  channels: 2,
 }
 
 export const mockAudioMetadata: MediaMetadata = {
@@ -25,9 +23,6 @@ export const mockAudioMetadata: MediaMetadata = {
   channels: 2,
   sample_rate: 44100,
   bitrate: 320_000,
-  album: "Test Album",
-  artist: "Test Artist",
-  title: "Test Track",
 }
 
 export const mockImageMetadata: MediaMetadata = {

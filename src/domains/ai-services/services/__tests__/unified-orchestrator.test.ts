@@ -480,7 +480,7 @@ describe("UnifiedOrchestrator", () => {
     it("должен рассчитывать статистику плана", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
       vi.mocked(invoke).mockResolvedValueOnce({
-        total_segments: 5,
+        fragment_count: 5,
         total_duration: 30,
         average_segment_duration: 6,
         quality_distribution: { high: 3, medium: 2, low: 0 },
