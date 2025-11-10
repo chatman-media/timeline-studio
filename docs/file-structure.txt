@@ -1,0 +1,242 @@
+ДЕТАЛЬНАЯ СТРУКТУРА ФИЧИ USER-SETTINGS
+========================================
+
+/src/features/user-settings/
+│
+├── 📄 index.ts (Экспорт public API)
+│   └── Экспортирует: компоненты, хуки, провайдер
+│
+├── 📄 README.md (Английская документация - 6.5 KB)
+│   └── Описание архитектуры, использование, статус готовности
+│
+├── 📄 README.ru.md (Русская документация - 6.5 KB)
+│   └── Аналогично README.md на русском
+│
+├── 📁 components/ (7 файлов компонентов)
+│   ├── 📄 index.ts
+│   │   └── Экспортирует: UserSettingsModal
+│   │
+│   ├── 📄 user-settings-modal.tsx
+│   │   └── Главное модальное окно настроек
+│   │       - Интеграция с modal provider
+│   │       - Кнопки Cancel/Save
+│   │       - Поддержка i18n
+│   │
+│   ├── 📄 user-settings-modal-tabs.tsx
+│   │   └── Контейнер с вкладками
+│   │       - Управление активной вкладкой
+│   │       - Динамический dev tab (только в development)
+│   │       - Организация 5 основных вкладок
+│   │
+│   ├── 📁 tabs/ (5 компонентов вкладок)
+│   │   ├── 📄 general-settings-tab.tsx (220 строк)
+│   │   │   └── Язык, пути скриншотов, автосохранение
+│   │   │
+│   │   ├── 📄 performance-settings-tab.tsx
+│   │   │   └── GPU ускорение, кодеки, качество рендера
+│   │   │
+│   │   ├── 📄 ai-services-tab.tsx (100+ строк)
+│   │   │   └── OpenAI, Claude, Groq, DeepSeek API ключи
+│   │   │
+│   │   ├── 📄 social-networks-tab.tsx
+│   │   │   └── OAuth подключения (YouTube, TikTok, Vimeo, Telegram)
+│   │   │
+│   │   └── 📄 development-tab.tsx
+│   │       └── Codecov, Analytics (only in dev mode)
+│   │
+│   └── 📁 widgets/ (3 вспомогательных компонента)
+│       ├── 📄 api-key-input.tsx
+│       │   └── Input с маскировкой для API ключей
+│       │
+│       ├── 📄 key-status-indicator.tsx
+│       │   └── Индикатор статуса (valid/invalid/testing/not_set)
+│       │
+│       └── 📄 oauth-connection.tsx
+│           └── Компонент для OAuth подключений
+│
+├── 📁 hooks/ (3 хука + моки)
+│   ├── 📄 index.ts
+│   │   └── Экспортирует все хуки
+│   │
+│   ├── 📄 use-user-settings.ts (133 строк)
+│   │   └── Главный хук (адаптер к доменной реализации)
+│   │       - 50+ методов и свойств
+│   │       - Все области настроек
+│   │       - Обратная совместимость
+│   │
+│   ├── 📄 use-api-keys.ts (418 строк) ⭐ БОЛЬШОЙ
+│   │   └── Управление API ключами
+│   │       - Операции: save, test, delete
+│   │       - OAuth: generate URL, exchange code, refresh token
+│   │       - Import/export из .env
+│   │       - Валидация с error handling
+│   │       - Состояние загрузки
+│   │
+│   ├── 📄 use-auto-revalidation.ts (200 строк)
+│   │   └── Автоматическая переval идация ключей
+│   │       - 24h интервал (настраивается)
+│   │       - Min 1h между проверками
+│   │       - Callbacks для success/error
+│   │       - Список сервисов (настраивается)
+│   │
+│   └── 📁 __mocks__/
+│       └── 📄 use-api-keys.ts
+│           └── Полный мок для тестирования
+│
+├── 📁 services/ (1 файл - провайдер контекста)
+│   └── 📄 user-settings-provider.tsx (286 строк)
+│       └── React Context провайдер
+│           - Интеграция с ProjectManagementOrchestrator
+│           - Подписка на изменения
+│           - 15 категорий настроек
+│           - 50+ методов обновления
+│
+└── 📁 __tests__/ (9 файлов тестов + утилиты)
+    ├── 📄 test-utils.ts
+    │   ├── createMockApiKeys() - генератор моков
+    │   └── createMockUserSettings() - генератор настроек
+    │
+    ├── 📁 components/ (6 тестов компонентов)
+    │   ├── 📄 user-settings-modal.test.tsx
+    │   ├── 📄 user-settings-modal-tabs.test.tsx
+    │   └── 📁 tabs/
+    │       ├── 📄 general-settings-tab.test.tsx
+    │       ├── 📄 performance-settings-tab.test.tsx
+    │       ├── 📄 social-networks-tab.test.tsx
+    │       └── 📄 development-tab.test.tsx
+    │
+    ├── 📁 widgets/ (2 теста виджетов)
+    │   ├── 📄 api-key-input.test.tsx
+    │   └── 📄 key-status-indicator.test.tsx
+    │
+    └── 📁 hooks/ (1 тест хуков)
+        └── 📄 use-user-settings.test.ts
+            └── Тесты адаптера и проксирования методов
+
+ИТОГО ДА ФАЙЛОВ:
+================
+Исходный код:  18 файлов
+Тесты:          9 файлов
+Документация:   2 файла
+Моки:           2 файла
+────────────────────────
+ВСЕГО:         31 файл
+
+СТРОК КОДА:
+===========
+Компоненты:    ~700-800 строк
+Хуки:          ~750 строк
+Сервисы:       ~300 строк
+Тесты:         ~1000 строк (в разработке)
+Документация:  ~400 строк
+────────────────
+ВСЕГО:        ~3500 строк
+
+ЗАВИСИМОСТИ ФАЙЛОВ:
+====================
+user-settings-modal.tsx
+  ├── use-modal (external)
+  ├── useTranslation (external)
+  └── user-settings-modal-tabs.tsx
+      ├── use-user-settings
+      ├── useApi Keys
+      ├── 5x tab components
+      └── useTranslation
+
+use-user-settings.ts
+  ├── use-domain-user-settings (domain)
+  ├── BrowserTab (type from domain)
+  └── LayoutMode (type from domain)
+
+use-api-keys.ts
+  ├── invoke (tauri)
+  ├── useUserSettings (self ref)
+  └── createLogger (lib)
+
+user-settings-provider.tsx
+  ├── ProjectManagementOrchestrator
+  ├── UserSettingsContext
+  └── BrowserTab (type)
+
+ТИПИЗАЦИЯ:
+===========
+- UserSettingsContextValue - 50+ свойств и методов
+- ApiKeyInfo - информация о ключе
+- ApiKeyStatus - "not_set" | "testing" | "invalid" | "valid"
+- ValidationResult - результат валидации
+- OAuthCredentials - параметры OAuth
+- LayoutMode - тип макета интерфейса
+- BrowserTab - тип вкладки браузера
+
+СОСТОЯНИЕ:
+==========
+useUserSettings:
+  - activeTab: BrowserTab
+  - layoutMode: LayoutMode
+  - playerVolume: number
+  - playerScreenshotsPath: string
+  - screenshotsPath: string
+  - openAiApiKey: string
+  - claudeApiKey: string
+  - isBrowserVisible: boolean
+  - isTimelineVisible: boolean
+  - isOptionsVisible: boolean
+  - 12+ дополнительных полей для GPU, proxy, timeline
+
+useApiKeys:
+  - apiKeysInfo: Record<string, ApiKeyInfo>
+  - loadingStatuses: Record<string, boolean>
+  - validationErrors: Record<string, string>
+
+ГОРЯЧИЕ ТОЧКИ (Hot Spots):
+==========================
+1. ❌ ai-services-tab.tsx (48-52) - ненадежная валидация
+2. ❌ __tests__/components/ - синтаксис vi.mock()
+3. ❌ __tests__/hooks/use-user-settings.test.ts - renderHook без DOM
+4. ⚠️ ai-services-tab.tsx (35-44) - hardcoded маски
+
+ПРОИЗВОДИТЕЛЬНОСТЬ:
+====================
+- useAutoRevalidation: запускается с 5s задержкой после загрузки
+- Периодическая проверка каждые 24 часа (настраивается)
+- Между проверками минимум 1 час
+- Небольшая задержка 1s между проверками разных сервисов
+
+БЕЗОПАСНОСТЬ:
+==============
+✓ Маскировка API ключей в UI (••••••)
+✓ Безопасное хранение на Tauri backend
+✓ Валидация через API сервисов
+✓ Скрытие ключей в логах (createLogger)
+✓ Нет хардкодированных ключей
+
+ПОДДЕРЖИВАЕМЫЕ СЕРВИСЫ:
+========================
+AI:
+  - OpenAI (API key)
+  - Claude (API key)
+  - Groq (API key)
+  - DeepSeek (API key)
+
+Социальные сети:
+  - YouTube (OAuth)
+  - TikTok (OAuth)
+  - Vimeo (OAuth)
+  - Telegram (Bot token)
+
+Разработка (dev-only):
+  - Codecov
+  - Analytics
+
+ИНТЕГРАЦИИ:
+============
+→ ProjectManagementOrchestrator (доменная реализация)
+→ Modal Provider (для модального окна)
+→ Tauri API (для backend операций)
+→ i18n (для переводов)
+→ Language feature (переключение языков)
+→ MediaStudio (использует layoutMode)
+→ Browser (использует activeTab, isBrowserVisible)
+→ VideoPlayer (использует playerVolume, playerScreenshotsPath)
+→ AI Chat (использует openAiApiKey, claudeApiKey)
+
