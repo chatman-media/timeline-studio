@@ -49,11 +49,13 @@ export function setupDOMMocks() {
   })
 
   // navigator.clipboard
-  Object.assign(navigator, {
-    clipboard: {
+  Object.defineProperty(navigator, "clipboard", {
+    value: {
       writeText: vi.fn(),
       readText: vi.fn(),
     },
+    writable: true,
+    configurable: true,
   })
 
   // URL object methods

@@ -406,54 +406,56 @@ export const mockBackendSync = {
     }
 
     // Call handler immediately with current state
-    // Wrap in try-catch to prevent crashes
-    try {
-      handler({
-        version: 1,
-        version_info: {
-          current_version_id: "initial",
-          branch_name: "main",
-          has_uncommitted_changes: false,
-          last_snapshot_time: new Date().toISOString(),
-          auto_save_enabled: true,
-          auto_save_interval_seconds: 30,
-        },
-        browser_state: mockBrowserState,
-        clipboard: null,
-        project: null,
-        ui_state: {
-          selected_clips: [],
-          selected_tracks: [],
-          selected_sections: [],
-          timeline_zoom: 1,
-          timeline_scroll: 0,
-          active_tool: "select",
-          browser_state: null,
-        },
-        playback_state: {
-          is_playing: false,
-          current_time: 0,
-          playback_rate: 1,
-          loop_enabled: false,
-          loop_start: null,
-          loop_end: null,
-          volume: 1,
-          current_media_id: null,
-          selected_clip_id: null,
-          video_source: "browser",
-          applied_effects: [],
-          applied_filters: [],
-          applied_template: null,
-          is_loading: false,
-          is_seeking: false,
-          duration: 0,
-        },
-        chat_sessions: [],
-      })
-    } catch (error) {
-      // Ignore errors during test initialization
-      console.warn("Error calling state change handler:", error)
-    }
+    // Use queueMicrotask to ensure it's async and doesn't interfere with React rendering
+    queueMicrotask(() => {
+      try {
+        handler({
+          version: 1,
+          version_info: {
+            current_version_id: "initial",
+            branch_name: "main",
+            has_uncommitted_changes: false,
+            last_snapshot_time: new Date().toISOString(),
+            auto_save_enabled: true,
+            auto_save_interval_seconds: 30,
+          },
+          browser_state: mockBrowserState,
+          clipboard: null,
+          project: null,
+          ui_state: {
+            selected_clips: [],
+            selected_tracks: [],
+            selected_sections: [],
+            timeline_zoom: 1,
+            timeline_scroll: 0,
+            active_tool: "select",
+            browser_state: null,
+          },
+          playback_state: {
+            is_playing: false,
+            current_time: 0,
+            playback_rate: 1,
+            loop_enabled: false,
+            loop_start: null,
+            loop_end: null,
+            volume: 1,
+            current_media_id: null,
+            selected_clip_id: null,
+            video_source: "browser",
+            applied_effects: [],
+            applied_filters: [],
+            applied_template: null,
+            is_loading: false,
+            is_seeking: false,
+            duration: 0,
+          },
+          chat_sessions: [],
+        })
+      } catch (error) {
+        // Ignore errors during test initialization
+        console.warn("Error calling state change handler:", error)
+      }
+    })
 
     // Return unsubscribe function
     return () => {
@@ -515,9 +517,6 @@ export function resetMockBrowserState() {
 
 // Helper to reset executeCommand mock
 export function resetExecuteCommandMock() {
-  // Clear all state change handlers to avoid memory leaks
-  stateChangeHandlers.length = 0
-
   // Reset all mocks to their original implementations
   mockBackendSync.executeCommand = vi.fn(async (command: ProjectCommand) => {
     handleBrowserCommand(command)
@@ -576,54 +575,56 @@ export function resetExecuteCommandMock() {
     }
 
     // Call handler immediately with current state
-    // Wrap in try-catch to prevent crashes
-    try {
-      handler({
-        version: 1,
-        version_info: {
-          current_version_id: "initial",
-          branch_name: "main",
-          has_uncommitted_changes: false,
-          last_snapshot_time: new Date().toISOString(),
-          auto_save_enabled: true,
-          auto_save_interval_seconds: 30,
-        },
-        browser_state: mockBrowserState,
-        clipboard: null,
-        project: null,
-        ui_state: {
-          selected_clips: [],
-          selected_tracks: [],
-          selected_sections: [],
-          timeline_zoom: 1,
-          timeline_scroll: 0,
-          active_tool: "select",
-          browser_state: null,
-        },
-        playback_state: {
-          is_playing: false,
-          current_time: 0,
-          playback_rate: 1,
-          loop_enabled: false,
-          loop_start: null,
-          loop_end: null,
-          volume: 1,
-          current_media_id: null,
-          selected_clip_id: null,
-          video_source: "browser",
-          applied_effects: [],
-          applied_filters: [],
-          applied_template: null,
-          is_loading: false,
-          is_seeking: false,
-          duration: 0,
-        },
-        chat_sessions: [],
-      })
-    } catch (error) {
-      // Ignore errors during test initialization
-      console.warn("Error calling state change handler:", error)
-    }
+    // Use queueMicrotask to ensure it's async and doesn't interfere with React rendering
+    queueMicrotask(() => {
+      try {
+        handler({
+          version: 1,
+          version_info: {
+            current_version_id: "initial",
+            branch_name: "main",
+            has_uncommitted_changes: false,
+            last_snapshot_time: new Date().toISOString(),
+            auto_save_enabled: true,
+            auto_save_interval_seconds: 30,
+          },
+          browser_state: mockBrowserState,
+          clipboard: null,
+          project: null,
+          ui_state: {
+            selected_clips: [],
+            selected_tracks: [],
+            selected_sections: [],
+            timeline_zoom: 1,
+            timeline_scroll: 0,
+            active_tool: "select",
+            browser_state: null,
+          },
+          playback_state: {
+            is_playing: false,
+            current_time: 0,
+            playback_rate: 1,
+            loop_enabled: false,
+            loop_start: null,
+            loop_end: null,
+            volume: 1,
+            current_media_id: null,
+            selected_clip_id: null,
+            video_source: "browser",
+            applied_effects: [],
+            applied_filters: [],
+            applied_template: null,
+            is_loading: false,
+            is_seeking: false,
+            duration: 0,
+          },
+          chat_sessions: [],
+        })
+      } catch (error) {
+        // Ignore errors during test initialization
+        console.warn("Error calling state change handler:", error)
+      }
+    })
 
     // Return unsubscribe function
     return () => {
@@ -633,6 +634,11 @@ export function resetExecuteCommandMock() {
       }
     }
   })
+}
+
+// Helper to clear all state change handlers (useful for cleanup between tests)
+export function clearStateChangeHandlers() {
+  stateChangeHandlers.length = 0
 }
 
 // Mock getBackendSync to always return the mock instance

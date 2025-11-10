@@ -89,6 +89,7 @@ export const Info = createMockIcon("Info")
 export const Keyboard = createMockIcon("Keyboard")
 export const Languages = createMockIcon("Languages")
 export const LayoutDashboard = createMockIcon("LayoutDashboard")
+export const LayoutGrid = createMockIcon("LayoutGrid")
 export const LayoutTemplate = createMockIcon("LayoutTemplate")
 export const Layers = createMockIcon("Layers")
 export const List = createMockIcon("List")
@@ -99,6 +100,7 @@ export const Maximize2 = createMockIcon("Maximize2")
 export const Mic = createMockIcon("Mic")
 export const Minimize2 = createMockIcon("Minimize2")
 export const Minus = createMockIcon("Minus")
+export const MessageSquare = createMockIcon("MessageSquare")
 export const Monitor = createMockIcon("Monitor")
 export const MonitorCog = createMockIcon("MonitorCog")
 export const Moon = createMockIcon("Moon")
@@ -111,10 +113,12 @@ export const Package = createMockIcon("Package")
 export const Palette = createMockIcon("Palette")
 export const PanelBottomClose = createMockIcon("PanelBottomClose")
 export const PanelBottomOpen = createMockIcon("PanelBottomOpen")
+export const PanelLeft = createMockIcon("PanelLeft")
 export const PanelLeftClose = createMockIcon("PanelLeftClose")
 export const PanelLeftOpen = createMockIcon("PanelLeftOpen")
 export const PanelRightClose = createMockIcon("PanelRightClose")
 export const PanelRightOpen = createMockIcon("PanelRightOpen")
+export const PanelTop = createMockIcon("PanelTop")
 export const Pause = createMockIcon("Pause")
 export const Play = createMockIcon("Play")
 export const PlayCircle = createMockIcon("PlayCircle")
@@ -247,6 +251,7 @@ vi.mock("lucide-react", () => ({
   Keyboard,
   Languages,
   LayoutDashboard,
+  LayoutGrid,
   LayoutTemplate,
   Layers,
   List,
@@ -257,6 +262,7 @@ vi.mock("lucide-react", () => ({
   Mic,
   Minimize2,
   Minus,
+  MessageSquare,
   Monitor,
   MonitorCog,
   Moon,
@@ -269,10 +275,12 @@ vi.mock("lucide-react", () => ({
   Palette,
   PanelBottomClose,
   PanelBottomOpen,
+  PanelLeft,
   PanelLeftClose,
   PanelLeftOpen,
   PanelRightClose,
   PanelRightOpen,
+  PanelTop,
   Pause,
   Play,
   PlayCircle,

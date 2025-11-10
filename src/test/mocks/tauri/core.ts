@@ -34,6 +34,8 @@ vi.mock("@/types/generated/tauri-bindings", () => ({
     getActiveJobs: vi.fn().mockResolvedValue([]),
     compileVideo: vi.fn().mockResolvedValue(null),
     cancelRender: vi.fn().mockResolvedValue(true),
+    // Browser commands
+    browserSwitchTab: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
     // Add other commands as needed
   },
   events: {
