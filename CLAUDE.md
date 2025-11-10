@@ -184,12 +184,23 @@ pacman -S mingw-w64-x86_64-ffmpeg mingw-w64-x86_64-pkg-config
 - `bun run tauri build` - Build the production Tauri desktop application
 
 ### Testing
-- `bun run test` - Run all tests
+- `bun run test` - Run all unit tests (9181 tests)
 - `bun run test:watch` - Run tests in watch mode
 - `bun run test src/features/timeline/__tests__/use-timeline.test.ts` - Run a single test file
 - `bun run test:coverage` - Generate test coverage report
-- `bun run test:rust` - Run Rust backend tests
-- `bun run test:e2e` - Run Playwright end-to-end tests
+- `bun run test:rust` - Run Rust backend tests (150+ tests)
+- `bun run test:e2e` - Run Playwright end-to-end tests (54 web tests)
+- `bun run test:e2e:tauri:dev` - Run Tauri-specific E2E tests (25 tests)
+- `bun run test:e2e:tauri:ui` - Run Tauri tests with Playwright UI
+
+**Tauri E2E Tests:**
+Timeline Studio включает специализированные тесты для Tauri API:
+- File System API (6 tests) - работа с файлами через Tauri
+- Project Management (5 tests) - сохранение и загрузка проектов
+- Notifications (5 tests) - системные нотификации
+- Window & Clipboard (9 tests) - управление окнами и буфером обмена
+
+См. подробную документацию в `e2e/tauri/README.md` и `docs/05_development/ru/testing-strategy.md`
 
 #### Smart Montage Planner Testing
 The Smart Montage Planner module includes comprehensive tests organized by feature:

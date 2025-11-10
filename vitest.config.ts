@@ -29,7 +29,12 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**/*", "node_modules/**/*"],
-    testTimeout: 30000,
+    testTimeout: 10000,
+    // Быстрая параллельная конфигурация с threads pool
+    pool: "threads",
+    // Включаем параллельное выполнение для скорости
+    fileParallelism: true,
+    isolate: true,
     environmentOptions: {
       jsdom: {
         url: "http://localhost",

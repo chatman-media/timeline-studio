@@ -84,6 +84,7 @@ jobs:
       - name: Run tests with coverage
         run: bun run test:coverage
         env:
+          NODE_OPTIONS: --max-old-space-size=8192
           CI: true
           # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} - DISABLED
           # CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }} - DISABLED
