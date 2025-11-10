@@ -4,7 +4,7 @@
  * Новая версия с интеграцией backend state management
  */
 
-import { createContext, type ReactNode, useCallback, useContext, useRef, useState } from "react"
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
@@ -118,6 +118,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const { projectState } = useAppSettings()
   const backendState = projectState
 
+  // Force re-render when media events occur
+  const [, forceUpdate] = useState(0)
+
   logInfo("ResourcesProvider: Initialized with projectState", {
     projectId: backendState?.project?.id || "no-project",
   })
@@ -151,6 +154,26 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     },
     [backendSync],
   )
+
+  // Subscribe to media events from backend to force re-render when media changes
+  useEffect(() => {
+    const handleMediaEvent = (event: any) => {
+      const mediaEventTypes = ["MediaAdded", "MediaRemoved", "MediaUpdated"]
+
+      if (mediaEventTypes.includes(event.type)) {
+        logInfo("ResourcesProvider: Media event detected, forcing update", { eventType: event.type })
+        // Force re-render to get fresh projectState from app-machine
+        forceUpdate((prev) => prev + 1)
+      }
+    }
+
+    // Subscribe to backend events
+    const unsubscribe = backendSync.onEvent(handleMediaEvent)
+
+    return () => {
+      unsubscribe()
+    }
+  }, [backendSync, forceUpdate])
 
   // Действия для добавления ресурсов
   const addMedia = useCallback(
@@ -188,6 +211,14 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       try {
         // Convert local MediaType to Rust MediaType
         const mediaType = convertToRustMediaType(file.type)
+        logInfo("ResourcesProvider: Converting media type before AddMedia", {
+          path: file.path,
+          localType: file.type,
+          rustType: mediaType,
+          isVideo: file.isVideo,
+          isImage: file.isImage,
+          isAudio: file.isAudio,
+        })
         await executeCommand({
           type: "AddMedia",
           params: {
@@ -532,6 +563,14 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           // Проверяем кэш метаданных для этого файла
           const cachedProbeData = metadataCacheRef.current.get(item.path)
           const mediaType = String(item.media_type)
+
+          // Log media type for debugging
+          logInfo("ResourcesProvider: Converting media item", {
+            id: item.id,
+            name: item.name,
+            mediaType,
+            hasCache: !!cachedProbeData,
+          })
 
           const file: MediaFile = {
             id: item.id,

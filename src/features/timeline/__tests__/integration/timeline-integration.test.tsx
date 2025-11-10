@@ -12,7 +12,7 @@
  * 8. Сохранение и восстановление состояния timeline
  */
 
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile, MediaType } from "@/domains/video-editing/types"

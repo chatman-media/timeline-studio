@@ -15,14 +15,13 @@
  * - Cloud upload integration (YouTube, Vimeo, Telegram)
  */
 
-import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import { AspectRatio, OutputFormat } from "@/domains/video-editing/types/video-compiler"
 import type { RenderProgress } from "@/features/video-compiler/types/render"
 import { RenderStatus } from "@/features/video-compiler/types/render"
-import { QUALITY_PRESETS, RESOLUTION_PRESETS } from "../../constants/export-constants"
+import { QUALITY_PRESETS } from "../../constants/export-constants"
 import type { ExportSettings, SocialExportSettings } from "../../types/export-types"
 
 // Mock Tauri API
@@ -1167,7 +1166,7 @@ describe("Export Pipeline Integration Tests", () => {
       )
 
       const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
-      await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (progress) => {
+      await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (_progress) => {
         // Progress callback
       })
 

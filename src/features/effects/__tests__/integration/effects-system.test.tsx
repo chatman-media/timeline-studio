@@ -6,14 +6,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { colorCorrectionEffect, gaussianBlurEffect, vintageEffect } from "@/features/effects/presets/basic-effects"
 import { EffectManager } from "@/features/effects/services/effect-manager"
-import type {
-  AppliedEffect,
-  BaseEffect,
-  EffectKeyframe,
-  EffectParameter,
-  EffectPreset,
-  EffectStack,
-} from "@/features/effects/types/unified-effects"
 
 describe("Effects System Integration Tests", () => {
   let effectManager: EffectManager

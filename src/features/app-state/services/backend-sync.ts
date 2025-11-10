@@ -346,6 +346,21 @@ export class BackendSync {
       "AutoSaveTriggered",
       "MergeCompleted",
       "AutoSaveConfigChanged",
+      // Browser events
+      "BrowserTabSwitched",
+      "BrowserSearchQueryChanged",
+      "BrowserFavoritesToggled",
+      "BrowserSortChanged",
+      "BrowserGroupByChanged",
+      "BrowserFilterChanged",
+      "BrowserViewModeChanged",
+      "BrowserPreviewSizeChanged",
+      "BrowserTabSettingsReset",
+      "BrowserFileSelected",
+      "BrowserFileDeselected",
+      "BrowserFileSelectionToggled",
+      "BrowserAllFilesSelected",
+      "BrowserAllFilesDeselected",
     ]
 
     return stateChangingTypes.includes(event.type)

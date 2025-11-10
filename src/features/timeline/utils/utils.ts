@@ -251,15 +251,15 @@ export function validateProject(project: TimelineProject): string[] {
   // Проверяем секции
   if (project?.sections) {
     project.sections.forEach((section) => {
-    if (section.startTime < 0) {
-      errors.push(`Section ${section.name}: start time cannot be negative`)
-    }
-    if (section.duration <= 0) {
-      errors.push(`Section ${section.name}: duration must be positive`)
-    }
-    if (section.endTime !== section.startTime + section.duration) {
-      errors.push(`Section ${section.name}: end time mismatch`)
-    }
+      if (section.startTime < 0) {
+        errors.push(`Section ${section.name}: start time cannot be negative`)
+      }
+      if (section.duration <= 0) {
+        errors.push(`Section ${section.name}: duration must be positive`)
+      }
+      if (section.endTime !== section.startTime + section.duration) {
+        errors.push(`Section ${section.name}: end time mismatch`)
+      }
     })
   }
 
