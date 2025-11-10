@@ -15,8 +15,8 @@
 import { act, renderHook } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType, MediaCodec } from "@/domains/video-editing/types"
 import type { MediaFile } from "@/domains/video-editing/types"
+import { MediaCodec, MediaType } from "@/domains/video-editing/types"
 import { TimelineProviders } from "@/test/test-utils"
 
 // ============================================================================

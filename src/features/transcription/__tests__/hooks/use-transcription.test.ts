@@ -110,8 +110,8 @@ describe("useTranscription", () => {
       let isTranscribingDuringCall = false
 
       mockTranscribeMedia.mockImplementation(async () => {
-        // Need to wait a tick for state to update
-        await new Promise((resolve) => setTimeout(resolve, 0))
+        // Wait for React to update state
+        await new Promise((resolve) => setTimeout(resolve, 10))
         isTranscribingDuringCall = result.current.isTranscribing
         return createMockTranscriptionResult()
       })
