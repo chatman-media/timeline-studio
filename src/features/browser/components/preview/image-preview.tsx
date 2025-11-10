@@ -1,14 +1,12 @@
-// import { convertFileSrc } from "@tauri-apps/api/core"
-
-import { readFile } from "@tauri-apps/plugin-fs"
 import { Image } from "lucide-react"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
+import { createImageUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
-import { checkFileAccess, convertToAssetUrl } from "@/lib/tauri-utils"
+import { checkFileAccess } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
@@ -54,68 +52,35 @@ export const ImagePreview = memo(function ImagePreview({
 
   // Состояние для хранения объекта URL
   const [imageUrl, setImageUrl] = useState<string>("")
-  // Ref для отслеживания текущего blob URL который нужно очистить
-  const blobUrlRef = useRef<string | null>(null)
 
-  // Функция для чтения файла и создания объекта URL
+  // Функция для получения URL изображения без загрузки в память
   const loadImageFile = useCallback(async (path: string) => {
-    try {
-      logger.debugSync("Начинаем загрузку изображения", { path })
+    // Проверяем расширение файла - отклоняем видео и аудио форматы
+    const extension = path.split(".").pop()?.toLowerCase()
+    const videoExtensions = ["mp4", "mov", "avi", "mkv", "webm", "m4v", "flv", "wmv", "mpg", "mpeg"]
+    const audioExtensions = ["mp3", "wav", "ogg", "m4a", "flac", "aac", "wma"]
 
-      // Проверяем расширение файла - отклоняем видео и аудио форматы
-      const extension = path.split(".").pop()?.toLowerCase()
-      const videoExtensions = ["mp4", "mov", "avi", "mkv", "webm", "m4v", "flv", "wmv", "mpg", "mpeg"]
-      const audioExtensions = ["mp3", "wav", "ogg", "m4a", "flac", "aac", "wma"]
-
-      if (extension && (videoExtensions.includes(extension) || audioExtensions.includes(extension))) {
-        logger.warnSync("Попытка загрузить видео/аудио файл как изображение", { path, extension })
-        // Возвращаем пустую строку, чтобы показать fallback иконку
-        return ""
-      }
-
-      // Сначала проверяем существование файла
-      const fileExists = await checkFileAccess(path)
-      if (!fileExists) {
-        logger.warnSync("Файл не существует", { path })
-        const assetUrl = convertToAssetUrl(path)
-        logger.debugSync("Используем asset URL для несуществующего файла", { assetUrl })
-        return assetUrl
-      }
-
-      logger.debugSync("Чтение файла через readFile", { path })
-      const fileData = await readFile(path)
-      logger.debugSync("Файл успешно прочитан", { path, dataSize: fileData.length })
-
-      // Определяем MIME тип по расширению
-      const mimeTypes: Record<string, string> = {
-        jpg: "image/jpeg",
-        jpeg: "image/jpeg",
-        png: "image/png",
-        gif: "image/gif",
-        webp: "image/webp",
-        svg: "image/svg+xml",
-        bmp: "image/bmp",
-        tiff: "image/tiff",
-        tif: "image/tiff",
-      }
-      const mimeType = mimeTypes[extension || ""] || "image/jpeg"
-
-      const blob = new Blob([fileData as BlobPart], { type: mimeType })
-      const url = URL.createObjectURL(blob)
-      logger.infoSync("Создан blob URL для изображения", { path, blobUrl: url, mimeType, extension })
-      return url
-    } catch (error) {
-      logger.errorSync("Ошибка при загрузке изображения", {
-        error: String(error),
-        message: error instanceof Error ? error.message : String(error),
-        path,
-        stack: error instanceof Error ? error.stack : undefined,
-      })
-      // В случае ошибки используем convertToAssetUrl
-      const assetUrl = convertToAssetUrl(path)
-      logger.debugSync("Используем fallback asset URL после ошибки", { assetUrl, originalPath: path })
-      return assetUrl
+    if (extension && (videoExtensions.includes(extension) || audioExtensions.includes(extension))) {
+      logger.warnSync("Попытка загрузить видео/аудио файл как изображение", { path, extension })
+      // Возвращаем пустую строку, чтобы показать fallback иконку
+      return ""
     }
+
+    // Проверяем существование файла
+    const fileExists = await checkFileAccess(path)
+    if (!fileExists) {
+      logger.warnSync("Файл не существует", { path })
+      return ""
+    }
+
+    // Используем унифицированную утилиту для создания image URL
+    const imageUrl = createImageUrl(path)
+    logger.debugSync("[ImagePreview] Created image URL", {
+      original: path,
+      imageUrl,
+      isAsset: imageUrl.startsWith("asset://"),
+    })
+    return imageUrl
   }, [])
 
   // Эффект для загрузки изображения при монтировании компонента
@@ -125,30 +90,15 @@ export const ImagePreview = memo(function ImagePreview({
 
     void loadImageFile(file.path).then((url) => {
       if (isMounted) {
-        // Очищаем предыдущий blob URL если он есть
-        if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
-          logger.debugSync("Очищаем предыдущий blob URL", { oldUrl: blobUrlRef.current })
-          URL.revokeObjectURL(blobUrlRef.current)
-        }
-        // Сохраняем новый URL в ref
-        const isBlob = url.startsWith("blob:")
-        blobUrlRef.current = isBlob ? url : null
         setImageUrl(url)
-        logger.debugSync("URL изображения установлен", { url, isBlob, fileName: file.name })
+        logger.debugSync("URL изображения установлен", { url, fileName: file.name })
       }
     })
 
-    // Очистка объекта URL при размонтировании компонента или смене файла
+    // Cleanup при размонтировании компонента
     return () => {
       isMounted = false
-      if (blobUrlRef.current && blobUrlRef.current.startsWith("blob:")) {
-        logger.debugSync("Размонтирование ImagePreview - очистка blob URL", {
-          blobUrl: blobUrlRef.current,
-          fileName: file.name,
-        })
-        URL.revokeObjectURL(blobUrlRef.current)
-        blobUrlRef.current = null
-      }
+      logger.debugSync("Размонтирование ImagePreview", { fileName: file.name })
     }
   }, [file.path, file.name, loadImageFile])
 
@@ -196,7 +146,7 @@ export const ImagePreview = memo(function ImagePreview({
       )}
       <div className="relative flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
         <img
-          src={imageUrl || convertToAssetUrl(file.path)}
+          src={imageUrl || undefined}
           alt={file.name}
           className="h-full w-full object-contain"
           onError={(e) => {

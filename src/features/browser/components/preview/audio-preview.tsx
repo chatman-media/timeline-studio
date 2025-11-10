@@ -1,4 +1,3 @@
-import { readFile } from "@tauri-apps/plugin-fs"
 import { Music } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { LiveAudioVisualizer } from "react-audio-visualize"
@@ -6,8 +5,8 @@ import { LiveAudioVisualizer } from "react-audio-visualize"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
+import { createAudioUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
-import { convertToAssetUrl } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
@@ -149,41 +148,16 @@ export const AudioPreview = memo(function AudioPreview({
   // Состояние для хранения объекта URL
   const [audioUrl, setAudioUrl] = useState<string>("")
 
-  // Функция для чтения файла и создания объекта URL
+  // Функция для получения URL аудио без загрузки в память
   const loadAudioFile = useCallback(async (path: string) => {
-    try {
-      logger.debugSync("Начинаем загрузку аудио файла", { path })
-      const fileData = await readFile(path)
-      logger.debugSync("Аудио файл успешно прочитан", { path, dataSize: fileData.length })
-
-      // Определяем тип аудио по расширению
-      const extension = path.split(".").pop()?.toLowerCase()
-      const audioMimeTypes: Record<string, string> = {
-        mp3: "audio/mpeg",
-        wav: "audio/wav",
-        ogg: "audio/ogg",
-        flac: "audio/flac",
-        aac: "audio/aac",
-        m4a: "audio/m4a",
-      }
-      const mimeType = audioMimeTypes[extension || ""] || "audio/mpeg"
-
-      const blob = new Blob([fileData as BlobPart], { type: mimeType })
-      const url = URL.createObjectURL(blob)
-      logger.infoSync("Создан blob URL для аудио", { path, blobUrl: url, mimeType, extension })
-      return url
-    } catch (error) {
-      logger.errorSync("Ошибка при загрузке аудио", {
-        error: String(error),
-        message: error instanceof Error ? error.message : String(error),
-        path,
-        stack: error instanceof Error ? error.stack : undefined,
-      })
-      // В случае ошибки используем convertToAssetUrl
-      const assetUrl = convertToAssetUrl(path)
-      logger.debugSync("Используем fallback asset URL для аудио", { assetUrl, originalPath: path })
-      return assetUrl
-    }
+    // Используем унифицированную утилиту для создания audio URL
+    const audioUrl = createAudioUrl(path)
+    logger.debugSync("[AudioPreview] Created audio URL", {
+      original: path,
+      audioUrl,
+      isAsset: audioUrl.startsWith("asset://"),
+    })
+    return audioUrl
   }, [])
 
   // Эффект для загрузки аудио при монтировании компонента
@@ -198,18 +172,12 @@ export const AudioPreview = memo(function AudioPreview({
       }
     })
 
-    // Очистка объекта URL при размонтировании компонента
+    // Cleanup при размонтировании компонента
     return () => {
       isMounted = false
-      if (audioUrl?.startsWith("blob:")) {
-        logger.debugSync("Размонтирование AudioPreview - очистка blob URL", {
-          blobUrl: audioUrl,
-          fileName: file.name,
-        })
-        URL.revokeObjectURL(audioUrl)
-      }
+      logger.debugSync("Размонтирование AudioPreview", { fileName: file.name })
     }
-  }, [file.path, file.name, loadAudioFile]) // Убираем audioUrl из зависимостей
+  }, [file.path, file.name, loadAudioFile])
 
   useEffect(() => {
     const audioElement = audioRef.current
@@ -282,7 +250,7 @@ export const AudioPreview = memo(function AudioPreview({
     >
       <audio
         ref={audioRef}
-        src={audioUrl || convertToAssetUrl(file.path)}
+        src={audioUrl || undefined}
         preload="metadata"
         tabIndex={0}
         className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"

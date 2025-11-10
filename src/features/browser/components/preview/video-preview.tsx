@@ -11,8 +11,9 @@ import type { DragData } from "@/features/timeline/types/drag-drop"
 import { getTrackTypeForMediaFile } from "@/features/timeline/utils/drag-calculations"
 import { usePlayer } from "@/features/video-player"
 import { formatDuration } from "@/lib/date"
+import { createThumbnailUrl, createVideoUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
-import { checkFileAccess, convertToAssetUrl, convertVideoSrc } from "@/lib/tauri-utils"
+import { checkFileAccess } from "@/lib/tauri-utils"
 import { cn, formatResolution } from "@/lib/utils"
 import { ApplyButton } from "../layout"
 import { AddMediaButton } from "../layout/add-media-button"
@@ -219,20 +220,9 @@ export const VideoPreview = memo(
 
     // Функция для получения URL видео без загрузки в память
     const loadVideoFile = useCallback(async (path: string) => {
-      if (typeof window !== "undefined") {
-        const windowWithTauri = window as any
-        const hasTauri = windowWithTauri.__TAURI__ !== undefined
-        const hasTauriInternals = windowWithTauri.__TAURI_INTERNALS__ !== undefined
-        logger.debugSync("[VideoPreview] Tauri environment check:", {
-          hasTauri,
-          hasTauriInternals,
-          isTauriEnv: hasTauri || hasTauriInternals,
-        })
-      }
-
-      // Используем file:// протокол для видео через convertVideoSrc
-      const videoUrl = convertVideoSrc(path)
-      logger.debugSync("[VideoPreview] Converting path", {
+      // Используем унифицированную утилиту для создания video URL
+      const videoUrl = createVideoUrl(path)
+      logger.debugSync("[VideoPreview] Created video URL", {
         original: path,
         videoUrl,
         isAsset: videoUrl.startsWith("asset://"),
@@ -369,7 +359,7 @@ export const VideoPreview = memo(
                   previewData
                     ? `data:image/jpeg;base64,${previewData}`
                     : file.thumbnailPath
-                      ? convertToAssetUrl(file.thumbnailPath)
+                      ? createThumbnailUrl(file.thumbnailPath)
                       : undefined
                 }
                 preload="metadata"
@@ -539,7 +529,7 @@ export const VideoPreview = memo(
                       previewData
                         ? `data:image/jpeg;base64,${previewData}`
                         : file.thumbnailPath
-                          ? convertToAssetUrl(file.thumbnailPath)
+                          ? createThumbnailUrl(file.thumbnailPath)
                           : undefined
                     }
                     preload="metadata"
