@@ -224,12 +224,21 @@ export class ThreeDTransitionRenderer extends BaseRenderer {
         v_position3D = vec3(a_position, 0.0);
       }`
 
-    // Компилируем каждый шейдер
+    // Компилируем каждый шейдер через shaderPool
+    const { shaderPool } = await import("@/lib/webgl")
+
     for (const type of shaderTypes) {
       const fragmentShader = this.getFragmentShader(type)
       if (fragmentShader) {
-        // В реальности используем shaderPool через BaseRenderer
-        logger.debugSync(`Compiled 3D shader: ${type}`)
+        const shaderSource = { vertex: vertexShader, fragment: fragmentShader }
+        const compiled = shaderPool.getProgram(`3d-${type}`, shaderSource)
+
+        if (!compiled) {
+          logger.errorSync(`Failed to compile 3D shader: ${type}`)
+        } else {
+          logger.debugSync(`Compiled 3D shader: ${type}`)
+          this.programs.set(`3d-${type}`, compiled)
+        }
       }
     }
   }

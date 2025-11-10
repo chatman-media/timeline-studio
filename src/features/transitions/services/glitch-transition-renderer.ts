@@ -200,25 +200,30 @@ export class GlitchTransitionRenderer extends BaseRenderer {
         v_texCoord = a_texCoord;
       }`
 
-    // Компилируем каждый шейдер
+    // Компилируем каждый шейдер через shaderPool
+    const { shaderPool } = await import("@/lib/webgl")
+
     for (const type of shaderTypes) {
       const fragmentShader = this.getFragmentShader(type)
       if (fragmentShader) {
-        // В реальности используем shaderPool через BaseRenderer
-        logger.debugSync(`Compiled glitch shader: ${type}`)
+        const shaderSource = { vertex: vertexShader, fragment: fragmentShader }
+        const compiled = shaderPool.getProgram(`glitch-${type}`, shaderSource)
+
+        if (!compiled) {
+          logger.errorSync(`Failed to compile glitch shader: ${type}`)
+        } else {
+          logger.debugSync(`Compiled glitch shader: ${type}`)
+          this.programs.set(`glitch-${type}`, compiled)
+        }
       }
     }
   }
 
   /**
    * Получить fragment shader для glitch эффекта
-   * Примечание: Здесь представлены упрощённые версии для демонстрации
-   * Полные шейдеры из dynamic-transition-service.ts остаются без изменений
    */
   private getFragmentShader(type: GlitchEffectType): string {
-    // Базовая структура с placeholder
-    // В production версии здесь будут полные шейдеры из dynamic-transition-service.ts
-    return `#version 300 es
+    const baseUniforms = `#version 300 es
       precision highp float;
 
       uniform sampler2D textureA;
@@ -228,16 +233,233 @@ export class GlitchTransitionRenderer extends BaseRenderer {
       uniform vec2 resolution;
 
       in vec2 v_texCoord;
-      out vec4 fragColor;
+      out vec4 fragColor;`
 
-      // Здесь будет полный код шейдера для ${type}
-      // Копируется из dynamic-transition-service.ts
-
-      void main() {
-        vec4 colorA = texture(textureA, v_texCoord);
-        vec4 colorB = texture(textureB, v_texCoord);
-        fragColor = mix(colorA, colorB, progress);
+    const noiseFunc = `
+      // Noise function
+      float random(vec2 co) {
+        return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
       }`
+
+    switch (type) {
+      case "digital-glitch":
+        return `${baseUniforms}
+          uniform float u_blockSize;
+          uniform float u_intensity;
+          uniform float u_frequency;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float block = floor(uv.y * resolution.y / u_blockSize);
+            float noise = random(vec2(block, u_time));
+
+            if (noise < u_frequency * progress) {
+              uv.x += (random(vec2(block, u_time + 1.0)) - 0.5) * u_intensity * progress;
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+
+      case "rgb-split":
+        return `${baseUniforms}
+          uniform float u_separation;
+          uniform float u_angle;
+          uniform float u_aberration;
+
+          void main() {
+            vec2 offset = vec2(cos(u_angle), sin(u_angle)) * u_separation * progress / resolution.x;
+
+            float r = mix(texture(textureA, v_texCoord + offset).r, texture(textureB, v_texCoord + offset).r, progress);
+            float g = mix(texture(textureA, v_texCoord).g, texture(textureB, v_texCoord).g, progress);
+            float b = mix(texture(textureA, v_texCoord - offset).b, texture(textureB, v_texCoord - offset).b, progress);
+
+            fragColor = vec4(r, g, b, 1.0);
+          }`
+
+      case "data-corruption":
+        return `${baseUniforms}
+          uniform float u_corruptionLevel;
+          uniform float u_noiseAmount;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float noise = random(uv + u_time);
+
+            if (noise < u_corruptionLevel * progress) {
+              uv = vec2(random(uv), random(uv + 1.0));
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            vec4 mixed = mix(colorA, colorB, progress);
+
+            if (noise < u_noiseAmount * progress) {
+              mixed = vec4(vec3(random(uv + u_time)), 1.0);
+            }
+
+            fragColor = mixed;
+          }`
+
+      case "analog-distortion":
+        return `${baseUniforms}
+          uniform float u_tracking;
+          uniform float u_jitter;
+          uniform float u_colorBleed;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float scanline = floor(uv.y * resolution.y);
+            float jitter = (random(vec2(scanline, u_time)) - 0.5) * u_jitter * progress;
+
+            uv.x += jitter;
+            uv.y += sin(uv.x * 10.0 + u_time) * u_tracking * progress;
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            vec4 mixed = mix(colorA, colorB, progress);
+
+            // Color bleeding
+            mixed.r = mix(mixed.r, texture(textureB, uv + vec2(0.01 * u_colorBleed, 0.0)).r, progress);
+
+            fragColor = mixed;
+          }`
+
+      case "signal-interference":
+        return `${baseUniforms}
+          uniform float u_waveFrequency;
+          uniform float u_waveAmplitude;
+          uniform float u_ghosting;
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float wave = sin(uv.y * u_waveFrequency + u_time * 2.0) * u_waveAmplitude * progress;
+            uv.x += wave;
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            vec4 mixed = mix(colorA, colorB, progress);
+
+            // Ghosting effect
+            vec4 ghost = texture(textureA, uv - vec2(u_ghosting * progress, 0.0));
+            mixed = mix(mixed, ghost, 0.3 * progress);
+
+            fragColor = mixed;
+          }`
+
+      case "pixel-storm":
+        return `${baseUniforms}
+          uniform float u_pixelSize;
+          uniform float u_chaos;
+          uniform float u_speed;
+          ${noiseFunc}
+
+          void main() {
+            vec2 pixelated = floor(v_texCoord * resolution / u_pixelSize) * u_pixelSize / resolution;
+            float noise = random(pixelated + u_time * u_speed);
+
+            vec2 uv = mix(v_texCoord, pixelated, progress);
+            if (noise < u_chaos * progress) {
+              uv = vec2(random(pixelated), random(pixelated + 1.0));
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+
+      case "codec-error":
+        return `${baseUniforms}
+          uniform float u_macroblockSize;
+          uniform float u_compressionArtifacts;
+          ${noiseFunc}
+
+          void main() {
+            vec2 block = floor(v_texCoord * resolution / u_macroblockSize);
+            vec2 blockUV = block * u_macroblockSize / resolution;
+            float noise = random(block + u_time);
+
+            vec2 uv = v_texCoord;
+            if (noise < u_compressionArtifacts * progress) {
+              uv = blockUV;
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+
+      case "matrix-rain":
+        return `${baseUniforms}
+          uniform float u_density;
+          uniform float u_speed;
+          uniform vec3 u_colorTint;
+          ${noiseFunc}
+
+          void main() {
+            float column = floor(v_texCoord.x * resolution.x / 20.0);
+            float fall = fract(v_texCoord.y + u_time * u_speed);
+            float noise = random(vec2(column, floor(fall * 20.0)));
+
+            vec4 colorA = texture(textureA, v_texCoord);
+            vec4 colorB = texture(textureB, v_texCoord);
+            vec4 mixed = mix(colorA, colorB, progress);
+
+            if (noise < u_density * progress) {
+              mixed = vec4(u_colorTint * noise, 1.0);
+            }
+
+            fragColor = mixed;
+          }`
+
+      case "screen-tear":
+        return `${baseUniforms}
+          uniform float u_tearCount;
+          uniform float u_displacement;
+          uniform float u_wobble;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float tear = floor(uv.y * u_tearCount);
+            float offset = random(vec2(tear, u_time)) * u_displacement * progress / resolution.x;
+            offset += sin(u_time * 5.0 + tear) * u_wobble * progress / resolution.x;
+
+            uv.x += offset;
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+
+      case "bit-crush":
+        return `${baseUniforms}
+          uniform float u_bitDepth;
+          uniform float u_colorPalette;
+
+          void main() {
+            vec4 colorA = texture(textureA, v_texCoord);
+            vec4 colorB = texture(textureB, v_texCoord);
+            vec4 mixed = mix(colorA, colorB, progress);
+
+            float levels = pow(2.0, u_bitDepth);
+            mixed.rgb = floor(mixed.rgb * levels * progress + mixed.rgb * (1.0 - progress) * 256.0) / levels;
+
+            fragColor = mixed;
+          }`
+
+      default:
+        return `${baseUniforms}
+          void main() {
+            vec4 colorA = texture(textureA, v_texCoord);
+            vec4 colorB = texture(textureB, v_texCoord);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+    }
   }
 
   /**

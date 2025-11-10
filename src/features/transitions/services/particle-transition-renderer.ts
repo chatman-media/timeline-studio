@@ -270,8 +270,181 @@ export class ParticleTransitionRenderer extends BaseRenderer {
       "organic-growth",
     ]
 
+    // Базовый вершинный шейдер для particle эффектов
+    const vertexShader = `#version 300 es
+      in vec2 a_position;
+      in vec2 a_texCoord;
+      out vec2 v_texCoord;
+
+      void main() {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+        v_texCoord = a_texCoord;
+      }`
+
+    // Компилируем каждый шейдер через shaderPool
+    const { shaderPool } = await import("@/lib/webgl")
+
     for (const type of shaderTypes) {
-      logger.debugSync(`Compiled particle shader: ${type}`)
+      const fragmentShader = this.getFragmentShader(type)
+      if (fragmentShader) {
+        const shaderSource = { vertex: vertexShader, fragment: fragmentShader }
+        const compiled = shaderPool.getProgram(`particle-${type}`, shaderSource)
+
+        if (!compiled) {
+          logger.errorSync(`Failed to compile particle shader: ${type}`)
+        } else {
+          logger.debugSync(`Compiled particle shader: ${type}`)
+          this.programs.set(`particle-${type}`, compiled)
+        }
+      }
+    }
+  }
+
+  /**
+   * Получить fragment shader для particle эффекта
+   */
+  private getFragmentShader(type: ParticleEffectType): string {
+    const baseUniforms = `#version 300 es
+      precision highp float;
+
+      uniform sampler2D textureA;
+      uniform sampler2D textureB;
+      uniform float progress;
+      uniform vec2 resolution;
+
+      in vec2 v_texCoord;
+      out vec4 fragColor;`
+
+    const noiseFunc = `
+      // Noise function
+      float random(vec2 co) {
+        return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+      }`
+
+    switch (type) {
+      case "particle-dissolve":
+        return `${baseUniforms}
+          uniform float particleCount;
+          uniform float particleSize;
+          uniform float speed;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float noise = random(floor(uv * particleCount));
+
+            if (noise < progress) {
+              uv += (vec2(random(uv), random(uv + 1.0)) - 0.5) * particleSize * progress;
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            float alpha = smoothstep(noise - 0.1, noise + 0.1, progress);
+            fragColor = mix(colorA, colorB, alpha);
+          }`
+
+      case "liquid-morph":
+        return `${baseUniforms}
+          uniform float viscosity;
+          uniform float turbulence;
+          uniform float waveHeight;
+          uniform float waveFrequency;
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float wave = sin(uv.x * waveFrequency + progress * 3.14159) * waveHeight * (1.0 - viscosity) * progress * 0.01;
+            uv.y += wave;
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            fragColor = mix(colorA, colorB, progress);
+          }`
+
+      case "glass-shatter":
+        return `${baseUniforms}
+          uniform vec2 impactPoint;
+          uniform float shardCount;
+          uniform float explosionForce;
+          uniform float gravity;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            vec2 toImpact = uv - impactPoint;
+            float dist = length(toImpact);
+            float shard = floor(atan(toImpact.y, toImpact.x) * shardCount / 6.28318);
+            float noise = random(vec2(shard, 0.0));
+
+            if (progress > noise * 0.5) {
+              vec2 offset = normalize(toImpact) * explosionForce * progress * 0.1;
+              offset.y -= gravity * progress * progress * 0.1;
+              uv += offset;
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            float alpha = smoothstep(noise * 0.5, noise * 0.5 + 0.2, progress);
+            fragColor = mix(colorA, colorB, alpha);
+          }`
+
+      case "fire-burn":
+        return `${baseUniforms}
+          uniform float intensity;
+          uniform float spread;
+          uniform float heatDistortion;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            float noise = random(uv);
+            float burn = progress + (noise - 0.5) * spread;
+
+            if (burn > 0.5) {
+              uv += (vec2(random(uv), random(uv + 1.0)) - 0.5) * heatDistortion * 0.05;
+            }
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+
+            // Fire edge effect
+            float edge = smoothstep(burn - 0.1, burn, 0.5) - smoothstep(burn, burn + 0.1, 0.5);
+            vec3 fireColor = vec3(1.0, 0.5, 0.0) * edge * intensity;
+
+            vec4 mixed = mix(colorA, colorB, smoothstep(burn - 0.2, burn, 0.5));
+            fragColor = vec4(mixed.rgb + fireColor, mixed.a);
+          }`
+
+      case "organic-growth":
+        return `${baseUniforms}
+          uniform float growthPattern;
+          uniform float branches;
+          uniform float speed;
+          ${noiseFunc}
+
+          void main() {
+            vec2 uv = v_texCoord;
+            vec2 center = vec2(0.5);
+            vec2 toCenter = uv - center;
+            float angle = atan(toCenter.y, toCenter.x);
+            float dist = length(toCenter);
+
+            float branch = floor(angle * branches / 6.28318);
+            float noise = random(vec2(branch, dist));
+            float growth = progress * speed + noise * 0.2;
+
+            vec4 colorA = texture(textureA, uv);
+            vec4 colorB = texture(textureB, uv);
+            float alpha = smoothstep(dist - growth, dist - growth + 0.2, 0.0);
+            fragColor = mix(colorA, colorB, alpha);
+          }`
+
+      default:
+        return `${baseUniforms}
+          void main() {
+            vec4 colorA = texture(textureA, v_texCoord);
+            vec4 colorB = texture(textureB, v_texCoord);
+            fragColor = mix(colorA, colorB, progress);
+          }`
     }
   }
 
