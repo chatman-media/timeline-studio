@@ -4,20 +4,20 @@
  * Тесты для преобразования ProjectState (backend) в Timeline (frontend)
  */
 
-import { describe, it, expect } from "vitest"
+import { describe, expect, it } from "vitest"
+import type { ProjectState } from "@/types/generated/state-types"
 import {
-  transformProjectStateToTimeline,
   createAddClipCommand,
   createMoveClipCommand,
-  createTrimClipCommand,
-  createSelectClipsCommand,
   createProjectCommand,
   createSaveProjectCommand,
+  createSelectClipsCommand,
+  createTrimClipCommand,
+  getTimelineSyncStats,
   isBackendSyncTimeline,
   isTimelineStale,
-  getTimelineSyncStats,
+  transformProjectStateToTimeline,
 } from "../../utils/project-transform"
-import type { ProjectState } from "@/types/generated/state-types"
 
 describe("ProjectTransform", () => {
   describe("transformProjectStateToTimeline", () => {

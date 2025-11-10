@@ -13,8 +13,8 @@ export { useUpdates } from "./hooks/use-updates"
 export type { ModalActor, ModalMachine } from "./machines/modal-machine"
 // Экспорт машин
 export { modalMachine } from "./machines/modal-machine"
-export type { UpdateMachine, UpdateMachineActor } from "./machines/update-machine"
-export { updateMachine } from "./machines/update-machine"
+export type { UpdateMachine, UpdateMachineActor, UpdateMachineInput } from "./machines/update-machine"
+export { createUpdateMachine, updateMachine } from "./machines/update-machine"
 // Экспорт провайдера
 export { SystemIntegrationProvider, useSystemIntegrationContext } from "./providers/system-integration-provider"
 // Экспорт оркестратора

@@ -4,8 +4,8 @@
  * Тесты для сервиса управления историей изменений
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest"
-import { UndoRedoService, type ActionType } from "../../services/undo-redo-service"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { type ActionType, UndoRedoService } from "../../services/undo-redo-service"
 
 describe("UndoRedoService", () => {
   let service: UndoRedoService
@@ -464,8 +464,8 @@ describe("UndoRedoService", () => {
       expect(stats.totalActions).toBe(3)
       expect(stats.undoCount).toBe(3)
       expect(stats.redoableActions).toBe(0)
-      expect(stats.actionsByType["ADD_CLIP"]).toBe(2)
-      expect(stats.actionsByType["ADD_TRACK"]).toBe(1)
+      expect(stats.actionsByType.ADD_CLIP).toBe(2)
+      expect(stats.actionsByType.ADD_TRACK).toBe(1)
     })
 
     it("should include redo count in stats", () => {

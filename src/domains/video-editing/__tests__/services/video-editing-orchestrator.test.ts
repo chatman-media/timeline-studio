@@ -4,13 +4,13 @@
  * Тесты для координатора работы машин видеоредактирования
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { VideoEditingOrchestrator } from "../../services/video-editing-orchestrator"
 
 // Mock dependencies
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
-    onStateChange: vi.fn((callback) => {
+    onStateChange: vi.fn((_callback) => {
       // Return unsubscribe function
       return () => {}
     }),

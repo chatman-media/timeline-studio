@@ -2,8 +2,8 @@
  * Tests for Modal Machine
  */
 
+import { beforeEach, describe, expect, it } from "vitest"
 import { createActor } from "xstate"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type ModalType, modalMachine } from "../../machines/modal-machine"
 
 describe("Modal Machine", () => {

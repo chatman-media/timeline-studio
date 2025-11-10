@@ -4,13 +4,11 @@
  * Тесты для адаптера конвертации MediaFile между форматами
  */
 
-import { describe, it, expect } from "vitest"
-import {
-  featureToDomainMediaFile,
-  domainToFeatureMediaFile,
-} from "../../utils/media-file-adapter"
-import { MediaType, MediaCodec } from "../../types/media"
+import { describe, expect, it } from "vitest"
 import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
+import { MediaType as FeatureMediaType } from "@/features/media/types/media"
+import { MediaCodec, MediaType } from "../../types/media"
+import { domainToFeatureMediaFile, featureToDomainMediaFile } from "../../utils/media-file-adapter"
 
 describe("MediaFileAdapter", () => {
   describe("featureToDomainMediaFile", () => {
@@ -19,7 +17,7 @@ describe("MediaFileAdapter", () => {
         id: "video-1",
         name: "test-video.mp4",
         path: "/test/video.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,

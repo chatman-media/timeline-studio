@@ -2,37 +2,59 @@
  * Tests for Update Machine
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-import { updateMachine } from "../../machines/update-machine"
-
-// Mock updateService directly
-vi.mock("@/features/updates/services/update-service", () => ({
-  updateService: {
-    checkForUpdates: vi.fn(),
-    downloadAndInstall: vi.fn(),
-    getCurrentVersion: vi.fn(),
-  },
-}))
+import type { UpdateService } from "@/features/updates/services/update-service"
+import type { UpdateCheckResult } from "@/features/updates/types"
+import { createUpdateMachine } from "../../machines/update-machine"
 
 describe("Update Machine", () => {
-  let actor: ReturnType<typeof createActor<typeof updateMachine>>
+  // Mock UpdateService для тестирования
+  let mockUpdateService: UpdateService
+  let actor: ReturnType<typeof createActor<ReturnType<typeof createUpdateMachine>>>
+
+  // Helper function to wait for state with promise microtask flushing
+  const waitForState = async (expectedState: string, timeout = 1000) => {
+    const startTime = Date.now()
+    while (Date.now() - startTime < timeout) {
+      // Flush microtasks to process promises
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      const currentState = actor.getSnapshot().value
+      if (currentState === expectedState) {
+        return
+      }
+    }
+    throw new Error(`Timeout waiting for state "${expectedState}". Current state: "${actor.getSnapshot().value}"`)
+  }
 
   beforeEach(async () => {
-    // DON'T clear all mocks here - it breaks the mock implementations
-    // vi.clearAllMocks()
+    // Создаем mock updateService с полным интерфейсом
+    mockUpdateService = {
+      checkForUpdates: vi.fn().mockResolvedValue({
+        available: false,
+        current_version: "1.0.0",
+        update_info: undefined,
+      } as UpdateCheckResult),
+      downloadAndInstall: vi.fn().mockResolvedValue(undefined),
+      getCurrentVersion: vi.fn().mockResolvedValue("1.0.0"),
+      isUpdaterAvailable: vi.fn().mockResolvedValue(true),
+      enableAutoCheck: vi.fn(),
+      disableAutoCheck: vi.fn(),
+      getCurrentStatus: vi.fn().mockReturnValue("idle"),
+      subscribe: vi.fn().mockReturnValue(() => {}),
+      reset: vi.fn(),
+      getAutoCheckSettings: vi.fn().mockReturnValue({ enabled: false, intervalMinutes: 60 }),
+      dispose: vi.fn(),
+    } as unknown as UpdateService
 
-    // Setup default mocks
-    const { updateService } = await import("@/features/updates/services/update-service")
-    vi.mocked(updateService.getCurrentVersion).mockResolvedValue("1.0.0")
-    vi.mocked(updateService.checkForUpdates).mockResolvedValue({
-      available: false,
-      update_info: null,
-    })
-    vi.mocked(updateService.downloadAndInstall).mockResolvedValue(undefined)
-
-    actor = createActor(updateMachine)
+    // Создаем машину с mock сервисом
+    const machine = createUpdateMachine({ updateService: mockUpdateService })
+    actor = createActor(machine)
     actor.start()
+
+    // Wait for initialization to complete
+    await waitForState("idle")
   })
 
   afterEach(() => {
@@ -42,18 +64,14 @@ describe("Update Machine", () => {
   describe("Initial State", () => {
     it("should start in initializing state", () => {
       // Create a new actor that hasn't started yet
-      const freshActor = createActor(updateMachine)
+      const machine = createUpdateMachine({ updateService: mockUpdateService })
+      const freshActor = createActor(machine)
       const snapshot = freshActor.getSnapshot()
       expect(snapshot.value).toBe("initializing")
       freshActor.stop()
     })
 
     it("should have initial context values", async () => {
-      // Wait for initialization to complete
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
-
       const snapshot = actor.getSnapshot()
 
       expect(snapshot.context.currentVersion).toBe("1.0.0") // Mocked value
@@ -62,24 +80,11 @@ describe("Update Machine", () => {
     })
 
     it("should transition to idle after initialization", async () => {
-      // Wait for initialization to complete
-      await vi.waitFor(() => {
-        const snapshot = actor.getSnapshot()
-        return snapshot.value === "idle"
-      })
-
       expect(actor.getSnapshot().value).toBe("idle")
     })
   })
 
   describe("Check for Updates", () => {
-    beforeEach(async () => {
-      // Wait for initialization
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
-    })
-
     it("should transition to checking state", () => {
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -89,96 +94,74 @@ describe("Update Machine", () => {
     })
 
     it("should return to idle if no update available", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: false,
-        update_info: null,
+        current_version: "1.0.0",
+        update_info: undefined,
       })
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      // Wait for async operation to complete
-      await vi.waitFor(
-        () => {
-          const state = actor.getSnapshot().value
-          return state === "idle"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("idle")
 
       expect(actor.getSnapshot().value).toBe("idle")
     })
 
     it("should transition to updateAvailable if update found", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: true,
+        current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          date: "2024-01-01",
+          pub_date: "2024-01-01",
           notes: "New version available",
+          signature: "mock-signature",
+          url: "https://example.com/update",
         },
       })
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "updateAvailable"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("updateAvailable")
 
       expect(actor.getSnapshot().value).toBe("updateAvailable")
       expect(actor.getSnapshot().context.availableUpdate).toBeDefined()
     })
 
     it("should save update info in context", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
       const updateInfo = {
         version: "2.0.0",
-        date: "2024-01-01",
+        pub_date: "2024-01-01",
         notes: "New features",
+        signature: "mock-signature",
+        url: "https://example.com/update",
       }
 
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: true,
+        current_version: "1.0.0",
         update_info: updateInfo,
       })
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().context.availableUpdate !== undefined
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("updateAvailable")
 
       expect(actor.getSnapshot().context.availableUpdate).toEqual(updateInfo)
     })
 
     it("should update lastCheckTime", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: false,
-        update_info: null,
+        current_version: "1.0.0",
+        update_info: undefined,
       })
 
       const beforeCheck = new Date()
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().context.lastCheckTime !== undefined
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("idle")
 
       const lastCheckTime = actor.getSnapshot().context.lastCheckTime
       expect(lastCheckTime).toBeInstanceOf(Date)
@@ -187,12 +170,6 @@ describe("Update Machine", () => {
   })
 
   describe("Auto Check Configuration", () => {
-    beforeEach(async () => {
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
-    })
-
     it("should enable auto check", () => {
       actor.send({ type: "ENABLE_AUTO_CHECK", intervalMinutes: 30 })
 
@@ -222,28 +199,23 @@ describe("Update Machine", () => {
 
   describe("Download and Install Flow", () => {
     beforeEach(async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
       // Setup: navigate to updateAvailable state
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: true,
+        current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          date: "2024-01-01",
+          pub_date: "2024-01-01",
           notes: "Update available",
+          signature: "mock-signature",
+          url: "https://example.com/update",
         },
       })
-      vi.mocked(updateService.downloadAndInstall).mockResolvedValue(undefined)
-
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
+      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "updateAvailable"
-      })
+      await waitForState("updateAvailable")
     })
 
     it("should transition to downloading when download triggered", () => {
@@ -256,12 +228,7 @@ describe("Update Machine", () => {
     it("should transition to readyToInstall after download completes", async () => {
       actor.send({ type: "DOWNLOAD_UPDATE" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "readyToInstall"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("readyToInstall")
 
       expect(actor.getSnapshot().value).toBe("readyToInstall")
     })
@@ -280,34 +247,27 @@ describe("Update Machine", () => {
 
   describe("Install Flow", () => {
     beforeEach(async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
       // Setup: navigate to readyToInstall state
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
         available: true,
+        current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          date: "2024-01-01",
+          pub_date: "2024-01-01",
           notes: "Update ready",
+          signature: "mock-signature",
+          url: "https://example.com/update",
         },
       })
-      vi.mocked(updateService.downloadAndInstall).mockResolvedValue(undefined)
-
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
+      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "updateAvailable"
-      })
+      await waitForState("updateAvailable")
 
       actor.send({ type: "DOWNLOAD_UPDATE" })
 
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "readyToInstall"
-      })
+      await waitForState("readyToInstall")
     })
 
     it("should transition to installing when install triggered", () => {
@@ -325,13 +285,7 @@ describe("Update Machine", () => {
       // Advance timers for the installation delay
       await vi.advanceTimersByTimeAsync(2000)
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "installed"
-        },
-        { timeout: 1000 },
-      )
-
+      // With fake timers, we need to check synchronously
       expect(actor.getSnapshot().value).toBe("installed")
 
       vi.useRealTimers()
@@ -339,61 +293,34 @@ describe("Update Machine", () => {
   })
 
   describe("Error Handling", () => {
-    beforeEach(async () => {
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
-    })
-
     it("should transition to error state on check failure", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockRejectedValue(new Error("Network error"))
+      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Network error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "error"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("error")
 
       expect(actor.getSnapshot().value).toBe("error")
       expect(actor.getSnapshot().context.error).toBeDefined()
     })
 
     it("should save error message", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
       const errorMessage = "Connection failed"
-      vi.mocked(updateService.checkForUpdates).mockRejectedValue(new Error(errorMessage))
+      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error(errorMessage))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().context.error !== undefined
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("error")
 
       expect(actor.getSnapshot().context.error).toBe(errorMessage)
     })
 
     it("should allow retry from error state", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockRejectedValue(new Error("Error"))
+      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "error"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("error")
 
       actor.send({ type: "RETRY" })
 
@@ -401,18 +328,11 @@ describe("Update Machine", () => {
     })
 
     it("should allow dismissing error", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockRejectedValue(new Error("Error"))
+      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "error"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("error")
 
       actor.send({ type: "DISMISS" })
 
@@ -423,34 +343,21 @@ describe("Update Machine", () => {
 
   describe("Dismiss Update", () => {
     it("should dismiss update and return to idle", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
-        if (cmd === "check_for_update") {
-          return Promise.resolve({
-            available: true,
-            update_info: {
-              version: "2.0.0",
-              date: "2024-01-01",
-              notes: "Update",
-            },
-          })
-        }
-        return Promise.resolve()
-      })
-
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+        available: true,
+        current_version: "1.0.0",
+        update_info: {
+          version: "2.0.0",
+          pub_date: "2024-01-01",
+          notes: "Update",
+          signature: "mock-signature",
+          url: "https://example.com/update",
+        },
       })
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "updateAvailable"
-        },
-        { timeout: 1000 },
-      )
+      await waitForState("updateAvailable")
 
       actor.send({ type: "DISMISS" })
 
@@ -459,59 +366,33 @@ describe("Update Machine", () => {
     })
 
     it("should dismiss installed update", async () => {
-      const { updateService } = await import("@/features/updates/services/update-service")
-
       vi.useFakeTimers()
 
-      vi.mocked(updateService.checkForUpdates).mockResolvedValue({
-        if (cmd === "check_for_update") {
-          return Promise.resolve({
-            available: true,
-            update_info: {
-              version: "2.0.0",
-              date: "2024-01-01",
-              notes: "Update",
-            },
-          })
-        }
-        if (cmd === "download_and_install_update") {
-          return Promise.resolve()
-        }
-        return Promise.resolve()
+      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+        available: true,
+        current_version: "1.0.0",
+        update_info: {
+          version: "2.0.0",
+          pub_date: "2024-01-01",
+          notes: "Update",
+          signature: "mock-signature",
+          url: "https://example.com/update",
+        },
       })
-
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
+      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "updateAvailable"
-        },
-        { timeout: 1000 },
-      )
+      // Need to flush promises with fake timers
+      await vi.runAllTimersAsync()
 
       actor.send({ type: "DOWNLOAD_UPDATE" })
 
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "readyToInstall"
-        },
-        { timeout: 1000 },
-      )
+      await vi.runAllTimersAsync()
 
       actor.send({ type: "INSTALL_UPDATE" })
 
       await vi.advanceTimersByTimeAsync(2000)
-
-      await vi.waitFor(
-        () => {
-          return actor.getSnapshot().value === "installed"
-        },
-        { timeout: 1000 },
-      )
 
       actor.send({ type: "DISMISS" })
 
@@ -523,12 +404,6 @@ describe("Update Machine", () => {
   })
 
   describe("Edge Cases", () => {
-    beforeEach(async () => {
-      await vi.waitFor(() => {
-        return actor.getSnapshot().value === "idle"
-      })
-    })
-
     it("should handle CHECK_FOR_UPDATES while checking", () => {
       actor.send({ type: "CHECK_FOR_UPDATES" })
 

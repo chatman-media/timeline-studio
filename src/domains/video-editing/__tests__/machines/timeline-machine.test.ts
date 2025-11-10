@@ -4,7 +4,7 @@
  * Тесты для XState машины управления UI состоянием timeline
  */
 
-import { describe, it, expect, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 import { createActor } from "xstate"
 import { timelineMachine } from "../../machines/timeline-machine"
 

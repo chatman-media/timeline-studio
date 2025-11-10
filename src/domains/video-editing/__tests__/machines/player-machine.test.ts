@@ -4,9 +4,10 @@
  * Тесты для XState машины управления воспроизведением
  */
 
-import { describe, it, expect, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 import { createActor } from "xstate"
-import { playerMachine, type PlayerEvent, type PlayerContext } from "../../machines/player-machine"
+import { playerMachine } from "../../machines/player-machine"
+import { MediaType } from "../../types/media"
 
 describe("PlayerMachine", () => {
   let actor: ReturnType<typeof createActor<typeof playerMachine>>
@@ -46,7 +47,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test-video.mp4",
       path: "/test/video.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 120,
       size: 1024 * 1024 * 50,
     }
@@ -90,7 +91,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test-video.mp4",
       path: "/test/video.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 120,
       size: 1024 * 1024,
     }
@@ -138,7 +139,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test-video.mp4",
       path: "/test/video.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 120,
       size: 1024 * 1024,
     }
@@ -189,7 +190,7 @@ describe("PlayerMachine", () => {
         id: "video-1",
         name: "test.mp4",
         path: "/test/test.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 60,
         size: 1024,
       }
@@ -215,7 +216,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test.mp4",
       path: "/test/test.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 60,
       size: 1024,
     }
@@ -260,7 +261,7 @@ describe("PlayerMachine", () => {
         id: "preview-1",
         name: "preview.mp4",
         path: "/test/preview.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 30,
         size: 1024,
       }
@@ -275,7 +276,7 @@ describe("PlayerMachine", () => {
         id: "preview-1",
         name: "preview.mp4",
         path: "/test/preview.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 30,
         size: 1024,
       }
@@ -292,7 +293,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test.mp4",
       path: "/test/test.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 60,
       size: 1024,
     }
@@ -372,7 +373,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test.mp4",
       path: "/test/test.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 60,
       size: 1024,
     }
@@ -417,7 +418,7 @@ describe("PlayerMachine", () => {
       id: "video-1",
       name: "test.mp4",
       path: "/test/test.mp4",
-      type: "video" as const,
+      type: MediaType.Video,
       duration: 60,
       size: 1024,
     }
@@ -513,7 +514,7 @@ describe("PlayerMachine", () => {
         id: "video-1",
         name: "test.mp4",
         path: "/test/test.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 60,
         size: 1024,
       }
@@ -532,7 +533,7 @@ describe("PlayerMachine", () => {
         id: "video-1",
         name: "test1.mp4",
         path: "/test/test1.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 60,
         size: 1024,
       }
@@ -541,7 +542,7 @@ describe("PlayerMachine", () => {
         id: "video-2",
         name: "test2.mp4",
         path: "/test/test2.mp4",
-        type: "video" as const,
+        type: MediaType.Video,
         duration: 90,
         size: 2048,
       }
