@@ -6,12 +6,26 @@ The Version Control module provides version control functionality for Timeline S
 
 ## 📊 Module Status
 
-- ✅ **Readiness**: Fully implemented and ready for use
+- ✅ **Readiness**: 75% - Core functionality implemented and integrated
 - ✅ **Components**: 2 UI components for version management
 - ✅ **Hooks**: 1 main hook for version control operations
 - ✅ **Services**: Integration through unified backend-sync service
-- ✅ **Tests**: Integration tests
+- ✅ **Tests**: Component and integration tests
 - ✅ **Features**: Snapshots, branches, auto-save, version history
+- ✅ **i18n**: Full localization support (15 languages)
+- ✅ **UI Integration**: Available in User Settings modal
+
+## 🎯 Integration Status
+
+**UI Location**: User Settings → Version Control tab
+
+The version control interface is accessible from the main application through:
+1. Open User Settings modal (Settings icon in the header)
+2. Navigate to "Version Control" tab (5th tab)
+3. Access all version control features through three sub-tabs:
+   - **History**: View and restore project versions
+   - **Branches**: Create and switch between branches
+   - **Settings**: Configure auto-save and storage options
 
 ## 📁 Module Architecture
 
@@ -471,6 +485,25 @@ const FINAL_TOUCHES = {
 2. **Descriptive Messages**: Use clear change descriptions
 3. **Regular Branching**: Create branches for experiments
 4. **Pre-merge Checks**: Always check changes before merging branches
+
+## ⚠️ Known Limitations
+
+The following features are currently **not implemented** and marked for future development:
+
+1. **Branch Merging**: Merging changes from one branch into another is not yet available
+   - UI shows placeholder message: "Branch merging is not yet implemented"
+   - Planned for Phase 2 implementation
+
+2. **Export/Import**: Version history export and import functionality is disabled
+   - Buttons are disabled in Settings tab
+   - Requires backend implementation for serialization/deserialization
+   - Planned for Phase 2 implementation
+
+3. **Integration Tests**: Full integration test suite is pending
+   - Component tests are complete and passing
+   - End-to-end integration tests with backend needed
+
+See [ROADMAP.md](./ROADMAP.md) for detailed development plans and timelines.
 
 ## 🚨 Troubleshooting
 

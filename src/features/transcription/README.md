@@ -22,11 +22,15 @@ src/features/transcription/
 │   ├── language-selector.tsx       # Выбор языка
 │   └── index.ts                    # Экспорты компонентов
 ├── hooks/                          # React хуки
-│   └── use-transcription.ts        # Хуки для транскрипции
-├── services/                       # Сервисы
-│   └── transcription-service.ts    # Основной сервис транскрипции
-├── types/                          # TypeScript типы
-│   └── index.ts                    # Интерфейсы и типы
+│   ├── use-transcription.ts        # Хуки для транскрипции
+│   └── use-enhanced-subtitle-automation.ts  # Enhanced subtitle automation
+├── __tests__/                      # Тесты
+│   ├── hooks/                      # Тесты хуков
+│   ├── components/                 # Тесты компонентов
+│   └── test-utils.ts               # Утилиты для тестирования
+├── __mocks__/                      # Моки для тестов
+│   └── transcription-service.ts    # Mock TranscriptionService
+├── types.ts                        # TypeScript типы (реэкспорт из domains)
 ├── index.ts                        # Главный экспорт модуля
 └── README.md                       # Документация модуля
 ```
@@ -65,6 +69,23 @@ src/features/transcription/
 - Кэширование результатов
 - Batch processing
 - Background tasks
+
+## ⚠️ Known Issues
+
+### Speaker Identification (В разработке)
+**Статус:** Не реализовано
+**Описание:** Функция идентификации говорящих (Speaker Identification) находится в стадии разработки. В настоящее время:
+- Backend (Rust/Tauri): Отсутствует имплементация speaker diarization
+- Frontend: UI компоненты для настройки speaker identification готовы, но не функционируют без backend
+- Планируемая реализация: Интеграция с pyannote.audio или аналогичными библиотеками
+
+**Обходное решение:**
+- Используйте `includeSpeakerLabels: false` в опциях транскрипции
+- Для идентификации говорящих используйте внешние сервисы (например, AWS Transcribe, Google Speech-to-Text)
+
+**Связанные фичи:**
+- Enhanced Subtitle Automation (`use-enhanced-subtitle-automation.ts`) - опция `usePersonIdentification` не работает
+- TranscriptionOptions interface - поле `speakerDiarization` reserved для будущей реализации
 
 ## 💡 Использование модуля
 
@@ -228,7 +249,9 @@ interface TranscriptionSegment {
 ## 🛠️ Сервисы
 
 ### TranscriptionService
-Основной сервис для работы с транскрипцией.
+Основной сервис для работы с транскрипцией расположен в `/src/domains/ai-services/services/transcription-service.ts`.
+
+**Примечание:** Сервис находится в domain layer (`/src/domains/ai-services/`), а не в feature layer, так как используется несколькими фичами.
 
 **Методы:**
 - `transcribeMedia(path, options, onProgress?)` - Транскрибировать медиафайл
@@ -237,6 +260,11 @@ interface TranscriptionSegment {
 - `downloadModel(name, onProgress?)` - Скачать модель
 - `getSupportedLanguages()` - Получить поддерживаемые языки
 - `recommendModel(duration, useLocal?)` - Рекомендовать модель
+
+**Импорт:**
+```typescript
+import { TranscriptionService } from '@/domains/ai-services/services/transcription-service';
+```
 
 ## ⚡ Производительность
 
@@ -266,6 +294,35 @@ interface TranscriptionSegment {
 - **Timeline** - Добавление результатов на таймлайн
 - **AI Chat** - Использование транскрипций как контекста
 - **Export** - Включение субтитров в финальное видео
+
+## 🧪 Тестирование
+
+Модуль включает полный набор unit тестов:
+
+**Тесты хуков:**
+- `__tests__/hooks/use-transcription.test.ts` - Тесты для `useTranscription` и `useWhisperModels`
+- `__tests__/hooks/use-enhanced-subtitle-automation.test.ts` - Тесты для enhanced subtitle automation
+
+**Тесты компонентов:**
+- `__tests__/components/language-selector.test.tsx` - Тесты селектора языка
+- `__tests__/components/model-selector.test.tsx` - Тесты селектора моделей
+- `__tests__/components/model-size-selector.test.tsx` - Тесты селектора размера модели
+
+**Запуск тестов:**
+```bash
+# Запустить все тесты модуля
+bun run test src/features/transcription
+
+# Запустить тесты в watch режиме
+bun run test:watch src/features/transcription
+
+# Запустить с coverage
+bun run test:coverage src/features/transcription
+```
+
+**Моки и утилиты:**
+- `__tests__/test-utils.ts` - Mock данные и фабрики для создания тестовых объектов
+- `__mocks__/transcription-service.ts` - Mock для TranscriptionService
 
 ## 🎯 Заключение
 

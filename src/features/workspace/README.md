@@ -66,12 +66,14 @@ function MediaStudio() {
         onPresetChange={switchPreset}
       />
 
-      {/* Workspace с виджетами */}
+      {/* Workspace с виджетами - машина передается через контекст */}
       <WidgetWorkspace widgetRenderers={widgetRenderers} />
     </div>
   )
 }
 ```
+
+**ВАЖНО:** `WidgetWorkspace` получает доступ к XState машине через `useWorkspaceLayout` hook. Не передавайте `machine` как prop!
 
 ## Preset лейауты
 
@@ -243,16 +245,114 @@ logger.warnSync("Preset not found", { presetId })
 
 См. `examples/media-studio-integration.tsx` для полного примера интеграции виджетной системы в MediaStudio.
 
-## TODO / Будущие улучшения
+## Known Issues
 
-- [ ] Resize виджетов (сейчас только drag)
-- [ ] Snap to grid при перетаскивании
-- [ ] Keyboard shortcuts для переключения лейаутов
-- [ ] Анимации при смене лейаута
-- [ ] Сохранение позиций в localStorage/backend
-- [ ] Undo/Redo для layout изменений
-- [ ] Минимизированные виджеты в dock
-- [ ] Полноэкранный режим для виджета
+### Критические
+- ❌ **Нет сохранения состояния между сессиями** - После перезапуска приложения все изменения layout теряются
+- ❌ **Минимизированные виджеты исчезают** - Отсутствует dock для отображения минимизированных виджетов
+
+### Важные
+- ⚠️ **Только drag, нет resize** - Виджеты можно перетаскивать, но нельзя изменять размер
+- ⚠️ **Нет валидации границ** - Виджеты могут выходить за пределы workspace (частично исправлено в drag handler)
+
+### Мелкие
+- ⚠️ **Нет snap to grid** - При перетаскивании виджеты не привязываются к сетке
+- ⚠️ **Нет анимаций** - Переключение между preset происходит мгновенно
+- ⚠️ **Нет undo/redo** - Невозможно отменить изменения layout
+
+## Roadmap
+
+### v1.1 (Следующий релиз)
+**Цель:** Production-ready функциональность
+
+- [ ] **Сохранение состояния** - Интеграция с localStorage и backend sync
+  - Сохранение текущего preset и custom layouts
+  - Сохранение позиций виджетов
+  - Восстановление состояния при запуске
+- [ ] **Widget Dock** - Панель для минимизированных виджетов
+  - Dock внизу workspace
+  - Drag & drop из dock обратно в workspace
+  - Превью виджетов при hover
+- [ ] **Resize функциональность** - Изменение размера виджетов
+  - Resize handles на углах и краях
+  - Maintain aspect ratio опция
+  - Min/max размеры для виджетов
+
+### v1.2 (Улучшения UX)
+**Цель:** Улучшенный пользовательский опыт
+
+- [ ] **Snap to Grid** - Привязка к сетке при drag/resize
+  - Настраиваемый размер сетки
+  - Visual grid overlay (опционально)
+  - Smart snap к другим виджетам
+- [ ] **Анимации** - Плавные переходы
+  - Анимация переключения preset
+  - Анимация minimize/maximize
+  - Анимация drag & drop
+- [ ] **Keyboard Shortcuts** - Горячие клавиши
+  - Ctrl+1/2/3/4 для переключения preset
+  - Ctrl+M для minimize активного виджета
+  - Ctrl+F для fullscreen виджета
+
+### v1.3 (Расширенные возможности)
+**Цель:** Power user функции
+
+- [ ] **Undo/Redo** - История изменений layout
+  - Command pattern для действий
+  - Сохранение истории в XState
+  - Ctrl+Z / Ctrl+Shift+Z shortcuts
+- [ ] **Fullscreen Mode** - Полноэкранный режим для виджета
+  - Double-click на header для fullscreen
+  - ESC для выхода
+  - Сохранение позиции перед fullscreen
+- [ ] **Widget Tabs** - Табы внутри виджетов
+  - Несколько виджетов одного типа в табах
+  - Drag & drop для реорганизации табов
+  - Close tab функция
+- [ ] **Layout Templates** - Экспорт/импорт layout
+  - Сохранение в JSON файл
+  - Импорт из файла
+  - Sharing с другими пользователями
+
+### v2.0 (Future Vision)
+**Цель:** Профессиональные возможности
+
+- [ ] **Multi-Monitor Support** - Поддержка нескольких мониторов
+  - Виджеты на разных экранах
+  - Per-monitor layout настройки
+- [ ] **Floating Windows** - Отдельные окна для виджетов
+  - Отрыв виджета в отдельное окно
+  - Dock обратно в workspace
+- [ ] **Collaborative Layouts** - Совместная работа
+  - Синхронизация layout между пользователями
+  - Real-time updates
+  - Permissions для layout изменений
+
+## Тестирование
+
+Фича имеет **полное покрытие тестами**:
+
+### Services (2 test files)
+- `workspace-layout-machine.test.ts` - XState machine тесты
+- `workspace-layout-provider.test.tsx` - Provider и hook тесты
+
+### Components (3 test files)
+- `widget-workspace.test.tsx` - Workspace компонент
+- `widget-container.test.tsx` - Container компонент
+- `layout-preset-selector.test.tsx` - Preset selector компонент
+
+### Запуск тестов
+
+```bash
+# Все тесты workspace фичи
+bun run test src/features/workspace
+
+# Конкретный файл
+bun run test src/features/workspace/__tests__/services/workspace-layout-machine.test.ts
+
+# Watch mode
+bun run test:watch src/features/workspace
+```
 
 ## Лицензия
 
