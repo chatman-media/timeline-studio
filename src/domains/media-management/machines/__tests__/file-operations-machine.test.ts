@@ -4,14 +4,9 @@
  * Тесты для file operations state machine
  */
 
-import { createActor } from "xstate"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import {
-  createMockOperation,
-  mockCompletedOperation,
-  mockFailedOperation,
-  mockImportOperation,
-} from "../../__mocks__"
+import { createActor } from "xstate"
+import { createMockOperation } from "../../__mocks__"
 import { fileOperationsMachine } from "../file-operations-machine"
 
 vi.mock("@/lib/tauri-logger", () => ({
@@ -467,9 +462,7 @@ describe("FileOperationsMachine", () => {
       const actor = createActor(fileOperationsMachine)
       actor.start()
 
-      const operations = Array.from({ length: 10 }, (_, i) =>
-        createMockOperation({ id: `op-${i}` }),
-      )
+      const operations = Array.from({ length: 10 }, (_, i) => createMockOperation({ id: `op-${i}` }))
 
       operations.forEach((op) => {
         actor.send({ type: "START_OPERATION", operation: op })
@@ -505,7 +498,7 @@ describe("FileOperationsMachine", () => {
       actor.start()
 
       const operation = createMockOperation({ id: "op-1" })
-      const longError = "Error: " + "A".repeat(10000)
+      const longError = `Error: ${"A".repeat(10000)}`
 
       actor.send({ type: "START_OPERATION", operation })
       actor.send({ type: "FAIL_OPERATION", operationId: "op-1", error: longError })

@@ -4,9 +4,8 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { useDomainEvents } from "../use-domain-events"
 import { DomainEventBus } from "../../events/domain-event-bus"
-import type { DomainEvent } from "../../events/domain-event"
+import { useDomainEvents } from "../use-domain-events"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({

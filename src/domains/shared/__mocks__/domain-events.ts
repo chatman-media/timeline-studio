@@ -27,7 +27,11 @@ export function createMockEventBus() {
 
   return {
     subscribe: vi.fn((handler: EventHandler, options?: SubscriptionOptions) => {
-      const types = options?.filter?.type ? (Array.isArray(options.filter.type) ? options.filter.type : [options.filter.type]) : ["*"]
+      const types = options?.filter?.type
+        ? Array.isArray(options.filter.type)
+          ? options.filter.type
+          : [options.filter.type]
+        : ["*"]
 
       types.forEach((type) => {
         const handlers = subscriptions.get(type) || []
@@ -46,39 +50,43 @@ export function createMockEventBus() {
       })
     }),
 
-    publish: vi.fn(async <T = unknown>(type: string, source: DomainName, payload: T, metadata?: Record<string, unknown>): Promise<PublishResult> => {
-      const event: DomainEvent<T> = {
-        id: `mock-${Date.now()}`,
-        type,
-        source,
-        timestamp: Date.now(),
-        payload,
-        metadata,
-      }
+    publish: vi.fn(
+      async <T = unknown>(
+        type: string,
+        source: DomainName,
+        payload: T,
+        metadata?: Record<string, unknown>,
+      ): Promise<PublishResult> => {
+        const event: DomainEvent<T> = {
+          id: `mock-${Date.now()}`,
+          type,
+          source,
+          timestamp: Date.now(),
+          payload,
+          metadata,
+        }
 
-      const handlers = [
-        ...(subscriptions.get(type) || []),
-        ...(subscriptions.get("*") || []),
-      ]
+        const handlers = [...(subscriptions.get(type) || []), ...(subscriptions.get("*") || [])]
 
-      const errors: Error[] = []
+        const errors: Error[] = []
 
-      await Promise.all(
-        handlers.map(async (handler) => {
-          try {
-            await handler(event)
-          } catch (error) {
-            errors.push(error as Error)
-          }
-        })
-      )
+        await Promise.all(
+          handlers.map(async (handler) => {
+            try {
+              await handler(event)
+            } catch (error) {
+              errors.push(error as Error)
+            }
+          }),
+        )
 
-      return {
-        eventId: event.id,
-        handlerCount: handlers.length,
-        errors: errors.length > 0 ? errors : undefined,
-      }
-    }),
+        return {
+          eventId: event.id,
+          handlerCount: handlers.length,
+          errors: errors.length > 0 ? errors : undefined,
+        }
+      },
+    ),
 
     getHistory: vi.fn(() => []),
     clearHistory: vi.fn(),
@@ -97,28 +105,32 @@ export function createMockEventBus() {
 /**
  * Create mock useDomainEvents hook return value
  */
-export function createMockDomainEventsHook(domain: DomainName = "ai-services") {
+export function createMockDomainEventsHook(_domain: DomainName = "ai-services") {
   return {
-    publish: vi.fn(async <T = unknown>(type: string, payload: T, metadata?: Record<string, unknown>): Promise<PublishResult> => {
-      return {
-        eventId: `mock-${Date.now()}`,
-        handlerCount: 0,
-      }
-    }),
+    publish: vi.fn(
+      async <T = unknown>(_type: string, _payload: T, _metadata?: Record<string, unknown>): Promise<PublishResult> => {
+        return {
+          eventId: `mock-${Date.now()}`,
+          handlerCount: 0,
+        }
+      },
+    ),
 
-    subscribe: vi.fn(<T = unknown>(handler: EventHandler<T>, options?: SubscriptionOptions) => {
+    subscribe: vi.fn(<T = unknown>(_handler: EventHandler<T>, _options?: SubscriptionOptions) => {
       // Mock subscription - does nothing
     }),
 
-    on: vi.fn(<T = unknown>(
-      eventType: string | string[],
-      handler: EventHandler<T>,
-      options?: Omit<SubscriptionOptions, "filter">
-    ) => {
-      // Mock subscription - does nothing
-    }),
+    on: vi.fn(
+      <T = unknown>(
+        _eventType: string | string[],
+        _handler: EventHandler<T>,
+        _options?: Omit<SubscriptionOptions, "filter">,
+      ) => {
+        // Mock subscription - does nothing
+      },
+    ),
 
-    once: vi.fn(<T = unknown>(eventType: string, handler: EventHandler<T>) => {
+    once: vi.fn(<T = unknown>(_eventType: string, _handler: EventHandler<T>) => {
       // Mock subscription - does nothing
     }),
   }
@@ -276,21 +288,24 @@ export function createEventSimulator() {
 export async function waitForEvent(
   eventBus: ReturnType<typeof createMockEventBus>,
   eventType: string,
-  timeout = 1000
+  timeout = 1000,
 ): Promise<DomainEvent> {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(new Error(`Event ${eventType} not received within ${timeout}ms`))
     }, timeout)
 
-    eventBus.subscribe((event) => {
-      if (event.type === eventType) {
-        clearTimeout(timeoutId)
-        resolve(event)
-      }
-    }, {
-      filter: { type: eventType },
-    })
+    eventBus.subscribe(
+      (event) => {
+        if (event.type === eventType) {
+          clearTimeout(timeoutId)
+          resolve(event)
+        }
+      },
+      {
+        filter: { type: eventType },
+      },
+    )
   })
 }
 
@@ -319,10 +334,7 @@ export function createEventSpy<T = unknown>() {
 /**
  * Assert event was published
  */
-export function assertEventPublished(
-  eventBus: ReturnType<typeof createMockEventBus>,
-  eventType: string
-): void {
+export function assertEventPublished(eventBus: ReturnType<typeof createMockEventBus>, eventType: string): void {
   const calls = vi.mocked(eventBus.publish).mock.calls
   const found = calls.some((call) => call[0] === eventType)
 
@@ -334,10 +346,7 @@ export function assertEventPublished(
 /**
  * Assert event was not published
  */
-export function assertEventNotPublished(
-  eventBus: ReturnType<typeof createMockEventBus>,
-  eventType: string
-): void {
+export function assertEventNotPublished(eventBus: ReturnType<typeof createMockEventBus>, eventType: string): void {
   const calls = vi.mocked(eventBus.publish).mock.calls
   const found = calls.some((call) => call[0] === eventType)
 

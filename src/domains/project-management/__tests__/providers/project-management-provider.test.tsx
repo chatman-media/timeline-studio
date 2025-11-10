@@ -4,7 +4,7 @@
  * Тесты для провайдеров проектного управления
  */
 
-import { render, renderHook, screen, waitFor } from "@testing-library/react"
+import { render, renderHook, screen } from "@testing-library/react"
 import { type ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { ProjectSettings } from "@/types/generated/tauri-bindings"
@@ -201,7 +201,7 @@ describe("Project Management Providers", () => {
         wrapper: UserSettingsProvider,
       })
 
-      result.current.updateActiveTab("audio")
+      result.current.updateActiveTab("music")
 
       expect(typeof result.current.updateActiveTab).toBe("function")
     })

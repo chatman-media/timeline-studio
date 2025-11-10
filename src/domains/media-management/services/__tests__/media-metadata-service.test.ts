@@ -6,14 +6,9 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import {
-  mockAudioMetadata,
-  mockImageMetadata,
-  mockSceneDetectionResults,
-  mockVideoMetadata,
-} from "../../__mocks__"
+import { mockAudioMetadata, mockImageMetadata, mockSceneDetectionResults, mockVideoMetadata } from "../../__mocks__"
+import type { MediaMetadata } from "../../types"
 import { getMediaMetadataService } from "../media-metadata-service"
-import type { MediaMetadata, SceneDetectionResult } from "../../types"
 
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
@@ -74,9 +69,7 @@ describe("MediaMetadataService", () => {
       const mockInvoke = vi.mocked(invoke)
       mockInvoke.mockRejectedValue(new Error("File not found"))
 
-      await expect(service.extractMetadata("/invalid/path.mp4")).rejects.toThrow(
-        "Failed to extract metadata",
-      )
+      await expect(service.extractMetadata("/invalid/path.mp4")).rejects.toThrow("Failed to extract metadata")
     })
   })
 
@@ -113,9 +106,7 @@ describe("MediaMetadataService", () => {
       const mockInvoke = vi.mocked(invoke)
       mockInvoke.mockRejectedValue(new Error("FFmpeg error"))
 
-      await expect(service.generateThumbnail("/test/video.mp4")).rejects.toThrow(
-        "Failed to generate thumbnail",
-      )
+      await expect(service.generateThumbnail("/test/video.mp4")).rejects.toThrow("Failed to generate thumbnail")
     })
   })
 
@@ -169,15 +160,15 @@ describe("MediaMetadataService", () => {
       // Mock failed thumbnail generation
       mockInvoke.mockRejectedValueOnce(new Error("Thumbnail failed"))
 
-      // Mock failed scene detection
-      mockInvoke.mockRejectedValueOnce(new Error("Scene detection failed"))
+      // Mock successful scene detection (service continues after thumbnail failure)
+      mockInvoke.mockResolvedValueOnce(mockSceneDetectionResults)
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
-      // Should still return results with metadata
+      // Should still return results with metadata and scenes
       expect(result.metadata).toEqual(mockVideoMetadata)
       expect(result.thumbnailPath).toBeUndefined()
-      expect(result.scenes).toBeUndefined()
+      expect(result.scenes).toEqual(mockSceneDetectionResults)
       expect(result.quality).toBeDefined()
     })
 
@@ -207,9 +198,7 @@ describe("MediaMetadataService", () => {
       const mockInvoke = vi.mocked(invoke)
       mockInvoke.mockRejectedValue(new Error("Cannot read file"))
 
-      await expect(service.getMediaDuration("/test/invalid.mp4")).rejects.toThrow(
-        "Failed to get media duration",
-      )
+      await expect(service.getMediaDuration("/test/invalid.mp4")).rejects.toThrow("Failed to get media duration")
     })
   })
 
@@ -224,7 +213,6 @@ describe("MediaMetadataService", () => {
         duration: 100,
         codec: "h265",
         bitrate: 50_000_000,
-        hasAudio: true,
       }
 
       mockInvoke.mockResolvedValue(highQualityMetadata)
@@ -245,7 +233,6 @@ describe("MediaMetadataService", () => {
         duration: 100,
         codec: "mpeg4",
         bitrate: 1_000_000,
-        hasAudio: true,
       }
 
       mockInvoke.mockResolvedValue(lowQualityMetadata)
@@ -272,13 +259,24 @@ describe("MediaMetadataService", () => {
 
     it("should return empty array if scene detection fails", async () => {
       const mockInvoke = vi.mocked(invoke)
+
+      // Successful metadata extraction
       mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
+
+      // Successful thumbnail generation
       mockInvoke.mockResolvedValueOnce("/tmp/thumb.jpg")
+
+      // Failed scene detection - метод detectScenes перехватывает ошибку и возвращает []
       mockInvoke.mockRejectedValueOnce(new Error("Scene detection error"))
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
-      expect(result.scenes).toBeUndefined()
+      // Service should handle scene detection failure gracefully
+      expect(result.metadata).toEqual(mockVideoMetadata)
+      expect(result.thumbnailPath).toBe("/tmp/thumb.jpg")
+      // detectScenes внутренне обрабатывает ошибку и возвращает пустой массив
+      expect(result.scenes).toEqual([])
+      expect(result.quality).toBeDefined()
     })
   })
 

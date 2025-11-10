@@ -4,6 +4,15 @@
  * Export all mock utilities for easy importing in tests
  */
 
+// AI Config Mocks
+export {
+  createMockAIConfig,
+  createMockProviderConfig,
+  mockAIConfigs,
+  mockAnalysisResults,
+  mockPlatformAdaptations,
+  mockScriptResults,
+} from "./ai-config"
 // Domain Events Mocks
 export {
   assertEventNotPublished,
@@ -19,13 +28,3 @@ export {
   mockVideoEditingPayloads,
   waitForEvent,
 } from "./domain-events"
-
-// AI Config Mocks
-export {
-  createMockAIConfig,
-  createMockProviderConfig,
-  mockAIConfigs,
-  mockAnalysisResults,
-  mockPlatformAdaptations,
-  mockScriptResults,
-} from "./ai-config"

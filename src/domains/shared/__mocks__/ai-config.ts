@@ -2,14 +2,15 @@
  * Mock AI Configuration for Testing
  */
 
-import type {
-  AIConfig,
-  AIProviderConfig,
-  AccuracyLevel,
+import {
+  type AccuracyLevel,
+  type AIConfig,
   AIProvider,
-  AnalysisDepth,
-  SpeedPriority,
+  type AIProviderConfig,
+  type AnalysisDepth,
+  type SpeedPriority,
 } from "../types/ai-tools/ai-config"
+import { PlatformId } from "../types/ai-tools/platform-adaptation"
 import { createDefaultAIConfig } from "../utils/config"
 
 /**
@@ -234,7 +235,7 @@ export const mockAIConfigs = {
       qualityEnhancement: true,
       autoSuggestions: true,
     },
-    platforms: ["youtube", "instagram", "tiktok", "facebook"],
+    platforms: [PlatformId.YOUTUBE, PlatformId.INSTAGRAM_FEED, PlatformId.TIKTOK, PlatformId.FACEBOOK],
   }),
 
   /**

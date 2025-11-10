@@ -4,13 +4,7 @@
  * Тестовые данные для медиа метаданных
  */
 
-import type {
-  MediaAnalysisResult,
-  MediaInfo,
-  MediaMetadata,
-  QualityMetrics,
-  SceneDetectionResult,
-} from "../types"
+import type { MediaAnalysisResult, MediaInfo, MediaMetadata, QualityMetrics, SceneDetectionResult } from "../types"
 
 export const mockVideoMetadata: MediaMetadata = {
   type: "Video",
@@ -29,9 +23,9 @@ export const mockVideoMetadata: MediaMetadata = {
 export const mockAudioMetadata: MediaMetadata = {
   type: "Audio",
   duration: 180.0,
-  audioCodec: "mp3",
-  audioChannels: 2,
-  audioSampleRate: 44100,
+  codec: "mp3",
+  channels: 2,
+  sample_rate: 44100,
   bitrate: 320_000,
   album: "Test Album",
   artist: "Test Artist",

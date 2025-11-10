@@ -14,12 +14,12 @@ export function useFileOperations() {
     operations: fileOperationsState.operations,
 
     // Operation lists
-    activeOperations: fileOperationsState.operations.filter((op) => op.status === "in_progress"),
+    activeOperations: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "in_progress"),
     completedOperations: fileOperationsState.completedOperations,
     failedOperations: fileOperationsState.failedOperations,
 
     // Operation counts
-    activeCount: fileOperationsState.operations.filter((op) => op.status === "in_progress").length,
+    activeCount: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "in_progress").length,
     completedCount: fileOperationsState.completedOperations.length,
     failedCount: fileOperationsState.failedOperations.length,
 
@@ -27,6 +27,6 @@ export function useFileOperations() {
     hasActiveOperations: fileOperationsState.hasActiveOperations,
 
     // Get specific operation by id
-    getOperation: (id: string) => fileOperationsState.operations.find((op) => op.id === id),
+    getOperation: (id: string) => fileOperationsState.operations.find((op: MediaFileOperation) => op.id === id),
   }
 }

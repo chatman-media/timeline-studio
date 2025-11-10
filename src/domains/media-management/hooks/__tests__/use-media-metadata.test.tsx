@@ -4,7 +4,6 @@
  * Тесты для хука useMediaMetadata
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
@@ -12,10 +11,15 @@ import { mockVideoMetadata } from "../../__mocks__"
 import { MediaManagementProvider } from "../../providers/media-management-provider"
 import { useMediaMetadata } from "../use-media-metadata"
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
 }))
-vi.mock("@/lib/tauri-logger")
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onStateChange: vi.fn(() => () => {}),
@@ -33,9 +37,14 @@ vi.mock("@/features/media/services/media-api", () => ({
   selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
   selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
 }))
+vi.mock("../../services/media-metadata-service", () => ({
+  getMediaMetadataService: vi.fn(() => ({
+    extractMetadata: vi.fn().mockResolvedValue(mockVideoMetadata),
+  })),
+}))
 
 describe("useMediaMetadata", () => {
-  const wrapper = ({ children }: { children: ReactNode}) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <MediaManagementProvider>{children}</MediaManagementProvider>
   )
 
@@ -61,10 +70,6 @@ describe("useMediaMetadata", () => {
 
   describe("getMetadata", () => {
     it("should extract metadata successfully", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockClear()
-      mockInvoke.mockResolvedValue(mockVideoMetadata)
-
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
 
       let metadata: any = null
@@ -82,11 +87,12 @@ describe("useMediaMetadata", () => {
     })
 
     it("should set loading state during extraction", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockClear()
-      mockInvoke.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockVideoMetadata), 100)),
-      )
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi
+          .fn()
+          .mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(mockVideoMetadata), 100))),
+      } as any)
 
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
 
@@ -103,9 +109,10 @@ describe("useMediaMetadata", () => {
     })
 
     it("should handle extraction errors", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockClear()
-      mockInvoke.mockRejectedValue(new Error("Metadata extraction failed"))
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi.fn().mockRejectedValue(new Error("Metadata extraction failed")),
+      } as any)
 
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
 
@@ -120,13 +127,14 @@ describe("useMediaMetadata", () => {
       })
 
       expect(metadata).toBe(null)
-      expect(result.current.error).toContain("Failed to extract metadata")
+      expect(result.current.error).toContain("Metadata extraction failed")
     })
 
     it("should handle non-Error exceptions", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockClear()
-      mockInvoke.mockRejectedValue("String error")
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi.fn().mockRejectedValue("String error"),
+      } as any)
 
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
 
@@ -203,15 +211,17 @@ describe("useMediaMetadata", () => {
 
   describe("state management", () => {
     it("should reset error on successful call", async () => {
-      const mockInvoke = vi.mocked(invoke)
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      const mockExtract = vi.fn()
 
-      // Reset mock before test
-      mockInvoke.mockClear()
+      // Setup mock to fail first, then succeed
+      mockExtract.mockRejectedValueOnce(new Error("First error")).mockResolvedValueOnce(mockVideoMetadata)
+
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: mockExtract,
+      } as any)
 
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
-
-      // First call fails
-      mockInvoke.mockRejectedValueOnce(new Error("First error"))
 
       await act(async () => {
         await result.current.getMetadata("/test/invalid.mp4")
@@ -220,9 +230,6 @@ describe("useMediaMetadata", () => {
       await waitFor(() => {
         expect(result.current.error).toBe("First error")
       })
-
-      // Second call succeeds
-      mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
 
       await act(async () => {
         await result.current.getMetadata("/test/video.mp4")
@@ -234,11 +241,10 @@ describe("useMediaMetadata", () => {
     })
 
     it("should handle concurrent calls", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
-      // Reset mock before test
-      mockInvoke.mockClear()
-      mockInvoke.mockResolvedValue(mockVideoMetadata)
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi.fn().mockResolvedValue(mockVideoMetadata),
+      } as any)
 
       const { result } = renderHook(() => useMediaMetadata(), { wrapper })
 

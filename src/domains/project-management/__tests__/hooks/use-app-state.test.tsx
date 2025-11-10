@@ -4,7 +4,7 @@
  * Тесты для хука useAppState
  */
 
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { TrackType } from "@/types/generated/tauri-bindings"
 import { useAppState } from "../../hooks/use-app-state"
@@ -241,11 +241,7 @@ describe("useAppState Hook", () => {
       const { result } = renderHook(() => useAppState())
 
       // Execute multiple commands concurrently
-      await Promise.all([
-        result.current.play(),
-        result.current.seek(10),
-        result.current.addTrack("Track", "Video"),
-      ])
+      await Promise.all([result.current.play(), result.current.seek(10), result.current.addTrack("Track", "Video")])
 
       // Should not throw
     })

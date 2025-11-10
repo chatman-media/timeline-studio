@@ -4,9 +4,9 @@
  * Тесты для хука useProjectManagement
  */
 
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectSettings } from "@/types/generated/tauri-bindings"
 import { useProjectManagement } from "../../hooks/use-project-management"
 import { resetProjectManagementOrchestrator } from "../../services/project-management-orchestrator"
 
@@ -137,7 +137,7 @@ describe("useProjectManagement Hook", () => {
 
       result.current.updateUserSettings({
         layoutMode: "chat",
-        activeTab: "audio",
+        activeTab: "music",
         playerVolume: 75,
       })
 

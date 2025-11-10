@@ -3,8 +3,8 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { DomainEventBus } from "../domain-event-bus"
 import type { DomainEvent, DomainName, EventHandler } from "../domain-event"
+import { DomainEventBus } from "../domain-event-bus"
 
 describe("DomainEventBus", () => {
   let eventBus: DomainEventBus

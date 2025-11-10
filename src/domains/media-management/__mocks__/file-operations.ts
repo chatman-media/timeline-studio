@@ -6,9 +6,7 @@
 
 import type { MediaFileOperation } from "../types"
 
-export const createMockOperation = (
-  overrides?: Partial<MediaFileOperation>,
-): MediaFileOperation => ({
+export const createMockOperation = (overrides?: Partial<MediaFileOperation>): MediaFileOperation => ({
   id: `op-${Date.now()}`,
   type: "import",
   status: "pending",

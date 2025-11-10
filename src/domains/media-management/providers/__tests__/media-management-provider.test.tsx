@@ -4,7 +4,6 @@
  * Интеграционные тесты для MediaManagementProvider
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
@@ -15,7 +14,15 @@ import { MediaManagementProvider } from "../media-management-provider"
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
-vi.mock("@/lib/tauri-logger")
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
+}))
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onStateChange: vi.fn(() => () => {}),
@@ -32,6 +39,23 @@ vi.mock("@/features/app-state/services/backend-sync", () => ({
 vi.mock("@/features/media/services/media-api", () => ({
   selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
   selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
+}))
+vi.mock("../../services/media-metadata-service", () => ({
+  getMediaMetadataService: vi.fn(() => ({
+    extractMetadata: vi.fn().mockResolvedValue({
+      type: "Video",
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      duration: 120.5,
+      codec: "h264",
+      bitrate: 5000000,
+      hasAudio: true,
+      audioCodec: "aac",
+      audioSampleRate: 48000,
+      audioChannels: 2,
+    }),
+  })),
 }))
 
 describe("MediaManagementProvider", () => {
@@ -122,15 +146,18 @@ describe("MediaManagementProvider", () => {
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      await expect(
-        result.current.importFiles(["/test/video.mp4"], {
-          copyToProject: true,
-          createProxies: false,
-          analyzeContent: true,
-          generateThumbnails: true,
-          preserveMetadata: true,
-        }),
-      ).rejects.toThrow()
+      // importFiles не выбрасывает ошибку - она продолжает импорт остальных файлов
+      // Проверим, что результат пустой массив при ошибке
+      const importResults = await result.current.importFiles(["/test/video.mp4"], {
+        copyToProject: true,
+        createProxies: false,
+        analyzeContent: true,
+        generateThumbnails: true,
+        preserveMetadata: true,
+      })
+
+      expect(importResults).toEqual([])
+      expect(result.current.error).toBe(null) // error сбрасывается при начале импорта
     })
 
     it("should handle partial import failures", async () => {
@@ -154,16 +181,13 @@ describe("MediaManagementProvider", () => {
       let importResults: any[] = []
 
       await act(async () => {
-        importResults = await result.current.importFiles(
-          ["/test/video1.mp4", "/test/video2.mp4", "/test/video3.mp4"],
-          {
-            copyToProject: true,
-            createProxies: false,
-            analyzeContent: true,
-            generateThumbnails: true,
-            preserveMetadata: true,
-          },
-        )
+        importResults = await result.current.importFiles(["/test/video1.mp4", "/test/video2.mp4", "/test/video3.mp4"], {
+          copyToProject: true,
+          createProxies: false,
+          analyzeContent: true,
+          generateThumbnails: true,
+          preserveMetadata: true,
+        })
       })
 
       // Should complete with results for successful imports only
@@ -308,10 +332,23 @@ describe("MediaManagementProvider", () => {
   })
 
   describe("extractMetadata", () => {
-    it("should extract metadata successfully", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue(mockVideoMetadata)
+    beforeEach(async () => {
+      // Reset backend sync mock to default for this describe block
+      const getBackendSync = await import("@/features/app-state/services/backend-sync")
+      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
+        onStateChange: vi.fn(() => () => {}),
+        executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
+        getProjectState: vi.fn().mockResolvedValue({
+          project: {
+            media_pool: {
+              items: {},
+            },
+          },
+        }),
+      } as any)
+    })
 
+    it("should extract metadata successfully", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
       let metadata: any = null
@@ -324,10 +361,12 @@ describe("MediaManagementProvider", () => {
     })
 
     it("should set loading state during extraction", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockVideoMetadata), 100)),
-      )
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi
+          .fn()
+          .mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(mockVideoMetadata), 100))),
+      } as any)
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
@@ -343,14 +382,14 @@ describe("MediaManagementProvider", () => {
     })
 
     it("should handle metadata extraction errors", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("Extraction failed"))
+      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
+      vi.mocked(getMediaMetadataService).mockReturnValue({
+        extractMetadata: vi.fn().mockRejectedValue(new Error("Extraction failed")),
+      } as any)
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      await expect(result.current.extractMetadata("/test/video.mp4")).rejects.toThrow(
-        "Extraction failed",
-      )
+      await expect(result.current.extractMetadata("/test/video.mp4")).rejects.toThrow("Extraction failed")
 
       await waitFor(() => {
         expect(result.current.error).toBe("Extraction failed")

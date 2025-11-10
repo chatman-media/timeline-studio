@@ -4,7 +4,7 @@
  * Тесты для хука useUserSettings из domains/project-management
  */
 
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useUserSettings } from "../../hooks/use-user-settings"
 import { resetProjectManagementOrchestrator } from "../../services/project-management-orchestrator"
@@ -103,7 +103,7 @@ describe("useUserSettings Hook (Domain)", () => {
     it("should update active tab", () => {
       const { result } = renderHook(() => useUserSettings())
 
-      result.current.updateActiveTab("audio")
+      result.current.updateActiveTab("music")
 
       expect(typeof result.current.updateActiveTab).toBe("function")
     })
@@ -111,7 +111,7 @@ describe("useUserSettings Hook (Domain)", () => {
     it("should support various tab types", () => {
       const { result } = renderHook(() => useUserSettings())
 
-      const tabs = ["media", "audio", "effects", "transitions"] as const
+      const tabs = ["media", "music", "effects", "transitions"] as const
 
       tabs.forEach((tab) => {
         result.current.updateActiveTab(tab)
@@ -264,7 +264,7 @@ describe("useUserSettings Hook (Domain)", () => {
 
       result.current.updateSettings({
         layoutMode: "chat",
-        activeTab: "audio",
+        activeTab: "music",
         playerVolume: 50,
         autoSaveEnabled: false,
       })

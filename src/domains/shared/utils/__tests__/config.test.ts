@@ -3,8 +3,9 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { createDefaultAIConfig } from "../config"
 import { AccuracyLevel, AIProvider, AnalysisDepth, SpeedPriority } from "../../types/ai-tools/ai-config"
+import { PlatformId } from "../../types/ai-tools/platform-adaptation"
+import { createDefaultAIConfig } from "../config"
 
 describe("createDefaultAIConfig", () => {
   describe("Default Configuration", () => {
@@ -213,10 +214,10 @@ describe("createDefaultAIConfig", () => {
 
     it("should override platforms", () => {
       const config = createDefaultAIConfig({
-        platforms: ["youtube", "instagram", "tiktok"],
+        platforms: [PlatformId.YOUTUBE, PlatformId.INSTAGRAM_FEED, PlatformId.TIKTOK],
       })
 
-      expect(config.platforms).toEqual(["youtube", "instagram", "tiktok"])
+      expect(config.platforms).toEqual([PlatformId.YOUTUBE, PlatformId.INSTAGRAM_FEED, PlatformId.TIKTOK])
     })
   })
 

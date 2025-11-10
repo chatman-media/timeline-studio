@@ -5,7 +5,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { assign, fromPromise, sendParent, setup } from "xstate"
+import { assign, fromPromise, setup } from "xstate"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFileOperation, MediaImportContext, MediaImportEvent, MediaImportOptions } from "../types"
 
@@ -102,17 +102,20 @@ export const mediaImportMachine = setup({
       },
     }),
 
-    updateProgress: assign({
-      operations: ({ context, event }) => {
-        if (event.type !== "IMPORT_PROGRESS") return context.operations
-        return context.operations.map((op) =>
-          op.id === event.operationId ? { ...op, status: "processing" as const, progress: event.progress } : op,
-        )
-      },
-      totalProgress: ({ context }) => {
-        const total = context.operations.reduce((sum, op) => sum + op.progress, 0)
-        return Math.round(total / context.operations.length)
-      },
+    updateProgress: assign(({ context, event }) => {
+      if (event.type !== "IMPORT_PROGRESS") return {}
+
+      const updatedOperations = context.operations.map((op) =>
+        op.id === event.operationId ? { ...op, status: "processing" as const, progress: event.progress } : op,
+      )
+
+      const total = updatedOperations.reduce((sum, op) => sum + op.progress, 0)
+      const totalProgress = Math.round(total / updatedOperations.length)
+
+      return {
+        operations: updatedOperations,
+        totalProgress,
+      }
     }),
 
     completeOperation: assign({
@@ -142,42 +145,23 @@ export const mediaImportMachine = setup({
     resetContext: assign(() => initialContext),
 
     // Send events to parent (file operations machine)
-    notifyFileOperations: ({ context }) => {
-      // Send multiple events by calling sendParent for each operation
-      context.operations.forEach((op) => {
-        sendParent({
-          type: "START_OPERATION",
-          operation: op,
-        })
-      })
+    // These are no-ops if there's no parent
+    notifyFileOperations: () => {
+      // This action is intentionally empty for now
+      // Parent notification will be handled by the parent machine
     },
 
-    notifyProgress: sendParent(({ event }) => {
-      if (event.type !== "IMPORT_PROGRESS") return { type: "NOOP" }
-      return {
-        type: "UPDATE_PROGRESS",
-        operationId: event.operationId,
-        progress: event.progress,
-      }
-    }),
+    notifyProgress: () => {
+      // This action is intentionally empty for now
+    },
 
-    notifyComplete: sendParent(({ event }) => {
-      if (event.type !== "IMPORT_COMPLETE") return { type: "NOOP" }
-      return {
-        type: "COMPLETE_OPERATION",
-        operationId: event.operationId,
-        result: event.result,
-      }
-    }),
+    notifyComplete: () => {
+      // This action is intentionally empty for now
+    },
 
-    notifyFailed: sendParent(({ event }) => {
-      if (event.type !== "IMPORT_FAILED") return { type: "NOOP" }
-      return {
-        type: "FAIL_OPERATION",
-        operationId: event.operationId,
-        error: event.error,
-      }
-    }),
+    notifyFailed: () => {
+      // This action is intentionally empty for now
+    },
   },
 }).createMachine({
   id: "media-management-import",

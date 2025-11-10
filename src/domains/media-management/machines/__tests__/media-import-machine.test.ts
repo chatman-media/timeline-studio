@@ -5,13 +5,13 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { createActor, waitFor } from "xstate"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { mockCompletedOperation, mockImportOperation } from "../../__mocks__"
+import { createActor, waitFor } from "xstate"
 import { mediaImportMachine } from "../media-import-machine"
-import type { MediaImportOptions } from "../../types"
 
-vi.mock("@tauri-apps/api/core")
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(),
+}))
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
@@ -94,11 +94,7 @@ describe("MediaImportMachine", () => {
 
       const snapshot = actor.getSnapshot()
 
-      expect(snapshot.context.files).toEqual([
-        "/test/video1.mp4",
-        "/test/video2.mp4",
-        "/test/video3.mp4",
-      ])
+      expect(snapshot.context.files).toEqual(["/test/video1.mp4", "/test/video2.mp4", "/test/video3.mp4"])
 
       actor.stop()
     })
@@ -282,9 +278,7 @@ describe("MediaImportMachine", () => {
   describe("importing state", () => {
     it("should transition to completed on successful import", async () => {
       const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue([
-        { path: "/project/video1.mp4", thumbnail: "/project/cache/video1-thumb.jpg" },
-      ])
+      mockInvoke.mockResolvedValue([{ path: "/project/video1.mp4", thumbnail: "/project/cache/video1-thumb.jpg" }])
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -334,9 +328,7 @@ describe("MediaImportMachine", () => {
     it("should handle CANCEL_IMPORT event", async () => {
       const mockInvoke = vi.mocked(invoke)
       // Mock a long-running import
-      mockInvoke.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve([]), 1000)),
-      )
+      mockInvoke.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve([]), 1000)))
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -387,6 +379,8 @@ describe("MediaImportMachine", () => {
         progress: 50,
       })
 
+      await waitFor(actor, (state) => state.context.operations[0].progress === 50)
+
       const snapshot = actor.getSnapshot()
 
       expect(snapshot.context.operations[0].progress).toBe(50)
@@ -425,6 +419,8 @@ describe("MediaImportMachine", () => {
         operationId: operations[1].id,
         progress: 50,
       })
+
+      await waitFor(actor, (state) => state.context.totalProgress === 75)
 
       const snapshot = actor.getSnapshot()
 
@@ -546,7 +542,7 @@ describe("MediaImportMachine", () => {
       const actor = createActor(mediaImportMachine)
       actor.start()
 
-      const longPath = "/very/long/path/".repeat(50) + "video.mp4"
+      const longPath = `${"/very/long/path/".repeat(50)}video.mp4`
 
       actor.send({
         type: "ADD_FILES",
