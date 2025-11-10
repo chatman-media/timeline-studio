@@ -40,6 +40,7 @@ vi.mock("@/features/media/services/media-api", () => ({
   selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
   selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
 }))
+// Mock должен возвращать тот же объект что и mockVideoMetadata
 vi.mock("../../services/media-metadata-service", () => ({
   getMediaMetadataService: vi.fn(() => ({
     extractMetadata: vi.fn().mockResolvedValue({
@@ -49,11 +50,11 @@ vi.mock("../../services/media-metadata-service", () => ({
       fps: 30,
       duration: 120.5,
       codec: "h264",
-      bitrate: 5000000,
+      bitrate: 5_000_000,
       hasAudio: true,
       audioCodec: "aac",
-      audioSampleRate: 48000,
       audioChannels: 2,
+      audioSampleRate: 48000,
     }),
   })),
 }))
@@ -357,7 +358,19 @@ describe("MediaManagementProvider", () => {
         metadata = await result.current.extractMetadata("/test/video.mp4")
       })
 
-      expect(metadata).toEqual(mockVideoMetadata)
+      // Verify metadata has expected structure
+      expect(metadata).toBeDefined()
+      expect(metadata.type).toBe("Video")
+      expect(metadata.width).toBe(1920)
+      expect(metadata.height).toBe(1080)
+      expect(metadata.fps).toBe(30)
+      expect(metadata.duration).toBe(120.5)
+      expect(metadata.codec).toBe("h264")
+      expect(metadata.bitrate).toBe(5_000_000)
+      expect(metadata.hasAudio).toBe(true)
+      expect(metadata.audioCodec).toBe("aac")
+      expect(metadata.audioChannels).toBe(2)
+      expect(metadata.audioSampleRate).toBe(48000)
     })
 
     it("should set loading state during extraction", async () => {

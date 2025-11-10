@@ -20,4 +20,11 @@ export { BrowserProvider, useBrowser, useBrowserState } from "./providers/browse
 
 // Constants
 export const DEFAULT_TAB: BrowserTab = "media"
-export const BROWSER_TABS = ["media", "effects", "filters", "transitions", "templates", "style-templates"] as const
+export const BROWSER_TABS: readonly BrowserTab[] = [
+  "media",
+  "effects",
+  "filters",
+  "transitions",
+  "templates",
+  "style_templates",
+]
