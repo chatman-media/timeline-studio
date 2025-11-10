@@ -115,6 +115,8 @@ export function useTimelineActions(): UseTimelineActionsReturn {
 
   const addSingleMediaToTimeline = useCallback(
     (file: MediaFile, customTrackId?: string, customStartTime?: number) => {
+      logger.info(`Adding media file to timeline: ${file.name} (type: ${file.type})`)
+
       // Если нет проекта, создаем новый
       if (!project) {
         logger.info("No timeline project found, creating new project...")
@@ -130,6 +132,8 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       const trackType = getTrackTypeForMedia(file)
       const targetTrackId = customTrackId || findBestTrackForMedia(file)
 
+      logger.info(`Track type: ${trackType}, Target track ID: ${targetTrackId || 'none - will create new'}`)
+
       // Если нет подходящего трека, создаем новый
       if (!targetTrackId) {
         const trackName = `${trackType.charAt(0).toUpperCase() + trackType.slice(1)} Track`
@@ -142,8 +146,8 @@ export function useTimelineActions(): UseTimelineActionsReturn {
         // Для синхронной обработки используем рекурсивный вызов с задержкой
         // Это позволит state machine обработать создание трека
         let retryCount = 0
-        const maxRetries = 10
-        const retryDelay = 100 // Увеличиваем задержку
+        const maxRetries = 20 // Увеличиваем количество попыток
+        const retryDelay = 150 // Увеличиваем задержку для надёжности
 
         const checkForTrack = () => {
           retryCount++
@@ -153,18 +157,20 @@ export function useTimelineActions(): UseTimelineActionsReturn {
 
           if (newTargetTrackId) {
             // Рекурсивно вызываем функцию с найденным треком
+            logger.info(`Track created successfully after ${retryCount} attempts for file: ${file.name}`)
             addSingleMediaToTimeline(file, newTargetTrackId, customStartTime)
           } else if (retryCount < maxRetries) {
             // Пробуем еще раз
             setTimeout(checkForTrack, retryDelay)
           } else {
             logger.error(
-              `Failed to create ${trackType} track for media file: ${file.name} after ${maxRetries} attempts`,
+              `Failed to create ${trackType} track for media file: ${file.name} after ${maxRetries} attempts. Please try again or create track manually.`,
             )
           }
         }
 
-        setTimeout(checkForTrack, retryDelay)
+        // Начинаем проверку с увеличенной начальной задержкой
+        setTimeout(checkForTrack, retryDelay * 2)
         return
       }
 
