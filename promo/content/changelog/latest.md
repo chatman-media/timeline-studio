@@ -1,3 +1,12 @@
+## [2.11.1](https://github.com/chatman-media/timeline-studio/compare/v2.11.0...v2.11.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* **domains:** Исправить типы в domain модулях ([c016508](https://github.com/chatman-media/timeline-studio/commit/c016508e12c3a539a396ecc1f4e09e7925fc2c38))
+* **timeline:** Исправить integration тест ([2e7cf89](https://github.com/chatman-media/timeline-studio/commit/2e7cf89c702e7d01cd85313e78e77d3f77c4fe15))
+* **transitions:** Доработать transition renderers и тесты ([a4dcdfb](https://github.com/chatman-media/timeline-studio/commit/a4dcdfb47924ee17c79b03b1673b81dbaa748bc6))
+
 # [2.11.0](https://github.com/chatman-media/timeline-studio/compare/v2.10.0...v2.11.0) (2025-11-10)
 
 
