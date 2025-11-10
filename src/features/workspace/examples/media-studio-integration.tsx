@@ -2,6 +2,21 @@
  * Media Studio Integration Example
  *
  * Example showing how to integrate widget system into MediaStudio
+ *
+ * IMPORTANT: This component MUST be wrapped in WorkspaceLayoutProvider
+ *
+ * @example
+ * ```tsx
+ * import { WorkspaceLayoutProvider } from "@/features/workspace"
+ *
+ * function App() {
+ *   return (
+ *     <WorkspaceLayoutProvider>
+ *       <MediaStudioWidgetExample />
+ *     </WorkspaceLayoutProvider>
+ *   )
+ * }
+ * ```
  */
 
 "use client"
@@ -22,9 +37,15 @@ import type { Widget, WidgetType } from "../types/widget"
 
 /**
  * Example MediaStudio component with widget system
+ *
+ * NOTE: useWorkspaceLayout hook provides access to the XState machine
+ * through the WorkspaceLayoutProvider context. The machine is created
+ * in the provider and should NOT be passed as a prop to WidgetWorkspace.
  */
 export function MediaStudioWidgetExample() {
-  const { currentPresetId, switchPreset, send } = useWorkspaceLayout()
+  // Get workspace state and actions from context
+  // The hook internally accesses the XState machine actor
+  const { currentPresetId, switchPreset } = useWorkspaceLayout()
 
   // Define widget renderers - map widget types to actual components
   const widgetRenderers = useMemo(
@@ -82,10 +103,11 @@ export function MediaStudioWidgetExample() {
 
       {/* Widget Workspace */}
       <main className="flex-1">
-        <WidgetWorkspace
-          machine={null} // Machine will be provided by provider
-          widgetRenderers={widgetRenderers}
-        />
+        {/*
+          WidgetWorkspace gets the machine state through useWorkspaceLayout hook.
+          No need to pass machine as prop - it's provided by WorkspaceLayoutProvider context.
+        */}
+        <WidgetWorkspace widgetRenderers={widgetRenderers} />
       </main>
     </div>
   )

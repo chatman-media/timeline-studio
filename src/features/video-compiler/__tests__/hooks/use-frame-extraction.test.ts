@@ -36,9 +36,9 @@ const mockGetFrameAtTimestamp = vi.fn()
 
 vi.mock("@/features/media/hooks/use-frame-preview", () => ({
   useFramePreview: () => ({
-    extractTimelineFrames: mockExtractTimelineFrames,
-    extractRecognitionFrames: mockExtractRecognitionFrames,
-    getFrameAtTimestamp: mockGetFrameAtTimestamp,
+    extractTimelineFrames: (...args: any[]) => mockExtractTimelineFrames(...args),
+    extractRecognitionFrames: (...args: any[]) => mockExtractRecognitionFrames(...args),
+    getFrameAtTimestamp: (...args: any[]) => mockGetFrameAtTimestamp(...args),
     isExtracting: false,
     error: null,
   }),
@@ -202,10 +202,14 @@ describe("useFrameExtraction", () => {
       __mocks.cacheRecognitionFrames.mockResolvedValue(undefined)
     }
 
-    // Reset mock functions
-    mockExtractTimelineFrames.mockReset()
-    mockExtractRecognitionFrames.mockReset()
-    mockGetFrameAtTimestamp.mockReset()
+    // Clear mock calls but preserve implementation
+    mockExtractTimelineFrames.mockClear()
+    mockExtractRecognitionFrames.mockClear()
+    mockGetFrameAtTimestamp.mockClear()
+
+    // Restore default implementations
+    mockExtractTimelineFrames.mockResolvedValue(mockTimelineFrames)
+    mockExtractRecognitionFrames.mockResolvedValue(mockRecognitionFrames)
   })
 
   describe("initialization", () => {
@@ -429,6 +433,47 @@ describe("useFrameExtraction", () => {
     })
   })
 
+  describe("adaptive interval calculation", () => {
+    it("should calculate adaptive interval for long videos", async () => {
+      const { result } = renderHook(() =>
+        useFrameExtraction({
+          interval: 1.0,
+          maxFrames: 100,
+        }),
+      )
+
+      // Длинное видео (300 секунд)
+      await act(async () => {
+        await result.current.extractTimelineFrames("/long-video.mp4", 300)
+      })
+
+      // Хук использует адаптивный интервал внутри
+      expect(mockExtractTimelineFrames).toHaveBeenCalledWith(
+        "/long-video.mp4", // fileId
+        "/long-video.mp4", // videoPath
+        300, // duration
+        1.0, // interval
+        100, // maxFrames
+      )
+    })
+  })
+
+  describe("progress tracking", () => {
+    it("should update progress during extraction", async () => {
+      const { result } = renderHook(() => useFrameExtraction())
+
+      // Начальный прогресс должен быть 0
+      expect(result.current.progress).toBe(0)
+
+      await act(async () => {
+        await result.current.extractTimelineFrames("/video.mp4", 10)
+      })
+
+      // После завершения прогресс должен быть 100
+      expect(result.current.progress).toBe(100)
+    })
+  })
+
   describe("concurrent extraction", () => {
     it("should handle concurrent extraction requests", async () => {
       const { ExtractionPurpose } = await import("../../services/frame-extraction-service")
@@ -462,82 +507,6 @@ describe("useFrameExtraction", () => {
       expect(mocks.extractRecognitionFrames).toHaveBeenCalledTimes(1)
       expect(result.current.timelineFrames).toEqual(mockTimelineFrames)
       // expect(result.current.recognitionFrames).toEqual(mockRecognitionFrames)
-    })
-  })
-
-  // TODO: Набор тестов пропущен (1 тест)
-  // Причина неизвестна - требуется проверка
-  // Тест адаптивного расчета интервалов для длинных видео
-  describe.skip("adaptive interval calculation", () => {
-    it("should calculate adaptive interval for long videos", async () => {
-      // Reset mocks before this test
-      mockExtractTimelineFrames.mockClear()
-      mockExtractRecognitionFrames.mockClear()
-      mockGetFrameAtTimestamp.mockClear()
-
-      mockExtractTimelineFrames.mockResolvedValueOnce(mockTimelineFrames)
-
-      const { result, rerender } = renderHook(() =>
-        useFrameExtraction({
-          interval: 1.0,
-          maxFrames: 100,
-        }),
-      )
-
-      // Force a rerender if the hook is not ready
-      if (!result.current) {
-        rerender()
-      }
-
-      // Check that the hook initialized properly
-      expect(result.current).toBeDefined()
-      expect(result.current.extractTimelineFrames).toBeDefined()
-
-      // Длинное видео (300 секунд)
-      await act(async () => {
-        await result.current.extractTimelineFrames("/long-video.mp4", 300)
-      })
-
-      // Хук использует адаптивный интервал внутри
-      expect(mockExtractTimelineFrames).toHaveBeenCalledWith(
-        "/long-video.mp4", // fileId
-        "/long-video.mp4", // videoPath
-        300, // duration
-        1.0, // interval
-        100, // maxFrames
-      )
-    })
-  })
-
-  // TODO: Набор тестов пропущен (1 тест)
-  // Причина неизвестна - требуется проверка
-  // Тест отслеживания прогресса экстракции кадров
-  describe.skip("progress tracking", () => {
-    it("should update progress during extraction", async () => {
-      // Reset mocks before this test
-      mockExtractTimelineFrames.mockClear()
-      mockExtractRecognitionFrames.mockClear()
-      mockGetFrameAtTimestamp.mockClear()
-
-      mockExtractTimelineFrames.mockResolvedValueOnce(mockTimelineFrames)
-
-      const { result, rerender } = renderHook(() => useFrameExtraction())
-
-      // Force a rerender if the hook is not ready
-      if (!result.current) {
-        rerender()
-      }
-
-      // Check that the hook initialized properly
-      expect(result.current).toBeDefined()
-      expect(result.current.progress).toBe(0)
-
-      await act(async () => {
-        await result.current.extractTimelineFrames("/video.mp4", 10)
-      })
-
-      // После завершения прогресс должен быть 100
-      expect(result.current.progress).toBe(100)
     })
   })
 })

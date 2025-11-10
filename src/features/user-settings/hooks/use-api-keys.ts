@@ -1,63 +1,17 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
+import { getValidationErrorMessage, validateApiKeyFormat } from "../constants/api-validation-patterns"
+import type {
+  ApiKeyInfo,
+  ApiKeyOperationResult,
+  ApiKeyStatus,
+  SupportedService,
+  ValidationResult,
+} from "../types/api-operations"
 import { useUserSettings } from "./use-user-settings"
 
 const logger = createLogger({ module: "UseApiKeys" })
-
-/**
- * API key operation result from backend
- */
-interface ApiKeyOperationResult {
-  success: boolean
-  message: string
-  data?: any
-}
-
-/**
- * API key info from backend
- */
-interface ApiKeyInfo {
-  key_type: string
-  has_value: boolean
-  is_oauth: boolean
-  has_access_token: boolean
-  created_at?: string
-  last_validated?: string
-  is_valid?: boolean
-}
-
-/**
- * Validation result from backend
- */
-interface ValidationResult {
-  is_valid: boolean
-  error_message?: string
-  service_info?: string
-  rate_limits?: {
-    requests_remaining?: number
-    reset_time?: string
-    daily_limit?: number
-  }
-}
-
-/**
- * Интерфейс для OAuth credentials
- */
-interface OAuthCredentials {
-  clientId: string
-  clientSecret: string
-  accessToken?: string
-}
-
-interface TelegramCredentials {
-  botToken: string
-  chatId: string
-}
-
-interface VimeoCredentials extends OAuthCredentials {
-  accessToken: string
-}
 
 /**
  * Хук для управления API ключами и OAuth подключениями
@@ -67,6 +21,7 @@ export function useApiKeys() {
   const [apiKeysInfo, setApiKeysInfo] = useState<Record<string, ApiKeyInfo>>({})
   const [loadingStatuses, setLoadingStatuses] = useState<Record<string, boolean>>({})
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [clientSideErrors, setClientSideErrors] = useState<Record<string, string>>({})
 
   /**
    * Загружает информацию обо всех API ключах
@@ -93,7 +48,7 @@ export function useApiKeys() {
    * Получить статус API ключа для сервиса
    */
   const getApiKeyStatus = useCallback(
-    (service: string): "not_set" | "testing" | "invalid" | "valid" => {
+    (service: string): ApiKeyStatus => {
       if (loadingStatuses[service]) {
         return "testing"
       }
@@ -118,6 +73,20 @@ export function useApiKeys() {
    */
   const saveSimpleApiKey = useCallback(
     async (service: string, value: string): Promise<boolean> => {
+      // Client-side валидация формата ключа перед отправкой на backend
+      if (value.trim().length > 0 && service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 }) {
+        const isValid = validateApiKeyFormat(service as SupportedService, value)
+        if (!isValid) {
+          const errorMsg = getValidationErrorMessage(service as SupportedService)
+          setClientSideErrors((prev) => ({ ...prev, [service]: errorMsg }))
+          void logger.warn(`Client-side validation failed for ${service}:`, { error: errorMsg })
+          return false
+        }
+      }
+
+      // Очищаем client-side ошибки при успешной валидации
+      setClientSideErrors((prev) => ({ ...prev, [service]: "" }))
+
       try {
         const result: ApiKeyOperationResult = await invoke("save_simple_api_key", {
           params: {
@@ -381,13 +350,24 @@ export function useApiKeys() {
 
   /**
    * Получить сообщение об ошибке валидации для сервиса
+   * Приоритет: client-side ошибки -> server-side ошибки
    */
   const getValidationError = useCallback(
     (service: string): string | undefined => {
-      return validationErrors[service]
+      return clientSideErrors[service] || validationErrors[service]
     },
-    [validationErrors],
+    [clientSideErrors, validationErrors],
   )
+
+  /**
+   * Валидация формата API ключа (client-side)
+   */
+  const validateKeyFormat = useCallback((service: string, key: string): boolean => {
+    if (!key || key.trim().length === 0) return true // Пустой ключ валиден (не установлен)
+    if (!(service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 })) return true // OAuth сервисы не валидируем
+
+    return validateApiKeyFormat(service as SupportedService, key)
+  }, [])
 
   return {
     // Основные операции
@@ -398,6 +378,7 @@ export function useApiKeys() {
     saveSimpleApiKey,
     deleteApiKey,
     loadApiKeysInfo,
+    validateKeyFormat,
 
     // OAuth operations
     saveOAuthCredentials,

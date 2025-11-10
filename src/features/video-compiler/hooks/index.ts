@@ -1,4 +1,7 @@
 export * from "./use-cache-stats"
+export * from "./use-frame-extraction"
 export * from "./use-gpu-capabilities"
+export * from "./use-metadata-cache"
+export * from "./use-prerender"
 export * from "./use-render-jobs"
 export * from "./use-video-compiler"

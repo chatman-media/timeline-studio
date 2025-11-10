@@ -13,6 +13,68 @@ vi.mock("@/features/app-state/hooks/use-version-control", () => ({
   useVersionControl: () => mockUseVersionControl(),
 }))
 
+// Mock react-i18next with Russian translations
+const mockT = vi.fn((key: string, options?: any) => {
+  const translations: Record<string, string> = {
+    "dialogs.userSettings.versionControl.title": "Контроль версий",
+    "dialogs.userSettings.versionControl.hasChanges": "Есть изменения",
+    "dialogs.userSettings.versionControl.autoSave": "Автосохранение: {{enabled}}",
+    "dialogs.userSettings.versionControl.autoSaveEnabled": "{{interval}}с",
+    "dialogs.userSettings.versionControl.autoSaveDisabled": "выкл",
+    "dialogs.userSettings.versionControl.tabs.history": "История",
+    "dialogs.userSettings.versionControl.tabs.branches": "Ветки",
+    "dialogs.userSettings.versionControl.tabs.settings": "Настройки",
+    "dialogs.userSettings.versionControl.branches.title": "Текущая ветка",
+    "dialogs.userSettings.versionControl.branches.active": "Активная",
+    "dialogs.userSettings.versionControl.branches.createNew": "Создать новую ветку",
+    "dialogs.userSettings.versionControl.branches.namePlaceholder": "Название ветки",
+    "dialogs.userSettings.versionControl.branches.create": "Создать",
+    "dialogs.userSettings.versionControl.branches.merge": "Слияние веток",
+    "dialogs.userSettings.versionControl.branches.mergeNotImplemented": "Функция слияния веток пока не реализована",
+    "dialogs.userSettings.versionControl.settings.autoSaveTitle": "Автоматическое сохранение",
+    "dialogs.userSettings.versionControl.settings.enableAutoSave": "Включить автосохранение",
+    "dialogs.userSettings.versionControl.settings.enableAutoSaveDesc": "Автоматически создавать снапшоты через заданные интервалы",
+    "dialogs.userSettings.versionControl.settings.enabled": "Включено",
+    "dialogs.userSettings.versionControl.settings.disabled": "Выключено",
+    "dialogs.userSettings.versionControl.settings.intervalTitle": "Интервал автосохранения",
+    "dialogs.userSettings.versionControl.settings.intervals.30": "30 секунд",
+    "dialogs.userSettings.versionControl.settings.intervals.60": "1 минута",
+    "dialogs.userSettings.versionControl.settings.intervals.120": "2 минуты",
+    "dialogs.userSettings.versionControl.settings.intervals.300": "5 минут",
+    "dialogs.userSettings.versionControl.settings.intervals.600": "10 минут",
+    "dialogs.userSettings.versionControl.settings.storage.title": "Хранение версий",
+    "dialogs.userSettings.versionControl.settings.storage.maxVersions": "Максимальное количество версий:",
+    "dialogs.userSettings.versionControl.settings.storage.maxVersionsValue": "100 (по умолчанию)",
+    "dialogs.userSettings.versionControl.settings.storage.compression": "Сжатие старых версий:",
+    "dialogs.userSettings.versionControl.settings.storage.compressionValue": "Включено",
+    "dialogs.userSettings.versionControl.settings.storage.compressionDesc": "Старые версии автоматически сжимаются для экономии места",
+    "dialogs.userSettings.versionControl.settings.exportImport.title": "Экспорт / Импорт",
+    "dialogs.userSettings.versionControl.settings.exportImport.export": "Экспортировать историю версий",
+    "dialogs.userSettings.versionControl.settings.exportImport.import": "Импортировать версии",
+    "dialogs.userSettings.versionControl.settings.exportImport.notImplemented": "Функции экспорта/импорта пока не реализованы",
+  }
+
+  let result = translations[key] || key
+
+  // Handle interpolation
+  if (options && typeof options === "object") {
+    Object.keys(options).forEach((optionKey) => {
+      result = result.replace(`{{${optionKey}}}`, String(options[optionKey]))
+    })
+  }
+
+  return result
+})
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: mockT,
+    i18n: { language: "ru" },
+    ready: true,
+  }),
+  Trans: ({ children }: { children?: React.ReactNode }) => children,
+}))
+
 // Mock Lucide icons
 vi.mock("lucide-react", () => ({
   AlertCircle: ({ className }: { className?: string }) => <div className={className}>AlertCircle</div>,
@@ -52,6 +114,7 @@ describe("VersionControlManager", () => {
 
   beforeEach(() => {
     mockUseVersionControl.mockReturnValue(defaultMockValues)
+    mockT.mockClear()
   })
 
   afterEach(() => {
@@ -166,6 +229,7 @@ describe("BranchManager", () => {
 
   beforeEach(() => {
     mockUseVersionControl.mockReturnValue(defaultMockValues)
+    mockT.mockClear()
   })
 
   afterEach(() => {
@@ -281,6 +345,7 @@ describe("VersionControlSettings", () => {
 
   beforeEach(() => {
     mockUseVersionControl.mockReturnValue(defaultMockValues)
+    mockT.mockClear()
   })
 
   afterEach(() => {

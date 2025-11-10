@@ -9,6 +9,7 @@ import { DevelopmentTab } from "./tabs/development-tab"
 import { GeneralSettingsTab } from "./tabs/general-settings-tab"
 import { PerformanceSettingsTab } from "./tabs/performance-settings-tab"
 import { SocialNetworksTab } from "./tabs/social-networks-tab"
+import { VersionControlTab } from "./tabs/version-control-tab"
 
 /**
  * Компонент модального окна настроек пользователя с вкладками
@@ -25,7 +26,7 @@ export function UserSettingsModalTabs() {
     <div className="flex flex-col h-full">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
         {/* Список вкладок */}
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6">
           <TabsTrigger value="general" className="text-xs">
             {t("dialogs.userSettings.tabs.general", "Основные")}
           </TabsTrigger>
@@ -37,6 +38,9 @@ export function UserSettingsModalTabs() {
           </TabsTrigger>
           <TabsTrigger value="social-networks" className="text-xs">
             {t("dialogs.userSettings.tabs.socialNetworks", "Соц. сети")}
+          </TabsTrigger>
+          <TabsTrigger value="version-control" className="text-xs">
+            {t("dialogs.userSettings.tabs.versionControl", "Версии")}
           </TabsTrigger>
           {isDevelopment && (
             <TabsTrigger value="development" className="text-xs">
@@ -61,6 +65,10 @@ export function UserSettingsModalTabs() {
 
           <TabsContent value="social-networks" className="h-full mt-0">
             <SocialNetworksTab />
+          </TabsContent>
+
+          <TabsContent value="version-control" className="h-full mt-0">
+            <VersionControlTab />
           </TabsContent>
 
           {isDevelopment && (

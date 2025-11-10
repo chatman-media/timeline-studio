@@ -58,6 +58,7 @@ describe("DevelopmentTab", () => {
       saveSimpleApiKey: mockSaveSimpleApiKey,
       deleteApiKey: vi.fn(),
       loadApiKeysInfo: vi.fn(),
+      validateKeyFormat: vi.fn().mockReturnValue(true),
       saveOAuthCredentials: vi.fn(),
       generateOAuthUrl: vi.fn(),
       exchangeOAuthCode: vi.fn(),

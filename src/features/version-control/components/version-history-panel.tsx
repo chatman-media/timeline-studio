@@ -5,6 +5,7 @@
 
 import { Clock, GitBranch, History, MessageCircle, Plus, RotateCcw, Settings, User } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -15,18 +16,19 @@ import { useVersionControl } from "@/features/app-state/hooks/use-version-contro
 
 import type { VersionInfo } from "../types"
 
-// Простая функция форматирования времени без date-fns
-const formatTimeAgo = (date: Date): string => {
+// Time formatting function with i18n support
+const formatTimeAgo = (date: Date, t: (key: string, params?: any) => string): string => {
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
   const diffMinutes = Math.floor(diffMs / (1000 * 60))
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
-  if (diffMinutes < 1) return "только что"
-  if (diffMinutes < 60) return `${diffMinutes} мин. назад`
-  if (diffHours < 24) return `${diffHours} ч. назад`
-  if (diffDays < 30) return `${diffDays} дн. назад`
+  if (diffMinutes < 1) return t("dialogs.userSettings.versionControl.history.timeAgo.justNow")
+  if (diffMinutes < 60)
+    return t("dialogs.userSettings.versionControl.history.timeAgo.minutesAgo", { count: diffMinutes })
+  if (diffHours < 24) return t("dialogs.userSettings.versionControl.history.timeAgo.hoursAgo", { count: diffHours })
+  if (diffDays < 30) return t("dialogs.userSettings.versionControl.history.timeAgo.daysAgo", { count: diffDays })
   return date.toLocaleDateString()
 }
 
@@ -35,6 +37,7 @@ interface VersionHistoryPanelProps {
 }
 
 export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
+  const { t } = useTranslation()
   const {
     currentVersionId,
     branchName,
@@ -85,14 +88,16 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
   // Handle restore version
   const handleRestoreVersion = useCallback(
     async (versionId: string) => {
-      if (window.confirm(`Восстановить проект до версии ${versionId}? Все несохранённые изменения будут потеряны.`)) {
+      if (
+        window.confirm(t("dialogs.userSettings.versionControl.history.restoreConfirm", { id: versionId.slice(0, 8) }))
+      ) {
         const success = await restoreVersion(versionId)
         if (success) {
           void loadVersionHistory() // Refresh list
         }
       }
     },
-    [restoreVersion, loadVersionHistory],
+    [restoreVersion, loadVersionHistory, t],
   )
 
   // Handle auto-save toggle
@@ -113,11 +118,11 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="h-4 w-4" />
-          История версий
+          {t("dialogs.userSettings.versionControl.history.title")}
         </CardTitle>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <GitBranch className="h-3 w-3" />
-          <span>Ветка: {branchName}</span>
+          <span>{t("dialogs.userSettings.versionControl.history.branch", { name: branchName })}</span>
           <Badge variant="outline" className="text-xs">
             {currentVersionId}
           </Badge>
@@ -130,8 +135,11 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-3 w-3" />
             <span>
-              Автосохранение: {autoSaveEnabled ? "включено" : "отключено"}
-              {autoSaveEnabled && ` (${autoSaveIntervalSeconds}с)`}
+              {t("dialogs.userSettings.versionControl.autoSave", {
+                enabled: autoSaveEnabled
+                  ? t("dialogs.userSettings.versionControl.autoSaveEnabled", { interval: autoSaveIntervalSeconds })
+                  : t("dialogs.userSettings.versionControl.autoSaveDisabled"),
+              })}
             </span>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setShowAutoSaveSettings(!showAutoSaveSettings)}>
@@ -143,20 +151,22 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
         {showAutoSaveSettings && (
           <div className="space-y-3 p-3 border rounded-lg">
             <div className="flex items-center justify-between">
-              <label className="text-sm">Включить автосохранение</label>
+              <label className="text-sm">{t("dialogs.userSettings.versionControl.settings.enableAutoSave")}</label>
               <Button
                 variant={autoSaveEnabled ? "default" : "outline"}
                 size="sm"
                 onClick={handleToggleAutoSave}
                 disabled={isLoading}
               >
-                {autoSaveEnabled ? "Вкл" : "Выкл"}
+                {autoSaveEnabled
+                  ? t("dialogs.userSettings.versionControl.settings.enabled")
+                  : t("dialogs.userSettings.versionControl.settings.disabled")}
               </Button>
             </div>
 
             {autoSaveEnabled && (
               <div className="space-y-2">
-                <label className="text-sm">Интервал (секунды)</label>
+                <label className="text-sm">{t("dialogs.userSettings.versionControl.settings.intervalTitle")}</label>
                 <div className="flex gap-2">
                   {[30, 60, 120, 300].map((interval) => (
                     <Button
@@ -180,7 +190,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Описание версии (опционально)"
+              placeholder={t("dialogs.userSettings.versionControl.history.placeholder")}
               value={snapshotMessage}
               onChange={(e) => setSnapshotMessage(e.target.value)}
               className="flex-1 px-3 py-2 text-sm border rounded-md"
@@ -188,7 +198,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
             />
             <Button onClick={handleCreateSnapshot} disabled={isLoading} size="sm">
               <Plus className="h-3 w-3 mr-1" />
-              Создать
+              {t("dialogs.userSettings.versionControl.history.create")}
             </Button>
           </div>
         </div>
@@ -197,16 +207,18 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
 
         {/* Version history */}
         <div className="space-y-2">
-          <h4 className="text-sm font-medium">История версий</h4>
+          <h4 className="text-sm font-medium">{t("dialogs.userSettings.versionControl.history.title")}</h4>
 
           {error && <div className="p-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded">{error}</div>}
 
           <ScrollArea className="h-64">
             {loadingVersions ? (
-              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">Загрузка...</div>
+              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
+                {t("dialogs.userSettings.versionControl.history.loading")}
+              </div>
             ) : versions.length === 0 ? (
               <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
-                Нет сохранённых версий
+                {t("dialogs.userSettings.versionControl.history.noVersions")}
               </div>
             ) : (
               <div className="space-y-2">
@@ -224,7 +236,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
                         </Badge>
                         {version.id === currentVersionId && (
                           <Badge variant="secondary" className="text-xs">
-                            Текущая
+                            {t("dialogs.userSettings.versionControl.history.current")}
                           </Badge>
                         )}
                       </div>
@@ -246,7 +258,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
                         <User className="h-3 w-3" />
                         <span>{version.author}</span>
                         <Clock className="h-3 w-3" />
-                        <span>{formatTimeAgo(new Date(version.timestamp))}</span>
+                        <span>{formatTimeAgo(new Date(version.timestamp), t)}</span>
                       </div>
 
                       {version.message && (
@@ -266,7 +278,9 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
         {/* Last snapshot info */}
         {lastSnapshotTime && (
           <div className="text-xs text-muted-foreground">
-            Последний снапшот: {formatTimeAgo(new Date(lastSnapshotTime))}
+            {t("dialogs.userSettings.versionControl.history.lastSnapshot", {
+              time: formatTimeAgo(new Date(lastSnapshotTime), t),
+            })}
           </div>
         )}
       </CardContent>

@@ -7,24 +7,36 @@
 "use client"
 
 import { DndContext, type DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
-import { useActor } from "@xstate/react"
 import type { ReactNode } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
+import { useWorkspaceLayout } from "../services/workspace-layout-provider"
 import type { Widget, WidgetType } from "../types/widget"
 import { WidgetContainer } from "./widget-container"
 
 const logger = createLogger("WidgetWorkspace")
 
 interface WidgetWorkspaceProps {
-  machine: any // XState machine instance
   widgetRenderers: Record<WidgetType, (widget: Widget) => ReactNode>
 }
 
-export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspaceProps) {
-  const [state, send] = useActor(machine)
-  const { activeWidgets, selectedWidgetId, isDragging } = state.context
+/**
+ * WidgetWorkspace component
+ *
+ * IMPORTANT: This component must be used within WorkspaceLayoutProvider.
+ * It uses useWorkspaceLayout hook to access the workspace state and actions.
+ *
+ * @example
+ * ```tsx
+ * <WorkspaceLayoutProvider>
+ *   <WidgetWorkspace widgetRenderers={...} />
+ * </WorkspaceLayoutProvider>
+ * ```
+ */
+export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
+  // Get workspace state and actions from context
+  const { activeWidgets, selectedWidgetId, isDragging, send } = useWorkspaceLayout()
 
   // Configure drag sensors
   const mouseSensor = useSensor(MouseSensor, {
@@ -78,13 +90,13 @@ export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspacePro
       type: "UPDATE_WIDGET_BOUNDS",
       widgetId: widget.id,
       bounds: newBounds,
-    } as any)
+    })
 
     send({ type: "END_DRAG" })
   }
 
   const handleDragStart = (event: any) => {
-    send({ type: "START_DRAG", widgetId: event.active.id } as any)
+    send({ type: "START_DRAG", widgetId: event.active.id })
   }
 
   return (
@@ -102,10 +114,10 @@ export function WidgetWorkspace({ machine, widgetRenderers }: WidgetWorkspacePro
               key={widget.id}
               widget={widget}
               isSelected={selectedWidgetId === widget.id}
-              onSelect={(id) => send({ type: "SELECT_WIDGET", widgetId: id } as any)}
-              onRemove={(id) => send({ type: "REMOVE_WIDGET", widgetId: id } as any)}
-              onMinimize={(id) => send({ type: "MINIMIZE_WIDGET", widgetId: id } as any)}
-              onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id } as any)}
+              onSelect={(id) => send({ type: "SELECT_WIDGET", widgetId: id })}
+              onRemove={(id) => send({ type: "REMOVE_WIDGET", widgetId: id })}
+              onMinimize={(id) => send({ type: "MINIMIZE_WIDGET", widgetId: id })}
+              onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id })}
             >
               {renderWidget(widget)}
             </WidgetContainer>
