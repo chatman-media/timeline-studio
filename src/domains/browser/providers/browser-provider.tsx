@@ -81,6 +81,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   // Initialize and subscribe to backend
   useEffect(() => {
     const handleBrowserEvent = (event: ProjectEvent) => {
+      logger.info("BrowserProvider: Received browser event", { eventType: event.type })
+
       // List of browser-related events that trigger state refresh
       const browserEventTypes = [
         "BrowserTabSwitched",
@@ -100,6 +102,7 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       ]
 
       if (browserEventTypes.includes(event.type as any)) {
+        logger.info("BrowserProvider: Refreshing browser state after event", { eventType: event.type })
         refreshBrowserState()
       }
     }
@@ -109,6 +112,10 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
 
     // Subscribe to state changes
     const unsubscribeState = backendSync.onStateChange((state) => {
+      logger.info("BrowserProvider: Received state change", {
+        hasBrowserState: !!state?.browser_state,
+        activeTab: state?.browser_state?.active_tab,
+      })
       if (state?.browser_state) {
         setBrowserState(state.browser_state)
       }
@@ -145,6 +152,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (!result.success) {
         throw new Error(result.error || `Failed to execute ${command.type}`)
       }
+      // Manually refresh state after command execution
+      await refreshBrowserState()
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : `Failed to execute ${command.type}`
       setError(errorMsg)
@@ -174,10 +183,28 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
 
   // Browser actions implementation
   const switchTab = async (tab: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSwitchTab" as any,
-      params: { tab },
-    })
+    logger.info("BrowserProvider: Switching tab", { from: activeTab, to: tab })
+
+    // Optimistic update - update local state immediately
+    if (browserState) {
+      setBrowserState({
+        ...browserState,
+        active_tab: tab,
+      })
+    }
+
+    // Use direct Tauri command instead of executeCommand for better debugging
+    const { commands } = await import("@/types/generated/tauri-bindings")
+    const result = await commands.browserSwitchTab(tab)
+
+    if (result.status === "error") {
+      logger.error("BrowserProvider: Tab switch failed", { error: result.error })
+      // Revert optimistic update on error
+      await refreshBrowserState()
+      throw new Error(result.error)
+    }
+
+    logger.info("BrowserProvider: Tab switch command sent successfully")
   }
 
   const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {

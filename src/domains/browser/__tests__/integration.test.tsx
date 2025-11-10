@@ -11,10 +11,10 @@
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { BrowserProvider, useBrowser } from "../providers/browser-provider"
-import { MOCK_FILE_IDS } from "../__mocks__"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { resetExecuteCommandMock, resetMockBrowserState } from "@/test/mocks/backend-sync"
+import { MOCK_FILE_IDS } from "../__mocks__"
+import { BrowserProvider, useBrowser } from "../providers/browser-provider"
 
 function createWrapper() {
   return ({ children }: { children: ReactNode }) => <BrowserProvider>{children}</BrowserProvider>
@@ -83,7 +83,7 @@ describe("Browser Domain Integration Tests", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      const tabs = ["media", "effects", "filters", "transitions", "templates", "style-templates"] as const
+      const tabs = ["media", "effects", "filters", "transitions", "templates", "style_templates"] as const
 
       for (const tab of tabs) {
         await act(async () => {
@@ -315,14 +315,10 @@ describe("Browser Domain Integration Tests", () => {
 
       // All commands should have been executed
       expect(backendSync.executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetSearchQuery" })
+        expect.objectContaining({ type: "BrowserSetSearchQuery" }),
       )
-      expect(backendSync.executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetFilter" })
-      )
-      expect(backendSync.executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetSort" })
-      )
+      expect(backendSync.executeCommand).toHaveBeenCalledWith(expect.objectContaining({ type: "BrowserSetFilter" }))
+      expect(backendSync.executeCommand).toHaveBeenCalledWith(expect.objectContaining({ type: "BrowserSetSort" }))
     })
 
     it("should toggle favorites and apply grouping", async () => {
@@ -346,11 +342,9 @@ describe("Browser Domain Integration Tests", () => {
       })
 
       expect(backendSync.executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserToggleFavorites" })
+        expect.objectContaining({ type: "BrowserToggleFavorites" }),
       )
-      expect(backendSync.executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetGroupBy" })
-      )
+      expect(backendSync.executeCommand).toHaveBeenCalledWith(expect.objectContaining({ type: "BrowserSetGroupBy" }))
     })
 
     it("should reset settings and apply new ones", async () => {
@@ -381,7 +375,7 @@ describe("Browser Domain Integration Tests", () => {
       })
 
       expect(getBackendSync().executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserResetTabSettings" })
+        expect.objectContaining({ type: "BrowserResetTabSettings" }),
       )
     })
   })
@@ -449,10 +443,10 @@ describe("Browser Domain Integration Tests", () => {
       })
 
       expect(getBackendSync().executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetViewMode" })
+        expect.objectContaining({ type: "BrowserSetViewMode" }),
       )
       expect(getBackendSync().executeCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "BrowserSetPreviewSize" })
+        expect.objectContaining({ type: "BrowserSetPreviewSize" }),
       )
     })
   })
@@ -482,7 +476,7 @@ describe("Browser Domain Integration Tests", () => {
       await expect(
         act(async () => {
           await result.current.selectFile("file-1")
-        })
+        }),
       ).rejects.toThrow("Network error")
 
       // This should succeed (executeCommand is restored by the mock)

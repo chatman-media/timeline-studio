@@ -227,16 +227,17 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
     qualityMetrics: calculateQualityMetrics(result),
 
     // Recommendations
-    editingRecommendations: result.editing_recommendations.map((rec: EditingRecommendation) => ({
-      type: rec.recommendation_type,
-      description: rec.description,
-      confidence: rec.priority / 100,
-      suggestedAction: rec.description, // Using description as action
-      timeRange:
-        rec.timestamp !== null && rec.duration !== null
-          ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
-          : undefined,
-    })),
+    editingRecommendations:
+      result.editing_recommendations?.map((rec: EditingRecommendation) => ({
+        type: rec.recommendation_type,
+        description: rec.description,
+        confidence: rec.priority / 100,
+        suggestedAction: rec.description, // Using description as action
+        timeRange:
+          rec.timestamp !== null && rec.duration !== null
+            ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
+            : undefined,
+      })) ?? [],
   }
 }
 

@@ -2,15 +2,9 @@
  * Тесты для BaseAITool
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { BaseAITool, ConsoleAIToolLogger, NoOpAIToolLogger } from "../base-ai-tool"
-import {
-  SimpleTestTool,
-  ErrorTestTool,
-  DelayedTestTool,
-  InvalidInputTestTool,
-  createMockLogger,
-} from "../../__mocks__"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { createMockLogger, DelayedTestTool, ErrorTestTool, InvalidInputTestTool, SimpleTestTool } from "../../__mocks__"
+import { ConsoleAIToolLogger, NoOpAIToolLogger } from "../base-ai-tool"
 
 describe("BaseAITool", () => {
   beforeEach(() => {

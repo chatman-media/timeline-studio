@@ -4,8 +4,9 @@
  * Вспомогательные функции и компоненты для тестирования AI Services
  */
 
-import { render, type RenderOptions } from "@testing-library/react"
+import { type RenderOptions, render } from "@testing-library/react"
 import type { ReactElement } from "react"
+import { vi } from "vitest"
 import { AIServicesDomainProvider } from "../providers/ai-services-domain-provider"
 
 /**

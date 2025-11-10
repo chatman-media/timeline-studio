@@ -5,16 +5,34 @@
  */
 
 import { vi } from "vitest"
-import type {
-  AnalysisOptions,
-  MontageAnalysisResult,
-  MontagePlan,
-  PlanStatistics,
-  PlanValidation,
-} from "@/types/montage-planner-rust"
+import type { MontageAnalysisResult, MontagePlan } from "@/types/montage-planner-rust"
+import { MomentCategory, MontageStyle } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 import type { AnalysisWorkflow, BatchAnalysisWorkflow } from "../services/unified-orchestrator"
-import { mockComprehensiveAnalysisResult } from "./ai-director-service"
+import { mockComprehensiveAnalysisResult as importedMockComprehensiveAnalysisResult } from "./ai-director-service"
+
+// Re-export mockComprehensiveAnalysisResult for use in tests
+export const mockComprehensiveAnalysisResult = importedMockComprehensiveAnalysisResult
+
+// Define types that are used in the mock but don't exist in the montage-planner-rust types
+interface PlanValidation {
+  is_valid: boolean
+  errors: string[]
+  warnings: string[]
+  suggestions: string[]
+  quality: number
+}
+
+interface PlanStatistics {
+  fragment_count: number
+  total_duration: number
+  average_fragment_duration: number
+  average_quality: number
+  motion_intensity: number
+  audio_quality: number
+  scene_variety: number
+  transition_smoothness: number
+}
 
 export const mockUnifiedContentAnalysis: UnifiedContentAnalysis = {
   analysisId: "test-unified-123",
@@ -36,27 +54,48 @@ export const mockUnifiedContentAnalysis: UnifiedContentAnalysis = {
     technical: 0.85,
   },
   audioAnalysis: {
-    transcription: "Test transcription",
-    sentiment: "positive",
-    keyPhrases: ["test", "analysis"],
-    speakers: 1,
+    hasAudio: true,
+    duration: 60,
+    channels: 2,
+    sampleRate: 48000,
+    bitrate: 320000,
+    quality: 85,
+    speechSegments: [],
+    musicSegments: [],
+    transcription: {
+      fullText: "Test transcription",
+      segments: [
+        {
+          start: 0,
+          end: 10,
+          text: "Test transcription",
+          confidence: 0.95,
+        },
+      ],
+      language: "en",
+    },
+    emotionalTone: "positive",
+    energyLevel: 0.7,
   },
-  sceneAnalysis: {
+  visualAnalysis: {
     scenes: [
       {
         startTime: 0,
         endTime: 10,
-        type: "dialogue",
+        sceneType: "dialogue",
         confidence: 0.9,
+        description: "Test scene",
       },
     ],
-    totalScenes: 1,
+    objects: [],
+    faces: [],
   },
   keyMoments: [
     {
       timestamp: 5.0,
-      type: "highlight",
-      confidence: 0.95,
+      duration: 2.0,
+      category: "highlight",
+      score: 0.95,
       description: "Key moment",
     },
   ],
@@ -64,62 +103,76 @@ export const mockUnifiedContentAnalysis: UnifiedContentAnalysis = {
 
 export const mockMontageAnalysisResult: MontageAnalysisResult = {
   video_id: "/test/video.mp4",
+  analysis_id: "test-montage-123",
   duration: 60,
-  fps: 30,
-  resolution: { width: 1920, height: 1080 },
   quality_score: 0.85,
-  moments: [
+  motion_score: 0.8,
+  faces_detected: 2,
+  objects_detected: ["person", "table"],
+  audio_quality: 0.85,
+  key_moments: [
     {
       timestamp: 5.0,
-      score: 0.95,
-      moment_type: "highlight",
-      description: "Peak moment",
-      frame_number: 150,
-      features: {
-        has_faces: true,
-        has_motion: true,
-        has_audio_peak: true,
-        composition_score: 0.9,
+      duration: 2.0,
+      category: MomentCategory.Highlight,
+      scores: {
+        visual: 95,
+        technical: 90,
+        emotional: 95,
+        narrative: 85,
+        action: 80,
+        composition: 90,
       },
+      total_score: 0.95,
+      description: "Peak moment",
+      tags: ["emotional", "peak"],
     },
   ],
-  audio_peaks: [],
-  visual_quality: {
-    brightness: 0.5,
-    contrast: 0.7,
-    sharpness: 0.8,
-    color_balance: 0.6,
-  },
-  faces_detected: [],
-  emotions_detected: [],
-  metadata: {
-    processing_time_ms: 1000,
-    frames_analyzed: 1800,
-    analysis_timestamp: new Date().toISOString(),
-  },
 }
 
 export const mockMontagePlan: MontagePlan = {
   id: "test-plan-123",
-  style: "dynamic",
+  name: "Test Montage Plan",
+  style: MontageStyle.DynamicAction,
   total_duration: 30,
-  target_duration: 30,
-  segments: [
+  clips: [
     {
-      video_id: "/test/video.mp4",
+      id: "clip-1",
+      source_file: "/test/video.mp4",
       start_time: 0,
       end_time: 10,
-      reason: "Best quality moment",
-      score: 0.95,
+      duration: 10,
+      moment: {
+        timestamp: 5.0,
+        duration: 2.0,
+        category: MomentCategory.Highlight,
+        scores: {
+          visual: 95,
+          technical: 90,
+          emotional: 95,
+          narrative: 85,
+          action: 80,
+          composition: 90,
+        },
+        total_score: 0.95,
+        description: "Peak moment",
+        tags: ["emotional", "peak"],
+      },
+      adjustments: {
+        speed_multiplier: 1.0,
+        color_correction: null,
+        stabilization: false,
+        crop: null,
+        fade_in: null,
+        fade_out: null,
+      },
+      order: 0,
     },
   ],
   transitions: [],
-  metadata: {
-    created_at: new Date().toISOString(),
-    video_count: 1,
-    total_source_duration: 60,
-    compression_ratio: 0.5,
-  },
+  quality_score: 0.95,
+  engagement_score: 0.9,
+  created_at: new Date().toISOString(),
 }
 
 export const mockAnalysisWorkflow: AnalysisWorkflow = {
@@ -158,7 +211,7 @@ export class MockUnifiedOrchestrator {
 
   analyzeComprehensive = vi.fn().mockResolvedValue({
     workflowId: "workflow-123",
-    comprehensive: mockComprehensiveAnalysisResult,
+    comprehensive: importedMockComprehensiveAnalysisResult,
     montage: mockMontageAnalysisResult,
     unified: mockUnifiedContentAnalysis,
   })
@@ -169,7 +222,7 @@ export class MockUnifiedOrchestrator {
       {
         videoPath: "/test/video1.mp4",
         workflowId: "workflow-123",
-        comprehensive: mockComprehensiveAnalysisResult,
+        comprehensive: importedMockComprehensiveAnalysisResult,
         montage: mockMontageAnalysisResult,
         unified: mockUnifiedContentAnalysis,
         success: true,
@@ -189,14 +242,18 @@ export class MockUnifiedOrchestrator {
     errors: [],
     warnings: [],
     suggestions: [],
+    quality: 0.95,
   } as PlanValidation)
 
   calculatePlanStatistics = vi.fn().mockResolvedValue({
-    total_segments: 1,
+    fragment_count: 1,
     total_duration: 30,
-    average_segment_duration: 30,
-    quality_distribution: { high: 1, medium: 0, low: 0 },
-    transition_count: 0,
+    average_fragment_duration: 30,
+    average_quality: 0.85,
+    motion_intensity: 0.8,
+    audio_quality: 0.85,
+    scene_variety: 0.7,
+    transition_smoothness: 0.9,
   } as PlanStatistics)
 
   getWorkflow = vi.fn((workflowId: string) => {

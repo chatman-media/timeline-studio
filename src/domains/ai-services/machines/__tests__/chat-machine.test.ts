@@ -4,10 +4,10 @@
  * Тесты для state machine управления чатом с AI
  */
 
-import { createActor, waitFor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { chatMachine, type ChatMachineContext } from "../chat-machine"
+import { createActor, waitFor } from "xstate"
 import type { ChatMessage } from "../../types/chat"
+import { chatMachine } from "../chat-machine"
 
 describe("Chat Machine", () => {
   let actor: ReturnType<typeof createActor<typeof chatMachine>>
@@ -262,7 +262,8 @@ describe("Chat Machine", () => {
       const newSession = {
         id: "session-123",
         title: "New Chat",
-        timestamp: new Date(),
+        createdAt: new Date(),
+        agent: "claude-4-sonnet" as const,
         messageCount: 0,
       }
 
@@ -284,8 +285,8 @@ describe("Chat Machine", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
         sessions: [
-          { id: "session-1", title: "Chat 1", timestamp: new Date(), messageCount: 0 },
-          { id: "session-2", title: "Chat 2", timestamp: new Date(), messageCount: 0 },
+          { id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
+          { id: "session-2", title: "Chat 2", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
         ],
       })
 
@@ -331,8 +332,8 @@ describe("Chat Machine", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
         sessions: [
-          { id: "session-1", title: "Chat 1", timestamp: new Date(), messageCount: 0 },
-          { id: "session-2", title: "Chat 2", timestamp: new Date(), messageCount: 0 },
+          { id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
+          { id: "session-2", title: "Chat 2", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
         ],
       })
 
@@ -349,7 +350,7 @@ describe("Chat Machine", () => {
     it("должен сбрасывать currentSessionId при удалении активной сессии", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
-        sessions: [{ id: "session-1", title: "Chat 1", timestamp: new Date(), messageCount: 0 }],
+        sessions: [{ id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 }],
       })
 
       actor.send({

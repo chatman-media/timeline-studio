@@ -2,6 +2,7 @@
  * Моковые AI инструменты для тестирования
  */
 
+import { vi } from "vitest"
 import { BaseAITool } from "../base/base-ai-tool"
 import type { AIToolExecutionOptions, AIToolMetadata, AIToolResult, FullExecutionContext } from "../types"
 
@@ -22,7 +23,7 @@ export class SimpleTestTool extends BaseAITool {
 
   async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
     return this.executeWithErrorHandling(
-      async (context: FullExecutionContext) => {
+      async (_context: FullExecutionContext) => {
         // Простая обработка
         return { message: `Processed: ${input.value}` }
       },
@@ -79,7 +80,7 @@ export class ErrorTestTool extends BaseAITool {
     )
   }
 
-  validate(input: any): boolean {
+  validate(_input: any): boolean {
     return true
   }
 
@@ -210,11 +211,7 @@ export function createMockLogger() {
 /**
  * Создание мокового результата выполнения
  */
-export function createMockToolResult<T = any>(
-  success: boolean = true,
-  data?: T,
-  errors?: string[],
-): AIToolResult<T> {
+export function createMockToolResult<T = any>(success: boolean = true, data?: T, errors?: string[]): AIToolResult<T> {
   return {
     success,
     data,

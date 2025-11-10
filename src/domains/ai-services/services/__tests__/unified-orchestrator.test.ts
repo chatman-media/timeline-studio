@@ -7,10 +7,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
-import {
-  mockMontageAnalysisResult,
-  mockMontagePlan,
-} from "../../__mocks__/unified-orchestrator"
+import { mockMontageAnalysisResult, mockMontagePlan } from "../../__mocks__/unified-orchestrator"
 import { UnifiedOrchestrator } from "../unified-orchestrator"
 
 // Mock dependencies
@@ -24,27 +21,170 @@ vi.mock("@/features/ai-director/services/ai-director-service", () => ({
       analysis_id: "test-analysis-123",
       status: "Completed",
       audio_analysis: {
-        has_audio: true,
-        duration: 60,
-        channels: 2,
-        sample_rate: 48000,
-        bitrate: 320000,
-        transcription: { text: "Test", confidence: 0.9, language: "en", segments: [] },
-        audio_quality: { overall_score: 0.85, noise_level: 0.1, clarity: 0.9, volume_consistency: 0.8 },
-        speech_segments: [],
-        music_segments: [],
-        silence_segments: [],
+        basic_metrics: {
+          duration: { seconds: 60 },
+          has_audio: true,
+          sample_rate: { hz: 48000 },
+          channels: 2,
+          overall_volume: { level: 0.7 },
+          estimated_quality: 0.85,
+          file_size_bytes: 1024 * 1024 * 10,
+          codec: "aac",
+          bitrate: 320000,
+        },
+        ffmpeg_analysis: {
+          volume_analysis: {
+            peak_volume: { level: 0.95 },
+            average_volume: { level: 0.7 },
+            rms_volume: { level: 0.75 },
+            dynamic_range: 0.8,
+            loudness_lufs: -14.0,
+            volume_histogram: [],
+          },
+          frequency_analysis: {
+            dominant_frequencies: [],
+            frequency_distribution: {
+              bass_energy: 0.3,
+              mid_energy: 0.5,
+              treble_energy: 0.2,
+              total_energy: 1.0,
+            },
+            spectral_centroid: { hz: 2000 },
+            spectral_rolloff: { hz: 8000 },
+            zero_crossing_rate: 0.1,
+          },
+          dynamics_analysis: {
+            crest_factor: 1.5,
+            dynamic_range: 0.8,
+            compression_ratio: 2.0,
+            attack_time: { seconds: 0.01 },
+            release_time: { seconds: 0.1 },
+          },
+          quality_metrics: {
+            overall_score: 0.85,
+            noise_level: 0.1,
+            clipping_detected: false,
+            distortion_level: 0.05,
+            signal_to_noise_ratio: 40.0,
+            issues: [],
+          },
+        },
+        montage_analysis: {
+          dynamic_range: 0.8,
+          speech_probability: 0.9,
+          music_probability: 0.1,
+          overall_quality_score: 0.85,
+          content_segments: [],
+          silence_segments: [],
+          beat_detection: null,
+          tempo_analysis: null,
+          key_detection: null,
+          emotional_tone: null,
+          energy_level: 0.7,
+          valence: 0.6,
+          sync_analysis: null,
+        },
+        transcription_analysis: {
+          engine_name: "whisper",
+          full_text: "Test transcription",
+          detected_language: "en",
+          total_duration: { seconds: 60 },
+          segments: [],
+          words: [],
+          confidence_score: 0.9,
+          processing_time: { seconds: 2.5 },
+          transcription_text: "Test",
+          language_detected: "en",
+          overall_confidence: 0.9,
+          word_segments: [],
+          sentence_segments: [],
+          speaker_segments: [],
+          speech_rate: null,
+          pause_analysis: null,
+          pronunciation_quality: null,
+          model_used: "base",
+          provider_used: "local",
+        },
+        analysis_metadata: {
+          analysis_version: "2.0-unified",
+          processing_time_ms: 1000,
+          config_used: {
+            enable_ffmpeg_analysis: true,
+            enable_montage_analysis: true,
+            enable_transcription: true,
+            ffmpeg_config: null,
+            montage_config: null,
+            whisper_config: null,
+            performance_mode: "Balanced",
+            max_processing_time_seconds: 300,
+            enable_caching: true,
+          },
+          engines_used: ["ffmpeg", "montage", "whisper"],
+          total_engines_available: 3,
+          analysis_timestamp: new Date().toISOString(),
+          success_rate: 1.0,
+        },
       },
       scene_analysis: {
-        scenes: [{ startTime: 0, endTime: 10, sceneType: "dialogue", confidence: 0.9, description: "Test" }],
-        shot_types: [],
-        transitions: [],
-        scene_changes: [],
-        camera_movements: [],
+        scenes: [
+          {
+            startTime: 0,
+            endTime: 10,
+            sceneType: "dialog",
+            confidence: 0.9,
+            description: "Test",
+            audioCharacteristics: null,
+            visualCharacteristics: null,
+            contentTags: [],
+            actionIntensity: 0.5,
+            emotionalTone: "neutral",
+          },
+        ],
+        total_scenes: 1,
+        avg_scene_duration: 10,
+        scene_types_distribution: { dialog: 1 },
       },
-      vision_analysis: { objects: [], faces: [], text_regions: [], dominant_colors: [] },
-      moment_analysis: { key_moments: [], highlights: [], emotional_peaks: [] },
-      content_analysis: { topics: [], sentiment: "positive", themes: [], key_phrases: [] },
+      vision_analysis: {
+        objects_detected: [],
+        faces_count: 0,
+        avg_composition_score: 0.85,
+        visual_quality_avg: 0.9,
+      },
+      moment_analysis: {
+        key_moments: [],
+        total_moments: 0,
+        moment_types_distribution: {},
+        avg_importance: 0,
+      },
+      content_analysis: {
+        classification: {
+          primaryCategory: "video",
+          categories: ["entertainment"],
+          genre: "general",
+          themes: ["test"],
+          tags: [],
+          confidence: 0.9,
+        },
+        mood: {
+          primary_mood: "positive",
+          mood_scores: {},
+          emotional_arc: [],
+          overall_sentiment: 0.7,
+        },
+        quality: {
+          overall: 0.85,
+          technicalQuality: 0.9,
+          contentQuality: 0.8,
+          productionValue: 0.85,
+        },
+        avg_composition: {
+          overall: 0.85,
+          ruleOfThirds: 0.8,
+          balance: 0.9,
+          focusClarity: 0.85,
+          symmetry: 0.75,
+        },
+      },
       combined_insights: {
         key_moments: [],
         emotional_timeline: [],
@@ -198,7 +338,9 @@ describe("UnifiedOrchestrator", () => {
       const { aiDirectorService } = await import("@/features/ai-director/services/ai-director-service")
       vi.mocked(aiDirectorService.analyzeComprehensive).mockRejectedValueOnce(new Error("AI Director failed"))
 
-      await expect(orchestrator.analyzeComprehensive("/test/video.mp4")).rejects.toThrow("Comprehensive analysis failed")
+      await expect(orchestrator.analyzeComprehensive("/test/video.mp4")).rejects.toThrow(
+        "Comprehensive analysis failed",
+      )
     })
 
     it("должен продолжать работу если montage analysis не удался", async () => {

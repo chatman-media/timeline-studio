@@ -148,7 +148,10 @@ export function calculateQualityScore(project: TimelineProject): number {
   // 3. Проверка на отсутствие аудио
   const hasAudio =
     project.globalTracks.some((track) => track.type === "audio" && track.clips.length > 0) ||
-    (project.sections && project.sections.some((section) => section.tracks.some((track) => track.type === "audio" && track.clips.length > 0)))
+    (project.sections &&
+      project.sections.some((section) =>
+        section.tracks.some((track) => track.type === "audio" && track.clips.length > 0),
+      ))
   if (!hasAudio) score -= 20
 
   // 4. Проверка на организацию

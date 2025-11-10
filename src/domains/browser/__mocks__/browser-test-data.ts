@@ -62,10 +62,7 @@ export const MOCK_FILE_IDS = {
 /**
  * Create a browser state with selected files
  */
-export const createBrowserStateWithSelection = (
-  tab: BrowserTab,
-  fileIds: string[]
-): BrowserState => {
+export const createBrowserStateWithSelection = (tab: BrowserTab, fileIds: string[]): BrowserState => {
   return createMockBrowserState({
     active_tab: tab,
     selected_files: {
@@ -78,10 +75,7 @@ export const createBrowserStateWithSelection = (
 /**
  * Create a browser state with custom tab settings
  */
-export const createBrowserStateWithSettings = (
-  tab: BrowserTab,
-  settings: Partial<TabSettings>
-): BrowserState => {
+export const createBrowserStateWithSettings = (tab: BrowserTab, settings: Partial<TabSettings>): BrowserState => {
   const baseState = createMockBrowserState()
   return {
     ...baseState,

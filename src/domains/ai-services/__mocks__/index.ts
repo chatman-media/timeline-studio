@@ -5,38 +5,35 @@
  */
 
 export * from "./ai-director-service"
-export * from "./unified-orchestrator"
-export * from "./test-utils"
-
 // Re-export commonly used mocks
 export {
+  aiDirectorService,
+  mockAIDirectorConfig,
   mockComprehensiveAnalysisResult,
   mockHealthStatus,
   mockSystemStatus,
-  mockAIDirectorConfig,
-  aiDirectorService,
   resetAIDirectorServiceMocks,
 } from "./ai-director-service"
-
+export * from "./test-utils"
 export {
-  mockUnifiedContentAnalysis,
-  mockMontageAnalysisResult,
-  mockMontagePlan,
-  mockAnalysisWorkflow,
-  mockBatchAnalysisWorkflow,
-  MockUnifiedOrchestrator,
-  unifiedOrchestrator,
-  resetUnifiedOrchestratorMocks,
-} from "./unified-orchestrator"
-
-export {
-  renderWithAIServices,
+  createMockSnapshot,
   createMockTauriEvent,
-  simulateAnalysisProgress,
-  simulateAnalysisError,
   mockBackendSync,
   mockTestData,
-  createMockSnapshot,
+  renderWithAIServices,
+  simulateAnalysisError,
+  simulateAnalysisProgress,
   waitForPromise,
   waitForTime,
 } from "./test-utils"
+export * from "./unified-orchestrator"
+export {
+  MockUnifiedOrchestrator,
+  mockAnalysisWorkflow,
+  mockBatchAnalysisWorkflow,
+  mockMontageAnalysisResult,
+  mockMontagePlan,
+  mockUnifiedContentAnalysis,
+  resetUnifiedOrchestratorMocks,
+  unifiedOrchestrator,
+} from "./unified-orchestrator"

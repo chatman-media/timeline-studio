@@ -2,11 +2,11 @@
  * Тесты для AIToolsContainer
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { AIToolsContainer, getAIToolsContainer, AIToolsContainerUtils } from "../container"
-import { ToolRegistry } from "../base/tool-registry"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { DelayedTestTool, SimpleTestTool } from "../__mocks__"
 import { ExecutionEngine } from "../base/execution-engine"
-import { SimpleTestTool, DelayedTestTool } from "../__mocks__"
+import { ToolRegistry } from "../base/tool-registry"
+import { AIToolsContainer, AIToolsContainerUtils, getAIToolsContainer } from "../container"
 import type { AIToolsConfig } from "../types"
 
 describe("AIToolsContainer", () => {

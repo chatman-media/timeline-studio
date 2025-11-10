@@ -4,16 +4,11 @@
  * Тесты для state machine AI Intelligence с интеграцией AI Director
  */
 
-import { createActor, waitFor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { createActor, waitFor } from "xstate"
 import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
-import {
-  mockComprehensiveAnalysisResult,
-  mockMontageAnalysisResult,
-  mockUnifiedContentAnalysis,
-} from "../../__mocks__/ai-director-service"
-import { aiIntelligenceMachine, type AIIntelligenceContext, type AIIntelligenceEvent } from "../ai-intelligence-machine"
+import { aiIntelligenceMachine } from "../ai-intelligence-machine"
 
 // Mock dependencies
 vi.mock("@/features/ai-director/services/ai-director-service", async () => {

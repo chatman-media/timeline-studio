@@ -5,8 +5,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-import * as BrowserDomain from "../index"
 import type { BrowserTab } from "@/types/generated/tauri-bindings"
+import * as BrowserDomain from "../index"
 
 describe("Browser Domain Exports", () => {
   describe("Constants", () => {
@@ -22,14 +22,7 @@ describe("Browser Domain Exports", () => {
     })
 
     it("should include all valid browser tabs", () => {
-      const expectedTabs: BrowserTab[] = [
-        "media",
-        "effects",
-        "filters",
-        "transitions",
-        "templates",
-        "style-templates",
-      ]
+      const expectedTabs: BrowserTab[] = ["media", "effects", "filters", "transitions", "templates", "style-templates"]
 
       expectedTabs.forEach((tab) => {
         expect(BrowserDomain.BROWSER_TABS).toContain(tab)
@@ -89,14 +82,7 @@ describe("Browser Domain Exports", () => {
     })
 
     it("should be a valid BrowserTab type", () => {
-      const validTabs: BrowserTab[] = [
-        "media",
-        "effects",
-        "filters",
-        "transitions",
-        "templates",
-        "style-templates",
-      ]
+      const validTabs: BrowserTab[] = ["media", "effects", "filters", "transitions", "templates", "style_templates"]
       expect(validTabs).toContain(BrowserDomain.DEFAULT_TAB)
     })
   })

@@ -2,11 +2,11 @@
  * Тесты для ExecutionEngine
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { DelayedTestTool, ErrorTestTool, SimpleTestTool } from "../../__mocks__"
+import type { AIToolTask } from "../../types"
 import { ExecutionEngine } from "../execution-engine"
 import { ToolRegistry } from "../tool-registry"
-import { SimpleTestTool, DelayedTestTool, ErrorTestTool } from "../../__mocks__"
-import type { AIToolTask } from "../../types"
 
 describe("ExecutionEngine", () => {
   let engine: ExecutionEngine
@@ -332,8 +332,8 @@ describe("ExecutionEngine", () => {
 
       const metrics = engine.getMetrics()
 
-      expect(metrics.toolUsageStats["SimpleTestTool"]).toBe(2)
-      expect(metrics.toolUsageStats["DelayedTestTool"]).toBe(1)
+      expect(metrics.toolUsageStats.SimpleTestTool).toBe(2)
+      expect(metrics.toolUsageStats.DelayedTestTool).toBe(1)
     })
   })
 

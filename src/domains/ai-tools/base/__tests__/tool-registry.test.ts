@@ -2,9 +2,9 @@
  * Тесты для ToolRegistry
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { DelayedTestTool, ErrorTestTool, InvalidInputTestTool, SimpleTestTool } from "../../__mocks__"
 import { ToolRegistry } from "../tool-registry"
-import { SimpleTestTool, DelayedTestTool, ErrorTestTool, InvalidInputTestTool } from "../../__mocks__"
 
 describe("ToolRegistry", () => {
   let registry: ToolRegistry
@@ -43,9 +43,7 @@ describe("ToolRegistry", () => {
 
       registry.register(tool1)
 
-      expect(() => registry.register(tool2)).toThrow(
-        'Инструмент с именем "SimpleTestTool" уже зарегистрирован',
-      )
+      expect(() => registry.register(tool2)).toThrow('Инструмент с именем "SimpleTestTool" уже зарегистрирован')
     })
 
     it("должен корректно регистрировать несколько инструментов", () => {
