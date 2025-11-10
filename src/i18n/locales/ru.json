@@ -1999,7 +1999,8 @@
         "aiServices": "ИИ сервисы",
         "socialNetworks": "Социальные сети",
         "development": "Разработка",
-        "performance": "Производительность"
+        "performance": "Производительность",
+        "versionControl": "Версии"
       },
       "status": {
         "notSet": "Не настроено",
@@ -2140,6 +2141,75 @@
           "clientIdPlaceholder": "Ваш Instagram OAuth Client ID",
           "clientSecretPlaceholder": "Ваш Instagram OAuth Client Secret",
           "getCredentials": "Получить OAuth данные"
+        }
+      },
+      "versionControl": {
+        "title": "Контроль версий",
+        "hasChanges": "Есть изменения",
+        "autoSave": "Автосохранение: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}с",
+        "autoSaveDisabled": "выкл",
+        "tabs": {
+          "history": "История",
+          "branches": "Ветки",
+          "settings": "Настройки"
+        },
+        "history": {
+          "title": "История версий",
+          "branch": "Ветка: {{name}}",
+          "creating": "Создание...",
+          "create": "Создать",
+          "placeholder": "Описание версии (опционально)",
+          "noVersions": "Нет сохранённых версий",
+          "loading": "Загрузка...",
+          "current": "Текущая",
+          "author": "Автор",
+          "timeAgo": {
+            "justNow": "только что",
+            "minutesAgo": "{{count}} мин. назад",
+            "hoursAgo": "{{count}} ч. назад",
+            "daysAgo": "{{count}} дн. назад"
+          },
+          "restoreConfirm": "Восстановить проект до версии {{id}}? Все несохранённые изменения будут потеряны.",
+          "lastSnapshot": "Последний снапшот: {{time}}"
+        },
+        "branches": {
+          "title": "Текущая ветка",
+          "active": "Активная",
+          "createNew": "Создать новую ветку",
+          "namePlaceholder": "Название ветки",
+          "create": "Создать",
+          "merge": "Слияние веток",
+          "mergeNotImplemented": "Функция слияния веток пока не реализована"
+        },
+        "settings": {
+          "autoSaveTitle": "Автоматическое сохранение",
+          "enableAutoSave": "Включить автосохранение",
+          "enableAutoSaveDesc": "Автоматически создавать снапшоты через заданные интервалы",
+          "enabled": "Включено",
+          "disabled": "Выключено",
+          "intervalTitle": "Интервал автосохранения",
+          "intervals": {
+            "30": "30 секунд",
+            "60": "1 минута",
+            "120": "2 минуты",
+            "300": "5 минут",
+            "600": "10 минут"
+          },
+          "storage": {
+            "title": "Хранение версий",
+            "maxVersions": "Максимальное количество версий:",
+            "maxVersionsValue": "100 (по умолчанию)",
+            "compression": "Сжатие старых версий:",
+            "compressionValue": "Включено",
+            "compressionDesc": "Старые версии автоматически сжимаются для экономии места"
+          },
+          "exportImport": {
+            "title": "Экспорт / Импорт",
+            "export": "Экспортировать историю версий",
+            "import": "Импортировать версии",
+            "notImplemented": "Функции экспорта/импорта пока не реализованы"
+          }
         }
       },
       "development": {

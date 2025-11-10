@@ -382,7 +382,8 @@
         "aiServices": "AI Services",
         "socialNetworks": "Social Networks",
         "development": "Development",
-        "performance": "Performance"
+        "performance": "Performance",
+        "versionControl": "Versions"
       },
       "status": {
         "notSet": "Not configured",
@@ -481,6 +482,75 @@
           "botTokenPlaceholder": "Your Telegram Bot Token",
           "chatIdPlaceholder": "Your Telegram Chat ID",
           "getCredentials": "Create Telegram Bot"
+        }
+      },
+      "versionControl": {
+        "title": "Version Control",
+        "hasChanges": "Has changes",
+        "autoSave": "Auto-save: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "off",
+        "tabs": {
+          "history": "History",
+          "branches": "Branches",
+          "settings": "Settings"
+        },
+        "history": {
+          "title": "Version History",
+          "branch": "Branch: {{name}}",
+          "creating": "Creating...",
+          "create": "Create",
+          "placeholder": "Version description (optional)",
+          "noVersions": "No saved versions",
+          "loading": "Loading...",
+          "current": "Current",
+          "author": "Author",
+          "timeAgo": {
+            "justNow": "just now",
+            "minutesAgo": "{{count}} min. ago",
+            "hoursAgo": "{{count}} hr. ago",
+            "daysAgo": "{{count}} days ago"
+          },
+          "restoreConfirm": "Restore project to version {{id}}? All unsaved changes will be lost.",
+          "lastSnapshot": "Last snapshot: {{time}}"
+        },
+        "branches": {
+          "title": "Current Branch",
+          "active": "Active",
+          "createNew": "Create new branch",
+          "namePlaceholder": "Branch name",
+          "create": "Create",
+          "merge": "Merge Branches",
+          "mergeNotImplemented": "Branch merging is not yet implemented"
+        },
+        "settings": {
+          "autoSaveTitle": "Automatic Saving",
+          "enableAutoSave": "Enable auto-save",
+          "enableAutoSaveDesc": "Automatically create snapshots at specified intervals",
+          "enabled": "Enabled",
+          "disabled": "Disabled",
+          "intervalTitle": "Auto-save interval",
+          "intervals": {
+            "30": "30 seconds",
+            "60": "1 minute",
+            "120": "2 minutes",
+            "300": "5 minutes",
+            "600": "10 minutes"
+          },
+          "storage": {
+            "title": "Version Storage",
+            "maxVersions": "Maximum versions:",
+            "maxVersionsValue": "100 (default)",
+            "compression": "Compress old versions:",
+            "compressionValue": "Enabled",
+            "compressionDesc": "Old versions are automatically compressed to save space"
+          },
+          "exportImport": {
+            "title": "Export / Import",
+            "export": "Export version history",
+            "import": "Import versions",
+            "notImplemented": "Export/import features are not yet implemented"
+          }
         }
       },
       "development": {
