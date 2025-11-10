@@ -7,6 +7,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
+import { mockAIDirectorConfig } from "../../__mocks__/ai-director-service"
 import { mockMontageAnalysisResult, mockMontagePlan } from "../../__mocks__/unified-orchestrator"
 import { UnifiedOrchestrator } from "../unified-orchestrator"
 
@@ -307,11 +308,10 @@ describe("UnifiedOrchestrator", () => {
       const { aiDirectorService } = await import("@/features/ai-director/services/ai-director-service")
 
       const config: AIDirectorConfig = {
+        ...mockAIDirectorConfig,
         enable_audio_analysis: true,
-        enable_scene_analysis: false,
+        enable_scene_detection: false,
         enable_vision_analysis: true,
-        enable_moment_analysis: true,
-        enable_content_analysis: false,
         quality_threshold: 0.7,
         max_processing_time: 30000,
       }
@@ -489,7 +489,7 @@ describe("UnifiedOrchestrator", () => {
 
       const stats = await orchestrator.calculatePlanStatistics(mockMontagePlan)
 
-      expect(stats.total_segments).toBe(5)
+      expect(stats.fragment_count).toBe(5)
       expect(stats.total_duration).toBe(30)
       expect(invoke).toHaveBeenCalledWith("calculate_plan_statistics", {
         plan: mockMontagePlan,
@@ -542,7 +542,6 @@ describe("UnifiedOrchestrator", () => {
       expect(status).toBeDefined()
       expect(status.health).toBeDefined()
       expect(status.capabilities).toBeDefined()
-      expect(status.version).toBe("1.0.0")
     })
 
     it("должен выполнять health check", async () => {

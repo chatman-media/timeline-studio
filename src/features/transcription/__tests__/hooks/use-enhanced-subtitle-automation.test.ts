@@ -67,6 +67,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 2500,
+        toolName: "enhanced-subtitle-automation",
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {})
@@ -87,6 +89,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
         success: false,
         errors: [errorMessage],
+        executionTime: 0,
+        toolName: "enhanced-subtitle-automation",
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {})
@@ -106,6 +110,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 2500,
+        toolName: "enhanced-subtitle-automation",
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {
@@ -130,6 +136,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 2000,
+        toolName: "auto-generate-subtitles-from-video",
       })
 
       const enhancedResult = await result.current.quickGenerateFromVideo("test-clip", "en")
@@ -149,6 +157,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
         success: false,
         errors: [errorMessage],
+        executionTime: 0,
+        toolName: "auto-generate-subtitles-from-video",
       })
 
       const enhancedResult = await result.current.quickGenerateFromVideo("test-clip")
@@ -170,6 +180,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.extractSubtitlesFromScreenText).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 1500,
+        toolName: "extract-subtitles-from-screen-text",
       })
 
       const enhancedResult = await result.current.extractFromScreenText("test-clip", "en")
@@ -189,6 +201,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.extractSubtitlesFromScreenText).mockResolvedValue({
         success: false,
         errors: [errorMessage],
+        executionTime: 0,
+        toolName: "extract-subtitles-from-screen-text",
       })
 
       const enhancedResult = await result.current.extractFromScreenText("test-clip")
@@ -210,6 +224,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.generateMultilingualSubtitles).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 3000,
+        toolName: "generate-multilingual-subtitles",
       })
 
       const enhancedResult = await result.current.generateMultilingual("test-clip", ["en", "ru", "es"])
@@ -229,6 +245,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.generateMultilingualSubtitles).mockResolvedValue({
         success: false,
         errors: [errorMessage],
+        executionTime: 0,
+        toolName: "generate-multilingual-subtitles",
       })
 
       const enhancedResult = await result.current.generateMultilingual("test-clip", ["en", "ru"])
@@ -274,6 +292,8 @@ describe("useEnhancedSubtitleAutomation", () => {
       vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
         success: true,
         data: mockResult,
+        executionTime: 2000,
+        toolName: "auto-generate-subtitles-from-video",
       })
 
       await result.current.quickGenerateFromVideo("test-clip")

@@ -42,9 +42,9 @@ export class ConsoleAIToolLogger implements AIToolLogger {
  * Логгер-заглушка (ничего не логирует)
  */
 export class NoOpAIToolLogger implements AIToolLogger {
-  info(): void {}
-  warn(): void {}
-  error(): void {}
+  info(_message: string, _data?: any): void {}
+  warn(_message: string, _data?: any): void {}
+  error(_message: string, _data?: any): void {}
 }
 
 /**

@@ -6,6 +6,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
+import { MediaType } from "@/features/media/types/media"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 import * as audioSyncService from "../../services/audio-sync"
 import { multicamManager } from "../../services/multicam-manager"
@@ -20,13 +21,12 @@ const createMockMediaFile = (id: string, timecode: string, creationTime: string)
   id,
   name: `video-${id}.mp4`,
   path: `/media/video-${id}.mp4`,
-  type: "video",
+  type: MediaType.Video,
   size: 1024 * 1024 * 100,
   duration: 120,
-  format: "mp4",
   createdAt: new Date(creationTime),
   updatedAt: new Date(creationTime),
-  thumbnail: `/thumbnails/${id}.jpg`,
+  thumbnailPath: `/thumbnails/${id}.jpg`,
   probeData: {
     streams: [
       {
@@ -50,9 +50,9 @@ const createMockMediaFile = (id: string, timecode: string, creationTime: string)
     ],
     format: {
       format_name: "mp4",
-      duration: "120",
-      size: "104857600",
-      bit_rate: "7000000",
+      duration: 120,
+      size: 104857600,
+      bit_rate: 7000000,
       tags: {
         creation_time: creationTime,
       },

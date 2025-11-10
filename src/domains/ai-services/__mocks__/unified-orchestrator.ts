@@ -97,6 +97,7 @@ export const mockUnifiedContentAnalysis: UnifiedContentAnalysis = {
       category: "highlight",
       score: 0.95,
       description: "Key moment",
+      tags: [],
     },
   ],
 }

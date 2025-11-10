@@ -362,7 +362,7 @@ describe("VideoEditingOrchestrator", () => {
       expect(timelineUIState.context).toBeDefined()
     })
 
-    it("should sync timeline UI selection to extended timeline", (done) => {
+    it("should sync timeline UI selection to extended timeline", async () => {
       const timelineUIActor = orchestrator.getActors().timelineUI
 
       timelineUIActor.send({
@@ -371,11 +371,10 @@ describe("VideoEditingOrchestrator", () => {
       })
 
       // Дожидаемся следующего тика для синхронизации
-      setTimeout(() => {
-        const timelineState = orchestrator.getTimelineState()
-        expect(timelineState).toBeDefined()
-        done()
-      }, 50)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      const timelineState = orchestrator.getTimelineState()
+      expect(timelineState).toBeDefined()
     })
   })
 

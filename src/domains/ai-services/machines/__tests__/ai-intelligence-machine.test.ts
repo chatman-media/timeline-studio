@@ -109,7 +109,7 @@ describe("AI Intelligence Machine", () => {
     it("должен обновлять AI Director config", () => {
       const config: Partial<AIDirectorConfig> = {
         enable_audio_analysis: true,
-        enable_scene_analysis: true,
+        enable_scene_detection: true,
         quality_threshold: 0.8,
       }
 

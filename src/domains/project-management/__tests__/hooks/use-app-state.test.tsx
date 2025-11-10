@@ -271,7 +271,7 @@ describe("useAppState Hook", () => {
     it("should accept valid track types", async () => {
       const { result } = renderHook(() => useAppState())
 
-      const trackTypes: TrackType[] = ["Video", "Audio", "Subtitle"]
+      const trackTypes: TrackType[] = ["Video", "Audio", "Title"]
 
       for (const trackType of trackTypes) {
         await result.current.addTrack(`Track ${trackType}`, trackType)

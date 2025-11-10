@@ -14,10 +14,8 @@ export const mockVideoMetadata: MediaMetadata = {
   duration: 120.5,
   codec: "h264",
   bitrate: 5_000_000,
-  hasAudio: true,
-  audioCodec: "aac",
-  audioChannels: 2,
-  audioSampleRate: 48000,
+  sample_rate: 48000,
+  channels: 2,
 }
 
 export const mockAudioMetadata: MediaMetadata = {

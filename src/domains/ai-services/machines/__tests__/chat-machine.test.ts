@@ -285,8 +285,20 @@ describe("Chat Machine", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
         sessions: [
-          { id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
-          { id: "session-2", title: "Chat 2", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
+          {
+            id: "session-1",
+            title: "Chat 1",
+            createdAt: new Date(),
+            agent: "claude-4-sonnet" as const,
+            messageCount: 0,
+          },
+          {
+            id: "session-2",
+            title: "Chat 2",
+            createdAt: new Date(),
+            agent: "claude-4-sonnet" as const,
+            messageCount: 0,
+          },
         ],
       })
 
@@ -332,8 +344,20 @@ describe("Chat Machine", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
         sessions: [
-          { id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
-          { id: "session-2", title: "Chat 2", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 },
+          {
+            id: "session-1",
+            title: "Chat 1",
+            createdAt: new Date(),
+            agent: "claude-4-sonnet" as const,
+            messageCount: 0,
+          },
+          {
+            id: "session-2",
+            title: "Chat 2",
+            createdAt: new Date(),
+            agent: "claude-4-sonnet" as const,
+            messageCount: 0,
+          },
         ],
       })
 
@@ -350,7 +374,15 @@ describe("Chat Machine", () => {
     it("должен сбрасывать currentSessionId при удалении активной сессии", () => {
       actor.send({
         type: "UPDATE_SESSIONS",
-        sessions: [{ id: "session-1", title: "Chat 1", createdAt: new Date(), agent: "claude-4-sonnet" as const, messageCount: 0 }],
+        sessions: [
+          {
+            id: "session-1",
+            title: "Chat 1",
+            createdAt: new Date(),
+            agent: "claude-4-sonnet" as const,
+            messageCount: 0,
+          },
+        ],
       })
 
       actor.send({

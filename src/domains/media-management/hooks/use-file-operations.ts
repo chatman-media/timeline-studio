@@ -4,6 +4,7 @@
  * Хук для работы с файловыми операциями
  */
 
+import type { MediaFileOperation } from "../types"
 import { useMediaManagement } from "./use-media-management"
 
 export function useFileOperations() {
@@ -14,12 +15,12 @@ export function useFileOperations() {
     operations: fileOperationsState.operations,
 
     // Operation lists
-    activeOperations: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "in_progress"),
+    activeOperations: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "processing"),
     completedOperations: fileOperationsState.completedOperations,
     failedOperations: fileOperationsState.failedOperations,
 
     // Operation counts
-    activeCount: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "in_progress").length,
+    activeCount: fileOperationsState.operations.filter((op: MediaFileOperation) => op.status === "processing").length,
     completedCount: fileOperationsState.completedOperations.length,
     failedCount: fileOperationsState.failedOperations.length,
 

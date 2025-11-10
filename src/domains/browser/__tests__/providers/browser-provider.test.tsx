@@ -550,8 +550,9 @@ describe("BrowserProvider", () => {
   describe("Error Handling", () => {
     it("should handle backend command errors", async () => {
       const backendSync = getBackendSync()
-      // Use mockRejectedValueOnce instead of replacing the entire mock
-      backendSync.executeCommand.mockRejectedValueOnce(new Error("Backend error"))
+      // Replace the mock temporarily to simulate an error
+      const originalMock = backendSync.executeCommand
+      backendSync.executeCommand = vi.fn().mockRejectedValue(new Error("Backend error"))
 
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
@@ -568,12 +569,16 @@ describe("BrowserProvider", () => {
       ).rejects.toThrow("Backend error")
 
       expect(result.current.error).toBeDefined()
+
+      // Restore the original mock
+      backendSync.executeCommand = originalMock
     })
 
     it("should handle state loading errors", async () => {
       const backendSync = getBackendSync()
-      // Use mockRejectedValueOnce instead of replacing the entire mock
-      backendSync.getProjectState.mockRejectedValueOnce(new Error("Failed to load state"))
+      // Replace the mock temporarily to simulate an error
+      const originalMock = backendSync.getProjectState
+      backendSync.getProjectState = vi.fn().mockRejectedValue(new Error("Failed to load state"))
 
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
@@ -582,6 +587,9 @@ describe("BrowserProvider", () => {
       await waitFor(() => {
         expect(result.current.error).toBeDefined()
       })
+
+      // Restore the original mock
+      backendSync.getProjectState = originalMock
     })
 
     it("should clear errors after successful operation", async () => {
@@ -596,7 +604,16 @@ describe("BrowserProvider", () => {
       })
 
       // First call fails
-      backendSync.executeCommand.mockRejectedValueOnce(new Error("Backend error"))
+      const originalMock = backendSync.executeCommand
+      let callCount = 0
+      backendSync.executeCommand = vi.fn().mockImplementation((command) => {
+        callCount++
+        if (callCount === 1) {
+          return Promise.reject(new Error("Backend error"))
+        }
+        // Restore to default behavior for subsequent calls
+        return originalMock(command)
+      })
 
       // Fail once
       await expect(
@@ -607,7 +624,7 @@ describe("BrowserProvider", () => {
 
       expect(result.current.error).toBeDefined()
 
-      // Succeed on next call (mockRejectedValueOnce only affects one call)
+      // Succeed on next call
       await act(async () => {
         await result.current.selectFile("file-2")
       })
@@ -616,6 +633,9 @@ describe("BrowserProvider", () => {
         // Error should be cleared
         expect(result.current.error).toBeNull()
       })
+
+      // Restore the original mock
+      backendSync.executeCommand = originalMock
     })
   })
 })

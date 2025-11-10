@@ -469,8 +469,9 @@ describe("Browser Domain Integration Tests", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      // Mock a failure using mockImplementationOnce
-      backendSync.executeCommand.mockImplementationOnce(() => Promise.reject(new Error("Network error")))
+      // Mock a failure by replacing the mock temporarily
+      const originalMock = backendSync.executeCommand
+      backendSync.executeCommand = vi.fn().mockRejectedValueOnce(new Error("Network error"))
 
       // This should fail
       await expect(
@@ -479,7 +480,10 @@ describe("Browser Domain Integration Tests", () => {
         }),
       ).rejects.toThrow("Network error")
 
-      // This should succeed (executeCommand is restored by the mock)
+      // Restore the original mock
+      backendSync.executeCommand = originalMock
+
+      // This should succeed
       await act(async () => {
         await result.current.selectFile("file-2")
       })
@@ -505,11 +509,16 @@ describe("Browser Domain Integration Tests", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      // Mock multiple failures using mockImplementationOnce
-      backendSync.executeCommand
-        .mockImplementationOnce(() => Promise.reject(new Error("Error 1")))
-        .mockImplementationOnce(() => Promise.reject(new Error("Error 2")))
-        .mockImplementationOnce(() => Promise.reject(new Error("Error 3")))
+      // Mock multiple failures by replacing the mock
+      const originalMock = backendSync.executeCommand
+      let callCount = 0
+      backendSync.executeCommand = vi.fn().mockImplementation(() => {
+        callCount++
+        if (callCount === 1) return Promise.reject(new Error("Error 1"))
+        if (callCount === 2) return Promise.reject(new Error("Error 2"))
+        if (callCount === 3) return Promise.reject(new Error("Error 3"))
+        return Promise.resolve({ success: true, error: null, data: null })
+      })
 
       // All should fail
       await expect(act(async () => await result.current.selectFile("file-1"))).rejects.toThrow("Error 1")
@@ -519,6 +528,9 @@ describe("Browser Domain Integration Tests", () => {
       await waitFor(() => {
         expect(result.current.error).toBeDefined()
       })
+
+      // Restore the original mock
+      backendSync.executeCommand = originalMock
 
       // Explicitly unmount to clean up hooks
       unmount()

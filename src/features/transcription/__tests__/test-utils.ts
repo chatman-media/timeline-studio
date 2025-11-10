@@ -18,7 +18,7 @@ export function createMockWord(overrides?: Partial<TranscriptionWord>): Transcri
     word: "test",
     start: 0,
     end: 1,
-    probability: 0.95,
+    confidence: 0.95,
     ...overrides,
   }
 }
@@ -130,6 +130,8 @@ export function createMockTranscriptionService() {
  */
 export function createMockEnhancedSubtitleResult() {
   return {
+    operation: "auto-generate-from-video",
+    success: true,
     subtitles: [
       {
         id: "1",
@@ -148,21 +150,40 @@ export function createMockEnhancedSubtitleResult() {
         speaker: "Speaker 1",
       },
     ],
+    sources: {
+      fromSpeech: [
+        {
+          id: "1",
+          text: "Hello world",
+          startTime: 0,
+          endTime: 5000,
+        },
+      ],
+      fromOCR: [],
+      fromSceneAnalysis: [],
+      combined: [
+        {
+          id: "1",
+          text: "Hello world",
+          startTime: 0,
+          endTime: 5000,
+        },
+      ],
+    },
     quality: {
       overallConfidence: 0.93,
       languageDetectionAccuracy: 0.98,
-      speechRecognitionQuality: 0.94,
+      speechRecognitionAccuracy: 0.94,
       ocrAccuracy: 0,
-      sceneAnalysisReliability: 0.9,
     },
     processing: {
       detectedLanguages: ["en"],
+      identifiedSpeakers: 1,
+      processedScenes: 0,
+      ocrTextBlocks: 0,
       totalProcessingTime: 2500,
-      speechRecognitionTime: 1500,
-      ocrTime: 0,
-      sceneAnalysisTime: 500,
-      optimizationTime: 500,
     },
+    recommendations: ["Consider adding OCR for on-screen text", "Audio quality is good for speech recognition"],
     metadata: {
       clipId: "test-clip",
       duration: 10000,

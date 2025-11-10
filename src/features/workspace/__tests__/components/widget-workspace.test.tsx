@@ -3,6 +3,7 @@
  */
 
 import { screen } from "@testing-library/react"
+import type { ReactElement } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { render } from "@/test/test-utils"
@@ -18,7 +19,7 @@ describe("WidgetWorkspace", () => {
     options: (widget: Widget) => <div data-testid={`widget-${widget.id}`}>Options Widget</div>,
     "ai-chat": (widget: Widget) => <div data-testid={`widget-${widget.id}`}>AI Chat Widget</div>,
     "ai-suggestions": (widget: Widget) => <div data-testid={`widget-${widget.id}`}>AI Suggestions Widget</div>,
-  } as Record<WidgetType, (widget: Widget) => JSX.Element>
+  } as Record<WidgetType, (widget: Widget) => ReactElement>
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -68,7 +69,7 @@ describe("WidgetWorkspace", () => {
     const incompleteRenderers = {
       timeline: (_widget: Widget) => <div>Timeline</div>,
       // Намеренно пропускаем другие типы
-    } as Record<WidgetType, (widget: Widget) => JSX.Element>
+    } as Record<WidgetType, (widget: Widget) => ReactElement>
 
     // Mock console.warn to avoid noise in test output
     const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
@@ -140,7 +141,7 @@ describe("WidgetWorkspace", () => {
       options: customRenderer,
       "ai-chat": customRenderer,
       "ai-suggestions": customRenderer,
-    } as Record<WidgetType, (widget: Widget) => JSX.Element>
+    } as Record<WidgetType, (widget: Widget) => ReactElement>
 
     render(
       <WorkspaceLayoutProvider>

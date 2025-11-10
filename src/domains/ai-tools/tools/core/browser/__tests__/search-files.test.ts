@@ -19,8 +19,21 @@ describe.skip("FileSearchTool", () => {
     // Мокируем доступ к браузеру
     vi.spyOn(helpers, "hasBrowserAccess").mockReturnValue(true)
     vi.spyOn(helpers, "getBrowserStateAccess").mockReturnValue({
-      getState: vi.fn(),
-      setState: vi.fn(),
+      getCurrentTab: vi.fn(() => "media" as const),
+      getFiles: vi.fn(() => []),
+      getSelectedFiles: vi.fn(() => []),
+      getFilters: vi.fn(() => ({})),
+      setFilters: vi.fn(),
+      selectFiles: vi.fn(),
+      deselectFiles: vi.fn(),
+      searchFiles: vi.fn(() => []),
+      getFileGroups: vi.fn(() => []),
+      getBrowserStats: vi.fn(() => ({
+        totalFiles: 0,
+        selectedFiles: 0,
+        filesByType: {},
+        totalSize: 0,
+      })),
     })
     vi.spyOn(helpers, "getBrowserFiles").mockReturnValue([
       {
@@ -281,8 +294,21 @@ describe.skip("searchMediaFiles", () => {
   beforeEach(() => {
     vi.spyOn(helpers, "hasBrowserAccess").mockReturnValue(true)
     vi.spyOn(helpers, "getBrowserStateAccess").mockReturnValue({
-      getState: vi.fn(),
-      setState: vi.fn(),
+      getCurrentTab: vi.fn(() => "media" as const),
+      getFiles: vi.fn(() => []),
+      getSelectedFiles: vi.fn(() => []),
+      getFilters: vi.fn(() => ({})),
+      setFilters: vi.fn(),
+      selectFiles: vi.fn(),
+      deselectFiles: vi.fn(),
+      searchFiles: vi.fn(() => []),
+      getFileGroups: vi.fn(() => []),
+      getBrowserStats: vi.fn(() => ({
+        totalFiles: 0,
+        selectedFiles: 0,
+        filesByType: {},
+        totalSize: 0,
+      })),
     })
     vi.spyOn(helpers, "getBrowserFiles").mockReturnValue([
       {
@@ -326,8 +352,21 @@ describe.skip("searchMediaFilesWrapper", () => {
   beforeEach(() => {
     vi.spyOn(helpers, "hasBrowserAccess").mockReturnValue(true)
     vi.spyOn(helpers, "getBrowserStateAccess").mockReturnValue({
-      getState: vi.fn(),
-      setState: vi.fn(),
+      getCurrentTab: vi.fn(() => "media" as const),
+      getFiles: vi.fn(() => []),
+      getSelectedFiles: vi.fn(() => []),
+      getFilters: vi.fn(() => ({})),
+      setFilters: vi.fn(),
+      selectFiles: vi.fn(),
+      deselectFiles: vi.fn(),
+      searchFiles: vi.fn(() => []),
+      getFileGroups: vi.fn(() => []),
+      getBrowserStats: vi.fn(() => ({
+        totalFiles: 0,
+        selectedFiles: 0,
+        filesByType: {},
+        totalSize: 0,
+      })),
     })
     vi.spyOn(helpers, "getBrowserFiles").mockReturnValue([
       {

@@ -168,11 +168,7 @@ describe("useUnifiedAnalysis", () => {
       const { unifiedOrchestrator } = await import("../../services/unified-orchestrator")
       const { result } = renderHook(() => useUnifiedAnalysis())
 
-      const config = {
-        aiDirectorConfig: {
-          enable_audio_analysis: true,
-          quality_threshold: 0.8,
-        },
+      const config: Parameters<typeof result.current.analyzeComprehensive>[1] = {
         skipMontageAnalysis: true,
       }
 

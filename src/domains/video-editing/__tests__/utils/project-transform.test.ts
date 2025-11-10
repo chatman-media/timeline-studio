@@ -400,43 +400,53 @@ describe("ProjectTransform", () => {
       const command = createAddClipCommand("track-1", "media-1", 10.5)
 
       expect(command.type).toBe("AddClip")
-      expect(command.params.track_id).toBe("track-1")
-      expect(command.params.media_id).toBe("media-1")
-      expect(command.params.time).toBe(10.5)
+      if (command.type === "AddClip") {
+        expect(command.params.track_id).toBe("track-1")
+        expect(command.params.media_id).toBe("media-1")
+        expect(command.params.time).toBe(10.5)
+      }
     })
 
     it("should create MoveClip command", () => {
       const command = createMoveClipCommand("clip-1", "track-2", 15)
 
       expect(command.type).toBe("MoveClip")
-      expect(command.params.clip_id).toBe("clip-1")
-      expect(command.params.track_id).toBe("track-2")
-      expect(command.params.time).toBe(15)
+      if (command.type === "MoveClip") {
+        expect(command.params.clip_id).toBe("clip-1")
+        expect(command.params.track_id).toBe("track-2")
+        expect(command.params.time).toBe(15)
+      }
     })
 
     it("should create TrimClip command", () => {
       const command = createTrimClipCommand("clip-1", 5, 20)
 
       expect(command.type).toBe("TrimClip")
-      expect(command.params.clip_id).toBe("clip-1")
-      expect(command.params.start).toBe(5)
-      expect(command.params.end).toBe(20)
+      if (command.type === "TrimClip") {
+        expect(command.params.clip_id).toBe("clip-1")
+        expect(command.params.start).toBe(5)
+        expect(command.params.end).toBe(20)
+      }
     })
 
     it("should create SelectClips command without adding to selection", () => {
       const command = createSelectClipsCommand(["clip-1", "clip-2"], false)
 
       expect(command.type).toBe("SelectClips")
-      expect(command.params.clip_ids).toEqual(["clip-1", "clip-2"])
-      expect(command.params.add_to_selection).toBe(false)
+      if (command.type === "SelectClips") {
+        expect(command.params.clip_ids).toEqual(["clip-1", "clip-2"])
+        expect(command.params.add_to_selection).toBe(false)
+      }
     })
 
     it("should create SelectClips command with adding to selection", () => {
       const command = createSelectClipsCommand(["clip-3"], true)
 
       expect(command.type).toBe("SelectClips")
-      expect(command.params.clip_ids).toEqual(["clip-3"])
-      expect(command.params.add_to_selection).toBe(true)
+      if (command.type === "SelectClips") {
+        expect(command.params.clip_ids).toEqual(["clip-3"])
+        expect(command.params.add_to_selection).toBe(true)
+      }
     })
 
     it("should create CreateProject command", () => {
@@ -448,22 +458,28 @@ describe("ProjectTransform", () => {
       const command = createProjectCommand("New Project", settings)
 
       expect(command.type).toBe("CreateProject")
-      expect(command.params.name).toBe("New Project")
-      expect(command.params.settings).toEqual(settings)
+      if (command.type === "CreateProject") {
+        expect(command.params.name).toBe("New Project")
+        expect(command.params.settings).toEqual(settings)
+      }
     })
 
     it("should create SaveProject command without path", () => {
       const command = createSaveProjectCommand()
 
       expect(command.type).toBe("SaveProject")
-      expect(command.params.path).toBeNull()
+      if (command.type === "SaveProject") {
+        expect(command.params.path).toBeNull()
+      }
     })
 
     it("should create SaveProject command with path", () => {
       const command = createSaveProjectCommand("/test/project.tlsp")
 
       expect(command.type).toBe("SaveProject")
-      expect(command.params.path).toBe("/test/project.tlsp")
+      if (command.type === "SaveProject") {
+        expect(command.params.path).toBe("/test/project.tlsp")
+      }
     })
   })
 

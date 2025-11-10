@@ -201,10 +201,6 @@ describe("usePrerender", () => {
 })
 
 describe("usePrerenderCache", () => {
-  let mockPrerenderSegment: any
-  let mockGetPrerenderCacheInfo: any
-  let mockClearPrerenderCache: any
-
   const mockCacheFiles = [
     {
       path: "/cache/segment1.mp4",
@@ -222,18 +218,8 @@ describe("usePrerenderCache", () => {
     },
   ]
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks()
-
-    const service = (await import("../../services/video-compiler-service")) as any
-    mockPrerenderSegment = service.__mocks.prerenderSegment
-    mockGetPrerenderCacheInfo = service.__mocks.getPrerenderCacheInfo
-    mockClearPrerenderCache = service.__mocks.clearPrerenderCache
-
-    mockGetPrerenderCacheInfo.mockResolvedValue({
-      files: mockCacheFiles,
-      totalSize: 3 * 1024 * 1024,
-    })
   })
 
   describe("basic functionality", () => {

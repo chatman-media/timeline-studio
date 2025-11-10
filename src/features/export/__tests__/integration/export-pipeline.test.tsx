@@ -250,7 +250,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       // Mock progress tracking
       const progressUpdates: RenderProgress[] = []
-      mockTrackRenderProgress.mockImplementation((jobId, callback) => {
+      mockTrackRenderProgress.mockImplementation((jobId: string, callback: (progress: RenderProgress) => void) => {
         const updates = [
           {
             job_id: jobId,
@@ -312,7 +312,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       // Track progress
       await new Promise<void>((resolve) => {
-        mockTrackRenderProgress(jobId, (progress) => {
+        mockTrackRenderProgress(jobId, (progress: RenderProgress) => {
           if (progress.status === RenderStatus.Completed) {
             resolve()
           }
@@ -341,7 +341,7 @@ describe("Export Pipeline Integration Tests", () => {
       const mockJobId = "export-job-metadata"
 
       mockRenderProject.mockResolvedValueOnce(mockJobId)
-      mockTrackRenderProgress.mockImplementation((_, callback) => {
+      mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -389,7 +389,7 @@ describe("Export Pipeline Integration Tests", () => {
         const mockJobId = `export-${format}-123`
 
         mockRenderProject.mockResolvedValueOnce(mockJobId)
-        mockTrackRenderProgress.mockImplementation((_, callback) => {
+        mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
           setTimeout(
             () =>
               callback({
@@ -442,7 +442,7 @@ describe("Export Pipeline Integration Tests", () => {
         const mockJobId = `export-${quality}-123`
 
         mockRenderProject.mockResolvedValueOnce(mockJobId)
-        mockTrackRenderProgress.mockImplementation((_, callback) => {
+        mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
           setTimeout(
             () =>
               callback({
@@ -484,7 +484,7 @@ describe("Export Pipeline Integration Tests", () => {
       })
 
       mockRenderProject.mockResolvedValueOnce("4k-job")
-      mockTrackRenderProgress.mockImplementation((_, callback) => {
+      mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -516,7 +516,7 @@ describe("Export Pipeline Integration Tests", () => {
       mockRenderProject.mockResolvedValueOnce(mockJobId)
 
       const progressCallbacks: RenderProgress[] = []
-      mockTrackRenderProgress.mockImplementation((_, callback) => {
+      mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
         const stages = [0, 10, 25, 50, 75, 90, 100]
         stages.forEach((percentage, index) => {
           setTimeout(() => {
@@ -538,7 +538,7 @@ describe("Export Pipeline Integration Tests", () => {
       await mockRenderProject(project, settings.savePath)
 
       await new Promise<void>((resolve) => {
-        mockTrackRenderProgress(mockJobId, (progress) => {
+        mockTrackRenderProgress(mockJobId, (progress: RenderProgress) => {
           if (progress.status === RenderStatus.Completed) {
             resolve()
           }
@@ -559,7 +559,7 @@ describe("Export Pipeline Integration Tests", () => {
       const mockJobId = "cancel-job-123"
 
       mockCancelRender.mockResolvedValueOnce(true)
-      mockTrackRenderProgress.mockImplementation((_, callback) => {
+      mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -818,7 +818,7 @@ describe("Export Pipeline Integration Tests", () => {
       const mockJobId = "failing-job"
 
       mockRenderProject.mockResolvedValueOnce(mockJobId)
-      mockTrackRenderProgress.mockImplementation((_, callback) => {
+      mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -839,7 +839,7 @@ describe("Export Pipeline Integration Tests", () => {
       await mockRenderProject(project, "/test/export.mp4")
 
       await new Promise<void>((resolve) => {
-        mockTrackRenderProgress(mockJobId, (progress) => {
+        mockTrackRenderProgress(mockJobId, (progress: RenderProgress) => {
           progressUpdates.push(progress)
           if (progress.status === RenderStatus.Failed) {
             resolve()
@@ -879,7 +879,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       // First attempt - interrupted
       mockRenderProject.mockResolvedValueOnce(mockJobId)
-      mockTrackRenderProgress.mockImplementationOnce((_, callback) => {
+      mockTrackRenderProgress.mockImplementationOnce((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -897,7 +897,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       // Resume attempt
       mockInvoke.mockResolvedValueOnce(mockJobId)
-      mockTrackRenderProgress.mockImplementationOnce((_, callback) => {
+      mockTrackRenderProgress.mockImplementationOnce((_: string, callback: (progress: RenderProgress) => void) => {
         setTimeout(
           () =>
             callback({
@@ -999,7 +999,7 @@ describe("Export Pipeline Integration Tests", () => {
         }
 
         mockRenderProject.mockResolvedValueOnce("youtube-export-job")
-        mockTrackRenderProgress.mockImplementation((_, callback) => {
+        mockTrackRenderProgress.mockImplementation((_: string, callback: (progress: RenderProgress) => void) => {
           setTimeout(
             () =>
               callback({
@@ -1150,7 +1150,7 @@ describe("Export Pipeline Integration Tests", () => {
 
       vi.mocked(mockSocialNetworksService.uploadVideo).mockClear()
       vi.mocked(mockSocialNetworksService.uploadVideo).mockImplementation(
-        async (_network, _file, _settings, onProgress) => {
+        async (_network: string, _file: Blob, _settings: any, onProgress?: (progress: number) => void) => {
           const updates = [0, 25, 50, 75, 100]
           for (const progress of updates) {
             progressUpdates.push(progress)
@@ -1166,7 +1166,7 @@ describe("Export Pipeline Integration Tests", () => {
       )
 
       const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
-      await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (_progress) => {
+      await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (_progress: number) => {
         // Progress callback
       })
 
@@ -1315,13 +1315,18 @@ describe("Export Pipeline Integration Tests", () => {
         effects: [
           {
             id: "effect-1",
-            type: "blur" as any,
-            name: "Blur Effect",
-            category: "filter" as any,
-            enabled: true,
-            intensity: 0.5,
-            parameters: {},
-          },
+            name: { en: "Blur Effect", ru: "Эффект размытия" },
+            category: "blur_sharpen" as any,
+            scope: ["clip"] as any,
+            processingType: "realtime" as any,
+            version: "1.0.0",
+            tags: ["blur"],
+            complexity: "medium" as const,
+            gpuAccelerated: true,
+            parameters: [],
+            presets: [],
+            processors: {},
+          } as any,
         ],
         filters: [
           {
@@ -1339,7 +1344,6 @@ describe("Export Pipeline Integration Tests", () => {
 
       expect(project.effects.length).toBe(1)
       expect(project.filters.length).toBe(1)
-      expect(project.effects[0].enabled).toBe(true)
       expect(project.filters[0].enabled).toBe(true)
     })
 

@@ -33,7 +33,8 @@ const mockT = vi.fn((key: string, options?: any) => {
     "dialogs.userSettings.versionControl.branches.mergeNotImplemented": "Функция слияния веток пока не реализована",
     "dialogs.userSettings.versionControl.settings.autoSaveTitle": "Автоматическое сохранение",
     "dialogs.userSettings.versionControl.settings.enableAutoSave": "Включить автосохранение",
-    "dialogs.userSettings.versionControl.settings.enableAutoSaveDesc": "Автоматически создавать снапшоты через заданные интервалы",
+    "dialogs.userSettings.versionControl.settings.enableAutoSaveDesc":
+      "Автоматически создавать снапшоты через заданные интервалы",
     "dialogs.userSettings.versionControl.settings.enabled": "Включено",
     "dialogs.userSettings.versionControl.settings.disabled": "Выключено",
     "dialogs.userSettings.versionControl.settings.intervalTitle": "Интервал автосохранения",
@@ -47,11 +48,13 @@ const mockT = vi.fn((key: string, options?: any) => {
     "dialogs.userSettings.versionControl.settings.storage.maxVersionsValue": "100 (по умолчанию)",
     "dialogs.userSettings.versionControl.settings.storage.compression": "Сжатие старых версий:",
     "dialogs.userSettings.versionControl.settings.storage.compressionValue": "Включено",
-    "dialogs.userSettings.versionControl.settings.storage.compressionDesc": "Старые версии автоматически сжимаются для экономии места",
+    "dialogs.userSettings.versionControl.settings.storage.compressionDesc":
+      "Старые версии автоматически сжимаются для экономии места",
     "dialogs.userSettings.versionControl.settings.exportImport.title": "Экспорт / Импорт",
     "dialogs.userSettings.versionControl.settings.exportImport.export": "Экспортировать историю версий",
     "dialogs.userSettings.versionControl.settings.exportImport.import": "Импортировать версии",
-    "dialogs.userSettings.versionControl.settings.exportImport.notImplemented": "Функции экспорта/импорта пока не реализованы",
+    "dialogs.userSettings.versionControl.settings.exportImport.notImplemented":
+      "Функции экспорта/импорта пока не реализованы",
   }
 
   let result = translations[key] || key

@@ -164,17 +164,20 @@ function handleBrowserCommand(command: ProjectCommand) {
 
     case "BrowserToggleFavorites":
       const favTab = command.params?.tab || activeTab
-      mockBrowserState = {
-        ...mockBrowserState,
-        tab_settings: {
-          ...mockBrowserState.tab_settings,
-          [favTab]: {
-            ...mockBrowserState.tab_settings[favTab],
-            show_favorites_only: !mockBrowserState.tab_settings[favTab].show_favorites_only,
+      const currentSettings = mockBrowserState.tab_settings[favTab]
+      if (currentSettings) {
+        mockBrowserState = {
+          ...mockBrowserState,
+          tab_settings: {
+            ...mockBrowserState.tab_settings,
+            [favTab]: {
+              ...currentSettings,
+              show_favorites_only: !currentSettings.show_favorites_only,
+            },
           },
-        },
+        }
+        triggerStateChange()
       }
-      triggerStateChange()
       break
 
     case "BrowserSetSort":

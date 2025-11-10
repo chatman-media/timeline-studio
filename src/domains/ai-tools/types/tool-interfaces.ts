@@ -85,6 +85,8 @@ export interface IAITool {
   execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult>
   validate(input: any): boolean
   getSchema(): { input: any; output: any }
+  getToolName(): string
+  getMetadata(): AIToolMetadata
 }
 
 // Интерфейс для реестра инструментов

@@ -154,7 +154,7 @@ describe("DomainEventBus", () => {
 
       eventBus.subscribe(handler, {
         filter: {
-          custom: (event) => event.payload.priority === "high",
+          custom: (event) => (event.payload as any).priority === "high",
         },
       })
 

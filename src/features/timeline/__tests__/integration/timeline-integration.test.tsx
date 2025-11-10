@@ -15,7 +15,8 @@
 import { act, renderHook } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile, MediaType } from "@/domains/video-editing/types"
+import { MediaType, MediaCodec } from "@/domains/video-editing/types"
+import type { MediaFile } from "@/domains/video-editing/types"
 import { TimelineProviders } from "@/test/test-utils"
 
 // ============================================================================
@@ -229,28 +230,25 @@ import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
 // TEST DATA
 // ============================================================================
 
-const createMockMediaFile = (id: string, type: MediaType = "video", duration = 60): MediaFile => ({
+const createMockMediaFile = (id: string, type: MediaType = MediaType.Video, duration = 60): MediaFile => ({
   id,
   name: `${id}.mp4`,
   path: `/test/${id}.mp4`,
   type,
-  isVideo: type === "video",
   duration,
   size: 1024000,
   width: 1920,
   height: 1080,
   fps: 30,
-  videoCodec: "h264",
-  audioCodec: "aac",
-  bitrate: 5000000,
+  videoCodec: MediaCodec.H264,
+  audioCodec: MediaCodec.AAC,
   createdAt: new Date(),
-  modifiedAt: new Date(),
 })
 
-const mockVideoFile1 = createMockMediaFile("video-1", "video", 120)
-const mockVideoFile2 = createMockMediaFile("video-2", "video", 90)
-const mockAudioFile1 = createMockMediaFile("audio-1", "audio", 180)
-const mockImageFile1 = createMockMediaFile("image-1", "image", 5)
+const mockVideoFile1 = createMockMediaFile("video-1", MediaType.Video, 120)
+const mockVideoFile2 = createMockMediaFile("video-2", MediaType.Video, 90)
+const mockAudioFile1 = createMockMediaFile("audio-1", MediaType.Audio, 180)
+const mockImageFile1 = createMockMediaFile("image-1", MediaType.StillImage, 5)
 
 // ============================================================================
 // WRAPPER COMPONENT
@@ -738,7 +736,7 @@ describe("Timeline Integration Tests", () => {
 
       // Assertions (89-91)
       expect(typeof playerResult.current.setPlaybackRate).toBe("function")
-      expect(playerResult.current.playbackRate).toBeDefined()
+      expect(playerResult.current.currentPlaybackRate).toBeDefined()
       expect(playerResult.current).toBeDefined()
     })
 

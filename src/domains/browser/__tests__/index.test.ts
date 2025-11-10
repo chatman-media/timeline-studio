@@ -82,7 +82,7 @@ describe("Browser Domain Exports", () => {
     })
 
     it("should be a valid BrowserTab type", () => {
-      const validTabs: BrowserTab[] = ["media", "effects", "filters", "transitions", "templates", "style_templates"]
+      const validTabs: BrowserTab[] = ["media", "effects", "filters", "transitions", "templates", "style-templates"]
       expect(validTabs).toContain(BrowserDomain.DEFAULT_TAB)
     })
   })

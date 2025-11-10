@@ -14,6 +14,52 @@ vi.mock("@/features/app-state/hooks/use-version-control", () => ({
   useVersionControl: () => mockUseVersionControl(),
 }))
 
+// Mock react-i18next with Russian translations
+const mockT = vi.fn((key: string, options?: any) => {
+  const translations: Record<string, string> = {
+    "dialogs.userSettings.versionControl.history.title": "История версий",
+    "dialogs.userSettings.versionControl.history.branch": "Ветка: {{name}}",
+    "dialogs.userSettings.versionControl.autoSave": "Автосохранение: {{enabled}}",
+    "dialogs.userSettings.versionControl.autoSaveEnabled": "включено ({{interval}}с)",
+    "dialogs.userSettings.versionControl.autoSaveDisabled": "отключено",
+    "dialogs.userSettings.versionControl.settings.enableAutoSave": "Включить автосохранение",
+    "dialogs.userSettings.versionControl.settings.enabled": "Вкл",
+    "dialogs.userSettings.versionControl.settings.disabled": "Выкл",
+    "dialogs.userSettings.versionControl.settings.intervalTitle": "Интервал автосохранения",
+    "dialogs.userSettings.versionControl.history.placeholder": "Описание версии (опционально)",
+    "dialogs.userSettings.versionControl.history.create": "Создать",
+    "dialogs.userSettings.versionControl.history.loading": "Загрузка...",
+    "dialogs.userSettings.versionControl.history.noVersions": "Нет сохранённых версий",
+    "dialogs.userSettings.versionControl.history.current": "Текущая",
+    "dialogs.userSettings.versionControl.history.restoreConfirm": "Восстановить версию {{id}}?",
+    "dialogs.userSettings.versionControl.history.lastSnapshot": "Последний снапшот: {{time}}",
+    "dialogs.userSettings.versionControl.history.timeAgo.justNow": "только что",
+    "dialogs.userSettings.versionControl.history.timeAgo.minutesAgo": "{{count}} минут назад",
+    "dialogs.userSettings.versionControl.history.timeAgo.hoursAgo": "{{count}} часов назад",
+    "dialogs.userSettings.versionControl.history.timeAgo.daysAgo": "{{count}} дней назад",
+  }
+
+  let result = translations[key] || key
+
+  // Handle interpolation
+  if (options && typeof options === "object") {
+    Object.keys(options).forEach((optionKey) => {
+      result = result.replace(`{{${optionKey}}}`, String(options[optionKey]))
+    })
+  }
+
+  return result
+})
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: mockT,
+    i18n: { language: "ru" },
+    ready: true,
+  }),
+  Trans: ({ children }: { children?: React.ReactNode }) => children,
+}))
+
 // Mock Lucide icons
 vi.mock("lucide-react", () => ({
   Clock: ({ className }: { className?: string }) => <div className={className}>Clock</div>,

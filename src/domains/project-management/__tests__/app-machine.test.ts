@@ -346,7 +346,7 @@ describe("App Machine", () => {
     it("should handle null project state gracefully", () => {
       actor.start()
 
-      actor.send({ type: "STATE_UPDATED", state: null })
+      actor.send({ type: "STATE_UPDATED", state: null as any })
 
       expect(actor.getSnapshot().context.projectState).toBeNull()
     })

@@ -37,6 +37,9 @@ describe("MediaFileAdapter", () => {
               codec_type: "audio",
             },
           ],
+          format: {
+            duration: 120,
+          },
         },
       }
 
@@ -58,7 +61,7 @@ describe("MediaFileAdapter", () => {
         id: "video-2",
         name: "silent-video.mp4",
         path: "/test/silent.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -73,6 +76,9 @@ describe("MediaFileAdapter", () => {
               r_frame_rate: "24/1",
             },
           ],
+          format: {
+            duration: 60,
+          },
         },
       }
 
@@ -87,7 +93,7 @@ describe("MediaFileAdapter", () => {
         id: "audio-1",
         name: "test-audio.mp3",
         path: "/test/audio.mp3",
-        type: "audio",
+        type: FeatureMediaType.Audio,
         isVideo: false,
         isAudio: true,
         isImage: false,
@@ -106,7 +112,7 @@ describe("MediaFileAdapter", () => {
         id: "image-1",
         name: "test-image.jpg",
         path: "/test/image.jpg",
-        type: "image",
+        type: FeatureMediaType.StillImage,
         isVideo: false,
         isAudio: false,
         isImage: true,
@@ -120,6 +126,7 @@ describe("MediaFileAdapter", () => {
               height: 2160,
             },
           ],
+          format: {},
         },
       }
 
@@ -135,7 +142,7 @@ describe("MediaFileAdapter", () => {
         id: "video-3",
         name: "fps-test.mp4",
         path: "/test/fps.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -150,6 +157,9 @@ describe("MediaFileAdapter", () => {
               r_frame_rate: "60000/1001", // ~59.94 fps
             },
           ],
+          format: {
+            duration: 30,
+          },
         },
       }
 
@@ -163,7 +173,7 @@ describe("MediaFileAdapter", () => {
         id: "video-4",
         name: "proxy-test.mp4",
         path: "/test/proxy.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -192,7 +202,7 @@ describe("MediaFileAdapter", () => {
         id: "video-5",
         name: "timeline-test.mp4",
         path: "/test/timeline.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -201,7 +211,7 @@ describe("MediaFileAdapter", () => {
         isAddedToTimeline: true,
         isIncluded: true,
         isUnavailable: false,
-        lastCheckedAt: "2024-01-01T00:00:00Z",
+        lastCheckedAt: Date.parse("2024-01-01T00:00:00Z"),
         isLoadingMetadata: false,
         source: "browser",
       }
@@ -219,7 +229,7 @@ describe("MediaFileAdapter", () => {
         id: "minimal-1",
         name: "minimal.mp4",
         path: "/test/minimal.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -426,7 +436,7 @@ describe("MediaFileAdapter", () => {
         id: "test-1",
         name: "round-trip.mp4",
         path: "/test/round-trip.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
@@ -446,6 +456,9 @@ describe("MediaFileAdapter", () => {
               r_frame_rate: "30/1",
             },
           ],
+          format: {
+            duration: 90,
+          },
         },
       }
 
@@ -469,7 +482,7 @@ describe("MediaFileAdapter", () => {
         id: "image-1",
         name: "image.jpg",
         path: "/test/image.jpg",
-        type: "image",
+        type: FeatureMediaType.StillImage,
         isVideo: false,
         isAudio: false,
         isImage: true,
@@ -486,13 +499,16 @@ describe("MediaFileAdapter", () => {
         id: "file-1",
         name: "test.mp4",
         path: "/test/file.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,
         duration: 60,
         size: 1024,
-        probeData: {},
+        probeData: {
+          streams: [],
+          format: {},
+        },
       }
 
       const domainFile = featureToDomainMediaFile(featureFile)
@@ -505,7 +521,7 @@ describe("MediaFileAdapter", () => {
         id: "file-1",
         name: "test.mp4",
         path: "/test/file.mp4",
-        type: "video",
+        type: FeatureMediaType.Video,
         isVideo: true,
         isAudio: false,
         isImage: false,

@@ -7,7 +7,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult, SceneAnalysis } from "@/types/generated/tauri-bindings"
 import { useAIDirector } from "../../hooks/use-ai-director"
 
 // ============================================================================
@@ -52,49 +52,132 @@ vi.mock("@/lib/tauri-logger", () => ({
 
 const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
   analysis_id: id,
-  status: "completed",
+  status: "Completed",
   audio_analysis: {
-    duration: 120,
-    loudness: -12.5,
-    tempo: 120,
-    silence_percentage: 5.2,
-    transcription: "Test transcription text",
-    metrics: {
-      peak_volume: 0.95,
-      rms_volume: 0.65,
-      dynamic_range: 18.5,
+    basic_metrics: {
+      duration: 120,
+      sample_rate: 44100,
+      channels: 2,
+      bit_depth: 16,
+      file_size: 1024000,
+    },
+    ffmpeg_analysis: {
+      loudness: {
+        integrated: -12.5,
+        range: 8.0,
+        true_peak: -1.0,
+      },
+      dynamics: {
+        crest_factor: 6.0,
+        dynamic_range: 18.5,
+        compression_ratio: 2.0,
+        attack_time: { seconds: 0.01 },
+        release_time: { seconds: 0.1 },
+      },
+      frequency: {
+        low_freq_energy: 0.3,
+        mid_freq_energy: 0.5,
+        high_freq_energy: 0.2,
+        spectral_centroid: 2000,
+        spectral_rolloff: 8000,
+      },
+      temporal: {
+        zero_crossing_rate: 0.1,
+        silence_ratio: 0.052,
+        speech_ratio: 0.8,
+      },
+    },
+    montage_analysis: {
+      tempo: 120,
+      beat_positions: [],
+      rhythm_stability: 0.9,
+      energy_curve: [],
+      silence_segments: [],
+    },
+    transcription_analysis: {
+      full_text: "Test transcription text",
+      segments: [],
+      detected_language: "en",
+      confidence: 0.95,
+    },
+    analysis_metadata: {
+      processing_time_ms: 1000,
+      engines_used: ["ffmpeg", "whisper"],
+      config_snapshot: "{}",
+      timestamp: "2024-01-01T00:00:00Z",
     },
   },
   scene_analysis: {
     scenes: [
-      { start_time: 0, end_time: 30, confidence: 0.92, description: "Indoor scene" },
-      { start_time: 30, end_time: 60, confidence: 0.88, description: "Outdoor scene" },
+      {
+        id: "scene-1",
+        fileId: "file-1",
+        startTime: 0,
+        endTime: 30,
+        duration: 30,
+        sceneType: "dialog",
+        confidence: 0.92,
+        keyFrames: [0, 15],
+        description: "Indoor scene",
+        visual: null,
+        audio: null,
+        emotional: null,
+        tags: [],
+      },
+      {
+        id: "scene-2",
+        fileId: "file-1",
+        startTime: 30,
+        endTime: 60,
+        duration: 30,
+        sceneType: "action",
+        confidence: 0.88,
+        keyFrames: [30, 45],
+        description: "Outdoor scene",
+        visual: null,
+        audio: null,
+        emotional: null,
+        tags: [],
+      },
     ],
-    scene_count: 2,
+    total_scenes: 2,
+    avg_scene_duration: 30,
+    scene_types_distribution: {},
   },
-  video_analysis: {
-    width: 1920,
-    height: 1080,
-    fps: 30,
-    duration: 120,
-    bitrate: 5000000,
-    codec: "h264",
+  vision_analysis: null,
+  moment_analysis: null,
+  content_analysis: null,
+  combined_insights: {
+    overall_quality_score: 0.85,
+    key_moments: [],
+    content_tags: [],
+    dominant_emotions: [],
+    pacing_analysis: {
+      overall_pace: "medium",
+      pace_changes: [],
+      recommended_cuts: [],
+    },
+    quality_issues: [],
+    enhancement_suggestions: [],
   },
-  object_detection: {
-    objects: [
-      { label: "person", confidence: 0.92, bbox: [0.3, 0.4, 0.2, 0.3], timestamp: 5 },
-      { label: "car", confidence: 0.85, bbox: [0.5, 0.6, 0.3, 0.2], timestamp: 35 },
-    ],
-    total_objects: 2,
+  performance_metrics: {
+    total_processing_time_ms: 60000,
+    peak_memory_usage_mb: 512,
+    cpu_usage_percent: 50,
+    gpu_usage_percent: null,
+    cache_hit_rate: null,
   },
-  face_recognition: {
-    faces: [{ person_id: "person-1", confidence: 0.94, bbox: [0.4, 0.3, 0.15, 0.2], timestamp: 10 }],
-    total_faces: 1,
-  },
-  started_at: "2024-01-01T00:00:00Z",
-  completed_at: "2024-01-01T00:01:00Z",
-  total_duration_ms: 60000,
+  editing_recommendations: [],
   errors: [],
+  metadata: {
+    analysis_version: "1.0.0",
+    processing_time_ms: 60000,
+    config_used: "{}",
+    engines_used: ["ffmpeg", "whisper"],
+    total_engines_available: 3,
+    analysis_timestamp: "2024-01-01T00:00:00Z",
+    success_rate: 1.0,
+  },
 })
 
 const createMockConfig = (): AIDirectorConfig => ({
@@ -102,11 +185,17 @@ const createMockConfig = (): AIDirectorConfig => ({
   enable_audio_analysis: true,
   enable_scene_detection: true,
   enable_video_analysis: true,
+  enable_vision_analysis: true,
+  enable_face_detection: true,
+  enable_face_analysis: true,
   enable_object_detection: true,
-  enable_face_recognition: true,
+  enable_moment_detection: true,
+  enable_content_analysis: true,
   enable_transcription: true,
   timeout_seconds: 300,
   max_memory_mb: 2048,
+  enable_caching: true,
+  cache_ttl_seconds: 3600,
 })
 
 // ============================================================================
@@ -134,14 +223,14 @@ describe("AI Director Workflow Integration Tests", () => {
 
       expect(analysis).toBeDefined()
       expect(analysis.analysis_id).toBe("comprehensive-1")
-      expect(analysis.status).toBe("completed")
+      expect(analysis.status).toBe("Completed")
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.audio_analysis?.loudness).toBe(-12.5)
+      expect(analysis.audio_analysis?.ffmpeg_analysis?.loudness.integrated).toBe(-12.5)
       expect(analysis.scene_analysis).toBeDefined()
-      expect(analysis.scene_analysis?.scene_count).toBe(2)
-      expect(analysis.video_analysis?.width).toBe(1920)
-      expect(analysis.object_detection?.total_objects).toBe(2)
-      expect(analysis.face_recognition?.total_faces).toBe(1)
+      expect(analysis.scene_analysis?.total_scenes).toBe(2)
+      expect(analysis.vision_analysis).toBeNull()
+      expect(analysis.moment_analysis).toBeNull()
+      expect(analysis.content_analysis).toBeNull()
       expect(analysis.errors).toHaveLength(0)
 
       await waitFor(() => {
@@ -164,7 +253,7 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeQuick("/test/video.mp4")
 
       expect(analysis.analysis_id).toBe("quick-1")
-      expect(analysis.status).toBe("completed")
+      expect(analysis.status).toBe("Completed")
       expect(mockCommands.aiDirectorAnalyzeQuick).toHaveBeenCalledWith("/test/video.mp4")
 
       await waitFor(() => {
@@ -198,7 +287,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(results[0].analysis_id).toBe("batch-1")
       expect(results[1].analysis_id).toBe("batch-2")
       expect(results[2].analysis_id).toBe("batch-3")
-      expect(results.every((r) => r.status === "completed")).toBe(true)
+      expect(results.every((r) => r.status === "Completed")).toBe(true)
 
       await waitFor(() => {
         expect(result.current.state.isAnalyzing).toBe(false)
@@ -227,16 +316,16 @@ describe("AI Director Workflow Integration Tests", () => {
 
       expect(analysis.scene_analysis).toBeDefined()
       expect(analysis.scene_analysis?.scenes).toHaveLength(2)
-      expect(analysis.scene_analysis?.scene_count).toBe(2)
+      expect(analysis.scene_analysis?.total_scenes).toBe(2)
 
       const scenes = analysis.scene_analysis?.scenes || []
-      expect(scenes[0].start_time).toBe(0)
-      expect(scenes[0].end_time).toBe(30)
+      expect(scenes[0].startTime).toBe(0)
+      expect(scenes[0].endTime).toBe(30)
       expect(scenes[0].confidence).toBeGreaterThan(0.8)
-      expect(scenes[1].start_time).toBe(30)
-      expect(scenes[1].end_time).toBe(60)
+      expect(scenes[1].startTime).toBe(30)
+      expect(scenes[1].endTime).toBe(60)
       expect(scenes.every((s) => s.confidence > 0.8)).toBe(true)
-      expect(scenes.every((s) => s.start_time < s.end_time)).toBe(true)
+      expect(scenes.every((s) => s.startTime < s.endTime)).toBe(true)
     })
 
     it("should validate scene boundaries and transitions", async () => {
@@ -255,12 +344,12 @@ describe("AI Director Workflow Integration Tests", () => {
 
       // Verify no overlaps
       for (let i = 0; i < scenes.length - 1; i++) {
-        expect(scenes[i].end_time).toBeLessThanOrEqual(scenes[i + 1].start_time)
+        expect(scenes[i].endTime).toBeLessThanOrEqual(scenes[i + 1].startTime)
       }
 
       // Verify valid ranges
       scenes.forEach((scene) => {
-        expect(scene.start_time).toBeLessThan(scene.end_time)
+        expect(scene.startTime).toBeLessThan(scene.endTime)
         expect(scene.confidence).toBeGreaterThan(0)
         expect(scene.confidence).toBeLessThanOrEqual(1)
       })
@@ -283,23 +372,23 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const scenes = analysis.scene_analysis?.scenes || []
-      const objects = analysis.object_detection?.objects || []
+      const duration = analysis.audio_analysis?.basic_metrics.duration || 0
 
       expect(scenes.length).toBeGreaterThan(0)
-      expect(objects.length).toBeGreaterThan(0)
+      expect(duration).toBeGreaterThan(0)
 
       scenes.forEach((scene) => {
-        expect(scene.start_time).toBeDefined()
-        expect(scene.end_time).toBeDefined()
+        expect(scene.startTime).toBeDefined()
+        expect(scene.endTime).toBeDefined()
         expect(scene.confidence).toBeGreaterThan(0)
       })
 
-      objects.forEach((obj) => {
-        expect(obj.timestamp).toBeDefined()
-        expect(obj.confidence).toBeGreaterThan(0)
-      })
+      // Verify moments can be extracted from combined insights
+      const keyMoments = analysis.combined_insights.key_moments
+      expect(keyMoments).toBeDefined()
+      expect(Array.isArray(keyMoments)).toBe(true)
 
-      expect(analysis.video_analysis?.duration).toBe(120)
+      expect(duration).toBe(120)
     })
 
     it("should prioritize high-quality moments", async () => {
@@ -313,25 +402,27 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const objects = analysis.object_detection?.objects || []
-      const faces = analysis.face_recognition?.faces || []
+      const keyMoments = analysis.combined_insights.key_moments
+      const qualityScore = analysis.combined_insights.overall_quality_score
 
-      const highQualityObjects = objects.filter((o) => o.confidence > 0.8)
-      const highQualityFaces = faces.filter((f) => f.confidence > 0.8)
+      expect(keyMoments).toBeDefined()
+      expect(qualityScore).toBeGreaterThan(0)
 
-      expect(highQualityObjects.length).toBeGreaterThan(0)
-      expect(highQualityFaces.length).toBeGreaterThan(0)
+      // Verify high quality analysis
+      expect(qualityScore).toBeGreaterThan(0.8)
+      expect(qualityScore).toBeLessThanOrEqual(1)
 
-      highQualityObjects.forEach((obj) => {
-        expect(obj.confidence).toBeGreaterThan(0.8)
+      // Verify scenes have high confidence
+      const scenes = analysis.scene_analysis?.scenes || []
+      const highQualityScenes = scenes.filter((s) => s.confidence > 0.8)
+      expect(highQualityScenes.length).toBeGreaterThan(0)
+
+      highQualityScenes.forEach((scene) => {
+        expect(scene.confidence).toBeGreaterThan(0.8)
       })
 
-      highQualityFaces.forEach((face) => {
-        expect(face.confidence).toBeGreaterThan(0.8)
-      })
-
-      expect(objects.length).toBe(2)
-      expect(faces.length).toBe(1)
+      expect(scenes.length).toBe(2)
+      expect(qualityScore).toBe(0.85)
     })
   })
 
@@ -348,7 +439,7 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const scenes = analysis.scene_analysis?.scenes || []
-      const cutPoints = scenes.map((s) => s.start_time)
+      const cutPoints = scenes.map((s) => s.startTime)
 
       expect(cutPoints.length).toBe(scenes.length)
       expect(cutPoints.length).toBeGreaterThan(0)
@@ -359,7 +450,7 @@ describe("AI Director Workflow Integration Tests", () => {
       }
 
       // Verify within video duration
-      const duration = analysis.video_analysis?.duration || 120
+      const duration = analysis.audio_analysis?.basic_metrics.duration || 120
       cutPoints.forEach((cut) => {
         expect(cut).toBeGreaterThanOrEqual(0)
         expect(cut).toBeLessThanOrEqual(duration)
@@ -381,13 +472,13 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.silence_percentage).toBeDefined()
-      expect(audio?.silence_percentage).toBeGreaterThanOrEqual(0)
-      expect(audio?.silence_percentage).toBeLessThanOrEqual(100)
-      expect(audio?.tempo).toBeDefined()
-      expect(audio?.tempo).toBeGreaterThan(0)
-      expect(audio?.loudness).toBeDefined()
-      expect(audio?.duration).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeDefined()
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeGreaterThanOrEqual(0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeLessThanOrEqual(1)
+      expect(audio?.montage_analysis?.tempo).toBeDefined()
+      expect(audio?.montage_analysis?.tempo).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBeDefined()
+      expect(audio?.basic_metrics.duration).toBeGreaterThan(0)
     })
   })
 
@@ -404,23 +495,23 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const audio = analysis.audio_analysis
-      const objects = analysis.object_detection?.objects || []
       const scenes = analysis.scene_analysis?.scenes || []
 
       expect(audio).toBeDefined()
-      expect(audio?.silence_percentage).toBeDefined()
-      expect(objects.length).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeDefined()
       expect(scenes.length).toBeGreaterThan(0)
 
-      const lowActivityObjects = objects.filter((o) => o.confidence < 0.7)
-      expect(lowActivityObjects).toBeDefined()
+      // Check for quality issues
+      const qualityIssues = analysis.combined_insights.quality_issues
+      expect(qualityIssues).toBeDefined()
+      expect(Array.isArray(qualityIssues)).toBe(true)
 
       scenes.forEach((scene) => {
-        const duration = scene.end_time - scene.start_time
+        const duration = scene.endTime - scene.startTime
         expect(duration).toBeGreaterThan(0)
       })
 
-      expect(analysis.video_analysis?.duration).toBe(120)
+      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(120)
       expect(analysis.errors).toHaveLength(0)
     })
 
@@ -435,25 +526,24 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const faces = analysis.face_recognition?.faces || []
-      const objects = analysis.object_detection?.objects || []
+      const keyMoments = analysis.combined_insights.key_moments
+      const scenes = analysis.scene_analysis?.scenes || []
 
-      const importantFaces = faces.filter((f) => f.confidence > 0.9)
-      const importantObjects = objects.filter((o) => o.confidence > 0.9)
+      expect(keyMoments).toBeDefined()
+      expect(Array.isArray(keyMoments)).toBe(true)
 
-      expect(importantFaces.length).toBeGreaterThan(0)
-      importantFaces.forEach((face) => {
-        expect(face.timestamp).toBeDefined()
-        expect(face.confidence).toBeGreaterThan(0.9)
+      // Verify important scenes are preserved (high confidence)
+      const importantScenes = scenes.filter((s) => s.confidence > 0.9)
+      expect(importantScenes.length).toBeGreaterThan(0)
+
+      importantScenes.forEach((scene) => {
+        expect(scene.startTime).toBeDefined()
+        expect(scene.confidence).toBeGreaterThan(0.9)
       })
 
-      expect(importantObjects.length).toBeGreaterThan(0)
-      importantObjects.forEach((obj) => {
-        expect(obj.timestamp).toBeDefined()
-        expect(obj.confidence).toBeGreaterThan(0.9)
-      })
-
-      expect(faces.length).toBe(1)
+      expect(scenes.length).toBeGreaterThan(0)
+      expect(analysis.combined_insights.overall_quality_score).toBeGreaterThan(0)
+      expect(analysis.errors).toHaveLength(0)
     })
   })
 
@@ -471,25 +561,25 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.duration).toBeGreaterThan(0)
-      expect(audio?.loudness).toBeDefined()
-      expect(audio?.tempo).toBeGreaterThan(0)
-      expect(audio?.silence_percentage).toBeGreaterThanOrEqual(0)
-      expect(audio?.silence_percentage).toBeLessThanOrEqual(100)
+      expect(audio?.basic_metrics.duration).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBeDefined()
+      expect(audio?.montage_analysis?.tempo).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeGreaterThanOrEqual(0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBeLessThanOrEqual(1)
 
-      const metrics = audio?.metrics
-      expect(metrics).toBeDefined()
-      expect(metrics?.peak_volume).toBeGreaterThan(0)
-      expect(metrics?.peak_volume).toBeLessThanOrEqual(1)
-      expect(metrics?.rms_volume).toBeGreaterThan(0)
-      expect(metrics?.dynamic_range).toBeGreaterThan(0)
+      const dynamics = audio?.ffmpeg_analysis?.dynamics
+      expect(dynamics).toBeDefined()
+      expect(dynamics?.crest_factor).toBeGreaterThan(0)
+      expect(dynamics?.dynamic_range).toBeGreaterThan(0)
+      expect(dynamics?.compression_ratio).toBeGreaterThan(0)
+      expect(audio?.ffmpeg_analysis?.loudness.true_peak).toBeDefined()
     })
 
     it("should detect audio quality issues", async () => {
       // Assertions: 8
       const mockResult = createMockAnalysisResult("audio-issues-1")
-      mockResult.audio_analysis!.loudness = -3.0
-      mockResult.audio_analysis!.silence_percentage = 45.0
+      mockResult.audio_analysis!.ffmpeg_analysis!.loudness.integrated = -3.0
+      mockResult.audio_analysis!.ffmpeg_analysis!.temporal.silence_ratio = 0.45
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
         status: "ok",
@@ -501,20 +591,20 @@ describe("AI Director Workflow Integration Tests", () => {
 
       const audio = analysis.audio_analysis
       expect(audio).toBeDefined()
-      expect(audio?.loudness).toBe(-3.0)
-      expect(audio?.silence_percentage).toBe(45.0)
+      expect(audio?.ffmpeg_analysis?.loudness.integrated).toBe(-3.0)
+      expect(audio?.ffmpeg_analysis?.temporal.silence_ratio).toBe(0.45)
 
       // Check for loudness issues
-      if (audio && audio.loudness > -6) {
-        expect(audio.loudness).toBeGreaterThan(-6)
+      if (audio?.ffmpeg_analysis && audio.ffmpeg_analysis.loudness.integrated > -6) {
+        expect(audio.ffmpeg_analysis.loudness.integrated).toBeGreaterThan(-6)
       }
 
       // Check for excessive silence
-      if (audio && audio.silence_percentage > 30) {
-        expect(audio.silence_percentage).toBeGreaterThan(30)
+      if (audio?.ffmpeg_analysis && audio.ffmpeg_analysis.temporal.silence_ratio > 0.3) {
+        expect(audio.ffmpeg_analysis.temporal.silence_ratio).toBeGreaterThan(0.3)
       }
 
-      expect(audio?.tempo).toBeDefined()
+      expect(audio?.montage_analysis?.tempo).toBeDefined()
       expect(analysis.errors).toHaveLength(0)
       expect(result.current.state.error).toBeNull()
     })
@@ -524,13 +614,11 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should detect and track faces across timeline", async () => {
       // Assertions: 10
       const mockResult = createMockAnalysisResult("face-track-1")
-      mockResult.face_recognition = {
-        faces: [
-          { person_id: "person-1", confidence: 0.94, bbox: [0.4, 0.3, 0.15, 0.2], timestamp: 10 },
-          { person_id: "person-1", confidence: 0.92, bbox: [0.42, 0.32, 0.15, 0.2], timestamp: 15 },
-          { person_id: "person-2", confidence: 0.89, bbox: [0.6, 0.4, 0.12, 0.18], timestamp: 20 },
-        ],
-        total_faces: 3,
+      mockResult.vision_analysis = {
+        objects_detected: [],
+        faces_count: 3,
+        avg_composition_score: 0.85,
+        visual_quality_avg: 0.9,
       }
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
@@ -541,32 +629,32 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const faceRecog = analysis.face_recognition
-      expect(faceRecog).toBeDefined()
-      expect(faceRecog?.total_faces).toBe(3)
-      expect(faceRecog?.faces).toHaveLength(3)
+      const visionAnalysis = analysis.vision_analysis
+      expect(visionAnalysis).toBeDefined()
+      expect(visionAnalysis?.faces_count).toBe(3)
+      expect(visionAnalysis?.avg_composition_score).toBeGreaterThan(0)
 
-      const person1Faces = faceRecog?.faces.filter((f) => f.person_id === "person-1") || []
-      expect(person1Faces).toHaveLength(2)
-      expect(person1Faces[0].timestamp).toBeLessThan(person1Faces[1].timestamp)
+      // Verify quality metrics
+      expect(visionAnalysis?.visual_quality_avg).toBeGreaterThan(0.8)
+      expect(visionAnalysis?.visual_quality_avg).toBeLessThanOrEqual(1)
 
-      faceRecog?.faces.forEach((face) => {
-        expect(face.confidence).toBeGreaterThan(0.8)
-        expect(face.bbox).toHaveLength(4)
-        expect(face.timestamp).toBeGreaterThanOrEqual(0)
-      })
+      // Verify overall analysis quality
+      const qualityScore = analysis.combined_insights.overall_quality_score
+      expect(qualityScore).toBeGreaterThan(0)
+      expect(qualityScore).toBeLessThanOrEqual(1)
+
+      expect(analysis.errors).toHaveLength(0)
+      expect(visionAnalysis?.faces_count).toBeGreaterThan(0)
     })
 
     it("should handle multiple faces in same frame", async () => {
       // Assertions: 8
       const mockResult = createMockAnalysisResult("multi-face-1")
-      mockResult.face_recognition = {
-        faces: [
-          { person_id: "person-1", confidence: 0.94, bbox: [0.3, 0.3, 0.15, 0.2], timestamp: 10 },
-          { person_id: "person-2", confidence: 0.91, bbox: [0.6, 0.3, 0.15, 0.2], timestamp: 10 },
-          { person_id: "person-3", confidence: 0.88, bbox: [0.45, 0.5, 0.15, 0.2], timestamp: 10 },
-        ],
-        total_faces: 3,
+      mockResult.vision_analysis = {
+        objects_detected: ["person", "person", "person"],
+        faces_count: 3,
+        avg_composition_score: 0.88,
+        visual_quality_avg: 0.92,
       }
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
@@ -577,18 +665,18 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const faces = analysis.face_recognition?.faces || []
-      const facesAt10 = faces.filter((f) => f.timestamp === 10)
+      const visionAnalysis = analysis.vision_analysis
+      expect(visionAnalysis).toBeDefined()
+      expect(visionAnalysis?.faces_count).toBe(3)
 
-      expect(facesAt10).toHaveLength(3)
-      facesAt10.forEach((face) => {
-        expect(face.confidence).toBeGreaterThan(0.8)
-      })
+      // Verify quality is high with multiple faces
+      expect(visionAnalysis?.avg_composition_score).toBeGreaterThan(0.8)
+      expect(visionAnalysis?.visual_quality_avg).toBeGreaterThan(0.8)
 
-      const uniquePersons = new Set(facesAt10.map((f) => f.person_id))
-      expect(uniquePersons.size).toBe(3)
-      expect(faces.length).toBe(3)
-      expect(analysis.face_recognition?.total_faces).toBe(3)
+      // Verify objects detected
+      const objectsDetected = visionAnalysis?.objects_detected || []
+      expect(objectsDetected.length).toBeGreaterThan(0)
+      expect(analysis.errors).toHaveLength(0)
       expect(result.current.state.error).toBeNull()
     })
   })
@@ -597,13 +685,11 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should recognize and categorize objects", async () => {
       // Assertions: 10
       const mockResult = createMockAnalysisResult("object-1")
-      mockResult.object_detection = {
-        objects: [
-          { label: "person", confidence: 0.92, bbox: [0.3, 0.4, 0.2, 0.3], timestamp: 5 },
-          { label: "car", confidence: 0.85, bbox: [0.5, 0.6, 0.3, 0.2], timestamp: 35 },
-          { label: "dog", confidence: 0.88, bbox: [0.2, 0.7, 0.15, 0.2], timestamp: 50 },
-        ],
-        total_objects: 3,
+      mockResult.vision_analysis = {
+        objects_detected: ["person", "car", "dog"],
+        faces_count: 1,
+        avg_composition_score: 0.85,
+        visual_quality_avg: 0.88,
       }
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
@@ -614,21 +700,20 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const objDet = analysis.object_detection
-      expect(objDet).toBeDefined()
-      expect(objDet?.total_objects).toBe(3)
-      expect(objDet?.objects).toHaveLength(3)
+      const visionAnalysis = analysis.vision_analysis
+      expect(visionAnalysis).toBeDefined()
+      expect(visionAnalysis?.objects_detected).toBeDefined()
+      expect(visionAnalysis?.objects_detected.length).toBe(3)
 
-      const labels = objDet?.objects.map((o) => o.label) || []
-      expect(labels).toContain("person")
-      expect(labels).toContain("car")
-      expect(labels).toContain("dog")
+      const objects = visionAnalysis?.objects_detected || []
+      expect(objects).toContain("person")
+      expect(objects).toContain("car")
+      expect(objects).toContain("dog")
 
-      objDet?.objects.forEach((obj) => {
-        expect(obj.confidence).toBeGreaterThan(0.7)
-        expect(obj.bbox).toHaveLength(4)
-        expect(obj.timestamp).toBeGreaterThanOrEqual(0)
-      })
+      // Verify vision quality metrics
+      expect(visionAnalysis?.avg_composition_score).toBeGreaterThan(0.7)
+      expect(visionAnalysis?.visual_quality_avg).toBeGreaterThan(0.7)
+      expect(analysis.errors).toHaveLength(0)
     })
   })
 
@@ -644,14 +729,16 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      // Verify video analysis has color data
-      expect(analysis.video_analysis).toBeDefined()
-      expect(analysis.video_analysis?.width).toBe(1920)
-      expect(analysis.video_analysis?.height).toBe(1080)
-      expect(analysis.video_analysis?.fps).toBe(30)
-      expect(analysis.video_analysis?.duration).toBe(120)
-      expect(analysis.video_analysis?.codec).toBe("h264")
+      // Verify vision analysis has composition data
+      expect(analysis.vision_analysis).toBeDefined()
+      expect(analysis.combined_insights.overall_quality_score).toBeGreaterThan(0)
       expect(analysis.scene_analysis?.scenes).toHaveLength(2)
+      expect(analysis.scene_analysis?.total_scenes).toBe(2)
+      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(120)
+
+      // Verify enhancement suggestions are available
+      const suggestions = analysis.combined_insights.enhancement_suggestions
+      expect(suggestions).toBeDefined()
       expect(result.current.state.error).toBeNull()
     })
   })
@@ -660,7 +747,12 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should generate subtitles from transcription", async () => {
       // Assertions: 9
       const mockResult = createMockAnalysisResult("subtitle-1")
-      mockResult.audio_analysis!.transcription = "Hello world. This is a test. We are testing subtitle generation."
+      mockResult.audio_analysis!.transcription_analysis = {
+        full_text: "Hello world. This is a test. We are testing subtitle generation.",
+        segments: [],
+        detected_language: "en",
+        confidence: 0.95,
+      }
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
         status: "ok",
@@ -670,14 +762,14 @@ describe("AI Director Workflow Integration Tests", () => {
       const { result } = renderHook(() => useAIDirector())
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
-      const transcription = analysis.audio_analysis?.transcription
+      const transcription = analysis.audio_analysis?.transcription_analysis?.full_text
       expect(transcription).toBeDefined()
       expect(transcription).toContain("Hello world")
       expect(transcription).toContain("test")
       expect(transcription?.length).toBeGreaterThan(0)
       expect(transcription?.split(". ")).toHaveLength(3)
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.audio_analysis?.duration).toBeGreaterThan(0)
+      expect(analysis.audio_analysis?.basic_metrics.duration).toBeGreaterThan(0)
       expect(analysis.errors).toHaveLength(0)
       expect(result.current.state.error).toBeNull()
     })
@@ -696,13 +788,13 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       expect(analysis.scene_analysis?.scenes).toBeDefined()
-      expect(analysis.object_detection?.objects).toBeDefined()
+      expect(analysis.editing_recommendations).toBeDefined()
       expect(analysis.audio_analysis).toBeDefined()
 
       const scenes = analysis.scene_analysis?.scenes || []
       const segments = scenes.map((s) => ({
-        startTime: s.start_time,
-        endTime: s.end_time,
+        startTime: s.startTime,
+        endTime: s.endTime,
         type: "scene" as const,
         confidence: s.confidence,
       }))
@@ -723,8 +815,8 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should handle analysis of long videos", async () => {
       // Assertions: 9
       const mockResult = createMockAnalysisResult("long-video-1")
-      mockResult.video_analysis!.duration = 3600 // 1 hour
-      mockResult.total_duration_ms = 45000 // 45 seconds processing
+      mockResult.audio_analysis!.basic_metrics.duration = 3600 // 1 hour
+      mockResult.performance_metrics.total_processing_time_ms = 45000 // 45 seconds processing
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockImplementation(
         () =>
@@ -740,11 +832,11 @@ describe("AI Director Workflow Integration Tests", () => {
       const endTime = Date.now()
 
       expect(analysis).toBeDefined()
-      expect(analysis.video_analysis?.duration).toBe(3600)
+      expect(analysis.audio_analysis?.basic_metrics.duration).toBe(3600)
       expect(endTime - startTime).toBeLessThan(10000)
       expect(analysis.scene_analysis).toBeDefined()
       expect(analysis.audio_analysis).toBeDefined()
-      expect(analysis.total_duration_ms).toBe(45000)
+      expect(analysis.performance_metrics.total_processing_time_ms).toBe(45000)
       expect(analysis.errors).toHaveLength(0)
 
       await waitFor(() => {

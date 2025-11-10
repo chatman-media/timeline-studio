@@ -184,7 +184,6 @@ export const mockComprehensiveAnalysisResult: ComprehensiveAnalysisResult = {
         thumbnailTimestamp: 5.0,
         persons: [],
         tags: ["emotional", "peak"],
-        sceneId: null,
       },
     ],
     total_moments: 1,
@@ -206,7 +205,7 @@ export const mockComprehensiveAnalysisResult: ComprehensiveAnalysisResult = {
       valence: 0.7,
       arousal: 0.6,
       dominance: 0.5,
-      confidence: 0.85,
+      emotionalArc: [],
     },
     quality: {
       overall: 0.85,
@@ -306,10 +305,9 @@ export const mockAIDirectorConfig: AIDirectorConfig = {
   ai_provider: null,
   ai_model: null,
   ai_api_key: null,
-  use_ai_enhanced_analysis: false,
-  ai_analysis_depth: "Balanced",
-  enable_ai_tagging: false,
+  enable_ai_enhanced_analysis: false,
   enable_ai_descriptions: false,
+  enable_ai_mood_analysis: false,
 }
 
 export const aiDirectorService = {
