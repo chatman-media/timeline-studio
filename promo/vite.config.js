@@ -61,6 +61,8 @@ export default defineConfig({
       define: {
         global: "globalThis",
       },
+      // Используем esbuild для gray-matter вместо Terser
+      minify: false,
     },
   },
   build: {
@@ -89,12 +91,12 @@ export default defineConfig({
           if (id.includes("node_modules/framer-motion")) {
             return "framer"
           }
+          // gray-matter и js-yaml отдельно (не минифицируются агрессивно)
+          if (id.includes("node_modules/gray-matter") || id.includes("node_modules/js-yaml")) {
+            return "yaml-parser"
+          }
           // Markdown и контент
-          if (
-            id.includes("node_modules/react-markdown") ||
-            id.includes("node_modules/remark") ||
-            id.includes("node_modules/gray-matter")
-          ) {
+          if (id.includes("node_modules/react-markdown") || id.includes("node_modules/remark")) {
             return "markdown"
           }
           // Остальные vendor библиотеки
@@ -123,8 +125,18 @@ export default defineConfig({
       mangle: {
         // Не минифицировать имена свойств для gray-matter/js-yaml
         properties: false,
-        // Сохраняем имена для gray-matter/js-yaml
-        reserved: ["isNothing", "Type"],
+        // Сохраняем критические имена функций и свойств для gray-matter/js-yaml
+        reserved: [
+          "isNothing",
+          "Type",
+          "Schema",
+          "DEFAULT_SCHEMA",
+          "YAML_NODE",
+          "extend",
+          "compile",
+          "load",
+          "loadAll",
+        ],
       },
     },
     // Генерация source maps только для продакшена при необходимости
