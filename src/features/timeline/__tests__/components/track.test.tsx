@@ -236,18 +236,19 @@ describe("Track Component", () => {
       const trackElement = screen.getByTestId("timeline-track")
       expect(trackElement).toBeInTheDocument()
 
-      // Семантический button элемент имеет встроенную доступность
-      expect(trackElement.tagName).toBe("BUTTON")
+      // DIV с role="button" для обеспечения доступности с вложенными интерактивными элементами
+      expect(trackElement.tagName).toBe("DIV")
+      expect(trackElement).toHaveAttribute("role", "button")
     })
 
     it("should be keyboard accessible", () => {
       render(<Track track={mockTrack} />)
 
       const trackElement = screen.getByTestId("timeline-track")
-      // Button элементы по умолчанию доступны с клавиатуры
-      expect(trackElement.tagName).toBe("BUTTON")
-      // Button элементы имеют tabIndex 0 по умолчанию
-      expect(trackElement).toBeInTheDocument()
+      // DIV с role="button" и tabIndex для клавиатурной доступности
+      expect(trackElement.tagName).toBe("DIV")
+      expect(trackElement).toHaveAttribute("role", "button")
+      expect(trackElement).toHaveAttribute("tabIndex", "0")
     })
   })
 })

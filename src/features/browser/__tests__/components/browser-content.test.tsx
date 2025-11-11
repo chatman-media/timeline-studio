@@ -48,9 +48,13 @@ const mockBrowserState = {
   setPreviewSize: mockSetPreviewSize,
 }
 
-vi.mock("@/domains/browser", () => ({
-  useBrowserState: () => mockBrowserState,
-}))
+vi.mock("@/domains/browser", async () => {
+  const actual = await vi.importActual<typeof import("@/domains/browser")>("@/domains/browser")
+  return {
+    ...actual,
+    useBrowserState: () => mockBrowserState,
+  }
+})
 
 // Создаем моки для timeline actions
 const mockAddMediaToTimeline = vi.fn()
@@ -60,6 +64,43 @@ vi.mock("@/features/timeline/hooks", () => ({
   useTimelineActions: () => ({
     addMediaToTimeline: mockAddMediaToTimeline,
     addSingleMediaToTimeline: mockAddSingleMediaToTimeline,
+  }),
+}))
+
+// Моки для useCurrentProject
+vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+  useCurrentProject: () => ({
+    currentProject: null,
+    openProject: vi.fn(),
+    saveProject: vi.fn(),
+    createNewProject: vi.fn(),
+  }),
+}))
+
+// Моки для useMediaImport
+vi.mock("@/features/media/hooks/use-media-import", () => ({
+  useMediaImport: () => ({
+    importFile: vi.fn(),
+    importFolder: vi.fn(),
+    processFiles: vi.fn(),
+  }),
+}))
+
+// Моки для useMusicImport
+vi.mock("@/features/browser/hooks/use-music-import", () => ({
+  useMusicImport: () => ({
+    importFile: vi.fn(),
+    importFolder: vi.fn(),
+    processFiles: vi.fn(),
+  }),
+}))
+
+// Моки для useMusicFiles
+vi.mock("@/features/app-state/hooks/use-music-files", () => ({
+  useMusicFiles: () => ({
+    musicFiles: [],
+    addMusicFile: vi.fn(),
+    removeMusicFile: vi.fn(),
   }),
 }))
 
