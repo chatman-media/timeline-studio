@@ -1,3 +1,10 @@
+## [2.11.4](https://github.com/chatman-media/timeline-studio/compare/v2.11.3...v2.11.4) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить предупреждения Biome о доступности в компонентах треков ([3d6e9c3](https://github.com/chatman-media/timeline-studio/commit/3d6e9c3ecbaf3cd4c3acdd87163f3c8b5f13f514))
+
 ## [2.11.3](https://github.com/chatman-media/timeline-studio/compare/v2.11.2...v2.11.3) (2025-11-11)
 
 
