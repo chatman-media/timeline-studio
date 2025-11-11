@@ -186,7 +186,7 @@ pub struct EffectResource {
   pub name: String,
   pub effect_id: String,
   pub parameters: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Filter resource
@@ -196,7 +196,7 @@ pub struct FilterResource {
   pub name: String,
   pub filter_id: String,
   pub parameters: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Transition resource
@@ -206,7 +206,7 @@ pub struct TransitionResource {
   pub name: String,
   pub transition_id: String,
   pub parameters: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Template resource
@@ -216,7 +216,7 @@ pub struct TemplateResource {
   pub name: String,
   pub template_id: String,
   pub data: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Style template resource
@@ -226,7 +226,7 @@ pub struct StyleTemplateResource {
   pub name: String,
   pub template_id: String,
   pub data: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Subtitle style resource
@@ -236,7 +236,7 @@ pub struct SubtitleResource {
   pub name: String,
   pub style_id: String,
   pub data: serde_json::Value,
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 /// Media item in the pool

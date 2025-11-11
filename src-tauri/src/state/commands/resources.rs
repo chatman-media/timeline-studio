@@ -61,7 +61,7 @@ impl ResourceCommands {
       name: name.clone(),
       effect_id,
       parameters,
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to effects pool
@@ -131,7 +131,7 @@ impl ResourceCommands {
       name: name.clone(),
       filter_id,
       parameters,
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to filters pool
@@ -210,7 +210,7 @@ impl ResourceCommands {
       name: name.clone(),
       transition_id,
       parameters,
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to transitions pool
@@ -277,7 +277,7 @@ impl ResourceCommands {
       name: name.clone(),
       template_id,
       data: data.clone(),
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to templates pool
@@ -353,7 +353,7 @@ impl ResourceCommands {
       name: name.clone(),
       template_id,
       data: data.clone(),
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to style templates pool
@@ -420,7 +420,7 @@ impl ResourceCommands {
       name: name.clone(),
       style_id,
       data: data.clone(),
-      added_at: Utc::now().timestamp(),
+      added_at: Utc::now().timestamp() as f64,
     };
 
     // Add to subtitles pool
