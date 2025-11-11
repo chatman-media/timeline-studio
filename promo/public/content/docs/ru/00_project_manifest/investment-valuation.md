@@ -171,19 +171,19 @@
 
 ### Предлагаемые раунды
 
-#### Seed Round: $4M (12% equity)
-**Pre-money оценка**: $29M  
-**Post-money оценка**: $33M
+#### Seed Round: $300K (5% equity)
+**Pre-money оценка**: $5.7M
+**Post-money оценка**: $6M
 
 **Использование средств:**
-- Команда разработки (40%): $1.6M
-- Маркетинг и пользователи (30%): $1.2M
-- Инфраструктура и операции (20%): $0.8M
-- Резерв (10%): $0.4M
+- Команда разработки (60%): $180K
+- Маркетинг и пользователи (20%): $60K
+- Инфраструктура и операции (15%): $45K
+- Резерв (5%): $15K
 
 **Milestones:**
-- 100K активных пользователей
-- $1M ARR
+- 50K активных пользователей
+- $500K ARR
 - Завершение всех 26 модулей
 - Запуск мобильных приложений
 
@@ -358,17 +358,26 @@ Timeline Studio AI Stack:
 
 ### D. Команда и hiring план
 
-#### Текущая команда (3 человека)
-- **Alexander Kireyev** - Founder/CEO/CTO
-- **AI/ML Engineer** - требуется
-- **Frontend Developer** - требуется
+#### Текущая команда (1 человек)
+- **Alexander Kireyev** - Founder/CEO/CTO ($4K/месяц)
 
-#### Hiring план после Seed ($4M)
-- **Head of Product** - $150K + equity
-- **Senior AI/ML Engineers** (2) - $140K + equity
-- **Senior Frontend Developers** (2) - $120K + equity
-- **DevOps Engineer** - $130K + equity
-- **Head of Marketing** - $140K + equity
+#### Hiring план после Seed ($300K)
+
+**Первые 6 месяцев (приоритетные позиции):**
+- **Alexander Kireyev** (CTO/Lead) - $4,000/месяц ($24K за 6 мес)
+- **Senior Frontend Developer** - $4,000/месяц ($24K за 6 мес)
+- **Senior AI/ML Engineer** - $5,000/месяц ($30K за 6 мес)
+- **DevOps Engineer** - $5,000/месяц ($30K за 6 мес)
+- **UI/UX Designer** - $3,500/месяц ($21K за 6 мес)
+
+**Итого на команду за 6 месяцев:** $129K
+
+**Оставшийся бюджет на второе полугодие:** $51K (операционные расходы, инфраструктура)
+
+**Расширение после достижения milestones:**
+- **Head of Product** - $5,000/месяц
+- **Marketing Lead** - $5,000/месяц
+- **Additional Frontend Developer** - $4,000/месяц
 
 #### Advisory Board (планируется)
 - **Ex-Adobe VP Engineering** - технический советник
