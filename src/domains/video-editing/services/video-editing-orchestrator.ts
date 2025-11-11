@@ -326,7 +326,7 @@ export class VideoEditingOrchestrator {
       type: "AddTrack",
       params: {
         name: name || `${type} Track`,
-        track_type: type.toUpperCase() as any,
+        track_type: type as any, // TrackType уже в PascalCase формате
         index: null,
       },
     }

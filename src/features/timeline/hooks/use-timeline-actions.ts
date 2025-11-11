@@ -31,15 +31,15 @@ export interface UseTimelineActionsReturn {
 function getTrackTypeForMediaFile(file: MediaFile): TrackType {
   // Проверяем по типу файла
   if (file.type === "still_image") {
-    return "image"
+    return "Image"
   }
 
   if (file.type === "video") {
-    return "video"
+    return "Video"
   }
 
   if (file.type === "audio") {
-    return "audio"
+    return "Audio"
   }
 
   // Проверяем по метаданным, если они доступны
@@ -48,15 +48,15 @@ function getTrackTypeForMediaFile(file: MediaFile): TrackType {
     const hasAudio = file.probeData.streams.some((stream) => stream.codec_type === "audio")
 
     if (hasVideo) {
-      return "video"
+      return "Video"
     }
     if (hasAudio) {
-      return "audio"
+      return "Audio"
     }
   }
 
   // По умолчанию считаем видео
-  return "video"
+  return "Video"
 }
 
 export function useTimelineActions(): UseTimelineActionsReturn {
@@ -132,7 +132,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       const trackType = getTrackTypeForMedia(file)
       const targetTrackId = customTrackId || findBestTrackForMedia(file)
 
-      logger.info(`Track type: ${trackType}, Target track ID: ${targetTrackId || 'none - will create new'}`)
+      logger.info(`Track type: ${trackType}, Target track ID: ${targetTrackId || "none - will create new"}`)
 
       // Если нет подходящего трека, создаем новый
       if (!targetTrackId) {
@@ -181,7 +181,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       void addMedia(file)
 
-      void addClip(targetTrackId, file.id, startTime)
+      void addClip(targetTrackId, file, startTime)
       logger.info(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
     [

@@ -54,6 +54,17 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
     // Получаем медиа файлы из media pool в новой архитектуре
     const mediaItems = projectState?.project?.media_pool?.items || {}
 
+    // Отладочный лог для диагностики проблемы с персистентностью медиа
+    const mediaCount = Object.keys(mediaItems).length
+    if (mediaCount > 0) {
+      console.log("[MediaAdapter] Media files in pool:", {
+        count: mediaCount,
+        projectId: projectState?.project?.id,
+        projectName: projectState?.project?.metadata?.name,
+        fileIds: Object.keys(mediaItems),
+      })
+    }
+
     // Преобразуем объект MediaItem в массив MediaFile
     return Object.values(mediaItems).map((item) => {
       const mediaItem = item as MediaItem

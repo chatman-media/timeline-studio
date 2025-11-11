@@ -163,29 +163,29 @@ describe("drag-calculations утилиты", () => {
         ...overrides,
       }) as any
 
-    it("разрешает видеофайлы на video треки", () => {
+    it("разрешает видеофайлы на Video треки", () => {
       const videoFile = createMockMediaFile({ isVideo: true })
-      expect(canDropOnTrack(videoFile, "video")).toBe(true)
+      expect(canDropOnTrack(videoFile, "Video")).toBe(true)
     })
 
-    it("разрешает аудиофайлы на audio треки", () => {
+    it("разрешает аудиофайлы на Audio треки", () => {
       const audioFile = createMockMediaFile({ isAudio: true })
-      expect(canDropOnTrack(audioFile, "audio")).toBe(true)
+      expect(canDropOnTrack(audioFile, "Audio")).toBe(true)
     })
 
-    it("разрешает аудиофайлы на music треки", () => {
+    it("разрешает аудиофайлы на Music треки", () => {
       const audioFile = createMockMediaFile({ isAudio: true })
-      expect(canDropOnTrack(audioFile, "music")).toBe(true)
+      expect(canDropOnTrack(audioFile, "Music")).toBe(true)
     })
 
-    it("разрешает изображения на video треки", () => {
+    it("разрешает изображения на Video треки", () => {
       const imageFile = createMockMediaFile({ isImage: true })
-      expect(canDropOnTrack(imageFile, "video")).toBe(true)
+      expect(canDropOnTrack(imageFile, "Video")).toBe(true)
     })
 
-    it("не разрешает изображения на image треки (изображения идут на video треки)", () => {
+    it("не разрешает изображения на Image треки (изображения идут на Video треки)", () => {
       const imageFile = createMockMediaFile({ isImage: true })
-      expect(canDropOnTrack(imageFile, "image")).toBe(false)
+      expect(canDropOnTrack(imageFile, "Image")).toBe(false)
     })
 
     it("запрещает несовместимые комбинации", () => {
@@ -194,26 +194,26 @@ describe("drag-calculations утилиты", () => {
       const imageFile = createMockMediaFile({ isImage: true })
 
       // Видео не может на аудио треки
-      expect(canDropOnTrack(videoFile, "audio")).toBe(false)
-      expect(canDropOnTrack(videoFile, "music")).toBe(false)
+      expect(canDropOnTrack(videoFile, "Audio")).toBe(false)
+      expect(canDropOnTrack(videoFile, "Music")).toBe(false)
 
-      // Аудио не может на video треки
-      expect(canDropOnTrack(audioFile, "video")).toBe(false)
-      expect(canDropOnTrack(audioFile, "image")).toBe(false)
+      // Аудио не может на Video треки
+      expect(canDropOnTrack(audioFile, "Video")).toBe(false)
+      expect(canDropOnTrack(audioFile, "Image")).toBe(false)
 
       // Изображения не могут на аудио треки
-      expect(canDropOnTrack(imageFile, "audio")).toBe(false)
-      expect(canDropOnTrack(imageFile, "music")).toBe(false)
+      expect(canDropOnTrack(imageFile, "Audio")).toBe(false)
+      expect(canDropOnTrack(imageFile, "Music")).toBe(false)
     })
 
     it("обрабатывает файлы без определенного типа", () => {
       const unknownFile = createMockMediaFile() // все флаги false
 
       // Неопределенные файлы не разрешены ни на каких треках
-      expect(canDropOnTrack(unknownFile, "video")).toBe(false)
-      expect(canDropOnTrack(unknownFile, "audio")).toBe(false)
-      expect(canDropOnTrack(unknownFile, "music")).toBe(false)
-      expect(canDropOnTrack(unknownFile, "image")).toBe(false)
+      expect(canDropOnTrack(unknownFile, "Video")).toBe(false)
+      expect(canDropOnTrack(unknownFile, "Audio")).toBe(false)
+      expect(canDropOnTrack(unknownFile, "Music")).toBe(false)
+      expect(canDropOnTrack(unknownFile, "Image")).toBe(false)
     })
 
     it("обрабатывает файлы с множественными типами", () => {
@@ -222,11 +222,11 @@ describe("drag-calculations утилиты", () => {
         isAudio: true,
       })
 
-      // Файл с видео и аудио может быть на video треках
-      expect(canDropOnTrack(multiFile, "video")).toBe(true)
+      // Файл с видео и аудио может быть на Video треках
+      expect(canDropOnTrack(multiFile, "Video")).toBe(true)
       // Но также может быть на аудио треках (приоритет аудио в логике)
-      expect(canDropOnTrack(multiFile, "audio")).toBe(true)
-      expect(canDropOnTrack(multiFile, "music")).toBe(true)
+      expect(canDropOnTrack(multiFile, "Audio")).toBe(true)
+      expect(canDropOnTrack(multiFile, "Music")).toBe(true)
     })
 
     it("обрабатывает неизвестные типы треков", () => {
@@ -251,19 +251,19 @@ describe("drag-calculations утилиты", () => {
         ...overrides,
       }) as any
 
-    it("возвращает 'video' для видеофайлов", () => {
+    it("возвращает 'Video' для видеофайлов", () => {
       const videoFile = createMockMediaFile({ isVideo: true })
-      expect(getTrackTypeForMediaFile(videoFile)).toBe("video")
+      expect(getTrackTypeForMediaFile(videoFile)).toBe("Video")
     })
 
-    it("возвращает 'audio' для аудиофайлов", () => {
+    it("возвращает 'Audio' для аудиофайлов", () => {
       const audioFile = createMockMediaFile({ isAudio: true })
-      expect(getTrackTypeForMediaFile(audioFile)).toBe("audio")
+      expect(getTrackTypeForMediaFile(audioFile)).toBe("Audio")
     })
 
-    it("возвращает 'video' для изображений (изображения отображаются на video треках)", () => {
+    it("возвращает 'Video' для изображений (изображения отображаются на Video треках)", () => {
       const imageFile = createMockMediaFile({ isImage: true })
-      expect(getTrackTypeForMediaFile(imageFile)).toBe("video")
+      expect(getTrackTypeForMediaFile(imageFile)).toBe("Video")
     })
 
     it("определяет приоритет при множественных типах", () => {
@@ -272,21 +272,21 @@ describe("drag-calculations утилиты", () => {
         isVideo: true,
         isAudio: true,
       })
-      expect(getTrackTypeForMediaFile(videoAudioFile)).toBe("video")
+      expect(getTrackTypeForMediaFile(videoAudioFile)).toBe("Video")
 
       // Видео имеет приоритет над изображением
       const videoImageFile = createMockMediaFile({
         isVideo: true,
         isImage: true,
       })
-      expect(getTrackTypeForMediaFile(videoImageFile)).toBe("video")
+      expect(getTrackTypeForMediaFile(videoImageFile)).toBe("Video")
 
       // Аудио имеет приоритет над изображением
       const audioImageFile = createMockMediaFile({
         isAudio: true,
         isImage: true,
       })
-      expect(getTrackTypeForMediaFile(audioImageFile)).toBe("audio")
+      expect(getTrackTypeForMediaFile(audioImageFile)).toBe("Audio")
     })
 
     it("анализирует probeData при отсутствии флагов", () => {
@@ -296,8 +296,8 @@ describe("drag-calculations утилиты", () => {
         },
       })
 
-      // Должен вернуть video так как есть видео стрим
-      expect(getTrackTypeForMediaFile(fileWithProbeData)).toBe("video")
+      // Должен вернуть Video так как есть видео стрим
+      expect(getTrackTypeForMediaFile(fileWithProbeData)).toBe("Video")
     })
 
     it("анализирует только аудио в probeData", () => {
@@ -307,24 +307,24 @@ describe("drag-calculations утилиты", () => {
         },
       })
 
-      expect(getTrackTypeForMediaFile(fileWithAudioProbe)).toBe("audio")
+      expect(getTrackTypeForMediaFile(fileWithAudioProbe)).toBe("Audio")
     })
 
-    it("возвращает 'video' по умолчанию для неопределенных типов", () => {
+    it("возвращает 'Video' по умолчанию для неопределенных типов", () => {
       const unknownFile = createMockMediaFile()
-      expect(getTrackTypeForMediaFile(unknownFile)).toBe("video")
+      expect(getTrackTypeForMediaFile(unknownFile)).toBe("Video")
 
       const fileWithEmptyProbe = createMockMediaFile({
         probeData: { streams: [] },
       })
-      expect(getTrackTypeForMediaFile(fileWithEmptyProbe)).toBe("video")
+      expect(getTrackTypeForMediaFile(fileWithEmptyProbe)).toBe("Video")
 
       const fileWithUnknownProbe = createMockMediaFile({
         probeData: {
           streams: [{ codec_type: "subtitle" }, { codec_type: "data" }],
         },
       })
-      expect(getTrackTypeForMediaFile(fileWithUnknownProbe)).toBe("video")
+      expect(getTrackTypeForMediaFile(fileWithUnknownProbe)).toBe("Video")
     })
 
     it("обрабатывает поврежденные данные probeData", () => {
@@ -334,13 +334,13 @@ describe("drag-calculations утилиты", () => {
         },
       })
 
-      expect(getTrackTypeForMediaFile(fileWithBadProbe)).toBe("video")
+      expect(getTrackTypeForMediaFile(fileWithBadProbe)).toBe("Video")
 
       const fileWithMissingProbe = createMockMediaFile({
         probeData: {}, // отсутствует streams
       })
 
-      expect(getTrackTypeForMediaFile(fileWithMissingProbe)).toBe("video")
+      expect(getTrackTypeForMediaFile(fileWithMissingProbe)).toBe("Video")
     })
   })
 

@@ -336,7 +336,7 @@ describe("TimelineContent", () => {
       const addButton = screen.getByText("Добавить видео трек")
       fireEvent.click(addButton)
 
-      expect(mockTimelineState.addTrack).toHaveBeenCalledWith("video", "Видео трек")
+      expect(mockTimelineState.addTrack).toHaveBeenCalledWith("Video", "Видео трек")
     })
 
     it("should render tracks when they exist", () => {

@@ -179,15 +179,18 @@ describe("TopBar", () => {
       expect(mockLogger.info).toHaveBeenCalledWith("Opening modal: project-settings")
     })
 
-    it("должен создавать новый проект", () => {
+    it("должен создавать новый проект", async () => {
       render(<TopBar />)
 
       const button = screen.getByTestId("new-project-button")
       fireEvent.click(button)
 
-      expect(mockClearBrowserState).toHaveBeenCalledTimes(1)
-      expect(mockCreateNewProject).toHaveBeenCalled()
-      expect(mockCreateTimelineProject).toHaveBeenCalled()
+      // Ждем завершения асинхронных операций
+      await vi.waitFor(() => {
+        expect(mockClearBrowserState).toHaveBeenCalledTimes(1)
+        expect(mockCreateNewProject).toHaveBeenCalled()
+        expect(mockCreateTimelineProject).toHaveBeenCalled()
+      })
     })
 
     it("должен открывать проект при клике на кнопку", async () => {
@@ -322,13 +325,16 @@ describe("TopBar", () => {
       expect(mockLogger.info).toHaveBeenCalledWith("Opening modal: user-settings")
     })
 
-    it("должен логировать создание нового проекта", () => {
+    it("должен логировать создание нового проекта", async () => {
       render(<TopBar />)
 
       const button = screen.getByTestId("new-project-button")
       fireEvent.click(button)
 
-      expect(mockLogger.info).toHaveBeenCalledWith("New project created successfully")
+      // Ждем завершения асинхронных операций и проверяем финальный лог
+      await vi.waitFor(() => {
+        expect(mockLogger.info).toHaveBeenCalledWith("New project created successfully - COMPLETE")
+      })
     })
   })
 

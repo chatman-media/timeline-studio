@@ -22,6 +22,14 @@ interface BrowserToolbarWrapperProps {
   onToggleFavorites: () => void
   onZoomIn: () => void
   onZoomOut: () => void
+  // Импорт медиа
+  onImportMediaFile?: () => void
+  onImportMediaFolder?: () => void
+  isImportingMedia?: boolean
+  // Импорт музыки
+  onImportMusicFile?: () => void
+  onImportMusicFolder?: () => void
+  isImportingMusic?: boolean
 }
 
 /**
@@ -46,6 +54,13 @@ export const BrowserToolbarWrapper = memo(
     onToggleFavorites,
     onZoomIn,
     onZoomOut,
+    // Импорт
+    onImportMediaFile,
+    onImportMediaFolder,
+    isImportingMedia,
+    onImportMusicFile,
+    onImportMusicFolder,
+    isImportingMusic,
   }: BrowserToolbarWrapperProps) => {
     // Получаем конфигурацию тулбара для текущей вкладки
     const toolbarConfig = getToolbarConfigForContent(
@@ -67,6 +82,13 @@ export const BrowserToolbarWrapper = memo(
 
     const canZoomIn = previewSizeIndex < PREVIEW_SIZES.length - 1
     const canZoomOut = previewSizeIndex > 0
+
+    // Определяем обработчики импорта в зависимости от активной вкладки
+    const onImportFile =
+      activeTab === "media" ? onImportMediaFile : activeTab === "music" ? onImportMusicFile : undefined
+    const onImportFolder =
+      activeTab === "media" ? onImportMediaFolder : activeTab === "music" ? onImportMusicFolder : undefined
+    const isImporting = activeTab === "media" ? isImportingMedia : activeTab === "music" ? isImportingMusic : false
 
     return (
       <MediaToolbar
@@ -96,10 +118,10 @@ export const BrowserToolbarWrapper = memo(
         onChangeViewMode={onViewModeChange}
         onChangeGroupBy={onGroupBy}
         onToggleFavorites={onToggleFavorites}
-        // Импорт (пока отключен, так как адаптеры загружаются лениво)
-        onImportFile={undefined}
-        onImportFolder={undefined}
-        isImporting={false}
+        // Импорт
+        onImportFile={onImportFile}
+        onImportFolder={onImportFolder}
+        isImporting={isImporting}
         // Зум
         onZoomIn={onZoomIn}
         onZoomOut={onZoomOut}

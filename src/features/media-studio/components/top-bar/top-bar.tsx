@@ -116,19 +116,25 @@ const TopBarComponent = function TopBar() {
     }
   }, [openProject, clearBrowserState])
 
-  const handleCreateNewProject = useCallback(() => {
+  const handleCreateNewProject = useCallback(async () => {
     try {
       // Создаем новый проект с настройками по умолчанию
       const projectName = "Untitled Project"
 
+      logger.info("Creating new project - BEFORE clearBrowserState", { projectName })
+
       // ВАЖНО: Сначала очищаем browser state
       clearBrowserState()
 
+      logger.info("Creating new project - AFTER clearBrowserState, BEFORE createNewProject")
+
       // Создаем проект в app-settings (для управления состоянием приложения)
-      void createNewProject(projectName)
+      await createNewProject(projectName)
+
+      logger.info("Creating new project - AFTER createNewProject, BEFORE createTimelineProject")
 
       // Создаем timeline проект с теми же настройками
-      void createTimelineProject(projectName, {
+      await createTimelineProject(projectName, {
         resolution: { width: 1920, height: 1080 },
         fps: 30,
         aspectRatio: "16:9",
@@ -142,7 +148,7 @@ const TopBarComponent = function TopBar() {
         autoSaveInterval: 300,
       })
 
-      logger.info("New project created successfully")
+      logger.info("New project created successfully - COMPLETE")
     } catch (error) {
       logger.error("Error creating new project", { error, context: "handleCreateNewProject" })
     }

@@ -1,6 +1,8 @@
 import { memo, useCallback } from "react"
 
 import { useBrowserState } from "@/domains/browser"
+import { useMusicImport } from "@/features/browser/hooks/use-music-import"
+import { useMediaImport } from "@/features/media/hooks/use-media-import"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
@@ -48,6 +50,12 @@ export const BrowserContent = memo(() => {
     sort_order: sortOrder,
     preview_size_index: previewSizeIndex,
   } = currentTabSettings
+
+  // Импорт медиа
+  const { importMediaFiles, importMediaFolder, isImporting: isImportingMedia } = useMediaImport()
+
+  // Импорт музыки
+  const { importMusicFiles, importMusicFolder, isImporting: isImportingMusic } = useMusicImport()
 
   // Используем useCallback для стабильных ссылок на функции
   const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])
@@ -97,6 +105,14 @@ export const BrowserContent = memo(() => {
         onToggleFavorites={handleToggleFavorites}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
+        // Импорт медиа
+        onImportMediaFile={activeTab === "media" ? importMediaFiles : undefined}
+        onImportMediaFolder={activeTab === "media" ? importMediaFolder : undefined}
+        isImportingMedia={activeTab === "media" ? isImportingMedia : false}
+        // Импорт музыки
+        onImportMusicFile={activeTab === "music" ? importMusicFiles : undefined}
+        onImportMusicFolder={activeTab === "music" ? importMusicFolder : undefined}
+        isImportingMusic={activeTab === "music" ? isImportingMusic : false}
       />
 
       {/* Контент только для активной вкладки */}
