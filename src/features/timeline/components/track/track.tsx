@@ -60,15 +60,17 @@ export function Track({
   }
 
   return (
-    <button
+    // biome-ignore lint/a11y/useSemanticElements: Using div instead of button because TrackHeader contains nested interactive elements (buttons). A button cannot contain other buttons per HTML spec.
+    <div
       data-testid="timeline-track"
-      type="button"
+      role="button"
+      tabIndex={0}
       className={cn(
         "flex border-b border-border bg-background track relative",
-        "hover:bg-accent/5 transition-colors",
+        "hover:bg-accent/5 transition-colors cursor-pointer",
         isSelected && "bg-accent/10 border-accent",
         track.isHidden && "opacity-50",
-        "w-full text-left p-0",
+        "w-full p-0",
         className,
       )}
       style={{ height: track.height, ...style }}
@@ -94,6 +96,6 @@ export function Track({
       {onHeightChange && (
         <TrackHeightAdjuster trackId={track.id} currentHeight={track.height} onHeightChange={onHeightChange} />
       )}
-    </button>
+    </div>
   )
 }
