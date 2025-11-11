@@ -1,3 +1,10 @@
+## [2.11.5](https://github.com/chatman-media/timeline-studio/compare/v2.11.4...v2.11.5) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить race condition при создании треков ([a8e0e12](https://github.com/chatman-media/timeline-studio/commit/a8e0e12241950b8401c605341fba30647dd307d7))
+
 ## [2.11.4](https://github.com/chatman-media/timeline-studio/compare/v2.11.3...v2.11.4) (2025-11-11)
 
 
