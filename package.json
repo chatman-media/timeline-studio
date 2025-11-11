@@ -180,7 +180,7 @@
     "jsdom": "27.1.0",
     "lightningcss": "^1.30.2",
     "md-to-pdf": "^5.2.4",
-    "semantic-release": "^24.2.9",
+    "semantic-release": "^25.0.2",
     "stylelint": "^16.25.0",
     "stylelint-config-standard": "39.0.1",
     "stylelint-config-tailwindcss": "^1.0.0",
