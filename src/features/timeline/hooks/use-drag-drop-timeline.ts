@@ -278,7 +278,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
             // For now, we'll add it to the first compatible track
             // This needs to be improved with proper track creation callback
             setTimeout(() => {
-              addSingleMediaToTimeline(dragData.mediaFile, undefined, 0)
+              void addSingleMediaToTimeline(dragData.mediaFile, undefined, 0)
             }, 100)
 
             dropSuccess = true
@@ -329,7 +329,7 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
               })
 
               // Use enhanced timeline action with custom positioning
-              addSingleMediaToTimeline(
+              void addSingleMediaToTimeline(
                 dragData.mediaFile,
                 dragState.dropPosition.trackId,
                 dragState.dropPosition.startTime,

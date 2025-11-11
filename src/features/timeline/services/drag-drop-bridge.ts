@@ -71,8 +71,8 @@ export function isInterModuleDrag(event: DragEndEvent): boolean {
 export function handleInterModuleDrag(
   event: DragEndEvent,
   timelineActions?: {
-    addSingleMediaToTimeline: (file: any, trackId?: string, startTime?: number) => void
-    addMediaToTimeline?: (files: any[]) => void
+    addSingleMediaToTimeline: (file: any, trackId?: string, startTime?: number) => Promise<void>
+    addMediaToTimeline?: (files: any[]) => Promise<void>
   },
   dragState?: { dropPosition?: { startTime?: number } },
 ): boolean {
@@ -118,14 +118,14 @@ export function handleInterModuleDrag(
       if (isMultiSelectDrag && timelineActions.addMediaToTimeline) {
         // Multi-select drag & drop - добавляем все выбранные файлы
         logger.info("[DragDropBridge] Multi-select drag detected:", dragItem.selectedFiles.length)
-        timelineActions.addMediaToTimeline(dragItem.selectedFiles)
+        void timelineActions.addMediaToTimeline(dragItem.selectedFiles)
         logger.info(
           "[DragDropBridge] Successfully added multiple media via Timeline actions:",
           dragItem.selectedFiles.length,
         )
       } else {
         // Single file drag & drop
-        timelineActions.addSingleMediaToTimeline(dragData.data, targetTrackId, startTime)
+        void timelineActions.addSingleMediaToTimeline(dragData.data, targetTrackId, startTime)
         logger.info(
           "[DragDropBridge] Successfully added media via Timeline actions:",
           dragData.data.name || "media file",

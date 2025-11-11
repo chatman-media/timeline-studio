@@ -16,8 +16,8 @@ const logger = createLogger("UseTimelineActions")
 
 export interface UseTimelineActionsReturn {
   // Добавление медиафайлов
-  addMediaToTimeline: (files: MediaFile[]) => void
-  addSingleMediaToTimeline: (file: MediaFile, targetTrackId?: string, startTime?: number) => void
+  addMediaToTimeline: (files: MediaFile[]) => Promise<void>
+  addSingleMediaToTimeline: (file: MediaFile, targetTrackId?: string, startTime?: number) => Promise<void>
 
   // Утилиты
   getTrackTypeForMedia: (file: MediaFile) => TrackType
@@ -114,19 +114,17 @@ export function useTimelineActions(): UseTimelineActionsReturn {
   // ============================================================================
 
   const addSingleMediaToTimeline = useCallback(
-    (file: MediaFile, customTrackId?: string, customStartTime?: number) => {
+    async (file: MediaFile, customTrackId?: string, customStartTime?: number) => {
       logger.info(`Adding media file to timeline: ${file.name} (type: ${file.type})`)
 
       // Если нет проекта, создаем новый
       if (!project) {
         logger.info("No timeline project found, creating new project...")
-        void createProject("Untitled Project")
+        await createProject("Untitled Project")
 
-        // Откладываем добавление медиафайла до создания проекта
-        setTimeout(() => {
-          addSingleMediaToTimeline(file, customTrackId, customStartTime)
-        }, 100)
-        return
+        // Ожидаем небольшую задержку для обновления состояния
+        await new Promise((resolve) => setTimeout(resolve, 100))
+        return addSingleMediaToTimeline(file, customTrackId, customStartTime)
       }
 
       const trackType = getTrackTypeForMedia(file)
@@ -140,38 +138,29 @@ export function useTimelineActions(): UseTimelineActionsReturn {
 
         logger.info(`Creating new ${trackType} track for file: ${file.name}`)
 
-        // Создаем трек
-        void addTrack(trackType, trackName, undefined)
+        try {
+          // Ожидаем создание трека
+          await addTrack(trackType, trackName, undefined)
 
-        // Для синхронной обработки используем рекурсивный вызов с задержкой
-        // Это позволит state machine обработать создание трека
-        let retryCount = 0
-        const maxRetries = 20 // Увеличиваем количество попыток
-        const retryDelay = 150 // Увеличиваем задержку для надёжности
-
-        const checkForTrack = () => {
-          retryCount++
+          // Ожидаем небольшую задержку для обновления состояния
+          await new Promise((resolve) => setTimeout(resolve, 150))
 
           // Пытаемся найти созданный трек
           const newTargetTrackId = findBestTrackForMedia(file)
 
-          if (newTargetTrackId) {
-            // Рекурсивно вызываем функцию с найденным треком
-            logger.info(`Track created successfully after ${retryCount} attempts for file: ${file.name}`)
-            addSingleMediaToTimeline(file, newTargetTrackId, customStartTime)
-          } else if (retryCount < maxRetries) {
-            // Пробуем еще раз
-            setTimeout(checkForTrack, retryDelay)
-          } else {
+          if (!newTargetTrackId) {
             logger.error(
-              `Failed to create ${trackType} track for media file: ${file.name} after ${maxRetries} attempts. Please try again or create track manually.`,
+              `Track was created but not found in state for media file: ${file.name}. Please try again or create track manually.`,
             )
+            return
           }
-        }
 
-        // Начинаем проверку с увеличенной начальной задержкой
-        setTimeout(checkForTrack, retryDelay * 2)
-        return
+          logger.info(`Track created successfully for file: ${file.name}`)
+          return addSingleMediaToTimeline(file, newTargetTrackId, customStartTime)
+        } catch (error) {
+          logger.error(`Failed to create ${trackType} track for media file: ${file.name}`, { error })
+          return
+        }
       }
 
       // Если трек уже существует, добавляем клип сразу
@@ -179,9 +168,9 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       const duration = file.duration || (file.type === "still_image" ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
 
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
-      void addMedia(file)
+      await addMedia(file)
 
-      void addClip(targetTrackId, file, startTime)
+      await addClip(targetTrackId, file, startTime)
       logger.info(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
     [
@@ -197,20 +186,19 @@ export function useTimelineActions(): UseTimelineActionsReturn {
   )
 
   const addMediaToTimeline = useCallback(
-    (files: MediaFile[]) => {
+    async (files: MediaFile[]) => {
       if (!files || files.length === 0) {
         return
       }
 
       logger.info(`Adding ${files.length} files to timeline`)
 
-      // Добавляем файлы по одному
-      files.forEach((file, index) => {
+      // Добавляем файлы последовательно, ожидая завершения каждого
+      for (const file of files) {
+        await addSingleMediaToTimeline(file)
         // Небольшая задержка между добавлениями для лучшего UX
-        setTimeout(() => {
-          addSingleMediaToTimeline(file)
-        }, index * 50)
-      })
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      }
     },
     [addSingleMediaToTimeline],
   )
