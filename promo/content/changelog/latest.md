@@ -1,3 +1,10 @@
+## [2.11.3](https://github.com/chatman-media/timeline-studio/compare/v2.11.2...v2.11.3) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить ошибку создания видео треков при добавлении медиафайлов ([017a622](https://github.com/chatman-media/timeline-studio/commit/017a622665d5788b6ff7738f29676c8a400f58e3))
+
 ## [2.11.2](https://github.com/chatman-media/timeline-studio/compare/v2.11.1...v2.11.2) (2025-11-10)
 
 
