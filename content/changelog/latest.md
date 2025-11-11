@@ -1,3 +1,24 @@
+## [2.11.5](https://github.com/chatman-media/timeline-studio/compare/v2.11.4...v2.11.5) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить race condition при создании треков ([a8e0e12](https://github.com/chatman-media/timeline-studio/commit/a8e0e12241950b8401c605341fba30647dd307d7))
+
+## [2.11.4](https://github.com/chatman-media/timeline-studio/compare/v2.11.3...v2.11.4) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить предупреждения Biome о доступности в компонентах треков ([3d6e9c3](https://github.com/chatman-media/timeline-studio/commit/3d6e9c3ecbaf3cd4c3acdd87163f3c8b5f13f514))
+
+## [2.11.3](https://github.com/chatman-media/timeline-studio/compare/v2.11.2...v2.11.3) (2025-11-11)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить ошибку создания видео треков при добавлении медиафайлов ([017a622](https://github.com/chatman-media/timeline-studio/commit/017a622665d5788b6ff7738f29676c8a400f58e3))
+
 ## [2.11.2](https://github.com/chatman-media/timeline-studio/compare/v2.11.1...v2.11.2) (2025-11-10)
 
 
