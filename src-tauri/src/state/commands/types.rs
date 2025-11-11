@@ -82,6 +82,23 @@ pub enum ProjectCommand {
     updates: MediaUpdates,
   },
 
+  // Imported media commands (temporary storage before adding to media_pool)
+  AddImportedMedia {
+    path: String,
+    media_type: MediaType,
+  },
+  UpdateImportedMedia {
+    media_id: String,
+    updates: serde_json::Value,
+  },
+  RemoveImportedMedia {
+    media_id: String,
+  },
+  MoveToMediaPool {
+    media_id: String,
+  },
+  ClearImportedMedia,
+
   // Media Management commands
   ImportMediaFiles {
     paths: Vec<String>,

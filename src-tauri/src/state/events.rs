@@ -86,6 +86,18 @@ pub enum ProjectEvent {
     file_paths: Vec<String>,
   },
 
+  // Imported media events (temporary storage)
+  ImportedMediaAdded {
+    media: MediaData,
+  },
+  ImportedMediaRemoved {
+    media_id: String,
+  },
+  ImportedMediaUpdated {
+    media_id: String,
+  },
+  ImportedMediaCleared,
+
   // Playback events
   PlaybackStarted {
     time: f64,
@@ -180,6 +192,50 @@ pub enum ProjectEvent {
   AutoSaveConfigChanged {
     enabled: bool,
     interval_seconds: u32,
+  },
+
+  // Resource pool events
+  EffectAdded {
+    effect_id: String,
+    name: String,
+  },
+  EffectRemoved {
+    effect_id: String,
+  },
+  FilterAdded {
+    filter_id: String,
+    name: String,
+  },
+  FilterRemoved {
+    filter_id: String,
+  },
+  TransitionAdded {
+    transition_id: String,
+    name: String,
+  },
+  TransitionRemoved {
+    transition_id: String,
+  },
+  TemplateAdded {
+    template_id: String,
+    name: String,
+  },
+  TemplateRemoved {
+    template_id: String,
+  },
+  StyleTemplateAdded {
+    template_id: String,
+    name: String,
+  },
+  StyleTemplateRemoved {
+    template_id: String,
+  },
+  SubtitleAdded {
+    subtitle_id: String,
+    name: String,
+  },
+  SubtitleRemoved {
+    subtitle_id: String,
   },
 
   // Browser events

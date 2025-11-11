@@ -1,16 +1,38 @@
 import { useCallback, useState } from "react"
 
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { selectMediaDirectory, selectMediaFile } from "@/features/media"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/use-media-processor"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import { convertToSavedMediaFile } from "@/features/media/utils/saved-media-utils"
-import { useResources } from "@/features/resources/services/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
+import type { MediaType as RustMediaType } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("MediaImport")
+
+/**
+ * Конвертирует локальный MediaType в Rust MediaType
+ */
+function convertToRustMediaType(localType: MediaType): RustMediaType {
+  switch (localType) {
+    case MediaType.Video:
+    case MediaType.VideoWithAudio:
+      return "Video"
+    case MediaType.Audio:
+    case MediaType.Music:
+    case MediaType.Voiceover:
+    case MediaType.SFX:
+    case MediaType.Ambient:
+      return "Audio"
+    case MediaType.StillImage:
+      return "Image"
+    default:
+      return "Video"
+  }
+}
 
 /**
  * Интерфейс для результата импорта
@@ -27,7 +49,7 @@ interface ImportResult {
  */
 export function useMediaImport() {
   const { currentProject, setProjectDirty } = useCurrentProject()
-  const { addMedia } = useResources()
+  const backendSync = getBackendSync()
   const [isImporting, setIsImporting] = useState(false)
   const [progress, setProgress] = useState(0)
 
@@ -90,19 +112,27 @@ export function useMediaImport() {
 
         const basicFiles = discoveredFiles.map((file) => createBasicMediaFile(file.path, file.size))
 
-        // Добавляем файлы в ресурсы для синхронизации с проектом (Resources - единственный источник истины)
+        // Добавляем файлы во временное хранилище imported_media (НЕ в Resources!)
         basicFiles.forEach((file) => {
-          logger.debugSync(`Добавляем базовый файл: ${file.name}`, {
+          logger.debugSync(`Добавляем импортированный файл: ${file.name}`, {
             id: file.id,
             type: file.isVideo ? "video" : file.isAudio ? "audio" : "image",
           })
-          void addMedia(file)
+
+          const rustMediaType = convertToRustMediaType(file.type)
+          void backendSync.executeCommand({
+            type: "AddImportedMedia",
+            params: {
+              path: file.path,
+              media_type: rustMediaType,
+            },
+          })
         })
       },
-      [addMedia],
+      [backendSync],
     ),
 
-    // Когда готовы метаданные - обновляем конкретный файл
+    // Когда готовы метаданные - обновляем конкретный файл в imported_media
     onMetadataReady: useCallback(
       (fileId: string, metadata: MediaFile) => {
         logger.infoSync(`Метаданные готовы для: ${metadata.name}`, {
@@ -114,18 +144,22 @@ export function useMediaImport() {
           hasProbeData: !!metadata.probeData,
         })
 
-        // Обновляем существующий файл, сохраняя его id
-        const updatedFile: MediaFile = {
-          ...metadata,
-          id: fileId,
-          isLoadingMetadata: false,
-        }
+        logger.debugSync(`Обновляем импортированный файл с метаданными: ${metadata.name}`)
 
-        logger.debugSync(`Обновляем файл с метаданными: ${metadata.name}`)
-        // Обновляем файл в ресурсах для синхронизации с проектом (Resources - единственный источник истины)
-        void addMedia(updatedFile)
+        // Обновляем файл во временном хранилище imported_media
+        void backendSync.executeCommand({
+          type: "UpdateImportedMedia",
+          params: {
+            media_id: fileId,
+            updates: {
+              duration: metadata.duration,
+              thumbnail: metadata.thumbnailPath,
+              metadata: metadata.probeData,
+            },
+          },
+        })
       },
-      [addMedia],
+      [backendSync],
     ),
 
     // Когда готово превью - обновляем путь и генерируем через Preview Manager
@@ -229,32 +263,22 @@ export function useMediaImport() {
       // Сохраняем финальные файлы для возврата
       let finalFiles: MediaFile[]
 
-      // Если получили обработанные файлы, добавляем их в ресурсы
+      // Файлы уже добавлены в imported_media через onFilesDiscovered и onMetadataReady
+      // НЕ добавляем их в Resources - пользователь сделает это через зеленую галочку
       if (processedFiles.length > 0) {
         logger.debugSync("Финализация обработанных файлов", { count: processedFiles.length })
-        // Устанавливаем isLoadingMetadata: false для финализации
         const filesWithMetadata = processedFiles.map((file) => ({
           ...file,
           isLoadingMetadata: false,
         }))
 
-        // Добавляем обработанные файлы в ресурсы (Resources - единственный источник истины)
-        // ВАЖНО: Добавляем ТОЛЬКО ОДИН РАЗ, после полной обработки с метаданными
-        logger.debugSync("Добавляем файлы в ресурсы", { count: filesWithMetadata.length })
-        filesWithMetadata.forEach((file) => {
-          void addMedia(file)
-        })
-
         // Сохраняем обработанные файлы в проект
         await saveFilesToProject(filesWithMetadata)
         finalFiles = filesWithMetadata
       } else {
-        logger.warnSync("Обработка не удалась, создаем базовые файлы")
-        // Если обработка не удалась, создаем базовые файлы и сохраняем их
+        logger.warnSync("Обработка не удалась, используем базовые файлы")
+        // Файлы уже добавлены в imported_media через onFilesDiscovered
         const basicFiles = selectedFiles.map((filePath) => createBasicMediaFile(filePath))
-        basicFiles.forEach((file) => {
-          void addMedia(file)
-        })
         await saveFilesToProject(basicFiles)
         finalFiles = basicFiles
       }
@@ -276,7 +300,7 @@ export function useMediaImport() {
         files: [],
       }
     }
-  }, [processFiles, saveFilesToProject, addMedia])
+  }, [processFiles, saveFilesToProject])
 
   /**
    * Импортирует папку с медиафайлами
@@ -319,11 +343,9 @@ export function useMediaImport() {
             isLoadingMetadata: false,
           }))
 
-          logger.debugSync("Добавляем файлы из папки в ресурсы", { count: filesWithMetadata.length })
-          // Добавляем файлы в ресурсы (Resources - единственный источник истины)
-          filesWithMetadata.forEach((file) => {
-            void addMedia(file)
-          })
+          // Файлы уже добавлены в imported_media через onFilesDiscovered и onMetadataReady
+          // НЕ добавляем их в Resources - пользователь сделает это через зеленую галочку
+          logger.debugSync("Файлы из папки в imported_media", { count: filesWithMetadata.length })
 
           // Сохраняем финальный список файлов в проект
           void saveFilesToProject(filesWithMetadata)
@@ -347,7 +369,7 @@ export function useMediaImport() {
         files: [],
       }
     }
-  }, [scanFolderWithThumbnails, saveFilesToProject, addMedia])
+  }, [scanFolderWithThumbnails, saveFilesToProject])
 
   return {
     importFile,

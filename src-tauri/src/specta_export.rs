@@ -19,8 +19,10 @@ pub use crate::state::events::{
 };
 #[allow(unused_imports)]
 pub use crate::state::project_state::{
-  Clip, Marker, MarkerType, MediaItem, MediaMetadata, MediaPool, MediaType, PlaybackState, Project,
-  ProjectMetadata, ProjectSettings, Resolution, Timeline, Track, TrackType, Transition, UiState,
+  Clip, EffectResource, FilterResource, Marker, MarkerType, MediaItem, MediaMetadata, MediaPool,
+  MediaType, PlaybackState, Project, ProjectMetadata, ProjectSettings, Resolution,
+  StyleTemplateResource, SubtitleResource, TemplateResource, Timeline, Track, TrackType,
+  Transition, TransitionResource, UiState,
 };
 #[allow(unused_imports)]
 pub use crate::state::{

@@ -51,16 +51,15 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
   const { importFile, importFolder, isImporting } = useMediaImport()
 
   const allMediaFiles = useMemo(() => {
-    // Получаем медиа файлы из media pool в новой архитектуре
-    const mediaItems = projectState?.project?.media_pool?.items || {}
+    // ВАЖНО: Читаем из imported_media вместо media_pool
+    // imported_media содержит временно импортированные файлы до добавления в Resources
+    const mediaItems = projectState?.imported_media || {}
 
-    // Отладочный лог для диагностики проблемы с персистентностью медиа
+    // Отладочный лог
     const mediaCount = Object.keys(mediaItems).length
     if (mediaCount > 0) {
-      console.log("[MediaAdapter] Media files in pool:", {
+      console.log("[MediaAdapter] Imported media files:", {
         count: mediaCount,
-        projectId: projectState?.project?.id,
-        projectName: projectState?.project?.metadata?.name,
         fileIds: Object.keys(mediaItems),
       })
     }
@@ -107,7 +106,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
             : undefined),
       }
     })
-  }, [projectState?.project?.media_pool?.items])
+  }, [projectState?.imported_media])
 
   // V2 не использует общий loading состояние, используем состояние импорта
   const mediaLoading = isImporting

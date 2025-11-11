@@ -656,13 +656,84 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         })
     : []
 
-  // Остальные ресурсы пока пустые (будут добавлены позже)
-  const subtitleResources: SubtitleResource[] = []
-  const effectResources: EffectResource[] = []
-  const filterResources: FilterResource[] = []
-  const transitionResources: TransitionResource[] = []
-  const templateResources: TemplateResource[] = []
-  const styleTemplateResources: StyleTemplateResource[] = []
+  // Extract resources from backend state
+  const effectsPool = backendState?.project?.effects_pool ?? {}
+  const effectResources: EffectResource[] = Object.values(effectsPool).map((item: any) => ({
+    id: item.id,
+    type: "effect" as const,
+    name: item.name,
+    resourceId: item.effect_id,
+    addedAt: item.added_at * 1000, // Convert to milliseconds
+    effect: {
+      id: item.effect_id,
+      name: item.name,
+      parameters: item.parameters,
+    },
+    params: item.parameters,
+  }))
+
+  const filtersPool = backendState?.project?.filters_pool ?? {}
+  const filterResources: FilterResource[] = Object.values(filtersPool).map((item: any) => ({
+    id: item.id,
+    type: "filter" as const,
+    name: item.name,
+    resourceId: item.filter_id,
+    addedAt: item.added_at * 1000,
+    filter: {
+      id: item.filter_id,
+      name: item.name,
+      params: item.parameters,
+    },
+    params: item.parameters,
+  }))
+
+  const transitionsPool = backendState?.project?.transitions_pool ?? {}
+  const transitionResources: TransitionResource[] = Object.values(transitionsPool).map((item: any) => ({
+    id: item.id,
+    type: "transition" as const,
+    name: item.name,
+    resourceId: item.transition_id,
+    addedAt: item.added_at * 1000,
+    transition: {
+      id: item.transition_id,
+      labels: { ru: item.name, en: item.name },
+      parameters: item.parameters,
+    },
+    params: item.parameters,
+  }))
+
+  const templatesPool = backendState?.project?.templates_pool ?? {}
+  const templateResources: TemplateResource[] = Object.values(templatesPool).map((item: any) => ({
+    id: item.id,
+    type: "template" as const,
+    name: item.name,
+    resourceId: item.template_id,
+    addedAt: item.added_at * 1000,
+    template: item.data, // Store full template data
+    params: {},
+  }))
+
+  const styleTemplatesPool = backendState?.project?.style_templates_pool ?? {}
+  const styleTemplateResources: StyleTemplateResource[] = Object.values(styleTemplatesPool).map((item: any) => ({
+    id: item.id,
+    type: "styleTemplate" as const,
+    name: item.name,
+    resourceId: item.template_id,
+    addedAt: item.added_at * 1000,
+    template: item.data, // Store full template data
+    params: {},
+  }))
+
+  const subtitlesPool = backendState?.project?.subtitles_pool ?? {}
+  const subtitleResources: SubtitleResource[] = Object.values(subtitlesPool).map((item: any) => ({
+    id: item.id,
+    type: "subtitle" as const,
+    name: item.name,
+    resourceId: item.style_id,
+    addedAt: item.added_at * 1000,
+    style: item.data, // Store full subtitle style data
+    params: {},
+  }))
 
   const resources: TimelineResource[] = [
     ...mediaResources,

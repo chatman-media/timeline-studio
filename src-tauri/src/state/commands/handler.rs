@@ -15,8 +15,10 @@ use super::types::*;
 // Import modular command handlers
 use super::advanced_edits::AdvancedEditsCommands;
 use super::effects::EffectsCommands;
+use super::imported_media::ImportedMediaCommands;
 use super::media::MediaCommands;
 use super::project::ProjectCommands;
+use super::resources::ResourceCommands;
 use super::timeline::TimelineCommands;
 use super::tracks::TracksCommands;
 use super::transitions::TransitionsCommands;
@@ -27,12 +29,14 @@ pub struct CommandHandler {
   persistence: Arc<PersistenceService>,
   // Modular command handlers
   media_commands: MediaCommands,
+  imported_media_commands: ImportedMediaCommands,
   timeline_commands: TimelineCommands,
   tracks_commands: TracksCommands,
   effects_commands: EffectsCommands,
   transitions_commands: TransitionsCommands,
   advanced_edits_commands: AdvancedEditsCommands,
   project_commands: ProjectCommands,
+  resource_commands: ResourceCommands,
 }
 
 #[allow(dead_code)]
@@ -44,6 +48,7 @@ impl CommandHandler {
   ) -> Self {
     // Initialize modular command handlers
     let media_commands = MediaCommands::new(state.clone(), event_bus.clone());
+    let imported_media_commands = ImportedMediaCommands::new(state.clone(), event_bus.clone());
     let timeline_commands = TimelineCommands::new(state.clone(), event_bus.clone());
     let tracks_commands = TracksCommands::new(state.clone(), event_bus.clone());
     let effects_commands = EffectsCommands::new(state.clone(), event_bus.clone());
@@ -51,18 +56,21 @@ impl CommandHandler {
     let advanced_edits_commands = AdvancedEditsCommands::new(state.clone(), event_bus.clone());
     let project_commands =
       ProjectCommands::new(state.clone(), event_bus.clone(), persistence.clone());
+    let resource_commands = ResourceCommands::new(state.clone(), event_bus.clone());
 
     Self {
       state,
       event_bus,
       persistence,
       media_commands,
+      imported_media_commands,
       timeline_commands,
       tracks_commands,
       effects_commands,
       transitions_commands,
       advanced_edits_commands,
       project_commands,
+      resource_commands,
     }
   }
 
@@ -160,6 +168,35 @@ impl CommandHandler {
       ProjectCommand::RemoveMedia { media_id } => self.media_commands.remove_media(media_id).await,
       ProjectCommand::UpdateMedia { media_id, updates } => {
         self.media_commands.update_media(media_id, updates).await
+      }
+
+      // Imported media commands - delegated to ImportedMediaCommands
+      ProjectCommand::AddImportedMedia { path, media_type } => {
+        self
+          .imported_media_commands
+          .add_imported_media(path, media_type)
+          .await
+      }
+      ProjectCommand::UpdateImportedMedia { media_id, updates } => {
+        self
+          .imported_media_commands
+          .update_imported_media(media_id, updates)
+          .await
+      }
+      ProjectCommand::RemoveImportedMedia { media_id } => {
+        self
+          .imported_media_commands
+          .remove_imported_media(media_id)
+          .await
+      }
+      ProjectCommand::MoveToMediaPool { media_id } => {
+        self
+          .imported_media_commands
+          .move_to_media_pool(media_id)
+          .await
+      }
+      ProjectCommand::ClearImportedMedia => {
+        self.imported_media_commands.clear_imported_media().await
       }
 
       // Media Management commands
@@ -2681,7 +2718,7 @@ impl CommandHandler {
     &self,
     resource_id: String,
     resource_type: String,
-    _data: serde_json::Value,
+    data: serde_json::Value,
     _metadata: HashMap<String, serde_json::Value>,
   ) -> CommandResult {
     log::info!(
@@ -2690,12 +2727,46 @@ impl CommandHandler {
       resource_type
     );
 
-    CommandResult::success(Some(serde_json::json!({
-      "saved": true,
-      "resource_id": resource_id,
-      "type": resource_type,
-      "timestamp": chrono::Utc::now()
-    })))
+    // Delegate to appropriate ResourceCommands method based on resource_type
+    match resource_type.as_str() {
+      "effect" => {
+        self
+          .resource_commands
+          .add_effect(resource_id, resource_type, data)
+          .await
+      }
+      "filter" => {
+        self
+          .resource_commands
+          .add_filter(resource_id, resource_type, data)
+          .await
+      }
+      "transition" => {
+        self
+          .resource_commands
+          .add_transition(resource_id, resource_type, data)
+          .await
+      }
+      "template" => {
+        self
+          .resource_commands
+          .add_template(resource_id, resource_type, data)
+          .await
+      }
+      "styleTemplate" => {
+        self
+          .resource_commands
+          .add_style_template(resource_id, resource_type, data)
+          .await
+      }
+      "subtitle" => {
+        self
+          .resource_commands
+          .add_subtitle(resource_id, resource_type, data)
+          .await
+      }
+      _ => CommandResult::error(format!("Unknown resource type: {}", resource_type)),
+    }
   }
 
   async fn delete_resource(&self, resource_id: String, resource_type: String) -> CommandResult {
@@ -2705,12 +2776,11 @@ impl CommandHandler {
       resource_type
     );
 
-    CommandResult::success(Some(serde_json::json!({
-      "deleted": true,
-      "resource_id": resource_id,
-      "type": resource_type,
-      "timestamp": chrono::Utc::now()
-    })))
+    // Delegate to ResourceCommands
+    self
+      .resource_commands
+      .remove_resource(resource_id, resource_type)
+      .await
   }
 
   async fn preload_category(&self, resource_type: String, category: String) -> CommandResult {

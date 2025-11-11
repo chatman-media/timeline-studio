@@ -229,8 +229,8 @@ pub async fn analyze_mood(
     primary: content_mood.mood.clone(),
     secondary: Vec::new(),
     valence: 0.0,
-    arousal: content_mood.energy_level as f64,
-    dominance: content_mood.emotional_intensity as f64,
+    arousal: content_mood.energy_level,
+    dominance: content_mood.emotional_intensity,
     emotional_arc: Vec::new(),
   };
 
@@ -309,8 +309,8 @@ pub async fn analyze_content_comprehensive(
     primary: content_mood.mood.clone(),
     secondary: Vec::new(),
     valence: 0.0,
-    arousal: content_mood.energy_level as f64,
-    dominance: content_mood.emotional_intensity as f64,
+    arousal: content_mood.energy_level,
+    dominance: content_mood.emotional_intensity,
     emotional_arc: Vec::new(),
   };
 

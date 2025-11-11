@@ -22,6 +22,8 @@ pub struct ProjectState {
   pub browser_state: BrowserState,
   /// Clipboard for copy/paste operations
   pub clipboard: Option<ClipboardData>,
+  /// Imported media files (temporary storage before adding to media_pool)
+  pub imported_media: HashMap<String, MediaItem>,
 }
 
 /// Main project structure
@@ -32,6 +34,13 @@ pub struct Project {
   pub timeline: Timeline,
   pub media_pool: MediaPool,
   pub settings: ProjectSettings,
+  // Resource pools
+  pub effects_pool: HashMap<String, EffectResource>,
+  pub filters_pool: HashMap<String, FilterResource>,
+  pub transitions_pool: HashMap<String, TransitionResource>,
+  pub templates_pool: HashMap<String, TemplateResource>,
+  pub style_templates_pool: HashMap<String, StyleTemplateResource>,
+  pub subtitles_pool: HashMap<String, SubtitleResource>,
 }
 
 /// Project metadata
@@ -167,6 +176,67 @@ pub enum MarkerType {
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct MediaPool {
   pub items: HashMap<String, MediaItem>,
+}
+
+/// Resource pools for effects, filters, transitions, etc.
+/// Effect resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct EffectResource {
+  pub id: String,
+  pub name: String,
+  pub effect_id: String,
+  pub parameters: serde_json::Value,
+  pub added_at: i64,
+}
+
+/// Filter resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct FilterResource {
+  pub id: String,
+  pub name: String,
+  pub filter_id: String,
+  pub parameters: serde_json::Value,
+  pub added_at: i64,
+}
+
+/// Transition resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct TransitionResource {
+  pub id: String,
+  pub name: String,
+  pub transition_id: String,
+  pub parameters: serde_json::Value,
+  pub added_at: i64,
+}
+
+/// Template resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct TemplateResource {
+  pub id: String,
+  pub name: String,
+  pub template_id: String,
+  pub data: serde_json::Value,
+  pub added_at: i64,
+}
+
+/// Style template resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct StyleTemplateResource {
+  pub id: String,
+  pub name: String,
+  pub template_id: String,
+  pub data: serde_json::Value,
+  pub added_at: i64,
+}
+
+/// Subtitle style resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct SubtitleResource {
+  pub id: String,
+  pub name: String,
+  pub style_id: String,
+  pub data: serde_json::Value,
+  pub added_at: i64,
 }
 
 /// Media item in the pool
@@ -504,6 +574,13 @@ impl ProjectState {
         items: HashMap::new(),
       },
       settings,
+      // Initialize empty resource pools
+      effects_pool: HashMap::new(),
+      filters_pool: HashMap::new(),
+      transitions_pool: HashMap::new(),
+      templates_pool: HashMap::new(),
+      style_templates_pool: HashMap::new(),
+      subtitles_pool: HashMap::new(),
     };
 
     self.project = Some(project);
