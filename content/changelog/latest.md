@@ -1,3 +1,37 @@
+## [2.11.2](https://github.com/chatman-media/timeline-studio/compare/v2.11.1...v2.11.2) (2025-11-10)
+
+
+### Bug Fixes
+
+* **timeline:** Исправить playbackRate в integration тесте ([f233fa8](https://github.com/chatman-media/timeline-studio/commit/f233fa852a1351262683262a7d8847942c9defd9))
+
+## [2.11.1](https://github.com/chatman-media/timeline-studio/compare/v2.11.0...v2.11.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* **domains:** Исправить типы в domain модулях ([c016508](https://github.com/chatman-media/timeline-studio/commit/c016508e12c3a539a396ecc1f4e09e7925fc2c38))
+* **timeline:** Исправить integration тест ([2e7cf89](https://github.com/chatman-media/timeline-studio/commit/2e7cf89c702e7d01cd85313e78e77d3f77c4fe15))
+* **transitions:** Доработать transition renderers и тесты ([a4dcdfb](https://github.com/chatman-media/timeline-studio/commit/a4dcdfb47924ee17c79b03b1673b81dbaa748bc6))
+
+# [2.11.0](https://github.com/chatman-media/timeline-studio/compare/v2.10.0...v2.11.0) (2025-11-10)
+
+
+### Bug Fixes
+
+* **ai:** Исправить TypeScript ошибки в AI модулях ([2e9b4d2](https://github.com/chatman-media/timeline-studio/commit/2e9b4d2d66735e33d0d1f621470321b82291dbe1))
+* **montage-planner:** Добавить MontagePlannerProvider в modal ([dd5fefa](https://github.com/chatman-media/timeline-studio/commit/dd5fefa10a14abae81b0a64bb06400e64c1d9551))
+* **promo:** Исправить ошибку gray-matter при минификации ([9faff19](https://github.com/chatman-media/timeline-studio/commit/9faff19a63dbf4802ddb0112e48ff24c62ca9aa6))
+* **timeline,transcription:** Исправить типы в тестах ([a908f98](https://github.com/chatman-media/timeline-studio/commit/a908f98e3808c367f6a391612545c7c4e89e0d94))
+* **types:** Исправить TypeScript ошибки в domains ([32238e2](https://github.com/chatman-media/timeline-studio/commit/32238e227cbafb6c9bfac709137f09192c815d41))
+
+
+### Features
+
+* **features:** Обновить user-settings, version-control, video-compiler и workspace ([91b1dca](https://github.com/chatman-media/timeline-studio/commit/91b1dca765c71b2f3ccb9f2771e81ca405f89bbe))
+* **i18n:** Обновить переводы для английского и русского языков ([cf883b9](https://github.com/chatman-media/timeline-studio/commit/cf883b9a950016142d60c8649dfc0ce19216e5cf))
+* **transitions:** Добавить тесты для transition renderers ([fe946a7](https://github.com/chatman-media/timeline-studio/commit/fe946a749b779c9d63e951ae65f159e8c31ca5b8))
+
 # [2.10.0](https://github.com/chatman-media/timeline-studio/compare/v2.9.2...v2.10.0) (2025-11-10)
 
 
