@@ -1,9 +1,13 @@
 import mdx from "@mdx-js/rollup"
 import react from "@vitejs/plugin-react"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer"
 import compression from "vite-plugin-compression"
 import { fixImports } from "./vite-plugin-fix-imports.js"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -43,13 +47,17 @@ export default defineConfig({
     alias: {
       buffer: "buffer",
       // Убеждаемся, что используется одна версия React
-      react: "react",
-      "react-dom": "react-dom",
+      react: path.resolve(__dirname, "./node_modules/react"),
+      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
+      "react/jsx-runtime": path.resolve(__dirname, "./node_modules/react/jsx-runtime"),
     },
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
     include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
       "buffer",
       "use-sync-external-store/shim/with-selector",
       "gray-matter",
