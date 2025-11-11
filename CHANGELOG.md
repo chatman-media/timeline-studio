@@ -1,3 +1,10 @@
+## [2.11.7](https://github.com/chatman-media/timeline-studio/compare/v2.11.6...v2.11.7) (2025-11-11)
+
+
+### Bug Fixes
+
+* **promo:** Исправить ошибку React forwardRef дублирования ([cf8ae45](https://github.com/chatman-media/timeline-studio/commit/cf8ae451b132aac4f396cd2325ab415bfc81f2a0))
+
 ## [2.11.6](https://github.com/chatman-media/timeline-studio/compare/v2.11.5...v2.11.6) (2025-11-11)
 
 
