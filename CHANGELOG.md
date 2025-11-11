@@ -1,3 +1,10 @@
+## [2.11.6](https://github.com/chatman-media/timeline-studio/compare/v2.11.5...v2.11.6) (2025-11-11)
+
+
+### Bug Fixes
+
+* **promo:** Исправить ошибку gray-matter на GitHub Pages ([d71a596](https://github.com/chatman-media/timeline-studio/commit/d71a5966292bffa1054b9a7d21a68601211dbe32))
+
 ## [2.11.5](https://github.com/chatman-media/timeline-studio/compare/v2.11.4...v2.11.5) (2025-11-11)
 
 
