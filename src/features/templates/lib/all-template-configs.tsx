@@ -1,10 +1,14 @@
 /**
  * Полные конфигурации всех шаблонов
- * Этот файл содержит конфигурации для всех 78 шаблонов
+ * Этот файл содержит конфигурации для всех 124 шаблонов:
+ * - 78 базовых (сетки, разделения, custom)
+ * - 26 PiP (Picture-in-Picture для вебинаров/стримов)
+ * - 20 профессиональных (L-Shape, Interview, Sports/Event)
  */
 
-import { createCellConfig, createDividerConfig, type MediaTemplateConfig, PRESET_STYLES } from "./template-config"
 import { pipTemplates } from "./pip-templates"
+import { professionalLayouts } from "./professional-layouts"
+import { createCellConfig, createDividerConfig, type MediaTemplateConfig, PRESET_STYLES } from "./template-config"
 
 // ===== БАЗОВЫЕ ШАБЛОНЫ =====
 
@@ -1053,6 +1057,8 @@ export const ALL_TEMPLATE_CONFIGS: MediaTemplateConfig[] = [
   ...mixedTemplates,
   ...customFiveTemplates,
   ...customSevenTemplates,
+  ...pipTemplates, // 26 Picture-in-Picture шаблонов
+  ...professionalLayouts, // 20 профессиональных шаблонов (L-Shape, Interview, Sports/Event)
 ]
 
 // Создаем карту для быстрого доступа

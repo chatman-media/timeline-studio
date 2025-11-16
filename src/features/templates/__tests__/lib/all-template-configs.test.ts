@@ -6,8 +6,9 @@ describe("All Template Configurations", () => {
   describe("ALL_TEMPLATE_CONFIGS", () => {
     it("should contain expected number of templates", () => {
       // The actual count may vary as templates are added
-      expect(ALL_TEMPLATE_CONFIGS.length).toBeGreaterThan(75)
-      expect(ALL_TEMPLATE_CONFIGS.length).toBeLessThan(90)
+      // Currently: 78 базовых + 26 PiP + 20 профессиональных = 124
+      expect(ALL_TEMPLATE_CONFIGS.length).toBeGreaterThan(100)
+      expect(ALL_TEMPLATE_CONFIGS.length).toBeLessThan(150)
     })
 
     it("should have unique template IDs", () => {
@@ -212,8 +213,17 @@ describe("All Template Configurations", () => {
           config.cells.forEach((cell, index) => {
             expect(cell.background?.color).toBeDefined()
             expect(cell.border?.width).toBeDefined()
-            expect(cell.title?.show).toBe(true)
-            expect(cell.title?.text).toBe(String(index + 1))
+
+            // Title can be either shown or hidden (e.g., PiP templates hide titles on small screens)
+            if (cell.title) {
+              expect(typeof cell.title.show).toBe("boolean")
+
+              // If title is shown and has text, it should be a non-empty string
+              if (cell.title.show && cell.title.text) {
+                expect(typeof cell.title.text).toBe("string")
+                expect(cell.title.text.length).toBeGreaterThan(0)
+              }
+            }
 
             // Check that backgrounds are one of the expected colors
             const expectedColors = ["#23262b", "#2a2e36"]
@@ -251,13 +261,14 @@ describe("All Template Configurations", () => {
         config.cellLayouts?.forEach((layout) => {
           expect(layout.position).toBe("absolute")
 
-          // Check that positioning values are valid CSS values (including "0")
-          if (layout.top) expect(layout.top).toMatch(/^(\d+(\.\d+)?%|0)$/)
-          if (layout.left) expect(layout.left).toMatch(/^(\d+(\.\d+)?%|0)$/)
-          if (layout.right) expect(layout.right).toMatch(/^(\d+(\.\d+)?%|0)$/)
-          if (layout.bottom) expect(layout.bottom).toMatch(/^(\d+(\.\d+)?%|0)$/)
-          if (layout.width) expect(layout.width).toMatch(/^(\d+(\.\d+)?%|0)$/)
-          if (layout.height) expect(layout.height).toMatch(/^(\d+(\.\d+)?%|0)$/)
+          // Check that positioning values are valid CSS values (including "0" and calc())
+          const cssValueRegex = /^(\d+(\.\d+)?%|0|calc\(.+\))$/
+          if (layout.top) expect(layout.top).toMatch(cssValueRegex)
+          if (layout.left) expect(layout.left).toMatch(cssValueRegex)
+          if (layout.right) expect(layout.right).toMatch(cssValueRegex)
+          if (layout.bottom) expect(layout.bottom).toMatch(cssValueRegex)
+          if (layout.width) expect(layout.width).toMatch(cssValueRegex)
+          if (layout.height) expect(layout.height).toMatch(cssValueRegex)
         })
       })
     })
