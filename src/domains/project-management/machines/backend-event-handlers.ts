@@ -19,6 +19,10 @@ export interface ProjectManagementContext {
   isLoading: boolean
   hasUnsavedChanges: boolean
   error: string | null
+  // Dirty flag tracking для auto-save
+  isDirty: boolean
+  lastModifiedTime: number | null
+  lastSavedTime: number | null
 }
 
 /**
@@ -59,11 +63,15 @@ function handleProjectCreated(
 
   logger.info("Project created:", { projectId: project_id, name })
 
-  // Проект создан на backend
-  // Полное состояние проекта придет через отдельный запрос или следующие события
+  const now = Date.now()
+
+  // Проект создан на backend - новый проект чистый (не dirty)
   return {
     isLoading: false,
     hasUnsavedChanges: false,
+    isDirty: false,
+    lastModifiedTime: now,
+    lastSavedTime: now,
     error: null,
   }
 }
@@ -76,11 +84,15 @@ function handleProjectOpened(
 
   logger.info("Project opened:", { projectId: project_id, path })
 
-  // Проект открыт на backend
-  // Полное состояние проекта будет получено через getProjectState()
+  const now = Date.now()
+
+  // Проект открыт на backend - открытый проект чистый (только что загружен)
   return {
     isLoading: false,
     hasUnsavedChanges: false,
+    isDirty: false,
+    lastModifiedTime: now,
+    lastSavedTime: now,
     error: null,
   }
 }
@@ -93,9 +105,13 @@ function handleProjectSaved(
 
   logger.info("Project saved:", { projectId: project_id, path })
 
-  // Проект сохранен на backend
+  const now = Date.now()
+
+  // Проект сохранен на backend - очищаем dirty flag
   return {
     hasUnsavedChanges: false,
+    isDirty: false,
+    lastSavedTime: now,
     error: null,
   }
 }
@@ -108,10 +124,49 @@ function handleProjectClosed(
 
   logger.info("Project closed:", { projectId: project_id })
 
-  // Проект закрыт на backend - очищаем состояние
+  // Проект закрыт на backend - очищаем всё состояние включая dirty flags
   return {
     projectState: null,
     hasUnsavedChanges: false,
+    isDirty: false,
+    lastModifiedTime: null,
+    lastSavedTime: null,
     error: null,
+  }
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Помечает проект как измененный (dirty)
+ * Используется когда происходят изменения в проекте
+ */
+export function markProjectDirty(context: ProjectManagementContext): Partial<ProjectManagementContext> {
+  const now = Date.now()
+
+  logger.debug("Marking project as dirty")
+
+  return {
+    isDirty: true,
+    hasUnsavedChanges: true,
+    lastModifiedTime: now,
+  }
+}
+
+/**
+ * Помечает проект как чистый (clean)
+ * Используется после успешного сохранения
+ */
+export function markProjectClean(context: ProjectManagementContext): Partial<ProjectManagementContext> {
+  const now = Date.now()
+
+  logger.debug("Marking project as clean")
+
+  return {
+    isDirty: false,
+    hasUnsavedChanges: false,
+    lastSavedTime: now,
   }
 }

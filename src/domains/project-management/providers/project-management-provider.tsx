@@ -11,7 +11,11 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from "
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
-import { handleProjectBackendEvent, type ProjectManagementContext } from "../machines/backend-event-handlers"
+import {
+  handleProjectBackendEvent,
+  markProjectDirty,
+  type ProjectManagementContext,
+} from "../machines/backend-event-handlers"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 
@@ -32,6 +36,11 @@ interface ProjectContext {
   // Новые методы для BackendSync
   syncProjectState: () => Promise<void>
   isBackendConnected: boolean
+  // Dirty flag tracking
+  isDirty: boolean
+  lastModifiedTime: number | null
+  lastSavedTime: number | null
+  markDirty: () => void
 }
 
 const ProjectContext = createContext<ProjectContext | null>(null)
@@ -48,6 +57,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     isLoading: false,
     hasUnsavedChanges: false,
     error: null,
+    // Dirty flag tracking
+    isDirty: false,
+    lastModifiedTime: null,
+    lastSavedTime: null,
   })
 
   // Получаем состояние из appActor (для совместимости)
@@ -254,6 +267,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Метод для пометки проекта как измененного
+  const markDirty = () => {
+    setLocalContext((prev) => ({
+      ...prev,
+      ...markProjectDirty(prev),
+    }))
+  }
+
   const contextValue: ProjectContext = {
     projectState: effectiveProjectState,
     isLoading: effectiveIsLoading,
@@ -265,6 +286,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     closeProject,
     syncProjectState,
     isBackendConnected,
+    // Dirty flag tracking
+    isDirty: localContext.isDirty,
+    lastModifiedTime: localContext.lastModifiedTime,
+    lastSavedTime: localContext.lastSavedTime,
+    markDirty,
   }
 
   return <ProjectContext.Provider value={contextValue}>{children}</ProjectContext.Provider>

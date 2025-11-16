@@ -11,6 +11,7 @@ import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
 import { type UserSettingsContextType, userSettingsMachine } from "../machines/user-settings-machine"
+import { getPerformanceMetricsTracker } from "./performance-metrics"
 
 const logger = createLogger("ProjectManagementOrchestrator")
 
@@ -19,6 +20,7 @@ export class ProjectManagementOrchestrator {
   private userSettingsActor: ActorRefFrom<typeof userSettingsMachine>
   private autoSaveTimer: NodeJS.Timeout | null = null
   private isLoadingSettings = false
+  private metricsTracker = getPerformanceMetricsTracker()
 
   constructor() {
     logger.info("[Project Management Orchestrator] Initializing...")
@@ -83,38 +85,128 @@ export class ProjectManagementOrchestrator {
   }
 
   /**
-   * Выполнение команды
+   * Выполнение команды с улучшенной обработкой ошибок
    */
   async executeCommand(command: ProjectCommand): Promise<any> {
     const startTime = performance.now()
     logger.info("[ProjectManagementOrchestrator] Executing command:", { data: command.type })
 
-    return new Promise((resolve, reject) => {
-      const subscription = this.appActor.subscribe((state) => {
-        const duration = performance.now() - startTime
-
-        if (state.matches({ connected: "idle" })) {
+    try {
+      return await new Promise((resolve, reject) => {
+        // Таймаут для команды (30 секунд)
+        const timeout = setTimeout(() => {
           subscription.unsubscribe()
-          if (duration > 100) {
-            logger.warn("Warning", {
-              data: `[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms`,
-            })
-          }
-          resolve(true)
-        } else if (state.matches("error")) {
-          subscription.unsubscribe()
-          logger.error("Error occurred", {
-            error: `[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms`,
+          const duration = performance.now() - startTime
+          const timeoutError = new Error(
+            `Command ${command.type} timed out after ${duration}ms. This might indicate a backend issue.`,
+          )
+          logger.error("[ProjectManagementOrchestrator] Command timeout:", {
+            command: command.type,
+            duration,
           })
-          reject(new Error(state.context.error || "Command failed"))
+          reject(timeoutError)
+        }, 30000)
+
+        const subscription = this.appActor.subscribe((state) => {
+          const duration = performance.now() - startTime
+
+          if (state.matches({ connected: "idle" })) {
+            clearTimeout(timeout)
+            subscription.unsubscribe()
+
+            // Записываем метрику успешной команды
+            this.metricsTracker.recordCommand({
+              commandType: command.type,
+              executionTime: duration,
+              timestamp: Date.now(),
+              success: true,
+            })
+
+            // Предупреждение о медленной команде
+            if (duration > 100) {
+              logger.warn("Warning", {
+                data: `[ProjectManagementOrchestrator] Command ${command.type} took ${duration}ms`,
+              })
+            }
+
+            resolve(true)
+          } else if (state.matches("error")) {
+            clearTimeout(timeout)
+            subscription.unsubscribe()
+
+            const errorMessage = state.context.error || "Command failed"
+
+            // Записываем метрику неудачной команды
+            this.metricsTracker.recordCommand({
+              commandType: command.type,
+              executionTime: duration,
+              timestamp: Date.now(),
+              success: false,
+              error: errorMessage,
+            })
+
+            logger.error("Error occurred", {
+              error: `[ProjectManagementOrchestrator] Command ${command.type} failed after ${duration}ms: ${errorMessage}`,
+            })
+
+            // Создаем понятное пользователю сообщение об ошибке
+            const userFriendlyError = this.getUserFriendlyErrorMessage(command.type, errorMessage)
+            reject(new Error(userFriendlyError))
+          }
+        })
+
+        try {
+          this.appActor.send({
+            type: "EXECUTE_COMMAND",
+            command,
+          })
+        } catch (error) {
+          clearTimeout(timeout)
+          subscription.unsubscribe()
+          const errorMessage = error instanceof Error ? error.message : "Unknown error"
+          logger.error("[ProjectManagementOrchestrator] Failed to send command:", {
+            command: command.type,
+            error: errorMessage,
+          })
+          reject(new Error(`Failed to execute ${command.type}: ${errorMessage}`))
         }
       })
+    } catch (error) {
+      const duration = performance.now() - startTime
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
 
-      this.appActor.send({
-        type: "EXECUTE_COMMAND",
-        command,
+      logger.error("[ProjectManagementOrchestrator] Command execution error:", {
+        command: command.type,
+        duration,
+        error: errorMessage,
       })
-    })
+
+      throw error
+    }
+  }
+
+  /**
+   * Получить понятное пользователю сообщение об ошибке
+   */
+  private getUserFriendlyErrorMessage(commandType: string, backendError: string): string {
+    // Маппинг backend ошибок на понятные пользователю сообщения
+    const errorMappings: Record<string, string> = {
+      CreateProject: "Failed to create project. Please check your project settings and try again.",
+      OpenProject: "Failed to open project. The file might be corrupted or in an incompatible format.",
+      SaveProject: "Failed to save project. Please check if you have write permissions and enough disk space.",
+      CloseProject: "Failed to close project. Some resources might still be in use.",
+      AddMedia: "Failed to add media file. The file might be corrupted or in an unsupported format.",
+      RemoveMedia: "Failed to remove media file from project.",
+      UpdateMedia: "Failed to update media file properties.",
+    }
+
+    const friendlyMessage = errorMappings[commandType]
+    if (friendlyMessage) {
+      return `${friendlyMessage}\n\nTechnical details: ${backendError}`
+    }
+
+    // Fallback для неизвестных команд
+    return `Command ${commandType} failed: ${backendError}`
   }
 
   /**
@@ -383,6 +475,20 @@ export class ProjectManagementOrchestrator {
   }
 
   /**
+   * Получить метрики производительности
+   */
+  getPerformanceReport() {
+    return this.metricsTracker.getReport()
+  }
+
+  /**
+   * Логировать метрики производительности
+   */
+  logPerformanceReport() {
+    this.metricsTracker.logReport()
+  }
+
+  /**
    * Очистка ресурсов
    */
   dispose() {
@@ -391,6 +497,9 @@ export class ProjectManagementOrchestrator {
     this.disableAutoSave()
     this.appActor.stop()
     this.userSettingsActor.stop()
+
+    // Логируем финальный отчет о производительности
+    this.metricsTracker.logReport()
   }
 }
 

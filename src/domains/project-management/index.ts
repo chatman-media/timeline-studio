@@ -24,5 +24,14 @@ export {
   ProjectManagementOrchestrator,
   resetProjectManagementOrchestrator,
 } from "./services/project-management-orchestrator"
+// Экспорт метрик производительности
+export {
+  getPerformanceMetricsTracker,
+  resetPerformanceMetricsTracker,
+  type CommandMetric,
+  type StateUpdateMetric,
+  type MemorySnapshot,
+  type PerformanceReport,
+} from "./services/performance-metrics"
 // Экспорт типов
 export * from "./types"
