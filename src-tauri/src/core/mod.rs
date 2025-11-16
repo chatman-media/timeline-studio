@@ -5,6 +5,7 @@ pub mod events;
 pub mod performance;
 pub mod plugins;
 pub mod telemetry;
+pub mod validation; // 🔒 Input validation utilities
 
 #[cfg(test)]
 pub mod test_utils;
@@ -29,3 +30,5 @@ pub use telemetry::{
   HealthCheckManager, LogLevel, MetricsCollector, TelemetryConfig, TelemetryConfigBuilder,
   TelemetryManager, Tracer,
 };
+#[allow(unused_imports)]
+pub use validation::{InputValidator, ValidationError, ValidationResult};
