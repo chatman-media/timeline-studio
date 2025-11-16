@@ -19,6 +19,16 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      - name: Free disk space
+        run: |
+          # Удаляем неиспользуемые пакеты для освобождения места (~10GB)
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -61,16 +71,15 @@ jobs:
       - name: Create dist directory
         run: mkdir -p dist
 
-      - name: Cache Rust build
-        uses: actions/cache@v4
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            src-tauri/target
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          workspaces: src-tauri
+          cache-on-failure: false
+          # Кэшируем только зависимости, не финальные артефакты
+          cache-all-crates: false
+          # Очищаем старые артефакты
+          shared-key: ci-build
 
       - name: Build Rust dependencies
         env:
@@ -80,6 +89,19 @@ jobs:
         run: |
           cd src-tauri
           cargo build --release
+
+      - name: Clean build artifacts
+        run: |
+          cd src-tauri
+          # Удаляем большие временные файлы и debug артефакты
+          rm -rf target/release/build/*/out
+          rm -rf target/release/build/*/output
+          rm -rf target/release/incremental
+          rm -rf target/release/deps/*.so
+          rm -rf target/release/deps/*.dylib
+          # Оставляем только скомпилированные библиотеки зависимостей
+          find target/release -type f -name "*.rlib" -delete
+          find target/release -maxdepth 1 -type f ! -name "generate_types*" -delete
 
       - name: Generate TypeScript bindings
         env:
@@ -110,6 +132,16 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      - name: Free disk space
+        run: |
+          # Удаляем неиспользуемые пакеты для освобождения места (~10GB)
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -118,16 +150,13 @@ jobs:
         with:
           toolchain: 1.90.0
 
-      - name: Cache cargo
-        uses: actions/cache@v4
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-test-
+          workspaces: src-tauri
+          cache-on-failure: false
+          cache-all-crates: false
+          shared-key: ci-test
 
       - name: Install Linux dependencies
         run: |
@@ -155,6 +184,17 @@ jobs:
           else
             cargo test --lib --bins --tests -- --test-threads=2
           fi
+
+      - name: Clean test artifacts
+        run: |
+          cd src-tauri
+          # Удаляем временные тестовые артефакты
+          rm -rf target/debug/incremental
+          rm -rf target/debug/build/*/out
+          rm -rf target/debug/build/*/output
+          # Удаляем большие бинарники тестов
+          find target/debug/deps -type f -executable -delete
+          find target/debug -maxdepth 1 -type f -executable -delete
 
   lint:
     name: Lint

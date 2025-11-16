@@ -154,6 +154,20 @@ default = [ "custom-protocol" ]
 # this feature is used used for production builds where `devPath` points to the filesystem
 custom-protocol = [ "tauri/custom-protocol" ]
 
+[profile.release]
+# Optimization for binary size
+opt-level = "z"     # Optimize for size
+lto = "thin"        # Enable Link Time Optimization (thin mode for faster builds)
+codegen-units = 1   # Better optimization (slower build but smaller binaries)
+strip = true        # Strip symbols from binary
+panic = "abort"     # Reduce binary size by removing unwinding code
+
+[profile.dev]
+# Faster development builds
+opt-level = 0
+debug = true
+incremental = true
+
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-global-shortcut = "2"
 
