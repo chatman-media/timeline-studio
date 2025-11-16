@@ -17,8 +17,12 @@ import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
-import type { MediaItem, MediaType } from "@/types/generated/tauri-bindings"
+import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
+import {
+  handleBackendEvent,
+  type ResourcesContext as ResourcesMachineContext,
+} from "../machines/backend-event-handlers"
 import {
   type EffectResource,
   type FilterResource,
@@ -118,8 +122,19 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const { projectState } = useAppSettings()
   const backendState = projectState
 
-  // Force re-render when media events occur
-  const [, forceUpdate] = useState(0)
+  // State для инкрементальных обновлений через события
+  const [resourcesState, setResourcesState] = useState<ResourcesMachineContext>({
+    mediaResources: [],
+    musicResources: [],
+    effectResources: [],
+    filterResources: [],
+    transitionResources: [],
+    templateResources: [],
+    styleTemplateResources: [],
+    subtitleResources: [],
+    isLoading: false,
+    error: null,
+  })
 
   logInfo("ResourcesProvider: Initialized with projectState", {
     projectId: backendState?.project?.id || "no-project",
@@ -155,25 +170,48 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     [backendSync],
   )
 
-  // Subscribe to media events from backend to force re-render when media changes
+  // Subscribe to backend events for incremental updates
   useEffect(() => {
-    const handleMediaEvent = (event: any) => {
-      const mediaEventTypes = ["MediaAdded", "MediaRemoved", "MediaUpdated"]
+    const handleEvent = (event: ProjectEvent) => {
+      // Список событий для Resources
+      const resourceEventTypes = [
+        "MediaAdded",
+        "MediaRemoved",
+        "MediaUpdated",
+        "EffectAdded",
+        "EffectRemoved",
+        "FilterAdded",
+        "FilterRemoved",
+        "TransitionAdded",
+        "TransitionRemoved",
+        "TemplateAdded",
+        "TemplateRemoved",
+        "StyleTemplateAdded",
+        "StyleTemplateRemoved",
+        "SubtitleAdded",
+        "SubtitleRemoved",
+      ]
 
-      if (mediaEventTypes.includes(event.type)) {
-        logInfo("ResourcesProvider: Media event detected, forcing update", { eventType: event.type })
-        // Force re-render to get fresh projectState from app-machine
-        forceUpdate((prev) => prev + 1)
+      if (resourceEventTypes.includes(event.type)) {
+        logInfo("ResourcesProvider: Backend event detected, applying incremental update", {
+          eventType: event.type,
+        })
+
+        // Применяем инкрементальное обновление
+        setResourcesState((prev) => {
+          const updates = handleBackendEvent(prev, event)
+          return { ...prev, ...updates }
+        })
       }
     }
 
     // Subscribe to backend events
-    const unsubscribe = backendSync.onEvent(handleMediaEvent)
+    const unsubscribe = backendSync.onEvent(handleEvent)
 
     return () => {
       unsubscribe()
     }
-  }, [backendSync, forceUpdate])
+  }, [backendSync])
 
   // Действия для добавления ресурсов
   const addMedia = useCallback(
@@ -539,287 +577,307 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     }
   }, [executeCommand])
 
-  // Извлекаем ресурсы из backend состояния
-  // Пока backend не содержит все типы ресурсов, создаем пустые массивы
-  const mediaPool = backendState?.project?.media_pool ?? null
-  if (!mediaPool) {
-    // Если пусто — логируем предупреждение и используем пустые наборы при дальнейшем преобразовании
-    logInfo("ResourcesProvider: MediaPool from backend is empty, using empty defaults")
-  } else {
-    const itemCount = Object.values(mediaPool.items || {}).length
-    logInfo("ResourcesProvider: MediaPool loaded from backend", { itemCount })
-  }
+  // Синхронизация с backend state при инициализации проекта
+  useEffect(() => {
+    if (!backendState?.project) {
+      // Нет проекта - очищаем state
+      setResourcesState({
+        mediaResources: [],
+        musicResources: [],
+        effectResources: [],
+        filterResources: [],
+        transitionResources: [],
+        templateResources: [],
+        styleTemplateResources: [],
+        subtitleResources: [],
+        isLoading: false,
+        error: null,
+      })
+      return
+    }
 
-  // Конвертируем медиа из backend в MediaResource формат
-  const mediaResources: MediaResource[] = mediaPool?.items
-    ? Object.values(mediaPool.items)
-        .filter((item): item is MediaItem => {
-          if (!item || typeof item !== "object") return false
-          const mediaItem = item as MediaItem
-          const mediaType = String(mediaItem.media_type)
-          return "media_type" in mediaItem && (mediaType === "Video" || mediaType === "Image")
-        })
-        .map((item) => {
-          // Проверяем кэш метаданных для этого файла
-          const cachedProbeData = metadataCacheRef.current.get(item.path)
-          const mediaType = String(item.media_type)
+    // Инициализируем из backend state
+    logInfo("ResourcesProvider: Initializing from backend state", {
+      projectId: backendState.project.id,
+    })
 
-          // Log media type for debugging
-          logInfo("ResourcesProvider: Converting media item", {
-            id: item.id,
-            name: item.name,
-            mediaType,
-            hasCache: !!cachedProbeData,
+    const mediaPool = backendState.project.media_pool ?? null
+    if (!mediaPool) {
+      logInfo("ResourcesProvider: MediaPool from backend is empty, using empty defaults")
+    } else {
+      const itemCount = Object.values(mediaPool.items || {}).length
+      logInfo("ResourcesProvider: MediaPool loaded from backend", { itemCount })
+    }
+
+    // Конвертируем медиа из backend в MediaResource формат
+    const mediaResources: MediaResource[] = mediaPool?.items
+      ? Object.values(mediaPool.items)
+          .filter((item): item is MediaItem => {
+            if (!item || typeof item !== "object") return false
+            const mediaItem = item as MediaItem
+            const mediaType = String(mediaItem.media_type)
+            return "media_type" in mediaItem && (mediaType === "Video" || mediaType === "Image")
           })
+          .map((item) => {
+            // Проверяем кэш метаданных для этого файла
+            const cachedProbeData = metadataCacheRef.current.get(item.path)
+            const mediaType = String(item.media_type)
 
-          const file: MediaFile = {
-            id: item.id,
-            name: item.name,
-            path: item.path,
-            type: mediaType === "Video" ? LocalMediaType.Video : LocalMediaType.StillImage,
-            size: 0, // Backend не предоставляет размер файла
-            isVideo: mediaType === "Video",
-            isAudio: false,
-            isImage: mediaType === "Image",
-            isLoadingMetadata: false,
-            // Используем метаданные из кэша если они есть, иначе пустые
-            probeData: cachedProbeData || { streams: [], format: {} },
-            duration: item.duration || 0,
-          }
-
-          // Логируем для отладки
-          if (cachedProbeData) {
-            logInfo("ResourcesProvider: Restored cached metadata", {
-              path: item.path,
-              streamsCount: cachedProbeData.streams?.length || 0,
+            // Log media type for debugging
+            logInfo("ResourcesProvider: Converting media item", {
+              id: item.id,
+              name: item.name,
+              mediaType,
+              hasCache: !!cachedProbeData,
             })
-          }
 
-          // Создаем MediaResource напрямую, используя backend ID
-          return {
-            id: item.id, // Используем ID от backend напрямую
-            type: "media" as const,
-            name: item.name,
-            resourceId: item.id, // resourceId совпадает с id
-            addedAt: Date.now(),
-            file,
-            params: {},
-          }
-        })
-    : []
-
-  const musicResources: MusicResource[] = mediaPool?.items
-    ? Object.values(mediaPool.items)
-        .filter((item): item is MediaItem => {
-          if (!item || typeof item !== "object") return false
-          const mediaItem = item as MediaItem
-          const mediaType = String(mediaItem.media_type)
-          return "media_type" in mediaItem && mediaType === "Audio"
-        })
-        .map((item) => {
-          // Проверяем кэш метаданных для этого файла
-          const cachedProbeData = metadataCacheRef.current.get(item.path)
-
-          const file: MediaFile = {
-            id: item.id,
-            name: item.name,
-            path: item.path,
-            type: LocalMediaType.Audio,
-            size: 0, // Backend не предоставляет размер файла
-            isVideo: false,
-            isAudio: true,
-            isImage: false,
-            isLoadingMetadata: false,
-            // Используем метаданные из кэша если они есть, иначе пустые
-            probeData: cachedProbeData || { streams: [], format: {} },
-            duration: item.duration || 0,
-          }
-
-          // Логируем для отладки
-          if (cachedProbeData) {
-            logInfo("ResourcesProvider: Restored cached metadata for music", {
+            const file: MediaFile = {
+              id: item.id,
+              name: item.name,
               path: item.path,
-              streamsCount: cachedProbeData.streams?.length || 0,
-            })
-          }
+              type: mediaType === "Video" ? LocalMediaType.Video : LocalMediaType.StillImage,
+              size: 0, // Backend не предоставляет размер файла
+              isVideo: mediaType === "Video",
+              isAudio: false,
+              isImage: mediaType === "Image",
+              isLoadingMetadata: false,
+              // Используем метаданные из кэша если они есть, иначе пустые
+              probeData: cachedProbeData || { streams: [], format: {} },
+              duration: item.duration || 0,
+            }
 
-          // Создаем MusicResource напрямую, используя backend ID
-          return {
-            id: item.id, // Используем ID от backend напрямую
-            type: "music" as const,
-            name: item.name,
-            resourceId: item.id, // resourceId совпадает с id
-            addedAt: Date.now(),
-            file,
-            params: {},
-          }
-        })
-    : []
+            // Логируем для отладки
+            if (cachedProbeData) {
+              logInfo("ResourcesProvider: Restored cached metadata", {
+                path: item.path,
+                streamsCount: cachedProbeData.streams?.length || 0,
+              })
+            }
 
-  // Extract resources from backend state
-  const effectsPool = backendState?.project?.effects_pool ?? {}
-  const effectResources: EffectResource[] = Object.values(effectsPool).map((item: any) => ({
-    id: item.id,
-    type: "effect" as const,
-    name: item.name,
-    resourceId: item.effect_id,
-    addedAt: item.added_at * 1000, // Convert to milliseconds
-    effect: {
-      id: item.effect_id,
+            // Создаем MediaResource напрямую, используя backend ID
+            return {
+              id: item.id, // Используем ID от backend напрямую
+              type: "media" as const,
+              name: item.name,
+              resourceId: item.id, // resourceId совпадает с id
+              addedAt: Date.now(),
+              file,
+              params: {},
+            }
+          })
+      : []
+
+    const musicResources: MusicResource[] = mediaPool?.items
+      ? Object.values(mediaPool.items)
+          .filter((item): item is MediaItem => {
+            if (!item || typeof item !== "object") return false
+            const mediaItem = item as MediaItem
+            const mediaType = String(mediaItem.media_type)
+            return "media_type" in mediaItem && mediaType === "Audio"
+          })
+          .map((item) => {
+            // Проверяем кэш метаданных для этого файла
+            const cachedProbeData = metadataCacheRef.current.get(item.path)
+
+            const file: MediaFile = {
+              id: item.id,
+              name: item.name,
+              path: item.path,
+              type: LocalMediaType.Audio,
+              size: 0, // Backend не предоставляет размер файла
+              isVideo: false,
+              isAudio: true,
+              isImage: false,
+              isLoadingMetadata: false,
+              // Используем метаданные из кэша если они есть, иначе пустые
+              probeData: cachedProbeData || { streams: [], format: {} },
+              duration: item.duration || 0,
+            }
+
+            // Логируем для отладки
+            if (cachedProbeData) {
+              logInfo("ResourcesProvider: Restored cached metadata for music", {
+                path: item.path,
+                streamsCount: cachedProbeData.streams?.length || 0,
+              })
+            }
+
+            // Создаем MusicResource напрямую, используя backend ID
+            return {
+              id: item.id, // Используем ID от backend напрямую
+              type: "music" as const,
+              name: item.name,
+              resourceId: item.id, // resourceId совпадает с id
+              addedAt: Date.now(),
+              file,
+              params: {},
+            }
+          })
+      : []
+
+    // Extract resources from backend state
+    const effectsPool = backendState?.project?.effects_pool ?? {}
+    const effectResources: EffectResource[] = Object.values(effectsPool).map((item: any) => ({
+      id: item.id,
+      type: "effect" as const,
       name: item.name,
-      parameters: item.parameters,
-    },
-    params: item.parameters,
-  }))
-
-  const filtersPool = backendState?.project?.filters_pool ?? {}
-  const filterResources: FilterResource[] = Object.values(filtersPool).map((item: any) => ({
-    id: item.id,
-    type: "filter" as const,
-    name: item.name,
-    resourceId: item.filter_id,
-    addedAt: item.added_at * 1000,
-    filter: {
-      id: item.filter_id,
-      name: item.name,
+      resourceId: item.effect_id,
+      addedAt: item.added_at * 1000, // Convert to milliseconds
+      effect: {
+        id: item.effect_id,
+        name: item.name,
+        parameters: item.parameters,
+      } as any,
       params: item.parameters,
-    },
-    params: item.parameters,
-  }))
+    }))
 
-  const transitionsPool = backendState?.project?.transitions_pool ?? {}
-  const transitionResources: TransitionResource[] = Object.values(transitionsPool).map((item: any) => ({
-    id: item.id,
-    type: "transition" as const,
-    name: item.name,
-    resourceId: item.transition_id,
-    addedAt: item.added_at * 1000,
-    transition: {
-      id: item.transition_id,
-      labels: { ru: item.name, en: item.name },
-      parameters: item.parameters,
-    },
-    params: item.parameters,
-  }))
+    const filtersPool = backendState?.project?.filters_pool ?? {}
+    const filterResources: FilterResource[] = Object.values(filtersPool).map((item: any) => ({
+      id: item.id,
+      type: "filter" as const,
+      name: item.name,
+      resourceId: item.filter_id,
+      addedAt: item.added_at * 1000,
+      filter: {
+        id: item.filter_id,
+        name: item.name,
+        params: item.parameters,
+      } as any,
+      params: item.parameters,
+    }))
 
-  const templatesPool = backendState?.project?.templates_pool ?? {}
-  const templateResources: TemplateResource[] = Object.values(templatesPool).map((item: any) => ({
-    id: item.id,
-    type: "template" as const,
-    name: item.name,
-    resourceId: item.template_id,
-    addedAt: item.added_at * 1000,
-    template: item.data, // Store full template data
-    params: {},
-  }))
+    const transitionsPool = backendState?.project?.transitions_pool ?? {}
+    const transitionResources: TransitionResource[] = Object.values(transitionsPool).map((item: any) => ({
+      id: item.id,
+      type: "transition" as const,
+      name: item.name,
+      resourceId: item.transition_id,
+      addedAt: item.added_at * 1000,
+      transition: {
+        id: item.transition_id,
+        labels: { ru: item.name, en: item.name },
+        parameters: item.parameters,
+      } as any,
+      params: item.parameters,
+    }))
 
-  const styleTemplatesPool = backendState?.project?.style_templates_pool ?? {}
-  const styleTemplateResources: StyleTemplateResource[] = Object.values(styleTemplatesPool).map((item: any) => ({
-    id: item.id,
-    type: "styleTemplate" as const,
-    name: item.name,
-    resourceId: item.template_id,
-    addedAt: item.added_at * 1000,
-    template: item.data, // Store full template data
-    params: {},
-  }))
+    const templatesPool = backendState?.project?.templates_pool ?? {}
+    const templateResources: TemplateResource[] = Object.values(templatesPool).map((item: any) => ({
+      id: item.id,
+      type: "template" as const,
+      name: item.name,
+      resourceId: item.template_id,
+      addedAt: item.added_at * 1000,
+      template: item.data, // Store full template data
+      params: {},
+    }))
 
-  const subtitlesPool = backendState?.project?.subtitles_pool ?? {}
-  const subtitleResources: SubtitleResource[] = Object.values(subtitlesPool).map((item: any) => ({
-    id: item.id,
-    type: "subtitle" as const,
-    name: item.name,
-    resourceId: item.style_id,
-    addedAt: item.added_at * 1000,
-    style: item.data, // Store full subtitle style data
-    params: {},
-  }))
+    const styleTemplatesPool = backendState?.project?.style_templates_pool ?? {}
+    const styleTemplateResources: StyleTemplateResource[] = Object.values(styleTemplatesPool).map((item: any) => ({
+      id: item.id,
+      type: "styleTemplate" as const,
+      name: item.name,
+      resourceId: item.template_id,
+      addedAt: item.added_at * 1000,
+      template: item.data, // Store full template data
+      params: {},
+    }))
 
-  const resources: TimelineResource[] = [
-    ...mediaResources,
-    ...musicResources,
-    ...subtitleResources,
-    ...effectResources,
-    ...filterResources,
-    ...transitionResources,
-    ...templateResources,
-    ...styleTemplateResources,
-  ]
+    const subtitlesPool = backendState.project.subtitles_pool ?? {}
+    const subtitleResources: SubtitleResource[] = Object.values(subtitlesPool).map((item: any) => ({
+      id: item.id,
+      type: "subtitle" as const,
+      name: item.name,
+      resourceId: item.style_id,
+      addedAt: item.added_at * 1000,
+      style: item.data, // Store full subtitle style data
+      params: {},
+    }))
 
-  // Утилиты - определяем ПОСЛЕ всех массивов ресурсов
-  const getResourceById = useCallback(
-    (resourceId: string) => {
-      const allResources = [
-        ...mediaResources,
-        ...musicResources,
-        ...subtitleResources,
-        ...effectResources,
-        ...filterResources,
-        ...transitionResources,
-        ...templateResources,
-        ...styleTemplateResources,
-      ]
-      return allResources.find((resource) => resource.resourceId === resourceId)
-    },
-    [
+    // Устанавливаем все ресурсы в state
+    setResourcesState({
       mediaResources,
       musicResources,
-      subtitleResources,
       effectResources,
       filterResources,
       transitionResources,
       templateResources,
       styleTemplateResources,
-    ],
+      subtitleResources,
+      isLoading: false,
+      error: null,
+    })
+
+    logInfo("ResourcesProvider: State initialized from backend", {
+      mediaCount: mediaResources.length,
+      musicCount: musicResources.length,
+      effectsCount: effectResources.length,
+      filtersCount: filterResources.length,
+      transitionsCount: transitionResources.length,
+      templatesCount: templateResources.length,
+      styleTemplatesCount: styleTemplateResources.length,
+      subtitlesCount: subtitleResources.length,
+    })
+  }, [backendState])
+
+  // Извлекаем ресурсы из state для использования в контексте
+  const resources: TimelineResource[] = [
+    ...resourcesState.mediaResources,
+    ...resourcesState.musicResources,
+    ...resourcesState.subtitleResources,
+    ...resourcesState.effectResources,
+    ...resourcesState.filterResources,
+    ...resourcesState.transitionResources,
+    ...resourcesState.templateResources,
+    ...resourcesState.styleTemplateResources,
+  ]
+
+  // Утилиты - определяем ПОСЛЕ всех массивов ресурсов
+  const getResourceById = useCallback(
+    (resourceId: string) => {
+      return resources.find((resource) => resource.resourceId === resourceId)
+    },
+    [resources],
   )
 
   const getResourcesByType = useCallback(
     (type: string) => {
       switch (type) {
         case "media":
-          return mediaResources
+          return resourcesState.mediaResources
         case "music":
-          return musicResources
+          return resourcesState.musicResources
         case "subtitle":
-          return subtitleResources
+          return resourcesState.subtitleResources
         case "effect":
-          return effectResources
+          return resourcesState.effectResources
         case "filter":
-          return filterResources
+          return resourcesState.filterResources
         case "transition":
-          return transitionResources
+          return resourcesState.transitionResources
         case "template":
-          return templateResources
+          return resourcesState.templateResources
         case "styleTemplate":
-          return styleTemplateResources
+          return resourcesState.styleTemplateResources
         default:
           return []
       }
     },
-    [
-      mediaResources,
-      musicResources,
-      subtitleResources,
-      effectResources,
-      filterResources,
-      transitionResources,
-      templateResources,
-      styleTemplateResources,
-    ],
+    [resourcesState],
   )
 
   // Контекстное значение
   const contextValue: ResourcesContextType = {
     // Ресурсы
     resources,
-    mediaResources,
-    musicResources,
-    subtitleResources,
-    effectResources,
-    filterResources,
-    transitionResources,
-    templateResources,
-    styleTemplateResources,
+    mediaResources: resourcesState.mediaResources,
+    musicResources: resourcesState.musicResources,
+    subtitleResources: resourcesState.subtitleResources,
+    effectResources: resourcesState.effectResources,
+    filterResources: resourcesState.filterResources,
+    transitionResources: resourcesState.transitionResources,
+    templateResources: resourcesState.templateResources,
+    styleTemplateResources: resourcesState.styleTemplateResources,
 
     // Состояние
     isLoading,
@@ -842,25 +900,25 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     getResourceById,
     getResourcesByType,
     isMusicAdded: (file: MediaFile) => {
-      return musicResources.some((resource) => (resource as any).data?.path === file.path)
+      return resourcesState.musicResources.some((resource) => resource.file.path === file.path)
     },
     isSubtitleAdded: (style: SubtitleStyleTemplate) => {
-      return subtitleResources.some((resource) => (resource as any).data?.id === style.id)
+      return resourcesState.subtitleResources.some((resource) => resource.style.id === style.id)
     },
     isTemplateAdded: (template: MediaTemplate) => {
-      return templateResources.some((resource) => (resource as any).data?.id === template.id)
+      return resourcesState.templateResources.some((resource) => resource.template.id === template.id)
     },
     isEffectAdded: (effect: VideoEffect) => {
-      return effectResources.some((resource) => (resource as any).data?.id === effect.id)
+      return resourcesState.effectResources.some((resource) => resource.effect.id === effect.id)
     },
     isFilterAdded: (filter: VideoFilter) => {
-      return filterResources.some((resource) => (resource as any).data?.id === filter.id)
+      return resourcesState.filterResources.some((resource) => resource.filter.id === filter.id)
     },
     isTransitionAdded: (transition: Transition) => {
-      return transitionResources.some((resource) => (resource as any).data?.id === transition.id)
+      return resourcesState.transitionResources.some((resource) => resource.transition.id === transition.id)
     },
     isStyleTemplateAdded: (template: StyleTemplate) => {
-      return styleTemplateResources.some((resource) => (resource as any).data?.id === template.id)
+      return resourcesState.styleTemplateResources.some((resource) => resource.template.id === template.id)
     },
     isAdded: (resourceId: string, type: string) => {
       const resources = getResourcesByType(type)

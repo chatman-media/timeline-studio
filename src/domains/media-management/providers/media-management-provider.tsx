@@ -2,7 +2,7 @@
  * Media Management Domain Provider
  *
  * Централизованный провайдер для Media Management домена
- * Перенесено на BackendSync для централизованного управления состоянием
+ * Использует event-driven архитектуру для синхронизации с backend
  */
 
 import { createContext, type ReactNode, useEffect, useState } from "react"
@@ -10,13 +10,18 @@ import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
+import {
+  handleMediaBackendEvent,
+  type MediaManagementContext as MediaContext,
+} from "../machines/backend-event-handlers"
 import { getMediaMetadataService } from "../services/media-metadata-service"
-import type { MediaImportOptions, MediaManagementService, MediaType } from "../types"
+import type { MediaImportOptions, MediaInfo, MediaManagementService, MediaType } from "../types"
 
 const logger = createLogger("MediaManagementProvider")
 
 interface MediaManagementContextValue extends MediaManagementService {
+  mediaPool: Map<string, MediaInfo>
   fileOperationsState: any
   mediaImportState: any
   isReady: boolean
@@ -33,37 +38,54 @@ interface MediaManagementProviderProps {
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(new Map())
   const [fileOperations, setFileOperations] = useState<any[]>([])
   const [mediaImportStatus, setMediaImportStatus] = useState<"idle" | "importing" | "completed" | "failed">("idle")
 
   const backendSync = getBackendSync()
   const metadataService = getMediaMetadataService()
 
-  // Подписка на изменения backend состояния
+  // Event-driven синхронизация через backend события
   useEffect(() => {
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      // Обновляем состояние на основе backend
-      if (state.project?.media_pool?.items) {
-        // Обновляем список медиа файлов из media_pool
-        const mediaItems = Object.values(state.project.media_pool.items).filter(
-          (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
-        )
-        setFileOperations(
-          mediaItems.map((file) => ({
-            id: file.id,
-            path: file.path,
-            status: "completed" as const,
-            result: file,
-            progress: 100,
-          })),
-        )
+    const unsubscribe = backendSync.onEvent((event: ProjectEvent) => {
+      // Создаем контекст для event handler
+      const context: MediaContext = {
+        mediaPool,
+        isLoading,
+        error,
+      }
+
+      // Обрабатываем событие
+      const updates = handleMediaBackendEvent(context, event)
+
+      // Применяем обновления к state
+      if (updates.mediaPool !== undefined) {
+        setMediaPool(updates.mediaPool)
+
+        // Обновляем fileOperations для совместимости
+        const operations = Array.from(updates.mediaPool.values()).map((mediaInfo) => ({
+          id: mediaInfo.path, // используем path как id для совместимости
+          path: mediaInfo.path,
+          status: "completed" as const,
+          result: mediaInfo,
+          progress: 100,
+        }))
+        setFileOperations(operations)
+      }
+
+      if (updates.isLoading !== undefined) {
+        setIsLoading(updates.isLoading)
+      }
+
+      if (updates.error !== undefined) {
+        setError(updates.error)
       }
     })
 
     return () => {
       unsubscribe()
     }
-  }, [backendSync])
+  }, [backendSync, mediaPool, isLoading, error])
 
   // Вспомогательная функция для определения типа медиа по пути файла
   const getMediaTypeFromPath = (filePath: string): MediaType => {
@@ -131,26 +153,14 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
     getMediaInfo: async (path: string) => {
       try {
-        // Пытаемся получить информацию из backend состояния
-        const backendState = await backendSync.getProjectState()
-        const mediaItems = backendState?.project?.media_pool?.items
-          ? Object.values(backendState.project.media_pool.items).filter(
-              (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
-            )
-          : []
-        const mediaFile = mediaItems.find((file) => file.path === path)
+        // Ищем в локальном media pool (синхронизирован через события)
+        const mediaInfo = Array.from(mediaPool.values()).find((media) => media.path === path)
 
-        if (mediaFile) {
-          return {
-            path: mediaFile.path,
-            name: mediaFile.name,
-            type: mediaFile.media_type,
-            duration: mediaFile.duration ?? undefined,
-            thumbnailPath: mediaFile.thumbnail ?? undefined,
-          }
+        if (mediaInfo) {
+          return mediaInfo
         }
 
-        // Если файл не найден в backend, возвращаем базовую информацию
+        // Если не найдено локально, возвращаем базовую информацию
         const name = path.split("/").pop() || path
         const mediaType = getMediaTypeFromPath(path)
 
@@ -181,17 +191,18 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
         const metadata = await metadataService.extractMetadata(path)
 
         // Обновляем метаданные в backend через UpdateMedia команду
+        // Backend отправит MediaUpdated событие, которое обновит локальный state
         if (metadata) {
-          const backendState = await backendSync.getProjectState()
-          const mediaItems = backendState?.project?.media_pool?.items
-            ? Object.values(backendState.project.media_pool.items).filter(
-                (item): item is import("@/types/generated/tauri-bindings").MediaItem => item !== undefined,
-              )
-            : []
-          const mediaFile = mediaItems.find((file) => file.path === path)
+          const mediaInfo = Array.from(mediaPool.values()).find((media) => media.path === path)
 
-          if (mediaFile) {
-            await backendSync.executeCommand(AppCommands.updateMedia(mediaFile.id, {}))
+          if (mediaInfo) {
+            // Находим media ID в pool и обновляем через команду
+            const mediaId = Array.from(mediaPool.entries()).find(([, media]) => media.path === path)?.[0]
+
+            if (mediaId) {
+              await backendSync.executeCommand(AppCommands.updateMedia(mediaId, {}))
+              // НЕ обновляем state напрямую - ждем события MediaUpdated
+            }
           }
         }
 
@@ -209,6 +220,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
   const value: MediaManagementContextValue = {
     ...mediaManagementService,
+    mediaPool,
     fileOperationsState: {
       operations: fileOperations,
       hasActiveOperations: fileOperations.some((op) => op.status === "in_progress"),

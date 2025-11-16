@@ -3,13 +3,17 @@
  *
  * Провайдер Browser домена с использованием BackendSync
  * Все состояние хранится на бэкенде и синхронизируется
+ * Использует event-driven архитектуру для инкрементальных обновлений
  */
 
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react"
+import { useSelector } from "@xstate/react"
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef } from "react"
+import { createActor } from "xstate"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
+  BrowserEvent,
   BrowserState,
   BrowserTab,
   ProjectCommand,
@@ -17,6 +21,7 @@ import type {
   TabSettings,
   ViewMode,
 } from "@/types/generated/tauri-bindings"
+import { browserMachine } from "../machines/browser-machine"
 
 const logger = createLogger("BrowserProvider")
 
@@ -74,137 +79,177 @@ const DEFAULT_TAB_SETTINGS: TabSettings = {
 
 export function BrowserProvider({ children }: BrowserProviderProps) {
   const backendSync = getBackendSync()
-  const [browserState, setBrowserState] = useState<BrowserState | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  // Initialize and subscribe to backend
+  // ✅ НОВАЯ АРХИТЕКТУРА: Используем XState машину для кэширования состояния
+  const browserActorRef = useRef(createActor(browserMachine))
+  const browserActor = browserActorRef.current
+
+  // Запускаем актор при монтировании
   useEffect(() => {
-    const handleBrowserEvent = (event: ProjectEvent) => {
-      logger.info("BrowserProvider: Received browser event", { eventType: event.type })
+    browserActor.start()
+    return () => {
+      browserActor.stop()
+    }
+  }, [browserActor])
 
-      // List of browser-related events that trigger state refresh
-      const browserEventTypes = [
-        "BrowserTabSwitched",
-        "BrowserSearchQueryChanged",
-        "BrowserFavoritesToggled",
-        "BrowserSortChanged",
-        "BrowserGroupByChanged",
-        "BrowserFilterChanged",
-        "BrowserViewModeChanged",
-        "BrowserPreviewSizeChanged",
-        "BrowserTabSettingsReset",
-        "BrowserFileSelected",
-        "BrowserFileDeselected",
-        "BrowserFileSelectionToggled",
-        "BrowserAllFilesSelected",
-        "BrowserAllFilesDeselected",
-      ]
+  // Получаем состояние из машины через useSelector
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
+  const selectedFiles = useSelector(browserActor, (state) => state.context.selectedFiles)
+  const isLoading = useSelector(browserActor, (state) => state.context.isLoading)
+  const error = useSelector(browserActor, (state) => state.context.error)
 
-      if (browserEventTypes.includes(event.type as any)) {
-        logger.info("BrowserProvider: Refreshing browser state after event", { eventType: event.type })
-        refreshBrowserState()
+  // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ (не на state changes)
+  useEffect(() => {
+    const handleBackendEvent = (event: ProjectEvent) => {
+      logger.info("[BrowserProvider] Received backend event, forwarding to machine", {
+        eventType: event.type,
+      })
+
+      // Проверяем, является ли это Browser событием
+      if (event.type === "Browser") {
+        const browserEvent = event.payload as BrowserEvent
+
+        // Отправляем событие напрямую в машину для инкрементальных обновлений
+        browserActor.send({
+          type: "BACKEND_EVENT",
+          event: browserEvent,
+        })
       }
     }
 
-    // Subscribe to backend events
-    const unsubscribeEvents = backendSync.onEvent(handleBrowserEvent)
+    // Подписываемся на backend события
+    const unsubscribeEvents = backendSync.onEvent(handleBackendEvent)
 
-    // Subscribe to state changes
+    // ✅ Подписываемся на state changes ТОЛЬКО для инициализации
+    // (когда проект открывается в первый раз)
     const unsubscribeState = backendSync.onStateChange((state) => {
-      logger.info("BrowserProvider: Received state change", {
-        hasBrowserState: !!state?.browser_state,
-        activeTab: state?.browser_state?.active_tab,
-      })
+      // Обновляем только если состояние браузера изменилось
       if (state?.browser_state) {
-        setBrowserState(state.browser_state)
+        logger.info("[BrowserProvider] Initializing from backend state", {
+          activeTab: state.browser_state.active_tab,
+        })
+
+        // Синхронизируем начальное состояние с машиной
+        if (state.browser_state.active_tab) {
+          browserActor.send({
+            type: "SWITCH_TAB",
+            tab: state.browser_state.active_tab,
+          })
+        }
+
+        // TODO: синхронизировать tabSettings и selectedFiles при инициализации
       }
     })
 
-    // Initial state load
-    refreshBrowserState()
+    // Получаем начальное состояние (только при mount)
+    // Устанавливаем loading в true перед загрузкой
+    browserActor.send({ type: "SET_LOADING", isLoading: true })
+
+    backendSync
+      .getProjectState()
+      .then((state) => {
+        if (state?.browser_state) {
+          logger.info("[BrowserProvider] Initial state loaded", {
+            activeTab: state.browser_state.active_tab,
+          })
+
+          if (state.browser_state.active_tab) {
+            browserActor.send({
+              type: "SWITCH_TAB",
+              tab: state.browser_state.active_tab,
+            })
+          }
+        }
+      })
+      .catch((err) => {
+        logger.error("[BrowserProvider] Failed to load initial state:", err)
+        browserActor.send({ type: "SET_ERROR", error: err instanceof Error ? err.message : "Failed to load state" })
+      })
+      .finally(() => {
+        // Устанавливаем loading в false после загрузки
+        browserActor.send({ type: "SET_LOADING", isLoading: false })
+      })
 
     return () => {
       unsubscribeEvents()
       unsubscribeState()
     }
-  }, [backendSync])
+  }, [backendSync, browserActor])
 
-  const refreshBrowserState = async () => {
-    try {
-      setIsLoading(true)
-      const state = await backendSync.getProjectState()
-      if (state?.browser_state) {
-        setBrowserState(state.browser_state)
-      }
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to refresh browser state")
-      logger.error("Failed to refresh browser state:", { error: err })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // ❌ УДАЛЕНО: refreshBrowserState - больше не нужен
+  // События обновляют состояние инкрементально через машину
 
+  // ✅ Вспомогательная функция для выполнения команд
   const executeBrowserCommand = async (command: ProjectCommand): Promise<void> => {
     try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+
       const result = await backendSync.executeCommand(command)
+
       if (!result.success) {
         throw new Error(result.error || `Failed to execute ${command.type}`)
       }
-      // Manually refresh state after command execution
-      await refreshBrowserState()
+
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие, которое обновит машину автоматически
+
+      // ✅ Очищаем ошибки при успешной операции
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : `Failed to execute ${command.type}`
-      setError(errorMsg)
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
       logger.error("Browser command failed:", { command, error: err })
       throw err
     }
   }
 
-  // Convenient getters
-  const activeTab: BrowserTab = browserState?.active_tab || "media"
-
+  // Convenient getters из машины
   const currentTabSettings: TabSettings = useMemo(() => {
-    if (!browserState?.tab_settings) return DEFAULT_TAB_SETTINGS
-    return browserState.tab_settings[activeTab] || DEFAULT_TAB_SETTINGS
-  }, [browserState, activeTab])
+    return tabSettings[activeTab] || DEFAULT_TAB_SETTINGS
+  }, [tabSettings, activeTab])
 
-  const selectedFiles: Set<string> = useMemo(() => {
-    if (!browserState?.selected_files) return new Set()
-    const files = browserState.selected_files[activeTab] || []
+  const selectedFilesSet: Set<string> = useMemo(() => {
+    const files = selectedFiles[activeTab] || []
     return new Set(files)
-  }, [browserState, activeTab])
+  }, [selectedFiles, activeTab])
 
   const previewSize: number = useMemo(() => {
     const sizeIndex = currentTabSettings.preview_size_index
     return PREVIEW_SIZES[sizeIndex] || PREVIEW_SIZES[DEFAULT_PREVIEW_SIZE_INDEX]
   }, [currentTabSettings])
 
+  // Для совместимости с API (некоторые компоненты ожидают browserState)
+  const browserState: BrowserState | null = useMemo(
+    () => ({
+      active_tab: activeTab,
+      tab_settings: tabSettings,
+      selected_files: selectedFiles,
+    }),
+    [activeTab, tabSettings, selectedFiles],
+  )
+
   // Browser actions implementation
   const switchTab = async (tab: BrowserTab): Promise<void> => {
-    logger.info("BrowserProvider: Switching tab", { from: activeTab, to: tab })
+    logger.info("[BrowserProvider] Switching tab", { from: activeTab, to: tab })
 
-    // Optimistic update - update local state immediately
-    if (browserState) {
-      setBrowserState({
-        ...browserState,
-        active_tab: tab,
-      })
-    }
+    // ✅ Оптимистичное обновление - обновляем машину сразу
+    browserActor.send({ type: "SWITCH_TAB", tab })
 
-    // Use direct Tauri command instead of executeCommand for better debugging
+    // Отправляем команду на backend
     const { commands } = await import("@/types/generated/tauri-bindings")
     const result = await commands.browserSwitchTab(tab)
 
     if (result.status === "error") {
-      logger.error("BrowserProvider: Tab switch failed", { error: result.error })
-      // Revert optimistic update on error
-      await refreshBrowserState()
+      logger.error("[BrowserProvider] Tab switch failed", { error: result.error })
+      // При ошибке backend пришлет корректное состояние через событие
+      browserActor.send({ type: "SET_ERROR", error: result.error })
       throw new Error(result.error)
     }
 
-    logger.info("BrowserProvider: Tab switch command sent successfully")
+    logger.info("[BrowserProvider] Tab switch command sent successfully")
+    // Backend пришлет событие TabSwitched для подтверждения
   }
 
   const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {
@@ -320,7 +365,7 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     // Convenient getters
     activeTab,
     currentTabSettings,
-    selectedFiles,
+    selectedFiles: selectedFilesSet,
     previewSize,
 
     // Actions

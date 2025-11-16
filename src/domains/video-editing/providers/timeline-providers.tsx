@@ -64,34 +64,42 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
       })
     }
 
-    // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: any) => {
-      const newVersion = state.version || 0
+    // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ (не на state changes)
+    const unsubscribeEvents = backendSync.onEvent((event) => {
+      logger.info("[TimelineProjectProvider] Received backend event, forwarding to machine", {
+        eventType: event.type,
+      })
 
-      // Пропускаем обновление, если версия не изменилась
-      if (newVersion <= lastProcessedVersionRef.current) {
-        logger.debug("[TimelineProjectProvider] Skipping duplicate state update", {
-          data: { currentVersion: lastProcessedVersionRef.current, newVersion },
-        })
-        return
-      }
+      // Отправляем событие напрямую в машину для инкрементальных обновлений
+      timelineActor.send({
+        type: "BACKEND_EVENT",
+        event,
+      })
+    })
 
-      lastProcessedVersionRef.current = newVersion
-      setBackendProject(state)
+    // ✅ Подписываемся на state changes ТОЛЬКО для инициализации проекта
+    // (когда проект открывается в первый раз)
+    const unsubscribeState = backendSync.onStateChange((state: any) => {
+      // Обновляем только если проекта еще нет
+      if (!project) {
+        const newVersion = state.version || 0
+        lastProcessedVersionRef.current = newVersion
+        setBackendProject(state)
 
-      // Преобразуем ProjectState в Timeline структуру
-      const transformedProject = transformProjectStateToTimeline(state)
-      if (transformedProject) {
-        timelineActor.send({
-          type: "PROJECT_UPDATED",
-          project: transformedProject,
-        })
+        // Преобразуем начальное состояние
+        const transformedProject = transformProjectStateToTimeline(state)
+        if (transformedProject) {
+          timelineActor.send({
+            type: "PROJECT_UPDATED",
+            project: transformedProject,
+          })
+        }
       }
     })
 
-    // Получаем начальное состояние
+    // Получаем начальное состояние (только при mount)
     backendSync.getProjectState().then((state: any) => {
-      if (state) {
+      if (state && state.project) {
         const newVersion = state.version || 0
         lastProcessedVersionRef.current = newVersion
         setBackendProject(state)
@@ -108,7 +116,8 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
-      unsubscribe()
+      unsubscribeEvents()
+      unsubscribeState()
     }
   }, [backendSync, timelineActor])
 

@@ -3,16 +3,23 @@
  *
  * Предоставляет контекст для работы с System Integration доменом
  * с синхронизацией системных настроек и feature flags через backend
+ *
+ * АРХИТЕКТУРА: Event-Driven с BackendSync
+ * - Подписывается на backend события через backendSync.onEvent()
+ * - Обрабатывает события через backend-event-handlers
+ * - Синхронизирует feature flags, notifications и updates с backend
  */
 
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
+import { type SystemIntegrationContext as BackendContext, handleBackendEvent } from "../machines/backend-event-handlers"
 import {
   getSystemIntegrationOrchestrator,
   type SystemIntegrationOrchestrator,
 } from "../services/system-integration-orchestrator"
+import type { SystemNotification } from "../types"
 
 const logger = createLogger("SystemIntegrationProvider")
 
@@ -21,8 +28,13 @@ interface SystemIntegrationContextValue {
   // BackendSync status
   isConnected: boolean
   error: string | null
-  // Feature flags состояние
+  // Feature flags состояние (синхронизируется с backend)
   features: Record<string, boolean>
+  // Notifications состояние (синхронизируется с backend)
+  notifications: SystemNotification[]
+  // Update state (синхронизируется с backend)
+  updateAvailable: boolean
+  updateInfo: any | null
 }
 
 const SystemIntegrationContext = createContext<SystemIntegrationContextValue | null>(null)
@@ -36,108 +48,122 @@ interface SystemIntegrationProviderProps {
 /**
  * System Integration Provider с интеграцией BackendSync
  *
- * Синхронизирует системные настройки, feature flags и уведомления с backend
+ * EVENT-DRIVEN АРХИТЕКТУРА:
+ * - Все изменения происходят через backend события
+ * - Feature flags синхронизируются через FeatureToggled события
+ * - Notifications синхронизируются через NotificationShown/Dismissed события
+ * - Updates синхронизируются через UpdateAvailable/CheckCompleted события
  */
 export function SystemIntegrationProvider({ children, initialFeatures = {} }: SystemIntegrationProviderProps) {
   const [orchestrator] = useState(() => getSystemIntegrationOrchestrator())
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [features, setFeatures] = useState<Record<string, boolean>>(initialFeatures)
+
+  // State управляется через backend события
+  const [backendContext, setBackendContext] = useState<BackendContext>({
+    features: initialFeatures,
+    notifications: [],
+    updateAvailable: false,
+    updateInfo: null,
+    isConnected: false,
+    error: null,
+  })
+
   const backendSync = getBackendSync()
 
-  // Синхронизация с backend
+  // ✅ EVENT-DRIVEN: Подписка на backend события
   useEffect(() => {
-    logger.info("[System Integration Provider] Initializing with BackendSync")
+    logger.info("[System Integration Provider] Initializing with BackendSync (Event-Driven)")
 
-    // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((_state: ProjectState) => {
-      setIsConnected(true)
-      logger.debug("[System Integration] State synced from backend")
-    })
+    // Подключаемся к backend
+    if (!backendSync.connected) {
+      backendSync.connect().catch((error) => {
+        logger.error("Failed to connect backend sync", { error })
+        setError(error.message || "Failed to connect to backend")
+      })
+    }
 
-    // Подписываемся на события backend
+    // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      switch (event.type) {
-        case "NotificationShown":
-          if (event.payload && "notification" in event.payload) {
-            const notification = event.payload.notification
-            orchestrator.showNotification({
-              notification_type: notification.notification_type,
-              type: notification.notification_type as "info" | "success" | "warning" | "error",
-              title: notification.title,
-              message: notification.message,
-              duration: notification.duration ?? undefined,
-            })
-          }
-          break
+      logger.info("[SystemIntegrationProvider] Received backend event", { eventType: event.type })
 
-        case "FeatureToggled":
-          if (event.payload && "feature" in event.payload && "enabled" in event.payload) {
-            const { feature, enabled } = event.payload
+      // Обрабатываем событие через backend-event-handlers
+      const updates = handleBackendEvent(backendContext, event)
+
+      // Применяем обновления к контексту
+      if (Object.keys(updates).length > 0) {
+        setBackendContext((prev) => ({
+          ...prev,
+          ...updates,
+        }))
+
+        // Синхронизируем с orchestrator для обратной совместимости
+        if (updates.features) {
+          Object.entries(updates.features).forEach(([feature, enabled]) => {
             orchestrator.toggleFeature(feature, enabled)
-            setFeatures((prev) => ({
-              ...prev,
-              [feature]: enabled,
-            }))
-          }
-          break
+          })
+        }
 
-        case "UpdateAvailable":
-          orchestrator.checkForUpdates()
-          break
+        if (updates.notifications) {
+          // Orchestrator уже управляет своими notifications
+          // Здесь мы просто синхронизируем state
+        }
       }
     })
 
-    // Устанавливаем начальные feature flags
-    const defaultFeatures = {
-      aiAnalysis: true,
-      smartMontage: true,
-      visionService: true,
-      multiCamera: true,
-      ...initialFeatures,
+    // Подписываемся на изменения backend состояния (для connection status)
+    const unsubscribeState = backendSync.onStateChange((_state: ProjectState) => {
+      setIsConnected(true)
+      setBackendContext((prev) => ({
+        ...prev,
+        isConnected: true,
+      }))
+      logger.debug("[System Integration] Backend connected")
+    })
+
+    // ✅ Инициализация начальных feature flags через backend команду
+    const initializeFeatureFlags = async () => {
+      const defaultFeatures = {
+        aiAnalysis: true,
+        smartMontage: true,
+        visionService: true,
+        multiCamera: true,
+        ...initialFeatures,
+      }
+
+      // Отправляем начальные feature flags в backend
+      for (const [feature, enabled] of Object.entries(defaultFeatures)) {
+        try {
+          await backendSync.executeCommand({
+            type: "ToggleFeature",
+            params: { feature, enabled },
+          })
+          logger.debug(`[System Integration] Initialized feature flag: ${feature} = ${enabled}`)
+        } catch (error) {
+          logger.warn(`Failed to initialize feature flag ${feature}:`, { error })
+          // Fallback: устанавливаем локально
+          orchestrator.toggleFeature(feature, enabled)
+        }
+      }
     }
 
-    // Инициализируем feature flags локально
-    // TODO: Когда backend будет поддерживать feature flags, добавить синхронизацию
-    setFeatures(defaultFeatures)
-    Object.entries(defaultFeatures).forEach(([feature, enabled]) => {
-      orchestrator.toggleFeature(feature, enabled)
-    })
+    initializeFeatureFlags()
 
     return () => {
       logger.info("[System Integration Provider] Cleanup")
-      unsubscribe()
       unsubscribeEvents()
+      unsubscribeState()
     }
   }, [orchestrator, initialFeatures, backendSync])
-
-  // Синхронизация изменений feature flags
-  useEffect(() => {
-    // TODO: Когда backend будет поддерживать feature flag commands,
-    // добавить синхронизацию изменений с backend
-    // Пока feature flags управляются только локально
-
-    return () => {
-      // Cleanup
-    }
-  }, [backendSync])
-
-  // Синхронизация системных уведомлений
-  useEffect(() => {
-    // TODO: Когда backend будет поддерживать notification sync commands,
-    // добавить периодическую синхронизацию непрочитанных уведомлений
-    // Пока уведомления управляются только локально
-
-    return () => {
-      // Cleanup
-    }
-  }, [orchestrator, backendSync])
 
   const value: SystemIntegrationContextValue = {
     orchestrator,
     isConnected,
     error,
-    features,
+    features: backendContext.features,
+    notifications: backendContext.notifications,
+    updateAvailable: backendContext.updateAvailable,
+    updateInfo: backendContext.updateInfo,
   }
 
   return <SystemIntegrationContext.Provider value={value}>{children}</SystemIntegrationContext.Provider>
@@ -158,17 +184,37 @@ export function useSystemIntegrationContext() {
 
 /**
  * Hook для работы с feature flags
+ *
+ * EVENT-DRIVEN: Все изменения feature flags проходят через backend команды
+ * и обновляются через события FeatureToggled
  */
 export function useFeatureFlags() {
   const { features, orchestrator, isConnected } = useSystemIntegrationContext()
+  const backendSync = getBackendSync()
 
-  const toggleFeature = (feature: string, enabled: boolean) => {
+  const toggleFeature = async (feature: string, enabled: boolean) => {
     if (!isConnected) {
       logger.warn("Warning", {
         data: "[System Integration] Backend not connected, feature flag change may not persist",
       })
     }
-    orchestrator.toggleFeature(feature, enabled)
+
+    try {
+      // ✅ Отправляем команду в backend - state обновится через событие FeatureToggled
+      await backendSync.executeCommand({
+        type: "ToggleFeature",
+        params: { feature, enabled },
+      })
+      logger.info(`[System Integration] Feature flag toggled: ${feature} = ${enabled}`)
+
+      // Также обновляем orchestrator для обратной совместимости
+      orchestrator.toggleFeature(feature, enabled)
+    } catch (error) {
+      logger.error(`Failed to toggle feature ${feature}:`, { error })
+      // Fallback: обновляем локально
+      orchestrator.toggleFeature(feature, enabled)
+      throw error
+    }
   }
 
   const isFeatureEnabled = (feature: string): boolean => {

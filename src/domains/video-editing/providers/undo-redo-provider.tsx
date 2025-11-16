@@ -7,7 +7,17 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
+import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
+import {
+  createInitialUndoState,
+  handleHistoryLoaded,
+  handleUndoBackendEvent,
+  type UndoAction,
+  type UndoRedoState,
+} from "../machines/undo-backend-event-handlers"
 
 const logger = createLogger("UndoRedoProvider")
 
@@ -27,31 +37,15 @@ interface Track {
   type: string
 }
 
-interface ProjectState {
-  undo_redo_state?: {
-    history?: any[]
-  }
-}
-
-// Mock backend sync
-interface BackendSync {
-  onStateChange: (callback: (state: ProjectState) => void) => () => void
-  onEvent: (callback: (event: any) => void) => () => void
-  executeCommand: (command: any) => Promise<any>
-}
-
-const mockBackendSync: BackendSync = {
-  onStateChange: (_callback) => () => {},
-  onEvent: (_callback) => () => {},
-  executeCommand: (_command) => Promise.resolve({ success: true }),
-}
-
-import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
-
 interface UndoRedoContextType {
   registerAction: ReturnType<typeof useUndoRedo>["registerAction"]
   startGrouping: ReturnType<typeof useUndoRedo>["startGrouping"]
   endGrouping: ReturnType<typeof useUndoRedo>["endGrouping"]
+  // Backend state
+  canUndo: boolean
+  canRedo: boolean
+  undoHistory: UndoAction[]
+  redoHistory: UndoAction[]
   // BackendSync status
   isConnected: boolean
   error: string | null
@@ -73,58 +67,88 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
   const undoRedo = useUndoRedo()
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const backendSync = mockBackendSync
+  const [undoState, setUndoState] = useState<UndoRedoState>(createInitialUndoState())
 
-  // Синхронизация истории с backend
+  // Получаем backend sync
+  const backendSync = getBackendSync()
+
+  // Подключение к backend и подписка на события
   useEffect(() => {
-    // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      setIsConnected(true)
+    let mounted = true
 
-      // Восстанавливаем историю из backend при загрузке
-      if (state.undo_redo_state && state.undo_redo_state.history) {
-        logger.debug("[UndoRedo] Restored history from backend:", {
-          data: `${state.undo_redo_state.history.length} actions`,
-        })
-        // Здесь можно восстановить историю в UndoRedoService
-        // Для этого потребуется добавить метод в сервис
-      }
-    })
+    const connectAndSubscribe = async () => {
+      try {
+        await backendSync.connect()
 
-    // Подписываемся на события backend
-    const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "UNDO_PERFORMED") {
-        logger.debug("[UndoRedo] Undo performed on backend:", { data: event.data.actionId })
-      } else if (event.type === "REDO_PERFORMED") {
-        logger.debug("[UndoRedo] Redo performed on backend:", { data: event.data.actionId })
+        if (!mounted) return
+
+        setIsConnected(true)
+
+        // Загружаем историю из backend
+        const result = await backendSync.executeCommand({
+          type: "GetUndoHistory",
+        } as ProjectCommand)
+
+        if (result.success && result.data && mounted) {
+          const updates = handleHistoryLoaded(undoState, result.data)
+          setUndoState((prev) => ({ ...prev, ...updates }))
+        }
+      } catch (error) {
+        if (mounted) {
+          logger.error("Failed to connect to backend:", { error })
+          setError(error instanceof Error ? error.message : String(error))
+          setIsConnected(false)
+        }
       }
-    })
+    }
+
+    connectAndSubscribe()
 
     return () => {
-      unsubscribe()
-      unsubscribeEvents()
+      mounted = false
     }
   }, [backendSync])
+
+  // Подписка на события backend
+  useEffect(() => {
+    const unsubscribe = backendSync.onEvent((event: ProjectEvent) => {
+      // Обрабатываем только Undo/Redo события
+      if (
+        event.type === "UndoPerformed" ||
+        event.type === "RedoPerformed" ||
+        event.type === "ActionRegistered" ||
+        event.type === "UndoHistoryCleared"
+      ) {
+        const updates = handleUndoBackendEvent(undoState, event)
+        setUndoState((prev) => ({ ...prev, ...updates }))
+      }
+    })
+
+    return unsubscribe
+  }, [backendSync, undoState])
 
   // Оборачиваем registerAction для синхронизации с backend
   const registerActionWithBackend: typeof undoRedo.registerAction = (action) => {
     const actionId = undoRedo.registerAction(action)
 
-    // Синхронизируем действие с backend
+    // Синхронизируем действие с backend через событие
     backendSync
       .executeCommand({
-        type: "UndoRedo",
-        params: {
-          type: "RegisterAction",
-          params: {
-            actionId,
-            action: {
-              ...action,
-              id: actionId,
-              timestamp: Date.now(),
-            },
-          },
+        type: "RegisterUndoAction",
+        action: {
+          id: actionId,
+          action_type: action.type,
+          description: action.description,
+          timestamp: new Date().toISOString(),
+          undo_data: action.undoData,
+          redo_data: action.redoData,
         },
+      } as ProjectCommand)
+      .then((result) => {
+        if (!result.success) {
+          logger.error("[UndoRedo] Failed to register action:", { error: result.error })
+          setError(result.error || "Unknown error")
+        }
       })
       .catch((err: unknown) => {
         const errorMessage = err instanceof Error ? err.message : String(err)
@@ -135,59 +159,15 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     return actionId
   }
 
-  // Оборачиваем undo/redo для синхронизации с backend
-  const originalUndo = undoRedo.undo
-  const originalRedo = undoRedo.redo
-
-  // Переопределяем методы undo/redo через контекст
-  useEffect(() => {
-    // Подписываемся на события undo/redo в сервисе
-    // и синхронизируем с backend
-    const handleUndo = async () => {
-      try {
-        await backendSync.executeCommand({
-          type: "UndoRedo",
-          params: {
-            type: "Undo",
-            params: {},
-          },
-        })
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : String(err)
-        logger.error("[UndoRedo] Failed to sync undo:", { error: err })
-        setError(errorMessage)
-      }
-    }
-
-    const handleRedo = async () => {
-      try {
-        await backendSync.executeCommand({
-          type: "UndoRedo",
-          params: {
-            type: "Redo",
-            params: {},
-          },
-        })
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : String(err)
-        logger.error("[UndoRedo] Failed to sync redo:", { error: err })
-        setError(errorMessage)
-      }
-    }
-
-    // Здесь можно добавить подписку на события сервиса
-    // если он поддерживает event emitter
-
-    return () => {
-      // Cleanup
-    }
-  }, [backendSync])
-
   // Создаем контекст с основными функциями регистрации
   const contextValue: UndoRedoContextType = {
     registerAction: registerActionWithBackend,
     startGrouping: undoRedo.startGrouping,
     endGrouping: undoRedo.endGrouping,
+    canUndo: undoState.canUndo,
+    canRedo: undoState.canRedo,
+    undoHistory: undoState.undoHistory,
+    redoHistory: undoState.redoHistory,
     isConnected,
     error,
   }

@@ -1,15 +1,17 @@
 /**
- * Project Management Domain Provider с интеграцией BackendSync
+ * Project Management Domain Provider с event-driven архитектурой
  *
- * Модульная система провайдеров для работы с управлением проектами и настройками.
- * Добавлена прямая интеграция с BackendSync для улучшенной синхронизации.
+ * Использует BackendSync для получения событий от backend.
+ * Следует паттерну Command → Event → State Update.
+ * События обрабатываются через backend-event-handlers.ts
  */
 
 import { useSelector } from "@xstate/react"
-import { createContext, type ReactNode, useContext, useEffect } from "react"
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
+import { handleProjectBackendEvent, type ProjectManagementContext } from "../machines/backend-event-handlers"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "../services/project-management-orchestrator"
 
@@ -40,79 +42,227 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const backendSync = getBackendSync()
   const isBackendConnected = backendSync.connected
 
+  // ✅ НОВАЯ АРХИТЕКТУРА: Локальное состояние для event-driven обновлений
+  const [localContext, setLocalContext] = useState<ProjectManagementContext>({
+    projectState: null,
+    isLoading: false,
+    hasUnsavedChanges: false,
+    error: null,
+  })
+
+  // Получаем состояние из appActor (для совместимости)
   const projectState = useSelector(appActor, (state) => state.context.projectState)
   const isLoading = useSelector(appActor, (state) => state.matches({ connected: "executing" }))
-  const hasUnsavedChanges = useSelector(appActor, (_state) => {
-    // Check if project has unsaved changes based on dirty flag
-    // TODO: Add dirty flag tracking to ProjectState or implement change detection
-    return false
-  })
+
+  // Используем локальное состояние если оно обновлено событиями, иначе из актора
+  const effectiveProjectState = localContext.projectState ?? projectState
+  const effectiveIsLoading = localContext.isLoading || isLoading
+  const effectiveHasUnsavedChanges = localContext.hasUnsavedChanges
+
+  // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ
+  useEffect(() => {
+    const handleBackendEvent = (event: ProjectEvent) => {
+      logger.info("[ProjectProvider] Received backend event:", { eventType: event.type })
+
+      // Проверяем, является ли это событие проекта
+      if (
+        event.type === "ProjectCreated" ||
+        event.type === "ProjectOpened" ||
+        event.type === "ProjectSaved" ||
+        event.type === "ProjectClosed"
+      ) {
+        // Используем event handler для обновления состояния
+        const updates = handleProjectBackendEvent(localContext, event)
+
+        // Применяем обновления к локальному контексту
+        setLocalContext((prev) => ({
+          ...prev,
+          ...updates,
+        }))
+
+        // Если проект открыт или создан, получаем полное состояние
+        if (event.type === "ProjectOpened" || event.type === "ProjectCreated") {
+          backendSync
+            .getProjectState()
+            .then((state) => {
+              logger.info("[ProjectProvider] Project state loaded after event")
+              setLocalContext((prev) => ({
+                ...prev,
+                projectState: state,
+                isLoading: false,
+              }))
+            })
+            .catch((error) => {
+              logger.error("[ProjectProvider] Failed to load project state:", { error })
+              setLocalContext((prev) => ({
+                ...prev,
+                error: error instanceof Error ? error.message : "Failed to load project state",
+                isLoading: false,
+              }))
+            })
+        }
+      }
+    }
+
+    // Подписываемся на backend события
+    const unsubscribeEvents = backendSync.onEvent(handleBackendEvent)
+
+    // ✅ Получаем начальное состояние при монтировании
+    backendSync
+      .getProjectState()
+      .then((state) => {
+        if (state) {
+          logger.info("[ProjectProvider] Initial project state loaded")
+          setLocalContext((prev) => ({
+            ...prev,
+            projectState: state,
+          }))
+        }
+      })
+      .catch((error) => {
+        logger.error("[ProjectProvider] Failed to load initial project state:", { error })
+      })
+
+    return () => {
+      unsubscribeEvents()
+    }
+  }, [backendSync])
 
   // Синхронизация состояния проекта с backend
   const syncProjectState = async () => {
-    if (!isBackendConnected || !projectState) return
+    if (!isBackendConnected) return
 
     try {
-      // Backend sync уже отслеживает состояние через events
-      // Просто получаем текущее состояние для синхронизации
-      await backendSync.getProjectState()
+      setLocalContext((prev) => ({ ...prev, isLoading: true }))
+
+      const state = await backendSync.getProjectState()
       logger.info("[ProjectProvider] Project state synced with backend")
+
+      setLocalContext((prev) => ({
+        ...prev,
+        projectState: state,
+        isLoading: false,
+      }))
     } catch (error) {
-      logger.error("[ProjectProvider] Failed to sync project state:", { error: error })
+      logger.error("[ProjectProvider] Failed to sync project state:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to sync project state",
+        isLoading: false,
+      }))
     }
   }
 
-  // Автоматическая синхронизация при изменениях
-  useEffect(() => {
-    if (projectState && isBackendConnected && hasUnsavedChanges) {
-      // Debounce синхронизацию
-      const timer = setTimeout(() => {
-        syncProjectState().catch((error) => logger.error("Failed to sync project state", { error }))
-      }, 1000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [projectState, isBackendConnected, hasUnsavedChanges])
-
-  // Расширенные методы с BackendSync
+  // ✅ НОВАЯ АРХИТЕКТУРА: Методы выполняют команды, события обновляют состояние
   const createProject = async (settings: ProjectSettings) => {
-    const result = await orchestrator.createProject(settings)
+    setLocalContext((prev) => ({ ...prev, isLoading: true, error: null }))
 
-    // Backend sync автоматически получает события через project:event
-    // Дополнительная синхронизация не требуется
+    try {
+      // Выполняем команду через orchestrator
+      await orchestrator.createProject(settings)
 
-    return result
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие ProjectCreated, которое обновит состояние автоматически
+    } catch (error) {
+      logger.error("[ProjectProvider] Failed to create project:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to create project",
+        isLoading: false,
+      }))
+      throw error
+    }
   }
 
   const saveProject = async () => {
-    const result = await orchestrator.saveProject()
+    setLocalContext((prev) => ({ ...prev, isLoading: true, error: null }))
 
-    // Синхронизируем с backend после сохранения
-    if (isBackendConnected) {
-      await syncProjectState()
+    try {
+      // Выполняем команду через orchestrator
+      await orchestrator.saveProject()
+
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие ProjectSaved, которое обновит hasUnsavedChanges автоматически
+    } catch (error) {
+      logger.error("[ProjectProvider] Failed to save project:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to save project",
+        isLoading: false,
+      }))
+      throw error
     }
-
-    return result
   }
 
   const openProject = async (path: string) => {
-    const result = await orchestrator.openProject(path)
+    setLocalContext((prev) => ({ ...prev, isLoading: true, error: null }))
 
-    // Backend sync автоматически получает события через project:event
-    // Дополнительная синхронизация не требуется
+    try {
+      // Выполняем команду через orchestrator
+      await orchestrator.openProject(path)
 
-    return result
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие ProjectOpened, которое обновит состояние автоматически
+    } catch (error) {
+      logger.error("[ProjectProvider] Failed to open project:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to open project",
+        isLoading: false,
+      }))
+      throw error
+    }
+  }
+
+  const closeProject = async () => {
+    setLocalContext((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      // Выполняем команду через orchestrator
+      await orchestrator.closeProject()
+
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие ProjectClosed, которое очистит состояние автоматически
+    } catch (error) {
+      logger.error("[ProjectProvider] Failed to close project:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to close project",
+        isLoading: false,
+      }))
+      throw error
+    }
+  }
+
+  const saveProjectAs = async (path: string) => {
+    setLocalContext((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      // Выполняем команду через orchestrator
+      await orchestrator.saveProjectAs(path)
+
+      // ❌ НЕ обновляем состояние вручную!
+      // Backend пришлет событие ProjectSaved, которое обновит состояние автоматически
+    } catch (error) {
+      logger.error("[ProjectProvider] Failed to save project as:", { error })
+      setLocalContext((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Failed to save project as",
+        isLoading: false,
+      }))
+      throw error
+    }
   }
 
   const contextValue: ProjectContext = {
-    projectState,
-    isLoading,
-    hasUnsavedChanges,
+    projectState: effectiveProjectState,
+    isLoading: effectiveIsLoading,
+    hasUnsavedChanges: effectiveHasUnsavedChanges,
     createProject,
     saveProject,
-    saveProjectAs: orchestrator.saveProjectAs.bind(orchestrator),
+    saveProjectAs,
     openProject,
-    closeProject: orchestrator.closeProject.bind(orchestrator),
+    closeProject,
     syncProjectState,
     isBackendConnected,
   }
@@ -333,30 +483,13 @@ interface ProjectManagementProviderProps {
 }
 
 /**
- * ProjectManagementProvider с улучшенной BackendSync интеграцией
+ * ProjectManagementProvider с event-driven архитектурой
  *
- * Добавляет:
- * - Автоматическую синхронизацию состояния проекта
- * - Синхронизацию пользовательских настроек
- * - Мониторинг состояния backend соединения
- * - Восстановление после потери соединения
+ * Все sub-провайдеры используют BackendSync для получения событий.
+ * События обрабатываются через backend-event-handlers.ts
+ * Следует паттерну Command → Event → State Update
  */
 export function ProjectManagementProvider({ children }: ProjectManagementProviderProps) {
-  const backendSync = getBackendSync()
-
-  // Инициализация BackendSync при монтировании
-  useEffect(() => {
-    logger.info("[ProjectManagementProvider] Initializing BackendSync integration")
-
-    // Подписываемся на события backend
-    const unsubscribe = backendSync.onEvent((event) => {
-      // Логируем все события для отладки
-      logger.debug("[ProjectManagementProvider] Backend event received:", { type: event.type })
-    })
-
-    return unsubscribe
-  }, [backendSync])
-
   return (
     <ProjectProvider>
       <UserSettingsProvider>

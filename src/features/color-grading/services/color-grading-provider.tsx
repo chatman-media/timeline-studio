@@ -1,29 +1,14 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("ColorGradingProvider")
-
-// Временные типы до создания backend-sync
-interface ProjectState {
-  color_grading?: any
-}
-
-interface BackendSync {
-  executeCommand: (command: any) => Promise<any>
-  onStateChange: (callback: (state: ProjectState) => void) => () => void
-  onEvent: (callback: (event: any) => void) => () => void
-}
-
-const mockBackendSync: BackendSync = {
-  executeCommand: (_command) => Promise.resolve({ success: true }),
-  onStateChange: (_callback) => () => {},
-  onEvent: (_callback) => () => {},
-}
-
-const getBackendSync = () => mockBackendSync
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
 import { useColorGrading } from "../hooks/use-color-grading"
+import {
+  type ColorGradingContext as ColorGradingMachineContext,
+  handleBackendEvent,
+} from "../machines/backend-event-handlers"
 import type {
   BasicParametersState,
   ColorGradingState,
@@ -33,6 +18,8 @@ import type {
   RGBValue,
 } from "../types/color-grading"
 import type { ColorGradingPreset } from "../types/presets"
+
+const logger = createLogger("ColorGradingProvider")
 
 interface ColorGradingContextValue {
   state: ColorGradingState
@@ -66,70 +53,109 @@ const ColorGradingContext = createContext<ColorGradingContextValue | null>(null)
  */
 export function ColorGradingProvider({ children }: { children: ReactNode }) {
   const colorGrading = useColorGrading()
+  const [backendSync] = useState(() => getBackendSync())
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const backendSync = getBackendSync()
+
+  // Backend event context
+  const [eventContext, setEventContext] = useState<ColorGradingMachineContext>({
+    availablePresets: [],
+    appliedColorGrading: new Map(),
+    isLoading: false,
+    error: null,
+  })
 
   // Синхронизация состояния с backend
   useEffect(() => {
-    // Подписываемся на изменения backend состояния
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
-      setIsConnected(true)
-
-      // Синхронизируем состояние цветокоррекции из backend
-      if (state.color_grading) {
-        // Здесь можно восстановить состояние из backend
-        // Например, загрузить сохраненные пресеты, последние настройки и т.д.
-        logger.debugSync("Synced state from backend", { state: state.color_grading })
-      }
-    })
+    setIsConnected(true)
 
     // Подписываемся на события backend
-    const unsubscribeEvents = backendSync.onEvent((event) => {
-      if (event.type === "COLOR_GRADING_PRESET_LOADED") {
-        colorGrading.loadPreset(event.data.presetId)
-      } else if (event.type === "COLOR_GRADING_APPLIED") {
-        // Обновляем состояние после применения цветокоррекции
-        logger.debugSync("Color grading applied to clip", { clipId: event.data.clipId })
+    const unsubscribeEvents = backendSync.onEvent((event: ProjectEvent) => {
+      logger.debugSync("Received backend event", { type: event.type })
+
+      // Обрабатываем события через event handler
+      const updates = handleBackendEvent(eventContext, event)
+
+      if (Object.keys(updates).length > 0) {
+        setEventContext((prev) => ({ ...prev, ...updates }))
+
+        // Синхронизируем с локальным состоянием color grading
+        if (event.type === "ColorGradingApplied") {
+          const { clip_id, preset_id } = event.payload
+          if (preset_id && colorGrading.state.selectedClip === clip_id) {
+            colorGrading.loadPreset(preset_id)
+          }
+        } else if (event.type === "ColorGradingReset") {
+          const { clip_id } = event.payload
+          if (colorGrading.state.selectedClip === clip_id) {
+            colorGrading.resetAll()
+          }
+        }
       }
     })
 
     return () => {
-      unsubscribe()
       unsubscribeEvents()
     }
-  }, [backendSync, colorGrading])
+  }, [backendSync, eventContext, colorGrading])
+
+  // Load available presets from backend on mount
+  useEffect(() => {
+    const loadPresets = async () => {
+      try {
+        const result = await backendSync.executeCommand({
+          type: "GetColorGradingPresets",
+        } as any)
+
+        if (result.success && result.data && typeof result.data === "object" && "presets" in result.data) {
+          const presets: ColorGradingPreset[] = (result.data.presets as any[]).map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            category: "custom" as const,
+            isBuiltIn: false,
+            createdAt: new Date(p.added_at * 1000),
+            updatedAt: new Date(p.added_at * 1000),
+            data: p.parameters,
+          }))
+
+          setEventContext((prev) => ({
+            ...prev,
+            availablePresets: presets,
+          }))
+        }
+      } catch (err) {
+        void logger.error("Failed to load presets from backend", { error: String(err) })
+      }
+    }
+
+    void loadPresets()
+  }, [backendSync])
 
   // Переопределяем applyToClip для синхронизации с backend
   const applyToClipWithBackend = async () => {
     if (!colorGrading.state.selectedClip) return
 
     try {
-      // Создаем объект цветокоррекции
-      const colorGradingData = {
-        id: `color-grading-${Date.now()}`,
+      // Создаем объект параметров цветокоррекции
+      const parameters = {
         colorWheels: colorGrading.state.colorWheels,
         basicParameters: colorGrading.state.basicParameters,
         curves: colorGrading.state.curves,
         lut: colorGrading.state.lut,
-        presetId: colorGrading.state.currentPreset,
-        isEnabled: true,
       }
 
       // Отправляем команду на backend
       await backendSync.executeCommand({
-        type: "Effects",
+        type: "ApplyColorGrading",
         params: {
-          type: "ApplyColorGrading",
-          params: {
-            clipId: colorGrading.state.selectedClip,
-            colorGrading: colorGradingData,
-          },
+          clip_id: colorGrading.state.selectedClip,
+          preset_id: colorGrading.state.currentPreset,
+          parameters: parameters as any, // Complex nested state, cast to any for backend
         },
-      })
+      } as any)
 
-      // Вызываем оригинальный метод для локального обновления
-      colorGrading.applyToClip()
+      // Локальное обновление обрабатывается через события backend
+      // Не вызываем colorGrading.applyToClip() напрямую - wait for event
     } catch (err) {
       void logger.error("Failed to apply color grading", { error: String(err) })
       setError(err instanceof Error ? err.message : "Failed to apply color grading")
@@ -139,33 +165,24 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
   // Переопределяем savePreset для синхронизации с backend
   const savePresetWithBackend = async (name: string) => {
     try {
-      const preset: ColorGradingPreset = {
-        id: `preset-custom-${Date.now()}`,
-        name,
-        category: "custom",
-        isBuiltIn: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        data: {
-          colorWheels: colorGrading.state.colorWheels,
-          basicParameters: colorGrading.state.basicParameters,
-          curves: colorGrading.state.curves,
-          lut: colorGrading.state.lut,
-        },
+      const parameters = {
+        colorWheels: colorGrading.state.colorWheels,
+        basicParameters: colorGrading.state.basicParameters,
+        curves: colorGrading.state.curves,
+        lut: colorGrading.state.lut,
       }
 
       // Сохраняем пресет на backend
       await backendSync.executeCommand({
-        type: "Effects",
+        type: "SaveColorGradingPreset",
         params: {
-          type: "SaveColorGradingPreset",
-          params: {
-            preset,
-          },
+          name,
+          parameters: parameters as any, // Complex nested state, cast to any for backend
         },
-      })
+      } as any)
 
-      // Вызываем оригинальный метод для локального сохранения
+      // Backend event будет обновлять список пресетов
+      // Вызываем локальное сохранение для немедленного feedback
       colorGrading.savePreset(name)
     } catch (err) {
       void logger.error("Failed to save preset", { error: String(err) })
@@ -176,60 +193,24 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
   // Переопределяем loadPreset для синхронизации с backend
   const loadPresetWithBackend = async (presetId: string) => {
     try {
-      // Уведомляем backend о загрузке пресета
-      await backendSync.executeCommand({
-        type: "Effects",
-        params: {
-          type: "LoadColorGradingPreset",
-          params: {
-            presetId,
-          },
-        },
-      })
-
-      // Вызываем оригинальный метод
+      // Вызываем оригинальный метод для немедленной загрузки UI
       colorGrading.loadPreset(presetId)
+
+      // Уведомляем backend о загрузке пресета (для аналитики/истории)
+      // Это опционально, backend уже знает о пресетах
+      logger.debugSync("Loaded preset from local state", { presetId })
     } catch (err) {
       void logger.error("Failed to load preset", { error: String(err) })
       setError(err instanceof Error ? err.message : "Failed to load preset")
     }
   }
 
-  // Отслеживаем изменения состояния и синхронизируем с backend
-  useEffect(() => {
-    if (colorGrading.hasChanges && colorGrading.state.selectedClip) {
-      // Debounced синхронизация изменений с backend
-      const timer = setTimeout(() => {
-        backendSync
-          .executeCommand({
-            type: "Effects",
-            params: {
-              type: "UpdateColorGradingPreview",
-              params: {
-                clipId: colorGrading.state.selectedClip,
-                settings: {
-                  colorWheels: colorGrading.state.colorWheels,
-                  basicParameters: colorGrading.state.basicParameters,
-                  curves: colorGrading.state.curves,
-                  lut: colorGrading.state.lut,
-                },
-              },
-            },
-          })
-          .catch((err) => {
-            void logger.error("Failed to sync preview", { error: String(err) })
-          })
-      }, 500) // Задержка 500ms для debouncing
-
-      return () => clearTimeout(timer)
-    }
-  }, [colorGrading.state, colorGrading.hasChanges, backendSync])
-
   const value: ColorGradingContextValue = {
     ...colorGrading,
     applyToClip: applyToClipWithBackend,
     savePreset: savePresetWithBackend,
     loadPreset: loadPresetWithBackend,
+    availablePresets: eventContext.availablePresets,
     isConnected,
     error,
   }

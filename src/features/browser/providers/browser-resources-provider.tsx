@@ -7,7 +7,9 @@ import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
+
+import { handleBackendEvent as processBackendEvent } from "../machines/resource-backend-event-handlers"
 
 const logger = createLogger("BrowserResourcesProvider")
 
@@ -372,9 +374,15 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadLocalResources(): Promise<LoadResult> {
+    // Event-driven подход: вместо прямой загрузки ресурсов,
+    // мы ждем, что backend отправит события EffectAdded, FilterAdded, TransitionAdded
+    // для локальных ресурсов при инициализации проекта
+
     if (this.isBackendConnected) {
       try {
-        const response = await this.backendSync.executeCommand({
+        // Отправляем команду для инициализации загрузки,
+        // но НЕ обновляем state напрямую - ждем события
+        await this.backendSync.executeCommand({
           type: "LoadResources",
           params: {
             resource_type: "effect",
@@ -383,31 +391,22 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           },
         })
 
-        if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data as any
-          this.resources.set("effect:local", effects)
-          this.resources.set("filter:local", filters)
-          this.resources.set("transition:local", transitions)
+        logger.debugSync("Initiated local resources loading from backend, waiting for events")
 
-          logger.debugSync("Loaded local resources from backend", {
-            effects: effects.length,
-            filters: filters.length,
-            transitions: transitions.length,
-          })
-
-          return {
-            success: true,
-            data: [...effects, ...filters, ...transitions],
-            source: "local",
-            timestamp: Date.now(),
-          }
+        // Backend отправит события EffectAdded, FilterAdded, TransitionAdded
+        // которые обработает handleBackendEvent()
+        return {
+          success: true,
+          data: [],
+          source: "local",
+          timestamp: Date.now(),
         }
       } catch (error) {
-        void logger.error("Failed to load local resources from backend", { error: String(error) })
+        void logger.error("Failed to initiate local resources loading", { error: String(error) })
       }
     }
 
-    // Fallback к пустым ресурсам
+    // Fallback: инициализируем пустыми массивами
     this.resources.set("effect:local", [])
     this.resources.set("filter:local", [])
     this.resources.set("transition:local", [])
@@ -421,9 +420,12 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadRemoteResources(): Promise<LoadResult> {
+    // Event-driven подход: команда инициирует загрузку,
+    // backend отправит события для добавленных ресурсов
+
     if (this.isBackendConnected) {
       try {
-        const response = await this.backendSync.executeCommand({
+        await this.backendSync.executeCommand({
           type: "LoadResources",
           params: {
             resource_type: "effect",
@@ -432,25 +434,21 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           },
         })
 
-        if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data as any
-          this.resources.set("effect:remote", effects)
-          this.resources.set("filter:remote", filters)
-          this.resources.set("transition:remote", transitions)
+        logger.debugSync("Initiated remote resources loading from backend, waiting for events")
 
-          return {
-            success: true,
-            data: [...effects, ...filters, ...transitions],
-            source: "remote",
-            timestamp: Date.now(),
-          }
+        // Backend отправит события EffectAdded, FilterAdded, TransitionAdded
+        return {
+          success: true,
+          data: [],
+          source: "remote",
+          timestamp: Date.now(),
         }
       } catch (error) {
-        void logger.error("Failed to load remote resources", { error: String(error) })
+        void logger.error("Failed to initiate remote resources loading", { error: String(error) })
       }
     }
 
-    // Fallback к пустым ресурсам
+    // Fallback: инициализируем пустыми массивами
     this.resources.set("effect:remote", [])
     this.resources.set("filter:remote", [])
     this.resources.set("transition:remote", [])
@@ -464,9 +462,12 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   }
 
   private async loadImportedResources(): Promise<LoadResult> {
+    // Event-driven подход: команда инициирует загрузку,
+    // backend отправит события ImportedMediaAdded, EffectAdded и т.д.
+
     if (this.isBackendConnected) {
       try {
-        const response = await this.backendSync.executeCommand({
+        await this.backendSync.executeCommand({
           type: "LoadResources",
           params: {
             resource_type: "effect",
@@ -475,25 +476,21 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
           },
         })
 
-        if (response.success && response.data) {
-          const { effects = [], filters = [], transitions = [] } = response.data as any
-          this.resources.set("effect:imported", effects)
-          this.resources.set("filter:imported", filters)
-          this.resources.set("transition:imported", transitions)
+        logger.debugSync("Initiated imported resources loading from backend, waiting for events")
 
-          return {
-            success: true,
-            data: [...effects, ...filters, ...transitions],
-            source: "imported",
-            timestamp: Date.now(),
-          }
+        // Backend отправит события ImportedMediaAdded, EffectAdded, FilterAdded, TransitionAdded
+        return {
+          success: true,
+          data: [],
+          source: "imported",
+          timestamp: Date.now(),
         }
       } catch (error) {
-        void logger.error("Failed to load imported resources", { error: String(error) })
+        void logger.error("Failed to initiate imported resources loading", { error: String(error) })
       }
     }
 
-    // Fallback к пустым ресурсам
+    // Fallback: инициализируем пустыми массивами
     this.resources.set("effect:imported", [])
     this.resources.set("filter:imported", [])
     this.resources.set("transition:imported", [])
@@ -667,6 +664,55 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     this.isBackendConnected = connected
   }
 
+  /**
+   * Обрабатывает backend события для инкрементального обновления ресурсов
+   */
+  handleBackendEvent(event: ProjectEvent): void {
+    const context = {
+      resources: this.resources,
+      loadedSources: this.loadingState.loadedSources,
+      isLoading: this.loadingState.isLoading,
+      error: this.loadingState.error,
+    }
+
+    const result = processBackendEvent(context, event)
+
+    // Применяем изменения
+    if (result.resources) {
+      this.resources = result.resources
+      // Очищаем кэш агрегированных ресурсов
+      this.resourcesCache.clear()
+    }
+
+    if (result.loadedSources) {
+      this.loadingState.loadedSources = result.loadedSources
+    }
+
+    if (result.shouldRefreshSource) {
+      // Асинхронно перезагружаем источник
+      this.refreshSource(result.shouldRefreshSource).catch((error: unknown) => {
+        void logger.error("Failed to refresh source after backend event", {
+          source: result.shouldRefreshSource,
+          error: String(error),
+        })
+      })
+    }
+
+    if (result.error) {
+      this.updateLoadingState({ error: result.error })
+    }
+
+    // Уведомляем подписчиков об обновлении
+    if (result.resources) {
+      ;(["effect", "filter", "transition", "template", "styleTemplate", "subtitle", "media"] as ResourceType[]).forEach(
+        (type) => {
+          const resources = this.getResources(type)
+          this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, resources))
+        },
+      )
+    }
+  }
+
   async syncResourcesWithBackend(source: ResourceSource): Promise<void> {
     if (!this.isBackendConnected) return
 
@@ -690,6 +736,8 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   async importResource(type: ResourceType, resource: Resource): Promise<boolean> {
     try {
       if (this.isBackendConnected) {
+        // Event-driven подход: отправляем команду,
+        // backend ответит событием EffectAdded/FilterAdded/etc.
         const response = await this.backendSync.executeCommand({
           type: "SaveResource",
           params: {
@@ -703,15 +751,24 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
         if (!response.success) {
           throw new Error(response.error || "Failed to import resource")
         }
+
+        logger.debugSync("Resource import initiated, waiting for backend event", {
+          resourceId: resource.id,
+          type,
+        })
+
+        // НЕ обновляем state напрямую - ждем события от backend
+        // События EffectAdded, FilterAdded, TransitionAdded, etc.
+        // обработает handleBackendEvent()
+      } else {
+        // Fallback: если backend не подключен, обновляем локально
+        const key = `${type}:imported`
+        const currentResources = this.resources.get(key) || []
+        this.resources.set(key, [...currentResources, resource])
+
+        // Уведомляем об обновлении
+        this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, this.getResources(type)))
       }
-
-      // Добавляем в локальный кэш
-      const key = `${type}:imported`
-      const currentResources = this.resources.get(key) || []
-      this.resources.set(key, [...currentResources, resource])
-
-      // Уведомляем об обновлении
-      this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, this.getResources(type)))
 
       return true
     } catch (error) {
@@ -726,6 +783,8 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
   async deleteResource(type: ResourceType, id: string, source: ResourceSource): Promise<boolean> {
     try {
       if (this.isBackendConnected) {
+        // Event-driven подход: отправляем команду,
+        // backend ответит событием EffectRemoved/FilterRemoved/etc.
         const response = await this.backendSync.executeCommand({
           type: "DeleteResource",
           params: {
@@ -737,18 +796,27 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
         if (!response.success) {
           throw new Error(response.error || "Failed to delete resource")
         }
+
+        logger.debugSync("Resource deletion initiated, waiting for backend event", {
+          resourceId: id,
+          type,
+        })
+
+        // НЕ обновляем state напрямую - ждем события от backend
+        // События EffectRemoved, FilterRemoved, TransitionRemoved, etc.
+        // обработает handleBackendEvent()
+      } else {
+        // Fallback: если backend не подключен, обновляем локально
+        const key = `${type}:${source}`
+        const currentResources = this.resources.get(key) || []
+        this.resources.set(
+          key,
+          currentResources.filter((r) => r.id !== id),
+        )
+
+        // Уведомляем об обновлении
+        this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, this.getResources(type)))
       }
-
-      // Удаляем из локального кэша
-      const key = `${type}:${source}`
-      const currentResources = this.resources.get(key) || []
-      this.resources.set(
-        key,
-        currentResources.filter((r) => r.id !== id),
-      )
-
-      // Уведомляем об обновлении
-      this.eventListeners.resourcesUpdate.forEach((callback) => callback(type, this.getResources(type)))
 
       return true
     } catch (error) {
@@ -771,6 +839,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
     // Очищаем кэш
     this.cache = {}
+    this.resourcesCache.clear()
 
     // Сбрасываем состояние загрузки
     this.loadingState = {
@@ -888,23 +957,32 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
 
     // Подписываемся на события backend
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      // TODO: Добавить правильные типы событий для ресурсов
       logger.debugSync("Backend event received", { eventType: event.type })
 
-      // Временно отключено до добавления правильных типов событий
-      // switch (event.type) {
-      //   case "RESOURCE_IMPORTED":
-      //     api.refreshSource("imported")
-      //     break
-      //   case "RESOURCE_DELETED":
-      //     if (event.data?.source) {
-      //       api.refreshSource(event.data.source)
-      //     }
-      //     break
-      //   case "REMOTE_RESOURCES_UPDATED":
-      //     api.refreshSource("remote")
-      //     break
-      // }
+      // Список событий для Browser Resources
+      const browserResourceEventTypes = [
+        "EffectAdded",
+        "EffectRemoved",
+        "FilterAdded",
+        "FilterRemoved",
+        "TransitionAdded",
+        "TransitionRemoved",
+        "TemplateAdded",
+        "TemplateRemoved",
+        "StyleTemplateAdded",
+        "StyleTemplateRemoved",
+        "SubtitleAdded",
+        "SubtitleRemoved",
+        "ImportedMediaAdded",
+        "ImportedMediaRemoved",
+        "ImportedMediaUpdated",
+        "ImportedMediaCleared",
+      ]
+
+      if (browserResourceEventTypes.includes(event.type)) {
+        logger.debugSync("Browser resource event detected, applying update", { eventType: event.type })
+        api.handleBackendEvent(event)
+      }
     })
 
     return () => {

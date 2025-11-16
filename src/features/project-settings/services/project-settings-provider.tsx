@@ -2,14 +2,16 @@
  * Project Settings Provider V2
  *
  * Новая версия с синхронизацией через backend
+ * Использует event-driven архитектуру для синхронизации
  */
 
 import React, { createContext, useCallback, useEffect, useState } from "react"
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
+import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./backend-event-handlers"
 
 const logger = createLogger({ module: "ProjectSettingsProvider" })
 
@@ -38,14 +40,63 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Подписка на backend состояние
+  // ✅ НОВАЯ АРХИТЕКТУРА: Подписка на backend СОБЫТИЯ (не на state changes)
   useEffect(() => {
-    const unsubscribe = backendSync.onStateChange((state: ProjectState) => {
+    const handleBackendEvent = (event: ProjectEvent) => {
+      logger.info("[ProjectSettingsProvider] Received backend event", {
+        eventType: event.type,
+      })
+
+      // Обрабатываем событие ProjectSettingsUpdated
+      const updatedSettings = handleProjectSettingsEvent(event)
+      if (updatedSettings) {
+        logger.info("[ProjectSettingsProvider] Settings updated from event", {
+          settings: updatedSettings,
+        })
+
+        // Обновляем backendState с новыми настройками
+        setBackendState((prevState) => {
+          if (!prevState?.project) return prevState
+
+          return {
+            ...prevState,
+            project: {
+              ...prevState.project,
+              settings: convertFrontendSettingsToBackend(updatedSettings),
+            },
+          }
+        })
+        setError(null)
+      }
+    }
+
+    // Подписываемся на backend события
+    const unsubscribeEvents = backendSync.onEvent(handleBackendEvent)
+
+    // Подписываемся на state changes ТОЛЬКО для инициализации
+    // (когда проект открывается в первый раз)
+    const unsubscribeState = backendSync.onStateChange((state: ProjectState) => {
+      logger.info("[ProjectSettingsProvider] Backend state changed", {
+        hasProject: !!state?.project,
+      })
       setBackendState(state)
       setError(null)
     })
 
-    return unsubscribe
+    // Получаем начальное состояние (только при mount)
+    backendSync.getProjectState().then((state) => {
+      if (state) {
+        logger.info("[ProjectSettingsProvider] Initial state loaded", {
+          hasProject: !!state.project,
+        })
+        setBackendState(state)
+      }
+    })
+
+    return () => {
+      unsubscribeEvents()
+      unsubscribeState()
+    }
   }, [backendSync])
 
   // Функция для выполнения backend команд
@@ -78,18 +129,47 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
 
   // Действия
   const updateSettings = useCallback(
-    async (_newSettings: Partial<ProjectSettings>) => {
-      // Пока backend не имеет команды для обновления настроек проекта,
-      // используем общую команду обновления проекта
-      logger.warn("Project settings update not yet implemented in backend")
+    async (newSettings: Partial<ProjectSettings>) => {
+      logger.info("[ProjectSettingsProvider] Updating settings", { newSettings })
 
-      // В будущем это будет:
-      // await executeCommand({
-      //   type: 'UpdateProjectSettings',
-      //   params: { settings: newSettings }
-      // })
+      try {
+        // Получаем текущие настройки для слияния
+        const currentSettings = backendState?.project?.settings || {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        }
+
+        // Преобразуем частичные frontend настройки в backend формат
+        const backendSettings = convertFrontendSettingsToBackend(newSettings)
+
+        // Объединяем с текущими настройками
+        const mergedSettings = {
+          ...currentSettings,
+          ...backendSettings,
+        }
+
+        logger.info("[ProjectSettingsProvider] Sending UpdateProjectSettings command", {
+          mergedSettings,
+        })
+
+        // ✅ Отправляем команду на backend
+        await executeCommand({
+          type: "UpdateProjectSettings",
+          params: { settings: mergedSettings },
+        })
+
+        // ❌ НЕ обновляем состояние вручную!
+        // Backend пришлет событие ProjectSettingsUpdated, которое обновит состояние автоматически
+      } catch (err) {
+        logger.error("[ProjectSettingsProvider] Failed to update settings", {
+          error: err,
+        })
+        throw err
+      }
     },
-    [executeCommand],
+    [executeCommand, backendState],
   )
 
   const resetSettings = useCallback(async () => {

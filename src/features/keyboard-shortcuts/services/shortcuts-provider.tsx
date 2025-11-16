@@ -46,12 +46,16 @@ interface ShortcutsProviderProps {
 }
 
 /**
- * Провайдер для управления клавиатурными сочетаниями с интеграцией BackendSync
+ * Провайдер для управления клавиатурными сочетаниями
  *
- * Добавлено:
- * - Синхронизация пользовательских shortcuts с backend
- * - Статистика использования shortcuts
- * - Синхронизация между окнами/устройствами
+ * АРХИТЕКТУРА: Local-first с Backend Analytics
+ * - Shortcuts хранятся локально в IndexedDB (user preferences)
+ * - Backend sync используется только для аналитики (LogUserAction)
+ * - Статистика использования отслеживается и логируется
+ * - События ProjectOpened триггерят перезагрузку из local storage
+ *
+ * NOTE: Shortcuts не являются частью project state, поэтому
+ * не требуют полной event-driven sync как timeline/media data
  */
 export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const { openModal } = useModal()
@@ -64,46 +68,46 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const [isGlobalEnabled, setIsGlobalEnabled] = useState(false)
   const [shortcutUsageStats, setShortcutUsageStats] = useState<{ [shortcutId: string]: number }>({})
 
-  // Синхронизация shortcuts с backend
+  // Note: Shortcuts are USER SETTINGS (local-only), stored in IndexedDB
+  // They don't need backend project state sync, only analytics logging
   const syncShortcuts = async () => {
     if (!isBackendConnected) return
 
     try {
-      // TODO: Implement proper shortcuts sync command in backend
-      // For now, sync via SyncUserSettings
+      // Log shortcuts configuration change for analytics
       await backendSync.executeCommand({
-        type: "SyncUserSettings",
+        type: "LogUserAction",
         params: {
-          settings: {
-            shortcuts: shortcuts.map((s) => ({ id: s.id, keys: s.keys })),
+          action: "shortcuts:sync",
+          timestamp: new Date().toISOString(),
+          metadata: {
+            shortcutsCount: shortcuts.length,
             globalEnabled: isGlobalEnabled,
             context: currentContext,
-            usageStats: shortcutUsageStats,
+            totalUsage: Object.values(shortcutUsageStats).reduce((sum, count) => sum + count, 0),
           },
         },
       })
 
-      logger.info("[ShortcutsProvider] Shortcuts synced with backend")
+      logger.info("[ShortcutsProvider] Shortcuts synced (analytics logged)")
     } catch (error) {
-      logger.error("[ShortcutsProvider] Failed to sync shortcuts:", { error })
+      logger.error("[ShortcutsProvider] Failed to sync shortcuts analytics:", { error })
     }
   }
 
-  // Подписка на backend события
+  // Подписка на backend события для analytics и логирования
   useEffect(() => {
     const unsubscribeConnection = backendSync.onStateChange((_state: ProjectState) => {
       setIsBackendConnected(true)
-
-      // Восстанавливаем shortcuts из backend
-      // TODO: ProjectState doesn't have user_settings property yet
-      // Need to implement proper state structure in backend
       logger.info("[ShortcutsProvider] Backend connection established")
     })
 
+    // Note: Shortcuts are user preferences (local-only), not project state
+    // No need to listen to backend events for shortcuts themselves
+    // We only log usage analytics to backend via LogUserAction
     const unsubscribeEvents = backendSync.onEvent((event) => {
-      // TODO: Add SHORTCUTS_UPDATED event type to ProjectEvent
       if (event.type === "ProjectOpened") {
-        // Reload shortcuts when project is opened
+        // Reload shortcuts from local storage when project opens
         loadSettings().catch((error) => logger.error("Operation failed", { error }))
       }
     })
@@ -168,7 +172,9 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                 event.preventDefault()
                 openModal("export")
                 break
-              // TODO: Добавить обработчики для остальных shortcuts
+              // Other shortcuts are handled by their respective feature components
+              default:
+                logger.debug(`Unhandled shortcut action: ${shortcut.id}`)
             }
           }
         }

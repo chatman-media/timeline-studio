@@ -1,12 +1,20 @@
-// Используем типы и машину из домена
+/**
+ * Modal Provider - Event-driven Architecture
+ *
+ * Провайдер модальных окон с использованием BackendSync
+ * Использует event-driven архитектуру для синхронизации с backend
+ * Только важные модалы синхронизируются с backend
+ */
 
-import { useMachine } from "@xstate/react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { useSelector } from "@xstate/react"
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef } from "react"
+import { createActor } from "xstate"
 import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
-const logger = createLogger({ module: "ModalProvider" })
+const logger = createLogger("ModalProvider")
 
 // Re-export types for convenience
 export type { ModalType, ModalData }
@@ -18,24 +26,24 @@ export interface ModalContextType {
   modalType: ModalType
   modalData: ModalData | null
   isOpen: boolean
-  openModal: (modalType: ModalType, modalData?: ModalData) => void
-  closeModal: () => void
-  submitModal: (data?: ModalData) => void
-  // BackendSync status
-  isConnected: boolean
+  isLoading: boolean
+  error: string | null
+  openModal: (modalType: ModalType, modalData?: ModalData) => Promise<void>
+  closeModal: () => Promise<void>
+  submitModal: (data?: ModalData) => Promise<void>
 }
 
 /**
  * Пропсы для провайдера модальных окон
  */
 interface ModalProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 /**
  * Контекст для модальных окон
  */
-const ModalContext = createContext<ModalContextType | undefined>(undefined)
+const ModalContext = createContext<ModalContextType | null>(null)
 
 // Модальные окна, которые требуют синхронизации с backend
 const BACKEND_SYNCED_MODALS: ModalType[] = [
@@ -50,119 +58,180 @@ const BACKEND_SYNCED_MODALS: ModalType[] = [
  * Провайдер для модальных окон с выборочной синхронизацией BackendSync
  *
  * Только важные модальные окна синхронизируются с backend
+ * Использует event-driven архитектуру для инкрементальных обновлений
  */
 export function ModalProvider({ children }: ModalProviderProps) {
-  const [state, send] = useMachine(modalMachine)
-  const [isConnected, setIsConnected] = useState(false)
   const backendSync = getBackendSync()
 
-  // Проверка подключения к backend
+  // ✅ НОВАЯ АРХИТЕКТУРА: Используем XState машину для кэширования состояния
+  const modalActorRef = useRef(createActor(modalMachine))
+  const modalActor = modalActorRef.current
+
+  // Запускаем актор при монтировании
   useEffect(() => {
-    // Подписываемся на изменения backend состояния для проверки подключения
-    const unsubscribe = backendSync.onStateChange(() => {
-      setIsConnected(true)
-    })
-
-    // Подписываемся на события backend
-    const unsubscribeEvents = backendSync.onEvent((_event) => {
-      // Обработка событий, связанных с модалами (если потребуется в будущем)
-      // Например: event.type === "ModalRequested"
-    })
-
+    modalActor.start()
     return () => {
-      unsubscribe()
-      unsubscribeEvents()
+      modalActor.stop()
     }
-  }, [backendSync])
+  }, [modalActor])
 
-  // Синхронизация закрытия модального окна с backend
+  // Получаем состояние из машины через useSelector
+  const modalType = useSelector(modalActor, (state) => state.context.modalType)
+  const modalData = useSelector(modalActor, (state) => state.context.modalData)
+  const isLoading = useSelector(modalActor, (state) => state.context.isLoading ?? false)
+  const error = useSelector(modalActor, (state) => state.context.error ?? null)
+  const isOpen = useSelector(modalActor, (state) => state.matches("opened"))
+
+  // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ (не на state changes)
   useEffect(() => {
-    const isOpen = state?.matches("opened")
-    const modalType = state?.context?.modalType
+    const handleBackendEvent = (event: ProjectEvent) => {
+      logger.info("[ModalProvider] Received backend event, forwarding to machine", {
+        eventType: event.type,
+      })
 
-    // Если модальное окно закрыто и это было важное модальное окно
-    if (!isOpen && modalType && BACKEND_SYNCED_MODALS.includes(modalType)) {
-      backendSync
-        .executeCommand({
-          type: "CloseModal",
-        })
-        .catch((err) => {
-          void logger.error("Failed to sync modal close", {
-            error: String(err),
-          })
-        })
-    }
-  }, [state, backendSync])
-
-  // Actions
-  const openModal = (modalType: ModalType, modalData?: ModalData) => {
-    logger.debugSync("Opening modal window", { modalType })
-    send({ type: "OPEN_MODAL", modalType, modalData })
-
-    // Уведомляем backend об открытии модального окна
-    if (isConnected && BACKEND_SYNCED_MODALS.includes(modalType)) {
-      backendSync
-        .executeCommand({
-          type: "OpenModal",
-          params: {
-            modal_type: modalType,
-            modal_data: (modalData as any) || null,
+      // Проверяем события модалов
+      if (event.type === "ModalOpened" || event.type === "ModalClosed" || event.type === "ModalSubmitted") {
+        // Отправляем событие напрямую в машину для инкрементальных обновлений
+        modalActor.send({
+          type: "BACKEND_EVENT",
+          event: {
+            type: event.type,
+            payload: event.payload || {},
           },
-        })
-        .catch((error) => {
-          void logger.error("Failed to notify backend about modal opening", {
-            error: String(error),
-          })
-        })
-    }
-  }
-
-  const closeModal = () => {
-    logger.debugSync("Closing modal window")
-    send({ type: "CLOSE_MODAL" })
-  }
-
-  const submitModal = async (data?: ModalData) => {
-    logger.debugSync("Submitting modal data", { data })
-
-    // Уведомляем backend о закрытии модального окна с данными
-    if (state?.context?.modalType && BACKEND_SYNCED_MODALS.includes(state.context.modalType) && isConnected) {
-      try {
-        await backendSync.executeCommand({
-          type: "SubmitModal",
-          params: {
-            data: (data as any) || null,
-          },
-        })
-      } catch (error) {
-        void logger.error("Failed to sync modal submission", {
-          modalType: state.context.modalType,
-          error: String(error),
         })
       }
     }
 
-    send({ type: "SUBMIT_MODAL", data })
+    // Подписываемся на backend события
+    const unsubscribeEvents = backendSync.onEvent(handleBackendEvent)
+
+    return () => {
+      unsubscribeEvents()
+    }
+  }, [backendSync, modalActor])
+
+  // ✅ Вспомогательная функция для проверки, нужна ли backend синхронизация
+  const shouldSyncWithBackend = (type: ModalType): boolean => {
+    return BACKEND_SYNCED_MODALS.includes(type)
   }
 
-  // Context value with safe fallbacks
-  const value: ModalContextType = {
-    modalType: state?.context?.modalType ?? "none",
-    modalData: state?.context?.modalData ?? null,
-    isOpen: state?.matches("opened") ?? false,
-    openModal,
-    closeModal,
-    submitModal,
-    isConnected,
+  // Modal actions implementation
+  const openModal = async (modalType: ModalType, modalData?: ModalData): Promise<void> => {
+    logger.info("[ModalProvider] Opening modal", { modalType })
+
+    // ✅ Оптимистичное обновление - обновляем машину сразу
+    modalActor.send({ type: "OPEN_MODAL", modalType, modalData })
+
+    // Отправляем команду на backend только для важных модалов
+    if (shouldSyncWithBackend(modalType)) {
+      try {
+        modalActor.send({ type: "SET_LOADING", isLoading: true })
+
+        const result = await backendSync.executeCommand({
+          type: "OpenModal" as any,
+          params: {
+            modal_type: modalType,
+            modal_data: modalData || null,
+          },
+        })
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to open modal")
+        }
+
+        logger.info("[ModalProvider] Modal open command sent successfully")
+        // Backend пришлет событие ModalOpened для подтверждения
+
+        modalActor.send({ type: "SET_LOADING", isLoading: false })
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to open modal"
+        modalActor.send({ type: "SET_ERROR", error: errorMsg })
+        logger.error("Modal open failed:", { modalType, error: err })
+        throw err
+      }
+    }
   }
 
-  return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
+  const closeModal = async (): Promise<void> => {
+    logger.info("[ModalProvider] Closing modal", { currentModal: modalType })
+
+    // ✅ Оптимистичное обновление
+    modalActor.send({ type: "CLOSE_MODAL" })
+
+    // Отправляем команду на backend только для важных модалов
+    if (shouldSyncWithBackend(modalType)) {
+      try {
+        const result = await backendSync.executeCommand({
+          type: "CloseModal" as any,
+        })
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to close modal")
+        }
+
+        logger.info("[ModalProvider] Modal close command sent successfully")
+        // Backend пришлет событие ModalClosed для подтверждения
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to close modal"
+        modalActor.send({ type: "SET_ERROR", error: errorMsg })
+        logger.error("Modal close failed:", { error: err })
+        throw err
+      }
+    }
+  }
+
+  const submitModal = async (data?: ModalData): Promise<void> => {
+    logger.info("[ModalProvider] Submitting modal", { currentModal: modalType, data })
+
+    // ✅ Оптимистичное обновление
+    modalActor.send({ type: "SUBMIT_MODAL", data })
+
+    // Отправляем команду на backend только для важных модалов
+    if (shouldSyncWithBackend(modalType)) {
+      try {
+        const result = await backendSync.executeCommand({
+          type: "SubmitModal" as any,
+          params: {
+            data: data || null,
+          },
+        })
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to submit modal")
+        }
+
+        logger.info("[ModalProvider] Modal submit command sent successfully")
+        // Backend пришлет событие ModalSubmitted для подтверждения
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to submit modal"
+        modalActor.send({ type: "SET_ERROR", error: errorMsg })
+        logger.error("Modal submit failed:", { error: err })
+        throw err
+      }
+    }
+  }
+
+  const contextValue: ModalContextType = useMemo(
+    () => ({
+      modalType,
+      modalData,
+      isOpen,
+      isLoading,
+      error,
+      openModal,
+      closeModal,
+      submitModal,
+    }),
+    [modalType, modalData, isOpen, isLoading, error],
+  )
+
+  return <ModalContext.Provider value={contextValue}>{children}</ModalContext.Provider>
 }
 
 /**
  * Хук для использования контекста модальных окон
  */
-export function useModal() {
+export function useModal(): ModalContextType {
   const context = useContext(ModalContext)
   if (!context) {
     throw new Error("useModal must be used within a ModalProvider")
