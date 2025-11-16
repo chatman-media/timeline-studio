@@ -173,7 +173,7 @@ export const AddMediaButton = memo(function AddMediaButton({
     <button
       type="button"
       className={cn(
-        "absolute z-[1] right-1 bottom-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
+        "absolute z-1 right-1 bottom-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
         isAdded(resource.id, type)
           ? isRecentlyAdded
             ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных
@@ -197,16 +197,31 @@ export const AddMediaButton = memo(function AddMediaButton({
           <X
             className={"transition-transform duration-150 hover:scale-110"}
             strokeWidth={2}
-            style={{ color: "#000", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }}
+            style={{
+              color: "#000",
+              height: `${6 + size / 30}px`,
+              width: `${6 + size / 30}px`,
+            }}
           />
         ) : (
-          <Check strokeWidth={3} style={{ color: "#fff", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }} />
+          <Check
+            strokeWidth={3}
+            style={{
+              color: "#fff",
+              height: `${6 + size / 30}px`,
+              width: `${6 + size / 30}px`,
+            }}
+          />
         )
       ) : (
         <Plus
           className={"transition-transform duration-150 hover:scale-110"}
           strokeWidth={2}
-          style={{ color: "#fff", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }}
+          style={{
+            color: "#fff",
+            height: `${6 + size / 30}px`,
+            width: `${6 + size / 30}px`,
+          }}
         />
       )}
     </button>

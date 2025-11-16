@@ -118,9 +118,11 @@ export const VideoStream = memo(
             if (hoverTime !== null) {
               videoRef.current.currentTime = hoverTime
             }
-            videoRef.current
-              .play()
-              .catch((err: unknown) => logger.errorSync("[VideoStream] Ошибка воспроизведения:", { err }))
+            videoRef.current.play().catch((err: unknown) =>
+              logger.errorSync("[VideoStream] Ошибка воспроизведения:", {
+                err,
+              }),
+            )
           } else {
             videoRef.current.pause()
           }
@@ -149,7 +151,9 @@ export const VideoStream = memo(
         logger.debugSync(`[VideoStream] Video src: ${video.src}`)
 
         if (!file.probeData?.streams || file.probeData.streams.length === 0) {
-          logger.debugSync("No streams found in probeData for file", { fileName: file.name })
+          logger.debugSync("No streams found in probeData for file", {
+            fileName: file.name,
+          })
         }
       },
       [file, key, stream.index],
@@ -168,7 +172,9 @@ export const VideoStream = memo(
 
     const handlePlay = useCallback(
       (e: React.SyntheticEvent<HTMLVideoElement>) => {
-        logger.debugSync("Video playing for stream", { streamIndex: stream.index })
+        logger.debugSync("Video playing for stream", {
+          streamIndex: stream.index,
+        })
         const video = e.currentTarget
         if (hoverTime !== null) {
           video.currentTime = hoverTime
@@ -237,7 +243,7 @@ export const VideoStream = memo(
     return (
       <div
         key={key}
-        className="relative flex-shrink-0"
+        className="relative shrink-0"
         style={{
           height: `${size}px`,
           width:

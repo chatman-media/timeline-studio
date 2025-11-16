@@ -53,7 +53,7 @@ export const BrowserTabs = memo(({ activeTab, onTabChange }: BrowserTabsProps) =
   const { t } = useTranslation()
 
   return (
-    <div className="h-[50px] flex-shrink-0 flex justify-start border-none rounded-none dark:bg-[#2D2D2D] m-0 p-0">
+    <div className="h-[50px] shrink-0 flex justify-start border-none rounded-none dark:bg-[#2D2D2D] m-0 p-0">
       <TabButton value="media" activeTab={activeTab} onClick={onTabChange} testId="media-tab">
         <Clapperboard className="h-4 w-4" />
         <span>{t("browser.tabs.media")}</span>

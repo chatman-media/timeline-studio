@@ -142,7 +142,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
     <button
       type="button"
       className={cn(
-        "absolute z-[1] top-1 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
+        "absolute z-1 top-1 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
         isFavorite
           ? isRecentlyAdded
             ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных
@@ -165,13 +165,21 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
       {isFavorite && isHovering && canShowRemoveButton ? (
         <StarOff
           className={"transition-transform duration-150 hover:scale-110"}
-          style={{ color: "#000", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }}
+          style={{
+            color: "#000",
+            height: `${6 + size / 30}px`,
+            width: `${6 + size / 30}px`,
+          }}
           strokeWidth={1}
         />
       ) : (
         <Star
           className={"transition-transform fill-white duration-150 hover:scale-110"}
-          style={{ color: "#ffffff", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }}
+          style={{
+            color: "#ffffff",
+            height: `${6 + size / 30}px`,
+            width: `${6 + size / 30}px`,
+          }}
           strokeWidth={2}
         />
       )}

@@ -52,10 +52,18 @@ export const BrowserContent = memo(() => {
   } = currentTabSettings
 
   // Импорт медиа
-  const { importMediaFiles, importMediaFolder, isImporting: isImportingMedia } = useMediaImport()
+  const {
+    importFile: importMediaFile,
+    importFolder: importMediaFolder,
+    isImporting: isImportingMedia,
+  } = useMediaImport()
 
   // Импорт музыки
-  const { importMusicFiles, importMusicFolder, isImporting: isImportingMusic } = useMusicImport()
+  const {
+    importFile: importMusicFile,
+    importDirectory: importMusicFolder,
+    isImporting: isImportingMusic,
+  } = useMusicImport()
 
   // Используем useCallback для стабильных ссылок на функции
   const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])
@@ -106,11 +114,11 @@ export const BrowserContent = memo(() => {
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         // Импорт медиа
-        onImportMediaFile={activeTab === "media" ? importMediaFiles : undefined}
+        onImportMediaFile={activeTab === "media" ? importMediaFile : undefined}
         onImportMediaFolder={activeTab === "media" ? importMediaFolder : undefined}
         isImportingMedia={activeTab === "media" ? isImportingMedia : false}
         // Импорт музыки
-        onImportMusicFile={activeTab === "music" ? importMusicFiles : undefined}
+        onImportMusicFile={activeTab === "music" ? importMusicFile : undefined}
         onImportMusicFolder={activeTab === "music" ? importMusicFolder : undefined}
         isImportingMusic={activeTab === "music" ? isImportingMusic : false}
       />

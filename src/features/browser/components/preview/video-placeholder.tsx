@@ -53,9 +53,11 @@ export const VideoPlaceholder = memo(
           const newPlayingState = !isPlaying
 
           if (newPlayingState) {
-            video
-              .play()
-              .catch((err: unknown) => logger.errorSync("[VideoPlaceholder] Ошибка воспроизведения:", { err }))
+            video.play().catch((err: unknown) =>
+              logger.errorSync("[VideoPlaceholder] Ошибка воспроизведения:", {
+                err,
+              }),
+            )
           } else {
             video.pause()
           }
@@ -135,9 +137,11 @@ export const VideoPlaceholder = memo(
           const newPlayingState = !isPlaying
 
           if (newPlayingState) {
-            video
-              .play()
-              .catch((err: unknown) => logger.errorSync("[VideoPlaceholder] Ошибка воспроизведения:", { err }))
+            video.play().catch((err: unknown) =>
+              logger.errorSync("[VideoPlaceholder] Ошибка воспроизведения:", {
+                err,
+              }),
+            )
           } else {
             video.pause()
           }
@@ -150,7 +154,7 @@ export const VideoPlaceholder = memo(
 
     return (
       <div
-        className="relative flex-shrink-0"
+        className="relative shrink-0"
         style={{
           height: `${size}px`,
           width: `${size * (16 / 9)}px`,

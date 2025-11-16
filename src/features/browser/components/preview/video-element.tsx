@@ -53,7 +53,13 @@ export const VideoElement = memo(
     return (
       <video
         key={streamKey ? `video-${file.id}-${streamIndex}` : undefined}
-        ref={videoRef ? (el) => (videoRef.current = el) : undefined}
+        ref={
+          videoRef
+            ? (el) => {
+                if (videoRef.current !== el) videoRef.current = el
+              }
+            : undefined
+        }
         src={videoUrl || undefined}
         poster={posterUrl}
         preload="metadata"

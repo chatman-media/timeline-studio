@@ -46,8 +46,8 @@ export const VideoOverlays = memo(
         {file.duration && file.duration > 0 && !isNotFirstStream && (
           <div
             className={cn(
-              "pointer-events-none absolute rounded-xs bg-black/60 text-xs leading-[16px]",
-              size > 100 ? "top-1 right-1 px-[4px] py-[2px]" : "top-0.5 right-0.5 px-[2px] py-0",
+              "pointer-events-none absolute rounded-xs bg-black/60 text-xs leading-4",
+              size > 100 ? "top-1 right-1 px-1 py-0.5" : "top-0.5 right-0.5 px-0.5 py-0",
             )}
             style={{
               fontSize: size > 100 ? "13px" : "11px",
@@ -81,7 +81,7 @@ export const VideoOverlays = memo(
         {/* Разрешение видео */}
         {isLoaded && !isNotFirstStream && streamWidth && streamHeight && (
           <div
-            className={`pointer-events-none absolute ${size > 100 ? "left-[28px]" : "left-[22px]"} rounded-xs bg-black/60 text-xs leading-[16px] ${size > 100 ? "bottom-1" : "bottom-0.5"} ${size > 100 ? "px-[4px] py-[2px]" : "px-[2px] py-0"}`}
+            className={`pointer-events-none absolute ${size > 100 ? "left-7" : "left-[22px]"} rounded-xs bg-black/60 text-xs leading-4 ${size > 100 ? "bottom-1" : "bottom-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"}`}
             style={{
               fontSize: size > 100 ? "13px" : "11px",
               color: "#ffffff",
@@ -95,7 +95,7 @@ export const VideoOverlays = memo(
         {/* Имя файла */}
         {showFileName && !isNotFirstStream && (
           <div
-            className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${size > 100 ? "px-[4px] py-[2px]" : "px-[2px] py-0"} line-clamp-1 rounded-xs bg-black/60 text-xs leading-[16px] ${isMultipleStreams ? "max-w-[100%]" : "max-w-[60%]"}`}
+            className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"} line-clamp-1 rounded-xs bg-black/60 text-xs leading-4 ${isMultipleStreams ? "max-w-full" : "max-w-[60%]"}`}
             style={{
               fontSize: size > 100 ? "12px" : "11px",
               color: "#ffffff",
@@ -119,7 +119,14 @@ export const VideoOverlays = memo(
         {/* Кнопка добавления */}
         {isLoaded && isLastStream && (
           <AddMediaButton
-            resource={{ id: file.id, type: "media", name: file.name, file } as TimelineResource}
+            resource={
+              {
+                id: file.id,
+                type: "media",
+                name: file.name,
+                file,
+              } as TimelineResource
+            }
             size={size}
             type="media"
           />
