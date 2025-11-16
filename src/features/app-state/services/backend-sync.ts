@@ -297,7 +297,7 @@ export class BackendSync {
     // Update last version
     this.lastVersion = envelope.metadata.version
 
-    // Notify event handlers
+    // Notify event handlers (отправляем событие напрямую, БЕЗ fetch состояния)
     this.eventHandlers.forEach((handler) => {
       try {
         handler(envelope.event)
@@ -306,11 +306,31 @@ export class BackendSync {
       }
     })
 
-    // For state-changing events, fetch new state
-    if (this.isStateChangingEvent(envelope.event)) {
-      logger.info("BackendSync: State-changing event detected, fetching new state")
+    // ✅ НОВАЯ АРХИТЕКТУРА: События обновляют state инкрементально
+    // ❌ СТАРАЯ АРХИТЕКТУРА: fetch полного состояния после каждого события
+    //
+    // Больше НЕ делаем fetchAndNotifyState()
+    // Вместо этого события обрабатываются напрямую в timeline machine
+    // через action handleBackendEvent
+    //
+    // ИСКЛЮЧЕНИЕ: ImportedMedia события ДОЛЖНЫ обновлять projectState,
+    // т.к. MediaAdapter читает из projectState.imported_media
+    if (this.isImportedMediaEvent(envelope.event)) {
       void this.fetchAndNotifyState()
     }
+  }
+
+  /**
+   * Check if event is related to imported media (requires state refresh)
+   */
+  private isImportedMediaEvent(event: ProjectEvent): boolean {
+    const importedMediaTypes = [
+      "ImportedMediaAdded",
+      "ImportedMediaRemoved",
+      "ImportedMediaUpdated",
+      "ImportedMediaCleared",
+    ]
+    return importedMediaTypes.includes(event.type)
   }
 
   /**
