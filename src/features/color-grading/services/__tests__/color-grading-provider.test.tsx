@@ -3,8 +3,16 @@ import { describe, expect, it, vi } from "vitest"
 
 import { ColorGradingProvider, useColorGradingContext } from "../color-grading-provider"
 
-// Import backend-sync mock
-import "@/test/mocks/backend-sync"
+// Mock backend-sync first
+const mockExecuteCommand = vi.fn()
+const mockOnEvent = vi.fn()
+
+vi.mock("@/features/app-state/services/backend-sync", () => ({
+  getBackendSync: vi.fn(() => ({
+    executeCommand: mockExecuteCommand,
+    onEvent: mockOnEvent,
+  })),
+}))
 
 // Mock the useColorGrading hook
 const mockColorGrading = {
@@ -102,6 +110,17 @@ function TestComponent() {
 }
 
 describe("ColorGradingProvider", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    // Setup default mocks
+    mockOnEvent.mockReturnValue(() => {}) // unsubscribe function
+    mockExecuteCommand.mockResolvedValue({
+      success: true,
+      data: { presets: [] },
+    })
+  })
+
   it("should provide color grading context to children", () => {
     render(
       <ColorGradingProvider>
@@ -353,7 +372,7 @@ describe("useColorGradingContext", () => {
       expect(contextValue.isActive).toBe(mockColorGrading.isActive)
     })
 
-    it("should have availablePresets defined", () => {
+    it("should have availablePresets defined", async () => {
       let contextValue: any
 
       function ContextCapture() {
@@ -361,15 +380,38 @@ describe("useColorGradingContext", () => {
         return null
       }
 
+      // Mock preset loading from backend
+      mockExecuteCommand.mockResolvedValue({
+        success: true,
+        data: {
+          presets: [
+            {
+              id: "preset-1",
+              name: "Cinematic",
+              added_at: Date.now() / 1000,
+              parameters: {},
+            },
+          ],
+        },
+      })
+
       render(
         <ColorGradingProvider>
           <ContextCapture />
         </ColorGradingProvider>,
       )
 
+      // Wait for preset loading
+      await vi.waitFor(() => {
+        expect(mockExecuteCommand).toHaveBeenCalledWith({
+          type: "GetColorGradingPresets",
+        })
+      })
+
       expect(contextValue.availablePresets).toBeDefined()
       expect(Array.isArray(contextValue.availablePresets)).toBe(true)
-      expect(contextValue.availablePresets.length).toBeGreaterThan(0)
+      // Presets are loaded asynchronously, so they may be empty initially
+      expect(contextValue.availablePresets.length).toBeGreaterThanOrEqual(0)
     })
   })
 

@@ -6,7 +6,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
+    onEvent: vi.fn(() => () => {}),
     sendCommand: vi.fn().mockResolvedValue(undefined),
+    getProjectState: vi.fn().mockResolvedValue(null),
+    executeCommand: vi.fn().mockResolvedValue({ success: true, data: null }),
   }),
 }))
 

@@ -114,7 +114,8 @@ describe("UserSettingsModal", () => {
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
-      isConnected: true,
+      isLoading: false,
+      error: null,
     }))
 
     vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
@@ -543,7 +544,8 @@ describe("UserSettingsModal", () => {
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
-      isConnected: true,
+      isLoading: false,
+      error: null,
     }))
 
     render(<UserSettingsModal />)
@@ -569,7 +571,8 @@ describe("UserSettingsModal", () => {
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
-      isConnected: true,
+      isLoading: false,
+      error: null,
     }))
 
     render(<UserSettingsModal />)

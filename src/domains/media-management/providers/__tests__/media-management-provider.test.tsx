@@ -25,7 +25,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
-    onStateChange: vi.fn(() => () => {}),
+    onEvent: vi.fn(() => () => {}),
     executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
     getProjectState: vi.fn().mockResolvedValue({
       project: {
@@ -140,7 +140,7 @@ describe("MediaManagementProvider", () => {
     it("should handle import errors", async () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockRejectedValue(new Error("Import failed")),
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -166,7 +166,7 @@ describe("MediaManagementProvider", () => {
 
       let callCount = 0
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockImplementation(() => {
           callCount++
           if (callCount === 2) {
@@ -200,7 +200,7 @@ describe("MediaManagementProvider", () => {
       const mockExecuteCommand = vi.fn().mockResolvedValue({ id: "media-1" })
 
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn(() => () => {}),
         executeCommand: mockExecuteCommand,
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -254,30 +254,45 @@ describe("MediaManagementProvider", () => {
   })
 
   describe("getMediaInfo", () => {
-    it("should get media info from backend", async () => {
+    it("should get media info from local media pool (synced via events)", async () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
+      let eventCallback: any = null
+
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn((callback) => {
+          eventCallback = callback
+          return () => {}
+        }),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockResolvedValue({
           project: {
             media_pool: {
-              items: {
-                "media-1": {
-                  id: "media-1",
-                  path: "/test/video.mp4",
-                  name: "video.mp4",
-                  media_type: "Video",
-                  duration: 120.5,
-                  thumbnail: "/tmp/thumb.jpg",
-                },
-              },
+              items: {},
             },
           },
         }),
       } as any)
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
+
+      // Simulate backend MediaAdded event
+      act(() => {
+        if (eventCallback) {
+          eventCallback({
+            type: "MediaAdded",
+            payload: {
+              media: {
+                id: "media-1",
+                path: "/test/video.mp4",
+                name: "video.mp4",
+                media_type: "Video",
+                duration: 120.5,
+                thumbnail: "/tmp/thumb.jpg",
+              },
+            },
+          })
+        }
+      })
 
       let mediaInfo: any = null
 
@@ -313,7 +328,7 @@ describe("MediaManagementProvider", () => {
     it("should handle errors gracefully", async () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn(() => () => {}),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockRejectedValue(new Error("Backend error")),
       } as any)
@@ -337,7 +352,7 @@ describe("MediaManagementProvider", () => {
       // Reset backend sync mock to default for this describe block
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn(() => () => {}),
+        onEvent: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
         getProjectState: vi.fn().mockResolvedValue({
           project: {
@@ -416,7 +431,7 @@ describe("MediaManagementProvider", () => {
       const mockOnStateChange = vi.fn(() => () => {})
 
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: mockOnStateChange,
+        onEvent: mockOnStateChange,
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -426,13 +441,13 @@ describe("MediaManagementProvider", () => {
       expect(mockOnStateChange).toHaveBeenCalled()
     })
 
-    it("should update file operations on backend state change", async () => {
+    it("should update file operations on backend MediaAdded event", async () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      let stateChangeCallback: any = null
+      let eventCallback: any = null
 
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onStateChange: vi.fn((callback) => {
-          stateChangeCallback = callback
+        onEvent: vi.fn((callback) => {
+          eventCallback = callback
           return () => {}
         }),
         executeCommand: vi.fn(),
@@ -441,20 +456,17 @@ describe("MediaManagementProvider", () => {
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      // Trigger state change
+      // Trigger MediaAdded event
       act(() => {
-        if (stateChangeCallback) {
-          stateChangeCallback({
-            project: {
-              media_pool: {
-                items: {
-                  "media-1": {
-                    id: "media-1",
-                    path: "/test/video.mp4",
-                    name: "video.mp4",
-                    media_type: "Video",
-                  },
-                },
+        if (eventCallback) {
+          eventCallback({
+            type: "MediaAdded",
+            payload: {
+              media: {
+                id: "media-1",
+                path: "/test/video.mp4",
+                name: "video.mp4",
+                media_type: "Video",
               },
             },
           })
@@ -463,6 +475,12 @@ describe("MediaManagementProvider", () => {
 
       await waitFor(() => {
         expect(result.current.fileOperationsState.operations).toHaveLength(1)
+        expect(result.current.fileOperationsState.operations[0]).toEqual(
+          expect.objectContaining({
+            path: "/test/video.mp4",
+            status: "completed",
+          }),
+        )
       })
     })
   })

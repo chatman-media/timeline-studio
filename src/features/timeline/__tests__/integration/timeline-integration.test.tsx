@@ -32,15 +32,13 @@ const mockDisconnect = vi.fn()
 const mockGetProjectState = vi.fn()
 
 vi.mock("@/features/app-state/services/backend-sync", () => {
-  const createMockFn = () => vi.fn()
-
-  const mockExecuteCommand = createMockFn()
-  const mockOnStateChange = createMockFn()
-  const mockOnEvent = createMockFn()
-  const mockConnect = createMockFn()
-  const mockDisconnect = createMockFn()
-  const mockGetProjectState = createMockFn()
-  const mockGetEventHistory = createMockFn()
+  const mockExecuteCommand = vi.fn().mockResolvedValue({ success: true, data: null, error: null })
+  const mockOnStateChange = vi.fn().mockReturnValue(() => {})
+  const mockOnEvent = vi.fn().mockReturnValue(() => {})
+  const mockConnect = vi.fn()
+  const mockDisconnect = vi.fn()
+  const mockGetProjectState = vi.fn().mockResolvedValue(null)
+  const mockGetEventHistory = vi.fn().mockResolvedValue([])
 
   class MockBackendSync {
     onStateChange = mockOnStateChange
@@ -266,6 +264,7 @@ describe("Timeline Integration Tests", () => {
     mockExecuteCommand.mockResolvedValue({ success: true, data: null, error: null })
     mockOnStateChange.mockReturnValue(() => {})
     mockOnEvent.mockReturnValue(() => {})
+    mockGetProjectState.mockResolvedValue(null)
 
     // Reset orchestrator state
     mockOrchestrator.getTimelineState.mockReturnValue({

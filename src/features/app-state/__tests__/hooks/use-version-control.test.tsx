@@ -63,6 +63,13 @@ describe("useVersionControl", () => {
       media_pool: {
         items: {},
       },
+      effects_pool: {},
+      filters_pool: {},
+      transitions_pool: {},
+      templates_pool: {},
+      style_templates_pool: {},
+      subtitles_pool: {},
+      color_grading_presets_pool: {},
       settings: {
         resolution: { width: 1920, height: 1080 },
         frame_rate: 30,
@@ -113,6 +120,7 @@ describe("useVersionControl", () => {
       tab_settings: {},
     },
     clipboard: null,
+    imported_media: {},
   }
 
   beforeEach(async () => {

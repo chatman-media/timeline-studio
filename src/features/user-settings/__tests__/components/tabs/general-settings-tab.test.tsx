@@ -114,7 +114,8 @@ describe("GeneralSettingsTab", () => {
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
-      isConnected: false,
+      isLoading: false,
+      error: null,
     }))
 
     vi.mocked(useLanguage).mockImplementation(() => ({

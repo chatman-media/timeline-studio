@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { BrowserProvider } from "@/domains/browser"
@@ -26,10 +26,10 @@ function TestWrapper({ children }: { children: React.ReactNode }) {
 
 describe("useFileSelection", () => {
   beforeEach(async () => {
-    // Важно: сброс состояния должен быть синхронным
+    // Сброс состояния
     resetMockBrowserState()
-    // Даем время на обработку изменений состояния
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    // Даем время на обработку изменений состояния и инициализацию provider
+    await new Promise((resolve) => setTimeout(resolve, 10))
   })
 
   it("должен возвращать правильное начальное состояние", () => {
@@ -51,21 +51,31 @@ describe("useFileSelection", () => {
 
     expect(result.current.isSelected).toBe(false)
 
+    // Переключаем выбор файла
     await act(async () => {
       await result.current.toggleSelection()
-      // Ждем завершения микротасков
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    expect(result.current.isSelected).toBe(true)
+    // Ждем, пока состояние обновится через backend events
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(true)
+      },
+      { timeout: 200 },
+    )
 
+    // Переключаем обратно
     await act(async () => {
       await result.current.toggleSelection()
-      // Ждем завершения микротасков
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    expect(result.current.isSelected).toBe(false)
+    // Ждем, пока состояние обновится
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(false)
+      },
+      { timeout: 200 },
+    )
   })
 
   it("должен выбирать файл", async () => {
@@ -75,13 +85,18 @@ describe("useFileSelection", () => {
 
     expect(result.current.isSelected).toBe(false)
 
+    // Выбираем файл
     await act(async () => {
       await result.current.selectFile()
-      // Ждем завершения микротасков
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    expect(result.current.isSelected).toBe(true)
+    // Ждем, пока состояние обновится через backend events
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(true)
+      },
+      { timeout: 200 },
+    )
   })
 
   it("должен отменять выбор файла", async () => {
@@ -92,20 +107,28 @@ describe("useFileSelection", () => {
     // Сначала выберем файл
     await act(async () => {
       await result.current.selectFile()
-      // Ждем завершения микротасков
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    expect(result.current.isSelected).toBe(true)
+    // Ждем, пока файл будет выбран
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(true)
+      },
+      { timeout: 200 },
+    )
 
     // Теперь отменим выбор
     await act(async () => {
       await result.current.deselectFile()
-      // Ждем завершения микротасков
-      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
-    expect(result.current.isSelected).toBe(false)
+    // Ждем, пока выбор будет отменен
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(false)
+      },
+      { timeout: 200 },
+    )
   })
 
   it("должен предотвращать всплытие события в handleToggleSelection", async () => {
@@ -125,11 +148,12 @@ describe("useFileSelection", () => {
 
     expect(mockEvent.stopPropagation).toHaveBeenCalledOnce()
 
-    // Подождем завершения асинхронной операции
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0))
-    })
-
-    expect(result.current.isSelected).toBe(true)
+    // Ждем, пока состояние обновится через backend events
+    await waitFor(
+      () => {
+        expect(result.current.isSelected).toBe(true)
+      },
+      { timeout: 200 },
+    )
   })
 })

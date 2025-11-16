@@ -51,10 +51,11 @@ describe("UserSettingsModalTabs", () => {
       openModal: vi.fn(),
       closeModal: vi.fn(),
       modalType: "none",
-      isConnected: false,
       modalData: null,
       isOpen: false,
       submitModal: vi.fn(),
+      isLoading: false,
+      error: null,
     }))
   })
 

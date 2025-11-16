@@ -16,6 +16,9 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
   const mockGetProjectState = createMockFn()
   const mockGetEventHistory = createMockFn()
 
+  // Setup default return values
+  mockGetProjectState.mockResolvedValue(null)
+
   // Создаем мок класса BackendSync внутри фабрики
   class MockBackendSync {
     onStateChange = mockOnStateChange

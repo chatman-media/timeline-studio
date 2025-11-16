@@ -162,35 +162,35 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
-      expect(trackType).toBe("Video")
+      expect(trackType).toBe("video")
     })
 
     it("должен определить тип Audio для аудиофайла", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(mockAudioFile)
-      expect(trackType).toBe("Audio")
+      expect(trackType).toBe("audio")
     })
 
     it("должен определить тип Image для изображения", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(mockImageFile)
-      expect(trackType).toBe("Image")
+      expect(trackType).toBe("image")
     })
 
     it("должен определить тип Video по probeData", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
-      expect(trackType).toBe("Video")
+      expect(trackType).toBe("video")
     })
 
     it("должен определить тип Audio по probeData если есть только аудио поток", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(mockAudioFile)
-      expect(trackType).toBe("Audio")
+      expect(trackType).toBe("audio")
     })
 
     it("должен возвращать Video по умолчанию для неизвестного типа", () => {
@@ -202,7 +202,7 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(unknownFile)
-      expect(trackType).toBe("Video")
+      expect(trackType).toBe("video")
     })
   })
 
@@ -231,7 +231,7 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       result.current.findBestTrackForMedia(mockVideoFile)
-      expect(mockTracks.getTracksByType).toHaveBeenCalledWith("Video")
+      expect(mockTracks.getTracksByType).toHaveBeenCalledWith("video")
     })
   })
 
@@ -304,7 +304,7 @@ describe("useTimelineActions", () => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
       })
 
-      expect(mockTimeline.addTrack).toHaveBeenCalledWith("Video", "Video Track", undefined)
+      expect(mockTimeline.addTrack).toHaveBeenCalledWith("video", "Video Track", undefined)
     })
 
     it("должен использовать customStartTime если указано", async () => {
@@ -419,7 +419,7 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(fileWithoutProbe)
-      expect(trackType).toBe("Video") // По типу type
+      expect(trackType).toBe("video") // По типу type
     })
 
     it("должен обработать файл с пустыми streams", () => {
@@ -431,7 +431,7 @@ describe("useTimelineActions", () => {
       const { result } = renderHook(() => useTimelineActions())
 
       const trackType = result.current.getTrackTypeForMedia(fileWithEmptyStreams)
-      expect(trackType).toBe("Video") // По умолчанию
+      expect(trackType).toBe("video") // По умолчанию
     })
 
     it("должен обработать отрицательные значения времени в клипах", () => {
@@ -501,7 +501,7 @@ describe("useTimelineActions", () => {
 
       // 1. Определяем тип медиа
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
-      expect(trackType).toBe("Video")
+      expect(trackType).toBe("video")
 
       // 2. Находим лучший трек
       const bestTrack = result.current.findBestTrackForMedia(mockVideoFile)
