@@ -31,15 +31,15 @@ export interface UseTimelineActionsReturn {
 function getTrackTypeForMediaFile(file: MediaFile): TrackType {
   // Проверяем по типу файла
   if (file.type === "still_image") {
-    return "Image"
+    return "image"
   }
 
   if (file.type === "video") {
-    return "Video"
+    return "video"
   }
 
   if (file.type === "audio") {
-    return "Audio"
+    return "audio"
   }
 
   // Проверяем по метаданным, если они доступны
@@ -48,15 +48,15 @@ function getTrackTypeForMediaFile(file: MediaFile): TrackType {
     const hasAudio = file.probeData.streams.some((stream) => stream.codec_type === "audio")
 
     if (hasVideo) {
-      return "Video"
+      return "video"
     }
     if (hasAudio) {
-      return "Audio"
+      return "audio"
     }
   }
 
   // По умолчанию считаем видео
-  return "Video"
+  return "video"
 }
 
 export function useTimelineActions(): UseTimelineActionsReturn {
@@ -170,7 +170,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       await addMedia(file)
 
-      await addClip(targetTrackId, file, startTime)
+      await addClip(targetTrackId, file as any, startTime)
       logger.info(`Added ${file.name} to track ${targetTrackId} at time ${startTime} with duration ${duration}`)
     },
     [

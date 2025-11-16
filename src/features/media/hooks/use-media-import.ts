@@ -154,7 +154,7 @@ export function useMediaImport() {
             updates: {
               duration: metadata.duration,
               thumbnail: metadata.thumbnailPath,
-              metadata: metadata.probeData,
+              metadata: metadata.probeData as any,
             },
           },
         })

@@ -1,6 +1,7 @@
 import { assign, setup } from "xstate"
-
+import { handleBackendChatEvent } from "@/features/ai-chat/machines/backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
+import type { ChatEvent } from "@/types/generated/tauri-bindings"
 
 import type { ChatListItem, ChatMessage } from "../types/chat"
 
@@ -33,6 +34,8 @@ export type ChatMachineEvent =
   | { type: "DELETE_SESSION"; sessionId: string }
   | { type: "SWITCH_SESSION"; sessionId: string }
   | { type: "UPDATE_SESSIONS"; sessions: ChatListItem[] }
+  // Backend events
+  | { type: "BACKEND_EVENT"; event: ChatEvent }
   // Timeline AI события
   | { type: "CREATE_TIMELINE_FROM_PROMPT"; prompt: string }
   | { type: "ANALYZE_RESOURCES"; query: string }
@@ -98,6 +101,20 @@ export const chatMachine = setup({
         logger.infoSync("Выбран агент", { agentId: event.agentId })
       }
     },
+
+    /**
+     * Обработка backend событий
+     */
+    handleBackendEvent: assign(({ context, event }) => {
+      if (event.type !== "BACKEND_EVENT") return context
+
+      logger.infoSync("Обработка backend события", { eventType: event.event.type })
+
+      // Делегируем обработку в специализированный обработчик
+      const updates = handleBackendChatEvent(context, event.event)
+
+      return { ...context, ...updates }
+    }),
   },
 }).createMachine({
   id: "ai-services-chat",
@@ -106,6 +123,9 @@ export const chatMachine = setup({
   states: {
     idle: {
       on: {
+        BACKEND_EVENT: {
+          actions: [{ type: "handleBackendEvent" }],
+        },
         SEND_CHAT_MESSAGE: {
           target: "processing",
           actions: [
@@ -210,6 +230,9 @@ export const chatMachine = setup({
     },
     processing: {
       on: {
+        BACKEND_EVENT: {
+          actions: [{ type: "handleBackendEvent" }],
+        },
         RECEIVE_CHAT_MESSAGE: {
           target: "idle",
           actions: [
@@ -246,6 +269,9 @@ export const chatMachine = setup({
     // Новые состояния для Timeline AI операций
     creatingTimeline: {
       on: {
+        BACKEND_EVENT: {
+          actions: [{ type: "handleBackendEvent" }],
+        },
         TIMELINE_OPERATION_SUCCESS: {
           target: "idle",
           actions: [
@@ -269,6 +295,9 @@ export const chatMachine = setup({
     },
     analyzingResources: {
       on: {
+        BACKEND_EVENT: {
+          actions: [{ type: "handleBackendEvent" }],
+        },
         TIMELINE_OPERATION_SUCCESS: {
           target: "idle",
           actions: [
@@ -292,6 +321,9 @@ export const chatMachine = setup({
     },
     executingCommand: {
       on: {
+        BACKEND_EVENT: {
+          actions: [{ type: "handleBackendEvent" }],
+        },
         TIMELINE_OPERATION_SUCCESS: {
           target: "idle",
           actions: [

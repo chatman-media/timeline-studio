@@ -15,7 +15,12 @@ export type {
   TabSettings,
   ViewMode,
 } from "@/types/generated/tauri-bindings"
-// Provider (BackendSync-based)
+// Backend Event Handlers
+export { handleBrowserBackendEvent } from "./machines/backend-event-handlers"
+
+// XState Machine
+export { type BrowserMachineContext, browserMachine, createBrowserActor } from "./machines/browser-machine"
+// Provider (BackendSync-based with event-driven architecture)
 export { BrowserProvider, useBrowser, useBrowserState } from "./providers/browser-provider"
 
 // Constants

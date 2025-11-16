@@ -152,8 +152,20 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
       }
     })
 
-    // Подписка на события backend
+    // Подписка на события backend для Chat
     const unsubscribeEvents = backendSync.onEvent((event: any) => {
+      // Chat события - отправляем напрямую в machine через BACKEND_EVENT
+      // ProjectEvent.Chat содержит ChatEvent в payload
+      if (event.type === "Chat" && event.payload) {
+        logger.debug("Chat event received from backend:", { chatEventType: event.payload.type })
+        chatSend({
+          type: "BACKEND_EVENT",
+          event: event.payload,
+        })
+        return
+      }
+
+      // Другие AI события
       switch (event.type) {
         case "AI_CONFIG_UPDATED":
           // Backend обновил конфигурацию AI сервисов
@@ -183,7 +195,7 @@ export function AIServicesDomainProvider({ children }: PropsWithChildren) {
         aiEventBridge.cleanup().catch((error: unknown) => logger.error("Failed to cleanup AI Event Bridge", { error }))
       }
     }
-  }, [backendSync])
+  }, [backendSync, chatSend])
 
   // Синхронизация при изменении состояния машин
   useEffect(() => {

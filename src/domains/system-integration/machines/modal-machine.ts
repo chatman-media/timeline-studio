@@ -3,10 +3,12 @@
  *
  * Управляет состоянием модальных окон приложения
  * Перенесено из src/features/modals/services/modal-machine.ts
+ * Использует event-driven архитектуру для синхронизации с backend
  */
 
 import { assign, setup } from "xstate"
-
+import type { ModalBackendEvent } from "@/features/modals/machines/backend-event-handlers"
+import { handleModalBackendEvent } from "@/features/modals/machines/backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ModalMachine")
@@ -50,19 +52,30 @@ export interface ModalData {
 }
 
 /**
+ * Контекст машины состояний для модальных окон
+ */
+export interface ModalMachineContext {
+  modalType: ModalType
+  modalData: ModalData | null
+  previousModal: ModalType | null
+  isLoading?: boolean
+  error?: string | null
+}
+
+/**
  * Создание машины состояний для модальных окон
  */
 export const modalMachine = setup({
   types: {
-    context: {} as {
-      modalType: ModalType
-      modalData: ModalData | null
-      previousModal: ModalType | null
-    },
+    context: {} as ModalMachineContext,
     events: {} as
       | { type: "OPEN_MODAL"; modalType: ModalType; modalData?: ModalData }
       | { type: "CLOSE_MODAL" }
-      | { type: "SUBMIT_MODAL"; data?: ModalData },
+      | { type: "SUBMIT_MODAL"; data?: ModalData }
+      | { type: "BACKEND_EVENT"; event: ModalBackendEvent }
+      | { type: "SET_LOADING"; isLoading: boolean }
+      | { type: "SET_ERROR"; error: string | null }
+      | { type: "CLEAR_ERROR" },
   },
   actions: {
     /**
@@ -73,6 +86,68 @@ export const modalMachine = setup({
         logger.debug(`[System Integration] Modal ${context.modalType} submitted with data`, { data: event.data })
       }
     },
+
+    /**
+     * Обработка backend событий
+     * Инкрементально обновляет состояние на основе событий
+     */
+    handleBackendEvent: assign(({ context, event }) => {
+      if (event.type !== "BACKEND_EVENT") return context
+
+      logger.info("[ModalMachine] Processing backend event", {
+        eventType: event.event.type,
+      })
+
+      // Делегируем обработку в event handlers
+      const updates = handleModalBackendEvent(context, event.event)
+
+      logger.debug("[ModalMachine] Context updates:", { updates })
+
+      return {
+        ...context,
+        ...updates,
+      }
+    }),
+
+    /**
+     * Установка состояния загрузки
+     */
+    setLoading: assign(({ context, event }) => {
+      if (event.type !== "SET_LOADING") return context
+
+      return {
+        ...context,
+        isLoading: event.isLoading,
+      }
+    }),
+
+    /**
+     * Установка ошибки
+     */
+    setError: assign(({ context, event }) => {
+      if (event.type !== "SET_ERROR") return context
+
+      return {
+        ...context,
+        error: event.error,
+        isLoading: false,
+      }
+    }),
+
+    /**
+     * Очистка ошибки
+     */
+    clearError: assign(({ context }) => ({
+      ...context,
+      error: null,
+    })),
+
+    /**
+     * Логирование событий для отладки
+     */
+    logEvent: ({ event }) => {
+      logger.debug("[ModalMachine] Event received:", { event: event.type })
+    },
   },
 }).createMachine({
   id: "system-integration-modal",
@@ -81,6 +156,23 @@ export const modalMachine = setup({
     modalType: "none",
     modalData: null,
     previousModal: null,
+    isLoading: false,
+    error: null,
+  },
+  on: {
+    // Backend события обрабатываются в любом состоянии
+    BACKEND_EVENT: {
+      actions: ["logEvent", "handleBackendEvent"],
+    },
+    SET_LOADING: {
+      actions: ["setLoading"],
+    },
+    SET_ERROR: {
+      actions: ["setError"],
+    },
+    CLEAR_ERROR: {
+      actions: ["clearError"],
+    },
   },
   states: {
     closed: {

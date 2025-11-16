@@ -14,6 +14,7 @@
 import { assign, fromPromise, setup } from "xstate"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile, Timeline, TimelineClip, Track, TrackType } from "../types"
+import { handleBackendEvent } from "./backend-event-handlers"
 
 const logger = createLogger("TimelineExtendedMachine")
 
@@ -203,6 +204,9 @@ export type TimelineExtendedEvent =
   // Error events
   | { type: "SET_ERROR"; error: string }
   | { type: "CLEAR_ERROR" }
+
+  // Backend sync events
+  | { type: "BACKEND_EVENT"; event: import("@/types/generated/tauri-bindings").ProjectEvent }
 
 // Утилиты преобразования (из провайдеров)
 function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
@@ -519,6 +523,25 @@ export const timelineExtendedMachine = setup({
     clearError: assign({
       error: null,
     }),
+
+    // Backend event handler
+    handleBackendEvent: assign(({ context, event }) => {
+      if (event.type !== "BACKEND_EVENT") return context
+
+      logger.info("Processing backend event in machine:", { eventType: event.event.type })
+
+      // Используем централизованный обработчик
+      const updates = handleBackendEvent(context, event.event)
+
+      logger.debug("Backend event processed, applying updates:", {
+        data: {
+          hasUpdates: Object.keys(updates).length > 0,
+          updatedFields: Object.keys(updates),
+        },
+      })
+
+      return { ...context, ...updates }
+    }),
   },
 }).createMachine({
   id: "timeline-extended",
@@ -679,6 +702,9 @@ export const timelineExtendedMachine = setup({
         },
         PROJECT_UPDATED: {
           actions: ["setProject"],
+        },
+        BACKEND_EVENT: {
+          actions: ["handleBackendEvent"],
         },
 
         // Track events

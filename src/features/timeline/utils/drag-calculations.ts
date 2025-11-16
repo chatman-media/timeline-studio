@@ -104,17 +104,17 @@ export function snapToTargets(
  */
 export function canDropOnTrack(mediaFile: MediaFile, trackType: TrackType): boolean {
   // Video files can go on video tracks
-  if (mediaFile.isVideo && trackType === "Video") {
+  if (mediaFile.isVideo && trackType === "video") {
     return true
   }
 
   // Audio files can go on audio tracks
-  if (mediaFile.isAudio && (trackType === "Audio" || trackType === "Music")) {
+  if (mediaFile.isAudio && (trackType === "audio" || trackType === "music")) {
     return true
   }
 
   // Image files can go on video tracks (as static images)
-  if (mediaFile.isImage && trackType === "Video") {
+  if (mediaFile.isImage && trackType === "video") {
     return true
   }
 
@@ -126,32 +126,32 @@ export function canDropOnTrack(mediaFile: MediaFile, trackType: TrackType): bool
  */
 export function getTrackTypeForMediaFile(mediaFile: MediaFile): TrackType {
   if (mediaFile.isVideo) {
-    return "Video"
+    return "video"
   }
 
   if (mediaFile.isAudio) {
-    return "Audio"
+    return "audio"
   }
 
   if (mediaFile.isImage) {
-    return "Video" // Images are displayed on video tracks
+    return "video" // Images are displayed on video tracks
   }
 
   // Check media type from file
-  if (mediaFile.type === MediaType.Video) return "Video"
-  if (mediaFile.type === MediaType.Audio) return "Audio"
+  if (mediaFile.type === MediaType.Video) return "video"
+  if (mediaFile.type === MediaType.Audio) return "audio"
 
   // Check probeData if available
   if (mediaFile.probeData?.streams) {
     const hasVideo = mediaFile.probeData.streams.some((stream: any) => stream.codec_type === "video")
     const hasAudio = mediaFile.probeData.streams.some((stream: any) => stream.codec_type === "audio")
 
-    if (hasVideo) return "Video"
-    if (hasAudio) return "Audio"
+    if (hasVideo) return "video"
+    if (hasAudio) return "audio"
   }
 
   // Default to video track
-  return "Video"
+  return "video"
 }
 
 /**
