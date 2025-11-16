@@ -208,59 +208,8 @@ export type TimelineExtendedEvent =
   // Backend sync events
   | { type: "BACKEND_EVENT"; event: import("@/types/generated/tauri-bindings").ProjectEvent }
 
-// Утилиты преобразования (из провайдеров)
-function convertClipToTimelineClip(clip: Clip, trackId: string): TimelineClip {
-  return {
-    id: clip.id,
-    name: clip.name,
-    mediaId: clip.media_id,
-    trackId,
-    startTime: clip.timeline_in,
-    duration: clip.timeline_out - clip.timeline_in,
-    sourceIn: clip.source_in,
-    sourceOut: clip.source_out,
-
-    // Media timing (required fields)
-    mediaStartTime: clip.source_in,
-    mediaEndTime: clip.source_out,
-    offset: 0,
-
-    // Playback
-    playbackRate: clip.playback_rate,
-    speed: clip.playback_rate,
-    isReversed: false,
-
-    // State
-    isSelected: false,
-    isLocked: !clip.enabled,
-    isMuted: false,
-
-    // Audio/Visual
-    volume: 1.0,
-    opacity: 1.0,
-    position: {
-      x: 0,
-      y: 0,
-      width: 1,
-      height: 1,
-      rotation: 0,
-      scaleX: 1,
-      scaleY: 1,
-    },
-
-    // Resources
-    effects: [],
-    filters: [],
-    transitions: [],
-
-    // Metadata
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }
-}
-
-// Старая функция convertProjectToTimeline удалена
-// Теперь используется transformProjectStateToTimeline из utils/project-transform
+// Утилиты преобразования вынесены в utils/clip-transform.ts
+// Используйте convertClipToTimelineClip из utils для консистентности
 
 // Actors для backend операций
 const executeCommandActor = fromPromise(async ({ input }: { input: { command: ProjectCommand } }) => {

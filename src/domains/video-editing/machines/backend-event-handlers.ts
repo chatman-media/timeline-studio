@@ -8,6 +8,8 @@
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { TimelineClip, Track } from "../types"
+import { convertClipToTimelineClip } from "../utils/clip-transform"
+import { validateClip, validateProjectEvent, validateTrack } from "../utils/type-validation"
 import type { TimelineExtendedContext } from "./timeline-extended-machine"
 
 const logger = createLogger("BackendEventHandlers")
@@ -19,6 +21,14 @@ export function handleBackendEvent(
   context: TimelineExtendedContext,
   event: ProjectEvent,
 ): Partial<TimelineExtendedContext> {
+  // Валидация события перед обработкой
+  if (!validateProjectEvent(event)) {
+    logger.error("Invalid backend event, skipping", { event })
+    return {
+      error: `Invalid backend event: ${event.type}`,
+    }
+  }
+
   logger.info("Handling backend event:", { event: event.type })
 
   switch (event.type) {
@@ -148,6 +158,12 @@ function handleClipAdded(
     return {}
   }
 
+  // Валидация клипа
+  if (!validateClip(clip)) {
+    logger.error("Invalid clip in ClipAdded event", { clip })
+    return { error: "Invalid clip data" }
+  }
+
   logger.info("Adding clip to track:", { trackId: track_id, clipId: clip.id })
 
   // Создаем новый project с обновленным клипом
@@ -161,33 +177,7 @@ function handleClipAdded(
     updatedProject.globalTracks = updatedProject.globalTracks.map((track) => {
       if (track.id === track_id) {
         trackFound = true
-        const newClip: TimelineClip = {
-          id: clip.id,
-          name: clip.name,
-          mediaId: clip.media_id,
-          trackId: track_id,
-          startTime: clip.timeline_in,
-          duration: clip.timeline_out - clip.timeline_in,
-          sourceIn: clip.source_in,
-          sourceOut: clip.source_out,
-          mediaStartTime: clip.source_in,
-          mediaEndTime: clip.source_out,
-          offset: 0,
-          playbackRate: 1.0,
-          speed: 1.0,
-          isReversed: false,
-          isSelected: false,
-          isLocked: false,
-          isMuted: false,
-          volume: 1.0,
-          opacity: 1.0,
-          position: { x: 0, y: 0, width: 1, height: 1, rotation: 0, scaleX: 1, scaleY: 1 },
-          effects: [],
-          filters: [],
-          transitions: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }
+        const newClip = convertClipToTimelineClip(clip, track_id)
 
         return {
           ...track,
@@ -205,33 +195,7 @@ function handleClipAdded(
       tracks: section.tracks.map((track) => {
         if (track.id === track_id) {
           trackFound = true
-          const newClip: TimelineClip = {
-            id: clip.id,
-            name: clip.name,
-            mediaId: clip.media_id,
-            trackId: track_id,
-            startTime: clip.timeline_in,
-            duration: clip.timeline_out - clip.timeline_in,
-            sourceIn: clip.source_in,
-            sourceOut: clip.source_out,
-            mediaStartTime: clip.source_in,
-            mediaEndTime: clip.source_out,
-            offset: 0,
-            playbackRate: 1.0,
-            speed: 1.0,
-            isReversed: false,
-            isSelected: false,
-            isLocked: false,
-            isMuted: false,
-            volume: 1.0,
-            opacity: 1.0,
-            position: { x: 0, y: 0, width: 1, height: 1, rotation: 0, scaleX: 1, scaleY: 1 },
-            effects: [],
-            filters: [],
-            transitions: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          }
+          const newClip = convertClipToTimelineClip(clip, track_id)
 
           return {
             ...track,
@@ -270,62 +234,52 @@ function handleClipMoved(
   const updatedProject = { ...context.project }
   let movedClip: TimelineClip | null = null
 
-  // Функция для удаления клипа из трека
-  const removeClipFromTrack = (track: Track): Track => {
+  // ОПТИМИЗАЦИЯ: Один проход вместо двух (O(n) вместо O(n²))
+  // Удаляем клип из старого трека И добавляем в новый трек за одну итерацию
+  const moveClipInTrack = (track: Track): Track => {
+    // Удаляем клип из этого трека (если он здесь)
     const clipIndex = track.clips.findIndex((c) => c.id === clip_id)
+    let updatedTrack = track
+
     if (clipIndex !== -1) {
       movedClip = { ...track.clips[clipIndex] }
-      return {
+      updatedTrack = {
         ...track,
         clips: track.clips.filter((c) => c.id !== clip_id),
       }
     }
-    return track
+
+    // Если это целевой трек, добавляем клип сюда
+    if (track.id === new_track_id && movedClip) {
+      const updatedMovedClip: TimelineClip = {
+        ...movedClip,
+        trackId: new_track_id,
+        startTime: new_time,
+      }
+
+      return {
+        ...updatedTrack,
+        clips: [...updatedTrack.clips, updatedMovedClip].sort((a, b) => a.startTime - b.startTime),
+      }
+    }
+
+    return updatedTrack
   }
 
-  // Удаляем клип из старого трека
+  // Один проход по всем трекам
   if (updatedProject.globalTracks) {
-    updatedProject.globalTracks = updatedProject.globalTracks.map(removeClipFromTrack)
+    updatedProject.globalTracks = updatedProject.globalTracks.map(moveClipInTrack)
   }
   if (updatedProject.sections) {
     updatedProject.sections = updatedProject.sections.map((section) => ({
       ...section,
-      tracks: section.tracks.map(removeClipFromTrack),
+      tracks: section.tracks.map(moveClipInTrack),
     }))
   }
 
   if (!movedClip) {
     logger.warn("Clip not found for move:", { clipId: clip_id })
     return {}
-  }
-
-  // Обновляем позицию клипа
-  const clipToMove: TimelineClip = movedClip
-  const updatedMovedClip: TimelineClip = {
-    ...clipToMove,
-    trackId: new_track_id,
-    startTime: new_time,
-  }
-
-  // Добавляем клип в новый трек
-  const addClipToTrack = (track: Track): Track => {
-    if (track.id === new_track_id) {
-      return {
-        ...track,
-        clips: [...track.clips, updatedMovedClip].sort((a, b) => a.startTime - b.startTime),
-      }
-    }
-    return track
-  }
-
-  if (updatedProject.globalTracks) {
-    updatedProject.globalTracks = updatedProject.globalTracks.map(addClipToTrack)
-  }
-  if (updatedProject.sections) {
-    updatedProject.sections = updatedProject.sections.map((section) => ({
-      ...section,
-      tracks: section.tracks.map(addClipToTrack),
-    }))
   }
 
   return {
@@ -483,61 +437,8 @@ function handleClipSplit(
     // Удаляем оригинальный клип и добавляем два новых
     const clips = track.clips.filter((c) => c.id !== original_clip_id)
 
-    const leftTimelineClip: TimelineClip = {
-      id: left_clip.id,
-      name: left_clip.name,
-      mediaId: left_clip.media_id,
-      trackId: track_id,
-      startTime: left_clip.timeline_in,
-      duration: left_clip.timeline_out - left_clip.timeline_in,
-      sourceIn: left_clip.source_in,
-      sourceOut: left_clip.source_out,
-      mediaStartTime: left_clip.source_in,
-      mediaEndTime: left_clip.source_out,
-      offset: 0,
-      playbackRate: 1.0,
-      speed: 1.0,
-      isReversed: false,
-      isSelected: false,
-      isLocked: false,
-      isMuted: false,
-      volume: 1.0,
-      opacity: 1.0,
-      position: { x: 0, y: 0, width: 1, height: 1, rotation: 0, scaleX: 1, scaleY: 1 },
-      effects: [],
-      filters: [],
-      transitions: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    const rightTimelineClip: TimelineClip = {
-      id: right_clip.id,
-      name: right_clip.name,
-      mediaId: right_clip.media_id,
-      trackId: track_id,
-      startTime: right_clip.timeline_in,
-      duration: right_clip.timeline_out - right_clip.timeline_in,
-      sourceIn: right_clip.source_in,
-      sourceOut: right_clip.source_out,
-      mediaStartTime: right_clip.source_in,
-      mediaEndTime: right_clip.source_out,
-      offset: 0,
-      playbackRate: 1.0,
-      speed: 1.0,
-      isReversed: false,
-      isSelected: false,
-      isLocked: false,
-      isMuted: false,
-      volume: 1.0,
-      opacity: 1.0,
-      position: { x: 0, y: 0, width: 1, height: 1, rotation: 0, scaleX: 1, scaleY: 1 },
-      effects: [],
-      filters: [],
-      transitions: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
+    const leftTimelineClip = convertClipToTimelineClip(left_clip, track_id)
+    const rightTimelineClip = convertClipToTimelineClip(right_clip, track_id)
 
     return {
       ...track,

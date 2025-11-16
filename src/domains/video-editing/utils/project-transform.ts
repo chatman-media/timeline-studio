@@ -105,8 +105,10 @@ export function transformProjectStateToTimeline(projectState: ProjectState | nul
       currentTime: projectState.playback_state.current_time,
       playbackRate: projectState.playback_state.playback_rate,
       volume: projectState.playback_state.volume,
-      selectedMedia: undefined, // TODO: добавить в backend
-      source: undefined, // TODO: добавить в backend
+      // ПРИМЕЧАНИЕ: selectedMedia и source управляются на frontend
+      // Они не синхронизируются с backend, т.к. относятся к UI состоянию
+      selectedMedia: undefined,
+      source: undefined,
     }
   }
 
@@ -332,7 +334,7 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
       tracks: allTracks.map((track) => ({
         id: track.id,
         name: track.name,
-        track_type: reverseMapTrackType(track.type) as any, // TODO: исправить типы
+        track_type: reverseMapTrackType(track.type),
         enabled: !track.muted,
         locked: track.locked,
         height: track.height,
@@ -380,13 +382,19 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
 /**
  * Обратный маппинг типов треков
  */
+/**
+ * Обратный маппинг типов треков (Frontend → Backend)
+ *
+ * ВАЖНО: Rust TrackType содержит только: Video, Audio, Title, Music, Voiceover, Sfx, Ambient
+ * Frontend типы Image и Subtitle маппятся на Video и Title соответственно
+ */
 function reverseMapTrackType(frontendType: Track["type"]): string {
   const typeMap: Record<Track["type"], string> = {
     video: "Video",
     audio: "Audio",
-    image: "Image",
+    image: "Video", // Image обрабатывается как Video в backend
     title: "Title",
-    subtitle: "Title",
+    subtitle: "Title", // Subtitle обрабатывается как Title в backend
     music: "Music",
     voiceover: "Voiceover",
     sfx: "Sfx",

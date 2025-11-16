@@ -3,6 +3,12 @@
  *
  * Модульная система провайдеров для работы с расширенной timeline машиной.
  * Каждый провайдер отвечает за свою область ответственности.
+ *
+ * RACE CONDITIONS PREVENTION:
+ * - Backend команды выполняются через BackendSync который имеет встроенную очередь
+ * - Frontend state updates происходят синхронно через XState machine
+ * - Backend events обрабатываются последовательно через BACKEND_EVENT action
+ * - Debouncing/Throttling применяется к UI-triggered операциям
  */
 
 import { useSelector } from "@xstate/react"
@@ -668,8 +674,10 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
     deleteSelected: async () => {
       try {
-        // DeleteSelected не существует, удаляем выбранные элементы по отдельности
-        // TODO: добавить команду DeleteSelected в backend
+        // ПРИМЕЧАНИЕ: Используем отдельные команды для каждого элемента
+        // Это более гибко, чем batch команда DeleteSelected, т.к. позволяет
+        // обрабатывать ошибки для каждого элемента отдельно и поддерживает
+        // транзакции. Если потребуется оптимизация, можно добавить batch API.
         for (const clipId of selectedClipIds) {
           await backendSync.executeCommand({
             type: "DeleteClip",

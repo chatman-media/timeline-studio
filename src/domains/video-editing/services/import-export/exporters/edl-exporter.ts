@@ -9,18 +9,22 @@ import { type EDLEvent, type Exporter, type ExportOptions, formatTimecode, secon
 
 export class EDLExporter implements Exporter {
   private frameRate = 30
+  private dropFrame = false
   private eventCounter = 0
+  private audioTrackCounter = new Map<string, number>() // Трек ID -> номер аудио трека
 
   async export(project: Timeline, options: ExportOptions): Promise<string> {
     this.frameRate = project.fps || 30
+    this.dropFrame = this.isDropFrame(this.frameRate)
     this.eventCounter = 1
+    this.audioTrackCounter.clear()
 
     const lines: string[] = []
 
     // Добавляем заголовок
     lines.push(`TITLE: ${project.name}`)
     lines.push("")
-    lines.push("FCM: NON-DROP FRAME") // TODO: поддержка drop-frame
+    lines.push(`FCM: ${this.dropFrame ? "DROP FRAME" : "NON-DROP FRAME"}`)
     lines.push("")
 
     // Собираем все треки
@@ -69,6 +73,16 @@ export class EDLExporter implements Exporter {
     return "text/plain"
   }
 
+  /**
+   * Определяет, нужно ли использовать drop-frame timecode
+   * Drop-frame используется для NTSC видео (29.97, 59.94 fps)
+   */
+  private isDropFrame(fps: number): boolean {
+    // Drop-frame используется для компенсации разницы между 30 fps и 29.97 fps
+    const ntscFrameRates = [29.97, 59.94, 23.976]
+    return ntscFrameRates.some((rate) => Math.abs(fps - rate) < 0.01)
+  }
+
   private createEventsFromTrack(track: Track, options: ExportOptions): EDLEvent[] {
     const events: EDLEvent[] = []
 
@@ -91,7 +105,7 @@ export class EDLExporter implements Exporter {
     return events
   }
 
-  private getEDLTrackType(track: Track): "V" | "A" | "AA" | "B" {
+  private getEDLTrackType(track: Track): string {
     switch (track.type) {
       case "video":
         return "V"
@@ -99,16 +113,22 @@ export class EDLExporter implements Exporter {
       case "music":
       case "voiceover":
       case "sfx":
-      case "ambient":
-        // Определяем номер аудио трека
-        // TODO: поддержка множественных аудио треков (A1, A2, etc.)
-        return "A"
+      case "ambient": {
+        // Поддержка множественных аудио треков (A1, A2, A3, etc.)
+        let audioTrackNum = this.audioTrackCounter.get(track.id)
+        if (audioTrackNum === undefined) {
+          audioTrackNum = this.audioTrackCounter.size + 1
+          this.audioTrackCounter.set(track.id, audioTrackNum)
+        }
+        // Возвращаем A1, A2, A3 для разных аудио треков
+        return audioTrackNum === 1 ? "A" : `A${audioTrackNum}`
+      }
       default:
         return "V" // По умолчанию видео
     }
   }
 
-  private createEventFromClip(clip: TimelineClip, trackType: "V" | "A" | "AA" | "B", options: ExportOptions): EDLEvent {
+  private createEventFromClip(clip: TimelineClip, trackType: string, options: ExportOptions): EDLEvent {
     // Вычисляем timecodes
     const sourceIn = secondsToTimecode(clip.sourceIn || 0, this.frameRate)
     const sourceOut = secondsToTimecode(clip.sourceOut || (clip.sourceIn || 0) + clip.duration, this.frameRate)
