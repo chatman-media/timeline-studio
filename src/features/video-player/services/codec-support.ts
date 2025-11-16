@@ -221,6 +221,8 @@ export class CodecSupportService {
     const profile = this.supportedProfiles.get(codecName)
     if (!profile) return "unsupported"
 
+    let video: HTMLVideoElement | null = null
+
     try {
       // Skip during SSR
       if (typeof document === "undefined") {
@@ -229,7 +231,7 @@ export class CodecSupportService {
       }
 
       // Базовая проверка через canPlayType
-      const video = document.createElement("video")
+      video = document.createElement("video")
       const basicSupport = video.canPlayType(profile.mimeType)
 
       if (basicSupport === "probably") {
@@ -266,6 +268,17 @@ export class CodecSupportService {
     } catch (error) {
       logger.warn(`Codec support check failed for ${codecName}:`, { error })
       return "unsupported"
+    } finally {
+      // ВАЖНО: Очищаем временный video element для предотвращения утечек памяти
+      if (video) {
+        // Безопасное удаление элемента (remove() может отсутствовать в тестовом окружении)
+        if (typeof video.remove === "function") {
+          video.remove()
+        } else if (video.parentNode) {
+          video.parentNode.removeChild(video)
+        }
+        video = null
+      }
     }
   }
 
