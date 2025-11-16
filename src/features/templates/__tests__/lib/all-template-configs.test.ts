@@ -210,7 +210,7 @@ describe("All Template Configurations", () => {
     it("should have properly configured cells with alternating backgrounds", () => {
       ALL_TEMPLATE_CONFIGS.forEach((config) => {
         if (config.cells) {
-          config.cells.forEach((cell, index) => {
+          config.cells.forEach((cell, _index) => {
             expect(cell.background?.color).toBeDefined()
             expect(cell.border?.width).toBeDefined()
 

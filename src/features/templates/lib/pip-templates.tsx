@@ -3,7 +3,7 @@
  * Этот файл содержит 26 PiP шаблонов для различных конфигураций
  */
 
-import { createCellConfig, createDividerConfig, type MediaTemplateConfig, PRESET_STYLES } from "./template-config"
+import { createCellConfig, createDividerConfig, type MediaTemplateConfig } from "./template-config"
 
 // ===== BASIC PiP (12 шаблонов: 4 позиции × 3 размера) =====
 
@@ -28,7 +28,7 @@ function createBasicPip(
 ): MediaTemplateConfig {
   const pos = PIP_POSITIONS[position]
   const sizeConfig = PIP_SIZES[size]
-  const sizePercent = Number.parseInt(sizeConfig.width)
+  const sizePercent = Number.parseInt(sizeConfig.width, 10)
 
   return {
     id: `pip-basic-${position}-${sizePercent}-${orientation}`,
@@ -95,7 +95,7 @@ function createDualPip(
   const pos1 = PIP_POSITIONS[config.pos1]
   const pos2 = PIP_POSITIONS[config.pos2]
   const sizeConfig = PIP_SIZES[config.size]
-  const sizePercent = Number.parseInt(sizeConfig.width)
+  const sizePercent = Number.parseInt(sizeConfig.width, 10)
 
   return {
     id: `pip-dual-${config.pos1}-${config.pos2}-${sizePercent}-${orientation}`,
