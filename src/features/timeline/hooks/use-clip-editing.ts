@@ -3,6 +3,7 @@ import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing
 import { EDIT_MODES } from "../types/edit-modes"
 import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../utils/edit-operations"
 import { DEFAULT_SNAP_CONFIG, findSnapPoints, snapTime } from "../utils/snap-engine"
+import { useTimelineUI } from "../context/timeline-ui-context"
 import { useEditModeContext } from "./use-edit-mode"
 import { useTimeline } from "./use-timeline"
 
@@ -14,9 +15,7 @@ interface UseClipEditingOptions {
 
 export function useClipEditing(clipId: string, options: UseClipEditingOptions = {}) {
   const { project, currentTime, send } = useTimeline()
-
-  // Мок UI state для восстановления функциональности
-  const uiState = { timeScale: 50 } // TODO: Получать из контекста
+  const { uiState } = useTimelineUI()
   const { editMode } = useEditModeContext()
   const [isEditing, setIsEditing] = useState(false)
   const [preview, setPreview] = useState<{
@@ -131,6 +130,29 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
           break
       }
 
+      // Проверка границ timeline - не даем клипу выходить за пределы
+      // Минимум: startTime не может быть отрицательным
+      if (newStartTime < 0) {
+        newStartTime = 0
+        newDuration = editStartRef.current.duration
+      }
+
+      // Максимум: clip не может выходить за пределы project duration
+      if (newStartTime + newDuration > project.duration) {
+        newStartTime = Math.max(0, project.duration - newDuration)
+      }
+
+      // Минимальная длительность clip
+      const MIN_CLIP_DURATION = 0.1 // 100ms
+      if (newDuration < MIN_CLIP_DURATION) {
+        newDuration = MIN_CLIP_DURATION
+      }
+
+      // Проверка offset границ
+      if (newOffset < 0) {
+        newOffset = 0
+      }
+
       // Apply snapping
       const snapPoints = findSnapPoints(
         project as any,
@@ -153,7 +175,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
         offset: newOffset,
       })
     },
-    [clip, track, editMode, project, uiState, currentTime, snapConfig],
+    [clip, track, editMode, project, uiState, currentTime, snapConfig, clipId],
   )
 
   // Complete trim operation

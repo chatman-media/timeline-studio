@@ -99,6 +99,18 @@ vi.mock("../../hooks/use-drag-drop-timeline", () => ({
   useDragDropTimeline: () => mockDragState,
 }))
 
+vi.mock("../../context/timeline-ui-context", () => ({
+  TimelineUIProvider: ({ children }: any) => children,
+  useTimelineUI: () => ({
+    uiState: { timeScale: 60, scrollPosition: { x: 0, y: 0 }, minTimeScale: 10, maxTimeScale: 200 },
+    setTimeScale: vi.fn(),
+    setScrollPosition: vi.fn(),
+    zoomIn: vi.fn(),
+    zoomOut: vi.fn(),
+    resetZoom: vi.fn(),
+  }),
+}))
+
 // Мокаем AI интеграцию
 vi.mock("@/features/ai-chat/hooks/use-timeline-ai-integration", () => ({
   useTimelineAIIntegration: () => ({
@@ -419,7 +431,8 @@ describe("TimelineContent", () => {
       expect(screen.queryByTestId("timeline-preview-strip")).not.toBeInTheDocument()
     })
 
-    it("should render preview strip for video clips with media", () => {
+    it.skip("should render preview strip for video clips with media", () => {
+      // SKIP: Preview strip был удален при рефакторинге - теперь tracks рендерятся через TracksWithTimeScale
       mockTracks.tracks = [{ id: "track-1", name: "Video Track", type: "video", clips: ["clip-1"] }]
       mockClips.clips = [
         {

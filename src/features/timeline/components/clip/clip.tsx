@@ -8,6 +8,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { useClipEditing } from "../../hooks/use-clip-editing"
 import { useClipGroups } from "../../hooks/use-clip-groups"
+import { useDebouncedDrag } from "../../hooks/use-debounced-drag"
 import { useEditModeContext } from "../../hooks/use-edit-mode"
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 import { useSlipSlide } from "../../hooks/use-slip-slide"
@@ -132,16 +133,27 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
     [editMode, clip.id, startSlip, startSlide],
   )
 
+  // Debounced drag для Slip/Slide операций
+  const { debouncedDragUpdate } = useDebouncedDrag({
+    delay: 16, // 60fps
+    onDragCommit: (x) => {
+      if (!slipSlidePreview || slipSlidePreview.clipId !== clip.id) return
+
+      if (slipSlidePreview.mode === "slip") {
+        updateSlip(x)
+      } else {
+        updateSlide(x)
+      }
+    },
+  })
+
   // Обработка глобальных событий мыши для SLIP/SLIDE
   useEffect(() => {
     if (!slipSlidePreview || slipSlidePreview.clipId !== clip.id) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (slipSlidePreview.mode === "slip") {
-        updateSlip(e.clientX)
-      } else {
-        updateSlide(e.clientX)
-      }
+      // Используем debounced версию для оптимизации (60fps вместо 60+ calls/sec)
+      debouncedDragUpdate(e.clientX)
     }
 
     const handleMouseUp = () => {
@@ -171,7 +183,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
       window.removeEventListener("mouseup", handleMouseUp)
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [slipSlidePreview, clip.id, updateSlip, updateSlide, commitSlip, commitSlide, cancelSlip, cancelSlide])
+  }, [slipSlidePreview, clip.id, debouncedDragUpdate, commitSlip, commitSlide, cancelSlip, cancelSlide])
 
   return (
     <>

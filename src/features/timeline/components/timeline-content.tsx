@@ -16,6 +16,7 @@ import { useTimelineAIIntegration } from "@/features/ai-chat/hooks/use-timeline-
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { createLogger } from "@/lib/tauri-logger"
+import { TimelineUIProvider, useTimelineUI } from "../context/timeline-ui-context"
 import { useClips } from "../hooks/use-clips"
 import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
 import { EditModeProvider } from "../hooks/use-edit-mode"
@@ -45,6 +46,14 @@ import { UndoRedoHotkeys } from "./undo-redo"
 const logger = createLogger("TimelineContent")
 
 export function TimelineContent() {
+  return (
+    <TimelineUIProvider initialState={{ timeScale: 60 }}>
+      <TimelineContentInner />
+    </TimelineUIProvider>
+  )
+}
+
+function TimelineContentInner() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [scrollOffset, setScrollOffset] = useState(0)
   const [containerWidth, setContainerWidth] = useState(0)
@@ -70,8 +79,8 @@ export function TimelineContent() {
     clearError = () => {},
   } = useTimeline()
 
-  // Временные значения для обратной совместимости
-  const timeScale = 60 // Пикселей в секунду по умолчанию
+  const { uiState } = useTimelineUI()
+  const timeScale = uiState.timeScale
 
   const { tracks, setTrackHeight } = useTracks()
   const { clips } = useClips()
@@ -284,47 +293,15 @@ export function TimelineContent() {
                       {/* Track Insertion Zones - показываем только во время drag */}
                       <TrackInsertionZones trackIds={tracks.map((t) => t.id)} isVisible={dragState.isDragging} />
 
-                      {/* Полоса превью для видео клипов */}
-                      {clips.some((clip) => {
-                        const track = tracks.find((t) => t.id === clip.trackId)
-                        return track?.type === "video" && clip.mediaFile?.path
-                      }) && (
-                        <div className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
-                          {clips
-                            .filter((clip) => {
-                              const track = tracks.find((t) => t.id === clip.trackId)
-                              return track?.type === "video" && clip.mediaFile?.path
-                            })
-                            .map((clip) => (
-                              <TimelinePreviewStrip
-                                key={clip.id}
-                                videoPath={clip.mediaFile?.path || null}
-                                duration={clip.duration}
-                                containerWidth={containerWidth}
-                                scale={timeScale}
-                                scrollOffset={scrollOffset}
-                                height={60}
-                                className="mb-1"
-                                onFrameClick={(timestamp) => seek(clip.startTime + timestamp)}
-                                showTimestamps={false}
-                              />
-                            ))}
-                        </div>
-                      )}
-
                       {/* Треки */}
                       <div className="space-y-0">
-                        {tracks.map((track) => (
-                          <Track
-                            key={track.id}
-                            track={track}
-                            timeScale={timeScale}
-                            currentTime={currentTime}
-                            isSelected={selectedTrackIds?.includes(track.id) ?? false}
-                            onSelect={(trackId) => selectTracks([trackId])}
-                            onUpdate={(updates) => updateTrack(track.id, updates as Partial<typeof Track>)}
-                          />
-                        ))}
+                        <TracksWithTimeScale
+                          tracks={tracks}
+                          currentTime={currentTime}
+                          selectedTrackIds={selectedTrackIds}
+                          selectTracks={selectTracks}
+                          updateTrack={updateTrack}
+                        />
                       </div>
                     </div>
                   )}
@@ -335,5 +312,38 @@ export function TimelineContent() {
         </div>
       </div>
     </EditModeProvider>
+  )
+}
+
+// Helper component to use timeScale from context
+function TracksWithTimeScale({
+  tracks,
+  currentTime,
+  selectedTrackIds,
+  selectTracks,
+  updateTrack,
+}: {
+  tracks: ReturnType<typeof useTracks>["tracks"]
+  currentTime: number
+  selectedTrackIds: string[] | undefined
+  selectTracks: (trackIds: string[]) => void
+  updateTrack: (trackId: string, updates: any) => void
+}) {
+  const { uiState } = useTimelineUI()
+
+  return (
+    <>
+      {tracks.map((track) => (
+        <Track
+          key={track.id}
+          track={track}
+          timeScale={uiState.timeScale}
+          currentTime={currentTime}
+          isSelected={selectedTrackIds?.includes(track.id) ?? false}
+          onSelect={(trackId) => selectTracks([trackId])}
+          onUpdate={(updates) => updateTrack(track.id, updates as Partial<typeof Track>)}
+        />
+      ))}
+    </>
   )
 }

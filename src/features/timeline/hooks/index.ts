@@ -6,6 +6,8 @@
 
 export type { UseBatchOperationsReturn } from "./use-batch-operations"
 export { useBatchOperations } from "./use-batch-operations"
+export type { UseClipEffectsOptions, UseClipEffectsReturn } from "./use-clip-effects"
+export { useClipEffects } from "./use-clip-effects"
 export type { UseClipsReturn } from "./use-clips"
 export { useClips } from "./use-clips"
 export type { UseIntegratedVersionControlReturn } from "./use-integrated-version-control"
