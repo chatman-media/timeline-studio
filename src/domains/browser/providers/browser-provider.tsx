@@ -577,8 +577,7 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
 
   const isFileSelected = (fileId: string, tab?: BrowserTab): boolean => {
     const targetTab = tab || activeTab
-    if (!browserState?.selected_files) return false
-    const files = browserState.selected_files[targetTab] || []
+    const files = selectedFiles[targetTab] || []
     return files.includes(fileId)
   }
 
