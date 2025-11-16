@@ -55,6 +55,7 @@ import type {
   UnifiedAIRequest,
   UnifiedAIResponse,
 } from "../../../types/generated/tauri-bindings"
+import { sanitizeTextInput, validateAIMessages } from "../utils/validation"
 
 // ============================================================================
 // TYPES
@@ -108,6 +109,10 @@ export interface SendRequestWithToolsOptions {
  */
 export class UnifiedAIService {
   private activeListeners: Map<string, UnlistenFn> = new Map()
+  /** Таймауты для автоматической очистки старых listeners (TTL cleanup) */
+  private listenerTimeouts: Map<string, NodeJS.Timeout> = new Map()
+  /** TTL для listeners в миллисекундах (5 минут) */
+  private readonly LISTENER_TTL_MS = 5 * 60 * 1000
 
   /**
    * Отправить обычный (non-streaming) запрос с кэшированием
@@ -125,9 +130,21 @@ export class UnifiedAIService {
    */
   async sendRequest(request: UnifiedAIRequest): Promise<UnifiedAIResponse> {
     try {
+      // Валидация входных данных
+      validateAIMessages(request.messages)
+
+      // Sanitize message content
+      const sanitizedRequest = {
+        ...request,
+        messages: request.messages.map((msg) => ({
+          ...msg,
+          content: sanitizeTextInput(msg.content),
+        })),
+      }
+
       // Используем secure команду, которая автоматически получает API ключ из storage
       const response = await invoke<UnifiedAIResponse>("ai_send_secure_request", {
-        request,
+        request: sanitizedRequest,
       })
       return response
     } catch (error) {
@@ -269,6 +286,28 @@ export class UnifiedAIService {
       })
       this.activeListeners.set(`${requestId}-error`, unlistenError)
     }
+
+    // Устанавливаем TTL таймаут для автоматической очистки (защита от memory leaks)
+    this.setupListenerTTL(requestId)
+  }
+
+  /**
+   * Установить TTL таймаут для автоматической очистки listeners
+   * Предотвращает memory leaks если listeners не были очищены вручную
+   */
+  private setupListenerTTL(requestId: string): void {
+    // Очищаем существующий таймаут если есть
+    const existingTimeout = this.listenerTimeouts.get(requestId)
+    if (existingTimeout) {
+      clearTimeout(existingTimeout)
+    }
+
+    // Создаем новый таймаут для автоматической очистки
+    const timeout = setTimeout(() => {
+      this.cleanupStreamingListeners(requestId)
+    }, this.LISTENER_TTL_MS)
+
+    this.listenerTimeouts.set(requestId, timeout)
   }
 
   /**
@@ -287,6 +326,13 @@ export class UnifiedAIService {
     }
 
     keysToRemove.forEach((key) => this.activeListeners.delete(key))
+
+    // Очищаем TTL таймаут
+    const timeout = this.listenerTimeouts.get(requestId)
+    if (timeout) {
+      clearTimeout(timeout)
+      this.listenerTimeouts.delete(requestId)
+    }
   }
 
   /**
@@ -570,6 +616,13 @@ export class UnifiedAIService {
       unlisten()
     }
     this.activeListeners.clear()
+
+    // Очищаем все TTL таймауты
+    const timeouts = Array.from(this.listenerTimeouts.values())
+    for (const timeout of timeouts) {
+      clearTimeout(timeout)
+    }
+    this.listenerTimeouts.clear()
   }
 }
 

@@ -14,26 +14,24 @@ const logger = createLogger("Index")
 export * from "./automation"
 // Core Tools
 export * from "./core"
+// Integration Tools
+export * from "./integration"
 
 import { ANALYSIS_TOOLS_STATS, analysisTools } from "./analysis"
 import { AUTOMATION_TOOLS_STATS, automationTools } from "./automation"
 // Импорты для статистики
 import { CORE_TOOLS_STATS, coreTools } from "./core"
+import { INTEGRATION_TOOLS_STATS, integrationTools } from "./integration"
 
 // Все инструменты домена
-export const allAITools = [
-  ...coreTools,
-  ...analysisTools,
-  ...automationTools,
-  // Здесь будут добавлены Integration tools
-]
+export const allAITools = [...coreTools, ...analysisTools, ...automationTools, ...integrationTools]
 
 // Статистика по всем инструментам
 export const AI_TOOLS_DOMAIN_STATS = {
   core: CORE_TOOLS_STATS,
   analysis: ANALYSIS_TOOLS_STATS,
   automation: AUTOMATION_TOOLS_STATS,
-  // integration: INTEGRATION_TOOLS_STATS, // Будет добавлено позже
+  integration: INTEGRATION_TOOLS_STATS,
   total: allAITools.length,
 }
 

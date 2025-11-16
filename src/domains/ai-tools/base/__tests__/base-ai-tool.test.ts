@@ -22,7 +22,6 @@ describe("BaseAITool", () => {
       const input = { value: "test" }
 
       const promise = tool.execute(input)
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(true)
@@ -37,7 +36,6 @@ describe("BaseAITool", () => {
       const input = { invalid: "data" }
 
       const promise = tool.execute(input)
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -50,7 +48,6 @@ describe("BaseAITool", () => {
       const input = { errorMessage: "Custom error message" }
 
       const promise = tool.execute(input)
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -94,7 +91,6 @@ describe("BaseAITool", () => {
         retries: 3,
         retryDelay: 100,
       })
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -113,7 +109,6 @@ describe("BaseAITool", () => {
       })
 
       // Симулируем прохождение времени для всех retry попыток
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -143,7 +138,6 @@ describe("BaseAITool", () => {
       })
 
       const promise = tool.execute({ value: "test" }, { retries: 5 })
-      await vi.runAllTimersAsync()
 
       expect(attemptCount).toBeLessThanOrEqual(3)
     })
@@ -158,7 +152,6 @@ describe("BaseAITool", () => {
         timeout: 1000, // 1 секунда таймаут
       })
 
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -173,7 +166,6 @@ describe("BaseAITool", () => {
         timeout: 1000, // 1 секунда таймаут
       })
 
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(true)
@@ -188,7 +180,6 @@ describe("BaseAITool", () => {
       const input = { value: "test" }
 
       const promise = tool.execute(input, { enableLogging: true })
-      await vi.runAllTimersAsync()
       await promise
 
       expect(mockLogger.info).toHaveBeenCalled()
@@ -200,7 +191,6 @@ describe("BaseAITool", () => {
       const input = { value: "test" }
 
       const promise = tool.execute(input, { enableLogging: false })
-      await vi.runAllTimersAsync()
       await promise
 
       expect(mockLogger.info).not.toHaveBeenCalled()
@@ -215,7 +205,6 @@ describe("BaseAITool", () => {
         enableLogging: true,
         retries: 2,
       })
-      await vi.runAllTimersAsync()
       await promise
 
       expect(mockLogger.warn).toHaveBeenCalled()
@@ -247,7 +236,6 @@ describe("BaseAITool", () => {
       const input = { invalid: "data" }
 
       const promise = tool.execute(input)
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.success).toBe(false)
@@ -265,7 +253,6 @@ describe("BaseAITool", () => {
       const promise = tool.execute(input, {
         metadata: customMetadata,
       })
-      await vi.runAllTimersAsync()
       const result = await promise
 
       expect(result.metadata).toMatchObject(customMetadata)
@@ -281,7 +268,6 @@ describe("BaseAITool", () => {
       const promise1 = tool.execute(input)
       const promise2 = tool.execute(input)
 
-      await vi.runAllTimersAsync()
 
       const result1 = await promise1
       const result2 = await promise2

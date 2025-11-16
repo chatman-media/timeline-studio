@@ -16,6 +16,8 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
+vi.mock("@/domains/ai-services/utils/validation")
+
 vi.mock("@/features/ai-director/services/ai-director-service", () => ({
   aiDirectorService: {
     analyzeComprehensive: vi.fn().mockResolvedValue({

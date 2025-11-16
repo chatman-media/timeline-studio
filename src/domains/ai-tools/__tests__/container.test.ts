@@ -173,10 +173,9 @@ describe("AIToolsContainer", () => {
 
       registry.register(new SimpleTestTool())
 
-      const promise = engine.execute("SimpleTestTool", { value: "test" })
-      await vi.runAllTimersAsync()
+      const result = await engine.execute("SimpleTestTool", { value: "test" })
 
-      await expect(promise).resolves.toBeDefined()
+      expect(result).toBeDefined()
     })
 
     it("должен завершить работу контейнера", async () => {
@@ -246,9 +245,7 @@ describe("AIToolsContainer", () => {
       registry.register(new SimpleTestTool())
       registry.register(new DelayedTestTool())
 
-      const promise = engine.execute("SimpleTestTool", { value: "test" })
-      await vi.runAllTimersAsync()
-      await promise
+      await engine.execute("SimpleTestTool", { value: "test" })
 
       const stats = container.getContainerStats()
 

@@ -13,6 +13,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import pLimit from "p-limit"
 import type {
   ContentAnalysisCompletedEvent,
   ContentAnalysisStartedEvent,
@@ -35,6 +36,7 @@ import {
   mapMontageAnalysisToUnified,
   type UnifiedContentAnalysis,
 } from "../mappers/ai-director-mapper"
+import { validateVideoBatch, validateVideoFile } from "../utils/validation"
 
 const logger = createLogger({ module: "UnifiedOrchestrator" })
 
@@ -81,6 +83,8 @@ export interface OrchestratorOptions {
   enableErrorRecovery?: boolean
   maxRetries?: number
   timeoutMs?: number
+  /** Максимальное количество одновременных AI запросов (rate limiting) */
+  maxConcurrentRequests?: number
 }
 
 // ============================================================================
@@ -93,6 +97,8 @@ export class UnifiedOrchestrator {
   private activeWorkflows = new Map<string, AnalysisWorkflow>()
   private activeBatches = new Map<string, BatchAnalysisWorkflow>()
   private options: Required<OrchestratorOptions>
+  /** Rate limiter для контроля одновременных AI запросов */
+  private rateLimiter: ReturnType<typeof pLimit>
 
   private constructor(options?: OrchestratorOptions) {
     this.options = {
@@ -100,7 +106,11 @@ export class UnifiedOrchestrator {
       enableErrorRecovery: options?.enableErrorRecovery ?? true,
       maxRetries: options?.maxRetries ?? 3,
       timeoutMs: options?.timeoutMs ?? 300000, // 5 minutes default
+      maxConcurrentRequests: options?.maxConcurrentRequests ?? 5, // Default: 5 concurrent AI requests
     }
+
+    // Инициализация rate limiter
+    this.rateLimiter = pLimit(this.options.maxConcurrentRequests)
 
     logger.info("UnifiedOrchestrator инициализирован", { options: this.options })
     this.setupEventListeners()
@@ -168,6 +178,9 @@ export class UnifiedOrchestrator {
     montage?: MontageAnalysisResult
     unified: UnifiedContentAnalysis
   }> {
+    // Валидация входных данных
+    validateVideoFile(videoPath)
+
     const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substring(7)}`
 
     logger.info("Запуск comprehensive analysis workflow", {
@@ -329,14 +342,36 @@ export class UnifiedOrchestrator {
       error?: string
     }>
   }> {
+    // Валидация batch входных данных
+    const validationResult = validateVideoBatch(videoPaths, 50)
+
+    if (validationResult.invalid.length > 0) {
+      logger.warn("Batch analysis: некоторые файлы невалидны", {
+        invalidCount: validationResult.invalid.length,
+        invalidFiles: validationResult.invalid,
+      })
+    }
+
+    // Используем только валидные файлы
+    const validPaths = validationResult.valid
+
+    if (validPaths.length === 0) {
+      throw new Error("No valid video files in batch")
+    }
+
     const batchId = `batch-${Date.now()}-${Math.random().toString(36).substring(7)}`
 
-    logger.info("Запуск batch analysis", { batchId, count: videoPaths.length })
+    logger.info("Запуск batch analysis", {
+      batchId,
+      totalCount: videoPaths.length,
+      validCount: validPaths.length,
+      invalidCount: validationResult.invalid.length,
+    })
 
     const batch: BatchAnalysisWorkflow = {
       batchId,
       status: "in_progress",
-      videoPaths,
+      videoPaths: validPaths,
       startTime: new Date(),
       completedCount: 0,
       failedCount: 0,
@@ -355,32 +390,60 @@ export class UnifiedOrchestrator {
       error?: string
     }> = []
 
-    // Анализируем каждый файл последовательно
-    for (const videoPath of videoPaths) {
-      try {
-        const result = await this.analyzeComprehensive(videoPath, config)
-        results.push({
-          videoPath,
-          workflowId: result.workflowId,
-          comprehensive: result.comprehensive,
-          montage: result.montage,
-          unified: result.unified,
-          success: true,
-        })
-        batch.completedCount++
-      } catch (error) {
-        results.push({
-          videoPath,
-          workflowId: "",
-          comprehensive: this.createEmptyComprehensiveResult(),
-          unified: this.createEmptyUnifiedAnalysis(videoPath),
-          success: false,
-          error: error instanceof Error ? error.message : String(error),
-        })
-        batch.failedCount++
-        logger.error("Batch analysis: ошибка анализа файла", { videoPath, error })
-      }
+    // Добавляем невалидные файлы в результаты как failed
+    for (const invalid of validationResult.invalid) {
+      results.push({
+        videoPath: invalid.path,
+        workflowId: "",
+        comprehensive: this.createEmptyComprehensiveResult(),
+        unified: this.createEmptyUnifiedAnalysis(invalid.path),
+        success: false,
+        error: invalid.error,
+      })
+      batch.failedCount++
     }
+
+    // Анализируем каждый валидный файл с rate limiting
+    // Используем Promise.all с индексами для сохранения порядка результатов
+    const analysisPromises = validPaths.map((videoPath, index) =>
+      this.rateLimiter(async () => {
+        try {
+          const result = await this.analyzeComprehensive(videoPath, config)
+          batch.completedCount++
+          logger.debug("Batch analysis: файл обработан", { videoPath, batchId })
+          return {
+            index,
+            result: {
+              videoPath,
+              workflowId: result.workflowId,
+              comprehensive: result.comprehensive,
+              montage: result.montage,
+              unified: result.unified,
+              success: true,
+            },
+          }
+        } catch (error) {
+          batch.failedCount++
+          logger.error("Batch analysis: ошибка анализа файла", { videoPath, error })
+          return {
+            index,
+            result: {
+              videoPath,
+              workflowId: "",
+              comprehensive: this.createEmptyComprehensiveResult(),
+              unified: this.createEmptyUnifiedAnalysis(videoPath),
+              success: false,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          }
+        }
+      }),
+    )
+
+    // Ждем завершения всех анализов и сортируем по индексу для сохранения порядка
+    const analysisResults = await Promise.all(analysisPromises)
+    analysisResults.sort((a, b) => a.index - b.index)
+    analysisResults.forEach(({ result }) => results.push(result))
 
     batch.status = "completed"
     batch.endTime = new Date()

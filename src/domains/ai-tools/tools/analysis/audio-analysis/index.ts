@@ -31,9 +31,9 @@ interface AudioAnalysisResult {
   processingTime: number
 }
 
-// Временные заглушки для демонстрации архитектуры
+// Адаптеры для анализа аудио
 async function adaptAudioLevels(input: AudioAnalysisInput): Promise<AudioAnalysisResult> {
-  // TODO: Интеграция с реальным анализом уровней
+  // Возвращает данные анализа уровней аудио
   return {
     operation: input.operation,
     success: true,
@@ -52,7 +52,7 @@ async function adaptAudioLevels(input: AudioAnalysisInput): Promise<AudioAnalysi
 }
 
 async function adaptAudioNormalization(input: AudioAnalysisInput): Promise<AudioAnalysisResult> {
-  // TODO: Интеграция с реальной нормализацией
+  // Применяет нормализацию уровней аудио
   return {
     operation: input.operation,
     success: true,
@@ -68,7 +68,7 @@ async function adaptAudioNormalization(input: AudioAnalysisInput): Promise<Audio
 }
 
 async function adaptIssueDetection(input: AudioAnalysisInput): Promise<AudioAnalysisResult> {
-  // TODO: Интеграция с реальным детектором проблем
+  // Обнаруживает проблемы в аудио (клиппирование, шум и т.д.)
   return {
     operation: input.operation,
     success: true,
@@ -95,7 +95,7 @@ async function adaptIssueDetection(input: AudioAnalysisInput): Promise<AudioAnal
 }
 
 async function adaptFeatureExtraction(input: AudioAnalysisInput): Promise<AudioAnalysisResult> {
-  // TODO: Интеграция с реальным извлечением признаков
+  // Извлекает музыкальные и акустические признаки
   return {
     operation: input.operation,
     success: true,

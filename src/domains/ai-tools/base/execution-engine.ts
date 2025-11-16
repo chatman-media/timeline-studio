@@ -3,6 +3,7 @@
  * Управляет жизненным циклом выполнения, параллельностью и мониторингом
  */
 
+import pLimit from "p-limit"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AIToolExecutionOptions,
@@ -30,6 +31,7 @@ interface ExecutionInfo {
   endTime?: number
   promise: Promise<AIToolResult>
   controller: AbortController
+  ttl?: number // Время жизни в мс для auto-cleanup
 }
 
 /**
@@ -42,10 +44,16 @@ export class ExecutionEngine implements IExecutionEngine {
   private metrics: ExecutionMetrics
   private eventListeners = new Map<keyof AIToolsEventMap, Array<(event: any) => void>>()
   private maxConcurrentExecutions: number = 10
+  private limit: ReturnType<typeof pLimit>
+  private cleanupInterval: NodeJS.Timeout | null = null
+  private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5 минут для завершенных задач
+  private readonly CLEANUP_INTERVAL = 60 * 1000 // Проверка каждую минуту
 
   private constructor() {
     this.registry = ToolRegistry.getInstance()
     this.metrics = this.initializeMetrics()
+    this.limit = pLimit(this.maxConcurrentExecutions)
+    this.startCleanupTimer()
   }
 
   /**
@@ -132,8 +140,8 @@ export class ExecutionEngine implements IExecutionEngine {
 
       throw error
     } finally {
-      // Удаляем из активных выполнений
-      this.executions.delete(executionId)
+      // НЕ удаляем сразу - пусть TTL механизм очистит позже
+      // Это позволяет просматривать историю выполнений
     }
   }
 
@@ -148,18 +156,20 @@ export class ExecutionEngine implements IExecutionEngine {
     this.emitEvent("batch:started", { batchId, taskCount: tasks.length })
 
     try {
-      // Выполняем задачи параллельно
+      // Выполняем задачи параллельно с учетом лимита concurrency
       const promises = tasks.map((task) =>
-        this.execute(task.toolName, task.input, task.options).catch(
-          (error) =>
-            ({
-              success: false,
-              message: error.message,
-              errors: [error.message],
-              executionTime: 0,
-              toolName: task.toolName,
-              executionId: "",
-            }) as AIToolResult,
+        this.limit(() =>
+          this.execute(task.toolName, task.input, task.options).catch(
+            (error) =>
+              ({
+                success: false,
+                message: error.message,
+                errors: [error.message],
+                executionTime: 0,
+                toolName: task.toolName,
+                executionId: "",
+              }) as AIToolResult,
+          ),
         ),
       )
 
@@ -210,13 +220,19 @@ export class ExecutionEngine implements IExecutionEngine {
       throw new Error(`Выполнение с ID "${executionId}" не найдено`)
     }
 
+    // Отправляем сигнал отмены через AbortController
     execution.controller.abort()
     execution.status = "cancelled"
     execution.endTime = Date.now()
 
-    // Удаляем из активных выполнений
-    this.executions.delete(executionId)
+    // Отправляем событие отмены
+    this.emitEvent("execution:failed", {
+      executionId,
+      toolName: execution.toolName,
+      error: new Error("Выполнение отменено пользователем"),
+    })
 
+    // НЕ удаляем сразу - пусть TTL очистит позже
     logger.info("[ExecutionEngine] Отменено выполнение:", { executionId })
   }
 
@@ -255,9 +271,10 @@ export class ExecutionEngine implements IExecutionEngine {
       throw new Error(`Невалидные входные данные для инструмента ${tool.metadata.name}`)
     }
 
-    // Выполняем инструмент
+    // Выполняем инструмент с propagation AbortSignal
     const result = await tool.execute(input, {
       ...options,
+      signal, // Передаем AbortSignal в инструмент
       metadata: {
         ...options.metadata,
         executionId,
@@ -429,6 +446,8 @@ export class ExecutionEngine implements IExecutionEngine {
    */
   public setMaxConcurrentExecutions(max: number): void {
     this.maxConcurrentExecutions = max
+    // Пересоздаем limiter с новым значением
+    this.limit = pLimit(max)
   }
 
   /**
@@ -449,11 +468,99 @@ export class ExecutionEngine implements IExecutionEngine {
   }
 
   /**
+   * Запуск таймера для автоматической очистки
+   */
+  private startCleanupTimer(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+    }
+
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupExpiredExecutions()
+    }, this.CLEANUP_INTERVAL)
+  }
+
+  /**
+   * Остановка таймера очистки
+   */
+  private stopCleanupTimer(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+      this.cleanupInterval = null
+    }
+  }
+
+  /**
+   * Очистка завершенных выполнений с истекшим TTL
+   */
+  private cleanupExpiredExecutions(): void {
+    const now = Date.now()
+    const toDelete: string[] = []
+
+    for (const [id, execution] of this.executions.entries()) {
+      // Очищаем только завершенные задачи
+      if (execution.status !== "running" && execution.endTime) {
+        const ttl = execution.ttl || this.DEFAULT_TTL
+        const expirationTime = execution.endTime + ttl
+
+        if (now >= expirationTime) {
+          toDelete.push(id)
+        }
+      }
+    }
+
+    toDelete.forEach((id) => {
+      this.executions.delete(id)
+      logger.debug("[ExecutionEngine] Очищено истекшее выполнение:", { executionId: id })
+    })
+
+    if (toDelete.length > 0) {
+      logger.info("[ExecutionEngine] Автоочистка:", {
+        cleaned: toDelete.length,
+        remaining: this.executions.size,
+      })
+    }
+  }
+
+  /**
+   * Ручная очистка завершенных выполнений
+   */
+  public cleanupCompleted(olderThanMs?: number): number {
+    const now = Date.now()
+    const threshold = olderThanMs || 0
+    const toDelete: string[] = []
+
+    for (const [id, execution] of this.executions.entries()) {
+      if (execution.status !== "running" && execution.endTime) {
+        const age = now - execution.endTime
+        if (age >= threshold) {
+          toDelete.push(id)
+        }
+      }
+    }
+
+    toDelete.forEach((id) => this.executions.delete(id))
+
+    return toDelete.length
+  }
+
+  /**
    * Очистка завершенных выполнений и сброс метрик
    */
   public reset(): void {
+    this.stopCleanupTimer()
     this.executions.clear()
     this.metrics = this.initializeMetrics()
+    this.eventListeners.clear()
+    this.startCleanupTimer()
+  }
+
+  /**
+   * Деструктор для очистки ресурсов
+   */
+  public dispose(): void {
+    this.stopCleanupTimer()
+    this.executions.clear()
     this.eventListeners.clear()
   }
 }
