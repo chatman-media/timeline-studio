@@ -8,6 +8,7 @@
 
 import { type ReactNode } from "react"
 import { BrowserProvider } from "@/domains/browser"
+import { MediaManagementProvider } from "@/domains/media-management"
 import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { AppProvider } from "@/features/app-state/services/app-provider"
@@ -48,6 +49,7 @@ const AppProviderComposite = composeProviders(
   // UserSettingsProvider, // Пользовательские настройки больше не обязательны: читаются через доменный хук
   ProjectSettingsProvider, // ✅ Новый провайдер настроек проекта с backend синхронизацией
   // ShortcutsProvider, // ОТКЛЮЧЕНО: отключено по запросу
+  MediaManagementProvider, // ✅ Провайдер управления медиа с event-driven архитектурой
   ResourcesProvider, // ✅ Новый провайдер ресурсов с backend интеграцией
   BrowserProvider, // ✅ Провайдер браузера с полной интеграцией backend state
 
