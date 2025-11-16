@@ -4,6 +4,8 @@
 
 Этот раздел содержит подробную архитектурную документацию Timeline Studio - AI-powered платформы для видеомонтажа с **257 интегрированными AI инструментами**.
 
+> **📑 Навигация**: См. [INDEX.md](./INDEX.md) для структурированного списка всех документов по архитектуре.
+
 ## 📊 AI Архитектура - Ключевые метрики
 
 - **🎯 Общее количество AI инструментов**: 257 (100% готовы к использованию)
@@ -17,7 +19,8 @@
 - [**communication.md**](communication.md) - Взаимодействие Frontend-Backend через Tauri IPC
 - [**data-flow.md**](data-flow.md) - Поток данных в приложении
 - [**ai-service.md**](ai-service.md) - Архитектура AI сервисов и обработки
-- [**backend-sync-architecture.md**](backend-sync-architecture.md) - Унифицированная BackendSync архитектура (NEW)
+- [**backend-sync-architecture.md**](backend-sync-architecture.md) - Command-Event Pattern архитектура
+- [**FINAL_VERIFICATION_REPORT.md**](FINAL_VERIFICATION_REPORT.md) - ✅ Финальный отчет о миграции на Event-Driven
 
 ### 🎨 Frontend архитектура
 - [**frontend/**](frontend/) - Обзор Frontend архитектуры
@@ -57,8 +60,8 @@
 ### Frontend (React + TypeScript)
 - **State Management**: XState для сложных состояний
 - **Component Architecture**: Feature-based организация
-- **Provider Architecture**: BackendSync интеграция (17 провайдеров мигрированы)
-- **Type Safety**: Строгая типизация с TypeScript
+- **Provider Architecture**: Event-Driven с BackendSync (17 провайдеров, 100% миграция завершена)
+- **Type Safety**: Строгая типизация с TypeScript + Specta автогенерация
 - **Performance**: React 19 с оптимизациями
 - **AI Integration**: Seamless AI tools integration
 
@@ -82,6 +85,17 @@
 - [API Reference](../04_api_reference/) - Справочник по API
 - [Разработка](../05_development/) - Руководство разработчика
 
+## 📊 Event-Driven Migration Status
+
+**Статус**: ✅ **Завершено** (16 ноября 2025)
+
+Все 17 провайдеров успешно мигрированы на event-driven архитектуру с Command-Event Pattern.
+
+- **Event-Driven провайдеры**: 12 (Timeline, UndoRedo, ProjectSettings, Browser, MediaManagement, ColorGrading, Resources, ProjectManagement, Modals, SystemIntegration, AI Services)
+- **Local-First провайдеры**: 5 (Shortcuts, UserSettings, AppSettings, Language, Theme)
+- **Тесты**: 9,406/9,406 пройдено (100%)
+- **Документация**: [FINAL_VERIFICATION_REPORT.md](./FINAL_VERIFICATION_REPORT.md)
+
 ---
 
-*Последнее обновление: 16 января 2025*
+*Последнее обновление: 16 ноября 2025*

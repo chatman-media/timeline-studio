@@ -1,291 +1,384 @@
-# BackendSync Architecture - Унифицированная архитектура синхронизации
+# Архитектура синхронизации Frontend-Backend
 
-**Дата создания:** 29 октября 2025  
-**Статус:** ✅ Внедрено и функционирует  
-**Версия:** 2.0
+## Обзор
 
-## 📋 Обзор
+Timeline Studio использует **Command-Event Pattern** для синхронизации состояния между React фронтендом и Rust бэкендом.
 
-BackendSync - это унифицированная архитектура для синхронизации состояния между React фронтендом и Rust бэкендом в Timeline Studio. Система обеспечивает:
+## Ключевые принципы
 
-- **Централизованное управление состоянием** между frontend и backend
-- **Автоматическую синхронизацию** изменений в реальном времени  
-- **Восстановление состояния** после сбоев соединения
-- **Отладку и логирование** всех операций
-- **Типизированные команды** с автогенерацией TypeScript типов
+### 1. Single Source of Truth (SSOT)
 
-## 🏗️ Архитектурная схема
+**Backend (Rust) = единственный источник правды**
+
+- Весь state проекта хранится в `ProjectState` (Rust)
+- Frontend НЕ имеет собственного authoritative state
+- XState машина на фронтенде — это **кэш** backend state
+
+### 2. Command-Event Pattern
 
 ```
-┌─────────────────┐    BackendSync     ┌─────────────────┐
-│   React UI      │ ◄────────────────► │   Rust Backend  │
-│                 │                    │                 │
-│ ┌─────────────┐ │                    │ ┌─────────────┐ │
-│ │ Providers   │ │ executeCommand()   │ │ State Store │ │
-│ │             │ │ ──────────────────►│ │             │ │
-│ │ ├ Project   │ │                    │ │ ├ Project   │ │
-│ │ ├ Timeline  │ │ onStateChange()    │ │ ├ Timeline  │ │
-│ │ ├ Media     │ │ ◄──────────────────│ │ ├ Media     │ │
-│ │ ├ AI        │ │                    │ │ ├ AI        │ │
-│ │ └ Browser   │ │ onEvent()          │ │ └ Browser   │ │
-│ └─────────────┘ │ ◄──────────────────│ └─────────────┘ │
-└─────────────────┘                    └─────────────────┘
+Frontend                Backend
+   |                       |
+   |--[Command: AddClip]-->|
+   |                       | (изменяет state)
+   |                       | (публикует событие)
+   |<--[Event: ClipAdded]--|
+   | (обновляет кэш)       |
+   |                       |
 ```
 
-## 🔧 Компоненты системы
-
-### 1. Backend Sync Service (`backend-sync.ts`)
-
-Центральный сервис для взаимодействия с backend:
-
+**Шаг 1: Отправка команды**
 ```typescript
-interface BackendSyncService {
-  // Основные методы
-  executeCommand<T>(command: Command): Promise<T>
-  getProjectState(): Promise<ProjectState | null>
-  
-  // Подписки
-  onStateChange(callback: (state: ProjectState) => void): () => void
-  onEvent(callback: (event: BackendEvent) => void): () => void
-  
-  // Статус
-  connected: boolean
-  isConnected(): boolean
+// Frontend отправляет команду
+await backendSync.executeCommand({
+  type: "AddClip",
+  params: { track_id, media_id, time }
+})
+```
+
+**Шаг 2: Backend обрабатывает**
+```rust
+// Backend выполняет команду
+pub async fn add_clip(&self, track_id: String, media_id: String, time: f64) {
+    // 1. Изменяет состояние
+    track.clips.push(clip.clone());
+    state.mark_dirty();
+
+    // 2. Публикует событие
+    self.event_bus.publish(
+        ProjectEvent::ClipAdded { track_id, clip },
+        "command_handler".to_string(),
+        version
+    ).await;
 }
 ```
 
-### 2. Provider Integration Pattern
-
-Стандартный паттерн интеграции для React провайдеров:
-
+**Шаг 3: Frontend получает событие**
 ```typescript
-import { createLogger } from '@/lib/tauri-logger'
-const logger = createLogger('BackendSyncArchitecture')
+// BackendSync слушает события
+listen<EventEnvelope>("project:event", (event) => {
+  this.handleBackendEvent(event.payload)
+})
 
-// 1. Полная интеграция BackendSync
-const backendSync = getBackendSync()
-const [isConnected, setIsConnected] = useState(backendSync.connected)
+// Обрабатывает событие напрямую
+handleBackendEvent(envelope: EventEnvelope) {
+  const event = envelope.event
 
-// 2. Синхронизация состояния
-const syncState = async () => {
-  if (!isConnected) return
-  await backendSync.executeCommand({
-    type: "Domain",
-    params: { type: "SyncState", params: state }
+  // Отправляет в машину для обновления кэша
+  timelineActor.send({
+    type: "BACKEND_EVENT",
+    event: event
   })
 }
-
-// 3. Подписка на изменения backend
-useEffect(() => {
-  const unsubscribe = backendSync.onStateChange((projectState) => {
-    setIsConnected(true)
-    if (projectState.domain_state) {
-      setState(projectState.domain_state)
-    }
-  })
-  return unsubscribe
-}, [backendSync])
-
-// 4. Debounced синхронизация для частых обновлений
-useEffect(() => {
-  const syncTimeout = setTimeout(() => {
-    syncState().catch((error) => {
-      logger.errorSync('Failed to sync state', { error })
-    })
-  }, 2000) // 2 секунды задержка
-
-  return () => clearTimeout(syncTimeout)
-}, [state, isConnected])
 ```
 
-## 📊 Статус миграции провайдеров
+### 3. Инкрементальные обновления
 
-### ✅ Мигрированные провайдеры (17 из 21 - 81%)
-
-| Провайдер | Тип интеграции | Особенности |
-|-----------|----------------|-------------|
-| **ProjectManagementProvider** | BackendSync + Orchestrator | Dual integration |
-| **TimelineProviders** | Полная BackendSync | Timeline state sync |
-| **MediaManagementProvider** | BackendSync | Media operations sync |
-| **BrowserStateProvider** | BackendSync + Analytics | UI state + usage analytics |
-| **AIIntelligenceProvider** | BackendSync | AI state synchronization |
-| **MontagePlannerProvider** | BackendSync + Tauri events | Montage planning sync |
-| **ColorGradingProvider** | BackendSync (debounced 500ms) | Real-time preview sync |
-| **UndoRedoProvider** | BackendSync + Orchestrator | Persistent history |
-| **ModalProvider** | Selective BackendSync | Important modals only |
-| **SystemIntegrationProvider** | BackendSync + Orchestrator | Feature flags & notifications |
-| **EffectsProvider** | BackendSync | Resource loading (local, remote, imported) |
-| **DragDropProvider** | BackendSync (logging) | Operation analytics |
-| **AIServicesDomainProvider** | BackendSync | AI services state & stats |
-| **ChatProvider** | BackendSync | AI chat state sync |
-| **PlayerProvider** | BackendSync | Video playback sync |
-| **ResourcesProvider** | BackendSync | Resource management |
-| **ShortcutsProvider** | BackendSync (analytics) | Usage statistics |
-
-### 🔧 Провайдеры, не требующие миграции (4 из 21 - 19%)
-
-| Провайдер | Причина | Тип |
-|-----------|---------|-----|
-| **AIServicesProvider** | DI контейнер без состояния | Dependency Injection |
-| **BrowserDomainProvider** | UI-only functionality | Local state machine |
-| **I18nProvider** | Локализация (react-i18next) | Configuration wrapper |
-| **TauriMockProvider** | Инструмент разработки | Development tool |
-
-## 💡 Паттерны использования
-
-### 1. Debounced синхронизация для UI
-
-Для компонентов с частыми обновлениями (слайдеры, инпуты):
-
+❌ **Неправильно** (старый подход):
 ```typescript
-import { createLogger } from '@/lib/tauri-logger'
-const logger = createLogger('BackendSyncArchitecture')
-
-// ColorGradingProvider - 500ms debounce
-useEffect(() => {
-  const syncTimeout = setTimeout(() => {
-    syncColorGradingState().catch((error) => {
-      logger.errorSync('Failed to sync color grading state', { error })
-    })
-  }, 500)
-
-  return () => clearTimeout(syncTimeout)
-}, [colorState, isConnected])
+// Получили событие ClipAdded
+// → Делаем полный fetch всего состояния
+const state = await backendSync.getProjectState()
+updateEntireState(state)
 ```
 
-### 2. Аналитика и логирование
+✅ **Правильно** (новый подход):
+```typescript
+// Получили событие ClipAdded
+// → Обновляем только этот клип
+handleClipAddedEvent(event: ClipAddedEvent) {
+  const { track_id, clip } = event.payload
 
-Для отслеживания пользовательских действий:
+  // Находим трек и добавляем клип
+  const track = findTrack(track_id)
+  track.clips.push(clip)
+
+  // Триггерим ре-рендер
+  notifySubscribers()
+}
+```
+
+### 4. Запрет оптимистичных обновлений
+
+❌ **Неправильно**:
+```typescript
+// Сначала обновляем UI
+const optimisticClip = { id: 'temp', ... }
+addClipToUI(optimisticClip)
+
+// Потом отправляем на backend
+await backend.addClip(...)
+
+// Заменяем temp ID на настоящий
+replaceOptimisticClip(optimisticClip.id, realClip.id)
+```
+
+✅ **Правильно**:
+```typescript
+// Показываем loader
+setLoading(true)
+
+// Отправляем команду
+await backend.addClip(...)
+
+// НЕ обновляем UI сами!
+// Ждем события ClipAdded от backend
+
+// Backend пришлет событие → UI обновится автоматически
+```
+
+## Компоненты системы
+
+### BackendSync (src/features/app-state/services/backend-sync.ts)
+
+**Ответственность**: Коммуникация с backend
 
 ```typescript
-import { createLogger } from '@/lib/tauri-logger'
-const logger = createLogger('BackendSyncArchitecture')
+class BackendSync {
+  // Отправка команд
+  async executeCommand(command: ProjectCommand): Promise<CommandResult>
 
-// BrowserStateProvider
-const switchTab = (tab: BrowserTab) => {
-  setState((prev) => ({ ...prev, activeTab: tab }))
+  // Подписка на события
+  onEvent(handler: EventHandler): UnsubscribeFn
 
-  // Логируем переключение вкладки
-  if (isBackendConnected) {
-    backendSync.executeCommand({
-      type: "Analytics",
-      params: {
-        type: "LogBrowserAction",
-        params: { action: "switch_tab", tab },
-      },
-    }).catch((error) => {
-      logger.errorSync('Failed to log browser action', { error })
+  // Получение полного состояния (только для инициализации!)
+  async getProjectState(): Promise<ProjectState | null>
+}
+```
+
+### Timeline Machine (src/domains/video-editing/machines/timeline-extended-machine.ts)
+
+**Ответственность**: Кэширование backend state, обработка событий
+
+```typescript
+const timelineMachine = setup({
+  types: {
+    events: {} as TimelineEvent | BackendEvent
+  },
+  actions: {
+    // Обработка backend событий
+    handleBackendEvent: assign(({ context, event }) => {
+      if (event.type !== 'BACKEND_EVENT') return context
+
+      switch (event.event.type) {
+        case 'ClipAdded':
+          return handleClipAdded(context, event.event)
+        case 'ClipDeleted':
+          return handleClipDeleted(context, event.event)
+        // ... другие события
+      }
     })
   }
+})
+```
+
+### Timeline Providers (src/domains/video-editing/providers/timeline-providers.tsx)
+
+**Ответственность**: React интеграция, подписка на события
+
+```typescript
+export function TimelineProjectProvider({ children }) {
+  const orchestrator = getVideoEditingOrchestrator()
+  const timelineActor = orchestrator.getActors().timeline
+  const backendSync = getBackendSync()
+
+  useEffect(() => {
+    // Подписываемся на backend события
+    const unsubscribe = backendSync.onEvent((event) => {
+      // Отправляем в машину
+      timelineActor.send({
+        type: 'BACKEND_EVENT',
+        event
+      })
+    })
+
+    return unsubscribe
+  }, [])
+
+  // ...
 }
 ```
 
-### 3. Восстановление после сбоя
+## Поток данных для типичной операции
 
-Автоматическое восстановление состояния при reconnect:
+### Пример: Добавление клипа на таймлайн
 
+**1. User действие**
 ```typescript
-import { createLogger } from '@/lib/tauri-logger'
-const logger = createLogger('BackendSyncArchitecture')
-
-useEffect(() => {
-  const unsubscribe = backendSync.onStateChange((projectState) => {
-    setIsConnected(true)
-    
-    // Восстанавливаем состояние из backend
-    if (projectState.domain_state) {
-      setState((prevState) => ({
-        ...prevState,
-        ...projectState.domain_state,
-      }))
-      logger.infoSync("State restored from backend")
-    }
-  })
-  
-  return unsubscribe
-}, [backendSync])
+// UI компонент
+<button onClick={() => addClipToTimeline(mediaFile)}>
+  Add to Timeline
+</button>
 ```
 
-## 🎯 Преимущества архитектуры
+**2. Hook вызывает команду**
+```typescript
+// useTimelineActions.ts
+const addClip = async (trackId, mediaFile, time) => {
+  // ❌ НЕ обновляем локальное состояние!
 
-### ✅ Достигнутые результаты
+  // ✅ Отправляем команду на backend
+  await orchestrator.addClip(trackId, mediaFile, time)
 
-1. **Унификация** - Все провайдеры используют единый паттерн интеграции
-2. **Производительность** - Debouncing предотвращает избыточные вызовы
-3. **Надежность** - Автоматическое восстановление после сбоев
-4. **Аналитика** - Сбор данных о пользовательском поведении
-5. **Отладка** - Централизованное логирование всех операций
-6. **Типизация** - Полная типизация команд и состояний
+  // Backend сам пришлет событие ClipAdded
+}
+```
 
-### 📊 Метрики производительности
+**3. Orchestrator выполняет команду**
+```typescript
+// video-editing-orchestrator.ts
+async addClip(trackId: string, mediaFile: MediaFile, time: number) {
+  // Подготовка данных
+  const mediaId = await this.ensureMediaInBackend(mediaFile)
 
-- **Синхронизация состояния**: < 50ms (локально)
-- **Восстановление после сбоя**: < 2s
-- **Debounced операции**: 500ms - 2s (в зависимости от типа)
-- **Memory overhead**: < 5MB дополнительно
+  // Отправка команды
+  const result = await this.backendSync.executeCommand({
+    type: 'AddClip',
+    params: { track_id: trackId, media_id: mediaId, time }
+  })
 
-## ✅ Последние обновления (08 ноября 2024)
+  if (!result.success) {
+    throw new Error(result.error)
+  }
 
-### Timeline Clips API - Полностью реализовано
+  // Возвращаемся. НЕ обновляем state!
+  return result
+}
+```
 
-Все команды для работы с клипами теперь полностью интегрированы с backend:
+**4. Backend обрабатывает команду**
+```rust
+// src-tauri/src/state/commands/timeline.rs
+pub async fn add_clip(&self, track_id: String, media_id: String, time: f64) {
+    let mut state = self.state.write().await;
 
-**В `video-editing-orchestrator.ts` добавлены методы:**
-- ✅ `moveClip()` - перемещение клипа между треками
-- ✅ `deleteClip()` - удаление клипа
-- ✅ `trimClip()` - обрезка клипа (изменение in/out точек)
-- ✅ `splitClip()` - разделение клипа на два
-- ✅ `updateClip()` - обновление параметров клипа
-- ✅ `copyClips()` / `cutClips()` / `pasteClips()` - clipboard операции
-- ✅ `batchUpdateClips()` - массовое обновление клипов
-- ✅ `selectClips()` - выбор клипов
-- ✅ `selectSections()` - выбор секций (NEW!)
-- ✅ `clearSelection()` - очистка выбора
+    // Изменяем состояние
+    let clip = Clip { id: uuid::new_v4(), ... };
+    track.clips.push(clip.clone());
+    state.mark_dirty();
 
-**Backend команды реализованы:**
-- ✅ `SelectSections` - выбор секций timeline
-- ✅ `ClearSelection` - очистка всех выборов (clips, tracks, sections)
-- ✅ Добавлено поле `selected_sections` в `UiState`
+    // Публикуем событие
+    self.event_bus.publish(
+        ProjectEvent::ClipAdded {
+            track_id: track_id.clone(),
+            clip: clip.into()
+        },
+        "command_handler".to_string(),
+        state.version
+    ).await;
+}
+```
 
-**Исправлены критические баги:**
-- ✅ Исправлена проблема с двойным event listener при подключении BackendSync из нескольких провайдеров
-- ✅ Добавлена защита от повторного подключения через `connectPromise`
+**5. Event Bus отправляет событие**
+```rust
+// src-tauri/src/state/events.rs
+pub async fn publish(&self, event: ProjectEvent, source: String, version: u32) {
+    let envelope = EventEnvelope {
+        metadata: EventMetadata { ... },
+        event: event.clone()
+    };
 
-## 🔮 Следующие шаги
+    // Emit на frontend
+    self.app_handle
+        .emit("project:event", &envelope)
+        .map_err(|e| format!("Failed to emit: {}", e))?;
+}
+```
 
-### Фаза 1: Расширение backend команд (В разработке)
+**6. Frontend получает событие**
+```typescript
+// backend-sync.ts
+private handleBackendEvent(envelope: EventEnvelope) {
+  // Уведомляем всех подписчиков
+  this.eventHandlers.forEach(handler => {
+    handler(envelope.event)
+  })
+}
+```
 
-**Необходимо реализовать в backend:**
+**7. Machine обрабатывает событие**
+```typescript
+// timeline-extended-machine.ts
+actions: {
+  handleClipAdded: assign(({ context, event }) => {
+    const { track_id, clip } = event.payload
 
-1. **Resources API** - для EffectsProvider
-   - `LoadResources` - загрузка ресурсов
-   - `SaveResource` - сохранение ресурса
-   - `DeleteResource` - удаление ресурса
+    // Находим секцию и трек
+    const section = context.project.sections.find(s =>
+      s.tracks.some(t => t.id === track_id)
+    )
+    const track = section.tracks.find(t => t.id === track_id)
 
-2. **Analytics API** - для логирования
-   - `LogBrowserAction` - действия в браузере
-   - `LogUserAction` - действия пользователя
+    // Добавляем клип
+    track.clips.push(clip)
 
-### Фаза 2: Оптимизация производительности
+    // Сортируем по времени
+    track.clips.sort((a, b) => a.timeline_in - b.timeline_in)
 
-1. **Батching команд** - группировка команд для снижения latency
-2. **Selective sync** - синхронизация только измененных частей состояния
-3. **Compression** - сжатие больших объектов состояния
+    return context
+  })
+}
+```
 
-### Фаза 3: Расширенная аналитика
+**8. React ре-рендерит UI**
+```typescript
+// Автоматически через useSelector
+const clips = useSelector(timelineActor, state => state.context.clips)
 
-1. **Performance monitoring** - метрики производительности
-2. **User behavior tracking** - анализ пользовательского поведения
-3. **Error tracking** - отслеживание ошибок синхронизации
+// Компонент ре-рендерится с новым клипом
+<ClipComponent clip={newClip} />
+```
 
-## 📚 Связанные документы
+## Обработка ошибок
 
-- [Provider Migration Status](../08_tasks/completed/provider-migration-status.md) - Статус миграции
-- [Communication Architecture](communication.md) - Общая архитектура коммуникации
-- [State Management](frontend/state-management.md) - Управление состоянием
+### Команда не выполнилась
 
----
+```typescript
+try {
+  await backendSync.executeCommand({ type: 'AddClip', params })
+} catch (error) {
+  // Показываем ошибку пользователю
+  toast.error('Failed to add clip: ' + error.message)
 
-**Автор:** AI Assistant
-**Последнее обновление:** 08 ноября 2024
-**Версия:** 2.1 - Timeline Clips API Integration Complete
+  // ❌ НЕ откатываем оптимистичное обновление (его не было!)
+  // ✅ Просто показываем ошибку
+}
+```
+
+### Событие потерялось
+
+Backend хранит историю событий:
+
+```typescript
+// При переподключении
+const events = await backendSync.getEventHistory(lastKnownVersion)
+
+// Применяем пропущенные события
+events.forEach(envelope => {
+  timelineActor.send({ type: 'BACKEND_EVENT', event: envelope.event })
+})
+```
+
+## Преимущества архитектуры
+
+✅ **Простота**: Один источник правды, понятный flow
+✅ **Надежность**: Нет рассинхронизации frontend/backend
+✅ **Отладка**: Все изменения логируются в event bus
+✅ **Версионирование**: Каждое событие имеет версию
+✅ **Undo/Redo**: Легко реализовать через replay событий
+✅ **Оффлайн**: Можно queue команды и отправить позже
+
+## Антипаттерны (чего избегать)
+
+❌ Оптимистичные обновления без rollback механизма
+❌ Прямое изменение context машины из провайдера
+❌ Дублирование логики на frontend и backend
+❌ Fetch полного состояния после каждого события
+❌ Игнорирование событий ("сделаем сами на фронте")
+
+## Примеры кода
+
+См. также:
+- [Полный пример в backend-sync.ts](../../features/app-state/services/backend-sync.ts)
+- [Обработка событий в timeline-machine](../../domains/video-editing/machines/timeline-extended-machine.ts)
+- [Провайдеры в timeline-providers.tsx](../../domains/video-editing/providers/timeline-providers.tsx)
