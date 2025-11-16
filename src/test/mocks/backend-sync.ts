@@ -1,5 +1,11 @@
 import { vi } from "vitest"
-import type { BrowserState, ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
+import type {
+  BrowserEvent,
+  BrowserState,
+  ProjectCommand,
+  ProjectEvent,
+  ProjectState,
+} from "@/types/generated/tauri-bindings"
 
 // Mock browser state
 const DEFAULT_BROWSER_STATE: BrowserState = {
@@ -79,6 +85,20 @@ const DEFAULT_BROWSER_STATE: BrowserState = {
 // Stateful mock data
 let mockBrowserState: BrowserState = { ...DEFAULT_BROWSER_STATE }
 const stateChangeHandlers: Array<(state: ProjectState) => void> = []
+const eventHandlers: Array<(event: ProjectEvent) => void> = []
+
+// Helper to trigger backend event
+function triggerBrowserEvent(browserEvent: BrowserEvent) {
+  const projectEvent: ProjectEvent = {
+    type: "Browser",
+    payload: browserEvent,
+  }
+
+  // Use queueMicrotask to ensure React has time to process events
+  queueMicrotask(() => {
+    eventHandlers.forEach((handler) => handler(projectEvent))
+  })
+}
 
 // Helper to trigger state change
 function triggerStateChange() {
@@ -95,6 +115,7 @@ function triggerStateChange() {
     browser_state: mockBrowserState,
     clipboard: null,
     project: null,
+    imported_media: {},
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
@@ -301,6 +322,14 @@ function handleBrowserCommand(command: ProjectCommand) {
               [tab]: [...currentFiles, command.params.file_id],
             },
           }
+          // Emit BrowserEvent
+          triggerBrowserEvent({
+            event_type: "FileSelected",
+            data: {
+              tab,
+              file_id: command.params.file_id,
+            },
+          } as any)
           triggerStateChange()
         }
       }
@@ -318,6 +347,14 @@ function handleBrowserCommand(command: ProjectCommand) {
             [tab]: currentFiles.filter((id) => id !== command.params.file_id),
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "FileDeselected",
+          data: {
+            tab,
+            file_id: command.params.file_id,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -326,16 +363,26 @@ function handleBrowserCommand(command: ProjectCommand) {
       if (command.params?.file_id) {
         const tab = command.params.tab || activeTab
         const files = mockBrowserState.selected_files[tab] || []
+        const isSelected = !files.includes(command.params.file_id)
         // Create new state object to trigger React re-render
         mockBrowserState = {
           ...mockBrowserState,
           selected_files: {
             ...mockBrowserState.selected_files,
-            [tab]: files.includes(command.params.file_id)
-              ? files.filter((id) => id !== command.params.file_id)
-              : [...files, command.params.file_id],
+            [tab]: isSelected
+              ? [...files, command.params.file_id]
+              : files.filter((id) => id !== command.params.file_id),
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "FileSelectionToggled",
+          data: {
+            tab,
+            file_id: command.params.file_id,
+            is_selected: isSelected,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -351,20 +398,35 @@ function handleBrowserCommand(command: ProjectCommand) {
             [tab]: [...command.params.file_ids],
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "AllFilesSelected",
+          data: {
+            tab,
+            file_ids: command.params.file_ids,
+          },
+        } as any)
         triggerStateChange()
       }
       break
 
     case "BrowserDeselectAllFiles":
-      const tab = command.params?.tab || activeTab
+      const deselectTab = command.params?.tab || activeTab
       // Create new state object to trigger React re-render
       mockBrowserState = {
         ...mockBrowserState,
         selected_files: {
           ...mockBrowserState.selected_files,
-          [tab]: [],
+          [deselectTab]: [],
         },
       }
+      // Emit BrowserEvent
+      triggerBrowserEvent({
+        event_type: "AllFilesDeselected",
+        data: {
+          tab: deselectTab,
+        },
+      } as any)
       triggerStateChange()
       break
   }
@@ -391,6 +453,37 @@ export const mockBackendSync = {
       auto_save_interval_seconds: 30,
     },
     browser_state: mockBrowserState,
+    clipboard: null,
+    project: null,
+    imported_media: {},
+    ui_state: {
+      selected_clips: [],
+      selected_tracks: [],
+      selected_sections: [],
+      timeline_zoom: 1,
+      timeline_scroll: 0,
+      active_tool: "select",
+      browser_state: null,
+    },
+    playback_state: {
+      is_playing: false,
+      current_time: 0,
+      playback_rate: 1,
+      loop_enabled: false,
+      loop_start: null,
+      loop_end: null,
+      volume: 1,
+      current_media_id: null,
+      selected_clip_id: null,
+      video_source: "browser",
+      applied_effects: [],
+      applied_filters: [],
+      applied_template: null,
+      is_loading: false,
+      is_seeking: false,
+      duration: 0,
+    },
+    chat_sessions: [],
   })),
   createSnapshot: vi.fn().mockResolvedValue({ success: true, error: null, data: { version_id: "test-snap" } }),
   restoreVersion: vi.fn().mockResolvedValue({ success: true, error: null, data: {} }),
@@ -401,7 +494,20 @@ export const mockBackendSync = {
   setAutoSaveInterval: vi.fn().mockResolvedValue({ success: true, error: null, data: {} }),
   enableAutoSave: vi.fn().mockResolvedValue({ success: true, error: null, data: {} }),
   mergeBranch: vi.fn().mockResolvedValue({ success: true, error: null, data: {} }),
-  onEvent: vi.fn(() => () => {}),
+  onEvent: vi.fn((handler: (event: ProjectEvent) => void) => {
+    // Add handler if it's not already in the array
+    if (!eventHandlers.includes(handler)) {
+      eventHandlers.push(handler)
+    }
+
+    // Return unsubscribe function
+    return () => {
+      const index = eventHandlers.indexOf(handler)
+      if (index > -1) {
+        eventHandlers.splice(index, 1)
+      }
+    }
+  }),
   onStateChange: vi.fn((handler: (state: ProjectState) => void) => {
     // Only add handler if it's not already in the array
     if (!stateChangeHandlers.includes(handler)) {
@@ -425,6 +531,7 @@ export const mockBackendSync = {
           browser_state: mockBrowserState,
           clipboard: null,
           project: null,
+          imported_media: {},
           ui_state: {
             selected_clips: [],
             selected_tracks: [],
@@ -539,6 +646,7 @@ export function resetExecuteCommandMock() {
     browser_state: mockBrowserState,
     clipboard: null,
     project: null,
+    imported_media: {},
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
@@ -569,7 +677,20 @@ export function resetExecuteCommandMock() {
     chat_sessions: [],
   }))
 
-  mockBackendSync.onEvent = vi.fn(() => () => {})
+  mockBackendSync.onEvent = vi.fn((handler: (event: ProjectEvent) => void) => {
+    // Add handler if it's not already in the array
+    if (!eventHandlers.includes(handler)) {
+      eventHandlers.push(handler)
+    }
+
+    // Return unsubscribe function
+    return () => {
+      const index = eventHandlers.indexOf(handler)
+      if (index > -1) {
+        eventHandlers.splice(index, 1)
+      }
+    }
+  })
 
   mockBackendSync.onStateChange = vi.fn((handler: (state: ProjectState) => void) => {
     // Only add handler if it's not already in the array
@@ -594,6 +715,7 @@ export function resetExecuteCommandMock() {
           browser_state: mockBrowserState,
           clipboard: null,
           project: null,
+          imported_media: {},
           ui_state: {
             selected_clips: [],
             selected_tracks: [],
@@ -642,6 +764,7 @@ export function resetExecuteCommandMock() {
 // Helper to clear all state change handlers (useful for cleanup between tests)
 export function clearStateChangeHandlers() {
   stateChangeHandlers.length = 0
+  eventHandlers.length = 0
 }
 
 // Mock getBackendSync to always return the mock instance
