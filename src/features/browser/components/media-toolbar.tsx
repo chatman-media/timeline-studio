@@ -177,15 +177,6 @@ export function MediaToolbar({
   return (
     <div className={cn("flex items-center justify-between py-2 px-1 bg-background", className)}>
       <div className="flex h-7 w-[calc(100%-100px)] items-center gap-2">
-        {/* Поле поиска */}
-        <Input
-          type="search"
-          placeholder={t("common.search")}
-          className="mr-2 h-7 w-full max-w-[400px] rounded-sm border border-gray-300 text-xs outline-none focus:border-gray-400 focus:ring-0 focus-visible:ring-0 dark:border-gray-600 dark:focus:border-gray-500"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-
         {/* Кнопка импорта */}
         {showImport && onImportFile && (
           <Button
@@ -245,6 +236,15 @@ export function MediaToolbar({
             </div>
           </Button>
         )}
+
+        {/* Поле поиска */}
+        <Input
+          type="search"
+          placeholder={t("common.search")}
+          className="mr-2 h-7 w-full max-w-[400px] rounded-sm border border-gray-300 text-xs outline-none focus:border-gray-400 focus:ring-0 focus-visible:ring-0 dark:border-gray-600 dark:focus:border-gray-500"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
       </div>
 
       <div className="flex items-end gap-2">
