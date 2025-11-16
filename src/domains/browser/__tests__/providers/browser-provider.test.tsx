@@ -212,7 +212,7 @@ describe("BrowserProvider", () => {
 
   describe("Tab Settings Management", () => {
     it("should set search query", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -225,14 +225,11 @@ describe("BrowserProvider", () => {
         await result.current.setSearchQuery("test query")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetSearchQuery",
-        params: { query: "test query", tab: null },
-      })
+      expect(commands.browserSetSearchQuery).toHaveBeenCalledWith("test query", null)
     })
 
     it("should set search query for specific tab", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -245,14 +242,11 @@ describe("BrowserProvider", () => {
         await result.current.setSearchQuery("effects query", "effects")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetSearchQuery",
-        params: { query: "effects query", tab: "effects" },
-      })
+      expect(commands.browserSetSearchQuery).toHaveBeenCalledWith("effects query", "effects")
     })
 
     it("should toggle favorites", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -265,14 +259,11 @@ describe("BrowserProvider", () => {
         await result.current.toggleFavorites()
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserToggleFavorites",
-        params: { tab: null },
-      })
+      expect(commands.browserToggleFavorites).toHaveBeenCalledWith(null)
     })
 
     it("should set sort", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -285,14 +276,11 @@ describe("BrowserProvider", () => {
         await result.current.setSort("name", "desc")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetSort",
-        params: { sort_by: "name", sort_order: "desc", tab: null },
-      })
+      expect(commands.browserSetSort).toHaveBeenCalledWith("name", "desc", null)
     })
 
     it("should set groupBy", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -305,14 +293,11 @@ describe("BrowserProvider", () => {
         await result.current.setGroupBy("type")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetGroupBy",
-        params: { group_by: "type", tab: null },
-      })
+      expect(commands.browserSetGroupBy).toHaveBeenCalledWith("type", null)
     })
 
     it("should set filter", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -325,14 +310,11 @@ describe("BrowserProvider", () => {
         await result.current.setFilter("video")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetFilter",
-        params: { filter_type: "video", tab: null },
-      })
+      expect(commands.browserSetFilter).toHaveBeenCalledWith("video", null)
     })
 
     it("should set view mode", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -345,14 +327,11 @@ describe("BrowserProvider", () => {
         await result.current.setViewMode("grid")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetViewMode",
-        params: { view_mode: "grid", tab: null },
-      })
+      expect(commands.browserSetViewMode).toHaveBeenCalledWith("grid", null)
     })
 
     it("should set preview size", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -365,14 +344,11 @@ describe("BrowserProvider", () => {
         await result.current.setPreviewSize(3)
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSetPreviewSize",
-        params: { size_index: 3, tab: null },
-      })
+      expect(commands.browserSetPreviewSize).toHaveBeenCalledWith(3, null)
     })
 
     it("should reset tab settings", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -385,16 +361,13 @@ describe("BrowserProvider", () => {
         await result.current.resetTabSettings("media")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserResetTabSettings",
-        params: { tab: "media" },
-      })
+      expect(commands.browserResetTabSettings).toHaveBeenCalledWith("media")
     })
   })
 
   describe("File Selection", () => {
     it("should select a file", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -407,14 +380,11 @@ describe("BrowserProvider", () => {
         await result.current.selectFile("file-1")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSelectFile",
-        params: { file_id: "file-1", tab: null },
-      })
+      expect(commands.browserSelectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should deselect a file", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -427,14 +397,11 @@ describe("BrowserProvider", () => {
         await result.current.deselectFile("file-1")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserDeselectFile",
-        params: { file_id: "file-1", tab: null },
-      })
+      expect(commands.browserDeselectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should toggle file selection", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -447,14 +414,11 @@ describe("BrowserProvider", () => {
         await result.current.toggleFileSelection("file-1")
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserToggleFileSelection",
-        params: { file_id: "file-1", tab: null },
-      })
+      expect(commands.browserToggleFileSelection).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should select all files", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -468,14 +432,11 @@ describe("BrowserProvider", () => {
         await result.current.selectAllFiles(fileIds)
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserSelectAllFiles",
-        params: { file_ids: fileIds, tab: null },
-      })
+      expect(commands.browserSelectAllFiles).toHaveBeenCalledWith(fileIds, null)
     })
 
     it("should deselect all files", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -488,10 +449,7 @@ describe("BrowserProvider", () => {
         await result.current.deselectAllFiles()
       })
 
-      expect(backendSync.executeCommand).toHaveBeenCalledWith({
-        type: "BrowserDeselectAllFiles",
-        params: { tab: null },
-      })
+      expect(commands.browserDeselectAllFiles).toHaveBeenCalledWith(null)
     })
 
     it("should check if file is selected", async () => {

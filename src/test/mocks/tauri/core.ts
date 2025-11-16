@@ -36,6 +36,19 @@ vi.mock("@/types/generated/tauri-bindings", () => ({
     cancelRender: vi.fn().mockResolvedValue(true),
     // Browser commands
     browserSwitchTab: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetSearchQuery: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserToggleFavorites: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetSort: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetGroupBy: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetFilter: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetViewMode: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSetPreviewSize: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserResetTabSettings: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSelectFile: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserDeselectFile: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserToggleFileSelection: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserSelectAllFiles: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
+    browserDeselectAllFiles: vi.fn().mockResolvedValue({ status: "ok", data: { success: true } }),
     // Add other commands as needed
   },
   events: {

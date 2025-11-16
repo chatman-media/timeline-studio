@@ -16,7 +16,6 @@ import type {
   BrowserEvent,
   BrowserState,
   BrowserTab,
-  ProjectCommand,
   ProjectEvent,
   TabSettings,
   ViewMode,
@@ -180,30 +179,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   // ❌ УДАЛЕНО: refreshBrowserState - больше не нужен
   // События обновляют состояние инкрементально через машину
 
-  // ✅ Вспомогательная функция для выполнения команд
-  const executeBrowserCommand = async (command: ProjectCommand): Promise<void> => {
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-
-      const result = await backendSync.executeCommand(command)
-
-      if (!result.success) {
-        throw new Error(result.error || `Failed to execute ${command.type}`)
-      }
-
-      // ❌ НЕ обновляем состояние вручную!
-      // Backend пришлет событие, которое обновит машину автоматически
-
-      // ✅ Очищаем ошибки при успешной операции
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : `Failed to execute ${command.type}`
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("Browser command failed:", { command, error: err })
-      throw err
-    }
-  }
+  // ❌ УДАЛЕНО: executeBrowserCommand - больше не нужен
+  // Все команды вызываются напрямую через commands.browserXxx() из tauri-bindings
 
   // Convenient getters из машины
   const currentTabSettings: TabSettings = useMemo(() => {
@@ -253,94 +230,250 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetSearchQuery" as any,
-      params: { query, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting search query", { query, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetSearchQuery(query, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set search query"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Search query failed", { error: err })
+      throw err
+    }
   }
 
   const toggleFavorites = async (tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserToggleFavorites" as any,
-      params: { tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Toggling favorites", { tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserToggleFavorites(tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to toggle favorites"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Toggle favorites failed", { error: err })
+      throw err
+    }
   }
 
   const setSort = async (sortBy: string, sortOrder: "asc" | "desc", tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetSort" as any,
-      params: { sort_by: sortBy, sort_order: sortOrder, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting sort", { sortBy, sortOrder, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetSort(sortBy, sortOrder, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set sort"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Set sort failed", { error: err })
+      throw err
+    }
   }
 
   const setGroupBy = async (groupBy: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetGroupBy" as any,
-      params: { group_by: groupBy, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting group by", { groupBy, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetGroupBy(groupBy, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set group by"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Set group by failed", { error: err })
+      throw err
+    }
   }
 
   const setFilter = async (filterType: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetFilter" as any,
-      params: { filter_type: filterType, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting filter", { filterType, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetFilter(filterType, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set filter"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Set filter failed", { error: err })
+      throw err
+    }
   }
 
   const setViewMode = async (viewMode: ViewMode, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetViewMode" as any,
-      params: { view_mode: viewMode, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting view mode", { viewMode, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetViewMode(viewMode, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set view mode"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Set view mode failed", { error: err })
+      throw err
+    }
   }
 
   const setPreviewSize = async (sizeIndex: number, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSetPreviewSize" as any,
-      params: { size_index: sizeIndex, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Setting preview size", { sizeIndex, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSetPreviewSize(sizeIndex, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to set preview size"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Set preview size failed", { error: err })
+      throw err
+    }
   }
 
   const resetTabSettings = async (tab: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserResetTabSettings" as any,
-      params: { tab },
-    })
+    logger.info("[BrowserProvider] Resetting tab settings", { tab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserResetTabSettings(tab)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to reset tab settings"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Reset tab settings failed", { error: err })
+      throw err
+    }
   }
 
   const selectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSelectFile" as any,
-      params: { file_id: fileId, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Selecting file", { fileId, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSelectFile(fileId, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to select file"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Select file failed", { error: err })
+      throw err
+    }
   }
 
   const deselectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserDeselectFile" as any,
-      params: { file_id: fileId, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Deselecting file", { fileId, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserDeselectFile(fileId, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to deselect file"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Deselect file failed", { error: err })
+      throw err
+    }
   }
 
   const toggleFileSelection = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserToggleFileSelection" as any,
-      params: { file_id: fileId, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Toggling file selection", { fileId, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserToggleFileSelection(fileId, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to toggle file selection"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Toggle file selection failed", { error: err })
+      throw err
+    }
   }
 
   const selectAllFiles = async (fileIds: string[], tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserSelectAllFiles" as any,
-      params: { file_ids: fileIds, tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Selecting all files", { count: fileIds.length, tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSelectAllFiles(fileIds, tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to select all files"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Select all files failed", { error: err })
+      throw err
+    }
   }
 
   const deselectAllFiles = async (tab?: BrowserTab): Promise<void> => {
-    await executeBrowserCommand({
-      type: "BrowserDeselectAllFiles" as any,
-      params: { tab: tab || null },
-    })
+    logger.info("[BrowserProvider] Deselecting all files", { tab: tab || activeTab })
+    try {
+      browserActor.send({ type: "SET_LOADING", isLoading: true })
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserDeselectAllFiles(tab || null)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+      browserActor.send({ type: "CLEAR_ERROR" })
+      browserActor.send({ type: "SET_LOADING", isLoading: false })
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to deselect all files"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Deselect all files failed", { error: err })
+      throw err
+    }
   }
 
   const isFileSelected = (fileId: string, tab?: BrowserTab): boolean => {
