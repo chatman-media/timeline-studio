@@ -297,8 +297,12 @@ describe("Templates Module", () => {
         expect(template).toHaveProperty("id")
         expect(template).toHaveProperty("split")
         expect(template).toHaveProperty("screens")
-        expect(template).toHaveProperty("render")
-        expect(typeof template.render).toBe("function")
+        // Новые шаблоны (PiP, Professional) используют MediaTemplateConfig без render
+        // Старые шаблоны используют MediaTemplate с render
+        // Оба варианта валидны
+        if ("render" in template) {
+          expect(typeof template.render).toBe("function")
+        }
       })
     })
 
