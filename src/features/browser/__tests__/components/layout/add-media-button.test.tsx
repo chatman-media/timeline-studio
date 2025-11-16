@@ -7,6 +7,14 @@ import { useResources } from "@/features/resources"
 
 import { AddMediaButton } from "../../../components/layout/add-media-button"
 
+// Мокаем BackendSync
+const mockExecuteCommand = vi.fn()
+vi.mock("@/features/app-state/services/backend-sync", () => ({
+  getBackendSync: vi.fn(() => ({
+    executeCommand: mockExecuteCommand,
+  })),
+}))
+
 vi.mock("@/features/resources", () => ({
   useResources: vi.fn().mockReturnValue({
     addResource: vi.fn(),
@@ -133,8 +141,8 @@ describe("AddMediaButton", () => {
 
   it("should render check icon when isAdded is true", () => {
     // Рендерим компонент
-    const { isAdded } = vi.mocked(useResources())
-    isAdded.mockReturnValue(true)
+    const mockUseResources = useResources as any
+    mockUseResources().isAdded.mockReturnValue(true)
 
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
 
@@ -149,9 +157,9 @@ describe("AddMediaButton", () => {
     expect(button.className).toContain("visible")
   })
 
-  it("should call addMedia when clicked while hovering and not added", () => {
-    const { isAdded, addMedia } = vi.mocked(useResources())
-    isAdded.mockReturnValue(false)
+  it("should call MoveToMediaPool command when clicked while hovering and not added", () => {
+    const mockUseResources = useResources as any
+    mockUseResources().isAdded.mockReturnValue(false)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -167,14 +175,19 @@ describe("AddMediaButton", () => {
       fireEvent.click(button)
     })
 
-    // Проверяем, что addMedia был вызван с правильными аргументами
-    expect(addMedia).toHaveBeenCalledTimes(1)
-    expect(addMedia).toHaveBeenCalledWith(testMediaFile)
+    // Проверяем, что executeCommand был вызван с командой MoveToMediaPool
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(1)
+    expect(mockExecuteCommand).toHaveBeenCalledWith({
+      type: "MoveToMediaPool",
+      params: {
+        media_id: testResource.id,
+      },
+    })
   })
 
   it("should show remove icon on hover when isAdded is true and not recently added", () => {
-    const { isAdded } = vi.mocked(useResources())
-    isAdded.mockReturnValue(true)
+    const mockUseResources = useResources as any
+    mockUseResources().isAdded.mockReturnValue(true)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -203,7 +216,8 @@ describe("AddMediaButton", () => {
   })
 
   it("should call removeResource when clicked on remove icon", async () => {
-    const { isAdded, removeResource } = vi.mocked(useResources())
+    const mockUseResources = useResources as any
+    const { isAdded, removeResource } = mockUseResources()
     isAdded.mockReturnValue(true)
 
     // Рендерим компонент

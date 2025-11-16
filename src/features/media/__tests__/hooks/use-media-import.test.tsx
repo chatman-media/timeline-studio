@@ -153,8 +153,8 @@ describe("useMediaImport", () => {
       isLoadingMetadata: false, // Изменено: файлы добавляются только после обработки
     })
 
-    // Проверяем, что файлы были добавлены в ресурсы
-    expect(mockAddMedia).toHaveBeenCalled()
+    // ПРИМЕЧАНИЕ: В новой реализации файлы добавляются в imported_media через BackendSync
+    // а не через addMedia из useResources, поэтому проверка mockAddMedia удалена
   })
 
   it("should import files from a folder", async () => {
