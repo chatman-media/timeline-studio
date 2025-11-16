@@ -68,12 +68,28 @@ export {
   WebGL2UnifiedRenderer,
   WebGL2UnifiedRenderer as UnifiedEffectsRenderer,
 } from "./services/webgl2-unified-renderer"
+export type { UserPreset, PresetsCollection } from "./services/user-presets-service"
+export {
+  saveUserPreset,
+  loadUserPreset,
+  loadPresetsForEffect,
+  updateUserPreset,
+  deleteUserPreset,
+  getAllUserPresets,
+  getFavoritePresets,
+  importPresets,
+  exportPresets,
+  clearAllPresets,
+  convertUserPresetToEffectPreset,
+} from "./services/user-presets-service"
 
 // ============================================================================
 // ХУКИ
 // ============================================================================
 
 export { useUnifiedEffects } from "./hooks/use-unified-effects"
+export { useUserPresets } from "./hooks/use-user-presets"
+export type { UseUserPresetsOptions, UseUserPresetsReturn } from "./hooks/use-user-presets"
 
 // ============================================================================
 // БИБЛИОТЕКИ ЭФФЕКТОВ
