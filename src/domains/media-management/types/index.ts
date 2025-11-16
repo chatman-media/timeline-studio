@@ -49,11 +49,11 @@ export interface MediaFileOperation {
 
 // Media import options
 export interface MediaImportOptions {
-  copyToProject: boolean
-  createProxies: boolean
-  analyzeContent: boolean
-  generateThumbnails: boolean
-  preserveMetadata: boolean
+  copyToProject?: boolean
+  createProxies?: boolean
+  analyzeContent?: boolean
+  generateThumbnails?: boolean
+  preserveMetadata?: boolean
 }
 
 // Media import context
@@ -135,6 +135,7 @@ export interface MediaManagementService {
   importFiles(files: string[], options: MediaImportOptions): Promise<any[]>
   selectMediaFiles(): Promise<string[] | null>
   selectAudioFiles(): Promise<string[] | null>
+  selectMediaDirectory(): Promise<string | null>
   getMediaInfo(path: string): Promise<any>
   extractMetadata(path: string): Promise<MediaMetadata>
 }
