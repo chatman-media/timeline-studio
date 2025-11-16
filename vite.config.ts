@@ -1,5 +1,5 @@
 import path from "node:path"
-import { codecovVitePlugin } from "@codecov/vite-plugin"
+// import { codecovVitePlugin } from "@codecov/vite-plugin"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 

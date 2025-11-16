@@ -4,6 +4,7 @@
  */
 
 import { createCellConfig, createDividerConfig, type MediaTemplateConfig, PRESET_STYLES } from "./template-config"
+import { pipTemplates } from "./pip-templates"
 
 // ===== БАЗОВЫЕ ШАБЛОНЫ =====
 
