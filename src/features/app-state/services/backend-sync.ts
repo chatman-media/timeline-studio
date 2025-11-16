@@ -306,99 +306,18 @@ export class BackendSync {
       }
     })
 
-    // ✅ НОВАЯ АРХИТЕКТУРА: События обновляют state инкрементально
-    // ❌ СТАРАЯ АРХИТЕКТУРА: fetch полного состояния после каждого события
+    // ✅ АРХИТЕКТУРА: События обновляют state инкрементально
+    // ❌ НЕ делаем fetchAndNotifyState() - события уже содержат все данные
+    // Провайдеры обрабатывают события через XState машины или локальный state
     //
-    // Больше НЕ делаем fetchAndNotifyState()
-    // Вместо этого события обрабатываются напрямую в timeline machine
-    // через action handleBackendEvent
-    //
-    // ИСКЛЮЧЕНИЕ: ImportedMedia события ДОЛЖНЫ обновлять projectState,
-    // т.к. MediaAdapter читает из projectState.imported_media
-    if (this.isImportedMediaEvent(envelope.event)) {
-      void this.fetchAndNotifyState()
-    }
-  }
-
-  /**
-   * Check if event is related to imported media (requires state refresh)
-   */
-  private isImportedMediaEvent(event: ProjectEvent): boolean {
-    const importedMediaTypes = [
-      "ImportedMediaAdded",
-      "ImportedMediaRemoved",
-      "ImportedMediaUpdated",
-      "ImportedMediaCleared",
-    ]
-    return importedMediaTypes.includes(event.type)
-  }
-
-  /**
-   * Check if event changes state
-   */
-  private isStateChangingEvent(event: ProjectEvent): boolean {
-    const stateChangingTypes = [
-      // Project lifecycle events
-      "ProjectCreated",
-      "ProjectOpened",
-      "ProjectSaved",
-      "ProjectClosed",
-      // Timeline events
-      "ClipAdded",
-      "ClipMoved",
-      "ClipTrimmed",
-      "ClipDeleted",
-      "ClipUpdated",
-      "TrackAdded",
-      "TrackDeleted",
-      "TrackUpdated",
-      // Media events
-      "MediaAdded",
-      "MediaRemoved",
-      "MediaUpdated",
-      // State events
-      "StateRestored",
-      // Version control events
-      "SnapshotCreated",
-      "VersionRestored",
-      "BranchCreated",
-      "BranchSwitched",
-      "AutoSaveTriggered",
-      "MergeCompleted",
-      "AutoSaveConfigChanged",
-      // Browser events
-      "BrowserTabSwitched",
-      "BrowserSearchQueryChanged",
-      "BrowserFavoritesToggled",
-      "BrowserSortChanged",
-      "BrowserGroupByChanged",
-      "BrowserFilterChanged",
-      "BrowserViewModeChanged",
-      "BrowserPreviewSizeChanged",
-      "BrowserTabSettingsReset",
-      "BrowserFileSelected",
-      "BrowserFileDeselected",
-      "BrowserFileSelectionToggled",
-      "BrowserAllFilesSelected",
-      "BrowserAllFilesDeselected",
-    ]
-
-    return stateChangingTypes.includes(event.type)
-  }
-
-  /**
-   * Fetch state and notify handlers
-   */
-  private async fetchAndNotifyState() {
-    const state = await this.getProjectState()
-    logger.info("BackendSync: Fetched project state", { state })
-    if (state) {
-      this.notifyStateChange(state)
-    }
+    // MediaManagement Provider обрабатывает события:
+    // - MediaAdded, MediaRemoved, MediaUpdated
+    // MediaAdapter теперь читает из MediaManagementContext.mediaPool
   }
 
   /**
    * Notify state change handlers
+   * Используется ТОЛЬКО для инициализации при первой загрузке
    */
   private notifyStateChange(state: ProjectState) {
     logger.info("BackendSync: Notifying state change to handlers", { handlersCount: this.stateChangeHandlers.size })
