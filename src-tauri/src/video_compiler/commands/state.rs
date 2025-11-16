@@ -61,42 +61,42 @@ impl Drop for VideoCompilerState {
   fn drop(&mut self) {
     log::info!("VideoCompilerState: начало graceful shutdown");
 
-    // Пытаемся получить текущий tokio runtime для асинхронного cleanup
+    // Выполняем синхронную очистку коллекций
+    // Очищаем активные задачи (старая архитектура)
+    if let Ok(mut jobs) = self.active_jobs.try_write() {
+      let job_count = jobs.len();
+      if job_count > 0 {
+        log::warn!("VideoCompilerState: принудительное завершение {job_count} активных задач");
+      }
+      jobs.clear();
+    } else {
+      log::warn!("VideoCompilerState: не удалось получить lock на active_jobs, пропускаем");
+    }
+
+    // Очищаем активные конвейеры (новая архитектура)
+    if let Ok(mut pipelines) = self.active_pipelines.try_write() {
+      let pipeline_count = pipelines.len();
+      if pipeline_count > 0 {
+        log::warn!("VideoCompilerState: принудительное завершение {pipeline_count} активных конвейеров");
+      }
+      pipelines.clear();
+    } else {
+      log::warn!(
+        "VideoCompilerState: не удалось получить lock на active_pipelines, пропускаем"
+      );
+    }
+
+    // Пытаемся получить текущий tokio runtime для асинхронного cleanup сервисов
     match tokio::runtime::Handle::try_current() {
       Ok(handle) => {
-        // Выполняем cleanup в рамках существующего runtime
-        handle.block_on(async {
-          log::info!("VideoCompilerState: отмена активных задач рендеринга");
-
-          // Очищаем активные задачи (старая архитектура)
-          if let Ok(mut jobs) = self.active_jobs.try_write() {
-            let job_count = jobs.len();
-            if job_count > 0 {
-              log::warn!("VideoCompilerState: принудительное завершение {job_count} активных задач");
-            }
-            jobs.clear();
-          } else {
-            log::warn!("VideoCompilerState: не удалось получить lock на active_jobs, пропускаем");
-          }
-
-          // Очищаем активные конвейеры (новая архитектура)
-          if let Ok(mut pipelines) = self.active_pipelines.try_write() {
-            let pipeline_count = pipelines.len();
-            if pipeline_count > 0 {
-              log::warn!("VideoCompilerState: принудительное завершение {pipeline_count} активных конвейеров");
-            }
-            pipelines.clear();
-          } else {
-            log::warn!(
-              "VideoCompilerState: не удалось получить lock на active_pipelines, пропускаем"
-            );
-          }
-
-          // Shutdown сервисов с таймаутом
+        // Запускаем cleanup в фоне без блокировки текущего потока
+        // Это безопасно как в production, так и в тестах (не вызывает nested runtime panic)
+        let services = self.services.clone();
+        handle.spawn(async move {
           log::info!("VideoCompilerState: shutdown сервисов");
           match tokio::time::timeout(
             std::time::Duration::from_secs(3),
-            self.services.shutdown_all(),
+            services.shutdown_all(),
           )
           .await
           {
@@ -112,7 +112,7 @@ impl Drop for VideoCompilerState {
           }
         });
 
-        log::info!("VideoCompilerState: graceful shutdown завершен");
+        log::info!("VideoCompilerState: graceful shutdown инициирован");
       }
       Err(_) => {
         // Runtime уже был dropped, делаем best-effort cleanup
