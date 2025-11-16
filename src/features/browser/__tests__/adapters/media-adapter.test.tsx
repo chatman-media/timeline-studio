@@ -6,16 +6,21 @@ import { createMockMediaFile } from "./test-utils"
 // Мокаем все зависимости напрямую
 vi.mock("@/features/app-state", () => ({
   AppSettingsProvider: ({ children }: any) => children,
-  useAppSettings: vi.fn(() => ({
-    connectionError: null,
-    projectState: {
-      // ВАЖНО: imported_media теперь используется вместо media_pool для временно импортированных файлов
-      imported_media: {
-        "test-1": {
-          id: "test-1",
-          name: "test-video.mp4",
+  useFavorites: vi.fn(() => ({
+    isItemFavorite: vi.fn(() => false),
+  })),
+}))
+
+// ✅ Новый мок для MediaManagement Provider
+vi.mock("@/domains/media-management", () => ({
+  useMediaManagement: vi.fn(() => ({
+    mediaPool: new Map([
+      [
+        "test-1",
+        {
           path: "/test/video.mp4",
-          media_type: "Video",
+          name: "test-video.mp4",
+          type: "Video",
           duration: 120.5,
           metadata: {
             format: "",
@@ -26,23 +31,15 @@ vi.mock("@/features/app-state", () => ({
             audio_channels: null,
             sample_rate: null,
           },
-          thumbnail: null,
-          usage_count: 0,
-          // Дополнительные поля для совместимости
-          extension: ".mp4",
-          size: 1024000,
-          createdAt: "2024-01-01T00:00:00Z",
-          startTime: 0,
-          probeData: {
-            streams: [{ codec_type: "video" }],
-            format: { duration: 120.5 },
-          },
+          thumbnailPath: null,
         },
-        "test-2": {
-          id: "test-2",
-          name: "test-image.jpg",
+      ],
+      [
+        "test-2",
+        {
           path: "/test/image.jpg",
-          media_type: "Image",
+          name: "test-image.jpg",
+          type: "Image",
           duration: null,
           metadata: {
             format: "",
@@ -53,27 +50,14 @@ vi.mock("@/features/app-state", () => ({
             audio_channels: null,
             sample_rate: null,
           },
-          thumbnail: null,
-          usage_count: 0,
-          // Дополнительные поля для совместимости
-          extension: ".jpg",
-          size: 512000,
-          createdAt: "2024-01-02T00:00:00Z",
-          startTime: 0,
+          thumbnailPath: null,
         },
-      },
-    },
-  })),
-  useFavorites: vi.fn(() => ({
-    isItemFavorite: vi.fn(() => false),
-  })),
-}))
-
-vi.mock("@/features/media/hooks/use-media-import", () => ({
-  useMediaImport: vi.fn(() => ({
-    importFile: vi.fn(),
-    importFolder: vi.fn(),
-    isImporting: false,
+      ],
+    ]),
+    isLoading: false,
+    error: null,
+    importFiles: vi.fn(),
+    selectMediaFiles: vi.fn(() => Promise.resolve([])),
   })),
 }))
 
