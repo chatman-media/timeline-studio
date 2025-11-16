@@ -574,7 +574,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
       byType: { effect: 0, filter: 0, transition: 0, media: 0, music: 0, subtitle: 0, template: 0, styleTemplate: 0 },
       bySource: { "built-in": 0, local: 0, remote: 0, imported: 0 },
       cacheSize: this.getCacheSize(),
-      memoryUsage: 0, // TODO: Подсчитать использование памяти
+      memoryUsage: this.estimateMemoryUsage(),
     }
 
     // Подсчитываем ресурсы по типам
@@ -590,6 +590,33 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     }
 
     return stats
+  }
+
+  /**
+   * Оценка использования памяти в байтах
+   * Приблизительный расчет на основе количества и размера ресурсов
+   */
+  private estimateMemoryUsage(): number {
+    let totalBytes = 0
+
+    // Оценка размера одного ресурса (средний размер объекта в памяти)
+    const AVERAGE_RESOURCE_SIZE = 1024 // ~1KB на ресурс (метаданные, строки, функции)
+
+    // Подсчитываем память для каждого типа ресурсов (с проверкой на undefined)
+    if (this.effects) {
+      totalBytes += this.effects.size * AVERAGE_RESOURCE_SIZE
+    }
+    if (this.filters) {
+      totalBytes += this.filters.size * AVERAGE_RESOURCE_SIZE
+    }
+    if (this.transitions) {
+      totalBytes += this.transitions.size * AVERAGE_RESOURCE_SIZE
+    }
+
+    // Добавляем память кэша
+    totalBytes += this.getCacheSize()
+
+    return totalBytes
   }
 
   getCacheSize(): number {
@@ -1117,10 +1144,20 @@ export function useBrowserResourcesProvider(): EffectsProviderContext {
 export { EffectsProvider as BrowserResourcesProvider }
 
 // ===  Deprecated exports для обратной совместимости ===
-// TODO: Удалить в следующей мажорной версии
-
 /**
  * @deprecated Используйте useBrowserResourcesProvider вместо useEffectsProvider
+ *
+ * План миграции (v2.0.0):
+ * 1. Обновить все внутренние использования на useBrowserResourcesProvider
+ * 2. Обновить все тесты
+ * 3. Добавить console.warn с предупреждением о deprecated API
+ * 4. Удалить в следующей мажорной версии (v2.0.0)
+ *
+ * Текущие использования:
+ * - src/features/browser/hooks/use-resources.ts (10 раз)
+ * - src/features/browser/__tests__/providers/effects-provider.test.tsx (4 раза)
+ * - src/features/browser/__tests__/components/browser-content.test.tsx (1 раз)
+ * - src/features/browser/__tests__/adapters/browser-adapter-mocks.ts (1 раз)
  */
 export const useEffectsProvider = useBrowserResourcesProvider
 
