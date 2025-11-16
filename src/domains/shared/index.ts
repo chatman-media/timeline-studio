@@ -10,11 +10,8 @@ export * from "./events"
 // Hooks
 export * from "./hooks/use-domain-events"
 
-// Types (будущее расширение)
-// export * from './types'
+// Types
+export * from "./types"
 
-// Utils (будущее расширение)
-// export * from './utils'
-
-// Contracts (будущее расширение)
-// export * from './contracts'
+// Utils
+export * from "./utils"
