@@ -127,6 +127,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (state?.browser_state) {
         logger.info("[BrowserProvider] Initializing from backend state", {
           activeTab: state.browser_state.active_tab,
+          tabSettings: state.browser_state.tab_settings,
+          selectedFiles: state.browser_state.selected_files,
         })
 
         // Синхронизируем начальное состояние с машиной
@@ -137,7 +139,99 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
           })
         }
 
-        // TODO: синхронизировать tabSettings и selectedFiles при инициализации
+        // Синхронизируем tabSettings
+        if (state.browser_state.tab_settings) {
+          Object.entries(state.browser_state.tab_settings).forEach(([tab, settings]) => {
+            // Генерируем события для каждой настройки каждой вкладки
+            const browserTab = tab as BrowserTab
+
+            // Для инициализации отправляем события напрямую в машину
+            // Это эквивалентно событиям от бэкенда
+            if (settings.search_query !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "SearchQueryChanged",
+                  data: { tab: browserTab, query: settings.search_query },
+                },
+              })
+            }
+
+            if (settings.show_favorites_only !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "FavoritesToggled",
+                  data: { tab: browserTab, show_favorites: settings.show_favorites_only },
+                },
+              })
+            }
+
+            if (settings.sort_by !== undefined && settings.sort_order !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "SortChanged",
+                  data: { tab: browserTab, sort_by: settings.sort_by, sort_order: settings.sort_order },
+                },
+              })
+            }
+
+            if (settings.group_by !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "GroupByChanged",
+                  data: { tab: browserTab, group_by: settings.group_by },
+                },
+              })
+            }
+
+            if (settings.filter_type !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "FilterChanged",
+                  data: { tab: browserTab, filter_type: settings.filter_type },
+                },
+              })
+            }
+
+            if (settings.view_mode !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "ViewModeChanged",
+                  data: { tab: browserTab, view_mode: settings.view_mode },
+                },
+              })
+            }
+
+            if (settings.preview_size_index !== undefined) {
+              browserActor.send({
+                type: "BACKEND_EVENT",
+                event: {
+                  event_type: "PreviewSizeChanged",
+                  data: { tab: browserTab, size_index: settings.preview_size_index },
+                },
+              })
+            }
+          })
+        }
+
+        // Синхронизируем selectedFiles
+        if (state.browser_state.selected_files) {
+          Object.entries(state.browser_state.selected_files).forEach(([tab, fileIds]) => {
+            const browserTab = tab as BrowserTab
+            browserActor.send({
+              type: "BACKEND_EVENT",
+              event: {
+                event_type: "AllFilesSelected",
+                data: { tab: browserTab, file_ids: fileIds },
+              },
+            })
+          })
+        }
       }
     })
 
