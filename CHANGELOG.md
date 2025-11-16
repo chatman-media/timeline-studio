@@ -1,3 +1,18 @@
+# [2.13.0](https://github.com/chatman-media/timeline-studio/compare/v2.12.0...v2.13.0) (2025-11-16)
+
+
+### Bug Fixes
+
+* **browser:** Добавить синхронизацию tabSettings и selectedFiles при инициализации ([5a9d438](https://github.com/chatman-media/timeline-studio/commit/5a9d4388688a5cf60bae41057dd349160dc39a85))
+* **browser:** Использовать прямые Tauri команды вместо executeCommand ([4d9480c](https://github.com/chatman-media/timeline-studio/commit/4d9480c21a0a119d3a8d08295ab854a921699afd))
+* **ci:** Оптимизировать использование дискового пространства в GitHub Actions ([af7dfdb](https://github.com/chatman-media/timeline-studio/commit/af7dfdbdb067e4bc64e55a1c610a2f333e60f8e8))
+
+
+### Features
+
+* **browser:** Изменить порядок элементов в тулбаре Media и Music ([3ada320](https://github.com/chatman-media/timeline-studio/commit/3ada320cf1fecd0d63376e4e80ac2f58c9de7260))
+* **templates:** Добавить PiP и профессиональные шаблоны в TEMPLATE_MAP ([d5f4e5a](https://github.com/chatman-media/timeline-studio/commit/d5f4e5acad22721777bc88da3070f21370e0640a))
+
 # [2.12.0](https://github.com/chatman-media/timeline-studio/compare/v2.11.7...v2.12.0) (2025-11-16)
 
 
