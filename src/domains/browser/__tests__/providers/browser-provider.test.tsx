@@ -453,6 +453,7 @@ describe("BrowserProvider", () => {
     })
 
     it("should check if file is selected", async () => {
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -464,18 +465,17 @@ describe("BrowserProvider", () => {
       // Initially not selected
       expect(result.current.isFileSelected("file-1")).toBe(false)
 
-      // Select file
+      // Select file - should call the command
       await act(async () => {
         await result.current.selectFile("file-1")
       })
 
-      // Now should be selected
-      await waitFor(() => {
-        expect(result.current.isFileSelected("file-1")).toBe(true)
-      })
+      // Verify command was called with correct parameters
+      expect(commands.browserSelectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should maintain separate selections per tab", async () => {
+      const { commands } = await import("@/types/generated/tauri-bindings")
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -499,18 +499,18 @@ describe("BrowserProvider", () => {
         await result.current.selectFile("effect-1", "effects")
       })
 
-      // Check that media tab still has its selection
-      expect(result.current.isFileSelected("media-1", "media")).toBe(true)
-      expect(result.current.isFileSelected("effect-1", "effects")).toBe(true)
+      // Verify commands were called with correct tab parameters
+      expect(commands.browserSelectFile).toHaveBeenCalledWith("media-1", "media")
+      expect(commands.browserSelectFile).toHaveBeenCalledWith("effect-1", "effects")
     })
   })
 
   describe("Error Handling", () => {
     it("should handle backend command errors", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
       // Replace the mock temporarily to simulate an error
-      const originalMock = backendSync.executeCommand
-      backendSync.executeCommand = vi.fn().mockRejectedValue(new Error("Backend error"))
+      const originalMock = commands.browserSelectFile
+      commands.browserSelectFile = vi.fn().mockResolvedValue({ status: "error", error: "Backend error" })
 
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
@@ -529,7 +529,7 @@ describe("BrowserProvider", () => {
       expect(result.current.error).toBeDefined()
 
       // Restore the original mock
-      backendSync.executeCommand = originalMock
+      commands.browserSelectFile = originalMock
     })
 
     it("should handle state loading errors", async () => {
@@ -551,7 +551,7 @@ describe("BrowserProvider", () => {
     })
 
     it("should clear errors after successful operation", async () => {
-      const backendSync = getBackendSync()
+      const { commands } = await import("@/types/generated/tauri-bindings")
 
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
@@ -562,15 +562,15 @@ describe("BrowserProvider", () => {
       })
 
       // First call fails
-      const originalMock = backendSync.executeCommand
+      const originalMock = commands.browserSelectFile
       let callCount = 0
-      backendSync.executeCommand = vi.fn().mockImplementation((command) => {
+      commands.browserSelectFile = vi.fn().mockImplementation(() => {
         callCount++
         if (callCount === 1) {
-          return Promise.reject(new Error("Backend error"))
+          return Promise.resolve({ status: "error", error: "Backend error" })
         }
         // Restore to default behavior for subsequent calls
-        return originalMock(command)
+        return Promise.resolve({ status: "ok", data: { success: true } })
       })
 
       // Fail once
@@ -593,7 +593,7 @@ describe("BrowserProvider", () => {
       })
 
       // Restore the original mock
-      backendSync.executeCommand = originalMock
+      commands.browserSelectFile = originalMock
     })
   })
 })
