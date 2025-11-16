@@ -169,7 +169,9 @@ impl StateManager {
 
         // Snapshot autosave (full version control snapshot)
         _ = snapshot_interval.tick() => {
-          let state = project_state.read().await;
+          // TOCTOU FIX: Use write lock from the start to prevent race conditions
+          // This ensures snapshot creation and state update are atomic
+          let mut state = project_state.write().await;
 
           // Create version control snapshot if enabled and there are significant changes
           if state.version_info.auto_save_enabled && state.version_info.has_uncommitted_changes {
@@ -181,12 +183,15 @@ impl StateManager {
               );
 
               let snapshot_id = snapshot.id.clone();
+              let state_version = state.version;
+
+              // Release write lock before I/O operation to prevent blocking other operations
+              drop(state);
 
               if let Err(e) = persistence.save_snapshot(&snapshot).await {
                 log::error!("Failed to save auto-snapshot: {}", e);
               } else {
-                // Update state to mark snapshot as created
-                drop(state);
+                // Re-acquire write lock to update state atomically
                 let mut state = project_state.write().await;
                 state.mark_snapshot_created(snapshot_id.clone());
 
@@ -197,7 +202,7 @@ impl StateManager {
                       snapshot_id: snapshot_id.clone(),
                     },
                     "autosave".to_string(),
-                    state.version,
+                    state_version,
                   )
                   .await
                   .ok();
