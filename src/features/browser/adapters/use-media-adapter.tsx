@@ -1,15 +1,14 @@
 import type React from "react"
 import { useMemo } from "react"
 
-import { useAppSettings, useFavorites } from "@/features/app-state"
+import { useMediaManagement } from "@/domains/media-management"
+import { useFavorites } from "@/features/app-state"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
 import { parseDuration, parseFileSize } from "@/features/browser/utils"
 import { useDraggable } from "@/features/drag-drop"
 import { getFileType } from "@/features/media"
-import { useMediaImport } from "@/features/media/hooks/use-media-import"
 import type { MediaFile } from "@/features/media/types/media"
 import i18n from "@/i18n"
-import type { MediaItem } from "@/types/generated/tauri-bindings"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 import { getDateGroup, getDurationGroup } from "../utils/grouping"
 
@@ -46,77 +45,75 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
  * Хук для создания адаптера медиафайлов с использованием React хуков
  */
 export function useMediaAdapter(): ListAdapter<MediaListItem> {
-  const { connectionError, projectState } = useAppSettings()
   const { isItemFavorite } = useFavorites()
-  const { importFile, importFolder, isImporting } = useMediaImport()
+  const { mediaPool, isLoading, error, importFiles, selectMediaFiles, selectMediaDirectory } = useMediaManagement()
 
   const allMediaFiles = useMemo(() => {
-    // ВАЖНО: Читаем из imported_media вместо media_pool
-    // imported_media содержит временно импортированные файлы до добавления в Resources
-    const mediaItems = projectState?.imported_media || {}
+    // ✅ НОВАЯ АРХИТЕКТУРА: Читаем из MediaManagement Provider
+    // mediaPool синхронизируется через события MediaAdded/MediaRemoved/MediaUpdated
+    const mediaItems = Array.from(mediaPool.values())
 
     // Отладочный лог
-    const mediaCount = Object.keys(mediaItems).length
-    if (mediaCount > 0) {
-      console.log("[MediaAdapter] Imported media files:", {
-        count: mediaCount,
-        fileIds: Object.keys(mediaItems),
+    if (mediaItems.length > 0) {
+      console.log("[MediaAdapter] Media pool files:", {
+        count: mediaItems.length,
+        files: mediaItems.map((m) => m.path),
       })
     }
 
-    // Преобразуем объект MediaItem в массив MediaFile
-    return Object.values(mediaItems).map((item) => {
-      const mediaItem = item as MediaItem
+    // Преобразуем MediaInfo в MediaFile
+    return mediaItems.map((mediaInfo) => {
       // Конвертируем duration обратно в формат строки времени для совместимости
       let durationStr = "0"
-      if (mediaItem.duration) {
-        const hours = Math.floor(mediaItem.duration / 3600)
-        const minutes = Math.floor((mediaItem.duration % 3600) / 60)
-        const seconds = Math.floor(mediaItem.duration % 60)
+      if (mediaInfo.duration) {
+        const hours = Math.floor(mediaInfo.duration / 3600)
+        const minutes = Math.floor((mediaInfo.duration % 3600) / 60)
+        const seconds = Math.floor(mediaInfo.duration % 60)
         durationStr = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
       }
 
       return {
-        ...mediaItem,
-        // Мапим поля из MediaItem в MediaFile
-        startTime: (mediaItem as any).startTime || Date.now() / 1000, // Используем сохраненное значение или текущее время
+        path: mediaInfo.path,
+        name: mediaInfo.name,
+        // Мапим поля из MediaInfo в MediaFile
+        startTime: Date.now() / 1000, // Используем текущее время для сортировки
         size:
-          (mediaItem as any).size ||
-          (mediaItem.metadata?.bitrate
-            ? `${Math.round((mediaItem.metadata.bitrate * (mediaItem.duration || 0)) / 8 / 1024 / 1024)}MB`
-            : "0MB"),
+          mediaInfo.metadata?.bitrate && mediaInfo.duration
+            ? `${Math.round((mediaInfo.metadata.bitrate * mediaInfo.duration) / 8 / 1024 / 1024)}MB`
+            : "0MB",
         duration: durationStr,
-        thumbnailPath: mediaItem.thumbnail,
-        type: mediaItem.media_type?.toLowerCase() || "video",
-        isVideo: (mediaItem.media_type as string) === "Video",
-        isAudio: (mediaItem.media_type as string) === "Audio",
-        isImage: (mediaItem.media_type as string) === "Image",
+        thumbnailPath: mediaInfo.thumbnailPath,
+        type: mediaInfo.type.toLowerCase(),
+        isVideo: mediaInfo.type === "Video",
+        isAudio: mediaInfo.type === "Audio",
+        isImage: mediaInfo.type === "Image",
         isLoadingMetadata: false,
         // Добавляем probeData для совместимости с тестами
-        probeData:
-          (mediaItem as any).probeData ||
-          (mediaItem.metadata
-            ? {
-                format: {
-                  size: mediaItem.metadata.bitrate ? (mediaItem.metadata.bitrate * (mediaItem.duration || 0)) / 8 : 0,
-                  tags: {},
-                },
-                streams: [],
-              }
-            : undefined),
+        probeData: mediaInfo.metadata
+          ? {
+              format: {
+                size:
+                  mediaInfo.metadata.bitrate && mediaInfo.duration
+                    ? (mediaInfo.metadata.bitrate * mediaInfo.duration) / 8
+                    : 0,
+                tags: {},
+              },
+              streams: [],
+            }
+          : undefined,
       }
     })
-  }, [projectState?.imported_media])
+  }, [mediaPool])
 
-  // V2 не использует общий loading состояние, используем состояние импорта
-  const mediaLoading = isImporting
+  // ✅ Используем состояние из MediaManagement Provider
+  const mediaLoading = isLoading
 
   return {
     // Хук для получения данных
     useData: () => ({
       items: allMediaFiles as unknown as MediaListItem[],
       loading: mediaLoading,
-      error: connectionError ? new Error(connectionError) : null,
+      error: error ? new Error(error) : null,
     }),
 
     // Компонент превью
@@ -218,12 +215,22 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
     // Обработчики импорта
     importHandlers: {
       importFile: async () => {
-        await importFile()
+        // ✅ Используем selectMediaFiles из MediaManagement Provider
+        const files = await selectMediaFiles()
+        if (files && files.length > 0) {
+          await importFiles(files, {})
+        }
       },
       importFolder: async () => {
-        await importFolder()
+        // Используем selectMediaDirectory из MediaManagement Provider
+        const directory = await selectMediaDirectory()
+        // selectMediaDirectory автоматически импортирует файлы, поэтому не нужно вызывать importFiles
+        if (!directory) {
+          // Пользователь отменил выбор директории
+          return
+        }
       },
-      isImporting,
+      isImporting: isLoading,
     },
 
     // Проверка избранного
