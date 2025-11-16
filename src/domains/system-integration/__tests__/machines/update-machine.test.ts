@@ -94,7 +94,7 @@ describe("Update Machine", () => {
     })
 
     it("should return to idle if no update available", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: false,
         current_version: "1.0.0",
         update_info: undefined,
@@ -108,7 +108,7 @@ describe("Update Machine", () => {
     })
 
     it("should transition to updateAvailable if update found", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: {
@@ -137,7 +137,7 @@ describe("Update Machine", () => {
         url: "https://example.com/update",
       }
 
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: updateInfo,
@@ -151,7 +151,7 @@ describe("Update Machine", () => {
     })
 
     it("should update lastCheckTime", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: false,
         current_version: "1.0.0",
         update_info: undefined,
@@ -200,7 +200,7 @@ describe("Update Machine", () => {
   describe("Download and Install Flow", () => {
     beforeEach(async () => {
       // Setup: navigate to updateAvailable state
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: {
@@ -211,7 +211,7 @@ describe("Update Machine", () => {
           url: "https://example.com/update",
         },
       })
-      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
+      ;(mockUpdateService.downloadAndInstall as ReturnType<typeof vi.fn>).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -248,7 +248,7 @@ describe("Update Machine", () => {
   describe("Install Flow", () => {
     beforeEach(async () => {
       // Setup: navigate to readyToInstall state
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: {
@@ -259,7 +259,7 @@ describe("Update Machine", () => {
           url: "https://example.com/update",
         },
       })
-      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
+      ;(mockUpdateService.downloadAndInstall as ReturnType<typeof vi.fn>).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -278,23 +278,21 @@ describe("Update Machine", () => {
     })
 
     it("should transition to installed after installation completes", async () => {
-      vi.useFakeTimers()
-
       actor.send({ type: "INSTALL_UPDATE" })
 
-      // Advance timers for the installation delay
-      await vi.advanceTimersByTimeAsync(2000)
+      // Wait for the installation delay (simulated)
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
-      // With fake timers, we need to check synchronously
+      // Should eventually be in installed state
+      await waitForState("installed", 3000)
+
       expect(actor.getSnapshot().value).toBe("installed")
-
-      vi.useRealTimers()
     })
   })
 
   describe("Error Handling", () => {
     it("should transition to error state on check failure", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Network error"))
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Network error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -306,7 +304,7 @@ describe("Update Machine", () => {
 
     it("should save error message", async () => {
       const errorMessage = "Connection failed"
-      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error(errorMessage))
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockRejectedValue(new Error(errorMessage))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -316,7 +314,7 @@ describe("Update Machine", () => {
     })
 
     it("should allow retry from error state", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Error"))
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -328,7 +326,7 @@ describe("Update Machine", () => {
     })
 
     it("should allow dismissing error", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockRejectedValue(new Error("Error"))
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Error"))
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
@@ -343,7 +341,7 @@ describe("Update Machine", () => {
 
   describe("Dismiss Update", () => {
     it("should dismiss update and return to idle", async () => {
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: {
@@ -366,9 +364,7 @@ describe("Update Machine", () => {
     })
 
     it("should dismiss installed update", async () => {
-      vi.useFakeTimers()
-
-      vi.mocked(mockUpdateService.checkForUpdates).mockResolvedValue({
+      ;(mockUpdateService.checkForUpdates as ReturnType<typeof vi.fn>).mockResolvedValue({
         available: true,
         current_version: "1.0.0",
         update_info: {
@@ -379,27 +375,24 @@ describe("Update Machine", () => {
           url: "https://example.com/update",
         },
       })
-      vi.mocked(mockUpdateService.downloadAndInstall).mockResolvedValue(undefined)
+      ;(mockUpdateService.downloadAndInstall as ReturnType<typeof vi.fn>).mockResolvedValue(undefined)
 
       actor.send({ type: "CHECK_FOR_UPDATES" })
 
-      // Need to flush promises with fake timers
-      await vi.runAllTimersAsync()
+      await waitForState("updateAvailable")
 
       actor.send({ type: "DOWNLOAD_UPDATE" })
 
-      await vi.runAllTimersAsync()
+      await waitForState("readyToInstall")
 
       actor.send({ type: "INSTALL_UPDATE" })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await waitForState("installed", 3000)
 
       actor.send({ type: "DISMISS" })
 
       expect(actor.getSnapshot().value).toBe("idle")
       expect(actor.getSnapshot().context.availableUpdate).toBeUndefined()
-
-      vi.useRealTimers()
     })
   })
 

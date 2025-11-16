@@ -1,5 +1,6 @@
 /**
  * Tests for useUpdates hook
+ * @vitest-environment jsdom
  */
 
 import { act, renderHook } from "@testing-library/react"

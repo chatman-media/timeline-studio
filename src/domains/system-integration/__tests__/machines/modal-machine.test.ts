@@ -2,7 +2,7 @@
  * Tests for Modal Machine
  */
 
-import { beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { createActor } from "xstate"
 import { type ModalType, modalMachine } from "../../machines/modal-machine"
 

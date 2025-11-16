@@ -1,13 +1,14 @@
 /**
  * Integration tests for hooks and orchestrator
+ * @vitest-environment jsdom
  *
- * TODO: Этот файл вызывает OOM при запуске всех тестов
- * Требуется разделить на меньшие файлы или оптимизировать
- * Временно пропущен
+ * NOTE: Этот файл временно пропущен (describe.skip) из-за потенциальных проблем
+ * с памятью при запуске всех тестов одновременно. Тесты проходят при запуске
+ * по отдельности. В будущем может потребоваться разделение на меньшие файлы.
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useFeatures } from "../../hooks/use-features"
 import { useModals } from "../../hooks/use-modals"
 import { useNotifications } from "../../hooks/use-notifications"
