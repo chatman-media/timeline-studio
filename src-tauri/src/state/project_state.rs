@@ -41,6 +41,7 @@ pub struct Project {
   pub templates_pool: HashMap<String, TemplateResource>,
   pub style_templates_pool: HashMap<String, StyleTemplateResource>,
   pub subtitles_pool: HashMap<String, SubtitleResource>,
+  pub color_grading_presets_pool: HashMap<String, ColorGradingPresetResource>,
 }
 
 /// Project metadata
@@ -236,6 +237,16 @@ pub struct SubtitleResource {
   pub name: String,
   pub style_id: String,
   pub data: serde_json::Value,
+  pub added_at: f64,
+}
+
+/// Color grading preset resource
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct ColorGradingPresetResource {
+  pub id: String,
+  pub name: String,
+  pub preset_id: String,
+  pub parameters: serde_json::Value,
   pub added_at: f64,
 }
 
@@ -581,6 +592,7 @@ impl ProjectState {
       templates_pool: HashMap::new(),
       style_templates_pool: HashMap::new(),
       subtitles_pool: HashMap::new(),
+      color_grading_presets_pool: HashMap::new(),
     };
 
     self.project = Some(project);

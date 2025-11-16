@@ -151,4 +151,33 @@ impl ProjectCommands {
 
     CommandResult::success(None)
   }
+
+  pub async fn update_project_settings(&self, settings: ProjectSettings) -> CommandResult {
+    log::info!("Updating project settings: {:?}", settings);
+
+    let mut state = self.state.write().await;
+
+    // Check if project exists
+    let project = match &mut state.project {
+      Some(p) => p,
+      None => return CommandResult::error("No project to update settings for".to_string()),
+    };
+
+    // Update settings
+    project.settings = settings.clone();
+    state.mark_dirty();
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::ProjectSettingsUpdated { settings },
+        "command_handler".to_string(),
+        state.version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({ "success": true })))
+  }
 }

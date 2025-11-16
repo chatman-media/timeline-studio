@@ -5,6 +5,7 @@ pub mod types;
 
 // Feature modules
 pub mod advanced_edits;
+pub mod color_grading;
 pub mod effects;
 pub mod imported_media;
 pub mod keyframes;
@@ -15,6 +16,7 @@ pub mod resources;
 pub mod timeline;
 pub mod tracks;
 pub mod transitions;
+pub mod undo;
 
 // Main handler (contains remaining commands and CommandHandler)
 pub mod handler;
@@ -26,6 +28,7 @@ pub use types::{CommandResult, PlayerSource, ProjectCommand};
 
 // Public interfaces for each module
 pub use advanced_edits::AdvancedEditsCommands;
+pub use color_grading::ColorGradingCommands;
 pub use effects::EffectsCommands;
 pub use imported_media::ImportedMediaCommands;
 pub use keyframes::KeyframeCommands;
@@ -36,3 +39,4 @@ pub use resources::ResourceCommands;
 pub use timeline::TimelineCommands;
 pub use tracks::TracksCommands;
 pub use transitions::TransitionsCommands;
+pub use undo::UndoCommands;

@@ -14,6 +14,7 @@ use super::types::*;
 
 // Import modular command handlers
 use super::advanced_edits::AdvancedEditsCommands;
+use super::color_grading::ColorGradingCommands;
 use super::effects::EffectsCommands;
 use super::imported_media::ImportedMediaCommands;
 use super::media::MediaCommands;
@@ -22,6 +23,7 @@ use super::resources::ResourceCommands;
 use super::timeline::TimelineCommands;
 use super::tracks::TracksCommands;
 use super::transitions::TransitionsCommands;
+use super::undo::UndoCommands;
 
 pub struct CommandHandler {
   state: Arc<RwLock<ProjectState>>,
@@ -37,6 +39,8 @@ pub struct CommandHandler {
   advanced_edits_commands: AdvancedEditsCommands,
   project_commands: ProjectCommands,
   resource_commands: ResourceCommands,
+  undo_commands: UndoCommands,
+  color_grading_commands: ColorGradingCommands,
 }
 
 #[allow(dead_code)]
@@ -57,6 +61,8 @@ impl CommandHandler {
     let project_commands =
       ProjectCommands::new(state.clone(), event_bus.clone(), persistence.clone());
     let resource_commands = ResourceCommands::new(state.clone(), event_bus.clone());
+    let undo_commands = UndoCommands::new(state.clone(), event_bus.clone());
+    let color_grading_commands = ColorGradingCommands::new(state.clone(), event_bus.clone());
 
     Self {
       state,
@@ -71,6 +77,8 @@ impl CommandHandler {
       advanced_edits_commands,
       project_commands,
       resource_commands,
+      undo_commands,
+      color_grading_commands,
     }
   }
 
@@ -84,6 +92,12 @@ impl CommandHandler {
       ProjectCommand::OpenProject { path } => self.project_commands.open_project(path).await,
       ProjectCommand::SaveProject { path } => self.project_commands.save_project(path).await,
       ProjectCommand::CloseProject => self.project_commands.close_project().await,
+      ProjectCommand::UpdateProjectSettings { settings } => {
+        self
+          .project_commands
+          .update_project_settings(settings)
+          .await
+      }
 
       // Track commands - delegated to TracksCommands
       ProjectCommand::AddTrack {
@@ -350,6 +364,54 @@ impl CommandHandler {
         self.browser_select_all_files(file_ids, tab).await
       }
       ProjectCommand::BrowserDeselectAllFiles { tab } => self.browser_deselect_all_files(tab).await,
+
+      // Undo/Redo commands
+      ProjectCommand::RegisterUndoAction { action } => match serde_json::from_value(action) {
+        Ok(undo_action) => self.undo_commands.register_action(undo_action).await,
+        Err(e) => CommandResult::error(format!("Invalid undo action: {}", e)),
+      },
+      ProjectCommand::Undo => self.undo_commands.undo().await,
+      ProjectCommand::Redo => self.undo_commands.redo().await,
+      ProjectCommand::GetUndoHistory => self.undo_commands.get_undo_history().await,
+      ProjectCommand::ClearUndoHistory => self.undo_commands.clear_history().await,
+      ProjectCommand::CanUndo => self.undo_commands.can_undo().await,
+      ProjectCommand::CanRedo => self.undo_commands.can_redo().await,
+
+      // Color Grading commands
+      ProjectCommand::ApplyColorGrading {
+        clip_id,
+        preset_id,
+        parameters,
+      } => {
+        self
+          .color_grading_commands
+          .apply_color_grading(clip_id, preset_id, parameters)
+          .await
+      }
+      ProjectCommand::SaveColorGradingPreset { name, parameters } => {
+        self
+          .color_grading_commands
+          .save_color_grading_preset(name, parameters)
+          .await
+      }
+      ProjectCommand::DeleteColorGradingPreset { preset_id } => {
+        self
+          .color_grading_commands
+          .delete_color_grading_preset(preset_id)
+          .await
+      }
+      ProjectCommand::ResetColorGrading { clip_id } => {
+        self
+          .color_grading_commands
+          .reset_color_grading(clip_id)
+          .await
+      }
+      ProjectCommand::GetColorGradingPresets => {
+        self
+          .color_grading_commands
+          .get_color_grading_presets()
+          .await
+      }
 
       // Chat commands
       ProjectCommand::Chat(chat_cmd) => self.handle_chat_command(chat_cmd).await,

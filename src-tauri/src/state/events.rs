@@ -28,6 +28,9 @@ pub enum ProjectEvent {
   ProjectClosed {
     project_id: String,
   },
+  ProjectSettingsUpdated {
+    settings: super::project_state::ProjectSettings,
+  },
 
   // Timeline events
   ClipAdded {
@@ -286,6 +289,43 @@ pub enum ProjectEvent {
   },
   StreamingComplete {
     data: serde_json::Value,
+  },
+
+  // Undo/Redo events
+  UndoPerformed {
+    action_id: String,
+    action_type: String,
+    description: String,
+  },
+  RedoPerformed {
+    action_id: String,
+    action_type: String,
+    description: String,
+  },
+  ActionRegistered {
+    action_id: String,
+    action_type: String,
+    description: String,
+    timestamp: DateTime<Utc>,
+  },
+  UndoHistoryCleared,
+
+  // Color Grading events
+  ColorGradingApplied {
+    clip_id: String,
+    preset_id: Option<String>,
+    parameters: serde_json::Value,
+  },
+  ColorGradingPresetSaved {
+    preset_id: String,
+    name: String,
+    parameters: serde_json::Value,
+  },
+  ColorGradingPresetDeleted {
+    preset_id: String,
+  },
+  ColorGradingReset {
+    clip_id: String,
   },
 }
 

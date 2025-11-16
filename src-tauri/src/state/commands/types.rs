@@ -30,6 +30,9 @@ pub enum ProjectCommand {
     path: Option<String>,
   },
   CloseProject,
+  UpdateProjectSettings {
+    settings: ProjectSettings,
+  },
 
   // Timeline commands
   AddTrack {
@@ -316,6 +319,35 @@ pub enum ProjectCommand {
   BrowserDeselectAllFiles {
     tab: Option<BrowserTab>,
   },
+
+  // Undo/Redo commands
+  RegisterUndoAction {
+    action: serde_json::Value,
+  },
+  Undo,
+  Redo,
+  GetUndoHistory,
+  ClearUndoHistory,
+  CanUndo,
+  CanRedo,
+
+  // Color Grading commands
+  ApplyColorGrading {
+    clip_id: String,
+    preset_id: Option<String>,
+    parameters: serde_json::Value,
+  },
+  SaveColorGradingPreset {
+    name: String,
+    parameters: serde_json::Value,
+  },
+  DeleteColorGradingPreset {
+    preset_id: String,
+  },
+  ResetColorGrading {
+    clip_id: String,
+  },
+  GetColorGradingPresets,
 
   // Chat commands
   Chat(ChatCommand),

@@ -12,6 +12,8 @@ pub use crate::core::plugins::plugin::{
 
 // State management types
 #[allow(unused_imports)]
+pub use crate::state::commands::undo::UndoAction;
+#[allow(unused_imports)]
 pub use crate::state::commands::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 #[allow(unused_imports)]
 pub use crate::state::events::{
