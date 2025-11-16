@@ -55,7 +55,10 @@ vi.mock("@/types/generated/tauri-bindings", () => ({
     }),
     browserSetSort: vi.fn(async (sortBy: string, sortOrder: string, tab: string | null) => {
       const backendSync = getBackendSync()
-      await backendSync.executeCommand({ type: "BrowserSetSort", params: { sort_by: sortBy, sort_order: sortOrder, tab } })
+      await backendSync.executeCommand({
+        type: "BrowserSetSort",
+        params: { sort_by: sortBy, sort_order: sortOrder, tab },
+      })
       return { status: "ok", data: { success: true } }
     }),
     browserSetGroupBy: vi.fn(async (groupBy: string, tab: string | null) => {

@@ -94,6 +94,43 @@ export function useVideoElement() {
   }, [])
 
   /**
+   * Полностью очищает видео элемент и освобождает память
+   * @param videoElement Видео элемент для очистки
+   */
+  const destroyVideoElement = useCallback((videoElement: HTMLVideoElement) => {
+    try {
+      // 1. Останавливаем воспроизведение
+      videoElement.pause()
+
+      // 2. Сохраняем src перед очисткой для revoke blob URLs
+      const currentSrc = videoElement.src || videoElement.currentSrc
+
+      // 3. Очищаем src и загружаем пустой источник для освобождения медиа буфера
+      videoElement.removeAttribute("src")
+      videoElement.load()
+
+      // 4. Очищаем object URL если он был создан (делаем после removeAttribute)
+      if (currentSrc && currentSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(currentSrc)
+      }
+
+      // 5. Удаляем из DOM
+      if (document.body.contains(videoElement)) {
+        document.body.removeChild(videoElement)
+      }
+
+      // 6. Удаляем из глобального реестра
+      allVideoElementsRef.current.delete(videoElement)
+
+      logger.debug("video element destroyed and memory released", {
+        videoId: videoElement.dataset.videoId,
+      })
+    } catch (error) {
+      logger.error("error destroying video element", { error })
+    }
+  }, [])
+
+  /**
    * Очищает неиспользуемые видео элементы
    * @param activeVideoIds Массив ID активных видео
    * @param videoRefs Объект для хранения ссылок на видео элементы
@@ -109,33 +146,28 @@ export function useVideoElement() {
       // Удаляем неиспользуемые видео элементы
       unusedVideoIds.forEach((id) => {
         const videoElement = videoRefs[id]
-        if (videoElement && document.body.contains(videoElement)) {
+        if (videoElement) {
           logger.debug("removing unused video element", { videoId: id })
 
-          // Останавливаем воспроизведение
-          videoElement.pause()
-
-          // Удаляем из DOM
-          document.body.removeChild(videoElement)
-
-          // Удаляем из глобального реестра
-          allVideoElementsRef.current.delete(videoElement)
+          // Полностью уничтожаем элемент и освобождаем память
+          // (destroyVideoElement уже удаляет из глобального реестра)
+          destroyVideoElement(videoElement)
 
           // Удаляем из videoRefs
-
           delete videoRefs[id]
         }
       })
 
       logger.debug("cleaned up unused video elements", { count: unusedVideoIds.length })
     },
-    [],
+    [destroyVideoElement],
   )
 
   return {
     getOrCreateVideoElement,
     updateVideoSrc,
     cleanupUnusedVideoElements,
+    destroyVideoElement,
     allVideoElementsRef,
   }
 }
