@@ -308,19 +308,24 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     // ✅ Оптимистичное обновление - обновляем машину сразу
     browserActor.send({ type: "SWITCH_TAB", tab })
 
-    // Отправляем команду на backend
-    const { commands } = await import("@/types/generated/tauri-bindings")
-    const result = await commands.browserSwitchTab(tab)
+    try {
+      // Отправляем команду на backend
+      const { commands } = await import("@/types/generated/tauri-bindings")
+      const result = await commands.browserSwitchTab(tab)
 
-    if (result.status === "error") {
-      logger.error("[BrowserProvider] Tab switch failed", { error: result.error })
-      // При ошибке backend пришлет корректное состояние через событие
-      browserActor.send({ type: "SET_ERROR", error: result.error })
-      throw new Error(result.error)
+      if (result.status === "error") {
+        throw new Error(result.error)
+      }
+
+      logger.info("[BrowserProvider] Tab switch command sent successfully")
+      // Backend пришлет событие TabSwitched для подтверждения
+      // Если оно придет с другим значением, то перезапишет локальное
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to switch tab"
+      browserActor.send({ type: "SET_ERROR", error: errorMsg })
+      logger.error("[BrowserProvider] Tab switch failed", { error: err })
+      throw err
     }
-
-    logger.info("[BrowserProvider] Tab switch command sent successfully")
-    // Backend пришлет событие TabSwitched для подтверждения
   }
 
   const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {
