@@ -8,7 +8,12 @@
 import { createContext, type ReactNode, useEffect, useState } from "react"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import { selectAudioFile, selectMediaFile } from "@/features/media/services/media-api"
+import {
+  getMediaFiles,
+  selectAudioFile,
+  selectMediaDirectory,
+  selectMediaFile,
+} from "@/features/media/services/media-api"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import {
@@ -149,6 +154,28 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
     selectAudioFiles: async () => {
       return selectAudioFile()
+    },
+
+    selectMediaDirectory: async () => {
+      try {
+        const directory = await selectMediaDirectory()
+        if (!directory) {
+          return null
+        }
+
+        // Получаем все медиафайлы из выбранной директории
+        const files = await getMediaFiles(directory)
+
+        // Автоматически импортируем файлы из директории
+        if (files.length > 0) {
+          await mediaManagementService.importFiles(files, {})
+        }
+
+        return directory
+      } catch (error) {
+        logger.error("Failed to select directory", { error })
+        throw error
+      }
     },
 
     getMediaInfo: async (path: string) => {
