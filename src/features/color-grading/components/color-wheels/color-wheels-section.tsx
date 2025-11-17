@@ -10,7 +10,7 @@ export function ColorWheelsSection() {
   return (
     <div className="space-y-4" data-testid="color-wheels-section">
       {/* Заголовок секции */}
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-muted-foreground">
         {t("colorGrading.colorWheels.description", "Adjust shadows (Lift), midtones (Gamma), and highlights (Gain)")}
       </div>
 

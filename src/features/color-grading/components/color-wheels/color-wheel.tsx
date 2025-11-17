@@ -167,7 +167,7 @@ export function ColorWheel({ type, label, value, onChange, size = 80, disabled =
 
   return (
     <div className="text-center space-y-2">
-      <label className="text-xs font-medium text-gray-300">{label}</label>
+      <label className="text-xs font-medium text-foreground/90">{label}</label>
 
       <div
         ref={containerRef}
@@ -186,20 +186,32 @@ export function ColorWheel({ type, label, value, onChange, size = 80, disabled =
             top: position.y,
           }}
         >
-          <div className="w-full h-full bg-white rounded-full border-2 border-black shadow-md" />
+          <div className="w-full h-full bg-foreground rounded-full border-2 border-background shadow-md" />
         </div>
       </div>
 
       {/* Численные значения */}
-      <div className="grid grid-cols-3 gap-1 text-xs">
-        <div>
-          R: <span className="text-red-400">{value.r.toFixed(2)}</span>
+      <div className="grid grid-cols-3 gap-1 text-xs font-mono tabular-nums">
+        <div className="text-muted-foreground">
+          R:{" "}
+          <span className="text-red-400">
+            {value.r >= 0 ? "+" : ""}
+            {value.r.toFixed(2)}
+          </span>
         </div>
-        <div>
-          G: <span className="text-green-400">{value.g.toFixed(2)}</span>
+        <div className="text-muted-foreground">
+          G:{" "}
+          <span className="text-green-400">
+            {value.g >= 0 ? "+" : ""}
+            {value.g.toFixed(2)}
+          </span>
         </div>
-        <div>
-          B: <span className="text-blue-400">{value.b.toFixed(2)}</span>
+        <div className="text-muted-foreground">
+          B:{" "}
+          <span className="text-blue-400">
+            {value.b >= 0 ? "+" : ""}
+            {value.b.toFixed(2)}
+          </span>
         </div>
       </div>
     </div>

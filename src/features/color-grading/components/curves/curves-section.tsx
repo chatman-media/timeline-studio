@@ -78,7 +78,7 @@ export function CurvesSection() {
   return (
     <div className="space-y-4" data-testid="curves-section">
       {/* Заголовок секции */}
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-muted-foreground">
         {t("colorGrading.curves.description", "Fine-tune tonal response with interactive curves")}
       </div>
 
@@ -88,7 +88,7 @@ export function CurvesSection() {
         onValueChange={(value) => setActiveCurve(value as typeof activeCurve)}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-4 bg-[#383838] border border-[#464647]">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="master" className="text-xs">
             {t("colorGrading.curves.master", "Master")}
           </TabsTrigger>
@@ -123,7 +123,7 @@ export function CurvesSection() {
                   {t("colorGrading.curves.auto", "Auto")}
                 </Button>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-muted-foreground">
                 {t("colorGrading.curves.hint", "Click to add points, drag to adjust")}
               </div>
             </div>

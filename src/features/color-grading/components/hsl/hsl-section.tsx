@@ -10,7 +10,7 @@ export function HSLSection() {
   return (
     <div className="space-y-4" data-testid="hsl-section">
       {/* Заголовок секции */}
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-muted-foreground">
         {t("colorGrading.hsl.description", "Advanced HSL adjustments and secondary color correction")}
       </div>
 
@@ -35,7 +35,7 @@ export function HSLSection() {
           max={100}
           defaultValue={0}
           formatValue={(v) => (v > 0 ? `+${v}` : v.toString())}
-          className="[&_input]:bg-gradient-to-r [&_input]:from-gray-500 [&_input]:to-purple-500"
+          className="[&_input]:bg-gradient-to-r [&_input]:from-muted [&_input]:to-purple-500"
         />
 
         <ParameterSlider
@@ -46,13 +46,13 @@ export function HSLSection() {
           max={100}
           defaultValue={0}
           formatValue={(v) => (v > 0 ? `+${v}` : v.toString())}
-          className="[&_input]:bg-gradient-to-r [&_input]:from-black [&_input]:via-gray-500 [&_input]:to-white"
+          className="[&_input]:bg-gradient-to-r [&_input]:from-background [&_input]:via-muted [&_input]:to-foreground"
         />
       </div>
 
       {/* Дополнительные параметры */}
-      <div className="border-t border-gray-600 pt-4 mt-6">
-        <div className="text-sm text-gray-400 mb-3">{t("colorGrading.hsl.advanced", "Advanced")}</div>
+      <div className="border-t border-border pt-4 mt-6">
+        <div className="text-sm text-muted-foreground mb-3">{t("colorGrading.hsl.advanced", "Advanced")}</div>
 
         <div className="space-y-3">
           <ParameterSlider

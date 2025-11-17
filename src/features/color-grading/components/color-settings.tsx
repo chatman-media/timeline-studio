@@ -50,23 +50,23 @@ export function ColorSettings({ className }: ColorSettingsProps) {
           {/* 1. ОСНОВНЫЕ НАСТРОЙКИ - Color Wheels */}
           <Collapsible open={openSections.colorWheels} onOpenChange={() => toggleSection("colorWheels")}>
             <CollapsibleTrigger
-              className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
               data-testid="color-wheels-trigger"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-400" />
                 <Palette className="h-4 w-4 text-blue-400" />
-                <h3 className="font-medium text-white">
+                <h3 className="font-medium text-foreground">
                   {t("colorGrading.primaryCorrection", "Primary Color Correction")}
                 </h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.colorWheels ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.colorWheels ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4">
+              <div className="bg-card rounded-lg border border-border p-4">
                 <ColorWheelsSection />
               </div>
             </CollapsibleContent>
@@ -75,21 +75,21 @@ export function ColorSettings({ className }: ColorSettingsProps) {
           {/* 2. КРИВЫЕ */}
           <Collapsible open={openSections.curves} onOpenChange={() => toggleSection("curves")}>
             <CollapsibleTrigger
-              className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
               data-testid="curves-trigger"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <TrendingUp className="h-4 w-4 text-green-400" />
-                <h3 className="font-medium text-white">{t("colorGrading.curvesSection", "Curves")}</h3>
+                <h3 className="font-medium text-foreground">{t("colorGrading.curvesSection", "Curves")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.curves ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.curves ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4">
+              <div className="bg-card rounded-lg border border-border p-4">
                 <CurvesSection />
               </div>
             </CollapsibleContent>
@@ -98,21 +98,21 @@ export function ColorSettings({ className }: ColorSettingsProps) {
           {/* 3. HSL КОРРЕКЦИЯ */}
           <Collapsible open={openSections.hsl} onOpenChange={() => toggleSection("hsl")}>
             <CollapsibleTrigger
-              className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
               data-testid="hsl-trigger"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-400" />
                 <Sliders className="h-4 w-4 text-yellow-400" />
-                <h3 className="font-medium text-white">{t("colorGrading.hslCorrection", "HSL Correction")}</h3>
+                <h3 className="font-medium text-foreground">{t("colorGrading.hslCorrection", "HSL Correction")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.hsl ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.hsl ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4">
+              <div className="bg-card rounded-lg border border-border p-4">
                 <HSLSection />
               </div>
             </CollapsibleContent>
@@ -121,21 +121,21 @@ export function ColorSettings({ className }: ColorSettingsProps) {
           {/* 4. LUT */}
           <Collapsible open={openSections.lut} onOpenChange={() => toggleSection("lut")}>
             <CollapsibleTrigger
-              className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
               data-testid="lut-trigger"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-400" />
                 <Image className="h-4 w-4 text-purple-400" />
-                <h3 className="font-medium text-white">{t("colorGrading.lutSection", "LUT")}</h3>
+                <h3 className="font-medium text-foreground">{t("colorGrading.lutSection", "LUT")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.lut ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.lut ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4">
+              <div className="bg-card rounded-lg border border-border p-4">
                 <LUTSection />
               </div>
             </CollapsibleContent>
@@ -144,21 +144,21 @@ export function ColorSettings({ className }: ColorSettingsProps) {
           {/* 5. SCOPES */}
           <Collapsible open={openSections.scopes} onOpenChange={() => toggleSection("scopes")}>
             <CollapsibleTrigger
-              className="flex items-center justify-between w-full p-3 bg-[#383838] hover:bg-[#404040] rounded-lg border border-[#464647] transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
               data-testid="scopes-trigger"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-red-400" />
                 <BarChart3 className="h-4 w-4 text-red-400" />
-                <h3 className="font-medium text-white">{t("colorGrading.scopesSection", "Scopes")}</h3>
+                <h3 className="font-medium text-foreground">{t("colorGrading.scopesSection", "Scopes")}</h3>
               </div>
               <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform ${openSections.scopes ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.scopes ? "rotate-180" : ""}`}
               />
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-3">
-              <div className="bg-[#2D2D30] rounded-lg border border-[#464647] p-4">
+              <div className="bg-card rounded-lg border border-border p-4">
                 <ScopesSection />
               </div>
             </CollapsibleContent>
@@ -166,7 +166,7 @@ export function ColorSettings({ className }: ColorSettingsProps) {
         </div>
 
         {/* Нижние кнопки управления */}
-        <div className="border-t border-[#464647] bg-[#2D2D30]">
+        <div className="border-t border-border bg-card">
           <ColorGradingControls />
         </div>
       </div>

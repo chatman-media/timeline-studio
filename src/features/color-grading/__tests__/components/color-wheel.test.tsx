@@ -48,9 +48,9 @@ describe("ColorWheel", () => {
   it("should display RGB values", () => {
     render(<ColorWheel {...defaultProps} value={{ r: 0.5, g: -0.3, b: 0.2 }} />)
 
-    expect(screen.getByText("0.50")).toBeInTheDocument()
+    expect(screen.getByText("+0.50")).toBeInTheDocument()
     expect(screen.getByText("-0.30")).toBeInTheDocument()
-    expect(screen.getByText("0.20")).toBeInTheDocument()
+    expect(screen.getByText("+0.20")).toBeInTheDocument()
   })
 
   it("should render canvas with correct size", () => {

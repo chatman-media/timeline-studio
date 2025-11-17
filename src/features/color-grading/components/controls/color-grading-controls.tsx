@@ -51,7 +51,7 @@ export function ColorGradingControls() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs h-8 px-3 hover:bg-[#404040]"
+          className="text-xs h-8 px-3"
           title={t("colorGrading.controls.resetAllTooltip", "Reset all color corrections")}
           onClick={resetAll}
           disabled={!hasChanges}
@@ -63,7 +63,7 @@ export function ColorGradingControls() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs h-8 px-3 hover:bg-[#404040]"
+          className="text-xs h-8 px-3"
           title={t("colorGrading.controls.autoCorrectTooltip", "Automatically adjust levels")}
           onClick={autoCorrect}
         >
@@ -76,32 +76,28 @@ export function ColorGradingControls() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs h-8 px-3 hover:bg-[#404040]"
+              className="text-xs h-8 px-3"
               title={t("colorGrading.controls.loadPresetTooltip", "Load color grading preset")}
             >
               {t("colorGrading.controls.loadPreset", "Load Preset")}
               <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-[#2D2D30] border-[#464647]">
+          <DropdownMenuContent className="w-56">
             {presetCategories.map((category) => (
               <div key={category}>
-                <DropdownMenuLabel className="text-xs text-gray-400 uppercase">
+                <DropdownMenuLabel className="text-xs text-muted-foreground uppercase">
                   {t(`colorGrading.presets.categories.${category}`, category)}
                 </DropdownMenuLabel>
                 {presetsByCategory[category].map((preset) => (
-                  <DropdownMenuItem
-                    key={preset.id}
-                    className="text-sm hover:bg-[#404040]"
-                    onClick={() => loadPreset(preset.id)}
-                  >
+                  <DropdownMenuItem key={preset.id} className="text-sm" onClick={() => loadPreset(preset.id)}>
                     {preset.name}
-                    {preset.description && <span className="text-xs text-gray-400 ml-2">{preset.description}</span>}
+                    {preset.description && (
+                      <span className="text-xs text-muted-foreground ml-2">{preset.description}</span>
+                    )}
                   </DropdownMenuItem>
                 ))}
-                {category !== presetCategories[presetCategories.length - 1] && (
-                  <DropdownMenuSeparator className="bg-[#464647]" />
-                )}
+                {category !== presetCategories[presetCategories.length - 1] && <DropdownMenuSeparator />}
               </div>
             ))}
           </DropdownMenuContent>
@@ -110,7 +106,7 @@ export function ColorGradingControls() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs h-8 px-3 hover:bg-[#404040]"
+          className="text-xs h-8 px-3"
           title={t("colorGrading.controls.savePresetTooltip", "Save current settings as preset")}
           onClick={handleSavePreset}
           disabled={!hasChanges}
@@ -125,7 +121,7 @@ export function ColorGradingControls() {
         <Button
           variant="outline"
           size="sm"
-          className="text-xs h-8 px-3 bg-[#383838] border-[#464647] hover:bg-[#404040]"
+          className="text-xs h-8 px-3"
           title={t("colorGrading.controls.togglePreviewTooltip", "Toggle real-time preview")}
           onClick={() => togglePreview(!state.previewEnabled)}
         >
@@ -135,7 +131,7 @@ export function ColorGradingControls() {
 
         <Button
           size="sm"
-          className="text-xs h-8 px-4 bg-blue-600 hover:bg-blue-700"
+          className="text-xs h-8 px-4"
           title={t("colorGrading.controls.applyToClipTooltip", "Apply color grading to selected clip")}
           onClick={applyToClip}
           disabled={!state.selectedClip || !hasChanges}

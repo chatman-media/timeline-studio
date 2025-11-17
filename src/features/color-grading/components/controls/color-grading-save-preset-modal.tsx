@@ -28,26 +28,30 @@ export function ColorGradingSavePresetModal() {
   }
 
   return (
-    <div className="bg-[#2D2D30] border-[#464647]">
+    <div className="bg-card border-border">
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor={presetNameId} className="text-right">
+          <Label htmlFor={presetNameId} className="text-right text-foreground">
             {t("colorGrading.dialogs.savePreset.nameLabel", "Name")}
           </Label>
           <Input
             id={presetNameId}
             value={presetName}
             onChange={(e) => setPresetName(e.target.value)}
-            className="col-span-3 bg-[#383838] border-[#464647]"
+            className="col-span-3 bg-muted border-border text-foreground"
             placeholder={t("colorGrading.dialogs.savePreset.namePlaceholder", "My Preset")}
           />
         </div>
       </div>
-      <div className="flex justify-end gap-2 pt-4 border-t">
-        <Button variant="ghost" onClick={closeModal} className="hover:bg-[#404040]">
+      <div className="flex justify-end gap-2 pt-4 border-t border-border">
+        <Button variant="ghost" onClick={closeModal} className="cursor-pointer hover:bg-accent">
           {t("common.cancel", "Cancel")}
         </Button>
-        <Button onClick={handleSave} disabled={!presetName.trim()} className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          onClick={handleSave}
+          disabled={!presetName.trim()}
+          className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+        >
           {t("common.save", "Save")}
         </Button>
       </div>

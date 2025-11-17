@@ -37,7 +37,7 @@ export function ParameterSlider({
   // Определяем цвет слайдера в зависимости от значения
   const getSliderColor = useCallback(() => {
     if (defaultValue !== undefined) {
-      if (value === defaultValue) return "bg-gray-500"
+      if (value === defaultValue) return "bg-muted-foreground"
       if (value > defaultValue) return "bg-blue-500"
       return "bg-orange-500"
     }
@@ -60,13 +60,15 @@ export function ParameterSlider({
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex justify-between items-center">
-        <label className="text-sm text-gray-300">{label}</label>
-        {showValue && <span className="text-xs text-gray-400 min-w-[3rem] text-right">{formatValue(value)}</span>}
+        <label className="text-sm text-foreground/90">{label}</label>
+        {showValue && (
+          <span className="text-xs text-muted-foreground min-w-[3rem] text-right">{formatValue(value)}</span>
+        )}
       </div>
 
       <div className="relative group">
         {/* Фоновый трек */}
-        <div className="absolute inset-y-0 w-full h-2 bg-gray-700 rounded-lg" onDoubleClick={handleDoubleClick} />
+        <div className="absolute inset-y-0 w-full h-2 bg-muted rounded-lg" onDoubleClick={handleDoubleClick} />
 
         {/* Заполненная часть */}
         <div
@@ -81,7 +83,7 @@ export function ParameterSlider({
         {/* Центральная метка (если есть defaultValue) */}
         {defaultValue !== undefined && (
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-[2px] h-3 bg-gray-600"
+            className="absolute top-1/2 -translate-y-1/2 w-[2px] h-3 bg-border"
             style={{ left: `${((defaultValue - min) / (max - min)) * 100}%` }}
           />
         )}
@@ -103,7 +105,7 @@ export function ParameterSlider({
             "[&::-webkit-slider-thumb]:appearance-none",
             "[&::-webkit-slider-thumb]:w-4",
             "[&::-webkit-slider-thumb]:h-4",
-            "[&::-webkit-slider-thumb]:bg-white",
+            "[&::-webkit-slider-thumb]:bg-foreground",
             "[&::-webkit-slider-thumb]:rounded-full",
             "[&::-webkit-slider-thumb]:shadow-md",
             "[&::-webkit-slider-thumb]:cursor-pointer",
@@ -112,7 +114,7 @@ export function ParameterSlider({
             "[&::-moz-range-thumb]:appearance-none",
             "[&::-moz-range-thumb]:w-4",
             "[&::-moz-range-thumb]:h-4",
-            "[&::-moz-range-thumb]:bg-white",
+            "[&::-moz-range-thumb]:bg-foreground",
             "[&::-moz-range-thumb]:rounded-full",
             "[&::-moz-range-thumb]:shadow-md",
             "[&::-moz-range-thumb]:cursor-pointer",
@@ -125,7 +127,7 @@ export function ParameterSlider({
 
         {/* Подсказка при наведении */}
         {!disabled && defaultValue !== undefined && (
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-xs text-gray-300 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-popover text-xs text-popover-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-border">
             Double-click to reset
           </div>
         )}

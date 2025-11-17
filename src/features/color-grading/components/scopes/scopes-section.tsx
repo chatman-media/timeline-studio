@@ -53,7 +53,7 @@ export function ScopesSection() {
   return (
     <div className="space-y-4" data-testid="scopes-section">
       {/* Заголовок секции */}
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-muted-foreground">
         {t("colorGrading.scopes.description", "Real-time analysis of color and exposure")}
       </div>
 
@@ -61,7 +61,7 @@ export function ScopesSection() {
       <div className="space-y-3">
         {/* Waveform переключатель */}
         <div className="flex items-center justify-between">
-          <Label htmlFor="waveform-enable" className="text-sm flex items-center gap-2">
+          <Label htmlFor="waveform-enable" className="text-sm flex items-center gap-2 text-foreground">
             <Activity className="h-4 w-4" />
             {t("colorGrading.scopes.waveform", "Waveform")}
           </Label>
@@ -73,7 +73,7 @@ export function ScopesSection() {
 
         {/* Vectorscope переключатель */}
         <div className="flex items-center justify-between">
-          <Label htmlFor="vectorscope-enable" className="text-sm flex items-center gap-2">
+          <Label htmlFor="vectorscope-enable" className="text-sm flex items-center gap-2 text-foreground">
             <CircleDot className="h-4 w-4" />
             {t("colorGrading.scopes.vectorscope", "Vectorscope")}
           </Label>
@@ -85,7 +85,7 @@ export function ScopesSection() {
 
         {/* Histogram переключатель */}
         <div className="flex items-center justify-between">
-          <Label htmlFor="histogram-enable" className="text-sm flex items-center gap-2">
+          <Label htmlFor="histogram-enable" className="text-sm flex items-center gap-2 text-foreground">
             <BarChart3 className="h-4 w-4" />
             {t("colorGrading.scopes.histogram", "Histogram")}
           </Label>
@@ -98,9 +98,9 @@ export function ScopesSection() {
 
       {/* Настройки частоты обновления */}
       <div className="space-y-2">
-        <Label className="text-sm text-gray-300">{t("colorGrading.scopes.refreshRate", "Refresh Rate")}</Label>
+        <Label className="text-sm text-foreground/90">{t("colorGrading.scopes.refreshRate", "Refresh Rate")}</Label>
         <Select value={state.scopes.refreshRate.toString()} onValueChange={handleRefreshRateChange}>
-          <SelectTrigger className="h-8 bg-[#383838] border-[#464647]">
+          <SelectTrigger className="h-8">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -167,7 +167,7 @@ export function ScopesSection() {
           </div>
 
           {/* Подсказки для скопов */}
-          <div className="text-xs text-gray-500 mt-2">
+          <div className="text-xs text-muted-foreground/70 mt-2">
             {activeScope === "waveform" &&
               t("colorGrading.scopes.waveformHint", "Shows luminance distribution across the image")}
             {activeScope === "vectorscope" &&

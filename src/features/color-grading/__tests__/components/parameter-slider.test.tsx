@@ -79,7 +79,7 @@ describe("ParameterSlider", () => {
     const user = userEvent.setup()
     const { container } = render(<ParameterSlider {...defaultProps} defaultValue={25} />)
 
-    const track = container.querySelector(".bg-gray-700")!
+    const track = container.querySelector(".bg-muted")!
     await user.dblClick(track)
 
     expect(defaultProps.onChange).toHaveBeenCalledWith(25)
@@ -89,7 +89,7 @@ describe("ParameterSlider", () => {
     const user = userEvent.setup()
     const { container } = render(<ParameterSlider {...defaultProps} defaultValue={25} disabled />)
 
-    const track = container.querySelector(".bg-gray-700")!
+    const track = container.querySelector(".bg-muted")!
     await user.dblClick(track)
 
     expect(defaultProps.onChange).not.toHaveBeenCalled()
@@ -98,8 +98,8 @@ describe("ParameterSlider", () => {
   it("should show different colors based on value relative to default", () => {
     const { container, rerender } = render(<ParameterSlider {...defaultProps} defaultValue={50} />)
 
-    // Value equals default - gray
-    let filledBar = container.querySelector(".bg-gray-500")
+    // Value equals default - muted-foreground
+    let filledBar = container.querySelector(".bg-muted-foreground")
     expect(filledBar).toBeInTheDocument()
 
     // Value greater than default - blue
@@ -130,7 +130,7 @@ describe("ParameterSlider", () => {
   it("should show center mark when default value is provided", () => {
     const { container } = render(<ParameterSlider {...defaultProps} defaultValue={50} />)
 
-    const centerMark = container.querySelector(".bg-gray-600") as HTMLElement
+    const centerMark = container.querySelector(".bg-border") as HTMLElement
     expect(centerMark).toBeInTheDocument()
     expect(centerMark?.style.left).toBe("50%")
   })
@@ -138,7 +138,7 @@ describe("ParameterSlider", () => {
   it("should not show center mark without default value", () => {
     const { container } = render(<ParameterSlider {...defaultProps} />)
 
-    const centerMark = container.querySelector(".bg-gray-600")
+    const centerMark = container.querySelector(".bg-border")
     expect(centerMark).not.toBeInTheDocument()
   })
 
@@ -218,7 +218,7 @@ describe("ParameterSlider", () => {
   it("should position default value mark correctly in negative range", () => {
     const { container } = render(<ParameterSlider {...defaultProps} value={25} min={-100} max={100} defaultValue={0} />)
 
-    const centerMark = container.querySelector(".bg-gray-600")
+    const centerMark = container.querySelector(".bg-border")
     expect(centerMark).toHaveStyle({ left: "50%" })
   })
 })

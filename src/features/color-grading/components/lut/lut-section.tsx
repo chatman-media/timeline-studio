@@ -148,16 +148,16 @@ export function LUTSection() {
   return (
     <div className="space-y-4" data-testid="lut-section">
       {/* Заголовок секции */}
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-muted-foreground">
         {t("colorGrading.lut.description", "Apply professional color looks with LUT files")}
       </div>
 
       {/* Выбор LUT файла */}
       <div className="space-y-2">
-        <Label className="text-sm text-gray-300">{t("colorGrading.lut.file", "LUT File")}</Label>
+        <Label className="text-sm text-foreground/90">{t("colorGrading.lut.file", "LUT File")}</Label>
         <div className="flex items-center gap-2">
           <Select value={selectedLUT} onValueChange={handleLUTChange}>
-            <SelectTrigger className="flex-1 h-8 bg-[#383838] border-[#464647]">
+            <SelectTrigger className="flex-1 h-8">
               <SelectValue placeholder={t("colorGrading.lut.selectFile", "Select LUT")} />
             </SelectTrigger>
             <SelectContent>
@@ -166,7 +166,7 @@ export function LUTSection() {
               {/* Film Emulation категория */}
               {allLUTs.film.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-gray-400">Film Emulation</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Film Emulation</div>
                   {allLUTs.film.map((lut) => (
                     <SelectItem key={lut.id} value={lut.id}>
                       {lut.name}
@@ -178,7 +178,7 @@ export function LUTSection() {
               {/* Creative категория */}
               {allLUTs.creative.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-gray-400">Creative Looks</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Creative Looks</div>
                   {allLUTs.creative.map((lut) => (
                     <SelectItem key={lut.id} value={lut.id}>
                       {lut.name}
@@ -190,7 +190,7 @@ export function LUTSection() {
               {/* Technical категория */}
               {allLUTs.technical.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-gray-400">Technical</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Technical</div>
                   {allLUTs.technical.map((lut) => (
                     <SelectItem key={lut.id} value={lut.id}>
                       {lut.name}
@@ -202,7 +202,7 @@ export function LUTSection() {
               {/* Custom LUTs */}
               {allLUTs.custom.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-gray-400">Custom LUTs</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Custom LUTs</div>
                   {allLUTs.custom.map((lut) => (
                     <SelectItem key={lut.id} value={lut.id}>
                       {lut.name}
@@ -259,7 +259,7 @@ export function LUTSection() {
       {selectedLUT !== "none" && state.lut.isEnabled && (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-400">{t("colorGrading.lut.preview", "Preview")}</span>
+            <span className="text-xs text-muted-foreground">{t("colorGrading.lut.preview", "Preview")}</span>
             <Button variant="ghost" size="sm" className="h-6 px-2" onClick={handleRefreshPreviews}>
               <RefreshCw className="h-3 w-3 mr-1" />
               <span className="text-xs">{t("colorGrading.lut.refresh", "Refresh")}</span>
@@ -269,15 +269,15 @@ export function LUTSection() {
           <div className="grid grid-cols-5 gap-1">
             {PREVIEW_INTENSITIES.map((intensity) => (
               <div key={intensity} className="relative group">
-                <div className="aspect-video bg-gray-800 rounded overflow-hidden">
+                <div className="aspect-video bg-muted rounded overflow-hidden">
                   {/* В реальном приложении здесь будет реальное превью с WebGL */}
                   <div
                     className="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900"
                     style={{ opacity: 0.3 + (intensity / 100) * 0.7 }}
                   />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-center py-0.5">
-                  <span className="text-[10px] text-white">{intensity === 0 ? "Original" : `${intensity}%`}</span>
+                <div className="absolute bottom-0 left-0 right-0 bg-background/80 text-center py-0.5">
+                  <span className="text-[10px] text-foreground">{intensity === 0 ? "Original" : `${intensity}%`}</span>
                 </div>
               </div>
             ))}
@@ -286,7 +286,7 @@ export function LUTSection() {
       )}
 
       {/* Информация о поддерживаемых форматах */}
-      <div className="text-xs text-gray-500 pt-2">
+      <div className="text-xs text-muted-foreground/70 pt-2">
         {t("colorGrading.lut.supportedFormats", "Supported formats: .cube, .3dl, .dat, .look, .mga, .m3d")}
       </div>
     </div>
