@@ -57,6 +57,10 @@ vi.mock("@/features/timeline/components/ai-suggestions/ai-suggestions-panel", ()
   AISuggestionsPanel: () => <div data-testid="ai-suggestions-panel">AI Suggestions Panel</div>,
 }))
 
+vi.mock("@/features/ai-chat/components/ai-chat", () => ({
+  AiChat: () => <div data-testid="ai-chat">AiChat</div>,
+}))
+
 // Создаем мок контекста вне функции
 const mockTimelineContext = {
   project: null,

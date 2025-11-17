@@ -155,12 +155,12 @@ describe("HSLSection", () => {
     expect(hueSlider).toHaveClass("[&_input]:from-red-500")
 
     const saturationSlider = screen.getByTestId("parameter-slider-Saturation")
-    expect(saturationSlider).toHaveClass("[&_input]:from-gray-500")
+    expect(saturationSlider).toHaveClass("[&_input]:from-muted")
     expect(saturationSlider).toHaveClass("[&_input]:to-purple-500")
 
     const luminanceSlider = screen.getByTestId("parameter-slider-Luminance")
-    expect(luminanceSlider).toHaveClass("[&_input]:from-black")
-    expect(luminanceSlider).toHaveClass("[&_input]:to-white")
+    expect(luminanceSlider).toHaveClass("[&_input]:from-background")
+    expect(luminanceSlider).toHaveClass("[&_input]:to-foreground")
   })
 
   it("should have correct slider ranges", () => {
@@ -178,7 +178,7 @@ describe("HSLSection", () => {
   it("should render border separator before advanced section", () => {
     const { container } = render(<HSLSection />)
 
-    const borderDiv = container.querySelector(".border-t.border-gray-600")
+    const borderDiv = container.querySelector(".border-t")
     expect(borderDiv).toBeInTheDocument()
   })
 
