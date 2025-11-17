@@ -102,7 +102,9 @@ export class InputTooLargeError extends ValidationError {
 export function validateFilePath(filePath: string): void {
   // Client-side guard
   if (!isServer) {
-    throw new ValidationError("File validation must be performed server-side (Tauri). Use Tauri commands for file operations.")
+    throw new ValidationError(
+      "File validation must be performed server-side (Tauri). Use Tauri commands for file operations.",
+    )
   }
 
   // Basic validation without Node.js APIs

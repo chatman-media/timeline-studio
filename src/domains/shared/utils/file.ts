@@ -179,7 +179,7 @@ export function parseFileSize(sizeString: string): number | null {
   const value = Number.parseFloat(match[1])
   const unit = match[2].toUpperCase()
 
-  if (isNaN(value) || value < 0) {
+  if (Number.isNaN(value) || value < 0) {
     return null
   }
 
@@ -212,10 +212,13 @@ export function sanitizeFileName(fileName: string): string {
   }
 
   // Удаляем недопустимые символы для имен файлов
-  return fileName
-    .replace(/[<>:"/\\|?*\x00-\x1F]/g, "-")
-    .replace(/\s+/g, " ")
-    .trim()
+  return (
+    fileName
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: Control characters (0x00-0x1F) are intentionally filtered for file name safety
+      .replace(/[<>:"/\\|?*\x00-\x1F]/g, "-")
+      .replace(/\s+/g, " ")
+      .trim()
+  )
 }
 
 /**

@@ -27,6 +27,7 @@ export function isValidPath(path: string): boolean {
 
   // Проверяем на недопустимые символы в имени файла
   // Разрешены: буквы, цифры, пробелы, точки, тире, подчёркивания, слеши, двоеточие (для Windows дисков)
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: Control characters (0x00-0x1F) are intentionally checked for path validation
   const invalidCharsRegex = /[<>"|?*\x00-\x1F]/
 
   // Разделяем путь на сегменты для проверки каждого
@@ -224,7 +225,7 @@ export function isValidColor(color: string): boolean {
  * isInRange(-5, 0, 10) // => false
  */
 export function isInRange(value: number, min: number, max: number): boolean {
-  return typeof value === "number" && !isNaN(value) && value >= min && value <= max
+  return typeof value === "number" && !Number.isNaN(value) && value >= min && value <= max
 }
 
 /**
@@ -260,7 +261,7 @@ export function isNonEmptyString(value: unknown): value is string {
  * @returns true если значение положительное число
  */
 export function isPositiveNumber(value: unknown): value is number {
-  return typeof value === "number" && !isNaN(value) && value > 0
+  return typeof value === "number" && !Number.isNaN(value) && value > 0
 }
 
 /**
@@ -269,7 +270,7 @@ export function isPositiveNumber(value: unknown): value is number {
  * @returns true если значение неотрицательное число
  */
 export function isNonNegativeNumber(value: unknown): value is number {
-  return typeof value === "number" && !isNaN(value) && value >= 0
+  return typeof value === "number" && !Number.isNaN(value) && value >= 0
 }
 
 /**
@@ -303,6 +304,7 @@ export function isValidFileName(fileName: string): boolean {
   }
 
   // Проверяем на недопустимые символы
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: Control characters (0x00-0x1F) are intentionally checked for file name validation
   const invalidCharsRegex = /[<>:"/\\|?*\x00-\x1F]/
   if (invalidCharsRegex.test(fileName)) {
     return false

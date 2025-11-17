@@ -265,9 +265,9 @@ describe("file utils", () => {
 
   describe("sanitizeFileName", () => {
     it("should remove invalid characters", () => {
-      expect(sanitizeFileName('file:name.txt')).toBe('file-name.txt')
-      expect(sanitizeFileName('my<file>.txt')).toBe('my-file-.txt')
-      expect(sanitizeFileName('file/with\\slashes.txt')).toBe('file-with-slashes.txt')
+      expect(sanitizeFileName("file:name.txt")).toBe("file-name.txt")
+      expect(sanitizeFileName("my<file>.txt")).toBe("my-file-.txt")
+      expect(sanitizeFileName("file/with\\slashes.txt")).toBe("file-with-slashes.txt")
     })
 
     it("should normalize whitespace", () => {
@@ -302,9 +302,7 @@ describe("file utils", () => {
     })
 
     it("should preserve directory structure", () => {
-      expect(addFileNameSuffix("/very/long/path/to/file.mp4", "_copy")).toBe(
-        "/very/long/path/to/file_copy.mp4"
-      )
+      expect(addFileNameSuffix("/very/long/path/to/file.mp4", "_copy")).toBe("/very/long/path/to/file_copy.mp4")
     })
 
     it("should work with Windows paths", () => {

@@ -82,7 +82,7 @@ export function parseTime(timeString: string): number | null {
   const parts = mainPart.split(":").map((p) => Number.parseInt(p, 10))
 
   // Проверка корректности частей
-  if (parts.some((p) => isNaN(p) || p < 0)) {
+  if (parts.some((p) => Number.isNaN(p) || p < 0)) {
     return null
   }
 
@@ -106,7 +106,7 @@ export function parseTime(timeString: string): number | null {
   // Добавляем миллисекунды если есть
   if (msPart) {
     const ms = Number.parseInt(msPart.padEnd(3, "0").substring(0, 3), 10)
-    if (!isNaN(ms)) {
+    if (!Number.isNaN(ms)) {
       totalMs += ms
     }
   }

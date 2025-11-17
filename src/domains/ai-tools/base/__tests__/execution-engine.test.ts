@@ -246,7 +246,6 @@ describe("ExecutionEngine", () => {
       const promise1 = engine.execute(tasks[0].toolName, tasks[0].input)
       const promise2 = engine.execute(tasks[1].toolName, tasks[1].input)
 
-
       // Третья задача должна быть отклонена из-за лимита
       await expect(engine.execute(tasks[2].toolName, tasks[2].input)).rejects.toThrow(
         "Превышен лимит одновременных выполнений",
