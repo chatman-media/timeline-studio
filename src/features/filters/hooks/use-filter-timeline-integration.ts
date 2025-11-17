@@ -46,18 +46,15 @@ export function useFilterTimelineIntegration(): UseFilterTimelineIntegrationRetu
   /**
    * Create an AppliedFilter instance from a VideoFilter
    */
-  const createAppliedFilter = useCallback(
-    (filter: VideoFilter, customParams?: Record<string, any>): AppliedFilter => {
-      return {
-        id: `applied-${filter.id}-${Date.now()}`,
-        filterId: filter.id,
-        customParams: customParams || filter.params,
-        isEnabled: true,
-        order: 0, // Will be set based on existing filters
-      }
-    },
-    [],
-  )
+  const createAppliedFilter = useCallback((filter: VideoFilter, customParams?: Record<string, any>): AppliedFilter => {
+    return {
+      id: `applied-${filter.id}-${Date.now()}`,
+      filterId: filter.id,
+      customParams: customParams || filter.params,
+      isEnabled: true,
+      order: 0, // Will be set based on existing filters
+    }
+  }, [])
 
   /**
    * Apply a filter to a timeline clip

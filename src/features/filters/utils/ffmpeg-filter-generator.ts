@@ -162,7 +162,7 @@ export function generateFFmpegFilterChain(filters: VideoFilter[]): string {
 export function generateFilterComplex(clipFilters: Record<string, VideoFilter[]>): string {
   const filterComplexParts: string[] = []
 
-  Object.entries(clipFilters).forEach(([clipId, filters], index) => {
+  Object.entries(clipFilters).forEach(([_clipId, filters], index) => {
     const filterChain = generateFFmpegFilterChain(filters)
     if (filterChain) {
       // Input label: [0:v] for first video stream, [1:v] for second, etc.

@@ -8,7 +8,6 @@ import type { UserPreset } from "../services/user-presets-service"
 import {
   deleteUserPreset,
   getAllUserPresets,
-  getFavoritePresets,
   loadPresetsForEffect,
   loadUserPreset,
   saveUserPreset,

@@ -27,11 +27,7 @@ interface FilterParameterControlsProps {
  * - Reset to default values
  * - Parameter grouping by category
  */
-export function FilterParameterControls({
-  filter,
-  onParamsChange,
-  showPreview = true,
-}: FilterParameterControlsProps) {
+export function FilterParameterControls({ filter, onParamsChange, showPreview = true }: FilterParameterControlsProps) {
   const { t } = useTranslation()
   const [params, setParams] = useState(filter.params)
 
@@ -156,7 +152,9 @@ export function FilterParameterControls({
 
     return (
       <div key={groupName} className="space-y-3">
-        <h4 className="text-sm font-medium text-muted-foreground">{t(`filters.paramGroups.${groupName}`, groupName)}</h4>
+        <h4 className="text-sm font-medium text-muted-foreground">
+          {t(`filters.paramGroups.${groupName}`, groupName)}
+        </h4>
         <div className="space-y-4">{availableParams.map(renderParameterSlider)}</div>
       </div>
     )

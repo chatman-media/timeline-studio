@@ -6,7 +6,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
-import type { BaseEffect, EffectPreset } from "../types/unified-effects"
+import type { EffectPreset } from "../types/unified-effects"
 
 const logger = createLogger("UserPresetsService")
 

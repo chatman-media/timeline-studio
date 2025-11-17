@@ -4,9 +4,8 @@
 
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-
-import type { VideoFilter } from "../../types/filters"
 import { useFilterTimelineIntegration } from "../../hooks/use-filter-timeline-integration"
+import type { VideoFilter } from "../../types/filters"
 
 describe("useFilterTimelineIntegration", () => {
   const mockFilter: VideoFilter = {

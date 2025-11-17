@@ -3,10 +3,10 @@
  * Компонент для drag & drop эффектов на Timeline
  */
 
-import React from "react"
 import { useDraggable } from "@dnd-kit/core"
-import type { BaseEffect } from "../types"
+import React from "react"
 import { cn } from "@/lib/utils"
+import type { BaseEffect } from "../types"
 
 export interface EffectDragSourceProps {
   effect: BaseEffect
