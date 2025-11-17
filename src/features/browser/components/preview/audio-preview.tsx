@@ -48,6 +48,7 @@ export const AudioPreview = memo(function AudioPreview({
   const audioRef = useRef<HTMLAudioElement>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
   const { playerSetSource, playerSetMedia } = usePlayer()
 
@@ -207,6 +208,7 @@ export const AudioPreview = memo(function AudioPreview({
         logger.debugSync("Audio nodes connected", { fileName: file.name })
 
         const recorder = new MediaRecorder(destination.stream)
+        mediaRecorderRef.current = recorder
         setMediaRecorder(recorder)
         recorder.start()
         logger.infoSync("MediaRecorder запущен для визуализации", { fileName: file.name })
@@ -222,20 +224,23 @@ export const AudioPreview = memo(function AudioPreview({
 
     return () => {
       logger.debugSync("Очистка AudioContext и MediaRecorder", { fileName: file.name })
-      if (mediaRecorder) {
-        mediaRecorder.stop()
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop()
         logger.debugSync("MediaRecorder остановлен", { fileName: file.name })
+        mediaRecorderRef.current = null
       }
       if (sourceRef.current) {
         sourceRef.current.disconnect()
         logger.debugSync("Audio source disconnected", { fileName: file.name })
+        sourceRef.current = null
       }
       if (audioContextRef.current) {
         void audioContextRef.current.close()
         logger.debugSync("AudioContext closed", { fileName: file.name })
+        audioContextRef.current = null
       }
     }
-  }, [file.name, mediaRecorder])
+  }, [file.name])
 
   return (
     <div
