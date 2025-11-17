@@ -247,10 +247,6 @@ impl CommandHandler {
         source_paths,
         project_path,
       } => self.copy_media_to_project(source_paths, project_path).await,
-      ProjectCommand::CreateProxyFiles {
-        media_paths,
-        proxy_settings,
-      } => self.create_proxy_files(media_paths, proxy_settings).await,
       ProjectCommand::DeleteMediaFiles {
         file_paths,
         move_to_trash,
@@ -5167,26 +5163,6 @@ impl CommandHandler {
       "source_paths": source_paths,
       "project_path": project_path,
       "copied_files": []
-    })))
-  }
-
-  async fn create_proxy_files(
-    &self,
-    media_paths: Vec<String>,
-    proxy_settings: ProxySettings,
-  ) -> CommandResult {
-    log::info!(
-      "Creating proxy files for: {:?} with settings: {:?}",
-      media_paths,
-      proxy_settings
-    );
-
-    // TODO: Implement proxy file creation using FFmpeg
-
-    CommandResult::success(Some(serde_json::json!({
-      "media_paths": media_paths,
-      "proxy_settings": proxy_settings,
-      "proxy_files": []
     })))
   }
 

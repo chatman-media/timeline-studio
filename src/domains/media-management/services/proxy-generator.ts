@@ -129,7 +129,7 @@ export class ProxyGeneratorService {
       this.activeGenerations.set(sourcePath, controller)
 
       // Вызываем Tauri команду для генерации прокси
-      const result = await invoke<ProxyGenerationResult>("generate_proxy", {
+      const result = await invoke<ProxyGenerationResult>("generate_proxy_command", {
         sourcePath,
         width: targetResolution.width,
         height: targetResolution.height,

@@ -42,6 +42,9 @@ mod voice_recording;
 pub mod video_compiler;
 use video_compiler::VideoCompilerState;
 
+// Модуль генерации прокси
+mod proxy_generator;
+
 // Модуль распознавания (YOLO)
 pub mod recognition;
 use recognition::commands::yolo_commands::YoloProcessorState;

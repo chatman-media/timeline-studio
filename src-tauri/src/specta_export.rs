@@ -37,6 +37,13 @@ pub use crate::state::browser::{
   BrowserEvent, BrowserState, BrowserTab, SortOrder, TabSettings, ViewMode,
 };
 
+// Proxy generator types
+#[allow(unused_imports)]
+pub use crate::proxy_generator::{
+  ProxyGenerationParams, ProxyGenerationResult,
+  Resolution as ProxyResolution,
+};
+
 // AI Provider types (unified multi-provider support)
 #[allow(unused_imports)]
 pub use crate::video_compiler::commands::ai_api_proxy::{
@@ -83,6 +90,8 @@ pub fn export_typescript_bindings() {
       crate::media::commands::import_media_files,
       crate::media::commands::scan_media_directory,
       crate::media::commands::index_media_files,
+      // Proxy generation command
+      crate::proxy_generator::generate_proxy_command,
       crate::media::commands::search_media_library,
       // Content Classification commands (legacy)
       crate::analysis::commands::classify_video_content,

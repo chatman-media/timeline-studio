@@ -131,10 +131,6 @@ pub enum ProjectCommand {
     source_paths: Vec<String>,
     project_path: String,
   },
-  CreateProxyFiles {
-    media_paths: Vec<String>,
-    proxy_settings: ProxySettings,
-  },
   DeleteMediaFiles {
     file_paths: Vec<String>,
     move_to_trash: bool,
@@ -1202,16 +1198,6 @@ pub struct MediaImportOptions {
   pub preserve_metadata: bool,
   pub organize_by_date: bool,
   pub organize_by_type: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-pub struct ProxySettings {
-  pub resolution: String, // "720p", "1080p", "custom"
-  pub codec: String,
-  pub quality: String, // "low", "medium", "high"
-  pub preserve_audio: bool,
-  pub custom_width: Option<u32>,
-  pub custom_height: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
