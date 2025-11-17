@@ -186,7 +186,7 @@ describe("MediaMetadataService", () => {
       const duration = 120.5
 
       // Очищаем все предыдущие моки перед настройкой нового
-      mockInvoke.mockReset()
+      mockInvoke.mockClear()
       mockInvoke.mockResolvedValue(duration)
 
       const result = await service.getMediaDuration("/test/video.mp4")
