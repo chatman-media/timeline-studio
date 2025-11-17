@@ -5,20 +5,25 @@
  * Simplified dashboard working directly with AI Director (file-centric, not project-based)
  */
 
-import { open } from "@tauri-apps/plugin-dialog"
-import { FileVideo, Play, Settings, Zap } from "lucide-react"
-import { useState } from "react"
+import { FileVideo, Play, Settings, Video, Zap } from "lucide-react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
+import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import type { LogContext } from "@/lib/tauri-logger"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult, SceneAnalysis } from "@/types/generated/tauri-bindings"
+
+// AI Director types are not in tauri-bindings yet, using placeholder types
+type AIDirectorConfig = any
+type ComprehensiveAnalysisResult = any
+type SceneAnalysis = any
 
 const logger = createLogger("AiAnalysisDashboard")
 
@@ -96,33 +101,25 @@ export function AIAnalysisDashboard() {
     currentStage,
   } = useAIDirectorAnalysis()
 
+  const { mediaFiles } = useMediaFiles()
+
   // Cast result to dashboard type for UI rendering
   const result = rawResult as DashboardAnalysisResult | null
 
-  const [selectedFile, setSelectedFile] = useState<string | null>(null)
+  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
 
-  // File selection
-  const handleSelectFile = async () => {
-    try {
-      const selected = await open({
-        title: "Выберите видео для анализа",
-        multiple: false,
-        filters: [
-          {
-            name: "Видео",
-            extensions: ["mp4", "mov", "avi", "mkv", "webm"],
-          },
-        ],
-      })
+  // Filter only video files
+  const videoFiles = useMemo(() => {
+    return mediaFiles.filter((media) => media.media_type === "Video")
+  }, [mediaFiles])
 
-      if (selected && typeof selected === "string") {
-        setSelectedFile(selected)
-      }
-    } catch (error) {
-      logger.error("Failed to select file:", { error } as LogContext)
-    }
-  }
+  // Get selected file path
+  const selectedFile = useMemo(() => {
+    if (!selectedMediaId) return null
+    const media = videoFiles.find((m) => m.id === selectedMediaId)
+    return media?.path || null
+  }, [selectedMediaId, videoFiles])
 
   // Start analysis
   const handleStartAnalysis = async () => {
@@ -202,19 +199,40 @@ export function AIAnalysisDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileVideo className="h-5 w-5" />
-                Выбор файла
+                <Video className="h-5 w-5" />
+                Выбор видео
               </CardTitle>
-              <CardDescription>Выберите видео для анализа</CardDescription>
+              <CardDescription>Выберите видео из медиапула</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button onClick={handleSelectFile} variant="outline" className="w-full">
-                {selectedFile ? "Изменить файл" : "Выбрать видео"}
-              </Button>
+              {videoFiles.length === 0 ? (
+                <div className="p-4 text-center text-muted-foreground">
+                  <p className="text-sm">Нет доступных видео</p>
+                  <p className="text-xs mt-1">Добавьте видео в браузер медиа</p>
+                </div>
+              ) : (
+                <Select value={selectedMediaId || ""} onValueChange={setSelectedMediaId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Выберите видео" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {videoFiles.map((video) => (
+                      <SelectItem key={video.id} value={video.id}>
+                        <div className="flex items-center gap-2">
+                          <FileVideo className="h-4 w-4" />
+                          <span className="truncate">{video.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
               {selectedFile && (
                 <div className="p-3 bg-muted rounded-md">
-                  <p className="text-sm font-medium truncate">{selectedFile.split("/").pop()}</p>
+                  <p className="text-sm font-medium truncate">
+                    {videoFiles.find((v) => v.id === selectedMediaId)?.name}
+                  </p>
                   <p className="text-xs text-muted-foreground truncate mt-1">{selectedFile}</p>
                 </div>
               )}
@@ -347,7 +365,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                         </div>
 
-                        {result.scene_analysis.scenes.slice(0, 5).map((scene, index: number) => (
+                        {result.scene_analysis.scenes.slice(0, 5).map((scene: any, index: number) => (
                           <Card key={scene.id}>
                             <CardContent className="pt-4">
                               <div className="flex justify-between items-start">
