@@ -59,6 +59,7 @@ describe("useAIDirector", () => {
     enable_composition_analysis: true,
     enable_mood_analysis: true,
     enable_quality_analysis: true,
+    enable_vision_language_model: false,
     max_processing_time: null,
     quality_threshold: 0.7,
     max_key_moments: null,

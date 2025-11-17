@@ -171,6 +171,7 @@ export function AIAnalysisDashboard() {
             enable_composition_analysis: analysisMode === "quality",
             enable_mood_analysis: true,
             enable_quality_analysis: analysisMode === "quality",
+            enable_vision_language_model: analysisMode === "quality",
             max_processing_time: null,
             quality_threshold: 0.5,
             max_key_moments: null,
