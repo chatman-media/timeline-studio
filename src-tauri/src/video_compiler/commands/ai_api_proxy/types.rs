@@ -77,11 +77,129 @@ pub struct UnifiedAIRequest {
   pub tool_choice: Option<ToolChoice>,
 }
 
-/// Unified AI Message
+/// AI Message Content (supports text and images)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(untagged)]
+pub enum AIMessageContent {
+  /// Simple text message
+  Text(String),
+
+  /// Multimodal message with text and/or images
+  Multimodal(Vec<AIContentPart>),
+}
+
+/// Content part (text or image)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum AIContentPart {
+  /// Text content
+  Text {
+    text: String,
+  },
+
+  /// Image content (base64 or URL)
+  Image {
+    #[serde(flatten)]
+    source: AIImageSource,
+  },
+}
+
+/// Image source (base64 or URL)
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum AIImageSource {
+  /// Base64 encoded image
+  Base64 {
+    #[serde(rename = "media_type")]
+    media_type: String, // e.g., "image/jpeg", "image/png"
+    data: String, // base64 encoded
+  },
+
+  /// Image URL
+  Url {
+    url: String,
+  },
+}
+
+/// Unified AI Message (supports text and vision)
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct AIMessage {
   pub role: String,
-  pub content: String,
+  pub content: AIMessageContent,
+}
+
+impl AIMessage {
+  /// Create a simple text message
+  pub fn text(role: impl Into<String>, text: impl Into<String>) -> Self {
+    Self {
+      role: role.into(),
+      content: AIMessageContent::Text(text.into()),
+    }
+  }
+
+  /// Create a message with image (base64)
+  pub fn with_image_base64(
+    role: impl Into<String>,
+    text: impl Into<String>,
+    image_data: String,
+    media_type: impl Into<String>,
+  ) -> Self {
+    Self {
+      role: role.into(),
+      content: AIMessageContent::Multimodal(vec![
+        AIContentPart::Text {
+          text: text.into(),
+        },
+        AIContentPart::Image {
+          source: AIImageSource::Base64 {
+            media_type: media_type.into(),
+            data: image_data,
+          },
+        },
+      ]),
+    }
+  }
+
+  /// Create a message with image URL
+  pub fn with_image_url(
+    role: impl Into<String>,
+    text: impl Into<String>,
+    image_url: impl Into<String>,
+  ) -> Self {
+    Self {
+      role: role.into(),
+      content: AIMessageContent::Multimodal(vec![
+        AIContentPart::Text {
+          text: text.into(),
+        },
+        AIContentPart::Image {
+          source: AIImageSource::Url {
+            url: image_url.into(),
+          },
+        },
+      ]),
+    }
+  }
+
+  /// Get text content from message
+  pub fn get_text(&self) -> String {
+    match &self.content {
+      AIMessageContent::Text(text) => text.clone(),
+      AIMessageContent::Multimodal(parts) => {
+        parts
+          .iter()
+          .filter_map(|part| {
+            if let AIContentPart::Text { text } = part {
+              Some(text.as_str())
+            } else {
+              None
+            }
+          })
+          .collect::<Vec<_>>()
+          .join("\n")
+      }
+    }
+  }
 }
 
 /// Unified AI Response
