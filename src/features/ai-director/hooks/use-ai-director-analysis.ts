@@ -23,6 +23,7 @@ export interface UseAIDirectorAnalysisReturn {
   startAnalysis: (videoPath: string, config?: AIDirectorConfig) => Promise<void>
   startQuickAnalysis: (videoPath: string) => Promise<void>
   clearErrors: () => void
+  clearResult: () => void
 
   // Computed
   progressPercentage: number
@@ -189,6 +190,13 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
     setErrors([])
   }, [])
 
+  // Clear result (for starting new analysis)
+  const clearResult = useCallback(() => {
+    setResult(null)
+    setErrors([])
+    setCurrentProgress(null)
+  }, [])
+
   // Computed values
   const progressPercentage = currentProgress?.progress ? Math.round(currentProgress.progress * 100) : 0
   const currentStage = currentProgress?.stage || "idle"
@@ -205,6 +213,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
     startAnalysis,
     startQuickAnalysis,
     clearErrors,
+    clearResult,
 
     // Computed
     progressPercentage,

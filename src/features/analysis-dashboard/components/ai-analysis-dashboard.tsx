@@ -100,6 +100,7 @@ export function AIAnalysisDashboard() {
     currentStage,
     startAnalysis,
     startQuickAnalysis,
+    clearResult,
   } = useAIDirectorAnalysis()
 
   const { mediaFiles } = useMediaFiles()
@@ -109,6 +110,9 @@ export function AIAnalysisDashboard() {
 
   const [selectedMediaIds, setSelectedMediaIds] = useState<Set<string>>(new Set())
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
+
+  // Show setup panel only when no analysis is running and no results exist
+  const showSetupPanel = !isAnalyzing && !result
 
   // Filter only video files
   const videoFiles = useMemo(() => {
@@ -226,9 +230,10 @@ export function AIAnalysisDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Panel - Configuration */}
-        <div className="lg:col-span-1 space-y-4">
-          {/* File Selection */}
-          <Card>
+        {showSetupPanel ? (
+          <div className="lg:col-span-1 space-y-4">
+            {/* File Selection */}
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Video className="h-5 w-5" />
@@ -362,9 +367,23 @@ export function AIAnalysisDashboard() {
             </CardContent>
           </Card>
         </div>
+        ) : null}
 
         {/* Right Panel - Results */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className={showSetupPanel ? "lg:col-span-2" : "lg:col-span-3"}>
+          {/* New Analysis Button */}
+          {(result || isAnalyzing) && (
+            <div className="mb-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Результаты анализа</h2>
+              {!isAnalyzing && (
+                <Button onClick={clearResult} variant="outline" className="gap-2">
+                  <Play className="h-4 w-4" />
+                  Новый анализ
+                </Button>
+              )}
+            </div>
+          )}
+
           {/* Progress */}
           {(isAnalyzing || currentProgress) && <AIDirectorProgress showOnlyWhenActive />}
 
