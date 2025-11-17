@@ -188,7 +188,8 @@ export function AIAnalysisDashboard() {
         }
       }
     } catch (error) {
-      logger.error("Failed to start analysis:", { error } as LogContext)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      logger.error("Failed to start analysis:", { error: errorMessage } as LogContext)
     }
   }
 
