@@ -143,7 +143,7 @@ function handleProjectClosed(
  * Помечает проект как измененный (dirty)
  * Используется когда происходят изменения в проекте
  */
-export function markProjectDirty(context: ProjectManagementContext): Partial<ProjectManagementContext> {
+export function markProjectDirty(_context: ProjectManagementContext): Partial<ProjectManagementContext> {
   const now = Date.now()
 
   logger.debug("Marking project as dirty")
@@ -159,7 +159,7 @@ export function markProjectDirty(context: ProjectManagementContext): Partial<Pro
  * Помечает проект как чистый (clean)
  * Используется после успешного сохранения
  */
-export function markProjectClean(context: ProjectManagementContext): Partial<ProjectManagementContext> {
+export function markProjectClean(_context: ProjectManagementContext): Partial<ProjectManagementContext> {
   const now = Date.now()
 
   logger.debug("Marking project as clean")

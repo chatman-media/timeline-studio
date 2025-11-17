@@ -174,7 +174,8 @@ export class PerformanceMetricsTracker {
     const failedCommands = totalCommands - successfulCommands
 
     const commandTimes = this.commandMetrics.map((m) => m.executionTime)
-    const averageCommandTime = commandTimes.length > 0 ? commandTimes.reduce((a, b) => a + b, 0) / commandTimes.length : 0
+    const averageCommandTime =
+      commandTimes.length > 0 ? commandTimes.reduce((a, b) => a + b, 0) / commandTimes.length : 0
 
     const slowestCommand =
       this.commandMetrics.length > 0
@@ -199,9 +200,7 @@ export class PerformanceMetricsTracker {
       this.memorySnapshots.length > 0 ? this.memorySnapshots[this.memorySnapshots.length - 1].heapUsed : 0
 
     const peakMemoryUsage =
-      this.memorySnapshots.length > 0
-        ? Math.max(...this.memorySnapshots.map((s) => s.heapUsed))
-        : 0
+      this.memorySnapshots.length > 0 ? Math.max(...this.memorySnapshots.map((s) => s.heapUsed)) : 0
 
     const averageMemoryUsage =
       this.memorySnapshots.length > 0

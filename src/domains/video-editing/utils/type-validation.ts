@@ -22,7 +22,17 @@ export function validateClip(clip: unknown): clip is Clip {
   const c = clip as Partial<Clip>
 
   // Обязательные поля
-  const required = ["id", "media_id", "name", "timeline_in", "timeline_out", "source_in", "source_out", "playback_rate", "enabled"]
+  const required = [
+    "id",
+    "media_id",
+    "name",
+    "timeline_in",
+    "timeline_out",
+    "source_in",
+    "source_out",
+    "playback_rate",
+    "enabled",
+  ]
 
   for (const field of required) {
     if (!(field in c)) {
@@ -216,7 +226,11 @@ export function validateProjectEvent(event: unknown): event is ProjectEvent {
 /**
  * Type guard с автоматическим логированием
  */
-export function assertValid<T>(value: unknown, validator: (v: unknown) => v is T, errorMessage: string): asserts value is T {
+export function assertValid<T>(
+  value: unknown,
+  validator: (v: unknown) => v is T,
+  errorMessage: string,
+): asserts value is T {
   if (!validator(value)) {
     logger.error(errorMessage, { value })
     throw new Error(`${errorMessage}: ${JSON.stringify(value)}`)

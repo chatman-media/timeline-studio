@@ -18,20 +18,20 @@ export {
   ProjectProvider,
   UserSettingsProvider,
 } from "./providers/project-management-provider"
+// Экспорт метрик производительности
+export {
+  type CommandMetric,
+  getPerformanceMetricsTracker,
+  type MemorySnapshot,
+  type PerformanceReport,
+  resetPerformanceMetricsTracker,
+  type StateUpdateMetric,
+} from "./services/performance-metrics"
 // Экспорт оркестратора
 export {
   getProjectManagementOrchestrator,
   ProjectManagementOrchestrator,
   resetProjectManagementOrchestrator,
 } from "./services/project-management-orchestrator"
-// Экспорт метрик производительности
-export {
-  getPerformanceMetricsTracker,
-  resetPerformanceMetricsTracker,
-  type CommandMetric,
-  type StateUpdateMetric,
-  type MemorySnapshot,
-  type PerformanceReport,
-} from "./services/performance-metrics"
 // Экспорт типов
 export * from "./types"

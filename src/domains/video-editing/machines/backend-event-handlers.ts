@@ -9,7 +9,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { TimelineClip, Track } from "../types"
 import { convertClipToTimelineClip } from "../utils/clip-transform"
-import { validateClip, validateProjectEvent, validateTrack } from "../utils/type-validation"
+import { validateClip, validateProjectEvent } from "../utils/type-validation"
 import type { TimelineExtendedContext } from "./timeline-extended-machine"
 
 const logger = createLogger("BackendEventHandlers")

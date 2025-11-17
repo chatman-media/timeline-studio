@@ -247,6 +247,15 @@ interface UpdateLayoutEvent {
 }
 
 /**
+ * Интерфейс события обновления макета интерфейса (альтернативное имя)
+ * @interface UpdateLayoutModeEvent
+ */
+interface UpdateLayoutModeEvent {
+  type: "UPDATE_LAYOUT_MODE" // Тип события (используется orchestrator)
+  layoutMode: LayoutMode // Новый макет интерфейса
+}
+
+/**
  * Интерфейс события обновления пути для скриншотов
  * @interface UpdateScreenshotsPathEvent
  */
@@ -315,6 +324,14 @@ interface ToggleTimelineVisibilityEvent {
  */
 interface ToggleOptionsVisibilityEvent {
   type: "TOGGLE_OPTIONS_VISIBILITY" // Тип события
+}
+
+/**
+ * Интерфейс события переключения видимости AI помощника
+ * @interface ToggleAIAssistantVisibilityEvent
+ */
+interface ToggleAIAssistantVisibilityEvent {
+  type: "TOGGLE_AI_ASSISTANT_VISIBILITY" // Тип события
 }
 
 /**
@@ -532,6 +549,7 @@ export type UserSettingsEvent =
   | UpdatePreviewSizeEvent
   | UpdateActiveTabEvent
   | UpdateLayoutEvent
+  | UpdateLayoutModeEvent
   | UpdateScreenshotsPathEvent
   | UpdatePlayerScreenshotsPathEvent
   | UpdateOpenAiApiKeyEvent
@@ -541,6 +559,7 @@ export type UserSettingsEvent =
   | UpdateAllSettingsEvent
   | ToggleTimelineVisibilityEvent
   | ToggleOptionsVisibilityEvent
+  | ToggleAIAssistantVisibilityEvent
   // Новые события для API ключей
   | UpdateYoutubeCredentialsEvent
   | UpdateTiktokCredentialsEvent
@@ -634,6 +653,11 @@ export const userSettingsMachine = createMachine(
             actions: ["updateLayout"],
           },
 
+          // Обновление макета интерфейса (альтернативное имя события, используется orchestrator)
+          UPDATE_LAYOUT_MODE: {
+            actions: ["updateLayout"],
+          },
+
           // Обновление пути для скриншотов
           UPDATE_SCREENSHOTS_PATH: {
             actions: ["updateScreenshotsPath"],
@@ -667,6 +691,11 @@ export const userSettingsMachine = createMachine(
           // Переключение видимости опций
           TOGGLE_OPTIONS_VISIBILITY: {
             actions: ["toggleOptionsVisibility"],
+          },
+
+          // Переключение видимости AI помощника
+          TOGGLE_AI_ASSISTANT_VISIBILITY: {
+            actions: ["toggleAIAssistantVisibility"],
           },
 
           // Обновление громкости плеера
@@ -866,9 +895,10 @@ export const userSettingsMachine = createMachine(
       /**
        * Действие для обновления макета интерфейса
        * Устанавливает новый макет интерфейса
+       * Поддерживает оба типа событий: UPDATE_LAYOUT и UPDATE_LAYOUT_MODE
        */
       updateLayout: assign(({ context, event }) => {
-        const typedEvent = event as UpdateLayoutEvent
+        const typedEvent = event as UpdateLayoutEvent | UpdateLayoutModeEvent
         logger.debug("Updating layout mode:", { data: typedEvent.layoutMode })
 
         // Возвращаем обновленный контекст
@@ -972,6 +1002,17 @@ export const userSettingsMachine = createMachine(
         return {
           ...context,
           isOptionsVisible: !context.isOptionsVisible,
+        }
+      }),
+
+      /**
+       * Действие для переключения видимости AI помощника
+       */
+      toggleAIAssistantVisibility: assign(({ context }) => {
+        logger.debug("Toggling AI assistant visibility:", { data: !context.isAIAssistantVisible })
+        return {
+          ...context,
+          isAIAssistantVisible: !context.isAIAssistantVisible,
         }
       }),
 

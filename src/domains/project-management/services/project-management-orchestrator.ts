@@ -288,10 +288,60 @@ export class ProjectManagementOrchestrator {
     Object.entries(settings).forEach(([key, value]) => {
       const eventType = this.getSettingsEventType(key)
       if (eventType) {
-        this.userSettingsActor.send({
-          type: eventType,
-          [key]: value,
-        } as any)
+        // TOGGLE события не принимают параметров - они просто инвертируют значение
+        if (eventType.startsWith("TOGGLE_")) {
+          this.userSettingsActor.send({
+            type: eventType,
+          } as any)
+        } else if (key === "autoSaveEnabled") {
+          // Специальная обработка для autoSaveEnabled - machine ожидает поле "enabled"
+          this.userSettingsActor.send({
+            type: eventType,
+            enabled: value,
+          } as any)
+        } else if (key === "autoSaveInterval") {
+          // Специальная обработка для autoSaveInterval - machine ожидает поле "interval"
+          this.userSettingsActor.send({
+            type: eventType,
+            interval: value,
+          } as any)
+        } else if (key === "openAiApiKey") {
+          // Специальная обработка для API ключей - machine ожидает поле "apiKey"
+          this.userSettingsActor.send({
+            type: eventType,
+            apiKey: value,
+          } as any)
+        } else if (key === "claudeApiKey") {
+          // Специальная обработка для API ключей - machine ожидает поле "apiKey"
+          this.userSettingsActor.send({
+            type: eventType,
+            apiKey: value,
+          } as any)
+        } else if (key === "gpuAccelerationEnabled") {
+          // Специальная обработка для GPU - machine ожидает поле "enabled"
+          this.userSettingsActor.send({
+            type: eventType,
+            enabled: value,
+          } as any)
+        } else if (key === "playerVolume") {
+          // Специальная обработка для volume - machine ожидает поле "volume"
+          this.userSettingsActor.send({
+            type: eventType,
+            volume: value,
+          } as any)
+        } else if (key === "activeTab") {
+          // Специальная обработка для activeTab - machine ожидает поле "tab"
+          this.userSettingsActor.send({
+            type: eventType,
+            tab: value,
+          } as any)
+        } else {
+          // Обычные события передают значение с оригинальным ключом
+          this.userSettingsActor.send({
+            type: eventType,
+            [key]: value,
+          } as any)
+        }
       }
     })
   }
@@ -306,8 +356,13 @@ export class ProjectManagementOrchestrator {
       openAiApiKey: "UPDATE_OPENAI_API_KEY",
       claudeApiKey: "UPDATE_CLAUDE_API_KEY",
       gpuAccelerationEnabled: "UPDATE_GPU_ACCELERATION",
-      autoSaveEnabled: "UPDATE_AUTO_SAVE",
+      autoSaveEnabled: "UPDATE_AUTO_SAVE_ENABLED",
       autoSaveInterval: "UPDATE_AUTO_SAVE_INTERVAL",
+      // События переключения видимости панелей
+      isBrowserVisible: "TOGGLE_BROWSER_VISIBILITY",
+      isTimelineVisible: "TOGGLE_TIMELINE_VISIBILITY",
+      isOptionsVisible: "TOGGLE_OPTIONS_VISIBILITY",
+      isAIAssistantVisible: "TOGGLE_AI_ASSISTANT_VISIBILITY",
       // Добавьте остальные маппинги по мере необходимости
     }
 

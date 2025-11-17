@@ -110,6 +110,10 @@ export function useUserSettings() {
     orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible })
   }, [orchestrator, settings.isOptionsVisible])
 
+  const toggleAIAssistantVisibility = useCallback(() => {
+    orchestrator.updateUserSettings({ isAIAssistantVisible: !settings.isAIAssistantVisible })
+  }, [orchestrator, settings.isAIAssistantVisible])
+
   // Пакетное обновление настроек
   const updateSettings = useCallback(
     (updates: Partial<UserSettingsContextType>) => {
@@ -139,6 +143,7 @@ export function useUserSettings() {
     toggleBrowserVisibility,
     toggleTimelineVisibility,
     toggleOptionsVisibility,
+    toggleAIAssistantVisibility,
 
     // Удобные геттеры
     hasOpenAiApiKey: !!settings.openAiApiKey,
