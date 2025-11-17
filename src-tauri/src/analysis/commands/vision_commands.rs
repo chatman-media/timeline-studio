@@ -371,3 +371,140 @@ mod tests {
   //     assert!(result.is_ok() || result.is_err());
   // }
 }
+
+// ============================================================================
+// AI VISION LANGUAGE MODELS (Moondream2, LLaVA, etc.)
+// ============================================================================
+
+use crate::analysis::services::vision_analyzer::{
+  VisionAnalysisConfig, VisionAnalysisResult, VisionAnalyzer,
+};
+use crate::security::SecureStorage;
+use crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager;
+use crate::video_compiler::commands::ai_api_proxy::types::AIProvider;
+use std::path::PathBuf;
+
+/// State for VisionAnalyzer
+pub struct VisionAnalyzerState {
+  analyzer: Arc<RwLock<VisionAnalyzer>>,
+}
+
+impl VisionAnalyzerState {
+  pub fn new(ai_manager: Arc<AIProviderManager>) -> Self {
+    let analyzer = VisionAnalyzer::new(ai_manager);
+    Self {
+      analyzer: Arc::new(RwLock::new(analyzer)),
+    }
+  }
+}
+
+/// Analyze video using vision language model (Moondream2, LLaVA, etc.)
+///
+/// Extracts frames and sends them to AI vision model for analysis
+#[tauri::command]
+#[specta::specta]
+pub async fn analyze_video_with_vision_model(
+  video_path: String,
+  provider: String,
+  model: String,
+  api_key: String,
+  num_frames: Option<usize>,
+  temperature: Option<f64>,
+  max_tokens: Option<u32>,
+  analyzer_state: State<'_, VisionAnalyzerState>,
+) -> Result<VisionAnalysisResult, String> {
+  log::info!(
+    "Analyzing video with vision model: {} ({})",
+    model,
+    provider
+  );
+
+  // Parse provider
+  let ai_provider = match provider.to_lowercase().as_str() {
+    "claude" => AIProvider::Claude,
+    "openai" => AIProvider::OpenAI,
+    "deepseek" => AIProvider::DeepSeek,
+    "ollama" => AIProvider::Ollama,
+    _ => return Err(format!("Unknown AI provider: {}", provider)),
+  };
+
+  let config = VisionAnalysisConfig {
+    provider: ai_provider,
+    model,
+    num_frames: num_frames.unwrap_or(5),
+    temperature: temperature.unwrap_or(0.7),
+    max_tokens: max_tokens.unwrap_or(1024),
+  };
+
+  let path = PathBuf::from(video_path);
+  let analyzer = analyzer_state.analyzer.read().await;
+
+  let result = analyzer
+    .analyze_video(&path, &api_key, config)
+    .await
+    .map_err(|e| format!("Vision analysis failed: {}", e))?;
+
+  log::info!(
+    "Vision analysis completed: {} frames analyzed in {}ms",
+    result.frames.len(),
+    result.processing_time_ms
+  );
+
+  Ok(result)
+}
+
+/// Analyze video using vision model with API key from secure storage
+///
+/// This is a convenience command that retrieves the API key from secure storage
+#[tauri::command]
+#[specta::specta]
+pub async fn analyze_video_with_vision_model_secure(
+  video_path: String,
+  provider: String,
+  model: String,
+  num_frames: Option<usize>,
+  temperature: Option<f64>,
+  max_tokens: Option<u32>,
+  analyzer_state: State<'_, VisionAnalyzerState>,
+  app_handle: tauri::AppHandle,
+) -> Result<VisionAnalysisResult, String> {
+  use crate::security::ApiKeyType;
+  use std::str::FromStr;
+
+  log::info!(
+    "Analyzing video with vision model (secure): {} ({})",
+    model,
+    provider
+  );
+
+  // Get API key from secure storage
+  let key_type = ApiKeyType::from_str(&provider.to_lowercase())
+    .map_err(|_| format!("Invalid provider for secure storage: {}", provider))?;
+
+  let mut secure_storage = SecureStorage::new(app_handle)
+    .map_err(|e| format!("Failed to initialize secure storage: {}", e))?;
+
+  let api_key = secure_storage
+    .get_api_key_value(key_type)
+    .await
+    .map_err(|e| format!("Failed to retrieve API key: {}", e))?
+    .ok_or_else(|| {
+      format!(
+        "API key for {} not found. Please configure it in User Settings",
+        provider
+      )
+    })?;
+
+  // Call main analysis function
+  analyze_video_with_vision_model(
+    video_path,
+    provider,
+    model,
+    api_key,
+    num_frames,
+    temperature,
+    max_tokens,
+    analyzer_state,
+  )
+  .await
+}

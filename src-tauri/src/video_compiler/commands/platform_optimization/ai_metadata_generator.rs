@@ -56,10 +56,7 @@ impl AIMetadataGenerator {
     let request = UnifiedAIRequest {
       provider,
       model: model.to_string(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: prompt,
-      }],
+      messages: vec![AIMessage::text("user", prompt)],
       max_tokens: Some(2048),
       temperature: Some(0.7),
       stream: Some(false),

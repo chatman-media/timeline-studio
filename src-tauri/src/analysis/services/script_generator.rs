@@ -220,10 +220,7 @@ impl ScriptGenerator {
     let request = UnifiedAIRequest {
       provider: config.provider.clone(),
       model: config.model.clone(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: prompt,
-      }],
+      messages: vec![AIMessage::text("user", prompt)],
       max_tokens: Some(config.max_tokens),
       temperature: Some(config.temperature),
       stream: Some(false),
@@ -264,10 +261,7 @@ impl ScriptGenerator {
     let request = UnifiedAIRequest {
       provider: config.provider.clone(),
       model: config.model.clone(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: prompt,
-      }],
+      messages: vec![AIMessage::text("user", prompt)],
       max_tokens: Some(2048),
       temperature: Some(0.8),
       stream: Some(false),
@@ -300,10 +294,7 @@ impl ScriptGenerator {
     let request = UnifiedAIRequest {
       provider: config.provider.clone(),
       model: config.model.clone(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: prompt,
-      }],
+      messages: vec![AIMessage::text("user", prompt)],
       max_tokens: Some(2048),
       temperature: Some(0.7),
       stream: Some(false),

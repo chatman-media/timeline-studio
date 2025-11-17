@@ -11,6 +11,7 @@ pub mod real_analysis_engine;
 pub mod scene_detector;
 pub mod script_generator; // 🆕 AI-powered script generation
 pub mod unified_audio_analyzer; // 🆕 Modern unified audio analysis service
+pub mod vision_analyzer; // 🆕 Vision language model analysis service
 
 // Избегаем конфликтов имен, импортируем специфично
 pub use ai_director::{
@@ -30,3 +31,6 @@ pub use script_generator::{
   ScriptScene, Voiceover, VoiceoverStyle,
 };
 pub use unified_audio_analyzer::UnifiedAudioAnalyzer;
+pub use vision_analyzer::{
+  FrameAnalysis, VisionAnalysisConfig, VisionAnalysisResult, VisionAnalyzer,
+};

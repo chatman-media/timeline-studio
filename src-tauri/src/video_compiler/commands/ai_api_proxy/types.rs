@@ -433,16 +433,17 @@ impl From<ClaudeMessage> for AIMessage {
   fn from(msg: ClaudeMessage) -> Self {
     AIMessage {
       role: msg.role,
-      content: msg.content,
+      content: AIMessageContent::Text(msg.content),
     }
   }
 }
 
 impl From<AIMessage> for ClaudeMessage {
   fn from(msg: AIMessage) -> Self {
+    let text = msg.get_text();
     ClaudeMessage {
       role: msg.role,
-      content: msg.get_text(),
+      content: text,
     }
   }
 }
@@ -455,9 +456,10 @@ impl From<OpenAIMessage> for AIMessage {
 
 impl From<AIMessage> for OpenAIMessage {
   fn from(msg: AIMessage) -> Self {
+    let text = msg.get_text();
     OpenAIMessage {
       role: msg.role,
-      content: msg.get_text(),
+      content: text,
     }
   }
 }

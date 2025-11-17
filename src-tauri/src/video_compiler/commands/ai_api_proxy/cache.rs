@@ -284,10 +284,7 @@ mod tests {
     let request = UnifiedAIRequest {
       provider: AIProvider::Claude,
       model: "claude-3-5-sonnet-20241022".to_string(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: "Hello".to_string(),
-      }],
+      messages: vec![AIMessage::text("user", "Hello")],
       max_tokens: Some(100),
       temperature: Some(0.7),
       stream: Some(false),
