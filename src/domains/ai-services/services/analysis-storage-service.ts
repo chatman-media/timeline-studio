@@ -5,8 +5,9 @@
  * Обеспечивает персистентность анализов между сессиями
  */
 
+import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ComprehensiveAnalysisResult, MontageAnalysisResult } from "@/types/generated/tauri-bindings"
+import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 
 const logger = createLogger({ module: "AnalysisStorageService" })
@@ -126,8 +127,8 @@ export class AnalysisStorageService {
           createdAt: analyses[videoPath] ? Date.now() : Date.now(),
           updatedAt: Date.now(),
           workflowId: result.analysis_id,
-          duration: result.performance_metrics.total_processing_time,
-          success: result.status === "Completed",
+          duration: result.total_duration_ms,
+          success: result.status === "completed",
           errors: result.errors.length > 0 ? result.errors : undefined,
         }
         await this.saveAnalysisMetadata(metadata)

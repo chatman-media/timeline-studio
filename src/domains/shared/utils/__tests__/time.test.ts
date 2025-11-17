@@ -94,13 +94,11 @@ describe("time utils", () => {
       expect(parseTime("01:02:05")).toBe(3725000)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should return null for non-string input", () => {
-      expect(parseTime(null)).toBeNull()
-      // @ts-expect-error - testing invalid input
-      expect(parseTime(undefined)).toBeNull()
-      // @ts-expect-error - testing invalid input
-      expect(parseTime(123)).toBeNull()
+      // Testing invalid input - using as any to bypass type checking
+      expect(parseTime(null as any)).toBeNull()
+      expect(parseTime(undefined as any)).toBeNull()
+      expect(parseTime(123 as any)).toBeNull()
     })
   })
 

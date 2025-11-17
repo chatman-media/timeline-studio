@@ -105,7 +105,7 @@ export class EDLExporter implements Exporter {
     return events
   }
 
-  private getEDLTrackType(track: Track): string {
+  private getEDLTrackType(track: Track): "V" | "A" | "AA" | "B" {
     switch (track.type) {
       case "video":
         return "V"
@@ -114,21 +114,21 @@ export class EDLExporter implements Exporter {
       case "voiceover":
       case "sfx":
       case "ambient": {
-        // Поддержка множественных аудио треков (A1, A2, A3, etc.)
+        // Поддержка множественных аудио треков (A, AA for second audio track)
         let audioTrackNum = this.audioTrackCounter.get(track.id)
         if (audioTrackNum === undefined) {
           audioTrackNum = this.audioTrackCounter.size + 1
           this.audioTrackCounter.set(track.id, audioTrackNum)
         }
-        // Возвращаем A1, A2, A3 для разных аудио треков
-        return audioTrackNum === 1 ? "A" : `A${audioTrackNum}`
+        // EDL поддерживает только A и AA для второго аудио трека
+        return audioTrackNum === 1 ? "A" : "AA"
       }
       default:
         return "V" // По умолчанию видео
     }
   }
 
-  private createEventFromClip(clip: TimelineClip, trackType: string, options: ExportOptions): EDLEvent {
+  private createEventFromClip(clip: TimelineClip, trackType: "V" | "A" | "AA" | "B", options: ExportOptions): EDLEvent {
     // Вычисляем timecodes
     const sourceIn = secondsToTimecode(clip.sourceIn || 0, this.frameRate)
     const sourceOut = secondsToTimecode(clip.sourceOut || (clip.sourceIn || 0) + clip.duration, this.frameRate)

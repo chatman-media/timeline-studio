@@ -49,13 +49,11 @@ describe("validation utils", () => {
       expect(isValidPath("....")).toBe(false)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should reject non-string inputs", () => {
-      expect(isValidPath(null)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isValidPath(undefined)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isValidPath(123)).toBe(false)
+      // Testing invalid input - using as any to bypass type checking
+      expect(isValidPath(null as any)).toBe(false)
+      expect(isValidPath(undefined as any)).toBe(false)
+      expect(isValidPath(123 as any)).toBe(false)
     })
   })
 
@@ -82,11 +80,10 @@ describe("validation utils", () => {
       expect(isValidUrl("htp://example.com")).toBe(false)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should reject non-string inputs", () => {
-      expect(isValidUrl(null)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isValidUrl(undefined)).toBe(false)
+      // Testing invalid input - using as any to bypass type checking
+      expect(isValidUrl(null as any)).toBe(false)
+      expect(isValidUrl(undefined as any)).toBe(false)
     })
   })
 
@@ -105,11 +102,10 @@ describe("validation utils", () => {
       expect(isValidEmail("")).toBe(false)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should reject non-string inputs", () => {
-      expect(isValidEmail(null)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isValidEmail(undefined)).toBe(false)
+      // Testing invalid input - using as any to bypass type checking
+      expect(isValidEmail(null as any)).toBe(false)
+      expect(isValidEmail(undefined as any)).toBe(false)
     })
   })
 
@@ -234,11 +230,10 @@ describe("validation utils", () => {
       expect(isInRange(Number.NaN, 0, 10)).toBe(false)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should reject non-numbers", () => {
-      expect(isInRange("5", 0, 10)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isInRange(null, 0, 10)).toBe(false)
+      // Testing invalid input - using as any to bypass type checking
+      expect(isInRange("5" as any, 0, 10)).toBe(false)
+      expect(isInRange(null as any, 0, 10)).toBe(false)
     })
   })
 
@@ -257,11 +252,10 @@ describe("validation utils", () => {
       expect(isValidJson("{")).toBe(false)
     })
 
-    // @ts-expect-error - testing invalid input
     it("should reject non-string inputs", () => {
-      expect(isValidJson(null)).toBe(false)
-      // @ts-expect-error - testing invalid input
-      expect(isValidJson(undefined)).toBe(false)
+      // Testing invalid input - using as any to bypass type checking
+      expect(isValidJson(null as any)).toBe(false)
+      expect(isValidJson(undefined as any)).toBe(false)
     })
   })
 

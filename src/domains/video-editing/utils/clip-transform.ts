@@ -5,7 +5,7 @@
  * Используется во всех backend event handlers для консистентности
  */
 
-import type { Clip } from "@/types/generated/tauri-bindings"
+import type { Clip } from "@/types/generated/state-types"
 import type { TimelineClip } from "../types"
 
 /**

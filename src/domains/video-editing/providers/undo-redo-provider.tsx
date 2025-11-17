@@ -9,7 +9,7 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from "
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectCommand, ProjectEvent } from "@/types/generated/state-types"
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
 import {
   createInitialUndoState,

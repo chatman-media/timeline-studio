@@ -5,13 +5,9 @@
  * для использования в TypeScript приложении
  */
 
-// Use only types from Rust backend
-import type {
-  ComprehensiveAnalysisResult,
-  EditingRecommendation,
-  KeyMomentInsight,
-  MontageAnalysisResult,
-} from "@/types/generated/tauri-bindings"
+// Use types from ai-director and montage-planner
+import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 
 // ============================================================================
 // Unified Content Analysis Interface
@@ -146,60 +142,66 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
   // Извлекаем scenes и конвертируем в нужный формат
   const scenes =
     result.scene_analysis?.scenes?.map((scene) => ({
-      startTime: scene.startTime,
-      endTime: scene.endTime,
-      sceneType: String(scene.sceneType || "unknown"),
+      startTime: scene.start_time,
+      endTime: scene.end_time,
+      sceneType: String("unknown"), // scene type not available in simple structure
       confidence: scene.confidence,
       description: scene.description || "",
     })) ?? []
 
-  // Извлекаем key moments из combined_insights
-  const keyMoments =
-    result.combined_insights.key_moments?.map((km: KeyMomentInsight) => ({
-      timestamp: km.timestamp,
-      duration: km.duration,
-      category: km.moment_type,
-      score: km.importance,
-      description: km.reason, // Используем reason как description
-      tags: [], // Tags не доступны в KeyMomentInsight
-    })) ?? []
+  // Key moments не доступны в базовой структуре ComprehensiveAnalysisResult
+  const keyMoments: Array<{
+    timestamp: number
+    duration: number
+    category: string
+    score: number
+    description: string
+    tags: string[]
+  }> = []
 
   return {
     // Metadata
     analysisId: result.analysis_id,
     videoPath: "", // TODO: Передавать из вызывающего кода
     status: mapAnalysisStatus(result.status),
-    createdAt: result.metadata.analysis_timestamp,
-    processingTimeMs: result.performance_metrics.total_processing_time,
+    createdAt: result.started_at,
+    processingTimeMs: result.total_duration_ms || 0,
 
-    // Video Info (минимальная информация, т.к. детали не доступны в новой структуре)
+    // Video Info
     videoInfo: {
-      duration: result.scene_analysis?.avg_scene_duration
-        ? result.scene_analysis.avg_scene_duration * result.scene_analysis.total_scenes
-        : 0,
-      fps: 0, // Не доступно
-      resolution: { width: 0, height: 0 }, // Не доступно
-      codec: "unknown",
+      duration: result.video_analysis?.duration || 0,
+      fps: result.video_analysis?.fps || 0,
+      resolution: {
+        width: result.video_analysis?.width || 0,
+        height: result.video_analysis?.height || 0,
+      },
+      codec: result.video_analysis?.codec || "unknown",
       fileSize: 0, // Не доступно
     },
 
-    // Audio Analysis (упрощенная версия - многие поля недоступны в новой структуре)
+    // Audio Analysis
     audioAnalysis: result.audio_analysis
       ? {
-          hasAudio: result.audio_analysis.basic_metrics.has_audio,
-          duration: result.audio_analysis.basic_metrics.duration.seconds,
-          channels: result.audio_analysis.basic_metrics.channels,
-          sampleRate: result.audio_analysis.basic_metrics.sample_rate.hz,
-          bitrate: result.audio_analysis.basic_metrics.bitrate || 0,
+          hasAudio: true,
+          duration: result.audio_analysis.duration,
+          channels: 0, // Not available in UnifiedAudioAnalysisResult
+          sampleRate: 0, // Not available
+          bitrate: 0, // Not available
           quality: 0, // TODO: Рассчитать из доступных метрик
 
           speechSegments: [], // TODO: Не доступно в текущей структуре
           musicSegments: [], // TODO: Не доступно в текущей структуре
 
-          transcription: undefined, // TODO: Не доступно в текущей структуре
+          transcription: result.audio_analysis.transcription
+            ? {
+                fullText: result.audio_analysis.transcription,
+                segments: [],
+                language: "unknown",
+              }
+            : undefined,
 
-          emotionalTone: "neutral", // TODO: Преобразовать из AudioEmotionalTone
-          energyLevel: 50, // TODO: Не доступно
+          emotionalTone: "neutral",
+          energyLevel: 50,
         }
       : undefined,
 
@@ -207,16 +209,28 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
     visualAnalysis: result.scene_analysis
       ? ({
           scenes,
-          objects: [],
-          faces: [],
-          composition: result.content_analysis?.avg_composition
-            ? {
-                overallQuality: result.content_analysis.avg_composition.overall * 100,
-                aestheticScore: 0, // TODO: Поле aesthetic не существует в CompositionScore
-                ruleOfThirds: result.content_analysis.avg_composition.ruleOfThirds,
-                symmetryScore: result.content_analysis.avg_composition.symmetry * 100,
-              }
-            : undefined,
+          objects:
+            result.object_detection?.objects.map((obj) => ({
+              timestamp: obj.timestamp,
+              detectedObjects: [
+                {
+                  className: obj.label,
+                  confidence: obj.confidence,
+                  bbox: obj.bbox,
+                },
+              ],
+            })) || [],
+          faces:
+            result.face_recognition?.faces.map((face) => ({
+              timestamp: face.timestamp,
+              detectedFaces: [
+                {
+                  confidence: face.confidence,
+                  bbox: face.bbox,
+                },
+              ],
+            })) || [],
+          composition: undefined, // Not available in current structure
         } as UnifiedContentAnalysis["visualAnalysis"])
       : undefined,
 
@@ -226,18 +240,8 @@ export function mapComprehensiveAnalysisToUnified(result: ComprehensiveAnalysisR
     // Quality Metrics
     qualityMetrics: calculateQualityMetrics(result),
 
-    // Recommendations
-    editingRecommendations:
-      result.editing_recommendations?.map((rec: EditingRecommendation) => ({
-        type: rec.recommendation_type,
-        description: rec.description,
-        confidence: rec.priority / 100,
-        suggestedAction: rec.description, // Using description as action
-        timeRange:
-          rec.timestamp !== null && rec.duration !== null
-            ? { start: rec.timestamp, end: rec.timestamp + rec.duration }
-            : undefined,
-      })) ?? [],
+    // Recommendations - not available in current structure
+    editingRecommendations: [],
   }
 }
 
@@ -305,13 +309,14 @@ export function mapMontageAnalysisToUnified(result: MontageAnalysisResult): Part
 /**
  * Рассчитывает общее качество аудио на основе метрик
  */
-function calculateAudioQuality(audioAnalysis: any): number {
-  // Простая эвристика: комбинация битрейта и отсутствия проблем качества
-  const bitrateScore = Math.min((audioAnalysis.basic_metrics.bitrate / 320000) * 100, 100)
-  const qualityIssuesCount = audioAnalysis.ffmpeg_analysis?.quality_issues?.length ?? 0
-  const qualityPenalty = qualityIssuesCount * 10
+function calculateAudioQuality(audioAnalysis: ComprehensiveAnalysisResult["audio_analysis"]): number {
+  if (!audioAnalysis) return 0
 
-  return Math.max(0, Math.min(100, bitrateScore - qualityPenalty))
+  // Простая эвристика на основе loudness и silence
+  const loudnessScore = Math.abs(audioAnalysis.loudness) < 40 ? 100 : 60
+  const silenceScore = audioAnalysis.silence_percentage < 20 ? 100 : 50
+
+  return Math.round((loudnessScore + silenceScore) / 2)
 }
 
 /**
@@ -323,16 +328,20 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
   audio: number
   technical: number
 } {
-  // Video quality из content_analysis
-  const videoQuality = result.content_analysis?.quality.overall ? result.content_analysis.quality.overall * 100 : 50
-
-  // Audio quality
-  const audioQuality = 50 // TODO: Рассчитать из доступных audio метрик
-
-  // Technical quality из vision_analysis
-  const technicalQuality = result.vision_analysis?.visual_quality_avg
-    ? result.vision_analysis.visual_quality_avg * 100
+  // Video quality - простая эвристика на основе разрешения и FPS
+  const videoQuality = result.video_analysis
+    ? Math.min(
+        100,
+        ((result.video_analysis.width * result.video_analysis.height) / (1920 * 1080)) * 50 +
+          (result.video_analysis.fps / 60) * 50,
+      )
     : 50
+
+  // Audio quality - на основе доступных метрик
+  const audioQuality = result.audio_analysis ? 70 : 50
+
+  // Technical quality - средняя из video и audio
+  const technicalQuality = (videoQuality + audioQuality) / 2
 
   // Overall quality
   const overall = (videoQuality + audioQuality + technicalQuality) / 3
@@ -349,16 +358,12 @@ function calculateQualityMetrics(result: ComprehensiveAnalysisResult): {
  * Рассчитывает техническое качество (разрешение, кодек, etc.)
  */
 function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number {
-  // Новая структура не содержит детальной video информации
-  // Используем visual_quality_avg из vision_analysis
-  return result.vision_analysis?.visual_quality_avg ? result.vision_analysis.visual_quality_avg * 100 : 50
+  if (!result.video_analysis) return 50
 
-  // DEPRECATED CODE BELOW (kept for reference)
-  /*
-  const { resolution, fps, codec } = result.video_analysis.basic_info
+  const { width, height, fps, codec } = result.video_analysis
 
   // Resolution score
-  const pixels = resolution.width * resolution.height
+  const pixels = width * height
   let resolutionScore = 0
   if (pixels >= 3840 * 2160)
     resolutionScore = 100 // 4K+
@@ -377,10 +382,9 @@ function calculateTechnicalQuality(result: ComprehensiveAnalysisResult): number 
 
   // Codec score (простая эвристика)
   const goodCodecs = ["h264", "h265", "hevc", "vp9", "av1"]
-  const codecScore = goodCodecs.some((c) => codec.toLowerCase().includes(c)) ? 100 : 60
+  const codecScore = codec && goodCodecs.some((c) => codec.toLowerCase().includes(c)) ? 100 : 60
 
   return (resolutionScore + fpsScore + codecScore) / 3
-  */
 }
 
 /**

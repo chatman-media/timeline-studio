@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { Clip, Project, ProjectEvent, Track as RustTrack } from "@/types/generated/tauri-bindings"
+import type { Clip, Project, ProjectEvent, Track as RustTrack } from "@/types/generated/state-types"
 
 const logger = createLogger("TypeValidation")
 

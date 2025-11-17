@@ -5,7 +5,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
+import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
 import { mockAIDirectorConfig } from "../../__mocks__/ai-director-service"
 import { mockMontageAnalysisResult, mockMontagePlan } from "../../__mocks__/unified-orchestrator"
@@ -313,9 +313,8 @@ describe("UnifiedOrchestrator", () => {
         ...mockAIDirectorConfig,
         enable_audio_analysis: true,
         enable_scene_detection: false,
-        enable_vision_analysis: true,
-        quality_threshold: 0.7,
-        max_processing_time: 30000,
+        enable_video_analysis: true,
+        timeout_seconds: 30,
       }
 
       await orchestrator.analyzeComprehensive("/test/video.mp4", {

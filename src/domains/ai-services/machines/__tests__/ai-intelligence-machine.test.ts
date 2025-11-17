@@ -6,7 +6,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
-import type { AIDirectorConfig } from "@/types/generated/tauri-bindings"
+import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
 import { aiIntelligenceMachine } from "../ai-intelligence-machine"
 
@@ -110,7 +110,7 @@ describe("AI Intelligence Machine", () => {
       const config: Partial<AIDirectorConfig> = {
         enable_audio_analysis: true,
         enable_scene_detection: true,
-        quality_threshold: 0.8,
+        timeout_seconds: 120,
       }
 
       actor.send({

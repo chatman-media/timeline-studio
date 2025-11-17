@@ -6,7 +6,8 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { SystemNotification as BackendSystemNotification, ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/state-types-extensions"
+import type { SystemNotification as BackendSystemNotification } from "@/types/generated/tauri-bindings"
 import type { SystemNotification } from "../types"
 
 const logger = createLogger("SystemIntegrationBackendEventHandlers")

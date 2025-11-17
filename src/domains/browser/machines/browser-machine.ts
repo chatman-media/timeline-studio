@@ -21,6 +21,7 @@ export interface BrowserMachineContext {
   activeTab: BrowserTab
   tabSettings: Record<BrowserTab, TabSettings>
   selectedFiles: Record<BrowserTab, string[]>
+  favorites: Record<BrowserTab, string[]>
 
   // UI state
   isLoading: boolean
@@ -62,6 +63,16 @@ const initialContext: BrowserMachineContext = {
     subtitles: { ...DEFAULT_TAB_SETTINGS },
   },
   selectedFiles: {
+    media: [],
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    style_templates: [],
+    music: [],
+    subtitles: [],
+  },
+  favorites: {
     media: [],
     effects: [],
     filters: [],

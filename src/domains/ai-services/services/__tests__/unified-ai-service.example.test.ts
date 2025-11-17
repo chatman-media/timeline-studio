@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { AIMessage, UnifiedAIRequest } from "../../../../types/generated/tauri-bindings"
+import type { AIMessage, UnifiedAIRequest } from "../unified-ai-service"
 
 describe("UnifiedAIService Usage Examples", () => {
   // Примеры структур данных
@@ -77,7 +77,7 @@ describe("UnifiedAIService Usage Examples", () => {
         {
           name: "get_weather",
           description: "Get current weather information for a location",
-          inputSchema: {
+          input_schema: {
             type: "object",
             properties: {
               location: {
@@ -94,7 +94,7 @@ describe("UnifiedAIService Usage Examples", () => {
           },
         },
       ],
-      toolChoice: { tool: { name: "get_weather" } },
+      toolChoice: { type: "tool", name: "get_weather" },
     }
 
     expect(requestWithTools.tools).toBeDefined()

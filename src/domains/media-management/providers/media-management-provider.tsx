@@ -15,7 +15,7 @@ import {
   selectMediaFile,
 } from "@/features/media/services/media-api"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/state-types-extensions"
 import {
   handleMediaBackendEvent,
   type MediaManagementContext as MediaContext,

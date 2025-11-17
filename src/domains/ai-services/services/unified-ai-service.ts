@@ -44,17 +44,65 @@
 import { invoke } from "@tauri-apps/api/core"
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 
-// Импорт типов из generated bindings
-import type {
-  AIMessage,
-  AIProvider,
-  AITool,
-  CacheStats,
-  ProviderStatus,
-  ToolChoice,
-  UnifiedAIRequest,
-  UnifiedAIResponse,
-} from "../../../types/generated/tauri-bindings"
+// Импорт типов - используем локальные определения
+export type AIProvider = "openai" | "claude" | "grok" | "deepseek" | "ollama" | "custom"
+
+export interface AIMessage {
+  role: "user" | "assistant" | "system"
+  content: string
+  name?: string
+}
+
+export interface AITool {
+  name: string
+  description: string
+  input_schema: Record<string, unknown>
+}
+
+export type ToolChoice = "auto" | "any" | "none" | { type: "tool"; name: string }
+
+export interface UnifiedAIRequest {
+  provider: AIProvider
+  model: string
+  messages: AIMessage[]
+  maxTokens?: number | null
+  temperature?: number | null
+  stream?: boolean
+  system?: string | null
+  tools?: AITool[] | null
+  toolChoice?: ToolChoice | null
+}
+
+export interface UnifiedAIResponse {
+  content: string
+  model: string
+  usage?: {
+    promptTokens: number
+    completionTokens: number
+    totalTokens: number
+  }
+  stopReason?: string
+  toolCalls?: Array<{
+    name: string
+    arguments: Record<string, unknown>
+  }>
+}
+
+export interface CacheStats {
+  totalEntries: number
+  totalHits: number
+  totalMisses: number
+  expiredEntries: number
+  cacheSize: number
+}
+
+export interface ProviderStatus {
+  provider: AIProvider
+  available: boolean
+  models?: string[]
+  error?: string
+}
+
 import { sanitizeTextInput, validateAIMessages } from "../utils/validation"
 
 // ============================================================================
@@ -136,7 +184,7 @@ export class UnifiedAIService {
       // Sanitize message content
       const sanitizedRequest = {
         ...request,
-        messages: request.messages.map((msg) => ({
+        messages: request.messages.map((msg: AIMessage) => ({
           ...msg,
           content: sanitizeTextInput(msg.content),
         })),

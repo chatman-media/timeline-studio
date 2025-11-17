@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/state-types"
 import type { TimelineClip, Track } from "../types"
 import { convertClipToTimelineClip } from "../utils/clip-transform"
 import { validateClip, validateProjectEvent } from "../utils/type-validation"
@@ -25,7 +25,7 @@ export function handleBackendEvent(
   if (!validateProjectEvent(event)) {
     logger.error("Invalid backend event, skipping", { event })
     return {
-      error: `Invalid backend event: ${event.type}`,
+      error: `Invalid backend event: ${String((event as any)?.type ?? "unknown")}`,
     }
   }
 

@@ -10,8 +10,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { Track as BackendTrack, Project, ProjectState } from "@/types/generated/state-types"
-import type { ProjectCommand } from "@/types/generated/tauri-bindings"
+import type { Track as BackendTrack, Project, ProjectCommand, ProjectState } from "@/types/generated/state-types"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -331,35 +330,38 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
       fps: timeline.fps,
       sample_rate: timeline.sampleRate,
       markers: [],
-      tracks: allTracks.map((track) => ({
-        id: track.id,
-        name: track.name,
-        track_type: reverseMapTrackType(track.type),
-        enabled: !track.muted,
-        locked: track.locked,
-        height: track.height,
-        clips: track.clips.map((clip) => ({
-          id: clip.id,
-          media_id: clip.mediaId,
-          name: clip.name,
-          timeline_in: clip.startTime,
-          timeline_out: clip.startTime + clip.duration,
-          source_in: clip.sourceIn,
-          source_out: clip.sourceOut,
-          playback_rate: clip.playbackRate,
-          enabled: !clip.isMuted,
-          effects: clip.effects.map((e) => e.effectId),
-          transitions: clip.transitions.map((t) => ({
-            id: t.id,
-            transition_type: t.transitionId,
-            duration: t.duration,
-            params: t.customParams || {},
-          })),
-        })),
-        effects: [],
-        volume: track.volume,
-        pan: track.pan,
-      })),
+      tracks: allTracks.map(
+        (track) =>
+          ({
+            id: track.id,
+            name: track.name,
+            track_type: reverseMapTrackType(track.type) as any,
+            enabled: !track.muted,
+            locked: track.locked,
+            height: track.height,
+            clips: track.clips.map((clip) => ({
+              id: clip.id,
+              media_id: clip.mediaId,
+              name: clip.name,
+              timeline_in: clip.startTime,
+              timeline_out: clip.startTime + clip.duration,
+              source_in: clip.sourceIn,
+              source_out: clip.sourceOut,
+              playback_rate: clip.playbackRate,
+              enabled: !clip.isMuted,
+              effects: clip.effects.map((e) => e.effectId),
+              transitions: clip.transitions.map((t) => ({
+                id: t.id,
+                transition_type: t.transitionId,
+                duration: t.duration,
+                params: t.customParams || {},
+              })),
+            })),
+            effects: [],
+            volume: track.volume,
+            pan: track.pan,
+          }) as BackendTrack,
+      ),
     },
     media_pool: {
       items: timeline.resources.media.reduce(

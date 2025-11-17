@@ -21,9 +21,9 @@ import type {
 } from "@/domains/shared/events"
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
+// Use types from ai-director and montage-planner
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
-// Use only Rust backend types
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 import type {
   AnalysisOptions,
   MontageAnalysisResult,
@@ -762,42 +762,16 @@ export class UnifiedOrchestrator {
   private createEmptyComprehensiveResult(): ComprehensiveAnalysisResult {
     return {
       analysis_id: `error-${Date.now()}`,
-      status: "Failed",
-      audio_analysis: null,
-      scene_analysis: null,
-      vision_analysis: null,
-      moment_analysis: null,
-      content_analysis: null,
-      combined_insights: {
-        key_moments: [],
-        emotional_timeline: [],
-        transitions: [],
-        overall_quality: 0,
-        main_subjects: [],
-        content_mood: "neutral",
-      },
-      performance_metrics: {
-        total_processing_time: 0,
-        audio_analysis_time: 0,
-        scene_analysis_time: 0,
-        vision_analysis_time: 0,
-        moment_analysis_time: 0,
-        content_analysis_time: 0,
-        integration_time: 0,
-        memory_used: 0,
-        success_rate: 0,
-      },
-      editing_recommendations: [],
+      status: "failed",
+      audio_analysis: undefined,
+      scene_analysis: undefined,
+      video_analysis: undefined,
+      object_detection: undefined,
+      face_recognition: undefined,
+      started_at: new Date().toISOString(),
+      completed_at: undefined,
+      total_duration_ms: 0,
       errors: ["Analysis failed"],
-      metadata: {
-        analysis_version: "1.0.0",
-        processing_time_ms: 0,
-        config_used: "default",
-        engines_used: [],
-        total_engines_available: 0,
-        analysis_timestamp: new Date().toISOString(),
-        success_rate: 0,
-      },
     }
   }
 

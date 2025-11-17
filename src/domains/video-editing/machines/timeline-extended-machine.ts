@@ -206,7 +206,7 @@ export type TimelineExtendedEvent =
   | { type: "CLEAR_ERROR" }
 
   // Backend sync events
-  | { type: "BACKEND_EVENT"; event: import("@/types/generated/tauri-bindings").ProjectEvent }
+  | { type: "BACKEND_EVENT"; event: import("@/types/generated/state-types").ProjectEvent }
 
 // Утилиты преобразования вынесены в utils/clip-transform.ts
 // Используйте convertClipToTimelineClip из utils для консистентности

@@ -10,7 +10,7 @@ import { useActor } from "@xstate/react"
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectState } from "@/types/generated/state-types"
 // NEW: Use AI Intelligence Machine with AI Director integration
 import {
   type AIIntelligenceContext,

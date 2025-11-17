@@ -35,7 +35,7 @@ export class CommandQueue {
     }
 
     // Добавляем в очередь с учетом приоритета
-    const insertIndex = this.queue.findIndex((cmd) => cmd.priority < priority)
+    const insertIndex = this.queue.findIndex((cmd) => (cmd.priority ?? 0) < priority)
     if (insertIndex === -1) {
       this.queue.push(command)
     } else {

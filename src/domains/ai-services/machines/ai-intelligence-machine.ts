@@ -9,8 +9,8 @@
 
 import { assign, emit, fromPromise, setup } from "xstate"
 import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
 import type { AnalysisOptions, MontageAnalysisResult, MontagePlan } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
 import { unifiedOrchestrator } from "../services/unified-orchestrator"

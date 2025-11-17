@@ -5,8 +5,7 @@
  */
 
 import { useState } from "react"
-import type { AIProvider } from "../../../../types/generated/tauri-bindings"
-import { unifiedAIService } from "../unified-ai-service"
+import { type AIProvider, type CacheStats, type ProviderStatus, unifiedAIService } from "../unified-ai-service"
 
 /**
  * Пример 1: Простой чат с AI
@@ -152,14 +151,7 @@ export function StreamingAIChatExample() {
  * Пример 3: Проверка доступности провайдеров
  */
 export function ProviderHealthCheckExample() {
-  const [health, setHealth] = useState<
-    Array<{
-      provider: AIProvider
-      available: boolean
-      models: string[]
-      error: string | null
-    }>
-  >([])
+  const [health, setHealth] = useState<ProviderStatus[]>([])
   const [loading, setLoading] = useState(false)
 
   const checkHealth = async () => {
@@ -201,7 +193,7 @@ export function ProviderHealthCheckExample() {
                   {status.available ? "✓ Available" : "✗ Unavailable"}
                 </span>
               </div>
-              {status.available && status.models.length > 0 && (
+              {status.available && status.models && status.models.length > 0 && (
                 <p className="text-sm text-gray-600 mt-1">Models: {status.models.slice(0, 3).join(", ")}</p>
               )}
               {status.error && <p className="text-sm text-red-600 mt-1">Error: {status.error}</p>}
@@ -217,13 +209,7 @@ export function ProviderHealthCheckExample() {
  * Пример 4: Статистика кэша
  */
 export function CacheStatsExample() {
-  const [stats, setStats] = useState<{
-    total_entries: number
-    total_hits: number
-    expired_entries: number
-    max_entries: number
-    enabled: boolean
-  } | null>(null)
+  const [stats, setStats] = useState<CacheStats | null>(null)
 
   const loadStats = async () => {
     try {
@@ -273,19 +259,19 @@ export function CacheStatsExample() {
       {stats && (
         <div className="p-4 bg-gray-100 rounded space-y-2">
           <p>
-            <span className="font-semibold">Status:</span> {stats.enabled ? "Enabled" : "Disabled"}
+            <span className="font-semibold">Total Entries:</span> {stats.totalEntries}
           </p>
           <p>
-            <span className="font-semibold">Total Entries:</span> {stats.total_entries}
+            <span className="font-semibold">Cache Hits:</span> {stats.totalHits}
           </p>
           <p>
-            <span className="font-semibold">Cache Hits:</span> {stats.total_hits}
+            <span className="font-semibold">Cache Misses:</span> {stats.totalMisses}
           </p>
           <p>
-            <span className="font-semibold">Expired:</span> {stats.expired_entries}
+            <span className="font-semibold">Expired:</span> {stats.expiredEntries}
           </p>
           <p>
-            <span className="font-semibold">Max Entries:</span> {stats.max_entries}
+            <span className="font-semibold">Cache Size:</span> {stats.cacheSize} bytes
           </p>
         </div>
       )}
@@ -311,7 +297,7 @@ export function AIWithToolsExample() {
           {
             name: "get_weather",
             description: "Get current weather information for a location",
-            inputSchema: {
+            input_schema: {
               type: "object",
               properties: {
                 location: {
@@ -329,14 +315,14 @@ export function AIWithToolsExample() {
           },
         ],
         {
-          toolChoice: { tool: { name: "get_weather" } },
+          toolChoice: { type: "tool", name: "get_weather" },
           maxTokens: 1024,
         },
       )
 
       if (response.toolCalls && response.toolCalls.length > 0) {
         const toolCall = response.toolCalls[0]
-        setResult(`AI wants to call: ${toolCall.name}\nWith input: ${JSON.stringify(toolCall.input, null, 2)}`)
+        setResult(`AI wants to call: ${toolCall.name}\nWith input: ${JSON.stringify(toolCall.arguments, null, 2)}`)
       } else {
         setResult(response.content)
       }

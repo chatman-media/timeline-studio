@@ -95,6 +95,7 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
   const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
   const selectedFiles = useSelector(browserActor, (state) => state.context.selectedFiles)
+  const favorites = useSelector(browserActor, (state) => state.context.favorites)
   const isLoading = useSelector(browserActor, (state) => state.context.isLoading)
   const error = useSelector(browserActor, (state) => state.context.error)
 
@@ -232,6 +233,15 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
             })
           })
         }
+
+        // Синхронизируем favorites (if present in backend state)
+        if (state.browser_state.favorites) {
+          // TODO: Add BrowserEvent for favorites sync when backend supports it
+          // For now, we'll just log that favorites exist
+          logger.info("[BrowserProvider] Favorites data available in backend", {
+            tabs: Object.keys(state.browser_state.favorites),
+          })
+        }
       }
     })
 
@@ -297,8 +307,9 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       active_tab: activeTab,
       tab_settings: tabSettings,
       selected_files: selectedFiles,
+      favorites: favorites,
     }),
-    [activeTab, tabSettings, selectedFiles],
+    [activeTab, tabSettings, selectedFiles, favorites],
   )
 
   // Browser actions implementation
