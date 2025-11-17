@@ -7,7 +7,7 @@ import type { BaseEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { AppliedEffect, TimelineClip, TimelineProject, TimelineTrack } from "../types"
-import { addEffectToResources, createAppliedEffect } from "./resource-manager"
+import { createAppliedEffect } from "./resource-manager"
 
 const logger = createLogger("ClipEffectsService")
 
@@ -52,11 +52,7 @@ export function applyEffectToClip(
   }
 
   // Создаем AppliedEffect
-  const { project: updatedProject, appliedEffect } = createAppliedEffect(
-    project,
-    options.effect,
-    options.customParams,
-  )
+  const { project: updatedProject, appliedEffect } = createAppliedEffect(project, options.effect, options.customParams)
 
   // Заменяем существующие эффекты того же типа, если нужно
   let effects = clip.effects || []
@@ -68,8 +64,7 @@ export function applyEffectToClip(
   }
 
   // Определяем порядок нового эффекта
-  appliedEffect.order =
-    options.position === "start" ? 0 : Math.max(0, ...effects.map((e) => e.order || 0)) + 1
+  appliedEffect.order = options.position === "start" ? 0 : Math.max(0, ...effects.map((e) => e.order || 0)) + 1
 
   // Если вставляем в начало, сдвигаем порядок остальных эффектов
   if (options.position === "start") {
@@ -243,11 +238,7 @@ export function clearEffectsFromClip(project: TimelineProject, clipId: string): 
 /**
  * Копирует эффекты с одного клипа на другой
  */
-export function copyEffects(
-  project: TimelineProject,
-  sourceClipId: string,
-  targetClipId: string,
-): TimelineProject {
+export function copyEffects(project: TimelineProject, sourceClipId: string, targetClipId: string): TimelineProject {
   void logger.info("Copying effects between clips", { sourceClipId, targetClipId })
 
   const { clip: sourceClip } = findClipInProject(project, sourceClipId)
@@ -277,11 +268,7 @@ export function copyEffects(
 /**
  * Переключает состояние эффекта (enabled/disabled)
  */
-export function toggleEffectOnClip(
-  project: TimelineProject,
-  clipId: string,
-  appliedEffectId: string,
-): TimelineProject {
+export function toggleEffectOnClip(project: TimelineProject, clipId: string, appliedEffectId: string): TimelineProject {
   const { clip, track, sectionIndex } = findClipInProject(project, clipId)
   if (!clip || !track) {
     throw new Error(`Clip ${clipId} not found`)

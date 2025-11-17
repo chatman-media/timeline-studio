@@ -104,6 +104,7 @@ export function useUserSettings(): UserSettingsContextValue {
     toggleBrowserVisibility: d.toggleBrowserVisibility,
     toggleTimelineVisibility: d.toggleTimelineVisibility,
     toggleOptionsVisibility: d.toggleOptionsVisibility,
+    toggleAIAssistantVisibility: d.toggleAIAssistantVisibility,
 
     // GPU/Perf
     handleGpuAccelerationChange,

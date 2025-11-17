@@ -118,7 +118,7 @@ export function ModalContainer() {
       case "effect-detail":
         return "max-w-4xl max-h-[90vh] overflow-y-auto"
       case "color-grading":
-        return "bg-[#2D2D30] border-[#464647]"
+        return "h-[max(400px,min(50vh,500px))] w-[max(500px,min(60vw,600px))]"
       case "montage-planner":
         return "h-[max(800px,min(90vh,1000px))] w-[max(1200px,min(95vw,1400px))]"
       default:

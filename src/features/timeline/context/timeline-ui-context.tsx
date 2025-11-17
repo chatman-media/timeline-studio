@@ -4,8 +4,8 @@
  * Предоставляет доступ к UI параметрам Timeline (timeScale, scroll, zoom и т.д.)
  */
 
-import { createLogger } from "@/lib/tauri-logger"
 import { createContext, type ReactNode, useCallback, useContext, useState } from "react"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineUIContext")
 

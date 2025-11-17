@@ -12,7 +12,6 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Save,
-  Send,
   Upload,
   UserCog,
   Wand2,
@@ -28,6 +27,7 @@ import { useCurrentProject } from "@/features/app-state/hooks/use-current-projec
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
 import { useModal } from "@/features/modals/services/modal-provider"
+import { PublicationTasksDropdown } from "@/features/publication"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { GpuStatusBadge, RenderJobsDropdown } from "@/features/video-compiler"
@@ -368,25 +368,8 @@ const TopBarComponent = function TopBar() {
         {/* Группа 5: Публикация, задачи, настройки пользователя и экспорт */}
         <div className="flex items-center justify-end">
           <GpuStatusBadge className="mr-2" />
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                className={TOP_BAR_BUTTON_CLASS}
-                variant="ghost"
-                size="icon"
-                title={buttonTitles.publish}
-                data-testid="publish-button"
-              >
-                <Send className="h-5 w-5" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-64" sideOffset={0}>
-              <div className="">
-                <h4 className="text-sm font-semibold">{t("topBar.publicationTasks")}</h4>
-                <div className="h-10" />
-              </div>
-            </PopoverContent>
-          </Popover>
+
+          <PublicationTasksDropdown />
 
           <RenderJobsDropdown />
 

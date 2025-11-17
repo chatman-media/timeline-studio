@@ -4,13 +4,17 @@
 
 import { useCallback, useState } from "react"
 
+import { getMediaMetadataService } from "@/domains/media-management/services/media-metadata-service"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
+import { createLogger } from "@/lib/tauri-logger"
 import type { Fragment, MontagePlan } from "../types"
 import { convertToAIServicesMediaFile } from "../utils/media-file-converter"
 import { useContentAnalysis } from "./use-content-analysis"
 import { useMontagePlanner } from "./use-montage-planner"
 import { usePlanGenerator } from "./use-plan-generator"
+
+const logger = createLogger("IntegratedAnalysis")
 
 export interface UseIntegratedAnalysisReturn {
   // Основные действия
@@ -122,25 +126,73 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
    */
   const analyzeSelectedFiles = useCallback(
     async (filePaths: string[]): Promise<void> => {
-      // Simple implementation - convert paths to MediaFiles and analyze
-      const mediaFiles: MediaFile[] = filePaths.map((path, index) => {
-        const isVideo = path.endsWith(".mp4") || path.endsWith(".mov")
-        const isAudio = path.endsWith(".mp3") || path.endsWith(".wav")
-        return {
-          id: `file-${index}`,
-          path,
-          name: path.split("/").pop() || path,
-          type: isVideo ? MediaType.Video : isAudio ? MediaType.Audio : MediaType.Unknown,
-          isVideo,
-          isAudio,
-          duration: 0,
-          format: "",
-          codec: "",
-          width: 0,
-          height: 0,
-          frameRate: 0,
-          bitrate: 0,
+      logger.info("[Integrated Analysis] Starting analysis of selected files", { filesCount: filePaths.length })
+
+      const metadataService = getMediaMetadataService()
+
+      // Извлекаем метаданные для каждого файла параллельно
+      const mediaFilesPromises = filePaths.map(async (path, index) => {
+        try {
+          // Определяем тип файла по расширению
+          const ext = path.split(".").pop()?.toLowerCase() || ""
+          const videoExts = ["mp4", "mov", "avi", "mkv", "webm", "m4v"]
+          const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a"]
+
+          const isVideo = videoExts.includes(ext)
+          const isAudio = audioExts.includes(ext)
+
+          // Извлекаем реальную длительность из метаданных
+          let duration = 0
+          try {
+            duration = await metadataService.getMediaDuration(path)
+            logger.debug(`[Integrated Analysis] Extracted duration for ${path}`, { duration })
+          } catch (error) {
+            logger.warn(`[Integrated Analysis] Failed to get duration for ${path}`, { error })
+          }
+
+          return {
+            id: `file-${index}`,
+            path,
+            name: path.split("/").pop() || path,
+            type: isVideo ? MediaType.Video : isAudio ? MediaType.Audio : MediaType.Unknown,
+            isVideo,
+            isAudio,
+            duration,
+            format: "",
+            codec: "",
+            width: 0,
+            height: 0,
+            frameRate: 0,
+            bitrate: 0,
+          } as MediaFile
+        } catch (error) {
+          logger.error(`[Integrated Analysis] Failed to process file ${path}`, { error })
+          // Возвращаем базовую информацию без метаданных в случае ошибки
+          const ext = path.split(".").pop()?.toLowerCase() || ""
+          const isVideo = ["mp4", "mov", "avi", "mkv", "webm", "m4v"].includes(ext)
+          const isAudio = ["mp3", "wav", "ogg", "flac", "aac", "m4a"].includes(ext)
+
+          return {
+            id: `file-${index}`,
+            path,
+            name: path.split("/").pop() || path,
+            type: isVideo ? MediaType.Video : isAudio ? MediaType.Audio : MediaType.Unknown,
+            isVideo,
+            isAudio,
+            duration: 0,
+            format: "",
+            codec: "",
+            width: 0,
+            height: 0,
+            frameRate: 0,
+            bitrate: 0,
+          } as MediaFile
         }
+      })
+
+      const mediaFiles = await Promise.all(mediaFilesPromises)
+      logger.info("[Integrated Analysis] Metadata extracted for all files", {
+        totalDuration: mediaFiles.reduce((sum, f) => sum + f.duration, 0),
       })
 
       await analyzeProject(mediaFiles)

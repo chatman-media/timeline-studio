@@ -102,6 +102,9 @@ export function useCacheStats(): UseCacheStatsReturn {
 // Вспомогательные функции для форматирования
 
 export function formatCacheRatio(ratio: number): string {
+  if (Number.isNaN(ratio)) {
+    return "0.0%"
+  }
   return `${(ratio * 100).toFixed(1)}%`
 }
 

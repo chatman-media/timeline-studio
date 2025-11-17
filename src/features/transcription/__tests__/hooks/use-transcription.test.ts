@@ -107,21 +107,27 @@ describe("useTranscription", () => {
 
     it("should set isTranscribing to true during transcription", async () => {
       const { result } = renderHook(() => useTranscription())
-      let isTranscribingDuringCall = false
 
       mockTranscribeMedia.mockImplementation(async () => {
-        // Wait for React to update state
-        await new Promise((resolve) => setTimeout(resolve, 10))
-        isTranscribingDuringCall = result.current.isTranscribing
+        // Return result after some delay to simulate actual transcription
+        await new Promise((resolve) => setTimeout(resolve, 50))
         return createMockTranscriptionResult()
       })
 
       const options = createMockTranscriptionOptions()
-      await result.current.transcribe("/path/to/media.mp4", options)
 
-      expect(isTranscribingDuringCall).toBe(true)
+      // Start transcription (don't await yet)
+      const transcribePromise = result.current.transcribe("/path/to/media.mp4", options)
 
-      // Wait for state to update
+      // Wait for isTranscribing to become true
+      await waitFor(() => {
+        expect(result.current.isTranscribing).toBe(true)
+      })
+
+      // Now wait for transcription to complete
+      await transcribePromise
+
+      // Wait for state to update back to false
       await waitFor(() => {
         expect(result.current.isTranscribing).toBe(false)
       })

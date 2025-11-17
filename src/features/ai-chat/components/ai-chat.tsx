@@ -594,7 +594,7 @@ export function AiChat() {
         {/* Header */}
         <div className="flex flex-col border-b border-border">
           <div className="flex items-center justify-between px-3 py-1 pb-[3px]">
-            <h2 className="text-sm font-medium text-white">{t("timeline.chat.title", "Chat")}</h2>
+            <h2 className="text-sm font-medium text-foreground">{t("timeline.chat.title", "Chat")}</h2>
             <div className="flex items-center gap-1">
               <Button
                 size="icon"
@@ -717,7 +717,7 @@ export function AiChat() {
                         ? `Доступно ${resourceStats.totalMedia} файлов. Попробуйте: 'создай монтаж', 'анализируй видео', 'адаптируй для TikTok'`
                         : "@ mention, ⌘L select. Команды: 'анализируй видео', 'создай сценарий', 'адаптируй для TikTok'..."
                   }
-                  className="min-h-[100px] w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-white placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
+                  className="min-h-[100px] w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
                   disabled={isProcessing || isStreaming}
                   rows={4}
                   data-testid="chat-input"
@@ -748,7 +748,7 @@ export function AiChat() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-9 justify-between border-border bg-muted text-sm text-white hover:bg-accent"
+                      className="h-9 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="chat-mode-selector"
                     >
                       {CHAT_MODES.find((m) => m.id === chatMode)?.name}
@@ -776,7 +776,7 @@ export function AiChat() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-9 flex-1 justify-between border-border bg-muted text-sm text-white hover:bg-accent"
+                      className="h-9 flex-1 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="agent-selector"
                     >
                       <span className="truncate">
@@ -892,7 +892,7 @@ export function AiChat() {
                         ? `Доступно ${resourceStats.totalMedia} файлов. Попробуйте: 'создай монтаж', 'анализируй видео', 'адаптируй для TikTok'`
                         : "@ mention, ⌘L select. Команды: 'анализируй видео', 'создай сценарий', 'адаптируй для TikTok'..."
                   }
-                  className="min-h-[40px] w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-white placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
+                  className="min-h-[40px] w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
                   disabled={isProcessing || isStreaming}
                   rows={1}
                   data-testid="chat-input-with-messages"
@@ -923,7 +923,7 @@ export function AiChat() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-9 justify-between border-border bg-muted text-sm text-white hover:bg-accent"
+                      className="h-9 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                     >
                       {CHAT_MODES.find((m) => m.id === chatMode)?.name}
                       <ChevronDown className="ml-2 h-4 w-4" />
@@ -950,7 +950,7 @@ export function AiChat() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-9 flex-1 justify-between border-border bg-muted text-sm text-white hover:bg-accent"
+                      className="h-9 flex-1 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="agent-selector"
                     >
                       <span className="truncate">

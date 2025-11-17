@@ -1,10 +1,11 @@
 /**
  * @vitest-environment jsdom
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+
 import { renderHook } from "@testing-library/react"
-import { useVideoElement } from "../use-video-element"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
+import { useVideoElement } from "../use-video-element"
 
 describe("useVideoElement - Memory Leak Prevention", () => {
   let mockMediaFile: MediaFile
@@ -74,12 +75,7 @@ describe("useVideoElement - Memory Leak Prevention", () => {
       path: blobUrl,
     }
 
-    const videoElement = result.current.getOrCreateVideoElement(
-      mockMediaFileWithBlob,
-      videoRefs,
-      0.5,
-      setVideoSource,
-    )
+    const videoElement = result.current.getOrCreateVideoElement(mockMediaFileWithBlob, videoRefs, 0.5, setVideoSource)
 
     // Уничтожаем элемент
     result.current.destroyVideoElement(videoElement)

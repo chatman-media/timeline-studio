@@ -75,16 +75,22 @@ export function RenderJobsDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="relative cursor-pointer">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative h-6 w-6 cursor-pointer hover:bg-[#D1D1D1] dark:hover:bg-[#464747] focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
           <ListTodo className="h-5 w-5" />
-          {t("videoCompiler.tasks")}
           {activeJobsCount > 0 && (
-            <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-xs">
+            <Badge
+              variant="secondary"
+              className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
+            >
               {activeJobsCount}
             </Badge>
           )}
           {jobs.some((job) => job.status === RenderStatus.Processing) && (
-            <Loader2 className="absolute -top-1 -right-1 h-3 w-3 animate-spin text-teal" />
+            <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-teal animate-spin" />
           )}
         </Button>
       </DropdownMenuTrigger>

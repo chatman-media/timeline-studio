@@ -3,7 +3,7 @@
 ## 📋 Статус готовности (v3 Architecture)
 
 - ✅ **Компоненты**: Полностью реализованы (виджеты, табы, модальные окна)
-- ✅ **Сервисы**: Машина состояний и провайдер готовы
+- ✅ **Сервисы**: Orchestrator и провайдер готовы
 - ✅ **Хуки**: useUserSettings и useApiKeys полностью протестированы
 - ✅ **Тесты**: Покрытие 87%+ (126 тестов)
 - ✅ **Валидация API**: Client-side + server-side валидация
@@ -49,7 +49,7 @@
 ## 🔧 Техническая реализация (v3)
 
 ### Архитектура
-- **XState машина состояний** для управления настройками
+- **Orchestrator** - централизованное управление настройками через React хуки
 - **React Context** для предоставления данных компонентам
 - **Tauri Store** для персистентного хранения
 - **Rust Backend** для безопасного управления API ключами
@@ -70,15 +70,15 @@ interface UserSettingsContext {
 }
 ```
 
-### События машины состояний
-- `UPDATE_ACTIVE_TAB` - Смена активной вкладки
-- `UPDATE_LAYOUT` - Смена макета
-- `UPDATE_SCREENSHOTS_PATH` - Изменение пути скриншотов
-- `UPDATE_PLAYER_SCREENSHOTS_PATH` - Изменение пути скриншотов плеера
-- `UPDATE_PLAYER_VOLUME` - Изменение громкости
-- `UPDATE_OPENAI_API_KEY` - Изменение API ключа OpenAI
-- `UPDATE_CLAUDE_API_KEY` - Изменение API ключа Claude
-- `TOGGLE_BROWSER_VISIBILITY` - Переключение видимости браузера
+### Основные операции
+- `handleTabChange` - Смена активной вкладки
+- `handleLayoutChange` - Смена макета
+- `handleScreenshotsPathChange` - Изменение пути скриншотов
+- `handlePlayerScreenshotsPathChange` - Изменение пути скриншотов плеера
+- `handlePlayerVolumeChange` - Изменение громкости
+- `saveSimpleApiKey` - Сохранение API ключа
+- `testApiKey` - Валидация API ключа
+- `toggleBrowserVisibility` - Переключение видимости браузера
 
 ## 🎣 Использование
 
@@ -161,7 +161,7 @@ bun test src/features/user-settings
 ```
 
 ### Покрытие
-- Машина состояний: 100%
+- Orchestrator логика: 100%
 - Провайдер: 95%
 - Хуки: 100%
 - Компоненты: 90%

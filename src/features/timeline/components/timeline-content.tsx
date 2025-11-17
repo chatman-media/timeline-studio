@@ -31,7 +31,6 @@ import { EditModeOverlay } from "./edit-tools/edit-mode-overlay"
 import { SplitIndicator } from "./edit-tools/split-indicator"
 import { TimelineMarkersLayer } from "./markers"
 import { TimelineHotkeys } from "./timeline-hotkeys"
-import { TimelinePreviewStrip } from "./timeline-preview-strip"
 import { TimelineScale } from "./timeline-scale"
 import {
   SpeedRampingIndicator,

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { createLogger } from "@/lib/tauri-logger"
+import { API_KEY_MASK, isApiKeyMask } from "../../constants"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { ApiKeyInput } from "../widgets/api-key-input"
 
@@ -16,7 +17,7 @@ const logger = createLogger({ module: "AiServicesTab" })
  */
 export function AiServicesTab() {
   const { t } = useTranslation()
-  const { saveSimpleApiKey, getApiKeyInfo } = useApiKeys()
+  const { saveSimpleApiKey, getApiKeyInfo, getValidationError } = useApiKeys()
 
   const [openAiKey, setOpenAiKey] = useState("")
   const [claudeKey, setClaudeKey] = useState("")
@@ -32,47 +33,47 @@ export function AiServicesTab() {
 
     // Если ключи существуют, показываем placeholder вместо значения для безопасности
     if (openAiInfo?.has_value) {
-      setOpenAiKey("••••••••••••••••••••••••••••••••••••••••••••••••••••")
+      setOpenAiKey(API_KEY_MASK)
     }
     if (claudeInfo?.has_value) {
-      setClaudeKey("••••••••••••••••••••••••••••••••••••••••••••••••••••")
+      setClaudeKey(API_KEY_MASK)
     }
     if (grokInfo?.has_value) {
-      setGrokKey("••••••••••••••••••••••••••••••••••••••••••••••••••••")
+      setGrokKey(API_KEY_MASK)
     }
     if (deepSeekInfo?.has_value) {
-      setDeepSeekKey("••••••••••••••••••••••••••••••••••••••••••••••••••••")
+      setDeepSeekKey(API_KEY_MASK)
     }
   }, [getApiKeyInfo])
 
   const handleOpenAiChange = (value: string) => {
     setOpenAiKey(value)
-    // Автосохранение при изменении
-    if (value && !value.includes("••••")) {
+    // Автосохранение при изменении (только если не маска)
+    if (value && !isApiKeyMask(value)) {
       void saveSimpleApiKey("openai", value)
     }
   }
 
   const handleClaudeChange = (value: string) => {
     setClaudeKey(value)
-    // Автосохранение при изменении
-    if (value && !value.includes("••••")) {
+    // Автосохранение при изменении (только если не маска)
+    if (value && !isApiKeyMask(value)) {
       void saveSimpleApiKey("claude", value)
     }
   }
 
   const handleGrokChange = (value: string) => {
     setGrokKey(value)
-    // Автосохранение при изменении
-    if (value && !value.includes("••••")) {
+    // Автосохранение при изменении (только если не маска)
+    if (value && !isApiKeyMask(value)) {
       void saveSimpleApiKey("grok", value)
     }
   }
 
   const handleDeepSeekChange = (value: string) => {
     setDeepSeekKey(value)
-    // Автосохранение при изменении
-    if (value && !value.includes("••••")) {
+    // Автосохранение при изменении (только если не маска)
+    if (value && !isApiKeyMask(value)) {
       void saveSimpleApiKey("deepseek", value)
     }
   }
@@ -117,6 +118,9 @@ export function AiServicesTab() {
             },
           ]}
         />
+        {getValidationError("openai") && (
+          <p className="text-xs text-destructive mt-1">{getValidationError("openai")}</p>
+        )}
       </div>
 
       <Separator />
@@ -146,6 +150,9 @@ export function AiServicesTab() {
             },
           ]}
         />
+        {getValidationError("claude") && (
+          <p className="text-xs text-destructive mt-1">{getValidationError("claude")}</p>
+        )}
       </div>
 
       <Separator />
@@ -175,6 +182,9 @@ export function AiServicesTab() {
             },
           ]}
         />
+        {getValidationError("grok") && (
+          <p className="text-xs text-destructive mt-1">{getValidationError("grok")}</p>
+        )}
       </div>
 
       <Separator />
@@ -204,6 +214,9 @@ export function AiServicesTab() {
             },
           ]}
         />
+        {getValidationError("deepseek") && (
+          <p className="text-xs text-destructive mt-1">{getValidationError("deepseek")}</p>
+        )}
       </div>
 
       <Separator />

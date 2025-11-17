@@ -6,10 +6,9 @@
 import { useCallback } from "react"
 import type { BaseEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AppliedEffect, TimelineProject } from "../types"
 import {
-  applyEffectToClip,
   applyEffectToBatch,
+  applyEffectToClip,
   clearEffectsFromClip,
   copyEffects,
   removeEffectFromClip,
@@ -17,6 +16,7 @@ import {
   toggleEffectOnClip,
   updateEffectOnClip,
 } from "../services/clip-effects-service"
+import type { AppliedEffect, TimelineProject } from "../types"
 
 const logger = createLogger("useClipEffects")
 

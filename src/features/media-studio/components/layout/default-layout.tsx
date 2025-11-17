@@ -1,4 +1,5 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { AiChat } from "@/features/ai-chat/components/ai-chat"
 import { Browser } from "@/features/browser/components"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
@@ -115,9 +116,22 @@ export function DefaultLayout() {
               transition: "width 0.3s ease-in-out",
             }}
           >
-            <div className="h-full flex-1">
-              <Timeline />
-            </div>
+            {/* Timeline и AI Chat рядом горизонтально */}
+            <ResizablePanelGroup direction="horizontal" className="min-h-0 h-full" autoSaveId="timeline-with-ai">
+              <ResizablePanel defaultSize={70} minSize={30} maxSize={80}>
+                <div className="h-full flex-1">
+                  <Timeline />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={30} minSize={20} maxSize={70}>
+                <div className="h-full flex-1 flex flex-col">
+                  <div className="flex-1 min-h-0">
+                    <AiChat />
+                  </div>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
         </>
       ) : null}

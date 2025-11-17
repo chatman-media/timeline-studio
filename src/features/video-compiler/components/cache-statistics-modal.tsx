@@ -76,11 +76,18 @@ export function CacheStatisticsModal() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{t("videoCompiler.cache.hitRate")}:</span>
-              <Badge variant={stats.hit_ratio > 0.7 ? "default" : "secondary"}>
+              <Badge variant={!Number.isNaN(stats.hit_ratio) && stats.hit_ratio > 0.7 ? "default" : "secondary"}>
                 {formatCacheRatio(stats.hit_ratio)}
               </Badge>
             </div>
-            <Progress value={stats.hit_ratio * 100} className="h-2" />
+            <Progress
+              value={
+                Number.isNaN(stats.hit_ratio) || !Number.isFinite(stats.hit_ratio)
+                  ? null
+                  : Math.max(0, Math.min(100, stats.hit_ratio * 100))
+              }
+              className="h-2"
+            />
           </div>
         </CardContent>
       </Card>
@@ -109,11 +116,16 @@ export function CacheStatisticsModal() {
                 variant="outline"
                 className={cn(
                   "text-xs",
-                  stats.preview_hit_ratio > 0.7 && "border-green-600 text-green-600",
-                  stats.preview_hit_ratio <= 0.7 &&
+                  !Number.isNaN(stats.preview_hit_ratio) &&
+                    stats.preview_hit_ratio > 0.7 &&
+                    "border-green-600 text-green-600",
+                  !Number.isNaN(stats.preview_hit_ratio) &&
+                    stats.preview_hit_ratio <= 0.7 &&
                     stats.preview_hit_ratio > 0.4 &&
                     "border-yellow-600 text-yellow-600",
-                  stats.preview_hit_ratio <= 0.4 && "border-red-600 text-red-600",
+                  !Number.isNaN(stats.preview_hit_ratio) &&
+                    stats.preview_hit_ratio <= 0.4 &&
+                    "border-red-600 text-red-600",
                 )}
               >
                 {formatCacheRatio(stats.preview_hit_ratio)}

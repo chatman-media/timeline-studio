@@ -246,7 +246,7 @@ describe("ModalContainer", () => {
       ["midi-mapping", "sm:max-w-md"],
       ["midi-configuration", "max-w-2xl"],
       ["effect-detail", "max-w-4xl"],
-      ["color-grading", "border-[#464647]"],
+      ["color-grading", "h-[max(400px,min(50vh,500px))]"],
     ]
 
     it.each(classTestCases)("should apply correct class for %s modal", (modalType, expectedClass) => {
