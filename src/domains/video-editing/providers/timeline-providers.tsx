@@ -79,7 +79,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
       // Отправляем событие напрямую в машину для инкрементальных обновлений
       timelineActor.send({
         type: "BACKEND_EVENT",
-        event,
+        event: event as any,
       })
     })
 

@@ -113,7 +113,7 @@ export function useAdvancedTransitions() {
           sourceTexture,
           targetTexture,
           progress: params.progress,
-          parameters: params.transition.parameters,
+          parameters: params.transition.parameters as any,
         })
 
         void logInfo(`Preview rendered successfully, time: ${result.renderTime}ms`)

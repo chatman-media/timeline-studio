@@ -43,7 +43,8 @@ pub struct CommandHandler {
   undo_commands: UndoCommands,
   color_grading_commands: ColorGradingCommands,
   // AI and security
-  ai_manager: Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
+  ai_manager:
+    Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
   secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
 }
 
@@ -54,7 +55,9 @@ impl CommandHandler {
     event_bus: Arc<EventBus>,
     persistence: Arc<PersistenceService>,
     app_handle: tauri::AppHandle,
-    ai_manager: Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
+    ai_manager: Arc<
+      crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager,
+    >,
     secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
   ) -> Self {
     // Initialize modular command handlers
@@ -3859,7 +3862,10 @@ impl CommandHandler {
     use std::str::FromStr;
 
     let key_type = ApiKeyType::from_str(provider).map_err(|_| {
-      format!("Invalid provider: {}. Supported: openai, claude, deepseek, grok", provider)
+      format!(
+        "Invalid provider: {}. Supported: openai, claude, deepseek, grok",
+        provider
+      )
     })?;
 
     let mut storage = self.secure_storage.lock().await;
@@ -3919,11 +3925,7 @@ impl CommandHandler {
     let mut messages = vec![];
 
     // Add project context as system message if provided
-    let system_message = if let Some(context) = project_context {
-      Some(format!("Project context: {}", context))
-    } else {
-      None
-    };
+    let system_message = project_context.map(|context| format!("Project context: {}", context));
 
     // Add user message
     messages.push(AIMessage::text("user", message));
@@ -3996,11 +3998,7 @@ impl CommandHandler {
 
     // Build messages array
     let mut messages = vec![];
-    let system_message = if let Some(context) = project_context {
-      Some(format!("Project context: {}", context))
-    } else {
-      None
-    };
+    let system_message = project_context.map(|context| format!("Project context: {}", context));
 
     messages.push(AIMessage::text("user", message));
 
@@ -4028,7 +4026,12 @@ impl CommandHandler {
     // - "ai-stream-error" при ошибке
     match self
       .ai_manager
-      .send_request_stream(&api_key, request, self.app_handle.clone(), request_id.clone())
+      .send_request_stream(
+        &api_key,
+        request,
+        self.app_handle.clone(),
+        request_id.clone(),
+      )
       .await
     {
       Ok(_) => CommandResult::success(Some(serde_json::json!({

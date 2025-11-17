@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
-import { PublicationStatus, type PublicationTask } from "../types/publication"
+import { PublicationPlatform, PublicationStatus, type PublicationTask } from "../types/publication"
 
 const logger = createLogger("UsePublicationTasks")
 
@@ -65,7 +65,7 @@ export function usePublicationTasks(): UsePublicationTasksReturn {
         // Преобразуем формат plugin в наш тип PublicationTask
         const publicationTasks: PublicationTask[] = response.data.uploads.map((upload: any) => ({
           id: upload.upload_id,
-          platform: "youtube", // На данный момент только YouTube
+          platform: PublicationPlatform.YouTube,
           project_name: "", // TODO: Получать из контекста
           video_path: "", // TODO: Получать из upload
           title: "", // TODO: Получать из upload settings
@@ -136,7 +136,7 @@ export function usePublicationTasks(): UsePublicationTasksReturn {
         const upload = response.data
         const task: PublicationTask = {
           id: upload.upload_id,
-          platform: "youtube",
+          platform: PublicationPlatform.YouTube,
           project_name: "",
           video_path: "",
           title: "",

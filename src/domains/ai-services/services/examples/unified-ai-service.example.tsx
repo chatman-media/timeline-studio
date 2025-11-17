@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react"
-import { type AIProvider, type CacheStats, type ProviderStatus, unifiedAIService } from "../unified-ai-service"
+import { type CacheStats, type ProviderStatus, unifiedAIService } from "../unified-ai-service"
 
 /**
  * Пример 1: Простой чат с AI

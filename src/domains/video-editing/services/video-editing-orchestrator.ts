@@ -264,7 +264,7 @@ export class VideoEditingOrchestrator {
     logger.info("[Video Editing Orchestrator] Executing command:", { data: command.type })
 
     try {
-      await this.backendSync.executeCommand(command)
+      await this.backendSync.executeCommand(command as any)
     } catch (error) {
       logger.error("[Video Editing Orchestrator] Command failed:", { error })
       throw error

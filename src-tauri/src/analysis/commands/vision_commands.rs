@@ -377,7 +377,7 @@ mod tests {
 // ============================================================================
 
 use crate::analysis::services::vision_analyzer::{
-  VisionAnalysisConfig, VisionAnalysisResult, VisionAnalyzer,
+  VLMAnalysisResult, VisionAnalysisConfig, VisionAnalyzer,
 };
 use crate::security::SecureStorage;
 use crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager;
@@ -412,7 +412,7 @@ pub async fn analyze_video_with_vision_model(
   temperature: Option<f64>,
   max_tokens: Option<u32>,
   analyzer_state: State<'_, VisionAnalyzerState>,
-) -> Result<VisionAnalysisResult, String> {
+) -> Result<VLMAnalysisResult, String> {
   log::info!(
     "Analyzing video with vision model: {} ({})",
     model,
@@ -467,7 +467,7 @@ pub async fn analyze_video_with_vision_model_secure(
   max_tokens: Option<u32>,
   analyzer_state: State<'_, VisionAnalyzerState>,
   app_handle: tauri::AppHandle,
-) -> Result<VisionAnalysisResult, String> {
+) -> Result<VLMAnalysisResult, String> {
   use crate::security::ApiKeyType;
   use std::str::FromStr;
 

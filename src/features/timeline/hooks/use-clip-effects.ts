@@ -264,7 +264,7 @@ export function useClipEffects({ project, onProjectUpdate }: UseClipEffectsOptio
 
       return appliedEffects.map((applied) => {
         const effect = project.resources.effects.find((e) => e.id === applied.effectId) || null
-        return { applied, effect }
+        return { applied, effect: effect as unknown as BaseEffect | null }
       })
     },
     [project, getClipEffects],

@@ -80,6 +80,16 @@ const DEFAULT_BROWSER_STATE: BrowserState = {
     templates: [],
     style_templates: [],
   },
+  favorites: {
+    media: [],
+    music: [],
+    subtitles: [],
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    style_templates: [],
+  },
 }
 
 // Stateful mock data
@@ -617,6 +627,20 @@ export function resetMockBrowserState() {
         : undefined,
       style_templates: DEFAULT_BROWSER_STATE.selected_files.style_templates
         ? [...DEFAULT_BROWSER_STATE.selected_files.style_templates]
+        : undefined,
+    },
+    favorites: {
+      media: DEFAULT_BROWSER_STATE.favorites.media ? [...DEFAULT_BROWSER_STATE.favorites.media] : undefined,
+      music: DEFAULT_BROWSER_STATE.favorites.music ? [...DEFAULT_BROWSER_STATE.favorites.music] : undefined,
+      subtitles: DEFAULT_BROWSER_STATE.favorites.subtitles ? [...DEFAULT_BROWSER_STATE.favorites.subtitles] : undefined,
+      effects: DEFAULT_BROWSER_STATE.favorites.effects ? [...DEFAULT_BROWSER_STATE.favorites.effects] : undefined,
+      filters: DEFAULT_BROWSER_STATE.favorites.filters ? [...DEFAULT_BROWSER_STATE.favorites.filters] : undefined,
+      transitions: DEFAULT_BROWSER_STATE.favorites.transitions
+        ? [...DEFAULT_BROWSER_STATE.favorites.transitions]
+        : undefined,
+      templates: DEFAULT_BROWSER_STATE.favorites.templates ? [...DEFAULT_BROWSER_STATE.favorites.templates] : undefined,
+      style_templates: DEFAULT_BROWSER_STATE.favorites.style_templates
+        ? [...DEFAULT_BROWSER_STATE.favorites.style_templates]
         : undefined,
     },
   }

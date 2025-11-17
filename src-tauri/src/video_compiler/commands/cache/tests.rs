@@ -198,8 +198,8 @@ mod cache_tests {
       total_files: 250,
       cache_hits: 100,
       cache_misses: 20,
-      hit_rate: 83.33,      // 100 hits / (100 hits + 20 misses) = 83.33%
-      hit_ratio: 83.33,     // Дублирует hit_rate для совместимости
+      hit_rate: 83.33,  // 100 hits / (100 hits + 20 misses) = 83.33%
+      hit_ratio: 83.33, // Дублирует hit_rate для совместимости
       preview_hits: 40,
       preview_misses: 10,
       preview_hit_ratio: 80.0,

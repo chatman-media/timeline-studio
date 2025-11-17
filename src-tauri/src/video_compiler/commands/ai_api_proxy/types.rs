@@ -93,9 +93,7 @@ pub enum AIMessageContent {
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AIContentPart {
   /// Text content
-  Text {
-    text: String,
-  },
+  Text { text: String },
 
   /// Image content (base64 or URL)
   Image {
@@ -116,9 +114,7 @@ pub enum AIImageSource {
   },
 
   /// Image URL
-  Url {
-    url: String,
-  },
+  Url { url: String },
 }
 
 /// Unified AI Message (supports text and vision)
@@ -147,9 +143,7 @@ impl AIMessage {
     Self {
       role: role.into(),
       content: AIMessageContent::Multimodal(vec![
-        AIContentPart::Text {
-          text: text.into(),
-        },
+        AIContentPart::Text { text: text.into() },
         AIContentPart::Image {
           source: AIImageSource::Base64 {
             media_type: media_type.into(),
@@ -169,9 +163,7 @@ impl AIMessage {
     Self {
       role: role.into(),
       content: AIMessageContent::Multimodal(vec![
-        AIContentPart::Text {
-          text: text.into(),
-        },
+        AIContentPart::Text { text: text.into() },
         AIContentPart::Image {
           source: AIImageSource::Url {
             url: image_url.into(),
@@ -185,19 +177,17 @@ impl AIMessage {
   pub fn get_text(&self) -> String {
     match &self.content {
       AIMessageContent::Text(text) => text.clone(),
-      AIMessageContent::Multimodal(parts) => {
-        parts
-          .iter()
-          .filter_map(|part| {
-            if let AIContentPart::Text { text } = part {
-              Some(text.as_str())
-            } else {
-              None
-            }
-          })
-          .collect::<Vec<_>>()
-          .join("\n")
-      }
+      AIMessageContent::Multimodal(parts) => parts
+        .iter()
+        .filter_map(|part| {
+          if let AIContentPart::Text { text } = part {
+            Some(text.as_str())
+          } else {
+            None
+          }
+        })
+        .collect::<Vec<_>>()
+        .join("\n"),
     }
   }
 }

@@ -75,7 +75,7 @@ function handleMediaAdded(
     name: media.name,
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
-    thumbnailPath: media.thumbnail ?? undefined,
+    thumbnailPath: (media as any).thumbnail ?? undefined,
   }
 
   // Добавляем в pool

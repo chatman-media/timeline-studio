@@ -34,7 +34,7 @@ function convertBackendNotification(backendNotification: BackendSystemNotificati
     type,
     timestamp: new Date(backendNotification.timestamp),
     duration: backendNotification.duration ?? undefined,
-    actions: backendNotification.actions ?? undefined,
+    actions: backendNotification.actions ? (backendNotification.actions as any) : undefined,
   }
 }
 

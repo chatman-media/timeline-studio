@@ -4,7 +4,7 @@
 
 import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { useVideoElement } from "../use-video-element"
 
 describe("useVideoElement - Memory Leak Prevention", () => {
@@ -16,18 +16,19 @@ describe("useVideoElement - Memory Leak Prevention", () => {
       id: "test-video-1",
       name: "test-video.mp4",
       path: "/path/to/test-video.mp4",
-      type: "video",
+      type: MediaType.Video,
       duration: 120,
       size: 1024 * 1024 * 100, // 100MB
-      createdAt: new Date().toISOString(),
-      thumbnailPath: null,
-      metadata: {
-        width: 1920,
-        height: 1080,
-        fps: 30,
-        codec: "h264",
-        bitrate: 5000000,
-      },
+      createdAt: new Date(),
+      thumbnailPath: undefined,
+      isVideo: true,
+      isAudio: false,
+      isImage: false,
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      bitrate: 5000000,
+      videoCodec: "h264",
     }
 
     videoRefs = {}

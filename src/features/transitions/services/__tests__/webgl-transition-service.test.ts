@@ -124,12 +124,12 @@ describe("WebGLTransitionService", () => {
     mockGl = createMockWebGLContext()
 
     // Mock getContext to return our mock WebGL context
-    vi.spyOn(mockCanvas, "getContext").mockImplementation((contextId: string) => {
+    vi.spyOn(mockCanvas, "getContext").mockImplementation(((contextId: string) => {
       if (contextId === "webgl" || contextId === "experimental-webgl") {
         return mockGl as WebGLRenderingContext
       }
       return null
-    })
+    }) as any)
   })
 
   afterEach(() => {
@@ -182,7 +182,7 @@ describe("WebGLTransitionService", () => {
     })
 
     it("should return null when texture creation fails", () => {
-      mockGl.createTexture = vi.fn(() => null)
+      ;(mockGl.createTexture as any) = vi.fn(() => null)
       const mockImage = new Image()
       const texture = service.createTextureFromImage(mockImage)
       expect(texture).toBeNull()

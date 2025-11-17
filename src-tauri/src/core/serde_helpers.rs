@@ -71,9 +71,7 @@ mod tests {
 
   #[test]
   fn test_max_u64() {
-    let test = TestStruct {
-      value: u64::MAX,
-    };
+    let test = TestStruct { value: u64::MAX };
 
     let json = serde_json::to_string(&test).unwrap();
     assert_eq!(json, r#"{"value":"18446744073709551615"}"#);

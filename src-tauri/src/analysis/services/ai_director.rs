@@ -24,7 +24,7 @@ use crate::analysis::engines::content_engine::{
 use crate::analysis::engines::{ContentEngine, MomentEngine, SceneEngine};
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
 use crate::analysis::services::vision_analyzer::{
-  VisionAnalysisConfig, VisionAnalysisResult as VLMAnalysisResult, VisionAnalyzer,
+  VLMAnalysisResult, VisionAnalysisConfig, VisionAnalyzer,
 };
 use crate::analysis::types::unified_types::{
   AudioCharacteristics, KeyMoment, SceneAnalysis, SceneType, VisualCharacteristics,
@@ -1013,10 +1013,7 @@ impl AIDirector {
     };
 
     // Получаем API ключ
-    let api_key = config
-      .ai_api_key
-      .clone()
-      .unwrap_or_else(|| String::new()); // Для Ollama ключ не нужен
+    let api_key = config.ai_api_key.clone().unwrap_or_else(String::new); // Для Ollama ключ не нужен
 
     // Запускаем анализ
     analyzer

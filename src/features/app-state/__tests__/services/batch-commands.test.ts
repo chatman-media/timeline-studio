@@ -5,7 +5,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectCommand } from "@/types/generated/state-types"
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 import {
   BatchCommandBuilder,
   type BatchCommandResult,

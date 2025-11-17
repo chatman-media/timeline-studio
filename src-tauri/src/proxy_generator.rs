@@ -124,9 +124,12 @@ pub fn generate_proxy(
   log::info!("FFmpeg command: {:?}", ffmpeg_cmd);
 
   // Execute FFmpeg
-  let output = ffmpeg_cmd
-    .output()
-    .map_err(|e| format!("Failed to execute FFmpeg: {}. Make sure FFmpeg is installed and in PATH", e))?;
+  let output = ffmpeg_cmd.output().map_err(|e| {
+    format!(
+      "Failed to execute FFmpeg: {}. Make sure FFmpeg is installed and in PATH",
+      e
+    )
+  })?;
 
   if !output.status.success() {
     let stderr = String::from_utf8_lossy(&output.stderr);
@@ -198,8 +201,15 @@ mod tests {
     };
 
     // Expected proxy filename format
-    let source_filename = Path::new(source_path).file_stem().unwrap().to_str().unwrap();
-    let expected_filename = format!("{}_proxy_{}x{}.mp4", source_filename, params.width, params.height);
+    let source_filename = Path::new(source_path)
+      .file_stem()
+      .unwrap()
+      .to_str()
+      .unwrap();
+    let expected_filename = format!(
+      "{}_proxy_{}x{}.mp4",
+      source_filename, params.width, params.height
+    );
 
     assert_eq!(expected_filename, "my_video_proxy_1280x720.mp4");
   }
@@ -248,8 +258,8 @@ pub async fn generate_proxy_command(
   };
 
   // Get app directories
-  let app_dirs = AppDirectories::get_or_create()
-    .map_err(|e| format!("Failed to get app directories: {}", e))?;
+  let app_dirs =
+    AppDirectories::get_or_create().map_err(|e| format!("Failed to get app directories: {}", e))?;
 
   let proxy_dir = &app_dirs.media_proxy_dir;
 

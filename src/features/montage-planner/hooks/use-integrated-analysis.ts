@@ -192,7 +192,7 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
 
       const mediaFiles = await Promise.all(mediaFilesPromises)
       logger.info("[Integrated Analysis] Metadata extracted for all files", {
-        totalDuration: mediaFiles.reduce((sum, f) => sum + f.duration, 0),
+        totalDuration: mediaFiles.reduce((sum, f) => sum + (f.duration || 0), 0),
       })
 
       await analyzeProject(mediaFiles)

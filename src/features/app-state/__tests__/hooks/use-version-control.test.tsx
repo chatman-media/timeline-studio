@@ -5,7 +5,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest"
-import type { ProjectEvent, ProjectState } from "@/types/generated/state-types"
+import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { useVersionControl } from "../../hooks/use-version-control"
 
 // Mock dependencies
@@ -118,6 +118,7 @@ describe("useVersionControl", () => {
       active_tab: "media",
       selected_files: {},
       tab_settings: {},
+      favorites: {},
     },
     clipboard: null,
     imported_media: {},

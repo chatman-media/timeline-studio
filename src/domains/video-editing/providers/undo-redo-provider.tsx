@@ -9,7 +9,6 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from "
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectCommand, ProjectEvent } from "@/types/generated/state-types"
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
 import {
   createInitialUndoState,
@@ -87,10 +86,10 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
         // Загружаем историю из backend
         const result = await backendSync.executeCommand({
           type: "GetUndoHistory",
-        } as ProjectCommand)
+        } as any)
 
         if (result.success && result.data && mounted) {
-          const updates = handleHistoryLoaded(undoState, result.data)
+          const updates = handleHistoryLoaded(undoState, result.data as any)
           setUndoState((prev) => ({ ...prev, ...updates }))
         }
       } catch (error) {
@@ -111,7 +110,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
 
   // Подписка на события backend
   useEffect(() => {
-    const unsubscribe = backendSync.onEvent((event: ProjectEvent) => {
+    const unsubscribe = backendSync.onEvent((event: any) => {
       // Обрабатываем только Undo/Redo события
       if (
         event.type === "UndoPerformed" ||
@@ -119,7 +118,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
         event.type === "ActionRegistered" ||
         event.type === "UndoHistoryCleared"
       ) {
-        const updates = handleUndoBackendEvent(undoState, event)
+        const updates = handleUndoBackendEvent(undoState, event as any)
         setUndoState((prev) => ({ ...prev, ...updates }))
       }
     })
@@ -143,7 +142,7 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
           undo_data: action.undoData,
           redo_data: action.redoData,
         },
-      } as ProjectCommand)
+      } as any)
       .then((result) => {
         if (!result.success) {
           logger.error("[UndoRedo] Failed to register action:", { error: result.error })

@@ -31,6 +31,4 @@ pub use script_generator::{
   ScriptScene, Voiceover, VoiceoverStyle,
 };
 pub use unified_audio_analyzer::UnifiedAudioAnalyzer;
-pub use vision_analyzer::{
-  FrameAnalysis, VisionAnalysisConfig, VisionAnalysisResult, VisionAnalyzer,
-};
+pub use vision_analyzer::{FrameAnalysis, VLMAnalysisResult, VisionAnalysisConfig, VisionAnalyzer};

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
-import type { BrowserTab } from "@/types/generated/state-types"
+import type { BrowserTab } from "@/types/generated/tauri-bindings"
 import { useApp } from "../services/app-provider"
 
 const logger = createLogger("UseFavorites")
@@ -15,7 +15,7 @@ const TYPE_TO_TAB_MAP: Record<string, BrowserTab> = {
   media: "media",
   music: "music",
   styleTemplate: "style_templates",
-}
+} as const
 
 /**
  * Хук для доступа к избранным элементам
@@ -67,7 +67,7 @@ export function useFavorites() {
           ...prev,
           [type]: (prev[type] || []).filter((f) => f.id !== item.id),
         }))
-        logger.error(`Failed to add to favorites [${type}]:`, error)
+        logger.error(`Failed to add to favorites [${type}]:`, { error })
       }
     },
     [executeCommand],
@@ -101,7 +101,7 @@ export function useFavorites() {
           ...prev,
           [type]: [...(prev[type] || []), item],
         }))
-        logger.error(`Failed to remove from favorites [${type}]:`, error)
+        logger.error(`Failed to remove from favorites [${type}]:`, { error })
       }
     },
     [executeCommand],

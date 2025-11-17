@@ -61,9 +61,9 @@ pub struct FrameAnalysis {
   pub mood: Option<String>,
 }
 
-/// Complete video vision analysis result
+/// Complete video vision language model analysis result
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
-pub struct VisionAnalysisResult {
+pub struct VLMAnalysisResult {
   /// Analysis of individual frames
   pub frames: Vec<FrameAnalysis>,
 
@@ -96,7 +96,7 @@ impl VisionAnalyzer {
     video_path: &PathBuf,
     api_key: &str,
     config: VisionAnalysisConfig,
-  ) -> Result<VisionAnalysisResult> {
+  ) -> Result<VLMAnalysisResult> {
     let start_time = std::time::Instant::now();
 
     info!(
@@ -136,7 +136,7 @@ impl VisionAnalyzer {
       frame_analyses.len()
     );
 
-    Ok(VisionAnalysisResult {
+    Ok(VLMAnalysisResult {
       frames: frame_analyses,
       overall_summary,
       themes,
@@ -342,7 +342,8 @@ impl VisionAnalyzer {
 
   /// Extract common themes from frame analyses
   fn extract_themes(&self, frames: &[FrameAnalysis]) -> Vec<String> {
-    let mut theme_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+    let mut theme_counts: std::collections::HashMap<String, usize> =
+      std::collections::HashMap::new();
 
     for frame in frames {
       // Count scene types

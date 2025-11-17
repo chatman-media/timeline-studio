@@ -52,7 +52,11 @@ export function applyEffectToClip(
   }
 
   // Создаем AppliedEffect
-  const { project: updatedProject, appliedEffect } = createAppliedEffect(project, options.effect, options.customParams)
+  const { project: updatedProject, appliedEffect } = createAppliedEffect(
+    project as any,
+    options.effect,
+    options.customParams,
+  )
 
   // Заменяем существующие эффекты того же типа, если нужно
   let effects = clip.effects || []
@@ -85,7 +89,7 @@ export function applyEffectToClip(
   }
 
   // Обновляем проект
-  return updateClipInProject(updatedProject, clipId, updatedClip, track.id, sectionIndex)
+  return updateClipInProject(updatedProject as unknown as TimelineProject, clipId, updatedClip, track.id, sectionIndex)
 }
 
 /**

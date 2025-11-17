@@ -111,7 +111,7 @@ export const chatMachine = setup({
       logger.infoSync("Обработка backend события", { eventType: event.event.type })
 
       // Делегируем обработку в специализированный обработчик
-      const updates = handleBackendChatEvent(context, event.event)
+      const updates = handleBackendChatEvent(context, event.event as any)
 
       return { ...context, ...updates }
     }),
