@@ -184,6 +184,9 @@ describe("MediaMetadataService", () => {
     it("should get duration for media file", async () => {
       const mockInvoke = vi.mocked(invoke)
       const duration = 120.5
+
+      // Очищаем все предыдущие моки перед настройкой нового
+      mockInvoke.mockReset()
       mockInvoke.mockResolvedValue(duration)
 
       const result = await service.getMediaDuration("/test/video.mp4")
@@ -196,6 +199,7 @@ describe("MediaMetadataService", () => {
 
     it("should handle duration extraction errors", async () => {
       const mockInvoke = vi.mocked(invoke)
+      mockInvoke.mockReset()
       mockInvoke.mockRejectedValue(new Error("Cannot read file"))
 
       await expect(service.getMediaDuration("/test/invalid.mp4")).rejects.toThrow("Failed to get media duration")

@@ -5,7 +5,6 @@
  * Группировка по дате, камере, событиям и другим критериям
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 
@@ -183,7 +182,7 @@ export class SmartOrganizationService {
       }
 
       // Сортируем файлы по дате
-      const sortedFiles = [...files].sort((a, b) => {
+      const sortedFiles = [...files].sort((_a, _b) => {
         // TODO: Использовать реальные даты файлов
         return 0
       })
@@ -330,7 +329,7 @@ export class SmartOrganizationService {
    */
   private async extractFileDate(
     file: MediaInfo,
-    options: Pick<OrganizeByDateOptions, "useCreationDate" | "useModificationDate" | "useExifDate">,
+    _options: Pick<OrganizeByDateOptions, "useCreationDate" | "useModificationDate" | "useExifDate">,
   ): Promise<Date | null> {
     try {
       // TODO: Реализовать извлечение даты из метаданных
@@ -345,7 +344,7 @@ export class SmartOrganizationService {
   /**
    * Получить timestamp файла
    */
-  private async getFileTimestamp(file: MediaInfo): Promise<number | null> {
+  private async getFileTimestamp(_file: MediaInfo): Promise<number | null> {
     try {
       // TODO: Реализовать получение timestamp
       return Date.now()
@@ -357,7 +356,7 @@ export class SmartOrganizationService {
   /**
    * Извлечь информацию о камере
    */
-  private async extractCameraInfo(file: MediaInfo): Promise<{ manufacturer?: string; model?: string } | null> {
+  private async extractCameraInfo(_file: MediaInfo): Promise<{ manufacturer?: string; model?: string } | null> {
     try {
       // TODO: Реализовать извлечение EXIF данных
       // Пока возвращаем null (все файлы пойдут в "Unknown")

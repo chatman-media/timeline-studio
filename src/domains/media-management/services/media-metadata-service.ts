@@ -117,12 +117,25 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
     logger.info("[Media Metadata] Getting duration for:", { filePath })
 
     try {
-      const duration = await invoke<number>("get_media_duration", {
-        path: filePath,
+      const result = await invoke<{
+        success: boolean
+        data?: number
+        error?: string
+      }>("execute_command", {
+        command: {
+          type: "GetMediaDuration",
+          params: {
+            file_path: filePath,
+          },
+        },
       })
 
-      logger.info("[Media Metadata] Duration:", { duration })
-      return duration
+      if (!result.success || result.data === undefined) {
+        throw new Error(result.error || "Failed to get duration")
+      }
+
+      logger.info("[Media Metadata] Duration:", { duration: result.data })
+      return result.data
     } catch (error) {
       logger.error("[Media Metadata] Failed to get duration:", { error })
       throw new Error(`Failed to get media duration: ${error}`)
