@@ -154,6 +154,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
       logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult } as Record<string, unknown>)
       setResult(analysisResult)
+      setIsAnalyzing(false) // Важно: устанавливаем после setResult, чтобы избежать race condition с событием
       logInfo("[useAIDirectorAnalysis] setResult вызван, устанавливаем результат", {
         hasResult: !!analysisResult,
         hasScenes: !!analysisResult?.scene_analysis?.scenes,
@@ -187,6 +188,7 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
         unknown
       >)
       setResult(analysisResult)
+      setIsAnalyzing(false) // Важно: устанавливаем после setResult, чтобы избежать race condition с событием
       logInfo("[useAIDirectorAnalysis] setResult вызван для быстрого анализа", {
         hasResult: !!analysisResult,
         hasScenes: !!analysisResult?.scene_analysis?.scenes,
