@@ -132,6 +132,11 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
           enable_ai_enhanced_analysis: false,
           enable_ai_descriptions: false,
           enable_ai_mood_analysis: false,
+          enable_vision_language_model: false,
+          vlm_model: null,
+          vlm_num_frames: 5,
+          vlm_temperature: 0.7,
+          vlm_max_tokens: 1024,
         },
       })
 

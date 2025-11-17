@@ -15,7 +15,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
-import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import type { LogContext } from "@/lib/tauri-logger"
@@ -92,7 +91,6 @@ type DashboardAnalysisResult = ComprehensiveAnalysisResult & {
 }
 
 export function AIAnalysisDashboard() {
-  const { analyzeComprehensive, analyzeQuick, state } = useAIDirector()
   const {
     isAnalyzing,
     currentProgress,
@@ -100,6 +98,8 @@ export function AIAnalysisDashboard() {
     errors,
     progressPercentage,
     currentStage,
+    startAnalysis,
+    startQuickAnalysis,
   } = useAIDirectorAnalysis()
 
   const { mediaFiles } = useMediaFiles()
@@ -152,7 +152,7 @@ export function AIAnalysisDashboard() {
       // Analyze each selected file sequentially
       for (const filePath of selectedFiles) {
         if (analysisMode === "fast") {
-          await analyzeQuick(filePath)
+          await startQuickAnalysis(filePath)
         } else {
           // Use default config based on mode
           const config: AIDirectorConfig = {
@@ -189,7 +189,7 @@ export function AIAnalysisDashboard() {
             enable_ai_descriptions: analysisMode === "quality",
             enable_ai_mood_analysis: true,
           }
-          await analyzeComprehensive(filePath, config)
+          await startAnalysis(filePath, config)
         }
       }
     } catch (error) {
