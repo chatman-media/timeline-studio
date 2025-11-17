@@ -6,7 +6,13 @@
  */
 
 import type { IAITool } from "@/domains/ai-tools/types"
-import type { AITool } from "@/types/generated/tauri-bindings"
+
+// AITool type is not exported from tauri-bindings yet, using placeholder
+type AITool = {
+  name: string
+  description: string
+  inputSchema: any
+}
 
 /**
  * Конвертирует BaseAITool в универсальный формат AITool

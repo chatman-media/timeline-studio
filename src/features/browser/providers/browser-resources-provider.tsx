@@ -7,9 +7,19 @@ import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 
 import { handleBackendEvent as processBackendEvent } from "../machines/resource-backend-event-handlers"
+
+// ProjectEvent is defined locally in resource-backend-event-handlers
+type ProjectEvent = Parameters<typeof processBackendEvent>[1]
+
+// Define ProjectState type locally
+interface ProjectState {
+  project: any | null
+  ui_state: any
+  playback_state: any
+  version: number
+}
 
 const logger = createLogger("BrowserResourcesProvider")
 
@@ -383,13 +393,13 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
         // Отправляем команду для инициализации загрузки,
         // но НЕ обновляем state напрямую - ждем события
         await this.backendSync.executeCommand({
-          type: "LoadResources",
+          type: "LoadResources" as any,
           params: {
             resource_type: "effect",
             source: "local",
             category: null,
           },
-        })
+        } as any)
 
         logger.debugSync("Initiated local resources loading from backend, waiting for events")
 
@@ -426,13 +436,13 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     if (this.isBackendConnected) {
       try {
         await this.backendSync.executeCommand({
-          type: "LoadResources",
+          type: "LoadResources" as any,
           params: {
             resource_type: "effect",
             source: "remote",
             category: null,
           },
-        })
+        } as any)
 
         logger.debugSync("Initiated remote resources loading from backend, waiting for events")
 
@@ -468,13 +478,13 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     if (this.isBackendConnected) {
       try {
         await this.backendSync.executeCommand({
-          type: "LoadResources",
+          type: "LoadResources" as any,
           params: {
             resource_type: "effect",
             source: "imported",
             category: null,
           },
-        })
+        } as any)
 
         logger.debugSync("Initiated imported resources loading from backend, waiting for events")
 
@@ -522,12 +532,12 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     if (this.isBackendConnected) {
       try {
         await this.backendSync.executeCommand({
-          type: "PreloadCategory",
+          type: "PreloadCategory" as any,
           params: {
             resource_type: type,
             category,
           },
-        })
+        } as any)
       } catch (error) {
         void logger.error("Failed to preload category", { error: String(error) })
       }
@@ -551,11 +561,11 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     if (this.isBackendConnected) {
       this.backendSync
         .executeCommand({
-          type: "SyncResources",
+          type: "SyncResources" as any,
           params: {
             source,
           },
-        })
+        } as any)
         .catch((error) => {
           void logger.error("Failed to sync source config", { error: String(error) })
         })
@@ -602,16 +612,12 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     // Оценка размера одного ресурса (средний размер объекта в памяти)
     const AVERAGE_RESOURCE_SIZE = 1024 // ~1KB на ресурс (метаданные, строки, функции)
 
-    // Подсчитываем память для каждого типа ресурсов (с проверкой на undefined)
-    if (this.effects) {
-      totalBytes += this.effects.size * AVERAGE_RESOURCE_SIZE
-    }
-    if (this.filters) {
-      totalBytes += this.filters.size * AVERAGE_RESOURCE_SIZE
-    }
-    if (this.transitions) {
-      totalBytes += this.transitions.size * AVERAGE_RESOURCE_SIZE
-    }
+    // Подсчитываем память для каждого типа ресурсов
+    const effectsCount = this.getEffects().length
+    const filtersCount = this.getFilters().length
+    const transitionsCount = this.getTransitions().length
+
+    totalBytes += (effectsCount + filtersCount + transitionsCount) * AVERAGE_RESOURCE_SIZE
 
     // Добавляем память кэша
     totalBytes += this.getCacheSize()
@@ -749,11 +755,11 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
 
     try {
       await this.backendSync.executeCommand({
-        type: "SyncResources",
+        type: "SyncResources" as any,
         params: {
           source,
         },
-      })
+      } as any)
       logger.debugSync("Synced resources with backend", { source })
     } catch (error) {
       void logger.error("Failed to sync resources", { source, error: String(error) })
@@ -766,14 +772,14 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
         // Event-driven подход: отправляем команду,
         // backend ответит событием EffectAdded/FilterAdded/etc.
         const response = await this.backendSync.executeCommand({
-          type: "SaveResource",
+          type: "SaveResource" as any,
           params: {
             resource_id: resource.id,
             resource_type: type,
             data: resource as any,
             metadata: {},
           },
-        })
+        } as any)
 
         if (!response.success) {
           throw new Error(response.error || "Failed to import resource")
@@ -813,12 +819,12 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
         // Event-driven подход: отправляем команду,
         // backend ответит событием EffectRemoved/FilterRemoved/etc.
         const response = await this.backendSync.executeCommand({
-          type: "DeleteResource",
+          type: "DeleteResource" as any,
           params: {
             resource_id: id,
             resource_type: type,
           },
-        })
+        } as any)
 
         if (!response.success) {
           throw new Error(response.error || "Failed to delete resource")

@@ -1,4 +1,4 @@
-import type { MediaItem } from "@/types/generated/tauri-bindings"
+import type { MediaItem } from "@/types/generated/state-types"
 
 import { useApp } from "../services/app-provider"
 

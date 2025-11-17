@@ -6,7 +6,7 @@
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 
 import { createLogger } from "@/lib/tauri-logger"
-// Use generated types from Specta
+// Use generated types
 import {
   type CommandResult,
   commands,

@@ -182,9 +182,7 @@ export function AiServicesTab() {
             },
           ]}
         />
-        {getValidationError("grok") && (
-          <p className="text-xs text-destructive mt-1">{getValidationError("grok")}</p>
-        )}
+        {getValidationError("grok") && <p className="text-xs text-destructive mt-1">{getValidationError("grok")}</p>}
       </div>
 
       <Separator />

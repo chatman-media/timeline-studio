@@ -8,7 +8,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { backendAI } from "@/shared/services/ai/backend-ai-service"
-import type { CacheStats } from "@/types/generated/tauri-bindings"
+
+// CacheStats type is not exported from tauri-bindings yet, using placeholder
+type CacheStats = {
+  enabled: boolean
+  total_entries: number
+  total_hits: number
+  expired_entries: number
+  max_entries: number
+}
 
 const logger = createLogger({ module: "CacheStatsPanel" })
 

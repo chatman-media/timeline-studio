@@ -11,10 +11,29 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { Resource, ResourceSource } from "../types/browser-resources-provider"
 
 const logger = createLogger("BrowserResources:BackendEventHandlers")
+
+// Define ProjectEvent type locally since import is not working
+type ProjectEvent =
+  | { type: "EffectAdded"; payload: { effect_id: string; name: string } }
+  | { type: "EffectRemoved"; payload: { effect_id: string } }
+  | { type: "FilterAdded"; payload: { filter_id: string; name: string } }
+  | { type: "FilterRemoved"; payload: { filter_id: string } }
+  | { type: "TransitionAdded"; payload: { transition_id: string; name: string } }
+  | { type: "TransitionRemoved"; payload: { transition_id: string } }
+  | { type: "TemplateAdded"; payload: { template_id: string; name: string } }
+  | { type: "TemplateRemoved"; payload: { template_id: string } }
+  | { type: "StyleTemplateAdded"; payload: { template_id: string; name: string } }
+  | { type: "StyleTemplateRemoved"; payload: { template_id: string } }
+  | { type: "SubtitleAdded"; payload: { subtitle_id: string; name: string } }
+  | { type: "SubtitleRemoved"; payload: { subtitle_id: string } }
+  | { type: "ImportedMediaAdded"; payload: { media: { id: string; name: string } } }
+  | { type: "ImportedMediaRemoved"; payload: { media_id: string } }
+  | { type: "ImportedMediaUpdated"; payload: { media_id: string } }
+  | { type: "ImportedMediaCleared"; payload: Record<string, never> }
+  | { type: string; payload?: any }
 
 /**
  * Контекст для обработки browser resource событий
@@ -99,10 +118,8 @@ export function handleBackendEvent(context: BrowserResourcesContext, event: Proj
 // Effect Handlers
 // ============================================================================
 
-function handleEffectAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "EffectAdded" }>,
-): EventHandlerResult {
+function handleEffectAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "EffectAdded") return {}
   const { effect_id, name } = event.payload
 
   logger.info("Adding effect to browser library", { effectId: effect_id, name })
@@ -120,12 +137,12 @@ function handleEffectAdded(
     return {}
   }
 
-  // Создаем новый ресурс
+  // Создаем новый ресурс (только базовые поля, остальные будут заполнены позже)
   const newResource: Resource = {
     id: effect_id,
     name,
     type: "effect",
-  }
+  } as Resource
 
   // Обновляем Map
   const newResources = new Map(context.resources)
@@ -137,10 +154,8 @@ function handleEffectAdded(
   }
 }
 
-function handleEffectRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "EffectRemoved" }>,
-): EventHandlerResult {
+function handleEffectRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "EffectRemoved") return {}
   const { effect_id } = event.payload
 
   logger.info("Removing effect from browser library", { effectId: effect_id })
@@ -163,10 +178,8 @@ function handleEffectRemoved(
 // Filter Handlers
 // ============================================================================
 
-function handleFilterAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "FilterAdded" }>,
-): EventHandlerResult {
+function handleFilterAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "FilterAdded") return {}
   const { filter_id, name } = event.payload
 
   logger.info("Adding filter to browser library", { filterId: filter_id, name })
@@ -186,7 +199,7 @@ function handleFilterAdded(
     id: filter_id,
     name,
     type: "filter",
-  }
+  } as Resource
 
   const newResources = new Map(context.resources)
   newResources.set(key, [...currentResources, newResource])
@@ -197,10 +210,8 @@ function handleFilterAdded(
   }
 }
 
-function handleFilterRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "FilterRemoved" }>,
-): EventHandlerResult {
+function handleFilterRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "FilterRemoved") return {}
   const { filter_id } = event.payload
 
   logger.info("Removing filter from browser library", { filterId: filter_id })
@@ -223,10 +234,8 @@ function handleFilterRemoved(
 // Transition Handlers
 // ============================================================================
 
-function handleTransitionAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "TransitionAdded" }>,
-): EventHandlerResult {
+function handleTransitionAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "TransitionAdded") return {}
   const { transition_id, name } = event.payload
 
   logger.info("Adding transition to browser library", { transitionId: transition_id, name })
@@ -246,7 +255,7 @@ function handleTransitionAdded(
     id: transition_id,
     name,
     type: "transition",
-  }
+  } as Resource
 
   const newResources = new Map(context.resources)
   newResources.set(key, [...currentResources, newResource])
@@ -257,10 +266,8 @@ function handleTransitionAdded(
   }
 }
 
-function handleTransitionRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "TransitionRemoved" }>,
-): EventHandlerResult {
+function handleTransitionRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "TransitionRemoved") return {}
   const { transition_id } = event.payload
 
   logger.info("Removing transition from browser library", { transitionId: transition_id })
@@ -283,10 +290,8 @@ function handleTransitionRemoved(
 // Template Handlers
 // ============================================================================
 
-function handleTemplateAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "TemplateAdded" }>,
-): EventHandlerResult {
+function handleTemplateAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "TemplateAdded") return {}
   const { template_id, name } = event.payload
 
   logger.info("Adding template to browser library", { templateId: template_id, name })
@@ -306,7 +311,7 @@ function handleTemplateAdded(
     id: template_id,
     name,
     type: "template",
-  }
+  } as Resource
 
   const newResources = new Map(context.resources)
   newResources.set(key, [...currentResources, newResource])
@@ -317,10 +322,8 @@ function handleTemplateAdded(
   }
 }
 
-function handleTemplateRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "TemplateRemoved" }>,
-): EventHandlerResult {
+function handleTemplateRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "TemplateRemoved") return {}
   const { template_id } = event.payload
 
   logger.info("Removing template from browser library", { templateId: template_id })
@@ -343,10 +346,8 @@ function handleTemplateRemoved(
 // Style Template Handlers
 // ============================================================================
 
-function handleStyleTemplateAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "StyleTemplateAdded" }>,
-): EventHandlerResult {
+function handleStyleTemplateAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "StyleTemplateAdded") return {}
   const { template_id, name } = event.payload
 
   logger.info("Adding style template to browser library", { templateId: template_id, name })
@@ -366,7 +367,7 @@ function handleStyleTemplateAdded(
     id: template_id,
     name,
     type: "styleTemplate",
-  }
+  } as Resource
 
   const newResources = new Map(context.resources)
   newResources.set(key, [...currentResources, newResource])
@@ -377,10 +378,8 @@ function handleStyleTemplateAdded(
   }
 }
 
-function handleStyleTemplateRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "StyleTemplateRemoved" }>,
-): EventHandlerResult {
+function handleStyleTemplateRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "StyleTemplateRemoved") return {}
   const { template_id } = event.payload
 
   logger.info("Removing style template from browser library", { templateId: template_id })
@@ -403,10 +402,8 @@ function handleStyleTemplateRemoved(
 // Subtitle Handlers
 // ============================================================================
 
-function handleSubtitleAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "SubtitleAdded" }>,
-): EventHandlerResult {
+function handleSubtitleAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "SubtitleAdded") return {}
   const { subtitle_id, name } = event.payload
 
   logger.info("Adding subtitle to browser library", { subtitleId: subtitle_id, name })
@@ -437,10 +434,8 @@ function handleSubtitleAdded(
   }
 }
 
-function handleSubtitleRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "SubtitleRemoved" }>,
-): EventHandlerResult {
+function handleSubtitleRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "SubtitleRemoved") return {}
   const { subtitle_id } = event.payload
 
   logger.info("Removing subtitle from browser library", { subtitleId: subtitle_id })
@@ -463,10 +458,8 @@ function handleSubtitleRemoved(
 // Imported Media Handlers
 // ============================================================================
 
-function handleImportedMediaAdded(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "ImportedMediaAdded" }>,
-): EventHandlerResult {
+function handleImportedMediaAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "ImportedMediaAdded") return {}
   const { media } = event.payload
 
   logger.info("Adding imported media to browser library", { mediaId: media.id, name: media.name })
@@ -498,10 +491,8 @@ function handleImportedMediaAdded(
   }
 }
 
-function handleImportedMediaRemoved(
-  context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "ImportedMediaRemoved" }>,
-): EventHandlerResult {
+function handleImportedMediaRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "ImportedMediaRemoved") return {}
   const { media_id } = event.payload
 
   logger.info("Removing imported media from browser library", { mediaId: media_id })
@@ -520,10 +511,8 @@ function handleImportedMediaRemoved(
   }
 }
 
-function handleImportedMediaUpdated(
-  _context: BrowserResourcesContext,
-  event: Extract<ProjectEvent, { type: "ImportedMediaUpdated" }>,
-): EventHandlerResult {
+function handleImportedMediaUpdated(_context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "ImportedMediaUpdated") return {}
   const { media_id } = event.payload
 
   logger.info("Imported media updated, triggering refresh", { mediaId: media_id })
@@ -534,10 +523,7 @@ function handleImportedMediaUpdated(
   }
 }
 
-function handleImportedMediaCleared(
-  context: BrowserResourcesContext,
-  _event: Extract<ProjectEvent, { type: "ImportedMediaCleared" }>,
-): EventHandlerResult {
+function handleImportedMediaCleared(context: BrowserResourcesContext, _event: ProjectEvent): EventHandlerResult {
   logger.info("Clearing all imported media from browser library")
 
   const source: ResourceSource = "imported"

@@ -6,14 +6,42 @@
 
 import { useCallback, useState } from "react"
 import { logError, logInfo } from "@/lib/tauri-logger"
-import type {
-  AIDirectorConfig,
-  ComprehensiveAnalysisResult,
-  ConfigValidationResult,
-  HealthCheckResult,
-  SystemCapabilities,
-} from "@/types/generated/tauri-bindings"
-import { commands } from "@/types/generated/tauri-bindings"
+
+// AI Director types are not in tauri-bindings yet, using placeholder types
+type AIDirectorConfig = any
+type ComprehensiveAnalysisResult = any
+type ConfigValidationResult = any
+type HealthCheckResult = any
+type SystemCapabilities = any
+
+import * as TauriBindings from "@/types/generated/tauri-bindings"
+
+// AI Director commands are not in bindings yet, create mock versions
+const commands = {
+  ...TauriBindings.commands,
+  aiDirectorAnalyzeComprehensive: async (_path: string, _config: any): Promise<any> => ({
+    status: "error" as const,
+    error: "Not implemented",
+  }),
+  aiDirectorAnalyzeQuick: async (_path: string): Promise<any> => ({
+    status: "error" as const,
+    error: "Not implemented",
+  }),
+  aiDirectorAnalyzeBatch: async (_paths: string[], _config: any): Promise<any> => ({
+    status: "error" as const,
+    error: "Not implemented",
+  }),
+  aiDirectorGetDefaultConfig: async (_mode: string): Promise<any> => ({
+    status: "error" as const,
+    error: "Not implemented",
+  }),
+  aiDirectorValidateConfig: async (_config: any): Promise<any> => ({
+    status: "error" as const,
+    error: "Not implemented",
+  }),
+  aiDirectorGetCapabilities: async (): Promise<any> => ({ status: "error" as const, error: "Not implemented" }),
+  aiDirectorHealthCheck: async (): Promise<any> => ({ status: "error" as const, error: "Not implemented" }),
+}
 
 export interface AIDirectorState {
   isAnalyzing: boolean

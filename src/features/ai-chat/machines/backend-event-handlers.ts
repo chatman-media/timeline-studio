@@ -8,7 +8,9 @@
 import type { ChatMachineContext } from "@/domains/ai-services/machines/chat-machine"
 import type { ChatListItem, ChatMessage } from "@/domains/ai-services/types/chat"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ChatEvent } from "@/types/generated/tauri-bindings"
+import type { ChatEvent as TauriChatEvent } from "@/types/generated/tauri-bindings"
+
+type ChatEvent = TauriChatEvent
 
 const logger = createLogger("ChatBackendEventHandlers")
 
@@ -19,22 +21,22 @@ export type { ChatMachineContext }
  * Главный обработчик backend событий
  */
 export function handleBackendChatEvent(context: ChatMachineContext, event: ChatEvent): Partial<ChatMachineContext> {
-  logger.info("Handling backend chat event:", { event: event.type })
+  logger.info("Handling backend chat event:", { event: (event as any).type })
 
-  switch (event.type) {
+  switch ((event as any).type) {
     // Chat Session Events
     case "ChatSessionCreated":
-      return handleChatSessionCreated(context, event)
+      return handleChatSessionCreated(context, event as any)
     case "ChatSessionDeleted":
-      return handleChatSessionDeleted(context, event)
+      return handleChatSessionDeleted(context, event as any)
     case "ChatSessionCleared":
-      return handleChatSessionCleared(context, event)
+      return handleChatSessionCleared(context, event as any)
     case "ChatSessionUpdated":
-      return handleChatSessionUpdated(context, event)
+      return handleChatSessionUpdated(context, event as any)
 
     // Chat Message Events
     case "ChatMessageAdded":
-      return handleChatMessageAdded(context, event)
+      return handleChatMessageAdded(context, event as any)
 
     default:
       logger.debug("Unhandled backend chat event type:", { type: event.type })
@@ -64,6 +66,8 @@ function handleChatSessionCreated(
     lastMessageAt: new Date(session.updated_at),
     messageCount: session.messages.length,
     lastMessage: session.messages[session.messages.length - 1]?.content,
+    createdAt: new Date(session.created_at),
+    agent: null as any, // Agent type will be inferred from session data later
   }
 
   return {

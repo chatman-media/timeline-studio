@@ -9,7 +9,9 @@ import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import { convertToSavedMediaFile } from "@/features/media/utils/saved-media-utils"
 import { createLogger } from "@/lib/tauri-logger"
-import type { MediaType as RustMediaType } from "@/types/generated/tauri-bindings"
+
+// Define RustMediaType locally
+type RustMediaType = "Video" | "Audio" | "Image" | "Unknown"
 
 const logger = createLogger("MediaImport")
 
@@ -121,12 +123,12 @@ export function useMediaImport() {
 
           const rustMediaType = convertToRustMediaType(file.type)
           void backendSync.executeCommand({
-            type: "AddImportedMedia",
+            type: "AddImportedMedia" as any,
             params: {
               path: file.path,
               media_type: rustMediaType,
             },
-          })
+          } as any)
         })
       },
       [backendSync],
@@ -148,7 +150,7 @@ export function useMediaImport() {
 
         // Обновляем файл во временном хранилище imported_media
         void backendSync.executeCommand({
-          type: "UpdateImportedMedia",
+          type: "UpdateImportedMedia" as any,
           params: {
             media_id: fileId,
             updates: {
@@ -157,7 +159,7 @@ export function useMediaImport() {
               metadata: metadata.probeData as any,
             },
           },
-        })
+        } as any)
       },
       [backendSync],
     ),

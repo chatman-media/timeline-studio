@@ -12,9 +12,15 @@ import { createActor } from "xstate"
 import { type ModalData, type ModalType, modalMachine } from "@/domains/system-integration/machines/modal-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("ModalProvider")
+
+// Define ProjectEvent type locally for modal events
+type ProjectEvent =
+  | { type: "ModalOpened"; payload: { modal_type: string; modal_data: any | null } }
+  | { type: "ModalClosed"; payload: Record<string, never> }
+  | { type: "ModalSubmitted"; payload: { data: any | null } }
+  | { type: string; payload?: any }
 
 // Re-export types for convenience
 export type { ModalType, ModalData }
@@ -133,7 +139,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
             modal_type: modalType,
             modal_data: modalData || null,
           },
-        })
+        } as any)
 
         if (!result.success) {
           throw new Error(result.error || "Failed to open modal")
@@ -194,7 +200,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           params: {
             data: data || null,
           },
-        })
+        } as any)
 
         if (!result.success) {
           throw new Error(result.error || "Failed to submit modal")

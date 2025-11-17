@@ -4,13 +4,14 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type {
-  AIDirectorConfig,
-  ComprehensiveAnalysisResult,
-  ConfigValidationResult,
-  HealthCheckResult,
-  SystemCapabilities,
-} from "@/types/generated/tauri-bindings"
+
+// AI Director types are not in tauri-bindings yet, using placeholder types
+type AIDirectorConfig = any
+type ComprehensiveAnalysisResult = any
+type ConfigValidationResult = any
+type HealthCheckResult = any
+type SystemCapabilities = any
+
 import { useAIDirector } from "../use-ai-director"
 
 // Mock logger

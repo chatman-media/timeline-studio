@@ -9,7 +9,9 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 // REMOVED: import { UnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type * as TauriTypes from "@/types/generated/tauri-bindings"
+
+type ProjectState = TauriTypes.ProjectState
 
 const logger = createLogger("ChatProvider")
 
@@ -158,10 +160,10 @@ export function ChatProvider({ children }: ChatProviderProps) {
       // Извлекаем сессии чата из состояния проекта
       if (state.chat_sessions) {
         const backendSessions = state.chat_sessions
-        const convertedSessions: ChatSession[] = backendSessions.map((s) => ({
+        const convertedSessions: ChatSession[] = backendSessions.map((s: any) => ({
           id: s.id,
           name: s.name,
-          messages: s.messages.map((m) => ({
+          messages: s.messages.map((m: any) => ({
             id: m.id,
             content: m.content,
             role: m.role as "user" | "assistant" | "system",

@@ -9,7 +9,7 @@ import React, { createContext, type ReactNode, useContext } from "react"
 
 import { type MockedFunction, vi } from "vitest"
 
-import type { CommandResult, ProjectCommand, ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
+import type { CommandResult, ProjectCommand, ProjectEvent, ProjectState } from "@/types/generated/state-types"
 
 // Mock data types
 export interface MockProjectState {

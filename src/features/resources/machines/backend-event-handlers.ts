@@ -7,7 +7,7 @@
 
 import { MediaType as LocalMediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/state-types-extensions"
 import type {
   EffectResource,
   FilterResource,

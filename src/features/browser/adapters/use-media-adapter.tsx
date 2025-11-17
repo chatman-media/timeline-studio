@@ -72,15 +72,19 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         durationStr = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
       }
 
+      // Получаем bitrate из метаданных если это видео
+      const bitrate =
+        mediaInfo.metadata?.type === "Video" || mediaInfo.metadata?.type === "Audio"
+          ? mediaInfo.metadata.bitrate
+          : undefined
+
       return {
         path: mediaInfo.path,
         name: mediaInfo.name,
         // Мапим поля из MediaInfo в MediaFile
         startTime: Date.now() / 1000, // Используем текущее время для сортировки
         size:
-          mediaInfo.metadata?.bitrate && mediaInfo.duration
-            ? `${Math.round((mediaInfo.metadata.bitrate * mediaInfo.duration) / 8 / 1024 / 1024)}MB`
-            : "0MB",
+          bitrate && mediaInfo.duration ? `${Math.round((bitrate * mediaInfo.duration) / 8 / 1024 / 1024)}MB` : "0MB",
         duration: durationStr,
         thumbnailPath: mediaInfo.thumbnailPath,
         type: mediaInfo.type.toLowerCase(),
@@ -92,10 +96,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         probeData: mediaInfo.metadata
           ? {
               format: {
-                size:
-                  mediaInfo.metadata.bitrate && mediaInfo.duration
-                    ? (mediaInfo.metadata.bitrate * mediaInfo.duration) / 8
-                    : 0,
+                size: bitrate && mediaInfo.duration ? (bitrate * mediaInfo.duration) / 8 : 0,
                 tags: {},
               },
               streams: [],

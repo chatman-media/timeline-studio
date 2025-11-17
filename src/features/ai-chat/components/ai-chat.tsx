@@ -15,7 +15,11 @@ import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { backendAI } from "@/shared/services/ai/backend-ai-service"
-import type { AIMessage, AIProvider } from "@/types/generated/tauri-bindings"
+
+// AI types are not exported from tauri-bindings yet, using placeholders
+type AIMessage = { role: string; content: string }
+type AIProvider = "claude" | "openai" | "deepseek" | "ollama"
+
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
 import { chatStorageService } from "../services/chat-storage-service"
@@ -373,7 +377,7 @@ export function AiChat() {
           logger.info("AI requested tool calls", { count: response.toolCalls.length })
 
           // Показываем пользователю, что AI использует инструменты
-          const toolsUsageMessage = `🛠️ Использую инструменты: ${response.toolCalls.map((tc) => tc.name).join(", ")}`
+          const toolsUsageMessage = `🛠️ Использую инструменты: ${response.toolCalls.map((tc: any) => tc.name).join(", ")}`
           receiveChatMessage(toolsUsageMessage)
 
           // Выполняем каждый инструмент

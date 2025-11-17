@@ -5,7 +5,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest"
-import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectState } from "@/types/generated/state-types"
 import { useVersionControl } from "../../hooks/use-version-control"
 
 // Mock dependencies

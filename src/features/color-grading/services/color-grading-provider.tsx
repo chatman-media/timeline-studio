@@ -2,9 +2,17 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from "
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
 import { useColorGrading } from "../hooks/use-color-grading"
+
+// Define ProjectEvent type locally for color grading events
+type ProjectEvent =
+  | { type: "ColorGradingApplied"; payload: { clip_id: string; preset_id?: string | null; parameters: any } }
+  | { type: "ColorGradingPresetSaved"; payload: { preset_id: string; name: string; parameters: any } }
+  | { type: "ColorGradingPresetDeleted"; payload: { preset_id: string } }
+  | { type: "ColorGradingReset"; payload: { clip_id: string } }
+  | { type: string; payload?: any }
+
 import {
   type ColorGradingContext as ColorGradingMachineContext,
   handleBackendEvent,

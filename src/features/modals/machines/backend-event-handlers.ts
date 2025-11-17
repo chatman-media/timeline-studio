@@ -5,8 +5,8 @@
  * Используется паттерн Command-Event для синхронизации
  */
 
+import type { ModalMachineContext } from "@/domains/system-integration/machines/modal-machine"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ModalMachineContext } from "./modal-machine"
 
 const logger = createLogger("ModalEventHandlers")
 
@@ -31,6 +31,7 @@ export type ModalBackendEvent =
         data: any | null
       }
     }
+  | { type: string; payload?: any }
 
 /**
  * Главный обработчик backend событий для Modal
@@ -58,10 +59,8 @@ export function handleModalBackendEvent(
 // Event Handlers
 // ============================================================================
 
-function handleModalOpened(
-  _context: ModalMachineContext,
-  event: Extract<ModalBackendEvent, { type: "ModalOpened" }>,
-): Partial<ModalMachineContext> {
+function handleModalOpened(_context: ModalMachineContext, event: ModalBackendEvent): Partial<ModalMachineContext> {
+  if (event.type !== "ModalOpened") return {}
   const { modal_type, modal_data } = event.payload
 
   logger.info("Modal opened:", { modal_type })
@@ -72,10 +71,7 @@ function handleModalOpened(
   }
 }
 
-function handleModalClosed(
-  context: ModalMachineContext,
-  _event: Extract<ModalBackendEvent, { type: "ModalClosed" }>,
-): Partial<ModalMachineContext> {
+function handleModalClosed(context: ModalMachineContext, _event: ModalBackendEvent): Partial<ModalMachineContext> {
   logger.info("Modal closed")
 
   // Если есть previousModal, возвращаемся к нему
@@ -95,10 +91,8 @@ function handleModalClosed(
   }
 }
 
-function handleModalSubmitted(
-  _context: ModalMachineContext,
-  event: Extract<ModalBackendEvent, { type: "ModalSubmitted" }>,
-): Partial<ModalMachineContext> {
+function handleModalSubmitted(_context: ModalMachineContext, event: ModalBackendEvent): Partial<ModalMachineContext> {
+  if (event.type !== "ModalSubmitted") return {}
   const { data } = event.payload
 
   logger.info("Modal submitted:", { data })

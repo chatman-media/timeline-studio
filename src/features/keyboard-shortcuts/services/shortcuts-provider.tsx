@@ -3,8 +3,16 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { ShortcutHandler } from "../components/shortcut-handler"
+
+// Define ProjectState type locally
+interface ProjectState {
+  project: any | null
+  ui_state: any
+  playback_state: any
+  version: number
+}
+
 import { DEFAULT_SHORTCUTS } from "../constants/default-shortcuts"
 import { usePanelShortcuts } from "../hooks/use-panel-shortcuts"
 import { type ShortcutContext, type ShortcutDefinition, shortcutsRegistry } from "./shortcuts-registry"
@@ -76,7 +84,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     try {
       // Log shortcuts configuration change for analytics
       await backendSync.executeCommand({
-        type: "LogUserAction",
+        type: "LogUserAction" as any,
         params: {
           action: "shortcuts:sync",
           timestamp: new Date().toISOString(),
@@ -87,7 +95,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             totalUsage: Object.values(shortcutUsageStats).reduce((sum, count) => sum + count, 0),
           },
         },
-      })
+      } as any)
 
       logger.info("[ShortcutsProvider] Shortcuts synced (analytics logged)")
     } catch (error) {
@@ -137,7 +145,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
           if (isBackendConnected) {
             backendSync
               .executeCommand({
-                type: "LogUserAction",
+                type: "LogUserAction" as any,
                 params: {
                   action: `shortcut:${shortcut.id}`,
                   timestamp: new Date().toISOString(),
@@ -146,7 +154,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                     context: currentContext,
                   },
                 },
-              })
+              } as any)
               .catch((error) => logger.error("Operation failed", { error }))
           }
 
@@ -278,13 +286,13 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     if (isBackendConnected) {
       backendSync
         .executeCommand({
-          type: "LogUserAction",
+          type: "LogUserAction" as any,
           params: {
             action: "shortcut:update",
             timestamp: new Date().toISOString(),
             metadata: { id, keys },
           },
-        })
+        } as any)
         .catch((error) => logger.error("Operation failed", { error }))
     }
   }
@@ -302,13 +310,13 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
     // Уведомляем backend
     if (isBackendConnected) {
       await backendSync.executeCommand({
-        type: "LogUserAction",
+        type: "LogUserAction" as any,
         params: {
           action: "shortcuts:reset",
           timestamp: new Date().toISOString(),
           metadata: {},
         },
-      })
+      } as any)
     }
   }
 

@@ -8,7 +8,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import React from "react"
 
-import type { ProjectCommand } from "@/types/generated/tauri-bindings"
+import type { ProjectCommand } from "@/types/generated/state-types"
 
 // Local type definitions until Specta export is updated
 export interface BatchCommandRequest {

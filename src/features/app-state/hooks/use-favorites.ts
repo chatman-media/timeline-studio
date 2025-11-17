@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
-import type { BrowserTab } from "@/types/generated/tauri-bindings"
+import type { BrowserTab } from "@/types/generated/state-types"
 import { useApp } from "../services/app-provider"
 
 const logger = createLogger("UseFavorites")

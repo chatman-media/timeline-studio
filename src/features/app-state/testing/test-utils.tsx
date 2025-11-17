@@ -10,7 +10,7 @@ import type React from "react"
 import type { ReactElement } from "react"
 import { vi } from "vitest"
 import { createLogger } from "@/lib/tauri-logger"
-import type { CommandResult, ProjectCommand } from "@/types/generated/tauri-bindings"
+import type { CommandResult, ProjectCommand } from "@/types/generated/state-types"
 import { createTestScenarios, MockBackendProvider, type MockProjectState } from "./mock-backend-provider"
 
 const logger = createLogger("TestUtils")

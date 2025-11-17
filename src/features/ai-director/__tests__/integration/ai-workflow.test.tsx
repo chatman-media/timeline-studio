@@ -7,7 +7,11 @@
 
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+
+// AI Director types are not in tauri-bindings yet, using placeholder types
+type AIDirectorConfig = any
+type ComprehensiveAnalysisResult = any
+
 import { useAIDirector } from "../../hooks/use-ai-director"
 
 // ============================================================================
@@ -392,8 +396,8 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(scenes[0].confidence).toBeGreaterThan(0.8)
       expect(scenes[1].startTime).toBe(30)
       expect(scenes[1].endTime).toBe(60)
-      expect(scenes.every((s) => s.confidence > 0.8)).toBe(true)
-      expect(scenes.every((s) => s.startTime < s.endTime)).toBe(true)
+      expect(scenes.every((s: any) => s.confidence > 0.8)).toBe(true)
+      expect(scenes.every((s: any) => s.startTime < s.endTime)).toBe(true)
     })
 
     it("should validate scene boundaries and transitions", async () => {
@@ -416,7 +420,7 @@ describe("AI Director Workflow Integration Tests", () => {
       }
 
       // Verify valid ranges
-      scenes.forEach((scene) => {
+      scenes.forEach((scene: any) => {
         expect(scene.startTime).toBeLessThan(scene.endTime)
         expect(scene.confidence).toBeGreaterThan(0)
         expect(scene.confidence).toBeLessThanOrEqual(1)
@@ -445,7 +449,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(scenes.length).toBeGreaterThan(0)
       expect(duration).toBeGreaterThan(0)
 
-      scenes.forEach((scene) => {
+      scenes.forEach((scene: any) => {
         expect(scene.startTime).toBeDefined()
         expect(scene.endTime).toBeDefined()
         expect(scene.confidence).toBeGreaterThan(0)
@@ -482,10 +486,10 @@ describe("AI Director Workflow Integration Tests", () => {
 
       // Verify scenes have high confidence
       const scenes = analysis.scene_analysis?.scenes || []
-      const highQualityScenes = scenes.filter((s) => s.confidence > 0.8)
+      const highQualityScenes = scenes.filter((s: any) => s.confidence > 0.8)
       expect(highQualityScenes.length).toBeGreaterThan(0)
 
-      highQualityScenes.forEach((scene) => {
+      highQualityScenes.forEach((scene: any) => {
         expect(scene.confidence).toBeGreaterThan(0.8)
       })
 
@@ -507,7 +511,7 @@ describe("AI Director Workflow Integration Tests", () => {
       const analysis = await result.current.analyzeComprehensive("/test/video.mp4")
 
       const scenes = analysis.scene_analysis?.scenes || []
-      const cutPoints = scenes.map((s) => s.startTime)
+      const cutPoints = scenes.map((s: any) => s.startTime)
 
       expect(cutPoints.length).toBe(scenes.length)
       expect(cutPoints.length).toBeGreaterThan(0)
@@ -519,7 +523,7 @@ describe("AI Director Workflow Integration Tests", () => {
 
       // Verify within video duration
       const duration = analysis.audio_analysis?.basic_metrics.duration?.seconds || 120
-      cutPoints.forEach((cut) => {
+      cutPoints.forEach((cut: any) => {
         expect(cut).toBeGreaterThanOrEqual(0)
         expect(cut).toBeLessThanOrEqual(duration)
       })
@@ -574,7 +578,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(qualityScore).toBeDefined()
       expect(qualityScore).toBeGreaterThanOrEqual(0)
 
-      scenes.forEach((scene) => {
+      scenes.forEach((scene: any) => {
         const duration = scene.endTime - scene.startTime
         expect(duration).toBeGreaterThan(0)
       })
@@ -601,10 +605,10 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(Array.isArray(keyMoments)).toBe(true)
 
       // Verify important scenes are preserved (high confidence)
-      const importantScenes = scenes.filter((s) => s.confidence > 0.9)
+      const importantScenes = scenes.filter((s: any) => s.confidence > 0.9)
       expect(importantScenes.length).toBeGreaterThan(0)
 
-      importantScenes.forEach((scene) => {
+      importantScenes.forEach((scene: any) => {
         expect(scene.startTime).toBeDefined()
         expect(scene.confidence).toBeGreaterThan(0.9)
       })
@@ -875,7 +879,7 @@ describe("AI Director Workflow Integration Tests", () => {
       expect(analysis.audio_analysis).toBeDefined()
 
       const scenes = analysis.scene_analysis?.scenes || []
-      const segments = scenes.map((s) => ({
+      const segments = scenes.map((s: any) => ({
         startTime: s.startTime,
         endTime: s.endTime,
         type: "scene" as const,
@@ -883,7 +887,7 @@ describe("AI Director Workflow Integration Tests", () => {
       }))
 
       expect(segments.length).toBe(scenes.length)
-      segments.forEach((seg) => {
+      segments.forEach((seg: any) => {
         expect(seg.startTime).toBeLessThan(seg.endTime)
         expect(seg.type).toBe("scene")
         expect(seg.confidence).toBeGreaterThan(0)

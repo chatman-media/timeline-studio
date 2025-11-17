@@ -13,7 +13,7 @@ describe("useFilterTimelineIntegration", () => {
     name: "Test Filter",
     category: "color-correction",
     complexity: "basic",
-    tags: ["test"],
+    tags: [] as const, // Use empty array instead of non-existent tag
     description: { en: "Test filter" },
     labels: { en: "Test" },
     params: {

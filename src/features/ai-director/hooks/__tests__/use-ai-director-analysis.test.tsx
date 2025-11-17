@@ -5,7 +5,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { AnalysisError, AnalysisProgress } from "@/domains/ai-services/types/ai-director-events"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+
+// AI Director types are not in tauri-bindings yet, using placeholder types
+type AIDirectorConfig = any
+type ComprehensiveAnalysisResult = any
+
 import { useAIDirectorAnalysis } from "../use-ai-director-analysis"
 
 // Mock logger

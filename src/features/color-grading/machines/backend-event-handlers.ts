@@ -6,9 +6,16 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
 import type { ColorGradingPreset } from "../types/presets"
+
+// Define ProjectEvent type locally for color grading events
+type ProjectEvent =
+  | { type: "ColorGradingApplied"; payload: { clip_id: string; preset_id?: string | null; parameters: any } }
+  | { type: "ColorGradingPresetSaved"; payload: { preset_id: string; name: string; parameters: any } }
+  | { type: "ColorGradingPresetDeleted"; payload: { preset_id: string } }
+  | { type: "ColorGradingReset"; payload: { clip_id: string } }
+  | { type: string; payload?: any }
 
 const logger = createLogger("ColorGrading:BackendEventHandlers")
 
@@ -47,10 +54,8 @@ export function handleBackendEvent(context: ColorGradingContext, event: ProjectE
 // Color Grading Handlers
 // ============================================================================
 
-function handleColorGradingApplied(
-  context: ColorGradingContext,
-  event: Extract<ProjectEvent, { type: "ColorGradingApplied" }>,
-): Partial<ColorGradingContext> {
+function handleColorGradingApplied(context: ColorGradingContext, event: ProjectEvent): Partial<ColorGradingContext> {
+  if (event.type !== "ColorGradingApplied") return {}
   const { clip_id, preset_id, parameters } = event.payload
 
   logger.info("Color grading applied to clip:", { clipId: clip_id, presetId: preset_id })
@@ -69,8 +74,9 @@ function handleColorGradingApplied(
 
 function handleColorGradingPresetSaved(
   context: ColorGradingContext,
-  event: Extract<ProjectEvent, { type: "ColorGradingPresetSaved" }>,
+  event: ProjectEvent,
 ): Partial<ColorGradingContext> {
+  if (event.type !== "ColorGradingPresetSaved") return {}
   const { preset_id, name, parameters } = event.payload
 
   logger.info("Color grading preset saved:", { presetId: preset_id, name })
@@ -111,8 +117,9 @@ function handleColorGradingPresetSaved(
 
 function handleColorGradingPresetDeleted(
   context: ColorGradingContext,
-  event: Extract<ProjectEvent, { type: "ColorGradingPresetDeleted" }>,
+  event: ProjectEvent,
 ): Partial<ColorGradingContext> {
+  if (event.type !== "ColorGradingPresetDeleted") return {}
   const { preset_id } = event.payload
 
   logger.info("Color grading preset deleted:", { presetId: preset_id })
@@ -122,10 +129,8 @@ function handleColorGradingPresetDeleted(
   }
 }
 
-function handleColorGradingReset(
-  context: ColorGradingContext,
-  event: Extract<ProjectEvent, { type: "ColorGradingReset" }>,
-): Partial<ColorGradingContext> {
+function handleColorGradingReset(context: ColorGradingContext, event: ProjectEvent): Partial<ColorGradingContext> {
+  if (event.type !== "ColorGradingReset") return {}
   const { clip_id } = event.payload
 
   logger.info("Color grading reset for clip:", { clipId: clip_id })

@@ -346,9 +346,14 @@ async function savePresetsCollection(collection: PresetsCollection): Promise<voi
 export function convertUserPresetToEffectPreset(userPreset: UserPreset): EffectPreset {
   return {
     id: userPreset.id,
-    name: userPreset.name,
-    description: userPreset.description,
-    params: userPreset.params,
-    tags: userPreset.tags,
+    name: typeof userPreset.name === "string" ? { en: userPreset.name, ru: userPreset.name } : userPreset.name,
+    description:
+      typeof userPreset.description === "string" || userPreset.description === undefined
+        ? userPreset.description
+          ? { en: userPreset.description, ru: userPreset.description }
+          : undefined
+        : userPreset.description,
+    parameters: userPreset.params,
+    tags: userPreset.tags || [],
   }
 }
