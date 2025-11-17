@@ -73,23 +73,34 @@ pub struct BrowserState {
   pub active_tab: BrowserTab,
   pub selected_files: HashMap<BrowserTab, Vec<String>>, // File IDs selected per tab
   pub tab_settings: HashMap<BrowserTab, TabSettings>,   // Settings per tab
+  pub favorites: HashMap<BrowserTab, Vec<String>>,      // Favorite file IDs per tab
 }
 
 impl Default for BrowserState {
   fn default() -> Self {
     let mut tab_settings = HashMap::new();
     let mut selected_files = HashMap::new();
+    let mut favorites = HashMap::new();
 
     // Initialize all tabs with default settings
     for tab in Self::all_tabs() {
-      tab_settings.insert(tab.clone(), TabSettings::default());
-      selected_files.insert(tab, Vec::new());
+      let mut settings = TabSettings::default();
+
+      // Music tab uses List view by default, others use Thumbnails
+      if tab != BrowserTab::Music {
+        settings.view_mode = ViewMode::Thumbnails;
+      }
+
+      tab_settings.insert(tab.clone(), settings);
+      selected_files.insert(tab.clone(), Vec::new());
+      favorites.insert(tab, Vec::new());
     }
 
     Self {
       active_tab: BrowserTab::default(),
       selected_files,
       tab_settings,
+      favorites,
     }
   }
 }
@@ -287,6 +298,49 @@ impl BrowserState {
   pub fn get_tab_settings(&self, tab: &BrowserTab) -> TabSettings {
     self.tab_settings.get(tab).cloned().unwrap_or_default()
   }
+
+  /// Add a file to favorites in a tab (defaults to active tab)
+  pub fn add_to_favorites(&mut self, file_id: String, tab: Option<BrowserTab>) {
+    let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
+    if let Some(fav) = self.favorites.get_mut(&target_tab) {
+      if !fav.contains(&file_id) {
+        fav.push(file_id);
+      }
+    }
+  }
+
+  /// Remove a file from favorites in a tab (defaults to active tab)
+  pub fn remove_from_favorites(&mut self, file_id: &str, tab: Option<BrowserTab>) {
+    let target_tab = tab.unwrap_or_else(|| self.active_tab.clone());
+    if let Some(fav) = self.favorites.get_mut(&target_tab) {
+      fav.retain(|id| id != file_id);
+    }
+  }
+
+  /// Check if a file is in favorites for a tab
+  pub fn is_favorite(&self, file_id: &str, tab: &BrowserTab) -> bool {
+    self
+      .favorites
+      .get(tab)
+      .map(|fav| fav.contains(&file_id.to_string()))
+      .unwrap_or(false)
+  }
+
+  /// Get all favorites for a specific tab
+  pub fn get_favorites(&self, tab: &BrowserTab) -> &[String] {
+    self
+      .favorites
+      .get(tab)
+      .map(|fav| fav.as_slice())
+      .unwrap_or(&[])
+  }
+
+  /// Clear all favorites for a tab
+  pub fn clear_favorites(&mut self, tab: &BrowserTab) {
+    if let Some(fav) = self.favorites.get_mut(tab) {
+      fav.clear();
+    }
+  }
 }
 
 /// Browser-specific events
@@ -347,5 +401,13 @@ pub enum BrowserEvent {
   },
   AllFilesDeselected {
     tab: BrowserTab,
+  },
+  FavoriteAdded {
+    tab: BrowserTab,
+    file_id: String,
+  },
+  FavoriteRemoved {
+    tab: BrowserTab,
+    file_id: String,
   },
 }

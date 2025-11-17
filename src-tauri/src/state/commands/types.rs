@@ -319,6 +319,14 @@ pub enum ProjectCommand {
   BrowserDeselectAllFiles {
     tab: Option<BrowserTab>,
   },
+  BrowserAddToFavorites {
+    file_id: String,
+    tab: Option<BrowserTab>,
+  },
+  BrowserRemoveFromFavorites {
+    file_id: String,
+    tab: Option<BrowserTab>,
+  },
 
   // Undo/Redo commands
   RegisterUndoAction {

@@ -1,8 +1,21 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { useApp } from "../services/app-provider"
+import type { BrowserEvent, BrowserTab } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("UseFavorites")
+
+// Маппинг типов фронтенда на BrowserTab
+const TYPE_TO_TAB_MAP: Record<string, BrowserTab> = {
+  transition: "transitions",
+  effect: "effects",
+  template: "templates",
+  filter: "filters",
+  subtitle: "subtitles",
+  media: "media",
+  music: "music",
+  styleTemplate: "style_templates",
+}
 
 /**
  * Хук для доступа к избранным элементам
@@ -11,8 +24,7 @@ const logger = createLogger("UseFavorites")
  * @returns Объект с данными и методами для работы с избранными
  */
 export function useFavorites() {
-  // Используем локальное состояние для избранных элементов
-  // В будущем это будет подключено к backend
+  // Состояние синхронизируется с backend через события
   const [favorites, setFavorites] = useState<Record<string, any[]>>({
     transition: [],
     effect: [],
@@ -20,55 +32,82 @@ export function useFavorites() {
     filter: [],
     subtitle: [],
     media: [],
-    audio: [],
+    music: [],
+    styleTemplate: [],
   })
 
-  const { executeCommand } = useApp()
+  const { executeCommand, listenToEvent } = useApp()
+
+  // Подписка на события favorites от backend
+  useEffect(() => {
+    const unsubscribeFavoriteAdded = listenToEvent("Browser", (event: BrowserEvent) => {
+      if (event.event_type === "favorite_added") {
+        const { tab, file_id } = event.data as { tab: BrowserTab; file_id: string }
+        const frontendType = Object.entries(TYPE_TO_TAB_MAP).find(([, t]) => t === tab)?.[0]
+        if (frontendType) {
+          setFavorites((prev) => ({
+            ...prev,
+            [frontendType]: [...(prev[frontendType] || []), { id: file_id }],
+          }))
+          logger.info(`Favorite added from backend [${tab}]:`, file_id)
+        }
+      }
+    })
+
+    const unsubscribeFavoriteRemoved = listenToEvent("Browser", (event: BrowserEvent) => {
+      if (event.event_type === "favorite_removed") {
+        const { tab, file_id } = event.data as { tab: BrowserTab; file_id: string }
+        const frontendType = Object.entries(TYPE_TO_TAB_MAP).find(([, t]) => t === tab)?.[0]
+        if (frontendType) {
+          setFavorites((prev) => ({
+            ...prev,
+            [frontendType]: (prev[frontendType] || []).filter((f) => f.id !== file_id),
+          }))
+          logger.info(`Favorite removed from backend [${tab}]:`, file_id)
+        }
+      }
+    })
+
+    return () => {
+      unsubscribeFavoriteAdded?.()
+      unsubscribeFavoriteRemoved?.()
+    }
+  }, [listenToEvent])
 
   const addToFavorites = useCallback(
     async (item: any, type: string) => {
-      setFavorites((prev) => ({
-        ...prev,
-        [type]: [...(prev[type] || []), item],
-      }))
+      const tab = TYPE_TO_TAB_MAP[type]
+      if (!tab) {
+        logger.error(`Unknown type for favorites: ${type}`)
+        return
+      }
 
-      // В будущем это будет backend команда:
-      // await executeCommand({
-      //   type: 'AddToFavorites',
-      //   params: { item, type }
-      // })
-      logger.info(`Added to favorites [${type}]:`, item)
+      // Отправляем команду в backend
+      await executeCommand({
+        type: "BrowserAddToFavorites",
+        params: { file_id: item.id, tab },
+      })
+
+      logger.info(`Adding to favorites [${type}]:`, item)
     },
     [executeCommand],
   )
 
   const removeFromFavorites = useCallback(
     async (item: any, type: string) => {
-      setFavorites((prev) => ({
-        ...prev,
-        [type]: (prev[type] || []).filter((f) => f.id !== item.id),
-      }))
+      const tab = TYPE_TO_TAB_MAP[type]
+      if (!tab) {
+        logger.error(`Unknown type for favorites: ${type}`)
+        return
+      }
 
-      // В будущем это будет backend команда:
-      // await executeCommand({
-      //   type: 'RemoveFromFavorites',
-      //   params: { itemId: item.id, type }
-      // })
-      logger.info(`Removed from favorites [${type}]:`, item)
-    },
-    [executeCommand],
-  )
+      // Отправляем команду в backend
+      await executeCommand({
+        type: "BrowserRemoveFromFavorites",
+        params: { file_id: item.id, tab },
+      })
 
-  const updateFavorites = useCallback(
-    async (newFavorites: Record<string, any[]>) => {
-      setFavorites(newFavorites)
-
-      // В будущем это будет backend команда:
-      // await executeCommand({
-      //   type: 'UpdateFavorites',
-      //   params: { favorites: newFavorites }
-      // })
-      logger.info("Updated favorites:", newFavorites)
+      logger.info(`Removing from favorites [${type}]:`, item)
     },
     [executeCommand],
   )
@@ -82,7 +121,6 @@ export function useFavorites() {
 
   return {
     favorites,
-    updateFavorites,
     addToFavorites,
     removeFromFavorites,
     isItemFavorite,

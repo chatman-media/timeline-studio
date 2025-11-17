@@ -364,6 +364,12 @@ impl CommandHandler {
         self.browser_select_all_files(file_ids, tab).await
       }
       ProjectCommand::BrowserDeselectAllFiles { tab } => self.browser_deselect_all_files(tab).await,
+      ProjectCommand::BrowserAddToFavorites { file_id, tab } => {
+        self.browser_add_to_favorites(file_id, tab).await
+      }
+      ProjectCommand::BrowserRemoveFromFavorites { file_id, tab } => {
+        self.browser_remove_from_favorites(file_id, tab).await
+      }
 
       // Undo/Redo commands
       ProjectCommand::RegisterUndoAction { action } => match serde_json::from_value(action) {
@@ -2572,6 +2578,62 @@ impl CommandHandler {
       .event_bus
       .publish(
         ProjectEvent::Browser(BrowserEvent::AllFilesDeselected { tab: target_tab }),
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
+  }
+
+  async fn browser_add_to_favorites(
+    &self,
+    file_id: String,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
+    let mut state = self.state.write().await;
+    let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
+    state
+      .browser_state
+      .add_to_favorites(file_id.clone(), Some(target_tab.clone()));
+    let version = state.version;
+
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::Browser(BrowserEvent::FavoriteAdded {
+          tab: target_tab,
+          file_id,
+        }),
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(None)
+  }
+
+  async fn browser_remove_from_favorites(
+    &self,
+    file_id: String,
+    tab: Option<BrowserTab>,
+  ) -> CommandResult {
+    let mut state = self.state.write().await;
+    let target_tab = tab.unwrap_or_else(|| state.browser_state.active_tab.clone());
+    state
+      .browser_state
+      .remove_from_favorites(&file_id, Some(target_tab.clone()));
+    let version = state.version;
+
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::Browser(BrowserEvent::FavoriteRemoved {
+          tab: target_tab,
+          file_id,
+        }),
         "command_handler".to_string(),
         version,
       )
