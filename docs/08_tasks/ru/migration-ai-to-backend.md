@@ -7,7 +7,7 @@
 **Статус:** ✅ **Phase 1-2 ЗАВЕРШЕНЫ** (Multi-provider + Tools support реализованы)
 
 **Дата начала:** 2025-11-08
-**Последнее обновление:** 2025-11-08
+**Последнее обновление:** 2025-11-17
 
 ---
 
@@ -125,6 +125,88 @@
 - 7 unified AI команд
 - 4 script generation команды
 - 5 metadata generation команд
+
+#### 6. AI Chat Integration
+
+**Местоположение:** `src-tauri/src/state/commands/handler.rs`
+
+**Реализовано:**
+- ✅ Интеграция AIProviderManager в CommandHandler (lines 28-47)
+- ✅ Интеграция SecureStorage для безопасного хранения API ключей
+- ✅ Метод `get_api_key_for_provider()` для получения ключей из user settings
+- ✅ Переписан `send_chat_message()` на использование AIProviderManager вместо старого API
+- ✅ Поддержка всех провайдеров: Claude, OpenAI, DeepSeek, Ollama
+- ✅ Использование `UnifiedAIRequest/UnifiedAIResponse` для всех запросов
+
+**Изменения:**
+
+1. **CommandHandler struct** - добавлены поля:
+   ```rust
+   ai_manager: Arc<AIProviderManager>,
+   secure_storage: Arc<tokio::sync::Mutex<SecureStorage>>,
+   ```
+
+2. **StateManager::new()** - инициализация AI сервисов:
+   ```rust
+   let ai_manager = Arc::new(AIProviderManager::new());
+   let secure_storage = Arc::new(tokio::sync::Mutex::new(
+     SecureStorage::new(app_handle.clone())?
+   ));
+   ```
+
+3. **get_api_key_for_provider()** - получение API ключей:
+   ```rust
+   async fn get_api_key_for_provider(&self, provider: &str) -> Result<String, String>
+   ```
+   - Конвертирует название провайдера в `ApiKeyType`
+   - Получает ключ из `SecureStorage` (AES-256-GCM шифрование)
+   - Возвращает понятные ошибки при отсутствии ключа
+
+4. **send_chat_message()** - полностью переписан:
+   ```rust
+   async fn send_chat_message(
+     &self,
+     session_id: String,
+     message: String,
+     model: String,
+     provider: String,
+     project_context: Option<serde_json::Value>,
+   ) -> CommandResult
+   ```
+   - Получает API ключ из user settings через `get_api_key_for_provider()`
+   - Парсит provider enum (case-insensitive)
+   - Создает `UnifiedAIRequest` с сообщениями и контекстом
+   - Отправляет запрос через `AIProviderManager::send_request()`
+   - Возвращает унифицированный ответ с usage metrics
+
+**Статус:** ✅ AI Chat полностью мигрирован на backend (2025-11-17)
+
+5. **send_streaming_chat_message()** - добавлена поддержка streaming:
+   ```rust
+   async fn send_streaming_chat_message(
+     &self,
+     session_id: String,
+     message: String,
+     model: String,
+     provider: String,
+     project_context: Option<serde_json::Value>,
+   ) -> CommandResult
+   ```
+   - Получает API ключ из SecureStorage
+   - Создает `UnifiedAIRequest` с `stream: Some(true)`
+   - Генерирует уникальный `request_id` через uuid
+   - Отправляет запрос через `AIProviderManager::send_request_stream()`
+   - События автоматически публикуются через Tauri Event System:
+     - `ai-stream-started` - начало streaming
+     - `ai-stream-chunk` - каждый chunk текста
+     - `ai-stream-completed` - завершение с полным текстом
+     - `ai-stream-error` - ошибка при streaming
+
+**Streaming Architecture:**
+- Backend использует `futures::StreamExt` для обработки HTTP stream
+- Каждый chunk парсится (SSE format для Claude/OpenAI)
+- События отправляются в frontend через Tauri Event System
+- Frontend подписывается на события через `listen()`
 
 ---
 
@@ -525,6 +607,61 @@ for (const metadata of multiPlatform.platforms) {
 }
 ```
 
+### 7. Streaming AI Chat (Real-time)
+
+```typescript
+import { listen } from '@tauri-apps/api/event'
+
+// Подписка на streaming события
+const unlistenStarted = await listen('ai-stream-started', (event) => {
+  console.log('Stream started:', event.payload)
+})
+
+const unlistenChunk = await listen('ai-stream-chunk', (event) => {
+  const { request_id, chunk, accumulated_text } = event.payload
+  // Обновить UI с новым chunk текста
+  updateChatMessage(request_id, accumulated_text)
+})
+
+const unlistenCompleted = await listen('ai-stream-completed', (event) => {
+  const { request_id, full_text, usage } = event.payload
+  console.log('Stream completed:', full_text)
+  console.log('Token usage:', usage)
+  // Финализировать сообщение
+  finalizeChatMessage(request_id, full_text)
+})
+
+const unlistenError = await listen('ai-stream-error', (event) => {
+  const { request_id, error } = event.payload
+  console.error('Stream error:', error)
+  showErrorMessage(error)
+})
+
+// Запустить streaming запрос
+try {
+  const response = await invoke('send_streaming_chat_message', {
+    sessionId: 'session-123',
+    message: 'Объясни мне что такое timeline в видеомонтаже',
+    model: 'claude-3-5-sonnet-20241022',
+    provider: 'claude',
+    projectContext: null,
+  })
+
+  console.log('Streaming started:', response)
+  // response содержит request_id для отслеживания событий
+} catch (error) {
+  console.error('Failed to start streaming:', error)
+}
+
+// Не забудьте отписаться когда компонент размонтируется
+onCleanup(() => {
+  unlistenStarted()
+  unlistenChunk()
+  unlistenCompleted()
+  unlistenError()
+})
+```
+
 ---
 
 ## Tools/Function Calling - Детали реализации
@@ -621,30 +758,146 @@ let tool = AITool {
 
 | Провайдер | Tools | Fallback | Streaming | Примечания |
 |-----------|-------|----------|-----------|------------|
-| Claude    | ✅    | ✅       | ⏳        | Tool Use API, полная поддержка |
-| OpenAI    | ✅    | ✅       | ⏳        | Function Calling, полная поддержка |
-| DeepSeek  | ✅    | ✅       | ⏳        | OpenAI-compatible API |
-| Ollama    | ❌    | ✅       | ⏳        | Локальный, пока без tools |
+| Claude    | ✅    | ✅       | ✅        | Tool Use API, полная поддержка streaming |
+| OpenAI    | ✅    | ✅       | ✅        | Function Calling, полная поддержка streaming |
+| DeepSeek  | ✅    | ✅       | ✅        | OpenAI-compatible API, streaming поддержан |
+| Ollama    | ✅    | ✅       | ✅        | Локальный, function calling с v0.1.26+, полная поддержка |
 
 ### Ограничения
-- **Tools**: Ollama пока не поддерживает инструменты
-- **Streaming**: Реализация запланирована в следующей итерации
 - **Батчинг**: Пока только последовательные запросы
-- **Timeout**: 120 секунд по умолчанию
+- **Timeout**: 120 секунд по умолчанию для обычных запросов, streaming без timeout
+- **Ollama Token Usage**: Ollama не предоставляет детальную статистику использования токенов
+
+---
+
+## Рекомендуемые локальные модели с Function Calling
+
+### 🔥 Llama 3.x (Meta)
+**Модели:** `llama3.1:8b`, `llama3.1:70b`, `llama3.2:3b`, `llama3.3:70b`
+- Официальная поддержка function calling от Meta
+- Отличное качество для всех размеров
+- Llama 3.3:70b - лучшая производительность
+- Рекомендуется для production
+
+**Установка:**
+```bash
+ollama pull llama3.3:70b
+```
+
+### 🎯 Специализированные модели
+
+**Firefunction V2** - `firefunction-v2:70b`
+- Специально обучена для function calling
+- Самая точная в выборе инструментов
+- Отличная для complex multi-tool scenarios
+
+**Hermes 2 Pro** - `hermes-2-pro:7b`, `hermes-2-pro:13b`
+- Основана на Llama, улучшенная для function calling
+- Хороший баланс скорости и качества
+- Поддержка сложных инструкций
+
+**Functionary 3** - `functionary:7b`, `functionary:13b`
+- Одна из первых специализированных моделей
+- Надежная для стандартных сценариев
+- Быстрая работа
+
+### 🌪️ Mistral
+**Модели:** `mistral:7b-instruct-v0.3`, `mistral-nemo:12b`
+- Встроенная поддержка function calling
+- Хорошее качество на русском языке
+- Быстрая работа
+
+### Сравнение производительности
+
+| Модель | Размер | Function Calling | Скорость | Качество | RAM |
+|--------|--------|------------------|----------|----------|-----|
+| Llama 3.3:70b | 70B | ✅ Отлично | Медленная | ⭐⭐⭐⭐⭐ | ~64GB |
+| Llama 3.1:8b | 8B | ✅ Хорошо | Быстрая | ⭐⭐⭐⭐ | ~8GB |
+| Llama 3.2:3b | 3B | ✅ Средне | Очень быстрая | ⭐⭐⭐ | ~4GB |
+| Firefunction V2 | 70B | ✅ Отлично | Медленная | ⭐⭐⭐⭐⭐ | ~64GB |
+| Hermes 2 Pro | 7B | ✅ Хорошо | Быстрая | ⭐⭐⭐⭐ | ~8GB |
+| Mistral | 7B | ✅ Хорошо | Быстрая | ⭐⭐⭐⭐ | ~8GB |
+
+### Docker Setup для Llama 3.3:70b
+
+```bash
+# Запуск Ollama в Docker
+docker run -d --gpus=all \
+  -v ollama:/root/.ollama \
+  -p 11434:11434 \
+  --name ollama \
+  ollama/ollama
+
+# Загрузка модели
+docker exec -it ollama ollama pull llama3.3:70b
+
+# Проверка
+curl http://localhost:11434/api/tags
+```
+
+### Пример использования с Function Calling
+
+```typescript
+import { invoke } from '@tauri-apps/api/core'
+
+const tools = [
+  {
+    name: 'analyze_video',
+    description: 'Analyze video content and extract metadata',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        video_path: { type: 'string', description: 'Path to video file' },
+        analyze_audio: { type: 'boolean', description: 'Include audio analysis' },
+      },
+      required: ['video_path'],
+    }
+  }
+]
+
+const response = await invoke('ai_send_request_with_tools', {
+  apiKey: 'local', // Для Ollama не нужен реальный ключ
+  provider: 'ollama',
+  model: 'llama3.3:70b',
+  messages: [
+    { role: 'user', content: 'Проанализируй видео project.mp4 со звуком' }
+  ],
+  tools,
+  toolChoice: { auto: null },
+})
+
+// Обработка tool_calls
+if (response.toolCalls) {
+  for (const call of response.toolCalls) {
+    console.log(`Вызов: ${call.name}`)
+    console.log(`Параметры:`, call.input)
+    // { video_path: "project.mp4", analyze_audio: true }
+  }
+}
+```
 
 ---
 
 ## Следующие шаги
 
 ### Краткосрочные (1-2 недели)
-- [ ] Streaming поддержка для всех провайдеров
-- [ ] Миграция AI Chat на использование бэкенда
+- [x] **✅ Streaming поддержка для всех провайдеров** (завершено 2025-11-17)
+  - Реализован send_streaming_chat_message() через AIProviderManager
+  - Поддержка Claude, OpenAI, DeepSeek, Ollama
+  - Tauri Event System для real-time событий
+- [x] **✅ Миграция AI Chat на использование бэкенда** (завершено 2025-11-17)
+  - Интегрирован AIProviderManager в CommandHandler
+  - Добавлено получение API ключей из SecureStorage
+  - Переписан send_chat_message() с поддержкой всех провайдеров
+  - Переписан send_streaming_chat_message() с поддержкой streaming
 - [ ] Кэширование AI ответов в SQLite
 - [ ] Rate limiting и retry с exponential backoff
 
 ### Среднесрочные (1-2 месяца)
 - [ ] Батчинг запросов для оптимизации
-- [ ] Ollama tools support (когда появится в upstream)
+- [x] **✅ Ollama tools support** (добавлено 2025-11-17)
+  - Поддержка function calling для Ollama 0.1.26+
+  - Работает с Llama 3.1, 3.2, 3.3, Mistral, Hermes, Firefunction
 - [ ] Мониторинг и аналитика использования AI
 - [ ] Cost tracking для каждого провайдера
 
@@ -762,11 +1015,13 @@ cargo test --features integration-tests
 ✅ **AI Director Integration** - Использование AI в анализе видео
 
 **Следующий фокус:**
-1. Интеграция AI Chat с новым бэкендом
-2. Реализация streaming для real-time ответов
+1. ~~Интеграция AI Chat с новым бэкендом~~ ✅ Завершено
+2. ~~Реализация streaming для real-time ответов~~ ✅ Завершено
 3. Кэширование результатов в SQLite
+4. Rate limiting и retry логика
+5. Обновление фронтенда для использования streaming событий
 
 ---
 
-*Документ обновлен: 2025-11-08*
+*Документ обновлен: 2025-11-17*
 *Авторы: Claude Code*
