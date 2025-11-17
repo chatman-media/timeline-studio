@@ -394,52 +394,63 @@ export function AIAnalysisDashboard() {
                         <div className="grid grid-cols-3 gap-4 mb-4">
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.scene_analysis.total_scenes}</p>
+                              <p className="text-2xl font-bold">{result.scene_analysis.total_scenes || 0}</p>
                               <p className="text-sm text-muted-foreground">Всего сцен</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
                               <p className="text-2xl font-bold">
-                                {result.scene_analysis.avg_scene_duration?.toFixed(1)}s
+                                {result.scene_analysis.avg_scene_duration
+                                  ? result.scene_analysis.avg_scene_duration.toFixed(1)
+                                  : "0"}
+                                s
                               </p>
                               <p className="text-sm text-muted-foreground">Средняя длительность</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.scene_analysis.scenes.length}</p>
+                              <p className="text-2xl font-bold">
+                                {result.scene_analysis.scenes?.length || 0}
+                              </p>
                               <p className="text-sm text-muted-foreground">Детектировано</p>
                             </CardContent>
                           </Card>
                         </div>
 
-                        {result.scene_analysis.scenes.slice(0, 5).map((scene: any, index: number) => (
-                          <Card key={scene.id}>
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <p className="font-medium">
-                                    Сцена {index + 1}: {scene.sceneType}
-                                  </p>
-                                  <p className="text-sm text-muted-foreground">
-                                    {scene.startTime.toFixed(1)}s - {scene.endTime.toFixed(1)}s (
-                                    {scene.duration.toFixed(1)}s)
-                                  </p>
-                                  {scene.description && <p className="text-sm mt-1">{scene.description}</p>}
-                                </div>
-                                <span className="text-sm font-medium text-blue-600">
-                                  {Math.round(scene.confidence * 100)}%
-                                </span>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                        {result.scene_analysis.scenes && result.scene_analysis.scenes.length > 0 ? (
+                          <>
+                            {result.scene_analysis.scenes.slice(0, 5).map((scene: any, index: number) => (
+                              <Card key={scene.id}>
+                                <CardContent className="pt-4">
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <p className="font-medium">
+                                        Сцена {index + 1}: {scene.sceneType}
+                                      </p>
+                                      <p className="text-sm text-muted-foreground">
+                                        {scene.startTime.toFixed(1)}s - {scene.endTime.toFixed(1)}s (
+                                        {scene.duration.toFixed(1)}s)
+                                      </p>
+                                      {scene.description && <p className="text-sm mt-1">{scene.description}</p>}
+                                    </div>
+                                    <span className="text-sm font-medium text-blue-600">
+                                      {Math.round(scene.confidence * 100)}%
+                                    </span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
 
-                        {result.scene_analysis.scenes.length > 5 && (
-                          <p className="text-sm text-muted-foreground text-center">
-                            ... и еще {result.scene_analysis.scenes.length - 5} сцен
-                          </p>
+                            {result.scene_analysis.scenes.length > 5 && (
+                              <p className="text-sm text-muted-foreground text-center">
+                                ... и еще {result.scene_analysis.scenes.length - 5} сцен
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-muted-foreground text-center py-4">Сцены не найдены</p>
                         )}
                       </div>
                     ) : (
@@ -454,7 +465,7 @@ export function AIAnalysisDashboard() {
                         <div className="grid grid-cols-3 gap-4 mb-4">
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.moment_analysis.total_moments}</p>
+                              <p className="text-2xl font-bold">{result.moment_analysis.total_moments || 0}</p>
                               <p className="text-sm text-muted-foreground">Всего моментов</p>
                             </CardContent>
                           </Card>
@@ -467,40 +478,46 @@ export function AIAnalysisDashboard() {
                           <Card>
                             <CardContent className="pt-6">
                               <p className="text-2xl font-bold">
-                                {(result.moment_analysis.avg_importance_score * 100).toFixed(0)}
+                                {result.moment_analysis.avg_importance_score
+                                  ? (result.moment_analysis.avg_importance_score * 100).toFixed(0)
+                                  : 0}
                               </p>
                               <p className="text-sm text-muted-foreground">Средняя важность</p>
                             </CardContent>
                           </Card>
                         </div>
 
-                        {result.moment_analysis.moments.slice(0, 10).map((moment: MomentData, index: number) => (
-                          <Card key={moment.id || index}>
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                  <p className="font-medium">{moment.moment_type}</p>
-                                  <p className="text-sm text-muted-foreground">{moment.timestamp.toFixed(1)}s</p>
-                                  {moment.description && <p className="text-sm mt-1">{moment.description}</p>}
-                                  {moment.content_tags && moment.content_tags.length > 0 && (
-                                    <div className="flex flex-wrap gap-1 mt-2">
-                                      {moment.content_tags.map((tag: string, i: number) => (
-                                        <span key={i} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                          {tag}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  )}
+                        {result.moment_analysis.moments && result.moment_analysis.moments.length > 0 ? (
+                          result.moment_analysis.moments.slice(0, 10).map((moment: MomentData, index: number) => (
+                            <Card key={moment.id || index}>
+                              <CardContent className="pt-4">
+                                <div className="flex justify-between items-start">
+                                  <div className="flex-1">
+                                    <p className="font-medium">{moment.moment_type}</p>
+                                    <p className="text-sm text-muted-foreground">{moment.timestamp.toFixed(1)}s</p>
+                                    {moment.description && <p className="text-sm mt-1">{moment.description}</p>}
+                                    {moment.content_tags && moment.content_tags.length > 0 && (
+                                      <div className="flex flex-wrap gap-1 mt-2">
+                                        {moment.content_tags.map((tag: string, i: number) => (
+                                          <span key={i} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                            {tag}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-sm font-medium text-blue-600">
+                                      {Math.round(moment.importance_score * 100)}%
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="text-right">
-                                  <span className="text-sm font-medium text-blue-600">
-                                    {Math.round(moment.importance_score * 100)}%
-                                  </span>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                              </CardContent>
+                            </Card>
+                          ))
+                        ) : (
+                          <p className="text-muted-foreground text-center py-4">Моменты не найдены</p>
+                        )}
                       </div>
                     ) : (
                       <p className="text-muted-foreground text-center py-8">Нет данных о моментах</p>
@@ -514,27 +531,36 @@ export function AIAnalysisDashboard() {
                         <div className="grid grid-cols-4 gap-4">
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.audio_analysis.rms_level.toFixed(3)}</p>
+                              <p className="text-2xl font-bold">
+                                {result.audio_analysis.rms_level?.toFixed(3) || "0.000"}
+                              </p>
                               <p className="text-sm text-muted-foreground">RMS Level</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.audio_analysis.peak_level.toFixed(3)}</p>
+                              <p className="text-2xl font-bold">
+                                {result.audio_analysis.peak_level?.toFixed(3) || "0.000"}
+                              </p>
                               <p className="text-sm text-muted-foreground">Peak Level</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
                               <p className="text-2xl font-bold">
-                                {Math.round(result.audio_analysis.spectral_centroid)}Hz
+                                {result.audio_analysis.spectral_centroid
+                                  ? Math.round(result.audio_analysis.spectral_centroid)
+                                  : 0}
+                                Hz
                               </p>
                               <p className="text-sm text-muted-foreground">Spectral Centroid</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.audio_analysis.energy.toFixed(3)}</p>
+                              <p className="text-2xl font-bold">
+                                {result.audio_analysis.energy?.toFixed(3) || "0.000"}
+                              </p>
                               <p className="text-sm text-muted-foreground">Energy</p>
                             </CardContent>
                           </Card>
@@ -549,20 +575,29 @@ export function AIAnalysisDashboard() {
                               <span>Музыка:</span>
                               <span className="font-medium">
                                 {result.audio_analysis.has_music ? "Да" : "Нет"} (
-                                {Math.round(result.audio_analysis.music_confidence * 100)}%)
+                                {result.audio_analysis.music_confidence
+                                  ? Math.round(result.audio_analysis.music_confidence * 100)
+                                  : 0}
+                                %)
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span>Речь:</span>
                               <span className="font-medium">
                                 {result.audio_analysis.has_speech ? "Да" : "Нет"} (
-                                {Math.round(result.audio_analysis.speech_confidence * 100)}%)
+                                {result.audio_analysis.speech_confidence
+                                  ? Math.round(result.audio_analysis.speech_confidence * 100)
+                                  : 0}
+                                %)
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span>Silence Ratio:</span>
                               <span className="font-medium">
-                                {Math.round(result.audio_analysis.silence_ratio * 100)}%
+                                {result.audio_analysis.silence_ratio
+                                  ? Math.round(result.audio_analysis.silence_ratio * 100)
+                                  : 0}
+                                %
                               </span>
                             </div>
                           </CardContent>
@@ -583,9 +618,13 @@ export function AIAnalysisDashboard() {
                               <CardTitle>Настроение</CardTitle>
                             </CardHeader>
                             <CardContent>
-                              <p className="text-xl font-medium">{result.content_analysis.mood}</p>
+                              <p className="text-xl font-medium">{result.content_analysis.mood || "Неизвестно"}</p>
                               <p className="text-sm text-muted-foreground">
-                                Confidence: {Math.round(result.content_analysis.mood_confidence * 100)}%
+                                Confidence:{" "}
+                                {result.content_analysis.mood_confidence
+                                  ? Math.round(result.content_analysis.mood_confidence * 100)
+                                  : 0}
+                                %
                               </p>
                             </CardContent>
                           </Card>
@@ -595,9 +634,13 @@ export function AIAnalysisDashboard() {
                               <CardTitle>Стиль</CardTitle>
                             </CardHeader>
                             <CardContent>
-                              <p className="text-xl font-medium">{result.content_analysis.style}</p>
+                              <p className="text-xl font-medium">{result.content_analysis.style || "Неизвестен"}</p>
                               <p className="text-sm text-muted-foreground">
-                                Confidence: {Math.round(result.content_analysis.style_confidence * 100)}%
+                                Confidence:{" "}
+                                {result.content_analysis.style_confidence
+                                  ? Math.round(result.content_analysis.style_confidence * 100)
+                                  : 0}
+                                %
                               </p>
                             </CardContent>
                           </Card>
@@ -629,19 +672,28 @@ export function AIAnalysisDashboard() {
                               <div className="flex justify-between">
                                 <span>Общее качество:</span>
                                 <span className="font-medium">
-                                  {Math.round(result.content_analysis.overall_quality * 100)}%
+                                  {result.content_analysis.overall_quality
+                                    ? Math.round(result.content_analysis.overall_quality * 100)
+                                    : 0}
+                                  %
                                 </span>
                               </div>
                               <div className="flex justify-between">
                                 <span>Визуальное качество:</span>
                                 <span className="font-medium">
-                                  {Math.round(result.content_analysis.visual_quality * 100)}%
+                                  {result.content_analysis.visual_quality
+                                    ? Math.round(result.content_analysis.visual_quality * 100)
+                                    : 0}
+                                  %
                                 </span>
                               </div>
                               <div className="flex justify-between">
                                 <span>Качество аудио:</span>
                                 <span className="font-medium">
-                                  {Math.round(result.content_analysis.audio_quality * 100)}%
+                                  {result.content_analysis.audio_quality
+                                    ? Math.round(result.content_analysis.audio_quality * 100)
+                                    : 0}
+                                  %
                                 </span>
                               </div>
                             </div>
@@ -660,27 +712,31 @@ export function AIAnalysisDashboard() {
                         <div className="grid grid-cols-3 gap-4">
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.vision_analysis.faces_count}</p>
+                              <p className="text-2xl font-bold">{result.vision_analysis.faces_count || 0}</p>
                               <p className="text-sm text-muted-foreground">Лиц обнаружено</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">{result.vision_analysis.objects_detected.length}</p>
+                              <p className="text-2xl font-bold">
+                                {result.vision_analysis.objects_detected?.length || 0}
+                              </p>
                               <p className="text-sm text-muted-foreground">Объектов</p>
                             </CardContent>
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
                               <p className="text-2xl font-bold">
-                                {Math.round(result.vision_analysis.avg_composition_score * 100)}
+                                {result.vision_analysis.avg_composition_score
+                                  ? Math.round(result.vision_analysis.avg_composition_score * 100)
+                                  : 0}
                               </p>
                               <p className="text-sm text-muted-foreground">Композиция</p>
                             </CardContent>
                           </Card>
                         </div>
 
-                        {result.vision_analysis.objects_detected.length > 0 && (
+                        {result.vision_analysis.objects_detected && result.vision_analysis.objects_detected.length > 0 && (
                           <Card>
                             <CardHeader>
                               <CardTitle>Обнаруженные объекты</CardTitle>
