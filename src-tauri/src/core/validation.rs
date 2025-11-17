@@ -93,12 +93,7 @@ impl InputValidator {
   }
 
   /// Validate f32 value is in range [min, max]
-  pub fn validate_range_f32(
-    value: f32,
-    min: f32,
-    max: f32,
-    field: &str,
-  ) -> ValidationResult<f32> {
+  pub fn validate_range_f32(value: f32, min: f32, max: f32, field: &str) -> ValidationResult<f32> {
     // First check if finite
     Self::validate_finite_f32(value, field)?;
 
@@ -115,12 +110,7 @@ impl InputValidator {
   }
 
   /// Validate f64 value is in range [min, max]
-  pub fn validate_range_f64(
-    value: f64,
-    min: f64,
-    max: f64,
-    field: &str,
-  ) -> ValidationResult<f64> {
+  pub fn validate_range_f64(value: f64, min: f64, max: f64, field: &str) -> ValidationResult<f64> {
     // First check if finite
     Self::validate_finite_f64(value, field)?;
 

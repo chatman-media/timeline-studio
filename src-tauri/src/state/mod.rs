@@ -38,7 +38,18 @@ pub struct StateManager {
 impl StateManager {
   pub async fn new(app_handle: tauri::AppHandle) -> Result<Self, String> {
     let event_bus = Arc::new(EventBus::new(app_handle.clone()));
-    let persistence = Arc::new(PersistenceService::new(app_handle)?);
+    let persistence = Arc::new(PersistenceService::new(app_handle.clone())?);
+
+    // Initialize AI Provider Manager
+    let ai_manager = Arc::new(
+      crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager::new(),
+    );
+
+    // Initialize Secure Storage for API keys
+    let secure_storage = Arc::new(tokio::sync::Mutex::new(
+      crate::security::SecureStorage::new(app_handle.clone())
+        .map_err(|e| format!("Failed to initialize secure storage: {}", e))?,
+    ));
 
     // Load or create initial project state
     let project_state = match persistence.load_latest().await {
@@ -68,6 +79,9 @@ impl StateManager {
       project_state.clone(),
       event_bus.clone(),
       persistence.clone(),
+      app_handle.clone(),
+      ai_manager,
+      secure_storage,
     ));
 
     let manager = Self {
@@ -171,7 +185,7 @@ impl StateManager {
         _ = snapshot_interval.tick() => {
           // TOCTOU FIX: Use write lock from the start to prevent race conditions
           // This ensures snapshot creation and state update are atomic
-          let mut state = project_state.write().await;
+          let state = project_state.write().await;
 
           // Create version control snapshot if enabled and there are significant changes
           if state.version_info.auto_save_enabled && state.version_info.has_uncommitted_changes {

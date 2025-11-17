@@ -18,6 +18,7 @@ pub mod ffmpeg_builder;
 pub mod ffmpeg_executor;
 pub mod frame_extraction;
 pub mod gpu;
+pub mod performance_manager;
 pub mod pipeline;
 pub mod preview;
 pub mod progress;

@@ -816,6 +816,24 @@ impl AIProviderManager {
       "stream": false,
     });
 
+    // Add tools if provided (Ollama uses OpenAI-compatible format)
+    if let Some(tools) = &request.tools {
+      let ollama_tools: Vec<Value> = tools
+        .iter()
+        .map(|tool| {
+          serde_json::json!({
+            "type": "function",
+            "function": {
+              "name": tool.name,
+              "description": tool.description,
+              "parameters": tool.input_schema
+            }
+          })
+        })
+        .collect();
+      body["tools"] = serde_json::json!(ollama_tools);
+    }
+
     if request.temperature.is_some() || request.max_tokens.is_some() {
       let mut options = serde_json::json!({});
       if let Some(temp) = request.temperature {
@@ -857,14 +875,39 @@ impl AIProviderManager {
       .unwrap_or("")
       .to_string();
 
+    // Parse tool calls if present (Ollama 0.1.26+)
+    let tool_calls = if let Some(calls) = json["message"]["tool_calls"].as_array() {
+      Some(
+        calls
+          .iter()
+          .filter_map(|call| {
+            let id = call["id"].as_str()?.to_string();
+            let function_name = call["function"]["name"].as_str()?.to_string();
+            let arguments_str = call["function"]["arguments"].as_str()?;
+
+            // Parse arguments JSON string to Value
+            let input = serde_json::from_str(arguments_str).ok()?;
+
+            Some(AIToolCall {
+              id,
+              name: function_name,
+              input,
+            })
+          })
+          .collect(),
+      )
+    } else {
+      None
+    };
+
     Ok(UnifiedAIResponse {
       id: uuid::Uuid::new_v4().to_string(),
       provider: AIProvider::Ollama,
       model: json["model"].as_str().unwrap_or("").to_string(),
       content,
-      usage: None, // Ollama doesn't provide token usage
+      usage: None, // Ollama doesn't provide token usage in standard format
       finish_reason: Some("stop".to_string()),
-      tool_calls: None, // Ollama doesn't support tools yet
+      tool_calls,
     })
   }
 
@@ -1209,6 +1252,24 @@ impl AIProviderManager {
       "messages": messages,
       "stream": true,
     });
+
+    // Add tools if provided (Ollama uses OpenAI-compatible format)
+    if let Some(tools) = &request.tools {
+      let ollama_tools: Vec<Value> = tools
+        .iter()
+        .map(|tool| {
+          serde_json::json!({
+            "type": "function",
+            "function": {
+              "name": tool.name,
+              "description": tool.description,
+              "parameters": tool.input_schema
+            }
+          })
+        })
+        .collect();
+      body["tools"] = serde_json::json!(ollama_tools);
+    }
 
     if request.temperature.is_some() || request.max_tokens.is_some() {
       let mut options = serde_json::json!({});

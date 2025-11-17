@@ -167,6 +167,11 @@ impl RenderCache {
     &self.stats
   }
 
+  /// Получить настройки кэша
+  pub fn get_settings(&self) -> &CacheSettings {
+    &self.settings
+  }
+
   /// Получить использование памяти кэшем (приблизительно)
   pub fn get_memory_usage(&self) -> CacheMemoryUsage {
     let preview_memory = self.preview_cache.estimate_memory_usage();

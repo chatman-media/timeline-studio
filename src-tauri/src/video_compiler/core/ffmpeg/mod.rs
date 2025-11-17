@@ -70,7 +70,11 @@ impl FFmpegCommand {
 
     if is_user_data {
       if let Err(e) = FFmpegSecurity::sanitize_argument(&arg_string) {
-        log::warn!("Potentially unsafe FFmpeg argument detected: {} ({})", arg_string, e);
+        log::warn!(
+          "Potentially unsafe FFmpeg argument detected: {} ({})",
+          arg_string,
+          e
+        );
         // For now, we log but don't block - strict mode can be enabled later
         // In production, you might want to return Result<Self, Error> instead
       }
@@ -158,9 +162,7 @@ impl FFmpegCommand {
     // Convert validated path back to string
     let path_string = validated_path
       .to_str()
-      .ok_or_else(|| {
-        VideoCompilerError::ValidationError("Invalid UTF-8 in file path".to_string())
-      })?
+      .ok_or_else(|| VideoCompilerError::ValidationError("Invalid UTF-8 in file path".to_string()))?
       .to_string();
 
     Ok(self.arg("-i").arg(path_string))
@@ -179,20 +181,14 @@ impl FFmpegCommand {
   /// # Errors
   ///
   /// Returns `ValidationError` if path is invalid or unsafe
-  pub fn output_file<S: AsRef<str>>(
-    self,
-    path: S,
-    estimated_size: Option<u64>,
-  ) -> Result<Self> {
+  pub fn output_file<S: AsRef<str>>(self, path: S, estimated_size: Option<u64>) -> Result<Self> {
     let path_str = path.as_ref();
     let validated_path = FFmpegSecurity::validate_output_file(path_str, estimated_size)?;
 
     // Convert validated path back to string
     let path_string = validated_path
       .to_str()
-      .ok_or_else(|| {
-        VideoCompilerError::ValidationError("Invalid UTF-8 in file path".to_string())
-      })?
+      .ok_or_else(|| VideoCompilerError::ValidationError("Invalid UTF-8 in file path".to_string()))?
       .to_string();
 
     Ok(self.arg(path_string))
@@ -552,9 +548,7 @@ mod tests {
     // This test verifies that dangerous arguments are detected (logged as warnings)
     // The current implementation logs but doesn't block for backward compatibility
 
-    let cmd = FFmpegCommand::ffmpeg()
-      .arg("-i")
-      .arg("normal_file.mp4"); // Normal arg should pass
+    let cmd = FFmpegCommand::ffmpeg().arg("-i").arg("normal_file.mp4"); // Normal arg should pass
 
     assert_eq!(cmd.args.len(), 2);
 

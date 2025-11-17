@@ -29,6 +29,7 @@ pub struct CommandHandler {
   state: Arc<RwLock<ProjectState>>,
   event_bus: Arc<EventBus>,
   persistence: Arc<PersistenceService>,
+  app_handle: tauri::AppHandle,
   // Modular command handlers
   media_commands: MediaCommands,
   imported_media_commands: ImportedMediaCommands,
@@ -41,6 +42,9 @@ pub struct CommandHandler {
   resource_commands: ResourceCommands,
   undo_commands: UndoCommands,
   color_grading_commands: ColorGradingCommands,
+  // AI and security
+  ai_manager: Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
+  secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
 }
 
 #[allow(dead_code)]
@@ -49,6 +53,9 @@ impl CommandHandler {
     state: Arc<RwLock<ProjectState>>,
     event_bus: Arc<EventBus>,
     persistence: Arc<PersistenceService>,
+    app_handle: tauri::AppHandle,
+    ai_manager: Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
+    secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
   ) -> Self {
     // Initialize modular command handlers
     let media_commands = MediaCommands::new(state.clone(), event_bus.clone());
@@ -68,6 +75,7 @@ impl CommandHandler {
       state,
       event_bus,
       persistence,
+      app_handle,
       media_commands,
       imported_media_commands,
       timeline_commands,
@@ -79,6 +87,8 @@ impl CommandHandler {
       resource_commands,
       undo_commands,
       color_grading_commands,
+      ai_manager,
+      secure_storage,
     }
   }
 
@@ -3843,6 +3853,29 @@ impl CommandHandler {
   // AI Chat Commands
   // ===========================
 
+  /// Helper method to get API key for a provider from secure storage
+  async fn get_api_key_for_provider(&self, provider: &str) -> Result<String, String> {
+    use crate::security::ApiKeyType;
+    use std::str::FromStr;
+
+    let key_type = ApiKeyType::from_str(provider).map_err(|_| {
+      format!("Invalid provider: {}. Supported: openai, claude, deepseek, grok", provider)
+    })?;
+
+    let mut storage = self.secure_storage.lock().await;
+    let api_key_value = storage
+      .get_api_key_value(key_type)
+      .await
+      .map_err(|e| format!("Failed to retrieve API key: {}", e))?;
+
+    api_key_value.ok_or_else(|| {
+      format!(
+        "API key for {} not found. Please configure it in User Settings",
+        provider
+      )
+    })
+  }
+
   async fn send_chat_message(
     &self,
     session_id: String,
@@ -3851,8 +3884,9 @@ impl CommandHandler {
     provider: String,
     project_context: Option<serde_json::Value>,
   ) -> CommandResult {
-    use crate::video_compiler::commands::ai_api_proxy::commands::claude_send_message;
-    use crate::video_compiler::commands::ai_api_proxy::types::ClaudeMessage;
+    use crate::video_compiler::commands::ai_api_proxy::types::{
+      AIMessage, AIProvider, UnifiedAIRequest,
+    };
 
     log::info!(
       "Sending chat message to {} model {} in session {}",
@@ -3861,61 +3895,66 @@ impl CommandHandler {
       session_id
     );
 
-    // TODO: Get API key from user settings
-    let api_key = "temp_key".to_string(); // This should come from secure storage
+    // Get API key from secure storage
+    let api_key = match self.get_api_key_for_provider(&provider).await {
+      Ok(key) => key,
+      Err(e) => return CommandResult::error(e),
+    };
 
-    // Build messages array with context if provided
+    // Parse provider enum (case-insensitive)
+    let ai_provider = match provider.to_lowercase().as_str() {
+      "claude" => AIProvider::Claude,
+      "openai" => AIProvider::OpenAI,
+      "deepseek" => AIProvider::DeepSeek,
+      "ollama" => AIProvider::Ollama,
+      _ => {
+        return CommandResult::error(format!(
+          "Unknown AI provider: {}. Supported: claude, openai, deepseek, ollama",
+          provider
+        ))
+      }
+    };
+
+    // Build messages array
     let mut messages = vec![];
 
     // Add project context as system message if provided
-    if let Some(context) = project_context {
-      messages.push(ClaudeMessage {
-        role: "system".to_string(),
-        content: format!("Project context: {}", context),
-      });
-    }
+    let system_message = if let Some(context) = project_context {
+      Some(format!("Project context: {}", context))
+    } else {
+      None
+    };
 
     // Add user message
-    messages.push(ClaudeMessage {
+    messages.push(AIMessage {
       role: "user".to_string(),
       content: message,
     });
 
-    // Send to AI provider
-    match provider.as_str() {
-      "claude" => {
-        match claude_send_message(
-          api_key,
-          model,
-          messages,
-          Some(4096), // max_tokens
-          Some(0.7),  // temperature
-          None,       // system
-        )
-        .await
-        {
-          Ok(response) => {
-            // Extract text from response
-            let response_text = response
-              .content
-              .iter()
-              .filter_map(|c| c.text.as_ref())
-              .map(|s| s.as_str())
-              .collect::<Vec<_>>()
-              .join("");
+    // Create unified request
+    let request = UnifiedAIRequest {
+      provider: ai_provider.clone(),
+      model,
+      messages,
+      max_tokens: Some(4096),
+      temperature: Some(0.7),
+      stream: Some(false),
+      system: system_message,
+      tools: None,
+      tool_choice: None,
+    };
 
-            CommandResult::success(Some(serde_json::json!({
-              "response": response_text,
-              "session_id": session_id,
-              "message_id": response.id,
-              "model": response.model,
-              "usage": response.usage
-            })))
-          }
-          Err(e) => CommandResult::error(format!("AI request failed: {}", e)),
-        }
-      }
-      _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
+    // Send request via AI Provider Manager
+    match self.ai_manager.send_request(&api_key, request).await {
+      Ok(response) => CommandResult::success(Some(serde_json::json!({
+        "response": response.content,
+        "session_id": session_id,
+        "message_id": response.id,
+        "model": response.model,
+        "provider": format!("{:?}", response.provider),
+        "usage": response.usage
+      }))),
+      Err(e) => CommandResult::error(format!("AI request failed: {}", e)),
     }
   }
 
@@ -3927,8 +3966,9 @@ impl CommandHandler {
     provider: String,
     project_context: Option<serde_json::Value>,
   ) -> CommandResult {
-    use crate::video_compiler::commands::ai_api_proxy::commands::claude_send_streaming_message;
-    use crate::video_compiler::commands::ai_api_proxy::types::ClaudeMessage;
+    use crate::video_compiler::commands::ai_api_proxy::types::{
+      AIMessage, AIProvider, UnifiedAIRequest,
+    };
 
     log::info!(
       "Sending streaming chat message to {} model {} in session {}",
@@ -3937,39 +3977,79 @@ impl CommandHandler {
       session_id
     );
 
-    // TODO: Get API key from user settings
-    let api_key = "temp_key".to_string();
+    // Get API key from secure storage
+    let api_key = match self.get_api_key_for_provider(&provider).await {
+      Ok(key) => key,
+      Err(e) => return CommandResult::error(e),
+    };
 
-    // Build messages array with context if provided
+    // Parse provider enum (case-insensitive)
+    let ai_provider = match provider.to_lowercase().as_str() {
+      "claude" => AIProvider::Claude,
+      "openai" => AIProvider::OpenAI,
+      "deepseek" => AIProvider::DeepSeek,
+      "ollama" => AIProvider::Ollama,
+      _ => {
+        return CommandResult::error(format!(
+          "Unknown AI provider: {}. Supported: claude, openai, deepseek, ollama",
+          provider
+        ))
+      }
+    };
+
+    // Build messages array
     let mut messages = vec![];
+    let system_message = if let Some(context) = project_context {
+      Some(format!("Project context: {}", context))
+    } else {
+      None
+    };
 
-    if let Some(context) = project_context {
-      messages.push(ClaudeMessage {
-        role: "system".to_string(),
-        content: format!("Project context: {}", context),
-      });
-    }
-
-    messages.push(ClaudeMessage {
+    messages.push(AIMessage {
       role: "user".to_string(),
       content: message,
     });
 
-    // Send streaming request to AI provider
-    match provider.as_str() {
-      "claude" => {
-        match claude_send_streaming_message(api_key, model, messages, Some(4096), Some(0.7), None)
-          .await
-        {
-          Ok(stream_id) => CommandResult::success(Some(serde_json::json!({
-            "stream_id": stream_id,
-            "session_id": session_id,
-            "status": "streaming"
-          }))),
-          Err(e) => CommandResult::error(format!("Streaming request failed: {}", e)),
+    // Create unified request with streaming enabled
+    let request = UnifiedAIRequest {
+      provider: ai_provider.clone(),
+      model,
+      messages,
+      max_tokens: Some(4096),
+      temperature: Some(0.7),
+      stream: Some(true), // Enable streaming
+      system: system_message,
+      tools: None,
+      tool_choice: None,
+    };
+
+    // Generate unique request ID for this stream
+    let request_id = uuid::Uuid::new_v4().to_string();
+
+    // Send streaming request via AI Provider Manager
+    // Events будут автоматически отправлены через Tauri Event System:
+    // - "ai-stream-started" когда начинается stream
+    // - "ai-stream-chunk" для каждого chunk
+    // - "ai-stream-completed" когда завершается
+    // - "ai-stream-error" при ошибке
+    match self
+      .ai_manager
+      .send_request_stream(&api_key, request, self.app_handle.clone(), request_id.clone())
+      .await
+    {
+      Ok(_) => CommandResult::success(Some(serde_json::json!({
+        "request_id": request_id,
+        "session_id": session_id,
+        "status": "streaming",
+        "provider": format!("{:?}", ai_provider),
+        "events": {
+          "started": "ai-stream-started",
+          "chunk": "ai-stream-chunk",
+          "completed": "ai-stream-completed",
+          "error": "ai-stream-error"
         }
-      }
-      _ => CommandResult::error(format!("Unsupported AI provider: {}", provider)),
+      }))),
+      Err(e) => CommandResult::error(format!("Streaming request failed: {}", e)),
     }
   }
 
@@ -6425,9 +6505,9 @@ impl CommandHandler {
 
     // Get API key from secure storage
     let api_key = match self.get_api_key_for_provider(&provider).await {
-      Some(key) => key,
-      None => {
-        return CommandResult::error(format!("No API key configured for provider: {}", provider));
+      Ok(key) => key,
+      Err(e) => {
+        return CommandResult::error(e);
       }
     };
 
@@ -6486,9 +6566,9 @@ impl CommandHandler {
 
     // Get API key
     let api_key = match self.get_api_key_for_provider(&provider).await {
-      Some(key) => key,
-      None => {
-        return CommandResult::error(format!("No API key configured for provider: {}", provider));
+      Ok(key) => key,
+      Err(e) => {
+        return CommandResult::error(e);
       }
     };
 
@@ -7036,19 +7116,8 @@ impl CommandHandler {
   }
 
   // === AI Provider Implementation Helpers ===
-
-  async fn get_api_key_for_provider(&self, provider: &str) -> Option<String> {
-    // TODO: Implement secure storage integration
-    // For now, return mock keys or read from environment
-    match provider {
-      "claude" => std::env::var("ANTHROPIC_API_KEY").ok(),
-      "openai" => std::env::var("OPENAI_API_KEY").ok(),
-      "deepseek" => std::env::var("DEEPSEEK_API_KEY").ok(),
-      "grok" => std::env::var("GROK_API_KEY").ok(),
-      "ollama" => Some("local".to_string()), // Ollama doesn't need API key
-      _ => None,
-    }
-  }
+  // Note: get_api_key_for_provider is now defined earlier in the file (line ~3854)
+  // and uses SecureStorage instead of environment variables
 
   async fn send_claude_request(
     &self,
@@ -7421,8 +7490,8 @@ impl CommandHandler {
     &self,
   ) -> Result<Vec<AiModel>, Box<dyn std::error::Error + Send + Sync>> {
     let api_key = match self.get_api_key_for_provider("openai").await {
-      Some(key) => key,
-      None => return Err("No OpenAI API key available".into()),
+      Ok(key) => key,
+      Err(_) => return Err("No OpenAI API key available".into()),
     };
 
     let client = reqwest::Client::new();
@@ -7519,7 +7588,7 @@ impl CommandHandler {
     let api_key = self
       .get_api_key_for_provider("claude")
       .await
-      .ok_or("No Claude API key configured")?;
+      .map_err(|e| -> Box<dyn std::error::Error + Send + Sync> { e.into() })?;
 
     let client = reqwest::Client::new();
     let response = client
@@ -7553,7 +7622,7 @@ impl CommandHandler {
     let api_key = self
       .get_api_key_for_provider("openai")
       .await
-      .ok_or("No OpenAI API key configured")?;
+      .map_err(|e| -> Box<dyn std::error::Error + Send + Sync> { e.into() })?;
 
     let client = reqwest::Client::new();
     let response = client
@@ -7577,7 +7646,7 @@ impl CommandHandler {
     let api_key = self
       .get_api_key_for_provider("deepseek")
       .await
-      .ok_or("No DeepSeek API key configured")?;
+      .map_err(|e| -> Box<dyn std::error::Error + Send + Sync> { e.into() })?;
 
     let client = reqwest::Client::new();
     let response = client
@@ -7599,7 +7668,7 @@ impl CommandHandler {
     let api_key = self
       .get_api_key_for_provider("grok")
       .await
-      .ok_or("No Grok API key configured")?;
+      .map_err(|e| -> Box<dyn std::error::Error + Send + Sync> { e.into() })?;
 
     let client = reqwest::Client::new();
     let response = client

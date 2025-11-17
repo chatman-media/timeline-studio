@@ -26,6 +26,12 @@ pub struct CacheStats {
   pub cache_hits: u64,
   pub cache_misses: u64,
   pub hit_rate: f64,
+  pub hit_ratio: f64, // Дублируем для совместимости с фронтендом
+  pub preview_hits: u64,
+  pub preview_misses: u64,
+  pub preview_hit_ratio: f64,
+  pub metadata_hits: u64,
+  pub metadata_misses: u64,
   pub memory_pressure: f64,
   pub eviction_count: u64,
 }
@@ -412,16 +418,41 @@ impl CacheService for CacheServiceImpl {
       }
     }
 
+    // Получаем реальную статистику из RenderCache
+    let cache = self.render_cache.read().await;
+    let cache_stats = cache.get_stats();
+
+    // Вычисляем общий hit_ratio
+    let total_requests = cache_stats.preview_requests + cache_stats.metadata_requests;
+    let total_hits = cache_stats.preview_hits + cache_stats.metadata_hits;
+    let hit_ratio = if total_requests == 0 {
+      0.0
+    } else {
+      total_hits as f64 / total_requests as f64
+    };
+
+    // Вычисляем preview_hit_ratio
+    let preview_hit_ratio = if cache_stats.preview_requests == 0 {
+      0.0
+    } else {
+      cache_stats.preview_hits as f64 / cache_stats.preview_requests as f64
+    };
+
     Ok(CacheStats {
       total_size_mb: total_size,
       preview_cache_size_mb: preview_size,
       render_cache_size_mb: render_size,
       temp_files_size_mb: temp_size,
       total_files,
-      // Пока добавляем заглушки для новых полей
-      cache_hits: 0,
-      cache_misses: 0,
-      hit_rate: 0.0,
+      cache_hits: total_hits,
+      cache_misses: cache_stats.preview_misses + cache_stats.metadata_misses,
+      hit_rate: hit_ratio,
+      hit_ratio,
+      preview_hits: cache_stats.preview_hits,
+      preview_misses: cache_stats.preview_misses,
+      preview_hit_ratio,
+      metadata_hits: cache_stats.metadata_hits,
+      metadata_misses: cache_stats.metadata_misses,
       memory_pressure: 0.0,
       eviction_count: 0,
     })

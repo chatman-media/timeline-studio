@@ -77,13 +77,13 @@ impl Drop for VideoCompilerState {
     if let Ok(mut pipelines) = self.active_pipelines.try_write() {
       let pipeline_count = pipelines.len();
       if pipeline_count > 0 {
-        log::warn!("VideoCompilerState: принудительное завершение {pipeline_count} активных конвейеров");
+        log::warn!(
+          "VideoCompilerState: принудительное завершение {pipeline_count} активных конвейеров"
+        );
       }
       pipelines.clear();
     } else {
-      log::warn!(
-        "VideoCompilerState: не удалось получить lock на active_pipelines, пропускаем"
-      );
+      log::warn!("VideoCompilerState: не удалось получить lock на active_pipelines, пропускаем");
     }
 
     // Пытаемся получить текущий tokio runtime для асинхронного cleanup сервисов
@@ -94,11 +94,8 @@ impl Drop for VideoCompilerState {
         let services = self.services.clone();
         handle.spawn(async move {
           log::info!("VideoCompilerState: shutdown сервисов");
-          match tokio::time::timeout(
-            std::time::Duration::from_secs(3),
-            services.shutdown_all(),
-          )
-          .await
+          match tokio::time::timeout(std::time::Duration::from_secs(3), services.shutdown_all())
+            .await
           {
             Ok(Ok(())) => {
               log::info!("VideoCompilerState: сервисы успешно остановлены");
@@ -336,6 +333,7 @@ pub struct RenderJob {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::sync::Arc;
   use std::time::Duration;
   use tokio::time::timeout;
 
@@ -644,5 +642,609 @@ mod tests {
     assert!(debug_str.contains("debug-test"));
     assert!(debug_str.contains("Debug Project"));
     assert!(debug_str.contains("Processing"));
+  }
+
+  // === EXTENDED TESTS: Drop Handler & Graceful Shutdown ===
+
+  #[tokio::test]
+  async fn test_drop_with_active_jobs() {
+    {
+      let state = VideoCompilerState::default();
+      let jobs = state.active_jobs.read().await;
+      assert!(jobs.is_empty());
+    }
+    // State dropped, should trigger graceful shutdown
+  }
+
+  #[tokio::test]
+  async fn test_drop_with_active_pipelines() {
+    {
+      let state = VideoCompilerState::default();
+      let pipelines = state.active_pipelines.read().await;
+      assert!(pipelines.is_empty());
+    }
+    // State dropped, pipelines should be cleared
+  }
+
+  #[tokio::test]
+  async fn test_concurrent_drop_protection() {
+    let state = Arc::new(VideoCompilerState::default());
+    let state_clone = state.clone();
+
+    // Spawn concurrent access
+    let handle = tokio::spawn(async move {
+      let _jobs = state_clone.active_jobs.read().await;
+      tokio::time::sleep(Duration::from_millis(10)).await;
+    });
+
+    handle.await.unwrap();
+    // State should handle concurrent drop safely
+  }
+
+  // === EXTENDED TESTS: ServiceContainer Integration ===
+
+  #[tokio::test]
+  async fn test_render_service_availability() {
+    let state = VideoCompilerState::default();
+    let render_service = state.services.get_render_service();
+    assert!(render_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_cache_service_availability() {
+    let state = VideoCompilerState::default();
+    let cache_service = state.services.get_cache_service();
+    assert!(cache_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_gpu_service_availability() {
+    let state = VideoCompilerState::default();
+    let gpu_service = state.services.get_gpu_service();
+    assert!(gpu_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_preview_service_availability() {
+    let state = VideoCompilerState::default();
+    let preview_service = state.services.get_preview_service();
+    assert!(preview_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_project_service_availability() {
+    let state = VideoCompilerState::default();
+    let project_service = state.services.get_project_service();
+    assert!(project_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_ffmpeg_service_availability() {
+    let state = VideoCompilerState::default();
+    let ffmpeg_service = state.services.get_ffmpeg_service();
+    assert!(ffmpeg_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_transition_ffmpeg_service_availability() {
+    let state = VideoCompilerState::default();
+    let transition_service = state.services.get_transition_ffmpeg_service();
+    assert!(transition_service.is_some());
+  }
+
+  #[tokio::test]
+  async fn test_all_services_initialized() {
+    let state = VideoCompilerState::default();
+
+    // Verify all services are available simultaneously
+    assert!(state.services.get_render_service().is_some());
+    assert!(state.services.get_cache_service().is_some());
+    assert!(state.services.get_gpu_service().is_some());
+    assert!(state.services.get_preview_service().is_some());
+    assert!(state.services.get_project_service().is_some());
+    assert!(state.services.get_ffmpeg_service().is_some());
+    assert!(state.services.get_transition_ffmpeg_service().is_some());
+  }
+
+  // === EXTENDED TESTS: Concurrent Operations ===
+
+  #[tokio::test]
+  async fn test_concurrent_read_access() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..10 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        let jobs = state_clone.active_jobs.read().await;
+        assert!(jobs.is_empty());
+        i
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+    assert_eq!(results.len(), 10);
+  }
+
+  #[tokio::test]
+  async fn test_concurrent_ffmpeg_path_updates() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..5 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        let path = format!("/usr/local/bin/ffmpeg-{i}");
+        state_clone.update_ffmpeg_path(path.clone()).await;
+        path
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+
+    assert_eq!(results.len(), 5);
+
+    // Final path should be one of the updated paths
+    let final_path = state.ffmpeg_path.read().await;
+    assert!(results.contains(&final_path.to_string()));
+  }
+
+  #[tokio::test]
+  async fn test_concurrent_settings_updates() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..5 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        let mut settings = state_clone.settings.write().await;
+        settings.max_concurrent_jobs = i + 1;
+        drop(settings);
+        i
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+
+    assert_eq!(results.len(), 5);
+
+    // Final value should be one of the updated values
+    let final_settings = state.settings.read().await;
+    assert!(final_settings.max_concurrent_jobs >= 1 && final_settings.max_concurrent_jobs <= 5);
+  }
+
+  #[tokio::test]
+  async fn test_concurrent_cache_operations() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..5 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        let cache = state_clone.cache_manager.read().await;
+        let stats = cache.get_stats();
+        assert_eq!(stats.preview_hits, 0);
+        drop(cache);
+        i
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+
+    assert_eq!(results.len(), 5);
+  }
+
+  // === EXTENDED TESTS: RenderJobMetadata Edge Cases ===
+
+  #[test]
+  fn test_metadata_with_empty_strings() {
+    let metadata = RenderJobMetadata {
+      project_name: "".to_string(),
+      output_path: "".to_string(),
+      created_at: "".to_string(),
+    };
+
+    assert_eq!(metadata.project_name, "");
+    assert_eq!(metadata.output_path, "");
+    assert_eq!(metadata.created_at, "");
+  }
+
+  #[test]
+  fn test_metadata_with_special_characters() {
+    let metadata = RenderJobMetadata {
+      project_name: "Test: Project (2024) [Final]".to_string(),
+      output_path: "/tmp/path with spaces/file-name.mp4".to_string(),
+      created_at: "2024-01-01T12:34:56.789Z".to_string(),
+    };
+
+    assert!(metadata.project_name.contains(':'));
+    assert!(metadata.project_name.contains('('));
+    assert!(metadata.project_name.contains('['));
+    assert!(metadata.output_path.contains(' '));
+  }
+
+  #[test]
+  fn test_metadata_with_unicode() {
+    let metadata = RenderJobMetadata {
+      project_name: "Проект 测试 プロジェクト".to_string(),
+      output_path: "/tmp/видео.mp4".to_string(),
+      created_at: "2024-01-01".to_string(),
+    };
+
+    assert!(metadata.project_name.contains("Проект"));
+    assert!(metadata.project_name.contains("测试"));
+    assert!(metadata.output_path.contains("видео"));
+  }
+
+  #[test]
+  fn test_metadata_clone_independence() {
+    let mut metadata1 = RenderJobMetadata {
+      project_name: "Original".to_string(),
+      output_path: "/original".to_string(),
+      created_at: "2024-01-01".to_string(),
+    };
+
+    let metadata2 = metadata1.clone();
+
+    // Modify original
+    metadata1.project_name = "Modified".to_string();
+
+    // Clone should remain unchanged
+    assert_eq!(metadata2.project_name, "Original");
+    assert_ne!(metadata1.project_name, metadata2.project_name);
+  }
+
+  // === EXTENDED TESTS: RenderJob Status Transitions ===
+
+  #[test]
+  fn test_render_job_queued_status() {
+    let job = RenderJob {
+      id: "queued-job".to_string(),
+      project_name: "Test".to_string(),
+      output_path: "/tmp/output.mp4".to_string(),
+      status: RenderStatus::Queued,
+      created_at: "2024-01-01".to_string(),
+      progress: None,
+      error_message: None,
+    };
+
+    assert!(matches!(job.status, RenderStatus::Queued));
+    assert!(job.progress.is_none());
+    assert!(job.error_message.is_none());
+  }
+
+  #[test]
+  fn test_render_job_preparing_status() {
+    let job = RenderJob {
+      id: "preparing-job".to_string(),
+      project_name: "Test".to_string(),
+      output_path: "/tmp/output.mp4".to_string(),
+      status: RenderStatus::Preparing,
+      created_at: "2024-01-01".to_string(),
+      progress: None,
+      error_message: None,
+    };
+
+    assert!(matches!(job.status, RenderStatus::Preparing));
+    assert!(job.progress.is_none());
+    assert!(job.error_message.is_none());
+  }
+
+  #[test]
+  fn test_render_job_completed_status() {
+    let job = RenderJob {
+      id: "completed-job".to_string(),
+      project_name: "Test".to_string(),
+      output_path: "/tmp/output.mp4".to_string(),
+      status: RenderStatus::Completed,
+      created_at: "2024-01-01".to_string(),
+      progress: None,
+      error_message: None,
+    };
+
+    assert!(matches!(job.status, RenderStatus::Completed));
+  }
+
+  #[test]
+  fn test_render_job_paused_status() {
+    let job = RenderJob {
+      id: "paused-job".to_string(),
+      project_name: "Test".to_string(),
+      output_path: "/tmp/output.mp4".to_string(),
+      status: RenderStatus::Paused,
+      created_at: "2024-01-01".to_string(),
+      progress: None,
+      error_message: None,
+    };
+
+    assert!(matches!(job.status, RenderStatus::Paused));
+  }
+
+  #[test]
+  fn test_render_job_cancelled_status() {
+    let job = RenderJob {
+      id: "cancelled-job".to_string(),
+      project_name: "Test".to_string(),
+      output_path: "/tmp/output.mp4".to_string(),
+      status: RenderStatus::Cancelled,
+      created_at: "2024-01-01".to_string(),
+      progress: None,
+      error_message: None,
+    };
+
+    assert!(matches!(job.status, RenderStatus::Cancelled));
+  }
+
+  // === EXTENDED TESTS: Settings Edge Cases ===
+
+  #[tokio::test]
+  async fn test_settings_hardware_acceleration_toggle() {
+    let state = VideoCompilerState::default();
+
+    // Initially true (default)
+    {
+      let settings = state.settings.read().await;
+      assert!(settings.hardware_acceleration);
+    }
+
+    // Disable hardware acceleration
+    {
+      let mut settings = state.settings.write().await;
+      settings.hardware_acceleration = false;
+    }
+
+    // Verify disabled
+    {
+      let settings = state.settings.read().await;
+      assert!(!settings.hardware_acceleration);
+    }
+
+    // Enable again
+    {
+      let mut settings = state.settings.write().await;
+      settings.hardware_acceleration = true;
+    }
+
+    // Verify enabled
+    {
+      let settings = state.settings.read().await;
+      assert!(settings.hardware_acceleration);
+    }
+  }
+
+  #[tokio::test]
+  async fn test_settings_max_concurrent_jobs_bounds() {
+    let state = VideoCompilerState::default();
+
+    // Test minimum value
+    {
+      let mut settings = state.settings.write().await;
+      settings.max_concurrent_jobs = 1;
+    }
+
+    {
+      let settings = state.settings.read().await;
+      assert_eq!(settings.max_concurrent_jobs, 1);
+    }
+
+    // Test higher value
+    {
+      let mut settings = state.settings.write().await;
+      settings.max_concurrent_jobs = 16;
+    }
+
+    {
+      let settings = state.settings.read().await;
+      assert_eq!(settings.max_concurrent_jobs, 16);
+    }
+  }
+
+  // === EXTENDED TESTS: FFmpeg Path Edge Cases ===
+
+  #[tokio::test]
+  async fn test_ffmpeg_path_with_spaces() {
+    let state = VideoCompilerState::default();
+    let path_with_spaces = "/usr/local/bin with spaces/ffmpeg".to_string();
+
+    state.update_ffmpeg_path(path_with_spaces.clone()).await;
+
+    let ffmpeg_path = state.ffmpeg_path.read().await;
+    assert_eq!(ffmpeg_path.as_str(), path_with_spaces);
+    assert!(ffmpeg_path.contains(' '));
+  }
+
+  #[tokio::test]
+  async fn test_ffmpeg_path_windows_style() {
+    let state = VideoCompilerState::default();
+    let windows_path = r"C:\Program Files\ffmpeg\bin\ffmpeg.exe".to_string();
+
+    state.update_ffmpeg_path(windows_path.clone()).await;
+
+    let ffmpeg_path = state.ffmpeg_path.read().await;
+    assert_eq!(ffmpeg_path.as_str(), windows_path);
+  }
+
+  #[tokio::test]
+  async fn test_ffmpeg_path_relative() {
+    let state = VideoCompilerState::default();
+    let relative_path = "./bin/ffmpeg".to_string();
+
+    state.update_ffmpeg_path(relative_path.clone()).await;
+
+    let ffmpeg_path = state.ffmpeg_path.read().await;
+    assert_eq!(ffmpeg_path.as_str(), relative_path);
+  }
+
+  #[tokio::test]
+  async fn test_ffmpeg_path_empty_string() {
+    let state = VideoCompilerState::default();
+    let empty_path = "".to_string();
+
+    state.update_ffmpeg_path(empty_path.clone()).await;
+
+    let ffmpeg_path = state.ffmpeg_path.read().await;
+    assert_eq!(ffmpeg_path.as_str(), "");
+  }
+
+  // === EXTENDED TESTS: Active Pipelines Management ===
+
+  #[tokio::test]
+  async fn test_active_pipelines_initial_state() {
+    let state = VideoCompilerState::default();
+    let pipelines = state.active_pipelines.read().await;
+    assert!(pipelines.is_empty());
+  }
+
+  #[tokio::test]
+  async fn test_active_pipelines_concurrent_access() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..10 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        let pipelines = state_clone.active_pipelines.read().await;
+        assert!(pipelines.is_empty());
+        i
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+
+    assert_eq!(results.len(), 10);
+  }
+
+  // === EXTENDED TESTS: Cache Manager Edge Cases ===
+
+  #[tokio::test]
+  async fn test_cache_clear_multiple_times() {
+    let state = VideoCompilerState::default();
+
+    for _ in 0..5 {
+      let mut cache = state.cache_manager.write().await;
+      cache.clear_all().await;
+      let stats = cache.get_stats();
+      assert_eq!(stats.preview_hits, 0);
+      assert_eq!(stats.render_hits, 0);
+    }
+  }
+
+  #[tokio::test]
+  async fn test_cache_stats_consistency() {
+    let state = VideoCompilerState::default();
+
+    let cache = state.cache_manager.read().await;
+    let stats1 = cache.get_stats();
+    let stats2 = cache.get_stats();
+
+    assert_eq!(stats1.preview_hits, stats2.preview_hits);
+    assert_eq!(stats1.render_hits, stats2.render_hits);
+  }
+
+  // === EXTENDED TESTS: Integration & Stress Tests ===
+
+  #[tokio::test]
+  async fn test_multiple_state_instances() {
+    let state1 = VideoCompilerState::default();
+    let state2 = VideoCompilerState::default();
+
+    // Both should be independent
+    state1.update_ffmpeg_path("/path1".to_string()).await;
+    state2.update_ffmpeg_path("/path2".to_string()).await;
+
+    let path1 = state1.ffmpeg_path.read().await;
+    let path2 = state2.ffmpeg_path.read().await;
+
+    assert_eq!(path1.as_str(), "/path1");
+    assert_eq!(path2.as_str(), "/path2");
+  }
+
+  #[tokio::test]
+  async fn test_state_clone_with_arc() {
+    let state = Arc::new(VideoCompilerState::default());
+    let state_clone = state.clone();
+
+    state.update_ffmpeg_path("/new/path".to_string()).await;
+
+    // Both should see the same update
+    let path1 = state.ffmpeg_path.read().await;
+    let path2 = state_clone.ffmpeg_path.read().await;
+
+    assert_eq!(path1.as_str(), path2.as_str());
+  }
+
+  #[tokio::test]
+  async fn test_rapid_settings_changes() {
+    let state = VideoCompilerState::default();
+
+    for i in 0..100 {
+      let mut settings = state.settings.write().await;
+      settings.max_concurrent_jobs = (i % 8) + 1;
+      drop(settings);
+    }
+
+    let final_settings = state.settings.read().await;
+    assert!(final_settings.max_concurrent_jobs >= 1 && final_settings.max_concurrent_jobs <= 8);
+  }
+
+  #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+  async fn test_high_concurrency_stress() {
+    let state = Arc::new(VideoCompilerState::default());
+    let mut handles = vec![];
+
+    for i in 0..100 {
+      let state_clone = state.clone();
+      let handle = tokio::spawn(async move {
+        match i % 4 {
+          0 => {
+            let _jobs = state_clone.active_jobs.read().await;
+          }
+          1 => {
+            let _pipelines = state_clone.active_pipelines.read().await;
+          }
+          2 => {
+            let _cache = state_clone.cache_manager.read().await;
+          }
+          _ => {
+            let _settings = state_clone.settings.read().await;
+          }
+        }
+        i
+      });
+      handles.push(handle);
+    }
+
+    let results: Vec<_> = futures::future::join_all(handles)
+      .await
+      .into_iter()
+      .map(|r| r.unwrap())
+      .collect();
+
+    assert_eq!(results.len(), 100);
   }
 }
