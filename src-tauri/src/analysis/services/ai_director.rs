@@ -336,13 +336,13 @@ impl Default for AIDirectorConfig {
       enable_caching: true,
       generate_editing_recommendations: true,
       enable_mcp_agents: false,
-      ai_provider: None, // По умолчанию AI не используется
-      ai_model: None,
-      ai_api_key: None, // Использовать secure storage
+      ai_provider: Some(AIProvider::Ollama), // По умолчанию Ollama (бесплатно, локально)
+      ai_model: Some("moondream2".to_string()),
+      ai_api_key: None, // Не требуется для Ollama
       enable_ai_enhanced_analysis: false,
       enable_ai_descriptions: false,
       enable_ai_mood_analysis: false,
-      enable_vision_language_model: false,
+      enable_vision_language_model: true, // ✅ Включено по умолчанию (Ollama бесплатно)
       vlm_model: Some("moondream2".to_string()), // Default model
       vlm_num_frames: 5,
       vlm_temperature: 0.7,
