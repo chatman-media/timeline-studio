@@ -157,7 +157,6 @@ pub fn generate_proxy(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use std::fs;
   use tempfile::TempDir;
 
   #[test]
@@ -182,7 +181,7 @@ mod tests {
 
   #[test]
   fn test_proxy_path_generation() {
-    let temp_dir = TempDir::new().unwrap();
+    let _temp_dir = TempDir::new().unwrap();
     let source_path = "/path/to/my_video.mp4";
 
     let params = ProxyGenerationParams {
