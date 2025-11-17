@@ -876,23 +876,25 @@ impl AIProviderManager {
       .to_string();
 
     // Parse tool calls if present (Ollama 0.1.26+)
-    let tool_calls = json["message"]["tool_calls"].as_array().map(|calls| calls
-          .iter()
-          .filter_map(|call| {
-            let id = call["id"].as_str()?.to_string();
-            let function_name = call["function"]["name"].as_str()?.to_string();
-            let arguments_str = call["function"]["arguments"].as_str()?;
+    let tool_calls = json["message"]["tool_calls"].as_array().map(|calls| {
+      calls
+        .iter()
+        .filter_map(|call| {
+          let id = call["id"].as_str()?.to_string();
+          let function_name = call["function"]["name"].as_str()?.to_string();
+          let arguments_str = call["function"]["arguments"].as_str()?;
 
-            // Parse arguments JSON string to Value
-            let input = serde_json::from_str(arguments_str).ok()?;
+          // Parse arguments JSON string to Value
+          let input = serde_json::from_str(arguments_str).ok()?;
 
-            Some(AIToolCall {
-              id,
-              name: function_name,
-              input,
-            })
+          Some(AIToolCall {
+            id,
+            name: function_name,
+            input,
           })
-          .collect());
+        })
+        .collect()
+    });
 
     Ok(UnifiedAIResponse {
       id: uuid::Uuid::new_v4().to_string(),
