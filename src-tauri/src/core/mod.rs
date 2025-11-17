@@ -4,6 +4,7 @@ pub mod di;
 pub mod events;
 pub mod performance;
 pub mod plugins;
+pub mod serde_helpers; // 🔧 Serde serialization helpers
 pub mod telemetry;
 pub mod validation; // 🔒 Input validation utilities
 

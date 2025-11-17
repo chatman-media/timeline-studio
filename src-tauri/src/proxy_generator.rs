@@ -20,6 +20,9 @@ pub struct ProxyGenerationParams {
 pub struct ProxyGenerationResult {
   pub proxy_path: String,
   pub source_path: String,
+  #[serde(serialize_with = "crate::core::serde_helpers::serialize_u64_as_string")]
+  #[serde(deserialize_with = "crate::core::serde_helpers::deserialize_u64_from_string")]
+  #[specta(type = String)]
   pub size: u64,
   pub resolution: Resolution,
 }
