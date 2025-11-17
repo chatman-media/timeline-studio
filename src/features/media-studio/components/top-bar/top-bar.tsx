@@ -1,4 +1,5 @@
 import {
+  Brain,
   FilePlus,
   FolderOpen,
   Keyboard,
@@ -171,6 +172,7 @@ const TopBarComponent = function TopBar() {
       publish: t("topBar.publish"),
       editingTasks: t("topBar.editingTasks"),
       montagePlanner: t("topBar.montagePlanner"),
+      aiDirector: t("topBar.aiDirector"),
       export: t("topBar.export"),
     }),
     [t, isBrowserVisible, isTimelineVisible, currentProject?.isDirty],
@@ -382,6 +384,17 @@ const TopBarComponent = function TopBar() {
             data-testid="montage-planner-button"
           >
             <Wand2 className="h-5 w-5" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={TOP_BAR_BUTTON_CLASS}
+            title={buttonTitles.aiDirector}
+            onClick={() => handleOpenModal("ai-director")}
+            data-testid="ai-director-button"
+          >
+            <Brain className="h-5 w-5" />
           </Button>
 
           <Button

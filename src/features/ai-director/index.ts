@@ -12,8 +12,10 @@ export type {
   HealthCheckResult,
   SystemCapabilities,
 } from "@/domains/ai-services/types/ai-director-events"
-// Re-export main types for convenience
-export type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/types/generated/tauri-bindings"
+// AI Director types are not in tauri-bindings yet, using placeholder exports
+export type AIDirectorConfig = any
+export type ComprehensiveAnalysisResult = any
+export * from "./components/ai-director-modal"
 export * from "./hooks"
 export * from "./services/ai-director-machine"
 export * from "./services/ai-director-service"

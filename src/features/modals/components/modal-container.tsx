@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { AIDirectorModal } from "@/features/ai-director"
 import { MissingFilesModal } from "@/features/app-state/components/missing-files-modal"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
@@ -74,6 +75,8 @@ export function ModalContainer() {
         return <ColorGradingSavePresetModal />
       case "montage-planner":
         return <MontagePlannerModal />
+      case "ai-director":
+        return <AIDirectorModal />
       default:
         return null
     }
@@ -120,6 +123,8 @@ export function ModalContainer() {
       case "color-grading":
         return "h-[max(400px,min(50vh,500px))] w-[max(500px,min(60vw,600px))]"
       case "montage-planner":
+        return "h-[max(800px,min(90vh,1000px))] w-[max(1200px,min(95vw,1400px))]"
+      case "ai-director":
         return "h-[max(800px,min(90vh,1000px))] w-[max(1200px,min(95vw,1400px))]"
       default:
         return "h-[max(600px,min(50vh,800px))]"
@@ -173,6 +178,8 @@ export function ModalContainer() {
         return t("modals.colorGrading.title", "Сохранить пресет цветокоррекции")
       case "montage-planner":
         return t("modals.montagePlanner.title", "Умный планировщик монтажа")
+      case "ai-director":
+        return t("modals.aiDirector.title", "AI Директор анализа")
       case "none":
         return ""
       default:

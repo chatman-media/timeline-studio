@@ -37,6 +37,7 @@ export type ModalType =
   | "effect-detail"
   | "color-grading"
   | "montage-planner"
+  | "ai-director"
   | "none"
 
 /**

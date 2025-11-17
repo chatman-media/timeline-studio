@@ -23,6 +23,9 @@ use crate::analysis::engines::content_engine::{
 };
 use crate::analysis::engines::{ContentEngine, MomentEngine, SceneEngine};
 use crate::analysis::services::unified_audio_analyzer::UnifiedAudioAnalyzer;
+use crate::analysis::services::vision_analyzer::{
+  VisionAnalysisConfig, VisionAnalysisResult as VLMAnalysisResult, VisionAnalyzer,
+};
 use crate::analysis::types::unified_types::{
   AudioCharacteristics, KeyMoment, SceneAnalysis, SceneType, VisualCharacteristics,
 };
@@ -49,8 +52,11 @@ pub struct ComprehensiveAnalysisResult {
   /// Scene analysis результат
   pub scene_analysis: Option<SceneAnalysisResult>,
 
-  /// Vision analysis результат
+  /// Vision analysis результат (ONNX-based detection)
   pub vision_analysis: Option<VisionAnalysisResult>,
+
+  /// Vision Language Model analysis результат (Moondream2, LLaVA, etc.)
+  pub vision_language_model_analysis: Option<VLMAnalysisResult>,
 
   /// Moment detection результат
   pub moment_analysis: Option<MomentAnalysisResult>,
@@ -289,6 +295,21 @@ pub struct AIDirectorConfig {
 
   /// 🆕 Использовать AI для анализа настроения
   pub enable_ai_mood_analysis: bool,
+
+  /// 🆕 Включить Vision Language Model анализ (Moondream2, LLaVA, etc.)
+  pub enable_vision_language_model: bool,
+
+  /// 🆕 VLM Model для использования (e.g., "moondream2", "llama3.2-vision:11b")
+  pub vlm_model: Option<String>,
+
+  /// 🆕 Количество фреймов для VLM анализа
+  pub vlm_num_frames: u32,
+
+  /// 🆕 Temperature для VLM
+  pub vlm_temperature: f64,
+
+  /// 🆕 Max tokens для VLM
+  pub vlm_max_tokens: u32,
 }
 
 impl Default for AIDirectorConfig {
@@ -321,6 +342,11 @@ impl Default for AIDirectorConfig {
       enable_ai_enhanced_analysis: false,
       enable_ai_descriptions: false,
       enable_ai_mood_analysis: false,
+      enable_vision_language_model: false,
+      vlm_model: Some("moondream2".to_string()), // Default model
+      vlm_num_frames: 5,
+      vlm_temperature: 0.7,
+      vlm_max_tokens: 1024,
     }
   }
 }
@@ -342,6 +368,9 @@ pub struct AIDirector {
   /// 🆕 AI Provider Manager для улучшенного анализа
   ai_manager: Arc<AIProviderManager>,
 
+  /// 🆕 Vision Language Model Analyzer (Moondream2, LLaVA, etc.)
+  vision_analyzer: Arc<RwLock<VisionAnalyzer>>,
+
   /// Конфигурация по умолчанию
   default_config: AIDirectorConfig,
 }
@@ -354,6 +383,7 @@ impl AIDirector {
     let moment_engine = Arc::new(RwLock::new(MomentEngine::new()));
     let content_engine = Arc::new(RwLock::new(ContentEngine::new()));
     let ai_manager = Arc::new(AIProviderManager::new());
+    let vision_analyzer = Arc::new(RwLock::new(VisionAnalyzer::new(ai_manager.clone())));
 
     Self {
       unified_audio_analyzer,
@@ -361,6 +391,7 @@ impl AIDirector {
       moment_engine,
       content_engine,
       ai_manager,
+      vision_analyzer,
       default_config: AIDirectorConfig::default(),
     }
   }
@@ -402,6 +433,7 @@ impl AIDirector {
       audio_analysis: None,
       scene_analysis: None,
       vision_analysis: None,
+      vision_language_model_analysis: None,
       moment_analysis: None,
       content_analysis: None,
       combined_insights: AnalysisInsights {
@@ -607,7 +639,37 @@ impl AIDirector {
       result.performance_metrics.content_analysis_time = content_start.elapsed().as_millis() as u32;
     }
 
-    // 6. INTEGRATION & INSIGHTS GENERATION
+    // 6. VISION LANGUAGE MODEL ANALYSIS (если включен и есть AI provider)
+    if config.enable_vision_language_model && config.ai_provider.is_some() {
+      total_engines += 1;
+      let vlm_start = Instant::now();
+
+      info!("Running Vision Language Model analysis...");
+      match self
+        .run_vision_language_model_analysis(media_path, &config)
+        .await
+      {
+        Ok(vlm_result) => {
+          result.vision_language_model_analysis = Some(vlm_result);
+          result
+            .metadata
+            .engines_used
+            .push("vision_language_model".to_string());
+          success_count += 1;
+          info!("Vision Language Model analysis completed successfully");
+        }
+        Err(e) => {
+          let error_msg = format!("Vision Language Model analysis failed: {}", e);
+          warn!("{}", error_msg);
+          result.errors.push(error_msg);
+        }
+      }
+
+      let vlm_time = vlm_start.elapsed().as_millis() as u32;
+      result.performance_metrics.vision_analysis_time += vlm_time; // Add to vision time
+    }
+
+    // 7. INTEGRATION & INSIGHTS GENERATION
     let integration_start = Instant::now();
     info!("Generating combined insights...");
 
@@ -930,6 +992,39 @@ impl AIDirector {
     })
   }
 
+  /// Запуск Vision Language Model analysis
+  async fn run_vision_language_model_analysis(
+    &self,
+    media_path: &Path,
+    config: &AIDirectorConfig,
+  ) -> Result<VLMAnalysisResult> {
+    let analyzer = self.vision_analyzer.read().await;
+
+    // Создаем конфигурацию для VLM
+    let vlm_config = VisionAnalysisConfig {
+      provider: config.ai_provider.clone().unwrap_or(AIProvider::Ollama),
+      model: config
+        .vlm_model
+        .clone()
+        .unwrap_or_else(|| "moondream2".to_string()),
+      num_frames: config.vlm_num_frames as usize,
+      temperature: config.vlm_temperature,
+      max_tokens: config.vlm_max_tokens,
+    };
+
+    // Получаем API ключ
+    let api_key = config
+      .ai_api_key
+      .clone()
+      .unwrap_or_else(|| String::new()); // Для Ollama ключ не нужен
+
+    // Запускаем анализ
+    analyzer
+      .analyze_video(&media_path.to_path_buf(), &api_key, vlm_config)
+      .await
+      .map_err(|e| anyhow::anyhow!("Vision Language Model analysis failed: {}", e))
+  }
+
   /// Генерация объединенных insights
   async fn generate_combined_insights(
     &self,
@@ -1161,13 +1256,13 @@ impl AIDirector {
     let request = UnifiedAIRequest {
       provider,
       model: model.to_string(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: format!(
+      messages: vec![AIMessage::text(
+        "user",
+        format!(
           "Analyze this video scene and provide a concise, engaging description (2-3 sentences):\n\n{}",
           scene_info
         ),
-      }],
+      )],
       max_tokens: Some(200),
       temperature: Some(0.7),
       stream: Some(false),
@@ -1214,9 +1309,9 @@ impl AIDirector {
     let request = UnifiedAIRequest {
       provider,
       model: model.to_string(),
-      messages: vec![AIMessage {
-        role: "user".to_string(),
-        content: format!(
+      messages: vec![AIMessage::text(
+        "user",
+        format!(
           "Analyze the emotional tone and mood of this video based on these scenes:\n\n{}\n\n\
            Provide a JSON response with:\n\
            - primary: main mood (e.g., 'joyful', 'dramatic', 'peaceful', 'energetic')\n\
@@ -1225,7 +1320,7 @@ impl AIDirector {
            - dominance: control/power level (0.0-1.0)",
           scenes_overview.join("\n")
         ),
-      }],
+      )],
       max_tokens: Some(300),
       temperature: Some(0.5),
       stream: Some(false),

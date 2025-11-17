@@ -140,6 +140,7 @@
     "projectTasks": "Задачи Проекта",
     "userSettings": "Настройки пользователя",
     "montagePlanner": "Планировщик монтажа",
+    "aiDirector": "AI Директор",
     "export": "Экспорт",
     "unknownError": "Неизвестная ошибка",
     "unknown": "Неизвестно",
@@ -211,6 +212,9 @@
       },
       "montagePlanner": {
         "title": "Умный планировщик монтажа"
+      },
+      "aiDirector": {
+        "title": "AI Директор анализа"
       }
     },
     "keyboardShortcuts": {
