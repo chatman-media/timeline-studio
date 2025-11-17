@@ -171,9 +171,9 @@ export function AIAnalysisDashboard() {
             enable_composition_analysis: analysisMode === "quality",
             enable_mood_analysis: true,
             enable_quality_analysis: analysisMode === "quality",
-            enable_vision_language_model: analysisMode === "quality",
-            vlm_model: null,
-            vlm_num_frames: 5,
+            enable_vision_language_model: true, // ✅ Всегда включено (Ollama бесплатно)
+            vlm_model: "llava", // Ollama vision модель по умолчанию
+            vlm_num_frames: analysisMode === "quality" ? 10 : 5, // Больше кадров для quality
             vlm_temperature: 0.7,
             vlm_max_tokens: 1024,
             max_processing_time: null,
