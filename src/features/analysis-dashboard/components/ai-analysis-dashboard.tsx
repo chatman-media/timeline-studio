@@ -5,13 +5,14 @@
  * Simplified dashboard working directly with AI Director (file-centric, not project-based)
  */
 
-import { FileVideo, Play, Settings, Video, Zap } from "lucide-react"
+import { CheckCircle2, Circle, FileVideo, Play, Settings, Video, Zap } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirector } from "@/features/ai-director/hooks/use-ai-director"
@@ -106,7 +107,7 @@ export function AIAnalysisDashboard() {
   // Cast result to dashboard type for UI rendering
   const result = rawResult as DashboardAnalysisResult | null
 
-  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
+  const [selectedMediaIds, setSelectedMediaIds] = useState<Set<string>>(new Set())
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
 
   // Filter only video files
@@ -114,52 +115,77 @@ export function AIAnalysisDashboard() {
     return mediaFiles.filter((media) => media.media_type === "Video")
   }, [mediaFiles])
 
-  // Get selected file path
-  const selectedFile = useMemo(() => {
-    if (!selectedMediaId) return null
-    const media = videoFiles.find((m) => m.id === selectedMediaId)
-    return media?.path || null
-  }, [selectedMediaId, videoFiles])
+  // Get selected file paths
+  const selectedFiles = useMemo(() => {
+    return Array.from(selectedMediaIds)
+      .map((id) => videoFiles.find((m) => m.id === id))
+      .filter((media) => media !== undefined)
+      .map((media) => media.path)
+  }, [selectedMediaIds, videoFiles])
+
+  // Toggle video selection
+  const toggleVideoSelection = (videoId: string) => {
+    const newSelection = new Set(selectedMediaIds)
+    if (newSelection.has(videoId)) {
+      newSelection.delete(videoId)
+    } else {
+      newSelection.add(videoId)
+    }
+    setSelectedMediaIds(newSelection)
+  }
+
+  // Select all videos
+  const selectAllVideos = () => {
+    setSelectedMediaIds(new Set(videoFiles.map((v) => v.id)))
+  }
+
+  // Deselect all videos
+  const deselectAllVideos = () => {
+    setSelectedMediaIds(new Set())
+  }
 
   // Start analysis
   const handleStartAnalysis = async () => {
-    if (!selectedFile) return
+    if (selectedFiles.length === 0) return
 
     try {
-      if (analysisMode === "fast") {
-        await analyzeQuick(selectedFile)
-      } else {
-        // Use default config based on mode
-        const config: AIDirectorConfig = {
-          performance_mode: "Balanced",
-          enable_audio_analysis: true,
-          enable_scene_detection: true,
-          enable_video_analysis: analysisMode === "quality",
-          enable_vision_analysis: analysisMode === "quality",
-          enable_face_detection: analysisMode === "quality",
-          enable_face_analysis: analysisMode === "quality",
-          enable_object_detection: analysisMode === "quality",
-          enable_object_analysis: analysisMode === "quality",
-          enable_emotion_analysis: false,
-          enable_moment_detection: true,
-          enable_content_classification: true,
-          enable_composition_analysis: analysisMode === "quality",
-          enable_mood_analysis: true,
-          enable_quality_analysis: analysisMode === "quality",
-          max_processing_time: null,
-          quality_threshold: 0.5,
-          max_key_moments: null,
-          enable_caching: true,
-          generate_editing_recommendations: true,
-          enable_mcp_agents: false,
-          ai_provider: null,
-          ai_model: null,
-          ai_api_key: null,
-          enable_ai_enhanced_analysis: analysisMode === "quality",
-          enable_ai_descriptions: analysisMode === "quality",
-          enable_ai_mood_analysis: true,
+      // Analyze each selected file sequentially
+      for (const filePath of selectedFiles) {
+        if (analysisMode === "fast") {
+          await analyzeQuick(filePath)
+        } else {
+          // Use default config based on mode
+          const config: AIDirectorConfig = {
+            performance_mode: "Balanced",
+            enable_audio_analysis: true,
+            enable_scene_detection: true,
+            enable_video_analysis: analysisMode === "quality",
+            enable_vision_analysis: analysisMode === "quality",
+            enable_face_detection: analysisMode === "quality",
+            enable_face_analysis: analysisMode === "quality",
+            enable_object_detection: analysisMode === "quality",
+            enable_object_analysis: analysisMode === "quality",
+            enable_emotion_analysis: false,
+            enable_moment_detection: true,
+            enable_content_classification: true,
+            enable_composition_analysis: analysisMode === "quality",
+            enable_mood_analysis: true,
+            enable_quality_analysis: analysisMode === "quality",
+            max_processing_time: null,
+            quality_threshold: 0.5,
+            max_key_moments: null,
+            enable_caching: true,
+            generate_editing_recommendations: true,
+            enable_mcp_agents: false,
+            ai_provider: null,
+            ai_model: null,
+            ai_api_key: null,
+            enable_ai_enhanced_analysis: analysisMode === "quality",
+            enable_ai_descriptions: analysisMode === "quality",
+            enable_ai_mood_analysis: true,
+          }
+          await analyzeComprehensive(filePath, config)
         }
-        await analyzeComprehensive(selectedFile, config)
       }
     } catch (error) {
       logger.error("Failed to start analysis:", { error } as LogContext)
@@ -202,7 +228,7 @@ export function AIAnalysisDashboard() {
                 <Video className="h-5 w-5" />
                 Выбор видео
               </CardTitle>
-              <CardDescription>Выберите видео из медиапула</CardDescription>
+              <CardDescription>Выберите видео из медиапула ({selectedMediaIds.size} выбрано)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {videoFiles.length === 0 ? (
@@ -211,30 +237,43 @@ export function AIAnalysisDashboard() {
                   <p className="text-xs mt-1">Добавьте видео в браузер медиа</p>
                 </div>
               ) : (
-                <Select value={selectedMediaId || ""} onValueChange={setSelectedMediaId}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Выберите видео" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {videoFiles.map((video) => (
-                      <SelectItem key={video.id} value={video.id}>
-                        <div className="flex items-center gap-2">
-                          <FileVideo className="h-4 w-4" />
-                          <span className="truncate">{video.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+                <>
+                  <div className="flex gap-2">
+                    <Button onClick={selectAllVideos} variant="outline" size="sm" className="flex-1">
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      Выбрать все
+                    </Button>
+                    <Button onClick={deselectAllVideos} variant="outline" size="sm" className="flex-1">
+                      <Circle className="h-4 w-4 mr-2" />
+                      Снять всё
+                    </Button>
+                  </div>
 
-              {selectedFile && (
-                <div className="p-3 bg-muted rounded-md">
-                  <p className="text-sm font-medium truncate">
-                    {videoFiles.find((v) => v.id === selectedMediaId)?.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground truncate mt-1">{selectedFile}</p>
-                </div>
+                  <ScrollArea className="h-[200px] rounded-md border p-2">
+                    <div className="space-y-2">
+                      {videoFiles.map((video) => (
+                        <div
+                          key={video.id}
+                          className="flex items-start gap-2 p-2 rounded-md hover:bg-muted cursor-pointer"
+                          onClick={() => toggleVideoSelection(video.id)}
+                        >
+                          <Checkbox
+                            checked={selectedMediaIds.has(video.id)}
+                            onCheckedChange={() => toggleVideoSelection(video.id)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <FileVideo className="h-4 w-4 flex-shrink-0" />
+                              <span className="text-sm font-medium truncate">{video.name}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate mt-1">{video.path}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </>
               )}
             </CardContent>
           </Card>
@@ -283,11 +322,15 @@ export function AIAnalysisDashboard() {
 
               <Button
                 onClick={handleStartAnalysis}
-                disabled={!selectedFile || isAnalyzing}
+                disabled={selectedFiles.length === 0 || isAnalyzing}
                 className="w-full mt-4 gap-2"
               >
                 <Play className="h-4 w-4" />
-                {isAnalyzing ? "Анализ..." : "Начать анализ"}
+                {isAnalyzing
+                  ? "Анализ..."
+                  : selectedFiles.length > 1
+                    ? `Анализировать ${selectedFiles.length} видео`
+                    : "Начать анализ"}
               </Button>
             </CardContent>
           </Card>
