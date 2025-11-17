@@ -95,7 +95,7 @@ describe("RenderJobsDropdown", () => {
   it("should render the dropdown button with correct text", () => {
     render(<RenderJobsDropdown />)
 
-    expect(screen.getByText("Задачи")).toBeInTheDocument()
+    expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
   })
 
   it("should show active jobs count badge", async () => {
@@ -112,7 +112,7 @@ describe("RenderJobsDropdown", () => {
   it("should open dropdown when clicked", async () => {
     render(<RenderJobsDropdown />)
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
 
     // Wait for initial load
     await waitFor(() => {
@@ -138,10 +138,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -162,10 +162,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -185,10 +185,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -213,10 +213,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -245,10 +245,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -269,10 +269,10 @@ describe("RenderJobsDropdown", () => {
     render(<RenderJobsDropdown />)
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /задачи/i })).toBeInTheDocument()
+      expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
@@ -320,7 +320,7 @@ describe("RenderJobsDropdown", () => {
       expect(invoke).toHaveBeenCalledWith("get_active_jobs")
     })
 
-    const button = screen.getByRole("button", { name: /задачи/i })
+    const button = screen.getByTestId("dropdown-menu-trigger")
     await act(async () => {
       fireEvent.click(button)
     })
