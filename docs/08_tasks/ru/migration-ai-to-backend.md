@@ -998,11 +998,297 @@ cargo test --features integration-tests
 
 ## Заключение
 
+## 7. Vision Language Models - Multimodal AI Support 🎨
+
+### Поддержка изображений в AI запросах
+
+**Статус:** ✅ Полностью реализовано
+
+Timeline Studio теперь поддерживает vision language models (VLM) для анализа видеофреймов с помощью AI.
+
+### Архитектура
+
+**1. Multimodal AIMessage**
+
+Добавлена поддержка изображений в `AIMessage`:
+
+```rust
+// types.rs
+pub enum AIMessageContent {
+  Text(String),
+  Multimodal(Vec<AIContentPart>),
+}
+
+pub enum AIContentPart {
+  Text { text: String },
+  Image { source: AIImageSource },
+}
+
+pub enum AIImageSource {
+  Base64 { media_type: String, data: String },
+  Url { url: String },
+}
+```
+
+**2. Helper методы:**
+
+```rust
+// Простой текст
+AIMessage::text("user", "Describe this scene")
+
+// Текст + изображение
+AIMessage::with_image_base64(
+  "user",
+  "What do you see in this frame?",
+  base64_image_data,
+  "image/jpeg"
+)
+
+// Текст + URL изображения
+AIMessage::with_image_url(
+  "user",
+  "Analyze this image",
+  "https://example.com/image.jpg"
+)
+```
+
+**3. Автоматическая конвертация для Ollama:**
+
+```rust
+// From<AIMessage> for OllamaMessage
+// Автоматически извлекает images из multimodal content
+impl From<AIMessage> for OllamaMessage {
+  fn from(msg: AIMessage) -> Self {
+    match msg.content {
+      AIMessageContent::Text(text) => OllamaMessage {
+        role: msg.role,
+        content: text,
+        images: None,
+      },
+      AIMessageContent::Multimodal(parts) => {
+        let mut text_parts = Vec::new();
+        let mut image_data = Vec::new();
+
+        for part in parts {
+          match part {
+            AIContentPart::Text { text } => text_parts.push(text),
+            AIContentPart::Image { source } => {
+              if let AIImageSource::Base64 { data, .. } = source {
+                image_data.push(data);
+              }
+            }
+          }
+        }
+
+        OllamaMessage {
+          role: msg.role,
+          content: text_parts.join("\n"),
+          images: if image_data.is_empty() { None } else { Some(image_data) },
+        }
+      }
+    }
+  }
+}
+```
+
+### VisionAnalyzer Service
+
+**Возможности:**
+- Извлечение ключевых фреймов из видео
+- Анализ каждого фрейма с помощью vision model
+- Генерация описаний сцен
+- Определение объектов, настроения, типа сцены
+- Автоматическая генерация общего summary
+- Извлечение тем и паттернов
+
+**Использование через Rust:**
+
+```rust
+use crate::analysis::services::vision_analyzer::{
+  VisionAnalyzer, VisionAnalysisConfig
+};
+
+let config = VisionAnalysisConfig {
+  provider: AIProvider::Ollama,
+  model: "moondream2".to_string(),
+  num_frames: 5,
+  temperature: 0.7,
+  max_tokens: 1024,
+};
+
+let analyzer = VisionAnalyzer::new(ai_manager);
+let result = analyzer
+  .analyze_video(&video_path, &api_key, config)
+  .await?;
+
+// Результат содержит:
+// - result.frames: Vec<FrameAnalysis>
+// - result.overall_summary: String
+// - result.themes: Vec<String>
+// - result.processing_time_ms: u64
+```
+
+### Tauri Commands
+
+**1. analyze_video_with_vision_model**
+
+Анализ видео с явным указанием API ключа:
+
+```typescript
+const result = await invoke('analyze_video_with_vision_model', {
+  videoPath: '/path/to/video.mp4',
+  provider: 'ollama',
+  model: 'moondream2',
+  apiKey: 'your-api-key', // или пустая строка для Ollama
+  numFrames: 5,           // опционально, по умолчанию 5
+  temperature: 0.7,       // опционально, по умолчанию 0.7
+  maxTokens: 1024,        // опционально, по умолчанию 1024
+})
+
+// Результат:
+interface VisionAnalysisResult {
+  frames: FrameAnalysis[]
+  overallSummary: string
+  themes: string[]
+  processingTimeMs: number
+}
+
+interface FrameAnalysis {
+  timestamp: number
+  description: string
+  detectedObjects: string[]
+  sceneType?: string
+  mood?: string
+}
+```
+
+**2. analyze_video_with_vision_model_secure**
+
+Анализ с автоматическим получением API ключа из SecureStorage:
+
+```typescript
+const result = await invoke('analyze_video_with_vision_model_secure', {
+  videoPath: '/path/to/video.mp4',
+  provider: 'ollama',
+  model: 'moondream2',
+  numFrames: 5,
+  temperature: 0.7,
+  maxTokens: 1024,
+})
+// API ключ загружается автоматически из безопасного хранилища
+```
+
+### Поддерживаемые Vision Models
+
+#### Ollama (локальные модели)
+
+| Модель | Размер | Особенности |
+|--------|--------|-------------|
+| **moondream2** | 1.7B | Быстрый, компактный, хорош для базового анализа |
+| **llama3.2-vision:11b** | 11B | Высокая точность, медленнее |
+| **llama3.2-vision:90b** | 90B | Максимальная точность, требует много ресурсов |
+| **llava** | 7B/13B | Хорошо для общих задач |
+
+**Установка моделей:**
+
+```bash
+# Легкая модель для быстрого анализа
+ollama pull moondream2
+
+# Средняя модель с хорошим балансом
+ollama pull llama3.2-vision:11b
+
+# Большая модель для максимальной точности
+ollama pull llama3.2-vision:90b
+```
+
+#### Claude, OpenAI, DeepSeek
+
+Vision поддержка также работает с облачными провайдерами (требуется соответствующий API ключ).
+
+### Примеры использования
+
+**1. Анализ сцен в видеоролике**
+
+```typescript
+const analysis = await invoke('analyze_video_with_vision_model_secure', {
+  videoPath: selectedClip.path,
+  provider: 'ollama',
+  model: 'moondream2',
+  numFrames: 8,
+})
+
+console.log('Overall:', analysis.overallSummary)
+console.log('Themes:', analysis.themes)
+
+analysis.frames.forEach(frame => {
+  console.log(`[${frame.timestamp}s]: ${frame.description}`)
+  console.log('  Objects:', frame.detectedObjects)
+  console.log('  Mood:', frame.mood)
+})
+```
+
+**2. Автоматическая генерация описаний для видео**
+
+```typescript
+const description = await generateVideoDescription(videoPath)
+
+async function generateVideoDescription(path: string) {
+  const result = await invoke('analyze_video_with_vision_model_secure', {
+    videoPath: path,
+    provider: 'ollama',
+    model: 'moondream2',
+    numFrames: 5,
+  })
+
+  return result.overallSummary
+}
+```
+
+**3. Поиск ключевых моментов**
+
+```typescript
+const analysis = await invoke('analyze_video_with_vision_model_secure', {
+  videoPath: videoFile.path,
+  provider: 'ollama',
+  model: 'llama3.2-vision:11b',
+  numFrames: 10,
+})
+
+// Найти моменты с действием
+const actionFrames = analysis.frames.filter(f =>
+  f.mood === 'energetic' || f.detectedObjects.includes('person')
+)
+
+// Экспортировать метаданные
+const metadata = {
+  title: analysis.overallSummary,
+  tags: analysis.themes,
+  keyMoments: actionFrames.map(f => f.timestamp),
+}
+```
+
+### Производительность
+
+**Типичное время обработки (5 фреймов):**
+
+- **moondream2** (Ollama): ~10-15 секунд
+- **llama3.2-vision:11b** (Ollama): ~30-45 секунд
+- **llama3.2-vision:90b** (Ollama): ~2-3 минуты
+- **Claude/GPT-4V** (API): ~5-10 секунд (зависит от сети)
+
+**Оптимизация:**
+- Используйте меньше фреймов (`numFrames: 3-5`) для быстрого анализа
+- Для детального анализа используйте `numFrames: 10-15`
+- Ollama модели работают полностью локально (приватность + скорость)
+
+---
+
 **Основные достижения:**
 
 ✅ **Multi-Provider Support** - 4 AI провайдера с единым интерфейсом
 
-✅ **Tools/Function Calling** - Полная поддержка для Claude, OpenAI, DeepSeek
+✅ **Tools/Function Calling** - Полная поддержка для Claude, OpenAI, DeepSeek, Ollama
 
 ✅ **Automatic Fallback** - Переключение между провайдерами при ошибках
 
@@ -1014,12 +1300,17 @@ cargo test --features integration-tests
 
 ✅ **AI Director Integration** - Использование AI в анализе видео
 
+✅ **Vision Language Models** - Анализ видеофреймов с Moondream2, LLaVA, Claude, GPT-4V
+
+✅ **Multimodal Support** - Поддержка текста + изображений в AI запросах
+
 **Следующий фокус:**
 1. ~~Интеграция AI Chat с новым бэкендом~~ ✅ Завершено
 2. ~~Реализация streaming для real-time ответов~~ ✅ Завершено
-3. Кэширование результатов в SQLite
-4. Rate limiting и retry логика
-5. Обновление фронтенда для использования streaming событий
+3. ~~Vision Language Models для анализа фреймов~~ ✅ Завершено
+4. Кэширование результатов в SQLite
+5. Rate limiting и retry логика
+6. Обновление фронтенда для использования streaming событий
 
 ---
 
