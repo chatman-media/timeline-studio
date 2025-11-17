@@ -6,7 +6,7 @@
  */
 
 import { CheckCircle2, Circle, FileVideo, Play, Settings, Video, Zap } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -110,6 +110,16 @@ export function AIAnalysisDashboard() {
 
   const [selectedMediaIds, setSelectedMediaIds] = useState<Set<string>>(new Set())
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>("balanced")
+
+  // Debug: отслеживаем получение результата в компоненте
+  useEffect(() => {
+    logger.infoSync("[AIAnalysisDashboard] Результат изменился", {
+      hasRawResult: !!rawResult,
+      hasResult: !!result,
+      isAnalyzing,
+      showSetupPanelWillBe: !isAnalyzing && !result,
+    })
+  }, [rawResult, result, isAnalyzing])
 
   // Show setup panel only when no analysis is running and no results exist
   const showSetupPanel = !isAnalyzing && !result

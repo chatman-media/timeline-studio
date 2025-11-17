@@ -39,6 +39,17 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   const [result, setResult] = useState<ComprehensiveAnalysisResult | null>(null)
   const [errors, setErrors] = useState<AnalysisError[]>([])
 
+  // Debug: отслеживаем изменения result
+  useEffect(() => {
+    logInfo("[useAIDirectorAnalysis] Состояние result изменилось", {
+      hasResult: !!result,
+      hasScenes: !!result?.scene_analysis?.scenes,
+      scenesCount: result?.scene_analysis?.scenes?.length || 0,
+      hasMoments: !!result?.moment_analysis?.moments,
+      momentsCount: result?.moment_analysis?.moments?.length || 0,
+    } as Record<string, unknown>)
+  }, [result])
+
   // Event listeners
   useEffect(() => {
     const unlistenFunctions: UnlistenFn[] = []
@@ -143,6 +154,11 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
 
       logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult } as Record<string, unknown>)
       setResult(analysisResult)
+      logInfo("[useAIDirectorAnalysis] setResult вызван, устанавливаем результат", {
+        hasResult: !!analysisResult,
+        hasScenes: !!analysisResult?.scene_analysis?.scenes,
+        hasMoments: !!analysisResult?.moment_analysis?.moments,
+      } as Record<string, unknown>)
     } catch (error) {
       logError("[useAIDirectorAnalysis] Ошибка запуска AI Director анализа", error as Record<string, unknown>)
       setIsAnalyzing(false)
@@ -171,6 +187,11 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
         unknown
       >)
       setResult(analysisResult)
+      logInfo("[useAIDirectorAnalysis] setResult вызван для быстрого анализа", {
+        hasResult: !!analysisResult,
+        hasScenes: !!analysisResult?.scene_analysis?.scenes,
+        hasMoments: !!analysisResult?.moment_analysis?.moments,
+      } as Record<string, unknown>)
     } catch (error) {
       logError("[useAIDirectorAnalysis] Ошибка запуска быстрого AI Director анализа", error as Record<string, unknown>)
       setIsAnalyzing(false)
