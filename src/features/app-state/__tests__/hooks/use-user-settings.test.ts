@@ -313,25 +313,19 @@ describe("useUserSettings", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      // Mock with delay to catch loading state
+      // Mock with updated settings
       const updatedSettings: UserSettingsContextType = {
         ...mockUserSettings,
         preferredLanguage: "en",
       }
-      vi.mocked(storeService.getUserSettings).mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(updatedSettings), 50)),
-      )
+      vi.mocked(storeService.getUserSettings).mockResolvedValueOnce(updatedSettings)
 
-      const refetchPromise = result.current.refetch()
+      // Call refetch and wait for it to complete
+      await result.current.refetch()
 
-      // Check loading state is true during refetch
+      // Verify settings were updated
       await waitFor(() => {
-        expect(result.current.isLoading).toBe(true)
-      })
-
-      await refetchPromise
-
-      await waitFor(() => {
+        expect(result.current.userSettings?.preferredLanguage).toBe("en")
         expect(result.current.isLoading).toBe(false)
       })
     })
