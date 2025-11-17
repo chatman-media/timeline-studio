@@ -16,9 +16,8 @@ type SystemCapabilities = any
 
 import * as TauriBindings from "@/types/generated/tauri-bindings"
 
-// AI Director commands are not in bindings yet, create mock versions
-const commands = {
-  ...TauriBindings.commands,
+// Default fallback implementations
+const defaultCommands = {
   aiDirectorAnalyzeComprehensive: async (_path: string, _config: any): Promise<any> => ({
     status: "error" as const,
     error: "Not implemented",
@@ -41,6 +40,24 @@ const commands = {
   }),
   aiDirectorGetCapabilities: async (): Promise<any> => ({ status: "error" as const, error: "Not implemented" }),
   aiDirectorHealthCheck: async (): Promise<any> => ({ status: "error" as const, error: "Not implemented" }),
+}
+
+// Use commands from bindings if available, otherwise use defaults
+const commands = {
+  aiDirectorAnalyzeComprehensive:
+    (TauriBindings.commands as any)?.aiDirectorAnalyzeComprehensive || defaultCommands.aiDirectorAnalyzeComprehensive,
+  aiDirectorAnalyzeQuick:
+    (TauriBindings.commands as any)?.aiDirectorAnalyzeQuick || defaultCommands.aiDirectorAnalyzeQuick,
+  aiDirectorAnalyzeBatch:
+    (TauriBindings.commands as any)?.aiDirectorAnalyzeBatch || defaultCommands.aiDirectorAnalyzeBatch,
+  aiDirectorGetDefaultConfig:
+    (TauriBindings.commands as any)?.aiDirectorGetDefaultConfig || defaultCommands.aiDirectorGetDefaultConfig,
+  aiDirectorValidateConfig:
+    (TauriBindings.commands as any)?.aiDirectorValidateConfig || defaultCommands.aiDirectorValidateConfig,
+  aiDirectorGetCapabilities:
+    (TauriBindings.commands as any)?.aiDirectorGetCapabilities || defaultCommands.aiDirectorGetCapabilities,
+  aiDirectorHealthCheck:
+    (TauriBindings.commands as any)?.aiDirectorHealthCheck || defaultCommands.aiDirectorHealthCheck,
 }
 
 export interface AIDirectorState {
