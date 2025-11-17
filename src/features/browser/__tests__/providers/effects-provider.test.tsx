@@ -357,6 +357,10 @@ describe("EffectsProvider API", () => {
   })
 
   it("должен поддерживать фильтрацию по тегам", () => {
+    // Сначала проверим, что эффекты вообще загружены
+    const allEffects = api.getEffects()
+    expect(allEffects.length).toBeGreaterThan(0)
+
     const testResources = api.getResourcesByTags("effect", ["test"])
     expect(testResources).toHaveLength(2)
 

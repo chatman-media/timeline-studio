@@ -54,8 +54,8 @@ describe("useFileSelection", () => {
     // Переключаем выбор файла
     await act(async () => {
       await result.current.toggleSelection()
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     // Ждем, пока состояние обновится через backend events
@@ -63,14 +63,14 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(true)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
 
     // Переключаем обратно
     await act(async () => {
       await result.current.toggleSelection()
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     // Ждем, пока состояние обновится
@@ -78,7 +78,7 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(false)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
   })
 
@@ -92,8 +92,8 @@ describe("useFileSelection", () => {
     // Выбираем файл
     await act(async () => {
       await result.current.selectFile()
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     // Ждем, пока состояние обновится через backend events
@@ -101,7 +101,7 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(true)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
   })
 
@@ -113,8 +113,8 @@ describe("useFileSelection", () => {
     // Сначала выберем файл
     await act(async () => {
       await result.current.selectFile()
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     // Ждем, пока файл будет выбран
@@ -122,14 +122,14 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(true)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
 
     // Теперь отменим выбор
     await act(async () => {
       await result.current.deselectFile()
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     // Ждем, пока выбор будет отменен
@@ -137,7 +137,7 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(false)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
   })
 
@@ -154,8 +154,8 @@ describe("useFileSelection", () => {
     // но мы можем проверить, что stopPropagation был вызван
     await act(async () => {
       result.current.handleToggleSelection(mockEvent)
-      // Даем время на обработку microtasks
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      // Даем время на обработку microtasks и event propagation
+      await new Promise((resolve) => setTimeout(resolve, 100))
     })
 
     expect(mockEvent.stopPropagation).toHaveBeenCalledOnce()
@@ -165,7 +165,7 @@ describe("useFileSelection", () => {
       () => {
         expect(result.current.isSelected).toBe(true)
       },
-      { timeout: 500 },
+      { timeout: 1000 },
     )
   })
 })

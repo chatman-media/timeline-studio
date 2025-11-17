@@ -27,28 +27,29 @@ describe("useFavorites", () => {
       filter: [],
       subtitle: [],
       media: [],
-      audio: [],
+      music: [],
+      styleTemplate: [],
     })
   })
 
   it("должен предоставлять метод обновления избранных", async () => {
     const { result } = renderHook(() => useFavorites())
 
-    const newFavorites = {
-      transition: [],
-      effect: [{ id: "effect1", name: "Blur" }],
-      template: [],
-      filter: [],
-      subtitle: [],
-      media: [],
-      audio: [],
-    }
+    const newItem = { id: "effect1", name: "Blur" }
 
+    // Добавляем элемент в избранное
     await act(async () => {
-      await result.current.updateFavorites(newFavorites)
+      await result.current.addToFavorites(newItem, "effect")
     })
 
-    expect(result.current.favorites).toEqual(newFavorites)
+    // Проверяем, что элемент добавился
+    expect(result.current.favorites.effect).toContainEqual(newItem)
+
+    // Проверяем, что вызвалась команда
+    expect(mockExecuteCommand).toHaveBeenCalledWith({
+      type: "BrowserAddToFavorites",
+      params: { file_id: "effect1", tab: "effects" },
+    })
   })
 
   it("должен предоставлять метод добавления в избранное", async () => {

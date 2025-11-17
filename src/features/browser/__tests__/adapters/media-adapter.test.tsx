@@ -11,7 +11,7 @@ vi.mock("@/features/app-state", () => ({
   })),
 }))
 
-// ✅ Новый мок для MediaManagement Provider
+// Мокируем основной экспорт из index
 vi.mock("@/domains/media-management", () => ({
   useMediaManagement: vi.fn(() => ({
     mediaPool: new Map([
@@ -58,6 +58,7 @@ vi.mock("@/domains/media-management", () => ({
     error: null,
     importFiles: vi.fn(),
     selectMediaFiles: vi.fn(() => Promise.resolve([])),
+    selectMediaDirectory: vi.fn(() => Promise.resolve([])),
   })),
 }))
 
@@ -103,6 +104,14 @@ vi.mock("@/i18n", () => ({
     off: vi.fn(),
     changeLanguage: vi.fn(() => Promise.resolve()),
   },
+}))
+
+vi.mock("@/features/drag-drop", () => ({
+  useDraggable: vi.fn(() => ({
+    onDragStart: vi.fn(),
+    onDragEnd: vi.fn(),
+    draggable: true,
+  })),
 }))
 
 describe("useMediaAdapter", () => {

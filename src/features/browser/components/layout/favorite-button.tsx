@@ -32,12 +32,16 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
   const isFavorite = favorites[type]?.some((f) => f.id === file.id)
   const [isHovering, setIsHovering] = useState(false)
   const [isRecentlyAdded, setIsRecentlyAdded] = useState(false)
+  const [isPending, setIsPending] = useState(false) // Локальное состояние для мгновенной обратной связи
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const prevIsFavoriteRef = useRef(isFavorite)
 
   useEffect(() => {
     // Обновляем состояние немедленно при изменении isFavorite
     if (isFavorite !== prevIsFavoriteRef.current) {
+      // Сбрасываем pending состояние когда isFavorite обновился
+      setIsPending(false)
+
       // Если элемент добавлен в избранное, устанавливаем флаг isRecentlyAdded
       if (isFavorite) {
         setIsRecentlyAdded(true)
@@ -127,25 +131,29 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
 
       if (isFavorite && isHovering && canShowRemoveButton) {
         // Удаляем из избранного
+        setIsPending(true)
         void removeFromFavorites(file, type)
       } else if (!isFavorite) {
         // Добавляем в избранное
-        void addToFavorites(file, type)
-        // Немедленно обновляем визуальное состояние
+        setIsPending(true)
         setIsRecentlyAdded(true)
+        void addToFavorites(file, type)
       }
     },
     [isFavorite, isHovering, canShowRemoveButton, removeFromFavorites, addToFavorites, file, type],
   )
+
+  // Определяем визуальное состояние с учетом pending
+  const visuallyFavorite = isFavorite || isPending
 
   return (
     <button
       type="button"
       className={cn(
         "absolute z-1 top-1 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
-        isFavorite
-          ? isRecentlyAdded
-            ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных
+        visuallyFavorite
+          ? isRecentlyAdded || isPending
+            ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных или pending
             : "visible bg-teal dark:bg-teal" // Добавлен класс visible
           : "invisible bg-secondary dark:bg-secondary group-hover:visible group-hover:bg-teal-light hover:bg-teal-light dark:group-hover:bg-teal dark:hover:bg-teal", // Скрыта по умолчанию, видима при наведении
       )}
@@ -155,7 +163,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
       onMouseLeave={() => setIsHovering(false)}
       data-file-id={file.id}
       title={
-        isFavorite
+        visuallyFavorite
           ? isHovering && canShowRemoveButton
             ? t("browser.media.removeFromFavorites")
             : t("browser.media.inFavorites")
