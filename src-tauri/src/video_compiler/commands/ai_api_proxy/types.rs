@@ -360,6 +360,9 @@ pub struct OllamaRequest {
 pub struct OllamaMessage {
   pub role: String,
   pub content: String,
+  /// Base64 encoded images for vision models (llama3.2-vision, moondream2, llava)
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub images: Option<Vec<String>>,
 }
 
 /// Ollama Options
@@ -439,17 +442,14 @@ impl From<AIMessage> for ClaudeMessage {
   fn from(msg: AIMessage) -> Self {
     ClaudeMessage {
       role: msg.role,
-      content: msg.content,
+      content: msg.get_text(),
     }
   }
 }
 
 impl From<OpenAIMessage> for AIMessage {
   fn from(msg: OpenAIMessage) -> Self {
-    AIMessage {
-      role: msg.role,
-      content: msg.content,
-    }
+    AIMessage::text(msg.role, msg.content)
   }
 }
 
@@ -457,25 +457,51 @@ impl From<AIMessage> for OpenAIMessage {
   fn from(msg: AIMessage) -> Self {
     OpenAIMessage {
       role: msg.role,
-      content: msg.content,
+      content: msg.get_text(),
     }
   }
 }
 
 impl From<OllamaMessage> for AIMessage {
   fn from(msg: OllamaMessage) -> Self {
-    AIMessage {
-      role: msg.role,
-      content: msg.content,
-    }
+    AIMessage::text(msg.role, msg.content)
   }
 }
 
 impl From<AIMessage> for OllamaMessage {
   fn from(msg: AIMessage) -> Self {
-    OllamaMessage {
-      role: msg.role,
-      content: msg.content,
+    match msg.content {
+      AIMessageContent::Text(text) => OllamaMessage {
+        role: msg.role,
+        content: text,
+        images: None,
+      },
+      AIMessageContent::Multimodal(parts) => {
+        let mut text_parts = Vec::new();
+        let mut image_data = Vec::new();
+
+        for part in parts {
+          match part {
+            AIContentPart::Text { text } => text_parts.push(text),
+            AIContentPart::Image { source } => {
+              // Extract base64 image data
+              if let AIImageSource::Base64 { data, .. } = source {
+                image_data.push(data);
+              }
+            }
+          }
+        }
+
+        OllamaMessage {
+          role: msg.role,
+          content: text_parts.join("\n"),
+          images: if image_data.is_empty() {
+            None
+          } else {
+            Some(image_data)
+          },
+        }
+      }
     }
   }
 }
