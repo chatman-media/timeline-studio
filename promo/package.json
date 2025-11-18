@@ -15,7 +15,6 @@
     "caniuse-lite": "^1.0.30001755",
     "framer-motion": "^12.23.24",
     "gray-matter": "^4.0.3",
-    "lottie-react": "^2.4.1",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

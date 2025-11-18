@@ -216,6 +216,28 @@ export const Project: React.FC = () => {
                               {children}
                             </a>
                           ),
+                          table: ({ children }) => (
+                            <div className="my-8 overflow-x-auto">
+                              <table className="w-full border-collapse">{children}</table>
+                            </div>
+                          ),
+                          thead: ({ children }) => (
+                            <thead className="bg-gradient-to-r from-purple-500/20 to-blue-500/20">
+                              {children}
+                            </thead>
+                          ),
+                          tbody: ({ children }) => <tbody className="divide-y divide-gray-700">{children}</tbody>,
+                          tr: ({ children }) => (
+                            <tr className="hover:bg-white/5 transition-colors">{children}</tr>
+                          ),
+                          th: ({ children }) => (
+                            <th className="px-4 py-3 text-left text-sm font-medium text-white border-b-2 border-purple-500/50">
+                              {children}
+                            </th>
+                          ),
+                          td: ({ children }) => (
+                            <td className="px-4 py-3 text-sm text-gray-300 font-light">{children}</td>
+                          ),
                         }}
                       >
                         {markdownContent}
