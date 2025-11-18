@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/chatman-media/timeline-studio/compare/v3.1.1...v3.1.2) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Обновить количество AI инструментов до 100+ ([e0d3645](https://github.com/chatman-media/timeline-studio/commit/e0d3645618b9359d825872d6e2514480822250fc))
+
 ## [3.1.1](https://github.com/chatman-media/timeline-studio/compare/v3.1.0...v3.1.1) (2025-11-18)
 
 
