@@ -20,13 +20,16 @@ import { backendAI } from "@/shared/services/ai/backend-ai-service"
 type AIMessage = { role: string; content: string }
 type AIProvider = "claude" | "openai" | "deepseek" | "ollama"
 
+import { allAITools } from "@/domains/ai-tools"
+
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
 import { chatStorageService } from "../services/chat-storage-service"
-import { AIToolsV2Utils } from "../tools"
 import { compressContext, isContextOverLimit } from "../utils/context-manager"
 import { convertToolsToUnifiedFormat, executeToolByName } from "../utils/convert-tools"
 import { createTimelineContextPrompt } from "../utils/timeline-context"
+import { type ActionPreviewItem, AIActionPreview } from "./ai-action-preview"
+import { AIProcessingIndicator, type AIProcessingStage } from "./ai-processing-indicator"
 import { ChatList } from "./chat-list"
 import { AISuggestionsPanel } from "./suggestions"
 
@@ -91,6 +94,11 @@ export function AiChat() {
   const [isStreaming, setIsStreaming] = useState(false)
   const [availableModels, setAvailableModels] = useState<Agent[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(true)
+  const [autoSendTrigger, setAutoSendTrigger] = useState(false)
+  const [processingStage, setProcessingStage] = useState<AIProcessingStage>("idle")
+  const [toolsInUse, setToolsInUse] = useState<string[]>([])
+  const [pendingActions, setPendingActions] = useState<ActionPreviewItem[]>([])
+  const [pendingToolCalls, setPendingToolCalls] = useState<any[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -204,6 +212,8 @@ export function AiChat() {
     void sendChatMessage(message)
     setMessage("")
     setProcessing(true)
+    setProcessingStage("analyzing")
+    setToolsInUse([])
 
     // Сохраняем сообщение пользователя в историю
     if (currentSessionId) {
@@ -333,7 +343,7 @@ export function AiChat() {
         }))
 
         // Получаем и конвертируем AI tools для режима "agent"
-        const tools = chatMode === "agent" ? convertToolsToUnifiedFormat(AIToolsV2Utils.getAllTools()) : []
+        const tools = chatMode === "agent" ? convertToolsToUnifiedFormat(allAITools) : []
 
         logger.info(`Sending AI request in ${chatMode} mode`, {
           provider,
@@ -341,6 +351,9 @@ export function AiChat() {
           toolsCount: tools.length,
           messagesCount: aiMessages.length,
         })
+
+        // Переходим к этапу генерации ответа
+        setProcessingStage("generating")
 
         // Отправляем запрос через backend AI service
         // API ключ автоматически загружается из secure storage на бэкенде
@@ -377,8 +390,13 @@ export function AiChat() {
         if (response.toolCalls && response.toolCalls.length > 0) {
           logger.info("AI requested tool calls", { count: response.toolCalls.length })
 
+          // Переходим к этапу использования инструментов
+          const toolNames = response.toolCalls.map((tc: any) => tc.name)
+          setProcessingStage("using-tools")
+          setToolsInUse(toolNames)
+
           // Показываем пользователю, что AI использует инструменты
-          const toolsUsageMessage = `🛠️ Использую инструменты: ${response.toolCalls.map((tc: any) => tc.name).join(", ")}`
+          const toolsUsageMessage = `🛠️ Использую инструменты: ${toolNames.join(", ")}`
           receiveChatMessage(toolsUsageMessage)
 
           // Выполняем каждый инструмент
@@ -388,7 +406,7 @@ export function AiChat() {
             try {
               logger.info(`Executing tool: ${toolCall.name}`, { input: toolCall.input })
 
-              const result = await executeToolByName(AIToolsV2Utils.getAllTools(), toolCall.name, toolCall.input)
+              const result = await executeToolByName(allAITools, toolCall.name, toolCall.input)
 
               toolResults.push({
                 id: toolCall.id,
@@ -439,6 +457,10 @@ export function AiChat() {
           const updatedMessages = [...aiMessages, assistantToolMessage, toolResultMessage]
 
           logger.info("Sending tool results back to AI for final response")
+
+          // Переходим к генерации финального ответа
+          setProcessingStage("generating")
+          setToolsInUse([])
 
           const finalResponse =
             tools.length > 0
@@ -512,6 +534,8 @@ export function AiChat() {
         }
       } finally {
         setProcessing(false)
+        setProcessingStage("idle")
+        setToolsInUse([])
         abortControllerRef.current = null
       }
     }
@@ -536,6 +560,14 @@ export function AiChat() {
     isIntegrated,
   ])
 
+  // Auto-send effect - triggers message send when autoSendTrigger is set
+  useEffect(() => {
+    if (autoSendTrigger && message.trim() && !isProcessing && !isStreaming) {
+      handleSendMessage()
+      setAutoSendTrigger(false)
+    }
+  }, [autoSendTrigger, message, isProcessing, isStreaming, handleSendMessage])
+
   // Обработчик остановки обработки
   const handleStopProcessing = useCallback(() => {
     // Прерываем текущий запрос, если он активен
@@ -546,7 +578,30 @@ export function AiChat() {
     setProcessing(false)
     setIsStreaming(false)
     setStreamingContent("")
+    setProcessingStage("idle")
+    setToolsInUse([])
+    setPendingActions([])
+    setPendingToolCalls([])
   }, [setProcessing])
+
+  // Обработчик подтверждения действий
+  const handleConfirmActions = useCallback(() => {
+    logger.info("User confirmed actions", { count: pendingActions.length })
+    // TODO: Выполнить накопленные tool calls
+    // Это требует значительного рефакторинга логики handleSendMessage
+    setPendingActions([])
+    setPendingToolCalls([])
+  }, [pendingActions])
+
+  // Обработчик отмены действий
+  const handleCancelActions = useCallback(() => {
+    logger.info("User canceled actions", { count: pendingActions.length })
+    setPendingActions([])
+    setPendingToolCalls([])
+    setProcessing(false)
+    setProcessingStage("idle")
+    setToolsInUse([])
+  }, [pendingActions])
 
   // Регистрируем shortcut для отправки сообщения
   useEffect(() => {
@@ -685,6 +740,10 @@ export function AiChat() {
                   setTimeout(() => {
                     inputRef.current?.focus()
                   }, 0)
+                }}
+                onAutoSend={(promptText) => {
+                  setMessage(promptText)
+                  setAutoSendTrigger(true)
                 }}
                 className="mb-3"
               />
@@ -840,6 +899,21 @@ export function AiChat() {
           {chatMessages.length > 0 && (
             <ScrollArea className="flex-1">
               <div className="p-4">
+                {/* AI Action Preview - показываем когда есть pending actions */}
+                {pendingActions.length > 0 && (
+                  <AIActionPreview
+                    actions={pendingActions}
+                    onConfirm={handleConfirmActions}
+                    onCancel={handleCancelActions}
+                    className="mb-3"
+                  />
+                )}
+
+                {/* AI Processing Indicator - показываем когда нет pending actions */}
+                {pendingActions.length === 0 && (isProcessing || isStreaming) && processingStage !== "idle" && (
+                  <AIProcessingIndicator stage={processingStage} toolsInUse={toolsInUse} className="mb-3" />
+                )}
+
                 <div className="flex flex-col gap-3" data-testid="messages-container">
                   {chatMessages.map((msg) => (
                     <div
@@ -861,26 +935,16 @@ export function AiChat() {
                       </div>
                     </div>
                   ))}
-                  {(isProcessing || isStreaming) && (
-                    <div
-                      className="flex max-w-[90%] flex-col rounded-lg bg-muted p-3 text-gray-100"
-                      data-testid="processing-message"
-                    >
+                  {/* Показываем стриминг контента (если есть) */}
+                  {isStreaming && streamingContent && (
+                    <div className="flex max-w-[90%] flex-col rounded-lg bg-muted p-3" data-testid="streaming-message">
                       <div className="flex items-start gap-2">
                         <div className="mt-0.5 flex-shrink-0">
-                          <Bot className="h-3.5 w-3.5" />
+                          <Bot className="h-3.5 w-3.5 text-foreground" />
                         </div>
-                        <div className="text-sm leading-relaxed">
-                          {isStreaming && streamingContent ? (
-                            <div>
-                              {streamingContent}
-                              <span className="inline-block w-2 h-4 bg-teal animate-pulse ml-1" />
-                            </div>
-                          ) : (
-                            <span className="inline-block animate-pulse">
-                              {t("timeline.chat.processing", "Обработка...")}
-                            </span>
-                          )}
+                        <div className="text-sm leading-relaxed text-foreground">
+                          {streamingContent}
+                          <span className="inline-block ml-1 h-4 w-2 animate-pulse bg-teal" />
                         </div>
                       </div>
                     </div>
@@ -902,6 +966,10 @@ export function AiChat() {
                   setTimeout(() => {
                     inputRef.current?.focus()
                   }, 0)
+                }}
+                onAutoSend={(promptText) => {
+                  setMessage(promptText)
+                  setAutoSendTrigger(true)
                 }}
                 className="mb-3"
               />

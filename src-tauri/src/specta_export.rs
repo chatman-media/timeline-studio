@@ -51,6 +51,12 @@ pub use crate::video_compiler::commands::ai_api_proxy::{
   ValidateApiKeyResponse,
 };
 
+// MCP (Model Context Protocol) types
+#[allow(unused_imports)]
+pub use crate::mcp::commands::{ChatMessage, ChatResponse};
+#[allow(unused_imports)]
+pub use crate::mcp::types::{MCPConfig, MCPTool, MCPToolRequest, MCPToolResult};
+
 // Simple command for demonstration
 #[tauri::command]
 #[specta::specta]

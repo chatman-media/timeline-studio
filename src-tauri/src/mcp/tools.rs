@@ -1,7 +1,10 @@
 //! MCP инструменты для работы с видео
 
 use super::types::{MCPContext, MCPTool, MCPToolResult};
+use crate::analysis::services::ai_director::{AIDirector, AIDirectorConfig};
+use crate::analysis::services::scene_detector::SceneDetector;
 use serde_json::{json, Value};
+use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -501,48 +504,240 @@ impl VideoTools {
 
   // === Tool Implementations ===
 
-  async fn execute_analyze_video(&self, _arguments: Value) -> MCPToolResult {
-    // TODO: Реализовать вызов AI Director анализа
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "analyze_video will be implemented"
-      })),
-      error: None,
+  async fn execute_analyze_video(&self, arguments: Value) -> MCPToolResult {
+    // Парсим аргументы
+    let video_path = match arguments.get("video_path").and_then(|v| v.as_str()) {
+      Some(path) => path,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: video_path".to_string()),
+        }
+      }
+    };
+
+    let path = Path::new(video_path);
+    if !path.exists() {
+      return MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Video file not found: {}", video_path)),
+      };
+    }
+
+    // Определяем тип анализа
+    let analysis_type = arguments
+      .get("analysis_type")
+      .and_then(|v| v.as_str())
+      .unwrap_or("balanced");
+
+    // Создаем конфигурацию для AI Director
+    let config = match analysis_type {
+      "quick" => AIDirectorConfig {
+        enable_audio_analysis: true,
+        enable_scene_detection: true,
+        enable_vision_analysis: false, // Отключаем для быстрого анализа
+        enable_moment_detection: true,
+        enable_content_classification: false,
+        ..Default::default()
+      },
+      "quality" => AIDirectorConfig {
+        enable_audio_analysis: true,
+        enable_scene_detection: true,
+        enable_vision_analysis: true, // Включаем всё для детального анализа
+        enable_moment_detection: true,
+        enable_content_classification: true,
+        ..Default::default()
+      },
+      _ => AIDirectorConfig::default(), // balanced
+    };
+
+    // Запускаем анализ через AI Director
+    let director = AIDirector::new();
+    match director
+      .analyze_media_comprehensive(path, Some(config))
+      .await
+    {
+      Ok(result) => MCPToolResult {
+        success: true,
+        data: Some(serde_json::to_value(&result).unwrap_or(json!({}))),
+        error: None,
+      },
+      Err(e) => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Analysis failed: {}", e)),
+      },
     }
   }
 
-  async fn execute_detect_scenes(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "detect_scenes will be implemented"
-      })),
-      error: None,
+  async fn execute_detect_scenes(&self, arguments: Value) -> MCPToolResult {
+    // Парсим аргументы
+    let video_path = match arguments.get("video_path").and_then(|v| v.as_str()) {
+      Some(path) => path,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: video_path".to_string()),
+        }
+      }
+    };
+
+    // Проверяем существование файла
+    if !Path::new(video_path).exists() {
+      return MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Video file not found: {}", video_path)),
+      };
+    }
+
+    // Создаем детектор сцен
+    let mut detector = SceneDetector::new();
+
+    // Применяем дополнительные параметры если указаны
+    if let Some(min_duration) = arguments.get("min_scene_duration").and_then(|v| v.as_f64()) {
+      detector.min_scene_duration = min_duration as f32;
+    }
+
+    // Запускаем детекцию сцен
+    match detector.detect_scenes(video_path).await {
+      Ok(scenes) => MCPToolResult {
+        success: true,
+        data: Some(json!({
+          "scenes_count": scenes.len(),
+          "scenes": serde_json::to_value(&scenes).unwrap_or(json!([])),
+        })),
+        error: None,
+      },
+      Err(e) => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Scene detection failed: {}", e)),
+      },
     }
   }
 
-  async fn execute_detect_moments(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "detect_moments will be implemented"
-      })),
-      error: None,
+  async fn execute_detect_moments(&self, arguments: Value) -> MCPToolResult {
+    // Парсим аргументы
+    let video_path = match arguments.get("video_path").and_then(|v| v.as_str()) {
+      Some(path) => path,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: video_path".to_string()),
+        }
+      }
+    };
+
+    let path = Path::new(video_path);
+    if !path.exists() {
+      return MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Video file not found: {}", video_path)),
+      };
+    }
+
+    let max_moments = arguments
+      .get("max_moments")
+      .and_then(|v| v.as_u64())
+      .unwrap_or(10) as usize;
+
+    // Используем AI Director с включенной детекцией моментов
+    let config = AIDirectorConfig {
+      enable_audio_analysis: false,
+      enable_scene_detection: true, // Нужно для анализа моментов
+      enable_vision_analysis: false,
+      enable_moment_detection: true, // Главное!
+      enable_content_classification: false,
+      ..Default::default()
+    };
+
+    let director = AIDirector::new();
+    match director
+      .analyze_media_comprehensive(path, Some(config))
+      .await
+    {
+      Ok(result) => {
+        let moments = result.moment_analysis.map(|analysis| {
+          let mut moments_vec = analysis.moments;
+          // Ограничиваем количество моментов
+          if moments_vec.len() > max_moments {
+            moments_vec.truncate(max_moments);
+          }
+          moments_vec
+        });
+
+        MCPToolResult {
+          success: true,
+          data: Some(json!({
+            "moments_count": moments.as_ref().map(|m| m.len()).unwrap_or(0),
+            "moments": serde_json::to_value(&moments).unwrap_or(json!([])),
+          })),
+          error: None,
+        }
+      }
+      Err(e) => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Moment detection failed: {}", e)),
+      },
     }
   }
 
-  async fn execute_analyze_audio(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "analyze_audio will be implemented"
-      })),
-      error: None,
+  async fn execute_analyze_audio(&self, arguments: Value) -> MCPToolResult {
+    // Парсим аргументы
+    let video_path = match arguments.get("video_path").and_then(|v| v.as_str()) {
+      Some(path) => path,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: video_path".to_string()),
+        }
+      }
+    };
+
+    let path = Path::new(video_path);
+    if !path.exists() {
+      return MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Video file not found: {}", video_path)),
+      };
+    }
+
+    // Используем AI Director только с аудио анализом
+    let config = AIDirectorConfig {
+      enable_audio_analysis: true, // Главное!
+      enable_scene_detection: false,
+      enable_vision_analysis: false,
+      enable_moment_detection: false,
+      enable_content_classification: false,
+      ..Default::default()
+    };
+
+    let director = AIDirector::new();
+    match director
+      .analyze_media_comprehensive(path, Some(config))
+      .await
+    {
+      Ok(result) => MCPToolResult {
+        success: true,
+        data: Some(json!({
+          "audio_analysis": serde_json::to_value(&result.audio_analysis).unwrap_or(json!({})),
+        })),
+        error: None,
+      },
+      Err(e) => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some(format!("Audio analysis failed: {}", e)),
+      },
     }
   }
 

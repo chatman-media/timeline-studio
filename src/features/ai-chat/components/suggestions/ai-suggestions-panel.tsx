@@ -36,6 +36,12 @@ export interface AISuggestionsPanelProps {
   onPromptClick: (promptText: string) => void
 
   /**
+   * Callback для автоотправки (опционально)
+   * Если указан - промт сразу отправляется в AI без дополнительного клика
+   */
+  onAutoSend?: (promptText: string) => void
+
+  /**
    * Дополнительный className
    */
   className?: string
@@ -50,6 +56,7 @@ export function AISuggestionsPanel({
   analysisResult,
   mediaFilesCount,
   onPromptClick,
+  onAutoSend,
   className,
   visible = true,
 }: AISuggestionsPanelProps) {
@@ -87,11 +94,11 @@ export function AISuggestionsPanel({
     const parts: string[] = []
 
     if (context.sceneCount && context.sceneCount > 0) {
-      parts.push(t("ai.suggestions.scenes", { count: context.sceneCount }, `${context.sceneCount} сцен`))
+      parts.push(t("ai.suggestions.scenes", `${context.sceneCount} сцен`))
     }
 
     if (context.momentCount && context.momentCount > 0) {
-      parts.push(t("ai.suggestions.moments", { count: context.momentCount }, `${context.momentCount} моментов`))
+      parts.push(t("ai.suggestions.moments", `${context.momentCount} моментов`))
     }
 
     if (context.hasMusic) {
@@ -99,7 +106,7 @@ export function AISuggestionsPanel({
     }
 
     if (context.facesCount && context.facesCount > 0) {
-      parts.push(t("ai.suggestions.faces", { count: context.facesCount }, `${context.facesCount} лиц`))
+      parts.push(t("ai.suggestions.faces", `${context.facesCount} лиц`))
     }
 
     if (parts.length === 0) {
@@ -135,8 +142,19 @@ export function AISuggestionsPanel({
               variant="outline"
               size="sm"
               onClick={() => {
-                logger.info("Prompt clicked", { promptId: prompt.id, text: prompt.text })
-                onPromptClick(prompt.text)
+                logger.info("Prompt clicked", {
+                  promptId: prompt.id,
+                  text: prompt.text,
+                  autoSend: !!onAutoSend,
+                })
+
+                // Если есть onAutoSend - сразу отправляем промт
+                if (onAutoSend) {
+                  onAutoSend(prompt.text)
+                } else {
+                  // Иначе просто вставляем текст в поле
+                  onPromptClick(prompt.text)
+                }
               }}
               className="h-auto whitespace-normal py-1.5 text-left text-xs hover:bg-accent hover:text-accent-foreground"
               title={prompt.text}
