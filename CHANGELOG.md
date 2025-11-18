@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/chatman-media/timeline-studio/compare/v3.2.0...v3.2.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Переработать страницу About с акцентом на AI возможности ([9274ee6](https://github.com/chatman-media/timeline-studio/commit/9274ee6070be24f952083ae41ca8c4459b36a336))
+
 # [3.2.0](https://github.com/chatman-media/timeline-studio/compare/v3.1.2...v3.2.0) (2025-11-18)
 
 
