@@ -109,7 +109,7 @@ export const Project: React.FC = () => {
                 <span>•</span>
                 <span>{language === "ru" ? "95% готовности" : "95% ready"}</span>
                 <span>•</span>
-                <span>{language === "ru" ? "250+ AI инструментов" : "250+ AI tools"}</span>
+                <span>{language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}</span>
               </div>
             </motion.div>
           </div>

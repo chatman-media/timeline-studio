@@ -301,7 +301,7 @@ export const translations = {
         whatIs: {
           question: "What is Timeline Studio?",
           answer:
-            "Timeline Studio is an AI-powered video editing application that helps you create professional-quality videos faster than ever. With over 150 AI tools, it automates tedious tasks while giving you creative control.",
+            "Timeline Studio is an AI-powered video editing application that helps you create professional-quality videos faster than ever. With 100+ AI tools, it automates tedious tasks while giving you creative control.",
         },
         isFree: {
           question: "Is Timeline Studio free?",

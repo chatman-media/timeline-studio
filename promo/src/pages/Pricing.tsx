@@ -27,7 +27,7 @@ export const Pricing: React.FC = () => {
       period: t("pricing.tiers.free.period"),
       description: t("pricing.tiers.free.description"),
       features: [
-        "257 AI tools (run locally)",
+        "100+ AI tools (run locally)",
         "4K/8K export without watermarks",
         "Fairlight Audio professional editor",
         "40+ transitions & 100+ effects",
