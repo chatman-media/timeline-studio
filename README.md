@@ -46,7 +46,7 @@
 
 ### 🎯 Key Advantages
 
-- **🤖 257 AI Tools** - complete video production automation with multi-provider support
+- **🤖 100+ AI Tools** - complete video production automation with multi-provider support
 - **⚡ GPU Acceleration** - hardware encoding NVENC, QuickSync, VideoToolbox
 - **🔌 Plugin System** - extend functionality without changing code
 - **🌐 15 Language Interface** - complete localization for global audience with RTL support
@@ -99,7 +99,7 @@ Timeline Studio is built on modern modular architecture:
 
 ## 🤖 AI Integration
 
-Timeline Studio features comprehensive AI integration with 257 specialized tools:
+Timeline Studio features comprehensive AI integration with 100+ specialized tools:
 
 ### AI Providers
 - **Claude** (Anthropic) - Primary AI with advanced reasoning
@@ -144,7 +144,7 @@ Timeline Studio uses a modular Rust backend architecture. Each module provides s
 
 ✅ **Completed**: 55+ modules (100% ready) - 30+ frontend + 25+ backend
 📋 **Recently Completed**:
-- 🤖 **AI Chat Integration** - Full Claude/OpenAI/DeepSeek/Ollama provider support with 257 specialized tools
+- 🤖 **AI Chat Integration** - Full Claude/OpenAI/DeepSeek/Ollama provider support with 100+ specialized tools
 - 💬 **Chat UI** - Modern chat interface with markdown support, code highlighting, and streaming responses
 - 🧠 **Smart Montage Planner** - AI-powered automatic montage generation with quality analysis
 - 🎬 **Timeline Integration** - Complete timeline editing with AI assistance
