@@ -62,6 +62,7 @@ export default defineConfig({
       "use-sync-external-store/shim/with-selector",
       "gray-matter",
       "js-yaml",
+      "lucide-react",
     ],
     esbuildOptions: {
       define: {
