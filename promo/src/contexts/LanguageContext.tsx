@@ -756,7 +756,7 @@ const translations = {
     "project.hero.description": "完整的Timeline Studio文档 - 革命性的AI视频编辑器",
     "project.hero.version": "版本 1.40.0",
     "project.hero.ready": "95% 完成",
-    "project.hero.tools": "250+ AI工具",
+    "project.hero.tools": "100+ AI工具",
     "project.tabs.manifest": "宣言",
     "project.tabs.business": "商业计划",
     "project.tabs.investment": "投资",
