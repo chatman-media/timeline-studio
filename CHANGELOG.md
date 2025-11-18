@@ -1,3 +1,15 @@
+# [3.12.0](https://github.com/chatman-media/timeline-studio/compare/v3.11.0...v3.12.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Исправить переводы и ссылки на главной странице ([729877f](https://github.com/chatman-media/timeline-studio/commit/729877f1cb60ba255ac84c13f62dac8cb2492f20)), closes [#download](https://github.com/chatman-media/timeline-studio/issues/download)
+
+
+### Features
+
+* **promo:** Заменить emoji на lucide-react иконки ([a6b8dfc](https://github.com/chatman-media/timeline-studio/commit/a6b8dfca0dc99a8a56f0b82fedb515f3724cfb6c))
+
 # [3.11.0](https://github.com/chatman-media/timeline-studio/compare/v3.10.0...v3.11.0) (2025-11-18)
 
 
