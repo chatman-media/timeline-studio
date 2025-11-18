@@ -1,3 +1,11 @@
+## [3.14.3](https://github.com/chatman-media/timeline-studio/compare/v3.14.2...v3.14.3) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Заменить npm на bun в build workflows ([e5f9d32](https://github.com/chatman-media/timeline-studio/commit/e5f9d320a24e0cd297e5e0c0fc0f52869e320c17))
+* **rust:** Убрать дубликат структуры Resolution ([4f83eef](https://github.com/chatman-media/timeline-studio/commit/4f83eeff745a89ec1551fa8c06a6f7e27b0b5949))
+
 ## [3.14.2](https://github.com/chatman-media/timeline-studio/compare/v3.14.1...v3.14.2) (2025-11-18)
 
 
