@@ -12,6 +12,7 @@ use tokio::sync::RwLock;
 
 /// Набор инструментов для работы с видео через MCP
 pub struct VideoTools {
+  #[allow(dead_code)]
   context: Arc<RwLock<MCPContext>>,
   project_state: Option<Arc<RwLock<ProjectState>>>,
   event_bus: Option<Arc<EventBus>>,

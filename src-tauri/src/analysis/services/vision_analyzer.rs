@@ -310,7 +310,7 @@ impl VisionAnalyzer {
   /// Extract a single frame at the specified timestamp
   ///
   /// Returns base64-encoded JPEG image
-  fn extract_single_frame(&self, video_path: &PathBuf, timestamp: f64) -> Result<String> {
+  fn extract_single_frame(&self, video_path: &Path, timestamp: f64) -> Result<String> {
     debug!("Extracting frame at {:.2}s", timestamp);
 
     // Use process ID and timestamp to create unique filename
@@ -357,7 +357,7 @@ impl VisionAnalyzer {
   }
 
   /// Get video duration using ffprobe
-  fn get_video_duration(&self, video_path: &PathBuf) -> Result<f64> {
+  fn get_video_duration(&self, video_path: &Path) -> Result<f64> {
     let output = Command::new("ffprobe")
       .args([
         "-v",

@@ -43,6 +43,7 @@ struct ClaudeTool {
 
 /// Claude API response
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 struct ClaudeResponse {
   id: String,
   #[serde(rename = "type")]
@@ -59,11 +60,13 @@ struct ClaudeResponse {
 enum ClaudeContent {
   Text {
     #[serde(rename = "type")]
+    #[allow(dead_code)]
     content_type: String,
     text: String,
   },
   ToolUse {
     #[serde(rename = "type")]
+    #[allow(dead_code)]
     content_type: String,
     id: String,
     name: String,

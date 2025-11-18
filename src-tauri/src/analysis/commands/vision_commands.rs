@@ -403,6 +403,7 @@ impl VisionAnalyzerState {
 /// Extracts frames and sends them to AI vision model for analysis
 #[tauri::command]
 #[specta::specta]
+#[allow(clippy::too_many_arguments)]
 pub async fn analyze_video_with_vision_model(
   video_path: String,
   provider: String,

@@ -774,6 +774,7 @@ mod tests {
         ApiKeyType::Telegram => {}       // Valid API key type variant,
         ApiKeyType::Codecov => {}        // Valid API key type variant,
         ApiKeyType::TauriAnalytics => {} // Valid API key type variant,
+        ApiKeyType::MCPClaude => {}      // Valid API key type variant,
       }
     }
   }

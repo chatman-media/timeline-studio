@@ -264,12 +264,12 @@ impl SceneDetector {
     debug!("Analyzing scene segment {:.2}-{:.2}s", start_time, end_time);
 
     // Базовый анализ (всегда доступен)
-    let mut result = SceneAnalysisResult::default();
-    result.duration = end_time - start_time;
-
-    // Определяем тип сцены на основе длительности и позиции
-    result.scene_type = self.classify_scene_type(start_time, end_time, metadata.duration);
-    result.confidence = 0.8; // Базовая уверенность
+    let mut result = SceneAnalysisResult {
+      duration: end_time - start_time,
+      scene_type: self.classify_scene_type(start_time, end_time, metadata.duration),
+      confidence: 0.8, // Базовая уверенность
+      ..Default::default()
+    };
 
     // Технические метрики - используем реальный FFmpeg анализ из VideoQualityAnalyzer
     let middle_timestamp = (start_time + end_time) / 2.0; // Анализируем середину сцены
