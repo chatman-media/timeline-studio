@@ -1,3 +1,15 @@
+# [3.10.0](https://github.com/chatman-media/timeline-studio/compare/v3.9.0...v3.10.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Улучшить отображение заголовка Hero секции ([40f6847](https://github.com/chatman-media/timeline-studio/commit/40f68478c396aa4e3eccef6fdcf55cd8da7ac0c1))
+
+
+### Features
+
+* **promo:** Заменить эмодзи на минималистичные Lucide иконки ([7214951](https://github.com/chatman-media/timeline-studio/commit/7214951c713224b0f0c4857b28154297b4268319))
+
 # [3.9.0](https://github.com/chatman-media/timeline-studio/compare/v3.8.0...v3.9.0) (2025-11-18)
 
 
