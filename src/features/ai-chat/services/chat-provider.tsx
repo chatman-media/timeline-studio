@@ -100,7 +100,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
   const [isStreaming, setIsStreaming] = useState(false)
 
   // Обратная совместимость со старым интерфейсом
-  const [selectedAgentId, setSelectedAgentId] = useState<string | null>("claude-4-sonnet")
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false)
 

@@ -132,6 +132,11 @@ export function AiChat() {
         }
 
         setAvailableModels(agents)
+
+        // Автоматически выбираем первую модель, если текущая не установлена или не существует в списке
+        if (agents.length > 0 && (!selectedAgentId || !agents.find((a) => a.id === selectedAgentId))) {
+          selectAgent(agents[0].id)
+        }
       } catch (error) {
         logger.error("Failed to load available models:", { error: String(error) })
         // Используем минимальный набор моделей в случае ошибки
@@ -141,12 +146,18 @@ export function AiChat() {
           { id: "deepseek-chat", name: "DeepSeek Chat", useTools: false, provider: "deepseek" },
         ]
         setAvailableModels(fallbackModels)
+
+        // Автоматически выбираем первую fallback модель
+        if (!selectedAgentId || !fallbackModels.find((a) => a.id === selectedAgentId)) {
+          selectAgent(fallbackModels[0].id)
+        }
       } finally {
         setIsLoadingModels(false)
       }
     }
 
     void loadModels()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Прокрутка к последнему сообщению
@@ -857,9 +868,13 @@ export function AiChat() {
                       data-testid="agent-selector"
                     >
                       <span className="truncate">
-                        {selectedAgentId
-                          ? availableModels.find((a) => a.id === selectedAgentId)?.name
-                          : "deepseek/deepseek-r1-zero:free"}
+                        {isLoadingModels
+                          ? t("timeline.chat.loading_models", "Загрузка моделей...")
+                          : selectedAgentId
+                            ? availableModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
+                            : availableModels.length > 0
+                              ? availableModels[0].name
+                              : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
                       <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
                     </Button>
@@ -871,11 +886,11 @@ export function AiChat() {
                   >
                     {isLoadingModels ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        Loading models...
+                        {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
                     ) : availableModels.length === 0 ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        No models available
+                        {t("timeline.chat.no_models", "Нет доступных моделей")}
                       </DropdownMenuItem>
                     ) : (
                       availableModels.map((agent) => (
@@ -1052,9 +1067,13 @@ export function AiChat() {
                       data-testid="agent-selector"
                     >
                       <span className="truncate">
-                        {selectedAgentId
-                          ? availableModels.find((a) => a.id === selectedAgentId)?.name
-                          : "deepseek/deepseek-r1-zero:free"}
+                        {isLoadingModels
+                          ? t("timeline.chat.loading_models", "Загрузка моделей...")
+                          : selectedAgentId
+                            ? availableModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
+                            : availableModels.length > 0
+                              ? availableModels[0].name
+                              : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
                       <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
                     </Button>
@@ -1066,11 +1085,11 @@ export function AiChat() {
                   >
                     {isLoadingModels ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        Loading models...
+                        {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
                     ) : availableModels.length === 0 ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        No models available
+                        {t("timeline.chat.no_models", "Нет доступных моделей")}
                       </DropdownMenuItem>
                     ) : (
                       availableModels.map((agent) => (
