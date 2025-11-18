@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/chatman-media/timeline-studio/compare/v3.3.0...v3.4.0) (2025-11-18)
+
+
+### Features
+
+* **promo:** Добавить информацию про эмоциональную арку и распознавание эмоций ([ef5edf4](https://github.com/chatman-media/timeline-studio/commit/ef5edf44ce26022c22e1b898b48665a176a70e9f))
+
 # [3.3.0](https://github.com/chatman-media/timeline-studio/compare/v3.2.1...v3.3.0) (2025-11-18)
 
 
