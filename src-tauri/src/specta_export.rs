@@ -40,8 +40,6 @@ pub use crate::state::browser::{
 // Proxy generator types
 #[allow(unused_imports)]
 pub use crate::proxy_generator::{ProxyGenerationParams, ProxyGenerationResult};
-#[allow(unused_imports)]
-pub use crate::state::project_state::Resolution as ProxyResolution;
 
 // AI Provider types (unified multi-provider support)
 #[allow(unused_imports)]
