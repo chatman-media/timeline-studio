@@ -227,69 +227,6 @@ export const Project: React.FC = () => {
             </motion.div>
           </div>
         </section>
-
-        {/* Quick Links */}
-        <section className="py-20">
-          <div className="container mx-auto px-6 md:px-8 lg:px-12">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto text-center"
-            >
-              <h2 className="text-4xl md:text-5xl mb-12 text-center">
-                <span className="text-gradient">{t("project.quickLinks.title")}</span>
-              </h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  {
-                    title: t("project.quickLinks.github.title"),
-                    description: t("project.quickLinks.github.description"),
-                    href: "https://github.com/chatman-media/timeline-studio",
-                  },
-                  {
-                    title: t("project.quickLinks.docs.title"),
-                    description: t("project.quickLinks.docs.description"),
-                    href: "/docs",
-                  },
-                  {
-                    title: t("project.quickLinks.download.title"),
-                    description: t("project.quickLinks.download.description"),
-                    href: "https://github.com/chatman-media/timeline-studio/releases/latest",
-                  },
-                ].map((link, index) => (
-                  <motion.a
-                    key={link.title}
-                    href={link.href}
-                    target={link.href.startsWith("http") ? "_blank" : undefined}
-                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="relative overflow-hidden rounded-xl block group hover:scale-105 transition-transform duration-300"
-                  >
-                    {/* Glassmorphism background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                    <div className="absolute inset-0 bg-white/[0.02]" />
-
-                    {/* Border gradient */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
-                      <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="relative p-8">
-                      <h3 className="text-2xl font-medium text-white mb-2">{link.title}</h3>
-                      <p className="text-gray-400 text-sm">{link.description}</p>
-                    </div>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
       </main>
 
       <Footer />
