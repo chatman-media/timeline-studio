@@ -188,14 +188,14 @@ export const About: React.FC = () => {
               <div className="grid md:grid-cols-4 gap-6">
                 {[
                   {
-                    Icon: Zap,
-                    title: t("about.corePrinciples.speed.title"),
-                    description: t("about.corePrinciples.speed.description"),
-                  },
-                  {
                     Icon: Lock,
                     title: t("about.corePrinciples.privacy.title"),
                     description: t("about.corePrinciples.privacy.description"),
+                  },
+                  {
+                    Icon: Zap,
+                    title: t("about.corePrinciples.speed.title"),
+                    description: t("about.corePrinciples.speed.description"),
                   },
                   {
                     Icon: Rocket,
@@ -223,8 +223,10 @@ export const About: React.FC = () => {
                     </div>
 
                     <div className="relative p-6 h-full">
-                      <value.Icon className="w-5 h-5 text-gray-400 mb-3" />
-                      <h3 className="text-lg font-medium text-white mb-2">{value.title}</h3>
+                      <div className="flex items-center gap-3 mb-3">
+                        <value.Icon className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <h3 className="text-lg font-medium text-white">{value.title}</h3>
+                      </div>
                       <p className="text-gray-400 text-sm">{value.description}</p>
                     </div>
                   </motion.div>
