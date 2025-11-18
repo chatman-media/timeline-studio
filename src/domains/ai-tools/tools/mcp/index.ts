@@ -27,6 +27,7 @@ abstract class BaseMCPTool extends BaseAITool {
 
   async execute(input: any, _options?: AIToolExecutionOptions): Promise<AIToolResult> {
     const executionId = `${this.mcpToolName}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const startTime = Date.now()
 
     try {
       this.logger?.info(`Executing MCP tool: ${this.mcpToolName}`, { input })
@@ -43,10 +44,14 @@ abstract class BaseMCPTool extends BaseAITool {
         },
       })
 
+      const executionTime = Date.now() - startTime
+
       if (result.success) {
         return {
           success: true,
           executionId,
+          toolName: this.mcpToolName,
+          executionTime,
           data: result.data,
           metadata: {
             mcpTool: this.mcpToolName,
@@ -58,18 +63,23 @@ abstract class BaseMCPTool extends BaseAITool {
       return {
         success: false,
         executionId,
-        error: result.error || "MCP tool execution failed",
+        toolName: this.mcpToolName,
+        executionTime,
+        errors: [result.error || "MCP tool execution failed"],
         metadata: {
           mcpTool: this.mcpToolName,
           timestamp: Date.now(),
         },
       }
     } catch (error) {
+      const executionTime = Date.now() - startTime
       this.logger?.error(`MCP tool ${this.mcpToolName} failed`, { error })
       return {
         success: false,
         executionId,
-        error: error instanceof Error ? error.message : String(error),
+        toolName: this.mcpToolName,
+        executionTime,
+        errors: [error instanceof Error ? error.message : String(error)],
         metadata: {
           mcpTool: this.mcpToolName,
           timestamp: Date.now(),

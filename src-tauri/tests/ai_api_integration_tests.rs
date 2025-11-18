@@ -332,16 +332,11 @@ async fn test_response_metadata() {
   assert!(result.is_ok());
   let response = result.unwrap();
 
-  // Check that metadata is present
+  // Check that response contains model information
   assert!(
-    response.metadata.is_some(),
-    "Response should contain metadata"
+    !response.model.is_empty(),
+    "Response should contain model name"
   );
-
-  if let Some(metadata) = response.metadata {
-    assert!(
-      metadata.get("model").is_some(),
-      "Metadata should contain model name"
-    );
-  }
+  assert_eq!(response.provider, AIProvider::Claude);
+  assert_eq!(response.model, "claude-3-5-sonnet-20241022");
 }

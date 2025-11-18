@@ -238,9 +238,11 @@ export function AiChat() {
               createdAt: new Date(),
               updatedAt: new Date(),
               messages: [],
-              agent: selectedAgentId || "claude-4-sonnet",
+              agent: (selectedAgentId || "claude-4-sonnet") as AgentId,
             }
-            await chatStorageService.saveSession(session)
+            if (session) {
+              await chatStorageService.saveSession(session)
+            }
           }
           // Добавляем сообщение
           await chatStorageService.addMessage(currentSessionId, userMessage)

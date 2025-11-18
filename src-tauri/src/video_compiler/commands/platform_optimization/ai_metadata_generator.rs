@@ -482,7 +482,7 @@ mod tests {
 
   #[test]
   fn test_metadata_generator_creation() {
-    let generator = AIMetadataGenerator::new();
+    let _generator = AIMetadataGenerator::new();
     // Verify it can be created
   }
 

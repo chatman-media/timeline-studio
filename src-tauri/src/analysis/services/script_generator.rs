@@ -529,7 +529,7 @@ mod tests {
 
   #[test]
   fn test_script_generator_creation() {
-    let generator = ScriptGenerator::new();
+    let _generator = ScriptGenerator::new();
     // Just verify it can be created
   }
 
