@@ -53,7 +53,7 @@ export type {
 export { AnalysisStorageService, analysisStorageService } from "./services/analysis-storage-service"
 export { ContentAnalysisService } from "./services/content"
 // Services
-export { ContentClassifier } from "./services/content-classifier"
+// export { ContentClassifier } from "./services/content-classifier" // ⚠️ Deprecated: Migrated to Rust backend (AI Director)
 // Media Analysis Services
 export * from "./services/media-analysis"
 // Platform Optimization Services

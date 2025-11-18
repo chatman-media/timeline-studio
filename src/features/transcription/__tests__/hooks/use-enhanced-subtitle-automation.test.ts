@@ -1,11 +1,11 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import * as enhancedAutomation from "@/features/ai-chat/tools/automation/enhanced-subtitle-automation"
+import * as enhancedAutomation from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
 import { useEnhancedSubtitleAutomation } from "../../hooks/use-enhanced-subtitle-automation"
 import { createMockEnhancedSubtitleResult } from "../test-utils"
 
 // Mock enhanced subtitle automation tool
-vi.mock("@/features/ai-chat/tools/automation/enhanced-subtitle-automation", () => ({
+vi.mock("@/domains/ai-tools/tools/automation/enhanced-subtitle-automation", () => ({
   enhancedSubtitleAutomation: {
     processEnhancedSubtitles: vi.fn(),
   },

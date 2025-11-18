@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-ABC123",
+  "object": "chat.completion",
+  "created": 1677858242,
+  "model": "gpt-4o",
+  "usage": {
+    "prompt_tokens": 1100,
+    "completion_tokens": 150,
+    "total_tokens": 1250
+  },
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "This frame depicts a dynamic action scene with high motion. The composition uses diagonal lines to create energy and movement. Quality: Sharp focus on the main subject, slight motion blur on background elements. Colors: Cool blue tones (40%) mixed with warm orange highlights (30%), creating visual contrast. Composition score: 9/10 with strong rule of thirds adherence. Scene type: Action/dynamic movement. Energy level: High. Notable objects: Person in motion, urban environment, vehicles. Technical quality: Very good (sharpness: 8/10, minimal noise, good stability)."
+      },
+      "finish_reason": "stop",
+      "index": 0
+    }
+  ]
+}

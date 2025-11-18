@@ -111,6 +111,11 @@ keyring = "3.6"
 # HTTP client for API validation
 reqwest = { version = "0.12.23", features = ["json", "rustls-tls", "multipart"] }
 which = "8.0.0"
+# Retry logic with exponential backoff
+tokio-retry = "0.3"
+# Rate limiting
+governor = "0.7"
+nonzero_ext = "0.3"
 # URL handling for OAuth
 url = "2.5"
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "load-dynamic"] }

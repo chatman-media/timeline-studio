@@ -51,6 +51,7 @@ use recognition::commands::yolo_commands::YoloProcessorState;
 
 // MCP (Model Context Protocol) интеграция
 pub mod mcp;
+use mcp::commands::MCPServerState;
 use recognition::person_database::PersonDatabase;
 use recognition::recognition_service::RecognitionState;
 use recognition::RecognitionService;
@@ -381,6 +382,10 @@ pub fn run() {
       // Create AI Director State
       let ai_director_state = AIDirectorState::new();
       app.manage(ai_director_state);
+
+      // Initialize MCP Server State
+      let mcp_server_state = MCPServerState(Arc::new(RwLock::new(None)));
+      app.manage(mcp_server_state);
 
       // Initialize Person Identification Database
       let person_db = {

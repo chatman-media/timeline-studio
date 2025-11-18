@@ -123,7 +123,8 @@ impl VideoTools {
   fn tool_detect_moments(&self) -> MCPTool {
     MCPTool {
       name: "detect_moments".to_string(),
-      description: "Найти ключевые моменты в видео (динамичные сцены, эмоции, интересные кадры)".to_string(),
+      description: "Найти ключевые моменты в видео (динамичные сцены, эмоции, интересные кадры)"
+        .to_string(),
       input_schema: json!({
         "type": "object",
         "properties": {

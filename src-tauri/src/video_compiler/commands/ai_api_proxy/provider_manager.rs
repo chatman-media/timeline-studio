@@ -7,47 +7,197 @@ use super::types::*;
 use crate::core::events::AppEvent;
 use crate::video_compiler::core::error::{Result, VideoCompilerError};
 use futures::StreamExt;
+use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
+use nonzero_ext::nonzero;
 use reqwest::Client;
 use serde_json::Value;
+use std::collections::HashMap;
+use std::sync::Arc;
 use std::time::Duration;
 use tauri::{AppHandle, Emitter};
+use tokio::sync::Mutex;
+use tokio_retry::{strategy::ExponentialBackoff, Retry};
+
+/// Retry configuration for API requests
+#[derive(Debug, Clone)]
+pub struct RetryConfig {
+  /// Maximum number of retry attempts (default: 3)
+  pub max_retries: usize,
+  /// Initial delay in milliseconds (default: 1000)
+  pub initial_delay_ms: u64,
+  /// Maximum delay in milliseconds (default: 8000)
+  pub max_delay_ms: u64,
+}
+
+impl Default for RetryConfig {
+  fn default() -> Self {
+    Self {
+      max_retries: 3,
+      initial_delay_ms: 1000,
+      max_delay_ms: 8000,
+    }
+  }
+}
 
 /// AI Provider Manager
 ///
 /// Управляет множественными AI провайдерами с поддержкой:
 /// - Автоматического fallback между провайдерами
 /// - Унифицированного интерфейса для всех провайдеров
-/// - Retry логики при ошибках
+/// - Retry логики при ошибках с exponential backoff
+/// - Rate limiting для предотвращения превышения лимитов API
 #[allow(dead_code)]
 pub struct AIProviderManager {
   client: Client,
   timeout: Duration,
+  retry_config: RetryConfig,
+  /// Rate limiters для каждого провайдера
+  rate_limiters: Arc<Mutex<HashMap<AIProvider, DefaultDirectRateLimiter>>>,
 }
 
 impl AIProviderManager {
-  /// Create new AI Provider Manager
+  /// Create new AI Provider Manager with default retry configuration
   pub fn new() -> Self {
+    Self::with_retry_config(RetryConfig::default())
+  }
+
+  /// Create AI Provider Manager with custom retry configuration
+  pub fn with_retry_config(retry_config: RetryConfig) -> Self {
+    // Initialize rate limiters for each provider
+    let mut limiters = HashMap::new();
+
+    // Claude: 50 requests per minute (Tier 1)
+    limiters.insert(
+      AIProvider::Claude,
+      RateLimiter::direct(Quota::per_minute(nonzero!(50u32))),
+    );
+
+    // OpenAI: 500 requests per minute (conservative default, Tier 1)
+    limiters.insert(
+      AIProvider::OpenAI,
+      RateLimiter::direct(Quota::per_minute(nonzero!(500u32))),
+    );
+
+    // DeepSeek: 50 requests per minute (conservative estimate)
+    limiters.insert(
+      AIProvider::DeepSeek,
+      RateLimiter::direct(Quota::per_minute(nonzero!(50u32))),
+    );
+
+    // Ollama: No rate limit (local), use high value
+    limiters.insert(
+      AIProvider::Ollama,
+      RateLimiter::direct(Quota::per_minute(nonzero!(10000u32))),
+    );
+
     Self {
       client: Client::builder()
         .timeout(Duration::from_secs(120))
         .build()
         .unwrap(),
       timeout: Duration::from_secs(120),
+      retry_config,
+      rate_limiters: Arc::new(Mutex::new(limiters)),
     }
   }
 
-  /// Send unified request to any provider
+  /// Determine if error is retryable
+  fn is_retryable_error(error: &VideoCompilerError) -> bool {
+    match error {
+      // Network errors are retryable
+      VideoCompilerError::Io(msg) => {
+        msg.contains("timeout")
+          || msg.contains("connection")
+          || msg.contains("network")
+          || msg.contains("DNS")
+      }
+      // Rate limit and server errors are retryable
+      VideoCompilerError::ValidationError(msg) => {
+        msg.contains("429") || // Rate limit
+        msg.contains("500") || // Internal server error
+        msg.contains("502") || // Bad gateway
+        msg.contains("503") || // Service unavailable
+        msg.contains("504") // Gateway timeout
+      }
+      _ => false,
+    }
+  }
+
+  /// Apply rate limiting before making a request
+  async fn apply_rate_limit(&self, provider: AIProvider) -> Result<()> {
+    let limiters = self.rate_limiters.lock().await;
+    if let Some(limiter) = limiters.get(&provider) {
+      limiter.until_ready().await;
+      Ok(())
+    } else {
+      // Provider not found, proceed without rate limiting
+      log::warn!("No rate limiter found for provider {:?}", provider);
+      Ok(())
+    }
+  }
+
+  /// Execute request with retry logic
+  async fn with_retry<F, Fut, T>(&self, operation: F) -> Result<T>
+  where
+    F: Fn() -> Fut,
+    Fut: std::future::Future<Output = Result<T>>,
+  {
+    let retry_strategy = ExponentialBackoff::from_millis(self.retry_config.initial_delay_ms)
+      .max_delay(Duration::from_millis(self.retry_config.max_delay_ms))
+      .take(self.retry_config.max_retries);
+
+    Retry::spawn(retry_strategy, || async {
+      match operation().await {
+        Ok(result) => Ok(result),
+        Err(e) => {
+          if Self::is_retryable_error(&e) {
+            log::warn!("Retryable error occurred: {}, retrying...", e);
+            Err(e)
+          } else {
+            log::error!("Non-retryable error occurred: {}", e);
+            Err(e)
+          }
+        }
+      }
+    })
+    .await
+  }
+
+  /// Send unified request to any provider with automatic retry and rate limiting
   pub async fn send_request(
     &self,
     api_key: &str,
     request: UnifiedAIRequest,
   ) -> Result<UnifiedAIResponse> {
-    match request.provider {
-      AIProvider::Claude => self.send_claude_request(api_key, request).await,
-      AIProvider::OpenAI => self.send_openai_request(api_key, request).await,
-      AIProvider::DeepSeek => self.send_deepseek_request(api_key, request).await,
-      AIProvider::Ollama => self.send_ollama_request(request).await,
-    }
+    let api_key = api_key.to_string();
+    let request_clone = request.clone();
+    let provider = request_clone.provider.clone();
+
+    // Apply rate limiting before sending request
+    self.apply_rate_limit(provider).await?;
+
+    self
+      .with_retry(|| async {
+        match request_clone.provider {
+          AIProvider::Claude => {
+            self
+              .send_claude_request(&api_key, request_clone.clone())
+              .await
+          }
+          AIProvider::OpenAI => {
+            self
+              .send_openai_request(&api_key, request_clone.clone())
+              .await
+          }
+          AIProvider::DeepSeek => {
+            self
+              .send_deepseek_request(&api_key, request_clone.clone())
+              .await
+          }
+          AIProvider::Ollama => self.send_ollama_request(request_clone.clone()).await,
+        }
+      })
+      .await
   }
 
   /// Send unified streaming request with real-time events
@@ -118,18 +268,28 @@ impl AIProviderManager {
     )
   }
 
-  /// Validate provider API key
+  /// Validate provider API key with automatic retry and rate limiting
   pub async fn validate_provider(
     &self,
     provider: AIProvider,
     api_key: &str,
   ) -> Result<Vec<String>> {
-    match provider {
-      AIProvider::Claude => self.validate_claude(api_key).await,
-      AIProvider::OpenAI => self.validate_openai(api_key).await,
-      AIProvider::DeepSeek => self.validate_deepseek(api_key).await,
-      AIProvider::Ollama => self.validate_ollama().await,
-    }
+    let api_key = api_key.to_string();
+    let provider_clone = provider.clone();
+
+    // Apply rate limiting before validation
+    self.apply_rate_limit(provider).await?;
+
+    self
+      .with_retry(|| async {
+        match provider_clone {
+          AIProvider::Claude => self.validate_claude(&api_key).await,
+          AIProvider::OpenAI => self.validate_openai(&api_key).await,
+          AIProvider::DeepSeek => self.validate_deepseek(&api_key).await,
+          AIProvider::Ollama => self.validate_ollama().await,
+        }
+      })
+      .await
   }
 
   // ============================================================================

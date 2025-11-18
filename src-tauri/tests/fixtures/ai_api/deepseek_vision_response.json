@@ -1,0 +1,21 @@
+{
+  "id": "ds_msg_012345",
+  "object": "chat.completion",
+  "created": 1677858242,
+  "model": "deepseek-vl",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "The frame shows an outdoor landscape scene with natural lighting. Composition follows the rule of thirds with the horizon line at the lower third. Quality: Good resolution, adequate sharpness. Colors: Natural green tones (50%), blue sky (30%), earth tones (20%). Composition score: 7/10. Scene type: Landscape/nature. Energy level: Low (calm, static). Notable objects: Trees, sky, grass, path. Technical quality: Good (sharpness: 7/10, low noise, stable shot)."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 900,
+    "completion_tokens": 120,
+    "total_tokens": 1020
+  }
+}

@@ -113,4 +113,4 @@ Tags: ${tags.join(", ")}
   }
 }
 
-export { ContentClassifier } from "../content-classifier"
+// export { ContentClassifier } from "../content-classifier" // ⚠️ Deprecated: File removed, migrated to Rust backend

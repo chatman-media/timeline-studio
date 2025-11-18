@@ -300,6 +300,14 @@ const translations = {
     "about.localModels.feature3": "Local scene analysis models (YOLO, Moondream)",
     "about.localModels.feature4": "Speech recognition",
     "about.corePrinciples.title": "Core Principles",
+    "about.corePrinciples.speed.title": "Speed & Efficiency",
+    "about.corePrinciples.speed.description": "GPU acceleration and smart caching for real-time editing",
+    "about.corePrinciples.privacy.title": "Privacy First",
+    "about.corePrinciples.privacy.description": "All AI processing runs locally - your data never leaves your machine",
+    "about.corePrinciples.innovation.title": "Innovation",
+    "about.corePrinciples.innovation.description": "Cutting-edge AI technology for professional video production",
+    "about.corePrinciples.openSource.title": "Open Source",
+    "about.corePrinciples.openSource.description": "Free forever, built by the community for creators worldwide",
   },
   ru: {
     // Navigation
@@ -594,6 +602,14 @@ const translations = {
     "about.localModels.feature3": "Локальные модели анализа сцен (YOLO, Moondream)",
     "about.localModels.feature4": "Распознавание речи",
     "about.corePrinciples.title": "Основные принципы",
+    "about.corePrinciples.speed.title": "Скорость и эффективность",
+    "about.corePrinciples.speed.description": "GPU-ускорение и умное кэширование для редактирования в реальном времени",
+    "about.corePrinciples.privacy.title": "Приватность прежде всего",
+    "about.corePrinciples.privacy.description": "Вся обработка AI выполняется локально - ваши данные не покидают компьютер",
+    "about.corePrinciples.innovation.title": "Инновации",
+    "about.corePrinciples.innovation.description": "Передовые AI-технологии для профессионального видеопроизводства",
+    "about.corePrinciples.openSource.title": "Открытый код",
+    "about.corePrinciples.openSource.description": "Бесплатно навсегда, создано сообществом для авторов по всему миру",
   },
   zh: {
     // Navigation
@@ -882,6 +898,14 @@ const translations = {
     "about.localModels.feature3": "本地场景分析模型 (YOLO, Moondream)",
     "about.localModels.feature4": "语音识别",
     "about.corePrinciples.title": "核心原则",
+    "about.corePrinciples.speed.title": "速度与效率",
+    "about.corePrinciples.speed.description": "GPU加速和智能缓存实现实时编辑",
+    "about.corePrinciples.privacy.title": "隐私优先",
+    "about.corePrinciples.privacy.description": "所有AI处理都在本地运行 - 您的数据永远不会离开您的设备",
+    "about.corePrinciples.innovation.title": "创新",
+    "about.corePrinciples.innovation.description": "专业视频制作的前沿AI技术",
+    "about.corePrinciples.openSource.title": "开源",
+    "about.corePrinciples.openSource.description": "永久免费，由社区为全球创作者打造",
   },
 }
 

@@ -1,0 +1,18 @@
+{
+  "id": "msg_01XYZ123ABC",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "This frame shows a professional interview setup with good lighting. The subject is positioned in the right third of the frame, following the rule of thirds. The background is slightly blurred, creating depth. Quality: High resolution, good sharpness, minimal noise. Colors: Warm tones dominate (60% warm, 30% neutral, 10% cool). Composition score: 8/10. Scene type: Interview/talking head. Energy level: Medium (conversational). Notable objects: Person, microphone, desk. Technical quality: Excellent (sharpness: 9/10, noise: low, stability: good)."
+    }
+  ],
+  "model": "claude-3-5-sonnet-20241022",
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 1250,
+    "output_tokens": 180
+  }
+}

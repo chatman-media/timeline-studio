@@ -6,7 +6,7 @@ use specta::Type;
 // ============================================================================
 
 /// AI Provider Type
-#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq, Hash)]
 #[serde(rename_all = "lowercase")]
 pub enum AIProvider {
   Claude,

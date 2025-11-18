@@ -103,7 +103,11 @@ impl MCPServer {
   }
 
   /// Отправить сообщение Claude с поддержкой инструментов
-  pub async fn chat(&self, message: String, conversation_history: Vec<ClaudeMessage>) -> Result<String> {
+  pub async fn chat(
+    &self,
+    message: String,
+    conversation_history: Vec<ClaudeMessage>,
+  ) -> Result<String> {
     let config = self.config.read().await;
 
     if !config.enabled {
@@ -161,7 +165,11 @@ impl MCPServer {
       let status = response.status();
       let error_text = response.text().await?;
       error!("Claude API error: {} - {}", status, error_text);
-      return Err(anyhow::anyhow!("Claude API error: {} - {}", status, error_text));
+      return Err(anyhow::anyhow!(
+        "Claude API error: {} - {}",
+        status,
+        error_text
+      ));
     }
 
     let claude_response: ClaudeResponse = response.json().await?;
@@ -188,7 +196,9 @@ impl MCPServer {
           result_text.push_str(&text);
           result_text.push('\n');
         }
-        ClaudeContent::ToolUse { name, input, id, .. } => {
+        ClaudeContent::ToolUse {
+          name, input, id, ..
+        } => {
           info!("Claude requested tool: {} (id: {})", name, id);
           debug!("Tool input: {:?}", input);
 
@@ -217,7 +227,10 @@ impl MCPServer {
   /// Выполнить инструмент напрямую (без Claude)
   pub async fn execute_tool(&self, request: MCPToolRequest) -> MCPToolResult {
     info!("Executing tool directly: {}", request.tool_name);
-    self.tools.execute_tool(&request.tool_name, request.arguments).await
+    self
+      .tools
+      .execute_tool(&request.tool_name, request.arguments)
+      .await
   }
 
   /// Проверить доступность Claude API

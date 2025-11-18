@@ -28,7 +28,10 @@ pub struct ChatResponse {
 /// Инициализировать MCP сервер
 #[tauri::command]
 #[specta::specta]
-pub async fn mcp_initialize(config: MCPConfig, state: State<'_, MCPServerState>) -> Result<bool, String> {
+pub async fn mcp_initialize(
+  config: MCPConfig,
+  state: State<'_, MCPServerState>,
+) -> Result<bool, String> {
   log::info!("Initializing MCP server");
 
   let server = MCPServer::new(config);
@@ -42,7 +45,10 @@ pub async fn mcp_initialize(config: MCPConfig, state: State<'_, MCPServerState>)
 /// Обновить конфигурацию MCP
 #[tauri::command]
 #[specta::specta]
-pub async fn mcp_update_config(config: MCPConfig, state: State<'_, MCPServerState>) -> Result<bool, String> {
+pub async fn mcp_update_config(
+  config: MCPConfig,
+  state: State<'_, MCPServerState>,
+) -> Result<bool, String> {
   log::info!("Updating MCP config");
 
   let state_guard = state.0.read().await;
@@ -109,7 +115,10 @@ pub async fn mcp_chat(
 /// Выполнить инструмент напрямую
 #[tauri::command]
 #[specta::specta]
-pub async fn mcp_execute_tool(request: MCPToolRequest, state: State<'_, MCPServerState>) -> Result<MCPToolResult, String> {
+pub async fn mcp_execute_tool(
+  request: MCPToolRequest,
+  state: State<'_, MCPServerState>,
+) -> Result<MCPToolResult, String> {
   log::info!("Executing MCP tool: {}", request.tool_name);
 
   let state_guard = state.0.read().await;

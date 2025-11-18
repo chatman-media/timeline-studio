@@ -15,29 +15,35 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineAiService")
 
-import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
-import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
-import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
-import { whisperTools } from "@/domains/ai-tools/tools/analysis/whisper"
-import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing"
-import { performanceTools as platformOptimizationTools } from "@/domains/ai-tools/tools/automation/performance"
-import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
-import { workflowTools as workflowAutomationTools } from "@/domains/ai-tools/tools/automation/workflow"
+import {
+  executeMultimodalTool as executeMultimodalAnalysisTool,
+  multimodalTools as multimodalAnalysisTools,
+} from "@/domains/ai-tools/tools/analysis/multimodal"
+import {
+  executePersonIdentificationTool,
+  personIdentificationTools,
+} from "@/domains/ai-tools/tools/analysis/person-identification"
+import { executeVideoAnalysisTool, videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
+import { executeWhisperTool, whisperTools } from "@/domains/ai-tools/tools/analysis/whisper"
+import { batchProcessingTools, executeBatchProcessingTool } from "@/domains/ai-tools/tools/automation/batch-processing"
+import {
+  executePerformanceTool as executePlatformOptimizationTool,
+  performanceTools as platformOptimizationTools,
+} from "@/domains/ai-tools/tools/automation/performance"
+import { executeSubtitleTool, subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
+import {
+  executeWorkflowTool as executeWorkflowAutomationTool,
+  workflowTools as workflowAutomationTools,
+} from "@/domains/ai-tools/tools/automation/workflow"
 import { browserTools, executeBrowserTool } from "@/domains/ai-tools/tools/core/browser"
 import { effectsFiltersTools, executeEffectsFiltersTool } from "@/domains/ai-tools/tools/core/effects-filters-tools"
 import { executePlayerTool, playerTools } from "@/domains/ai-tools/tools/core/player"
 import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/core/resources"
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
-import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
-import { executePlatformOptimizationTool } from "@/features/ai-chat/tools"
-import { executeMultimodalAnalysisTool } from "@/features/ai-chat/tools/analysis/multimodal-tools"
-import { executePersonIdentificationTool } from "@/features/ai-chat/tools/analysis/person-identification-tools"
-import { executeVideoAnalysisTool } from "@/features/ai-chat/tools/analysis/video-analysis-tools"
-import { executeWhisperTool } from "@/features/ai-chat/tools/analysis/whisper-tools"
-import { executeBatchProcessingTool } from "@/features/ai-chat/tools/automation/batch-processing-tools"
-import { executeSubtitleTool } from "@/features/ai-chat/tools/automation/subtitle-tools"
-import { executeWorkflowAutomationTool } from "@/features/ai-chat/tools/automation/workflow-tools"
-import { executeExportManagementTool } from "@/features/ai-chat/tools/integration/export-tools"
+import {
+  executeExportTool as executeExportManagementTool,
+  exportTools as exportManagementTools,
+} from "@/domains/ai-tools/tools/integration/export"
 import {
   AIBrowserContext,
   AIPlayerContext,

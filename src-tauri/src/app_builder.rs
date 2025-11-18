@@ -527,6 +527,13 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::classify_video_content,
     crate::analysis::commands::quick_classify_content,
     crate::analysis::commands::get_default_classification_options,
+    // MCP (Model Context Protocol) commands
+    crate::mcp::commands::mcp_initialize,
+    crate::mcp::commands::mcp_update_config,
+    crate::mcp::commands::mcp_get_tools,
+    crate::mcp::commands::mcp_chat,
+    crate::mcp::commands::mcp_execute_tool,
+    crate::mcp::commands::mcp_check_api,
   ])
 }
 

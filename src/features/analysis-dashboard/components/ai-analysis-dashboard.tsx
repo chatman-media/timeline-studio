@@ -263,139 +263,139 @@ export function AIAnalysisDashboard() {
           <div className="lg:col-span-1 space-y-4">
             {/* File Selection */}
             <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Video className="h-5 w-5" />
-                Выбор видео
-              </CardTitle>
-              <CardDescription>Выберите видео из медиапула ({selectedMediaIds.size} выбрано)</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {videoFiles.length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground">
-                  <p className="text-sm">Нет доступных видео</p>
-                  <p className="text-xs mt-1">Добавьте видео в браузер медиа</p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex gap-2">
-                    <Button onClick={selectAllVideos} variant="outline" size="sm" className="flex-1">
-                      <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Выбрать все
-                    </Button>
-                    <Button onClick={deselectAllVideos} variant="outline" size="sm" className="flex-1">
-                      <Circle className="h-4 w-4 mr-2" />
-                      Снять всё
-                    </Button>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Video className="h-5 w-5" />
+                  Выбор видео
+                </CardTitle>
+                <CardDescription>Выберите видео из медиапула ({selectedMediaIds.size} выбрано)</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {videoFiles.length === 0 ? (
+                  <div className="p-4 text-center text-muted-foreground">
+                    <p className="text-sm">Нет доступных видео</p>
+                    <p className="text-xs mt-1">Добавьте видео в браузер медиа</p>
                   </div>
-
-                  <ScrollArea className="h-[200px] rounded-md border p-2">
-                    <div className="space-y-2">
-                      {videoFiles.map((video) => (
-                        <div
-                          key={video.id}
-                          className="flex items-start gap-2 p-2 rounded-md hover:bg-muted cursor-pointer"
-                          onClick={() => toggleVideoSelection(video.id)}
-                        >
-                          <Checkbox
-                            checked={selectedMediaIds.has(video.id)}
-                            onCheckedChange={() => toggleVideoSelection(video.id)}
-                            className="mt-1"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <FileVideo className="h-4 w-4 flex-shrink-0" />
-                              <span className="text-sm font-medium truncate">{video.name}</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground truncate mt-1">{video.path}</p>
-                          </div>
-                        </div>
-                      ))}
+                ) : (
+                  <>
+                    <div className="flex gap-2">
+                      <Button onClick={selectAllVideos} variant="outline" size="sm" className="flex-1">
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        Выбрать все
+                      </Button>
+                      <Button onClick={deselectAllVideos} variant="outline" size="sm" className="flex-1">
+                        <Circle className="h-4 w-4 mr-2" />
+                        Снять всё
+                      </Button>
                     </div>
-                  </ScrollArea>
-                </>
-              )}
-            </CardContent>
-          </Card>
 
-          {/* Analysis Mode */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Режим анализа
-              </CardTitle>
-              <CardDescription>Выберите скорость и глубину анализа</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup value={analysisMode} onValueChange={(v) => setAnalysisMode(v as AnalysisMode)}>
-                <div className="flex items-center space-x-2 p-3 rounded-md border">
-                  <RadioGroupItem value="fast" id="fast" />
-                  <div className="flex-1">
-                    <Label htmlFor="fast" className="font-medium cursor-pointer">
-                      Fast
-                    </Label>
-                    <p className="text-xs text-muted-foreground">{getModeDescription("fast")}</p>
+                    <ScrollArea className="h-[200px] rounded-md border p-2">
+                      <div className="space-y-2">
+                        {videoFiles.map((video) => (
+                          <div
+                            key={video.id}
+                            className="flex items-start gap-2 p-2 rounded-md hover:bg-muted cursor-pointer"
+                            onClick={() => toggleVideoSelection(video.id)}
+                          >
+                            <Checkbox
+                              checked={selectedMediaIds.has(video.id)}
+                              onCheckedChange={() => toggleVideoSelection(video.id)}
+                              className="mt-1"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <FileVideo className="h-4 w-4 flex-shrink-0" />
+                                <span className="text-sm font-medium truncate">{video.name}</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate mt-1">{video.path}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Analysis Mode */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Режим анализа
+                </CardTitle>
+                <CardDescription>Выберите скорость и глубину анализа</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={analysisMode} onValueChange={(v) => setAnalysisMode(v as AnalysisMode)}>
+                  <div className="flex items-center space-x-2 p-3 rounded-md border">
+                    <RadioGroupItem value="fast" id="fast" />
+                    <div className="flex-1">
+                      <Label htmlFor="fast" className="font-medium cursor-pointer">
+                        Fast
+                      </Label>
+                      <p className="text-xs text-muted-foreground">{getModeDescription("fast")}</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center space-x-2 p-3 rounded-md border mt-2">
-                  <RadioGroupItem value="balanced" id="balanced" />
-                  <div className="flex-1">
-                    <Label htmlFor="balanced" className="font-medium cursor-pointer">
-                      Balanced
-                    </Label>
-                    <p className="text-xs text-muted-foreground">{getModeDescription("balanced")}</p>
+                  <div className="flex items-center space-x-2 p-3 rounded-md border mt-2">
+                    <RadioGroupItem value="balanced" id="balanced" />
+                    <div className="flex-1">
+                      <Label htmlFor="balanced" className="font-medium cursor-pointer">
+                        Balanced
+                      </Label>
+                      <p className="text-xs text-muted-foreground">{getModeDescription("balanced")}</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center space-x-2 p-3 rounded-md border mt-2">
-                  <RadioGroupItem value="quality" id="quality" />
-                  <div className="flex-1">
-                    <Label htmlFor="quality" className="font-medium cursor-pointer">
-                      Quality
-                    </Label>
-                    <p className="text-xs text-muted-foreground">{getModeDescription("quality")}</p>
+                  <div className="flex items-center space-x-2 p-3 rounded-md border mt-2">
+                    <RadioGroupItem value="quality" id="quality" />
+                    <div className="flex-1">
+                      <Label htmlFor="quality" className="font-medium cursor-pointer">
+                        Quality
+                      </Label>
+                      <p className="text-xs text-muted-foreground">{getModeDescription("quality")}</p>
+                    </div>
                   </div>
+                </RadioGroup>
+
+                <Button
+                  onClick={handleStartAnalysis}
+                  disabled={selectedFiles.length === 0 || isAnalyzing}
+                  className="w-full mt-4 gap-2"
+                >
+                  <Play className="h-4 w-4" />
+                  {isAnalyzing
+                    ? "Анализ..."
+                    : selectedFiles.length > 1
+                      ? `Анализировать ${selectedFiles.length} видео`
+                      : "Начать анализ"}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* System Status */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Статус системы</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">AI Director:</span>
+                  <span className="font-medium text-green-600">Готов</span>
                 </div>
-              </RadioGroup>
-
-              <Button
-                onClick={handleStartAnalysis}
-                disabled={selectedFiles.length === 0 || isAnalyzing}
-                className="w-full mt-4 gap-2"
-              >
-                <Play className="h-4 w-4" />
-                {isAnalyzing
-                  ? "Анализ..."
-                  : selectedFiles.length > 1
-                    ? `Анализировать ${selectedFiles.length} видео`
-                    : "Начать анализ"}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* System Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Статус системы</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">AI Director:</span>
-                <span className="font-medium text-green-600">Готов</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Движков:</span>
-                <span className="font-medium">5 активных</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">GPU:</span>
-                <span className="font-medium">Не используется</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Движков:</span>
+                  <span className="font-medium">5 активных</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">GPU:</span>
+                  <span className="font-medium">Не используется</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         ) : null}
 
         {/* Right Panel - Results */}
@@ -467,9 +467,7 @@ export function AIAnalysisDashboard() {
                           </Card>
                           <Card>
                             <CardContent className="pt-6">
-                              <p className="text-2xl font-bold">
-                                {result.scene_analysis.scenes?.length || 0}
-                              </p>
+                              <p className="text-2xl font-bold">{result.scene_analysis.scenes?.length || 0}</p>
                               <p className="text-sm text-muted-foreground">Детектировано</p>
                             </CardContent>
                           </Card>
@@ -792,25 +790,26 @@ export function AIAnalysisDashboard() {
                           </Card>
                         </div>
 
-                        {result.vision_analysis.objects_detected && result.vision_analysis.objects_detected.length > 0 && (
-                          <Card>
-                            <CardHeader>
-                              <CardTitle>Обнаруженные объекты</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex flex-wrap gap-2">
-                                {result.vision_analysis.objects_detected.map((obj: string, i: number) => (
-                                  <span
-                                    key={i}
-                                    className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
-                                  >
-                                    {obj}
-                                  </span>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
+                        {result.vision_analysis.objects_detected &&
+                          result.vision_analysis.objects_detected.length > 0 && (
+                            <Card>
+                              <CardHeader>
+                                <CardTitle>Обнаруженные объекты</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="flex flex-wrap gap-2">
+                                  {result.vision_analysis.objects_detected.map((obj: string, i: number) => (
+                                    <span
+                                      key={i}
+                                      className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
+                                    >
+                                      {obj}
+                                    </span>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
                       </div>
                     ) : (
                       <p className="text-muted-foreground text-center py-8">Нет данных о видении</p>

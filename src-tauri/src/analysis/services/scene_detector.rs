@@ -3,8 +3,8 @@
 use crate::analysis::models::*;
 // use crate::video_compiler::core::ffmpeg::audio_analysis::FFmpegAudioAnalyzer;  // Временно отключено
 // use crate::video_compiler::core::ffmpeg::video_analysis::FFmpegVideoAnalyzer;  // Временно отключено
-use crate::montage_planner::EmotionalTone;
 use crate::montage_planner::services::VideoQualityAnalyzer;
+use crate::montage_planner::EmotionalTone;
 use crate::recognition::types_professional::Emotion;
 use anyhow::{Context, Result};
 use chrono::Utc;
@@ -65,6 +65,7 @@ impl SceneDetector {
       max_scene_duration: max_duration,
       scene_change_threshold: threshold,
       enable_audio_analysis: enable_audio,
+      quality_analyzer: VideoQualityAnalyzer::new(),
     }
   }
 
@@ -294,7 +295,10 @@ impl SceneDetector {
       }
       Err(e) => {
         // Fallback к базовым значениям если FFmpeg анализ не удался
-        warn!("Failed to analyze frame quality: {}, using fallback values", e);
+        warn!(
+          "Failed to analyze frame quality: {}, using fallback values",
+          e
+        );
         result.brightness = 0.5;
         result.contrast = 0.6;
         result.saturation = 0.5;
