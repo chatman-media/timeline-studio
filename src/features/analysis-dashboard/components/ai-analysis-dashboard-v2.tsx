@@ -6,14 +6,22 @@
  */
 
 import { Play, RefreshCw, Zap } from "lucide-react"
-import { useState } from "react"
-
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { AnalyzerCheckboxGroup, type AnalyzerType, type FileAnalysisProgress as FileProgress } from "@/features/ai-director"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useBrowser } from "@/domains/browser"
+import { useMediaManagement } from "@/domains/media-management"
+import {
+  AIDirectorChat,
+  AnalyzerCheckboxGroup,
+  AnalyzerPresetSelector,
+  type AnalyzerType,
+  useAIDirectorAnalysisV2,
+  useAnalyzerPresets,
+} from "@/features/ai-director"
 import { FileAnalysisProgress } from "@/features/ai-director/components/file-analysis-progress"
-import { createDemoFileProgress } from "@/features/ai-director/__mocks__/analysis-progress-demo"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AiAnalysisDashboardV2")
@@ -24,34 +32,54 @@ export function AIAnalysisDashboardV2() {
     new Set(["scene_detection", "audio_quality", "moment_detection"]),
   )
 
-  // Demo: file progress states
-  const [filesProgress, setFilesProgress] = useState<FileProgress[]>([])
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  // Get selected files from media pool
+  const { selectedFiles } = useBrowser()
+  const { mediaPool } = useMediaManagement()
 
-  // Start demo analysis
-  const handleStartDemoAnalysis = () => {
-    logger.infoSync("[Dashboard] Starting demo analysis", {
-      selectedAnalyzers: Array.from(selectedAnalyzers),
+  // Convert selected file IDs to full paths
+  const selectedFilePaths = useMemo(() => {
+    const paths: string[] = []
+    selectedFiles.forEach((fileId) => {
+      const mediaFile = mediaPool.get(fileId)
+      if (mediaFile) {
+        paths.push(mediaFile.path)
+      }
     })
+    return paths
+  }, [selectedFiles, mediaPool])
 
-    setIsAnalyzing(true)
+  // Use AI Director Analysis V2 hook
+  const { isAnalyzing, filesProgress, startBatchAnalysis, reset } = useAIDirectorAnalysisV2()
 
-    // Load demo data
-    const demoFiles = createDemoFileProgress()
-    setFilesProgress(demoFiles)
+  // Use analyzer presets hook
+  const { customPresets, savePreset, deletePreset, applyPreset } = useAnalyzerPresets()
 
-    // Simulate completion after 5s
-    setTimeout(() => {
-      setIsAnalyzing(false)
-      logger.infoSync("[Dashboard] Demo analysis completed")
-    }, 5000)
+  // Handle start analysis with files from media pool
+  const handleStartAnalysis = async () => {
+    try {
+      if (selectedFilePaths.length === 0) {
+        logger.warnSync("[Dashboard] No files selected in media pool")
+        return
+      }
+
+      logger.infoSync("[Dashboard] Starting analysis for selected files from media pool", {
+        filesCount: selectedFilePaths.length,
+        analyzers: Array.from(selectedAnalyzers),
+      })
+
+      // Start analysis
+      await startBatchAnalysis(selectedFilePaths, selectedAnalyzers)
+
+      logger.infoSync("[Dashboard] Analysis started successfully")
+    } catch (error) {
+      logger.errorSync("[Dashboard] Error starting analysis", error as Record<string, unknown>)
+    }
   }
 
   // Reset all
   const handleReset = () => {
     logger.infoSync("[Dashboard] Resetting dashboard")
-    setFilesProgress([])
-    setIsAnalyzing(false)
+    reset()
     setSelectedAnalyzers(new Set(["scene_detection", "audio_quality", "moment_detection"]))
   }
 
@@ -79,20 +107,45 @@ export function AIAnalysisDashboardV2() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Panel - Analyzer Selection (25% width) */}
         {showSetupPanel && (
-          <div className="lg:col-span-1">
-            <AnalyzerCheckboxGroup selectedAnalyzers={selectedAnalyzers} onSelectionChange={setSelectedAnalyzers} />
+          <div className="lg:col-span-1 space-y-4">
+            <Tabs defaultValue="presets" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="presets">Preset'ы</TabsTrigger>
+                <TabsTrigger value="manual">Ручной выбор</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="presets" className="mt-4">
+                <AnalyzerPresetSelector
+                  selectedAnalyzers={selectedAnalyzers}
+                  customPresets={customPresets}
+                  onApplyPreset={(preset) => applyPreset(preset, setSelectedAnalyzers)}
+                  onSavePreset={savePreset}
+                  onDeletePreset={deletePreset}
+                />
+              </TabsContent>
+
+              <TabsContent value="manual" className="mt-4">
+                <AnalyzerCheckboxGroup selectedAnalyzers={selectedAnalyzers} onSelectionChange={setSelectedAnalyzers} />
+              </TabsContent>
+            </Tabs>
 
             <Button
-              onClick={handleStartDemoAnalysis}
-              disabled={selectedAnalyzers.size === 0 || isAnalyzing}
-              className="w-full mt-4 gap-2"
+              onClick={handleStartAnalysis}
+              disabled={selectedAnalyzers.size === 0 || isAnalyzing || selectedFilePaths.length === 0}
+              className="w-full gap-2"
               size="lg"
             >
               <Play className="h-5 w-5" />
-              {isAnalyzing ? "Анализ..." : "Начать анализ (Demo)"}
+              {isAnalyzing ? "Анализ..." : "Начать анализ"}
             </Button>
 
-            <p className="text-xs text-muted-foreground text-center mt-2">Demo режим: загрузит тестовые данные</p>
+            {selectedFilePaths.length > 0 ? (
+              <p className="text-xs text-muted-foreground text-center">
+                Выбрано файлов: <span className="font-semibold">{selectedFilePaths.length}</span>
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground text-center">Выберите файлы в медиа пуле для анализа</p>
+            )}
           </div>
         )}
 
@@ -154,6 +207,11 @@ export function AIAnalysisDashboardV2() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* AI Director Chat - показываем когда есть завершенные файлы */}
+              {filesProgress.some((f) => f.status === "completed") && (
+                <AIDirectorChat filesProgress={filesProgress} className="mt-6" />
+              )}
             </div>
           )}
 

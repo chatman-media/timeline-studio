@@ -15,8 +15,8 @@ import { createLogger } from "@/lib/tauri-logger"
 
 import type {
   AnalyzerType,
-  FileAnalysisProgress as FileProgress,
   BatchAnalysisProgress,
+  FileAnalysisProgress as FileProgress,
 } from "../types/analysis-progress"
 import { createInitialFileProgress, updateAnalyzerProgress } from "../types/analysis-progress"
 
@@ -78,24 +78,14 @@ function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): Partial<AIDirectorC
  * Так как бэкенд не отправляет детальный прогресс каждого анализатора,
  * мы симулируем его на основе stage и общего прогресса
  */
-function simulateAnalyzerProgress(
-  file: FileProgress,
-  stage: string,
-  overallProgress: number
-): FileProgress {
+function simulateAnalyzerProgress(file: FileProgress, stage: string, overallProgress: number): FileProgress {
   let updated = { ...file }
 
   // Map stages to analyzer types
   const stageToAnalyzers: Record<string, AnalyzerType[]> = {
     initialization: [],
     audio: ["audio_quality", "speech_recognition", "music_detection", "sound_events", "silence_detection"],
-    video: [
-      "scene_detection",
-      "object_detection",
-      "face_detection",
-      "motion_analysis",
-      "composition_analysis",
-    ],
+    video: ["scene_detection", "object_detection", "face_detection", "motion_analysis", "composition_analysis"],
     vision: ["vlm_analysis"],
     integration: ["moment_detection", "content_classification", "quality_assessment", "mood_analysis"],
   }
@@ -134,9 +124,7 @@ function simulateAnalyzerProgress(
           status: "completed",
           progress: 100,
           endTime: new Date().toISOString(),
-          duration: analyzer.startTime
-            ? Date.now() - new Date(analyzer.startTime).getTime()
-            : 0,
+          duration: analyzer.startTime ? Date.now() - new Date(analyzer.startTime).getTime() : 0,
         })
       }
     }
@@ -165,7 +153,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
       try {
         // Analysis started
         const unlistenStarted = await listen("analysis-started", (event) => {
-          logger.infoSync("[useAIDirectorAnalysisV2] Analysis started", event.payload)
+          logger.infoSync("[useAIDirectorAnalysisV2] Analysis started", event.payload as Record<string, unknown>)
           // Будет обработано в startBatchAnalysis
         })
         if (isMounted) unlistenFunctions.push(unlistenStarted)
@@ -173,7 +161,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         // Analysis progress - самое важное событие для обновления UI
         const unlistenProgress = await listen("analysis-progress", (event) => {
           const progress = event.payload as unknown as AnalysisProgress
-          logger.infoSync("[useAIDirectorAnalysisV2] Analysis progress", progress)
+          logger.infoSync("[useAIDirectorAnalysisV2] Analysis progress", progress as unknown as Record<string, unknown>)
 
           setFilesProgress((prev) => {
             if (prev.length === 0) return prev
@@ -201,7 +189,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
         // Analysis completed
         const unlistenCompleted = await listen("analysis-completed", (event) => {
-          logger.infoSync("[useAIDirectorAnalysisV2] Analysis completed", event.payload)
+          logger.infoSync("[useAIDirectorAnalysisV2] Analysis completed", event.payload as Record<string, unknown>)
 
           setFilesProgress((prev) => {
             const updated = [...prev]
@@ -238,7 +226,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         // Analysis errors
         const unlistenError = await listen("analysis-error", (event) => {
           const error = event.payload as unknown as AnalysisError
-          logger.errorSync("[useAIDirectorAnalysisV2] Analysis error", error)
+          logger.errorSync("[useAIDirectorAnalysisV2] Analysis error", error as unknown as Record<string, unknown>)
 
           setErrors((prev) => [...prev, error])
 
@@ -260,7 +248,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         })
         if (isMounted) unlistenFunctions.push(unlistenError)
       } catch (error) {
-        logger.errorSync("[useAIDirectorAnalysisV2] Ошибка настройки event listeners", error)
+        logger.errorSync("[useAIDirectorAnalysisV2] Ошибка настройки event listeners", error as Record<string, unknown>)
       }
     }
 
@@ -272,7 +260,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         try {
           unlisten()
         } catch (error) {
-          logger.errorSync("[useAIDirectorAnalysisV2] Ошибка cleanup event listener", error)
+          logger.errorSync("[useAIDirectorAnalysisV2] Ошибка cleanup event listener", error as Record<string, unknown>)
         }
       })
     }
@@ -294,24 +282,23 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
       // Create initial file progress
       const initialFiles = filePaths.map((filePath, index) => {
         const fileName = filePath.split("/").pop() || filePath
-        return createInitialFileProgress(
-          `file-${index}`,
-          filePath,
-          fileName,
-          Array.from(analyzers)
-        )
+        return createInitialFileProgress(`file-${index}`, filePath, fileName, Array.from(analyzers))
       })
       setFilesProgress(initialFiles)
 
       // Create batch progress
       const batchId = `batch-${Date.now()}`
       setBatchProgress({
-        batchId,
-        totalFiles: filePaths.length,
-        completedFiles: 0,
-        failedFiles: 0,
-        status: "analyzing",
+        id: batchId,
+        status: "running",
+        files: initialFiles,
         startTime: new Date().toISOString(),
+        stats: {
+          totalFiles: filePaths.length,
+          completedFiles: 0,
+          failedFiles: 0,
+          totalProgress: 0,
+        },
       })
 
       // Convert analyzers to config
@@ -336,13 +323,16 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           ? {
               ...prev,
               status: "completed",
-              completedFiles: results.length,
               endTime: new Date().toISOString(),
+              stats: {
+                ...prev.stats,
+                completedFiles: results.length,
+              },
             }
-          : null
+          : null,
       )
     } catch (error) {
-      logger.errorSync("[useAIDirectorAnalysisV2] Ошибка пакетного анализа", error)
+      logger.errorSync("[useAIDirectorAnalysisV2] Ошибка пакетного анализа", error as Record<string, unknown>)
       setIsAnalyzing(false)
       setErrors((prev) => [
         ...prev,
@@ -356,10 +346,10 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         prev
           ? {
               ...prev,
-              status: "failed",
+              status: "error",
               endTime: new Date().toISOString(),
             }
-          : null
+          : null,
       )
     }
   }, [])
@@ -381,9 +371,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
   // Computed: overall progress across all files
   const overallProgress =
     filesProgress.length > 0
-      ? Math.round(
-          filesProgress.reduce((sum, file) => sum + file.progress, 0) / filesProgress.length
-        )
+      ? Math.round(filesProgress.reduce((sum, file) => sum + file.progress, 0) / filesProgress.length)
       : 0
 
   return {

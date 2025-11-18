@@ -17,8 +17,10 @@ export type AIDirectorConfig = any
 export type ComprehensiveAnalysisResult = any
 
 // Components
+export * from "./components/ai-director-chat"
 export * from "./components/ai-director-modal"
 export * from "./components/analyzer-checkbox-group"
+export * from "./components/analyzer-preset-selector"
 export * from "./components/analyzer-progress-item"
 export * from "./components/file-analysis-progress"
 // Hooks
@@ -50,3 +52,12 @@ export {
   getAnalyzersByCategory,
   updateAnalyzerProgress,
 } from "./types/analysis-progress"
+// Preset types
+export type { AnalyzerPreset } from "./types/analyzer-presets"
+export {
+  createCustomPreset,
+  DEFAULT_PRESETS,
+  getDefaultPresets,
+  getPresetById,
+  validatePreset,
+} from "./types/analyzer-presets"

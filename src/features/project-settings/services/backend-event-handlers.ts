@@ -145,7 +145,7 @@ export function convertFrontendSettingsToBackend(settings: Partial<ProjectSettin
   // Преобразуем resolution из строки в объект
   if (settings.resolution) {
     const [width, height] = settings.resolution.split("x").map(Number)
-    if (!isNaN(width) && !isNaN(height)) {
+    if (!Number.isNaN(width) && !Number.isNaN(height)) {
       result.resolution = { width, height }
     }
   }
