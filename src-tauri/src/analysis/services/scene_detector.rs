@@ -4,6 +4,7 @@ use crate::analysis::models::*;
 // use crate::video_compiler::core::ffmpeg::audio_analysis::FFmpegAudioAnalyzer;  // Временно отключено
 // use crate::video_compiler::core::ffmpeg::video_analysis::FFmpegVideoAnalyzer;  // Временно отключено
 use crate::montage_planner::EmotionalTone;
+use crate::montage_planner::services::VideoQualityAnalyzer;
 use crate::recognition::types_professional::Emotion;
 use anyhow::{Context, Result};
 use chrono::Utc;
@@ -37,6 +38,8 @@ pub struct SceneDetector {
   pub scene_change_threshold: f32,
   /// Включить ли audio analysis для каждой сцены
   pub enable_audio_analysis: bool,
+  /// Quality analyzer для получения реальных метрик
+  quality_analyzer: VideoQualityAnalyzer,
 }
 
 impl SceneDetector {
@@ -46,6 +49,7 @@ impl SceneDetector {
       max_scene_duration: 300.0,   // Максимум 5 минут
       scene_change_threshold: 0.3, // 30% изменения для новой сцены
       enable_audio_analysis: true,
+      quality_analyzer: VideoQualityAnalyzer::new(),
     }
   }
 
@@ -251,7 +255,7 @@ impl SceneDetector {
   /// Анализ сегмента сцены
   async fn analyze_scene_segment(
     &self,
-    _file_path: &str,
+    file_path: &str,
     start_time: f32,
     end_time: f32,
     metadata: &FileMetadata,
@@ -266,13 +270,41 @@ impl SceneDetector {
     result.scene_type = self.classify_scene_type(start_time, end_time, metadata.duration);
     result.confidence = 0.8; // Базовая уверенность
 
-    // Технические метрики (можно получить из FFmpeg)
-    result.quality_score = 0.75; // TODO: реальный анализ качества
-    result.brightness = 0.5;
-    result.contrast = 0.6;
-    result.saturation = 0.5;
-    result.sharpness = 0.7;
-    result.noise_level = 0.2;
+    // Технические метрики - используем реальный FFmpeg анализ из VideoQualityAnalyzer
+    let middle_timestamp = (start_time + end_time) / 2.0; // Анализируем середину сцены
+
+    match self
+      .quality_analyzer
+      .analyze_frame_quality(file_path, middle_timestamp as f64)
+      .await
+    {
+      Ok(frame_quality) => {
+        // Конвертируем метрики из 0-100 шкалы в 0.0-1.0
+        result.brightness = (frame_quality.brightness / 100.0).clamp(0.0, 1.0);
+        result.contrast = (frame_quality.contrast / 100.0).clamp(0.0, 1.0);
+        result.saturation = (frame_quality.saturation / 100.0).clamp(0.0, 1.0);
+        result.sharpness = (frame_quality.sharpness / 100.0).clamp(0.0, 1.0);
+        result.noise_level = (frame_quality.noise_level / 100.0).clamp(0.0, 1.0);
+        result.quality_score = (frame_quality.overall_quality / 100.0).clamp(0.0, 1.0);
+
+        debug!(
+          "Real FFmpeg metrics for scene at {:.2}s: brightness={:.2}, contrast={:.2}, saturation={:.2}",
+          middle_timestamp, result.brightness, result.contrast, result.saturation
+        );
+      }
+      Err(e) => {
+        // Fallback к базовым значениям если FFmpeg анализ не удался
+        warn!("Failed to analyze frame quality: {}, using fallback values", e);
+        result.brightness = 0.5;
+        result.contrast = 0.6;
+        result.saturation = 0.5;
+        result.sharpness = 0.7;
+        result.noise_level = 0.2;
+        result.quality_score = 0.75;
+      }
+    }
+
+    // Stability - пока используем эвристику (для полного анализа нужен анализ всей сцены)
     result.stability = 0.8;
 
     // Композиционные метрики
