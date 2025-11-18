@@ -7,7 +7,7 @@ use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter};

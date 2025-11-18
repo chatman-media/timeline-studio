@@ -45,12 +45,10 @@ describe("useFilterTimelineIntegration", () => {
       expect(appliedFilter.customParams).toEqual(customParams)
     })
 
-    it("should generate unique IDs", async () => {
+    it("should generate unique IDs", () => {
       const { result } = renderHook(() => useFilterTimelineIntegration())
 
       const filter1 = result.current.createAppliedFilter(mockFilter)
-      // Wait a bit to ensure different timestamp
-      await new Promise((resolve) => setTimeout(resolve, 1))
       const filter2 = result.current.createAppliedFilter(mockFilter)
 
       expect(filter1.id).not.toBe(filter2.id)
