@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import * as enhancedAutomation from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
 import { useEnhancedSubtitleAutomation } from "../../hooks/use-enhanced-subtitle-automation"
 import { createMockEnhancedSubtitleResult } from "../test-utils"
@@ -69,6 +69,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 2500,
         toolName: "enhanced-subtitle-automation",
+        executionId: `enhanced-subtitle-automation_${Date.now()}_test`,
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {})
@@ -91,6 +92,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         errors: [errorMessage],
         executionTime: 0,
         toolName: "enhanced-subtitle-automation",
+        executionId: `enhanced-subtitle-automation_${Date.now()}_test`,
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {})
@@ -112,6 +114,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 2500,
         toolName: "enhanced-subtitle-automation",
+        executionId: `enhanced-subtitle-automation_${Date.now()}_test`,
       })
 
       await result.current.generateEnhancedSubtitles("/path/to/media.mp4", "test-clip", {
@@ -138,6 +141,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 2000,
         toolName: "auto-generate-subtitles-from-video",
+        executionId: `auto-generate-subtitles-from-video_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.quickGenerateFromVideo("test-clip", "en")
@@ -159,6 +163,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         errors: [errorMessage],
         executionTime: 0,
         toolName: "auto-generate-subtitles-from-video",
+        executionId: `auto-generate-subtitles-from-video_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.quickGenerateFromVideo("test-clip")
@@ -182,6 +187,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 1500,
         toolName: "extract-subtitles-from-screen-text",
+        executionId: `extract-subtitles-from-screen-text_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.extractFromScreenText("test-clip", "en")
@@ -203,6 +209,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         errors: [errorMessage],
         executionTime: 0,
         toolName: "extract-subtitles-from-screen-text",
+        executionId: `extract-subtitles-from-screen-text_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.extractFromScreenText("test-clip")
@@ -226,6 +233,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 3000,
         toolName: "generate-multilingual-subtitles",
+        executionId: `generate-multilingual-subtitles_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.generateMultilingual("test-clip", ["en", "ru", "es"])
@@ -247,6 +255,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         errors: [errorMessage],
         executionTime: 0,
         toolName: "generate-multilingual-subtitles",
+        executionId: `generate-multilingual-subtitles_${Date.now()}_test`,
       })
 
       const enhancedResult = await result.current.generateMultilingual("test-clip", ["en", "ru"])
@@ -294,6 +303,7 @@ describe("useEnhancedSubtitleAutomation", () => {
         data: mockResult,
         executionTime: 2000,
         toolName: "auto-generate-subtitles-from-video",
+        executionId: `auto-generate-subtitles-from-video_${Date.now()}_test`,
       })
 
       await result.current.quickGenerateFromVideo("test-clip")

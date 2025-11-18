@@ -6,9 +6,6 @@
 import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-
-import { logError, logInfo } from "@/lib/tauri-logger"
-
 // Импортируем новый enhanced инструмент
 import {
   autoGenerateSubtitlesFromVideo,
@@ -17,7 +14,8 @@ import {
   enhancedSubtitleAutomation,
   extractSubtitlesFromScreenText,
   generateMultilingualSubtitles,
-} from "../../ai-chat/tools/automation/enhanced-subtitle-automation"
+} from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции
 import type { TranscriptionResult, TranscriptionSegment } from "../types"
