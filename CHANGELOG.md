@@ -1,3 +1,11 @@
+## [3.1.1](https://github.com/chatman-media/timeline-studio/compare/v3.1.0...v3.1.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Заменить @heroicons/react на SVG компонент для React 19 ([fc0fa0a](https://github.com/chatman-media/timeline-studio/commit/fc0fa0a72de71683afad701caeba6415c8bb4bf8))
+* **promo:** Заменить @heroicons/react на SVG компонент для совместимости с React 19 ([daf7070](https://github.com/chatman-media/timeline-studio/commit/daf70702000cc8c591d2dbb14c87c871ada40185))
+
 # [3.1.0](https://github.com/chatman-media/timeline-studio/compare/v3.0.0...v3.1.0) (2025-11-18)
 
 
