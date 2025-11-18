@@ -181,3 +181,8 @@ impl ProjectCommands {
     CommandResult::success(Some(serde_json::json!({ "success": true })))
   }
 }
+
+// TODO: Add unit tests for project commands
+// Current blocker: EventBus and PersistenceService require AppHandle for initialization
+// which makes unit testing difficult without mocking infrastructure.
+// Recommendation: Create mock versions or use integration tests instead.
