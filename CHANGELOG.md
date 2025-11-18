@@ -1,3 +1,12 @@
+## [3.13.1](https://github.com/chatman-media/timeline-studio/compare/v3.13.0...v3.13.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ai-chat:** Добавить фильтрацию невалидных инструментов ([9785b07](https://github.com/chatman-media/timeline-studio/commit/9785b07fbfc340284d52aba0f7c4edd9ff4433d3))
+* **ai-chat:** Исправить селектор моделей в чате ([248d2b5](https://github.com/chatman-media/timeline-studio/commit/248d2b514ebf167ff71e665bdfa7b03ec27211e2))
+* **tauri:** Добавить проверки окружения Tauri ([5c4b205](https://github.com/chatman-media/timeline-studio/commit/5c4b2055558093cba11a5019ae52e8cd5cfe29bb))
+
 # [3.13.0](https://github.com/chatman-media/timeline-studio/compare/v3.12.0...v3.13.0) (2025-11-18)
 
 
