@@ -53,56 +53,69 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
   // Event listeners
   useEffect(() => {
     const unlistenFunctions: UnlistenFn[] = []
+    let isMounted = true
 
     const setupEventListeners = async () => {
-      // Listen to analysis started
-      const unlistenStarted = await listen("analysis-started", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis started", event.payload as Record<string, unknown>)
-        setIsAnalyzing(true)
-        setCurrentProgress(null)
-        setResult(null)
-        setErrors([])
-      })
-      unlistenFunctions.push(unlistenStarted)
+      try {
+        // Listen to analysis started
+        const unlistenStarted = await listen("analysis-started", (event) => {
+          logInfo("[useAIDirectorAnalysis] Analysis started", event.payload as Record<string, unknown>)
+          setIsAnalyzing(true)
+          setCurrentProgress(null)
+          setResult(null)
+          setErrors([])
+        })
+        if (isMounted) unlistenFunctions.push(unlistenStarted)
 
-      // Listen to analysis progress
-      const unlistenProgress = await listen("analysis-progress", (event) => {
-        const progress = event.payload as unknown as AnalysisProgress
-        logInfo("[useAIDirectorAnalysis] Analysis progress", progress as unknown as Record<string, unknown>)
-        setCurrentProgress(progress)
-      })
-      unlistenFunctions.push(unlistenProgress)
+        // Listen to analysis progress
+        const unlistenProgress = await listen("analysis-progress", (event) => {
+          const progress = event.payload as unknown as AnalysisProgress
+          logInfo("[useAIDirectorAnalysis] Analysis progress", progress as unknown as Record<string, unknown>)
+          setCurrentProgress(progress)
+        })
+        if (isMounted) unlistenFunctions.push(unlistenProgress)
 
-      // Listen to analysis completed
-      const unlistenCompleted = await listen("analysis-completed", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload as Record<string, unknown>)
-        setIsAnalyzing(false)
-        setCurrentProgress(null)
-        // result будет установлен из возвращаемого значения команды
-      })
-      unlistenFunctions.push(unlistenCompleted)
+        // Listen to analysis completed
+        const unlistenCompleted = await listen("analysis-completed", (event) => {
+          logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload as Record<string, unknown>)
+          setIsAnalyzing(false)
+          setCurrentProgress(null)
+          // result будет установлен из возвращаемого значения команды
+        })
+        if (isMounted) unlistenFunctions.push(unlistenCompleted)
 
-      // Listen to analysis errors
-      const unlistenError = await listen("analysis-error", (event) => {
-        const error = event.payload as unknown as AnalysisError
-        logError("[useAIDirectorAnalysis] Analysis error", error as unknown as Record<string, unknown>)
-        setErrors((prev) => [...prev, error])
-      })
-      unlistenFunctions.push(unlistenError)
+        // Listen to analysis errors
+        const unlistenError = await listen("analysis-error", (event) => {
+          const error = event.payload as unknown as AnalysisError
+          logError("[useAIDirectorAnalysis] Analysis error", error as unknown as Record<string, unknown>)
+          setErrors((prev) => [...prev, error])
+        })
+        if (isMounted) unlistenFunctions.push(unlistenError)
 
-      // Listen to stage completed
-      const unlistenStageCompleted = await listen("analysis-stage-completed", (event) => {
-        logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload as Record<string, unknown>)
-        // Можно добавить дополнительную логику для отслеживания завершенных этапов
-      })
-      unlistenFunctions.push(unlistenStageCompleted)
+        // Listen to stage completed
+        const unlistenStageCompleted = await listen("analysis-stage-completed", (event) => {
+          logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload as Record<string, unknown>)
+          // Можно добавить дополнительную логику для отслеживания завершенных этапов
+        })
+        if (isMounted) unlistenFunctions.push(unlistenStageCompleted)
+      } catch (error) {
+        logError("[useAIDirectorAnalysis] Ошибка настройки event listeners", error as Record<string, unknown>)
+      }
     }
 
-    setupEventListeners()
+    void setupEventListeners()
 
     // Cleanup on unmount
     return () => {
-      unlistenFunctions.forEach((unlisten) => unlisten())
+      isMounted = false
+      unlistenFunctions.forEach((unlisten) => {
+        try {
+          unlisten()
+        } catch (error) {
+          // Игнорируем ошибки при cleanup
+          logError("[useAIDirectorAnalysis] Ошибка при cleanup event listener", error as Record<string, unknown>)
+        }
+      })
     }
   }, [])
 

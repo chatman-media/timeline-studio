@@ -289,11 +289,38 @@ pub struct OpenAIRequest {
   pub stream: Option<bool>,
 }
 
+/// OpenAI Message Content (supports text and vision)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OpenAIMessageContent {
+  /// Simple text content (backward compatible)
+  Text(String),
+  /// Multimodal content array (text + images for vision models)
+  Array(Vec<OpenAIContentPart>),
+}
+
+/// OpenAI Content Part (for multimodal messages)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum OpenAIContentPart {
+  /// Text content part
+  Text { text: String },
+  /// Image URL content part (for vision models like GPT-4o, GPT-4 Turbo, DeepSeek-VL)
+  ImageUrl { image_url: OpenAIImageUrl },
+}
+
+/// OpenAI Image URL (supports base64 data URIs)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenAIImageUrl {
+  /// Image URL (can be data:image/jpeg;base64,... or https://...)
+  pub url: String,
+}
+
 /// OpenAI Message
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OpenAIMessage {
   pub role: String,
-  pub content: String,
+  pub content: OpenAIMessageContent,
 }
 
 /// OpenAI Response
@@ -440,16 +467,77 @@ impl From<AIMessage> for ClaudeMessage {
 
 impl From<OpenAIMessage> for AIMessage {
   fn from(msg: OpenAIMessage) -> Self {
-    AIMessage::text(msg.role, msg.content)
+    match msg.content {
+      OpenAIMessageContent::Text(text) => AIMessage::text(msg.role, text),
+      OpenAIMessageContent::Array(parts) => {
+        let mut content_parts = Vec::new();
+        for part in parts {
+          match part {
+            OpenAIContentPart::Text { text } => {
+              content_parts.push(AIContentPart::Text { text });
+            }
+            OpenAIContentPart::ImageUrl { image_url } => {
+              // Extract base64 from data URI (data:image/jpeg;base64,...)
+              if let Some(base64_data) = image_url.url.strip_prefix("data:") {
+                if let Some(comma_pos) = base64_data.find(',') {
+                  let (media_type, data) = base64_data.split_at(comma_pos);
+                  let data = &data[1..]; // Skip comma
+
+                  // Extract media type (image/jpeg;base64 -> image/jpeg)
+                  let media_type = media_type.split(';').next().unwrap_or("image/jpeg");
+
+                  content_parts.push(AIContentPart::Image {
+                    source: AIImageSource::Base64 {
+                      media_type: media_type.to_string(),
+                      data: data.to_string(),
+                    },
+                  });
+                }
+              }
+            }
+          }
+        }
+        AIMessage {
+          role: msg.role,
+          content: AIMessageContent::Multimodal(content_parts),
+        }
+      }
+    }
   }
 }
 
 impl From<AIMessage> for OpenAIMessage {
   fn from(msg: AIMessage) -> Self {
-    let text = msg.get_text();
-    OpenAIMessage {
-      role: msg.role,
-      content: text,
+    match msg.content {
+      AIMessageContent::Text(text) => OpenAIMessage {
+        role: msg.role,
+        content: OpenAIMessageContent::Text(text),
+      },
+      AIMessageContent::Multimodal(parts) => {
+        let mut openai_parts = Vec::new();
+
+        for part in parts {
+          match part {
+            AIContentPart::Text { text } => {
+              openai_parts.push(OpenAIContentPart::Text { text });
+            }
+            AIContentPart::Image { source } => {
+              if let AIImageSource::Base64 { media_type, data } = source {
+                // Create data URI: data:image/jpeg;base64,<data>
+                let url = format!("data:{};base64,{}", media_type, data);
+                openai_parts.push(OpenAIContentPart::ImageUrl {
+                  image_url: OpenAIImageUrl { url },
+                });
+              }
+            }
+          }
+        }
+
+        OpenAIMessage {
+          role: msg.role,
+          content: OpenAIMessageContent::Array(openai_parts),
+        }
+      }
     }
   }
 }
@@ -513,7 +601,11 @@ impl AIProvider {
         "gpt-4".to_string(),
         "gpt-3.5-turbo".to_string(),
       ],
-      AIProvider::DeepSeek => vec!["deepseek-chat".to_string(), "deepseek-coder".to_string()],
+      AIProvider::DeepSeek => vec![
+        "deepseek-chat".to_string(),
+        "deepseek-coder".to_string(),
+        "deepseek-vl".to_string(), // Vision model for image analysis
+      ],
       AIProvider::Ollama => vec![
         "llama3".to_string(),
         "codellama".to_string(),
