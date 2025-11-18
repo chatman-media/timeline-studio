@@ -24,6 +24,7 @@ import {
   useAnalyzerPresets,
 } from "@/features/ai-director"
 import { FileAnalysisProgress } from "@/features/ai-director/components/file-analysis-progress"
+import { useTimeline } from "@/features/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AiAnalysisDashboardV2")
@@ -37,16 +38,33 @@ export function AIAnalysisDashboardV2() {
   // Get selected files from media pool
   const { selectedFiles } = useBrowser()
   const { mediaPool } = useMediaManagement()
+  const { project } = useTimeline()
 
   // Convert selected file IDs to full paths
   const selectedFilePaths = useMemo(() => {
+    logger.infoSync("[Dashboard] Converting selected files to paths", {
+      selectedFilesCount: selectedFiles.size,
+      mediaPoolSize: mediaPool.size,
+      hasProject: !!project,
+      selectedFileIds: Array.from(selectedFiles),
+    })
+
     const paths: string[] = []
     selectedFiles.forEach((fileId) => {
+      // Try mediaPool first
       const mediaFile = mediaPool.get(fileId)
+
+      logger.infoSync(`[Dashboard] Checking file ${fileId}`, {
+        foundInMediaPool: !!mediaFile,
+        path: mediaFile?.path,
+      })
+
       if (mediaFile) {
         paths.push(mediaFile.path)
       }
     })
+
+    logger.infoSync("[Dashboard] Final paths", { pathsCount: paths.length, paths })
     return paths
   }, [selectedFiles, mediaPool])
 
