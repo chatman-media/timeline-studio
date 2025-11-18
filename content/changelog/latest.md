@@ -1,3 +1,15 @@
+# [3.3.0](https://github.com/chatman-media/timeline-studio/compare/v3.2.1...v3.3.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Обновить информацию о проекте на странице About ([c3b490c](https://github.com/chatman-media/timeline-studio/commit/c3b490c607eb66fcb0b1db349e862911c9d8458c))
+
+
+### Features
+
+* **mcp:** Добавить MCP интеграцию для Claude API с 18 инструментами видеомонтажа ([102de0e](https://github.com/chatman-media/timeline-studio/commit/102de0e0f6387cbc823a5a2fb124c936293cdbca))
+
 ## [3.2.1](https://github.com/chatman-media/timeline-studio/compare/v3.2.0...v3.2.1) (2025-11-18)
 
 
