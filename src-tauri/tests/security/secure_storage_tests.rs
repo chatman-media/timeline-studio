@@ -134,8 +134,7 @@ fn test_get_or_create_encryption_key() {
   let result1 = SecureStorage::get_or_create_encryption_key();
 
   // В тестовом окружении может не быть доступа к config dir
-  if result1.is_ok() {
-    let key1 = result1.unwrap();
+  if let Ok(key1) = result1 {
     assert_eq!(key1.len(), 32);
 
     // Второй вызов должен вернуть тот же ключ

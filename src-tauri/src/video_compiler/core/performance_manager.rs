@@ -296,8 +296,10 @@ mod tests {
   #[tokio::test]
   async fn test_should_run_cleanup() {
     let temp_dir = TempDir::new().unwrap();
-    let mut settings = PerformanceSettings::default();
-    settings.cleanup_interval = Duration::from_millis(100);
+    let settings = PerformanceSettings {
+      cleanup_interval: Duration::from_millis(100),
+      ..Default::default()
+    };
 
     let manager = PerformanceManager::with_settings(temp_dir.path().to_path_buf(), settings);
 
@@ -324,8 +326,10 @@ mod tests {
   #[tokio::test]
   async fn test_auto_cleanup_disabled() {
     let temp_dir = TempDir::new().unwrap();
-    let mut settings = PerformanceSettings::default();
-    settings.auto_cleanup_enabled = false;
+    let settings = PerformanceSettings {
+      auto_cleanup_enabled: false,
+      ..Default::default()
+    };
 
     let manager = PerformanceManager::with_settings(temp_dir.path().to_path_buf(), settings);
 

@@ -59,8 +59,10 @@ async fn test_yolo_on_hevc_video() {
   #[allow(unreachable_code)]
   {
     let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig::default();
-    config.model = YoloModel::YoloV11Detection;
+    let mut config = ProcessorConfig {
+      model: YoloModel::YoloV11Detection,
+      ..Default::default()
+    };
     config.processing_config.confidence_threshold = 0.5;
     let mut processor = YoloProcessor::new(config).await.unwrap();
 
@@ -131,8 +133,10 @@ async fn test_face_detection_on_video() {
   #[allow(unreachable_code)]
   {
     let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig::default();
-    config.model = YoloModel::YoloV11Face;
+    let mut config = ProcessorConfig {
+      model: YoloModel::YoloV11Face,
+      ..Default::default()
+    };
     config.processing_config.confidence_threshold = 0.7;
     let mut processor = YoloProcessor::new(config).await.unwrap();
 
@@ -327,8 +331,10 @@ async fn test_batch_processing() {
   #[allow(unreachable_code)]
   {
     let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig::default();
-    config.model = YoloModel::YoloV11Detection;
+    let mut config = ProcessorConfig {
+      model: YoloModel::YoloV11Detection,
+      ..Default::default()
+    };
     config.processing_config.confidence_threshold = 0.5;
     let mut processor = YoloProcessor::new(config).await.unwrap();
 

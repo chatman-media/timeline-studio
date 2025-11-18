@@ -261,6 +261,7 @@ mod custom_plugin_example {
   use timeline_studio_lib::video_compiler::error::Result;
 
   /// Простой плагин-счетчик событий
+  #[allow(dead_code)]
   pub struct EventCounterPlugin {
     metadata: PluginMetadata,
     event_count: std::sync::atomic::AtomicU32,

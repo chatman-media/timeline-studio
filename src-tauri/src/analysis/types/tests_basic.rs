@@ -39,7 +39,7 @@ mod tests {
     // Test dB conversion
     let vol_db = AudioVolume::from_db(-6.0);
     let db_value = vol_db.to_db();
-    assert!(db_value >= -6.1 && db_value <= -5.9);
+    assert!((-6.1..=-5.9).contains(&db_value));
   }
 
   #[test]
