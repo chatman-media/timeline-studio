@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.4.0",
     "@studio-freight/lenis": "^1.0.42",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001755",
@@ -24,7 +22,6 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "7.9.6",
     "remark-gfm": "^4.0.1",
-    "three": "^0.181.1",
     "use-sync-external-store": "^1.6.0"
   },
   "devDependencies": {
@@ -34,7 +31,6 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "5.3.3",
-    "@types/three": "^0.181.0",
     "@vitejs/plugin-react": "5.1.1",
     "autoprefixer": "^10.4.22",
     "globals": "^16.5.0",

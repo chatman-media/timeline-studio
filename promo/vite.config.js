@@ -63,8 +63,6 @@ export default defineConfig({
       "gray-matter",
       "js-yaml",
     ],
-    // Исключаем тяжелые библиотеки из предварительной оптимизации
-    exclude: ["@react-three/fiber", "@react-three/drei", "three"],
     esbuildOptions: {
       define: {
         global: "globalThis",
@@ -86,14 +84,6 @@ export default defineConfig({
           // Router отдельно
           if (id.includes("node_modules/react-router-dom")) {
             return "router"
-          }
-          // Three.js и 3D библиотеки - тяжелые, загружаются только на /logo3d
-          if (
-            id.includes("node_modules/three") ||
-            id.includes("node_modules/@react-three/fiber") ||
-            id.includes("node_modules/@react-three/drei")
-          ) {
-            return "three"
           }
           // Framer Motion - анимации
           if (id.includes("node_modules/framer-motion")) {
