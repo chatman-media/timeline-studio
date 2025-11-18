@@ -4,6 +4,7 @@ use std::path::Path;
 use std::process::Command;
 
 use crate::app_dirs::AppDirectories;
+use crate::state::project_state::Resolution;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct ProxyGenerationParams {
@@ -25,12 +26,6 @@ pub struct ProxyGenerationResult {
   #[specta(type = String)]
   pub size: u64,
   pub resolution: Resolution,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-pub struct Resolution {
-  pub width: u32,
-  pub height: u32,
 }
 
 /// Generate proxy file using FFmpeg
