@@ -86,32 +86,30 @@ fn setup_ollama_mock(server: &mut ServerGuard) -> Mock {
 }
 
 /// Create a sample vision analysis request
-fn create_vision_request(
-  provider: AIProvider,
-  model: String,
-  endpoint: String,
-) -> UnifiedAIRequest {
+fn create_vision_request(provider: AIProvider, model: String) -> UnifiedAIRequest {
   UnifiedAIRequest {
     provider,
     model,
-    endpoint: Some(endpoint),
-    messages: vec![Message {
+    messages: vec![AIMessage {
       role: "user".to_string(),
-      content: vec![
-        ContentPart::Text {
+      content: AIMessageContent::Multimodal(vec![
+        AIContentPart::Text {
           text: "Analyze this video frame in detail. Provide information about composition, quality, colors, and scene type.".to_string(),
         },
-        ContentPart::Image {
-          source: ImageSource::Base64 {
+        AIContentPart::Image {
+          source: AIImageSource::Base64 {
             media_type: "image/jpeg".to_string(),
             data: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==".to_string(), // 1x1 red pixel
           },
         },
-      ],
+      ]),
     }],
     temperature: Some(0.7),
     max_tokens: Some(1024),
     stream: Some(false),
+    system: None,
+    tools: None,
+    tool_choice: None,
   }
 }
 
@@ -121,21 +119,20 @@ async fn test_claude_vision_integration() {
   let _mock = setup_claude_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::Claude,
-    "claude-3-5-sonnet-20241022".to_string(),
-    format!("{}/v1/messages", server.url()),
-  );
+  let request = create_vision_request(AIProvider::Claude, "claude-3-5-sonnet-20241022".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
   assert!(result.is_ok(), "Request should succeed with mock response");
   let response = result.unwrap();
-  assert!(!response.text.is_empty(), "Response should contain text");
   assert!(
-    response.text.contains("interview")
-      || response.text.contains("composition")
-      || response.text.contains("quality"),
+    !response.content.is_empty(),
+    "Response should contain content"
+  );
+  assert!(
+    response.content.contains("interview")
+      || response.content.contains("composition")
+      || response.content.contains("quality"),
     "Response should contain vision analysis keywords"
   );
 }
@@ -156,11 +153,11 @@ async fn test_openai_vision_integration() {
 
   assert!(result.is_ok(), "Request should succeed with mock response");
   let response = result.unwrap();
-  assert!(!response.text.is_empty(), "Response should contain text");
+  assert!(!response.content.is_empty(), "Response should contain text");
   assert!(
-    response.text.contains("action")
-      || response.text.contains("composition")
-      || response.text.contains("dynamic"),
+    response.content.contains("action")
+      || response.content.contains("composition")
+      || response.content.contains("dynamic"),
     "Response should contain vision analysis keywords"
   );
 }
@@ -181,11 +178,11 @@ async fn test_deepseek_vision_integration() {
 
   assert!(result.is_ok(), "Request should succeed with mock response");
   let response = result.unwrap();
-  assert!(!response.text.is_empty(), "Response should contain text");
+  assert!(!response.content.is_empty(), "Response should contain text");
   assert!(
-    response.text.contains("landscape")
-      || response.text.contains("outdoor")
-      || response.text.contains("nature"),
+    response.content.contains("landscape")
+      || response.content.contains("outdoor")
+      || response.content.contains("nature"),
     "Response should contain vision analysis keywords"
   );
 }
@@ -206,11 +203,11 @@ async fn test_ollama_vision_integration() {
 
   assert!(result.is_ok(), "Request should succeed with mock response");
   let response = result.unwrap();
-  assert!(!response.text.is_empty(), "Response should contain text");
+  assert!(!response.content.is_empty(), "Response should contain text");
   assert!(
-    response.text.contains("indoor")
-      || response.text.contains("desk")
-      || response.text.contains("office"),
+    response.content.contains("indoor")
+      || response.content.contains("desk")
+      || response.content.contains("office"),
     "Response should contain vision analysis keywords"
   );
 }

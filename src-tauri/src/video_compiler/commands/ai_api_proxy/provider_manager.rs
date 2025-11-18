@@ -27,6 +27,8 @@ pub struct RetryConfig {
   pub initial_delay_ms: u64,
   /// Maximum delay in milliseconds (default: 8000)
   pub max_delay_ms: u64,
+  /// Request timeout in seconds (default: 120)
+  pub timeout_secs: u64,
 }
 
 impl Default for RetryConfig {
@@ -35,8 +37,65 @@ impl Default for RetryConfig {
       max_retries: 3,
       initial_delay_ms: 1000,
       max_delay_ms: 8000,
+      timeout_secs: 120, // 2 minutes default
     }
   }
+}
+
+/// Validate API key format for a specific provider
+///
+/// Проверяет, соответствует ли API ключ ожидаемому формату для провайдера.
+/// Это предотвращает отправку запросов с заведомо неверными ключами.
+fn validate_api_key(provider: &AIProvider, api_key: &str) -> Result<()> {
+  match provider {
+    AIProvider::Claude => {
+      // Claude API keys: sk-ant-api03-... (usually 108 characters)
+      if !api_key.starts_with("sk-ant-") {
+        return Err(VideoCompilerError::ValidationError(
+          "Invalid Claude API key format. Expected key starting with 'sk-ant-'".to_string(),
+        ));
+      }
+      if api_key.len() < 40 {
+        return Err(VideoCompilerError::ValidationError(
+          "Claude API key is too short. Expected at least 40 characters".to_string(),
+        ));
+      }
+    }
+    AIProvider::OpenAI => {
+      // OpenAI API keys: sk-... or sk-proj-... (usually 48-56 characters)
+      if !api_key.starts_with("sk-") {
+        return Err(VideoCompilerError::ValidationError(
+          "Invalid OpenAI API key format. Expected key starting with 'sk-'".to_string(),
+        ));
+      }
+      if api_key.len() < 40 {
+        return Err(VideoCompilerError::ValidationError(
+          "OpenAI API key is too short. Expected at least 40 characters".to_string(),
+        ));
+      }
+    }
+    AIProvider::DeepSeek => {
+      // DeepSeek API keys: sk-... (similar to OpenAI format)
+      if !api_key.starts_with("sk-") {
+        return Err(VideoCompilerError::ValidationError(
+          "Invalid DeepSeek API key format. Expected key starting with 'sk-'".to_string(),
+        ));
+      }
+      if api_key.len() < 40 {
+        return Err(VideoCompilerError::ValidationError(
+          "DeepSeek API key is too short. Expected at least 40 characters".to_string(),
+        ));
+      }
+    }
+    AIProvider::Ollama => {
+      // Ollama doesn't require API key (local server)
+      // Allow empty or any string
+      if !api_key.is_empty() {
+        log::warn!("Ollama is a local server and doesn't require API key, but one was provided");
+      }
+    }
+  }
+  Ok(())
 }
 
 /// AI Provider Manager
@@ -90,12 +149,11 @@ impl AIProviderManager {
       RateLimiter::direct(Quota::per_minute(nonzero!(10000u32))),
     );
 
+    let timeout = Duration::from_secs(retry_config.timeout_secs);
+
     Self {
-      client: Client::builder()
-        .timeout(Duration::from_secs(120))
-        .build()
-        .unwrap(),
-      timeout: Duration::from_secs(120),
+      client: Client::builder().timeout(timeout).build().unwrap(),
+      timeout,
       retry_config,
       rate_limiters: Arc::new(Mutex::new(limiters)),
     }
@@ -169,9 +227,13 @@ impl AIProviderManager {
     api_key: &str,
     request: UnifiedAIRequest,
   ) -> Result<UnifiedAIResponse> {
+    let provider = request.provider.clone();
+
+    // Validate API key format before proceeding
+    validate_api_key(&provider, api_key)?;
+
     let api_key = api_key.to_string();
     let request_clone = request.clone();
-    let provider = request_clone.provider.clone();
 
     // Apply rate limiting before sending request
     self.apply_rate_limit(provider).await?;
@@ -210,6 +272,9 @@ impl AIProviderManager {
     app_handle: AppHandle,
     request_id: String,
   ) -> Result<()> {
+    // Validate API key format before proceeding
+    validate_api_key(&request.provider, api_key)?;
+
     match request.provider {
       AIProvider::Claude => {
         self
@@ -1585,5 +1650,103 @@ mod tests {
       AIProvider::Ollama.default_endpoint(),
       "http://localhost:11434/api/chat"
     );
+  }
+
+  // API Key Validation Tests
+  #[test]
+  fn test_validate_claude_api_key_valid() {
+    let result = validate_api_key(
+      &AIProvider::Claude,
+      "sk-ant-api03-1234567890abcdefghijklmnopqrstuvwxyz1234567890",
+    );
+    assert!(result.is_ok());
+  }
+
+  #[test]
+  fn test_validate_claude_api_key_invalid_prefix() {
+    let result = validate_api_key(
+      &AIProvider::Claude,
+      "sk-1234567890abcdefghijklmnopqrstuvwxyz",
+    );
+    assert!(result.is_err());
+    assert!(result
+      .unwrap_err()
+      .to_string()
+      .contains("Invalid Claude API key format"));
+  }
+
+  #[test]
+  fn test_validate_claude_api_key_too_short() {
+    let result = validate_api_key(&AIProvider::Claude, "sk-ant-short");
+    assert!(result.is_err());
+    assert!(result.unwrap_err().to_string().contains("too short"));
+  }
+
+  #[test]
+  fn test_validate_openai_api_key_valid() {
+    let result = validate_api_key(
+      &AIProvider::OpenAI,
+      "sk-1234567890abcdefghijklmnopqrstuvwxyz1234567890",
+    );
+    assert!(result.is_ok());
+  }
+
+  #[test]
+  fn test_validate_openai_api_key_valid_proj() {
+    let result = validate_api_key(
+      &AIProvider::OpenAI,
+      "sk-proj-1234567890abcdefghijklmnopqrstuvwxyz1234567890",
+    );
+    assert!(result.is_ok());
+  }
+
+  #[test]
+  fn test_validate_openai_api_key_invalid_prefix() {
+    let result = validate_api_key(&AIProvider::OpenAI, "invalid-key-format-1234567890");
+    assert!(result.is_err());
+    assert!(result
+      .unwrap_err()
+      .to_string()
+      .contains("Invalid OpenAI API key format"));
+  }
+
+  #[test]
+  fn test_validate_openai_api_key_too_short() {
+    let result = validate_api_key(&AIProvider::OpenAI, "sk-short");
+    assert!(result.is_err());
+    assert!(result.unwrap_err().to_string().contains("too short"));
+  }
+
+  #[test]
+  fn test_validate_deepseek_api_key_valid() {
+    let result = validate_api_key(
+      &AIProvider::DeepSeek,
+      "sk-1234567890abcdefghijklmnopqrstuvwxyz1234567890",
+    );
+    assert!(result.is_ok());
+  }
+
+  #[test]
+  fn test_validate_deepseek_api_key_invalid_prefix() {
+    let result = validate_api_key(&AIProvider::DeepSeek, "invalid-key-format-1234567890");
+    assert!(result.is_err());
+    assert!(result
+      .unwrap_err()
+      .to_string()
+      .contains("Invalid DeepSeek API key format"));
+  }
+
+  #[test]
+  fn test_validate_ollama_api_key_empty() {
+    // Ollama doesn't require API key, so empty is valid
+    let result = validate_api_key(&AIProvider::Ollama, "");
+    assert!(result.is_ok());
+  }
+
+  #[test]
+  fn test_validate_ollama_api_key_any_string() {
+    // Ollama accepts any string (logs a warning but doesn't fail)
+    let result = validate_api_key(&AIProvider::Ollama, "any-random-string");
+    assert!(result.is_ok());
   }
 }
