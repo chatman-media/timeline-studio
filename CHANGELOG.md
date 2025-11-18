@@ -1,3 +1,20 @@
+# [3.7.0](https://github.com/chatman-media/timeline-studio/compare/v3.6.0...v3.7.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **rust:** исправить ошибки компиляции в vision_commands и mcp/commands ([67833eb](https://github.com/chatman-media/timeline-studio/commit/67833eb018fc80ccc06de4484745bf4051ed479d))
+
+
+### Features
+
+* **ai-api:** улучшить AI API провайдеры и тесты ([5030cad](https://github.com/chatman-media/timeline-studio/commit/5030cadab1a6d82dee25a774388cdd879633f90a))
+* **ai-chat:** обновить AI Chat компоненты и suggestions ([881fd2c](https://github.com/chatman-media/timeline-studio/commit/881fd2c13784be1dcddb476b8659b210916ceed2))
+* **ai-services:** улучшить AI Services и настройки ([564f4b2](https://github.com/chatman-media/timeline-studio/commit/564f4b2e6e815959111b599699989c4649a91f7d))
+* **mcp:** расширить MCP интеграцию с новыми инструментами ([5e47109](https://github.com/chatman-media/timeline-studio/commit/5e47109323be1be653da7703fe806b1f05c24386))
+* **promo:** Редизайн главной страницы с фокусом на практические примеры ([0d71d57](https://github.com/chatman-media/timeline-studio/commit/0d71d571adbc19773b2dc9d6b8264ddc2e6c7511))
+* **subtitles:** улучшить Enhanced Subtitle Automation ([b5d88b2](https://github.com/chatman-media/timeline-studio/commit/b5d88b2d5d9d0e42217554e6dae209cdd6bf0eb6))
+
 # [3.6.0](https://github.com/chatman-media/timeline-studio/compare/v3.5.0...v3.6.0) (2025-11-18)
 
 
