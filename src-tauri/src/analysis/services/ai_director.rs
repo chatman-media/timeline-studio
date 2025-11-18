@@ -1010,6 +1010,7 @@ impl AIDirector {
       num_frames: config.vlm_num_frames,
       temperature: config.vlm_temperature,
       max_tokens: config.vlm_max_tokens,
+      max_batch_size: 1, // Default: stream one frame at a time
     };
 
     // Получаем API ключ

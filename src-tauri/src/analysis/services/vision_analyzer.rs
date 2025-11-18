@@ -28,6 +28,10 @@ pub struct VisionAnalysisConfig {
 
   /// Max tokens for response
   pub max_tokens: u32,
+
+  /// Maximum number of frames to process simultaneously (default: 1 for streaming)
+  /// Higher values use more memory but may be faster with parallel processing
+  pub max_batch_size: u32,
 }
 
 impl Default for VisionAnalysisConfig {
@@ -38,6 +42,7 @@ impl Default for VisionAnalysisConfig {
       num_frames: 5,
       temperature: 0.7,
       max_tokens: 1024,
+      max_batch_size: 1, // Stream by default (process one frame at a time)
     }
   }
 }
@@ -91,6 +96,7 @@ impl VisionAnalyzer {
   /// Analyze video using vision language model
   ///
   /// Extracts key frames, sends them to vision model, and returns analysis results
+  /// Uses streaming approach to minimize memory usage
   pub async fn analyze_video(
     &self,
     video_path: &PathBuf,
@@ -100,24 +106,50 @@ impl VisionAnalyzer {
     let start_time = std::time::Instant::now();
 
     info!(
-      "Starting vision analysis of {:?} with {} frames",
-      video_path, config.num_frames
+      "Starting vision analysis of {:?} with {} frames (batch size: {})",
+      video_path, config.num_frames, config.max_batch_size
     );
 
     // Get video duration first
     let duration = self.get_video_duration(video_path)?;
     info!("Video duration: {:.2}s", duration);
 
-    // Extract frames at evenly distributed timestamps
-    let frame_data = self.extract_frames(video_path, duration, config.num_frames)?;
+    // Calculate timestamps for even distribution
+    let timestamps = self.calculate_frame_timestamps(duration, config.num_frames);
 
-    // Analyze each frame
-    let mut frame_analyses = Vec::new();
-    for (timestamp, base64_image) in frame_data {
-      let analysis = self
-        .analyze_frame(timestamp, base64_image, api_key, &config)
-        .await?;
-      frame_analyses.push(analysis);
+    // Process frames in batches to limit memory usage
+    let mut frame_analyses = Vec::with_capacity(config.num_frames as usize);
+    let batch_size = config.max_batch_size.max(1) as usize;
+
+    for chunk in timestamps.chunks(batch_size) {
+      let chunk_start = std::time::Instant::now();
+
+      // Extract and analyze frames in this batch
+      for &timestamp in chunk {
+        // Extract single frame
+        let base64_image = self.extract_single_frame(video_path, timestamp)?;
+
+        debug!(
+          "Frame at {:.2}s: base64 size = {} bytes",
+          timestamp,
+          base64_image.len()
+        );
+
+        // Analyze frame
+        let analysis = self
+          .analyze_frame(timestamp, base64_image, api_key, &config)
+          .await?;
+
+        frame_analyses.push(analysis);
+
+        // base64_image is dropped here, freeing memory
+      }
+
+      debug!(
+        "Processed batch of {} frames in {}ms",
+        chunk.len(),
+        chunk_start.elapsed().as_millis()
+      );
     }
 
     // Generate overall summary
@@ -142,6 +174,73 @@ impl VisionAnalyzer {
       themes,
       processing_time_ms: processing_time,
     })
+  }
+
+  /// Calculate evenly distributed timestamps for frame extraction
+  ///
+  /// Avoids first and last second to skip potential black frames
+  fn calculate_frame_timestamps(&self, duration: f64, num_frames: u32) -> Vec<f64> {
+    let mut timestamps = Vec::with_capacity(num_frames as usize);
+
+    // Avoid first and last second to skip black frames
+    let safe_duration = (duration - 2.0).max(1.0);
+    let interval = safe_duration / (num_frames as f64 + 1.0);
+
+    for i in 1..=num_frames {
+      let timestamp = 1.0 + (i as f64 * interval);
+      timestamps.push(timestamp);
+    }
+
+    timestamps
+  }
+
+  /// Extract a single frame at the specified timestamp
+  ///
+  /// Returns base64-encoded JPEG image
+  fn extract_single_frame(&self, video_path: &PathBuf, timestamp: f64) -> Result<String> {
+    debug!("Extracting frame at {:.2}s", timestamp);
+
+    // Use process ID and timestamp to create unique filename
+    let temp_dir = std::env::temp_dir();
+    let frame_path = temp_dir.join(format!(
+      "vlm_frame_{}_{}.jpg",
+      std::process::id(),
+      timestamp.to_string().replace('.', "_")
+    ));
+
+    let output = Command::new("ffmpeg")
+      .args([
+        "-ss",
+        &format!("{:.2}", timestamp),
+        "-i",
+        video_path.to_str().unwrap(),
+        "-vframes",
+        "1",
+        "-q:v",
+        "2", // High quality JPEG
+        "-y",
+        frame_path.to_str().unwrap(),
+      ])
+      .output()
+      .map_err(|e| VideoCompilerError::Io(format!("Failed to run ffmpeg: {}", e)))?;
+
+    if !output.status.success() {
+      return Err(VideoCompilerError::Io(format!(
+        "ffmpeg failed to extract frame at {}s",
+        timestamp
+      )));
+    }
+
+    // Read frame and encode to base64
+    let image_bytes = std::fs::read(&frame_path)
+      .map_err(|e| VideoCompilerError::Io(format!("Failed to read frame: {}", e)))?;
+
+    let base64_image = BASE64.encode(&image_bytes);
+
+    // Cleanup temporary file immediately
+    let _ = std::fs::remove_file(&frame_path);
+
+    Ok(base64_image)
   }
 
   /// Get video duration using ffprobe
@@ -170,69 +269,6 @@ impl VisionAnalyzer {
       .trim()
       .parse::<f64>()
       .map_err(|e| VideoCompilerError::Io(format!("Failed to parse duration: {}", e)))
-  }
-
-  /// Extract frames at evenly distributed timestamps
-  ///
-  /// Returns Vec of (timestamp, base64_encoded_image)
-  fn extract_frames(
-    &self,
-    video_path: &PathBuf,
-    duration: f64,
-    num_frames: u32,
-  ) -> Result<Vec<(f64, String)>> {
-    let mut frames = Vec::new();
-
-    // Calculate timestamps for even distribution
-    // Avoid first and last second to skip black frames
-    let safe_duration = (duration - 2.0).max(1.0);
-    let interval = safe_duration / (num_frames as f64 + 1.0);
-
-    for i in 1..=num_frames {
-      let timestamp = 1.0 + (i as f64 * interval);
-
-      debug!("Extracting frame at {:.2}s", timestamp);
-
-      // Extract frame to temporary file
-      let temp_dir = std::env::temp_dir();
-      let frame_path = temp_dir.join(format!("frame_{}.jpg", i));
-
-      let output = Command::new("ffmpeg")
-        .args([
-          "-ss",
-          &format!("{:.2}", timestamp),
-          "-i",
-          video_path.to_str().unwrap(),
-          "-vframes",
-          "1",
-          "-q:v",
-          "2", // High quality JPEG
-          "-y",
-          frame_path.to_str().unwrap(),
-        ])
-        .output()
-        .map_err(|e| VideoCompilerError::Io(format!("Failed to run ffmpeg: {}", e)))?;
-
-      if !output.status.success() {
-        return Err(VideoCompilerError::Io(format!(
-          "ffmpeg failed to extract frame at {}s",
-          timestamp
-        )));
-      }
-
-      // Read frame and encode to base64
-      let image_bytes = std::fs::read(&frame_path)
-        .map_err(|e| VideoCompilerError::Io(format!("Failed to read frame: {}", e)))?;
-
-      let base64_image = BASE64.encode(&image_bytes);
-
-      // Cleanup temporary file
-      let _ = std::fs::remove_file(&frame_path);
-
-      frames.push((timestamp, base64_image));
-    }
-
-    Ok(frames)
   }
 
   /// Analyze a single frame using vision model

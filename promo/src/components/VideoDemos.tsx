@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import type React from "react"
+import { useTranslation } from "../hooks/useTranslation"
 
 interface Demo {
   title: string
@@ -9,22 +10,24 @@ interface Demo {
 }
 
 export const VideoDemos: React.FC = () => {
+  const { t } = useTranslation()
+
   const demos: Demo[] = [
     {
-      title: "AI Auto-Editing in Action",
-      description: "Watch how AI selects best moments and creates engaging edits automatically",
+      title: t("mainPage.videoDemos.aiEditing.title"),
+      description: t("mainPage.videoDemos.aiEditing.description"),
       icon: "🎬",
       comingSoon: true,
     },
     {
-      title: "Multi-Camera Workflow",
-      description: "Edit multi-angle footage with automated switching and sync",
+      title: t("mainPage.videoDemos.multiCamera.title"),
+      description: t("mainPage.videoDemos.multiCamera.description"),
       icon: "📹",
       comingSoon: true,
     },
     {
-      title: "Color Grading Tutorial",
-      description: "Professional color correction and grading workflow",
+      title: t("mainPage.videoDemos.colorGrading.title"),
+      description: t("mainPage.videoDemos.colorGrading.description"),
       icon: "🎨",
       comingSoon: true,
     },
@@ -47,10 +50,10 @@ export const VideoDemos: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="section-title">
-            See It <span className="text-gradient">In Action</span>
+            {t("mainPage.videoDemos.title")} <span className="text-gradient">{t("mainPage.videoDemos.titleHighlight")}</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Quick video tutorials showing Timeline Studio's powerful features
+            {t("mainPage.videoDemos.subtitle")}
           </p>
         </motion.div>
 
@@ -85,7 +88,7 @@ export const VideoDemos: React.FC = () => {
                     <div className="text-6xl mb-4">{demo.icon}</div>
                     {demo.comingSoon && (
                       <div className="inline-block px-4 py-2 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-500/30">
-                        <span className="text-sm text-purple-300 font-medium">Coming Soon</span>
+                        <span className="text-sm text-purple-300 font-medium">{t("mainPage.videoDemos.comingSoon")}</span>
                       </div>
                     )}
                   </div>
@@ -121,11 +124,11 @@ export const VideoDemos: React.FC = () => {
           className="text-center mt-12"
         >
           <p className="text-gray-400 mb-4">
-            Want to see more? Check out our{" "}
+            {t("mainPage.videoDemos.checkGithub")}{" "}
             <a href="https://github.com/chatman-media/timeline-studio" className="text-blue-400 hover:text-blue-300 transition-colors">
-              GitHub repository
+              {t("mainPage.videoDemos.githubRepo")}
             </a>{" "}
-            for documentation and examples
+            {t("mainPage.videoDemos.forDocs")}
           </p>
         </motion.div>
       </div>

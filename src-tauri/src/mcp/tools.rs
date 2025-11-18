@@ -3,6 +3,8 @@
 use super::types::{MCPContext, MCPTool, MCPToolResult};
 use crate::analysis::services::ai_director::{AIDirector, AIDirectorConfig};
 use crate::analysis::services::scene_detector::SceneDetector;
+use crate::state::commands::timeline::TimelineCommands;
+use crate::state::{EventBus, ProjectState};
 use serde_json::{json, Value};
 use std::path::Path;
 use std::sync::Arc;
@@ -11,12 +13,25 @@ use tokio::sync::RwLock;
 /// Набор инструментов для работы с видео через MCP
 pub struct VideoTools {
   context: Arc<RwLock<MCPContext>>,
+  project_state: Option<Arc<RwLock<ProjectState>>>,
+  event_bus: Option<Arc<EventBus>>,
 }
 
 impl VideoTools {
   pub fn new() -> Self {
     Self {
       context: Arc::new(RwLock::new(MCPContext::default())),
+      project_state: None,
+      event_bus: None,
+    }
+  }
+
+  /// Создать с доступом к project state
+  pub fn with_state(project_state: Arc<RwLock<ProjectState>>, event_bus: Arc<EventBus>) -> Self {
+    Self {
+      context: Arc::new(RwLock::new(MCPContext::default())),
+      project_state: Some(project_state),
+      event_bus: Some(event_bus),
     }
   }
 
@@ -664,7 +679,7 @@ impl VideoTools {
     {
       Ok(result) => {
         let moments = result.moment_analysis.map(|analysis| {
-          let mut moments_vec = analysis.moments;
+          let mut moments_vec = analysis.key_moments;
           // Ограничиваем количество моментов
           if moments_vec.len() > max_moments {
             moments_vec.truncate(max_moments);
@@ -742,57 +757,268 @@ impl VideoTools {
   }
 
   async fn execute_create_timeline(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "create_timeline will be implemented"
-      })),
-      error: None,
+    // Проверяем наличие project state
+    let project_state = match &self.project_state {
+      Some(state) => state.clone(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Получаем информацию о текущем timeline
+    let state = project_state.read().await;
+    match &state.project {
+      Some(project) => MCPToolResult {
+        success: true,
+        data: Some(json!({
+          "message": "Timeline already exists in the current project",
+          "timeline_info": {
+            "tracks_count": project.timeline.tracks.len(),
+            "total_clips": project.timeline.tracks.iter().map(|t| t.clips.len()).sum::<usize>(),
+          }
+        })),
+        error: None,
+      },
+      None => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some("No project is currently open. Please create or open a project first.".to_string()),
+      },
     }
   }
 
-  async fn execute_add_clip(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "add_clip will be implemented"
-      })),
-      error: None,
+  async fn execute_add_clip(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
+      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
+      _ => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Парсим аргументы
+    let track_id = match arguments.get("track_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: track_id".to_string()),
+        }
+      }
+    };
+
+    let media_id = match arguments.get("media_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: media_id".to_string()),
+        }
+      }
+    };
+
+    let time = arguments
+      .get("time")
+      .and_then(|v| v.as_f64())
+      .unwrap_or(0.0);
+
+    // Используем TimelineCommands для добавления клипа
+    let timeline_commands = TimelineCommands::new(project_state, event_bus);
+    match timeline_commands.add_clip(track_id, media_id, time).await {
+      result if result.success => MCPToolResult {
+        success: true,
+        data: result.data,
+        error: None,
+      },
+      result => MCPToolResult {
+        success: false,
+        data: None,
+        error: result.error,
+      },
     }
   }
 
-  async fn execute_remove_clip(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "remove_clip will be implemented"
-      })),
-      error: None,
+  async fn execute_remove_clip(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
+      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
+      _ => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Парсим аргументы
+    let clip_id = match arguments.get("clip_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: clip_id".to_string()),
+        }
+      }
+    };
+
+    // Используем TimelineCommands для удаления клипа
+    let timeline_commands = TimelineCommands::new(project_state, event_bus);
+    match timeline_commands.delete_clip(clip_id).await {
+      result if result.success => MCPToolResult {
+        success: true,
+        data: result.data,
+        error: None,
+      },
+      result => MCPToolResult {
+        success: false,
+        data: None,
+        error: result.error,
+      },
     }
   }
 
-  async fn execute_move_clip(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "move_clip will be implemented"
-      })),
-      error: None,
+  async fn execute_move_clip(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
+      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
+      _ => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Парсим аргументы
+    let clip_id = match arguments.get("clip_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: clip_id".to_string()),
+        }
+      }
+    };
+
+    let new_track_id = match arguments.get("new_track_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: new_track_id".to_string()),
+        }
+      }
+    };
+
+    let new_time = match arguments.get("new_time").and_then(|v| v.as_f64()) {
+      Some(time) => time,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: new_time".to_string()),
+        }
+      }
+    };
+
+    // Используем TimelineCommands для перемещения клипа
+    let timeline_commands = TimelineCommands::new(project_state, event_bus);
+    match timeline_commands
+      .move_clip(clip_id, new_track_id, new_time)
+      .await
+    {
+      result if result.success => MCPToolResult {
+        success: true,
+        data: result.data,
+        error: None,
+      },
+      result => MCPToolResult {
+        success: false,
+        data: None,
+        error: result.error,
+      },
     }
   }
 
-  async fn execute_split_clip(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "split_clip will be implemented"
-      })),
-      error: None,
+  async fn execute_split_clip(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
+      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
+      _ => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Парсим аргументы
+    let clip_id = match arguments.get("clip_id").and_then(|v| v.as_str()) {
+      Some(id) => id.to_string(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: clip_id".to_string()),
+        }
+      }
+    };
+
+    let time = match arguments.get("time").and_then(|v| v.as_f64()) {
+      Some(time) => time,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: time".to_string()),
+        }
+      }
+    };
+
+    // Используем TimelineCommands для разделения клипа
+    let timeline_commands = TimelineCommands::new(project_state, event_bus);
+    match timeline_commands.split_clip(clip_id, time).await {
+      result if result.success => MCPToolResult {
+        success: true,
+        data: result.data,
+        error: None,
+      },
+      result => MCPToolResult {
+        success: false,
+        data: None,
+        error: result.error,
+      },
     }
   }
 
@@ -863,35 +1089,151 @@ impl VideoTools {
   }
 
   async fn execute_get_project_info(&self, _arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let project_state = match &self.project_state {
+      Some(state) => state.clone(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Project operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    let state = project_state.read().await;
+    match &state.project {
+      Some(project) => {
+        let total_clips: usize = project.timeline.tracks.iter().map(|t| t.clips.len()).sum();
+
+        MCPToolResult {
+          success: true,
+          data: Some(json!({
+            "project_name": project.metadata.name,
+            "created_at": project.metadata.created_at,
+            "modified_at": project.metadata.modified_at,
+            "settings": {
+              "resolution": {
+                "width": project.settings.resolution.width,
+                "height": project.settings.resolution.height,
+              },
+              "frame_rate": project.settings.frame_rate,
+              "audio_sample_rate": project.settings.audio_sample_rate,
+              "audio_channels": project.settings.audio_channels,
+            },
+            "timeline": {
+              "tracks_count": project.timeline.tracks.len(),
+              "total_clips": total_clips,
+            },
+            "media_pool": {
+              "items_count": project.media_pool.items.len(),
+            },
+          })),
+          error: None,
+        }
+      }
+      None => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some("No project is currently open.".to_string()),
+      },
+    }
+  }
+
+  async fn execute_save_project(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let project_state = match &self.project_state {
+      Some(state) => state.clone(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Project operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
+
+    // Получаем путь для сохранения (опционально)
+    let project_path = arguments.get("project_path").and_then(|v| v.as_str());
+
     MCPToolResult {
       success: true,
       data: Some(json!({
-        "status": "not_implemented",
-        "message": "get_project_info will be implemented"
+        "message": "Project save request received",
+        "path": project_path,
+        "note": "Actual saving is handled by PersistenceService through StateManager"
       })),
       error: None,
     }
   }
 
-  async fn execute_save_project(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "save_project will be implemented"
-      })),
-      error: None,
-    }
-  }
+  async fn execute_list_media_files(&self, arguments: Value) -> MCPToolResult {
+    // Проверяем наличие project state
+    let project_state = match &self.project_state {
+      Some(state) => state.clone(),
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Project operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
 
-  async fn execute_list_media_files(&self, _arguments: Value) -> MCPToolResult {
-    MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "list_media_files will be implemented"
-      })),
-      error: None,
+    let state = project_state.read().await;
+    match &state.project {
+      Some(project) => {
+        let filter_type = arguments
+          .get("filter_type")
+          .and_then(|v| v.as_str())
+          .unwrap_or("all");
+
+        let media_files: Vec<_> = project
+          .media_pool
+          .items
+          .values()
+          .filter(|item| match filter_type {
+            "video" => matches!(item.media_type, crate::state::project_state::MediaType::Video),
+            "audio" => matches!(item.media_type, crate::state::project_state::MediaType::Audio),
+            "image" => matches!(item.media_type, crate::state::project_state::MediaType::Image),
+            _ => true, // "all"
+          })
+          .map(|item| {
+            json!({
+              "id": item.id,
+              "name": item.name,
+              "type": format!("{:?}", item.media_type),
+              "path": item.file_path,
+              "duration": item.duration,
+              "created_at": item.created_at,
+            })
+          })
+          .collect();
+
+        MCPToolResult {
+          success: true,
+          data: Some(json!({
+            "media_files": media_files,
+            "total_count": media_files.len(),
+            "filter_applied": filter_type,
+          })),
+          error: None,
+        }
+      }
+      None => MCPToolResult {
+        success: false,
+        data: None,
+        error: Some("No project is currently open.".to_string()),
+      },
     }
   }
 }

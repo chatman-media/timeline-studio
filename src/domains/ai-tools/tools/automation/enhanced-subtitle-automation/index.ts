@@ -160,7 +160,7 @@ async function adaptExtractFromVisualText(clipId: string, language?: string): Pr
   })
 }
 
-async function adaptMultilingualDetection(clipId: string, languages: string[]): Promise<EnhancedSubtitleResult> {
+async function adaptMultilingualDetection(_clipId: string, languages: string[]): Promise<EnhancedSubtitleResult> {
   return {
     operation: "multilingual_detection",
     success: true,

@@ -2,6 +2,7 @@
 
 use super::server::MCPServer;
 use super::types::{MCPConfig, MCPToolRequest, MCPToolResult};
+use crate::state::StateManager;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tauri::State;
@@ -30,15 +31,22 @@ pub struct ChatResponse {
 #[specta::specta]
 pub async fn mcp_initialize(
   config: MCPConfig,
-  state: State<'_, MCPServerState>,
+  mcp_state: State<'_, MCPServerState>,
+  state_manager: State<'_, StateManager>,
 ) -> Result<bool, String> {
-  log::info!("Initializing MCP server");
+  log::info!("Initializing MCP server with StateManager");
 
-  let server = MCPServer::new(config);
+  // Получаем project_state и event_bus из StateManager
+  let project_state = state_manager.project_state().clone();
+  let event_bus = state_manager.event_bus().clone();
 
-  let mut state_guard = state.0.write().await;
+  // Создаем MCP сервер с доступом к state
+  let server = MCPServer::with_state(config, project_state, event_bus);
+
+  let mut state_guard = mcp_state.0.write().await;
   *state_guard = Some(server);
 
+  log::info!("MCP server initialized with full project state access");
   Ok(true)
 }
 

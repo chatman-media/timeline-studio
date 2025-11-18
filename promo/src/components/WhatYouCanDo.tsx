@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import type React from "react"
+import { useTranslation } from "../hooks/useTranslation"
 
 interface Feature {
   icon: string
@@ -9,71 +10,73 @@ interface Feature {
 }
 
 export const WhatYouCanDo: React.FC = () => {
+  const { t } = useTranslation()
+
   const features: Feature[] = [
     {
       icon: "🎬",
-      title: "Professional Video Editing",
-      description: "Full-featured timeline with all tools you need",
+      title: t("mainPage.whatYouCanDo.professional.title"),
+      description: t("mainPage.whatYouCanDo.professional.description"),
       examples: [
-        "Multi-track timeline with unlimited layers",
-        "Frame-accurate editing",
-        "Multicam editing with angle switching",
-        "Compound clips and nesting",
+        t("mainPage.whatYouCanDo.professional.examples.multitrack"),
+        t("mainPage.whatYouCanDo.professional.examples.frameAccurate"),
+        t("mainPage.whatYouCanDo.professional.examples.multicam"),
+        t("mainPage.whatYouCanDo.professional.examples.compound"),
       ],
     },
     {
       icon: "🤖",
-      title: "AI-Powered Automation",
-      description: "100+ AI tools to speed up your workflow",
+      title: t("mainPage.whatYouCanDo.aiPowered.title"),
+      description: t("mainPage.whatYouCanDo.aiPowered.description"),
       examples: [
-        "Auto scene detection and cutting",
-        "Smart color grading",
-        "Audio enhancement and noise removal",
-        "Automatic subtitle generation",
+        t("mainPage.whatYouCanDo.aiPowered.examples.sceneDetection"),
+        t("mainPage.whatYouCanDo.aiPowered.examples.colorGrading"),
+        t("mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement"),
+        t("mainPage.whatYouCanDo.aiPowered.examples.subtitles"),
       ],
     },
     {
       icon: "🎨",
-      title: "Effects & Transitions",
-      description: "Professional effects library",
+      title: t("mainPage.whatYouCanDo.effects.title"),
+      description: t("mainPage.whatYouCanDo.effects.description"),
       examples: [
-        "100+ transitions (3D, glitch, cinematic)",
-        "Color grading with LUTs",
-        "Green screen / chroma key",
-        "Speed ramping and time remapping",
+        t("mainPage.whatYouCanDo.effects.examples.transitions"),
+        t("mainPage.whatYouCanDo.effects.examples.luts"),
+        t("mainPage.whatYouCanDo.effects.examples.chromaKey"),
+        t("mainPage.whatYouCanDo.effects.examples.speedRamping"),
       ],
     },
     {
       icon: "🎵",
-      title: "Advanced Audio (Fairlight)",
-      description: "Professional audio editing suite",
+      title: t("mainPage.whatYouCanDo.audio.title"),
+      description: t("mainPage.whatYouCanDo.audio.description"),
       examples: [
-        "Multi-track audio mixing",
-        "Surround sound support",
-        "Audio effects and filters",
-        "Voice enhancement and EQ",
+        t("mainPage.whatYouCanDo.audio.examples.mixing"),
+        t("mainPage.whatYouCanDo.audio.examples.surround"),
+        t("mainPage.whatYouCanDo.audio.examples.effects"),
+        t("mainPage.whatYouCanDo.audio.examples.voiceEnhancement"),
       ],
     },
     {
       icon: "📤",
-      title: "Export & Share",
-      description: "Export to any format or platform",
+      title: t("mainPage.whatYouCanDo.export.title"),
+      description: t("mainPage.whatYouCanDo.export.description"),
       examples: [
-        "4K/8K export without watermarks",
-        "Direct upload to YouTube, TikTok, Vimeo",
-        "Custom presets for social media",
-        "Hardware-accelerated rendering",
+        t("mainPage.whatYouCanDo.export.examples.quality"),
+        t("mainPage.whatYouCanDo.export.examples.directUpload"),
+        t("mainPage.whatYouCanDo.export.examples.presets"),
+        t("mainPage.whatYouCanDo.export.examples.hwAccelerated"),
       ],
     },
     {
       icon: "🔍",
-      title: "Recognition & Analysis",
-      description: "AI-powered scene understanding",
+      title: t("mainPage.whatYouCanDo.recognition.title"),
+      description: t("mainPage.whatYouCanDo.recognition.description"),
       examples: [
-        "Face and object detection (YOLO)",
-        "Emotion recognition",
-        "Scene classification",
-        "Quality analysis and scoring",
+        t("mainPage.whatYouCanDo.recognition.examples.faceObject"),
+        t("mainPage.whatYouCanDo.recognition.examples.emotion"),
+        t("mainPage.whatYouCanDo.recognition.examples.sceneClassification"),
+        t("mainPage.whatYouCanDo.recognition.examples.quality"),
       ],
     },
   ]
@@ -95,10 +98,10 @@ export const WhatYouCanDo: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="section-title">
-            What You Can <span className="text-gradient">Create</span>
+            {t("mainPage.whatYouCanDo.title")} <span className="text-gradient">{t("mainPage.whatYouCanDo.titleHighlight")}</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Everything you need for professional video production
+            {t("mainPage.whatYouCanDo.subtitle")}
           </p>
         </motion.div>
 

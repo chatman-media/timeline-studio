@@ -2,6 +2,7 @@
 
 use super::tools::VideoTools;
 use super::types::{MCPConfig, MCPToolRequest, MCPToolResult};
+use crate::state::{EventBus, ProjectState};
 use anyhow::Result;
 use log::{debug, error, info};
 use serde::{Deserialize, Serialize};
@@ -82,6 +83,19 @@ impl MCPServer {
     Self {
       config: Arc::new(RwLock::new(config)),
       tools: Arc::new(VideoTools::new()),
+      client: reqwest::Client::new(),
+    }
+  }
+
+  /// Создать MCP сервер с доступом к project state
+  pub fn with_state(
+    config: MCPConfig,
+    project_state: Arc<RwLock<ProjectState>>,
+    event_bus: Arc<EventBus>,
+  ) -> Self {
+    Self {
+      config: Arc::new(RwLock::new(config)),
+      tools: Arc::new(VideoTools::with_state(project_state, event_bus)),
       client: reqwest::Client::new(),
     }
   }

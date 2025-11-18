@@ -271,6 +271,105 @@ export const translations = {
       downloadFree: "Download Free",
     },
     mainPage: {
+      hero: {
+        title: "Professional Video Editor",
+        subtitle: "with 100+ AI Tools",
+        description: {
+          local: "Local features",
+          free: "free forever",
+          localAI: "Local AI processing.",
+          cloud: "Cloud features and premium AI models available with PRO subscription.",
+        },
+        openSource: "Open Source",
+        downloadFree: "Download Free",
+        viewGithub: "View on GitHub",
+      },
+      whatYouCanDo: {
+        title: "What You Can",
+        titleHighlight: "Create",
+        subtitle: "Everything you need for professional video production",
+        professional: {
+          title: "Professional Video Editing",
+          description: "Full-featured timeline with all tools you need",
+          examples: {
+            multitrack: "Multi-track timeline with unlimited layers",
+            frameAccurate: "Frame-accurate editing",
+            multicam: "Multicam editing with angle switching",
+            compound: "Compound clips and nesting",
+          },
+        },
+        aiPowered: {
+          title: "AI-Powered Automation",
+          description: "100+ AI tools to speed up your workflow",
+          examples: {
+            sceneDetection: "Auto scene detection and cutting",
+            colorGrading: "Smart color grading",
+            audioEnhancement: "Audio enhancement and noise removal",
+            subtitles: "Automatic subtitle generation",
+          },
+        },
+        effects: {
+          title: "Effects & Transitions",
+          description: "Professional effects library",
+          examples: {
+            transitions: "100+ transitions (3D, glitch, cinematic)",
+            luts: "Color grading with LUTs",
+            chromaKey: "Green screen / chroma key",
+            speedRamping: "Speed ramping and time remapping",
+          },
+        },
+        audio: {
+          title: "Advanced Audio (Fairlight)",
+          description: "Professional audio editing suite",
+          examples: {
+            mixing: "Multi-track audio mixing",
+            surround: "Surround sound support",
+            effects: "Audio effects and filters",
+            voiceEnhancement: "Voice enhancement and EQ",
+          },
+        },
+        export: {
+          title: "Export & Share",
+          description: "Export to any format or platform",
+          examples: {
+            quality: "4K/8K export without watermarks",
+            directUpload: "Direct upload to YouTube, TikTok, Vimeo",
+            presets: "Custom presets for social media",
+            hwAccelerated: "Hardware-accelerated rendering",
+          },
+        },
+        recognition: {
+          title: "Recognition & Analysis",
+          description: "AI-powered scene understanding",
+          examples: {
+            faceObject: "Face and object detection (YOLO)",
+            emotion: "Emotion recognition",
+            sceneClassification: "Scene classification",
+            quality: "Quality analysis and scoring",
+          },
+        },
+      },
+      videoDemos: {
+        title: "See It",
+        titleHighlight: "In Action",
+        subtitle: "Quick video tutorials showing Timeline Studio's powerful features",
+        aiEditing: {
+          title: "AI Auto-Editing in Action",
+          description: "Watch how AI selects best moments and creates engaging edits automatically",
+        },
+        multiCamera: {
+          title: "Multi-Camera Workflow",
+          description: "Edit multi-angle footage with automated switching and sync",
+        },
+        colorGrading: {
+          title: "Color Grading Tutorial",
+          description: "Professional color correction and grading workflow",
+        },
+        comingSoon: "Coming Soon",
+        checkGithub: "Want to see more? Check out our",
+        githubRepo: "GitHub repository",
+        forDocs: "for documentation and examples",
+      },
       features: {
         smartAnalysis: {
           title: "Smart Analysis",
@@ -621,6 +720,105 @@ export const translations = {
       downloadFree: "Скачать бесплатно",
     },
     mainPage: {
+      hero: {
+        title: "Профессиональный видеоредактор",
+        subtitle: "со 100+ ИИ-инструментами",
+        description: {
+          local: "Локальные функции",
+          free: "бесплатно навсегда",
+          localAI: "Локальная обработка ИИ.",
+          cloud: "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
+        },
+        openSource: "Открытый код",
+        downloadFree: "Скачать бесплатно",
+        viewGithub: "Посмотреть на GitHub",
+      },
+      whatYouCanDo: {
+        title: "Что можно",
+        titleHighlight: "создать",
+        subtitle: "Всё необходимое для профессионального производства видео",
+        professional: {
+          title: "Профессиональный видеомонтаж",
+          description: "Полнофункциональный таймлайн со всеми необходимыми инструментами",
+          examples: {
+            multitrack: "Многодорожечный таймлайн с неограниченным количеством слоёв",
+            frameAccurate: "Покадровый монтаж",
+            multicam: "Мультикамерный монтаж с переключением углов",
+            compound: "Составные клипы и вложенность",
+          },
+        },
+        aiPowered: {
+          title: "Автоматизация с помощью ИИ",
+          description: "100+ ИИ-инструментов для ускорения рабочего процесса",
+          examples: {
+            sceneDetection: "Автоопределение сцен и нарезка",
+            colorGrading: "Умная цветокоррекция",
+            audioEnhancement: "Улучшение звука и удаление шума",
+            subtitles: "Автоматическая генерация субтитров",
+          },
+        },
+        effects: {
+          title: "Эффекты и переходы",
+          description: "Профессиональная библиотека эффектов",
+          examples: {
+            transitions: "100+ переходов (3D, глитч, кинематограф)",
+            luts: "Цветокоррекция с LUT",
+            chromaKey: "Хромакей / зелёный экран",
+            speedRamping: "Изменение скорости и time remapping",
+          },
+        },
+        audio: {
+          title: "Продвинутый звук (Fairlight)",
+          description: "Профессиональный аудиомонтаж",
+          examples: {
+            mixing: "Многодорожечный аудиомикс",
+            surround: "Поддержка объёмного звука",
+            effects: "Аудиоэффекты и фильтры",
+            voiceEnhancement: "Улучшение голоса и EQ",
+          },
+        },
+        export: {
+          title: "Экспорт и публикация",
+          description: "Экспорт в любой формат или платформу",
+          examples: {
+            quality: "Экспорт 4K/8K без водяных знаков",
+            directUpload: "Прямая загрузка на YouTube, TikTok, Vimeo",
+            presets: "Пользовательские пресеты для соцсетей",
+            hwAccelerated: "Аппаратно-ускоренный рендеринг",
+          },
+        },
+        recognition: {
+          title: "Распознавание и анализ",
+          description: "Понимание сцен с помощью ИИ",
+          examples: {
+            faceObject: "Распознавание лиц и объектов (YOLO)",
+            emotion: "Распознавание эмоций",
+            sceneClassification: "Классификация сцен",
+            quality: "Анализ и оценка качества",
+          },
+        },
+      },
+      videoDemos: {
+        title: "Посмотрите",
+        titleHighlight: "в действии",
+        subtitle: "Короткие видеоуроки, демонстрирующие мощные функции Timeline Studio",
+        aiEditing: {
+          title: "Авто-монтаж с ИИ в действии",
+          description: "Смотрите, как ИИ выбирает лучшие моменты и создаёт захватывающий монтаж автоматически",
+        },
+        multiCamera: {
+          title: "Мультикамерный рабочий процесс",
+          description: "Монтаж многоугловых кадров с автоматическим переключением и синхронизацией",
+        },
+        colorGrading: {
+          title: "Туториал по цветокоррекции",
+          description: "Профессиональный рабочий процесс цветокоррекции и грейдинга",
+        },
+        comingSoon: "Скоро",
+        checkGithub: "Хотите увидеть больше? Посмотрите наш",
+        githubRepo: "репозиторий на GitHub",
+        forDocs: "с документацией и примерами",
+      },
       features: {
         smartAnalysis: {
           title: "Умный анализ",
@@ -964,6 +1162,105 @@ export const translations = {
       downloadFree: "免费下载",
     },
     mainPage: {
+      hero: {
+        title: "专业视频编辑器",
+        subtitle: "拥有100+个AI工具",
+        description: {
+          local: "本地功能",
+          free: "永久免费",
+          localAI: "本地AI处理。",
+          cloud: "云功能和高级AI模型可通过PRO订阅获得。",
+        },
+        openSource: "开源",
+        downloadFree: "免费下载",
+        viewGithub: "在GitHub上查看",
+      },
+      whatYouCanDo: {
+        title: "您可以",
+        titleHighlight: "创造什么",
+        subtitle: "专业视频制作所需的一切",
+        professional: {
+          title: "专业视频编辑",
+          description: "功能齐全的时间轴，包含您需要的所有工具",
+          examples: {
+            multitrack: "无限层的多轨时间轴",
+            frameAccurate: "帧精确编辑",
+            multicam: "带角度切换的多机位编辑",
+            compound: "复合剪辑和嵌套",
+          },
+        },
+        aiPowered: {
+          title: "AI驱动的自动化",
+          description: "100+个AI工具加速您的工作流程",
+          examples: {
+            sceneDetection: "自动场景检测和剪切",
+            colorGrading: "智能调色",
+            audioEnhancement: "音频增强和降噪",
+            subtitles: "自动生成字幕",
+          },
+        },
+        effects: {
+          title: "效果和转场",
+          description: "专业效果库",
+          examples: {
+            transitions: "100+转场（3D、故障、电影）",
+            luts: "使用LUT调色",
+            chromaKey: "绿幕/色度键",
+            speedRamping: "速度渐变和时间重映射",
+          },
+        },
+        audio: {
+          title: "高级音频（Fairlight）",
+          description: "专业音频编辑套件",
+          examples: {
+            mixing: "多轨音频混音",
+            surround: "环绕声支持",
+            effects: "音频效果和滤镜",
+            voiceEnhancement: "人声增强和EQ",
+          },
+        },
+        export: {
+          title: "导出和分享",
+          description: "导出到任何格式或平台",
+          examples: {
+            quality: "4K/8K导出无水印",
+            directUpload: "直接上传到YouTube、TikTok、Vimeo",
+            presets: "社交媒体自定义预设",
+            hwAccelerated: "硬件加速渲染",
+          },
+        },
+        recognition: {
+          title: "识别和分析",
+          description: "AI驱动的场景理解",
+          examples: {
+            faceObject: "人脸和物体检测（YOLO）",
+            emotion: "情绪识别",
+            sceneClassification: "场景分类",
+            quality: "质量分析和评分",
+          },
+        },
+      },
+      videoDemos: {
+        title: "观看",
+        titleHighlight: "实际演示",
+        subtitle: "快速视频教程展示Timeline Studio的强大功能",
+        aiEditing: {
+          title: "AI自动编辑实战",
+          description: "观看AI如何选择最佳时刻并自动创建引人入胜的编辑",
+        },
+        multiCamera: {
+          title: "多机位工作流程",
+          description: "使用自动切换和同步编辑多角度素材",
+        },
+        colorGrading: {
+          title: "调色教程",
+          description: "专业的色彩校正和调色工作流程",
+        },
+        comingSoon: "即将推出",
+        checkGithub: "想看更多？查看我们的",
+        githubRepo: "GitHub仓库",
+        forDocs: "获取文档和示例",
+      },
       features: {
         smartAnalysis: {
           title: "智能分析",

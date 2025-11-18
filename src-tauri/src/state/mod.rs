@@ -113,6 +113,11 @@ impl StateManager {
     &self.event_bus
   }
 
+  /// Get project state reference (for advanced integrations like MCP)
+  pub fn project_state(&self) -> &Arc<RwLock<ProjectState>> {
+    &self.project_state
+  }
+
   /// Save current state to disk
   pub async fn save_state(&self, path: Option<String>) -> Result<(), String> {
     let state = self.project_state.read().await;

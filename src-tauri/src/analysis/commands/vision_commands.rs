@@ -434,6 +434,7 @@ pub async fn analyze_video_with_vision_model(
     num_frames: num_frames.unwrap_or(5) as u32,
     temperature: temperature.unwrap_or(0.7),
     max_tokens: max_tokens.unwrap_or(1024),
+    max_batch_size: 1, // Default: stream one frame at a time
   };
 
   let path = PathBuf::from(video_path);
