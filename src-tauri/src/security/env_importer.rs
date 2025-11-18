@@ -106,6 +106,14 @@ impl EnvImporter {
     );
 
     mappings.insert(
+      ApiKeyType::MCPClaude,
+      vec![
+        "MCP_CLAUDE_API_KEY".to_string(),
+        "MCP_ANTHROPIC_API_KEY".to_string(),
+      ],
+    );
+
+    mappings.insert(
       ApiKeyType::DeepSeek,
       vec!["DEEPSEEK_API_KEY".to_string(), "DEEPSEEK_KEY".to_string()],
     );
@@ -180,6 +188,7 @@ impl EnvImporter {
       // Простые API ключи
       ApiKeyType::OpenAI
       | ApiKeyType::Claude
+      | ApiKeyType::MCPClaude
       | ApiKeyType::DeepSeek
       | ApiKeyType::Grok
       | ApiKeyType::Codecov
@@ -363,6 +372,9 @@ impl EnvImporter {
         }
         ApiKeyType::Claude => {
           env_content.push_str(&format!("CLAUDE_API_KEY=\"{}\"\n", key_data.value));
+        }
+        ApiKeyType::MCPClaude => {
+          env_content.push_str(&format!("MCP_CLAUDE_API_KEY=\"{}\"\n", key_data.value));
         }
         ApiKeyType::DeepSeek => {
           env_content.push_str(&format!("DEEPSEEK_API_KEY=\"{}\"\n", key_data.value));
