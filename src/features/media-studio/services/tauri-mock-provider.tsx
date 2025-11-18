@@ -46,15 +46,19 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       let tempProjectCreated = false
 
       // Mock event plugin internals
+      // Structure matches real Tauri: listeners is an object, not Map
       ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {
-        listeners: new Map(),
+        listeners: {},
         emit: (event: string, payload?: any) => {
           logger.info(`[TauriMock] Event emit: ${event}`, payload)
         },
-        unregisterListener: (id: string) => {
-          logger.info(`[TauriMock] Unregister listener: ${id}`)
+        unregisterListener: (eventId: string) => {
+          logger.info(`[TauriMock] Unregister listener: ${eventId}`)
           const listeners = (window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners
-          listeners.delete(id)
+          // Add safety check to prevent accessing undefined listener
+          if (listeners[eventId] && listeners[eventId].handlerId !== undefined) {
+            delete listeners[eventId]
+          }
         },
       }
 
@@ -159,9 +163,20 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               return null
             case "get_prerender_cache_info":
               return { file_count: 0, total_size: 0, cache_path: "/tmp/cache", files: [] }
-            case "plugin:event|listen":
-              return { id: Math.random().toString(36).slice(2) }
+            case "plugin:event|listen": {
+              const eventId = Math.random().toString(36).slice(2)
+              const handlerId = Math.random().toString(36).slice(2)
+              // Register listener in the correct structure
+              if ((window as any).__TAURI_EVENT_PLUGIN_INTERNALS__) {
+                ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners[eventId] = {
+                  handlerId,
+                  event: args?.event || "unknown",
+                }
+              }
+              return eventId
+            }
             case "plugin:event|unlisten":
+              // Unlisten will be handled by unregisterListener
               return null
             case "plugin:store|load":
               // Return a resource ID for the store

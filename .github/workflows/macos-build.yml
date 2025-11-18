@@ -81,11 +81,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '24'
-          cache: 'npm'
+          bun-version: latest
 
       - name: Install dependencies (macOS)
         run: |
@@ -100,9 +99,7 @@ jobs:
           echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig" >> $GITHUB_ENV
 
       - name: Install frontend dependencies
-        run: |
-          echo "engine-strict=false" > .npmrc
-          npm install --no-audit --no-fund
+        run: bun install --frozen-lockfile || bun install
 
       - name: Install Tauri CLI
         run: |

@@ -111,11 +111,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '24'
-          cache: 'npm'
+          bun-version: latest
 
       - name: Install Rust (stable)
         uses: dtolnay/rust-toolchain@stable
@@ -383,13 +382,7 @@ jobs:
           echo "ORT_DYLIB_PATH=/usr/local/lib/libonnxruntime.so" >> $GITHUB_ENV
 
       - name: Install frontend dependencies
-        run: |
-          # Configure npm for timeouts
-          npm config set fetch-timeout 300000
-          npm config set fetch-retries 5
-          # Try to install with retries
-          npm install --no-audit --no-fund || \
-          npm install --no-audit --no-fund --omit=optional
+        run: bun install --frozen-lockfile || bun install
       
       - name: Fix Windows dependencies and lightningcss
         if: matrix.platform == 'windows-latest'
@@ -671,7 +664,7 @@ jobs:
 
       - name: Build Next.js app (macOS)
         if: matrix.platform == 'macos-latest'
-        run: npm run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
+        run: bun run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
         continue-on-error: true
 
       - name: Build the app (macOS universal)
@@ -716,7 +709,7 @@ jobs:
 
       - name: Build Next.js app (Windows)
         if: matrix.platform == 'windows-latest'
-        run: npm run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
+        run: bun run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
         continue-on-error: true
 
       - name: Build the app (Windows)
@@ -753,7 +746,7 @@ jobs:
 
       - name: Build Next.js app (Linux)
         if: matrix.platform == 'ubuntu-latest'
-        run: npm run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
+        run: bun run build || echo "Build failed due to known Next.js 16 bug, continuing with Tauri build..."
         continue-on-error: true
 
       - name: Build the app (Linux)
@@ -816,16 +809,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '24'
-          cache: 'npm'
+          bun-version: latest
 
       - name: Install dependencies
         run: |
           cd promo
-          npm install
+          bun install --frozen-lockfile || bun install
 
       - name: Show version for debugging
         run: |
@@ -835,7 +827,7 @@ jobs:
       - name: Build promo page
         run: |
           cd promo
-          npm run build
+          bun run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
