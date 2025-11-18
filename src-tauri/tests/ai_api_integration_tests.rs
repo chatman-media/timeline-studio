@@ -143,11 +143,7 @@ async fn test_openai_vision_integration() {
   let _mock = setup_openai_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::OpenAI,
-    "gpt-4o".to_string(),
-    format!("{}/v1/chat/completions", server.url()),
-  );
+  let request = create_vision_request(AIProvider::OpenAI, "gpt-4o".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
@@ -168,11 +164,7 @@ async fn test_deepseek_vision_integration() {
   let _mock = setup_deepseek_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::DeepSeek,
-    "deepseek-vl".to_string(),
-    format!("{}/chat/completions", server.url()),
-  );
+  let request = create_vision_request(AIProvider::DeepSeek, "deepseek-vl".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
@@ -193,11 +185,7 @@ async fn test_ollama_vision_integration() {
   let _mock = setup_ollama_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::Ollama,
-    "moondream2".to_string(),
-    format!("{}/api/chat", server.url()),
-  );
+  let request = create_vision_request(AIProvider::Ollama, "moondream2".to_string());
 
   let result = manager.send_request("", request).await; // Ollama doesn't need API key
 
@@ -236,11 +224,7 @@ async fn test_retry_on_rate_limit() {
     .create();
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::Claude,
-    "claude-3-5-sonnet-20241022".to_string(),
-    format!("{}/v1/messages", server.url()),
-  );
+  let request = create_vision_request(AIProvider::Claude, "claude-3-5-sonnet-20241022".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
@@ -274,11 +258,7 @@ async fn test_retry_on_server_error() {
     .create();
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::OpenAI,
-    "gpt-4o".to_string(),
-    format!("{}/v1/chat/completions", server.url()),
-  );
+  let request = create_vision_request(AIProvider::OpenAI, "gpt-4o".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
@@ -302,11 +282,7 @@ async fn test_non_retryable_error() {
     .create();
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::Claude,
-    "claude-3-5-sonnet-20241022".to_string(),
-    format!("{}/v1/messages", server.url()),
-  );
+  let request = create_vision_request(AIProvider::Claude, "claude-3-5-sonnet-20241022".to_string());
 
   let result = manager.send_request("invalid-key", request).await;
 
@@ -322,19 +298,18 @@ async fn test_multimodal_content_parsing() {
   let _mock = setup_claude_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let mut request = create_vision_request(
-    AIProvider::Claude,
-    "claude-3-5-sonnet-20241022".to_string(),
-    format!("{}/v1/messages", server.url()),
-  );
+  let mut request =
+    create_vision_request(AIProvider::Claude, "claude-3-5-sonnet-20241022".to_string());
 
   // Add multiple images
-  request.messages[0].content.push(ContentPart::Image {
-    source: ImageSource::Base64 {
-      media_type: "image/jpeg".to_string(),
-      data: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==".to_string(),
-    },
-  });
+  if let AIMessageContent::Multimodal(ref mut parts) = request.messages[0].content {
+    parts.push(AIContentPart::Image {
+      source: AIImageSource::Base64 {
+        media_type: "image/jpeg".to_string(),
+        data: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==".to_string(),
+      },
+    });
+  }
 
   let result = manager.send_request("test-api-key", request).await;
 
@@ -350,11 +325,7 @@ async fn test_response_metadata() {
   let _mock = setup_claude_mock(&mut server);
 
   let manager = AIProviderManager::new();
-  let request = create_vision_request(
-    AIProvider::Claude,
-    "claude-3-5-sonnet-20241022".to_string(),
-    format!("{}/v1/messages", server.url()),
-  );
+  let request = create_vision_request(AIProvider::Claude, "claude-3-5-sonnet-20241022".to_string());
 
   let result = manager.send_request("test-api-key", request).await;
 
