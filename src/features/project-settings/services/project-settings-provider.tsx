@@ -185,12 +185,72 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
 
     const backendSettings = backendState.project.settings
 
+    // Определяем aspect ratio из backend разрешения
+    const width = backendSettings.resolution.width
+    const height = backendSettings.resolution.height
+    const ratio = width / height
+
+    // Проверяем стандартные соотношения сторон
+    let aspectRatio = DEFAULT_PROJECT_SETTINGS.aspectRatio
+
+    if (Math.abs(ratio - 16 / 9) < 0.01) {
+      aspectRatio = {
+        label: "16:9",
+        textLabel: "widescreen",
+        description: "YouTube",
+        value: { width, height, name: "16:9" },
+      }
+    } else if (Math.abs(ratio - 9 / 16) < 0.01) {
+      aspectRatio = {
+        label: "9:16",
+        textLabel: "portrait",
+        description: "TikTok, YouTube Shorts",
+        value: { width, height, name: "9:16" },
+      }
+    } else if (Math.abs(ratio - 1) < 0.01) {
+      aspectRatio = {
+        label: "1:1",
+        textLabel: "square",
+        description: "Instagram",
+        value: { width, height, name: "1:1" },
+      }
+    } else if (Math.abs(ratio - 4 / 3) < 0.01) {
+      aspectRatio = {
+        label: "4:3",
+        textLabel: "standard",
+        description: "TV",
+        value: { width, height, name: "4:3" },
+      }
+    } else if (Math.abs(ratio - 4 / 5) < 0.01) {
+      aspectRatio = {
+        label: "4:5",
+        textLabel: "vertical",
+        description: "Instagram Story",
+        value: { width, height, name: "4:5" },
+      }
+    } else if (Math.abs(ratio - 21 / 9) < 0.01) {
+      aspectRatio = {
+        label: "21:9",
+        textLabel: "cinematic",
+        description: "Cinema",
+        value: { width, height, name: "21:9" },
+      }
+    } else {
+      // Кастомное соотношение
+      aspectRatio = {
+        label: "custom",
+        textLabel: "",
+        description: "custom",
+        value: { width, height, name: `${width}:${height}` },
+      }
+    }
+
     // Преобразуем backend настройки в frontend формат
     return {
-      resolution: `${backendSettings.resolution.width}x${backendSettings.resolution.height}`,
+      resolution: `${width}x${height}`,
       frameRate: backendSettings.frame_rate.toString() as any,
       colorSpace: "sdr" as const, // По умолчанию, так как backend не хранит colorSpace
-      aspectRatio: DEFAULT_PROJECT_SETTINGS.aspectRatio, // По умолчанию, так как backend не хранит aspectRatio
+      aspectRatio,
     }
   }, [backendState?.project?.settings])
 

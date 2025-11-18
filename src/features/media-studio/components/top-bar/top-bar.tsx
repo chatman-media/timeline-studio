@@ -2,7 +2,6 @@ import {
   Brain,
   FilePlus,
   FolderOpen,
-  Keyboard,
   LayoutTemplate,
   Mic,
   MonitorCog,
@@ -112,7 +111,10 @@ const TopBarComponent = function TopBar() {
         logger.info("Project opened successfully", { path: selected })
       }
     } catch (error) {
-      logger.error("Error opening project", { error, context: "handleOpenProject" })
+      logger.error("Error opening project", {
+        error,
+        context: "handleOpenProject",
+      })
     }
   }, [openProject, clearBrowserState])
 
@@ -121,7 +123,9 @@ const TopBarComponent = function TopBar() {
       // Создаем новый проект с настройками по умолчанию
       const projectName = "Untitled Project"
 
-      logger.info("Creating new project - BEFORE clearBrowserState", { projectName })
+      logger.info("Creating new project - BEFORE clearBrowserState", {
+        projectName,
+      })
 
       // ВАЖНО: Сначала очищаем browser state
       clearBrowserState()
@@ -150,7 +154,10 @@ const TopBarComponent = function TopBar() {
 
       logger.info("New project created successfully - COMPLETE")
     } catch (error) {
-      logger.error("Error creating new project", { error, context: "handleCreateNewProject" })
+      logger.error("Error creating new project", {
+        error,
+        context: "handleCreateNewProject",
+      })
     }
   }, [createNewProject, createTimelineProject, clearBrowserState])
 
@@ -160,7 +167,6 @@ const TopBarComponent = function TopBar() {
       browser: isBrowserVisible ? t("browser.hide") : t("browser.show"),
       timeline: isTimelineVisible ? t("timeline.hide") : t("timeline.show"),
       layout: t("topBar.layout"),
-      keyboardShortcuts: t("topBar.keyboardShortcuts"),
       userSettings: t("topBar.userSettings"),
       projectSettings: t("topBar.projectSettings"),
       openProject: t("topBar.openProject"),
@@ -249,21 +255,11 @@ const TopBarComponent = function TopBar() {
           </Popover>
         </div>
 
-        {/* Группа 2: Переключатель темы, быстрые клавиши, настройки проекта */}
+        {/* Группа 2: Переключатель темы, настройки пользователя */}
         <div className="flex items-center justify-start ml-[20%]">
           <div data-testid="theme-toggle">
             <ThemeToggle />
           </div>
-          <Button
-            className={TOP_BAR_BUTTON_CLASS}
-            variant="ghost"
-            size="icon"
-            title={buttonTitles.keyboardShortcuts}
-            onClick={() => handleOpenModal("keyboard-shortcuts")}
-            data-testid="keyboard-shortcuts-button"
-          >
-            <Keyboard className="h-5 w-5" />
-          </Button>
           <Button
             className={TOP_BAR_BUTTON_CLASS}
             variant="ghost"
@@ -274,10 +270,6 @@ const TopBarComponent = function TopBar() {
           >
             <UserCog className="h-5 w-5" />
           </Button>
-        </div>
-
-        {/* Группа 3: Открытие, сохранение и редактирование названия */}
-        <div className="flex items-center justify-center">
           <Button
             className={TOP_BAR_BUTTON_CLASS}
             variant="ghost"
@@ -288,6 +280,10 @@ const TopBarComponent = function TopBar() {
           >
             <MonitorCog className="h-5 w-5" />
           </Button>
+        </div>
+
+        {/* Группа 3: Открытие, сохранение и редактирование названия */}
+        <div className="flex items-center justify-center">
           <Button
             className={TOP_BAR_BUTTON_CLASS}
             variant="ghost"

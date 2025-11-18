@@ -126,7 +126,17 @@ export function convertFrontendSettingsToBackend(settings: Partial<ProjectSettin
   // Преобразуем resolution из строки в объект
   if (settings.resolution) {
     const [width, height] = settings.resolution.split("x").map(Number)
-    result.resolution = { width, height }
+    if (!isNaN(width) && !isNaN(height)) {
+      result.resolution = { width, height }
+    }
+  }
+
+  // Если resolution не задан, но есть aspectRatio.value - используем его
+  if (!result.resolution && settings.aspectRatio?.value) {
+    const { width, height } = settings.aspectRatio.value
+    if (width && height) {
+      result.resolution = { width, height }
+    }
   }
 
   // Преобразуем frameRate из строки в число

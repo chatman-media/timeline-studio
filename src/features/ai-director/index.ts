@@ -15,7 +15,38 @@ export type {
 // AI Director types are not in tauri-bindings yet, using placeholder exports
 export type AIDirectorConfig = any
 export type ComprehensiveAnalysisResult = any
+
+// Components
 export * from "./components/ai-director-modal"
+export * from "./components/analyzer-checkbox-group"
+export * from "./components/analyzer-progress-item"
+export * from "./components/file-analysis-progress"
+// Hooks
 export * from "./hooks"
+// Services
 export * from "./services/ai-director-machine"
 export * from "./services/ai-director-service"
+// New progress types
+export type {
+  AnalysisConfig,
+  AnalysisProgressEvent,
+  AnalyzerMetadata,
+  AnalyzerProgress,
+  AnalyzerResult,
+  AnalyzerStatus,
+  AnalyzerType,
+  BatchAnalysisProgress,
+  BatchAnalysisStatus,
+  FileAnalysisProgress,
+  FileAnalysisStatus,
+} from "./types/analysis-progress"
+// Progress utilities
+export {
+  ANALYZER_METADATA,
+  calculateBatchProgress,
+  calculateFileProgress,
+  createInitialFileProgress,
+  getAnalyzerMetadata,
+  getAnalyzersByCategory,
+  updateAnalyzerProgress,
+} from "./types/analysis-progress"
