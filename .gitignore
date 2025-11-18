@@ -67,6 +67,9 @@ claude_desktop_config.json
 
 # Generated TypeScript types from Rust
 /src/types/generated/
+# But keep these manually maintained files
+!/src/types/generated/state-types.ts
+!/src/types/generated/state-types-extensions.ts
 /videos/*
 
 # Serena cache
