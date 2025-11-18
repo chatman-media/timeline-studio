@@ -14,7 +14,8 @@
 - ✅ **TypeScript bindings** - Автогенерация типов через Specta
 - ✅ **UI настроек** - Секция MCP в User Settings с автосохранением
 - ✅ **Автоинициализация** - MCPProvider в цепочке приложения
-- ✅ **18 MCP Tools** - Адаптеры IAITool для всех инструментов
+- ✅ **18 MCP Tools как IAITool** - Адаптеры для автоматической интеграции с AI Chat ✨ **НОВОЕ**
+- ✅ **Единый интерфейс** - MCP tools доступны через allAITools без отдельного UI ✨ **НОВОЕ**
 - ✅ **Исправлено 65+ TypeScript ошибок** - 6 параллельных агентов
 - ✅ **Общая готовность**: 96.5% → **96.8%** (+0.3%)
 
@@ -59,8 +60,8 @@
 | **Архитектура** | Domain-Driven Design ✅ |
 | **Покрытие тестами** | 90%+ |
 | **Количество тестов** | 9,650+ |
-| **AI инструменты** | 48 + 18 MCP Tools ✅ |
-| **MCP интеграция** | Claude Code ✅ |
+| **AI инструменты** | 66 (48 + 18 MCP Tools) ✅ |
+| **MCP интеграция** | Claude Code через IAITool ✅ |
 | **Поддержка языков** | 15 |
 | **Tauri команды** | 457 (+6 MCP) |
 
@@ -78,13 +79,20 @@
   - 95/95 тестов проходят ✅
   - **Улучшения волны 1**: Rate limiting (p-limit), input validation (440 строк), TTL cleanup для memory leaks
 
-- **ai-tools** (100%) ✅ - 48 AI инструментов с execution engine
+- **ai-tools** (100%) ✅ - **66 AI инструментов** с execution engine ✨ **+18 MCP**
   - Base Infrastructure (100% tested, 126 тестов)
   - Core Tools: 18 инструментов (Timeline, Browser, Resources, Player)
   - Analysis Tools: 15 инструментов (100% готовность) ✅
   - Automation Tools: 10 инструментов (100% готовность) ✅
   - Integration Tools: 5 инструментов (100% готовность) ✅
+  - **MCP Tools: 18 инструментов (адаптеры IAITool)** ✨ **НОВОЕ** - `src/domains/ai-tools/tools/mcp/`
+    - 4 Analysis (analyze-video, detect-scenes, detect-moments, analyze-audio)
+    - 5 Timeline (create, add-clip, remove-clip, move-clip, split-clip)
+    - 4 Effects (apply-filter, add-transition, color-grading, text-overlay)
+    - 2 Export (export-video, create-preview)
+    - 3 Project (get-info, save, list-media-files)
   - **Улучшения волны 1**: ExecutionEngine concurrency fix, AbortSignal propagation, auto-cleanup (TTL)
+  - **Волна 3**: Интеграция MCP через единый интерфейс IAITool
 
 **Core Domains:**
 - **browser** (100%) ✅ - Медиа браузер с 6 вкладками
