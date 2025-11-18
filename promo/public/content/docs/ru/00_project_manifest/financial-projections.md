@@ -93,7 +93,7 @@ Q4 2025: $1.25M MRR
 🎯 CONVERSION STRATEGY:
 
 📱 Free Tier Value:
-├── All 257 AI tools included
+├── All 100+ AI tools included
 ├── No watermarks on exports
 ├── Professional quality results
 └── Unlimited local processing
@@ -287,7 +287,7 @@ Phase 3 (2027): Enterprise & Mobile
 ├── Luma AI: $43M at $300M (2023)
 
 📊 Our Positioning:
-├── More advanced AI (257 tools)
+├── More advanced AI (100+ tools)
 ├── Proven market (video editing)
 ├── Better unit economics
 ├── Justified premium: $60-70M

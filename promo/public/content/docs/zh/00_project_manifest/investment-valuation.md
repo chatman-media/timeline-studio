@@ -307,7 +307,7 @@ Timeline Studio代表了一个**独特的投资机会**，以公允估值**$10M*
 
 | 参数 | Timeline Studio | Adobe Premiere | DaVinci Resolve | Final Cut Pro | Filmora |
 |------|----------------|----------------|-----------------|---------------|----------|
-| AI工具 | **257** | 15 | 10 | 12 | 25 |
+| AI工具 | **100+** | 15 | 10 | 12 | 25 |
 | 价格 | 免费 + $19/月 | $23/月 | $295一次性 | $299一次性 | $70/年 |
 | 平台 | Win/Mac/Linux/iOS/Android | Win/Mac | Win/Mac/Linux | 仅Mac | Win/Mac |
 | GPU加速 | ✅ 所有平台 | ✅ 有限 | ✅ 良好 | ✅ 仅Mac | ❌ 无 |
