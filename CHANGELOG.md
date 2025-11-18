@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/chatman-media/timeline-studio/compare/v3.1.2...v3.2.0) (2025-11-18)
+
+
+### Features
+
+* **promo:** Переработать About страницу с акцентом на ключевые технологии ([a99b6b8](https://github.com/chatman-media/timeline-studio/commit/a99b6b8b855c1ef37e3ed1d504d3d466da72d1e3))
+
 ## [3.1.2](https://github.com/chatman-media/timeline-studio/compare/v3.1.1...v3.1.2) (2025-11-18)
 
 
