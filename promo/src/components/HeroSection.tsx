@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { Sparkles, Zap, Lock } from "lucide-react"
 import { useReducedMotion } from "../hooks/useReducedMotion"
 import { useTranslation } from "../hooks/useTranslation"
+import { GITHUB_RELEASES_URL, GITHUB_REPO_URL } from "../constants"
 
 export function HeroSection() {
   const { t } = useTranslation()
@@ -97,7 +98,7 @@ export function HeroSection() {
           className="flex justify-center gap-3 mb-6"
         >
           <a
-            href="https://github.com/chatman-media/timeline-studio"
+            href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-full border border-white/10 transition-all"
@@ -174,7 +175,9 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
-            href="#download"
+            href={GITHUB_RELEASES_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden transform hover:scale-[1.02] transition-transform"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl" />
@@ -187,7 +190,7 @@ export function HeroSection() {
             </span>
           </a>
           <a
-            href="https://github.com/chatman-media/timeline-studio"
+            href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden transform hover:scale-[1.02] transition-transform border border-white/20"

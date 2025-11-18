@@ -3,6 +3,7 @@ import type React from "react"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
 import { useTranslation } from "../hooks/useTranslation"
+import { GITHUB_RELEASES_URL } from "../constants"
 
 export const About: React.FC = () => {
   const { t } = useTranslation()
@@ -302,7 +303,9 @@ export const About: React.FC = () => {
                   </svg>
                 </a>
                 <a
-                  href="#download"
+                  href={GITHUB_RELEASES_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
                 >
                   {t("about.cta.tryStudio")}
