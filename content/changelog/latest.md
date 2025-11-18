@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/chatman-media/timeline-studio/compare/v3.4.0...v3.4.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Исправить все оставшиеся упоминания 257/250+ на 100+ ([58d651c](https://github.com/chatman-media/timeline-studio/commit/58d651c9b3b2810289e07a07843233fc7ab5d585))
+
 # [3.4.0](https://github.com/chatman-media/timeline-studio/compare/v3.3.0...v3.4.0) (2025-11-18)
 
 
