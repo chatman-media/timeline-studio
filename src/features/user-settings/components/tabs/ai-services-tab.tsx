@@ -23,6 +23,7 @@ export function AiServicesTab() {
   const [claudeKey, setClaudeKey] = useState("")
   const [grokKey, setGrokKey] = useState("")
   const [deepSeekKey, setDeepSeekKey] = useState("")
+  const [mcpClaudeKey, setMcpClaudeKey] = useState("")
 
   // Загружаем существующие ключи при монтировании
   useEffect(() => {
@@ -30,6 +31,7 @@ export function AiServicesTab() {
     const claudeInfo = getApiKeyInfo("claude")
     const grokInfo = getApiKeyInfo("grok")
     const deepSeekInfo = getApiKeyInfo("deepseek")
+    const mcpClaudeInfo = getApiKeyInfo("mcp_claude")
 
     // Если ключи существуют, показываем placeholder вместо значения для безопасности
     if (openAiInfo?.has_value) {
@@ -43,6 +45,9 @@ export function AiServicesTab() {
     }
     if (deepSeekInfo?.has_value) {
       setDeepSeekKey(API_KEY_MASK)
+    }
+    if (mcpClaudeInfo?.has_value) {
+      setMcpClaudeKey(API_KEY_MASK)
     }
   }, [getApiKeyInfo])
 
@@ -75,6 +80,14 @@ export function AiServicesTab() {
     // Автосохранение при изменении (только если не маска)
     if (value && !isApiKeyMask(value)) {
       void saveSimpleApiKey("deepseek", value)
+    }
+  }
+
+  const handleMcpClaudeChange = (value: string) => {
+    setMcpClaudeKey(value)
+    // Автосохранение при изменении (только если не маска)
+    if (value && !isApiKeyMask(value)) {
+      void saveSimpleApiKey("mcp_claude", value)
     }
   }
 
@@ -215,6 +228,62 @@ export function AiServicesTab() {
         {getValidationError("deepseek") && (
           <p className="text-xs text-destructive mt-1">{getValidationError("deepseek")}</p>
         )}
+      </div>
+
+      <Separator />
+
+      {/* MCP (Model Context Protocol) настройки */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">
+            {t("dialogs.userSettings.mcpClaudeApiKey", "Claude API ключ для MCP")}
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            {t(
+              "dialogs.userSettings.mcpDescription",
+              "Model Context Protocol (MCP) - расширенная интеграция с Claude для доступа к инструментам видеомонтажа. Позволяет использовать Claude Code подписку прямо в редакторе.",
+            )}
+          </p>
+        </div>
+
+        <ApiKeyInput
+          value={mcpClaudeKey}
+          onChange={handleMcpClaudeChange}
+          placeholder={t("dialogs.userSettings.enterApiKey", "Введите API ключ")}
+          service="mcp_claude"
+          testable={true}
+          links={[
+            {
+              text: t("dialogs.userSettings.getApiKey", "Получить API ключ"),
+              url: "https://console.anthropic.com/settings/keys",
+            },
+            {
+              text: t("dialogs.userSettings.learnAboutMcp", "Узнать больше о MCP"),
+              url: "https://modelcontextprotocol.io/",
+            },
+          ]}
+        />
+        {getValidationError("mcp_claude") && (
+          <p className="text-xs text-destructive mt-1">{getValidationError("mcp_claude")}</p>
+        )}
+
+        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
+          <div className="flex items-start space-x-2">
+            <div className="text-blue-500 mt-0.5">ℹ️</div>
+            <div className="flex-1">
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                {t("dialogs.userSettings.mcpFeatures", "Возможности MCP:")}
+              </p>
+              <ul className="mt-1 text-xs text-blue-600/80 dark:text-blue-400/80 space-y-0.5 list-disc list-inside">
+                <li>{t("dialogs.userSettings.mcpFeature1", "Анализ видео и аудио контента")}</li>
+                <li>{t("dialogs.userSettings.mcpFeature2", "Управление таймлайном и клипами")}</li>
+                <li>{t("dialogs.userSettings.mcpFeature3", "Применение эффектов и переходов")}</li>
+                <li>{t("dialogs.userSettings.mcpFeature4", "Экспорт и создание превью")}</li>
+                <li>{t("dialogs.userSettings.mcpFeature5", "18 специализированных инструментов")}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Separator />

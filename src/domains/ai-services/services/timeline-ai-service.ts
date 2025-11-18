@@ -15,35 +15,20 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineAiService")
 
-import {
-  executeMultimodalTool as executeMultimodalAnalysisTool,
-  multimodalTools as multimodalAnalysisTools,
-} from "@/domains/ai-tools/tools/analysis/multimodal"
-import {
-  executePersonIdentificationTool,
-  personIdentificationTools,
-} from "@/domains/ai-tools/tools/analysis/person-identification"
-import { executeVideoAnalysisTool, videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
-import { executeWhisperTool, whisperTools } from "@/domains/ai-tools/tools/analysis/whisper"
-import { batchProcessingTools, executeBatchProcessingTool } from "@/domains/ai-tools/tools/automation/batch-processing"
-import {
-  executePerformanceTool as executePlatformOptimizationTool,
-  performanceTools as platformOptimizationTools,
-} from "@/domains/ai-tools/tools/automation/performance"
-import { executeSubtitleTool, subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
-import {
-  executeWorkflowTool as executeWorkflowAutomationTool,
-  workflowTools as workflowAutomationTools,
-} from "@/domains/ai-tools/tools/automation/workflow"
+import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
+import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
+import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
+import { whisperTools } from "@/domains/ai-tools/tools/analysis/whisper"
+import { batchProcessingTools } from "@/domains/ai-tools/tools/automation/batch-processing"
+import { performanceTools as platformOptimizationTools } from "@/domains/ai-tools/tools/automation/performance"
+import { subtitleTools } from "@/domains/ai-tools/tools/automation/subtitles"
+import { workflowTools as workflowAutomationTools } from "@/domains/ai-tools/tools/automation/workflow"
 import { browserTools, executeBrowserTool } from "@/domains/ai-tools/tools/core/browser"
 import { effectsFiltersTools, executeEffectsFiltersTool } from "@/domains/ai-tools/tools/core/effects-filters-tools"
 import { executePlayerTool, playerTools } from "@/domains/ai-tools/tools/core/player"
 import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/core/resources"
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
-import {
-  executeExportTool as executeExportManagementTool,
-  exportTools as exportManagementTools,
-} from "@/domains/ai-tools/tools/integration/export"
+import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
 import {
   AIBrowserContext,
   AIPlayerContext,
@@ -481,7 +466,10 @@ export class TimelineAIService {
           "sync_subtitles_with_whisper",
         ].includes(name)
       ) {
-        result = await executeWhisperTool(name, input)
+        // Whisper tools используют BaseAITool - найдем соответствующий инструмент
+        const whisperTool = whisperTools[0]
+        const toolResult = await whisperTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("subtitle_") ||
         [
@@ -499,7 +487,9 @@ export class TimelineAIService {
           "create_chapters_from_subtitles",
         ].includes(name)
       ) {
-        result = await executeSubtitleTool(name, input)
+        const subtitleTool = subtitleTools[0]
+        const toolResult = await subtitleTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("video_analysis_") ||
         name.startsWith("ffmpeg_") ||
@@ -521,7 +511,9 @@ export class TimelineAIService {
           "analyze_video_encoding",
         ].includes(name)
       ) {
-        result = await executeVideoAnalysisTool(name, input)
+        const videoAnalysisTool = videoAnalysisTools[0]
+        const toolResult = await videoAnalysisTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("batch_") ||
         [
@@ -539,7 +531,9 @@ export class TimelineAIService {
           "clear_batch_history",
         ].includes(name)
       ) {
-        result = await executeBatchProcessingTool(name, input)
+        const batchTool = batchProcessingTools[0]
+        const toolResult = await batchTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("multimodal_") ||
         name.startsWith("analyze_video_") ||
@@ -556,7 +550,9 @@ export class TimelineAIService {
           "moderate_video_content",
         ].includes(name)
       ) {
-        result = await executeMultimodalAnalysisTool(name, input)
+        const multimodalTool = multimodalAnalysisTools[0]
+        const toolResult = await multimodalTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("platform_") ||
         [
@@ -572,7 +568,9 @@ export class TimelineAIService {
           "generate_platform_metadata",
         ].includes(name)
       ) {
-        result = await executePlatformOptimizationTool(name, input)
+        const performanceTool = platformOptimizationTools[0]
+        const toolResult = await performanceTool.execute(input)
+        result = toolResult.data
       } else if (
         name.startsWith("workflow_") ||
         name.includes("workflow") ||
@@ -588,7 +586,9 @@ export class TimelineAIService {
           "create_workflow_template",
         ].includes(name)
       ) {
-        result = await executeWorkflowAutomationTool(name, input)
+        const workflowTool = workflowAutomationTools[0]
+        const toolResult = await workflowTool.execute(input)
+        result = toolResult.data
       } else if (
         [
           "analyze_media_browser",
@@ -680,7 +680,9 @@ export class TimelineAIService {
           "generate_person_report",
         ].includes(name)
       ) {
-        result = await executePersonIdentificationTool(name, input)
+        const personTool = personIdentificationTools[0]
+        const toolResult = await personTool.execute(input)
+        result = toolResult.data
       } else if (
         [
           "optimize_export_settings",
@@ -697,7 +699,9 @@ export class TimelineAIService {
           "export_error_resolver",
         ].includes(name)
       ) {
-        result = await executeExportManagementTool(name, input)
+        const exportTool = exportManagementTools[0]
+        const toolResult = await exportTool.execute(input)
+        result = toolResult.data
       } else if (
         [
           "smart_effect_suggester",
