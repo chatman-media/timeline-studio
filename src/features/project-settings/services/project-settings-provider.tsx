@@ -46,6 +46,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
     const handleBackendEvent = (event: ProjectEvent) => {
       logger.info("[ProjectSettingsProvider] Received backend event", {
         eventType: event.type,
+        event: JSON.stringify(event),
       })
 
       // Обрабатываем событие ProjectSettingsUpdated
@@ -55,15 +56,24 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
           settings: updatedSettings,
         })
 
-        // Обновляем backendState с новыми настройками
+        // ВАЖНО: НЕ используем convertFrontendSettingsToBackend здесь!
+        // Событие уже содержит backend формат настроек
         setBackendState((prevState) => {
-          if (!prevState?.project) return prevState
+          if (!prevState?.project) {
+            logger.warn("[ProjectSettingsProvider] No project in prevState, cannot update settings")
+            return prevState
+          }
+
+          logger.info("[ProjectSettingsProvider] Updating backendState with new settings", {
+            oldSettings: prevState.project.settings,
+            newSettings: (event as any).payload?.settings,
+          })
 
           return {
             ...prevState,
             project: {
               ...prevState.project,
-              settings: convertFrontendSettingsToBackend(updatedSettings),
+              settings: (event as any).payload.settings,
             },
           }
         })
@@ -131,7 +141,9 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
   // Действия
   const updateSettings = useCallback(
     async (newSettings: Partial<ProjectSettings>) => {
-      logger.info("[ProjectSettingsProvider] Updating settings", { newSettings })
+      logger.info("[ProjectSettingsProvider] updateSettings called", {
+        newSettings: JSON.stringify(newSettings),
+      })
 
       try {
         // Получаем текущие настройки для слияния
@@ -142,8 +154,16 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
           audio_channels: 2,
         }
 
+        logger.info("[ProjectSettingsProvider] Current backend settings", {
+          currentSettings,
+        })
+
         // Преобразуем частичные frontend настройки в backend формат
         const backendSettings = convertFrontendSettingsToBackend(newSettings)
+
+        logger.info("[ProjectSettingsProvider] Converted to backend format", {
+          backendSettings,
+        })
 
         // Объединяем с текущими настройками
         const mergedSettings = {
@@ -156,9 +176,13 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
         })
 
         // ✅ Отправляем команду на backend
-        await executeCommand({
+        const result = await executeCommand({
           type: "UpdateProjectSettings",
           params: { settings: mergedSettings },
+        })
+
+        logger.info("[ProjectSettingsProvider] Command executed, result:", {
+          result,
         })
 
         // ❌ НЕ обновляем состояние вручную!

@@ -11,12 +11,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  AnalyzerCheckboxGroup,
-  type AnalyzerType,
-  FileAnalysisProgress,
-  type FileAnalysisProgress as FileProgress,
-} from "@/features/ai-director"
+import { AnalyzerCheckboxGroup, type AnalyzerType, type FileAnalysisProgress as FileProgress } from "@/features/ai-director"
+import { FileAnalysisProgress } from "@/features/ai-director/components/file-analysis-progress"
 import { createDemoFileProgress } from "@/features/ai-director/__mocks__/analysis-progress-demo"
 import { createLogger } from "@/lib/tauri-logger"
 

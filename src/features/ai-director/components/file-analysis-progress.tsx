@@ -146,9 +146,7 @@ export function FileAnalysisProgress({ file, className, defaultExpanded = false 
                 </div>
 
                 {/* Progress Bar */}
-                {file.status === "analyzing" && (
-                  <Progress value={file.progress} className="h-1.5 mt-2" indicatorClassName="bg-blue-500" />
-                )}
+                {file.status === "analyzing" && <Progress value={file.progress} className="h-1.5 mt-2" />}
 
                 {/* Stats */}
                 {file.stats && (

@@ -123,9 +123,7 @@ export function AnalyzerProgressItem({ analyzer, className, compact = false }: A
         </div>
 
         {/* Progress Bar */}
-        {analyzer.status === "running" && (
-          <Progress value={analyzer.progress} className="h-1" indicatorClassName="bg-blue-500" />
-        )}
+        {analyzer.status === "running" && <Progress value={analyzer.progress} className="h-1" />}
 
         {/* Error Message */}
         {analyzer.error && <p className="text-xs text-red-600 mt-1">{analyzer.error}</p>}

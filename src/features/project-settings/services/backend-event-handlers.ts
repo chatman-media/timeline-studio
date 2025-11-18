@@ -16,15 +16,34 @@ const logger = createLogger({ module: "ProjectSettingsEventHandlers" })
  * Возвращает обновленные настройки проекта при получении события
  */
 export function handleProjectSettingsEvent(event: ProjectEvent): ProjectSettings | null {
+  logger.info("[handleProjectSettingsEvent] Called with event", {
+    eventType: event.type,
+    hasPayload: !!(event as any).payload,
+    payload: JSON.stringify((event as any).payload),
+  })
+
   if (event.type !== "ProjectSettingsUpdated") {
+    logger.info("[handleProjectSettingsEvent] Event type is not ProjectSettingsUpdated, ignoring")
     return null
   }
 
-  logger.info("Handling ProjectSettingsUpdated event", {
-    settings: event.payload.settings,
+  const settings = (event as any).payload?.settings
+  if (!settings) {
+    logger.error("[handleProjectSettingsEvent] No settings in event payload!")
+    return null
+  }
+
+  logger.info("[handleProjectSettingsEvent] Converting backend settings to frontend", {
+    backendSettings: settings,
   })
 
-  return convertBackendSettingsToFrontend(event.payload.settings)
+  const frontendSettings = convertBackendSettingsToFrontend(settings)
+
+  logger.info("[handleProjectSettingsEvent] Converted to frontend format", {
+    frontendSettings,
+  })
+
+  return frontendSettings
 }
 
 /**
