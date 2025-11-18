@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { useId } from "react"
+import { Brain, Clapperboard, Sparkles, Camera, Scissors, Palette, Music, Video, Film, Smile } from "lucide-react"
 import { useLanguage } from "../contexts/LanguageContext"
 import { AnimatedSection } from "./AnimatedSection"
 
@@ -45,7 +46,7 @@ export function AIEditingSection() {
                 {/* Content */}
                 <div className="relative p-8 flex items-start space-x-4">
                   <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span className="text-2xl">🧠</span>
+                    <Brain className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-medium text-white mb-2">
@@ -77,7 +78,7 @@ export function AIEditingSection() {
                 {/* Content */}
                 <div className="relative p-8 flex items-start space-x-4">
                   <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span className="text-2xl">🎬</span>
+                    <Clapperboard className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-medium text-white mb-2">
@@ -109,7 +110,7 @@ export function AIEditingSection() {
                 {/* Content */}
                 <div className="relative p-8 flex items-start space-x-4">
                   <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span className="text-2xl">✨</span>
+                    <Sparkles className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-medium text-white mb-2">
@@ -151,7 +152,7 @@ export function AIEditingSection() {
                     {/* Content grid */}
                     <div className="relative h-full flex items-center justify-center p-8">
                       <div className="grid grid-cols-3 gap-4 w-full max-w-md">
-                        {[...Array(9)].map((_, i) => (
+                        {[Camera, Scissors, Palette, Music, Sparkles, Clapperboard, Video, Film, Smile].map((Icon, i) => (
                           <motion.div
                             key={i}
                             initial={{ opacity: 0, scale: 0 }}
@@ -166,9 +167,7 @@ export function AIEditingSection() {
                             }}
                             className="aspect-square glass rounded-lg flex items-center justify-center"
                           >
-                            <span className="text-2xl opacity-60">
-                              {["🎥", "✂️", "🎨", "🎵", "✨", "🎬", "📹", "🎞️", "🎭"][i]}
-                            </span>
+                            <Icon className="w-8 h-8 text-white/60" />
                           </motion.div>
                         ))}
                       </div>

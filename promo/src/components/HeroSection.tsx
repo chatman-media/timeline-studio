@@ -139,27 +139,27 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="flex flex-wrap justify-center gap-6 mb-12"
         >
-          <div className="flex items-center gap-3 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-            <div className="p-2 bg-purple-500/10 rounded-lg">
-              <Sparkles className="w-5 h-5 text-purple-400" />
+          <div className="flex items-center gap-3 px-4 py-2 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10">
+            <div className="p-2 bg-white/5 rounded-xl">
+              <Sparkles className="w-5 h-5 text-white drop-shadow-lg" />
             </div>
             <div className="text-left">
               <div className="text-sm text-gray-400">AI Tools</div>
               <div className="text-xl font-bold text-white">100+</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-            <div className="p-2 bg-blue-500/10 rounded-lg">
-              <Zap className="w-5 h-5 text-blue-400" />
+          <div className="flex items-center gap-3 px-4 py-2 backdrop-blur-sm rounded-2xl shadow-2xl shadow-blue-500/10">
+            <div className="p-2 bg-white/5 rounded-xl">
+              <Zap className="w-5 h-5 text-white drop-shadow-lg" />
             </div>
             <div className="text-left">
               <div className="text-sm text-gray-400">Performance</div>
               <div className="text-xl font-bold text-white">60 FPS</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-            <div className="p-2 bg-green-500/10 rounded-lg">
-              <Lock className="w-5 h-5 text-green-400" />
+          <div className="flex items-center gap-3 px-4 py-2 backdrop-blur-sm rounded-2xl shadow-2xl shadow-green-500/10">
+            <div className="p-2 bg-white/5 rounded-xl">
+              <Lock className="w-5 h-5 text-white drop-shadow-lg" />
             </div>
             <div className="text-left">
               <div className="text-sm text-gray-400">Privacy</div>

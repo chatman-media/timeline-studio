@@ -17,19 +17,19 @@ export const VideoDemos: React.FC = () => {
     {
       title: t("mainPage.videoDemos.aiEditing.title"),
       description: t("mainPage.videoDemos.aiEditing.description"),
-      icon: <Clapperboard className="w-16 h-16 text-purple-400" />,
+      icon: <Clapperboard className="w-16 h-16 text-white drop-shadow-2xl" />,
       comingSoon: true,
     },
     {
       title: t("mainPage.videoDemos.multiCamera.title"),
       description: t("mainPage.videoDemos.multiCamera.description"),
-      icon: <Video className="w-16 h-16 text-blue-400" />,
+      icon: <Video className="w-16 h-16 text-white drop-shadow-2xl" />,
       comingSoon: true,
     },
     {
       title: t("mainPage.videoDemos.colorGrading.title"),
       description: t("mainPage.videoDemos.colorGrading.description"),
-      icon: <Palette className="w-16 h-16 text-pink-400" />,
+      icon: <Palette className="w-16 h-16 text-white drop-shadow-2xl" />,
       comingSoon: true,
     },
   ]

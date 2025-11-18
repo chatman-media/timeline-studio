@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import type React from "react"
+import { Clapperboard } from "lucide-react"
 
 interface SearchDemoProps {
   className?: string
@@ -33,7 +34,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
           {/* Заглушка для мобильных */}
           <div className="md:hidden w-full aspect-video bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-2xl flex items-center justify-center">
             <div className="text-center text-white/60">
-              <div className="text-4xl mb-2">🎬</div>
+              <Clapperboard className="w-12 h-12 mx-auto mb-2" />
               <p className="text-sm">Timeline Studio Interface</p>
             </div>
           </div>

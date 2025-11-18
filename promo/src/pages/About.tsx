@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import type React from "react"
+import { Clapperboard, Wrench, Lock, Zap, Rocket, Globe } from "lucide-react"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
 import { useTranslation } from "../hooks/useTranslation"
@@ -72,7 +73,7 @@ export const About: React.FC = () => {
                   </div>
 
                   <div className="relative p-8 h-full">
-                    <div className="text-5xl mb-6">🎬</div>
+                    <Clapperboard className="w-12 h-12 text-white mb-6" />
                     <h3 className="text-2xl font-medium text-white mb-4">{t("about.aiDirector.title")}</h3>
                     <p className="text-gray-300 mb-6">{t("about.aiDirector.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
@@ -99,7 +100,7 @@ export const About: React.FC = () => {
                   </div>
 
                   <div className="relative p-8 h-full">
-                    <div className="text-5xl mb-6">🧰</div>
+                    <Wrench className="w-12 h-12 text-white mb-6" />
                     <h3 className="text-2xl font-medium text-white mb-4">{t("about.aiTools.title")}</h3>
                     <p className="text-gray-300 mb-6">{t("about.aiTools.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
@@ -126,7 +127,7 @@ export const About: React.FC = () => {
                   </div>
 
                   <div className="relative p-8 h-full">
-                    <div className="text-5xl mb-6">🔒</div>
+                    <Lock className="w-12 h-12 text-white mb-6" />
                     <h3 className="text-2xl font-medium text-white mb-4">{t("about.localModels.title")}</h3>
                     <p className="text-gray-300 mb-6">{t("about.localModels.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
@@ -187,22 +188,22 @@ export const About: React.FC = () => {
               <div className="grid md:grid-cols-4 gap-6">
                 {[
                   {
-                    icon: "⚡",
+                    Icon: Zap,
                     title: t("about.corePrinciples.speed.title"),
                     description: t("about.corePrinciples.speed.description"),
                   },
                   {
-                    icon: "🔒",
+                    Icon: Lock,
                     title: t("about.corePrinciples.privacy.title"),
                     description: t("about.corePrinciples.privacy.description"),
                   },
                   {
-                    icon: "🚀",
+                    Icon: Rocket,
                     title: t("about.corePrinciples.innovation.title"),
                     description: t("about.corePrinciples.innovation.description"),
                   },
                   {
-                    icon: "🌍",
+                    Icon: Globe,
                     title: t("about.corePrinciples.openSource.title"),
                     description: t("about.corePrinciples.openSource.description"),
                   },
@@ -222,7 +223,7 @@ export const About: React.FC = () => {
                     </div>
 
                     <div className="relative p-6 h-full">
-                      <div className="text-3xl mb-3">{value.icon}</div>
+                      <value.Icon className="w-8 h-8 text-white mb-3" />
                       <h3 className="text-lg font-medium text-white mb-2">{value.title}</h3>
                       <p className="text-gray-400 text-sm">{value.description}</p>
                     </div>

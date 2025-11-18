@@ -1,10 +1,8 @@
 import { motion } from "framer-motion"
 import type React from "react"
-import { Film, Bot, Palette, Music, Upload, Search } from "lucide-react"
 import { useTranslation } from "../hooks/useTranslation"
 
 interface Feature {
-  icon: React.ReactNode
   title: string
   description: string
   examples: string[]
@@ -15,11 +13,6 @@ export const WhatYouCanDo: React.FC = () => {
 
   const features: Feature[] = [
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-transparent rounded-2xl w-fit backdrop-blur-sm shadow-2xl shadow-purple-500/20">
-          <Film className="w-8 h-8 text-white drop-shadow-lg" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.professional.title"),
       description: t("mainPage.whatYouCanDo.professional.description"),
       examples: [
@@ -30,11 +23,6 @@ export const WhatYouCanDo: React.FC = () => {
       ],
     },
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-transparent rounded-2xl w-fit backdrop-blur-sm shadow-2xl shadow-purple-500/20">
-          <Bot className="w-8 h-8 text-white drop-shadow-lg" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.aiPowered.title"),
       description: t("mainPage.whatYouCanDo.aiPowered.description"),
       examples: [
@@ -45,11 +33,6 @@ export const WhatYouCanDo: React.FC = () => {
       ],
     },
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl w-fit backdrop-blur-sm border border-white/10 shadow-lg shadow-white/5">
-          <Palette className="w-8 h-8 text-white" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.effects.title"),
       description: t("mainPage.whatYouCanDo.effects.description"),
       examples: [
@@ -60,11 +43,6 @@ export const WhatYouCanDo: React.FC = () => {
       ],
     },
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl w-fit backdrop-blur-sm border border-white/10 shadow-lg shadow-white/5">
-          <Music className="w-8 h-8 text-white" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.audio.title"),
       description: t("mainPage.whatYouCanDo.audio.description"),
       examples: [
@@ -75,11 +53,6 @@ export const WhatYouCanDo: React.FC = () => {
       ],
     },
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl w-fit backdrop-blur-sm border border-white/10 shadow-lg shadow-white/5">
-          <Upload className="w-8 h-8 text-white" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.export.title"),
       description: t("mainPage.whatYouCanDo.export.description"),
       examples: [
@@ -90,11 +63,6 @@ export const WhatYouCanDo: React.FC = () => {
       ],
     },
     {
-      icon: (
-        <div className="p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl w-fit backdrop-blur-sm border border-white/10 shadow-lg shadow-white/5">
-          <Search className="w-8 h-8 text-white" />
-        </div>
-      ),
       title: t("mainPage.whatYouCanDo.recognition.title"),
       description: t("mainPage.whatYouCanDo.recognition.description"),
       examples: [
@@ -151,7 +119,6 @@ export const WhatYouCanDo: React.FC = () => {
 
               {/* Content */}
               <div className="relative p-6">
-                <div className="mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-400 text-sm mb-4">{feature.description}</p>
                 <ul className="space-y-2">
