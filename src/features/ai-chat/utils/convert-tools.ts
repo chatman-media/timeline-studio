@@ -21,6 +21,18 @@ type AITool = {
  * @returns Универсальный AITool для отправки на бэкенд
  */
 export function convertToUnifiedAITool(tool: IAITool): AITool {
+  // Проверяем, что tool имеет метод getSchema
+  if (!tool || typeof tool.getSchema !== "function") {
+    console.error("Invalid tool structure:", {
+      tool,
+      hasGetSchema: typeof tool?.getSchema,
+      metadata: tool?.metadata,
+    })
+    throw new Error(
+      `Tool ${tool?.metadata?.name || "unknown"} does not have getSchema() method. This tool is not properly implemented.`,
+    )
+  }
+
   const schema = tool.getSchema()
 
   return {
@@ -37,7 +49,17 @@ export function convertToUnifiedAITool(tool: IAITool): AITool {
  * @returns Массив универсальных AITool для отправки на бэкенд
  */
 export function convertToolsToUnifiedFormat(tools: IAITool[]): AITool[] {
-  return tools.map(convertToUnifiedAITool)
+  // Фильтруем массив - оставляем только валидные инструменты
+  const validTools = tools.filter((tool) => {
+    // Проверяем, что tool это объект с методом getSchema и metadata
+    if (!tool || typeof tool !== "object") return false
+    if (typeof tool.getSchema !== "function") return false
+    if (!tool.metadata || typeof tool.metadata !== "object") return false
+    if (!tool.metadata.name || typeof tool.metadata.name !== "string") return false
+    return true
+  })
+
+  return validTools.map(convertToUnifiedAITool)
 }
 
 /**
