@@ -789,7 +789,9 @@ impl VideoTools {
       None => MCPToolResult {
         success: false,
         data: None,
-        error: Some("No project is currently open. Please create or open a project first.".to_string()),
+        error: Some(
+          "No project is currently open. Please create or open a project first.".to_string(),
+        ),
       },
     }
   }
@@ -1202,9 +1204,18 @@ impl VideoTools {
           .items
           .values()
           .filter(|item| match filter_type {
-            "video" => matches!(item.media_type, crate::state::project_state::MediaType::Video),
-            "audio" => matches!(item.media_type, crate::state::project_state::MediaType::Audio),
-            "image" => matches!(item.media_type, crate::state::project_state::MediaType::Image),
+            "video" => matches!(
+              item.media_type,
+              crate::state::project_state::MediaType::Video
+            ),
+            "audio" => matches!(
+              item.media_type,
+              crate::state::project_state::MediaType::Audio
+            ),
+            "image" => matches!(
+              item.media_type,
+              crate::state::project_state::MediaType::Image
+            ),
             _ => true, // "all"
           })
           .map(|item| {
@@ -1212,9 +1223,8 @@ impl VideoTools {
               "id": item.id,
               "name": item.name,
               "type": format!("{:?}", item.media_type),
-              "path": item.file_path,
+              "path": item.path,
               "duration": item.duration,
-              "created_at": item.created_at,
             })
           })
           .collect();
