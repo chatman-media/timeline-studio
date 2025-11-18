@@ -1,13 +1,14 @@
 import { motion } from "framer-motion"
+import { Zap, Sparkles, Film, Star, Code, Hexagon } from "lucide-react"
 import { AnimatedSection } from "./AnimatedSection"
 
 const effects = [
-  { name: "Glitch", icon: "⚡", color: "from-red-500 to-orange-500" },
-  { name: "Blur", icon: "💫", color: "from-blue-500 to-cyan-500" },
-  { name: "Vintage", icon: "📽️", color: "from-amber-500 to-yellow-500" },
-  { name: "Neon", icon: "🌟", color: "from-purple-500 to-pink-500" },
-  { name: "Matrix", icon: "💚", color: "from-green-500 to-emerald-500" },
-  { name: "Hologram", icon: "🔮", color: "from-indigo-500 to-purple-500" },
+  { name: "Glitch", icon: <Zap className="w-8 h-8" />, color: "from-red-500 to-orange-500" },
+  { name: "Blur", icon: <Sparkles className="w-8 h-8" />, color: "from-blue-500 to-cyan-500" },
+  { name: "Vintage", icon: <Film className="w-8 h-8" />, color: "from-amber-500 to-yellow-500" },
+  { name: "Neon", icon: <Star className="w-8 h-8" />, color: "from-purple-500 to-pink-500" },
+  { name: "Matrix", icon: <Code className="w-8 h-8" />, color: "from-green-500 to-emerald-500" },
+  { name: "Hologram", icon: <Hexagon className="w-8 h-8" />, color: "from-indigo-500 to-purple-500" },
 ]
 
 export function EffectsSection() {
@@ -36,9 +37,9 @@ export function EffectsSection() {
                 className="glass-card p-6 rounded-xl text-center cursor-pointer group"
               >
                 <div
-                  className={`w-16 h-16 mx-auto mb-3 bg-gradient-to-r ${effect.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}
+                  className={`w-16 h-16 mx-auto mb-3 bg-gradient-to-r ${effect.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform text-white`}
                 >
-                  <span className="text-3xl">{effect.icon}</span>
+                  {effect.icon}
                 </div>
                 <p className="text-white font-medium">{effect.name}</p>
               </motion.div>

@@ -1,11 +1,12 @@
 import { motion } from "framer-motion"
 import type React from "react"
+import { Clapperboard, Video, Palette } from "lucide-react"
 import { useTranslation } from "../hooks/useTranslation"
 
 interface Demo {
   title: string
   description: string
-  icon: string
+  icon: React.ReactNode
   comingSoon?: boolean
 }
 
@@ -16,19 +17,19 @@ export const VideoDemos: React.FC = () => {
     {
       title: t("mainPage.videoDemos.aiEditing.title"),
       description: t("mainPage.videoDemos.aiEditing.description"),
-      icon: "🎬",
+      icon: <Clapperboard className="w-16 h-16 text-purple-400" />,
       comingSoon: true,
     },
     {
       title: t("mainPage.videoDemos.multiCamera.title"),
       description: t("mainPage.videoDemos.multiCamera.description"),
-      icon: "📹",
+      icon: <Video className="w-16 h-16 text-blue-400" />,
       comingSoon: true,
     },
     {
       title: t("mainPage.videoDemos.colorGrading.title"),
       description: t("mainPage.videoDemos.colorGrading.description"),
-      icon: "🎨",
+      icon: <Palette className="w-16 h-16 text-pink-400" />,
       comingSoon: true,
     },
   ]
@@ -85,7 +86,7 @@ export const VideoDemos: React.FC = () => {
 
                   {/* Icon */}
                   <div className="relative z-10 text-center">
-                    <div className="text-6xl mb-4">{demo.icon}</div>
+                    <div className="mb-4 flex justify-center">{demo.icon}</div>
                     {demo.comingSoon && (
                       <div className="inline-block px-4 py-2 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-500/30">
                         <span className="text-sm text-purple-300 font-medium">{t("mainPage.videoDemos.comingSoon")}</span>
