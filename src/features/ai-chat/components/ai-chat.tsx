@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/chat"
+import type { Agent, AgentId, ChatMessage, ChatSession } from "@/domains/ai-services/types/chat"
 import { useTimeline } from "@/domains/video-editing/hooks"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
@@ -229,10 +229,18 @@ export function AiChat() {
       // Проверяем, существует ли сессия в storage (для новых чатов может не существовать)
       const performSave = async () => {
         try {
-          const session = await chatStorageService.getSession(currentSessionId)
+          let session = await chatStorageService.getSession(currentSessionId)
           if (!session) {
-            // Если сессия не существует, создаем ее
-            await chatStorageService.createSession("") // Заголовок будет создан автоматически при добавлении первого сообщения
+            // Если сессия не существует, создаем ее с нужным ID
+            session = {
+              id: currentSessionId,
+              title: "Новый чат",
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              messages: [],
+              agent: selectedAgentId || "claude-4-sonnet",
+            }
+            await chatStorageService.saveSession(session)
           }
           // Добавляем сообщение
           await chatStorageService.addMessage(currentSessionId, userMessage)
@@ -509,7 +517,11 @@ export function AiChat() {
 
           // Сохраняем финальное сообщение в историю
           if (currentSessionId) {
-            await chatStorageService.addMessage(currentSessionId, finalAgentMessage)
+            try {
+              await chatStorageService.addMessage(currentSessionId, finalAgentMessage)
+            } catch (error) {
+              logger.error("Failed to save assistant message:", { error: String(error) })
+            }
           }
         } else {
           // Обычный ответ без tool calls
@@ -525,7 +537,11 @@ export function AiChat() {
 
           // Сохраняем сообщение в историю
           if (currentSessionId) {
-            await chatStorageService.addMessage(currentSessionId, agentMessage)
+            try {
+              await chatStorageService.addMessage(currentSessionId, agentMessage)
+            } catch (error) {
+              logger.error("Failed to save assistant message:", { error: String(error) })
+            }
           }
         }
       } catch (error) {

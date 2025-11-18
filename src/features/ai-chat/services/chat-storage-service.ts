@@ -80,8 +80,13 @@ export class LocalChatStorageService implements ChatStorageService {
 
     try {
       if (isDesktop()) {
-        const { readTextFile } = await import("@tauri-apps/plugin-fs")
+        const { readTextFile, exists } = await import("@tauri-apps/plugin-fs")
         const filePath = `${this.chatsDir}/${id}.json`
+
+        // Проверяем существование файла перед чтением
+        if (!(await exists(filePath))) {
+          return null
+        }
 
         const content = await readTextFile(filePath)
         const session = JSON.parse(content)
@@ -319,7 +324,7 @@ export class LocalChatStorageService implements ChatStorageService {
   /**
    * Сохранить сессию
    */
-  private async saveSession(session: ChatSession): Promise<void> {
+  async saveSession(session: ChatSession): Promise<void> {
     await this.initialize()
 
     try {

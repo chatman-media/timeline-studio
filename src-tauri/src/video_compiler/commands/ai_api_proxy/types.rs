@@ -607,6 +607,7 @@ impl AIProvider {
         "deepseek-vl".to_string(), // Vision model for image analysis
       ],
       AIProvider::Ollama => vec![
+        "llama3.2".to_string(),
         "llama3".to_string(),
         "codellama".to_string(),
         "mistral".to_string(),
@@ -622,5 +623,38 @@ impl AIProvider {
       AIProvider::DeepSeek => "https://api.deepseek.com/v1/chat/completions".to_string(),
       AIProvider::Ollama => "http://localhost:11434/api/chat".to_string(),
     }
+  }
+
+  /// Определить провайдера по названию модели
+  pub fn from_model_name(model: &str) -> Option<Self> {
+    // Claude модели
+    if model.starts_with("claude-") {
+      return Some(AIProvider::Claude);
+    }
+
+    // OpenAI модели
+    if model.starts_with("gpt-") || model.starts_with("o1-") || model.starts_with("text-") {
+      return Some(AIProvider::OpenAI);
+    }
+
+    // DeepSeek модели
+    if model.starts_with("deepseek-") {
+      return Some(AIProvider::DeepSeek);
+    }
+
+    // Ollama/локальные модели
+    if model.starts_with("llama")
+      || model.starts_with("mistral")
+      || model.starts_with("codellama")
+      || model.starts_with("phi")
+      || model.starts_with("gemma")
+      || model.starts_with("qwen")
+      || model.starts_with("vicuna")
+      || model.starts_with("wizard")
+    {
+      return Some(AIProvider::Ollama);
+    }
+
+    None
   }
 }

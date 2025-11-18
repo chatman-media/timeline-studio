@@ -4,14 +4,14 @@
 
 set +e  # Don't exit on error
 
-cargo test --lib "$@" 2>&1
+cargo test "$@" 2>&1
 
 exit_code=$?
 
 # If exit code is 101 (SIGABRT from FFmpeg cleanup), check if tests actually passed
 if [ $exit_code -eq 101 ]; then
     # Re-run to capture output
-    output=$(cargo test --lib "$@" 2>&1)
+    output=$(cargo test "$@" 2>&1)
 
     # Check if all tests passed
     if echo "$output" | grep -q "test result: ok"; then

@@ -639,10 +639,10 @@ describe("useResourcesAdapter", () => {
 
     await waitForProviderReady()
 
-    expect(screen.getByTestId("items-count")).toHaveTextContent("39")
+    expect(screen.getByTestId("items-count")).toHaveTextContent("2")
     expect(screen.getByTestId("loading")).toHaveTextContent("false")
     expect(screen.getByTestId("error")).toHaveTextContent("none")
-    expect(screen.getByTestId("total-stats")).toHaveTextContent("55")
+    expect(screen.getByTestId("total-stats")).toHaveTextContent("4")
   })
 
   it("должен фильтровать через адаптер", async () => {

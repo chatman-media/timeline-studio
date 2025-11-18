@@ -264,14 +264,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
-          sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev pkg-config
+          sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev \
+            libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
+
+      - name: Setup FFmpeg environment
+        run: |
+          echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
 
       - name: Create dist directory
         run: mkdir -p dist
 
       - name: Generate TypeScript bindings
         env:
-          PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig
+          PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
         run: |
           cd src-tauri
           cargo run --bin generate_types

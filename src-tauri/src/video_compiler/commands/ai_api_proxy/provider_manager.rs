@@ -225,8 +225,22 @@ impl AIProviderManager {
   pub async fn send_request(
     &self,
     api_key: &str,
-    request: UnifiedAIRequest,
+    mut request: UnifiedAIRequest,
   ) -> Result<UnifiedAIResponse> {
+    // Автоматически определяем провайдера по названию модели если он указан неправильно
+    if let Some(detected_provider) = AIProvider::from_model_name(&request.model) {
+      // Если определенный провайдер не совпадает с указанным, используем определенный
+      if detected_provider != request.provider {
+        log::warn!(
+          "Model '{}' does not match provider {:?}, auto-correcting to {:?}",
+          request.model,
+          request.provider,
+          detected_provider
+        );
+        request.provider = detected_provider;
+      }
+    }
+
     let provider = request.provider.clone();
 
     // Validate API key format before proceeding
@@ -268,10 +282,24 @@ impl AIProviderManager {
   pub async fn send_request_stream(
     &self,
     api_key: &str,
-    request: UnifiedAIRequest,
+    mut request: UnifiedAIRequest,
     app_handle: AppHandle,
     request_id: String,
   ) -> Result<()> {
+    // Автоматически определяем провайдера по названию модели если он указан неправильно
+    if let Some(detected_provider) = AIProvider::from_model_name(&request.model) {
+      // Если определенный провайдер не совпадает с указанным, используем определенный
+      if detected_provider != request.provider {
+        log::warn!(
+          "Model '{}' does not match provider {:?}, auto-correcting to {:?}",
+          request.model,
+          request.provider,
+          detected_provider
+        );
+        request.provider = detected_provider;
+      }
+    }
+
     // Validate API key format before proceeding
     validate_api_key(&request.provider, api_key)?;
 
