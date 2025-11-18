@@ -55,10 +55,10 @@ export const About: React.FC = () => {
               className="max-w-6xl mx-auto"
             >
               <h2 className="text-4xl md:text-5xl mb-4 text-center">
-                <span className="text-gradient">AI-Powered Video Editor</span>
+                <span className="text-gradient">{t("about.aiEditor.title")}</span>
               </h2>
               <p className="text-xl text-gray-400 text-center mb-16 max-w-3xl mx-auto">
-                Professional video editing with intelligent AI director and 100+ specialized tools
+                {t("about.aiEditor.subtitle")}
               </p>
 
               <div className="grid md:grid-cols-3 gap-8">
@@ -78,15 +78,13 @@ export const About: React.FC = () => {
 
                   <div className="relative p-8 h-full">
                     <div className="text-5xl mb-6">🎬</div>
-                    <h3 className="text-2xl font-medium text-white mb-4">AI Director</h3>
-                    <p className="text-gray-300 mb-6">
-                      Intelligent scene selection, automated multicam editing, and smart montage creation powered by advanced AI algorithms
-                    </p>
+                    <h3 className="text-2xl font-medium text-white mb-4">{t("about.aiDirector.title")}</h3>
+                    <p className="text-gray-300 mb-6">{t("about.aiDirector.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
-                      <li>• Auto-detect best moments</li>
-                      <li>• Smart angle switching</li>
-                      <li>• Music synchronization</li>
-                      <li>• Pacing optimization</li>
+                      <li>• {t("about.aiDirector.feature1")}</li>
+                      <li>• {t("about.aiDirector.feature2")}</li>
+                      <li>• {t("about.aiDirector.feature3")}</li>
+                      <li>• {t("about.aiDirector.feature4")}</li>
                     </ul>
                   </div>
                 </motion.div>
@@ -107,15 +105,13 @@ export const About: React.FC = () => {
 
                   <div className="relative p-8 h-full">
                     <div className="text-5xl mb-6">🧰</div>
-                    <h3 className="text-2xl font-medium text-white mb-4">100+ AI Tools</h3>
-                    <p className="text-gray-300 mb-6">
-                      Comprehensive suite of specialized AI tools running locally for complete creative control and privacy
-                    </p>
+                    <h3 className="text-2xl font-medium text-white mb-4">{t("about.aiTools.title")}</h3>
+                    <p className="text-gray-300 mb-6">{t("about.aiTools.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
-                      <li>• Color grading AI</li>
-                      <li>• Audio enhancement</li>
-                      <li>• Effects & transitions</li>
-                      <li>• Text & subtitles</li>
+                      <li>• {t("about.aiTools.feature1")}</li>
+                      <li>• {t("about.aiTools.feature2")}</li>
+                      <li>• {t("about.aiTools.feature3")}</li>
+                      <li>• {t("about.aiTools.feature4")}</li>
                     </ul>
                   </div>
                 </motion.div>
@@ -136,15 +132,13 @@ export const About: React.FC = () => {
 
                   <div className="relative p-8 h-full">
                     <div className="text-5xl mb-6">🔒</div>
-                    <h3 className="text-2xl font-medium text-white mb-4">Local AI Models</h3>
-                    <p className="text-gray-300 mb-6">
-                      Advanced computer vision and audio analysis models running entirely on your machine for maximum privacy
-                    </p>
+                    <h3 className="text-2xl font-medium text-white mb-4">{t("about.localModels.title")}</h3>
+                    <p className="text-gray-300 mb-6">{t("about.localModels.description")}</p>
                     <ul className="space-y-2 text-sm text-gray-400">
-                      <li>• Face & object detection</li>
-                      <li>• Scene analysis (YOLO)</li>
-                      <li>• Speech recognition</li>
-                      <li>• No cloud dependency</li>
+                      <li>• {t("about.localModels.feature1")}</li>
+                      <li>• {t("about.localModels.feature2")}</li>
+                      <li>• {t("about.localModels.feature3")}</li>
+                      <li>• {t("about.localModels.feature4")}</li>
                     </ul>
                   </div>
                 </motion.div>
@@ -193,7 +187,7 @@ export const About: React.FC = () => {
               className="max-w-6xl mx-auto"
             >
               <h2 className="text-4xl md:text-5xl mb-12 text-center">
-                <span className="text-gradient">Core Principles</span>
+                <span className="text-gradient">{t("about.corePrinciples.title")}</span>
               </h2>
               <div className="grid md:grid-cols-4 gap-6">
                 {[
