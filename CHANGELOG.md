@@ -1,3 +1,13 @@
+## [3.14.1](https://github.com/chatman-media/timeline-studio/compare/v3.14.0...v3.14.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Исправить GitHub Actions workflows ([ea17138](https://github.com/chatman-media/timeline-studio/commit/ea171381df729984de8660b15daa5372a7a7d978))
+* **filters:** Улучшить генерацию уникальных ID для AppliedFilter ([6d55bce](https://github.com/chatman-media/timeline-studio/commit/6d55bce838cd7764968adf7dd9375152da116ed4))
+* **lint:** Удалить неиспользуемый импорт ChatSession ([3e090bc](https://github.com/chatman-media/timeline-studio/commit/3e090bc9edce180ba289893ac328a2dffdafe4af))
+* **rust:** Исправить clippy warnings ([5c6e621](https://github.com/chatman-media/timeline-studio/commit/5c6e6216f01b158ba19d3445e2436a7c3757f851))
+
 # [3.14.0](https://github.com/chatman-media/timeline-studio/compare/v3.13.1...v3.14.0) (2025-11-18)
 
 
