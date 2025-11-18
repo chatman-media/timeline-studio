@@ -1,6 +1,6 @@
-import { CheckIcon } from "@heroicons/react/24/outline"
 import { motion } from "framer-motion"
 import type React from "react"
+import { CheckIcon } from "../components/CheckIcon"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
 import { useTranslation } from "../hooks/useTranslation"

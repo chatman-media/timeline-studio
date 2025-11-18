@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "@studio-freight/lenis": "^1.0.42",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001755",
