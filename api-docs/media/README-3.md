@@ -1,819 +1,548 @@
-# Plugin System / Система плагинов
+# Video Compiler Module
 
-Модульная система плагинов для Timeline Studio, обеспечивающая расширяемость приложения через безопасные и изолированные плагины.
+Модуль для компиляции видео проектов Timeline Studio с использованием FFmpeg.
 
-## 🏗️ Архитектура
-
-### Основные компоненты
+## Архитектура
 
 ```
-plugins/
-├── plugin.rs         # Базовые структуры и интерфейсы плагинов  
-├── manager.rs        # Менеджер жизненного цикла плагинов
-├── permissions.rs    # Многоуровневая система разрешений
-├── sandbox.rs        # Sandbox изоляция и мониторинг ресурсов
-├── loader.rs         # Загрузчик плагинов и реестр
-├── api.rs           # Богатый Plugin API для взаимодействия с приложением
-├── api_factory.rs   # Фабрика для создания API с зависимостями
-├── context.rs       # Контекст выполнения плагина
-└── commands.rs      # Tauri команды для интеграции с frontend
+video_compiler/
+├── mod.rs                # Главный модуль, инициализация
+├── commands/             # Tauri команды API (модульная структура)
+│   ├── mod.rs           # Реэкспорт всех команд
+│   ├── rendering.rs     # Команды рендеринга
+│   ├── cache.rs         # Команды управления кэшем
+│   ├── gpu.rs           # Команды GPU
+│   ├── info.rs          # Информационные команды
+│   ├── preview.rs       # Команды генерации превью
+│   ├── project.rs       # Команды управления проектами
+│   ├── settings.rs      # Команды настроек
+│   ├── metrics.rs       # Команды метрик и мониторинга
+│   ├── misc.rs          # Вспомогательные команды
+│   ├── ffmpeg_advanced.rs # Продвинутые FFmpeg команды
+│   ├── advanced_metrics.rs # Расширенные метрики
+│   ├── state.rs         # Управление состоянием
+│   ├── schema_commands.rs # Команды работы со схемой
+│   ├── prerender_commands.rs # Команды предрендеринга
+│   ├── frame_extraction_commands.rs # Извлечение кадров
+│   ├── test_helper_commands.rs # Тестовые утилиты
+│   ├── service_commands.rs # Управление сервисами
+│   ├── batch_commands.rs # Пакетная обработка
+│   ├── multimodal_commands.rs # Мультимодальный анализ
+│   ├── whisper_commands.rs # Интеграция с Whisper
+│   ├── video_analysis.rs # Анализ видео
+│   ├── platform_optimization_commands.rs # Оптимизация для платформ
+│   ├── workflow_commands.rs # Управление рабочими процессами
+│   ├── compiler_settings_commands.rs # Настройки компилятора
+│   ├── service_container_commands.rs # Контейнер сервисов
+│   ├── ffmpeg_builder_commands.rs # Команды FFmpeg builder
+│   ├── ffmpeg_executor_commands.rs # Команды FFmpeg executor
+│   ├── monitoring_commands.rs # Мониторинг и метрики
+│   ├── pipeline_commands.rs # Управление конвейерами
+│   ├── yolo_commands.rs # YOLO процессор
+│   ├── preview_advanced_commands.rs # Расширенные превью
+│   ├── frame_extraction_advanced_commands.rs # Расширенное извлечение кадров
+│   ├── timeline_schema_commands.rs # Схема таймлайна
+│   ├── remaining_utilities_commands.rs # Оставшиеся утилиты
+│   ├── ffmpeg_utilities_commands.rs # FFmpeg утилиты
+│   ├── pipeline_advanced_commands.rs # Продвинутые команды pipeline
+│   ├── recognition_advanced_commands.rs # Продвинутые команды распознавания
+│   ├── security_advanced_commands.rs # Команды безопасности
+│   ├── ffmpeg_builder_extra_commands.rs # Дополнительные команды FFmpeg
+│   ├── progress_tracker_commands.rs # Отслеживание прогресса
+│   ├── frame_manager_commands.rs # Управление кадрами
+│   └── tests/           # Тесты команд
+├── core/                 # Основные компоненты
+│   ├── mod.rs           # Реэкспорт основных модулей
+│   ├── cache.rs         # Система кэширования
+│   ├── error.rs         # Обработка ошибок
+│   ├── frame_extraction.rs # Извлечение кадров
+│   ├── gpu.rs           # GPU ускорение
+│   ├── pipeline.rs      # Конвейер рендеринга
+│   ├── pipeline_refactored.rs # Новая архитектура pipeline
+│   ├── preview.rs       # Генерация превью
+│   ├── progress.rs      # Отслеживание прогресса
+│   ├── renderer.rs      # Основной рендерер
+│   └── stages/          # Этапы конвейера
+│       ├── mod.rs       # Интерфейсы и общие типы
+│       ├── validation.rs # Этап валидации
+│       ├── preprocessing.rs # Этап предобработки
+│       ├── composition.rs # Этап композиции
+│       ├── encoding.rs  # Этап кодирования
+│       └── finalization.rs # Этап финализации
+├── ffmpeg_builder/       # Построитель FFmpeg команд (модульная структура)
+│   ├── mod.rs           # Основной модуль
+│   ├── builder.rs       # Основной построитель
+│   ├── filters.rs       # Построение фильтров
+│   ├── inputs.rs        # Обработка входных данных
+│   ├── outputs.rs       # Конфигурация вывода
+│   ├── effects.rs       # Обработка эффектов
+│   ├── subtitles.rs     # Обработка субтитров
+│   ├── templates.rs     # Обработка шаблонов
+│   └── tests.rs         # Тесты построителя
+├── ffmpeg_executor.rs    # Исполнитель FFmpeg команд
+├── schema/               # Структуры данных проекта (модульная структура)
+│   ├── mod.rs           # Реэкспорт типов
+│   ├── project.rs       # Основная схема проекта
+│   ├── timeline.rs      # Timeline, треки и клипы
+│   ├── effects.rs       # Эффекты, фильтры и переходы
+│   ├── templates.rs     # Шаблоны раскладок
+│   ├── subtitles.rs     # Субтитры
+│   ├── export.rs        # Настройки экспорта
+│   ├── common.rs        # Общие типы
+│   └── tests.rs         # Тесты схемы
+├── services/             # Сервисы
+│   ├── mod.rs           # Service Container
+│   ├── cache_service.rs # Сервис кэширования
+│   ├── cache_service_with_metrics.rs # Кэш с метриками
+│   ├── ffmpeg_service.rs # FFmpeg сервис
+│   ├── gpu_service.rs   # GPU сервис
+│   ├── preview_service.rs # Сервис превью
+│   ├── project_service.rs # Сервис проектов
+│   ├── render_service.rs # Сервис рендеринга
+│   └── monitoring.rs    # Мониторинг и метрики
+└── tests/               # Интеграционные тесты
+    ├── mod.rs           # Главный модуль тестов
+    ├── fixtures.rs      # Тестовые данные
+    ├── integration.rs   # Интеграционные тесты
+    ├── mocks.rs         # Моки для тестов
+    └── utils.rs         # Утилиты для тестов
 ```
 
-## 📁 Модули
+## Основные компоненты
 
-### `plugin.rs` - Базовые структуры и интерфейсы
-**Основные типы**:
-- `Plugin` trait - основной интерфейс плагина  
-- `PluginMetadata` - метаданные и информация о плагине
-- `PluginCommand` - команды для выполнения в плагине
-- `PluginResponse` - результат выполнения команды
-- `PluginState` - состояния жизненного цикла
-- `Version` - версионирование с семантическим сравнением
+### VideoCompilerState
+Центральное состояние модуля, управляемое Tauri:
 
-**Жизненный цикл плагина**:
 ```rust
-Created → Loading → Loaded → Running → Suspended → Stopped → Error
+pub struct VideoCompilerState {
+    pub active_jobs: Arc<RwLock<HashMap<String, ActiveRenderJob>>>,
+    pub cache_manager: Arc<RwLock<RenderCache>>,
+    pub ffmpeg_path: String,
+    pub settings: Arc<RwLock<CompilerSettings>>,
+}
 ```
 
-**Пример реализации плагина**:
+### Основные структуры данных
+
+#### ProjectSchema
 ```rust
-use async_trait::async_trait;
-
-pub struct VideoFilterPlugin;
-
-#[async_trait]
-impl Plugin for VideoFilterPlugin {
-    fn metadata(&self) -> PluginMetadata {
-        PluginMetadata {
-            id: "video-filter".to_string(),
-            name: "Video Filter".to_string(),
-            version: "1.0.0".to_string(),
-            author: "Timeline Studio".to_string(),
-            description: "Advanced video filtering".to_string(),
-            tags: vec!["video".to_string(), "effects".to_string()],
-            min_app_version: "0.1.0".to_string(),
-        }
-    }
-
-    async fn initialize(&mut self, context: PluginContext) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        // Инициализация плагина
-        log::info!("VideoFilter plugin initialized");
-        Ok(())
-    }
-
-    async fn execute(&self, command: PluginCommand) -> Result<PluginResponse, Box<dyn std::error::Error + Send + Sync>> {
-        match command.command.as_str() {
-            "apply_blur" => {
-                let intensity = command.params.get("intensity")
-                    .and_then(|v| v.as_f64())
-                    .unwrap_or(1.0);
-                
-                Ok(PluginResponse::success(serde_json::json!({
-                    "effect_applied": "blur",
-                    "intensity": intensity,
-                    "processed_frames": 100
-                })))
-            }
-            _ => Ok(PluginResponse::error("Unknown command"))
-        }
-    }
-
-    async fn shutdown(&mut self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        log::info!("VideoFilter plugin shutting down");
-        Ok(())
-    }
+pub struct ProjectSchema {
+    pub version: String,
+    pub metadata: ProjectMetadata,
+    pub timeline: Timeline,        // Настройки timeline
+    pub tracks: Vec<Track>,        // Треки на верхнем уровне
+    pub effects: Vec<Effect>,      // Глобальные эффекты
+    pub transitions: Vec<Transition>,
+    pub filters: Vec<Filter>,
+    pub templates: Vec<Template>,
+    pub style_templates: Vec<StyleTemplate>,
+    pub subtitles: Vec<Subtitle>,  // Субтитры на верхнем уровне
+    pub settings: ProjectSettings,
 }
 ```
 
----
-
-### `manager.rs` - Менеджер плагинов
-**Основные функции**:
-- Загрузка и выгрузка плагинов через PluginLoader
-- Управление жизненным циклом и состоянием
-- Выполнение команд плагинов с timeout
-- Мониторинг sandbox и нарушений лимитов
-- Статистика использования ресурсов
-
-**API**:
+#### Timeline
 ```rust
-impl PluginManager {
-    pub fn new(
-        app_version: Version,
-        event_bus: Arc<EventBus>,
-        service_container: Arc<ServiceContainer>,
-    ) -> Self
-    
-    pub async fn load_plugin(&self, plugin_id: &str, permissions: PluginPermissions) -> Result<String>
-    pub async fn unload_plugin(&self, plugin_id: &str) -> Result<()>
-    pub async fn send_command(&self, plugin_id: &str, command: PluginCommand) -> Result<PluginResponse>
-    pub async fn get_plugin_info(&self, plugin_id: &str) -> Result<serde_json::Value>
-    pub async fn suspend_plugin(&self, plugin_id: &str) -> Result<()>
-    pub async fn resume_plugin(&self, plugin_id: &str) -> Result<()>
-    pub async fn list_loaded_plugins(&self) -> HashMap<String, PluginState>
-    pub async fn get_sandbox_stats(&self) -> Vec<SandboxStats>
-    pub async fn get_violating_plugins(&self) -> Vec<String>
-    pub async fn reset_plugin_violations(&self, plugin_id: &str) -> bool
-    pub fn loader(&self) -> &PluginLoader
+pub struct Timeline {
+    pub duration: f64,           // Общая продолжительность в секундах
+    pub fps: u32,                // Кадров в секунду
+    pub resolution: (u32, u32),  // Ширина x Высота
+    pub sample_rate: u32,        // Частота дискретизации аудио
+    pub aspect_ratio: AspectRatio,
 }
 ```
 
-**Пример использования**:
+#### Track
 ```rust
-// Создание менеджера с зависимостями
-let app_version = Version::new(0, 23, 0);
-let event_bus = Arc::new(EventBus::new());
-let service_container = Arc::new(ServiceContainer::new());
-
-let manager = PluginManager::new(app_version, event_bus, service_container);
-
-// Загрузка плагина с разрешениями
-let permissions = SecurityLevel::Standard.permissions();
-let instance_id = manager.load_plugin("blur-effect", permissions).await?;
-
-// Выполнение команды
-let command = PluginCommand {
-    id: uuid::Uuid::new_v4(),
-    command: "apply_blur".to_string(),
-    params: serde_json::json!({
-        "intensity": 0.5,
-        "media_id": "video.mp4"
-    }),
-};
-
-let response = manager.send_command(&instance_id, command).await?;
-
-// Получение статистики
-let stats = manager.get_sandbox_stats().await;
-for stat in stats {
-    println!("Plugin {}: Memory: {}MB, CPU: {}%", 
-        stat.plugin_id, stat.memory_usage_mb, stat.cpu_usage_percent);
+pub struct Track {
+    pub id: String,
+    pub track_type: TrackType,   // Video, Audio, Subtitle
+    pub name: String,
+    pub clips: Vec<Clip>,
+    pub enabled: bool,
+    pub locked: bool,
+    pub volume: f32,
+    pub effects: Vec<String>,     // ID эффектов
+    pub filters: Vec<String>,     // ID фильтров
 }
-
-// Выгрузка плагина
-manager.unload_plugin(&instance_id).await?;
 ```
 
----
-
-### `permissions.rs` - Система разрешений
-**Многоуровневая система безопасности**:
-- `SecurityLevel` - предустановленные уровни безопасности
-- `PluginPermissions` - детальные разрешения
-- `FileSystemPermissions` - контроль доступа к файловой системе
-- `NetworkPermissions` - ограничения сетевых подключений
-
-**Уровни безопасности**:
+#### Clip
 ```rust
-pub enum SecurityLevel {
-    Minimal,    // Базовый доступ к чтению медиа и timeline
-    Standard,   // + запись в timeline и чтение файлов  
-    Extended,   // + запись файлов и расширенные UI операции
-    Full,       // Полный доступ ко всем API + системная информация
-}
-
-impl SecurityLevel {
-    pub fn permissions(self) -> PluginPermissions {
-        match self {
-            SecurityLevel::Minimal => PluginPermissions {
-                security_level: SecurityLevel::Minimal,
-                ui_access: false,
-                file_system: FileSystemPermissions::read_only(),
-                network: NetworkPermissions::blocked(),
-                system_info: false,
-            },
-            // ... остальные уровни
-        }
-    }
+pub struct Clip {
+    pub id: String,
+    pub source_path: PathBuf,    // Путь к исходному файлу
+    pub start_time: f64,         // Время начала на timeline
+    pub end_time: f64,           // Время окончания на timeline
+    pub source_start: f64,       // Начало в исходном файле
+    pub source_end: f64,         // Окончание в исходном файле
+    pub speed: f64,              // Скорость воспроизведения
+    pub opacity: f32,            // Прозрачность
+    pub effects: Vec<String>,    // ID эффектов
+    pub filters: Vec<String>,    // ID фильтров
+    pub properties: ClipProperties,
+    pub real_path: Option<PathBuf>, // Реальный путь к файлу (для восстановления)
 }
 ```
 
-**Детальные разрешения файловой системы**:
+## API Команды (400+ команд)
+
+### Рендеринг (rendering.rs)
+- `compile_video` - Запуск компиляции видео
+- `cancel_render` - Отмена рендеринга
+- `get_active_render_jobs` - Получить активные задачи
+- `get_render_job` - Получить информацию о задаче
+- `pause_render` - Приостановить рендеринг
+- `resume_render` - Возобновить рендеринг
+- `export_with_preset` - Экспорт с предустановками
+
+### Кэш (cache.rs)
+- `clear_render_cache` - Очистить весь кэш
+- `clear_project_cache` - Очистить кэш проекта
+- `get_cache_size` - Получить размер кэша
+- `get_cache_stats` - Получить статистику кэша
+- `clean_old_cache` - Очистить старые записи
+- `get_cached_projects` - Список закэшированных проектов
+- `has_project_cache` - Проверить наличие кэша
+- `get_cached_media_metadata` - Метаданные медиафайлов
+- `clear_media_metadata_cache` - Очистить метаданные
+- `optimize_cache` - Оптимизировать кэш
+- `export_cache_stats` - Экспорт статистики
+- `set_cache_size_limit` - Установить лимит размера
+- `get_cache_size_limit` - Получить лимит размера
+- `preload_media_to_cache` - Предзагрузка медиа
+
+### GPU (gpu.rs)
+- `detect_gpus` - Обнаружить GPU
+- `get_gpu_capabilities` - Возможности GPU
+- `check_hardware_acceleration_support` - Проверка поддержки
+- `get_recommended_gpu` - Рекомендуемый GPU
+- `set_preferred_gpu` - Установить предпочитаемый GPU
+- `set_hardware_acceleration` - Включить/выключить ускорение
+- `get_gpu_usage_status` - Статус использования GPU
+- `benchmark_gpu` - Тест производительности
+- `get_gpu_supported_codecs` - Поддерживаемые кодеки
+- `auto_select_gpu` - Автовыбор GPU
+
+### Информация (info.rs)
+- `get_ffmpeg_version` - Версия FFmpeg
+- `check_ffmpeg_available` - Проверка доступности FFmpeg
+- `get_supported_formats` - Поддерживаемые форматы
+- `get_supported_video_codecs` - Видео кодеки
+- `get_supported_audio_codecs` - Аудио кодеки
+- `get_system_info` - Информация о системе
+- `get_disk_space` - Дисковое пространство
+- `get_compiler_config` - Конфигурация компилятора
+- `get_performance_stats` - Статистика производительности
+- `get_available_filters` - Доступные фильтры
+
+### Превью (preview.rs)
+- `generate_frame_preview` - Превью кадра
+- `generate_video_thumbnails` - Миниатюры видео
+- `generate_project_preview` - Превью проекта
+- `generate_effect_preview` - Превью эффекта
+- `generate_transition_preview` - Превью перехода
+- `generate_storyboard` - Раскадровка
+- `generate_animated_preview` - Анимированное превью
+- `generate_waveform_preview` - Визуализация звуковой волны
+- `get_cached_preview_info` - Информация о превью
+- `clear_project_previews` - Очистить превью проекта
+- `generate_custom_preview` - Настраиваемое превью
+
+### Проекты (project.rs)
+- `validate_project_schema` - Валидация схемы
+- `optimize_project_schema` - Оптимизация схемы
+- `analyze_project` - Анализ проекта
+- `get_project_media_files` - Список медиафайлов
+- `check_project_media_availability` - Проверка доступности медиа
+- `update_project_media_paths` - Обновление путей
+- `add_subtitles_to_project` - Добавить субтитры
+- `extract_project_subtitles` - Извлечь субтитры
+- `backup_project` - Резервное копирование
+- `merge_projects` - Объединение проектов
+- `split_project` - Разделение проекта
+
+### Настройки (settings.rs)
+- `get_compiler_settings` - Получить настройки
+- `update_compiler_settings` - Обновить настройки
+- `set_ffmpeg_path` - Установить путь к FFmpeg
+- `set_parallel_jobs` - Параллельные задачи
+- `set_memory_limit` - Лимит памяти
+- `set_temp_directory` - Временная директория
+- `set_log_level` - Уровень логирования
+- `reset_compiler_settings` - Сброс настроек
+- `get_recommended_settings` - Рекомендуемые настройки
+- `export_settings` - Экспорт настроек
+- `import_settings` - Импорт настроек
+- `get_quality_presets` - Предустановки качества
+- `apply_quality_preset` - Применить предустановку
+
+### FFmpeg продвинутые команды (ffmpeg_advanced.rs)
+- `generate_video_preview` - Генерация превью видео
+- `generate_gif_preview` - Создание GIF из видео
+- `concat_videos` - Объединение видео файлов
+- `apply_video_filter` - Применение фильтра к видео
+- `probe_media_file` - Анализ медиафайла
+- `test_hardware_acceleration` - Тест аппаратного ускорения
+- `generate_subtitle_preview` - Превью с субтитрами
+- `check_ffmpeg_installation` - Проверка установки FFmpeg
+- `get_ffmpeg_codecs` - Список поддерживаемых кодеков
+- `get_ffmpeg_formats` - Список поддерживаемых форматов
+- `execute_ffmpeg_with_progress` - Выполнение FFmpeg с прогрессом
+- `execute_ffmpeg_simple` - Простое выполнение FFmpeg
+- `get_ffmpeg_execution_info` - Полная информация о выполнении
+
+### Метрики и мониторинг (metrics.rs)
+- `get_all_metrics` - Все метрики системы
+- `get_service_metrics` - Метрики сервисов
+- `export_metrics_prometheus` - Экспорт в формате Prometheus
+- `reset_service_metrics` - Сброс метрик
+- `get_active_operations_count` - Количество активных операций
+- `get_error_statistics` - Статистика ошибок
+- `get_slow_operations` - Медленные операции
+
+### Расширенные метрики (advanced_metrics.rs)
+- `get_cache_performance_metrics` - Производительность кэша
+- `set_cache_alert_thresholds` - Пороги оповещений
+- `get_cache_alerts` - Активные оповещения
+- `get_gpu_utilization_metrics` - Использование GPU
+- `get_memory_usage_metrics` - Использование памяти
+- `create_custom_alert` - Создание пользовательского оповещения
+- `get_metrics_history` - История метрик
+
+## Процесс рендеринга
+
+1. **Валидация проекта** - проверка структуры и путей к файлам
+2. **Построение FFmpeg команды** - создание сложной команды с фильтрами
+3. **Запуск процесса** - выполнение FFmpeg с отслеживанием прогресса
+4. **Мониторинг** - обновление статуса через каналы
+5. **Завершение** - очистка ресурсов и уведомление
+
+## FFmpeg Executor
+
+Новый компонент для выполнения FFmpeg команд с расширенными возможностями:
+
 ```rust
-pub struct FileSystemPermissions {
-    pub read_paths: Vec<PathBuf>,     // Разрешенные пути для чтения
-    pub write_paths: Vec<PathBuf>,    // Разрешенные пути для записи
+pub struct FFmpegExecutor {
+    progress_sender: Option<mpsc::Sender<ProgressUpdate>>,
 }
 
-impl FileSystemPermissions {
-    pub fn can_read(&self, path: &Path) -> bool {
-        self.read_paths.iter().any(|allowed| path.starts_with(allowed))
-    }
-    
-    pub fn can_write(&self, path: &Path) -> bool {
-        self.write_paths.iter().any(|allowed| path.starts_with(allowed))
-    }
-    
-    pub fn read_only() -> Self {
-        Self {
-            read_paths: vec![PathBuf::from("/")],  // Чтение везде
-            write_paths: vec![],                   // Запись нигде
-        }
-    }
-    
-    pub fn sandbox(plugin_dir: PathBuf) -> Self {
-        Self {
-            read_paths: vec![plugin_dir.clone()],
-            write_paths: vec![plugin_dir],
-        }
-    }
+pub struct FFmpegExecutionResult {
+    pub exit_code: i32,
+    pub stdout: String,
+    pub stderr: String,
+    pub final_progress: Option<RenderProgress>,
+}
+
+pub struct FFmpegExecutionContext {
+    pub command_args: Vec<String>,
+    pub project_id: Option<String>,
+    pub operation_type: FFmpegOperationType,
+    pub timeout: Option<Duration>,
+    pub env_vars: HashMap<String, String>,
+    pub working_dir: Option<PathBuf>,
+}
+
+pub enum FFmpegOperationType {
+    VideoCompilation,
+    FrameExtraction,
+    ThumbnailGeneration,
+    MediaAnalysis,
+    GifCreation,
+    VideoConcat,
+    FilterApplication,
+    SubtitleRendering,
+    AudioProcessing,
+    StreamCopy,
+    Custom(String),
 }
 ```
 
-**Сетевые ограничения**:
+### Возможности:
+- Выполнение команд с отслеживанием прогресса в реальном времени
+- Парсинг вывода FFmpeg для извлечения информации о прогрессе
+- Поддержка отмены операций
+- Простое выполнение для быстрых операций
+- Проверка доступности FFmpeg и его возможностей
+- Получение списка поддерживаемых кодеков и форматов
+- Контекстное выполнение с FFmpegExecutionContext
+- Типизированные операции через FFmpegOperationType
+- Настройка окружения и рабочей директории
+- Гибкие таймауты для разных операций
+
+## GPU Ускорение
+
+Поддерживаемые кодировщики:
+- **NVIDIA**: NVENC (h264_nvenc, hevc_nvenc)
+- **Intel**: QuickSync (h264_qsv, hevc_qsv)
+- **AMD**: AMF (h264_amf, hevc_amf)
+- **macOS**: VideoToolbox (h264_videotoolbox, hevc_videotoolbox)
+- **Linux**: VA-API (h264_vaapi, hevc_vaapi)
+
+## Кэширование
+
+LRU кэш для:
+- Превью кадров
+- Метаданных файлов
+- Промежуточных результатов
+
 ```rust
-pub struct NetworkPermissions {
-    pub allowed_hosts: Vec<String>,   // Разрешенные хосты
-    pub blocked_hosts: Vec<String>,   // Заблокированные хосты
-}
-
-impl NetworkPermissions {
-    pub fn can_connect(&self, host: &str) -> bool {
-        if self.blocked_hosts.contains(&host.to_string()) {
-            return false;
-        }
-        
-        self.allowed_hosts.is_empty() || 
-        self.allowed_hosts.contains(&host.to_string())
-    }
-    
-    pub fn blocked() -> Self {
-        Self {
-            allowed_hosts: vec![],
-            blocked_hosts: vec!["*".to_string()],
-        }
-    }
+pub struct CacheMemoryUsage {
+    pub total_size: u64,
+    pub entry_count: usize,
+    pub preview_cache_size: u64,
+    pub preview_cache_count: usize,
+    pub metadata_cache_size: u64,
+    pub metadata_cache_count: usize,
 }
 ```
 
-**Пример настройки разрешений**:
+## Обработка ошибок
+
 ```rust
-// Использование предустановленного уровня
-let permissions = SecurityLevel::Standard.permissions();
-
-// Кастомная настройка
-let permissions = PluginPermissions {
-    security_level: SecurityLevel::Extended,
-    ui_access: true,
-    file_system: FileSystemPermissions {
-        read_paths: vec![
-            PathBuf::from("/home/user/videos"),
-            PathBuf::from("/tmp/plugin-cache"),
-        ],
-        write_paths: vec![
-            PathBuf::from("/tmp/plugin-output"),
-        ],
-    },
-    network: NetworkPermissions {
-        allowed_hosts: vec![
-            "api.youtube.com".to_string(),
-            "upload.youtube.com".to_string(),
-        ],
-        blocked_hosts: vec![],
-    },
-    system_info: false,
-};
-```
-
----
-
-### `api.rs` - Plugin API
-**Богатый API для взаимодействия плагинов с приложением**:
-- `PluginApi` trait - основной интерфейс для плагинов
-- `PluginApiImpl` - полная реализация API с проверкой разрешений
-- `PluginStorage` - изолированное хранилище данных плагина
-- Интеграция с EventBus для публикации событий
-
-**Основные группы методов**:
-```rust
-#[async_trait]
-pub trait PluginApi: Send + Sync {
-    // Работа с медиа
-    async fn get_media_info(&self, media_id: &str) -> Result<MediaInfo>;
-    async fn apply_effect(&self, media_id: &str, effect: Effect) -> Result<()>;
-    async fn generate_thumbnail(&self, media_id: &str, time: f64) -> Result<PathBuf>;
-    
-    // Работа с timeline
-    async fn get_timeline_state(&self) -> Result<TimelineState>;
-    async fn add_clip(&self, clip: Clip) -> Result<String>;
-    async fn remove_clip(&self, clip_id: &str) -> Result<()>;
-    async fn update_clip(&self, clip_id: &str, clip: ClipInfo) -> Result<()>;
-    
-    // UI интеграция
-    async fn show_dialog(&self, dialog: PluginDialog) -> Result<DialogResult>;
-    async fn add_menu_item(&self, menu: MenuItem) -> Result<()>;
-    async fn show_notification(&self, title: &str, message: &str) -> Result<()>;
-    
-    // Файловая система (с проверкой разрешений)
-    async fn pick_file(&self, filters: Vec<(&str, Vec<&str>)>) -> Result<Option<PathBuf>>;
-    async fn read_file(&self, path: &Path) -> Result<Vec<u8>>;
-    async fn write_file(&self, path: &Path, data: &[u8]) -> Result<()>;
-    
-    // Хранилище данных
-    async fn get_storage(&self) -> Result<Box<dyn PluginStorage>>;
-    
-    // Системная информация
-    async fn get_system_info(&self) -> Result<SystemInfo>;
+pub enum VideoCompilerError {
+    ValidationError(String),
+    FFmpegError { exit_code: Option<i32>, stderr: String, command: String },
+    DependencyMissing(String),
+    IoError(String),
+    SerializationError(String),
+    MediaFileError { path: String, reason: String },
+    UnsupportedFormat { format: String, file_path: String },
+    RenderError { job_id: String, stage: String, message: String },
+    PreviewError { timestamp: f64, reason: String },
+    CacheError(String),
+    ConfigError(String),
+    ResourceError { resource_type: String, available: String, required: String },
+    TimeoutError { operation: String, timeout_seconds: u64 },
+    CancelledError(String),
+    GpuError(String),
+    GpuUnavailable(String),
+    InternalError(String),
+    Unknown(String),
+    TemplateNotFound(String),
+    InvalidParameter(String),
 }
 ```
 
-**Автоматическая публикация событий**:
-```rust
-// При создании thumbnail
-AppEvent::ThumbnailGenerated {
-    media_id: "video.mp4".to_string(),
-    thumbnail_path: "/path/to/thumbnail.jpg".to_string(),
-}
+## Использование из фронтенда
 
-// При операциях с timeline
-AppEvent::PluginEvent {
-    plugin_id: "my-plugin".to_string(),
-    event: serde_json::json!({
-        "type": "timeline.clip.added",
-        "clip_id": "clip-123",
-        "track_id": "video-track-1"
-    }),
-}
-```
-
-**Пример использования в плагине**:
-```rust
-impl Plugin for MediaProcessorPlugin {
-    async fn execute(&self, command: PluginCommand) -> Result<PluginResponse, Box<dyn std::error::Error + Send + Sync>> {
-        let api = self.get_api(); // Получаем API из контекста
-        
-        match command.command.as_str() {
-            "process_media" => {
-                let media_id = command.params.get("media_id").unwrap().as_str().unwrap();
-                
-                // Получить информацию о медиа
-                let media_info = api.get_media_info(media_id).await?;
-                
-                // Создать превью
-                let thumbnail = api.generate_thumbnail(media_id, 5.0).await?;
-                
-                // Добавить на timeline
-                let clip = Clip {
-                    media_id: media_id.to_string(),
-                    track_id: "video-track-1".to_string(),
-                    start_time: 0.0,
-                    duration: media_info.duration,
-                };
-                let clip_id = api.add_clip(clip).await?;
-                
-                // Сохранить результат в хранилище
-                let storage = api.get_storage().await?;
-                storage.set("last_processed", serde_json::json!({
-                    "media_id": media_id,
-                    "clip_id": clip_id,
-                    "timestamp": chrono::Utc::now().timestamp()
-                })).await?;
-                
-                Ok(PluginResponse::success(serde_json::json!({
-                    "clip_id": clip_id,
-                    "thumbnail_path": thumbnail,
-                    "duration": media_info.duration
-                })))
-            }
-            _ => Ok(PluginResponse::error("Unknown command"))
-        }
-    }
-}
-```
-
----
-
-### `commands.rs` - Tauri команды
-**Команды для интеграции с frontend**:
-- Полное управление жизненным циклом плагинов
-- Получение информации и статистики
-- Мониторинг sandbox и нарушений
-
-**Основные команды**:
-```rust
-// Управление жизненным циклом
-#[tauri::command]
-pub async fn load_plugin(plugin_id: String, permissions: Option<PluginPermissions>) -> Result<String, String>
-
-#[tauri::command] 
-pub async fn unload_plugin(plugin_id: String) -> Result<(), String>
-
-#[tauri::command]
-pub async fn suspend_plugin(plugin_id: String) -> Result<(), String>
-
-#[tauri::command]
-pub async fn resume_plugin(plugin_id: String) -> Result<(), String>
-
-// Получение информации
-#[tauri::command]
-pub async fn list_loaded_plugins() -> Result<Vec<(String, String)>, String>
-
-#[tauri::command]
-pub async fn list_available_plugins() -> Result<Vec<PluginMetadata>, String>
-
-#[tauri::command]
-pub async fn get_plugin_info(plugin_id: String) -> Result<Value, String>
-
-// Выполнение команд
-#[tauri::command]
-pub async fn send_plugin_command(
-    plugin_id: String,
-    command: String, 
-    params: Value
-) -> Result<PluginResponse, String>
-
-// Мониторинг и статистика
-#[tauri::command]
-pub async fn get_plugins_sandbox_stats() -> Result<Vec<Value>, String>
-
-#[tauri::command]
-pub async fn get_violating_plugins() -> Result<Vec<String>, String>
-
-#[tauri::command] 
-pub async fn reset_plugin_violations(plugin_id: String) -> Result<bool, String>
-
-// Тестирование
-#[tauri::command]
-pub async fn register_example_plugins() -> Result<(), String>
-```
-
-**Использование из frontend (TypeScript)**:
 ```typescript
-import { invoke } from '@tauri-apps/api/tauri';
-
-// Загрузка плагина
-const instanceId = await invoke<string>('load_plugin', {
-  pluginId: 'blur-effect',
-  permissions: {
-    securityLevel: 'Standard',
-    uiAccess: true
-  }
+// Компиляция видео
+const jobId = await invoke('compile_video', {
+    projectSchema: project,
+    outputPath: '/path/to/output.mp4'
 });
 
-// Выполнение команды
-const response = await invoke<PluginResponse>('send_plugin_command', {
-  pluginId: instanceId,
-  command: 'apply_blur',
-  params: {
-    mediaId: 'video.mp4',
-    intensity: 0.5
-  }
+// Отслеживание прогресса
+const job = await invoke('get_render_job', { jobId });
+
+// Генерация превью
+const previewPath = await invoke('generate_frame_preview', {
+    projectSchema: project,
+    timestamp: 10.5,
+    outputPath: '/tmp/preview.jpg'
 });
 
-// Получение статистики
-const stats = await invoke<SandboxStats[]>('get_plugins_sandbox_stats');
-console.log('Memory usage:', stats.map(s => s.memoryUsageMb));
+// Проверка GPU
+const gpus = await invoke('detect_gpus');
+const capabilities = await invoke('get_gpu_capabilities', { gpuIndex: 0 });
 
-// Выгрузка плагина
-await invoke('unload_plugin', { pluginId: instanceId });
+// Новые FFmpeg команды
+// Генерация GIF превью
+await invoke('generate_gif_preview', {
+    inputPath: '/path/to/video.mp4',
+    outputPath: '/path/to/preview.gif',
+    startTime: 5.0,
+    duration: 3.0,
+    fps: 10,
+    resolution: [320, 240]
+});
+
+// Объединение видео
+await invoke('concat_videos', {
+    inputPaths: ['/video1.mp4', '/video2.mp4'],
+    outputPath: '/output.mp4'
+});
+
+// Выполнение FFmpeg с отслеживанием прогресса
+await invoke('execute_ffmpeg_with_progress', {
+    commandArgs: ['-i', 'input.mp4', '-c:v', 'libx264', 'output.mp4']
+});
+
+// Слушатель событий прогресса
+await listen('ffmpeg-progress', (event) => {
+    console.log('Progress:', event.payload);
+});
+
+// Получение информации о медиафайле
+const fileInfo = await invoke('probe_media_file', {
+    inputPath: '/path/to/media.mp4'
+});
 ```
 
----
+## Конфигурация
 
-### `sandbox.rs` - Sandbox изоляция
-**Изоляция и безопасность**:
-- Memory isolation через WASM linear memory
-- CPU limits через step counting
-- I/O control через host function imports
-- Resource monitoring
-
-**Конфигурация sandbox**:
 ```rust
-pub struct SandboxConfig {
-    pub max_memory_pages: u32,        // Максимум памяти (64KB страницы)
-    pub max_execution_steps: u64,     // Лимит инструкций
-    pub max_call_depth: u32,          // Максимальная глубина вызовов
-    pub timeout: Duration,            // Общий timeout
-    pub allowed_imports: Vec<String>, // Разрешенные host functions
-}
-
-impl Default for SandboxConfig {
-    fn default() -> Self {
-        Self {
-            max_memory_pages: 256,      // 16MB
-            max_execution_steps: 1_000_000,
-            max_call_depth: 1000,
-            timeout: Duration::from_secs(10),
-            allowed_imports: vec![
-                "log".to_string(),
-                "read_file".to_string(),
-                "write_file".to_string(),
-            ],
-        }
-    }
+pub struct CompilerSettings {
+    pub max_concurrent_jobs: u32,
+    pub cache_size_mb: u64,
+    pub temp_directory: PathBuf,
+    pub ffmpeg_path: String,
+    pub hardware_acceleration: bool,
+    pub preview_quality: u8,
 }
 ```
 
----
+## Восстановление медиафайлов
 
-### `loader.rs` - WASM Загрузчик
-**Функциональность**:
-- Валидация WASM модулей
-- Instantiation с host functions
-- Memory management
-- Error recovery
+Модуль поддерживает восстановление ссылок на перемещенные медиафайлы:
 
-**Поддерживаемые форматы**:
-- WebAssembly binary (.wasm)
-- WebAssembly text (.wat)
-- Compressed modules (.wasm.gz)
-
----
-
-### `api.rs` - Plugin API
-**Host Functions для плагинов**:
 ```rust
-// Файловая система
-extern "C" fn host_read_file(path_ptr: u32, path_len: u32) -> u32;
-extern "C" fn host_write_file(path_ptr: u32, path_len: u32, data_ptr: u32, data_len: u32) -> u32;
-
-// Логирование  
-extern "C" fn host_log(level: u32, msg_ptr: u32, msg_len: u32);
-
-// HTTP запросы
-extern "C" fn host_http_get(url_ptr: u32, url_len: u32) -> u32;
-extern "C" fn host_http_post(url_ptr: u32, url_len: u32, body_ptr: u32, body_len: u32) -> u32;
-
-// Video processing
-extern "C" fn host_process_frame(frame_ptr: u32, frame_len: u32, params_ptr: u32, params_len: u32) -> u32;
-```
-
----
-
-### `context.rs` - Контекст выполнения
-**Shared state между host и plugin**:
-- Current working directory
-- Plugin-specific configuration
-- Resource usage tracking
-- Error reporting
-
----
-
-## 🧪 Тестирование
-
-### Покрытие тестами: 47 unit тестов
-
-**`plugin.rs` (12 тестов)**:
-- ✅ Создание и сериализация плагинов (`PluginMetadata`, `PluginCommand`, `PluginResponse`)
-- ✅ Валидация версий (`Version` структура с семантическим сравнением)
-- ✅ Lifecycle state transitions (`PluginState` переходы)
-- ✅ Command и Response обработка
-- ✅ Error handling и сериализация JSON
-
-**`permissions.rs` (17 тестов)**:
-- ✅ Многоуровневая система безопасности (`SecurityLevel`)
-- ✅ Файловая система (`FileSystemPermissions` read/write проверки)
-- ✅ Сетевые разрешения (`NetworkPermissions` allow/block хосты)
-- ✅ Композиция разрешений (`PluginPermissions`)
-- ✅ Валидация доступа к путям
-
-**`api.rs` (2 теста)**:
-- ✅ PluginStorage функциональность (set/get/remove/clear операции)
-- ✅ Уровни безопасности и их конвертация
-
-**`commands.rs` (1 тест)**:
-- ✅ Регистрация примеров плагинов
-
-**`manager.rs`, `loader.rs`, `context.rs`, `sandbox.rs`** (15 тестов):
-- ✅ Полный жизненный цикл плагинов
-- ✅ Concurrent access и thread safety
-- ✅ Sandbox изоляция и мониторинг ресурсов
-- ✅ Event bus интеграция
-
-**Примеры ключевых тестов**:
-```rust
-#[test]
-fn test_plugin_metadata_serialization() {
-    let metadata = PluginMetadata {
-        id: "test-plugin".to_string(),
-        name: "Test Plugin".to_string(),
-        version: "1.0.0".to_string(),
-        author: "Test Author".to_string(),
-        description: "Test description".to_string(),
-        tags: vec!["test".to_string()],
-        min_app_version: "0.1.0".to_string(),
-    };
+pub struct MediaRestorationService {
+    pub async fn restore_missing_files(
+        &self,
+        project_schema: &mut ProjectSchema
+    ) -> Result<Vec<RestorationResult>>
     
-    // Проверяем JSON сериализацию/десериализацию
-    let json = serde_json::to_string(&metadata).unwrap();
-    let deserialized: PluginMetadata = serde_json::from_str(&json).unwrap();
-    assert_eq!(metadata.id, deserialized.id);
-}
-
-#[test]
-fn test_filesystem_permissions() {
-    let perms = FileSystemPermissions {
-        read_paths: vec![PathBuf::from("/allowed")],
-        write_paths: vec![PathBuf::from("/writable")],
-    };
-    
-    assert!(perms.can_read(&PathBuf::from("/allowed/file.txt")));
-    assert!(!perms.can_write(&PathBuf::from("/allowed/file.txt")));
-    assert!(perms.can_write(&PathBuf::from("/writable/output.txt")));
-}
-
-#[tokio::test]
-async fn test_plugin_storage() {
-    use tempfile::TempDir;
-    
-    let temp_dir = TempDir::new().unwrap();
-    let storage = PluginStorageImpl::new(
-        "test-plugin".to_string(), 
-        temp_dir.path().to_path_buf()
-    ).await.unwrap();
-    
-    // Тест set/get операций
-    let test_value = serde_json::json!({"key": "value", "number": 42});
-    storage.set("test", test_value.clone()).await.unwrap();
-    
-    let retrieved = storage.get("test").await.unwrap();
-    assert_eq!(retrieved, Some(test_value));
-    
-    // Тест clear операции
-    storage.clear().await.unwrap();
-    let keys = storage.keys().await.unwrap();
-    assert!(keys.is_empty());
+    pub async fn find_file_by_signature(
+        &self,
+        original_path: &Path,
+        search_dirs: Vec<PathBuf>
+    ) -> Option<PathBuf>
 }
 ```
 
-**Запуск тестов**:
-```bash
-# Все тесты плагинов
-cargo test plugins::
+### Алгоритм восстановления:
+1. Проверка существования файлов по оригинальным путям
+2. Поиск по имени файла в указанных директориях
+3. Сравнение метаданных (размер, длительность для видео)
+4. Обновление путей в схеме проекта
+5. Сохранение real_path для будущих восстановлений
 
-# Конкретные модули
-cargo test plugins::plugin::tests
-cargo test plugins::permissions::tests
-cargo test plugins::api::tests
-```
+## Рефакторинг (2025)
 
----
+Модуль был значительно реорганизован для улучшения поддерживаемости:
 
-## 🔧 Интеграция с приложением
+1. **commands.rs** разделен на 30+ функциональных модулей
+2. **ffmpeg_builder.rs** разделен на 7 специализированных модулей  
+3. **schema.rs** разделен на 7 доменных модулей
+4. **pipeline.rs** разделен на этапы в **core/stages/** 
+5. Добавлена модульная структура **core/** для основных компонентов
+6. Создана архитектура **services/** для управления сервисами
+7. Добавлен **ffmpeg_executor.rs** для выполнения FFmpeg команд
+8. Расширена система метрик и мониторинга
+9. Добавлены продвинутые FFmpeg команды для всех операций
+10. Добавлены команды AI интеграции (Whisper, multimodal анализ)
+11. Полное покрытие тестами новых компонентов
+12. **Добавлено 150+ новых Tauri команд** для доступа ко всей функциональности
 
-### Настройка в main приложении (`lib.rs`)
-```rust
-use crate::core::plugins::PluginManager;
-use crate::core::{EventBus, ServiceContainer};
+### Ключевые улучшения:
 
-// В setup функции Tauri приложения
-let app_version = core::plugins::plugin::Version::new(0, 23, 0);
-let event_bus = std::sync::Arc::new(core::EventBus::new());
-let service_container = std::sync::Arc::new(core::di::ServiceContainer::new());
-
-let plugin_manager = core::plugins::PluginManager::new(
-    app_version,
-    event_bus.clone(),
-    service_container.clone(),
-);
-
-// Регистрация примеров плагинов
-let registry = plugin_manager.loader().registry();
-if let Err(e) = tauri::async_runtime::block_on(plugins::register_example_plugins(&registry)) {
-    log::warn!("Failed to register example plugins: {}", e);
-} else {
-    log::info!("Example plugins registered successfully");
-}
-
-app.manage(plugin_manager);
-app.manage(event_bus);
-app.manage(service_container);
-```
-
-### Регистрация Tauri команд (`app_builder.rs`)
-```rust
-.invoke_handler(tauri::generate_handler![
-    // ... другие команды
-    
-    // Plugin system commands
-    crate::core::plugins::commands::load_plugin,
-    crate::core::plugins::commands::unload_plugin,
-    crate::core::plugins::commands::list_loaded_plugins,
-    crate::core::plugins::commands::list_available_plugins,
-    crate::core::plugins::commands::send_plugin_command,
-    crate::core::plugins::commands::get_plugin_info,
-    crate::core::plugins::commands::suspend_plugin,
-    crate::core::plugins::commands::resume_plugin,
-    crate::core::plugins::commands::get_plugins_sandbox_stats,
-    crate::core::plugins::commands::get_violating_plugins,
-    crate::core::plugins::commands::reset_plugin_violations,
-    crate::core::plugins::commands::register_example_plugins,
-    
-    // Тестовая команда
-    crate::test_plugin_system,
-])
-```
-
-### Создание плагинов (`plugins/examples/`)
-```rust
-// src/plugins/examples/blur_effect_simple.rs
-use crate::core::plugins::{Plugin, PluginCommand, PluginResponse, PluginMetadata, PluginContext};
-use async_trait::async_trait;
-
-pub struct BlurEffectPlugin;
-
-#[async_trait]
-impl Plugin for BlurEffectPlugin {
-    fn metadata(&self) -> PluginMetadata {
-        PluginMetadata {
-            id: "blur-effect".to_string(),
-            name: "Blur Effect".to_string(),
-            version: "1.0.0".to_string(),
-            author: "Timeline Studio".to_string(),
-            description: "Simple blur effect for video clips".to_string(),
-            tags: vec!["effect".to_string(), "video".to_string()],
-            min_app_version: "0.1.0".to_string(),
-        }
-    }
-
-    async fn initialize(&mut self, _context: PluginContext) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        log::info!("BlurEffect plugin initialized");
-        Ok(())
-    }
-
-    async fn execute(&self, command: PluginCommand) -> Result<PluginResponse, Box<dyn std::error::Error + Send + Sync>> {
-        match command.command.as_str() {
-            "apply_blur" => {
-                let intensity = command.params.get("intensity")
-                    .and_then(|v| v.as_f64())
-                    .unwrap_or(1.0);
-                
-                Ok(PluginResponse::success(serde_json::json!({
-                    "effect_applied": "blur",
-                    "intensity": intensity
-                })))
-            }
-            _ => Ok(PluginResponse::error("Unknown command"))
-        }
-    }
-
-    async fn shutdown(&mut self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        Ok(())
-    }
-}
-
-// Регистрация в src/plugins/mod.rs
-pub async fn register_example_plugins(
-    registry: &crate::core::plugins::PluginRegistry,
-) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    registry.register("blur-effect", || {
-        Box::new(examples::blur_effect_simple::BlurEffectPlugin)
-    }).await?;
-    
-    registry.register("youtube-uploader", || {
-        Box::new(examples::youtube_uploader_simple::YouTubeUploaderPlugin)
-    }).await?;
-    
-    Ok(())
-}
-```
-
----
-
-## 🚀 Текущий статус и планы развития
-
-### ✅ Реализовано (версия 1.0)
-- **Базовая архитектура**: Plugin trait, PluginManager, PluginLoader
-- **Система разрешений**: 4 уровня безопасности с детальным контролем
-- **Plugin API**: 18 методов для взаимодействия с приложением
-- **Tauri интеграция**: 12 команд для frontend
-- **Хранилище данных**: Изолированное JSON хранилище для каждого плагина
-- **Event bus**: Автоматическая публикация событий
-- **Примеры плагинов**: BlurEffect и YouTubeUploader
-- **47 unit тестов**: Полное покрытие всех модулей
-
-### 🔄 В разработке (версия 1.1)
-- **UI интеграция**: Реальная реализация диалогов и меню
-- **Media services**: Полная интеграция с FFmpeg и media компилятором
-- **Timeline integration**: Подключение к реальному timeline состоянию
-
-### 📋 Планируется (версия 2.0)
-- **WASM поддержка**: Загрузка плагинов как WebAssembly модулей
-- **Динамическая загрузка**: Hot reload плагинов без перезапуска
-- **Plugin Store**: Магазин плагинов с автообновлением
-- **Remote plugins**: Плагины через сетевые API
-- **Advanced sandbox**: Memory limits, CPU quotas, network isolation
-
-### 🔗 Связанные модули
-- **EventBus** (`core/events.rs`) - система событий
-- **ServiceContainer** (`core/di.rs`) - dependency injection
-- **VideoCompiler** - интеграция с медиа обработкой
-- **MediaProcessor** - работа с медиа файлами
-
----
-
-## 📚 Документация
-
-### Внутренняя документация
-- [Core модули](../README.md) - общий обзор core системы
-- [Plugin System Design](../../../../../src-tauri/docs/plugin-system-design.md) - техническая спецификация
-- [Backend Testing Architecture](../../../../../docs-ru/10-roadmap/in-progress/backend-testing-architecture.md) - статус разработки
-
-### Пользовательская документация  
-- [Plugin Development Guide](../../../../../docs-ru/08-plugins/development-guide.md) - руководство разработчика
-- [Plugin API Reference](../../../../../docs-ru/08-plugins/api-reference.md) - справочник API
-- [Security Guidelines](../../../../../docs-ru/08-plugins/security.md) - рекомендации по безопасности
-
----
-
-*Создано: 24 июня 2025* | *Версия: 1.0* | *Статус: Производство* | *Тесты: 47/47 ✅*
+1. **Модульность** - каждый компонент теперь в отдельном модуле
+2. **Сервис-ориентированная архитектура** - все основные функции представлены как сервисы
+3. **Расширенный мониторинг** - детальные метрики для всех операций
+4. **FFmpeg интеграция** - полная поддержка всех возможностей FFmpeg
+5. **AI интеграция** - Whisper для транскрипции, multimodal анализ видео
+6. **Тестируемость** - моки, фикстуры и утилиты для тестирования
+7. **Минимальные предупреждения компиляции** - 94.5% dead code warnings устранено (с ~200 до 11)
+8. **Поэтапный pipeline** - ясная архитектура с отдельными этапами обработки
