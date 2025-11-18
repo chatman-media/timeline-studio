@@ -1014,7 +1014,7 @@ impl AIDirector {
     };
 
     // Получаем API ключ
-    let api_key = config.ai_api_key.clone().unwrap_or_else(String::new); // Для Ollama ключ не нужен
+    let api_key = config.ai_api_key.clone().unwrap_or_default(); // Для Ollama ключ не нужен
 
     // Запускаем анализ
     // Note: AI Director не имеет прямого доступа к Tauri AppHandle, поэтому передаем None

@@ -27,21 +27,11 @@ pub struct MCPToolRequest {
 }
 
 /// Контекст для выполнения tools
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct MCPContext {
   pub project_id: Option<String>,
   pub timeline_id: Option<String>,
   pub user_id: Option<String>,
-}
-
-impl Default for MCPContext {
-  fn default() -> Self {
-    Self {
-      project_id: None,
-      timeline_id: None,
-      user_id: None,
-    }
-  }
 }
 
 /// Конфигурация MCP сервера

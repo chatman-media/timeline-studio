@@ -483,7 +483,10 @@ pub async fn analyze_video_with_vision_model_secure(
   let key_type = ApiKeyType::from_str(&provider.to_lowercase())
     .map_err(|_| format!("Invalid provider for secure storage: {}", provider))?;
 
-  let mut secure_storage = SecureStorage::new(app_handle.clone())
+  // Clone app_handle before using it in SecureStorage
+  let app_handle_for_analysis = app_handle.clone();
+
+  let mut secure_storage = SecureStorage::new(app_handle)
     .map_err(|e| format!("Failed to initialize secure storage: {}", e))?;
 
   let api_key = secure_storage
@@ -497,7 +500,7 @@ pub async fn analyze_video_with_vision_model_secure(
       )
     })?;
 
-  // Call main analysis function
+  // Call main analysis function with the cloned app_handle
   analyze_video_with_vision_model(
     video_path,
     provider,
@@ -507,7 +510,7 @@ pub async fn analyze_video_with_vision_model_secure(
     temperature,
     max_tokens,
     analyzer_state,
-    app_handle,
+    app_handle_for_analysis,
   )
   .await
 }
