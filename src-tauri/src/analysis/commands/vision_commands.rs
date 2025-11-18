@@ -431,7 +431,7 @@ pub async fn analyze_video_with_vision_model(
   let config = VisionAnalysisConfig {
     provider: ai_provider,
     model,
-    num_frames: num_frames.unwrap_or(5),
+    num_frames: num_frames.unwrap_or(5) as u32,
     temperature: temperature.unwrap_or(0.7),
     max_tokens: max_tokens.unwrap_or(1024),
   };

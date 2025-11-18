@@ -4,7 +4,7 @@ use super::server::MCPServer;
 use super::types::{MCPConfig, MCPToolRequest, MCPToolResult};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use tauri::{AppHandle, State};
+use tauri::State;
 use tokio::sync::RwLock;
 
 /// State для MCP сервера
