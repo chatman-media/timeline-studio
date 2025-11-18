@@ -44,6 +44,115 @@ export const About: React.FC = () => {
           </div>
         </section>
 
+        {/* Key Technologies Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-6 md:px-8 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="max-w-6xl mx-auto"
+            >
+              <h2 className="text-4xl md:text-5xl mb-4 text-center">
+                <span className="text-gradient">AI-Powered Video Editor</span>
+              </h2>
+              <p className="text-xl text-gray-400 text-center mb-16 max-w-3xl mx-auto">
+                Professional video editing with intelligent AI director and 100+ specialized tools
+              </p>
+
+              <div className="grid md:grid-cols-3 gap-8">
+                {/* AI Director */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                  className="relative overflow-hidden rounded-2xl"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-purple-500/15 to-pink-500/15 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 p-[1px]">
+                    <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
+                  </div>
+
+                  <div className="relative p-8 h-full">
+                    <div className="text-5xl mb-6">🎬</div>
+                    <h3 className="text-2xl font-medium text-white mb-4">AI Director</h3>
+                    <p className="text-gray-300 mb-6">
+                      Intelligent scene selection, automated multicam editing, and smart montage creation powered by advanced AI algorithms
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li>• Auto-detect best moments</li>
+                      <li>• Smart angle switching</li>
+                      <li>• Music synchronization</li>
+                      <li>• Pacing optimization</li>
+                    </ul>
+                  </div>
+                </motion.div>
+
+                {/* 100+ AI Tools */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  viewport={{ once: true }}
+                  className="relative overflow-hidden rounded-2xl"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/15 via-teal-500/15 to-blue-500/15 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/30 via-teal-500/30 to-blue-500/30 p-[1px]">
+                    <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
+                  </div>
+
+                  <div className="relative p-8 h-full">
+                    <div className="text-5xl mb-6">🧰</div>
+                    <h3 className="text-2xl font-medium text-white mb-4">100+ AI Tools</h3>
+                    <p className="text-gray-300 mb-6">
+                      Comprehensive suite of specialized AI tools running locally for complete creative control and privacy
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li>• Color grading AI</li>
+                      <li>• Audio enhancement</li>
+                      <li>• Effects & transitions</li>
+                      <li>• Text & subtitles</li>
+                    </ul>
+                  </div>
+                </motion.div>
+
+                {/* Local Models */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="relative overflow-hidden rounded-2xl"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-orange-500/15 to-red-500/15 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 via-orange-500/30 to-red-500/30 p-[1px]">
+                    <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
+                  </div>
+
+                  <div className="relative p-8 h-full">
+                    <div className="text-5xl mb-6">🔒</div>
+                    <h3 className="text-2xl font-medium text-white mb-4">Local AI Models</h3>
+                    <p className="text-gray-300 mb-6">
+                      Advanced computer vision and audio analysis models running entirely on your machine for maximum privacy
+                    </p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li>• Face & object detection</li>
+                      <li>• Scene analysis (YOLO)</li>
+                      <li>• Speech recognition</li>
+                      <li>• No cloud dependency</li>
+                    </ul>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Mission Section */}
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-8 lg:px-12">
@@ -58,16 +167,12 @@ export const About: React.FC = () => {
                 <span className="text-gradient">{t("about.mission.title")}</span>
               </h2>
               <div className="relative overflow-hidden rounded-2xl">
-                {/* Glassmorphism background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                 <div className="absolute inset-0 bg-white/[0.02]" />
-
-                {/* Border gradient */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
-                {/* Content */}
                 <div className="relative p-8 md:p-12">
                   <p className="text-lg text-gray-300 leading-relaxed mb-6">{t("about.mission.paragraph1")}</p>
                   <p className="text-lg text-gray-300 leading-relaxed">{t("about.mission.paragraph2")}</p>
@@ -77,7 +182,7 @@ export const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Values Section */}
+        {/* Core Values */}
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-8 lg:px-12">
             <motion.div
@@ -88,39 +193,29 @@ export const About: React.FC = () => {
               className="max-w-6xl mx-auto"
             >
               <h2 className="text-4xl md:text-5xl mb-12 text-center">
-                <span className="text-gradient">{t("about.values.title")}</span>
+                <span className="text-gradient">Core Principles</span>
               </h2>
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-4 gap-6">
                 {[
                   {
-                    icon: "🚀",
-                    title: t("about.values.innovation.title"),
-                    description: t("about.values.innovation.description"),
-                  },
-                  {
-                    icon: "🌍",
-                    title: t("about.values.community.title"),
-                    description: t("about.values.community.description"),
-                  },
-                  {
                     icon: "⚡",
-                    title: t("about.values.efficiency.title"),
-                    description: t("about.values.efficiency.description"),
+                    title: "Speed & Efficiency",
+                    description: "GPU acceleration and smart caching for real-time editing",
                   },
                   {
                     icon: "🔒",
-                    title: t("about.values.privacy.title"),
-                    description: t("about.values.privacy.description"),
+                    title: "Privacy First",
+                    description: "All AI processing runs locally - your data never leaves your machine",
                   },
                   {
-                    icon: "🎯",
-                    title: t("about.values.userCentric.title"),
-                    description: t("about.values.userCentric.description"),
+                    icon: "🚀",
+                    title: "Innovation",
+                    description: "Cutting-edge AI technology for professional video production",
                   },
                   {
-                    icon: "💡",
-                    title: t("about.values.openInnovation.title"),
-                    description: t("about.values.openInnovation.description"),
+                    icon: "🌍",
+                    title: "Open Source",
+                    description: "Free forever, built by the community for creators worldwide",
                   },
                 ].map((value, index) => (
                   <motion.div
@@ -131,19 +226,15 @@ export const About: React.FC = () => {
                     viewport={{ once: true }}
                     className="relative overflow-hidden rounded-xl"
                   >
-                    {/* Glassmorphism background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                     <div className="absolute inset-0 bg-white/[0.02]" />
-
-                    {/* Border gradient */}
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                       <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                     </div>
 
-                    {/* Content */}
-                    <div className="relative p-8">
-                      <div className="text-4xl mb-4">{value.icon}</div>
-                      <h3 className="text-2xl font-medium text-white mb-2">{value.title}</h3>
+                    <div className="relative p-6 h-full">
+                      <div className="text-3xl mb-3">{value.icon}</div>
+                      <h3 className="text-lg font-medium text-white mb-2">{value.title}</h3>
                       <p className="text-gray-400 text-sm">{value.description}</p>
                     </div>
                   </motion.div>
@@ -168,16 +259,12 @@ export const About: React.FC = () => {
               </h2>
               <p className="text-lg text-gray-300 mb-12">{t("about.team.description")}</p>
               <div className="relative overflow-hidden rounded-2xl inline-block">
-                {/* Glassmorphism background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                 <div className="absolute inset-0 bg-white/[0.02]" />
-
-                {/* Border gradient */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
-                {/* Content */}
                 <div className="relative p-8">
                   <div className="flex items-center space-x-6">
                     <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -219,7 +306,7 @@ export const About: React.FC = () => {
                   href="https://github.com/chatman-media/timeline-studio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 bg-gray-700 text-white font-medium rounded-xl hover:bg-gray-600 transition-colors flex items-center space-x-2"
+                  className="px-6 py-3 bg-gray-700 text-white font-medium rounded-xl hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
                 >
                   <span>{t("about.cta.contributeGithub")}</span>
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
