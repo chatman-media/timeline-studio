@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/chatman-media/timeline-studio/compare/v3.4.2...v3.5.0) (2025-11-18)
+
+
+### Features
+
+* **mcp:** Интегрировать MCP с существующим AI чатом через IAITool адаптеры ([5f3542a](https://github.com/chatman-media/timeline-studio/commit/5f3542a2e355fd2ded8f91c538fde5fc1012ae02))
+
 ## [3.4.2](https://github.com/chatman-media/timeline-studio/compare/v3.4.1...v3.4.2) (2025-11-18)
 
 
