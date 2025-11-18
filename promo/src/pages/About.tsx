@@ -277,6 +277,32 @@ export const About: React.FC = () => {
           </div>
         </section>
 
+        {/* Investor Documentation Section */}
+        <section className="py-20 border-t border-gray-800">
+          <div className="container mx-auto px-6 md:px-8 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <h2 className="text-3xl md:text-4xl mb-6">
+                <span className="text-gradient">For Investors</span>
+              </h2>
+              <p className="text-lg text-gray-400 mb-8">
+                Interested in investing? View our detailed project documentation, business plan, and financial projections.
+              </p>
+              <a
+                href="/project"
+                className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all"
+              >
+                View Investment Documentation
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-8 lg:px-12">
