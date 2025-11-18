@@ -1,3 +1,121 @@
+# [3.0.0](https://github.com/chatman-media/timeline-studio/compare/v2.13.0...v3.0.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ai-director:** Добавить отсутствующее поле enable_vision_language_model ([87399c2](https://github.com/chatman-media/timeline-studio/commit/87399c2573e2f4bcd4787f5c16405db3a354d452))
+* **ai-director:** Добавить отсутствующие VLM поля в AIDirectorConfig ([dc6cc01](https://github.com/chatman-media/timeline-studio/commit/dc6cc013f09bee6d76116b394ada53ef56d60a8f))
+* **ai-director:** Использовать useAIDirectorAnalysis для real-time событий прогресса ([c4dafd3](https://github.com/chatman-media/timeline-studio/commit/c4dafd3ecb3adafa378c9152cde85272355c5d6e))
+* **ai-director:** Исправить race condition между событием и результатом ([19473c2](https://github.com/chatman-media/timeline-studio/commit/19473c2314117ff62d9a2c58f381f26ac5c1096a))
+* **ai-director:** Исправить ошибку cleanup event listeners ([4b4bb5a](https://github.com/chatman-media/timeline-studio/commit/4b4bb5a53ba60364c1d92a07e7eba93571a27ca7))
+* **analysis-dashboard:** Добавить защиту от undefined в результатах анализа ([360739b](https://github.com/chatman-media/timeline-studio/commit/360739bdc43ca2b2bf1bce6095e91970a3eddcec))
+* **analysis:** Улучшить логирование ошибок в AI Analysis Dashboard ([29bd0b6](https://github.com/chatman-media/timeline-studio/commit/29bd0b63b6db6e81ce890c3425edd6e3942c6c8c))
+* **backend:** Изменить типы с u64/usize на u32 для Specta совместимости ([2da87df](https://github.com/chatman-media/timeline-studio/commit/2da87df84cd16b66328d3ace7050ad3249b8c891))
+* **backend:** Исправить Specta BigInt экспорт для u64 типов ([fe77041](https://github.com/chatman-media/timeline-studio/commit/fe770419ddba8da982af676f8dcb5beedb73f666))
+* **browser:** Исправить бесконечный цикл переинициализации AudioContext ([b7b1c69](https://github.com/chatman-media/timeline-studio/commit/b7b1c69a5b67f9a5467af2d3d87dc80fde713978))
+* **browser:** Исправить синхронизацию состояния выбора файлов в тестах ([8986e1a](https://github.com/chatman-media/timeline-studio/commit/8986e1aaa8712834fa93469087d5e33fd4364d0c))
+* **favorites:** Исправить ошибку undefined listenToEvent ([8e64e3b](https://github.com/chatman-media/timeline-studio/commit/8e64e3bab96debddea1b931875ae1ecac44d7334))
+* **macos:** Установить правильное отображаемое имя в Dock ([b9211c8](https://github.com/chatman-media/timeline-studio/commit/b9211c85d7538174276f913c80b62ca97dca28c6))
+* **promo:** Удалить несовместимые с React 19 зависимости ([d05ff64](https://github.com/chatman-media/timeline-studio/commit/d05ff64dbd2e0da53382c48b683ef6bfb24a7225))
+* **proxy:** Исправить неиспользуемую переменную temp_dir в тестах ([d8edb91](https://github.com/chatman-media/timeline-studio/commit/d8edb91776145b303f492b62d3c8abdf3c22b5b3))
+* **tests:** Исправить падающие video_compiler тесты - заменить block_on на spawn в Drop ([e4c5458](https://github.com/chatman-media/timeline-studio/commit/e4c5458826448ad5d378c1c3f5f6b605148cc767))
+* **tests:** Исправить падающие фронтенд тесты ([f88f261](https://github.com/chatman-media/timeline-studio/commit/f88f261597bdad43073c0067c7ba8404a93b2dba))
+* **tests:** Исправить падающие фронтенд тесты ([f2cc488](https://github.com/chatman-media/timeline-studio/commit/f2cc4889ce96532b775e6f4815695fa570f20c71))
+* **tests:** Удалить зависающий тест test_language_state_mutex_recovery ([2f4a5d0](https://github.com/chatman-media/timeline-studio/commit/2f4a5d0927534db2b8d14738c50857c2a6061f89))
+* **test:** Исправить flaky тест refetch в use-user-settings ([ce2b881](https://github.com/chatman-media/timeline-studio/commit/ce2b881f7c2f48d66a853750991837a184c2ccf3))
+* **types:** Исправить импорты типов во всех features ([4aff515](https://github.com/chatman-media/timeline-studio/commit/4aff515c73fe299586c62010687c6054f857db3a))
+* **types:** Исправить импорты типов во всех доменах ([06092ed](https://github.com/chatman-media/timeline-studio/commit/06092ed61e6f041935a3e8c965c667d4118c239d))
+* Исправить все ошибки типов TypeScript (131 ошибка) ([e172072](https://github.com/chatman-media/timeline-studio/commit/e172072422a2a12b8b2aa85841a136ae7331b277))
+
+
+### Code Refactoring
+
+* **backend-sync:** Удалить legacy код fetch состояния после событий ([7a27704](https://github.com/chatman-media/timeline-studio/commit/7a27704f00e4fbe65c46c69e293167375731eb6c))
+* **browser:** Мигрировать MediaAdapter на MediaManagement Provider ([280926a](https://github.com/chatman-media/timeline-studio/commit/280926a517839e9e6830b43acc3ac44d33d98475))
+
+
+### Features
+
+* **ai-analysis:** Включить Ollama VLM в UI по умолчанию ([285c211](https://github.com/chatman-media/timeline-studio/commit/285c211778dc55e0d88be171ba5371eb7e8d2876))
+* **ai-analysis:** Добавить кнопку рефреша для сброса состояния ([55a7b12](https://github.com/chatman-media/timeline-studio/commit/55a7b120b863e66c31fcc4162b85302a5f28a1f8))
+* **ai-director:** Автоматически показывать текущий/последний анализ ([248b872](https://github.com/chatman-media/timeline-studio/commit/248b87248a57843254ae0df2a1ffc3fc77a726cc))
+* **ai-director:** Включить Ollama VLM по умолчанию для бесплатного анализа эмоций ([6bdb2bd](https://github.com/chatman-media/timeline-studio/commit/6bdb2bddc4bade2414a6f69a44e77474d6651b37))
+* **ai-director:** Добавить AI Director в модальную систему топ-бара ([bf95bb3](https://github.com/chatman-media/timeline-studio/commit/bf95bb3ee010946672b9146032a3348431d27649))
+* **ai-director:** Добавить множественный выбор видео для анализа ([bc8afd3](https://github.com/chatman-media/timeline-studio/commit/bc8afd3fb24a703182e9062fa17fbbe2344b9bbd))
+* **ai-director:** Использовать видео из медиапула для AI анализа ([c0e4d91](https://github.com/chatman-media/timeline-studio/commit/c0e4d91a5fc58ccbb88ab4e0c14829b7e577e029))
+* **ai:** Добавить поддержку multimodal контента в AI типах ([021e864](https://github.com/chatman-media/timeline-studio/commit/021e864dbfa056267bb2b9a9aa3b000ab001f7b9))
+* **ai:** Добавить поддержку vision моделей в Ollama ([aa08255](https://github.com/chatman-media/timeline-studio/commit/aa082557132e12aeeb3992533058dafd331453f6))
+* **ai:** Интегрировать secure storage для AI провайдеров ([343e009](https://github.com/chatman-media/timeline-studio/commit/343e00944d14f5cf758b2cf596d16c8fe48d305e))
+* **browser:** Реализовать полную backend синхронизацию для favorites ([fec3c07](https://github.com/chatman-media/timeline-studio/commit/fec3c070f32674e7ffe9a891f30ce492928bf821))
+* **effects-filters-transitions:** Улучшить систему эффектов ([29769b5](https://github.com/chatman-media/timeline-studio/commit/29769b58c5a540c30b9c9c02960176586822acbc))
+* **media-management:** Добавить selectMediaDirectory и новые сервисы ([45a9476](https://github.com/chatman-media/timeline-studio/commit/45a94760b043a723169d9bfde4eead27db490def))
+* **media-management:** Добавить новые сервисы управления медиа ([24e8470](https://github.com/chatman-media/timeline-studio/commit/24e847023c7df566b51687af496093a106ab7490))
+* **media:** Реализовать генерацию прокси-файлов с FFmpeg интеграцией ([703b87e](https://github.com/chatman-media/timeline-studio/commit/703b87eb2fa7575100aa2945f5308b6f1646042b))
+* **project-management:** Улучшить управление проектами ([7609cca](https://github.com/chatman-media/timeline-studio/commit/7609ccafe907f75a41eeb5fbfd65d2855bf34e27))
+* **providers:** Добавить MediaManagementProvider в цепочку провайдеров ([977d834](https://github.com/chatman-media/timeline-studio/commit/977d834e459eb8d39e9954e8f02ab77e6a082e79))
+* **rust:** Добавить валидацию и безопасность FFmpeg ([2ccfd4f](https://github.com/chatman-media/timeline-studio/commit/2ccfd4ffb9fc24f5a896282de133373205eff9ab))
+* **shared:** Добавить общие утилиты и контракты ([6d9ffd3](https://github.com/chatman-media/timeline-studio/commit/6d9ffd39ddbd35f867401ec67c31614bc6a0905d))
+
+
+### BREAKING CHANGES
+
+* **ai-director:** AI Director теперь использует Ollama с моondream2 по умолчанию
+
+Изменения:
+- ai_provider: Ollama вместо None (бесплатно, локально)
+- ai_model: moondream2 (легкая vision модель)
+- enable_vision_language_model: true (включено по умолчанию)
+- Не требуется API ключ для локального анализа
+
+Преимущества:
+✅ Бесплатный анализ видео (0 затрат)
+✅ Локальная обработка (приватность)
+✅ Определение эмоций через vision AI
+✅ Поддержка llama3.2-vision, llava, moondream2
+
+Требования:
+- Ollama должен быть запущен
+- Скачана vision модель: ollama pull moondream2
+
+Fallback: При отсутствии Ollama можно переключить на Claude/OpenAI
+* **backend-sync:** BackendSync больше не делает fetch состояния после событий
+
+Удалено:
+- isImportedMediaEvent() - проверка ImportedMedia событий
+- isStateChangingEvent() - список событий требующих fetch (70+ строк)
+- fetchAndNotifyState() - метод fetch полного состояния
+
+Архитектурные улучшения:
+✅ BackendSync теперь ТОЛЬКО транспорт событий
+✅ Нет fetch состояния после событий (события содержат все данные)
+✅ MediaManagement Provider обрабатывает MediaAdded/Removed/Updated
+✅ MediaAdapter читает из MediaManagementContext.mediaPool
+
+Результат:
+- Полностью event-driven архитектура без исключений
+- notifyStateChange() используется ТОЛЬКО для инициализации
+- Все обновления через инкрементальные события
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+* **browser:** MediaAdapter теперь читает данные из MediaManagementContext вместо projectState
+
+Изменения:
+- Заменён useAppSettings + useMediaImport на useMediaManagement
+- MediaAdapter читает из mediaPool вместо projectState.imported_media
+- Конвертация MediaInfo -> MediaFile для совместимости
+- Обновлены обработчики импорта для использования API провайдера
+
+Архитектурное улучшение:
+- MediaAdapter больше не зависит от projectState
+- Использует event-driven архитектуру через MediaManagement Provider
+- MediaPool синхронизируется через события MediaAdded/Removed/Updated
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
 # [2.13.0](https://github.com/chatman-media/timeline-studio/compare/v2.12.0...v2.13.0) (2025-11-16)
 
 
