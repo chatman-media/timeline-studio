@@ -187,23 +187,23 @@ export const About: React.FC = () => {
                 {[
                   {
                     icon: "⚡",
-                    title: "Speed & Efficiency",
-                    description: "GPU acceleration and smart caching for real-time editing",
+                    title: t("about.corePrinciples.speed.title"),
+                    description: t("about.corePrinciples.speed.description"),
                   },
                   {
                     icon: "🔒",
-                    title: "Privacy First",
-                    description: "All AI processing runs locally - your data never leaves your machine",
+                    title: t("about.corePrinciples.privacy.title"),
+                    description: t("about.corePrinciples.privacy.description"),
                   },
                   {
                     icon: "🚀",
-                    title: "Innovation",
-                    description: "Cutting-edge AI technology for professional video production",
+                    title: t("about.corePrinciples.innovation.title"),
+                    description: t("about.corePrinciples.innovation.description"),
                   },
                   {
                     icon: "🌍",
-                    title: "Open Source",
-                    description: "Free forever, built by the community for creators worldwide",
+                    title: t("about.corePrinciples.openSource.title"),
+                    description: t("about.corePrinciples.openSource.description"),
                   },
                 ].map((value, index) => (
                   <motion.div
