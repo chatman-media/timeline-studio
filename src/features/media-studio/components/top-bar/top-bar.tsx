@@ -16,7 +16,6 @@ import {
   Save,
   Upload,
   UserCog,
-  Wand2,
   Webcam,
 } from "lucide-react"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
@@ -178,7 +177,6 @@ const TopBarComponent = function TopBar() {
       voiceRecording: t("topBar.voiceRecording"),
       publish: t("topBar.publish"),
       editingTasks: t("topBar.editingTasks"),
-      montagePlanner: t("topBar.montagePlanner"),
       aiDirector: t("topBar.aiDirector"),
       aiDirectorReset: "Сбросить AI Director", // TODO: добавить в i18n
       export: t("topBar.export"),
@@ -382,17 +380,6 @@ const TopBarComponent = function TopBar() {
           <PublicationTasksDropdown />
 
           <RenderJobsDropdown />
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className={TOP_BAR_BUTTON_CLASS}
-            title={buttonTitles.montagePlanner}
-            onClick={() => handleOpenModal("montage-planner")}
-            data-testid="montage-planner-button"
-          >
-            <Wand2 className="h-5 w-5" />
-          </Button>
 
           <Button
             variant="ghost"

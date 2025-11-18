@@ -28,6 +28,7 @@ import { compressContext, isContextOverLimit } from "../utils/context-manager"
 import { convertToolsToUnifiedFormat, executeToolByName } from "../utils/convert-tools"
 import { createTimelineContextPrompt } from "../utils/timeline-context"
 import { ChatList } from "./chat-list"
+import { AISuggestionsPanel } from "./suggestions"
 
 const logger = createLogger({ module: "AiChat" })
 
@@ -675,6 +676,19 @@ export function AiChat() {
           {/* Input area - positioned at top when no messages */}
           {chatMessages.length === 0 && (
             <div className="p-4">
+              {/* AI Suggestions Panel */}
+              <AISuggestionsPanel
+                mediaFilesCount={resourceStats?.totalMedia || 0}
+                onPromptClick={(promptText) => {
+                  setMessage(promptText)
+                  // Автоматически фокусируем поле ввода
+                  setTimeout(() => {
+                    inputRef.current?.focus()
+                  }, 0)
+                }}
+                className="mb-3"
+              />
+
               {/* Подсказка для пустого проекта */}
               {resourceStats && resourceStats.totalMedia === 0 && (
                 <div className="mb-3 rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
@@ -880,6 +894,18 @@ export function AiChat() {
           {/* Input area when messages exist */}
           {chatMessages.length > 0 && (
             <div className="border-t border-border p-4">
+              {/* AI Suggestions Panel */}
+              <AISuggestionsPanel
+                mediaFilesCount={resourceStats?.totalMedia || 0}
+                onPromptClick={(promptText) => {
+                  setMessage(promptText)
+                  setTimeout(() => {
+                    inputRef.current?.focus()
+                  }, 0)
+                }}
+                className="mb-3"
+              />
+
               <div className="relative">
                 <textarea
                   ref={inputRef}
