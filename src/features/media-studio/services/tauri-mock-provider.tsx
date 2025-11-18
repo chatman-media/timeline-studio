@@ -54,9 +54,9 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
         },
         unregisterListener: (eventId: string) => {
           logger.info(`[TauriMock] Unregister listener: ${eventId}`)
-          const listeners = (window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners
+          const listeners = (window as any).__TAURI_EVENT_PLUGIN_INTERNALS__?.listeners
           // Add safety check to prevent accessing undefined listener
-          if (listeners[eventId] && listeners[eventId].handlerId !== undefined) {
+          if (listeners?.[eventId]?.handlerId !== undefined) {
             delete listeners[eventId]
           }
         },
