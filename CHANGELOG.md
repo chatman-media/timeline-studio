@@ -1,3 +1,10 @@
+# [3.9.0](https://github.com/chatman-media/timeline-studio/compare/v3.8.0...v3.9.0) (2025-11-18)
+
+
+### Features
+
+* **promo:** Добавить полную поддержку трёх языков для обновленных секций ([8367c1d](https://github.com/chatman-media/timeline-studio/commit/8367c1d549c6a618b7f6335cad63376092f011d4))
+
 # [3.8.0](https://github.com/chatman-media/timeline-studio/compare/v3.7.0...v3.8.0) (2025-11-18)
 
 
