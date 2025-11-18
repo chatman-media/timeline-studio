@@ -23,6 +23,9 @@ export * from "./components/analyzer-checkbox-group"
 export * from "./components/analyzer-preset-selector"
 export * from "./components/analyzer-progress-item"
 export * from "./components/file-analysis-progress"
+export * from "./components/montage-plan-editor"
+export * from "./components/montage-plan-preview"
+export * from "./components/montage-template-selector"
 // Hooks
 export * from "./hooks"
 // Services
@@ -61,3 +64,39 @@ export {
   getPresetById,
   validatePreset,
 } from "./types/analyzer-presets"
+// Montage plan types
+export type {
+  MontageClip,
+  MontageCreationState,
+  MontageCreationStatus,
+  MontageMusicSettings,
+  MontagePlan,
+  MontageRequest,
+  MontageStyle,
+  MontageTextSettings,
+  MontageTransition,
+  TransitionType,
+} from "./types/montage-plan"
+// Montage template types
+export type {
+  ClipSelectionRules,
+  MontageTemplate,
+  MontageTemplateParameters,
+  TransitionRules,
+} from "./types/montage-templates"
+export {
+  BUILT_IN_TEMPLATES,
+  getAllCategories,
+  getTemplateById,
+  getTemplatesByCategory,
+  searchTemplatesByTags,
+} from "./types/montage-templates"
+// Montage plan utilities
+export {
+  exportMontagePlan,
+  exportMultiplePlans,
+  exportPlanAsTemplate,
+  importMontagePlan,
+  importMultiplePlans,
+} from "./utils/montage-plan-io"
+export { parseMontagePlanFromAI, validateMontagePlan } from "./utils/montage-plan-parser"

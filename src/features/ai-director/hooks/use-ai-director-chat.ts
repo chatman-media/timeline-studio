@@ -9,7 +9,9 @@ import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { FileAnalysisProgress } from "../types/analysis-progress"
+import type { MontagePlan } from "../types/montage-plan"
 import { AI_DIRECTOR_SYSTEM_PROMPT, createAnalysisContext } from "../utils/director-prompts"
+import { parseMontagePlanFromAI } from "../utils/montage-plan-parser"
 
 const logger = createLogger("useAIDirectorChat")
 
@@ -21,21 +23,31 @@ interface ChatMessage {
   metadata?: Record<string, any>
 }
 
+interface UseAIDirectorChatOptions {
+  /** Callback когда AI создал план монтажа */
+  onMontagePlanCreated?: (plan: MontagePlan) => void
+}
+
 interface UseAIDirectorChatReturn {
   messages: ChatMessage[]
   isProcessing: boolean
   error: string | null
   sendMessage: (content: string) => Promise<void>
   clearMessages: () => void
+  lastMontagePlan: MontagePlan | null
 }
 
 /**
  * Hook для управления чатом с AI Director
  */
-export function useAIDirectorChat(filesProgress: FileAnalysisProgress[]): UseAIDirectorChatReturn {
+export function useAIDirectorChat(
+  filesProgress: FileAnalysisProgress[],
+  options?: UseAIDirectorChatOptions,
+): UseAIDirectorChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [lastMontagePlan, setLastMontagePlan] = useState<MontagePlan | null>(null)
   const [backendSync] = useState(() => getBackendSync())
 
   // Отправить сообщение в AI Director
@@ -93,15 +105,38 @@ export function useAIDirectorChat(filesProgress: FileAnalysisProgress[]): UseAID
           throw new Error(result.error || "No response from AI")
         }
 
+        const responseContent = (result.data as any).response
+
+        // Пробуем распарсить план монтажа если AI его создал
+        let montagePlan: MontagePlan | null = null
+        if (responseContent.includes("```json") || responseContent.includes("{")) {
+          montagePlan = parseMontagePlanFromAI(responseContent)
+
+          if (montagePlan) {
+            logger.infoSync("[useAIDirectorChat] Montage plan detected and parsed", {
+              planId: montagePlan.id,
+              clipsCount: montagePlan.clips.length,
+            })
+
+            setLastMontagePlan(montagePlan)
+
+            // Вызываем callback если передан
+            if (options?.onMontagePlanCreated) {
+              options.onMontagePlanCreated(montagePlan)
+            }
+          }
+        }
+
         // Добавляем ответ AI
         const assistantMessage: ChatMessage = {
           id: (result.data as any).message_id || `msg-ai-${Date.now()}`,
           role: "assistant",
-          content: (result.data as any).response,
+          content: responseContent,
           timestamp: new Date(),
           metadata: {
             model: (result.data as any).model || "claude-3-5-sonnet-20241022",
             usage: (result.data as any).usage,
+            montagePlan: montagePlan || undefined,
           },
         }
 
@@ -127,13 +162,14 @@ export function useAIDirectorChat(filesProgress: FileAnalysisProgress[]): UseAID
         setIsProcessing(false)
       }
     },
-    [filesProgress, backendSync],
+    [filesProgress, backendSync, options],
   )
 
   // Очистить историю сообщений
   const clearMessages = useCallback(() => {
     setMessages([])
     setError(null)
+    setLastMontagePlan(null)
     logger.infoSync("[useAIDirectorChat] Messages cleared")
   }, [])
 
@@ -143,5 +179,6 @@ export function useAIDirectorChat(filesProgress: FileAnalysisProgress[]): UseAID
     error,
     sendMessage,
     clearMessages,
+    lastMontagePlan,
   }
 }

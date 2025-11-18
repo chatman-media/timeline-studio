@@ -7,7 +7,7 @@
  * и помогает пользователю создать монтаж через естественный диалог
  */
 
-import { Bot, Lightbulb, Send, Sparkles } from "lucide-react"
+import { Bot, Lightbulb, Send, Sparkles, X } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -17,12 +17,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
 import { useAIDirectorChat } from "../hooks/use-ai-director-chat"
+import { useMontageApplicator } from "../hooks/use-montage-applicator"
 import type { FileAnalysisProgress } from "../types/analysis-progress"
+import type { MontagePlan } from "../types/montage-plan"
 import { createWelcomeMessage, DIRECTOR_PROMPT_EXAMPLES } from "../utils/director-prompts"
+import { MontagePlanPreview } from "./montage-plan-preview"
 
 interface AIDirectorChatProps {
   filesProgress: FileAnalysisProgress[]
-  onCreateMontage?: (plan: any) => void
+  onCreateMontage?: (plan: MontagePlan) => void
   className?: string
 }
 
@@ -33,13 +36,24 @@ interface ChatMessage {
   timestamp: Date
 }
 
-export function AIDirectorChat({ filesProgress, onCreateMontage: _onCreateMontage, className }: AIDirectorChatProps) {
+export function AIDirectorChat({ filesProgress, onCreateMontage, className }: AIDirectorChatProps) {
   // Используем hook для AI Director чата
-  const { messages: chatMessages, isProcessing, sendMessage } = useAIDirectorChat(filesProgress)
+  const {
+    messages: chatMessages,
+    isProcessing,
+    sendMessage,
+    lastMontagePlan,
+  } = useAIDirectorChat(filesProgress, {
+    onMontagePlanCreated: onCreateMontage,
+  })
+
+  // Hook для применения плана монтажа к timeline
+  const { applyMontagePlan } = useMontageApplicator()
 
   const [input, setInput] = useState("")
   const [showExamples, setShowExamples] = useState(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [showPreview, setShowPreview] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -47,6 +61,13 @@ export function AIDirectorChat({ filesProgress, onCreateMontage: _onCreateMontag
   useEffect(() => {
     setMessages(chatMessages)
   }, [chatMessages])
+
+  // Показываем preview когда AI создал план
+  useEffect(() => {
+    if (lastMontagePlan && !showPreview) {
+      setShowPreview(true)
+    }
+  }, [lastMontagePlan, showPreview])
 
   // Добавить приветственное сообщение один раз при инициализации
   useEffect(() => {
@@ -120,80 +141,128 @@ export function AIDirectorChat({ filesProgress, onCreateMontage: _onCreateMontag
   }
 
   return (
-    <Card className={cn("flex flex-col h-[600px]", className)}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
-          AI Director Chat
-        </CardTitle>
-        <CardDescription>Создавай монтаж через диалог с AI ассистентом</CardDescription>
-      </CardHeader>
+    <>
+      <Card className={cn("flex flex-col h-[600px]", className)}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            AI Director Chat
+          </CardTitle>
+          <CardDescription>Создавай монтаж через диалог с AI ассистентом</CardDescription>
+        </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-        {/* Messages */}
-        <ScrollArea className="flex-1 px-6" ref={scrollRef}>
-          <div className="space-y-4 py-4">
-            {messages.map((msg) => (
-              <MessageBubble key={msg.id} message={msg} />
-            ))}
-
-            {isProcessing && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Bot className="h-4 w-4 animate-pulse" />
-                <span className="text-sm">AI думает...</span>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-
-        {/* Examples (показываем только вначале) */}
-        {showExamples && messages.length <= 1 && (
-          <div className="px-6 py-3 border-t bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="h-4 w-4 text-primary" />
-              <span className="text-xs font-medium">Примеры запросов:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {DIRECTOR_PROMPT_EXAMPLES[0].prompts.slice(0, 2).map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-7"
-                  onClick={() => handleExampleClick(example)}
-                >
-                  {example}
-                </Button>
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+          {/* Messages */}
+          <ScrollArea className="flex-1 px-6" ref={scrollRef}>
+            <div className="space-y-4 py-4">
+              {messages.map((msg) => (
+                <MessageBubble key={msg.id} message={msg} />
               ))}
+
+              {isProcessing && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Bot className="h-4 w-4 animate-pulse" />
+                  <span className="text-sm">AI думает...</span>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+
+          {/* Examples (показываем только вначале) */}
+          {showExamples && messages.length <= 1 && (
+            <div className="px-6 py-3 border-t bg-muted/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Lightbulb className="h-4 w-4 text-primary" />
+                <span className="text-xs font-medium">Примеры запросов:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {DIRECTOR_PROMPT_EXAMPLES[0].prompts.slice(0, 2).map((example, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs h-7"
+                    onClick={() => handleExampleClick(example)}
+                  >
+                    {example}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="p-6 border-t bg-background">
+            <div className="flex gap-2">
+              <Textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Напиши что хочешь создать..."
+                className="min-h-[60px] resize-none"
+                disabled={isProcessing}
+              />
+              <Button
+                onClick={() => handleSend()}
+                disabled={!input.trim() || isProcessing}
+                size="icon"
+                className="h-[60px]"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Enter - отправить, Shift+Enter - новая строка</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Preview плана монтажа */}
+      {showPreview && lastMontagePlan && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowPreview(false)}
+        >
+          <div className="max-w-4xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="relative">
+              <Button
+                onClick={() => setShowPreview(false)}
+                variant="ghost"
+                size="icon"
+                className="absolute -top-2 -right-2 z-10 rounded-full bg-background shadow-lg"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <MontagePlanPreview
+                plan={lastMontagePlan}
+                onApply={async () => {
+                  try {
+                    // Применяем план к timeline
+                    // План может быть отредактирован внутри preview компонента
+                    await applyMontagePlan(lastMontagePlan, {
+                      useExistingTracks: false,
+                      onComplete: () => {
+                        if (onCreateMontage) {
+                          onCreateMontage(lastMontagePlan)
+                        }
+                        setShowPreview(false)
+                      },
+                      onError: (error) => {
+                        console.error("Failed to apply montage plan:", error)
+                        // TODO: показать пользователю ошибку
+                      },
+                    })
+                  } catch (error) {
+                    console.error("Failed to apply montage plan:", error)
+                  }
+                }}
+                onCancel={() => setShowPreview(false)}
+              />
             </div>
           </div>
-        )}
-
-        {/* Input */}
-        <div className="p-6 border-t bg-background">
-          <div className="flex gap-2">
-            <Textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Напиши что хочешь создать..."
-              className="min-h-[60px] resize-none"
-              disabled={isProcessing}
-            />
-            <Button
-              onClick={() => handleSend()}
-              disabled={!input.trim() || isProcessing}
-              size="icon"
-              className="h-[60px]"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">Enter - отправить, Shift+Enter - новая строка</p>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </>
   )
 }
 
