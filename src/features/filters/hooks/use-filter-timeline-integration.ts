@@ -4,7 +4,7 @@
  * Provides functionality to apply filters to timeline clips
  */
 
-import { useCallback } from "react"
+import { useCallback, useRef } from "react"
 
 import type { AppliedFilter } from "@/features/timeline/types/timeline"
 import type { VideoFilter } from "../types/filters"
@@ -43,12 +43,16 @@ interface UseFilterTimelineIntegrationReturn {
  * It works with the timeline-machine to update clip state.
  */
 export function useFilterTimelineIntegration(): UseFilterTimelineIntegrationReturn {
+  // Counter for generating unique IDs
+  const counterRef = useRef(0)
+
   /**
    * Create an AppliedFilter instance from a VideoFilter
    */
   const createAppliedFilter = useCallback((filter: VideoFilter, customParams?: Record<string, any>): AppliedFilter => {
+    counterRef.current += 1
     return {
-      id: `applied-${filter.id}-${Date.now()}`,
+      id: `applied-${filter.id}-${Date.now()}-${counterRef.current}`,
       filterId: filter.id,
       customParams: customParams || filter.params,
       isEnabled: true,
