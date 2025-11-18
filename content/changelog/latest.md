@@ -1,3 +1,29 @@
+## [3.13.1](https://github.com/chatman-media/timeline-studio/compare/v3.13.0...v3.13.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ai-chat:** Добавить фильтрацию невалидных инструментов ([9785b07](https://github.com/chatman-media/timeline-studio/commit/9785b07fbfc340284d52aba0f7c4edd9ff4433d3))
+* **ai-chat:** Исправить селектор моделей в чате ([248d2b5](https://github.com/chatman-media/timeline-studio/commit/248d2b514ebf167ff71e665bdfa7b03ec27211e2))
+* **tauri:** Добавить проверки окружения Tauri ([5c4b205](https://github.com/chatman-media/timeline-studio/commit/5c4b2055558093cba11a5019ae52e8cd5cfe29bb))
+
+# [3.13.0](https://github.com/chatman-media/timeline-studio/compare/v3.12.0...v3.13.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Исправить ошибку forwardRef в lucide-react ([4520367](https://github.com/chatman-media/timeline-studio/commit/4520367276fd7adf6fcd8fc2c66c2e59e75d1c77))
+
+
+### Features
+
+* **promo:** Add beautiful table styling to Project markdown ([d2fe5df](https://github.com/chatman-media/timeline-studio/commit/d2fe5df992f560dc516af1358da03b1dd11a839f))
+* **promo:** Add translations for investor section and fix link ([35e0897](https://github.com/chatman-media/timeline-studio/commit/35e0897d23ceac6c59c010b5c1c5584d840a35b7))
+* **promo:** Remove Project from navigation and add investor section to About ([cbb244b](https://github.com/chatman-media/timeline-studio/commit/cbb244bb2b8396eb34f79e057611fff5c1fed49d))
+* **promo:** Remove Quick Links section from Project page ([9e1b5a5](https://github.com/chatman-media/timeline-studio/commit/9e1b5a59c7fa01731f8529f8f74a1c2f898ae528))
+* **promo:** Replace all emoji icons with Lucide icons ([3b5b2e3](https://github.com/chatman-media/timeline-studio/commit/3b5b2e383367ea683fb48798c8f928548f70986b))
+* Remove icons from Project page and bump version to 3.13.0 ([083ba9a](https://github.com/chatman-media/timeline-studio/commit/083ba9a79a19f733865d8e7c27bf1651a8c1ec72))
+
 # [3.12.0](https://github.com/chatman-media/timeline-studio/compare/v3.11.0...v3.12.0) (2025-11-18)
 
 
