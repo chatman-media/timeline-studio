@@ -12,6 +12,7 @@ import {
   PanelLeftOpen,
   PanelRightClose,
   PanelRightOpen,
+  RefreshCw,
   Save,
   Upload,
   UserCog,
@@ -117,6 +118,12 @@ const TopBarComponent = function TopBar() {
     }
   }, [openProject, clearBrowserState])
 
+  const handleResetAIDirector = useCallback(() => {
+    logger.info("Resetting AI Director modal")
+    // Закрываем и сразу переоткрываем модалку для сброса состояния
+    openModal("ai-director")
+  }, [openModal])
+
   const handleCreateNewProject = useCallback(async () => {
     try {
       // Создаем новый проект с настройками по умолчанию
@@ -173,6 +180,7 @@ const TopBarComponent = function TopBar() {
       editingTasks: t("topBar.editingTasks"),
       montagePlanner: t("topBar.montagePlanner"),
       aiDirector: t("topBar.aiDirector"),
+      aiDirectorReset: "Сбросить AI Director", // TODO: добавить в i18n
       export: t("topBar.export"),
     }),
     [t, isBrowserVisible, isTimelineVisible, currentProject?.isDirty],
@@ -395,6 +403,17 @@ const TopBarComponent = function TopBar() {
             data-testid="ai-director-button"
           >
             <Brain className="h-5 w-5" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={TOP_BAR_BUTTON_CLASS}
+            title={buttonTitles.aiDirectorReset}
+            onClick={handleResetAIDirector}
+            data-testid="ai-director-reset-button"
+          >
+            <RefreshCw className="h-4 w-4" />
           </Button>
 
           <Button

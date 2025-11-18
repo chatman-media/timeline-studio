@@ -417,6 +417,14 @@ export function AIAnalysisDashboard() {
           {(isAnalyzing || currentProgress) && <AIDirectorProgress showOnlyWhenActive />}
 
           {/* Results */}
+          {(() => {
+            logger.infoSync("[AIAnalysisDashboard] Проверка условия рендеринга результатов", {
+              hasResult: !!result,
+              isAnalyzing,
+              willRender: !!(result && !isAnalyzing),
+            })
+            return null
+          })()}
           {result && !isAnalyzing && (
             <Card>
               <CardHeader>
