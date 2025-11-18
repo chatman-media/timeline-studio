@@ -18,6 +18,7 @@ export type ComprehensiveAnalysisResult = any
 
 // Components
 export * from "./components/ai-director-chat"
+export * from "./components/ai-director-dashboard"
 export * from "./components/ai-director-modal"
 export * from "./components/analyzer-checkbox-group"
 export * from "./components/analyzer-preset-selector"
@@ -64,6 +65,22 @@ export {
   getPresetById,
   validatePreset,
 } from "./types/analyzer-presets"
+// Dashboard types
+export type {
+  AgentStatus,
+  AgentType,
+  AIAgent,
+  DashboardState,
+  DashboardStats,
+  QuickAction,
+  WorkflowTemplate,
+} from "./types/dashboard"
+export {
+  AGENT_TYPE_DESCRIPTIONS,
+  AGENT_TYPE_ICONS,
+  AGENT_TYPE_NAMES,
+  BUILT_IN_WORKFLOWS,
+} from "./types/dashboard"
 // Montage plan types
 export type {
   MontageClip,
