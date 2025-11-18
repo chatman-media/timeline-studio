@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/chatman-media/timeline-studio/compare/v3.0.0...v3.1.0) (2025-11-18)
+
+
+### Features
+
+* **top-bar:** Добавить кнопку рефреша AI Director в топ бар ([8a84cfc](https://github.com/chatman-media/timeline-studio/commit/8a84cfcac74d568476a2b3b21b1a648f4a7fd3ea))
+
 # [3.0.0](https://github.com/chatman-media/timeline-studio/compare/v2.13.0...v3.0.0) (2025-11-18)
 
 
