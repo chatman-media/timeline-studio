@@ -1,3 +1,16 @@
+# [3.11.0](https://github.com/chatman-media/timeline-studio/compare/v3.10.0...v3.11.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **promo:** Исправить конфигурацию для lucide-react ([14b9698](https://github.com/chatman-media/timeline-studio/commit/14b969834ba9259b412a5612d88f4b1c1853c2cb))
+* **vision:** Добавить AppHandle для progress tracking в Vision Analyzer ([4b29023](https://github.com/chatman-media/timeline-studio/commit/4b290239f8912d8f8f92981c691f838e0c869ddf))
+
+
+### Features
+
+* **mcp:** Добавить 18 MCP Tools как IAITool адаптеры для AI Chat ([dcc5f6c](https://github.com/chatman-media/timeline-studio/commit/dcc5f6c03c0d2e548d5672266689c271b530776d))
+
 # [3.10.0](https://github.com/chatman-media/timeline-studio/compare/v3.9.0...v3.10.0) (2025-11-18)
 
 
