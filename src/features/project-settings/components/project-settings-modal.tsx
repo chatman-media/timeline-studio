@@ -256,37 +256,6 @@ export function ProjectSettingsModal() {
                   // Вычисляем новую высоту на основе соотношения сторон
                   const newHeight = Math.round(width / aspectRatio)
                   setCustomHeight(newHeight)
-
-                  // Обновляем настройки проекта с новыми размерами,
-                  // сохраняя соотношение сторон
-                  const newSettings = {
-                    ...settings,
-                    aspectRatio: {
-                      ...settings.aspectRatio,
-                      value: {
-                        ...settings.aspectRatio.value,
-                        width,
-                        height: newHeight,
-                      },
-                    },
-                    resolution: `${width}x${newHeight}`,
-                  }
-                  void updateSettings(newSettings)
-                } else {
-                  // Если соотношение сторон не заблокировано или пользовательское,
-                  // просто обновляем ширину без изменения высоты
-                  const newSettings = {
-                    ...settings,
-                    aspectRatio: {
-                      ...settings.aspectRatio,
-                      value: {
-                        ...settings.aspectRatio.value,
-                        width,
-                      },
-                    },
-                    resolution: `${width}x${customHeight}`,
-                  }
-                  void updateSettings(newSettings)
                 }
               }
             }}
@@ -316,37 +285,6 @@ export function ProjectSettingsModal() {
                   // Вычисляем новую ширину на основе соотношения сторон
                   const newWidth = Math.round(height * aspectRatio)
                   setCustomWidth(newWidth)
-
-                  // Обновляем настройки проекта с новыми размерами,
-                  // сохраняя соотношение сторон
-                  const newSettings = {
-                    ...settings,
-                    aspectRatio: {
-                      ...settings.aspectRatio,
-                      value: {
-                        ...settings.aspectRatio.value,
-                        width: newWidth,
-                        height,
-                      },
-                    },
-                    resolution: `${newWidth}x${height}`,
-                  }
-                  void updateSettings(newSettings)
-                } else {
-                  // Если соотношение сторон не заблокировано или пользовательское,
-                  // просто обновляем высоту без изменения ширины
-                  const newSettings = {
-                    ...settings,
-                    aspectRatio: {
-                      ...settings.aspectRatio,
-                      value: {
-                        ...settings.aspectRatio.value,
-                        height,
-                      },
-                    },
-                    resolution: `${customWidth}x${height}`,
-                  }
-                  void updateSettings(newSettings)
                 }
               }
             }}
