@@ -1,3 +1,17 @@
+# [3.14.0](https://github.com/chatman-media/timeline-studio/compare/v3.13.1...v3.14.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **security:** Добавить поддержку MCP Claude в env importer ([e5993e3](https://github.com/chatman-media/timeline-studio/commit/e5993e34eb2dddf0684ce8202992faaabdb21973))
+* **security:** Добавить поддержку типа API ключа mcp_claude ([ce1a8ae](https://github.com/chatman-media/timeline-studio/commit/ce1a8ae81995e7b51e7cbc70199bf1a88c918e07))
+* Исправить тесты и улучшить AI интеграцию ([bca746e](https://github.com/chatman-media/timeline-studio/commit/bca746eb428ccf31912119761b885ff6e15a4f7f))
+
+
+### Features
+
+* **ai-chat:** Приоритет локальных моделей при автовыборе ([9771d29](https://github.com/chatman-media/timeline-studio/commit/9771d29b469a71be233dad74309a14ba5c36948b))
+
 ## [3.13.1](https://github.com/chatman-media/timeline-studio/compare/v3.13.0...v3.13.1) (2025-11-18)
 
 
