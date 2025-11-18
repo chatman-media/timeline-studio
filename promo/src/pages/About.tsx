@@ -288,16 +288,14 @@ export const About: React.FC = () => {
               className="max-w-3xl mx-auto text-center"
             >
               <h2 className="text-3xl md:text-4xl mb-6">
-                <span className="text-gradient">For Investors</span>
+                <span className="text-gradient">{t("about.investor.title")}</span>
               </h2>
-              <p className="text-lg text-gray-400 mb-8">
-                Interested in investing? View our detailed project documentation, business plan, and financial projections.
-              </p>
+              <p className="text-lg text-gray-400 mb-8">{t("about.investor.description")}</p>
               <a
-                href="/project"
+                href="/#/project"
                 className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all"
               >
-                View Investment Documentation
+                {t("about.investor.viewDocs")}
               </a>
             </motion.div>
           </div>
