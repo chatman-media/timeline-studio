@@ -1017,8 +1017,10 @@ impl AIDirector {
     let api_key = config.ai_api_key.clone().unwrap_or_else(String::new); // Для Ollama ключ не нужен
 
     // Запускаем анализ
+    // Note: AI Director не имеет прямого доступа к Tauri AppHandle, поэтому передаем None
+    // Progress tracking будет работать только при прямом вызове через команды
     analyzer
-      .analyze_video(&media_path.to_path_buf(), &api_key, vlm_config)
+      .analyze_video(&media_path.to_path_buf(), &api_key, vlm_config, None)
       .await
       .map_err(|e| anyhow::anyhow!("Vision Language Model analysis failed: {}", e))
   }

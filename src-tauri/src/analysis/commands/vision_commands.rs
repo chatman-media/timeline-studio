@@ -412,6 +412,7 @@ pub async fn analyze_video_with_vision_model(
   temperature: Option<f64>,
   max_tokens: Option<u32>,
   analyzer_state: State<'_, VisionAnalyzerState>,
+  app_handle: tauri::AppHandle,
 ) -> Result<VLMAnalysisResult, String> {
   log::info!(
     "Analyzing video with vision model: {} ({})",
@@ -441,7 +442,7 @@ pub async fn analyze_video_with_vision_model(
   let analyzer = analyzer_state.analyzer.read().await;
 
   let result = analyzer
-    .analyze_video(&path, &api_key, config)
+    .analyze_video(&path, &api_key, config, Some(&app_handle))
     .await
     .map_err(|e| format!("Vision analysis failed: {}", e))?;
 
@@ -482,7 +483,7 @@ pub async fn analyze_video_with_vision_model_secure(
   let key_type = ApiKeyType::from_str(&provider.to_lowercase())
     .map_err(|_| format!("Invalid provider for secure storage: {}", provider))?;
 
-  let mut secure_storage = SecureStorage::new(app_handle)
+  let mut secure_storage = SecureStorage::new(app_handle.clone())
     .map_err(|e| format!("Failed to initialize secure storage: {}", e))?;
 
   let api_key = secure_storage
@@ -506,6 +507,7 @@ pub async fn analyze_video_with_vision_model_secure(
     temperature,
     max_tokens,
     analyzer_state,
+    app_handle,
   )
   .await
 }

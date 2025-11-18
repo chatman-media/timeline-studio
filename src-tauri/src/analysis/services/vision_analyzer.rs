@@ -160,7 +160,12 @@ impl VisionAnalyzer {
     if let Some(handle) = app_handle {
       let _ = handle.emit(
         "vlm-progress",
-        VLMProgressEvent::new(0, config.num_frames + 1, "Initializing analysis...".to_string(), None),
+        VLMProgressEvent::new(
+          0,
+          config.num_frames + 1,
+          "Initializing analysis...".to_string(),
+          None,
+        ),
       );
     }
 
