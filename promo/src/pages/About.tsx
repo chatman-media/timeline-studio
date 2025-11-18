@@ -223,7 +223,7 @@ export const About: React.FC = () => {
                     </div>
 
                     <div className="relative p-6 h-full">
-                      <value.Icon className="w-8 h-8 text-white mb-3" />
+                      <value.Icon className="w-5 h-5 text-gray-400 mb-3" />
                       <h3 className="text-lg font-medium text-white mb-2">{value.title}</h3>
                       <p className="text-gray-400 text-sm">{value.description}</p>
                     </div>
