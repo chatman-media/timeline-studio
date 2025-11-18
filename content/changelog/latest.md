@@ -1,3 +1,36 @@
+# [2.13.0](https://github.com/chatman-media/timeline-studio/compare/v2.12.0...v2.13.0) (2025-11-16)
+
+
+### Bug Fixes
+
+* **browser:** Добавить синхронизацию tabSettings и selectedFiles при инициализации ([5a9d438](https://github.com/chatman-media/timeline-studio/commit/5a9d4388688a5cf60bae41057dd349160dc39a85))
+* **browser:** Использовать прямые Tauri команды вместо executeCommand ([4d9480c](https://github.com/chatman-media/timeline-studio/commit/4d9480c21a0a119d3a8d08295ab854a921699afd))
+* **ci:** Оптимизировать использование дискового пространства в GitHub Actions ([af7dfdb](https://github.com/chatman-media/timeline-studio/commit/af7dfdbdb067e4bc64e55a1c610a2f333e60f8e8))
+
+
+### Features
+
+* **browser:** Изменить порядок элементов в тулбаре Media и Music ([3ada320](https://github.com/chatman-media/timeline-studio/commit/3ada320cf1fecd0d63376e4e80ac2f58c9de7260))
+* **templates:** Добавить PiP и профессиональные шаблоны в TEMPLATE_MAP ([d5f4e5a](https://github.com/chatman-media/timeline-studio/commit/d5f4e5acad22721777bc88da3070f21370e0640a))
+
+# [2.12.0](https://github.com/chatman-media/timeline-studio/compare/v2.11.7...v2.12.0) (2025-11-16)
+
+
+### Bug Fixes
+
+* **backend-sync:** Исправить отображение импортированных медиафайлов в Browser ([1793507](https://github.com/chatman-media/timeline-studio/commit/17935078af39607456fb7898983c47687dc033ce))
+* **backend:** Исправить типы added_at с i64 на f64 для Specta совместимости ([1fbfcaf](https://github.com/chatman-media/timeline-studio/commit/1fbfcafa974419cd1d18947564b97f0d9762a6f9))
+* **templates:** Исправить биome lint warnings ([3e922bd](https://github.com/chatman-media/timeline-studio/commit/3e922bd1da062357b457797f28b5dc743147d604))
+
+
+### Features
+
+* **backend:** Добавить Undo/Redo и ColorGrading команды ([ed0c4bc](https://github.com/chatman-media/timeline-studio/commit/ed0c4bc5c4dfd32a531386a0843ccea91b46d6a0))
+* **frontend:** Добавить backend event handlers для всех провайдеров ([1db250d](https://github.com/chatman-media/timeline-studio/commit/1db250d88204d1f99e5f6cd2c85c694a6280113b))
+* **providers:** Мигрировать все провайдеры на event-driven архитектуру ([2b71c86](https://github.com/chatman-media/timeline-studio/commit/2b71c86f8ebf8f12928e0513a340ae13aa3cafd3))
+* **resources:** Полная интеграция всех типов ресурсов с backend хранилищем ([cbe8eae](https://github.com/chatman-media/timeline-studio/commit/cbe8eae5404ed471c74d19aebc672d8736ad333e))
+* **templates:** Добавить 46 профессиональных многокамерных шаблонов ([855daa0](https://github.com/chatman-media/timeline-studio/commit/855daa088dd0cdd5728b1178da0f794639d05b40))
+
 ## [2.11.7](https://github.com/chatman-media/timeline-studio/compare/v2.11.6...v2.11.7) (2025-11-11)
 
 
