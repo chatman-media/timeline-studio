@@ -1,3 +1,13 @@
+## [3.14.2](https://github.com/chatman-media/timeline-studio/compare/v3.14.1...v3.14.2) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Добавить state-types в репозиторий для CI ([dd6b19a](https://github.com/chatman-media/timeline-studio/commit/dd6b19ae0d7cd797c051279354808bdc8008496d))
+* **ci:** Добавить установку promo зависимостей в typecheck ([78d9430](https://github.com/chatman-media/timeline-studio/commit/78d94305bd8980e48cddde7cce9e50b792f63612))
+* **rust:** Исправить clippy warnings ([be82e9f](https://github.com/chatman-media/timeline-studio/commit/be82e9fbaf87754f6b5aa360387f3da08269449b))
+* **typescript:** Исправить ошибки типов в TypeScript ([81ecd9e](https://github.com/chatman-media/timeline-studio/commit/81ecd9e4cc86cc9dd32448ef3220ec363ea0e39f))
+
 ## [3.14.1](https://github.com/chatman-media/timeline-studio/compare/v3.14.0...v3.14.1) (2025-11-18)
 
 
