@@ -45,6 +45,7 @@ impl ApiValidator {
     match key_type {
       ApiKeyType::OpenAI => self.validate_openai_key(value).await,
       ApiKeyType::Claude => self.validate_claude_key(value).await,
+      ApiKeyType::MCPClaude => self.validate_claude_key(value).await, // MCP использует тот же Claude API
       ApiKeyType::DeepSeek => self.validate_deepseek_key(value).await,
       ApiKeyType::Grok => self.validate_grok_key(value).await,
       ApiKeyType::YouTube => self.validate_youtube_oauth(value).await,

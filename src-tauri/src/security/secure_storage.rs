@@ -14,6 +14,7 @@ pub enum ApiKeyType {
   // AI сервисы
   OpenAI,
   Claude,
+  MCPClaude, // MCP (Model Context Protocol) с Claude backend
   DeepSeek,
   Grok,
 
@@ -33,6 +34,7 @@ impl ApiKeyType {
     match self {
       ApiKeyType::OpenAI => "openai",
       ApiKeyType::Claude => "claude",
+      ApiKeyType::MCPClaude => "mcp_claude",
       ApiKeyType::DeepSeek => "deepseek",
       ApiKeyType::Grok => "grok",
       ApiKeyType::YouTube => "youtube",
@@ -52,6 +54,7 @@ impl FromStr for ApiKeyType {
     match s {
       "openai" => Ok(ApiKeyType::OpenAI),
       "claude" => Ok(ApiKeyType::Claude),
+      "mcp_claude" => Ok(ApiKeyType::MCPClaude),
       "deepseek" => Ok(ApiKeyType::DeepSeek),
       "grok" => Ok(ApiKeyType::Grok),
       "youtube" => Ok(ApiKeyType::YouTube),
