@@ -1,3 +1,17 @@
+# [3.6.0](https://github.com/chatman-media/timeline-studio/compare/v3.5.0...v3.6.0) (2025-11-18)
+
+
+### Features
+
+* **ai-chat:** добавить AI Suggestions Panel с умными контекстными промтами ([36843d9](https://github.com/chatman-media/timeline-studio/commit/36843d93ac35c6ed2b3cbe8b298f8e56e9312155))
+
+# [3.5.0](https://github.com/chatman-media/timeline-studio/compare/v3.4.2...v3.5.0) (2025-11-18)
+
+
+### Features
+
+* **mcp:** Интегрировать MCP с существующим AI чатом через IAITool адаптеры ([5f3542a](https://github.com/chatman-media/timeline-studio/commit/5f3542a2e355fd2ded8f91c538fde5fc1012ae02))
+
 ## [3.4.2](https://github.com/chatman-media/timeline-studio/compare/v3.4.1...v3.4.2) (2025-11-18)
 
 
