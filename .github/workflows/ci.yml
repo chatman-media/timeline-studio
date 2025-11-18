@@ -255,6 +255,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile || bun install
 
+      - name: Install promo dependencies
+        run: |
+          cd promo
+          bun install --frozen-lockfile || bun install
+          cd ..
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
