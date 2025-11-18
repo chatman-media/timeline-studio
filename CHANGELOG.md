@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/chatman-media/timeline-studio/compare/v3.7.0...v3.8.0) (2025-11-18)
+
+
+### Features
+
+* **promo:** Добавить i18n поддержку для главной страницы на 3 языках ([0cd5258](https://github.com/chatman-media/timeline-studio/commit/0cd5258db008c44858c04a27a8bd6c5b9857b6cc))
+
 # [3.7.0](https://github.com/chatman-media/timeline-studio/compare/v3.6.0...v3.7.0) (2025-11-18)
 
 
