@@ -5,7 +5,7 @@
  * Simplified dashboard working directly with AI Director (file-centric, not project-based)
  */
 
-import { CheckCircle2, Circle, FileVideo, Play, Settings, Video, Zap } from "lucide-react"
+import { CheckCircle2, Circle, FileVideo, Play, RefreshCw, Settings, Video, Zap } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -120,6 +120,14 @@ export function AIAnalysisDashboard() {
       showSetupPanelWillBe: !isAnalyzing && !result,
     })
   }, [rawResult, result, isAnalyzing])
+
+  // Reset all state to default
+  const handleReset = () => {
+    logger.infoSync("[AIAnalysisDashboard] Сброс всего состояния дашборда")
+    clearResult()
+    setSelectedMediaIds(new Set())
+    setAnalysisMode("balanced")
+  }
 
   // Show setup panel only when no analysis is running and no results exist
   const showSetupPanel = !isAnalyzing && !result
@@ -236,6 +244,17 @@ export function AIAnalysisDashboard() {
           </h1>
           <p className="text-muted-foreground mt-1">Комплексный AI анализ видео - сцены, моменты, аудио, контент</p>
         </div>
+
+        {/* Reset Button */}
+        <Button
+          onClick={handleReset}
+          variant="outline"
+          size="icon"
+          className="h-10 w-10"
+          title="Сбросить все настройки и результаты"
+        >
+          <RefreshCw className="h-5 w-5" />
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
