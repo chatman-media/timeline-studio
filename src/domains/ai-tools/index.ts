@@ -206,15 +206,16 @@ export const AI_TOOLS_DOMAIN_INFO = {
     "integration", // Интеграция (export, platform-integration)
   ] as const,
 
-  // Общее количество поддерживаемых инструментов
-  totalSupportedTools: 48,
+  // Общее количество поддерживаемых инструментов (включая 18 MCP Tools)
+  totalSupportedTools: 66,
 
   // Статистика по доменам
   toolsByDomain: {
-    core: 18,
-    analysis: 15,
-    automation: 10,
-    integration: 5,
+    core: 24, // 18 + 6 MCP (timeline + project + browser)
+    analysis: 19, // 15 + 4 MCP (video + audio analysis)
+    automation: 14, // 10 + 4 MCP (effects)
+    integration: 7, // 5 + 2 MCP (export)
+    mcp: 18, // Все MCP инструменты
   },
 
   // Возможности

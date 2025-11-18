@@ -10,6 +10,45 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::process::Command;
 use std::sync::Arc;
+use tauri::{AppHandle, Emitter};
+
+/// Progress event for VLM analysis
+#[derive(Debug, Clone, Serialize, specta::Type)]
+pub struct VLMProgressEvent {
+  /// Current step (0-based index)
+  pub current: u32,
+
+  /// Total number of steps
+  pub total: u32,
+
+  /// Progress percentage (0-100)
+  pub percentage: u32,
+
+  /// Current status message
+  pub status: String,
+
+  /// Current frame timestamp (if applicable)
+  pub timestamp: Option<f64>,
+}
+
+impl VLMProgressEvent {
+  /// Create a new progress event
+  pub fn new(current: u32, total: u32, status: String, timestamp: Option<f64>) -> Self {
+    let percentage = if total > 0 {
+      ((current as f64 / total as f64) * 100.0) as u32
+    } else {
+      0
+    };
+
+    Self {
+      current,
+      total,
+      percentage,
+      status,
+      timestamp,
+    }
+  }
+}
 
 /// Vision Analysis Configuration
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
@@ -97,11 +136,18 @@ impl VisionAnalyzer {
   ///
   /// Extracts key frames, sends them to vision model, and returns analysis results
   /// Uses streaming approach to minimize memory usage
+  ///
+  /// # Arguments
+  /// * `video_path` - Path to the video file
+  /// * `api_key` - API key for the AI provider
+  /// * `config` - Vision analysis configuration
+  /// * `app_handle` - Optional Tauri app handle for progress events (None for testing)
   pub async fn analyze_video(
     &self,
     video_path: &PathBuf,
     api_key: &str,
     config: VisionAnalysisConfig,
+    app_handle: Option<&AppHandle>,
   ) -> Result<VLMAnalysisResult> {
     let start_time = std::time::Instant::now();
 
@@ -109,6 +155,14 @@ impl VisionAnalyzer {
       "Starting vision analysis of {:?} with {} frames (batch size: {})",
       video_path, config.num_frames, config.max_batch_size
     );
+
+    // Emit initial progress event
+    if let Some(handle) = app_handle {
+      let _ = handle.emit(
+        "vlm-progress",
+        VLMProgressEvent::new(0, config.num_frames + 1, "Initializing analysis...".to_string(), None),
+      );
+    }
 
     // Get video duration first
     let duration = self.get_video_duration(video_path)?;
@@ -126,6 +180,21 @@ impl VisionAnalyzer {
 
       // Extract and analyze frames in this batch
       for &timestamp in chunk {
+        let current_frame = frame_analyses.len() as u32 + 1;
+
+        // Emit progress event for frame extraction
+        if let Some(handle) = app_handle {
+          let _ = handle.emit(
+            "vlm-progress",
+            VLMProgressEvent::new(
+              current_frame,
+              config.num_frames + 1,
+              format!("Extracting frame at {:.1}s...", timestamp),
+              Some(timestamp),
+            ),
+          );
+        }
+
         // Extract single frame
         let base64_image = self.extract_single_frame(video_path, timestamp)?;
 
@@ -134,6 +203,19 @@ impl VisionAnalyzer {
           timestamp,
           base64_image.len()
         );
+
+        // Emit progress event for frame analysis
+        if let Some(handle) = app_handle {
+          let _ = handle.emit(
+            "vlm-progress",
+            VLMProgressEvent::new(
+              current_frame,
+              config.num_frames + 1,
+              format!("Analyzing frame at {:.1}s...", timestamp),
+              Some(timestamp),
+            ),
+          );
+        }
 
         // Analyze frame
         let analysis = self
@@ -152,6 +234,19 @@ impl VisionAnalyzer {
       );
     }
 
+    // Emit progress event for summary generation
+    if let Some(handle) = app_handle {
+      let _ = handle.emit(
+        "vlm-progress",
+        VLMProgressEvent::new(
+          config.num_frames,
+          config.num_frames + 1,
+          "Generating overall summary...".to_string(),
+          None,
+        ),
+      );
+    }
+
     // Generate overall summary
     let overall_summary = self
       .generate_overall_summary(&frame_analyses, api_key, &config)
@@ -161,6 +256,19 @@ impl VisionAnalyzer {
     let themes = self.extract_themes(&frame_analyses);
 
     let processing_time = start_time.elapsed().as_millis() as u32;
+
+    // Emit final progress event
+    if let Some(handle) = app_handle {
+      let _ = handle.emit(
+        "vlm-progress",
+        VLMProgressEvent::new(
+          config.num_frames + 1,
+          config.num_frames + 1,
+          "Analysis complete!".to_string(),
+          None,
+        ),
+      );
+    }
 
     info!(
       "Vision analysis completed in {}ms, analyzed {} frames",

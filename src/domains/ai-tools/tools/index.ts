@@ -16,15 +16,19 @@ export * from "./automation"
 export * from "./core"
 // Integration Tools
 export * from "./integration"
+// MCP Tools
+export * from "./mcp"
 
 import { ANALYSIS_TOOLS_STATS, analysisTools } from "./analysis"
 import { AUTOMATION_TOOLS_STATS, automationTools } from "./automation"
 // Импорты для статистики
 import { CORE_TOOLS_STATS, coreTools } from "./core"
 import { INTEGRATION_TOOLS_STATS, integrationTools } from "./integration"
+// MCP Tools
+import { allMCPTools } from "./mcp"
 
-// Все инструменты домена
-export const allAITools = [...coreTools, ...analysisTools, ...automationTools, ...integrationTools]
+// Все инструменты домена (48 + 18 MCP = 66 total)
+export const allAITools = [...coreTools, ...analysisTools, ...automationTools, ...integrationTools, ...allMCPTools]
 
 // Статистика по всем инструментам
 export const AI_TOOLS_DOMAIN_STATS = {
