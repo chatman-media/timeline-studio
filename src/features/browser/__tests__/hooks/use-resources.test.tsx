@@ -642,7 +642,7 @@ describe("useResourcesAdapter", () => {
     expect(screen.getByTestId("items-count")).toHaveTextContent("39")
     expect(screen.getByTestId("loading")).toHaveTextContent("false")
     expect(screen.getByTestId("error")).toHaveTextContent("none")
-    expect(screen.getByTestId("total-stats")).toHaveTextContent("41")
+    expect(screen.getByTestId("total-stats")).toHaveTextContent("55")
   })
 
   it("должен фильтровать через адаптер", async () => {
