@@ -1,3 +1,10 @@
+## [3.4.2](https://github.com/chatman-media/timeline-studio/compare/v3.4.1...v3.4.2) (2025-11-18)
+
+
+### Performance Improvements
+
+* **promo:** Убрать анимированные градиенты фона для улучшения производительности ([31f53a7](https://github.com/chatman-media/timeline-studio/commit/31f53a74d79862c3ae7687ffc2abf3731e2e1ee7)), closes [#0f172a](https://github.com/chatman-media/timeline-studio/issues/0f172a)
+
 ## [3.4.1](https://github.com/chatman-media/timeline-studio/compare/v3.4.0...v3.4.1) (2025-11-18)
 
 
