@@ -459,7 +459,7 @@ jobs:
             echo "cargo-llvm-cov not found, running tests without coverage"
             # Use wrapper script to handle FFmpeg mutex cleanup issue
             if [ -f ./run-tests.sh ]; then
-              ./run-tests.sh --bins --tests -- --test-threads=2
+              ./run-tests.sh --lib --bins --tests -- --test-threads=2
             else
               cargo test --lib --bins --tests -- --test-threads=2
             fi
@@ -469,7 +469,7 @@ jobs:
           if command -v cargo2junit &> /dev/null && [ ! -f "../test-results/rust-junit.xml" ]; then
             # Use wrapper script for JUnit report generation
             if [ -f ./run-tests.sh ]; then
-              ./run-tests.sh --no-fail-fast --message-format json -- --test-threads=2 2>/dev/null | cargo2junit > ../test-results/rust-junit.xml || echo "cargo2junit failed"
+              ./run-tests.sh --lib --no-fail-fast --message-format json -- --test-threads=2 2>/dev/null | cargo2junit > ../test-results/rust-junit.xml || echo "cargo2junit failed"
             else
               cargo test --lib --no-fail-fast --message-format json -- --test-threads=2 2>/dev/null | cargo2junit > ../test-results/rust-junit.xml || echo "cargo2junit failed"
             fi
