@@ -246,14 +246,8 @@ const Docs: React.FC = () => {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 hero-gradient opacity-50" />
-
-          {/* Animated background elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700" />
-          </div>
+          {/* Background */}
+          <div className="absolute inset-0 hero-gradient" />
 
           <div className="relative container mx-auto px-6 md:px-8 lg:px-12">
             <motion.div

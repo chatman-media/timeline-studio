@@ -78,14 +78,8 @@ export const Project: React.FC = () => {
       <main className="flex-1">
         {/* Hero Banner */}
         <section className="relative pt-32 pb-20 overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 hero-gradient opacity-50" />
-
-          {/* Animated background elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700" />
-          </div>
+          {/* Background */}
+          <div className="absolute inset-0 hero-gradient" />
 
           <div className="relative container mx-auto px-10 md:px-16 lg:px-24">
             <motion.div
@@ -105,7 +99,7 @@ export const Project: React.FC = () => {
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
               <div className="flex items-center justify-center space-x-4 text-gray-400">
-                <span>{language === "ru" ? "Версия 1.40.0" : "Version 1.40.0"}</span>
+                <span>{language === "ru" ? "Версия 3.2" : "Version 3.2"}</span>
                 <span>•</span>
                 <span>{language === "ru" ? "95% готовности" : "95% ready"}</span>
                 <span>•</span>
