@@ -11,7 +11,7 @@ export const Project: React.FC = () => {
   const { language, t } = useLanguage()
   const [markdownContent, setMarkdownContent] = useState("")
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("manifest")
+  const [activeTab, setActiveTab] = useState("business")
 
   // Определяем вкладки
   const tabs = [
@@ -29,11 +29,6 @@ export const Project: React.FC = () => {
       id: "investment",
       title: language === "ru" ? "Инвестиции" : "Investment",
       path: "investment-valuation.md",
-    },
-    {
-      id: "competitive",
-      title: language === "ru" ? "Конкуренты" : "Competitive",
-      path: "competitive-analysis.md",
     },
   ]
 
