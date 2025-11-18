@@ -22,9 +22,6 @@ export * from "./hooks/use-chat-state"
 export * from "./hooks/use-resources-ai-integration"
 export * from "./hooks/use-timeline-ai"
 
-// Инструменты
-export type { AIToolResult } from "./tools/base-ai-tool"
-
 export * from "./types/streaming"
 
 // Утилиты

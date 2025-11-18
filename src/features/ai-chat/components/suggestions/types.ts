@@ -14,6 +14,7 @@ export interface SuggestedPrompt {
     hasMusic?: boolean
     hasScenes?: boolean
     hasFaces?: boolean
+    hasSpeech?: boolean
     minScenes?: number
     avgSceneDuration?: number
     hasLowQuality?: boolean
