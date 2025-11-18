@@ -23,6 +23,7 @@ describe("AIDirectorProgress", () => {
     startAnalysis: vi.fn(),
     startQuickAnalysis: vi.fn(),
     clearErrors: vi.fn(),
+    clearResult: vi.fn(),
     progressPercentage: 0,
     currentStage: "idle",
     estimatedTimeRemaining: null,

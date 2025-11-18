@@ -1007,7 +1007,7 @@ impl AIDirector {
         .vlm_model
         .clone()
         .unwrap_or_else(|| "moondream2".to_string()),
-      num_frames: config.vlm_num_frames as usize,
+      num_frames: config.vlm_num_frames,
       temperature: config.vlm_temperature,
       max_tokens: config.vlm_max_tokens,
     };

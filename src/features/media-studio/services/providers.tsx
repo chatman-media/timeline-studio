@@ -11,6 +11,7 @@ import { BrowserProvider } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
+import { MCPProvider } from "@/features/ai-chat/services/mcp-provider"
 import { AppProvider } from "@/features/app-state/services/app-provider"
 import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/theme-context"
 import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-provider"
@@ -58,6 +59,7 @@ const AppProviderComposite = composeProviders(
 
   PlayerProvider, // ✅ Новый провайдер видеоплеера с backend синхронизацией
   ChatProvider, // ✅ Новый провайдер чата с backend интеграцией для истории
+  MCPProvider, // ✅ Провайдер MCP для интеграции Claude Code с инструментами видеомонтажа
   // AIIntelligenceProvider, // ОТКЛЮЧЕНО: может быть тяжелым и вызывать зависания
 )
 

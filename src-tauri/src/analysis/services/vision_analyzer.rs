@@ -21,7 +21,7 @@ pub struct VisionAnalysisConfig {
   pub model: String,
 
   /// Number of frames to extract and analyze
-  pub num_frames: usize,
+  pub num_frames: u32,
 
   /// Temperature for AI generation (0.0-1.0)
   pub temperature: f64,
@@ -179,7 +179,7 @@ impl VisionAnalyzer {
     &self,
     video_path: &PathBuf,
     duration: f64,
-    num_frames: usize,
+    num_frames: u32,
   ) -> Result<Vec<(f64, String)>> {
     let mut frames = Vec::new();
 

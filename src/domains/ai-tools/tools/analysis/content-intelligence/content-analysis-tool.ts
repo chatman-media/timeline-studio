@@ -342,7 +342,9 @@ export class ContentIntelligenceTool extends BaseAITool {
 
     try {
       // Используем Scene Analysis Engine для реального анализа
-      const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
+      const { ContentClassifier } = await import(
+        "@/domains/ai-services/services/engines/scene-analysis/services/content-classifier"
+      )
 
       const sceneEngine = SceneAnalysisEngine.getInstance()
 
@@ -544,7 +546,9 @@ export class ContentIntelligenceTool extends BaseAITool {
     this.logger?.info("Выполняем классификацию контента")
 
     try {
-      const { ContentClassifier } = await import("@/domains/ai-services/services/content-classifier")
+      const { ContentClassifier } = await import(
+        "@/domains/ai-services/services/engines/scene-analysis/services/content-classifier"
+      )
       const classifier = ContentClassifier.getInstance()
       const sceneEngine = SceneAnalysisEngine.getInstance()
 
