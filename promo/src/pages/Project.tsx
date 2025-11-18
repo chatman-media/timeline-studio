@@ -99,7 +99,7 @@ export const Project: React.FC = () => {
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
               <div className="flex items-center justify-center space-x-4 text-gray-400">
-                <span>{language === "ru" ? "Версия 3.2" : "Version 3.2"}</span>
+                <span>{language === "ru" ? "Версия 3.13" : "Version 3.13"}</span>
                 <span>•</span>
                 <span>{language === "ru" ? "95% готовности" : "95% ready"}</span>
                 <span>•</span>
@@ -247,19 +247,16 @@ export const Project: React.FC = () => {
                     title: t("project.quickLinks.github.title"),
                     description: t("project.quickLinks.github.description"),
                     href: "https://github.com/chatman-media/timeline-studio",
-                    icon: "🔗",
                   },
                   {
                     title: t("project.quickLinks.docs.title"),
                     description: t("project.quickLinks.docs.description"),
                     href: "/docs",
-                    icon: "📚",
                   },
                   {
                     title: t("project.quickLinks.download.title"),
                     description: t("project.quickLinks.download.description"),
                     href: "https://github.com/chatman-media/timeline-studio/releases/latest",
-                    icon: "⬇️",
                   },
                 ].map((link, index) => (
                   <motion.a
@@ -284,7 +281,6 @@ export const Project: React.FC = () => {
 
                     {/* Content */}
                     <div className="relative p-8">
-                      <div className="text-4xl mb-4">{link.icon}</div>
                       <h3 className="text-2xl font-medium text-white mb-2">{link.title}</h3>
                       <p className="text-gray-400 text-sm">{link.description}</p>
                     </div>
