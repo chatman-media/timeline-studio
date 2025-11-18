@@ -133,24 +133,22 @@ export function AiChat() {
 
         setAvailableModels(agents)
 
-        // Автоматически выбираем первую модель, если текущая не установлена или не существует в списке
+        // Автоматически выбираем модель с приоритетом локальных, если текущая не установлена или не существует в списке
         if (agents.length > 0 && (!selectedAgentId || !agents.find((a) => a.id === selectedAgentId))) {
-          selectAgent(agents[0].id)
+          // Приоритет локальных провайдеров: ollama, lmstudio, localai
+          const localProviders = ["ollama", "lmstudio", "localai", "local"]
+          const localModel = agents.find((a) => localProviders.includes(a.provider?.toLowerCase() || ""))
+
+          // Выбираем локальную модель если есть, иначе первую доступную
+          const modelToSelect = localModel || agents[0]
+          selectAgent(modelToSelect.id)
         }
       } catch (error) {
         logger.error("Failed to load available models:", { error: String(error) })
-        // Используем минимальный набор моделей в случае ошибки
-        const fallbackModels: Agent[] = [
-          { id: "claude-3-5-sonnet-20241022", name: "Claude 3.5 Sonnet", useTools: true, provider: "claude" },
-          { id: "gpt-4o", name: "GPT-4o", useTools: true, provider: "openai" },
-          { id: "deepseek-chat", name: "DeepSeek Chat", useTools: false, provider: "deepseek" },
-        ]
-        setAvailableModels(fallbackModels)
-
-        // Автоматически выбираем первую fallback модель
-        if (!selectedAgentId || !fallbackModels.find((a) => a.id === selectedAgentId)) {
-          selectAgent(fallbackModels[0].id)
-        }
+        // При ошибке загрузки не устанавливаем модели автоматически
+        // Пользователь должен настроить провайдеры вручную
+        setAvailableModels([])
+        logger.warn("No models available. Please configure AI providers in settings.")
       } finally {
         setIsLoadingModels(false)
       }
