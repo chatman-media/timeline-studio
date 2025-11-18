@@ -1,11 +1,12 @@
 import { motion } from "framer-motion"
 import type React from "react"
 import versionData from "../../version.json"
-import { AIEditingSection } from "./components/AIEditingSection"
 import { Footer } from "./components/Footer"
 import { HeroSection } from "./components/HeroSection"
 import { Navigation } from "./components/Navigation"
 import { SearchDemo } from "./components/SearchDemo"
+import { VideoDemos } from "./components/VideoDemos"
+import { WhatYouCanDo } from "./components/WhatYouCanDo"
 import { useTranslation } from "./hooks/useTranslation"
 
 const App: React.FC = () => {
@@ -18,14 +19,29 @@ const App: React.FC = () => {
         {/* Hero Section */}
         <HeroSection />
 
-        {/* Demo Component */}
-        <section className="relative py-20 overflow-hidden">
+        {/* Screenshot Demo */}
+        <section className="relative py-20 overflow-hidden bg-[#0a0f1e]">
           <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-700" />
+            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
           </div>
 
           <div className="relative container mx-auto px-6 md:px-8 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="section-title">
+                The <span className="text-gradient">Interface</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Clean, intuitive, and powerful - everything where you need it
+              </p>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -36,76 +52,14 @@ const App: React.FC = () => {
             >
               <SearchDemo />
             </motion.div>
-
-            {/* Features Grid */}
-            <h2 className="sr-only">Key Features</h2>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="max-w-6xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
-              style={{ position: "relative" }}
-            >
-              <div className="relative overflow-hidden rounded-xl">
-                {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
-
-                {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
-                  <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
-                </div>
-
-                {/* Content */}
-                <div className="relative p-8">
-                  <div className="text-4xl mb-4">🎯</div>
-                  <div className="card-title">{t("mainPage.features.smartAnalysis.title")}</div>
-                  <p className="card-description">{t("mainPage.features.smartAnalysis.description")}</p>
-                </div>
-              </div>
-
-              <div className="relative overflow-hidden rounded-xl">
-                {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
-
-                {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
-                  <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
-                </div>
-
-                {/* Content */}
-                <div className="relative p-8">
-                  <div className="text-4xl mb-4">⚡</div>
-                  <div className="card-title">{t("mainPage.features.instantCreation.title")}</div>
-                  <p className="card-description">{t("mainPage.features.instantCreation.description")}</p>
-                </div>
-              </div>
-
-              <div className="relative overflow-hidden rounded-xl">
-                {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
-
-                {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
-                  <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
-                </div>
-
-                {/* Content */}
-                <div className="relative p-8">
-                  <div className="text-4xl mb-4">📈</div>
-                  <div className="card-title">{t("mainPage.features.viralOptimization.title")}</div>
-                  <p className="card-description">{t("mainPage.features.viralOptimization.description")}</p>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </section>
 
-        {/* AI Editing Section */}
-        <AIEditingSection />
+        {/* What You Can Do */}
+        <WhatYouCanDo />
+
+        {/* Video Demos */}
+        <VideoDemos />
 
         {/* Download Section */}
         <section id="download" className="relative py-20 overflow-hidden">
