@@ -49,6 +49,9 @@ export function ProjectSettingsModal() {
   // Флаг блокировки соотношения сторон (при изменении ширины/высоты)
   const [aspectRatioLocked, setAspectRatioLocked] = useState<boolean>(true)
 
+  // Флаг редактирования - чтобы не перезаписывать поля при вводе
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+
   /**
    * Эффект для обновления доступных разрешений при изменении соотношения сторон
    * Загружает список разрешений, соответствующих выбранному соотношению сторон
@@ -59,15 +62,17 @@ export function ProjectSettingsModal() {
     setAvailableResolutions(resolutions)
 
     // Обновляем значения пользовательской ширины и высоты
-    // в соответствии с текущими настройками проекта
-    setCustomWidth(settings.aspectRatio.value.width)
-    setCustomHeight(settings.aspectRatio.value.height)
+    // ТОЛЬКО если пользователь НЕ редактирует поля в данный момент
+    if (!isEditing) {
+      setCustomWidth(settings.aspectRatio.value.width)
+      setCustomHeight(settings.aspectRatio.value.height)
+    }
 
     logger.info("[ProjectSettingsDialog] Доступные разрешения обновлены:", {
       count: resolutions.length,
       aspectRatio: settings.aspectRatio.label,
     })
-  }, [settings.aspectRatio]) // Зависимость от соотношения сторон
+  }, [settings.aspectRatio, isEditing]) // Зависимость от соотношения сторон и флага редактирования
 
   /**
    * Функция для обновления соотношения сторон и автоматического обновления разрешения
@@ -242,6 +247,8 @@ export function ProjectSettingsModal() {
           <Input
             type="number"
             value={customWidth}
+            onFocus={() => setIsEditing(true)}
+            onBlur={() => setIsEditing(false)}
             onChange={(e) => {
               const width = Number.parseInt(e.target.value, 10)
               if (!Number.isNaN(width) && width > 0) {
@@ -271,6 +278,8 @@ export function ProjectSettingsModal() {
           <Input
             type="number"
             value={customHeight}
+            onFocus={() => setIsEditing(true)}
+            onBlur={() => setIsEditing(false)}
             onChange={(e) => {
               const height = Number.parseInt(e.target.value, 10)
               if (!Number.isNaN(height) && height > 0) {
@@ -419,6 +428,9 @@ export function ProjectSettingsModal() {
           variant="default"
           className="flex-1 cursor-pointer bg-[#00CCC0] text-black hover:bg-[#00AAA0]"
           onClick={() => {
+            // Сбрасываем флаг редактирования
+            setIsEditing(false)
+
             // Создаем копию текущих настроек для обновления
             // Это обеспечивает обновление всех компонентов, зависящих от настроек
             const currentSettings = { ...settings }
