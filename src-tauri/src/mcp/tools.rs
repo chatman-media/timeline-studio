@@ -1147,7 +1147,7 @@ impl VideoTools {
 
   async fn execute_save_project(&self, arguments: Value) -> MCPToolResult {
     // Проверяем наличие project state
-    let project_state = match &self.project_state {
+    let _project_state = match &self.project_state {
       Some(state) => state.clone(),
       None => {
         return MCPToolResult {
