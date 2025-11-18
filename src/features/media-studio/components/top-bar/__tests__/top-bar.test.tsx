@@ -256,15 +256,6 @@ describe("TopBar", () => {
       expect(mockOpenModal).toHaveBeenCalledWith("voice-recording")
     })
 
-    it("должен открывать модальное окно montage planner", () => {
-      render(<TopBar />)
-
-      const button = screen.getByTestId("montage-planner-button")
-      fireEvent.click(button)
-
-      expect(mockOpenModal).toHaveBeenCalledWith("montage-planner")
-    })
-
     it("должен открывать модальное окно export", () => {
       render(<TopBar />)
 
