@@ -48,6 +48,9 @@ mod proxy_generator;
 // Модуль распознавания (YOLO)
 pub mod recognition;
 use recognition::commands::yolo_commands::YoloProcessorState;
+
+// MCP (Model Context Protocol) интеграция
+pub mod mcp;
 use recognition::person_database::PersonDatabase;
 use recognition::recognition_service::RecognitionState;
 use recognition::RecognitionService;
