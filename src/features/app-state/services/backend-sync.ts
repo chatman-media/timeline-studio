@@ -5,6 +5,7 @@
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 
+import { isDesktop } from "@/lib/environment"
 import { createLogger } from "@/lib/tauri-logger"
 // Use generated types
 import {
@@ -72,6 +73,13 @@ export class BackendSync {
         return
       }
 
+      // Check if running in Tauri environment
+      if (!isDesktop()) {
+        logger.warn("Backend sync is only available in Tauri environment, skipping connection")
+        this.isConnected = false
+        return
+      }
+
       logger.info("Backend sync connecting...")
 
       // Subscribe to backend events
@@ -111,6 +119,16 @@ export class BackendSync {
    * Execute a command on the backend
    */
   async executeCommand(command: ProjectCommand): Promise<CommandResult> {
+    // Check if running in Tauri environment
+    if (!isDesktop()) {
+      logger.warn("Backend commands are only available in Tauri environment")
+      return {
+        success: false,
+        error: "Backend commands are only available in desktop mode",
+        data: null,
+      }
+    }
+
     try {
       const result = await commands.executeCommand(command)
       if (result.status === "ok") {
@@ -136,6 +154,12 @@ export class BackendSync {
    * Get current project state
    */
   async getProjectState(): Promise<ProjectState | null> {
+    // Check if running in Tauri environment
+    if (!isDesktop()) {
+      logger.warn("Backend state is only available in Tauri environment")
+      return null
+    }
+
     try {
       const result = await commands.getProjectState()
       if (result.status === "ok") {

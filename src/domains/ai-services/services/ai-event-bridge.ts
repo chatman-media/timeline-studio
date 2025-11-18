@@ -20,6 +20,7 @@ import type {
   AIDirectorBatchCompletedEvent,
   AIDirectorStageCompletedEvent,
 } from "@/domains/shared/events/ai-services-events"
+import { isDesktop } from "@/lib/environment"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "AIEventBridge" })
@@ -117,6 +118,13 @@ export class AIEventBridge {
   async initialize(): Promise<void> {
     if (this.isInitialized) {
       logger.warn("AIEventBridge уже инициализирован")
+      return
+    }
+
+    // Check if running in Tauri environment
+    if (!isDesktop()) {
+      logger.warn("AIEventBridge is only available in Tauri environment, skipping initialization")
+      this.isInitialized = false
       return
     }
 
