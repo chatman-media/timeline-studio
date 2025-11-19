@@ -393,6 +393,7 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     // FFmpeg advanced commands
     crate::video_compiler::commands::generate_video_preview,
     crate::video_compiler::commands::generate_gif_preview,
+    crate::video_compiler::commands::generate_waveform_preview,
     crate::video_compiler::commands::probe_media_file,
     crate::video_compiler::commands::test_hardware_acceleration,
     crate::video_compiler::commands::generate_subtitle_preview,
