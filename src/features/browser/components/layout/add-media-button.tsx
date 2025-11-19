@@ -115,13 +115,15 @@ export const AddMediaButton = memo(function AddMediaButton({
         // Добавляем в добавленные в зависимости от типа
         switch (resource.type) {
           case "media":
-            // Используем команду MoveToMediaPool для переноса из imported_media в media_pool
-            void backendSync.executeCommand({
-              type: "MoveToMediaPool",
-              params: {
-                media_id: resource.id,
-              },
-            })
+            // // Используем команду MoveToMediaPool для переноса из imported_media в media_pool
+            // void backendSync.executeCommand({
+            //   type: "MoveToMediaPool",
+            //   params: {
+            //     media_id: resource.id,
+            //   },
+            // })
+            void addMedia(resource.file)
+
             break
           case "music":
             void addMusic(resource.file)

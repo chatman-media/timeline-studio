@@ -1,4 +1,4 @@
-import { Blend, Clapperboard, FlipHorizontal2, Music, Sparkles, Sticker, Type, Video } from "lucide-react"
+import { Blend, Clapperboard, FlipHorizontal2, LayoutTemplate, Music, Sparkles, Sticker, Type, Video, Wand2 } from "lucide-react"
 import { memo, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -85,6 +85,14 @@ export const BrowserTabs = memo(({ activeTab, onTabChange }: BrowserTabsProps) =
       <TabButton value="style-templates" activeTab={activeTab} onClick={onTabChange} testId="style-templates-tab">
         <Sticker className="h-4 w-4" />
         <span>{t("browser.tabs.styleTemplates")}</span>
+      </TabButton>
+      <TabButton value="projects" activeTab={activeTab} onClick={onTabChange} testId="projects-tab">
+        <LayoutTemplate className="h-4 w-4" />
+        <span>{t("browser.tabs.projects")}</span>
+      </TabButton>
+      <TabButton value="scenarios" activeTab={activeTab} onClick={onTabChange} testId="scenarios-tab">
+        <Wand2 className="h-4 w-4" />
+        <span>{t("browser.tabs.scenarios")}</span>
       </TabButton>
     </div>
   )

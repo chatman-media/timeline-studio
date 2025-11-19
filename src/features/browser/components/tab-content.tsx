@@ -8,6 +8,8 @@ import { useEffectsAdapter } from "../adapters/use-effects-adapter"
 import { useFiltersAdapter } from "../adapters/use-filters-adapter"
 import { useMediaAdapter } from "../adapters/use-media-adapter"
 import { useMusicAdapter } from "../adapters/use-music-adapter"
+import { useProjectTemplatesAdapter } from "../adapters/use-project-templates-adapter"
+import { useScenariosAdapter } from "../adapters/use-scenarios-adapter"
 import { useStyleTemplatesAdapter } from "../adapters/use-style-templates-adapter"
 import { useSubtitlesAdapter } from "../adapters/use-subtitles-adapter"
 import { useTemplatesAdapter } from "../adapters/use-templates-adapter"
@@ -71,6 +73,18 @@ const StyleTemplatesTabContent = memo(() => {
   return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
 })
 
+const ProjectsTabContent = memo(() => {
+  const adapter = useProjectTemplatesAdapter()
+  const handleItemSelect = useMemo(() => () => {}, [])
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+})
+
+const ScenariosTabContent = memo(() => {
+  const adapter = useScenariosAdapter()
+  const handleItemSelect = useMemo(() => () => {}, [])
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+})
+
 // Компоненты с именами
 MediaTabContent.displayName = "MediaTabContent"
 MusicTabContent.displayName = "MusicTabContent"
@@ -80,6 +94,8 @@ TransitionsTabContent.displayName = "TransitionsTabContent"
 SubtitlesTabContent.displayName = "SubtitlesTabContent"
 TemplatesTabContent.displayName = "TemplatesTabContent"
 StyleTemplatesTabContent.displayName = "StyleTemplatesTabContent"
+ProjectsTabContent.displayName = "ProjectsTabContent"
+ScenariosTabContent.displayName = "ScenariosTabContent"
 
 /**
  * Компонент для рендеринга контента вкладки с ленивой загрузкой
@@ -115,6 +131,10 @@ export const TabContent = memo(({ tabValue, activeTab, className }: TabContentPr
         return <TemplatesTabContent />
       case "style-templates":
         return <StyleTemplatesTabContent />
+      case "projects":
+        return <ProjectsTabContent />
+      case "scenarios":
+        return <ScenariosTabContent />
       default:
         return (
           <div className="flex h-full items-center justify-center">

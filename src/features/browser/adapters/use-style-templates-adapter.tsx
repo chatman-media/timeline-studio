@@ -2,8 +2,8 @@ import type React from "react"
 
 import { useFavorites } from "@/features/app-state"
 import { useStyleTemplatesAdapter as useUnifiedStyleTemplatesAdapter } from "@/features/browser/hooks/use-resources"
-import { useDraggable } from "@/features/drag-drop"
 import { StyleTemplatePreview } from "@/features/style-templates/components/style-template-preview"
+import { StyleTemplateDragSource } from "@/features/style-templates/components/style-template-drag-source"
 import type { StyleTemplate } from "@/features/style-templates/types"
 
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
@@ -25,17 +25,6 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
     onClick?.(template)
   }
 
-  // Используем DragDropManager для перетаскивания
-  const dragProps = useDraggable(
-    "template",
-    () => template,
-    () => ({
-      url: template.thumbnail || `/style-templates/${template.id}.png`,
-      width: 120,
-      height: 80,
-    }),
-  )
-
   const handleSelect = (_templateId: string) => {
     // Template selected
     onAddToTimeline?.(template)
@@ -48,63 +37,68 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
 
   if (viewMode === "list") {
     return (
-      <div
-        className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
-        onClick={handleClick}
-        {...dragProps}
-      >
-        {/* Template preview thumbnail */}
-        <div className="flex-shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative">
-          {template.thumbnail ? (
-            <img
-              src={template.thumbnail}
-              alt={typeof template.name === "string" ? template.name : template.name.ru}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">
-                {(typeof template.name === "string" ? template.name : template.name.ru).substring(0, 2).toUpperCase()}
-              </span>
+      <StyleTemplateDragSource template={template}>
+        <div
+          className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
+          onClick={handleClick}
+        >
+          {/* Template preview thumbnail */}
+          <div className="flex-shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative">
+            {template.thumbnail ? (
+              <img
+                src={template.thumbnail}
+                alt={typeof template.name === "string" ? template.name : template.name.ru}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">
+                  {(typeof template.name === "string" ? template.name : template.name.ru)
+                    .substring(0, 2)
+                    .toUpperCase()}
+                </span>
+              </div>
+            )}
+
+            {/* Animation indicator */}
+            {template.hasAnimation && <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full" />}
+          </div>
+
+          {/* Template Info */}
+          <div className="flex-1 min-w-0">
+            <div className="font-medium text-sm truncate">
+              {typeof template.name === "string" ? template.name : template.name.ru}
             </div>
-          )}
-
-          {/* Animation indicator */}
-          {template.hasAnimation && <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full" />}
-        </div>
-
-        {/* Template Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">
-            {typeof template.name === "string" ? template.name : template.name.ru}
+            <div className="text-xs text-muted-foreground truncate">
+              {(typeof template.description === "string" ? template.description : template.description?.ru) ||
+                `${template.category} • ${template.style}`}
+            </div>
           </div>
-          <div className="text-xs text-muted-foreground truncate">
-            {(typeof template.description === "string" ? template.description : template.description?.ru) ||
-              `${template.category} • ${template.style}`}
+
+          {/* Category */}
+          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.category}</div>
+
+          {/* Style */}
+          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.style}</div>
+
+          {/* Duration */}
+          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.duration}s</div>
+
+          {/* Features */}
+          <div className="flex-shrink-0 flex gap-1">
+            {template.hasText && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" />}
+            {template.hasAnimation && (
+              <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />
+            )}
           </div>
         </div>
-
-        {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.category}</div>
-
-        {/* Style */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.style}</div>
-
-        {/* Duration */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.duration}s</div>
-
-        {/* Features */}
-        <div className="flex-shrink-0 flex gap-1">
-          {template.hasText && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" />}
-          {template.hasAnimation && <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />}
-        </div>
-      </div>
+      </StyleTemplateDragSource>
     )
   }
 
   // Thumbnails mode - use the original StyleTemplatePreview component
   return (
-    <div {...dragProps}>
+    <StyleTemplateDragSource template={template}>
       <StyleTemplatePreview
         template={template}
         size={previewSize}
@@ -112,7 +106,7 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
         previewWidth={previewWidth}
         previewHeight={previewHeight}
       />
-    </div>
+    </StyleTemplateDragSource>
   )
 }
 
