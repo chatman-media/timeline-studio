@@ -16,6 +16,7 @@ export interface ShortcutSettings {
   shortcuts: Record<string, Partial<ShortcutDefinition>>
   globalEnabled: boolean
   version: string
+  activePreset?: string // Название активной предустановки
 }
 
 export class ShortcutsPersistence {
@@ -32,11 +33,12 @@ export class ShortcutsPersistence {
   /**
    * Сохранить настройки shortcuts
    */
-  async saveSettings(shortcuts: ShortcutDefinition[], globalEnabled: boolean): Promise<void> {
+  async saveSettings(shortcuts: ShortcutDefinition[], globalEnabled: boolean, activePreset?: string): Promise<void> {
     const settings: ShortcutSettings = {
       shortcuts: this.serializeShortcuts(shortcuts),
       globalEnabled,
       version: this.currentVersion,
+      activePreset,
     }
 
     try {

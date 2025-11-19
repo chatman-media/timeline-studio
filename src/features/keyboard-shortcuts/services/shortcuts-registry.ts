@@ -5,6 +5,7 @@
 
 import type { HotkeyCallback, Options as HotkeyOptions } from "react-hotkeys-hook"
 import { createLogger } from "@/lib/tauri-logger"
+import { type ConflictInfo, detectConflicts, validateNewKeys } from "./shortcuts-conflicts"
 import { shortcutsPersistence } from "./shortcuts-persistence"
 
 const logger = createLogger({ module: "ShortcutsRegistry" })
@@ -43,6 +44,7 @@ class ShortcutsRegistry {
   private listeners: ((shortcuts: ShortcutDefinition[]) => void)[] = []
   private currentContext: ShortcutContext = "global"
   private contextStack: ShortcutContext[] = ["global"]
+  private conflicts: ConflictInfo[] = []
 
   private constructor() {
     this.initializeCategories()
@@ -90,6 +92,7 @@ class ShortcutsRegistry {
     }
 
     this.shortcuts.set(shortcut.id, shortcut)
+    this.updateConflicts()
     this.notifyListeners()
   }
 
@@ -134,7 +137,19 @@ class ShortcutsRegistry {
   updateKeys(id: string, keys: string[]): void {
     const shortcut = this.shortcuts.get(id)
     if (shortcut) {
+      // Валидируем новые клавиши
+      const validation = validateNewKeys(keys, id, this.getAll())
+      if (!validation.valid) {
+        logger.warn("Cannot update keys - validation failed:", {
+          id,
+          keys,
+          error: validation.error,
+        })
+        throw new Error(validation.error)
+      }
+
       shortcut.keys = keys
+      this.updateConflicts()
       this.notifyListeners()
     }
   }
@@ -191,6 +206,27 @@ class ShortcutsRegistry {
   private notifyListeners(): void {
     const shortcuts = this.getAll()
     this.listeners.forEach((listener) => listener(shortcuts))
+  }
+
+  /**
+   * Обновляет информацию о конфликтах
+   */
+  private updateConflicts(): void {
+    this.conflicts = detectConflicts(this.getAll())
+  }
+
+  /**
+   * Получает информацию о конфликтах
+   */
+  getConflicts(): ConflictInfo[] {
+    return this.conflicts
+  }
+
+  /**
+   * Проверяет наличие конфликтов
+   */
+  hasAnyConflicts(): boolean {
+    return this.conflicts.length > 0
   }
 
   /**

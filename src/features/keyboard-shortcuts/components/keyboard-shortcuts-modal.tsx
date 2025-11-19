@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react"
+import { Download, Search, Upload, X } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -8,12 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useModal } from "@/features/modals/services/modal-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { createPresets, type PresetType } from "../presets"
+import { useShortcuts } from "../services/shortcuts-provider"
+import { ConflictIndicator } from "./conflict-indicator"
 
 const logger = createLogger({ module: "KeyboardShortcutsModal" })
 
 export function KeyboardShortcutsModal() {
   const { t } = useTranslation()
   const { closeModal } = useModal()
+  const { exportSettings, importSettings } = useShortcuts()
 
   // Создаем предустановки с локализацией
   const PRESETS = useMemo(() => createPresets(t), [t])
@@ -192,6 +195,47 @@ export function KeyboardShortcutsModal() {
   // Обработчик изменения предустановки
   const handlePresetChange = (value: string) => {
     setSelectedPreset(value as PresetType)
+  }
+
+  // Обработчик экспорта настроек
+  const handleExport = async () => {
+    try {
+      const settings = await exportSettings()
+      const blob = new Blob([settings], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `timeline-shortcuts-${selectedPreset.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      logger.info("Shortcuts exported successfully")
+    } catch (error) {
+      logger.error("Failed to export shortcuts:", { error })
+    }
+  }
+
+  // Обработчик импорта настроек
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      const text = await file.text()
+      await importSettings(text)
+      logger.info("Shortcuts imported successfully")
+
+      // Перезагружаем PRESETS после импорта
+      const freshPresets = createPresets(t)
+      Object.assign(PRESETS, freshPresets)
+      setSelectedPreset((prev) => prev)
+    } catch (error) {
+      logger.error("Failed to import shortcuts:", { error })
+    }
+
+    // Сбрасываем input
+    event.target.value = ""
   }
 
   // Прокрутка к категории - упрощенная версия
@@ -562,6 +606,22 @@ export function KeyboardShortcutsModal() {
             }}
           >
             {t("dialogs.keyboardShortcuts.resetDefaults", "Восстановление значений по умолчанию")}
+          </Button>
+          <Button
+            variant="outline"
+            className="cursor-pointer px-4"
+            onClick={handleExport}
+            title={t("dialogs.keyboardShortcuts.export", "Экспортировать")}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            {t("dialogs.keyboardShortcuts.export", "Экспортировать")}
+          </Button>
+          <Button variant="outline" className="cursor-pointer px-4" asChild>
+            <label htmlFor="import-shortcuts" title={t("dialogs.keyboardShortcuts.import", "Импортировать")}>
+              <Upload className="h-4 w-4 mr-2" />
+              {t("dialogs.keyboardShortcuts.import", "Импортировать")}
+              <input id="import-shortcuts" type="file" accept=".json" className="hidden" onChange={handleImport} />
+            </label>
           </Button>
           <Button
             variant="outline"
