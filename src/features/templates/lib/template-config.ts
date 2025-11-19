@@ -10,6 +10,28 @@ export interface SplitPoint {
   y: number // Координата Y точки разделения (в процентах от 0 до 100)
 }
 
+// Типы анимаций для панелей
+export type AnimationType =
+  | "fade" // Появление/исчезновение через прозрачность
+  | "slide-left" // Слайд слева
+  | "slide-right" // Слайд справа
+  | "slide-up" // Слайд снизу вверх
+  | "slide-down" // Слайд сверху вниз
+  | "zoom-in" // Увеличение от центра
+  | "zoom-out" // Уменьшение к центру
+  | "flip-horizontal" // Переворот по горизонтали
+  | "flip-vertical" // Переворот по вертикали
+  | "none" // Без анимации
+
+// Конфигурация анимации
+export interface AnimationConfig {
+  type: AnimationType
+  duration?: number // Длительность в миллисекундах (по умолчанию 300ms)
+  delay?: number // Задержка перед началом (по умолчанию 0ms)
+  easing?: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "cubic-bezier"
+  cubicBezier?: [number, number, number, number] // Параметры для cubic-bezier
+}
+
 // Расширенная конфигурация ячейки
 export interface CellConfiguration {
   // Существующие настройки
@@ -18,6 +40,13 @@ export interface CellConfiguration {
   alignY?: "top" | "center" | "bottom" // Вертикальное выравнивание
   initialScale?: number // Начальный масштаб (1.0 = 100%)
   initialPosition?: { x: number; y: number } // Начальная позиция (в процентах от размера ячейки)
+
+  // Настройки анимации
+  animation?: {
+    enter?: AnimationConfig // Анимация появления
+    exit?: AnimationConfig // Анимация исчезновения
+    transition?: AnimationConfig // Анимация при переключении между камерами
+  }
 
   // Новые настройки для заголовка/номера ячейки
   title?: {
@@ -77,6 +106,12 @@ export interface LayoutConfig {
   backgroundColor?: string
   borderRadius?: string
   containerStyle?: React.CSSProperties // Дополнительные стили контейнера
+
+  // Настройки анимации при переключении layout
+  layoutTransition?: {
+    duration?: number // Длительность в миллисекундах (по умолчанию 500ms)
+    easing?: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out"
+  }
 }
 
 // Расширенная конфигурация расположения ячейки
@@ -148,6 +183,11 @@ export const PRESET_STYLES = {
           fontWeight: "normal",
         },
       },
+      animation: {
+        enter: { type: "fade" as const, duration: 300, easing: "ease-in-out" as const },
+        exit: { type: "fade" as const, duration: 200, easing: "ease-in" as const },
+        transition: { type: "fade" as const, duration: 250, easing: "ease-in-out" as const },
+      },
     },
     alternate: {
       background: { color: "#2a2e36" },
@@ -161,6 +201,33 @@ export const PRESET_STYLES = {
           fontWeight: "normal",
         },
       },
+      animation: {
+        enter: { type: "fade" as const, duration: 300, easing: "ease-in-out" as const },
+        exit: { type: "fade" as const, duration: 200, easing: "ease-in" as const },
+        transition: { type: "fade" as const, duration: 250, easing: "ease-in-out" as const },
+      },
+    },
+  },
+  animation: {
+    fade: {
+      enter: { type: "fade" as const, duration: 300, easing: "ease-in-out" as const },
+      exit: { type: "fade" as const, duration: 200, easing: "ease-in" as const },
+      transition: { type: "fade" as const, duration: 250, easing: "ease-in-out" as const },
+    },
+    slide: {
+      enter: { type: "slide-up" as const, duration: 400, easing: "ease-out" as const },
+      exit: { type: "slide-down" as const, duration: 300, easing: "ease-in" as const },
+      transition: { type: "slide-left" as const, duration: 350, easing: "ease-in-out" as const },
+    },
+    zoom: {
+      enter: { type: "zoom-in" as const, duration: 350, easing: "ease-out" as const },
+      exit: { type: "zoom-out" as const, duration: 250, easing: "ease-in" as const },
+      transition: { type: "zoom-in" as const, duration: 300, easing: "ease-in-out" as const },
+    },
+    none: {
+      enter: { type: "none" as const, duration: 0, easing: "linear" as const },
+      exit: { type: "none" as const, duration: 0, easing: "linear" as const },
+      transition: { type: "none" as const, duration: 0, easing: "linear" as const },
     },
   },
   divider: {
