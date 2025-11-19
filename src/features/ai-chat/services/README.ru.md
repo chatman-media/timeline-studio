@@ -2,173 +2,232 @@
 
 **Русский** | [English](./README.md)
 
-Сервисы для функциональности AI чата и интеграции с различными AI провайдерами в Timeline Studio.
+Основные сервисы для функциональности AI чата в Timeline Studio.
 
-## Обзор архитектуры
+## Архитектура
 
-Сервисы следуют **модульной архитектуре** с четким разделением ответственности:
+Слой сервисов минимален в модуле AI Chat. Большая часть AI функциональности мигрирована в доменные сервисы:
 
-- **Основные Провайдеры**: Отдельные классы сервисов для каждого AI провайдера
-- **Слой Управления**: Менеджеры конфигурации и провайдеров
-- **Единый Интерфейс**: Единая точка входа для всех AI операций
-- **Специализированные Сервисы**: AI функциональность для конкретных доменов
+- **AI Tools** → `/src/domains/ai-tools/tools/`
+- **AI Services** → `/src/domains/ai-services/services/`
+- **Shared Services** → `/src/shared/services/ai/`
 
-## Основные AI провайдеры
-
-### `claude-service.ts`
-Интеграция с Claude API от Anthropic. Поддерживает модели Claude 4 Sonnet и Opus с использованием инструментов.
-
-### `open-ai-service.ts`
-Интеграция с OpenAI API. Поддерживает модели GPT-4, GPT-4o, GPT-3.5 Turbo и o3.
-
-### `deepseek-service.ts`
-Интеграция с DeepSeek API для продвинутых языковых моделей включая варианты R1, Chat и Coder.
-
-### `ollama-service.ts`
-Интеграция с локальными моделями через Ollama для работы без интернета.
-
-## Слой управления
-
-### `model-configuration-manager.ts`
-**Централизованная конфигурация моделей** - обрабатывает метаданные моделей, возможности и маппинг провайдеров. Делает добавление новых моделей крайне простым.
-
-### `provider-manager.ts`
-**Оркестрация провайдеров** - управляет экземплярами провайдеров, балансировкой нагрузки и логикой переключения.
-
-### `ai-response-processor.ts`
-**Стандартизация ответов** - унифицированная обработка и валидация ответов для всех провайдеров.
-
-## Единый интерфейс
-
-### `unified-ai-service.ts`
-**Главная точка входа API** - предоставляет единый интерфейс для всех AI операций с автоматическим выбором провайдера, обработкой отказов и кэшированием.
-
-## Специализированные сервисы
-
-### `timeline-ai-service.ts`
-AI сервис для работы с таймлайном, включая интеллектуальный монтаж, анализ контента и генерацию рекомендаций.
-
-### `whisper-service.ts`
-Сервис транскрипции аудио с **интеграцией Faster Whisper**. Поддерживает OpenAI Whisper, локальные модели и Faster Whisper с автоматическим выбором провайдера.
-
-### `ffmpeg-analysis-service.ts`
-Анализ видео файлов с помощью FFmpeg для извлечения метаданных и технических характеристик.
-
-### `multimodal-analysis-service.ts`
-Мультимодальный анализ контента (видео + аудио + текст) для комплексного понимания.
-
-## Вспомогательные сервисы
-
-### `api-key-loader.ts`
-Управление API ключами для различных сервисов. Безопасное хранение и загрузка из настроек пользователя.
-
-### `chat-storage-service.ts`
-Сохранение истории чатов и управление сессиями.
-
-### `batch-processing-service.ts`
-Пакетная обработка множества файлов с использованием AI инструментов.
-
-### `platform-optimization-service.ts`
-Оптимизация контента для различных платформ (YouTube, TikTok, Instagram).
-
-### `workflow-automation-service.ts`
-Автоматизация рабочих процессов и создание пайплайнов обработки.
-
-### `intent-recognition.ts`
-Распознавание намерений пользователя для выбора подходящих инструментов и действий.
-
-## Управление состоянием
-
-### `chat-machine.ts`
-XState машина состояний для управления чатом, сообщениями и сессиями.
+## Доступные Сервисы
 
 ### `chat-provider.tsx`
-React Context Provider для доступа к функциональности чата во всем приложении.
+React Context Provider для функциональности чата.
 
-## Использование
+**Возможности:**
+- Предоставляет контекст state machine чата
+- Управляет чат-сессиями
+- Обрабатывает отправку сообщений и потоковую передачу
+- Обработка ошибок и восстановление
+
+**Использование:**
+```typescript
+import { ChatProvider, useChat } from '@/features/ai-chat/services'
+
+function App() {
+  return (
+    <ChatProvider>
+      <ChatComponent />
+    </ChatProvider>
+  )
+}
+
+function ChatComponent() {
+  const { messages, sendMessage } = useChat()
+  // ... использовать функциональность чата
+}
+```
+
+### `chat-storage-service.ts`
+Сервис сохранения истории чата.
+
+**Возможности:**
+- Сохранение и загрузка чат-сессий
+- Управление сессиями (создание, удаление, переименование)
+- Сохранение истории сообщений
+- Интеграция с локальным хранилищем
+
+**API:**
+```typescript
+interface ChatStorageService {
+  saveSession(session: ChatSession): Promise<void>
+  loadSession(sessionId: string): Promise<ChatSession | null>
+  loadAllSessions(): Promise<ChatSession[]>
+  deleteSession(sessionId: string): Promise<void>
+  clearAllSessions(): Promise<void>
+}
+```
+
+**Использование:**
+```typescript
+import { ChatStorageService } from '@/features/ai-chat/services'
+
+const storageService = new ChatStorageService()
+
+// Сохранить сессию
+await storageService.saveSession(session)
+
+// Загрузить все сессии
+const sessions = await storageService.loadAllSessions()
+
+// Удалить сессию
+await storageService.deleteSession(sessionId)
+```
+
+### `mcp-provider.tsx`
+Провайдер интеграции Model Context Protocol (MCP).
+
+**Возможности:**
+- Управление подключением к MCP серверу
+- Обнаружение и регистрация инструментов
+- Контекстные подсказки инструментов
+- Конвертация формата инструментов
+
+**Использование:**
+```typescript
+import { MCPProvider, useMCP } from '@/features/ai-chat/services'
+
+function App() {
+  return (
+    <MCPProvider>
+      <ChatProvider>
+        <AIChat />
+      </ChatProvider>
+    </MCPProvider>
+  )
+}
+
+function ToolsPanel() {
+  const { availableTools, callTool } = useMCP()
+  // ... использовать MCP функциональность
+}
+```
+
+### `index.ts`
+Реэкспорт chat machine из доменных сервисов.
+
+**Примечание:** Chat machine была мигрирована в `/src/domains/ai-services/machines/chat-machine.ts` для лучшей модульности.
+
+**Экспорты:**
+```typescript
+export type {
+  ChatListItem,
+  ChatMachine,
+  ChatMachineContext,
+  ChatMachineEvent,
+  ChatMessage,
+} from "../../../domains/ai-services/machines/chat-machine"
+
+export { chatMachine } from "../../../domains/ai-services/machines/chat-machine"
+```
+
+## Интеграция с Доменными Сервисами
+
+### AI Services (`/src/domains/ai-services/services/`)
+
+Для функциональности AI провайдеров используйте доменные сервисы:
 
 ```typescript
-// Импорт унифицированного сервиса (рекомендуется)
-import { UnifiedAIService } from './unified-ai-service-new'
+// Unified AI Service для AI операций
+import { UnifiedAIService } from '@/domains/ai-services/services/unified-ai-service'
 
-// Импорт отдельного сервиса
-import { ClaudeService } from './claude-service'
-
-// Использование провайдера чата
-import { ChatProvider, useChat } from './chat-provider'
-
-// Пример: AI запрос с автоматическим выбором провайдера
 const aiService = UnifiedAIService.getInstance()
-const response = await aiService.sendRequest(
-  "claude-4-sonnet",
-  messages,
-  { fallbackModels: ["gpt-4o"] }
-)
+const response = await aiService.sendRequest(model, messages)
 ```
 
-## Добавление новых AI моделей
-
-Система спроектирована для **легкого добавления моделей**. Чтобы добавить Claude 4.1 или GPT-5:
-
-### 1. Добавить константы моделей
 ```typescript
-// В claude-service.ts
-export const CLAUDE_MODELS = {
-  CLAUDE_4_SONNET: "claude-4-sonnet",
-  CLAUDE_4_OPUS: "claude-4-opus",
-  CLAUDE_4_1: "claude-4.1", // ← Новая модель
-}
+// Whisper Service для транскрипции
+import { WhisperService } from '@/domains/ai-services/services/whisper-service'
 
-// В open-ai-service.ts
-export const AI_MODELS = {
-  GPT_4: "gpt-4",
-  GPT_4O: "gpt-4o",
-  GPT_5: "gpt-5", // ← Новая модель
-  O3: "o3",
-}
+const whisperService = WhisperService.getInstance()
+const transcription = await whisperService.transcribe(audioPath)
 ```
 
-### 2. Обновить менеджер конфигурации моделей
 ```typescript
-// В model-configuration-manager.ts - STATIC_MODELS
-[CLAUDE_MODELS.CLAUDE_4_1]: {
-  id: CLAUDE_MODELS.CLAUDE_4_1,
-  name: "Claude 4.1",
-  provider: "claude",
-  isLocal: false,
-  supportsStreaming: true,
-  supportsTools: true,
-  maxTokens: 200000,
-  description: "Последняя модель Claude с расширенными возможностями",
-},
+// FFmpeg Analysis Service для анализа видео/аудио
+import { FFmpegAnalysisService } from '@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service'
 
-[AI_MODELS.GPT_5]: {
-  id: AI_MODELS.GPT_5,
-  name: "GPT-5",
-  provider: "openai",
-  isLocal: false,
-  supportsStreaming: true,
-  supportsTools: true,
-  maxTokens: 200000,
-  description: "Модель следующего поколения от OpenAI",
+const ffmpegService = FFmpegAnalysisService.getInstance()
+const analysis = await ffmpegService.analyzeVideo(videoFile)
+```
+
+### AI Tools (`/src/domains/ai-tools/tools/`)
+
+Для функциональности AI инструментов импортируйте из доменов:
+
+```typescript
+// Timeline инструменты
+import { CreateProjectTool, DetectScenesTool } from '@/domains/ai-tools/tools/core/timeline'
+
+// Инструменты анализа
+import { VideoAnalysisTool, AudioAnalysisTool } from '@/domains/ai-tools/tools/analysis'
+
+// Инструменты автоматизации
+import { EnhancedSubtitleAutomationTool } from '@/domains/ai-tools/tools/automation'
+```
+
+### Shared Services (`/src/shared/services/ai/`)
+
+Для общей AI инфраструктуры:
+
+```typescript
+// Контейнер dependency injection
+import { getAIContainer } from '@/shared/services/ai/di-container'
+
+const container = getAIContainer()
+const service = await container.resolve('UnifiedAIService')
+```
+
+```typescript
+// React интеграционные хуки
+import { useAIService } from '@/shared/services/ai/react-integration'
+
+function MyComponent() {
+  const aiService = useAIService()
+  // ... использовать AI сервис
 }
 ```
 
-### 3. Готово! 🎉
+## Лучшие Практики
 
-**ModelConfigurationManager** автоматически обрабатывает:
-- Маппинг провайдеров по префиксу модели
-- Проверку доступности
-- Выбор модели для задач
-- Логику переключения
+### Управление Состоянием Чата
+- Всегда оборачивайте компоненты чата в `ChatProvider`
+- Используйте хук `useChat()` для доступа к функциональности чата
+- Обрабатывайте ошибки блоками try-catch
+- Реализуйте состояния загрузки для лучшего UX
 
-**Никаких других изменений не требуется** - унифицированный сервис автоматически поддержит новые модели.
+### Управление Сессиями
+- Сохраняйте сессии регулярно для предотвращения потери данных
+- Реализуйте автосохранение при важных изменениях
+- Валидируйте данные сессии перед загрузкой
+- Обрабатывайте миграцию для изменений схемы сессий
 
-## Ключевые преимущества
+### MCP Интеграция
+- Инициализируйте MCP провайдер перед chat провайдером
+- Регистрируйте инструменты при монтировании провайдера
+- Корректно обрабатывайте ошибки обнаружения инструментов
+- Реализуйте проверки доступности инструментов
 
-- ✅ **Легкое добавление моделей**: 2 простых шага для добавления любой новой модели
-- ✅ **Автоматический выбор провайдера**: На основе доступности и возможностей
-- ✅ **Интеллектуальные резервы**: Плавная деградация при недоступности предпочитаемых моделей
-- ✅ **Единый интерфейс**: Единое API для всех AI операций
-- ✅ **Модульная архитектура**: Четкое разделение ответственности
-- ✅ **Интеграция Faster Whisper**: Автоматический выбор провайдера транскрипции
+## Тестирование
+
+### Тесты Сервисов
+```bash
+# Запустить все тесты сервисов
+bun run test src/features/ai-chat/services/
+
+# Конкретные тесты
+bun run test src/features/ai-chat/services/__tests__/chat-storage-service.test.ts
+```
+
+### Доступные Тесты
+- `chat-storage-service.test.ts` - Тесты сервиса хранения чата
+
+## Связанная Документация
+
+- [Документация Chat Machine](../../../domains/ai-services/machines/README.md)
+- [Документация AI Services](../../../domains/ai-services/README.md)
+- [Документация AI Tools](../../../domains/ai-tools/README.md)
+- [Документация Shared Services](../../../shared/services/ai/README.md)

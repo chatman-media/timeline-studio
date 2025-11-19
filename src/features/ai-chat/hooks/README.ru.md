@@ -258,46 +258,30 @@ function TimelineCreator() {
 }
 ```
 
-### `useSafeTimeline()`
-Безопасный доступ к состоянию timeline для AI операций.
+### `useBrowserAIIntegration()`
+Хук для AI интеграции с медиа браузером.
 
-**Возвращает:** 
-- `TimelineContextType | null` - контекст timeline или `null` если недоступен
+**Возвращаемые значения:**
+```typescript
+{
+  isReady: boolean
+  hasFiles: boolean
+  filesCount: number
+}
+```
 
 **Пример использования:**
 ```typescript
-import { useSafeTimeline } from '@/features/ai-chat/hooks'
+import { useBrowserAIIntegration } from '@/features/ai-chat/hooks'
 
-function SafeTimelineAccess() {
-  const timeline = useSafeTimeline()
-  
-  const processCurrentProject = () => {
-    if (!timeline) {
-      logger.warnSync('Timeline не доступен')
-      return
-    }
-    
-    // Безопасное использование timeline
-    const project = timeline.currentProject
-    if (project) {
-      logger.debugSync('Текущий проект:', project.name)
-      logger.debugSync('Длительность:', project.duration, 'секунд')
-    } else {
-      logger.debugSync('Проект не загружен')
-    }
-  }
+function BrowserStatus() {
+  const { isReady, hasFiles, filesCount } = useBrowserAIIntegration()
 
   return (
-    <div>
-      <div>
-        Timeline статус: {timeline ? '✅ Доступен' : '❌ Недоступен'}
-      </div>
-      <button 
-        onClick={processCurrentProject}
-        disabled={!timeline}
-      >
-        Обработать текущий проект
-      </button>
+    <div className="browser-status">
+      <div>Браузер готов: {isReady ? '✅' : '❌'}</div>
+      <div>Файлы загружены: {hasFiles ? '✅' : '❌'}</div>
+      <div>Количество файлов: {filesCount}</div>
     </div>
   )
 }
@@ -605,3 +589,21 @@ useEffect(() => {
   }
 }, [])
 ```
+
+## Тестирование
+
+```bash
+# Запустить все тесты хуков
+bun run test src/features/ai-chat/hooks/
+
+# Конкретные тесты хуков
+bun run test src/features/ai-chat/hooks/__tests__/use-chat-state.test.tsx
+bun run test src/features/ai-chat/hooks/__tests__/use-chat-actions.test.tsx
+bun run test src/features/ai-chat/hooks/__tests__/use-timeline-ai-integration.test.tsx
+```
+
+## Связанная Документация
+
+- [Chat Provider](../services/README.ru.md#chat-providertsx) - Управление состоянием чата
+- [AI Tools](../../../domains/ai-tools/README.md) - Доступные AI инструменты
+- [AI Services](../../../domains/ai-services/README.md) - Интеграция AI сервисов

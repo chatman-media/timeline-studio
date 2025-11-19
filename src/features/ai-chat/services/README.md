@@ -2,173 +2,232 @@
 
 [Русский](./README.ru.md) | **English**
 
-Services for AI chat functionality and integration with various AI providers in Timeline Studio.
+Core services for AI chat functionality in Timeline Studio.
 
-## Architecture Overview
+## Architecture
 
-The services follow a **modular architecture** with clear separation of concerns:
+The services layer is minimal in the AI Chat module. Most AI functionality has been migrated to domain services:
 
-- **Core Providers**: Individual service classes for each AI provider
-- **Management Layer**: Configuration and provider managers
-- **Unified Interface**: Single entry point for all AI operations
-- **Specialized Services**: Domain-specific AI functionality
+- **AI Tools** → `/src/domains/ai-tools/tools/`
+- **AI Services** → `/src/domains/ai-services/services/`
+- **Shared Services** → `/src/shared/services/ai/`
 
-## Core AI Providers
-
-### `claude-service.ts`
-Integration with Anthropic's Claude API. Supports Claude 4 Sonnet and Opus models with tool usage.
-
-### `open-ai-service.ts`
-Integration with OpenAI API. Supports GPT-4, GPT-4o, GPT-3.5 Turbo, and o3 models.
-
-### `deepseek-service.ts`
-Integration with DeepSeek API for advanced language models including R1, Chat, and Coder variants.
-
-### `ollama-service.ts`
-Integration with local models via Ollama for offline operation.
-
-## Management Layer
-
-### `model-configuration-manager.ts`
-**Centralized model configuration** - handles model metadata, capabilities, and provider mapping. Makes adding new models extremely easy.
-
-### `provider-manager.ts`
-**Provider orchestration** - manages provider instances, load balancing, and failover logic.
-
-### `ai-response-processor.ts`
-**Response standardization** - unified response processing and validation across all providers.
-
-## Unified Interface
-
-### `unified-ai-service-new.ts`
-**Main API entry point** - provides a single interface for all AI operations with automatic provider selection, fallback handling, and caching.
-
-## Specialized Services
-
-### `timeline-ai-service.ts`
-AI service for timeline operations including intelligent editing, content analysis, and recommendations.
-
-### `whisper-service.ts`
-Audio transcription service with **Faster Whisper integration**. Supports OpenAI Whisper, local models, and Faster Whisper with automatic provider selection.
-
-### `ffmpeg-analysis-service.ts`
-Video file analysis using FFmpeg for metadata and technical characteristics extraction.
-
-### `multimodal-analysis-service.ts`
-Multimodal content analysis (video + audio + text) for comprehensive understanding.
-
-## Utility Services
-
-### `api-key-loader.ts`
-API key management for various services. Secure storage and loading from user settings.
-
-### `chat-storage-service.ts`
-Chat history persistence and session management.
-
-### `batch-processing-service.ts`
-Batch processing of multiple files using AI tools.
-
-### `platform-optimization-service.ts`
-Content optimization for various platforms (YouTube, TikTok, Instagram).
-
-### `workflow-automation-service.ts`
-Workflow automation and processing pipeline creation.
-
-### `intent-recognition.ts`
-User intent recognition for selecting appropriate tools and actions.
-
-## State Management
-
-### `chat-machine.ts`
-XState state machine for chat flow, messages, and sessions.
+## Available Services
 
 ### `chat-provider.tsx`
-React Context Provider for chat functionality access throughout the application.
+React Context Provider for chat functionality.
 
-## Usage
+**Features:**
+- Provides chat state machine context
+- Manages chat sessions
+- Handles message sending and streaming
+- Error handling and recovery
+
+**Usage:**
+```typescript
+import { ChatProvider, useChat } from '@/features/ai-chat/services'
+
+function App() {
+  return (
+    <ChatProvider>
+      <ChatComponent />
+    </ChatProvider>
+  )
+}
+
+function ChatComponent() {
+  const { messages, sendMessage } = useChat()
+  // ... use chat functionality
+}
+```
+
+### `chat-storage-service.ts`
+Chat history persistence service.
+
+**Features:**
+- Save and load chat sessions
+- Session management (create, delete, rename)
+- Message history persistence
+- Local storage integration
+
+**API:**
+```typescript
+interface ChatStorageService {
+  saveSession(session: ChatSession): Promise<void>
+  loadSession(sessionId: string): Promise<ChatSession | null>
+  loadAllSessions(): Promise<ChatSession[]>
+  deleteSession(sessionId: string): Promise<void>
+  clearAllSessions(): Promise<void>
+}
+```
+
+**Usage:**
+```typescript
+import { ChatStorageService } from '@/features/ai-chat/services'
+
+const storageService = new ChatStorageService()
+
+// Save session
+await storageService.saveSession(session)
+
+// Load all sessions
+const sessions = await storageService.loadAllSessions()
+
+// Delete session
+await storageService.deleteSession(sessionId)
+```
+
+### `mcp-provider.tsx`
+Model Context Protocol (MCP) integration provider.
+
+**Features:**
+- MCP server connection management
+- Tool discovery and registration
+- Context-aware tool suggestions
+- Tool format conversion
+
+**Usage:**
+```typescript
+import { MCPProvider, useMCP } from '@/features/ai-chat/services'
+
+function App() {
+  return (
+    <MCPProvider>
+      <ChatProvider>
+        <AIChat />
+      </ChatProvider>
+    </MCPProvider>
+  )
+}
+
+function ToolsPanel() {
+  const { availableTools, callTool } = useMCP()
+  // ... use MCP functionality
+}
+```
+
+### `index.ts`
+Re-exports chat machine from domain services.
+
+**Note:** The chat machine has been migrated to `/src/domains/ai-services/machines/chat-machine.ts` for better modularity.
+
+**Exports:**
+```typescript
+export type {
+  ChatListItem,
+  ChatMachine,
+  ChatMachineContext,
+  ChatMachineEvent,
+  ChatMessage,
+} from "../../../domains/ai-services/machines/chat-machine"
+
+export { chatMachine } from "../../../domains/ai-services/machines/chat-machine"
+```
+
+## Domain Services Integration
+
+### AI Services (`/src/domains/ai-services/services/`)
+
+For AI provider functionality, use domain services:
 
 ```typescript
-// Import unified service (recommended)
-import { UnifiedAIService } from './unified-ai-service-new'
+// Unified AI Service for AI operations
+import { UnifiedAIService } from '@/domains/ai-services/services/unified-ai-service'
 
-// Import individual service
-import { ClaudeService } from './claude-service'
-
-// Use chat provider
-import { ChatProvider, useChat } from './chat-provider'
-
-// Example: AI request with automatic provider selection
 const aiService = UnifiedAIService.getInstance()
-const response = await aiService.sendRequest(
-  "claude-4-sonnet", 
-  messages, 
-  { fallbackModels: ["gpt-4o"] }
-)
+const response = await aiService.sendRequest(model, messages)
 ```
 
-## Adding New AI Models
-
-The system is designed for **easy model addition**. To add Claude 4.1 or GPT-5:
-
-### 1. Add Model Constants
 ```typescript
-// In claude-service.ts
-export const CLAUDE_MODELS = {
-  CLAUDE_4_SONNET: "claude-4-sonnet",
-  CLAUDE_4_OPUS: "claude-4-opus",
-  CLAUDE_4_1: "claude-4.1", // ← New model
-}
+// Whisper Service for transcription
+import { WhisperService } from '@/domains/ai-services/services/whisper-service'
 
-// In open-ai-service.ts  
-export const AI_MODELS = {
-  GPT_4: "gpt-4",
-  GPT_4O: "gpt-4o", 
-  GPT_5: "gpt-5", // ← New model
-  O3: "o3",
-}
+const whisperService = WhisperService.getInstance()
+const transcription = await whisperService.transcribe(audioPath)
 ```
 
-### 2. Update Model Configuration Manager
 ```typescript
-// In model-configuration-manager.ts - STATIC_MODELS
-[CLAUDE_MODELS.CLAUDE_4_1]: {
-  id: CLAUDE_MODELS.CLAUDE_4_1,
-  name: "Claude 4.1",
-  provider: "claude",
-  isLocal: false,
-  supportsStreaming: true,
-  supportsTools: true,
-  maxTokens: 200000,
-  description: "Latest Claude model with enhanced capabilities",
-},
+// FFmpeg Analysis Service for video/audio analysis
+import { FFmpegAnalysisService } from '@/domains/ai-services/services/media-analysis/ffmpeg-analysis-service'
 
-[AI_MODELS.GPT_5]: {
-  id: AI_MODELS.GPT_5,
-  name: "GPT-5",
-  provider: "openai", 
-  isLocal: false,
-  supportsStreaming: true,
-  supportsTools: true,
-  maxTokens: 200000,
-  description: "Next generation OpenAI model",
+const ffmpegService = FFmpegAnalysisService.getInstance()
+const analysis = await ffmpegService.analyzeVideo(videoFile)
+```
+
+### AI Tools (`/src/domains/ai-tools/tools/`)
+
+For AI tool functionality, import from domains:
+
+```typescript
+// Timeline tools
+import { CreateProjectTool, DetectScenesTool } from '@/domains/ai-tools/tools/core/timeline'
+
+// Analysis tools
+import { VideoAnalysisTool, AudioAnalysisTool } from '@/domains/ai-tools/tools/analysis'
+
+// Automation tools
+import { EnhancedSubtitleAutomationTool } from '@/domains/ai-tools/tools/automation'
+```
+
+### Shared Services (`/src/shared/services/ai/`)
+
+For shared AI infrastructure:
+
+```typescript
+// Dependency injection container
+import { getAIContainer } from '@/shared/services/ai/di-container'
+
+const container = getAIContainer()
+const service = await container.resolve('UnifiedAIService')
+```
+
+```typescript
+// React integration hooks
+import { useAIService } from '@/shared/services/ai/react-integration'
+
+function MyComponent() {
+  const aiService = useAIService()
+  // ... use AI service
 }
 ```
 
-### 3. That's It! 🎉
+## Best Practices
 
-The **ModelConfigurationManager** automatically handles:
-- Provider mapping by model prefix
-- Availability checking
-- Model selection for tasks
-- Fallback logic
+### Chat State Management
+- Always wrap chat components with `ChatProvider`
+- Use `useChat()` hook for accessing chat functionality
+- Handle errors with try-catch blocks
+- Implement loading states for better UX
 
-**No other changes needed** - the unified service will automatically support the new models.
+### Session Management
+- Save sessions regularly to prevent data loss
+- Implement auto-save on important changes
+- Validate session data before loading
+- Handle migration for session schema changes
 
-## Key Benefits
+### MCP Integration
+- Initialize MCP provider before chat provider
+- Register tools on provider mount
+- Handle tool discovery errors gracefully
+- Implement tool availability checks
 
-- ✅ **Easy Model Addition**: 2 simple steps to add any new model
-- ✅ **Automatic Provider Selection**: Based on availability and capabilities  
-- ✅ **Intelligent Fallbacks**: Graceful degradation when preferred models unavailable
-- ✅ **Unified Interface**: Single API for all AI operations
-- ✅ **Modular Architecture**: Clean separation of concerns
-- ✅ **Faster Whisper Integration**: Automatic transcription provider selection
+## Testing
+
+### Service Tests
+```bash
+# Run all service tests
+bun run test src/features/ai-chat/services/
+
+# Specific tests
+bun run test src/features/ai-chat/services/__tests__/chat-storage-service.test.ts
+```
+
+### Available Tests
+- `chat-storage-service.test.ts` - Chat storage service tests
+
+## Related Documentation
+
+- [Chat Machine Documentation](../../../domains/ai-services/machines/README.md)
+- [AI Services Documentation](../../../domains/ai-services/README.md)
+- [AI Tools Documentation](../../../domains/ai-tools/README.md)
+- [Shared Services Documentation](../../../shared/services/ai/README.md)

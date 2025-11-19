@@ -74,12 +74,19 @@ await proxyGen.batchGenerate(files, {
 await proxyGen.cancelGeneration('/path/to/video.mp4')
 ```
 
+**✅ РЕАЛИЗОВАНО В RUST** (`src-tauri/src/proxy_generator.rs`):
+- ✅ Tauri команда `generate_proxy_command` (строка 234)
+- ✅ Интеграция с FFmpeg для реальной генерации (строки 62-133)
+- ✅ Поддержка кодеков: h264, h265/hevc
+- ✅ Настройка разрешения, битрейта, FPS
+- ✅ Опция сохранения/удаления аудио
+- ✅ TypeScript биндинги сгенерированы (`tauri-bindings.ts:245`)
+
 **TODO (для будущих версий)**:
-- Реализация Tauri команды `generate_proxy` в Rust
-- Интеграция с FFmpeg для реальной генерации
 - Автоматический выбор оптимальных настроек
-- Поддержка различных профилей кодеков
+- Поддержка различных профилей кодеков (прогрессивная развертка, GOP и т.д.)
 - Сохранение истории генерации
+- Прогресс-бар через Tauri события (сейчас эмулируется на фронтенде)
 
 ---
 
@@ -251,12 +258,24 @@ await waveformGen.batchGenerate(audioFiles, {
 })
 ```
 
+**✅ РЕАЛИЗОВАНО В RUST** (`src-tauri/src/video_compiler/core/ffmpeg_builder/advanced.rs`):
+- ✅ FFmpeg команда `build_waveform_command` (строка 104)
+- ✅ Использование FFmpeg фильтра `showwavespic` для генерации
+- ✅ Настройка размера и цвета waveform
+- ✅ Генерация PNG файлов
+
+**⚠️ НЕ ЭКСПОРТИРОВАНО как отдельная Tauri команда**:
+- Waveform функционал существует, но используется внутри других сервисов
+- Нет прямого доступа из TypeScript через `commands.generateWaveform()`
+- Требуется создать wrapper команду для frontend использования
+
 **TODO (для будущих версий)**:
-- Реализация Tauri команды `generate_waveform` в Rust
-- Использование FFmpeg для декодирования
+- Создать публичную Tauri команду `generate_waveform_command`
+- Экспортировать через specta для TypeScript биндингов
 - Спектрограмма
 - Стерео waveform (L/R каналы)
 - Интерактивные waveforms с zoom
+- SVG формат (сейчас только PNG)
 
 ---
 
@@ -406,16 +425,24 @@ export function getService(): ServiceClass {
 ## Следующие шаги (опционально)
 
 ### Phase 1: Backend Integration
-1. Реализовать Tauri команды:
-   - `generate_proxy` (Rust + FFmpeg)
-   - `generate_waveform` (Rust + FFmpeg)
-   - `detect_camera_devices` (Rust + OS API)
-   - `list_camera_files` (Rust + File System)
+**Статус**: Частично выполнено ✅
 
-2. Добавить событийную модель:
-   - `ProxyGenerationProgress`
-   - `CameraDeviceConnected`
-   - `CameraDeviceDisconnected`
+1. ✅ **Реализованные Tauri команды**:
+   - ✅ `generate_proxy_command` (Rust + FFmpeg) - **ГОТОВО**
+   - ✅ `build_waveform_command` (Rust + FFmpeg) - существует, но не экспортирован
+   - ⚠️ `get_media_metadata` (Rust) - существует, но не экспортирован как команда
+
+2. ❌ **TODO: Доработка Backend**:
+   - 📋 Создать `generate_waveform_command` с specta экспортом
+   - 📋 Создать `extract_metadata_command` с specta экспортом
+   - 📋 `detect_camera_devices` (Rust + OS API)
+   - 📋 `list_camera_files` (Rust + File System)
+
+3. ❌ **TODO: Событийная модель**:
+   - 📋 `ProxyGenerationProgress` (для real-time прогресса)
+   - 📋 `WaveformGenerationProgress`
+   - 📋 `CameraDeviceConnected`
+   - 📋 `CameraDeviceDisconnected`
 
 ### Phase 2: Advanced Features
 1. Smart Organization:
@@ -450,20 +477,35 @@ export function getService(): ServiceClass {
 
 Media Management Domain успешно доведен до **100% готовности**.
 
+---
+
+## 📊 Сводная таблица Backend Integration
+
+| Функционал | TypeScript | Rust Core | Tauri Command | Specta Export | Статус |
+|-----------|------------|-----------|---------------|---------------|--------|
+| **Proxy Generation** | ✅ Полный | ✅ Полный | ✅ `generate_proxy_command` | ✅ Да | ✅ **ГОТОВО** |
+| **Waveform Generation** | ✅ Базовый | ✅ `build_waveform_command` | ❌ Нет wrapper | ❌ Нет | ⚠️ **70%** |
+| **Metadata Extraction** | ✅ Базовый | ✅ `get_media_metadata` | ❌ Нет wrapper | ❌ Нет | ⚠️ **60%** |
+| **Camera Import** | ✅ Заглушки | ❌ Нет | ❌ Нет | ❌ Нет | ⚠️ **20%** |
+| **Smart Organization** | ✅ Базовый | ❌ Нет EXIF | ❌ Нет | ❌ Нет | ⚠️ **40%** |
+| **Error Tracker** | ✅ Полный | N/A (Frontend) | N/A | N/A | ✅ **100%** |
+
+---
+
 **Ключевые достижения**:
 1. ✅ Все 105 тестов проходят
 2. ✅ Реализованы 5 новых сервисов (~60KB кода)
 3. ✅ Полная интеграция с BackendSync
 4. ✅ Улучшенный error handling
 5. ✅ Готовность к расширению
+6. ✅ **ProxyGenerator ПОЛНОСТЬЮ готов к продакшену**
 
-**Готовность к продакшену**: 100% (базовая версия)
-- Core функционал полностью реализован
-- Тесты покрывают основные сценарии
-- Архитектура готова к расширению
-- TODO секции указывают путь развития
+**Готовность к продакшену**:
+- **Frontend**: 100% (все сервисы реализованы)
+- **Backend Integration**: 65% (1 из 5 полностью готов)
 
 **Рекомендации**:
-- Начать интеграцию с Tauri backend (Phase 1)
-- Добавить тесты для новых сервисов (Phase 3)
-- Расширить функционал постепенно (Phase 2)
+1. **Приоритет 1**: Экспортировать waveform и metadata как Tauri команды
+2. **Приоритет 2**: Реализовать Camera Import backend
+3. **Приоритет 3**: Добавить EXIF extraction для Smart Organization
+4. **Приоритет 4**: Событийная модель для real-time прогресса

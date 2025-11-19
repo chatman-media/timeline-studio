@@ -2,163 +2,291 @@
 
 **Русский** | [English](./README.md)
 
-AI-чат интерфейс для Timeline Studio с поддержкой нескольких AI провайдеров и 48+ специализированных инструментов, организованных по доменам с расширенной автоматизацией субтитров.
+AI-чат интерфейс для Timeline Studio с доменной архитектурой. Предоставляет React компоненты и хуки для интеграции AI чата с поддержкой MCP (Model Context Protocol).
 
-## 🏗️ Новая Архитектура (После Рефакторинга)
+## 🏗️ Обзор Архитектуры
 
-### Интеграция с Shared AI Services
-- **Единый AI Контейнер** - Централизованный DI для всех AI сервисов
-- **Общие Провайдеры** - Claude, OpenAI, DeepSeek, Ollama из `/src/shared/services/ai/`
-- **Межмодульная Совместимость** - Интеграция с AI Content Intelligence 
-- **Legacy Адаптеры** - Обратная совместимость для существующего кода
+Модуль AI Chat — это **легковесный фронтенд-слой**, который интегрируется с доменными сервисами:
 
-### Основные AI Провайдеры
-- **Claude 4** (Anthropic) - Продвинутое рассуждение и анализ
-- **OpenAI GPT-4** - Общего назначения и кодирование  
-- **DeepSeek** - Анализ и генерация кода
-- **Ollama** - Локальные модели (Llama 3.2, Mistral, Code Llama)
+### Интеграция с Доменами
+- **AI Tools** → `/src/domains/ai-tools/` - 48+ специализированных инструментов, организованных по доменам
+- **AI Services** → `/src/domains/ai-services/` - Основные AI провайдеры и оркестрация
+- **Shared Services** → `/src/shared/services/ai/` - Общие AI утилиты и DI контейнер
 
-### Основные компоненты
+### Ответственность модуля AI Chat
+- React компоненты для чат UI (интерфейс чата, список сообщений, подсказки)
+- React хуки для AI интеграции (timeline, browser, player, resources)
+- Управление контекстом и синхронизация состояния
+- Интеграция с MCP провайдером
+- Хранение чата и управление сессиями
 
-#### Основные Сервисы
-- `unified-ai-service.ts` - **Рефакторен** - Обёртка над shared AI сервисами
-- `provider-manager.ts` - **Обновлён** - Использует shared AI провайдеры  
-- `model-configuration-manager.ts` - **Обновлён** - С shared константами моделей
-- `timeline-ai-service.ts` - **Рефакторен** - Координация через shared UnifiedAIService
-- `chat-machine.ts` - XState машина для управления чатом
-- `intent-recognition.ts` - Анализ намерений пользователя
+## 📁 Структура Модуля
 
-#### AI Инструменты (Domain-based архитектура)
+### `/components/`
+React UI компоненты для чат интерфейса:
+- `ai-chat.tsx` - Главный компонент чата
+- `chat-list.tsx` - Список чат-сессий
+- `ai-processing-indicator.tsx` - Индикаторы загрузки и обработки
+- `ai-action-preview.tsx` - Предпросмотр AI действий перед выполнением
+- `cache-stats-panel.tsx` - Статистика кэша AI ответов
+- `suggestions/` - Панель контекстных AI подсказок
 
-##### 📁 Core Domain - Основные инструменты
-- **Timeline Tools** (17) - создание проектов, секции, клипы, анализ, сцены
-- **Resources Tools** (7) - эффекты, фильтры, переходы, анализ, экспорт
-- **Browser Tools** (5) - навигация по медиафайлам, поиск, анализ
-- **Player Tools** (3) - управление воспроизведением, превью, анализ
-- **Effects & Settings** - визуальные эффекты и конфигурация
+### `/hooks/`
+React хуки для AI интеграции:
+- `use-chat.tsx` - Основной хук чата с интеграцией state machine
+- `use-chat-state.ts` - Доступ к состоянию чата
+- `use-chat-actions.tsx` - Действия чата (отправка, очистка, отмена)
+- `use-timeline-ai.tsx` - AI операции для timeline
+- `use-timeline-ai-integration.ts` - Утилиты интеграции timeline
+- `use-browser-ai-integration.ts` - AI интеграция браузера
+- `use-player-ai-integration.ts` - AI интеграция плеера
+- `use-resources-ai-integration.ts` - AI интеграция ресурсов
 
-##### 🔬 Analysis Domain - Инструменты анализа
-- **Video Analysis** - детекция сцен, анализ качества, движения
-- **Audio Analysis** - анализ аудио, тишины, спектра
-- **Content Intelligence** - анализ содержания и структуры
-- **Multimodal Analysis** - комбинированный анализ видео и аудио
-- **Whisper Tools** - транскрипция речи
-- **Person Identification** - распознавание лиц
-- **Color & Style Analysis** - анализ цвета и стиля
+### `/services/`
+Основные сервисы для функциональности чата:
+- `chat-provider.tsx` - React Context Provider для состояния чата
+- `chat-storage-service.ts` - Сохранение истории чата
+- `mcp-provider.tsx` - Интеграция Model Context Protocol
+- `index.ts` - Реэкспорт chat machine из domains
 
-##### ⚙️ Automation Domain - Автоматизация
-- **Workflow Automation** - автоматические рабочие процессы
-- **Batch Processing** - пакетная обработка файлов
-- **Performance Tools** - оптимизация производительности и рендеринга
-- **Smart Templates** - интеллектуальные шаблоны и макеты
-- **🆕 Enhanced Subtitle Automation** - AI-автоматизация субтитров с:
-  - OCR извлечением текста с экрана
-  - Whisper интеграцией для распознавания речи
-  - Анализом сцен для контекста
-  - Продвинутой синхронизацией (4 алгоритма)
-  - Поддержкой 31 языка
-  - Идентификацией говорящих
-  - Метриками качества и рекомендациями
+### `/types/`
+TypeScript определения типов:
+- `ai-context.ts` - Типы контекста для AI операций
+- `common.ts` - Общие типы результатов и интерфейсов
+- `streaming.ts` - Типы потоковых ответов
 
-##### 🔗 Integration Domain - Интеграции
-- **Export Management** - экспорт в различные форматы
-- **Platform Integration** - интеграция с соцсетями и платформами
-- **Format Conversion** - конвертация форматов
+### `/utils/`
+Утилитарные функции:
+- `context-manager.ts` - Сбор и управление AI контекстом
+- `timeline-context.ts` - Утилиты контекста для timeline
+- `convert-tools.ts` - Конвертация формата инструментов для MCP
 
-#### Специализированные системы
-- **BaseAITool** - базовый класс с унифицированной обработкой ошибок
-- **Content Intelligence** - AI-анализ контента и структуры
+### `/machines/`
+Обработчики событий бэкенда:
+- `backend-event-handlers.ts` - Обработка Tauri событий для AI операций
+
+## 🔗 Интеграция с Доменными Сервисами
+
+Модуль AI Chat опирается на доменные сервисы для AI функциональности:
+
+### AI Tools (`/src/domains/ai-tools/tools/`)
+48+ специализированных инструментов, организованных по доменам:
+
+#### Core Domain
+- **Timeline Tools** (17) - проект, секции, клипы, сцены, анализ истории
+- **Resources Tools** (7) - эффекты, фильтры, переходы, совместимость
+- **Browser Tools** (5) - навигация по файлам, поиск, анализ контента
+- **Player Tools** (3) - управление воспроизведением, превью, анализ медиа
+
+#### Analysis Domain
+- **Video Analysis** - детекция сцен, качество, анализ движения
+- **Audio Analysis** - распознавание речи, шум, спектральный анализ
+- **Content Intelligence** - понимание и классификация контента
+- **Multimodal Analysis** - комбинированный анализ видео/аудио
+- **Whisper Integration** - транскрипция и преобразование речи в текст
 - **Person Identification** - детекция и отслеживание лиц
-- **Scene Analysis** - автоматическая детекция сцен и смен кадров
-- **🆕 ai-content-intelligence Integration** - VisionService, OCR, ONNX Runtime
-- **🆕 Enhanced Transcription** - Whisper интеграция с оптимизацией субтитров
-- **🆕 Advanced Synchronization** - 4-алгоритмная система синхронизации субтитров
-- **FFmpeg Integration** - бэкенд для анализа видео и аудио
+- **Color & Style Analysis** - цветокоррекция и стилизация
 
-## Использование
+#### Automation Domain
+- **Enhanced Subtitle Automation** - OCR, Whisper, синхронизация
+- **Batch Processing** - параллельная обработка медиа
+- **Workflow Automation** - интеллектуальная автоматизация задач
+- **Smart Templates** - адаптивная генерация макетов
+- **Performance Tools** - оптимизация и рендеринг
 
-### Чат интерфейс
+#### Integration Domain
+- **Export Management** - многоформатный экспорт
+- **Platform Integration** - оптимизация для соцсетей
+- **Format Conversion** - конвертация медиа форматов
+
+### AI Services (`/src/domains/ai-services/services/`)
+Основные AI провайдеры и оркестрация:
+- `unified-ai-service.ts` - Главный AI сервис оркестратор
+- `unified-orchestrator.ts` - Продвинутая AI оркестрация workflow
+- `whisper-service.ts` - Сервис транскрипции аудио
+- `media-analysis/ffmpeg-analysis-service.ts` - Анализ видео/аудио
+
+### Shared Services (`/src/shared/services/ai/`)
+Общая AI инфраструктура:
+- `di-container.ts` - Контейнер dependency injection
+- `backend-ai-service.ts` - Интеграция backend AI сервиса
+- `react-integration.tsx` - React хуки для AI сервисов
+- `providers/interfaces.ts` - Интерфейсы AI провайдеров
+
+## 🚀 Основные Возможности
+
+### Поддержка MCP (Model Context Protocol)
+- Встроенная интеграция MCP через `mcp-provider.tsx`
+- Конвертация доменных инструментов в формат MCP
+- Поддержка MCP серверов и обнаружения инструментов
+- Контекстные подсказки инструментов
+
+### Управление Состоянием Чата
+- XState-based машина чата (мигрирована в `/src/domains/ai-services/machines/chat-machine.ts`)
+- Постоянная история чата через `chat-storage-service.ts`
+- Управление и переключение сессий
+- Потоковые ответы в реальном времени
+
+### Контекстно-ориентированный AI
+- Автоматический сбор контекста из Timeline, Browser, Player, Resources
+- Умное сжатие контекста для лимитов токенов
+- Валидация и оптимизация контекста
+- Динамические обновления контекста
+
+### Хуки Интеграции AI
+- Timeline AI операции (создание, анализ, оптимизация)
+- Интеграция браузера (поиск файлов, анализ контента)
+- Интеграция плеера (управление воспроизведением, превью)
+- Интеграция ресурсов (эффекты, фильтры, совместимость)
+
+## 📚 Примеры Использования
+
+### Использование Чат Компонентов
 ```typescript
-// Пользователи взаимодействуют через естественный язык
-"Создай свадебное видео с романтичными переходами"
-"Добавь все видео из браузера в ресурсы"
-"Примени цветокоррекцию ко всем клипам"
+import { AIChat } from "@/features/ai-chat/components"
+import { ChatProvider } from "@/features/ai-chat/services"
+
+function App() {
+  return (
+    <ChatProvider>
+      <AIChat />
+    </ChatProvider>
+  )
+}
 ```
 
-### Программный API
+### Использование Чат Хуков
 ```typescript
-import { useTimelineAI } from './hooks/use-timeline-ai'
+import { useChat } from "@/features/ai-chat/hooks"
 
-const { createTimelineFromPrompt } = useTimelineAI()
-await createTimelineFromPrompt("Создай тревел-видео с энергичной музыкой")
+function ChatComponent() {
+  const { sendMessage, messages, isLoading } = useChat()
+
+  const handleSend = async (text: string) => {
+    await sendMessage(text)
+  }
+
+  return (
+    <div>
+      {messages.map(msg => (
+        <div key={msg.id}>{msg.content}</div>
+      ))}
+    </div>
+  )
+}
 ```
 
-## Возможности
+### Timeline AI Интеграция
+```typescript
+import { useTimelineAI } from "@/features/ai-chat/hooks"
 
-### Потоковые ответы
-- Потоковая передача ответов в реальном времени через Server-Sent Events
-- Инкрементальное обновление UI с анимацией печати
-- Поддержка отмены длительных запросов
+function TimelineComponent() {
+  const { createTimelineFromPrompt, analyzeTimeline } = useTimelineAI()
 
-### Управление контекстом
-- Автоматическое сжатие контекста для больших диалогов
-- Оценка токенов и обработка лимитов
-- Умное сохранение контекста
+  const handleCreate = async () => {
+    await createTimelineFromPrompt("Создай тревел-видео")
+  }
 
-### Поддержка нескольких провайдеров
-- Автоматическое переключение между провайдерами
-- Оптимизации для каждого провайдера
-- Единая обработка ошибок
-
-## Структура файлов
-
-```
-ai-chat/
-├── services/         # AI сервисы и state machines
-├── tools/           # 48+ AI инструментов (организованные по доменам)
-│   ├── core/        # Основные инструменты
-│   ├── analysis/    # Инструменты анализа
-│   ├── automation/  # Автоматизация (включая Enhanced Subtitle Automation)
-│   └── integration/ # Интеграции
-├── hooks/           # React хуки
-├── components/      # UI компоненты
-├── types/           # TypeScript определения
-└── utils/           # Вспомогательные функции
+  const handleAnalyze = async () => {
+    const analysis = await analyzeTimeline()
+    console.log(analysis)
+  }
+}
 ```
 
-## Документация
+### Управление Контекстом
+```typescript
+import { collectFullContext, compressContext } from "@/features/ai-chat/utils"
 
-- [Сервисы](./services/README.ru.md) - Реализации AI сервисов (модульная архитектура)
-- [Инструменты](./tools/README.md) - Domain-based архитектура и описание AI инструментов
-- [Миграция](./tools/MIGRATION.md) - Полный обзор миграции на новую архитектуру
-- [Компоненты](./components/README.ru.md) - React UI компоненты
-- [Хуки](./hooks/README.ru.md) - React хуки для AI функциональности
+// Собрать полный контекст для AI
+const context = await collectFullContext()
+
+// Сжать при необходимости
+if (isContextTooLarge(context)) {
+  const compressed = compressContext(context, maxTokens)
+}
+```
+
+### MCP Интеграция
+```typescript
+import { MCPProvider } from "@/features/ai-chat/services"
+
+function App() {
+  return (
+    <MCPProvider>
+      <ChatProvider>
+        <AIChat />
+      </ChatProvider>
+    </MCPProvider>
+  )
+}
+```
+
+## 🧪 Тестирование
+
+### Структура Тестов
+- **Тесты Компонентов** - `components/__tests__/` - тестирование UI компонентов
+- **Тесты Хуков** - `hooks/__tests__/` - тестирование React хуков
+- **Тесты Сервисов** - `services/__tests__/` - тестирование слоя сервисов
+- **Тесты Утилит** - `utils/__tests__/` - тестирование утилитарных функций
+- **Интеграционные Тесты** - `__tests__/` - полное тестирование интеграции
+
+### Запуск Тестов
+```bash
+# Все тесты ai-chat
+bun run test src/features/ai-chat/
+
+# Определенные категории тестов
+bun run test src/features/ai-chat/hooks/
+bun run test src/features/ai-chat/services/
+bun run test src/features/ai-chat/components/
+```
+
+### Доступные Тесты
+- `chat-list.test.tsx` - Компонент списка чата
+- `use-chat-actions.test.tsx` - Хук действий чата
+- `use-chat-state.test.tsx` - Хук состояния чата
+- `use-timeline-ai-integration.test.tsx` - Timeline AI интеграция
+- `chat-storage-service.test.ts` - Сервис хранения чата
+- `convert-tools.test.ts` - Утилиты конвертации инструментов
+- `function-calling.test.ts` - AI вызов функций
+
+## 🤝 Участие в Разработке
+
+При добавлении новых функций в AI Chat:
+
+### Добавление Новых Компонентов
+1. Создайте компонент в директории `components/`
+2. Экспортируйте из `components/index.ts`
+3. Добавьте тесты в `components/__tests__/`
+4. Обновите документацию компонентов README
+
+### Добавление Новых Хуков
+1. Создайте хук в директории `hooks/`
+2. Экспортируйте из `hooks/index.ts`
+3. Добавьте тесты в `hooks/__tests__/`
+4. Обновите документацию хуков README
+
+### Добавление Сбора Контекста
+1. Обновите `utils/context-manager.ts` для новых типов контекста
+2. Добавьте определения типов в `types/ai-context.ts`
+3. Обновите документацию со структурой контекста
+
+### Интеграция с Доменными Сервисами
+- AI Tools → добавьте в `/src/domains/ai-tools/tools/`
+- AI Services → добавьте в `/src/domains/ai-services/services/`
+- Общие утилиты → добавьте в `/src/shared/services/ai/`
+
+## 📖 Документация
+
+Документация модуля:
+- [Компоненты](./components/README.ru.md) - Справочник UI компонентов
+- [Хуки](./hooks/README.ru.md) - Справочник React хуков
+- [Сервисы](./services/README.ru.md) - Справочник слоя сервисов
 - [Типы](./types/README.ru.md) - TypeScript определения типов
-- [Утилиты](./utils/README.ru.md) - Вспомогательные функции
-- [Примеры](./examples/README.ru.md) - Примеры использования и паттерны
-- [Документация разработки](./DEV.md) - Developer Guide с планами рефакторинга
+- [Утилиты](./utils/README.ru.md) - Справочник утилитарных функций
 
-## 🎆 Новые возможности
-
-С новой domain-based архитектурой можно легко добавлять новые инструменты:
-
-- **🆕 Enhanced Subtitle Automation** - Полная AI-система генерации субтитров
-  - Автоматический анализ видео контента через ai-content-intelligence
-  - OCR извлечение текста с экрана с использованием VisionService
-  - Распознавание речи через Whisper интеграцию
-  - Продвинутая синхронизация с 4 алгоритмами
-  - Поддержка 31 языка
-  - Идентификация говорящих и контекст сцен
-  - Метрики качества и рекомендации по оптимизации
-
-- **Slip/Slide редактирование** - сдвиг контента внутри клипов
-- **Мультиязычные субтитры** - автоматический перевод
-- **Анализ BPM музыки** - определение темпа
-- **Эмоциональный анализ сцен** - определение настроения
-- **Motion tracking** - отслеживание движения
-- **Авто-цветокоррекция** - согласование цветов
-
-Для добавления нового инструмента:
-1. Выберите подходящий домен
-2. Используйте `BaseAITool` как базовый класс
-3. Добавьте в соответствующий index файл
+Документация доменов:
+- [Документация AI Tools](../../domains/ai-tools/README.md)
+- [Документация AI Services](../../domains/ai-services/README.md)
+- [Документация Shared Services](../../shared/services/ai/README.md)
