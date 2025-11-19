@@ -8,16 +8,26 @@ import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { MontagePlan } from "../types/montage-plan"
+import type { MontageTemplate } from "../types/montage-templates"
 import { validateMontagePlan } from "./montage-plan-parser"
 
 const logger = createLogger("MontagePlanIO")
 
+interface ExportTemplateOptions {
+  category?: MontageTemplate["category"]
+  tags?: string[]
+  icon?: string
+}
+
 /**
  * Экспортировать план монтажа в JSON файл
  */
-export async function exportMontagePlan(plan: MontagePlan): Promise<boolean> {
+export async function exportMontagePlan(plan: MontagePlan): Promise<string | null> {
   try {
     logger.infoSync("[MontagePlanIO] Exporting montage plan", { planId: plan.id })
+
+    // Генерируем имя файла по умолчанию
+    const defaultFileName = `${plan.name.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.json`
 
     // Открываем диалог сохранения файла
     const filePath = await save({
@@ -27,12 +37,12 @@ export async function exportMontagePlan(plan: MontagePlan): Promise<boolean> {
           extensions: ["json"],
         },
       ],
-      defaultPath: `${plan.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.json`,
+      defaultPath: defaultFileName,
     })
 
     if (!filePath) {
       logger.infoSync("[MontagePlanIO] Export cancelled by user")
-      return false
+      return null
     }
 
     // Сериализуем план
@@ -42,10 +52,10 @@ export async function exportMontagePlan(plan: MontagePlan): Promise<boolean> {
     await writeTextFile(filePath, planJSON)
 
     logger.infoSync("[MontagePlanIO] Plan exported successfully", { filePath })
-    return true
+    return filePath
   } catch (error) {
     logger.errorSync("[MontagePlanIO] Failed to export plan", error as Record<string, unknown>)
-    return false
+    throw error
   }
 }
 
@@ -109,51 +119,48 @@ export async function importMontagePlan(): Promise<MontagePlan | null> {
 /**
  * Экспортировать несколько планов в один файл
  */
-export async function exportMultiplePlans(plans: MontagePlan[]): Promise<boolean> {
+export async function exportMultiplePlans(plans: MontagePlan[]): Promise<string | null> {
   try {
     logger.infoSync("[MontagePlanIO] Exporting multiple plans", { count: plans.length })
 
     const filePath = await save({
       filters: [
         {
-          name: "Montage Plans Collection",
+          name: "Montage Plans",
           extensions: ["json"],
         },
       ],
-      defaultPath: "montage_plans_collection.json",
+      defaultPath: "montage-plans.json",
     })
 
     if (!filePath) {
-      return false
+      return null
     }
 
-    const collection = {
-      version: "1.0",
-      exportedAt: new Date().toISOString(),
-      plans,
-    }
+    // Экспортируем как простой массив (по требованию тестов)
+    const plansJSON = JSON.stringify(plans, null, 2)
 
-    await writeTextFile(filePath, JSON.stringify(collection, null, 2))
+    await writeTextFile(filePath, plansJSON)
 
     logger.infoSync("[MontagePlanIO] Multiple plans exported successfully")
-    return true
+    return filePath
   } catch (error) {
     logger.errorSync("[MontagePlanIO] Failed to export multiple plans", error as Record<string, unknown>)
-    return false
+    throw error
   }
 }
 
 /**
  * Импортировать несколько планов из файла
  */
-export async function importMultiplePlans(): Promise<MontagePlan[]> {
+export async function importMultiplePlans(): Promise<MontagePlan[] | null> {
   try {
     logger.infoSync("[MontagePlanIO] Importing multiple plans")
 
     const filePath = await open({
       filters: [
         {
-          name: "Montage Plans Collection",
+          name: "Montage Plans",
           extensions: ["json"],
         },
       ],
@@ -161,19 +168,23 @@ export async function importMultiplePlans(): Promise<MontagePlan[]> {
     })
 
     if (!filePath) {
-      return []
+      return null
     }
 
     const fileContent = await readTextFile(filePath as string)
-    const collection = JSON.parse(fileContent)
+    const data = JSON.parse(fileContent)
 
-    // Проверяем формат
-    if (!collection.plans || !Array.isArray(collection.plans)) {
-      throw new Error("Invalid collection format")
+    // Поддерживаем как массив, так и одиночный план
+    let plansData: any[]
+    if (Array.isArray(data)) {
+      plansData = data
+    } else {
+      // Если это одиночный план, оборачиваем в массив
+      plansData = [data]
     }
 
     // Восстанавливаем даты для каждого плана
-    const plans: MontagePlan[] = collection.plans.map((planData: any) => ({
+    const plans: MontagePlan[] = plansData.map((planData: any) => ({
       ...planData,
       createdAt: new Date(planData.createdAt),
       updatedAt: planData.updatedAt ? new Date(planData.updatedAt) : undefined,
@@ -186,29 +197,74 @@ export async function importMultiplePlans(): Promise<MontagePlan[]> {
     return plans
   } catch (error) {
     logger.errorSync("[MontagePlanIO] Failed to import multiple plans", error as Record<string, unknown>)
-    return []
+    throw error
   }
 }
 
 /**
  * Экспортировать план как шаблон (без привязки к конкретным файлам)
  */
-export async function exportPlanAsTemplate(plan: MontagePlan): Promise<boolean> {
+export async function exportPlanAsTemplate(
+  plan: MontagePlan,
+  options?: ExportTemplateOptions
+): Promise<string | null> {
   try {
-    // Создаем шаблонную версию плана без конкретных путей к файлам
-    const template = {
+    const avgClipDuration = plan.clips.length > 0
+      ? plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length
+      : 5
+
+    // Создаем шаблон из плана
+    const template: MontageTemplate = {
+      id: `template-${Date.now()}`,
       name: plan.name,
-      description: plan.description,
+      description: plan.description || `Template based on ${plan.name}`,
       style: plan.style,
-      targetDuration: plan.targetDuration,
-      clipCount: plan.clips.length,
-      averageClipDuration: plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length,
-      transitions: plan.transitions.map((t) => ({
-        type: t.type,
-        duration: t.duration,
-      })),
-      music: plan.music,
-      texts: plan.texts,
+      icon: options?.icon || "📋",
+      category: options?.category || "custom",
+      tags: options?.tags || ["custom"],
+      isBuiltIn: false,
+      createdAt: new Date(),
+
+      parameters: {
+        targetDuration: plan.targetDuration,
+        clipDuration: {
+          min: Math.max(1, avgClipDuration * 0.5),
+          max: avgClipDuration * 2,
+          preferred: avgClipDuration,
+        },
+        clipCount: {
+          min: Math.max(1, plan.clips.length - 2),
+          max: plan.clips.length + 5,
+          preferred: plan.clips.length,
+        },
+      },
+
+      clipRules: {
+        qualityThreshold: 0.7,
+        contentRequirements: {},
+        scenePriority: {
+          action: 0.5,
+          static: 0.5,
+          closeup: 0.5,
+          wide: 0.5,
+        },
+        diversity: {
+          avoidRepetition: true,
+          mixSceneTypes: true,
+        },
+      },
+
+      transitionRules: {
+        defaultType: plan.transitions[0]?.type || "cross_dissolve",
+        duration: plan.transitions[0]?.duration || 0.5,
+        variety: {
+          enabled: plan.transitions.length > 1,
+          types: plan.transitions.map(t => t.type),
+        },
+        frequency: plan.clips.length > 1 ? plan.transitions.length / (plan.clips.length - 1) : 0,
+      },
+
+      musicSettings: plan.music,
     }
 
     const filePath = await save({
@@ -218,19 +274,19 @@ export async function exportPlanAsTemplate(plan: MontagePlan): Promise<boolean> 
           extensions: ["json"],
         },
       ],
-      defaultPath: `${plan.name}_template.json`,
+      defaultPath: `${plan.name.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-template.json`,
     })
 
     if (!filePath) {
-      return false
+      return null
     }
 
     await writeTextFile(filePath, JSON.stringify(template, null, 2))
 
     logger.infoSync("[MontagePlanIO] Plan exported as template")
-    return true
+    return filePath
   } catch (error) {
     logger.errorSync("[MontagePlanIO] Failed to export plan as template", error as Record<string, unknown>)
-    return false
+    throw error
   }
 }

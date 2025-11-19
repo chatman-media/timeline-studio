@@ -1,173 +1,257 @@
 /**
- * Hook для применения шаблонов монтажа
- * Генерирует план монтажа на основе шаблона и результатов анализа
- */
-
-import { useCallback } from "react"
-
-import { createLogger } from "@/lib/tauri-logger"
-
-import type { FileAnalysisProgress } from "../types/analysis-progress"
-import type { MontageClip, MontagePlan } from "../types/montage-plan"
-import type { MontageTemplate } from "../types/montage-templates"
-
-const logger = createLogger("useMontageTemplate")
-
-export interface UseMontageTemplateReturn {
-  /** Сгенерировать план на основе шаблона */
-  generatePlanFromTemplate: (template: MontageTemplate, filesProgress: FileAnalysisProgress[]) => MontagePlan | null
-}
-
-/**
  * Hook для работы с шаблонами монтажа
  */
-export function useMontageTemplate(): UseMontageTemplateReturn {
-  /**
-   * Генерирует план монтажа на основе шаблона
-   */
-  const generatePlanFromTemplate = useCallback(
-    (template: MontageTemplate, filesProgress: FileAnalysisProgress[]): MontagePlan | null => {
-      try {
-        logger.infoSync("[useMontageTemplate] Generating plan from template", {
-          templateId: template.id,
-          filesCount: filesProgress.length,
-        })
 
-        // Фильтруем завершенные файлы
-        const completedFiles = filesProgress.filter((f) => f.status === "completed")
+import { useCallback, useState } from "react"
 
-        if (completedFiles.length === 0) {
-          logger.errorSync("[useMontageTemplate] No completed files available")
-          return null
-        }
+import type { MontageTemplate, MontageTemplateParameters } from "../types/montage-templates"
+import { BUILT_IN_TEMPLATES, getTemplateById } from "../types/montage-templates"
 
-        // Собираем все доступные сегменты из анализа
-        const availableSegments: Array<{
-          file: FileAnalysisProgress
-          startTime: number
-          endTime: number
-          duration: number
-          qualityScore: number
-        }> = []
+interface TemplateComparison {
+  template1: MontageTemplate
+  template2: MontageTemplate
+  differences: {
+    targetDuration?: { t1: number; t2: number }
+    aspectRatio?: { t1?: string; t2?: string }
+    clipCount?: { t1: number; t2: number }
+  }
+}
 
-        for (const file of completedFiles) {
-          // Проверяем наличие анализа сцен
-          const sceneAnalysis = file.analyzers.find((a) => a.type === "scene_detection")
-          if (sceneAnalysis?.result?.scenes) {
-            // Добавляем каждую сцену как потенциальный сегмент
-            for (const scene of sceneAnalysis.result.scenes) {
-              availableSegments.push({
-                file,
-                startTime: scene.start_time,
-                endTime: scene.end_time,
-                duration: scene.end_time - scene.start_time,
-                qualityScore: scene.score || 0.5,
-              })
-            }
-          } else {
-            // Если нет анализа сцен, используем весь файл
-            const duration = file.duration || 10
-            availableSegments.push({
-              file,
-              startTime: 0,
-              endTime: duration,
-              duration,
-              qualityScore: 0.6,
-            })
-          }
-        }
+interface TemplateRecommendation {
+  id: string
+  score: number
+  template: MontageTemplate
+}
 
-        // Фильтруем сегменты по правилам шаблона
-        let filteredSegments = availableSegments.filter(
-          (seg) => seg.qualityScore >= template.clipRules.qualityThreshold,
-        )
+interface RecommendationCriteria {
+  targetDuration?: number
+  style?: string
+  aspectRatio?: string
+}
 
-        // Фильтруем по длительности клипа
-        filteredSegments = filteredSegments.filter(
-          (seg) =>
-            seg.duration >= template.parameters.clipDuration.min &&
-            seg.duration <= template.parameters.clipDuration.max,
-        )
+export function useMontageTemplate() {
+  const [selectedTemplate, setSelectedTemplate] = useState<MontageTemplate | null>(null)
+  const [customizedTemplate, setCustomizedTemplate] = useState<MontageTemplate | null>(null)
+  const [customTemplates, setCustomTemplates] = useState<MontageTemplate[]>([])
+  const [filteredTemplates, setFilteredTemplates] = useState<MontageTemplate[]>(BUILT_IN_TEMPLATES)
+  const [comparison, setComparison] = useState<TemplateComparison | null>(null)
+  const [recommendations, setRecommendations] = useState<TemplateRecommendation[]>([])
 
-        if (filteredSegments.length === 0) {
-          logger.errorSync("[useMontageTemplate] No segments match template requirements")
-          return null
-        }
+  // Объединенный список всех шаблонов (встроенные + кастомные)
+  const availableTemplates = [...BUILT_IN_TEMPLATES, ...customTemplates]
 
-        // Сортируем по качеству
-        filteredSegments.sort((a, b) => b.qualityScore - a.qualityScore)
+  // Выбор шаблона
+  const selectTemplate = useCallback((templateOrId: MontageTemplate | string) => {
+    if (typeof templateOrId === "string") {
+      const template = availableTemplates.find(t => t.id === templateOrId)
+      setSelectedTemplate(template || null)
+    } else {
+      setSelectedTemplate(templateOrId)
+    }
+    // Сбрасываем кастомизацию при новом выборе
+    setCustomizedTemplate(null)
+  }, [availableTemplates])
 
-        // Выбираем нужное количество клипов
-        const targetClipCount = Math.min(template.parameters.clipCount.preferred, filteredSegments.length)
-        const selectedSegments = filteredSegments.slice(0, targetClipCount)
+  // Очистка выбора
+  const clearSelection = useCallback(() => {
+    setSelectedTemplate(null)
+    setCustomizedTemplate(null)
+  }, [])
 
-        // Создаем клипы
-        const clips: MontageClip[] = selectedSegments.map((seg, _index) => ({
-          fileId: seg.file.id,
-          filePath: seg.file.path,
-          startTime: seg.startTime,
-          endTime: seg.endTime,
-          duration: seg.duration,
-          reason: `Selected by template: ${template.name}`,
-          qualityScore: seg.qualityScore,
-        }))
+  // Фильтрация по категории
+  const filterByCategory = useCallback((category: MontageTemplate["category"]) => {
+    const filtered = availableTemplates.filter(t => t.category === category)
+    setFilteredTemplates(filtered)
+  }, [availableTemplates])
 
-        // Создаем переходы согласно правилам шаблона
-        const transitions = []
-        for (let i = 0; i < clips.length - 1; i++) {
-          if (Math.random() < template.transitionRules.frequency) {
-            const transitionType = template.transitionRules.variety.enabled
-              ? template.transitionRules.variety.types[
-                  Math.floor(Math.random() * template.transitionRules.variety.types.length)
-                ]
-              : template.transitionRules.defaultType
+  // Фильтрация по нескольким категориям
+  const filterByCategories = useCallback((categories: MontageTemplate["category"][]) => {
+    const filtered = availableTemplates.filter(t => categories.includes(t.category))
+    setFilteredTemplates(filtered)
+  }, [availableTemplates])
 
-            transitions.push({
-              type: transitionType,
-              duration: template.transitionRules.duration,
-              afterClipIndex: i,
-            })
-          }
-        }
+  // Поиск по имени
+  const searchTemplates = useCallback((query: string) => {
+    const lowerQuery = query.toLowerCase()
+    const filtered = filteredTemplates.filter(t =>
+      t.name.toLowerCase().includes(lowerQuery) ||
+      t.description.toLowerCase().includes(lowerQuery)
+    )
+    setFilteredTemplates(filtered)
+  }, [filteredTemplates])
 
-        // Вычисляем фактическую длительность
-        const actualDuration = clips.reduce((sum, clip) => sum + clip.duration, 0)
+  // Поиск по тегам
+  const searchByTags = useCallback((tags: string[]) => {
+    const filtered = availableTemplates.filter(t =>
+      tags.some(tag => t.tags.includes(tag))
+    )
+    setFilteredTemplates(filtered)
+  }, [availableTemplates])
 
-        // Создаем план монтажа
-        const plan: MontagePlan = {
-          id: `plan-${template.id}-${Date.now()}`,
-          name: `${template.name} - Auto Generated`,
-          style: template.style,
-          targetDuration: template.parameters.targetDuration,
-          actualDuration,
-          clips,
-          transitions,
-          music: template.musicSettings,
-          description: `Автоматически созданный план на основе шаблона "${template.name}"`,
-          createdAt: new Date(),
-          metadata: {
-            sourceFilesCount: completedFiles.length,
-            usedFilesCount: new Set(clips.map((c) => c.fileId)).size,
-            usagePercentage: (new Set(clips.map((c) => c.fileId)).size / completedFiles.length) * 100,
-          },
-        }
+  // Очистка всех фильтров
+  const clearFilters = useCallback(() => {
+    setFilteredTemplates(availableTemplates)
+  }, [availableTemplates])
 
-        logger.infoSync("[useMontageTemplate] Plan generated successfully", {
-          planId: plan.id,
-          clipsCount: clips.length,
-          actualDuration,
-        })
+  // Кастомизация параметров
+  const customizeParameters = useCallback((params: Partial<MontageTemplateParameters>) => {
+    if (!selectedTemplate) return
 
-        return plan
-      } catch (error) {
-        logger.errorSync("[useMontageTemplate] Failed to generate plan from template", error as Record<string, unknown>)
-        return null
+    const customized: MontageTemplate = {
+      ...selectedTemplate,
+      parameters: {
+        ...selectedTemplate.parameters,
+        ...params,
+      },
+    }
+    setCustomizedTemplate(customized)
+  }, [selectedTemplate])
+
+  // Сброс кастомизации
+  const resetCustomization = useCallback(() => {
+    setCustomizedTemplate(null)
+  }, [])
+
+  // Сравнение двух шаблонов
+  const compareTemplates = useCallback((id1: string, id2: string) => {
+    const t1 = availableTemplates.find(t => t.id === id1)
+    const t2 = availableTemplates.find(t => t.id === id2)
+
+    if (!t1 || !t2) return
+
+    const diff: TemplateComparison["differences"] = {}
+
+    if (t1.parameters.targetDuration !== t2.parameters.targetDuration) {
+      diff.targetDuration = { t1: t1.parameters.targetDuration, t2: t2.parameters.targetDuration }
+    }
+
+    if (t1.parameters.aspectRatio !== t2.parameters.aspectRatio) {
+      diff.aspectRatio = { t1: t1.parameters.aspectRatio, t2: t2.parameters.aspectRatio }
+    }
+
+    if (t1.parameters.clipCount.preferred !== t2.parameters.clipCount.preferred) {
+      diff.clipCount = {
+        t1: t1.parameters.clipCount.preferred,
+        t2: t2.parameters.clipCount.preferred
       }
-    },
-    [],
-  )
+    }
+
+    setComparison({
+      template1: t1,
+      template2: t2,
+      differences: diff,
+    })
+  }, [availableTemplates])
+
+  // Очистка сравнения
+  const clearComparison = useCallback(() => {
+    setComparison(null)
+  }, [])
+
+  // Получение рекомендаций
+  const getRecommendations = useCallback((criteria: RecommendationCriteria) => {
+    const scored: TemplateRecommendation[] = availableTemplates.map(template => {
+      let score = 0
+
+      // Оценка по длительности
+      if (criteria.targetDuration) {
+        const durationDiff = Math.abs(template.parameters.targetDuration - criteria.targetDuration)
+        const durationScore = Math.max(0, 1 - durationDiff / criteria.targetDuration)
+        score += durationScore * 0.4
+      }
+
+      // Оценка по стилю
+      if (criteria.style && template.style === criteria.style) {
+        score += 0.3
+      }
+
+      // Оценка по соотношению сторон
+      if (criteria.aspectRatio && template.parameters.aspectRatio === criteria.aspectRatio) {
+        score += 0.3
+      }
+
+      return {
+        id: template.id,
+        score,
+        template,
+      }
+    })
+
+    // Сортируем по оценке
+    scored.sort((a, b) => b.score - a.score)
+    setRecommendations(scored)
+  }, [availableTemplates])
+
+  // Сохранение как кастомного шаблона
+  const saveAsCustomTemplate = useCallback((metadata: { name: string; description: string }) => {
+    if (!selectedTemplate) return
+
+    const customTemplate: MontageTemplate = {
+      ...selectedTemplate,
+      id: `custom-${Date.now()}`,
+      name: metadata.name,
+      description: metadata.description,
+      isBuiltIn: false,
+      category: "custom",
+      createdAt: new Date(),
+    }
+
+    setCustomTemplates(prev => [...prev, customTemplate])
+  }, [selectedTemplate])
+
+  // Удаление кастомного шаблона
+  const deleteCustomTemplate = useCallback((id: string) => {
+    setCustomTemplates(prev => prev.filter(t => t.id !== id))
+  }, [])
+
+  // Экспорт шаблона
+  const exportTemplate = useCallback(() => {
+    if (!selectedTemplate) return ""
+    return JSON.stringify(selectedTemplate, null, 2)
+  }, [selectedTemplate])
+
+  // Импорт шаблона
+  const importTemplate = useCallback((json: string) => {
+    try {
+      const template = JSON.parse(json) as MontageTemplate
+
+      // Валидация обязательных полей
+      if (!template.id || !template.name || !template.style || !template.parameters) {
+        throw new Error("Invalid template structure")
+      }
+
+      setSelectedTemplate(template)
+    } catch (error) {
+      throw new Error(`Failed to import template: ${error instanceof Error ? error.message : "Unknown error"}`)
+    }
+  }, [])
 
   return {
-    generatePlanFromTemplate,
+    // State
+    selectedTemplate,
+    customizedTemplate,
+    availableTemplates,
+    customTemplates,
+    filteredTemplates,
+    comparison,
+    recommendations,
+
+    // Actions
+    selectTemplate,
+    clearSelection,
+    filterByCategory,
+    filterByCategories,
+    searchTemplates,
+    searchByTags,
+    clearFilters,
+    customizeParameters,
+    resetCustomization,
+    compareTemplates,
+    clearComparison,
+    getRecommendations,
+    saveAsCustomTemplate,
+    deleteCustomTemplate,
+    exportTemplate,
+    importTemplate,
   }
 }

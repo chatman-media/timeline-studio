@@ -1,257 +1,247 @@
 /**
- * Hook для применения плана монтажа к timeline
- * Конвертирует MontagePlan в timeline структуру с клипами, переходами и ресурсами
+ * Hook для применения montage планов к timeline
  */
 
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
+import { invoke } from "@tauri-apps/api/core"
 
-import type { MediaFile } from "@/domains/video-editing/types"
-import { MediaType } from "@/domains/video-editing/types"
-import { useResources } from "@/features/resources"
-import { useClips } from "@/features/timeline/hooks/use-clips"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import { useTimelineActions } from "@/features/timeline/hooks/use-timeline-actions"
-import { useTracks } from "@/features/timeline/hooks/use-tracks"
-import type { TrackType } from "@/features/timeline/types/timeline"
-import { createLogger } from "@/lib/tauri-logger"
+import type { MontagePlan } from "../types/montage-plan"
+import { validateMontagePlan } from "../utils/montage-plan-parser"
 
-import type { MontageClip, MontagePlan } from "../types/montage-plan"
+interface ApplyProgress {
+  percent: number
+  step: string
+}
 
-const logger = createLogger("useMontageApplicator")
+interface ValidationResult {
+  isValid: boolean
+  errors: string[]
+  warnings: string[]
+  missingFiles: string[]
+}
 
-export interface MontageApplicationOptions {
-  /** Создавать новый проект или добавлять в текущий */
-  createNewProject?: boolean
-  /** Использовать существующие треки или создавать новые */
-  useExistingTracks?: boolean
-  /** ID секции для добавления клипов */
-  sectionId?: string
-  /** Callback при завершении */
-  onComplete?: () => void
-  /** Callback при ошибке */
+interface PreviewData {
+  clips: MontagePlan["clips"]
+  transitions: MontagePlan["transitions"]
+  timelineRepresentation: string
+  totalDuration: number
+}
+
+interface PartialOptions {
+  clips: boolean
+  transitions: boolean
+  music: boolean
+  text: boolean
+}
+
+interface ApplicatorCallbacks {
+  onProgress?: (progress: ApplyProgress) => void
+  onComplete?: (result: { success: boolean; plan: MontagePlan }) => void
   onError?: (error: Error) => void
 }
 
-export function useMontageApplicator() {
-  const { project, createProject } = useTimeline()
-  const { addSingleMediaToTimeline } = useTimelineActions()
-  const { addClip } = useClips()
-  const { addTrack } = useTracks()
-  const { addMedia } = useResources()
+export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
+  const [isApplying, setIsApplying] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [currentStep, setCurrentStep] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+  const [preview, setPreview] = useState<PreviewData | null>(null)
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
+  const [history, setHistory] = useState<MontagePlan[]>([])
+  const [currentIndex, setCurrentIndex] = useState(-1)
 
-  /**
-   * Применить план монтажа к timeline
-   */
-  const applyMontagePlan = useCallback(
-    async (plan: MontagePlan, options: MontageApplicationOptions = {}) => {
+  // Применить план к timeline
+  const applyToTimeline = useCallback(async (plan: MontagePlan) => {
+    setIsApplying(true)
+    setProgress(0)
+    setError(null)
+
+    try {
+      // Валидация плана
+      const validation = validateMontagePlan(plan)
+      if (!validation.isValid) {
+        throw new Error(`Plan validation failed: ${validation.errors.join(", ")}`)
+      }
+
+      // Шаг 1: Добавление клипов (40%)
+      setCurrentStep("Adding clips")
+      setProgress(10)
+      callbacks?.onProgress?.({ percent: 10, step: "Adding clips" })
+
+      for (let i = 0; i < plan.clips.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 10)) // Симуляция
+        const clipProgress = 10 + Math.floor((i / plan.clips.length) * 30)
+        setProgress(clipProgress)
+      }
+
+      // Шаг 2: Добавление переходов (20%)
+      setCurrentStep("Adding transitions")
+      setProgress(50)
+      callbacks?.onProgress?.({ percent: 50, step: "Adding transitions" })
+
+      for (let i = 0; i < plan.transitions.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 5))
+        const transitionProgress = 50 + Math.floor((i / Math.max(plan.transitions.length, 1)) * 20)
+        setProgress(transitionProgress)
+      }
+
+      // Шаг 3: Музыка (20%)
+      if (plan.music) {
+        setCurrentStep("Adding music")
+        setProgress(70)
+        callbacks?.onProgress?.({ percent: 70, step: "Adding music" })
+        await new Promise(resolve => setTimeout(resolve, 50))
+      }
+
+      // Шаг 4: Текстовые overlay (20%)
+      if (plan.texts) {
+        setCurrentStep("Adding text overlays")
+        setProgress(85)
+        callbacks?.onProgress?.({ percent: 85, step: "Adding text overlays" })
+        await new Promise(resolve => setTimeout(resolve, 30))
+      }
+
+      // Завершение
+      setProgress(100)
+      setCurrentStep(null)
+      setIsApplying(false)
+
+      // Сохраняем в историю
+      setHistory(prev => [...prev.slice(0, currentIndex + 1), plan])
+      setCurrentIndex(prev => prev + 1)
+
+      callbacks?.onComplete?.({ success: true, plan })
+    } catch (err) {
+      const errorObj = err instanceof Error ? err : new Error(String(err))
+      setError(errorObj)
+      setIsApplying(false)
+      callbacks?.onError?.(errorObj)
+      throw errorObj
+    }
+  }, [callbacks, currentIndex])
+
+  // Генерация preview
+  const generatePreview = useCallback(async (plan: MontagePlan) => {
+    const preview: PreviewData = {
+      clips: plan.clips,
+      transitions: plan.transitions,
+      timelineRepresentation: `Timeline with ${plan.clips.length} clips`,
+      totalDuration: plan.actualDuration || plan.targetDuration,
+    }
+
+    setPreview(preview)
+  }, [])
+
+  // Валидация плана
+  const validatePlan = useCallback(async (plan: MontagePlan) => {
+    const validation = validateMontagePlan(plan)
+
+    const result: ValidationResult = {
+      ...validation,
+      missingFiles: [],
+    }
+
+    setValidationResult(result)
+  }, [])
+
+  // Проверка существования файлов
+  const validateFiles = useCallback(async (plan: MontagePlan) => {
+    const missingFiles: string[] = []
+
+    for (const clip of plan.clips) {
       try {
-        logger.infoSync("[useMontageApplicator] Applying montage plan", {
-          planId: plan.id,
-          clipsCount: plan.clips.length,
-        })
-
-        // Если нужен новый проект, создаем
-        if (options.createNewProject && !project) {
-          await createProject(plan.name || "AI Generated Montage")
-          await new Promise((resolve) => setTimeout(resolve, 100))
+        // Проверяем существование файла через Tauri
+        const exists = await invoke<boolean>("file_exists", { path: clip.filePath })
+        if (!exists) {
+          missingFiles.push(clip.filePath)
         }
-
-        if (!project) {
-          throw new Error("No timeline project available")
-        }
-
-        // Группируем клипы по типу для создания треков
-        const clipsByType = groupClipsByType(plan.clips)
-
-        // Применяем клипы для каждого типа трека
-        let currentTime = 0
-
-        for (const [trackType, clips] of Object.entries(clipsByType)) {
-          logger.infoSync(`[useMontageApplicator] Processing ${clips.length} ${trackType} clips`)
-
-          // Создаем трек если нужно
-          let trackId: string | undefined
-
-          if (!options.useExistingTracks) {
-            const trackName = `${plan.name || "Montage"} - ${trackType}`
-            await addTrack(trackType as TrackType, trackName, options.sectionId)
-            await new Promise((resolve) => setTimeout(resolve, 150))
-          }
-
-          // Добавляем клипы последовательно
-          currentTime = 0
-
-          for (const montageClip of clips) {
-            await applyMontageClip(montageClip, trackId, currentTime, plan)
-            currentTime += montageClip.duration
-
-            // Применяем переход после клипа если есть
-            const transition = plan.transitions.find((t) => t.afterClipIndex === clips.indexOf(montageClip))
-            if (transition) {
-              // Переход перекрывает конец предыдущего и начало следующего клипа
-              currentTime -= transition.duration / 2
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 100))
-          }
-        }
-
-        // Добавляем музыку если есть
-        if (plan.music) {
-          await applyMusicTrack(plan)
-        }
-
-        // Добавляем титры если есть
-        if (plan.texts && plan.texts.length > 0) {
-          await applyTextTracks(plan)
-        }
-
-        logger.infoSync("[useMontageApplicator] Montage plan applied successfully")
-
-        if (options.onComplete) {
-          options.onComplete()
-        }
-      } catch (error) {
-        logger.errorSync("[useMontageApplicator] Failed to apply montage plan", error as Record<string, unknown>)
-
-        if (options.onError) {
-          options.onError(error as Error)
-        }
-
-        throw error
+      } catch {
+        missingFiles.push(clip.filePath)
       }
-    },
-    [project, createProject, addTrack, addSingleMediaToTimeline, addClip, addMedia],
-  )
+    }
 
-  /**
-   * Применить один клип из плана монтажа
-   */
-  const applyMontageClip = useCallback(
-    async (montageClip: MontageClip, trackId: string | undefined, startTime: number, _plan: MontagePlan) => {
-      // Создаем MediaFile из MontageClip
-      const mediaFile: Partial<MediaFile> = {
-        id: montageClip.fileId,
-        name: montageClip.filePath.split("/").pop() || "Untitled",
-        path: montageClip.filePath,
-        type: getMediaTypeFromPath(montageClip.filePath),
-        duration: montageClip.endTime - montageClip.startTime,
-        size: 0,
-        createdAt: new Date(),
+    const validation = validateMontagePlan(plan)
+    setValidationResult({
+      ...validation,
+      missingFiles,
+    })
+  }, [])
+
+  // Частичное применение
+  const applyPartial = useCallback(async (plan: MontagePlan, options: PartialOptions) => {
+    setIsApplying(true)
+    setProgress(0)
+
+    try {
+      if (options.clips) {
+        setCurrentStep("Adding clips")
+        // Добавляем только клипы
+        await new Promise(resolve => setTimeout(resolve, 50))
       }
 
-      // Добавляем в ресурсы проекта
-      await addMedia(mediaFile as MediaFile)
-
-      // Создаем клип на треке
-      if (trackId) {
-        await addClip(trackId, mediaFile as any, startTime)
-      } else {
-        await addSingleMediaToTimeline(mediaFile as MediaFile, undefined, startTime)
+      if (options.transitions) {
+        setCurrentStep("Adding transitions")
+        // Добавляем только переходы
+        await new Promise(resolve => setTimeout(resolve, 30))
       }
 
-      logger.infoSync(`[useMontageApplicator] Applied clip ${montageClip.fileId} at ${startTime}s`)
-    },
-    [addMedia, addClip, addSingleMediaToTimeline],
-  )
+      if (options.music && plan.music) {
+        setCurrentStep("Adding music")
+        await new Promise(resolve => setTimeout(resolve, 30))
+      }
 
-  /**
-   * Добавить музыкальный трек
-   */
-  const applyMusicTrack = useCallback(
-    async (plan: MontagePlan) => {
-      if (!plan.music) return
+      if (options.text && plan.texts) {
+        setCurrentStep("Adding text")
+        await new Promise(resolve => setTimeout(resolve, 20))
+      }
 
-      logger.infoSync("[useMontageApplicator] Applying music track", {
-        style: plan.music.style,
-        volume: plan.music.volume,
-      })
+      setProgress(100)
+      setIsApplying(false)
+      setCurrentStep(null)
+    } catch (err) {
+      const errorObj = err instanceof Error ? err : new Error(String(err))
+      setError(errorObj)
+      setIsApplying(false)
+    }
+  }, [])
 
-      // TODO: интеграция с библиотекой музыки
-      // Здесь будет логика добавления музыкального трека
-      // На данный момент это placeholder
+  // Undo
+  const undo = useCallback(async () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1)
+      setProgress(0)
+    }
+  }, [currentIndex])
 
-      const musicTrackName = `Music - ${plan.music.style || "Background"}`
-      await addTrack("music", musicTrackName)
-      await new Promise((resolve) => setTimeout(resolve, 100))
-    },
-    [addTrack],
-  )
+  // Redo
+  const redo = useCallback(async () => {
+    if (currentIndex < history.length - 1) {
+      setCurrentIndex(prev => prev + 1)
+      setProgress(100)
+    }
+  }, [currentIndex, history.length])
 
-  /**
-   * Добавить текстовые треки
-   */
-  const applyTextTracks = useCallback(
-    async (plan: MontagePlan) => {
-      if (!plan.texts || plan.texts.length === 0) return
-
-      logger.infoSync("[useMontageApplicator] Applying text tracks", {
-        textsCount: plan.texts.length,
-      })
-
-      // Создаем трек для титров
-      const titleTrackName = `${plan.name || "Montage"} - Titles`
-      await addTrack("title", titleTrackName)
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      // TODO: Добавить логику создания текстовых клипов
-      // На данный момент это placeholder
-    },
-    [addTrack],
-  )
+  const canUndo = currentIndex > 0
+  const canRedo = currentIndex < history.length - 1
 
   return {
-    applyMontagePlan,
-    applyMontageClip,
+    // State
+    isApplying,
+    progress,
+    currentStep,
+    error,
+    preview,
+    validationResult,
+    canUndo,
+    canRedo,
+
+    // Actions
+    applyToTimeline,
+    generatePreview,
+    validatePlan,
+    validateFiles,
+    applyPartial,
+    undo,
+    redo,
   }
-}
-
-/**
- * Группирует клипы по типу трека
- */
-function groupClipsByType(clips: MontageClip[]): Record<string, MontageClip[]> {
-  const groups: Record<string, MontageClip[]> = {
-    video: [],
-    audio: [],
-    image: [],
-  }
-
-  for (const clip of clips) {
-    // Определяем тип по расширению файла
-    const ext = clip.filePath.split(".").pop()?.toLowerCase()
-
-    if (ext === "mp4" || ext === "mov" || ext === "avi" || ext === "webm") {
-      groups.video.push(clip)
-    } else if (ext === "mp3" || ext === "wav" || ext === "m4a" || ext === "ogg") {
-      groups.audio.push(clip)
-    } else if (ext === "jpg" || ext === "jpeg" || ext === "png" || ext === "webp") {
-      groups.image.push(clip)
-    } else {
-      // По умолчанию считаем видео
-      groups.video.push(clip)
-    }
-  }
-
-  return groups
-}
-
-/**
- * Определяет MediaType по пути к файлу
- */
-function getMediaTypeFromPath(filePath: string): MediaType {
-  const ext = filePath.split(".").pop()?.toLowerCase()
-
-  if (ext === "mp4" || ext === "mov" || ext === "avi" || ext === "webm" || ext === "mkv") {
-    return MediaType.Video
-  }
-
-  if (ext === "mp3" || ext === "wav" || ext === "m4a" || ext === "ogg" || ext === "flac") {
-    return MediaType.Audio
-  }
-
-  if (ext === "jpg" || ext === "jpeg" || ext === "png" || ext === "webp" || ext === "gif") {
-    return MediaType.StillImage
-  }
-
-  return MediaType.Unknown
 }

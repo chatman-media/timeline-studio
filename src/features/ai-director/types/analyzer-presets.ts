@@ -8,30 +8,30 @@ export interface AnalyzerPreset {
   id: string
   name: string
   description: string
-  analyzers: AnalyzerType[]
+  analyzers: Set<AnalyzerType>
   isDefault: boolean // Встроенный preset или кастомный
   category: "speed" | "quality" | "custom"
-  estimatedTime: number // Примерное время на 1 минуту видео (секунды)
+  estimatedTime: string // Примерное время (строка для отображения)
 }
 
 /**
  * Встроенные preset'ы
  */
-export const DEFAULT_PRESETS: Record<string, AnalyzerPreset> = {
-  fast: {
-    id: "preset-fast",
+export const DEFAULT_PRESETS: AnalyzerPreset[] = [
+  {
+    id: "quick-scan",
     name: "Быстрый",
     description: "Базовый анализ для быстрого результата",
-    analyzers: ["scene_detection", "audio_quality", "moment_detection"],
+    analyzers: new Set(["scene_detection", "audio_quality", "moment_detection"]),
     isDefault: true,
     category: "speed",
-    estimatedTime: 60, // ~1 минута
+    estimatedTime: "< 1 min",
   },
-  balanced: {
-    id: "preset-balanced",
+  {
+    id: "balanced-analysis",
     name: "Сбалансированный",
     description: "Оптимальный баланс скорости и качества",
-    analyzers: [
+    analyzers: new Set([
       "scene_detection",
       "audio_quality",
       "moment_detection",
@@ -39,16 +39,16 @@ export const DEFAULT_PRESETS: Record<string, AnalyzerPreset> = {
       "object_detection",
       "quality_assessment",
       "mood_analysis",
-    ],
+    ]),
     isDefault: true,
     category: "quality",
-    estimatedTime: 180, // ~3 минуты
+    estimatedTime: "2-3 min",
   },
-  quality: {
-    id: "preset-quality",
+  {
+    id: "deep-analysis",
     name: "Максимальное качество",
-    description: "Полный анализ всеми доступными анализаторами",
-    analyzers: [
+    description: "Complete analysis with all available analyzers",
+    analyzers: new Set([
       "scene_detection",
       "object_detection",
       "face_detection",
@@ -64,125 +64,48 @@ export const DEFAULT_PRESETS: Record<string, AnalyzerPreset> = {
       "quality_assessment",
       "moment_detection",
       "vlm_analysis",
-    ],
+    ]),
     isDefault: true,
     category: "quality",
-    estimatedTime: 600, // ~10 минут
+    estimatedTime: "5-10 min",
   },
-  video_only: {
-    id: "preset-video-only",
-    name: "Только видео",
-    description: "Анализ визуального контента без звука",
-    analyzers: ["scene_detection", "object_detection", "face_detection", "motion_analysis", "composition_analysis"],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 150,
-  },
-  audio_only: {
-    id: "preset-audio-only",
-    name: "Только аудио",
-    description: "Анализ звуковой дорожки без видео",
-    analyzers: ["audio_quality", "speech_recognition", "music_detection", "sound_events", "silence_detection"],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 90,
-  },
-  highlights: {
-    id: "preset-highlights",
-    name: "Highlights",
-    description: "Поиск ключевых моментов для создания нарезок",
-    analyzers: [
+  {
+    id: "montage-focus",
+    name: "Фокус на монтаж",
+    description: "Анализ оптимизирован для создания нарезок",
+    analyzers: new Set([
       "scene_detection",
       "moment_detection",
       "audio_quality",
       "music_detection",
       "motion_analysis",
       "mood_analysis",
-    ],
+    ]),
     isDefault: true,
     category: "custom",
-    estimatedTime: 120,
+    estimatedTime: "1-2 min",
   },
-  vlog: {
-    id: "preset-vlog",
-    name: "Vlog",
-    description: "Анализ для vlog контента",
-    analyzers: ["face_detection", "mood_analysis", "scene_detection", "music_detection", "vlm_analysis"],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 180,
-  },
-  interview: {
-    id: "preset-interview",
-    name: "Интервью",
-    description: "Анализ интервью и разговорного контента",
-    analyzers: [
-      "face_detection",
-      "speech_recognition",
-      "audio_quality",
-      "silence_detection",
-      "scene_detection",
-      "moment_detection",
-    ],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 150,
-  },
-  sports: {
-    id: "preset-sports",
-    name: "Спорт",
-    description: "Анализ спортивных событий и матчей",
-    analyzers: [
-      "motion_analysis",
-      "moment_detection",
-      "scene_detection",
-      "object_detection",
-      "audio_quality",
-      "sound_events",
-    ],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 140,
-  },
-  tutorial: {
-    id: "preset-tutorial",
-    name: "Обучение",
-    description: "Анализ обучающих видео и туториалов",
-    analyzers: [
-      "speech_recognition",
-      "scene_detection",
-      "silence_detection",
+  {
+    id: "quality-focus",
+    name: "Фокус на качество",
+    description: "Анализ качества контента",
+    analyzers: new Set([
       "quality_assessment",
-      "vlm_analysis",
-      "moment_detection",
-    ],
-    isDefault: true,
-    category: "custom",
-    estimatedTime: 200,
-  },
-  music_video: {
-    id: "preset-music-video",
-    name: "Музыкальное видео",
-    description: "Анализ музыкальных клипов",
-    analyzers: [
-      "music_detection",
-      "scene_detection",
-      "motion_analysis",
       "composition_analysis",
-      "mood_analysis",
-      "face_detection",
-    ],
+      "scene_detection",
+      "audio_quality",
+    ]),
     isDefault: true,
-    category: "custom",
-    estimatedTime: 130,
+    category: "quality",
+    estimatedTime: "1-2 min",
   },
-}
+]
 
 /**
  * Получить все default preset'ы
  */
 export function getDefaultPresets(): AnalyzerPreset[] {
-  return Object.values(DEFAULT_PRESETS)
+  return DEFAULT_PRESETS
 }
 
 /**
@@ -190,7 +113,7 @@ export function getDefaultPresets(): AnalyzerPreset[] {
  */
 export function getPresetById(id: string, customPresets: AnalyzerPreset[] = []): AnalyzerPreset | undefined {
   // Сначала ищем в default
-  const defaultPreset = Object.values(DEFAULT_PRESETS).find((p) => p.id === id)
+  const defaultPreset = DEFAULT_PRESETS.find((p) => p.id === id)
   if (defaultPreset) return defaultPreset
 
   // Затем в custom
@@ -200,7 +123,7 @@ export function getPresetById(id: string, customPresets: AnalyzerPreset[] = []):
 /**
  * Создать кастомный preset
  */
-export function createCustomPreset(name: string, description: string, analyzers: AnalyzerType[]): AnalyzerPreset {
+export function createCustomPreset(name: string, description: string, analyzers: Set<AnalyzerType>): AnalyzerPreset {
   return {
     id: `preset-custom-${Date.now()}`,
     name,
@@ -215,27 +138,13 @@ export function createCustomPreset(name: string, description: string, analyzers:
 /**
  * Вычислить примерное время выполнения для набора анализаторов
  */
-function calculateEstimatedTime(analyzers: AnalyzerType[]): number {
-  // Базовое время для каждого типа анализатора (секунды на минуту видео)
-  const timeMap: Record<AnalyzerType, number> = {
-    scene_detection: 30,
-    object_detection: 45,
-    face_detection: 40,
-    motion_analysis: 25,
-    composition_analysis: 20,
-    audio_quality: 15,
-    speech_recognition: 60,
-    music_detection: 20,
-    sound_events: 15,
-    silence_detection: 10,
-    mood_analysis: 15,
-    content_classification: 20,
-    quality_assessment: 10,
-    moment_detection: 25,
-    vlm_analysis: 120,
-  }
+function calculateEstimatedTime(analyzers: Set<AnalyzerType>): string {
+  const count = analyzers.size
 
-  return analyzers.reduce((total, type) => total + (timeMap[type] || 30), 0)
+  if (count <= 3) return "< 1 min"
+  if (count <= 7) return "2-3 min"
+  if (count <= 12) return "5-10 min"
+  return "10+ min"
 }
 
 /**

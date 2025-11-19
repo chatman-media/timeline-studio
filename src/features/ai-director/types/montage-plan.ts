@@ -62,7 +62,9 @@ export interface MontageTransition {
   /** Длительность перехода (секунды) */
   duration: number
   /** Позиция после какого клипа (индекс) */
-  afterClipIndex: number
+  afterClipIndex?: number
+  /** Время применения перехода (секунды в общем монтаже) */
+  atTime?: number
 }
 
 /**
@@ -117,8 +119,12 @@ export interface MontagePlan {
   transitions: MontageTransition[]
   /** Настройки музыки (если нужна) */
   music?: MontageMusicSettings
+  /** Настройки музыки (alias для совместимости) */
+  musicSettings?: MontageMusicSettings
   /** Текстовые элементы */
   texts?: MontageTextSettings[]
+  /** Настройки текста (alias для совместимости) */
+  textSettings?: MontageTextSettings
   /** Общее описание плана */
   description?: string
   /** Дата создания */
@@ -132,6 +138,8 @@ export interface MontagePlan {
     /** Процент использованного материала */
     usagePercentage?: number
   }
+  /** Общая длительность (alias) */
+  totalDuration?: number
 }
 
 /**

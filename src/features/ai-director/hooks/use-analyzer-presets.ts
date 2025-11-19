@@ -1,117 +1,211 @@
 /**
- * Hook для управления analyzer preset'ами
- * Хранит кастомные preset'ы в user settings
+ * Hook для управления analyzer presets
  */
 
-import { useCallback, useEffect, useState } from "react"
-
-import { createLogger } from "@/lib/tauri-logger"
+import { useCallback, useState } from "react"
 
 import type { AnalyzerType } from "../types/analysis-progress"
 import type { AnalyzerPreset } from "../types/analyzer-presets"
+import { DEFAULT_PRESETS } from "../types/analyzer-presets"
 
-const logger = createLogger("useAnalyzerPresets")
-
-const STORAGE_KEY = "ai-director-analyzer-presets"
-
-export interface UseAnalyzerPresetsReturn {
-  customPresets: AnalyzerPreset[]
-  savePreset: (preset: AnalyzerPreset) => void
-  deletePreset: (presetId: string) => void
-  applyPreset: (preset: AnalyzerPreset, setAnalyzers: (analyzers: Set<AnalyzerType>) => void) => void
-  isLoading: boolean
+interface PresetComparison {
+  preset1: AnalyzerPreset
+  preset2: AnalyzerPreset
+  differences: {
+    onlyIn1: Set<AnalyzerType>
+    onlyIn2: Set<AnalyzerType>
+    additionalIn2: Set<AnalyzerType>
+    common: Set<AnalyzerType>
+  }
 }
 
-export function useAnalyzerPresets(): UseAnalyzerPresetsReturn {
-  const [customPresets, setCustomPresets] = useState<AnalyzerPreset[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+type UseCase = "montage" | "preview" | "archival" | "quality"
 
-  // Load presets from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const presets = JSON.parse(stored) as AnalyzerPreset[]
-        setCustomPresets(presets)
-        logger.infoSync("[useAnalyzerPresets] Loaded presets from storage", {
-          count: presets.length,
-        })
+export function useAnalyzerPresets() {
+  const [selectedPreset, setSelectedPreset] = useState<AnalyzerPreset | null>(null)
+  const [customPresets, setCustomPresets] = useState<AnalyzerPreset[]>([])
+  const [comparison, setComparison] = useState<PresetComparison | null>(null)
+  const [recommendedPreset, setRecommendedPreset] = useState<AnalyzerPreset | null>(null)
+
+  // Объединенный список presets (default + custom)
+  const presets = [...DEFAULT_PRESETS, ...customPresets]
+
+  // Выбор preset
+  const selectPreset = useCallback((id: string) => {
+    const preset = presets.find(p => p.id === id)
+    setSelectedPreset(preset || null)
+  }, [presets])
+
+  // Получить выбранные анализаторы
+  const getSelectedAnalyzers = useCallback((): Set<AnalyzerType> => {
+    if (!selectedPreset) return new Set()
+    return new Set(selectedPreset.analyzers)
+  }, [selectedPreset])
+
+  // Очистка выбора
+  const clearSelection = useCallback(() => {
+    setSelectedPreset(null)
+  }, [])
+
+  // Создание кастомного preset
+  const createCustomPreset = useCallback((options: {
+    name: string
+    description: string
+    analyzers: Set<AnalyzerType>
+  }) => {
+    const newPreset: AnalyzerPreset = {
+      id: `custom-${Date.now()}`,
+      name: options.name,
+      description: options.description,
+      analyzers: Array.from(options.analyzers),
+      isDefault: false,
+      category: "custom",
+      estimatedTime: Array.from(options.analyzers).length * 30, // Простая оценка
+    }
+
+    setCustomPresets(prev => [...prev, newPreset])
+  }, [])
+
+  // Удаление кастомного preset
+  const deleteCustomPreset = useCallback((id: string) => {
+    // Не даем удалять default presets
+    const preset = presets.find(p => p.id === id)
+    if (preset?.isDefault) return
+
+    setCustomPresets(prev => prev.filter(p => p.id !== id))
+  }, [presets])
+
+  // Обновление кастомного preset
+  const updateCustomPreset = useCallback((id: string, updates: {
+    name?: string
+    description?: string
+    analyzers?: Set<AnalyzerType>
+  }) => {
+    setCustomPresets(prev => prev.map(p => {
+      if (p.id !== id) return p
+
+      return {
+        ...p,
+        ...(updates.name && { name: updates.name }),
+        ...(updates.description && { description: updates.description }),
+        ...(updates.analyzers && { analyzers: Array.from(updates.analyzers) }),
       }
+    }))
+  }, [])
+
+  // Получение рекомендации по use case
+  const getRecommendation = useCallback((useCase: UseCase) => {
+    let recommended: AnalyzerPreset | null = null
+
+    switch (useCase) {
+      case "montage":
+        recommended = DEFAULT_PRESETS.find(p => p.id === "montage-focus") || DEFAULT_PRESETS[0]
+        break
+      case "preview":
+        recommended = DEFAULT_PRESETS.find(p => p.id === "quick-scan") || DEFAULT_PRESETS[0]
+        break
+      case "archival":
+        recommended = DEFAULT_PRESETS.find(p => p.id === "deep-analysis") || DEFAULT_PRESETS[2]
+        break
+      case "quality":
+        recommended = DEFAULT_PRESETS.find(p => p.id === "quality-focus") || DEFAULT_PRESETS[4]
+        break
+    }
+
+    setRecommendedPreset(recommended)
+  }, [])
+
+  // Сравнение двух presets
+  const comparePresets = useCallback((id1: string, id2: string) => {
+    const preset1 = presets.find(p => p.id === id1)
+    const preset2 = presets.find(p => p.id === id2)
+
+    if (!preset1 || !preset2) return
+
+    const onlyIn1 = new Set<AnalyzerType>()
+    const onlyIn2 = new Set<AnalyzerType>()
+    const common = new Set<AnalyzerType>()
+
+    // Анализируем различия
+    preset1.analyzers.forEach(a => {
+      if (preset2.analyzers.has(a)) {
+        common.add(a)
+      } else {
+        onlyIn1.add(a)
+      }
+    })
+
+    preset2.analyzers.forEach(a => {
+      if (!preset1.analyzers.has(a)) {
+        onlyIn2.add(a)
+      }
+    })
+
+    setComparison({
+      preset1,
+      preset2,
+      differences: {
+        onlyIn1,
+        onlyIn2,
+        additionalIn2: onlyIn2, // Alias для совместимости
+        common,
+      },
+    })
+  }, [presets])
+
+  // Экспорт preset
+  const exportPreset = useCallback((): string => {
+    if (!selectedPreset) return ""
+
+    // Преобразуем Set в массив для JSON сериализации
+    const exportData = {
+      ...selectedPreset,
+      analyzers: Array.from(selectedPreset.analyzers),
+    }
+
+    return JSON.stringify(exportData, null, 2)
+  }, [selectedPreset])
+
+  // Импорт preset
+  const importPreset = useCallback((json: string) => {
+    try {
+      const data = JSON.parse(json)
+
+      const imported: AnalyzerPreset = {
+        id: data.id || `imported-${Date.now()}`,
+        name: data.name,
+        description: data.description,
+        analyzers: Array.isArray(data.analyzers) ? data.analyzers : [],
+        isDefault: data.isDefault || false,
+        category: data.category || "custom",
+        estimatedTime: data.estimatedTime || 0,
+      }
+
+      // Добавляем в кастомные presets
+      setCustomPresets(prev => [...prev, imported])
     } catch (error) {
-      logger.errorSync("[useAnalyzerPresets] Failed to load presets", error as Record<string, unknown>)
-    } finally {
-      setIsLoading(false)
+      throw new Error(`Failed to import preset: ${error instanceof Error ? error.message : "Unknown error"}`)
     }
   }, [])
 
-  // Save preset
-  const savePreset = useCallback((preset: AnalyzerPreset) => {
-    setCustomPresets((prev) => {
-      // Check if preset with same ID already exists
-      const existingIndex = prev.findIndex((p) => p.id === preset.id)
-
-      let updated: AnalyzerPreset[]
-      if (existingIndex >= 0) {
-        // Update existing
-        updated = [...prev]
-        updated[existingIndex] = preset
-        logger.infoSync("[useAnalyzerPresets] Updated existing preset", {
-          presetId: preset.id,
-        })
-      } else {
-        // Add new
-        updated = [...prev, preset]
-        logger.infoSync("[useAnalyzerPresets] Saved new preset", {
-          presetId: preset.id,
-          name: preset.name,
-        })
-      }
-
-      // Persist to localStorage
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-      } catch (error) {
-        logger.errorSync("[useAnalyzerPresets] Failed to persist preset", error as Record<string, unknown>)
-      }
-
-      return updated
-    })
-  }, [])
-
-  // Delete preset
-  const deletePreset = useCallback((presetId: string) => {
-    setCustomPresets((prev) => {
-      const updated = prev.filter((p) => p.id !== presetId)
-
-      logger.infoSync("[useAnalyzerPresets] Deleted preset", { presetId })
-
-      // Persist to localStorage
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-      } catch (error) {
-        logger.errorSync("[useAnalyzerPresets] Failed to persist after delete", error as Record<string, unknown>)
-      }
-
-      return updated
-    })
-  }, [])
-
-  // Apply preset
-  const applyPreset = useCallback((preset: AnalyzerPreset, setAnalyzers: (analyzers: Set<AnalyzerType>) => void) => {
-    logger.infoSync("[useAnalyzerPresets] Applying preset", {
-      presetId: preset.id,
-      name: preset.name,
-      analyzersCount: preset.analyzers.length,
-    })
-
-    setAnalyzers(new Set(preset.analyzers))
-  }, [])
-
   return {
+    // State
+    presets,
+    selectedPreset,
     customPresets,
-    savePreset,
-    deletePreset,
-    applyPreset,
-    isLoading,
+    comparison,
+    recommendedPreset,
+
+    // Actions
+    selectPreset,
+    getSelectedAnalyzers,
+    clearSelection,
+    createCustomPreset,
+    deleteCustomPreset,
+    updateCustomPreset,
+    getRecommendation,
+    comparePresets,
+    exportPreset,
+    importPreset,
   }
 }
