@@ -14,6 +14,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { useWorkspaceLayout } from "../services/workspace-layout-provider"
 import type { Widget, WidgetType } from "../types/widget"
 import { WidgetContainer } from "./widget-container"
+import { WidgetDock } from "./widget-dock"
 
 const logger = createLogger("WidgetWorkspace")
 
@@ -36,7 +37,7 @@ interface WidgetWorkspaceProps {
  */
 export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
   // Get workspace state and actions from context
-  const { activeWidgets, selectedWidgetId, isDragging, send } = useWorkspaceLayout()
+  const { activeWidgets, selectedWidgetId, isDragging, send, updateWidgetBounds } = useWorkspaceLayout()
 
   // Configure drag sensors
   const mouseSensor = useSensor(MouseSensor, {
@@ -118,6 +119,8 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
               onRemove={(id) => send({ type: "REMOVE_WIDGET", widgetId: id })}
               onMinimize={(id) => send({ type: "MINIMIZE_WIDGET", widgetId: id })}
               onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id })}
+              onResize={updateWidgetBounds}
+              enableResize={true}
             >
               {renderWidget(widget)}
             </WidgetContainer>
@@ -126,6 +129,9 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
 
         {/* Drag overlay indicator */}
         {isDragging && <div className="pointer-events-none absolute inset-0 bg-primary/5 transition-colors" />}
+
+        {/* Widget Dock for minimized widgets */}
+        <WidgetDock />
       </div>
     </DndContext>
   )

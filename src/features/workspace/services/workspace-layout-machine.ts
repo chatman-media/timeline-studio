@@ -10,8 +10,11 @@ import { createLogger } from "@/lib/tauri-logger"
 
 import { DEFAULT_LAYOUT_PRESET_ID, getLayoutPreset, LAYOUT_PRESETS } from "../config/layout-presets"
 import type { LayoutPreset, Widget, WidgetBounds } from "../types/widget"
+import { debouncedSave, type WorkspaceState } from "./workspace-persistence"
 
 const logger = createLogger("WorkspaceLayoutMachine")
+
+const WORKSPACE_VERSION = "1.0.0"
 
 /**
  * Layout machine context
@@ -28,6 +31,11 @@ interface LayoutContext {
   // Drag state
   isDragging: boolean
   dragWidgetId: string | null
+  // Resize state
+  isResizing: boolean
+  resizeWidgetId: string | null
+  resizeHandle: ResizeHandle | null
+  resizeStartBounds: WidgetBounds | null
 }
 
 /**
@@ -47,6 +55,15 @@ type LayoutEvent =
   | { type: "SAVE_CUSTOM_LAYOUT"; name: string; description?: string }
   | { type: "DELETE_CUSTOM_LAYOUT"; layoutId: string }
   | { type: "RESET_TO_PRESET" }
+  | { type: "RESTORE_STATE"; state: WorkspaceState }
+  | { type: "START_RESIZE"; widgetId: string; handle: ResizeHandle }
+  | { type: "UPDATE_RESIZE"; bounds: WidgetBounds }
+  | { type: "END_RESIZE" }
+
+/**
+ * Resize handle positions
+ */
+export type ResizeHandle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw"
 
 /**
  * Workspace Layout Machine
@@ -222,6 +239,74 @@ export const workspaceLayoutMachine = setup({
         selectedWidgetId: null,
       }
     }),
+
+    restoreState: assign(({ event }) => {
+      if (event.type !== "RESTORE_STATE") return {}
+
+      logger.debugSync("Restoring workspace state", {
+        presetId: event.state.currentPresetId,
+        widgetCount: event.state.activeWidgets.length,
+      })
+
+      return {
+        currentPresetId: event.state.currentPresetId,
+        activeWidgets: event.state.activeWidgets,
+        customLayouts: event.state.customLayouts,
+        selectedWidgetId: null,
+      }
+    }),
+
+    startResize: assign(({ event }) => {
+      if (event.type !== "START_RESIZE") return {}
+
+      logger.debugSync("Starting widget resize", {
+        widgetId: event.widgetId,
+        handle: event.handle,
+      })
+
+      return {
+        isResizing: true,
+        resizeWidgetId: event.widgetId,
+        resizeHandle: event.handle,
+      }
+    }),
+
+    updateResize: assign(({ context, event }) => {
+      if (event.type !== "UPDATE_RESIZE" || !context.resizeWidgetId) return {}
+
+      return {
+        activeWidgets: context.activeWidgets.map((widget) =>
+          widget.id === context.resizeWidgetId
+            ? {
+                ...widget,
+                bounds: event.bounds,
+              }
+            : widget,
+        ),
+      }
+    }),
+
+    endResize: assign(() => {
+      logger.debugSync("Ending widget resize")
+
+      return {
+        isResizing: false,
+        resizeWidgetId: null,
+        resizeHandle: null,
+        resizeStartBounds: null,
+      }
+    }),
+
+    // Persist state after any modification
+    persistState: ({ context }) => {
+      const state: WorkspaceState = {
+        currentPresetId: context.currentPresetId,
+        activeWidgets: context.activeWidgets,
+        customLayouts: context.customLayouts,
+        version: WORKSPACE_VERSION,
+      }
+      debouncedSave(state)
+    },
   },
 }).createMachine({
   id: "workspaceLayout",
@@ -233,30 +318,34 @@ export const workspaceLayoutMachine = setup({
     selectedWidgetId: null,
     isDragging: false,
     dragWidgetId: null,
+    isResizing: false,
+    resizeWidgetId: null,
+    resizeHandle: null,
+    resizeStartBounds: null,
   },
   states: {
     idle: {
       on: {
         SWITCH_PRESET: {
-          actions: "switchPreset",
+          actions: ["switchPreset", "persistState"],
         },
         ADD_WIDGET: {
-          actions: "addWidget",
+          actions: ["addWidget", "persistState"],
         },
         REMOVE_WIDGET: {
-          actions: "removeWidget",
+          actions: ["removeWidget", "persistState"],
         },
         UPDATE_WIDGET_BOUNDS: {
-          actions: "updateWidgetBounds",
+          actions: ["updateWidgetBounds", "persistState"],
         },
         TOGGLE_WIDGET_VISIBILITY: {
-          actions: "toggleWidgetVisibility",
+          actions: ["toggleWidgetVisibility", "persistState"],
         },
         MINIMIZE_WIDGET: {
-          actions: "minimizeWidget",
+          actions: ["minimizeWidget", "persistState"],
         },
         MAXIMIZE_WIDGET: {
-          actions: "maximizeWidget",
+          actions: ["maximizeWidget", "persistState"],
         },
         SELECT_WIDGET: {
           actions: "selectWidget",
@@ -265,14 +354,21 @@ export const workspaceLayoutMachine = setup({
           target: "dragging",
           actions: "startDrag",
         },
+        START_RESIZE: {
+          target: "resizing",
+          actions: "startResize",
+        },
         SAVE_CUSTOM_LAYOUT: {
-          actions: "saveCustomLayout",
+          actions: ["saveCustomLayout", "persistState"],
         },
         DELETE_CUSTOM_LAYOUT: {
-          actions: "deleteCustomLayout",
+          actions: ["deleteCustomLayout", "persistState"],
         },
         RESET_TO_PRESET: {
-          actions: "resetToPreset",
+          actions: ["resetToPreset", "persistState"],
+        },
+        RESTORE_STATE: {
+          actions: "restoreState",
         },
       },
     },
@@ -283,7 +379,18 @@ export const workspaceLayoutMachine = setup({
         },
         END_DRAG: {
           target: "idle",
-          actions: "endDrag",
+          actions: ["endDrag", "persistState"],
+        },
+      },
+    },
+    resizing: {
+      on: {
+        UPDATE_RESIZE: {
+          actions: "updateResize",
+        },
+        END_RESIZE: {
+          target: "idle",
+          actions: ["endResize", "persistState"],
         },
       },
     },

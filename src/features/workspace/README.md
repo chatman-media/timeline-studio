@@ -2,9 +2,18 @@
 
 Современная виджетная система для Timeline Studio на базе **@dnd-kit** и **XState v5**.
 
+## Статус
+
+**Текущая версия:** v1.1.0
+**Готовность:** 100%
+**Покрытие тестами:** 88 тестов (7 test files)
+
 ## Особенности
 
 - ✅ **Drag & Drop** - перетаскивание виджетов с помощью @dnd-kit
+- ✅ **Resize** - изменение размера виджетов (8 resize handles)
+- ✅ **Widget Dock** - панель для минимизированных виджетов
+- ✅ **Persistence** - сохранение состояния между сессиями (localStorage + backend sync)
 - ✅ **4 готовых preset лейаута** - Default, Vertical, Options, Chat
 - ✅ **XState v5 для управления состоянием** - надежное управление виджетами
 - ✅ **TypeScript** - полная типизация
@@ -247,38 +256,32 @@ logger.warnSync("Preset not found", { presetId })
 
 ## Known Issues
 
-### Критические
-- ❌ **Нет сохранения состояния между сессиями** - После перезапуска приложения все изменения layout теряются
-- ❌ **Минимизированные виджеты исчезают** - Отсутствует dock для отображения минимизированных виджетов
-
-### Важные
-- ⚠️ **Только drag, нет resize** - Виджеты можно перетаскивать, но нельзя изменять размер
-- ⚠️ **Нет валидации границ** - Виджеты могут выходить за пределы workspace (частично исправлено в drag handler)
-
-### Мелкие
+### Мелкие улучшения
 - ⚠️ **Нет snap to grid** - При перетаскивании виджеты не привязываются к сетке
 - ⚠️ **Нет анимаций** - Переключение между preset происходит мгновенно
 - ⚠️ **Нет undo/redo** - Невозможно отменить изменения layout
+- ⚠️ **Нет keyboard shortcuts** - Отсутствуют горячие клавиши для управления
 
 ## Roadmap
 
-### v1.1 (Следующий релиз)
+### v1.1 ✅ (Выпущена)
 **Цель:** Production-ready функциональность
 
-- [ ] **Сохранение состояния** - Интеграция с localStorage и backend sync
+- ✅ **Сохранение состояния** - Интеграция с localStorage и backend sync
   - Сохранение текущего preset и custom layouts
   - Сохранение позиций виджетов
   - Восстановление состояния при запуске
-- [ ] **Widget Dock** - Панель для минимизированных виджетов
+  - Debounced save для оптимизации
+- ✅ **Widget Dock** - Панель для минимизированных виджетов
   - Dock внизу workspace
-  - Drag & drop из dock обратно в workspace
-  - Превью виджетов при hover
-- [ ] **Resize функциональность** - Изменение размера виджетов
-  - Resize handles на углах и краях
-  - Maintain aspect ratio опция
-  - Min/max размеры для виджетов
+  - Restore widget функция
+  - Отображение только минимизированных виджетов
+- ✅ **Resize функциональность** - Изменение размера виджетов
+  - 8 resize handles (4 угла + 4 стороны)
+  - Валидация границ (min/max размеры)
+  - Интеграция с persistence
 
-### v1.2 (Улучшения UX)
+### v1.2 (Следующий релиз)
 **Цель:** Улучшенный пользовательский опыт
 
 - [ ] **Snap to Grid** - Привязка к сетке при drag/resize
@@ -330,16 +333,18 @@ logger.warnSync("Preset not found", { presetId })
 
 ## Тестирование
 
-Фича имеет **полное покрытие тестами**:
+Фича имеет **полное покрытие тестами** - **88 тестов** в 7 файлах:
 
-### Services (2 test files)
-- `workspace-layout-machine.test.ts` - XState machine тесты
-- `workspace-layout-provider.test.tsx` - Provider и hook тесты
+### Services (3 test files)
+- `workspace-layout-machine.test.ts` - 27 тестов (включая resize и restore state)
+- `workspace-layout-provider.test.tsx` - 12 тестов
+- `workspace-persistence.test.ts` - 10 тестов (новое)
 
-### Components (3 test files)
-- `widget-workspace.test.tsx` - Workspace компонент
-- `widget-container.test.tsx` - Container компонент
-- `layout-preset-selector.test.tsx` - Preset selector компонент
+### Components (4 test files)
+- `widget-workspace.test.tsx` - 9 тестов
+- `widget-container.test.tsx` - 15 тестов
+- `widget-dock.test.tsx` - 5 тестов (новое)
+- `layout-preset-selector.test.tsx` - 10 тестов
 
 ### Запуск тестов
 

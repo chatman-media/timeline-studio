@@ -7,12 +7,14 @@
 "use client"
 
 import { useActor } from "@xstate/react"
-import { createContext, type ReactNode, useContext } from "react"
+import { createContext, type ReactNode, useContext, useEffect } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Widget, WidgetBounds } from "../types/widget"
+import { type ResizeHandle } from "./workspace-layout-machine"
 import { type WorkspaceLayoutEvent, workspaceLayoutMachine } from "./workspace-layout-machine"
+import { isValidWorkspaceState, loadWorkspaceState } from "./workspace-persistence"
 
 const logger = createLogger("WorkspaceLayoutProvider")
 
@@ -23,6 +25,7 @@ interface WorkspaceLayoutContextValue {
   customLayouts: any[]
   selectedWidgetId: string | null
   isDragging: boolean
+  isResizing: boolean
 
   // Actions
   switchPreset: (presetId: string) => void
@@ -36,6 +39,9 @@ interface WorkspaceLayoutContextValue {
   saveCustomLayout: (name: string, description?: string) => void
   deleteCustomLayout: (layoutId: string) => void
   resetToPreset: () => void
+  startResize: (widgetId: string, handle: ResizeHandle) => void
+  updateResize: (bounds: WidgetBounds) => void
+  endResize: () => void
 
   // Raw send for advanced usage
   send: (event: WorkspaceLayoutEvent) => void
@@ -50,6 +56,25 @@ interface WorkspaceLayoutProviderProps {
 export function WorkspaceLayoutProvider({ children }: WorkspaceLayoutProviderProps) {
   const [state, send] = useActor(workspaceLayoutMachine)
 
+  // Load persisted state on mount
+  useEffect(() => {
+    const loadState = async () => {
+      try {
+        const savedState = await loadWorkspaceState()
+        if (savedState && isValidWorkspaceState(savedState)) {
+          logger.debugSync("Restoring workspace state from storage")
+          send({ type: "RESTORE_STATE", state: savedState })
+        } else {
+          logger.debugSync("No valid saved state found, using default preset")
+        }
+      } catch (error) {
+        logger.errorSync("Failed to load workspace state", { error })
+      }
+    }
+
+    loadState()
+  }, [send])
+
   const value: WorkspaceLayoutContextValue = {
     // State
     currentPresetId: state.context.currentPresetId,
@@ -57,6 +82,7 @@ export function WorkspaceLayoutProvider({ children }: WorkspaceLayoutProviderPro
     customLayouts: state.context.customLayouts,
     selectedWidgetId: state.context.selectedWidgetId,
     isDragging: state.context.isDragging,
+    isResizing: state.context.isResizing,
 
     // Actions
     switchPreset: (presetId: string) => {
@@ -107,6 +133,20 @@ export function WorkspaceLayoutProvider({ children }: WorkspaceLayoutProviderPro
     resetToPreset: () => {
       logger.debugSync("Resetting to preset from provider")
       send({ type: "RESET_TO_PRESET" })
+    },
+
+    startResize: (widgetId: string, handle: ResizeHandle) => {
+      logger.debugSync("Starting resize from provider", { widgetId, handle })
+      send({ type: "START_RESIZE", widgetId, handle })
+    },
+
+    updateResize: (bounds: WidgetBounds) => {
+      send({ type: "UPDATE_RESIZE", bounds })
+    },
+
+    endResize: () => {
+      logger.debugSync("Ending resize from provider")
+      send({ type: "END_RESIZE" })
     },
 
     send,

@@ -297,4 +297,124 @@ describe("WorkspaceLayoutMachine", () => {
       expect(snapshot.context.selectedWidgetId).toBeNull()
     })
   })
+
+  describe("Resize", () => {
+    it("должен начать resize виджета", () => {
+      const snapshot = actor.getSnapshot()
+      const widgetId = snapshot.context.activeWidgets[0].id
+
+      actor.send({ type: "START_RESIZE", widgetId, handle: "se" })
+
+      const afterSnapshot = actor.getSnapshot()
+      expect(afterSnapshot.value).toBe("resizing")
+      expect(afterSnapshot.context.isResizing).toBe(true)
+      expect(afterSnapshot.context.resizeWidgetId).toBe(widgetId)
+      expect(afterSnapshot.context.resizeHandle).toBe("se")
+    })
+
+    it("должен обновлять размер виджета во время resize", () => {
+      const snapshot = actor.getSnapshot()
+      const widget = snapshot.context.activeWidgets[0]
+      const newBounds = { x: 0, y: 0, width: 60, height: 60 }
+
+      actor.send({ type: "START_RESIZE", widgetId: widget.id, handle: "se" })
+      actor.send({
+        type: "UPDATE_RESIZE",
+        bounds: newBounds,
+      })
+
+      const afterSnapshot = actor.getSnapshot()
+      const updatedWidget = afterSnapshot.context.activeWidgets.find((w) => w.id === widget.id)
+
+      expect(updatedWidget?.bounds).toEqual(newBounds)
+      expect(afterSnapshot.value).toBe("resizing")
+    })
+
+    it("должен завершить resize виджета", () => {
+      const snapshot = actor.getSnapshot()
+      const widgetId = snapshot.context.activeWidgets[0].id
+
+      actor.send({ type: "START_RESIZE", widgetId, handle: "e" })
+      actor.send({ type: "END_RESIZE" })
+
+      const afterSnapshot = actor.getSnapshot()
+      expect(afterSnapshot.value).toBe("idle")
+      expect(afterSnapshot.context.isResizing).toBe(false)
+      expect(afterSnapshot.context.resizeWidgetId).toBeNull()
+      expect(afterSnapshot.context.resizeHandle).toBeNull()
+    })
+
+    it("должен обрабатывать resize с разными handles", () => {
+      const snapshot = actor.getSnapshot()
+      const widget = snapshot.context.activeWidgets[0]
+
+      const handles: Array<"n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw"> = [
+        "n",
+        "s",
+        "e",
+        "w",
+        "ne",
+        "nw",
+        "se",
+        "sw",
+      ]
+
+      handles.forEach((handle) => {
+        actor.send({ type: "START_RESIZE", widgetId: widget.id, handle })
+        const afterStart = actor.getSnapshot()
+        expect(afterStart.context.resizeHandle).toBe(handle)
+        actor.send({ type: "END_RESIZE" })
+      })
+    })
+  })
+
+  describe("RESTORE_STATE", () => {
+    it("должен восстановить состояние из сохраненного snapshot", () => {
+      const savedState = {
+        currentPresetId: "vertical",
+        activeWidgets: [
+          {
+            id: "custom-1",
+            type: "ai-chat" as const,
+            bounds: { x: 10, y: 10, width: 30, height: 30 },
+            isVisible: true,
+            isMinimized: false,
+            zIndex: 1,
+          },
+        ],
+        customLayouts: [
+          {
+            id: "custom-layout-1",
+            name: "Custom Layout",
+            widgets: [],
+          },
+        ],
+        version: "1.0.0",
+      }
+
+      actor.send({ type: "RESTORE_STATE", state: savedState })
+
+      const snapshot = actor.getSnapshot()
+      expect(snapshot.context.currentPresetId).toBe("vertical")
+      expect(snapshot.context.activeWidgets).toHaveLength(1)
+      expect(snapshot.context.activeWidgets[0].type).toBe("ai-chat")
+      expect(snapshot.context.customLayouts).toHaveLength(1)
+    })
+
+    it("должен сбросить selectedWidgetId при restore", () => {
+      actor.send({ type: "SELECT_WIDGET", widgetId: "browser-1" })
+
+      const savedState = {
+        currentPresetId: "default",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      actor.send({ type: "RESTORE_STATE", state: savedState })
+
+      const snapshot = actor.getSnapshot()
+      expect(snapshot.context.selectedWidgetId).toBeNull()
+    })
+  })
 })
