@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "API Anahtarını Al"
         }
+      },
+      "versionControl": {
+        "title": "Sürüm Kontrolü",
+        "hasChanges": "Değişiklikler var",
+        "autoSave": "Otomatik kaydet: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "kapalı",
+        "tabs": {
+          "history": "Geçmiş",
+          "branches": "Dallar",
+          "settings": "Ayarlar"
+        },
+        "history": {
+          "title": "Sürüm Geçmişi",
+          "branch": "Dal: {{name}}",
+          "creating": "Oluşturuluyor...",
+          "create": "Oluştur",
+          "placeholder": "Sürüm açıklaması (isteğe bağlı)",
+          "noVersions": "Kaydedilmiş sürüm yok",
+          "loading": "Yükleniyor...",
+          "current": "Mevcut",
+          "author": "Yazar",
+          "timeAgo": {
+            "justNow": "şimdi",
+            "minutesAgo": "{{count}} dk. önce",
+            "hoursAgo": "{{count}} sa. önce",
+            "daysAgo": "{{count}} gün önce"
+          },
+          "restoreConfirm": "Proje {{id}} sürümüne geri yüklensin mi? Kaydedilmemiş tüm değişiklikler kaybolacak.",
+          "lastSnapshot": "Son anlık görüntü: {{time}}"
+        },
+        "branches": {
+          "title": "Mevcut Dal",
+          "active": "Aktif",
+          "createNew": "Yeni dal oluştur",
+          "namePlaceholder": "Dal adı",
+          "create": "Oluştur",
+          "merge": "Dalları Birleştir",
+          "mergeNotImplemented": "Dal birleştirme henüz uygulanmadı"
+        },
+        "settings": {
+          "autoSaveTitle": "Otomatik Kaydetme",
+          "enableAutoSave": "Otomatik kaydetmeyi etkinleştir",
+          "enableAutoSaveDesc": "Belirtilen aralıklarla otomatik olarak anlık görüntü oluştur",
+          "enabled": "Etkin",
+          "disabled": "Devre Dışı",
+          "intervalTitle": "Otomatik kaydetme aralığı",
+          "intervals": {
+            "30": "30 saniye",
+            "60": "1 dakika",
+            "120": "2 dakika",
+            "300": "5 dakika",
+            "600": "10 dakika"
+          },
+          "storage": {
+            "title": "Sürüm Depolama",
+            "maxVersions": "Maksimum sürüm:",
+            "maxVersionsValue": "100 (varsayılan)",
+            "compression": "Eski sürümleri sıkıştır:",
+            "compressionValue": "Etkin",
+            "compressionDesc": "Eski sürümler otomatik olarak yer tasarrufu için sıkıştırılır"
+          },
+          "exportImport": {
+            "title": "Dışa Aktar / İçe Aktar",
+            "export": "Sürüm geçmişini dışa aktar",
+            "import": "Sürümleri içe aktar",
+            "notImplemented": "Dışa/içe aktarma özellikleri henüz uygulanmadı"
+          }
+        }
       }
     },
     "export": {
@@ -1195,7 +1264,7 @@
       "empty_project_hint": "Proje boş. Şununla başlayın:",
       "import_media": "Medya içe aktar",
       "ask_ai_import": "AI'ya sor",
-    "copy": "Kopyala"
+      "copy": "Kopyala"
     },
     "title": "Zaman Çizelgesi",
     "noTracks": "Parça yok",

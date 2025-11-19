@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "APIキーを取得"
         }
+      },
+      "versionControl": {
+        "title": "バージョン管理",
+        "hasChanges": "変更あり",
+        "autoSave": "自動保存：{{enabled}}",
+        "autoSaveEnabled": "{{interval}}秒",
+        "autoSaveDisabled": "オフ",
+        "tabs": {
+          "history": "履歴",
+          "branches": "ブランチ",
+          "settings": "設定"
+        },
+        "history": {
+          "title": "バージョン履歴",
+          "branch": "ブランチ：{{name}}",
+          "creating": "作成中...",
+          "create": "作成",
+          "placeholder": "バージョンの説明（任意）",
+          "noVersions": "保存されたバージョンがありません",
+          "loading": "読み込み中...",
+          "current": "現在",
+          "author": "作成者",
+          "timeAgo": {
+            "justNow": "たった今",
+            "minutesAgo": "{{count}}分前",
+            "hoursAgo": "{{count}}時間前",
+            "daysAgo": "{{count}}日前"
+          },
+          "restoreConfirm": "プロジェクトをバージョン{{id}}に復元しますか？保存されていない変更はすべて失われます。",
+          "lastSnapshot": "最後のスナップショット：{{time}}"
+        },
+        "branches": {
+          "title": "現在のブランチ",
+          "active": "アクティブ",
+          "createNew": "新しいブランチを作成",
+          "namePlaceholder": "ブランチ名",
+          "create": "作成",
+          "merge": "ブランチをマージ",
+          "mergeNotImplemented": "ブランチのマージはまだ実装されていません"
+        },
+        "settings": {
+          "autoSaveTitle": "自動保存",
+          "enableAutoSave": "自動保存を有効にする",
+          "enableAutoSaveDesc": "指定した間隔で自動的にスナップショットを作成",
+          "enabled": "有効",
+          "disabled": "無効",
+          "intervalTitle": "自動保存間隔",
+          "intervals": {
+            "30": "30秒",
+            "60": "1分",
+            "120": "2分",
+            "300": "5分",
+            "600": "10分"
+          },
+          "storage": {
+            "title": "バージョンストレージ",
+            "maxVersions": "最大バージョン数：",
+            "maxVersionsValue": "100（デフォルト）",
+            "compression": "古いバージョンを圧縮：",
+            "compressionValue": "有効",
+            "compressionDesc": "古いバージョンは自動的に圧縮されてスペースを節約します"
+          },
+          "exportImport": {
+            "title": "エクスポート/インポート",
+            "export": "バージョン履歴をエクスポート",
+            "import": "バージョンをインポート",
+            "notImplemented": "エクスポート/インポート機能はまだ実装されていません"
+          }
+        }
       }
     },
     "export": {
@@ -1195,7 +1264,7 @@
       "empty_project_hint": "プロジェクトは空です。次から始めてください：",
       "import_media": "メディアをインポート",
       "ask_ai_import": "AIに質問",
-    "copy": "コピー"
+      "copy": "コピー"
     },
     "title": "タイムライン",
     "noTracks": "トラックなし",

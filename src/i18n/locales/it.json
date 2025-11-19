@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "Ottieni chiave API"
         }
+      },
+      "versionControl": {
+        "title": "Controllo Versione",
+        "hasChanges": "Ha modifiche",
+        "autoSave": "Salvataggio automatico: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "disattivato",
+        "tabs": {
+          "history": "Cronologia",
+          "branches": "Rami",
+          "settings": "Impostazioni"
+        },
+        "history": {
+          "title": "Cronologia Versioni",
+          "branch": "Ramo: {{name}}",
+          "creating": "Creazione...",
+          "create": "Crea",
+          "placeholder": "Descrizione versione (opzionale)",
+          "noVersions": "Nessuna versione salvata",
+          "loading": "Caricamento...",
+          "current": "Corrente",
+          "author": "Autore",
+          "timeAgo": {
+            "justNow": "proprio ora",
+            "minutesAgo": "{{count}} min. fa",
+            "hoursAgo": "{{count}} h. fa",
+            "daysAgo": "{{count}} giorni fa"
+          },
+          "restoreConfirm": "Ripristinare il progetto alla versione {{id}}? Tutte le modifiche non salvate andranno perse.",
+          "lastSnapshot": "Ultimo snapshot: {{time}}"
+        },
+        "branches": {
+          "title": "Ramo Corrente",
+          "active": "Attivo",
+          "createNew": "Crea nuovo ramo",
+          "namePlaceholder": "Nome ramo",
+          "create": "Crea",
+          "merge": "Unisci Rami",
+          "mergeNotImplemented": "L'unione dei rami non è ancora implementata"
+        },
+        "settings": {
+          "autoSaveTitle": "Salvataggio Automatico",
+          "enableAutoSave": "Attiva salvataggio automatico",
+          "enableAutoSaveDesc": "Crea automaticamente snapshot a intervalli specificati",
+          "enabled": "Attivato",
+          "disabled": "Disattivato",
+          "intervalTitle": "Intervallo salvataggio automatico",
+          "intervals": {
+            "30": "30 secondi",
+            "60": "1 minuto",
+            "120": "2 minuti",
+            "300": "5 minuti",
+            "600": "10 minuti"
+          },
+          "storage": {
+            "title": "Archiviazione Versioni",
+            "maxVersions": "Versioni massime:",
+            "maxVersionsValue": "100 (predefinito)",
+            "compression": "Comprimi vecchie versioni:",
+            "compressionValue": "Attivato",
+            "compressionDesc": "Le vecchie versioni vengono automaticamente compresse per risparmiare spazio"
+          },
+          "exportImport": {
+            "title": "Esporta / Importa",
+            "export": "Esporta cronologia versioni",
+            "import": "Importa versioni",
+            "notImplemented": "Le funzioni di esportazione/importazione non sono ancora implementate"
+          }
+        }
       }
     },
     "export": {
@@ -1361,7 +1430,7 @@
       "empty_project_hint": "Il progetto è vuoto. Inizia con:",
       "import_media": "Importa media",
       "ask_ai_import": "Chiedi all'IA",
-    "copy": "Copia"
+      "copy": "Copia"
     },
     "title": "Timeline",
     "noTracks": "Nessuna traccia",

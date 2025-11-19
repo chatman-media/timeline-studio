@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "获取 API 密钥"
         }
+      },
+      "versionControl": {
+        "title": "版本控制",
+        "hasChanges": "有更改",
+        "autoSave": "自动保存：{{enabled}}",
+        "autoSaveEnabled": "{{interval}}秒",
+        "autoSaveDisabled": "关闭",
+        "tabs": {
+          "history": "历史",
+          "branches": "分支",
+          "settings": "设置"
+        },
+        "history": {
+          "title": "版本历史",
+          "branch": "分支：{{name}}",
+          "creating": "创建中...",
+          "create": "创建",
+          "placeholder": "版本描述（可选）",
+          "noVersions": "没有保存的版本",
+          "loading": "加载中...",
+          "current": "当前",
+          "author": "作者",
+          "timeAgo": {
+            "justNow": "刚刚",
+            "minutesAgo": "{{count}}分钟前",
+            "hoursAgo": "{{count}}小时前",
+            "daysAgo": "{{count}}天前"
+          },
+          "restoreConfirm": "将项目恢复到版本{{id}}？所有未保存的更改将丢失。",
+          "lastSnapshot": "最后快照：{{time}}"
+        },
+        "branches": {
+          "title": "当前分支",
+          "active": "活动",
+          "createNew": "创建新分支",
+          "namePlaceholder": "分支名称",
+          "create": "创建",
+          "merge": "合并分支",
+          "mergeNotImplemented": "分支合并尚未实现"
+        },
+        "settings": {
+          "autoSaveTitle": "自动保存",
+          "enableAutoSave": "启用自动保存",
+          "enableAutoSaveDesc": "按指定间隔自动创建快照",
+          "enabled": "已启用",
+          "disabled": "已禁用",
+          "intervalTitle": "自动保存间隔",
+          "intervals": {
+            "30": "30秒",
+            "60": "1分钟",
+            "120": "2分钟",
+            "300": "5分钟",
+            "600": "10分钟"
+          },
+          "storage": {
+            "title": "版本存储",
+            "maxVersions": "最大版本数：",
+            "maxVersionsValue": "100（默认）",
+            "compression": "压缩旧版本：",
+            "compressionValue": "已启用",
+            "compressionDesc": "旧版本会自动压缩以节省空间"
+          },
+          "exportImport": {
+            "title": "导出/导入",
+            "export": "导出版本历史",
+            "import": "导入版本",
+            "notImplemented": "导出/导入功能尚未实现"
+          }
+        }
       }
     },
     "export": {
@@ -1195,7 +1264,7 @@
       "empty_project_hint": "项目为空。从以下开始：",
       "import_media": "导入媒体",
       "ask_ai_import": "询问AI",
-    "copy": "复制"
+      "copy": "复制"
     },
     "title": "时间轴",
     "noTracks": "无轨道",

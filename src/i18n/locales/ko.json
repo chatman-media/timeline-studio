@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "API 키 받기"
         }
+      },
+      "versionControl": {
+        "title": "버전 관리",
+        "hasChanges": "변경사항 있음",
+        "autoSave": "자동 저장: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}초",
+        "autoSaveDisabled": "꺼짐",
+        "tabs": {
+          "history": "기록",
+          "branches": "브랜치",
+          "settings": "설정"
+        },
+        "history": {
+          "title": "버전 기록",
+          "branch": "브랜치: {{name}}",
+          "creating": "생성 중...",
+          "create": "생성",
+          "placeholder": "버전 설명(선택사항)",
+          "noVersions": "저장된 버전이 없습니다",
+          "loading": "로딩 중...",
+          "current": "현재",
+          "author": "작성자",
+          "timeAgo": {
+            "justNow": "방금",
+            "minutesAgo": "{{count}}분 전",
+            "hoursAgo": "{{count}}시간 전",
+            "daysAgo": "{{count}}일 전"
+          },
+          "restoreConfirm": "프로젝트를 버전 {{id}}로 복원하시겠습니까? 저장되지 않은 모든 변경사항이 손실됩니다.",
+          "lastSnapshot": "마지막 스냅샷: {{time}}"
+        },
+        "branches": {
+          "title": "현재 브랜치",
+          "active": "활성",
+          "createNew": "새 브랜치 생성",
+          "namePlaceholder": "브랜치 이름",
+          "create": "생성",
+          "merge": "브랜치 병합",
+          "mergeNotImplemented": "브랜치 병합은 아직 구현되지 않았습니다"
+        },
+        "settings": {
+          "autoSaveTitle": "자동 저장",
+          "enableAutoSave": "자동 저장 활성화",
+          "enableAutoSaveDesc": "지정된 간격으로 자동으로 스냅샷 생성",
+          "enabled": "활성화됨",
+          "disabled": "비활성화됨",
+          "intervalTitle": "자동 저장 간격",
+          "intervals": {
+            "30": "30초",
+            "60": "1분",
+            "120": "2분",
+            "300": "5분",
+            "600": "10분"
+          },
+          "storage": {
+            "title": "버전 저장소",
+            "maxVersions": "최대 버전 수:",
+            "maxVersionsValue": "100(기본값)",
+            "compression": "이전 버전 압축:",
+            "compressionValue": "활성화됨",
+            "compressionDesc": "이전 버전은 공간 절약을 위해 자동으로 압축됩니다"
+          },
+          "exportImport": {
+            "title": "내보내기/가져오기",
+            "export": "버전 기록 내보내기",
+            "import": "버전 가져오기",
+            "notImplemented": "내보내기/가져오기 기능은 아직 구현되지 않았습니다"
+          }
+        }
       }
     },
     "export": {
@@ -1195,7 +1264,7 @@
       "empty_project_hint": "프로젝트가 비어 있습니다. 다음으로 시작하세요:",
       "import_media": "미디어 가져오기",
       "ask_ai_import": "AI에게 물어보기",
-    "copy": "복사"
+      "copy": "복사"
     },
     "title": "타임라인",
     "noTracks": "트랙 없음",

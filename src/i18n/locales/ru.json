@@ -651,7 +651,9 @@
       "filters": "Фильтры",
       "templates": "Камеры",
       "styleTemplates": "Шаблоны",
-      "subtitles": "Титры"
+      "subtitles": "Титры",
+      "projects": "Проекты",
+      "scenarios": "Сценарии"
     },
     "templateScreens": {
       "one": "экран",

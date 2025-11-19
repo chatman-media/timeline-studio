@@ -525,7 +525,76 @@
         "description": "سيتم حفظ المشروع تلقائيًا في الفترة الزمنية المحددة"
       },
       "cancel": "إلغاء",
-      "save": "موافق"
+      "save": "موافق",
+      "versionControl": {
+        "title": "التحكم في الإصدار",
+        "hasChanges": "يوجد تغييرات",
+        "autoSave": "الحفظ التلقائي: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}ث",
+        "autoSaveDisabled": "متوقف",
+        "tabs": {
+          "history": "السجل",
+          "branches": "الفروع",
+          "settings": "الإعدادات"
+        },
+        "history": {
+          "title": "سجل الإصدارات",
+          "branch": "الفرع: {{name}}",
+          "creating": "جاري الإنشاء...",
+          "create": "إنشاء",
+          "placeholder": "وصف الإصدار (اختياري)",
+          "noVersions": "لا توجد إصدارات محفوظة",
+          "loading": "جاري التحميل...",
+          "current": "الحالي",
+          "author": "المؤلف",
+          "timeAgo": {
+            "justNow": "الآن",
+            "minutesAgo": "قبل {{count}} دقيقة",
+            "hoursAgo": "قبل {{count}} ساعة",
+            "daysAgo": "قبل {{count}} يوم"
+          },
+          "restoreConfirm": "استعادة المشروع إلى الإصدار {{id}}؟ سيتم فقدان جميع التغييرات غير المحفوظة.",
+          "lastSnapshot": "آخر لقطة: {{time}}"
+        },
+        "branches": {
+          "title": "الفرع الحالي",
+          "active": "نشط",
+          "createNew": "إنشاء فرع جديد",
+          "namePlaceholder": "اسم الفرع",
+          "create": "إنشاء",
+          "merge": "دمج الفروع",
+          "mergeNotImplemented": "دمج الفروع غير مُنفذ بعد"
+        },
+        "settings": {
+          "autoSaveTitle": "الحفظ التلقائي",
+          "enableAutoSave": "تفعيل الحفظ التلقائي",
+          "enableAutoSaveDesc": "إنشاء لقطات تلقائيًا على فترات محددة",
+          "enabled": "مفعّل",
+          "disabled": "معطّل",
+          "intervalTitle": "فترة الحفظ التلقائي",
+          "intervals": {
+            "30": "30 ثانية",
+            "60": "دقيقة واحدة",
+            "120": "دقيقتان",
+            "300": "5 دقائق",
+            "600": "10 دقائق"
+          },
+          "storage": {
+            "title": "تخزين الإصدارات",
+            "maxVersions": "الحد الأقصى للإصدارات:",
+            "maxVersionsValue": "100 (افتراضي)",
+            "compression": "ضغط الإصدارات القديمة:",
+            "compressionValue": "مفعّل",
+            "compressionDesc": "يتم ضغط الإصدارات القديمة تلقائيًا لتوفير المساحة"
+          },
+          "exportImport": {
+            "title": "تصدير / استيراد",
+            "export": "تصدير سجل الإصدارات",
+            "import": "استيراد الإصدارات",
+            "notImplemented": "ميزات التصدير/الاستيراد غير مُنفذة بعد"
+          }
+        }
+      }
     },
     "export": {
       "title": "تصدير",
@@ -1489,7 +1558,7 @@
       "empty_project_hint": "المشروع فارغ. ابدأ بـ:",
       "import_media": "استيراد الوسائط",
       "ask_ai_import": "اسأل الذكاء الاصطناعي",
-    "copy": "نسخ"
+      "copy": "نسخ"
     },
     "title": "الجدول الزمني",
     "noTracks": "لا توجد مسارات",

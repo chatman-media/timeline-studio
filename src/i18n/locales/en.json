@@ -1233,7 +1233,9 @@
       "filters": "Filters",
       "templates": "Multicam",
       "styleTemplates": "Templates",
-      "subtitles": "Subtitles"
+      "subtitles": "Subtitles",
+      "projects": "Projects",
+      "scenarios": "Scenarios"
     },
     "templateScreens": {
       "one": "screen",

@@ -476,7 +476,76 @@
         "description": "प्रोजेक्ट निर्दिष्ट समय अंतराल पर स्वचालित रूप से सहेजा जाएगा"
       },
       "cancel": "रद्द करें",
-      "save": "ठीक है"
+      "save": "ठीक है",
+      "versionControl": {
+        "title": "संस्करण नियंत्रण",
+        "hasChanges": "परिवर्तन हैं",
+        "autoSave": "स्वचालित सहेजें: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}सेकंड",
+        "autoSaveDisabled": "बंद",
+        "tabs": {
+          "history": "इतिहास",
+          "branches": "शाखाएं",
+          "settings": "सेटिंग्स"
+        },
+        "history": {
+          "title": "संस्करण इतिहास",
+          "branch": "शाखा: {{name}}",
+          "creating": "बना रहा है...",
+          "create": "बनाएं",
+          "placeholder": "संस्करण विवरण (वैकल्पिक)",
+          "noVersions": "कोई सहेजे गए संस्करण नहीं",
+          "loading": "लोड हो रहा है...",
+          "current": "वर्तमान",
+          "author": "लेखक",
+          "timeAgo": {
+            "justNow": "अभी",
+            "minutesAgo": "{{count}} मिनट पहले",
+            "hoursAgo": "{{count}} घंटे पहले",
+            "daysAgo": "{{count}} दिन पहले"
+          },
+          "restoreConfirm": "प्रोजेक्ट को संस्करण {{id}} में पुनर्स्थापित करें? सभी असहेजे गए परिवर्तन खो जाएंगे।",
+          "lastSnapshot": "अंतिम स्नैपशॉट: {{time}}"
+        },
+        "branches": {
+          "title": "वर्तमान शाखा",
+          "active": "सक्रिय",
+          "createNew": "नई शाखा बनाएं",
+          "namePlaceholder": "शाखा का नाम",
+          "create": "बनाएं",
+          "merge": "शाखाएं मिलाएं",
+          "mergeNotImplemented": "शाखा विलय अभी लागू नहीं किया गया है"
+        },
+        "settings": {
+          "autoSaveTitle": "स्वचालित सहेजना",
+          "enableAutoSave": "स्वचालित सहेजना सक्षम करें",
+          "enableAutoSaveDesc": "निर्दिष्ट अंतराल पर स्वचालित रूप से स्नैपशॉट बनाएं",
+          "enabled": "सक्षम",
+          "disabled": "अक्षम",
+          "intervalTitle": "स्वचालित सहेजने का अंतराल",
+          "intervals": {
+            "30": "30 सेकंड",
+            "60": "1 मिनट",
+            "120": "2 मिनट",
+            "300": "5 मिनट",
+            "600": "10 मिनट"
+          },
+          "storage": {
+            "title": "संस्करण भंडारण",
+            "maxVersions": "अधिकतम संस्करण:",
+            "maxVersionsValue": "100 (डिफ़ॉल्ट)",
+            "compression": "पुराने संस्करणों को संपीड़ित करें:",
+            "compressionValue": "सक्षम",
+            "compressionDesc": "पुराने संस्करण स्वचालित रूप से स्थान बचाने के लिए संपीड़ित होते हैं"
+          },
+          "exportImport": {
+            "title": "निर्यात / आयात",
+            "export": "संस्करण इतिहास निर्यात करें",
+            "import": "संस्करण आयात करें",
+            "notImplemented": "निर्यात/आयात सुविधाएं अभी लागू नहीं की गई हैं"
+          }
+        }
+      }
     },
     "export": {
       "title": "निर्यात",
@@ -1420,7 +1489,7 @@
       "empty_project_hint": "प्रोजेक्ट खाली है। इससे शुरू करें:",
       "import_media": "मीडिया आयात करें",
       "ask_ai_import": "AI से पूछें",
-    "copy": "कॉपी करें"
+      "copy": "कॉपी करें"
     },
     "title": "टाइमलाइन",
     "noTracks": "कोई ट्रैक नहीं",

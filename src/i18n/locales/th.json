@@ -417,6 +417,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "รับคีย์ API"
         }
+      },
+      "versionControl": {
+        "title": "การควบคุมเวอร์ชัน",
+        "hasChanges": "มีการเปลี่ยนแปลง",
+        "autoSave": "บันทึกอัตโนมัติ: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}วินาที",
+        "autoSaveDisabled": "ปิด",
+        "tabs": {
+          "history": "ประวัติ",
+          "branches": "สาขา",
+          "settings": "การตั้งค่า"
+        },
+        "history": {
+          "title": "ประวัติเวอร์ชัน",
+          "branch": "สาขา: {{name}}",
+          "creating": "กำลังสร้าง...",
+          "create": "สร้าง",
+          "placeholder": "คำอธิบายเวอร์ชัน (ไม่บังคับ)",
+          "noVersions": "ไม่มีเวอร์ชันที่บันทึกไว้",
+          "loading": "กำลังโหลด...",
+          "current": "ปัจจุบัน",
+          "author": "ผู้เขียน",
+          "timeAgo": {
+            "justNow": "เมื่อสักครู่",
+            "minutesAgo": "{{count}} นาทีที่แล้ว",
+            "hoursAgo": "{{count}} ชั่วโมงที่แล้ว",
+            "daysAgo": "{{count}} วันที่แล้ว"
+          },
+          "restoreConfirm": "คืนค่าโปรเจ็กต์เป็นเวอร์ชัน {{id}}? การเปลี่ยนแปลงที่ไม่ได้บันทึกทั้งหมดจะสูญหาย",
+          "lastSnapshot": "สแนปช็อตล่าสุด: {{time}}"
+        },
+        "branches": {
+          "title": "สาขาปัจจุบัน",
+          "active": "ใช้งานอยู่",
+          "createNew": "สร้างสาขาใหม่",
+          "namePlaceholder": "ชื่อสาขา",
+          "create": "สร้าง",
+          "merge": "ผสานสาขา",
+          "mergeNotImplemented": "การผสานสาขายังไม่ได้ถูกนำมาใช้"
+        },
+        "settings": {
+          "autoSaveTitle": "การบันทึกอัตโนมัติ",
+          "enableAutoSave": "เปิดใช้งานการบันทึกอัตโนมัติ",
+          "enableAutoSaveDesc": "สร้างสแนปช็อตอัตโนมัติตามช่วงเวลาที่กำหนด",
+          "enabled": "เปิดใช้งาน",
+          "disabled": "ปิดใช้งาน",
+          "intervalTitle": "ช่วงเวลาบันทึกอัตโนมัติ",
+          "intervals": {
+            "30": "30 วินาที",
+            "60": "1 นาที",
+            "120": "2 นาที",
+            "300": "5 นาที",
+            "600": "10 นาที"
+          },
+          "storage": {
+            "title": "การจัดเก็บเวอร์ชัน",
+            "maxVersions": "เวอร์ชันสูงสุด:",
+            "maxVersionsValue": "100 (ค่าเริ่มต้น)",
+            "compression": "บีบอัดเวอร์ชันเก่า:",
+            "compressionValue": "เปิดใช้งาน",
+            "compressionDesc": "เวอร์ชันเก่าจะถูกบีบอัดโดยอัตโนมัติเพื่อประหยัดพื้นที่"
+          },
+          "exportImport": {
+            "title": "ส่งออก / นำเข้า",
+            "export": "ส่งออกประวัติเวอร์ชัน",
+            "import": "นำเข้าเวอร์ชัน",
+            "notImplemented": "ฟีเจอร์การส่งออก/นำเข้ายังไม่ได้ถูกนำมาใช้"
+          }
+        }
       }
     },
     "export": {
@@ -1247,7 +1316,7 @@
       "empty_project_hint": "โปรเจกต์ว่างเปล่า เริ่มต้นด้วย:",
       "import_media": "นำเข้าสื่อ",
       "ask_ai_import": "ถาม AI",
-    "copy": "คัดลอก"
+      "copy": "คัดลอก"
     },
     "title": "ไทม์ไลน์",
     "noTracks": "ไม่มีแทร็ก",

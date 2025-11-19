@@ -600,6 +600,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "Obter chave API"
         }
+      },
+      "versionControl": {
+        "title": "Controle de versão",
+        "hasChanges": "Tem alterações",
+        "autoSave": "Salvamento automático: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "desativado",
+        "tabs": {
+          "history": "Histórico",
+          "branches": "Ramos",
+          "settings": "Configurações"
+        },
+        "history": {
+          "title": "Histórico de versões",
+          "branch": "Ramo: {{name}}",
+          "creating": "Criando...",
+          "create": "Criar",
+          "placeholder": "Descrição da versão (opcional)",
+          "noVersions": "Nenhuma versão salva",
+          "loading": "Carregando...",
+          "current": "Atual",
+          "author": "Autor",
+          "timeAgo": {
+            "justNow": "agora mesmo",
+            "minutesAgo": "há {{count}} min.",
+            "hoursAgo": "há {{count}} h.",
+            "daysAgo": "há {{count}} dias"
+          },
+          "restoreConfirm": "Restaurar projeto para a versão {{id}}? Todas as alterações não salvas serão perdidas.",
+          "lastSnapshot": "Último snapshot: {{time}}"
+        },
+        "branches": {
+          "title": "Ramo atual",
+          "active": "Ativo",
+          "createNew": "Criar novo ramo",
+          "namePlaceholder": "Nome do ramo",
+          "create": "Criar",
+          "merge": "Mesclar ramos",
+          "mergeNotImplemented": "A mesclagem de ramos ainda não está implementada"
+        },
+        "settings": {
+          "autoSaveTitle": "Salvamento automático",
+          "enableAutoSave": "Ativar salvamento automático",
+          "enableAutoSaveDesc": "Criar snapshots automaticamente em intervalos especificados",
+          "enabled": "Ativado",
+          "disabled": "Desativado",
+          "intervalTitle": "Intervalo de salvamento automático",
+          "intervals": {
+            "30": "30 segundos",
+            "60": "1 minuto",
+            "120": "2 minutos",
+            "300": "5 minutos",
+            "600": "10 minutos"
+          },
+          "storage": {
+            "title": "Armazenamento de versões",
+            "maxVersions": "Versões máximas:",
+            "maxVersionsValue": "100 (padrão)",
+            "compression": "Comprimir versões antigas:",
+            "compressionValue": "Ativado",
+            "compressionDesc": "Versões antigas são automaticamente comprimidas para economizar espaço"
+          },
+          "exportImport": {
+            "title": "Exportar / Importar",
+            "export": "Exportar histórico de versões",
+            "import": "Importar versões",
+            "notImplemented": "As funções de exportação/importação ainda não estão implementadas"
+          }
+        }
       }
     },
     "export": {
@@ -1049,7 +1118,7 @@
       "empty_project_hint": "O projeto está vazio. Comece com:",
       "import_media": "Importar mídia",
       "ask_ai_import": "Perguntar à IA",
-    "copy": "Copiar"
+      "copy": "Copiar"
     }
   },
   "filters": {

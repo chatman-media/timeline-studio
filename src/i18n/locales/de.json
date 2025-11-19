@@ -706,6 +706,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "API-Schlüssel erhalten"
         }
+      },
+      "versionControl": {
+        "title": "Versionskontrolle",
+        "hasChanges": "Hat Änderungen",
+        "autoSave": "Auto-Speichern: {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "aus",
+        "tabs": {
+          "history": "Verlauf",
+          "branches": "Zweige",
+          "settings": "Einstellungen"
+        },
+        "history": {
+          "title": "Versionsverlauf",
+          "branch": "Zweig: {{name}}",
+          "creating": "Erstellen...",
+          "create": "Erstellen",
+          "placeholder": "Versionsbeschreibung (optional)",
+          "noVersions": "Keine gespeicherten Versionen",
+          "loading": "Laden...",
+          "current": "Aktuell",
+          "author": "Autor",
+          "timeAgo": {
+            "justNow": "gerade eben",
+            "minutesAgo": "vor {{count}} Min.",
+            "hoursAgo": "vor {{count}} Std.",
+            "daysAgo": "vor {{count}} Tagen"
+          },
+          "restoreConfirm": "Projekt auf Version {{id}} wiederherstellen? Alle nicht gespeicherten Änderungen gehen verloren.",
+          "lastSnapshot": "Letzter Snapshot: {{time}}"
+        },
+        "branches": {
+          "title": "Aktueller Zweig",
+          "active": "Aktiv",
+          "createNew": "Neuen Zweig erstellen",
+          "namePlaceholder": "Zweigname",
+          "create": "Erstellen",
+          "merge": "Zweige zusammenführen",
+          "mergeNotImplemented": "Zweigzusammenführung ist noch nicht implementiert"
+        },
+        "settings": {
+          "autoSaveTitle": "Automatisches Speichern",
+          "enableAutoSave": "Auto-Speichern aktivieren",
+          "enableAutoSaveDesc": "Snapshots automatisch in festgelegten Intervallen erstellen",
+          "enabled": "Aktiviert",
+          "disabled": "Deaktiviert",
+          "intervalTitle": "Auto-Speichern-Intervall",
+          "intervals": {
+            "30": "30 Sekunden",
+            "60": "1 Minute",
+            "120": "2 Minuten",
+            "300": "5 Minuten",
+            "600": "10 Minuten"
+          },
+          "storage": {
+            "title": "Versionsspeicherung",
+            "maxVersions": "Maximale Versionen:",
+            "maxVersionsValue": "100 (Standard)",
+            "compression": "Alte Versionen komprimieren:",
+            "compressionValue": "Aktiviert",
+            "compressionDesc": "Alte Versionen werden automatisch komprimiert, um Speicherplatz zu sparen"
+          },
+          "exportImport": {
+            "title": "Export / Import",
+            "export": "Versionsverlauf exportieren",
+            "import": "Versionen importieren",
+            "notImplemented": "Export/Import-Funktionen sind noch nicht implementiert"
+          }
+        }
       }
     },
     "keyboardShortcuts": {
@@ -970,7 +1039,7 @@
       "empty_project_hint": "Projekt ist leer. Beginnen Sie mit:",
       "import_media": "Medien importieren",
       "ask_ai_import": "KI fragen",
-    "copy": "Kopieren"
+      "copy": "Kopieren"
     },
     "title": "Timeline",
     "noTracks": "Keine Spuren",

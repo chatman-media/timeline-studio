@@ -489,6 +489,75 @@
           "placeholder": "sk-ant-...",
           "getKey": "Obtenir la clé API"
         }
+      },
+      "versionControl": {
+        "title": "Contrôle de version",
+        "hasChanges": "A des changements",
+        "autoSave": "Sauvegarde auto : {{enabled}}",
+        "autoSaveEnabled": "{{interval}}s",
+        "autoSaveDisabled": "désactivé",
+        "tabs": {
+          "history": "Historique",
+          "branches": "Branches",
+          "settings": "Paramètres"
+        },
+        "history": {
+          "title": "Historique des versions",
+          "branch": "Branche : {{name}}",
+          "creating": "Création...",
+          "create": "Créer",
+          "placeholder": "Description de version (optionnel)",
+          "noVersions": "Aucune version enregistrée",
+          "loading": "Chargement...",
+          "current": "Actuel",
+          "author": "Auteur",
+          "timeAgo": {
+            "justNow": "à l'instant",
+            "minutesAgo": "il y a {{count}} min.",
+            "hoursAgo": "il y a {{count}} h.",
+            "daysAgo": "il y a {{count}} jours"
+          },
+          "restoreConfirm": "Restaurer le projet à la version {{id}} ? Tous les changements non sauvegardés seront perdus.",
+          "lastSnapshot": "Dernier snapshot : {{time}}"
+        },
+        "branches": {
+          "title": "Branche actuelle",
+          "active": "Active",
+          "createNew": "Créer une nouvelle branche",
+          "namePlaceholder": "Nom de branche",
+          "create": "Créer",
+          "merge": "Fusionner les branches",
+          "mergeNotImplemented": "La fusion de branches n'est pas encore implémentée"
+        },
+        "settings": {
+          "autoSaveTitle": "Sauvegarde automatique",
+          "enableAutoSave": "Activer la sauvegarde auto",
+          "enableAutoSaveDesc": "Créer automatiquement des snapshots à intervalles spécifiés",
+          "enabled": "Activé",
+          "disabled": "Désactivé",
+          "intervalTitle": "Intervalle de sauvegarde auto",
+          "intervals": {
+            "30": "30 secondes",
+            "60": "1 minute",
+            "120": "2 minutes",
+            "300": "5 minutes",
+            "600": "10 minutes"
+          },
+          "storage": {
+            "title": "Stockage des versions",
+            "maxVersions": "Versions maximales :",
+            "maxVersionsValue": "100 (par défaut)",
+            "compression": "Compresser les anciennes versions :",
+            "compressionValue": "Activé",
+            "compressionDesc": "Les anciennes versions sont automatiquement compressées pour économiser de l'espace"
+          },
+          "exportImport": {
+            "title": "Export / Import",
+            "export": "Exporter l'historique des versions",
+            "import": "Importer des versions",
+            "notImplemented": "Les fonctions d'export/import ne sont pas encore implémentées"
+          }
+        }
       }
     },
     "keyboardShortcuts": {
@@ -968,7 +1037,7 @@
       "empty_project_hint": "Le projet est vide. Commencez par :",
       "import_media": "Importer des médias",
       "ask_ai_import": "Demander à l'IA",
-    "copy": "Copier"
+      "copy": "Copier"
     },
     "source": {
       "timeline": "Timeline",
