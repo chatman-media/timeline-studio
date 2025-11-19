@@ -36,21 +36,24 @@ export function AIAnalysisDashboardV2() {
   )
 
   // Get selected files from media pool
-  const { selectedFiles } = useBrowser()
+  const { browserState } = useBrowser()
   const { mediaPool } = useMediaManagement()
   const { project } = useTimeline()
 
   // Convert selected file IDs to full paths
+  // ВАЖНО: Берем файлы именно из вкладки "media", а не из activeTab
   const selectedFilePaths = useMemo(() => {
+    const mediaTabSelectedFiles = browserState?.selected_files?.["media"] || []
+
     logger.infoSync("[Dashboard] Converting selected files to paths", {
-      selectedFilesCount: selectedFiles.size,
+      selectedFilesCount: mediaTabSelectedFiles.length,
       mediaPoolSize: mediaPool.size,
       hasProject: !!project,
-      selectedFileIds: Array.from(selectedFiles),
+      selectedFileIds: mediaTabSelectedFiles,
     })
 
     const paths: string[] = []
-    selectedFiles.forEach((fileId) => {
+    mediaTabSelectedFiles.forEach((fileId) => {
       // Try mediaPool first
       const mediaFile = mediaPool.get(fileId)
 
@@ -66,7 +69,7 @@ export function AIAnalysisDashboardV2() {
 
     logger.infoSync("[Dashboard] Final paths", { pathsCount: paths.length, paths })
     return paths
-  }, [selectedFiles, mediaPool])
+  }, [browserState, mediaPool])
 
   // Use AI Director Analysis V2 hook
   const { isAnalyzing, filesProgress, startBatchAnalysis, reset } = useAIDirectorAnalysisV2()
