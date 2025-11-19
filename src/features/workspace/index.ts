@@ -7,8 +7,8 @@
 // Components
 export { LayoutPresetSelector } from "./components/layout-preset-selector"
 export { WidgetContainer } from "./components/widget-container"
-export { WidgetWorkspace } from "./components/widget-workspace"
 export { WidgetDock } from "./components/widget-dock"
+export { WidgetWorkspace } from "./components/widget-workspace"
 
 // Layout Presets
 export {
@@ -20,10 +20,10 @@ export {
 
 // State Machine
 export {
+  type ResizeHandle,
   type WorkspaceLayoutContext,
   type WorkspaceLayoutEvent,
   type WorkspaceLayoutMachine,
-  type ResizeHandle,
   workspaceLayoutMachine,
 } from "./services/workspace-layout-machine"
 
@@ -33,13 +33,13 @@ export { useWorkspaceLayout, WorkspaceLayoutProvider } from "./services/workspac
 // Persistence
 export type { WorkspaceState } from "./services/workspace-persistence"
 export {
-  saveWorkspaceStateLocal,
-  loadWorkspaceStateLocal,
   clearWorkspaceStateLocal,
-  saveWorkspaceStateBackend,
-  loadWorkspaceStateBackend,
-  loadWorkspaceState,
   isValidWorkspaceState,
+  loadWorkspaceState,
+  loadWorkspaceStateBackend,
+  loadWorkspaceStateLocal,
+  saveWorkspaceStateBackend,
+  saveWorkspaceStateLocal,
 } from "./services/workspace-persistence"
 
 // Types

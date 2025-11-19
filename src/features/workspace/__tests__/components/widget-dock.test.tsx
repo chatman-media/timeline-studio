@@ -5,10 +5,8 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import * as WorkspaceProvider from "../../services/workspace-layout-provider"
-
 import { WidgetDock } from "../../components/widget-dock"
+import * as WorkspaceProvider from "../../services/workspace-layout-provider"
 
 describe("WidgetDock", () => {
   const mockMaximizeWidget = vi.fn()

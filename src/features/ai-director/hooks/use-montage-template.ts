@@ -41,16 +41,19 @@ export function useMontageTemplate() {
   const availableTemplates = [...BUILT_IN_TEMPLATES, ...customTemplates]
 
   // Выбор шаблона
-  const selectTemplate = useCallback((templateOrId: MontageTemplate | string) => {
-    if (typeof templateOrId === "string") {
-      const template = availableTemplates.find(t => t.id === templateOrId)
-      setSelectedTemplate(template || null)
-    } else {
-      setSelectedTemplate(templateOrId)
-    }
-    // Сбрасываем кастомизацию при новом выборе
-    setCustomizedTemplate(null)
-  }, [availableTemplates])
+  const selectTemplate = useCallback(
+    (templateOrId: MontageTemplate | string) => {
+      if (typeof templateOrId === "string") {
+        const template = availableTemplates.find((t) => t.id === templateOrId)
+        setSelectedTemplate(template || null)
+      } else {
+        setSelectedTemplate(templateOrId)
+      }
+      // Сбрасываем кастомизацию при новом выборе
+      setCustomizedTemplate(null)
+    },
+    [availableTemplates],
+  )
 
   // Очистка выбора
   const clearSelection = useCallback(() => {
@@ -59,34 +62,43 @@ export function useMontageTemplate() {
   }, [])
 
   // Фильтрация по категории
-  const filterByCategory = useCallback((category: MontageTemplate["category"]) => {
-    const filtered = availableTemplates.filter(t => t.category === category)
-    setFilteredTemplates(filtered)
-  }, [availableTemplates])
+  const filterByCategory = useCallback(
+    (category: MontageTemplate["category"]) => {
+      const filtered = availableTemplates.filter((t) => t.category === category)
+      setFilteredTemplates(filtered)
+    },
+    [availableTemplates],
+  )
 
   // Фильтрация по нескольким категориям
-  const filterByCategories = useCallback((categories: MontageTemplate["category"][]) => {
-    const filtered = availableTemplates.filter(t => categories.includes(t.category))
-    setFilteredTemplates(filtered)
-  }, [availableTemplates])
+  const filterByCategories = useCallback(
+    (categories: MontageTemplate["category"][]) => {
+      const filtered = availableTemplates.filter((t) => categories.includes(t.category))
+      setFilteredTemplates(filtered)
+    },
+    [availableTemplates],
+  )
 
   // Поиск по имени
-  const searchTemplates = useCallback((query: string) => {
-    const lowerQuery = query.toLowerCase()
-    const filtered = filteredTemplates.filter(t =>
-      t.name.toLowerCase().includes(lowerQuery) ||
-      t.description.toLowerCase().includes(lowerQuery)
-    )
-    setFilteredTemplates(filtered)
-  }, [filteredTemplates])
+  const searchTemplates = useCallback(
+    (query: string) => {
+      const lowerQuery = query.toLowerCase()
+      const filtered = filteredTemplates.filter(
+        (t) => t.name.toLowerCase().includes(lowerQuery) || t.description.toLowerCase().includes(lowerQuery),
+      )
+      setFilteredTemplates(filtered)
+    },
+    [filteredTemplates],
+  )
 
   // Поиск по тегам
-  const searchByTags = useCallback((tags: string[]) => {
-    const filtered = availableTemplates.filter(t =>
-      tags.some(tag => t.tags.includes(tag))
-    )
-    setFilteredTemplates(filtered)
-  }, [availableTemplates])
+  const searchByTags = useCallback(
+    (tags: string[]) => {
+      const filtered = availableTemplates.filter((t) => tags.some((tag) => t.tags.includes(tag)))
+      setFilteredTemplates(filtered)
+    },
+    [availableTemplates],
+  )
 
   // Очистка всех фильтров
   const clearFilters = useCallback(() => {
@@ -94,18 +106,21 @@ export function useMontageTemplate() {
   }, [availableTemplates])
 
   // Кастомизация параметров
-  const customizeParameters = useCallback((params: Partial<MontageTemplateParameters>) => {
-    if (!selectedTemplate) return
+  const customizeParameters = useCallback(
+    (params: Partial<MontageTemplateParameters>) => {
+      if (!selectedTemplate) return
 
-    const customized: MontageTemplate = {
-      ...selectedTemplate,
-      parameters: {
-        ...selectedTemplate.parameters,
-        ...params,
-      },
-    }
-    setCustomizedTemplate(customized)
-  }, [selectedTemplate])
+      const customized: MontageTemplate = {
+        ...selectedTemplate,
+        parameters: {
+          ...selectedTemplate.parameters,
+          ...params,
+        },
+      }
+      setCustomizedTemplate(customized)
+    },
+    [selectedTemplate],
+  )
 
   // Сброс кастомизации
   const resetCustomization = useCallback(() => {
@@ -113,35 +128,38 @@ export function useMontageTemplate() {
   }, [])
 
   // Сравнение двух шаблонов
-  const compareTemplates = useCallback((id1: string, id2: string) => {
-    const t1 = availableTemplates.find(t => t.id === id1)
-    const t2 = availableTemplates.find(t => t.id === id2)
+  const compareTemplates = useCallback(
+    (id1: string, id2: string) => {
+      const t1 = availableTemplates.find((t) => t.id === id1)
+      const t2 = availableTemplates.find((t) => t.id === id2)
 
-    if (!t1 || !t2) return
+      if (!t1 || !t2) return
 
-    const diff: TemplateComparison["differences"] = {}
+      const diff: TemplateComparison["differences"] = {}
 
-    if (t1.parameters.targetDuration !== t2.parameters.targetDuration) {
-      diff.targetDuration = { t1: t1.parameters.targetDuration, t2: t2.parameters.targetDuration }
-    }
-
-    if (t1.parameters.aspectRatio !== t2.parameters.aspectRatio) {
-      diff.aspectRatio = { t1: t1.parameters.aspectRatio, t2: t2.parameters.aspectRatio }
-    }
-
-    if (t1.parameters.clipCount.preferred !== t2.parameters.clipCount.preferred) {
-      diff.clipCount = {
-        t1: t1.parameters.clipCount.preferred,
-        t2: t2.parameters.clipCount.preferred
+      if (t1.parameters.targetDuration !== t2.parameters.targetDuration) {
+        diff.targetDuration = { t1: t1.parameters.targetDuration, t2: t2.parameters.targetDuration }
       }
-    }
 
-    setComparison({
-      template1: t1,
-      template2: t2,
-      differences: diff,
-    })
-  }, [availableTemplates])
+      if (t1.parameters.aspectRatio !== t2.parameters.aspectRatio) {
+        diff.aspectRatio = { t1: t1.parameters.aspectRatio, t2: t2.parameters.aspectRatio }
+      }
+
+      if (t1.parameters.clipCount.preferred !== t2.parameters.clipCount.preferred) {
+        diff.clipCount = {
+          t1: t1.parameters.clipCount.preferred,
+          t2: t2.parameters.clipCount.preferred,
+        }
+      }
+
+      setComparison({
+        template1: t1,
+        template2: t2,
+        differences: diff,
+      })
+    },
+    [availableTemplates],
+  )
 
   // Очистка сравнения
   const clearComparison = useCallback(() => {
@@ -149,59 +167,65 @@ export function useMontageTemplate() {
   }, [])
 
   // Получение рекомендаций
-  const getRecommendations = useCallback((criteria: RecommendationCriteria) => {
-    const scored: TemplateRecommendation[] = availableTemplates.map(template => {
-      let score = 0
+  const getRecommendations = useCallback(
+    (criteria: RecommendationCriteria) => {
+      const scored: TemplateRecommendation[] = availableTemplates.map((template) => {
+        let score = 0
 
-      // Оценка по длительности
-      if (criteria.targetDuration) {
-        const durationDiff = Math.abs(template.parameters.targetDuration - criteria.targetDuration)
-        const durationScore = Math.max(0, 1 - durationDiff / criteria.targetDuration)
-        score += durationScore * 0.4
-      }
+        // Оценка по длительности
+        if (criteria.targetDuration) {
+          const durationDiff = Math.abs(template.parameters.targetDuration - criteria.targetDuration)
+          const durationScore = Math.max(0, 1 - durationDiff / criteria.targetDuration)
+          score += durationScore * 0.4
+        }
 
-      // Оценка по стилю
-      if (criteria.style && template.style === criteria.style) {
-        score += 0.3
-      }
+        // Оценка по стилю
+        if (criteria.style && template.style === criteria.style) {
+          score += 0.3
+        }
 
-      // Оценка по соотношению сторон
-      if (criteria.aspectRatio && template.parameters.aspectRatio === criteria.aspectRatio) {
-        score += 0.3
-      }
+        // Оценка по соотношению сторон
+        if (criteria.aspectRatio && template.parameters.aspectRatio === criteria.aspectRatio) {
+          score += 0.3
+        }
 
-      return {
-        id: template.id,
-        score,
-        template,
-      }
-    })
+        return {
+          id: template.id,
+          score,
+          template,
+        }
+      })
 
-    // Сортируем по оценке
-    scored.sort((a, b) => b.score - a.score)
-    setRecommendations(scored)
-  }, [availableTemplates])
+      // Сортируем по оценке
+      scored.sort((a, b) => b.score - a.score)
+      setRecommendations(scored)
+    },
+    [availableTemplates],
+  )
 
   // Сохранение как кастомного шаблона
-  const saveAsCustomTemplate = useCallback((metadata: { name: string; description: string }) => {
-    if (!selectedTemplate) return
+  const saveAsCustomTemplate = useCallback(
+    (metadata: { name: string; description: string }) => {
+      if (!selectedTemplate) return
 
-    const customTemplate: MontageTemplate = {
-      ...selectedTemplate,
-      id: `custom-${Date.now()}`,
-      name: metadata.name,
-      description: metadata.description,
-      isBuiltIn: false,
-      category: "custom",
-      createdAt: new Date(),
-    }
+      const customTemplate: MontageTemplate = {
+        ...selectedTemplate,
+        id: `custom-${Date.now()}`,
+        name: metadata.name,
+        description: metadata.description,
+        isBuiltIn: false,
+        category: "custom",
+        createdAt: new Date(),
+      }
 
-    setCustomTemplates(prev => [...prev, customTemplate])
-  }, [selectedTemplate])
+      setCustomTemplates((prev) => [...prev, customTemplate])
+    },
+    [selectedTemplate],
+  )
 
   // Удаление кастомного шаблона
   const deleteCustomTemplate = useCallback((id: string) => {
-    setCustomTemplates(prev => prev.filter(t => t.id !== id))
+    setCustomTemplates((prev) => prev.filter((t) => t.id !== id))
   }, [])
 
   // Экспорт шаблона

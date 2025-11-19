@@ -5,8 +5,8 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
-import { MontageTemplateSelector } from "../montage-template-selector"
 import { BUILT_IN_TEMPLATES } from "../../types/montage-templates"
+import { MontageTemplateSelector } from "../montage-template-selector"
 
 describe("MontageTemplateSelector", () => {
   const mockOnSelect = vi.fn()

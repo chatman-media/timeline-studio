@@ -60,6 +60,22 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
               applyTransitionToClip(clip.id, item.data, type)
             }
             break
+          case "style-template":
+            // Style template можно применить как эффект или переход в зависимости от категории
+            const template = item.data
+            if (template.category === "transition") {
+              // Применяем как переход
+              if (dropZoneRef.current) {
+                const rect = dropZoneRef.current.getBoundingClientRect()
+                const relativeX = event.clientX - rect.left
+                const type = relativeX < rect.width / 2 ? "in" : "out"
+                applyTransitionToClip(clip.id, template, type)
+              }
+            } else {
+              // Применяем как эффект (intro, outro, lower-third, overlay)
+              applyEffectToClip(clip.id, template)
+            }
+            break
         }
       } catch (error) {
         logger.error("Error applying resource to clip:", { error })
@@ -85,6 +101,10 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
           break
         case "transition":
           canAccept = canApplyTransitionToClip(clip.id, item.data)
+          break
+        case "style-template":
+          // Style template всегда можно применить
+          canAccept = true
           break
       }
 
@@ -121,7 +141,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
 
     const dropTarget: DropTarget = {
       id: `clip-${clip.id}`,
-      accepts: ["effect", "filter", "transition"],
+      accepts: ["effect", "filter", "transition", "style-template"],
       element: dropZoneRef.current,
       onDragEnter: handleDragEnter,
       onDragOver: handleDragOver,
@@ -144,8 +164,9 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
     const hasEffect = event.dataTransfer.types.includes("effect")
     const hasFilter = event.dataTransfer.types.includes("filter")
     const hasTransition = event.dataTransfer.types.includes("transition")
+    const hasStyleTemplate = event.dataTransfer.types.includes("style-template")
 
-    if (hasEffect || hasFilter || hasTransition) {
+    if (hasEffect || hasFilter || hasTransition || hasStyleTemplate) {
       setIsDragOver(true)
       event.dataTransfer.dropEffect = "copy"
     }
@@ -224,7 +245,9 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
                   ? "Добавить фильтр"
                   : dragType === "transition"
                     ? "Добавить переход"
-                    : "Добавить ресурс"
+                    : dragType === "style-template"
+                      ? "Добавить шаблон"
+                      : "Добавить ресурс"
               : "Несовместимый ресурс"}
           </div>
         </div>

@@ -45,6 +45,8 @@ vi.mock("lucide-react", () => ({
   FlipHorizontal2: () => <span data-testid="icon-flip" />,
   Video: () => <span data-testid="icon-video" />,
   Sticker: () => <span data-testid="icon-sticker" />,
+  LayoutTemplate: () => <span data-testid="icon-layouttemplate" />,
+  Wand2: () => <span data-testid="icon-wand2" />,
 }))
 
 describe("BrowserTabs", () => {
@@ -72,6 +74,8 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toBeInTheDocument()
     expect(screen.getByTestId("templates-tab")).toBeInTheDocument()
     expect(screen.getByTestId("style-templates-tab")).toBeInTheDocument()
+    expect(screen.getByTestId("projects-tab")).toBeInTheDocument()
+    expect(screen.getByTestId("scenarios-tab")).toBeInTheDocument()
   })
 
   it("должен отображать правильные иконки для каждой вкладки", () => {
@@ -85,6 +89,8 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toContainElement(screen.getByTestId("icon-flip"))
     expect(screen.getByTestId("templates-tab")).toContainElement(screen.getByTestId("icon-video"))
     expect(screen.getByTestId("style-templates-tab")).toContainElement(screen.getByTestId("icon-sticker"))
+    expect(screen.getByTestId("projects-tab")).toContainElement(screen.getByTestId("icon-layouttemplate"))
+    expect(screen.getByTestId("scenarios-tab")).toContainElement(screen.getByTestId("icon-wand2"))
   })
 
   it("должен отображать правильные метки для каждой вкладки", () => {
@@ -98,6 +104,8 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toHaveTextContent("browser.tabs.transitions")
     expect(screen.getByTestId("templates-tab")).toHaveTextContent("browser.tabs.templates")
     expect(screen.getByTestId("style-templates-tab")).toHaveTextContent("browser.tabs.styleTemplates")
+    expect(screen.getByTestId("projects-tab")).toHaveTextContent("browser.tabs.projects")
+    expect(screen.getByTestId("scenarios-tab")).toHaveTextContent("browser.tabs.scenarios")
   })
 
   it("должен устанавливать правильные классы для активной вкладки", () => {
@@ -174,7 +182,18 @@ describe("BrowserTabs", () => {
   })
 
   it("должен обрабатывать все возможные вкладки", () => {
-    const tabs = ["media", "music", "subtitles", "effects", "filters", "transitions", "templates", "style-templates"]
+    const tabs = [
+      "media",
+      "music",
+      "subtitles",
+      "effects",
+      "filters",
+      "transitions",
+      "templates",
+      "style-templates",
+      "projects",
+      "scenarios",
+    ]
 
     tabs.forEach((tab) => {
       // Очищаем DOM перед каждым рендером

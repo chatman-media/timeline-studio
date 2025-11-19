@@ -3,7 +3,7 @@
  * Проверка работы всех workflow templates: TikTok, Highlight Reel, Documentary
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { BUILT_IN_TEMPLATES, getTemplateById } from "../../types/montage-templates"
 
 // Mock Tauri
@@ -201,14 +201,7 @@ describe("Workflow Templates Integration", () => {
     })
 
     it("should have valid transition types", () => {
-      const validTransitionTypes = [
-        "cut",
-        "cross_dissolve",
-        "fade_to_black",
-        "wipe",
-        "slide",
-        "zoom",
-      ]
+      const validTransitionTypes = ["cut", "cross_dissolve", "fade_to_black", "wipe", "slide", "zoom"]
 
       BUILT_IN_TEMPLATES.forEach((template) => {
         expect(validTransitionTypes).toContain(template.transitionRules.defaultType)
@@ -220,14 +213,7 @@ describe("Workflow Templates Integration", () => {
     })
 
     it("should have valid style types", () => {
-      const validStyles = [
-        "dynamic",
-        "cinematic",
-        "highlights",
-        "vlog",
-        "calm",
-        "tutorial",
-      ]
+      const validStyles = ["dynamic", "cinematic", "highlights", "vlog", "calm", "tutorial"]
 
       BUILT_IN_TEMPLATES.forEach((template) => {
         expect(validStyles).toContain(template.style)
@@ -316,15 +302,7 @@ describe("Workflow Templates Integration", () => {
 
   describe("Template Categorization", () => {
     it("should have valid categories", () => {
-      const validCategories = [
-        "social",
-        "promo",
-        "cinematic",
-        "tutorial",
-        "highlights",
-        "vlog",
-        "custom",
-      ]
+      const validCategories = ["social", "promo", "cinematic", "tutorial", "highlights", "vlog", "custom"]
 
       BUILT_IN_TEMPLATES.forEach((template) => {
         expect(validCategories).toContain(template.category)
@@ -343,9 +321,7 @@ describe("Workflow Templates Integration", () => {
 
   describe("Platform Optimization", () => {
     it("should optimize for Instagram/TikTok (vertical)", () => {
-      const verticalTemplates = BUILT_IN_TEMPLATES.filter(
-        (t) => t.parameters.aspectRatio === "9:16"
-      )
+      const verticalTemplates = BUILT_IN_TEMPLATES.filter((t) => t.parameters.aspectRatio === "9:16")
 
       expect(verticalTemplates.length).toBeGreaterThan(0)
 
@@ -356,9 +332,7 @@ describe("Workflow Templates Integration", () => {
     })
 
     it("should optimize for YouTube (horizontal)", () => {
-      const horizontalTemplates = BUILT_IN_TEMPLATES.filter(
-        (t) => t.parameters.aspectRatio === "16:9"
-      )
+      const horizontalTemplates = BUILT_IN_TEMPLATES.filter((t) => t.parameters.aspectRatio === "16:9")
 
       expect(horizontalTemplates.length).toBeGreaterThan(0)
     })

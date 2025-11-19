@@ -291,7 +291,9 @@ export function validateMontagePlan(plan: MontagePlan): ValidationResult {
 
     if (diff > 1) {
       // Допуск 1 секунда
-      warnings.push(`Actual duration (${effectiveDuration}s) doesn't match sum of clip durations (${calculatedDuration}s)`)
+      warnings.push(
+        `Actual duration (${effectiveDuration}s) doesn't match sum of clip durations (${calculatedDuration}s)`,
+      )
     }
   }
 

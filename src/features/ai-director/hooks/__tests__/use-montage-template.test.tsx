@@ -2,10 +2,10 @@
  * @vitest-environment jsdom
  */
 
-import { renderHook, act } from "@testing-library/react"
-import { describe, expect, it, beforeEach } from "vitest"
-import { useMontageTemplate } from "../use-montage-template"
+import { act, renderHook } from "@testing-library/react"
+import { beforeEach, describe, expect, it } from "vitest"
 import { BUILT_IN_TEMPLATES } from "../../types/montage-templates"
+import { useMontageTemplate } from "../use-montage-template"
 
 describe("useMontageTemplate", () => {
   beforeEach(() => {

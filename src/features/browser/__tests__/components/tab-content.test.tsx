@@ -108,6 +108,32 @@ vi.mock("@/features/browser/adapters/use-style-templates-adapter", () => ({
   })),
 }))
 
+vi.mock("@/features/browser/adapters/use-project-templates-adapter", () => ({
+  useProjectTemplatesAdapter: vi.fn(() => ({
+    useData: () => ({ items: [], loading: false, error: null }),
+    PreviewComponent: () => null,
+    getSortValue: vi.fn(),
+    getSearchableText: vi.fn(),
+    getGroupValue: vi.fn(),
+    matchesFilter: vi.fn(),
+    importHandlers: undefined,
+    favoriteType: "projectTemplate",
+  })),
+}))
+
+vi.mock("@/features/browser/adapters/use-scenarios-adapter", () => ({
+  useScenariosAdapter: vi.fn(() => ({
+    useData: () => ({ items: [], loading: false, error: null }),
+    PreviewComponent: () => null,
+    getSortValue: vi.fn(),
+    getSearchableText: vi.fn(),
+    getGroupValue: vi.fn(),
+    matchesFilter: vi.fn(),
+    importHandlers: undefined,
+    favoriteType: "scenario",
+  })),
+}))
+
 vi.mock("@/features/browser/components/universal-list", () => ({
   UniversalList: ({ adapter }: any) => (
     <div data-testid="universal-list" data-favorite-type={adapter.favoriteType}>
@@ -197,6 +223,20 @@ describe("TabContent", () => {
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "styleTemplate")
+    })
+
+    it("should render projects tab content when active", () => {
+      render(<TabContent tabValue="projects" activeTab="projects" className="test-class" />)
+
+      expect(screen.getByTestId("universal-list")).toBeInTheDocument()
+      expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "projectTemplate")
+    })
+
+    it("should render scenarios tab content when active", () => {
+      render(<TabContent tabValue="scenarios" activeTab="scenarios" className="test-class" />)
+
+      expect(screen.getByTestId("universal-list")).toBeInTheDocument()
+      expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "scenario")
     })
   })
 

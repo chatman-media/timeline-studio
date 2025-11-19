@@ -1,4 +1,15 @@
-import { Blend, Clapperboard, FlipHorizontal2, LayoutTemplate, Music, Sparkles, Sticker, Type, Video, Wand2 } from "lucide-react"
+import {
+  Blend,
+  Clapperboard,
+  FlipHorizontal2,
+  LayoutTemplate,
+  Music,
+  Sparkles,
+  Sticker,
+  Type,
+  Video,
+  Wand2,
+} from "lucide-react"
 import { memo, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 

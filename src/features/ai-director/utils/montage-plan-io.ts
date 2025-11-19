@@ -204,14 +204,10 @@ export async function importMultiplePlans(): Promise<MontagePlan[] | null> {
 /**
  * Экспортировать план как шаблон (без привязки к конкретным файлам)
  */
-export async function exportPlanAsTemplate(
-  plan: MontagePlan,
-  options?: ExportTemplateOptions
-): Promise<string | null> {
+export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTemplateOptions): Promise<string | null> {
   try {
-    const avgClipDuration = plan.clips.length > 0
-      ? plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length
-      : 5
+    const avgClipDuration =
+      plan.clips.length > 0 ? plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length : 5
 
     // Создаем шаблон из плана
     const template: MontageTemplate = {
@@ -259,7 +255,7 @@ export async function exportPlanAsTemplate(
         duration: plan.transitions[0]?.duration || 0.5,
         variety: {
           enabled: plan.transitions.length > 1,
-          types: plan.transitions.map(t => t.type),
+          types: plan.transitions.map((t) => t.type),
         },
         frequency: plan.clips.length > 1 ? plan.transitions.length / (plan.clips.length - 1) : 0,
       },

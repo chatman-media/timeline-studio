@@ -2,15 +2,15 @@
  * Tests for montage plan import/export utilities
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { MontagePlan } from "../../types/montage-plan"
 import {
   exportMontagePlan,
-  importMontagePlan,
   exportMultiplePlans,
-  importMultiplePlans,
   exportPlanAsTemplate,
+  importMontagePlan,
+  importMultiplePlans,
 } from "../montage-plan-io"
-import type { MontagePlan } from "../../types/montage-plan"
 
 // Mock Tauri dialog
 vi.mock("@tauri-apps/plugin-dialog", () => ({

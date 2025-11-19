@@ -484,8 +484,8 @@ Media Management Domain успешно доведен до **100% готовно
 | Функционал | TypeScript | Rust Core | Tauri Command | Specta Export | Статус |
 |-----------|------------|-----------|---------------|---------------|--------|
 | **Proxy Generation** | ✅ Полный | ✅ Полный | ✅ `generate_proxy_command` | ✅ Да | ✅ **ГОТОВО** |
-| **Waveform Generation** | ✅ Базовый | ✅ `build_waveform_command` | ❌ Нет wrapper | ❌ Нет | ⚠️ **70%** |
-| **Metadata Extraction** | ✅ Базовый | ✅ `get_media_metadata` | ❌ Нет wrapper | ❌ Нет | ⚠️ **60%** |
+| **Waveform Generation** | ✅ **Обновлен** | ✅ Полный | ✅ `generate_waveform_preview` | ❌ Нет | ✅ **ГОТОВО** |
+| **Metadata Extraction** | ✅ Базовый | ✅ `get_media_metadata` | ✅ Да (app_builder) | ❌ Нет | ⚠️ **80%** |
 | **Camera Import** | ✅ Заглушки | ❌ Нет | ❌ Нет | ❌ Нет | ⚠️ **20%** |
 | **Smart Organization** | ✅ Базовый | ❌ Нет EXIF | ❌ Нет | ❌ Нет | ⚠️ **40%** |
 | **Error Tracker** | ✅ Полный | N/A (Frontend) | N/A | N/A | ✅ **100%** |
@@ -502,10 +502,16 @@ Media Management Domain успешно доведен до **100% готовно
 
 **Готовность к продакшену**:
 - **Frontend**: 100% (все сервисы реализованы)
-- **Backend Integration**: 65% (1 из 5 полностью готов)
+- **Backend Integration**: 75% (2 из 5 полностью готовы)
+
+**✅ Обновлено 2025-11-19**:
+- ✅ **Waveform Generation теперь готов к продакшену**
+- Добавлена команда `generate_waveform_preview` в `app_builder.rs:396`
+- Frontend сервис обновлен для использования реальной команды
+- Полная документация: `docs/08_tasks/waveform-integration-complete.md`
 
 **Рекомендации**:
-1. **Приоритет 1**: Экспортировать waveform и metadata как Tauri команды
-2. **Приоритет 2**: Реализовать Camera Import backend
-3. **Приоритет 3**: Добавить EXIF extraction для Smart Organization
-4. **Приоритет 4**: Событийная модель для real-time прогресса
+1. ✅ ~~Экспортировать waveform как Tauri команду~~ **ВЫПОЛНЕНО**
+2. **Приоритет 1**: Добавить EXIF extraction для Metadata
+3. **Приоритет 2**: Реализовать Camera Import backend
+4. **Приоритет 3**: Событийная модель для real-time прогресса

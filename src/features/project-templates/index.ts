@@ -1,26 +1,26 @@
 // Типы
-export type {
-  ProjectTemplate,
-  ProjectStructure,
-  Section,
-  TrackConfig,
-  ProjectPlaceholders,
-  ProjectSettings,
-  ProjectTemplateFilter,
-  ProjectTemplateSortBy,
-  ProjectTemplateSortOrder,
-} from "./types"
 
 // Шаблоны
 export {
   allProjectTemplates,
-  projectTemplatesByCategory,
-  projectTemplatesByPlatform,
   getProjectTemplateById,
+  getProjectTemplatesByAspectRatio,
   getProjectTemplatesByCategory,
   getProjectTemplatesByPlatform,
-  getProjectTemplatesByAspectRatio,
-  youtubeTemplates,
-  socialTemplates,
   podcastTemplates,
+  projectTemplatesByCategory,
+  projectTemplatesByPlatform,
+  socialTemplates,
+  youtubeTemplates,
 } from "./lib/templates"
+export type {
+  ProjectPlaceholders,
+  ProjectSettings,
+  ProjectStructure,
+  ProjectTemplate,
+  ProjectTemplateFilter,
+  ProjectTemplateSortBy,
+  ProjectTemplateSortOrder,
+  Section,
+  TrackConfig,
+} from "./types"

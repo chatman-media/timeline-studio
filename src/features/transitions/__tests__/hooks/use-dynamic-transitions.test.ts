@@ -1,7 +1,7 @@
-import { renderHook, waitFor, act } from "@testing-library/react"
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest"
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useDynamicTransitions } from "../../hooks/use-dynamic-transitions"
-import { DynamicTransitionService, type DynamicShaderType } from "../../services/dynamic-transition-service"
+import { type DynamicShaderType, DynamicTransitionService } from "../../services/dynamic-transition-service"
 
 // Create mock service methods
 const mockServiceMethods = {

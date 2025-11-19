@@ -89,12 +89,7 @@ export const DEFAULT_PRESETS: AnalyzerPreset[] = [
     id: "quality-focus",
     name: "Фокус на качество",
     description: "Анализ качества контента",
-    analyzers: new Set([
-      "quality_assessment",
-      "composition_analysis",
-      "scene_detection",
-      "audio_quality",
-    ]),
+    analyzers: new Set(["quality_assessment", "composition_analysis", "scene_detection", "audio_quality"]),
     isDefault: true,
     category: "quality",
     estimatedTime: "1-2 min",

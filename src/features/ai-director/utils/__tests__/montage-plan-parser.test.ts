@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { parseMontagePlanFromAI, validateMontagePlan } from "../montage-plan-parser"
 import type { MontagePlan } from "../../types/montage-plan"
+import { parseMontagePlanFromAI, validateMontagePlan } from "../montage-plan-parser"
 
 describe("montage-plan-parser", () => {
   describe("parseMontagePlanFromAI", () => {
@@ -103,9 +103,7 @@ This plan uses a cinematic style.`
           { sourceFile: "v1.mp4", startTime: 0, duration: 5, inPoint: 0, effects: [] },
           { sourceFile: "v2.mp4", startTime: 5, duration: 5, inPoint: 0, effects: [] },
         ],
-        transitions: [
-          { type: "cross_dissolve", duration: 0.5, atTime: 5 },
-        ],
+        transitions: [{ type: "cross_dissolve", duration: 0.5, atTime: 5 }],
         totalDuration: 10,
         createdAt: new Date().toISOString(),
       })
@@ -324,9 +322,7 @@ This plan uses a cinematic style.`
     it("should validate source file paths", () => {
       const planWithEmptyPath: MontagePlan = {
         ...validPlan,
-        clips: [
-          { fileId: "f1", filePath: "", startTime: 0, endTime: 5, duration: 5, reason: "Test" },
-        ],
+        clips: [{ fileId: "f1", filePath: "", startTime: 0, endTime: 5, duration: 5, reason: "Test" }],
       }
 
       const result = validateMontagePlan(planWithEmptyPath)

@@ -6,11 +6,7 @@ import { youtubeTemplates } from "./youtube-templates"
 /**
  * Все шаблоны проектов
  */
-export const allProjectTemplates: ProjectTemplate[] = [
-  ...youtubeTemplates,
-  ...socialTemplates,
-  ...podcastTemplates,
-]
+export const allProjectTemplates: ProjectTemplate[] = [...youtubeTemplates, ...socialTemplates, ...podcastTemplates]
 
 /**
  * Группировка шаблонов по категориям

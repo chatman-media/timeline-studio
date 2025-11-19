@@ -2,10 +2,10 @@
  * @vitest-environment jsdom
  */
 
-import { renderHook, act } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import { useAnalyzerPresets } from "../use-analyzer-presets"
 import { DEFAULT_PRESETS } from "../../types/analyzer-presets"
+import { useAnalyzerPresets } from "../use-analyzer-presets"
 
 describe("useAnalyzerPresets", () => {
   describe("Initial State", () => {

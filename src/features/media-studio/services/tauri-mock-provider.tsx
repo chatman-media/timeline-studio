@@ -48,19 +48,16 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       // Mock event plugin internals
       // Structure matches real Tauri: listeners is an object, not Map
       // Create a safe listeners object with Proxy to prevent undefined access errors
-      const safeListeners = new Proxy(
-        {} as Record<string, any>,
-        {
-          get(target, prop) {
-            // Always return a valid object even if listener doesn't exist
-            if (!(prop in target)) {
-              logger.warn(`[TauriMock] Accessing non-existent listener: ${String(prop)}`)
-              return { handlerId: undefined }
-            }
-            return target[prop as string]
-          },
+      const safeListeners = new Proxy({} as Record<string, any>, {
+        get(target, prop) {
+          // Always return a valid object even if listener doesn't exist
+          if (!(prop in target)) {
+            logger.warn(`[TauriMock] Accessing non-existent listener: ${String(prop)}`)
+            return { handlerId: undefined }
+          }
+          return target[prop as string]
         },
-      )
+      })
 
       ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {
         listeners: safeListeners,

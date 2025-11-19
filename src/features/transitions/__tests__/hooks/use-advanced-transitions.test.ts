@@ -1,5 +1,5 @@
-import { renderHook, waitFor, act } from "@testing-library/react"
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest"
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useAdvancedTransitions } from "../../hooks/use-advanced-transitions"
 import { webglTransitionService } from "../../services/webgl-transition-service"
 

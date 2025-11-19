@@ -82,7 +82,7 @@ export function WidgetContainer({
       const deltaY = ((e.clientY - resizeStartRef.current.y) / parentRect.height) * 100
 
       const { bounds: startBounds } = resizeStartRef.current
-      let newBounds = { ...startBounds }
+      const newBounds = { ...startBounds }
 
       // Calculate new bounds based on resize handle
       switch (resizeHandle) {

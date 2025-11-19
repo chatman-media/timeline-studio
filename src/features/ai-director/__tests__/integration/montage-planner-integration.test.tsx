@@ -3,7 +3,7 @@
  * Проверка взаимодействия AI Director с Montage Planner
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock Tauri
 vi.mock("@tauri-apps/api/core", () => ({
@@ -119,9 +119,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
         createdAt: new Date().toISOString(),
       }
 
-      vi.mocked(invoke)
-        .mockResolvedValueOnce(mockAnalysis)
-        .mockResolvedValueOnce(mockMontagePlan)
+      vi.mocked(invoke).mockResolvedValueOnce(mockAnalysis).mockResolvedValueOnce(mockMontagePlan)
 
       const analysis = await invoke("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
@@ -154,9 +152,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
           peak_loudness: -6.5,
           average_loudness: -14.5,
           dynamic_range: 8.0,
-          silence_segments: [
-            { start: 30.5, duration: 2.0, silence_level: -60.0 },
-          ],
+          silence_segments: [{ start: 30.5, duration: 2.0, silence_level: -60.0 }],
         },
         montage_analysis: {
           rhythm_profile: {
@@ -272,9 +268,9 @@ describe("AI Director ↔ Montage Planner Integration", () => {
       const mockMoments = {
         key_moments: [
           { timestamp: 5.0, duration: 3.0, quality_score: 0.95, moment_type: "HighAction" },
-          { timestamp: 15.0, duration: 2.0, quality_score: 0.60, moment_type: "Static" },
+          { timestamp: 15.0, duration: 2.0, quality_score: 0.6, moment_type: "Static" },
           { timestamp: 25.0, duration: 4.0, quality_score: 0.85, moment_type: "Emotional" },
-          { timestamp: 35.0, duration: 3.0, quality_score: 0.50, moment_type: "Static" },
+          { timestamp: 35.0, duration: 3.0, quality_score: 0.5, moment_type: "Static" },
         ],
       }
 
@@ -285,9 +281,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
       })
 
       const qualityThreshold = 0.7
-      const filteredMoments = analysis.key_moments.filter(
-        (m: any) => m.quality_score >= qualityThreshold
-      )
+      const filteredMoments = analysis.key_moments.filter((m: any) => m.quality_score >= qualityThreshold)
 
       expect(filteredMoments).toHaveLength(2)
       expect(filteredMoments[0].quality_score).toBe(0.95)
@@ -302,12 +296,10 @@ describe("AI Director ↔ Montage Planner Integration", () => {
       const mockVisionAnalysis = {
         scene_changes: [
           { timestamp: 0.0, confidence: 0.95, scene_type: "Indoor" },
-          { timestamp: 15.5, confidence: 0.90, scene_type: "Outdoor" },
+          { timestamp: 15.5, confidence: 0.9, scene_type: "Outdoor" },
           { timestamp: 45.0, confidence: 0.88, scene_type: "Indoor" },
         ],
-        composition_analysis: [
-          { timestamp: 5.0, rule_of_thirds_score: 0.85, balance_score: 0.80 },
-        ],
+        composition_analysis: [{ timestamp: 5.0, rule_of_thirds_score: 0.85, balance_score: 0.8 }],
       }
 
       vi.mocked(invoke).mockResolvedValueOnce(mockVisionAnalysis)
@@ -358,7 +350,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       clipTimes.forEach((clipTime) => {
         const nearestBeat = beatTimestamps.reduce((prev: number, curr: number) =>
-          Math.abs(curr - clipTime) < Math.abs(prev - clipTime) ? curr : prev
+          Math.abs(curr - clipTime) < Math.abs(prev - clipTime) ? curr : prev,
         )
         expect(Math.abs(nearestBeat - clipTime)).toBeLessThan(0.05) // Within 50ms
       })
@@ -396,7 +388,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
         analysis.moment_analysis.key_moments.map((moment: any) => ({
           ...moment,
           sourceFile: sourceFiles[fileIndex],
-        }))
+        })),
       )
 
       expect(allMoments).toHaveLength(6) // 2 moments × 3 files

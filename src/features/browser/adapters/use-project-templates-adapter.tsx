@@ -218,13 +218,15 @@ export function useProjectTemplatesAdapter(): ListAdapter<ProjectTemplateListIte
 
           case "platform":
             if (!template.targetPlatform || template.targetPlatform === "custom") return "Any Platform"
-            return {
-              youtube: "YouTube",
-              instagram: "Instagram",
-              tiktok: "TikTok",
-              facebook: "Facebook",
-              twitter: "Twitter",
-            }[template.targetPlatform] || "Other"
+            return (
+              {
+                youtube: "YouTube",
+                instagram: "Instagram",
+                tiktok: "TikTok",
+                facebook: "Facebook",
+                twitter: "Twitter",
+              }[template.targetPlatform] || "Other"
+            )
 
           case "aspectRatio":
             return template.aspectRatio

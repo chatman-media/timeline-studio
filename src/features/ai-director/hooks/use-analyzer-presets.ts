@@ -31,10 +31,13 @@ export function useAnalyzerPresets() {
   const presets = [...DEFAULT_PRESETS, ...customPresets]
 
   // Выбор preset
-  const selectPreset = useCallback((id: string) => {
-    const preset = presets.find(p => p.id === id)
-    setSelectedPreset(preset || null)
-  }, [presets])
+  const selectPreset = useCallback(
+    (id: string) => {
+      const preset = presets.find((p) => p.id === id)
+      setSelectedPreset(preset || null)
+    },
+    [presets],
+  )
 
   // Получить выбранные анализаторы
   const getSelectedAnalyzers = useCallback((): Set<AnalyzerType> => {
@@ -48,50 +51,60 @@ export function useAnalyzerPresets() {
   }, [])
 
   // Создание кастомного preset
-  const createCustomPreset = useCallback((options: {
-    name: string
-    description: string
-    analyzers: Set<AnalyzerType>
-  }) => {
-    const newPreset: AnalyzerPreset = {
-      id: `custom-${Date.now()}`,
-      name: options.name,
-      description: options.description,
-      analyzers: Array.from(options.analyzers),
-      isDefault: false,
-      category: "custom",
-      estimatedTime: Array.from(options.analyzers).length * 30, // Простая оценка
-    }
+  const createCustomPreset = useCallback(
+    (options: { name: string; description: string; analyzers: Set<AnalyzerType> }) => {
+      const newPreset: AnalyzerPreset = {
+        id: `custom-${Date.now()}`,
+        name: options.name,
+        description: options.description,
+        analyzers: Array.from(options.analyzers),
+        isDefault: false,
+        category: "custom",
+        estimatedTime: Array.from(options.analyzers).length * 30, // Простая оценка
+      }
 
-    setCustomPresets(prev => [...prev, newPreset])
-  }, [])
+      setCustomPresets((prev) => [...prev, newPreset])
+    },
+    [],
+  )
 
   // Удаление кастомного preset
-  const deleteCustomPreset = useCallback((id: string) => {
-    // Не даем удалять default presets
-    const preset = presets.find(p => p.id === id)
-    if (preset?.isDefault) return
+  const deleteCustomPreset = useCallback(
+    (id: string) => {
+      // Не даем удалять default presets
+      const preset = presets.find((p) => p.id === id)
+      if (preset?.isDefault) return
 
-    setCustomPresets(prev => prev.filter(p => p.id !== id))
-  }, [presets])
+      setCustomPresets((prev) => prev.filter((p) => p.id !== id))
+    },
+    [presets],
+  )
 
   // Обновление кастомного preset
-  const updateCustomPreset = useCallback((id: string, updates: {
-    name?: string
-    description?: string
-    analyzers?: Set<AnalyzerType>
-  }) => {
-    setCustomPresets(prev => prev.map(p => {
-      if (p.id !== id) return p
+  const updateCustomPreset = useCallback(
+    (
+      id: string,
+      updates: {
+        name?: string
+        description?: string
+        analyzers?: Set<AnalyzerType>
+      },
+    ) => {
+      setCustomPresets((prev) =>
+        prev.map((p) => {
+          if (p.id !== id) return p
 
-      return {
-        ...p,
-        ...(updates.name && { name: updates.name }),
-        ...(updates.description && { description: updates.description }),
-        ...(updates.analyzers && { analyzers: Array.from(updates.analyzers) }),
-      }
-    }))
-  }, [])
+          return {
+            ...p,
+            ...(updates.name && { name: updates.name }),
+            ...(updates.description && { description: updates.description }),
+            ...(updates.analyzers && { analyzers: Array.from(updates.analyzers) }),
+          }
+        }),
+      )
+    },
+    [],
+  )
 
   // Получение рекомендации по use case
   const getRecommendation = useCallback((useCase: UseCase) => {
@@ -99,16 +112,16 @@ export function useAnalyzerPresets() {
 
     switch (useCase) {
       case "montage":
-        recommended = DEFAULT_PRESETS.find(p => p.id === "montage-focus") || DEFAULT_PRESETS[0]
+        recommended = DEFAULT_PRESETS.find((p) => p.id === "montage-focus") || DEFAULT_PRESETS[0]
         break
       case "preview":
-        recommended = DEFAULT_PRESETS.find(p => p.id === "quick-scan") || DEFAULT_PRESETS[0]
+        recommended = DEFAULT_PRESETS.find((p) => p.id === "quick-scan") || DEFAULT_PRESETS[0]
         break
       case "archival":
-        recommended = DEFAULT_PRESETS.find(p => p.id === "deep-analysis") || DEFAULT_PRESETS[2]
+        recommended = DEFAULT_PRESETS.find((p) => p.id === "deep-analysis") || DEFAULT_PRESETS[2]
         break
       case "quality":
-        recommended = DEFAULT_PRESETS.find(p => p.id === "quality-focus") || DEFAULT_PRESETS[4]
+        recommended = DEFAULT_PRESETS.find((p) => p.id === "quality-focus") || DEFAULT_PRESETS[4]
         break
     }
 
@@ -116,42 +129,45 @@ export function useAnalyzerPresets() {
   }, [])
 
   // Сравнение двух presets
-  const comparePresets = useCallback((id1: string, id2: string) => {
-    const preset1 = presets.find(p => p.id === id1)
-    const preset2 = presets.find(p => p.id === id2)
+  const comparePresets = useCallback(
+    (id1: string, id2: string) => {
+      const preset1 = presets.find((p) => p.id === id1)
+      const preset2 = presets.find((p) => p.id === id2)
 
-    if (!preset1 || !preset2) return
+      if (!preset1 || !preset2) return
 
-    const onlyIn1 = new Set<AnalyzerType>()
-    const onlyIn2 = new Set<AnalyzerType>()
-    const common = new Set<AnalyzerType>()
+      const onlyIn1 = new Set<AnalyzerType>()
+      const onlyIn2 = new Set<AnalyzerType>()
+      const common = new Set<AnalyzerType>()
 
-    // Анализируем различия
-    preset1.analyzers.forEach(a => {
-      if (preset2.analyzers.has(a)) {
-        common.add(a)
-      } else {
-        onlyIn1.add(a)
-      }
-    })
+      // Анализируем различия
+      preset1.analyzers.forEach((a) => {
+        if (preset2.analyzers.has(a)) {
+          common.add(a)
+        } else {
+          onlyIn1.add(a)
+        }
+      })
 
-    preset2.analyzers.forEach(a => {
-      if (!preset1.analyzers.has(a)) {
-        onlyIn2.add(a)
-      }
-    })
+      preset2.analyzers.forEach((a) => {
+        if (!preset1.analyzers.has(a)) {
+          onlyIn2.add(a)
+        }
+      })
 
-    setComparison({
-      preset1,
-      preset2,
-      differences: {
-        onlyIn1,
-        onlyIn2,
-        additionalIn2: onlyIn2, // Alias для совместимости
-        common,
-      },
-    })
-  }, [presets])
+      setComparison({
+        preset1,
+        preset2,
+        differences: {
+          onlyIn1,
+          onlyIn2,
+          additionalIn2: onlyIn2, // Alias для совместимости
+          common,
+        },
+      })
+    },
+    [presets],
+  )
 
   // Экспорт preset
   const exportPreset = useCallback((): string => {
@@ -182,7 +198,7 @@ export function useAnalyzerPresets() {
       }
 
       // Добавляем в кастомные presets
-      setCustomPresets(prev => [...prev, imported])
+      setCustomPresets((prev) => [...prev, imported])
     } catch (error) {
       throw new Error(`Failed to import preset: ${error instanceof Error ? error.message : "Unknown error"}`)
     }

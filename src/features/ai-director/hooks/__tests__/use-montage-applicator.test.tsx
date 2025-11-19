@@ -2,10 +2,10 @@
  * @vitest-environment jsdom
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi, beforeEach } from "vitest"
-import { useMontageApplicator } from "../use-montage-applicator"
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MontagePlan } from "../../types/montage-plan"
+import { useMontageApplicator } from "../use-montage-applicator"
 
 // Mock Tauri invoke
 vi.mock("@tauri-apps/api/core", () => ({
@@ -332,10 +332,12 @@ describe("useMontageApplicator", () => {
       })
 
       expect(onProgress).toHaveBeenCalled()
-      expect(onProgress).toHaveBeenCalledWith(expect.objectContaining({
-        percent: expect.any(Number),
-        step: expect.any(String),
-      }))
+      expect(onProgress).toHaveBeenCalledWith(
+        expect.objectContaining({
+          percent: expect.any(Number),
+          step: expect.any(String),
+        }),
+      )
     })
 
     it("should call completion callback", async () => {

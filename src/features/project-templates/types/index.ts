@@ -1,11 +1,11 @@
 export type {
-  ProjectTemplate,
-  ProjectStructure,
-  Section,
-  TrackConfig,
   ProjectPlaceholders,
   ProjectSettings,
+  ProjectStructure,
+  ProjectTemplate,
   ProjectTemplateFilter,
   ProjectTemplateSortBy,
   ProjectTemplateSortOrder,
+  Section,
+  TrackConfig,
 } from "./project-template"

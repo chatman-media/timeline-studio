@@ -2,8 +2,8 @@
  * Hook для применения montage планов к timeline
  */
 
-import { useCallback, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
+import { useCallback, useState } from "react"
 
 import type { MontagePlan } from "../types/montage-plan"
 import { validateMontagePlan } from "../utils/montage-plan-parser"
@@ -51,74 +51,77 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
   const [currentIndex, setCurrentIndex] = useState(-1)
 
   // Применить план к timeline
-  const applyToTimeline = useCallback(async (plan: MontagePlan) => {
-    setIsApplying(true)
-    setProgress(0)
-    setError(null)
+  const applyToTimeline = useCallback(
+    async (plan: MontagePlan) => {
+      setIsApplying(true)
+      setProgress(0)
+      setError(null)
 
-    try {
-      // Валидация плана
-      const validation = validateMontagePlan(plan)
-      if (!validation.isValid) {
-        throw new Error(`Plan validation failed: ${validation.errors.join(", ")}`)
+      try {
+        // Валидация плана
+        const validation = validateMontagePlan(plan)
+        if (!validation.isValid) {
+          throw new Error(`Plan validation failed: ${validation.errors.join(", ")}`)
+        }
+
+        // Шаг 1: Добавление клипов (40%)
+        setCurrentStep("Adding clips")
+        setProgress(10)
+        callbacks?.onProgress?.({ percent: 10, step: "Adding clips" })
+
+        for (let i = 0; i < plan.clips.length; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 10)) // Симуляция
+          const clipProgress = 10 + Math.floor((i / plan.clips.length) * 30)
+          setProgress(clipProgress)
+        }
+
+        // Шаг 2: Добавление переходов (20%)
+        setCurrentStep("Adding transitions")
+        setProgress(50)
+        callbacks?.onProgress?.({ percent: 50, step: "Adding transitions" })
+
+        for (let i = 0; i < plan.transitions.length; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 5))
+          const transitionProgress = 50 + Math.floor((i / Math.max(plan.transitions.length, 1)) * 20)
+          setProgress(transitionProgress)
+        }
+
+        // Шаг 3: Музыка (20%)
+        if (plan.music) {
+          setCurrentStep("Adding music")
+          setProgress(70)
+          callbacks?.onProgress?.({ percent: 70, step: "Adding music" })
+          await new Promise((resolve) => setTimeout(resolve, 50))
+        }
+
+        // Шаг 4: Текстовые overlay (20%)
+        if (plan.texts) {
+          setCurrentStep("Adding text overlays")
+          setProgress(85)
+          callbacks?.onProgress?.({ percent: 85, step: "Adding text overlays" })
+          await new Promise((resolve) => setTimeout(resolve, 30))
+        }
+
+        // Завершение
+        setProgress(100)
+        setCurrentStep(null)
+        setIsApplying(false)
+
+        // Сохраняем в историю
+        setHistory((prev) => [...prev.slice(0, currentIndex + 1), plan])
+        setCurrentIndex((prev) => prev + 1)
+
+        callbacks?.onComplete?.({ success: true, plan })
+      } catch (err) {
+        const errorObj = err instanceof Error ? err : new Error(String(err))
+        setError(errorObj)
+        setIsApplying(false)
+        callbacks?.onError?.(errorObj)
+        throw errorObj
       }
-
-      // Шаг 1: Добавление клипов (40%)
-      setCurrentStep("Adding clips")
-      setProgress(10)
-      callbacks?.onProgress?.({ percent: 10, step: "Adding clips" })
-
-      for (let i = 0; i < plan.clips.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 10)) // Симуляция
-        const clipProgress = 10 + Math.floor((i / plan.clips.length) * 30)
-        setProgress(clipProgress)
-      }
-
-      // Шаг 2: Добавление переходов (20%)
-      setCurrentStep("Adding transitions")
-      setProgress(50)
-      callbacks?.onProgress?.({ percent: 50, step: "Adding transitions" })
-
-      for (let i = 0; i < plan.transitions.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 5))
-        const transitionProgress = 50 + Math.floor((i / Math.max(plan.transitions.length, 1)) * 20)
-        setProgress(transitionProgress)
-      }
-
-      // Шаг 3: Музыка (20%)
-      if (plan.music) {
-        setCurrentStep("Adding music")
-        setProgress(70)
-        callbacks?.onProgress?.({ percent: 70, step: "Adding music" })
-        await new Promise(resolve => setTimeout(resolve, 50))
-      }
-
-      // Шаг 4: Текстовые overlay (20%)
-      if (plan.texts) {
-        setCurrentStep("Adding text overlays")
-        setProgress(85)
-        callbacks?.onProgress?.({ percent: 85, step: "Adding text overlays" })
-        await new Promise(resolve => setTimeout(resolve, 30))
-      }
-
-      // Завершение
-      setProgress(100)
-      setCurrentStep(null)
-      setIsApplying(false)
-
-      // Сохраняем в историю
-      setHistory(prev => [...prev.slice(0, currentIndex + 1), plan])
-      setCurrentIndex(prev => prev + 1)
-
-      callbacks?.onComplete?.({ success: true, plan })
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err))
-      setError(errorObj)
-      setIsApplying(false)
-      callbacks?.onError?.(errorObj)
-      throw errorObj
-    }
-  }, [callbacks, currentIndex])
+    },
+    [callbacks, currentIndex],
+  )
 
   // Генерация preview
   const generatePreview = useCallback(async (plan: MontagePlan) => {
@@ -176,23 +179,23 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
       if (options.clips) {
         setCurrentStep("Adding clips")
         // Добавляем только клипы
-        await new Promise(resolve => setTimeout(resolve, 50))
+        await new Promise((resolve) => setTimeout(resolve, 50))
       }
 
       if (options.transitions) {
         setCurrentStep("Adding transitions")
         // Добавляем только переходы
-        await new Promise(resolve => setTimeout(resolve, 30))
+        await new Promise((resolve) => setTimeout(resolve, 30))
       }
 
       if (options.music && plan.music) {
         setCurrentStep("Adding music")
-        await new Promise(resolve => setTimeout(resolve, 30))
+        await new Promise((resolve) => setTimeout(resolve, 30))
       }
 
       if (options.text && plan.texts) {
         setCurrentStep("Adding text")
-        await new Promise(resolve => setTimeout(resolve, 20))
+        await new Promise((resolve) => setTimeout(resolve, 20))
       }
 
       setProgress(100)
@@ -208,7 +211,7 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
   // Undo
   const undo = useCallback(async () => {
     if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1)
+      setCurrentIndex((prev) => prev - 1)
       setProgress(0)
     }
   }, [currentIndex])
@@ -216,7 +219,7 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
   // Redo
   const redo = useCallback(async () => {
     if (currentIndex < history.length - 1) {
-      setCurrentIndex(prev => prev + 1)
+      setCurrentIndex((prev) => prev + 1)
       setProgress(100)
     }
   }, [currentIndex, history.length])

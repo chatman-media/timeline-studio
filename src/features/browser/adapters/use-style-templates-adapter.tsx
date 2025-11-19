@@ -2,8 +2,8 @@ import type React from "react"
 
 import { useFavorites } from "@/features/app-state"
 import { useStyleTemplatesAdapter as useUnifiedStyleTemplatesAdapter } from "@/features/browser/hooks/use-resources"
-import { StyleTemplatePreview } from "@/features/style-templates/components/style-template-preview"
 import { StyleTemplateDragSource } from "@/features/style-templates/components/style-template-drag-source"
+import { StyleTemplatePreview } from "@/features/style-templates/components/style-template-preview"
 import type { StyleTemplate } from "@/features/style-templates/types"
 
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
@@ -53,9 +53,7 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <span className="text-white text-xs font-bold">
-                  {(typeof template.name === "string" ? template.name : template.name.ru)
-                    .substring(0, 2)
-                    .toUpperCase()}
+                  {(typeof template.name === "string" ? template.name : template.name.ru).substring(0, 2).toUpperCase()}
                 </span>
               </div>
             )}
@@ -87,9 +85,7 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
           {/* Features */}
           <div className="flex-shrink-0 flex gap-1">
             {template.hasText && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" />}
-            {template.hasAnimation && (
-              <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />
-            )}
+            {template.hasAnimation && <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />}
           </div>
         </div>
       </StyleTemplateDragSource>
