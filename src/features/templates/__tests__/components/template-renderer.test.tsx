@@ -126,17 +126,26 @@ describe("TemplateRenderer", () => {
       dividers: createDividerConfig("default"),
     }
 
-    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    const { container } = render(
+      <TemplateRenderer config={config} renderCell={mockRenderCell} enableAnimations={false} />,
+    )
 
-    const cells = container.querySelectorAll(".relative")
-    expect(cells[0]).toHaveStyle({
+    // Находим ячейки по их data-testid, а затем их родительские контейнеры со стилями
+    const cell0 = screen.getByTestId("cell-0")
+    const cell1 = screen.getByTestId("cell-1")
+
+    // Поднимаемся на два уровня вверх: cell-content wrapper -> cell container with styles
+    const styledCell0 = cell0.parentElement?.parentElement
+    const styledCell1 = cell1.parentElement?.parentElement
+
+    expect(styledCell0).toHaveStyle({
       backgroundColor: "#ff0000",
       borderWidth: "2px",
       borderColor: "#00ff00",
       borderStyle: "solid",
       padding: "10px",
     })
-    expect(cells[1]).toHaveStyle({
+    expect(styledCell1).toHaveStyle({
       backgroundColor: "#0000ff",
       borderWidth: "1px",
       borderColor: "#ffff00",

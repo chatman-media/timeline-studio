@@ -1,3 +1,6 @@
+export { AnimatedCell } from "./animated-cell"
 export * from "./resizable-template"
-// export * from "./template-list" // Removed - replaced by adapter pattern
+export { TemplateCustomizer } from "./template-customizer"
 export * from "./template-preview"
+export { TemplateRenderer } from "./template-renderer"
+export { VideoPanelComponent } from "./video-panel-component"

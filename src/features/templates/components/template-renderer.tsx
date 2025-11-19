@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { CellConfiguration, MediaTemplateConfig } from "../lib/template-config"
+import { AnimatedCell } from "./animated-cell"
 
 const logger = createLogger({ module: "TemplateRenderer" })
 
@@ -9,24 +10,60 @@ interface TemplateRendererProps {
   config: MediaTemplateConfig
   renderCell: (index: number, cellConfig: CellConfiguration) => React.ReactNode
   className?: string
+  enableAnimations?: boolean // Флаг для включения/отключения анимаций
+  activeCell?: number // Индекс активной ячейки (для transition анимаций)
 }
 
 /**
  * Компонент для рендеринга шаблонов на основе конфигурации
  * Поддерживает различные типы разделения: vertical, horizontal, diagonal, grid, custom
+ * С поддержкой анимаций для ячеек и переходов между layouts
  */
-export function TemplateRenderer({ config, renderCell, className }: TemplateRendererProps) {
+export function TemplateRenderer({
+  config,
+  renderCell,
+  className,
+  enableAnimations = true,
+  activeCell,
+}: TemplateRendererProps) {
   const { split, screens, cells = [], dividers, layout, gridConfig } = config
+
+  // Состояние для отслеживания предыдущей активной ячейки
+  const [prevActiveCell, setPrevActiveCell] = useState<number | undefined>(activeCell)
+  const [transitioningCells, setTransitioningCells] = useState<Set<number>>(new Set())
+
+  // Отслеживаем изменения активной ячейки для transition анимаций
+  useEffect(() => {
+    if (activeCell !== undefined && activeCell !== prevActiveCell) {
+      const cells = new Set<number>()
+      if (prevActiveCell !== undefined) cells.add(prevActiveCell)
+      cells.add(activeCell)
+      setTransitioningCells(cells)
+
+      // Сбрасываем состояние transition после завершения анимации
+      const maxDuration = Math.max(...(config.cells || []).map((cell) => cell.animation?.transition?.duration || 250))
+      const timer = setTimeout(() => {
+        setTransitioningCells(new Set())
+        setPrevActiveCell(activeCell)
+      }, maxDuration)
+
+      return () => clearTimeout(timer)
+    }
+  }, [activeCell, prevActiveCell, config.cells])
 
   // Генерируем конфигурации ячеек, если они не заданы
   const cellConfigs: CellConfiguration[] = cells.length > 0 ? cells : Array.from({ length: screens }, (_, _i) => ({}))
 
-  // Стили контейнера
+  // Стили контейнера с поддержкой layout transitions
   const containerStyle: React.CSSProperties = {
     backgroundColor: layout?.backgroundColor,
     borderRadius: layout?.borderRadius,
     padding: layout?.padding,
     ...layout?.containerStyle,
+    ...(enableAnimations &&
+      layout?.layoutTransition && {
+        transition: `all ${layout.layoutTransition.duration || 500}ms ${layout.layoutTransition.easing || "ease-in-out"}`,
+      }),
   }
 
   // Рендеринг разделителя
@@ -96,7 +133,7 @@ export function TemplateRenderer({ config, renderCell, className }: TemplateRend
     )
   }
 
-  // Рендеринг ячейки с настройками
+  // Рендеринг ячейки с настройками и анимациями
   const renderCellWithConfig = (index: number, cellConfig: CellConfiguration, style?: React.CSSProperties) => {
     const cellStyle: React.CSSProperties = {
       ...style,
@@ -111,10 +148,28 @@ export function TemplateRenderer({ config, renderCell, className }: TemplateRend
       margin: cellConfig.margin,
     }
 
-    return (
-      <div key={`cell-${index}`} className="relative flex items-center justify-center" style={cellStyle}>
+    const cellContent = (
+      <div className="relative flex h-full w-full items-center justify-center">
         {renderCell(index, cellConfig)}
         {renderCellTitle(cellConfig, index)}
+      </div>
+    )
+
+    // Если анимации отключены, рендерим без AnimatedCell
+    if (!enableAnimations || !cellConfig.animation) {
+      return (
+        <div key={`cell-${index}`} className="relative flex items-center justify-center" style={cellStyle}>
+          {cellContent}
+        </div>
+      )
+    }
+
+    // Рендерим с анимациями
+    return (
+      <div key={`cell-${index}`} className="relative" style={cellStyle}>
+        <AnimatedCell animation={cellConfig.animation} isVisible={true} isTransitioning={transitioningCells.has(index)}>
+          {cellContent}
+        </AnimatedCell>
       </div>
     )
   }

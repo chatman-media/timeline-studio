@@ -5,10 +5,9 @@ import { ALL_TEMPLATE_CONFIG_MAP, ALL_TEMPLATE_CONFIGS, getAllTemplateConfig } f
 describe("All Template Configurations", () => {
   describe("ALL_TEMPLATE_CONFIGS", () => {
     it("should contain expected number of templates", () => {
-      // The actual count may vary as templates are added
-      // Currently: 78 базовых + 26 PiP + 20 профессиональных = 124
-      expect(ALL_TEMPLATE_CONFIGS.length).toBeGreaterThan(100)
-      expect(ALL_TEMPLATE_CONFIGS.length).toBeLessThan(150)
+      // Currently: 78 базовых + 26 PiP + 20 профессиональных + 30 дополнительных + 5 dup = 159
+      expect(ALL_TEMPLATE_CONFIGS.length).toBeGreaterThan(150)
+      expect(ALL_TEMPLATE_CONFIGS.length).toBeLessThan(200)
     })
 
     it("should have unique template IDs", () => {
