@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2025-06-25",
-  "totalStyles": 20,
+  "version": "2.0.0",
+  "lastUpdated": "2025-11-19",
+  "totalStyles": 72,
   "categories": ["basic", "cinematic", "stylized", "minimal", "animated", "modern"],
   "styles": [
     {
@@ -16,21 +16,16 @@
       },
       "labels": {
         "ru": "Базовый белый",
-        "en": "Basic White",
-        "es": "Blanco Básico",
-        "fr": "Blanc de Base",
-        "de": "Basis Weiß"
+        "en": "Basic White"
       },
       "style": {
         "fontFamily": "Arial, sans-serif",
         "fontSize": 24,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#ffffff",
         "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
         "textAlign": "center",
-        "lineHeight": 1.4,
-        "letterSpacing": 0
+        "lineHeight": 1.4
       }
     },
     {
@@ -45,21 +40,258 @@
       },
       "labels": {
         "ru": "Базовый желтый",
-        "en": "Basic Yellow",
-        "es": "Amarillo Básico",
-        "fr": "Jaune de Base",
-        "de": "Basis Gelb"
+        "en": "Basic Yellow"
       },
       "style": {
         "fontFamily": "Arial, sans-serif",
         "fontSize": 24,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#ffff00",
         "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
         "textAlign": "center",
-        "lineHeight": 1.4,
-        "letterSpacing": 0
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-black-bg",
+      "name": "Basic Black Background",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["simple", "contrast", "readable"],
+      "description": {
+        "ru": "Белый текст на черном фоне для максимальной контрастности",
+        "en": "White text on black background for maximum contrast"
+      },
+      "labels": {
+        "ru": "Белый на черном",
+        "en": "Black Background"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "backgroundColor": "rgba(0, 0, 0, 0.85)",
+        "padding": "6px 12px",
+        "borderRadius": "2px",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-outlined",
+      "name": "Basic Outlined",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["outline", "bold", "clear"],
+      "description": {
+        "ru": "Белый текст с черной обводкой",
+        "en": "White text with black outline"
+      },
+      "labels": {
+        "ru": "С обводкой",
+        "en": "Outlined"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ffffff",
+        "textShadow": "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-cyan",
+      "name": "Basic Cyan",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "bright", "modern"],
+      "description": {
+        "ru": "Голубой текст для яркого контраста",
+        "en": "Cyan text for bright contrast"
+      },
+      "labels": {
+        "ru": "Голубой",
+        "en": "Cyan"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#00ffff",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-magenta",
+      "name": "Basic Magenta",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "vibrant", "standout"],
+      "description": {
+        "ru": "Пурпурный текст для выделения",
+        "en": "Magenta text for emphasis"
+      },
+      "labels": {
+        "ru": "Пурпурный",
+        "en": "Magenta"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ff00ff",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-green",
+      "name": "Basic Green",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "natural", "soft"],
+      "description": {
+        "ru": "Зеленый текст для мягкого контраста",
+        "en": "Green text for soft contrast"
+      },
+      "labels": {
+        "ru": "Зеленый",
+        "en": "Green"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#00ff00",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-orange",
+      "name": "Basic Orange",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "warm", "friendly"],
+      "description": {
+        "ru": "Оранжевый текст для теплого акцента",
+        "en": "Orange text for warm accent"
+      },
+      "labels": {
+        "ru": "Оранжевый",
+        "en": "Orange"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ffa500",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-pink",
+      "name": "Basic Pink",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "soft", "playful"],
+      "description": {
+        "ru": "Розовый текст для игривого стиля",
+        "en": "Pink text for playful style"
+      },
+      "labels": {
+        "ru": "Розовый",
+        "en": "Pink"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ff69b4",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-blue",
+      "name": "Basic Blue",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "calm", "professional"],
+      "description": {
+        "ru": "Синий текст для спокойного тона",
+        "en": "Blue text for calm tone"
+      },
+      "labels": {
+        "ru": "Синий",
+        "en": "Blue"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#4169e1",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-red",
+      "name": "Basic Red",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "alert", "attention"],
+      "description": {
+        "ru": "Красный текст для привлечения внимания",
+        "en": "Red text for attention"
+      },
+      "labels": {
+        "ru": "Красный",
+        "en": "Red"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ff0000",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "basic-lime",
+      "name": "Basic Lime",
+      "category": "basic",
+      "complexity": "basic",
+      "tags": ["color", "bright", "energetic"],
+      "description": {
+        "ru": "Лаймовый текст для энергичного стиля",
+        "en": "Lime text for energetic style"
+      },
+      "labels": {
+        "ru": "Лаймовый",
+        "en": "Lime"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#32cd32",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4
       }
     },
     {
@@ -74,16 +306,12 @@
       },
       "labels": {
         "ru": "Кинематографический элегантный",
-        "en": "Cinematic Elegant",
-        "es": "Cinematográfico Elegante",
-        "fr": "Cinématographique Élégant",
-        "de": "Kinematografisch Elegant"
+        "en": "Cinematic Elegant"
       },
       "style": {
         "fontFamily": "Georgia, serif",
         "fontSize": 26,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#f5f5f5",
         "textShadow": "0 3px 6px rgba(0, 0, 0, 0.9)",
         "textAlign": "center",
@@ -103,22 +331,268 @@
       },
       "labels": {
         "ru": "Кинематографический жирный",
-        "en": "Cinematic Bold",
-        "es": "Cinematográfico Negrita",
-        "fr": "Cinématographique Gras",
-        "de": "Kinematografisch Fett"
+        "en": "Cinematic Bold"
       },
       "style": {
         "fontFamily": "Impact, Arial Black, sans-serif",
         "fontSize": 28,
         "fontWeight": "bold",
-        "fontStyle": "normal",
         "color": "#ffffff",
         "textShadow": "0 4px 8px rgba(0, 0, 0, 1), 0 0 20px rgba(0, 0, 0, 0.5)",
         "textAlign": "center",
         "lineHeight": 1.3,
         "letterSpacing": 2,
         "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "cinematic-noir",
+      "name": "Film Noir",
+      "category": "cinematic",
+      "complexity": "advanced",
+      "tags": ["noir", "vintage", "classic"],
+      "description": {
+        "ru": "Винтажный стиль в духе классического нуара",
+        "en": "Vintage style inspired by classic film noir"
+      },
+      "labels": {
+        "ru": "Фильм-нуар",
+        "en": "Film Noir"
+      },
+      "style": {
+        "fontFamily": "Times New Roman, serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#e0e0e0",
+        "textShadow": "2px 2px 4px rgba(0, 0, 0, 0.95)",
+        "textAlign": "center",
+        "lineHeight": 1.6,
+        "letterSpacing": 0.5
+      }
+    },
+    {
+      "id": "cinematic-thriller",
+      "name": "Thriller Style",
+      "category": "cinematic",
+      "complexity": "advanced",
+      "tags": ["thriller", "suspense", "dark"],
+      "description": {
+        "ru": "Напряженный стиль для триллеров",
+        "en": "Tense style for thrillers"
+      },
+      "labels": {
+        "ru": "Триллер",
+        "en": "Thriller"
+      },
+      "style": {
+        "fontFamily": "Helvetica, Arial, sans-serif",
+        "fontSize": 25,
+        "fontWeight": "500",
+        "color": "#d0d0d0",
+        "textShadow": "0 0 10px rgba(255, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.9)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "cinematic-epic",
+      "name": "Epic Cinema",
+      "category": "cinematic",
+      "complexity": "advanced",
+      "tags": ["epic", "grand", "cinematic"],
+      "description": {
+        "ru": "Эпический стиль для больших фильмов",
+        "en": "Epic style for blockbusters"
+      },
+      "labels": {
+        "ru": "Эпический",
+        "en": "Epic"
+      },
+      "style": {
+        "fontFamily": "Trajan Pro, Georgia, serif",
+        "fontSize": 30,
+        "fontWeight": "bold",
+        "color": "#ffd700",
+        "textShadow": "0 0 15px rgba(255, 215, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.9)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 3,
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "cinematic-drama",
+      "name": "Drama Style",
+      "category": "cinematic",
+      "complexity": "intermediate",
+      "tags": ["drama", "emotional", "subtle"],
+      "description": {
+        "ru": "Драматический стиль с мягкими тенями",
+        "en": "Dramatic style with soft shadows"
+      },
+      "labels": {
+        "ru": "Драма",
+        "en": "Drama"
+      },
+      "style": {
+        "fontFamily": "Palatino, serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#f0f0f0",
+        "textShadow": "0 2px 6px rgba(0, 0, 0, 0.7)",
+        "textAlign": "center",
+        "lineHeight": 1.5,
+        "letterSpacing": 0.5
+      }
+    },
+    {
+      "id": "cinematic-action",
+      "name": "Action Style",
+      "category": "cinematic",
+      "complexity": "intermediate",
+      "tags": ["action", "dynamic", "bold"],
+      "description": {
+        "ru": "Динамичный стиль для экшн-сцен",
+        "en": "Dynamic style for action scenes"
+      },
+      "labels": {
+        "ru": "Экшн",
+        "en": "Action"
+      },
+      "style": {
+        "fontFamily": "Impact, Arial Black, sans-serif",
+        "fontSize": 27,
+        "fontWeight": "bold",
+        "color": "#ff4500",
+        "textShadow": "0 0 10px rgba(255, 69, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.9)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 1.5,
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "cinematic-romance",
+      "name": "Romance Style",
+      "category": "cinematic",
+      "complexity": "intermediate",
+      "tags": ["romance", "soft", "elegant"],
+      "description": {
+        "ru": "Романтический стиль с мягкими оттенками",
+        "en": "Romantic style with soft tones"
+      },
+      "labels": {
+        "ru": "Романтика",
+        "en": "Romance"
+      },
+      "style": {
+        "fontFamily": "Brush Script MT, cursive",
+        "fontSize": 26,
+        "fontWeight": "normal",
+        "color": "#ffb6c1",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.6)",
+        "textAlign": "center",
+        "lineHeight": 1.5,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "cinematic-horror",
+      "name": "Horror Style",
+      "category": "cinematic",
+      "complexity": "advanced",
+      "tags": ["horror", "scary", "unsettling"],
+      "description": {
+        "ru": "Жуткий стиль для хоррора",
+        "en": "Creepy style for horror"
+      },
+      "labels": {
+        "ru": "Хоррор",
+        "en": "Horror"
+      },
+      "style": {
+        "fontFamily": "Courier New, monospace",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#8b0000",
+        "textShadow": "0 0 15px rgba(139, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "cinematic-scifi",
+      "name": "Sci-Fi Style",
+      "category": "cinematic",
+      "complexity": "advanced",
+      "tags": ["scifi", "futuristic", "tech"],
+      "description": {
+        "ru": "Футуристический стиль для научной фантастики",
+        "en": "Futuristic style for sci-fi"
+      },
+      "labels": {
+        "ru": "Научная фантастика",
+        "en": "Sci-Fi"
+      },
+      "style": {
+        "fontFamily": "Orbitron, monospace",
+        "fontSize": 24,
+        "fontWeight": "500",
+        "color": "#00ffff",
+        "textShadow": "0 0 10px rgba(0, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "cinematic-comedy",
+      "name": "Comedy Style",
+      "category": "cinematic",
+      "complexity": "basic",
+      "tags": ["comedy", "fun", "light"],
+      "description": {
+        "ru": "Веселый стиль для комедии",
+        "en": "Fun style for comedy"
+      },
+      "labels": {
+        "ru": "Комедия",
+        "en": "Comedy"
+      },
+      "style": {
+        "fontFamily": "Comic Sans MS, cursive",
+        "fontSize": 25,
+        "fontWeight": "bold",
+        "color": "#ffff00",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.7)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "cinematic-documentary",
+      "name": "Documentary Style",
+      "category": "cinematic",
+      "complexity": "basic",
+      "tags": ["documentary", "professional", "clean"],
+      "description": {
+        "ru": "Профессиональный стиль для документалистики",
+        "en": "Professional style for documentaries"
+      },
+      "labels": {
+        "ru": "Документальный",
+        "en": "Documentary"
+      },
+      "style": {
+        "fontFamily": "Arial, Helvetica, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "backgroundColor": "rgba(0, 0, 0, 0.75)",
+        "padding": "4px 10px",
+        "borderRadius": "2px",
+        "textAlign": "left",
+        "lineHeight": 1.5
       }
     },
     {
@@ -133,16 +607,12 @@
       },
       "labels": {
         "ru": "Стилизованный неон",
-        "en": "Stylized Neon",
-        "es": "Neón Estilizado",
-        "fr": "Néon Stylisé",
-        "de": "Stilisiertes Neon"
+        "en": "Neon Glow"
       },
       "style": {
         "fontFamily": "Orbitron, monospace",
         "fontSize": 24,
         "fontWeight": "bold",
-        "fontStyle": "normal",
         "color": "#00ffff",
         "textShadow": "0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff",
         "textAlign": "center",
@@ -163,22 +633,278 @@
       },
       "labels": {
         "ru": "Стилизованный ретро",
-        "en": "Stylized Retro",
-        "es": "Retro Estilizado",
-        "fr": "Rétro Stylisé",
-        "de": "Stilisiertes Retro"
+        "en": "Retro 80s"
       },
       "style": {
         "fontFamily": "Courier New, monospace",
         "fontSize": 26,
         "fontWeight": "bold",
-        "fontStyle": "normal",
         "color": "#ff6b9d",
         "textShadow": "2px 2px 0px #4ecdc4, 4px 4px 0px #45b7aa",
         "textAlign": "center",
         "lineHeight": 1.3,
         "letterSpacing": 2,
         "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "stylized-graffiti",
+      "name": "Graffiti Style",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["graffiti", "urban", "street", "bold"],
+      "description": {
+        "ru": "Уличный граффити стиль",
+        "en": "Street graffiti style"
+      },
+      "labels": {
+        "ru": "Граффити",
+        "en": "Graffiti"
+      },
+      "style": {
+        "fontFamily": "Impact, Arial Black, sans-serif",
+        "fontSize": 30,
+        "fontWeight": "bold",
+        "color": "#ff1493",
+        "textShadow": "3px 3px 0px #000, -2px -2px 0px #fff, 0 0 10px rgba(255, 20, 147, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.2,
+        "letterSpacing": 2,
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "stylized-comic",
+      "name": "Comic Book Style",
+      "category": "stylized",
+      "complexity": "intermediate",
+      "tags": ["comic", "cartoon", "fun", "bold"],
+      "description": {
+        "ru": "Стиль комиксов с яркими цветами",
+        "en": "Comic book style with bright colors"
+      },
+      "labels": {
+        "ru": "Комикс",
+        "en": "Comic Book"
+      },
+      "style": {
+        "fontFamily": "Comic Sans MS, cursive",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "color": "#ffff00",
+        "textShadow": "-3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000",
+        "textAlign": "center",
+        "lineHeight": 1.3
+      }
+    },
+    {
+      "id": "stylized-cyberpunk",
+      "name": "Cyberpunk Style",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["cyberpunk", "tech", "neon", "futuristic"],
+      "description": {
+        "ru": "Киберпанк стиль с техно-эффектами",
+        "en": "Cyberpunk style with tech effects"
+      },
+      "labels": {
+        "ru": "Киберпанк",
+        "en": "Cyberpunk"
+      },
+      "style": {
+        "fontFamily": "Consolas, monospace",
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "color": "#ff00ff",
+        "textShadow": "0 0 5px #ff00ff, 0 0 10px #ff00ff, 2px 2px 0 #00ffff",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "stylized-vapor",
+      "name": "Vaporwave Style",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["vaporwave", "aesthetic", "retro", "dreamy"],
+      "description": {
+        "ru": "Вапорвейв эстетика с ретро градиентами",
+        "en": "Vaporwave aesthetic with retro gradients"
+      },
+      "labels": {
+        "ru": "Вапорвейв",
+        "en": "Vaporwave"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "background": "linear-gradient(45deg, #ff71ce, #01cdfe, #05ffa1)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "2px 2px 4px rgba(255, 113, 206, 0.3)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "letterSpacing": 3
+      }
+    },
+    {
+      "id": "stylized-glitch",
+      "name": "Glitch Effect",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["glitch", "digital", "error", "tech"],
+      "description": {
+        "ru": "Глитч эффект с цифровыми артефактами",
+        "en": "Glitch effect with digital artifacts"
+      },
+      "labels": {
+        "ru": "Глитч",
+        "en": "Glitch"
+      },
+      "style": {
+        "fontFamily": "Courier New, monospace",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#00ff00",
+        "textShadow": "2px 0 #ff00ff, -2px 0 #00ffff",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "stylized-neon-pink",
+      "name": "Neon Pink",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["neon", "pink", "vibrant", "nightclub"],
+      "description": {
+        "ru": "Розовый неон для ночной атмосферы",
+        "en": "Pink neon for nightclub atmosphere"
+      },
+      "labels": {
+        "ru": "Розовый неон",
+        "en": "Neon Pink"
+      },
+      "style": {
+        "fontFamily": "Impact, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "color": "#ff1493",
+        "textShadow": "0 0 10px #ff1493, 0 0 20px #ff1493, 0 0 30px #ff1493",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "stylized-chrome",
+      "name": "Chrome Effect",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["chrome", "metallic", "shiny", "3d"],
+      "description": {
+        "ru": "Хромированный металлический эффект",
+        "en": "Chrome metallic effect"
+      },
+      "labels": {
+        "ru": "Хром",
+        "en": "Chrome"
+      },
+      "style": {
+        "fontFamily": "Arial Black, sans-serif",
+        "fontSize": 32,
+        "fontWeight": "bold",
+        "background": "linear-gradient(180deg, #e0e0e0, #808080, #e0e0e0)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "2px 2px 4px rgba(0, 0, 0, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.2,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "stylized-fire",
+      "name": "Fire Effect",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["fire", "flame", "hot", "dynamic"],
+      "description": {
+        "ru": "Огненный эффект с градиентом пламени",
+        "en": "Fire effect with flame gradient"
+      },
+      "labels": {
+        "ru": "Огонь",
+        "en": "Fire"
+      },
+      "style": {
+        "fontFamily": "Impact, sans-serif",
+        "fontSize": 30,
+        "fontWeight": "bold",
+        "background": "linear-gradient(0deg, #ff0000, #ff4500, #ffa500)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "0 0 20px rgba(255, 69, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.2,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "stylized-ice",
+      "name": "Ice Effect",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["ice", "frozen", "cold", "crystal"],
+      "description": {
+        "ru": "Ледяной эффект с холодным градиентом",
+        "en": "Ice effect with cold gradient"
+      },
+      "labels": {
+        "ru": "Лед",
+        "en": "Ice"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "background": "linear-gradient(180deg, #e0f7ff, #87ceeb, #4682b4)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "0 0 15px rgba(135, 206, 235, 0.7)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "stylized-gold",
+      "name": "Gold Luxury",
+      "category": "stylized",
+      "complexity": "advanced",
+      "tags": ["gold", "luxury", "premium", "elegant"],
+      "description": {
+        "ru": "Роскошный золотой стиль",
+        "en": "Luxury gold style"
+      },
+      "labels": {
+        "ru": "Золото",
+        "en": "Gold"
+      },
+      "style": {
+        "fontFamily": "Georgia, serif",
+        "fontSize": 30,
+        "fontWeight": "bold",
+        "background": "linear-gradient(180deg, #ffd700, #ffed4e, #ffd700)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "2px 2px 4px rgba(0, 0, 0, 0.6)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 2
       }
     },
     {
@@ -193,16 +919,12 @@
       },
       "labels": {
         "ru": "Минималистичный чистый",
-        "en": "Minimal Clean",
-        "es": "Minimalista Limpio",
-        "fr": "Minimaliste Propre",
-        "de": "Minimal Sauber"
+        "en": "Minimal Clean"
       },
       "style": {
         "fontFamily": "Helvetica, Arial, sans-serif",
         "fontSize": 22,
         "fontWeight": 300,
-        "fontStyle": "normal",
         "color": "#ffffff",
         "letterSpacing": 1,
         "textAlign": "center",
@@ -221,22 +943,265 @@
       },
       "labels": {
         "ru": "Минималистичный с фоном",
-        "en": "Minimal Background",
-        "es": "Minimalista con Fondo",
-        "fr": "Minimaliste avec Arrière-plan",
-        "de": "Minimal mit Hintergrund"
+        "en": "Minimal Background"
       },
       "style": {
         "fontFamily": "Roboto, sans-serif",
         "fontSize": 20,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#f0f0f0",
         "backgroundColor": "rgba(0, 0, 0, 0.6)",
         "padding": "8px 16px",
         "borderRadius": "4px",
         "textAlign": "center",
         "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-mono",
+      "name": "Minimal Monospace",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "mono", "tech", "code"],
+      "description": {
+        "ru": "Минимализм с моноширинным шрифтом",
+        "en": "Minimalism with monospace font"
+      },
+      "labels": {
+        "ru": "Моноширинный",
+        "en": "Monospace"
+      },
+      "style": {
+        "fontFamily": "Consolas, Monaco, monospace",
+        "fontSize": 20,
+        "fontWeight": "normal",
+        "color": "#e0e0e0",
+        "textAlign": "center",
+        "lineHeight": 1.5,
+        "letterSpacing": 0.5
+      }
+    },
+    {
+      "id": "minimal-thin",
+      "name": "Minimal Thin",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "thin", "light", "delicate"],
+      "description": {
+        "ru": "Тонкий минималистичный шрифт",
+        "en": "Thin minimalist font"
+      },
+      "labels": {
+        "ru": "Тонкий",
+        "en": "Thin"
+      },
+      "style": {
+        "fontFamily": "Helvetica Neue, Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": 100,
+        "color": "#ffffff",
+        "textAlign": "center",
+        "lineHeight": 1.6,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "minimal-bold",
+      "name": "Minimal Bold",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "bold", "strong", "clear"],
+      "description": {
+        "ru": "Жирный минималистичный стиль",
+        "en": "Bold minimalist style"
+      },
+      "labels": {
+        "ru": "Жирный минимализм",
+        "en": "Bold Minimal"
+      },
+      "style": {
+        "fontFamily": "Arial, Helvetica, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ffffff",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-soft",
+      "name": "Minimal Soft",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "soft", "gentle", "subtle"],
+      "description": {
+        "ru": "Мягкий минималистичный стиль",
+        "en": "Soft minimalist style"
+      },
+      "labels": {
+        "ru": "Мягкий",
+        "en": "Soft"
+      },
+      "style": {
+        "fontFamily": "Verdana, sans-serif",
+        "fontSize": 22,
+        "fontWeight": 300,
+        "color": "#f5f5f5",
+        "textShadow": "0 1px 2px rgba(0, 0, 0, 0.3)",
+        "textAlign": "center",
+        "lineHeight": 1.5
+      }
+    },
+    {
+      "id": "minimal-border",
+      "name": "Minimal Border",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "border", "frame", "outlined"],
+      "description": {
+        "ru": "Минималистичный стиль с рамкой",
+        "en": "Minimalist style with border"
+      },
+      "labels": {
+        "ru": "С рамкой",
+        "en": "Bordered"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 22,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "border": "2px solid #ffffff",
+        "padding": "6px 12px",
+        "borderRadius": "4px",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-uppercase",
+      "name": "Minimal Uppercase",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "uppercase", "caps", "modern"],
+      "description": {
+        "ru": "Минималистичный стиль заглавными буквами",
+        "en": "Minimalist style in uppercase"
+      },
+      "labels": {
+        "ru": "Заглавные",
+        "en": "Uppercase"
+      },
+      "style": {
+        "fontFamily": "Helvetica, Arial, sans-serif",
+        "fontSize": 20,
+        "fontWeight": "500",
+        "color": "#ffffff",
+        "textAlign": "center",
+        "lineHeight": 1.5,
+        "letterSpacing": 3,
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "minimal-shadow",
+      "name": "Minimal Shadow",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "shadow", "depth", "subtle"],
+      "description": {
+        "ru": "Минималистичный стиль с тонкой тенью",
+        "en": "Minimalist style with subtle shadow"
+      },
+      "labels": {
+        "ru": "С тенью",
+        "en": "Shadow"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "textShadow": "0 1px 3px rgba(0, 0, 0, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-rounded",
+      "name": "Minimal Rounded",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "rounded", "soft", "modern"],
+      "description": {
+        "ru": "Минималистичный стиль с круглыми углами",
+        "en": "Minimalist style with rounded corners"
+      },
+      "labels": {
+        "ru": "Скругленный",
+        "en": "Rounded"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 22,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "backgroundColor": "rgba(0, 0, 0, 0.5)",
+        "padding": "8px 16px",
+        "borderRadius": "20px",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-line",
+      "name": "Minimal Line",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "line", "underline", "simple"],
+      "description": {
+        "ru": "Минималистичный стиль с линией снизу",
+        "en": "Minimalist style with bottom line"
+      },
+      "labels": {
+        "ru": "С линией",
+        "en": "Line"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "borderBottom": "2px solid #ffffff",
+        "paddingBottom": "4px",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "minimal-compact",
+      "name": "Minimal Compact",
+      "category": "minimal",
+      "complexity": "basic",
+      "tags": ["minimal", "compact", "small", "subtle"],
+      "description": {
+        "ru": "Компактный минималистичный стиль",
+        "en": "Compact minimalist style"
+      },
+      "labels": {
+        "ru": "Компактный",
+        "en": "Compact"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "normal",
+        "color": "#ffffff",
+        "backgroundColor": "rgba(0, 0, 0, 0.7)",
+        "padding": "4px 8px",
+        "borderRadius": "2px",
+        "textAlign": "center",
+        "lineHeight": 1.3
       }
     },
     {
@@ -251,16 +1216,12 @@
       },
       "labels": {
         "ru": "Анимированная печатная машинка",
-        "en": "Animated Typewriter",
-        "es": "Máquina de Escribir Animada",
-        "fr": "Machine à Écrire Animée",
-        "de": "Animierte Schreibmaschine"
+        "en": "Typewriter"
       },
       "style": {
         "fontFamily": "Courier New, monospace",
         "fontSize": 24,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#00ff00",
         "backgroundColor": "rgba(0, 0, 0, 0.8)",
         "padding": "4px 8px",
@@ -282,21 +1243,266 @@
       },
       "labels": {
         "ru": "Анимированное затухание",
-        "en": "Animated Fade",
-        "es": "Desvanecimiento Animado",
-        "fr": "Fondu Animé",
-        "de": "Animiertes Ausblenden"
+        "en": "Fade In/Out"
       },
       "style": {
         "fontFamily": "Open Sans, sans-serif",
         "fontSize": 24,
         "fontWeight": "normal",
-        "fontStyle": "normal",
         "color": "#ffffff",
         "textShadow": "0 2px 4px rgba(0, 0, 0, 0.7)",
         "textAlign": "center",
         "lineHeight": 1.4,
         "animation": "fadeInOut 3s ease-in-out infinite"
+      }
+    },
+    {
+      "id": "animated-slide",
+      "name": "Animated Slide",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "slide", "motion", "dynamic"],
+      "description": {
+        "ru": "Анимация скольжения снизу вверх",
+        "en": "Slide-in animation from bottom"
+      },
+      "labels": {
+        "ru": "Скольжение",
+        "en": "Slide"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ffffff",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "slideUp 1s ease-out"
+      }
+    },
+    {
+      "id": "animated-bounce",
+      "name": "Animated Bounce",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "bounce", "playful", "energetic"],
+      "description": {
+        "ru": "Прыгающая анимация для энергичных видео",
+        "en": "Bouncing animation for energetic videos"
+      },
+      "labels": {
+        "ru": "Прыжок",
+        "en": "Bounce"
+      },
+      "style": {
+        "fontFamily": "Impact, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "color": "#ffff00",
+        "textShadow": "0 3px 6px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "animation": "bounce 1s ease-in-out infinite"
+      }
+    },
+    {
+      "id": "animated-pulse",
+      "name": "Animated Pulse",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "pulse", "heartbeat", "attention"],
+      "description": {
+        "ru": "Пульсирующая анимация для привлечения внимания",
+        "en": "Pulsing animation for attention"
+      },
+      "labels": {
+        "ru": "Пульсация",
+        "en": "Pulse"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ff0000",
+        "textShadow": "0 0 10px rgba(255, 0, 0, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "pulse 1.5s ease-in-out infinite"
+      }
+    },
+    {
+      "id": "animated-zoom",
+      "name": "Animated Zoom",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "zoom", "scale", "dramatic"],
+      "description": {
+        "ru": "Анимация увеличения для драматического эффекта",
+        "en": "Zoom animation for dramatic effect"
+      },
+      "labels": {
+        "ru": "Увеличение",
+        "en": "Zoom"
+      },
+      "style": {
+        "fontFamily": "Impact, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "color": "#ffffff",
+        "textShadow": "0 4px 8px rgba(0, 0, 0, 0.9)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "animation": "zoomIn 0.5s ease-out"
+      }
+    },
+    {
+      "id": "animated-shake",
+      "name": "Animated Shake",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "shake", "vibrate", "alert"],
+      "description": {
+        "ru": "Дрожащая анимация для предупреждений",
+        "en": "Shaking animation for alerts"
+      },
+      "labels": {
+        "ru": "Дрожание",
+        "en": "Shake"
+      },
+      "style": {
+        "fontFamily": "Arial Black, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ff4500",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.8)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "shake 0.5s linear infinite"
+      }
+    },
+    {
+      "id": "animated-rotate",
+      "name": "Animated Rotate",
+      "category": "animated",
+      "complexity": "advanced",
+      "tags": ["animated", "rotate", "spin", "dynamic"],
+      "description": {
+        "ru": "Вращающаяся анимация для динамики",
+        "en": "Rotating animation for dynamics"
+      },
+      "labels": {
+        "ru": "Вращение",
+        "en": "Rotate"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "color": "#00ffff",
+        "textShadow": "0 0 10px rgba(0, 255, 255, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "animation": "rotate 2s linear infinite"
+      }
+    },
+    {
+      "id": "animated-wave",
+      "name": "Animated Wave",
+      "category": "animated",
+      "complexity": "advanced",
+      "tags": ["animated", "wave", "flow", "smooth"],
+      "description": {
+        "ru": "Волнообразная анимация букв",
+        "en": "Wave animation of letters"
+      },
+      "labels": {
+        "ru": "Волна",
+        "en": "Wave"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#4169e1",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.7)",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "wave 1.5s ease-in-out infinite"
+      }
+    },
+    {
+      "id": "animated-glow",
+      "name": "Animated Glow",
+      "category": "animated",
+      "complexity": "advanced",
+      "tags": ["animated", "glow", "light", "neon"],
+      "description": {
+        "ru": "Пульсирующее свечение",
+        "en": "Pulsing glow effect"
+      },
+      "labels": {
+        "ru": "Свечение",
+        "en": "Glow"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ffff00",
+        "textShadow": "0 0 10px #ffff00, 0 0 20px #ffff00",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "glow 2s ease-in-out infinite"
+      }
+    },
+    {
+      "id": "animated-flicker",
+      "name": "Animated Flicker",
+      "category": "animated",
+      "complexity": "intermediate",
+      "tags": ["animated", "flicker", "neon", "unstable"],
+      "description": {
+        "ru": "Мерцающая анимация неоновой вывески",
+        "en": "Flickering neon sign animation"
+      },
+      "labels": {
+        "ru": "Мерцание",
+        "en": "Flicker"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#00ffff",
+        "textShadow": "0 0 10px #00ffff",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "flicker 0.3s infinite"
+      }
+    },
+    {
+      "id": "animated-blink",
+      "name": "Animated Blink",
+      "category": "animated",
+      "complexity": "basic",
+      "tags": ["animated", "blink", "flash", "attention"],
+      "description": {
+        "ru": "Мигающая анимация",
+        "en": "Blinking animation"
+      },
+      "labels": {
+        "ru": "Мигание",
+        "en": "Blink"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "color": "#ff0000",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "animation": "blink 1s step-end infinite"
       }
     },
     {
@@ -311,16 +1517,12 @@
       },
       "labels": {
         "ru": "Современный без засечек",
-        "en": "Modern Sans",
-        "es": "Sans Moderno",
-        "fr": "Sans Moderne",
-        "de": "Moderne Sans"
+        "en": "Modern Sans"
       },
       "style": {
         "fontFamily": "Inter, system-ui, sans-serif",
         "fontSize": 24,
         "fontWeight": 500,
-        "fontStyle": "normal",
         "color": "#ffffff",
         "textShadow": "0 1px 3px rgba(0, 0, 0, 0.8)",
         "textAlign": "center",
@@ -340,22 +1542,286 @@
       },
       "labels": {
         "ru": "Современный градиент",
-        "en": "Modern Gradient",
-        "es": "Gradiente Moderno",
-        "fr": "Dégradé Moderne",
-        "de": "Moderner Gradient"
+        "en": "Gradient"
       },
       "style": {
         "fontFamily": "Poppins, sans-serif",
         "fontSize": 26,
         "fontWeight": "bold",
-        "fontStyle": "normal",
         "background": "linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1)",
         "WebkitBackgroundClip": "text",
         "WebkitTextFillColor": "transparent",
         "textAlign": "center",
         "lineHeight": 1.4,
         "letterSpacing": 1
+      }
+    },
+    {
+      "id": "modern-glass",
+      "name": "Glass Morphism",
+      "category": "modern",
+      "complexity": "advanced",
+      "tags": ["modern", "glass", "blur", "transparent"],
+      "description": {
+        "ru": "Стеклянный морфизм с размытием",
+        "en": "Glass morphism with blur"
+      },
+      "labels": {
+        "ru": "Стеклянный",
+        "en": "Glass"
+      },
+      "style": {
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "600",
+        "color": "#ffffff",
+        "backgroundColor": "rgba(255, 255, 255, 0.1)",
+        "backdropFilter": "blur(10px)",
+        "padding": "10px 20px",
+        "borderRadius": "12px",
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "textAlign": "center",
+        "lineHeight": 1.4
+      }
+    },
+    {
+      "id": "modern-neon-gradient",
+      "name": "Neon Gradient",
+      "category": "modern",
+      "complexity": "advanced",
+      "tags": ["modern", "neon", "gradient", "vibrant"],
+      "description": {
+        "ru": "Неоновый градиент с яркими цветами",
+        "en": "Neon gradient with vibrant colors"
+      },
+      "labels": {
+        "ru": "Неоновый градиент",
+        "en": "Neon Gradient"
+      },
+      "style": {
+        "fontFamily": "Montserrat, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "background": "linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "0 0 20px rgba(255, 0, 255, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "modern-rainbow",
+      "name": "Rainbow Gradient",
+      "category": "modern",
+      "complexity": "advanced",
+      "tags": ["modern", "rainbow", "colorful", "vibrant"],
+      "description": {
+        "ru": "Радужный градиент со всеми цветами",
+        "en": "Rainbow gradient with all colors"
+      },
+      "labels": {
+        "ru": "Радуга",
+        "en": "Rainbow"
+      },
+      "style": {
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "background": "linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "modern-minimal-outline",
+      "name": "Minimal Outline",
+      "category": "modern",
+      "complexity": "intermediate",
+      "tags": ["modern", "outline", "minimal", "elegant"],
+      "description": {
+        "ru": "Современный контурный стиль",
+        "en": "Modern outline style"
+      },
+      "labels": {
+        "ru": "Контурный",
+        "en": "Outline"
+      },
+      "style": {
+        "fontFamily": "Helvetica Neue, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "color": "transparent",
+        "textShadow": "0 0 2px #ffffff",
+        "WebkitTextStroke": "2px #ffffff",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "modern-tech",
+      "name": "Tech Style",
+      "category": "modern",
+      "complexity": "intermediate",
+      "tags": ["modern", "tech", "digital", "futuristic"],
+      "description": {
+        "ru": "Технологичный цифровой стиль",
+        "en": "Tech digital style"
+      },
+      "labels": {
+        "ru": "Технологичный",
+        "en": "Tech"
+      },
+      "style": {
+        "fontFamily": "Roboto Mono, monospace",
+        "fontSize": 24,
+        "fontWeight": "500",
+        "color": "#00ff00",
+        "backgroundColor": "rgba(0, 0, 0, 0.8)",
+        "padding": "6px 12px",
+        "borderRadius": "4px",
+        "border": "1px solid #00ff00",
+        "textAlign": "left",
+        "lineHeight": 1.4,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "modern-pastel",
+      "name": "Pastel Gradient",
+      "category": "modern",
+      "complexity": "intermediate",
+      "tags": ["modern", "pastel", "soft", "gentle"],
+      "description": {
+        "ru": "Пастельный градиент с мягкими тонами",
+        "en": "Pastel gradient with soft tones"
+      },
+      "labels": {
+        "ru": "Пастельный",
+        "en": "Pastel"
+      },
+      "style": {
+        "fontFamily": "Quicksand, sans-serif",
+        "fontSize": 26,
+        "fontWeight": "600",
+        "background": "linear-gradient(45deg, #ffc3a0, #ffafbd, #c3cfe2)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textAlign": "center",
+        "lineHeight": 1.4,
+        "letterSpacing": 1
+      }
+    },
+    {
+      "id": "modern-retro-wave",
+      "name": "Retro Wave",
+      "category": "modern",
+      "complexity": "advanced",
+      "tags": ["modern", "retro", "synthwave", "80s"],
+      "description": {
+        "ru": "Ретровейв стиль в стиле синтвейв",
+        "en": "Retrowave synthwave style"
+      },
+      "labels": {
+        "ru": "Ретровейв",
+        "en": "Retro Wave"
+      },
+      "style": {
+        "fontFamily": "Audiowide, cursive",
+        "fontSize": 30,
+        "fontWeight": "bold",
+        "background": "linear-gradient(180deg, #ff006e, #8338ec, #3a86ff)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "0 0 20px rgba(255, 0, 110, 0.5)",
+        "textAlign": "center",
+        "lineHeight": 1.2,
+        "letterSpacing": 2,
+        "textTransform": "uppercase"
+      }
+    },
+    {
+      "id": "modern-holographic",
+      "name": "Holographic",
+      "category": "modern",
+      "complexity": "advanced",
+      "tags": ["modern", "holographic", "iridescent", "futuristic"],
+      "description": {
+        "ru": "Голографический эффект с переливами",
+        "en": "Holographic effect with iridescence"
+      },
+      "labels": {
+        "ru": "Голографический",
+        "en": "Holographic"
+      },
+      "style": {
+        "fontFamily": "Futura, sans-serif",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "background": "linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff, #00ffff)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+        "textShadow": "0 0 15px rgba(255, 0, 255, 0.4)",
+        "textAlign": "center",
+        "lineHeight": 1.3,
+        "letterSpacing": 2
+      }
+    },
+    {
+      "id": "modern-dark",
+      "name": "Dark Mode",
+      "category": "modern",
+      "complexity": "basic",
+      "tags": ["modern", "dark", "minimalist", "sleek"],
+      "description": {
+        "ru": "Темный режим с контрастным текстом",
+        "en": "Dark mode with contrast text"
+      },
+      "labels": {
+        "ru": "Темный режим",
+        "en": "Dark Mode"
+      },
+      "style": {
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "500",
+        "color": "#e0e0e0",
+        "backgroundColor": "rgba(18, 18, 18, 0.9)",
+        "padding": "8px 16px",
+        "borderRadius": "6px",
+        "textAlign": "center",
+        "lineHeight": 1.5
+      }
+    },
+    {
+      "id": "modern-light",
+      "name": "Light Mode",
+      "category": "modern",
+      "complexity": "basic",
+      "tags": ["modern", "light", "bright", "clean"],
+      "description": {
+        "ru": "Светлый режим с темным текстом",
+        "en": "Light mode with dark text"
+      },
+      "labels": {
+        "ru": "Светлый режим",
+        "en": "Light Mode"
+      },
+      "style": {
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 24,
+        "fontWeight": "500",
+        "color": "#1a1a1a",
+        "backgroundColor": "rgba(255, 255, 255, 0.9)",
+        "padding": "8px 16px",
+        "borderRadius": "6px",
+        "textAlign": "center",
+        "lineHeight": 1.5
       }
     }
   ]

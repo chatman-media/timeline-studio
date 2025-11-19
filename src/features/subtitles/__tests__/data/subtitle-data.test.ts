@@ -17,7 +17,7 @@ const subtitleStyles = subtitleStylesData as typeof subtitleStylesData & {
 describe("Subtitle Data Files", () => {
   describe("subtitle-styles.json", () => {
     it("должен содержать корректные метаданные", () => {
-      expect(subtitleStyles.version).toBe("1.0.0")
+      expect(subtitleStyles.version).toBe("2.0.0")
       expect(subtitleStyles.lastUpdated).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       expect(subtitleStyles.totalStyles).toBeGreaterThan(0)
       expect(subtitleStyles.categories).toBeInstanceOf(Array)
@@ -79,7 +79,7 @@ describe("Subtitle Data Files", () => {
 
   describe("subtitle-categories.json", () => {
     it("должен содержать корректные метаданные", () => {
-      expect(subtitleCategories.version).toBe("1.0.0")
+      expect(subtitleCategories.version).toBe("2.0.0")
       expect(subtitleCategories.lastUpdated).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       expect(subtitleCategories.categories).toBeDefined()
       expect(typeof subtitleCategories.categories).toBe("object")
