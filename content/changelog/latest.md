@@ -1,3 +1,13 @@
+## [3.15.1](https://github.com/chatman-media/timeline-studio/compare/v3.15.0...v3.15.1) (2025-11-24)
+
+
+### Bug Fixes
+
+* **promo:** Improve React minification safety in Vite config ([0843c84](https://github.com/chatman-media/timeline-studio/commit/0843c8446b4f9b918b2f4da902d16c65c541c944))
+* **tauri:** Add Tauri event plugin internals initialization ([101fdda](https://github.com/chatman-media/timeline-studio/commit/101fddaf5e9ebba6d17f4919e9cd19103a2caa7d))
+* **tauri:** Update app display name to "Timeline Studio" ([ab6854b](https://github.com/chatman-media/timeline-studio/commit/ab6854b25455d12db81b93cb35433b48c3988d69))
+* **tauri:** Update Tauri mock provider with event listeners ([11f6d62](https://github.com/chatman-media/timeline-studio/commit/11f6d62e363b3947a39f3e68203b1a243e1df836))
+
 # [3.15.0](https://github.com/chatman-media/timeline-studio/compare/v3.14.3...v3.15.0) (2025-11-24)
 
 
