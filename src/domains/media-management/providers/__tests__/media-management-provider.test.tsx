@@ -301,6 +301,7 @@ describe("MediaManagementProvider", () => {
       })
 
       expect(mediaInfo).toEqual({
+        id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
         type: "Video",

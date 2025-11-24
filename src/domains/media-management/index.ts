@@ -27,7 +27,14 @@ export type {
 } from "./services/camera-import"
 export { CameraImportService, getCameraImport } from "./services/camera-import"
 // Error Tracker
-export type { ErrorRecord, ErrorStats, ErrorType, RecoveryStrategy } from "./services/error-tracker"
+export type {
+  ErrorRecord,
+  ErrorStats,
+  ErrorType,
+  OperationStats,
+  RecoveryStrategy,
+  RetryConfig,
+} from "./services/error-tracker"
 export { ErrorTrackerService, getErrorTracker } from "./services/error-tracker"
 export type { MediaMetadataService } from "./services/media-metadata-service"
 // Services

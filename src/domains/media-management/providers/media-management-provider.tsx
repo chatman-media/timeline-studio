@@ -69,7 +69,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
         // Обновляем fileOperations для совместимости
         const operations = Array.from(updates.mediaPool.values()).map((mediaInfo) => ({
-          id: mediaInfo.path, // используем path как id для совместимости
+          id: mediaInfo.id || mediaInfo.path, // используем id если доступен, иначе path
           path: mediaInfo.path,
           status: "completed" as const,
           result: mediaInfo,
@@ -181,10 +181,12 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     getMediaInfo: async (path: string) => {
       try {
         // Ищем в локальном media pool (синхронизирован через события)
-        const mediaInfo = Array.from(mediaPool.values()).find((media) => media.path === path)
+        const mediaEntry = Array.from(mediaPool.entries()).find(([, media]) => media.path === path)
 
-        if (mediaInfo) {
-          return mediaInfo
+        if (mediaEntry) {
+          const [mediaId, mediaInfo] = mediaEntry
+          // Добавляем id если его еще нет
+          return mediaInfo.id ? mediaInfo : { ...mediaInfo, id: mediaId }
         }
 
         // Если не найдено локально, возвращаем базовую информацию
