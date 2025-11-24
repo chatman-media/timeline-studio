@@ -3,6 +3,9 @@ import dayjs from "dayjs"
 import { DEFAULT_LANGUAGE, formatDateByLanguage, type LanguageCode } from "@/i18n/constants"
 import { createLogger } from "./tauri-logger"
 
+// Re-export duration formatters from the dedicated module
+export { formatDurationHuman, formatDurationMs, formatDurationSeconds, parseDurationString } from "./duration-formatter"
+
 const logger = createLogger("DateUtils")
 
 /**

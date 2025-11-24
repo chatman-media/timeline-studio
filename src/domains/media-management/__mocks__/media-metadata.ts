@@ -72,6 +72,7 @@ export const mockAudioAnalysis: MediaAnalysisResult = {
 }
 
 export const mockMediaInfo: MediaInfo = {
+  id: "test-media-uuid-001",
   path: "/test/video.mp4",
   name: "video.mp4",
   type: "Video",

@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
+import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 interface UseVoiceRecordingProps {
@@ -34,11 +35,9 @@ export function useVoiceRecording({
   const countdownTimerRef = useRef<number | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  // Форматируем время записи в формат MM:SS
+  // Форматируем время записи в формат MM:SS с ведущим нулем (00:00)
   const formatTime = useCallback((seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+    return formatDurationSeconds(seconds, false, true)
   }, [])
 
   // Останавливаем запись

@@ -2,6 +2,7 @@
  * Утилиты для модуля camera-capture
  */
 
+import { formatDurationMs } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "CameraCaptureUtils" })
@@ -60,11 +61,7 @@ export function cleanupVideoElement(videoElement: HTMLVideoElement | null, logPr
  * @returns Отформатированная строка времени
  */
 export function formatRecordingTime(timeInMs: number): string {
-  const totalSeconds = Math.floor(timeInMs / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-
-  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+  return formatDurationMs(timeInMs)
 }
 
 /**

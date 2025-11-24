@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { PublicationPlatform, PublicationStatus, type PublicationTask } from "../types/publication"
@@ -304,12 +305,6 @@ export function formatPublicationDuration(startTime: string, endTime?: string, t
   if (duration < 60) {
     return t ? t("publication.duration.seconds").replace("{{count}}", duration.toString()) : `${duration} sec`
   }
-  if (duration < 3600) {
-    const minutes = Math.floor(duration / 60)
-    const seconds = duration % 60
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`
-  }
-  const hours = Math.floor(duration / 3600)
-  const minutes = Math.floor((duration % 3600) / 60)
-  return `${hours}:${minutes.toString().padStart(2, "0")}:${(duration % 60).toString().padStart(2, "0")}`
+  // Используем стандартный форматер для остальных случаев
+  return formatDurationSeconds(duration)
 }

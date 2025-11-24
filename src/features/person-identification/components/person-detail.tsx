@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { formatDurationSeconds } from "@/lib/duration-formatter"
 
 import type { PersonAppearance, PersonProfile, Timecode } from "../types/person"
 
@@ -23,14 +24,7 @@ interface PersonDetailProps {
 
 // Вспомогательная функция для форматирования Timecode
 function formatTimecode(timecode: Timecode): string {
-  const hours = Math.floor(timecode.seconds / 3600)
-  const minutes = Math.floor((timecode.seconds % 3600) / 60)
-  const seconds = Math.floor(timecode.seconds % 60)
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-  }
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`
+  return formatDurationSeconds(timecode.seconds)
 }
 
 export function PersonDetail({ person, appearances = [], onEdit, onClose }: PersonDetailProps) {

@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 
+import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaApi")
@@ -207,16 +208,9 @@ export function formatFileSize(bytes?: number): string {
  * Форматирование длительности в читаемый вид
  * @param seconds Длительность в секундах
  * @returns Отформатированная длительность
+ * @deprecated Используйте formatDurationSeconds из @/lib/duration-formatter
  */
 export function formatDuration(seconds?: number): string {
   if (seconds === undefined) return "Неизвестно"
-
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
-  return `${minutes}:${secs.toString().padStart(2, "0")}`
+  return formatDurationSecondsUtil(seconds)
 }
