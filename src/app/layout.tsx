@@ -27,13 +27,22 @@ export default function RootLayout({
 
   console.log('[Tauri Init] Initializing event plugin internals...');
 
-  const listeners = new Proxy({}, {
+  const listenersStorage = {};
+  const listeners = new Proxy(listenersStorage, {
     get(target, prop) {
       if (!(prop in target)) {
         console.warn('[Tauri Init] Accessing non-existent listener: ' + String(prop));
         return { handlerId: 0, event: 'unknown' };
       }
       return target[prop];
+    },
+    set(target, prop, value) {
+      target[prop] = value;
+      return true;
+    },
+    deleteProperty(target, prop) {
+      delete target[prop];
+      return true;
     }
   });
 
@@ -42,8 +51,8 @@ export default function RootLayout({
       listeners: listeners,
       unregisterListener: function(event, eventId) {
         console.log('[Tauri Init] Unregister listener: ' + event + ', eventId: ' + eventId);
-        if (eventId in listeners) {
-          delete listeners[eventId];
+        if (eventId in listenersStorage) {
+          delete listenersStorage[eventId];
         }
       }
     };
