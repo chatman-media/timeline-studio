@@ -16,6 +16,8 @@ pub enum BrowserTab {
   Filters,
   Templates,
   StyleTemplates,
+  Projects,
+  Scenarios,
 }
 
 /// View mode for browser display
