@@ -1,14 +1,11 @@
 /**
  * Timeline AI Analysis Hook
  * Интеграция AI Content Intelligence с Timeline для автоматического анализа
+ * Migrated to use Tauri backend commands directly
  */
 
+import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
-// TODO: Migrate to use AI Director directly
-import SceneAnalysisEngine, {
-  AdvancedSceneAnalysis,
-} from "@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine"
-import type { SceneAnalysisResult } from "@/domains/ai-services/services/engines/scene-analysis/types"
 import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
@@ -18,11 +15,43 @@ import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelineAiAnalysis")
 
+// Types from Rust backend (matching src-tauri/src/analysis/types/unified_types.rs)
+interface SceneAnalysis {
+  id: string
+  fileId: string
+  startTime: number
+  endTime: number
+  duration: number
+  sceneType: string
+  confidence: number
+  keyFrames: number[]
+  description?: string
+  visual?: {
+    dominantColors: string[]
+    brightness: number
+    contrast: number
+    saturation: number
+    motionLevel: number
+    compositionScore: number
+    sharpness: number
+    noiseLevel: number
+  }
+  audio?: {
+    hasSpeech: boolean
+    hasMusic: boolean
+    volumeLevel: number
+    clarity: number
+  }
+  objects: string[]
+  persons: string[]
+  transition?: any
+}
+
 interface TimelineAnalysisState {
   isAnalyzing: boolean
   analysisProgress: number
   currentAnalysis: UnifiedContentAnalysis | null
-  sceneAnalysis: AdvancedSceneAnalysis[] | null
+  sceneAnalysis: SceneAnalysis[] | null
   insights: ContentInsights | null
   keyMoments: KeyMoment[]
   error: string | null
@@ -101,13 +130,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   // Настройки
   const [enableAutoAnalysis, setEnableAutoAnalysis] = useState(true)
 
-  // Инициализация сервисов
-  const [sceneEngine] = useState(() => SceneAnalysisEngine.getInstance())
-  const [orchestrator] = useState<any | null>(() => null) // TODO: Migrate to AI Director
-
-  // AI engines инициализируются автоматически при первом использовании
-
-  // Анализ отдельного клипа
+  // Анализ отдельного клипа через Tauri backend
   const analyzeClip = useCallback(
     async (clip: TimelineClip) => {
       if (!clip.mediaFile || analysisState.isAnalyzing) return
@@ -124,27 +147,23 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         // Прогресс: начало анализа
         setAnalysisState((prev) => ({ ...prev, analysisProgress: 10 }))
 
-        // Запускаем анализ сцен
-        const mediaFileForEngine = {
-          path: clip.mediaFile.path,
-          filename: clip.mediaFile.name,
-          duration: clip.mediaFile.duration || 0,
-          size: clip.mediaFile.size || 0,
-          format: "video",
-        } as any // Type assertion для совместимости с AI engine
-        const sceneResult = await sceneEngine.analyzeScenes(mediaFileForEngine)
+        // Вызываем Tauri команду для анализа сцен
+        logger.info("Analyzing scenes via Tauri backend", { path: clip.mediaFile.path })
+
+        const scenes = await invoke<SceneAnalysis[]>("analyze_scenes_by_path_command", {
+          filePath: clip.mediaFile.path,
+        })
 
         setAnalysisState((prev) => ({
           ...prev,
-          sceneAnalysis: sceneResult,
+          sceneAnalysis: scenes,
           analysisProgress: 50,
         }))
 
-        // Обрабатываем результат анализа
-        const scenes = Array.isArray(sceneResult) ? sceneResult.map((s: any) => s.scene || s).filter(Boolean) : []
-        const keyMoments = Array.isArray(sceneResult) ? sceneResult.flatMap((s: any) => s.keyMoments || []) : []
+        // Генерируем ключевые моменты из сцен
+        const keyMoments = convertScenesToKeyMoments(scenes)
 
-        // Создаем мок анализа для совместимости
+        // Создаем unified анализ для совместимости
         const fullAnalysis: UnifiedContentAnalysis = {
           mediaFile: {
             name: clip.mediaFile.name,
@@ -154,7 +173,15 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
             size: clip.mediaFile.size || 0,
             format: "video",
           },
-          scenes,
+          scenes: scenes.map((s) => ({
+            id: s.id,
+            type: s.sceneType,
+            startTime: s.startTime,
+            endTime: s.endTime,
+            duration: s.duration,
+            confidence: s.confidence,
+            description: s.description || "",
+          })),
           keyMoments,
           contentType: "narrative" as any,
           genres: [],
@@ -171,7 +198,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
             duration: clip.mediaFile.duration || 0,
           },
           qualityMetrics: {
-            overall: 45,
+            overall: calculateOverallQuality(scenes),
             sharpness: 70,
             brightness: 60,
             contrast: 75,
@@ -187,9 +214,9 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
             scenes: [],
           },
           insights: {
-            summary: "Автоматический анализ завершен",
-            strengths: ["Хорошее качество видео"],
-            weaknesses: ["Требует цветокоррекция"],
+            summary: `Проанализировано ${scenes.length} сцен`,
+            strengths: scenes.length > 0 ? ["Хорошее качество видео"] : [],
+            weaknesses: [],
             recommendations: [],
             marketingAngles: [],
             targetDemographics: [],
@@ -209,8 +236,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         }))
 
         // Генерируем предложения на основе анализа
-        const mockSceneAnalysisResult = { scenes, keyMoments } as SceneAnalysisResult
-        const newSuggestions = generateSuggestionsFromAnalysis(clip, mockSceneAnalysisResult, fullAnalysis)
+        const newSuggestions = generateSuggestionsFromScenes(clip, scenes, fullAnalysis)
         setSuggestions((prev) => [...prev, ...newSuggestions])
 
         setAnalysisState((prev) => ({
@@ -218,6 +244,8 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           analysisProgress: 100,
           isAnalyzing: false,
         }))
+
+        logger.info("Scene analysis completed", { scenesCount: scenes.length })
       } catch (error) {
         logger.error("Clip analysis failed:", { error })
         setAnalysisState((prev) => ({
@@ -227,7 +255,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         }))
       }
     },
-    [analysisState.isAnalyzing, sceneEngine, orchestrator, adaptDomainClipToFeatureClip],
+    [analysisState.isAnalyzing, adaptDomainClipToFeatureClip],
   )
 
   // Анализ всего Timeline
@@ -333,7 +361,6 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
           case "transition":
           case "effect":
           case "color":
-            // TODO: Реализовать применение эффектов и переходов
             logger.info(`Applying ${suggestion.type} suggestion:`, { suggestion })
             break
 
@@ -360,9 +387,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   const generateMarkersFromAnalysis = useCallback(async () => {
     if (!analysisState.keyMoments || analysisState.keyMoments.length === 0) return
 
-    const scenes = Array.isArray(analysisState.sceneAnalysis)
-      ? analysisState.sceneAnalysis.map((s: any) => s.scene || s).filter(Boolean)
-      : []
+    const scenes = analysisState.sceneAnalysis || []
     const { keyMoments } = analysisState
 
     // Создаем маркеры для ключевых моментов
@@ -381,7 +406,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
     })
 
     // Создаем маркеры для смены сцен
-    scenes.forEach((scene: any, index: number) => {
+    scenes.forEach((scene: SceneAnalysis, index: number) => {
       if (index > 0) {
         // Пропускаем первую сцену
         send({
@@ -391,8 +416,8 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
             type: "section",
             timecode: scene.startTime,
             name: `Сцена ${index + 1}`,
-            description: `Тип: ${scene.type}`,
-            color: getColorForSceneType(scene.type),
+            description: `Тип: ${scene.sceneType}`,
+            color: getColorForSceneType(scene.sceneType),
           },
         })
       }
@@ -400,28 +425,20 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   }, [analysisState.sceneAnalysis, analysisState.keyMoments, send])
 
   // Поиск ключевых моментов в клипе
-  const findKeyMoments = useCallback(
-    async (clip: TimelineClip): Promise<KeyMoment[]> => {
-      if (!clip.mediaFile) return []
+  const findKeyMoments = useCallback(async (clip: TimelineClip): Promise<KeyMoment[]> => {
+    if (!clip.mediaFile) return []
 
-      try {
-        const mediaFileForEngine = {
-          path: clip.mediaFile.path,
-          filename: clip.mediaFile.name,
-          duration: clip.mediaFile.duration || 0,
-          size: clip.mediaFile.size || 0,
-          format: "video",
-        } as any // Type assertion для совместимости с AI engine
-        const analysis = await sceneEngine.analyzeScenes(mediaFileForEngine)
+    try {
+      const scenes = await invoke<SceneAnalysis[]>("analyze_scenes_by_path_command", {
+        filePath: clip.mediaFile.path,
+      })
 
-        return Array.isArray(analysis) ? analysis.flatMap((s: any) => s.keyMoments || []) : []
-      } catch (error) {
-        logger.error("Failed to find key moments:", { error })
-        return []
-      }
-    },
-    [sceneEngine],
-  )
+      return convertScenesToKeyMoments(scenes)
+    } catch (error) {
+      logger.error("Failed to find key moments:", { error })
+      return []
+    }
+  }, [])
 
   // Автоматический анализ при добавлении клипов
   useEffect(() => {
@@ -465,16 +482,78 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   }
 }
 
-// Генерация предложений на основе анализа
-function generateSuggestionsFromAnalysis(
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Convert scene analysis results to key moments
+ */
+function convertScenesToKeyMoments(scenes: SceneAnalysis[]): KeyMoment[] {
+  const keyMoments: KeyMoment[] = []
+
+  scenes.forEach((scene) => {
+    // Add key moments for scene transitions
+    if (scene.transition) {
+      keyMoments.push({
+        id: `km-${scene.id}`,
+        timestamp: scene.startTime,
+        duration: 2,
+        type: KeyMomentType.TRANSITION,
+        score: scene.confidence,
+        description: `Переход: ${scene.sceneType}`,
+        tags: [scene.sceneType],
+      })
+    }
+
+    // Add moments for high-quality or high-motion scenes
+    if (scene.visual && scene.visual.motionLevel > 0.7) {
+      keyMoments.push({
+        id: `km-action-${scene.id}`,
+        timestamp: scene.startTime + scene.duration / 2,
+        duration: Math.min(scene.duration, 5),
+        type: KeyMomentType.ACTION,
+        score: scene.visual.motionLevel,
+        description: `Активная сцена: ${scene.sceneType}`,
+        tags: ["action", scene.sceneType],
+      })
+    }
+  })
+
+  return keyMoments
+}
+
+/**
+ * Calculate overall quality from scenes
+ */
+function calculateOverallQuality(scenes: SceneAnalysis[]): number {
+  if (scenes.length === 0) return 0
+
+  const qualityScores = scenes
+    .filter((s) => s.visual)
+    .map((s) => {
+      const v = s.visual!
+      return (v.sharpness + v.compositionScore + (1 - v.noiseLevel)) / 3
+    })
+
+  if (qualityScores.length === 0) return 50
+
+  const avgQuality = qualityScores.reduce((sum, score) => sum + score, 0) / qualityScores.length
+  return Math.round(avgQuality * 100)
+}
+
+/**
+ * Generate suggestions from scene analysis
+ */
+function generateSuggestionsFromScenes(
   clip: TimelineClip,
-  sceneAnalysis: SceneAnalysisResult,
+  scenes: SceneAnalysis[],
   fullAnalysis: UnifiedContentAnalysis,
 ): TimelineAISuggestion[] {
   const suggestions: TimelineAISuggestion[] = []
 
   // Предложения по нарезке на основе сцен
-  sceneAnalysis.scenes.forEach((scene: any, index: number) => {
+  scenes.forEach((scene, index) => {
     if (index > 0 && scene.duration > 10) {
       // Длинные сцены
       suggestions.push({
@@ -484,26 +563,8 @@ function generateSuggestionsFromAnalysis(
         title: "Разделить длинную сцену",
         description: `Сцена длительностью ${scene.duration.toFixed(1)}с может быть разделена`,
         clipId: clip.id,
-        timestamp: Number(scene.startTime) + scene.duration / 2,
+        timestamp: scene.startTime + scene.duration / 2,
         confidence: 0.7,
-      })
-    }
-  })
-
-  // Предложения по скорости на основе типа сцены
-  sceneAnalysis.scenes.forEach((scene: any) => {
-    if (scene.type === "action" && scene.duration < 5) {
-      suggestions.push({
-        id: `speed-${clip.id}-${scene.id}`,
-        type: "speed",
-        priority: "low",
-        title: "Замедлить экшн-сцену",
-        description: "Короткая экшн-сцена может выиграть от замедления",
-        clipId: clip.id,
-        timestamp: scene.startTime,
-        duration: scene.duration,
-        confidence: 0.6,
-        actionData: { speed: 0.75 },
       })
     }
   })
@@ -561,7 +622,7 @@ function getColorForSceneType(type: string): string {
   switch (type) {
     case "action":
       return "#ef4444"
-    case "dialogue":
+    case "dialog":
       return "#3b82f6"
     case "landscape":
       return "#10b981"

@@ -4,7 +4,6 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines"
 import { createLogger } from "@/lib/tauri-logger"
 import { PersonDatabaseService } from "../services/person-database-service"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
@@ -31,7 +30,7 @@ export function usePersonIdentification(options: UsePersonIdentificationOptions 
   const [error, setError] = useState<string | null>(null)
 
   const personDatabase = PersonDatabaseService.getInstance()
-  const sceneAnalysisEngine = new SceneAnalysisEngine()
+  // TODO: Migrate scene analysis to use Tauri backend commands
 
   // Загрузка всех персон
   const loadPersons = useCallback(async () => {

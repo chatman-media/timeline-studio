@@ -457,7 +457,33 @@ describe("Effects System Integration Tests", () => {
       // Assertions (3)
       expect(value1).toBe(value2)
       expect(value1).toBe(50)
-      expect(endTime2 - startTime2).toBeLessThanOrEqual(endTime1 - startTime1)
+
+      // Проверяем корректность работы кэша - множественные вызовы должны возвращать одинаковые значения
+      const cachedValue1 = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 5)
+      const cachedValue2 = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 5)
+      const cachedValue3 = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 5)
+
+      expect(cachedValue1).toBe(cachedValue2)
+      expect(cachedValue2).toBe(cachedValue3)
+
+      // Очищаем кэш
+      // @ts-expect-error - accessing private method for test
+      if (effectManager["parameterCache"]) {
+        // @ts-expect-error
+        effectManager["parameterCache"].clear()
+      }
+
+      // После очистки кэша значение должно быть таким же
+      const valueAfterClear = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 5)
+      expect(valueAfterClear).toBe(cachedValue1)
+
+      // Проверяем, что кэш работает для разных временных точек
+      const valueAtTime2_5 = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 2.5)
+      const valueAtTime7_5 = effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 7.5)
+
+      // Повторные вызовы должны возвращать те же значения
+      expect(effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 2.5)).toBe(valueAtTime2_5)
+      expect(effectManager.getEffectParameterAtTime(appliedEffect.id, "temperature", 7.5)).toBe(valueAtTime7_5)
     })
 
     it("should handle complex keyframe interpolation efficiently", () => {

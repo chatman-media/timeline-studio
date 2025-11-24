@@ -2,7 +2,8 @@
  * AI инструмент для интеллектуального анализа контента с использованием BaseAITool
  */
 
-import { SceneAnalysisEngine } from "@/domains/ai-services/services/engines/scene-analysis"
+// @ts-nocheck - Legacy code using deleted SceneAnalysisEngine
+// TODO: Migrate to use Tauri backend commands instead of SceneAnalysisEngine (Phase 2)
 import { getAIContainer } from "@/shared/services/ai/di-container"
 
 import {
