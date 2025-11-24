@@ -117,7 +117,9 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
         pure_funcs: ["console.log", "console.info"],
-        passes: 2, // Два прохода для лучшего сжатия
+        passes: 1, // Один проход - безопаснее для React
+        keep_fnames: true, // Сохраняем имена функций
+        keep_classnames: true, // Сохраняем имена классов
       },
       format: {
         comments: false, // Убираем комментарии
@@ -125,7 +127,7 @@ export default defineConfig({
       mangle: {
         // Не минифицировать имена свойств для gray-matter/js-yaml
         properties: false,
-        // Сохраняем критические имена функций и свойств для gray-matter/js-yaml
+        // Сохраняем критические имена функций и свойств
         reserved: [
           "isNothing",
           "Type",
@@ -136,7 +138,20 @@ export default defineConfig({
           "compile",
           "load",
           "loadAll",
+          // React critical names
+          "forwardRef",
+          "createElement",
+          "Component",
+          "PureComponent",
+          "createContext",
+          "useEffect",
+          "useState",
+          "useRef",
+          "useMemo",
+          "useCallback",
         ],
+        keep_fnames: true, // Сохраняем имена функций при мангле
+        keep_classnames: true, // Сохраняем имена классов при мангле
       },
     },
     // Генерация source maps только для продакшена при необходимости
