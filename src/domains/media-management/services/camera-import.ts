@@ -191,6 +191,7 @@ export class CameraImportService {
             path: file.path,
             name: file.name,
             type: file.type === "video" ? "Video" : file.type === "audio" ? "Audio" : "Image",
+            // id будет добавлен backend при импорте через MediaAdded событие
           }
 
           imported.push(mediaInfo)
