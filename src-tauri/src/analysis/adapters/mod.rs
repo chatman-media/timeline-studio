@@ -14,6 +14,6 @@ use crate::analysis::types::AudioAnalysisError;
 
 /// Trait для всех audio adapters
 pub trait AudioAdapter<Input, Output> {
-    /// Конвертировать legacy type в unified format
-    fn convert(&self, input: Input) -> Result<Output, AudioAnalysisError>;
+  /// Конвертировать legacy type в unified format
+  fn convert(&self, input: Input) -> Result<Output, AudioAnalysisError>;
 }

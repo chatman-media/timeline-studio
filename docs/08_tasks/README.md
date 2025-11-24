@@ -26,6 +26,18 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-25] Task Organization - Root Cleanup
+Moved 6 task files from docs/08_tasks/ root to proper folders:
+
+| File | Status | Action |
+|------|--------|--------|
+| peaks-js-integration.md | 90% | → active/ |
+| migration-ai-to-backend.md | Phase 1-2 done | → active/ |
+| multicam-improvements.md | В работе | → active/ |
+| video-player-sync-improvements.md | В работе | → active/ |
+| ai-director-v2-concept.md | Концепт | → planned/ |
+| waveform-integration-complete.md | 100% | → completed/ |
+
 ### [2025-11-25] Audio Analysis Architecture Refactoring
 - **Status:** В работе (80%)
 - **File:** audio-analysis-architecture-refactoring.md

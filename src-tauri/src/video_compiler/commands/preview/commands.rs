@@ -272,11 +272,7 @@ pub async fn generate_waveform_data_json(
 
   // Генерируем waveform данные через FFmpeg
   let waveform_json = preview_service
-    .generate_waveform_data_json(
-      std::path::Path::new(&audio_path),
-      pixels_per_second,
-      bits,
-    )
+    .generate_waveform_data_json(std::path::Path::new(&audio_path), pixels_per_second, bits)
     .await?;
 
   // Сохраняем JSON в файл
