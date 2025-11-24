@@ -27,6 +27,25 @@ vi.mock("@/features/user-settings", () => ({
   })),
 }))
 
+// Мокаем useMediaFiles
+vi.mock("@/features/app-state/hooks/use-media-files", () => ({
+  useMediaFiles: vi.fn(() => ({
+    mediaFiles: [],
+    selectedFiles: [],
+    getMediaFiles: vi.fn(() => []),
+  })),
+}))
+
+// Мокаем useTimeline
+vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+  useTimeline: vi.fn(() => ({
+    clips: [],
+    tracks: [],
+    sections: [],
+    globalTracks: [],
+  })),
+}))
+
 // Мокаем usePlayer для возврата нужного состояния
 vi.mock("@/features/video-player/services/player-provider", async () => {
   const actual = await vi.importActual("@/features/video-player/services/player-provider")

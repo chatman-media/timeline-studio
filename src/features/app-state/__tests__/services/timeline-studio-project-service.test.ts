@@ -363,12 +363,20 @@ describe("TimelineStudioProjectService", () => {
   })
 
   describe("Export/Import Stubs", () => {
-    it("должен выбрасывать ошибку для неимплементированного экспорта", async () => {
+    it("должен экспортировать проект в различные форматы", async () => {
       const project = await service.createProject("Test")
 
-      expect(() => service.exportForExchange(project, "xml")).toThrow("not implemented")
-      expect(() => service.exportForExchange(project, "aaf")).toThrow("not implemented")
-      expect(() => service.exportForExchange(project, "edl")).toThrow("not implemented")
+      // Методы экспорта реализованы и возвращают строки
+      const xmlExport = service.exportForExchange(project, "xml")
+      const aafExport = service.exportForExchange(project, "aaf")
+      const edlExport = service.exportForExchange(project, "edl")
+
+      expect(typeof xmlExport).toBe("string")
+      expect(typeof aafExport).toBe("string")
+      expect(typeof edlExport).toBe("string")
+      expect(xmlExport.length).toBeGreaterThan(0)
+      expect(aafExport.length).toBeGreaterThan(0)
+      expect(edlExport.length).toBeGreaterThan(0)
     })
 
     it("должен выбрасывать ошибку для неимплементированного импорта", () => {

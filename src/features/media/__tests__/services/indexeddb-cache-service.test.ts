@@ -639,11 +639,12 @@ describe("IndexedDBCacheService", () => {
 
     it("should handle timestamp exactly at TTL boundary", async () => {
       const fileId = "boundary-file"
-      const exactTTL = Date.now() - 30 * 24 * 60 * 60 * 1000 // Exactly 30 days
+      // Немного меньше TTL, чтобы учесть время выполнения теста
+      const almostTTL = Date.now() - 30 * 24 * 60 * 60 * 1000 + 100 // 30 days minus 100ms
       const cachedAtBoundary = {
         fileId,
         thumbnail: "data",
-        timestamp: exactTTL,
+        timestamp: almostTTL,
         size: 1000,
       }
 
@@ -651,7 +652,7 @@ describe("IndexedDBCacheService", () => {
 
       const result = await service.getCachedPreview(fileId)
 
-      // Should still be valid (not expired) at exactly TTL
+      // Should still be valid (not expired) just before TTL
       expect(result).toBe("data")
       expect(mockDel).not.toHaveBeenCalled()
     })

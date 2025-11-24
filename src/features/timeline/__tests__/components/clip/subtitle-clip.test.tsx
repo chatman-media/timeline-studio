@@ -21,6 +21,11 @@ vi.mock("../../../hooks/use-timeline-selection", () => ({
   }),
 }))
 
+// Мокаем useTimeScale из timeline-ui-context
+vi.mock("../../../context/timeline-ui-context", () => ({
+  useTimeScale: () => PIXELS_PER_SECOND,
+}))
+
 // Мокаем useSubtitleStyles
 vi.mock("@/features/subtitles", () => ({
   useSubtitleStyles: () => ({
