@@ -280,6 +280,7 @@ pub struct MediaMetadata {
   pub bitrate: Option<u32>,
   pub audio_channels: Option<u32>,
   pub sample_rate: Option<u32>,
+  pub creation_time: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
