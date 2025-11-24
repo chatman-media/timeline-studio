@@ -5,8 +5,10 @@
  * Группировка по дате, камере, событиям и другим критериям
  */
 
+import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
+import { getMediaMetadataService } from "./media-metadata-service"
 
 const logger = createLogger("SmartOrganization")
 
@@ -181,11 +183,19 @@ export class SmartOrganizationService {
         throw new Error("Only timestamp-based event detection is currently supported")
       }
 
+      // Получаем timestamps для всех файлов
+      const filesWithTimestamps = await Promise.all(
+        files.map(async (file) => ({
+          file,
+          timestamp: await this.getFileTimestamp(file),
+        })),
+      )
+
       // Сортируем файлы по дате
-      const sortedFiles = [...files].sort((_a, _b) => {
-        // TODO: Использовать реальные даты файлов
-        return 0
-      })
+      const sortedFiles = filesWithTimestamps
+        .filter((item) => item.timestamp !== null)
+        .sort((a, b) => a.timestamp! - b.timestamp!)
+        .map((item) => item.file)
 
       // Группируем по событиям
       const events: MediaGroup[] = []
@@ -329,12 +339,48 @@ export class SmartOrganizationService {
    */
   private async extractFileDate(
     file: MediaInfo,
-    _options: Pick<OrganizeByDateOptions, "useCreationDate" | "useModificationDate" | "useExifDate">,
+    options: Pick<OrganizeByDateOptions, "useCreationDate" | "useModificationDate" | "useExifDate">,
   ): Promise<Date | null> {
     try {
-      // TODO: Реализовать извлечение даты из метаданных
-      // Пока возвращаем текущую дату для базовой функциональности
-      return new Date()
+      const { useCreationDate, useModificationDate, useExifDate } = options
+
+      // 1. Приоритет: EXIF дата (для фото/видео) если включена
+      if (useExifDate && (file.type === "Video" || file.type === "Image")) {
+        try {
+          const metadataService = getMediaMetadataService()
+          const metadata = await metadataService.extractMetadata(file.path)
+
+          // Проверяем creation_time в метаданных
+          if ("creation_time" in metadata && metadata.creation_time) {
+            const date = new Date(metadata.creation_time)
+            if (!Number.isNaN(date.getTime())) {
+              return date
+            }
+          }
+        } catch (error) {
+          logger.warn("Failed to extract EXIF date", { filePath: file.path, error })
+        }
+      }
+
+      // 2. Используем дату из существующих метаданных файла, если есть
+      if (file.metadata && "creation_time" in file.metadata && file.metadata.creation_time) {
+        const date = new Date(file.metadata.creation_time)
+        if (!Number.isNaN(date.getTime())) {
+          return date
+        }
+      }
+
+      // 3. Получаем статистику файла через Tauri
+      const fileStats = await invoke<{ size: number; lastModified: number }>("get_file_stats", {
+        path: file.path,
+      })
+
+      // Используем дату модификации если включена или как fallback
+      if (fileStats.lastModified && (useModificationDate || useCreationDate)) {
+        return new Date(fileStats.lastModified)
+      }
+
+      return null
     } catch (error) {
       logger.error("Failed to extract file date", { filePath: file.path, error })
       return null
@@ -344,11 +390,18 @@ export class SmartOrganizationService {
   /**
    * Получить timestamp файла
    */
-  private async getFileTimestamp(_file: MediaInfo): Promise<number | null> {
+  private async getFileTimestamp(file: MediaInfo): Promise<number | null> {
     try {
-      // TODO: Реализовать получение timestamp
-      return Date.now()
+      // Используем extractFileDate с приоритетом EXIF данных
+      const date = await this.extractFileDate(file, {
+        useCreationDate: true,
+        useModificationDate: true,
+        useExifDate: true,
+      })
+
+      return date ? date.getTime() : null
     } catch (error) {
+      logger.warn("Failed to get file timestamp", { filePath: file.path, error })
       return null
     }
   }
@@ -356,12 +409,57 @@ export class SmartOrganizationService {
   /**
    * Извлечь информацию о камере
    */
-  private async extractCameraInfo(_file: MediaInfo): Promise<{ manufacturer?: string; model?: string } | null> {
+  private async extractCameraInfo(file: MediaInfo): Promise<{ manufacturer?: string; model?: string } | null> {
     try {
-      // TODO: Реализовать извлечение EXIF данных
-      // Пока возвращаем null (все файлы пойдут в "Unknown")
+      // Информация о камере доступна только для фото и видео
+      if (file.type !== "Video" && file.type !== "Image") {
+        return null
+      }
+
+      // Пытаемся извлечь метаданные через сервис
+      const metadataService = getMediaMetadataService()
+      const metadata = await metadataService.extractMetadata(file.path)
+
+      // Извлекаем информацию о камере из codec или других полей
+      let manufacturer: string | undefined
+      let model: string | undefined
+
+      // Для видео можем использовать информацию из codec
+      if (metadata.type === "Video" && metadata.codec) {
+        const codecLower = metadata.codec.toLowerCase()
+
+        // Определяем производителя по codec
+        if (codecLower.includes("apple") || codecLower.includes("prores")) {
+          manufacturer = "Apple"
+        } else if (codecLower.includes("gopro")) {
+          manufacturer = "GoPro"
+        } else if (codecLower.includes("dji")) {
+          manufacturer = "DJI"
+        } else if (codecLower.includes("sony")) {
+          manufacturer = "Sony"
+        } else if (codecLower.includes("canon")) {
+          manufacturer = "Canon"
+        }
+
+        model = metadata.codec
+      }
+
+      // Если есть поля в базовых метаданных (они могут добавляться в будущем)
+      if (metadata.artist) {
+        manufacturer = metadata.artist
+      }
+      if (metadata.album) {
+        model = metadata.album
+      }
+
+      // Возвращаем результат только если есть хоть какая-то информация
+      if (manufacturer || model) {
+        return { manufacturer, model }
+      }
+
       return null
     } catch (error) {
+      logger.warn("Failed to extract camera info", { filePath: file.path, error })
       return null
     }
   }
@@ -444,12 +542,12 @@ export function getSmartOrganization(): SmartOrganizationService {
 }
 
 /**
- * TODO: Будущие улучшения
+ * Будущие улучшения:
  *
- * 1. Полная интеграция с metadata extraction для получения:
- *    - EXIF даты съемки
- *    - Модели камеры
- *    - GPS координат для геогруппировки
+ * 1. Расширенная интеграция с metadata extraction:
+ *    - GPS координаты для геогруппировки
+ *    - Расширенные EXIF данные (выдержка, ISO, диафрагма)
+ *    - Полная информация о камере из EXIF (не только из codec)
  * 2. Машинное обучение для группировки по содержимому:
  *    - Определение похожих сцен
  *    - Группировка людей (face recognition)
