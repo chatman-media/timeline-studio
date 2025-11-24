@@ -61,6 +61,8 @@ const initialContext: BrowserMachineContext = {
     style_templates: { ...DEFAULT_TAB_SETTINGS },
     music: { ...DEFAULT_TAB_SETTINGS },
     subtitles: { ...DEFAULT_TAB_SETTINGS },
+    projects: { ...DEFAULT_TAB_SETTINGS },
+    scenarios: { ...DEFAULT_TAB_SETTINGS },
   },
   selectedFiles: {
     media: [],
@@ -71,6 +73,8 @@ const initialContext: BrowserMachineContext = {
     style_templates: [],
     music: [],
     subtitles: [],
+    projects: [],
+    scenarios: [],
   },
   favorites: {
     media: [],
@@ -81,6 +85,8 @@ const initialContext: BrowserMachineContext = {
     style_templates: [],
     music: [],
     subtitles: [],
+    projects: [],
+    scenarios: [],
   },
   isLoading: false,
   error: null,
