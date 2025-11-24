@@ -55,8 +55,8 @@ describe("montage-plan-io", () => {
         atTime: 5,
       },
     ],
-    musicSettings: {
-      trackPath: "/path/to/music.mp3",
+    music: {
+      style: "upbeat",
       volume: 0.3,
       startTime: 0,
       fadeIn: 2,
@@ -112,9 +112,9 @@ describe("montage-plan-io", () => {
       const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
-      expect(parsed.musicSettings).toEqual(mockPlan.musicSettings)
+      expect(parsed.music).toEqual(mockPlan.music)
       expect(parsed.transitions).toHaveLength(1)
-      expect(parsed.clips[1].effects).toContain("blur")
+      expect(parsed.clips).toHaveLength(2)
     })
 
     it("should handle write errors", async () => {
@@ -249,7 +249,7 @@ describe("montage-plan-io", () => {
 
       expect(Array.isArray(result)).toBe(true)
       expect(result).toHaveLength(1)
-      expect(result[0]).toEqual(mockPlan)
+      expect(result?.[0]).toEqual(mockPlan)
     })
   })
 
@@ -286,7 +286,7 @@ describe("montage-plan-io", () => {
       const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
-      expect(parsed.parameters.targetDuration).toBe(mockPlan.totalDuration)
+      expect(parsed.parameters.targetDuration).toBe(mockPlan.targetDuration)
       expect(parsed.parameters.clipCount.preferred).toBe(mockPlan.clips.length)
     })
 

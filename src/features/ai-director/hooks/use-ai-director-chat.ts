@@ -110,7 +110,8 @@ export function useAIDirectorChat(
         // Пробуем распарсить план монтажа если AI его создал
         let montagePlan: MontagePlan | null = null
         if (responseContent.includes("```json") || responseContent.includes("{")) {
-          montagePlan = parseMontagePlanFromAI(responseContent)
+          const parseResult = parseMontagePlanFromAI(responseContent)
+          montagePlan = parseResult.success ? parseResult.plan || null : null
 
           if (montagePlan) {
             logger.infoSync("[useAIDirectorChat] Montage plan detected and parsed", {

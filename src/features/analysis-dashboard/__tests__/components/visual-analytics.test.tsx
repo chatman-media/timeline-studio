@@ -2,7 +2,7 @@
  * VisualAnalytics Component Tests
  */
 
-import { render, screen, within } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { VisualAnalytics } from "../../components/visual-analytics"
 import { createMockVisualAnalytics } from "../test-utils"
@@ -84,10 +84,11 @@ describe("VisualAnalytics", () => {
     render(<VisualAnalytics data={data} />)
 
     // Scene types: intro, action, dialogue, outro
-    expect(screen.getByText("intro")).toBeInTheDocument()
-    expect(screen.getByText("action")).toBeInTheDocument()
-    expect(screen.getByText("dialogue")).toBeInTheDocument()
-    expect(screen.getByText("outro")).toBeInTheDocument()
+    // Используем getAllByText так как текст может появляться в нескольких местах (timeline + legend)
+    expect(screen.getAllByText("intro").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("action").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("dialogue").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("outro").length).toBeGreaterThan(0)
   })
 
   it("should calculate and display average scene duration", () => {

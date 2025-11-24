@@ -112,7 +112,7 @@ export async function importMontagePlan(): Promise<MontagePlan | null> {
     return plan
   } catch (error) {
     logger.errorSync("[MontagePlanIO] Failed to import plan", error as Record<string, unknown>)
-    return null
+    throw error
   }
 }
 
@@ -260,7 +260,14 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
         frequency: plan.clips.length > 1 ? plan.transitions.length / (plan.clips.length - 1) : 0,
       },
 
-      musicSettings: plan.music,
+      musicSettings: plan.music
+        ? {
+            style: plan.music.style || "upbeat",
+            volume: plan.music.volume || 0.5,
+            fadeIn: plan.music.fadeIn || 2,
+            fadeOut: plan.music.fadeOut || 2,
+          }
+        : undefined,
     }
 
     const filePath = await save({

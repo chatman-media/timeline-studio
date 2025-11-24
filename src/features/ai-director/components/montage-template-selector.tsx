@@ -18,7 +18,14 @@ import { BUILT_IN_TEMPLATES, getAllCategories } from "../types/montage-templates
 interface MontageTemplateSelectorProps {
   onSelect?: (template: MontageTemplate) => void
   selectedTemplateId?: string
+  selected?: string
   className?: string
+  showCategoryFilter?: boolean
+  showSearch?: boolean
+  showDetails?: boolean
+  groupByCategory?: boolean
+  showTags?: boolean
+  showAspectRatio?: boolean
 }
 
 export function MontageTemplateSelector({ onSelect, selectedTemplateId, className }: MontageTemplateSelectorProps) {

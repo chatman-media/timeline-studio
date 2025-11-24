@@ -48,7 +48,7 @@ export function AIDirectorChat({ filesProgress, onCreateMontage, className }: AI
   })
 
   // Hook для применения плана монтажа к timeline
-  const { applyMontagePlan } = useMontageApplicator()
+  const { applyToTimeline } = useMontageApplicator()
 
   const [input, setInput] = useState("")
   const [showExamples, setShowExamples] = useState(true)
@@ -239,19 +239,11 @@ export function AIDirectorChat({ filesProgress, onCreateMontage, className }: AI
                   try {
                     // Применяем план к timeline
                     // План может быть отредактирован внутри preview компонента
-                    await applyMontagePlan(lastMontagePlan, {
-                      useExistingTracks: false,
-                      onComplete: () => {
-                        if (onCreateMontage) {
-                          onCreateMontage(lastMontagePlan)
-                        }
-                        setShowPreview(false)
-                      },
-                      onError: (error) => {
-                        console.error("Failed to apply montage plan:", error)
-                        // TODO: показать пользователю ошибку
-                      },
-                    })
+                    await applyToTimeline(lastMontagePlan)
+                    if (onCreateMontage) {
+                      onCreateMontage(lastMontagePlan)
+                    }
+                    setShowPreview(false)
                   } catch (error) {
                     console.error("Failed to apply montage plan:", error)
                   }

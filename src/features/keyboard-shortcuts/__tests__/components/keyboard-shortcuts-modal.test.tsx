@@ -18,6 +18,15 @@ vi.mock("@/features/modals/services/modal-provider", () => ({
   }),
 }))
 
+const mockExportSettings = vi.fn(() => Promise.resolve("{}"))
+const mockImportSettings = vi.fn(() => Promise.resolve())
+vi.mock("../../services/shortcuts-provider", () => ({
+  useShortcuts: () => ({
+    exportSettings: mockExportSettings,
+    importSettings: mockImportSettings,
+  }),
+}))
+
 const mockCreatePresets = vi.fn()
 vi.mock("../../presets", () => ({
   createPresets: (...args: any[]) => {

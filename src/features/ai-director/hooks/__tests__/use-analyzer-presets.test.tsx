@@ -4,6 +4,7 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
+import type { AnalyzerType } from "../../types/analysis-progress"
 import { DEFAULT_PRESETS } from "../../types/analyzer-presets"
 import { useAnalyzerPresets } from "../use-analyzer-presets"
 
@@ -113,7 +114,7 @@ describe("useAnalyzerPresets", () => {
 
       const preset = result.current.selectedPreset
       expect(preset?.analyzers.size).toBeGreaterThan(10)
-      expect(preset?.description).toContain("complete")
+      expect(preset?.description.toLowerCase()).toContain("complete")
     })
 
     it("should have montage-focus optimized for editing", () => {
@@ -151,7 +152,7 @@ describe("useAnalyzerPresets", () => {
         result.current.createCustomPreset({
           name: "My Custom Preset",
           description: "Custom analyzer selection",
-          analyzers: customAnalyzers,
+          analyzers: customAnalyzers as Set<AnalyzerType>,
         })
       })
 
@@ -169,7 +170,7 @@ describe("useAnalyzerPresets", () => {
         result.current.createCustomPreset({
           name: "Test Preset",
           description: "Test",
-          analyzers: customAnalyzers,
+          analyzers: customAnalyzers as Set<AnalyzerType>,
         })
       })
 
@@ -202,7 +203,7 @@ describe("useAnalyzerPresets", () => {
         result.current.createCustomPreset({
           name: "Test Preset",
           description: "Original",
-          analyzers: customAnalyzers,
+          analyzers: customAnalyzers as Set<AnalyzerType>,
         })
       })
 

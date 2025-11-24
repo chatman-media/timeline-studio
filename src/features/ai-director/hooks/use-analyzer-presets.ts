@@ -6,7 +6,7 @@ import { useCallback, useState } from "react"
 
 import type { AnalyzerType } from "../types/analysis-progress"
 import type { AnalyzerPreset } from "../types/analyzer-presets"
-import { DEFAULT_PRESETS } from "../types/analyzer-presets"
+import { calculateEstimatedTime, DEFAULT_PRESETS } from "../types/analyzer-presets"
 
 interface PresetComparison {
   preset1: AnalyzerPreset
@@ -57,10 +57,10 @@ export function useAnalyzerPresets() {
         id: `custom-${Date.now()}`,
         name: options.name,
         description: options.description,
-        analyzers: Array.from(options.analyzers),
+        analyzers: options.analyzers,
         isDefault: false,
         category: "custom",
-        estimatedTime: Array.from(options.analyzers).length * 30, // Простая оценка
+        estimatedTime: calculateEstimatedTime(options.analyzers),
       }
 
       setCustomPresets((prev) => [...prev, newPreset])
@@ -98,7 +98,7 @@ export function useAnalyzerPresets() {
             ...p,
             ...(updates.name && { name: updates.name }),
             ...(updates.description && { description: updates.description }),
-            ...(updates.analyzers && { analyzers: Array.from(updates.analyzers) }),
+            ...(updates.analyzers && { analyzers: updates.analyzers }),
           }
         }),
       )

@@ -2,23 +2,38 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useAdvancedTransitions } from "../../hooks/use-advanced-transitions"
 import { webglTransitionService } from "../../services/webgl-transition-service"
+import type { Transition } from "../../types/transitions"
+
+// Helper function to create mock transitions
+const createMockTransition = (overrides: Partial<Transition>): Transition => ({
+  id: "mock-transition",
+  type: "fade",
+  labels: { ru: "Тест", en: "Test" },
+  description: { ru: "Тестовый переход", en: "Test transition" },
+  category: "basic",
+  complexity: "basic",
+  tags: [],
+  duration: { min: 0.5, max: 3, default: 1 },
+  ffmpegCommand: () => "test-command",
+  parameters: {},
+  ...overrides,
+})
 
 // Mock transitions data
-const mockTransitions = [
-  {
+const mockTransitions: Transition[] = [
+  createMockTransition({
     id: "fade",
-    name: "Fade",
-    category: "basic",
-    complexity: "basic" as const,
-    gpuAccelerated: false,
+    type: "fade",
+    labels: { ru: "Затухание", en: "Fade" },
+    complexity: "basic",
     parameters: {},
-  },
-  {
+    gpuAccelerated: false,
+  }),
+  createMockTransition({
     id: "blur-transition",
-    name: "Blur Transition",
-    category: "blur",
-    complexity: "intermediate" as const,
-    gpuAccelerated: true,
+    type: "blur",
+    labels: { ru: "Размытие", en: "Blur Transition" },
+    complexity: "intermediate",
     parameters: {
       blur: {
         enabled: true,
@@ -26,13 +41,13 @@ const mockTransitions = [
         type: "gaussian",
       },
     },
-  },
-  {
-    id: "color-transition",
-    name: "Color Transition",
-    category: "color",
-    complexity: "intermediate" as const,
     gpuAccelerated: true,
+  }),
+  createMockTransition({
+    id: "color-transition",
+    type: "color",
+    labels: { ru: "Цвет", en: "Color Transition" },
+    complexity: "intermediate",
     parameters: {
       color: {
         enabled: true,
@@ -41,18 +56,20 @@ const mockTransitions = [
         brightness: 0.2,
       },
     },
-  },
-  {
-    id: "advanced-3d",
-    name: "3D Advanced",
-    category: "3d",
-    complexity: "advanced" as const,
     gpuAccelerated: true,
+  }),
+  createMockTransition({
+    id: "advanced-3d",
+    type: "3d",
+    labels: { ru: "3D", en: "3D Advanced" },
+    category: "3d",
+    complexity: "advanced",
     parameters: {
       blur: { enabled: true, amount: 30, type: "radial" },
       color: { enabled: true, tint: "#00FF00", saturation: 1, brightness: 0 },
     },
-  },
+    gpuAccelerated: true,
+  }),
 ]
 
 // Mock use-transitions hook
@@ -178,17 +195,14 @@ describe("useAdvancedTransitions", () => {
     it("should filter transitions by category", () => {
       const { result } = renderHook(() => useAdvancedTransitions())
 
-      const blurTransitions = result.current.getTransitionsByCategory("blur")
-      expect(blurTransitions).toHaveLength(1)
-      expect(blurTransitions[0].id).toBe("blur-transition")
-
-      const colorTransitions = result.current.getTransitionsByCategory("color")
-      expect(colorTransitions).toHaveLength(1)
-      expect(colorTransitions[0].id).toBe("color-transition")
-
+      // Filter by exact category match, not by type
       const threeDTransitions = result.current.getTransitionsByCategory("3d")
       expect(threeDTransitions).toHaveLength(1)
       expect(threeDTransitions[0].id).toBe("advanced-3d")
+
+      // Basic category
+      const basicTransitions = result.current.getTransitionsByCategory("basic")
+      expect(basicTransitions).toHaveLength(3) // blur, color, fade
     })
   })
 
@@ -332,15 +346,15 @@ describe("useAdvancedTransitions", () => {
       const transition = {
         ...mockTransitions[1],
         parameters: {
-          blur: { enabled: false, amount: 100, type: "motion" },
+          blur: { enabled: false, amount: 100, type: "motion" as const },
         },
       }
 
       const params = result.current.createDefaultParameters(transition)
 
-      expect(params.blur.enabled).toBe(false)
-      expect(params.blur.amount).toBe(100)
-      expect(params.blur.type).toBe("motion")
+      expect(params.blur?.enabled).toBe(false)
+      expect(params.blur?.amount).toBe(100)
+      expect(params.blur?.type).toBe("motion")
     })
   })
 

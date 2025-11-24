@@ -53,7 +53,7 @@ export function AnalyzerPresetSelector({
 
   // Handle save preset
   const handleSavePreset = () => {
-    const newPreset = createCustomPreset(presetName, presetDescription, Array.from(selectedAnalyzers))
+    const newPreset = createCustomPreset(presetName, presetDescription, selectedAnalyzers)
 
     const validation = validatePreset(newPreset)
     if (!validation.isValid) {
@@ -70,8 +70,8 @@ export function AnalyzerPresetSelector({
 
   // Check if current selection matches a preset
   const matchingPreset = [...defaultPresets, ...customPresets].find((preset) => {
-    if (preset.analyzers.length !== selectedAnalyzers.size) return false
-    return preset.analyzers.every((analyzer) => selectedAnalyzers.has(analyzer))
+    if (preset.analyzers.size !== selectedAnalyzers.size) return false
+    return Array.from(preset.analyzers).every((analyzer) => selectedAnalyzers.has(analyzer))
   })
 
   return (
@@ -232,8 +232,8 @@ function PresetCard({ preset, isActive, onApply, onDelete, canDelete }: PresetCa
           </div>
           <p className="text-xs text-muted-foreground mt-1">{preset.description}</p>
           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-            <span>{preset.analyzers.length} анализаторов</span>
-            <span>{formatTime(preset.estimatedTime)}</span>
+            <span>{preset.analyzers.size} анализаторов</span>
+            <span>{preset.estimatedTime}</span>
           </div>
         </div>
 

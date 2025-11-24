@@ -159,7 +159,7 @@ This plan uses a cinematic style.`
 
       expect(result.success).toBe(true)
       expect(result.plan?.textSettings).toBeDefined()
-      expect(result.plan?.textSettings?.titleText).toBe("My Video")
+      expect(result.plan?.textSettings?.content).toBe("My Video")
     })
 
     it("should handle malformed JSON with helpful error", () => {
@@ -235,6 +235,7 @@ This plan uses a cinematic style.`
     it("should validate transition timing", () => {
       const planWithInvalidTransition: MontagePlan = {
         ...validPlan,
+        actualDuration: 5, // Set actual duration so transition validation can detect out-of-bounds
         transitions: [
           {
             type: "cross_dissolve",
@@ -247,7 +248,7 @@ This plan uses a cinematic style.`
       const result = validateMontagePlan(planWithInvalidTransition)
 
       expect(result.isValid).toBe(false)
-      expect(result.errors.some((e) => e.includes("transition"))).toBe(true)
+      expect(result.errors.some((e) => e.toLowerCase().includes("transition"))).toBe(true)
     })
 
     it("should validate total duration matches clips", () => {
@@ -265,8 +266,8 @@ This plan uses a cinematic style.`
     it("should validate music volume range", () => {
       const planWithInvalidVolume: MontagePlan = {
         ...validPlan,
-        musicSettings: {
-          trackPath: "music.mp3",
+        music: {
+          style: "upbeat",
           volume: 1.5, // Invalid > 1.0
           fadeIn: 0,
           fadeOut: 0,

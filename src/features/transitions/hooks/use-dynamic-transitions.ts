@@ -308,14 +308,18 @@ export function useDynamicTransitions(options: UseDynamicTransitionsOptions = {}
 
       const requiresComputeShaders: DynamicShaderType[] = ["particle-dissolve", "organic-growth"]
 
-      if (requiresHighPerformance.includes(shaderType) && state.performance.fps < 30) {
+      // Проверяем FPS только если он уже измерен (не равен 0)
+      // fps = 0 означает, что измерения еще не начались или не завершились
+      if (requiresHighPerformance.includes(shaderType) && state.performance.fps > 0 && state.performance.fps < 30) {
         void logInfo(`Transition ${shaderType} requires high performance but fps=${state.performance.fps}`)
         return false
       }
 
+      // Compute shaders - это опциональная оптимизация, не обязательное требование
+      // Переходы работают и без них, просто медленнее
+      // Поэтому не блокируем использование переходов при отсутствии compute shaders
       if (requiresComputeShaders.includes(shaderType) && !state.capabilities.computeShaders) {
-        void logInfo(`Transition ${shaderType} requires compute shaders but not available`)
-        return false
+        void logInfo(`Transition ${shaderType} would benefit from compute shaders but they are not available`)
       }
 
       return true

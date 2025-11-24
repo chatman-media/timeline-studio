@@ -3,7 +3,7 @@
  */
 
 import { renderHook, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 import { useAnalysisMetrics, usePerformanceMonitoring } from "../../hooks/use-performance-monitoring"
 import { createMockFileProgress } from "../test-utils"
 
@@ -190,10 +190,12 @@ describe("usePerformanceMonitoring", () => {
   })
 
   it("should update metrics when filesProgress changes", async () => {
+    // Start with completed file
     const initialFiles = [
       createMockFileProgress({
         fileId: "file-1",
-        status: "analyzing",
+        status: "completed",
+        duration: 60000,
       }),
     ]
 
@@ -201,9 +203,17 @@ describe("usePerformanceMonitoring", () => {
       initialProps: { files: initialFiles },
     })
 
-    const initialAnalysis = result.current.metrics.analysis
+    // Wait for initial metrics
+    await waitFor(
+      () => {
+        expect(result.current.metrics.analysis).toBeDefined()
+        expect(result.current.metrics.analysis?.totalFiles).toBe(1)
+        expect(result.current.metrics.analysis?.filesProcessed).toBe(1)
+      },
+      { timeout: 3000 },
+    )
 
-    // Update with new progress
+    // Update with additional analyzing file
     const updatedFiles = [
       createMockFileProgress({
         fileId: "file-1",
@@ -213,20 +223,28 @@ describe("usePerformanceMonitoring", () => {
       createMockFileProgress({
         fileId: "file-2",
         status: "analyzing",
+        progress: 50,
       }),
     ]
 
     rerender({ files: updatedFiles })
 
-    await waitFor(() => {
-      expect(result.current.metrics.analysis?.filesProcessed).toBe(1)
-      expect(result.current.metrics.analysis?.totalFiles).toBe(2)
-    })
+    // Wait for metrics to update with new files
+    await waitFor(
+      () => {
+        const analysis = result.current.metrics.analysis
+        expect(analysis).toBeDefined()
+        expect(analysis?.totalFiles).toBe(2)
+        expect(analysis?.filesProcessed).toBe(1)
+        expect(analysis?.avgProcessingTime).toBe(60)
+      },
+      { timeout: 5000, interval: 50 },
+    )
   })
 })
 
 describe("useAnalysisMetrics", () => {
-  it("should return only analysis metrics", () => {
+  it("should return only analysis metrics", async () => {
     const filesProgress = [
       createMockFileProgress({
         status: "completed",
@@ -236,10 +254,15 @@ describe("useAnalysisMetrics", () => {
 
     const { result } = renderHook(() => useAnalysisMetrics(filesProgress))
 
-    expect(result.current).toBeDefined()
-    expect(result.current?.filesProcessed).toBe(1)
-    expect(result.current?.totalFiles).toBe(1)
-    expect(result.current?.avgProcessingTime).toBe(60)
+    await waitFor(
+      () => {
+        expect(result.current).toBeDefined()
+        expect(result.current?.filesProcessed).toBe(1)
+        expect(result.current?.totalFiles).toBe(1)
+        expect(result.current?.avgProcessingTime).toBe(60)
+      },
+      { timeout: 3000 },
+    )
   })
 
   it("should return undefined when no files", () => {
@@ -248,7 +271,7 @@ describe("useAnalysisMetrics", () => {
     expect(result.current).toBeUndefined()
   })
 
-  it("should enable ETA by default", () => {
+  it("should enable ETA by default", async () => {
     const filesProgress = [
       createMockFileProgress({
         status: "completed",
@@ -261,6 +284,11 @@ describe("useAnalysisMetrics", () => {
 
     const { result } = renderHook(() => useAnalysisMetrics(filesProgress))
 
-    expect(result.current?.eta).toBeDefined()
+    await waitFor(
+      () => {
+        expect(result.current?.eta).toBeDefined()
+      },
+      { timeout: 3000 },
+    )
   })
 })

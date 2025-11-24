@@ -157,9 +157,10 @@ describe("AddMediaButton", () => {
     expect(button.className).toContain("visible")
   })
 
-  it("should call MoveToMediaPool command when clicked while hovering and not added", () => {
+  it("should call addMedia when clicked while hovering and not added", () => {
     const mockUseResources = useResources as any
-    mockUseResources().isAdded.mockReturnValue(false)
+    const { isAdded, addMedia } = mockUseResources()
+    isAdded.mockReturnValue(false)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -175,14 +176,9 @@ describe("AddMediaButton", () => {
       fireEvent.click(button)
     })
 
-    // Проверяем, что executeCommand был вызван с командой MoveToMediaPool
-    expect(mockExecuteCommand).toHaveBeenCalledTimes(1)
-    expect(mockExecuteCommand).toHaveBeenCalledWith({
-      type: "MoveToMediaPool",
-      params: {
-        media_id: testResource.id,
-      },
-    })
+    // Проверяем, что addMedia был вызван с файлом
+    expect(addMedia).toHaveBeenCalledTimes(1)
+    expect(addMedia).toHaveBeenCalledWith(testResource.file)
   })
 
   it("should show remove icon on hover when isAdded is true and not recently added", () => {

@@ -17,6 +17,7 @@ import {
   AIDirectorChat,
   AIDirectorDashboard,
   AnalyzerCheckboxGroup,
+  type AnalyzerPreset,
   AnalyzerPresetSelector,
   type AnalyzerType,
   useAIDirectorAnalysisV2,
@@ -43,7 +44,7 @@ export function AIAnalysisDashboardV2() {
   // Convert selected file IDs to full paths
   // ВАЖНО: Берем файлы именно из вкладки "media", а не из activeTab
   const selectedFilePaths = useMemo(() => {
-    const mediaTabSelectedFiles = browserState?.selected_files?.["media"] || []
+    const mediaTabSelectedFiles = browserState?.selected_files?.media || []
 
     logger.infoSync("[Dashboard] Converting selected files to paths", {
       selectedFilesCount: mediaTabSelectedFiles.length,
@@ -75,7 +76,29 @@ export function AIAnalysisDashboardV2() {
   const { isAnalyzing, filesProgress, startBatchAnalysis, reset } = useAIDirectorAnalysisV2()
 
   // Use analyzer presets hook
-  const { customPresets, savePreset, deletePreset, applyPreset } = useAnalyzerPresets()
+  const {
+    customPresets,
+    createCustomPreset,
+    deleteCustomPreset: deletePresetFromHook,
+    selectPreset,
+  } = useAnalyzerPresets()
+
+  // Wrapper functions to match component API
+  const savePreset = (preset: AnalyzerPreset) => {
+    createCustomPreset({ name: preset.name, description: preset.description, analyzers: preset.analyzers })
+  }
+
+  const deletePreset = (id: string) => {
+    deletePresetFromHook(id)
+  }
+
+  const applyPreset = (
+    preset: { id: string; analyzers: Set<AnalyzerType> },
+    setAnalyzers: (a: Set<AnalyzerType>) => void,
+  ) => {
+    selectPreset(preset.id)
+    setAnalyzers(preset.analyzers)
+  }
 
   // Use AI Director Dashboard hook
   const { agents, stats, startWorkflow, updateAgent, clearCompleted } = useAIDirectorDashboard(filesProgress)

@@ -89,9 +89,11 @@ export function parseMontagePlanFromAI(aiResponse: string): ParseResult {
     // Создаем textSettings из данных (для обратной совместимости)
     const textSettings = textData
       ? {
-          titleText: textData.titleText || textData.content || textData.text,
-          titleDuration: Number.parseFloat(textData.titleDuration || textData.duration || 3),
-          creditsText: textData.creditsText,
+          content: textData.titleText || textData.content || textData.text || "",
+          startTime: Number.parseFloat(textData.startTime || 0),
+          duration: Number.parseFloat(textData.titleDuration || textData.duration || 3),
+          style: (textData.style as "title" | "subtitle" | "caption" | "credit") || "title",
+          position: (textData.position as "top" | "center" | "bottom") || "center",
         }
       : undefined
 

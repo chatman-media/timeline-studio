@@ -112,22 +112,22 @@ describe("Additional Templates", () => {
       expect(bottomRight).toBeDefined()
 
       // Check small size is 20%
-      expect(topLeft?.cellLayouts![1].width).toBe("20%")
-      expect(topLeft?.cellLayouts![1].height).toBe("20%")
+      expect(topLeft!.cellLayouts![1].width).toBe("20%")
+      expect(topLeft!.cellLayouts![1].height).toBe("20%")
     })
 
     it("includes medium size overlays", () => {
       const medium = cornerTemplates.find((t) => t.id === "corner-overlay-top-left-medium-landscape")
       expect(medium).toBeDefined()
-      expect(medium?.cellLayouts![1].width).toBe("30%")
-      expect(medium?.cellLayouts![1].height).toBe("30%")
+      expect(medium!.cellLayouts![1].width).toBe("30%")
+      expect(medium!.cellLayouts![1].height).toBe("30%")
     })
 
     it("includes large size overlays for portrait", () => {
       const large = cornerTemplates.find((t) => t.id === "corner-overlay-top-left-large-portrait")
       expect(large).toBeDefined()
-      expect(large?.cellLayouts![1].width).toBe("40%")
-      expect(large?.cellLayouts![1].height).toBe("30%")
+      expect(large!.cellLayouts![1].width).toBe("40%")
+      expect(large!.cellLayouts![1].height).toBe("30%")
     })
 
     it("all overlay cells have borders", () => {

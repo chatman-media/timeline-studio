@@ -5,7 +5,7 @@
 import { useCallback, useState } from "react"
 
 import type { MontageTemplate, MontageTemplateParameters } from "../types/montage-templates"
-import { BUILT_IN_TEMPLATES, getTemplateById } from "../types/montage-templates"
+import { BUILT_IN_TEMPLATES } from "../types/montage-templates"
 
 interface TemplateComparison {
   template1: MontageTemplate

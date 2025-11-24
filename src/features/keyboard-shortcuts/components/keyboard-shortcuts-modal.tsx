@@ -9,7 +9,6 @@ import { useModal } from "@/features/modals/services/modal-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { createPresets, type PresetType } from "../presets"
 import { useShortcuts } from "../services/shortcuts-provider"
-import { ConflictIndicator } from "./conflict-indicator"
 
 const logger = createLogger({ module: "KeyboardShortcutsModal" })
 

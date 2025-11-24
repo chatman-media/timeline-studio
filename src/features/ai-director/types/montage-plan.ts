@@ -129,6 +129,8 @@ export interface MontagePlan {
   description?: string
   /** Дата создания */
   createdAt: Date
+  /** Дата последнего обновления */
+  updatedAt?: Date
   /** Метаданные */
   metadata?: {
     /** Кол-во проанализированных файлов */

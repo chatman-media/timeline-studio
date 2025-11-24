@@ -84,7 +84,7 @@ export function usePerformanceMonitoring(
       // Учитываем текущий прогресс активных файлов
       const activeProgress = analyzingFiles.reduce((sum, f) => sum + f.progress, 0) / analyzingFiles.length
       if (activeProgress > 0) {
-        eta = eta * ((100 - activeProgress) / 100)
+        eta *= (100 - activeProgress) / 100
       }
     }
 

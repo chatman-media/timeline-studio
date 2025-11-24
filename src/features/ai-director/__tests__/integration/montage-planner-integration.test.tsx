@@ -55,9 +55,9 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockAnalysisResult)
 
-      const analysisResult = await invoke("ai_director_analyze_comprehensive", {
+      const analysisResult = (await invoke("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
-      })
+      })) as typeof mockAnalysisResult
 
       expect(analysisResult.moment_analysis?.key_moments).toHaveLength(2)
 
@@ -121,17 +121,17 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockAnalysis).mockResolvedValueOnce(mockMontagePlan)
 
-      const analysis = await invoke("ai_director_analyze_comprehensive", {
+      const analysis = (await invoke("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
-      })
+      })) as typeof mockAnalysis
 
       expect(analysis.moment_analysis?.key_moments).toHaveLength(2)
 
       // Generate montage plan based on analysis
-      const plan = await invoke("generate_montage_plan", {
+      const plan = (await invoke("generate_montage_plan", {
         moments: analysis.moment_analysis?.key_moments,
         config: { style: "dynamic", targetDuration: 30 },
-      })
+      })) as typeof mockMontagePlan
 
       expect(plan.clips).toHaveLength(2)
       expect(plan.clips[0].inPoint).toBe(5.0)
@@ -172,14 +172,14 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockUnifiedAudioAnalysis)
 
-      const audioAnalysis = await invoke("unified_audio_analyze_comprehensive", {
+      const audioAnalysis = (await invoke("unified_audio_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           performance_mode: "balanced",
         },
-      })
+      })) as typeof mockUnifiedAudioAnalysis
 
       // Use audio analysis for montage planning
       expect(audioAnalysis.montage_analysis?.rhythm_profile?.beats_per_minute).toBe(120.0)
@@ -206,9 +206,9 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockAudioWithSilence)
 
-      const audioAnalysis = await invoke("unified_audio_analyze_comprehensive", {
+      const audioAnalysis = (await invoke("unified_audio_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
-      })
+      })) as typeof mockAudioWithSilence
 
       const silenceSegments = audioAnalysis.ffmpeg_analysis?.silence_segments || []
 
@@ -276,9 +276,9 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockMoments)
 
-      const analysis = await invoke("ai_director_analyze_comprehensive", {
+      const analysis = (await invoke("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
-      })
+      })) as typeof mockMoments
 
       const qualityThreshold = 0.7
       const filteredMoments = analysis.key_moments.filter((m: any) => m.quality_score >= qualityThreshold)
@@ -304,13 +304,13 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockVisionAnalysis)
 
-      const visionAnalysis = await invoke("analyze_video_comprehensive", {
+      const visionAnalysis = (await invoke("analyze_video_comprehensive", {
         videoPath: "/path/to/video.mp4",
         options: {
           enable_scene_detection: true,
           enable_composition_analysis: true,
         },
-      })
+      })) as typeof mockVisionAnalysis
 
       expect(visionAnalysis.scene_changes).toHaveLength(3)
 
@@ -336,12 +336,12 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockRhythmAnalysis)
 
-      const audioAnalysis = await invoke("unified_audio_analyze_comprehensive", {
+      const audioAnalysis = (await invoke("unified_audio_analyze_comprehensive", {
         videoPath: "/path/to/music-video.mp4",
         config: {
           enable_montage_analysis: true,
         },
-      })
+      })) as typeof mockRhythmAnalysis
 
       const beatTimestamps = audioAnalysis.montage_analysis?.rhythm_profile?.beat_timestamps || []
 
@@ -376,9 +376,9 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       vi.mocked(invoke).mockResolvedValueOnce(mockBatchAnalysis)
 
-      const batchAnalysis = await invoke("ai_director_analyze_batch", {
+      const batchAnalysis = (await invoke("ai_director_analyze_batch", {
         filePaths: sourceFiles,
-      })
+      })) as typeof mockBatchAnalysis
 
       expect(Array.isArray(batchAnalysis)).toBe(true)
       expect(batchAnalysis).toHaveLength(3)
@@ -403,15 +403,16 @@ describe("AI Director ↔ Montage Planner Integration", () => {
         analysis_id: "test-123",
         status: "Completed",
         // Missing moment_analysis
+        moment_analysis: null as { key_moments: any[] } | null,
         vision_analysis: null,
         audio_analysis: null,
       }
 
       vi.mocked(invoke).mockResolvedValueOnce(incompleteAnalysis)
 
-      const analysis = await invoke("ai_director_analyze_comprehensive", {
+      const analysis = (await invoke("ai_director_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
-      })
+      })) as typeof incompleteAnalysis
 
       // Should handle missing data without crashing
       const moments = analysis.moment_analysis?.key_moments || []

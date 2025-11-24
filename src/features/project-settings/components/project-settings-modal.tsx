@@ -263,6 +263,31 @@ export function ProjectSettingsModal() {
                   // Вычисляем новую высоту на основе соотношения сторон
                   const newHeight = Math.round(width / aspectRatio)
                   setCustomHeight(newHeight)
+
+                  // Обновляем настройки с новыми размерами
+                  void updateSettings({
+                    ...settings,
+                    aspectRatio: {
+                      ...settings.aspectRatio,
+                      value: {
+                        ...settings.aspectRatio.value,
+                        width,
+                        height: newHeight,
+                      },
+                    },
+                  })
+                } else {
+                  // При разблокированном соотношении обновляем только ширину
+                  void updateSettings({
+                    ...settings,
+                    aspectRatio: {
+                      ...settings.aspectRatio,
+                      value: {
+                        ...settings.aspectRatio.value,
+                        width,
+                      },
+                    },
+                  })
                 }
               }
             }}
@@ -294,6 +319,31 @@ export function ProjectSettingsModal() {
                   // Вычисляем новую ширину на основе соотношения сторон
                   const newWidth = Math.round(height * aspectRatio)
                   setCustomWidth(newWidth)
+
+                  // Обновляем настройки с новыми размерами
+                  void updateSettings({
+                    ...settings,
+                    aspectRatio: {
+                      ...settings.aspectRatio,
+                      value: {
+                        ...settings.aspectRatio.value,
+                        width: newWidth,
+                        height,
+                      },
+                    },
+                  })
+                } else {
+                  // При разблокированном соотношении обновляем только высоту
+                  void updateSettings({
+                    ...settings,
+                    aspectRatio: {
+                      ...settings.aspectRatio,
+                      value: {
+                        ...settings.aspectRatio.value,
+                        height,
+                      },
+                    },
+                  })
                 }
               }
             }}

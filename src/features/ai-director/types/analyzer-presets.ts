@@ -133,7 +133,7 @@ export function createCustomPreset(name: string, description: string, analyzers:
 /**
  * Вычислить примерное время выполнения для набора анализаторов
  */
-function calculateEstimatedTime(analyzers: Set<AnalyzerType>): string {
+export function calculateEstimatedTime(analyzers: Set<AnalyzerType>): string {
   const count = analyzers.size
 
   if (count <= 3) return "< 1 min"
@@ -156,7 +156,7 @@ export function validatePreset(preset: AnalyzerPreset): { isValid: boolean; erro
     errors.push("Имя preset'а слишком длинное (максимум 50 символов)")
   }
 
-  if (preset.analyzers.length === 0) {
+  if (preset.analyzers.size === 0) {
     errors.push("Preset должен содержать хотя бы один анализатор")
   }
 
