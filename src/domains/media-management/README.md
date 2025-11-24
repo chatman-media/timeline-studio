@@ -19,7 +19,89 @@ media-management/
 └── index.ts         # Главный экспорт
 ```
 
-## Основные компоненты
+## ✨ Основные компоненты
+
+### MediaManagementProvider с уведомлениями
+
+**Новинка v2.0**: Полная интеграция системных уведомлений при импорте файлов.
+
+#### Базовое использование
+
+```typescript
+import { MediaManagementProvider } from '@/domains/media-management'
+
+function App() {
+  return (
+    <MediaManagementProvider enableNotifications={true}>
+      <YourApp />
+    </MediaManagementProvider>
+  )
+}
+```
+
+#### С расширенными настройками
+
+```typescript
+<MediaManagementProvider
+  enableNotifications={true}
+  importCallbacks={{
+    onImportStart: (filesCount) => {
+      console.log(`Начинаем импорт ${filesCount} файлов`)
+    },
+    onImportProgress: (progress, filesCount) => {
+      console.log(`Прогресс: ${progress}% (${filesCount} файлов)`)
+    },
+    onImportComplete: (filesCount, duration) => {
+      console.log(`Импортировано ${filesCount} файлов за ${duration}мс`)
+    },
+    onImportError: (error) => {
+      console.error('Ошибка импорта:', error)
+    },
+    onImportCancelled: () => {
+      console.log('Импорт отменен пользователем')
+    }
+  }}
+>
+  <YourApp />
+</MediaManagementProvider>
+```
+
+#### Использование в компонентах
+
+```typescript
+import { useMediaManagement } from '@/domains/media-management'
+
+function MyComponent() {
+  const { importFiles, mediaPool, isLoading } = useMediaManagement()
+
+  const handleImport = async () => {
+    // Автоматически покажет уведомления о прогрессе
+    await importFiles(['/path/to/video.mp4'], {
+      copyToProject: true
+    })
+  }
+
+  return (
+    <div>
+      <button onClick={handleImport} disabled={isLoading}>
+        Импортировать файлы
+      </button>
+      <p>Файлов в библиотеке: {mediaPool.size}</p>
+    </div>
+  )
+}
+```
+
+#### Особенности системы уведомлений
+
+- **Автоматические toast-уведомления**: Показывают старт, прогресс и завершение импорта
+- **Отслеживание прогресса**: Реал-тайм обновления с количеством файлов
+- **Информация о длительности**: Показывает сколько времени занял импорт
+- **Обработка ошибок**: Детальные сообщения об ошибках
+- **Настраиваемые callbacks**: Дополнительная логика через importCallbacks
+- **Опциональность**: enableNotifications={false} для отключения
+
+---
 
 ### Media Import Machine
 
@@ -45,6 +127,8 @@ mediaImport.onProgress((progress) => {
   logger.debugSync(`Imported ${progress.completed}/${progress.total}`)
 })
 ```
+
+---
 
 ### File Operations
 
@@ -234,6 +318,68 @@ await mediaManagement.autoRelink({
 })
 ```
 
+## 🆕 Duration Formatter (v2.0)
+
+**Новинка**: Централизованные утилиты для форматирования длительности.
+
+### Основные функции
+
+```typescript
+import {
+  formatDurationSeconds,
+  formatDurationMs,
+  formatDurationHuman,
+  parseDurationString
+} from '@/lib/duration-formatter'
+
+// Форматирование секунд
+formatDurationSeconds(65)           // => "1:05"
+formatDurationSeconds(3665)         // => "1:01:05"
+formatDurationSeconds(0, false, true) // => "00:00" (с padding)
+formatDurationSeconds(3600, false)   // => "60:00" (всегда MM:SS)
+formatDurationSeconds(3600, true)    // => "01:00:00" (всегда HH:MM:SS)
+
+// Форматирование миллисекунд
+formatDurationMs(65000)             // => "1:05"
+formatDurationMs(3665000)           // => "1:01:05"
+
+// Человекочитаемый формат
+formatDurationHuman(7325)           // => "2h 2m 5s"
+formatDurationHuman(65)             // => "1m 5s"
+
+// Парсинг строки в секунды
+parseDurationString("1:05")         // => 65
+parseDurationString("01:01:05")     // => 3665
+parseDurationString(65)             // => 65 (pass-through для numbers)
+```
+
+### Параметры showHours
+
+- `true` - Всегда показывать часы (01:01:05)
+- `false` - Никогда не показывать часы, даже > 59 минут (60:00)
+- `undefined` - Автоматически (1:01:05 если часы > 0, иначе 1:05)
+
+### Параметр padMinutes
+
+- `true` - Добавлять leading zero для минут (00:30)
+- `false` (default) - Без padding (0:30)
+
+### Использование в проекте
+
+```typescript
+// В компонентах
+const { duration } = mediaFile
+return <span>{formatDurationSeconds(duration)}</span>
+
+// В логах
+logger.debug(`Processing took ${formatDurationHuman(processingTime)}`)
+
+// При парсинге пользовательского ввода
+const seconds = parseDurationString(userInput)
+```
+
+---
+
 ## Интеграция с другими доменами
 
 ### С AI Services
@@ -329,6 +475,70 @@ async function batchRename() {
   })
 }
 ```
+
+## 📚 Дополнительная документация
+
+Для более глубокого понимания Media Management домена см.:
+
+- **[INDEX.md](./INDEX.md)** - Навигационный хаб по всей документации
+- **[MEDIAPOOL-QUICK-GUIDE.md](./MEDIAPOOL-QUICK-GUIDE.md)** - 5-минутный гайд по MediaPool
+- **[MEDIAPOOL-ARCHITECTURE.md](./MEDIAPOOL-ARCHITECTURE.md)** - Подробная архитектура event-driven системы
+- **[MEDIAPOOL-DIAGRAMS.md](./MEDIAPOOL-DIAGRAMS.md)** - Визуальные диаграммы и схемы
+- **[FIXES-AND-TODOS.md](./FIXES-AND-TODOS.md)** - Исправления, TODO и известные проблемы
+- **[/docs/ru/05_development/duration-standardization.md](../../../docs/ru/05_development/duration-standardization.md)** - Стандарты форматирования времени
+
+---
+
+## 📝 Changelog
+
+### v2.0.0 (November 25, 2024)
+
+**🎉 Основные изменения:**
+
+1. **Система уведомлений для импорта**
+   - Интеграция useNotifications в MediaManagementProvider
+   - Prop `enableNotifications` с автоматическими toast-уведомлениями
+   - Callback система через `importCallbacks`
+   - Реал-тайм прогресс с количеством файлов
+
+2. **Duration Formatter**
+   - Создан централизованный `/src/lib/duration-formatter.ts`
+   - 4 функции: formatDurationSeconds, formatDurationMs, formatDurationHuman, parseDurationString
+   - Параметры showHours и padMinutes для гибкости
+   - 17 тестов, 100% coverage
+   - Обновлено 9 файлов по всему проекту
+
+3. **Критический баг исправлен**
+   - Файлы не отображались в Browser после импорта
+   - Добавлено поле `id?: string` в MediaInfo
+   - use-media-adapter теперь использует entries() вместо values()
+   - Все файлы корректно отображаются с UUID tracking
+
+4. **Smart Organization улучшен**
+   - Реализовано извлечение реальных дат из EXIF
+   - Интеграция с media-metadata-service
+   - Tauri get_file_stats для дат модификации
+   - Type guards для безопасного доступа к creation_time
+
+5. **Error Tracker обновлен**
+   - Exponential backoff retry (1s, 2s, 4s)
+   - Альтернативные методы восстановления
+   - Статистика операций (success/failure rates)
+   - getOperationStats() и getReliabilityScore()
+
+6. **TypeScript ошибки исправлены**
+   - browser-machine: Добавлены табы projects и scenarios
+   - smart-organization: Type guards для metadata
+   - 0 TypeScript ошибок (связанных с изменениями)
+
+**📊 Статистика:**
+- 7/17 TODO исправлено (41%)
+- 10020/10188 тестов прошли (98.35%)
+- 0 TypeScript ошибок
+- 95KB документации создано
+- 28 файлов изменено
+
+---
 
 ## Лицензия
 

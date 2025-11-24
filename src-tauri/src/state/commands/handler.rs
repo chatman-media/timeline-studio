@@ -4868,7 +4868,7 @@ impl CommandHandler {
           bitrate: None,
           audio_channels: None,
           sample_rate: None,
-        creation_time: None,
+          creation_time: None,
         },
         thumbnail: None,
         usage_count: 0,
