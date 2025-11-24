@@ -1,3 +1,23 @@
+# [3.16.0](https://github.com/chatman-media/timeline-studio/compare/v3.15.1...v3.16.0) (2025-11-24)
+
+
+### Bug Fixes
+
+* **browser:** Add missing tabs to browser-machine initial context ([a427007](https://github.com/chatman-media/timeline-studio/commit/a4270079add7b65c5c91ddb45bda438aaf937f63))
+* **browser:** Fix critical bug - files not displaying in Browser ([b77c2cf](https://github.com/chatman-media/timeline-studio/commit/b77c2cf4c72eadb4dbbfc078961abc1ad54f3633))
+* **browser:** Добавить варианты Projects и Scenarios в BrowserTab enum ([228ea11](https://github.com/chatman-media/timeline-studio/commit/228ea113ccae459a821a6d2fd1301cf8d8fafb28))
+* **media-management:** Implement file date extraction and error recovery (17 TODOs fixed) ([a899b55](https://github.com/chatman-media/timeline-studio/commit/a899b55a2c85ba2e9ebde84d6bb568fe50c97883))
+* **tauri:** Исправить ошибку управления event listeners в Proxy ([81dc143](https://github.com/chatman-media/timeline-studio/commit/81dc14327c0aff409ddc236363fd26eedbea7ad6))
+
+
+### Features
+
+* **browser:** Добавить вкладку scenarios в Browser ([996f967](https://github.com/chatman-media/timeline-studio/commit/996f967e54d49ecc21e26c3d2700849906b0ec11))
+* **lib:** Standardize duration formatting across codebase ([06d3dfe](https://github.com/chatman-media/timeline-studio/commit/06d3dfef5c920ec6006f62aa4478f1c9d82aa7d7))
+* **media-management:** Add notification system for media import ([0d0d4b4](https://github.com/chatman-media/timeline-studio/commit/0d0d4b4c6fd9576f0e8755f2725e127939fdd3c3))
+* **project-templates,scenarios:** Добавить полную функциональность шаблонов и сценариев ([9752d83](https://github.com/chatman-media/timeline-studio/commit/9752d835a076222147f07f1daf8e29277449416e))
+* **types:** Добавить поле creation_time в MediaMetadata ([da1c4c7](https://github.com/chatman-media/timeline-studio/commit/da1c4c7138c79fbaa3f193c8eb497ec8f8874b6d))
+
 ## [3.15.1](https://github.com/chatman-media/timeline-studio/compare/v3.15.0...v3.15.1) (2025-11-24)
 
 
