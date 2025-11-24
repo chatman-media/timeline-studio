@@ -234,7 +234,7 @@ describe("useProjectTemplate", () => {
         validationResult = result.current.validateTemplate(mockTemplates[0])
       })
 
-      expect(validationResult?.valid).toBe(true)
+      expect((validationResult as unknown as ValidationResult)?.valid).toBe(true)
       expect(result.current.validationResult?.valid).toBe(true)
     })
   })

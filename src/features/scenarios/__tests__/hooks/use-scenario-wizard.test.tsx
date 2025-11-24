@@ -57,7 +57,7 @@ describe("useScenarioWizard", () => {
         autoSaveInterval: 300,
         showTimecode: true,
       },
-    } as TimelineStudioProject
+    } as unknown as TimelineStudioProject
 
     mockScenario = {
       id: "test-scenario",

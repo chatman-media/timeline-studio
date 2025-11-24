@@ -59,7 +59,7 @@ describe("ScenarioExecutor", () => {
         autoSaveInterval: 300,
         showTimecode: true,
       },
-    } as TimelineStudioProject
+    } as unknown as TimelineStudioProject
 
     mockScenario = {
       id: "test-scenario",
@@ -111,7 +111,7 @@ describe("ScenarioExecutor", () => {
         ],
       }
 
-      expect(executor.stepHandlers.has("custom-step")).toBe(true)
+      expect((executor as any).stepHandlers.has("custom-step")).toBe(true)
     })
   })
 
@@ -266,7 +266,7 @@ describe("ScenarioExecutor", () => {
       ]
 
       defaultStepTypes.forEach((type) => {
-        expect(executor.stepHandlers.has(type)).toBe(true)
+        expect((executor as any).stepHandlers.has(type)).toBe(true)
       })
     })
   })

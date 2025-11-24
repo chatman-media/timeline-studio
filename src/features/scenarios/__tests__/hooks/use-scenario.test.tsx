@@ -94,7 +94,7 @@ vi.mock("../../lib/scenarios", () => ({
         undoSupport: true,
       },
     },
-  ] as Scenario[],
+  ] as unknown as Scenario[],
   getScenariosByCategory: vi.fn((category: string) => {
     const all = [
       {
@@ -106,7 +106,7 @@ vi.mock("../../lib/scenarios", () => ({
         steps: [],
         settings: {},
       },
-    ] as Scenario[]
+    ] as unknown as Scenario[]
     return all.filter((s) => s.category === category)
   }),
   getScenariosByDifficulty: vi.fn((difficulty: string) => {
@@ -129,7 +129,7 @@ vi.mock("../../lib/scenarios", () => ({
         steps: [],
         settings: {},
       },
-    ] as Scenario[]
+    ] as unknown as Scenario[]
     return all.filter((s) => s.difficulty === difficulty)
   }),
 }))
@@ -176,7 +176,7 @@ describe("useScenario", () => {
         autoSaveInterval: 300,
         showTimecode: true,
       },
-    } as TimelineStudioProject
+    } as unknown as TimelineStudioProject
   })
 
   describe("initial state", () => {
