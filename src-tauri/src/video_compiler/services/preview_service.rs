@@ -555,21 +555,204 @@ impl PreviewService for PreviewServiceImpl {
 
   async fn generate_waveform_data_json(
     &self,
-    _audio_path: &Path,
+    audio_path: &Path,
     pixels_per_second: u32,
     bits: u8,
   ) -> Result<String> {
-    // Generate JSON waveform data compatible with peaks.js/audiowaveform
-    // For now, return a simple placeholder implementation
-    // TODO: Implement proper waveform JSON generation using FFmpeg or audiowaveform
+    use super::super::core::ffmpeg::FFmpegCommand;
+    use std::process::Stdio;
+    use tokio::io::AsyncReadExt;
+    use tokio::process::Command;
+
+    log::info!("Generating waveform JSON for {:?}", audio_path);
+
+    if !audio_path.exists() {
+      return Err(VideoCompilerError::MediaFileError {
+        path: audio_path.to_string_lossy().to_string(),
+        reason: "Audio file not found".to_string(),
+      });
+    }
+
+    // Step 1: Get audio metadata using ffprobe
+    let probe_output = FFmpegCommand::ffprobe()
+      .args(vec![
+        "-v", "quiet",
+        "-print_format", "json",
+        "-show_streams",
+        "-show_format",
+        &audio_path.to_string_lossy(),
+      ])
+      .execute()
+      .await?;
+
+    let probe_json: serde_json::Value =
+      serde_json::from_slice(&probe_output.stdout).map_err(|e| {
+        VideoCompilerError::ProcessingError {
+          operation: "ffprobe_parse".to_string(),
+          details: format!("Failed to parse ffprobe output: {}", e),
+        }
+      })?;
+
+    // Extract audio stream metadata
+    let audio_stream = probe_json["streams"]
+      .as_array()
+      .and_then(|streams| {
+        streams.iter().find(|s| s["codec_type"].as_str() == Some("audio"))
+      })
+      .ok_or_else(|| VideoCompilerError::MediaFileError {
+        path: audio_path.to_string_lossy().to_string(),
+        reason: "No audio stream found".to_string(),
+      })?;
+
+    let sample_rate = audio_stream["sample_rate"]
+      .as_str()
+      .and_then(|s| s.parse::<u32>().ok())
+      .unwrap_or(48000);
+
+    let channels = audio_stream["channels"]
+      .as_u64()
+      .map(|c| c as u32)
+      .unwrap_or(2);
+
+    let duration = probe_json["format"]["duration"]
+      .as_str()
+      .and_then(|s| s.parse::<f64>().ok())
+      .unwrap_or(0.0);
+
+    if duration == 0.0 {
+      return Err(VideoCompilerError::ProcessingError {
+        operation: "duration_check".to_string(),
+        details: "Audio file has zero duration".to_string(),
+      });
+    }
+
+    let samples_per_pixel = sample_rate / pixels_per_second;
+    let total_pixels = ((duration * pixels_per_second as f64).ceil() as usize).max(1);
+
+    log::info!(
+      "Audio metadata: sample_rate={}, channels={}, duration={:.2}s, total_pixels={}",
+      sample_rate,
+      channels,
+      duration,
+      total_pixels
+    );
+
+    // Step 2: Extract PCM audio data using FFmpeg
+    // Convert to mono, 16-bit PCM, little-endian
+    let mut ffmpeg_child = Command::new("ffmpeg")
+      .args(&[
+        "-i", &audio_path.to_string_lossy(),
+        "-f", "s16le",          // 16-bit signed PCM, little-endian
+        "-ac", "1",             // Convert to mono
+        "-ar", &sample_rate.to_string(), // Keep original sample rate
+        "-",                     // Output to stdout
+      ])
+      .stdout(Stdio::piped())
+      .stderr(Stdio::null())
+      .spawn()
+      .map_err(|e| VideoCompilerError::ProcessingError {
+        operation: "ffmpeg_spawn".to_string(),
+        details: format!("Failed to spawn FFmpeg: {}", e),
+      })?;
+
+    let mut stdout = ffmpeg_child.stdout.take().ok_or_else(|| {
+      VideoCompilerError::ProcessingError {
+        operation: "ffmpeg_stdout".to_string(),
+        details: "Failed to capture FFmpeg stdout".to_string(),
+      }
+    })?;
+
+    // Read all PCM data
+    let mut pcm_data = Vec::new();
+    stdout.read_to_end(&mut pcm_data).await.map_err(|e| {
+      VideoCompilerError::ProcessingError {
+        operation: "read_pcm".to_string(),
+        details: format!("Failed to read PCM data: {}", e),
+      }
+    })?;
+
+    // Wait for FFmpeg to complete
+    let status = ffmpeg_child.wait().await.map_err(|e| {
+      VideoCompilerError::ProcessingError {
+        operation: "ffmpeg_wait".to_string(),
+        details: format!("FFmpeg process failed: {}", e),
+      }
+    })?;
+
+    if !status.success() {
+      return Err(VideoCompilerError::ProcessingError {
+        operation: "ffmpeg_execution".to_string(),
+        details: format!("FFmpeg exited with status: {}", status),
+      });
+    }
+
+    log::info!("Extracted {} bytes of PCM data", pcm_data.len());
+
+    // Step 3: Convert PCM bytes to i16 samples
+    let samples: Vec<i16> = pcm_data
+      .chunks_exact(2)
+      .map(|chunk| i16::from_le_bytes([chunk[0], chunk[1]]))
+      .collect();
+
+    if samples.is_empty() {
+      return Err(VideoCompilerError::ProcessingError {
+        operation: "pcm_conversion".to_string(),
+        details: "No audio samples extracted".to_string(),
+      });
+    }
+
+    log::info!("Converted to {} audio samples", samples.len());
+
+    // Step 4: Calculate min/max for each pixel
+    let mut waveform_data = Vec::with_capacity(total_pixels * 2); // min/max pairs
+
+    for pixel_index in 0..total_pixels {
+      let start_sample = (pixel_index * samples_per_pixel as usize).min(samples.len());
+      let end_sample = ((pixel_index + 1) * samples_per_pixel as usize).min(samples.len());
+
+      if start_sample >= samples.len() {
+        // No more samples, fill with silence
+        waveform_data.push(0);
+        waveform_data.push(0);
+        continue;
+      }
+
+      let pixel_samples = &samples[start_sample..end_sample];
+
+      if pixel_samples.is_empty() {
+        waveform_data.push(0);
+        waveform_data.push(0);
+        continue;
+      }
+
+      let min_sample = *pixel_samples.iter().min().unwrap_or(&0);
+      let max_sample = *pixel_samples.iter().max().unwrap_or(&0);
+
+      // Convert to 8-bit or 16-bit format
+      if bits == 8 {
+        // Convert from i16 (-32768 to 32767) to i8 (-128 to 127)
+        let min_8bit = (min_sample / 256) as i8;
+        let max_8bit = (max_sample / 256) as i8;
+        waveform_data.push(min_8bit as i32);
+        waveform_data.push(max_8bit as i32);
+      } else {
+        // Keep as 16-bit
+        waveform_data.push(min_sample as i32);
+        waveform_data.push(max_sample as i32);
+      }
+    }
+
+    log::info!("Generated waveform data with {} points", waveform_data.len() / 2);
+
+    // Step 5: Create JSON in audiowaveform format
     let json_data = serde_json::json!({
       "version": 2,
-      "channels": 2,
-      "sample_rate": 48000,
-      "samples_per_pixel": 48000 / pixels_per_second,
+      "channels": 1, // We converted to mono
+      "sample_rate": sample_rate,
+      "samples_per_pixel": samples_per_pixel,
       "bits": bits,
-      "length": 0,
-      "data": []
+      "length": waveform_data.len(),
+      "data": waveform_data,
     });
 
     Ok(json_data.to_string())
