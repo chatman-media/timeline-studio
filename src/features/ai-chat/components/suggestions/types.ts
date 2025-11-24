@@ -2,7 +2,7 @@
  * Типы для AI Suggestions Panel
  */
 
-export type PromptCategory = "universal" | "style" | "platform" | "quick" | "quality"
+export type PromptCategory = "universal" | "style" | "platform" | "quick" | "quality" | "montage"
 
 export interface SuggestedPrompt {
   id: string

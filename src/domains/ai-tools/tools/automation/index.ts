@@ -5,6 +5,8 @@
 
 // Batch Processing Tools
 export * from "./batch-processing"
+// Montage Planning Tools
+export * from "./montage-planning"
 // Performance Tools
 export * from "./performance"
 // Subtitle Tools
@@ -17,6 +19,7 @@ export * from "./workflow"
 
 // Импорты для статистики
 import { batchProcessingTools } from "./batch-processing"
+import { montagePlanningTools } from "./montage-planning"
 import { performanceTools } from "./performance"
 import { subtitleTools } from "./subtitles"
 import { templateTools } from "./templates"
@@ -25,6 +28,7 @@ import { workflowTools } from "./workflow"
 // Все Automation инструменты
 export const automationTools = [
   ...batchProcessingTools,
+  ...montagePlanningTools,
   ...workflowTools,
   ...performanceTools,
   ...templateTools,
@@ -36,6 +40,7 @@ export const AUTOMATION_TOOLS_COUNT = automationTools.length
 
 export const AUTOMATION_TOOLS_STATS = {
   batchProcessing: batchProcessingTools.length,
+  montagePlanning: montagePlanningTools.length,
   workflow: workflowTools.length,
   performance: performanceTools.length,
   templates: templateTools.length,
@@ -48,6 +53,8 @@ export function getAutomationToolsByCategory(category: keyof typeof AUTOMATION_T
   switch (category) {
     case "batchProcessing":
       return batchProcessingTools
+    case "montagePlanning":
+      return montagePlanningTools
     case "workflow":
       return workflowTools
     case "performance":

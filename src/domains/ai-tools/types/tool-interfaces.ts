@@ -68,7 +68,12 @@ export type AnalysisToolCategory =
   | "content-intelligence"
   | "whisper-tools"
   | "multimodal"
-export type AutomationToolCategory = "batch-processing" | "workflow-automation" | "smart-templates" | "performance"
+export type AutomationToolCategory =
+  | "batch-processing"
+  | "montage-planning"
+  | "workflow-automation"
+  | "smart-templates"
+  | "performance"
 export type IntegrationToolCategory = "export-tools" | "platform-integration"
 
 export type AIToolCategory = CoreToolCategory | AnalysisToolCategory | AutomationToolCategory | IntegrationToolCategory

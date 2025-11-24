@@ -198,6 +198,38 @@ export const CONTEXTUAL_PROMPTS: SuggestedPrompt[] = [
       minScenes: 5,
     },
   },
+
+  // Планирование монтажа (если есть анализ)
+  {
+    id: "auto-montage-2min",
+    emoji: "🤖",
+    text: "Создай автоматический монтаж на 2 минуты",
+    category: "montage",
+    priority: 16,
+    requiredConditions: {
+      hasScenes: true,
+    },
+  },
+  {
+    id: "best-moments-montage",
+    emoji: "✨",
+    text: "Собери монтаж из лучших моментов",
+    category: "montage",
+    priority: 15,
+    requiredConditions: {
+      hasScenes: true,
+    },
+  },
+  {
+    id: "compress-to-1min",
+    emoji: "⏱️",
+    text: "Сожми до 1 минуты, оставь самое важное",
+    category: "montage",
+    priority: 14,
+    requiredConditions: {
+      minScenes: 5,
+    },
+  },
 ]
 
 /**
