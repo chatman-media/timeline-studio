@@ -12,7 +12,7 @@
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",
     "buffer": "^6.0.3",
-    "caniuse-lite": "^1.0.30001755",
+    "caniuse-lite": "^1.0.30001757",
     "framer-motion": "^12.23.24",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.554.0",
@@ -27,7 +27,7 @@
     "@mdx-js/rollup": "^3.1.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.5",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "5.3.3",
     "@vitejs/plugin-react": "5.1.1",
@@ -38,12 +38,12 @@
     "tailwindcss": "4.1.17",
     "terser": "^5.44.1",
     "typescript": "~5.9.3",
-    "vite": "7.2.2",
+    "vite": "7.2.4",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-static-copy": "^3.1.4",
     "vite-ssg": "^28.2.2"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.53.2"
+    "@rollup/rollup-linux-x64-gnu": "^4.53.3"
   }
 }
