@@ -78,7 +78,10 @@
     "ai:analyze": "node scripts/cli-ai-chat.js analyze-with-ai",
     "ai:history": "node scripts/cli-ai-chat.js history",
     "ai:test": "node scripts/test-claude-api.js",
-    "ai:models": "node scripts/cli-ai-chat.js models"
+    "ai:models": "node scripts/cli-ai-chat.js models",
+    "knip": "knip",
+    "knip:fix": "knip --fix",
+    "knip:watch": "knip --watch"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -180,6 +183,7 @@
     "happy-dom": "20.0.10",
     "js-yaml": "^4.1.1",
     "jsdom": "27.2.0",
+    "knip": "^5.70.2",
     "lightningcss": "^1.30.2",
     "markdown-pdf": "^11.0.0",
     "md-to-pdf": "^5.2.5",

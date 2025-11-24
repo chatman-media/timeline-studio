@@ -1,0 +1,52 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/**/*.{ts,tsx}",
+    "src/features/**/index.{ts,tsx}",
+    "src/domains/**/index.{ts,tsx}"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}"
+  ],
+  "ignore": [
+    "src/**/__tests__/**",
+    "src/**/__mocks__/**",
+    "src/**/test-utils.{ts,tsx}",
+    "src/test/**",
+    "e2e/**",
+    "promo/**",
+    "scripts/**",
+    "**/*.d.ts",
+    "**/bindings.ts"
+  ],
+  "ignoreDependencies": [
+    "@tauri-apps/*",
+    "tauri-plugin-*"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "next": {
+    "entry": [
+      "src/app/**/*.{ts,tsx}",
+      "next.config.{js,ts,mjs}"
+    ]
+  },
+  "vitest": {
+    "entry": [
+      "vitest.config.{ts,js}",
+      "src/**/*.test.{ts,tsx}",
+      "src/**/*.spec.{ts,tsx}"
+    ]
+  },
+  "playwright": {
+    "entry": [
+      "playwright.config.ts",
+      "e2e/**/*.spec.ts"
+    ]
+  },
+  "postcss": {
+    "config": ["postcss.config.{js,cjs,mjs}"]
+  },
+  "tailwind": {
+    "config": ["tailwind.config.{js,ts}"]
+  }
+}

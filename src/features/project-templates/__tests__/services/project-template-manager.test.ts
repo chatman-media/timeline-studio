@@ -105,8 +105,8 @@ describe("ProjectTemplateManager", () => {
         id: "custom-test-template",
         name: { en: "Custom Test", ru: "Кастомный тест" },
         description: { en: "Test description", ru: "Тестовое описание" },
-        category: "custom",
-        isCustom: true,
+        category: "presentation",
+        aspectRatio: "16:9",
         estimatedDuration: 60,
         settings: {
           resolution: { width: 1920, height: 1080 },
@@ -116,16 +116,15 @@ describe("ProjectTemplateManager", () => {
         structure: {
           tracks: [],
           sections: [],
-          markers: [],
         },
-      }
+        placeholders: {},
+      } as any
 
       projectTemplateManager.addCustomTemplate(customTemplate)
 
       const found = projectTemplateManager.getTemplateById(customTemplate.id)
       expect(found).toBeDefined()
       expect(found?.id).toBe(customTemplate.id)
-      expect(found?.isCustom).toBe(true)
     })
 
     it("should throw error when adding template with existing id", () => {

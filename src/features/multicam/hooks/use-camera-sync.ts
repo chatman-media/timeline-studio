@@ -81,7 +81,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(50)
 
       // Выполняем синхронизацию
-      const mappedMediaFiles = mediaItemsToMediaFiles(mediaFiles)
+      const mappedMediaFiles = mediaItemsToMediaFiles(mediaFiles as any)
       const results = syncByTimecodeService(baseClip as any, clips as any, mappedMediaFiles)
 
       // Преобразуем результаты в нужный формат
