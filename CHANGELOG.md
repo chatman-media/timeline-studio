@@ -1,3 +1,35 @@
+# [3.15.0](https://github.com/chatman-media/timeline-studio/compare/v3.14.3...v3.15.0) (2025-11-24)
+
+
+### Bug Fixes
+
+* **ai-director:** Добавить детальное логирование для диагностики выбора файлов ([4ef33e4](https://github.com/chatman-media/timeline-studio/commit/4ef33e439f750a2c08961f663bdb6a7679edd873))
+* **backend:** Убрать дублирующий импорт Resolution ([afc0a48](https://github.com/chatman-media/timeline-studio/commit/afc0a48779aae730953ec7837866f0b3bdf1e26f))
+* correct unregisterListener signature to match Tauri API ([8e26e52](https://github.com/chatman-media/timeline-studio/commit/8e26e5257353dd60f949a6b2feaf537ea6e721cb))
+* **lint:** Исправить все ошибки линтера ([7ce99e7](https://github.com/chatman-media/timeline-studio/commit/7ce99e7f876db2751bab6254b323227bc13252b6))
+* prevent undefined access error in Tauri mock event listeners ([3b899fc](https://github.com/chatman-media/timeline-studio/commit/3b899fc8d6dab7b8388923146ed1aeb52f4864e0))
+* **project-settings:** Добавить флаг редактирования для защиты от перезаписи полей ([746e832](https://github.com/chatman-media/timeline-studio/commit/746e832d71082ba0f8ba09152f8cb03cb1cfe98b))
+* **project-settings:** Исправить race condition при редактировании полей ([857f133](https://github.com/chatman-media/timeline-studio/commit/857f1339b24a14a56296b513a683d129463e0f48))
+* **project-settings:** Исправить синхронизацию настроек с backend ([c259133](https://github.com/chatman-media/timeline-studio/commit/c259133579a0a6e29508bc83a0b5fabab120e632))
+* **tauri-mock:** Исправить ошибку доступа к undefined в unregisterListener ([1ef890a](https://github.com/chatman-media/timeline-studio/commit/1ef890ad297d73bd1fe45283b58d293f4b59b091))
+
+
+### Features
+
+* **ai-director:** Добавить AI Director Dashboard ([4ec1396](https://github.com/chatman-media/timeline-studio/commit/4ec13961a9ea0c4d2f987433bba9c4072900e476))
+* **ai-director:** Реализовать Phase 4 и Phase 5 - Montage Creation & Refinement ([f4ae800](https://github.com/chatman-media/timeline-studio/commit/f4ae8007cfb52417e8bf989fe311bd49841fd77a))
+* **ai-director:** Рефакторинг и расширение функциональности монтажа ([7511680](https://github.com/chatman-media/timeline-studio/commit/751168021b1b21273335b4c8f73d734b3e93f1a8))
+* **analysis-dashboard:** Добавить Performance Metrics и Visual Analytics ([184b78b](https://github.com/chatman-media/timeline-studio/commit/184b78b3d73f66231e5eeb7f28ae06fc2c1a4770))
+* **browser:** Добавить Project Templates и Scenarios ([78862f6](https://github.com/chatman-media/timeline-studio/commit/78862f6926da4cef36d423396d69da3be3af024d))
+* **keyboard-shortcuts:** Добавить conflict detection и cheat sheet ([7b856c7](https://github.com/chatman-media/timeline-studio/commit/7b856c73845b75e66ab0a03c3dfb05030c9846d4))
+* **media-management:** Завершить интеграцию Waveform Generator ([f5f7526](https://github.com/chatman-media/timeline-studio/commit/f5f7526345678bbdc610d750a1d0dfbffa5f3ecb))
+* **style-templates:** Добавить custom templates storage и export ([00e132d](https://github.com/chatman-media/timeline-studio/commit/00e132dfc046afc8194375ab53a725e3698b6a09))
+* **subtitles:** Обновить стили и добавить style manager ([dfce4a3](https://github.com/chatman-media/timeline-studio/commit/dfce4a3a3be25f4a748b77f40c27873ea53e6cbd))
+* **tauri:** Добавить waveform preview command ([1e8feae](https://github.com/chatman-media/timeline-studio/commit/1e8feae1f473a95b8e46f53547823280937c435a))
+* **templates:** Добавить animated cells и custom template storage ([0ec8bea](https://github.com/chatman-media/timeline-studio/commit/0ec8bea219e0323a4a9ea961fa46503b71752755))
+* **transitions,style-templates:** Расширение и документирование ([507a3ab](https://github.com/chatman-media/timeline-studio/commit/507a3ab352df21b406be1d123013cf03044d20b7))
+* **workspace:** Добавить Widget Dock и Workspace Persistence ([24861c8](https://github.com/chatman-media/timeline-studio/commit/24861c82f2b5fb306a746d34c71642feaedcba49))
+
 ## [3.14.3](https://github.com/chatman-media/timeline-studio/compare/v3.14.2...v3.14.3) (2025-11-18)
 
 
