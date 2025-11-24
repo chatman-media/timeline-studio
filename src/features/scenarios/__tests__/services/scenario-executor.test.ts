@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
 
-import { scenarioExecutor, ScenarioExecutor } from "../../services/scenario-executor"
+import { ScenarioExecutor, scenarioExecutor } from "../../services/scenario-executor"
 import type { Scenario } from "../../types/scenario"
 
 // Mock logger
@@ -111,7 +111,7 @@ describe("ScenarioExecutor", () => {
         ],
       }
 
-      expect(executor["stepHandlers"].has("custom-step")).toBe(true)
+      expect(executor.stepHandlers.has("custom-step")).toBe(true)
     })
   })
 
@@ -266,7 +266,7 @@ describe("ScenarioExecutor", () => {
       ]
 
       defaultStepTypes.forEach((type) => {
-        expect(executor["stepHandlers"].has(type)).toBe(true)
+        expect(executor.stepHandlers.has(type)).toBe(true)
       })
     })
   })

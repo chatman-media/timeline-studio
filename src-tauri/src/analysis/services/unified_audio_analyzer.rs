@@ -347,68 +347,14 @@ impl UnifiedAudioAnalyzer {
     }
   }
 
-  /// Convert Whisper result to unified audio transcription analysis
+  /// Convert Whisper result to unified audio transcription analysis using WhisperAudioAdapter
   fn convert_whisper_to_unified(
     &self,
     whisper_result: WhisperTranscriptionResult,
   ) -> Result<AudioTranscriptionAnalysis, AudioAnalysisError> {
-    use crate::analysis::types::audio_analysis::{TranscriptionSegment, TranscriptionWord};
-
-    // Конвертируем Whisper segments в unified format
-    let segments = whisper_result
-      .segments
-      .unwrap_or_default()
-      .into_iter()
-      .map(|seg| TranscriptionSegment {
-        start_time: AudioTimestamp::from_seconds(seg.start),
-        end_time: AudioTimestamp::from_seconds(seg.end),
-        text: seg.text,
-        confidence: (1.0 - seg.no_speech_prob.clamp(0.0, 1.0)) as AudioFloat, // Convert to confidence
-        language: whisper_result.language.clone(),
-        speaker_id: None, // Whisper не поддерживает speaker diarization
-      })
-      .collect();
-
-    let words = whisper_result
-      .words
-      .unwrap_or_default()
-      .into_iter()
-      .map(|word| TranscriptionWord {
-        word: word.word,
-        start_time: AudioTimestamp::from_seconds(word.start),
-        end_time: AudioTimestamp::from_seconds(word.end),
-        confidence: 0.8, // Default confidence для words
-      })
-      .collect();
-
-    // Clone the text before moving it
-    let full_text = whisper_result.text.clone();
-    let detected_language = whisper_result.language.clone();
-
-    Ok(AudioTranscriptionAnalysis {
-      // Unified API fields
-      engine_name: "whisper".to_string(),
-      full_text: full_text.clone(),
-      detected_language: detected_language.clone(),
-      total_duration: whisper_result.duration.map(AudioDuration::from_seconds),
-      segments,
-      words,
-      confidence_score: 0.85, // Average confidence for Whisper
-      processing_time: AudioDuration::from_seconds(0.0), // TODO: Track actual processing time
-
-      // Legacy fields для совместимости
-      transcription_text: Some(full_text),
-      language_detected: detected_language,
-      overall_confidence: Some(0.85),
-      word_segments: None,     // TODO: Convert if needed
-      sentence_segments: None, // TODO: Convert if needed
-      speaker_segments: None,  // Whisper не поддерживает
-      speech_rate: None,       // TODO: Calculate if needed
-      pause_analysis: None,    // TODO: Calculate if needed
-      pronunciation_quality: None,
-      model_used: Some("whisper".to_string()),
-      provider_used: Some("local".to_string()),
-    })
+    // Use WhisperAudioAdapter for conversion
+    let adapter = crate::analysis::adapters::WhisperAudioAdapter::new();
+    adapter.convert(whisper_result)
   }
 
   /// Check system capabilities

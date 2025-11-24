@@ -4,6 +4,7 @@
  * Домен для управления медиа файлами и операциями с ними
  */
 
+export { AudioWaveform, AudioWaveformCompact } from "./components/audio-waveform"
 // Hooks
 export {
   useFileOperations,
@@ -11,6 +12,8 @@ export {
   useMediaManagement,
   useMediaMetadata,
 } from "./hooks"
+// Peaks.js Waveform
+export { createAudioElement, usePeaksWaveform } from "./hooks/use-peaks-waveform"
 export type { FileOperationsMachine } from "./machines/file-operations-machine"
 // Machines
 export { fileOperationsMachine } from "./machines/file-operations-machine"
@@ -57,7 +60,6 @@ export type {
   OrganizeByEventsOptions,
 } from "./services/smart-organization"
 export { getSmartOrganization, SmartOrganizationService } from "./services/smart-organization"
-
 // Waveform Generator
 export type { WaveformData, WaveformOptions, WaveformResult } from "./services/waveform-generator"
 export { getWaveformGenerator, WaveformGeneratorService } from "./services/waveform-generator"
@@ -85,3 +87,13 @@ export type {
   QualityMetrics,
   SceneDetectionResult,
 } from "./types"
+export type {
+  AudiowaveformData,
+  PeaksInstance,
+  PeaksOptions,
+  PeaksPoint,
+  PeaksSegment,
+  UsePeaksResult,
+  WaveformDataOptions,
+  WaveformDataResult,
+} from "./types/peaks-waveform"

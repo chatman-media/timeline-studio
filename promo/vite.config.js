@@ -5,14 +5,12 @@ import { fileURLToPath } from "node:url"
 import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer"
 import compression from "vite-plugin-compression"
-import { fixImports } from "./vite-plugin-fix-imports.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    fixImports(),
     mdx(),
     react(),
     // Brotli compression для максимального сжатия
@@ -78,16 +76,21 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Улучшенная стратегия разделения кода
-        manualChunks: (id) => {
-          // React core - критически важен
-          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+manualChunks: (id) => {
+          // React core + все React-зависимые UI библиотеки
+          if (
+            id.includes("node_modules/react") ||
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/lucide-react") ||
+            id.includes("node_modules/scheduler")
+          ) {
             return "react"
           }
           // Router отдельно
           if (id.includes("node_modules/react-router-dom")) {
-            return "router"
+            return "react" // объединяем с react для правильного порядка
           }
-          // Framer Motion - анимации
+          // Framer Motion - анимации (тоже зависит от React)
           if (id.includes("node_modules/framer-motion")) {
             return "framer"
           }

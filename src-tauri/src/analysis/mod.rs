@@ -1,5 +1,6 @@
 // Analysis module - интеграция с существующей person database
 
+pub mod adapters; // 🆕 Audio analysis adapters
 pub mod commands;
 pub mod database; // ✅ Включаем обратно и исправляем проблемы
 pub mod engines; // 🆕 Analysis engines
@@ -17,6 +18,9 @@ pub use services::{
   RealAnalysisEngine,
   UnifiedAudioAnalyzer, // Unified Audio Analysis
 };
+
+// 🆕 Re-export audio adapters
+pub use adapters::{FFmpegAudioAdapter, MontageAudioAdapter, WhisperAudioAdapter};
 
 // 🆕 Re-export unified audio types
 pub use types::{

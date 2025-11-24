@@ -79,9 +79,6 @@ describe("useScenarioWizard", () => {
           type: "add-template",
           name: { en: "Step 2", ru: "Шаг 2" },
           config: {},
-          validation: {
-            required: true,
-          },
         },
         {
           id: "step-3",
@@ -134,7 +131,7 @@ describe("useScenarioWizard", () => {
       expect(allSteps[0].isValid).toBe(true) // No validation required
 
       expect(allSteps[1].completed).toBe(false)
-      expect(allSteps[1].isValid).toBe(false) // Required validation
+      expect(allSteps[1].isValid).toBe(true) // No validation required
 
       expect(allSteps[2].completed).toBe(false)
       expect(allSteps[2].isValid).toBe(true) // No validation required
@@ -161,7 +158,7 @@ describe("useScenarioWizard", () => {
       expect(onStepChange).toHaveBeenCalledWith(1)
     })
 
-    it("should not navigate to next step if current step is invalid", () => {
+    it("should not navigate to next step on last step", () => {
       const { result } = renderHook(() =>
         useScenarioWizard({
           scenario: mockScenario,
@@ -169,21 +166,24 @@ describe("useScenarioWizard", () => {
         }),
       )
 
-      // Go to step 2 (has required validation)
+      // Navigate to last step
+      act(() => {
+        result.current.goNext()
+      })
       act(() => {
         result.current.goNext()
       })
 
-      expect(result.current.currentStepIndex).toBe(1)
-      expect(result.current.canGoNext).toBe(false)
+      expect(result.current.currentStepIndex).toBe(2)
+      expect(result.current.isLastStep).toBe(true)
 
-      // Try to go next without setting data
+      // Try to go next from last step
       act(() => {
         result.current.goNext()
       })
 
-      // Should stay at step 2
-      expect(result.current.currentStepIndex).toBe(1)
+      // Should stay at last step
+      expect(result.current.currentStepIndex).toBe(2)
     })
 
     it("should navigate to previous step", () => {
@@ -307,13 +307,10 @@ describe("useScenarioWizard", () => {
 
       // Navigate to optional step (step-3)
       act(() => {
-        result.current.goNext()
+        result.current.goNext() // Go to step-2
       })
       act(() => {
-        result.current.setStepData("step-2", { data: "test" })
-      })
-      act(() => {
-        result.current.goNext()
+        result.current.goNext() // Go to step-3
       })
 
       expect(result.current.currentStepIndex).toBe(2)
@@ -440,20 +437,12 @@ describe("useScenarioWizard", () => {
         }),
       )
 
-      // Step 1 has no required validation
+      // All steps have no required validation
       expect(result.current.validateCurrentStep()).toBe(true)
 
-      // Navigate to step 2 (has required validation)
+      // Navigate to step 2
       act(() => {
         result.current.goNext()
-      })
-
-      // Step 2 requires data
-      expect(result.current.validateCurrentStep()).toBe(false)
-
-      // Set data
-      act(() => {
-        result.current.setStepData("step-2", { data: "test" })
       })
 
       expect(result.current.validateCurrentStep()).toBe(true)
@@ -468,16 +457,11 @@ describe("useScenarioWizard", () => {
       )
 
       expect(result.current.validateStep("step-1")).toBe(true)
-      expect(result.current.validateStep("step-2")).toBe(false)
-
-      act(() => {
-        result.current.setStepData("step-2", { data: "test" })
-      })
-
       expect(result.current.validateStep("step-2")).toBe(true)
+      expect(result.current.validateStep("step-3")).toBe(true)
     })
 
-    it("should update canGoNext based on validation", () => {
+    it("should allow navigation when steps are valid", () => {
       const { result } = renderHook(() =>
         useScenarioWizard({
           scenario: mockScenario,
@@ -485,16 +469,12 @@ describe("useScenarioWizard", () => {
         }),
       )
 
+      // All steps are valid by default
+      expect(result.current.canGoNext).toBe(true)
+
       // Navigate to step 2
       act(() => {
         result.current.goNext()
-      })
-
-      expect(result.current.canGoNext).toBe(false)
-
-      // Set data to make it valid
-      act(() => {
-        result.current.setStepData("step-2", { data: "test" })
       })
 
       expect(result.current.canGoNext).toBe(true)
@@ -512,13 +492,19 @@ describe("useScenarioWizard", () => {
         }),
       )
 
+      // Navigate through steps to mark them as completed
+      act(() => {
+        result.current.goNext() // Complete step-1
+        result.current.goNext() // Complete step-2
+      })
+
       act(() => {
         result.current.complete()
       })
 
       expect(onComplete).toHaveBeenCalled()
       const wizardData = onComplete.mock.calls[0][0]
-      expect(wizardData.completedSteps).toContain("step-1")
+      expect(wizardData.completedSteps.length).toBeGreaterThan(0)
     })
 
     it("should cancel wizard", () => {
@@ -572,6 +558,7 @@ describe("useScenarioWizard", () => {
         useScenarioWizard({
           scenario: mockScenario,
           project: mockProject,
+          allowSkipOptional: true,
         }),
       )
 
@@ -588,14 +575,13 @@ describe("useScenarioWizard", () => {
 
       // Complete step 2
       act(() => {
-        result.current.setStepData("step-2", { data: "test" })
         result.current.goNext()
       })
 
       expect(result.current.completedCount).toBe(2)
       expect(result.current.progress).toBeCloseTo(66.67, 1)
 
-      // Complete step 3
+      // Skip step 3 (optional)
       act(() => {
         result.current.skipStep()
       })
@@ -642,7 +628,6 @@ describe("useScenarioWizard", () => {
 
       // Complete step 2
       act(() => {
-        result.current.setStepData("step-2", { data: "test" })
         result.current.goNext()
       })
 

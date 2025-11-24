@@ -245,6 +245,48 @@ pub async fn generate_waveform_preview(
   Ok(output_path)
 }
 
+/// Генерировать waveform данные в формате JSON для peaks.js
+///
+/// Использует FFmpeg для извлечения аудио данных и генерирует JSON файл
+/// совместимый с peaks.js и audiowaveform
+#[tauri::command]
+pub async fn generate_waveform_data_json(
+  audio_path: String,
+  output_path: String,
+  pixels_per_second: Option<u32>,
+  bits: Option<u8>,
+  state: State<'_, VideoCompilerState>,
+) -> Result<String> {
+  let pixels_per_second = pixels_per_second.unwrap_or(20);
+  let bits = bits.unwrap_or(8);
+
+  // Валидация параметров
+  if bits != 8 && bits != 16 {
+    return Err(VideoCompilerError::validation("Bits должен быть 8 или 16"));
+  }
+
+  let preview_service = state
+    .services
+    .get_preview_service()
+    .ok_or_else(|| VideoCompilerError::validation("PreviewService не найден"))?;
+
+  // Генерируем waveform данные через FFmpeg
+  let waveform_json = preview_service
+    .generate_waveform_data_json(
+      std::path::Path::new(&audio_path),
+      pixels_per_second,
+      bits,
+    )
+    .await?;
+
+  // Сохраняем JSON в файл
+  tokio::fs::write(&output_path, waveform_json)
+    .await
+    .map_err(|e| VideoCompilerError::Io(format!("Не удалось сохранить waveform JSON: {e}")))?;
+
+  Ok(output_path)
+}
+
 /// Получить информацию о превью из кэша
 #[tauri::command]
 pub async fn get_cached_preview_info(

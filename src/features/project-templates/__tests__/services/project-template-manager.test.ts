@@ -6,7 +6,7 @@ import type { ProjectTemplate } from "../../types/project-template"
 describe("ProjectTemplateManager", () => {
   beforeEach(() => {
     // Reset state before each test by clearing the Map
-    const customTemplatesMap = projectTemplateManager["customTemplates"] as Map<string, any>
+    const customTemplatesMap = projectTemplateManager.customTemplates as Map<string, any>
     customTemplatesMap.clear()
   })
 

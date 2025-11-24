@@ -136,6 +136,7 @@
     "node-fetch": "^3.3.2",
     "onnxruntime-web": "^1.23.2",
     "p-limit": "^7.2.0",
+    "peaks.js": "^4.0.0",
     "react": "^19.2.0",
     "react-audio-visualize": "github:eadwinCode/react-audio-visualize",
     "react-dom": "^19.2.0",

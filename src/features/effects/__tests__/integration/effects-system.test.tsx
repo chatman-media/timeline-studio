@@ -468,9 +468,9 @@ describe("Effects System Integration Tests", () => {
 
       // Очищаем кэш
       // @ts-expect-error - accessing private method for test
-      if (effectManager["parameterCache"]) {
+      if (effectManager.parameterCache) {
         // @ts-expect-error
-        effectManager["parameterCache"].clear()
+        effectManager.parameterCache.clear()
       }
 
       // После очистки кэша значение должно быть таким же

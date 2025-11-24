@@ -84,6 +84,14 @@ pub trait PreviewService: Service + Send + Sync {
     color: &str,
   ) -> Result<Vec<u8>>;
 
+  /// Сгенерировать JSON данные waveform для peaks.js
+  async fn generate_waveform_data_json(
+    &self,
+    audio_path: &Path,
+    pixels_per_second: u32,
+    bits: u8,
+  ) -> Result<String>;
+
   /// Пакетная генерация превью
   async fn batch_generate_previews(
     &self,
@@ -543,6 +551,28 @@ impl PreviewService for PreviewServiceImpl {
     self.cache_preview(&cache_key, &result).await?;
 
     Ok(waveform_data)
+  }
+
+  async fn generate_waveform_data_json(
+    &self,
+    audio_path: &Path,
+    pixels_per_second: u32,
+    bits: u8,
+  ) -> Result<String> {
+    // Generate JSON waveform data compatible with peaks.js/audiowaveform
+    // For now, return a simple placeholder implementation
+    // TODO: Implement proper waveform JSON generation using FFmpeg or audiowaveform
+    let json_data = serde_json::json!({
+      "version": 2,
+      "channels": 2,
+      "sample_rate": 48000,
+      "samples_per_pixel": 48000 / pixels_per_second,
+      "bits": bits,
+      "length": 0,
+      "data": []
+    });
+
+    Ok(json_data.to_string())
   }
 
   async fn batch_generate_previews(
