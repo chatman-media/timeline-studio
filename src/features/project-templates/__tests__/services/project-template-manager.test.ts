@@ -6,7 +6,7 @@ import type { ProjectTemplate } from "../../types/project-template"
 describe("ProjectTemplateManager", () => {
   beforeEach(() => {
     // Reset state before each test by clearing the Map
-    const customTemplatesMap = projectTemplateManager.customTemplates as Map<string, any>
+    const customTemplatesMap = (projectTemplateManager as any).customTemplates as Map<string, any>
     customTemplatesMap.clear()
   })
 
@@ -131,8 +131,8 @@ describe("ProjectTemplateManager", () => {
       const template: ProjectTemplate = {
         id: "duplicate-id",
         name: { en: "Test", ru: "Тест" },
-        category: "custom",
-        isCustom: true,
+        category: "presentation",
+        aspectRatio: "16:9",
         estimatedDuration: 60,
         settings: {
           resolution: { width: 1920, height: 1080 },
@@ -142,9 +142,9 @@ describe("ProjectTemplateManager", () => {
         structure: {
           tracks: [],
           sections: [],
-          markers: [],
         },
-      }
+        placeholders: {},
+      } as any
 
       projectTemplateManager.addCustomTemplate(template)
 
@@ -159,8 +159,8 @@ describe("ProjectTemplateManager", () => {
       const customTemplate: ProjectTemplate = {
         id: "delete-test",
         name: { en: "Delete Test", ru: "Тест удаления" },
-        category: "custom",
-        isCustom: true,
+        category: "presentation",
+        aspectRatio: "16:9",
         estimatedDuration: 60,
         settings: {
           resolution: { width: 1920, height: 1080 },
@@ -170,9 +170,9 @@ describe("ProjectTemplateManager", () => {
         structure: {
           tracks: [],
           sections: [],
-          markers: [],
         },
-      }
+        placeholders: {},
+      } as any
 
       projectTemplateManager.addCustomTemplate(customTemplate)
       expect(projectTemplateManager.getTemplateById(customTemplate.id)).toBeDefined()
@@ -183,7 +183,7 @@ describe("ProjectTemplateManager", () => {
 
     it("should throw error when deleting built-in template", () => {
       const templates = projectTemplateManager.getAllTemplates()
-      const builtInTemplate = templates.find((t) => !t.isCustom)
+      const builtInTemplate = templates.find((t) => t.id.startsWith("youtube"))
 
       if (builtInTemplate) {
         expect(() => {

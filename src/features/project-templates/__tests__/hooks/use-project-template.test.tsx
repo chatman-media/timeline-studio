@@ -61,13 +61,14 @@ describe("useProjectTemplate", () => {
         autoSaveInterval: 300,
         showTimecode: true,
       },
-    } as TimelineStudioProject
+    } as unknown as TimelineStudioProject
 
     mockTemplates = [
       {
         id: "template-1",
         name: { en: "YouTube Video", ru: "YouTube видео" },
         category: "youtube",
+        aspectRatio: "16:9",
         estimatedDuration: 600,
         settings: {
           resolution: { width: 1920, height: 1080 },
@@ -77,13 +78,14 @@ describe("useProjectTemplate", () => {
         structure: {
           tracks: [],
           sections: [],
-          markers: [],
         },
+        placeholders: {},
       },
       {
         id: "template-2",
-        name: { en: "TikTok Video", ru: "TikTok видео" },
-        category: "tiktok",
+        name: { en: "Social Media Video", ru: "Соцсети видео" },
+        category: "social",
+        aspectRatio: "9:16",
         estimatedDuration: 60,
         settings: {
           resolution: { width: 1080, height: 1920 },
@@ -93,10 +95,10 @@ describe("useProjectTemplate", () => {
         structure: {
           tracks: [],
           sections: [],
-          markers: [],
         },
+        placeholders: {},
       },
-    ] as ProjectTemplate[]
+    ] as unknown as ProjectTemplate[]
 
     vi.spyOn(projectTemplateManager, "getAllTemplates").mockReturnValue(mockTemplates)
   })
@@ -300,7 +302,7 @@ describe("useProjectTemplate", () => {
       vi.spyOn(projectTemplateManager, "getTemplateById").mockReturnValue(mockTemplates[0])
       vi.spyOn(templateValidator, "validate").mockReturnValue({
         valid: false,
-        errors: [{ type: "error", field: "settings", message: "Invalid settings" }],
+        errors: [{ field: "settings", message: "Invalid settings", severity: "error" as const }],
         warnings: [],
       })
 
@@ -332,7 +334,6 @@ describe("useProjectTemplate", () => {
       const customTemplate: ProjectTemplate = {
         ...mockTemplates[0],
         id: "custom-1",
-        isCustom: true,
       }
 
       act(() => {
@@ -345,7 +346,7 @@ describe("useProjectTemplate", () => {
     it("should not add invalid custom template", () => {
       vi.spyOn(templateValidator, "validate").mockReturnValue({
         valid: false,
-        errors: [{ type: "error", field: "settings", message: "Invalid settings" }],
+        errors: [{ field: "settings", message: "Invalid settings", severity: "error" as const }],
         warnings: [],
       })
 
@@ -354,7 +355,6 @@ describe("useProjectTemplate", () => {
       const customTemplate: ProjectTemplate = {
         ...mockTemplates[0],
         id: "custom-1",
-        isCustom: true,
       }
 
       expect(() => {
@@ -414,7 +414,13 @@ describe("useProjectTemplate", () => {
     })
 
     it("should preview template", () => {
-      const mockPreview = { tracks: [], sections: [], markers: [] }
+      const mockPreview = {
+        duration: 0,
+        trackCount: 0,
+        sectionCount: 0,
+        markers: [],
+        tracks: [],
+      }
       vi.spyOn(templateApplier, "previewTemplate").mockReturnValue(mockPreview)
 
       const { result } = renderHook(() => useProjectTemplate())
