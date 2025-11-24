@@ -227,8 +227,7 @@
 
 - **Архитектура:** `/src/features/transitions/ARCHITECTURE.md`
 - **Статус:** `/TRANSITIONS_STATUS.md`
-- **Отчёт RU:** `/docs/ru/08_tasks/active/transitions-feature-final-report.md`
-- **Отчёт EN:** `/docs/en/08_tasks/active/transitions-feature-final-report.md`
+- **Отчёт RU:** `/docs/08_tasks/active/transitions-feature-final-report.md`
 - **DEV Guide:** `/src/features/transitions/DEV.md` (⚠️ требует обновления)
 
 ---

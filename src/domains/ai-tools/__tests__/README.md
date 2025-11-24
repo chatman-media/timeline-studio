@@ -234,6 +234,6 @@ expect(listener).toHaveBeenCalledWith(
 ## Дополнительная информация
 
 Для получения дополнительной информации см.:
-- `/docs/05_development/ru/testing.md` - Общее руководство по тестированию
+- `/docs/05_development/testing.md` - Общее руководство по тестированию
 - `/src/domains/ai-tools/README.md` - Документация по AI Tools Domain
 - `/src/test/README.md` - Общая информация о тестовом окружении

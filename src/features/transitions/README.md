@@ -357,8 +357,7 @@ Overall:         298/317 PASS (94%)
 - **DEV.md** - Техническая документация (⚠️ требует обновления)
 
 ### Детальные отчёты
-- **/docs/ru/08_tasks/active/transitions-feature-final-report.md** - Детальный отчёт (RU)
-- **/docs/en/08_tasks/active/transitions-feature-final-report.md** - Detailed report (EN)
+- **/docs/08_tasks/active/transitions-feature-final-report.md** - Детальный отчёт (RU)
 - **/TRANSITIONS_STATUS.md** - Краткая сводка статуса
 
 ---

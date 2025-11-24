@@ -485,7 +485,7 @@ async function batchRename() {
 - **[MEDIAPOOL-ARCHITECTURE.md](./MEDIAPOOL-ARCHITECTURE.md)** - Подробная архитектура event-driven системы
 - **[MEDIAPOOL-DIAGRAMS.md](./MEDIAPOOL-DIAGRAMS.md)** - Визуальные диаграммы и схемы
 - **[FIXES-AND-TODOS.md](./FIXES-AND-TODOS.md)** - Исправления, TODO и известные проблемы
-- **[/docs/ru/05_development/duration-standardization.md](../../../docs/ru/05_development/duration-standardization.md)** - Стандарты форматирования времени
+- **[/docs/05_development/duration-standardization.md](../../../docs/05_development/duration-standardization.md)** - Стандарты форматирования времени
 
 ---
 
