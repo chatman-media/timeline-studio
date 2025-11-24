@@ -4,11 +4,12 @@ import { useMemo } from "react"
 import { useMediaManagement } from "@/domains/media-management"
 import { useFavorites } from "@/features/app-state"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
-import { parseDuration, parseFileSize } from "@/features/browser/utils"
+import { parseFileSize } from "@/features/browser/utils"
 import { useDraggable } from "@/features/drag-drop"
 import { getFileType } from "@/features/media"
 import type { MediaFile } from "@/features/media/types/media"
 import i18n from "@/i18n"
+import { formatDurationSeconds, parseDurationString } from "@/lib/duration-formatter"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 import { getDateGroup, getDurationGroup } from "../utils/grouping"
 
@@ -51,26 +52,22 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
   const allMediaFiles = useMemo(() => {
     // ✅ НОВАЯ АРХИТЕКТУРА: Читаем из MediaManagement Provider
     // mediaPool синхронизируется через события MediaAdded/MediaRemoved/MediaUpdated
-    const mediaItems = Array.from(mediaPool.values())
+    // ✅ FIX: Используем entries() для получения и UUID (id), и MediaInfo
+    const mediaItems = Array.from(mediaPool.entries())
 
     // Отладочный лог
     if (mediaItems.length > 0) {
       console.log("[MediaAdapter] Media pool files:", {
         count: mediaItems.length,
-        files: mediaItems.map((m) => m.path),
+        files: mediaItems.map(([id, m]) => ({ id, path: m.path })),
       })
     }
 
     // Преобразуем MediaInfo в MediaFile
-    return mediaItems.map((mediaInfo) => {
-      // Конвертируем duration обратно в формат строки времени для совместимости
-      let durationStr = "0"
-      if (mediaInfo.duration) {
-        const hours = Math.floor(mediaInfo.duration / 3600)
-        const minutes = Math.floor((mediaInfo.duration % 3600) / 60)
-        const seconds = Math.floor(mediaInfo.duration % 60)
-        durationStr = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-      }
+    // ✅ FIX: Деструктурируем [mediaId, mediaInfo] из entries
+    return mediaItems.map(([mediaId, mediaInfo]) => {
+      // ✅ Используем стандартный форматер для duration
+      const durationStr = formatDurationSeconds(mediaInfo.duration ?? 0)
 
       // Получаем bitrate из метаданных если это видео
       const bitrate =
@@ -79,6 +76,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
           : undefined
 
       return {
+        // ✅ FIX: Добавляем id из ключа mediaPool (UUID от backend)
+        id: mediaId,
         path: mediaInfo.path,
         name: mediaInfo.name,
         // Мапим поля из MediaInfo в MediaFile
@@ -135,7 +134,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
           return parseFileSize(file.size)
 
         case "duration":
-          return parseDuration(file.duration)
+          // duration хранится как строка "MM:SS" или "HH:MM:SS", парсим в секунды
+          return parseDurationString(file.duration) ?? 0
         default:
           return file.startTime || 0
       }
@@ -175,7 +175,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         }
 
         case "duration": {
-          const duration = parseDuration(file.duration)
+          // duration хранится как строка "MM:SS" или "HH:MM:SS", парсим в секунды
+          const duration = parseDurationString(file.duration) ?? 0
           return getDurationGroup(duration)
         }
 

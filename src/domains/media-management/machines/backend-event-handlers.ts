@@ -71,6 +71,7 @@ function handleMediaAdded(
 
   // Конвертируем backend MediaItem в frontend MediaInfo
   const mediaInfo: MediaInfo = {
+    id: media.id,
     path: media.path,
     name: media.name,
     type: media.media_type as MediaType,
@@ -136,9 +137,10 @@ function handleMediaUpdated(
     return {}
   }
 
-  // Обновляем media info с изменениями
+  // Обновляем media info с изменениями, сохраняя id
   const updatedMedia: MediaInfo = {
     ...existingMedia,
+    id: media_id,
     ...(changes.name && { name: changes.name }),
     ...(changes.thumbnail && { thumbnailPath: changes.thumbnail }),
   }

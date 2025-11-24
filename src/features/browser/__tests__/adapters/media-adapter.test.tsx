@@ -71,8 +71,15 @@ vi.mock("@/features/media", () => ({
   }),
 }))
 
+vi.mock("@/lib/duration-formatter", () => ({
+  parseDurationString: vi.fn((duration) => {
+    if (typeof duration === "number") return duration
+    return duration || 0
+  }),
+  formatDurationSeconds: vi.fn((seconds) => `${Math.floor(seconds / 60)}:${seconds % 60}`),
+}))
+
 vi.mock("@/features/browser/utils", () => ({
-  parseDuration: vi.fn((duration) => duration || 0),
   parseFileSize: vi.fn((size) => size || 0),
 }))
 

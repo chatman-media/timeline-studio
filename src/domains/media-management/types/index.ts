@@ -28,6 +28,7 @@ export type MediaMetadata = BaseMediaMetadata & {
 export type MediaType = "Video" | "Audio" | "Image" | "Unknown"
 
 export interface MediaInfo {
+  id?: string
   path: string
   name: string
   type: MediaType
