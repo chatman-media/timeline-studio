@@ -6,6 +6,8 @@
     <string>Timeline Studio</string>
     <key>CFBundleDisplayName</key>
     <string>Timeline Studio</string>
+    <key>LSApplicationNameForUserInterface</key>
+    <string>Timeline Studio</string>
     <key>NSCameraUsageDescription</key>
     <string>Timeline Studio needs access to your camera to record video directly in the application.</string>
     <key>NSMicrophoneUsageDescription</key>
