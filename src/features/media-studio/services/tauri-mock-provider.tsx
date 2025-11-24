@@ -45,40 +45,58 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       // Track if temp project has been created
       let tempProjectCreated = false
 
-      // Mock event plugin internals
-      // Structure matches real Tauri: listeners is an object, not Map
-      // Create a safe listeners object with Proxy to prevent undefined access errors
-      const safeListeners = new Proxy({} as Record<string, any>, {
+      // Mock event plugin internals using Tauri's official mock structure
+      // Store callbacks indexed by numeric IDs
+      const callbacks = new Map<number, (data: any) => void>()
+      // Store event listeners with their metadata
+      const eventListeners: Record<string, { handlerId: number; event: string }> = {}
+
+      function registerCallback(callback: any, once = false) {
+        const identifier = Math.floor(Math.random() * 0xffffffff)
+        callbacks.set(identifier, (data: any) => {
+          if (once) {
+            callbacks.delete(identifier)
+          }
+          return callback && callback(data)
+        })
+        return identifier
+      }
+
+      function unregisterCallback(id: number) {
+        callbacks.delete(id)
+      }
+
+      function unregisterListener(_event: string, eventId: string) {
+        logger.info(`[TauriMock] Unregister listener for event: ${_event}, eventId: ${eventId}`)
+        // Remove from event listeners
+        if (eventId in eventListeners) {
+          const handlerId = eventListeners[eventId].handlerId
+          unregisterCallback(handlerId)
+          delete eventListeners[eventId]
+        }
+      }
+
+      // Create a Proxy for listeners to prevent undefined access errors
+      const listenersProxy = new Proxy(eventListeners, {
         get(target, prop) {
-          // Always return a valid object even if listener doesn't exist
           if (!(prop in target)) {
-            logger.warn(`[TauriMock] Accessing non-existent listener: ${String(prop)}`)
-            return { handlerId: undefined }
+            // Return a safe default object for missing event IDs
+            logger.debug(`[TauriMock] Accessing non-existent listener: ${String(prop)}`)
+            return { handlerId: 0, event: "unknown" }
           }
           return target[prop as string]
         },
       })
 
       ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {
-        listeners: safeListeners,
-        emit: (event: string, payload?: any) => {
-          logger.info(`[TauriMock] Event emit: ${event}`, payload)
-        },
-        unregisterListener: (event: string, eventId: string) => {
-          logger.info(`[TauriMock] Unregister listener for event: ${event}, eventId: ${eventId}`)
-          const listeners = (window as any).__TAURI_EVENT_PLUGIN_INTERNALS__?.listeners
-          // Add safety check to prevent accessing undefined listener
-          if (listeners && eventId in listeners) {
-            delete listeners[eventId]
-          }
-        },
+        listeners: listenersProxy,
+        unregisterListener,
       }
 
       ;(window as any).__TAURI_INTERNALS__ = {
-        transformCallback: (callback: any, once: boolean) => {
-          const id = Math.random().toString(36).slice(2)
-          return { callback, once, id }
-        },
+        transformCallback: registerCallback,
+        unregisterCallback,
+        callbacks,
         invoke: async (cmd: string, args?: any) => {
           logger.info(`[TauriMock] Command: ${cmd}`, args)
 
@@ -176,15 +194,18 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "get_prerender_cache_info":
               return { file_count: 0, total_size: 0, cache_path: "/tmp/cache", files: [] }
             case "plugin:event|listen": {
-              const eventId = Math.random().toString(36).slice(2)
-              const handlerId = Math.random().toString(36).slice(2)
-              // Register listener in the correct structure
-              if ((window as any).__TAURI_EVENT_PLUGIN_INTERNALS__) {
-                ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners[eventId] = {
-                  handlerId,
-                  event: args?.event || "unknown",
-                }
+              // Generate event ID and register listener
+              const eventId = Math.random().toString(36).slice(2, 11)
+              const handlerId = args?.handler || Math.floor(Math.random() * 0xffffffff)
+              const eventName = args?.event || "unknown"
+
+              // Register listener in the listeners object
+              eventListeners[eventId] = {
+                handlerId,
+                event: eventName,
               }
+
+              logger.debug(`[TauriMock] Registered listener for event: ${eventName}, eventId: ${eventId}`)
               return eventId
             }
             case "plugin:event|unlisten":
