@@ -376,19 +376,45 @@ The documentation is organized with numbered directories for logical grouping:
 - `18_marketing/` - Marketing and promotion strategies
 - `99_archive/` - Archived documentation
 
-### Bilingual Support
-Each directory contains language-specific subdirectories:
-- `ru/` - Russian documentation
-- `en/` - English documentation
-
 Example structure:
 ```
 docs/
-├── 05_development/
-│   ├── ru/
-│   │   └── setup.md
-│   └── en/
-│       └── setup.md
+├── 03_architecture/
+│   ├── overview.md
+│   └── state-management.md
+├── 08_tasks/
+│   ├── README.md          # Лог изменений задач
+│   ├── active/            # Задачи в работе
+│   ├── planned/           # Запланированные задачи
+│   └── completed/         # Завершённые задачи
+```
+
+## Task Management Workflow (Claude)
+
+При работе с проектом Claude должен следовать этому процессу управления задачами:
+
+### Когда пользователь спрашивает "что дальше делаем":
+1. Проверить `docs/08_tasks/active/` на наличие активных задач
+2. Если active пусто - взять задачу из `docs/08_tasks/planned/`
+3. Предложить пользователю задачи на выбор с кратким описанием
+
+### При работе над задачей:
+1. Открыть документ задачи в `docs/08_tasks/active/`
+2. Отмечать прогресс как чеклист в документе (`- [x]` для выполненных пунктов)
+3. Обновлять статус и дату последнего изменения
+
+### При завершении задачи:
+1. Убедиться что все пункты отмечены как выполненные
+2. Переместить файл задачи в `docs/08_tasks/completed/`
+3. Добавить запись в `docs/08_tasks/README.md` в секцию "Changelog"
+4. Обновить README файлы в active/ и completed/ при необходимости
+
+### Формат записи в Changelog:
+```markdown
+### [YYYY-MM-DD] Название задачи
+- **Статус:** Завершено / В работе / Перенесено
+- **Файл:** task-name.md
+- **Действие:** completed → moved to completed/ | planned → active | etc.
 ```
 
 ## Code Style Guidelines
