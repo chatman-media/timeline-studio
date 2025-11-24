@@ -37,7 +37,7 @@ export function PlanViewer({ plan }: PlanViewerProps) {
 
   const handleApplyToTimeline = async () => {
     // Convert MediaItem[] to MediaFile[]
-    const convertedMediaFiles: MediaFile[] = mediaFiles.map((item: MediaItem) => {
+    const convertedMediaFiles: MediaFile[] = mediaFiles.map((item) => {
       const isVideo = item.media_type.toLowerCase().includes("video")
       const isAudio = item.media_type.toLowerCase() === "audio"
       return {

@@ -4,8 +4,9 @@
 //! Заменяет audio_analysis_integration.rs и использует unified типы
 
 use crate::analysis::types::{
-  AudioAnalysisError, AudioAnalysisMetadata, AudioBasicMetrics, AudioFFmpegAnalysis, AudioMontageAnalysis, AudioPerformanceMode,
-  AudioTranscriptionAnalysis, UnifiedAudioAnalysisResult, UnifiedAudioConfig,
+  AudioAnalysisError, AudioAnalysisMetadata, AudioBasicMetrics, AudioFFmpegAnalysis,
+  AudioMontageAnalysis, AudioPerformanceMode, AudioTranscriptionAnalysis,
+  UnifiedAudioAnalysisResult, UnifiedAudioConfig,
 };
 use crate::video_compiler::commands::whisper_commands::business_logic::check_local_whisper_availability;
 use crate::video_compiler::commands::whisper_commands::types::WhisperTranscriptionResult;

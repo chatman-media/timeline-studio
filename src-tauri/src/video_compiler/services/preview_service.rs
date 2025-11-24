@@ -555,7 +555,7 @@ impl PreviewService for PreviewServiceImpl {
 
   async fn generate_waveform_data_json(
     &self,
-    audio_path: &Path,
+    _audio_path: &Path,
     pixels_per_second: u32,
     bits: u8,
   ) -> Result<String> {

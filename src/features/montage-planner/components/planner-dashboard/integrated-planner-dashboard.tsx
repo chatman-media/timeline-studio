@@ -56,7 +56,7 @@ export function IntegratedPlannerDashboard() {
   const handleAnalyzeProject = async () => {
     try {
       // Convert MediaItem[] to MediaFile[]
-      const convertedMediaFiles: MediaFile[] = mediaFiles.map((item: MediaItem) => {
+      const convertedMediaFiles: MediaFile[] = mediaFiles.map((item) => {
         const isVideo = item.media_type.toLowerCase().includes("video")
         const isAudio = item.media_type.toLowerCase() === "audio"
         return {
@@ -177,7 +177,7 @@ export function IntegratedPlannerDashboard() {
                 <span className="text-muted-foreground">Total Duration</span>
                 <span className="font-medium">
                   {formatDuration(
-                    mediaFiles.reduce((sum: number, file: MediaItem) => {
+                    mediaFiles.reduce((sum, file) => {
                       const duration = file.duration
                       return sum + (typeof duration === "number" ? duration : 0)
                     }, 0),

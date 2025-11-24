@@ -67,6 +67,7 @@ impl MontageAudioAdapter {
   }
 
   /// Конвертировать AudioContentType
+  #[allow(dead_code)]
   fn convert_content_type(content_type: &AudioContentType) -> String {
     match content_type {
       AudioContentType::Speech => "speech".to_string(),
