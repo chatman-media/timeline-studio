@@ -1,3 +1,77 @@
+# [3.15.0](https://github.com/chatman-media/timeline-studio/compare/v3.14.3...v3.15.0) (2025-11-24)
+
+
+### Bug Fixes
+
+* **ai-director:** Добавить детальное логирование для диагностики выбора файлов ([4ef33e4](https://github.com/chatman-media/timeline-studio/commit/4ef33e439f750a2c08961f663bdb6a7679edd873))
+* **backend:** Убрать дублирующий импорт Resolution ([afc0a48](https://github.com/chatman-media/timeline-studio/commit/afc0a48779aae730953ec7837866f0b3bdf1e26f))
+* correct unregisterListener signature to match Tauri API ([8e26e52](https://github.com/chatman-media/timeline-studio/commit/8e26e5257353dd60f949a6b2feaf537ea6e721cb))
+* **lint:** Исправить все ошибки линтера ([7ce99e7](https://github.com/chatman-media/timeline-studio/commit/7ce99e7f876db2751bab6254b323227bc13252b6))
+* prevent undefined access error in Tauri mock event listeners ([3b899fc](https://github.com/chatman-media/timeline-studio/commit/3b899fc8d6dab7b8388923146ed1aeb52f4864e0))
+* **project-settings:** Добавить флаг редактирования для защиты от перезаписи полей ([746e832](https://github.com/chatman-media/timeline-studio/commit/746e832d71082ba0f8ba09152f8cb03cb1cfe98b))
+* **project-settings:** Исправить race condition при редактировании полей ([857f133](https://github.com/chatman-media/timeline-studio/commit/857f1339b24a14a56296b513a683d129463e0f48))
+* **project-settings:** Исправить синхронизацию настроек с backend ([c259133](https://github.com/chatman-media/timeline-studio/commit/c259133579a0a6e29508bc83a0b5fabab120e632))
+* **tauri-mock:** Исправить ошибку доступа к undefined в unregisterListener ([1ef890a](https://github.com/chatman-media/timeline-studio/commit/1ef890ad297d73bd1fe45283b58d293f4b59b091))
+
+
+### Features
+
+* **ai-director:** Добавить AI Director Dashboard ([4ec1396](https://github.com/chatman-media/timeline-studio/commit/4ec13961a9ea0c4d2f987433bba9c4072900e476))
+* **ai-director:** Реализовать Phase 4 и Phase 5 - Montage Creation & Refinement ([f4ae800](https://github.com/chatman-media/timeline-studio/commit/f4ae8007cfb52417e8bf989fe311bd49841fd77a))
+* **ai-director:** Рефакторинг и расширение функциональности монтажа ([7511680](https://github.com/chatman-media/timeline-studio/commit/751168021b1b21273335b4c8f73d734b3e93f1a8))
+* **analysis-dashboard:** Добавить Performance Metrics и Visual Analytics ([184b78b](https://github.com/chatman-media/timeline-studio/commit/184b78b3d73f66231e5eeb7f28ae06fc2c1a4770))
+* **browser:** Добавить Project Templates и Scenarios ([78862f6](https://github.com/chatman-media/timeline-studio/commit/78862f6926da4cef36d423396d69da3be3af024d))
+* **keyboard-shortcuts:** Добавить conflict detection и cheat sheet ([7b856c7](https://github.com/chatman-media/timeline-studio/commit/7b856c73845b75e66ab0a03c3dfb05030c9846d4))
+* **media-management:** Завершить интеграцию Waveform Generator ([f5f7526](https://github.com/chatman-media/timeline-studio/commit/f5f7526345678bbdc610d750a1d0dfbffa5f3ecb))
+* **style-templates:** Добавить custom templates storage и export ([00e132d](https://github.com/chatman-media/timeline-studio/commit/00e132dfc046afc8194375ab53a725e3698b6a09))
+* **subtitles:** Обновить стили и добавить style manager ([dfce4a3](https://github.com/chatman-media/timeline-studio/commit/dfce4a3a3be25f4a748b77f40c27873ea53e6cbd))
+* **tauri:** Добавить waveform preview command ([1e8feae](https://github.com/chatman-media/timeline-studio/commit/1e8feae1f473a95b8e46f53547823280937c435a))
+* **templates:** Добавить animated cells и custom template storage ([0ec8bea](https://github.com/chatman-media/timeline-studio/commit/0ec8bea219e0323a4a9ea961fa46503b71752755))
+* **transitions,style-templates:** Расширение и документирование ([507a3ab](https://github.com/chatman-media/timeline-studio/commit/507a3ab352df21b406be1d123013cf03044d20b7))
+* **workspace:** Добавить Widget Dock и Workspace Persistence ([24861c8](https://github.com/chatman-media/timeline-studio/commit/24861c82f2b5fb306a746d34c71642feaedcba49))
+
+## [3.14.3](https://github.com/chatman-media/timeline-studio/compare/v3.14.2...v3.14.3) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Заменить npm на bun в build workflows ([e5f9d32](https://github.com/chatman-media/timeline-studio/commit/e5f9d320a24e0cd297e5e0c0fc0f52869e320c17))
+* **rust:** Убрать дубликат структуры Resolution ([4f83eef](https://github.com/chatman-media/timeline-studio/commit/4f83eeff745a89ec1551fa8c06a6f7e27b0b5949))
+
+## [3.14.2](https://github.com/chatman-media/timeline-studio/compare/v3.14.1...v3.14.2) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Добавить state-types в репозиторий для CI ([dd6b19a](https://github.com/chatman-media/timeline-studio/commit/dd6b19ae0d7cd797c051279354808bdc8008496d))
+* **ci:** Добавить установку promo зависимостей в typecheck ([78d9430](https://github.com/chatman-media/timeline-studio/commit/78d94305bd8980e48cddde7cce9e50b792f63612))
+* **rust:** Исправить clippy warnings ([be82e9f](https://github.com/chatman-media/timeline-studio/commit/be82e9fbaf87754f6b5aa360387f3da08269449b))
+* **typescript:** Исправить ошибки типов в TypeScript ([81ecd9e](https://github.com/chatman-media/timeline-studio/commit/81ecd9e4cc86cc9dd32448ef3220ec363ea0e39f))
+
+## [3.14.1](https://github.com/chatman-media/timeline-studio/compare/v3.14.0...v3.14.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **ci:** Исправить GitHub Actions workflows ([ea17138](https://github.com/chatman-media/timeline-studio/commit/ea171381df729984de8660b15daa5372a7a7d978))
+* **filters:** Улучшить генерацию уникальных ID для AppliedFilter ([6d55bce](https://github.com/chatman-media/timeline-studio/commit/6d55bce838cd7764968adf7dd9375152da116ed4))
+* **lint:** Удалить неиспользуемый импорт ChatSession ([3e090bc](https://github.com/chatman-media/timeline-studio/commit/3e090bc9edce180ba289893ac328a2dffdafe4af))
+* **rust:** Исправить clippy warnings ([5c6e621](https://github.com/chatman-media/timeline-studio/commit/5c6e6216f01b158ba19d3445e2436a7c3757f851))
+
+# [3.14.0](https://github.com/chatman-media/timeline-studio/compare/v3.13.1...v3.14.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* **security:** Добавить поддержку MCP Claude в env importer ([e5993e3](https://github.com/chatman-media/timeline-studio/commit/e5993e34eb2dddf0684ce8202992faaabdb21973))
+* **security:** Добавить поддержку типа API ключа mcp_claude ([ce1a8ae](https://github.com/chatman-media/timeline-studio/commit/ce1a8ae81995e7b51e7cbc70199bf1a88c918e07))
+* Исправить тесты и улучшить AI интеграцию ([bca746e](https://github.com/chatman-media/timeline-studio/commit/bca746eb428ccf31912119761b885ff6e15a4f7f))
+
+
+### Features
+
+* **ai-chat:** Приоритет локальных моделей при автовыборе ([9771d29](https://github.com/chatman-media/timeline-studio/commit/9771d29b469a71be233dad74309a14ba5c36948b))
+
 ## [3.13.1](https://github.com/chatman-media/timeline-studio/compare/v3.13.0...v3.13.1) (2025-11-18)
 
 
