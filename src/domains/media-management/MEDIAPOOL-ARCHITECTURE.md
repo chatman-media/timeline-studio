@@ -470,6 +470,300 @@ logger.info("Media added to pool:", {
                     └─────────────────┘
 ```
 
+## Визуальные диаграммы
+
+### Структура MediaPool
+
+```
+MediaPool (Map)
+├─ "550e8400-..." → MediaInfo { path: "/video1.mp4", type: "Video" }
+├─ "6fa459ea-..." → MediaInfo { path: "/audio1.mp3", type: "Audio" }
+├─ "7c9e6679-..." → MediaInfo { path: "/image1.png", type: "Image" }
+└─ "8d7be5f9-..." → MediaInfo { path: "/video2.mov", type: "Video" }
+
+┌─────────────────────────────────────────────────────────┐
+│ Key: UUID (от Backend)                                  │
+│ Value: MediaInfo (Frontend representation)              │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Конвертация типов
+
+```
+BACKEND (Rust)              FRONTEND (TypeScript)
+────────────────────────────────────────────────
+
+MediaData {                 MediaInfo {
+  id: String,        ──────→  (используется как ключ Map)
+  path: String,      ──────→  path: string,
+  name: String,      ──────→  name: string,
+  media_type: String,──────→  type: MediaType,
+  duration: f64      ──────→  duration?: number,
+                              metadata?: MediaMetadata,
+                              thumbnailPath?: string
+}                           }
+
+┌────────────────────────────────────────────────────────┐
+│ Конвертация в handleMediaAdded():                      │
+│                                                         │
+│ const mediaInfo: MediaInfo = {                         │
+│   path: media.path,              // String → string    │
+│   name: media.name,              // String → string    │
+│   type: media.media_type as MediaType, // cast         │
+│   duration: media.duration ?? undefined, // nullable   │
+│   thumbnailPath: media.thumbnail ?? undefined          │
+│ }                                                       │
+│                                                         │
+│ updatedMediaPool.set(media.id, mediaInfo)              │
+│                      ^^^^^^^^   ^^^^^^^^^              │
+│                      UUID       MediaInfo              │
+└────────────────────────────────────────────────────────┘
+```
+
+### Command-Event паттерн
+
+```
+КОМАНДЫ (Commands)
+─────────────────────────────────────────
+Frontend → Backend
+Императивные: "Сделай это"
+
+AddMedia      → Добавь файл в медиапул
+RemoveMedia   → Удали файл из медиапула
+UpdateMedia   → Обнови метаданные файла
+
+┌─────────────────────────────────────┐
+│ backendSync.executeCommand({        │
+│   type: "AddMedia",                 │
+│   params: { path, media_type }      │
+│ })                                  │
+└─────────────────────────────────────┘
+
+                ↓
+
+СОБЫТИЯ (Events)
+─────────────────────────────────────────
+Backend → Frontend
+Декларативные: "Это произошло"
+
+MediaAdded    → Файл был добавлен
+MediaRemoved  → Файл был удален
+MediaUpdated  → Метаданные были обновлены
+
+┌─────────────────────────────────────┐
+│ backendSync.onEvent((event) => {    │
+│   if (event.type === "MediaAdded") {│
+│     // Update mediaPool             │
+│   }                                 │
+│ })                                  │
+└─────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────┐
+│ Зачем такая сложность?                             │
+│                                                     │
+│ ✅ Backend = Source of Truth                       │
+│ ✅ Команда может быть отклонена (валидация)        │
+│ ✅ Событие = гарантия успешного выполнения         │
+│ ✅ Undo/Redo работает через команды                │
+│ ✅ Синхронизация между вкладками через события     │
+└────────────────────────────────────────────────────┘
+```
+
+### Иммутабельность
+
+```
+❌ МУТАЦИЯ (Плохо)
+───────────────────────────────────────
+context.mediaPool.set(media.id, mediaInfo)
+return { mediaPool: context.mediaPool }
+
+Проблема:
+- React не обнаружит изменение
+- Та же ссылка на Map
+- UI не обновится!
+
+
+✅ ИММУТАБЕЛЬНОСТЬ (Хорошо)
+───────────────────────────────────────
+const updatedMediaPool = new Map(context.mediaPool)
+                         ^^^^^^^^^ Новая Map!
+updatedMediaPool.set(media.id, mediaInfo)
+return { mediaPool: updatedMediaPool }
+
+Преимущества:
+- Новая ссылка
+- React обнаружит изменение
+- UI обновится
+- Можно сравнивать по ссылке
+
+
+┌────────────────────────────────────────────────────┐
+│ В React:                                            │
+│                                                     │
+│ const [mediaPool, setMediaPool] = useState(...)    │
+│                                                     │
+│ // ❌ Не работает                                  │
+│ mediaPool.set(id, info)                            │
+│ setMediaPool(mediaPool) // Та же ссылка!           │
+│                                                     │
+│ // ✅ Работает                                     │
+│ const updated = new Map(mediaPool)                 │
+│ updated.set(id, info)                              │
+│ setMediaPool(updated) // Новая ссылка!             │
+└────────────────────────────────────────────────────┘
+```
+
+### Жизненный цикл проекта
+
+```
+НОВЫЙ ПРОЕКТ
+────────────────────────────────────────
+┌─────────────────┐
+│ CreateProject   │
+│ command         │
+└────────┬────────┘
+         │
+         ↓
+    ┌────────────────────┐
+    │ Backend creates    │
+    │ empty ProjectState │
+    │ media_pool = {}    │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ ProjectCreated     │
+    │ event              │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ Frontend:          │
+    │ mediaPool = new Map│
+    └────────────────────┘
+
+
+ОТКРЫТИЕ СУЩЕСТВУЮЩЕГО ПРОЕКТА
+────────────────────────────────────────
+┌─────────────────┐
+│ OpenProject     │
+│ command         │
+└────────┬────────┘
+         │
+         ↓
+    ┌────────────────────┐
+    │ Backend loads      │
+    │ project file       │
+    │ restores state     │
+    │ media_pool = {...} │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ ProjectLoaded      │
+    │ event with state   │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ Frontend:          │
+    │ for each media:    │
+    │   emit MediaAdded  │
+    │ mediaPool populated│
+    └────────────────────┘
+
+
+ЗАКРЫТИЕ ПРОЕКТА
+────────────────────────────────────────
+┌─────────────────┐
+│ CloseProject    │
+│ command         │
+└────────┬────────┘
+         │
+         ↓
+    ┌────────────────────┐
+    │ Backend saves      │
+    │ project file       │
+    │ clears state       │
+    │ media_pool = {}    │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ ProjectClosed      │
+    │ event              │
+    └────────┬───────────┘
+             │
+             ↓
+    ┌────────────────────┐
+    │ Frontend:          │
+    │ mediaPool.clear()  │
+    │ setMediaPool(empty)│
+    └────────────────────┘
+```
+
+### Отладка и troubleshooting
+
+```
+ПРОВЕРКА СИНХРОНИЗАЦИИ
+────────────────────────────────────────
+┌────────────────────────────────────┐
+│ Frontend                           │
+│ console.log(                       │
+│   "Frontend pool:",                │
+│   Array.from(mediaPool.keys())     │
+│ )                                  │
+└────────────────────────────────────┘
+         │
+         │ Сравнить
+         ↓
+┌────────────────────────────────────┐
+│ Backend                            │
+│ const state = await                │
+│   backendSync.getState()           │
+│ console.log(                       │
+│   "Backend pool:",                 │
+│   Object.keys(state.media_pool)    │
+│ )                                  │
+└────────────────────────────────────┘
+
+Если не совпадают:
+- Проверить подписку на события
+- Проверить обработку событий
+- Проверить логи backend
+
+
+ОТСЛЕЖИВАНИЕ СОБЫТИЙ
+────────────────────────────────────────
+backendSync.onEvent((event) => {
+  if (event.type.startsWith("Media")) {
+    console.log({
+      time: new Date().toISOString(),
+      type: event.type,
+      payload: event.payload
+    })
+  }
+})
+
+Ожидаемые события:
+- MediaAdded после importFiles()
+- MediaRemoved после удаления
+- MediaUpdated после обновления метаданных
+
+
+ПРОВЕРКА ИММУТАБЕЛЬНОСТИ
+────────────────────────────────────────
+const oldRef = mediaPool
+// ... operations ...
+const newRef = mediaPool
+
+if (oldRef === newRef) {
+  console.error("❌ Mutation detected!")
+} else {
+  console.log("✅ Immutable update")
+}
+```
+
 ## FAQ
 
 ### Q: Почему Map, а не массив?

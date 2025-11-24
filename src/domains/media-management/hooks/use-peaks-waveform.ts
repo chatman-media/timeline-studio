@@ -5,8 +5,7 @@
  * Предоставляет интерактивную визуализацию waveform для аудио
  */
 
-import type { PeaksInstance } from "peaks.js"
-import Peaks from "peaks.js"
+import type { PeaksInstance, PeaksOptions } from "peaks.js"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { PeaksPoint, PeaksSegment, UsePeaksResult } from "../types/peaks-waveform"
@@ -66,11 +65,16 @@ export function usePeaksWaveform(options: UsePeaksWaveformOptions): UsePeaksResu
   /**
    * Инициализация peaks.js
    */
-  const initializePeaks = useCallback(() => {
+  const initializePeaks = useCallback(async () => {
     if (!audioRef.current) {
       const err = new Error("Audio element not found")
       setError(err)
       onError?.(err)
+      return
+    }
+
+    // Проверка на SSR - peaks.js требует window
+    if (typeof window === "undefined") {
       return
     }
 
@@ -80,8 +84,11 @@ export function usePeaksWaveform(options: UsePeaksWaveformOptions): UsePeaksResu
     try {
       logger.info("Initializing peaks.js", { audioUrl, dataUri })
 
+      // Динамический импорт peaks.js (требует window)
+      const Peaks = (await import("peaks.js")).default
+
       // Базовая конфигурация
-      const baseConfig: Partial<import("peaks.js").PeaksOptions> = {
+      const baseConfig: Partial<PeaksOptions> = {
         overview: overviewRef.current
           ? {
               container: overviewRef.current,
@@ -111,7 +118,7 @@ export function usePeaksWaveform(options: UsePeaksWaveformOptions): UsePeaksResu
         baseConfig.webAudio = { audioContext }
       }
 
-      const config = baseConfig as import("peaks.js").PeaksOptions
+      const config = baseConfig as PeaksOptions
 
       // Инициализируем peaks.js с callback
       Peaks.init(config, (error, peaksInstance) => {

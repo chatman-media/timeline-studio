@@ -2,7 +2,7 @@
 
 High-performance WebGL2-based preview system for Timeline Studio, providing real-time video rendering with effects.
 
-**🌐 Languages:** [English](./README_EN.md) | [Русский](./README.md)
+**🌐 Languages:** [English](./README.md) | [Русский](./README.ru.md)
 
 ## 🚀 Features
 

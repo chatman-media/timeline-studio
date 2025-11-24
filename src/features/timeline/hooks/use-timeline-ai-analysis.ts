@@ -181,7 +181,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
             duration: s.duration,
             confidence: s.confidence,
             description: s.description || "",
-          })),
+          })) as any,
           keyMoments,
           contentType: "narrative" as any,
           genres: [],
@@ -499,10 +499,10 @@ function convertScenesToKeyMoments(scenes: SceneAnalysis[]): KeyMoment[] {
         id: `km-${scene.id}`,
         timestamp: scene.startTime,
         duration: 2,
-        type: KeyMomentType.TRANSITION,
+        type: KeyMomentType.VISUAL_HIGHLIGHT,
         score: scene.confidence,
         description: `Переход: ${scene.sceneType}`,
-        tags: [scene.sceneType],
+        sceneId: scene.id,
       })
     }
 
@@ -512,10 +512,10 @@ function convertScenesToKeyMoments(scenes: SceneAnalysis[]): KeyMoment[] {
         id: `km-action-${scene.id}`,
         timestamp: scene.startTime + scene.duration / 2,
         duration: Math.min(scene.duration, 5),
-        type: KeyMomentType.ACTION,
+        type: KeyMomentType.ACTION_PEAK,
         score: scene.visual.motionLevel,
         description: `Активная сцена: ${scene.sceneType}`,
-        tags: ["action", scene.sceneType],
+        sceneId: scene.id,
       })
     }
   })

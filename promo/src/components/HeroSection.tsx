@@ -114,7 +114,7 @@ export function HeroSection() {
           initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.3 }}
-          className="text-4xl md:text-6xl font-semibold mb-6"
+          className="text-4xl md:text-6xl font-normal mb-6"
         >
           {t("mainPage.hero.title")}
           <br />

@@ -480,11 +480,8 @@ async function batchRename() {
 
 Для более глубокого понимания Media Management домена см.:
 
-- **[INDEX.md](./INDEX.md)** - Навигационный хаб по всей документации
 - **[MEDIAPOOL-QUICK-GUIDE.md](./MEDIAPOOL-QUICK-GUIDE.md)** - 5-минутный гайд по MediaPool
-- **[MEDIAPOOL-ARCHITECTURE.md](./MEDIAPOOL-ARCHITECTURE.md)** - Подробная архитектура event-driven системы
-- **[MEDIAPOOL-DIAGRAMS.md](./MEDIAPOOL-DIAGRAMS.md)** - Визуальные диаграммы и схемы
-- **[FIXES-AND-TODOS.md](./FIXES-AND-TODOS.md)** - Исправления, TODO и известные проблемы
+- **[MEDIAPOOL-ARCHITECTURE.md](./MEDIAPOOL-ARCHITECTURE.md)** - Подробная архитектура event-driven системы с визуальными диаграммами
 - **[/docs/05_development/duration-standardization.md](../../../docs/05_development/duration-standardization.md)** - Стандарты форматирования времени
 
 ---

@@ -16,7 +16,6 @@ import type { MediaFile } from "@/domains/video-editing/types/media"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { MediaType } from "@/features/media/types/media"
 import { formatTime } from "@/lib/date"
-import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 import { usePlanGenerator } from "../../hooks/use-plan-generator"
 import { useTimelineIntegration } from "../../hooks/use-timeline-integration"

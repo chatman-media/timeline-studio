@@ -84,9 +84,7 @@ html {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #6366f1 100%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
 }
 
 /* Эффекты для кнопок */
@@ -124,12 +122,11 @@ html {
 }
 
 .nav-glass-scrolled {
-  background: rgb(17 24 39 / 20%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgb(255 255 255 / 8%);
-  box-shadow:
-    0 4px 16px 0 rgb(0 0 0 / 15%),
-    0 8px 32px 0 rgb(17 24 39 / 25%);
+  background: rgb(255 255 255 / 5%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgb(255 255 255 / 10%);
+  box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
   will-change: transform;
 }
 

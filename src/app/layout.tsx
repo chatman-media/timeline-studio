@@ -25,13 +25,21 @@ export default function RootLayout({
 (function() {
   'use strict';
 
-  console.log('[Tauri Init] Initializing event plugin internals...');
+  if (typeof window === 'undefined') return;
 
+  // Создаём безопасный объект-заглушку для listeners
   const listenersStorage = {};
+
+  const safeGet = function(obj, prop) {
+    if (obj && prop in obj) return obj[prop];
+    return { handlerId: 0, event: 'unknown' };
+  };
+
   const listeners = new Proxy(listenersStorage, {
     get(target, prop) {
+      if (prop === Symbol.toStringTag) return 'Object';
+      if (typeof prop === 'symbol') return undefined;
       if (!(prop in target)) {
-        console.warn('[Tauri Init] Accessing non-existent listener: ' + String(prop));
         return { handlerId: 0, event: 'unknown' };
       }
       return target[prop];
@@ -43,22 +51,19 @@ export default function RootLayout({
     deleteProperty(target, prop) {
       delete target[prop];
       return true;
+    },
+    has(target, prop) {
+      return prop in target;
     }
   });
 
-  if (typeof window !== 'undefined') {
-    window.__TAURI_EVENT_PLUGIN_INTERNALS__ = {
-      listeners: listeners,
-      unregisterListener: function(event, eventId) {
-        console.log('[Tauri Init] Unregister listener: ' + event + ', eventId: ' + eventId);
-        if (eventId in listenersStorage) {
-          delete listenersStorage[eventId];
-        }
-      }
-    };
-
-    console.log('[Tauri Init] Event plugin internals initialized successfully');
-  }
+  window.__TAURI_EVENT_PLUGIN_INTERNALS__ = window.__TAURI_EVENT_PLUGIN_INTERNALS__ || {};
+  window.__TAURI_EVENT_PLUGIN_INTERNALS__.listeners = listeners;
+  window.__TAURI_EVENT_PLUGIN_INTERNALS__.unregisterListener = function(event, eventId) {
+    if (eventId && eventId in listenersStorage) {
+      delete listenersStorage[eventId];
+    }
+  };
 })();
             `,
           }}

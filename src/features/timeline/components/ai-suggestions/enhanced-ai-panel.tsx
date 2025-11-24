@@ -8,7 +8,8 @@ import { useCallback, useMemo, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
+// REMOVED: executeContentIntelligenceTool - legacy code deleted, will be replaced by AI Director v2
+// import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@/domains/media-management"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 // MIGRATION NOTE: UnifiedDashboard removed - use AI Director integration instead
@@ -129,23 +130,20 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
       setError(null)
 
       try {
-        const result = await executeContentIntelligenceTool(analysis.operation, {
-          mediaFiles: mediaFiles,
-          options: {
-            projectTitle: project?.name || "Timeline Project",
-            targetPlatforms: ["youtube", "instagram", "tiktok"],
-            language: "ru",
-            audience: "general",
-          },
-        })
+        // REMOVED: executeContentIntelligenceTool - will be replaced by AI Director v2
+        // const result = await executeContentIntelligenceTool(analysis.operation, {
+        //   mediaFiles: mediaFiles,
+        //   options: {
+        //     projectTitle: project?.name || "Timeline Project",
+        //     targetPlatforms: ["youtube", "instagram", "tiktok"],
+        //     language: "ru",
+        //     audience: "general",
+        //   },
+        // })
 
-        setAnalysisResults({
-          analysis: analysis.name,
-          results: result,
-          timestamp: new Date().toISOString(),
-        })
-
-        logger.info(`AI Panel: ${analysis.name} completed`, { result })
+        // Temporary message until AI Director v2 is implemented
+        setError(new Error("Эта функция будет доступна в AI Director v2. Используйте AI Chat для анализа."))
+        logger.info(`AI Panel: ${analysis.name} temporary disabled, waiting for v2`)
       } catch (error) {
         logger.error(`AI Panel: ${analysis.name} failed`, { error })
         setError(error instanceof Error ? error : new Error("Ошибка анализа"))

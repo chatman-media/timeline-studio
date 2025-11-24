@@ -1,160 +1,110 @@
-# Browser - Функциональные требования
+# Browser Module - Media and Resources Browser
 
-## 📋 Статус готовности: 100%
+**Languages:** [English](./README.md) | [Русский](./README.ru.md)
 
-- ✅ **Компоненты**: Полностью реализованы
-- ✅ **Сервисы состояния**: Полностью реализованы
-- ✅ **Тесты**: Отличное покрытие (534 теста, все проходят)
-- ✅ **Основная логика**: Табы, контент, навигация
-- ✅ **Превью компоненты**: Все типы медиа
-- ✅ **Layout компоненты**: Кнопки, статус-бар
-- ✅ **TODO комментарии**: Все решены (5/5)
-- ✅ **Обработка ошибок**: Полная в async операциях
-- ✅ **Code quality**: Нет lint ошибок
+## Overview
 
-## 🎯 Основные функции
+The Browser module provides a tabbed interface for browsing and managing different types of media files and resources in Timeline Studio. It serves as the main entry point for importing and organizing project assets.
 
-### ✅ Готово
+## Features
 
-#### Система табов
-- [x] Переключение между категориями контента
-- [x] Активное состояние табов
-- [x] Адаптивный дизайн табов
-- [x] Поддержка клавиатурной навигации
+### Tab System
+- **Media** - Video and image files
+- **Music** - Audio files and music
+- **Transitions** - Transitions between clips
+- **Effects** - Video effects
+- **Subtitles** - Subtitles and text
+- **Filters** - Image filters
+- **Templates** - Project templates
+- **Style Templates** - Intro/outro and title templates
 
-#### Категории контента
-- [x] **Media** - медиафайлы (видео, изображения)
-- [x] **Music** - аудиофайлы и музыка
-- [x] **Transitions** - переходы между клипами
-- [x] **Effects** - видеоэффекты
-- [x] **Subtitles** - субтитры и текст
-- [x] **Filters** - фильтры изображения
-- [x] **Templates** - шаблоны проектов
-- [x] **Style Templates** - стилестические шаблоны (интро, аутро, заголовки)
+### Media Browser
+- Import media files via button or drag & drop
+- Preview thumbnails with playback capability
+- File metadata (resolution, duration, format)
+- Date-based grouping
+- Search and filtering
+- Favorite files (star)
+- Status bar with information
+- Add to resources panel button (plus)
+- Load to player for preview button (arrow)
 
-#### Медиа браузер
-- [x] Импорт медиафайлов через кнопку или drag & drop
-- [x] Отображение превью с возможностью воспроизведения
-- [x] Метаданные файлов (разрешение, длительность, формат)
-- [x] Группировка по датам
-- [x] Поиск и фильтрация
-- [x] Избранные файлы (звездочка)
-- [x] Статус-бар с информацией
-- [x] Кнопка добавления в панель ресурсов (плюс)
-- [x] Кнопка загрузки в плеер для предпросмотра (стрелка)
+### Integration
+- Drag & drop to Timeline - fully functional
+- "Apply" button for loading into VideoPlayer
+- Add to resources panel for Timeline and AI integration
+- Seamless integration with project settings via providers
 
-#### Интеграция с провайдерами
-- [x] MediaListProvider для медиафайлов
-- [x] Автономные компоненты для других категорий
-- [x] Единообразный интерфейс
+## Architecture
 
-## 🎨 UI/UX требования
+### Components
+- `browser.tsx` - Root component with tab management
+- `browser-tabs.tsx` - Tab navigation
+- `browser-content.tsx` - Content display for each tab
+- `layout/` - Layout components (buttons, status bar)
+- `preview/` - Preview components (audio, video, image)
 
-### ✅ Реализовано
+### State Management
+- `browser-state-machine.ts` - XState machine for browser state
+- `browser-state-provider.tsx` - React context provider
+- `use-browser-state.ts` - Hook for accessing browser state
 
-#### Макет
-- [x] Вертикальная структура с табами сверху
-- [x] Прокручиваемая область контента
-- [x] Адаптивные размеры
-- [x] Темная тема
+## Usage
 
-#### Табы
-- [x] Горизонтальное расположение
-- [x] Четкие индикаторы активного таба
-- [x] Плавные переходы
-- [x] Иконки для категорий
+```typescript
+import { Browser } from '@/features/browser'
 
-#### Контент
-- [x] Единообразное отображение элементов
-- [x] Оптимизированная прокрутка
-- [x] Загрузочные состояния
-- [x] Пустые состояния
+function MediaStudio() {
+  return (
+    <div>
+      <Browser />
+    </div>
+  )
+}
+```
 
-## 🔄 Интеграция с другими компонентами
+## Testing
 
-### ✅ Реализовано
-- [x] Интеграция в MediaStudio layouts
-- [x] Переключение видимости через UserSettings
-- [x] Провайдеры для управления состоянием
+- **Total tests**: 535 tests (534 passing, 1 skipped)
+- **Component coverage**: 71.73% statements
+- **Service coverage**: 100% statements
+- **Layout coverage**: 86.1% statements
+- **Preview coverage**: 74.54% statements
 
-### ✅ Реализовано (продолжение)
-- [x] Drag & drop в Timeline - полностью функционально
-- [x] Кнопка "Apply" для загрузки в VideoPlayer для предпросмотра
-- [x] Кнопка добавления в панель ресурсов для работы с Timeline и AI
-- [x] Интеграция с проектными настройками через провайдеры
+Run tests:
+```bash
+bun run test src/features/browser/__tests__/
+```
 
-## 📊 Производительность
+## Technical Details
 
-### ✅ Оптимизировано
-- [x] Ленивая загрузка контента табов
-- [x] Виртуализация для больших списков
-- [x] Оптимизированные ререндеры
-- [x] Эффективное управление состоянием
+For detailed technical documentation, see [DEV.md](./DEV.md).
 
-### ❌ Возможные улучшения
-- [ ] Кэширование превью
-- [ ] Предзагрузка соседних табов (не реализована)
-- [ ] Оптимизация для больших библиотек
-- [ ] Фоновая индексация файлов
+## Performance
 
-## 🧪 Тестирование
+- Lazy loading of tab content
+- Virtualization for large lists
+- Optimized re-renders
+- Efficient state management
 
-### ✅ Покрыто тестами
-- [x] Компонент Browser
-- [x] BrowserTabs навигация
-- [x] BrowserContent отображение
-- [x] Интеграция с провайдерами
-- [x] Компоненты превью (audio, video, image)
-- [x] Layout компоненты (favorite-button, status-bar)
-- [x] Сервисы состояния (browser-state-machine)
+## API
 
-### Качество тестов
-- [x] Модульные тесты компонентов
-- [x] Тесты пользовательских взаимодействий
-- [x] Тесты интеграции с провайдерами
-- [x] Моки для внешних зависимостей
+```typescript
+// Browser state
+interface BrowserContext {
+  activeTab: BrowserTab
+  selectedFiles: Map<BrowserTab, string[]>
+  searchQuery: string
+  viewMode: 'grid' | 'list'
+  sortBy: 'name' | 'date' | 'size' | 'type'
+  sortOrder: 'asc' | 'desc'
+  groupBy: 'none' | 'date' | 'type' | 'folder'
+}
 
-### Покрытие тестами
-- **Общее количество тестов**: 535 тестов (534 проходят, 1 пропущен)
-- **Покрытие компонентов**: 71.73% statements
-- **Покрытие сервисов**: 100% statements
-- **Покрытие layout**: 86.1% statements
-- **Покрытие preview**: 74.54% statements
-- **Статус**: Все тесты проходят успешно
+// Browser hook
+const { activeTab, switchTab, selectedFiles } = useBrowserState()
+```
 
-## 📱 Адаптивность
+## License
 
-### ✅ Реализовано
-- [x] Адаптивная ширина табов
-- [x] Прокрутка контента на мобильных
-- [x] Оптимизированные размеры элементов
-- [x] Сенсорная навигация
-
-### ❌ Возможные улучшения
-- [ ] Специальные макеты и оптимизация для планшетов и мобильного устройства
-
-## 🔧 Техническая реализация
-
-### Архитектура
-- [x] Модульная структура компонентов
-- [x] Разделение логики и представления
-- [x] Переиспользуемые компоненты
-- [x] TypeScript типизация
-- [x] XState машины состояний
-
-### Состояние
-- [x] Локальное состояние для UI
-- [x] Провайдеры для сложной логики
-- [x] Синхронизация между компонентами
-- [x] BrowserStateMachine для управления табами
-- [x] Сохранение состояния в localStorage
-
-## 🎯 Приоритеты развития
-
-### Высокий приоритет
-1. Drag & drop интеграция с Timeline
-2. Улучшенный предпросмотр медиа
-3. Расширенные возможности поиска
-
-### Низкий приоритет
-1. Продвинутые фильтры
+Part of Timeline Studio - see root project license.

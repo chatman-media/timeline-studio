@@ -109,6 +109,53 @@ pub enum AppEvent {
     error: String,
   },
 
+  // 🆕 AI Director v2 - Детальные события по файлам
+  FileAnalysisStarted {
+    analysis_id: String,
+    file_id: String,
+    file_path: String,
+    file_index: usize,
+    total_files: usize,
+  },
+  FileAnalysisProgress {
+    analysis_id: String,
+    file_id: String,
+    progress: f32, // 0.0 - 1.0 для этого файла
+    current_analyzer: Option<String>,
+    completed_analyzers: Vec<String>,
+  },
+  FileAnalysisCompleted {
+    analysis_id: String,
+    file_id: String,
+    duration_ms: u64,
+    success: bool,
+    error: Option<String>,
+  },
+
+  // 🆕 AI Director v2 - События по анализаторам
+  AnalyzerStarted {
+    analysis_id: String,
+    file_id: String,
+    analyzer_type: String, // "scene_detection", "audio_quality", "vlm", etc.
+    analyzer_name: String,
+  },
+  AnalyzerProgress {
+    analysis_id: String,
+    file_id: String,
+    analyzer_type: String,
+    progress: f32, // 0.0 - 1.0
+    details: Option<String>, // Дополнительная информация
+  },
+  AnalyzerCompleted {
+    analysis_id: String,
+    file_id: String,
+    analyzer_type: String,
+    duration_ms: u64,
+    success: bool,
+    result_summary: Option<String>, // Краткое резюме результата
+    error: Option<String>,
+  },
+
   // AI Stream events (for real-time AI responses)
   AIStreamStarted {
     request_id: String,

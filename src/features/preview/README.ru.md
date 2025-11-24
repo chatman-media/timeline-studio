@@ -2,7 +2,7 @@
 
 Высокопроизводительная система превью Timeline Studio на основе WebGL2, обеспечивающая реалтайм рендеринг видео с эффектами.
 
-**🌐 Languages:** [English](./README_EN.md) | [Русский](./README.md)
+**🌐 Languages:** [English](./README.md) | [Русский](./README.ru.md)
 
 ## 🚀 Особенности
 

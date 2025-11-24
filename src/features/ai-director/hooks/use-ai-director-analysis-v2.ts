@@ -158,6 +158,155 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         })
         if (isMounted) unlistenFunctions.push(unlistenStarted)
 
+        // 🆕 v2: File Analysis Started
+        const unlistenFileStarted = await listen("file-analysis-started", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] File analysis started", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const fileIndex = payload.file_index as number
+
+            if (fileIndex < updatedFiles.length) {
+              updatedFiles[fileIndex] = {
+                ...updatedFiles[fileIndex],
+                status: "analyzing",
+                startTime: new Date().toISOString(),
+              }
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenFileStarted)
+
+        // 🆕 v2: File Analysis Progress
+        const unlistenFileProgress = await listen("file-analysis-progress", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] File analysis progress", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const file = updatedFiles.find((f) => f.id === payload.file_id)
+
+            if (file) {
+              const fileIndex = updatedFiles.indexOf(file)
+              const progressPercentage = Math.round((payload.progress as number) * 100)
+
+              updatedFiles[fileIndex] = {
+                ...file,
+                progress: progressPercentage,
+              }
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenFileProgress)
+
+        // 🆕 v2: File Analysis Completed
+        const unlistenFileCompleted = await listen("file-analysis-completed", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] File analysis completed", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const file = updatedFiles.find((f) => f.id === payload.file_id)
+
+            if (file) {
+              const fileIndex = updatedFiles.indexOf(file)
+              updatedFiles[fileIndex] = {
+                ...file,
+                status: payload.success ? "completed" : "error",
+                progress: 100,
+                error: payload.error,
+                endTime: new Date().toISOString(),
+                duration: payload.duration_ms,
+              }
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenFileCompleted)
+
+        // 🆕 v2: Analyzer Started
+        const unlistenAnalyzerStarted = await listen("analyzer-started", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Analyzer started", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const file = updatedFiles.find((f) => f.id === payload.file_id)
+
+            if (file) {
+              const fileIndex = updatedFiles.indexOf(file)
+              const analyzerType = payload.analyzer_type as string
+
+              updatedFiles[fileIndex] = updateAnalyzerProgress(file, analyzerType as AnalyzerType, {
+                status: "running",
+                progress: 0,
+                startTime: new Date().toISOString(),
+              })
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenAnalyzerStarted)
+
+        // 🆕 v2: Analyzer Progress
+        const unlistenAnalyzerProgress = await listen("analyzer-progress", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Analyzer progress", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const file = updatedFiles.find((f) => f.id === payload.file_id)
+
+            if (file) {
+              const fileIndex = updatedFiles.indexOf(file)
+              const analyzerType = payload.analyzer_type as string
+              const progressPercentage = Math.round((payload.progress as number) * 100)
+
+              updatedFiles[fileIndex] = updateAnalyzerProgress(file, analyzerType as AnalyzerType, {
+                progress: progressPercentage,
+                details: payload.details,
+              })
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenAnalyzerProgress)
+
+        // 🆕 v2: Analyzer Completed
+        const unlistenAnalyzerCompleted = await listen("analyzer-completed", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Analyzer completed", payload)
+
+          setFilesProgress((prev) => {
+            const updatedFiles = [...prev]
+            const file = updatedFiles.find((f) => f.id === payload.file_id)
+
+            if (file) {
+              const fileIndex = updatedFiles.indexOf(file)
+              const analyzerType = payload.analyzer_type as string
+
+              updatedFiles[fileIndex] = updateAnalyzerProgress(file, analyzerType as AnalyzerType, {
+                status: payload.success ? "completed" : "error",
+                progress: 100,
+                error: payload.error,
+                endTime: new Date().toISOString(),
+                duration: payload.duration_ms,
+              })
+            }
+
+            return updatedFiles
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenAnalyzerCompleted)
+
         // Analysis progress - самое важное событие для обновления UI
         const unlistenProgress = await listen("analysis-progress", (event) => {
           const progress = event.payload as unknown as AnalysisProgress

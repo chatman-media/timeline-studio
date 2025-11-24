@@ -229,16 +229,6 @@
       "linter": {
         "enabled": false
       }
-    },
-    {
-      "includes": ["src/domains/ai-tools/tools/analysis/content-intelligence/content-analysis-tool.ts"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUndeclaredVariables": "off"
-          }
-        }
-      }
     }
   ]
 }

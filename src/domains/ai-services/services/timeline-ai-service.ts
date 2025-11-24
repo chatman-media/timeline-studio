@@ -6,10 +6,7 @@
  */
 
 // REMOVED: import { null as any /* getAIContainer from deleted ai-core */ } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
-import {
-  contentIntelligenceTools,
-  executeContentIntelligenceTool,
-} from "@/domains/ai-tools/tools/analysis/content-intelligence"
+// REMOVED: content-intelligence tools - legacy code deleted, AI Director v2 will replace this functionality
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -88,7 +85,7 @@ export class TimelineAIService {
       ...multimodalAnalysisTools,
       ...platformOptimizationTools,
       ...workflowAutomationTools,
-      ...contentIntelligenceTools,
+      // REMOVED: contentIntelligenceTools - migrated to AI Director v2
       ...personIdentificationTools,
       ...exportManagementTools,
       ...effectsFiltersTools,
@@ -650,21 +647,11 @@ export class TimelineAIService {
         ].includes(name)
       ) {
         result = await executeResourceTool(name, input)
-      } else if (
-        [
-          "analyze_content_intelligence",
-          "detect_scene_boundaries",
-          "classify_content",
-          "generate_full_script",
-          "create_shot_list",
-          "adapt_content_to_platform",
-          "generate_multilanguage_batch",
-          "generate_content_variants",
-          "analyze_content_quality",
-        ].includes(name)
-      ) {
-        result = await executeContentIntelligenceTool(name, input)
-      } else if (
+      }
+      // REMOVED: Content Intelligence tools block - migrated to AI Director v2
+      // These tools (analyze_content_intelligence, detect_scene_boundaries, classify_content, etc.)
+      // will be re-implemented in AI Director v2 with better backend integration
+      else if (
         [
           "identify_persons_in_video",
           "search_persons",
