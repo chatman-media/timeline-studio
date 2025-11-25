@@ -81,7 +81,9 @@
     "ai:models": "node scripts/cli-ai-chat.js models",
     "knip": "knip",
     "knip:fix": "knip --fix",
-    "knip:watch": "knip --watch"
+    "knip:watch": "knip --watch",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -158,6 +160,13 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.2",
     "@semantic-release/release-notes-generator": "^14.1.0",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-themes": "^10.0.8",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/nextjs": "^10.0.8",
+    "@storybook/react": "^10.0.8",
+    "@storybook/test": "^8.6.14",
     "@tailwindcss/postcss": "^4.1.17",
     "@tauri-apps/cli": "^2.9.4",
     "@testing-library/dom": "^10.4.1",
@@ -180,6 +189,7 @@
     "lightningcss": "^1.30.2",
     "puppeteer": "^24.31.0",
     "semantic-release": "^24.2.9",
+    "storybook": "^10.0.8",
     "stylelint": "^16.26.0",
     "stylelint-config-standard": "39.0.1",
     "stylelint-config-tailwindcss": "^1.0.0",
