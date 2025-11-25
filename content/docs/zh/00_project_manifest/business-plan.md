@@ -494,4 +494,17 @@
 
 ---
 
+## 📞 联系方式
+
+- **邮箱**: [ak.chatman.media@gmail.com](mailto:ak.chatman.media@gmail.com)
+- **Telegram**: [@timelinestudio](https://t.me/timelinestudio)
+- **Discord**: [discord.gg/uvSBCw6e](https://discord.gg/uvSBCw6e)
+- **GitHub**: [github.com/chatman-media/timeline-studio](https://github.com/chatman-media/timeline-studio)
+- **演示**: [timelinestudio.pro](https://timelinestudio.pro)
+
+*文档准备时间: 2025年11月25日*
+*版本: 1.1*
+
+---
+
 *Timeline Studio - 通过AI革命性改变视频内容创作，简化复杂流程* 🚀

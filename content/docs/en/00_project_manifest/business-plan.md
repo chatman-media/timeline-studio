@@ -494,4 +494,17 @@
 
 ---
 
+## 📞 Contacts
+
+- **Email**: [ak.chatman.media@gmail.com](mailto:ak.chatman.media@gmail.com)
+- **Telegram**: [@timelinestudio](https://t.me/timelinestudio)
+- **Discord**: [discord.gg/uvSBCw6e](https://discord.gg/uvSBCw6e)
+- **GitHub**: [github.com/chatman-media/timeline-studio](https://github.com/chatman-media/timeline-studio)
+- **Demo**: [timelinestudio.pro](https://timelinestudio.pro)
+
+*Document prepared: November 25, 2025*
+*Version: 1.1*
+
+---
+
 *Timeline Studio - revolutionizing video content creation through AI and simplifying complex processes* 🚀

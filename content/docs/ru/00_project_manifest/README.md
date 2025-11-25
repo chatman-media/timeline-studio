@@ -354,14 +354,15 @@ Timeline Studio - это open source проект, и мы приветству�
 
 ## 📞 Контакты
 
+- **Email**: [ak.chatman.media@gmail.com](mailto:ak.chatman.media@gmail.com)
+- **Telegram**: [@timelinestudio](https://t.me/timelinestudio)
+- **Discord**: [discord.gg/uvSBCw6e](https://discord.gg/uvSBCw6e)
 - **GitHub**: [github.com/chatman-media/timeline-studio](https://github.com/chatman-media/timeline-studio)
-- **Telegram**: [t.me/timelinestudio](https://t.me/timelinestudio)
-- **Discord**: [discord.gg/gwJUYxck](https://discord.gg/uvSBCw6e)
-- **Email**: ak.chatman.media@gmail.com
-- **Website**: [timelinestudio.pro](https://timelinestudio.pro)
+- **Demo**: [timelinestudio.pro](https://timelinestudio.pro)
+
+*Документ подготовлен: 25 ноября 2025*
+*Версия: 1.1*
 
 ---
 
-*Последнее обновление: 11 сентября 2025*
-*Версия: 0.79.0 (Alpha)*
-*Статус: 95% готовности, подготовка к Beta и захвату 5 новых рынков ($45.1 млрд)*
+*Timeline Studio - революция в создании видеоконтента через AI и упрощение сложных процессов* 🚀

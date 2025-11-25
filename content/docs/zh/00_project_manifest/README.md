@@ -360,8 +360,9 @@ Timeline Studio是一个开源项目，我们欢迎：
 - **Email**: ak.chatman.media@gmail.com
 - **Website**: [timelinestudio.pro](https://timelinestudio.pro)
 
+*文档准备时间: 2025年11月25日*
+*版本: 1.1*
+
 ---
 
-*最后更新：2025年9月11日*
-*版本：0.79.0 (Alpha)*
-*状态：95%就绪，准备Beta版并捕获5个新市场 ($451亿)*
+*Timeline Studio - 通过AI革命性改变视频内容创作，简化复杂流程* 🚀

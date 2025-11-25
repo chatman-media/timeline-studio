@@ -415,12 +415,13 @@ Timeline Studio AI Stack:
 
 ---
 
-**Контакты для инвесторов:**
-- **Email**: ak.chatman.media@gmail.com
-- **Telegram**: @timelinestudio
-- **GitHub**: github.com/chatman-media/timeline-studio
-- **Demo**: timelinestudio.pro
+**Contact for investors:**
+- **Email**: [ak.chatman.media@gmail.com](mailto:ak.chatman.media@gmail.com)
+- **Telegram**: [@timelinestudio](https://t.me/timelinestudio)
+- **Discord**: [discord.gg/uvSBCw6e](https://discord.gg/uvSBCw6e)
+- **GitHub**: [github.com/chatman-media/timeline-studio](https://github.com/chatman-media/timeline-studio)
+- **Demo**: [timelinestudio.pro](https://timelinestudio.pro)
 
-*Документ подготовлен: 11 сентября 2025*
-*Версия: 1.0*
-*Конфиденциально - только для потенциальных инвесторов*
+*Document prepared: November 25, 2025*
+*Version: 1.1*
+*Confidential - for potential investors only*
