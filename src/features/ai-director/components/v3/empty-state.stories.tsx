@@ -30,6 +30,10 @@ const meta = {
   },
   args: {
     onSelectFiles: fn(),
+    onStartAnalysis: fn(),
+    mediaPool: new Map(),
+    selectedFileIds: new Set<string>(),
+    onSelectionChange: fn(),
   },
 } satisfies Meta<typeof EmptyState>
 

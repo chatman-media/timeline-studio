@@ -6,22 +6,19 @@
  */
 
 import { Settings, Zap } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useBrowser } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
-import { useModal } from "@/features/modals"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisSettings as AnalysisSettingsType } from "./analysis-settings"
 import { AnalysisSettings } from "./analysis-settings"
 import { EmptyState } from "./empty-state"
 import { FileAnalysisCard, type FileAnalysisCardData } from "./file-analysis-card"
-import { MediaPoolSelector } from "./media-pool-selector"
 import { OverallProgressCard } from "./overall-progress-card"
 
 const logger = createLogger("AIDirectorV3Dashboard")
@@ -38,37 +35,15 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
     analyzers: ["scene_detection", "audio_quality"],
   })
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [selectedFileIds, setSelectedFileIds] = useState<Set<string>>(new Set())
 
   // Hooks
-  const { browserState } = useBrowser()
   const { mediaPool } = useMediaManagement()
-  const { openModal } = useModal()
   const { isAnalyzing, filesProgress, batchProgress, startBatchAnalysis, cancelAnalysis, reset } =
     useAIDirectorAnalysisV2()
 
   // Convert analyzers array to Set for backward compatibility
   const selectedAnalyzers = useMemo(() => new Set(analysisSettings.analyzers), [analysisSettings.analyzers])
-
-  // Get selected files from media pool
-  const selectedFilePaths = useMemo(() => {
-    const mediaTabSelectedFiles = browserState?.selected_files?.media || []
-
-    logger.infoSync("[Dashboard v3] Converting selected files to paths", {
-      selectedFilesCount: mediaTabSelectedFiles.length,
-      mediaPoolSize: mediaPool.size,
-    })
-
-    const paths: string[] = []
-    mediaTabSelectedFiles.forEach((fileId) => {
-      const mediaFile = mediaPool.get(fileId)
-      if (mediaFile) {
-        paths.push(mediaFile.path)
-      }
-    })
-
-    logger.infoSync("[Dashboard v3] Final paths", { pathsCount: paths.length })
-    return paths
-  }, [browserState, mediaPool])
 
   // Convert filesProgress to card data
   const fileCardsData = useMemo((): FileAnalysisCardData[] => {
@@ -98,54 +73,64 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
   }, [filesProgress])
 
   // Handlers
-  const handleOpenMediaPool = () => {
-    logger.infoSync("[Dashboard v3] Opening Browser modal")
-
-    // NOTE: Browser tab is already open and functional
-    // Files are selected from the Media tab in the Browser panel
-    // This is a user instruction toast for better UX
-    toast.info("Select files from Browser", {
-      description: "Use the Media tab in Browser to select files for analysis",
+  const handleOpenMediaPool = useCallback(() => {
+    logger.infoSync("[Dashboard v3] Opening Browser for import")
+    toast.info("Импортируйте файлы через Browser", {
+      description: "Используйте вкладку Media в Browser для импорта файлов",
       duration: 5000,
     })
-  }
+  }, [])
 
-  const handleStartAnalysis = async () => {
-    try {
-      if (selectedFilePaths.length === 0) {
-        logger.warnSync("[Dashboard v3] No files selected")
-        toast.warning("No files selected", {
-          description: "Please select files from the media pool first",
+  const handleSelectionChange = useCallback((newSelection: Set<string>) => {
+    setSelectedFileIds(newSelection)
+  }, [])
+
+  const handleStartAnalysisFromEmptyState = useCallback(
+    async (fileIds: Set<string>) => {
+      // Get paths from IDs
+      const paths: string[] = []
+      fileIds.forEach((fileId) => {
+        const mediaFile = mediaPool.get(fileId)
+        if (mediaFile) {
+          paths.push(mediaFile.path)
+        }
+      })
+
+      if (paths.length === 0) {
+        toast.warning("Файлы не выбраны", {
+          description: "Выберите файлы из медиапула",
         })
         return
       }
 
       if (analysisSettings.analyzers.length === 0) {
-        toast.warning("No analyzers selected", {
-          description: "Please select at least one analyzer in Settings",
+        toast.warning("Анализаторы не выбраны", {
+          description: "Выберите хотя бы один анализатор в настройках",
         })
         return
       }
 
-      logger.infoSync("[Dashboard v3] Starting batch analysis", {
-        filesCount: selectedFilePaths.length,
-        analyzers: Array.from(selectedAnalyzers),
-      })
+      try {
+        logger.infoSync("[Dashboard v3] Starting batch analysis", {
+          filesCount: paths.length,
+          analyzers: analysisSettings.analyzers,
+        })
 
-      toast.success("Analysis started", {
-        description: `Processing ${selectedFilePaths.length} file${selectedFilePaths.length > 1 ? "s" : ""}`,
-      })
+        toast.success("Анализ запущен", {
+          description: `Обработка ${paths.length} файл${paths.length > 1 ? "ов" : "а"}`,
+        })
 
-      await startBatchAnalysis(selectedFilePaths, selectedAnalyzers)
-
-      logger.infoSync("[Dashboard v3] Analysis started successfully")
-    } catch (error) {
-      logger.errorSync("[Dashboard v3] Error starting analysis", error as Record<string, unknown>)
-      toast.error("Failed to start analysis", {
-        description: error instanceof Error ? error.message : "Unknown error occurred",
-      })
-    }
-  }
+        await startBatchAnalysis(paths, selectedAnalyzers)
+        logger.infoSync("[Dashboard v3] Analysis started successfully")
+      } catch (error) {
+        logger.errorSync("[Dashboard v3] Error starting analysis", error as Record<string, unknown>)
+        toast.error("Ошибка запуска анализа", {
+          description: error instanceof Error ? error.message : "Неизвестная ошибка",
+        })
+      }
+    },
+    [mediaPool, analysisSettings.analyzers, selectedAnalyzers, startBatchAnalysis],
+  )
 
   const handleReset = () => {
     logger.infoSync("[Dashboard v3] Resetting dashboard")
@@ -209,7 +194,15 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
         {/* Empty State */}
         {showEmptyState && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <EmptyState onSelectFiles={handleOpenMediaPool} currentSettings={analysisSettings} />
+            <EmptyState
+              onSelectFiles={handleOpenMediaPool}
+              onStartAnalysis={handleStartAnalysisFromEmptyState}
+              mediaPool={mediaPool}
+              selectedFileIds={selectedFileIds}
+              onSelectionChange={handleSelectionChange}
+              currentSettings={analysisSettings}
+              isAnalyzing={isAnalyzing}
+            />
           </div>
         )}
 
@@ -273,36 +266,6 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
           </div>
         )}
 
-        {/* Start Analysis Button (when files selected but not analyzing) */}
-        {!hasFiles && selectedFilePaths.length > 0 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <MediaPoolSelector
-              selectedCount={selectedFilePaths.length}
-              onOpenMediaPool={handleOpenMediaPool}
-              disabled={isAnalyzing}
-            />
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={handleStartAnalysis}
-                  disabled={isAnalyzing || analysisSettings.analyzers.length === 0}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isAnalyzing ? "Analyzing..." : "Start Analysis"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {analysisSettings.analyzers.length === 0
-                    ? "Please select at least one analyzer in Settings"
-                    : `Analyze ${selectedFilePaths.length} file${selectedFilePaths.length > 1 ? "s" : ""} with ${analysisSettings.analyzers.length} analyzer${analysisSettings.analyzers.length > 1 ? "s" : ""}`}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        )}
       </div>
     </TooltipProvider>
   )
