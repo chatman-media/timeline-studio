@@ -547,6 +547,35 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Сбрасываем все настройки таба к дефолтным значениям
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "SearchQueryChanged", data: { tab, query: "" } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "FavoritesToggled", data: { tab, show_favorites: false } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "SortChanged", data: { tab, sort_by: "name", sort_order: "asc" } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "GroupByChanged", data: { tab, group_by: "none" } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "FilterChanged", data: { tab, filter_type: "all" } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "ViewModeChanged", data: { tab, view_mode: "thumbnails" } },
+      })
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: { event_type: "PreviewSizeChanged", data: { tab, size_index: DEFAULT_PREVIEW_SIZE_INDEX } },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -558,7 +587,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const selectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Selecting file", { fileId, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Selecting file", { fileId, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -566,6 +596,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "FileSelected",
+          data: { tab: targetTab, file_id: fileId },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -577,7 +615,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const deselectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Deselecting file", { fileId, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Deselecting file", { fileId, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -585,6 +624,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "FileDeselected",
+          data: { tab: targetTab, file_id: fileId },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -596,7 +643,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const toggleFileSelection = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Toggling file selection", { fileId, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Toggling file selection", { fileId, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -604,6 +652,16 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Проверяем текущее состояние и отправляем противоположное событие
+      const currentFiles = selectedFiles[targetTab] || []
+      const isSelected = currentFiles.includes(fileId)
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: isSelected ? "FileDeselected" : "FileSelected",
+          data: { tab: targetTab, file_id: fileId },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -615,7 +673,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const selectAllFiles = async (fileIds: string[], tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Selecting all files", { count: fileIds.length, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Selecting all files", { count: fileIds.length, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -623,6 +682,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "AllFilesSelected",
+          data: { tab: targetTab, file_ids: fileIds },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -634,7 +701,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const deselectAllFiles = async (tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Deselecting all files", { tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Deselecting all files", { tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -642,6 +710,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "AllFilesDeselected",
+          data: { tab: targetTab },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {

@@ -25,8 +25,9 @@ export const VideoPlaceholder = memo(
   ({ file, size, videoUrl, previewData, hoverTime, onHoverTimeChange }: VideoPlaceholderProps) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
+    const [hasError, setHasError] = useState(false)
     const { playerSetSource, playerSetMedia } = usePlayer()
-    const { isAdded: isResourceAdded, removeResource } = useResources()
+    const { isAdded: isResourceAdded } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
 
     const handleClick = useCallback(
@@ -114,19 +115,24 @@ export const VideoPlaceholder = memo(
       (e: React.SyntheticEvent<HTMLVideoElement>) => {
         const video = e.currentTarget
         if (video.error) {
-          logger.errorSync("[VideoPlaceholder] Ошибка загрузки видео:")
-          logger.errorSync(`  - Путь файла: ${file.path}`)
-          logger.errorSync(`  - URL: ${video.src}`)
-          logger.errorSync(`  - Код ошибки: ${video.error.code}`)
-          logger.errorSync(`  - Сообщение: ${video.error.message}`)
-
+          // MEDIA_ERR_SRC_NOT_SUPPORTED (код 4) - кодек не поддерживается браузером
+          // Это ожидаемое поведение для H.265/HEVC видео с дронов - не спамим в консоль
           if (video.error.code === 4) {
-            logger.debugSync(`[VideoPlaceholder] Автоматическое удаление файла из проекта: ${file.name}`)
-            void removeResource(file.id, "media")
+            logger.debugSync(`[VideoPlaceholder] Кодек не поддерживается браузером: ${file.name} - используем превью`)
+          } else {
+            // Для других ошибок логируем подробно
+            logger.errorSync("[VideoPlaceholder] Ошибка загрузки видео:")
+            logger.errorSync(`  - Путь файла: ${file.path}`)
+            logger.errorSync(`  - URL: ${video.src}`)
+            logger.errorSync(`  - Код ошибки: ${video.error.code}`)
+            logger.errorSync(`  - Сообщение: ${video.error.message}`)
           }
+
+          // Устанавливаем флаг ошибки чтобы убрать "Загрузка..."
+          setHasError(true)
         }
       },
-      [file, removeResource],
+      [file],
     )
 
     const handleKeyDown = useCallback(
@@ -178,6 +184,20 @@ export const VideoPlaceholder = memo(
             onError={handleError}
             onKeyDown={handleKeyDown}
           />
+
+          {/* Показываем имя файла если видео ещё не загружено и нет превью */}
+          {!isLoaded && !previewData && !file.thumbnailPath && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/40 to-black/60 text-center">
+              <div className="truncate px-2 text-xs text-white/80" style={{ maxWidth: "90%" }}>
+                {file.name}
+              </div>
+              {hasError ? (
+                <div className="mt-1 text-[10px] text-yellow-400/80">Ожидаем превью...</div>
+              ) : (
+                <div className="mt-1 text-[10px] text-white/50">Загрузка...</div>
+              )}
+            </div>
+          )}
 
           <VideoOverlays file={file} size={size} isLoaded={isLoaded} isMultipleStreams={false} />
         </div>

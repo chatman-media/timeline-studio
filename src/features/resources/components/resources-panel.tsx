@@ -23,7 +23,13 @@ import type { TimelineResource } from "@/features/resources/types"
 /**
  * Компонент для отдельного ресурса с поддержкой drag
  */
-function ResourceItem({ resource, onRemove }: { resource: TimelineResource; onRemove: (id: string) => void }) {
+function ResourceItem({
+  resource,
+  onRemove,
+}: {
+  resource: TimelineResource
+  onRemove: (id: string, type: string) => void
+}) {
   const { t } = useTranslation()
 
   // Определяем тип для DragDropManager
@@ -119,7 +125,7 @@ function ResourceItem({ resource, onRemove }: { resource: TimelineResource; onRe
         <button
           onClick={(e) => {
             e.stopPropagation()
-            onRemove(resource.id)
+            onRemove(resource.id, resource.type)
           }}
           className="absolute right-1 top-1 z-10 rounded bg-black/50 p-0.5 opacity-0 transition-opacity duration-150 hover:bg-red-500/80 group-hover:opacity-100"
         >
@@ -200,7 +206,7 @@ function ResourceItem({ resource, onRemove }: { resource: TimelineResource; onRe
       <button
         onClick={(e) => {
           e.stopPropagation()
-          onRemove(resource.id)
+          onRemove(resource.id, resource.type)
         }}
         className="absolute right-1 top-1 z-10 rounded bg-black/50 p-0.5 opacity-0 transition-opacity duration-150 hover:bg-red-500/80 group-hover:opacity-100"
       >

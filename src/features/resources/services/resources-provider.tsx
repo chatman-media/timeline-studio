@@ -505,10 +505,10 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
         resourceType,
       })
       try {
-        if (resourceType === "media") {
+        if (resourceType === "media" || resourceType === "music") {
           await executeCommand({
             type: "RemoveMedia",
-            params: { mediaId: resourceId },
+            params: { media_id: resourceId },
           })
         } else {
           await executeCommand({
@@ -540,7 +540,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       try {
         await executeCommand({
           type: "UpdateMedia",
-          params: { mediaId: resourceId, updates: params },
+          params: { media_id: resourceId, updates: params },
         })
         logInfo("ResourcesProvider: Resource updated successfully", { resourceId })
       } catch (error) {

@@ -10,6 +10,7 @@ import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import {
   getMediaFiles,
+  restorePreviewCache,
   selectAudioFile,
   selectMediaDirectory,
   selectMediaFile,
@@ -50,47 +51,138 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
   const backendSync = getBackendSync()
   const metadataService = getMediaMetadataService()
 
+  // Восстановление кэша превью при старте приложения
+  useEffect(() => {
+    const initPreviewCache = async () => {
+      try {
+        const restoredCount = await restorePreviewCache()
+        if (restoredCount > 0) {
+          logger.info(`Preview cache restored: ${restoredCount} thumbnails loaded from disk`)
+        }
+      } catch (error) {
+        // Не критичная ошибка - продолжаем работу без кэша
+        logger.error("Failed to restore preview cache", { error })
+      }
+    }
+
+    initPreviewCache()
+  }, [])
+
+  // Загрузка начального состояния при монтировании
+  useEffect(() => {
+    const unsubscribeState = backendSync.onStateChange((state: any) => {
+      logger.info("Loading initial media state from backend")
+
+      const initialMediaPool = new Map<string, MediaInfo>()
+
+      // Загружаем из project.media_pool
+      if (state.project?.media_pool?.items) {
+        const mediaPoolItems = state.project.media_pool.items
+        Object.entries(mediaPoolItems).forEach(([mediaId, mediaItem]: [string, any]) => {
+          initialMediaPool.set(mediaId, {
+            id: mediaId,
+            path: mediaItem.path,
+            name: mediaItem.name,
+            type: mediaItem.media_type as MediaType,
+            duration: mediaItem.duration ?? undefined,
+            thumbnailPath: mediaItem.thumbnail ?? undefined,
+          })
+        })
+      }
+
+      // Загружаем из imported_media (временное хранилище)
+      if (state.imported_media) {
+        Object.entries(state.imported_media).forEach(([mediaId, mediaItem]: [string, any]) => {
+          if (!initialMediaPool.has(mediaId)) {
+            initialMediaPool.set(mediaId, {
+              id: mediaId,
+              path: mediaItem.path,
+              name: mediaItem.name,
+              type: mediaItem.media_type as MediaType,
+              duration: mediaItem.duration ?? undefined,
+              thumbnailPath: mediaItem.thumbnail ?? undefined,
+            })
+          }
+        })
+      }
+
+      logger.info("Initial media pool loaded", { count: initialMediaPool.size })
+      setMediaPool(initialMediaPool)
+
+      // Обновляем fileOperations для совместимости
+      const operations = Array.from(initialMediaPool.values()).map((mediaInfo) => ({
+        id: mediaInfo.id || mediaInfo.path,
+        path: mediaInfo.path,
+        status: "completed" as const,
+        result: mediaInfo,
+        progress: 100,
+      }))
+      setFileOperations(operations)
+    })
+
+    return () => {
+      unsubscribeState()
+    }
+  }, [backendSync])
+
   // Event-driven синхронизация через backend события
   useEffect(() => {
     const unsubscribe = backendSync.onEvent((event: ProjectEvent) => {
-      // Создаем контекст для event handler
-      const context: MediaContext = {
-        mediaPool,
-        isLoading,
-        error,
-      }
+      // Используем функциональное обновление для актуального состояния
+      setMediaPool((currentMediaPool) => {
+        // Создаем контекст для event handler с актуальным состоянием
+        const context: MediaContext = {
+          mediaPool: currentMediaPool,
+          isLoading: false,
+          error: null,
+        }
 
-      // Обрабатываем событие
-      const updates = handleMediaBackendEvent(context, event)
+        // Обрабатываем событие
+        const updates = handleMediaBackendEvent(context, event)
 
-      // Применяем обновления к state
-      if (updates.mediaPool !== undefined) {
-        setMediaPool(updates.mediaPool)
+        // Если есть обновления mediaPool, возвращаем новое значение
+        if (updates.mediaPool !== undefined) {
+          logger.info("Media pool updated via event", {
+            eventType: event.type,
+            oldCount: currentMediaPool.size,
+            newCount: updates.mediaPool.size,
+          })
 
-        // Обновляем fileOperations для совместимости
-        const operations = Array.from(updates.mediaPool.values()).map((mediaInfo) => ({
-          id: mediaInfo.id || mediaInfo.path, // используем id если доступен, иначе path
-          path: mediaInfo.path,
-          status: "completed" as const,
-          result: mediaInfo,
-          progress: 100,
-        }))
-        setFileOperations(operations)
-      }
+          // Обновляем fileOperations для совместимости
+          const operations = Array.from(updates.mediaPool.values()).map((mediaInfo) => ({
+            id: mediaInfo.id || mediaInfo.path,
+            path: mediaInfo.path,
+            status: "completed" as const,
+            result: mediaInfo,
+            progress: 100,
+          }))
+          setFileOperations(operations)
 
-      if (updates.isLoading !== undefined) {
-        setIsLoading(updates.isLoading)
-      }
+          // Обновляем isLoading если есть в updates
+          if (updates.isLoading !== undefined) {
+            setIsLoading(updates.isLoading)
+          }
 
-      if (updates.error !== undefined) {
-        setError(updates.error)
-      }
+          return updates.mediaPool
+        }
+
+        // Обрабатываем isLoading/error даже если mediaPool не изменился
+        if (updates.isLoading !== undefined) {
+          setIsLoading(updates.isLoading)
+        }
+        if (updates.error !== undefined) {
+          setError(updates.error)
+        }
+
+        // Если обновлений mediaPool нет, возвращаем текущее состояние
+        return currentMediaPool
+      })
     })
 
     return () => {
       unsubscribe()
     }
-  }, [backendSync, mediaPool, isLoading, error])
+  }, [backendSync]) // Только backendSync в зависимостях - избегаем лишних переподписок
 
   // Вспомогательная функция для определения типа медиа по пути файла
   const getMediaTypeFromPath = (filePath: string): MediaType => {

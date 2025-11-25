@@ -44,6 +44,11 @@ export function handleBackendEvent(context: ResourcesContext, event: ProjectEven
   logger.info("Handling backend event:", { eventType: event.type })
 
   switch (event.type) {
+    // Project events - очищаем все ресурсы при создании/закрытии проекта
+    case "ProjectCreated":
+    case "ProjectClosed":
+      return handleProjectReset()
+
     // Media events
     case "MediaAdded":
       return handleMediaAdded(context, event)
@@ -91,6 +96,31 @@ export function handleBackendEvent(context: ResourcesContext, event: ProjectEven
     default:
       logger.debug("Unhandled backend event type:", { type: event.type })
       return {}
+  }
+}
+
+// ============================================================================
+// Project Handlers
+// ============================================================================
+
+/**
+ * Обработка события ProjectCreated/ProjectClosed
+ * Очищает все ресурсы для нового/закрытого проекта
+ */
+function handleProjectReset(): Partial<ResourcesContext> {
+  logger.info("Resetting all resources for new/closed project")
+
+  return {
+    mediaResources: [],
+    musicResources: [],
+    effectResources: [],
+    filterResources: [],
+    transitionResources: [],
+    templateResources: [],
+    styleTemplateResources: [],
+    subtitleResources: [],
+    isLoading: false,
+    error: null,
   }
 }
 

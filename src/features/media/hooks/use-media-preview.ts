@@ -166,6 +166,46 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
     [options],
   )
 
+  /**
+   * Восстановить кэш превью с диска
+   * Сканирует директорию кэша и загружает информацию о существующих thumbnail файлах
+   * Вызывается при старте приложения для быстрой загрузки существующих превью
+   */
+  const restorePreviewCache = useCallback(async (): Promise<number> => {
+    try {
+      const restoredCount = await invoke<number>("restore_preview_cache")
+      logger.debugSync(`Preview cache restored: ${restoredCount} thumbnails`)
+      return restoredCount
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to restore preview cache"
+      logger.errorSync("Failed to restore preview cache", { error: errorMsg })
+      // Не устанавливаем ошибку в state - это не критично
+      return 0
+    }
+  }, [])
+
+  /**
+   * Проверить есть ли кэшированный thumbnail на диске
+   */
+  const hasCachedThumbnail = useCallback(async (fileId: string, width: number, height: number): Promise<boolean> => {
+    try {
+      return await invoke<boolean>("has_cached_thumbnail", { fileId, width, height })
+    } catch {
+      return false
+    }
+  }, [])
+
+  /**
+   * Получить путь к кэшированному thumbnail
+   */
+  const getCachedThumbnailPath = useCallback(async (fileId: string, width: number, height: number): Promise<string> => {
+    try {
+      return await invoke<string>("get_cached_thumbnail_path", { fileId, width, height })
+    } catch {
+      return ""
+    }
+  }, [])
+
   const getAllFilesWithPreviews = useCallback(async (): Promise<string[]> => {
     return getFilesWithPreviews()
   }, [getFilesWithPreviews])
@@ -217,6 +257,11 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
     loadPreviewData,
     saveTimelineFrames,
     getTimelineFrames,
+
+    // Cache operations
+    restorePreviewCache,
+    hasCachedThumbnail,
+    getCachedThumbnailPath,
 
     // State
     isGenerating,

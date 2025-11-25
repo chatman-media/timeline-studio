@@ -162,8 +162,15 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
         if (isMountedRef.current) {
           unlistenRef.current = unlistenFn
         } else {
-          // Компонент уже размонтирован, сразу отписываемся
-          unlistenFn()
+          // Компонент уже размонтирован - отписываемся с задержкой
+          // чтобы Tauri event system успела зарегистрировать listener
+          setTimeout(() => {
+            try {
+              unlistenFn()
+            } catch {
+              // Ignore unlisten errors (listener may already be removed)
+            }
+          }, 0)
         }
       } catch {
         // Ignore listener setup errors (e.g., in non-Tauri environment)
@@ -175,13 +182,18 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
     return () => {
       isMountedRef.current = false
       // Безопасно вызываем unlisten если он был установлен
-      if (unlistenRef.current) {
+      // Сначала сохраняем и обнуляем ref, чтобы избежать повторного вызова
+      const unlisten = unlistenRef.current
+      unlistenRef.current = null
+
+      if (unlisten && typeof unlisten === "function") {
+        // Вызываем unlisten синхронно с защитой от ошибок
+        // queueMicrotask вызывает race condition с Tauri event system
         try {
-          unlistenRef.current()
+          unlisten()
         } catch {
-          // Ignore unlisten errors
+          // Ignore unlisten errors (e.g., listener already removed or Tauri not ready)
         }
-        unlistenRef.current = null
       }
     }
   }, [onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress])

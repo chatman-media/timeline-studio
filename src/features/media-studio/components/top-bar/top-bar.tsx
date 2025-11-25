@@ -2,7 +2,6 @@ import {
   Brain,
   FilePlus,
   FolderOpen,
-  Keyboard,
   LayoutTemplate,
   Mic,
   MonitorCog,
@@ -280,16 +279,6 @@ const TopBarComponent = function TopBar() {
             data-testid="project-settings-button"
           >
             <MonitorCog className="h-5 w-5" />
-          </Button>
-          <Button
-            className={TOP_BAR_BUTTON_CLASS}
-            variant="ghost"
-            size="icon"
-            title={t("topBar.keyboardShortcuts")}
-            onClick={() => handleOpenModal("keyboard-shortcuts")}
-            data-testid="keyboard-shortcuts-button"
-          >
-            <Keyboard className="h-5 w-5" />
           </Button>
         </div>
 

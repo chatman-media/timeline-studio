@@ -363,19 +363,6 @@ export function PerformanceSettingsTab() {
                 </div>
               </div>
             </div>
-
-            {/* Настройки прокси для медиа */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Switch id="proxy-media" checked={true} disabled />
-                <Label htmlFor="proxy-media" className="text-sm">
-                  {t("dialogs.userSettings.performance.autoProxyMedia")}
-                </Label>
-              </div>
-              <p className="text-xs text-muted-foreground ml-6">
-                {t("dialogs.userSettings.performance.autoProxyMediaDesc")}
-              </p>
-            </div>
           </div>
         )}
       </div>

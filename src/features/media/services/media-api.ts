@@ -214,3 +214,51 @@ export function formatDuration(seconds?: number): string {
   if (seconds === undefined) return "Неизвестно"
   return formatDurationSecondsUtil(seconds)
 }
+
+/**
+ * Восстановить кэш превью с диска
+ * Сканирует директорию кэша и загружает информацию о существующих thumbnail файлах
+ * Вызывается при старте приложения для быстрой загрузки существующих превью
+ * @returns Количество восстановленных thumbnails
+ */
+export async function restorePreviewCache(): Promise<number> {
+  try {
+    const restoredCount = await invoke<number>("restore_preview_cache")
+    logger.debugSync(`Preview cache restored: ${restoredCount} thumbnails`)
+    return restoredCount
+  } catch (error) {
+    logger.errorSync("Failed to restore preview cache", { error })
+    // Не критичная ошибка - возвращаем 0
+    return 0
+  }
+}
+
+/**
+ * Проверить есть ли кэшированный thumbnail на диске
+ * @param fileId ID файла
+ * @param width Ширина thumbnail
+ * @param height Высота thumbnail
+ * @returns true если кэш существует
+ */
+export async function hasCachedThumbnail(fileId: string, width: number, height: number): Promise<boolean> {
+  try {
+    return await invoke<boolean>("has_cached_thumbnail", { fileId, width, height })
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Получить путь к кэшированному thumbnail
+ * @param fileId ID файла
+ * @param width Ширина thumbnail
+ * @param height Высота thumbnail
+ * @returns Путь к файлу thumbnail
+ */
+export async function getCachedThumbnailPath(fileId: string, width: number, height: number): Promise<string> {
+  try {
+    return await invoke<string>("get_cached_thumbnail_path", { fileId, width, height })
+  } catch {
+    return ""
+  }
+}
