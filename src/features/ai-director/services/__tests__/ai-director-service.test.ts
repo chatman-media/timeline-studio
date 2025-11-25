@@ -106,7 +106,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeComprehensive("/path/to/video.mp4", mockConfig)
 
       expect(result).toEqual(mockAnalysisResult)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: mockConfig,
       })
@@ -118,7 +118,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeComprehensive("/path/to/video.mp4")
 
       expect(result).toEqual(mockAnalysisResult)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: undefined,
       })
@@ -130,7 +130,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeQuick("/path/to/video.mp4")
 
       expect(result).toEqual(mockAnalysisResult)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_quick", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_quick", {
         videoPath: "/path/to/video.mp4",
       })
     })
@@ -142,7 +142,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeBatch(["/path/to/video1.mp4", "/path/to/video2.mp4"], mockConfig)
 
       expect(result).toEqual(batchResults)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_batch", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch", {
         filePaths: ["/path/to/video1.mp4", "/path/to/video2.mp4"],
         config: mockConfig,
       })
@@ -455,7 +455,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeQuick(longPath)
 
       expect(result).toEqual(mockAnalysisResult)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_quick", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_quick", {
         videoPath: longPath,
       })
     })
@@ -528,7 +528,7 @@ describe("AIDirectorService", () => {
       const result = await service.analyzeComprehensive("/path/to/video.mp4", minimalConfig)
 
       expect(result).toEqual(mockAnalysisResult)
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: minimalConfig,
       })
