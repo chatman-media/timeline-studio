@@ -230,6 +230,65 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         })
         if (isMounted) unlistenFunctions.push(unlistenFileCompleted)
 
+        // 🆕 Phase 2: Batch Analysis Started
+        const unlistenBatchStarted = await listen("batch-analysis-started", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis started", payload)
+
+          setBatchProgress({
+            batchId: payload.batch_id,
+            totalFiles: payload.total_files,
+            completedFiles: 0,
+            progress: 0,
+            configMode: payload.config_mode,
+            startTime: new Date().toISOString(),
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenBatchStarted)
+
+        // 🆕 Phase 2: Batch Analysis Progress
+        const unlistenBatchProgress = await listen("batch-analysis-progress", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis progress", payload)
+
+          setBatchProgress((prev) => {
+            if (!prev) return prev
+
+            return {
+              ...prev,
+              completedFiles: payload.completed_files,
+              progress: Math.round((payload.progress as number) * 100),
+              currentFilePath: payload.current_file_path,
+              estimatedTimeRemaining: payload.estimated_time_remaining,
+            }
+          })
+        })
+        if (isMounted) unlistenFunctions.push(unlistenBatchProgress)
+
+        // 🆕 Phase 2: Batch Analysis Completed
+        const unlistenBatchCompleted = await listen("batch-analysis-completed", (event) => {
+          const payload = event.payload as any
+          logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", payload)
+
+          setBatchProgress((prev) => {
+            if (!prev) return prev
+
+            return {
+              ...prev,
+              completedFiles: payload.total_files,
+              progress: 100,
+              successfulFiles: payload.successful_files,
+              failedFiles: payload.failed_files,
+              totalDuration: payload.total_duration_ms,
+              errors: payload.errors,
+              endTime: new Date().toISOString(),
+            }
+          })
+
+          setIsAnalyzing(false)
+        })
+        if (isMounted) unlistenFunctions.push(unlistenBatchCompleted)
+
         // 🆕 v2: Analyzer Started
         const unlistenAnalyzerStarted = await listen("analyzer-started", (event) => {
           const payload = event.payload as any
@@ -454,9 +513,9 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
       const config = mapAnalyzersToConfig(analyzers)
       logger.infoSync("[useAIDirectorAnalysisV2] Config", config)
 
-      // Call backend command
-      // NOTE: Бэкенд анализирует файлы последовательно, мы обновляем currentFileIndex по мере продвижения
-      const results = await invoke<ComprehensiveAnalysisResult[]>("ai_director_analyze_batch", {
+      // Call backend command (v2 with events)
+      // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события
+      const results = await invoke<ComprehensiveAnalysisResult[]>("ai_director_v2_analyze_batch", {
         filePaths,
         config,
       })

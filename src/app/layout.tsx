@@ -27,43 +27,58 @@ export default function RootLayout({
 
   if (typeof window === 'undefined') return;
 
-  // Создаём безопасный объект-заглушку для listeners
-  const listenersStorage = {};
-
-  const safeGet = function(obj, prop) {
-    if (obj && prop in obj) return obj[prop];
-    return { handlerId: 0, event: 'unknown' };
-  };
-
-  const listeners = new Proxy(listenersStorage, {
-    get(target, prop) {
-      if (prop === Symbol.toStringTag) return 'Object';
-      if (typeof prop === 'symbol') return undefined;
-      if (!(prop in target)) {
-        return { handlerId: 0, event: 'unknown' };
-      }
-      return target[prop];
-    },
-    set(target, prop, value) {
-      target[prop] = value;
+  // Глобальный handler для ошибок связанных с Tauri event listeners
+  window.addEventListener('error', function(e) {
+    if (e.message && e.message.includes('listeners') && e.message.includes('handlerId')) {
+      e.preventDefault();
+      console.warn('[Tauri] Suppressed listener error:', e.message);
       return true;
-    },
-    deleteProperty(target, prop) {
-      delete target[prop];
-      return true;
-    },
-    has(target, prop) {
-      return prop in target;
     }
   });
 
-  window.__TAURI_EVENT_PLUGIN_INTERNALS__ = window.__TAURI_EVENT_PLUGIN_INTERNALS__ || {};
-  window.__TAURI_EVENT_PLUGIN_INTERNALS__.listeners = listeners;
-  window.__TAURI_EVENT_PLUGIN_INTERNALS__.unregisterListener = function(event, eventId) {
-    if (eventId && eventId in listenersStorage) {
-      delete listenersStorage[eventId];
+  // Создаём безопасный объект-заглушку для listeners
+  const listenersStorage = {};
+  const defaultListener = Object.freeze({ handlerId: 0, event: 'unknown' });
+
+  const listeners = new Proxy(listenersStorage, {
+    get: function(target, prop) {
+      if (prop === Symbol.toStringTag) return 'Object';
+      if (typeof prop === 'symbol') return undefined;
+      return target[prop] || defaultListener;
+    },
+    set: function(target, prop, value) {
+      target[prop] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      delete target[prop];
+      return true;
+    },
+    has: function(target, prop) {
+      return true; // Всегда возвращаем true чтобы избежать ошибок
+    }
+  });
+
+  // Безопасная функция unregisterListener
+  var safeUnregister = function(event, eventId) {
+    try {
+      if (eventId && listenersStorage[eventId]) {
+        delete listenersStorage[eventId];
+      }
+    } catch(e) {
+      // Ignore
     }
   };
+
+  // Инициализируем __TAURI_EVENT_PLUGIN_INTERNALS__
+  Object.defineProperty(window, '__TAURI_EVENT_PLUGIN_INTERNALS__', {
+    value: {
+      listeners: listeners,
+      unregisterListener: safeUnregister
+    },
+    writable: true,
+    configurable: true
+  });
 })();
             `,
           }}
