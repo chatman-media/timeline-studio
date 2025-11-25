@@ -55,7 +55,59 @@ fn test_timeline_serialization() {
 }
 ```
 
-### 2. Integration Tests (Интеграционные тесты)
+### 2. Storybook (Визуальная документация и разработка)
+
+**Storybook** - интерактивная среда для разработки и документирования UI компонентов в изоляции.
+
+- **Инструмент:** Storybook 8.x для Next.js
+- **Запуск:** `bun run storybook`
+- **Build:** `bun run build-storybook`
+- **URL:** http://localhost:6006
+
+#### Преимущества Storybook:
+1. **Изолированная разработка** - работа с компонентами без запуска всего приложения
+2. **Визуальная документация** - автоматическая документация компонентов
+3. **Тестирование состояний** - демонстрация различных состояний компонента
+4. **Совместная работа** - дизайнеры и разработчики видят одно и то же
+5. **Visual regression testing** - возможность автоматического тестирования изменений UI
+
+#### Структура Stories
+
+```
+src/features/
+├── ai-director/
+│   └── components/
+│       └── v3/
+│           ├── empty-state.stories.tsx
+│           ├── file-analysis-card.stories.tsx
+│           ├── overall-progress-card.stories.tsx
+│           ├── media-pool-selector.stories.tsx
+│           └── analysis-settings.stories.tsx
+├── timeline/
+│   └── components/
+│       ├── edit-mode-selector.stories.tsx
+│       └── split-edit-toolbar.stories.tsx
+└── options/
+    └── components/
+        ├── speed-settings.stories.tsx
+        └── audio-settings.stories.tsx
+```
+
+#### Storybook vs Unit Tests
+
+| Аспект | Storybook | Unit Tests |
+|--------|-----------|------------|
+| **Цель** | Визуальная разработка и документация | Функциональное тестирование |
+| **Когда использовать** | Разработка UI, демонстрация состояний | Проверка логики, граничные случаи |
+| **Интерактивность** | Высокая (controls, actions) | Низкая (автоматизированные проверки) |
+| **Документация** | Автоматическая из JSDoc | Описывает поведение через тесты |
+| **Покрытие** | Визуальные состояния | Логика и edge cases |
+
+**Рекомендация:** Используйте оба подхода вместе:
+- **Storybook** для разработки UI и демонстрации различных состояний
+- **Unit Tests** для проверки логики, обработки ошибок и граничных случаев
+
+### 3. Integration Tests (Интеграционные тесты)
 
 #### Frontend Integration
 - **Количество:** ~100 тестов
@@ -308,10 +360,11 @@ jobs:
 ## Метрики качества
 
 ### Текущее состояние
-- ✅ Unit tests: **9181 passing** (99.8%)
+- ✅ Unit tests: **10,190 passing** (из 10,229 total, ~99.6%)
 - ✅ Rust tests: **150+ passing**
 - ✅ E2E Web tests: **54 tests** (Next.js dev server)
 - ✅ E2E Tauri tests: **25 tests** (Tauri API + native функции)
+- ✅ Storybook stories: **50+ stories** для основных компонентов
 
 ### Целевые показатели
 - Unit test coverage: **>85%**
