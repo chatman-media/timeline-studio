@@ -1,3 +1,23 @@
+# [3.17.0](https://github.com/chatman-media/timeline-studio/compare/v3.16.0...v3.17.0) (2025-11-25)
+
+
+### Bug Fixes
+
+* **media:** exclude peaks.js exports from index to fix SSR ([f70750d](https://github.com/chatman-media/timeline-studio/commit/f70750def2bb90b93b9d2000390b6dd3b03e7a91))
+* resolve Rust compilation warnings ([4465d0e](https://github.com/chatman-media/timeline-studio/commit/4465d0e537b90bd6f4dc774a3156d5b33dd7d66c))
+* **tauri:** add safe error handling for event listeners ([2bef73d](https://github.com/chatman-media/timeline-studio/commit/2bef73ddb7f8378a4ea22a5c775e3bb58d470db6))
+* **types:** fix TypeScript errors in montage-planning and components ([8498530](https://github.com/chatman-media/timeline-studio/commit/849853061c9db4dd8f533feb7206353f31a3928c))
+
+
+### Features
+
+* add knip for unused code detection ([850cf12](https://github.com/chatman-media/timeline-studio/commit/850cf128a799440f05e5d7e07beb71eafbcb7277))
+* **ai:** Implement Montage Planner AI Chat integration (Phase 1 - 75% complete) ([e6e4e3e](https://github.com/chatman-media/timeline-studio/commit/e6e4e3e245b7b547f486bb41269d3829868ab373))
+* **audio:** Complete Peaks.js waveform generation & update audio analysis docs ([4c5af5f](https://github.com/chatman-media/timeline-studio/commit/4c5af5f8662e8a94a2981fe82b940939be54e118))
+* **backend:** AI Director v2 with event-driven architecture ([923f9ec](https://github.com/chatman-media/timeline-studio/commit/923f9ec2088194e70c6174dcf34e450722f7f763))
+* **ci:** add promo site version sync to release workflow ([89d66fa](https://github.com/chatman-media/timeline-studio/commit/89d66fa454a813be0e8cd28e6355f111040850df))
+* Complete Audio Analysis Architecture Refactoring Phase 2 & 3 ([df524d3](https://github.com/chatman-media/timeline-studio/commit/df524d36b4c2867e8f1ffc209dbe637a414f0529))
+
 # [3.16.0](https://github.com/chatman-media/timeline-studio/compare/v3.15.1...v3.16.0) (2025-11-24)
 
 
