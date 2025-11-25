@@ -1,305 +1,166 @@
 # Tauri E2E Tests
 
-Тесты для проверки функционала Timeline Studio через Tauri API.
+Комплексные end-to-end тесты для Tauri-специфичной функциональности Timeline Studio.
 
-## Особенности
+## 📊 Статус покрытия
 
-Эти тесты отличаются от обычных E2E тестов тем, что:
-- Используют реальный Tauri runtime на порту 1420 (а не Next.js dev server на 3001)
-- Имеют доступ к полному Tauri API (`window.__TAURI__`)
-- Могут тестировать нативные функции (файловая система, нотификации, окна, clipboard)
-- Требуют запущенного Tauri приложения в dev режиме
+| Категория | Реализовано | Запланировано | Покрытие |
+|-----------|-------------|---------------|----------|
+| **App Core** | 8 тестов | 8 | ✅ 100% |
+| **Features** | 24 теста | ~600 | 🟡 4% |
+| **Domains** | 25 тестов | ~80 | 🟡 31% |
+| **Integration** | 0 тестов | ~50 | ⏳ 0% |
+| **ИТОГО** | **57 тестов** | **~738** | **8%** |
 
-## Структура тестов
+## ✅ Реализованные тесты
+
+### App Core
+- `app-core/startup.spec.ts` - 8 тестов (инициализация, провайдеры, XState, events, performance)
+
+### Features
+| Фича | Файл | Тестов | Статус |
+|------|------|--------|--------|
+| AI Director | `features/ai-director/backend-integration.spec.ts` | 11 | ✅ Ready |
+| Browser | `features/browser/media-import.spec.ts` | 13 | ✅ Ready |
+| AI Chat | `features/ai-chat/` | 0 | ⏳ Пустая папка |
+| Video Player | `features/video-player/` | 0 | ⏳ Пустая папка |
+
+### Domains (корневые тесты)
+| Домен | Файл | Тестов | Статус |
+|-------|------|--------|--------|
+| File System | `file-system.spec.ts` | 6 | ✅ Ready |
+| Notifications | `notifications.spec.ts` | 5 | ✅ Ready |
+| Project Management | `project-management.spec.ts` | 5 | ✅ Ready |
+| Window & Clipboard | `window-clipboard.spec.ts` | 9 | ✅ Ready |
+
+## 📋 Чеклист по фичам
+
+> Полные чеклисты E2E тестов находятся в README.md каждой фичи в секции "E2E Tests"
+
+### 🔴 High Priority (нужны тесты)
+
+| Фича | Planned | Tauri Commands | README |
+|------|---------|----------------|--------|
+| **video-player** | 19 | 8 | `src/features/video-player/README.md` |
+| **timeline** | 23 | backend-sync | `src/features/timeline/README.md` |
+| **export** | 31 | 6 | `src/features/export/README.md` |
+| **video-compiler** | 20 | 17 | `src/features/video-compiler/README.md` |
+| **user-settings** | 16 | 12 | `src/features/user-settings/README.md` |
+| **person-identification** | 30 | 20+ | `src/features/person-identification/README.md` |
+| **montage-planner** | 24 | 6 | `src/features/montage-planner/README.md` |
+
+### 🟡 Medium Priority
+
+| Фича | Planned | Tauri Commands | README |
+|------|---------|----------------|--------|
+| ai-chat | 15 | через domains | `src/features/ai-chat/README.md` |
+| camera-capture | 25 | Web APIs | `src/features/camera-capture/README.md` |
+| effects | 25 | 3 | `src/features/effects/README.md` |
+| subtitles | 15 | 2 | `src/features/subtitles/README.md` |
+| transcription | 20 | через domains | `src/features/transcription/README.md` |
+| recognition | 20 | 3 | `src/features/recognition/README.md` |
+| updates | 10 | 1 | `src/features/updates/README.md` |
+| voice-recording | 17 | 1 | `src/features/voice-recording/README.md` |
+
+### 🟢 Low Priority (frontend-only)
+
+| Фича | Planned | Note | README |
+|------|---------|------|--------|
+| filters | 12 | CSS Filters | `src/features/filters/README.md` |
+| color-grading | 20 | Canvas API | `src/features/color-grading/README.md` |
+| transitions | 19 | WebGL | `src/features/transitions/README.md` |
+| motion-graphics | 30 | Frontend | `src/features/motion-graphics/README.md` |
+| templates | 16 | Frontend | `src/features/templates/README.md` |
+| style-templates | 14 | localStorage | `src/features/style-templates/README.md` |
+
+## 📁 Структура проекта
 
 ```
 e2e/tauri/
-├── file-system.spec.ts        # Тесты файловой системы через Tauri API
-├── project-management.spec.ts # Сохранение и загрузка проектов
-├── notifications.spec.ts      # Системные нотификации
-├── window-clipboard.spec.ts   # Управление окнами и clipboard
-└── README.md                  # Этот файл
+├── fixtures/              # Тестовые данные и моки
+├── helpers/               # Вспомогательные функции
+├── page-objects/          # Page Object Pattern для компонентов
+├── app-core/              # Тесты ядра приложения
+│   └── startup.spec.ts    # ✅ 8 тестов
+├── features/              # Тесты по фичам
+│   ├── ai-chat/           # ⏳ Пусто
+│   ├── ai-director/       # ✅ 11 тестов
+│   │   └── backend-integration.spec.ts
+│   ├── browser/           # ✅ 13 тестов
+│   │   └── media-import.spec.ts
+│   └── video-player/      # ⏳ Пусто
+├── integration/           # ⏳ Комплексные сценарии
+├── file-system.spec.ts    # ✅ 6 тестов
+├── notifications.spec.ts  # ✅ 5 тестов
+├── project-management.spec.ts # ✅ 5 тестов
+└── window-clipboard.spec.ts   # ✅ 9 тестов
 ```
 
-## Запуск тестов
+## 🎯 Что тестируем
 
-### Вариант 1: Автоматический запуск (рекомендуется)
+### App Core (Ядро приложения)
+- **startup.spec.ts** ✅ - Порядок инициализации, загрузка сервисов, XState machines, event listeners
+
+### Features (Фичи)
+- **Browser** ✅ - Импорт медиа, Tauri API, метаданные файлов
+- **AI Director** ✅ - Backend integration, команды, события
+- **Video Player** ⏳ - Playback, контролы, синхронизация с timeline
+- **AI Chat** ⏳ - Разговоры, команды, streaming
+
+### Domains (Корневые тесты)
+- **File System** ✅ - Tauri FS API, чтение/запись файлов
+- **Notifications** ✅ - Tauri notifications plugin
+- **Project Management** ✅ - Сохранение/загрузка проектов
+- **Window & Clipboard** ✅ - Window API, буфер обмена
+
+### Integration (Интеграция)
+- ⏳ Комплексные сценарии использования
+- ⏳ Взаимодействие между фичами
+
+## 🚀 Запуск тестов
+
 ```bash
-# Запускает Tauri dev сервер и тесты автоматически
+# Все Tauri E2E тесты
 bun run test:e2e:tauri:dev
-```
 
-Эта команда:
-1. Запускает `bun run tauri dev` (порт 1420)
-2. Ждет пока сервер станет доступен
-3. Запускает Playwright тесты с проектом "tauri"
-4. Автоматически останавливает сервер после завершения
-
-### Вариант 2: Ручной запуск
-
-**Терминал 1 - запустите Tauri dev:**
-```bash
-bun run tauri dev
-```
-
-**Терминал 2 - запустите тесты:**
-```bash
-# Запуск всех Tauri тестов
-bun run test:e2e:tauri
-
-# Запуск с UI
+# С UI для отладки
 bun run test:e2e:tauri:ui
 
-# Запуск конкретного теста
-playwright test --project=tauri e2e/tauri/file-system.spec.ts
+# Конкретный файл
+bunx playwright test e2e/tauri/features/browser/navigation.spec.ts
+
+# Только app-core тесты
+bunx playwright test e2e/tauri/app-core/
 ```
 
-### Вариант 3: Запуск вместе с обычными E2E тестами
-```bash
-# Запускает все E2E тесты (Web + Tauri)
-bun run test:e2e
-```
+## 📝 Написание тестов
 
-## Конфигурация
-
-Настройки для Tauri тестов находятся в `playwright.config.ts`:
+### Базовый шаблон
 
 ```typescript
-{
-  name: "tauri",
-  use: {
-    baseURL: "http://localhost:1420",  // Tauri dev server
-  },
-  testMatch: "**/e2e/tauri/**/*.spec.ts",
-}
-```
+import { test, expect } from '@playwright/test'
 
-## Доступный Tauri API
-
-В тестах доступен полный Tauri API через `window.__TAURI__`:
-
-### Файловая система
-```javascript
-const tauri = window.__TAURI__
-
-// Чтение файла
-const content = await tauri.fs.readTextFile("/path/to/file.txt")
-
-// Запись файла
-await tauri.fs.writeTextFile("/path/to/file.txt", "content")
-
-// Проверка существования
-const exists = await tauri.fs.exists("/path/to/file.txt")
-
-// Удаление файла
-await tauri.fs.remove("/path/to/file.txt")
-```
-
-### Пути
-```javascript
-// Получение системных путей
-const appData = await tauri.path.appDataDir()
-const appCache = await tauri.path.appCacheDir()
-const tempDir = await tauri.path.tempDir()
-
-// Соединение путей
-const fullPath = await tauri.path.join(appData, "projects", "file.tsp")
-```
-
-### Диалоги
-```javascript
-// Открыть диалог выбора файла
-const filePath = await tauri.dialog.open({
-  multiple: false,
-  filters: [{
-    name: "Project",
-    extensions: ["tsp"]
-  }]
-})
-
-// Сохранить файл
-const savePath = await tauri.dialog.save({
-  defaultPath: "project.tsp"
-})
-```
-
-### Нотификации
-```javascript
-// Проверка разрешения
-const granted = await tauri.notification.isPermissionGranted()
-
-// Запрос разрешения
-await tauri.notification.requestPermission()
-
-// Отправка нотификации
-await tauri.notification.sendNotification({
-  title: "Export Complete",
-  body: "Your video has been exported successfully"
-})
-```
-
-### Управление окнами
-```javascript
-// Получить текущее окно
-const window = tauri.window.getCurrent()
-
-// Изменить заголовок
-await window.setTitle("New Title")
-
-// Изменить размер
-await window.setSize({ width: 1920, height: 1080 })
-
-// Состояние окна
-const isMaximized = await window.isMaximized()
-const isFullscreen = await window.isFullscreen()
-
-// Управление
-await window.minimize()
-await window.maximize()
-await window.close()
-```
-
-### Clipboard
-```javascript
-// Запись в буфер обмена
-await tauri.clipboard.writeText("Text to copy")
-
-// Чтение из буфера обмена
-const text = await tauri.clipboard.readText()
-```
-
-### Команды (invoke)
-```javascript
-// Вызов Rust команды
-const result = await tauri.core.invoke("command_name", {
-  arg1: "value1",
-  arg2: 42
-})
-```
-
-## Написание новых тестов
-
-### Структура теста
-```typescript
-import { test, expect } from "@playwright/test"
-
-test.describe("Feature Name", () => {
+test.describe('Feature Name', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/")
-
-    // Ждем загрузки Tauri API
-    await page.waitForFunction(() => {
-      return typeof (window as any).__TAURI__ !== "undefined"
-    }, { timeout: 10000 })
+    await page.goto('/')
+    await page.waitForFunction(() => typeof (window as any).__TAURI__ !== 'undefined')
   })
 
-  test("should do something", async ({ page }) => {
-    const result = await page.evaluate(async () => {
-      const tauri = (window as any).__TAURI__
-
-      // Ваш код с Tauri API
-      return await tauri.fs.readTextFile("/test.txt")
-    })
-
-    expect(result).toBeDefined()
+  test('should do something', async ({ page }) => {
+    // Arrange
+    const element = page.locator('[data-testid="element"]')
+    
+    // Act
+    await element.click()
+    
+    // Assert
+    expect(await element.isVisible()).toBe(true)
   })
 })
 ```
 
-### Best Practices
+## 🔗 Связанная документация
 
-1. **Всегда ждите загрузки Tauri API** перед использованием
-2. **Используйте `page.evaluate()`** для доступа к `window.__TAURI__`
-3. **Обрабатывайте ошибки** - некоторые команды могут быть недоступны в dev режиме
-4. **Очищайте тестовые файлы** после каждого теста
-5. **Используйте временные пути** для тестовых файлов
-6. **Проверяйте доступность API** перед использованием
-
-### Пример с обработкой ошибок
-```typescript
-test("should handle errors gracefully", async ({ page }) => {
-  const result = await page.evaluate(async () => {
-    const tauri = (window as any).__TAURI__
-
-    try {
-      // Пытаемся прочитать несуществующий файл
-      const content = await tauri.fs.readTextFile("/non-existent.txt")
-      return { success: true, content }
-    } catch (error) {
-      return {
-        success: false,
-        error: (error as Error).message
-      }
-    }
-  })
-
-  expect(result.success).toBe(false)
-  expect(result.error).toBeDefined()
-})
-```
-
-## Отладка
-
-### Просмотр логов Tauri
-```bash
-# Запустите с логированием
-RUST_LOG=debug bun run tauri dev
-```
-
-### Использование Playwright UI
-```bash
-bun run test:e2e:tauri:ui
-```
-
-### Скриншоты при ошибках
-Playwright автоматически делает скриншоты при падении тестов.
-Найти их можно в `test-results/`.
-
-### Трассировка
-```bash
-# Запуск с трассировкой
-playwright test --project=tauri --trace on
-```
-
-## Troubleshooting
-
-### Тест не может подключиться к порту 1420
-**Решение:** Убедитесь что `bun run tauri dev` запущен и доступен.
-
-### `window.__TAURI__` is undefined
-**Решение:** Добавьте ожидание загрузки API:
-```typescript
-await page.waitForFunction(() => {
-  return typeof (window as any).__TAURI__ !== "undefined"
-})
-```
-
-### Таймауты при выполнении команд
-**Решение:** Увеличьте таймаут в `playwright.config.ts` для проекта "tauri".
-
-### Ошибки доступа к файловой системе
-**Решение:**
-- Проверьте права доступа к файлам
-- Используйте временные директории для тестов
-- Убедитесь что Tauri имеет необходимые разрешения в `tauri.conf.json`
-
-## CI/CD
-
-Для запуска в CI/CD добавьте в workflow:
-
-```yaml
-- name: Install Tauri dependencies
-  run: |
-    # Установка системных зависимостей
-    sudo apt-get install -y libwebkit2gtk-4.1-dev
-
-- name: Run Tauri E2E tests
-  run: bun run test:e2e:tauri:dev
-  timeout-minutes: 10
-```
-
-## Ссылки
-
-- [Tauri Testing Guide](https://tauri.app/v2/guides/test/)
-- [Playwright Documentation](https://playwright.dev/)
-- [Tauri API Reference](https://tauri.app/v2/reference/js/)
+- [Playwright Documentation](https://playwright.dev)
+- [Tauri Testing Guide](https://tauri.app/v1/guides/testing/)
+- [Testing Strategy](/docs/05_development/ru/testing-strategy.md)
