@@ -278,17 +278,75 @@ Dashboard V2 поддерживает готовые наборы анализа
 
 ## Тестирование
 
-**Статус:** ⚠️ Требуется расширение
+**Статус:** ✅ Частично покрыто
 
-Текущее покрытие тестами: ~0% (тесты не написаны)
+Текущее покрытие тестами: Hooks и компоненты визуализации покрыты
+
+### Test Behavior (from test suites)
+
+#### use-performance-monitoring.test.ts
+- ✓ Should return initial metrics with empty data
+- ✓ Should calculate analysis metrics from files progress
+- ✓ Should calculate total processing time
+- ✓ Should calculate ETA when enabled
+- ✓ Should not calculate ETA when disabled
+- ✓ Should start monitoring when hasActiveFiles
+- ✓ Should stop monitoring when no active files
+- ✓ Should respect custom update interval
+- ✓ Should handle empty filesProgress array
+- ✓ Should provide startMonitoring and stopMonitoring functions
+- ✓ Should handle files without duration
+- ✓ Should update metrics when filesProgress changes
+
+**useAnalysisMetrics:**
+- ✓ Should return only analysis metrics
+- ✓ Should return undefined when no files
+- ✓ Should enable ETA by default
+
+#### visual-analytics.test.tsx (VisualAnalytics Component)
+- ✓ Should render empty state when no data is provided
+- ✓ Should render scenes timeline when scenes data is provided
+- ✓ Should render quality scores chart when quality data is provided
+- ✓ Should render moments distribution when moments data is provided
+- ✓ Should render scene types distribution chart
+- ✓ Should render all sections when full data is provided
+- ✓ Should display scene legend with correct scene types
+- ✓ Should calculate and display average scene duration
+- ✓ Should display quality metrics averages
+- ✓ Should group moments by importance levels
+- ✓ Should display moment types distribution
+- ✓ Should apply custom className
+- ✓ Should handle duration prop correctly for timeline
+- ✓ Should not render scenes timeline if duration is missing
+- ✓ Should show empty state for quality chart when no scores
+- ✓ Should limit moment types to top 10
+
+#### performance-metrics.test.tsx (PerformanceMetrics Component)
+- ✓ Should render CPU metrics correctly
+- ✓ Should render memory metrics correctly
+- ✓ Should render GPU metrics correctly
+- ✓ Should render analysis metrics correctly
+- ✓ Should render in compact mode
+- ✓ Should format time correctly (seconds and hours)
+- ✓ Should calculate memory usage percentage
+- ✓ Should show load status for CPU
+- ✓ Should render analysis progress percentage
+
+**DetailedPerformanceMetrics:**
+- ✓ Should render detailed metrics with all sections
+- ✓ Should render system resources section
+- ✓ Should render analysis performance section
+- ✓ Should not render ETA section if eta is not provided
+- ✓ Should handle GPU not in use
+- ✓ Should apply custom className
 
 ### Необходимые тесты
 
-#### Unit Tests
+#### Unit Tests (TODO)
 - [ ] `ai-analysis-dashboard.test.tsx` - тестирование компонента v1
 - [ ] `ai-analysis-dashboard-v2.test.tsx` - тестирование компонента v2
 
-#### Integration Tests
+#### Integration Tests (TODO)
 - [ ] Интеграция с useAIDirectorAnalysis
 - [ ] Интеграция с Media Browser
 - [ ] Интеграция с AI Director Dashboard
@@ -356,6 +414,44 @@ bun run test:watch src/features/analysis-dashboard
 ## Авторы
 
 Timeline Studio Team
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/analysis-dashboard/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация AI Analysis Dashboard v1 | ⏳ Planned | - | 🟡 Medium |
+| Инициализация AI Analysis Dashboard v2 | ⏳ Planned | - | 🔴 High |
+| Выбор видео из медиапула | ⏳ Planned | - | 🔴 High |
+| Выбор режима анализа (Fast/Balanced/Quality) | ⏳ Planned | - | 🔴 High |
+| Выбор analyzer presets | ⏳ Planned | - | 🔴 High |
+| Ручной выбор анализаторов | ⏳ Planned | - | 🟡 Medium |
+| Запуск AI Director анализа | ⏳ Planned | - | 🔴 High |
+| Мониторинг прогресса анализа в реальном времени | ⏳ Planned | - | 🔴 High |
+| Отображение детального прогресса по файлам | ⏳ Planned | - | 🔴 High |
+| Отображение прогресса по анализаторам | ⏳ Planned | - | 🔴 High |
+| Просмотр результатов в табах (Сцены, Моменты, Аудио, Контент, Видение) | ⏳ Planned | - | 🔴 High |
+| Performance metrics отображение | ⏳ Planned | - | 🟡 Medium |
+| Visual analytics отображение | ⏳ Planned | - | 🟡 Medium |
+| AI Director Dashboard интеграция | ⏳ Planned | - | 🟡 Medium |
+| AI Chat для работы с результатами | ⏳ Planned | - | 🟡 Medium |
+| Обработка ошибок анализа | ⏳ Planned | - | 🔴 High |
+| Отмена анализа в процессе | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (запуск анализа, мониторинг, результаты)
+- 🟡 Medium - важный функционал (метрики, визуализация, интеграции)
+- 🟢 Low - дополнительный функционал
+
+### Примечания
+- Analysis Dashboard не использует прямые Tauri команды, но зависит от AI Director модуля
+- Тесты должны проверять интеграцию с `useAIDirectorAnalysis` и `useAIDirectorAnalysisV2`
+- Важна проверка real-time обновлений через event emitters
+- Performance monitoring требует специального внимания к метрикам
+- Visual analytics должны быть протестированы с различными типами данных
 
 ## Changelog
 

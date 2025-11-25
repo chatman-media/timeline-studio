@@ -260,13 +260,39 @@ const { getPersonsForClip, getAppearancesForClip } = useTimelinePersons()
 - ✅ **Privacy Processor** - 6 types of face blurring for anonymization with **real-time face detection**
 - ✅ **Face Quality Assessment** - comprehensive 4-factor quality scoring (size, sharpness, landmarks, lighting)
 
-### Tauri Commands for Clustering
+### Tauri Backend Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_person_database` | - | Initialize Tauri person database |
+| `create_person` | `{ name, tags, notes }` | Create new person profile |
+| `delete_person` | `{ personId }` | Delete person from database |
+| `add_face_embedding` | `{ personId, embedding, quality }` | Add face embedding to person |
+| `add_person_appearance` | `{ personId, clipId, startTime, endTime, confidence }` | Record person appearance |
+| `add_person_thumbnail` | `{ personId, imageData }` | Add thumbnail image |
+| `set_similarity_threshold` | `{ threshold }` | Set similarity threshold for matching |
+| `init_advanced_tracking` | `{ config }` | Initialize advanced tracking system |
+| `start_person_tracking` | `{ videoPath, personIds }` | Start tracking persons in video |
+| `stop_person_tracking` | - | Stop tracking process |
+| `assign_person_to_track` | `{ trackId, personId }` | Assign person to tracking track |
+| `merge_tracks` | `{ sourceTrackId, targetTrackId }` | Merge two tracking tracks |
+| `update_tracking_config` | `{ config }` | Update tracking configuration |
+| `cleanup_tracking` | - | Cleanup tracking resources |
+| `init_yolo_processor` | `{ modelPath }` | Initialize YOLO face detector |
+| `init_facenet_processor` | `{ modelPath }` | Initialize FaceNet embedder |
+| `start_realtime_face_detection` | `{ config }` | Start real-time face detection |
+| `stop_realtime_face_detection` | - | Stop real-time detection |
+| `update_face_detection_config` | `{ config }` | Update detection settings |
+| `cleanup_face_detection` | - | Cleanup detection resources |
+
+### Clustering Commands
+
 ```typescript
 // Initialize clustering engine
 await invoke('init_clustering_engine', { params: { eps: 0.5, min_samples: 3 } })
 
 // Cluster faces
-const result = await invoke('cluster_faces', { 
+const result = await invoke('cluster_faces', {
   embeddings: faceEmbeddings,
   params: { eps: 0.5, min_samples: 3, metric: 'cosine' }
 })
@@ -295,11 +321,61 @@ const result = await invoke('get_aligned_face', {
 
 // Privacy face blurring with auto-detection
 await invoke('blur_faces_in_image', {
-  imagePath: '/path/to/image.jpg', 
+  imagePath: '/path/to/image.jpg',
   outputPath: '/path/to/blurred.jpg',
   autoDetect: true, // Uses first available YOLO processor
   faceBoxes: null
 })
+```
+
+## 🧪 Testing
+
+### Test Coverage
+
+The module has comprehensive test coverage across all layers:
+
+**Component Tests** (`__tests__/components/`):
+- ✓ `person-detail.test.tsx` - Person detail view
+- ✓ `person-form.test.tsx` - Create/edit person form
+- ✓ `person-form-modal.test.tsx` - Modal dialog for person form
+- ✓ `person-list.test.tsx` - Person list with filtering
+- ✓ `person-manager.test.tsx` - Main person management component
+
+**Hook Tests** (`__tests__/hooks/`):
+- ✓ `use-person-identification.test.tsx` - Main person identification hook
+
+**Service Tests** (`__tests__/services/`):
+- ✓ `person-database-service.test.ts` - Basic database operations
+- ✓ `person-database-service.integration.test.ts` - Integration tests
+  - Database initialization
+  - CRUD operations
+  - Search functionality
+  - Statistics calculation
+- ✓ `person-database-service.tauri.test.ts` - Tauri backend integration
+  - Database operations via Tauri
+  - Embedding operations
+  - Appearance tracking
+  - Thumbnail management
+  - Statistics and clustering
+  - Error handling
+- ✓ `person-database-service.extended.test.ts` - Extended functionality
+  - Full person data management
+  - Embedding search
+  - Appearance tracking
+  - Statistics and merging
+  - Event listeners
+
+### Running Tests
+
+```bash
+# Run all person identification tests
+bun run test src/features/person-identification
+
+# Run specific test suite
+bun run test src/features/person-identification/__tests__/services/person-database-service.tauri.test.ts
+
+# Run with coverage
+bun run test:coverage src/features/person-identification
 ```
 
 ## 🛡️ Security and Privacy
@@ -314,3 +390,47 @@ await invoke('blur_faces_in_image', {
 **Status**: ✅ **Fully implemented and ready to use**
 
 The Person Identification module is fully integrated into Timeline Studio and provides a comprehensive solution for working with persons in video projects. All main features are implemented and tested.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/person-identification/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация базы данных персон (`init_person_database`) | ⏳ Planned | - | 🔴 High |
+| Создание нового профиля персоны | ⏳ Planned | - | 🔴 High |
+| Удаление персоны (`delete_person`) | ⏳ Planned | - | 🔴 High |
+| Добавление эмбеддинга лица (`add_face_embedding`) | ⏳ Planned | - | 🔴 High |
+| Добавление появления персоны (`add_person_appearance`) | ⏳ Planned | - | 🔴 High |
+| Добавление миниатюры (`add_person_thumbnail`) | ⏳ Planned | - | 🟡 Medium |
+| Настройка порога схожести (`set_similarity_threshold`) | ⏳ Planned | - | 🟡 Medium |
+| Инициализация расширенного трекинга (`init_advanced_tracking`) | ⏳ Planned | - | 🟡 Medium |
+| Запуск трекинга персон в видео (`start_person_tracking`) | ⏳ Planned | - | 🔴 High |
+| Остановка трекинга (`stop_person_tracking`) | ⏳ Planned | - | 🔴 High |
+| Назначение персоны на трек (`assign_person_to_track`) | ⏳ Planned | - | 🟡 Medium |
+| Объединение треков (`merge_tracks`) | ⏳ Planned | - | 🟡 Medium |
+| Обновление конфигурации трекинга (`update_tracking_config`) | ⏳ Planned | - | 🟢 Low |
+| Очистка ресурсов трекинга (`cleanup_tracking`) | ⏳ Planned | - | 🟢 Low |
+| Инициализация YOLO процессора (`init_yolo_processor`) | ⏳ Planned | - | 🔴 High |
+| Инициализация FaceNet процессора (`init_facenet_processor`) | ⏳ Planned | - | 🔴 High |
+| Запуск обнаружения лиц в реальном времени (`start_realtime_face_detection`) | ⏳ Planned | - | 🔴 High |
+| Остановка обнаружения лиц (`stop_realtime_face_detection`) | ⏳ Planned | - | 🔴 High |
+| Обновление конфигурации обнаружения (`update_face_detection_config`) | ⏳ Planned | - | 🟡 Medium |
+| Очистка ресурсов обнаружения (`cleanup_face_detection`) | ⏳ Planned | - | 🟢 Low |
+| Кластеризация лиц (`cluster_faces`) | ⏳ Planned | - | 🟡 Medium |
+| Автоматическая кластеризация видео (`auto_cluster_video_faces`) | ⏳ Planned | - | 🟡 Medium |
+| Выравнивание лица с оценкой качества (`get_aligned_face`) | ⏳ Planned | - | 🟡 Medium |
+| Размытие лиц для приватности (`blur_faces_in_image`) | ⏳ Planned | - | 🟡 Medium |
+| UI - список персон с фильтрацией | ⏳ Planned | - | 🔴 High |
+| UI - форма создания/редактирования персоны | ⏳ Planned | - | 🔴 High |
+| UI - детальная информация о персоне | ⏳ Planned | - | 🟡 Medium |
+| UI - индикаторы персон на Timeline | ⏳ Planned | - | 🟡 Medium |
+| UI - панель персон в Timeline | ⏳ Planned | - | 🟡 Medium |
+| UI - монитор обнаружения в реальном времени | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал (управление БД, обнаружение лиц, трекинг, основной UI)
+- 🟡 Medium - важный функционал (расширенная обработка, кластеризация, дополнительный UI)
+- 🟢 Low - дополнительный функционал (конфигурация, очистка ресурсов, вспомогательные элементы)

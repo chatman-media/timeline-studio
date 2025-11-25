@@ -369,20 +369,56 @@ const effectChain = [
 // Effects are automatically applied in preview
 ```
 
+## 🔌 API (Backend Commands)
+
+**No Tauri commands used** - This module operates entirely on the frontend using WebGL2 for GPU-accelerated rendering. All video processing and effects are handled client-side.
+
 ## 🧪 Testing
 
-Run tests:
+### Test Coverage
+
+The module has test coverage for core functionality:
+
+**Service Tests** (`__tests__/services/`):
+- ✓ `webgl2-preview-renderer.test.ts` - WebGL2 preview renderer
+  - Initialization and GPU capabilities
+  - Video source management
+  - Timeline segments handling
+  - Frame rendering and capture
+  - Effects application
+  - Resource cleanup
+
+**Hook Tests** (`__tests__/hooks/`):
+- ✓ `use-webgl2-preview.test.tsx` - WebGL2 preview hook
+  - Initialization with default options
+  - Renderer initialization when canvas is set
+  - GPU tier-based quality adaptation
+  - Video source handling
+  - Preview frame updates on time changes
+  - Quality settings management
+
+### Running Tests
+
 ```bash
-bun run test src/features/preview/__tests__/
+# Run all preview tests
+bun run test src/features/preview
+
+# Run specific test file
+bun run test src/features/preview/__tests__/services/webgl2-preview-renderer.test.ts
+
+# Run with coverage
+bun run test:coverage src/features/preview
 ```
 
-Tests cover:
+### Test Coverage Areas
 - ✅ WebGL2PreviewRenderer functionality
 - ✅ useWebGL2Preview hook behavior
-- ✅ PreviewCache operations
-- ✅ Quality adaptation logic
-- ✅ Timeline integration
+- ✅ GPU tier detection and quality adaptation
+- ✅ Video source management
+- ✅ Timeline segments integration
 - ✅ Effect application
+- ✅ Frame rendering and capture
+- ✅ Resource cleanup
 
 ## 🔧 Troubleshooting
 
@@ -461,3 +497,38 @@ When adding new features:
 ## 📄 License
 
 Part of Timeline Studio - see root project license.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/preview/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация WebGL2 рендерера | ⏳ Planned | - | 🔴 High |
+| Определение GPU Tier (high/medium/low) | ⏳ Planned | - | 🔴 High |
+| Автоматическая адаптация качества по GPU | ⏳ Planned | - | 🔴 High |
+| Установка видео источника | ⏳ Planned | - | 🔴 High |
+| Рендеринг текущего кадра | ⏳ Planned | - | 🔴 High |
+| Захват кадра (captureFrame) | ⏳ Planned | - | 🟡 Medium |
+| Применение эффектов в реальном времени | ⏳ Planned | - | 🔴 High |
+| Интеграция с Timeline сегментами | ⏳ Planned | - | 🔴 High |
+| Кэширование кадров (PreviewCache) | ⏳ Planned | - | 🟡 Medium |
+| Предзагрузка кадров (prefetch) | ⏳ Planned | - | 🟡 Medium |
+| Статистика кэша | ⏳ Planned | - | 🟢 Low |
+| Очистка кэша | ⏳ Planned | - | 🟢 Low |
+| UI - панель превью (PreviewPanel) | ⏳ Planned | - | 🔴 High |
+| UI - управление качеством (QualityControls) | ⏳ Planned | - | 🟡 Medium |
+| UI - список цепочки эффектов (EffectChainList) | ⏳ Planned | - | 🟡 Medium |
+| UI - галерея пресетов (PresetGallery) | ⏳ Planned | - | 🟢 Low |
+| Синхронизация с VideoPlayer | ⏳ Planned | - | 🔴 High |
+| Обновление превью при изменении времени | ⏳ Planned | - | 🔴 High |
+| Обработка ошибок WebGL2 | ⏳ Planned | - | 🟡 Medium |
+| Корректная очистка ресурсов | ⏳ Planned | - | 🟡 Medium |
+| Производительность на разных GPU | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (инициализация WebGL2, рендеринг, применение эффектов, интеграция)
+- 🟡 Medium - важный функционал (кэширование, UI контролы, обработка ошибок)
+- 🟢 Low - дополнительный функционал (статистика, пресеты, вспомогательные элементы)

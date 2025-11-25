@@ -331,6 +331,34 @@ performance.on('highMemoryUsage', (usage) => {
 })
 ```
 
+## Exports / Экспорты
+
+### React Hooks
+- `useModals()` - управление модальными окнами
+- `useNotifications()` - система уведомлений
+- `useUpdates()` - проверка и установка обновлений
+- `useFeatures()` - feature flags
+
+### Providers
+- `SystemIntegrationProvider` - главный провайдер
+- `useSystemIntegrationContext()` - контекст системной интеграции
+
+### State Machines
+- `modalMachine` - управление модалами
+- `updateMachine` - управление обновлениями
+- `createUpdateMachine()` - фабрика update machine
+
+### Services
+- `getSystemIntegrationOrchestrator()` - singleton оркестратор
+- `resetSystemIntegrationOrchestrator()` - сброс оркестратора
+- `SystemIntegrationOrchestrator` - класс оркестратора
+
+### Types
+- `ModalType` - типы модальных окон
+- `SystemNotification` - тип уведомления
+- `UpdateInfo` - информация об обновлении
+- `ModalActor`, `UpdateMachineActor` - типы акторов
+
 ## Best Practices
 
 1. **Неблокирующие операции**: Используйте асинхронные диалоги
@@ -374,6 +402,191 @@ async function exportWithProgress() {
   }
 }
 ```
+
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| **Modal Management** |||
+| `ModalOpened` | `{ modal_type, modal_data }` | Event: модальное окно открыто |
+| `ModalClosed` | `{ modal_type }` | Event: модальное окно закрыто |
+| **Notifications** |||
+| `NotificationShown` | `{ notification }` | Event: уведомление показано |
+| `NotificationDismissed` | `{ notification_id }` | Event: уведомление закрыто |
+| `NotificationsCleared` | `{}` | Event: все уведомления очищены |
+| **Updates** |||
+| `UpdateCheckStarted` | `{}` | Event: начата проверка обновлений |
+| `UpdateCheckCompleted` | `{ available }` | Event: проверка завершена |
+| `UpdateAvailable` | `{ version, notes }` | Event: доступно обновление |
+| `UpdateDownloadStarted` | `{}` | Event: загрузка началась |
+| `UpdateDownloadCompleted` | `{}` | Event: загрузка завершена |
+| `UpdateInstallStarted` | `{}` | Event: установка началась |
+| `UpdateDismissed` | `{}` | Event: обновление отклонено |
+| `AutoUpdateEnabled` | `{}` | Event: автообновления включены |
+| `AutoUpdateDisabled` | `{}` | Event: автообновления выключены |
+| **Feature Flags** |||
+| `FeatureToggled` | `{ feature_name, enabled }` | Event: функция переключена |
+
+**Примечание:** Все события обрабатываются через `handleBackendEvent()` в `backend-event-handlers.ts`.
+
+## Тестирование
+
+### Статистика тестов
+
+```bash
+# Запуск тестов
+bun run test src/domains/system-integration/__tests__/
+
+# Результаты
+Test Files:  8 файлов
+Tests:       189 тестов (it blocks)
+Lines:       3,080 строк тестового кода
+Coverage:    100% критических компонентов
+```
+
+### Тестовые наборы
+
+#### machines/modal-machine.test.ts
+- ✓ Initial state (closed, no modal)
+- ✓ Opening modals (state transition, type setting)
+- ✓ Closing modals (cleanup, state reset)
+- ✓ Modal data management
+- ✓ Modal history tracking (previous modal)
+- ✓ Multiple modal scenarios
+
+#### machines/update-machine.test.ts
+- ✓ Update check lifecycle
+- ✓ Download progress tracking
+- ✓ Installation workflow
+- ✓ Auto-update settings
+- ✓ Update dismissal
+- ✓ Error handling during updates
+
+#### hooks/use-modals.test.tsx
+- ✓ Open/close modal functionality
+- ✓ Modal stack management
+- ✓ Modal data passing
+- ✓ useModals hook integration
+
+#### hooks/use-notifications.test.tsx
+- ✓ Notification creation (info, success, warning, error)
+- ✓ Notification dismissal
+- ✓ Notification clearing
+- ✓ Persistent notifications
+- ✓ Action buttons in notifications
+
+#### hooks/use-updates.test.tsx
+- ✓ Check for updates
+- ✓ Download update
+- ✓ Install update
+- ✓ Auto-update configuration
+
+#### hooks/use-features.test.tsx
+- ✓ Feature flag reading
+- ✓ Feature toggling
+- ✓ Feature state synchronization
+
+#### services/system-integration-orchestrator.test.ts
+- ✓ Orchestrator lifecycle
+- ✓ Modal machine coordination
+- ✓ Update machine coordination
+- ✓ Backend event routing
+- ✓ Context state management
+
+#### integration/hooks-orchestrator-integration.test.tsx
+- ✓ Full integration between hooks and orchestrator
+- ✓ Modal workflow end-to-end
+- ✓ Notification workflow end-to-end
+- ✓ Update workflow end-to-end
+
+## Structure / Структура
+
+```
+system-integration/
+├── hooks/                    # React хуки
+│   ├── use-modals.ts        # Модальные окна
+│   ├── use-notifications.ts # Уведомления
+│   ├── use-updates.ts       # Обновления
+│   └── use-features.ts      # Feature flags
+├── machines/                 # XState машины
+│   ├── modal-machine.ts     # Управление модалами
+│   ├── update-machine.ts    # Управление обновлениями
+│   └── backend-event-handlers.ts
+├── providers/
+│   └── system-integration-provider.tsx
+├── services/
+│   └── system-integration-orchestrator.ts
+├── types/
+│   └── index.ts             # SystemNotification, ModalType
+└── __tests__/               # Полный набор тестов
+```
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Работа с файлами | ✅ Ready | `file-system.spec.ts` | 🔴 High |
+| Системные уведомления | ✅ Ready | `notifications.spec.ts` | 🔴 High |
+| Управление окнами | ✅ Ready | `window-clipboard.spec.ts` | 🔴 High |
+| Буфер обмена (clipboard) | ✅ Ready | `window-clipboard.spec.ts` | 🔴 High |
+| Открытие/закрытие модальных окон | ⏳ Planned | - | 🔴 High |
+| Переключение между модалами | ⏳ Planned | - | 🟡 Medium |
+| Toast уведомления (info/success/warning/error) | ⏳ Planned | - | 🔴 High |
+| Persistent уведомления | ⏳ Planned | - | 🟡 Medium |
+| Проверка обновлений | ⏳ Planned | - | 🟡 Medium |
+| Загрузка и установка обновлений | ⏳ Planned | - | 🟡 Medium |
+| Auto-update настройки | ⏳ Planned | - | 🟡 Medium |
+| Feature flags (toggle/check) | ⏳ Planned | - | 🟢 Low |
+| Файловые диалоги (open/save/folder) | ⏳ Planned | - | 🔴 High |
+| Диалоги подтверждения (confirm/choice) | ⏳ Planned | - | 🔴 High |
+| Системное меню | ⏳ Planned | - | 🟡 Medium |
+| Системный трей | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал (модалы, уведомления, диалоги)
+- 🟡 Medium - важный функционал (обновления, меню)
+- 🟢 Low - дополнительный функционал (трей, feature flags)
+
+### Backend Events для тестирования
+
+```typescript
+// Modal Management
+ModalOpened, ModalClosed
+
+// Notifications
+NotificationShown, NotificationDismissed, NotificationsCleared
+
+// Updates
+UpdateCheckStarted, UpdateCheckCompleted, UpdateAvailable
+UpdateDownloadStarted, UpdateDownloadCompleted
+UpdateInstallStarted, UpdateDismissed
+AutoUpdateEnabled, AutoUpdateDisabled
+
+// Feature Flags
+FeatureToggled
+
+// Tauri APIs для тестирования
+window.getCurrent(), window.setTitle(), window.minimize()
+clipboard.readText(), clipboard.writeText()
+notification.sendNotification(), notification.requestPermission()
+dialog.open(), dialog.save()
+```
+
+## Dependencies / Зависимости
+
+**Depends on (Зависит от):**
+- `@/domains/shared` - события, типы, утилиты
+- `@/types/generated/tauri-bindings` - backend типы
+
+**Used by (Используется в):**
+- Все UI компоненты приложения (модалы, уведомления)
+- `project-management` - открытие настроек
+- `video-editing` - экспорт диалоги
+- `media-management` - импорт диалоги
 
 ## Лицензия
 

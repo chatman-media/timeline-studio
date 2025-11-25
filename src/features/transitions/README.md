@@ -420,6 +420,41 @@ Overall:         298/317 PASS (94%)
 
 ---
 
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/transitions/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация WebGL2 context | ⏳ Planned | - | 🔴 High |
+| Рендеринг Basic transitions (blur, color) | ⏳ Planned | - | 🔴 High |
+| Рендеринг Glitch transitions (10 эффектов) | ⏳ Planned | - | 🔴 High |
+| Рендеринг Particle transitions (5 эффектов) | ⏳ Planned | - | 🔴 High |
+| Рендеринг 3D transitions (9 эффектов) | ⏳ Planned | - | 🔴 High |
+| Применение перехода между клипами на Timeline | ⏳ Planned | - | 🔴 High |
+| Drag & Drop перехода на Timeline | ⏳ Planned | - | 🔴 High |
+| Компиляция всех шейдеров | ⏳ Planned | - | 🔴 High |
+| Управление текстурами и uniforms | ⏳ Planned | - | 🟡 Medium |
+| Редактирование кривых Безье в TransitionCurveEditor | ⏳ Planned | - | 🟡 Medium |
+| TransitionControlPanel настройки параметров | ⏳ Planned | - | 🟡 Medium |
+| Превью переходов в Browser | ⏳ Planned | - | 🟡 Medium |
+| Группировка переходов по категориям | ⏳ Planned | - | 🟡 Medium |
+| FFmpeg экспорт с GPU ускорением | ⏳ Planned | - | 🟡 Medium |
+| Keyframe анимация параметров перехода | ⏳ Planned | - | 🟡 Medium |
+| Физика частиц (gravity, turbulence) | ⏳ Planned | - | 🟢 Low |
+| Shader pooling и кэширование | ⏳ Planned | - | 🟢 Low |
+| Performance benchmarks (60 FPS) | ⏳ Planned | - | 🟢 Low |
+| Обработка ошибок WebGL | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал рендеринга всех типов переходов
+- 🟡 Medium - редактирование, управление и экспорт
+- 🟢 Low - оптимизация производительности и обработка ошибок
+
+---
+
 **Статус:** 🟢 Production Ready
 **Рекомендация:** Можно использовать в production (100% готовности)
 **Последнее обновление:** 2025-11-19

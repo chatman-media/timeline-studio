@@ -1,6 +1,19 @@
-# Effects - Functional Requirements
+# Effects
 
-**🌐 Languages:** [English](./README_EN.md) | [Русский](./README.md)
+## Overview / Обзор
+
+**EN:** Comprehensive video effects system with 39 built-in effects across 8 categories. Features WebGL2 GPU-accelerated rendering, real-time preview, interactive parameter controls, and support for user presets. Includes artistic, cinematic, technical, and creative effects with FFmpeg export integration.
+
+**RU:** Комплексная система видеоэффектов с 39 встроенными эффектами в 8 категориях. Включает WebGL2 GPU-ускоренный рендеринг, предпросмотр в реальном времени, интерактивные элементы управления параметрами и поддержку пользовательских пресетов. Содержит художественные, кинематографические, технические и креативные эффекты с интеграцией экспорта FFmpeg.
+
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `save_file` | `{ path: string, contents: string }` | Save user preset to file system |
+| `delete_user_effect` | `{ filePath: string }` | Delete user effect file |
+| `create_effect` | `{ name: string, params: EffectParams }` | Create custom effect definition |
+| `create_filter` | `{ name: string, params: FilterParams }` | Create custom filter definition |
 
 ## 📋 Readiness Status: ✅ COMPLETE (Fully Implemented)
 
@@ -257,3 +270,44 @@ function EffectPreview({ effect }) {
 - **Real-time parameter adjustment** without lag
 - **Automatic quality scaling** based on GPU capabilities
 - **Memory efficient** shader pooling and caching
+
+## 🎭 E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/effects/`
+
+### Чеклист тестов
+
+| Тест | Приоритет | Статус | Файл |
+|------|-----------|--------|------|
+| Навигация на вкладку Effects | 🔴 High | ⏳ Planned | - |
+| Отображение списка эффектов (39 items) | 🔴 High | ⏳ Planned | - |
+| Отображение категорий (8 categories) | 🔴 High | ⏳ Planned | - |
+| Фильтрация по категории | 🟡 Medium | ⏳ Planned | - |
+| Поиск эффектов по названию | 🟡 Medium | ⏳ Planned | - |
+| Переключение Grid/Categories view | 🟢 Low | ⏳ Planned | - |
+| Просмотр деталей эффекта (modal) | 🟡 Medium | ⏳ Planned | - |
+| Отображение параметров эффекта | 🟡 Medium | ⏳ Planned | - |
+| Изменение параметров (интерактивные контролы) | 🔴 High | ⏳ Planned | - |
+| WebGL2 preview рендеринг | 🔴 High | ⏳ Planned | - |
+| CSS preview fallback | 🟡 Medium | ⏳ Planned | - |
+| Выбор пресета эффекта | 🟡 Medium | ⏳ Planned | - |
+| Команда `save_file` (сохранение пресета) | 🟡 Medium | ⏳ Planned | - |
+| Команда `delete_user_effect` | 🟢 Low | ⏳ Planned | - |
+| Команда `create_effect` | 🟡 Medium | ⏳ Planned | - |
+| Команда `create_filter` | 🟡 Medium | ⏳ Planned | - |
+| Импорт пользовательского эффекта (JSON) | 🟢 Low | ⏳ Planned | - |
+| Импорт LUT файлов (.cube, .lut) | 🟢 Low | ⏳ Planned | - |
+| Добавление эффекта в избранное | 🟢 Low | ⏳ Planned | - |
+| Drag & drop эффекта на Timeline | 🔴 High | ⏳ Planned | - |
+| Применение эффекта к клипу | 🔴 High | ⏳ Planned | - |
+| Real-time preview в VideoPlayer | 🔴 High | ⏳ Planned | - |
+| Отображение FFmpeg команд | 🟢 Low | ⏳ Planned | - |
+| Error handling (WebGL не поддерживается) | 🟡 Medium | ⏳ Planned | - |
+| Загрузка fallback данных при ошибке | 🟡 Medium | ⏳ Planned | - |
+
+### Примечания
+- Effects модуль использует 4 Tauri команды для работы с пользовательскими эффектами
+- Основной функционал - WebGL2 GPU-ускоренный рендеринг
+- Важно тестировать fallback на CSS preview при отсутствии WebGL2
+- Требуется проверка интеграции с Timeline для применения эффектов
+- Тесты должны покрывать импорт пользовательских эффектов и LUT файлов

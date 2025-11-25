@@ -166,24 +166,65 @@ interface SpeedSettings {
 - **Media File Display**: Rich metadata display for selected files
 - **Format Support**: Comprehensive format and codec information
 
+## 🔌 API (Backend Commands)
+
+**No Tauri commands used** - This module operates entirely on the frontend using JavaScript/TypeScript for UI controls and settings management.
+
 ## 🧪 Testing
 
-### Component Testing
-- **Comprehensive Coverage**: All components have dedicated test suites
-- **Isolated Testing**: Components can be tested without Timeline dependency
-- **User Interaction**: Tests cover user interactions and state changes
-- **Error Scenarios**: Tests handle error conditions gracefully
+### Test Coverage
+
+The module has comprehensive test coverage for all components:
+
+**Component Tests** (`__tests__/components/`):
+- ✓ `options.test.tsx` - Main tabbed interface
+  - Renders component without errors
+  - Accepts props correctly
+- ✓ `audio-settings.test.tsx` - Audio settings component
+  - Renders component with all controls
+  - Displays media file information when selected
+  - Shows "no media selected" message appropriately
+- ✓ `speed-settings.test.tsx` - Speed settings component
+  - Renders all speed controls
+  - Shows speed presets
+  - Displays control buttons
+- ✓ `info-settings.test.tsx` - Media information display
+  - Renders all info sections
+  - Displays media file metadata
+  - Shows "no media selected" when appropriate
+
+**Simplified Tests** (`components/__tests__/`):
+- ✓ `audio-settings-simple.test.tsx` - Simplified audio settings tests
+  - Renders without errors
+  - Shows main sections
+  - Displays control buttons
+- ✓ `speed-settings-simple.test.tsx` - Simplified speed settings tests
+  - Renders without errors
+  - Shows main sections and presets
+  - Displays control buttons
 
 ### Test Structure
 ```typescript
 // Example test structure
 describe('AudioSettings', () => {
-  it('renders with default settings')
-  it('toggles collapsible sections')
-  it('updates settings when user interacts')
-  it('handles Timeline integration safely')
-  it('applies settings when Apply button is clicked')
+  it('should render audio settings component')
+  it('should render all audio setting controls')
+  it('should display media file information when selectedMediaFile is provided')
+  it('should show no media selected message when no media file is provided')
 })
+```
+
+### Running Tests
+
+```bash
+# Run all options tests
+bun run test src/features/options
+
+# Run specific test file
+bun run test src/features/options/__tests__/components/audio-settings.test.tsx
+
+# Run with coverage
+bun run test:coverage src/features/options
 ```
 
 ## 🎨 UI/UX Design
@@ -261,3 +302,33 @@ const handleAudioSettingsApply = (settings: AudioSettings) => {
 **Status**: ✅ **Fully implemented and production ready**
 
 The Options module provides a comprehensive, professional-grade settings interface that integrates seamlessly with Timeline Studio's editing workflow. All major features are implemented with excellent user experience and full test coverage.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/options/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация панели настроек | ⏳ Planned | - | 🔴 High |
+| Переключение между вкладками (Audio/Speed/Info/Color) | ⏳ Planned | - | 🔴 High |
+| Автоматическое переключение на Info при выборе медиа | ⏳ Planned | - | 🟡 Medium |
+| Настройки аудио - изменение Sample Rate | ⏳ Planned | - | 🟡 Medium |
+| Настройки аудио - переключение каналов (mono/stereo/5.1/7.1) | ⏳ Planned | - | 🟡 Medium |
+| Настройки аудио - выбор кодека (aac/mp3/flac/opus) | ⏳ Planned | - | 🟡 Medium |
+| Настройки аудио - управление громкостью | ⏳ Planned | - | 🔴 High |
+| Настройки аудио - включение эффектов (Noise Reduction/Compressor) | ⏳ Planned | - | 🟡 Medium |
+| Настройки скорости - выбор пресетов (0.25x - 4.0x) | ⏳ Planned | - | 🔴 High |
+| Настройки скорости - пользовательское значение скорости | ⏳ Planned | - | 🔴 High |
+| Настройки скорости - Speed Ramping | ⏳ Planned | - | 🟡 Medium |
+| Настройки скорости - Reverse Playback | ⏳ Planned | - | 🟡 Medium |
+| Отображение информации о медиа файле | ⏳ Planned | - | 🟡 Medium |
+| Интеграция с Timeline (применение к выбранным клипам) | ⏳ Planned | - | 🔴 High |
+| Сохранение настроек при переключении клипов | ⏳ Planned | - | 🟡 Medium |
+| Сброс настроек к значениям по умолчанию | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал (переключение вкладок, базовые настройки аудио/скорости, интеграция с Timeline)
+- 🟡 Medium - важный функционал (расширенные настройки, эффекты, отображение информации)
+- 🟢 Low - дополнительный функционал (сброс настроек, вспомогательные элементы)

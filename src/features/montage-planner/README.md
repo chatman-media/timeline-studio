@@ -263,28 +263,55 @@ const customStyle: MontageStyle = {
 }
 ```
 
-## Backend Commands
+## API (Backend Commands)
 
-The module provides Tauri commands for backend integration:
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `analyze_video_composition` | `{ video_path: string, processor_id?: string, options?: AnalysisOptions }` | Analyze video composition with YOLO object detection |
+| `detect_key_moments` | `{ detections: Detection[], quality_scores: QualityScore[] }` | Detect key moments from analysis results |
+| `generate_montage_plan` | `{ moments: MomentScore[], config: PlanConfig, source_files: MediaFile[] }` | Generate montage plan using genetic algorithm |
+| `analyze_video_quality` | `{ video_path: string }` | Analyze overall video quality via FFmpeg |
+| `analyze_frame_quality` | `{ video_path: string, timestamp: number }` | Analyze specific frame quality metrics |
+| `analyze_audio_content` | `{ audio_path: string }` | Extract audio features (tempo, key, emotional tone) |
 
-```rust
-// Video composition analysis with YOLO
-analyze_video_composition(video_path, processor_id, options)
+### Response Types
 
-// Key moment detection
-detect_key_moments(detections, quality_scores)
+```typescript
+// Video Composition Analysis
+interface VideoCompositionAnalysis {
+  quality_score: number
+  motion_level: number
+  faces_detected: number
+  objects_detected: ObjectDetection[]
+  frame_analysis: FrameMetrics
+}
 
-// Montage plan generation
-generate_montage_plan(moments, config, source_files)
+// Moment Detection
+interface MomentScore {
+  timestamp: number
+  duration: number
+  scores: {
+    visual: number
+    technical: number
+    emotional: number
+    narrative: number
+    action: number
+    composition: number
+  }
+  totalScore: number
+  category: "action" | "highlight" | "calm" | "transition"
+}
 
-// Video quality analysis
-analyze_video_quality(video_path)
-
-// Frame quality analysis
-analyze_frame_quality(video_path, timestamp)
-
-// Audio content analysis
-analyze_audio_content(audio_path)
+// Montage Plan
+interface MontagePlan {
+  id: string
+  name: string
+  sequences: Sequence[]
+  totalDuration: number
+  qualityScore: number
+  engagementScore: number
+  coherenceScore: number
+}
 ```
 
 ## Testing
@@ -307,10 +334,44 @@ bun run test src/features/montage-planner/__tests__/components/
 - **Component Tests** - UI components and integration
 - **Mock Data** - Comprehensive test utilities and mock data
 
+## Behavior (from tests) / Поведение (из тестов)
+
+### use-montage-backend.test.ts
+- ✓ Should initialize with correct default state
+- ✓ Should provide all 6 required backend commands
+- ✓ Should provide state management properties (isLoading, error)
+- ✓ Should call Tauri invoke with correct parameters for each command
+- ✓ Should handle successful analysis and return results
+- ✓ Should handle errors correctly (both Error objects and string errors)
+- ✓ Should reset error state on new operations
+- ✓ Should maintain stable function references across renders
+
+### Backend Commands Tested:
+- ✓ `analyzeVideoComposition` - Video composition analysis with YOLO
+- ✓ `detectKeyMoments` - Key moment detection from detections
+- ✓ `generateMontagePlan` - Montage plan generation with genetic algorithm
+- ✓ `analyzeVideoQuality` - Overall video quality analysis
+- ✓ `analyzeFrameQuality` - Specific frame quality metrics
+- ✓ `analyzeAudioContent` - Audio feature extraction (tempo, key, tone)
+
+## Dependencies / Зависимости
+
+**Used by:**
+- Media editing workflow when creating smart montages
+- AI Director for automated video creation
+
+**Depends on:**
+- `@/features/recognition` - YOLO object detection integration
+- `@/features/timeline` - Timeline integration for applying plans
+- `@tauri-apps/api/core` - Backend Tauri commands
+- FFmpeg (backend) - Video/audio quality analysis
+- YOLO models (backend) - Object and scene detection
+- Rust genetic algorithm (backend) - Plan optimization
+
 ## Integration with Other Modules
 
 - **YOLO Recognition** ✅ - Complete integration for object detection
-- **FFmpeg** ✅ - Direct calls for video/audio analysis  
+- **FFmpeg** ✅ - Direct calls for video/audio analysis
 - **Timeline** ✅ - Ready for plan application
 - **AI Multi-Platform** - Ready for API integration
 
@@ -351,3 +412,63 @@ bun run test src/features/montage-planner/__tests__/components/
 ## License
 
 Part of Timeline Studio project - see main project license.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/montage-planner/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация Montage Planner Dashboard | ⏳ Planned | - | 🔴 High |
+| Анализ видео композиции (analyze_video_composition) | ⏳ Planned | - | 🔴 High |
+| Обнаружение ключевых моментов (detect_key_moments) | ⏳ Planned | - | 🔴 High |
+| Генерация плана монтажа (generate_montage_plan) | ⏳ Planned | - | 🔴 High |
+| Анализ качества видео (analyze_video_quality) | ⏳ Planned | - | 🟡 Medium |
+| Анализ качества кадра (analyze_frame_quality) | ⏳ Planned | - | 🟡 Medium |
+| Анализ аудио контента (analyze_audio_content) | ⏳ Planned | - | 🟡 Medium |
+| YOLO детекция объектов | ⏳ Planned | - | 🔴 High |
+| Детекция лиц в видео | ⏳ Planned | - | 🟡 Medium |
+| Определение уровня действия (action level) | ⏳ Planned | - | 🟡 Medium |
+| Оценка эмоционального тона | ⏳ Planned | - | 🟡 Medium |
+| Генетический алгоритм оптимизации | ⏳ Planned | - | 🔴 High |
+| Применение стиля монтажа (dynamic/cinematic/music video) | ⏳ Planned | - | 🔴 High |
+| Пользовательский стиль монтажа | ⏳ Planned | - | 🟢 Low |
+| Расчет ритма и темпа | ⏳ Planned | - | 🟡 Medium |
+| Синхронизация с битом музыки | ⏳ Planned | - | 🟡 Medium |
+| Применение плана к Timeline | ⏳ Planned | - | 🔴 High |
+| Создание маркеров из плана | ⏳ Planned | - | 🟡 Medium |
+| Предпросмотр плана с метриками качества | ⏳ Planned | - | 🟡 Medium |
+| Экспорт/импорт плана монтажа | ⏳ Planned | - | 🟢 Low |
+| Обработка ошибок анализа | ⏳ Planned | - | 🟡 Medium |
+| Отмена длительной операции | ⏳ Planned | - | 🟡 Medium |
+| Параллельная обработка файлов | ⏳ Planned | - | 🟢 Low |
+| Кэширование результатов анализа | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал, тестировать первым
+- 🟡 Medium - важный функционал
+- 🟢 Low - дополнительный функционал
+
+### Tauri команды используемые модулем
+- `analyze_video_composition` - анализ композиции с YOLO детекцией
+- `detect_key_moments` - обнаружение ключевых моментов
+- `generate_montage_plan` - генерация плана с генетическим алгоритмом
+- `analyze_video_quality` - общий анализ качества через FFmpeg
+- `analyze_frame_quality` - анализ метрик конкретного кадра
+- `analyze_audio_content` - извлечение аудио фич (tempo, key, тон)
+
+### Backend интеграция
+- **YOLO модели** - детекция объектов и сцен
+- **FFmpeg** - анализ качества видео/аудио
+- **Rust genetic algorithm** - оптимизация плана монтажа
+- **Параллельная обработка** - оптимизированная многопоточность
+
+### Примечания
+- Модуль включает полную backend интеграцию (Rust/Tauri)
+- Поддержка 6+ предустановленных стилей монтажа
+- Реальная интеграция с YOLO и FFmpeg
+- Генетический алгоритм с адаптивной мутацией
+- Кэширование рекомендуется для повторных операций
+- Среднее время анализа: <5 минут на 1 час материала

@@ -289,16 +289,22 @@ const customPreset = createPresetFromLayer(animationLayer, {
 4. **Preset Usage** - Start with presets and customize as needed
 5. **Timeline Integration** - Ensure animation duration matches clip duration
 
+## API (Backend Commands)
+
+**No Tauri commands used** - This module operates entirely on the frontend using JavaScript/TypeScript.
+
 ## Testing
 
-```bash
-# Run motion graphics tests
-bun run test src/features/motion-graphics
+**No unit tests currently** - The module does not have dedicated test files yet. Testing is performed through:
+- Manual testing in the Timeline Studio UI
+- Integration testing with Timeline module
+- Visual testing of animation output
 
-# Test specific components
-bun run test src/features/motion-graphics/__tests__/keyframe-manager.test.ts
-bun run test src/features/motion-graphics/__tests__/interpolation.test.ts
-```
+Future test coverage should include:
+- Keyframe interpolation algorithms
+- Expression engine evaluation
+- Preset application and customization
+- Timeline integration
 
 ## Dependencies
 
@@ -315,6 +321,65 @@ bun run test src/features/motion-graphics/__tests__/interpolation.test.ts
 - [ ] Animation templates marketplace
 - [ ] GPU acceleration for complex animations
 - [ ] Motion capture data import
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/motion-graphics/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация Motion Graphics Panel | ⏳ Planned | - | 🔴 High |
+| Создание keyframe для числового свойства | ⏳ Planned | - | 🔴 High |
+| Создание keyframe для векторных свойств (vec2, vec3, vec4) | ⏳ Planned | - | 🔴 High |
+| Создание keyframe для цветовых свойств | ⏳ Planned | - | 🔴 High |
+| Редактирование keyframe значений | ⏳ Planned | - | 🔴 High |
+| Удаление keyframe | ⏳ Planned | - | 🔴 High |
+| Копирование/вставка keyframes | ⏳ Planned | - | 🟡 Medium |
+| Linear интерполяция | ⏳ Planned | - | 🔴 High |
+| Bezier интерполяция с кастомными handles | ⏳ Planned | - | 🔴 High |
+| Ease интерполяция (In, Out, In-Out) | ⏳ Planned | - | 🔴 High |
+| Специальные интерполяции (Bounce, Elastic, Back, Expo) | ⏳ Planned | - | 🟡 Medium |
+| Hold интерполяция | ⏳ Planned | - | 🟡 Medium |
+| Expression Engine: базовые математические функции | ⏳ Planned | - | 🔴 High |
+| Expression Engine: wiggle функция | ⏳ Planned | - | 🟡 Medium |
+| Expression Engine: easing функции | ⏳ Planned | - | 🟡 Medium |
+| Expression Engine: векторные операции | ⏳ Planned | - | 🟡 Medium |
+| Expression Engine: доступ к context переменным (time, frame, fps) | ⏳ Planned | - | 🔴 High |
+| Создание анимационного слоя | ⏳ Planned | - | 🔴 High |
+| Управление слоями (enable/disable, solo, lock) | ⏳ Planned | - | 🔴 High |
+| Blend modes для слоев | ⏳ Planned | - | 🟡 Medium |
+| Opacity настройка для слоев | ⏳ Planned | - | 🔴 High |
+| Применение motion preset | ⏳ Planned | - | 🔴 High |
+| Создание кастомного preset | ⏳ Planned | - | 🟡 Medium |
+| Импорт/экспорт анимационных данных | ⏳ Planned | - | 🟡 Medium |
+| Curve Editor: визуальное редактирование кривых | ⏳ Planned | - | 🔴 High |
+| Timeline интеграция: применение анимации к clip | ⏳ Planned | - | 🔴 High |
+| Timeline интеграция: оценка анимации в конкретное время | ⏳ Planned | - | 🔴 High |
+| Real-time preview анимации | ⏳ Planned | - | 🔴 High |
+| Обработка ошибок в expressions | ⏳ Planned | - | 🔴 High |
+| Performance: кэширование вычисленных значений | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (keyframes, интерполяция, слои, timeline интеграция)
+- 🟡 Medium - важный функционал (expressions, presets, curve editor)
+- 🟢 Low - дополнительный функционал (импорт/экспорт, специальные эффекты)
+
+### Примечания
+- **Модуль не использует Tauri команды** - вся логика на фронтенде (JavaScript/TypeScript)
+- Основные области тестирования:
+  - Keyframe management система (CRUD операции)
+  - Interpolation algorithms (корректность математических вычислений)
+  - Expression Engine (JavaScript evaluation в sandbox)
+  - Layer system (иерархия, blending, compositing)
+  - Timeline integration (применение к clips, синхронизация времени)
+  - UI компоненты (Motion Graphics Panel, Curve Editor)
+- Критично протестировать все типы интерполяций для разных типов данных
+- Expression Engine требует тестирования безопасности (sandbox isolation)
+- Performance testing важен для сложных анимаций с множественными слоями
+- Curve Editor требует UI/UX тестирования с реальными пользовательскими сценариями
+- Timeline интеграция должна быть протестирована с различными типами clips
 
 ## License
 

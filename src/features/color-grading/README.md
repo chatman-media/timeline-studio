@@ -1,8 +1,20 @@
-# Color Grading Feature
+# Color Grading
 
-Professional color correction system integrated into Timeline Studio's Options panel.
+## Overview / Обзор
 
-## Overview
+**EN:** Professional color correction system integrated into Timeline Studio's Options panel. Provides DaVinci Resolve-level color correction capabilities including Color Wheels, RGB curves, HSL adjustments, LUT support, and professional scopes.
+
+**RU:** Профессиональная система цветокоррекции, интегрированная в панель Options Timeline Studio. Предоставляет возможности цветокоррекции уровня DaVinci Resolve, включая цветовые круги, RGB кривые, HSL настройки, поддержку LUT и профессиональные инструменты анализа.
+
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands. All color grading is performed client-side using CSS filters and canvas processing.
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| N/A | - | Pure frontend implementation |
+
+## Features / Возможности
 
 The Color Grading feature provides DaVinci Resolve-level color correction capabilities, including:
 - Primary color correction with Color Wheels (Lift/Gamma/Gain/Offset)
@@ -295,6 +307,43 @@ When adding new features:
 4. Update localization files
 5. Document new functionality
 6. Ensure performance targets are met
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/color-grading/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация Color Grading в Options панели | ⏳ Planned | - | 🔴 High |
+| Color Wheels интерактивное управление (Lift/Gamma/Gain/Offset) | ⏳ Planned | - | 🔴 High |
+| RGB Curves редактор с добавлением/удалением точек | ⏳ Planned | - | 🔴 High |
+| Master curve управление | ⏳ Planned | - | 🔴 High |
+| HSL параметры (Temperature, Tint, Contrast) | ⏳ Planned | - | 🟡 Medium |
+| Saturation и Hue контроль | ⏳ Planned | - | 🟡 Medium |
+| Импорт .cube LUT файлов (Tauri dialog) | ⏳ Planned | - | 🟡 Medium |
+| Встроенные LUT presets (Film, Creative, Technical) | ⏳ Planned | - | 🟡 Medium |
+| LUT intensity контроль (0-100%) | ⏳ Planned | - | 🟢 Low |
+| Toggle LUT enable/disable | ⏳ Planned | - | 🟢 Low |
+| Waveform Scope отображение | ⏳ Planned | - | 🟡 Medium |
+| Vectorscope с skin tone line | ⏳ Planned | - | 🟡 Medium |
+| Histogram RGB каналов | ⏳ Planned | - | 🟡 Medium |
+| Scopes refresh rate настройка (15/30/60 FPS) | ⏳ Planned | - | 🟢 Low |
+| Full-screen режим для scopes | ⏳ Planned | - | 🟢 Low |
+| Применение к выбранному клипу | ⏳ Planned | - | 🔴 High |
+| Сохранение пресетов цветокоррекции | ⏳ Planned | - | 🟡 Medium |
+| Загрузка сохраненных пресетов | ⏳ Planned | - | 🟡 Medium |
+| Reset All функциональность | ⏳ Planned | - | 🟢 Low |
+| Real-time preview обновление | ⏳ Planned | - | 🔴 High |
+
+### Приоритеты
+- 🔴 High - критичный функционал (инициализация, color wheels, curves, применение, preview)
+- 🟡 Medium - важный функционал (HSL, LUT, scopes, presets)
+- 🟢 Low - дополнительный функционал (intensity, toggle, refresh rate, reset)
+
+### Описание
+Color Grading - frontend-only модуль без прямых Tauri команд, кроме file dialog для импорта LUT. Вся обработка выполняется client-side через CSS filters и canvas. Критически важно протестировать корректность работы интерактивных элементов (color wheels, curves editor) и real-time preview. Необходимо проверить производительность scopes при разных refresh rates и корректность trilinear interpolation для LUT.
 
 ---
 

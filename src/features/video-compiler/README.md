@@ -1485,3 +1485,37 @@ The Video Compiler module represents a comprehensive video rendering system for 
 - **Ease of use** with intuitive API and automatic optimization
 
 The module is ready for production use and continues to actively evolve based on user needs and technological trends in video processing.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/video-compiler/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Запуск рендеринга через `compile_video` | ⏳ Planned | - | 🔴 High |
+| Отмена рендеринга через `cancel_render` | ⏳ Planned | - | 🔴 High |
+| Получение прогресса рендеринга через `get_render_progress` | ⏳ Planned | - | 🔴 High |
+| Отображение активных задач через `get_active_jobs` | ⏳ Planned | - | 🔴 High |
+| Обработка ошибок при рендеринге | ⏳ Planned | - | 🔴 High |
+| Определение GPU возможностей через `get_gpu_capabilities_full` | ⏳ Planned | - | 🟡 Medium |
+| Проверка доступности энкодеров через `check_gpu_encoder_availability` | ⏳ Planned | - | 🟡 Medium |
+| Обновление настроек компилятора через `update_compiler_settings_advanced` | ⏳ Planned | - | 🟡 Medium |
+| Извлечение фреймов для таймлайна через `extract_timeline_frames` | ⏳ Planned | - | 🟡 Medium |
+| Извлечение фреймов для распознавания через `extract_recognition_frames` | ⏳ Planned | - | 🟡 Medium |
+| Извлечение фреймов для субтитров через `extract_subtitle_frames` | ⏳ Planned | - | 🟡 Medium |
+| Статистика кеша через `get_cache_stats` | ⏳ Planned | - | 🟡 Medium |
+| Очистка кеша превью через `clear_preview_cache` | ⏳ Planned | - | 🟡 Medium |
+| Очистка кеша метаданных через `clear_media_metadata_cache` | ⏳ Planned | - | 🟡 Medium |
+| Полная очистка кеша через `clear_all_cache` | ⏳ Planned | - | 🟡 Medium |
+| Кеширование метаданных через `cache_media_metadata` | ⏳ Planned | - | 🟢 Low |
+| Получение информации о задаче через `get_render_job` | ⏳ Planned | - | 🟢 Low |
+| Проверка свободного места на диске через `get_disk_space` | ⏳ Planned | - | 🟢 Low |
+| GPU Status Badge в UI | ⏳ Planned | - | 🟢 Low |
+| Render Jobs Dropdown с реальными данными проектов | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал рендеринга
+- 🟡 Medium - важный функционал для производительности и оптимизации
+- 🟢 Low - дополнительный функционал для мониторинга

@@ -289,6 +289,44 @@ bun run type-check
 2. **Advanced Playback Settings** - Fine-tuning options
 3. **UI Customization** - User preferences
 
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/video-player/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Загрузка и отображение видео через `convertVideoSrc` | ⏳ Planned | - | 🔴 High |
+| Воспроизведение/пауза через команды `Play` и `Pause` | ⏳ Planned | - | 🔴 High |
+| Навигация по времени через команду `Seek` | ⏳ Planned | - | 🔴 High |
+| Изменение скорости воспроизведения через `SetPlaybackRate` | ⏳ Planned | - | 🔴 High |
+| Управление громкостью через `playerSetVolume` | ⏳ Planned | - | 🔴 High |
+| Выбор клипа через `playerSelectClip` | ⏳ Planned | - | 🔴 High |
+| Загрузка медиа через `playerSetMedia` | ⏳ Planned | - | 🔴 High |
+| Отображение прогресса воспроизведения в UI | ⏳ Planned | - | 🔴 High |
+| Полноэкранный режим | ⏳ Planned | - | 🟡 Medium |
+| Покадровая навигация (вперед/назад) | ⏳ Planned | - | 🟡 Medium |
+| Переключение между видео файлами | ⏳ Planned | - | 🟡 Medium |
+| AI анализ оверлей | ⏳ Planned | - | 🟡 Medium |
+| Превью эффектов в реальном времени | ⏳ Planned | - | 🟡 Medium |
+| Превью переходов между клипами | ⏳ Planned | - | 🟡 Medium |
+| Поддержка HDR контента | ⏳ Planned | - | 🟡 Medium |
+| Горячие клавиши для управления плеером | ⏳ Planned | - | 🟡 Medium |
+| Запись с камеры | ⏳ Planned | - | 🟢 Low |
+| Сетка для композиции | ⏳ Planned | - | 🟢 Low |
+| Обработка ошибок загрузки видео | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал воспроизведения
+- 🟡 Medium - важный функционал для редактирования
+- 🟢 Low - дополнительный функционал
+
+### Примечания
+- **Пустая папка**: Директория `e2e/tauri/features/video-player/` существует, но не содержит тестов
+- **Высокий приоритет**: Модуль является центральным для всей системы, требует comprehensive E2E тестирования
+- **Интеграции**: Требуется тестирование интеграций с timeline, effects, AI chat
+
 ## 📚 Related Documentation
 
 - [Timeline Module](../timeline/README.md) - Timeline integration

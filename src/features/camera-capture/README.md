@@ -186,6 +186,101 @@ const {
 - **Общее количество тестов**: 68 тестов
 - **Время выполнения**: ~1.4 секунд
 
+### Test Behavior (from test suites)
+
+#### use-screen-capture.test.ts
+- ✓ Should initialize with default values
+- ✓ Should start screen capture successfully
+- ✓ Should handle permission denied error
+- ✓ Should handle user cancellation
+- ✓ Should stop screen capture
+- ✓ Should handle ended event from video track
+- ✓ Should get source info
+- ✓ Should accept custom constraints
+
+#### use-devices.test.ts
+- ✓ Should initialize with empty devices
+- ✓ Should get devices when getDevices is called
+- ✓ Should handle empty device labels
+- ✓ Should set selected device
+- ✓ Should set selected audio device
+- ✓ Should handle error when enumerateDevices fails
+
+#### use-recording.test.ts
+- ✓ Should initialize with default values
+- ✓ Should set countdown
+- ✓ Should start countdown
+- ✓ Should have stopRecording method
+- ✓ Should have recordingTime property
+- ✓ Should format recording time correctly
+
+#### use-camera-stream.test.ts
+- ✓ Should initialize with isDeviceReady false
+- ✓ Should initialize camera and set isDeviceReady to true
+- ✓ Should handle error when getUserMedia fails
+- ✓ Should try fallback constraints when initial getUserMedia fails
+- ✓ Should stop tracks when setIsDeviceReady is set to false
+
+#### camera-capture-hooks.test.ts
+**useCameraPermissions:**
+- ✓ Should initialize with pending status
+- ✓ Should set status to granted when permissions are granted
+- ✓ Should set status to denied when permissions are denied
+- ✓ Should set status to error when device not found
+
+**useDeviceCapabilities:**
+- ✓ Should initialize with empty resolutions and loading false
+- ✓ Should get device capabilities and set resolutions
+- ✓ Should use common resolutions when getCapabilities is not supported
+- ✓ Should handle errors when getting device capabilities
+
+#### camera-settings.test.tsx
+- ✓ Renders all settings correctly
+- ✓ Calls onDeviceChange when device select changes
+- ✓ Calls onAudioDeviceChange when audio device select changes
+- ✓ Calls onResolutionChange when resolution select changes
+- ✓ Calls onFrameRateChange when frame rate select changes
+- ✓ Calls onCountdownChange when countdown input changes
+- ✓ Disables controls when isRecording is true
+- ✓ Shows loading state when isLoadingCapabilities is true
+
+#### camera-capture-modal-screen.test.tsx (Screen Recording)
+- ✓ Should render mode switch buttons
+- ✓ Should switch to screen mode when Screen button is clicked
+- ✓ Should show screen settings when in screen mode
+- ✓ Should hide camera settings when in screen mode
+- ✓ Should stop screen capture when switching back to camera
+- ✓ Should show error message if screen capture fails
+- ✓ Should disable mode switch buttons when recording
+
+#### camera-permission-request.test.tsx
+- ✓ Renders pending state
+- ✓ Renders denied state with retry button
+- ✓ Renders denied state with empty error message
+- ✓ Renders error state with custom error message
+- ✓ Renders granted state
+- ✓ Handles unknown permission status
+
+#### recording-controls.test.tsx
+- ✓ Renders start recording button when not recording
+- ✓ Renders stop recording button when recording
+- ✓ Disables start button when device is not ready
+- ✓ Calls onStartRecording when start button is clicked
+- ✓ Calls onStopRecording when stop button is clicked
+- ✓ Formats recording time correctly
+
+#### camera-capture-modal.test.tsx
+- ✓ Renders all components correctly
+- ✓ Renders with correct layout
+
+#### camera-preview.test.tsx
+- ✓ Renders loading state when device is not ready
+- ✓ Renders video element when device is ready
+- ✓ Shows countdown when showCountdown is true and countdown > 0
+- ✓ Does not show countdown when showCountdown is false
+- ✓ Does not show countdown when countdown is 0
+- ✓ Sets correct video attributes
+
 ```bash
 # Запустить тесты модуля
 bun test src/features/camera-capture
@@ -200,3 +295,44 @@ bun test:coverage src/features/camera-capture
 - Поддерживаются только современные браузеры с MediaRecorder API
 - Для работы требуется HTTPS или localhost
 - Разрешения запрашиваются при первом использовании
+
+## 🎭 E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/camera-capture/`
+
+### Чеклист тестов
+
+| Тест | Приоритет | Статус | Файл |
+|------|-----------|--------|------|
+| Открытие модального окна Camera Capture | 🔴 High | ⏳ Planned | - |
+| Запрос разрешений камеры/микрофона | 🔴 High | ⏳ Planned | - |
+| Отображение списка камер | 🔴 High | ⏳ Planned | - |
+| Отображение списка микрофонов | 🔴 High | ⏳ Planned | - |
+| Выбор устройства камеры | 🔴 High | ⏳ Planned | - |
+| Выбор устройства микрофона | 🔴 High | ⏳ Planned | - |
+| Запуск видеопотока (startStream) | 🔴 High | ⏳ Planned | - |
+| Отображение превью камеры | 🔴 High | ⏳ Planned | - |
+| Начало записи видео | 🔴 High | ⏳ Planned | - |
+| Остановка записи видео | 🔴 High | ⏳ Planned | - |
+| Пауза/возобновление записи | 🟡 Medium | ⏳ Planned | - |
+| Отображение таймера записи | 🟡 Medium | ⏳ Planned | - |
+| Countdown перед записью | 🟢 Low | ⏳ Planned | - |
+| Смена разрешения видео | 🟡 Medium | ⏳ Planned | - |
+| Смена FPS | 🟡 Medium | ⏳ Planned | - |
+| Переключение на запись экрана | 🔴 High | ⏳ Planned | - |
+| Запуск screen capture | 🔴 High | ⏳ Planned | - |
+| Выбор источника (окно/вкладка/экран) | 🔴 High | ⏳ Planned | - |
+| Остановка screen capture | 🔴 High | ⏳ Planned | - |
+| Сохранение записанного видео | 🔴 High | ⏳ Planned | - |
+| Интеграция с медиатекой | 🟡 Medium | ⏳ Planned | - |
+| Error handling (нет камеры) | 🟡 Medium | ⏳ Planned | - |
+| Error handling (отказ в разрешениях) | 🔴 High | ⏳ Planned | - |
+| Закрытие модального окна | 🟡 Medium | ⏳ Planned | - |
+| Остановка потоков при закрытии | 🔴 High | ⏳ Planned | - |
+
+### Примечания
+- Camera Capture не использует прямые Tauri команды
+- Использует Web APIs: MediaDevices, MediaRecorder, Screen Capture API
+- Важно тестировать работу с разрешениями (camera/microphone)
+- Требуется проверка сохранения записи через Tauri файловую систему
+- Тесты должны покрывать оба режима: камера и запись экрана

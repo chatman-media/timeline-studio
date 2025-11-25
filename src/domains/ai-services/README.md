@@ -265,6 +265,165 @@ if (quality.overall < 70) {
 }
 ```
 
+## API (Backend Commands)
+
+### Content Intelligence Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `ffmpeg_detect_scenes` | `{ videoPath: string }` | Детекция сцен в видео через FFmpeg |
+| `ffmpeg_analyze_quality` | `{ videoPath: string }` | Анализ качества видео |
+| `ffmpeg_detect_silence` | `{ videoPath: string }` | Обнаружение тишины в видео |
+| `ffmpeg_analyze_motion` | `{ videoPath: string }` | Анализ движения в видео |
+| `ffmpeg_extract_keyframes` | `{ videoPath: string, options?: {...} }` | Извлечение ключевых кадров |
+| `ffmpeg_analyze_audio` | `{ videoPath: string }` | Анализ аудиодорожки |
+| `ffmpeg_quick_analysis` | `{ filePath: string }` | Быстрый анализ видеофайла |
+
+### Recognition Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_yolo_processor` | `{ modelPath: string, device: string }` | Инициализация YOLO процессора |
+| `detect_objects_in_image` | `{ processorId: string, imagePath: string }` | Детекция объектов на изображении |
+| `analyze_video_with_yolo` | `{ processorId: string, videoPath: string, options?: {...} }` | Анализ видео с YOLO |
+| `init_retinaface_processor` | `{}` | Инициализация RetinaFace детектора |
+| `detect_faces_with_landmarks` | `{ imagePath: string }` | Детекция лиц с ключевыми точками |
+| `init_facenet_processor` | `{}` | Инициализация FaceNet для эмбеддингов |
+| `generate_face_embedding` | `{ imagePath: string }` | Генерация эмбеддинга лица |
+| `calculate_cosine_similarity` | `{ embedding1: number[], embedding2: number[] }` | Вычисление схожести эмбеддингов |
+
+### Montage Planner Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `analyze_montage_videos` | `{ videos: MediaFile[] }` | Анализ видео для монтажа |
+| `analyze_video_composition` | `{ videoPath: string }` | Анализ композиции видео |
+| `detect_key_moments` | `{ videoPath: string }` | Детекция ключевых моментов |
+| `generate_montage_plan` | `{ analysis: Analysis, preferences: Preferences }` | Генерация плана монтажа |
+| `optimize_montage_plan` | `{ plan: MontagePlan, constraints: Constraints }` | Оптимизация плана монтажа |
+| `validate_montage_plan` | `{ plan: MontagePlan }` | Валидация плана монтажа |
+| `apply_montage_plan` | `{ plan: MontagePlan }` | Применение плана к таймлайну |
+| `export_montage_plan` | `{ plan: MontagePlan, format: string }` | Экспорт плана монтажа |
+
+### Audio & Whisper Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `analyze_audio_peaks` | `{ audioPath: string, options?: {...} }` | Анализ аудио пиков |
+| `detect_speech_onsets` | `{ audioPath: string, options?: {...} }` | Детекция начала речи |
+| `whisper_transcribe_openai` | `{ audioPath: string, options: WhisperOptions }` | Транскрипция через Whisper |
+
+### Person Identification Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `create_person` | `{ name: string }` | Создание записи персоны |
+| `get_person` | `{ personId: string }` | Получение данных персоны |
+| `add_face_embedding` | `{ personId: string, embedding: number[], metadata: {...} }` | Добавление эмбеддинга лица |
+| `search_similar_persons` | `{ embedding: number[], topK?: number }` | Поиск похожих персон |
+| `delete_person` | `{ personId: string }` | Удаление персоны |
+| `init_advanced_tracking` | `{ config: TrackingConfig }` | Инициализация трекинга |
+| `start_person_tracking` | `{ videoPath: string, options?: {...} }` | Запуск трекинга персон |
+| `assign_person_to_track` | `{ trackId: string, personId: string }` | Привязка персоны к треку |
+| `merge_tracks` | `{ sourceTrackId: string, targetTrackId: string }` | Объединение треков |
+
+### Chat & API Keys Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `save_simple_api_key` | `{ serviceName: string, apiKey: string }` | Сохранение API ключа |
+| `get_decrypted_api_key` | `{ serviceName: string }` | Получение расшифрованного ключа |
+| `validate_api_key` | `{ serviceName: string, apiKey: string }` | Валидация API ключа |
+| `list_api_keys` | `{}` | Список сохранённых ключей |
+| `delete_api_key` | `{ serviceName: string }` | Удаление API ключа |
+
+## Behavior (from tests) / Поведение (из тестов)
+
+### unified-orchestrator.test.ts
+- ✓ Orchestrator предоставляет методы для всех AI операций
+- ✓ Интеграция с FFmpeg, YOLO, Whisper сервисами
+- ✓ Обработка ошибок и retry логика
+- ✓ Кэширование результатов анализа
+
+### chat-machine.test.ts
+- ✓ XState машина для управления AI чатом
+- ✓ Отправка сообщений и получение ответов
+- ✓ Поддержка streaming ответов
+- ✓ Управление историей сообщений
+
+### ai-intelligence-machine.test.ts
+- ✓ Машина состояний для AI интеллекта
+- ✓ Анализ контента и генерация адаптаций
+- ✓ Интеграция с платформами (YouTube, TikTok, Instagram)
+
+### use-unified-analysis.test.tsx
+- ✓ React хук для унифицированного анализа
+- ✓ Асинхронная загрузка результатов
+- ✓ Обработка состояний loading/error/success
+
+## Dependencies / Зависимости
+
+### Depends on:
+- `@tauri-apps/api` - Tauri IPC для коммуникации с backend
+- `xstate` - State machines для управления сложным состоянием
+- `@/lib/tauri-logger` - Логирование операций
+
+### Used by:
+- `@/features/ai-chat` - AI ассистент в редакторе
+- `@/features/ai-director` - AI режиссер для автомонтажа
+- `@/features/recognition` - Распознавание объектов и лиц
+- `@/domains/ai-tools` - AI инструменты для интеграции
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Работа с файлами | ✅ Ready | `file-system.spec.ts` | 🔴 High |
+| FFmpeg анализ видео | ⏳ Planned | - | 🔴 High |
+| FFmpeg детекция сцен | ⏳ Planned | - | 🔴 High |
+| FFmpeg извлечение ключевых кадров | ⏳ Planned | - | 🟡 Medium |
+| FFmpeg анализ аудио | ⏳ Planned | - | 🟡 Medium |
+| YOLO детекция объектов | ⏳ Planned | - | 🔴 High |
+| YOLO анализ видео | ⏳ Planned | - | 🔴 High |
+| RetinaFace детекция лиц | ⏳ Planned | - | 🟡 Medium |
+| FaceNet эмбеддинги | ⏳ Planned | - | 🟡 Medium |
+| Whisper транскрипция | ⏳ Planned | - | 🔴 High |
+| Person identification | ⏳ Planned | - | 🟡 Medium |
+| Монтаж планнер анализ | ⏳ Planned | - | 🔴 High |
+| Монтаж планнер генерация плана | ⏳ Planned | - | 🔴 High |
+| AI Chat API ключи | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (FFmpeg, YOLO, Whisper, монтаж планнер)
+- 🟡 Medium - важный функционал (face detection, embeddings, API keys)
+- 🟢 Low - дополнительный функционал
+
+### Команды для тестирования
+
+```typescript
+// Content Intelligence
+invoke('ffmpeg_detect_scenes', { videoPath })
+invoke('ffmpeg_analyze_quality', { videoPath })
+invoke('ffmpeg_extract_keyframes', { videoPath, options })
+invoke('ffmpeg_analyze_audio', { videoPath })
+
+// Recognition
+invoke('init_yolo_processor', { modelPath, device })
+invoke('detect_objects_in_image', { processorId, imagePath })
+invoke('analyze_video_with_yolo', { processorId, videoPath, options })
+
+// Whisper
+invoke('whisper_transcribe_openai', { audioPath, options })
+
+// Montage Planner
+invoke('analyze_montage_videos', { videos })
+invoke('generate_montage_plan', { analysis, preferences })
+```
+
 ## Лицензия
 
 Часть Timeline Studio. См. корневую лицензию проекта.

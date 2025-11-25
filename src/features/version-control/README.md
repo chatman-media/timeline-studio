@@ -535,3 +535,31 @@ See [ROADMAP.md](./ROADMAP.md) for detailed development plans and timelines.
 ## 🎯 Conclusion
 
 The Version Control module provides a reliable version management system for Timeline Studio, allowing users to safely experiment, track changes, and restore previous project states. Integration with Rust backend ensures high performance and reliability of operations.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/version-control/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Создание снапшота через команду `CreateSnapshot` | ⏳ Planned | - | 🔴 High |
+| Восстановление версии через команду `RestoreVersion` | ⏳ Planned | - | 🔴 High |
+| Получение истории версий через `GetVersionHistory` | ⏳ Planned | - | 🔴 High |
+| Отображение текущей ветки и версии в UI | ⏳ Planned | - | 🔴 High |
+| Индикатор несохраненных изменений | ⏳ Planned | - | 🔴 High |
+| Создание новой ветки через `CreateBranch` | ⏳ Planned | - | 🟡 Medium |
+| Переключение между ветками через `SwitchBranch` | ⏳ Planned | - | 🟡 Medium |
+| Настройка автосохранения через `EnableAutoSave` и `SetAutoSaveInterval` | ⏳ Planned | - | 🟡 Medium |
+| Сравнение версий через `CompareVersions` | ⏳ Planned | - | 🟡 Medium |
+| Обработка ошибок при сохранении версии | ⏳ Planned | - | 🟡 Medium |
+| Обработка ошибок при восстановлении версии | ⏳ Planned | - | 🟡 Medium |
+| Отображение метаинформации версий (timestamp, author, message) | ⏳ Planned | - | 🟢 Low |
+| Фильтрация версий по веткам | ⏳ Planned | - | 🟢 Low |
+| Поиск версий по сообщениям | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал для безопасности данных пользователя
+- 🟡 Medium - важный функционал для управления версиями
+- 🟢 Low - дополнительный функционал для удобства

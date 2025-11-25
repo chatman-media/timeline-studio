@@ -300,6 +300,52 @@ async function exportVideo(timeline: Timeline) {
 }
 ```
 
+## Exports / Экспорты
+
+### Events System
+- `domainEventBus` - централизованная шина событий
+- `DomainEvent<T>` - базовый тип события
+- `createDomainEvent()` - фабрика событий
+
+### React Hooks
+- `useDomainEvents()` - хук для работы с событиями
+
+### Utilities (Utils)
+**File Operations:**
+- `getFileExtension()`, `getFileName()`, `getDirectory()`
+- `formatFileSize()`, `parseFileSize()`
+- `isVideoFile()`, `isAudioFile()`, `isImageFile()`
+- `normalizePath()`, `sanitizeFileName()`
+
+**Validation:**
+- `isValidPath()`, `isValidUrl()`, `isValidEmail()`
+- `isValidColor()`, `isValidFileName()`
+- `isPositiveNumber()`, `isInRange()`
+
+**Time Utilities:**
+- `formatTime()`, `parseTime()`
+- `formatDuration()`, `parseDuration()`
+
+**ID Generation:**
+- `generateId()` - короткие ID
+- `generateUUID()` - UUID v4
+
+**Config:**
+- `loadConfig()`, `validateConfig()`
+
+### Types
+**Media Types:**
+- `BaseMediaFile`, `MediaAnalysisResult`
+- `Resolution`, `TimeRange`
+
+**Contracts:**
+- `IMediaAnalysisContract`
+- `IExportContract`
+- `IAIServiceContract`
+
+**AI Tools:**
+- AI pipeline types, script generation, content analysis
+
 ## Best Practices
 
 1. **Минимальные зависимости**: Shared домен не должен зависеть от других доменов
@@ -334,6 +380,115 @@ domainEventBus.on('analysis:completed', (event) => {
   }
 })
 ```
+
+## API (Backend Commands)
+
+**Shared домен не имеет прямых Tauri команд** - он предоставляет только общие типы, утилиты и систему событий для других доменов.
+
+### Event Bus API
+
+```typescript
+// Публикация события
+domainEventBus.emit(eventType: string, payload: any)
+
+// Подписка на событие
+domainEventBus.on(eventType: string, handler: Function): UnsubscribeFn
+
+// Отписка
+unsubscribe()
+```
+
+## Тестирование
+
+### Статистика тестов
+
+```bash
+# Запуск тестов
+bun run test src/domains/shared/utils/__tests__/
+
+# Результаты
+Test Files:  7 файлов (5 основных + 2 дополнительных)
+Tests:       264 теста (it blocks)
+Coverage:    Высокое покрытие всех утилит
+```
+
+### Тестовые наборы
+
+#### file.test.ts
+- ✓ File extension extraction (handles multiple dots, case sensitivity)
+- ✓ File name parsing and sanitization
+- ✓ Directory path extraction
+- ✓ File size formatting and parsing
+- ✓ Media file type detection (video, audio, image)
+- ✓ Path normalization (Unix/Windows compatibility)
+- ✓ File name suffix addition
+
+#### validation.test.ts
+- ✓ Path validation (Unix/Windows paths, invalid characters)
+- ✓ URL validation (protocols, query params, anchors)
+- ✓ Email validation (RFC-compliant patterns)
+- ✓ Color validation (hex, rgb, rgba, named colors)
+- ✓ File name validation (forbidden chars, length limits)
+- ✓ File size validation (max size checks)
+- ✓ JSON validation (parsing and structure)
+- ✓ Numeric validations (positive, non-negative, ranges)
+- ✓ String validations (non-empty checks)
+
+#### time.test.ts
+- ✓ Time formatting (seconds to HH:MM:SS.ms)
+- ✓ Time parsing (HH:MM:SS to seconds)
+- ✓ Duration calculations
+- ✓ Timecode conversions
+
+#### id.test.ts
+- ✓ Unique ID generation
+- ✓ UUID v4 generation
+- ✓ Collision detection tests
+- ✓ ID format validation
+
+#### config.test.ts
+- ✓ Configuration loading
+- ✓ Default values handling
+- ✓ Configuration validation
+- ✓ Type safety tests
+
+## Structure / Структура
+
+```
+shared/
+├── events/              # Domain Event Bus система
+│   ├── domain-event-bus.ts
+│   └── types.ts
+├── hooks/              # React хуки
+│   └── use-domain-events.ts
+├── types/              # Общие TypeScript типы
+│   ├── media.ts        # Медиа файлы и анализ
+│   ├── contracts.ts    # Контракты между доменами
+│   └── ai-tools/       # AI конфигурации и типы
+├── utils/              # Утилиты с тестами
+│   ├── file.ts         # Работа с файлами
+│   ├── validation.ts   # Валидация данных
+│   ├── time.ts         # Временные утилиты
+│   ├── id.ts           # Генерация ID
+│   └── config.ts       # Конфигурация
+└── __mocks__/          # Моки для тестирования
+    ├── domain-events.ts
+    └── ai-config.ts
+```
+
+## Dependencies / Зависимости
+
+**Used by (Используется доменами):**
+- `project-management` - типы проектов, события
+- `video-editing` - медиа типы, временные утилиты
+- `system-integration` - события системы, валидация
+- `media-management` - файловые утилиты, медиа типы
+- `ai-services` - AI типы и контракты
+- `browser` - файловые утилиты, события
+
+**Depends on (Зависит от):**
+- Никаких внешних доменов (базовый домен)
+- `@/lib/tauri-logger` - только для логирования
 
 ## Лицензия
 

@@ -204,3 +204,27 @@ const mockUpdateService = {
 3. **Error Recovery** - Provide options to retry failed operations
 4. **Data Safety** - Ensure user data is preserved during updates
 5. **Testing** - Thoroughly test update scenarios before release
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/updates/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Проверка доступных обновлений | ⏳ Planned | - | 🔴 High |
+| Tauri команда `download_and_install_update` | ⏳ Planned | - | 🔴 High |
+| Отображение состояния обновления (idle, checking, available, downloading, downloaded, installing, error) | ⏳ Planned | - | 🔴 High |
+| Отображение прогресса загрузки | ⏳ Planned | - | 🔴 High |
+| Уведомления о доступных обновлениях | ⏳ Planned | - | 🟡 Medium |
+| Отмена загрузки обновления | ⏳ Planned | - | 🟡 Medium |
+| Настройки автоматического обновления (auto check, auto download, auto install) | ⏳ Planned | - | 🟡 Medium |
+| Обработка ошибок при скачивании обновления | ⏳ Planned | - | 🟡 Medium |
+| Выбор канала обновлений (stable, beta, alpha) | ⏳ Planned | - | 🟢 Low |
+| Проверка подписи обновления | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал для безопасности обновлений
+- 🟡 Medium - важный функционал для пользовательского опыта
+- 🟢 Low - дополнительный функционал

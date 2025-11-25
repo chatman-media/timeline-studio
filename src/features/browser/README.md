@@ -71,6 +71,116 @@ function MediaStudio() {
 - **Layout coverage**: 86.1% statements
 - **Preview coverage**: 74.54% statements
 
+### Test Behavior (from test suites)
+
+#### resource-loaders.test.ts (Lazy Loading)
+**loadEffectsLazy:**
+- ✓ Should successfully load effects
+- ✓ Should handle string functions in effects
+- ✓ Should handle loading errors
+
+**loadFiltersLazy:**
+- ✓ Should successfully load filters
+
+**loadTransitionsLazy:**
+- ✓ Should successfully load transitions
+- ✓ Should handle string functions in transitions
+
+**loadAllResourcesLazy:**
+- ✓ Should load all resource types
+- ✓ Should handle cancellation
+- ✓ Should handle errors from individual loaders
+
+**loadResourcesByCategory:**
+- ✓ Should load resources for specific category
+- ✓ Should return empty array for non-existent category
+- ✓ Should handle cancellation
+- ✓ Should handle unknown resource type
+
+**loadResourcesInChunks:**
+- ✓ Should load resources in chunks
+- ✓ Should handle loading errors
+- ✓ Should handle cancellation during chunking
+
+#### use-music-import.test.tsx
+**importFile:**
+- ✓ Should successfully import audio files
+- ✓ Should handle no files selected
+- ✓ Should handle import errors
+- ✓ Should create basic music files without metadata
+- ✓ Should handle metadata loading errors gracefully
+
+**importDirectory:**
+- ✓ Should successfully import audio files from directory
+- ✓ Should handle no directory selected
+- ✓ Should filter only audio files from directory
+- ✓ Should handle directory with no audio files
+- ✓ Should handle directory import errors
+
+**Progress Tracking:**
+- ✓ Should update progress during import
+
+**Cleanup:**
+- ✓ Should clean up timeouts on unmount
+
+**Edge Cases:**
+- ✓ Should handle files with special characters
+- ✓ Should handle files without extensions
+- ✓ Should handle very long file paths
+
+#### use-resources.test.tsx (Resource Hooks)
+**useEffects:**
+- ✓ Should load and return effects
+
+**useFilters:**
+- ✓ Should load and return filters
+
+**useTransitions:**
+- ✓ Should load and return transitions
+
+**useResourceById:**
+- ✓ Should find resource by ID
+- ✓ Should return null for non-existent ID
+
+**useResourcesSearch:**
+- ✓ Should perform search by query
+- ✓ Should filter by category
+- ✓ Should filter by tags
+- ✓ Should filter by complexity
+
+**useResourcesByCategory:**
+- ✓ Should return resources by category
+
+**useResourcesByTags:**
+- ✓ Should return resources by tags
+
+**useResourcesByComplexity:**
+- ✓ Should return resources by complexity
+
+**useLoadingState:**
+- ✓ Should return loading state
+
+**useResourcesStats:**
+- ✓ Should return resource statistics
+
+**useResources:**
+- ✓ Should load resources by type
+
+**useResourceSources:**
+- ✓ Should manage data sources
+
+**useResourcesCache:**
+- ✓ Should manage cache
+
+**useResourcesAdapter:**
+- ✓ Should provide unified adapter interface
+- ✓ Should filter through adapter
+
+**Typed Search Hooks:**
+- ✓ Should perform typed search for effects
+- ✓ Should perform typed search for filters
+- ✓ Should perform typed search for transitions
+
 Run tests:
 ```bash
 bun run test src/features/browser/__tests__/
@@ -104,6 +214,48 @@ interface BrowserContext {
 // Browser hook
 const { activeTab, switchTab, selectedFiles } = useBrowserState()
 ```
+
+## 🎭 E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/browser/`
+
+### Чеклист тестов
+
+| Тест | Приоритет | Статус | Файл |
+|------|-----------|--------|------|
+| Проверка доступности Tauri команд импорта | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Tauri backend (core, dialog, fs) | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Команда `import_media` | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Команда `add_imported_media` | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Команда `get_media_metadata` | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Навигация на вкладку Media | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Отображение browser panel | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Чтение директории test-data | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Обработка кириллических имен файлов | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Кнопка импорта в UI | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Drag-and-drop зона | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Отображение media items | 🔴 High | ✅ Ready | `media-import.spec.ts` |
+| Video playback preview | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Команда `get_project_state` (media pool) | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Подписка на backend events | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Команда `clear_imported_media` | 🟡 Medium | ✅ Ready | `media-import.spec.ts` |
+| Переключение между вкладками (Effects, Filters, etc.) | 🟡 Medium | ⏳ Planned | - |
+| Поиск и фильтрация медиа | 🟡 Medium | ⏳ Planned | - |
+| Сортировка по дате/имени/размеру | 🟡 Medium | ⏳ Planned | - |
+| Группировка по дате/типу | 🟡 Medium | ⏳ Planned | - |
+| Добавление в избранное (star) | 🟢 Low | ⏳ Planned | - |
+| Добавление в resources panel | 🔴 High | ⏳ Planned | - |
+| Drag & drop на Timeline | 🔴 High | ⏳ Planned | - |
+| Загрузка в VideoPlayer (Apply) | 🟡 Medium | ⏳ Planned | - |
+| Grid/List view переключение | 🟢 Low | ⏳ Planned | - |
+| Отображение метаданных файлов | 🟡 Medium | ⏳ Planned | - |
+
+### Примечания
+- ✅ **13 тестов уже реализованы** в `media-import.spec.ts`
+- Покрыт весь backend workflow для импорта медиа
+- Тесты проверяют Tauri API, команды, UI интеграцию
+- Требуется добавить тесты для остальных вкладок (Effects, Filters, Transitions)
+- Важно протестировать drag & drop на Timeline
 
 ## License
 

@@ -1,12 +1,47 @@
-# Resources - Функциональные требования
+# Resources
+
+## Overview / Обзор
+
+**EN:** Resource management system for Timeline Studio. Manages effects, filters, transitions, templates, music, and subtitles. Provides centralized state management, resource tracking, and integration with timeline and browser components.
+
+**RU:** Система управления ресурсами для Timeline Studio. Управляет эффектами, фильтрами, переходами, шаблонами, музыкой и субтитрами. Обеспечивает централизованное управление состоянием, отслеживание ресурсов и интеграцию с компонентами таймлайна и браузера.
 
 ## 📋 Статус готовности
 
 - ✅ **Машина состояний**: Полностью реализована
 - ✅ **Провайдер**: Полностью реализован
-- ✅ **Тесты**: Покрыты тестами
-- ❌ **Компоненты**: Не созданы (нет папки components)
-- ✅ **Интеграция**: Используется в TimelineResources
+- ✅ **Компоненты**: ResourcesPanel реализован
+- ✅ **Тесты**: 511 тестов в resources-panel.test.tsx
+- ✅ **Интеграция**: Используется в Timeline и Browser
+
+## API (Backend Commands)
+
+No direct Tauri backend commands. Resources are managed client-side through XState machine.
+
+## Behavior (from tests) / Поведение (из тестов)
+
+### resources-panel.test.tsx
+- ✓ should render without crashing
+- ✓ should render all resource categories
+- ✓ should render category icons
+- ✓ should display resources with their names
+- ✓ should show resource count for categories with resources
+- ✓ should display appropriate icons for each resource type
+- ✓ should show 'no resources' message for empty categories
+- ✓ should handle all empty categories
+- ✓ should not show resource count for empty categories
+- ✓ should translate template names correctly
+- ✓ should translate style template names correctly
+- ✓ should show raw names for non-template resources
+- ✓ should handle mix of populated and empty categories
+- ✓ should have correct CSS classes for styling
+- ✓ should render scrollable container
+- ✓ should render resource items with proper styling
+- ✓ should have proper semantic structure
+- ✓ should have readable text sizes
+- ✓ should show delete button on hover
+- ✓ should call removeResource when delete button is clicked
+- ✓ should handle delete button clicks properly
 
 ## 🎯 Основные функции
 
@@ -184,3 +219,66 @@ interface TimelineResource {
 - [ ] Интуитивность drag & drop операций
 - [ ] Быстрота поиска нужного ресурса
 - [ ] Удобство предпросмотра и настройки
+
+## Structure / Структура
+
+```
+resources/
+├── components/                       # UI компоненты
+│   └── resources-panel.tsx          # Панель отображения ресурсов
+├── machines/                         # State machines
+│   └── backend-event-handlers.ts    # Обработчики событий бэкенда
+├── services/                         # Сервисы и провайдеры
+│   └── resources-provider.tsx       # React Context провайдер
+├── config/                           # Конфигурация
+│   └── preview-config.ts            # Настройки превью
+├── types.ts                          # TypeScript типы
+├── index.ts                          # Экспорты модуля
+├── README.md                         # Документация
+└── __tests__/                        # Тесты (511 тестов)
+    └── components/
+        └── resources-panel.test.tsx
+```
+
+## Dependencies / Зависимости
+
+- Depends on:
+  - `xstate` - для state machine
+  - `react-i18next` - для интернационализации
+  - `lucide-react` - для иконок
+  - `@/features/effects` - для типов эффектов
+  - `@/features/filters` - для типов фильтров
+  - `@/features/transitions` - для типов переходов
+  - `@/features/templates` - для типов шаблонов
+  - `@/features/style-templates` - для стилевых шаблонов
+- Used by:
+  - `@/features/timeline` - для отображения ресурсов
+  - `@/features/browser` - для управления ресурсами
+  - `@/features/media-studio` - для интеграции в редактор
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/resources/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация ResourcesPanel | ⏳ Planned | - | 🔴 High |
+| Отображение категорий ресурсов | ⏳ Planned | - | 🔴 High |
+| Добавление ресурса в категорию | ⏳ Planned | - | 🔴 High |
+| Удаление ресурса через UI | ⏳ Planned | - | 🔴 High |
+| Отображение счетчиков ресурсов | ⏳ Planned | - | 🟡 Medium |
+| Фильтрация ресурсов по категориям | ⏳ Planned | - | 🟡 Medium |
+| Drag & Drop ресурсов на Timeline | ⏳ Planned | - | 🟡 Medium |
+| Применение эффектов к клипам | ⏳ Planned | - | 🟡 Medium |
+| Применение фильтров к клипам | ⏳ Planned | - | 🟡 Medium |
+| Применение переходов между клипами | ⏳ Planned | - | 🟡 Medium |
+| Локализация названий ресурсов | ⏳ Planned | - | 🟢 Low |
+| Поиск по ресурсам | ⏳ Planned | - | 🟢 Low |
+| Сортировка ресурсов | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал управления ресурсами
+- 🟡 Medium - функции интеграции с Timeline
+- 🟢 Low - дополнительные UI возможности

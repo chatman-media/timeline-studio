@@ -236,6 +236,36 @@ console.log(masked) // "sk-proj••••••••••••••••�
 - [x] Валидация API ключей (реализовано в v3)
 - [ ] Автоматическое резервное копирование
 
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/user-settings/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Открытие и закрытие модального окна настроек | ⏳ Planned | - | 🔴 High |
+| Сохранение API ключей через `save_simple_api_key` | ⏳ Planned | - | 🔴 High |
+| Валидация API ключей через `validate_api_key` | ⏳ Planned | - | 🔴 High |
+| Список API ключей через `list_api_keys` | ⏳ Planned | - | 🔴 High |
+| Client-side валидация формата ключей (regex паттерны) | ⏳ Planned | - | 🔴 High |
+| Маскирование API ключей в UI | ⏳ Planned | - | 🔴 High |
+| OAuth интеграция: генерация URL через `generate_oauth_url` | ⏳ Planned | - | 🟡 Medium |
+| OAuth интеграция: обмен кода через `exchange_oauth_code` | ⏳ Planned | - | 🟡 Medium |
+| Импорт/экспорт настроек через `import_from_env` и `export_to_env_format` | ⏳ Planned | - | 🟡 Medium |
+| Удаление API ключей через `delete_api_key` | ⏳ Planned | - | 🟡 Medium |
+| Изменение макета интерфейса (default, options, vertical, dual) | ⏳ Planned | - | 🟡 Medium |
+| Настройка путей для скриншотов | ⏳ Planned | - | 🟡 Medium |
+| Регулировка громкости плеера | ⏳ Planned | - | 🟡 Medium |
+| Переключение видимости браузера | ⏳ Planned | - | 🟢 Low |
+| Refresh OAuth токена через `refresh_oauth_token` | ⏳ Planned | - | 🟢 Low |
+| Получение информации об OAuth пользователе через `get_oauth_user_info` | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал для работы с API и безопасности
+- 🟡 Medium - важный функционал для пользовательского опыта
+- 🟢 Low - дополнительный функционал
+
 **Версия:** 0.60.1
 **Последнее обновление:** 1 августа 2025
 **Разработано с ❤️ командой Timeline Studio**

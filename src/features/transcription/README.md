@@ -328,8 +328,42 @@ bun run test:coverage src/features/transcription
 
 Модуль транскрипции предоставляет мощные возможности для автоматического распознавания речи с поддержкой множества провайдеров и языков. Он оптимизирован для работы с Timeline Studio и готов к использованию в продакшене.
 
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/transcription/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация TranscriptionPanel | ⏳ Planned | - | 🔴 High |
+| Транскрипция медиафайла через OpenAI Whisper | ⏳ Planned | - | 🔴 High |
+| Транскрипция через локальный Whisper | ⏳ Planned | - | 🔴 High |
+| Транскрипция через Faster Whisper | ⏳ Planned | - | 🔴 High |
+| Автоопределение языка | ⏳ Planned | - | 🔴 High |
+| Word-level timestamps | ⏳ Planned | - | 🔴 High |
+| Экспорт результатов в SRT | ⏳ Planned | - | 🔴 High |
+| Экспорт результатов в VTT | ⏳ Planned | - | 🔴 High |
+| Экспорт результатов в ASS | ⏳ Planned | - | 🔴 High |
+| Добавление субтитров на таймлайн | ⏳ Planned | - | 🔴 High |
+| Загрузка и управление моделями Whisper | ⏳ Planned | - | 🟡 Medium |
+| Скачивание моделей (tiny → large-v3) | ⏳ Planned | - | 🟡 Medium |
+| Редактирование транскрипции в TranscriptionEditor | ⏳ Planned | - | 🟡 Medium |
+| Выбор языка через LanguageSelector | ⏳ Planned | - | 🟡 Medium |
+| Выбор размера модели через ModelSelector | ⏳ Planned | - | 🟡 Medium |
+| VAD (Voice Activity Detection) | ⏳ Planned | - | 🟡 Medium |
+| Прогресс транскрипции в реальном времени | ⏳ Planned | - | 🟡 Medium |
+| Enhanced Subtitle Automation | ⏳ Planned | - | 🟢 Low |
+| Переключение провайдеров | ⏳ Planned | - | 🟢 Low |
+| Настройки compute type (CPU/CUDA/MPS) | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал транскрипции и экспорта
+- 🟡 Medium - управление моделями и редактирование
+- 🟢 Low - дополнительные настройки и автоматизация
+
 ---
 
-**Версия:** 0.68.1  
-**Последнее обновление:** 7 августа 2025  
+**Версия:** 0.68.1
+**Последнее обновление:** 7 августа 2025
 **Разработано с ❤️ командой Timeline Studio**

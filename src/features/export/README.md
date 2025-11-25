@@ -1,6 +1,29 @@
-# Export Module - Модуль экспорта ✅ 95%
+# Export
 
-Модуль для экспорта видео проектов в различные форматы и платформы. **Все основные функции реализованы и протестированы.**
+## Overview / Обзор
+
+**EN:** Comprehensive video export system with professional presets, social media integration (YouTube, TikTok, Vimeo, Telegram), batch export, and section export. Features 4-tab interface similar to DaVinci Resolve with H.264/H.265/ProRes codecs, OAuth authentication, and render queue management.
+
+**RU:** Комплексная система экспорта видео с профессиональными пресетами, интеграцией социальных сетей (YouTube, TikTok, Vimeo, Telegram), пакетным экспортом и экспортом секций. Включает 4-вкладочный интерфейс, похожий на DaVinci Resolve, с кодеками H.264/H.265/ProRes, OAuth авторизацией и управлением очередью рендеринга.
+
+## API (Backend Commands)
+
+The export module uses Video Compiler backend commands for rendering:
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `compile_video` | `{ schema: ProjectSchema, outputPath: string, settings: RenderSettings }` | Start video rendering with specified settings |
+| `cancel_render` | `{ jobId: string }` | Cancel active render job |
+| `get_render_progress` | `{ jobId: string }` | Get current render progress (0-100%) |
+
+**OAuth & Social Media Commands:**
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `store_token` | `{ network: string, token: OAuthToken }` | Securely store OAuth token (Tauri Store) |
+| `get_token` | `{ network: string }` | Retrieve stored OAuth token |
+| `delete_token` | `{ network: string }` | Remove OAuth token |
+
+**Status:** ✅ 95% Complete - Модуль экспорта готов к продакшену
 
 ## 🎯 Возможности - Все реализовано ✅
 
@@ -336,3 +359,50 @@ export/__tests__/
 - ✅ Интернационализация (15 языков)
 
 **Модуль Export достиг 100% готовности** 🎉
+
+## 🎭 E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/export/`
+
+### Чеклист тестов
+
+| Тест | Приоритет | Статус | Файл |
+|------|-----------|--------|------|
+| Открытие Export Modal | 🔴 High | ⏳ Planned | - |
+| Отображение 4 вкладок (Local, Social, Batch, Section) | 🔴 High | ⏳ Planned | - |
+| Переключение между вкладками | 🔴 High | ⏳ Planned | - |
+| Отображение пресетов экспорта | 🔴 High | ⏳ Planned | - |
+| Выбор пресета (H.264 Master, H.265, ProRes) | 🔴 High | ⏳ Planned | - |
+| Настройка разрешения (720p, 1080p, 4K) | 🔴 High | ⏳ Planned | - |
+| Настройка FPS (24, 30, 60) | 🔴 High | ⏳ Planned | - |
+| Выбор качества (Custom, Good, Best) | 🟡 Medium | ⏳ Planned | - |
+| Выбор формата (MP4, MOV, WebM) | 🔴 High | ⏳ Planned | - |
+| Выбор кодека (H.264, H.265, ProRes) | 🔴 High | ⏳ Planned | - |
+| Выбор папки сохранения | 🔴 High | ⏳ Planned | - |
+| Команда `compile_video` (старт рендеринга) | 🔴 High | ⏳ Planned | - |
+| Команда `get_render_progress` | 🔴 High | ⏳ Planned | - |
+| Команда `cancel_render` | 🟡 Medium | ⏳ Planned | - |
+| Отображение прогресса экспорта | 🔴 High | ⏳ Planned | - |
+| Интеграция с Render Jobs Dropdown | 🔴 High | ⏳ Planned | - |
+| YouTube OAuth авторизация | 🟡 Medium | ⏳ Planned | - |
+| TikTok OAuth авторизация | 🟡 Medium | ⏳ Planned | - |
+| Vimeo OAuth авторизация | 🟢 Low | ⏳ Planned | - |
+| Telegram Bot API интеграция | 🟢 Low | ⏳ Planned | - |
+| Команда `store_token` (OAuth) | 🟡 Medium | ⏳ Planned | - |
+| Команда `get_token` | 🟡 Medium | ⏳ Planned | - |
+| Команда `delete_token` | 🟢 Low | ⏳ Planned | - |
+| Пакетный экспорт (выбор файлов) | 🟡 Medium | ⏳ Planned | - |
+| Управление очередью рендеринга | 🟡 Medium | ⏳ Planned | - |
+| Экспорт секций (по маркерам) | 🟡 Medium | ⏳ Planned | - |
+| Экспорт секций (по клипам) | 🟡 Medium | ⏳ Planned | - |
+| Экспорт секций (ручной диапазон) | 🟡 Medium | ⏳ Planned | - |
+| Валидация настроек экспорта | 🟡 Medium | ⏳ Planned | - |
+| Error handling (нет свободного места) | 🟡 Medium | ⏳ Planned | - |
+| Уведомления о завершении экспорта | 🟡 Medium | ⏳ Planned | - |
+
+### Примечания
+- Export модуль интегрирован с Video Compiler для рендеринга
+- Использует 3 основные Tauri команды: `compile_video`, `get_render_progress`, `cancel_render`
+- OAuth интеграция требует отдельных тестов для каждой соцсети
+- Важно тестировать интеграцию с Render Jobs Dropdown
+- Пакетный и секционный экспорт - продвинутые функции, требуют детального тестирования

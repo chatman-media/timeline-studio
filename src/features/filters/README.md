@@ -1,6 +1,20 @@
-# Filters - Functional Requirements
+# Filters
 
-**🌐 Languages:** [English](./README.md) | [Русский](./README.ru.md)
+## Overview / Обзор
+
+**EN:** CSS-based video filters system with real-time preview and hardware acceleration. Provides color correction, technical, cinematic, artistic, creative, and vintage filters. Supports multiple simultaneous filters, user presets, and FFmpeg export integration. Features include brightness, contrast, saturation, hue rotation, blur, sepia, grayscale, and more.
+
+**RU:** Система видеофильтров на основе CSS с предпросмотром в реальном времени и аппаратным ускорением. Предоставляет фильтры цветокоррекции, технические, кинематографические, художественные, креативные и винтажные. Поддерживает несколько одновременных фильтров, пользовательские пресеты и интеграцию экспорта FFmpeg. Включает яркость, контрастность, насыщенность, поворот оттенка, размытие, сепию, оттенки серого и многое другое.
+
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands. All filter processing is performed client-side using CSS filters.
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| N/A | - | Pure frontend implementation using CSS Filters API |
+
+**Note:** Filters can be exported to FFmpeg commands for final rendering via the Export module.
 
 ## 📋 Status: ✅ Production Ready
 
@@ -108,3 +122,34 @@ The Filters feature integrates seamlessly with:
 ---
 
 For more details, see [DEV.md](./DEV.md)
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/filters/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация панели фильтров | ⏳ Planned | - | 🔴 High |
+| Применение одиночного фильтра (brightness) | ⏳ Planned | - | 🔴 High |
+| Применение множественных фильтров | ⏳ Planned | - | 🔴 High |
+| Настройка параметров фильтра (слайдер) | ⏳ Planned | - | 🟡 Medium |
+| Предпросмотр фильтра в реальном времени | ⏳ Planned | - | 🔴 High |
+| Сохранение пользовательского пресета | ⏳ Planned | - | 🟡 Medium |
+| Загрузка пользовательского пресета | ⏳ Planned | - | 🟡 Medium |
+| Удаление фильтра | ⏳ Planned | - | 🟡 Medium |
+| Сброс всех фильтров | ⏳ Planned | - | 🟡 Medium |
+| Копирование фильтров между клипами | ⏳ Planned | - | 🟢 Low |
+| Применение группы фильтров (категория) | ⏳ Planned | - | 🟢 Low |
+| CSS фильтр рендеринг в видеоплеере | ⏳ Planned | - | 🔴 High |
+
+### Приоритеты
+- 🔴 High - критичный функционал, тестировать первым
+- 🟡 Medium - важный функционал
+- 🟢 Low - дополнительный функционал
+
+### Примечания
+- Модуль является чисто фронтенд реализацией (CSS Filters API)
+- Не использует Tauri команды напрямую
+- Интеграция с экспортом через FFmpeg (тестируется в модуле Export)

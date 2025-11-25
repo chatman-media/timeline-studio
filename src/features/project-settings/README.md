@@ -181,6 +181,10 @@ function App() {
 }
 ```
 
+## 🔌 API (Backend Commands)
+
+**No Tauri commands used** - This module operates entirely on the frontend using React and XState for state management. All project settings are managed in memory and persisted through the project file system.
+
 ## 🧪 Тестирование
 
 ### Покрытие тестов (обновлено)
@@ -190,6 +194,46 @@ function App() {
 - ✅ **Хуки**: 100%
 - ✅ **Утилиты**: 100%
 - ✅ **Общее покрытие**: 89%+ (превышает требуемые 90%)
+
+### Структура тестов
+
+**Component Tests** (`__tests__/components/`):
+- ✓ `project-settings-modal.test.tsx` (48 тестов)
+  - Основной рендеринг и UI элементы
+  - Управление состоянием (открытие/закрытие модального окна)
+  - Валидация входных данных
+  - Блокировка/разблокировка соотношения сторон
+  - Обработка изменений размеров
+  - Выбор предустановок
+  - Сохранение и отмена изменений
+
+**Hook Tests** (`__tests__/hooks/`):
+- ✓ `use-project-settings.test.ts`
+  - Основная функциональность хука
+  - Обработка ошибок при использовании вне провайдера
+  - Интеграция с провайдером
+  - Типизация и edge cases
+  - Производительность и стабильность
+
+**Service Tests** (`__tests__/services/`):
+- ✓ `project-settings-machine.test.ts` - Машина состояний
+- ✓ `project-settings-provider.test.tsx` - React Context провайдер
+
+**Utility Tests** (`__tests__/utils/`):
+- ✓ `aspect-ratio-utils.test.ts` - Работа с соотношениями сторон
+- ✓ `localization-utils.test.ts` - Локализация элементов
+- ✓ `settings-utils.test.ts` - Обновление настроек
+
+**Integration Tests** (`__tests__/integration/`):
+- ✓ `project-architecture-integration.test.ts`
+  - Media Pool и Sequences интеграция
+  - Управление ресурсами и эффектами
+  - Оптимизация проекта
+  - Вложенные sequences (master clips)
+  - Валидация сложных структур
+  - Сериализация/десериализация
+  - Коллаборация и резервные копии
+  - Производительность больших проектов
 
 ### Запуск тестов
 ```bash
@@ -203,6 +247,10 @@ bun run test:coverage src/features/project-settings
 bun test src/features/project-settings/__tests__/components
 bun test src/features/project-settings/__tests__/services
 bun test src/features/project-settings/__tests__/utils
+bun test src/features/project-settings/__tests__/integration
+
+# Конкретный тест
+bun test src/features/project-settings/__tests__/components/project-settings-modal.test.tsx
 ```
 
 ### Тестируемые сценарии
@@ -213,6 +261,7 @@ bun test src/features/project-settings/__tests__/utils
 - **Интеграция**: Работа с хуками, провайдерами, утилитами
 - **Машина состояний**: Переходы состояний, обновления
 - **Утилиты**: Вычисления, преобразования, локализация
+- **Архитектура проекта**: Media Pool, Sequences, оптимизация
 
 ## 🔗 Интеграция с приложением
 
@@ -334,3 +383,38 @@ type ResolutionOption = {
   label: string
 }
 ```
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/project-settings/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Открытие/закрытие модального окна настроек | ⏳ Planned | - | 🔴 High |
+| Изменение названия проекта | ⏳ Planned | - | 🔴 High |
+| Изменение описания проекта | ⏳ Planned | - | 🟡 Medium |
+| Выбор соотношения сторон (16:9, 9:16, 1:1, 4:3, 21:9) | ⏳ Planned | - | 🔴 High |
+| Пользовательское соотношение сторон | ⏳ Planned | - | 🟡 Medium |
+| Блокировка/разблокировка соотношения сторон | ⏳ Planned | - | 🔴 High |
+| Автоматический пересчет высоты при изменении ширины | ⏳ Planned | - | 🔴 High |
+| Автоматический пересчет ширины при изменении высоты | ⏳ Planned | - | 🔴 High |
+| Выбор разрешения из пресетов | ⏳ Planned | - | 🔴 High |
+| Пользовательское разрешение (320x240 - 7680x4320) | ⏳ Planned | - | 🟡 Medium |
+| Валидация минимальных размеров (320x240) | ⏳ Planned | - | 🟡 Medium |
+| Валидация максимальных размеров (7680x4320) | ⏳ Planned | - | 🟡 Medium |
+| Изменение частоты кадров (24/25/30/50/60/120 fps) | ⏳ Planned | - | 🔴 High |
+| Выбор цветового пространства (Rec.709/Rec.2020/DCI-P3/sRGB) | ⏳ Planned | - | 🟡 Medium |
+| Сохранение изменений настроек | ⏳ Planned | - | 🔴 High |
+| Отмена изменений | ⏳ Planned | - | 🟡 Medium |
+| Сброс настроек к значениям по умолчанию | ⏳ Planned | - | 🟡 Medium |
+| Интеграция с Timeline (применение разрешения) | ⏳ Planned | - | 🔴 High |
+| Интеграция с VideoPlayer (применение частоты кадров) | ⏳ Planned | - | 🔴 High |
+| Сохранение настроек в файл проекта | ⏳ Planned | - | 🔴 High |
+| Загрузка настроек из файла проекта | ⏳ Planned | - | 🔴 High |
+
+### Приоритеты
+- 🔴 High - критичный функционал (изменение основных настроек, блокировка соотношения, сохранение/загрузка)
+- 🟡 Medium - важный функционал (валидация, пользовательские значения, отмена/сброс)
+- 🟢 Low - дополнительный функционал (дополнительные UI элементы)

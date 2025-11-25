@@ -260,9 +260,100 @@ import { ConflictIndicator } from "@/features/keyboard-shortcuts"
 />
 ```
 
+## 🔌 API (Backend Commands)
+
+Модуль не использует прямые Tauri команды, но интегрируется с Tauri Store API для персистентности:
+- Использует `@tauri-apps/plugin-store` для сохранения настроек
+- Поддерживает fallback на localStorage для веб-версии
+
+## 🧪 Behavior (from tests) / Поведение (из тестов)
+
+### shortcuts-persistence.test.ts
+- ✓ Должен возвращать singleton instance
+- ✓ Должен сохранять настройки в localStorage в веб-режиме
+- ✓ Должен сохранять настройки в Tauri Store в desktop-режиме
+- ✓ Должен использовать fallback на localStorage при ошибке Tauri Store
+- ✓ Должен загружать настройки из localStorage/Tauri Store
+- ✓ Должен мигрировать настройки при несовпадении версии
+- ✓ Должен применять сохраненные настройки к shortcuts
+- ✓ Должен экспортировать/импортировать настройки в JSON
+- ✓ Должен обрабатывать edge cases (пустые массивы, невалидный JSON)
+
+### tauri-global-shortcuts.test.ts
+- ✓ Должен регистрировать глобальные shortcuts через Tauri API
+- ✓ Должен отменять регистрацию при отключении
+- ✓ Должен конвертировать macOS символы в Tauri формат
+- ✓ Должен конвертировать текстовые модификаторы (cmd, ctrl, alt, shift)
+- ✓ Должен вызывать action при срабатывании shortcut
+- ✓ Должен обновлять shortcuts при изменениях
+
+### shortcuts-provider.test.tsx
+- ✓ Должен инициализировать провайдер с DEFAULT_SHORTCUTS
+- ✓ Должен подписываться на изменения shortcuts
+- ✓ Должен загружать сохраненные настройки
+- ✓ Должен включать/выключать shortcuts
+- ✓ Должен обновлять клавиши shortcut
+- ✓ Должен сбрасывать shortcuts к дефолтным значениям
+- ✓ Должен автоматически сохранять настройки
+
+### shortcuts-conflicts.test.ts
+- ✓ Должен обнаруживать конфликты между shortcuts
+- ✓ Должен предлагать альтернативные клавиши
+- ✓ Должен валидировать новые клавиши перед применением
+
+### shortcuts-registry.test.ts
+- ✓ Должен регистрировать shortcuts в централизованном реестре
+- ✓ Должен получать shortcuts по ID, категории, контексту
+- ✓ Должен обновлять и удалять shortcuts
+- ✓ Должен управлять контекстными shortcuts (global, timeline, browser)
+
 ## 🚀 Будущие улучшения
 
 1. **Запись макросов** - последовательности действий на одну клавишу
 2. **Облачная синхронизация** настроек между устройствами
 3. **AI-подсказки** - умные рекомендации shortcuts на основе использования
 4. **Видео туториалы** - встроенные обучающие видео для новых пользователей
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/keyboard-shortcuts/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Открытие модального окна клавиатурных сочетаний | ⏳ Planned | - | 🔴 High |
+| Регистрация shortcut через ShortcutsRegistry | ⏳ Planned | - | 🔴 High |
+| Выполнение действия по нажатию shortcut | ⏳ Planned | - | 🔴 High |
+| Изменение клавиш для shortcut | ⏳ Planned | - | 🔴 High |
+| Обнаружение конфликтов клавиш | ⏳ Planned | - | 🔴 High |
+| Разрешение конфликтов (предложение альтернатив) | ⏳ Planned | - | 🟡 Medium |
+| Сохранение настроек в Tauri Store | ⏳ Planned | - | 🔴 High |
+| Загрузка настроек из Tauri Store | ⏳ Planned | - | 🔴 High |
+| Переключение между preset (Timeline/Premiere/Filmora) | ⏳ Planned | - | 🟡 Medium |
+| Экспорт настроек в JSON | ⏳ Planned | - | 🟡 Medium |
+| Импорт настроек из JSON | ⏳ Planned | - | 🟡 Medium |
+| Глобальные shortcuts через Tauri API | ⏳ Planned | - | 🔴 High |
+| Регистрация глобального shortcut (register) | ⏳ Planned | - | 🔴 High |
+| Отмена глобального shortcut (unregister) | ⏳ Planned | - | 🟡 Medium |
+| Проверка занятости shortcut (isRegistered) | ⏳ Planned | - | 🟡 Medium |
+| Поиск shortcuts по названию | ⏳ Planned | - | 🟢 Low |
+| Поиск shortcuts по комбинации клавиш | ⏳ Planned | - | 🟢 Low |
+| Генерация Cheat Sheet | ⏳ Planned | - | 🟢 Low |
+| Сброс shortcuts к дефолтным значениям | ⏳ Planned | - | 🟡 Medium |
+| Включение/выключение shortcuts глобально | ⏳ Planned | - | 🟡 Medium |
+| Контекстные shortcuts (timeline/browser/global) | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал, тестировать первым
+- 🟡 Medium - важный функционал
+- 🟢 Low - дополнительный функционал
+
+### Tauri API используемый модулем
+- `@tauri-apps/plugin-store` - сохранение настроек shortcuts
+- `@tauri-apps/plugin-global-shortcut` - глобальные shortcuts (register, unregister, isRegistered)
+
+### Примечания
+- Модуль использует Tauri Store для персистентности (fallback на localStorage)
+- Глобальные shortcuts работают только в desktop режиме
+- Поддержка 3 preset: Timeline Studio, Adobe Premiere Pro (119 shortcuts), Wondershare Filmora

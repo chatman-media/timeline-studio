@@ -535,6 +535,184 @@ async function batchRename() {
 - 95KB документации создано
 - 28 файлов изменено
 
+## API (Backend Commands)
+
+### Media Import Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `import_media_files` | `{ paths: string[], options: ImportOptions }` | Импорт медиа файлов в проект |
+| `extract_media_metadata` | `{ filePath: string }` | Извлечение метаданных медиафайла |
+| `generate_video_thumbnail` | `{ videoPath: string, time: number }` | Генерация превью видео |
+| `get_media_duration` | `{ filePath: string }` | Получение длительности медиафайла |
+
+### File Operations Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `copy_media_to_project` | `{ sourcePath: string, projectPath: string }` | Копирование медиа в папку проекта |
+| `move_media_files` | `{ files: string[], destination: string }` | Перемещение медиафайлов |
+| `delete_media_files` | `{ files: string[] }` | Удаление медиафайлов |
+| `create_proxy_files` | `{ sourcePath: string, options: ProxyOptions }` | Создание прокси-файлов |
+
+### Media Library Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `scan_media_directory` | `{ directoryPath: string }` | Сканирование директории с медиа |
+| `index_media_files` | `{ files: string[] }` | Индексация медиафайлов |
+| `search_media_library` | `{ query: string, filters?: {...} }` | Поиск в медиатеке |
+
+### Analysis Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `detect_video_scenes` | `{ videoPath: string, options?: {...} }` | Детекция сцен в видео |
+| `generate_audio_waveform` | `{ audioPath: string, options?: {...} }` | Генерация аудио waveform |
+
+### Export & Conversion Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `export_media_file` | `{ sourcePath: string, outputPath: string, preset: string }` | Экспорт медиафайла |
+| `batch_export_media` | `{ files: ExportJob[] }` | Пакетный экспорт медиа |
+| `convert_media_format` | `{ inputPath: string, outputPath: string, format: string, options?: {...} }` | Конвертация формата медиа |
+| `optimize_media_file` | `{ filePath: string, options: OptimizeOptions }` | Оптимизация медиафайла |
+
+### Device Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `eject_device` | `{ deviceId: string }` | Безопасное извлечение устройства |
+
+## Behavior (from tests) / Поведение (из тестов)
+
+### media-management-provider.test.tsx
+- ✓ Инициализация MediaManagementProvider
+- ✓ Интеграция системы уведомлений
+- ✓ Обработка callback'ов импорта (onImportStart, onImportProgress, onImportComplete)
+- ✓ Автоматические toast-уведомления при импорте
+- ✓ Отслеживание количества файлов в mediaPool
+- ✓ Управление loading состоянием
+
+### use-media-import.test.tsx
+- ✓ Импорт медиафайлов с опциями
+- ✓ Отслеживание прогресса импорта
+- ✓ Обработка ошибок импорта
+- ✓ Генерация прокси-файлов при импорте
+- ✓ Копирование файлов в проект
+- ✓ Анализ контента при импорте
+
+### use-file-operations.test.tsx
+- ✓ Копирование файлов
+- ✓ Перемещение файлов
+- ✓ Переименование файлов
+- ✓ Удаление файлов с подтверждением
+- ✓ Перемещение в корзину (moveToTrash)
+- ✓ Обработка конфликтов при копировании
+
+### use-media-metadata.test.tsx
+- ✓ Чтение метаданных медиафайлов
+- ✓ Обновление метаданных
+- ✓ Пакетное обновление метаданных
+- ✓ Извлечение EXIF данных
+- ✓ Получение информации о кодеке
+- ✓ Определение разрешения и FPS
+
+### file-operations-machine.test.ts
+- ✓ XState машина для файловых операций
+- ✓ Состояния: idle, copying, moving, deleting, error
+- ✓ Обработка прогресса операций
+- ✓ Отмена длительных операций
+- ✓ Retry логика при ошибках
+
+### media-import-machine.test.ts
+- ✓ XState машина для импорта медиа
+- ✓ Состояния: idle, scanning, importing, analyzing, complete, error
+- ✓ Пошаговый импорт с анализом
+- ✓ Генерация превью и waveform
+- ✓ Валидация файлов перед импортом
+- ✓ Обработка дубликатов
+
+### media-metadata-service.test.ts
+- ✓ MediaMetadataService для работы с метаданными
+- ✓ Извлечение технических характеристик
+- ✓ Чтение/запись пользовательских тегов
+- ✓ Обработка различных форматов (video, audio, image)
+- ✓ Кэширование метаданных
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Работа с файлами | ✅ Ready | `file-system.spec.ts` | 🔴 High |
+| Управление проектами | ✅ Ready | `project-management.spec.ts` | 🔴 High |
+| Импорт медиафайлов | ⏳ Planned | - | 🔴 High |
+| Извлечение метаданных | ⏳ Planned | - | 🔴 High |
+| Генерация превью видео | ⏳ Planned | - | 🟡 Medium |
+| Получение длительности медиа | ⏳ Planned | - | 🔴 High |
+| Копирование медиа в проект | ⏳ Planned | - | 🔴 High |
+| Перемещение медиафайлов | ⏳ Planned | - | 🟡 Medium |
+| Удаление медиафайлов | ⏳ Planned | - | 🟡 Medium |
+| Создание прокси-файлов | ⏳ Planned | - | 🟡 Medium |
+| Сканирование медиа директории | ⏳ Planned | - | 🔴 High |
+| Поиск в медиатеке | ⏳ Planned | - | 🟡 Medium |
+| Детекция сцен в видео | ⏳ Planned | - | 🔴 High |
+| Генерация аудио waveform | ⏳ Planned | - | 🟡 Medium |
+| Экспорт медиафайла | ⏳ Planned | - | 🔴 High |
+| Пакетный экспорт | ⏳ Planned | - | 🟡 Medium |
+| Конвертация формата медиа | ⏳ Planned | - | 🟡 Medium |
+| Оптимизация медиафайла | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (импорт, метаданные, копирование, экспорт)
+- 🟡 Medium - важный функционал (прокси, перемещение, конвертация)
+- 🟢 Low - дополнительный функционал
+
+### Команды для тестирования
+
+```typescript
+// Media Import
+invoke('import_media_files', { paths, options })
+invoke('extract_media_metadata', { filePath })
+invoke('generate_video_thumbnail', { videoPath, time })
+invoke('get_media_duration', { filePath })
+
+// File Operations
+invoke('copy_media_to_project', { sourcePath, projectPath })
+invoke('move_media_files', { files, destination })
+invoke('delete_media_files', { files })
+invoke('create_proxy_files', { sourcePath, options })
+
+// Media Library
+invoke('scan_media_directory', { directoryPath })
+invoke('search_media_library', { query, filters })
+
+// Analysis & Export
+invoke('detect_video_scenes', { videoPath, options })
+invoke('export_media_file', { sourcePath, outputPath, preset })
+```
+
+## Dependencies / Зависимости
+
+### Depends on:
+- `@tauri-apps/api` - Tauri IPC для файловых операций
+- `xstate` - State machines для импорта и операций
+- `peaks.js` - Генерация аудио waveform
+- `@/lib/tauri-logger` - Логирование
+- `@/lib/duration-formatter` - Форматирование времени
+- FFmpeg (backend) - Обработка медиа и метаданных
+
+### Used by:
+- `@/features/browser` - Отображение медиа в браузере
+- `@/features/timeline` - Добавление медиа на таймлайн
+- `@/features/media-studio` - Главный интерфейс редактора
+- `@/domains/ai-services` - Анализ медиа контента
+
 ---
 
 ## Лицензия

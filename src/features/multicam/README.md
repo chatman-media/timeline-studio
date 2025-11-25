@@ -240,7 +240,40 @@ manager.on('camera-switched', (angleIndex) => {
 })
 ```
 
+## 🔌 API (Backend Commands)
+
+**Нет Tauri команд** - Модуль работает полностью на фронтенде, используя JavaScript/TypeScript.
+
 ## 🧪 Тестирование
+
+### Покрытие тестами
+
+Модуль имеет обширное тестовое покрытие:
+
+**Компоненты** (`components/__tests__/`):
+- ✓ `angle-viewer.test.tsx` - Сетка превью камер
+- ✓ `camera-selector.test.tsx` - Селектор камер (основной рендеринг, состояние disabled, выпадающее меню, кастомные классы)
+- ✓ `multicam-indicator.test.tsx` - Индикаторы мультикамеры
+- ✓ `sync-controls.test.tsx` - Управление синхронизацией
+- ✓ `audio-sync-dialog.test.tsx` - Диалог аудио синхронизации
+
+**Хуки** (`hooks/__tests__/`):
+- ✓ `use-multicam.test.tsx` - Основной хук мультикамеры
+- ✓ `use-multicam-shortcuts.test.tsx` - Горячие клавиши
+- ✓ `use-video-lazy-loading.test.tsx` - Ленивая загрузка видео
+
+**Сервисы** (`services/__tests__/`):
+- ✓ `multicam-manager.test.ts` - Глобальный менеджер состояния
+- ✓ `audio-sync.test.ts` - Синхронизация по аудио
+- ✓ `timecode-sync.test.ts` - Парсинг таймкода, конвертация, синхронизация
+
+**Утилиты** (`utils/__tests__/`):
+- ✓ `simple-event-bus.test.ts` - Шина событий
+
+**Интеграция** (`__tests__/integration/`):
+- ✓ `multicam-editing.test.tsx` - Интеграционные тесты редактирования
+
+### Запуск тестов
 
 ```bash
 # Запустить тесты модуля
@@ -248,6 +281,9 @@ bun run test src/features/multicam
 
 # С покрытием
 bun run test:coverage src/features/multicam
+
+# Конкретный тест
+bun run test src/features/multicam/services/__tests__/timecode-sync.test.ts
 ```
 
 ## 🚀 Планы развития
@@ -264,3 +300,31 @@ bun run test:coverage src/features/multicam
 - Модуль использует систему связанных клипов из timeline
 - Синхронизация по аудио в текущей версии использует заглушку
 - Для реальной работы требуется интеграция с FFmpeg или Web Audio API
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/multicam/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация модуля мультикамеры | ⏳ Planned | - | 🔴 High |
+| Создание мультикамерной группы из связанных клипов | ⏳ Planned | - | 🔴 High |
+| Переключение между камерами (1-9) | ⏳ Planned | - | 🔴 High |
+| Горячие клавиши переключения камер | ⏳ Planned | - | 🔴 High |
+| Отображение сетки превью всех камер (AngleViewer) | ⏳ Planned | - | 🟡 Medium |
+| Синхронизация по таймкоду | ⏳ Planned | - | 🟡 Medium |
+| Синхронизация по аудио (диалог) | ⏳ Planned | - | 🟡 Medium |
+| Ручная настройка смещения камер | ⏳ Planned | - | 🟡 Medium |
+| Автоматическое переключение видео в плеере | ⏳ Planned | - | 🔴 High |
+| Добавление/удаление камер из группы | ⏳ Planned | - | 🟡 Medium |
+| Изменение порядка камер | ⏳ Planned | - | 🟢 Low |
+| Сохранение настроек синхронизации в проект | ⏳ Planned | - | 🟡 Medium |
+| Индикаторы мультикамеры на Timeline | ⏳ Planned | - | 🟢 Low |
+| Работа с более чем 9 камерами | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал (переключение камер, синхронизация, интеграция с Timeline)
+- 🟡 Medium - важный функционал (управление группами, настройки синхронизации)
+- 🟢 Low - дополнительный функционал (визуальные элементы, расширенные возможности)

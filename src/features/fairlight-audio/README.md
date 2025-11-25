@@ -1,10 +1,22 @@
-# Fairlight Audio Module ✅ ЗАВЕРШЕН
+# Fairlight Audio
 
-Профессиональный модуль для работы с аудио в Timeline Studio, предоставляющий полноценный микшерный пульт, обработку эффектов и интеграцию с таймлайном.
+## Overview / Обзор
 
-**Статус:** ✅ ПОЛНОСТЬЮ ЗАВЕРШЕН (100% готовности)  
-**Дата завершения:** 30 июня 2025  
-**Готов к production использованию**
+**EN:** Professional audio workstation integrated into Timeline Studio. Features full mixing console, 7-band parametric EQ, compressor, reverb, AI noise reduction, surround sound (Stereo/5.1/7.1), MIDI integration, automation engine, and professional metering (LUFS, Spectrum, Phase correlation). Built on Web Audio API with AudioWorklet for real-time processing.
+
+**RU:** Профессиональная аудио рабочая станция, интегрированная в Timeline Studio. Включает полноценный микшерный пульт, 7-полосный параметрический эквалайзер, компрессор, реверберацию, AI шумоподавление, surround звук (Stereo/5.1/7.1), MIDI интеграцию, движок автоматизации и профессиональные измерители (LUFS, Spectrum, Phase correlation). Построен на Web Audio API с AudioWorklet для обработки в реальном времени.
+
+## API (Backend Commands)
+
+This module is frontend-only and uses Web Audio API. Audio file loading uses Tauri commands:
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `convertFileSrc` | `{ filePath: string }` | Convert local file path to asset URL for loading |
+
+**Note:** All audio processing (EQ, compression, reverb, noise reduction) is performed client-side using Web Audio API and AudioWorklet processors.
+
+**Status:** ✅ 100% Complete - Готов к production использованию
 
 ## Архитектура
 
@@ -276,3 +288,44 @@ Channels → MasterGain → Limiter → Destination
 - Утилиты для симуляции аудио событий
 
 См. `/src/test/utils/README.md` для подробной документации по тестированию аудио компонентов.
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/fairlight-audio/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация AudioEngine (Web Audio API) | ⏳ Planned | - | 🔴 High |
+| Tauri команда `convertFileSrc` для загрузки аудио | ⏳ Planned | - | 🔴 High |
+| Создание и управление каналами микшера | ⏳ Planned | - | 🔴 High |
+| Управление громкостью канала (fader) | ⏳ Planned | - | 🔴 High |
+| Управление панорамой канала (pan) | ⏳ Planned | - | 🔴 High |
+| Solo/Mute функциональность | ⏳ Planned | - | 🔴 High |
+| 7-полосный параметрический эквалайзер | ⏳ Planned | - | 🟡 Medium |
+| Динамический компрессор | ⏳ Planned | - | 🟡 Medium |
+| Реверберация с импульсными характеристиками | ⏳ Planned | - | 🟡 Medium |
+| AI шумоподавление (3 алгоритма) | ⏳ Planned | - | 🟡 Medium |
+| Effects Rack управление цепочкой эффектов | ⏳ Planned | - | 🟡 Medium |
+| Surround Sound (Stereo, 5.1, 7.1) | ⏳ Planned | - | 🟡 Medium |
+| MIDI устройства подключение | ⏳ Planned | - | 🟢 Low |
+| MIDI маршрутизация (Router) | ⏳ Planned | - | 🟢 Low |
+| MIDI секвенсор с piano roll | ⏳ Planned | - | 🟢 Low |
+| Автоматизация параметров (5 режимов) | ⏳ Planned | - | 🟡 Medium |
+| Bus routing и группы каналов | ⏳ Planned | - | 🟡 Medium |
+| Send панель и посылки | ⏳ Planned | - | 🟢 Low |
+| Level Meter (Peak/RMS/VU) | ⏳ Planned | - | 🟢 Low |
+| Spectrum Analyzer (FFT) | ⏳ Planned | - | 🟢 Low |
+| Phase Correlation Meter | ⏳ Planned | - | 🟢 Low |
+| LUFS Meter (EBU R128) | ⏳ Planned | - | 🟢 Low |
+| Waveform визуализация | ⏳ Planned | - | 🟢 Low |
+| Синхронизация с Timeline | ⏳ Planned | - | 🔴 High |
+
+### Приоритеты
+- 🔴 High - критичный функционал (AudioEngine, convertFileSrc, каналы, громкость, pan, solo/mute, timeline sync)
+- 🟡 Medium - важный функционал (эффекты, surround, автоматизация, routing)
+- 🟢 Low - дополнительный функционал (MIDI, meters, waveform, sends)
+
+### Описание
+Fairlight Audio - frontend-only модуль на базе Web Audio API. Единственная Tauri команда `convertFileSrc` используется для конвертации локальных путей в asset URL. Критически важно протестировать инициализацию AudioEngine, управление каналами и синхронизацию с Timeline. Необходимо проверить корректность работы real-time обработки эффектов и измерителей. Важно убедиться что AudioWorklet processors загружаются правильно.

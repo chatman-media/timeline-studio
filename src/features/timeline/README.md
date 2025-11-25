@@ -272,3 +272,40 @@ function MyComponent() {
 3. ✅ Система кеширования - 100%
 4. ⚠️ Экспорт и рендеринг - планируется
 5. ⚠️ Продвинутые анимации переходов - планируется
+
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/timeline/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация Timeline компонента | ⏳ Planned | - | 🔴 High |
+| Создание видео/аудио треков | ⏳ Planned | - | 🔴 High |
+| Добавление клипов на треки | ⏳ Planned | - | 🔴 High |
+| Перемещение клипов по таймлайну | ⏳ Planned | - | 🔴 High |
+| Изменение длительности клипов (trim) | ⏳ Planned | - | 🔴 High |
+| Удаление клипов | ⏳ Planned | - | 🔴 High |
+| Копирование/вставка клипов | ⏳ Planned | - | 🔴 High |
+| Управление треками (lock/hide/delete) | ⏳ Planned | - | 🔴 High |
+| Синхронизация с VideoPlayer | ⏳ Planned | - | 🔴 High |
+| Timeline-Player двухсторонняя синхронизация | ⏳ Planned | - | 🟡 Medium |
+| Drag & Drop медиа из Browser | ⏳ Planned | - | 🟡 Medium |
+| Multi-select drag клипов | ⏳ Planned | - | 🟡 Medium |
+| SLIP/SLIDE режимы редактирования | ⏳ Planned | - | 🟡 Medium |
+| Keyframe Animation клипов | ⏳ Planned | - | 🟡 Medium |
+| Video Fade Transitions | ⏳ Planned | - | 🟡 Medium |
+| Batch Operations над клипами | ⏳ Planned | - | 🟡 Medium |
+| Snap visualization и привязка | ⏳ Planned | - | 🟡 Medium |
+| Undo/Redo операций | ⏳ Planned | - | 🟡 Medium |
+| Version Control Integration | ⏳ Planned | - | 🟡 Medium |
+| Speed ramping hotkeys | ⏳ Planned | - | 🟢 Low |
+| Markers hotkeys | ⏳ Planned | - | 🟢 Low |
+| JL cut hotkeys | ⏳ Planned | - | 🟢 Low |
+| Effects cache performance | ⏳ Planned | - | 🟢 Low |
+
+### Приоритеты
+- 🔴 High - критичный функционал управления треками и клипами
+- 🟡 Medium - продвинутые функции редактирования и интеграции
+- 🟢 Low - горячие клавиши и оптимизация производительности

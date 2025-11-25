@@ -359,6 +359,37 @@ bun run test src/features/workspace/__tests__/services/workspace-layout-machine.
 bun run test:watch src/features/workspace
 ```
 
+## E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/workspace/`
+
+### Чеклист тестов
+
+| Тест | Статус | Файл | Приоритет |
+|------|--------|------|-----------|
+| Инициализация workspace с default preset | ⏳ Planned | - | 🔴 High |
+| Загрузка сохраненного состояния из localStorage | ⏳ Planned | - | 🔴 High |
+| Tauri команда `save_workspace_state` | ⏳ Planned | - | 🔴 High |
+| Tauri команда `load_workspace_state` | ⏳ Planned | - | 🔴 High |
+| Переключение между preset лейаутами | ⏳ Planned | - | 🔴 High |
+| Drag & Drop виджетов | ⏳ Planned | - | 🟡 Medium |
+| Resize виджетов с 8 handles | ⏳ Planned | - | 🟡 Medium |
+| Minimize/Maximize виджетов | ⏳ Planned | - | 🟡 Medium |
+| Widget Dock функциональность | ⏳ Planned | - | 🟡 Medium |
+| Сохранение кастомного layout | ⏳ Planned | - | 🟡 Medium |
+| Удаление кастомного layout | ⏳ Planned | - | 🟢 Low |
+| Восстановление состояния после перезапуска | ⏳ Planned | - | 🔴 High |
+| Debounced save при изменениях | ⏳ Planned | - | 🟢 Low |
+| Fallback стратегия загрузки (localStorage → backend) | ⏳ Planned | - | 🟡 Medium |
+
+### Приоритеты
+- 🔴 High - критичный функционал (persistence, preset switching)
+- 🟡 Medium - важный функционал (drag & drop, resize, dock)
+- 🟢 Low - дополнительный функционал (custom layouts, debounce)
+
+### Описание
+Workspace использует Tauri backend для persistent storage состояния виджетов и custom layouts. Критические команды `save_workspace_state` и `load_workspace_state` должны быть протестированы для обеспечения сохранности пользовательских настроек между сессиями. Также важно протестировать UI взаимодействия (drag, resize, minimize) для корректной работы виджетной системы.
+
 ## Лицензия
 
 Часть Timeline Studio проекта.
