@@ -11,6 +11,9 @@ use tokio::process::Command;
 /// Этот фильтр анализирует видео и находит наиболее репрезентативный кадр
 /// (не чёрный, не размытый)
 /// ВАЖНО: Для 4K видео этот метод медленный, поэтому используем -ss и ограниченное n
+///
+/// TODO: Интегрировать в UI как опцию "Smart thumbnail" для важных превью
+#[allow(dead_code)]
 pub async fn generate_thumbnail_smart(
   input_path: &Path,
   output_path: &Path,
