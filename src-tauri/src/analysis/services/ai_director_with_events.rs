@@ -298,6 +298,144 @@ impl AIDirectorWithEvents {
       .await
   }
 
+  /// 🆕 Phase 2: Batch Analysis с events и детальным прогрессом
+  pub async fn analyze_batch_with_events(
+    &self,
+    file_paths: Vec<String>,
+    config_opt: Option<AIDirectorConfig>,
+  ) -> Result<Vec<ComprehensiveAnalysisResult>> {
+    let batch_id = Uuid::new_v4().to_string();
+    let total_files = file_paths.len();
+    let batch_start = Instant::now();
+
+    if file_paths.is_empty() {
+      return Err(anyhow::anyhow!("No files provided for batch analysis"));
+    }
+
+    // Определяем config mode для события
+    let config_mode = match &config_opt {
+      Some(cfg) => {
+        if !cfg.enable_video_analysis {
+          "fast"
+        } else if cfg.enable_emotion_analysis && cfg.enable_mood_analysis {
+          "quality"
+        } else {
+          "balanced"
+        }
+      }
+      None => "balanced",
+    };
+
+    info!(
+      "Starting batch analysis: batch_id={}, files={}, mode={}",
+      batch_id, total_files, config_mode
+    );
+
+    // 1. Emit BatchAnalysisStarted
+    self
+      .emit_batch_analysis_started(&batch_id, total_files, config_mode)
+      .await;
+
+    let mut results = Vec::new();
+    let mut errors = Vec::new();
+    let mut successful_files = 0;
+
+    // 2. Process each file sequentially
+    for (index, file_path) in file_paths.iter().enumerate() {
+      let path = std::path::PathBuf::from(file_path);
+
+      if !path.exists() {
+        let error_msg = format!("File not found: {}", file_path);
+        errors.push(error_msg.clone());
+        error!("{}", error_msg);
+        continue;
+      }
+
+      info!(
+        "Batch analysis: processing file {}/{}: {}",
+        index + 1,
+        total_files,
+        file_path
+      );
+
+      // Emit progress before analyzing file
+      let progress = index as f32 / total_files as f32;
+      let remaining_files = total_files - index;
+      let avg_time_per_file = if index > 0 {
+        batch_start.elapsed().as_secs() / index as u64
+      } else {
+        60 // initial estimate: 60 seconds per file
+      };
+      let estimated_time_remaining = avg_time_per_file * remaining_files as u64;
+
+      self
+        .emit_batch_analysis_progress(
+          &batch_id,
+          index,
+          total_files,
+          progress,
+          Some(file_path),
+          Some(estimated_time_remaining),
+        )
+        .await;
+
+      // Analyze the file
+      match self
+        .analyze_comprehensive_with_events(&path, config_opt.clone())
+        .await
+      {
+        Ok(result) => {
+          successful_files += 1;
+          results.push(result);
+          info!(
+            "Batch analysis: file {}/{} completed successfully",
+            index + 1,
+            total_files
+          );
+        }
+        Err(e) => {
+          let error_msg = format!("File {} failed: {}", file_path, e);
+          errors.push(error_msg.clone());
+          error!("{}", error_msg);
+        }
+      }
+    }
+
+    let failed_files = total_files - successful_files;
+    let total_duration = batch_start.elapsed().as_millis() as u64;
+
+    // 3. Emit final progress
+    self
+      .emit_batch_analysis_progress(&batch_id, total_files, total_files, 1.0, None, Some(0))
+      .await;
+
+    // 4. Emit BatchAnalysisCompleted
+    self
+      .emit_batch_analysis_completed(
+        &batch_id,
+        total_files,
+        successful_files,
+        failed_files,
+        total_duration,
+        errors.clone(),
+      )
+      .await;
+
+    info!(
+      "Batch analysis completed: batch_id={}, successful={}/{}, duration={}ms",
+      batch_id, successful_files, total_files, total_duration
+    );
+
+    if results.is_empty() && !errors.is_empty() {
+      return Err(anyhow::anyhow!(
+        "All batch analyses failed: {}",
+        errors.join("; ")
+      ));
+    }
+
+    Ok(results)
+  }
+
   /// Запуск audio stage с прогрессом
   async fn run_audio_stage(
     &self,
@@ -309,22 +447,26 @@ impl AIDirectorWithEvents {
     let file_path = media_path.to_string_lossy().to_string();
 
     // 🆕 v2: Emit file analysis started
-    self.emit_file_analysis_started(
-      analysis_id,
-      &file_id,
-      &file_path,
-      0, // file_index
-      1, // total_files (single file for now)
-    ).await;
+    self
+      .emit_file_analysis_started(
+        analysis_id,
+        &file_id,
+        &file_path,
+        0, // file_index
+        1, // total_files (single file for now)
+      )
+      .await;
 
     // Analyzer 1: Audio Quality
     let metadata_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "audio_quality",
-      "Audio Quality Analyzer"
-    ).await;
+    self
+      .emit_analyzer_started(
+        analysis_id,
+        &file_id,
+        "audio_quality",
+        "Audio Quality Analyzer",
+      )
+      .await;
 
     self
       .emit_progress(
@@ -338,33 +480,39 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "audio_quality",
-      metadata_start.elapsed().as_millis() as u64,
-      true,
-      Some("Audio quality analyzed"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "audio_quality",
+        metadata_start.elapsed().as_millis() as u64,
+        true,
+        Some("Audio quality analyzed"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.25,
-      Some("speech_recognition"),
-      vec!["audio_quality".to_string()],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.25,
+        Some("speech_recognition"),
+        vec!["audio_quality".to_string()],
+      )
+      .await;
 
     // Analyzer 2: Speech Recognition
     let ffmpeg_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "speech_recognition",
-      "Speech Recognition"
-    ).await;
+    self
+      .emit_analyzer_started(
+        analysis_id,
+        &file_id,
+        "speech_recognition",
+        "Speech Recognition",
+      )
+      .await;
 
     self
       .emit_progress(
@@ -378,33 +526,42 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "speech_recognition",
-      ffmpeg_start.elapsed().as_millis() as u64,
-      true,
-      Some("Speech recognized"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "speech_recognition",
+        ffmpeg_start.elapsed().as_millis() as u64,
+        true,
+        Some("Speech recognized"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.5,
-      Some("moment_detection"),
-      vec!["audio_quality".to_string(), "speech_recognition".to_string()],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.5,
+        Some("moment_detection"),
+        vec![
+          "audio_quality".to_string(),
+          "speech_recognition".to_string(),
+        ],
+      )
+      .await;
 
     // Analyzer 3: Moment Detection
     let montage_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "moment_detection",
-      "Moment Detection"
-    ).await;
+    self
+      .emit_analyzer_started(
+        analysis_id,
+        &file_id,
+        "moment_detection",
+        "Moment Detection",
+      )
+      .await;
 
     self
       .emit_progress(
@@ -418,28 +575,32 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(800)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "moment_detection",
-      montage_start.elapsed().as_millis() as u64,
-      true,
-      Some("Moments detected"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "moment_detection",
+        montage_start.elapsed().as_millis() as u64,
+        true,
+        Some("Moments detected"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.9,
-      None,
-      vec![
-        "audio_quality".to_string(),
-        "speech_recognition".to_string(),
-        "moment_detection".to_string()
-      ],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.9,
+        None,
+        vec![
+          "audio_quality".to_string(),
+          "speech_recognition".to_string(),
+          "moment_detection".to_string(),
+        ],
+      )
+      .await;
 
     self
       .emit_progress(
@@ -452,13 +613,15 @@ impl AIDirectorWithEvents {
       .await;
 
     // 🆕 v2: Emit file analysis completed
-    self.emit_file_analysis_completed(
-      analysis_id,
-      &file_id,
-      metadata_start.elapsed().as_millis() as u64,
-      true,
-      None,
-    ).await;
+    self
+      .emit_file_analysis_completed(
+        analysis_id,
+        &file_id,
+        metadata_start.elapsed().as_millis() as u64,
+        true,
+        None,
+      )
+      .await;
 
     Ok(())
   }
@@ -474,22 +637,21 @@ impl AIDirectorWithEvents {
     let file_path = media_path.to_string_lossy().to_string();
 
     // 🆕 v2: Emit file analysis started
-    self.emit_file_analysis_started(
-      analysis_id,
-      &file_id,
-      &file_path,
-      0, // file_index
-      1, // total_files (single file for now)
-    ).await;
+    self
+      .emit_file_analysis_started(
+        analysis_id,
+        &file_id,
+        &file_path,
+        0, // file_index
+        1, // total_files (single file for now)
+      )
+      .await;
 
     // Analyzer 1: Scene Detection
     let metadata_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "scene_detection",
-      "Scene Detection"
-    ).await;
+    self
+      .emit_analyzer_started(analysis_id, &file_id, "scene_detection", "Scene Detection")
+      .await;
 
     self
       .emit_progress(
@@ -503,33 +665,39 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(600)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "scene_detection",
-      metadata_start.elapsed().as_millis() as u64,
-      true,
-      Some("Scenes detected"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "scene_detection",
+        metadata_start.elapsed().as_millis() as u64,
+        true,
+        Some("Scenes detected"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.25,
-      Some("object_detection"),
-      vec!["scene_detection".to_string()],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.25,
+        Some("object_detection"),
+        vec!["scene_detection".to_string()],
+      )
+      .await;
 
     // Analyzer 2: Object Detection
     let object_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "object_detection",
-      "YOLO Object Detector"
-    ).await;
+    self
+      .emit_analyzer_started(
+        analysis_id,
+        &file_id,
+        "object_detection",
+        "YOLO Object Detector",
+      )
+      .await;
 
     self
       .emit_progress(
@@ -543,33 +711,42 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(1200)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "object_detection",
-      object_start.elapsed().as_millis() as u64,
-      true,
-      Some("Objects detected"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "object_detection",
+        object_start.elapsed().as_millis() as u64,
+        true,
+        Some("Objects detected"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.5,
-      Some("composition_analysis"),
-      vec!["scene_detection".to_string(), "object_detection".to_string()],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.5,
+        Some("composition_analysis"),
+        vec![
+          "scene_detection".to_string(),
+          "object_detection".to_string(),
+        ],
+      )
+      .await;
 
     // Analyzer 3: Composition Analysis
     let composition_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "composition_analysis",
-      "Composition Analysis"
-    ).await;
+    self
+      .emit_analyzer_started(
+        analysis_id,
+        &file_id,
+        "composition_analysis",
+        "Composition Analysis",
+      )
+      .await;
 
     self
       .emit_progress(
@@ -583,37 +760,38 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(900)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "composition_analysis",
-      composition_start.elapsed().as_millis() as u64,
-      true,
-      Some("Composition analyzed"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "composition_analysis",
+        composition_start.elapsed().as_millis() as u64,
+        true,
+        Some("Composition analyzed"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      0.75,
-      Some("motion_analysis"),
-      vec![
-        "scene_detection".to_string(),
-        "object_detection".to_string(),
-        "composition_analysis".to_string()
-      ],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        0.75,
+        Some("motion_analysis"),
+        vec![
+          "scene_detection".to_string(),
+          "object_detection".to_string(),
+          "composition_analysis".to_string(),
+        ],
+      )
+      .await;
 
     // Analyzer 4: Motion Analysis
     let scene_start = Instant::now();
-    self.emit_analyzer_started(
-      analysis_id,
-      &file_id,
-      "motion_analysis",
-      "Motion Analysis"
-    ).await;
+    self
+      .emit_analyzer_started(analysis_id, &file_id, "motion_analysis", "Motion Analysis")
+      .await;
 
     self
       .emit_progress(
@@ -627,38 +805,44 @@ impl AIDirectorWithEvents {
 
     tokio::time::sleep(tokio::time::Duration::from_millis(400)).await;
 
-    self.emit_analyzer_completed(
-      analysis_id,
-      &file_id,
-      "motion_analysis",
-      scene_start.elapsed().as_millis() as u64,
-      true,
-      Some("Motion analyzed"),
-      None,
-    ).await;
+    self
+      .emit_analyzer_completed(
+        analysis_id,
+        &file_id,
+        "motion_analysis",
+        scene_start.elapsed().as_millis() as u64,
+        true,
+        Some("Motion analyzed"),
+        None,
+      )
+      .await;
 
     // 🆕 v2: Update file progress to complete
-    self.emit_file_analysis_progress(
-      analysis_id,
-      &file_id,
-      1.0,
-      None,
-      vec![
-        "scene_detection".to_string(),
-        "object_detection".to_string(),
-        "composition_analysis".to_string(),
-        "motion_analysis".to_string()
-      ],
-    ).await;
+    self
+      .emit_file_analysis_progress(
+        analysis_id,
+        &file_id,
+        1.0,
+        None,
+        vec![
+          "scene_detection".to_string(),
+          "object_detection".to_string(),
+          "composition_analysis".to_string(),
+          "motion_analysis".to_string(),
+        ],
+      )
+      .await;
 
     // 🆕 v2: Emit file analysis completed
-    self.emit_file_analysis_completed(
-      analysis_id,
-      &file_id,
-      metadata_start.elapsed().as_millis() as u64,
-      true,
-      None,
-    ).await;
+    self
+      .emit_file_analysis_completed(
+        analysis_id,
+        &file_id,
+        metadata_start.elapsed().as_millis() as u64,
+        true,
+        None,
+      )
+      .await;
 
     Ok(())
   }
@@ -901,6 +1085,74 @@ impl AIDirectorWithEvents {
 
     if let Err(e) = self.app_handle.emit("analyzer-completed", &event) {
       error!("Failed to emit AnalyzerCompleted event: {}", e);
+    }
+  }
+
+  // 🆕 Phase 2: Batch Analysis Events
+
+  /// Emit BatchAnalysisStarted event
+  async fn emit_batch_analysis_started(
+    &self,
+    batch_id: &str,
+    total_files: usize,
+    config_mode: &str,
+  ) {
+    let event = AppEvent::BatchAnalysisStarted {
+      batch_id: batch_id.to_string(),
+      total_files,
+      config_mode: config_mode.to_string(),
+    };
+
+    if let Err(e) = self.app_handle.emit("batch-analysis-started", &event) {
+      error!("Failed to emit BatchAnalysisStarted event: {}", e);
+    }
+  }
+
+  /// Emit BatchAnalysisProgress event
+  async fn emit_batch_analysis_progress(
+    &self,
+    batch_id: &str,
+    completed_files: usize,
+    total_files: usize,
+    progress: f32,
+    current_file_path: Option<&str>,
+    estimated_time_remaining: Option<u64>,
+  ) {
+    let event = AppEvent::BatchAnalysisProgress {
+      batch_id: batch_id.to_string(),
+      completed_files,
+      total_files,
+      progress,
+      current_file_path: current_file_path.map(|s| s.to_string()),
+      estimated_time_remaining,
+    };
+
+    if let Err(e) = self.app_handle.emit("batch-analysis-progress", &event) {
+      error!("Failed to emit BatchAnalysisProgress event: {}", e);
+    }
+  }
+
+  /// Emit BatchAnalysisCompleted event
+  async fn emit_batch_analysis_completed(
+    &self,
+    batch_id: &str,
+    total_files: usize,
+    successful_files: usize,
+    failed_files: usize,
+    total_duration_ms: u64,
+    errors: Vec<String>,
+  ) {
+    let event = AppEvent::BatchAnalysisCompleted {
+      batch_id: batch_id.to_string(),
+      total_files,
+      successful_files,
+      failed_files,
+      total_duration_ms,
+      errors,
+    };
+
+    if let Err(e) = self.app_handle.emit("batch-analysis-completed", &event) {
+      error!("Failed to emit BatchAnalysisCompleted event: {}", e);
     }
   }
 }

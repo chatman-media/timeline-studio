@@ -4,6 +4,7 @@ pub mod real_analysis_commands;
 // pub mod frame_integration_commands;  // Временно отключено - зависит от services
 // pub mod audio_integration_commands; // Commented out due to compilation issues
 pub mod ai_director_commands;
+pub mod ai_director_v2_commands; // 🆕 AI Director v2 with events
 pub mod content_classification_commands;
 pub mod content_commands;
 pub mod scene_commands; // 🆕 Scene Analysis commands
@@ -16,6 +17,7 @@ pub use real_analysis_commands::*;
 // pub use frame_integration_commands::*;  // Временно отключено
 // pub use audio_integration_commands::*; // Commented out due to compilation issues
 pub use ai_director_commands::*;
+pub use ai_director_v2_commands::*; // 🆕 AI Director v2 commands
 pub use content_classification_commands::*;
 pub use content_commands::*;
 pub use scene_commands::*;

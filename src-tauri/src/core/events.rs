@@ -143,7 +143,7 @@ pub enum AppEvent {
     analysis_id: String,
     file_id: String,
     analyzer_type: String,
-    progress: f32, // 0.0 - 1.0
+    progress: f32,           // 0.0 - 1.0
     details: Option<String>, // Дополнительная информация
   },
   AnalyzerCompleted {
@@ -154,6 +154,29 @@ pub enum AppEvent {
     success: bool,
     result_summary: Option<String>, // Краткое резюме результата
     error: Option<String>,
+  },
+
+  // 🆕 AI Director v2 Phase 2 - Batch Analysis события
+  BatchAnalysisStarted {
+    batch_id: String,
+    total_files: usize,
+    config_mode: String, // "fast", "balanced", "quality"
+  },
+  BatchAnalysisProgress {
+    batch_id: String,
+    completed_files: usize,
+    total_files: usize,
+    progress: f32, // 0.0 - 1.0 общий прогресс
+    current_file_path: Option<String>,
+    estimated_time_remaining: Option<u64>, // seconds
+  },
+  BatchAnalysisCompleted {
+    batch_id: String,
+    total_files: usize,
+    successful_files: usize,
+    failed_files: usize,
+    total_duration_ms: u64,
+    errors: Vec<String>,
   },
 
   // AI Stream events (for real-time AI responses)

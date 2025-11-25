@@ -157,7 +157,7 @@ async fn test_face_detection_model() {
               "   Face {}: confidence {:.2}%, bbox: {:?}",
               i + 1,
               detection.confidence * 100.0,
-              detection.bounding_box
+              detection.bbox
             );
           }
         }
@@ -224,12 +224,8 @@ async fn test_recognition_service_initialization() {
   let temp_dir = TempDir::new().unwrap();
 
   match RecognitionService::new(temp_dir.path().to_path_buf()).await {
-    Ok(service) => {
+    Ok(_service) => {
       println!("✅ RecognitionService initialized successfully");
-
-      // Test that we can get status
-      let status = service.get_status();
-      println!("   Service status: {:?}", status);
     }
     Err(e) => {
       println!("⚠️ Could not initialize RecognitionService: {e}");
@@ -343,10 +339,6 @@ async fn test_ort_manager_initialization() {
   match OrtManager::ensure_initialized() {
     Ok(_) => {
       println!("✅ ONNX Runtime initialized successfully");
-
-      // Check available providers
-      let providers = OrtManager::get_available_providers();
-      println!("   Available providers: {:?}", providers);
     }
     Err(e) => {
       println!("❌ Failed to initialize ONNX Runtime: {e}");

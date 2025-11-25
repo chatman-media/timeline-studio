@@ -6,13 +6,13 @@ pub mod analysis_engine;
 pub mod analysis_frame_integration;
 pub mod content_classification_engine; // 🆕 Content Classification Engine
 pub mod moment_analyzer;
+#[cfg(test)]
+mod performance_tests; // Performance benchmarks для unified audio analyzer
 pub mod project_manager;
 pub mod real_analysis_engine;
 pub mod scene_detector;
 pub mod script_generator; // 🆕 AI-powered script generation
 pub mod unified_audio_analyzer; // 🆕 Modern unified audio analysis service
-#[cfg(test)]
-mod performance_tests; // Performance benchmarks для unified audio analyzer
 pub mod vision_analyzer; // 🆕 Vision language model analysis service
 
 // Избегаем конфликтов имен, импортируем специфично

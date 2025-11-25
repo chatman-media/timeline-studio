@@ -576,8 +576,10 @@ impl PreviewService for PreviewServiceImpl {
     // Step 1: Get audio metadata using ffprobe
     let probe_output = FFmpegCommand::ffprobe()
       .args(vec![
-        "-v", "quiet",
-        "-print_format", "json",
+        "-v",
+        "quiet",
+        "-print_format",
+        "json",
         "-show_streams",
         "-show_format",
         &audio_path.to_string_lossy(),
@@ -597,7 +599,9 @@ impl PreviewService for PreviewServiceImpl {
     let audio_stream = probe_json["streams"]
       .as_array()
       .and_then(|streams| {
-        streams.iter().find(|s| s["codec_type"].as_str() == Some("audio"))
+        streams
+          .iter()
+          .find(|s| s["codec_type"].as_str() == Some("audio"))
       })
       .ok_or_else(|| VideoCompilerError::MediaFileError {
         path: audio_path.to_string_lossy().to_string(),
@@ -641,11 +645,15 @@ impl PreviewService for PreviewServiceImpl {
     // Convert to mono, 16-bit PCM, little-endian
     let mut ffmpeg_child = Command::new("ffmpeg")
       .args(&[
-        "-i", &audio_path.to_string_lossy(),
-        "-f", "s16le",          // 16-bit signed PCM, little-endian
-        "-ac", "1",             // Convert to mono
-        "-ar", &sample_rate.to_string(), // Keep original sample rate
-        "-",                     // Output to stdout
+        "-i",
+        &audio_path.to_string_lossy(),
+        "-f",
+        "s16le", // 16-bit signed PCM, little-endian
+        "-ac",
+        "1", // Convert to mono
+        "-ar",
+        &sample_rate.to_string(), // Keep original sample rate
+        "-",                      // Output to stdout
       ])
       .stdout(Stdio::piped())
       .stderr(Stdio::null())
@@ -655,29 +663,33 @@ impl PreviewService for PreviewServiceImpl {
         details: format!("Failed to spawn FFmpeg: {}", e),
       })?;
 
-    let mut stdout = ffmpeg_child.stdout.take().ok_or_else(|| {
-      VideoCompilerError::ProcessingError {
-        operation: "ffmpeg_stdout".to_string(),
-        details: "Failed to capture FFmpeg stdout".to_string(),
-      }
-    })?;
+    let mut stdout =
+      ffmpeg_child
+        .stdout
+        .take()
+        .ok_or_else(|| VideoCompilerError::ProcessingError {
+          operation: "ffmpeg_stdout".to_string(),
+          details: "Failed to capture FFmpeg stdout".to_string(),
+        })?;
 
     // Read all PCM data
     let mut pcm_data = Vec::new();
-    stdout.read_to_end(&mut pcm_data).await.map_err(|e| {
-      VideoCompilerError::ProcessingError {
+    stdout
+      .read_to_end(&mut pcm_data)
+      .await
+      .map_err(|e| VideoCompilerError::ProcessingError {
         operation: "read_pcm".to_string(),
         details: format!("Failed to read PCM data: {}", e),
-      }
-    })?;
+      })?;
 
     // Wait for FFmpeg to complete
-    let status = ffmpeg_child.wait().await.map_err(|e| {
-      VideoCompilerError::ProcessingError {
+    let status = ffmpeg_child
+      .wait()
+      .await
+      .map_err(|e| VideoCompilerError::ProcessingError {
         operation: "ffmpeg_wait".to_string(),
         details: format!("FFmpeg process failed: {}", e),
-      }
-    })?;
+      })?;
 
     if !status.success() {
       return Err(VideoCompilerError::ProcessingError {
@@ -742,7 +754,10 @@ impl PreviewService for PreviewServiceImpl {
       }
     }
 
-    log::info!("Generated waveform data with {} points", waveform_data.len() / 2);
+    log::info!(
+      "Generated waveform data with {} points",
+      waveform_data.len() / 2
+    );
 
     // Step 5: Create JSON in audiowaveform format
     let json_data = serde_json::json!({

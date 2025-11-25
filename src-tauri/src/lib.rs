@@ -63,6 +63,7 @@ use montage_planner::commands::MontageState;
 // Модуль Analysis System
 pub mod analysis;
 use analysis::commands::ai_director_commands::AIDirectorState; // AI Director State
+use analysis::commands::ai_director_v2_commands::AIDirectorV2State; // 🆕 AI Director v2 State with events
 use analysis::commands::content_commands::ContentEngineState; // 🆕 Content Engine State
 use analysis::commands::scene_commands::SceneEngineState; // 🆕 Scene Engine State
 use analysis::commands::vision_commands::VisionServiceState; // 🆕 Vision Service State
@@ -424,11 +425,46 @@ pub fn run() {
       };
 
       // Initialize Analysis System (temporarily disabled - needs AnalysisState implementation)
-      if let Some(_person_db_ref) = person_db {
+      if let Some(_person_db_ref) = &person_db {
         log::info!("Analysis system components ready but AnalysisState not yet implemented");
         // TODO: Implement AnalysisState and uncomment initialization
       } else {
         log::warn!("Analysis system not initialized - PersonDatabase required");
+      }
+
+      // 🆕 Initialize AI Director v2 State with events
+      if let Some(person_db_ref) = &person_db {
+        match app.handle().path().app_data_dir() {
+          Ok(app_dir) => {
+            let analysis_db_path = app_dir.join("analysis.db");
+
+            match tauri::async_runtime::block_on(analysis::database::AnalysisDatabase::new(
+              analysis_db_path.to_str().unwrap_or("analysis.db"),
+              person_db_ref.clone(),
+            )) {
+              Ok(analysis_db) => {
+                let analysis_db_arc = Arc::new(analysis_db);
+                let yolo_state_arc = Arc::new(RwLock::new(YoloProcessorState::default()));
+                let ai_director_v2_state = AIDirectorV2State::new(
+                  analysis_db_arc,
+                  person_db_ref.clone(),
+                  yolo_state_arc,
+                  app.handle().clone(),
+                );
+                app.manage(ai_director_v2_state);
+                log::info!("AI Director v2 State initialized successfully with event support");
+              }
+              Err(e) => {
+                log::error!("Failed to initialize Analysis Database for AI Director v2: {e}");
+              }
+            }
+          }
+          Err(e) => {
+            log::error!("Failed to get app data dir for AI Director v2: {e}");
+          }
+        }
+      } else {
+        log::warn!("AI Director v2 not initialized - PersonDatabase required");
       }
 
       // Create Secure Storage for API keys

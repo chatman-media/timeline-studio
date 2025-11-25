@@ -13,6 +13,9 @@ pub mod unified_types;
 #[cfg(test)]
 pub mod tests_basic;
 
+#[cfg(test)]
+pub mod tests;
+
 pub use audio_analysis::*;
 pub use audio_core::*;
 pub use content_classification::*;

@@ -525,6 +525,10 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::ai_director_get_default_config,
     crate::analysis::commands::ai_director_validate_config,
     crate::analysis::commands::ai_director_health_check,
+    // 🆕 AI Director v2 commands with real-time events (Phase 2: Batch Analysis)
+    crate::analysis::commands::ai_director_v2_analyze_comprehensive,
+    crate::analysis::commands::ai_director_v2_analyze_quick,
+    crate::analysis::commands::ai_director_v2_analyze_batch,
     // Content Classification commands
     crate::analysis::commands::classify_video_content,
     crate::analysis::commands::quick_classify_content,
