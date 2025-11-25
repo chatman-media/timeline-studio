@@ -366,7 +366,7 @@ const Docs: React.FC = () => {
                         href="https://github.com/chatman-media/timeline-studio/blob/main/CONTRIBUTING.md"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all"
+                        className="px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-all"
                       >
                         {t("docs.contribute.contributingGuide")}
                       </a>

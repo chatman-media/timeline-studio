@@ -150,8 +150,8 @@ const DownloadButton: React.FC<{ platform: string; icon: string }> = ({ platform
       className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden block"
       style={{ position: "relative" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+      <div className="absolute inset-0 bg-[#7c3aed] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10 flex items-center justify-center gap-3">
         {platform === "Windows" && (
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">

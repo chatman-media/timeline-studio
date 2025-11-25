@@ -129,11 +129,9 @@ export const Demo: React.FC = () => {
                   href="https://github.com/chatman-media/timeline-studio/releases/latest"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden transform hover:scale-[1.02] transition-transform"
+                  className="px-8 py-4 rounded-xl text-lg font-medium text-white bg-[#8b5cf6] hover:bg-[#7c3aed] transform hover:scale-[1.02] transition-all"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <span className="relative z-10">Download Free ⭐</span>
+                  Download Free ⭐
                 </a>
                 <Link
                   to="/pricing"

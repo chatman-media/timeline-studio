@@ -283,7 +283,7 @@ export const Changelog: React.FC = () => {
                               href={`https://github.com/chatman-media/timeline-studio/releases/tag/v${version.version}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-all duration-300 transform hover:scale-105"
                             >
                               {t("changelog.viewRelease")}
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

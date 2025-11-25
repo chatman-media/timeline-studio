@@ -123,7 +123,7 @@ export const Pricing: React.FC = () => {
                 >
                   {tier.highlighted && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-medium px-3 py-1 rounded-full uppercase tracking-wider">
+                      <span className="bg-[#8b5cf6] text-white text-xs font-medium px-3 py-1 rounded-full uppercase tracking-wider">
                         {t("pricing.mostPopular")}
                       </span>
                     </div>
@@ -190,7 +190,7 @@ export const Pricing: React.FC = () => {
                       <button
                         className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-300 cursor-pointer ${
                           tier.highlighted
-                            ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
+                            ? "bg-[#8b5cf6] text-white hover:bg-[#7c3aed]"
                             : "bg-white/10 text-white hover:bg-white/20"
                         }`}
                       >
@@ -263,9 +263,8 @@ export const Pricing: React.FC = () => {
                       </li>
                     </ul>
 
-                    <button className="relative group w-full py-4 px-8 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium transition-all duration-300 overflow-hidden transform hover:scale-[1.02]">
-                      <span className="relative z-10">{t("pricing.tiers.team.buttonText")}</span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <button className="w-full py-4 px-8 rounded-xl bg-[#8b5cf6] text-white font-medium transition-all duration-300 hover:bg-[#7c3aed] transform hover:scale-[1.02] cursor-pointer">
+                      {t("pricing.tiers.team.buttonText")}
                     </button>
                   </div>
                 </div>
@@ -316,8 +315,8 @@ export const Pricing: React.FC = () => {
                       </li>
                     </ul>
 
-                    <button className="relative group w-full py-4 px-8 rounded-xl bg-white/10 text-white font-medium transition-all duration-300 overflow-hidden transform hover:scale-[1.02] hover:bg-white/20">
-                      <span className="relative z-10">{t("pricing.tiers.enterprise.buttonText")}</span>
+                    <button className="w-full py-4 px-8 rounded-xl bg-white/10 text-white font-medium transition-all duration-300 transform hover:scale-[1.02] hover:bg-white/20 cursor-pointer">
+                      {t("pricing.tiers.enterprise.buttonText")}
                     </button>
                   </div>
                 </div>

@@ -64,14 +64,14 @@ export function PricingSection() {
               <motion.div whileHover={{ y: -10 }} className={`relative ${plan.featured ? "scale-105" : ""}`}>
                 {plan.featured && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm px-4 py-1 rounded-full">
+                    <span className="bg-[#8b5cf6] text-white text-sm px-4 py-1 rounded-full">
                       Популярный
                     </span>
                   </div>
                 )}
 
                 <div
-                  className={`glass-card p-8 rounded-2xl h-full ${plan.featured ? "border-2 border-blue-500/50" : ""}`}
+                  className={`glass-card p-8 rounded-2xl h-full ${plan.featured ? "border-2 border-[#8b5cf6]/50" : ""}`}
                 >
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
@@ -101,7 +101,7 @@ export function PricingSection() {
                   <button
                     className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-300 ${
                       plan.featured
-                        ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:shadow-lg hover:shadow-blue-500/25"
+                        ? "bg-[#8b5cf6] text-white hover:bg-[#7c3aed]"
                         : "glass text-white hover:bg-white/10"
                     }`}
                   >

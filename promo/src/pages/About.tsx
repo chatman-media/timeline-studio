@@ -259,7 +259,7 @@ export const About: React.FC = () => {
 
                 <div className="relative p-8">
                   <div className="flex items-center space-x-6">
-                    <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <div className="w-20 h-20 bg-[#8b5cf6] rounded-full flex items-center justify-center">
                       <span className="text-2xl font-bold text-white">AK</span>
                     </div>
                     <div className="text-left">
@@ -295,7 +295,7 @@ export const About: React.FC = () => {
               <p className="text-lg text-gray-400 mb-8">{t("about.investor.description")}</p>
               <a
                 href="/#/project"
-                className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all"
+                className="inline-block px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-all cursor-pointer"
               >
                 {t("about.investor.viewDocs")}
               </a>
@@ -333,7 +333,7 @@ export const About: React.FC = () => {
                   href={GITHUB_RELEASES_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-colors"
                 >
                   {t("about.cta.tryStudio")}
                 </a>

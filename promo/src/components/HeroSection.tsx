@@ -114,11 +114,11 @@ export function HeroSection() {
           initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.3 }}
-          className="text-4xl md:text-6xl font-normal mb-6"
+          className="text-4xl md:text-6xl font-semibold mb-6"
         >
           {t("mainPage.hero.title")}
           <br />
-          <span className="text-gradient">{t("mainPage.hero.subtitle")}</span>
+          <span className="text-purple-400">{t("mainPage.hero.subtitle")}</span>
         </motion.h1>
 
         <motion.p
@@ -180,8 +180,8 @@ export function HeroSection() {
             rel="noopener noreferrer"
             className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden transform hover:scale-[1.02] transition-transform"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl" />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+            <div className="absolute inset-0 bg-[#7c3aed] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <span className="relative z-10 flex items-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
