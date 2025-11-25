@@ -5,10 +5,71 @@
  */
 
 import { convertFileSrc } from "@tauri-apps/api/core"
+import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "./tauri-logger"
 import { isTauriEnvironment } from "./tauri-utils"
 
 const logger = createLogger("MediaUrlUtils")
+
+/**
+ * Кодеки, не поддерживаемые браузером/WebView и требующие прокси
+ */
+const UNSUPPORTED_BROWSER_CODECS = ["hevc", "h265", "hev1"]
+
+/**
+ * Проверяет, является ли видеофайл H.265/HEVC
+ * Эти файлы не воспроизводятся в WebView/Safari и требуют прокси
+ */
+export function isUnsupportedBrowserCodec(file: MediaFile): boolean {
+  // Проверяем videoCodec если есть
+  if (file.videoCodec) {
+    const codec = file.videoCodec.toLowerCase()
+    return UNSUPPORTED_BROWSER_CODECS.some((c) => codec.includes(c))
+  }
+
+  // Проверяем probeData streams
+  if (file.probeData?.streams) {
+    const videoStream = file.probeData.streams.find((s) => s.codec_type === "video")
+    if (videoStream?.codec_name) {
+      const codec = videoStream.codec_name.toLowerCase()
+      return UNSUPPORTED_BROWSER_CODECS.some((c) => codec.includes(c))
+    }
+  }
+
+  return false
+}
+
+/**
+ * Проверяет, есть ли готовый прокси для файла
+ */
+export function hasProxy(file: MediaFile): boolean {
+  return !!file.proxy?.path
+}
+
+/**
+ * Получает путь для воспроизведения видео
+ * Использует прокси если файл H.265 и прокси доступен
+ */
+export function getPlaybackPath(file: MediaFile): string {
+  // Если кодек не поддерживается браузером и есть прокси - используем его
+  if (isUnsupportedBrowserCodec(file) && hasProxy(file)) {
+    logger.debugSync("Using proxy path for unsupported codec", {
+      original: file.path,
+      proxy: file.proxy!.path,
+      codec: file.videoCodec || file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
+    })
+    return file.proxy!.path
+  }
+
+  return file.path
+}
+
+/**
+ * Проверяет, требуется ли генерация прокси для файла
+ */
+export function needsProxyGeneration(file: MediaFile): boolean {
+  return isUnsupportedBrowserCodec(file) && !hasProxy(file)
+}
 
 /**
  * Типы медиафайлов для URL генерации

@@ -265,7 +265,6 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
             </div>
           </div>
         )}
-
       </div>
     </TooltipProvider>
   )

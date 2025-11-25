@@ -2,17 +2,15 @@
 
 import type { ReactNode } from "react"
 
-import { AIServicesProvider } from "@/shared/services/ai/react-integration"
-import { AppProvider } from "../services/app-provider"
-
 interface AppStateGuardProps {
   children: ReactNode
 }
 
+/**
+ * AppStateGuard - упрощенный компонент
+ * Ранее дублировал AIServicesProvider и AppProvider, которые уже есть в Providers
+ * Теперь просто пропускает children
+ */
 export function AppStateGuard({ children }: AppStateGuardProps) {
-  return (
-    <AIServicesProvider>
-      <AppProvider>{children}</AppProvider>
-    </AIServicesProvider>
-  )
+  return <>{children}</>
 }

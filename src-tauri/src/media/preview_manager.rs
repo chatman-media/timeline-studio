@@ -94,7 +94,7 @@ impl PreviewDataManager {
       let path = entry.path();
 
       // Пропускаем если это не jpg файл
-      if path.extension().map_or(true, |ext| ext != "jpg") {
+      if path.extension().is_none_or(|ext| ext != "jpg") {
         continue;
       }
 

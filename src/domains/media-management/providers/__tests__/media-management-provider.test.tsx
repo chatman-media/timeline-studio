@@ -26,6 +26,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onEvent: vi.fn(() => () => {}),
+    onStateChange: vi.fn(() => () => {}),
     executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
     getProjectState: vi.fn().mockResolvedValue({
       project: {
@@ -141,6 +142,7 @@ describe("MediaManagementProvider", () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: vi.fn(() => () => {}),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockRejectedValue(new Error("Import failed")),
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -167,6 +169,7 @@ describe("MediaManagementProvider", () => {
       let callCount = 0
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: vi.fn(() => () => {}),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockImplementation(() => {
           callCount++
           if (callCount === 2) {
@@ -201,6 +204,7 @@ describe("MediaManagementProvider", () => {
 
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: vi.fn(() => () => {}),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: mockExecuteCommand,
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -263,6 +267,7 @@ describe("MediaManagementProvider", () => {
           eventCallback = callback
           return () => {}
         }),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockResolvedValue({
           project: {
@@ -330,6 +335,7 @@ describe("MediaManagementProvider", () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: vi.fn(() => () => {}),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockRejectedValue(new Error("Backend error")),
       } as any)
@@ -354,6 +360,7 @@ describe("MediaManagementProvider", () => {
       const getBackendSync = await import("@/features/app-state/services/backend-sync")
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: vi.fn(() => () => {}),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
         getProjectState: vi.fn().mockResolvedValue({
           project: {
@@ -433,6 +440,7 @@ describe("MediaManagementProvider", () => {
 
       vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
         onEvent: mockOnStateChange,
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)
@@ -451,6 +459,7 @@ describe("MediaManagementProvider", () => {
           eventCallback = callback
           return () => {}
         }),
+        onStateChange: vi.fn(() => () => {}),
         executeCommand: vi.fn(),
         getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
       } as any)

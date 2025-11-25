@@ -23,6 +23,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onEvent: vi.fn(() => () => {}),
+    onStateChange: vi.fn(() => () => {}),
     executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
     getProjectState: vi.fn().mockResolvedValue({
       project: {

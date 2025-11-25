@@ -10,10 +10,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MediaManagementProvider } from "../../providers/media-management-provider"
 import { useFileOperations } from "../use-file-operations"
 
-vi.mock("@/lib/tauri-logger")
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
+}))
 vi.mock("@/features/app-state/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onEvent: vi.fn(() => () => {}),
+    onStateChange: vi.fn(() => () => {}),
     executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
     getProjectState: vi.fn().mockResolvedValue({
       project: {

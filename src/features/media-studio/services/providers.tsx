@@ -20,7 +20,6 @@ import { ProjectSettingsProvider } from "@/features/project-settings/services/pr
 import { ResourcesProvider } from "@/features/resources/services/resources-provider"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
-import { AIServicesProvider } from "@/shared/services/ai/react-integration"
 
 interface ProvidersProps {
   children: ReactNode
@@ -38,8 +37,7 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
 // AppProvider должен быть рано в цепочке для инициализации backend
 const AppProviderComposite = composeProviders(
   TauriMockProvider, // Должен быть первым для инициализации моков
-  AIServicesProvider, // AI сервисы должны инициализироваться рано
-  I18nProvider, // Легкий провайдер для локализации
+  I18nProvider, // Легкий провайдер для локализации (не блокирует рендер)
   ThemeProvider, // Легкий провайдер для темы
   ModalProvider, // Легкий провайдер для модальных окон
 

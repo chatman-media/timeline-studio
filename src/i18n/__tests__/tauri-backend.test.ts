@@ -1,75 +1,4 @@
-import { invoke } from "@tauri-apps/api/core"
-import { describe, expect, it, vi } from "vitest"
-
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
-}))
-
-describe("i18n TauriBackend Integration", () => {
-  it("should mock Tauri invoke successfully", () => {
-    expect(invoke).toBeDefined()
-    expect(vi.isMockFunction(invoke)).toBe(true)
-  })
-
-  it("should handle translation loading через Tauri backend", async () => {
-    const mockInvoke = vi.mocked(invoke)
-    const mockTranslation = JSON.stringify({
-      common: { save: "Сохранить" },
-    })
-
-    mockInvoke.mockResolvedValueOnce(mockTranslation)
-
-    const result = await invoke("load_translation_tauri", { lang: "ru" })
-
-    expect(mockInvoke).toHaveBeenCalledWith("load_translation_tauri", {
-      lang: "ru",
-    })
-    expect(result).toBe(mockTranslation)
-  })
-
-  it("should handle errors from Tauri backend", async () => {
-    const mockInvoke = vi.mocked(invoke)
-    mockInvoke.mockRejectedValueOnce(new Error("Translation file not found"))
-
-    await expect(invoke("load_translation_tauri", { lang: "unknown" })).rejects.toThrow("Translation file not found")
-  })
-
-  it("should return valid JSON string from backend", async () => {
-    const mockInvoke = vi.mocked(invoke)
-    const translationObject = {
-      common: {
-        save: "Save",
-        cancel: "Cancel",
-      },
-    }
-    mockInvoke.mockResolvedValueOnce(JSON.stringify(translationObject))
-
-    const result = await invoke("load_translation_tauri", { lang: "en" })
-
-    expect(typeof result).toBe("string")
-    const parsed = JSON.parse(result as string)
-    expect(parsed).toEqual(translationObject)
-  })
-
-  it("should support multiple language loads", async () => {
-    const mockInvoke = vi.mocked(invoke)
-
-    mockInvoke
-      .mockResolvedValueOnce(JSON.stringify({ common: { save: "Save" } }))
-      .mockResolvedValueOnce(JSON.stringify({ common: { save: "Сохранить" } }))
-      .mockResolvedValueOnce(JSON.stringify({ common: { save: "Guardar" } }))
-
-    const en = await invoke("load_translation_tauri", { lang: "en" })
-    const ru = await invoke("load_translation_tauri", { lang: "ru" })
-    const es = await invoke("load_translation_tauri", { lang: "es" })
-
-    expect(en).toContain("Save")
-    expect(ru).toContain("Сохранить")
-    expect(es).toContain("Guardar")
-    expect(mockInvoke).toHaveBeenCalledTimes(3)
-  })
-})
+import { describe, expect, it } from "vitest"
 
 describe("i18n Configuration", () => {
   it("should have DEFAULT_LANGUAGE constant", async () => {
@@ -115,7 +44,26 @@ describe("i18n Module Exports", () => {
     const i18n = module.default
     expect(i18n).toBeDefined()
   })
+})
 
-  // Note: tauriBackend export tests are skipped due to mocking conflicts
-  // The backend functionality is tested via integration tests above
+describe("i18n Bundled Translations", () => {
+  it("should have all 15 languages bundled", async () => {
+    const { SUPPORTED_LANGUAGES } = await import("../constants")
+
+    // All translations are now bundled, no Tauri API needed
+    const expectedLanguages = ["ar", "de", "en", "es", "fa", "fr", "hi", "it", "ja", "ko", "pt", "ru", "th", "tr", "zh"]
+
+    expect(SUPPORTED_LANGUAGES.sort()).toEqual(expectedLanguages.sort())
+  })
+
+  it("all translation files should be importable", async () => {
+    // Test that all locale files can be imported
+    const en = await import("../locales/en.json")
+    const ru = await import("../locales/ru.json")
+    const es = await import("../locales/es.json")
+
+    expect(en.default).toBeDefined()
+    expect(ru.default).toBeDefined()
+    expect(es.default).toBeDefined()
+  })
 })

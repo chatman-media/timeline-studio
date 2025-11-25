@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useEffect, useState } from "react"
+import type { ReactNode } from "react"
 
 import { I18nextProvider } from "react-i18next"
 
@@ -10,39 +10,13 @@ interface I18nProviderProps {
   children: ReactNode
 }
 
+/**
+ * I18nProvider - провайдер локализации
+ * НЕ блокирует рендеринг - использует встроенные английские переводы как fallback
+ * Переводы для других языков загружаются асинхронно в фоне
+ */
 export function I18nProvider({ children }: I18nProviderProps) {
-  const [isI18nInitialized, setIsI18nInitialized] = useState(false)
-
-  useEffect(() => {
-    // Проверяем, инициализирован ли i18n
-    if (i18n.isInitialized) {
-      setIsI18nInitialized(true)
-    } else {
-      // Если не инициализирован, подписываемся на событие initialized
-      const handleInitialized = () => {
-        setIsI18nInitialized(true)
-      }
-
-      i18n.on("initialized", handleInitialized)
-
-      // Очистка подписки при размонтировании
-      return () => {
-        i18n.off("initialized", handleInitialized)
-      }
-    }
-  }, [])
-
-  // Показываем загрузку, пока i18n не инициализирован
-  if (!isI18nInitialized) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 mx-auto" />
-          <p className="text-gray-600">Loading translations...</p>
-        </div>
-      </div>
-    )
-  }
-
+  // Рендерим сразу - английские переводы уже встроены как fallback
+  // Другие языки загрузятся асинхронно и UI обновится автоматически
   return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
 }

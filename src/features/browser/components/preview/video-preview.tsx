@@ -1,12 +1,13 @@
 import { useDraggable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
+import { useAutoProxy } from "@/features/media/hooks/use-auto-proxy"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { MediaFile } from "@/features/media/types/media"
 import type { TimelineResource } from "@/features/resources/types"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { getTrackTypeForMediaFile } from "@/features/timeline/utils/drag-calculations"
 import { usePlayer } from "@/features/video-player"
-import { createVideoUrl } from "@/lib/media-url-utils"
+import { createVideoUrl, getPlaybackPath, needsProxyGeneration } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { checkFileAccess } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"
@@ -45,10 +46,31 @@ export const VideoPreview = memo(
     const [hoverTime, setHoverTime] = useState<number | null>(null)
     const [previewData, setPreviewData] = useState<string | null>(null)
     const [videoUrl, setVideoUrl] = useState<string>("")
+    const [proxyPath, setProxyPath] = useState<string | null>(null)
     const { setPreviewMedia, playerSetSource, playerSetMedia } = usePlayer()
 
     // Используем Preview Manager для получения данных превью
     const { getPreviewData } = useMediaPreview()
+
+    // Auto proxy для H.265 видео
+    const { generateProxy, getProxyPath, isGenerating } = useAutoProxy({
+      onProxyReady: (fileId, path) => {
+        if (fileId === file.id) {
+          logger.infoSync(`[VideoPreview] Proxy ready for ${file.name}`, { proxyPath: path })
+          setProxyPath(path)
+        }
+      },
+    })
+
+    // Логируем codec информацию для отладки H.265 детекции
+    useEffect(() => {
+      logger.infoSync(`[VideoPreview] File loaded: ${file.name}`, {
+        videoCodec: file.videoCodec,
+        streamCodec: file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
+        hasProxy: !!file.proxy?.path,
+        isVideo: file.isVideo,
+      })
+    }, [file.id, file.videoCodec, file.probeData?.streams, file.proxy?.path, file.isVideo, file.name])
 
     // Загружаем preview data при монтировании
     useEffect(() => {
@@ -92,12 +114,47 @@ export const VideoPreview = memo(
       return videoUrl
     }, [])
 
+    // Проверяем нужна ли генерация прокси
+    const proxyNeeded = useMemo(
+      () => needsProxyGeneration(file) && !proxyPath,
+      [file.videoCodec, file.probeData?.streams, file.proxy?.path, proxyPath],
+    )
+
     // Мемоизируем путь к файлу для предотвращения лишних перезагрузок
-    const filePath = useMemo(() => file.path, [file.path])
+    // Используем прокси путь если файл H.265/HEVC и прокси доступен (из file.proxy или локального состояния)
+    const filePath = useMemo(() => {
+      // Приоритет: локальный proxyPath > file.proxy?.path > оригинальный path
+      if (proxyPath) return proxyPath
+      return getPlaybackPath(file)
+    }, [file.path, file.proxy?.path, file.videoCodec, file.probeData?.streams, proxyPath])
+
+    // Эффект для запуска генерации прокси если нужно
+    useEffect(() => {
+      // Проверяем, есть ли уже прокси в кэше
+      const cachedProxy = getProxyPath(file.id)
+      if (cachedProxy) {
+        setProxyPath(cachedProxy)
+        return
+      }
+
+      // Запускаем генерацию если нужен прокси и не генерируется
+      if (proxyNeeded && !isGenerating(file.id)) {
+        logger.infoSync(`[VideoPreview] Starting proxy generation for H.265 video: ${file.name}`)
+        void generateProxy(file)
+      }
+    }, [file, proxyNeeded, generateProxy, getProxyPath, isGenerating])
 
     // Эффект для загрузки видео при монтировании компонента
     useEffect(() => {
       let isMounted = true
+
+      // Логируем если требуется прокси но он не готов
+      if (proxyNeeded && !proxyPath) {
+        logger.debugSync(`[VideoPreview] Proxy needed for H.265 video: ${file.name}`, {
+          codec: file.videoCodec || file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
+          isGenerating: isGenerating(file.id),
+        })
+      }
 
       logger.debugSync(`[VideoPreview] Attempting to load video from path: ${filePath}`)
 
@@ -118,7 +175,17 @@ export const VideoPreview = memo(
       return () => {
         isMounted = false
       }
-    }, [filePath, loadVideoFile])
+    }, [
+      filePath,
+      loadVideoFile,
+      proxyNeeded,
+      proxyPath,
+      file.id,
+      file.name,
+      file.videoCodec,
+      file.probeData?.streams,
+      isGenerating,
+    ])
 
     // Оптимизируем вычисления с помощью useMemo
     const videoData = useMemo(() => {
@@ -199,6 +266,7 @@ export const VideoPreview = memo(
     const isSameFile = prevProps.file.path === nextProps.file.path
     const isSameMetadataState = prevProps.file.isLoadingMetadata === nextProps.file.isLoadingMetadata
     const isSameThumbnail = prevProps.file.thumbnailPath === nextProps.file.thumbnailPath
+    const isSameProxy = prevProps.file.proxy?.path === nextProps.file.proxy?.path
     const isSameProps =
       prevProps.size === nextProps.size &&
       prevProps.showFileName === nextProps.showFileName &&
@@ -210,13 +278,19 @@ export const VideoPreview = memo(
     const isSameStreamsCount = prevStreamsCount === nextStreamsCount
 
     const shouldSkipRender =
-      !nextProps.file.isLoadingMetadata && isSameStreamsCount && isSameFile && isSameProps && isSameThumbnail
+      !nextProps.file.isLoadingMetadata &&
+      isSameStreamsCount &&
+      isSameFile &&
+      isSameProps &&
+      isSameThumbnail &&
+      isSameProxy
 
     if (!shouldSkipRender) {
       logger.debugSync(`[VideoPreview] Re-rendering ${nextProps.file.name}:`, {
         isSameFile,
         isSameMetadataState,
         isSameThumbnail,
+        isSameProxy,
         isSameProps,
         isSameStreamsCount,
         isLoadingMetadata: nextProps.file.isLoadingMetadata,

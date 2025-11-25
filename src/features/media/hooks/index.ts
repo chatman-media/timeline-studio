@@ -1,4 +1,5 @@
 // Экспорт всех хуков media
+export * from "./use-auto-proxy"
 export * from "./use-cache-statistics"
 export * from "./use-file-selection"
 export * from "./use-frame-preview"

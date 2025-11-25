@@ -481,9 +481,9 @@ describe("ResourcesPanel", () => {
       if (firstDeleteButton && firstDeleteButton instanceof HTMLElement) {
         firstDeleteButton.click()
 
-        // Should have called removeResource with the correct ID
+        // Should have called removeResource with the correct ID and category
         expect(mockRemoveResource).toHaveBeenCalledTimes(1)
-        expect(mockRemoveResource).toHaveBeenCalledWith("effect-1")
+        expect(mockRemoveResource).toHaveBeenCalledWith("effect-1", "effect")
       }
     })
 

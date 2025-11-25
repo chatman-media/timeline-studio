@@ -122,11 +122,11 @@ html {
 }
 
 .nav-glass-scrolled {
-  background: rgb(255 255 255 / 5%);
+  background: rgb(17 24 39 / 75%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgb(255 255 255 / 10%);
-  box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
+  box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
   will-change: transform;
 }
 

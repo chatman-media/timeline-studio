@@ -57,11 +57,7 @@ vi.mock("@/i18n/services/i18n-provider", () => ({
   I18nProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="i18n-provider">{children}</div>,
 }))
 
-vi.mock("@/shared/services/ai/react-integration", () => ({
-  AIServicesProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="ai-services-provider">{children}</div>
-  ),
-}))
+// AIServicesProvider removed - not used in app
 
 describe("Providers", () => {
   describe("рендеринг", () => {
@@ -134,9 +130,8 @@ describe("Providers", () => {
         </Providers>,
       )
 
-      // Проверяем наличие всех провайдеров
+      // Проверяем наличие всех провайдеров (AIServicesProvider removed)
       expect(container.querySelector('[data-testid="tauri-mock-provider"]')).toBeInTheDocument()
-      expect(container.querySelector('[data-testid="ai-services-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="i18n-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="theme-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="modal-provider"]')).toBeInTheDocument()
@@ -218,10 +213,9 @@ describe("Providers", () => {
         </Providers>,
       )
 
-      // Все провайдеры должны быть в DOM
+      // Все провайдеры должны быть в DOM (AIServicesProvider removed)
       const providers = [
         "tauri-mock-provider",
-        "ai-services-provider",
         "i18n-provider",
         "theme-provider",
         "modal-provider",

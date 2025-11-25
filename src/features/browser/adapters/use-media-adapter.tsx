@@ -75,11 +75,17 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
           ? mediaInfo.metadata.bitrate
           : undefined
 
+      // Получаем codec из метаданных для video файлов
+      const videoCodec =
+        mediaInfo.metadata?.type === "Video" ? (mediaInfo.metadata as { codec?: string }).codec : undefined
+
       return {
         // ✅ FIX: Добавляем id из ключа mediaPool (UUID от backend)
         id: mediaId,
         path: mediaInfo.path,
         name: mediaInfo.name,
+        // ✅ FIX: Передаём videoCodec для определения H.265/HEVC
+        videoCodec,
         // Мапим поля из MediaInfo в MediaFile
         startTime: Date.now() / 1000, // Используем текущее время для сортировки
         size:
@@ -98,7 +104,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
                 size: bitrate && mediaInfo.duration ? (bitrate * mediaInfo.duration) / 8 : 0,
                 tags: {},
               },
-              streams: [],
+              // ✅ FIX: Добавляем stream с codec_name для H.265 детекции
+              streams: videoCodec ? [{ codec_type: "video" as const, codec_name: videoCodec, index: 0 }] : [],
             }
           : undefined,
       }
