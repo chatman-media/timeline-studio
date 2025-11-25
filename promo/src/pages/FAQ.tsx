@@ -51,10 +51,9 @@ const FAQ: React.FC = () => {
           <section className="py-20 bg-[#12192C]">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
-                <h1 className="page-title text-center">
+                <h1 className="page-title text-center mt-8 mb-16">
                   <span className="text-gradient">{t("faq.title")}</span>
                 </h1>
-                <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-12" />
 
                 <div className="space-y-6">
                   {faqs.map((faq, index) => (
