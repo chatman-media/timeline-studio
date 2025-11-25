@@ -644,7 +644,7 @@ impl PreviewService for PreviewServiceImpl {
     // Step 2: Extract PCM audio data using FFmpeg
     // Convert to mono, 16-bit PCM, little-endian
     let mut ffmpeg_child = Command::new("ffmpeg")
-      .args(&[
+      .args([
         "-i",
         &audio_path.to_string_lossy(),
         "-f",
