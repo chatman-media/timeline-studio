@@ -416,11 +416,12 @@ Timeline Studio AI技术栈:
 ---
 
 **投资者联系方式:**
-- **邮箱**: ak.chatman.media@gmail.com
-- **Telegram**: @timelinestudio
-- **GitHub**: github.com/chatman-media/timeline-studio
-- **演示**: timelinestudio.pro
+- **邮箱**: [ak.chatman.media@gmail.com](mailto:ak.chatman.media@gmail.com)
+- **Telegram**: [@timelinestudio](https://t.me/timelinestudio)
+- **Discord**: [discord.gg/uvSBCw6e](https://discord.gg/uvSBCw6e)
+- **GitHub**: [github.com/chatman-media/timeline-studio](https://github.com/chatman-media/timeline-studio)
+- **演示**: [timelinestudio.pro](https://timelinestudio.pro)
 
-*文档准备时间: 2025年9月11日*
-*版本: 1.0*
+*文档准备时间: 2025年11月25日*
+*版本: 1.1*
 *机密 - 仅供潜在投资者*
