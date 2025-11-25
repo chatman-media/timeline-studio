@@ -3,6 +3,23 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useMediaAdapter } from "../../adapters/use-media-adapter"
 import { createMockMediaFile } from "./test-utils"
 
+// Мокаем duration formatter
+vi.mock("@/lib/duration-formatter", () => ({
+  formatDurationSeconds: vi.fn((seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins}:${secs.toString().padStart(2, "0")}`
+  }),
+  parseDurationString: vi.fn((duration: unknown) => {
+    if (typeof duration === "number") return duration
+    if (typeof duration !== "string") return null
+    const parts = duration.split(":").map((p) => Number.parseInt(p, 10))
+    if (parts.length === 2) return parts[0] * 60 + parts[1]
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
+    return null
+  }),
+}))
+
 // Мокаем все зависимости напрямую
 vi.mock("@/features/app-state", () => ({
   AppSettingsProvider: ({ children }: any) => children,
