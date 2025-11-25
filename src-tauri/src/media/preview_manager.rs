@@ -5,7 +5,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 
 use super::preview_data::{MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview};
-use super::thumbnail::generate_thumbnail;
+use super::thumbnail::{generate_thumbnail, generate_thumbnail_fast};
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::frame_extraction::{ExtractionPurpose, FrameExtractionManager};
 use crate::video_compiler::preview::PreviewGenerator;
@@ -42,12 +42,120 @@ impl PreviewDataManager {
   }
 
   /// Получить все данные превью для файла
+  /// Если base64_data не загружен, но файл существует на диске - загружает лениво
   pub async fn get_preview_data(&self, file_id: &str) -> Option<MediaPreviewData> {
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+
+    // Сначала читаем данные
     let data = self.data.read().await;
-    data.get(file_id).cloned()
+    let mut preview_data = data.get(file_id)?.clone();
+    drop(data); // Освобождаем read lock
+
+    // Проверяем нужно ли загрузить base64 для browser_thumbnail
+    if let Some(ref mut thumbnail) = preview_data.browser_thumbnail {
+      if thumbnail.base64_data.is_none() && thumbnail.path.exists() {
+        // Lazy load base64 из файла
+        if let Ok(bytes) = tokio::fs::read(&thumbnail.path).await {
+          let base64_data = STANDARD.encode(&bytes);
+          thumbnail.base64_data = Some(base64_data.clone());
+
+          // Обновляем кэш с загруженными данными
+          let mut data = self.data.write().await;
+          if let Some(cached) = data.get_mut(file_id) {
+            if let Some(ref mut cached_thumb) = cached.browser_thumbnail {
+              cached_thumb.base64_data = Some(base64_data);
+              log::debug!("Lazy loaded base64 for thumbnail: {}", file_id);
+            }
+          }
+        }
+      }
+    }
+
+    Some(preview_data)
+  }
+
+  /// Восстановить кэш превью с диска при запуске
+  /// Сканирует директорию кэша и загружает информацию о существующих thumbnail файлах
+  pub async fn restore_cache_from_disk(&self) -> Result<usize> {
+    let browser_cache_dir = self.base_dir.join("Caches/preview/browser");
+
+    if !browser_cache_dir.exists() {
+      log::info!("Browser cache directory does not exist, nothing to restore");
+      return Ok(0);
+    }
+
+    let mut restored_count = 0;
+    let mut data = self.data.write().await;
+
+    // Сканируем директорию кэша
+    let mut entries = tokio::fs::read_dir(&browser_cache_dir).await?;
+
+    while let Some(entry) = entries.next_entry().await? {
+      let path = entry.path();
+
+      // Пропускаем если это не jpg файл
+      if path.extension().map_or(true, |ext| ext != "jpg") {
+        continue;
+      }
+
+      // Парсим имя файла: {file_id}_{width}x{height}.jpg
+      if let Some(file_name) = path.file_stem().and_then(|s| s.to_str()) {
+        // Ищем последнее вхождение "_" перед размерами
+        if let Some(size_pos) = file_name.rfind('_') {
+          let file_id = &file_name[..size_pos];
+          let size_part = &file_name[size_pos + 1..];
+
+          // Парсим размеры
+          if let Some((width_str, height_str)) = size_part.split_once('x') {
+            if let (Ok(width), Ok(height)) = (width_str.parse::<u32>(), height_str.parse::<u32>()) {
+              // Создаем ThumbnailData без base64 (будет загружено при запросе)
+              let thumbnail = ThumbnailData {
+                path: path.clone(),
+                base64_data: None, // Не загружаем base64 сразу - лениво при запросе
+                timestamp: 0.0,    // Timestamp неизвестен из имени файла
+                width,
+                height,
+              };
+
+              // Добавляем в индекс
+              let preview_data = data
+                .entry(file_id.to_string())
+                .or_insert_with(|| MediaPreviewData::new(file_id.to_string(), PathBuf::new()));
+              preview_data.set_browser_thumbnail(thumbnail);
+
+              restored_count += 1;
+              log::debug!(
+                "Restored cached thumbnail: {} ({}x{})",
+                file_id,
+                width,
+                height
+              );
+            }
+          }
+        }
+      }
+    }
+
+    log::info!("Restored {} cached thumbnails from disk", restored_count);
+    Ok(restored_count)
+  }
+
+  /// Получить путь к кэшированному thumbnail если он существует
+  pub fn get_cached_thumbnail_path(&self, file_id: &str, width: u32, height: u32) -> PathBuf {
+    self
+      .base_dir
+      .join("Caches/preview/browser")
+      .join(format!("{file_id}_{width}x{height}.jpg"))
+  }
+
+  /// Проверить существует ли кэшированный thumbnail
+  pub async fn has_cached_thumbnail(&self, file_id: &str, width: u32, height: u32) -> bool {
+    let path = self.get_cached_thumbnail_path(file_id, width, height);
+    path.exists()
   }
 
   /// Генерировать превью для браузера
+  /// Сначала проверяет наличие кэшированного thumbnail, если есть - возвращает его
   pub async fn generate_browser_thumbnail(
     &self,
     file_id: String,
@@ -56,25 +164,85 @@ impl PreviewDataManager {
     height: u32,
     timestamp: f64,
   ) -> Result<ThumbnailData> {
-    // Генерируем превью
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+
     let output_path = self
       .base_dir
       .join("Caches/preview/browser")
       .join(format!("{file_id}_{width}x{height}.jpg"));
+
+    // Проверяем кэш в памяти
+    {
+      let data = self.data.read().await;
+      if let Some(preview_data) = data.get(&file_id) {
+        if let Some(ref thumbnail) = preview_data.browser_thumbnail {
+          // Проверяем что файл существует и размеры совпадают
+          if thumbnail.width == width && thumbnail.height == height && thumbnail.path.exists() {
+            log::debug!("Using cached thumbnail for {} from memory", file_id);
+            return Ok(thumbnail.clone());
+          }
+        }
+      }
+    }
+
+    // Проверяем кэш на диске
+    if output_path.exists() {
+      log::debug!(
+        "Found cached thumbnail on disk for {}: {:?}",
+        file_id,
+        output_path
+      );
+      // Читаем существующий файл
+      let image_data = tokio::fs::read(&output_path).await?;
+      let base64_data = STANDARD.encode(&image_data);
+
+      let thumbnail = ThumbnailData {
+        path: output_path,
+        base64_data: Some(base64_data),
+        timestamp,
+        width,
+        height,
+      };
+
+      // Сохраняем в память для быстрого доступа
+      let mut data = self.data.write().await;
+      let preview_data = data
+        .entry(file_id.clone())
+        .or_insert_with(|| MediaPreviewData::new(file_id, file_path));
+      preview_data.set_browser_thumbnail(thumbnail.clone());
+
+      return Ok(thumbnail);
+    }
+
+    // Кэш не найден - генерируем новый thumbnail
+    log::debug!("Generating new thumbnail for {}", file_id);
 
     // Создаем директорию если не существует
     if let Some(parent) = output_path.parent() {
       tokio::fs::create_dir_all(parent).await?;
     }
 
-    // Генерируем превью
-    generate_thumbnail(&file_path, &output_path, width, height, timestamp)
+    // Генерируем превью (сначала быстрый метод, затем обычный)
+    // generate_thumbnail_fast использует аппаратное ускорение если доступно
+    if generate_thumbnail_fast(&file_path, &output_path, width, height, timestamp)
       .await
-      .map_err(|e| anyhow::anyhow!(e))?;
+      .is_err()
+    {
+      // Fallback к обычному методу если быстрый не сработал
+      log::debug!("Fast thumbnail generation failed, falling back to standard method");
+      generate_thumbnail(&file_path, &output_path, width, height, timestamp)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+    }
 
     // Читаем файл для base64
     let image_data = tokio::fs::read(&output_path).await?;
-    use base64::{engine::general_purpose::STANDARD, Engine as _};
+    log::info!(
+      "Generated thumbnail for {}: {} bytes at {:?}",
+      file_id,
+      image_data.len(),
+      output_path
+    );
     let base64_data = STANDARD.encode(&image_data);
 
     let thumbnail = ThumbnailData {

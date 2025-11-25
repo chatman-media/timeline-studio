@@ -604,6 +604,18 @@ impl ProjectState {
       self.browser_state.selected_files.insert(tab, Vec::new());
     }
 
+    // Очищаем imported_media (временное хранилище файлов браузера)
+    self.imported_media.clear();
+
+    // Очищаем chat_sessions (историю чата)
+    self.chat_sessions.clear();
+
+    // Очищаем clipboard
+    self.clipboard = None;
+
+    // Сбрасываем playback_state
+    self.playback_state = PlaybackState::default();
+
     self.version += 1;
     self.version_info.has_uncommitted_changes = true;
 

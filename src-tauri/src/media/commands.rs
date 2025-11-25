@@ -191,6 +191,48 @@ pub async fn load_preview_data(
     .map_err(|e| e.to_string())
 }
 
+/// Восстановить кэш превью с диска
+/// Сканирует директорию кэша и загружает информацию о существующих thumbnail файлах
+#[tauri::command]
+pub async fn restore_preview_cache(state: State<'_, PreviewManagerState>) -> Result<usize, String> {
+  state
+    .manager
+    .restore_cache_from_disk()
+    .await
+    .map_err(|e| e.to_string())
+}
+
+/// Проверить существует ли кэшированный thumbnail
+#[tauri::command]
+pub async fn has_cached_thumbnail(
+  state: State<'_, PreviewManagerState>,
+  file_id: String,
+  width: u32,
+  height: u32,
+) -> Result<bool, String> {
+  Ok(
+    state
+      .manager
+      .has_cached_thumbnail(&file_id, width, height)
+      .await,
+  )
+}
+
+/// Получить путь к кэшированному thumbnail
+#[tauri::command]
+pub fn get_cached_thumbnail_path(
+  state: State<'_, PreviewManagerState>,
+  file_id: String,
+  width: u32,
+  height: u32,
+) -> String {
+  state
+    .manager
+    .get_cached_thumbnail_path(&file_id, width, height)
+    .to_string_lossy()
+    .to_string()
+}
+
 /// Сохранить timeline frames для файла
 #[tauri::command]
 pub async fn save_timeline_frames(

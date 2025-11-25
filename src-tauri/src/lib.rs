@@ -225,11 +225,13 @@ pub fn run() {
   // Build the app with all registered commands
   app_builder::build_app()
     .manage(LanguageState::default())
-    .manage(PreviewDataManager::new(
-      dirs::cache_dir()
-        .unwrap_or_default()
-        .join("timeline-studio"),
-    ))
+    .manage(media::commands::PreviewManagerState {
+      manager: PreviewDataManager::new(
+        dirs::cache_dir()
+          .unwrap_or_default()
+          .join("timeline-studio"),
+      ),
+    })
     .setup(|app: &mut tauri::App<tauri::Wry>| {
       // Initialize Video Compiler
       let video_compiler_state = tauri::async_runtime::block_on(video_compiler::initialize());

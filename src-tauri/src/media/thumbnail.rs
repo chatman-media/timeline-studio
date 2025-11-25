@@ -1,9 +1,69 @@
 // Модуль для генерации превью медиафайлов
+//
+// Решение проблемы с чёрными кадрами на превью:
+// https://medium.com/@georgechmr/skipping-black-frame-when-generating-video-thumbnail-with-ffmpeg-9e26bf2f67e3
+// https://superuser.com/questions/538112/meaningful-thumbnails-for-a-video-using-ffmpeg
 
 use std::path::Path;
 use tokio::process::Command;
 
+/// Генерирует "умное" превью используя FFmpeg thumbnail фильтр
+/// Этот фильтр анализирует видео и находит наиболее репрезентативный кадр
+/// (не чёрный, не размытый)
+/// ВАЖНО: Для 4K видео этот метод медленный, поэтому используем -ss и ограниченное n
+pub async fn generate_thumbnail_smart(
+  input_path: &Path,
+  output_path: &Path,
+  width: u32,
+  height: u32,
+) -> Result<(), String> {
+  use std::time::Duration;
+  use tokio::time::timeout;
+
+  // Таймаут 10 секунд - если дольше, лучше использовать простой метод
+  let result = timeout(Duration::from_secs(10), async {
+    // -ss 1 - начинаем с 1 секунды (пропускаем чёрное начало)
+    // -t 10 - анализируем только первые 10 секунд
+    // n=30 - анализируем 30 кадров (не 100, для скорости)
+    Command::new("ffmpeg")
+      .arg("-ss")
+      .arg("1") // Пропускаем первую секунду (часто чёрная)
+      .arg("-t")
+      .arg("10") // Берём только 10 секунд видео для анализа
+      .arg("-i")
+      .arg(input_path.to_string_lossy().as_ref())
+      .arg("-vf")
+      .arg(format!(
+        "thumbnail=n=30,scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:black"
+      ))
+      .arg("-frames:v")
+      .arg("1")
+      .arg("-q:v")
+      .arg("2")
+      .arg("-f")
+      .arg("image2")
+      .arg(output_path.to_string_lossy().as_ref())
+      .arg("-y")
+      .output()
+      .await
+  })
+  .await;
+
+  match result {
+    Ok(Ok(status)) => {
+      if !status.status.success() {
+        let stderr = String::from_utf8_lossy(&status.stderr);
+        return Err(format!("FFmpeg thumbnail filter failed: {stderr}"));
+      }
+      Ok(())
+    }
+    Ok(Err(e)) => Err(format!("Failed to execute ffmpeg: {e}")),
+    Err(_) => Err("Thumbnail generation timed out (>10s)".to_string()),
+  }
+}
+
 /// Генерирует превью для видеофайла
+/// Оптимизирован для быстрой работы с 4K и большими файлами
 pub async fn generate_thumbnail(
   input_path: &Path,
   output_path: &Path,
@@ -11,17 +71,29 @@ pub async fn generate_thumbnail(
   height: u32,
   time_offset: f64,
 ) -> Result<(), String> {
+  // Если time_offset == 0, используем 5 секунд для пропуска черного fade-in
+  // DJI дрон видео часто имеют длинное fade-in в начале (особенно HLG формат)
+  let seek_time = if time_offset == 0.0 { 5.0 } else { time_offset };
+
+  // ВАЖНО: -ss ПЕРЕД -i для быстрого seeking (input-level seeking)
+  // Это критично для 4K видео - без этого FFmpeg декодирует весь файл
   let status = Command::new("ffmpeg")
+    .arg("-ss")
+    .arg(seek_time.to_string())
     .arg("-i")
     .arg(input_path.to_string_lossy().as_ref())
-    .arg("-ss")
-    .arg(time_offset.to_string())
     .arg("-vframes")
     .arg("1")
     .arg("-vf")
-    .arg(format!("scale={width}:{height}"))
+    // scale с флагом force_original_aspect_ratio для корректного масштабирования
+    // и pad для центрирования если соотношения сторон не совпадают
+    .arg(format!(
+      "scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:black"
+    ))
     .arg("-q:v")
     .arg("2")
+    .arg("-f")
+    .arg("image2") // Явно указываем формат для надёжности
     .arg(output_path.to_string_lossy().as_ref())
     .arg("-y") // Перезаписать если существует
     .output()
@@ -31,6 +103,53 @@ pub async fn generate_thumbnail(
   if !status.status.success() {
     let stderr = String::from_utf8_lossy(&status.stderr);
     return Err(format!("FFmpeg failed: {stderr}"));
+  }
+
+  Ok(())
+}
+
+/// Быстрая генерация превью с аппаратным ускорением (если доступно)
+/// Используется для массовой генерации превью
+/// Стратегия: быстрый seek на 2 секунды с hwaccel
+pub async fn generate_thumbnail_fast(
+  input_path: &Path,
+  output_path: &Path,
+  width: u32,
+  height: u32,
+  time_offset: f64,
+) -> Result<(), String> {
+  // Если time_offset == 0, используем 5 секунд для пропуска черного fade-in
+  // DJI дрон видео часто имеют длинное fade-in в начале (особенно HLG формат)
+  let seek_time = if time_offset == 0.0 { 5.0 } else { time_offset };
+
+  // Пробуем с hwaccel для быстрого декодирования
+  let status = Command::new("ffmpeg")
+    .arg("-hwaccel")
+    .arg("auto") // Автоматический выбор аппаратного ускорения
+    .arg("-ss")
+    .arg(seek_time.to_string())
+    .arg("-i")
+    .arg(input_path.to_string_lossy().as_ref())
+    .arg("-vframes")
+    .arg("1")
+    .arg("-vf")
+    .arg(format!(
+      "scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:black"
+    ))
+    .arg("-q:v")
+    .arg("3") // Чуть ниже качество для скорости
+    .arg("-f")
+    .arg("image2")
+    .arg(output_path.to_string_lossy().as_ref())
+    .arg("-y")
+    .output()
+    .await
+    .map_err(|e| format!("Failed to execute ffmpeg: {e}"))?;
+
+  if !status.status.success() {
+    // Fallback на обычную версию без hwaccel
+    log::debug!("Hwaccel failed, falling back to standard thumbnail");
+    return generate_thumbnail(input_path, output_path, width, height, time_offset).await;
   }
 
   Ok(())

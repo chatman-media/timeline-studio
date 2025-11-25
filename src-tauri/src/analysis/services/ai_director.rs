@@ -713,7 +713,7 @@ impl AIDirector {
   }
 
   /// Запуск unified audio analysis
-  async fn run_unified_audio_analysis(
+  pub async fn run_unified_audio_analysis(
     &self,
     media_path: &Path,
     config: &AIDirectorConfig,
@@ -736,7 +736,7 @@ impl AIDirector {
   }
 
   /// Запуск scene detection через SceneEngine
-  async fn run_scene_detection(
+  pub async fn run_scene_detection(
     &self,
     _media_path: &Path,
     config: &AIDirectorConfig,
@@ -808,7 +808,7 @@ impl AIDirector {
   }
 
   /// Запуск vision analysis
-  async fn run_vision_analysis(
+  pub async fn run_vision_analysis(
     &self,
     scenes: &[SceneAnalysis],
     _config: &AIDirectorConfig,
@@ -851,7 +851,7 @@ impl AIDirector {
   }
 
   /// Запуск moment detection через MomentEngine
-  async fn run_moment_detection(
+  pub async fn run_moment_detection(
     &self,
     scenes: &[SceneAnalysis],
     config: &AIDirectorConfig,
@@ -871,7 +871,7 @@ impl AIDirector {
   }
 
   /// Запуск content analysis через ContentEngine
-  async fn run_content_analysis(
+  pub async fn run_content_analysis(
     &self,
     scenes: &[SceneAnalysis],
     config: &AIDirectorConfig,
@@ -993,7 +993,7 @@ impl AIDirector {
   }
 
   /// Запуск Vision Language Model analysis
-  async fn run_vision_language_model_analysis(
+  pub async fn run_vision_language_model_analysis(
     &self,
     media_path: &Path,
     config: &AIDirectorConfig,

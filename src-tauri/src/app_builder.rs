@@ -60,6 +60,10 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::media::commands::save_preview_data,
     crate::media::commands::save_timeline_frames,
     crate::media::commands::analyze_media,
+    // Preview cache commands
+    crate::media::commands::restore_preview_cache,
+    crate::media::commands::has_cached_thumbnail,
+    crate::media::commands::get_cached_thumbnail_path,
     // Proxy generation command
     crate::proxy_generator::generate_proxy_command,
     // Recognition commands

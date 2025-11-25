@@ -436,15 +436,16 @@ impl AIDirectorWithEvents {
     Ok(results)
   }
 
-  /// Запуск audio stage с прогрессом
+  /// Запуск audio stage с прогрессом - РЕАЛЬНЫЙ АНАЛИЗ
   async fn run_audio_stage(
     &self,
     media_path: &Path,
-    _config: &AIDirectorConfig,
+    config: &AIDirectorConfig,
     analysis_id: &str,
   ) -> Result<()> {
     let file_id = Uuid::new_v4().to_string();
     let file_path = media_path.to_string_lossy().to_string();
+    let stage_start = Instant::now();
 
     // 🆕 v2: Emit file analysis started
     self
@@ -457,14 +458,13 @@ impl AIDirectorWithEvents {
       )
       .await;
 
-    // Analyzer 1: Audio Quality
-    let metadata_start = Instant::now();
+    // Analyzer: Unified Audio Analysis (реальный анализ)
     self
       .emit_analyzer_started(
         analysis_id,
         &file_id,
-        "audio_quality",
-        "Audio Quality Analyzer",
+        "unified_audio",
+        "Unified Audio Analyzer",
       )
       .await;
 
@@ -472,169 +472,162 @@ impl AIDirectorWithEvents {
       .emit_progress(
         analysis_id,
         "audio",
-        0.15,
-        Some("Extracting audio metadata..."),
-        Some(100),
-      )
-      .await;
-
-    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
-
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "audio_quality",
-        metadata_start.elapsed().as_millis() as u64,
-        true,
-        Some("Audio quality analyzed"),
+        0.1,
+        Some("Starting unified audio analysis..."),
         None,
       )
       .await;
 
-    // 🆕 v2: Update file progress
     self
-      .emit_file_analysis_progress(
+      .emit_analyzer_progress(
         analysis_id,
         &file_id,
-        0.25,
-        Some("speech_recognition"),
-        vec!["audio_quality".to_string()],
+        "unified_audio",
+        0.1,
+        Some("Initializing audio analysis..."),
       )
       .await;
 
-    // Analyzer 2: Speech Recognition
-    let ffmpeg_start = Instant::now();
-    self
-      .emit_analyzer_started(
-        analysis_id,
-        &file_id,
-        "speech_recognition",
-        "Speech Recognition",
-      )
+    // Вызов реального анализа
+    let analysis_result = self
+      .inner
+      .run_unified_audio_analysis(media_path, config)
       .await;
 
-    self
-      .emit_progress(
-        analysis_id,
-        "audio",
-        0.2,
-        Some("Running FFmpeg analysis..."),
-        Some(80),
-      )
-      .await;
+    match &analysis_result {
+      Ok(result) => {
+        // Emit прогресс по мере получения результатов
+        let mut completed_analyzers = Vec::new();
+        let mut progress = 0.2;
 
-    tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
+        // Проверяем какие компоненты анализа завершены
+        if result.ffmpeg_analysis.is_some() {
+          self
+            .emit_analyzer_progress(
+              analysis_id,
+              &file_id,
+              "unified_audio",
+              progress,
+              Some("FFmpeg analysis completed"),
+            )
+            .await;
+          completed_analyzers.push("ffmpeg_analysis".to_string());
+          progress += 0.25;
+        }
 
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "speech_recognition",
-        ffmpeg_start.elapsed().as_millis() as u64,
-        true,
-        Some("Speech recognized"),
-        None,
-      )
-      .await;
+        if result.montage_analysis.is_some() {
+          self
+            .emit_analyzer_progress(
+              analysis_id,
+              &file_id,
+              "unified_audio",
+              progress,
+              Some("Montage analysis completed"),
+            )
+            .await;
+          completed_analyzers.push("montage_analysis".to_string());
+          progress += 0.25;
+        }
 
-    // 🆕 v2: Update file progress
-    self
-      .emit_file_analysis_progress(
-        analysis_id,
-        &file_id,
-        0.5,
-        Some("moment_detection"),
-        vec![
-          "audio_quality".to_string(),
-          "speech_recognition".to_string(),
-        ],
-      )
-      .await;
+        if result.transcription_analysis.is_some() {
+          self
+            .emit_analyzer_progress(
+              analysis_id,
+              &file_id,
+              "unified_audio",
+              progress,
+              Some("Transcription analysis completed"),
+            )
+            .await;
+          completed_analyzers.push("transcription_analysis".to_string());
+        }
 
-    // Analyzer 3: Moment Detection
-    let montage_start = Instant::now();
-    self
-      .emit_analyzer_started(
-        analysis_id,
-        &file_id,
-        "moment_detection",
-        "Moment Detection",
-      )
-      .await;
+        // Update file progress
+        self
+          .emit_file_analysis_progress(analysis_id, &file_id, 0.9, None, completed_analyzers)
+          .await;
 
-    self
-      .emit_progress(
-        analysis_id,
-        "audio",
-        0.25,
-        Some("Processing montage analysis..."),
-        Some(60),
-      )
-      .await;
+        // Emit общий прогресс
+        self
+          .emit_progress(
+            analysis_id,
+            "audio",
+            0.28,
+            Some("Audio analysis completed successfully"),
+            Some(stage_start.elapsed().as_secs().saturating_sub(1).max(1)),
+          )
+          .await;
 
-    tokio::time::sleep(tokio::time::Duration::from_millis(800)).await;
+        // Emit analyzer completed с успехом
+        self
+          .emit_analyzer_completed(
+            analysis_id,
+            &file_id,
+            "unified_audio",
+            stage_start.elapsed().as_millis() as u64,
+            true,
+            Some(&format!(
+              "Audio analyzed: quality={:.2}, insights={}",
+              result.overall_quality_score(),
+              result.available_insights().join(", ")
+            )),
+            None,
+          )
+          .await;
+      }
+      Err(e) => {
+        // Emit analyzer completed с ошибкой
+        self
+          .emit_analyzer_completed(
+            analysis_id,
+            &file_id,
+            "unified_audio",
+            stage_start.elapsed().as_millis() as u64,
+            false,
+            None,
+            Some(e.to_string()),
+          )
+          .await;
 
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "moment_detection",
-        montage_start.elapsed().as_millis() as u64,
-        true,
-        Some("Moments detected"),
-        None,
-      )
-      .await;
-
-    // 🆕 v2: Update file progress
-    self
-      .emit_file_analysis_progress(
-        analysis_id,
-        &file_id,
-        0.9,
-        None,
-        vec![
-          "audio_quality".to_string(),
-          "speech_recognition".to_string(),
-          "moment_detection".to_string(),
-        ],
-      )
-      .await;
-
-    self
-      .emit_progress(
-        analysis_id,
-        "audio",
-        0.28,
-        Some("Finalizing audio analysis..."),
-        Some(20),
-      )
-      .await;
+        self
+          .emit_progress(
+            analysis_id,
+            "audio",
+            0.28,
+            Some(&format!("Audio analysis failed: {}", e)),
+            None,
+          )
+          .await;
+      }
+    }
 
     // 🆕 v2: Emit file analysis completed
     self
       .emit_file_analysis_completed(
         analysis_id,
         &file_id,
-        metadata_start.elapsed().as_millis() as u64,
-        true,
-        None,
+        stage_start.elapsed().as_millis() as u64,
+        analysis_result.is_ok(),
+        analysis_result.err().map(|e| e.to_string()),
       )
       .await;
 
     Ok(())
   }
 
-  /// Запуск video stage с прогрессом
+  /// Запуск video stage с прогрессом - РЕАЛЬНЫЙ АНАЛИЗ
   async fn run_video_stage(
     &self,
     media_path: &Path,
-    _config: &AIDirectorConfig,
+    config: &AIDirectorConfig,
     analysis_id: &str,
   ) -> Result<()> {
     let file_id = Uuid::new_v4().to_string();
     let file_path = media_path.to_string_lossy().to_string();
+    let stage_start = Instant::now();
+    let mut completed_analyzers = Vec::new();
+    let mut all_scenes = Vec::new();
+    let mut has_errors = false;
 
     // 🆕 v2: Emit file analysis started
     self
@@ -647,8 +640,8 @@ impl AIDirectorWithEvents {
       )
       .await;
 
-    // Analyzer 1: Scene Detection
-    let metadata_start = Instant::now();
+    // ========== Analyzer 1: Scene Detection ==========
+    let scene_start = Instant::now();
     self
       .emit_analyzer_started(analysis_id, &file_id, "scene_detection", "Scene Detection")
       .await;
@@ -657,25 +650,54 @@ impl AIDirectorWithEvents {
       .emit_progress(
         analysis_id,
         "video",
-        0.45,
-        Some("Extracting video metadata..."),
-        Some(70),
-      )
-      .await;
-
-    tokio::time::sleep(tokio::time::Duration::from_millis(600)).await;
-
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "scene_detection",
-        metadata_start.elapsed().as_millis() as u64,
-        true,
-        Some("Scenes detected"),
+        0.35,
+        Some("Running scene detection..."),
         None,
       )
       .await;
+
+    self
+      .emit_analyzer_progress(
+        analysis_id,
+        &file_id,
+        "scene_detection",
+        0.2,
+        Some("Analyzing video frames..."),
+      )
+      .await;
+
+    // Реальный вызов scene detection
+    match self.inner.run_scene_detection(media_path, config).await {
+      Ok(scenes) => {
+        all_scenes = scenes;
+        self
+          .emit_analyzer_completed(
+            analysis_id,
+            &file_id,
+            "scene_detection",
+            scene_start.elapsed().as_millis() as u64,
+            true,
+            Some(&format!("{} scenes detected", all_scenes.len())),
+            None,
+          )
+          .await;
+        completed_analyzers.push("scene_detection".to_string());
+      }
+      Err(e) => {
+        self
+          .emit_analyzer_completed(
+            analysis_id,
+            &file_id,
+            "scene_detection",
+            scene_start.elapsed().as_millis() as u64,
+            false,
+            None,
+            Some(e.to_string()),
+          )
+          .await;
+        has_errors = true;
+      }
+    }
 
     // 🆕 v2: Update file progress
     self
@@ -683,45 +705,75 @@ impl AIDirectorWithEvents {
         analysis_id,
         &file_id,
         0.25,
-        Some("object_detection"),
-        vec!["scene_detection".to_string()],
+        Some("vision_analysis"),
+        completed_analyzers.clone(),
       )
       .await;
 
-    // Analyzer 2: Object Detection
-    let object_start = Instant::now();
-    self
-      .emit_analyzer_started(
-        analysis_id,
-        &file_id,
-        "object_detection",
-        "YOLO Object Detector",
-      )
-      .await;
+    // ========== Analyzer 2: Vision Analysis ==========
+    if !all_scenes.is_empty() {
+      let vision_start = Instant::now();
+      self
+        .emit_analyzer_started(analysis_id, &file_id, "vision_analysis", "Vision Analyzer")
+        .await;
 
-    self
-      .emit_progress(
-        analysis_id,
-        "video",
-        0.5,
-        Some("Running object detection..."),
-        Some(50),
-      )
-      .await;
+      self
+        .emit_progress(
+          analysis_id,
+          "video",
+          0.5,
+          Some("Running vision analysis..."),
+          None,
+        )
+        .await;
 
-    tokio::time::sleep(tokio::time::Duration::from_millis(1200)).await;
+      self
+        .emit_analyzer_progress(
+          analysis_id,
+          &file_id,
+          "vision_analysis",
+          0.3,
+          Some("Analyzing visual features..."),
+        )
+        .await;
 
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "object_detection",
-        object_start.elapsed().as_millis() as u64,
-        true,
-        Some("Objects detected"),
-        None,
-      )
-      .await;
+      // Реальный вызов vision analysis
+      match self.inner.run_vision_analysis(&all_scenes, config).await {
+        Ok(vision_result) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "vision_analysis",
+              vision_start.elapsed().as_millis() as u64,
+              true,
+              Some(&format!(
+                "Objects: {}, Faces: {}, Quality: {:.2}",
+                vision_result.objects_detected.len(),
+                vision_result.faces_count,
+                vision_result.visual_quality_avg
+              )),
+              None,
+            )
+            .await;
+          completed_analyzers.push("vision_analysis".to_string());
+        }
+        Err(e) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "vision_analysis",
+              vision_start.elapsed().as_millis() as u64,
+              false,
+              None,
+              Some(e.to_string()),
+            )
+            .await;
+          has_errors = true;
+        }
+      }
+    }
 
     // 🆕 v2: Update file progress
     self
@@ -729,48 +781,78 @@ impl AIDirectorWithEvents {
         analysis_id,
         &file_id,
         0.5,
-        Some("composition_analysis"),
-        vec![
-          "scene_detection".to_string(),
-          "object_detection".to_string(),
-        ],
+        Some("content_analysis"),
+        completed_analyzers.clone(),
       )
       .await;
 
-    // Analyzer 3: Composition Analysis
-    let composition_start = Instant::now();
-    self
-      .emit_analyzer_started(
-        analysis_id,
-        &file_id,
-        "composition_analysis",
-        "Composition Analysis",
-      )
-      .await;
+    // ========== Analyzer 3: Content Analysis ==========
+    if !all_scenes.is_empty() {
+      let content_start = Instant::now();
+      self
+        .emit_analyzer_started(
+          analysis_id,
+          &file_id,
+          "content_analysis",
+          "Content Analyzer",
+        )
+        .await;
 
-    self
-      .emit_progress(
-        analysis_id,
-        "video",
-        0.6,
-        Some("Analyzing composition..."),
-        Some(30),
-      )
-      .await;
+      self
+        .emit_progress(
+          analysis_id,
+          "video",
+          0.6,
+          Some("Analyzing content..."),
+          None,
+        )
+        .await;
 
-    tokio::time::sleep(tokio::time::Duration::from_millis(900)).await;
+      self
+        .emit_analyzer_progress(
+          analysis_id,
+          &file_id,
+          "content_analysis",
+          0.4,
+          Some("Classifying content..."),
+        )
+        .await;
 
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "composition_analysis",
-        composition_start.elapsed().as_millis() as u64,
-        true,
-        Some("Composition analyzed"),
-        None,
-      )
-      .await;
+      // Реальный вызов content analysis
+      match self.inner.run_content_analysis(&all_scenes, config).await {
+        Ok(content_result) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "content_analysis",
+              content_start.elapsed().as_millis() as u64,
+              true,
+              Some(&format!(
+                "Classification: {:?}, Quality: {:.2}",
+                content_result.classification, content_result.quality.overall
+              )),
+              None,
+            )
+            .await;
+          completed_analyzers.push("content_analysis".to_string());
+        }
+        Err(e) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "content_analysis",
+              content_start.elapsed().as_millis() as u64,
+              false,
+              None,
+              Some(e.to_string()),
+            )
+            .await;
+          has_errors = true;
+        }
+      }
+    }
 
     // 🆕 v2: Update file progress
     self
@@ -778,44 +860,70 @@ impl AIDirectorWithEvents {
         analysis_id,
         &file_id,
         0.75,
-        Some("motion_analysis"),
-        vec![
-          "scene_detection".to_string(),
-          "object_detection".to_string(),
-          "composition_analysis".to_string(),
-        ],
+        Some("moment_detection"),
+        completed_analyzers.clone(),
       )
       .await;
 
-    // Analyzer 4: Motion Analysis
-    let scene_start = Instant::now();
-    self
-      .emit_analyzer_started(analysis_id, &file_id, "motion_analysis", "Motion Analysis")
-      .await;
+    // ========== Analyzer 4: Moment Detection ==========
+    if !all_scenes.is_empty() {
+      let moment_start = Instant::now();
+      self
+        .emit_analyzer_started(analysis_id, &file_id, "moment_detection", "Moment Detector")
+        .await;
 
-    self
-      .emit_progress(
-        analysis_id,
-        "video",
-        0.65,
-        Some("Detecting scenes..."),
-        Some(15),
-      )
-      .await;
+      self
+        .emit_progress(
+          analysis_id,
+          "video",
+          0.7,
+          Some("Detecting key moments..."),
+          None,
+        )
+        .await;
 
-    tokio::time::sleep(tokio::time::Duration::from_millis(400)).await;
+      self
+        .emit_analyzer_progress(
+          analysis_id,
+          &file_id,
+          "moment_detection",
+          0.5,
+          Some("Analyzing key moments..."),
+        )
+        .await;
 
-    self
-      .emit_analyzer_completed(
-        analysis_id,
-        &file_id,
-        "motion_analysis",
-        scene_start.elapsed().as_millis() as u64,
-        true,
-        Some("Motion analyzed"),
-        None,
-      )
-      .await;
+      // Реальный вызов moment detection
+      match self.inner.run_moment_detection(&all_scenes, config).await {
+        Ok(moments) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "moment_detection",
+              moment_start.elapsed().as_millis() as u64,
+              true,
+              Some(&format!("{} key moments detected", moments.len())),
+              None,
+            )
+            .await;
+          completed_analyzers.push("moment_detection".to_string());
+        }
+        Err(e) => {
+          self
+            .emit_analyzer_completed(
+              analysis_id,
+              &file_id,
+              "moment_detection",
+              moment_start.elapsed().as_millis() as u64,
+              false,
+              None,
+              Some(e.to_string()),
+            )
+            .await;
+          has_errors = true;
+        }
+      }
+    }
 
     // 🆕 v2: Update file progress to complete
     self
@@ -824,12 +932,21 @@ impl AIDirectorWithEvents {
         &file_id,
         1.0,
         None,
-        vec![
-          "scene_detection".to_string(),
-          "object_detection".to_string(),
-          "composition_analysis".to_string(),
-          "motion_analysis".to_string(),
-        ],
+        completed_analyzers.clone(),
+      )
+      .await;
+
+    // Final progress update
+    self
+      .emit_progress(
+        analysis_id,
+        "video",
+        0.7,
+        Some(&format!(
+          "Video analysis completed: {} analyzers succeeded",
+          completed_analyzers.len()
+        )),
+        None,
       )
       .await;
 
@@ -838,9 +955,13 @@ impl AIDirectorWithEvents {
       .emit_file_analysis_completed(
         analysis_id,
         &file_id,
-        metadata_start.elapsed().as_millis() as u64,
-        true,
-        None,
+        stage_start.elapsed().as_millis() as u64,
+        !has_errors,
+        if has_errors {
+          Some("Some analyzers failed".to_string())
+        } else {
+          None
+        },
       )
       .await;
 
