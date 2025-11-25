@@ -67,11 +67,12 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       }
 
       function unregisterListener(_event: string, eventId: string) {
-        logger.info(`[TauriMock] Unregister listener for event: ${_event}, eventId: ${eventId}`)
-        // Remove from event listeners
-        if (eventId in eventListeners) {
-          const handlerId = eventListeners[eventId].handlerId
-          unregisterCallback(handlerId)
+        // Безопасная проверка
+        if (!eventId) return
+
+        const listener = eventListeners[eventId]
+        if (listener && typeof listener.handlerId === "number") {
+          unregisterCallback(listener.handlerId)
           delete eventListeners[eventId]
         }
       }
@@ -79,19 +80,23 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       // Create a Proxy for listeners to prevent undefined access errors
       const listenersProxy = new Proxy(eventListeners, {
         get(target, prop) {
+          if (typeof prop === "symbol") return undefined
           if (!(prop in target)) {
-            // Return a safe default object for missing event IDs
-            logger.debug(`[TauriMock] Accessing non-existent listener: ${String(prop)}`)
             return { handlerId: 0, event: "unknown" }
           }
           return target[prop as string]
         },
+        has(target, prop) {
+          return prop in target
+        },
       })
 
-      ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {
-        listeners: listenersProxy,
-        unregisterListener,
+      // Не перезаписываем если уже есть
+      if (!(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__) {
+        ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__ = {}
       }
+      ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.listeners = listenersProxy
+      ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.unregisterListener = unregisterListener
 
       ;(window as any).__TAURI_INTERNALS__ = {
         transformCallback: registerCallback,

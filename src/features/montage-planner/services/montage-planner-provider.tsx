@@ -115,11 +115,18 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
 
     // Cleanup
     return () => {
-      unsubscribeProgress?.()
-      unsubscribeVideoAnalyzed?.()
-      unsubscribeAudioAnalyzed?.()
-      unsubscribeFragments?.()
-      unsubscribeMoments?.()
+      const safeUnlisten = (fn: (() => void) | null) => {
+        try {
+          fn?.()
+        } catch {
+          // Ignore unlisten errors
+        }
+      }
+      safeUnlisten(unsubscribeProgress)
+      safeUnlisten(unsubscribeVideoAnalyzed)
+      safeUnlisten(unsubscribeAudioAnalyzed)
+      safeUnlisten(unsubscribeFragments)
+      safeUnlisten(unsubscribeMoments)
     }
   }, [send])
 

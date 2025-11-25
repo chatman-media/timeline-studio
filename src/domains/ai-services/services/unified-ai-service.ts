@@ -368,7 +368,11 @@ export class UnifiedAIService {
     const entries = Array.from(this.activeListeners.entries())
     for (const [key, unlisten] of entries) {
       if (key.startsWith(requestId)) {
-        unlisten()
+        try {
+          unlisten()
+        } catch {
+          // Ignore unlisten errors
+        }
         keysToRemove.push(key)
       }
     }
@@ -661,7 +665,11 @@ export class UnifiedAIService {
     // Convert iterator to array to avoid downlevelIteration issue
     const listeners = Array.from(this.activeListeners.values())
     for (const unlisten of listeners) {
-      unlisten()
+      try {
+        unlisten()
+      } catch {
+        // Ignore errors during cleanup
+      }
     }
     this.activeListeners.clear()
 

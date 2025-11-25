@@ -344,9 +344,13 @@ export class AIEventBridge {
       listenersCount: this.unlisteners.length,
     })
 
-    // Отписываемся от всех Tauri событий
+    // Отписываемся от всех Tauri событий с защитой от ошибок
     for (const unlisten of this.unlisteners) {
-      unlisten()
+      try {
+        unlisten()
+      } catch (error) {
+        logger.warn("Ошибка при отписке от события", { error })
+      }
     }
 
     this.unlisteners = []

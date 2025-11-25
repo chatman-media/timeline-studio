@@ -148,7 +148,13 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
     })
 
     return () => {
-      void unlisten.then((fn) => fn())
+      void unlisten.then((fn) => {
+        try {
+          fn()
+        } catch {
+          // Ignore unlisten errors
+        }
+      })
     }
   }, [onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress])
 

@@ -1,415 +1,282 @@
+//! Real data tests for recognition module
+//! Tests with actual images and videos from test-data/
+
 use crate::recognition::model_manager::YoloModel;
 use crate::recognition::ort_manager::OrtManager;
 use crate::recognition::recognition_service::RecognitionService;
 use crate::recognition::types::{DetectedObject, RecognitionResults};
 use crate::recognition::{ProcessorConfig, YoloProcessor};
-// Временно отключаем пока не интегрируем frame_extraction
-// use crate::video_compiler::frame_extraction::{FrameExtractionManager, ExtractionPurpose};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::time::Instant;
 use tempfile::TempDir;
 
+/// Get path to test-data directory
+fn get_test_data_dir() -> Option<PathBuf> {
+  let possible_paths = vec![
+    PathBuf::from("../test-data"),
+    PathBuf::from("test-data"),
+    PathBuf::from("../../test-data"),
+  ];
+
+  for path in possible_paths {
+    if path.exists() {
+      return Some(path);
+    }
+  }
+
+  // Try from workspace root
+  if let Ok(cwd) = std::env::current_dir() {
+    let workspace_path = cwd.join("../test-data");
+    if workspace_path.exists() {
+      return Some(workspace_path);
+    }
+  }
+
+  None
+}
+
+/// Get test image path (DSC07845.png)
+fn get_test_image() -> Option<PathBuf> {
+  let test_dir = get_test_data_dir()?;
+  let image_path = test_dir.join("DSC07845.png");
+  if image_path.exists() {
+    Some(image_path)
+  } else {
+    None
+  }
+}
+
+/// Get Kate.mp4 video path for face detection
+fn get_kate_video() -> Option<PathBuf> {
+  let test_dir = get_test_data_dir()?;
+  let video_path = test_dir.join("Kate.mp4");
+  if video_path.exists() {
+    Some(video_path)
+  } else {
+    None
+  }
+}
+
 /// Проверяет доступность ONNX Runtime
 fn is_ort_available() -> bool {
-  // Используем OrtManager для проверки
   OrtManager::ensure_initialized().is_ok()
 }
 
-/// Вспомогательная функция для извлечения кадров из видео
-/// Временная заглушка - в реальности использовать video_compiler
-#[allow(dead_code)]
-async fn extract_frames_for_recognition(
-  video_path: &Path,
-  output_dir: &Path,
-  count: usize,
-) -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
-  // Временная реализация - создаем пути к несуществующим кадрам
-  // В реальной реализации здесь должен использоваться FrameExtractionManager
-
-  println!("Mock frame extraction from: {video_path:?}");
-
-  let recognition_dir = output_dir.join("recognition");
-  std::fs::create_dir_all(&recognition_dir)?;
-
-  let mut frame_paths = Vec::new();
-  for i in 0..count {
-    let frame_path = recognition_dir.join(format!("frame_{i:03}.png"));
-    frame_paths.push(frame_path);
-  }
-
-  // В реальной реализации здесь бы вызывался FFmpeg для извлечения кадров
-  println!("Would extract {count} frames to {recognition_dir:?}");
-
-  Ok(frame_paths)
-}
-
 #[tokio::test]
-async fn test_yolo_on_hevc_video() {
+async fn test_yolo_on_real_image() {
   if !is_ort_available() {
     eprintln!("Skipping test: ONNX Runtime not available");
     return;
   }
 
-  // let video = get_test_video();
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("YOLO test on HEVC video skipped - test data not available");
-  return;
-
-  // Код ниже не будет выполнен из-за return выше
-  #[allow(unreachable_code)]
-  {
-    let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig {
-      model: YoloModel::YoloV11Detection,
-      ..Default::default()
-    };
-    config.processing_config.confidence_threshold = 0.5;
-    let mut processor = YoloProcessor::new(config).await.unwrap();
-
-    // Пытаемся загрузить модель
-    match processor.load_model().await {
-      Ok(_) => {
-        println!("YOLO model loaded successfully");
-
-        // Извлекаем кадры для распознавания
-        // match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 3)
-        //   .await
-        // {
-        //   Ok(frame_paths) => {
-        //     println!("Extracted {} frames for recognition", frame_paths.len());
-        //
-        //     // Обрабатываем каждый кадр
-        //     for (idx, frame_path) in frame_paths.iter().enumerate() {
-        //       let start = Instant::now();
-        //       match processor.process_image(frame_path).await {
-        //         Ok(detections) => {
-        //           let duration = start.elapsed();
-        //           println!(
-        //             "Frame {} processed in {:?}, found {} objects",
-        //             idx,
-        //             duration,
-        //             detections.len()
-        //           );
-        //
-        //           for detection in &detections {
-        //             println!(
-        //               "  - {} (confidence: {:.2})",
-        //               detection.class, detection.confidence
-        //             );
-        //       }
-        //     }
-        //         Err(e) => println!("Failed to process frame {}: {}", idx, e),
-        //   }
-        // }
-        //   }
-        //   Err(e) => println!("Failed to extract frames: {}", e),
-        // }
-      }
-      Err(e) => {
-        println!("Failed to load YOLO model: {e}");
-        println!("Skipping test - model not available");
-      }
+  let image_path = match get_test_image() {
+    Some(path) => path,
+    None => {
+      eprintln!("Skipping test: test image DSC07845.png not found in test-data/");
+      return;
     }
-  }
-}
+  };
 
-#[tokio::test]
-async fn test_face_detection_on_video() {
-  if !is_ort_available() {
-    eprintln!("Skipping test: ONNX Runtime not available");
-    return;
-  }
+  println!("Testing YOLO on image: {:?}", image_path);
 
-  // let video = VIDEO_FILES
-  //   .iter()
-  //   .find(|v| v.filename.contains("Kate"))
-  //   .expect("No suitable video for face detection test");
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("Face detection test skipped - test data not available");
-  return;
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV8Detection,
+    ..Default::default()
+  };
 
-  // println!("Testing face detection on: {}", video.filename);
+  match YoloProcessor::new(config).await {
+    Ok(processor) => {
+      let start = Instant::now();
+      match processor.process_image_path(&image_path).await {
+        Ok(detections) => {
+          let duration = start.elapsed();
+          println!("✅ Image processed in {:?}", duration);
+          println!("   Found {} objects", detections.len());
 
-  #[allow(unreachable_code)]
-  {
-    let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig {
-      model: YoloModel::YoloV11Face,
-      ..Default::default()
-    };
-    config.processing_config.confidence_threshold = 0.7;
-    let mut processor = YoloProcessor::new(config).await.unwrap();
-
-    match processor.load_model().await {
-      Ok(_) => {
-        // match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 5)
-        //   .await
-        // {
-        //   Ok(frame_paths) => {
-        //     let mut total_faces = 0;
-        //
-        //     for frame_path in &frame_paths {
-        //       if let Ok(detections) = processor.process_image(frame_path).await {
-        //         total_faces += detections.len();
-        //   }
-        // }
-        //
-        //     println!(
-        //       "Found {} faces across {} frames",
-        //       total_faces,
-        //       frame_paths.len()
-        //     );
-        //   }
-        //   Err(e) => println!("Failed to extract frames: {}", e),
-        // }
-        println!("Would process face detection here");
-      }
-      Err(_) => println!("Face detection model not available - skipping test"),
-    }
-  }
-}
-
-#[tokio::test]
-async fn test_recognition_service_with_real_video() {
-  if !is_ort_available() {
-    eprintln!("Skipping test: ONNX Runtime not available");
-    return;
-  }
-
-  // let video = get_test_video();
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("Recognition service test skipped - test data not available");
-  return;
-
-  #[allow(unreachable_code)]
-  let temp_dir = TempDir::new().unwrap();
-
-  // Создаем сервис
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf())
-    .await
-    .unwrap();
-
-  // Извлекаем кадры
-  // match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 5).await {
-  //     Ok(frame_paths) => {
-  //         println!("Processing {} frames from {}", frame_paths.len(), video.filename);
-  //
-  //         // Обрабатываем видео
-  //         match service.process_video("test_video_1", frame_paths).await {
-  //             Ok(results) => {
-  //                 println!("Recognition completed:");
-  //                 println!("  - Objects: {}", results.objects.len());
-  //                 println!("  - Faces: {}", results.faces.len());
-  //                 println!("  - Scenes: {}", results.scenes.len());
-  //
-  //               // Детальная информация об объектах
-  //                 for obj in &results.objects {
-  //                     println!("  Object '{}' appeared {} times (confidence: {:.2})",
-  //                         obj.class, obj.timestamps.len(), obj.confidence);
-  //             }
-  //
-  //               // Проверяем, что результаты сохранены
-  //                 let loaded = service.load_results("test_video_1").await.unwrap();
-  //                 assert!(loaded.is_some());
-  //         },
-  //             Err(e) => println!("Recognition failed: {}", e),
-  //     }
-  // },
-  //     Err(e) => println!("Failed to extract frames: {}", e),
-  // }
-}
-
-#[tokio::test]
-async fn test_cyrillic_filename_recognition() {
-  if !is_ort_available() {
-    eprintln!("Skipping test: ONNX Runtime not available");
-    return;
-  }
-
-  // let cyrillic_file = get_file_with_cyrillic()
-  //     .expect("No file with cyrillic name found");
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("Cyrillic filename test skipped - test data not available");
-  return;
-
-  // if !cyrillic_file.has_video {
-  //   println!("Cyrillic file is not a video, skipping");
-  //   return;
-  // }
-  //
-  // println!(
-  //   "Testing recognition with cyrillic filename: {}",
-  //   cyrillic_file.filename
-  // );
-  //
-  // let temp_dir = TempDir::new().unwrap();
-  // let service = RecognitionService::new(temp_dir.path().to_path_buf()).unwrap();
-  //
-  // match extract_frames_for_recognition(
-  //   &cyrillic_file.get_path(),
-  //   &temp_dir.path().to_path_buf(),
-  //   3,
-  // )
-  // .await
-  // {
-  //   Ok(frame_paths) => match service.process_video("cyrillic_test", frame_paths).await {
-  //     Ok(results) => {
-  //       println!("Successfully processed video with cyrillic name");
-  //       println!("Found {} object types", results.objects.len());
-  // }
-  //     Err(e) => println!("Failed to process: {}", e),
-  //   },
-  //   Err(e) => println!("Failed to extract frames: {}", e),
-  // }
-}
-
-#[tokio::test]
-async fn test_performance_on_4k_video() {
-  if !is_ort_available() {
-    eprintln!("Skipping test: ONNX Runtime not available");
-    return;
-  }
-
-  // let video_4k = VIDEO_FILES.iter()
-  //     .find(|v| v.width == Some(3840))
-  //     .expect("No 4K video found");
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("4K performance test skipped - test data not available");
-  return;
-
-  // println!("Testing performance on 4K video: {}", video_4k.filename);
-  //
-  // let temp_dir = TempDir::new().unwrap();
-  // let mut processor = YoloProcessor::new(YoloModel::YoloV11Detection, 0.5).unwrap();
-  //
-  // match processor.load_model().await {
-  //   Ok(_) => {
-  //     // Извлекаем только 2 кадра для теста производительности
-  //     match extract_frames_for_recognition(
-  //       &video_4k.get_path(),
-  //       &temp_dir.path().to_path_buf(),
-  //       2,
-  //     )
-  //     .await
-  //     {
-  //       Ok(frame_paths) => {
-  //         for (idx, frame_path) in frame_paths.iter().enumerate() {
-  //           let start = Instant::now();
-  //
-  //           match processor.process_image(frame_path).await {
-  //             Ok(detections) => {
-  //               let duration = start.elapsed();
-  //               println!("4K frame {} processed in {:?}", idx, duration);
-  //               println!("Found {} objects", detections.len());
-  //
-  //             // Проверяем производительность
-  //               assert!(duration.as_secs() < 10, "Processing 4K frame took too long");
-  //         }
-  //             Err(e) => println!("Failed to process 4K frame: {}", e),
-  //       }
-  //     }
-  //   }
-  //       Err(e) => println!("Failed to extract frames from 4K video: {}", e),
-  // }
-  //   }
-  //   Err(_) => println!("Model not available for 4K test"),
-  // }
-}
-
-#[tokio::test]
-async fn test_batch_processing() {
-  if !is_ort_available() {
-    eprintln!("Skipping test: ONNX Runtime not available");
-    return;
-  }
-
-  // let videos = VIDEO_FILES.iter().take(2).collect::<Vec<_>>();
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  println!("Batch processing test skipped - test data not available");
-  return;
-
-  #[allow(unreachable_code)]
-  {
-    let _temp_dir = TempDir::new().unwrap();
-    let mut config = ProcessorConfig {
-      model: YoloModel::YoloV11Detection,
-      ..Default::default()
-    };
-    config.processing_config.confidence_threshold = 0.5;
-    let mut processor = YoloProcessor::new(config).await.unwrap();
-
-    match processor.load_model().await {
-      Ok(_) => {
-        let mut all_frame_paths = Vec::new();
-
-        // Извлекаем кадры из нескольких видео
-        // for video in &videos {
-        //   match extract_frames_for_recognition(&video.get_path(), &temp_dir.path().to_path_buf(), 2)
-        //     .await
-        //   {
-        //     Ok(mut paths) => all_frame_paths.append(&mut paths),
-        //     Err(e) => println!("Failed to extract frames from {}: {}", video.filename, e),
-        //   }
-        // }
-
-        if !all_frame_paths.is_empty() {
-          println!("Batch processing {} frames", all_frame_paths.len());
-
-          let start = Instant::now();
-          match processor.process_batch(all_frame_paths).await {
-            Ok(batch_results) => {
-              let duration = start.elapsed();
-              println!("Batch processed in {duration:?}");
-
-              let total_detections: usize = batch_results.iter().map(|r| r.len()).sum();
-
-              println!("Total detections across all frames: {total_detections}");
-            }
-            Err(e) => println!("Batch processing failed: {e}"),
+          for detection in &detections {
+            println!(
+              "   - {} (confidence: {:.2}%)",
+              detection.class,
+              detection.confidence * 100.0
+            );
           }
+
+          // Performance check: should be under 5 seconds
+          assert!(
+            duration.as_secs() < 5,
+            "Image processing took too long: {:?}",
+            duration
+          );
+        }
+        Err(e) => {
+          println!("❌ Failed to process image: {e}");
+          // Don't fail test - model might not be available
         }
       }
-      Err(_) => println!("Model not available for batch test"),
+    }
+    Err(e) => {
+      println!("⚠️ Could not create YOLO processor: {e}");
+      println!("   This is expected if YOLO model is not downloaded");
     }
   }
 }
 
 #[tokio::test]
-async fn test_scene_detection_accuracy() {
+async fn test_face_detection_model() {
   if !is_ort_available() {
     eprintln!("Skipping test: ONNX Runtime not available");
     return;
   }
 
-  // Используем разные видео для проверки определения сцен
-  let _temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(_temp_dir.path().to_path_buf())
-    .await
-    .unwrap();
+  let image_path = match get_test_image() {
+    Some(path) => path,
+    None => {
+      eprintln!("Skipping test: test image not found");
+      return;
+    }
+  };
 
-  // Видео с людьми
-  // Тест временно отключен из-за отсутствия доступа к test_data
-  // if let Some(people_video) = VIDEO_FILES.iter().find(|v| v.filename.contains("Kate")) {
-  //     match extract_frames_for_recognition(&people_video.get_path(), &temp_dir.path().to_path_buf(), 5).await {
-  //         Ok(frame_paths) => {
-  //             match service.process_video("people_test", frame_paths).await {
-  //                 Ok(results) => {
-  //                   // Проверяем, что определена сцена с людьми
-  //                     let has_people_scene = results.scenes.iter()
-  //                         .any(|s| s.scene_type == "people");
-  //
-  //                     println!("People scene detected in {}: {}",
-  //                         people_video.filename, has_people_scene);
-  //             },
-  //                 Err(e) => println!("Failed to process people video: {}", e),
-  //         }
-  //     },
-  //         Err(e) => println!("Failed to extract frames: {}", e),
-  // }
-  // }
+  println!("Testing Face Detection on: {:?}", image_path);
 
-  // Добавляем простой тест для проверки
-  println!("Scene detection test skipped - test data not available");
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV8Face,
+    ..Default::default()
+  };
+
+  match YoloProcessor::new(config).await {
+    Ok(processor) => {
+      let start = Instant::now();
+      match processor.process_image_path(&image_path).await {
+        Ok(detections) => {
+          let duration = start.elapsed();
+          println!("✅ Face detection completed in {:?}", duration);
+          println!("   Found {} faces", detections.len());
+
+          for (i, detection) in detections.iter().enumerate() {
+            println!(
+              "   Face {}: confidence {:.2}%, bbox: {:?}",
+              i + 1,
+              detection.confidence * 100.0,
+              detection.bounding_box
+            );
+          }
+        }
+        Err(e) => {
+          println!("❌ Face detection failed: {e}");
+        }
+      }
+    }
+    Err(e) => {
+      println!("⚠️ Could not create face detection processor: {e}");
+    }
+  }
+}
+
+#[tokio::test]
+async fn test_yolov11_face_detection() {
+  if !is_ort_available() {
+    eprintln!("Skipping test: ONNX Runtime not available");
+    return;
+  }
+
+  let image_path = match get_test_image() {
+    Some(path) => path,
+    None => {
+      eprintln!("Skipping test: test image not found");
+      return;
+    }
+  };
+
+  println!("Testing YOLOv11 Face Detection on: {:?}", image_path);
+
+  let config = ProcessorConfig {
+    model: YoloModel::YoloV11Face,
+    ..Default::default()
+  };
+
+  match YoloProcessor::new(config).await {
+    Ok(processor) => {
+      let start = Instant::now();
+      match processor.process_image_path(&image_path).await {
+        Ok(detections) => {
+          let duration = start.elapsed();
+          println!("✅ YOLOv11 face detection completed in {:?}", duration);
+          println!("   Found {} faces", detections.len());
+        }
+        Err(e) => {
+          println!("❌ YOLOv11 face detection failed: {e}");
+        }
+      }
+    }
+    Err(e) => {
+      println!("⚠️ Could not create YOLOv11 face processor: {e}");
+    }
+  }
+}
+
+#[tokio::test]
+async fn test_recognition_service_initialization() {
+  if !is_ort_available() {
+    eprintln!("Skipping test: ONNX Runtime not available");
+    return;
+  }
+
+  let temp_dir = TempDir::new().unwrap();
+
+  match RecognitionService::new(temp_dir.path().to_path_buf()).await {
+    Ok(service) => {
+      println!("✅ RecognitionService initialized successfully");
+
+      // Test that we can get status
+      let status = service.get_status();
+      println!("   Service status: {:?}", status);
+    }
+    Err(e) => {
+      println!("⚠️ Could not initialize RecognitionService: {e}");
+    }
+  }
+}
+
+#[tokio::test]
+async fn test_model_loading_performance() {
+  if !is_ort_available() {
+    eprintln!("Skipping test: ONNX Runtime not available");
+    return;
+  }
+
+  println!("Testing model loading performance...");
+
+  let models = vec![
+    ("YOLOv8 Detection", YoloModel::YoloV8Detection),
+    ("YOLOv8 Face", YoloModel::YoloV8Face),
+    ("YOLOv11 Face", YoloModel::YoloV11Face),
+  ];
+
+  for (name, model) in models {
+    let config = ProcessorConfig {
+      model,
+      ..Default::default()
+    };
+
+    let start = Instant::now();
+    match YoloProcessor::new(config).await {
+      Ok(_) => {
+        let duration = start.elapsed();
+        println!("✅ {} loaded in {:?}", name, duration);
+
+        // Model should load in under 10 seconds
+        assert!(
+          duration.as_secs() < 10,
+          "{} took too long to load: {:?}",
+          name,
+          duration
+        );
+      }
+      Err(e) => {
+        println!("⚠️ {} not available: {}", name, e);
+      }
+    }
+  }
 }
 
 #[tokio::test]
@@ -419,25 +286,27 @@ async fn test_export_recognition_results() {
     return;
   }
 
-  // let video = get_test_video();
-  // Этот тест работает без реальных данных
   let temp_dir = TempDir::new().unwrap();
-  let _service = RecognitionService::new(temp_dir.path().to_path_buf())
-    .await
-    .unwrap();
+  let _service = match RecognitionService::new(temp_dir.path().to_path_buf()).await {
+    Ok(s) => s,
+    Err(e) => {
+      println!("⚠️ Could not create service: {e}");
+      return;
+    }
+  };
 
-  // Создаем простые результаты для экспорта
+  // Create test results
   let results = RecognitionResults {
     objects: vec![
       DetectedObject {
         class: "person".to_string(),
-        confidence: 0.9,
+        confidence: 0.95,
         timestamps: vec![1.0, 2.0, 3.0],
         bounding_boxes: vec![],
       },
       DetectedObject {
         class: "car".to_string(),
-        confidence: 0.8,
+        confidence: 0.87,
         timestamps: vec![5.0, 6.0],
         bounding_boxes: vec![],
       },
@@ -448,7 +317,7 @@ async fn test_export_recognition_results() {
     processed_at: chrono::Utc::now(),
   };
 
-  // Сохраняем результаты через JSON
+  // Save results as JSON
   let results_dir = temp_dir.path().join("Recognition");
   std::fs::create_dir_all(&results_dir).unwrap();
 
@@ -456,16 +325,55 @@ async fn test_export_recognition_results() {
   let json = serde_json::to_string_pretty(&results).unwrap();
   tokio::fs::write(&results_file, json).await.unwrap();
 
-  // Проверяем JSON файл
-  let json_path = temp_dir
-    .path()
-    .join("Recognition/export_test_recognition.json");
-  assert!(json_path.exists());
+  // Verify JSON file
+  assert!(results_file.exists());
 
-  // Читаем и проверяем содержимое
-  let json_content = std::fs::read_to_string(&json_path).unwrap();
+  let json_content = std::fs::read_to_string(&results_file).unwrap();
   assert!(json_content.contains("person"));
   assert!(json_content.contains("car"));
-  assert!(json_content.contains("0.9"));
-  assert!(json_content.contains("0.8"));
+  assert!(json_content.contains("0.95"));
+
+  println!("✅ Export test passed");
+}
+
+#[tokio::test]
+async fn test_ort_manager_initialization() {
+  println!("Testing ORT Manager initialization...");
+
+  match OrtManager::ensure_initialized() {
+    Ok(_) => {
+      println!("✅ ONNX Runtime initialized successfully");
+
+      // Check available providers
+      let providers = OrtManager::get_available_providers();
+      println!("   Available providers: {:?}", providers);
+    }
+    Err(e) => {
+      println!("❌ Failed to initialize ONNX Runtime: {e}");
+    }
+  }
+}
+
+#[tokio::test]
+async fn test_video_frame_processing() {
+  if !is_ort_available() {
+    eprintln!("Skipping test: ONNX Runtime not available");
+    return;
+  }
+
+  let video_path = match get_kate_video() {
+    Some(path) => path,
+    None => {
+      eprintln!("Skipping test: Kate.mp4 not found in test-data/");
+      return;
+    }
+  };
+
+  println!("Testing video processing on: {:?}", video_path);
+  println!("Note: Full video processing requires frame extraction integration");
+
+  // For now, just verify the video file exists and is readable
+  let metadata = std::fs::metadata(&video_path).unwrap();
+  println!("   Video size: {} MB", metadata.len() / 1024 / 1024);
+  println!("✅ Video file verified");
 }

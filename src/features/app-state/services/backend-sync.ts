@@ -108,7 +108,11 @@ export class BackendSync {
    */
   async disconnect(): Promise<void> {
     if (this.unlisten) {
-      this.unlisten()
+      try {
+        this.unlisten()
+      } catch (error) {
+        logger.warn("Error during unlisten", { error })
+      }
       this.unlisten = null
     }
     this.isConnected = false

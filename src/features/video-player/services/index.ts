@@ -10,6 +10,8 @@ export type { ColorGradingParams, FilterLUT, FilterSettings } from "./filters-pr
 export { getFiltersPreviewService } from "./filters-preview"
 export type { HDRMetadata, VideoCodecInfo } from "./hdr-support"
 export { getHDRSupportService } from "./hdr-support"
+export type { PerformanceMetrics, SyncRecord } from "./performance-monitor"
+export { globalPerformanceMonitor, PerformanceMonitor } from "./performance-monitor"
 export type {
   PlayerContextType as PlayerMachineContextType,
   PlayerEvent,

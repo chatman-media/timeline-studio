@@ -1,4 +1,5 @@
 import { createLogger } from "@/lib/tauri-logger"
+import { globalPerformanceMonitor } from "./performance-monitor"
 
 const logger = createLogger("video-player:command-queue")
 
@@ -7,6 +8,7 @@ export type CommandPriority = "high" | "normal" | "low"
 export interface QueuedCommand<T = any> {
   id: string
   priority: CommandPriority
+  commandType?: string
   execute: () => Promise<T>
   timestamp: number
 }
@@ -72,9 +74,10 @@ export class CommandQueue {
    *
    * @param command Функция для выполнения
    * @param priority Приоритет выполнения (high/normal/low)
+   * @param commandType Тип команды для мониторинга (например, "play", "seek", "pause")
    * @returns Promise с результатом выполнения
    */
-  async enqueue<T>(command: () => Promise<T>, priority: CommandPriority = "normal"): Promise<T> {
+  async enqueue<T>(command: () => Promise<T>, priority: CommandPriority = "normal", commandType?: string): Promise<T> {
     // Проверка переполнения очереди
     if (this.queue.length >= this.maxQueueSize) {
       const error = new Error(`Command queue overflow: ${this.queue.length} commands pending`)
@@ -88,6 +91,7 @@ export class CommandQueue {
       const queuedCommand: QueuedCommand<T> = {
         id: commandId,
         priority,
+        commandType,
         timestamp: Date.now(),
         execute: async () => {
           try {
@@ -172,16 +176,27 @@ export class CommandQueue {
       await command.execute()
       const duration = performance.now() - startTime
 
+      // Записываем успешную синхронизацию в Performance Monitor
+      globalPerformanceMonitor.recordSync(duration, command.commandType || "unknown")
+
       logger.debug("Command executed", {
         commandId: command.id,
         priority: command.priority,
+        commandType: command.commandType,
         duration: `${duration.toFixed(2)}ms`,
         queueSize: this.queue.length,
       })
     } catch (error) {
+      // Записываем ошибку в Performance Monitor
+      globalPerformanceMonitor.recordFailure(
+        error instanceof Error ? error : new Error(String(error)),
+        command.commandType || "unknown",
+      )
+
       logger.error("Command execution failed", {
         commandId: command.id,
         priority: command.priority,
+        commandType: command.commandType,
         error,
       })
     } finally {

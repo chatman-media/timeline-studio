@@ -26,6 +26,16 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-25] Audio Analysis Architecture Refactoring - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** audio-analysis-architecture-refactoring-plan.md
+- **Action:** active/ → completed/
+- **Notes:**
+  - 45 тестов (types: 21, adapters: 12, integration: 5, performance: 7)
+  - API документация: `docs/04_api_reference/unified-audio-api.md`
+  - Performance тесты: `src-tauri/src/analysis/services/performance_tests.rs`
+  - Unified типы (f64), 3 адаптера, 10 Tauri команд
+
 ### [2025-11-25] Task Organization - Root Cleanup
 Moved 6 task files from docs/08_tasks/ root to proper folders:
 

@@ -216,7 +216,11 @@ export class TranscriptionService {
       const result = await invoke<boolean>("download_whisper_model", { modelName })
       return result
     } finally {
-      unlisten()
+      try {
+        unlisten()
+      } catch {
+        // Ignore unlisten errors
+      }
     }
   }
 
