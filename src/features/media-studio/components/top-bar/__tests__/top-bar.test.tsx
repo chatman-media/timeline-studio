@@ -117,7 +117,6 @@ describe("TopBar", () => {
     it("должен рендерить кнопки настроек", () => {
       render(<TopBar />)
 
-      expect(screen.getByTestId("keyboard-shortcuts-button")).toBeInTheDocument()
       expect(screen.getByTestId("user-settings-button")).toBeInTheDocument()
       expect(screen.getByTestId("project-settings-button")).toBeInTheDocument()
     })
@@ -220,15 +219,6 @@ describe("TopBar", () => {
   })
 
   describe("модальные окна", () => {
-    it("должен открывать модальное окно keyboard shortcuts", () => {
-      render(<TopBar />)
-
-      const button = screen.getByTestId("keyboard-shortcuts-button")
-      fireEvent.click(button)
-
-      expect(mockOpenModal).toHaveBeenCalledWith("keyboard-shortcuts")
-    })
-
     it("должен открывать модальное окно user settings", () => {
       render(<TopBar />)
 

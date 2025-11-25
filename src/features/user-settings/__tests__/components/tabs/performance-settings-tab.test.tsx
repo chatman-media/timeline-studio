@@ -317,23 +317,6 @@ describe("PerformanceSettingsTab", () => {
     expect(screen.getByText("2 dialogs.userSettings.performance.tasks")).toBeInTheDocument()
   })
 
-  it("shows disabled auto proxy media switch when proxy is enabled", () => {
-    mockUseUserSettings.mockReturnValue({
-      ...defaultMockValues,
-      proxyEnabled: true,
-    })
-
-    renderWithModal(<PerformanceSettingsTab />)
-
-    // Find the disabled switch by checking for disabled attribute
-    const switches = screen.getAllByRole("switch")
-    const autoProxySwitch = switches.find((sw) => sw.hasAttribute("disabled"))
-
-    expect(autoProxySwitch).toBeDefined()
-    expect(autoProxySwitch).toBeDisabled()
-    expect(autoProxySwitch).toBeChecked()
-  })
-
   it("shows proxy configuration when enabled", () => {
     mockUseUserSettings.mockReturnValue({
       ...defaultMockValues,

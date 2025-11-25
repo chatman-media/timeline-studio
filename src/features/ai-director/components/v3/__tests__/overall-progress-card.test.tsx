@@ -1,9 +1,10 @@
 /**
  * Tests for OverallProgressCard component
+ * @vitest-environment jsdom
  */
 
 import { render, screen } from "@testing-library/react"
-import { userEvent } from "@testing-library/user-event"
+import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { OverallProgressCard, type OverallProgressData } from "../overall-progress-card"

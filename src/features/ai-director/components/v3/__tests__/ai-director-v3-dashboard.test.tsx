@@ -2,26 +2,18 @@
  * Tests for AIDirectorV3Dashboard component
  */
 
-import { act, render, screen, waitFor } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AIDirectorV3Dashboard } from "../ai-director-v3-dashboard"
 
 // Mock dependencies
-vi.mock("@/domains/browser", () => ({
-  useBrowser: vi.fn(),
-}))
-
 vi.mock("@/domains/media-management", () => ({
   useMediaManagement: vi.fn(),
 }))
 
 vi.mock("@/features/ai-director/hooks/use-ai-director-analysis-v2", () => ({
   useAIDirectorAnalysisV2: vi.fn(),
-}))
-
-vi.mock("@/features/modals", () => ({
-  useModal: vi.fn(),
 }))
 
 vi.mock("@/lib/tauri-logger", () => ({
@@ -42,17 +34,13 @@ vi.mock("sonner", () => ({
 }))
 
 import { toast } from "sonner"
-import { useBrowser } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type { FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
-import { useModal } from "@/features/modals"
 
 describe("AIDirectorV3Dashboard", () => {
-  const mockUseBrowser = vi.mocked(useBrowser)
   const mockUseMediaManagement = vi.mocked(useMediaManagement)
   const mockUseAIDirectorAnalysisV2 = vi.mocked(useAIDirectorAnalysisV2)
-  const mockUseModal = vi.mocked(useModal)
   const mockToast = vi.mocked(toast)
 
   const createMockFileProgress = (overrides?: Partial<FileAnalysisProgress>): FileAnalysisProgress => ({
@@ -87,14 +75,9 @@ describe("AIDirectorV3Dashboard", () => {
   const mockReset = vi.fn()
 
   const defaultMocks = {
-    browserState: {
-      selected_files: {
-        media: ["file-1", "file-2"],
-      },
-    },
     mediaPool: new Map([
-      ["file-1", { id: "file-1", path: "/path/to/video1.mp4", name: "video1.mp4" }],
-      ["file-2", { id: "file-2", path: "/path/to/video2.mp4", name: "video2.mp4" }],
+      ["file-1", { id: "file-1", path: "/path/to/video1.mp4", name: "video1.mp4", type: "Video" as const }],
+      ["file-2", { id: "file-2", path: "/path/to/video2.mp4", name: "video2.mp4", type: "Video" as const }],
     ]),
     analysisHook: {
       isAnalyzing: false,
@@ -109,19 +92,11 @@ describe("AIDirectorV3Dashboard", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockUseBrowser.mockReturnValue({
-      browserState: defaultMocks.browserState,
-    } as any)
-
     mockUseMediaManagement.mockReturnValue({
       mediaPool: defaultMocks.mediaPool,
     } as any)
 
     mockUseAIDirectorAnalysisV2.mockReturnValue(defaultMocks.analysisHook as any)
-
-    mockUseModal.mockReturnValue({
-      openModal: vi.fn(),
-    } as any)
   })
 
   describe("Rendering", () => {
@@ -139,50 +114,34 @@ describe("AIDirectorV3Dashboard", () => {
       expect(settingsButton).toBeInTheDocument()
     })
 
-    it("shows empty state when no files in progress", () => {
+    it("shows empty state with file selection when no analysis in progress", () => {
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      expect(screen.getByText(/ready to analyze/i)).toBeInTheDocument()
-    })
-  })
-
-  describe("Empty State", () => {
-    it("displays empty state with select files option", () => {
-      render(<AIDirectorV3Dashboard initialFiles={[]} />)
-
-      // Empty state button has the primary style (bg-primary)
-      const buttons = screen.getAllByRole("button", { name: /select files from media pool/i })
-      expect(buttons[0]).toBeInTheDocument()
-      expect(buttons[0].className).toContain("bg-primary")
+      expect(screen.getByText("Выберите файлы для анализа")).toBeInTheDocument()
+      expect(screen.getByText(/2 файлов в медиапуле/)).toBeInTheDocument()
     })
 
-    it("shows toast instruction when selecting files from empty state", async () => {
-      const user = userEvent.setup()
+    it("shows files from media pool in empty state", () => {
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      // Empty state button is the first one with this text
-      const buttons = screen.getAllByRole("button", { name: /select files from media pool/i })
-      await user.click(buttons[0])
-
-      expect(mockToast.info).toHaveBeenCalledWith(
-        "Select files from Browser",
-        expect.objectContaining({
-          description: "Use the Media tab in Browser to select files for analysis",
-        }),
-      )
+      expect(screen.getByText("video1.mp4")).toBeInTheDocument()
+      expect(screen.getByText("video2.mp4")).toBeInTheDocument()
     })
   })
 
   describe("File Selection and Analysis Start", () => {
-    it("shows start analysis button when files are selected", () => {
-      mockUseBrowser.mockReturnValue({
-        browserState: { selected_files: { media: ["file-1", "file-2"] } },
-      } as any)
-
+    it("allows selecting files from media pool", async () => {
+      const user = userEvent.setup()
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      const startButton = screen.getByRole("button", { name: /start analysis/i })
-      expect(startButton).toBeInTheDocument()
+      // Click on first file to select it
+      const file1 = screen.getByText("video1.mp4")
+      await user.click(file1.closest('[class*="cursor-pointer"]')!)
+
+      // Should show "Начать анализ" button with file count
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /Начать анализ.*1/ })).toBeInTheDocument()
+      })
     })
 
     it("starts analysis with selected files", async () => {
@@ -191,7 +150,12 @@ describe("AIDirectorV3Dashboard", () => {
 
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      const startButton = screen.getByRole("button", { name: /start analysis/i })
+      // Select files using "Выбрать все" button
+      const selectAllButton = screen.getByRole("button", { name: /Выбрать все/ })
+      await user.click(selectAllButton)
+
+      // Click start analysis
+      const startButton = screen.getByRole("button", { name: /Начать анализ/ })
       await user.click(startButton)
 
       await waitFor(() => {
@@ -202,15 +166,19 @@ describe("AIDirectorV3Dashboard", () => {
       })
 
       expect(mockToast.success).toHaveBeenCalledWith(
-        "Analysis started",
+        "Анализ запущен",
         expect.objectContaining({
-          description: "Processing 2 files",
+          description: expect.stringMatching(/Обработка 2 файл/),
         }),
       )
     })
 
-    // Note: Warning tests removed as "Start Analysis" button is not rendered when no files selected
-    // The UI prevents these invalid states by not showing the button, which is better UX than showing warnings
+    it("disables start button when no files selected", () => {
+      render(<AIDirectorV3Dashboard initialFiles={[]} />)
+
+      const startButton = screen.getByRole("button", { name: /Выберите файлы/ })
+      expect(startButton).toBeDisabled()
+    })
   })
 
   describe("Analysis Progress", () => {
@@ -441,12 +409,17 @@ describe("AIDirectorV3Dashboard", () => {
 
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      const startButton = screen.getByRole("button", { name: /start analysis/i })
+      // Select all files first
+      const selectAllButton = screen.getByRole("button", { name: /Выбрать все/ })
+      await user.click(selectAllButton)
+
+      // Click start analysis
+      const startButton = screen.getByRole("button", { name: /Начать анализ/ })
       await user.click(startButton)
 
       await waitFor(() => {
         expect(mockToast.error).toHaveBeenCalledWith(
-          "Failed to start analysis",
+          "Ошибка запуска анализа",
           expect.objectContaining({
             description: "Failed to initialize analysis",
           }),
@@ -472,45 +445,16 @@ describe("AIDirectorV3Dashboard", () => {
     })
   })
 
-  describe("Media Pool Integration", () => {
-    it("converts selected file IDs to paths correctly", () => {
-      const mediaPool = new Map([
-        ["file-1", { id: "file-1", path: "/videos/clip1.mp4", name: "clip1.mp4" }],
-        ["file-2", { id: "file-2", path: "/videos/clip2.mp4", name: "clip2.mp4" }],
-      ])
-
-      mockUseBrowser.mockReturnValue({
-        browserState: { selected_files: { media: ["file-1", "file-2"] } },
-      } as any)
-
+  describe("Empty Media Pool", () => {
+    it("shows empty pool message when no files in media pool", () => {
       mockUseMediaManagement.mockReturnValue({
-        mediaPool,
+        mediaPool: new Map(),
       } as any)
 
       render(<AIDirectorV3Dashboard initialFiles={[]} />)
 
-      // Verify selected files count is displayed
-      expect(screen.getByText(/2 selected/i)).toBeInTheDocument()
-    })
-
-    it("handles missing files in media pool gracefully", () => {
-      const mediaPool = new Map([
-        ["file-1", { id: "file-1", path: "/videos/clip1.mp4", name: "clip1.mp4" }],
-        // file-2 is missing
-      ])
-
-      mockUseBrowser.mockReturnValue({
-        browserState: { selected_files: { media: ["file-1", "file-2"] } },
-      } as any)
-
-      mockUseMediaManagement.mockReturnValue({
-        mediaPool,
-      } as any)
-
-      render(<AIDirectorV3Dashboard initialFiles={[]} />)
-
-      // Should only show 1 file (file-2 is ignored)
-      expect(screen.getByText(/1 selected/i)).toBeInTheDocument()
+      expect(screen.getByText(/Медиапул пуст/)).toBeInTheDocument()
+      expect(screen.getByRole("button", { name: /Открыть Browser для импорта/ })).toBeInTheDocument()
     })
   })
 

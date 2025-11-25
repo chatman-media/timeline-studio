@@ -60,6 +60,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })
@@ -131,6 +134,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })
@@ -184,6 +190,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })
@@ -232,6 +241,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })
@@ -257,6 +269,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })
@@ -285,6 +300,9 @@ describe("useFramePreview", () => {
         getFilesWithPreviews: vi.fn(),
         savePreviewData: vi.fn(),
         loadPreviewData: vi.fn(),
+        restorePreviewCache: vi.fn(),
+        hasCachedThumbnail: vi.fn(),
+        getCachedThumbnailPath: vi.fn(),
         isGenerating: false,
         error: null,
       })

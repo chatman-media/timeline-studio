@@ -23,6 +23,7 @@ const createMockIcon = (name: string) => {
 export const Activity = createMockIcon("Activity")
 export const AlertCircle = createMockIcon("AlertCircle")
 export const AlertTriangle = createMockIcon("AlertTriangle")
+export const AlignCenter = createMockIcon("AlignCenter")
 export const ArrowLeftRight = createMockIcon("ArrowLeftRight")
 export const ArrowRight = createMockIcon("ArrowRight")
 export const AudioLines = createMockIcon("AudioLines")
@@ -82,6 +83,7 @@ export const GripVertical = createMockIcon("GripVertical")
 export const GripVerticalIcon = createMockIcon("GripVerticalIcon")
 export const HardDrive = createMockIcon("HardDrive")
 export const Hash = createMockIcon("Hash")
+export const Headphones = createMockIcon("Headphones")
 export const History = createMockIcon("History")
 export const Image = createMockIcon("Image")
 export const ImagePlay = createMockIcon("ImagePlay")
@@ -96,6 +98,7 @@ export const List = createMockIcon("List")
 export const ListTodo = createMockIcon("ListTodo")
 export const Loader2 = createMockIcon("Loader2")
 export const Lock = createMockIcon("Lock")
+export const Magnet = createMockIcon("Magnet")
 export const Maximize2 = createMockIcon("Maximize2")
 export const Mic = createMockIcon("Mic")
 export const Minimize2 = createMockIcon("Minimize2")
@@ -137,6 +140,7 @@ export const Settings2 = createMockIcon("Settings2")
 export const Sliders = createMockIcon("Sliders")
 export const Circle = createMockIcon("Circle")
 export const Sparkles = createMockIcon("Sparkles")
+export const Speaker = createMockIcon("Speaker")
 export const Split = createMockIcon("Split")
 export const Square = createMockIcon("Square")
 export const SquareMousePointer = createMockIcon("SquareMousePointer")
@@ -166,6 +170,7 @@ export const Users = createMockIcon("Users")
 export const Video = createMockIcon("Video")
 export const Volume2 = createMockIcon("Volume2")
 export const VolumeX = createMockIcon("VolumeX")
+export const Waves = createMockIcon("Waves")
 export const RadioIcon = createMockIcon("RadioIcon")
 export const Shuffle = createMockIcon("Shuffle")
 export const Wand2 = createMockIcon("Wand2")
@@ -185,6 +190,7 @@ vi.mock("lucide-react", () => ({
   Activity,
   AlertCircle,
   AlertTriangle,
+  AlignCenter,
   ArrowLeftRight,
   ArrowRight,
   AudioLines,
@@ -244,6 +250,7 @@ vi.mock("lucide-react", () => ({
   GripVerticalIcon,
   HardDrive,
   Hash,
+  Headphones,
   History,
   Image,
   ImagePlay,
@@ -258,6 +265,7 @@ vi.mock("lucide-react", () => ({
   ListTodo,
   Loader2,
   Lock,
+  Magnet,
   Maximize2,
   Mic,
   Minimize2,
@@ -299,6 +307,7 @@ vi.mock("lucide-react", () => ({
   Settings2,
   Shuffle,
   Sliders,
+  Speaker,
   Circle,
   Sparkles,
   Split,
@@ -330,6 +339,7 @@ vi.mock("lucide-react", () => ({
   Video,
   Volume2,
   VolumeX,
+  Waves,
   Wand2,
   Webcam,
   X,
