@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
-import { listen } from "@tauri-apps/api/event"
-import { useCallback, useEffect, useState } from "react"
+import { listen, type UnlistenFn } from "@tauri-apps/api/event"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import type { MediaFile } from "@/features/media/types/media"
 import { cacheMediaMetadata, getCachedMetadata } from "@/features/video-compiler/services/metadata-cache-service"
@@ -104,57 +104,85 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
   // Извлекаем callbacks из options для стабильных ссылок
   const { onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress } = options
 
+  // Храним unlisten функцию в ref для безопасной отписки
+  const unlistenRef = useRef<UnlistenFn | null>(null)
+  const isMountedRef = useRef(true)
+
   useEffect(() => {
-    // Подписываемся на события процессора
-    const unlisten = listen<ProcessorEvent>("media-processor", (event) => {
-      const { type, data } = event.payload
+    isMountedRef.current = true
 
-      switch (type) {
-        case "FilesDiscovered":
-          onFilesDiscovered?.((data as FilesDiscoveredData).files)
-          break
+    // Подписываемся на события процессора асинхронно
+    const setupListener = async () => {
+      try {
+        const unlistenFn = await listen<ProcessorEvent>("media-processor", (event) => {
+          // Проверяем, что компонент ещё смонтирован
+          if (!isMountedRef.current) return
 
-        case "MetadataReady": {
-          const metadataData = data as MetadataReadyData
-          // Cache the metadata for future use
-          void cacheMetadataIfValid(metadataData.metadata)
-          onMetadataReady?.(metadataData.file_id, metadataData.metadata)
-          break
+          const { type, data } = event.payload
+
+          switch (type) {
+            case "FilesDiscovered":
+              onFilesDiscovered?.((data as FilesDiscoveredData).files)
+              break
+
+            case "MetadataReady": {
+              const metadataData = data as MetadataReadyData
+              // Cache the metadata for future use
+              void cacheMetadataIfValid(metadataData.metadata)
+              onMetadataReady?.(metadataData.file_id, metadataData.metadata)
+              break
+            }
+
+            case "ThumbnailReady": {
+              const thumbnailData = data as ThumbnailReadyData
+              onThumbnailReady?.(thumbnailData.file_id, thumbnailData.thumbnail_path, thumbnailData.thumbnail_data)
+              break
+            }
+
+            case "ProcessingError": {
+              const errorData = data as ProcessingErrorData
+              setErrors((prev) => new Map(prev).set(errorData.file_id, errorData.error))
+              onError?.(errorData.file_id, errorData.error)
+              break
+            }
+
+            case "ScanProgress": {
+              const progressData = data as ScanProgressData
+              setProgress({ current: progressData.current, total: progressData.total })
+              onProgress?.(progressData.current, progressData.total)
+              break
+            }
+            default:
+              // Неизвестный тип события, игнорируем
+              break
+          }
+        })
+
+        // Сохраняем unlisten функцию только если компонент ещё смонтирован
+        if (isMountedRef.current) {
+          unlistenRef.current = unlistenFn
+        } else {
+          // Компонент уже размонтирован, сразу отписываемся
+          unlistenFn()
         }
-
-        case "ThumbnailReady": {
-          const thumbnailData = data as ThumbnailReadyData
-          onThumbnailReady?.(thumbnailData.file_id, thumbnailData.thumbnail_path, thumbnailData.thumbnail_data)
-          break
-        }
-
-        case "ProcessingError": {
-          const errorData = data as ProcessingErrorData
-          setErrors((prev) => new Map(prev).set(errorData.file_id, errorData.error))
-          onError?.(errorData.file_id, errorData.error)
-          break
-        }
-
-        case "ScanProgress": {
-          const progressData = data as ScanProgressData
-          setProgress({ current: progressData.current, total: progressData.total })
-          onProgress?.(progressData.current, progressData.total)
-          break
-        }
-        default:
-          // Неизвестный тип события, игнорируем
-          break
+      } catch {
+        // Ignore listener setup errors (e.g., in non-Tauri environment)
       }
-    })
+    }
+
+    void setupListener()
 
     return () => {
-      void unlisten.then((fn) => {
+      isMountedRef.current = false
+      // Безопасно вызываем unlisten если он был установлен
+      if (unlistenRef.current) {
         try {
-          fn()
+          unlistenRef.current()
         } catch {
           // Ignore unlisten errors
         }
-      })
+        unlistenRef.current = null
+      }
     }
   }, [onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress])
 

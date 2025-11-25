@@ -31,7 +31,7 @@ export class AIDirectorService {
    * Запустить comprehensive analysis медиафайла
    */
   async analyzeComprehensive(videoPath: string, config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult> {
-    return invoke("ai_director_analyze_comprehensive", {
+    return invoke("ai_director_v2_analyze_comprehensive", {
       videoPath,
       config,
     })
@@ -41,7 +41,7 @@ export class AIDirectorService {
    * Запустить быстрый анализ медиафайла
    */
   async analyzeQuick(videoPath: string): Promise<ComprehensiveAnalysisResult> {
-    return invoke("ai_director_analyze_quick", {
+    return invoke("ai_director_v2_analyze_quick", {
       videoPath,
     })
   }
@@ -50,7 +50,7 @@ export class AIDirectorService {
    * Запустить batch analysis нескольких файлов
    */
   async analyzeBatch(filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> {
-    return invoke("ai_director_analyze_batch", {
+    return invoke("ai_director_v2_analyze_batch", {
       filePaths,
       config,
     })

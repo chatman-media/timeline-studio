@@ -35,6 +35,7 @@ export interface UseAIDirectorAnalysisV2Return {
 
   // Actions
   startBatchAnalysis: (filePaths: string[], analyzers: Set<AnalyzerType>) => Promise<void>
+  cancelAnalysis: () => void
   clearErrors: () => void
   reset: () => void
 
@@ -236,6 +237,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis started", payload)
 
           setBatchProgress({
+            status: "running",
             batchId: payload.batch_id,
             totalFiles: payload.total_files,
             completedFiles: 0,
@@ -530,12 +532,19 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         prev
           ? {
               ...prev,
-              status: "completed",
+              status: "completed" as const,
               endTime: new Date().toISOString(),
-              stats: {
-                ...prev.stats,
-                completedFiles: results.length,
-              },
+              stats: prev.stats
+                ? {
+                    ...prev.stats,
+                    completedFiles: results.length,
+                  }
+                : {
+                    totalFiles: prev.totalFiles || 0,
+                    completedFiles: results.length,
+                    failedFiles: 0,
+                    totalProgress: 100,
+                  },
             }
           : null,
       )
@@ -560,6 +569,41 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           : null,
       )
     }
+  }, [])
+
+  // Cancel analysis
+  const cancelAnalysis = useCallback(() => {
+    logger.infoSync("[useAIDirectorAnalysisV2] Cancelling analysis")
+
+    // Stop the analyzing state
+    setIsAnalyzing(false)
+
+    // Update batch progress to cancelled
+    setBatchProgress((prev) =>
+      prev
+        ? {
+            ...prev,
+            status: "cancelled",
+            endTime: new Date().toISOString(),
+          }
+        : null,
+    )
+
+    // Mark all analyzing/pending files as cancelled
+    setFilesProgress((prev) =>
+      prev.map((file) => {
+        if (file.status === "analyzing" || file.status === "pending") {
+          return {
+            ...file,
+            status: "cancelled",
+            endTime: new Date().toISOString(),
+          }
+        }
+        return file
+      }),
+    )
+
+    logger.infoSync("[useAIDirectorAnalysisV2] Analysis cancelled")
   }, [])
 
   // Clear errors
@@ -591,6 +635,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
     // Actions
     startBatchAnalysis,
+    cancelAnalysis,
     clearErrors,
     reset,
 

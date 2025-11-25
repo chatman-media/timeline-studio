@@ -9,9 +9,15 @@ import { invoke } from "@tauri-apps/api/core"
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { getVideoEditingOrchestrator } from "@/domains/video-editing"
 import type { TimelineClip } from "@/domains/video-editing/types"
-import type { MomentScore, MontagePlan, PlanGeneratorConfig } from "@/features/montage-planner/types"
+import {
+  MomentCategory,
+  type MomentScore,
+  type MontagePlan,
+  type PlanGeneratorConfig,
+} from "@/features/montage-planner/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedMoment } from "@/types/montage-planner-rust"
+import { MomentCategory as RustMomentCategory } from "@/types/montage-planner-rust"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import type { AIToolMetadata, IAITool } from "../../../types"
 
@@ -187,6 +193,23 @@ function formatDuration(seconds: number): string {
 }
 
 /**
+ * Маппинг категорий из Rust backend (PascalCase) в frontend (lowercase)
+ */
+function mapRustCategoryToFrontend(rustCategory: RustMomentCategory): MomentCategory {
+  const mapping: Record<RustMomentCategory, MomentCategory> = {
+    [RustMomentCategory.Action]: MomentCategory.Action,
+    [RustMomentCategory.Drama]: MomentCategory.Drama,
+    [RustMomentCategory.Comedy]: MomentCategory.Comedy,
+    [RustMomentCategory.Transition]: MomentCategory.Transition,
+    [RustMomentCategory.Highlight]: MomentCategory.Highlight,
+    [RustMomentCategory.Opening]: MomentCategory.Opening,
+    [RustMomentCategory.Closing]: MomentCategory.Closing,
+    [RustMomentCategory.BRoll]: MomentCategory.BRoll,
+  }
+  return mapping[rustCategory] ?? MomentCategory.Highlight
+}
+
+/**
  * Конвертирует DetectedMoment из backend в MomentScore для frontend
  */
 function convertDetectedMomentToMomentScore(detected: DetectedMoment): MomentScore {
@@ -202,7 +225,7 @@ function convertDetectedMomentToMomentScore(detected: DetectedMoment): MomentSco
       composition: detected.scores.composition,
     },
     totalScore: detected.total_score,
-    category: detected.category,
+    category: mapRustCategoryToFrontend(detected.category as RustMomentCategory),
   }
 }
 

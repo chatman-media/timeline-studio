@@ -340,7 +340,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting search query", { query, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting search query", { query, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -348,6 +349,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "SearchQueryChanged",
+          data: { tab: targetTab, query },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -359,7 +368,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const toggleFavorites = async (tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Toggling favorites", { tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Toggling favorites", { tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -367,6 +377,17 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Получаем текущее состояние и инвертируем
+      const currentSettings = tabSettings[targetTab] || DEFAULT_TAB_SETTINGS
+      const newShowFavorites = !currentSettings.show_favorites_only
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "FavoritesToggled",
+          data: { tab: targetTab, show_favorites: newShowFavorites },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -378,7 +399,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setSort = async (sortBy: string, sortOrder: "asc" | "desc", tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting sort", { sortBy, sortOrder, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting sort", { sortBy, sortOrder, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -386,6 +408,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "SortChanged",
+          data: { tab: targetTab, sort_by: sortBy, sort_order: sortOrder },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -397,7 +427,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setGroupBy = async (groupBy: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting group by", { groupBy, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting group by", { groupBy, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -405,6 +436,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "GroupByChanged",
+          data: { tab: targetTab, group_by: groupBy },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -416,7 +455,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setFilter = async (filterType: string, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting filter", { filterType, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting filter", { filterType, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -424,6 +464,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "FilterChanged",
+          data: { tab: targetTab, filter_type: filterType },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -435,7 +483,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setViewMode = async (viewMode: ViewMode, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting view mode", { viewMode, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting view mode", { viewMode, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -443,6 +492,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "ViewModeChanged",
+          data: { tab: targetTab, view_mode: viewMode },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {
@@ -454,7 +511,8 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   }
 
   const setPreviewSize = async (sizeIndex: number, tab?: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Setting preview size", { sizeIndex, tab: tab || activeTab })
+    const targetTab = tab || activeTab
+    logger.info("[BrowserProvider] Setting preview size", { sizeIndex, tab: targetTab })
     try {
       browserActor.send({ type: "SET_LOADING", isLoading: true })
       const { commands } = await import("@/types/generated/tauri-bindings")
@@ -462,6 +520,14 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
       if (result.status === "error") {
         throw new Error(result.error)
       }
+      // Обновляем локальное состояние после успешного вызова бэкенда
+      browserActor.send({
+        type: "BACKEND_EVENT",
+        event: {
+          event_type: "PreviewSizeChanged",
+          data: { tab: targetTab, size_index: sizeIndex },
+        },
+      })
       browserActor.send({ type: "CLEAR_ERROR" })
       browserActor.send({ type: "SET_LOADING", isLoading: false })
     } catch (err) {

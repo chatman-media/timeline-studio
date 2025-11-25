@@ -4,15 +4,11 @@
  * AI Director Modal Component
  *
  * Модальное окно для AI Director анализа видео
- * Использует AIAnalysisDashboardV2 - переработанную версию с детальным прогрессом
+ * Использует AIDirectorV3Dashboard - новый minimalist UI с batch support
  */
 
-import { AIAnalysisDashboardV2 } from "@/features/analysis-dashboard/components/ai-analysis-dashboard-v2"
+import { AIDirectorV3Dashboard } from "./v3"
 
 export function AIDirectorModal() {
-  return (
-    <div className="flex h-full w-full flex-col">
-      <AIAnalysisDashboardV2 />
-    </div>
-  )
+  return <AIDirectorV3Dashboard />
 }

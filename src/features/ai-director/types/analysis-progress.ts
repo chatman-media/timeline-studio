@@ -17,6 +17,7 @@ export type AnalyzerType =
   // Audio analyzers
   | "audio_quality"
   | "speech_recognition"
+  | "speech_detection" // Alias for speech_recognition in v3 UI
   | "music_detection"
   | "sound_events"
   | "silence_detection"
@@ -24,7 +25,9 @@ export type AnalyzerType =
   | "mood_analysis"
   | "content_classification"
   | "quality_assessment"
+  | "visual_quality" // Alias for quality_assessment in v3 UI
   | "moment_detection"
+  | "person_recognition" // Person recognition in v3 UI
   | "vlm_analysis"
 
 export interface AnalyzerMetadata {
@@ -73,6 +76,8 @@ export interface AnalyzerResult {
 export type FileAnalysisStatus = "pending" | "analyzing" | "completed" | "error" | "cancelled"
 
 export interface FileAnalysisProgress {
+  /** Unique file ID (alias for fileId for backward compatibility) */
+  id?: string
   fileId: string
   filePath: string
   fileName: string
@@ -83,6 +88,10 @@ export interface FileAnalysisProgress {
   endTime?: string
   duration?: number // в миллисекундах
   error?: string
+  /** Current analysis stage (for UI display) */
+  currentStage?: string
+  /** Estimated time remaining in seconds */
+  eta?: number
   // Статистика
   stats?: {
     totalAnalyzers: number
@@ -99,14 +108,25 @@ export interface FileAnalysisProgress {
 export type BatchAnalysisStatus = "idle" | "running" | "completed" | "error" | "cancelled"
 
 export interface BatchAnalysisProgress {
-  id: string
+  /** Unique batch ID */
+  id?: string
+  /** Batch ID (for backward compatibility) */
+  batchId?: string
   status: BatchAnalysisStatus
-  files: FileAnalysisProgress[]
+  files?: FileAnalysisProgress[]
   startTime?: string
   endTime?: string
   duration?: number
+  /** Configuration mode used for this batch */
+  configMode?: string
+  /** Direct access fields for convenience */
+  totalFiles?: number
+  completedFiles?: number
+  progress?: number // 0-100
+  estimatedTimeRemaining?: number // in seconds
+  currentFilePath?: string
   // Общая статистика
-  stats: {
+  stats?: {
     totalFiles: number
     completedFiles: number
     failedFiles: number
@@ -288,7 +308,28 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     description: "Детекция тишины",
     estimatedDuration: 15,
   },
+  speech_detection: {
+    type: "speech_detection",
+    displayName: "Speech Detection",
+    category: "audio",
+    description: "Определение речевых сегментов",
+    estimatedDuration: 30,
+  },
   // Content
+  person_recognition: {
+    type: "person_recognition",
+    displayName: "Person Recognition",
+    category: "video",
+    description: "Распознавание персон",
+    estimatedDuration: 55,
+  },
+  visual_quality: {
+    type: "visual_quality",
+    displayName: "Visual Quality",
+    category: "video",
+    description: "Оценка визуального качества",
+    estimatedDuration: 30,
+  },
   mood_analysis: {
     type: "mood_analysis",
     displayName: "Mood Analysis",
