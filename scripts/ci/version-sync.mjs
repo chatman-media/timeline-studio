@@ -23,6 +23,7 @@ const config = {
     tauri: "src-tauri/tauri.conf.json",
     version: "version.json",
     mock: "src/test/mocks/tauri/api/app.ts",
+    promoProject: "promo/src/pages/Project.tsx",
   },
 }
 
@@ -104,6 +105,16 @@ const updaters = {
     )
     writeFileSync(path, content)
   },
+
+  promoVersion: (path, version) => {
+    let content = readFileSync(path, "utf8")
+    // Обновляем версию в формате "Версия X.X.X" и "Version X.X.X"
+    content = content.replace(
+      /language === "ru" \? "Версия [\d.]+" : "Version [\d.]+"/,
+      `language === "ru" ? "Версия ${version}" : "Version ${version}"`,
+    )
+    writeFileSync(path, content)
+  },
 }
 
 /**
@@ -166,8 +177,12 @@ async function main() {
   versionResult ? success++ : failed++
 
   // Тестовый мок
-  const result = updateVersion(config.files.mock, version, updaters.typescript)
-  result ? success++ : failed++
+  const mockResult = updateVersion(config.files.mock, version, updaters.typescript)
+  mockResult ? success++ : failed++
+
+  // Promo сайт - страница проекта
+  const promoResult = updateVersion(config.files.promoProject, version, updaters.promoVersion)
+  promoResult ? success++ : failed++
 
   // Итоги
   console.log(`\n✅ Обновлено: ${success}`)

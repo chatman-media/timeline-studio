@@ -94,9 +94,9 @@ export const Project: React.FC = () => {
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
               <div className="flex items-center justify-center space-x-4 text-gray-400">
-                <span>{language === "ru" ? "Версия 3.13" : "Version 3.13"}</span>
+                <span>{language === "ru" ? "Версия 3.13.0" : "Version 3.13.0"}</span>
                 <span>•</span>
-                <span>{language === "ru" ? "95% готовности" : "95% ready"}</span>
+                <span>Open Source</span>
                 <span>•</span>
                 <span>{language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}</span>
               </div>
@@ -119,7 +119,7 @@ export const Project: React.FC = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer ${
                     activeTab === tab.id
-                      ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+                      ? "bg-[#8b5cf6] text-white shadow-lg"
                       : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 hover:text-white"
                   }`}
                 >
