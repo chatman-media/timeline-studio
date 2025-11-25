@@ -4,7 +4,10 @@
  * Домен для управления медиа файлами и операциями с ними
  */
 
-export { AudioWaveform, AudioWaveformCompact } from "./components/audio-waveform"
+// AudioWaveform components require peaks.js which needs browser environment
+// Import directly from "./components/audio-waveform" with "use client" directive
+// export { AudioWaveform, AudioWaveformCompact } from "./components/audio-waveform"
+
 // Hooks
 export {
   useFileOperations,
@@ -12,8 +15,9 @@ export {
   useMediaManagement,
   useMediaMetadata,
 } from "./hooks"
-// Peaks.js Waveform
-export { createAudioElement, usePeaksWaveform } from "./hooks/use-peaks-waveform"
+
+// Peaks.js Waveform - requires browser environment, import directly when needed
+// export { createAudioElement, usePeaksWaveform } from "./hooks/use-peaks-waveform"
 export type { FileOperationsMachine } from "./machines/file-operations-machine"
 // Machines
 export { fileOperationsMachine } from "./machines/file-operations-machine"
