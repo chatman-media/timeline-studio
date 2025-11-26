@@ -28,11 +28,23 @@ vi.mock("@/lib/tauri-utils", () => ({
   convertVideoSrc: (src: string) => mockConvertVideoSrc(src),
 }))
 
-vi.mock("sonner", () => ({
-  toast: {
-    error: vi.fn(),
-    success: vi.fn(),
-  },
+const mockShowSuccess = vi.fn()
+const mockShowError = vi.fn()
+const mockShowInfo = vi.fn()
+const mockShowWarning = vi.fn()
+
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: mockShowSuccess,
+    showError: mockShowError,
+    showInfo: mockShowInfo,
+    showWarning: mockShowWarning,
+    notifications: [],
+    hasNotifications: false,
+    showNotification: vi.fn(),
+    dismissNotification: vi.fn(),
+    clearNotifications: vi.fn(),
+  }),
 }))
 
 // Mock UI components
@@ -47,9 +59,6 @@ vi.mock("@/components/ui/aspect-ratio", () => ({
 vi.mock("../player-controls", () => ({
   PlayerControls: () => <div data-testid="player-controls">Player Controls</div>,
 }))
-
-// Get mocked toast after vi.mock
-const { toast: mockToast } = await import("sonner")
 
 describe("EffectsPreviewPlayer", () => {
   const mockEffectsPreviewService = {
@@ -116,6 +125,10 @@ describe("EffectsPreviewPlayer", () => {
 
   afterEach(() => {
     vi.clearAllMocks()
+    mockShowSuccess.mockClear()
+    mockShowError.mockClear()
+    mockShowInfo.mockClear()
+    mockShowWarning.mockClear()
   })
 
   it("renders the component with video player", () => {
@@ -164,7 +177,7 @@ describe("EffectsPreviewPlayer", () => {
     })
 
     await waitFor(() => {
-      expect(mockToast.success).toHaveBeenCalledWith('Эффект "blur" добавлен')
+      expect(mockShowSuccess).toHaveBeenCalledWith("Эффект добавлен", 'Эффект "blur" добавлен')
     })
   })
 

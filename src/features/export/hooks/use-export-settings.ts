@@ -1,7 +1,7 @@
 import { save } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useNotifications } from "@/domains/system-integration"
 import { OutputFormat } from "@/domains/video-editing/types"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import { QUALITY_PRESETS, RESOLUTION_PRESETS } from "../constants/export-constants"
@@ -23,6 +23,7 @@ export function useExportSettings() {
   logInfo("[useExportSettings] Инициализация хука")
 
   const { t } = useTranslation()
+  const { showError } = useNotifications()
   const [exportSettings, setExportSettings] = useState<ExportSettings>({
     ...DEFAULT_EXPORT_SETTINGS,
     fileName: t("project.untitledExport", { number: 1 }),
@@ -46,9 +47,9 @@ export function useExportSettings() {
       }
     } catch (error) {
       logError(`[useExportSettings] Ошибка выбора папки: ${String(error)}`)
-      toast.error(t("dialogs.export.errors.folderSelection"))
+      showError(t("dialogs.export.errors.folderSelection"), "")
     }
-  }, [exportSettings, t])
+  }, [exportSettings, showError, t])
 
   const getExportConfig = useCallback(() => {
     const qualityPreset = QUALITY_PRESETS[exportSettings.quality]

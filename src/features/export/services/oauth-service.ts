@@ -1,11 +1,12 @@
 // OAuth service для авторизации в социальных сетях
 
-import { toast } from "sonner"
+import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { OAuthToken } from "../types/export-types"
 import { SecureTokenStorage } from "./secure-token-storage"
 
 const logger = createLogger({ module: "OauthService" })
+const orchestrator = getSystemIntegrationOrchestrator()
 
 interface OAuthConfig {
   clientId: string
@@ -48,7 +49,11 @@ export async function loginToNetwork(network: string): Promise<OAuthToken | null
   }
 
   if (!config.clientId) {
-    toast.error(`OAuth not configured for ${network}. Please check environment variables.`)
+    orchestrator.showNotification({
+      type: "error",
+      title: "OAuth Configuration Error",
+      message: `OAuth not configured for ${network}. Please check environment variables.`,
+    })
     return null
   }
 
@@ -208,7 +213,12 @@ async function refreshVimeoToken(refreshToken: string): Promise<OAuthToken> {
 export async function logout(network: string): Promise<void> {
   // Очищаем сохраненные токены через безопасное хранилище
   await SecureTokenStorage.removeToken(network)
-  toast.success(`Logged out from ${network}`)
+  orchestrator.showNotification({
+    type: "success",
+    title: "Logged Out",
+    message: `Successfully logged out from ${network}`,
+    duration: 3000,
+  })
 }
 
 export async function getStoredToken(network: string): Promise<OAuthToken | null> {

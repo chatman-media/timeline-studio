@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
@@ -21,6 +21,7 @@ const generateSubtitleId = () => `subtitle-${Date.now()}-${Math.random().toStrin
 export function useSubtitlesImport() {
   const [isImporting, setIsImporting] = useState(false)
   const { project, send } = useTimeline()
+  const { showSuccess, showError } = useNotifications()
 
   /**
    * Добавление субтитров на таймлайн
@@ -140,23 +141,17 @@ export function useSubtitlesImport() {
             totalImported += subtitles.length
           } catch (error) {
             logger.error(`Ошибка при импорте файла ${filePath}:`, { error })
-            toast.error("Ошибка импорта", {
-              description: `Не удалось импортировать файл ${filePath}`,
-            })
+            showError("Ошибка импорта", `Не удалось импортировать файл ${filePath}`)
           }
         }
 
         if (totalImported > 0) {
-          toast.success("Субтитры импортированы", {
-            description: `Импортировано ${totalImported} субтитров из ${files.length} файлов`,
-          })
+          showSuccess("Субтитры импортированы", `Импортировано ${totalImported} субтитров из ${files.length} файлов`)
         }
       }
     } catch (error) {
       logger.error("Ошибка при импорте субтитров:", { error })
-      toast.error("Ошибка", {
-        description: "Не удалось импортировать субтитры",
-      })
+      showError("Ошибка", "Не удалось импортировать субтитры")
     } finally {
       setIsImporting(false)
     }
@@ -207,21 +202,18 @@ export function useSubtitlesImport() {
             })
           }
 
-          toast.success("Субтитры импортированы", {
-            description: `Импортировано ${subtitles.length} субтитров из файла ${result.file_name}`,
-          })
+          showSuccess(
+            "Субтитры импортированы",
+            `Импортировано ${subtitles.length} субтитров из файла ${result.file_name}`,
+          )
         } catch (error) {
           logger.error("Ошибка при импорте файла:", { error })
-          toast.error("Ошибка импорта", {
-            description: "Не удалось импортировать файл субтитров",
-          })
+          showError("Ошибка импорта", "Не удалось импортировать файл субтитров")
         }
       }
     } catch (error) {
       logger.error("Ошибка при выборе файла:", { error })
-      toast.error("Ошибка", {
-        description: "Не удалось выбрать файл",
-      })
+      showError("Ошибка", "Не удалось выбрать файл")
     } finally {
       setIsImporting(false)
     }

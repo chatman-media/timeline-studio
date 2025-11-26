@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
@@ -13,6 +13,7 @@ export function SubtitleAIToolsModal() {
   const { t } = useTranslation()
   const { modalData, closeModal } = useModal()
   const { project, send } = useTimeline()
+  const { showSuccess } = useNotifications()
 
   /**
    * Обработчик добавления субтитров на таймлайн
@@ -69,9 +70,10 @@ export function SubtitleAIToolsModal() {
       })
     })
 
-    toast.success(t("subtitles.ai.success", "Субтитры добавлены"), {
-      description: t("subtitles.ai.successDesc", "Добавлено {{count}} субтитров", { count: segments.length }),
-    })
+    showSuccess(
+      t("subtitles.ai.success", "Субтитры добавлены"),
+      t("subtitles.ai.successDesc", "Добавлено {{count}} субтитров", { count: segments.length }),
+    )
 
     closeModal()
   }

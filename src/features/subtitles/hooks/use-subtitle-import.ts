@@ -5,11 +5,11 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
+import { useNotifications } from "@/domains/system-integration"
 import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
-import { useToast } from "@/hooks/use-toast"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { SubtitleClip } from "../types/subtitles"
@@ -29,7 +29,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
   const [isImporting, setIsImporting] = useState(false)
   const [importProgress, setImportProgress] = useState(0)
 
-  const { toast } = useToast()
+  const { showSuccess, showError } = useNotifications()
   const { project, addTrack, addClip } = useTimeline()
 
   /**
@@ -142,10 +142,10 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         count: subtitles.length,
         format,
       } as LogContext)
-      toast({
-        title: "Субтитры импортированы",
-        description: `Импортировано ${subtitles.length} субтитров из файла ${format.toUpperCase()}`,
-      })
+      showSuccess(
+        "Субтитры импортированы",
+        `Импортировано ${subtitles.length} субтитров из файла ${format.toUpperCase()}`,
+      )
 
       // Вызываем callback если есть
       if (onImportComplete) {
@@ -159,16 +159,12 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       })
     } catch (error) {
       await logError("[useSubtitleImport] Ошибка импорта субтитров", { error } as LogContext)
-      toast({
-        title: "Ошибка импорта",
-        description: error instanceof Error ? error.message : "Неизвестная ошибка",
-        variant: "destructive",
-      })
+      showError("Ошибка импорта", error instanceof Error ? error.message : "Неизвестная ошибка")
     } finally {
       setIsImporting(false)
       setImportProgress(0)
     }
-  }, [trackId, addTrack, addClip, project, toast, onImportComplete])
+  }, [trackId, addTrack, addClip, project, showSuccess, showError, onImportComplete])
 
   /**
    * Импортирует субтитры из строки
@@ -295,26 +291,19 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         await logInfo("[useSubtitleImport] Whisper транскрипция успешно импортирована", {
           count: subtitles.length,
         } as LogContext)
-        toast({
-          title: "Транскрипция импортирована",
-          description: `Добавлено ${subtitles.length} субтитров из транскрипции`,
-        })
+        showSuccess("Транскрипция импортирована", `Добавлено ${subtitles.length} субтитров из транскрипции`)
 
         return { success: true, subtitles }
       } catch (error) {
         await logError("[useSubtitleImport] Ошибка импорта Whisper транскрипции", { error } as LogContext)
-        toast({
-          title: "Ошибка импорта",
-          description: error instanceof Error ? error.message : "Неизвестная ошибка",
-          variant: "destructive",
-        })
+        showError("Ошибка импорта", error instanceof Error ? error.message : "Неизвестная ошибка")
         return {
           success: false,
           error: error instanceof Error ? error.message : "Неизвестная ошибка",
         }
       }
     },
-    [trackId, addClip, toast],
+    [trackId, addClip, showSuccess, showError],
   )
 
   return {

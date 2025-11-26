@@ -1,6 +1,6 @@
 // Объединяющий сервис для всех социальных сетей
 
-import { toast } from "sonner"
+import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
@@ -10,6 +10,7 @@ import * as VimeoService from "./vimeo-service"
 import * as YouTubeService from "./youtube-service"
 
 const logger = createLogger({ module: "SocialNetworksService" })
+const orchestrator = getSystemIntegrationOrchestrator()
 
 export interface SocialUploadResult {
   success: boolean
@@ -20,7 +21,11 @@ export interface SocialUploadResult {
 
 export async function login(network: string): Promise<boolean> {
   try {
-    toast.info(`Connecting to ${network}...`)
+    orchestrator.showNotification({
+      type: "info",
+      title: "Connecting",
+      message: `Connecting to ${network}...`,
+    })
 
     const token = await OAuthService.loginToNetwork(network)
     if (!token) {
@@ -36,18 +41,32 @@ export async function login(network: string): Promise<boolean> {
       localStorage.setItem(`${network}_user_info`, JSON.stringify(userInfo))
     }
 
-    toast.success(`Successfully connected to ${network}`)
+    orchestrator.showNotification({
+      type: "success",
+      title: "Connected",
+      message: `Successfully connected to ${network}`,
+      duration: 3000,
+    })
     return true
   } catch (error) {
     logger.error(`Login failed for ${network}: ${String(error)}`)
-    toast.error(`Failed to connect to ${network}: ${error instanceof Error ? error.message : "Unknown error"}`)
+    orchestrator.showNotification({
+      type: "error",
+      title: "Connection Failed",
+      message: `Failed to connect to ${network}: ${error instanceof Error ? error.message : "Unknown error"}`,
+    })
     return false
   }
 }
 
 export async function logout(network: string): Promise<void> {
   await OAuthService.logout(network)
-  toast.info(`Disconnected from ${network}`)
+  orchestrator.showNotification({
+    type: "info",
+    title: "Disconnected",
+    message: `Disconnected from ${network}`,
+    duration: 3000,
+  })
 }
 
 export async function isLoggedIn(network: string): Promise<boolean> {

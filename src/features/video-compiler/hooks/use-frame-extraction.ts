@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useNotifications } from "@/domains/system-integration"
 import {
   type ExtractionPurpose,
   frameExtractionService,
@@ -53,6 +53,7 @@ export interface UseFrameExtractionResult {
 
 export function useFrameExtraction(options: UseFrameExtractionOptions = {}): UseFrameExtractionResult {
   const { t } = useTranslation()
+  const { showError, showSuccess } = useNotifications()
   const { cacheResults = true, interval = 1.0, maxFrames } = options
 
   const [timelineFrames, setTimelineFrames] = useState<TimelineFrame[]>([])
@@ -113,12 +114,12 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
         const error = err as Error
         void logger.error("Failed to extract timeline frames:", { error })
         setError(error)
-        toast.error(t("videoCompiler.frameExtraction.errorTimeline"))
+        showError(t("videoCompiler.frameExtraction.errorTimeline"), error.message)
       } finally {
         setIsLoading(false)
       }
     },
-    [extractFramesWithCache, interval, maxFrames, t],
+    [extractFramesWithCache, interval, maxFrames, showError, t],
   )
 
   /**
@@ -145,36 +146,39 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
         const error = err as Error
         void logger.error("Failed to extract recognition frames:", { error })
         setError(error)
-        toast.error(t("videoCompiler.frameExtraction.errorRecognition"))
+        showError(t("videoCompiler.frameExtraction.errorRecognition"), error.message)
       } finally {
         setIsLoading(false)
       }
     },
-    [cacheResults, interval, t],
+    [cacheResults, interval, showError, t],
   )
 
   /**
    * Извлечь кадры для субтитров
    */
-  const extractSubtitleFrames = useCallback(async (videoPath: string, subtitles: Subtitle[]) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      setProgress(0)
+  const extractSubtitleFrames = useCallback(
+    async (videoPath: string, subtitles: Subtitle[]) => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        setProgress(0)
 
-      const frames = await frameExtractionService.extractSubtitleFrames(videoPath, subtitles)
+        const frames = await frameExtractionService.extractSubtitleFrames(videoPath, subtitles)
 
-      setSubtitleFrames(frames)
-      setProgress(100)
-    } catch (err) {
-      const error = err as Error
-      void logger.error("Failed to extract subtitle frames:", { error })
-      setError(error)
-      toast.error(t("videoCompiler.frameExtraction.errorSubtitles"))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+        setSubtitleFrames(frames)
+        setProgress(100)
+      } catch (err) {
+        const error = err as Error
+        void logger.error("Failed to extract subtitle frames:", { error })
+        setError(error)
+        showError(t("videoCompiler.frameExtraction.errorSubtitles"), error.message)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [showError, t],
+  )
 
   /**
    * Очистить кэш
@@ -182,12 +186,12 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
   const clearCache = useCallback(async () => {
     try {
       await frameExtractionService.clearFrameCache()
-      toast.success(t("videoCompiler.frameExtraction.cacheCleared"))
+      showSuccess(t("videoCompiler.frameExtraction.cacheCleared"), "")
     } catch (err) {
       void logger.error("Failed to clear cache:", { error: err })
-      toast.error(t("videoCompiler.frameExtraction.errorClearCache"))
+      showError(t("videoCompiler.frameExtraction.errorClearCache"), err instanceof Error ? err.message : String(err))
     }
-  }, [])
+  }, [showSuccess, showError, t])
 
   /**
    * Сбросить состояние

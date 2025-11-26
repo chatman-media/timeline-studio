@@ -1,7 +1,7 @@
 import { save } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
 import type { TrackType } from "@/features/timeline/types"
@@ -17,7 +17,7 @@ const logger = createLogger("UseSubtitlesExport")
 export function useSubtitlesExport() {
   const [isExporting, setIsExporting] = useState(false)
   const { tracks } = useTracks()
-  // toast импортирован напрямую из sonner
+  const { showSuccess, showError } = useNotifications()
 
   /**
    * Проверяет, является ли клип субтитром
@@ -66,9 +66,7 @@ export function useSubtitlesExport() {
         const subtitlesToExport = subtitles || getSubtitlesFromTimeline()
 
         if (subtitlesToExport.length === 0) {
-          toast.error("Нет субтитров", {
-            description: "На таймлайне нет субтитров для экспорта",
-          })
+          showError("Нет субтитров", "На таймлайне нет субтитров для экспорта")
           return
         }
 
@@ -96,14 +94,13 @@ export function useSubtitlesExport() {
           output_path: filePath,
         })
 
-        toast.success("Субтитры экспортированы", {
-          description: `Экспортировано ${subtitlesToExport.length} субтитров в формате ${format.toUpperCase()}`,
-        })
+        showSuccess(
+          "Субтитры экспортированы",
+          `Экспортировано ${subtitlesToExport.length} субтитров в формате ${format.toUpperCase()}`,
+        )
       } catch (error) {
         logger.error("Ошибка при экспорте субтитров:", { error })
-        toast.error("Ошибка экспорта", {
-          description: "Не удалось экспортировать субтитры",
-        })
+        showError("Ошибка экспорта", "Не удалось экспортировать субтитры")
       } finally {
         setIsExporting(false)
       }
@@ -120,9 +117,7 @@ export function useSubtitlesExport() {
       const selectedSubtitles = allSubtitles.filter((sub) => selectedIds.includes(sub.id))
 
       if (selectedSubtitles.length === 0) {
-        toast.error("Нет выбранных субтитров", {
-          description: "Выберите субтитры для экспорта",
-        })
+        showError("Нет выбранных субтитров", "Выберите субтитры для экспорта")
         return
       }
 
@@ -140,9 +135,7 @@ export function useSubtitlesExport() {
       const rangeSubtitles = allSubtitles.filter((sub) => sub.startTime >= startTime && sub.startTime <= endTime)
 
       if (rangeSubtitles.length === 0) {
-        toast.error("Нет субтитров в диапазоне", {
-          description: "В указанном временном диапазоне нет субтитров",
-        })
+        showError("Нет субтитров в диапазоне", "В указанном временном диапазоне нет субтитров")
         return
       }
 

@@ -10,8 +10,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { toast } from "sonner"
-
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
@@ -49,6 +48,7 @@ export function EffectsPreviewPlayer() {
     settings: { aspectRatio },
   } = useProjectSettings()
   const { currentVideo: video, currentTime } = usePlayer()
+  const { showSuccess } = useNotifications()
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const effectsCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -156,20 +156,23 @@ export function EffectsPreviewPlayer() {
   /**
    * Добавление эффекта
    */
-  const addEffect = useCallback((effectId: string) => {
-    const parameters = getEffectsPreviewService().getEffectParameters(effectId)
-    if (!parameters) return
+  const addEffect = useCallback(
+    (effectId: string) => {
+      const parameters = getEffectsPreviewService().getEffectParameters(effectId)
+      if (!parameters) return
 
-    const newEffect: EffectSettings = {
-      effectId,
-      enabled: true,
-      parameters,
-      intensity: 1.0,
-    }
+      const newEffect: EffectSettings = {
+        effectId,
+        enabled: true,
+        parameters,
+        intensity: 1.0,
+      }
 
-    setActiveEffects((prev) => [...prev, newEffect])
-    toast.success(`Эффект "${effectId}" добавлен`)
-  }, [])
+      setActiveEffects((prev) => [...prev, newEffect])
+      showSuccess("Эффект добавлен", `Эффект "${effectId}" добавлен`)
+    },
+    [showSuccess],
+  )
 
   /**
    * Удаление эффекта

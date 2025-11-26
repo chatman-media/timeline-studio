@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useNotifications } from "@/domains/system-integration"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"
@@ -21,6 +21,7 @@ const logger = createLogger({ module: "ExportModal" })
 
 export function ExportModal() {
   const { t } = useTranslation()
+  const { showError, showSuccess } = useNotifications()
   const { project } = useTimeline()
   const { startRender, isRendering, renderProgress, cancelRender } = useVideoCompiler()
   const { closeModal } = useModal()
@@ -39,14 +40,14 @@ export function ExportModal() {
   // Запуск экспорта
   const handleExport = useCallback(async () => {
     if (!project) {
-      toast.error(t("dialogs.export.errors.noProject"))
+      showError(t("dialogs.export.errors.noProject"), "")
       return
     }
 
     const settings = getCurrentSettings()
 
     if (!settings.savePath) {
-      toast.error(t("dialogs.export.errors.noPath"))
+      showError(t("dialogs.export.errors.noPath"), "")
       return
     }
 
@@ -58,15 +59,15 @@ export function ExportModal() {
       await startRender(projectSchema, settings.savePath)
     } catch (error) {
       logger.error(`Export failed: ${String(error)}`)
-      toast.error(t("dialogs.export.errors.exportFailed"))
+      showError(t("dialogs.export.errors.exportFailed"), "")
     }
-  }, [project, getCurrentSettings, getExportConfig, startRender, t])
+  }, [project, getCurrentSettings, getExportConfig, startRender, showError, t])
 
   // Запуск социального экспорта
   const handleSocialExport = useCallback(
     async (socialNetwork: string) => {
       if (!project) {
-        toast.error(t("dialogs.export.errors.noProject"))
+        showError(t("dialogs.export.errors.noProject"), "")
         return
       }
 
@@ -81,13 +82,13 @@ export function ExportModal() {
         // После рендеринга загружаем в социальную сеть
         await uploadToSocialNetwork(tempPath, socialSettings)
 
-        toast.success(t("dialogs.export.uploadSuccess", { platform: socialNetwork }))
+        showSuccess(t("dialogs.export.uploadSuccess", { platform: socialNetwork }), "")
       } catch (error) {
         logger.error(`Social export failed: ${String(error)}`)
-        toast.error(t("dialogs.export.errors.socialExportFailed"))
+        showError(t("dialogs.export.errors.socialExportFailed"), "")
       }
     },
-    [project, getExportConfig, startRender, uploadToSocialNetwork, socialSettings, t],
+    [project, getExportConfig, startRender, uploadToSocialNetwork, socialSettings, showError, showSuccess, t],
   )
 
   // Отмена рендеринга
@@ -144,7 +145,7 @@ export function ExportModal() {
           defaultSettings={currentSettings}
           onExport={async (settings) => {
             if (!project) {
-              toast.error(t("dialogs.export.errors.noProject"))
+              showError(t("dialogs.export.errors.noProject"), "")
               return
             }
 
@@ -176,11 +177,11 @@ export function ExportModal() {
                 await startRender(projectSchema, outputPath)
               }
 
-              toast.success(t("dialogs.export.sectionsExportSuccess"))
+              showSuccess(t("dialogs.export.sectionsExportSuccess"), "")
               closeModal()
             } catch (error) {
               logger.error(`Section export failed: ${String(error)}`)
-              toast.error(t("dialogs.export.errors.exportFailed"))
+              showError(t("dialogs.export.errors.exportFailed"), "")
             }
           }}
         />

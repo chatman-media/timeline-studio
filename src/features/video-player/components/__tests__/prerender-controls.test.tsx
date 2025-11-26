@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { toast } from "sonner"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Import mocked modules
@@ -9,11 +8,24 @@ import { usePlayer } from "@/features/video-player/services/player-provider"
 
 import { PrerenderControls } from "../prerender-controls"
 
-// Mock dependencies
-vi.mock("sonner", () => ({
-  toast: {
-    success: vi.fn(),
-  },
+// Mock notifications
+const mockShowSuccess = vi.fn()
+const mockShowError = vi.fn()
+const mockShowInfo = vi.fn()
+const mockShowWarning = vi.fn()
+
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: mockShowSuccess,
+    showError: mockShowError,
+    showInfo: mockShowInfo,
+    showWarning: mockShowWarning,
+    notifications: [],
+    hasNotifications: false,
+    showNotification: vi.fn(),
+    dismissNotification: vi.fn(),
+    clearNotifications: vi.fn(),
+  }),
 }))
 
 vi.mock("@/features/timeline/hooks/use-timeline")
@@ -74,6 +86,10 @@ describe("PrerenderControls", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockShowSuccess.mockClear()
+    mockShowError.mockClear()
+    mockShowInfo.mockClear()
+    mockShowWarning.mockClear()
 
     mockUseTimeline.mockReturnValue({
       project: mockProject,
@@ -305,9 +321,7 @@ describe("PrerenderControls", () => {
         )
       })
 
-      expect(toast.success).toHaveBeenCalledWith("Пререндер завершен за 1500мс", {
-        description: "Размер файла: 1.00 МБ",
-      })
+      expect(mockShowSuccess).toHaveBeenCalledWith("Пререндер завершен", "Завершено за 1500мс. Размер: 1.00 МБ")
     })
 
     it("should clear cache", async () => {
@@ -515,7 +529,7 @@ describe("PrerenderControls", () => {
         expect(mockPrerender).toHaveBeenCalled()
       })
 
-      expect(toast.success).not.toHaveBeenCalled()
+      expect(mockShowSuccess).not.toHaveBeenCalled()
     })
   })
 

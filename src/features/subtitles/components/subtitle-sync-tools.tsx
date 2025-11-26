@@ -1,12 +1,11 @@
 import { Clock, Minus, Plus, RotateCcw } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
 import type { TrackType } from "@/features/timeline/types"
@@ -23,6 +22,7 @@ export function SubtitleSyncTools() {
   const { t } = useTranslation()
   const { tracks } = useTracks()
   const { updateClip } = useTimeline()
+  const { showSuccess, showError } = useNotifications()
 
   const [timeOffset, setTimeOffset] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
@@ -67,9 +67,10 @@ export function SubtitleSyncTools() {
 
     const subtitles = getSubtitlesFromTimeline()
     if (subtitles.length === 0) {
-      toast.error(t("subtitles.sync.noSubtitles", "Нет субтитров"), {
-        description: t("subtitles.sync.noSubtitlesDesc", "На таймлайне нет субтитров для синхронизации"),
-      })
+      showError(
+        t("subtitles.sync.noSubtitles", "Нет субтитров"),
+        t("subtitles.sync.noSubtitlesDesc", "На таймлайне нет субтитров для синхронизации"),
+      )
       return
     }
 
@@ -86,17 +87,19 @@ export function SubtitleSyncTools() {
         updatedCount++
       }
 
-      toast.success(t("subtitles.sync.success", "Синхронизация выполнена"), {
-        description: t("subtitles.sync.successDesc", "Обновлено {{count}} субтитров", { count: updatedCount }),
-      })
+      showSuccess(
+        t("subtitles.sync.success", "Синхронизация выполнена"),
+        t("subtitles.sync.successDesc", "Обновлено {{count}} субтитров", { count: updatedCount }),
+      )
 
       setIsOpen(false)
       setTimeOffset(0)
     } catch (error) {
       logger.error("Ошибка при синхронизации субтитров:", { error })
-      toast.error(t("subtitles.sync.error", "Ошибка синхронизации"), {
-        description: t("subtitles.sync.errorDesc", "Не удалось синхронизировать субтитры"),
-      })
+      showError(
+        t("subtitles.sync.error", "Ошибка синхронизации"),
+        t("subtitles.sync.errorDesc", "Не удалось синхронизировать субтитры"),
+      )
     }
   }
 

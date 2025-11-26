@@ -4,11 +4,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { toast } from "sonner"
-
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
@@ -32,6 +31,7 @@ export function EnhancedVideoPlayer() {
   const { project } = useTimeline()
   const { prerender, isRendering, currentResult } = usePrerender()
   const { hasInCache, getFromCache, addToCache } = usePrerenderCache()
+  const { showInfo } = useNotifications()
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const [prerenderOptions, setPrerenderOptions] = useState<PrerenderOptions>({
@@ -140,8 +140,11 @@ export function EnhancedVideoPlayer() {
       ...prev,
       enabled: !prev.enabled,
     }))
-    toast.info(prerenderOptions.enabled ? "Пререндер отключен" : "Пререндер включен")
-  }, [prerenderOptions.enabled])
+    showInfo(
+      prerenderOptions.enabled ? "Пререндер отключен" : "Пререндер включен",
+      prerenderOptions.enabled ? "Пререндер был отключен" : "Пререндер был включен",
+    )
+  }, [prerenderOptions.enabled, showInfo])
 
   // Определяем источник видео
   const videoSource = currentSegment?.filePath

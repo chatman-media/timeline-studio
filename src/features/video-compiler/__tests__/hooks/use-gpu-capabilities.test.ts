@@ -27,13 +27,13 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-// Мокаем sonner
-vi.mock("sonner", () => ({
-  toast: {
-    error: vi.fn(),
-    success: vi.fn(),
-    info: vi.fn(),
-  },
+// Мокаем useNotifications
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+    showInfo: vi.fn(),
+  }),
 }))
 
 describe("useGpuCapabilities", () => {

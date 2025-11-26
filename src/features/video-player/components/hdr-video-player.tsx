@@ -10,8 +10,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { toast } from "sonner"
-
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -24,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { convertVideoSrc } from "@/lib/tauri-utils"
@@ -47,6 +46,7 @@ export function HDRVideoPlayer() {
     settings: { aspectRatio },
   } = useProjectSettings()
   const { currentVideo: video, currentTime } = usePlayer()
+  const { showInfo, showError } = useNotifications()
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -125,16 +125,16 @@ export function HDRVideoPlayer() {
         // Показываем HDR controls если контент HDR
         if (metadata.isHdr) {
           setShowHDRControls(true)
-          toast.info(`HDR ${metadata.format} видео обнаружено`)
+          showInfo("HDR видео", `HDR ${metadata.format} видео обнаружено`)
         }
       } catch (error) {
         logger.error("video analysis failed", { error })
-        toast.error("Не удалось проанализировать видео")
+        showError("Ошибка анализа", "Не удалось проанализировать видео")
       }
     }
 
     void analyzeVideo()
-  }, [video?.path])
+  }, [video?.path, showInfo, showError])
 
   /**
    * Применение HDR tone mapping

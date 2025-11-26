@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useNotifications } from "@/domains/system-integration"
 import {
   clearPrerenderCache as clearCache,
   getPrerenderCacheInfo,
@@ -25,6 +25,7 @@ export interface PrerenderState {
 
 export function usePrerender() {
   const { t } = useTranslation()
+  const { showSuccess, showError } = useNotifications()
   const { project } = useTimeline()
   const [state, setState] = useState<PrerenderState>({
     isRendering: false,
@@ -37,19 +38,19 @@ export function usePrerender() {
   const prerender = useCallback(
     async (startTime: number, endTime: number, applyEffects = true, quality = 75) => {
       if (!project) {
-        toast.error(t("videoCompiler.prerender.projectNotLoaded"))
+        showError(t("videoCompiler.prerender.projectNotLoaded"), "")
         return null
       }
 
       // Валидация временного диапазона
       if (startTime >= endTime) {
-        toast.error(t("videoCompiler.prerender.invalidTimeRange"))
+        showError(t("videoCompiler.prerender.invalidTimeRange"), "")
         return null
       }
 
       const duration = endTime - startTime
       if (duration > 60) {
-        toast.error(t("videoCompiler.prerender.limitExceeded"))
+        showError(t("videoCompiler.prerender.limitExceeded"), "")
         return null
       }
 
@@ -83,7 +84,7 @@ export function usePrerender() {
           currentResult: result,
         }))
 
-        toast.success(t("videoCompiler.prerender.completed", { time: result.renderTimeMs }))
+        showSuccess(t("videoCompiler.prerender.completed", { time: result.renderTimeMs }), "")
         return result
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : t("common.unknownError")
@@ -96,11 +97,11 @@ export function usePrerender() {
           error: errorMessage,
         }))
 
-        toast.error(t("videoCompiler.prerender.error", { error: errorMessage }))
+        showError(t("videoCompiler.prerender.error"), errorMessage)
         return null
       }
     },
-    [project],
+    [project, showSuccess, showError, t],
   )
 
   /**
@@ -129,6 +130,7 @@ export function usePrerenderCache() {
   // logInfo("[usePrerenderCache] Инициализация usePrerenderCache хука")
 
   const { t } = useTranslation()
+  const { showSuccess, showError } = useNotifications()
   const [cacheFiles, setCacheFiles] = useState<PrerenderCacheFile[]>([])
   const [totalSize, setTotalSize] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
@@ -212,16 +214,16 @@ export function usePrerenderCache() {
     try {
       const deletedSize = await clearCache()
       // logInfo("[usePrerenderCache] Кеш очищен успешно", { deletedSize })
-      toast.success(t("videoCompiler.prerender.cacheCleared", { size: (deletedSize / 1024 / 1024).toFixed(2) }))
+      showSuccess(t("videoCompiler.prerender.cacheCleared", { size: (deletedSize / 1024 / 1024).toFixed(2) }), "")
 
       // Обновляем информацию
       setCacheFiles([])
       setTotalSize(0)
     } catch (error) {
       // logError("[usePrerenderCache] Ошибка очистки кеша", error)
-      toast.error(t("videoCompiler.prerender.errorClearingCache"))
+      showError(t("videoCompiler.prerender.errorClearingCache"), error instanceof Error ? error.message : String(error))
     }
-  }, [])
+  }, [showSuccess, showError, t])
 
   return {
     hasInCache,

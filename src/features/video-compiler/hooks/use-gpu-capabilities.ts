@@ -1,7 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
+import { useNotifications } from "@/domains/system-integration"
 import {
   CompilerSettings,
   FfmpegCapabilities,
@@ -10,6 +9,7 @@ import {
   GpuInfo,
   SystemInfo,
 } from "@/domains/video-editing"
+import { videoCompilerSystemService } from "@/domains/video-editing/services/video-compiler-system-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseGpuCapabilities")
@@ -32,6 +32,7 @@ interface UseGpuCapabilitiesReturn {
 
 export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
   const { t } = useTranslation()
+  const { showSuccess, showError, showInfo } = useNotifications()
   const [gpuCapabilities, setGpuCapabilities] = useState<GpuCapabilities | null>(null)
   const [currentGpu, setCurrentGpu] = useState<GpuInfo | null>(null)
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null)
@@ -50,19 +51,19 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
 
       // Загружаем все данные параллельно
       const [gpuResponse, system, ffmpeg, settings] = await Promise.all([
-        invoke<any>("get_gpu_capabilities_full").catch((err: unknown) => {
+        videoCompilerSystemService.getGpuCapabilitiesFull().catch((err: unknown) => {
           void logger.error("Failed to get GPU capabilities:", { error: err })
           throw err
         }),
-        invoke<SystemInfo>("get_system_info").catch((err: unknown) => {
+        videoCompilerSystemService.getSystemInfo().catch((err: unknown) => {
           void logger.error("Failed to get system info:", { error: err })
           throw err
         }),
-        invoke<FfmpegCapabilities>("check_ffmpeg_capabilities").catch((err: unknown) => {
+        videoCompilerSystemService.checkFfmpegCapabilities().catch((err: unknown) => {
           void logger.error("Failed to check FFmpeg:", { error: err })
           throw err
         }),
-        invoke<CompilerSettings>("get_compiler_settings_advanced").catch((err: unknown) => {
+        videoCompilerSystemService.getCompilerSettings().catch((err: unknown) => {
           void logger.error("Failed to get compiler settings:", { error: err })
           throw err
         }),
@@ -86,13 +87,12 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
 
       // Показываем информацию о GPU
       if (gpu.hardware_acceleration_supported && gpu.recommended_encoder) {
-        toast.success(t("videoCompiler.gpu.accelerationAvailable"), {
-          description: t("videoCompiler.gpu.recommendedEncoder", { encoder: gpu.recommended_encoder }),
-        })
+        showSuccess(
+          t("videoCompiler.gpu.accelerationAvailable"),
+          t("videoCompiler.gpu.recommendedEncoder", { encoder: gpu.recommended_encoder }),
+        )
       } else {
-        toast.info(t("videoCompiler.gpu.accelerationUnavailable"), {
-          description: t("videoCompiler.gpu.cpuEncodingWillBeUsed"),
-        })
+        showInfo(t("videoCompiler.gpu.accelerationUnavailable"), t("videoCompiler.gpu.cpuEncodingWillBeUsed"))
       }
     } catch (err) {
       let errorMsg = err instanceof Error ? err.message : t("common.unknownError")
@@ -108,9 +108,9 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       setError(errorMsg)
       void logger.error("GPU capabilities error:", { error: err })
 
-      // Не показываем toast при первой загрузке, только логируем
+      // Не показываем уведомление при первой загрузке, только логируем
       if (!isLoading) {
-        toast.error(t("videoCompiler.gpu.errorGettingInfo"), { description: errorMsg })
+        showError(t("videoCompiler.gpu.errorGettingInfo"), errorMsg)
       }
     } finally {
       setIsLoading(false)
@@ -118,27 +118,31 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
   }, [])
 
   // Обновить настройки компилятора
-  const updateSettings = useCallback(async (newSettings: CompilerSettings) => {
-    try {
-      await invoke("set_hardware_acceleration", { enabled: newSettings.hardware_acceleration })
-      setCompilerSettings(newSettings)
+  const updateSettings = useCallback(
+    async (newSettings: CompilerSettings) => {
+      try {
+        await videoCompilerSystemService.setHardwareAcceleration(newSettings.hardware_acceleration)
+        setCompilerSettings(newSettings)
 
-      toast.success(t("videoCompiler.gpu.settingsUpdated"), {
-        description: newSettings.hardware_acceleration
-          ? t("videoCompiler.gpu.accelerationEnabled")
-          : t("videoCompiler.gpu.accelerationDisabled"),
-      })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : t("common.unknownError")
-      toast.error(t("videoCompiler.gpu.errorUpdatingSettings"), { description: errorMsg })
-      throw err
-    }
-  }, [])
+        showSuccess(
+          t("videoCompiler.gpu.settingsUpdated"),
+          newSettings.hardware_acceleration
+            ? t("videoCompiler.gpu.accelerationEnabled")
+            : t("videoCompiler.gpu.accelerationDisabled"),
+        )
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : t("common.unknownError")
+        showError(t("videoCompiler.gpu.errorUpdatingSettings"), errorMsg)
+        throw err
+      }
+    },
+    [showSuccess, showError, t],
+  )
 
   // Проверить доступность аппаратного ускорения
   const checkHardwareAcceleration = useCallback(async (): Promise<boolean> => {
     try {
-      return await invoke<boolean>("check_hardware_acceleration_support")
+      return await videoCompilerSystemService.checkHardwareAccelerationSupport()
     } catch (err) {
       void logger.error("Failed to check hardware acceleration:", { error: err })
       return false

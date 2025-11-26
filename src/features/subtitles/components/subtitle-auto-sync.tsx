@@ -2,7 +2,6 @@ import { invoke } from "@tauri-apps/api/core"
 import { Activity, AudioWaveform, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -10,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { useNotifications } from "@/domains/system-integration"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
@@ -39,6 +39,7 @@ export function SubtitleAutoSync() {
   const { tracks } = useTracks()
   const { updateClip } = useTimeline()
   const { mediaFiles } = useMediaFiles()
+  const { showSuccess, showError, showInfo } = useNotifications()
 
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
@@ -188,13 +189,13 @@ export function SubtitleAutoSync() {
    */
   const performAutoSync = async () => {
     if (!selectedAudioTrack) {
-      toast.error(t("subtitles.autoSync.selectAudio", "Выберите аудио трек"))
+      showError(t("subtitles.autoSync.selectAudio", "Выберите аудио трек"), "")
       return
     }
 
     const subtitles = getSubtitlesFromTimeline()
     if (subtitles.length === 0) {
-      toast.error(t("subtitles.autoSync.noSubtitles", "Нет субтитров для синхронизации"))
+      showError(t("subtitles.autoSync.noSubtitles", "Нет субтитров для синхронизации"), "")
       return
     }
 
@@ -203,14 +204,14 @@ export function SubtitleAutoSync() {
 
     try {
       // Этап 1: Анализ аудио
-      toast.info(t("subtitles.autoSync.analyzing", "Анализ аудио..."))
+      showInfo(t("subtitles.autoSync.analyzing", "Анализ аудио..."), "")
       setProgress(20)
 
       const audioPeaks = await analyzeAudio(selectedAudioTrack)
       setProgress(40)
 
       // Этап 2: Определение моментов речи
-      toast.info(t("subtitles.autoSync.detectingSpeech", "Определение моментов речи..."))
+      showInfo(t("subtitles.autoSync.detectingSpeech", "Определение моментов речи..."), "")
       const speechOnsets = detectSpeechOnsets(audioPeaks)
       setProgress(60)
 
@@ -219,7 +220,7 @@ export function SubtitleAutoSync() {
       }
 
       // Этап 3: Сопоставление субтитров
-      toast.info(t("subtitles.autoSync.matching", "Сопоставление субтитров..."))
+      showInfo(t("subtitles.autoSync.matching", "Сопоставление субтитров..."), "")
       const syncResults = matchSubtitlesToSpeech([...subtitles], [...speechOnsets])
       setProgress(80)
 
@@ -247,8 +248,9 @@ export function SubtitleAutoSync() {
         setProgress(80 + (20 * (i + 1)) / syncResults.length)
       }
 
-      toast.success(t("subtitles.autoSync.success", "Синхронизация завершена"), {
-        description: t(
+      showSuccess(
+        t("subtitles.autoSync.success", "Синхронизация завершена"),
+        t(
           "subtitles.autoSync.successDesc",
           "Синхронизировано {{synced}} из {{total}} субтитров ({{confident}} с высокой точностью)",
           {
@@ -257,15 +259,15 @@ export function SubtitleAutoSync() {
             confident: highConfidenceCount,
           },
         ),
-      })
+      )
     } catch (error) {
       logger.error("Ошибка автосинхронизации:", { error })
-      toast.error(t("subtitles.autoSync.error", "Ошибка синхронизации"), {
-        description:
-          error instanceof Error
-            ? error.message
-            : t("subtitles.autoSync.errorDesc", "Не удалось выполнить автоматическую синхронизацию"),
-      })
+      showError(
+        t("subtitles.autoSync.error", "Ошибка синхронизации"),
+        error instanceof Error
+          ? error.message
+          : t("subtitles.autoSync.errorDesc", "Не удалось выполнить автоматическую синхронизацию"),
+      )
     } finally {
       setIsAnalyzing(false)
       setIsSyncing(false)

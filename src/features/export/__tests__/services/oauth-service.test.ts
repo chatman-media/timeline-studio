@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+const mockShowNotification = vi.fn()
+
 // Mock environment utilities before importing services
 vi.mock("@/lib/environment", () => ({
   isDesktop: vi.fn().mockReturnValue(false),
@@ -11,12 +13,11 @@ vi.mock("@/lib/environment", () => ({
   }),
 }))
 
-// Mock dependencies
-vi.mock("sonner", () => ({
-  toast: {
-    error: vi.fn(),
-    success: vi.fn(),
-  },
+// Mock system integration orchestrator
+vi.mock("@/domains/system-integration", () => ({
+  getSystemIntegrationOrchestrator: () => ({
+    showNotification: mockShowNotification,
+  }),
 }))
 
 // Mock SecureTokenStorage
@@ -54,7 +55,6 @@ Object.entries(mockEnv).forEach(([key, value]) => {
 
 // Import after mocking
 const { OAuthService } = await import("../../services/oauth-service")
-const { toast } = await import("sonner")
 const { SecureTokenStorage } = await import("../../services/secure-token-storage")
 
 // Mock window.open and message handling
@@ -75,6 +75,7 @@ Object.assign(global.window, {
 describe("OAuthService - Comprehensive", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockShowNotification.mockClear()
     mockLogger.error.mockClear()
     mockLogger.info.mockClear()
     mockLogger.warn.mockClear()
@@ -115,7 +116,13 @@ describe("OAuthService - Comprehensive", () => {
       const result = await FreshOAuthService.loginToNetwork("youtube")
 
       expect(result).toBeNull()
-      expect(toast.error).toHaveBeenCalledWith("OAuth not configured for youtube. Please check environment variables.")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "error",
+          title: "OAuth Configuration Error",
+          message: "OAuth not configured for youtube. Please check environment variables.",
+        }),
+      )
     }, 10000)
 
     it("should show error toast if TikTok clientId is not configured", async () => {
@@ -130,7 +137,13 @@ describe("OAuthService - Comprehensive", () => {
       const result = await FreshOAuthService.loginToNetwork("tiktok")
 
       expect(result).toBeNull()
-      expect(toast.error).toHaveBeenCalledWith("OAuth not configured for tiktok. Please check environment variables.")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "error",
+          title: "OAuth Configuration Error",
+          message: "OAuth not configured for tiktok. Please check environment variables.",
+        }),
+      )
     }, 10000)
 
     it("should create correct auth URL for YouTube", async () => {
@@ -402,21 +415,42 @@ describe("OAuthService - Comprehensive", () => {
       await OAuthService.logout("youtube")
 
       expect(SecureTokenStorage.removeToken).toHaveBeenCalledWith("youtube")
-      expect(toast.success).toHaveBeenCalledWith("Logged out from youtube")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "success",
+          title: "Logged Out",
+          message: "Successfully logged out from youtube",
+          duration: 3000,
+        }),
+      )
     })
 
     it("should clear stored tokens and show success message for TikTok", async () => {
       await OAuthService.logout("tiktok")
 
       expect(SecureTokenStorage.removeToken).toHaveBeenCalledWith("tiktok")
-      expect(toast.success).toHaveBeenCalledWith("Logged out from tiktok")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "success",
+          title: "Logged Out",
+          message: "Successfully logged out from tiktok",
+          duration: 3000,
+        }),
+      )
     })
 
     it("should handle logout for any network", async () => {
       await OAuthService.logout("custom_network")
 
       expect(SecureTokenStorage.removeToken).toHaveBeenCalledWith("custom_network")
-      expect(toast.success).toHaveBeenCalledWith("Logged out from custom_network")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "success",
+          title: "Logged Out",
+          message: "Successfully logged out from custom_network",
+          duration: 3000,
+        }),
+      )
     })
   })
 

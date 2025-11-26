@@ -1,15 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { OutputFormat } from "@/features/video-compiler/types/render"
-import * as SocialNetworksService from "../../services/social-networks-service"
+
+const mockShowNotification = vi.fn()
 
 // Мокаем зависимости
-vi.mock("sonner", () => ({
-  toast: {
-    info: vi.fn(),
-    success: vi.fn(),
-    error: vi.fn(),
-  },
+vi.mock("@/domains/system-integration", () => ({
+  getSystemIntegrationOrchestrator: () => ({
+    showNotification: mockShowNotification,
+  }),
 }))
+
+// Импортируем после моков
+const SocialNetworksService = await import("../../services/social-networks-service")
 
 vi.mock("../../services/oauth-service", () => ({
   OAuthService: {
@@ -37,7 +39,6 @@ vi.mock("../../services/tiktok-service", () => ({
   validateVideoFile: vi.fn(),
 }))
 
-const { toast } = await import("sonner")
 const { OAuthService } = await import("../../services/oauth-service")
 const YouTubeService = await import("../../services/youtube-service")
 const TikTokService = await import("../../services/tiktok-service")
@@ -45,6 +46,7 @@ const TikTokService = await import("../../services/tiktok-service")
 describe("SocialNetworksService", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockShowNotification.mockClear()
     localStorage.clear()
   })
 
@@ -59,8 +61,21 @@ describe("SocialNetworksService", () => {
       const result = await SocialNetworksService.login("youtube")
 
       expect(result).toBe(true)
-      expect(toast.info).toHaveBeenCalledWith("Connecting to youtube...")
-      expect(toast.success).toHaveBeenCalledWith("Successfully connected to youtube")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "info",
+          title: "Connecting",
+          message: "Connecting to youtube...",
+        }),
+      )
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "success",
+          title: "Connected",
+          message: "Successfully connected to youtube",
+          duration: 3000,
+        }),
+      )
       expect(OAuthService.storeToken).toHaveBeenCalledWith("youtube", mockToken)
       expect(localStorage.getItem("youtube_user_info")).toBe(JSON.stringify(mockUserInfo))
     })
@@ -71,7 +86,13 @@ describe("SocialNetworksService", () => {
       const result = await SocialNetworksService.login("youtube")
 
       expect(result).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith("Failed to connect to youtube: Authentication failed")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "error",
+          title: "Connection Failed",
+          message: "Failed to connect to youtube: Authentication failed",
+        }),
+      )
     })
 
     it("should handle network errors", async () => {
@@ -80,7 +101,13 @@ describe("SocialNetworksService", () => {
       const result = await SocialNetworksService.login("youtube")
 
       expect(result).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith("Failed to connect to youtube: Network error")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "error",
+          title: "Connection Failed",
+          message: "Failed to connect to youtube: Network error",
+        }),
+      )
     })
   })
 
@@ -89,7 +116,14 @@ describe("SocialNetworksService", () => {
       await SocialNetworksService.logout("youtube")
 
       expect(OAuthService.logout).toHaveBeenCalledWith("youtube")
-      expect(toast.info).toHaveBeenCalledWith("Disconnected from youtube")
+      expect(mockShowNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "info",
+          title: "Disconnected",
+          message: "Disconnected from youtube",
+          duration: 3000,
+        }),
+      )
     })
   })
 

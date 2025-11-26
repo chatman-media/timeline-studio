@@ -4,7 +4,6 @@
 
 import { Settings2, Sparkles } from "lucide-react"
 import { useCallback, useId } from "react"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +17,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
+import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
 
@@ -41,6 +41,7 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
   const { prerender, isRendering, currentResult } = usePrerender()
   const { clearCache, cacheSize, totalCacheSize } = usePrerenderCache()
   const { project } = useTimeline()
+  const { showSuccess } = useNotifications()
   const {
     prerenderSettings: {
       prerenderEnabled,
@@ -91,11 +92,12 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
     const result = await prerender(segmentStart, segmentEnd, settings.applyEffects, settings.quality)
 
     if (result) {
-      toast.success(`Пререндер завершен за ${result.renderTimeMs}мс`, {
-        description: `Размер файла: ${(result.fileSize / 1024 / 1024).toFixed(2)} МБ`,
-      })
+      showSuccess(
+        "Пререндер завершен",
+        `Завершено за ${result.renderTimeMs}мс. Размер: ${(result.fileSize / 1024 / 1024).toFixed(2)} МБ`,
+      )
     }
-  }, [currentTime, duration, settings, prerender])
+  }, [currentTime, duration, settings, prerender, showSuccess])
 
   /**
    * Проверить, есть ли эффекты в текущем моменте

@@ -1,8 +1,8 @@
 import { readFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { SOCIAL_NETWORKS } from "../constants/export-constants"
@@ -18,6 +18,7 @@ export function useSocialExport() {
   logInfo("[useSocialExport] Инициализация хука")
 
   const { t } = useTranslation()
+  const { showError, showSuccess } = useNotifications()
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [isUploading, setIsUploading] = useState<boolean>(false)
 
@@ -28,11 +29,11 @@ export function useSocialExport() {
         return success
       } catch (error) {
         logError(`[useSocialExport] Ошибка входа в ${network}: ${String(error)}`)
-        toast.error(t("dialogs.export.errors.loginFailed", { network }))
+        showError(t("dialogs.export.errors.loginFailed", { network }), "")
         return false
       }
     },
-    [t],
+    [showError, t],
   )
 
   const logoutFromSocialNetwork = useCallback(async (network: string) => {
@@ -75,16 +76,16 @@ export function useSocialExport() {
         setIsUploading(false)
         setUploadProgress(100)
 
-        toast.success(t("dialogs.export.uploadSuccess", { network: network.name }))
+        showSuccess(t("dialogs.export.uploadSuccess", { network: network.name }), "")
         return result
       } catch (error) {
         setIsUploading(false)
         logError(`[useSocialExport] Ошибка загрузки в ${network.name}: ${String(error)}`)
-        toast.error(t("dialogs.export.errors.uploadFailed", { network: network.name }))
+        showError(t("dialogs.export.errors.uploadFailed", { network: network.name }), "")
         throw error
       }
     },
-    [t],
+    [showError, showSuccess, t],
   )
 
   const validateSocialExport = useCallback(

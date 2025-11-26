@@ -1,5 +1,4 @@
 import { act, renderHook } from "@testing-library/react"
-import { toast } from "sonner"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { setTranslations } from "@/test/mocks/libraries"
@@ -9,11 +8,14 @@ import * as SocialNetworksService from "../../services/social-networks-service"
 
 import type { SocialExportSettings } from "../../types/export-types"
 
-vi.mock("sonner", () => ({
-  toast: {
-    error: vi.fn(),
-    success: vi.fn(),
-  },
+const mockShowError = vi.fn()
+const mockShowSuccess = vi.fn()
+
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showError: mockShowError,
+    showSuccess: mockShowSuccess,
+  }),
 }))
 
 vi.mock("../../services/social-networks-service", () => ({
@@ -27,6 +29,8 @@ vi.mock("../../services/social-networks-service", () => ({
 describe("useSocialExport", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockShowError.mockClear()
+    mockShowSuccess.mockClear()
     setTranslations({
       "dialogs.export.errors.loginFailed": "Failed to login to {{network}}",
       "dialogs.export.errors.uploadFailed": "Upload to {{network}} failed",
@@ -46,7 +50,7 @@ describe("useSocialExport", () => {
 
       expect(success).toBe(true)
       expect(SocialNetworksService.login).toHaveBeenCalledWith("youtube")
-      expect(toast.error).not.toHaveBeenCalled()
+      expect(mockShowError).not.toHaveBeenCalled()
     })
 
     it("should handle login failure", async () => {
@@ -59,7 +63,7 @@ describe("useSocialExport", () => {
       })
 
       expect(success).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith("Failed to login to {{network}}")
+      expect(mockShowError).toHaveBeenCalledWith("Failed to login to {{network}}", "")
     })
   })
 
@@ -145,7 +149,7 @@ describe("useSocialExport", () => {
       ).rejects.toThrow("File not found: /path/to/video.mp4")
 
       expect(result.current.isUploading).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith("Upload to {{network}} failed")
+      expect(mockShowError).toHaveBeenCalledWith("Upload to {{network}} failed", "")
     })
 
     it("should update upload progress state", async () => {
