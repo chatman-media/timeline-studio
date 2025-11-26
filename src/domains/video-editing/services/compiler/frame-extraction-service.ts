@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
+import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { Subtitle } from "@/domains/video-editing/types/video-compiler"
-import { indexedDBCacheService } from "@/features/media/services/indexeddb-cache-service"
 
 import { createLogger } from "@/lib/tauri-logger"
 

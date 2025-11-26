@@ -1,12 +1,12 @@
-import { invoke } from "@tauri-apps/api/core"
 import { save } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 import { toast } from "sonner"
 
+import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
 import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
-import type { SubtitleClip, SubtitleExportOptions } from "../types/subtitles"
+import type { SubtitleClip } from "../types/subtitles"
 import { exportSubtitles, getSubtitleFileExtension } from "../utils/subtitle-exporters"
 
 const logger = createLogger("UseSubtitlesExport")
@@ -89,14 +89,12 @@ export function useSubtitlesExport() {
         // Экспортируем субтитры
         const content = exportSubtitles(subtitlesToExport, format)
 
-        // Сохраняем файл через Tauri
-        const options: SubtitleExportOptions = {
+        // Сохраняем файл через сервис
+        await SubtitlesService.saveSubtitleFile({
           format,
           content,
           output_path: filePath,
-        }
-
-        await invoke("save_subtitle_file", { options })
+        })
 
         toast.success("Субтитры экспортированы", {
           description: `Экспортировано ${subtitlesToExport.length} субтитров в формате ${format.toUpperCase()}`,

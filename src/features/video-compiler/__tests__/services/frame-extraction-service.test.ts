@@ -7,8 +7,8 @@ import {
   type SubtitlePosition,
   type SubtitleStyle,
 } from "@/domains/video-editing"
-import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
-import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
+import type { RecognitionFrame, TimelineFrame } from "@/domains/video-editing/services/compiler"
+import { ExtractionPurpose, frameExtractionService } from "@/domains/video-editing/services/compiler"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
@@ -16,7 +16,7 @@ vi.mock("@tauri-apps/api/core", () => ({
 }))
 
 // Мокаем IndexedDB Cache Service
-vi.mock("@/features/media/services/indexeddb-cache-service", () => ({
+vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   indexedDBCacheService: {
     cacheTimelineFrames: vi.fn(),
     getCachedTimelineFrames: vi.fn(),
@@ -109,7 +109,7 @@ describe("frameExtractionService", () => {
     const { invoke } = await import("@tauri-apps/api/core")
     mockInvoke = invoke as any
 
-    const { indexedDBCacheService } = await import("@/features/media/services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     mockIndexedDBCacheService = indexedDBCacheService as any
   })
 

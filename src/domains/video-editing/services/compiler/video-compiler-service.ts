@@ -4,9 +4,9 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
+import type { RenderProgress } from "@/features/video-compiler/types/render"
+import { RenderStatus } from "@/features/video-compiler/types/render"
 import { createLogger } from "@/lib/tauri-logger"
-import type { RenderProgress } from "../types/render"
-import { RenderStatus } from "../types/render"
 
 const logger = createLogger("VideoCompilerService")
 

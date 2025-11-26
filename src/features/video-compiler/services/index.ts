@@ -1,4 +1,6 @@
-export * from "./cache-service"
-export * from "./frame-extraction-service"
-export * from "./metadata-cache-service"
-export * from "./video-compiler-service"
+/**
+ * Video Compiler Services
+ *
+ * Re-export from domain for backward compatibility
+ */
+export * from "@/domains/video-editing/services/compiler"

@@ -6,16 +6,15 @@ import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-
 import {
   clearPrerenderCache as clearCache,
   getPrerenderCacheInfo,
   type PrerenderCacheFile,
   type PrerenderResult,
   prerenderSegment,
-} from "../services/video-compiler-service"
+} from "@/domains/video-editing/services/compiler"
+import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
+import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 
 export interface PrerenderState {
   isRendering: boolean

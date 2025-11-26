@@ -1,9 +1,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 import { Subtitle, SubtitleAlignX, SubtitleAlignY, SubtitleFontWeight } from "@/domains/video-editing"
-
+import * as frameExtractionServiceModule from "@/domains/video-editing/services/compiler"
 import { useFrameExtraction } from "../../hooks/use-frame-extraction"
-import * as frameExtractionServiceModule from "../../services/frame-extraction-service"
 
 // Ensure console.error is mocked to see errors
 const originalConsoleError = console.error
@@ -45,7 +44,7 @@ vi.mock("@/features/media/hooks/use-frame-preview", () => ({
 }))
 
 // Мокаем сервис извлечения кадров
-vi.mock("../../services/frame-extraction-service", () => {
+vi.mock("@/domains/video-editing/services/compiler", () => {
   const mockExtractRecognitionFramesService = vi.fn()
   const mockCacheRecognitionFramesService = vi.fn()
 
@@ -188,7 +187,7 @@ describe("useFrameExtraction", () => {
   beforeEach(async () => {
     vi.clearAllMocks()
     const { frameExtractionService, FrameExtractionService, __mocks } = (await import(
-      "../../services/frame-extraction-service"
+      "@/domains/video-editing/services/compiler"
     )) as any
 
     mockFrameExtractionService = frameExtractionService
@@ -302,7 +301,7 @@ describe("useFrameExtraction", () => {
 
   describe("extractRecognitionFrames", () => {
     it("should extract recognition frames for object detection", async () => {
-      const { ExtractionPurpose } = await import("../../services/frame-extraction-service")
+      const { ExtractionPurpose } = await import("@/domains/video-editing/services/compiler")
       mockFrameExtractionService.extractRecognitionFrames.mockResolvedValueOnce(mockRecognitionFrames)
       mockFrameExtractionService.cacheRecognitionFrames.mockResolvedValueOnce(undefined)
 
@@ -327,7 +326,7 @@ describe("useFrameExtraction", () => {
     })
 
     it("should extract recognition frames for scene recognition", async () => {
-      const { ExtractionPurpose } = await import("../../services/frame-extraction-service")
+      const { ExtractionPurpose } = await import("@/domains/video-editing/services/compiler")
       mockFrameExtractionService.extractRecognitionFrames.mockResolvedValueOnce(mockRecognitionFrames)
       mockFrameExtractionService.cacheRecognitionFrames.mockResolvedValueOnce(undefined)
 
@@ -476,7 +475,7 @@ describe("useFrameExtraction", () => {
 
   describe("concurrent extraction", () => {
     it("should handle concurrent extraction requests", async () => {
-      const { ExtractionPurpose } = await import("../../services/frame-extraction-service")
+      const { ExtractionPurpose } = await import("@/domains/video-editing/services/compiler")
 
       // Настраиваем моки для этого теста
       mockExtractTimelineFrames.mockImplementation(

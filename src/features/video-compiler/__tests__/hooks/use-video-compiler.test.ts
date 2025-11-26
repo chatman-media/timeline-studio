@@ -25,7 +25,7 @@ vi.mock("sonner", () => ({
 }))
 
 // Мокаем video compiler service
-vi.mock("../../services/video-compiler-service", () => ({
+vi.mock("@/domains/video-editing/services/compiler", () => ({
   renderProject: vi.fn(),
   trackRenderProgress: vi.fn(),
 }))
@@ -75,7 +75,7 @@ describe("useVideoCompiler", () => {
   beforeEach(async () => {
     vi.clearAllMocks()
     const { invoke } = await import("@tauri-apps/api/core")
-    const { renderProject, trackRenderProgress } = await import("../../services/video-compiler-service")
+    const { renderProject, trackRenderProgress } = await import("@/domains/video-editing/services/compiler")
     mockInvoke = vi.mocked(invoke)
     mockRenderProject = vi.mocked(renderProject)
     mockTrackRenderProgress = vi.mocked(trackRenderProgress)

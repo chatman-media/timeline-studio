@@ -2,10 +2,10 @@
  * Хук для импорта субтитров в Timeline
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
+import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
@@ -152,8 +152,8 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         onImportComplete(clipsToAdd)
       }
 
-      // Сохраняем изменения в backend
-      await invoke("update_timeline_subtitles", {
+      // Сохраняем изменения в backend через сервис
+      await SubtitlesService.updateTimelineSubtitles({
         trackId: targetTrackId,
         subtitles: clipsToAdd,
       })

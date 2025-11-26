@@ -3,8 +3,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import type { VideoCompilerCacheStats } from "@/features/video-compiler/types/cache"
 import { createLogger } from "@/lib/tauri-logger"
-import type { VideoCompilerCacheStats } from "../types/cache"
 
 const logger = createLogger("CacheService")
 

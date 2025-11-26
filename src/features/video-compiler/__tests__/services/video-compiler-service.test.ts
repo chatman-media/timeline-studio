@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { RenderJob } from "@/domains/video-editing"
-import * as videoCompilerService from "../../services/video-compiler-service"
+import * as videoCompilerService from "@/domains/video-editing/services/compiler"
 import { type RenderProgress, RenderStatus } from "../../types/render"
 
 // Типы для API ответов

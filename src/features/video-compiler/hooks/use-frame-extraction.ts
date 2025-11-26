@@ -2,16 +2,16 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-import { Subtitle } from "@/domains/video-editing/types"
-import { useFramePreview } from "@/features/media/hooks/use-frame-preview"
-import { createLogger } from "@/lib/tauri-logger"
 import {
   type ExtractionPurpose,
   frameExtractionService,
   type RecognitionFrame,
   type SubtitleFrame,
   type TimelineFrame,
-} from "../services/frame-extraction-service"
+} from "@/domains/video-editing/services/compiler"
+import { Subtitle } from "@/domains/video-editing/types"
+import { useFramePreview } from "@/features/media/hooks/use-frame-preview"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")
 

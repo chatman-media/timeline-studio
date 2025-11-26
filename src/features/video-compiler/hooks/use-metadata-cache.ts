@@ -3,15 +3,15 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { createLogger } from "@/lib/tauri-logger"
-import type { MediaMetadata } from "../../../domains/shared/types"
 import {
   cacheMediaMetadata,
   cacheMultipleMetadata,
   checkCachedFiles,
   getCachedMetadata,
   getCacheMemoryUsage,
-} from "../services/metadata-cache-service"
+} from "@/domains/video-editing/services/compiler"
+import { createLogger } from "@/lib/tauri-logger"
+import type { MediaMetadata } from "../../../domains/shared/types"
 import type { CacheMemoryUsage } from "../types/cache"
 
 const logger = createLogger("UseMetadataCache")
