@@ -1,3 +1,10 @@
+# [3.32.0](https://github.com/chatman-media/timeline-studio/compare/v3.31.4...v3.32.0) (2025-11-26)
+
+
+### Features
+
+* **ai-director:** complete v3 UI implementation with animations and tooltips ([f0188f8](https://github.com/chatman-media/timeline-studio/commit/f0188f80f43f14e508d301ff766c6627eb4c04a9))
+
 ## [3.21.4](https://github.com/chatman-media/timeline-studio/compare/v3.21.3...v3.21.4) (2025-11-26)
 
 
