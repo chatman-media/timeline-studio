@@ -8,11 +8,11 @@
  */
 
 import { assign, emit, fromPromise, setup } from "xstate"
-import { aiDirectorService } from "../services/ai-director"
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "../services/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisOptions, MontageAnalysisResult, MontagePlan } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "../services/ai-director"
+import { aiDirectorService } from "../services/ai-director"
 import { unifiedOrchestrator } from "../services/unified-orchestrator"
 
 const logger = createLogger({ module: "AIIntelligence" })

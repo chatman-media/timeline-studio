@@ -5,10 +5,10 @@
  * Обеспечивает персистентность анализов между сессиями
  */
 
-import type { ComprehensiveAnalysisResult } from "./ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
+import type { ComprehensiveAnalysisResult } from "./ai-director"
 
 const logger = createLogger({ module: "AnalysisStorageService" })
 

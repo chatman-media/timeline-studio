@@ -1,14 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import type { MediaFile } from "@/features/media/types/media"
-import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
-
 import {
   generateRestorationReport,
   promptUserToFindFile,
   restoreFile,
   restoreProjectMedia,
-} from "../../services/media-restoration-service"
+} from "@/domains/media-management"
+import type { MediaFile } from "@/features/media/types/media"
+import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 
 // Мокаем модули Tauri
 vi.mock("@tauri-apps/api/path", () => ({

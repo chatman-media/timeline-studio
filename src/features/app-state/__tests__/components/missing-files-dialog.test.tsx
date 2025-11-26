@@ -3,8 +3,18 @@ import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Мокаем MediaRestorationService
-vi.mock("@/features/media/services/media-restoration-service", () => ({
+vi.mock("@/domains/media-management/services/media-restoration-service", () => ({
   promptUserToFindFile: vi.fn(),
+}))
+
+// Мокаем tauri-logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    error: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+  })),
 }))
 
 import type { SavedMediaFile } from "@/features/media/types/saved-media"
@@ -52,7 +62,7 @@ vi.mock("lucide-react", () => ({
   Trash2: () => <div data-testid="trash-icon" />,
 }))
 
-const { promptUserToFindFile } = await import("@/features/media/services/media-restoration-service")
+const { promptUserToFindFile } = await import("@/domains/media-management/services/media-restoration-service")
 const mockPromptUserToFindFile = vi.mocked(promptUserToFindFile)
 
 describe("MissingFilesDialog", () => {

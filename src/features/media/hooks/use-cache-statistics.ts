@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { type CacheStatistics, indexedDBCacheService } from "../services/indexeddb-cache-service"
+import {
+  type CacheStatistics,
+  indexedDBCacheService,
+} from "@/domains/media-management/services/indexeddb-cache-service"
 
 interface UseCacheStatisticsReturn {
   statistics: CacheStatistics | null

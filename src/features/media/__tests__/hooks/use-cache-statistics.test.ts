@@ -1,11 +1,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
+import type { CacheStatistics } from "@/domains/media-management/services/indexeddb-cache-service"
 import { useCacheStatistics } from "@/features/media/hooks/use-cache-statistics"
-import type { CacheStatistics } from "@/features/media/services/indexeddb-cache-service"
 
 // Мокаем indexedDBCacheService
-vi.mock("@/features/media/services/indexeddb-cache-service", () => ({
+vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   indexedDBCacheService: {
     getCacheStatistics: vi.fn(),
   },
@@ -29,7 +28,7 @@ describe("useCacheStatistics", () => {
       totalSize: 1024 * 1024 * 60,
     }
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockResolvedValue(mockStatistics)
 
     const { result } = renderHook(() => useCacheStatistics())
@@ -52,7 +51,7 @@ describe("useCacheStatistics", () => {
   it("should handle errors during loading", async () => {
     const mockError = new Error("Database error")
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockRejectedValue(mockError)
 
     const { result } = renderHook(() => useCacheStatistics())
@@ -67,7 +66,7 @@ describe("useCacheStatistics", () => {
   })
 
   it("should handle non-Error exceptions", async () => {
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockRejectedValue("String error")
 
     const { result } = renderHook(() => useCacheStatistics())
@@ -98,7 +97,7 @@ describe("useCacheStatistics", () => {
       totalSize: 1024 * 1024 * 60,
     }
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics)
       .mockResolvedValueOnce(mockStatistics1)
       .mockResolvedValueOnce(mockStatistics2)
@@ -141,7 +140,7 @@ describe("useCacheStatistics", () => {
       totalSize: 1024 * 1024 + 128 * 1024,
     }
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics)
       .mockRejectedValueOnce(mockError)
       .mockResolvedValueOnce(mockStatistics)
@@ -180,7 +179,7 @@ describe("useCacheStatistics", () => {
       totalSize: 0,
     }
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockResolvedValue(mockEmptyStatistics)
 
     const { result } = renderHook(() => useCacheStatistics())
@@ -202,7 +201,7 @@ describe("useCacheStatistics", () => {
       totalSize: 1024 * 1024 + 128 * 1024,
     }
 
-    const { indexedDBCacheService } = await import("../../services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
 
     // Создаем задержку для симуляции медленной загрузки
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockImplementation(

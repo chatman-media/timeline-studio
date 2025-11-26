@@ -5,10 +5,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig } from "../ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
 import { mockAIDirectorConfig } from "../../__mocks__/ai-director-service"
 import { mockMontageAnalysisResult, mockMontagePlan } from "../../__mocks__/unified-orchestrator"
+import type { AIDirectorConfig } from "../ai-director"
 import { UnifiedOrchestrator } from "../unified-orchestrator"
 
 // Mock dependencies

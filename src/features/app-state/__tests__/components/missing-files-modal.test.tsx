@@ -13,7 +13,7 @@ vi.mock("@/features/modals/services", () => ({
   useModal: vi.fn(),
 }))
 
-vi.mock("@/features/media/services/media-restoration-service", () => ({
+vi.mock("@/domains/media-management", () => ({
   promptUserToFindFile: vi.fn(),
 }))
 
@@ -26,7 +26,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 const { useModal } = await import("@/features/modals/services")
-const { promptUserToFindFile } = await import("@/features/media/services/media-restoration-service")
+const { promptUserToFindFile } = await import("@/domains/media-management")
 
 describe.skip("MissingFilesModal", () => {
   const mockMissingFiles: SavedMediaFile[] = [

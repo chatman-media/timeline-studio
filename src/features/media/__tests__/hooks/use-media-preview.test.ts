@@ -1,8 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
+import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
-import { indexedDBCacheService } from "@/features/media/services/indexeddb-cache-service"
 import type { MediaPreviewData, ThumbnailData } from "@/features/media/types/preview"
 
 // Mock Tauri API
@@ -10,8 +9,16 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
+// Mock tauri-logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    debugSync: vi.fn(),
+    errorSync: vi.fn(),
+  })),
+}))
+
 // Mock IndexedDB cache service
-vi.mock("@/features/media/services/indexeddb-cache-service", () => ({
+vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   indexedDBCacheService: {
     getCachedPreview: vi.fn().mockResolvedValue(null),
     cachePreview: vi.fn().mockResolvedValue(undefined),

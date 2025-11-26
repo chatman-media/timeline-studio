@@ -7,7 +7,7 @@ import {
   getMediaMetadata,
   selectMediaDirectory,
   selectMediaFile,
-} from "../../services"
+} from "@/domains/media-management/services/media-api"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({

@@ -81,7 +81,7 @@ export interface ConfigValidationResult {
   warnings: string[]
 }
 
-export interface HealthCheckResult {
+export interface AIDirectorHealthCheckResult {
   overall_status: "healthy" | "degraded" | "unhealthy"
   services: {
     audio_engine: "healthy" | "degraded" | "unhealthy"
@@ -143,7 +143,7 @@ export async function aiDirectorValidateConfig(config: AIDirectorConfig): Promis
   return invoke("ai_director_validate_config", { config })
 }
 
-export async function aiDirectorHealthCheck(): Promise<HealthCheckResult> {
+export async function aiDirectorHealthCheck(): Promise<AIDirectorHealthCheckResult> {
   logger.debug("Running health check")
   return invoke("ai_director_health_check")
 }

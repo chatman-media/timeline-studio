@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { selectMediaDirectory, selectMediaFile } from "@/features/media"
+import { selectMediaDirectory, selectMediaFile } from "@/domains/media-management"
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useMediaImport } from "../../hooks/use-media-import"
@@ -78,7 +78,7 @@ vi.mock("../../hooks/use-media-processor", () => ({
   })),
 }))
 
-vi.mock("@/features/media", () => ({
+vi.mock("@/domains/media-management", () => ({
   selectMediaFile: vi.fn(),
   selectMediaDirectory: vi.fn(),
 }))

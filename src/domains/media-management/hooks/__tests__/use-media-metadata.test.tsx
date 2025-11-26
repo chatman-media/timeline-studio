@@ -34,9 +34,12 @@ vi.mock("@/features/app-state/services/backend-sync", () => ({
     }),
   })),
 }))
-vi.mock("@/features/media/services/media-api", () => ({
+vi.mock("../../services/media-api", () => ({
   selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
   selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
+  getMediaFiles: vi.fn().mockResolvedValue([]),
+  selectMediaDirectory: vi.fn().mockResolvedValue(null),
+  restorePreviewCache: vi.fn().mockResolvedValue(undefined),
 }))
 vi.mock("../../services/media-metadata-service", () => ({
   getMediaMetadataService: vi.fn(() => ({

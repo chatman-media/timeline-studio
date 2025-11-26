@@ -17,7 +17,7 @@ vi.mock("../../hooks/use-media-preview", () => ({
   })),
 }))
 
-vi.mock("@/features/video-compiler/services/frame-extraction-service", () => ({
+vi.mock("@/domains/video-editing/services/compiler/frame-extraction-service", () => ({
   FrameExtractionService: {
     getInstance: vi.fn(() => ({
       extractTimelineFrames: vi.fn().mockResolvedValue([
@@ -48,7 +48,9 @@ describe("useFramePreview", () => {
   describe("extractTimelineFrames", () => {
     it("должен извлекать кадры для таймлайна", async () => {
       const { useMediaPreview } = await import("../../hooks/use-media-preview")
-      const { FrameExtractionService } = await import("@/features/video-compiler/services/frame-extraction-service")
+      const { FrameExtractionService } = await import(
+        "@/domains/video-editing/services/compiler/frame-extraction-service"
+      )
 
       vi.mocked(useMediaPreview).mockReturnValue({
         getPreviewData: vi.fn().mockResolvedValue(null), // No cache data
@@ -110,7 +112,9 @@ describe("useFramePreview", () => {
 
     it("должен использовать кэшированные кадры если они существуют", async () => {
       const { useMediaPreview } = await import("../../hooks/use-media-preview")
-      const { FrameExtractionService } = await import("@/features/video-compiler/services/frame-extraction-service")
+      const { FrameExtractionService } = await import(
+        "@/domains/video-editing/services/compiler/frame-extraction-service"
+      )
 
       const cachedFrames = [
         { timestamp: 0, frameData: "cached1", isKeyframe: false },

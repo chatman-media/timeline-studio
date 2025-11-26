@@ -146,8 +146,6 @@ pub async fn ai_director_v2_analyze_batch(
 
 #[cfg(test)]
 mod tests {
-  use super::*;
-
   #[test]
   fn test_ai_director_v2_state_creation() {
     // This test requires mocking AppHandle, Analysis DB, Person DB, and Yolo State

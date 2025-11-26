@@ -6,8 +6,8 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
-import type { AIDirectorConfig } from "../../services/ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
+import type { AIDirectorConfig } from "../../services/ai-director"
 import { aiIntelligenceMachine } from "../ai-intelligence-machine"
 
 // Mock dependencies

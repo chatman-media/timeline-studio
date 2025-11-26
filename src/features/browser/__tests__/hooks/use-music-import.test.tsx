@@ -1,8 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import * as mediaDomainModule from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
-import * as mediaModule from "@/features/media"
 import { MediaType } from "@/features/media/types/media"
 
 // Mock модулей
@@ -28,11 +27,14 @@ vi.mock("@/features/app-state/hooks/use-music-files", () => ({
   })),
 }))
 
-vi.mock("@/features/media", () => ({
-  convertToSavedMusicFile: vi.fn((file) => Promise.resolve(file)),
+vi.mock("@/domains/media-management", () => ({
   getMediaMetadata: vi.fn(),
   selectAudioFile: vi.fn(),
   selectMediaDirectory: vi.fn(),
+}))
+
+vi.mock("@/features/media", () => ({
+  convertToSavedMusicFile: vi.fn((file) => Promise.resolve(file)),
 }))
 
 vi.mock("@/lib/tauri-logger", () => ({
@@ -64,8 +66,8 @@ describe("useMusicImport", () => {
         },
       }
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -95,7 +97,7 @@ describe("useMusicImport", () => {
     })
 
     it("should handle no files selected", async () => {
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue([])
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue([])
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -111,7 +113,7 @@ describe("useMusicImport", () => {
 
     it("should handle import errors", async () => {
       const error = new Error("Failed to select files")
-      ;(mediaModule.selectAudioFile as any).mockRejectedValue(error)
+      ;(mediaDomainModule.selectAudioFile as any).mockRejectedValue(error)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -128,8 +130,8 @@ describe("useMusicImport", () => {
     it("should create basic music files without metadata", async () => {
       const mockFiles = ["/path/to/song.mp3"]
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(null)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -151,8 +153,8 @@ describe("useMusicImport", () => {
       const mockFiles = ["/path/to/song.mp3"]
       const error = new Error("Metadata loading failed")
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockRejectedValue(error)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockRejectedValue(error)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -172,7 +174,7 @@ describe("useMusicImport", () => {
       const mockDir = "/path/to/music"
       const mockFiles = ["/path/to/music/song1.mp3", "/path/to/music/song2.wav"]
 
-      ;(mediaModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)
@@ -188,7 +190,7 @@ describe("useMusicImport", () => {
           format: {},
         },
       }
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -206,7 +208,7 @@ describe("useMusicImport", () => {
     })
 
     it("should handle no directory selected", async () => {
-      ;(mediaModule.selectMediaDirectory as any).mockResolvedValue(null)
+      ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -228,7 +230,7 @@ describe("useMusicImport", () => {
         "/path/to/mixed/image.jpg",
       ]
 
-      ;(mediaModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)
@@ -244,7 +246,7 @@ describe("useMusicImport", () => {
           format: {},
         },
       }
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -263,7 +265,7 @@ describe("useMusicImport", () => {
       const mockDir = "/path/to/empty"
       const mockFiles = ["/path/to/empty/video.mp4", "/path/to/empty/image.jpg"]
 
-      ;(mediaModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)
@@ -281,7 +283,7 @@ describe("useMusicImport", () => {
 
     it("should handle directory import errors", async () => {
       const error = new Error("Failed to read directory")
-      ;(mediaModule.selectMediaDirectory as any).mockRejectedValue(error)
+      ;(mediaDomainModule.selectMediaDirectory as any).mockRejectedValue(error)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -310,8 +312,8 @@ describe("useMusicImport", () => {
         },
       }
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(mockMetadata)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -331,7 +333,7 @@ describe("useMusicImport", () => {
     it("should clean up timeouts on unmount", async () => {
       const mockFiles = ["/path/to/song.mp3"]
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
 
       const { result, unmount } = renderHook(() => useMusicImport())
 
@@ -348,8 +350,8 @@ describe("useMusicImport", () => {
     it("should handle files with special characters", async () => {
       const mockFiles = ["/path/to/Música (Artist).mp3", "/path/to/歌曲.mp3"]
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(null)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -365,8 +367,8 @@ describe("useMusicImport", () => {
     it("should handle files without extensions", async () => {
       const mockFiles = ["/path/to/audiofile"]
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(null)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMusicImport())
 
@@ -383,8 +385,8 @@ describe("useMusicImport", () => {
       const longPath = `/path/to/${"very/long/".repeat(50)}song.mp3`
       const mockFiles = [longPath]
 
-      ;(mediaModule.selectAudioFile as any).mockResolvedValue(mockFiles)
-      ;(mediaModule.getMediaMetadata as any).mockResolvedValue(null)
+      ;(mediaDomainModule.selectAudioFile as any).mockResolvedValue(mockFiles)
+      ;(mediaDomainModule.getMediaMetadata as any).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMusicImport())
 

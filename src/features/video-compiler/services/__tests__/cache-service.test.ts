@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { clearAllCache, clearPreviewCache, configureCacheSettings, getCacheSize, getCacheStats } from "../cache-service"
+import {
+  clearAllCache,
+  clearPreviewCache,
+  configureCacheSettings,
+  getCacheSize,
+  getCacheStats,
+} from "@/domains/video-editing/services/compiler/cache-service"
 
 // Mock Tauri API
 vi.mock("@tauri-apps/api/core", () => ({

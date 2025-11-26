@@ -7,15 +7,15 @@
 import { vi } from "vitest"
 import type {
   AIDirectorConfig,
+  AIDirectorHealthCheckResult,
   ComprehensiveAnalysisResult,
-  HealthCheckResult,
   SystemCapabilities,
 } from "../services/ai-director"
 
 // Define types that match the mock data structure
-type HealthStatus = HealthCheckResult
+type HealthStatus = AIDirectorHealthCheckResult
 type SystemStatus = {
-  health: HealthCheckResult
+  health: AIDirectorHealthCheckResult
   capabilities: SystemCapabilities
   version: string
 }

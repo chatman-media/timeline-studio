@@ -8,7 +8,7 @@ import {
   selectAudioFile,
   selectMediaDirectory,
   selectMediaFile,
-} from "../../services/media-api"
+} from "@/domains/media-management"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({

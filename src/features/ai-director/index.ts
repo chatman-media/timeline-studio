@@ -7,10 +7,20 @@
  */
 
 export type {
+  AIDirectorConfig,
+  AIDirectorHealthCheckResult,
+  AIDirectorVideoAnalysisOptions,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  SystemCapabilities,
+  UnifiedAudioConfig,
+} from "@/domains/ai-services"
+// AI Director Service and types are now re-exported from domain
+export { AIDirectorService, aiDirectorService } from "@/domains/ai-services"
+export type {
   AnalysisError,
   AnalysisProgress,
 } from "@/domains/ai-services/types/ai-director-events"
-
 // Components
 export * from "./components/ai-director-chat"
 export * from "./components/ai-director-dashboard"
@@ -26,17 +36,6 @@ export * from "./components/montage-template-selector"
 export * from "./hooks"
 // Services
 export * from "./services/ai-director-machine"
-// AI Director Service and types are now re-exported from domain
-export { AIDirectorService, aiDirectorService } from "@/domains/ai-services"
-export type {
-  AIDirectorConfig,
-  AIDirectorVideoAnalysisOptions,
-  ComprehensiveAnalysisResult,
-  ConfigValidationResult,
-  HealthCheckResult,
-  SystemCapabilities,
-  UnifiedAudioConfig,
-} from "@/domains/ai-services"
 // New progress types
 export type {
   AnalysisConfig,

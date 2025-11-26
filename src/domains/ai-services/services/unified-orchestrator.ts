@@ -20,9 +20,6 @@ import type {
   MontagePlanGeneratedEvent,
 } from "@/domains/shared/events"
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
-import { aiDirectorService } from "./ai-director"
-// Use types from ai-director and montage-planner
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "./ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AnalysisOptions,
@@ -37,6 +34,9 @@ import {
   type UnifiedContentAnalysis,
 } from "../mappers/ai-director-mapper"
 import { validateVideoBatch, validateVideoFile } from "../utils/validation"
+// Use types from ai-director and montage-planner
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "./ai-director"
+import { aiDirectorService } from "./ai-director"
 
 const logger = createLogger({ module: "UnifiedOrchestrator" })
 

@@ -139,6 +139,7 @@ export function mergeEffectsCollections(collection1: any, collection2: any) {
 // РЕЭКСПОРТ ИЗ ДОМЕНА (для обратной совместимости)
 // ============================================================================
 
+export type { UserEffect, UserEffectsCollection } from "@/domains/video-editing/services/effects"
 export {
   addEffectToClip,
   addFilterToClip,

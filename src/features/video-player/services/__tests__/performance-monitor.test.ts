@@ -114,8 +114,8 @@ describe("PerformanceMonitor", () => {
       }
 
       const metrics = monitor.getMetrics()
-      // P95 индекс = 95
-      expect(metrics.p95Latency).toBe(95)
+      // P95 индекс = Math.floor(100 * 0.95) = 95, значение в sortedTimes[95] = 96
+      expect(metrics.p95Latency).toBe(96)
     })
 
     it("должен корректно рассчитывать P99 latency", () => {
@@ -125,8 +125,8 @@ describe("PerformanceMonitor", () => {
       }
 
       const metrics = monitor.getMetrics()
-      // P99 индекс = 99
-      expect(metrics.p99Latency).toBe(99)
+      // P99 индекс = Math.floor(100 * 0.99) = 99, значение в sortedTimes[99] = 100
+      expect(metrics.p99Latency).toBe(100)
     })
 
     it("должен рассчитывать частоту синхронизации", () => {

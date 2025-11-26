@@ -1,5 +1,5 @@
 import type { ChatListItem, ChatMessage, ChatSession, ChatStorageService } from "@/domains/ai-services/types/chat"
-import { appDirectoriesService } from "@/features/app-state/services"
+import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
 import { isDesktop } from "@/lib/environment"
 import { createLogger } from "@/lib/tauri-logger"
 

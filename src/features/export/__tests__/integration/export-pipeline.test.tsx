@@ -40,7 +40,7 @@ vi.mock("sonner", () => ({
 }))
 
 // Mock video compiler service
-vi.mock("@/features/video-compiler/services/video-compiler-service", () => ({
+vi.mock("@/domains/video-editing/services/compiler/video-compiler-service", () => ({
   renderProject: vi.fn(),
   trackRenderProgress: vi.fn(),
   cancelRender: vi.fn(),
@@ -223,7 +223,7 @@ describe("Export Pipeline Integration Tests", () => {
 
     const { invoke } = await import("@tauri-apps/api/core")
     const { renderProject, trackRenderProgress, cancelRender } = await import(
-      "@/features/video-compiler/services/video-compiler-service"
+      "@/domains/video-editing/services/compiler/video-compiler-service"
     )
     mockSocialNetworksService = await import("../../services/social-networks-service")
 

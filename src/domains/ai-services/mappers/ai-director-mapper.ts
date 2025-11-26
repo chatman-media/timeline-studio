@@ -5,9 +5,9 @@
  * для использования в TypeScript приложении
  */
 
+import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 // Use types from ai-director and montage-planner
 import type { ComprehensiveAnalysisResult } from "../services/ai-director"
-import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 
 // ============================================================================
 // Unified Content Analysis Interface

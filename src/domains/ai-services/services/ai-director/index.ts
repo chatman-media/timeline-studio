@@ -6,10 +6,10 @@
 
 export type {
   AIDirectorConfig,
+  AIDirectorHealthCheckResult,
   AIDirectorVideoAnalysisOptions,
   ComprehensiveAnalysisResult,
   ConfigValidationResult,
-  HealthCheckResult,
   SystemCapabilities,
   UnifiedAudioConfig,
 } from "./ai-director-service"

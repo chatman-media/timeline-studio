@@ -70,7 +70,13 @@ describe("CommandQueue", () => {
     it("должен обрабатывать приоритеты - high выполняется раньше normal", async () => {
       const executionOrder: string[] = []
 
-      // Добавляем команды в разном порядке
+      // Сначала добавляем блокирующую команду, чтобы остальные попали в очередь
+      const blockingPromise = queue.enqueue(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+        return "blocking"
+      }, "low")
+
+      // Теперь добавляем команды, они попадут в очередь
       const normalPromise = queue.enqueue(async () => {
         executionOrder.push("normal")
         return "normal"
@@ -81,10 +87,10 @@ describe("CommandQueue", () => {
         return "high"
       }, "high")
 
-      await vi.runAllTimersAsync()
-      await Promise.all([normalPromise, highPromise])
+      await vi.advanceTimersByTimeAsync(200)
+      await Promise.all([blockingPromise, normalPromise, highPromise])
 
-      // High должен выполниться раньше
+      // High должен выполниться раньше normal (после blocking)
       expect(executionOrder[0]).toBe("high")
       expect(executionOrder[1]).toBe("normal")
     })
@@ -92,6 +98,13 @@ describe("CommandQueue", () => {
     it("должен обрабатывать приоритеты - low выполняется после normal", async () => {
       const executionOrder: string[] = []
 
+      // Сначала добавляем блокирующую команду, чтобы остальные попали в очередь
+      const blockingPromise = queue.enqueue(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+        return "blocking"
+      }, "high")
+
+      // Теперь добавляем команды, они попадут в очередь
       const lowPromise = queue.enqueue(async () => {
         executionOrder.push("low")
         return "low"
@@ -102,9 +115,10 @@ describe("CommandQueue", () => {
         return "normal"
       }, "normal")
 
-      await vi.runAllTimersAsync()
-      await Promise.all([normalPromise, lowPromise])
+      await vi.advanceTimersByTimeAsync(200)
+      await Promise.all([blockingPromise, normalPromise, lowPromise])
 
+      // Normal должен выполниться раньше low (после blocking)
       expect(executionOrder[0]).toBe("normal")
       expect(executionOrder[1]).toBe("low")
     })
@@ -131,6 +145,11 @@ describe("CommandQueue", () => {
 
       const resultPromise = slowQueue.enqueue(slowCommand, "normal", "slow-test")
 
+      // Добавляем catch чтобы предотвратить unhandled rejection
+      resultPromise.catch(() => {
+        // Expected rejection
+      })
+
       // Продвигаем таймеры
       await vi.advanceTimersByTimeAsync(150)
 
@@ -141,6 +160,11 @@ describe("CommandQueue", () => {
       const failingCommand = vi.fn().mockRejectedValue(new Error("Command failed"))
 
       const resultPromise = queue.enqueue(failingCommand, "normal", "fail-test")
+
+      // Добавляем catch чтобы предотвратить unhandled rejection
+      resultPromise.catch(() => {
+        // Expected rejection
+      })
 
       await vi.runAllTimersAsync()
 
@@ -324,7 +348,10 @@ describe("CommandQueue", () => {
       const longCommand = () => new Promise((resolve) => setTimeout(resolve, 5000))
 
       // Первая команда начинает выполняться
-      queue.enqueue(longCommand, "normal")
+      // Добавляем catch чтобы предотвратить unhandled rejection при таймауте
+      queue.enqueue(longCommand, "normal").catch(() => {
+        // Expected - команда может завершиться таймаутом
+      })
 
       // Добавляем команды разных приоритетов
       queue.enqueue(async () => {

@@ -28,7 +28,7 @@ const {
   getCachedMetadata,
   getCacheMemoryUsage,
   invalidateFileCache,
-} = await import("../metadata-cache-service")
+} = await import("@/domains/video-editing/services/compiler/metadata-cache-service")
 
 const mockMetadata: MediaMetadata = {
   file_path: "/path/to/test-video.mp4",

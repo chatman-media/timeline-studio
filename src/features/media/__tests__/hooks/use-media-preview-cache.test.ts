@@ -1,8 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { useMediaPreview } from "../../hooks/use-media-preview"
-import { indexedDBCacheService } from "../../services/indexeddb-cache-service"
 
 // Mock Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
@@ -10,7 +9,7 @@ vi.mock("@tauri-apps/api/core", () => ({
 }))
 
 // Mock IndexedDB cache service
-vi.mock("../../services/indexeddb-cache-service", () => ({
+vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   indexedDBCacheService: {
     getCachedPreview: vi.fn(),
     cachePreview: vi.fn(),

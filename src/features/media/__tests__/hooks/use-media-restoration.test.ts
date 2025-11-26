@@ -6,17 +6,32 @@ import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 
 // Мокаем MediaRestorationService
-vi.mock("@/features/media/services/media-restoration-service", () => ({
+vi.mock("@/domains/media-management/services/media-restoration-service", () => ({
   restoreProjectMedia: vi.fn(),
-  handleMissingFiles: vi.fn(),
   generateRestorationReport: vi.fn(),
 }))
 
-const { restoreProjectMedia, handleMissingFiles, generateRestorationReport } = await import(
-  "@/features/media/services/media-restoration-service"
+// Мокаем useModal
+vi.mock("@/features/modals/services", () => ({
+  useModal: vi.fn(() => ({
+    closeModal: vi.fn(),
+  })),
+}))
+
+// Мокаем tauri-logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  })),
+}))
+
+const { restoreProjectMedia, generateRestorationReport } = await import(
+  "@/domains/media-management/services/media-restoration-service"
 )
 const mockRestoreProjectMedia = vi.mocked(restoreProjectMedia)
-const mockHandleMissingFiles = vi.mocked(handleMissingFiles)
 const mockGenerateRestorationReport = vi.mocked(generateRestorationReport)
 
 describe("useMediaRestoration", () => {
@@ -144,17 +159,6 @@ describe("useMediaRestoration", () => {
     }
 
     mockRestoreProjectMedia.mockResolvedValue(resultWithMissingFiles)
-    mockHandleMissingFiles.mockResolvedValue({
-      found: [
-        {
-          original: mockMediaFiles[0],
-          newPath: "/new/path/video.mp4",
-          restoredFile: { id: "media-1", name: "video.mp4" } as MediaFile,
-        },
-      ],
-      stillMissing: [],
-      userCancelled: [],
-    })
 
     const { result } = renderHook(() => useMediaRestoration())
 

@@ -12,13 +12,14 @@ vi.mock("@xstate/react", () => ({
   useMachine: vi.fn(),
 }))
 
-// Мокаем сервисы
-vi.mock("../../services/update-service", () => ({
+// Мокаем domain service
+vi.mock("@/domains/system-integration", () => ({
   updateService: {
     subscribe: vi.fn(() => vi.fn()),
     enableAutoCheck: vi.fn(),
     disableAutoCheck: vi.fn(),
   },
+  updateMachine: {},
 }))
 
 describe("useUpdateManager", () => {
@@ -177,14 +178,14 @@ describe("useUpdateManager", () => {
   })
 
   it("подписывается на события updateService", async () => {
-    const { updateService } = await import("../../services/update-service")
+    const { updateService } = await import("@/domains/system-integration")
     renderHook(() => useUpdateManager())
 
     expect(vi.mocked(updateService).subscribe).toHaveBeenCalled()
   })
 
   it("включает/выключает автопроверку в сервисе", async () => {
-    const { updateService } = await import("../../services/update-service")
+    const { updateService } = await import("@/domains/system-integration")
 
     // Автопроверка выключена
     renderHook(() => useUpdateManager())

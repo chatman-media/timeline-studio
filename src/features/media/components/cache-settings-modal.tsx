@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import {
+  type CacheStatistics,
+  indexedDBCacheService,
+} from "@/domains/media-management/services/indexeddb-cache-service"
 import { createLogger } from "@/lib/tauri-logger"
 import { formatFileSize } from "@/lib/utils"
-
-import { type CacheStatistics, indexedDBCacheService } from "../services/indexeddb-cache-service"
 
 const logger = createLogger("CacheSettings")
 

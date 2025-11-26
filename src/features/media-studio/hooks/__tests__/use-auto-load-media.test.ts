@@ -27,7 +27,7 @@ vi.mock("@/features/app-state/hooks", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state/services", () => ({
+vi.mock("@/domains/project-management/services/app-directories-service", () => ({
   appDirectoriesService: {
     createAppDirectories: vi.fn().mockResolvedValue(undefined),
     getMediaSubdirectory: vi.fn((subdir: string) => `/app/media/${subdir}`),

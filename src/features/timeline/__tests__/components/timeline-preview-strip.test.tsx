@@ -9,7 +9,7 @@ vi.mock("@/features/video-compiler/hooks/use-frame-extraction", () => ({
 }))
 
 // Mock the frame extraction service
-vi.mock("@/features/video-compiler/services/frame-extraction-service", () => ({
+vi.mock("@/domains/video-editing/services/compiler/frame-extraction-service", () => ({
   frameExtractionService: {
     createPreviewElement: vi.fn(),
   },
@@ -44,7 +44,9 @@ describe("TimelinePreviewStrip", () => {
     })
 
     // Mock the frame extraction service
-    const { frameExtractionService } = await import("@/features/video-compiler/services/frame-extraction-service")
+    const { frameExtractionService } = await import(
+      "@/domains/video-editing/services/compiler/frame-extraction-service"
+    )
     vi.mocked(frameExtractionService.createPreviewElement).mockReturnValue({
       src: "data:image/jpeg;base64,test-frame-data",
       onload: null,
@@ -276,7 +278,9 @@ describe("TimelinePreviewStrip", () => {
 
   describe("PreviewFrame component", () => {
     it("should create preview element on mount", async () => {
-      const { frameExtractionService } = await import("@/features/video-compiler/services/frame-extraction-service")
+      const { frameExtractionService } = await import(
+        "@/domains/video-editing/services/compiler/frame-extraction-service"
+      )
 
       mockUseSmartTimelinePreviews.mockReturnValue({
         frames: [{ timestamp: 1, frameData: "test-data", isKeyframe: false }],

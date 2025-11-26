@@ -8,6 +8,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import {
   type AIDirectorConfig,
+  type AIDirectorHealthCheckResult,
   type AIDirectorVideoAnalysisOptions,
   aiDirectorAnalyzeBatch,
   aiDirectorAnalyzeComprehensive,
@@ -19,7 +20,6 @@ import {
   analyzeVideoComprehensive,
   type ComprehensiveAnalysisResult,
   type ConfigValidationResult,
-  type HealthCheckResult,
   type SystemCapabilities,
   type UnifiedAudioConfig,
   unifiedAudioAnalyzeBatch,
@@ -87,7 +87,7 @@ export class AIDirectorService {
   /**
    * Выполнить health check системы
    */
-  async healthCheck(): Promise<HealthCheckResult> {
+  async healthCheck(): Promise<AIDirectorHealthCheckResult> {
     return aiDirectorHealthCheck()
   }
 
@@ -128,7 +128,7 @@ export class AIDirectorService {
     filePaths: string[],
     config?: { performanceMode?: "fast" | "balanced" | "quality" },
   ): Promise<any[]> {
-    return unifiedAudioAnalyzeBatch(filePaths, config)
+    return unifiedAudioAnalyzeBatch(filePaths, config ? { performance_mode: config.performanceMode } : undefined)
   }
 
   /**
@@ -205,7 +205,7 @@ export class AIDirectorService {
    */
   async getSystemStatus(): Promise<{
     capabilities: SystemCapabilities
-    health: HealthCheckResult
+    health: AIDirectorHealthCheckResult
     audioCapabilities: any
   }> {
     const [capabilities, health, audioCapabilities] = await Promise.all([
@@ -259,10 +259,10 @@ export const aiDirectorService = AIDirectorService.getInstance()
 // Re-export types for convenience
 export type {
   AIDirectorConfig,
+  AIDirectorHealthCheckResult,
   AIDirectorVideoAnalysisOptions,
   ComprehensiveAnalysisResult,
   ConfigValidationResult,
-  HealthCheckResult,
   SystemCapabilities,
   UnifiedAudioConfig,
 }

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-
+import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
 import { useMediaFiles, useMusicFiles } from "@/features/app-state/hooks"
-import { appDirectoriesService } from "@/features/app-state/services"
 import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 import { getMediaExtensions, getMusicExtensions } from "../utils/validation"

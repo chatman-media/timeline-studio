@@ -6,7 +6,6 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { AIDirectorConfig } from "../services/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AnalysisOptions,
@@ -16,6 +15,7 @@ import type {
   PlanValidation,
 } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"
+import type { AIDirectorConfig } from "../services/ai-director"
 import type { AnalysisWorkflow, BatchAnalysisWorkflow } from "../services/unified-orchestrator"
 import { unifiedOrchestrator } from "../services/unified-orchestrator"
 

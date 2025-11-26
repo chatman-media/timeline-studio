@@ -15,7 +15,7 @@ vi.mock("@tauri-apps/api/event", () => ({
 }))
 
 // Mock metadata cache service
-vi.mock("@/features/video-compiler/services/metadata-cache-service", () => ({
+vi.mock("@/domains/video-editing/services/compiler/metadata-cache-service", () => ({
   cacheMediaMetadata: vi.fn(),
   getCachedMetadata: vi.fn(),
 }))
@@ -98,7 +98,7 @@ describe("useMediaProcessor", () => {
 
     const tauriCore = await import("@tauri-apps/api/core")
     const tauriEvent = await import("@tauri-apps/api/event")
-    const metadataCache = await import("@/features/video-compiler/services/metadata-cache-service")
+    const metadataCache = await import("@/domains/video-editing/services/compiler/metadata-cache-service")
 
     mockInvoke = vi.mocked(tauriCore.invoke)
     mockListen = vi.mocked(tauriEvent.listen)

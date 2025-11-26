@@ -7,7 +7,7 @@ import type { ChatMessage } from "@/domains/ai-services/types/chat"
 import { LocalChatStorageService } from "../chat-storage-service"
 
 // Mock appDirectoriesService
-vi.mock("@/features/app-state/services", () => ({
+vi.mock("@/domains/project-management/services/app-directories-service", () => ({
   appDirectoriesService: {
     getAppDirectories: vi.fn().mockResolvedValue({
       base_dir: "/mock/base/dir",
