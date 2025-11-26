@@ -4,6 +4,15 @@
 
 AI-powered chat interface for Timeline Studio with domain-driven architecture. Provides React components and hooks for integrating AI chat functionality with MCP (Model Context Protocol) support.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `mcp_initialize` | `{ config: MCPConfig }` | Initialize MCP server with configuration (enables MCP, sets model, max_tokens, temperature) |
+| `mcp_check_api` | - | Verify connectivity to Claude API |
+
+**Note:** The AI Chat module primarily uses frontend AI services and tools from `/src/domains/ai-tools/` and `/src/domains/ai-services/`. MCP commands are only used for Model Context Protocol integration.
+
 ## 🏗️ Architecture Overview
 
 The AI Chat module is a **lightweight frontend layer** that integrates with domain services:
@@ -242,14 +251,76 @@ bun run test src/features/ai-chat/services/
 bun run test src/features/ai-chat/components/
 ```
 
+### Test Behavior (from test suites)
+
+#### chat-list.test.tsx
+- ✓ Should render chat list with sessions
+- ✓ Should show only first 3 sessions by default
+- ✓ Should expand to show all sessions when "Show more" is clicked
+- ✓ Should highlight current session
+- ✓ Should call onSelectSession when session is clicked
+- ✓ Should show delete button on hover
+- ✓ Should show copy button on hover
+- ✓ Should show loading state when creating new chat
+- ✓ Should show message count for each session
+- ✓ Should truncate long session titles
+- ✓ Should handle empty sessions list
+
+#### chat-storage-service.test.ts (LocalChatStorageService)
+- ✓ Should create new session with provided title
+- ✓ Should create new session with automatic title if not provided
+- ✓ Should save session in localStorage
+- ✓ Should get existing session
+- ✓ Should return null for non-existent session
+- ✓ Should correctly convert dates from strings to Date objects
+- ✓ Should return empty array if no sessions exist
+- ✓ Should update session
+- ✓ Should throw error if session not found
+- ✓ Should delete session
+- ✓ Should not throw error when deleting non-existent session
+- ✓ Should add message to session
+- ✓ Should update session title based on first user message
+- ✓ Should truncate long title to 50 characters
+- ✓ Should update message in session
+- ✓ Should delete message from session
+- ✓ Should find sessions by title
+- ✓ Should find sessions by message content
+- ✓ Should be case-insensitive
+- ✓ Should export session to JSON
+- ✓ Should import session from JSON
+- ✓ Should return same instance (singleton pattern)
+- ✓ Should handle sessions with many messages
+- ✓ Should handle special characters in messages
+
+#### convert-tools.test.ts (Function Calling Integration)
+- ✓ Should convert BaseAITool to AITool format
+- ✓ Should correctly handle complex schemas
+- ✓ Should convert array of tools
+- ✓ Should handle empty array
+- ✓ Should find tool by name
+- ✓ Should return undefined if tool not found
+- ✓ Should be case-sensitive
+- ✓ Should execute tool by name
+- ✓ Should throw error if tool not found
+- ✓ Should throw error if input is invalid
+- ✓ Should throw error if input is null
+- ✓ Should throw error if tool execution fails
+- ✓ Should correctly execute async tools
+- ✓ Should pass correct parameters to tool
+- ✓ Should handle tools with empty result
+- ✓ Should handle tools with same name (takes first)
+- ✓ Should handle large input data
+- ✓ Should handle special characters in tool names
+- ✓ Should correctly handle parallel tool execution
+
 ### Available Tests
-- `chat-list.test.tsx` - Chat list component
+- `chat-list.test.tsx` - Chat list component (11 tests)
 - `use-chat-actions.test.tsx` - Chat actions hook
 - `use-chat-state.test.tsx` - Chat state hook
 - `use-timeline-ai-integration.test.tsx` - Timeline AI integration
-- `chat-storage-service.test.ts` - Chat storage service
-- `convert-tools.test.ts` - Tool conversion utilities
-- `function-calling.test.ts` - AI function calling
+- `chat-storage-service.test.ts` - Chat storage service (45+ tests)
+- `convert-tools.test.ts` - Tool conversion utilities (30+ tests)
+- `function-calling.test.ts` - AI function calling integration
 
 ## 🤝 Contributing
 
@@ -290,3 +361,33 @@ Domain documentation:
 - [AI Tools Documentation](../../domains/ai-tools/README.md)
 - [AI Services Documentation](../../domains/ai-services/README.md)
 - [Shared Services Documentation](../../shared/services/ai/README.md)
+
+## 🎭 E2E Tests / E2E Тесты
+
+**Расположение:** `e2e/tauri/features/ai-chat/`
+
+### Чеклист тестов
+
+| Тест | Приоритет | Статус | Файл |
+|------|-----------|--------|------|
+| Инициализация AI Chat компонента | 🔴 High | ⏳ Planned | - |
+| Открытие/закрытие chat панели | 🔴 High | ⏳ Planned | - |
+| Отправка сообщения в чат | 🔴 High | ⏳ Planned | - |
+| Получение ответа от AI | 🔴 High | ⏳ Planned | - |
+| Работа с chat sessions | 🟡 Medium | ⏳ Planned | - |
+| Переключение между сессиями | 🟡 Medium | ⏳ Planned | - |
+| Очистка истории чата | 🟡 Medium | ⏳ Planned | - |
+| Интеграция с Timeline (context) | 🔴 High | ⏳ Planned | - |
+| Интеграция с Browser (context) | 🟡 Medium | ⏳ Planned | - |
+| Применение AI suggestions | 🔴 High | ⏳ Planned | - |
+| Function calling (AI Tools) | 🟡 Medium | ⏳ Planned | - |
+| Streaming responses | 🟡 Medium | ⏳ Planned | - |
+| Error handling (network, API) | 🟡 Medium | ⏳ Planned | - |
+| MCP provider integration | 🟢 Low | ⏳ Planned | - |
+| Export/import chat sessions | 🟢 Low | ⏳ Planned | - |
+
+### Примечания
+- AI Chat не использует прямые Tauri команды, но требует интеграции с AI Services
+- Основной функционал - интеграция с Timeline и Browser через context
+- Важно тестировать streaming responses и function calling
+- Папка `e2e/tauri/features/ai-chat/` создана, но пуста (ждет реализации)
