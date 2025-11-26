@@ -23,13 +23,17 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
 
         {/* Screenshot - скрыт на мобильных */}
         <div className="relative">
-          <img
-            src="/screen5.png"
-            alt="Timeline Studio AI Interface"
-            width="4112"
-            height="2572"
-            className="w-full h-auto rounded-2xl hidden md:block"
-          />
+          <picture className="hidden md:block">
+            <source srcSet="/screen5.webp" type="image/webp" />
+            <img
+              src="/screen5.png"
+              alt="Timeline Studio AI Interface"
+              width="4112"
+              height="2572"
+              className="w-full h-auto rounded-2xl"
+              loading="lazy"
+            />
+          </picture>
 
           {/* Заглушка для мобильных */}
           <div className="md:hidden w-full aspect-video bg-linear-to-br from-purple-900/20 to-pink-900/20 rounded-2xl flex items-center justify-center">

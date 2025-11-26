@@ -21,9 +21,6 @@
 /*.ico
   Cache-Control: public, max-age=31536000, immutable
 
-/fav.svg
-  Cache-Control: public, max-age=31536000, immutable
-
 # Кеширование шрифтов
 /*.woff
   Cache-Control: public, max-age=31536000, immutable

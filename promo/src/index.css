@@ -295,26 +295,6 @@ html {
         0 30px 60px -30px rgba(0, 0, 0, 0.7);
 }
 
-/* Mountain depth effect */
-.mountain-depth {
-    position: relative;
-    overflow: hidden;
-}
-
-.mountain-depth::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(0, 0, 0, 0.1) 30%,
-        rgba(0, 0, 0, 0.4) 70%,
-        rgba(0, 0, 0, 0.8) 100%
-    );
-    pointer-events: none;
-}
-
 /* Glow effects */
 .glow-effect {
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
