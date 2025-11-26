@@ -19,6 +19,7 @@ const translations = {
     "nav.about": "About",
     "nav.changelog": "Changelog",
     "nav.download": "Download Free",
+    "nav.investors": "Investors",
 
     // Blog
     "blog.title": "Blog",
@@ -414,6 +415,7 @@ const translations = {
     "nav.about": "О нас",
     "nav.changelog": "Изменения",
     "nav.download": "Скачать",
+    "nav.investors": "Инвесторам",
 
     // Blog
     "blog.title": "Блог",
@@ -811,6 +813,7 @@ const translations = {
     "nav.about": "关于",
     "nav.changelog": "更新日志",
     "nav.download": "免费下载",
+    "nav.investors": "投资者",
 
     // Blog
     "blog.title": "博客",
