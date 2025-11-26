@@ -187,25 +187,15 @@ export const Pricing: React.FC = () => {
                       </ul>
 
                       {/* CTA Button */}
-                      <button
-                        className={`group relative w-full py-3 px-6 rounded-xl font-medium overflow-hidden cursor-pointer ${
-                          tier.highlighted
-                            ? "text-white"
-                            : "bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
-                        }`}
-                      >
-                        {tier.highlighted && (
-                          <>
-                            {/* Background with purple base */}
-                            <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+                      <button className="group relative w-full py-3 px-6 rounded-xl font-medium text-white overflow-hidden cursor-pointer">
+                        {/* Background with purple base */}
+                        <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
 
-                            {/* Kiro-style spreading effect on hover */}
-                            <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
-                          </>
-                        )}
+                        {/* Kiro-style spreading effect on hover */}
+                        <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
 
                         {/* Text */}
-                        <span className={tier.highlighted ? "relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500" : ""}>
+                        <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
                           {tier.buttonText}
                         </span>
                       </button>
